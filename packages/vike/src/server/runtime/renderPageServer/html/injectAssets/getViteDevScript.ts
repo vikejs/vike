@@ -2,7 +2,8 @@ export { getViteDevScript }
 
 import type { ViteRPC } from '../../../../../node/vite/plugins/non-runnable-dev/pluginViteRPC.js'
 import type { GlobalContextServerInternal } from '../../../globalContext.js'
-import { assert, assertUsage, assertWarning, getViteRPC } from 'FIXME_utils.js'
+import { assert, assertUsage, assertWarning } from '../../../../../utils/assert.js'
+import { getViteRPC } from '../../../../../utils/getViteRPC.js'
 import pc from '@brillout/picocolors'
 
 const reachOutCTA = 'Create a new GitHub issue to discuss a solution.'

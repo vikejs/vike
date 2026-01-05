@@ -1,7 +1,7 @@
 export { mergeScriptTags }
 
 import { inferNonceAttr, type PageContextCspNonce } from '../../csp.js'
-import { assert } from 'FIXME_utils.js'
+import { assert } from '../../../../../utils/assert.js'
 import { scriptCommonAttrs } from './inferHtmlTags.js'
 
 const scriptRE = /(<script\b(?:\s[^>]*>|>))(.*?)<\/script>/gims

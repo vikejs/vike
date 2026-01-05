@@ -7,7 +7,9 @@ export type { StreamFromReactStreamingPackage }
 export type { StreamFromReactStreamingPackagePublic }
 
 import type { renderToStream } from 'react-streaming/server'
-import { assert, assertUsage, hasProp, isVikeReactApp } from 'FIXME_utils.js'
+import { assert, assertUsage } from '../../../../../utils/assert.js'
+import { hasProp } from '../../../../../utils/hasProp.js'
+import { isVikeReactApp } from '../../../../../utils/isVikeReactApp.js'
 import { streamPipeNodeToString, StreamReadableWeb, streamReadableWebToString, StreamWritableNode } from '../stream.js'
 
 // We use this simplistic public type to avoid type mismatches (when the user installed another version than Vike's devDependency#react-streaming install).

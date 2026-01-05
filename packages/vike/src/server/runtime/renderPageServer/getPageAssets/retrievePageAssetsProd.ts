@@ -1,7 +1,7 @@
 export { retrievePageAssetsProd }
 export { resolveIncludeAssetsImportedByServer }
 
-import { isImportPathNpmPackage } from '../../../../utils/isImportPath.js'
+import { isImportPathNpmPackage } from '../../../../utils/parseNpmPackage.js'
 import { assert } from '../../../../utils/assert.js'
 import type { ViteManifest } from '../../../../types/ViteManifest.js'
 import { getManifestEntry } from './getManifestEntry.js'

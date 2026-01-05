@@ -35,6 +35,7 @@ export type { GlobalContextServerInternal }
 
 import { PROJECT_VERSION } from '../../utils/PROJECT_VERSION.js'
 import { assert, assertUsage, assertWarning } from '../../utils/assert.js'
+import { assertIsNotBrowser } from '../../utils/assertIsNotBrowser.js'
 import { isPlainObject } from '../../utils/isPlainObject.js'
 import { objectReplace } from '../../utils/objectReplace.js'
 import { genPromise } from '../../utils/genPromise.js'

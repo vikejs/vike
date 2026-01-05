@@ -6,7 +6,7 @@ import {
 } from '../../../shared-server-client/getPageContextRequestUrl.js'
 import { modifyUrl } from '../../../shared-server-client/modifyUrl.js'
 import { slice } from '../../../utils/slice.js'
-import { baseServer } from '../../../utils/parseUrl-extras.js'
+import { baseServer } from '../../../utils/urlToFile.js'
 import { assert } from '../../../utils/assert.js'
 import { hasProp } from '../../../utils/hasProp.js'
 import { isObject } from '../../../utils/isObject.js'
