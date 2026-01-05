@@ -300,18 +300,22 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   host: {
     env: { config: true },
     global: true,
+    vite: true,
   },
   port: {
     env: { config: true },
     global: true,
+    vite: true,
   },
   mode: {
     env: { config: true },
     global: true,
+    vite: true,
   },
   force: {
     env: { config: true },
     global: true,
+    vite: true,
   },
   csp: {
     env: { server: true },
@@ -348,7 +352,12 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     global: (value, { isGlobalLocation }) => typeof value === 'object' || isGlobalLocation,
     cumulative: true,
   },
-  vite: { env: { config: true }, global: true, cumulative: true },
+  vite: {
+    env: { config: true },
+    global: true,
+    cumulative: true,
+    vite: true,
+  },
   disableAutoFullBuild: {
     env: { config: true },
     global: true,
@@ -357,18 +366,22 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   vite6BuilderApp: {
     env: { config: true },
     global: true,
+    vite: true,
   },
   includeAssetsImportedByServer: {
     env: { config: true },
     global: true,
+    vite: true,
   },
   baseAssets: {
     env: { config: true, server: true },
     global: true,
+    vite: true,
   },
   baseServer: {
     env: { config: true, server: true },
     global: true,
+    vite: true,
   },
   redirects: {
     env: { server: true },
