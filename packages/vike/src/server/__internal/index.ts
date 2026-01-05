@@ -1,7 +1,6 @@
-// TODO/ai move all import './assertEnvServer.js' to the top of the file, followed by a blank line. Only header comments can live above import '../assertEnvServer.js'
+// Used by vike:build:pluginProdBuildEntry
 import '../assertEnvServer.js'
 
-// Used by vike:build:pluginProdBuildEntry
 export { setGlobalContext_prodBuildEntry } from '../runtime/globalContext.js'
 
 // Used by vite-plugin-vercel

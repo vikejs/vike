@@ -1,4 +1,5 @@
 import '../../../assertEnvServer.js'
+
 export { getManifestEntry }
 
 import type { ViteManifest, ViteManifestEntry } from '../../../../types/ViteManifest.js'

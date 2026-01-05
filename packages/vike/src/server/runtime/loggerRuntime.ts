@@ -1,8 +1,9 @@
 // Logger used by the the server runtime. (Also during pre-rendering since it uses the sever runtime.)
 
+import '../assertEnvServer.js'
+
 export let logRuntimeError: LogRuntimeError
 export let logRuntimeInfo: LogRuntimeInfo | null | LogRuntimeInfo = null // is `null` in production
-import '../assertEnvServer.js'
 export { setLogRuntimeDev }
 export { assertPageContext_logRuntime }
 export type { PageContext_logRuntime }
