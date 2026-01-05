@@ -230,8 +230,7 @@ async function resolveVikeConfigInternal_withErrorHandling(
     vikeConfigDependencies: new Set(),
   }
 
-  // Get previous config values for configs with vite: true
-  const previousVikeConfig = globalObject.vikeConfigSync
+  const vikeConfigPrevious = globalObject.vikeConfigSync
 
   let hasError = false
   let ret: VikeConfigInternal | undefined
@@ -263,17 +262,16 @@ async function resolveVikeConfigInternal_withErrorHandling(
     globalObject.vikeConfigHasBuildError = false
     setVikeConfigError({ errorBuild: false })
 
-    // Check if vite: true configs changed
-    const viteConfigChanged = checkViteConfigChanged(previousVikeConfig, ret)
-
+    let viteRestarted = false
     if (hadError) {
       logConfigInfo(vikeConfigErrorRecoverMsg, 'error-resolve')
       if (globalObject.restartViteBecauseOfError) {
         globalObject.restartViteBecauseOfError = false
         restartViteDevServer()
+        viteRestarted = true
       }
-    } else if (viteConfigChanged && isDev) {
-      // Restart Vite dev server only if vite: true configs changed
+    }
+    if (!viteRestarted && isDev && checkIfViteConfigChanged(vikeConfigPrevious, ret)) {
       restartViteDevServer()
     }
 
@@ -295,11 +293,11 @@ async function resolveVikeConfigInternal_withErrorHandling(
   }
 }
 
-function checkViteConfigChanged(
-  previousVikeConfig: VikeConfigInternal | null,
-  newVikeConfig: VikeConfigInternal,
+function checkIfViteConfigChanged(
+  vikeConfigOld: VikeConfigInternal | null,
+  vikeConfigNew: VikeConfigInternal,
 ): boolean {
-  if (previousVikeConfig === null) {
+  if (vikeConfigOld === null) {
     // First load - no change
     return false
   }
@@ -307,8 +305,8 @@ function checkViteConfigChanged(
   const configDefinitions = getConfigDefinitions([], (configDef) => !!configDef.vite)
   const configNames = Object.keys(configDefinitions)
 
-  const previousConfigValues = getConfigValues(previousVikeConfig._pageConfigGlobal, true)
-  const newConfigValues = getConfigValues(newVikeConfig._pageConfigGlobal, true)
+  const previousConfigValues = getConfigValues(vikeConfigOld._pageConfigGlobal, true)
+  const newConfigValues = getConfigValues(vikeConfigNew._pageConfigGlobal, true)
 
   for (const configName of configNames) {
     const previousValue = previousConfigValues[configName]?.value
