@@ -131,7 +131,7 @@ type VikeConfigInternal = GlobalConfigPublic & {
   prerenderContext: PrerenderContext
 }
 
-function reloadVikeConfig(restartViteBecauseOfChange?: true) {
+function reloadVikeConfig() {
   assert(globalObject.vikeConfigCtx)
   const { userRootDir, vikeVitePluginOptions } = globalObject.vikeConfigCtx
   assert(vikeVitePluginOptions)
