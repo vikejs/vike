@@ -64,4 +64,8 @@
   - Soft deprecation + migration scripts => hook renaming not too annoying for the user?
   - Rename +on{After}RenderClient to +onRenderClient{Start,End} ?
   - Rename +onData => +onAfterData ? Maybe not because it isn't strictly always called after +data
-  - Pre-rendering hook renaming? +onPrerender and +onPrerenderBegin ?
+  - Pre-rendering hook renaming?
+    - https://vike.dev/onBeforePrerenderStart => +onPrerender (or +onPrerenderInit ? So far I think +onPrerender is good)
+    - https://vike.dev/onPrerenderStart => +onPrerenderBegin
+      - ChatGPT disagrees: https://github.com/vikejs/vike/issues/1979 New hook `onRenderHtmlEnd()`
+      - https://chatgpt.com/c/695b8fdc-1474-8325-b0ff-5627de850bdb
