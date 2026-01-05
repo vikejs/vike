@@ -1,3 +1,5 @@
+import './assertEnvApi.js'
+
 export { preview }
 export type { CliPreviewConfig }
 
@@ -6,7 +8,9 @@ import { preview as previewVite, type ResolvedConfig, type PreviewServer } from 
 import { importServerProductionIndex } from '@brillout/vite-plugin-server-entry/runtime'
 import type { ApiOptions } from './types.js'
 import { getOutDirs } from '../vite/shared/getOutDirs.js'
-import { assertUsage, assertWarning, onSetupPreview, isCallable } from './utils.js'
+import { assertUsage, assertWarning } from '../../utils/assert.js'
+import { onSetupPreview } from '../../utils/assertSetup.js'
+import { isCallable } from '../../utils/isCallable.js'
 import pc from '@brillout/picocolors'
 import path from 'node:path'
 import { getVikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.js'

@@ -1,3 +1,5 @@
+import './assertEnvApi.js'
+
 export { build_ as build }
 export { dev_ as dev }
 export { preview_ as preview }

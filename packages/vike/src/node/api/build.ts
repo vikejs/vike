@@ -1,3 +1,5 @@
+import './assertEnvApi.js'
+
 export { build }
 
 import { prepareViteApiCall } from './prepareViteApiCall.js'

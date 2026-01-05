@@ -1,3 +1,5 @@
+import './assertEnvApi.js'
+
 export { resolveViteConfigFromUser }
 export { isOnlyResolvingUserConfig }
 export { getVikeConfigInternalEarly }
@@ -15,7 +17,10 @@ import {
   isVikeConfigContextSet,
 } from '../vite/shared/resolveVikeConfigInternal.js'
 import path from 'node:path'
-import { assert, assertUsage, assertWarning, getGlobalObject, pick, toPosixPath } from './utils.js'
+import { assert, assertUsage, assertWarning } from '../../utils/assert.js'
+import { getGlobalObject } from '../../utils/getGlobalObject.js'
+import { pick } from '../../utils/pick.js'
+import { toPosixPath } from '../../utils/path.js'
 import pc from '@brillout/picocolors'
 import { getEnvVarObject } from '../vite/shared/getEnvVarObject.js'
 import { getVikeApiOperation, isVikeCliOrApi } from '../../shared-server-node/api-context.js'
