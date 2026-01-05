@@ -117,7 +117,6 @@ const globalObject = getGlobalObject('vite/shared/resolveVikeConfigInternal.ts',
   vikeConfigSync: null as VikeConfigInternal | null,
   vikeConfigCtx: null as VikeConfigContext | null, // Information provided by Vite's `config` and Vike's CLI. We could, if we want or need to, completely remove the dependency on Vite.
   prerenderContext: null as null | PrerenderContext,
-  previousViteConfigValues: null as null | Record<string, unknown>,
 })
 type VikeConfigContext = { userRootDir: string; isDev: boolean; vikeVitePluginOptions: unknown }
 type PrerenderContext = {
@@ -232,7 +231,7 @@ async function resolveVikeConfigInternal_withErrorHandling(
   }
 
   // Get previous config values for configs with vite: true
-  const previousViteConfigValues = globalObject.previousViteConfigValues
+  const previousVikeConfig = globalObject.vikeConfigSync
 
   let hasError = false
   let ret: VikeConfigInternal | undefined
@@ -265,9 +264,7 @@ async function resolveVikeConfigInternal_withErrorHandling(
     setVikeConfigError({ errorBuild: false })
 
     // Check if vite: true configs changed
-    const newViteConfigValues = getViteConfigValues(ret)
-    const viteConfigChanged = checkViteConfigChanged(previousViteConfigValues, newViteConfigValues)
-    globalObject.previousViteConfigValues = newViteConfigValues
+    const viteConfigChanged = checkViteConfigChanged(previousVikeConfig, ret)
 
     if (hadError) {
       logConfigInfo(vikeConfigErrorRecoverMsg, 'error-resolve')
@@ -298,34 +295,25 @@ async function resolveVikeConfigInternal_withErrorHandling(
   }
 }
 
-function getViteConfigValues(vikeConfig: VikeConfigInternal): Record<string, unknown> {
-  const viteConfigValues: Record<string, unknown> = {}
-  const { _pageConfigGlobal } = vikeConfig
-  const configDefinitions = getConfigDefinitions([], (configDef) => !!configDef.vite)
-
-  Object.keys(configDefinitions).forEach((configName) => {
-    const configValues = getConfigValues(_pageConfigGlobal, true)
-    const configValue = configValues[configName]
-    if (configValue) {
-      viteConfigValues[configName] = configValue.value
-    }
-  })
-
-  return viteConfigValues
-}
-
 function checkViteConfigChanged(
-  previousValues: Record<string, unknown> | null,
-  newValues: Record<string, unknown>,
+  previousVikeConfig: VikeConfigInternal | null,
+  newVikeConfig: VikeConfigInternal,
 ): boolean {
-  if (previousValues === null) {
+  if (previousVikeConfig === null) {
     // First load - no change
     return false
   }
 
-  const allConfigNames = new Set([...Object.keys(previousValues), ...Object.keys(newValues)])
-  for (const configName of allConfigNames) {
-    if (!deepEqual(previousValues[configName], newValues[configName])) {
+  const configDefinitions = getConfigDefinitions([], (configDef) => !!configDef.vite)
+  const configNames = Object.keys(configDefinitions)
+
+  const previousConfigValues = getConfigValues(previousVikeConfig._pageConfigGlobal, true)
+  const newConfigValues = getConfigValues(newVikeConfig._pageConfigGlobal, true)
+
+  for (const configName of configNames) {
+    const previousValue = previousConfigValues[configName]?.value
+    const newValue = newConfigValues[configName]?.value
+    if (!deepEqual(previousValue, newValue)) {
       return true
     }
   }
