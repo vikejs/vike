@@ -311,7 +311,6 @@ function hasViteConfigChanged(vikeConfigOld: VikeConfigInternal | null, vikeConf
 
   return false
 }
-
 function deepEqualPrimitive(x: any, y: any): boolean {
   const tx = typeof x
   const ty = typeof y
@@ -337,6 +336,7 @@ function deepEqualPrimitive(x: any, y: any): boolean {
   if (keysX.length !== keysY.length) return false
   return keysX.every((key) => deepEqualPrimitive(x[key], y[key]))
 }
+
 async function resolveVikeConfigInternal(
   userRootDir: string,
   vikeVitePluginOptions: unknown,
