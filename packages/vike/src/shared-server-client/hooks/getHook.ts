@@ -24,7 +24,6 @@ import { checkType } from '../../utils/checkType.js'
 import { isArray } from '../../utils/isArray.js'
 import { isCallable } from '../../utils/isCallable.js'
 import { isObject } from '../../utils/isObject.js'
-
 import pc from '@brillout/picocolors'
 import type { GlobalContextPublicMinimum } from '../getGlobalContextPublicShared.js'
 import type { PageContextPublicMinimum } from '../getPageContextPublicShared.js'

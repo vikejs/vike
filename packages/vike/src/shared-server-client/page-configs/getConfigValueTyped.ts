@@ -4,7 +4,6 @@ export type { TypeAsString }
 import { assert, assertUsage } from '../../utils/assert.js'
 import type { ResolveTypeAsString } from '../../utils/hasProp.js'
 import { getValuePrintable } from '../../utils/getValuePrintable.js'
-
 import type { ConfigValue, DefinedAtData } from '../../types/PageConfig.js'
 import type { ConfigNameBuiltIn } from '../../types/Config.js'
 import pc from '@brillout/picocolors'

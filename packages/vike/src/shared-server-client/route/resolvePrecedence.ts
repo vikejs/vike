@@ -3,7 +3,6 @@ export { resolvePrecedence }
 
 import { analyzeRouteString } from './resolveRouteString.js'
 import { higherFirst, lowerFirst, makeFirst } from '../../utils/sorter.js'
-
 import { isStaticRouteString } from './resolveRouteString.js'
 import type { RouteType } from './loadPageRoutes.js'
 

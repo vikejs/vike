@@ -5,7 +5,6 @@ export type { PageContextPublicMinimum }
 import { assert, assertWarning } from '../utils/assert.js'
 import { compareString } from '../utils/compareString.js'
 import { isPropertyGetter } from '../utils/isPropertyGetter.js'
-
 import { addIs404ToPageProps } from './addIs404ToPageProps.js'
 import { getGlobalContextPublicShared } from './getGlobalContextPublicShared.js'
 import { getPublicProxy } from './getPublicProxy.js'

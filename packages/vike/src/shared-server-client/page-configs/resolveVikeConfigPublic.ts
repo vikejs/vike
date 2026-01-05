@@ -31,7 +31,6 @@ import { isScriptFile, isTemplateFile } from '../../utils/isScriptFile.js'
 import { objectDefineProperty } from '../../utils/objectDefineProperty.js'
 import { isBrowser } from '../../utils/isBrowser.js'
 import { isObject } from '../../utils/isObject.js'
-
 import pc from '@brillout/picocolors'
 import type { ConfigResolved } from '../../types/Config/ConfigResolved.js'
 import type { Route } from '../../types/Config.js'

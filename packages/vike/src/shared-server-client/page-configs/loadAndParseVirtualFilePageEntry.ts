@@ -1,7 +1,6 @@
 export { loadAndParseVirtualFilePageEntry }
 
 import { objectAssign } from '../../utils/objectAssign.js'
-
 import type {
   ConfigValues,
   PageConfigRuntime,

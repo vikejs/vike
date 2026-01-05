@@ -10,7 +10,6 @@ import { assert, assertUsage, assertWarning } from '../../utils/assert.js'
 import { hasProp } from '../../utils/hasProp.js'
 import { isPlainObject } from '../../utils/isPlainObject.js'
 import { isPromise } from '../../utils/isPromise.js'
-
 import pc from '@brillout/picocolors'
 
 async function resolveRouteFunction(

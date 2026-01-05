@@ -6,7 +6,6 @@ export { isErrorPage }
 
 import { assert, assertUsage } from '../utils/assert.js'
 import { unique } from '../utils/unique.js'
-
 import type { PageConfigRuntime } from '../types/PageConfig.js'
 import type { PageFile } from './getPageFiles.js'
 

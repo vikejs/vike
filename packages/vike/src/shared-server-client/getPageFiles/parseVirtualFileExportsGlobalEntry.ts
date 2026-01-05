@@ -8,7 +8,6 @@ import { hasProp } from '../../utils/hasProp.js'
 import { isArray } from '../../utils/isArray.js'
 import { isCallable } from '../../utils/isCallable.js'
 import { isObject } from '../../utils/isObject.js'
-
 import { assertExportValues } from './assert_exports_old_design.js'
 import { getPageFileObject, type PageFile } from './getPageFileObject.js'
 import { fileTypes, type FileType } from './fileTypes.js'

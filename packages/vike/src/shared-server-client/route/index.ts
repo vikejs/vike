@@ -15,7 +15,6 @@ import { assert, assertUsage } from '../../utils/assert.js'
 import { debug } from '../../utils/debug.js'
 import { isPlainObject } from '../../utils/isPlainObject.js'
 import { objectAssign } from '../../utils/objectAssign.js'
-
 import type { PageContextUrlInternal, PageContextUrlSource } from '../getPageContextUrlComputed.js'
 import { resolvePrecedence } from './resolvePrecedence.js'
 import { resolveRouteString } from './resolveRouteString.js'

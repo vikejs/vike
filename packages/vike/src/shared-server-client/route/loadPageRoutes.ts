@@ -10,7 +10,6 @@ import { hasProp } from '../../utils/hasProp.js'
 import { isArray } from '../../utils/isArray.js'
 import { isCallable } from '../../utils/isCallable.js'
 import { slice } from '../../utils/slice.js'
-
 import { FilesystemRoot, deduceRouteStringFromFilesystemPath } from './deduceRouteStringFromFilesystemPath.js'
 
 import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../../types/PageConfig.js'

@@ -4,7 +4,6 @@ export { getHookFilePathToShowToUser }
 
 import { assert } from '../../utils/assert.js'
 import { isArray } from '../../utils/isArray.js'
-
 import type { PageConfigRuntime, DefinedAtData } from '../../types/PageConfig.js'
 
 function getPageConfig(pageId: string, pageConfigs: PageConfigRuntime[]): PageConfigRuntime {

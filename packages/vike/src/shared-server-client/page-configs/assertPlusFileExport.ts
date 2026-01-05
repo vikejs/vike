@@ -1,7 +1,6 @@
 export { assertPlusFileExport }
 
 import { assert, assertUsage, assertWarning } from '../../utils/assert.js'
-
 import pc from '@brillout/picocolors'
 
 const SIDE_EXPORTS_TOLERATE = [

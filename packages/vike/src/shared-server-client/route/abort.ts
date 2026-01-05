@@ -24,7 +24,6 @@ import { joinEnglish } from '../../utils/joinEnglish.js'
 import { objectAssign } from '../../utils/objectAssign.js'
 import { truncateString } from '../../utils/truncateString.js'
 import { unique } from '../../utils/unique.js'
-
 import pc from '@brillout/picocolors'
 
 // For improved IntelliSense, we define the list of status codes directly on the argument types of redirect() and render()

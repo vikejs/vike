@@ -8,7 +8,6 @@ export { getRouteStringParameterList }
 import { assertWarning, assert, assertUsage } from '../../utils/assert.js'
 import { escapeRegex } from '../../utils/escapeRegex.js'
 import { isBrowser } from '../../utils/isBrowser.js'
-
 import pc from '@brillout/picocolors'
 
 const PARAM_TOKEN_NEW = '@'

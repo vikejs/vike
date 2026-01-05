@@ -4,7 +4,6 @@ export type { BaseUrlsResolved }
 import { assert, assertUsage } from '../utils/assert.js'
 import { isBaseServer } from '../utils/parseUrl.js'
 import { isBaseAssets } from '../utils/parseUrl-extras.js'
-
 import pc from '@brillout/picocolors'
 
 type BaseUrlsResolved = {
