@@ -1080,6 +1080,15 @@ function getConfigDefinitions(
           ...configDefinitions[configName],
           ...configDefinitionUserLand,
         }
+
+        // Validate: vite: true requires global: true
+        const configDef = configDefinitions[configName]
+        if (configDef.vite) {
+          assertUsage(
+            configDef.global,
+            `${plusFile.filePath.filePathToShowToUser} sets ${pc.cyan(`meta.${configName}.vite`)} to ${pc.cyan('true')} but ${pc.cyan(`meta.${configName}.global`)} isn't ${pc.cyan('true')} (vite: true requires global: true)`,
+          )
+        }
       })
     })
 
