@@ -3,7 +3,8 @@
 export { getPageFilesClientSide }
 export { getPageFilesServerSide }
 
-import { assert, assertUsage, isNotNullish } from '../utils.js'
+import { assert, assertUsage, isNotNullish } from '../../utils/assert.js'
+
 import type { PageFile } from './getPageFileObject.js'
 
 function getPageFilesClientSide(pageFilesAll: PageFile[], pageId: string): PageFile[] {

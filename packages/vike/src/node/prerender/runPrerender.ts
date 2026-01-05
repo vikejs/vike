@@ -9,27 +9,23 @@ export type { PrerenderTrigger }
 
 import path from 'node:path'
 import { route } from '../../shared-server-client/route/index.js'
-import {
-  assert,
-  assertUsage,
-  assertWarning,
-  hasProp,
-  objectAssign,
-  isObjectWithKeys,
-  isCallable,
-  isPropertyGetter,
-  assertPosixPath,
-  urlToFile,
-  isPlainObject,
-  pLimit,
-  PLimit,
-  isArray,
-  onSetupPrerender,
-  PROJECT_VERSION,
-  preservePropertyGetters,
-  changeEnumerable,
-  escapeHtml,
-} from './utils.js'
+import { PROJECT_VERSION } from '../../utils/PROJECT_VERSION.js'
+import { assert, assertUsage, assertWarning } from '../../utils/assert.js'
+import { onSetupPrerender } from '../../utils/assertSetup.js'
+import { changeEnumerable } from '../../utils/changeEnumerable.js'
+import { escapeHtml } from '../../utils/escapeHtml.js'
+import { hasProp } from '../../utils/hasProp.js'
+import { isArray } from '../../utils/isArray.js'
+import { isCallable } from '../../utils/isCallable.js'
+import { isObjectWithKeys } from '../../utils/isObjectWithKeys.js'
+import { isPlainObject } from '../../utils/isPlainObject.js'
+import { isPropertyGetter } from '../../utils/isPropertyGetter.js'
+import { objectAssign } from '../../utils/objectAssign.js'
+import { pLimit, PLimit } from '../../utils/pLimit.js'
+import { preservePropertyGetters } from '../../utils/preservePropertyGetters.js'
+import { assertPosixPath } from '../../utils/path.js'
+import { urlToFile } from '../../utils/urlToFile.js'
+
 import { prerenderPage } from '../../server/runtime/renderPageServer/renderPageServerAfterRoute.js'
 import { createPageContextServer } from '../../server/runtime/renderPageServer/createPageContextServer.js'
 import pc from '@brillout/picocolors'

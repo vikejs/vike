@@ -2,7 +2,8 @@ export { getGlobalContextPublicShared }
 export type { GlobalContextPublicMinimum }
 
 import { getPublicProxy } from './getPublicProxy.js'
-import { assert } from './utils.js'
+import { assert } from '../../utils/assert.js'
+
 import type { PageConfigGlobalRuntime } from '../types/PageConfig.js'
 
 type GlobalContextPublicMinimum = {

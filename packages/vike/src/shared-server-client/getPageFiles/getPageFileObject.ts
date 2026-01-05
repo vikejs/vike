@@ -5,7 +5,9 @@ export type { PageFile }
 
 import { determinePageIdOld } from '../determinePageIdOld.js'
 import { isErrorPageId } from '../error-page.js'
-import { assert, slice } from '../utils.js'
+import { assert } from '../../utils/assert.js'
+import { slice } from '../../utils/slice.js'
+
 import { determineFileType, FileType } from './fileTypes.js'
 
 type PageFile = {

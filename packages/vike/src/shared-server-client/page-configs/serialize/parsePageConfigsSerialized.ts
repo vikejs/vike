@@ -13,7 +13,8 @@ import type {
   PageConfigRuntimeSerialized,
   ValueSerialized,
 } from './PageConfigSerialized.js'
-import { assert, assertUsage, isCallable } from '../../utils.js'
+import { assert, assertUsage } from '../../../utils/assert.js'
+import { isCallable } from '../../../utils/isCallable.js'
 import { getConfigDefinedAt } from '../getConfigDefinedAt.js'
 import type { ConfigValueSerialized } from './PageConfigSerialized.js'
 import { parseTransform } from '@brillout/json-serializer/parse'

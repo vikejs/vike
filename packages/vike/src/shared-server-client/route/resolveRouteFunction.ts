@@ -6,7 +6,11 @@ export { warnDeprecatedAllowKey }
 import type { PageContextUrlInternal } from '../getPageContextUrlComputed.js'
 import { execHookSingleSync } from '../hooks/execHook.js'
 import { getPageContextPublicShared } from '../getPageContextPublicShared.js'
-import { assert, assertUsage, assertWarning, hasProp, isPlainObject, isPromise } from './utils.js'
+import { assert, assertUsage, assertWarning } from '../../utils/assert.js'
+import { hasProp } from '../../utils/hasProp.js'
+import { isPlainObject } from '../../utils/isPlainObject.js'
+import { isPromise } from '../../utils/isPromise.js'
+
 import pc from '@brillout/picocolors'
 
 async function resolveRouteFunction(

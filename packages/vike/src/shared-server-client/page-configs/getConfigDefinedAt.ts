@@ -5,7 +5,10 @@ export { getDefinedByString }
 export type { ConfigDefinedAt }
 export type { ConfigDefinedAtOptional }
 
-import { assert, checkType, isArray } from '../utils.js'
+import { assert } from '../../utils/assert.js'
+import { checkType } from '../../utils/checkType.js'
+import { isArray } from '../../utils/isArray.js'
+
 import type { DefinedAt, DefinedAtData, DefinedBy } from '../../types/PageConfig.js'
 import pc from '@brillout/picocolors'
 import { getExportPath } from './getExportPath.js'

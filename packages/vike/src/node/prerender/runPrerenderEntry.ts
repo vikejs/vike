@@ -3,7 +3,8 @@ export { runPrerenderFromCLIPrerenderCommand }
 export { runPrerenderFromAutoRun }
 export { runPrerender_forceExit }
 
-import { assert } from './utils.js'
+import { assert } from '../../utils/assert.js'
+
 import type { InlineConfig, ResolvedConfig } from 'vite'
 import { prepareViteApiCall } from '../api/prepareViteApiCall.js'
 import { isVikeCli } from '../cli/context.js'

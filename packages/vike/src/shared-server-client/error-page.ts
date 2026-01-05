@@ -4,7 +4,9 @@ export { isErrorPage }
 
 // TO-DO/next-major-release: consider loading this file only for Client Routing
 
-import { assert, assertUsage, unique } from './utils.js'
+import { assert, assertUsage } from '../../utils/assert.js'
+import { unique } from '../../utils/unique.js'
+
 import type { PageConfigRuntime } from '../types/PageConfig.js'
 import type { PageFile } from './getPageFiles.js'
 

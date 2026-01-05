@@ -1,7 +1,8 @@
 export { getConfigValueTyped }
 export type { TypeAsString }
 
-import { type ResolveTypeAsString, assert, assertUsage, getValuePrintable } from '../utils.js'
+import { type ResolveTypeAsString, assert, assertUsage, getValuePrintable } from '../../utils/assert.js'
+
 import type { ConfigValue, DefinedAtData } from '../../types/PageConfig.js'
 import type { ConfigNameBuiltIn } from '../../types/Config.js'
 import pc from '@brillout/picocolors'

@@ -7,10 +7,10 @@ export { ModifyUrlSameOriginOptions }
 import {
   createUrlFromComponents,
   isNotNullish_keyVal,
-  parseUrl,
   objectFilter,
   assertUsageUrlPathAbsolute,
-} from './utils.js'
+} from '../../utils/assert.js'
+import { parseUrl } from '../../utils/parseUrl.js'
 
 type ModifyUrlSameOriginOptions = {
   hash?: string | null

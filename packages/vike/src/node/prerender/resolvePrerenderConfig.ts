@@ -2,7 +2,11 @@ export { resolvePrerenderConfigGlobal }
 export { resolvePrerenderConfigLocal }
 
 import { VikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.js'
-import { assert, assertUsage, isArray, isObject, objectAssign } from './utils.js'
+import { assert, assertUsage } from '../../utils/assert.js'
+import { isArray } from '../../utils/isArray.js'
+import { isObject } from '../../utils/isObject.js'
+import { objectAssign } from '../../utils/objectAssign.js'
+
 import { getConfigValueBuildTime } from '../../shared-server-client/page-configs/getConfigValueBuildTime.js'
 import type { PageConfigBuildTime } from '../../types/PageConfig.js'
 import { getConfigDefinedAt } from '../../shared-server-client/page-configs/getConfigDefinedAt.js'

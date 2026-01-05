@@ -5,9 +5,14 @@ export type { RouteType }
 
 import type { PageFile } from '../getPageFiles.js'
 import { isErrorPageId } from '../error-page.js'
-import { assert, assertUsage, hasProp, slice } from './utils.js'
+import { assert, assertUsage } from '../../utils/assert.js'
+import { hasProp } from '../../utils/hasProp.js'
+import { isArray } from '../../utils/isArray.js'
+import { isCallable } from '../../utils/isCallable.js'
+import { slice } from '../../utils/slice.js'
+
 import { FilesystemRoot, deduceRouteStringFromFilesystemPath } from './deduceRouteStringFromFilesystemPath.js'
-import { isArray, isCallable } from '../utils.js'
+
 import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../../types/PageConfig.js'
 import { getConfigValueRuntime } from '../page-configs/getConfigValueRuntime.js'
 import { getDefinedAtString } from '../page-configs/getConfigDefinedAt.js'

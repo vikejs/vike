@@ -1,6 +1,7 @@
 export { getConfigValueRuntime }
 
-import { type ResolveTypeAsString } from '../utils.js'
+import { type ResolveTypeAsString } from '../../utils/assert.js'
+
 import type { PageConfigRuntime, ConfigValue } from '../../types/PageConfig.js'
 import type { ConfigNameBuiltIn } from '../../types/Config.js'
 import { getConfigValueTyped, type TypeAsString } from './getConfigValueTyped.js'

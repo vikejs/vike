@@ -1,6 +1,7 @@
 export { normalizeClientSideUrl }
 
-import { assert, parseUrl } from './utils.js'
+import { assert } from '../../utils/assert.js'
+import { parseUrl } from '../../utils/parseUrl.js'
 
 /** Resolves relative URLs */
 function normalizeClientSideUrl(url: string, options?: { withoutHash: true }): `/${string}` {

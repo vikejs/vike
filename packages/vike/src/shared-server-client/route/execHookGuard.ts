@@ -1,7 +1,9 @@
 export { execHookGuard }
 
 import { getHookFromPageContext, getHookTimeoutDefault, type Hook } from '../hooks/getHook.js'
-import { assert, assertUsage, isCallable } from './utils.js'
+import { assert, assertUsage } from '../../utils/assert.js'
+import { isCallable } from '../../utils/isCallable.js'
+
 import type { PageContextConfig, PageFile } from '../getPageFiles.js'
 import { execHookSingle, type PageContextExecHook } from '../hooks/execHook.js'
 import type { GlobalContextInternal } from '../createGlobalContextShared.js'

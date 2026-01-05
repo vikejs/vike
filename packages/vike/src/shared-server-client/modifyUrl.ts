@@ -1,7 +1,8 @@
 export { modifyUrl }
 
 import { modifyUrlSameOrigin, type ModifyUrlSameOriginOptions } from './modifyUrlSameOrigin.js'
-import { createUrlFromComponents, parseUrl } from './utils.js'
+import { createUrlFromComponents } from '../../utils/assert.js'
+import { parseUrl } from '../../utils/parseUrl.js'
 
 /**
  * Modify a URL.

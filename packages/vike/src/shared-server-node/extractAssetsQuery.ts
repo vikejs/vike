@@ -2,7 +2,8 @@ export { extractAssetsAddQuery }
 export { extractAssetsRemoveQuery }
 
 // We import from node/utils.ts instead of node/vite/utils.ts because this file is loaded by the server runtime
-import { assert, getFileExtension } from './utils.js'
+import { assert } from '../utils/assert.js'
+import { getFileExtension } from '../utils/getFileExtension.js'
 
 const query = 'extractAssets'
 

@@ -2,7 +2,12 @@ export { parseVirtualFileExportsGlobalEntry }
 
 // TO-DO/next-major-release: remove old design code, and remove all assertions.
 
-import { assert, hasProp, isCallable, isObject, cast, isArray } from '../utils.js'
+import { assert, cast } from '../../utils/assert.js'
+import { hasProp } from '../../utils/hasProp.js'
+import { isArray } from '../../utils/isArray.js'
+import { isCallable } from '../../utils/isCallable.js'
+import { isObject } from '../../utils/isObject.js'
+
 import { assertExportValues } from './assert_exports_old_design.js'
 import { getPageFileObject, type PageFile } from './getPageFileObject.js'
 import { fileTypes, type FileType } from './fileTypes.js'

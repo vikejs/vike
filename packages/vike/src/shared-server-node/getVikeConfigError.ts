@@ -3,7 +3,8 @@ export { getVikeConfigErrorBuild }
 export { setVikeConfigError }
 export { debugFileChange }
 
-import { getGlobalObject, createDebug } from './utils.js'
+import { createDebug } from '../utils/debug.js'
+import { getGlobalObject } from '../utils/getGlobalObject.js'
 
 const globalObject = getGlobalObject('server/shared/getVikeConfigError.ts', {
   errorRuntime: false as VikeConfigHasError,

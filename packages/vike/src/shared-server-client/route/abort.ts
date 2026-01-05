@@ -15,21 +15,16 @@ export type { UrlRedirect }
 export type { PageContextAbort }
 
 import { isUserHookError } from '../hooks/execHook.js'
-import {
-  assert,
-  assertInfo,
-  assertUsage,
-  assertUsageUrlPathAbsolute,
-  assertUsageUrlRedirectTarget,
-  assertWarning,
-  checkType,
-  hasProp,
-  isBrowser,
-  joinEnglish,
-  objectAssign,
-  truncateString,
-  unique,
-} from './utils.js'
+import { assert, assertInfo, assertUsage, assertWarning } from '../../utils/assert.js'
+import { assertUsageUrlPathAbsolute, assertUsageUrlRedirectTarget } from '../../utils/parseUrl.js'
+import { checkType } from '../../utils/checkType.js'
+import { hasProp } from '../../utils/hasProp.js'
+import { isBrowser } from '../../utils/isBrowser.js'
+import { joinEnglish } from '../../utils/joinEnglish.js'
+import { objectAssign } from '../../utils/objectAssign.js'
+import { truncateString } from '../../utils/truncateString.js'
+import { unique } from '../../utils/unique.js'
+
 import pc from '@brillout/picocolors'
 
 // For improved IntelliSense, we define the list of status codes directly on the argument types of redirect() and render()

@@ -16,7 +16,11 @@ import {
 import type { GlobalContextClientInternal } from '../runtime-client-routing/getGlobalContextClientInternal.js'
 import type { GlobalContextClientInternalWithServerRouting } from '../runtime-server-routing/getGlobalContextClientInternal.js'
 import { getGlobalContextSerializedInHtml } from './getJsonSerializedInHtml.js'
-import { assert, assertUsage, genPromise, getGlobalObject, objectAssign, checkType } from './utils.js'
+import { assert, assertUsage } from '../../utils/assert.js'
+import { checkType } from '../../utils/checkType.js'
+import { genPromise } from '../../utils/genPromise.js'
+import { getGlobalObject } from '../../utils/getGlobalObject.js'
+import { objectAssign } from '../../utils/objectAssign.js'
 
 type GlobalContextNotTyped = Record<string, unknown>
 const globalObject = getGlobalObject<{

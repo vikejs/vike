@@ -27,15 +27,16 @@ import { type ConfigDefinedAtOptional, getConfigDefinedAtOptional, getDefinedAtS
 import { getConfigValueFilePathToShowToUser } from './helpers.js'
 import {
   assert,
-  isObject,
   assertWarning,
   assertUsage,
   makeLast,
-  isBrowser,
   isScriptFile,
   isTemplateFile,
   objectDefineProperty,
-} from '../utils.js'
+} from '../../utils/assert.js'
+import { isBrowser } from '../../utils/isBrowser.js'
+import { isObject } from '../../utils/isObject.js'
+
 import pc from '@brillout/picocolors'
 import type { ConfigResolved } from '../../types/Config/ConfigResolved.js'
 import type { Route } from '../../types/Config.js'
