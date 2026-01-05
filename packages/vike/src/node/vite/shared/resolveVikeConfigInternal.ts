@@ -318,7 +318,7 @@ function deepEqualPrimitive(x: any, y: any): boolean {
   // Skip functions - treat them as always equal
   if (tx === 'function' && ty === 'function') return true
 
-  // Copy of deepEqual for everything else
+  // Copy of utils/deepEqual.ts for everything else
   return x && y && tx === 'object' && tx === ty
     ? Object.keys(x).length === Object.keys(y).length &&
         Object.keys(x).every((key) => deepEqualPrimitive(x[key], y[key]))
