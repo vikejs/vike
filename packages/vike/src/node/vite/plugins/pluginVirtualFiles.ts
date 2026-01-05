@@ -168,12 +168,13 @@ async function isAppDependency(filePathAbsoluteFilesystem: string, moduleGraph: 
   // - They're missing in Vite's module graph.
   // - Potentially modifies Vike's virtual files.
   // - Same for all `pages/+config.js` transitive dependencies.
-  // isConfigDependency is null if not a config dependency, or array of all + files (we don't track which specific + files import it)
+  // isConfigDependency is null if the file is not a config dependency, or an array of + files that (transitively) import it
   assertPosixPath(filePathAbsoluteFilesystem)
   const vikeConfigObject = await getVikeConfigInternalOptional()
   if (vikeConfigObject) {
-    const { _vikeConfigDependencies: vikeConfigDependencies, _plusFiles: plusFiles } = vikeConfigObject
-    if (vikeConfigDependencies.has(filePathAbsoluteFilesystem)) {
+    const { _vikeConfigDependencies: vikeConfigDependencies } = vikeConfigObject
+    const plusFiles = vikeConfigDependencies.get(filePathAbsoluteFilesystem)
+    if (plusFiles !== undefined) {
       isAppFile.isConfigDependency = plusFiles.length > 0 ? plusFiles : null
     }
   }

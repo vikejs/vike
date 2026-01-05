@@ -127,8 +127,7 @@ type PrerenderContext = {
 type VikeConfigInternal = GlobalConfigPublic & {
   _pageConfigs: PageConfigBuildTime[]
   _pageConfigGlobal: PageConfigGlobalBuildTime
-  _vikeConfigDependencies: Set<string>
-  _plusFiles: string[]
+  _vikeConfigDependencies: Map<string, string[]>
   prerenderContext: PrerenderContext
 }
 
@@ -227,7 +226,7 @@ async function resolveVikeConfigInternal_withErrorHandling(
 
   const esbuildCache: EsbuildCache = {
     transpileCache: {},
-    vikeConfigDependencies: new Set(),
+    vikeConfigDependencies: new Map(),
   }
 
   let hasError = false
@@ -291,15 +290,6 @@ async function resolveVikeConfigInternal(
 ): Promise<VikeConfigInternal> {
   const plusFilesByLocationId = await getPlusFilesByLocationId(userRootDir, esbuildCache)
 
-  const plusFiles: string[] = []
-  Object.values(plusFilesByLocationId).forEach((plusFilesList) => {
-    plusFilesList.forEach((plusFile) => {
-      if (plusFile.filePath.filePathAbsoluteFilesystem) {
-        plusFiles.push(plusFile.filePath.filePathAbsoluteFilesystem)
-      }
-    })
-  })
-
   const configDefinitionsResolved = await resolveConfigDefinitions(plusFilesByLocationId, userRootDir, esbuildCache)
 
   const { pageConfigGlobal, pageConfigs } = getPageConfigsBuildTime(
@@ -328,7 +318,6 @@ async function resolveVikeConfigInternal(
     _pageConfigs: pageConfigs,
     _pageConfigGlobal: pageConfigGlobal,
     _vikeConfigDependencies: esbuildCache.vikeConfigDependencies,
-    _plusFiles: plusFiles,
   }
   globalObject.vikeConfigSync = vikeConfig
 
@@ -1555,7 +1544,6 @@ async function getVikeConfigDummy(esbuildCache: EsbuildCache): Promise<VikeConfi
     ...globalConfigPublicDummy,
     prerenderContext: prerenderContextDummy,
     _vikeConfigDependencies: esbuildCache.vikeConfigDependencies,
-    _plusFiles: [],
   }
   globalObject.vikeConfigSync = vikeConfigDummy
   globalObject.isV1Design_ = true
