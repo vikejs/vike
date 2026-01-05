@@ -299,6 +299,7 @@ function checkIfViteConfigChanged(
 ): boolean {
   if (vikeConfigOld === null) return false
 
+  // TODO/ai get *all* config definitions
   const configDefinitions = getConfigDefinitions([], (configDef) => !!configDef.vite)
   const viteConfigNames = Object.keys(configDefinitions)
 
