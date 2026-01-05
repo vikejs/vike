@@ -11,7 +11,6 @@ import { isArray } from '../../utils/isArray.js'
 import { isCallable } from '../../utils/isCallable.js'
 import { slice } from '../../utils/slice.js'
 import { FilesystemRoot, deduceRouteStringFromFilesystemPath } from './deduceRouteStringFromFilesystemPath.js'
-
 import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../../types/PageConfig.js'
 import { getConfigValueRuntime } from '../page-configs/getConfigValueRuntime.js'
 import { getDefinedAtString } from '../page-configs/getConfigDefinedAt.js'
