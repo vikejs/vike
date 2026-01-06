@@ -1,6 +1,7 @@
 export { getHookFromPageContext }
 export { getHooksFromPageContextNew }
 export { getHookFromPageConfig }
+export { getHookFromPageConfigBuildTime }
 export { getHookFromPageConfigGlobal }
 export { getHooksFromPageConfigGlobalCumulative }
 export { getHook_setIsPrerenderering }
@@ -16,9 +17,15 @@ export { getHookTimeoutDefault }
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import type { PageContextConfig } from '../getPageFiles.js'
 import type { HookNameOld, HookNamePage, HookNameGlobal, HookName } from '../../types/Config.js'
-import type { ConfigValue, PageConfigGlobalRuntime, PageConfigRuntime } from '../../types/PageConfig.js'
+import type {
+  ConfigValue,
+  PageConfigGlobalRuntime,
+  PageConfigRuntime,
+  PageConfigBuildTime,
+} from '../../types/PageConfig.js'
 import { getHookFilePathToShowToUser } from '../page-configs/helpers.js'
 import { getConfigValueRuntime } from '../page-configs/getConfigValueRuntime.js'
+import { getConfigValueBuildTime } from '../page-configs/getConfigValueBuildTime.js'
 import { assert, assertUsage } from '../../utils/assert.js'
 import { checkType } from '../../utils/checkType.js'
 import { isArray } from '../../utils/isArray.js'
@@ -93,6 +100,14 @@ function getHookFromPageConfig(pageConfig: PageConfigRuntime, hookName: HookName
   if (!configValue?.value) return null
   const { hookFn, hookFilePath } = getHookFromConfigValue(configValue)
   const hooksTimeout = getConfigValueRuntime(pageConfig, 'hooksTimeout')?.value
+  const hookTimeout = getHookTimeout(hooksTimeout, hookName)
+  return getHook(hookFn, hookName, hookFilePath, hookTimeout)
+}
+function getHookFromPageConfigBuildTime(pageConfig: PageConfigBuildTime, hookName: HookNamePage): null | Hook {
+  const configValue = getConfigValueBuildTime(pageConfig, hookName)
+  if (!configValue?.value) return null
+  const { hookFn, hookFilePath } = getHookFromConfigValue(configValue)
+  const hooksTimeout = getConfigValueBuildTime(pageConfig, 'hooksTimeout')?.value
   const hookTimeout = getHookTimeout(hooksTimeout, hookName)
   return getHook(hookFn, hookName, hookFilePath, hookTimeout)
 }

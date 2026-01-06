@@ -42,12 +42,11 @@ import { getPageFilesServerSide } from '../../shared-server-client/getPageFiles.
 import { getPageContextRequestUrl } from '../../shared-server-client/getPageContextRequestUrl.js'
 import { getUrlFromRouteString } from '../../shared-server-client/route/resolveRouteString.js'
 import { getConfigValueRuntime } from '../../shared-server-client/page-configs/getConfigValueRuntime.js'
-import { loadAndParseVirtualFilePageEntry } from '../../shared-server-client/page-configs/loadAndParseVirtualFilePageEntry.js'
 import { getErrorPageId, isErrorPage } from '../../shared-server-client/error-page.js'
 import { isAbortError } from '../../shared-server-client/route/abort.js'
 import { loadPageConfigsLazyServerSide } from '../../server/runtime/renderPageServer/loadPageConfigsLazyServerSide.js'
 import {
-  getHookFromPageConfig,
+  getHookFromPageConfigBuildTime,
   getHookFromPageConfigGlobal,
   getHookTimeoutDefault,
   getHook_setIsPrerenderering,
@@ -207,7 +206,13 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
 
   // Allow user to create `pageContext` for parameterized routes and/or bulk data fetching
   // https://vike.dev/onBeforePrerenderStart
-  await callOnBeforePrerenderStartHooks(prerenderContext, globalContext, concurrencyLimit, doNotPrerenderList)
+  await callOnBeforePrerenderStartHooks(
+    vikeConfig._pageConfigs,
+    prerenderContext,
+    globalContext,
+    concurrencyLimit,
+    doNotPrerenderList,
+  )
 
   // Create `pageContext` for each page with a static route
   const urlList = getUrlListFromPagesWithStaticRoute(globalContext, doNotPrerenderList)
@@ -333,6 +338,7 @@ function assertExportNames(pageFile: PageFile) {
 }
 
 async function callOnBeforePrerenderStartHooks(
+  pageConfigs: PageConfigBuildTime[],
   prerenderContext: PrerenderContext,
   globalContext: GlobalContextServerInternal,
   concurrencyLimit: PLimit,
@@ -354,11 +360,10 @@ async function callOnBeforePrerenderStartHooks(
 
   // V1 design
   await Promise.all(
-    globalContext._pageConfigs.map((pageConfig) =>
+    pageConfigs.map((pageConfig) =>
       concurrencyLimit(async () => {
         const hookName = 'onBeforePrerenderStart'
-        const pageConfigLoaded = await loadAndParseVirtualFilePageEntry(pageConfig, false)
-        const hook = getHookFromPageConfig(pageConfigLoaded, hookName)
+        const hook = getHookFromPageConfigBuildTime(pageConfig, hookName)
         if (!hook) return
         const { hookFn, hookFilePath, hookTimeout } = hook
         onBeforePrerenderStartHooks.push({

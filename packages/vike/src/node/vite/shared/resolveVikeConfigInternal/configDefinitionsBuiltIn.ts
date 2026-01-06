@@ -348,11 +348,12 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     cumulative: true,
   },
   onPrerenderStart: {
-    env: { config: true, production: true },
+    env: { config: true, server: true, production: true },
+    eager: true,
     global: true,
   },
   onBeforePrerenderStart: {
-    env: { config: true, production: true },
+    env: { config: true, server: true, production: true },
   },
   vite: {
     env: { config: true },
