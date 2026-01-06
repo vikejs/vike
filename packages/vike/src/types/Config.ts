@@ -668,7 +668,7 @@ type PrerenderSetting =
   | boolean
   | {
       /**
-       * Allow only some of your pages to be pre-rendered.
+       * Allow only some pages to be pre-rendered.
        *
        * This setting doesn't affect the pre-rendering process: it merely suppresses the warnings when some of your pages cannot be pre-rendered.
        *
@@ -678,7 +678,7 @@ type PrerenderSetting =
        */
       partial?: boolean
       /**
-       * Whether +redirects should be pre-rendered to HTML documents that redirect the user.
+       * Whether +redirects should be pre-rendered to redirecting HTML documents.
        *
        * https://vike.dev/prerender#redirects
        */
@@ -704,7 +704,7 @@ type PrerenderSetting =
        */
       parallel?: boolean | number
       /**
-       * Disable the automatic initiation of the pre-rendering process when running `$ vike build`.
+       * Don't automatically run the pre-rendering process upon `$ vike build`.
        *
        * Use this if you want to programmatically initiate the pre-rendering process instead.
        *
@@ -714,11 +714,11 @@ type PrerenderSetting =
        */
       disableAutoRun?: boolean
       /**
-       * Whether to enable pre-rendering.
+       * Change settings without enabling pre-rendering.
        *
-       * Setting `enable: null` enables you to set prerender settings without enabling pre-rendering by default.
+       * By setting `enable: null` you can define pre-render settings without enabling pre-rendering.
        *
-       * This is useful, for example, if you want pre-rendering to stay opt-in instead of opt-out while setting pre-render settings globally.
+       * Used by Vike extensions to set pre-render settings without enabling pre-rerendering on behalf of the user.
        *
        * https://vike.dev/prerender#enable
        *
@@ -726,9 +726,11 @@ type PrerenderSetting =
        */
       enable?: boolean | null
       /**
+       * Don't remove the `dist/server/` directory.
+       *
        * If you pre-render all your pages then Vike removes the `dist/server/` directory after pre-rendering has finished.
        *
-       * If you set this setting to `true` then Vike won't remove the `dist/server/` directory.
+       * If `keepDistServer: true` then Vike won't remove the `dist/server/` directory.
        *
        * https://vike.dev/prerender#keepDistServer
        *

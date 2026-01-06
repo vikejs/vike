@@ -341,6 +341,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     eager: true,
     global: true,
   },
+  // TODO: align all meta configs
   prerender: {
     env: { config: true },
     global: (value, { isGlobalLocation }) => typeof value === 'object' || isGlobalLocation,

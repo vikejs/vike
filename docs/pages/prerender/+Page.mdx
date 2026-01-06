@@ -6,43 +6,67 @@ import { ConfigSpec } from '../../components'
   global={null}
 >
 ```ts ts-only hide-menu
-// Can be a function that returns the setting
-type Prerender = PrerenderSetting | () => Promise<PrerenderSetting>
-type PrerenderSetting = boolean | {
-  partial?: boolean
-  redirects?: boolean
-  noExtraDir?: boolean
-  parallel?: boolean | number
-  disableAutoRun?: boolean
-  enable?: null | boolean
-  keepDistServer?: boolean
+// Toggle pre-rendering (globally, or per page)
+type PageSetting = boolean
+
+type GlobalSetting = PageSetting | {
+  // Allow only some pages to be pre-rendered
+  partial?: boolean // Default: `false`
+  // Whether +redirects should be pre-rendered to redirecting HTML documents
+  redirects?: boolean // Default: `true` if all pages are pre-rendered
+  // Don't create a new directory for each HTML file
+  noExtraDir?: boolean // Default: `false`
+  // Number of concurrent pre-render jobs
+  parallel?: boolean | number // Default: `os.cpus.length` (number of CPUs)
+  // Don't automatically run the pre-rendering process upon `$ vike build`
+  disableAutoRun?: boolean // Default: `false`
+  // Change settings without enabling pre-rendering
+  enable?: null | boolean // Default: `true`
+  // Don't remove dist/server/
+  keepDistServer?: boolean // Default: `false`
 }
+
+// pages/+prerender.js
+type PrerenderConfigGlobal = GlobalSetting | (() => GlobalSetting | Promise<GlobalSetting>)
+
+// pages/some-page/+prerender.js
+type PrerenderConfigLocal = PageSetting | (() => PageSetting | Promise<PageSetting>)
 ```
 </ConfigSpec>
 
 > <Link href="/pre-rendering" /> explains what pre-rendering is and how to use it.
 
-Default values:
-
-```ts
-// pages/+config.ts
-
-import type { Config } from 'vike/types'
-
-export default {
-  prerender: {
-    partial: false,
-    redirects: isFullyPrerendered, // Default value is `true` if all pages are pre-rendered
-    noExtraDir: false,
-    parallel: os.cpus.length, // Number of CPUs
-    disableAutoRun: false,
-    enable: true,
-    keepDistServer: false
-  }
-} satisfies Config
-```
-
-
+> Note that:
+> - Global settings (`GlobalSetting` above) must be defined at a global location.
+> - Page settings (`PageSetting` above) can be defined anywhere (locally as well as globally).
+>
+> ```ts
+> // 👉 Local config (i.e. doesn't apply to all pages)
+> // pages/movies/@id/+config.ts
+>
+> import type { Config } from 'vike/types'
+>
+> export default {
+>   // ❌ Global settings cannot be defined here
+>   prerender: { parallel: false },
+>   // ✅ Can be define here (toggle per page)
+>   prerender: false
+> } satisfies Config
+> ```
+>
+> ```ts
+> // 👉 Global config (i.e. applies to all pages)
+> // pages/+config.ts
+>
+> import type { Config } from 'vike/types'
+>
+> export default {
+>   // ✅ Global settings can be define here
+>   prerender: { parallel: false },
+>   // ✅ Can also be define here (toggle globally)
+>   prerender: false
+> } satisfies Config
+> ```
 
 ## `partial`
 
