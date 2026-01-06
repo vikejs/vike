@@ -352,7 +352,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     global: true,
   },
   onBeforePrerenderStart: {
-    env: { server: true, production: true },
+    env: { config: true, production: true },
   },
   vite: {
     env: { config: true },
