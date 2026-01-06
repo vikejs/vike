@@ -40,6 +40,8 @@ type PrerenderConfigLocal = PageSetting | (() => PageSetting | Promise<PageSetti
 > - Global settings (`GlobalSetting` above) must be defined at a global location.
 > - Page settings (`PageSetting` above) can be defined anywhere (locally as well as globally).
 >
+> See also: <Link href="/config#inheritance" />.
+>
 > ```ts
 > // 👉 Local config (i.e. doesn't apply to all pages)
 > // pages/movies/@id/+config.ts
