@@ -304,7 +304,7 @@ function hasViteConfigChanged(vikeConfigOld: VikeConfigInternal | null, vikeConf
     // TO-DO/eventually: make it work for functions e.g. Vite plugins added via +vite — two solutions to make it work:
     //  - We cache transpileWithEsbuild() but it's far from trivial
     //  - We trigger a Vite reload by watching file changes instead of hasViteConfigChanged()
-    //    - Implmentation: https://github.com/vikejs/vike/pull/3017/changes/1e55cbc1ed8bac4a72bf8c658cfbd67eecb7802a
+    //    - Implementation: https://github.com/vikejs/vike/pull/3017/changes/1e55cbc1ed8bac4a72bf8c658cfbd67eecb7802a
     if (!deepEqualPrimitive(valOld, valNew)) {
       return true
     }
