@@ -146,9 +146,6 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   onBeforeRender: {
     env: { server: true },
   },
-  onBeforePrerenderStart: {
-    env: { server: true, production: true },
-  },
   Page: {
     env: { server: true, client: true },
   },
@@ -339,11 +336,6 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { config: true },
     global: true,
   },
-  onPrerenderStart: {
-    env: { server: true, production: true },
-    eager: true,
-    global: true,
-  },
   onBeforeRoute: {
     env: { server: true, client: 'if-client-routing' },
     eager: true,
@@ -353,6 +345,14 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { config: true },
     global: (value, { isGlobalLocation }) => typeof value === 'object' || isGlobalLocation,
     cumulative: true,
+  },
+  onPrerenderStart: {
+    env: { server: true, production: true },
+    eager: true,
+    global: true,
+  },
+  onBeforePrerenderStart: {
+    env: { server: true, production: true },
   },
   vite: {
     env: { config: true },
