@@ -1,7 +1,7 @@
 export { testOtherFrameworkNavigation }
 
 import { test, page, getServerUrl, expect } from '@brillout/test-e2e'
-import { expectUrl, testCounter, waitForNavigation } from '../../utils'
+import { expectUrl, testCounter, waitForNavigation } from '../utils'
 
 function testOtherFrameworkNavigation() {
   test('navigate from another SPA framework', async () => {
