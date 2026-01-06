@@ -349,7 +349,6 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   },
   onPrerenderStart: {
     env: { config: true, production: true },
-    eager: true,
     global: true,
   },
   onBeforePrerenderStart: {
