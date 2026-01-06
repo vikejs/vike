@@ -343,7 +343,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   },
   // TODO: align all meta configs
   prerender: {
-    env: { config: true },
+    env: { config: true, production: true },
     global: (value, { isGlobalLocation }) => typeof value === 'object' || isGlobalLocation,
     cumulative: true,
   },
