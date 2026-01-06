@@ -348,7 +348,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     cumulative: true,
   },
   onPrerenderStart: {
-    env: { server: true, production: true },
+    env: { config: true, production: true },
     eager: true,
     global: true,
   },
