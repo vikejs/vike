@@ -1,5 +1,5 @@
 import { Link, Construction, FileRemoved } from '@brillout/docpress'
-import { IconLocal, IconGlobal } from '../../components'
+import { IconPerPage, IconGlobal } from '../../components'
 
 Detailed information about Vike's config files.
 
@@ -190,7 +190,7 @@ pages/admin/dashboard/+Page.jsx
 
 ### Global
 
-Some configurations are always *global*, while others can be *local* — we distinguish these two types of configurations and call a configuration either *global* or *local*:
+Some configurations are always *global*, while others can be *per-page*:
 
 - <IconGlobal/> **Global configuration** — always applies to all pages.
 
@@ -198,7 +198,7 @@ Some configurations are always *global*, while others can be *local* — we dist
 
   A global config cannot be applied to only a subset of pages.
 
-  > There isn't any config inheritance for global configs:
+  > There isn't any <Link href="#inheritance">config inheritance</Link> for global configs:
   >
   > ```yaml
   > # Defining +baseAssets for a single page doesn't make sense — Vike logs a warning
@@ -209,22 +209,22 @@ Some configurations are always *global*, while others can be *local* — we dist
   > /pages/index/+Page.js
   > ```
 
-- <IconLocal/> **Local configuration** — can be defined on a per-page basis.
+- <IconPerPage/> **Per-page configuration** — can be defined on a per-page basis, as well as globally.
 
-  For example, the <Link href="/title">`+title` setting</Link> is local, because each page can have a different title.
+  For example, the <Link href="/title">`+title` setting</Link> is per-page: each page can have a different title.
 
-  > A local config can apply globally if defined at a global location:
+  > A per-page config can apply globally if defined at a global location:
   > ```ts
   > // pages/+config.ts
   >
   > import { Config } from 'vike/types'
   >
   > export default {
-  >   // If it isn't overridden then this title applies to all pages (more precisely
-  >   // speaking: it applies to all pages defined at pages/**)
+  >   // Defines the default title for all pages. Applies to all pages unless overridden.
   >   title: 'My App'
   > } satisfies Config
   > ```
+  > See also: <Link href="#inheritance" />.
 
 ### Groups
 

@@ -381,7 +381,7 @@ async function resolveConfigDefinitions(
     .flat()
     .sort((plusFile1, plusFile2) => sortAfterInheritanceOrderGlobal(plusFile1, plusFile2, plusFilesByLocationId, null))
   const configDefinitionsGlobal = getConfigDefinitions(
-    // We use `plusFilesByLocationId` in order to allow local Vike extensions to create global configs, and to set the value of global configs such as `+vite` (enabling Vike extensions to add Vite plugins).
+    // We use `plusFilesByLocationId` in order to allow non-global Vike extensions to create global configs, and to set the value of global configs such as `+vite` (enabling Vike extensions to add Vite plugins).
     plusFilesByLocationIdOrdered,
     (configDef) => !!configDef.global,
   )
@@ -475,7 +475,7 @@ function getPageConfigsBuildTime(
     const sources = resolveConfigValueSources(
       configName,
       configDef,
-      // We use `plusFilesByLocationId` in order to allow local Vike extensions to create global configs, and to set the value of global configs such as `+vite` (enabling Vike extensions to add Vite plugins).
+      // We use `plusFilesByLocationId` in order to allow non-global Vike extensions to create global configs, and to set the value of global configs such as `+vite` (enabling Vike extensions to add Vite plugins).
       Object.values(plusFilesByLocationId).flat(),
       userRootDir,
       true,
@@ -575,7 +575,7 @@ function assertGlobalConfigLocation(
     assert(plusFile)
     const { filePathAbsoluteUserRootDir } = plusFile.filePath
 
-    // Allow local Vike extensions to set global configs (`filePathAbsoluteUserRootDir===null` for Vike extension)
+    // Allow non-global Vike extensions to set global configs (`filePathAbsoluteUserRootDir===null` for Vike extension)
     if (!filePathAbsoluteUserRootDir) return
     assert(!plusFile.isExtensionConfig)
 
@@ -584,7 +584,7 @@ function assertGlobalConfigLocation(
       assert(configDef)
       const isConditionallyGlobal = isCallable(configDef.global)
       const errBeg =
-        `${filePathAbsoluteUserRootDir} (which is a local config file) sets the config ${pc.cyan(configName)}` as const
+        `${filePathAbsoluteUserRootDir} (which is a non-global config file) sets the config ${pc.cyan(configName)}` as const
       const errMid = !isConditionallyGlobal
         ? ("but it's a global config" as const)
         : ('to a value that is global' as const)

@@ -30,20 +30,18 @@ type GlobalSetting = PageSetting | {
 type PrerenderConfigGlobal = GlobalSetting | (() => GlobalSetting | Promise<GlobalSetting>)
 
 // pages/some-page/+prerender.js
-type PrerenderConfigLocal = PageSetting | (() => PageSetting | Promise<PageSetting>)
+type PrerenderConfigPage = PageSetting | (() => PageSetting | Promise<PageSetting>)
 ```
 </ConfigSpec>
 
 > <Link href="/pre-rendering" /> explains what pre-rendering is and how to use it.
 
 > Note that:
-> - Global settings (`GlobalSetting` above) must be defined at a global location.
-> - Page settings (`PageSetting` above) can be defined anywhere (locally as well as globally).
->
-> See also: <Link href="/config#inheritance" />.
+> - Global settings (`GlobalSetting` above) must be defined in a global config file.
+> - Page settings (`PageSetting` above) can be defined in a page config file.
 >
 > ```ts
-> // 👉 Local config (i.e. doesn't apply to all pages)
+> // 👉 Page config file
 > // pages/movies/@id/+config.ts
 >
 > import type { Config } from 'vike/types'
@@ -57,7 +55,7 @@ type PrerenderConfigLocal = PageSetting | (() => PageSetting | Promise<PageSetti
 > ```
 >
 > ```ts
-> // 👉 Global config (i.e. applies to all pages)
+> // 👉 Global config file (i.e. applies to all pages)
 > // pages/+config.ts
 >
 > import type { Config } from 'vike/types'
@@ -69,6 +67,11 @@ type PrerenderConfigLocal = PageSetting | (() => PageSetting | Promise<PageSetti
 >   prerender: false
 > } satisfies Config
 > ```
+>
+> See also:
+> - <Link href="/config#inheritance" />
+> - <Link href="/config#global" />
+
 
 ## `partial`
 

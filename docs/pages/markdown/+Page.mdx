@@ -32,7 +32,7 @@ Example:
 
 There are several techniques for defining metadata (e.g. the date and author of a page).
 
-The preferred technique depends on whether you want to define global or local metadata.
+The preferred technique depends on whether you want to define global or page metadata.
 
 #### Global metadata
 
@@ -52,11 +52,11 @@ For global metadata, we recommend:
  You may be tempted to use [`import.meta.glob()`](https://vitejs.dev/guide/features.html#glob-import) to retrieve metadata defined inside all `+Page.md` files, but we discourage this approach: loading all `+Page.md` files at once <ViteLazyTranspilingContradiction />.
 </Warning>
 
-#### Local metadata
+#### Page metadata
 
-> **What is local metadata?**  For example, you want to show detailed information below a blog post, such as the author's name. This metadata is shown only for that page and, therefore, needs to be accessible only *locally*.
+> **What is page metadata?**  For example, you want to show detailed information below a blog post, such as the author's name. This metadata is shown only for that page.
 
-For local metadata, we recommend:
+For page metadata, we recommend:
 - <Link href="#with-a-custom-setting" />
 - <Link href="#with-frontmatter" />
 
@@ -275,7 +275,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 ### With a custom setting
 
-You can use <Link href="/meta">`meta`</Link> to create a custom setting for defining <Link href="#local-metadata">local metadata</Link>.
+You can use <Link href="/meta">`meta`</Link> to create a custom setting for defining <Link href="#page-metadata">page metadata</Link>.
 
 ```mdx
 // /pages/2024-new-year/+Page.mdx
@@ -329,7 +329,7 @@ author: John Smith
 This page uses [markdown](https://en.wikipedia.org/wiki/Markdown).
 ```
 
-You can use such frontmatter to define <Link href="#local-metadata">local metadata</Link>.
+You can use such frontmatter to define <Link href="#page-metadata">page metadata</Link>.
 
 <Warning>
  We discourage using frontmatter for defining <Link href="#global-metadata">global metadata</Link>, because loading all `+Page.md` files at once <ViteLazyTranspilingContradiction />.

@@ -2,17 +2,17 @@ import { CodeBlockTransformer, Link } from '@brillout/docpress'
 
 Global configurations always apply to all pages, see <Link href="/config#global" />.
 
-Consequently, it doesn't make sense to define a global config in a local <Link href="/config#files">`+` file</Link>.
+Consequently, it doesn't make sense to define a global config in a non-global <Link href="/config#files">`+` file</Link>.
 
 ```ts
 // /pages/tags/+config.ts
 
-// This is a local config file: it applies only to a subset of pages.
+// This is a non-global config file: it applies only to a subset of pages.
 
 import type { Config } from 'vike/types'
 
 export default {
-  // ❌ Defining a global setting in a local +config.ts
+  // ❌ Cannot define a global setting in a non-global +config.ts
   baseServer: '/blog/'
 } satisfies Config
 ```
@@ -34,18 +34,18 @@ If you get the following warning then move your config to a global location.
 
 <CodeBlockTransformer lineBreak="white-space">
 ```
-[vike][Warning] /pages/index/+config.js (which is a local config file) sets the config `baseServer` but it's a global config: define `baseServer` at a global config file such as /pages/+config.js instead.
+[vike][Warning] /pages/index/+config.js (which is a non-global config file) sets the config `baseServer` but it's a global config: define `baseServer` at a global config file such as /pages/+config.js instead.
 ```
 </CodeBlockTransformer>
 
 
-> Some settings (e.g. <Link href="/prerender">`prerender`</Link>) are mixed: certain values can be defined only globally (e.g. <Link href="/prerender#partial">`prerender.partial`</Link>) while other values can be defined locally (e.g. <Link href="/pre-rendering#partial">`false`</Link>).
+> Some settings (e.g. <Link href="/prerender">`prerender`</Link>) are mixed: certain values can be defined only globally (e.g. <Link href="/prerender#partial">`prerender.partial`</Link>), while other values can be defined per-page (e.g. <Link href="/pre-rendering#partial">`false`</Link>).
 >
-> If you get the following warning, it's because you're defining a global value in a local `+` file.
+> If you get the following warning, it's because you're defining a global value in a non-global `+` file.
 >
 > <CodeBlockTransformer lineBreak="white-space">
 > ```
-> [vike][Warning] /pages/about/+config.ts (which is a local config file) sets the config `prerender` to a value that is global: define global values at a global config file such as /pages/+config.ts instead.
+> [vike][Warning] /pages/about/+config.ts (which is a non-global config file) sets the config `prerender` to a value that is global: define global values at a global config file such as /pages/+config.ts instead.
 > ```
 > </CodeBlockTransformer>
 
