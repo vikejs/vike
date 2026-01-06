@@ -66,6 +66,7 @@
   - Rename +onData => +onAfterData ? Maybe not because it isn't strictly always called after +data
   - Pre-rendering hook renaming?
     - New design: https://github.com/vikejs/vike/issues/3002#issuecomment-3714603326
+      - Failed attempt to align pre-render configs https://github.com/vikejs/vike/pull/3018
     - Old design
       - https://vike.dev/onBeforePrerenderStart => +onPrerender (or +onPrerenderInit ? So far I think +onPrerender is good)
       - https://vike.dev/onPrerenderStart => +onPrerenderBegin
