@@ -389,9 +389,12 @@ async function executeFile(
   filePathSourceFile: FilePathResolved,
   esbuildCache?: EsbuildCache,
 ) {
+  console.log(filePathToExecuteAbsoluteFilesystem)
   if (esbuildCache?.importCache[filePathToExecuteAbsoluteFilesystem]) {
+    console.log(0)
     return await esbuildCache.importCache[filePathToExecuteAbsoluteFilesystem]
   }
+  console.log(1)
 
   const importPromise = (async () => {
     let fileExports: Record<string, unknown> = {}
