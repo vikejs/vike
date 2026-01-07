@@ -398,7 +398,7 @@ async function executeFile(
   const key = filePathToExecuteAbsoluteFilesystem
   console.log(filePathToExecuteAbsoluteFilesystem, esbuildCache.importCache[key])
 
-  return await (esbuildCache.importCache[key] ??= (async () => {
+  const importPromise = (esbuildCache.importCache[key] ??= (async () => {
     let fileExports: Record<string, unknown> = {}
     try {
       fileExports = await import_(filePathToExecuteAbsoluteFilesystem)
@@ -415,6 +415,7 @@ async function executeFile(
     fileExports = { ...fileExports }
     return fileExports
   })())
+  return await importPromise
 }
 
 const formatted = '_formatted'
