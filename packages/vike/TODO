@@ -1,4 +1,4 @@
-= TO-DO/now
+= TO-DO/after-open-source-pricing
 - Add assertWarning() deprecations:
   - `pageContext.exports`
   - `pageContext.configEntries`
@@ -6,8 +6,6 @@
   - Also `documentHtml` — use pageContext.html instead
   - Also `injectFilter()` — maybe deprecate `injectFilter()` in favor of `pageContext.injectAssets`? Do we need a new hook or is `onRenderHtml()`/`onAfterRenderHtml()` enough?
   - Also all return values of `onBeforeRender()`, `onRenderHtml()`, `onBeforeRoute()` and all hooks
-
-= TO-DO/after-open-source-pricing
 - NODE_ENV
   - https://nodejs.org/en/learn/getting-started/nodejs-the-difference-between-development-and-production
   - https://github.com/vikejs/vike/issues/1528
