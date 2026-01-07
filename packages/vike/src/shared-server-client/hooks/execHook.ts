@@ -221,6 +221,7 @@ function execHookBase<HookReturn>(
       originalReturn = callOriginal()
     } catch (err) {
       originalError = err
+      throw err
     }
     return originalReturn
   }
