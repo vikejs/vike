@@ -51,6 +51,10 @@ type EsbuildCache = {
     string, // filePathAbsoluteFilesystem
     Promise<FileExports>
   >
+  importCache: Record<
+    string, // filePathAbsoluteFilesystem
+    Promise<Record<string, unknown>>
+  >
   vikeConfigDependencies: Set<string>
 }
 async function transpileAndExecuteFile(
@@ -91,7 +95,7 @@ async function transpileAndExecuteFile(
   let fileExports: FileExports['fileExports']
   if (isExtensionConfig && !isHeader && fileExtension.endsWith('js')) {
     // This doesn't track dependencies => we should never use this for user land configs
-    fileExports = await executeFile(filePathAbsoluteFilesystem, filePath)
+    fileExports = await executeFile(filePathAbsoluteFilesystem, filePath, esbuildCache)
   } else {
     const transformImports = isHeader ? 'all' : true
     const code = await transpileFile(filePath, transformImports, userRootDir, esbuildCache)
@@ -380,22 +384,38 @@ async function executeTranspiledFile(filePath: FilePathResolved, code: string) {
   return fileExports
 }
 
-async function executeFile(filePathToExecuteAbsoluteFilesystem: string, filePathSourceFile: FilePathResolved) {
-  let fileExports: Record<string, unknown> = {}
-  try {
-    fileExports = await import_(filePathToExecuteAbsoluteFilesystem)
-  } catch (err) {
-    triggerPrepareStackTrace(err)
-    const errIntroMsg = getErrIntroMsg('execute', filePathSourceFile)
-    assert(isObject(err))
-    execErrIntroMsg.set(err, errIntroMsg)
-    throw err
+async function executeFile(
+  filePathToExecuteAbsoluteFilesystem: string,
+  filePathSourceFile: FilePathResolved,
+  esbuildCache?: EsbuildCache,
+) {
+  if (esbuildCache?.importCache[filePathToExecuteAbsoluteFilesystem]) {
+    return await esbuildCache.importCache[filePathToExecuteAbsoluteFilesystem]
   }
-  // Return a plain JavaScript object:
-  //  - import() returns `[Module: null prototype] { default: { onRenderClient: '...' }}`
-  //  - We don't need this special object.
-  fileExports = { ...fileExports }
-  return fileExports
+
+  const importPromise = (async () => {
+    let fileExports: Record<string, unknown> = {}
+    try {
+      fileExports = await import_(filePathToExecuteAbsoluteFilesystem)
+    } catch (err) {
+      triggerPrepareStackTrace(err)
+      const errIntroMsg = getErrIntroMsg('execute', filePathSourceFile)
+      assert(isObject(err))
+      execErrIntroMsg.set(err, errIntroMsg)
+      throw err
+    }
+    // Return a plain JavaScript object:
+    //  - import() returns `[Module: null prototype] { default: { onRenderClient: '...' }}`
+    //  - We don't need this special object.
+    fileExports = { ...fileExports }
+    return fileExports
+  })()
+
+  if (esbuildCache) {
+    esbuildCache.importCache[filePathToExecuteAbsoluteFilesystem] = importPromise
+  }
+
+  return await importPromise
 }
 
 const formatted = '_formatted'

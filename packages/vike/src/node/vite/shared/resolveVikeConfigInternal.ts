@@ -222,6 +222,7 @@ async function resolveVikeConfigInternal_withErrorHandling(
 
   const esbuildCache: EsbuildCache = {
     transpileCache: {},
+    importCache: {},
     vikeConfigDependencies: new Set(),
   }
 
@@ -300,7 +301,6 @@ function hasViteConfigChanged(vikeConfigOld: VikeConfigInternal | null, vikeConf
   for (const configName of viteConfigNames) {
     const valOld = configValuesOld[configName]?.value
     const valNew = configValuesNew[configName]?.value
-    // TODO/ai: try it simply by using an import_() cache
     // TO-DO/eventually: make it work for functions e.g. Vite plugins added via +vite — two solutions to make it work:
     //  - We cache transpileWithEsbuild() but it's far from trivial
     //  - We trigger a Vite reload by watching file changes instead of hasViteConfigChanged()
