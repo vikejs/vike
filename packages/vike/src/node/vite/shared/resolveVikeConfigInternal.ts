@@ -1568,7 +1568,7 @@ function restartViteDevServer() {
   // - To reproduce: add `bla: 12` to examples/react-full/renderer/+config.ts => `9:22:30 AM [vike][config][Wrong Usage] /renderer/+config.ts sets an unknown config bla`
   ;(async () => {
     try {
-      await viteDevServer.restart(true)
+      await viteDevServer.restart()
     } catch (err) {
       console.error('Vite restart error:')
       console.error(err)
