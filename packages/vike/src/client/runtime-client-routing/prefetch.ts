@@ -1,3 +1,5 @@
+import '../assertEnvClient.js'
+
 export { prefetch }
 export { getPageContextPrefetched }
 export { initLinkPrefetchHandlers }

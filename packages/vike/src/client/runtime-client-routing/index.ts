@@ -1,3 +1,5 @@
+import '../assertEnvClient.js'
+
 // TO-DO/next-major-release: move
 //   import { navigate, prefetch } from 'vike/client/router'
 // to:

@@ -1,3 +1,5 @@
+import '../assertEnvClient.js'
+
 export { getPageContextFromHooksClient }
 export { getPageContextFromHooksClient_firstRender }
 export { getPageContextFromHooksServer }

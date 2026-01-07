@@ -1,3 +1,5 @@
+import '../assertEnvClient.js'
+
 export { pushHistoryState }
 export { replaceHistoryStateOriginal }
 export { onPopStateBegin }

@@ -1,3 +1,5 @@
+import '../assertEnvClient.js'
+
 export { normalizeClientSideUrl }
 
 import { assert } from '../../utils/assert.js'

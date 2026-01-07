@@ -1,3 +1,5 @@
+import '../assertEnvClient.js'
+
 export { renderPageClient }
 export { getRenderCount }
 export { disableClientRouting }

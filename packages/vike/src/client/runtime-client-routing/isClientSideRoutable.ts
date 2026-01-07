@@ -1,3 +1,5 @@
+import '../assertEnvClient.js'
+
 export { isClientSideRoutable }
 
 import { analyzePageClientSideInit } from '../../shared-server-client/getPageFiles/analyzePageClientSide.js'

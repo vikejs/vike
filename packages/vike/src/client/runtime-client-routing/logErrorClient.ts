@@ -1,3 +1,5 @@
+import '../assertEnvClient.js'
+
 export { logErrorClient }
 
 import { isObject } from '../../utils/isObject.js'
