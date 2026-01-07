@@ -51,6 +51,7 @@ type EsbuildCache = {
     string, // filePathAbsoluteFilesystem
     Promise<FileExports>
   >
+  // TODO/ai Move and use globalObject.importCache instead
   importCache: Record<
     string, // filePathAbsoluteFilesystem
     Promise<Record<string, unknown>>
