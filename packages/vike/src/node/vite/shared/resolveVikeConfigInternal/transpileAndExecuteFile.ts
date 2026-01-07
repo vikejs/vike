@@ -386,10 +386,7 @@ async function executeTranspiledFile(filePath: FilePathResolved, code: string) {
   return fileExports
 }
 
-async function executeFile(
-  filePathToExecuteAbsoluteFilesystem: string,
-  filePathSourceFile: FilePathResolved,
-) {
+async function executeFile(filePathToExecuteAbsoluteFilesystem: string, filePathSourceFile: FilePathResolved) {
   let fileExports: Record<string, unknown> = {}
   try {
     fileExports = await import_(filePathToExecuteAbsoluteFilesystem)
