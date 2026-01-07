@@ -18,13 +18,13 @@ import {
 } from 'esbuild'
 import fs from 'node:fs'
 import path from 'node:path'
+import crypto from 'node:crypto'
 import pc from '@brillout/picocolors'
 import { import_ } from '@brillout/import'
 import { assert, assertWarning, assertUsage } from '../../../../utils/assert.js'
 import { assertIsNotProductionRuntime } from '../../../../utils/assertSetup.js'
 import { createDebug } from '../../../../utils/debug.js'
 import { genPromise } from '../../../../utils/genPromise.js'
-import { getRandomId } from '../../../../utils/getRandomId.js'
 import { assertFilePathAbsoluteFilesystem } from '../../../../utils/isFilePathAbsoluteFilesystem.js'
 import { isImportPathRelative } from '../../../../utils/isImportPath.js'
 import { isObject } from '../../../../utils/isObject.js'
@@ -99,7 +99,7 @@ async function transpileAndExecuteFile(
   } else {
     const transformImports = isHeader ? 'all' : true
     const code = await transpileFile(filePath, transformImports, userRootDir, esbuildCache)
-    fileExports = await executeTranspiledFile(filePath, code)
+    fileExports = await executeTranspiledFile(filePath, code, esbuildCache)
   }
 
   resolve({ fileExports })
@@ -368,16 +368,22 @@ async function transpileWithEsbuild(
   return { code, pointerImports }
 }
 
-async function executeTranspiledFile(filePath: FilePathResolved, code: string) {
+async function executeTranspiledFile(filePath: FilePathResolved, code: string, esbuildCache?: EsbuildCache) {
   const { filePathAbsoluteFilesystem } = filePath
   // Alternative to using a temporary file: https://github.com/vitejs/vite/pull/13269
   //  - But seems to break source maps, so I don't think it's worth it
-  const filePathTmp = getTemporaryBuildFilePath(filePathAbsoluteFilesystem)
-  fs.writeFileSync(filePathTmp, code)
-  const clean = () => fs.unlinkSync(filePathTmp)
+  const filePathTmp = getTemporaryBuildFilePath(filePathAbsoluteFilesystem, code)
+  if (!fs.existsSync(filePathTmp)) {
+    fs.writeFileSync(filePathTmp, code)
+  }
+  const clean = () => {
+    try {
+      fs.unlinkSync(filePathTmp)
+    } catch {}
+  }
   let fileExports: Record<string, unknown> = {}
   try {
-    fileExports = await executeFile(filePathTmp, filePath)
+    fileExports = await executeFile(filePathTmp, filePath, esbuildCache)
   } finally {
     clean()
   }
@@ -452,12 +458,13 @@ function getConfigExecutionErrorIntroMsg(err: unknown) {
   return errIntroMsg ?? null
 }
 
-function getTemporaryBuildFilePath(filePathAbsoluteFilesystem: string): string {
+function getTemporaryBuildFilePath(filePathAbsoluteFilesystem: string, code: string): string {
   assertPosixPath(filePathAbsoluteFilesystem)
   const dirname = path.posix.dirname(filePathAbsoluteFilesystem)
   const filename = path.posix.basename(filePathAbsoluteFilesystem)
+  const hash = crypto.createHash('md5').update(code).digest('hex').slice(0, 12)
   // Syntax with semicolon `build:${/*...*/}` doesn't work on Windows: https://github.com/vikejs/vike/issues/800#issuecomment-1517329455
-  const filePathTmp = path.posix.join(dirname, `${filename}.build-${getRandomId()}.mjs`)
+  const filePathTmp = path.posix.join(dirname, `${filename}.build-${hash}.mjs`)
   assert(isTemporaryBuildFile(filePathTmp))
   return filePathTmp
 }
