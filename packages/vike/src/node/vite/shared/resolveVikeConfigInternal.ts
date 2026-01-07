@@ -289,6 +289,7 @@ async function resolveVikeConfigInternal_withErrorHandling(
   }
 }
 
+// `+meta.vite: true` => restart Vite if config changes
 function hasViteConfigChanged(vikeConfigOld: VikeConfigInternal | null, vikeConfigNew: VikeConfigInternal): boolean {
   if (!vikeConfigOld) return false
 
@@ -301,9 +302,8 @@ function hasViteConfigChanged(vikeConfigOld: VikeConfigInternal | null, vikeConf
   for (const configName of viteConfigNames) {
     const valOld = configValuesOld[configName]?.value
     const valNew = configValuesNew[configName]?.value
-    if (!deepEqual(valOld, valNew)) {
-      return true
-    }
+    // Works thanks to the import() cache, see executeFile()
+    if (!deepEqual(valOld, valNew)) return true
   }
 
   return false
