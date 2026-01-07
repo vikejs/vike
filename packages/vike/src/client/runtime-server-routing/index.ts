@@ -1,3 +1,5 @@
+import '../assertEnvClient.js'
+
 // TO-DO/next-major-release: remove this file
 
 import type { PageContextBuiltInClientWithServerRouting } from '../../types/PageContext.js'

@@ -1,3 +1,5 @@
+import '../assertEnvClient.js'
+
 export { createPageContextClient }
 export type PageContextCreatedClient_ServerRouting = Awaited<ReturnType<typeof createPageContextClient>>
 

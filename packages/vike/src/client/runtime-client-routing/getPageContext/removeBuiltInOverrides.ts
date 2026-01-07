@@ -1,3 +1,5 @@
+import '../../assertEnvClient.js'
+
 export { removeBuiltInOverrides }
 
 import { assert, assertWarning } from '../../../utils/assert.js'

@@ -1,3 +1,5 @@
+import '../../assertEnvClient.js'
+
 // TO-DO/pageContext-prefetch: rename this file to getPrefetchSettingResolved.ts
 
 export { getPrefetchSettings }

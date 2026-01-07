@@ -1,3 +1,5 @@
+import '../assertEnvClient.js'
+
 export { scrollRestoration_init }
 export { scrollRestoration_initialRenderIsDone }
 

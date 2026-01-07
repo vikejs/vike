@@ -1,3 +1,5 @@
+import '../assertEnvClient.js'
+
 export { isLinkSkipped }
 export { isLinkIgnored }
 export { isHrefCurrentUrl }

@@ -1,3 +1,5 @@
+import '../assertEnvClient.js'
+
 export { setScrollPosition }
 export { autoSaveScrollPosition }
 export { scrollToHashOrTop }

@@ -1,3 +1,5 @@
+import '../assertEnvClient.js'
+
 export { getCurrentUrl }
 
 import { normalizeClientSideUrl } from './normalizeClientSideUrl.js'

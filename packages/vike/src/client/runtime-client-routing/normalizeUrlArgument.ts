@@ -1,3 +1,5 @@
+import '../assertEnvClient.js'
+
 export { normalizeUrlArgument }
 
 import { assertUsage } from '../../utils/assert.js'

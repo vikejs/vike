@@ -1,3 +1,5 @@
+import '../assertEnvClient.js'
+
 export { initOnPopState }
 
 import { onPopStateBegin, type HistoryInfo } from './history.js'

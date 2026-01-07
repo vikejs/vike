@@ -1,3 +1,5 @@
+import '../assertEnvClient.js'
+
 export { getBaseServer }
 
 import { assert } from '../../utils/assert.js'

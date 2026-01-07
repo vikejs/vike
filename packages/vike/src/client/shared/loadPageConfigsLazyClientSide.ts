@@ -1,3 +1,5 @@
+import '../assertEnvClient.js'
+
 export { loadPageConfigsLazyClientSide }
 export type { PageContext_loadPageConfigsLazyClientSide }
 export { isErrorFetchingStaticAssets }

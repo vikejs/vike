@@ -1,3 +1,5 @@
+import '../assertEnvClient.js'
+
 // Public usage
 export { getGlobalContext }
 export { getGlobalContextSync }

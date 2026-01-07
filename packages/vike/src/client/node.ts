@@ -1,3 +1,5 @@
+import './assertEnvClient.js'
+
 import { assertUsage } from '../utils/assert.js'
 assertUsage(
   false,

@@ -1,3 +1,5 @@
+import '../assertEnvClient.js'
+
 export { getPageContextPublicClientShared }
 export { getPageContextPublicClientMinimal }
 

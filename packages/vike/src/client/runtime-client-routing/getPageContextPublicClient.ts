@@ -1,3 +1,5 @@
+import '../assertEnvClient.js'
+
 export { getPageContextPublicClient }
 export type { PageContextPublicClient }
 export type { PageContextPublicProxyClient }

@@ -1,3 +1,5 @@
+import '../assertEnvClient.js'
+
 export { removeFoucBuster }
 
 import { assert } from '../../utils/assert.js'
