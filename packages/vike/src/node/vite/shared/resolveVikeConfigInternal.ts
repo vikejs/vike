@@ -223,7 +223,6 @@ async function resolveVikeConfigInternal_withErrorHandling(
 
   const esbuildCache: EsbuildCache = {
     transpileCache: {},
-    importCache: {},
     vikeConfigDependencies: new Set(),
   }
 

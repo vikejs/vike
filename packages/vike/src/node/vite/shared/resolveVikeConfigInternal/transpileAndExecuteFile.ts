@@ -51,11 +51,6 @@ type EsbuildCache = {
     string, // filePathAbsoluteFilesystem
     Promise<FileExports>
   >
-  // TODO/ai Move and use globalObject.importCache instead
-  importCache: Record<
-    string, // filePathAbsoluteFilesystem
-    Promise<Record<string, unknown>>
-  >
   vikeConfigDependencies: Set<string>
 }
 async function transpileAndExecuteFile(
@@ -96,11 +91,11 @@ async function transpileAndExecuteFile(
   let fileExports: FileExports['fileExports']
   if (isExtensionConfig && !isHeader && fileExtension.endsWith('js')) {
     // This doesn't track dependencies => we should never use this for user land configs
-    fileExports = await executeFile(filePathAbsoluteFilesystem, filePath, esbuildCache)
+    fileExports = await executeFile(filePathAbsoluteFilesystem, filePath)
   } else {
     const transformImports = isHeader ? 'all' : true
     const code = await transpileFile(filePath, transformImports, userRootDir, esbuildCache)
-    fileExports = await executeTranspiledFile(filePath, code, esbuildCache)
+    fileExports = await executeTranspiledFile(filePath, code)
   }
 
   resolve({ fileExports })
@@ -369,7 +364,7 @@ async function transpileWithEsbuild(
   return { code, pointerImports }
 }
 
-async function executeTranspiledFile(filePath: FilePathResolved, code: string, esbuildCache: EsbuildCache) {
+async function executeTranspiledFile(filePath: FilePathResolved, code: string) {
   const { filePathAbsoluteFilesystem } = filePath
   // Alternative to using a temporary file: https://github.com/vitejs/vite/pull/13269
   //  - But seems to break source maps, so I don't think it's worth it
@@ -384,7 +379,7 @@ async function executeTranspiledFile(filePath: FilePathResolved, code: string, e
   }
   let fileExports: Record<string, unknown> = {}
   try {
-    fileExports = await executeFile(filePathTmp, filePath, esbuildCache)
+    fileExports = await executeFile(filePathTmp, filePath)
   } finally {
     clean()
   }
@@ -394,29 +389,22 @@ async function executeTranspiledFile(filePath: FilePathResolved, code: string, e
 async function executeFile(
   filePathToExecuteAbsoluteFilesystem: string,
   filePathSourceFile: FilePathResolved,
-  esbuildCache: EsbuildCache,
 ) {
-  const key = filePathToExecuteAbsoluteFilesystem
-  console.log(filePathToExecuteAbsoluteFilesystem, esbuildCache.importCache[key])
-
-  const importPromise = (esbuildCache.importCache[key] ??= (async () => {
-    let fileExports: Record<string, unknown> = {}
-    try {
-      fileExports = await import_(filePathToExecuteAbsoluteFilesystem)
-    } catch (err) {
-      triggerPrepareStackTrace(err)
-      const errIntroMsg = getErrIntroMsg('execute', filePathSourceFile)
-      assert(isObject(err))
-      execErrIntroMsg.set(err, errIntroMsg)
-      throw err
-    }
-    // Return a plain JavaScript object:
-    //  - import() returns `[Module: null prototype] { default: { onRenderClient: '...' }}`
-    //  - We don't need this special object.
-    fileExports = { ...fileExports }
-    return fileExports
-  })())
-  return await importPromise
+  let fileExports: Record<string, unknown> = {}
+  try {
+    fileExports = await import_(filePathToExecuteAbsoluteFilesystem)
+  } catch (err) {
+    triggerPrepareStackTrace(err)
+    const errIntroMsg = getErrIntroMsg('execute', filePathSourceFile)
+    assert(isObject(err))
+    execErrIntroMsg.set(err, errIntroMsg)
+    throw err
+  }
+  // Return a plain JavaScript object:
+  //  - import() returns `[Module: null prototype] { default: { onRenderClient: '...' }}`
+  //  - We don't need this special object.
+  fileExports = { ...fileExports }
+  return fileExports
 }
 
 const formatted = '_formatted'
