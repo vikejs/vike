@@ -221,6 +221,7 @@ function execHookBase<HookReturn>(
       originalReturn = callOriginal()
     } catch (err) {
       originalError = err
+      throw err
     }
     return originalReturn
   }
@@ -232,20 +233,22 @@ function execHookBase<HookReturn>(
         try {
           await onHookCall(hookPublic, pageContext)
         } catch (err) {
-          console.error(err)
-          /* TO-DO/eventually: use dependency injection to be able to use logErrorServer() when this function runs on the server-side.
-          if (
-            !globalThis.__VIKE__IS_CLIENT &&
-            pageContext &&
-            // Avoid infinite loop
-            hookName !== 'onError'
-          ) {
-            assert(!pageContext.isClientSide)
-            logErrorServer(err, pageContext)
-          } else {
-            logErrorClient(err)
+          if (err !== originalError) {
+            console.error(err)
+            /* TO-DO/eventually: use dependency injection to be able to use logErrorServer() when this function runs on the server-side.
+            if (
+              !globalThis.__VIKE__IS_CLIENT &&
+              pageContext &&
+              // Avoid infinite loop
+              hookName !== 'onError'
+            ) {
+              assert(!pageContext.isClientSide)
+              logErrorServer(err, pageContext)
+            } else {
+              logErrorClient(err)
+            }
+            //*/
           }
-          //*/
         }
       })()
       // +onHookCall must run hook.call() before any `await` — https://github.com/vikejs/vike/pull/2978#discussion_r2645232953
