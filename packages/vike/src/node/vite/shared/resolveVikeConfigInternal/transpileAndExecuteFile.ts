@@ -369,14 +369,8 @@ async function executeTranspiledFile(filePath: FilePathResolved, code: string) {
   // Alternative to using a temporary file: https://github.com/vitejs/vite/pull/13269
   //  - But seems to break source maps, so I don't think it's worth it
   const filePathTmp = getTemporaryBuildFilePath(filePathAbsoluteFilesystem, code)
-  if (!fs.existsSync(filePathTmp)) {
-    fs.writeFileSync(filePathTmp, code)
-  }
-  const clean = () => {
-    try {
-      fs.unlinkSync(filePathTmp)
-    } catch {}
-  }
+  fs.writeFileSync(filePathTmp, code)
+  const clean = () => fs.unlinkSync(filePathTmp)
   let fileExports: Record<string, unknown> = {}
   try {
     fileExports = await executeFile(filePathTmp, filePath)
