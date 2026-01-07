@@ -237,5 +237,5 @@ async function emitServerEntryOnlyIfNeeded(config: ResolvedConfig) {
 
 function assertViteBuildSsr(configFromUser: UserConfig) {
   // https://github.com/vikejs/vike/issues/3010
-  assertUsage(!configFromUser.build?.ssr, "Don't set vite.build.ssr")
+  assertUsage(!configFromUser.build?.ssr === undefined, "Don't set vite.build.ssr")
 }
