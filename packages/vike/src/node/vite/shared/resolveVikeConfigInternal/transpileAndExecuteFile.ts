@@ -383,6 +383,7 @@ async function executeTranspiledFile(filePath: FilePathResolved, code: string) {
 async function executeFile(filePathToExecuteAbsoluteFilesystem: string, filePathSourceFile: FilePathResolved) {
   let fileExports: Record<string, unknown> = {}
   try {
+    // `import(filePath)` is cached: if `filePath` doesn't change => the file isn't re-executed. The import() cache is required for the +meta.vite implementation to work correctly.
     fileExports = await import_(filePathToExecuteAbsoluteFilesystem)
   } catch (err) {
     triggerPrepareStackTrace(err)
@@ -433,9 +434,10 @@ function getTemporaryBuildFilePath(filePathAbsoluteFilesystem: string, code: str
   assertPosixPath(filePathAbsoluteFilesystem)
   const dirname = path.posix.dirname(filePathAbsoluteFilesystem)
   const filename = path.posix.basename(filePathAbsoluteFilesystem)
-  const hash = crypto.createHash('md5').update(code).digest('hex').slice(0, 12)
+  // Using content hash in file path => the cache of dynamic `import()` is accurate
+  const fileHash = crypto.createHash('md5').update(code).digest('hex').slice(0, 12)
   // Syntax with semicolon `build:${/*...*/}` doesn't work on Windows: https://github.com/vikejs/vike/issues/800#issuecomment-1517329455
-  const filePathTmp = path.posix.join(dirname, `${filename}.build-${hash}.mjs`)
+  const filePathTmp = path.posix.join(dirname, `${filename}.build-${fileHash}.mjs`)
   assert(isTemporaryBuildFile(filePathTmp))
   return filePathTmp
 }
