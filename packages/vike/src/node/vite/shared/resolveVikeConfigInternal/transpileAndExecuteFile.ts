@@ -368,7 +368,7 @@ async function transpileWithEsbuild(
   return { code, pointerImports }
 }
 
-async function executeTranspiledFile(filePath: FilePathResolved, code: string, esbuildCache?: EsbuildCache) {
+async function executeTranspiledFile(filePath: FilePathResolved, code: string, esbuildCache: EsbuildCache) {
   const { filePathAbsoluteFilesystem } = filePath
   // Alternative to using a temporary file: https://github.com/vitejs/vite/pull/13269
   //  - But seems to break source maps, so I don't think it's worth it
@@ -393,16 +393,12 @@ async function executeTranspiledFile(filePath: FilePathResolved, code: string, e
 async function executeFile(
   filePathToExecuteAbsoluteFilesystem: string,
   filePathSourceFile: FilePathResolved,
-  esbuildCache?: EsbuildCache,
+  esbuildCache: EsbuildCache,
 ) {
-  console.log(filePathToExecuteAbsoluteFilesystem)
-  if (esbuildCache?.importCache[filePathToExecuteAbsoluteFilesystem]) {
-    console.log(0)
-    return await esbuildCache.importCache[filePathToExecuteAbsoluteFilesystem]
-  }
-  console.log(1)
+  const key = filePathToExecuteAbsoluteFilesystem
+  console.log(filePathToExecuteAbsoluteFilesystem, esbuildCache.importCache[key])
 
-  const importPromise = (async () => {
+  return await (esbuildCache.importCache[key] ??= (async () => {
     let fileExports: Record<string, unknown> = {}
     try {
       fileExports = await import_(filePathToExecuteAbsoluteFilesystem)
@@ -418,13 +414,7 @@ async function executeFile(
     //  - We don't need this special object.
     fileExports = { ...fileExports }
     return fileExports
-  })()
-
-  if (esbuildCache) {
-    esbuildCache.importCache[filePathToExecuteAbsoluteFilesystem] = importPromise
-  }
-
-  return await importPromise
+  })())
 }
 
 const formatted = '_formatted'
