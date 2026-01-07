@@ -106,6 +106,7 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
       config: {
         order: 'post',
         async handler(configFromUser) {
+          assert(!configFromUser.build?.ssr)
           let configFromVike: UserConfig = { server: {}, preview: {} }
           const vikeConfig = await getVikeConfigInternal()
 
