@@ -106,7 +106,8 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
       config: {
         order: 'post',
         async handler(configFromUser) {
-          assert(!configFromUser.build?.ssr)
+          assertViteBuildSsr(configFromUser)
+
           let configFromVike: UserConfig = { server: {}, preview: {} }
           const vikeConfig = await getVikeConfigInternal()
 
@@ -232,4 +233,9 @@ async function emitServerEntryOnlyIfNeeded(config: ResolvedConfig) {
   if (config.vitePluginServerEntry?.inject && !vikeConfig.prerenderContext.isPrerenderingEnabled) {
     config.vitePluginServerEntry.disableServerEntryEmit = true
   }
+}
+
+function assertViteBuildSsr(configFromUser: UserConfig) {
+  // https://github.com/vikejs/vike/issues/3010
+  assertUsage(!configFromUser.build?.ssr, "Don't set vite.build.ssr")
 }
