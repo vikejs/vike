@@ -434,10 +434,6 @@ function getTemporaryBuildFilePath(filePathAbsoluteFilesystem: string, code: str
   assertPosixPath(filePathAbsoluteFilesystem)
   const dirname = path.posix.dirname(filePathAbsoluteFilesystem)
   const filename = path.posix.basename(filePathAbsoluteFilesystem)
-  console.log()
-  console.log(filename)
-  console.log(code)
-  console.log()
   // Using content hash in file path => the cache of dynamic `import()` is accurate
   const fileHash = crypto.createHash('md5').update(code).digest('hex').slice(0, 12)
   // Syntax with semicolon `build:${/*...*/}` doesn't work on Windows: https://github.com/vikejs/vike/issues/800#issuecomment-1517329455
