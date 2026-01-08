@@ -15,7 +15,7 @@
     "typescript": "^5.9.3",
     "vike": "0.4.250",
     "vike-react": "0.6.18",
-    "vike-react-zustand": "^0.1.8",
+    "vike-react-zustand": "^0.1.9",
     "vite": "^7.2.2",
     "zustand": "^5.0.9"
   },
