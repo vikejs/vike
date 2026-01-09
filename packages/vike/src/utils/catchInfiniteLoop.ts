@@ -7,7 +7,7 @@ const trackers = {} as Record<string, Tracker>
 
 type Tracker = {
   count: number
-  start: Date
+  startTime: number
   warned?: true
 }
 
@@ -16,12 +16,12 @@ const time = 5 * 1000
 
 function catchInfiniteLoop(functionName: `${string}()`) {
   // Init
-  const now = new Date()
+  const now = new Date().getTime()
 
   // Clean all outdated trackers
   Object.keys(trackers).forEach((key) => {
     const tracker = trackers[key]!
-    const elapsedTime = now.getTime() - tracker.start.getTime()
+    const elapsedTime = now - tracker.startTime
     if (elapsedTime > time) delete trackers[key]
   })
 
@@ -44,7 +44,7 @@ function catchInfiniteLoop(functionName: `${string}()`) {
   }
 }
 
-function createTracker(now: Date): Tracker {
+function createTracker(now: number): Tracker {
   const tracker = {
     count: 0,
     start: now,
