@@ -24,12 +24,12 @@ function CommunityNote({ url, extension }: { url: string; extension?: Extension 
         </a>{' '}
         to improve it.
       </Contribution>
-      {extension !== undefined && <HasExtension toolTitle={toolName} extension={extension} />}
+      {extension !== undefined && <ExtensionNote toolTitle={toolName} extension={extension} />}
     </>
   )
 }
 
-function HasExtension({ toolTitle, extension }: { toolTitle: React.ReactNode; extension: Extension }) {
+function ExtensionNote({ toolTitle, extension }: { toolTitle: React.ReactNode; extension: Extension }) {
   if (extension === false) {
     return (
       <Contribution>
