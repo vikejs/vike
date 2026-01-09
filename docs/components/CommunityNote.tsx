@@ -3,8 +3,10 @@ export { CommunityNote }
 import React from 'react'
 import { Contribution, Link, assert, parseMarkdownMini, usePageContext } from '@brillout/docpress'
 
-type UIFramework = 'react' | 'solid' | 'vue'
-type Extension = false | `vike-${UIFramework}-`
+const uiFrameworks = ['react', 'solid', 'vue'] as const
+type UIFramework = (typeof uiFrameworks)[number]
+type Extension = false | ExtensionName
+type ExtensionName = `vike-${UIFramework}-${string}`
 
 function CommunityNote({ url, extension }: { url: string; extension?: Extension }) {
   assert(url, 'url missing')
@@ -28,7 +30,6 @@ function CommunityNote({ url, extension }: { url: string; extension?: Extension 
 }
 
 function HasExtension({ toolTitle, extension }: { toolTitle: React.ReactNode; extension: Extension }) {
-  const pageContext = usePageContext()
   if (extension === false) {
     return (
       <Contribution>
@@ -38,12 +39,7 @@ function HasExtension({ toolTitle, extension }: { toolTitle: React.ReactNode; ex
       </Contribution>
     )
   }
-  let toolName = pageContext.urlPathname
-  if (toolName.startsWith(extension)) {
-    const prefix = `${extension}-`
-    assert(toolName.startsWith(prefix))
-    toolName.slice(prefix.length)
-  }
+  const uiFramework = getUiFramework(extension)
   return (
     <>
       <p>
@@ -53,21 +49,15 @@ function HasExtension({ toolTitle, extension }: { toolTitle: React.ReactNode; ex
         </Link>{' '}
         you can use{' '}
         <code>
-          <a
-            href={`https://github.com/vikejs/vike-${extension}/tree/main/packages/vike-${extension}-${toolName}#readme`}
-          >
-            vike-{extension}-{toolName}
+          <a href={`https://github.com/vikejs/vike-${uiFramework}/tree/main/packages/${extension}#readme`}>
+            {extension}
           </a>
         </code>{' '}
         for automatic integration.
       </p>
       <blockquote>
         <p>
-          The{' '}
-          <code>
-            vike-{extension}-{toolName}
-          </code>{' '}
-          extension requires{' '}
+          The <code>${extension}</code> extension requires{' '}
           <code>
             <Link href={`/vike-${extension}`}>vike-{extension}</Link>
           </code>
@@ -80,4 +70,15 @@ function HasExtension({ toolTitle, extension }: { toolTitle: React.ReactNode; ex
 
 function getEditLink(path?: string) {
   return `https://github.com/vikejs/vike/blob/main/docs/pages${path}/+Page.mdx?plain=1`
+}
+
+function getUiFramework(extension: ExtensionName) {
+  let uiFramework: UIFramework | undefined
+  uiFrameworks.forEach((ui) => {
+    if (extension.startsWith(`vike-${ui}-`)) {
+      uiFramework = ui
+    }
+  })
+  assert(uiFramework)
+  return uiFramework
 }
