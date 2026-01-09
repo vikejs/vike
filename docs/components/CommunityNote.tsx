@@ -4,9 +4,9 @@ import React from 'react'
 import { Contribution, Link, assert, parseMarkdownMini, usePageContext } from '@brillout/docpress'
 
 const uiFrameworks = ['react', 'solid', 'vue'] as const
-type UIFramework = (typeof uiFrameworks)[number]
+type UiFramework = (typeof uiFrameworks)[number]
 type Extension = false | ExtensionName
-type ExtensionName = `vike-${UIFramework}-${string}`
+type ExtensionName = `vike-${UiFramework}-${string}`
 
 function CommunityNote({ url, extension }: { url: string; extension?: Extension }) {
   assert(url, 'url missing')
@@ -73,7 +73,7 @@ function getEditLink(path?: string) {
 }
 
 function getUiFramework(extension: ExtensionName) {
-  let uiFramework: UIFramework | undefined
+  let uiFramework: UiFramework | undefined
   uiFrameworks.forEach((ui) => {
     if (extension.startsWith(`vike-${ui}-`)) {
       uiFramework = ui
