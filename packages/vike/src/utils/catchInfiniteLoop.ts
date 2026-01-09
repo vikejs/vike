@@ -11,7 +11,7 @@ type Tracker = {
   warned?: true
 }
 
-const maxCalls = 100
+const maxCalls = 99
 const time = 5 * 1000
 
 function catchInfiniteLoop(functionName: `${string}()`) {
