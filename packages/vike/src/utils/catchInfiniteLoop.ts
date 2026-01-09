@@ -1,6 +1,7 @@
 export { catchInfiniteLoop }
 
 import { assertUsage, assertWarning } from './assert.js'
+import { humanizeTime } from './humanizeTime.js'
 
 const trackers = {} as Record<string, Tracker>
 
@@ -10,7 +11,11 @@ type Tracker = {
   warned?: true
 }
 
-function catchInfiniteLoop(functionName: `${string}()`, maxNumberOfCalls = 100, withinSeconds = 5) {
+const maxNumberOfCalls = 100
+const withinSeconds = 5
+
+// TODO/ai
+function catchInfiniteLoop(functionName: `${string}()`) {
   // Init
   const now = new Date()
   let tracker: Tracker = (trackers[functionName] ??= createTracker(now))
@@ -23,7 +28,7 @@ function catchInfiniteLoop(functionName: `${string}()`, maxNumberOfCalls = 100, 
   tracker.count++
 
   // Error
-  const msg = `[Infinite Loop] Rendering ${tracker.count} times within ${withinSeconds} seconds [${functionName}]`
+  const msg = `[Infinite Loop] ${functionName} called ${tracker.count} times within ${humanizeTime(withinSeconds)}`
   if (tracker.count > maxNumberOfCalls) {
     assertUsage(false, msg)
   }
