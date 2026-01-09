@@ -20,6 +20,7 @@ function catchInfiniteLoop(functionName: `${string}()`) {
   const now = new Date()
   let tracker: Tracker = (trackers[functionName] ??= createTracker(now))
 
+  // TODO/ai Clean all outdated times instead of just the [functionName] one
   // Reset
   const elapsedTime = now.getTime() - tracker.start.getTime()
   if (elapsedTime > time) tracker = trackers[functionName] = createTracker(now)
