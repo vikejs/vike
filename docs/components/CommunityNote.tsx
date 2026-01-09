@@ -3,9 +3,10 @@ export { CommunityNote }
 import React from 'react'
 import { Contribution, Link, assert, parseMarkdownMini, usePageContext } from '@brillout/docpress'
 
-type UIFramework = 'react' | 'solid' | 'vue' | false
+type UIFramework = 'react' | 'solid' | 'vue'
+type Extension = false | `vike-${UIFramework}-`
 
-function CommunityNote({ url, hasExtension }: { url: string; hasExtension?: UIFramework }) {
+function CommunityNote({ url, hasExtension }: { url: string; hasExtension?: Extension }) {
   assert(url, 'The `url` prop is required')
   const pageContext = usePageContext()
   const toolName = parseMarkdownMini(pageContext.resolved.pageTitle!)
@@ -26,7 +27,7 @@ function CommunityNote({ url, hasExtension }: { url: string; hasExtension?: UIFr
   )
 }
 
-function HasExtension({ toolTitle, hasExtension }: { toolTitle: React.ReactNode; hasExtension: UIFramework }) {
+function HasExtension({ toolTitle, hasExtension }: { toolTitle: React.ReactNode; hasExtension: Extension }) {
   const pageContext = usePageContext()
   if (hasExtension === false) {
     return (
