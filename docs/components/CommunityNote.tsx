@@ -5,16 +5,14 @@ import { Contribution, Link, assert, parseMarkdownMini, usePageContext } from '@
 
 type UIFramework = 'react' | 'solid' | 'vue' | false
 
-function CommunityNote({ tool, url, hasExtension }: { tool?: string; url: string; hasExtension?: UIFramework }) {
+function CommunityNote({ url, hasExtension }: { url: string; hasExtension?: UIFramework }) {
   assert(url, 'The `url` prop is required')
-  if (hasExtension !== undefined) {
-    assert(tool, 'The `tool` prop is required when the `hasExtension` prop is provided')
-  }
   const pageContext = usePageContext()
+  const toolName = parseMarkdownMini(pageContext.resolved.pageTitle!)
   return (
     <>
       <p>
-        Documentation about using Vike with <a href={url}>{parseMarkdownMini(pageContext.resolved.pageTitle!)}</a>.
+        Documentation about using Vike with <a href={url}>{toolName}</a>.
       </p>
       <Contribution>
         This page is maintained by the community and may contain outdated information —{' '}
@@ -23,18 +21,13 @@ function CommunityNote({ tool, url, hasExtension }: { tool?: string; url: string
         </a>{' '}
         to improve it.
       </Contribution>
-      {hasExtension !== undefined && (
-        <HasExtension toolName={tool} toolTitle={pageContext.resolved.pageTitle!} hasExtension={hasExtension} />
-      )}
+      {hasExtension !== undefined && <HasExtension toolTitle={toolName} hasExtension={hasExtension} />}
     </>
   )
 }
 
-function HasExtension({
-  toolName,
-  toolTitle,
-  hasExtension,
-}: { toolName?: string; toolTitle: string; hasExtension: UIFramework }) {
+function HasExtension({ toolTitle, hasExtension }: { toolTitle: React.ReactNode; hasExtension: UIFramework }) {
+  const pageContext = usePageContext()
   if (hasExtension === false) {
     return (
       <Contribution>
@@ -43,6 +36,12 @@ function HasExtension({
         you can manually integrate {toolTitle}.
       </Contribution>
     )
+  }
+  let toolName = pageContext.urlPathname
+  if (toolName.startsWith(hasExtension)) {
+    const prefix = `${hasExtension}-`
+    assert(toolName.startsWith(prefix))
+    toolName.slice(prefix.length)
   }
   return (
     <>
