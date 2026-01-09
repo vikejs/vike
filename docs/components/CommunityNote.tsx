@@ -6,7 +6,7 @@ import { Contribution, Link, assert, parseMarkdownMini, usePageContext } from '@
 type UIFramework = 'react' | 'solid' | 'vue'
 type Extension = false | `vike-${UIFramework}-`
 
-function CommunityNote({ url, hasExtension }: { url: string; hasExtension?: Extension }) {
+function CommunityNote({ url, extension }: { url: string; extension?: Extension }) {
   assert(url, 'The `url` prop is required')
   const pageContext = usePageContext()
   const toolName = parseMarkdownMini(pageContext.resolved.pageTitle!)
@@ -22,14 +22,14 @@ function CommunityNote({ url, hasExtension }: { url: string; hasExtension?: Exte
         </a>{' '}
         to improve it.
       </Contribution>
-      {hasExtension !== undefined && <HasExtension toolTitle={toolName} hasExtension={hasExtension} />}
+      {extension !== undefined && <HasExtension toolTitle={toolName} extension={extension} />}
     </>
   )
 }
 
-function HasExtension({ toolTitle, hasExtension }: { toolTitle: React.ReactNode; hasExtension: Extension }) {
+function HasExtension({ toolTitle, extension }: { toolTitle: React.ReactNode; extension: Extension }) {
   const pageContext = usePageContext()
-  if (hasExtension === false) {
+  if (extension === false) {
     return (
       <Contribution>
         There isn't a <Link href="/extensions">Vike extension</Link> for {toolTitle} yet, but{' '}
@@ -39,8 +39,8 @@ function HasExtension({ toolTitle, hasExtension }: { toolTitle: React.ReactNode;
     )
   }
   let toolName = pageContext.urlPathname
-  if (toolName.startsWith(hasExtension)) {
-    const prefix = `${hasExtension}-`
+  if (toolName.startsWith(extension)) {
+    const prefix = `${extension}-`
     assert(toolName.startsWith(prefix))
     toolName.slice(prefix.length)
   }
@@ -48,15 +48,15 @@ function HasExtension({ toolTitle, hasExtension }: { toolTitle: React.ReactNode;
     <>
       <p>
         If you are using{' '}
-        <Link href={`/vike-${hasExtension}`}>
-          <code>vike-{hasExtension}</code>
+        <Link href={`/vike-${extension}`}>
+          <code>vike-{extension}</code>
         </Link>{' '}
         you can use{' '}
         <code>
           <a
-            href={`https://github.com/vikejs/vike-${hasExtension}/tree/main/packages/vike-${hasExtension}-${toolName}#readme`}
+            href={`https://github.com/vikejs/vike-${extension}/tree/main/packages/vike-${extension}-${toolName}#readme`}
           >
-            vike-{hasExtension}-{toolName}
+            vike-{extension}-{toolName}
           </a>
         </code>{' '}
         for automatic integration.
@@ -65,11 +65,11 @@ function HasExtension({ toolTitle, hasExtension }: { toolTitle: React.ReactNode;
         <p>
           The{' '}
           <code>
-            vike-{hasExtension}-{toolName}
+            vike-{extension}-{toolName}
           </code>{' '}
           extension requires{' '}
           <code>
-            <Link href={`/vike-${hasExtension}`}>vike-{hasExtension}</Link>
+            <Link href={`/vike-${extension}`}>vike-{extension}</Link>
           </code>
           .
         </p>
