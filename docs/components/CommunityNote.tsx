@@ -3,18 +3,19 @@ export { CommunityNote }
 import React from 'react'
 import { Contribution, Link, assert, parseMarkdownMini, usePageContext } from '@brillout/docpress'
 
-type UIFramework = 'react' | 'solid' | 'vue' | false
+const uiFrameworks = ['react', 'solid', 'vue'] as const
+type UiFramework = (typeof uiFrameworks)[number]
+type Extension = false | ExtensionName
+type ExtensionName = `vike-${UiFramework}-${string}`
 
-function CommunityNote({ tool, url, hasExtension }: { tool?: string; url: string; hasExtension?: UIFramework }) {
-  assert(url, 'The `url` prop is required')
-  if (hasExtension !== undefined) {
-    assert(tool, 'The `tool` prop is required when the `hasExtension` prop is provided')
-  }
+function CommunityNote({ url, extension }: { url: string; extension?: Extension }) {
   const pageContext = usePageContext()
+  assert(url, 'url missing')
+  const toolName = parseMarkdownMini(pageContext.resolved.pageTitle!)
   return (
     <>
       <p>
-        Documentation about using Vike with <a href={url}>{parseMarkdownMini(pageContext.resolved.pageTitle!)}</a>.
+        Documentation about using Vike with <a href={url}>{toolName}</a>.
       </p>
       <Contribution>
         This page is maintained by the community and may contain outdated information —{' '}
@@ -23,55 +24,36 @@ function CommunityNote({ tool, url, hasExtension }: { tool?: string; url: string
         </a>{' '}
         to improve it.
       </Contribution>
-      {hasExtension !== undefined && (
-        <HasExtension toolName={tool} toolTitle={pageContext.resolved.pageTitle!} hasExtension={hasExtension} />
-      )}
+      {extension !== undefined && <ExtensionNote toolName={toolName} extension={extension} />}
     </>
   )
 }
 
-function HasExtension({
-  toolName,
-  toolTitle,
-  hasExtension,
-}: { toolName?: string; toolTitle: string; hasExtension: UIFramework }) {
-  if (hasExtension === false) {
+function ExtensionNote({ toolName, extension }: { toolName: React.ReactNode; extension: Extension }) {
+  if (extension === false) {
     return (
       <Contribution>
-        There isn't a <Link href="/extensions">Vike extension</Link> for {toolTitle} yet, but{' '}
+        There isn't a <Link href="/extensions">Vike extension</Link> for {toolName} yet, but{' '}
         <a href="https://github.com/vikejs/vike/issues/1715">contributions welcome to create one</a>. In the meantime,
-        you can manually integrate {toolTitle}.
+        you can manually integrate {toolName}.
       </Contribution>
     )
   }
+  const extensionPkg = <code>{extension}</code>
+  const uiFramework = getUiFramework(extension)
+  const uiFrameworkExtensionPkg = <code>vike-{uiFramework}</code>
   return (
     <>
       <p>
-        If you are using{' '}
-        <Link href={`/vike-${hasExtension}`}>
-          <code>vike-{hasExtension}</code>
-        </Link>{' '}
-        you can use{' '}
-        <code>
-          <a
-            href={`https://github.com/vikejs/vike-${hasExtension}/tree/main/packages/vike-${hasExtension}-${toolName}#readme`}
-          >
-            vike-{hasExtension}-{toolName}
-          </a>
-        </code>{' '}
+        If you are using <Link href={`/vike-${uiFramework}`}>{uiFrameworkExtensionPkg}</Link> you can use{' '}
+        <a href={`https://github.com/vikejs/vike-${uiFramework}/tree/main/packages/${extension}#readme`}>
+          {extensionPkg}
+        </a>{' '}
         for automatic integration.
       </p>
       <blockquote>
         <p>
-          The{' '}
-          <code>
-            vike-{hasExtension}-{toolName}
-          </code>{' '}
-          extension requires{' '}
-          <code>
-            <Link href={`/vike-${hasExtension}`}>vike-{hasExtension}</Link>
-          </code>
-          .
+          The {extensionPkg} extension requires {uiFrameworkExtensionPkg}.
         </p>
       </blockquote>
     </>
@@ -80,4 +62,15 @@ function HasExtension({
 
 function getEditLink(path?: string) {
   return `https://github.com/vikejs/vike/blob/main/docs/pages${path}/+Page.mdx?plain=1`
+}
+
+function getUiFramework(extension: ExtensionName) {
+  let uiFramework: UiFramework | undefined
+  uiFrameworks.forEach((ui) => {
+    if (extension.startsWith(`vike-${ui}-`)) {
+      uiFramework = ui
+    }
+  })
+  assert(uiFramework)
+  return uiFramework
 }
