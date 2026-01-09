@@ -31,7 +31,7 @@ function catchInfiniteLoop(functionName: `${string}()`) {
   tracker.count++
 
   // Error
-  const msg = `[Infinite Loop] ${functionName} called ${tracker.count} times within ${humanizeTime(time)}`
+  const msg = `${functionName} called ${tracker.count} times within ${humanizeTime(time)} — infinite loop?`
   if (tracker.count > maxCalls) {
     assertUsage(false, msg)
   }
