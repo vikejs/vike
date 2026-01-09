@@ -14,16 +14,14 @@ type Tracker = {
 const maxCalls = 100
 const time = 5 * 1000
 
-// TODO/ai
 function catchInfiniteLoop(functionName: `${string}()`) {
   // Init
   const now = new Date()
-  let tracker: Tracker = (trackers[functionName] ??= createTracker(now))
 
-  // TODO/ai Clean all outdated times instead of just the [functionName] one
-  // Reset
-  const elapsedTime = now.getTime() - tracker.start.getTime()
-  if (elapsedTime > time) tracker = trackers[functionName] = createTracker(now)
+  // Clean all outdated trackers
+  cleanOutdatedTrackers(now)
+
+  const tracker: Tracker = (trackers[functionName] ??= createTracker(now))
 
   // Count
   tracker.count++
@@ -48,4 +46,14 @@ function createTracker(now: Date): Tracker {
     start: now,
   }
   return tracker
+}
+
+function cleanOutdatedTrackers(now: Date) {
+  Object.keys(trackers).forEach((key) => {
+    const tracker = trackers[key]
+    const elapsedTime = now.getTime() - tracker.start.getTime()
+    if (elapsedTime > time) {
+      delete trackers[key]
+    }
+  })
 }
