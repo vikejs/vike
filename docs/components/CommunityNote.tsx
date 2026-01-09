@@ -39,23 +39,21 @@ function ExtensionNote({ toolName, extension }: { toolName: React.ReactNode; ext
       </Contribution>
     )
   }
+  const extensionPkg = <code>{extension}</code>
   const uiFramework = getUiFramework(extension)
+  const uiFrameworkExtensionPkg = <code>vike-{uiFramework}</code>
   return (
     <>
       <p>
-        If you are using{' '}
-        <Link href={`/vike-${uiFramework}`}>
-          <code>vike-{uiFramework}</code>
-        </Link>{' '}
-        you can use{' '}
+        If you are using <Link href={`/vike-${uiFramework}`}>{uiFrameworkExtensionPkg}</Link> you can use{' '}
         <a href={`https://github.com/vikejs/vike-${uiFramework}/tree/main/packages/${extension}#readme`}>
-          <code>{extension}</code>
+          {extensionPkg}
         </a>{' '}
         for automatic integration.
       </p>
       <blockquote>
         <p>
-          The <code>{extension}</code> extension requires <code>vike-{uiFramework}</code>.
+          The {extensionPkg} extension requires {uiFrameworkExtensionPkg}.
         </p>
       </blockquote>
     </>
