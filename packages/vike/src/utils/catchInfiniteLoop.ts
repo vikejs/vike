@@ -19,7 +19,13 @@ function catchInfiniteLoop(functionName: `${string}()`) {
   const now = new Date()
 
   // Clean all outdated trackers
-  cleanOutdatedTrackers(now)
+  Object.keys(trackers).forEach((key) => {
+    const tracker = trackers[key]!
+    const elapsedTime = now.getTime() - tracker.start.getTime()
+    if (elapsedTime > time) {
+      delete trackers[key]
+    }
+  })
 
   const tracker: Tracker = (trackers[functionName] ??= createTracker(now))
 
@@ -46,14 +52,4 @@ function createTracker(now: Date): Tracker {
     start: now,
   }
   return tracker
-}
-
-function cleanOutdatedTrackers(now: Date) {
-  Object.keys(trackers).forEach((key) => {
-    const tracker = trackers[key]
-    const elapsedTime = now.getTime() - tracker.start.getTime()
-    if (elapsedTime > time) {
-      delete trackers[key]
-    }
-  })
 }
