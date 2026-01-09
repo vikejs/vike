@@ -1043,6 +1043,10 @@ function tools() {
         title: 'Lingui',
         url: '/lingui',
       },
+      {
+        title: 'Payload CMS',
+        url: '/payload',
+      },
     ] as const
   ).map((h) => ({ ...h, category: 'Guides (tools)' as const })) satisfies HeadingDetachedDefinition[]
 }
