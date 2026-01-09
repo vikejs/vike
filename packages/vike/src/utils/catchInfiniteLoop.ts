@@ -22,9 +22,7 @@ function catchInfiniteLoop(functionName: `${string}()`) {
   Object.keys(trackers).forEach((key) => {
     const tracker = trackers[key]!
     const elapsedTime = now.getTime() - tracker.start.getTime()
-    if (elapsedTime > time) {
-      delete trackers[key]
-    }
+    if (elapsedTime > time) delete trackers[key]
   })
 
   const tracker: Tracker = (trackers[functionName] ??= createTracker(now))
