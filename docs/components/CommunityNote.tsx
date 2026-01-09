@@ -48,11 +48,9 @@ function ExtensionNote({ toolName, extension }: { toolName: React.ReactNode; ext
           <code>vike-{uiFramework}</code>
         </Link>{' '}
         you can use{' '}
-        <code>
-          <a href={`https://github.com/vikejs/vike-${uiFramework}/tree/main/packages/${extension}#readme`}>
-            {extension}
-          </a>
-        </code>{' '}
+        <a href={`https://github.com/vikejs/vike-${uiFramework}/tree/main/packages/${extension}#readme`}>
+          <code>{extension}</code>
+        </a>{' '}
         for automatic integration.
       </p>
       <blockquote>
