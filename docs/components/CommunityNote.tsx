@@ -44,8 +44,8 @@ function ExtensionNote({ toolTitle, extension }: { toolTitle: React.ReactNode; e
     <>
       <p>
         If you are using{' '}
-        <Link href={`/vike-${extension}`}>
-          <code>vike-{extension}</code>
+        <Link href={`/vike-${uiFramework}`}>
+          <code>vike-{uiFramework}</code>
         </Link>{' '}
         you can use{' '}
         <code>
@@ -59,7 +59,7 @@ function ExtensionNote({ toolTitle, extension }: { toolTitle: React.ReactNode; e
         <p>
           The <code>${extension}</code> extension requires{' '}
           <code>
-            <Link href={`/vike-${extension}`}>vike-{extension}</Link>
+            <Link href={`/vike-${uiFramework}`}>vike-{uiFramework}</Link>
           </code>
           .
         </p>
