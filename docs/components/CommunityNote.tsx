@@ -57,7 +57,7 @@ function ExtensionNote({ toolTitle, extension }: { toolTitle: React.ReactNode; e
       </p>
       <blockquote>
         <p>
-          The <code>${extension}</code> extension requires{' '}
+          The <code>{extension}</code> extension requires{' '}
           <code>
             <Link href={`/vike-${uiFramework}`}>vike-{uiFramework}</Link>
           </code>
