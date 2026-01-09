@@ -7,7 +7,7 @@ type UIFramework = 'react' | 'solid' | 'vue'
 type Extension = false | `vike-${UIFramework}-`
 
 function CommunityNote({ url, extension }: { url: string; extension?: Extension }) {
-  assert(url, 'The `url` prop is required')
+  assert(url, 'url missing')
   const pageContext = usePageContext()
   const toolName = parseMarkdownMini(pageContext.resolved.pageTitle!)
   return (
