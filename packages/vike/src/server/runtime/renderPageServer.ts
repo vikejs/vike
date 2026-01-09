@@ -1,8 +1,10 @@
 import '../assertEnvServer.js'
 
 export { renderPageServer }
+export { getRequestTag }
 export type { PageContextInit }
 export type { PageContextBegin }
+export type { RequestTag }
 
 import { renderPageServerAfterRoute } from './renderPageServer/renderPageServerAfterRoute.js'
 import {
@@ -186,7 +188,7 @@ async function renderPageServerEntryRecursive(
   globalContext: GlobalContextServerInternal,
   requestId: number,
 ): Promise<PageContextAfterRender> {
-  catchInfiniteLoop('renderPageServerEntryRecursive()')
+  catchInfiniteLoop(`[${getRequestTag(requestId)}] renderPageServerEntryRecursive()`)
 
   const pageContextNominalPageBegin = fork(pageContextBegin)
 
@@ -677,4 +679,9 @@ function assertPageContextFinish(pageContextFinish: PageContextAfterRender) {
     const contentType = headers.get('Content-Type')
     assert(contentType?.toLowerCase() === 'application/json')
   }
+}
+
+type RequestTag = ReturnType<typeof getRequestTag>
+function getRequestTag(requestId: number) {
+  return `request-${requestId}` as const
 }
