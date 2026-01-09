@@ -25,7 +25,7 @@ function catchInfiniteLoop(functionName: `${string}()`) {
     if (elapsedTime > time) delete trackers[key]
   })
 
-  const tracker: Tracker = (trackers[functionName] ??= createTracker(now))
+  const tracker = (trackers[functionName] ??= { count: 0, startTime: now })
 
   // Count
   tracker.count++
@@ -42,12 +42,4 @@ function catchInfiniteLoop(functionName: `${string}()`) {
     assertWarning(false, msg, { onlyOnce: false, showStackTrace: true })
     tracker.warned = true
   }
-}
-
-function createTracker(now: number): Tracker {
-  const tracker = {
-    count: 0,
-    start: now,
-  }
-  return tracker
 }
