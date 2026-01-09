@@ -9,8 +9,8 @@ type Extension = false | ExtensionName
 type ExtensionName = `vike-${UiFramework}-${string}`
 
 function CommunityNote({ url, extension }: { url: string; extension?: Extension }) {
-  assert(url, 'url missing')
   const pageContext = usePageContext()
+  assert(url, 'url missing')
   const toolName = parseMarkdownMini(pageContext.resolved.pageTitle!)
   return (
     <>
