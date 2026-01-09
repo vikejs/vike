@@ -24,18 +24,18 @@ function CommunityNote({ url, extension }: { url: string; extension?: Extension 
         </a>{' '}
         to improve it.
       </Contribution>
-      {extension !== undefined && <ExtensionNote toolTitle={toolName} extension={extension} />}
+      {extension !== undefined && <ExtensionNote toolName={toolName} extension={extension} />}
     </>
   )
 }
 
-function ExtensionNote({ toolTitle, extension }: { toolTitle: React.ReactNode; extension: Extension }) {
+function ExtensionNote({ toolName, extension }: { toolName: React.ReactNode; extension: Extension }) {
   if (extension === false) {
     return (
       <Contribution>
-        There isn't a <Link href="/extensions">Vike extension</Link> for {toolTitle} yet, but{' '}
+        There isn't a <Link href="/extensions">Vike extension</Link> for {toolName} yet, but{' '}
         <a href="https://github.com/vikejs/vike/issues/1715">contributions welcome to create one</a>. In the meantime,
-        you can manually integrate {toolTitle}.
+        you can manually integrate {toolName}.
       </Contribution>
     )
   }
