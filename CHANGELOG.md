@@ -20,7 +20,10 @@
 * [+onHookCall](http://vike.dev/onHookCall) ([#2978](https://github.com/vikejs/vike/issues/2978)) ([6161324](https://github.com/vikejs/vike/commit/6161324d78745e6a76ed503714df38f3ea4f36ed))
 
 
-### BREAKING CHANGES
+### MINOR BREAKING CHANGES
+
+> [!NOTE]
+> We recommend ignoring `MINOR BREAKING CHANGES` unless this version breaks your app, see [Vike Versioning](https://vike.dev/versioning).
 
 * If uncaught errors are logged twice, stop logging them in your `uncaughtException` and `unhandledRejection` handlers. (Vike now always handles these and logs uncaught errors.)
 
