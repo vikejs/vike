@@ -1,3 +1,31 @@
+## [0.4.251](https://github.com/vikejs/vike/compare/v0.4.250...v0.4.251) (2026-01-11)
+
+
+### Bug Fixes
+
+* @brillout/vite-plugin-server-entry@^0.7.16 ([8e5a6cd](https://github.com/vikejs/vike/commit/8e5a6cd2ec71fd1abd87d114b4709fea6726ce73))
+* @brillout/vite-plugin-server-entry@^0.7.17 (fix [#3006](https://github.com/vikejs/vike/issues/3006)) ([#3009](https://github.com/vikejs/vike/issues/3009)) ([e88cc77](https://github.com/vikejs/vike/commit/e88cc774a7963fb6f191306b2d7c1bbad50ff651))
+* avoid server shut down upon uncaught errors ([57b9979](https://github.com/vikejs/vike/commit/57b997978397389f20ff36ffb0b855368c8c8534))
+* callable +prerender ([#3002](https://github.com/vikejs/vike/issues/3002)) ([#3007](https://github.com/vikejs/vike/issues/3007)) ([2686732](https://github.com/vikejs/vike/commit/26867324e3ad040041126b9b89405cc2172aed12))
+* don't force optimize upon Vite restart ([413c0ec](https://github.com/vikejs/vike/commit/413c0ecd13b13e7f412cfb3154bee8ce8ae202a6))
+* fix HTTP response upon server-side error without error page ([7401d2a](https://github.com/vikejs/vike/commit/7401d2a1cc247ec9454d4b7bddf9cd2c04257f05))
+* fix infinite loop catcher (fix [#3028](https://github.com/vikejs/vike/issues/3028)) ([#3029](https://github.com/vikejs/vike/issues/3029)) ([7552006](https://github.com/vikejs/vike/commit/755200652879891593b4c385832a7cd1ca8f0339))
+* fix skipping .ssr.js from server-only hooks check ([193dea3](https://github.com/vikejs/vike/commit/193dea3bb494c0a75d86f73c2b9cfbaf0e6b9b34))
+* trigger Vite reload when Vite config changed via Vike config ([#3017](https://github.com/vikejs/vike/issues/3017)) ([106e738](https://github.com/vikejs/vike/commit/106e738bfd37dbf56f1b3f4efbd951da59e0790c))
+* validate vite.build.ssr (fix [#3010](https://github.com/vikejs/vike/issues/3010)) ([#3021](https://github.com/vikejs/vike/issues/3021)) ([daad3d1](https://github.com/vikejs/vike/commit/daad3d18eede56a80fabb0cf2612c4e082691d85))
+
+
+### Features
+
+* [+onHookCall](http://vike.dev/onHookCall) ([#2978](https://github.com/vikejs/vike/issues/2978)) ([6161324](https://github.com/vikejs/vike/commit/6161324d78745e6a76ed503714df38f3ea4f36ed))
+
+
+### BREAKING CHANGES
+
+* If uncaught errors are logged twice, stop logging them in your `uncaughtException` and `unhandledRejection` handlers. (Vike now always handles these and logs uncaught errors.)
+
+
+
 ## [0.4.250](https://github.com/vikejs/vike/compare/v0.4.249...v0.4.250) (2025-12-22)
 
 
