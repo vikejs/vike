@@ -1,3 +1,12 @@
+## [0.4.252](https://github.com/vikejs/vike/compare/v0.4.251...v0.4.252) (2026-01-12)
+
+
+### Bug Fixes
+
+* fix pageContext.dangerouslyUseInternals type ([6669f13](https://github.com/vikejs/vike/commit/6669f13af51ab64479148e14e5a7fdb569939cd9))
+
+
+
 ## [0.4.251](https://github.com/vikejs/vike/compare/v0.4.250...v0.4.251) (2026-01-11)
 
 
