@@ -15,7 +15,7 @@ import { assert, assertUsage, assertWarning } from '../utils/assert.js'
 import { getPropAccessNotation } from '../utils/getPropAccessNotation.js'
 import { isBrowser } from '../utils/isBrowser.js'
 
-type ObjProxy<Obj> = {
+type ObjProxy<Obj> = Obj & {
   _isProxyObject: true
   _originalObject: Obj
 }
@@ -25,11 +25,10 @@ function getPublicProxy<Obj extends Record<string | symbol, unknown>>(
   objName: 'pageContext' | 'globalContext' | 'prerenderContext' | 'vikeConfig',
   skipOnInternalProp?: boolean,
   fallback?: (prop: string | symbol) => unknown,
-): Obj &
-  ObjProxy<Obj> & {
-    /** https://vike.dev/warning/internals */
-    dangerouslyUseInternals: DangerouslyUseInternals<Obj>
-  } {
+): ObjProxy<Obj> & {
+  /** https://vike.dev/warning/internals */
+  dangerouslyUseInternals: DangerouslyUseInternals<Obj>
+} {
   return new Proxy(obj, {
     get: (_: any, prop: string | symbol) => getProp(prop, obj, objName, skipOnInternalProp, fallback),
   })
