@@ -131,7 +131,7 @@ function HeroTagline({
               taglineSecondary
             ) : (
               <>
-                Composable framework for building (advanced) applications, with blazing-fast{' '}
+                Composable framework to build (advanced) applications, with blazing-fast{' '}
                 <LinkTagline href="/new" color="#fe9618">
                   quick&nbsp;start
                 </LinkTagline>
