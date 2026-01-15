@@ -7,7 +7,7 @@
     "server:prod": "cross-env NODE_ENV=production tsx ./express-entry.ts"
   },
   "dependencies": {
-    "@universal-middleware/express": "^0.4.22",
+    "@universal-middleware/express": "^0.4.23",
     "express": "^5.2.1",
     "@vitejs/plugin-react": "^4.7.0",
     "react": "^19.2.1",
