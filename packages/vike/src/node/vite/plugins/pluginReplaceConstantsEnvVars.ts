@@ -27,18 +27,18 @@ const PUBLIC_ENV_ALLOWLIST = [
 //   - Or stop using Vite's `mode` implementation and have Vike implement its own `mode` feature? (So that the only dependencies are `$ vike build --mode staging` and `$ MODE=staging vike build`.)
 
 // === Rolldown filter
-const skipNodeModules = '/node_modules/'
 const skipIrrelevant = 'import.meta.env.'
 const filterRolldown = {
+  /* We don't do that, because vike-react-sentry uses import.meta.env.PUBLIC_ENV__SENTRY_DSN
   id: {
-    exclude: `**${skipNodeModules}**`,
+    exclude: `**${'/node_modules/'}**`,
   },
+  */
   code: {
     include: skipIrrelevant,
   },
 }
-const filterFunction = (id: string, code: string) => {
-  if (id.includes(skipNodeModules)) return false
+const filterFunction = (code: string) => {
   if (!code.includes(skipIrrelevant)) return false
   return true
 }
@@ -72,9 +72,7 @@ function pluginReplaceConstantsEnvVars(): Plugin[] {
         handler(code, id, options) {
           id = normalizeId(id)
           assertPosixPath(id)
-          assertPosixPath(config.root)
-          if (!id.startsWith(config.root)) return // skip linked dependencies
-          assert(filterFunction(id, code))
+          assert(filterFunction(code))
 
           const isBuild = config.command === 'build'
           const isClientSide = !isViteServerSide_extraSafe(config, this.environment, options)
