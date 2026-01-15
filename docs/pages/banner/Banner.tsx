@@ -41,7 +41,7 @@ function BannerMinimalCommon({
 function BannerSlides() {
   return (
     <BannerCommon
-      taglineSecondary="Composable framework for building advanced applications"
+      taglineSecondary="Composable framework for building (advanced) applications"
       taglineSecondaryStyle={{ marginTop: -20 }}
       taglineStyle={{ marginTop: -20 }}
       style={{ background: 'white' }}
