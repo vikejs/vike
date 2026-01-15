@@ -153,7 +153,7 @@
     "node": ">=20.19.0"
   },
   "license": "MIT",
-  "description": "The Framework *You* Control - Next.js & Nuxt alternative for unprecedented flexibility and dependability.",
+  "description": "(Replaces Next.js/Nuxt) 🔨 Composable framework to build (advanced) applications with flexibility and stability.",
   "keywords": [
     "vite-plugin",
     "ssr",
