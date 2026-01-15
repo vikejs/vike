@@ -21,7 +21,7 @@ import path from 'node:path'
 import crypto from 'node:crypto'
 import pc from '@brillout/picocolors'
 import { import_ } from '@brillout/import'
-import { assert, assertWarning, assertUsage } from '../../../../utils/assert.js'
+import { assert, assertWarning } from '../../../../utils/assert.js'
 import { assertIsNotProductionRuntime } from '../../../../utils/assertSetup.js'
 import { createDebug } from '../../../../utils/debug.js'
 import { genPromise } from '../../../../utils/genPromise.js'
@@ -69,10 +69,12 @@ async function transpileAndExecuteFile(
   const { promise, resolve } = genPromise<FileExports>()
   esbuildCache.transpileCache[filePathAbsoluteFilesystem] = promise
 
+  /* We tolerate .tsx so that a file can be both a runtime and config file (`meta.env.config === true && meta.env.server === true`), e.g. https://github.com/brillout/docpress/issues/86
   assertUsage(
     isPlainScriptFile(filePathAbsoluteFilesystem),
     `${filePathToShowToUserResolved} has file extension .${fileExtension} but a config file can only be a JavaScript/TypeScript file`,
   )
+  */
   const isHeader = isHeaderFile(filePathAbsoluteFilesystem)
   if (isHeader) {
     assertWarning(
