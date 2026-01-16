@@ -1,4 +1,4 @@
-import { Link } from '@brillout/docpress'
+import { Link, Warning } from '@brillout/docpress'
 import { ConfigSpec } from '../../components'
 
 <ConfigSpec
@@ -15,6 +15,10 @@ type Hook = {
 }
 ```
 </ConfigSpec>
+
+<Warning>
+It's in beta: breaking changes may occur with any version update.
+</Warning>
 
 Hook called whenever a Vike hook is called. Useful for instrumentation (e.g. Sentry, OpenTelemetry).
 
