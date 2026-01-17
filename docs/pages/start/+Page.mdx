@@ -1,5 +1,4 @@
 import { Link } from '@brillout/docpress'
-import { BatiCmd } from './BatiCmd.tsx'
 import { UiFrameworkExtension } from '../../components'
 import './style.css'
 
@@ -20,7 +19,13 @@ Use <Link href="/new">vike.dev/new</Link> to scaffold a new Vike app.
 
 You can skip exploring the scaffolder's UI for now and directly run the following command instead:
 
-<BatiCmd />
+```shell
+npm create @batijs/app --react
+# Or:
+npm create @batijs/app --vue
+# Or:
+npm create @batijs/app --solid
+```
 
 > This scaffolds a Vike app that uses <UiFrameworkExtension name /> which are the official React, Vue, and Solid integrations maintained by the Vike team.
 >
@@ -28,11 +33,11 @@ You can skip exploring the scaffolder's UI for now and directly run the followin
 
 Then:
 
-```bash
+```shell
 # Install dependencies:
-pnpm install
+npm install
 # Start your app:
-pnpm run dev
+npm run dev
 ```
 
 You can now go to [localhost:3000](http://localhost:3000) <span class="gray">(or [localhost:3001](http://localhost:3001) if `localhost:3000` is busy)</span>.

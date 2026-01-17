@@ -12,31 +12,11 @@ Guide to migrate from <Link href="/vike-server">`vike-server`</Link> to <Link hr
 
 ## 1. Update dependencies
 
-<Tabs>
-  <TabList>
-    <Tab>npm</Tab>
-    <Tab>pnpm</Tab>
-    <Tab>yarn</Tab>
-  </TabList>
-  <TabPanel>
-    ```shell
-    npm uninstall vike-server
-    npm i vike-photon vike@latest
-    ```
-  </TabPanel>
-  <TabPanel>
-    ```shell
-    pnpm remove vike-server
-    pnpm add vike-photon vike@latest
-    ```
-  </TabPanel>
-  <TabPanel>
-    ```shell
-    yarn remove vike-server
-    yarn add vike-photon vike@latest
-    ```
-  </TabPanel>
-</Tabs>
+
+```shell
+npm uninstall vike-server
+npm i vike-photon vike@latest
+```
 
 > `vike-photon` requires `vike >= 0.4.239`
 
@@ -89,29 +69,9 @@ export default {
     <Tab>Elysia</Tab>
   </TabList>
   <TabPanel>
-    {/* Hono */}
-    <Tabs>
-      <TabList>
-        <Tab>npm</Tab>
-        <Tab>pnpm</Tab>
-        <Tab>yarn</Tab>
-      </TabList>
-      <TabPanel>
-        ```shell
-        npm i @photonjs/hono
-        ```
-      </TabPanel>
-      <TabPanel>
-        ```shell
-        pnpm add @photonjs/hono
-        ```
-      </TabPanel>
-      <TabPanel>
-        ```shell
-        yarn add @photonjs/hono
-        ```
-      </TabPanel>
-    </Tabs>
+    ```shell
+    npm i @photonjs/hono
+    ```
 
     ```ts
     // server/index.ts
@@ -125,29 +85,9 @@ export default {
     ```
   </TabPanel>
   <TabPanel>
-    {/* Express.js */}
-    <Tabs>
-      <TabList>
-        <Tab>npm</Tab>
-        <Tab>pnpm</Tab>
-        <Tab>yarn</Tab>
-      </TabList>
-      <TabPanel>
-        ```shell
-        npm i @photonjs/express
-        ```
-      </TabPanel>
-      <TabPanel>
-        ```shell
-        pnpm add @photonjs/express
-        ```
-      </TabPanel>
-      <TabPanel>
-        ```shell
-        yarn add @photonjs/express
-        ```
-      </TabPanel>
-    </Tabs>
+    ```shell
+    npm i @photonjs/express
+    ```
 
     ```ts
     // server/index.ts
@@ -161,29 +101,9 @@ export default {
     ```
   </TabPanel>
   <TabPanel>
-    {/* Fastify */}
-    <Tabs>
-      <TabList>
-        <Tab>npm</Tab>
-        <Tab>pnpm</Tab>
-        <Tab>yarn</Tab>
-      </TabList>
-      <TabPanel>
-        ```shell
-        npm i @photonjs/fastify
-        ```
-      </TabPanel>
-      <TabPanel>
-        ```shell
-        pnpm add @photonjs/fastify
-        ```
-      </TabPanel>
-      <TabPanel>
-        ```shell
-        yarn add @photonjs/fastify
-        ```
-      </TabPanel>
-    </Tabs>
+    ```shell
+    npm i @photonjs/fastify
+    ```
 
     ```ts
     // server/index.ts
@@ -197,29 +117,9 @@ export default {
     ```
   </TabPanel>
   <TabPanel>
-    {/* H3 */}
-    <Tabs>
-      <TabList>
-        <Tab>npm</Tab>
-        <Tab>pnpm</Tab>
-        <Tab>yarn</Tab>
-      </TabList>
-      <TabPanel>
-        ```shell
-        npm i @photonjs/h3
-        ```
-      </TabPanel>
-      <TabPanel>
-        ```shell
-        pnpm add @photonjs/h3
-        ```
-      </TabPanel>
-      <TabPanel>
-        ```shell
-        yarn add @photonjs/h3
-        ```
-      </TabPanel>
-    </Tabs>
+    ```shell
+    npm i @photonjs/h3
+    ```
 
     ```ts
     // server/index.ts
@@ -233,29 +133,9 @@ export default {
     ```
   </TabPanel>
   <TabPanel>
-    {/* Elysia */}
-    <Tabs>
-      <TabList>
-        <Tab>npm</Tab>
-        <Tab>pnpm</Tab>
-        <Tab>yarn</Tab>
-      </TabList>
-      <TabPanel>
-        ```shell
-        npm i @photonjs/elysia
-        ```
-      </TabPanel>
-      <TabPanel>
-        ```shell
-        pnpm add @photonjs/elysia
-        ```
-      </TabPanel>
-      <TabPanel>
-        ```shell
-        yarn add @photonjs/elysia
-        ```
-      </TabPanel>
-    </Tabs>
+    ```shell
+    npm i @photonjs/elysia
+    ```
 
     ```ts
     // server/index.ts
@@ -274,31 +154,10 @@ export default {
 
 > This step is only required if you use `vike-cloudflare`.
 
-<Tabs>
-  <TabList>
-    <Tab>npm</Tab>
-    <Tab>pnpm</Tab>
-    <Tab>yarn</Tab>
-  </TabList>
-  <TabPanel>
-    ```shell
-    npm uninstall vike-cloudflare
-    npm i @photonjs/cloudflare
-    ```
-  </TabPanel>
-  <TabPanel>
-    ```shell
-    pnpm remove vike-cloudflare
-    pnpm add @photonjs/cloudflare
-    ```
-  </TabPanel>
-  <TabPanel>
-    ```shell
-    yarn remove vike-cloudflare
-    yarn add @photonjs/cloudflare
-    ```
-  </TabPanel>
-</Tabs>
+```shell
+npm uninstall vike-cloudflare
+npm i @photonjs/cloudflare
+```
 
 ```ts
 // pages/+config.ts
@@ -321,32 +180,10 @@ export default {
 
 > This step is only required if you use `vite-plugin-vercel`.
 
-<Tabs>
-  <TabList>
-    <Tab>npm</Tab>
-    <Tab>pnpm</Tab>
-    <Tab>yarn</Tab>
-  </TabList>
-  <TabPanel>
-    ```shell
-    npm uninstall vite-plugin-vercel
-    npm i @photonjs/vercel
-    ```
-  </TabPanel>
-  <TabPanel>
-    ```shell
-    pnpm remove vite-plugin-vercel
-    pnpm add @photonjs/vercel
-    ```
-  </TabPanel>
-  <TabPanel>
-    ```shell
-    yarn remove vite-plugin-vercel
-    yarn add @photonjs/vercel
-    ```
-  </TabPanel>
-</Tabs>
-
+```shell
+npm uninstall vite-plugin-vercel
+npm i @photonjs/vercel
+```
 
 ```ts
 // vite.config.ts
