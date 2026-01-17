@@ -6,7 +6,7 @@ import type { UserConfig } from 'vite'
 
 export default (() => {
   const vikeConfig = getVikeConfig()
-  // assert(vikeConfig.pages['/pages/markdown']!.route === '/markdown')
+  assert(vikeConfig.pages['/pages/markdown']!.route === '/markdown')
   return {
     // TEST: using +vite to add Vite plugin
     plugins: [mdx()],
