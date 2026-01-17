@@ -8,7 +8,7 @@ on:
 jobs:
   send-discord-message:
     # 'skipped' means the `if: ` condition wasn't fulfilled
-    if: ${{ github.event.workflow_run.conclusion != 'skipped'  }}
+    if: ${{ github.event.workflow_run.conclusion != 'skipped' }}
     runs-on: ubuntu-latest
     env:
       DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
