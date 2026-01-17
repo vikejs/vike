@@ -1,5 +1,4 @@
 import { Link, Warning } from '@brillout/docpress'
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import '../../components/tabs.css'
 import { UseScaffolder } from '../../components'
 import { Example } from '../../components'
@@ -21,28 +20,9 @@ import { PhotonBuiltInServer, PhotonBetaWarning, PhotonAutoLoad, PhotonDeploymen
 
 #### 1. Install
 
-<Tabs>
-  <TabList>
-    <Tab>npm</Tab>
-    <Tab>pnpm</Tab>
-    <Tab>yarn</Tab>
-  </TabList>
-  <TabPanel>
-    ```shell
-    npm i vike-photon @photonjs/vercel
-    ```
-  </TabPanel>
-  <TabPanel>
-    ```shell
-    pnpm add vike-photon @photonjs/vercel
-    ```
-  </TabPanel>
-  <TabPanel>
-    ```shell
-    yarn add vike-photon @photonjs/vercel
-    ```
-  </TabPanel>
-</Tabs>
+```shell
+npm i vike-photon @photonjs/vercel
+```
 
 ```ts
 // pages/+config.ts

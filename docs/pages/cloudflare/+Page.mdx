@@ -1,6 +1,5 @@
 import { RepoLink, Link, FileAdded, Warning } from '@brillout/docpress'
 import { Example, UseScaffolder } from '../../components'
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import '../../components/tabs.css'
 import Examples from './Examples.mdx'
 import { PhotonBuiltInServer, PhotonBetaWarning, PhotonAutoLoad, PhotonDeploymentProviderIntroPart1, PhotonDeploymentProviderIntroPart2 } from '../vike-photon/components'
@@ -26,28 +25,9 @@ import { PhotonBuiltInServer, PhotonBetaWarning, PhotonAutoLoad, PhotonDeploymen
 
 #### 1. Install
 
-<Tabs>
-  <TabList>
-    <Tab>npm</Tab>
-    <Tab>pnpm</Tab>
-    <Tab>yarn</Tab>
-  </TabList>
-  <TabPanel>
-    ```shell
-    npm i wrangler vike-photon @photonjs/cloudflare
-    ```
-  </TabPanel>
-  <TabPanel>
-    ```shell
-    pnpm add wrangler vike-photon @photonjs/cloudflare
-    ```
-  </TabPanel>
-  <TabPanel>
-    ```shell
-    yarn add wrangler vike-photon @photonjs/cloudflare
-    ```
-  </TabPanel>
-</Tabs>
+```shell
+npm i wrangler vike-photon @photonjs/cloudflare
+```
 
 ```ts
 // pages/+config.ts
@@ -120,28 +100,9 @@ env.LOG_LEVEL
 ```
 
 > Example of using [Cloudflare D1](https://developers.cloudflare.com/d1/):
-> <Tabs>
->   <TabList>
->     <Tab>npm</Tab>
->     <Tab>pnpm</Tab>
->     <Tab>yarn</Tab>
->   </TabList>
->   <TabPanel>
->     ```shell
->     npm create vike@latest --- --react --hono --drizzle --cloudflare
->     ```
->   </TabPanel>
->   <TabPanel>
->     ```shell
->     pnpm create vike@latest --react --hono --drizzle --cloudflare
->     ```
->   </TabPanel>
->   <TabPanel>
->     ```shell
->     yarn create vike@latest --react --hono --drizzle --cloudflare
->     ```
->   </TabPanel>
-> </Tabs>
+> ```shell
+> npm create vike@latest -- --react --hono --drizzle --cloudflare
+> ```
 >
 > Or go to <Link href="/new">vike.dev/new</Link> and select `Cloudflare` with an ORM.
 
@@ -195,28 +156,9 @@ env.LOG_LEVEL
 
 If you use TypeScript, run [`wrangler types`](https://developers.cloudflare.com/workers/wrangler/commands/#types) whenever you change your Cloudflare configuration to update the `worker-configuration.d.ts` file.
 
-<Tabs>
-  <TabList>
-    <Tab>npm</Tab>
-    <Tab>pnpm</Tab>
-    <Tab>yarn</Tab>
-  </TabList>
-  <TabPanel>
-    ```shell
-    npx wrangler types
-    ```
-  </TabPanel>
-  <TabPanel>
-    ```shell
-    pnpm wrangler types
-    ```
-  </TabPanel>
-  <TabPanel>
-    ```shell
-    yarn wrangler types
-    ```
-  </TabPanel>
-</Tabs>
+```shell
+npx wrangler types
+```
 
 Then commit:
 

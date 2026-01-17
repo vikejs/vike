@@ -38,28 +38,10 @@ The entire documentation for using Photon is contained on this page, <Link href=
 
 #### 1. Install
 
-<Tabs>
-  <TabList>
-    <Tab>npm</Tab>
-    <Tab>pnpm</Tab>
-    <Tab>yarn</Tab>
-  </TabList>
-  <TabPanel>
-    ```shell
-    npm i vike-photon
-    ```
-  </TabPanel>
-  <TabPanel>
-    ```shell
-    pnpm add vike-photon
-    ```
-  </TabPanel>
-  <TabPanel>
-    ```shell
-    yarn add vike-photon
-    ```
-  </TabPanel>
-</Tabs>
+```shell
+npm i vike-photon
+```
+
 ```ts
 // pages/+config.ts
 
@@ -118,28 +100,10 @@ export default {
     <Tab>Hattip</Tab>
   </TabList>
   <TabPanel>
-    <Tabs>
-      <TabList>
-        <Tab>npm</Tab>
-        <Tab>pnpm</Tab>
-        <Tab>yarn</Tab>
-      </TabList>
-      <TabPanel>
-        ```shell
-        npm i hono @photonjs/hono
-        ```
-      </TabPanel>
-      <TabPanel>
-        ```shell
-        pnpm add hono @photonjs/hono
-        ```
-      </TabPanel>
-      <TabPanel>
-        ```shell
-        yarn add hono @photonjs/hono
-        ```
-      </TabPanel>
-    </Tabs>
+    ```shell
+    npm i hono @photonjs/hono
+    ```
+
     <FileAdded>
     ```ts
     // server/index.ts
@@ -158,28 +122,10 @@ export default {
     </FileAdded>
   </TabPanel>
   <TabPanel>
-    <Tabs>
-      <TabList>
-        <Tab>npm</Tab>
-        <Tab>pnpm</Tab>
-        <Tab>yarn</Tab>
-      </TabList>
-      <TabPanel>
-        ```shell
-        npm i express @photonjs/express
-        ```
-      </TabPanel>
-      <TabPanel>
-        ```shell
-        pnpm add express @photonjs/express
-        ```
-      </TabPanel>
-      <TabPanel>
-        ```shell
-        yarn add express @photonjs/express
-        ```
-      </TabPanel>
-    </Tabs>
+    ```shell
+    npm i express @photonjs/express
+    ```
+
     <FileAdded>
     ```ts
     // server/index.ts
@@ -198,28 +144,10 @@ export default {
     </FileAdded>
   </TabPanel>
   <TabPanel>
-    <Tabs>
-      <TabList>
-        <Tab>npm</Tab>
-        <Tab>pnpm</Tab>
-        <Tab>yarn</Tab>
-      </TabList>
-      <TabPanel>
-        ```shell
-        npm i fastify fastify-raw-body @photonjs/fastify
-        ```
-      </TabPanel>
-      <TabPanel>
-        ```shell
-        pnpm add fastify fastify-raw-body @photonjs/fastify
-        ```
-      </TabPanel>
-      <TabPanel>
-        ```shell
-        yarn add fastify fastify-raw-body @photonjs/fastify
-        ```
-      </TabPanel>
-    </Tabs>
+    ```shell
+    npm i fastify fastify-raw-body @photonjs/fastify
+    ```
+
     <FileAdded>
     ```ts
     // server/index.ts
@@ -244,28 +172,10 @@ export default {
     </FileAdded>
   </TabPanel>
   <TabPanel>
-    <Tabs>
-      <TabList>
-        <Tab>npm</Tab>
-        <Tab>pnpm</Tab>
-        <Tab>yarn</Tab>
-      </TabList>
-      <TabPanel>
-        ```shell
-        npm i h3 @photonjs/h3
-        ```
-      </TabPanel>
-      <TabPanel>
-        ```shell
-        pnpm add h3 @photonjs/h3
-        ```
-      </TabPanel>
-      <TabPanel>
-        ```shell
-        yarn add h3 @photonjs/h3
-        ```
-      </TabPanel>
-    </Tabs>
+    ```shell
+    npm i h3 @photonjs/h3
+    ```
+
     <FileAdded>
     ```ts
     // server/index.ts
@@ -284,28 +194,10 @@ export default {
     </FileAdded>
   </TabPanel>
   <TabPanel>
-    <Tabs>
-      <TabList>
-        <Tab>npm</Tab>
-        <Tab>pnpm</Tab>
-        <Tab>yarn</Tab>
-      </TabList>
-      <TabPanel>
-        ```shell
-        npm i elysia @photonjs/elysia
-        ```
-      </TabPanel>
-      <TabPanel>
-        ```shell
-        pnpm add elysia @photonjs/elysia
-        ```
-      </TabPanel>
-      <TabPanel>
-        ```shell
-        yarn add elysia @photonjs/elysia
-        ```
-      </TabPanel>
-    </Tabs>
+    ```shell
+    npm i elysia @photonjs/elysia
+    ```
+
     <FileAdded>
     ```ts
     // server/index.ts
@@ -324,41 +216,23 @@ export default {
     </FileAdded>
   </TabPanel>
   <TabPanel>
-    <Tabs>
-      <TabList>
-        <Tab>npm</Tab>
-        <Tab>pnpm</Tab>
-        <Tab>yarn</Tab>
-      </TabList>
-      <TabPanel>
-        ```shell
-        npm i @hattip/router @photonjs/hattip
-        ```
-      </TabPanel>
-      <TabPanel>
-        ```shell
-        pnpm add @hattip/router @photonjs/hattip
-        ```
-      </TabPanel>
-      <TabPanel>
-        ```shell
-        yarn add @hattip/router @photonjs/hattip
-        ```
-      </TabPanel>
-    </Tabs>
+    ```shell
+    npm i @hattip/router @photonjs/hattip
+    ```
+
     ```ts
     // server/index.ts
 
     import { createRouter } from '@hattip/router'
-    import { apply, serve } from '@photonjs/hattip'// [!code ++]
+    import { apply, serve } from '@photonjs/hattip' // [!code ++]
 
     function startServer() {
       const router = createRouter()
-      apply(router)// [!code ++]
-      return serve(router)// [!code ++]
+      apply(router) // [!code ++]
+      return serve(router) // [!code ++]
     }
 
-    export default startServer()// [!code ++]
+    export default startServer() // [!code ++]
     ```
   </TabPanel>
 </Tabs>
