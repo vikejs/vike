@@ -11,9 +11,9 @@ Render components only on the client-side.
 
 <TreeShaking description={<>The children of <code>{'<ClientOnly>'}</code> are automatically removed and never loaded on the server.</>}>
 ```jsx
-import { SomeComponent } from './SomeComponent'// [!code --]
+import { SomeComponent } from './SomeComponent' // [!code --]
 <ClientOnly fallback={<p>Loading...</p>}>
-  <SomeComponent />// [!code --]
+  <SomeComponent /> // [!code --]
 </ClientOnly>
 ```
 
