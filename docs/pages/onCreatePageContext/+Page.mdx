@@ -1,10 +1,7 @@
 import { Link } from '@brillout/docpress'
 import { ConfigSpec } from '../../components'
 
-<ConfigSpec
-  env="client, server"
-  cumulative
-/>
+<ConfigSpec env="client, server" cumulative />
 
 Hook called when the <Link href="/pageContext">`pageContext` object</Link> is created.
 
@@ -18,6 +15,7 @@ export async function onCreatePageContext(pageContext: PageContext) {
   // Server or client — pageContext was just created
 }
 ```
+
 ```ts
 // pages/+onCreatePageContext.server.ts
 // Environment: server
@@ -28,6 +26,7 @@ export async function onCreatePageContext(pageContext: PageContextServer) {
   // Server only — pageContext was just created
 }
 ```
+
 ```ts
 // pages/+onCreatePageContext.client.ts
 // Environment: client
@@ -38,20 +37,23 @@ export async function onCreatePageContext(pageContext: PageContextClient) {
   // Client only — pageContext was just created
 }
 ```
+
 > See also:
+>
 > - <Link href="/file-env" />
 
 > You can also define two separate hooks (`+onCreatePageContext.server.js` and `+onCreatePageContext.client.js`) instead of a single `+onCreatePageContext.js` hook.
 
 The `onCreatePageContext()` hook is called right after <Link href="/routing">routing</Link>, see:
+
 - <Link href="/hooks#lifecycle" />
 - <Link href="/pageContext#lifecycle" />
 
 You can define multiple `onCreatePageContext()` hooks that apply to different groups of pages (or just a single page), see <Link href="/config#inheritance"/>.
 
 See also:
-- <Link href="/onCreateGlobalContext" />
 
+- <Link href="/onCreateGlobalContext" />
 
 ## Use case: initialization
 
@@ -76,7 +78,6 @@ declare global {
 }
 ```
 
-
 ## Use case: computed properties
 
 Defining a `pageContext` property derived from multiple other properties:
@@ -88,29 +89,27 @@ Defining a `pageContext` property derived from multiple other properties:
 import type { PageContextServer } from 'vike/types'
 
 export async function onCreatePageContext(pageContext: PageContextServer) {
-  pageContext.pageURLs =
-    pageContext.globalContext.pages
-    .map(page => ({
-      url: page.route,
-      isActive: page.route === pageContext.urlParsed.pathname
-    }))
+  pageContext.pageURLs = pageContext.globalContext.pages.map((page) => ({
+    url: page.route,
+    isActive: page.route === pageContext.urlParsed.pathname,
+  }))
 }
 
 declare global {
   namespace Vike {
     // We extend PageContext instead of PageContextServer because pageURLs is passed to the client
     interface PageContext {
-      pageURLs: { url: string, isActive: boolean }[]
+      pageURLs: { url: string; isActive: boolean }[]
     }
   }
 }
 ```
 
 > See also:
+>
 > - <Link href="/globalContext#pages">API > `globalContext.pages`</Link>
 > - <Link href="/pageContext#urlParsed">API > `pageContext.urlParsed`</Link>
 > - <Link href="/markdown#with-a-custom-setting-eager" doNotInferSectionTitle />
-
 
 ## Use case: store
 
@@ -120,7 +119,7 @@ Initializing a <Link href="/store">store</Link> on the server-side:
 // pages/+onCreatePageContext.ssr.ts
 // Environment: server
 
-import { Store } from 'aweomse-store'
+import { Store } from 'awesome-store'
 import type { PageContextServer } from 'vike/types'
 
 // Note how we use `.ssr.js` instead of `.server.js` — this hook only runs during SSR,
@@ -142,9 +141,9 @@ declare global {
 On the client-side, the store is typically initialized by using a <Link href="/onCreateGlobalContext" noBreadcrumb/>.
 
 See also:
- - <Link href="/onCreateGlobalContext#use-case-store" doNotInferSectionTitle />
- - <Link href="/store#manual-integration" />
 
+- <Link href="/onCreateGlobalContext#use-case-store" doNotInferSectionTitle />
+- <Link href="/store#manual-integration" />
 
 ## See also
 
