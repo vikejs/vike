@@ -10,7 +10,7 @@ import {
   DocumentHtml,
   dangerouslySkipEscape,
 } from './html/renderHtml.js'
-import { getHookFromPageContext, type Hook } from '../../../shared-server-client/hooks/getHook.js'
+import { getHookFromPageContext, type HookInternal } from '../../../shared-server-client/hooks/getHook.js'
 import { isPromise } from '../../../utils/isPromise.js'
 import { isCallable } from '../../../utils/isCallable.js'
 import { assert, assertUsage, assertWarning } from '../../../utils/assert.js'
@@ -33,7 +33,7 @@ import type { PageContextInternalServer } from '../../../types/PageContext.js'
 
 type GetPageAssets = () => Promise<PageAsset[]>
 
-type RenderHook = Hook & { hookName: HookName }
+type RenderHook = HookInternal & { hookName: HookName }
 type HookName =
   | 'onRenderHtml'
   // TO-DO/next-major-release: remove this line + remove all occurrences of string literal 'render' in source code
@@ -90,7 +90,7 @@ function getRenderHook(
 ) {
   let hookFound: RenderHook | undefined
   {
-    let hook: null | Hook
+    let hook: null | HookInternal
     let hookName: undefined | HookName = undefined
     hook = getHookFromPageContext(pageContext, 'onRenderHtml')
     if (hook) {

@@ -4,7 +4,7 @@ export { execHookOnRenderClient }
 export type { PageContextBeforeRenderClient }
 
 import { assert, assertUsage } from '../../utils/assert.js'
-import { getHookFromPageContext, type Hook } from '../../shared-server-client/hooks/getHook.js'
+import { getHookFromPageContext, type HookInternal } from '../../shared-server-client/hooks/getHook.js'
 import type { PageFile, PageContextConfig } from '../../shared-server-client/getPageFiles.js'
 import { execHookSingle } from '../../shared-server-client/hooks/execHook.js'
 import type { GlobalContextClientInternalShared } from './getGlobalContextClientInternalShared.js'
@@ -26,7 +26,7 @@ async function execHookOnRenderClient<PageContext extends PageContextBeforeRende
   pageContext: PageContext,
   getPageContextPublic: (pageContext: PageContext) => PageContext,
 ): Promise<void> {
-  let hook: null | Hook = null
+  let hook: null | HookInternal = null
 
   {
     const renderHook = getHookFromPageContext(pageContext, 'render')

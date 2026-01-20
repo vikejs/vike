@@ -15,7 +15,7 @@ import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import { humanizeTime } from '../../utils/humanizeTime.js'
 import { isObject } from '../../utils/isObject.js'
 import type { PageContextClient, PageContextServer } from '../../types/PageContext.js'
-import type { Hook, HookLoc } from './getHook.js'
+import type { HookInternal, HookLoc } from './getHook.js'
 import type { PageContextConfig } from '../getPageFiles.js'
 import { getHooksFromPageConfigGlobalCumulative, getHooksFromPageContextNew } from './getHook.js'
 import type { HookName, HookNameGlobal } from '../../types/Config.js'
@@ -26,7 +26,7 @@ const globalObject = getGlobalObject('utils/execHook.ts', {
   pageContext: null as null | PageContextExecHook,
 })
 
-type HookWithResult = Hook & {
+type HookWithResult = HookInternal & {
   hookReturn: unknown
 }
 
@@ -56,7 +56,7 @@ async function execHookGlobal(
 }
 
 async function execHookList<PageContext extends PageContextExecHook>(
-  hooks: Hook[],
+  hooks: HookInternal[],
   pageContext: PageContext,
   getPageContextPublic: (pageContext: PageContext) => PageContext,
 ) {
@@ -77,7 +77,7 @@ async function execHookList<PageContext extends PageContextExecHook>(
 }
 
 async function execHookSingle<PageContext extends PageContextExecHook>(
-  hook: Hook,
+  hook: HookInternal,
   pageContext: PageContext,
   getPageContextPublic: (pageContext: PageContext) => PageContext,
 ) {
@@ -90,7 +90,7 @@ async function execHookSingle<PageContext extends PageContextExecHook>(
 }
 
 async function execHookSingleWithReturn<PageContext extends PageContextExecHook>(
-  hook: Hook,
+  hook: HookInternal,
   pageContext: PageContext,
   getPageContextPublic: (pageContext: PageContext) => PageContext,
 ) {
@@ -105,7 +105,7 @@ function isUserHookError(err: unknown): false | HookLoc {
 }
 
 async function execHookSingleWithoutPageContext<HookReturn>(
-  hook: Omit<Hook, 'hookFn'>,
+  hook: Omit<HookInternal, 'hookFn'>,
   globalContext: GlobalContextPublicMinimum,
   hookFnCaller: () => HookReturn,
 ): Promise<HookReturn> {
@@ -115,7 +115,7 @@ async function execHookSingleWithoutPageContext<HookReturn>(
 }
 
 function execHookSingleSync<PageContext extends PageContextExecHook>(
-  hook: Omit<Hook<PageContext>, 'hookTimeout'>,
+  hook: Omit<HookInternal<PageContext>, 'hookTimeout'>,
   globalContext: GlobalContextPublicMinimum,
   pageContext: PageContext | null,
   getPageContextPublic: (pageContext: PageContext) => PageContext,
@@ -129,7 +129,7 @@ function execHookSingleSync<PageContext extends PageContextExecHook>(
 
 function execHookBaseAsync<HookReturn>(
   hookFnCaller: () => HookReturn,
-  hook: Omit<Hook, 'hookFn'>,
+  hook: Omit<HookInternal, 'hookFn'>,
   globalContext: GlobalContextPublicMinimum,
   pageContextPublic: null | PageContextExecHook,
 ): Promise<HookReturn> {
@@ -195,7 +195,7 @@ function execHookBaseAsync<HookReturn>(
 // Every execHook* function should be based on this
 function execHookBase<HookReturn>(
   hookFnCaller: () => HookReturn,
-  hook: Omit<Hook, 'hookTimeout' | 'hookFn'>,
+  hook: Omit<HookInternal, 'hookTimeout' | 'hookFn'>,
   globalContext: GlobalContextPublicMinimum,
   pageContext: PageContextExecHook | null,
 ): HookReturn | Promise<HookReturn> {

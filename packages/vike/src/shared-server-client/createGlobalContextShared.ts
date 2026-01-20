@@ -18,7 +18,7 @@ import { execHookGlobal } from './hooks/execHook.js'
 import { type GlobalContextPublicMinimum, getGlobalContextPublicShared } from './getGlobalContextPublicShared.js'
 import type { GlobalContextServerInternal } from '../server/runtime/globalContext.js'
 import type { GlobalContextClientInternal } from '../client/runtime-client-routing/getGlobalContextClientInternal.js'
-import { getHooksFromPageConfigGlobalCumulative, type Hook } from './hooks/getHook.js'
+import { getHooksFromPageConfigGlobalCumulative, type HookInternal } from './hooks/getHook.js'
 const getGlobalContextSyncErrMsg =
   "The global context isn't set yet, call getGlobalContextSync() later or use getGlobalContext() instead."
 
@@ -27,7 +27,7 @@ async function createGlobalContextShared<GlobalContextAdded extends {}, GlobalCo
   virtualFileExportsGlobalEntry: unknown,
   globalObject: {
     globalContext?: {}
-    onCreateGlobalContextHooks?: Hook<GlobalContextPublicMinimum>[]
+    onCreateGlobalContextHooks?: HookInternal<GlobalContextPublicMinimum>[]
     previousCreateGlobalContextPromise?: Promise<void>
   },
   addGlobalContext?: (globalContext: GlobalContextBase) => GlobalContextAdded,
@@ -142,8 +142,8 @@ function getAllPageIds(pageFilesAll: PageFile[], pageConfigs: PageConfigRuntime[
 }
 
 function hooksAreEqual<HookArg = GlobalContextPublicMinimum>(
-  hooks1: Hook<HookArg>[],
-  hooks2: Hook<HookArg>[],
+  hooks1: HookInternal<HookArg>[],
+  hooks2: HookInternal<HookArg>[],
 ): boolean {
   const hooksFn1 = hooks1.map((hook) => hook.hookFn)
   const hooksFn2 = hooks2.map((hook) => hook.hookFn)
