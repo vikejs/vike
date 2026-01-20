@@ -24,29 +24,29 @@ Most of the migration boils down to the following two steps.
 Move your `renderer/` hooks to `+` files:
 
 ```ts
-// /renderer/_default.page.client.ts// [!code --]
-// /renderer/+onRenderClient.ts// [!code ++]
+// /renderer/_default.page.client.ts // [!code --]
+// /renderer/+onRenderClient.ts // [!code ++]
 
-// @detype-uncomment export { render }// [!code --]
-// @detype-uncomment export { render as onRenderClient }// [!code ++]
+// @detype-uncomment export { render } // [!code --]
+// @detype-uncomment export { render as onRenderClient } // [!code ++]
 ```
 
 ```ts
-// /renderer/_default.page.server.ts// [!code --]
-// /renderer/+onRenderHtml.ts// [!code ++]
+// /renderer/_default.page.server.ts // [!code --]
+// /renderer/+onRenderHtml.ts // [!code ++]
 
-// @detype-uncomment export { render }// [!code --]
-// @detype-uncomment export { render as onRenderHtml }// [!code ++]
+// @detype-uncomment export { render } // [!code --]
+// @detype-uncomment export { render as onRenderHtml } // [!code ++]
 ```
 
 If you've defined a global `onBeforeRender()` hook and/or `passToClient`:
 
 ```ts
-// /renderer/_default.page.server.ts// [!code --]
-// /renderer/+onBeforeRender.ts// [!code ++]
+// /renderer/_default.page.server.ts // [!code --]
+// /renderer/+onBeforeRender.ts // [!code ++]
 
 // @detype-uncomment export { onBeforeRender }
-export const passToClient = ['pageProps']// [!code --]
+export const passToClient = ['pageProps'] // [!code --]
 ```
 
 <FileAdded>
@@ -92,8 +92,8 @@ export default {
 Move your error page (if you defined one):
 
 ```ts
-// /renderer/_error.page.ts// [!code --]
-// /pages/_error/+Page.ts// [!code ++]
+// /renderer/_error.page.ts // [!code --]
+// /pages/_error/+Page.ts // [!code ++]
 
 // @detype-uncomment export { Page }
 ```
@@ -102,21 +102,21 @@ Move your error page (if you defined one):
 **2. Migrate `/pages/**/*.page.*`**
 
 ```ts
-// /pages/some-page/index.page.ts// [!code --]
-// /pages/some-page/+Page.ts// [!code ++]
+// /pages/some-page/index.page.ts // [!code --]
+// /pages/some-page/+Page.ts // [!code ++]
 
 // @detype-uncomment export { Page }
 ```
 ```ts
-// /pages/some-page/index.page.server.ts// [!code --]
-// /pages/some-page/+onBeforeRender.ts// [!code ++]
+// /pages/some-page/index.page.server.ts // [!code --]
+// /pages/some-page/+onBeforeRender.ts // [!code ++]
 
 // @detype-uncomment export { onBeforeRender }
 ```
 
 ```ts
-// /pages/some-page/index.page.route.ts// [!code --]
-// /pages/some-page/+route.ts// [!code ++]
+// /pages/some-page/index.page.route.ts // [!code --]
+// /pages/some-page/+route.ts // [!code ++]
 
 // @detype-uncomment export default route
 ```
@@ -218,7 +218,7 @@ export const doNotPrerender = true
 import type { Config } from 'vike/types'
 
 export default {
-  prerender: false// [!code ++]
+  prerender: false // [!code ++]
 } satisfies Config
 ```
 

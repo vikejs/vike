@@ -33,10 +33,10 @@ npm i wrangler vike-photon @photonjs/cloudflare
 // pages/+config.ts
 
 import type { Config } from 'vike/types'
-import vikePhoton from 'vike-photon/config'// [!code ++]
+import vikePhoton from 'vike-photon/config' // [!code ++]
 
 export default {
-  extends: [vikePhoton]// [!code ++]
+  extends: [vikePhoton] // [!code ++]
 } satisfies Config
 ```
 
@@ -50,8 +50,8 @@ export default {
 {
   "scripts": {
     "dev": "vike dev",
-    "preview": "vike build && vike preview",// [!code ++]
-    "deploy": "vike build && wrangler deploy"// [!code ++]
+    "preview": "vike build && vike preview", // [!code ++]
+    "deploy": "vike build && wrangler deploy" // [!code ++]
   }
 }
 ```
@@ -173,7 +173,7 @@ Make sure TypeScript loads it:
 
 {
   "compilerOptions": {
-    "types": ["./worker-configuration.d.ts"]// [!code ++]
+    "types": ["./worker-configuration.d.ts"] // [!code ++]
  }
 }
 ```
