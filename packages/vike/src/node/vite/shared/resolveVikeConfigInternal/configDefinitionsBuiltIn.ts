@@ -139,7 +139,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     cumulative: true,
   },
   onHookCall: {
-    env: { server: true, client: true },
+    env: { server: true },
     global: true,
     cumulative: true,
   },

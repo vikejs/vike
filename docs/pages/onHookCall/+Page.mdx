@@ -2,12 +2,12 @@ import { Link, Warning } from '@brillout/docpress'
 import { ConfigSpec } from '../../components'
 
 <ConfigSpec
-  env="server, client"
+  env="server (and/or client)"
   cumulative
   global
 >
 ```ts ts-only hide-menu
-type OnHookCall = (hook: Hook, pageContext: null | PageContext) => void
+type OnHookCall = (hook: Hook, pageContext: null | PageContextServer) => void
 type Hook = {
   name: string
   filePath: string
@@ -20,29 +20,21 @@ type Hook = {
 It's in beta: breaking changes may occur with any version update.
 </Warning>
 
-Hook called whenever a Vike hook is called. Useful for instrumentation (e.g. Sentry, OpenTelemetry).
+Hook called whenever a Vike hook is called. Commonly used for instrumentation (e.g. Sentry, OpenTelemetry).
 
 ```ts
 // pages/+onHookCall.ts
-// Environment: server & client
+// Environment: server
 
-import type { Config } from 'vike/types'
+import type { Config, PageContextServer } from 'vike/types'
+type Hook = Parameters<Extract<Config['onHookCall'], Function>>[0]
 
-export const onHookCall: Config['onHookCall'] = async (hook, pageContext) => {
+export async function onHookCall(hook: Hook, pageContext: PageContextServer) {
   console.log('before', hook.name, hook.filePath)
   await hook.call()
   console.log('after', hook.name, hook.filePath)
 }
 ```
-
-The first parameter `hook` contains:
-- `hook.name` — Name of the hook being called (e.g. `'onRenderHtml'`, `'data'`, `'guard'`)
-- `hook.filePath` — File path where the hook is defined
-- `hook.call()` — Call the hook
-
-The second parameter is <Link href="/pageContext">`pageContext`</Link> or `null`.
-
-> You can access <Link href="/globalContext">`globalContext`</Link> by using <Link href="/getGlobalContext" noBreadcrumb />.
 
 > You must always call `hook.call()` and do so before any `await`.
 >
@@ -62,6 +54,17 @@ The second parameter is <Link href="/pageContext">`pageContext`</Link> or `null`
 > }
 > ```
 
+The first parameter `hook` contains:
+- `hook.name` — Name of the hook being called (e.g. `'onRenderHtml'`, `'data'`, `'guard'`)
+- `hook.filePath` — File path where the hook is defined
+- `hook.call()` — Call the hook
+
+The second parameter is <Link href="/pageContext">`pageContext`</Link> or `null`.
+
+> You can access <Link href="/globalContext">`globalContext`</Link> by using <Link href="/getGlobalContext" noBreadcrumb />.
+
+> To execute it on the client, define `+onHookCall.client.js` or `+onHookCall.shared.js` — see <Link href="/file-env" />.
+
 
 ## Use case: instrumentation
 
@@ -69,12 +72,13 @@ Instrument hooks with Sentry:
 
 ```ts
 // pages/+onHookCall.ts
-// Environment: server & client
+// Environment: server
 
 import * as Sentry from '@sentry/node'
-import type { Config } from 'vike/types'
+import type { Config, PageContextServer } from 'vike/types'
+type Hook = Parameters<Extract<Config['onHookCall'], Function>>[0]
 
-export const onHookCall: Config['onHookCall'] = async (hook, pageContext) => {
+export async function onHookCall(hook: Hook, pageContext: PageContextServer) {
   await Sentry.startSpan(
     {
       op: 'vike.hook',
@@ -92,14 +96,15 @@ Instrument hooks with OpenTelemetry:
 
 ```ts
 // pages/+onHookCall.ts
-// Environment: server & client
+// Environment: server
 
 import { trace } from '@opentelemetry/api'
-import type { Config } from 'vike/types'
+import type { Config, PageContextServer } from 'vike/types'
+type Hook = Parameters<Extract<Config['onHookCall'], Function>>[0]
 
 const tracer = trace.getTracer('vike')
 
-export const onHookCall: Config['onHookCall'] = async (hook, pageContext) => {
+export async function onHookCall(hook: Hook, pageContext: PageContextServer) {
   await tracer.startActiveSpan(hook.name, async (span) => {
     span.setAttribute('hook.filePath', hook.filePath)
     try {
@@ -119,12 +124,13 @@ See also: <Link href="/error-tracking" />
 Log all hook executions for debugging:
 
 ```ts
-// pages/+onHookCall.ts
+// pages/+onHookCall.shared.ts
 // Environment: server & client
 
-import type { Config } from 'vike/types'
+import type { Config, PageContext } from 'vike/types'
+type Hook = Parameters<Extract<Config['onHookCall'], Function>>[0]
 
-export const onHookCall: Config['onHookCall'] = async (hook, pageContext) => {
+export async function onHookCall(hook: Hook, pageContext: PageContext) {
   const start = performance.now()
   console.log(`[+${hook.name}] start`)
   try {

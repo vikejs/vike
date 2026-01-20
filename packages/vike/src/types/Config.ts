@@ -371,9 +371,7 @@ type ConfigBuiltIn = {
    *
    *  https://vike.dev/onHookCall
    */
-  onHookCall?:
-    | ((hook: HookPublic, pageContext: PageContextClient | PageContextServer | null) => void | Promise<void>)
-    | ImportStringList
+  onHookCall?: ((hook: HookPublic, pageContext: PageContextServer | null) => void | Promise<void>) | ImportStringList
 
   /** Hook for fetching data.
    *
