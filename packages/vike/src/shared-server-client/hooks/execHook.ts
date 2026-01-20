@@ -9,6 +9,7 @@ export { getPageContext_sync }
 export { providePageContext }
 export { isUserHookError }
 export type { PageContextExecHook }
+export type { HookPublic }
 
 import { assert, getProjectError, assertWarning, assertUsage } from '../../utils/assert.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
@@ -226,7 +227,8 @@ function execHookBase<HookReturn>(
     return originalReturn
   }
   for (const onHookCall of configValue.value as Function[]) {
-    const hookPublic = { name: hookName, filePath: hookFilePath, call }
+    // @ts-expect-error
+    const hookPublic: HookPublic = { name: hookName, filePath: hookFilePath, call }
     // Recursively wrap callOriginal() so +onHookCall can use async hooks. (E.g. vike-react-sentry integrates Sentry's `Tracer.startActiveSpan()`.)
     call = () => {
       ;(async () => {
@@ -261,6 +263,8 @@ function execHookBase<HookReturn>(
   if (originalError) throw originalError
   return originalReturn!
 }
+
+type HookPublic = { name: HookName; filePath: string; call: () => void | Promise<void> }
 
 function isNotDisabled(timeout: false | number): timeout is number {
   return !!timeout && timeout !== Infinity

@@ -54,6 +54,7 @@ import type { PassToClientPublic } from '../server/runtime/renderPageServer/html
 import type { CliPreviewConfig } from '../node/api/preview.js'
 import type { StaticReplace } from '../node/vite/plugins/pluginStaticReplace/applyStaticReplace.js'
 import type { ImportStringList } from '../node/vite/shared/importString.js'
+import type { HookPublic } from '../shared-server-client/hooks/execHook.js'
 
 type HookNameOld = HookName | HookNameOldDesign
 type HookName = HookNamePage | HookNameGlobal
@@ -371,10 +372,7 @@ type ConfigBuiltIn = {
    *  https://vike.dev/onHookCall
    */
   onHookCall?:
-    | ((
-        hook: { name: HookName; filePath: string; call: () => void | Promise<void> },
-        pageContext: PageContextClient | PageContextServer | null,
-      ) => void | Promise<void>)
+    | ((hook: HookPublic, pageContext: PageContextClient | PageContextServer | null) => void | Promise<void>)
     | ImportStringList
 
   /** Hook for fetching data.
