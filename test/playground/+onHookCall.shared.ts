@@ -1,7 +1,8 @@
-import type { Config } from 'vike/types'
+import type { Config, PageContext } from 'vike/types'
 import { assert } from './utils/assert'
 
-export const onHookCall: Config['onHookCall'] = async (hook, pageContext) => {
+type Hook = Parameters<Extract<Config['onHookCall'], Function>>[0]
+export async function onHookCall(hook: Hook, pageContext: PageContext) {
   assert(pageContext === null || pageContext.isClientSide === true || pageContext.isClientSide === false)
   console.log(
     // spellcheck-ignore
