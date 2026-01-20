@@ -4,7 +4,7 @@ export { getHookFromPageConfig }
 export { getHookFromPageConfigGlobal }
 export { getHooksFromPageConfigGlobalCumulative }
 export { getHook_setIsPrerenderering }
-export type { Hook }
+export type { HookInternal }
 export type { HookLoc }
 export type { HookTimeout }
 export type { HooksTimeoutProvidedByUser }
@@ -30,7 +30,7 @@ import type { PageContextPublicMinimum } from '../getPageContextPublicShared.js'
 const globalObject = getGlobalObject<{ isPrerendering?: true }>('hooks/getHook.ts', {})
 
 type HookArgDefault = PageContextPublicMinimum
-type Hook<HookArg = HookArgDefault> = HookLoc & { hookFn: HookFn<HookArg>; hookTimeout: HookTimeout }
+type HookInternal<HookArg = HookArgDefault> = HookLoc & { hookFn: HookFn<HookArg>; hookTimeout: HookTimeout }
 type HookLoc = {
   hookName: HookNameOld
   /* Once we remove the old design, we'll be able to use the full path information.
@@ -53,7 +53,7 @@ type HookTimeout = {
 type HooksTimeoutProvidedByUser = false | Partial<Record<HookNameOld, false | Partial<HookTimeout>>>
 type HooksTimeoutProvidedByUserNormalized = false | Partial<Record<HookNameOld, Partial<HookTimeout>>>
 
-function getHookFromPageContext(pageContext: PageContextConfig, hookName: HookNameOld): null | Hook {
+function getHookFromPageContext(pageContext: PageContextConfig, hookName: HookNameOld): null | HookInternal {
   if (!(hookName in pageContext.exports)) {
     return null
   }
@@ -69,10 +69,10 @@ function getHookFromPageContext(pageContext: PageContextConfig, hookName: HookNa
   return getHook(hookFn, hookName, hookFilePath, hookTimeout)
 }
 // TO-DO/eventually: remove getHookFromPageContext() in favor of getHooksFromPageContextNew()
-function getHooksFromPageContextNew(hookName: HookName, pageContext: PageContextConfig): Hook[] {
+function getHooksFromPageContextNew(hookName: HookName, pageContext: PageContextConfig): HookInternal[] {
   const { hooksTimeout } = pageContext.config
   const hookTimeout = getHookTimeout(hooksTimeout, hookName)
-  const hooks: Hook[] = []
+  const hooks: HookInternal[] = []
   /* TO-DO/eventually: use pageContext.configEntries in favor of pageContext.exportsAll once V0.4 is removed
   pageContext.configEntries[hookName]?.forEach((val) => {
     const hookFn = val.configValue
@@ -88,7 +88,7 @@ function getHooksFromPageContextNew(hookName: HookName, pageContext: PageContext
   })
   return hooks
 }
-function getHookFromPageConfig(pageConfig: PageConfigRuntime, hookName: HookNamePage): null | Hook {
+function getHookFromPageConfig(pageConfig: PageConfigRuntime, hookName: HookNamePage): null | HookInternal {
   const configValue = getConfigValueRuntime(pageConfig, hookName)
   if (!configValue?.value) return null
   const { hookFn, hookFilePath } = getHookFromConfigValue(configValue)
@@ -96,7 +96,10 @@ function getHookFromPageConfig(pageConfig: PageConfigRuntime, hookName: HookName
   const hookTimeout = getHookTimeout(hooksTimeout, hookName)
   return getHook(hookFn, hookName, hookFilePath, hookTimeout)
 }
-function getHookFromPageConfigGlobal(pageConfigGlobal: PageConfigGlobalRuntime, hookName: HookNameGlobal): null | Hook {
+function getHookFromPageConfigGlobal(
+  pageConfigGlobal: PageConfigGlobalRuntime,
+  hookName: HookNameGlobal,
+): null | HookInternal {
   const configValue = pageConfigGlobal.configValues[hookName]
   if (!configValue?.value) return null
   const { hookFn, hookFilePath } = getHookFromConfigValue(configValue)
@@ -106,7 +109,7 @@ function getHookFromPageConfigGlobal(pageConfigGlobal: PageConfigGlobalRuntime, 
 function getHooksFromPageConfigGlobalCumulative<HookArg = GlobalContextPublicMinimum>(
   pageConfigGlobal: PageConfigGlobalRuntime,
   hookName: HookNameGlobal,
-): Hook<HookArg>[] {
+): HookInternal<HookArg>[] {
   const configValue = pageConfigGlobal.configValues[hookName]
   if (!configValue?.value) return []
   const val = configValue.value
@@ -129,7 +132,7 @@ function getHook<HookArg = HookArgDefault>(
   hookName: HookNameOld,
   hookFilePath: string,
   hookTimeout: HookTimeout,
-): Hook<HookArg> {
+): HookInternal<HookArg> {
   assert(hookFilePath)
   assertHookFn<HookArg>(hookFn, { hookName, hookFilePath })
   const hook = { hookFn, hookName, hookFilePath, hookTimeout }

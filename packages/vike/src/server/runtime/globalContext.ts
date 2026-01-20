@@ -74,7 +74,7 @@ import {
   getVikeConfigErrorBuild,
   setVikeConfigError,
 } from '../../shared-server-node/getVikeConfigError.js'
-import type { Hook } from '../../shared-server-client/hooks/getHook.js'
+import type { HookInternal } from '../../shared-server-client/hooks/getHook.js'
 import type { ViteRPC } from '../../node/vite/plugins/non-runnable-dev/pluginViteRPC.js'
 import { getVikeApiOperation } from '../../shared-server-node/api-context.js'
 import type { PrerenderContext } from '../../types/index.js'
@@ -593,7 +593,7 @@ function addGlobalContext(globalContext: GlobalContextBase) {
 function addGlobalContextCommon(
   globalContext: GlobalContextBase,
   pageRoutes: PageRoutes,
-  onBeforeRouteHook: null | Hook,
+  onBeforeRouteHook: null | HookInternal,
 ) {
   const globalContextBase = {
     isClientSide: false as const,

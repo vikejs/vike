@@ -15,7 +15,7 @@ import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../../types/Pag
 import { getConfigValueRuntime } from '../page-configs/getConfigValueRuntime.js'
 import { getDefinedAtString } from '../page-configs/getConfigDefinedAt.js'
 import { warnDeprecatedAllowKey } from './resolveRouteFunction.js'
-import { getHookFromPageConfigGlobal, getHookTimeoutDefault, type Hook } from '../hooks/getHook.js'
+import { getHookFromPageConfigGlobal, getHookTimeoutDefault, type HookInternal } from '../hooks/getHook.js'
 
 type PageRoute = {
   pageId: string
@@ -39,7 +39,7 @@ async function loadPageRoutes(
   pageConfigs: PageConfigRuntime[],
   pageConfigGlobal: PageConfigGlobalRuntime,
   allPageIds: string[],
-): Promise<{ pageRoutes: PageRoutes; onBeforeRouteHook: null | Hook }> {
+): Promise<{ pageRoutes: PageRoutes; onBeforeRouteHook: null | HookInternal }> {
   // TO-DO/next-major-release: remove this line, remove this function, rename loadPageRoutesSync() to loadPageRoutes()
   await Promise.all(pageFilesAll.filter((p) => p.fileType === '.page.route').map((p) => p.loadFile?.()))
   return loadPageRoutesSync(pageFilesAll, pageConfigs, pageConfigGlobal, allPageIds)
@@ -50,7 +50,7 @@ function loadPageRoutesSync(
   pageConfigs: PageConfigRuntime[],
   pageConfigGlobal: PageConfigGlobalRuntime,
   allPageIds: string[],
-): { pageRoutes: PageRoutes; onBeforeRouteHook: null | Hook } {
+): { pageRoutes: PageRoutes; onBeforeRouteHook: null | HookInternal } {
   const { onBeforeRouteHook, filesystemRoots } = getGlobalHooks(pageFilesAll, pageConfigs, pageConfigGlobal)
   const pageRoutes = getPageRoutes(filesystemRoots, pageFilesAll, pageConfigs, allPageIds)
   return { pageRoutes, onBeforeRouteHook }
@@ -200,7 +200,7 @@ function getGlobalHooks(
   pageConfigs: PageConfigRuntime[],
   pageConfigGlobal: PageConfigGlobalRuntime,
 ): {
-  onBeforeRouteHook: null | Hook
+  onBeforeRouteHook: null | HookInternal
   filesystemRoots: null | FilesystemRoot[]
 } {
   // V1 Design
@@ -211,7 +211,7 @@ function getGlobalHooks(
 
   // Old design
   // TO-DO/next-major-release: remove
-  let onBeforeRouteHook: null | Hook = null
+  let onBeforeRouteHook: null | HookInternal = null
   const filesystemRoots: FilesystemRoot[] = []
   pageFilesAll
     .filter((p) => p.fileType === '.page.route' && p.isDefaultPageFile)

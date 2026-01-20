@@ -1,6 +1,6 @@
 export { execHookGuard }
 
-import { getHookFromPageContext, getHookTimeoutDefault, type Hook } from '../hooks/getHook.js'
+import { getHookFromPageContext, getHookTimeoutDefault, type HookInternal } from '../hooks/getHook.js'
 import { assert, assertUsage } from '../../utils/assert.js'
 import { isCallable } from '../../utils/isCallable.js'
 import type { PageContextConfig, PageFile } from '../getPageFiles.js'
@@ -16,7 +16,7 @@ async function execHookGuard<
   } & PageContextExecHook &
     PageContextConfig,
 >(pageContext: PageContext, getPageContextPublic: (pageConfig: PageContext) => PageContext): Promise<void> {
-  let hook: Hook | null
+  let hook: HookInternal | null
   if (pageContext._globalContext._pageFilesAll.length > 0) {
     // TO-DO/next-major-release: remove
     // V0.4 design
@@ -34,7 +34,7 @@ async function execHookGuard<
 
 // We cannot easily use pageContext.exports for the V0.4 design
 // TO-DO/next-major-release: remove
-type PageGuard = Hook
+type PageGuard = HookInternal
 function findPageGuard(pageId: string, pageFilesAll: PageFile[]): null | PageGuard {
   const pageRouteFile = pageFilesAll.find((p) => p.pageId === pageId && p.fileType === '.page.route')
   if (!pageRouteFile) return null
