@@ -3,11 +3,11 @@ import { Link } from '@brillout/docpress'
 Hook types such as `GuardSync` are deprecated — directly use <Link href="/pageContext#typescript">`PageContext`/`PageContextServer`/`PageContextClient`</Link> instead.
 
 ```ts ts-only
-import type { GuardSync } from 'vike/types'// [!code --]
-import type { PageContextServer } from 'vike/types'// [!code ++]
+import type { GuardSync } from 'vike/types' // [!code --]
+import type { PageContextServer } from 'vike/types' // [!code ++]
 
-export const guard: GuardSync = (pageContext): ReturnType<GuardSync> => {// [!code --]
-export const guard = (pageContext: PageContextServer) => {// [!code ++]
+export const guard: GuardSync = (pageContext): ReturnType<GuardSync> => { // [!code --]
+export const guard = (pageContext: PageContextServer) => { // [!code ++]
   // ...
 }
 ```

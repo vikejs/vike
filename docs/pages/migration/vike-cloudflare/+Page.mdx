@@ -9,12 +9,12 @@ Make sure to upgrade `vike` to version `>=0.4.227`.
 ```ts
 // vite.config.ts
 
-import { pages } from 'vike-cloudflare'// [!code --]
+import { pages } from 'vike-cloudflare' // [!code --]
 import { defineConfig } from 'vite'
 
 export default defineConfig({
   plugins: [
-    pages()// [!code --]
+    pages() // [!code --]
   ]
 })
 ```
@@ -23,12 +23,12 @@ export default defineConfig({
 // +config.ts
 
 import type { Config } from 'vike/types'
-import vikeCloudflare from 'vike-cloudflare/config'// [!code ++]
+import vikeCloudflare from 'vike-cloudflare/config' // [!code ++]
 
 export default {
   extends: [
     // ...
-    vikeCloudflare// [!code ++]
+    vikeCloudflare // [!code ++]
   ]
 } satisfies Config
 ```
@@ -45,19 +45,19 @@ If your are using <Link href="/hono" /> or <Link href="/hattip" />, some additio
     ```ts
     // vite.config.ts
 
-    import devServer from '@hono/vite-dev-server'// [!code --]
-    import { pages } from 'vike-cloudflare'// [!code --]
+    import devServer from '@hono/vite-dev-server' // [!code --]
+    import { pages } from 'vike-cloudflare' // [!code --]
     import { defineConfig } from 'vite'
 
     export default defineConfig({
       plugins: [
-        devServer(/*...*/),// [!code --]
-        pages({// [!code --]
-          server: {// [!code --]
-            kind: 'hono',// [!code --]
-            entry: 'hono-entry.ts'// [!code --]
-          }// [!code --]
-        })// [!code --]
+        devServer(/*...*/), // [!code --]
+        pages({ // [!code --]
+          server: { // [!code --]
+            kind: 'hono', // [!code --]
+            entry: 'hono-entry.ts' // [!code --]
+          } // [!code --]
+        }) // [!code --]
       ]
     })
     ```
@@ -66,16 +66,16 @@ If your are using <Link href="/hono" /> or <Link href="/hattip" />, some additio
     // +config.ts
 
     import type { Config } from 'vike/types'
-    import vikeCloudflare from 'vike-cloudflare/config'// [!code ++]
+    import vikeCloudflare from 'vike-cloudflare/config' // [!code ++]
 
     export default {
       extends: [
         // ...
-        vikeCloudflare// [!code ++]
+        vikeCloudflare // [!code ++]
       ],
-      server: {// [!code ++]
-        entry: 'hono-entry.ts'// [!code ++]
-      }// [!code ++]
+      server: { // [!code ++]
+        entry: 'hono-entry.ts' // [!code ++]
+      } // [!code ++]
     } satisfies Config
     ```
 
@@ -84,14 +84,14 @@ If your are using <Link href="/hono" /> or <Link href="/hattip" />, some additio
 
     {
       "scripts": {
-        "dev": "vite",// [!code --]
-        "dev": "vike dev",// [!code ++]
-        "build": "vite build"// [!code --]
-        "build": "vike build"// [!code ++]
+        "dev": "vite", // [!code --]
+        "dev": "vike dev", // [!code ++]
+        "build": "vite build" // [!code --]
+        "build": "vike build" // [!code ++]
       },
       "devDependencies": {
-        "@hono/vite-cloudflare-pages": "^0.4.2",// [!code --]
-        "@hono/vite-dev-server": "^0.17.0"// [!code --]
+        "@hono/vite-cloudflare-pages": "^0.4.2", // [!code --]
+        "@hono/vite-dev-server": "^0.17.0" // [!code --]
       }
     }
     ```
@@ -100,19 +100,19 @@ If your are using <Link href="/hono" /> or <Link href="/hattip" />, some additio
     ```ts
     // vite.config.ts
  
-    import { hattip } from '@hattip/vite'// [!code --]
-    import { pages } from 'vike-cloudflare'// [!code --]
+    import { hattip } from '@hattip/vite' // [!code --]
+    import { pages } from 'vike-cloudflare' // [!code --]
     import { defineConfig } from 'vite'
 
     export default defineConfig({
       plugins: [
-        hattip(),// [!code --]
-        pages({// [!code --]
-          server: {// [!code --]
-            kind: 'hattip',// [!code --]
-            entry: 'hattip-entry.ts'// [!code --]
-          }// [!code --]
-        })// [!code --]
+        hattip(), // [!code --]
+        pages({ // [!code --]
+          server: { // [!code --]
+            kind: 'hattip', // [!code --]
+            entry: 'hattip-entry.ts' // [!code --]
+          } // [!code --]
+        }) // [!code --]
       ]
     })
     ```
@@ -121,16 +121,16 @@ If your are using <Link href="/hono" /> or <Link href="/hattip" />, some additio
     // +config.ts
 
     import type { Config } from 'vike/types'
-    import vikeCloudflare from 'vike-cloudflare/config'// [!code ++]
+    import vikeCloudflare from 'vike-cloudflare/config' // [!code ++]
 
     export default {
       extends: [
         // ...
-        vikeCloudflare// [!code ++]
+        vikeCloudflare // [!code ++]
       ],
-      server: {// [!code ++]
-        entry: 'hattip-entry.ts'// [!code ++]
-      }// [!code ++]
+      server: { // [!code ++]
+        entry: 'hattip-entry.ts' // [!code ++]
+      } // [!code ++]
     } satisfies Config
     ```
 
@@ -139,15 +139,15 @@ If your are using <Link href="/hono" /> or <Link href="/hattip" />, some additio
 
     {
       "scripts": {
-        "dev": "hattip serve ./hattip-entry.ts --client",// [!code --]
-        "dev": "vike dev",// [!code ++]
-        "build": "cross-env NODE_ENV=production hattip build ./hattip-entry.ts --target es2022 --client"// [!code --]
-        "build": "vike build"// [!code ++]
+        "dev": "hattip serve ./hattip-entry.ts --client", // [!code --]
+        "dev": "vike dev", // [!code ++]
+        "build": "cross-env NODE_ENV=production hattip build ./hattip-entry.ts --target es2022 --client" // [!code --]
+        "build": "vike build" // [!code ++]
       },
       "devDependencies": {
         "@hattip/adapter-cloudflare-workers": "^0.0.49",
-        "@hattip/adapter-node": "^0.0.49",// [!code --]
-        "@hattip/vite": "^0.0.49",// [!code --]
+        "@hattip/adapter-node": "^0.0.49", // [!code --]
+        "@hattip/vite": "^0.0.49", // [!code --]
       }
     }
     ```

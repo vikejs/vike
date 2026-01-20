@@ -46,10 +46,10 @@ npm i vike-photon
 // pages/+config.ts
 
 import type { Config } from 'vike/types'
-import vikePhoton from 'vike-photon/config'// [!code ++]
+import vikePhoton from 'vike-photon/config' // [!code ++]
 
 export const config = {
-  extends: [vikePhoton]// [!code ++]
+  extends: [vikePhoton] // [!code ++]
 } satisfies Config
 ```
 
@@ -63,7 +63,7 @@ Update your production script in `package.json`:
 "scripts": {
   "dev": "vike dev",
   "build": "vike build",
-  "prod": "vike build && node ./dist/server/index.mjs"// [!code ++]
+  "prod": "vike build && node ./dist/server/index.mjs" // [!code ++]
 }
 ```
 
@@ -84,9 +84,9 @@ import vikePhoton from 'vike-photon/config'
 
 export default {
   extends: [vikePhoton],
-  photon: {// [!code ++]
-    server: 'server/index.ts'// [!code ++]
-  }// [!code ++]
+  photon: { // [!code ++]
+    server: 'server/index.ts' // [!code ++]
+  } // [!code ++]
 } satisfies Config
 ```
 
@@ -380,7 +380,7 @@ export const config = {
     server: {
       id: 'server/index.ts'
     },
-    standalone: true// [!code ++]
+    standalone: true // [!code ++]
   }
 } satisfies Config
 ```
@@ -442,12 +442,12 @@ import vikePhoton from 'vike-photon/config'
 
 export default {
   extends: [vikePhoton],
-  photon: {// [!code ++]
-    // Disable compression// [!code ++]
-    compress: false,// [!code ++]
-    // Only compress static files// [!code ++]
-    // @detype-uncomment compress: 'static'// [!code ++]
-  }// [!code ++]
+  photon: { // [!code ++]
+    // Disable compression // [!code ++]
+    compress: false, // [!code ++]
+    // Only compress static files // [!code ++]
+    // @detype-uncomment compress: 'static' // [!code ++]
+  } // [!code ++]
 } satisfies Config
 ```
 
@@ -467,12 +467,12 @@ import vikePhoton from 'vike-photon/config'
 
 export default {
   extends: [vikePhoton],
-  photon: {// [!code ++]
-    // Don't serve static files// [!code ++]
-    static: false,// [!code ++]
-    // Settings// [!code ++]
-    // @detype-uncomment static: { maxAge: 3600, /* ... */ }// [!code ++]
-  }// [!code ++]
+  photon: { // [!code ++]
+    // Don't serve static files // [!code ++]
+    static: false, // [!code ++]
+    // Settings // [!code ++]
+    // @detype-uncomment static: { maxAge: 3600, /* ... */ } // [!code ++]
+  } // [!code ++]
 } satisfies Config
 ```
 

@@ -30,8 +30,8 @@ npm i vike-photon vike@latest
   "scripts": {
     "dev": "vike dev",
     "build": "vike build",
-    "prod": "NODE_ENV=production node dist/server/index.js"// [!code --]
-    "prod": "node ./dist/server/index.mjs"// [!code ++]
+    "prod": "NODE_ENV=production node dist/server/index.js" // [!code --]
+    "prod": "node ./dist/server/index.mjs" // [!code ++]
   }
 }
 ```
@@ -42,19 +42,19 @@ npm i vike-photon vike@latest
 // pages/+config.ts
 
 import type { Config } from 'vike/types'
-import vikeServer from 'vike-server/config'// [!code --]
-import vikePhoton from 'vike-photon/config'// [!code ++]
+import vikeServer from 'vike-server/config' // [!code --]
+import vikePhoton from 'vike-photon/config' // [!code ++]
 
 export default {
   extends: [
     // ...
-    vikeServer,// [!code --]
-    vikePhoton// [!code ++]
+    vikeServer, // [!code --]
+    vikePhoton // [!code ++]
   ],
-  server: 'server/index.ts',// [!code --]
-  photon: {// [!code ++]
-    server: 'server/index.ts'// [!code ++]
-  }// [!code ++]
+  server: 'server/index.ts', // [!code --]
+  photon: { // [!code ++]
+    server: 'server/index.ts' // [!code ++]
+  } // [!code ++]
 } satisfies Config
 ```
 
@@ -77,9 +77,9 @@ export default {
     // server/index.ts
 
     import { Hono } from 'hono'
-    // @detype-uncomment import { apply } from 'vike-server/hono'// [!code --]
-    // @detype-uncomment import { serve } from 'vike-server/hono/serve'// [!code --]
-    import { apply, serve } from '@photonjs/hono'// [!code ++]
+    // @detype-uncomment import { apply } from 'vike-server/hono' // [!code --]
+    // @detype-uncomment import { serve } from 'vike-server/hono/serve' // [!code --]
+    import { apply, serve } from '@photonjs/hono' // [!code ++]
 
     // ...
     ```
@@ -93,9 +93,9 @@ export default {
     // server/index.ts
 
     import express from 'express'
-    // @detype-uncomment import { apply } from 'vike-server/express'// [!code --]
-    // @detype-uncomment import { serve } from 'vike-server/express/serve'// [!code --]
-    import { apply, serve } from '@photonjs/express'// [!code ++]
+    // @detype-uncomment import { apply } from 'vike-server/express' // [!code --]
+    // @detype-uncomment import { serve } from 'vike-server/express/serve' // [!code --]
+    import { apply, serve } from '@photonjs/express' // [!code ++]
 
     // ...
     ```
@@ -109,9 +109,9 @@ export default {
     // server/index.ts
 
     import fastify from 'fastify'
-    // @detype-uncomment import { apply } from 'vike-server/fastify'// [!code --]
-    // @detype-uncomment import { serve } from 'vike-server/fastify/serve'// [!code --]
-    import { apply, serve } from '@photonjs/fastify'// [!code ++]
+    // @detype-uncomment import { apply } from 'vike-server/fastify' // [!code --]
+    // @detype-uncomment import { serve } from 'vike-server/fastify/serve' // [!code --]
+    import { apply, serve } from '@photonjs/fastify' // [!code ++]
 
     // ...
     ```
@@ -125,9 +125,9 @@ export default {
     // server/index.ts
 
     import { createApp } from 'h3'
-    // @detype-uncomment import { apply } from 'vike-server/h3'// [!code --]
-    // @detype-uncomment import { serve } from 'vike-server/h3/serve'// [!code --]
-    import { apply, serve } from '@photonjs/h3'// [!code ++]
+    // @detype-uncomment import { apply } from 'vike-server/h3' // [!code --]
+    // @detype-uncomment import { serve } from 'vike-server/h3/serve' // [!code --]
+    import { apply, serve } from '@photonjs/h3' // [!code ++]
 
     // ...
     ```
@@ -141,9 +141,9 @@ export default {
     // server/index.ts
 
     import { Elysia } from 'elysia'
-    // @detype-uncomment import { apply } from 'vike-server/elysia'// [!code --]
-    // @detype-uncomment import { serve } from 'vike-server/elysia/serve'// [!code --]
-    import { apply, serve } from '@photonjs/elysia'// [!code ++]
+    // @detype-uncomment import { apply } from 'vike-server/elysia' // [!code --]
+    // @detype-uncomment import { serve } from 'vike-server/elysia/serve' // [!code --]
+    import { apply, serve } from '@photonjs/elysia' // [!code ++]
 
     // ...
     ```
@@ -162,12 +162,12 @@ npm i @photonjs/cloudflare
 ```ts
 // pages/+config.ts
 
-import vikeCloudflare from 'vike-cloudflare/config'// [!code --]
+import vikeCloudflare from 'vike-cloudflare/config' // [!code --]
 
 export default {
   extends: [
     // ...
-    vikeCloudflare// [!code --]
+    vikeCloudflare // [!code --]
   ]
 }
 ```
@@ -188,12 +188,12 @@ npm i @photonjs/vercel
 ```ts
 // vite.config.ts
 
-import vercel from "vite-plugin-vercel";// [!code --]
+import vercel from "vite-plugin-vercel"; // [!code --]
 
 export default {
-  vercel: {// [!code --]
-    // ...// [!code --]
-  },// [!code --]
+  vercel: { // [!code --]
+    // ... // [!code --]
+  }, // [!code --]
 };
 ```
 

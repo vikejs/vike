@@ -15,14 +15,14 @@ Instead of using internals, reach out to Vike's team to get guidance.
 That said, you can suppress the warning by using `dangerouslyUseInternals`:
 
 ```js
-pageContext._someInternalProp// [!code --]
-pageContext.dangerouslyUseInternals._someInternalProp// [!code ++]
+pageContext._someInternalProp // [!code --]
+pageContext.dangerouslyUseInternals._someInternalProp // [!code ++]
 
-globalContext._someInternalProp// [!code --]
-globalContext.dangerouslyUseInternals._someInternalProp// [!code ++]
+globalContext._someInternalProp // [!code --]
+globalContext.dangerouslyUseInternals._someInternalProp // [!code ++]
 
-vikeConfig._someInternalProp// [!code --]
-vikeConfig.dangerouslyUseInternals._someInternalProp// [!code ++]
+vikeConfig._someInternalProp // [!code --]
+vikeConfig.dangerouslyUseInternals._someInternalProp // [!code ++]
 
 // ...
 ```

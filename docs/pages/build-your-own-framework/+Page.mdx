@@ -23,14 +23,14 @@ You can achieve that by progressively applying one or more of the following step
   // pages/+config.ts
 
   import type { Config } from 'vike/types'
-  import react from 'vike-react/config'// [!code --]
-  import apollo from 'vike-react-apollo/config'// [!code --]
-  import myFramework from 'my-framework/config'// [!code ++]
+  import react from 'vike-react/config' // [!code --]
+  import apollo from 'vike-react-apollo/config' // [!code --]
+  import myFramework from 'my-framework/config' // [!code ++]
 
   export default {
-    ssr: false,// [!code --]
-    extends: [react, apollo],// [!code --]
-    extends: [myFramework]// [!code ++]
+    ssr: false, // [!code --]
+    extends: [react, apollo], // [!code --]
+    extends: [myFramework] // [!code ++]
   } satisfies Config
   ```
 - <Link href="/meta">Create custom settings</Link>, so that your Product Developers can easily configure your framework.
@@ -68,7 +68,7 @@ You can achieve that by progressively applying one or more of the following step
       "dev": "my-framework",
       "build": "my-framework build",
       "preview": "my-framework preview",
-      "deploy": "my-framework deploy"// [!code ++]
+      "deploy": "my-framework deploy" // [!code ++]
     }
   }
   ```

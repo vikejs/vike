@@ -38,13 +38,13 @@ import type { PageContextServer } from 'vike/types'
 
 async function onBeforeRender(pageContext: PageContextServer) {
   const starWarsMovies = await getStarWarsMovies()
-  pageContext.starWarsMovies = starWarsMovies// [!code --]
-  // We should do this instead// [!code ++]
-  return {// [!code ++]
-    pageContext: {// [!code ++]
-      starWarsMovies// [!code ++]
-    }// [!code ++]
-  }// [!code ++]
+  pageContext.starWarsMovies = starWarsMovies // [!code --]
+  // We should do this instead // [!code ++]
+  return { // [!code ++]
+    pageContext: { // [!code ++]
+      starWarsMovies // [!code ++]
+    } // [!code ++]
+  } // [!code ++]
 }
 ```
 
@@ -66,14 +66,14 @@ import type { PageContextServer } from 'vike/types'
 async function onBeforeRender(pageContext: PageContextServer) {
   const starWarsMovies = await getStarWarsMovies()
   return {
-    // @detype-uncomment pageContext: {// [!code --]
-    // @detype-uncomment   ...pageContext,// [!code --]
-    // @detype-uncomment   starWarsMovies// [!code --]
-    // @detype-uncomment }// [!code --]
-    // Do this instead// [!code ++]
-    pageContext: {// [!code ++]
-      starWarsMovies// [!code ++]
-    }// [!code ++]
+    // @detype-uncomment pageContext: { // [!code --]
+    // @detype-uncomment   ...pageContext, // [!code --]
+    // @detype-uncomment   starWarsMovies // [!code --]
+    // @detype-uncomment } // [!code --]
+    // Do this instead // [!code ++]
+    pageContext: { // [!code ++]
+      starWarsMovies // [!code ++]
+    } // [!code ++]
   }
 }
 ```

@@ -29,11 +29,11 @@ To add `vike-vue` to an existing Vike app: install the `vike-vue` npm package (e
 // /pages/+config.ts
 
 import type { Config } from 'vike/types'
-import vikeVue from 'vike-vue/config'// [!code ++]
+import vikeVue from 'vike-vue/config' // [!code ++]
 
 export default {
   // ...
-  extends: [vikeVue]// [!code ++]
+  extends: [vikeVue] // [!code ++]
 } satisfies Config
 ```
 
@@ -48,8 +48,8 @@ import vikeVue from 'vike-vue/config'
 export default {
   // ...
 
-  // Setting to toggle SSR// [!code ++]
-  ssr: false,// [!code ++]
+  // Setting to toggle SSR // [!code ++]
+  ssr: false, // [!code ++]
 
   extends: [vikeVue]
 } satisfies Config

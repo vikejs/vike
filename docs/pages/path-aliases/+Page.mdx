@@ -3,8 +3,8 @@ import { RepoLink, Link } from '@brillout/docpress'
 Instead of using relative import paths, which can be cumbersome, you can use path aliases. For example:
 
 ```js
-import { Counter } from '../../../../components/Counter'// [!code --]
-import { Counter } from '#root/components/Counter'// [!code ++]
+import { Counter } from '../../../../components/Counter' // [!code --]
+import { Counter } from '#root/components/Counter' // [!code ++]
 ```
 
 > We recommend following [the Node.js convention](https://nodejs.org/api/packages.html#subpath-imports:~:text=must%20always%20start%20with%20%23%20to%20ensure%20they%20are%20disambiguated%20from%20external%20package%20specifiers) to always prefix path aliases with the special character `#`.
