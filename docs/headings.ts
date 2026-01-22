@@ -1320,7 +1320,7 @@ function getStarted() {
   return (
     [
       {
-        title: 'Scaffold new Vike app without Vike extension',
+        title: 'Scaffold new Vike app without extension',
         url: '/new/core',
         pageDesign: {
           hideMenuLeft: true as const,
