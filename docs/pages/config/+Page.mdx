@@ -29,12 +29,12 @@ export default {
 ```ts
 // /pages/product/@id/Page.ts
 
-// @detype-uncomment export default /* ... */
+// @docpress-uncomment export default /* ... */
 ```
 ```ts
 // /pages/product/@id/Layout.ts
 
-// @detype-uncomment export default /* ... */
+// @docpress-uncomment export default /* ... */
 ```
 
 For more convenience, you can define following `+` files instead:
@@ -320,7 +320,7 @@ Into:
 
 import type { Config } from 'vike/types'
 import Layout from '../layouts/LayoutDefault.jsx' // [!code --]
-// @detype-replace Layout_ Layout
+// @docpress-replace Layout_ Layout
 const Layout_ = 'import:../layouts/LayoutDefault.jsx:default' // [!code ++]
 
 export default {

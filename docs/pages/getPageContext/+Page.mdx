@@ -68,8 +68,8 @@ export type Data = Awaited<ReturnType<typeof data>>
 import { getPageContext } from 'vike/getPageContext' // [!code --]
 import type { PageContextServer } from 'vike/types'
 
-// @detype-uncomment function data() { // [!code --]
-// @detype-uncomment  const pageContext = getPageContext() // [!code --]
+// @docpress-uncomment function data() { // [!code --]
+// @docpress-uncomment  const pageContext = getPageContext() // [!code --]
 function data(pageContext: PageContextServer) { // [!code ++]
   // ...
 }

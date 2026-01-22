@@ -27,16 +27,16 @@ Move your `renderer/` hooks to `+` files:
 // /renderer/_default.page.client.ts // [!code --]
 // /renderer/+onRenderClient.ts // [!code ++]
 
-// @detype-uncomment export { render } // [!code --]
-// @detype-uncomment export { render as onRenderClient } // [!code ++]
+// @docpress-uncomment export { render } // [!code --]
+// @docpress-uncomment export { render as onRenderClient } // [!code ++]
 ```
 
 ```ts
 // /renderer/_default.page.server.ts // [!code --]
 // /renderer/+onRenderHtml.ts // [!code ++]
 
-// @detype-uncomment export { render } // [!code --]
-// @detype-uncomment export { render as onRenderHtml } // [!code ++]
+// @docpress-uncomment export { render } // [!code --]
+// @docpress-uncomment export { render as onRenderHtml } // [!code ++]
 ```
 
 If you've defined a global `onBeforeRender()` hook and/or `passToClient`:
@@ -45,7 +45,7 @@ If you've defined a global `onBeforeRender()` hook and/or `passToClient`:
 // /renderer/_default.page.server.ts // [!code --]
 // /renderer/+onBeforeRender.ts // [!code ++]
 
-// @detype-uncomment export { onBeforeRender }
+// @docpress-uncomment export { onBeforeRender }
 export const passToClient = ['pageProps'] // [!code --]
 ```
 
@@ -72,8 +72,8 @@ Move `/renderer/` configurations to `/renderer/+config.js`:
 ```ts
 // /renderer/_default.page.client.ts
 
-// @detype-uncomment export { clientRouting }
-// @detype-uncomment export { hydrationCanBeAborted }
+// @docpress-uncomment export { clientRouting }
+// @docpress-uncomment export { hydrationCanBeAborted }
 ```
 </FileRemoved>
 <FileAdded>
@@ -95,7 +95,7 @@ Move your error page (if you defined one):
 // /renderer/_error.page.ts // [!code --]
 // /pages/_error/+Page.ts // [!code ++]
 
-// @detype-uncomment export { Page }
+// @docpress-uncomment export { Page }
 ```
 
 
@@ -105,20 +105,20 @@ Move your error page (if you defined one):
 // /pages/some-page/index.page.ts // [!code --]
 // /pages/some-page/+Page.ts // [!code ++]
 
-// @detype-uncomment export { Page }
+// @docpress-uncomment export { Page }
 ```
 ```ts
 // /pages/some-page/index.page.server.ts // [!code --]
 // /pages/some-page/+onBeforeRender.ts // [!code ++]
 
-// @detype-uncomment export { onBeforeRender }
+// @docpress-uncomment export { onBeforeRender }
 ```
 
 ```ts
 // /pages/some-page/index.page.route.ts // [!code --]
 // /pages/some-page/+route.ts // [!code ++]
 
-// @detype-uncomment export default route
+// @docpress-uncomment export default route
 ```
 
 > Each page now lives in its own directory.

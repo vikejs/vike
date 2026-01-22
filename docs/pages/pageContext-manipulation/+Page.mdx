@@ -66,10 +66,10 @@ import type { PageContextServer } from 'vike/types'
 async function onBeforeRender(pageContext: PageContextServer) {
   const starWarsMovies = await getStarWarsMovies()
   return {
-    // @detype-uncomment pageContext: { // [!code --]
-    // @detype-uncomment   ...pageContext, // [!code --]
-    // @detype-uncomment   starWarsMovies // [!code --]
-    // @detype-uncomment } // [!code --]
+    // @docpress-uncomment pageContext: { // [!code --]
+    // @docpress-uncomment   ...pageContext, // [!code --]
+    // @docpress-uncomment   starWarsMovies // [!code --]
+    // @docpress-uncomment } // [!code --]
     // Do this instead // [!code ++]
     pageContext: { // [!code ++]
       starWarsMovies // [!code ++]
