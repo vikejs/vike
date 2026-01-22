@@ -24,7 +24,7 @@ function CustomIntegrationWarning({ uiFramework }: { uiFramework?: 'react' | 'vu
           You are building an app with a simple architecture.
           <blockquote>
             <p>
-              For example, <code>https://vike.dev</code> has a simple architecture — it uses a custom integration.
+              For example <code>https://vike.dev</code> has a simple architecture — it uses a custom integration.
             </p>
             <p>
               You can read the source code of {uiFrameworkExtension} — it's small! — and check whether you need most of
@@ -36,7 +36,8 @@ function CustomIntegrationWarning({ uiFramework }: { uiFramework?: 'react' | 'vu
           You are using {uiFrameworkExtension} but ran into a blocker.
           <blockquote>
             <p>
-              Before migrating away from {uiFrameworkExtension}, we recommend starting a discussion with a maintainer.
+              Before migrating away from {uiFrameworkExtension}, we recommend discussing it with the maintainers to
+              explore your options.
             </p>
           </blockquote>
         </li>

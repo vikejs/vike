@@ -7,12 +7,12 @@ We recommend using <Link href="/vike-react">`vike-react`</Link> which integrates
 
 > <UseScaffolder>`vike-react`</UseScaffolder>
 
-You can also <Link href="#custom-integration">integrate React yourself</Link> if you want full control over the React integration.
+You can also <Link href="#custom-integration">integrate React yourself</Link> if you want full control over React integration.
 
 
 ## Custom integration
 
-Instead of using <Link href="/vike-react">`vike-react`</Link>, you can implement your own React integration, for full control over the integration of React and React libraries.
+Instead of using <Link href="/vike-react">`vike-react`</Link>, you can implement your own React integration for full control over the integration of React and React libraries.
 
 <CustomIntegrationWarning uiFramework="react" />
 
@@ -36,16 +36,13 @@ Community examples:
 
 [React Server Components (RSC)](https://react.dev/blog/2023/03/22/react-labs-what-we-have-been-working-on-march-2023#react-server-components) is a new application architecture designed by the React team.
 
-The design can be broken down into three parts:
- -	✅ RPC (Server Actions)
- -	✅ Progressive Rendering
- - 🚧 Server Components
+Vike has experimental support for Server Components via [`vike-react-rsc`](https://github.com/nitedani/vike-react-rsc).
 
-Vike already supports <Link href="/streaming#progressive-rendering">Progressive Rendering</Link> as well as <Link href="/RPC">RPC</Link>.
+If you use `vike-react`, use <Link href="/RPC">RPC</Link> instead of [Server Functions (aka Server Actions)](https://react.dev/reference/rsc/server-functions).
 
-> Instead of using [Server Actions via `'use server'`](https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations), we recommend using [Telefunc](https://telefunc.com/).
+> [Telefunc](https://telefunc.com) is an RPC implementation with minimal boilerplate similar to Server Functions.
 
-Experimental Server Components implementation: [`vike-react-rsc`](https://github.com/nitedani/vike-react-rsc).
+> Vike fully supports <Link href="/streaming#progressive-rendering">Progressive Rendering</Link> (HTML streaming) which can be used also without Server Components.
 
 
 ## See also
