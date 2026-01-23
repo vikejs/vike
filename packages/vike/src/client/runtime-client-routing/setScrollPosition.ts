@@ -8,11 +8,22 @@ export type { ScrollTarget }
 import { assert } from '../../utils/assert.js'
 import { onPageHide } from '../../utils/onPageVisibilityChange.js'
 import { sleep } from '../../utils/sleep.js'
-import { throttle } from '../../utils/throttle.js'
-import { replaceHistoryStateOriginal, saveScrollPosition, type ScrollPosition } from './history.js'
+import { throttle, type ThrottledFunction } from '../../utils/throttle.js'
+import {
+  replaceHistoryStateOriginal,
+  saveScrollPosition,
+  type ScrollPosition,
+  registerCancelFunction,
+} from './history.js'
 
 type ScrollTarget = undefined | { preserveScroll: boolean } | ScrollPosition
+
+let throttledSaveScrollPosition: ThrottledFunction | undefined
+
 function setScrollPosition(scrollTarget: ScrollTarget, url?: string): void {
+  // Cancel any pending throttled scroll save to prevent it from saving the wrong page's scroll
+  throttledSaveScrollPosition?.cancel()
+
   if (!scrollTarget && url && hasTextFragment(url)) {
     scrollToTextFragment(url)
     return
@@ -123,6 +134,10 @@ function getUrlHash(): string | null {
 // Save scroll position (needed for back-/forward navigation)
 function autoSaveScrollPosition() {
   // Safari cannot handle more than 100 `history.replaceState()` calls within 30 seconds (https://github.com/vikejs/vike/issues/46)
-  window.addEventListener('scroll', throttle(saveScrollPosition, 300), { passive: true })
+  throttledSaveScrollPosition = throttle(saveScrollPosition, Math.ceil(1000 / 3))
+  window.addEventListener('scroll', throttledSaveScrollPosition, { passive: true })
   onPageHide(saveScrollPosition)
+
+  // Register cancel function so history.ts can cancel pending scroll saves
+  registerCancelFunction(() => throttledSaveScrollPosition?.cancel())
 }

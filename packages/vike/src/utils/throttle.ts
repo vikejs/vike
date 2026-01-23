@@ -1,14 +1,33 @@
 export { throttle }
+export type { ThrottledFunction }
 
-function throttle(func: Function, waitTime: number) {
+type ThrottledFunction = {
+  (): void
+  cancel: () => void
+}
+
+function throttle(func: Function, waitTime: number): ThrottledFunction {
   let isQueued: boolean = false
-  return () => {
+  let timeoutId: ReturnType<typeof setTimeout> | null = null
+
+  const throttled = () => {
     if (!isQueued) {
       isQueued = true
-      setTimeout(() => {
+      timeoutId = setTimeout(() => {
         isQueued = false
+        timeoutId = null
         func()
       }, waitTime)
     }
   }
+
+  throttled.cancel = () => {
+    if (timeoutId !== null) {
+      clearTimeout(timeoutId)
+      timeoutId = null
+      isQueued = false
+    }
+  }
+
+  return throttled
 }
