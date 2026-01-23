@@ -9,7 +9,7 @@ import type { PageContextConfig } from '../../shared-server-client/getPageFiles.
 type PageContextCurrent = PageContextConfig & {
   urlPathname: string
 }
-const globalObject = getGlobalObject('runtime-client-routing/getPageContextCurrent.ts', {
+const globalObject = getGlobalObject('getPageContextCurrent.ts', {
   pageContextCurrent: null as null | PageContextCurrent,
 })
 
