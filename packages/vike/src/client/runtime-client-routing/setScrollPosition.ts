@@ -11,15 +11,17 @@ import { onPageHide } from '../../utils/onPageVisibilityChange.js'
 import { sleep } from '../../utils/sleep.js'
 import { throttle, type ThrottledFunction } from '../../utils/throttle.js'
 import { replaceHistoryStateOriginal, saveScrollPosition, type ScrollPosition } from './history.js'
+import { getGlobalObject } from '../../utils/getGlobalObject.js'
 
 type ScrollTarget = undefined | { preserveScroll: boolean } | ScrollPosition
 
-// TODO/ai use globalObject
-let throttledSaveScrollPosition: ThrottledFunction | undefined
+const globalObject = getGlobalObject<{
+  throttledSaveScrollPosition?: ThrottledFunction
+}>('runtime-client-routing/setScrollPosition.ts', {})
 
 // Cancel any pending throttled scroll save to prevent it from saving the wrong page's scroll
 function cancelThrottledScrollSave() {
-  throttledSaveScrollPosition?.cancel()
+  globalObject.throttledSaveScrollPosition?.cancel()
 }
 
 function setScrollPosition(scrollTarget: ScrollTarget, url?: string): void {
@@ -136,7 +138,7 @@ function getUrlHash(): string | null {
 // Save scroll position (needed for back-/forward navigation)
 function autoSaveScrollPosition() {
   // Safari cannot handle more than 100 `history.replaceState()` calls within 30 seconds (https://github.com/vikejs/vike/issues/46)
-  throttledSaveScrollPosition = throttle(saveScrollPosition, Math.ceil(1000 / 3))
-  window.addEventListener('scroll', throttledSaveScrollPosition, { passive: true })
+  globalObject.throttledSaveScrollPosition = throttle(saveScrollPosition, Math.ceil(1000 / 3))
+  window.addEventListener('scroll', globalObject.throttledSaveScrollPosition, { passive: true })
   onPageHide(saveScrollPosition)
 }
