@@ -6,7 +6,7 @@ import { retrievePageContext } from '../retrievePageContext'
 function testSettingOnlyAvailableInCorrectEnv() {
   test('Custom Setting Env - Client-only', async () => {
     // Avoid weird error:
-    // ```console
+    // ```shell
     // proxy.goto: Navigation to "http://localhost:3000/config-meta/env/client" is interrupted by another navigation to "http://localhost:3000/"
     // ```
     await sleep(100)

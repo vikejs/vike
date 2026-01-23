@@ -35,7 +35,7 @@ import type { ConfigEnv } from '../../types/index.js'
 import type { GlobalContextClientInternal } from './getGlobalContextClientInternal.js'
 const globalObject = getGlobalObject<{
   pageContextInitIsPassedToClient?: true
-}>('runtime-client-routing/getPageContextFromHooks.ts', {})
+}>('getPageContextFromHooks.ts', {})
 
 // TO-DO/soon/cumulative-hooks: filter & execute all client-only hooks (see other TO-DO/soon/cumulative-hooks comments)
 // - The client-side needs to know what hooks are client-only

@@ -13,7 +13,7 @@ export { scrollRestoration_initialRenderIsDone }
 
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import { onPageHide, onPageShow } from '../../utils/onPageVisibilityChange.js'
-const globalObject = getGlobalObject<{ initialRenderIsDone?: true }>('runtime-client-routing/scrollRestoration.ts', {})
+const globalObject = getGlobalObject<{ initialRenderIsDone?: true }>('scrollRestoration.ts', {})
 
 function scrollRestoration_init() {
   // Use the native scroll restoration mechanism only for the first render

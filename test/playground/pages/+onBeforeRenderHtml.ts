@@ -5,7 +5,9 @@ import { assert } from '../utils/assert'
 import { getGlobalContext, getGlobalContextAsync, getGlobalContextSync } from 'vike'
 
 async function onBeforeRenderHtml(pageContext: PageContextServer) {
-  console.log('+onBeforeRenderHtml hook called')
+  if (import.meta.env.PUBLIC_ENV__TEST) {
+    console.log('+onBeforeRenderHtml hook called')
+  }
 
   // TEST: pageContext.isClientSide
   assert(!pageContext.isClientSide)

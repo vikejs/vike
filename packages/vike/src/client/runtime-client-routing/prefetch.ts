@@ -33,7 +33,7 @@ import { normalizeUrlArgument } from './normalizeUrlArgument.js'
 import type { GlobalContextClientInternal } from './getGlobalContextClientInternal.js'
 
 assertClientRouting()
-const globalObject = getGlobalObject('runtime-client-routing/prefetch.ts', {
+const globalObject = getGlobalObject('prefetch.ts', {
   linkPrefetchHandlerAdded: new WeakSet<HTMLElement>(),
   addLinkPrefetchHandlers_debounce: null as null | ReturnType<typeof setTimeout>,
   mutationObserver: new MutationObserver(addLinkPrefetchHandlers),

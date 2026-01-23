@@ -5,6 +5,8 @@ import { fileURLToPath } from 'node:url'
 
 import { testRunClassic } from '../../test/utils'
 
+process.env.PUBLIC_ENV__TEST = 'true'
+
 import {
   testGlobalContext,
   testHMRPlusValueFile,
