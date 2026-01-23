@@ -78,7 +78,6 @@ function saveScrollPosition() {
 }
 
 function pushHistoryState(url: string, overwriteLastHistoryEntry: boolean) {
-  // Cancel any pending throttled scroll save to prevent it from saving the wrong page's scroll
   cancelDelayedScrollSave()
 
   if (!overwriteLastHistoryEntry) {
@@ -139,7 +138,6 @@ function monkeyPatchHistoryAPI() {
       funcOriginal(state, ...rest)
       assertIsEnhanced(window.history.state as unknown)
 
-      // Cancel any pending throttled scroll save to prevent it from saving the wrong page's scroll
       cancelDelayedScrollSave()
 
       globalObject.previous = getHistoryInfo()

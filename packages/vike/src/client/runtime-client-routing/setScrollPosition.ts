@@ -19,13 +19,7 @@ const globalObject = getGlobalObject<{
   cancelSave?: () => void
 }>('setScrollPosition.ts', {})
 
-// Cancel any pending throttled scroll save to prevent it from saving the wrong page's scroll
-function cancelDelayedScrollSave() {
-  globalObject.cancelSave?.()
-}
-
 function setScrollPosition(scrollTarget: ScrollTarget, url?: string): void {
-  // Cancel any pending throttled scroll save to prevent it from saving the wrong page's scroll
   cancelDelayedScrollSave()
 
   if (!scrollTarget && url && hasTextFragment(url)) {
@@ -142,4 +136,7 @@ function autoSaveScrollPosition() {
   window.addEventListener('scroll', call, { passive: true })
   globalObject.cancelSave = cancel
   onPageHide(saveScrollPosition)
+}
+function cancelDelayedScrollSave() {
+  globalObject.cancelSave?.()
 }
