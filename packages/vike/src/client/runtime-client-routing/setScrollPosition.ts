@@ -2,7 +2,7 @@ import '../assertEnvClient.js'
 
 export { setScrollPosition }
 export { autoSaveScrollPosition }
-export { cancelThrottledScrollSave }
+export { cancelDelayedScrollSave }
 export { scrollToHashOrTop }
 export type { ScrollTarget }
 
@@ -16,17 +16,17 @@ import { getGlobalObject } from '../../utils/getGlobalObject.js'
 type ScrollTarget = undefined | { preserveScroll: boolean } | ScrollPosition
 
 const globalObject = getGlobalObject<{
-  cancelThrottledScrollSave?: () => void
+  cancelDelayedScrollSave?: () => void
 }>('setScrollPosition.ts', {})
 
 // Cancel any pending throttled scroll save to prevent it from saving the wrong page's scroll
-function cancelThrottledScrollSave() {
-  globalObject.cancelThrottledScrollSave?.()
+function cancelDelayedScrollSave() {
+  globalObject.cancelDelayedScrollSave?.()
 }
 
 function setScrollPosition(scrollTarget: ScrollTarget, url?: string): void {
   // Cancel any pending throttled scroll save to prevent it from saving the wrong page's scroll
-  cancelThrottledScrollSave()
+  cancelDelayedScrollSave()
 
   if (!scrollTarget && url && hasTextFragment(url)) {
     scrollToTextFragment(url)
@@ -140,6 +140,6 @@ function autoSaveScrollPosition() {
   // Safari cannot handle more than 100 `history.replaceState()` calls within 30 seconds (https://github.com/vikejs/vike/issues/46)
   const { call, cancel } = throttle(saveScrollPosition, Math.ceil(1000 / 3))
   window.addEventListener('scroll', call, { passive: true })
-  globalObject.cancelThrottledScrollSave = cancel
+  globalObject.cancelDelayedScrollSave = cancel
   onPageHide(saveScrollPosition)
 }

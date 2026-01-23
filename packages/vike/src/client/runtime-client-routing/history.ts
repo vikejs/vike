@@ -13,7 +13,7 @@ import { assert, assertUsage } from '../../utils/assert.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import { isObject } from '../../utils/isObject.js'
 import { redirectHard } from '../../utils/redirectHard.js'
-import { cancelThrottledScrollSave } from './setScrollPosition.js'
+import { cancelDelayedScrollSave } from './setScrollPosition.js'
 
 const globalObject = getGlobalObject('history.ts', {
   monkeyPatched: false,
@@ -79,7 +79,7 @@ function saveScrollPosition() {
 
 function pushHistoryState(url: string, overwriteLastHistoryEntry: boolean) {
   // Cancel any pending throttled scroll save to prevent it from saving the wrong page's scroll
-  cancelThrottledScrollSave()
+  cancelDelayedScrollSave()
 
   if (!overwriteLastHistoryEntry) {
     const state: StateEnhanced = {
@@ -140,7 +140,7 @@ function monkeyPatchHistoryAPI() {
       assertIsEnhanced(window.history.state as unknown)
 
       // Cancel any pending throttled scroll save to prevent it from saving the wrong page's scroll
-      cancelThrottledScrollSave()
+      cancelDelayedScrollSave()
 
       globalObject.previous = getHistoryInfo()
 
