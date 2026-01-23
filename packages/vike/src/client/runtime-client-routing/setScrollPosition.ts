@@ -9,19 +9,19 @@ export type { ScrollTarget }
 import { assert } from '../../utils/assert.js'
 import { onPageHide } from '../../utils/onPageVisibilityChange.js'
 import { sleep } from '../../utils/sleep.js'
-import { throttle, type ThrottledFunction } from '../../utils/throttle.js'
+import { throttle } from '../../utils/throttle.js'
 import { replaceHistoryStateOriginal, saveScrollPosition, type ScrollPosition } from './history.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 
 type ScrollTarget = undefined | { preserveScroll: boolean } | ScrollPosition
 
 const globalObject = getGlobalObject<{
-  throttledSaveScrollPosition?: ThrottledFunction
+  cancelThrottledScrollSave?: () => void
 }>('setScrollPosition.ts', {})
 
 // Cancel any pending throttled scroll save to prevent it from saving the wrong page's scroll
 function cancelThrottledScrollSave() {
-  globalObject.throttledSaveScrollPosition?.cancel()
+  globalObject.cancelThrottledScrollSave?.()
 }
 
 function setScrollPosition(scrollTarget: ScrollTarget, url?: string): void {
