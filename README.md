@@ -1,6 +1,6 @@
 # Vike
 
-(Replaces Next.js/Nuxt) 🔨 Composable framework to build (advanced) applications with flexibility and stability.
+(Replaces Next.js/Nuxt) 🔨 Composable framework to build advanced applications with flexibility and stability.
 
 ## Links
 
