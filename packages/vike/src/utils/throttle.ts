@@ -25,5 +25,6 @@ function throttle(func: Function, waitTime: number): ThrottledFunction {
     }
   }
 
+  // TODO/ai return cancel instead of throttled
   return throttled
 }
