@@ -138,7 +138,7 @@ function getUrlHash(): string | null {
 // Save scroll position (needed for back-/forward navigation)
 function autoSaveScrollPosition() {
   // Safari cannot handle more than 100 `history.replaceState()` calls within 30 seconds (https://github.com/vikejs/vike/issues/46)
-  const { call, cancel } = throttle(saveScrollPosition, Math.ceil(1000 / 3))
+  const { call, cancel } = throttle(saveScrollPosition, 300)
   window.addEventListener('scroll', call, { passive: true })
   globalObject.cancelDelayedScrollSave = cancel
   onPageHide(saveScrollPosition)
