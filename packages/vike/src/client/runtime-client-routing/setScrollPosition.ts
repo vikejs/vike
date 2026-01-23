@@ -14,6 +14,7 @@ import { replaceHistoryStateOriginal, saveScrollPosition, type ScrollPosition } 
 
 type ScrollTarget = undefined | { preserveScroll: boolean } | ScrollPosition
 
+// TODO/ai use globalObject
 let throttledSaveScrollPosition: ThrottledFunction | undefined
 
 // Cancel any pending throttled scroll save to prevent it from saving the wrong page's scroll
