@@ -7,21 +7,21 @@ type ThrottledFunction = {
 }
 
 function throttle(func: Function, waitTime: number): ThrottledFunction {
-  let timeoutId: ReturnType<typeof setTimeout> | null = null
+  let timeoutId: ReturnType<typeof setTimeout> | undefined
 
   const throttled = () => {
-    if (timeoutId === null) {
+    if (!timeoutId) {
       timeoutId = setTimeout(() => {
-        timeoutId = null
+        timeoutId = undefined
         func()
       }, waitTime)
     }
   }
 
   throttled.cancel = () => {
-    if (timeoutId !== null) {
+    if (timeoutId) {
       clearTimeout(timeoutId)
-      timeoutId = null
+      timeoutId = undefined
     }
   }
 
