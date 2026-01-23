@@ -1,15 +1,9 @@
 export { throttle }
-export type { ThrottledFunction }
 
-type ThrottledFunction = {
-  (): void
-  cancel: () => void
-}
-
-function throttle(func: Function, waitTime: number): ThrottledFunction {
+function throttle(func: Function, waitTime: number) {
   let timeoutId: ReturnType<typeof setTimeout> | undefined
 
-  const throttled = () => {
+  const call = () => {
     if (!timeoutId) {
       timeoutId = setTimeout(() => {
         timeoutId = undefined
@@ -18,13 +12,12 @@ function throttle(func: Function, waitTime: number): ThrottledFunction {
     }
   }
 
-  throttled.cancel = () => {
+  const cancel = () => {
     if (timeoutId) {
       clearTimeout(timeoutId)
       timeoutId = undefined
     }
   }
 
-  // TODO/ai return cancel instead of throttled
-  return throttled
+  return { call, cancel }
 }
