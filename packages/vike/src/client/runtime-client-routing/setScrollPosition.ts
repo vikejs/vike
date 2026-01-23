@@ -17,7 +17,7 @@ type ScrollTarget = undefined | { preserveScroll: boolean } | ScrollPosition
 
 const globalObject = getGlobalObject<{
   throttledSaveScrollPosition?: ThrottledFunction
-}>('runtime-client-routing/setScrollPosition.ts', {})
+}>('setScrollPosition.ts', {})
 
 // Cancel any pending throttled scroll save to prevent it from saving the wrong page's scroll
 function cancelThrottledScrollSave() {
