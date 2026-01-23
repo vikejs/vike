@@ -512,14 +512,18 @@ async function renderPageClient(renderArgs: RenderArgs) {
     changeUrl(urlOriginal, overwriteLastHistoryEntry)
     globalObject.previousPageContext = pageContext
     assert(globalObject.onRenderClientPreviousPromise === undefined)
+    // TO-DO/eventually: remove this assert
+    const assertPageContext = () => assert((getPageContextClient() as any)._originalObject === pageContext) // ensure `getPageContext() === usePageContext()` (it seems to not be the case sometimes?)
     const onRenderClientPromise = (async () => {
       let onRenderClientError: unknown
+      assertPageContext()
       try {
         await execHookOnRenderClient(pageContext, getPageContextPublicClient)
       } catch (err) {
         assert(err)
         onRenderClientError = err
       }
+      assertPageContext()
       globalObject.onRenderClientPreviousPromise = undefined
       globalObject.isFirstRenderDone = true
       return onRenderClientError
