@@ -6,6 +6,7 @@ type ThrottledFunction = {
   cancel: () => void
 }
 
+// TODO/ai: simplify implementation
 function throttle(func: Function, waitTime: number): ThrottledFunction {
   let isQueued: boolean = false
   let timeoutId: ReturnType<typeof setTimeout> | null = null
