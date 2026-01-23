@@ -16,12 +16,12 @@ import { getGlobalObject } from '../../utils/getGlobalObject.js'
 type ScrollTarget = undefined | { preserveScroll: boolean } | ScrollPosition
 
 const globalObject = getGlobalObject<{
-  cancelDelayedScrollSave?: () => void
+  cancelSave?: () => void
 }>('setScrollPosition.ts', {})
 
 // Cancel any pending throttled scroll save to prevent it from saving the wrong page's scroll
 function cancelDelayedScrollSave() {
-  globalObject.cancelDelayedScrollSave?.()
+  globalObject.cancelSave?.()
 }
 
 function setScrollPosition(scrollTarget: ScrollTarget, url?: string): void {
@@ -140,6 +140,6 @@ function autoSaveScrollPosition() {
   // Safari cannot handle more than 100 `history.replaceState()` calls within 30 seconds (https://github.com/vikejs/vike/issues/46)
   const { call, cancel } = throttle(saveScrollPosition, 300)
   window.addEventListener('scroll', call, { passive: true })
-  globalObject.cancelDelayedScrollSave = cancel
+  globalObject.cancelSave = cancel
   onPageHide(saveScrollPosition)
 }
