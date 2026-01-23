@@ -2,6 +2,7 @@ import '../assertEnvClient.js'
 
 export { setScrollPosition }
 export { autoSaveScrollPosition }
+export { cancelThrottledScrollSave }
 export { scrollToHashOrTop }
 export type { ScrollTarget }
 
@@ -9,20 +10,20 @@ import { assert } from '../../utils/assert.js'
 import { onPageHide } from '../../utils/onPageVisibilityChange.js'
 import { sleep } from '../../utils/sleep.js'
 import { throttle, type ThrottledFunction } from '../../utils/throttle.js'
-import {
-  replaceHistoryStateOriginal,
-  saveScrollPosition,
-  type ScrollPosition,
-  registerCancelFunction,
-} from './history.js'
+import { replaceHistoryStateOriginal, saveScrollPosition, type ScrollPosition } from './history.js'
 
 type ScrollTarget = undefined | { preserveScroll: boolean } | ScrollPosition
 
 let throttledSaveScrollPosition: ThrottledFunction | undefined
 
+// Cancel any pending throttled scroll save to prevent it from saving the wrong page's scroll
+function cancelThrottledScrollSave() {
+  throttledSaveScrollPosition?.cancel()
+}
+
 function setScrollPosition(scrollTarget: ScrollTarget, url?: string): void {
   // Cancel any pending throttled scroll save to prevent it from saving the wrong page's scroll
-  throttledSaveScrollPosition?.cancel()
+  cancelThrottledScrollSave()
 
   if (!scrollTarget && url && hasTextFragment(url)) {
     scrollToTextFragment(url)
@@ -137,7 +138,4 @@ function autoSaveScrollPosition() {
   throttledSaveScrollPosition = throttle(saveScrollPosition, Math.ceil(1000 / 3))
   window.addEventListener('scroll', throttledSaveScrollPosition, { passive: true })
   onPageHide(saveScrollPosition)
-
-  // Register cancel function so history.ts can cancel pending scroll saves
-  registerCancelFunction(() => throttledSaveScrollPosition?.cancel())
 }

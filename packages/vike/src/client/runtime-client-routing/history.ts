@@ -5,8 +5,6 @@ export { replaceHistoryStateOriginal }
 export { onPopStateBegin }
 export { saveScrollPosition }
 export { initHistory }
-export { cancelThrottledScrollSave }
-export { registerCancelFunction }
 export type { HistoryInfo }
 export type { ScrollPosition }
 
@@ -15,23 +13,14 @@ import { assert, assertUsage } from '../../utils/assert.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import { isObject } from '../../utils/isObject.js'
 import { redirectHard } from '../../utils/redirectHard.js'
+import { cancelThrottledScrollSave } from './setScrollPosition.js'
 
 const globalObject = getGlobalObject('history.ts', {
   monkeyPatched: false,
   previous: undefined as any as HistoryInfo,
-  cancelThrottledScrollSave: undefined as undefined | (() => void),
 })
 initHistory() // we redundantly call initHistory() to ensure it's called early
 globalObject.previous = getHistoryInfo()
-
-// Import the cancel function from setScrollPosition.ts
-// This is set by autoSaveScrollPosition() and allows history.ts to cancel pending scroll saves
-function cancelThrottledScrollSave() {
-  globalObject.cancelThrottledScrollSave?.()
-}
-export function registerCancelFunction(cancel: () => void) {
-  globalObject.cancelThrottledScrollSave = cancel
-}
 
 type StateEnhanced = {
   vike: {
