@@ -78,8 +78,6 @@ function saveScrollPosition() {
 }
 
 function pushHistoryState(url: string, overwriteLastHistoryEntry: boolean) {
-  cancelDelayedScrollSave()
-
   if (!overwriteLastHistoryEntry) {
     const state: StateEnhanced = {
       vike: {
@@ -92,6 +90,7 @@ function pushHistoryState(url: string, overwriteLastHistoryEntry: boolean) {
     // Calling the monkey patched history.pushState() (and not the original) so that other tools (e.g. user tracking) can listen to Vike's pushState() calls.
     // - https://github.com/vikejs/vike/issues/1582
     window.history.pushState(state, '', url)
+    cancelDelayedScrollSave()
   } else {
     replaceHistoryState(getState(), url)
   }

@@ -13,10 +13,8 @@ function throttle(func: Function, waitTime: number) {
   }
 
   const cancel = () => {
-    if (timeoutId) {
-      clearTimeout(timeoutId)
-      timeoutId = undefined
-    }
+    clearTimeout(timeoutId)
+    timeoutId = undefined
   }
 
   return { call, cancel }
