@@ -125,8 +125,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
   } = renderArgs
   let { scrollTarget } = renderArgs
   const { previousPageContext } = globalObject
-  const urlOriginalDebug = urlOriginal
-  console.log('renderPageClient', urlOriginalDebug)
+  console.log(urlOriginal, 'renderPageClient')
 
   addLinkPrefetchHandlers_unwatch()
 
@@ -155,7 +154,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
   return await renderPageNominal()
 
   async function renderPageNominal() {
-    console.log('renderPageNominal()', urlOriginalDebug)
+    console.log(urlOriginal, 'renderPageNominal()')
     const onError = async (err: unknown) => {
       await handleError({ err })
     }
@@ -263,7 +262,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     // Set global hydrationCanBeAborted
     if (pageContext.exports.hydrationCanBeAborted) {
-      console.log('setHydrationCanBeAborted()', urlOriginalDebug)
+      console.log(urlOriginal, 'setHydrationCanBeAborted()')
       setHydrationCanBeAborted()
     } else {
       // TODO: show only in dev
@@ -287,6 +286,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
         return
       }
       if (isRenderOutdated()) return
+      console.log(urlOriginal, 'isRenderOutdated() [first]', false)
       updateType(pageContext, pageContextAugmented)
 
       // Render page view
@@ -324,6 +324,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
       }
       if (isRenderOutdated()) return
       updateType(pageContext, pageContextFromHooksClient)
+      console.log(urlOriginal, 'isRenderOutdated() [secon]', false)
 
       return await renderPageView(pageContext)
     }
@@ -443,7 +444,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
       return
     }
     if (isRenderOutdated()) return
-    console.log('isRenderOutdated()', false, urlOriginalDebug)
     updateType(pageContext, pageContextFromHooksClient)
 
     await renderPageView(pageContext, args)
@@ -524,7 +524,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
       assert(pageContextClient, { undefined: true })
       const pageIdGet = pageContextClient.pageId
       const pageIdRen = pageContext.pageId
-      assert(pageIdGet === pageIdRen, { pageIdGet, pageIdRen, urlOriginalDebug })
+      assert(pageIdGet === pageIdRen, { pageIdGet, pageIdRen, urlOriginal })
       assert(pageContextClient._originalObject === pageContext, 'not some object') // ensure `getPageContext() === usePageContext()` (it seems to not be the case sometimes?)
     }
     const onRenderClientPromise = (async () => {
@@ -634,7 +634,7 @@ async function getPageContextBegin(
     isFirstRender: boolean
   },
 ) {
-  console.log('getPageContextBegin()', urlOriginal)
+  console.log(urlOriginal, 'getPageContextBegin()')
   const previousPageContext = globalObject.previousPageContext ?? null
   const pageContext = await createPageContextClient(urlOriginal)
   objectAssign(pageContext, {
@@ -647,9 +647,9 @@ async function getPageContextBegin(
     ...pageContextInitClient,
   })
 
-  console.log('globalObject.currentPageContext.pageId [before]', globalObject.currentPageContext?.pageId, urlOriginal)
+  console.log(urlOriginal, 'globalObject.currentPageContext.pageId [before]', globalObject.currentPageContext?.pageId)
   globalObject.currentPageContext = pageContext
-  console.log('globalObject.currentPageContext.pageId [after]', globalObject.currentPageContext.pageId, urlOriginal)
+  console.log(urlOriginal, 'globalObject.currentPageContext.pageId [after]', globalObject.currentPageContext.pageId)
 
   // TO-DO/next-major-release: remove
   Object.defineProperty(pageContext, '_previousPageContext', {
