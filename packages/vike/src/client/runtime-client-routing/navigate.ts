@@ -6,7 +6,7 @@ export { reload }
 // import { modifyUrlSameOrigin, ModifyUrlSameOriginOptions } from '../../shared/modifyUrlSameOrigin.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 import { normalizeUrlArgument } from './normalizeUrlArgument.js'
-import { firstRenderStartPromise, renderPageClient } from './renderPageClient.js'
+import { renderPageClient } from './renderPageClient.js'
 import type { ScrollTarget } from './setScrollPosition.js'
 import { assertClientRouting } from '../../utils/assertRoutingType.js'
 
@@ -31,9 +31,6 @@ async function navigate(url: string, options?: Options): Promise<void> {
   // let url = normalizeUrlArgument(options.url ?? getCurrentUrl(), 'navigate')
   // url = modifyUrlSameOrigin(url, options)
   normalizeUrlArgument(url, 'navigate')
-
-  // If `hydrationCanBeAborted === false` (e.g. Vue) then we can apply navigate() only after hydration is done
-  await firstRenderStartPromise
 
   const { keepScrollPosition, overwriteLastHistoryEntry, pageContext } = options ?? {}
   const scrollTarget: ScrollTarget = { preserveScroll: keepScrollPosition ?? false }

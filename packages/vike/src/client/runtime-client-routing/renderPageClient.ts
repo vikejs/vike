@@ -3,7 +3,6 @@ import '../assertEnvClient.js'
 export { renderPageClient }
 export { getRenderCount }
 export { disableClientRouting }
-export { firstRenderStartPromise }
 export { getPageContextClient }
 export type { PageContextBegin }
 export type { PageContextInternalClientAfterRender }
@@ -79,20 +78,19 @@ const globalObject = getGlobalObject<{
   previousPageContext?: PreviousPageContext
   renderedPageContext?: PageContextInternalClient & PageContext_loadPageConfigsLazyClientSide
   currentPageContext?: Record<string, unknown>
-  firstRenderStartPromise: Promise<void>
-  firstRenderStartPromiseResolve: () => void
+  hydrationAwaitPromise: Promise<void>
+  hydrationAwaitPromiseResolve: () => void
 }>(
   'renderPageClient.ts',
   (() => {
-    const { promise: firstRenderStartPromise, resolve: firstRenderStartPromiseResolve } = genPromise()
+    const { promise: hydrationAwaitPromise, resolve: hydrationAwaitPromiseResolve } = genPromise()
     return {
       renderCounter: 0,
-      firstRenderStartPromise,
-      firstRenderStartPromiseResolve,
+      hydrationAwaitPromise,
+      hydrationAwaitPromiseResolve,
     }
   })(),
 )
-const { firstRenderStartPromise } = globalObject
 type PreviousPageContext = { pageId: string } & PageContextConfig &
   PageContextRouted &
   PageContextCreatedClient &
@@ -132,7 +130,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
   addLinkPrefetchHandlers_unwatch()
 
-  const { isRenderOutdated, setHydrationCanBeAborted, isFirstRender } = getIsRenderOutdated()
+  const { isRenderOutdated, isFirstRender, setHydrationCanBeAborted } = getIsRenderOutdated()
 
   const pageContextBeginArgs = {
     urlOriginal,
@@ -149,8 +147,10 @@ async function renderPageClient(renderArgs: RenderArgs) {
     return
   }
 
-  globalObject.firstRenderStartPromiseResolve()
-  if (isRenderOutdated()) return
+  if (!isFirstRender) {
+    await globalObject.hydrationAwaitPromise
+    if (isRenderOutdated()) return
+  }
 
   return await renderPageNominal()
 
@@ -604,6 +604,10 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     stampFinished(urlOriginal)
 
+    if (isFirstRender) {
+      globalObject.hydrationAwaitPromiseResolve()
+    }
+
     return pageContext
   }
 }
@@ -710,6 +714,7 @@ function getIsRenderOutdated() {
   let hydrationCanBeAborted = false
   const setHydrationCanBeAborted = () => {
     hydrationCanBeAborted = true
+    globalObject.hydrationAwaitPromiseResolve()
   }
 
   /** Whether the rendering should be aborted because a new rendering has started. We should call this after each `await`. */
@@ -728,8 +733,8 @@ function getIsRenderOutdated() {
 
   return {
     isRenderOutdated,
-    setHydrationCanBeAborted,
     isFirstRender: renderNumber === 1,
+    setHydrationCanBeAborted,
   }
 }
 function getRenderCount(): number {
