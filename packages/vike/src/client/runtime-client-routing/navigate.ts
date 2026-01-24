@@ -9,6 +9,7 @@ import { normalizeUrlArgument } from './normalizeUrlArgument.js'
 import { renderPageClient } from './renderPageClient.js'
 import type { ScrollTarget } from './setScrollPosition.js'
 import { assertClientRouting } from '../../utils/assertRoutingType.js'
+import { initClientRouter } from './initClientRouter.js'
 
 assertClientRouting()
 
@@ -31,6 +32,9 @@ async function navigate(url: string, options?: Options): Promise<void> {
   // let url = normalizeUrlArgument(options.url ?? getCurrentUrl(), 'navigate')
   // url = modifyUrlSameOrigin(url, options)
   normalizeUrlArgument(url, 'navigate')
+
+  // Ensure initClientRouter() is called before navigate() — otherwise race condition when +client.js calls navigate() before initClientRouter() is called in runtime-client-routing/entry.ts
+  initClientRouter()
 
   const { keepScrollPosition, overwriteLastHistoryEntry, pageContext } = options ?? {}
   const scrollTarget: ScrollTarget = { preserveScroll: keepScrollPosition ?? false }

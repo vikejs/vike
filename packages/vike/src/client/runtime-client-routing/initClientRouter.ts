@@ -3,6 +3,7 @@ import '../assertEnvClient.js'
 export { initClientRouter }
 
 import { assert } from '../../utils/assert.js'
+import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import { getRenderCount, renderPageClient } from './renderPageClient.js'
 import { initOnPopState } from './initOnPopState.js'
 import { initOnLinkClick } from './initOnLinkClick.js'
@@ -11,7 +12,15 @@ import { autoSaveScrollPosition } from './setScrollPosition.js'
 import { initLinkPrefetchHandlers } from './prefetch.js'
 import { initHistory } from './history.js'
 
+const globalObject = getGlobalObject<{
+  done?: true
+}>('initClientRouter.ts', {})
+
 async function initClientRouter() {
+  if (globalObject.done) return
+  // The init calls below are sync and therefore guaranteed to be called before any subsequent initClientRouter() call
+  globalObject.done = true
+
   // Init navigation history and scroll restoration
   initHistoryAndScroll()
 
