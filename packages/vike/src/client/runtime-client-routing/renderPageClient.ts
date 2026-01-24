@@ -265,6 +265,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     if (pageContext.exports.hydrationCanBeAborted) {
       setHydrationCanBeAborted()
     } else {
+      // TODO: show only in dev
       assertWarning(
         !isReact(),
         'You seem to be using React; we recommend setting hydrationCanBeAborted to true, see https://vike.dev/hydrationCanBeAborted',
