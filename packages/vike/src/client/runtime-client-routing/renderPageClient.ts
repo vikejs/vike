@@ -111,8 +111,6 @@ type RenderArgs = {
   pageContextInitClient?: Record<string, unknown>
 }
 async function renderPageClient(renderArgs: RenderArgs) {
-  const urlOriginalDebug = renderArgs.urlOriginal ?? 'not set'
-  console.log('renderPageClient', urlOriginalDebug)
   catchInfiniteLoop('renderPageClient()')
 
   const {
@@ -127,6 +125,8 @@ async function renderPageClient(renderArgs: RenderArgs) {
   } = renderArgs
   let { scrollTarget } = renderArgs
   const { previousPageContext } = globalObject
+  const urlOriginalDebug = urlOriginal
+  console.log('renderPageClient', urlOriginalDebug)
 
   addLinkPrefetchHandlers_unwatch()
 
@@ -520,9 +520,9 @@ async function renderPageClient(renderArgs: RenderArgs) {
     const assertPageContext = () => {
       const pageContextClient = getPageContextClient() as any
       assert(pageContextClient, { undefined: true })
-      const pageId1 = pageContextClient.pageId
-      const pageId2 = pageContext.pageId
-      assert(pageId1 === pageId2, { pageId1, pageId2, urlOriginalDebug })
+      const pageIdGet = pageContextClient.pageId
+      const pageIdRen = pageContext.pageId
+      assert(pageIdGet === pageIdRen, { pageIdGet, pageIdRen, urlOriginalDebug })
       assert(pageContextClient._originalObject === pageContext, 'not some object') // ensure `getPageContext() === usePageContext()` (it seems to not be the case sometimes?)
     }
     const onRenderClientPromise = (async () => {
