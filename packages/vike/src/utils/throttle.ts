@@ -2,8 +2,7 @@ export { throttle }
 
 function throttle(func: Function, waitTime: number) {
   let timeoutId: ReturnType<typeof setTimeout> | undefined
-
-  const call = () => {
+  return () => {
     if (!timeoutId) {
       timeoutId = setTimeout(() => {
         timeoutId = undefined
@@ -11,11 +10,4 @@ function throttle(func: Function, waitTime: number) {
       }, waitTime)
     }
   }
-
-  const cancel = () => {
-    clearTimeout(timeoutId)
-    timeoutId = undefined
-  }
-
-  return { call, cancel }
 }

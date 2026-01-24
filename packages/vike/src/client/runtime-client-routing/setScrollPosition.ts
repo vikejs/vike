@@ -2,7 +2,6 @@ import '../assertEnvClient.js'
 
 export { setScrollPosition }
 export { autoSaveScrollPosition }
-export { cancelDelayedScrollSave }
 export { scrollToHashOrTop }
 export type { ScrollTarget }
 
@@ -11,17 +10,10 @@ import { onPageHide } from '../../utils/onPageVisibilityChange.js'
 import { sleep } from '../../utils/sleep.js'
 import { throttle } from '../../utils/throttle.js'
 import { replaceHistoryStateOriginal, saveScrollPosition, type ScrollPosition } from './history.js'
-import { getGlobalObject } from '../../utils/getGlobalObject.js'
 
 type ScrollTarget = undefined | { preserveScroll: boolean } | ScrollPosition
 
-const globalObject = getGlobalObject<{
-  cancelSave?: () => void
-}>('setScrollPosition.ts', {})
-
 function setScrollPosition(scrollTarget: ScrollTarget, url?: string): void {
-  cancelDelayedScrollSave()
-
   if (!scrollTarget && url && hasTextFragment(url)) {
     scrollToTextFragment(url)
     return
@@ -132,11 +124,6 @@ function getUrlHash(): string | null {
 // Save scroll position (needed for back-/forward navigation)
 function autoSaveScrollPosition() {
   // Safari cannot handle more than 100 `history.replaceState()` calls within 30 seconds (https://github.com/vikejs/vike/issues/46)
-  const { call, cancel } = throttle(saveScrollPosition, 300)
-  window.addEventListener('scroll', call, { passive: true })
-  globalObject.cancelSave = cancel
+  window.addEventListener('scroll', throttle(saveScrollPosition, 300), { passive: true })
   onPageHide(saveScrollPosition)
-}
-function cancelDelayedScrollSave() {
-  // globalObject.cancelSave?.()
 }
