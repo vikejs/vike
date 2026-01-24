@@ -273,6 +273,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
       )
     }
     // There wasn't any `await` but the isRenderOutdated() return value may have changed because we called setHydrationCanBeAborted()
+    console.log(urlOriginal, 'isRenderOutdated() [post setHydrationCanBeAborted()]', isRenderOutdated())
     if (isRenderOutdated()) return
 
     // Get pageContext from hooks (fetched from server, and/or directly called on the client-side)
@@ -285,8 +286,8 @@ async function renderPageClient(renderArgs: RenderArgs) {
         await onError(err)
         return
       }
+      console.log(urlOriginal, 'isRenderOutdated() [isFirstRender]', isRenderOutdated())
       if (isRenderOutdated()) return
-      console.log(urlOriginal, 'isRenderOutdated() [first]', false)
       updateType(pageContext, pageContextAugmented)
 
       // Render page view
@@ -322,9 +323,9 @@ async function renderPageClient(renderArgs: RenderArgs) {
         await onError(err)
         return
       }
+      console.log(urlOriginal, 'isRenderOutdated() [!isFirstRender]', isRenderOutdated())
       if (isRenderOutdated()) return
       updateType(pageContext, pageContextFromHooksClient)
-      console.log(urlOriginal, 'isRenderOutdated() [secon]', false)
 
       return await renderPageView(pageContext)
     }
