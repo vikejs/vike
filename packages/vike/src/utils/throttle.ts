@@ -1,11 +1,12 @@
 export { throttle }
 
 function throttle(func: Function, waitTime: number) {
-  let timeoutId: ReturnType<typeof setTimeout> | undefined
+  let isQueued: boolean = false
   return () => {
-    if (!timeoutId) {
-      timeoutId = setTimeout(() => {
-        timeoutId = undefined
+    if (!isQueued) {
+      isQueued = true
+      setTimeout(() => {
+        isQueued = false
         func()
       }, waitTime)
     }
