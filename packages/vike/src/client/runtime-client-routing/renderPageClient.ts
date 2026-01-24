@@ -113,7 +113,8 @@ type RenderArgs = {
   pageContextInitClient?: Record<string, unknown>
 }
 async function renderPageClient(renderArgs: RenderArgs) {
-  console.log('renderPageClient', renderArgs.urlOriginal)
+  const urlOriginalDebug = renderArgs.urlOriginal ?? 'not set'
+  console.log('renderPageClient', urlOriginalDebug)
   catchInfiniteLoop('renderPageClient()')
 
   const {
@@ -154,7 +155,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
   return await renderPageNominal()
 
   async function renderPageNominal() {
-    console.log('renderPageNominal()')
+    console.log('renderPageNominal()', urlOriginalDebug)
     const onError = async (err: unknown) => {
       await handleError({ err })
     }
@@ -520,7 +521,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
       assert(pageContextClient, { undefined: true })
       const pageId1 = pageContextClient.pageId
       const pageId2 = pageContext.pageId
-      assert(pageId1 === pageId2, { pageId1, pageId2 })
+      assert(pageId1 === pageId2, { pageId1, pageId2, urlOriginalDebug })
       assert(pageContextClient._originalObject === pageContext, 'not some object') // ensure `getPageContext() === usePageContext()` (it seems to not be the case sometimes?)
     }
     const onRenderClientPromise = (async () => {
@@ -626,7 +627,7 @@ async function getPageContextBegin(
     isFirstRender: boolean
   },
 ) {
-  console.log('getPageContextBegin()')
+  console.log('getPageContextBegin()', urlOriginal)
   const previousPageContext = globalObject.previousPageContext ?? null
   const pageContext = await createPageContextClient(urlOriginal)
   objectAssign(pageContext, {
@@ -639,9 +640,9 @@ async function getPageContextBegin(
     ...pageContextInitClient,
   })
 
-  console.log('globalObject.currentPageContext.pageId [before]', globalObject.currentPageContext?.pageId)
+  console.log('globalObject.currentPageContext.pageId [before]', globalObject.currentPageContext?.pageId, urlOriginal)
   globalObject.currentPageContext = pageContext
-  console.log('globalObject.currentPageContext.pageId [after]', globalObject.currentPageContext.pageId)
+  console.log('globalObject.currentPageContext.pageId [after]', globalObject.currentPageContext.pageId, urlOriginal)
 
   // TO-DO/next-major-release: remove
   Object.defineProperty(pageContext, '_previousPageContext', {
