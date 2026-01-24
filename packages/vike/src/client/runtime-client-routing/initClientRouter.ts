@@ -12,6 +12,8 @@ import { autoSaveScrollPosition } from './setScrollPosition.js'
 import { initLinkPrefetchHandlers } from './prefetch.js'
 import { initHistory } from './history.js'
 
+Error.stackTraceLimit = Infinity
+
 const globalObject = getGlobalObject<{
   done?: true
 }>('initClientRouter.ts', {})
