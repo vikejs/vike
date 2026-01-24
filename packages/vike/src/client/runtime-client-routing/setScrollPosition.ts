@@ -138,5 +138,5 @@ function autoSaveScrollPosition() {
   onPageHide(saveScrollPosition)
 }
 function cancelDelayedScrollSave() {
-  globalObject.cancelSave?.()
+  // globalObject.cancelSave?.()
 }
