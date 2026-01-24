@@ -11,6 +11,9 @@ import { scrollRestoration_init } from './scrollRestoration.js'
 import { autoSaveScrollPosition } from './setScrollPosition.js'
 import { initLinkPrefetchHandlers } from './prefetch.js'
 import { initHistory } from './history.js'
+import { setVirtualFileExportsGlobalEntry } from '../shared/getGlobalContextClientInternalShared.js'
+// @ts-expect-error
+import * as virtualFileExportsGlobalEntry from 'virtual:vike:global-entry:client:client-routing'
 
 Error.stackTraceLimit = Infinity
 
@@ -19,6 +22,8 @@ const globalObject = getGlobalObject<{
 }>('initClientRouter.ts', {})
 
 async function initClientRouter() {
+  setVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry)
+
   if (globalObject.done) return
   // The init calls below are sync and therefore guaranteed to be called before any subsequent initClientRouter() call
   globalObject.done = true
