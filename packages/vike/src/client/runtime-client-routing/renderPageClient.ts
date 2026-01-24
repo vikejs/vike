@@ -579,7 +579,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     setScrollPosition(scrollTarget, urlOriginal)
     // TODO: refactor
     if (scrollTarget && 'y' in scrollTarget) {
-      // Restore window.history.state.vike.scrollPosition (required in case of scrolling during rendering)
+      // Restore window.history.state.vike.scrollPosition (in case scrolling occurred during rendering)
       saveScrollPosition(scrollTarget)
     }
     scrollRestoration_initialRenderIsDone()

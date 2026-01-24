@@ -12,7 +12,6 @@ import { throttle } from '../../utils/throttle.js'
 import { replaceHistoryStateOriginal, saveScrollPosition, type ScrollPosition } from './history.js'
 
 type ScrollTarget = undefined | { preserveScroll: boolean } | ScrollPosition
-
 function setScrollPosition(scrollTarget: ScrollTarget, url?: string): void {
   if (!scrollTarget && url && hasTextFragment(url)) {
     scrollToTextFragment(url)
