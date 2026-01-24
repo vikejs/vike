@@ -125,12 +125,12 @@ async function renderPageClient(renderArgs: RenderArgs) {
   } = renderArgs
   let { scrollTarget } = renderArgs
   const { previousPageContext } = globalObject
-  console.log(urlOriginal, 'renderPageClient')
 
   addLinkPrefetchHandlers_unwatch()
 
   const { isRenderOutdated, isFirstRender, setHydrationCanBeAborted } = getIsRenderOutdated()
 
+  const renderId = Math.random()
   const pageContextBeginArgs = {
     urlOriginal,
     isBackwardNavigation,
@@ -139,7 +139,9 @@ async function renderPageClient(renderArgs: RenderArgs) {
     isClientSideNavigation,
     pageContextInitClient,
     isFirstRender,
+    renderId,
   }
+  console.log(urlOriginal, 'renderPageClient', renderId)
 
   if (globalObject.clientRoutingIsDisabled) {
     redirectHard(urlOriginal)
@@ -501,6 +503,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
       } & PageContextRouted,
     isErrorPage?: { err?: unknown },
   ) {
+    console.log(urlOriginal, 'renderPageView() 1', renderId)
     const onError = async (err: unknown) => {
       if (!isErrorPage) {
         await handleError({ err })
@@ -512,10 +515,13 @@ async function renderPageClient(renderArgs: RenderArgs) {
     // We use globalObject.onRenderClientPreviousPromise in order to ensure that there is never two concurrent onRenderClient() calls
     if (globalObject.onRenderClientPreviousPromise) {
       // Make sure that the previous render has finished
+      console.log(urlOriginal, 'renderPageView() 2', renderId)
       await globalObject.onRenderClientPreviousPromise
+      console.log(urlOriginal, 'renderPageView() 3', renderId)
       assert(globalObject.onRenderClientPreviousPromise === undefined)
       if (isRenderOutdated()) return
     }
+    console.log(urlOriginal, 'renderPageView() 4', renderId)
     changeUrl(urlOriginal, overwriteLastHistoryEntry)
     globalObject.previousPageContext = pageContext
     assert(globalObject.onRenderClientPreviousPromise === undefined)
@@ -525,7 +531,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
       assert(pageContextClient, { undefined: true })
       const pageIdGet = pageContextClient.pageId
       const pageIdRen = pageContext.pageId
-      assert(pageIdGet === pageIdRen, { pageIdGet, pageIdRen, urlOriginal })
+      assert(pageIdGet === pageIdRen, { pageIdGet, pageIdRen, urlOriginal, renderId })
       assert(pageContextClient._originalObject === pageContext, 'not some object') // ensure `getPageContext() === usePageContext()` (it seems to not be the case sometimes?)
     }
     const onRenderClientPromise = (async () => {
@@ -625,6 +631,7 @@ async function getPageContextBegin(
     isClientSideNavigation,
     pageContextInitClient,
     isFirstRender,
+    renderId,
   }: {
     urlOriginal: string
     isBackwardNavigation: boolean | null
@@ -633,6 +640,7 @@ async function getPageContextBegin(
     isClientSideNavigation: boolean
     pageContextInitClient: Record<string, unknown> | undefined
     isFirstRender: boolean
+    renderId: number
   },
 ) {
   console.log(urlOriginal, 'getPageContextBegin()')
@@ -645,6 +653,7 @@ async function getPageContextBegin(
     isHydration: isFirstRender && !isForErrorPage,
     previousPageContext,
     pageContextsAborted,
+    renderId,
     ...pageContextInitClient,
   })
 
