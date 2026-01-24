@@ -263,6 +263,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     // Set global hydrationCanBeAborted
     if (pageContext.exports.hydrationCanBeAborted) {
+      console.log('setHydrationCanBeAborted()', urlOriginalDebug)
       setHydrationCanBeAborted()
     } else {
       // TODO: show only in dev
@@ -442,6 +443,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
       return
     }
     if (isRenderOutdated()) return
+    console.log('isRenderOutdated()', false, urlOriginalDebug)
     updateType(pageContext, pageContextFromHooksClient)
 
     await renderPageView(pageContext, args)
