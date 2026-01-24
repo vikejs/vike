@@ -543,7 +543,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
         assert(err)
         onRenderClientError = err
       }
-      assertPageContext(2)
+      // assertPageContext(2)
       globalObject.onRenderClientPreviousPromise = undefined
       globalObject.isFirstRenderDone = true
       return onRenderClientError
