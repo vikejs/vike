@@ -153,6 +153,15 @@ async function renderPageClient(renderArgs: RenderArgs) {
     if (isRenderOutdated()) return
   }
 
+  // We use globalObject.onRenderClientPreviousPromise in order to ensure that there is never two concurrent onRenderClient() calls
+  if (globalObject.onRenderClientPreviousPromise) {
+    // Make sure that the previous render has finished
+    // console.log(urlOriginal, 'renderPageView() 2', renderId)
+    await globalObject.onRenderClientPreviousPromise
+    // console.log(urlOriginal, 'renderPageView() 3', renderId)
+    if (isRenderOutdated()) return
+  }
+
   return await renderPageNominal()
 
   async function renderPageNominal() {
@@ -512,19 +521,9 @@ async function renderPageClient(renderArgs: RenderArgs) {
       }
     }
 
-    // We use globalObject.onRenderClientPreviousPromise in order to ensure that there is never two concurrent onRenderClient() calls
-    if (globalObject.onRenderClientPreviousPromise) {
-      // Make sure that the previous render has finished
-      console.log(urlOriginal, 'renderPageView() 2', renderId)
-      await globalObject.onRenderClientPreviousPromise
-      console.log(urlOriginal, 'renderPageView() 3', renderId)
-      assert(globalObject.onRenderClientPreviousPromise === undefined)
-      if (isRenderOutdated()) return
-    }
     console.log(urlOriginal, 'renderPageView() 4', renderId)
     changeUrl(urlOriginal, overwriteLastHistoryEntry)
     globalObject.previousPageContext = pageContext
-    assert(globalObject.onRenderClientPreviousPromise === undefined)
     // TO-DO/eventually: remove this assert
     const assertPageContext = (assertNumber: 1 | 2) => {
       const pageContextClient = getPageContextClient() as any
@@ -550,7 +549,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
     })()
     globalObject.onRenderClientPreviousPromise = onRenderClientPromise
     const onRenderClientError = await onRenderClientPromise
-    assert(globalObject.onRenderClientPreviousPromise === undefined)
     if (onRenderClientError) {
       await onError(onRenderClientError)
       if (!isErrorPage) return
