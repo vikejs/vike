@@ -17,6 +17,6 @@ function assertVirtualFileExports<ModuleExports>(
 }
 
 function getKeys(obj: any) {
-  if (obj === undefined) return null
+  if (obj === undefined) return 'is-undefined'
   return [...Object.getOwnPropertyNames(obj), ...Object.getOwnPropertySymbols(obj), ...Object.keys(obj)]
 }
