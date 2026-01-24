@@ -126,7 +126,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
     pageContextsAborted = [],
   } = renderArgs
   let { scrollTarget } = renderArgs
-  console.log('scrollTarget 1', scrollTarget)
   const { previousPageContext } = globalObject
 
   addLinkPrefetchHandlers_unwatch()
@@ -577,9 +576,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
     }
 
     // Page scrolling
-    //@ts-ignore
-    console.log('scrollTarget 2', scrollTarget?.y)
-    console.log('scrollPosition', window.history.state.vike.scrollPosition.y)
     setScrollPosition(scrollTarget, urlOriginal)
     // TODO: refactor
     if (scrollTarget && 'y' in scrollTarget) {
