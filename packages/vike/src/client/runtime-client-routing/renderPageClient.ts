@@ -113,6 +113,7 @@ type RenderArgs = {
   pageContextInitClient?: Record<string, unknown>
 }
 async function renderPageClient(renderArgs: RenderArgs) {
+  console.log('renderPageClient', renderArgs.urlOriginal)
   catchInfiniteLoop('renderPageClient()')
 
   const {
@@ -153,6 +154,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
   return await renderPageNominal()
 
   async function renderPageNominal() {
+    console.log('renderPageNominal()')
     const onError = async (err: unknown) => {
       await handleError({ err })
     }
@@ -624,6 +626,7 @@ async function getPageContextBegin(
     isFirstRender: boolean
   },
 ) {
+  console.log('getPageContextBegin()')
   const previousPageContext = globalObject.previousPageContext ?? null
   const pageContext = await createPageContextClient(urlOriginal)
   objectAssign(pageContext, {
@@ -636,7 +639,9 @@ async function getPageContextBegin(
     ...pageContextInitClient,
   })
 
+  console.log('globalObject.currentPageContext.pageId [before]', globalObject.currentPageContext?.pageId)
   globalObject.currentPageContext = pageContext
+  console.log('globalObject.currentPageContext.pageId [after]', globalObject.currentPageContext.pageId)
 
   // TO-DO/next-major-release: remove
   Object.defineProperty(pageContext, '_previousPageContext', {
