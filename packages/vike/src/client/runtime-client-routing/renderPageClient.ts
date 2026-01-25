@@ -51,7 +51,7 @@ import {
 } from '../../shared-server-client/route/abort.js'
 import { route } from '../../shared-server-client/route/index.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
-import { setScrollPosition, type ScrollTarget } from './setScrollPosition.js'
+import { isScrollPosition, setScrollPosition, type ScrollTarget } from './setScrollPosition.js'
 import { scrollRestoration_initialRenderIsDone } from './scrollRestoration.js'
 import { getErrorPageId, isErrorPage } from '../../shared-server-client/error-page.js'
 import type { PageContextConfig } from '../../shared-server-client/getPageFiles.js'
@@ -578,8 +578,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     // Page scrolling
     setScrollPosition(scrollTarget, urlOriginal)
-    // TODO: refactor
-    if (scrollTarget && 'y' in scrollTarget) {
+    if (isScrollPosition(scrollTarget)) {
       // Restore window.history.state.vike.scrollPosition (in case scrolling occurred during rendering)
       saveScrollPosition(scrollTarget)
     }
