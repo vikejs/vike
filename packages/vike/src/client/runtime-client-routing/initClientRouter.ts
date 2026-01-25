@@ -3,6 +3,7 @@ import '../assertEnvClient.js'
 export { initClientRouter }
 
 import { assert } from '../../utils/assert.js'
+import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import { getRenderCount, renderPageClient } from './renderPageClient.js'
 import { initOnPopState } from './initOnPopState.js'
 import { initOnLinkClick } from './initOnLinkClick.js'
@@ -10,27 +11,36 @@ import { scrollRestoration_init } from './scrollRestoration.js'
 import { autoSaveScrollPosition } from './setScrollPosition.js'
 import { initLinkPrefetchHandlers } from './prefetch.js'
 import { initHistory } from './history.js'
+import { setVirtualFileExportsGlobalEntry } from '../shared/getGlobalContextClientInternalShared.js'
+// @ts-expect-error
+import * as virtualFileExportsGlobalEntry from 'virtual:vike:global-entry:client:client-routing'
 
-async function initClientRouter() {
+const globalObject = getGlobalObject<{
+  done?: true
+}>('initClientRouter.ts', {})
+
+function initClientRouter() {
+  setVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry)
+
+  if (globalObject.done) return
+  globalObject.done = true
+
   // Init navigation history and scroll restoration
   initHistoryAndScroll()
 
   // Render/hydrate
-  const renderFirstPagePromise = renderFirstPage()
+  renderFirstPage()
 
   // Intercept <a> clicks
   initOnLinkClick()
 
   // Add <a> prefetch handlers
   initLinkPrefetchHandlers()
-
-  // Preserve stack track
-  await renderFirstPagePromise
 }
 
-async function renderFirstPage() {
+function renderFirstPage() {
   assert(getRenderCount() === 0)
-  await renderPageClient({
+  renderPageClient({
     scrollTarget: { preserveScroll: true },
     isClientSideNavigation: false,
   })
