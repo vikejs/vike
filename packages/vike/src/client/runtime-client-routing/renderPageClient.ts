@@ -268,12 +268,13 @@ async function renderPageClient(renderArgs: RenderArgs) {
     if (pageContext.exports.hydrationCanBeAborted) {
       setHydrationCanBeAborted()
     } else {
-      // TODO: show only in dev
-      assertWarning(
-        !isReact(),
-        'You seem to be using React; we recommend setting hydrationCanBeAborted to true, see https://vike.dev/hydrationCanBeAborted',
-        { onlyOnce: true },
-      )
+      if (globalThis.__VIKE__IS_DEV) {
+        assertWarning(
+          !isReact(),
+          'You seem to be using React; we recommend setting hydrationCanBeAborted to true, see https://vike.dev/hydrationCanBeAborted',
+          { onlyOnce: true },
+        )
+      }
     }
     // There wasn't any `await` but the isRenderOutdated() return value may have changed because we called setHydrationCanBeAborted()
     if (isRenderOutdated()) return
