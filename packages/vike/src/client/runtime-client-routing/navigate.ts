@@ -6,9 +6,10 @@ export { reload }
 // import { modifyUrlSameOrigin, ModifyUrlSameOriginOptions } from '../../shared/modifyUrlSameOrigin.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 import { normalizeUrlArgument } from './normalizeUrlArgument.js'
-import { firstRenderStartPromise, renderPageClient } from './renderPageClient.js'
+import { renderPageClient } from './renderPageClient.js'
 import type { ScrollTarget } from './setScrollPosition.js'
 import { assertClientRouting } from '../../utils/assertRoutingType.js'
+import { initClientRouter } from './initClientRouter.js'
 
 assertClientRouting()
 
@@ -32,8 +33,8 @@ async function navigate(url: string, options?: Options): Promise<void> {
   // url = modifyUrlSameOrigin(url, options)
   normalizeUrlArgument(url, 'navigate')
 
-  // If `hydrationCanBeAborted === false` (e.g. Vue) then we can apply navigate() only after hydration is done
-  await firstRenderStartPromise
+  // Ensure initClientRouter() is called before navigate() — otherwise race condition when +client.js calls navigate() before initClientRouter() is called in runtime-client-routing/entry.ts
+  initClientRouter()
 
   const { keepScrollPosition, overwriteLastHistoryEntry, pageContext } = options ?? {}
   const scrollTarget: ScrollTarget = { preserveScroll: keepScrollPosition ?? false }

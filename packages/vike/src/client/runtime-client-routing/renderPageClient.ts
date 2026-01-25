@@ -3,7 +3,6 @@ import '../assertEnvClient.js'
 export { renderPageClient }
 export { getRenderCount }
 export { disableClientRouting }
-export { firstRenderStartPromise }
 export { getPageContextClient }
 export type { PageContextBegin }
 export type { PageContextInternalClientAfterRender }
@@ -79,20 +78,19 @@ const globalObject = getGlobalObject<{
   previousPageContext?: PreviousPageContext
   renderedPageContext?: PageContextInternalClient & PageContext_loadPageConfigsLazyClientSide
   currentPageContext?: Record<string, unknown>
-  firstRenderStartPromise: Promise<void>
-  firstRenderStartPromiseResolve: () => void
+  hydrationAwaitPromise: Promise<void>
+  hydrationAwaitPromiseResolve: () => void
 }>(
   'renderPageClient.ts',
   (() => {
-    const { promise: firstRenderStartPromise, resolve: firstRenderStartPromiseResolve } = genPromise()
+    const { promise: hydrationAwaitPromise, resolve: hydrationAwaitPromiseResolve } = genPromise()
     return {
       renderCounter: 0,
-      firstRenderStartPromise,
-      firstRenderStartPromiseResolve,
+      hydrationAwaitPromise,
+      hydrationAwaitPromiseResolve,
     }
   })(),
 )
-const { firstRenderStartPromise } = globalObject
 type PreviousPageContext = { pageId: string } & PageContextConfig &
   PageContextRouted &
   PageContextCreatedClient &
@@ -147,7 +145,15 @@ async function renderPageClient(renderArgs: RenderArgs) {
     return
   }
 
-  globalObject.firstRenderStartPromiseResolve()
+  // Await hydration (unless +hydrationCanBeAborted)
+  if (!isFirstRender) {
+    await globalObject.hydrationAwaitPromise
+    if (isRenderOutdated()) return
+  }
+
+  // Ensure no concurrent onRenderClient() calls.
+  // - We could `await globalObject.onRenderClientPreviousPromise` later just before execHookOnRenderClient() but we prefer doing it early to ensure `getPageContext() === usePageContext()` (and maybe it prevents other potential inconsistencies?).
+  await globalObject.onRenderClientPreviousPromise
   if (isRenderOutdated()) return
 
   return await renderPageNominal()
@@ -262,6 +268,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     if (pageContext.exports.hydrationCanBeAborted) {
       setHydrationCanBeAborted()
     } else {
+      // TODO: show only in dev
       assertWarning(
         !isReact(),
         'You seem to be using React; we recommend setting hydrationCanBeAborted to true, see https://vike.dev/hydrationCanBeAborted',
@@ -502,15 +509,9 @@ async function renderPageClient(renderArgs: RenderArgs) {
       }
     }
 
-    // We use globalObject.onRenderClientPreviousPromise in order to ensure that there is never two concurrent onRenderClient() calls
-    if (globalObject.onRenderClientPreviousPromise) {
-      // Make sure that the previous render has finished
-      await globalObject.onRenderClientPreviousPromise
-      assert(globalObject.onRenderClientPreviousPromise === undefined)
-      if (isRenderOutdated()) return
-    }
     changeUrl(urlOriginal, overwriteLastHistoryEntry)
     globalObject.previousPageContext = pageContext
+    // There should never be concurrent onRenderClient() calls
     assert(globalObject.onRenderClientPreviousPromise === undefined)
     const onRenderClientPromise = (async () => {
       let onRenderClientError: unknown
@@ -526,7 +527,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
     })()
     globalObject.onRenderClientPreviousPromise = onRenderClientPromise
     const onRenderClientError = await onRenderClientPromise
-    assert(globalObject.onRenderClientPreviousPromise === undefined)
     if (onRenderClientError) {
       await onError(onRenderClientError)
       if (!isErrorPage) return
@@ -588,6 +588,8 @@ async function renderPageClient(renderArgs: RenderArgs) {
     globalObject.renderedPageContext = pageContext
 
     stampFinished(urlOriginal)
+
+    globalObject.hydrationAwaitPromiseResolve()
 
     return pageContext
   }
@@ -692,6 +694,7 @@ function getIsRenderOutdated() {
   let hydrationCanBeAborted = false
   const setHydrationCanBeAborted = () => {
     hydrationCanBeAborted = true
+    globalObject.hydrationAwaitPromiseResolve()
   }
 
   /** Whether the rendering should be aborted because a new rendering has started. We should call this after each `await`. */
