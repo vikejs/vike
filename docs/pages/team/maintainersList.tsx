@@ -77,6 +77,9 @@ const maintainersList = [
       <>
         <code>vike-react</code> (Contributor)
       </>,
+      <>
+        <code>DocPress</code> (Contributor)
+      </>,
       <>Bati (Contributor)</>,
     ],
   },

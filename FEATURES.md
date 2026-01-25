@@ -47,7 +47,10 @@ Build fast.
   [TO-DO/eventually] Compare with:
   - https://redux.js.org/usage/nextjs
   - https://zustand.docs.pmnd.rs/guides/nextjs
-- Powerful hooks such as +onCreateGlobalContext and +onCreatePageContext
+- Powerful hooks
+  - +onCreateGlobalContext
+  - +onCreatePageContext
+  - +onHookCall
 - [wip] Typesafe routes
 - [wip] AI
   - Simple approach: add Vike's docs to the LLMs's context => completely solves the "AI generates outdated code" problem
