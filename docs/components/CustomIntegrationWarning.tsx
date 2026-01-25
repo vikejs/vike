@@ -36,8 +36,8 @@ function CustomIntegrationWarning({ uiFramework }: { uiFramework?: 'react' | 'vu
           You are using {uiFrameworkExtension} but ran into a blocker.
           <blockquote>
             <p>
-              Before migrating away from {uiFrameworkExtension}, we recommend discussing it with the maintainers to
-              explore your options.
+              Before migrating away from {uiFrameworkExtension}, we recommend talking with Vike maintainers to explore
+              your options.
             </p>
           </blockquote>
         </li>
