@@ -65,8 +65,8 @@ function getTimestamp() {
   return new Date().getTime()
 }
 
-function saveScrollPosition() {
-  const scrollPosition = getScrollPosition()
+function saveScrollPosition(scrollPosition?: ScrollPosition) {
+  scrollPosition ||= getScrollPosition()
 
   // Don't overwrite history.state if it was set by a non-Vike history.pushState() call.
   // https://github.com/vikejs/vike/issues/2801#issuecomment-3490431479

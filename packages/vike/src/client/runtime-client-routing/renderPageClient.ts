@@ -39,7 +39,7 @@ import {
   loadPageConfigsLazyClientSide,
   PageContext_loadPageConfigsLazyClientSide,
 } from '../shared/loadPageConfigsLazyClientSide.js'
-import { pushHistoryState } from './history.js'
+import { pushHistoryState, saveScrollPosition } from './history.js'
 import {
   addNewPageContextAborted,
   type ErrorAbort,
@@ -578,6 +578,11 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     // Page scrolling
     setScrollPosition(scrollTarget, urlOriginal)
+    // TODO: refactor
+    if (scrollTarget && 'y' in scrollTarget) {
+      // Restore window.history.state.vike.scrollPosition (in case scrolling occurred during rendering)
+      saveScrollPosition(scrollTarget)
+    }
     scrollRestoration_initialRenderIsDone()
 
     if (pageContext._hasPageContextFromServer) setPageContextInitIsPassedToClient(pageContext)
