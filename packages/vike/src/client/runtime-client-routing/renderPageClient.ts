@@ -589,9 +589,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     stampFinished(urlOriginal)
 
-    if (isFirstRender) {
-      globalObject.hydrationAwaitPromiseResolve()
-    }
+    globalObject.hydrationAwaitPromiseResolve()
 
     return pageContext
   }
