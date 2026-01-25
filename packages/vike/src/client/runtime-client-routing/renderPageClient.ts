@@ -511,6 +511,8 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     changeUrl(urlOriginal, overwriteLastHistoryEntry)
     globalObject.previousPageContext = pageContext
+    // There should never be concurrent onRenderClient() calls
+    assert(globalObject.onRenderClientPreviousPromise === undefined)
     const onRenderClientPromise = (async () => {
       let onRenderClientError: unknown
       try {
