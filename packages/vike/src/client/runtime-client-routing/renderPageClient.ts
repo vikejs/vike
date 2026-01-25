@@ -128,9 +128,8 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
   addLinkPrefetchHandlers_unwatch()
 
-  const { isRenderOutdated, isFirstRender, setHydrationCanBeAborted } = getIsRenderOutdated()
+  const { isRenderOutdated, setHydrationCanBeAborted, isFirstRender } = getIsRenderOutdated()
 
-  const renderId = Math.random()
   const pageContextBeginArgs = {
     urlOriginal,
     isBackwardNavigation,
@@ -139,33 +138,27 @@ async function renderPageClient(renderArgs: RenderArgs) {
     isClientSideNavigation,
     pageContextInitClient,
     isFirstRender,
-    renderId,
   }
-  console.log(urlOriginal, 'renderPageClient', renderId)
 
   if (globalObject.clientRoutingIsDisabled) {
     redirectHard(urlOriginal)
     return
   }
 
+  // Don't abort hydration (unless +hydrationCanBeAborted)
   if (!isFirstRender) {
     await globalObject.hydrationAwaitPromise
     if (isRenderOutdated()) return
   }
 
-  // We use globalObject.onRenderClientPreviousPromise in order to ensure that there is never two concurrent onRenderClient() calls
-  if (globalObject.onRenderClientPreviousPromise) {
-    // Make sure that the previous render has finished
-    // console.log(urlOriginal, 'renderPageView() 2', renderId)
-    await globalObject.onRenderClientPreviousPromise
-    // console.log(urlOriginal, 'renderPageView() 3', renderId)
-    if (isRenderOutdated()) return
-  }
+  // Ensure no concurrent onRenderClient() calls.
+  // - We could `await globalObject.onRenderClientPreviousPromise` later just before execHookOnRenderClient() but we prefer doing it early to ensure `getPageContext() === usePageContext()` (and maybe it prevents other potential inconsistencies?).
+  await globalObject.onRenderClientPreviousPromise
+  if (isRenderOutdated()) return
 
   return await renderPageNominal()
 
   async function renderPageNominal() {
-    console.log(urlOriginal, 'renderPageNominal()')
     const onError = async (err: unknown) => {
       await handleError({ err })
     }
@@ -273,7 +266,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     // Set global hydrationCanBeAborted
     if (pageContext.exports.hydrationCanBeAborted) {
-      console.log(urlOriginal, 'setHydrationCanBeAborted()')
       setHydrationCanBeAborted()
     } else {
       // TODO: show only in dev
@@ -284,7 +276,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
       )
     }
     // There wasn't any `await` but the isRenderOutdated() return value may have changed because we called setHydrationCanBeAborted()
-    console.log(urlOriginal, 'isRenderOutdated() [post setHydrationCanBeAborted()]', isRenderOutdated())
     if (isRenderOutdated()) return
 
     // Get pageContext from hooks (fetched from server, and/or directly called on the client-side)
@@ -297,7 +288,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
         await onError(err)
         return
       }
-      console.log(urlOriginal, 'isRenderOutdated() [isFirstRender]', isRenderOutdated())
       if (isRenderOutdated()) return
       updateType(pageContext, pageContextAugmented)
 
@@ -334,7 +324,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
         await onError(err)
         return
       }
-      console.log(urlOriginal, 'isRenderOutdated() [!isFirstRender]', isRenderOutdated())
       if (isRenderOutdated()) return
       updateType(pageContext, pageContextFromHooksClient)
 
@@ -512,7 +501,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
       } & PageContextRouted,
     isErrorPage?: { err?: unknown },
   ) {
-    console.log(urlOriginal, 'renderPageView() 1', renderId)
     const onError = async (err: unknown) => {
       if (!isErrorPage) {
         await handleError({ err })
@@ -521,28 +509,16 @@ async function renderPageClient(renderArgs: RenderArgs) {
       }
     }
 
-    console.log(urlOriginal, 'renderPageView() 4', renderId)
     changeUrl(urlOriginal, overwriteLastHistoryEntry)
     globalObject.previousPageContext = pageContext
-    // TO-DO/eventually: remove this assert
-    const assertPageContext = (assertNumber: 1 | 2) => {
-      const pageContextClient = getPageContextClient() as any
-      assert(pageContextClient, { undefined: true })
-      const pageIdGet = pageContextClient.pageId
-      const pageIdRen = pageContext.pageId
-      assert(pageIdGet === pageIdRen, { pageIdGet, pageIdRen, urlOriginal, renderId, assertNumber })
-      assert(pageContextClient._originalObject === pageContext, 'not some object') // ensure `getPageContext() === usePageContext()` (it seems to not be the case sometimes?)
-    }
     const onRenderClientPromise = (async () => {
       let onRenderClientError: unknown
-      assertPageContext(1)
       try {
         await execHookOnRenderClient(pageContext, getPageContextPublicClient)
       } catch (err) {
         assert(err)
         onRenderClientError = err
       }
-      assertPageContext(2)
       globalObject.onRenderClientPreviousPromise = undefined
       globalObject.isFirstRenderDone = true
       return onRenderClientError
@@ -629,7 +605,6 @@ async function getPageContextBegin(
     isClientSideNavigation,
     pageContextInitClient,
     isFirstRender,
-    renderId,
   }: {
     urlOriginal: string
     isBackwardNavigation: boolean | null
@@ -638,10 +613,8 @@ async function getPageContextBegin(
     isClientSideNavigation: boolean
     pageContextInitClient: Record<string, unknown> | undefined
     isFirstRender: boolean
-    renderId: number
   },
 ) {
-  console.log(urlOriginal, 'getPageContextBegin()')
   const previousPageContext = globalObject.previousPageContext ?? null
   const pageContext = await createPageContextClient(urlOriginal)
   objectAssign(pageContext, {
@@ -651,13 +624,10 @@ async function getPageContextBegin(
     isHydration: isFirstRender && !isForErrorPage,
     previousPageContext,
     pageContextsAborted,
-    renderId,
     ...pageContextInitClient,
   })
 
-  console.log(urlOriginal, 'globalObject.currentPageContext.pageId [before]', globalObject.currentPageContext?.pageId)
   globalObject.currentPageContext = pageContext
-  console.log(urlOriginal, 'globalObject.currentPageContext.pageId [after]', globalObject.currentPageContext.pageId)
 
   // TO-DO/next-major-release: remove
   Object.defineProperty(pageContext, '_previousPageContext', {
@@ -743,8 +713,8 @@ function getIsRenderOutdated() {
 
   return {
     isRenderOutdated,
-    isFirstRender: renderNumber === 1,
     setHydrationCanBeAborted,
+    isFirstRender: renderNumber === 1,
   }
 }
 function getRenderCount(): number {

@@ -28,7 +28,6 @@ type GlobalContextNotTyped = Record<string, unknown>
 const globalObject = getGlobalObject<{
   isClientRouting?: boolean
   virtualFileExportsGlobalEntry?: unknown
-  virtualFileExportsGlobalEntrySet?: true
   globalContext?: GlobalContextNotTyped
   globalContextPromise?: Promise<GlobalContextNotTyped>
   globalContextInitialPromise: Promise<void>
@@ -52,8 +51,6 @@ async function getGlobalContextClientInternalShared() {
   }
 
   // Create
-  assert(globalObject.virtualFileExportsGlobalEntrySet, 'TODO TMP 1')
-  assert(globalObject.virtualFileExportsGlobalEntry, 'TODO TMP 2')
   const globalContextPromise = createGlobalContextShared(
     globalObject.virtualFileExportsGlobalEntry,
     globalObject,
@@ -98,7 +95,6 @@ function getGlobalContextSync(): TypeIsNotExported {
 }
 
 async function setVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry: unknown) {
-  globalObject.virtualFileExportsGlobalEntrySet = true
   // HMR => virtualFileExportsGlobalEntry differ
   if (globalObject.virtualFileExportsGlobalEntry !== virtualFileExportsGlobalEntry) {
     delete globalObject.globalContextPromise

@@ -1,3 +1,5 @@
+// TO-DO/eventually: remove
+
 export { assertVirtualFileExports }
 
 import { assert } from '../utils/assert.js'
@@ -7,7 +9,8 @@ function assertVirtualFileExports<ModuleExports>(
   test: (moduleExports: ModuleExports) => boolean,
   moduleId?: string,
 ) {
-  if (!moduleExports || !test(moduleExports)) {
+  assert(moduleExports, typeof moduleExports)
+  if (!test(moduleExports)) {
     /* https://github.com/vikejs/vike/issues/2903#issuecomment-3642285811
     throw getProjectError('@cloudflare/vite-plugin error https://github.com/vikejs/vike/issues/2903#issuecomment-3642285811')
     /*/
@@ -17,6 +20,5 @@ function assertVirtualFileExports<ModuleExports>(
 }
 
 function getKeys(obj: any) {
-  if (obj === undefined) return 'is-undefined'
   return [...Object.getOwnPropertyNames(obj), ...Object.getOwnPropertySymbols(obj), ...Object.keys(obj)]
 }

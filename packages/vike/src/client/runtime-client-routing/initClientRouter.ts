@@ -15,38 +15,32 @@ import { setVirtualFileExportsGlobalEntry } from '../shared/getGlobalContextClie
 // @ts-expect-error
 import * as virtualFileExportsGlobalEntry from 'virtual:vike:global-entry:client:client-routing'
 
-Error.stackTraceLimit = Infinity
-
 const globalObject = getGlobalObject<{
   done?: true
 }>('initClientRouter.ts', {})
 
-async function initClientRouter() {
+function initClientRouter() {
   setVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry)
 
   if (globalObject.done) return
-  // The init calls below are sync and therefore guaranteed to be called before any subsequent initClientRouter() call
   globalObject.done = true
 
   // Init navigation history and scroll restoration
   initHistoryAndScroll()
 
   // Render/hydrate
-  const renderFirstPagePromise = renderFirstPage()
+  renderFirstPage()
 
   // Intercept <a> clicks
   initOnLinkClick()
 
   // Add <a> prefetch handlers
   initLinkPrefetchHandlers()
-
-  // Preserve stack track
-  await renderFirstPagePromise
 }
 
-async function renderFirstPage() {
+function renderFirstPage() {
   assert(getRenderCount() === 0)
-  await renderPageClient({
+  renderPageClient({
     scrollTarget: { preserveScroll: true },
     isClientSideNavigation: false,
   })
