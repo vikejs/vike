@@ -6,7 +6,6 @@ import { UiFrameworkExtension, type UiFrameworkExtensionList } from '../componen
 
 function CustomIntegrationWarning({ uiFramework }: { uiFramework?: 'react' | 'vue' | 'solid' }) {
   const list: UiFrameworkExtensionList | undefined = uiFramework && [`vike-${uiFramework}`]
-  const uiFrameworkName = !uiFramework ? 'React/Vue/Solid/...' : uiFramework[0].toUpperCase() + uiFramework.slice(1)
   const uiFrameworkExtension = !list ? (
     <UiFrameworkExtension succinct />
   ) : (
@@ -17,8 +16,7 @@ function CustomIntegrationWarning({ uiFramework }: { uiFramework?: 'react' | 'vu
       Custom integrations can be complex and we generally recommend using {uiFrameworkExtension} instead.
       <br />
       <br />
-      <span style={{ fontFamily: 'emoji' }}>👉</span> A custom integration can make sense in following
-      scenarios:
+      <span style={{ fontFamily: 'emoji' }}>👉</span> A custom integration can make sense in following scenarios:
       <ul>
         <li>
           You are building an app with a simple architecture.
