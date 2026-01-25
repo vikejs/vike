@@ -145,7 +145,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     return
   }
 
-  // Don't abort hydration (unless +hydrationCanBeAborted)
+  // Await hydration (unless +hydrationCanBeAborted)
   if (!isFirstRender) {
     await globalObject.hydrationAwaitPromise
     if (isRenderOutdated()) return
