@@ -331,7 +331,12 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   keepScrollPosition: {
     env: { client: true },
   },
-  middleware: { env: { server: true }, cumulative: true, eager: true, global: true },
+  middleware: {
+    env: { server: true },
+    cumulative: true,
+    eager: true,
+    global: true,
+  },
   cli: {
     env: { config: true },
     global: true,
@@ -341,7 +346,6 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     eager: true,
     global: true,
   },
-  // TODO: align all meta configs
   prerender: {
     env: { config: true },
     global: (value, { isGlobalLocation }) => typeof value === 'object' || isGlobalLocation,
