@@ -16,7 +16,7 @@ const maintainersList = [
     firstName: 'Rom',
     isCoreTeam: true,
     roles: [
-      <>Vike Core (Lead Maintainer, Creator)</>,
+      <>Vike (Lead Maintainer, Creator)</>,
       <>
         <code>vike-react</code> (Lead Maintainer, Creator)
       </>,
@@ -52,10 +52,16 @@ const maintainersList = [
     isCoreTeam: true,
     roles: [
       <>
-        <code>vike-react-query</code> (Creator)
+        <code>vike-react-query</code> (Lead Maintainer, Creator)
       </>,
       <>
-        <code>vike-react-apollo</code> (Creator)
+        <code>vike-react-apollo</code> (Lead Maintainer, Creator)
+      </>,
+      <>
+        <code>vike-react-zustand</code> (Lead Maintainer, Creator)
+      </>,
+      <>
+        <code>vike-react-sentry</code> (Lead Maintainer, Creator)
       </>,
       <>
         <code>vike-server</code> (Creator)
@@ -68,6 +74,7 @@ const maintainersList = [
     firstName: 'Muhammad',
     isCoreTeam: true,
     roles: [
+      <>DocPress (Major Contributor)</>,
       <>
         <code>vike-vue</code> (Contributor)
       </>,
@@ -77,7 +84,6 @@ const maintainersList = [
       <>
         <code>vike-react</code> (Contributor)
       </>,
-      <>DocPress (Contributor)</>,
       <>Bati (Contributor)</>,
     ],
   },
