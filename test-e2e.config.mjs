@@ -80,6 +80,8 @@ function getCiJobs() {
 function tolerateError({ logSource, logText, testInfo }) {
   return (
     [
+      // Error: clientOnly() is deprecated — use <ClientOnly> https://vike.dev/ClientOnly
+      'clientOnly() is deprecated',
       /*
       What seems to be a wrangler bug:
       ```console
