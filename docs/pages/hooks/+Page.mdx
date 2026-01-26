@@ -17,11 +17,17 @@ See also: <Link href="/settings" />.
 - [**`onPageTransitionEnd()`**](/onPageTransitionEnd): <TextEnv>client</TextEnv> Called upon page navigation, after the new page has finished rendering.
 - [**`onCreatePageContext()`**](/onCreatePageContext): <TextEnv>server & client</TextEnv> Called when a <Link href="/pageContext">`pageContext` object</Link> is created.
 - [**`onCreateGlobalContext()`**](/onCreateGlobalContext): <TextEnv>server & client</TextEnv> Called when the <Link href="/globalContext">`globalContext` object</Link> is created.
+- [**`onData()`**](/onData): <TextEnv>server & client</TextEnv> Called as soon as <Link href="/pageContext#data">`pageContext.data`</Link> is available.
 
 **Pre-rendering**
 
 - [**`onBeforePrerenderStart()`**](/onBeforePrerenderStart): <TextEnv>server</TextEnv> Called for initializing <Link href="/pre-rendering">pre-rendering</Link>.
 - [**`onPrerenderStart()`**](/onPrerenderStart): <TextEnv>server</TextEnv> Called when <Link href="/pre-rendering">pre-rendering</Link> starts.
+
+**Instrumentation**
+
+- [**`onHookCall()`**](/onHookCall): <TextEnv>server & client</TextEnv> Called whenever a hook is invoked. Useful for error tracking and performance monitoring.
+- [**`onError()`**](/onError): <TextEnv>server</TextEnv> Called when an error occurs on the server.
 
 **`vike-vue`**
 
@@ -33,7 +39,6 @@ See also: <Link href="/settings" />.
 
 > Most users don't need to know about these hooks.
 
-- [**`onData()`**](/onData): <TextEnv>server & client</TextEnv> Called as soon as <Link href="/pageContext#data">`pageContext.data`</Link> is available.
 - [**`onBeforeRender()`**](/onBeforeRender): <TextEnv>server (configurable)</TextEnv> Called before the page is rendered, lower-level and usually for advanced integrations with data fetching tools.
 - [**`onRenderHtml()`**](/onRenderHtml): <TextEnv>server</TextEnv> Called when a page is rendered to HTML on the server-side.
 - [**`onRenderClient()`**](/onRenderClient): <TextEnv>client</TextEnv> Called when a page is rendered on the client-side.
@@ -42,11 +47,6 @@ See also: <Link href="/settings" />.
 - [**`onAfterRenderClient()`**](/onAfterRenderClient): <TextEnv>client</TextEnv> Called at the end of <Link href="/onRenderClient">`onRenderClient()`</Link>.
 - [**`onBeforeRenderHtml()`**](/onBeforeRenderHtml): <TextEnv>server</TextEnv> Called at the beginning of <Link href="/onRenderHtml">`onRenderHtml()`</Link>.
 - [**`onAfterRenderHtml()`**](/onAfterRenderHtml): <TextEnv>server</TextEnv> Called at the end of <Link href="/onRenderHtml">`onRenderHtml()`</Link>.
-
-**Instrumentation**
-
-- [**`onHookCall()`**](/onHookCall): <TextEnv>server & client</TextEnv> Called whenever a hook is invoked. Useful for error tracking and performance monitoring.
-- [**`onError()`**](/onError): <TextEnv>server</TextEnv> Called when an error occurs on the server.
 
 
 ## Upcoming
