@@ -1820,8 +1820,8 @@ importers:
         specifier: 0.4.252
         version: link:../../packages/vike
       vike-solid:
-        specifier: ^0.7.19
-        version: 0.7.19(solid-js@1.9.10)(vike@packages+vike)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
+        specifier: ^0.7.20
+        version: 0.7.20(solid-js@1.9.10)(vike@packages+vike)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
       vite:
         specifier: ^7.2.2
         version: 7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
@@ -2001,8 +2001,8 @@ importers:
         specifier: 0.4.252
         version: link:../../packages/vike
       vike-solid:
-        specifier: ^0.7.19
-        version: 0.7.19(solid-js@1.9.10)(vike@packages+vike)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
+        specifier: ^0.7.20
+        version: 0.7.20(solid-js@1.9.10)(vike@packages+vike)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
     devDependencies:
       typescript:
         specifier: ^5.9.3
@@ -8178,8 +8178,8 @@ packages:
       vite:
         optional: true
 
-  vike-solid@0.7.19:
-    resolution: {integrity: sha512-abOAco1Q6m6bQJNulCXTT59DNDRbrDlO35ilWfmTxHYB+giAWK8WAdy6DFdKG8waErpBfSmmVtGzUNooyhbK9g==}
+  vike-solid@0.7.20:
+    resolution: {integrity: sha512-T2m95J1xzxUk3NY8wod6/6kFCAyucpLQY5eDMvFuB9id1BPr5x8jj+NQLFvfZ03UGSjp1iGLyqTEaled4dodEQ==}
     peerDependencies:
       solid-js: ^1.8.7
       vike: '>=0.4.250'
@@ -15697,7 +15697,7 @@ snapshots:
       - hono
       - srvx
 
-  vike-solid@0.7.19(solid-js@1.9.10)(vike@packages+vike)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)):
+  vike-solid@0.7.20(solid-js@1.9.10)(vike@packages+vike)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)):
     dependencies:
       isbot-fast: 1.2.0
       solid-js: 1.9.10
