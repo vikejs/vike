@@ -1,4 +1,4 @@
-import { Link, RepoLink, TypescriptOnly } from '@brillout/docpress'
+import { Link, RepoLink } from '@brillout/docpress'
 import { UiFrameworkExtension, ConfigSpec, ProvidedBy } from '../../components'
 
 <ConfigSpec
@@ -51,7 +51,8 @@ async function data(pageContext: PageContextServer) {
 }
 ```
 
-<TypescriptOnly>
+:::Choice{#TypeScript}
+
 Using type inference as shown above is usually what you want, but if you want to enforce a type instead:
 
 ```ts ts-only
@@ -68,7 +69,8 @@ function data(pageContext: PageContextServer): Promise<Data> {
   // ...
 }
 ```
-</TypescriptOnly>
+
+:::
 
 
 ## Without `vike-{react,vue,solid}`

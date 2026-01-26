@@ -48,10 +48,4 @@ const config: Config = {
     fontSize: 21,
     marginLeft: 0,
   },
-  choices: {
-    'pkg-manager': {
-      choices: ['npm', 'pnpm', 'yarn', 'bun'],
-      default: 'npm',
-    },
-  },
 } satisfies Config

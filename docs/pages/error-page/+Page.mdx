@@ -1,4 +1,4 @@
-import { Link, TypescriptOnly } from '@brillout/docpress'
+import { Link } from '@brillout/docpress'
 import { ConfigSpec } from '../../components'
 
 <ConfigSpec
@@ -48,7 +48,7 @@ function Page() {
 }
 ```
 
-<TypescriptOnly>
+:::Choice{#TypeScript}
 
 To define the type of `pageContext.abortReason`:
 
@@ -66,7 +66,7 @@ declare global {
 }
 ```
 
-</TypescriptOnly>
+:::
 
 > The <Link href="/usePageContext" /> UI component hook allows you to access <Link href="/pageContext" noBreadcrumb /> from any UI component.
 
