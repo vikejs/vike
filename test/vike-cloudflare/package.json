@@ -12,7 +12,7 @@
     "solid-js": "^1.9.10",
     "tsx": "^4.20.6",
     "vike": "0.4.252",
-    "vike-solid": "^0.7.19",
+    "vike-solid": "^0.8.0",
     "vite": "^7.2.2"
   },
   "devDependencies": {

@@ -10,11 +10,12 @@
     "node-fetch": "^3.3.2",
     "solid-js": "^1.9.10",
     "vike": "0.4.252",
-    "vike-solid": "^0.7.19"
+    "vike-solid": "^0.8.0"
   },
   "devDependencies": {
     "typescript": "^5.9.3",
-    "vite": "^7.0.6"
+    "vite": "^7.0.6",
+    "vite-plugin-solid": "^2.11.10"
   },
   "type": "module"
 }
