@@ -4,11 +4,11 @@
   "repository": "https://github.com/vikejs/vike",
   "exports": {
     "./server": {
+      "types": "./dist/server/runtime/index.d.ts",
       "worker": "./dist/server/runtime/index.js",
       "workerd": "./dist/server/runtime/index.js",
       "node": "./dist/server/runtime/index.js",
       "browser": "./dist/client/node.js",
-      "types": "./dist/server/runtime/index.d.ts",
       "default": "./dist/server/runtime/index.js"
     },
     "./client": {
@@ -19,89 +19,89 @@
       "default": "./dist/types/index.js"
     },
     "./client/router": {
+      "types": "./dist/client/runtime-client-routing/index.d.ts",
       "worker": "./dist/server/client/router.js",
       "workerd": "./dist/server/client/router.js",
       "node": "./dist/server/client/router.js",
       "browser": "./dist/client/runtime-client-routing/index.js",
-      "types": "./dist/client/runtime-client-routing/index.d.ts",
       "default": "./dist/client/runtime-client-routing/index.js"
     },
     "./routing": {
+      "types": "./dist/shared-server-client/route/routing.d.ts",
       "worker": "./dist/shared-server-client/route/routing.js",
       "workerd": "./dist/shared-server-client/route/routing.js",
       "node": "./dist/shared-server-client/route/routing.js",
       "browser": "./dist/shared-server-client/route/routing.js",
-      "types": "./dist/shared-server-client/route/routing.d.ts",
       "default": "./dist/shared-server-client/route/routing.js"
     },
     "./cli": {
-      "node": "./dist/node/cli/index.js",
       "types": "./dist/node/cli/index.d.ts",
+      "node": "./dist/node/cli/index.js",
       "default": "./dist/node/cli/index.js"
     },
     "./api": {
-      "node": "./dist/node/api/index.js",
       "types": "./dist/node/api/index.d.ts",
+      "node": "./dist/node/api/index.js",
       "default": "./dist/node/api/index.js"
     },
     "./prerender": {
-      "node": "./dist/node/prerender/index.js",
       "types": "./dist/node/prerender/index.d.ts",
+      "node": "./dist/node/prerender/index.js",
       "default": "./dist/node/prerender/index.js"
     },
     "./plugin": {
-      "node": "./dist/node/vite/index.js",
       "types": "./dist/node/vite/index.d.ts",
+      "node": "./dist/node/vite/index.js",
       "default": "./dist/node/vite/index.js"
     },
     "./RenderErrorPage": {
+      "types": "./dist/shared-server-client/RenderErrorPage.d.ts",
       "worker": "./dist/shared-server-client/RenderErrorPage.js",
       "workerd": "./dist/shared-server-client/RenderErrorPage.js",
       "node": "./dist/shared-server-client/RenderErrorPage.js",
       "browser": "./dist/shared-server-client/RenderErrorPage.js",
-      "types": "./dist/shared-server-client/RenderErrorPage.d.ts",
       "default": "./dist/shared-server-client/RenderErrorPage.js"
     },
     "./abort": {
+      "types": "./dist/shared-server-client/abort.d.ts",
       "worker": "./dist/shared-server-client/abort.js",
       "workerd": "./dist/shared-server-client/abort.js",
       "node": "./dist/shared-server-client/abort.js",
       "browser": "./dist/shared-server-client/abort.js",
-      "types": "./dist/shared-server-client/abort.d.ts",
       "default": "./dist/shared-server-client/abort.js"
     },
     "./getPageContext": {
+      "types": "./dist/server/runtime/getPageContext.d.ts",
       "worker": "./dist/server/runtime/getPageContext.js",
       "workerd": "./dist/server/runtime/getPageContext.js",
       "node": "./dist/server/runtime/getPageContext.js",
       "browser": "./dist/client/runtime-client-routing/getPageContext.js",
-      "types": "./dist/server/runtime/getPageContext.d.ts",
       "default": "./dist/server/runtime/getPageContext.js"
     },
     "./modifyUrl": {
+      "types": "./dist/shared-server-client/modifyUrl.d.ts",
       "worker": "./dist/shared-server-client/modifyUrl.js",
       "workerd": "./dist/shared-server-client/modifyUrl.js",
       "node": "./dist/shared-server-client/modifyUrl.js",
       "browser": "./dist/shared-server-client/modifyUrl.js",
-      "types": "./dist/shared-server-client/modifyUrl.d.ts",
       "default": "./dist/shared-server-client/modifyUrl.js"
     },
     "./universal-middleware": {
+      "types": "./dist/server/runtime/universal-middleware.d.ts",
       "worker": "./dist/server/runtime/universal-middleware.js",
       "workerd": "./dist/server/runtime/universal-middleware.js",
       "node": "./dist/server/runtime/universal-middleware.js",
       "browser": "./dist/client/node.js",
-      "types": "./dist/server/runtime/universal-middleware.d.ts",
       "default": "./dist/server/runtime/universal-middleware.js"
     },
     "./__internal": {
-      "node": "./dist/server/__internal/index.js",
       "types": "./dist/server/__internal/index.d.ts",
+      "node": "./dist/server/__internal/index.js",
       "default": "./dist/server/__internal/index.js"
     },
     "./__internal/setup": {
-      "node": "./dist/server/runtime/page-files/setup.js",
       "types": "./dist/server/runtime/page-files/setup.d.ts",
+      "node": "./dist/server/runtime/page-files/setup.js",
       "default": "./dist/server/runtime/page-files/setup.js"
     },
     "./__internal/vite": {
@@ -109,11 +109,11 @@
       "default": "./dist/server/__internal/vite.js"
     },
     ".": {
+      "types": "./dist/server/runtime/index.d.ts",
       "worker": "./dist/server/runtime/index.js",
       "workerd": "./dist/server/runtime/index.js",
       "node": "./dist/server/runtime/index.js",
       "browser": "./dist/client/index.js",
-      "types": "./dist/server/runtime/index.d.ts",
       "default": "./dist/server/runtime/index.js"
     }
   },
