@@ -13,6 +13,7 @@ import { assert } from '../../../utils/assert.js'
 import { hasProp } from '../../../utils/hasProp.js'
 import { isObject } from '../../../utils/isObject.js'
 import { parseUrl } from '../../../utils/parseUrl.js'
+const pageContextJsonFileExtensionUrl = `/index${pageContextJsonFileExtension}`
 
 type UrlParsed = ReturnType<typeof parseUrl>
 
@@ -41,17 +42,18 @@ function handlePageContextRequestUrl(url: string) {
 
 function isMatch(urlParsed: UrlParsed) {
   const { pathnameOriginal, pathname } = urlParsed
-  assert(pathname.endsWith(pageContextJsonFileExtension) === pathnameOriginal.endsWith(pageContextJsonFileExtension))
-  return pathname.endsWith(pageContextJsonFileExtension)
+  assert(
+    pathname.endsWith(pageContextJsonFileExtensionUrl) === pathnameOriginal.endsWith(pageContextJsonFileExtensionUrl),
+  )
+  return pathname.endsWith(pageContextJsonFileExtensionUrl)
 }
 
 function processUrl(urlParsed: UrlParsed, url: string) {
   // We cannot use `urlParsed.pathname` because it would break the `urlParsed.pathnameOriginal` value of subsequent `parseUrl()` calls.
   const { pathnameOriginal, search } = urlParsed
   assert(doNotCreateExtraDirectory === false)
-  const urlSuffix = `/index${pageContextJsonFileExtension}`
-  assert(pathnameOriginal.endsWith(urlSuffix), { url })
-  let pathnameModified = slice(pathnameOriginal, 0, -1 * urlSuffix.length)
+  assert(pathnameOriginal.endsWith(pageContextJsonFileExtensionUrl), { url })
+  let pathnameModified = slice(pathnameOriginal, 0, -1 * pageContextJsonFileExtensionUrl.length)
   if (pathnameModified === '') pathnameModified = '/'
   const searchVikeArgs = search?._vike
   const urlWithoutPageContextRequestSuffix = modifyUrl(url, {
