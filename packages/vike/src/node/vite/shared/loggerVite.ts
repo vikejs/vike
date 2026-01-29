@@ -21,7 +21,7 @@ const globalObject = getGlobalObject('vite/shared/loggerDev.ts', {
   processStartupLog_hasViteLoggedStartup: null as null | true,
   processStartupLog_hasViteLoggedHelpShortcut: null as null | true,
   swallowViteLogForceOptimization_enabled: false,
-  swallowViteLogConnected_originalConsoleLog: null as typeof console.log | null,
+  swallowViteLogConnected_originalConsoleLog: undefined as typeof console.log | null | undefined,
 })
 
 function interceptViteLogs(config: ResolvedConfig) {
@@ -133,19 +133,25 @@ function swallowViteLogForceOptimization_disable(): void {
   globalObject.swallowViteLogForceOptimization_enabled = false
 }
 
-// Suppress "[vite] connected." message. (It doesn't go through Vite's logger thus we must monkey patch the console.log() function.)
+// Swallow message `[vite] connected.`
 function swallowViteLogConnected(): void {
   if (isDebugError()) return
   if (globalObject.swallowViteLogConnected_originalConsoleLog) return
   globalObject.swallowViteLogConnected_originalConsoleLog = console.log
+  // The message `[vite] connected.` doesn't go through Vite's logger thus we must monkey patch console.log()
   console.log = swallowViteLogConnected_logPatch
   setTimeout(swallowViteLogConnected_clean, 3000)
 }
 // Remove console.log() monkey patch
 function swallowViteLogConnected_clean(): void {
-  // Don't remove console.log() patches from other libraries (e.g. instrumentation)
-  if (console.log === swallowViteLogConnected_logPatch) return
+  if (isDebugError()) {
+    assert(globalObject.swallowViteLogConnected_originalConsoleLog === undefined)
+    return
+  }
+  if (globalObject.swallowViteLogConnected_originalConsoleLog === null) return // already cleaned
   assert(globalObject.swallowViteLogConnected_originalConsoleLog)
+  // Don't remove console.log() patches from other libraries (e.g. instrumentation)
+  if (console.log !== swallowViteLogConnected_logPatch) return
   console.log = globalObject.swallowViteLogConnected_originalConsoleLog
   globalObject.swallowViteLogConnected_originalConsoleLog = null
 }
