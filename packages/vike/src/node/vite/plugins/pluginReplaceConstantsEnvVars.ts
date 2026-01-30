@@ -19,6 +19,8 @@ const PUBLIC_ENV_PREFIX = 'PUBLIC_ENV__'
 const PUBLIC_ENV_ALLOWLIST = [
   // https://github.com/vikejs/vike/issues/1724
   'STORYBOOK',
+  // https://github.com/vikejs/vike/pull/3069
+  'DEBUG',
 ]
 
 // TO-DO/eventually:
