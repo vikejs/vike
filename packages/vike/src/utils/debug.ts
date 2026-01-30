@@ -210,8 +210,8 @@ function getDEBUG(): string | undefined | null {
   } catch {}
 
   // ssr.external
-  // - `process` can be undefined in edge workers
-  // - We want bundlers to be able to statically replace `process.env.*`
+  // - `process` can be `undefined` (e.g. edge workers)
+  // - We want bundlers (e.g. webpack) to be able to statically replace `process.env.*`
   try {
     return process.env.DEBUG
   } catch {}
