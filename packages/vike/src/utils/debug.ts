@@ -210,9 +210,9 @@ function getDEBUG() {
   // - https://github.com/vikejs/vike/commit/7637564a98f43e23834bcae2f7ada8d941958a34
   // - https://github.com/vikejs/vike/pull/2718
   // - We don't implement this yet because it crashes @cloudflare/vite-plugin
-  if (import.meta.env) {
+  try {
     return import.meta.env.DEBUG
-  }
+  } catch {}
   //*/
 
   // ssr.external
