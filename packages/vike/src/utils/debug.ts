@@ -42,7 +42,7 @@ const isUsed =
   // Vite doesn't do tree-shaking in dev (maybe it will with Rolldown?)
   import.meta.env.DEV
 // We purposely read process.env.DEBUG early, in order to avoid users from the temptation to set process.env.DEBUG with JavaScript, since reading & writing process.env.DEBUG dynamically leads to inconsistencies such as https://github.com/vikejs/vike/issues/2239
-const DEBUG = (isUsed && getDEBUG()) || ''
+const DEBUG: string = (isUsed && getDEBUG()) || ''
 if (isUsed) assertFlagsActivated()
 
 type Flag = (typeof flags)[number]
@@ -200,27 +200,21 @@ function getFlagsActivated() {
   return { flagsActivated, isAll, isGlobal }
 }
 
-function getDEBUG() {
+function getDEBUG(): string | undefined | null {
   assert(isUsed)
 
-  let DEBUG: undefined | string
-
   // ssr.noExternal
-  //* // Full implementation:
-  // - https://github.com/vikejs/vike/commit/7637564a98f43e23834bcae2f7ada8d941958a34
-  // - https://github.com/vikejs/vike/pull/2718
-  // - We don't implement this yet because it crashes @cloudflare/vite-plugin
+  // - @cloudflare/vite-plugin
   try {
-    return import.meta.env.DEBUG
+    return import.meta.env.DEBUG as string | undefined
   } catch {}
-  //*/
 
   // ssr.external
   // - `process` can be undefined in edge workers
   // - We want bundlers to be able to statically replace `process.env.*`
   try {
-    DEBUG = process.env.DEBUG
+    return process.env.DEBUG
   } catch {}
 
-  return DEBUG
+  return null
 }
