@@ -4,7 +4,7 @@ import cm from '@classmatejs/react'
 import FlexGraphicBlocks from './Blocks'
 import Legend from './Legend'
 import useFlexGraphicInteractions from './useFlexGraphicInteractions'
-import { FlexGraphicHookName, HOOK_COLORS } from '../../../util/constants'
+import { FlexGraphicHook, HOOK_COLORS } from '../../../util/constants'
 
 const StyledOuter = cm.div`
   w-full md:w-3/4 lg:w-4/5 
@@ -37,7 +37,7 @@ const FlexGraphic = () => {
     isSlideshowMode,
   } = useFlexGraphicInteractions()
 
-  const getHoverHandlers = (hookName: FlexGraphicHookName) => ({
+  const getHoverHandlers = (hookName: FlexGraphicHook) => ({
     onMouseEnter: () => onChangeHightlight([hookName]),
     onMouseLeave: () => onChangeHightlight(null),
   })

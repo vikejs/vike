@@ -8,7 +8,7 @@ export const LayoutSize = {
 
 export type LayoutSize = (typeof LayoutSize)[keyof typeof LayoutSize]
 
-export const FlexGraphicHookNames = {
+export const FlexGraphicHook = {
   onBeforeRenderClient: 'onBeforeRenderClient',
   Wrapper: 'Wrapper',
   onCreatePageContext: 'onCreatePageContext',
@@ -21,10 +21,11 @@ export const FlexGraphicHookNames = {
   onRenderHtml: 'onRenderHtml',
   onAfterRenderHtml: 'onAfterRenderHtml',
 } as const
+export type FlexGraphicHook = (typeof FlexGraphicHook)[keyof typeof FlexGraphicHook]
 
-export type FlexGraphicHookName = (typeof FlexGraphicHookNames)[keyof typeof FlexGraphicHookNames]
+export const HOOK_NAME_KEYS = Object.keys(FlexGraphicHook) as FlexGraphicHook[]
 
-export const HOOK_COLORS: { [key in FlexGraphicHookName]: string } = {
+export const HOOK_COLORS: { [key in FlexGraphicHook]: string } = {
   onBeforeRenderClient: '#E3B3D2',
   Wrapper: '#DF9058',
   onCreatePageContext: '#7ECDD3',

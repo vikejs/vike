@@ -1,11 +1,11 @@
 import React from 'react'
 import cm from '@classmatejs/react'
 
-import { FlexGraphicHookName, HOOK_COLORS } from '../../../util/constants'
+import { FlexGraphicHook, HOOK_COLORS } from '../../../util/constants'
 
 interface LegendProps {
-  onChangeHightlight: (hooks: FlexGraphicHookName[] | null) => void
-  activeHooks: FlexGraphicHookName[] | null
+  onChangeHightlight: (hooks: FlexGraphicHook[] | null) => void
+  activeHooks: FlexGraphicHook[] | null
   isSlideshowMode: boolean
 }
 
@@ -13,7 +13,7 @@ const Legend = ({ onChangeHightlight, activeHooks, isSlideshowMode }: LegendProp
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 mb-4">
       {Object.entries(HOOK_COLORS).map(([key, color]) => {
-        const hookName = key as FlexGraphicHookName
+        const hookName = key as FlexGraphicHook
         const isActive = activeHooks?.includes(hookName)
         const isInteractiveActive = !isSlideshowMode && activeHooks?.length
         const type = isActive ? 'active' : isSlideshowMode ? 'disabled' : isInteractiveActive ? 'inactive' : 'active'

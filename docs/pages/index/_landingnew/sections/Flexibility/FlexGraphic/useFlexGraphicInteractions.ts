@@ -2,11 +2,14 @@ import { useEffect, useRef, useState, type RefObject } from 'react'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
 
-import { FlexGraphicHookName, HOOK_COLORS } from '../../../util/constants'
+import { FlexGraphicHook, HOOK_COLORS, HOOK_NAME_KEYS } from '../../../util/constants'
 
-const hookNames = Object.keys(HOOK_COLORS) as FlexGraphicHookName[]
 const animationDuration = 0.5
 const animationEase = 'power2.out'
+const baseColor = '#E3E3E3'
+const baseStrokeWidth = 3
+const activeStrokeWidth = 4
+const slideshowIntervalMs = 2400
 
 interface ApplyColorParams {
   targets: SVGElement[]
@@ -84,10 +87,6 @@ interface HookRefMap {
 }
 
 const useFlexGraphicInteractions = () => {
-  const baseColor = '#E3E3E3'
-  const baseStrokeWidth = 3
-  const activeStrokeWidth = 4
-  const slideshowIntervalMs = 2400
   const onRenderClientRef = useRef<SVGGElement>(null)
   const wrapperRef = useRef<SVGGElement>(null)
   const onCreatePageContextRef = useRef<SVGGElement>(null)
@@ -100,7 +99,9 @@ const useFlexGraphicInteractions = () => {
   const onRenderHtmlRef = useRef<SVGGElement>(null)
   const onAfterRenderHtmlRef = useRef<SVGGElement>(null)
 
-  const [activeHooks, setActiveHooks] = useState<FlexGraphicHookName[] | null>(hookNames.length ? [hookNames[0]] : null)
+  const [activeHooks, setActiveHooks] = useState<FlexGraphicHook[] | null>(
+    HOOK_NAME_KEYS.length ? [HOOK_NAME_KEYS[0]] : null,
+  )
   const [isSlideshowMode, setIsSlideshowMode] = useState(true)
   const slideshowIndexRef = useRef(0)
 
@@ -150,7 +151,7 @@ const useFlexGraphicInteractions = () => {
     { dependencies: [activeHooks] },
   )
 
-  const onChangeHightlight = contextSafe((hooks: FlexGraphicHookName[] | null) => {
+  const onChangeHightlight = contextSafe((hooks: FlexGraphicHook[] | null) => {
     const nextHooks = hooks?.length ? hooks : null
     setActiveHooks(nextHooks)
     setIsSlideshowMode(!nextHooks)
@@ -158,14 +159,14 @@ const useFlexGraphicInteractions = () => {
 
   // slideshow effect
   useEffect(() => {
-    if (!isSlideshowMode || !hookNames.length) {
+    if (!isSlideshowMode || !HOOK_NAME_KEYS.length) {
       return
     }
-    setActiveHooks([hookNames[slideshowIndexRef.current % hookNames.length]])
+    setActiveHooks([HOOK_NAME_KEYS[slideshowIndexRef.current % HOOK_NAME_KEYS.length]])
 
     const intervalId = window.setInterval(() => {
-      slideshowIndexRef.current = (slideshowIndexRef.current + 1) % hookNames.length
-      setActiveHooks([hookNames[slideshowIndexRef.current]])
+      slideshowIndexRef.current = (slideshowIndexRef.current + 1) % HOOK_NAME_KEYS.length
+      setActiveHooks([HOOK_NAME_KEYS[slideshowIndexRef.current]])
     }, slideshowIntervalMs)
 
     return () => window.clearInterval(intervalId)
