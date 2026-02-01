@@ -1,0 +1,66 @@
+@import 'tailwindcss';
+
+/* custom */
+@theme {
+  --font-sans: 'Inter', sans-serif;
+  --text-tiny: 0.65rem;
+}
+
+@plugin "daisyui" {
+  themes: vike --default;
+}
+
+@plugin "daisyui/theme" {
+  name: 'vike';
+  --color-base-100: oklch(98% 0.002 247.839);
+  --color-base-200: oklch(96% 0.003 264.542);
+  --color-base-300: oklch(92% 0.006 264.531);
+  --color-base-content: oklch(13% 0.028 261.692);
+  --color-primary: oklch(58% 0.158 241.966);
+  --color-primary-content: oklch(98% 0.002 247.839);
+  --color-secondary: oklch(55% 0.046 257.417);
+  --color-secondary-content: oklch(98% 0.002 247.839);
+  --color-accent: oklch(60% 0.118 184.704);
+  --color-accent-content: oklch(100% 0 0);
+  --color-neutral: oklch(27.441% 0.013 253.041);
+  --color-neutral-content: oklch(85.488% 0.002 253.041);
+  --color-info: oklch(60% 0.126 221.723);
+  --color-info-content: oklch(100% 0 0);
+  --color-success: oklch(62% 0.194 149.214);
+  --color-success-content: oklch(98% 0.018 155.826);
+  --color-warning: oklch(80% 0.199 91.936);
+  --color-warning-content: oklch(13% 0.028 261.692);
+  --color-error: oklch(57% 0.245 27.325);
+  --color-error-content: oklch(97% 0.013 17.38);
+  /* .rounded-selector = 0.25rem */
+  --radius-selector: 0.25rem;
+  /* .rounded-field = 0.5rem */
+  --radius-field: 0.5rem;
+  /* .rounded-box = 1rem */
+  --radius-box: 1rem;
+  /* 4px */
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1.5px;
+  --depth: 0;
+  --noise: 0;
+}
+
+@layer base {
+  body {
+    @apply font-sans bg-base-200 ring-primary min-h-dvh;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-bold;
+  }
+
+  p {
+    @apply my-4;
+  }
+}

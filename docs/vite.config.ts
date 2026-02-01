@@ -1,6 +1,7 @@
 import svgr from 'vite-plugin-svgr'
 import type { UserConfig } from 'vite'
 import vike from 'vike/plugin'
+import tailwindcss from '@tailwindcss/vite'
 
 export default {
   optimizeDeps: { include: ['@batijs/elements'] },
@@ -8,6 +9,7 @@ export default {
     // Used by the landing page, see `.svg?react` imports
     svgr(),
     vike(),
+    tailwindcss(),
   ],
   // https://github.com/vikejs/vike/blob/08a1ff55c80ddca64ca6d4417fefd45fefeb4ffb/vike/node/plugin/plugins/replaceConstants.ts#L32
   // @ts-expect-error
