@@ -19,7 +19,7 @@
     "react-dom": "^19.2.1",
     "react-streaming": "^0.4.15",
     "typescript": "^5.9.3",
-    "vike": "0.4.252",
+    "vike": "0.4.253",
     "vite": "^7.2.6"
   },
   "type": "module"

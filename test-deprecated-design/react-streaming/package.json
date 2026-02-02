@@ -15,7 +15,7 @@
     "react-dom": "^19.2.1",
     "react-streaming": "^0.4.15",
     "sirv": "^2.0.2",
-    "vike": "0.4.252",
+    "vike": "0.4.253",
     "vite": "^6.3.2"
   },
   "type": "module"
