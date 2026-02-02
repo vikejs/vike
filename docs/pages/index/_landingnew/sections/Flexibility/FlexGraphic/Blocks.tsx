@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useCallback } from 'react'
 
 import { ExtensionBlock } from './styled'
 import {
@@ -27,14 +27,17 @@ interface FlexGraphicBlocksProps {
 }
 
 const FlexGraphicBlocks = ({ activeHooks, activeBlocks, onBlockHover, onBlockLeave }: FlexGraphicBlocksProps) => {
-  const getConnectedHook = (type: ExtensionBlockVariants) => {
-    if (!activeHooks?.length) {
-      return null
-    }
+  const getConnectedHook = useCallback(
+    (type: ExtensionBlockVariants) => {
+      if (!activeHooks?.length) {
+        return null
+      }
 
-    const match = activeHooks.find((hook) => EXTENSION_BLOCK_CONNECTED_HOOKS[type].includes(hook))
-    return match ?? null
-  }
+      const match = activeHooks.find((hook) => EXTENSION_BLOCK_CONNECTED_HOOKS[type].includes(hook))
+      return match ?? null
+    },
+    [activeHooks],
+  )
 
   return (
     <>

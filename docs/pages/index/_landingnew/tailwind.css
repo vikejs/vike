@@ -5,6 +5,7 @@
   --font-sans: 'Inter', sans-serif;
   --text-tiny: 0.65rem;
 
+  --color-gray: oklch(0.5 0.01 250);
   --color-shade: oklch(0.8576 0 0);
   --color-shade-100: oklch(0.8923 0 0);
 
@@ -34,6 +35,7 @@
 }
 
 @plugin "daisyui" {
+  /* leave this here - seems playwright or other headless browsers are not able to support @property css attributes */
   exclude: properties;
   themes: vike --default;
 }
