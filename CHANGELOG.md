@@ -15,10 +15,12 @@
 * support file being both a runtime and config file (brillout/docpress[#86](https://github.com/vikejs/vike/issues/86)) ([3d92f08](https://github.com/vikejs/vike/commit/3d92f086484a9c391697baf39dfa25a8de273b5a))
 
 
-### BREAKING CHANGES
+### MINOR BREAKING CHANGES
 
-* +onHookCall is now server-only by default, use
-`.client.js` or `.shared.js` to execute it on the client.
+> [!NOTE]
+> We recommend ignoring `MINOR BREAKING CHANGES` unless this version breaks your app, see [Vike Versioning](https://vike.dev/versioning).
+
+* `+onHookCall` is now server-only by default, use `.client.js` or `.shared.js` to execute it on the client. (Note that `+onHookCall` is in beta — breaking changes are expected.)
 
 
 
