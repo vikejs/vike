@@ -4,6 +4,33 @@
 @theme {
   --font-sans: 'Inter', sans-serif;
   --text-tiny: 0.65rem;
+
+  --color-shade: oklch(0.8576 0 0);
+  --color-shade-100: oklch(0.8923 0 0);
+
+  /* convert hex to oklch: https://oklch.com/ */
+  --color-onBeforeRenderClient: oklch(0.819 0.0686 339.84);
+  --color-onBeforeRenderClient-hex: #e3b3d2;
+  --color-Wrapper: oklch(0.7227 0.12 54.89);
+  --color-Wrapper-hex: #df9058;
+  --color-onCreatePageContext: oklch(0.7996 0.0782 201.92);
+  --color-onCreatePageContext-hex: #7ecdd3;
+  --color-Head: oklch(0.8449 0.1889 127.63);
+  --color-Head-hex: #a9e248;
+  --color-onHookCall: oklch(0.6916 0.2222 344.42);
+  --color-onHookCall-hex: #f453bc;
+  --color-onBeforeRenderHtml: oklch(0.6921 0.0872 95.93);
+  --color-onBeforeRenderHtml-hex: #ac9c5b;
+  --color-onRenderClient: oklch(0.6733 0.1463 21.75);
+  --color-onRenderClient-hex: #e26d6d;
+  --color-onCreateGlobalContext: oklch(0.5602 0.0646 243.91);
+  --color-onCreateGlobalContext-hex: #537998;
+  --color-onError: oklch(0.8031 0.1636 159.24);
+  --color-onError-hex: #42de98;
+  --color-onRenderHtml: oklch(0.7277 0.1574 139.22);
+  --color-onRenderHtml-hex: #6fbe59;
+  --color-onAfterRenderHtml: oklch(0.8549 0.1547 94.42);
+  --color-onAfterRenderHtml-hex: #f0cd42;
 }
 
 @plugin "daisyui" {

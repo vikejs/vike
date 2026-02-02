@@ -1,7 +1,7 @@
 import React from 'react'
-import cm from '@classmatejs/react'
 
 import { FlexGraphicHook, HOOK_COLORS } from '../../../util/constants'
+import { StyledLegendItem } from './styled'
 
 interface LegendProps {
   onChangeHightlight: (hooks: FlexGraphicHook[] | null) => void
@@ -16,7 +16,7 @@ const Legend = ({ onChangeHightlight, activeHooks, isSlideshowMode }: LegendProp
         const hookName = key as FlexGraphicHook
         const isActive = activeHooks?.includes(hookName)
         const isInteractiveActive = !isSlideshowMode && activeHooks?.length
-        const type = isActive ? 'active' : isSlideshowMode ? 'disabled' : isInteractiveActive ? 'inactive' : 'active'
+        const type = isActive ? 'active' : isSlideshowMode ? 'disabled' : isInteractiveActive ? 'inactive' : 'paused'
 
         return (
           <StyledLegendItem
@@ -35,21 +35,3 @@ const Legend = ({ onChangeHightlight, activeHooks, isSlideshowMode }: LegendProp
 }
 
 export default Legend
-
-const StyledLegendItem = cm.div.variants<{ $type: 'disabled' | 'active' | 'inactive' }>({
-  base: `
-    transition-opacity 
-    flex items-center gap-2 
-    p-1
-  `,
-  variants: {
-    $type: {
-      disabled: 'opacity-50',
-      active: 'opacity-100 font-bold',
-      inactive: 'opacity-75',
-    },
-  },
-  defaultVariants: {
-    $type: 'disabled',
-  },
-})

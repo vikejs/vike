@@ -1,18 +1,20 @@
-import React from 'react'
+import React, { useCallback, useState } from 'react'
 import cm from '@classmatejs/react'
 
 import FlexGraphicBlocks from './Blocks'
 import Legend from './Legend'
 import useFlexGraphicInteractions from './useFlexGraphicInteractions'
-import { FlexGraphicHook, HOOK_COLORS } from '../../../util/constants'
+import {
+  EXTENSION_BLOCK_CONNECTED_HOOKS,
+  EXTENSION_BLOCK_KEYS,
+  type ExtensionBlockVariants,
+  FlexGraphicHook,
+  HOOK_COLORS,
+} from '../../../util/constants'
 
 const StyledOuter = cm.div`
   w-full md:w-3/4 lg:w-4/5 
   relative
-`
-
-const StyledSvg = cm.svg`
-  w-full h-full 
 `
 
 const pinHeight = 2
@@ -36,18 +38,57 @@ const FlexGraphic = () => {
     activeHooks,
     isSlideshowMode,
   } = useFlexGraphicInteractions()
+  const [activeBlocks, setActiveBlocks] = useState<ExtensionBlockVariants[] | null>(null)
 
-  const getHoverHandlers = (hookName: FlexGraphicHook) => ({
-    onMouseEnter: () => onChangeHightlight([hookName]),
-    onMouseLeave: () => onChangeHightlight(null),
-  })
+  const getHoverHandlers = useCallback(
+    (hookName: FlexGraphicHook) => ({
+      onMouseEnter: () => onChangeHightlight([hookName]),
+      onMouseLeave: () => onChangeHightlight(null),
+    }),
+    [onChangeHightlight],
+  )
+
+  const getBlocksForHooks = useCallback((hooks: FlexGraphicHook[]) => {
+    if (!hooks.length) {
+      return []
+    }
+    return EXTENSION_BLOCK_KEYS.filter((block) =>
+      EXTENSION_BLOCK_CONNECTED_HOOKS[block].some((hook) => hooks.includes(hook)),
+    )
+  }, [])
+
+  const onBlockHover = useCallback(
+    (block: ExtensionBlockVariants) => {
+      const hooks = EXTENSION_BLOCK_CONNECTED_HOOKS[block]
+      setActiveBlocks(hooks.length ? getBlocksForHooks(hooks) : [block])
+      onChangeHightlight(hooks)
+    },
+    [getBlocksForHooks, onChangeHightlight],
+  )
+
+  const onBlockLeave = useCallback(() => {
+    setActiveBlocks(null)
+    onChangeHightlight(null)
+  }, [onChangeHightlight])
 
   return (
     <>
       <Legend activeHooks={activeHooks} onChangeHightlight={onChangeHightlight} isSlideshowMode={isSlideshowMode} />
       <StyledOuter>
-        <FlexGraphicBlocks />
-        <StyledSvg width="479" height="349" viewBox="0 0 479 349" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <FlexGraphicBlocks
+          activeHooks={activeHooks}
+          activeBlocks={activeBlocks}
+          onBlockHover={onBlockHover}
+          onBlockLeave={onBlockLeave}
+        />
+        <svg
+          className="w-full h-auto "
+          width="479"
+          height="349"
+          viewBox="0 0 479 349"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
           {/* onRenderClient */}
           <g ref={onRenderClientRef} {...getHoverHandlers('onRenderClient')}>
             <rect fill={HOOK_COLORS.onRenderClient} width={pinWidth} height={pinHeight} x="70" y="208" />
@@ -191,7 +232,7 @@ const FlexGraphic = () => {
             />
             <path stroke={HOOK_COLORS.onCreatePageContext} strokeWidth={strokeWidth} d="M235.5 241L235.5 341.197" />
           </g>
-        </StyledSvg>
+        </svg>
       </StyledOuter>
     </>
   )

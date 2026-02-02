@@ -1,58 +1,63 @@
-import cm from '@classmatejs/react'
-import React from 'react'
+import React, { ReactNode } from 'react'
 
-const FlexGraphicBlocks = () => {
+import { ExtensionBlock } from './styled'
+import {
+  EXTENSION_BLOCK_CONNECTED_HOOKS,
+  type ExtensionBlockVariants,
+  type FlexGraphicHook,
+  HOOK_COLORS,
+} from '../../../util/constants'
+
+const blocks: { type: ExtensionBlockVariants; label: ReactNode }[] = [
+  { type: 'react', label: 'vike-react' },
+  { type: 'core', label: 'vike-core' },
+  { type: 'apollo', label: 'vike-react-apollo' },
+  { type: 'styledjsx', label: 'vike-react-styled-jsx' },
+  { type: 'redux', label: 'vike-react-redux' },
+  { type: 'sentry', label: 'vike-react-sentry' },
+]
+
+const activeBorderColor = 'var(--color-shade)'
+
+interface FlexGraphicBlocksProps {
+  activeHooks: FlexGraphicHook[] | null
+  activeBlocks?: ExtensionBlockVariants[] | null
+  onBlockHover?: (type: ExtensionBlockVariants) => void
+  onBlockLeave?: () => void
+}
+
+const FlexGraphicBlocks = ({ activeHooks, activeBlocks, onBlockHover, onBlockLeave }: FlexGraphicBlocksProps) => {
+  const getConnectedHook = (type: ExtensionBlockVariants) => {
+    if (!activeHooks?.length) {
+      return null
+    }
+
+    const match = activeHooks.find((hook) => EXTENSION_BLOCK_CONNECTED_HOOKS[type].includes(hook))
+    return match ?? null
+  }
+
   return (
     <>
-      <ExtensionBlock $type="react">vike-react</ExtensionBlock>
-      <ExtensionBlock $type="core">vike-core</ExtensionBlock>
-      <ExtensionBlock $type="apollo">vike-react-apollo</ExtensionBlock>
-      <ExtensionBlock $type="styledjsx">vike-react-styled-jsx</ExtensionBlock>
-      <ExtensionBlock $type="redux">vike-react-redux</ExtensionBlock>
-      <ExtensionBlock $type="sentry">vike-react-sentry</ExtensionBlock>
+      {blocks.map(({ type, label }) => {
+        const connectedHook = getConnectedHook(type)
+        const isActive = activeBlocks?.includes(type)
+        const borderColor = isActive ? activeBorderColor : connectedHook ? HOOK_COLORS[connectedHook] : undefined
+        const shadowType = isActive ? 'active' : (connectedHook ?? 'inactive')
+        return (
+          <ExtensionBlock
+            key={type}
+            $type={type}
+            $shadowType={shadowType}
+            style={borderColor ? { borderColor } : undefined}
+            onMouseEnter={() => onBlockHover?.(type)}
+            onMouseLeave={() => onBlockLeave?.()}
+          >
+            {label}
+          </ExtensionBlock>
+        )
+      })}
     </>
   )
 }
 
 export default FlexGraphicBlocks
-
-type blockVariants = 'react' | 'core' | 'apollo' | 'styledjsx' | 'redux' | 'sentry'
-const ExtensionBlock = cm.div.variants<{ $type: blockVariants }>({
-  base: `
-  absolute 
-  rounded-lg
-  font-mono
-  bg-base-200
-  border-1 md:border-2 border-base-300
-  text-tiny sm:text-sm 
-  flex justify-center items-center
-`,
-  variants: {
-    $type: {
-      react: `
-        top-[22.3%] left-[12%]
-        h-[15%] w-[33%]
-      `,
-      core: `
-        top-[60.1%] left-[12%]
-        h-[30%] w-[33%]
-      `,
-      apollo: `
-        top-[10%] left-[55.5%]
-        h-[11%] w-[35%]
-      `,
-      styledjsx: `
-        top-[30.7%] left-[55.5%]
-        h-[11%] w-[35%]
-      `,
-      redux: `
-        top-[52.1%] left-[55.5%]
-        h-[11%] w-[35%]
-      `,
-      sentry: `
-        top-[74.4%] left-[55.5%]
-        h-[11%] w-[35%]
-      `,
-    },
-  },
-})

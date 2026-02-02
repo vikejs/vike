@@ -1,57 +1,26 @@
 import { useEffect, useRef, useState, type RefObject } from 'react'
-import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
 
 import { FlexGraphicHook, HOOK_COLORS, HOOK_NAME_KEYS } from '../../../util/constants'
+import { applyColor, applyStrokeWidth, killTweens } from './animations'
 
-const animationDuration = 0.5
-const animationEase = 'power2.out'
-const baseColor = '#E3E3E3'
+// todo: to config
+
+const baseColor = '#E3E3E3' // bad - use CSS variable here
 const baseStrokeWidth = 3
 const activeStrokeWidth = 4
-const slideshowIntervalMs = 2400
+const hitboxStrokeWidth = 14
 
-interface ApplyColorParams {
-  targets: SVGElement[]
-  color: string
-  mode: 'set' | 'to'
-  attr: 'stroke' | 'fill'
-}
+const slideshowIntervalMs = 2000
+const slideshowResumeDelayMs = 1200
 
-const applyColor = ({ targets, color, mode, attr }: ApplyColorParams) => {
-  if (!targets.length) {
-    return
+const resolveCssColor = (color: string) => {
+  const match = color.match(/^var\((--[^)]+)\)$/)
+  if (!match) {
+    return color
   }
-
-  if (mode === 'set') {
-    gsap.set(targets, { attr: { [attr]: color } })
-    return
-  }
-
-  gsap.to(targets, {
-    attr: { [attr]: color },
-    duration: animationDuration,
-    ease: animationEase,
-    overwrite: 'auto',
-  })
-}
-
-const applyStrokeWidth = (targets: SVGElement[], width: number, mode: 'set' | 'to') => {
-  if (!targets.length) {
-    return
-  }
-
-  if (mode === 'set') {
-    gsap.set(targets, { attr: { 'stroke-width': width } })
-    return
-  }
-
-  gsap.to(targets, {
-    attr: { 'stroke-width': width },
-    duration: animationDuration,
-    ease: animationEase,
-    overwrite: 'auto',
-  })
+  const value = getComputedStyle(document.documentElement).getPropertyValue(match[1]).trim()
+  return value || color
 }
 
 const collectTargets = (ref: RefObject<SVGGElement | null>) => {
@@ -59,7 +28,9 @@ const collectTargets = (ref: RefObject<SVGGElement | null>) => {
     return { strokeTargets: [] as SVGElement[], fillTargets: [] as SVGElement[] }
   }
 
-  const nodes = Array.from(ref.current.querySelectorAll<SVGElement>('[stroke], [fill]'))
+  const nodes = Array.from(
+    ref.current.querySelectorAll<SVGElement>('[stroke]:not([data-hitbox]), [fill]:not([data-hitbox])'),
+  )
   const strokeTargets = nodes.filter((node) => node.hasAttribute('stroke'))
   const fillTargets = nodes.filter((node) => node.hasAttribute('fill'))
 
@@ -104,6 +75,7 @@ const useFlexGraphicInteractions = () => {
   )
   const [isSlideshowMode, setIsSlideshowMode] = useState(true)
   const slideshowIndexRef = useRef(0)
+  const slideshowResumeTimeoutRef = useRef<number | null>(null)
 
   const hookRefMap: HookRefMap = {
     onRenderClient: onRenderClientRef,
@@ -125,6 +97,9 @@ const useFlexGraphicInteractions = () => {
     () => {
       const baseMode = hasInitializedRef.current ? 'to' : 'set'
       const allTargets = collectAllTargets(hookRefMap)
+      const allElements = [...allTargets.strokeTargets, ...allTargets.fillTargets]
+
+      killTweens(allElements)
 
       applyColor({ targets: allTargets.strokeTargets, color: baseColor, mode: baseMode, attr: 'stroke' })
       applyColor({ targets: allTargets.fillTargets, color: baseColor, mode: baseMode, attr: 'fill' })
@@ -138,7 +113,7 @@ const useFlexGraphicInteractions = () => {
           }
 
           const targets = collectTargets(ref)
-          const hookColor = HOOK_COLORS[hookName]
+          const hookColor = resolveCssColor(HOOK_COLORS[hookName])
 
           applyColor({ targets: targets.strokeTargets, color: hookColor, mode: 'to', attr: 'stroke' })
           applyColor({ targets: targets.fillTargets, color: hookColor, mode: 'to', attr: 'fill' })
@@ -152,10 +127,45 @@ const useFlexGraphicInteractions = () => {
   )
 
   const onChangeHightlight = contextSafe((hooks: FlexGraphicHook[] | null) => {
-    const nextHooks = hooks?.length ? hooks : null
-    setActiveHooks(nextHooks)
-    setIsSlideshowMode(!nextHooks)
+    setActiveHooks(hooks)
+    if (slideshowResumeTimeoutRef.current) {
+      window.clearTimeout(slideshowResumeTimeoutRef.current)
+      slideshowResumeTimeoutRef.current = null
+    }
+
+    if (hooks === null) {
+      slideshowResumeTimeoutRef.current = window.setTimeout(() => {
+        setIsSlideshowMode(true)
+      }, slideshowResumeDelayMs)
+      return
+    }
+
+    setIsSlideshowMode(false)
   })
+
+  // setup hitboxes
+  useEffect(() => {
+    Object.values(hookRefMap).forEach((ref) => {
+      if (!ref.current || ref.current.querySelector('[data-hitbox="true"]')) {
+        return
+      }
+      const hitTargets = Array.from(
+        ref.current.querySelectorAll<SVGElement>('path, line, polyline, polygon, rect, circle, ellipse'),
+      )
+
+      hitTargets.forEach((target) => {
+        const hitbox = target.cloneNode(false) as SVGElement
+        hitbox.setAttribute('data-hitbox', 'true')
+        hitbox.setAttribute('fill', 'none')
+        hitbox.setAttribute('stroke', 'transparent')
+        hitbox.setAttribute('stroke-width', String(hitboxStrokeWidth))
+        hitbox.setAttribute('pointer-events', 'stroke')
+        hitbox.setAttribute('vector-effect', 'non-scaling-stroke')
+        hitbox.setAttribute('aria-hidden', 'true')
+        ref.current?.insertBefore(hitbox, ref.current.firstChild)
+      })
+    })
+  }, [])
 
   // slideshow effect
   useEffect(() => {
@@ -171,6 +181,15 @@ const useFlexGraphicInteractions = () => {
 
     return () => window.clearInterval(intervalId)
   }, [isSlideshowMode, slideshowIntervalMs])
+
+  useEffect(
+    () => () => {
+      if (slideshowResumeTimeoutRef.current) {
+        window.clearTimeout(slideshowResumeTimeoutRef.current)
+      }
+    },
+    [],
+  )
 
   return {
     onRenderClientRef,
