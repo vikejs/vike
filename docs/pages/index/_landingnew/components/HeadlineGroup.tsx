@@ -29,10 +29,18 @@ type HeadlineGroupProps = {
   centered?: boolean
   headingStyle?: 'h1' | 'h2'
   sub?: string | ReactNode
+  outerClassName?: string
 }
 
-const HeadlineGroup = ({ main, pre, centered = false, headingStyle = 'h2', sub }: HeadlineGroupProps) => (
-  <>
+const HeadlineGroup = ({
+  main,
+  pre,
+  centered = false,
+  headingStyle = 'h2',
+  sub,
+  outerClassName,
+}: HeadlineGroupProps) => (
+  <div role="heading" className={outerClassName}>
     {pre && (
       <AuxHeadline $type="pre" $centered={centered || true}>
         {pre}
@@ -46,7 +54,7 @@ const HeadlineGroup = ({ main, pre, centered = false, headingStyle = 'h2', sub }
         {sub}
       </AuxHeadline>
     )}
-  </>
+  </div>
 )
 
 export default HeadlineGroup

@@ -78,7 +78,7 @@
 
 @layer base {
   body {
-    @apply font-sans bg-base-200 ring-primary min-h-dvh;
+    @apply font-sans;
   }
 
   h1,
