@@ -83,7 +83,7 @@ const brands: Brand[] = [
 const BrandSubsection = () => {
   return (
     <GlassContainer className="flex flex-col items-center justify-center gap-4 mx-auto py-10">
-      <div className="flex gap-10 justify-center items-center flex-wrap pb-10">
+      <div className="flex gap-10 justify-center items-center flex-wrap mb-6 relative">
         {brands.map((e, i) => (
           <a
             href={e.website}
@@ -91,7 +91,7 @@ const BrandSubsection = () => {
             key={i}
             aria-label={e.desc}
             data-label-position={i === brands.length - 1 ? 'top-left' : null}
-            className="hero-usedby colorize-on-hover h-full flex justify-center items-center"
+            className="hero-usedby colorize-on-hover h-full flex justify-center items-center relative"
           >
             <img className={cmMerge('decolorize-4 w-auto', e.height)} src={e.logo} width={400} height={200} />
           </a>

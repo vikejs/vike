@@ -1,6 +1,5 @@
 import React from 'react'
 
-import FlexGraphic from './FlexGraphic'
 import LayoutComponent from '../../components/LayoutComponent'
 import HeadlineGroup from '../../components/HeadlineGroup'
 import GradientText from '../../components/GradientText'
@@ -22,13 +21,10 @@ const FlexibilitySection = () => {
           </>
         }
         sub="Any tools. Any API. Any backend. Any rendering. Any deployment."
-        blurColor='green'
+        blurColor="green"
       />
-      <div className="grid grid-cols-2">
-        <div>
-          
-        </div>
-        <FlexGraphic />
+      <div className="grid grid-cols-2 min-h-100 bg-base-200 mt-20">
+        <div>read-only editor here</div>
       </div>
     </LayoutComponent>
   )

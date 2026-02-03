@@ -91,7 +91,7 @@ export const createSlideshowScrollTrigger = ({
     trigger,
     start: 'top 75%',
     end: 'bottom 25%',
-    // markers: true,
+    markers: true,
     onEnter,
     onEnterBack,
     onLeave,

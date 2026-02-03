@@ -8,7 +8,10 @@ import BrandSubsection from './BrandSubsection'
 const IntroSection = () => {
   return (
     <>
-      <LayoutComponent $size="sm" className="flex flex-col items-center text-center lg:min-h-[75dvh] pb-10">
+      <LayoutComponent
+        $size="sm"
+        className="flex flex-col items-center text-center lg:min-h-[calc(100dvh-56*var(--spacing))] pb-20"
+      >
         <span className="inline-flex flex-col sm:flex-row gap-1 mx-auto mb-4 mt-20">
           <span className="block badge badge-neutral badge-ghost badge-sm">⭐️ Replaces Next.js / Nuxt / ...</span>
           <span className="block badge badge-neutral badge-ghost badge-sm">🏗️ Powered By Vite</span>

@@ -36,7 +36,7 @@ const HeadlineGroup = ({
           {main}
         </BaseHeadline>
         {sub && (
-          <AuxHeadline $type="sub" $centered={centered || true}>
+          <AuxHeadline className='mb-3' $type="sub" $centered={centered || true}>
             {sub}
           </AuxHeadline>
         )}
@@ -61,9 +61,8 @@ export default HeadlineGroup
 
 const AuxHeadline = cm.p.variants<{ $centered?: boolean; $type: 'sub' | 'pre' }>({
   base: ({ $centered }) => `
-    text-lg 
+    md:text-lg lg:text-xl
     text-grey-100
-    lg:text-xl
     my-0
     ${$centered ? 'text-center' : ''}
   `,

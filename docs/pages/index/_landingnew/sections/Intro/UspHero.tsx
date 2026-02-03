@@ -7,7 +7,6 @@ import GradientText from '../../components/GradientText'
 import { BlurDotOpacity } from '../../util/ui.constants'
 
 const UspHero = () => {
-  // todo: wire up to prevent flickery hover effects with css only solution
   const [hoveredUsp, setHoveredUsp] = useState<string | null>(null)
 
   return (
@@ -28,6 +27,7 @@ const UspHero = () => {
             </div>
             <div className="absolute h-full -inset-3 z-1 bg-linear-to-t to-base-300" />
             <StyledTextContent $hovered={isHovered}>
+              {/* todo: use more classmatejs */}
               <div className="text-3xl md:text-5xl lg:text-7xl text-center block mb-2">{usp.icon}</div>
               <div className="text-center">
                 <H3Headline as="h2" className="mb-3">
