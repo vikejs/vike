@@ -108,7 +108,8 @@ function addErrorHint(error: unknown) {
   //*/
   const hint = getErrorHint(error)
   if (!hint) return error
-  const append = `\n${pc.bold(formatHintLog(hint))}` as const
+  const color = hint === hintDefault ? pc.gray : pc.bold
+  const append = `\n${color(formatHintLog(hint))}` as const
   return getBetterError(error, { message: { append } })
 }
 function getErrorHint(error: unknown) {
