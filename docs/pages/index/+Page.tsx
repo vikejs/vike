@@ -11,10 +11,10 @@ const LandingPage = () => {
   }, [])
 
   return (
-    <>
+    <div className='tailwind-portal bg-base-300'>
       <IntroSection />
       <FlexibilitySection />
-    </>
+    </div>
   )
 }
 

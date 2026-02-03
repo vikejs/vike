@@ -15,7 +15,7 @@ interface LayoutComponentProps {
 }
 
 const LayoutComponent = cm.div.variants<LayoutComponentProps>({
-  base: ({ $noGrow }) => ($noGrow ? '' : 'm-auto w-full'),
+  base: ({ $noGrow }) => `px2 md:px-4 ${$noGrow ? '' : 'm-auto w-full'} relative`,
   variants: {
     $size: layoutComponentSizeMapping,
   },

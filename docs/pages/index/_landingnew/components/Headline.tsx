@@ -1,70 +1,73 @@
 import React, { HTMLAttributes } from 'react'
+import { createVariantMap, type CmBaseComponent, type VariantsConfig } from '@classmatejs/react'
 
-import { type CmBaseComponent, createVariantMap } from '@classmatejs/react'
-
+// 1. setup accepted elements and types
 const headlineLevels = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] as const
 type HeadlineLevels = (typeof headlineLevels)[number]
-const extraElements = ['p'] as const
 
-const headlineVariants = {
+const additionalElements = ['p'] as const
+type AdditionalHeadlineTypes = (typeof additionalElements)[number]
+
+type RcVariantType = HeadlineLevels | 'p' | 'xlarge'
+
+// 1. Setup Accepted Elements and Types
+interface HeadlineVariantProps extends HTMLAttributes<HTMLElement> {
+  $as?: RcVariantType
+}
+const headlineVariants: VariantsConfig<HeadlineVariantProps, HeadlineVariantProps> = {
+  base: '',
   variants: {
     $as: {
-      h1: 'text-4xl! md:text-5xl lg:text-6xl! font-bold',
-      h2: 'text-4xl! md:text-5xl font-bold ',
-      h3: 'text-3xl! font-bold',
-      h4: 'text-2xl! font-bold',
-      h5: 'text-xl! font-bold ',
-      h6: 'text-lg! font-bold ',
-      p: 'text-base!',
-      xlarge: 'text-7xl! lg:text-8xl! xl:text-9xl! font-black',
+      xlarge: 'text-4xl! md:text-5xl! xl:text-7xl!',
+      h1: 'text-3xl! md:text-4xl! xl:text-5xl!',
+      h2: 'text-2xl! md:text-3xl! xl:text-4xl!',
+      h3: 'text-xl! md:text-2xl! xl:text-3xl ',
+      h4: 'text-lg! xl:text-xl!',
+      h5: 'text-lg! ',
+      h6: 'text-base ',
+      p: 'text-base',
     },
   },
-  defaultVariants: {
-    $as: 'p',
-  },
 }
 
-const headlineElements = [...headlineLevels, ...extraElements] as const
-
-type HeadlineElement = HeadlineLevels | (typeof extraElements)[number]
-type HeadlineVariant = HeadlineElement | 'xlarge'
-
-interface HeadlineBaseProps extends HTMLAttributes<HTMLElement> {
-  $as?: HeadlineVariant
-}
-
-const headlineMap = createVariantMap<HeadlineElement>({
-  elements: headlineElements,
+// 3. create variant map
+const hVariantMap: Record<string, CmBaseComponent<HeadlineVariantProps>> = createVariantMap({
+  elements: [...additionalElements, ...headlineLevels],
   variantsConfig: headlineVariants,
-}) as Record<HeadlineElement, CmBaseComponent<HeadlineBaseProps>>
-// Primary component: pick the HTML tag + variant classes
-interface HeadlineProps extends HeadlineBaseProps {
-  as?: HeadlineElement
-  variant?: HeadlineVariant
+})
+
+// 4 define the react component
+// due large variety of elements, we just type for "HTMLAttributes<HTMLElement>" - adjust as needed
+interface HeadlineProps extends HTMLAttributes<HTMLElement> {
+  variant?: RcVariantType
+  as: Exclude<RcVariantType, 'p'> | AdditionalHeadlineTypes
 }
-export const Headline = (props: HeadlineProps) => {
-  const as = props.as ?? 'p'
-  const variant = props.variant ?? as
-  const Component = headlineMap[as] ?? headlineMap.p
+const Headline = ({ as, variant, ...props }: HeadlineProps) => {
+  const isHeadline = headlineLevels.includes(as as HeadlineLevels)
+  const variantToUse = variant || (isHeadline ? (as as RcVariantType) : 'p')
+
+  const Component = hVariantMap[as] || null
 
   return (
-    <Component $as={variant} {...props}>
+    <Component $as={variantToUse} {...props}>
       {props.children}
     </Component>
   )
 }
 
-// Convenience exports (H1Headline, etc.)
-type HeadlineComponentProps = Omit<HeadlineProps, 'as'> & { as?: HeadlineProps['as'] }
+// 5. create convenience components
+type HeadlineComponentProps = { as?: HeadlineProps['as'] } & HTMLAttributes<HTMLElement>
 const createHeadlineComponent = (level: HeadlineLevels) => {
-  return (props: HeadlineComponentProps) => (
-    <Headline as={props.as ?? level} variant={props.as ? level : undefined} {...props} />
+  return ({ as = level, ...props }: HeadlineComponentProps) => (
+    <Headline as={as} {...(as !== level ? { variant: level } : {})} {...props} />
   )
 }
 
+// 6. export(s)
 export const H1Headline = createHeadlineComponent('h1')
 export const H2Headline = createHeadlineComponent('h2')
 export const H3Headline = createHeadlineComponent('h3')
 export const H4Headline = createHeadlineComponent('h4')
 export const H5Headline = createHeadlineComponent('h5')
 export const H6Headline = createHeadlineComponent('h6')
+export default Headline

@@ -1,11 +1,12 @@
 import cm from '@classmatejs/react'
 import React, { HTMLAttributes } from 'react'
 
-type BlurDotSize = 'sm' | 'md' | 'lg' | 'xl'
-type BlurDotType = 'blue' | 'green' | 'orange'
+type BlurDotSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 type BlurDotOpacity = 'low' | 'medium' | 'high'
 
-const StyledBlurDot = cm.div.variants<{ $size: BlurDotSize; $opacity: BlurDotOpacity }>({
+export type BlurDotType = 'blue' | 'green' | 'orange'
+
+const StyledBlurDot = cm.div.variants<{ $size: BlurDotSize; $visibility: BlurDotOpacity }>({
   base: `
   absolute
   pointer-events-none
@@ -19,15 +20,15 @@ const StyledBlurDot = cm.div.variants<{ $size: BlurDotSize; $opacity: BlurDotOpa
       lg: 'w-72 h-72',
       xl: 'w-96 h-96',
     },
-    $opacity: {
-      low: 'opacity-10',
+    $visibility: {
+      low: 'opacity-15',
       medium: 'opacity-30',
       high: 'opacity-50',
     },
   },
   defaultVariants: {
     $size: 'md',
-    $opacity: 'medium',
+    $visibility: 'medium',
   },
 })
 
@@ -44,17 +45,18 @@ interface BlurDotProps extends HTMLAttributes<HTMLDivElement> {
   type: BlurDotType
   lazy?: boolean
   size?: BlurDotSize
-  opacity?: BlurDotOpacity
+  visibility?: BlurDotOpacity
 }
 
 const sizePxBySize: Record<BlurDotSize, number> = {
-  sm: 144,
-  md: 192,
-  lg: 288,
-  xl: 384,
+  xs: 144,
+  sm: 196,
+  md: 256,
+  lg: 320,
+  xl: 500,
 }
 
-const BlurDot = ({ type, lazy = true, opacity = 'medium', size = 'md', ...props }: BlurDotProps) => {
+const BlurDot = ({ type, lazy = true, visibility = 'medium', size = 'md', ...props }: BlurDotProps) => {
   const imgUrl = `${pathBase}blur-${type}.avif`
   const mobileImgUrl = `${pathBase}blur-${type}@0.5.avif`
   const sizePx = sizePxBySize[size]
@@ -62,7 +64,7 @@ const BlurDot = ({ type, lazy = true, opacity = 'medium', size = 'md', ...props 
 
   return (
     <>
-      <StyledBlurDot $opacity={opacity} $size={size} className={`${props.className ?? ''}`}>
+      <StyledBlurDot $visibility={visibility} $size={size} className={`${props.className ?? ''}`}>
         <StyledBlurDotImage
           crossOrigin="anonymous"
           width={sizePx}

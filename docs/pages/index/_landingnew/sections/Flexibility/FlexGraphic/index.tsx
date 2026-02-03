@@ -73,7 +73,6 @@ const FlexGraphic = () => {
 
   return (
     <>
-      <Legend activeHooks={activeHooks} onChangeHightlight={onChangeHightlight} isSlideshowMode={isSlideshowMode} />
       <StyledOuter>
         <FlexGraphicBlocks
           activeHooks={activeHooks}
@@ -234,6 +233,7 @@ const FlexGraphic = () => {
           </g>
         </svg>
       </StyledOuter>
+      <Legend activeHooks={activeHooks} onChangeHightlight={onChangeHightlight} isSlideshowMode={isSlideshowMode} />
     </>
   )
 }

@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react'
 import cm from '@classmatejs/react'
 
-import { Headline } from './Headline'
+import Headline from './Headline'
 
 const AuxHeadline = cm.p.variants<{ $centered?: boolean; $type: 'sub' | 'pre' }>({
   base: ({ $centered }) => `
@@ -27,7 +27,7 @@ type HeadlineGroupProps = {
   main: string | ReactNode
   pre?: string | ReactNode
   centered?: boolean
-  headingStyle?: 'h1' | 'h2'
+  headingStyle?: 'h1' | 'h2' | 'xlarge'
   sub?: string | ReactNode
   outerClassName?: string
 }
