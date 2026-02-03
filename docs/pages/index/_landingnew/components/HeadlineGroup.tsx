@@ -6,7 +6,7 @@ import Headline from './Headline'
 const AuxHeadline = cm.p.variants<{ $centered?: boolean; $type: 'sub' | 'pre' }>({
   base: ({ $centered }) => `
     text-lg 
-    text-gray
+    text-grey-100
     lg:text-xl
     my-0
     ${$centered ? 'text-center' : ''}

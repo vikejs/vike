@@ -24,6 +24,7 @@ const strokeWidth = 3
 const FlexGraphic = () => {
   const {
     onRenderClientRef,
+    containerRef,
     wrapperRef,
     onCreatePageContextRef,
     headRef,
@@ -73,7 +74,7 @@ const FlexGraphic = () => {
 
   return (
     <>
-      <StyledOuter>
+      <StyledOuter ref={containerRef}>
         <FlexGraphicBlocks
           activeHooks={activeHooks}
           activeBlocks={activeBlocks}

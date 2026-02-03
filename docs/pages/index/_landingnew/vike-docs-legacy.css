@@ -16,7 +16,7 @@ Long term solution:
     font-size: 1em;
   }
 
-  pre>code {
+  pre > code {
     @apply bg-base-100;
     @apply !text-codeblock;
   }

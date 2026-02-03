@@ -49,14 +49,15 @@ export const ExtensionBlock = cm.div.variants<{
 export const StyledLegendItem = cm.div.variants<{ $type: 'disabled' | 'active' | 'inactive' | 'paused' }>({
   base: `
     transition-opacity 
+    font-semibold
     flex items-center gap-2 
     p-1
   `,
   variants: {
     $type: {
       disabled: 'opacity-35',
-      active: 'opacity-100 font-semibold',
-      inactive: 'opacity-50',
+      active: 'opacity-100 ',
+      inactive: 'opacity-40',
       paused: 'opacity-70',
     },
   },

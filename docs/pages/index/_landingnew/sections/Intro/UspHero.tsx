@@ -69,7 +69,7 @@ const UspHero = () => {
                 <H3Headline as="h2" className="mb-3">
                   {usp.title}
                 </H3Headline>
-                <p className="text-grey">{usp.description}</p>
+                <p className="text-grey-100">{usp.description}</p>
               </div>
             </StyledTextContent>
           </div>

@@ -1,4 +1,5 @@
 import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 // todo: to config
 const animationDuration = 0.15
@@ -52,4 +53,48 @@ export const killTweens = (targets: SVGElement[]) => {
     return
   }
   gsap.killTweensOf(targets)
+}
+
+let scrollTriggerRegistered = false
+
+const registerScrollTrigger = () => {
+  if (scrollTriggerRegistered || typeof window === 'undefined') {
+    return
+  }
+  gsap.registerPlugin(ScrollTrigger)
+  scrollTriggerRegistered = true
+}
+
+interface SlideshowScrollTriggerParams {
+  trigger: Element | null
+  onEnter: () => void
+  onEnterBack: () => void
+  onLeave: () => void
+  onLeaveBack: () => void
+}
+
+export const createSlideshowScrollTrigger = ({
+  trigger,
+  onEnter,
+  onEnterBack,
+  onLeave,
+  onLeaveBack,
+}: SlideshowScrollTriggerParams) => {
+  if (!trigger) {
+    return null
+  }
+
+  registerScrollTrigger()
+
+  return ScrollTrigger.create({
+    id: 'slideshow strt',
+    trigger,
+    start: 'top 75%',
+    end: 'bottom 25%',
+    // markers: true,
+    onEnter,
+    onEnterBack,
+    onLeave,
+    onLeaveBack,
+  })
 }

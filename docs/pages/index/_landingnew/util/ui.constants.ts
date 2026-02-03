@@ -4,7 +4,7 @@ export interface ExtendedShadowColorVariants extends Record<FlexGraphicHook, str
   inactive: string
   active: string
 }
-
+// todo: evtl. remove
 export const flexGraphicHookShadowVariants = {
   onBeforeRenderClient: 'inset-shadow-onBeforeRenderClient/50',
   Wrapper: 'inset-shadow-Wrapper/50',

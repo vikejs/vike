@@ -2,11 +2,11 @@ import { useEffect, useRef, useState, type RefObject } from 'react'
 import { useGSAP } from '@gsap/react'
 
 import { FlexGraphicHook, HOOK_COLORS, HOOK_NAME_KEYS } from '../../../util/constants'
-import { applyColor, applyStrokeWidth, killTweens } from './animations'
+import { applyColor, applyStrokeWidth, createSlideshowScrollTrigger, killTweens } from './animations'
 
 // todo: to config
 
-const baseColor = '#E3E3E3' // bad - use CSS variable here
+const circuitDefaultColor = 'var(--color-grey-300-hex)'
 const baseStrokeWidth = 3
 const activeStrokeWidth = 4
 const hitboxStrokeWidth = 14
@@ -14,12 +14,16 @@ const hitboxStrokeWidth = 14
 const slideshowIntervalMs = 2000
 const slideshowResumeDelayMs = 1200
 
-const resolveCssColor = (color: string) => {
+const resolveCssColor = (color: string, root?: Element | null) => {
   const match = color.match(/^var\((--[^)]+)\)$/)
   if (!match) {
     return color
   }
-  const value = getComputedStyle(document.documentElement).getPropertyValue(match[1]).trim()
+  if (typeof window === 'undefined' || typeof document === 'undefined') {
+    return color
+  }
+  const baseElement = root ?? document.documentElement
+  const value = getComputedStyle(baseElement).getPropertyValue(match[1]).trim()
   return value || color
 }
 
@@ -59,6 +63,7 @@ interface HookRefMap {
 
 const useFlexGraphicInteractions = () => {
   const onRenderClientRef = useRef<SVGGElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
   const wrapperRef = useRef<SVGGElement>(null)
   const onCreatePageContextRef = useRef<SVGGElement>(null)
   const headRef = useRef<SVGGElement>(null)
@@ -74,8 +79,15 @@ const useFlexGraphicInteractions = () => {
     HOOK_NAME_KEYS.length ? [HOOK_NAME_KEYS[0]] : null,
   )
   const [isSlideshowMode, setIsSlideshowMode] = useState(true)
+  const [isScrollActive, setIsScrollActive] = useState(false)
   const slideshowIndexRef = useRef(0)
   const slideshowResumeTimeoutRef = useRef<number | null>(null)
+  const getThemeRoot = () => {
+    if (typeof document === 'undefined') {
+      return null
+    }
+    return containerRef.current?.closest('#tailwind-portal') ?? document.documentElement
+  }
 
   const hookRefMap: HookRefMap = {
     onRenderClient: onRenderClientRef,
@@ -96,10 +108,14 @@ const useFlexGraphicInteractions = () => {
   const { contextSafe } = useGSAP(
     () => {
       const baseMode = hasInitializedRef.current ? 'to' : 'set'
+      const themeRoot = getThemeRoot()
+      const baseColor = resolveCssColor(circuitDefaultColor, themeRoot)
       const allTargets = collectAllTargets(hookRefMap)
       const allElements = [...allTargets.strokeTargets, ...allTargets.fillTargets]
 
       killTweens(allElements)
+
+      // we must extract the base color from CSS to support theming
 
       applyColor({ targets: allTargets.strokeTargets, color: baseColor, mode: baseMode, attr: 'stroke' })
       applyColor({ targets: allTargets.fillTargets, color: baseColor, mode: baseMode, attr: 'fill' })
@@ -113,7 +129,7 @@ const useFlexGraphicInteractions = () => {
           }
 
           const targets = collectTargets(ref)
-          const hookColor = resolveCssColor(HOOK_COLORS[hookName])
+          const hookColor = resolveCssColor(HOOK_COLORS[hookName], themeRoot)
 
           applyColor({ targets: targets.strokeTargets, color: hookColor, mode: 'to', attr: 'stroke' })
           applyColor({ targets: targets.fillTargets, color: hookColor, mode: 'to', attr: 'fill' })
@@ -167,9 +183,23 @@ const useFlexGraphicInteractions = () => {
     })
   }, [])
 
+  useGSAP(() => {
+    if (!containerRef.current) {
+      return
+    }
+    createSlideshowScrollTrigger({
+      trigger: containerRef.current,
+      onEnter: () => setIsScrollActive(true),
+      onEnterBack: () => setIsScrollActive(true),
+      onLeave: () => setIsScrollActive(false),
+      onLeaveBack: () => setIsScrollActive(false),
+    })
+  })
+
   // slideshow effect
   useEffect(() => {
-    if (!isSlideshowMode || !HOOK_NAME_KEYS.length) {
+    const isSlideshowActive = isSlideshowMode && isScrollActive
+    if (!isSlideshowActive || !HOOK_NAME_KEYS.length) {
       return
     }
     setActiveHooks([HOOK_NAME_KEYS[slideshowIndexRef.current % HOOK_NAME_KEYS.length]])
@@ -180,7 +210,7 @@ const useFlexGraphicInteractions = () => {
     }, slideshowIntervalMs)
 
     return () => window.clearInterval(intervalId)
-  }, [isSlideshowMode, slideshowIntervalMs])
+  }, [isSlideshowMode, isScrollActive, slideshowIntervalMs])
 
   useEffect(
     () => () => {
@@ -193,6 +223,7 @@ const useFlexGraphicInteractions = () => {
 
   return {
     onRenderClientRef,
+    containerRef,
     wrapperRef,
     onCreatePageContextRef,
     headRef,

@@ -5,7 +5,7 @@ import LayoutComponent from '../../components/LayoutComponent'
 
 const FlexibilitySection = () => {
   return (
-    <LayoutComponent className="mt-400">
+    <LayoutComponent className="my-400">
       <FlexGraphic />
     </LayoutComponent>
   )
