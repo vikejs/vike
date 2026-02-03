@@ -17,7 +17,7 @@ const blocks: { type: ExtensionBlockVariants; label: ReactNode }[] = [
   { type: 'sentry', label: 'vike-react-sentry' },
 ]
 
-const activeBorderColor = 'var(--color-shade)'
+const activeBorderColor = 'var(--color-grey-100)'
 
 interface FlexGraphicBlocksProps {
   activeHooks: FlexGraphicHook[] | null

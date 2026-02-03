@@ -1,0 +1,85 @@
+/* fix to deal with following problem:
+- tailwind preflight sanitizes various elements https://tailwindcss.com/docs/preflight as soon as tailwind.css is imported
+- if user navigates from landing page to docs page, those preflight styles are still active,
+  since tailwind.css remains in header after navigation
+- we cannot disable it globally, since daisyui plugin depends on it
+Current workaround:
+- Re-apply the default styles from legacy vike docs styles
+- Re-apply some of the preflight styles to the tailwind scope
+Mid term solution:
+- scope the styles on vike docs
+Long term solution:
+- migrate vike docs to tailwindcss and daisyui
+*/
+@layer components {
+  code {
+    font-size: 1em;
+  }
+
+  pre>code {
+    @apply bg-base-100;
+    @apply !text-codeblock;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-bold;
+  }
+
+  h1 code,
+  h2 code,
+  h3 code,
+  h4 code,
+  h5 code,
+  h6 code,
+  th code {
+    font-size: 0.9em !important;
+  }
+
+  span code,
+  p code,
+  li code,
+  dd code,
+  a code {
+    font-size: 0.9em !important;
+  }
+
+  li {
+    @apply !list-disc !list-outside !ml-10;
+  }
+
+  blockquote {
+    @apply my-4;
+  }
+
+  p {
+    @apply my-4;
+  }
+
+  /* we use our own styling portal to cope with default styles from vike docs */
+  #tailwind-portal {
+    @apply text-base-content font-sans;
+  }
+
+  /* re-reset to use 0 margin, since this is our new styling rule:
+  no browser based default margin for semantic elements. it's inconsistent throughout browsers
+  we always wanna work with our own spacing system
+  */
+  #tailwind-portal p {
+    @apply my-0;
+  }
+
+  #tailwind-portal h1,
+  #tailwind-portal h2,
+  #tailwind-portal h3,
+  #tailwind-portal h4,
+  #tailwind-portal h5,
+  #tailwind-portal h6 {
+    @apply font-bold;
+    @apply my-0;
+  }
+}

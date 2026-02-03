@@ -2,7 +2,14 @@ import cm from '@classmatejs/react'
 import React, { HTMLAttributes } from 'react'
 
 type BlurDotSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
-type BlurDotOpacity = 'low' | 'medium' | 'high'
+
+export const BlurDotOpacity = {
+  low: 'opacity-15',
+  medium: 'opacity-30',
+  high: 'opacity-50',
+} as const
+
+export type BlurDotOpacity = keyof typeof BlurDotOpacity
 
 export type BlurDotType = 'blue' | 'green' | 'orange'
 
@@ -21,9 +28,9 @@ const StyledBlurDot = cm.div.variants<{ $size: BlurDotSize; $visibility: BlurDot
       xl: 'w-96 h-96',
     },
     $visibility: {
-      low: 'opacity-15',
-      medium: 'opacity-30',
-      high: 'opacity-50',
+      low: BlurDotOpacity.low,
+      medium: BlurDotOpacity.medium,
+      high: BlurDotOpacity.high,
     },
   },
   defaultVariants: {

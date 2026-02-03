@@ -1,14 +1,30 @@
 @import 'tailwindcss';
+@import "./vike-docs-legacy.css";
 
 /* custom */
 @theme {
   --font-sans: 'Inter', sans-serif;
   --text-tiny: 0.65rem;
+  --text-codeblock: 0.813rem;
 
-  --color-gray: oklch(0.5 0.01 250);
-  --color-shade: oklch(0.8359 0 0);
-  --color-shade-100: oklch(0.8923 0 0);
+  --color-black: oklch(0.1605 0.0241 248.51);
+  --color-content: oklch(0.3546 0.0241 248.51);
+  --color-grey: oklch(0.4553 0.0241 248.51);
+  --color-grey-100: oklch(0.5482 0.0241 248.51);
+  --color-grey-200: oklch(0.7347 0.0241 248.51);
+  --color-grey-300: oklch(0.8377 0.0171 248.51);
+  --color-grey-400: oklch(0.9302 0.0103 248.51);
+  --color-bg: oklch(0.9702 0 0);
   --color-white: oklch(1 0 0);
+
+  /* daisyUI specific */
+  --d-color-primary: oklch(0.4733 0.2194 297.53);
+  --d-color-secondary: oklch(0.5706 0.185 256.24);
+  --d-color-accent: oklch(60% 0.118 184.704);
+  --d-color-info: oklch(60% 0.126 221.723);
+  --d-color-success: oklch(62% 0.194 149.214);
+  --d-color-warning: oklch(80% 0.199 91.936);
+  --d-color-error: oklch(57% 0.245 27.325);
 
   /* convert hex to oklch: https://oklch.com/ */
   --color-onBeforeRenderClient: oklch(0.819 0.0686 339.84);
@@ -36,6 +52,7 @@
 }
 
 @plugin "daisyui" {
+  root: '#tailwind-portal';
   /* leave this here - seems playwright or other headless browsers are not able to support @property css attributes */
   exclude: properties;
   themes: vike --default;
@@ -43,27 +60,26 @@
 
 @plugin "daisyui/theme" {
   name: 'vike';
-  --color-base-100: oklch(0.84 0 0);
-  --color-base-200: oklch(0.9037 0 0);
-  /* brightest: #f5f5f5 */
-  --color-base-300: oklch(0.9702 0 0);
-  --color-base-content: oklch(0.3546 0.0241 248.51);
-  --color-primary: oklch(58% 0.158 241.966);
-  --color-primary-content: oklch(98% 0.002 247.839);
-  --color-secondary: oklch(55% 0.046 257.417);
-  --color-secondary-content: oklch(98% 0.002 247.839);
-  --color-accent: oklch(60% 0.118 184.704);
-  --color-accent-content: oklch(100% 0 0);
-  --color-neutral: oklch(20% 0.012 264.531);
-  --color-neutral-content: oklch(85.488% 0.002 253.041);
-  --color-info: oklch(60% 0.126 221.723);
-  --color-info-content: oklch(100% 0 0);
-  --color-success: oklch(62% 0.194 149.214);
-  --color-success-content: oklch(98% 0.018 155.826);
-  --color-warning: oklch(80% 0.199 91.936);
-  --color-warning-content: oklch(13% 0.028 261.692);
-  --color-error: oklch(57% 0.245 27.325);
-  --color-error-content: oklch(97% 0.013 17.38);
+  --color-base-100: var(--color-grey-300);
+  --color-base-200: var(--color-grey-400);
+  --color-base-300: var(--color-bg);
+  --color-base-content: var(--color-content);
+  --color-primary: var(--d-color-primary);
+  --color-primary-content: var(--color-bg);
+  --color-secondary: var(--d-color-secondary);
+  --color-secondary-content: var(--color-bg);
+  --color-accent: var(--d-color-accent);
+  --color-accent-content: var(--color-bg);
+  --color-neutral: var(--d-color-black);
+  --color-neutral-content: var(--color-bg);
+  --color-info: var(--d-color-info);
+  --color-info-content: var(--color-bg);
+  --color-success: var(--d-color-success);
+  --color-success-content: var(--color-bg);
+  --color-warning: var(--d-color-warning);
+  --color-warning-content: var(--color-black);
+  --color-error: var(--d-color-error);
+  --color-error-content: var(--color-bg);
   /* .rounded-selector = 0.25rem */
   --radius-selector: 0.25rem;
   /* .rounded-field = 0.5rem */
@@ -77,30 +93,4 @@
 
   --depth: 0;
   --noise: 0;
-}
-
-@layer base {
-  /* re-apply paragraph margin and heading style for other doc pages, 
-  since daisy ui removes the spacing of p elements */
-  p {
-    @apply my-4;
-  }
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    @apply font-bold;
-  }
-
-  .tailwind-portal {
-    @apply text-base-content font-sans;
-  }
-
-  /* re-reset to use 0 margin, since this is our new default */
-  .tailwind-portal p {
-    @apply my-0;
-  }
 }

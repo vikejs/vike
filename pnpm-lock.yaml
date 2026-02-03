@@ -90,6 +90,9 @@ importers:
       tailwindcss:
         specifier: ^4.1.18
         version: 4.1.18
+      tailwindcss-scoped-preflight:
+        specifier: ^3.5.7
+        version: 3.5.7(postcss@8.5.6)(tailwindcss@4.1.18)
 
   examples/auth:
     dependencies:
@@ -7938,6 +7941,12 @@ packages:
   tailwind-merge@3.4.0:
     resolution: {integrity: sha512-uSaO4gnW+b3Y2aWoWfFpX62vn2sR3skfhbjsEnaBI81WD1wBLlHZe5sWf0AqjksNdYTbGBEd0UasQMT3SNV15g==}
 
+  tailwindcss-scoped-preflight@3.5.7:
+    resolution: {integrity: sha512-+TXhksi7Ac6aCH0w9fk5eEHRvAwOaVP57JwkMSvIhhxTggFu5rdMIy83xImJ+jQYPE9nbQQEl34G2Ka8g+zrDg==}
+    peerDependencies:
+      postcss: ^8
+      tailwindcss: ^3
+
   tailwindcss@4.1.18:
     resolution: {integrity: sha512-4+Z+0yiYyEtUVCScyfHCxOYP06L5Ne+JiHhY2IjR2KWMIWhJOYZKLSGZaP5HkZ8+bY0cxfzwDE5uOmzFXyIwxw==}
 
@@ -15299,6 +15308,11 @@ snapshots:
   symbol-observable@4.0.0: {}
 
   tailwind-merge@3.4.0: {}
+
+  tailwindcss-scoped-preflight@3.5.7(postcss@8.5.6)(tailwindcss@4.1.18):
+    dependencies:
+      postcss: 8.5.6
+      tailwindcss: 4.1.18
 
   tailwindcss@4.1.18: {}
 

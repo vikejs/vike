@@ -1,7 +1,7 @@
 import { gsap } from 'gsap'
 
 // todo: to config
-const animationDuration = 0.5
+const animationDuration = 0.15
 const animationEase = 'power2.out'
 
 interface ApplyColorParams {

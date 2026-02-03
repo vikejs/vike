@@ -11,11 +11,10 @@ export const ExtensionBlock = cm.div.variants<{
   rounded-lg
   font-mono
   bg-base-200
-  border-1 md:border-2 border-base-300
+  border-2 border-base-100
   text-tiny sm:text-sm 
   flex justify-center items-center
   transition-all
-  shadow-md
 `,
   variants: {
     $type: {
@@ -44,7 +43,6 @@ export const ExtensionBlock = cm.div.variants<{
         h-[11%] w-[35%]
       `,
     },
-    $shadowType: flexGraphicHookShadowVariants,
   },
 })
 
