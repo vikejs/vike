@@ -16,9 +16,9 @@ Long term solution:
     font-size: 1em;
   }
 
-  pre > code {
+  pre>code {
     @apply bg-base-100;
-    @apply !text-codeblock;
+    @apply !text-[0.813rem];
   }
 
   h1,
@@ -81,5 +81,10 @@ Long term solution:
   #tailwind-portal h6 {
     @apply font-bold;
     @apply my-0;
+  }
+
+  #tailwind-portal blockquote {
+    @apply !border-0 border-none;
+    @apply !bg-transparent !my-0;
   }
 }

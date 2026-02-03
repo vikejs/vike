@@ -1,15 +1,15 @@
 import cm from '@classmatejs/react'
 import React, { HTMLAttributes } from 'react'
 
+import blurDotGreenSm from './../assets/decorators/blur/blur-green@0.5.avif'
+import blurDotGreen from './../assets/decorators/blur/blur-green.avif'
+import blurDotBlueSm from './../assets/decorators/blur/blur-blue@0.5.avif'
+import blurDotBlue from './../assets/decorators/blur/blur-blue.avif'
+import blurDotOrangeSm from './../assets/decorators/blur/blur-orange@0.5.avif'
+import blurDotOrange from './../assets/decorators/blur/blur-orange.avif'
+import { BlurDotOpacity } from '../util/constants'
+
 type BlurDotSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
-
-export const BlurDotOpacity = {
-  low: 'opacity-15',
-  medium: 'opacity-30',
-  high: 'opacity-50',
-} as const
-
-export type BlurDotOpacity = keyof typeof BlurDotOpacity
 
 export type BlurDotType = 'blue' | 'green' | 'orange'
 
@@ -46,8 +46,6 @@ const StyledBlurDotImage = cm.img`
   object-cover
 `
 
-const pathBase = '/decorators/blur/'
-
 interface BlurDotProps extends HTMLAttributes<HTMLDivElement> {
   type: BlurDotType
   lazy?: boolean
@@ -64,10 +62,11 @@ const sizePxBySize: Record<BlurDotSize, number> = {
 }
 
 const BlurDot = ({ type, lazy = true, visibility = 'medium', size = 'md', ...props }: BlurDotProps) => {
-  const imgUrl = `${pathBase}blur-${type}.avif`
-  const mobileImgUrl = `${pathBase}blur-${type}@0.5.avif`
   const sizePx = sizePxBySize[size]
   const mobileSizePx = Math.round(sizePx / 2)
+
+  const mobileImgUrl = type === 'blue' ? blurDotBlueSm : type === 'green' ? blurDotGreenSm : blurDotOrangeSm
+  const imgUrl = type === 'blue' ? blurDotBlue : type === 'green' ? blurDotGreen : blurDotOrange
 
   return (
     <>

@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-import BlurDot, { BlurDotOpacity, BlurDotType } from '../../components/BlurDot'
-import { H3Headline, H4Headline } from '../../components/Headline'
+import BlurDot, { BlurDotType } from '../../components/BlurDot'
+import { H3Headline } from '../../components/Headline'
 import cm from '@classmatejs/react'
+import { BlurDotOpacity } from '../../util/constants'
 
 const UspIds = {
   freedom: 'freedom',
@@ -47,7 +48,7 @@ const UspHero = () => {
   const [hoveredUsp, setHoveredUsp] = useState<string | null>(null)
 
   return (
-    <div className="grid grid-cols-3 gap-2">
+    <div className="grid grid-cols-3 gap-2 md:w-6/7 mx-auto">
       {usps.map((usp) => {
         const isHovered = hoveredUsp === usp.id
 

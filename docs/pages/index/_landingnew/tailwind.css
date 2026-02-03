@@ -5,7 +5,6 @@
 @theme {
   --font-sans: 'Inter', sans-serif;
   --text-tiny: 0.65rem;
-  --text-codeblock: 0.813rem;
 
   --color-black: oklch(0.1605 0.0241 248.51);
   --color-content: oklch(0.3546 0.0241 248.51);
@@ -72,7 +71,7 @@
   --color-secondary-content: var(--color-bg);
   --color-accent: var(--d-color-accent);
   --color-accent-content: var(--color-bg);
-  --color-neutral: var(--d-color-black);
+  --color-neutral: var(--color-black);
   --color-neutral-content: var(--color-bg);
   --color-info: var(--d-color-info);
   --color-info-content: var(--color-bg);

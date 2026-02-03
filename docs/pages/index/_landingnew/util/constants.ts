@@ -51,6 +51,14 @@ export const ExtensionBlockVariants = {
 export type ExtensionBlockVariants = (typeof ExtensionBlockVariants)[keyof typeof ExtensionBlockVariants]
 export const EXTENSION_BLOCK_KEYS = Object.keys(ExtensionBlockVariants) as ExtensionBlockVariants[]
 
+export const BlurDotOpacity = {
+  low: 'opacity-15',
+  medium: 'opacity-30',
+  high: 'opacity-50',
+} as const
+
+export type BlurDotOpacity = keyof typeof BlurDotOpacity
+
 export const EXTENSION_BLOCK_CONNECTED_HOOKS: { [key in ExtensionBlockVariants]: FlexGraphicHook[] } = {
   react: [
     FlexGraphicHook.onRenderClient,
@@ -84,3 +92,4 @@ export const EXTENSION_BLOCK_CONNECTED_HOOKS: { [key in ExtensionBlockVariants]:
     FlexGraphicHook.Head,
   ],
 }
+
