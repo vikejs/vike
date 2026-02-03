@@ -52,9 +52,9 @@ export type ExtensionBlockVariants = (typeof ExtensionBlockVariants)[keyof typeo
 export const EXTENSION_BLOCK_KEYS = Object.keys(ExtensionBlockVariants) as ExtensionBlockVariants[]
 
 export const BlurDotOpacity = {
-  low: 'opacity-15',
-  medium: 'opacity-30',
-  high: 'opacity-50',
+  low: 'opacity-50',
+  medium: 'opacity-80',
+  high: 'opacity-100',
 } as const
 
 export type BlurDotOpacity = keyof typeof BlurDotOpacity

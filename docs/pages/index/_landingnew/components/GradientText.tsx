@@ -4,7 +4,7 @@ import React from 'react'
 const defaultGradients = {
   blue: { startColor: '#7F5AF0', endColor: '#3B82F6' },
   orange: { startColor: '#F97316', endColor: '#E879F9' },
-  green: { startColor: '#10B981', endColor: '#4ADE80' },
+  green: { startColor: '#00955f', endColor: '#00b0a5' },
 }
 
 type GradientTextColors = 'blue' | 'orange' | 'green'

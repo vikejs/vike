@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import BlurDot, { BlurDotType } from '../../components/BlurDot'
 import { H3Headline } from '../../components/Headline'
-import cm from '@classmatejs/react'
+import cm, { cmMerge } from '@classmatejs/react'
 import { BlurDotOpacity } from '../../util/constants'
+import GradientText from '../../components/GradientText'
 
 const UspIds = {
   freedom: 'freedom',
@@ -68,7 +69,20 @@ const UspHero = () => {
               <div className="text-3xl md:text-5xl lg:text-7xl text-center block mb-2">{usp.icon}</div>
               <div className="text-center">
                 <H3Headline as="h2" className="mb-3">
-                  {usp.title}
+                  <span className="relative block w-fit mx-auto">
+                    <span className={cmMerge(isHovered ? 'opacity-30' : 'opacity-0', 'transition-opacity  z-3 relative')}>
+                      {usp.title}
+                    </span>
+                    <span
+                      className={cmMerge(
+                        'absolute left-0 top-0',
+                        isHovered ? 'opacity-100' : 'opacity-100',
+                        'transition-opacity',
+                      )}
+                    >
+                      <GradientText color={usp.dotColor}>{usp.title}</GradientText>
+                    </span>
+                  </span>
                 </H3Headline>
                 <p className="text-grey-100">{usp.description}</p>
               </div>
@@ -97,7 +111,7 @@ const StyledUspItemInner = cm.div<{ $hovered?: boolean }>`
 const StyledDot = cm.extend(BlurDot)<{ $hovered?: boolean }>`
   -mt-20 
   transition-all
-  ${({ $hovered }) => ($hovered ? `${BlurDotOpacity.medium}` : BlurDotOpacity.low)}
+  ${({ $hovered }) => ($hovered ? `-translate-y-4 scale-120 ${BlurDotOpacity.medium}` : `translate-y-0 scale-100 ${BlurDotOpacity.low}`)}
 `
 
 const StyledTextContent = cm.div<{ $hovered?: boolean }>`
