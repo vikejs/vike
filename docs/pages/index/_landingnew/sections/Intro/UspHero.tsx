@@ -1,48 +1,10 @@
 import React, { useState } from 'react'
-import BlurDot, { BlurDotType } from '../../components/BlurDot'
+import BlurDot from '../../components/BlurDot'
 import { H3Headline } from '../../components/Headline'
 import cm, { cmMerge } from '@classmatejs/react'
-import { BlurDotOpacity } from '../../util/constants'
+import { landingPageHeroUsps } from '../../util/constants'
 import GradientText from '../../components/GradientText'
-
-const UspIds = {
-  freedom: 'freedom',
-  stability: 'stability',
-  lightningDx: 'lightning-dx',
-} as const
-type UspId = (typeof UspIds)[keyof typeof UspIds]
-
-type Usp = {
-  id: UspId
-  title: string
-  description: string
-  icon: string
-  dotColor: BlurDotType
-}
-
-const usps: Usp[] = [
-  {
-    id: UspIds.freedom,
-    title: 'Freedom',
-    description: 'Small dummy text for usps. Small dummy text for.',
-    icon: '🕊️',
-    dotColor: 'green',
-  },
-  {
-    id: UspIds.stability,
-    title: 'Stability',
-    description: 'Small dummy text for usps. Small dummy text for usps. Henlo',
-    icon: '💎',
-    dotColor: 'blue',
-  },
-  {
-    id: UspIds.lightningDx,
-    title: 'Lightning DX',
-    description: 'Small dummy text for usps. Small dummy text for usps. N',
-    icon: '⚡️',
-    dotColor: 'orange',
-  },
-]
+import { BlurDotOpacity } from '../../util/ui.constants'
 
 const UspHero = () => {
   // todo: wire up to prevent flickery hover effects with css only solution
@@ -50,7 +12,7 @@ const UspHero = () => {
 
   return (
     <div className="grid grid-cols-3 gap-2 md:w-6/7 mx-auto">
-      {usps.map((usp) => {
+      {landingPageHeroUsps.map((usp) => {
         const isHovered = hoveredUsp === usp.id
 
         return (
@@ -70,7 +32,9 @@ const UspHero = () => {
               <div className="text-center">
                 <H3Headline as="h2" className="mb-3">
                   <span className="relative block w-fit mx-auto">
-                    <span className={cmMerge(isHovered ? 'opacity-30' : 'opacity-0', 'transition-opacity  z-3 relative')}>
+                    <span
+                      className={cmMerge(isHovered ? 'opacity-30' : 'opacity-0', 'transition-opacity  z-3 relative')}
+                    >
                       {usp.title}
                     </span>
                     <span

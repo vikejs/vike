@@ -1,6 +1,20 @@
 import cm, { cmMerge } from '@classmatejs/react'
 import React from 'react'
 
+const GlassContainer = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => {
+  return (
+    <div className={cmMerge('relative', className)} {...props}>
+      <StyledGlassOuter>
+        <StyledGlassBorder $position="top" />
+        <StyledGlassBorder $position="bottom" />
+      </StyledGlassOuter>
+      <div className="relative">{props.children}</div>
+    </div>
+  )
+}
+
+export default GlassContainer
+
 const StyledGlassOuter = cm.div`
   absolute
   -inset-5
@@ -27,17 +41,3 @@ const StyledGlassBorder = cm.div.variants<{ $position: 'top' | 'bottom' }>({
     },
   },
 })
-
-const GlassContainer = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => {
-  return (
-    <div className={cmMerge('relative', className)} {...props}>
-      <StyledGlassOuter>
-        <StyledGlassBorder $position="top" />
-        <StyledGlassBorder $position="bottom" />
-      </StyledGlassOuter>
-      <div className="relative">{props.children}</div>
-    </div>
-  )
-}
-
-export default GlassContainer

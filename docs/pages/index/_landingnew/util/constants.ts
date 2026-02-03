@@ -1,12 +1,4 @@
-export const LayoutSize = {
-  xxs: 'xxs',
-  xs: 'xs',
-  sm: 'sm',
-  md: 'md',
-  lg: 'lg',
-} as const
-
-export type LayoutSize = (typeof LayoutSize)[keyof typeof LayoutSize]
+import { BlurDotType } from './ui.constants'
 
 export const FlexGraphicHook = {
   onBeforeRenderClient: 'onBeforeRenderClient',
@@ -25,20 +17,6 @@ export type FlexGraphicHook = (typeof FlexGraphicHook)[keyof typeof FlexGraphicH
 
 export const HOOK_NAME_KEYS = Object.keys(FlexGraphicHook) as FlexGraphicHook[]
 
-export const HOOK_COLORS: { [key in FlexGraphicHook]: string } = {
-  onBeforeRenderClient: 'var(--color-onBeforeRenderClient-hex)',
-  Wrapper: 'var(--color-Wrapper-hex)',
-  onCreatePageContext: 'var(--color-onCreatePageContext-hex)',
-  Head: 'var(--color-Head-hex)',
-  onHookCall: 'var(--color-onHookCall-hex)',
-  onBeforeRenderHtml: 'var(--color-onBeforeRenderHtml-hex)',
-  onRenderClient: 'var(--color-onRenderClient-hex)',
-  onCreateGlobalContext: 'var(--color-onCreateGlobalContext-hex)',
-  onError: 'var(--color-onError-hex)',
-  onRenderHtml: 'var(--color-onRenderHtml-hex)',
-  onAfterRenderHtml: 'var(--color-onAfterRenderHtml-hex)',
-} as const
-
 export const ExtensionBlockVariants = {
   react: 'react',
   core: 'core',
@@ -49,17 +27,9 @@ export const ExtensionBlockVariants = {
 } as const
 
 export type ExtensionBlockVariants = (typeof ExtensionBlockVariants)[keyof typeof ExtensionBlockVariants]
-export const EXTENSION_BLOCK_KEYS = Object.keys(ExtensionBlockVariants) as ExtensionBlockVariants[]
+export const extensionBlockKeys = Object.keys(ExtensionBlockVariants) as ExtensionBlockVariants[]
 
-export const BlurDotOpacity = {
-  low: 'opacity-50',
-  medium: 'opacity-70',
-  high: 'opacity-100',
-} as const
-
-export type BlurDotOpacity = keyof typeof BlurDotOpacity
-
-export const EXTENSION_BLOCK_CONNECTED_HOOKS: { [key in ExtensionBlockVariants]: FlexGraphicHook[] } = {
+export const extensionBlockConnectedHooks: { [key in ExtensionBlockVariants]: FlexGraphicHook[] } = {
   react: [
     FlexGraphicHook.onRenderClient,
     FlexGraphicHook.onRenderHtml,
@@ -93,3 +63,41 @@ export const EXTENSION_BLOCK_CONNECTED_HOOKS: { [key in ExtensionBlockVariants]:
   ],
 }
 
+const UspCategoryId = {
+  freedom: 'freedom',
+  stability: 'stability',
+  lightningDx: 'lightning-dx',
+} as const
+type UspId = (typeof UspCategoryId)[keyof typeof UspCategoryId]
+
+type Usp = {
+  id: UspId
+  title: string
+  description: string
+  icon: string
+  dotColor: BlurDotType
+}
+
+export const landingPageHeroUsps: Usp[] = [
+  {
+    id: UspCategoryId.freedom,
+    title: 'Freedom',
+    description: 'Small dummy text for usps. Small dummy text for.',
+    icon: '🕊️',
+    dotColor: 'green',
+  },
+  {
+    id: UspCategoryId.stability,
+    title: 'Stability',
+    description: 'Small dummy text for usps. Small dummy text for usps. Henlo',
+    icon: '💎',
+    dotColor: 'blue',
+  },
+  {
+    id: UspCategoryId.lightningDx,
+    title: 'Lightning DX',
+    description: 'Small dummy text for usps. Small dummy text for usps. N',
+    icon: '⚡️',
+    dotColor: 'orange',
+  },
+]

@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState, type RefObject } from 'react'
 import { useGSAP } from '@gsap/react'
 
-import { FlexGraphicHook, HOOK_COLORS, HOOK_NAME_KEYS } from '../../../util/constants'
+import { FlexGraphicHook, HOOK_NAME_KEYS } from '../../../util/constants'
 import { applyColor, applyStrokeWidth, createSlideshowScrollTrigger, killTweens } from './animations'
+import { hookColors } from '../../../util/ui.constants'
 
 // todo: to config
 
@@ -129,7 +130,7 @@ const useFlexGraphicInteractions = () => {
           }
 
           const targets = collectTargets(ref)
-          const hookColor = resolveCssColor(HOOK_COLORS[hookName], themeRoot)
+          const hookColor = resolveCssColor(hookColors[hookName], themeRoot)
 
           applyColor({ targets: targets.strokeTargets, color: hookColor, mode: 'to', attr: 'stroke' })
           applyColor({ targets: targets.fillTargets, color: hookColor, mode: 'to', attr: 'fill' })

@@ -1,13 +1,5 @@
 import cm from '@classmatejs/react'
-import { LayoutSize } from '../util/constants'
-
-const layoutComponentSizeMapping = {
-  xxs: 'max-w-[480px]',
-  xs: 'max-w-[768px]',
-  sm: 'max-w-[1000px]',
-  md: 'max-w-[1100px]', // 1140 base header width - 2 x 20px padding from header elements..
-  lg: 'max-w-[1400px]',
-} as const
+import { layoutComponentSizeMapping, LayoutSize } from '../util/ui.constants'
 
 interface LayoutComponentProps {
   $size?: LayoutSize

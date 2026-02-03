@@ -1,10 +1,8 @@
 import cm from '@classmatejs/react'
 import { ExtensionBlockVariants } from '../../../util/constants'
-import { type ExtendedShadowColorVariants, flexGraphicHookShadowVariants } from '../../../util/ui.constants'
 
 export const ExtensionBlock = cm.div.variants<{
   $type: ExtensionBlockVariants
-  $shadowType: keyof ExtendedShadowColorVariants
 }>({
   base: `
   absolute 

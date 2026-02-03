@@ -7,9 +7,7 @@ import blurDotBlueSm from './../assets/decorators/blur/raw/blur-blue@0.5.png'
 import blurDotBlue from './../assets/decorators/blur/raw/blur-blue.png'
 import blurDotOrangeSm from './../assets/decorators/blur/raw/blur-orange@0.5.png'
 import blurDotOrange from './../assets/decorators/blur/raw/blur-orange.png'
-import { BlurDotOpacity } from '../util/constants'
-
-
+import { BlurDotOpacity, BlurDotType } from '../util/ui.constants'
 
 const BlurDot = ({ type, lazy = true, visibility = 'medium', size = 'md', ...props }: BlurDotProps) => {
   const sizePx = sizePxBySize[size]
@@ -40,7 +38,8 @@ const BlurDot = ({ type, lazy = true, visibility = 'medium', size = 'md', ...pro
 export default BlurDot
 
 type BlurDotSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
-export type BlurDotType = 'blue' | 'green' | 'orange'
+
+
 
 const StyledBlurDot = cm.div.variants<{ $size: BlurDotSize; $visibility: BlurDotOpacity }>({
   base: `

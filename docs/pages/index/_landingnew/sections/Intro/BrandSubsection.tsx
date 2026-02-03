@@ -20,9 +20,9 @@ type Brand = {
 }
 
 const heightVariant = {
-  small: 'h-4',
-  medium: 'h-5',
-  large: 'h-6',
+  small: 'h-4.5',
+  medium: 'h-6',
+  large: 'h-8',
 }
 
 const brands: Brand[] = [
@@ -34,13 +34,6 @@ const brands: Brand[] = [
     height: heightVariant.small,
   },
   {
-    website: 'https://contra.com',
-    desc: 'Upwork alternative',
-    name: 'Contra',
-    logo: usedByContra,
-    height: heightVariant.medium,
-  },
-  {
     website: 'https://app.spline.design',
     desc: 'Advanced 3D design web app',
     name: 'Spline',
@@ -48,10 +41,10 @@ const brands: Brand[] = [
     logo: usedBySpline,
   },
   {
-    website: 'https://ecosia.org',
-    desc: 'Google alternative',
-    name: 'Ecosia',
-    logo: usedByEcosia,
+    website: 'https://contra.com',
+    desc: 'Upwork alternative',
+    name: 'Contra',
+    logo: usedByContra,
     height: heightVariant.medium,
   },
   {
@@ -60,6 +53,13 @@ const brands: Brand[] = [
     name: 'Bild.de',
     height: heightVariant.large,
     logo: usedByBild,
+  },
+  {
+    website: 'https://ecosia.org',
+    desc: 'Google alternative',
+    name: 'Ecosia',
+    logo: usedByEcosia,
+    height: heightVariant.medium,
   },
   {
     website: 'https://dia.es',
@@ -104,7 +104,7 @@ const BrandSubsection = () => {
         </a>
       </div>
       <Blockquote
-        className='md:w-4/5 mx-auto'
+        className="md:w-4/5 mx-auto"
         authorPictures={[
           'https://github.com/brillout.png?size=100',
           'https://github.com/magne4000.png?size=100',

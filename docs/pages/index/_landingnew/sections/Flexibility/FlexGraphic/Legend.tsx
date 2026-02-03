@@ -1,7 +1,8 @@
 import React from 'react'
 
-import { FlexGraphicHook, HOOK_COLORS } from '../../../util/constants'
+import { FlexGraphicHook } from '../../../util/constants'
 import { StyledLegendItem } from './styled'
+import { hookColors } from '../../../util/ui.constants'
 
 interface LegendProps {
   onChangeHightlight: (hooks: FlexGraphicHook[] | null) => void
@@ -12,7 +13,7 @@ interface LegendProps {
 const Legend = ({ onChangeHightlight, activeHooks, isSlideshowMode }: LegendProps) => {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 mb-4">
-      {Object.entries(HOOK_COLORS).map(([key, color]) => {
+      {Object.entries(hookColors).map(([key, color]) => {
         const hookName = key as FlexGraphicHook
         const isActive = activeHooks?.includes(hookName)
         const isInteractiveActive = !isSlideshowMode && activeHooks?.length
