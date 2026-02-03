@@ -82,7 +82,7 @@ const brands: Brand[] = [
 
 const BrandSubsection = () => {
   return (
-    <GlassContainer className="flex flex-col items-center justify-center gap-4 md:w-6/7 mx-auto py-10">
+    <GlassContainer className="flex flex-col items-center justify-center gap-4 mx-auto py-10">
       <div className="flex gap-10 justify-center items-center flex-wrap pb-10">
         {brands.map((e, i) => (
           <a

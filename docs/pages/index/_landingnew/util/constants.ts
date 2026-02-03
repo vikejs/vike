@@ -53,7 +53,7 @@ export const EXTENSION_BLOCK_KEYS = Object.keys(ExtensionBlockVariants) as Exten
 
 export const BlurDotOpacity = {
   low: 'opacity-50',
-  medium: 'opacity-80',
+  medium: 'opacity-70',
   high: 'opacity-100',
 } as const
 
