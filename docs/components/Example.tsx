@@ -1,5 +1,6 @@
 export { Example }
 export { ExampleTimestamp }
+export { GithubLink }
 
 import React from 'react'
 import { assert } from '@brillout/docpress'
@@ -10,7 +11,7 @@ type TimestampType = `${number}.${number}`
 function Example({ repo, timestamp, href }: { repo: Repo; timestamp: TimestampType; href?: string }) {
   return (
     <>
-      <ExampleTimestamp>{timestamp}</ExampleTimestamp> <Github href={href}>{repo}</Github>
+      <ExampleTimestamp>{timestamp}</ExampleTimestamp> <GithubLink href={href} repo={repo} />
     </>
   )
 }
@@ -34,9 +35,7 @@ function ExampleTimestamp({
   )
 }
 
-function Github({ children, href }: { children: Repo; href?: string }) {
-  const repo = children
-  assert(repo)
+function GithubLink({ repo, href }: { repo: Repo; href?: string }) {
   assert(repo.split('/').length >= 2)
   href ??= 'https://github.com/' + repo
   return (
