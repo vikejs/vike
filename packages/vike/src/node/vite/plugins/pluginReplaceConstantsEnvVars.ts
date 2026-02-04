@@ -119,19 +119,16 @@ function pluginReplaceConstantsEnvVars(): Plugin[] {
             magicString.replaceAll(new RegExp(regExpStr, 'g'), JSON.stringify(replacement))
           })
 
-          // Replace bare `import.meta.env` expression with null
-          // This prevents confusion when users do console.log(import.meta.env)
-          // since Vite's replacement only includes built-in properties (DEV, PROD, SSR, MODE, BASE_URL)
-          // but not PUBLIC_ENV__ variables that Vike handles
-          // if (code.includes('BLA')) console.log(code)
-          // `define: { 'import.meta.env': JSON.stringify(null) }` doesn't work because it also replaces `import.meta.env` inside `import.meta.env.SONE_ENV`
+          // Replace bare `import.meta.env` expression with `null`.
+          // - Otherwise Vite replaces with an object that is missing PUBLIC_ENV__ which is confusing for users.
+          // - We purposely don't support replacing `import.meta.env` with an object to incentivize to write code-splitting friendly code.
+          // - `define: { 'import.meta.env': JSON.stringify(null) }` doesn't work because it also replaces `import.meta.env` inside `import.meta.env.SONE_ENV`
           const bareImportMetaEnvRegex = /\bimport\.meta\.env(?!\.)/g
           if (bareImportMetaEnvRegex.test(code)) {
             const modulePath = getFilePathToShowToUserModule(id, config)
-            const warnMsg = `The expression ${pc.cyan('import.meta.env')} in ${modulePath} is replaced with ${pc.cyan('null')} — use ${pc.cyan('import.meta.env.SONE_ENV')} instead ${pc.underline('https://vike.dev/env')}`
+            const warnMsg = `The bare ${pc.cyan('import.meta.env')} expression in ${modulePath} is replaced with ${pc.cyan('null')} — use ${pc.cyan('import.meta.env.SONE_ENV')} instead ${pc.underline('https://vike.dev/env')}`
             assertWarning(false, warnMsg, { onlyOnce: true })
-            // Reset regex.lastIndex after .test() since the /g flag makes it stateful
-            bareImportMetaEnvRegex.lastIndex = 0
+            bareImportMetaEnvRegex.lastIndex = 0 // Reset state after .test() since the /g flag makes it stateful
             magicString.replaceAll(bareImportMetaEnvRegex, JSON.stringify(null))
           }
 
