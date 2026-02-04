@@ -130,6 +130,8 @@ function pluginReplaceConstantsEnvVars(): Plugin[] {
             const modulePath = getFilePathToShowToUserModule(id, config)
             const warnMsg = `The expression ${pc.cyan('import.meta.env')} in ${modulePath} is replaced with ${pc.cyan('null')} — use ${pc.cyan('import.meta.env.SONE_ENV')} instead ${pc.underline('https://vike.dev/env')}`
             assertWarning(false, warnMsg, { onlyOnce: true })
+            // Reset regex.lastIndex after .test() since the /g flag makes it stateful
+            bareImportMetaEnvRegex.lastIndex = 0
             magicString.replaceAll(bareImportMetaEnvRegex, JSON.stringify(null))
           }
 
