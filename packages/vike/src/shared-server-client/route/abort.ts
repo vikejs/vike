@@ -265,6 +265,7 @@ function assertStatusCode(statusCode: number, expected: number[], caller: 'rende
     assert(import.meta.env.DEV === globalThis.__VIKE__IS_DEV)
   } else {
     assert(!isBrowser())
+    // TODO/ai replace `import.meta.env` with globalThis.__VIKE_IS_NOT_EXTERNAL (and implment __VIKE_IS_NOT_EXTERNAL)
     if (import.meta.env) {
       assert(typeof globalThis.__VIKE__IS_DEV === 'boolean')
       assert(typeof globalThis.__VIKE__IS_CLIENT === 'boolean')
