@@ -85,6 +85,18 @@ function pluginReplaceConstantsEnvVars(): Plugin[] {
 
           const { magicString, getMagicStringResult } = getMagicString(code, id)
 
+          // Replace bare `import.meta.env` expression with null
+          // This prevents confusion when users do console.log(import.meta.env)
+          // since Vite's replacement only includes built-in properties (DEV, PROD, SSR, MODE, BASE_URL)
+          // but not PUBLIC_ENV__ variables that Vike handles
+          const bareImportMetaEnvRegex = /\bimport\.meta\.env(?!\.)/g
+          if (bareImportMetaEnvRegex.test(code)) {
+            const modulePath = getFilePathToShowToUserModule(id, config)
+            const warnMsg = `import.meta.env is used in ${modulePath}. This will be replaced with null. Use import.meta.env.SOME_VAR to access environment variables, see https://vike.dev/env`
+            assertWarning(false, warnMsg, { onlyOnce: true })
+            magicString.replaceAll(bareImportMetaEnvRegex, 'null')
+          }
+
           // Get regex operations
           const replacements = Object.entries(envVarsAll)
             // Skip env vars that start with [`config.envPrefix`](https://vite.dev/config/shared-options.html#envprefix) — they are already handled by Vite
