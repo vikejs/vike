@@ -119,9 +119,9 @@ function pluginReplaceConstantsEnvVars(): Plugin[] {
             magicString.replaceAll(new RegExp(regExpStr, 'g'), JSON.stringify(replacement))
           })
 
-          // Replace bare `import.meta.env` expression with `null` for the user-land.
+          // Replace bare `import.meta.env` expression with `null` in the user-land.
           // - Otherwise Vite replaces it with an object missing PUBLIC_ENV__ variables which is confusing for users.
-          // - We purposely don't support replacing `import.meta.env` with an object to incentivize the user to write code-splitting friendly code.
+          // - We purposely don't support replacing `import.meta.env` with an object to incentivize users to write tree-shaking friendly code.
           // - `define: { 'import.meta.env': JSON.stringify(null) }` doesn't work because it also replaces `import.meta.env` inside `import.meta.env.SONE_ENV`
           const bareImportMetaEnvRegex = /\bimport\.meta\.env(?!\.)/g
           const isUserLand = !id.includes('node_modules') && id.startsWith(config.root) // skip node_modules/ as well as linked dependencies
