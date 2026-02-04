@@ -5,8 +5,6 @@ import { navigate } from 'vike/client/router'
 import { Counter } from '../../components/Counter'
 
 function Page() {
-  console.log('BLA')
-  console.log('import.meta.env', import.meta.env)
   return (
     <>
       <h1>Welcome to Vike</h1>
