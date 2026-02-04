@@ -53,7 +53,7 @@ function pluginReplaceConstantsEnvVars(): Plugin[] {
   return [
     {
       name: 'vike:pluginReplaceConstantsEnvVars',
-      // Correct oder:
+      // Correct order:
       // 1. @vitejs/plugin-vue
       // 2. vike:pluginExtractAssets and vike:pluginExtractExportNames [needs to be applied after @vitejs/plugin-vue]
       // 3. vike:pluginReplaceConstantsEnvVars [needs to be applied after vike:pluginExtractAssets and vike:pluginExtractExportNames]
