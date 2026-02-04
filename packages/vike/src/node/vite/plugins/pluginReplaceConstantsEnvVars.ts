@@ -127,18 +127,13 @@ function pluginReplaceConstantsEnvVars(): Plugin[] {
           // `define: { 'import.meta.env': JSON.stringify(null) }` doesn't work because it also replaces `import.meta.env` inside `import.meta.env.SONE_ENV`
           const bareImportMetaEnvRegex = /\bimport\.meta\.env(?!\.)/g
           if (bareImportMetaEnvRegex.test(code)) {
-            // console.log('befor', code)
-            // console.log('after', )
             const modulePath = getFilePathToShowToUserModule(id, config)
             const warnMsg = `The expression ${pc.cyan('import.meta.env')} in ${modulePath} is replaced with ${pc.cyan('null')} — use ${pc.cyan('import.meta.env.SONE_ENV')} instead ${pc.underline('https://vike.dev/env')}`
             assertWarning(false, warnMsg, { onlyOnce: true })
-            console.log('DIFF', code !== code.replaceAll(bareImportMetaEnvRegex, JSON.stringify(null)))
             magicString.replaceAll(bareImportMetaEnvRegex, JSON.stringify(null))
           }
 
-          const rest = getMagicStringResult()
-          console.log('code post', rest?.code)
-          return rest
+          return getMagicStringResult()
         },
       },
     },
