@@ -124,11 +124,11 @@ function pluginReplaceConstantsEnvVars(): Plugin[] {
           // since Vite's replacement only includes built-in properties (DEV, PROD, SSR, MODE, BASE_URL)
           // but not PUBLIC_ENV__ variables that Vike handles
           // if (code.includes('BLA')) console.log(code)
-          // `define: { 'import.meta.env': JSON.stringify(null) }` doesn't work because it also replaces `import.meta.env` inside `import.meta.env.SOME_VAR`
+          // `define: { 'import.meta.env': JSON.stringify(null) }` doesn't work because it also replaces `import.meta.env` inside `import.meta.env.SONE_ENV`
           const bareImportMetaEnvRegex = /\bimport\.meta\.env(?!\.)/g
           if (bareImportMetaEnvRegex.test(code)) {
             const modulePath = getFilePathToShowToUserModule(id, config)
-            const warnMsg = `The expression ${pc.cyan('import.meta.env')} in ${modulePath} is replaced with ${pc.cyan('null')} — use ${pc.cyan('import.meta.env.SOME_VAR')} instead to access environment variables, see https://vike.dev/env`
+            const warnMsg = `The expression ${pc.cyan('import.meta.env')} in ${modulePath} is replaced with ${pc.cyan('null')} — use ${pc.cyan('import.meta.env.SONE_ENV')} instead, see https://vike.dev/env`
             assertWarning(false, warnMsg, { onlyOnce: true })
             magicString.replaceAll(bareImportMetaEnvRegex, 'null')
           }
