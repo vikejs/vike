@@ -11,7 +11,7 @@
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
     "vike": "0.4.253",
-    "vike-react": "^0.6.19",
+    "vike-react": "^0.6.20",
     "vike-server": "^1.0.25",
     "vite": "^7.1.9"
   },

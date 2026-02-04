@@ -11,7 +11,7 @@
     "react-dom": "^19.2.1",
     "vike": "0.4.253",
     "vike-photon": "^0.1.24",
-    "vike-react": "^0.6.19"
+    "vike-react": "^0.6.20"
   },
   "devDependencies": {
     "@photonjs/cloudflare": "^0.1.13",
