@@ -133,9 +133,9 @@ Note how the `import()` is completely removed, resulting in more lightweight pro
 
 ## Config files
 
-In config files, [`import.meta.env` isn't available](https://github.com/vikejs/vike/issues/1726#issuecomment-2208626928) (neither `vite.config.js` nor `+config.js`).
+In config files, [<ImportMeta prop="env"/> isn't available](https://github.com/vikejs/vike/issues/1726#issuecomment-2208626928) (neither `vite.config.js` nor `+config.js`).
 
-Use [`process.env`](https://nodejs.org/en/learn/command-line/how-to-read-environment-variables-from-nodejs) instead of `import.meta.env`.
+Use [`process.env`](https://nodejs.org/en/learn/command-line/how-to-read-environment-variables-from-nodejs) instead of <ImportMeta prop="env"/>.
 
 
 ## Public allowlist
