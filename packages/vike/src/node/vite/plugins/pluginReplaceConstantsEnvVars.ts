@@ -77,6 +77,10 @@ function pluginReplaceConstantsEnvVars(): Plugin[] {
       transform: {
         filter: filterRolldown,
         handler(code, id, options) {
+          if (id.includes('node_modules/vite/')) {
+            console.error('\nUNEXPECTED BUNDLING VITE CODE: ' + id)
+            process.exit(1)
+          }
           id = normalizeId(id)
           assertPosixPath(id)
           assert(filterFunction(code))
