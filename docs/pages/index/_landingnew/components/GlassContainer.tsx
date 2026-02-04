@@ -17,7 +17,7 @@ export default GlassContainer
 
 const StyledGlassOuter = cm.div`
   absolute
-  -inset-5
+  inset-0 lg:-inset-5
   z-0
   bg-gradient-to-r
   via-white/60

@@ -1,5 +1,5 @@
 import React, { ReactNode, useMemo } from 'react'
-import cm from '@classmatejs/react'
+import cm, { cmMerge } from '@classmatejs/react'
 
 import Headline from './Headline'
 import BlurDot from './BlurDot'
@@ -46,10 +46,10 @@ const HeadlineGroup = ({
   )
 
   return (
-    <div role="heading" className={outerClassName}>
+    <div role="heading" className={cmMerge('w-full overflow-hidden', outerClassName)}>
       {blurColor && (
         <div className="absolute inset-0 flex justify-center z-0">
-          <BlurDot type={blurColor} size="lg" visibility="low" className="-mt-30" />
+          <BlurDot type={blurColor} size="xl" visibility="low" className="-mt-40" />
         </div>
       )}
       <div className="z-2 relative">{headlineContent}</div>

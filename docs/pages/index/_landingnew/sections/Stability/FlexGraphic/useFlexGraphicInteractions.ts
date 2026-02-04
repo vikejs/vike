@@ -5,15 +5,13 @@ import { FlexGraphicHook, HOOK_NAME_KEYS } from '../../../util/constants'
 import { applyColor, applyStrokeWidth, createSlideshowScrollTrigger, killTweens } from './animations'
 import { hookColors } from '../../../util/ui.constants'
 
-// todo: to config
-
 const circuitDefaultColor = 'var(--color-grey-300-hex)'
 const baseStrokeWidth = 3
 const activeStrokeWidth = 4
 const hitboxStrokeWidth = 14
 
 const slideshowIntervalMs = 2000
-const slideshowResumeDelayMs = 1200
+const slideshowResumeDelayMs = 600
 
 const resolveCssColor = (color: string, root?: Element | null) => {
   const match = color.match(/^var\((--[^)]+)\)$/)

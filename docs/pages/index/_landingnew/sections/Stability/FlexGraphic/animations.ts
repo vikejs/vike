@@ -2,7 +2,7 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 // todo: to config
-const animationDuration = 0.15
+const animationDuration = 0.25
 const animationEase = 'power2.out'
 
 interface ApplyColorParams {

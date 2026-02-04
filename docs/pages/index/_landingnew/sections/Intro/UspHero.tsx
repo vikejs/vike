@@ -10,6 +10,7 @@ const UspHero = () => {
   const [hoveredUsp, setHoveredUsp] = useState<string | null>(null)
 
   return (
+    <div className='w-full'>
     <div className="grid grid-cols-3 gap-2 md:w-6/7 mx-auto">
       {landingPageHeroUsps.map((usp) => {
         const isHovered = hoveredUsp === usp.id
@@ -54,6 +55,7 @@ const UspHero = () => {
           </div>
         )
       })}
+    </div>
     </div>
   )
 }

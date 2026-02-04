@@ -3,6 +3,7 @@ import { ExtensionBlockVariants } from '../../../util/constants'
 
 export const ExtensionBlock = cm.div.variants<{
   $type: ExtensionBlockVariants
+  $animationState?: "active" | "inactive"
 }>({
   base: `
   absolute 
@@ -10,9 +11,11 @@ export const ExtensionBlock = cm.div.variants<{
   font-mono
   bg-base-200
   border-2 border-base-100
-  text-tiny sm:text-sm 
+  text-tiny sm:text-sm text-grey-100
   flex justify-center items-center
   transition-all
+  duration-250
+  ease-out
 `,
   variants: {
     $type: {
@@ -40,6 +43,10 @@ export const ExtensionBlock = cm.div.variants<{
         top-[74.4%] left-[55.5%]
         h-[11%] w-[35%]
       `,
+    },
+    $animationState: {
+      active: 'text-base-content',
+      inactive: 'bg-base-200/50',
     },
   },
 })

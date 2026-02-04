@@ -10,7 +10,7 @@ const IntroSection = () => {
     <>
       <LayoutComponent
         $size="sm"
-        className="flex flex-col items-center text-center lg:min-h-[calc(100dvh-56*var(--spacing))] pb-20"
+        className="flex flex-col items-center text-center lg:min-h-[calc(100dvh-56*var(--spacing))] pb-20 overflow-hidden"
       >
         <span className="inline-flex flex-col sm:flex-row gap-1 mx-auto mb-4 mt-20">
           <span className="block badge badge-neutral badge-ghost badge-sm">⭐️ Replaces Next.js / Nuxt / ...</span>
