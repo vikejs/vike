@@ -270,8 +270,6 @@ function assertStatusCode(statusCode: number, expected: number[], caller: 'rende
       assert(typeof globalThis.__VIKE__IS_CLIENT === 'boolean')
       assert(import.meta.env.SSR === true)
       assert(import.meta.env.DEV === globalThis.__VIKE__IS_DEV)
-    } else {
-      // __VIKE__IS_NO_EXTERNAL is false when 'vike' is ssr.external
     }
   }
 
