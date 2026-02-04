@@ -22,6 +22,8 @@ declare global {
   /** Like `import.meta.env.SSR` but works for `node_modules/` packages with `ssr.external` */
   var __VIKE__IS_CLIENT: boolean
   var __VIKE__IS_DEBUG: boolean
+  /** Whether vike is NOT externalized (i.e., `import.meta.env` is defined). `false` when vike is `ssr.external` */
+  var __VIKE__IS_NOT_EXTERNAL: boolean
 }
 
 const VIRTUAL_FILE_ID_constantsGlobalThis = 'virtual:vike:server:constantsGlobalThis'
@@ -29,6 +31,8 @@ const VIRTUAL_FILE_ID_constantsGlobalThis = 'virtual:vike:server:constantsGlobal
 const isDebugVal = isDebug()
 globalThis.__VIKE__IS_CLIENT = false
 globalThis.__VIKE__IS_DEBUG = isDebugVal
+// When vike is ssr.external, the virtual file isn't imported, so we default to false
+globalThis.__VIKE__IS_NOT_EXTERNAL = false
 
 // === Rolldown filter
 const filterRolldown = {
@@ -97,6 +101,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
             `globalThis.__VIKE__IS_DEV = ${JSON.stringify(isDev)};`,
             `globalThis.__VIKE__IS_CLIENT = false;`,
             `globalThis.__VIKE__IS_DEBUG = ${JSON.stringify(isDebugVal)};`,
+            `globalThis.__VIKE__IS_NOT_EXTERNAL = true;`,
           ].join('\n')
           return code
         },
