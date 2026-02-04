@@ -128,7 +128,7 @@ function pluginReplaceConstantsEnvVars(): Plugin[] {
           const bareImportMetaEnvRegex = /\bimport\.meta\.env(?!\.)/g
           if (bareImportMetaEnvRegex.test(code)) {
             const modulePath = getFilePathToShowToUserModule(id, config)
-            const warnMsg = `The expression ${pc.cyan('import.meta.env')} in ${modulePath} is replaced with ${pc.cyan('null')} — use ${pc.cyan('import.meta.env.PUBLIC_ENV__SOME_VAR')} / ${pc.cyan('import.meta.env.SOME_VAR')} instead to access environment variables, see https://vike.dev/env`
+            const warnMsg = `The expression ${pc.cyan('import.meta.env')} in ${modulePath} is replaced with ${pc.cyan('null')} — use ${pc.cyan('import.meta.env.SOME_VAR')} instead to access environment variables, see https://vike.dev/env`
             assertWarning(false, warnMsg, { onlyOnce: true })
             magicString.replaceAll(bareImportMetaEnvRegex, 'null')
           }
