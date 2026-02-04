@@ -23,7 +23,7 @@ declare global {
   var __VIKE__IS_CLIENT: boolean
   var __VIKE__IS_DEBUG: boolean
   /** Whether the code is processed by Vite, i.e. `true` when the code is `ssr.noExternal` */
-  var __VIKE__IS_NO_EXTERNAL: true | undefined
+  var __VIKE__NO_EXTERNAL: true | undefined
 }
 
 const VIRTUAL_FILE_ID_constantsGlobalThis = 'virtual:vike:server:constantsGlobalThis'
@@ -57,7 +57,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
             define: {
               'globalThis.__VIKE__IS_DEV': JSON.stringify(isDev),
               'globalThis.__VIKE__IS_DEBUG': JSON.stringify(isDebugVal),
-              'globalThis.__VIKE__IS_NO_EXTERNAL': 'true',
+              'globalThis.__VIKE__NO_EXTERNAL': 'true',
             },
           }
         },
