@@ -1820,8 +1820,8 @@ importers:
         specifier: 0.4.253
         version: link:../../packages/vike
       vike-solid:
-        specifier: ^0.8.0
-        version: 0.8.0(solid-js@1.9.10)(vike@packages+vike)(vite-plugin-solid@2.11.10(solid-js@1.9.10)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)))
+        specifier: ^0.8.1
+        version: 0.8.1(solid-js@1.9.10)(vike@packages+vike)(vite-plugin-solid@2.11.10(solid-js@1.9.10)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)))
       vite:
         specifier: ^7.2.2
         version: 7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
@@ -2001,8 +2001,8 @@ importers:
         specifier: 0.4.253
         version: link:../../packages/vike
       vike-solid:
-        specifier: ^0.8.0
-        version: 0.8.0(solid-js@1.9.10)(vike@packages+vike)(vite-plugin-solid@2.11.10(solid-js@1.9.10)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)))
+        specifier: ^0.8.1
+        version: 0.8.1(solid-js@1.9.10)(vike@packages+vike)(vite-plugin-solid@2.11.10(solid-js@1.9.10)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)))
     devDependencies:
       typescript:
         specifier: ^5.9.3
@@ -6081,15 +6081,18 @@ packages:
 
   glob@10.4.5:
     resolution: {integrity: sha512-7Bv8RF0k6xjo7d4A/PxYLbUCfb6c+Vpd2/mB2yRDlew7Jb5hEXiCD9ibfO7wpk8i4sevK6DFny9h7EYbM3/sHg==}
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
     hasBin: true
 
   glob@10.5.0:
     resolution: {integrity: sha512-DfXN8DfhJ7NH3Oe7cFmu3NCu1wKbkReJ8TorzSAFbSKrlNaQSKfIzqYqVY8zlbs2NLBbWpRiU52GX2PbaBVNkg==}
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
     hasBin: true
 
   glob@11.0.3:
     resolution: {integrity: sha512-2Nim7dha1KVkaiF4q6Dj+ngPPMdfvLJEOpZk/jKiUAkqKebpGAWQXAq9z1xu9HKu5lWfqw/FASuccEjyznjPaA==}
     engines: {node: 20 || >=22}
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
     hasBin: true
 
   glob@13.0.0:
@@ -7790,7 +7793,7 @@ packages:
   tar@7.5.2:
     resolution: {integrity: sha512-7NyxrTE4Anh8km8iEy7o0QYPs+0JKBTj5ZaqHg6B39erLg0qYXN3BijtShwbsNSvQ+LN75+KV+C4QR/f6Gwnpg==}
     engines: {node: '>=18'}
-    deprecated: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exhorbitant rates) by contacting i@izs.me
+    deprecated: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   telefunc@0.2.17:
     resolution: {integrity: sha512-UJxfQUgl8eIOk7xxtpj3kMrXvIxggaiwj0VGXjRnQM2AO9KYAjNREyb6Rz5lEEHlZR+s4yhiCLjuwfm5t4Nx1A==}
@@ -8190,8 +8193,8 @@ packages:
       vite:
         optional: true
 
-  vike-solid@0.8.0:
-    resolution: {integrity: sha512-niwCFwIp9Qii3D+cFVLWM8Vn9tSmpuhNN3F5QV79a6LkLHIh1hBkPG8QBPpYsSmuE0Y6q70YNtzk/cP3A6a5jw==}
+  vike-solid@0.8.1:
+    resolution: {integrity: sha512-Zn2wmRmf+KnXb8HYF452kztkwPHiPxwTtthTdCgNXcLWxi8udP1vbkCyXZ1IXJkE0cQtonpqhLviBiotEIh6UA==}
     peerDependencies:
       solid-js: ^1.8.7
       vike: '>=0.4.250'
@@ -15728,7 +15731,7 @@ snapshots:
       - hono
       - srvx
 
-  vike-solid@0.8.0(solid-js@1.9.10)(vike@packages+vike)(vite-plugin-solid@2.11.10(solid-js@1.9.10)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))):
+  vike-solid@0.8.1(solid-js@1.9.10)(vike@packages+vike)(vite-plugin-solid@2.11.10(solid-js@1.9.10)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))):
     dependencies:
       isbot-fast: 1.2.0
       solid-js: 1.9.10
