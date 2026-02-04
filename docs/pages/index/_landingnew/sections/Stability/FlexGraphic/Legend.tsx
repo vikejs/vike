@@ -20,12 +20,13 @@ const Legend = ({ onChangeHightlight, activeHooks, isSlideshowMode }: LegendProp
         const type = isActive ? 'active' : isSlideshowMode ? 'disabled' : isInteractiveActive ? 'inactive' : 'paused'
 
         return (
-          <StyledLegendItem
-            onMouseEnter={() => onChangeHightlight([hookName])}
-            onMouseLeave={() => onChangeHightlight(null)}
-            key={key}
-            $type={type}
-          >
+          <StyledLegendItem key={key} $type={type}>
+            {/* extra hover area -> prevent style jitter on hover */}
+            <div
+              onMouseEnter={() => onChangeHightlight([hookName])}
+              onMouseLeave={() => onChangeHightlight(null)}
+              className="absolute inset-0"
+            />
             <div className="w-4 h-4 rounded" style={{ backgroundColor: color }}></div>
             <span className="text-sm">+{key}</span>
           </StyledLegendItem>

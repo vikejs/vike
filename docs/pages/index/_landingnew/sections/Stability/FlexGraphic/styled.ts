@@ -53,6 +53,7 @@ export const ExtensionBlock = cm.div.variants<{
 
 export const StyledLegendItem = cm.div.variants<{ $type: 'disabled' | 'active' | 'inactive' | 'paused' }>({
   base: `
+    relative
     transition-opacity 
     font-semibold
     flex items-center gap-2 
