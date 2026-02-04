@@ -22,6 +22,8 @@ declare global {
   /** Like `import.meta.env.SSR` but works for `node_modules/` packages with `ssr.external` */
   var __VIKE__IS_CLIENT: boolean
   var __VIKE__IS_DEBUG: boolean
+  /** Whether the code is processed by Vite, e.g. `true` when server code is `ssr.noExternal` */
+  var __VIKE__NO_EXTERNAL: true | undefined
 }
 
 const VIRTUAL_FILE_ID_constantsGlobalThis = 'virtual:vike:server:constantsGlobalThis'
@@ -55,6 +57,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
             define: {
               'globalThis.__VIKE__IS_DEV': JSON.stringify(isDev),
               'globalThis.__VIKE__IS_DEBUG': JSON.stringify(isDebugVal),
+              'globalThis.__VIKE__NO_EXTERNAL': 'true',
             },
           }
         },

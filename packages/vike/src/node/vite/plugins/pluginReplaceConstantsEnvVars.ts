@@ -14,6 +14,7 @@ import { getFilePathToShowToUserModule } from '../shared/getFilePath.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 import { getMagicString } from '../shared/getMagicString.js'
+import pc from '@brillout/picocolors'
 
 const PUBLIC_ENV_PREFIX = 'PUBLIC_ENV__'
 const PUBLIC_ENV_ALLOWLIST = [
@@ -29,7 +30,7 @@ const PUBLIC_ENV_ALLOWLIST = [
 //   - Or stop using Vite's `mode` implementation and have Vike implement its own `mode` feature? (So that the only dependencies are `$ vike build --mode staging` and `$ MODE=staging vike build`.)
 
 // === Rolldown filter
-const skipIrrelevant = 'import.meta.env.'
+const skipIrrelevant = 'import.meta.env'
 const filterRolldown = {
   /* We don't do that, because vike-react-sentry uses import.meta.env.PUBLIC_ENV__SENTRY_DSN
   id: {
@@ -117,6 +118,22 @@ function pluginReplaceConstantsEnvVars(): Plugin[] {
           replacements.forEach(({ regExpStr, replacement }) => {
             magicString.replaceAll(new RegExp(regExpStr, 'g'), JSON.stringify(replacement))
           })
+
+          // Replace bare `import.meta.env` expression with `null` in the user-land.
+          // - Otherwise Vite replaces it with an object missing PUBLIC_ENV__ variables which is confusing for users.
+          // - We purposely don't support replacing `import.meta.env` with an object to incentivize users to write tree-shaking friendly code.
+          // - `define: { 'import.meta.env': JSON.stringify(null) }` doesn't work because it also replaces `import.meta.env` inside `import.meta.env.SONE_ENV`
+          const bareImportMetaEnvRegex = /\bimport\.meta\.env(?!\.)/g
+          const isUserLand = !id.includes('node_modules') && id.startsWith(config.root) // skip node_modules/ as well as linked dependencies
+          if (isUserLand && bareImportMetaEnvRegex.test(code)) {
+            assertWarning(
+              false,
+              `The bare ${pc.cyan('import.meta.env')} expression in ${getFilePathToShowToUserModule(id, config)} is replaced with ${pc.cyan('null')} — use ${pc.cyan('import.meta.env.SONE_ENV')} instead ${pc.underline('https://vike.dev/env')}`,
+              { onlyOnce: true },
+            )
+            bareImportMetaEnvRegex.lastIndex = 0 // Reset state after .test() since the /g flag makes the RegExp stateful
+            magicString.replaceAll(bareImportMetaEnvRegex, JSON.stringify(null))
+          }
 
           return getMagicStringResult()
         },

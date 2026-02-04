@@ -265,13 +265,11 @@ function assertStatusCode(statusCode: number, expected: number[], caller: 'rende
     assert(import.meta.env.DEV === globalThis.__VIKE__IS_DEV)
   } else {
     assert(!isBrowser())
-    if (import.meta.env) {
+    if (globalThis.__VIKE__NO_EXTERNAL) {
       assert(typeof globalThis.__VIKE__IS_DEV === 'boolean')
       assert(typeof globalThis.__VIKE__IS_CLIENT === 'boolean')
       assert(import.meta.env.SSR === true)
       assert(import.meta.env.DEV === globalThis.__VIKE__IS_DEV)
-    } else {
-      // import.meta.env isn't defined when 'vike' is ssr.external
     }
   }
 
