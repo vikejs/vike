@@ -22,8 +22,8 @@ declare global {
   /** Like `import.meta.env.SSR` but works for `node_modules/` packages with `ssr.external` */
   var __VIKE__IS_CLIENT: boolean
   var __VIKE__IS_DEBUG: boolean
-  /** Whether the code is processed by Vite, i.e. `false` when the code is `ssr.external` */
-  var __VIKE__IS_NOT_EXTERNAL: boolean
+  /** Whether the code is processed by Vite, i.e. `true` when the code is `ssr.noExternal` */
+  var __VIKE__IS_NOT_EXTERNAL: true | undefined
 }
 
 const VIRTUAL_FILE_ID_constantsGlobalThis = 'virtual:vike:server:constantsGlobalThis'
@@ -31,7 +31,6 @@ const VIRTUAL_FILE_ID_constantsGlobalThis = 'virtual:vike:server:constantsGlobal
 const isDebugVal = isDebug()
 globalThis.__VIKE__IS_CLIENT = false
 globalThis.__VIKE__IS_DEBUG = isDebugVal
-globalThis.__VIKE__IS_NOT_EXTERNAL = false
 
 // === Rolldown filter
 const filterRolldown = {
@@ -58,7 +57,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
             define: {
               'globalThis.__VIKE__IS_DEV': JSON.stringify(isDev),
               'globalThis.__VIKE__IS_DEBUG': JSON.stringify(isDebugVal),
-              'globalThis.__VIKE__IS_NOT_EXTERNAL': JSON.stringify(true),
+              'globalThis.__VIKE__IS_NOT_EXTERNAL': 'true',
             },
           }
         },
@@ -101,7 +100,6 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
             `globalThis.__VIKE__IS_DEV = ${JSON.stringify(isDev)};`,
             `globalThis.__VIKE__IS_CLIENT = false;`,
             `globalThis.__VIKE__IS_DEBUG = ${JSON.stringify(isDebugVal)};`,
-            `globalThis.__VIKE__IS_NOT_EXTERNAL = false;`,
           ].join('\n')
           return code
         },
