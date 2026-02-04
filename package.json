@@ -45,5 +45,8 @@
     "playwright-chromium": "1.57.0",
     "vitest": "^3.2.4"
   },
+  "overrides": {
+    "@cloudfalre/vite-plugin": "1.23.0"
+  },
   "packageManager": "pnpm@9.15.9"
 }
