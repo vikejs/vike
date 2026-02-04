@@ -126,13 +126,12 @@ function pluginReplaceConstantsEnvVars(): Plugin[] {
           const bareImportMetaEnvRegex = /\bimport\.meta\.env(?!\.)/g
           const isUserLand = !id.includes('node_modules') && id.startsWith(config.root) // skip node_modules/ as well as linked dependencies
           if (isUserLand && bareImportMetaEnvRegex.test(code)) {
-            const modulePath = getFilePathToShowToUserModule(id, config)
             assertWarning(
               false,
-              `The bare ${pc.cyan('import.meta.env')} expression in ${modulePath} is replaced with ${pc.cyan('null')} — use ${pc.cyan('import.meta.env.SONE_ENV')} instead ${pc.underline('https://vike.dev/env')}`,
+              `The bare ${pc.cyan('import.meta.env')} expression in ${getFilePathToShowToUserModule(id, config)} is replaced with ${pc.cyan('null')} — use ${pc.cyan('import.meta.env.SONE_ENV')} instead ${pc.underline('https://vike.dev/env')}`,
               { onlyOnce: true },
             )
-            bareImportMetaEnvRegex.lastIndex = 0 // Reset state after .test() since the /g flag makes it stateful
+            bareImportMetaEnvRegex.lastIndex = 0 // Reset state after .test() since the /g flag makes the RegExp stateful
             magicString.replaceAll(bareImportMetaEnvRegex, JSON.stringify(null))
           }
 
