@@ -8,7 +8,7 @@ import { escapeRegex } from '../../../utils/escapeRegex.js'
 import { isNotNullish } from '../../../utils/isNullish.js'
 import { assert, assertUsage, assertWarning } from '../../../utils/assert.js'
 import { isArray } from '../../../utils/isArray.js'
-import { lowerFirst } from '../../../utils/sorter.js'
+import { makeLast } from '../../../utils/sorter.js'
 import { assertPosixPath } from '../../../utils/path.js'
 import { getFilePathToShowToUserModule } from '../shared/getFilePath.js'
 import { normalizeId } from '../shared/normalizeId.js'
@@ -53,6 +53,11 @@ function pluginReplaceConstantsEnvVars(): Plugin[] {
   return [
     {
       name: 'vike:pluginReplaceConstantsEnvVars',
+      // Correct oder:
+      // 1. @vitejs/plugin-vue
+      // 2. vike:pluginExtractAssets and vike:pluginExtractExportNames [needs to be applied after @vitejs/plugin-vue]
+      // 3. vike:pluginReplaceConstantsEnvVars [needs to be applied after vike:pluginExtractAssets and vike:pluginExtractExportNames]
+      // 4. vite:define (Vite built-in plugin) [needs to be applied after vike:pluginReplaceConstantsEnvVars]
       enforce: 'post',
       configResolved: {
         handler(config_) {
@@ -64,9 +69,8 @@ function pluginReplaceConstantsEnvVars(): Plugin[] {
 
           envPrefix = getEnvPrefix(config)
 
-          // Vite's built-in plugin vite:define needs to apply after this plugin.
-          //  - This plugin vike:pluginReplaceConstantsEnvVars needs to apply after vike:pluginExtractAssets and vike:pluginExtractExportNames which need to apply after @vitejs/plugin-vue
-          ;(config.plugins as Plugin[]).sort(lowerFirst<Plugin>((plugin) => (plugin.name === 'vite:define' ? 1 : 0)))
+          // See comment `Correct order` above
+          ;(config.plugins as Plugin[]).sort(makeLast<Plugin>((plugin) => plugin.name === 'vite:define'))
         },
       },
       transform: {
