@@ -130,6 +130,8 @@ function pluginReplaceConstantsEnvVars(): Plugin[] {
             const modulePath = getFilePathToShowToUserModule(id, config)
             const warnMsg = `The expression ${pc.cyan('import.meta.env')} in ${modulePath} is replaced with ${pc.cyan('null')} — use ${pc.cyan('import.meta.env.SONE_ENV')} instead ${pc.underline('https://vike.dev/env')}`
             assertWarning(false, warnMsg, { onlyOnce: true })
+            // TODO/ai why doesn't commenting out the following line break the `magicString.replaceAll` line?
+            code.replaceAll(bareImportMetaEnvRegex, JSON.stringify(null))
             magicString.replaceAll(bareImportMetaEnvRegex, JSON.stringify(null))
           }
 
