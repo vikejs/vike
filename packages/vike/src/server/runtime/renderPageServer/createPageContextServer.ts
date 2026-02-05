@@ -19,7 +19,10 @@ import {
 
 type PageContextCreatedServer = Awaited<ReturnType<typeof createPageContextServer>>
 function createPageContextServer(
-  pageContextInit: PageContextInit,
+  pageContextInit: PageContextInit & {
+    // TO-DO/next-major-release: remove
+    headers?: Record<string, unknown>
+  },
   globalContext: GlobalContextServerInternal,
   args: {
     requestId: number
