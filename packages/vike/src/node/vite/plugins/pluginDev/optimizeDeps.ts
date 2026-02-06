@@ -33,6 +33,14 @@ const LATE_DISCOVERED = [
   '@compiled/react/runtime',
 ]
 
+// TO-DO/eventually: remove this.
+// Avoid following warning for older vike-photon versions:
+// ```
+// [11:32:49.768][/test/photon-vercel/.test-dev.test.ts][pnpm run dev][stderr] Failed to resolve dependency: vike > @brillout/require-shim, present in ssr 'optimizeDeps.include'
+// ```
+// https://github.com/vikejs/vike-photon/issues/56
+const ALWAYS_REMOVE = ['@brillout/require-shim', 'vike > @brillout/require-shim']
+
 const optimizeDeps = {
   optimizeDeps: {
     exclude: [
@@ -241,13 +249,18 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
 }
 
 function add(input: string | string[] | undefined, listAddendum: string[]): string[] {
-  const list = !input ? [] : isArray(input) ? unique(input) : [input]
+  let list = !input ? [] : isArray(input) ? unique(input) : [input]
   listAddendum.forEach((e) => {
     if (!list.includes(e)) list.push(e)
   })
+  list = remove(list)
   return list
 }
 function unique<T>(arr: T[]): T[] {
   const arrUnique = Array.from(new Set(arr))
   return arr.length !== arrUnique.length ? arrUnique : arr
+}
+
+function remove(input: string[]) {
+  return input.filter((e) => !ALWAYS_REMOVE.includes(e))
 }
