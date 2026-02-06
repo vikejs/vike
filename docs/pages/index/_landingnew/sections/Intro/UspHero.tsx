@@ -35,7 +35,7 @@ const UspHero = () => {
                     <H3Headline as="h2" className="mb-3">
                       <span className="relative block w-fit mx-auto">
                         <StyledTitleShape $hovered={isHovered}>{usp.title}</StyledTitleShape>
-                        <StyledTitle className={cmMerge('absolute left-0 top-0', 'transition-opacity')}>
+                        <StyledTitle className={"absolute left-0 top-0 transition-opacity"}>
                           <GradientText color={usp.dotColor}>{usp.title}</GradientText>
                         </StyledTitle>
                       </span>
@@ -48,7 +48,7 @@ const UspHero = () => {
                       'btn btn-sm btn-ghost opacity-75 pointer-events-none',
                     )}
                   >
-                    Learn more →
+                    Learn more
                   </span>
                 </div>
               </StyledTextContent>
@@ -106,7 +106,7 @@ const StyledIconWrapper = cm.div`
 const StyledTextContent = cm.div<{ $hovered?: boolean }>`
   relative z-3
   transition-transform
-  min-h-60
+  min-h-56
   flex flex-col justify-between
   ${uiConfig.transition.mediumDurationTw}
   ${uiConfig.transition.easeOutTw}
