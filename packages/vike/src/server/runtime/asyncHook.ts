@@ -5,14 +5,12 @@ export type { AsyncStore }
 
 import { getPageContextPublicServer } from './renderPageServer/getPageContextPublicServer.js'
 import { assert } from '../../utils/assert.js'
-import { assertIsNotBrowser } from '../../utils/assertIsNotBrowser.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import { isObject } from '../../utils/isObject.js'
 import type { AsyncLocalStorage as AsyncLocalStorageType } from 'node:async_hooks'
 import { import_ } from '@brillout/import'
 import '../assertEnvServer.js'
 
-assertIsNotBrowser()
 type AsyncStore = null | {
   requestId: number
   pageContext?: Record<string, unknown>

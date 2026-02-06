@@ -109,7 +109,6 @@ const globalObjectTyped = globalObject as typeof globalObject & {
   globalContext?: GlobalContextServerInternal
 }
 const vikeConfigErrorRecoverMsg = pc.bold(pc.green('Vike config loaded'))
-assertIsNotBrowser()
 
 // Internal usage
 type GlobalContextServerInternal = Awaited<ReturnType<typeof createGlobalContext>>

@@ -11,11 +11,8 @@ import type {
   PageConfigGlobalBuildTime,
 } from '../../../../types/PageConfig.js'
 import { assert } from '../../../../utils/assert.js'
-import { assertIsNotBrowser } from '../../../../utils/assertIsNotBrowser.js'
 import { getFileSuffixes } from '../../../../shared-server-node/getFileSuffixes.js'
 import '../../assertEnvVite.js'
-
-assertIsNotBrowser()
 
 type RuntimeEnv = { isForClientSide: boolean; isClientRouting: boolean; isDev?: boolean } | { isForConfig: true }
 
