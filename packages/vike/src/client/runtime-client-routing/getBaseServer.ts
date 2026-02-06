@@ -1,8 +1,7 @@
-import '../assertEnvClient.js'
-
 export { getBaseServer }
 
 import { assert } from '../../utils/assert.js'
+import '../assertEnvClient.js'
 
 function getBaseServer(): string {
   const baseServer = import.meta.env.BASE_SERVER

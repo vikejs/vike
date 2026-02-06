@@ -1,5 +1,3 @@
-import '../../assertEnvServer.js'
-
 export { getPageContextPublicServer }
 export type { PageContextPublicServer }
 
@@ -8,6 +6,7 @@ import {
   getPageContextPublicShared,
   type PageContextPublicMinimum,
 } from '../../../shared-server-client/getPageContextPublicShared.js'
+import '../../assertEnvServer.js'
 
 type PageContextPublicServer = ReturnType<typeof getPageContextPublicServer>
 function getPageContextPublicServer<PageContext extends PageContextPublicMinimum>(pageContext: PageContext) {

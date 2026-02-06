@@ -1,5 +1,3 @@
-import '../assertEnvServer.js'
-
 export { renderPageServer as renderPage } from './renderPageServer.js'
 export { escapeInject, dangerouslySkipEscape } from './renderPageServer/html/renderHtml.js'
 export { pipeWebStream, pipeNodeStream, pipeStream, stampPipe } from './renderPageServer/html/stream.js'
@@ -15,6 +13,7 @@ export { createPageRenderer } from '../createPageRenderer.js'
 import { assertWarning } from '../../utils/assert.js'
 import pc from '@brillout/picocolors'
 import { RenderErrorPage as RenderErrorPage_ } from '../../shared-server-client/route/abort.js'
+import '../assertEnvServer.js'
 /** @deprecated
  * Replace:
  *   ```

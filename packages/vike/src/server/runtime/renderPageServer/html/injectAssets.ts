@@ -1,5 +1,3 @@
-import '../../../assertEnvServer.js'
-
 export { injectHtmlTagsToString }
 export { injectHtmlTagsToStream }
 export type { PageContextInjectAssets }
@@ -22,6 +20,7 @@ import type { StreamFromReactStreamingPackage } from './stream/react-streaming.j
 import type { PageContextSerialization } from './serializeContext.js'
 import { getViteDevScript } from './injectAssets/getViteDevScript.js'
 import type { GlobalContextServerInternal } from '../../globalContext.js'
+import '../../../assertEnvServer.js'
 
 type PageContextInjectAssets = {
   urlPathname: string

@@ -1,9 +1,8 @@
-import '../../assertEnvServer.js'
-
 export { execHookDataAndOnBeforeRender }
 
 import { assertOnBeforeRenderHookReturn } from '../../../shared-server-client/assertOnBeforeRenderHookReturn.js'
 import { execHookServer, type PageContextExecHookServer } from './execHookServer.js'
+import '../../assertEnvServer.js'
 
 async function execHookDataAndOnBeforeRender(
   pageContext: {

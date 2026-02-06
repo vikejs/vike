@@ -1,8 +1,7 @@
-import '../assertEnvClient.js'
-
 export { removeFoucBuster }
 
 import { assert } from '../../utils/assert.js'
+import '../assertEnvClient.js'
 
 // See also:
 // - Alternative approach of exactly injecting what Vite injects:

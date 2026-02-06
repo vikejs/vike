@@ -1,5 +1,3 @@
-import '../assertEnvVite.js'
-
 export { getFilePathResolved }
 export { getFilePathUnresolved }
 export { getFilePathAbsoluteUserRootDir }
@@ -16,6 +14,7 @@ import { assert } from '../../../utils/assert.js'
 import { assertPosixPath } from '../../../utils/path.js'
 import type { FilePathResolved, FilePathUnresolved } from '../../../types/FilePath.js'
 import type { ResolvedConfig } from 'vite'
+import '../assertEnvVite.js'
 
 function getFilePathResolved(
   args: {

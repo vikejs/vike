@@ -1,5 +1,3 @@
-import '../../assertEnvVite.js'
-
 export { pluginBuildConfig }
 export { assertRollupInput }
 export { analyzeClientEntries }
@@ -28,6 +26,7 @@ import {
   handleAssetsManifest_alignCssTarget,
 } from './handleAssetsManifest.js'
 import { resolveIncludeAssetsImportedByServer } from '../../../../server/runtime/renderPageServer/getPageAssets/retrievePageAssetsProd.js'
+import '../../assertEnvVite.js'
 
 function pluginBuildConfig(): Plugin[] {
   return [

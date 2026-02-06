@@ -1,5 +1,3 @@
-import '../assertEnvVite.js'
-
 export { getClientEntrySrcDev }
 export type GetClientEntrySrcDev = typeof getClientEntrySrcDev
 
@@ -10,6 +8,7 @@ import { requireResolveNpmPackage, requireResolveDistFile } from '../../../utils
 import { assert } from '../../../utils/assert.js'
 import { assertPosixPath } from '../../../utils/path.js'
 import type { ViteDevServer } from 'vite'
+import '../assertEnvVite.js'
 
 assertIsNotProductionRuntime()
 

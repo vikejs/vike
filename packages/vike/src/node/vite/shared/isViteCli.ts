@@ -1,5 +1,3 @@
-import '../assertEnvVite.js'
-
 export { isViteCli }
 export { getViteConfigForBuildFromCli }
 export { getViteCommandFromCli }
@@ -8,6 +6,7 @@ import { toPosixPath } from '../../../utils/path.js'
 import { assert } from '../../../utils/assert.js'
 import { isObject } from '../../../utils/isObject.js'
 import { cac } from 'cac'
+import '../assertEnvVite.js'
 
 const desc = 'vike:vite-cli-simulation'
 

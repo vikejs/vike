@@ -1,5 +1,3 @@
-import '../../assertEnvVite.js'
-
 export { transformPointerImports }
 export { parsePointerImportData }
 export { isPointerImportData }
@@ -32,6 +30,7 @@ import { isImportPath } from '../../../../utils/isImportPath.js'
 import { styleFileRE } from '../../../../utils/styleFileRE.js'
 import pc from '@brillout/picocolors'
 import { parseImportString, isImportString, serializeImportString } from '../importString.js'
+import '../../assertEnvVite.js'
 
 function transformPointerImports(
   code: string,

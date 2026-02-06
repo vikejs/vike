@@ -1,6 +1,5 @@
-import '../assertEnvClient.js'
-
 import { assertClientRouting } from '../../utils/assertRoutingType.js'
+import '../assertEnvClient.js'
 assertClientRouting()
 
 import { initClientRouter } from './initClientRouter.js'

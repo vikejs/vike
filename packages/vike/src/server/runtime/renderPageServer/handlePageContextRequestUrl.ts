@@ -1,5 +1,3 @@
-import '../../assertEnvServer.js'
-
 export { handlePageContextRequestUrl }
 
 import {
@@ -13,6 +11,7 @@ import { assert } from '../../../utils/assert.js'
 import { hasProp } from '../../../utils/hasProp.js'
 import { isObject } from '../../../utils/isObject.js'
 import { parseUrl } from '../../../utils/parseUrl.js'
+import '../../assertEnvServer.js'
 const pageContextJsonFileExtensionUrl = `/index${pageContextJsonFileExtension}`
 
 type UrlParsed = ReturnType<typeof parseUrl>

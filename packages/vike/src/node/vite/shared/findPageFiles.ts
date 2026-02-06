@@ -1,5 +1,3 @@
-import '../assertEnvVite.js'
-
 export { findPageFiles }
 
 import { glob } from 'tinyglobby'
@@ -10,6 +8,7 @@ import { assertWarning } from '../../../utils/assert.js'
 import type { FileType } from '../../../shared-server-client/getPageFiles/fileTypes.js'
 import pc from '@brillout/picocolors'
 import { getOutDirs } from './getOutDirs.js'
+import '../assertEnvVite.js'
 
 async function findPageFiles(config: ResolvedConfig, fileTypes: FileType[], isDev: boolean): Promise<string[]> {
   const cwd = config.root

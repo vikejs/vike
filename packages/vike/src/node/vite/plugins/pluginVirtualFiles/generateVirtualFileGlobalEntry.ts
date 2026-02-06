@@ -1,5 +1,3 @@
-import '../../assertEnvVite.js'
-
 export { generateVirtualFileGlobalEntry }
 
 import type { PageConfigBuildTime, PageConfigGlobalBuildTime } from '../../../../types/PageConfig.js'
@@ -11,6 +9,7 @@ import {
   serializeConfigValues,
 } from '../../../../shared-server-client/page-configs/serialize/serializeConfigValues.js'
 import { VIRTUAL_FILE_ID_constantsGlobalThis } from '../pluginReplaceConstantsGlobalThis.js'
+import '../../assertEnvVite.js'
 
 async function generateVirtualFileGlobalEntry(
   isForClientSide: boolean,

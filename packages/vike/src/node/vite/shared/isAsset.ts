@@ -1,6 +1,6 @@
-import '../assertEnvVite.js'
-
 export { isAsset }
+
+import '../assertEnvVite.js'
 
 function isAsset(filename: string) {
   return assetFileExtensions.some((ext) => filename.endsWith('.' + ext))

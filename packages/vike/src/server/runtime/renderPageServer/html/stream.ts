@@ -1,5 +1,3 @@
-import '../../../assertEnvServer.js'
-
 export { processStream }
 export { streamToString }
 export { stampPipe }
@@ -49,6 +47,7 @@ import {
 import { import_ } from '@brillout/import'
 import type { Readable as Readable_, Writable as Writable_ } from 'node:stream'
 import pc from '@brillout/picocolors'
+import '../../../assertEnvServer.js'
 
 const debug = createDebug('vike:stream')
 

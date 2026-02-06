@@ -1,11 +1,10 @@
-import '../assertEnvVite.js'
-
 export { getExportNames }
 export { getImportStatements }
 export type { ImportStatement }
 
 import { init, parse } from 'es-module-lexer'
 import { assert } from '../../../utils/assert.js'
+import '../assertEnvVite.js'
 
 type ParseResult = ReturnType<typeof parse>
 type ImportStatement = ParseResult[0][0]

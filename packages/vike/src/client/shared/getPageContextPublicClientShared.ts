@@ -1,5 +1,3 @@
-import '../assertEnvClient.js'
-
 export { getPageContextPublicClientShared }
 export { getPageContextPublicClientMinimal }
 
@@ -11,6 +9,7 @@ import {
   getPageContextPublicShared,
 } from '../../shared-server-client/getPageContextPublicShared.js'
 import type { PageContextInternalClient } from '../../types/PageContext.js'
+import '../assertEnvClient.js'
 
 type PageContextPublicClientShared = PageContextPublicMinimum & PageContextInternalClient & PageContextConfig
 

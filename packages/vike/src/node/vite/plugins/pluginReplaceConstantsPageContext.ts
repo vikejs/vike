@@ -1,5 +1,3 @@
-import '../assertEnvVite.js'
-
 export { pluginReplaceConstantsPageContext }
 
 import type { Plugin, ResolvedConfig } from 'vite'
@@ -8,6 +6,7 @@ import { assertPosixPath } from '../../../utils/path.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 import { getMagicString } from '../shared/getMagicString.js'
+import '../assertEnvVite.js'
 
 const constantsIsClientSide = [
   //

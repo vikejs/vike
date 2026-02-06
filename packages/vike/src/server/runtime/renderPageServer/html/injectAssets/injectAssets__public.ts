@@ -1,5 +1,3 @@
-import '../../../../assertEnvServer.js'
-
 export { injectAssets__public }
 
 import { assertUsage, assertWarning } from '../../../../../utils/assert.js'
@@ -7,6 +5,7 @@ import { castProp } from '../../../../../utils/cast.js'
 import { hasProp } from '../../../../../utils/hasProp.js'
 import { injectHtmlTagsToString } from '../injectAssets.js'
 import type { PageAsset } from '../../getPageAssets.js'
+import '../../../../assertEnvServer.js'
 
 // TO-DO/next-major-release: remove
 async function injectAssets__public(htmlString: string, pageContext: Record<string, unknown>): Promise<string> {

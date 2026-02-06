@@ -1,11 +1,8 @@
-import '../assertEnvServer.js'
-
 export { logErrorServer }
 export { hasAlreadyLogged }
 
 import pc from '@brillout/picocolors'
 import { assertWarning } from '../../utils/assert.js'
-import { assertIsNotBrowser } from '../../utils/assertIsNotBrowser.js'
 import { hasRed } from '../../utils/colorsServer.js'
 import { isDebugError } from '../../utils/debug.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
@@ -17,7 +14,8 @@ import type {
   PageContextCreatedServer,
   PageContextCreatedServerWithoutGlobalContext,
 } from './renderPageServer/createPageContextServer.js'
-assertIsNotBrowser()
+import '../assertEnvServer.js'
+
 const globalObject = getGlobalObject('server/runtime/logErrorServer.ts', {
   wasAlreadyLogged: new WeakSet<object>(),
 })

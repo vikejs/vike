@@ -1,5 +1,3 @@
-import '../assertEnvVite.js'
-
 export { pluginReplaceConstantsEnvVars }
 
 import type { Plugin, ResolvedConfig } from 'vite'
@@ -15,6 +13,7 @@ import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 import { getMagicString } from '../shared/getMagicString.js'
 import pc from '@brillout/picocolors'
+import '../assertEnvVite.js'
 
 const PUBLIC_ENV_PREFIX = 'PUBLIC_ENV__'
 const PUBLIC_ENV_ALLOWLIST = [

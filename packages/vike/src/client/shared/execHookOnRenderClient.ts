@@ -1,5 +1,3 @@
-import '../assertEnvClient.js'
-
 export { execHookOnRenderClient }
 export type { PageContextBeforeRenderClient }
 
@@ -10,6 +8,7 @@ import { execHookSingle } from '../../shared-server-client/hooks/execHook.js'
 import type { GlobalContextClientInternalShared } from './getGlobalContextClientInternalShared.js'
 import type { PageContextCreatedClient } from '../runtime-client-routing/createPageContextClient.js'
 import type { PageContextCreatedClient_ServerRouting } from '../runtime-server-routing/createPageContextClient.js'
+import '../assertEnvClient.js'
 
 type PageContextCreatedClientShared = PageContextCreatedClient | PageContextCreatedClient_ServerRouting
 

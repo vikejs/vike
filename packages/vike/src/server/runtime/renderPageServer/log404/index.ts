@@ -1,5 +1,3 @@
-import '../../../assertEnvServer.js'
-
 export { log404 }
 // Exported for ./index.spec.ts
 export { getRoutesInfo }
@@ -14,6 +12,7 @@ import { getTerminalWidth } from '../../../../utils/getTerminalWidth.js'
 import { truncateString } from '../../../../utils/truncateString.js'
 import pc from '@brillout/picocolors'
 import type { PageContextCreatedServer } from '../createPageContextServer.js'
+import '../../../assertEnvServer.js'
 
 function log404(
   pageContext: PageContextCreatedServer & {

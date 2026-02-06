@@ -1,5 +1,3 @@
-import '../assertEnvVite.js'
-
 // Public usage
 export { getVikeConfig }
 export type { VikeConfig }
@@ -102,6 +100,7 @@ import { resolvePrerenderConfigGlobal } from '../../prerender/resolvePrerenderCo
 import type { ResolvedConfig, UserConfig } from 'vite'
 import { getPublicProxy, type DangerouslyUseInternals } from '../../../shared-server-client/getPublicProxy.js'
 import { setVikeConfigError } from '../../../shared-server-node/getVikeConfigError.js'
+import '../assertEnvVite.js'
 assertIsNotProductionRuntime()
 
 const globalObject = getGlobalObject('vite/shared/resolveVikeConfigInternal.ts', {

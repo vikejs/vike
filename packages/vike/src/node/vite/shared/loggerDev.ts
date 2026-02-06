@@ -1,5 +1,3 @@
-import '../assertEnvVite.js'
-
 // TO-DO/eventually:
 // - New hook onLog(): https://github.com/vikejs/vike/issues/1438
 // - Exact same logs between prod and dev, only difference is that some log objects have:
@@ -41,6 +39,7 @@ import { logErrorServer } from '../../../server/runtime/logErrorServer.js'
 import { getBetterError } from '../../../utils/getBetterError.js'
 import { getRequestId_withAsyncHook } from '../../../server/runtime/asyncHook.js'
 import { getRequestTag, type RequestTag } from '../../../server/runtime/renderPageServer.js'
+import '../assertEnvVite.js'
 
 assertIsNotProductionRuntime()
 setLogRuntimeDev(logErrorServerDev, logRuntimeInfoDev)

@@ -1,11 +1,10 @@
-import '../../assertEnvServer.js'
-
 export { getCacheControl }
 export { cacheControlDisable }
 
 import type { PageConfigRuntime } from '../../../types/PageConfig.js'
 import { getPageConfig } from '../../../shared-server-client/page-configs/helpers.js'
 import { getConfigValueRuntime } from '../../../shared-server-client/page-configs/getConfigValueRuntime.js'
+import '../../assertEnvServer.js'
 
 const cacheControlDisable = 'no-store, max-age=0'
 

@@ -1,5 +1,3 @@
-import '../../assertEnvVite.js'
-
 export { assertResolveAlias }
 
 import type { ResolvedConfig } from 'vite'
@@ -7,6 +5,7 @@ import { assert, assertUsage, assertWarning } from '../../../../utils/assert.js'
 import { isArray } from '../../../../utils/isArray.js'
 import { isPathAliasRecommended } from '../../../../utils/parseNpmPackage.js'
 import pc from '@brillout/picocolors'
+import '../../assertEnvVite.js'
 
 // Recommend users to avoid un-distinguishable path aliases.
 

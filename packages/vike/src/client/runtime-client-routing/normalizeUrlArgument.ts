@@ -1,9 +1,8 @@
-import '../assertEnvClient.js'
-
 export { normalizeUrlArgument }
 
 import { assertUsage } from '../../utils/assert.js'
 import { isUrl, isUrlRelative } from '../../utils/parseUrl.js'
+import '../assertEnvClient.js'
 
 function normalizeUrlArgument(url: string, fnName: 'prefetch' | 'navigate'): string {
   // Succinct error message to save client-side KBs

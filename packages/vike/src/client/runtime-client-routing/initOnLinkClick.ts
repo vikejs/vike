@@ -1,10 +1,9 @@
-import '../assertEnvClient.js'
-
 export { initOnLinkClick }
 
 import { isLinkIgnored, isHrefCurrentUrl, isLinkSkipped } from './isLinkSkipped.js'
 import { renderPageClient } from './renderPageClient.js'
 import { scrollToHashOrTop, type ScrollTarget } from './setScrollPosition.js'
+import '../assertEnvClient.js'
 
 function initOnLinkClick() {
   document.addEventListener('click', onLinkClick)

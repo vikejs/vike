@@ -1,5 +1,3 @@
-import './assertEnvApi.js'
-
 export { preview }
 export type { CliPreviewConfig }
 
@@ -14,6 +12,7 @@ import { isCallable } from '../../utils/isCallable.js'
 import pc from '@brillout/picocolors'
 import path from 'node:path'
 import { getVikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.js'
+import './assertEnvApi.js'
 
 /**
  * Programmatically trigger `$ vike preview`
