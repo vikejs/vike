@@ -1,11 +1,15 @@
 #!/usr/bin/env node
 
 /**
- * Linting script to ensure all .ts files have an assertEnv*.ts import.
+ * Assert assertEnv imports
  *
- * This script checks that all TypeScript files in packages/vike/src import
- * the appropriate assertEnv*.ts file, with a whitelist for files that are
- * currently exempt from this requirement.
+ * This linter ensures all TypeScript files import the appropriate assertEnv*.ts file.
+ * The assertEnv imports validate runtime environment assumptions at module load time.
+ *
+ * Usage:
+ *   pnpm run lint                    # From project root
+ *   node scripts/lint-assertenv.mjs  # From packages/vike/
+ *   node lint-assertenv.mjs          # From packages/vike/scripts/
  */
 
 import fs from 'node:fs'
@@ -13,129 +17,149 @@ import { execSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 
-// Get the directory of this script
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-const packageRoot = join(__dirname, '..')
+// =============================================================================
+// Configuration
+// =============================================================================
 
-// Whitelist patterns: files/directories that currently don't import assertEnv*.ts
-// Supports glob patterns: '*' for single directory level, '**' for recursive
 const WHITELIST_PATTERNS = [
-  // Prerender
+  // Build-time code
   'src/node/prerender/**',
 
-  // Shared server-client code (utils, types, configs)
+  // Shared code (environment-agnostic utilities and types)
   'src/shared-server-client/**',
-
-  // Shared server-node code
   'src/shared-server-node/**',
-
-  // Type definitions
   'src/types/**',
-
-  // Utility functions
   'src/utils/**',
 
-  // Single files
+  // Specific exceptions
   'src/node/createDevMiddleware.ts',
   'src/node/api/types.ts',
   'src/client/runtime-client-routing/prefetch/PrefetchSetting.ts',
 ]
 
-function matchesPattern(filePath, pattern) {
-  // Convert glob pattern to regex
+const ASSERT_ENV_IMPORT_PATTERN = /import\s+.*['"].*assertEnv.*\.js['"]/
+
+// =============================================================================
+// Path resolution
+// =============================================================================
+
+const scriptDir = dirname(fileURLToPath(import.meta.url))
+const packageRoot = join(scriptDir, '..')
+
+// =============================================================================
+// Core logic
+// =============================================================================
+
+function findTypeScriptFiles() {
+  const output = execSync(
+    'find src -name "*.ts" -type f ! -name "*.spec.ts" ! -name "*.test.ts" ! -name "assertEnv*.ts"',
+    { encoding: 'utf-8', cwd: packageRoot },
+  )
+
+  return output
+    .trim()
+    .split('\n')
+    .filter((line) => line.length > 0)
+}
+
+function hasAssertEnvImport(filePath) {
+  const content = fs.readFileSync(join(packageRoot, filePath), 'utf-8')
+  return ASSERT_ENV_IMPORT_PATTERN.test(content)
+}
+
+function matchesGlobPattern(filePath, pattern) {
   const regexPattern = pattern
     .replace(/\./g, '\\.') // Escape dots
     .replace(/\*\*/g, '___DOUBLESTAR___') // Temporarily replace **
     .replace(/\*/g, '[^/]*') // * matches anything except /
     .replace(/___DOUBLESTAR___/g, '.*') // ** matches anything including /
 
-  const regex = new RegExp(`^${regexPattern}$`)
-  return regex.test(filePath)
+  return new RegExp(`^${regexPattern}$`).test(filePath)
 }
 
 function isWhitelisted(filePath) {
-  return WHITELIST_PATTERNS.some((pattern) => matchesPattern(filePath, pattern))
+  return WHITELIST_PATTERNS.some((pattern) => matchesGlobPattern(filePath, pattern))
 }
 
-function main() {
-  // Find all .ts files in src, excluding test files and assertEnv files
-  const findOutput = execSync(
-    'find src -name "*.ts" -type f ! -name "*.spec.ts" ! -name "*.test.ts" ! -name "assertEnv*.ts"',
-    { encoding: 'utf-8', cwd: packageRoot },
-  )
-  const tsFiles = findOutput
-    .trim()
-    .split('\n')
-    .filter((line) => line.length > 0)
+function analyzeFiles(files) {
+  const withImport = []
+  const withoutImport = []
+  const missingImport = [] // Not whitelisted and missing import
+  const invalidWhitelist = [] // Whitelisted but has import
 
-  const filesWithoutImport = []
-  const violations = []
+  for (const file of files) {
+    const hasImport = hasAssertEnvImport(file)
+    const whitelisted = isWhitelisted(file)
 
-  for (const file of tsFiles) {
-    const filePath = join(packageRoot, file)
-    const content = fs.readFileSync(filePath, 'utf-8')
-
-    // Check if file imports assertEnv*.ts
-    const hasAssertEnvImport = /import\s+.*['"].*assertEnv.*\.js['"]/.test(content)
-
-    if (!hasAssertEnvImport) {
-      filesWithoutImport.push(file)
-
-      // Check if this file is whitelisted
-      if (!isWhitelisted(file)) {
-        violations.push(file)
+    if (hasImport) {
+      withImport.push(file)
+      if (whitelisted) {
+        invalidWhitelist.push(file)
+      }
+    } else {
+      withoutImport.push(file)
+      if (!whitelisted) {
+        missingImport.push(file)
       }
     }
   }
 
-  const whitelistedFilesCount = filesWithoutImport.filter((f) => isWhitelisted(f)).length
-
-  // Validate whitelist accuracy: ensure whitelisted files don't have assertEnv imports
-  const whitelistViolations = []
-  for (const file of tsFiles) {
-    if (isWhitelisted(file)) {
-      const filePath = join(packageRoot, file)
-      const content = fs.readFileSync(filePath, 'utf-8')
-      const hasAssertEnvImport = /import\s+.*['"].*assertEnv.*\.js['"]/.test(content)
-
-      if (hasAssertEnvImport) {
-        whitelistViolations.push(file)
-      }
-    }
+  return {
+    total: files.length,
+    withImport: withImport.length,
+    withoutImport: withoutImport.length,
+    whitelisted: withoutImport.filter(isWhitelisted).length,
+    missingImport,
+    invalidWhitelist,
   }
+}
 
-  if (whitelistViolations.length > 0) {
-    console.error(
-      `\n❌ WHITELIST ERROR: ${whitelistViolations.length} file(s) are in WHITELIST_PATTERNS but DO have assertEnv*.ts import:\n`,
-    )
-    whitelistViolations.forEach((file) => {
-      console.error(`  - ${file}`)
-    })
-    console.error('\nThese files should be REMOVED from WHITELIST_PATTERNS in scripts/lint-assertenv.mjs\n')
-    process.exit(1)
-  }
-
-  // Report results
-  console.log(`✓ Total .ts files checked: ${tsFiles.length}`)
-  console.log(`✓ Files with assertEnv import: ${tsFiles.length - filesWithoutImport.length}`)
-  console.log(`✓ Files without assertEnv import: ${filesWithoutImport.length}`)
-  console.log(`✓ Whitelisted files: ${whitelistedFilesCount}`)
-
-  if (violations.length > 0) {
-    console.error(
-      `\n❌ ERROR: ${violations.length} file(s) are missing assertEnv*.ts import and are not whitelisted:\n`,
-    )
-    violations.forEach((file) => {
-      console.error(`  - ${file}`)
-    })
-    console.error(
-      '\nPlease either:\n1. Add the appropriate assertEnv*.ts import to these files, or\n2. Add them to the WHITELIST_PATTERNS in scripts/lint-assertenv.mjs\n',
-    )
-    process.exit(1)
-  }
-
+function reportSuccess(stats) {
+  console.log(`✓ Total .ts files checked: ${stats.total}`)
+  console.log(`✓ Files with assertEnv import: ${stats.withImport}`)
+  console.log(`✓ Files without assertEnv import: ${stats.withoutImport}`)
+  console.log(`✓ Whitelisted files: ${stats.whitelisted}`)
   console.log('\n✅ All .ts files either have assertEnv*.ts import or are whitelisted.')
+}
+
+function reportInvalidWhitelist(files) {
+  console.error(`\n❌ WHITELIST ERROR: ${files.length} file(s) are whitelisted but DO have assertEnv*.ts import:\n`)
+  files.forEach((file) => console.error(`  - ${file}`))
+  console.error('\nThese files should be REMOVED from WHITELIST_PATTERNS in scripts/lint-assertenv.mjs\n')
+}
+
+function reportMissingImports(files) {
+  console.error(`\n❌ ERROR: ${files.length} file(s) are missing assertEnv*.ts import:\n`)
+  files.forEach((file) => console.error(`  - ${file}`))
+  console.error(
+    '\nPlease either:\n' +
+      '  1. Add the appropriate assertEnv*.ts import to these files, or\n' +
+      '  2. Add them to the WHITELIST_PATTERNS in scripts/lint-assertenv.mjs\n',
+  )
+}
+
+// =============================================================================
+// Main
+// =============================================================================
+
+function main() {
+  const files = findTypeScriptFiles()
+  const stats = analyzeFiles(files)
+
+  // Validate whitelist accuracy first
+  if (stats.invalidWhitelist.length > 0) {
+    reportInvalidWhitelist(stats.invalidWhitelist)
+    process.exit(1)
+  }
+
+  // Check for missing imports
+  if (stats.missingImport.length > 0) {
+    reportMissingImports(stats.missingImport)
+    process.exit(1)
+  }
+
+  // Success!
+  reportSuccess(stats)
 }
 
 main()
