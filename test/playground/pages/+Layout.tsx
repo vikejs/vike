@@ -43,7 +43,7 @@ function Layout({ children }: { children: React.ReactNode }) {
   assert(import.meta.env.SSR === !pageContext.globalContext.isClientSide)
   // import.meta.env.SSR is AST based whereas pageContext.isClientSide isn't
   // https://github.com/rolldown/rolldown/issues/4300
-  assert('import.meta.env.SSR' === 'import.meta.env' + '.SSR')
+  assert('import.meta.env.SSR' === 'import.meta' + '.env.SSR')
   if (import.meta.env.PROD) {
     const syntaxReplacementExpect: string = import.meta.env.SSR ? 'false' : 'true'
     const syntaxReplacementActual = 'pageContext.isClientSide'
