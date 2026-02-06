@@ -15,24 +15,24 @@ import { execSync } from 'node:child_process'
 // Supports glob patterns: '*' for single directory level, '**' for recursive
 const WHITELIST_PATTERNS = [
   // Prerender
-  'packages/vike/src/node/prerender/**',
+  'src/node/prerender/**',
 
   // Shared server-client code (utils, types, configs)
-  'packages/vike/src/shared-server-client/**',
+  'src/shared-server-client/**',
 
   // Shared server-node code
-  'packages/vike/src/shared-server-node/**',
+  'src/shared-server-node/**',
 
   // Type definitions
-  'packages/vike/src/types/**',
+  'src/types/**',
 
   // Utility functions
-  'packages/vike/src/utils/**',
+  'src/utils/**',
 
   // Single files
-  'packages/vike/src/node/createDevMiddleware.ts',
-  'packages/vike/src/node/api/types.ts',
-  'packages/vike/src/client/runtime-client-routing/prefetch/PrefetchSetting.ts',
+  'src/node/createDevMiddleware.ts',
+  'src/node/api/types.ts',
+  'src/client/runtime-client-routing/prefetch/PrefetchSetting.ts',
 ]
 
 function matchesPattern(filePath, pattern) {
@@ -54,7 +54,7 @@ function isWhitelisted(filePath) {
 function main() {
   // Find all .ts files in packages/vike/src, excluding test files and assertEnv files
   const findOutput = execSync(
-    'find packages/vike/src -name "*.ts" -type f ! -name "*.spec.ts" ! -name "*.test.ts" ! -name "assertEnv*.ts"',
+    'find src -name "*.ts" -type f ! -name "*.spec.ts" ! -name "*.test.ts" ! -name "assertEnv*.ts"',
     { encoding: 'utf-8' },
   )
   const tsFiles = findOutput
@@ -103,7 +103,7 @@ function main() {
     whitelistViolations.forEach((file) => {
       console.error(`  - ${file}`)
     })
-    console.error('\nThese files should be REMOVED from WHITELIST_PATTERNS in scripts/lint-assertenv.mjs\n')
+    console.error('\nThese files should be REMOVED from WHITELIST_PATTERNS in lint-assertenv.mjs\n')
     process.exit(1)
   }
 
@@ -121,7 +121,7 @@ function main() {
       console.error(`  - ${file}`)
     })
     console.error(
-      '\nPlease either:\n1. Add the appropriate assertEnv*.ts import to these files, or\n2. Add them to the WHITELIST_PATTERNS in scripts/lint-assertenv.mjs\n',
+      '\nPlease either:\n1. Add the appropriate assertEnv*.ts import to these files, or\n2. Add them to the WHITELIST_PATTERNS in lint-assertenv.mjs\n',
     )
     process.exit(1)
   }
