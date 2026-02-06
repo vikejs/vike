@@ -10,6 +10,13 @@
 
 import fs from 'node:fs'
 import { execSync } from 'node:child_process'
+import { fileURLToPath } from 'node:url'
+import { dirname, join } from 'node:path'
+
+// Get the directory of this script
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+const packageRoot = join(__dirname, '..')
 
 // Whitelist patterns: files/directories that currently don't import assertEnv*.ts
 // Supports glob patterns: '*' for single directory level, '**' for recursive
@@ -52,10 +59,10 @@ function isWhitelisted(filePath) {
 }
 
 function main() {
-  // Find all .ts files in packages/vike/src, excluding test files and assertEnv files
+  // Find all .ts files in src, excluding test files and assertEnv files
   const findOutput = execSync(
     'find src -name "*.ts" -type f ! -name "*.spec.ts" ! -name "*.test.ts" ! -name "assertEnv*.ts"',
-    { encoding: 'utf-8' },
+    { encoding: 'utf-8', cwd: packageRoot },
   )
   const tsFiles = findOutput
     .trim()
@@ -66,7 +73,8 @@ function main() {
   const violations = []
 
   for (const file of tsFiles) {
-    const content = fs.readFileSync(file, 'utf-8')
+    const filePath = join(packageRoot, file)
+    const content = fs.readFileSync(filePath, 'utf-8')
 
     // Check if file imports assertEnv*.ts
     const hasAssertEnvImport = /import\s+.*['"].*assertEnv.*\.js['"]/.test(content)
@@ -87,7 +95,8 @@ function main() {
   const whitelistViolations = []
   for (const file of tsFiles) {
     if (isWhitelisted(file)) {
-      const content = fs.readFileSync(file, 'utf-8')
+      const filePath = join(packageRoot, file)
+      const content = fs.readFileSync(filePath, 'utf-8')
       const hasAssertEnvImport = /import\s+.*['"].*assertEnv.*\.js['"]/.test(content)
 
       if (hasAssertEnvImport) {
