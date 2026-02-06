@@ -1,5 +1,3 @@
-import '../../assertEnvVite.js'
-
 export { pluginDistPackageJsonFile }
 
 // We create a file `dist/server/package.json` to support ESM users.
@@ -12,6 +10,7 @@ export { pluginDistPackageJsonFile }
 import type { Plugin, ResolvedConfig } from 'vite'
 import { rollupIsEsm } from '../../shared/rollupIsEsm.js'
 import { isViteServerSide } from '../../shared/isViteServerSide.js'
+import '../../assertEnvVite.js'
 
 function pluginDistPackageJsonFile(): Plugin[] {
   let config: ResolvedConfig

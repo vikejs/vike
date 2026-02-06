@@ -1,5 +1,3 @@
-import '../../assertEnvServer.js'
-
 export { createHttpResponsePage }
 export { createHttpResponsePageJson }
 export { createHttpResponseErrorFallback }
@@ -24,6 +22,7 @@ import type { PageContextBegin } from '../renderPageServer.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 import { resolveHeadersResponseFinal } from './headersResponse.js'
 import { stringify } from '@brillout/json-serializer/stringify'
+import '../../assertEnvServer.js'
 
 type HttpResponse = {
   statusCode: 200 | 404 | 500 | RedirectStatusCode | AbortStatusCode

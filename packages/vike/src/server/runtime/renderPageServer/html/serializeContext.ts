@@ -1,5 +1,3 @@
-import '../../../assertEnvServer.js'
-
 export { getPageContextClientSerialized }
 export { getPageContextClientSerializedAbort }
 export { getGlobalContextClientSerialized }
@@ -25,6 +23,7 @@ import type { PageContextCreatedServer } from '../createPageContextServer.js'
 import type { PageContextBegin } from '../../renderPageServer.js'
 import type { PageContextCspNonce } from '../csp.js'
 import { assertRouteParams } from '../../../../shared-server-client/route/resolveRouteFunction.js'
+import '../../../assertEnvServer.js'
 
 const passToClientBuiltInPageContext = [
   'abortReason',

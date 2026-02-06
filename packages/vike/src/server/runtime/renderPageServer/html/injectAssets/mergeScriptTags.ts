@@ -1,10 +1,9 @@
-import '../../../../assertEnvServer.js'
-
 export { mergeScriptTags }
 
 import { inferNonceAttr, type PageContextCspNonce } from '../../csp.js'
 import { assert } from '../../../../../utils/assert.js'
 import { scriptCommonAttrs } from './inferHtmlTags.js'
+import '../../../../assertEnvServer.js'
 
 const scriptRE = /(<script\b(?:\s[^>]*>|>))(.*?)<\/script>/gims
 const srcRE = /\bsrc\s*=\s*(?:"([^"]+)"|'([^']+)'|([^\s'">]+))/im

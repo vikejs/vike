@@ -1,5 +1,3 @@
-import '../../assertEnvVite.js'
-
 export { transpileAndExecuteFile }
 export { getConfigBuildErrorFormatted }
 export { getConfigExecutionErrorIntroMsg }
@@ -37,6 +35,7 @@ import { transformPointerImports } from './pointerImports.js'
 import sourceMapSupport from 'source-map-support'
 import type { FilePathResolved } from '../../../../types/FilePath.js'
 import { getFilePathAbsoluteUserRootDir } from '../getFilePath.js'
+import '../../assertEnvVite.js'
 
 assertIsNotProductionRuntime()
 installSourceMapSupport()

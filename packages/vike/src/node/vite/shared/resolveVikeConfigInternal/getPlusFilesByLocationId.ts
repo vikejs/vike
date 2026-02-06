@@ -1,5 +1,3 @@
-import '../../assertEnvVite.js'
-
 export { getPlusFilesByLocationId }
 export type { PlusFileValue }
 export type { PlusFile }
@@ -16,6 +14,7 @@ import { resolvePointerImport } from './resolvePointerImport.js'
 import { getFilePathResolved } from '../getFilePath.js'
 import type { FilePathResolved } from '../../../../types/FilePath.js'
 import { assertExtensionsConventions, assertExtensionsRequire } from './assertExtensions.js'
+import '../../assertEnvVite.js'
 
 type PlusFile = PlusFileConfig | PlusFileValue
 type PlusFileCommon = {

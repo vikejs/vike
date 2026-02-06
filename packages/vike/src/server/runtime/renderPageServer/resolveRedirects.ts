@@ -1,5 +1,3 @@
-import '../../assertEnvServer.js'
-
 export { resolveRedirects }
 export { getStaticRedirectsForPrerender }
 
@@ -16,6 +14,7 @@ import {
   resolveRouteString,
 } from '../../../shared-server-client/route/resolveRouteString.js'
 import pc from '@brillout/picocolors'
+import '../../assertEnvServer.js'
 assertIsNotBrowser() // Don't bloat the client
 
 const redirectsErrPrefix = '[+redirects]'

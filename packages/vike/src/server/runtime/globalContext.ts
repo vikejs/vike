@@ -1,5 +1,3 @@
-import '../assertEnvServer.js'
-
 // Public use
 export { getGlobalContext }
 export { getGlobalContextSync }
@@ -79,6 +77,7 @@ import type { ViteRPC } from '../../node/vite/plugins/non-runnable-dev/pluginVit
 import { getVikeApiOperation } from '../../shared-server-node/api-context.js'
 import type { PrerenderContext } from '../../types/index.js'
 import { hasAlreadyLogged } from './logErrorServer.js'
+import '../assertEnvServer.js'
 const debug = createDebug('vike:globalContext')
 const globalObject = getGlobalObject<
   {

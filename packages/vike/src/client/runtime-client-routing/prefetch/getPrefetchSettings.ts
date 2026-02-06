@@ -1,5 +1,3 @@
-import '../../assertEnvClient.js'
-
 // TO-DO/pageContext-prefetch: rename this file to getPrefetchSettingResolved.ts
 
 export { getPrefetchSettings }
@@ -9,6 +7,7 @@ export type { PrefetchSettingResolved }
 import { assertUsage, assertInfo } from '../../../utils/assert.js'
 import type { PageContextConfig } from '../../../shared-server-client/getPageFiles.js'
 import type { PrefetchSetting, PrefetchStaticAssets } from './PrefetchSetting.js'
+import '../../assertEnvClient.js'
 // TO-DO/pageContext-prefetch: Make it `Infinity` for pre-rendered pages.
 const PAGE_CONTEXT_MAX_AGE_DEFAULT = 5000
 const prefetchSettingTrue = {

@@ -1,5 +1,3 @@
-import '../../assertEnvVite.js'
-
 export { getConfigValueSourcesRelevant }
 export { getConfigValueSourceRelevantAnyEnv }
 export { isRuntimeEnvMatch }
@@ -15,6 +13,7 @@ import type {
 import { assert } from '../../../../utils/assert.js'
 import { assertIsNotBrowser } from '../../../../utils/assertIsNotBrowser.js'
 import { getFileSuffixes } from '../../../../shared-server-node/getFileSuffixes.js'
+import '../../assertEnvVite.js'
 
 assertIsNotBrowser()
 

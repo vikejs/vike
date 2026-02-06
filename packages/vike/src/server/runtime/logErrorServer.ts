@@ -1,5 +1,3 @@
-import '../assertEnvServer.js'
-
 export { logErrorServer }
 export { hasAlreadyLogged }
 
@@ -17,6 +15,7 @@ import type {
   PageContextCreatedServer,
   PageContextCreatedServerWithoutGlobalContext,
 } from './renderPageServer/createPageContextServer.js'
+import '../assertEnvServer.js'
 assertIsNotBrowser()
 const globalObject = getGlobalObject('server/runtime/logErrorServer.ts', {
   wasAlreadyLogged: new WeakSet<object>(),

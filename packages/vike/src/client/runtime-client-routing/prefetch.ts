@@ -1,5 +1,3 @@
-import '../assertEnvClient.js'
-
 export { prefetch }
 export { getPageContextPrefetched }
 export { initLinkPrefetchHandlers }
@@ -31,6 +29,7 @@ import {
 import pc from '@brillout/picocolors'
 import { normalizeUrlArgument } from './normalizeUrlArgument.js'
 import type { GlobalContextClientInternal } from './getGlobalContextClientInternal.js'
+import '../assertEnvClient.js'
 
 assertClientRouting()
 const globalObject = getGlobalObject('prefetch.ts', {

@@ -1,5 +1,3 @@
-import '../../assertEnvServer.js'
-
 export { getPageAssets }
 export type { PageAsset }
 export type { GetPageAssets }
@@ -16,6 +14,7 @@ import { prependBase } from '../../../utils/parseUrl-extras.js'
 import type { ClientDependency } from '../../../shared-server-client/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 import type { ViteRPC } from '../../../node/vite/plugins/non-runnable-dev/pluginViteRPC.js'
+import '../../assertEnvServer.js'
 
 type PageAsset = {
   src: string

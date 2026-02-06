@@ -1,5 +1,3 @@
-import '../../assertEnvVite.js'
-
 export { handleAssetsManifest }
 export { handleAssetsManifest_getBuildConfig }
 export { handleAssetsManifest_isFixEnabled }
@@ -31,6 +29,7 @@ import {
 } from '../../shared/isViteServerSide.js'
 import { set_macro_ASSETS_MANIFEST } from './pluginProdBuildEntry.js'
 import { getManifestFilePathRelative } from '../../shared/getManifestFilePathRelative.js'
+import '../../assertEnvVite.js'
 type Bundle = Rollup.OutputBundle
 
 const globalObject = getGlobalObject('handleAssetsManifest.ts', {

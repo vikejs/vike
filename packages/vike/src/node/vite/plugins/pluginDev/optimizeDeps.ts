@@ -1,5 +1,3 @@
-import '../../assertEnvVite.js'
-
 export { optimizeDeps }
 export { resolveOptimizeDeps }
 
@@ -21,6 +19,7 @@ import {
 } from '../../../../shared-server-node/virtualFileId.js'
 import { getFilePathResolved } from '../../shared/getFilePath.js'
 import { getConfigValueSourcesRelevant } from '../pluginVirtualFiles/getConfigValueSourcesRelevant.js'
+import '../../assertEnvVite.js'
 
 const debug = createDebug('vike:optimizeDeps')
 

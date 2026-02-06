@@ -1,5 +1,3 @@
-import '../assertEnvVite.js'
-
 export { pluginVirtualFiles }
 
 import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleNode, ModuleGraph } from 'vite'
@@ -26,6 +24,7 @@ import { updateUserFiles } from '../../../server/runtime/globalContext.js'
 import { isPlusFile } from '../shared/resolveVikeConfigInternal/crawlPlusFilePaths.js'
 import { isTemporaryBuildFile } from '../shared/resolveVikeConfigInternal/transpileAndExecuteFile.js'
 import { debugFileChange, getVikeConfigError } from '../../../shared-server-node/getVikeConfigError.js'
+import '../assertEnvVite.js'
 
 // === Rolldown filter
 const filterRolldown = {

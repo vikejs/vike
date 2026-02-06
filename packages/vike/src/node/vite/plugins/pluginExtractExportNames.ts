@@ -1,5 +1,3 @@
-import '../assertEnvVite.js'
-
 export { pluginExtractExportNames }
 export { isUsingClientRouter }
 export { extractExportNamesRE }
@@ -13,6 +11,7 @@ import { getGlobalObject } from '../../../utils/getGlobalObject.js'
 import { getExportNames } from '../shared/parseEsModule.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
+import '../assertEnvVite.js'
 const extractExportNamesRE = /(\?|&)extractExportNames(?:&|$)/
 const debug = createDebug('vike:pluginExtractExportNames')
 const globalObject = getGlobalObject<{ usesClientRouter?: true }>('plugins/pluginExtractExportNames.ts', {})

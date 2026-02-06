@@ -1,5 +1,3 @@
-import '../../assertEnvServer.js'
-
 export { renderPageServerAfterRoute }
 export { prerenderPage }
 export { prerenderPageEntry }
@@ -30,6 +28,7 @@ import { isServerSideError } from '../../../shared-server-client/misc/isServerSi
 import type { PageContextCreatedServer } from './createPageContextServer.js'
 import type { PageContextBegin } from '../renderPageServer.js'
 import { getAsyncLocalStorage, type AsyncStore } from '../asyncHook.js'
+import '../../assertEnvServer.js'
 
 type PageContextAfterRender = { httpResponse: HttpResponse; errorWhileRendering: null | Error }
 

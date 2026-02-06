@@ -1,5 +1,3 @@
-import '../assertEnvVite.js'
-
 export { pluginPreview }
 
 import type { Plugin, ResolvedConfig } from 'vite'
@@ -14,6 +12,7 @@ import { logDockerHint } from './pluginDev.js'
 import { getOutDirs } from '../shared/getOutDirs.js'
 import sirv from 'sirv'
 import { getVikeConfigInternal, type VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
+import '../assertEnvVite.js'
 type ConnectServer = ViteDevServer['middlewares']
 
 function pluginPreview(): Plugin[] {

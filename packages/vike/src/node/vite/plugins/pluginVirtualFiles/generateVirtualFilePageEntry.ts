@@ -1,5 +1,3 @@
-import '../../assertEnvVite.js'
-
 export { generateVirtualFilePageEntry }
 
 import { assert, getProjectError } from '../../../../utils/assert.js'
@@ -15,6 +13,7 @@ import {
 import { handleAssetsManifest_isFixEnabled } from '../build/handleAssetsManifest.js'
 import { getConfigValueBuildTime } from '../../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
 import { resolveIncludeAssetsImportedByServer } from '../../../../server/runtime/renderPageServer/getPageAssets/retrievePageAssetsProd.js'
+import '../../assertEnvVite.js'
 
 async function generateVirtualFilePageEntry(id: string, isDev: boolean): Promise<string> {
   const result = parseVirtualFileId(id)

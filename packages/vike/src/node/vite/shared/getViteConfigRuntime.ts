@@ -1,5 +1,3 @@
-import '../assertEnvVite.js'
-
 export { getViteConfigRuntime }
 export type { ViteConfigRuntime }
 
@@ -8,6 +6,7 @@ import { assertFilePathAbsoluteFilesystem } from '../../../utils/isFilePathAbsol
 import { assert } from '../../../utils/assert.js'
 import { hasProp } from '../../../utils/hasProp.js'
 import { getOutDirs } from './getOutDirs.js'
+import '../assertEnvVite.js'
 
 type ViteConfigRuntime = ReturnType<typeof getViteConfigRuntime>
 function getViteConfigRuntime(config: ResolvedConfig) {

@@ -1,8 +1,7 @@
-import '../assertEnvVite.js'
-
 export { getManifestFilePathRelative }
 
 import { assert } from '../../../utils/assert.js'
+import '../assertEnvVite.js'
 
 function getManifestFilePathRelative(manifestConfig: string | boolean) {
   assert(['string', 'boolean'].includes(typeof manifestConfig))

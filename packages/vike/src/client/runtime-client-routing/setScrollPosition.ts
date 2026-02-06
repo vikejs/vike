@@ -1,5 +1,3 @@
-import '../assertEnvClient.js'
-
 export { setScrollPosition }
 export { autoSaveScrollPosition }
 export { scrollToHashOrTop }
@@ -11,6 +9,7 @@ import { onPageHide } from '../../utils/onPageVisibilityChange.js'
 import { sleep } from '../../utils/sleep.js'
 import { throttle } from '../../utils/throttle.js'
 import { replaceHistoryStateOriginal, saveScrollPosition, type ScrollPosition } from './history.js'
+import '../assertEnvClient.js'
 
 type ScrollTarget = undefined | { preserveScroll: boolean; y?: undefined } | ScrollPosition
 function setScrollPosition(scrollTarget: ScrollTarget, url?: string): void {

@@ -1,5 +1,3 @@
-import '../../assertEnvVite.js'
-
 export { configDefinitionsBuiltIn }
 export type { ConfigDefinition }
 export type { ConfigDefinitions }
@@ -21,6 +19,7 @@ import {
 } from '../../plugins/pluginVirtualFiles/getConfigValueSourcesRelevant.js'
 import type { PageConfigBuildTimeBeforeComputed } from '../resolveVikeConfigInternal.js'
 import { getFileSuffixes } from '../../../../shared-server-node/getFileSuffixes.js'
+import '../../assertEnvVite.js'
 
 // For users
 /** The meta definition of a config.

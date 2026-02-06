@@ -1,5 +1,3 @@
-import '../../../../assertEnvServer.js'
-
 // Unit tests at ./injectHtmlTags.spec.ts
 
 export { injectHtmlTags }
@@ -15,6 +13,7 @@ import { assert, assertUsage } from '../../../../../utils/assert.js'
 import { slice } from '../../../../../utils/slice.js'
 import type { StreamFromReactStreamingPackage } from '../stream/react-streaming.js'
 import type { HtmlTag } from './getHtmlTags.js'
+import '../../../../assertEnvServer.js'
 
 type Position = 'HTML_BEGIN' | 'HTML_END'
 function injectHtmlTags(htmlString: string, htmlTags: HtmlTag[], position: Position): string {

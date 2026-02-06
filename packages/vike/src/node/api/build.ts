@@ -1,10 +1,9 @@
-import './assertEnvApi.js'
-
 export { build }
 
 import { prepareViteApiCall } from './prepareViteApiCall.js'
 import { createBuilder } from 'vite'
 import type { ApiOptions } from './types.js'
+import './assertEnvApi.js'
 
 /**
  * Programmatically trigger `$ vike build`

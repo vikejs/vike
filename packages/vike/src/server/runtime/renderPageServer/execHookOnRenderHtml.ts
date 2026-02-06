@@ -1,5 +1,3 @@
-import '../../assertEnvServer.js'
-
 export { execHookOnRenderHtml }
 export type { RenderHook }
 
@@ -30,6 +28,7 @@ import { execHookSingleWithReturn, type PageContextExecHook } from '../../../sha
 import type { GlobalContextServerInternal } from '../globalContext.js'
 import type { PageContextConfig } from '../../../shared-server-client/getPageFiles.js'
 import type { PageContextInternalServer } from '../../../types/PageContext.js'
+import '../../assertEnvServer.js'
 
 type GetPageAssets = () => Promise<PageAsset[]>
 

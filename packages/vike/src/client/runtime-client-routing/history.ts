@@ -1,5 +1,3 @@
-import '../assertEnvClient.js'
-
 export { pushHistoryState }
 export { replaceHistoryStateOriginal }
 export { onPopStateBegin }
@@ -13,6 +11,7 @@ import { assert, assertUsage } from '../../utils/assert.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import { isObject } from '../../utils/isObject.js'
 import { redirectHard } from '../../utils/redirectHard.js'
+import '../assertEnvClient.js'
 
 const globalObject = getGlobalObject('history.ts', {
   monkeyPatched: false,

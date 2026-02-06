@@ -1,5 +1,3 @@
-import '../../assertEnvVite.js'
-
 // Prettify transpilation errors
 //  - Doesn't work for optimize errors: https://gist.github.com/brillout/9b7bb78ae866558b292ea1b516a986ec
 
@@ -20,6 +18,7 @@ import { escapeRegex } from '../../../../utils/escapeRegex.js'
 import { isObject } from '../../../../utils/isObject.js'
 import { removeEmptyLines } from '../../../../utils/removeEmptyLines.js'
 import { cleanFilePathUnknown, getFilePathToShowToUserUnknown } from '../getFilePath.js'
+import '../../assertEnvVite.js'
 
 // Subset of RollupError
 type ErrorWithCodeSnippet = { id: string; frame?: string; message?: string; plugin?: string }

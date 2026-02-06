@@ -1,5 +1,3 @@
-import '../assertEnvVite.js'
-
 export { pluginReplaceConstantsGlobalThis }
 export { VIRTUAL_FILE_ID_constantsGlobalThis }
 // Trick for loading the `declare global` below
@@ -15,6 +13,7 @@ import {
   isViteServerSide_configEnvironment,
   isViteServerSide_extraSafe,
 } from '../shared/isViteServerSide.js'
+import '../assertEnvVite.js'
 
 declare global {
   /** Like `import.meta.env.DEV` but works for `node_modules/` packages with `ssr.external` */

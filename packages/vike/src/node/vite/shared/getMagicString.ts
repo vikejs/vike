@@ -1,8 +1,7 @@
-import '../assertEnvVite.js'
-
 export { getMagicString }
 
 import MagicString from 'magic-string'
+import '../assertEnvVite.js'
 
 // Used everywhere instead of `new MagicString()` for consistent source map generation
 function getMagicString(code: string, id: string) {

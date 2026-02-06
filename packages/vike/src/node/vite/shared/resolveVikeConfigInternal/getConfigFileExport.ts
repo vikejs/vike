@@ -1,11 +1,10 @@
-import '../../assertEnvVite.js'
-
 export { getConfigFileExport }
 
 import pc from '@brillout/picocolors'
 import { assertPlusFileExport } from '../../../../shared-server-client/page-configs/assertPlusFileExport.js'
 import { assertUsage } from '../../../../utils/assert.js'
 import { isObject } from '../../../../utils/isObject.js'
+import '../../assertEnvVite.js'
 
 function getConfigFileExport(
   fileExports: Record<string, unknown>,

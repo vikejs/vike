@@ -1,5 +1,3 @@
-import '../../assertEnvVite.js'
-
 export { crawlPlusFilePaths }
 export { isPlusFile }
 export { getPlusFileValueConfigName }
@@ -24,6 +22,7 @@ import { getEnvVarObject } from '../getEnvVarObject.js'
 import pc from '@brillout/picocolors'
 import picomatch, { type Matcher } from 'picomatch'
 import { ignorePatternsBuiltIn } from './crawlPlusFilePaths/ignorePatternsBuiltIn.js'
+import '../../assertEnvVite.js'
 const execA = promisify(exec)
 const debug = createDebug('vike:crawl')
 
