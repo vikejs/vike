@@ -234,7 +234,6 @@ function getGlobs(
       }
       const globPaths = globExcludePath ? `[${globIncludePath}, ${globExcludePath}]` : `[${globIncludePath}]`
       const globLine = `const ${varNameLocal} = import.meta.glob(${globPaths}, ${JSON.stringify(globOptions)});`
-      console.log('globLine', globLine)
       return globLine
     }),
     `const ${varName} = {${varNameLocals.map((varNameLocal) => `...${varNameLocal}`).join(',')}};`,
