@@ -3,7 +3,7 @@ import cm, { cmMerge } from '@classmatejs/react'
 
 import Headline from './Headline'
 import BlurDot from './BlurDot'
-import { BlurDotType } from '../util/ui.constants'
+import { UiColorVariantKey } from '../util/ui.constants'
 
 type HeadlineGroupProps = {
   main: string | ReactNode
@@ -12,7 +12,7 @@ type HeadlineGroupProps = {
   headingStyle?: 'h1' | 'h2' | 'xlarge'
   sub?: string | ReactNode
   outerClassName?: string
-  blurColor?: BlurDotType
+  blurColor?: UiColorVariantKey
 }
 
 const HeadlineGroup = ({

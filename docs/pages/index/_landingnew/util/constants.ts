@@ -1,4 +1,15 @@
-import { BlurDotType } from './ui.constants'
+import { UiColorVariantKey } from './ui.constants'
+
+import vuetifyImg from '../assets/tech-icons/vuetify.svg'
+import piniaImg from '../assets/tech-icons/pinia.svg'
+import tanstackImg from '../assets/tech-icons/tanstack.svg'
+import vueImg from '../assets/tech-icons/vue.svg'
+import reactImg from '../assets/tech-icons/react.svg'
+import apolloImg from '../assets/tech-icons/apollo.svg'
+import reduxImg from '../assets/tech-icons/redux.svg'
+import vercelImg from '../assets/tech-icons/vercel.svg'
+import sentryImg from '../assets/tech-icons/sentry.svg'
+import solidImg from '../assets/tech-icons/solid.svg'
 
 export const FlexGraphicHook = {
   onBeforeRenderClient: 'onBeforeRenderClient',
@@ -75,7 +86,7 @@ type Usp = {
   title: string
   description: string
   icon: string
-  dotColor: BlurDotType
+  dotColor: UiColorVariantKey
 }
 
 export const landingPageHeroUsps: Usp[] = [
@@ -99,5 +110,69 @@ export const landingPageHeroUsps: Usp[] = [
     description: 'Small dummy text for usps. Small dummy text for usps. N',
     icon: '⚡️',
     dotColor: 'orange',
+  },
+]
+
+const NavigationTabFrameworks = {
+  react: 'react',
+  vue: 'vue',
+  solid: 'solid',
+}
+type NavigationTabFrameworks = typeof NavigationTabFrameworks
+type NavigationTabFramework = NavigationTabFrameworks[keyof NavigationTabFrameworks]
+
+export type FlexEditorTabTool = {
+  name: string
+  imgKey: string
+}
+
+export type FlexEditorTab = {
+  title: string
+  frontend: NavigationTabFramework
+  rendering: string
+  backend: string
+  api: string
+  deployment: string
+  tools: FlexEditorTabTool[]
+}
+
+export const flexEditorTabs: FlexEditorTab[] = [
+  {
+    title: 'E-commerce',
+    frontend: NavigationTabFrameworks.react,
+    rendering: 'SSR',
+    backend: 'Node.js',
+    api: 'GraphQL',
+    deployment: 'Cloudflare',
+    tools: [
+      { name: 'vike-react', imgKey: reactImg },
+      { name: 'vike-react-apollo', imgKey: apolloImg },
+      { name: 'vike-react-redux', imgKey: reduxImg },
+      { name: 'vike-react-styled-jsx', imgKey: vercelImg },
+      { name: 'vike-react-sentry', imgKey: sentryImg },
+    ],
+  },
+  {
+    title: 'Admin panel',
+    frontend: NavigationTabFrameworks.vue,
+    rendering: 'SPA',
+    backend: 'external (Java/Laravel/Rails/Django/...)',
+    api: 'REST',
+    deployment: 'static (e.g. GitHub Pages)',
+    tools: [
+      { name: 'vike-vue', imgKey: vueImg },
+      { name: 'vike-vue-query', imgKey: tanstackImg },
+      { name: 'vike-vue-pinia', imgKey: piniaImg },
+      { name: 'vike-vue-vuetify', imgKey: vuetifyImg },
+    ],
+  },
+  {
+    title: 'Marketing pages',
+    frontend: NavigationTabFrameworks.solid,
+    rendering: 'SSG',
+    backend: 'none',
+    api: 'none',
+    deployment: 'static (e.g. GitHub Pages)',
+    tools: [{ name: 'vike-solid', imgKey: solidImg }],
   },
 ]

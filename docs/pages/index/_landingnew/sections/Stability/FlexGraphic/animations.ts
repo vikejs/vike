@@ -1,9 +1,6 @@
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
-// todo: to config
-const animationDuration = 0.25
-const animationEase = 'power2.out'
+import { uiConfig } from '../../../util/ui.constants'
 
 interface ApplyColorParams {
   targets: SVGElement[]
@@ -24,8 +21,8 @@ export const applyColor = ({ targets, color, mode, attr }: ApplyColorParams) => 
 
   gsap.to(targets, {
     attr: { [attr]: color },
-    duration: animationDuration,
-    ease: animationEase,
+    duration: uiConfig.transition.shortDuration,
+    ease: uiConfig.transition.easeOutGsap,
     overwrite: 'auto',
   })
 }
@@ -42,8 +39,8 @@ export const applyStrokeWidth = (targets: SVGElement[], width: number, mode: 'se
 
   gsap.to(targets, {
     attr: { 'stroke-width': width },
-    duration: animationDuration,
-    ease: animationEase,
+    duration: uiConfig.transition.shortDuration,
+    ease: uiConfig.transition.easeOutGsap,
     overwrite: 'auto',
   })
 }

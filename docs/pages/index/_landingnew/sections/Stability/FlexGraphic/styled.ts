@@ -1,5 +1,6 @@
 import cm from '@classmatejs/react'
 import { ExtensionBlockVariants } from '../../../util/constants'
+import { uiConfig } from '../../../util/ui.constants'
 
 export const ExtensionBlock = cm.div.variants<{
   $type: ExtensionBlockVariants
@@ -14,8 +15,8 @@ export const ExtensionBlock = cm.div.variants<{
   text-tiny sm:text-sm text-grey-100
   flex justify-center items-center
   transition-all
-  duration-250
-  ease-out
+  ${uiConfig.transition.shortDurationTw}
+  ${uiConfig.transition.easeOutTw}
 `,
   variants: {
     $type: {
@@ -54,10 +55,12 @@ export const ExtensionBlock = cm.div.variants<{
 export const StyledLegendItem = cm.div.variants<{ $type: 'disabled' | 'active' | 'inactive' | 'paused' }>({
   base: `
     relative
-    transition-opacity 
+    transition-opacity
     font-semibold
     flex items-center gap-2 
     p-1
+    ${uiConfig.transition.shortDurationTw}
+    ${uiConfig.transition.easeOutTw}
   `,
   variants: {
     $type: {

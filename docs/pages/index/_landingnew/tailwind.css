@@ -19,15 +19,17 @@
   --color-white: oklch(1 0 0);
 
   /* daisyUI specific */
-  --d-color-primary: oklch(0.4733 0.2194 297.53);
-  --d-color-secondary: oklch(0.5706 0.185 256.24);
-  --d-color-accent: oklch(60% 0.118 184.704);
   --d-color-info: oklch(60% 0.126 221.723);
   --d-color-success: oklch(62% 0.194 149.214);
   --d-color-warning: oklch(80% 0.199 91.936);
   --d-color-error: oklch(57% 0.245 27.325);
 
-  /* convert hex to oklch: https://oklch.com/ */
+  /* reuse specific daisy variants for buttons etc */
+  --d-color-primary: #248C83;
+  --d-color-secondary: #4198db;
+  --d-color-accent: #b5721b;
+
+  /* colors for hooks */
   --color-onBeforeRenderClient: oklch(0.819 0.0686 339.84);
   --color-onBeforeRenderClient-hex: #e3b3d2;
   --color-Wrapper: oklch(0.7227 0.12 54.89);
@@ -65,12 +67,19 @@
   --color-base-200: var(--color-grey-400);
   --color-base-300: var(--color-bg);
   --color-base-content: var(--color-content);
+
+  /* flexibility - green */
   --color-primary: var(--d-color-primary);
   --color-primary-content: var(--color-bg);
+
+  /* stability - blue */
   --color-secondary: var(--d-color-secondary);
   --color-secondary-content: var(--color-bg);
+
+  /* dx - orange */
   --color-accent: var(--d-color-accent);
   --color-accent-content: var(--color-bg);
+
   --color-neutral: var(--color-black);
   --color-neutral-content: var(--color-bg);
   --color-info: var(--d-color-info);

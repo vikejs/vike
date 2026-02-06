@@ -1,12 +1,12 @@
 import React from 'react'
-import { GradientTextColors } from '../util/ui.constants'
+import { UiColorVariantKey } from '../util/ui.constants'
 import HeadlineGroup from './HeadlineGroup'
 import GradientText from './GradientText'
 
 interface SectionHeaderProps {
   icon: React.ReactNode
   badgeText?: string
-  color: GradientTextColors
+  color: UiColorVariantKey
   main: string | React.ReactNode
   sub: string | React.ReactNode
 }

@@ -7,7 +7,7 @@ import blurDotBlueSm from './../assets/decorators/blur/raw/blur-blue@0.5.png'
 import blurDotBlue from './../assets/decorators/blur/raw/blur-blue.png'
 import blurDotOrangeSm from './../assets/decorators/blur/raw/blur-orange@0.5.png'
 import blurDotOrange from './../assets/decorators/blur/raw/blur-orange.png'
-import { BlurDotOpacity, BlurDotType } from '../util/ui.constants'
+import { BlurDotOpacity, UiColorVariantKey } from '../util/ui.constants'
 
 const BlurDot = ({ type, lazy = true, visibility = 'medium', size = 'md', ...props }: BlurDotProps) => {
   const sizePx = sizePxBySize[size]
@@ -75,7 +75,7 @@ const StyledBlurDotImage = cm.img`
 `
 
 interface BlurDotProps extends HTMLAttributes<HTMLDivElement> {
-  type: BlurDotType
+  type: UiColorVariantKey
   lazy?: boolean
   size?: BlurDotSize
   visibility?: BlurDotOpacity

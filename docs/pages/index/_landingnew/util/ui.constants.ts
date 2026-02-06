@@ -1,4 +1,21 @@
-import { FlexGraphicHook } from "./constants"
+import { FlexGraphicHook } from './constants'
+
+export const uiConfig = {
+  transition: {
+    shortDuration: 0.15,
+    shortDurationTw: 'duration-150',
+    mediumDuration: 0.25,
+    mediumDurationTw: 'duration-250',
+    longDuration: 0.75,
+    longDurationTw: 'duration-750',
+    easeInTw: 'ease-in',
+    easeInGsap: 'power1.in',
+    easeOutTw: 'ease-out',
+    easeOutGsap: 'power1.out',
+    easeInOutTw: 'ease-in-out',
+    easeInOutGsap: 'power1.inOut',
+  },
+}
 
 export const LayoutSize = {
   xxs: 'xxs',
@@ -16,20 +33,6 @@ export const layoutComponentSizeMapping: { [key in LayoutSize]: string } = {
   md: 'max-w-[1100px]', // 1140 base header width - 2 x 20px padding from header elements..
   lg: 'max-w-[1280px]',
 } as const
-
-export const BlurDotType = {
-  blue: 'blue',
-  green: 'green',
-  orange: 'orange',
-} as const
-export type BlurDotType = (typeof BlurDotType)[keyof typeof BlurDotType]
-
-export const GradientTextColors = {
-  blue: 'blue',
-  orange: 'orange',
-  green: 'green',
-} as const
-export type GradientTextColors = (typeof GradientTextColors)[keyof typeof GradientTextColors]
 
 export const BlurDotOpacity = {
   low: 'opacity-50',
@@ -50,4 +53,23 @@ export const hookColors: { [key in FlexGraphicHook]: string } = {
   onError: 'var(--color-onError-hex)',
   onRenderHtml: 'var(--color-onRenderHtml-hex)',
   onAfterRenderHtml: 'var(--color-onAfterRenderHtml-hex)',
+} as const
+
+export const UiColorVariantKey = {
+  blue: 'blue',
+  green: 'green',
+  orange: 'orange',
+} as const
+export type UiColorVariantKey = (typeof UiColorVariantKey)[keyof typeof UiColorVariantKey]
+
+export const UiVariantTextColor = {
+  green: 'text-primary',
+  blue: 'text-secondary',
+  orange: 'text-accent',
+} as const
+
+export const UiVariantBtnColor = {
+  green: 'btn-primary',
+  blue: 'btn-secondary',
+  orange: 'btn-accent',
 } as const

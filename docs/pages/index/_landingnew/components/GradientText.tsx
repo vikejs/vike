@@ -1,8 +1,8 @@
 import React from 'react'
-import { GradientTextColors } from '../util/ui.constants'
+import { UiColorVariantKey } from '../util/ui.constants'
 
 // 3 default combinations: blue, orange, green
-export const defaultGradients: Record<GradientTextColors, { startColor: string; endColor: string }> = {
+export const defaultGradients: Record<UiColorVariantKey, { startColor: string; endColor: string }> = {
   blue: { startColor: '#7F5AF0', endColor: '#3B82F6' },
   orange: { startColor: '#F97316', endColor: '#E879F9' },
   green: { startColor: '#00955f', endColor: '#00b0a5' },
@@ -13,7 +13,7 @@ interface GradientTextProps {
   startColor?: string
   endColor?: string
   rotation?: number
-  color?: GradientTextColors
+  color?: UiColorVariantKey
 }
 
 const GradientText = ({ children, color, startColor, endColor, rotation = 90 }: GradientTextProps) => {
