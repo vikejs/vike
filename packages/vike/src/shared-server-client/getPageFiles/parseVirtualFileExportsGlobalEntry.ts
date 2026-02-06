@@ -108,6 +108,8 @@ function parseGlobResult(globObject: Record<string, unknown>): GlobResult {
     cast<FileType>(fileType)
     assert(fileTypes.includes(fileType))
     assert(isObject(globFiles))
+    console.log('globFiles', globFiles)
+    console.log('Object.keys(globFiles).length', Object.keys(globFiles).length)
     Object.entries(globFiles).forEach(([filePath, globValue]) => {
       const pageFile = getPageFileObject(filePath)
       assert(pageFile.fileType === fileType)
