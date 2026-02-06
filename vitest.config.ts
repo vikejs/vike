@@ -5,7 +5,6 @@ const env = {
 }
 
 export default defineConfig({
-  clearScreen: false,
   test: {
     projects: [
       {

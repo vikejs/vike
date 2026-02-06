@@ -9,7 +9,7 @@
     "========= Test": "",
     "test": "vitest run && test-e2e && test-types",
     "test:units": "vitest --project unit",
-    "test:e2e": "DEBUG=vitest:* vitest",
+    "test:e2e": "vitest run --project e2e && test-e2e",
     "test:types": "test-types",
     "// https://github.com/vitejs/vite-ecosystem-ci/blob/6b5e66429c57047394cf7b7d8e052532ea03a414/tests/vike.ts#L14": "",
     "test:vite-ecosystem-ci": "(export VITE_ECOSYSTEM_CI=true; vitest run && test-e2e --exclude test-deprecated-design && test-types)",
