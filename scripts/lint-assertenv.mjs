@@ -103,7 +103,7 @@ function main() {
     whitelistViolations.forEach((file) => {
       console.error(`  - ${file}`)
     })
-    console.error('\nThese files should be REMOVED from WHITELIST_PATTERNS in scripts/lint-assertenv.js\n')
+    console.error('\nThese files should be REMOVED from WHITELIST_PATTERNS in scripts/lint-assertenv.mjs\n')
     process.exit(1)
   }
 
@@ -121,7 +121,7 @@ function main() {
       console.error(`  - ${file}`)
     })
     console.error(
-      '\nPlease either:\n1. Add the appropriate assertEnv*.ts import to these files, or\n2. Add them to the WHITELIST_PATTERNS in scripts/lint-assertenv.js\n',
+      '\nPlease either:\n1. Add the appropriate assertEnv*.ts import to these files, or\n2. Add them to the WHITELIST_PATTERNS in scripts/lint-assertenv.mjs\n',
     )
     process.exit(1)
   }
