@@ -8,9 +8,8 @@
  * currently exempt from this requirement.
  */
 
-const fs = require('node:fs')
-const path = require('node:path')
-const { execSync } = require('node:child_process')
+import fs from 'node:fs'
+import { execSync } from 'node:child_process'
 
 // Whitelist patterns: files/directories that currently don't import assertEnv*.ts
 // Supports glob patterns: '*' for single directory level, '**' for recursive
@@ -65,7 +64,6 @@ function main() {
 
   const filesWithoutImport = []
   const violations = []
-  const whitelistedCount = 0
 
   for (const file of tsFiles) {
     const content = fs.readFileSync(file, 'utf-8')
@@ -131,9 +129,4 @@ function main() {
   console.log('\n✅ All .ts files either have assertEnv*.ts import or are whitelisted.')
 }
 
-try {
-  main()
-} catch (err) {
-  console.error('Error running lint-assertenv:', err)
-  process.exit(1)
-}
+main()
