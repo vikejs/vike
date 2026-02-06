@@ -15,18 +15,6 @@ const { execSync } = require('node:child_process')
 // Whitelist patterns: files/directories that currently don't import assertEnv*.ts
 // Supports glob patterns: '*' for single directory level, '**' for recursive
 const WHITELIST_PATTERNS = [
-  // Client-side code
-  'packages/vike/src/client/**',
-
-  // Node CLI and loaders
-  'packages/vike/src/node/cli/**',
-
-  // Node API
-  'packages/vike/src/node/api/**',
-
-  // Node Vite plugin
-  'packages/vike/src/node/vite/**',
-
   // Prerender
   'packages/vike/src/node/prerender/**',
 
@@ -44,6 +32,8 @@ const WHITELIST_PATTERNS = [
 
   // Single files
   'packages/vike/src/node/createDevMiddleware.ts',
+  'packages/vike/src/node/api/types.ts',
+  'packages/vike/src/client/runtime-client-routing/prefetch/PrefetchSetting.ts',
 ]
 
 function matchesPattern(filePath, pattern) {
@@ -94,6 +84,30 @@ function main() {
   }
 
   const whitelistedFilesCount = filesWithoutImport.filter((f) => isWhitelisted(f)).length
+
+  // Validate whitelist accuracy: ensure whitelisted files don't have assertEnv imports
+  const whitelistViolations = []
+  for (const file of tsFiles) {
+    if (isWhitelisted(file)) {
+      const content = fs.readFileSync(file, 'utf-8')
+      const hasAssertEnvImport = /import\s+.*['"].*assertEnv.*\.js['"]/.test(content)
+
+      if (hasAssertEnvImport) {
+        whitelistViolations.push(file)
+      }
+    }
+  }
+
+  if (whitelistViolations.length > 0) {
+    console.error(
+      `\n❌ WHITELIST ERROR: ${whitelistViolations.length} file(s) are in WHITELIST_PATTERNS but DO have assertEnv*.ts import:\n`,
+    )
+    whitelistViolations.forEach((file) => {
+      console.error(`  - ${file}`)
+    })
+    console.error('\nThese files should be REMOVED from WHITELIST_PATTERNS in scripts/lint-assertenv.js\n')
+    process.exit(1)
+  }
 
   // Report results
   console.log(`✓ Total .ts files checked: ${tsFiles.length}`)
