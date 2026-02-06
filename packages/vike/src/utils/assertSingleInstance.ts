@@ -47,7 +47,7 @@ function assertSingleInstance() {
       versions.length <= 1,
       // Do *NOT* patch Vike to remove this warning: you *will* eventually encounter the issues listed at https://vike.dev/warning/version-mismatch
       // - This happened before: https://github.com/vikejs/vike/issues/1108#issuecomment-1719061509
-      `vike@${pc.bold(versions[0]!)} and vike@${pc.bold(versions[1]!)} loaded which is highly discouraged, see ${pc.underline('https://vike.dev/warning/version-mismatch')}`,
+      `vike@${pc.bold(versions[0]!)} and vike@${pc.bold(versions[1]!)} loaded which is highly discouraged ${pc.underline('https://vike.dev/warning/version-mismatch')}`,
       { onlyOnce: true, showStackTrace: false },
     )
   }
