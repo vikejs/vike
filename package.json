@@ -28,6 +28,8 @@
     "========= Formatting": "",
     "format": "biome check --write --unsafe",
     "format:check": "biome ci && echo '\\033[1;32mFormatting is correct.\\033[0m' || (echo '\\033[1;34mFix formatting by running `$ pnpm run format`.\\033[0m' && exit 1)",
+    "========= Linting": "",
+    "lint": "cd packages/vike && node lint-assertenv.mjs",
     "========= Spellchecking ": "",
     "spellcheck": "spellcheck fix --version 1.33.1",
     "spellcheck:check": "spellcheck check --version 1.33.1",
