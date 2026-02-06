@@ -1,11 +1,11 @@
-import { assert } from './assert.js'
-
 export { higherFirst }
 export { lowerFirst }
 export { makeFirst }
 export { makeLast }
 export { reverse }
 export type { SortReturn }
+
+import { assert } from './assert.js'
 
 /**
  * # How to use `Array.prototype.sort()`
