@@ -1,5 +1,3 @@
-import './assertEnvVite.js'
-
 export default plugin
 export { plugin }
 // TO-DO/next-major-release: remove
@@ -43,6 +41,7 @@ import { pluginReplaceConstantsNonRunnableDev } from './plugins/non-runnable-dev
 import { isVikeCliOrApi } from '../../shared-server-node/api-context.js'
 import { pluginViteConfigVikeExtensions } from './plugins/pluginViteConfigVikeExtensions.js'
 import { getVikeConfigInternalEarly, isOnlyResolvingUserConfig } from '../api/resolveViteConfigFromUser.js'
+import './assertEnvVite.js'
 
 // We don't call this in ./onLoad.ts to avoid a cyclic dependency with utils.ts
 setGetClientEntrySrcDev(getClientEntrySrcDev)

@@ -1,5 +1,3 @@
-import '../../assertEnvServer.js'
-
 export { handleErrorWithoutErrorPage }
 
 import type { GlobalContextServerInternal } from '../globalContext.js'
@@ -9,6 +7,7 @@ import { createHttpResponseErrorFallback, createHttpResponseErrorFallbackJson } 
 import pc from '@brillout/picocolors'
 import type { GetPageAssets } from './getPageAssets.js'
 import type { PageContextCreatedServer } from './createPageContextServer.js'
+import '../../assertEnvServer.js'
 
 // When the user hasn't defined _error.page.js
 function handleErrorWithoutErrorPage<

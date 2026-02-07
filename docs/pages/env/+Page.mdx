@@ -43,7 +43,7 @@ DATABASE_URL=postgresql://database.example.com:5432
 
 ## Access
 
-Use `import.meta.env` to access environment variables.
+Use <ImportMeta prop="env"/> to access environment variables.
 
 ```ts
 // /pages/movies/+data.ts
@@ -79,12 +79,12 @@ function ContactUs() {
 
 > Keep in mind that <code>{'import.meta.env.SOME_ENV'}</code> <Link href="#static-replacement">is statically replaced</Link>:
 > ```ts
+> // ✅ Works
+> import.meta.env.SOME_ENV
 > // ❌ Won't work
 > import.meta.env['SOME_ENV']
 > // ❌ Won't work
 > const { SOME_ENV } = import.meta.env
-> // ✅ Works
-> import.meta.env.SOME_ENV
 > ```
 
 
@@ -102,7 +102,7 @@ For improved DX, consider using [`zod`](https://github.com/colinhacks/zod), for 
 For better [tree shaking](https://rollupjs.org/introduction/#tree-shaking) (aka dead code elimination), `import.meta.env.SOME_ENV` is statically replaced with its value. For example:
 
 ```js
-// src/someFile.js [source code in Git repository]
+// src/someFile.js [source code in your Git repository]
 
 console.log('value:', import.meta.env.DISABLE_TRACKING)
 
@@ -128,14 +128,14 @@ console.log("value:", "true");
 console.log("Tracking is disabled");
 ```
 
-Note how the `import()` is completely removed, resulting in more lightweight production bundles.
+Note how `import()` is completely removed, resulting in a more lightweight production bundle.
 
 
 ## Config files
 
-In config files, [`import.meta.env` isn't available](https://github.com/vikejs/vike/issues/1726#issuecomment-2208626928) (neither `vite.config.js` nor `+config.js`).
+In config files, [<ImportMeta prop="env"/> isn't available](https://github.com/vikejs/vike/issues/1726#issuecomment-2208626928) (neither `vite.config.js` nor `+config.js`).
 
-Use [`process.env`](https://nodejs.org/en/learn/command-line/how-to-read-environment-variables-from-nodejs) instead of `import.meta.env`.
+Use [`process.env`](https://nodejs.org/en/learn/command-line/how-to-read-environment-variables-from-nodejs) instead of <ImportMeta prop="env"/>.
 
 
 ## Public allowlist

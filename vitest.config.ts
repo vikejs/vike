@@ -20,6 +20,7 @@ export default defineConfig({
           include: ['test/**/*.spec.ts'],
           name: 'e2e',
           env,
+          fileParallelism: false,
         },
       },
     ],

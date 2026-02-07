@@ -1,5 +1,3 @@
-import '../../assertEnvServer.js'
-
 export { addErrorHint }
 // For ./addErrorHint/getErrorHint.spec.ts
 export { getErrorHint }
@@ -9,6 +7,7 @@ import { formatHintLog } from '../../../utils/formatHintLog.js'
 import { getBetterError } from '../../../utils/getBetterError.js'
 import { isObject } from '../../../utils/isObject.js'
 import pc from '@brillout/picocolors'
+import '../../assertEnvServer.js'
 
 const hintDefault = 'The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package'
 const hintLinkPrefix = 'To fix this error, see '
@@ -108,7 +107,8 @@ function addErrorHint(error: unknown) {
   //*/
   const hint = getErrorHint(error)
   if (!hint) return error
-  const append = `\n${pc.bold(formatHintLog(hint))}` as const
+  const color = hint === hintDefault ? pc.gray : pc.bold
+  const append = `\n${color(formatHintLog(hint))}` as const
   return getBetterError(error, { message: { append } })
 }
 function getErrorHint(error: unknown) {

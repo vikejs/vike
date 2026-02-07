@@ -1,5 +1,3 @@
-import '../assertEnvClient.js'
-
 export { createPageContextClient }
 export type PageContextCreatedClient = Awaited<ReturnType<typeof createPageContextClient>>
 
@@ -11,6 +9,7 @@ import { assert } from '../../utils/assert.js'
 import { objectAssign } from '../../utils/objectAssign.js'
 import { isBaseServer } from '../../utils/parseUrl.js'
 import { updateType } from '../../utils/updateType.js'
+import '../assertEnvClient.js'
 
 async function createPageContextClient(urlOriginal: string) {
   const pageContext = createPageContextBase(urlOriginal)

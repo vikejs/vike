@@ -1,5 +1,3 @@
-import '../../assertEnvVite.js'
-
 export { pluginProdBuildEntry }
 export { set_macro_ASSETS_MANIFEST }
 
@@ -15,6 +13,7 @@ import { isUsingClientRouter } from '../pluginExtractExportNames.js'
 import { assertBuildInfo, type BuildInfo } from '../../../../server/runtime/globalContext.js'
 import { getOutDirs } from '../../shared/getOutDirs.js'
 import { getViteConfigRuntime } from '../../shared/getViteConfigRuntime.js'
+import '../../assertEnvVite.js'
 type Bundle = Rollup.OutputBundle
 const ASSETS_MANIFEST = '__VITE_ASSETS_MANIFEST__'
 

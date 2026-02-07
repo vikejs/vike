@@ -1,8 +1,7 @@
-import '../assertEnvServer.js'
-
 export default universalVikeHandler
 
 import { renderPageServer } from './renderPageServer.js'
+import '../assertEnvServer.js'
 
 async function universalVikeHandler(
   request: Request,

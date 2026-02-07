@@ -1,5 +1,3 @@
-import '../../assertEnvServer.js'
-
 export { execHookServer }
 export type { PageContextExecHookServer }
 
@@ -9,6 +7,7 @@ import type { PageContextConfig } from '../../../shared-server-client/getPageFil
 import type { HookName } from '../../../types/Config.js'
 import { getHooksFromPageContextNew } from '../../../shared-server-client/hooks/getHook.js'
 import { getFileSuffixes } from '../../../shared-server-node/getFileSuffixes.js'
+import '../../assertEnvServer.js'
 
 type PageContextExecHookServer = PageContextConfig & PageContextExecHook & { isClientSideNavigation: boolean }
 async function execHookServer(hookName: HookName, pageContext: PageContextExecHookServer) {

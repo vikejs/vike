@@ -1,5 +1,3 @@
-import '../assertEnvVite.js'
-
 export { interceptViteLogs }
 export { processStartupLog }
 export { swallowViteLogForceOptimization_enable }
@@ -15,6 +13,7 @@ import { getGlobalObject } from '../../../utils/getGlobalObject.js'
 import { getRequestId_withAsyncHook } from '../../../server/runtime/asyncHook.js'
 import { logErrorServerDev, logVite } from './loggerDev.js'
 import type { LogType as LoggerType, ResolvedConfig, LogErrorOptions } from 'vite'
+import '../assertEnvVite.js'
 
 const globalObject = getGlobalObject('vite/shared/loggerDev.ts', {
   processStartupLog_isCompact: null as null | boolean,

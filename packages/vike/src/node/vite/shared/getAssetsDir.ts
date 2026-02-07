@@ -1,9 +1,8 @@
-import '../assertEnvVite.js'
-
 export { getAssetsDir }
 
 import type { ResolvedConfig } from 'vite'
 import { assertUsage } from '../../../utils/assert.js'
+import '../assertEnvVite.js'
 
 function getAssetsDir(config: ResolvedConfig) {
   let { assetsDir } = config.build

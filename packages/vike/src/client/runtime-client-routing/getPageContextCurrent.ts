@@ -1,10 +1,9 @@
-import '../assertEnvClient.js'
-
 export { setPageContextCurrent }
 export { getPageContextCurrent }
 
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import type { PageContextConfig } from '../../shared-server-client/getPageFiles.js'
+import '../assertEnvClient.js'
 
 type PageContextCurrent = PageContextConfig & {
   urlPathname: string

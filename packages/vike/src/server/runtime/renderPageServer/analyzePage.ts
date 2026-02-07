@@ -1,5 +1,3 @@
-import '../../assertEnvServer.js'
-
 export { analyzePage }
 
 import type { ClientDependency } from '../../../shared-server-client/getPageFiles/analyzePageClientSide/ClientDependency.js'
@@ -13,6 +11,7 @@ import { generateVirtualFileId } from '../../../shared-server-node/virtualFileId
 import { analyzeClientSide } from '../../../shared-server-client/getPageFiles/analyzeClientSide.js'
 import { getConfigValueRuntime } from '../../../shared-server-client/page-configs/getConfigValueRuntime.js'
 import type { PageContext_loadPageConfigsLazyServerSide } from './loadPageConfigsLazyServerSide.js'
+import '../../assertEnvServer.js'
 
 function analyzePage(
   pageContext: PageContext_loadPageConfigsLazyServerSide & {

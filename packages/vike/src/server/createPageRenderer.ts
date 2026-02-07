@@ -1,4 +1,4 @@
-import './assertEnvServer.js'
+export { createPageRenderer }
 
 // TO-DO/next-major-release: remove this file
 
@@ -6,8 +6,7 @@ import './assertEnvServer.js'
 import { renderPageServer } from './runtime/renderPageServer.js'
 import { assertWarning } from '../utils/assert.js'
 //import { importBuildWasLoaded } from './importBuild.js'
-
-export { createPageRenderer }
+import './assertEnvServer.js'
 
 type Options = {
   viteDevServer?: unknown

@@ -1,5 +1,3 @@
-import '../../assertEnvServer.js'
-
 export { createPageContextServer }
 export { createPageContextServerWithoutGlobalContext }
 export type { PageContextCreatedServer }
@@ -16,10 +14,14 @@ import {
   createPageContextObject,
   createPageContextShared,
 } from '../../../shared-server-client/createPageContextShared.js'
+import '../../assertEnvServer.js'
 
 type PageContextCreatedServer = Awaited<ReturnType<typeof createPageContextServer>>
 function createPageContextServer(
-  pageContextInit: PageContextInit,
+  pageContextInit: PageContextInit & {
+    // TO-DO/next-major-release: remove
+    headers?: Record<string, unknown>
+  },
   globalContext: GlobalContextServerInternal,
   args: {
     requestId: number

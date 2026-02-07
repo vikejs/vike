@@ -1,5 +1,3 @@
-import '../assertEnvVite.js'
-
 export { pluginCommon }
 
 import { type InlineConfig, type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
@@ -21,6 +19,7 @@ import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/resolv
 import { temp_disablePrerenderAutoRun } from '../../prerender/context.js'
 import type { VitePluginServerEntryOptions } from '@brillout/vite-plugin-server-entry/plugin'
 import { version as viteVersionVike } from 'vite'
+import '../assertEnvVite.js'
 const pluginName = 'vike:pluginCommon'
 
 declare module 'vite' {

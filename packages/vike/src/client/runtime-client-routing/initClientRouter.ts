@@ -1,5 +1,3 @@
-import '../assertEnvClient.js'
-
 export { initClientRouter }
 
 import { assert } from '../../utils/assert.js'
@@ -14,6 +12,7 @@ import { initHistory } from './history.js'
 import { setVirtualFileExportsGlobalEntry } from '../shared/getGlobalContextClientInternalShared.js'
 // @ts-expect-error
 import * as virtualFileExportsGlobalEntry from 'virtual:vike:global-entry:client:client-routing'
+import '../assertEnvClient.js'
 
 const globalObject = getGlobalObject<{
   done?: true

@@ -1,5 +1,3 @@
-import '../assertEnvClient.js'
-
 export { isLinkSkipped }
 export { isLinkIgnored }
 export { isHrefCurrentUrl }
@@ -8,6 +6,7 @@ import { normalizeClientSideUrl } from '../shared/normalizeClientSideUrl.js'
 import { getBaseServer } from './getBaseServer.js'
 import { assert } from '../../utils/assert.js'
 import { parseUrl, isBaseServer, isUrl, isUrlExternal } from '../../utils/parseUrl.js'
+import '../assertEnvClient.js'
 
 function isLinkSkipped(linkTag: HTMLElement): boolean {
   const href = linkTag.getAttribute('href')

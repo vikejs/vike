@@ -1,11 +1,10 @@
-import '../../assertEnvVite.js'
-
 export { pluginModuleBanner }
 
 import type { ResolvedConfig, Plugin } from 'vite'
 import { assert } from '../../../../utils/assert.js'
 import { removeVirtualFileIdPrefix } from '../../../../utils/virtualFileId.js'
 import { getMagicString } from '../../shared/getMagicString.js'
+import '../../assertEnvVite.js'
 
 // Misusing legal comments so that esbuild doesn't remove them.
 // - Legal comments: https://esbuild.github.io/api/#legal-comments

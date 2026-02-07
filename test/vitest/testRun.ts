@@ -2,12 +2,15 @@ export { testRun }
 export { viteConfig }
 
 import { expect, describe, it } from 'vitest'
+import type { InlineConfig } from 'vite'
 
 const viteConfig = {
   logLevel: 'warn' as const,
   root: __dirname,
   configFile: __dirname + '/vite.config.js',
-}
+  server: { strictPort: true },
+  preview: { strictPort: true },
+} satisfies InlineConfig
 const urlBase = 'http://localhost:3000'
 
 function testRun() {

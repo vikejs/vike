@@ -1,6 +1,5 @@
-import './assertEnvClient.js'
-
 import { assertUsage } from '../utils/assert.js'
+import './assertEnvClient.js'
 assertUsage(
   false,
   [

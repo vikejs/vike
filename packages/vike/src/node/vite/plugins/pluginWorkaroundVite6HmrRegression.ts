@@ -1,8 +1,7 @@
-import '../assertEnvVite.js'
-
 export { pluginWorkaroundVite6HmrRegression }
 
 import type { Plugin } from 'vite'
+import '../assertEnvVite.js'
 
 // https://vite.dev/guide/migration (will be 404 after vite@7 release) > search for `hmrReload()`
 // https://v6.vite.dev/guide/migration (will exist after vite@7 release) > search for `hmrReload()`

@@ -1,8 +1,7 @@
-import '../assertEnvClient.js'
-
 export { logErrorClient }
 
 import { isObject } from '../../utils/isObject.js'
+import '../assertEnvClient.js'
 
 function logErrorClient(err: unknown) {
   if (

@@ -1,5 +1,3 @@
-import '../assertEnvClient.js'
-
 export { getPageContextFromHooksClient }
 export { getPageContextFromHooksClient_firstRender }
 export { getPageContextFromHooksServer }
@@ -33,6 +31,7 @@ import type { PageContextBegin } from './renderPageClient.js'
 import { type PageContextPublicClient, getPageContextPublicClient } from './getPageContextPublicClient.js'
 import type { ConfigEnv } from '../../types/index.js'
 import type { GlobalContextClientInternal } from './getGlobalContextClientInternal.js'
+import '../assertEnvClient.js'
 const globalObject = getGlobalObject<{
   pageContextInitIsPassedToClient?: true
 }>('getPageContextFromHooks.ts', {})

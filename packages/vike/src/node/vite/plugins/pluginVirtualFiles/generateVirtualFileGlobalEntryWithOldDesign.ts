@@ -1,5 +1,3 @@
-import '../../assertEnvVite.js'
-
 export { generateVirtualFileGlobalEntryWithOldDesign }
 
 // TO-DO/next-major-release:
@@ -25,6 +23,7 @@ import { isViteServerSide_extraSafe } from '../../shared/isViteServerSide.js'
 import { resolveIncludeAssetsImportedByServer } from '../../../../server/runtime/renderPageServer/getPageAssets/retrievePageAssetsProd.js'
 import type { Environment } from 'vite'
 import { VIRTUAL_FILE_ID_constantsGlobalThis } from '../pluginReplaceConstantsGlobalThis.js'
+import '../../assertEnvVite.js'
 
 type GlobRoot = {
   includeDir: string // slash-terminated

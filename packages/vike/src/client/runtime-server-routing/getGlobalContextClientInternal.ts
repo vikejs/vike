@@ -1,9 +1,8 @@
-import '../assertEnvClient.js'
-
 export { getGlobalContextClientInternal }
 export type { GlobalContextClientInternalWithServerRouting }
 
 import { getGlobalContextClientInternalShared } from '../shared/getGlobalContextClientInternalShared.js'
+import '../assertEnvClient.js'
 
 type GlobalContextClientInternalWithServerRouting = Awaited<ReturnType<typeof getGlobalContextClientInternal>>
 

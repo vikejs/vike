@@ -1,5 +1,3 @@
-import '../../assertEnvServer.js'
-
 export { loadPageConfigsLazyServerSide }
 export type { PageContext_loadPageConfigsLazyServerSide }
 export type { PageConfigsLazy }
@@ -27,6 +25,7 @@ import type { PageContextAfterRoute } from '../../../shared-server-client/route/
 import type { PageContextCreatedServer } from './createPageContextServer.js'
 import { resolveHeadersResponseEarly } from './headersResponse.js'
 import { resolvePageContextCspNone } from './csp.js'
+import '../../assertEnvServer.js'
 
 type PageContext_loadPageConfigsLazyServerSide = PageContextCreatedServer &
   PageContextAfterRoute & { is404: boolean | null; pageId: string }

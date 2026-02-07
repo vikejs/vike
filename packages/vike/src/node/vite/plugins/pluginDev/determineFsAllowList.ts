@@ -1,5 +1,3 @@
-import '../../assertEnvVite.js'
-
 export { determineFsAllowList }
 
 import { searchForWorkspaceRoot } from 'vite'
@@ -9,6 +7,7 @@ import { assert } from '../../../../utils/assert.js'
 import { assertPosixPath } from '../../../../utils/path.js'
 import { getPackageNodeModulesDirectory } from '../../../../utils/requireResolve.js'
 import { fileURLToPath } from 'node:url'
+import '../../assertEnvVite.js'
 const importMetaUrl = import.meta.url
 assertPosixPath(importMetaUrl)
 const __dirname_ = path.posix.dirname(fileURLToPath(importMetaUrl))

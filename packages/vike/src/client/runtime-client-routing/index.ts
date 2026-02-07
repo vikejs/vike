@@ -1,5 +1,3 @@
-import '../assertEnvClient.js'
-
 // TO-DO/next-major-release: move
 //   import { navigate, prefetch } from 'vike/client/router'
 // to:
@@ -13,6 +11,7 @@ export { PROJECT_VERSION as version } from '../../utils/PROJECT_VERSION.js'
 
 // TO-DO/next-major-release: remove this
 import type { PageContextBuiltInClientWithClientRouting } from '../../types/PageContext.js'
+import '../assertEnvClient.js'
 /** @deprecated
  * Replace:
  *   ```

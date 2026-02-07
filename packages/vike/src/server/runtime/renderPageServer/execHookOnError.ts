@@ -1,5 +1,3 @@
-import '../../assertEnvServer.js'
-
 export { execHookOnError }
 
 import { assert } from '../../../utils/assert.js'
@@ -13,6 +11,7 @@ import type {
   PageContextCreatedServerWithoutGlobalContext,
 } from './createPageContextServer.js'
 import { getPageContextPublicServer } from './getPageContextPublicServer.js'
+import '../../assertEnvServer.js'
 
 const globalObject = getGlobalObject('renderPageServer/execHookOnError.ts', {
   seen: new WeakSet(),

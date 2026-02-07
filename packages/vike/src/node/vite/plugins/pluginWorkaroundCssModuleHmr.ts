@@ -1,10 +1,9 @@
-import '../assertEnvVite.js'
-
 export { pluginWorkaroundCssModuleHmr }
 
 // https://github.com/vikejs/vike/issues/1127#issuecomment-2294511748
 
 import type { Plugin } from 'vite'
+import '../assertEnvVite.js'
 
 function pluginWorkaroundCssModuleHmr(): Plugin[] {
   return [

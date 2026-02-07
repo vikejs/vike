@@ -1,5 +1,3 @@
-import '../../assertEnvVite.js'
-
 export { pluginDistFileNames }
 
 // Attempt to preserve file structure of `.page.js` files:
@@ -15,6 +13,7 @@ import crypto from 'node:crypto'
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
 import { getAssetsDir } from '../../shared/getAssetsDir.js'
 import { assertModuleId, getFilePathToShowToUserModule } from '../../shared/getFilePath.js'
+import '../../assertEnvVite.js'
 type PreRenderedChunk = Rollup.PreRenderedChunk
 type PreRenderedAsset = Rollup.PreRenderedAsset
 

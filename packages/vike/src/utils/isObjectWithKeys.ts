@@ -1,6 +1,6 @@
-import { isPlainObject } from './isPlainObject.js'
-
 export { isObjectWithKeys }
+
+import { isPlainObject } from './isPlainObject.js'
 
 function isObjectWithKeys<Keys extends readonly string[]>(
   obj: unknown,

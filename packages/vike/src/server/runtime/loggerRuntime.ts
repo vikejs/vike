@@ -1,5 +1,3 @@
-import '../assertEnvServer.js'
-
 // Logger used by the the server runtime. (Also during pre-rendering since it uses the sever runtime.)
 
 export let logRuntimeError: LogRuntimeError
@@ -15,6 +13,7 @@ import type {
   PageContextCreatedServer,
   PageContextCreatedServerWithoutGlobalContext,
 } from './renderPageServer/createPageContextServer.js'
+import '../assertEnvServer.js'
 
 type LogRuntimeInfo = (msg: string, pageContext: PageContext_logRuntime, logType: LogType) => void
 type LogRuntimeError = (err: unknown, pageContext: PageContext_logRuntime) => void

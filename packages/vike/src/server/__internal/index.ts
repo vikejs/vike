@@ -1,5 +1,3 @@
-import '../assertEnvServer.js'
-
 // Used by vike:build:pluginProdBuildEntry
 export { setGlobalContext_prodBuildEntry } from '../runtime/globalContext.js'
 
@@ -12,6 +10,7 @@ import type { PageFile } from '../../shared-server-client/getPageFiles/getPageFi
 import { getGlobalContextServerInternal, initGlobalContext_getPagesAndRoutes } from '../runtime/globalContext.js'
 import { setNodeEnvProductionIfUndefined } from '../../utils/assertSetup.js'
 import { PageConfigRuntime } from '../../types/PageConfig.js'
+import '../assertEnvServer.js'
 
 /**
  * Used by {@link https://github.com/magne4000/vite-plugin-vercel|vite-plugin-vercel} to compute some rewrite rules and extract { isr } configs.

@@ -1,11 +1,10 @@
-import '../../assertEnvServer.js'
-
 export { assertArguments }
 
 import { assert, assertUsage, assertWarning } from '../../../utils/assert.js'
 import { hasProp } from '../../../utils/hasProp.js'
 import { isObject } from '../../../utils/isObject.js'
 import pc from '@brillout/picocolors'
+import '../../assertEnvServer.js'
 
 function assertArguments(...args: unknown[]): void {
   const prefix = `${pc.code('renderPage(pageContextInit)')} (https://vike.dev/renderPage)` as const

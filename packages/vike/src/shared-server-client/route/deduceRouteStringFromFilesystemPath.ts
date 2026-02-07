@@ -1,11 +1,11 @@
+export { deduceRouteStringFromFilesystemPath }
+export type { FilesystemRoot }
+
 // Unit tests at ./deduceRouteStringFromFilesystemPath.spec.ts
 
 import { assert } from '../../utils/assert.js'
 import { slice } from '../../utils/slice.js'
 import { higherFirst } from '../../utils/sorter.js'
-
-export { deduceRouteStringFromFilesystemPath }
-export type { FilesystemRoot }
 
 type FilesystemRoot = {
   filesystemRoot: string

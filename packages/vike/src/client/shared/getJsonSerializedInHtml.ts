@@ -1,5 +1,3 @@
-import '../assertEnvClient.js'
-
 export { getPageContextSerializedInHtml }
 export { getGlobalContextSerializedInHtml }
 
@@ -7,6 +5,7 @@ import { parse } from '@brillout/json-serializer/parse'
 import { assert, assertUsage } from '../../utils/assert.js'
 import { hasProp } from '../../utils/hasProp.js'
 import { htmlElementId_globalContext, htmlElementId_pageContext } from '../../shared-server-client/htmlElementIds.js'
+import '../assertEnvClient.js'
 
 // elements should exist because:
 // 1. <script id="vike_pageContext" type="application/json"> appears before the <script> that loads Vike's client runtime (which includes this file)

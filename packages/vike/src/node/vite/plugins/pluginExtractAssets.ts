@@ -1,5 +1,3 @@
-import '../assertEnvVite.js'
-
 // TO-DO/next-major-release: remove
 
 // Remove this workaround if the other workaround config.build.ssrEmitAssets turns out to be reliable.
@@ -32,6 +30,7 @@ import { assertV1Design } from '../../../shared-server-node/assertV1Design.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 import { resolveIncludeAssetsImportedByServer } from '../../../server/runtime/renderPageServer/getPageAssets/retrievePageAssetsProd.js'
+import '../assertEnvVite.js'
 type ResolvedId = Rollup.ResolvedId
 
 const extractAssetsRE = /(\?|&)extractAssets(?:&|$)/

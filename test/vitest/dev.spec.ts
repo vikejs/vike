@@ -12,7 +12,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
   try {
-    await viteServer.close()
+    await viteServer?.close()
   } catch (e) {
     console.error('Error closing Vite server:', e)
   }

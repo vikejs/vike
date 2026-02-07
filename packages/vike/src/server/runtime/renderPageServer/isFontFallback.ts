@@ -1,9 +1,8 @@
-import '../../assertEnvServer.js'
-
 export { isFontFallback }
 
 import type { PageAsset } from './getPageAssets.js'
 import { assert } from '../../../utils/assert.js'
+import '../../assertEnvServer.js'
 
 function isFontFallback(asset: PageAsset, pageAssets: PageAsset[]): boolean {
   if (asset.assetType !== 'font') {

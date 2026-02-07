@@ -11,11 +11,11 @@
     "compression": "^1.7.4",
     "cross-env": "^7.0.3",
     "express": "^5.2.1",
-    "react": "^19.2.1",
-    "react-dom": "^19.2.1",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
     "react-streaming": "^0.4.15",
     "sirv": "^2.0.2",
-    "vike": "0.4.252",
+    "vike": "0.4.253",
     "vite": "^6.3.2"
   },
   "type": "module"

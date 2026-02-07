@@ -1,5 +1,3 @@
-import '../assertEnvVite.js'
-
 export { getOutDirs }
 export { resolveOutDir }
 export type { OutDirs }
@@ -11,6 +9,7 @@ import { pathJoin, toPosixPath } from '../../../utils/path.js'
 import { assert, assertUsage } from '../../../utils/assert.js'
 import { assertPosixPath } from '../../../utils/path.js'
 import { isViteServerSide_viteEnvOptional, type ViteEnv } from './isViteServerSide.js'
+import '../assertEnvVite.js'
 const debug = createDebug('vike:outDir')
 
 type OutDirs = {

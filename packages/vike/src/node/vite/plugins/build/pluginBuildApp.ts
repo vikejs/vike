@@ -1,5 +1,3 @@
-import '../../assertEnvVite.js'
-
 export { pluginBuildApp }
 
 import { runPrerender_forceExit } from '../../../prerender/runPrerenderEntry.js'
@@ -19,6 +17,7 @@ import { isViteServerSide_onlySsrEnv } from '../../shared/isViteServerSide.js'
 import { runPrerenderFromAutoRun } from '../../../prerender/runPrerenderEntry.js'
 import { getManifestFilePathRelative } from '../../shared/getManifestFilePathRelative.js'
 import { logErrorServer } from '../../../../server/runtime/logErrorServer.js'
+import '../../assertEnvVite.js'
 
 const globalObject = getGlobalObject('build/pluginBuildApp.ts', {
   forceExit: false,
