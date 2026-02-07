@@ -1802,49 +1802,6 @@ importers:
         specifier: ^6.3.5
         version: 6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
 
-  test/vike-cloudflare:
-    dependencies:
-      '@universal-middleware/hono':
-        specifier: ^0.4.20
-        version: 0.4.20(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.9.8)
-      hono:
-        specifier: ^4.10.4
-        version: 4.10.4
-      solid-js:
-        specifier: ^1.9.10
-        version: 1.9.10
-      tsx:
-        specifier: ^4.20.6
-        version: 4.20.6
-      vike:
-        specifier: 0.4.253
-        version: link:../../packages/vike
-      vike-solid:
-        specifier: ^0.8.1
-        version: 0.8.1(solid-js@1.9.10)(vike@packages+vike)(vite-plugin-solid@2.11.10(solid-js@1.9.10)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)))
-      vite:
-        specifier: ^7.2.2
-        version: 7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
-    devDependencies:
-      '@auth/core':
-        specifier: ^0.40.0
-        version: 0.40.0
-      '@types/node':
-        specifier: ^24.10.0
-        version: 24.10.2
-      '@universal-middleware/core':
-        specifier: ^0.4.16
-        version: 0.4.16(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.9.8)
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-      vike-cloudflare:
-        specifier: ^0.2.8
-        version: 0.2.8(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.9.8)(vike@packages+vike)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
-      wrangler:
-        specifier: ^4.56.0
-        version: 4.56.0
-
   test/vike-react:
     dependencies:
       '@types/react':
@@ -2283,20 +2240,6 @@ packages:
       subscriptions-transport-ws:
         optional: true
 
-  '@auth/core@0.40.0':
-    resolution: {integrity: sha512-n53uJE0RH5SqZ7N1xZoMKekbHfQgjd0sAEyUbE+IYJnmuQkbvuZnXItCU7d+i7Fj8VGOgqvNO7Mw4YfBTlZeQw==}
-    peerDependencies:
-      '@simplewebauthn/browser': ^9.0.1
-      '@simplewebauthn/server': ^9.0.2
-      nodemailer: ^6.8.0
-    peerDependenciesMeta:
-      '@simplewebauthn/browser':
-        optional: true
-      '@simplewebauthn/server':
-        optional: true
-      nodemailer:
-        optional: true
-
   '@babel/code-frame@7.27.1':
     resolution: {integrity: sha512-cjQ7ZlQ0Mv3b47hABuTevyTuYN4i+loJKGeV9flcCgIK37cCXRh+L1bd3iBHlynerhQ7BhCkn2BPbQUL+rGqFg==}
     engines: {node: '>=6.9.0'}
@@ -2648,10 +2591,6 @@ packages:
   '@cloudflare/kv-asset-handler@0.2.0':
     resolution: {integrity: sha512-MVbXLbTcAotOPUj0pAMhVtJ+3/kFkwJqc5qNOleOZTv6QkZZABDMS21dSrSlVswEHwrpWC03e4fWytjqKvuE2A==}
 
-  '@cloudflare/kv-asset-handler@0.3.4':
-    resolution: {integrity: sha512-YLPHc8yASwjNkmcDMQMY35yiWjoKAKnhUbPRszBRS0YgH+IXtsMp61j+yTcnCE3oO2DgP0U3iejLC8FTtKDC8Q==}
-    engines: {node: '>=16.13'}
-
   '@cloudflare/kv-asset-handler@0.4.1':
     resolution: {integrity: sha512-Nu8ahitGFFJztxUml9oD/DLb7Z28C8cd8F46IVQ7y5Btz575pvMY8AqZsXkX7Gds29eCKdMgIHjIvzskHgPSFg==}
     engines: {node: '>=18.0.0'}
@@ -2779,9 +2718,6 @@ packages:
     engines: {node: '>=16'}
     cpu: [x64]
     os: [win32]
-
-  '@cloudflare/workers-types@4.20250510.0':
-    resolution: {integrity: sha512-VLdSYUooX2QhdlzyBnnLAqa5B3xWyr5vdvya9NZk2BJNmRt2iblSLunj7iBKiW9J+SIBHz7c+kUzUJKoFLKRjg==}
 
   '@conventional-changelog/git-client@2.5.1':
     resolution: {integrity: sha512-lAw7iA5oTPWOLjiweb7DlGEMDEvzqzLLa6aWOly2FSZ64IwLE8T458rC+o+WvI31Doz6joM7X2DoNog7mX8r4A==}
@@ -3487,9 +3423,6 @@ packages:
     peerDependencies:
       graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
 
-  '@hattip/adapter-cloudflare-workers@0.0.49':
-    resolution: {integrity: sha512-FtCarhqmAgSW0b4LOCMzWGyN6B/z6zZhL4yJgZBETKMEnXywVNYYrnEbYEKIY/l6f7aWD1vTZ9jNcKS5RZeUww==}
-
   '@hattip/core@0.0.49':
     resolution: {integrity: sha512-3/ZJtC17cv8m6Sph8+nw4exUp9yhEf2Shi7HK6AHSUSBtaaQXZ9rJBVxTfZj3PGNOR/P49UBXOym/52WYKFTJQ==}
 
@@ -4050,9 +3983,6 @@ packages:
 
   '@oxc-project/types@0.98.0':
     resolution: {integrity: sha512-Vzmd6FsqVuz5HQVcRC/hrx7Ujo3WEVeQP7C2UNP5uy1hUY4SQvMB+93jxkI1KRHz9a/6cni3glPOtvteN+zpsw==}
-
-  '@panva/hkdf@1.2.1':
-    resolution: {integrity: sha512-6oclG6Y3PiDFcoyk8srjLfVKyMfVCKJ27JwNPViuXziFpmdz+MZnZN/aKY0JGXgYuO/VghU0jcOAZgWXZ1Dmrw==}
 
   '@photonjs/cloudflare@0.1.13':
     resolution: {integrity: sha512-gyu26ZIEJTLVU47U3OC7iqsT6tvp5qpk1KtTT0zCGpTInTc5p7s3db7xAzq+egZ09SSrU+SbQpoYAlAboLaryA==}
@@ -4807,9 +4737,6 @@ packages:
 
   '@universal-middleware/hono@0.4.17':
     resolution: {integrity: sha512-NKO42xEv4oQ/fvMg4NN3je+bhBymIHi5mFWjyxAtb5ewbtkCZs9eb+aBNO+Ai1FEy2jQpkBEJMvclW5eohFw9g==}
-
-  '@universal-middleware/hono@0.4.20':
-    resolution: {integrity: sha512-UYsp/urka7BEilzAn/SlnDNxel5rWKV+hRDqwoPhq3E1bJ91M6YuT5OR4EtTm2Jx4S0fFMr8ITA2F4hWZ/+vgw==}
 
   '@universal-middleware/sirv@0.1.23':
     resolution: {integrity: sha512-Lh3Xc/NvwnfQ3/zabID5/OjKdwQcNyELEUxGaSk6R6j4KReGtXQYtP4ej8Jhq77df4wF39CQaEv5S+9h8ZPAyQ==}
@@ -6657,9 +6584,6 @@ packages:
   jju@1.4.0:
     resolution: {integrity: sha512-8wb9Yw966OSxApiCt0K3yNJL8pnNeIv+OEq2YMidz4FKP6nonSRoOXc80iXY4JaN2FC11B9qsNmDsm+ZOfMROA==}
 
-  jose@6.0.11:
-    resolution: {integrity: sha512-QxG7EaliDARm1O1S8BGakqncGT9s25bKL1WSf6/oa17Tkqwi8D2ZNglqCF+DsYF88/rV66Q/Q2mFAy697E1DUg==}
-
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
 
@@ -7168,9 +7092,6 @@ packages:
     resolution: {integrity: sha512-tt6PvKu4WyzPwWUzy/hvPFqn+uwXO0K1ZHka8az3NnrhWJDmSqI8ncWq0fkL0k/lmmi5tAC11FXwXuh0rFbt1A==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
-  oauth4webapi@3.5.1:
-    resolution: {integrity: sha512-txg/jZQwcbaF7PMJgY7aoxc9QuCxHVFMiEkDIJ60DwDz3PbtXPQnrzo+3X4IRYGChIwWLabRBRpf1k9hO9+xrQ==}
-
   object-assign@4.1.1:
     resolution: {integrity: sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==}
     engines: {node: '>=0.10.0'}
@@ -7389,14 +7310,6 @@ packages:
   postcss@8.5.6:
     resolution: {integrity: sha512-3Ybi1tAuwAP9s0r1UQ2J4n5Y0G05bJkpUIO0/bI9MhwmD70S5aTWbXGBwxHrelT+XM1k6dM0pk+SwNkpTRN7Pg==}
     engines: {node: ^10 || ^12 || >=14}
-
-  preact-render-to-string@6.5.11:
-    resolution: {integrity: sha512-ubnauqoGczeGISiOh6RjX0/cdaF8v/oDXIjO85XALCQjwQP+SB4RDXXtvZ6yTYSjG+PC1QRP2AhPgCEsM2EvUw==}
-    peerDependencies:
-      preact: '>=10'
-
-  preact@10.24.3:
-    resolution: {integrity: sha512-Z2dPnBnMUfyQfSQ+GBdsGa16hz35YmLmtTLhM169uW944hYL6xzTYkJjC07j+Wosz733pMWx0fgON3JNw1jJQA==}
 
   prettier@3.7.4:
     resolution: {integrity: sha512-v6UNi1+3hSlVvv8fSaoUbggEM5VErKmmpGA7Pl3HF8V6uKY7rvClBOJlH6yNwQtfTueNkGVpOv/mtWL9L4bgRA==}
@@ -8336,13 +8249,6 @@ packages:
   vfile@6.0.3:
     resolution: {integrity: sha512-KzIbH/9tXat2u30jf+smMwFCsno4wHVdNmzFyL+T/L3UGqqk6JKfVqOFOZEpZSHADH1k40ab6NUIXZq422ov3Q==}
 
-  vike-cloudflare@0.2.8:
-    resolution: {integrity: sha512-1t9kdcG10BrDcPCRob80MmO66AlAtARnua3iNcMPlP5JYLt/PhftxR6GS0mLJo1PPM8gFizujFJ77k+vJpnOSA==}
-    peerDependencies:
-      hono: ^4.7.4
-      vike: '>=0.4.231'
-      vite: '>=5.3.0'
-
   vike-photon@0.1.24:
     resolution: {integrity: sha512-zaF/WvNq0JwNvCbQR6eDuf7pgpNwWu5+ZhLJx2Qr1/ndPZrya9PuO2Me7Q9CFvWvig3zvegZ47ny79zyir+sAw==}
     peerDependencies:
@@ -9056,14 +8962,6 @@ snapshots:
     optionalDependencies:
       react: 18.2.0
 
-  '@auth/core@0.40.0':
-    dependencies:
-      '@panva/hkdf': 1.2.1
-      jose: 6.0.11
-      oauth4webapi: 3.5.1
-      preact: 10.24.3
-      preact-render-to-string: 6.5.11(preact@10.24.3)
-
   '@babel/code-frame@7.27.1':
     dependencies:
       '@babel/helper-validator-identifier': 7.28.5
@@ -9572,11 +9470,6 @@ snapshots:
     dependencies:
       mime: 3.0.0
 
-  '@cloudflare/kv-asset-handler@0.3.4':
-    dependencies:
-      mime: 3.0.0
-    optional: true
-
   '@cloudflare/kv-asset-handler@0.4.1':
     dependencies:
       mime: 3.0.0
@@ -9699,9 +9592,6 @@ snapshots:
     optional: true
 
   '@cloudflare/workerd-windows-64@1.20260131.0':
-    optional: true
-
-  '@cloudflare/workers-types@4.20250510.0':
     optional: true
 
   '@conventional-changelog/git-client@2.5.1(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.2.1)':
@@ -10093,13 +9983,6 @@ snapshots:
   '@graphql-typed-document-node/core@3.2.0(graphql@16.5.0)':
     dependencies:
       graphql: 16.5.0
-
-  '@hattip/adapter-cloudflare-workers@0.0.49':
-    dependencies:
-      '@cloudflare/kv-asset-handler': 0.3.4
-      '@cloudflare/workers-types': 4.20250510.0
-      '@hattip/core': 0.0.49
-    optional: true
 
   '@hattip/core@0.0.49':
     optional: true
@@ -10609,8 +10492,6 @@ snapshots:
   '@oxc-project/types@0.82.3': {}
 
   '@oxc-project/types@0.98.0': {}
-
-  '@panva/hkdf@1.2.1': {}
 
   '@photonjs/cloudflare@0.1.13(@hattip/core@0.0.49)(@types/express@5.0.6)(srvx@0.9.8)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))(workerd@1.20260131.0)(wrangler@4.62.0)':
     dependencies:
@@ -11504,20 +11385,6 @@ snapshots:
       - srvx
 
   '@universal-middleware/hono@0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.9.8)':
-    dependencies:
-      '@universal-middleware/core': 0.4.16(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.9.8)
-    transitivePeerDependencies:
-      - '@cloudflare/workers-types'
-      - '@hattip/core'
-      - '@types/express'
-      - '@webroute/route'
-      - elysia
-      - fastify
-      - h3
-      - hono
-      - srvx
-
-  '@universal-middleware/hono@0.4.20(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.9.8)':
     dependencies:
       '@universal-middleware/core': 0.4.16(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.9.8)
     transitivePeerDependencies:
@@ -13925,8 +13792,6 @@ snapshots:
 
   jju@1.4.0: {}
 
-  jose@6.0.11: {}
-
   js-tokens@4.0.0: {}
 
   js-yaml@3.14.1:
@@ -14741,8 +14606,6 @@ snapshots:
 
   npm-to-yarn@3.0.1: {}
 
-  oauth4webapi@3.5.1: {}
-
   object-assign@4.1.1: {}
 
   object-inspect@1.13.4: {}
@@ -14980,12 +14843,6 @@ snapshots:
       nanoid: 3.3.11
       picocolors: 1.1.1
       source-map-js: 1.2.1
-
-  preact-render-to-string@6.5.11(preact@10.24.3):
-    dependencies:
-      preact: 10.24.3
-
-  preact@10.24.3: {}
 
   prettier@3.7.4: {}
 
@@ -16220,24 +16077,6 @@ snapshots:
     dependencies:
       '@types/unist': 3.0.3
       vfile-message: 4.0.2
-
-  vike-cloudflare@0.2.8(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.9.8)(vike@packages+vike)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)):
-    dependencies:
-      hono: 4.10.4
-      vike: link:packages/vike
-      vike-server: 1.0.25(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.9.8)(vike@packages+vike)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
-      vite: 7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
-    optionalDependencies:
-      '@hattip/adapter-cloudflare-workers': 0.0.49
-    transitivePeerDependencies:
-      - '@cloudflare/workers-types'
-      - '@hattip/core'
-      - '@types/express'
-      - '@webroute/route'
-      - elysia
-      - fastify
-      - h3
-      - srvx
 
   vike-photon@0.1.24(jjx2yh3hik6zf7jl2mdtlmvqyi):
     dependencies:
