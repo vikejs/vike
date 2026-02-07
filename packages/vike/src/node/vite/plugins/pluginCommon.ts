@@ -9,7 +9,6 @@ import { assert, assertUsage, assertWarning } from '../../../utils/assert.js'
 import { hasProp } from '../../../utils/hasProp.js'
 import { isObject } from '../../../utils/isObject.js'
 import { assertRollupInput } from './build/pluginBuildConfig.js'
-import { installRequireShim_setUserRootDir } from '@brillout/require-shim'
 import pc from '@brillout/picocolors'
 import { assertResolveAlias } from './pluginCommon/assertResolveAlias.js'
 import { isViteCli } from '../shared/isViteCli.js'
@@ -77,7 +76,6 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
         handler(config) {
           assertViteRoot(config._rootResolvedEarly!, config)
           assertSingleInstance(config)
-          installRequireShim_setUserRootDir(config.root)
         },
       },
     },

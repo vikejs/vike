@@ -33,6 +33,15 @@ const LATE_DISCOVERED = [
   '@compiled/react/runtime',
 ]
 
+// TO-DO/eventually: remove this.
+// Avoid following warning for older vike-photon versions:
+// ```
+// [11:32:49.768][/test/photon-vercel/.test-dev.test.ts][pnpm run dev][stderr] Failed to resolve dependency: vike > @brillout/require-shim, present in ssr 'optimizeDeps.include'
+// ```
+// https://github.com/vikejs/vike-photon/issues/56
+// https://github.com/vikejs/vike/pull/3091
+const ALWAYS_REMOVE = ['@brillout/require-shim', 'vike > @brillout/require-shim']
+
 const optimizeDeps = {
   optimizeDeps: {
     exclude: [
@@ -107,6 +116,15 @@ async function resolveOptimizeDeps(config: ResolvedConfig) {
       env.optimizeDeps.include = add(env.optimizeDeps.include, includeServer)
       env.optimizeDeps.entries = add(env.optimizeDeps.entries, entriesServer)
     }
+  }
+
+  // Remove @brillout/require-shim
+  config.optimizeDeps.include = remove(config.optimizeDeps.include)
+  config.optimizeDeps.entries = remove(config.optimizeDeps.entries)
+  for (const envName in config.environments) {
+    const env = config.environments[envName]!
+    env.optimizeDeps.include = remove(env.optimizeDeps.include ?? [])
+    env.optimizeDeps.entries = remove(env.optimizeDeps.entries ?? [])
   }
 
   // Debug
@@ -241,13 +259,23 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
 }
 
 function add(input: string | string[] | undefined, listAddendum: string[]): string[] {
-  const list = !input ? [] : isArray(input) ? unique(input) : [input]
+  const list = normalizeInput(input)
   listAddendum.forEach((e) => {
     if (!list.includes(e)) list.push(e)
   })
   return list
 }
+function normalizeInput(input: string[] | string | undefined): string[] {
+  const list = !input ? [] : isArray(input) ? unique(input) : [input]
+  return list
+}
 function unique<T>(arr: T[]): T[] {
   const arrUnique = Array.from(new Set(arr))
   return arr.length !== arrUnique.length ? arrUnique : arr
+}
+
+function remove(input: string[] | string | undefined) {
+  let list = normalizeInput(input)
+  list = list.filter((e) => !ALWAYS_REMOVE.includes(e))
+  return list
 }
