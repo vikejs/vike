@@ -39,7 +39,7 @@ const LATE_DISCOVERED = [
 // [11:32:49.768][/test/photon-vercel/.test-dev.test.ts][pnpm run dev][stderr] Failed to resolve dependency: vike > @brillout/require-shim, present in ssr 'optimizeDeps.include'
 // ```
 // https://github.com/vikejs/vike-photon/issues/56
-const ALWAYS_REMOVE = ['@brillout/require-shim', 'vike > @brillout/require-shim']
+const ALWAYS_REMOVE = ['euwqe', '@brillout/require-shim', 'vike > @brillout/require-shim']
 
 const optimizeDeps = {
   optimizeDeps: {
@@ -115,7 +115,13 @@ async function resolveOptimizeDeps(config: ResolvedConfig) {
       env.optimizeDeps.include = add(env.optimizeDeps.include, includeServer)
       env.optimizeDeps.entries = add(env.optimizeDeps.entries, entriesServer)
     }
+    // @ts-ignore
+    env.optimizeDeps.include = remove(env.optimizeDeps.include ?? [])
+    // @ts-ignore
+    env.optimizeDeps.entries = remove(env.optimizeDeps.entries ?? [])
   }
+
+  config.ssr.optimizeDeps.include = remove(config.ssr.optimizeDeps.include as any)
 
   // Debug
   if (debug.isActivated)
