@@ -1,9 +1,8 @@
-import '../assertEnvClient.js'
-
 export { normalizeClientSideUrl }
 
 import { assert } from '../../utils/assert.js'
 import { parseUrl } from '../../utils/parseUrl.js'
+import '../assertEnvClient.js'
 
 /** Resolves relative URLs */
 function normalizeClientSideUrl(url: string, options?: { withoutHash: true }): `/${string}` {

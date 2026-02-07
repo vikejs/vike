@@ -1,5 +1,3 @@
-import '../../../assertEnvServer.js'
-
 export { escapeInject }
 export { dangerouslySkipEscape }
 export { renderDocumentHtml }
@@ -33,6 +31,7 @@ import type { StreamFromReactStreamingPackage } from './stream/react-streaming.j
 import type { PageAsset } from '../getPageAssets.js'
 import type { PreloadFilter } from './injectAssets/getHtmlTags.js'
 import pc from '@brillout/picocolors'
+import '../../../assertEnvServer.js'
 
 type DocumentHtml = TemplateWrapped | EscapedString | StreamProviderAny
 type HtmlRender = string | StreamProviderNormalized

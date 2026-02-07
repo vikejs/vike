@@ -1,5 +1,3 @@
-import '../../../../assertEnvServer.js'
-
 export { getHtmlTags }
 export type { HtmlTag }
 export type { PreloadFilter }
@@ -30,6 +28,7 @@ import {
 } from '../../../../../shared-server-client/htmlElementIds.js'
 import { isFontFallback } from '../../isFontFallback.js'
 import { inferNonceAttr, type PageContextCspNonce } from '../../csp.js'
+import '../../../../assertEnvServer.js'
 
 const stamp = '__injectFilterEntry'
 

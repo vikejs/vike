@@ -1,5 +1,3 @@
-import '../assertEnvVite.js'
-
 export { pluginAssertFileEnv }
 
 // Implementation for https://vike.dev/file-env
@@ -24,6 +22,7 @@ import { normalizeId } from '../shared/normalizeId.js'
 import { isV1Design } from '../shared/resolveVikeConfigInternal.js'
 import { isViteServerSide, isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 import { suffixesAssertFileEnv } from '../../../shared-server-node/getFileSuffixes.js'
+import '../assertEnvVite.js'
 
 const envS = suffixesAssertFileEnv
 type Env = (typeof envS)[number]

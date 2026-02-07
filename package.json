@@ -28,6 +28,8 @@
     "========= Formatting": "",
     "format": "biome check --write --unsafe",
     "format:check": "biome ci && echo '\\033[1;32mFormatting is correct.\\033[0m' || (echo '\\033[1;34mFix formatting by running `$ pnpm run format`.\\033[0m' && exit 1)",
+    "========= Linting": "",
+    "lint": "cd packages/vike && node scripts/lint-assertenv.mjs",
     "========= Spellchecking ": "",
     "spellcheck": "spellcheck fix --version 1.33.1",
     "spellcheck:check": "spellcheck check --version 1.33.1",
@@ -43,7 +45,7 @@
     "@brillout/test-e2e": "^0.6.21",
     "@brillout/test-types": "^0.1.13",
     "playwright-chromium": "1.57.0",
-    "vitest": "^3.2.4"
+    "vitest": "^4.0.18"
   },
   "packageManager": "pnpm@9.15.9"
 }

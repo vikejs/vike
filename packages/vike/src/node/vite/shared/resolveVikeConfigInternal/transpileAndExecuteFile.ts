@@ -1,5 +1,3 @@
-import '../../assertEnvVite.js'
-
 export { transpileAndExecuteFile }
 export { getConfigBuildErrorFormatted }
 export { getConfigExecutionErrorIntroMsg }
@@ -37,6 +35,7 @@ import { transformPointerImports } from './pointerImports.js'
 import sourceMapSupport from 'source-map-support'
 import type { FilePathResolved } from '../../../../types/FilePath.js'
 import { getFilePathAbsoluteUserRootDir } from '../getFilePath.js'
+import '../../assertEnvVite.js'
 
 assertIsNotProductionRuntime()
 installSourceMapSupport()
@@ -372,7 +371,16 @@ async function executeTranspiledFile(filePath: FilePathResolved, code: string) {
   //  - But seems to break source maps, so I don't think it's worth it
   const filePathTmp = getTemporaryBuildFilePath(filePathAbsoluteFilesystem, code)
   fs.writeFileSync(filePathTmp, code)
-  const clean = () => fs.unlinkSync(filePathTmp)
+  const clean = () => {
+    try {
+      fs.unlinkSync(filePathTmp)
+    } catch {
+      // I don't know why but with Vitest (4.0.18) it seems that sometimes `filePathTmp` is already removed => we therefore swallow the follow error:
+      // ```shell
+      // Error: ENOENT: no such file or directory, unlink '/home/rom/tmp/vike/test/vitest/pages/+config.js.build-4718e6535172.mjs'
+      // ```
+    }
+  }
   let fileExports: Record<string, unknown> = {}
   try {
     fileExports = await executeFile(filePathTmp, filePath)

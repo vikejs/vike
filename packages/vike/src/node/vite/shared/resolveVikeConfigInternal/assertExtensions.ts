@@ -1,5 +1,3 @@
-import '../../assertEnvVite.js'
-
 export { assertExtensionsConventions }
 export { assertExtensionsRequire }
 
@@ -12,6 +10,7 @@ import { getConfVal } from '../resolveVikeConfigInternal.js'
 import type { PlusFile } from './getPlusFilesByLocationId.js'
 import path from 'node:path'
 import semver from 'semver'
+import '../../assertEnvVite.js'
 
 function assertExtensionsConventions(plusFile: PlusFile): void {
   assertExtensionName(plusFile)

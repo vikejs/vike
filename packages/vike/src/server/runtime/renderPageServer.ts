@@ -1,5 +1,3 @@
-import '../assertEnvServer.js'
-
 export { renderPageServer }
 export { getRequestTag }
 export type { PageContextInit }
@@ -75,6 +73,7 @@ import type { PageContextInit, PageContextInternalServer } from '../../types/Pag
 import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.js'
 import { forkPageContext } from '../../shared-server-client/forkPageContext.js'
 import { getAsyncLocalStorage, type AsyncStore } from './asyncHook.js'
+import '../assertEnvServer.js'
 
 const globalObject = getGlobalObject('runtime/renderPageServer.ts', {
   httpRequestsCount: 0,

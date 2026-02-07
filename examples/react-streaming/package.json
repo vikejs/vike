@@ -12,11 +12,11 @@
     "cross-env": "^10.1.0",
     "cross-fetch": "^4.1.0",
     "express": "^5.2.1",
-    "react": "^19.2.1",
-    "react-dom": "^19.2.1",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
     "react-streaming": "^0.4.15",
     "sirv": "^3.0.2",
-    "vike": "0.4.252",
+    "vike": "0.4.253",
     "vite": "^7.2.6"
   },
   "type": "module"

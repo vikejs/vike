@@ -1,5 +1,3 @@
-import '../../../assertEnvServer.js'
-
 export { retrievePageAssetsProd }
 export { resolveIncludeAssetsImportedByServer }
 
@@ -10,6 +8,7 @@ import { getManifestEntry } from './getManifestEntry.js'
 import { extractAssetsAddQuery } from '../../../../shared-server-node/extractAssetsQuery.js'
 import type { ClientDependency } from '../../../../shared-server-client/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import type { ConfigResolved } from '../../../../types/index.js'
+import '../../../assertEnvServer.js'
 
 function retrievePageAssetsProd(
   assetsManifest: ViteManifest,

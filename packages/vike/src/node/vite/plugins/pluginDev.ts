@@ -1,5 +1,3 @@
-import '../assertEnvVite.js'
-
 export { pluginDev }
 export { logDockerHint }
 
@@ -14,6 +12,7 @@ import { assertWarning } from '../../../utils/assert.js'
 import { interceptViteLogs } from '../shared/loggerVite.js'
 import pc from '@brillout/picocolors'
 import { swallowViteLogConnected, swallowViteLogConnected_clean } from '../shared/loggerVite.js'
+import '../assertEnvVite.js'
 
 function pluginDev(): Plugin[] {
   let config: ResolvedConfig

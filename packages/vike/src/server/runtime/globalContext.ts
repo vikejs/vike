@@ -1,5 +1,3 @@
-import '../assertEnvServer.js'
-
 // Public use
 export { getGlobalContext }
 export { getGlobalContextSync }
@@ -37,7 +35,6 @@ export type { GlobalContextServerInternal }
 
 import { PROJECT_VERSION } from '../../utils/PROJECT_VERSION.js'
 import { assert, assertUsage, assertWarning } from '../../utils/assert.js'
-import { assertIsNotBrowser } from '../../utils/assertIsNotBrowser.js'
 import { isPlainObject } from '../../utils/isPlainObject.js'
 import { objectReplace } from '../../utils/objectReplace.js'
 import { genPromise } from '../../utils/genPromise.js'
@@ -79,6 +76,7 @@ import type { ViteRPC } from '../../node/vite/plugins/non-runnable-dev/pluginVit
 import { getVikeApiOperation } from '../../shared-server-node/api-context.js'
 import type { PrerenderContext } from '../../types/index.js'
 import { hasAlreadyLogged } from './logErrorServer.js'
+import '../assertEnvServer.js'
 const debug = createDebug('vike:globalContext')
 const globalObject = getGlobalObject<
   {
@@ -110,7 +108,6 @@ const globalObjectTyped = globalObject as typeof globalObject & {
   globalContext?: GlobalContextServerInternal
 }
 const vikeConfigErrorRecoverMsg = pc.bold(pc.green('Vike config loaded'))
-assertIsNotBrowser()
 
 // Internal usage
 type GlobalContextServerInternal = Awaited<ReturnType<typeof createGlobalContext>>

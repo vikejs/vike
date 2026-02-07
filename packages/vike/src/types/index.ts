@@ -93,6 +93,8 @@ import type { ConfigEffect } from '../node/vite/shared/resolveVikeConfigInternal
 type Effect = ConfigEffect
 export type { Effect }
 
+export type { EarlyHint } from '../server/runtime/renderPageServer/getEarlyHints.js'
+
 // TO-DO/next-major-release: remove
 // Ancient Vike versions used to have `import type { PageContextBuiltInClient } from 'vike/types'`
 import { PageContextBuiltInClientWithServerRouting } from './PageContext.js'

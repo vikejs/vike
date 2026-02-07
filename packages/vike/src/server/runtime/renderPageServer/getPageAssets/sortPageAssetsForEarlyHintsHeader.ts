@@ -1,9 +1,8 @@
-import '../../../assertEnvServer.js'
-
 export { sortPageAssetsForEarlyHintsHeader }
 
 import { higherFirst } from '../../../../utils/sorter.js'
 import type { PageAsset } from '../getPageAssets.js'
+import '../../../assertEnvServer.js'
 
 async function sortPageAssetsForEarlyHintsHeader(pageAssets: PageAsset[], isProduction: boolean) {
   pageAssets.sort(

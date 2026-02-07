@@ -1,5 +1,3 @@
-import './assertEnvCli.js'
-
 export { parseCli }
 export type { Command }
 export type { CliOptions }
@@ -9,6 +7,7 @@ import { assert } from '../../utils/assert.js'
 import { includes } from '../../utils/includes.js'
 import { PROJECT_VERSION } from '../../utils/PROJECT_VERSION.js'
 import { parseJson5 } from '../vite/shared/getEnvVarObject.js'
+import './assertEnvCli.js'
 
 type CliOptions = Record<string, unknown>
 type Command = 'dev' | 'build' | 'preview' | 'prerender'

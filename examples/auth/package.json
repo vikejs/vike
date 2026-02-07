@@ -14,11 +14,11 @@
     "cookie-parser": "^1.4.6",
     "cross-env": "^7.0.3",
     "express": "5.2.1",
-    "react": "^19.2.1",
-    "react-dom": "^19.2.1",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
     "typescript": "^5.9.3",
-    "vike": "0.4.252",
-    "vike-react": "^0.6.19",
+    "vike": "0.4.253",
+    "vike-react": "^0.6.20",
     "vite": "^6.3.2"
   },
   "type": "module"

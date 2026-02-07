@@ -1,5 +1,3 @@
-import '../../assertEnvVite.js'
-
 // Files loaded at config time:
 
 export { loadPointerImport }
@@ -23,6 +21,7 @@ import { getConfigFileExport } from './getConfigFileExport.js'
 import { PointerImport, resolvePointerImportData } from './resolvePointerImport.js'
 import type { ConfigDefinitionInternal, ConfigDefinitionsInternal } from './configDefinitionsBuiltIn.js'
 import { getConfigDefinedAt } from '../../../../shared-server-client/page-configs/getConfigDefinedAt.js'
+import '../../assertEnvVite.js'
 
 assertIsNotProductionRuntime()
 

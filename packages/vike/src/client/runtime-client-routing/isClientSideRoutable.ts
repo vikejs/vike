@@ -1,5 +1,3 @@
-import '../assertEnvClient.js'
-
 export { isClientSideRoutable }
 
 import { analyzePageClientSideInit } from '../../shared-server-client/getPageFiles/analyzePageClientSide.js'
@@ -7,6 +5,7 @@ import { findPageConfig } from '../../shared-server-client/page-configs/findPage
 import { analyzeClientSide } from '../../shared-server-client/getPageFiles/analyzeClientSide.js'
 import type { GlobalContextClientInternal } from './getGlobalContextClientInternal.js'
 import type { PageFile } from '../../shared-server-client/getPageFiles.js'
+import '../assertEnvClient.js'
 
 // TO-DO/next-major-release: make it sync
 async function isClientSideRoutable(

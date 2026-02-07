@@ -1,5 +1,3 @@
-import '../assertEnvClient.js'
-
 export { getPageContext }
 export { providePageContext }
 
@@ -8,6 +6,7 @@ export { providePageContext }
 import { getPageContext_sync, providePageContext } from '../../shared-server-client/hooks/execHook.js'
 import { getPageContextClient } from './renderPageClient.js'
 import type { GetPageContextParams } from '../../server/runtime/getPageContext.js'
+import '../assertEnvClient.js'
 
 // Return type `never` because it's the type of the server-side getPageContext() that is publicly exposed
 type TypeIsNotExported = never

@@ -1,5 +1,3 @@
-import '../assertEnvServer.js'
-
 export { getPageContext }
 export { providePageContext }
 export type { GetPageContextParams }
@@ -7,6 +5,7 @@ export type { GetPageContextParams }
 import { getPageContext_withAsyncHook } from './asyncHook.js'
 import { getPageContext_sync, providePageContext } from '../../shared-server-client/hooks/execHook.js'
 import type { PageContextClient, PageContextServer } from '../../types/PageContext.js'
+import '../assertEnvServer.js'
 
 type GetPageContextParams = Parameters<typeof getPageContext>[0]
 /**

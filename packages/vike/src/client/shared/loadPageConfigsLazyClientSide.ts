@@ -1,5 +1,3 @@
-import '../assertEnvClient.js'
-
 export { loadPageConfigsLazyClientSide }
 export type { PageContext_loadPageConfigsLazyClientSide }
 export { isErrorFetchingStaticAssets }
@@ -10,6 +8,7 @@ import { findPageConfig } from '../../shared-server-client/page-configs/findPage
 import { loadAndParseVirtualFilePageEntry } from '../../shared-server-client/page-configs/loadAndParseVirtualFilePageEntry.js'
 import type { PageConfigGlobalRuntime, PageConfigRuntime, PageConfigRuntimeLoaded } from '../../types/PageConfig.js'
 import { objectAssign } from '../../utils/objectAssign.js'
+import '../assertEnvClient.js'
 
 const errStamp = '_isAssetsError'
 

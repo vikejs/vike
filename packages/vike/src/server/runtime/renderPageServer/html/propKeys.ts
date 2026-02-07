@@ -1,10 +1,9 @@
-import '../../../assertEnvServer.js'
-
 export { getPropVal }
 export { setPropVal }
 export { getPropKeys }
 
 import { isObject } from '../../../../utils/isObject.js'
+import '../../../assertEnvServer.js'
 
 // Get a nested property from an object using a dot-separated path such as 'user.id'
 function getPropVal(obj: Record<string, unknown>, prop: string): null | { value: unknown } {

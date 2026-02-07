@@ -1,5 +1,3 @@
-import '../assertEnvClient.js'
-
 export { renderPageClient }
 export { getRenderCount }
 export { disableClientRouting }
@@ -65,6 +63,7 @@ import { getHooksFromPageContextNew } from '../../shared-server-client/hooks/get
 import { getPageContextPublicClientMinimal } from '../shared/getPageContextPublicClientShared.js'
 import type { VikeGlobalInternal } from '../../types/VikeGlobalInternal.js'
 import { logErrorClient } from './logErrorClient.js'
+import '../assertEnvClient.js'
 
 type PageContextInternalClientAfterRender = NonNullable<Awaited<ReturnType<typeof renderPageClient>>>
 

@@ -1,3 +1,29 @@
+## [0.4.253](https://github.com/vikejs/vike/compare/v0.4.252...v0.4.253) (2026-02-02)
+
+
+### Bug Fixes
+
+* apply import.meta.env static replacement also for node_modules/ code ([7f781cf](https://github.com/vikejs/vike/commit/7f781cf0a08a7f8cd9e54cbf35c4576f2b98949f))
+* avoid race condition between hydration and fast subsequent render ([#3056](https://github.com/vikejs/vike/issues/3056)) ([a555bc6](https://github.com/vikejs/vike/commit/a555bc631cc7ca10e5bb4e25d26247979d2ba3d8))
+* fix scroll restoration race condition (fix [#3050](https://github.com/vikejs/vike/issues/3050)) ([#3053](https://github.com/vikejs/vike/issues/3053)) ([45fd585](https://github.com/vikejs/vike/commit/45fd58584daa90f54c07ddcd13ef5eb299007511))
+* fix temporary console.log patch (fix [#3067](https://github.com/vikejs/vike/issues/3067)) ([3ea247f](https://github.com/vikejs/vike/commit/3ea247f0c01cc263b35839799257eb9bb66e9afd))
+* improve browser check (fix [#3036](https://github.com/vikejs/vike/issues/3036)) ([1d0a050](https://github.com/vikejs/vike/commit/1d0a05096b4a067074528403c27df085f3aeca74))
+* make `DEBUG` flag work on the edge (e.g. Cloudflare) (fix [#3067](https://github.com/vikejs/vike/issues/3067)) ([#3069](https://github.com/vikejs/vike/issues/3069)) ([4fa40ed](https://github.com/vikejs/vike/commit/4fa40edae0a52b544cbf83c0ce1f3ab3fe464ec4))
+* make +onHookCall server-only by default ([#3049](https://github.com/vikejs/vike/issues/3049)) ([3c0065c](https://github.com/vikejs/vike/commit/3c0065c51488364083655f3e448d11eb6b798c20))
+* move export types to first entry ([1a26d5b](https://github.com/vikejs/vike/commit/1a26d5bffc68920ad3bcb2012e3ad20cf86e14b2))
+* skip malformed `.pageContext.json` requests (fix [#3052](https://github.com/vikejs/vike/issues/3052)) ([e3a6e9d](https://github.com/vikejs/vike/commit/e3a6e9d0dff4bad56b3b6de703c1387b702c534a))
+* support file being both a runtime and config file (brillout/docpress[#86](https://github.com/vikejs/vike/issues/86)) ([3d92f08](https://github.com/vikejs/vike/commit/3d92f086484a9c391697baf39dfa25a8de273b5a))
+
+
+### MINOR BREAKING CHANGES
+
+> [!NOTE]
+> We recommend ignoring `MINOR BREAKING CHANGES` unless this version breaks your app, see [Vike Versioning](https://vike.dev/versioning).
+
+* `+onHookCall` is now server-only by default, use `.client.js` or `.shared.js` to execute it on the client. (Note that `+onHookCall` is in beta — breaking changes are expected.)
+
+
+
 ## [0.4.252](https://github.com/vikejs/vike/compare/v0.4.251...v0.4.252) (2026-01-12)
 
 

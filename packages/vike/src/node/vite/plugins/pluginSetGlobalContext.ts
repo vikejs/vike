@@ -1,5 +1,3 @@
-import '../assertEnvVite.js'
-
 export { pluginSetGlobalContext }
 
 import type { Plugin } from 'vite'
@@ -16,6 +14,7 @@ import {
 import { isDevCheck } from '../../../utils/isDev.js'
 import { reloadVikeConfig } from '../shared/resolveVikeConfigInternal.js'
 import { getViteConfigRuntime } from '../shared/getViteConfigRuntime.js'
+import '../assertEnvVite.js'
 
 function pluginSetGlobalContext(): Plugin[] {
   let isServerReload = false

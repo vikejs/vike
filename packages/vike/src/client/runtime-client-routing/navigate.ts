@@ -1,5 +1,3 @@
-import '../assertEnvClient.js'
-
 export { navigate }
 export { reload }
 
@@ -10,6 +8,7 @@ import { renderPageClient } from './renderPageClient.js'
 import type { ScrollTarget } from './setScrollPosition.js'
 import { assertClientRouting } from '../../utils/assertRoutingType.js'
 import { initClientRouter } from './initClientRouter.js'
+import '../assertEnvClient.js'
 
 assertClientRouting()
 

@@ -1,5 +1,3 @@
-import '../../../assertEnvServer.js'
-
 export { retrievePageAssetsDev }
 export { setGetClientEntrySrcDev }
 
@@ -10,6 +8,7 @@ import type { ModuleNode, ViteDevServer } from 'vite'
 import type { ClientDependency } from '../../../../shared-server-client/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import { parseVirtualFileId } from '../../../../shared-server-node/virtualFileId.js'
 import type { GetClientEntrySrcDev } from '../../../../node/vite/shared/getClientEntrySrcDev.js'
+import '../../../assertEnvServer.js'
 
 const globalObject = getGlobalObject('getPageAssets/retrievePageAssetsDev.ts', {
   // We cannot define getClientEntrySrcDev() in this file because it depends on utils/requireResolve.ts which isn't available in production

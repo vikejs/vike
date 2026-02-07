@@ -1,5 +1,3 @@
-import '../assertEnvClient.js'
-
 export { scrollRestoration_init }
 export { scrollRestoration_initialRenderIsDone }
 
@@ -13,6 +11,7 @@ export { scrollRestoration_initialRenderIsDone }
 
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import { onPageHide, onPageShow } from '../../utils/onPageVisibilityChange.js'
+import '../assertEnvClient.js'
 const globalObject = getGlobalObject<{ initialRenderIsDone?: true }>('scrollRestoration.ts', {})
 
 function scrollRestoration_init() {

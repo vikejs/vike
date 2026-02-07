@@ -1,5 +1,3 @@
-import '../../../../assertEnvServer.js'
-
 // Zero-config support for https://www.npmjs.com/package/react-streaming
 
 export { isStreamFromReactStreamingPackage }
@@ -13,6 +11,7 @@ import { assert, assertUsage } from '../../../../../utils/assert.js'
 import { hasProp } from '../../../../../utils/hasProp.js'
 import { isVikeReactApp } from '../../../../../utils/isVikeReactApp.js'
 import { streamPipeNodeToString, StreamReadableWeb, streamReadableWebToString, StreamWritableNode } from '../stream.js'
+import '../../../../assertEnvServer.js'
 
 // We use this simplistic public type to avoid type mismatches (when the user installed another version than Vike's devDependency#react-streaming install).
 type StreamFromReactStreamingPackagePublic = { injectToStream: Function }

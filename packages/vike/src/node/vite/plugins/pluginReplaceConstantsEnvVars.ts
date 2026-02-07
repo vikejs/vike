@@ -1,5 +1,3 @@
-import '../assertEnvVite.js'
-
 export { pluginReplaceConstantsEnvVars }
 
 import type { Plugin, ResolvedConfig } from 'vite'
@@ -8,12 +6,14 @@ import { escapeRegex } from '../../../utils/escapeRegex.js'
 import { isNotNullish } from '../../../utils/isNullish.js'
 import { assert, assertUsage, assertWarning } from '../../../utils/assert.js'
 import { isArray } from '../../../utils/isArray.js'
-import { lowerFirst } from '../../../utils/sorter.js'
+import { makeLast } from '../../../utils/sorter.js'
 import { assertPosixPath } from '../../../utils/path.js'
 import { getFilePathToShowToUserModule } from '../shared/getFilePath.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 import { getMagicString } from '../shared/getMagicString.js'
+import pc from '@brillout/picocolors'
+import '../assertEnvVite.js'
 
 const PUBLIC_ENV_PREFIX = 'PUBLIC_ENV__'
 const PUBLIC_ENV_ALLOWLIST = [
@@ -29,7 +29,7 @@ const PUBLIC_ENV_ALLOWLIST = [
 //   - Or stop using Vite's `mode` implementation and have Vike implement its own `mode` feature? (So that the only dependencies are `$ vike build --mode staging` and `$ MODE=staging vike build`.)
 
 // === Rolldown filter
-const skipIrrelevant = 'import.meta.env.'
+const skipIrrelevant = 'import.meta.env'
 const filterRolldown = {
   /* We don't do that, because vike-react-sentry uses import.meta.env.PUBLIC_ENV__SENTRY_DSN
   id: {
@@ -53,6 +53,11 @@ function pluginReplaceConstantsEnvVars(): Plugin[] {
   return [
     {
       name: 'vike:pluginReplaceConstantsEnvVars',
+      // Correct order:
+      // 1. @vitejs/plugin-vue
+      // 2. vike:pluginExtractAssets and vike:pluginExtractExportNames [needs to be applied after @vitejs/plugin-vue]
+      // 3. vike:pluginReplaceConstantsEnvVars [needs to be applied after vike:pluginExtractAssets and vike:pluginExtractExportNames]
+      // 4. vite:define (Vite built-in plugin) [needs to be applied after vike:pluginReplaceConstantsEnvVars]
       enforce: 'post',
       configResolved: {
         handler(config_) {
@@ -64,9 +69,8 @@ function pluginReplaceConstantsEnvVars(): Plugin[] {
 
           envPrefix = getEnvPrefix(config)
 
-          // Vite's built-in plugin vite:define needs to apply after this plugin.
-          //  - This plugin vike:pluginReplaceConstantsEnvVars needs to apply after vike:pluginExtractAssets and vike:pluginExtractExportNames which need to apply after @vitejs/plugin-vue
-          ;(config.plugins as Plugin[]).sort(lowerFirst<Plugin>((plugin) => (plugin.name === 'vite:define' ? 1 : 0)))
+          // See comment `Correct order` above
+          ;(config.plugins as Plugin[]).sort(makeLast<Plugin>((plugin) => plugin.name === 'vite:define'))
         },
       },
       transform: {
@@ -113,6 +117,22 @@ function pluginReplaceConstantsEnvVars(): Plugin[] {
           replacements.forEach(({ regExpStr, replacement }) => {
             magicString.replaceAll(new RegExp(regExpStr, 'g'), JSON.stringify(replacement))
           })
+
+          // Replace bare `import.meta.env` expression with `null` in the user-land.
+          // - Otherwise Vite replaces it with an object missing PUBLIC_ENV__ variables which is confusing for users.
+          // - We purposely don't support replacing `import.meta.env` with an object to incentivize users to write tree-shaking friendly code.
+          // - `define: { 'import.meta.env': JSON.stringify(null) }` doesn't work because it also replaces `import.meta.env` inside `import.meta.env.SONE_ENV`
+          const bareImportMetaEnvRegex = /\bimport\.meta\.env(?!\.)/g
+          const isUserLand = !id.includes('node_modules') && id.startsWith(config.root) // skip node_modules/ as well as linked dependencies
+          if (isUserLand && bareImportMetaEnvRegex.test(code)) {
+            assertWarning(
+              false,
+              `The bare ${pc.cyan('import.meta.env')} expression in ${getFilePathToShowToUserModule(id, config)} is replaced with ${pc.cyan('null')} — use ${pc.cyan('import.meta.env.SONE_ENV')} instead ${pc.underline('https://vike.dev/env')}`,
+              { onlyOnce: true },
+            )
+            bareImportMetaEnvRegex.lastIndex = 0 // Reset state after .test() since the /g flag makes the RegExp stateful
+            magicString.replaceAll(bareImportMetaEnvRegex, JSON.stringify(null))
+          }
 
           return getMagicStringResult()
         },

@@ -179,8 +179,6 @@ type PageContextInit = {
   headersOriginal?: unknown // We set it to the type `unknown` instead of the type `HeadersInit` because `HeadersInit` isn't accurate: for example, `http.IncomingHttpHeaders` is a valid input for `new Headers()` but doesn't match the `HeadersInit` init.
   /** @deprecated Set `pageContextInit.urlOriginal` instead  */ // TO-DO/next-major-release: remove
   url?: string
-  /** @deprecated Set pageContextInit.headersOriginal instead */ // TO-DO/next-major-release: remove
-  headers?: Record<string, string>
 }
 
 type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
@@ -349,6 +347,9 @@ type PageContextClientCommon = {
    * https://vike.dev/pageContext#isPrerendering
    */
   isPrerendering: false
+
+  cspNonce?: undefined
+  headers?: undefined
 }
 
 type PageContextInternalServer = Omit<

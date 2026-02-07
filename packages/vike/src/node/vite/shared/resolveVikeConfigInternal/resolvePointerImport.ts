@@ -1,5 +1,3 @@
-import '../../assertEnvVite.js'
-
 export { resolvePointerImport }
 export { resolvePointerImportData }
 export type { PointerImport }
@@ -15,6 +13,7 @@ import { requireResolveOptional } from '../../../../utils/requireResolve.js'
 import { type PointerImportData, assertPointerImportPath, parsePointerImportData } from './pointerImports.js'
 import { getFilePathAbsoluteUserRootDir, getFilePathResolved, getFilePathUnresolved } from '../getFilePath.js'
 import type { FilePath, FilePathResolved } from '../../../../types/FilePath.js'
+import '../../assertEnvVite.js'
 
 type PointerImport = { fileExportPath: FileExportPath }
 type FileExportPath = DefinedAtFilePath & Required<Pick<DefinedAtFilePath, 'fileExportName'>>

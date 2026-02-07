@@ -1,5 +1,3 @@
-import '../../assertEnvVite.js'
-
 export { getFilesystemRouteString }
 export { getFilesystemRouteDefinedBy }
 export { isInherited }
@@ -16,6 +14,7 @@ import { assert, assertWarning } from '../../../../utils/assert.js'
 import { assertIsNotProductionRuntime } from '../../../../utils/assertSetup.js'
 import { assertPosixPath } from '../../../../utils/path.js'
 import { higherFirst } from '../../../../utils/sorter.js'
+import '../../assertEnvVite.js'
 assertIsNotProductionRuntime()
 
 /**

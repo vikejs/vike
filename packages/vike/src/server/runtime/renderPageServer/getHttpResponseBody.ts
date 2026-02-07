@@ -1,5 +1,3 @@
-import '../../assertEnvServer.js'
-
 export { getHttpResponseBody }
 export { getHttpResponseBodyStreamHandlers }
 export type { HttpResponseBody }
@@ -29,6 +27,7 @@ import { assert, assertUsage, assertWarning } from '../../../utils/assert.js'
 import { getHtmlString, type HtmlRender } from './html/renderHtml.js'
 import type { RenderHook } from './execHookOnRenderHtml.js'
 import pc from '@brillout/picocolors'
+import '../../assertEnvServer.js'
 
 const streamDocs = 'See https://vike.dev/streaming for more information.'
 

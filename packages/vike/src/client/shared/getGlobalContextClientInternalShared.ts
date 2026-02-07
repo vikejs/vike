@@ -1,5 +1,3 @@
-import '../assertEnvClient.js'
-
 // Public usage
 export { getGlobalContext }
 export { getGlobalContextSync }
@@ -23,6 +21,7 @@ import { checkType } from '../../utils/checkType.js'
 import { genPromise } from '../../utils/genPromise.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import { objectAssign } from '../../utils/objectAssign.js'
+import '../assertEnvClient.js'
 
 type GlobalContextNotTyped = Record<string, unknown>
 const globalObject = getGlobalObject<{

@@ -1,5 +1,3 @@
-import '../assertEnvServer.js'
-
 // TO-DO/eventually: point package.json#exports['./server'] to this file.
 // - Write migration guide, see comment below.
 
@@ -7,6 +5,7 @@ export * from './index.js'
 
 import { assertWarning } from '../../utils/assert.js'
 import pc from '@brillout/picocolors'
+import '../assertEnvServer.js'
 assertWarning(
   false,
   [

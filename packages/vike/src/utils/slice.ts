@@ -1,6 +1,6 @@
-import { assert } from './assert.js'
-
 export { slice }
+
+import { assert } from './assert.js'
 
 function slice<Element, T extends Array<Element>>(thing: T, from: number, to: number): T
 function slice(thing: string, from: number, to: number): string
