@@ -5,6 +5,7 @@ import cm, { cmMerge } from '@classmatejs/react'
 import { landingPageHeroUsps } from '../../util/constants'
 import GradientText from '../../components/GradientText'
 import { BlurDotOpacity, uiConfig, UiVariantBtnColor } from '../../util/ui.constants'
+import { ChevronsDown, ChevronsRight } from 'lucide-react'
 
 const UspHero = () => {
   const [hoveredUsp, setHoveredUsp] = useState<string | null>(null)
@@ -23,7 +24,7 @@ const UspHero = () => {
               onMouseLeave={() => setHoveredUsp(null)}
             >
               <StyledUspItemInner $hovered={isHovered} />
-              <div className="absolute inset-0 flex justify-center items-center z-2">
+              <div className="absolute inset-0 flex justify-center items-center z-2 pointer-events-none">
                 <StyledDot type={usp.dotColor} size="lg" visibility="high" $hovered={isHovered} />
               </div>
               <div className="absolute h-full -inset-3 z-1 bg-linear-to-t to-base-300" />
@@ -49,6 +50,7 @@ const UspHero = () => {
                     )}
                   >
                     Learn more
+                    <ChevronsRight className="inline-block w-3 h-3" />
                   </span>
                 </div>
               </StyledTextContent>

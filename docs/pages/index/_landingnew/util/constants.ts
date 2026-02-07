@@ -119,11 +119,11 @@ const NavigationTabFrameworks = {
   solid: 'solid',
 }
 type NavigationTabFrameworks = typeof NavigationTabFrameworks
-type NavigationTabFramework = NavigationTabFrameworks[keyof NavigationTabFrameworks]
+export type NavigationTabFramework = NavigationTabFrameworks[keyof NavigationTabFrameworks]
 
 export type FlexEditorTabTool = {
-  name: string
-  imgKey: string
+  name?: string
+  imgKey?: string
 }
 
 export type FlexEditorTab = {

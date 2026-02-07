@@ -21,7 +21,7 @@ const FlexibilitySection = () => {
         color="green"
       />
       <NavigationTabs />
-      <div className="grid grid-cols-2 min-h-100 bg-base-200 mt-20">
+      <div className="grid grid-cols-2 min-h-100 bg-base-200 z-4 relative border-2 border-primary -mt-0.5 rounded-box">
         <div>read-only editor here</div>
       </div>
     </LayoutComponent>

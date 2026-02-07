@@ -1,5 +1,8 @@
 @import 'tailwindcss';
+
 @import './vike-docs-legacy.css';
+
+
 
 /* custom */
 @theme {
@@ -104,3 +107,6 @@
   --depth: 0;
   --noise: 0;
 }
+
+@source inline("bg-base-{100..300..100}");
+@source inline("bg-base-100 bg-base-200 bg-base-300");

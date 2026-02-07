@@ -48,7 +48,7 @@ const HeadlineGroup = ({
   return (
     <div role="heading" className={cmMerge('w-full overflow-hidden', outerClassName)}>
       {blurColor && (
-        <div className="absolute inset-0 flex justify-center z-0">
+        <div className="absolute inset-0 flex justify-center z-0  pointer-events-none">
           <BlurDot type={blurColor} size="xl" visibility="low" className="-mt-40" />
         </div>
       )}

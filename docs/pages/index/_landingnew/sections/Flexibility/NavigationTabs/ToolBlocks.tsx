@@ -1,27 +1,26 @@
-import React, { useMemo } from 'react'
+import React, { useId, useMemo } from 'react'
 import { FlexEditorTabTool } from '../../../util/constants'
 import cm from '@classmatejs/react'
 
-const StyledToolBlock = cm.div`
-  flex
-  flex-wrap
-  gap-2
-  mt-2
-`
+const maxToolBlocksCount = 5
 
 const ToolBlocks = ({ tools }: { tools: FlexEditorTabTool[] }) => {
+  // fill empty blocks, add stable id for react
   const filledTools = useMemo(() => {
-    const maxToolBlocks = tools.length + 1
-    const emptyBlocksCount = maxToolBlocks - tools.length
-    const emptyBlocks = Array(emptyBlocksCount).fill({ name: undefined, imgKey: undefined })
-    return [...tools, ...emptyBlocks]
+    const toolCountDiff = maxToolBlocksCount - tools.length
+    const emptyBlocks = Array(toolCountDiff).fill({ name: undefined, imgKey: undefined })
+    return [...tools, ...emptyBlocks].map((tool, index) => ({
+      name: tool.name,
+      imgKey: tool.imgKey,
+      id: `${index}`,
+    }))
   }, [tools])
 
   return (
-    <div className="flex flex-wrap gap-2 mt-2">
+    <div className="flex flex-col-reverse gap-1">
       {filledTools.map((tool) => (
-        <StyledToolBlock key={tool.name}>
-          {tool.imgKey && <img src={tool.imgKey} alt={tool.name} className="w-6 h-6 mr-2" />}
+        <StyledToolBlock key={tool.id} $isEmpty={!tool.name}>
+          {tool.imgKey && <img src={tool.imgKey} alt={tool.name} className="w-4 h-4" />}
           {tool.name && <span>{tool.name}</span>}
         </StyledToolBlock>
       ))}
@@ -29,3 +28,23 @@ const ToolBlocks = ({ tools }: { tools: FlexEditorTabTool[] }) => {
   )
 }
 export default ToolBlocks
+
+const StyledToolBlock = cm.div.variants<{ $isEmpty: boolean }>({
+  base: `
+  flex flex-wrap gap-2
+  h-10
+  pl-3
+  items-center
+  rounded-field
+  border-1 
+  `,
+  variants: {
+    $isEmpty: {
+      true: 'bg-base-200/50 border-dashed border-base-100',
+      false: 'bg-base-200 border-base-100', // not accepted
+    },
+  },
+  defaultVariants: {
+    $isEmpty: false,
+  },
+})
