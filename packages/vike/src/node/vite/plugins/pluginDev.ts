@@ -20,7 +20,6 @@ function pluginDev(): Plugin[] {
     {
       name: 'vike:pluginDev',
       apply: applyDev,
-      enforce: 'pre',
       config: {
         handler() {
           return {
@@ -33,7 +32,6 @@ function pluginDev(): Plugin[] {
         async handler(config_) {
           config = config_
           await resolveOptimizeDeps(config)
-          // console.log('i', config.ssr.optimizeDeps.include)
           await determineFsAllowList(config)
           interceptViteLogs(config)
           logDockerHint(config.server.host)

@@ -39,7 +39,7 @@ const LATE_DISCOVERED = [
 // [11:32:49.768][/test/photon-vercel/.test-dev.test.ts][pnpm run dev][stderr] Failed to resolve dependency: vike > @brillout/require-shim, present in ssr 'optimizeDeps.include'
 // ```
 // https://github.com/vikejs/vike-photon/issues/56
-const ALWAYS_REMOVE = ['euwqe', '@brillout/require-shim', 'vike > @brillout/require-shim']
+const ALWAYS_REMOVE = ['@brillout/require-shim', 'vike > @brillout/require-shim']
 
 const optimizeDeps = {
   optimizeDeps: {
@@ -115,13 +115,16 @@ async function resolveOptimizeDeps(config: ResolvedConfig) {
       env.optimizeDeps.include = add(env.optimizeDeps.include, includeServer)
       env.optimizeDeps.entries = add(env.optimizeDeps.entries, entriesServer)
     }
-    // @ts-ignore
-    env.optimizeDeps.include = remove(env.optimizeDeps.include ?? [])
-    // @ts-ignore
-    env.optimizeDeps.entries = remove(env.optimizeDeps.entries ?? [])
   }
 
-  config.ssr.optimizeDeps.include = remove(config.ssr.optimizeDeps.include as any)
+  // remove @brillout/require-shim
+  config.optimizeDeps.include = remove(config.optimizeDeps.include)
+  config.optimizeDeps.entries = remove(config.optimizeDeps.entries)
+  for (const envName in config.environments) {
+    const env = config.environments[envName]!
+    env.optimizeDeps.include = remove(env.optimizeDeps.include ?? [])
+    env.optimizeDeps.entries = remove(env.optimizeDeps.entries ?? [])
+  }
 
   // Debug
   if (debug.isActivated)
@@ -255,11 +258,14 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
 }
 
 function add(input: string | string[] | undefined, listAddendum: string[]): string[] {
-  let list = !input ? [] : isArray(input) ? unique(input) : [input]
+  const list = normalizeInput(input)
   listAddendum.forEach((e) => {
     if (!list.includes(e)) list.push(e)
   })
-  list = remove(list)
+  return list
+}
+function normalizeInput(input: string[] | string | undefined): string[] {
+  const list = !input ? [] : isArray(input) ? unique(input) : [input]
   return list
 }
 function unique<T>(arr: T[]): T[] {
@@ -267,6 +273,7 @@ function unique<T>(arr: T[]): T[] {
   return arr.length !== arrUnique.length ? arrUnique : arr
 }
 
-function remove(input: string[]) {
-  return input.filter((e) => !ALWAYS_REMOVE.includes(e))
+function remove(input: string[] | string | undefined) {
+  let list = normalizeInput(input)
+  return list.filter((e) => !ALWAYS_REMOVE.includes(e))
 }
