@@ -27,7 +27,7 @@
   --d-color-warning: oklch(80% 0.199 91.936);
   --d-color-error: oklch(57% 0.245 27.325);
 
-  /* reuse specific daisy variants for buttons etc */
+  /* define ui variant colors while re-using pregenerated daisy variants */
   --d-color-primary: #248C83;
   --d-color-secondary: #4198db;
   --d-color-accent: #b5721b;
