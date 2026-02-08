@@ -45,13 +45,6 @@ export const applyStrokeWidth = (targets: SVGElement[], width: number, mode: 'se
   })
 }
 
-export const killTweens = (targets: SVGElement[]) => {
-  if (!targets.length) {
-    return
-  }
-  gsap.killTweensOf(targets)
-}
-
 let scrollTriggerRegistered = false
 
 const registerScrollTrigger = () => {

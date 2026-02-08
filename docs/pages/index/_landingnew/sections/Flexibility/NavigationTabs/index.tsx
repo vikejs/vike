@@ -22,7 +22,13 @@ const StyledTabBg = cm.div<{ $active: boolean }>`
   border-primary
   border-t-2
   border-x-2
-  ${({ $active }) => ($active ? 'bg-base-200' : 'border-t-0 border-x-0 border-b-2  bg-base-100')}
+  ${({ $active }) =>
+    $active
+      ? 'bg-base-200'
+      : `
+    border-t-0 border-x-0 border-b-2
+    bg-base-200/50
+  `}
 `
 
 const StyledTabTitle = cm.div`
@@ -32,40 +38,19 @@ const StyledTabTitle = cm.div`
   flex items-center justify-between
 `
 
-// const StyledTabGradient = cm.span<{ $isActive: boolean }>`
-//   absolute -inset-1
-//   pointer-events-none
-//   bg-gradient-to-t to-base-300 via-base-300/40 z-10
-// `
-
-const StyledTabGradient = cm.span.variants<{ $state: 'hover' | 'active' | 'inactive' }>({
-  base: `
-    absolute -inset-1  
-    pointer-events-none
-    bg-gradient-to-t to-base-300 via-base-300/40 z-10
-    opacity-0
-    transition-opacity
-  `,
-  variants: {
-    $state: {
-      hover: 'opacity-30',
-      active: 'opacity-20',
-      inactive: 'opacity-100',
-    },
-  },
-  defaultVariants: {
-    $state: 'inactive',
-  },
-})
+const StyledTabGradient = cm.span`
+  absolute -inset-1  
+  pointer-events-none
+  bg-gradient-to-t to-base-300 via-base-300/40 z-10
+`
 
 const NavigationTabs = () => {
-  const { activeTab, setActiveTab, handleHover, hoveredTab } = useNavigationTabsInteractions()
+  const { containerRef, activeTab, setActiveTab, handleHover, getToolBlocksRef } = useNavigationTabsInteractions()
 
   return (
-    <StyledWrapper>
+    <StyledWrapper ref={containerRef}>
       {flexEditorTabs.map((tab) => {
         const isActive = activeTab === tab.frontend
-        const tabState = isActive ? 'active' : hoveredTab === tab.frontend ? 'hover' : 'inactive'
 
         return (
           <div
@@ -75,13 +60,13 @@ const NavigationTabs = () => {
             onMouseEnter={() => handleHover(tab.frontend)}
             onMouseLeave={() => handleHover(undefined)}
           >
-            <ToolBlocks tools={tab.tools} />
-            <StyledTabGradient $state={tabState} />
+            <ToolBlocks ref={getToolBlocksRef(tab.frontend)} tools={tab.tools} />
+            <StyledTabGradient />
             <StyledTab>
               <StyledTabBg $active={isActive} />
               <StyledTabTitle>
                 {tab.title}
-                <ChevronsDown className="inline-block mr-2 w-4 h-4" />
+                <ChevronsDown className="inline-block w-4 h-4 text-grey-200" />
               </StyledTabTitle>
             </StyledTab>
           </div>

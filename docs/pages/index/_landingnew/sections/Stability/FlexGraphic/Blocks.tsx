@@ -51,7 +51,7 @@ const FlexGraphicBlocks = ({ activeHooks, activeBlocks, onBlockHover, onBlockLea
           <ExtensionBlock
             key={type}
             $type={type}
-            $animationState={isActive ? 'active' : connectedHook ? "active" : "inactive"}
+            $animationState={isActive ? 'active' : connectedHook ? 'active' : 'inactive'}
             style={borderColor ? { borderColor } : undefined}
             onMouseEnter={() => onBlockHover?.(type)}
             onMouseLeave={() => onBlockLeave?.()}

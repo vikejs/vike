@@ -4,7 +4,7 @@ import { uiConfig } from '../../../util/ui.constants'
 
 export const ExtensionBlock = cm.div.variants<{
   $type: ExtensionBlockVariants
-  $animationState?: "active" | "inactive"
+  $animationState?: 'active' | 'inactive'
 }>({
   base: `
   absolute 
@@ -46,8 +46,8 @@ export const ExtensionBlock = cm.div.variants<{
       `,
     },
     $animationState: {
-      active: 'text-base-content',
-      inactive: 'bg-base-200/50',
+      active: 'text-base-content scale-102',
+      inactive: 'bg-base-200/50 scale-100',
     },
   },
 })

@@ -10,6 +10,7 @@ import reduxImg from '../assets/tech-icons/redux.svg'
 import vercelImg from '../assets/tech-icons/vercel.svg'
 import sentryImg from '../assets/tech-icons/sentry.svg'
 import solidImg from '../assets/tech-icons/solid.svg'
+import { BrickWallShield, LucideIcon, ShoppingCart } from 'lucide-react'
 
 export const FlexGraphicHook = {
   onBeforeRenderClient: 'onBeforeRenderClient',

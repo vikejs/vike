@@ -2,8 +2,9 @@ import { useEffect, useRef, useState, type RefObject } from 'react'
 import { useGSAP } from '@gsap/react'
 
 import { FlexGraphicHook, HOOK_NAME_KEYS } from '../../../util/constants'
-import { applyColor, applyStrokeWidth, createSlideshowScrollTrigger, killTweens } from './animations'
+import { applyColor, applyStrokeWidth, createSlideshowScrollTrigger } from './animations'
 import { hookColors } from '../../../util/ui.constants'
+import { killTweens } from '../../../util/gsap.utils'
 
 const circuitDefaultColor = 'var(--color-grey-300-hex)'
 const baseStrokeWidth = 3
@@ -104,6 +105,12 @@ const useFlexGraphicInteractions = () => {
 
   const hasInitializedRef = useRef(false)
 
+  // re-runs on [activeHooks] change, applies colors and stroke widths
+  // also kills tweens to prevent animation conflicts
+  // todo: refactor
+  // gsap.killTweensOf is harsh here - it known for causing lag if generally used
+  // instead of killing and applying all tweens state changes, we should pregenerate tweens in refs -> gsap.fromTo
+  // which we can then play, reverse or pause based on the states without recalculation or kill.
   const { contextSafe } = useGSAP(
     () => {
       const baseMode = hasInitializedRef.current ? 'to' : 'set'
@@ -112,9 +119,8 @@ const useFlexGraphicInteractions = () => {
       const allTargets = collectAllTargets(hookRefMap)
       const allElements = [...allTargets.strokeTargets, ...allTargets.fillTargets]
 
+      // outchy
       killTweens(allElements)
-
-      // we must extract the base color from CSS to support theming
 
       applyColor({ targets: allTargets.strokeTargets, color: baseColor, mode: baseMode, attr: 'stroke' })
       applyColor({ targets: allTargets.fillTargets, color: baseColor, mode: baseMode, attr: 'fill' })

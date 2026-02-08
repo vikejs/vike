@@ -8,15 +8,15 @@ const DxSection = () => {
   return (
     <LayoutComponent className="mt-20">
       <SectionHeader
-        icon={"⚡️"}
-        badgeText='Developer Experience'
+        icon={'⚡️'}
+        badgeText="Developer Experience"
         main={
           <>
             <GradientText color="orange">Lightning</GradientText> DX
           </>
         }
         sub="Build mission-critical apps — on a rock-solid foundation."
-        color='orange'
+        color="orange"
       />
       <div className="grid grid-cols-2 min-h-100 bg-base-200 mt-20">
         <div>read-only editor here</div>

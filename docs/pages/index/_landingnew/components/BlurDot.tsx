@@ -39,8 +39,6 @@ export default BlurDot
 
 type BlurDotSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 
-
-
 const StyledBlurDot = cm.div.variants<{ $size: BlurDotSize; $visibility: BlurDotOpacity }>({
   base: `
   absolute

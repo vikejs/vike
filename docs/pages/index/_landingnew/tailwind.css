@@ -2,8 +2,6 @@
 
 @import './vike-docs-legacy.css';
 
-
-
 /* custom */
 @theme {
   --font-sans: 'Inter', sans-serif;
@@ -28,7 +26,7 @@
   --d-color-error: oklch(57% 0.245 27.325);
 
   /* define ui variant colors while re-using pregenerated daisy variants */
-  --d-color-primary: #248C83;
+  --d-color-primary: #248c83;
   --d-color-secondary: #4198db;
   --d-color-accent: #b5721b;
 

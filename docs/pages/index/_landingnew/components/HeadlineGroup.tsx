@@ -36,7 +36,7 @@ const HeadlineGroup = ({
           {main}
         </BaseHeadline>
         {sub && (
-          <AuxHeadline className='mb-3' $type="sub" $centered={centered || true}>
+          <AuxHeadline className="mb-3" $type="sub" $centered={centered || true}>
             {sub}
           </AuxHeadline>
         )}
