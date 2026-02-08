@@ -1,72 +1,87 @@
-import cm from '@classmatejs/react'
-import React, { useEffect, useState } from 'react'
-import { flexEditorTabs, NavigationTabFramework } from '../../../util/constants'
+import cm, { cmMerge } from '@classmatejs/react'
+import React from 'react'
+import { flexEditorTabs } from '../../../util/constants'
 import ToolBlocks from './ToolBlocks'
 import { ChevronsDown } from 'lucide-react'
 import useNavigationTabsInteractions from './useNavigationTabsInteractions'
 
 const StyledWrapper = cm.div`
   mx-auto w-6/7 
-  grid grid-cols-3 gap-4
+  grid grid-cols-3 gap-10
+  z-20
+  mt-14
+  relative
   overflow-hidden
-  z-0
+  pt-3
+  px-3
 `
 
 const StyledTab = cm.div`
-  px-4 py-3 relative
-`
-const StyledTabBg = cm.div<{ $active: boolean }>`
-  absolute inset-0 
-  rounded-t-field
-  z-10
-  border-primary
-  border-t-2
-  border-x-2
-  ${({ $active }) =>
-    $active
-      ? 'bg-base-200'
-      : `
-    border-t-0 border-x-0 border-b-2
-    bg-base-200/50
-  `}
+  px-4 py-3 relative z-12
 `
 
-const StyledTabTitle = cm.div`
+const StyledTabBg = cm.div.variants<{ $state: 'active' | 'hover' | 'inactive' }>({
+  base: `
+    absolute inset-0 
+    rounded-t-field
+    z-10
+    border-primary
+    border-b-2
+    border-b-base-200
+  `,
+  variants: {
+    $state: {
+      active: 'border-b-primary bg-primary',
+      hover: 'border-2 border-b-primary border-x-primary',
+      inactive: `border-b-2 border-b-primary bg-base-200`,
+    },
+  },
+  defaultVariants: {
+    $state: 'inactive',
+  },
+})
+
+const StyledTabTitle = cm.div<{ $active: boolean }>`
   relative 
   font-bold
   z-11
+  ${({ $active }) => ($active ? 'text-white' : 'text-primary')}
   flex items-center justify-between
 `
 
 const StyledTabGradient = cm.span`
-  absolute -inset-1  
+  absolute -inset-2
   pointer-events-none
-  bg-gradient-to-t to-base-300 via-base-300/40 z-10
+  bg-gradient-to-t to-base-300 via-base-300/40 z-13
 `
 
 const NavigationTabs = () => {
-  const { containerRef, activeTab, setActiveTab, handleHover, getToolBlocksRef } = useNavigationTabsInteractions()
+  const { containerRef, activeTab, setActiveTab, handleHover, getToolBlocksRef, getTabGradientRef, hoveredTab } =
+    useNavigationTabsInteractions()
 
   return (
     <StyledWrapper ref={containerRef}>
       {flexEditorTabs.map((tab) => {
         const isActive = activeTab === tab.frontend
+        const tabBgState = isActive ? 'active' : hoveredTab === tab.frontend ? 'hover' : 'inactive'
 
         return (
           <div
             key={tab.frontend}
-            className="flex flex-col gap-1 relative"
+            className="flex flex-col gap-1 relative cursor-pointer"
             onClick={() => setActiveTab(tab.frontend)}
             onMouseEnter={() => handleHover(tab.frontend)}
             onMouseLeave={() => handleHover(undefined)}
           >
-            <ToolBlocks ref={getToolBlocksRef(tab.frontend)} tools={tab.tools} />
-            <StyledTabGradient />
+            <ToolBlocks ref={getToolBlocksRef(tab.frontend)} tools={tab.tools} active={isActive} />
+            <StyledTabGradient ref={getTabGradientRef(tab.frontend)} />
             <StyledTab>
-              <StyledTabBg $active={isActive} />
-              <StyledTabTitle>
+              <StyledTabBg $state={tabBgState} />
+              <StyledTabTitle $active={isActive}>
                 {tab.title}
-                <ChevronsDown className="inline-block w-4 h-4 text-grey-200" />
+                <ChevronsDown
+                  className={cmMerge('inline-block w-4 h-4 ', isActive ? 'text-base-300' : 'text-primary')}
+                />
               </StyledTabTitle>
             </StyledTab>
           </div>

@@ -1,8 +1,8 @@
 import { gsap } from 'gsap'
 
-export const killTweens = (targets: Element[]) => {
+export const killTweens = (targets: Element[], props?: string | string[]) => {
   if (!targets.length) {
     return
   }
-  gsap.killTweensOf(targets)
+  gsap.killTweensOf(targets, props)
 }
