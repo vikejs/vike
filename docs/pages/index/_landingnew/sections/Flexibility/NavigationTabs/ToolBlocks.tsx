@@ -35,6 +35,7 @@ const ToolBlocks = forwardRef<HTMLDivElement, { tools: FlexEditorTabTool[]; acti
         name: tool.name,
         imgKey: tool.imgKey,
         id: `${index}`,
+        brandColor: tool.brandColor || 'transparent',
       }))
     }, [tools])
 
@@ -48,6 +49,11 @@ const ToolBlocks = forwardRef<HTMLDivElement, { tools: FlexEditorTabTool[]; acti
               data-tool-block="true"
               data-tool-block-empty={tool.name ? undefined : 'true'}
             >
+              {/* gradient from brandColor to transparent - left to right */}
+              <div
+                className="absolute inset-0 opacity-10"
+                style={{ background: `linear-gradient(to right, ${tool.brandColor ?? 'transparent'}, transparent)` }}
+              />
               <div
                 className={cmMerge(
                   'absolute -inset-1 bg-base-300',

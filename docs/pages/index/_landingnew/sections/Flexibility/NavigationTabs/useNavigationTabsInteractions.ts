@@ -74,23 +74,25 @@ const useNavigationTabsInteractions = () => {
 
   const handleHover = contextSafe((tabFrontend: NavigationTabFramework | undefined) => {
     setHoveredTab(tabFrontend)
+  })
 
-    if (tabFrontend && tabFrontend !== activeTab) {
-      const waveTargets = collectToolBlocks(toolBlocksRefMap.current[tabFrontend] ?? null, true)
-      killTweens(waveTargets)
-      const timeline = createPipeWaveTimeline(waveTargets)
-      if (timeline) {
-        const timelines = waveTimelineMap.current[tabFrontend] ?? []
-        waveTimelineMap.current[tabFrontend] = timelines
-        timelines.push(timeline)
-        timeline.eventCallback('onComplete', () => {
-          const current = waveTimelineMap.current[tabFrontend]
-          if (!current) {
-            return
-          }
-          waveTimelineMap.current[tabFrontend] = current.filter((entry) => entry !== timeline)
-        })
-      }
+  const handleClick = contextSafe((tabFrontend: NavigationTabFramework) => {
+    setActiveTab(tabFrontend)
+
+    const waveTargets = collectToolBlocks(toolBlocksRefMap.current[tabFrontend] ?? null, true)
+    killTweens(waveTargets)
+    const timeline = createPipeWaveTimeline(waveTargets)
+    if (timeline) {
+      const timelines = waveTimelineMap.current[tabFrontend] ?? []
+      waveTimelineMap.current[tabFrontend] = timelines
+      timelines.push(timeline)
+      timeline.eventCallback('onComplete', () => {
+        const current = waveTimelineMap.current[tabFrontend]
+        if (!current) {
+          return
+        }
+        waveTimelineMap.current[tabFrontend] = current.filter((entry) => entry !== timeline)
+      })
     }
   })
 
@@ -117,6 +119,7 @@ const useNavigationTabsInteractions = () => {
     getToolBlocksRef,
     activeTab,
     setActiveTab,
+    handleClick,
     handleHover,
     hoveredTab,
   }

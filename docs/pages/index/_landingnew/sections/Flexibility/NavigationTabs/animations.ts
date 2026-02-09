@@ -1,7 +1,7 @@
 import { gsap } from 'gsap'
 import { uiConfig } from '../../../util/ui.constants'
 
-export const pipeWaveStagger = { each: 0.02, from: 'end', ease: "power1.out" } as const
+export const pipeWaveStagger = { each: 0.02, from: 'end', ease: 'power1.out' } as const
 const pipeWaveKeyframes = [
   { y: -3, opacity: 0.7, duration: uiConfig.transition.shortDuration },
   { y: -6, opacity: 0.4, duration: uiConfig.transition.shortDuration },

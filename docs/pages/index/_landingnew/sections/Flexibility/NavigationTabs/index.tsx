@@ -56,7 +56,7 @@ const StyledTabGradient = cm.span`
 `
 
 const NavigationTabs = () => {
-  const { containerRef, activeTab, setActiveTab, handleHover, getToolBlocksRef, getTabGradientRef, hoveredTab } =
+  const { containerRef, activeTab, handleClick, handleHover, getToolBlocksRef, getTabGradientRef, hoveredTab } =
     useNavigationTabsInteractions()
 
   return (
@@ -69,7 +69,7 @@ const NavigationTabs = () => {
           <div
             key={tab.frontend}
             className="flex flex-col gap-1 relative cursor-pointer"
-            onClick={() => setActiveTab(tab.frontend)}
+            onClick={() => handleClick(tab.frontend)}
             onMouseEnter={() => handleHover(tab.frontend)}
             onMouseLeave={() => handleHover(undefined)}
           >

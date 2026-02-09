@@ -125,6 +125,7 @@ export type NavigationTabFramework = NavigationTabFrameworks[keyof NavigationTab
 export type FlexEditorTabTool = {
   name?: string
   imgKey?: string
+  brandColor?: string
 }
 
 export type FlexEditorTab = {
@@ -145,7 +146,7 @@ export const flexEditorTabs: FlexEditorTab[] = [
     backend: 'none',
     api: 'none',
     deployment: 'static (e.g. GitHub Pages)',
-    tools: [{ name: 'Solidjs', imgKey: solidImg }],
+    tools: [{ name: 'Solidjs', imgKey: solidImg, brandColor: '#6DB33F' }],
   },
   {
     title: 'Admin panel',
@@ -155,10 +156,10 @@ export const flexEditorTabs: FlexEditorTab[] = [
     api: 'REST',
     deployment: 'static (e.g. GitHub Pages)',
     tools: [
-      { name: 'Vue', imgKey: vueImg },
-      { name: 'Tanstack query', imgKey: tanstackImg },
-      { name: 'Pinia', imgKey: piniaImg },
-      { name: 'Vuetify', imgKey: vuetifyImg },
+      { name: 'Vue', imgKey: vueImg, brandColor: '#4FC08D' },
+      { name: 'Tanstack query', imgKey: tanstackImg, brandColor: '#FF4154' },
+      { name: 'Pinia', imgKey: piniaImg, brandColor: '#EA4E92' },
+      { name: 'Vuetify', imgKey: vuetifyImg, brandColor: '#1867C0' },
     ],
   },
   {
@@ -169,11 +170,11 @@ export const flexEditorTabs: FlexEditorTab[] = [
     api: 'GraphQL',
     deployment: 'Cloudflare',
     tools: [
-      { name: 'React', imgKey: reactImg },
-      { name: 'Apollo', imgKey: apolloImg },
-      { name: 'Redux', imgKey: reduxImg },
-      { name: 'Styled-jsx', imgKey: vercelImg },
-      { name: 'Sentry', imgKey: sentryImg },
+      { name: 'React', imgKey: reactImg, brandColor: '#61DAFB' },
+      { name: 'Apollo', imgKey: apolloImg, brandColor: '#311C87' },
+      { name: 'Redux', imgKey: reduxImg, brandColor: '#764ABC' },
+      { name: 'Styled-jsx', imgKey: vercelImg, brandColor: '#000000' },
+      { name: 'Sentry', imgKey: sentryImg, brandColor: '#E03E2F' },
     ],
   },
 ]
