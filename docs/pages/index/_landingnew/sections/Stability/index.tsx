@@ -1,8 +1,6 @@
 import React from 'react'
 import LayoutComponent from '../../components/LayoutComponent'
-import HeadlineGroup from '../../components/HeadlineGroup'
 import GradientText from '../../components/GradientText'
-import FlexGraphic from './FlexGraphic'
 import SectionHeader from '../../components/SectionHeader'
 
 const StabilitySection = () => {
@@ -20,8 +18,7 @@ const StabilitySection = () => {
         color="blue"
       />
       <div className="grid grid-cols-2">
-        <div></div>
-        <FlexGraphic />
+        <div>123</div>
       </div>
     </LayoutComponent>
   )

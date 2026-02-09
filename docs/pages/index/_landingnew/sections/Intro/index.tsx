@@ -24,7 +24,7 @@ const IntroSection = () => {
             right.
           </GradientText>
         </Headline>
-        <p className="text-xl md:text-2xl text-grey-100 text-center w-3/4 lg:w-3/5 mx-auto mb-6">
+        <p className="text-xl md:text-2xl text-grey text-center w-3/4 lg:w-3/5 mx-auto mb-6">
           Composable framework to build advanced applications with stability and flexibility.
         </p>
         <div className="flex gap-2 items-center justify-center mb-16">

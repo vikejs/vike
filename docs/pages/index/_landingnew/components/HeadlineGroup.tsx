@@ -18,7 +18,7 @@ type HeadlineGroupProps = {
 const HeadlineGroup = ({
   main,
   pre,
-  centered = false,
+  centered = true,
   headingStyle = 'h2',
   sub,
   blurColor,
@@ -28,15 +28,15 @@ const HeadlineGroup = ({
     () => (
       <>
         {pre && (
-          <AuxHeadline $type="pre" $centered={centered || true}>
+          <AuxHeadline $type="pre" $centered={centered}>
             {pre}
           </AuxHeadline>
         )}
-        <BaseHeadline className={`${sub ? 'mb-3' : ''}`} as="h1" variant={headingStyle} $centered={centered || true}>
+        <BaseHeadline className={`${sub ? 'mb-3' : ''}`} as="h1" variant={headingStyle} $centered={centered}>
           {main}
         </BaseHeadline>
         {sub && (
-          <AuxHeadline className="mb-3" $type="sub" $centered={centered || true}>
+          <AuxHeadline className="mb-3" $type="sub" $centered={centered}>
             {sub}
           </AuxHeadline>
         )}
@@ -62,7 +62,7 @@ export default HeadlineGroup
 const AuxHeadline = cm.p.variants<{ $centered?: boolean; $type: 'sub' | 'pre' }>({
   base: ({ $centered }) => `
     md:text-lg lg:text-xl
-    text-grey-100
+    text-grey
     my-0
     ${$centered ? 'text-center' : ''}
   `,

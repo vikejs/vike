@@ -97,7 +97,7 @@ const BrandSubsection = () => {
           </a>
         ))}
       </div>
-      <div className="text-grey-100 text-sm w-fit mx-auto mb-12">
+      <div className="text-grey text-sm w-fit mx-auto mb-12">
         Used by large organizations to build mission-critical applications, see{' '}
         <a href="link" className="text-secondary">
           Use Cases

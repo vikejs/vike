@@ -41,7 +41,7 @@ const UspHero = () => {
                         </StyledTitle>
                       </span>
                     </H3Headline>
-                    <p className="text-grey-100">{usp.description}</p>
+                    <p className="text-grey">{usp.description}</p>
                   </div>
                   <span
                     className={cmMerge(

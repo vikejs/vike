@@ -15,6 +15,7 @@ import { hookColors } from '../../../util/ui.constants'
 const StyledOuter = cm.div`
   w-full
   relative
+  min-w-150
 `
 
 const pinHeight = 2
@@ -60,6 +61,12 @@ const FlexGraphic = () => {
 
   const onBlockHover = useCallback(
     (block: ExtensionBlockVariants) => {
+      return
+      // todo: maybe later -> current problem:
+      // when user hovers e.g. react redux also all the other library blocks light up, 
+      // that causes confusion because the libs have nothing to do with each other
+      // only hightlight vike-core and vike-react in that situation but also only color the circuits
+      // that are related to the hovered block (e.g. in that case only the react and redux circuit but not the head or onRenderClient circuit)
       const hooks = extensionBlockConnectedHooks[block]
       setActiveBlocks(hooks.length ? getBlocksForHooks(hooks) : [block])
       onChangeHightlight(hooks)
@@ -73,7 +80,7 @@ const FlexGraphic = () => {
   }, [onChangeHightlight])
 
   return (
-    <div>
+    <div className='absolute left-0 -top-10 origin-center'>
       <StyledOuter ref={containerRef}>
         <FlexGraphicBlocks
           activeHooks={activeHooks}

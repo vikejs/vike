@@ -12,7 +12,7 @@ interface LegendProps {
 
 const Legend = ({ onChangeHightlight, activeHooks, isSlideshowMode }: LegendProps) => {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 mb-4">
+    <div className="grid grid-cols-2 md:grid-cols-3 mb-4 mt-6">
       {Object.entries(hookColors).map(([key, color]) => {
         const hookName = key as FlexGraphicHook
         const isActive = activeHooks?.includes(hookName)
@@ -28,7 +28,7 @@ const Legend = ({ onChangeHightlight, activeHooks, isSlideshowMode }: LegendProp
               className="absolute inset-0"
             />
             <div className="w-4 h-4 rounded" style={{ backgroundColor: color }}></div>
-            <span className="text-sm">+{key}</span>
+            <span className="text-xs">+{key}</span>
           </StyledLegendItem>
         )
       })}

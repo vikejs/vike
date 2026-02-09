@@ -11,16 +11,13 @@ interface SectionHeaderProps {
   sub: string | React.ReactNode
 }
 
-const SectionHeader = ({ color, icon, main, sub, badgeText }: SectionHeaderProps) => (
+const SectionHeader = ({ color, icon, main, sub }: SectionHeaderProps) => (
   <HeadlineGroup
     outerClassName="w-full sm:w-4/5 md:w-3/4 lg:w-2/3 mx-auto"
     headingStyle="h1"
     pre={
-      <span className="flex flex-col gap-4">
+      <span className="flex flex-col gap-4 mb-6">
         <span className="text-8xl">{icon}</span>
-        <span className="badge badge-sm badge-ghost badge-white mx-auto">
-          <GradientText color={color}>{badgeText}</GradientText>
-        </span>
       </span>
     }
     main={main}
