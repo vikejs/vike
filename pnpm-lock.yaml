@@ -1662,6 +1662,9 @@ importers:
       vike:
         specifier: 0.4.253
         version: link:../../packages/vike
+      vike-photon:
+        specifier: ^0.1.24
+        version: 0.1.24(jjx2yh3hik6zf7jl2mdtlmvqyi)
       vike-react:
         specifier: ^0.6.20
         version: 0.6.20(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(vike@packages+vike)
@@ -7811,7 +7814,7 @@ packages:
   tar@7.5.2:
     resolution: {integrity: sha512-7NyxrTE4Anh8km8iEy7o0QYPs+0JKBTj5ZaqHg6B39erLg0qYXN3BijtShwbsNSvQ+LN75+KV+C4QR/f6Gwnpg==}
     engines: {node: '>=18'}
-    deprecated: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+    deprecated: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exhorbitant rates) by contacting i@izs.me
 
   telefunc@0.2.17:
     resolution: {integrity: sha512-UJxfQUgl8eIOk7xxtpj3kMrXvIxggaiwj0VGXjRnQM2AO9KYAjNREyb6Rz5lEEHlZR+s4yhiCLjuwfm5t4Nx1A==}
@@ -10669,7 +10672,7 @@ snapshots:
 
   '@rolldown/binding-wasm32-wasi@1.0.0-beta.51':
     dependencies:
-      '@napi-rs/wasm-runtime': 1.1.0
+      '@napi-rs/wasm-runtime': 1.1.1
     optional: true
 
   '@rolldown/binding-win32-arm64-msvc@1.0.0-beta.51':
@@ -15908,11 +15911,11 @@ snapshots:
   vike-photon@0.1.24(jjx2yh3hik6zf7jl2mdtlmvqyi):
     dependencies:
       '@brillout/picocolors': 1.0.30
-      '@brillout/vite-plugin-server-entry': 0.7.15
+      '@brillout/vite-plugin-server-entry': 0.7.17
       '@photonjs/core': 0.1.20(@hattip/core@0.0.49)(@types/express@5.0.6)(srvx@0.9.8)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
       '@photonjs/runtime': 0.1.16(@hattip/core@0.0.49)(@types/express@5.0.6)(rollup@4.43.0)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
       '@universal-middleware/compress': 0.2.34
-      '@universal-middleware/core': 0.4.14(@hattip/core@0.0.49)(@types/express@5.0.6)(srvx@0.9.8)
+      '@universal-middleware/core': 0.4.16(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.9.8)
       '@universal-middleware/sirv': 0.1.24
       pkg-types: 2.3.0
       standaloner: 0.1.11(rollup@4.43.0)
@@ -15938,11 +15941,11 @@ snapshots:
   vike-photon@0.1.24(m7npfw7cyaf73iw6kdcztmiiya):
     dependencies:
       '@brillout/picocolors': 1.0.30
-      '@brillout/vite-plugin-server-entry': 0.7.15
+      '@brillout/vite-plugin-server-entry': 0.7.17
       '@photonjs/core': 0.1.20(@hattip/core@0.0.49)(@types/express@5.0.6)(srvx@0.9.8)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
       '@photonjs/runtime': 0.1.16(@hattip/core@0.0.49)(@types/express@5.0.6)(rollup@4.43.0)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
       '@universal-middleware/compress': 0.2.34
-      '@universal-middleware/core': 0.4.14(@hattip/core@0.0.49)(@types/express@5.0.6)(srvx@0.9.8)
+      '@universal-middleware/core': 0.4.16(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.9.8)
       '@universal-middleware/sirv': 0.1.24
       pkg-types: 2.3.0
       standaloner: 0.1.11(rollup@4.43.0)

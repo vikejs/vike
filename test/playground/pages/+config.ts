@@ -1,5 +1,6 @@
 import type { Config } from 'vike/types'
 import vikeReact from 'vike-react/config'
+import vikePhoton from 'vike-photon/config'
 
 export default {
   title: 'Big Playground',
@@ -27,7 +28,7 @@ export default {
     // TEST: redirect edge cases
     '/external-redirect': 'https://app.nmrium.org#?toc=https://cheminfo.github.io/nmr-dataset-demo/samples.json',
   },
-  extends: [vikeReact],
+  extends: [vikeReact, vikePhoton],
   meta: {
     frontmatter: {
       env: { server: true },
