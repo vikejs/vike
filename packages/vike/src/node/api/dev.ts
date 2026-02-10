@@ -1,5 +1,5 @@
 export { dev }
-// Enable vike-photon to call startupLog() — TO-DO/eventually: remove if it doesn't end up being used
+// Enable vike-photon to call startupLog() — TO-DO/eventually: remove if it doesn't end up being used https://github.com/vikejs/vike-photon/issues/57
 export { startupLog }
 
 import { prepareViteApiCall } from './prepareViteApiCall.js'
@@ -34,7 +34,7 @@ async function dev(
     if (viteServer.resolvedUrls) {
       startupLog(viteServer.resolvedUrls, viteServer)
     } else {
-      // Enable vike-photon to call startupLog() — TO-DO/eventually: remove if it doesn't end up being used
+      // Enable vike-photon to call startupLog() — TO-DO/eventually: remove if it doesn't end up being used https://github.com/vikejs/vike-photon/issues/57
       ;(viteConfig.server as Record<string, any>).startupLog = (resolvedUrls: ResolvedServerUrls) =>
         startupLog(resolvedUrls, viteServer)
     }
