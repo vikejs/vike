@@ -105,6 +105,10 @@ const useFlexGraphicInteractions = () => {
 
   const hasInitializedRef = useRef(false)
 
+  const activateAllHooks = () => {
+    setActiveHooks(HOOK_NAME_KEYS.length ? [...HOOK_NAME_KEYS] : null)
+  }
+
   // re-runs on [activeHooks] change, applies colors and stroke widths
   // also kills tweens to prevent animation conflicts
   // todo: refactor
@@ -148,6 +152,10 @@ const useFlexGraphicInteractions = () => {
   )
 
   const onChangeHightlight = contextSafe((hooks: FlexGraphicHook[] | null) => {
+    if (!isScrollActive) {
+      return
+    }
+
     setActiveHooks(hooks)
     if (slideshowResumeTimeoutRef.current) {
       window.clearTimeout(slideshowResumeTimeoutRef.current)
@@ -194,10 +202,42 @@ const useFlexGraphicInteractions = () => {
     }
     createSlideshowScrollTrigger({
       trigger: containerRef.current,
-      onEnter: () => setIsScrollActive(true),
-      onEnterBack: () => setIsScrollActive(true),
-      onLeave: () => setIsScrollActive(false),
-      onLeaveBack: () => setIsScrollActive(false),
+      onEnter: () => {
+        setIsScrollActive(true)
+        if (slideshowResumeTimeoutRef.current) {
+          window.clearTimeout(slideshowResumeTimeoutRef.current)
+          slideshowResumeTimeoutRef.current = null
+        }
+        slideshowIndexRef.current = 0
+        setIsSlideshowMode(true)
+      },
+      onEnterBack: () => {
+        setIsScrollActive(true)
+        if (slideshowResumeTimeoutRef.current) {
+          window.clearTimeout(slideshowResumeTimeoutRef.current)
+          slideshowResumeTimeoutRef.current = null
+        }
+        slideshowIndexRef.current = 0
+        setIsSlideshowMode(true)
+      },
+      onLeave: () => {
+        setIsScrollActive(false)
+        if (slideshowResumeTimeoutRef.current) {
+          window.clearTimeout(slideshowResumeTimeoutRef.current)
+          slideshowResumeTimeoutRef.current = null
+        }
+        setIsSlideshowMode(false)
+        activateAllHooks()
+      },
+      onLeaveBack: () => {
+        setIsScrollActive(false)
+        if (slideshowResumeTimeoutRef.current) {
+          window.clearTimeout(slideshowResumeTimeoutRef.current)
+          slideshowResumeTimeoutRef.current = null
+        }
+        setIsSlideshowMode(false)
+        activateAllHooks()
+      },
     })
   })
 

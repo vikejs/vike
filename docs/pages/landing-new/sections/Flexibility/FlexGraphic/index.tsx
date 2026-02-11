@@ -64,7 +64,7 @@ const FlexGraphic = () => {
     (block: ExtensionBlockVariants) => {
       return
       // todo: maybe later -> current problem:
-      // when user hovers e.g. react redux also all the other library blocks light up, 
+      // when user hovers e.g. react redux also all the other library blocks light up,
       // that causes confusion because the libs have nothing to do with each other
       // only hightlight vike-core and vike-react in that situation but also only color the circuits
       // that are related to the hovered block (e.g. in that case only the react and redux circuit but not the head or onRenderClient circuit)
@@ -81,7 +81,7 @@ const FlexGraphic = () => {
   }, [onChangeHightlight])
 
   return (
-    <div className='absolute left-0 -top-10 origin-center'>
+    <div className="absolute left-0 -top-10 origin-center">
       <StyledOuter ref={containerRef}>
         <FlexGraphicBlocks
           activeHooks={activeHooks}

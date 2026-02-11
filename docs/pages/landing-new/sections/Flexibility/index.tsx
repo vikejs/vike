@@ -31,13 +31,13 @@ const FlexibilitySection = () => {
         <div className="grid grid-cols-2 gap-10">
           <div className="relative -ml-3">
             <img
-              loading='lazy'
+              loading="lazy"
               src={libraryRollImg}
               alt="Library roll with various tools and frameworks"
               className="w-full h-auto hidden sm:block rounded-lg"
             />
             <img
-              loading='lazy'
+              loading="lazy"
               src={libraryRollImgMobile}
               alt="Library roll with various tools and frameworks - mobile version"
               className="w-full h-auto sm:hidden rounded-lg"
@@ -46,7 +46,7 @@ const FlexibilitySection = () => {
           <GlassContainer>
             <div className="flex flex-col gap-0 justify-center min-h-90">
               <HeadlineGroup
-                headingStyle="h1"
+                headingStyle="h2"
                 outerClassName="mb-8"
                 centered={false}
                 main={
@@ -77,7 +77,7 @@ const FlexibilitySection = () => {
           <GlassContainer>
             <div className="flex flex-col gap-0 justify-center min-h-90">
               <HeadlineGroup
-                headingStyle="h1"
+                headingStyle="h2"
                 outerClassName="mb-8"
                 centered={false}
                 main={
