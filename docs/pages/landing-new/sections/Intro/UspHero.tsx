@@ -24,10 +24,10 @@ const UspHero = () => {
               onMouseLeave={() => setHoveredUsp(null)}
             >
               <StyledUspItemInner $hovered={isHovered} />
-              <div className="absolute inset-0 flex justify-center items-center z-2 pointer-events-none">
+              <div className="absolute inset-0 flex justify-center items-center z-4 pointer-events-none">
                 <StyledDot type={usp.dotColor} size="lg" visibility="high" $hovered={isHovered} />
               </div>
-              <div className="absolute h-full -inset-3 z-1 bg-linear-to-t to-base-300" />
+              <div className="absolute -inset-1 z-3 bg-linear-to-t to-base-300" />
               <StyledTextContent $hovered={isHovered}>
                 {/* todo: use more classmatejs */}
                 <StyledIconWrapper>{usp.icon}</StyledIconWrapper>
@@ -73,6 +73,7 @@ const StyledUspItemInner = cm.div<{ $hovered?: boolean }>`
   bg-white
   opacity-0
   translate-y-1
+  z-3
   ${uiConfig.transition.mediumDurationTw}
   ${uiConfig.transition.easeOutTw}
   ${({ $hovered }) => ($hovered ? 'scale-102 translate-y-0 opacity-100' : '')}
@@ -106,7 +107,7 @@ const StyledIconWrapper = cm.div`
 `
 
 const StyledTextContent = cm.div<{ $hovered?: boolean }>`
-  relative z-3
+  relative z-6
   transition-transform
   min-h-56
   flex flex-col justify-between

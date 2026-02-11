@@ -20,6 +20,7 @@ const BlurDot = ({ type, lazy = true, visibility = 'medium', size = 'md', ...pro
     <>
       <StyledBlurDot $visibility={visibility} $size={size} className={`${props.className ?? ''}`}>
         <StyledBlurDotImage
+          data-speed="0.8"
           crossOrigin="anonymous"
           width={sizePx}
           height={sizePx}
@@ -37,7 +38,7 @@ const BlurDot = ({ type, lazy = true, visibility = 'medium', size = 'md', ...pro
 
 export default BlurDot
 
-type BlurDotSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+type BlurDotSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl'
 
 const StyledBlurDot = cm.div.variants<{ $size: BlurDotSize; $visibility: BlurDotOpacity }>({
   base: `
@@ -52,6 +53,7 @@ const StyledBlurDot = cm.div.variants<{ $size: BlurDotSize; $visibility: BlurDot
       md: 'w-48 h-48',
       lg: 'w-96 h-96',
       xl: 'w-120 h-120',
+      xxl: 'w-160 h-160',
     },
     $visibility: {
       low: BlurDotOpacity.low,
@@ -85,4 +87,5 @@ const sizePxBySize: Record<BlurDotSize, number> = {
   md: 256,
   lg: 320,
   xl: 500,
+  xxl: 640,
 }

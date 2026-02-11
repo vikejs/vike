@@ -12,7 +12,7 @@ interface LegendProps {
 
 const Legend = ({ onChangeHightlight, activeHooks, isSlideshowMode }: LegendProps) => {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 mb-4 mt-6">
+    <div className="grid grid-cols-2 md:grid-cols-3">
       {Object.entries(hookColors).map(([key, color]) => {
         const hookName = key as FlexGraphicHook
         const isActive = activeHooks?.includes(hookName)

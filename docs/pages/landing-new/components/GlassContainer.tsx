@@ -1,9 +1,12 @@
 import cm, { cmMerge } from '@classmatejs/react'
 import React from 'react'
+import { R } from '../util/gsap.utils'
 
 const GlassContainer = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => {
+  const speedValue = R(1.01, 1.03).toFixed(2)
+  
   return (
-    <div className={cmMerge('relative', className)} {...props}>
+    <div className={cmMerge('relative', className)} {...props} data-speed={`clamp(${speedValue})`}>
       <StyledGlassOuter>
         <StyledGlassBorder $position="top" />
         <StyledGlassBorder $position="bottom" />

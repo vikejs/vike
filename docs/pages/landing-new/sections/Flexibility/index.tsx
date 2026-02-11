@@ -9,6 +9,7 @@ import { ChevronsRight } from 'lucide-react'
 import GlassContainer from '../../components/GlassContainer'
 import libraryRollImg from '../../assets/libraryRoll.webp'
 import libraryRollImgMobile from '../../assets/libraryRoll@0.5.webp'
+import BlurDot from '../../components/BlurDot'
 
 const FlexibilitySection = () => {
   return (
@@ -28,7 +29,7 @@ const FlexibilitySection = () => {
       </LayoutComponent>
 
       <LayoutComponent className="my-20">
-        <div className="grid grid-cols-2 gap-10">
+        <div className="grid grid-cols-2 gap-10 relative z-2">
           <div className="relative -ml-3">
             <img
               loading="lazy"
@@ -70,10 +71,11 @@ const FlexibilitySection = () => {
             </div>
           </GlassContainer>
         </div>
+        <BlurDot type="green" size="xl" visibility="low" className="absolute top-0 -right-40 z-0" />
       </LayoutComponent>
 
       <LayoutComponent className="mt-20 mb-90">
-        <div className="grid grid-cols-2 gap-10">
+        <div className="grid grid-cols-2 gap-10 relative z-2">
           <GlassContainer>
             <div className="flex flex-col gap-0 justify-center min-h-90">
               <HeadlineGroup
@@ -100,10 +102,11 @@ const FlexibilitySection = () => {
               </p>
             </div>
           </GlassContainer>
-          <div className="relative">
+          <div className="relative" data-speed="clamp(0.95)">
             <FlexGraphic />
           </div>
         </div>
+        <BlurDot type="green" size="xxl" visibility="low" className="absolute top-20 -left-40 z-0" />
       </LayoutComponent>
     </>
   )

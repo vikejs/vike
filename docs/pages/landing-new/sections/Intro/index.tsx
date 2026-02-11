@@ -18,7 +18,7 @@ const IntroSection = () => {
         </span>
         <Headline as="h1" variant="xlarge" className="mb-4">
           {'Build '}
-          <GradientText color="orange">fast.</GradientText>
+          <GradientText color="blue">fast.</GradientText>
           {' Build '}
           <GradientText color="blue" rotation={45}>
             right.
