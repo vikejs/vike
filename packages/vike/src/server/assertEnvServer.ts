@@ -6,10 +6,10 @@ import { setAssertAlwaysShowStackTrace } from '../utils/assert.js'
 import { isDebugError } from '../utils/debug.js'
 import { installUncaughtErrorHandlers } from '../utils/installUncaughtErrorHandlers.js'
 
-assertEnv()
+assertEnvServer()
 onLoad()
 
-function assertEnv() {
+function assertEnvServer() {
   assertIsNotBrowser()
   assertNodeVersion()
 }
