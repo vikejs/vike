@@ -56,7 +56,6 @@ export const StyledLegendItem = cm.div.variants<{ $type: 'disabled' | 'active' |
   base: `
     relative
     transition-opacity
-    font-semibold
     flex items-center gap-2 
     p-1
     ${uiConfig.transition.shortDurationTw}

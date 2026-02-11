@@ -7,15 +7,15 @@
   --font-sans: 'Inter', sans-serif;
   --text-tiny: 0.65rem;
 
-  --color-black: oklch(0.1605 0.0241 248.51);
-  --color-content: oklch(0.3546 0.0241 248.51);
-  --color-grey: oklch(0.5553 0.0241 248.51);
-  --color-grey-100: oklch(0.7347 0.0241 248.51);
-  --color-grey-200: oklch(0.89 0.0241 248.51);
+  --color-black: oklch(0.1605 0 0);
+  --color-content: oklch(0.3 0 0);
+  --color-grey: oklch(0.5553 0 0);
+  --color-grey-100: oklch(0.7347 0 0);
+  --color-grey-200: oklch(0.89 0 0);
   --color-grey-200-hex: #b4c1ce;
-  --color-grey-300: oklch(0.93 0.0171 248.51);
+  --color-grey-300: oklch(0.93 0 0);
   --color-grey-300-hex: #c1cbd5;
-  --color-grey-400: oklch(0.9502 0.0103 248.51);
+  --color-grey-400: oklch(0.9502 0 0);
   --color-bg: oklch(0.9702 0 0);
   --color-white: oklch(1 0 0);
 
