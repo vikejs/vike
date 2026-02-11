@@ -3,7 +3,7 @@ import React from 'react'
 import { R } from '../util/gsap.utils'
 
 const GlassContainer = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => {
-  const speedValue = R(1.01, 1.03).toFixed(2)
+  const speedValue = R(1.07, 1.1).toFixed(2)
   
   return (
     <div className={cmMerge('relative', className)} {...props} data-speed={`clamp(${speedValue})`}>
