@@ -24,7 +24,7 @@ import { getEnvVarObject } from '../vite/shared/getEnvVarObject.js'
 import { getVikeApiOperation, isVikeCliOrApi } from '../../shared-server-node/api-context.js'
 import { getViteCommandFromCli } from '../vite/shared/isViteCli.js'
 import type { Config } from '../../types/index.js'
-import './assertEnvApi.js'
+import './assertEnvApiDev.js'
 
 const globalObject = getGlobalObject<{ root?: string; isOnlyResolvingUserConfig?: boolean }>(
   'api/prepareViteApiCall.ts',
