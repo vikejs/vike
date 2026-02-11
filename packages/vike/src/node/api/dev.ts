@@ -12,7 +12,7 @@ import { colorVite } from '../../utils/colorsServer.js'
 import { PROJECT_VERSION } from '../../utils/PROJECT_VERSION.js'
 import pc from '@brillout/picocolors'
 import { processStartupLog } from '../vite/shared/loggerVite.js'
-import './assertEnvApi.js'
+import './assertEnvApiDev.js'
 assertIsNotProductionRuntime()
 
 /**
