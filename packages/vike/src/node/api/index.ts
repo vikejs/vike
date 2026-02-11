@@ -7,7 +7,7 @@ import type { build } from './build.js'
 import type { dev } from './dev.js'
 import type { preview } from './preview.js'
 import type { prerender } from './prerender.js'
-import './assertEnvApiDev.js'
+import './assertEnvApiDevAndProd.js'
 
 const build_: typeof build = async (...args) => (await import('./build.js')).build(...args)
 const dev_: typeof dev = async (...args) => (await import('./dev.js')).dev(...args)

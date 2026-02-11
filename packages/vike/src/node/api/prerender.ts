@@ -4,7 +4,7 @@ import { runPrerenderFromAPI } from '../prerender/runPrerenderEntry.js'
 import type { PrerenderOptions } from '../prerender/runPrerender.js'
 import { prepareViteApiCall } from './prepareViteApiCall.js'
 import type { ResolvedConfig } from 'vite'
-import './assertEnvApiDev.js'
+import './assertEnvApiDevAndProd.js'
 
 /**
  * Programmatically trigger `$ vike prerender`
