@@ -8,7 +8,7 @@ export const defaultGradients: Record<UiColorVariantKey, { startColor: string; e
   green: { startColor: '#00955f', endColor: '#00b0a5' },
 }
 
-interface GradientTextProps {
+interface GradientTextProps extends React.HTMLAttributes<HTMLSpanElement> {
   children: React.ReactNode
   startColor?: string
   endColor?: string
@@ -16,7 +16,7 @@ interface GradientTextProps {
   color?: UiColorVariantKey
 }
 
-const GradientText = ({ children, color, startColor, endColor, rotation = 90 }: GradientTextProps) => {
+const GradientText = ({ children, color, startColor, endColor, rotation = 90, style, ...props }: GradientTextProps) => {
   const isCustomGradient = Boolean(startColor && endColor)
   const usedStartColor = isCustomGradient ? startColor : color ? defaultGradients[color].startColor : 'green'
   const usedEndColor = isCustomGradient ? endColor : color ? defaultGradients[color].endColor : 'red'
@@ -29,7 +29,9 @@ const GradientText = ({ children, color, startColor, endColor, rotation = 90 }: 
         background: styleBackgroundString,
         WebkitBackgroundClip: 'text',
         WebkitTextFillColor: 'transparent',
+        ...style,
       }}
+      {...props}
     >
       {children}
     </span>

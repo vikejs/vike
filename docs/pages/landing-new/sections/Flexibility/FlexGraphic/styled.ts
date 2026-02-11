@@ -11,7 +11,7 @@ export const ExtensionBlock = cm.div.variants<{
   rounded-lg
   font-mono
   bg-base-200
-  border-2 border-base-100
+  border-2 border-grey-100
   text-tiny sm:text-xs text-grey
   flex justify-center items-center
   transition-all

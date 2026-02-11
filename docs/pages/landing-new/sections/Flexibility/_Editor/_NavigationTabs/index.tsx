@@ -1,6 +1,6 @@
 import cm, { cmMerge } from '@classmatejs/react'
 import React from 'react'
-import { flexEditorTabs } from '../../../util/constants'
+import { flexEditorTabs } from '../../../../util/constants'
 import ToolBlocks from './ToolBlocks'
 import { ChevronsDown } from 'lucide-react'
 import useNavigationTabsInteractions from './useNavigationTabsInteractions'

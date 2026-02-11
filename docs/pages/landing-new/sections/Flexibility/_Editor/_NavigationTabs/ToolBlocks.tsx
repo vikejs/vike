@@ -1,7 +1,7 @@
 import React, { forwardRef, useId, useMemo } from 'react'
-import { FlexEditorTabTool } from '../../../util/constants'
+import { FlexEditorTabTool } from '../../../../util/constants'
 import cm, { cmMerge } from '@classmatejs/react'
-import { uiConfig } from '../../../util/ui.constants'
+import { uiConfig } from '../../../../util/ui.constants'
 
 const maxToolBlocksCount = 5
 

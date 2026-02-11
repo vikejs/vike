@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { flexEditorTabs, NavigationTabFramework } from '../../../util/constants'
+import { flexEditorTabs, NavigationTabFramework } from '../../../../util/constants'
 import { useGSAP } from '@gsap/react'
 import {
   applyGrayscale,
@@ -8,7 +8,7 @@ import {
   gradientHoverOffset,
   moveTabGradient,
 } from './animations'
-import { killTweens } from '../../../util/gsap.utils'
+import { killTweens } from '../../../../util/gsap.utils'
 
 const useNavigationTabsInteractions = () => {
   const containerRef = useRef<HTMLDivElement>(null)

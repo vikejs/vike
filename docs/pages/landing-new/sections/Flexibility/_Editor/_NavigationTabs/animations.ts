@@ -1,5 +1,5 @@
 import { gsap } from 'gsap'
-import { uiConfig } from '../../../util/ui.constants'
+import { uiConfig } from '../../../../util/ui.constants'
 
 export const pipeWaveStagger = { each: 0.02, from: 'end', ease: 'power1.out' } as const
 const pipeWaveKeyframes = [
