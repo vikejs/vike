@@ -17,7 +17,7 @@ export default defineConfig({
     react(),
     vike(),
     vavite({
-      handlerEntry: '/server/handlerEntry.ts',
+      handlerEntry: '/server/index.ts',
       serveClientAssetsInDev: true,
     }),
   ],
