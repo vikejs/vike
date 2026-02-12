@@ -1772,7 +1772,7 @@ importers:
         specifier: ^10.1.0
         version: 10.1.0
       express:
-        specifier: ^5.0.1
+        specifier: ^5.2.1
         version: 5.2.1
       react:
         specifier: ^19.2.4
