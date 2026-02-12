@@ -1,3 +1,7 @@
-import { testRun } from './.testRun'
+import { testRunClassic } from '../utils'
 
-testRun('pnpm run dev')
+testRunClassic('npm run dev', {
+  tolerateError({ logText }) {
+    return logText.includes("Vite's CLI is deprecated") || logText.includes('Run the built server entry')
+  },
+})
