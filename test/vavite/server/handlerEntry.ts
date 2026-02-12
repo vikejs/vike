@@ -1,5 +1,5 @@
-import { IncomingMessage, ServerResponse } from 'node:http'
 import { renderPage } from 'vike/server'
+import type { IncomingMessage, ServerResponse } from 'node:http'
 
 export default async function handler(request: IncomingMessage, res: ServerResponse) {
   const pageContext = await renderPage({ urlOriginal: request.url! })
