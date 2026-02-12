@@ -1,4 +1,4 @@
-import { IncomingMessage, ServerResponse } from 'http'
+import { IncomingMessage, ServerResponse } from 'node:http'
 import { renderPage } from 'vike/server'
 
 export default async function handler(request: IncomingMessage, res: ServerResponse) {
