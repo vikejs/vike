@@ -1768,9 +1768,6 @@ importers:
 
   test/vavite:
     dependencies:
-      '@types/express':
-        specifier: ^5.0.6
-        version: 5.0.6
       cross-env:
         specifier: ^10.1.0
         version: 10.1.0
@@ -1790,6 +1787,9 @@ importers:
         specifier: ^0.6.20
         version: 0.6.20(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(vike@packages+vike)
     devDependencies:
+      '@types/express':
+        specifier: ^5.0.6
+        version: 5.0.6
       '@types/react':
         specifier: ^19.2.7
         version: 19.2.11
