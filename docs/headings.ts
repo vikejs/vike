@@ -248,6 +248,11 @@ const headings = [
   },
   {
     level: 2,
+    title: 'EdgeOne Pages',
+    url: '/edgeone-pages',
+  },
+  {
+    level: 2,
     title: 'Static Hosts',
     titleInNav: '... more',
     url: '/static-hosts',

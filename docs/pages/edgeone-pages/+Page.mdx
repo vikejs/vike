@@ -1,0 +1,23 @@
+import { StaticHostDocIntro, StaticHostDocOutro, StaticHostDocStrategies } from '../../components/static-host'
+import { Link } from '@brillout/docpress'
+
+<StaticHostDocIntro
+  staticHostLink={<>, such as <a href="https://pages.edgeone.ai/">EdgeOne Pages</a></>}
+/>
+
+> For deploying with SSR, see <a href="https://pages.edgeone.ai/zh/document/framework-vike">EdgeOne Pages Vike Documentation</a>.
+
+
+### Static Site Generation (SSG)
+
+To pre-render a page as static HTML at build time, set `prerender: true` in the page's `+config.ts`:
+
+```typescript
+// pages/about/+config.ts
+export default {
+  prerender: true,
+}
+```
+
+During the build phase, static HTML files are generated. After deployment, routes with pre-rendered content directly serve these static files without server-side rendering on each request.
+
