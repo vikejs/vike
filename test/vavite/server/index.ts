@@ -13,7 +13,7 @@ if (!viteDevServer) {
 
 // Vike middleware. It should always be our last middleware (because it's a
 // catch-all middleware superseding any middleware placed after it).
-app.get('*', async (req, res, next) => {
+app.get('/{*vikeCatchAll}', async (req, res, next) => {
   const pageContextInit = {
     urlOriginal: req.originalUrl,
     headersOriginal: req.headers,
