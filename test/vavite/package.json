@@ -2,6 +2,7 @@
   "scripts": {
     "dev": "vavite serve",
     "build": "vavite build",
+    "preview": "npm run build && npm run start",
     "start": "cross-env NODE_ENV=production node dist/server/index.mjs"
   },
   "dependencies": {
