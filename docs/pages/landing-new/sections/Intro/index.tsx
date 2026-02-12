@@ -25,7 +25,7 @@ const IntroSection = () => {
           </GradientText>
         </Headline>
         <p className="text-xl md:text-2xl text-grey text-center w-3/4 lg:w-3/5 mx-auto mb-6">
-          Composable framework to build advanced applications with stability and flexibility.
+          Plug-and-play composable framework for building applications with speed, flexibility, and stability.
         </p>
         <div className="flex gap-2 items-center justify-center mb-16">
           <a className="btn btn-neutral">Get Started</a>

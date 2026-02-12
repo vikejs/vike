@@ -1,18 +1,18 @@
 import React from 'react'
 import { UiColorVariantKey, UiVariantBgColor } from '../util/ui.constants'
-import cm from '@classmatejs/react'
+import cm, { cmMerge } from '@classmatejs/react'
 
 type BarChartData = {
   label: string
   percentage: number
 }
 
-interface BarChartProps {
+interface BarChartProps extends React.HTMLAttributes<HTMLDivElement> {
   pollData: [BarChartData, BarChartData]
   color: UiColorVariantKey
 }
 
-const BarChart = ({ pollData, color }: BarChartProps) => {
+const BarChart = ({ pollData, color, className, ...props }: BarChartProps) => {
   const winningEntry = pollData.reduce((prev, current) => (prev.percentage > current.percentage ? prev : current))
 
   // bar chart only supports two entries, se want want to know how (x) is the winning entry ahead of the losing entry, so we can use that to determine the width of the winning bar
@@ -21,7 +21,7 @@ const BarChart = ({ pollData, color }: BarChartProps) => {
   ).toFixed(1)
 
   return (
-    <div className="flex flex-col gap-1">
+    <div className={cmMerge('flex flex-col gap-1', className)} {...props}>
       {pollData.map((data) => {
         const barWidth = `${data.percentage}%`
         return (

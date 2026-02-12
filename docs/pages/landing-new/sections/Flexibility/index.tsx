@@ -10,9 +10,8 @@ import GlassContainer from '../../components/GlassContainer'
 import libraryRollImg from '../../assets/libraryRoll.webp'
 import libraryRollImgMobile from '../../assets/libraryRoll@0.5.webp'
 import BlurDot from '../../components/BlurDot'
-import Poll from '../../components/BarChart'
 import BarChart from '../../components/BarChart'
-import { H3Headline } from '../../components/Headline'
+import { H3Headline, H4Headline } from '../../components/Headline'
 
 const FlexibilitySection = () => {
   return (
@@ -61,7 +60,9 @@ const FlexibilitySection = () => {
                 sub="Build anything you want"
               />
               <p className="mb-8">
-                Vike has first-class support for common architectures, and Vike's flexible design enables deep integration with tools — use Vike extensions for automatic integration or integrate manually for maximum flexibility.
+                Vike has <b>first-class</b> support for common architectures, and Vike's flexible design enables deep
+                integration with tools — use Vike extensions for automatic integration or integrate manually for maximum
+                flexibility.
               </p>
               <p>
                 <a href="/docs/hooks/introduction">
@@ -76,18 +77,31 @@ const FlexibilitySection = () => {
         <BlurDot type="green" size="xl" visibility="low" className="absolute top-0 -right-40 z-0" />
       </LayoutComponent>
 
-      <LayoutComponent $size="xs" className='my-32' data-speed="0.96">
-        <H3Headline className='text-center'>
-          <GradientText color="green">Supported</GradientText> tools (first-class support)
-        </H3Headline>
-        <p className="mb-8 text-grey text-center">A caption henlo</p>
-        <BarChart
-          pollData={[
-            { label: 'other frameworks', percentage: 20 },
-            { label: 'Vike', percentage: 100 },
-          ]}
-          color="green"
-        />
+      <LayoutComponent className="my-32 grid grid-cols-2 gap-10">
+        <div className="" data-speed="0.85 ">
+          <H4Headline as="h3" className="mb-8">
+            Supported <GradientText color="green">tools</GradientText> (first-class support)
+          </H4Headline>
+          <BarChart
+            pollData={[
+              { label: 'other frameworks', percentage: 33 },
+              { label: 'Vike', percentage: 100 },
+            ]}
+            color="green"
+          />
+        </div>
+        <div className="" data-speed="0.85 ">
+          <H4Headline as="h3" className="mb-8">
+            Supported <GradientText color="green">architectures</GradientText> (first-class support)
+          </H4Headline>
+          <BarChart
+            pollData={[
+              { label: 'other frameworks', percentage: 33 },
+              { label: 'Vike', percentage: 100 },
+            ]}
+            color="green"
+          />
+        </div>
       </LayoutComponent>
 
       <LayoutComponent className="mt-20 mb-70">
@@ -100,15 +114,12 @@ const FlexibilitySection = () => {
                 centered={false}
                 main={
                   <>
-                    <GradientText color="green">Limitless</GradientText> design
+                    <GradientText color="green">Powerful</GradientText> hooks
                   </>
                 }
-                sub="Build anything you want"
+                sub="Build what you want with powerful hooks."
               />
-              <p className="mb-8">
-                That’s it. We focus on that, so you as the user and also vike developers share access to the same vast
-                hook-driven ecosystem. Vike behaves the same, only the perspective changes.
-              </p>
+              <p className="mb-8">Vike's comprehensive list of hooks unlocks unprecedented flexibility.</p>
               <p>
                 <a href="/docs/hooks/introduction">
                   <GradientText color="green" className="flex gap-2 items-center ">
@@ -118,27 +129,26 @@ const FlexibilitySection = () => {
               </p>
             </div>
           </GlassContainer>
-          <div className="relative" data-speed="clamp(0.95)">
+          <div className="relative">
             <FlexGraphic />
           </div>
         </div>
         <BlurDot type="green" size="xxl" visibility="low" className="absolute top-20 -left-40 z-0" />
       </LayoutComponent>
 
-      <LayoutComponent $size="xs" className='my-24'>
-        <H3Headline className='text-center'>
-          <GradientText color="green">Supported</GradientText> tools (first-class support)
+      <LayoutComponent $size="xs" className="my-24" data-speed="0.92">
+        <H3Headline className="text-center">
+          Supported <GradientText color="green">use cases</GradientText>
         </H3Headline>
-        <p className="mb-8 text-grey text-center">A caption henlo</p>
+        <p className="mb-8 text-grey text-center">Vike's hooks support an unmatched amount of use cases.</p>
         <BarChart
           pollData={[
-            { label: 'other frameworks', percentage: 75 },
+            { label: 'other frameworks', percentage: 20 },
             { label: 'Vike', percentage: 100 },
           ]}
           color="green"
         />
       </LayoutComponent>
-
     </>
   )
 }

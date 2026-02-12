@@ -105,10 +105,6 @@ const useFlexGraphicInteractions = () => {
 
   const hasInitializedRef = useRef(false)
 
-  const activateAllHooks = () => {
-    setActiveHooks(HOOK_NAME_KEYS.length ? [...HOOK_NAME_KEYS] : null)
-  }
-
   // re-runs on [activeHooks] change, applies colors and stroke widths
   // also kills tweens to prevent animation conflicts
   // todo: refactor
@@ -227,7 +223,7 @@ const useFlexGraphicInteractions = () => {
           slideshowResumeTimeoutRef.current = null
         }
         setIsSlideshowMode(false)
-        activateAllHooks()
+        setActiveHooks(null)
       },
       onLeaveBack: () => {
         setIsScrollActive(false)
@@ -236,7 +232,7 @@ const useFlexGraphicInteractions = () => {
           slideshowResumeTimeoutRef.current = null
         }
         setIsSlideshowMode(false)
-        activateAllHooks()
+        setActiveHooks(null)
       },
     })
   })
