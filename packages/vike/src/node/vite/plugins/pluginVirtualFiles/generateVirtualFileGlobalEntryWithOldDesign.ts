@@ -7,7 +7,7 @@ export { generateVirtualFileGlobalEntryWithOldDesign }
 //    - Systematically remove all pageFilesAll references does the trick?
 
 import type { ResolvedConfig } from 'vite'
-import { assert, assertWarning } from '../../../../utils/assert.js'
+import { assert } from '../../../../utils/assert.js'
 import { isVersionMatch } from '../../../../utils/assertVersion.js'
 import { debugGlob } from '../../../../utils/debugGlob.js'
 import { scriptFileExtensionPattern } from '../../../../utils/isScriptFile.js'
@@ -17,7 +17,7 @@ import { version as viteVersion } from 'vite'
 import { type FileType, fileTypes } from '../../../../shared-server-client/getPageFiles/fileTypes.js'
 import path from 'node:path'
 import { generateVirtualFileGlobalEntry } from './generateVirtualFileGlobalEntry.js'
-import { getVikeConfigInternal, isV1Design as isV1Design_ } from '../../shared/resolveVikeConfigInternal.js'
+import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { getOutDirs } from '../../shared/getOutDirs.js'
 import { isViteServerSide_extraSafe } from '../../shared/isViteServerSide.js'
 import { resolveIncludeAssetsImportedByServer } from '../../../../server/runtime/renderPageServer/getPageAssets/retrievePageAssetsProd.js'
@@ -129,9 +129,6 @@ ${await generateVirtualFileGlobalEntry(isForClientSide, isDev, id, isClientRouti
 
 `
 
-  // We still use import.meta.glob() when using th V1 design in order to not break the V1 design deprecation warning
-  const isV1Design = isV1Design_()
-
   const vikeConfig = await getVikeConfigInternal()
 
   // Old design => no + files => only to enable pre-rendering is setting `vike({prerender})` in vite.config.js
@@ -147,15 +144,15 @@ ${await generateVirtualFileGlobalEntry(isForClientSide, isDev, id, isClientRouti
         isBuild,
       })
       if (includeImport) {
-        fileContent += getGlobs(globRoots, isBuild, fileType, null, isV1Design)
+        fileContent += getGlobs(globRoots, isBuild, fileType, null)
       }
       if (includeExportNames) {
-        fileContent += getGlobs(globRoots, isBuild, fileType, 'extractExportNames', isV1Design)
+        fileContent += getGlobs(globRoots, isBuild, fileType, 'extractExportNames')
       }
     })
   const includeAssetsImportedByServer = resolveIncludeAssetsImportedByServer(vikeConfig.config)
   if (includeAssetsImportedByServer && isForClientSide) {
-    fileContent += getGlobs(globRoots, isBuild, '.page.server', 'extractAssets', isV1Design)
+    fileContent += getGlobs(globRoots, isBuild, '.page.server', 'extractAssets')
   }
 
   return fileContent
@@ -173,7 +170,6 @@ function getGlobs(
   isBuild: boolean,
   fileType: Exclude<FileType, '.css'>,
   query: 'extractExportNames' | 'extractAssets' | null,
-  isV1Design: boolean,
 ): string {
   const isEager = isBuild && (query === 'extractExportNames' || fileType === '.page.route')
 
@@ -216,20 +212,10 @@ function getGlobs(
       const globOptions: Record<string, unknown> = { eager: isEager }
       if (query) {
         const isNewViteInterface = isVersionMatch(viteVersion, ['5.1.0'])
-        if (
-          isNewViteInterface &&
-          // When used for the old design, the new syntax breaks Vike's CI (surprinsigly so). I couldn't reproduce locally (I didn't dig much).
-          isV1Design
-        ) {
+        if (isNewViteInterface) {
           globOptions.query = `?${query}`
         } else {
           globOptions.as = query
-          const msg = [
-            "Update to the new V1 design to get rid of Vite's warning:",
-            'The glob option "as" has been deprecated in favour of "query".',
-            'See https://vike.dev/migration/v1-design for how to migrate.',
-          ].join(' ')
-          assertWarning(!isNewViteInterface, msg, { onlyOnce: true })
         }
       }
       const globPaths = globExcludePath ? `[${globIncludePath}, ${globExcludePath}]` : `[${globIncludePath}]`
