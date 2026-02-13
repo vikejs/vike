@@ -1,23 +1,14 @@
 import { StaticHostDocIntro, StaticHostDocOutro, StaticHostDocStrategies } from '../../components/static-host'
 import { Link } from '@brillout/docpress'
 
-## Static Site Generation (SSG)
+[EdgeOne Pages](https://edgeone.ai/products/pages) is a deployment platform developed by [Tencent](https://en.wikipedia.org/wiki/Tencent). It supports server capabilities such as <Link href="/ssr">SSR</Link> and <Link href="/stream">HTML streaming</Link>.
 
-To pre-render a page as static HTML at build time, set `prerender: true` in the page's `+config.ts`. For detailed SSG configuration, see <a href="https://pages.edgeone.ai/document/framework-vike">EdgeOne Pages Vike Documentation</a>.
+See also: [EdgeOne Pages > Vike](https://pages.edgeone.ai/document/framework-vike).
 
-```typescript
-// pages/about/+config.ts
 
-export default {
-  prerender: true,
-}
-```
+## Get started
 
-## Server-Side Rendering (SSR)
-
-EdgeOne Pages supports deploying Vike applications with SSR capabilities through the `@edgeone/vite` adapter.
-
-### Installation
+### 1. Install
 
 Install the EdgeOne Vite adapter:
 
@@ -28,18 +19,37 @@ npm install @edgeone/vite
 ```ts
 // vite.config.js
 
-import { defineConfig } from 'vite'
 import vike from 'vike/plugin'
 import edgeone from '@edgeone/vite'
 
-export default defineConfig({
+export default {
   plugins: [vike(), edgeone({ serverWrapper: 'vike' })]
-})
+}
 ```
 
-The build command remains `vike build`.
+> The build command remains `$ vike build`.
 
-### Settings
+### 2. Deploy
+
+#### Git Connection Deployment
+
+Push your project to [GitHub](http://github.com) or [GitLab](https://gitlab.com), then [connect it to EdgeOne Pages](https://pages.edgeone.ai/document/importing-a-git-repository).
+
+#### CLI Deployment
+
+Install the [EdgeOne CLI](https://pages.edgeone.ai/document/edgeone-cli):
+
+```shell
+npm install -g edgeone
+```
+
+Then deploy:
+
+```shell
+edgeone pages deploy
+```
+
+## Settings
 
 The `edgeone()` Vite plugin accepts the following optional configurations:
 
@@ -50,16 +60,8 @@ The `edgeone()` Vite plugin accepts the following optional configurations:
 - **`routes`** (`string[]`): Custom route list (e.g., `['/', '/about']`). When not provided, Vike automatically scans the `pages/` directory.
 - **`ssr`** (`boolean`): Enable SSR. By default, the adapter infers this based on your project.
 
-### Deployment
+See also: [EdgeOne Pages > Vike](https://pages.edgeone.ai/document/framework-vike).
 
-#### Git Connection Deployment
+## See also
 
-After integrating the adapter, push your project to GitHub or GitLab, then use Git connection deployment on EdgeOne Pages.
-
-#### CLI Deployment
-
-Install the EdgeOne CLI tool, then deploy using:
-
-```bash
-edgeone pages deploy
-```
+- [EdgeOne Pages > Vike](https://pages.edgeone.ai/document/framework-vike)
