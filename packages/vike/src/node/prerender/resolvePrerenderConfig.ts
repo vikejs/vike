@@ -26,7 +26,6 @@ async function resolvePrerenderConfigGlobal(vikeConfig: Pick<VikeConfigInternal,
   const prerenderConfigGlobal = {
     partial: pickFirst(prerenderSettings.map((c) => c.partial)) ?? false,
     noExtraDir: pickFirst(prerenderSettings.map((c) => c.noExtraDir)) ?? null,
-    keepDistServer: pickFirst(prerenderSettings.map((c) => c.keepDistServer)) ?? false,
     parallel: pickFirst(prerenderSettings.map((c) => c.parallel)) ?? true,
     disableAutoRun: pickFirst(prerenderSettings.map((c) => c.disableAutoRun)) ?? false,
   } satisfies Record<string, boolean | number | null>
@@ -57,6 +56,7 @@ async function resolvePrerenderConfigGlobal(vikeConfig: Pick<VikeConfigInternal,
     isPrerenderingEnabled,
     isPrerenderingEnabledForAllPages,
     redirects: pickFirst(prerenderSettings.map((c) => c.redirects)) ?? isPrerenderingEnabledForAllPages,
+    keepDistServer: pickFirst(prerenderSettings.map((c) => c.keepDistServer)) ?? false,
   })
 
   // TO-DO/next-major-release: remove
