@@ -23,7 +23,7 @@ type GlobalSetting = PageSetting | {
   // Change settings without enabling pre-rendering
   enable?: null | boolean // Default: `true`
   // Don't remove dist/server/
-  keepDistServer?: boolean // Default: `false`
+  keepDistServer?: boolean // Default: `false` if all pages are pre-rendered
 }
 
 // pages/+prerender.js
@@ -93,7 +93,7 @@ Alternatively, set `+prerender` to `false` for the pages that cannot be pre-rend
 
 ## `redirects`
 
-`boolean` (default: `true` if the app is fully-prerendered)
+`boolean` (default: `true` if your app is fully-prerendered)
 
 Whether <Link href="/redirects">`+redirects`</Link> should be pre-rendered to following HTML:
 
@@ -215,11 +215,11 @@ export default {
 
 ## `keepDistServer`
 
-`boolean` (default: `false`)
+`boolean` (default: `false` if your app is fully-prerendered)
 
 If you pre-render all your pages (i.e. you didn't set <Link href="#partial">`partial`</Link> to `true`) then Vike removes the `dist/server/` directory (or `path.join(build.outDir, 'server/')` if you changed [`build.outDir`](https://vitejs.dev/config/build-options.html#build-outdir)) after pre-rendering has finished.
 
-If you set `prerender.keepDistServer` to `true` then Vike won't remove the `dist/server/` directory.
+If you set `prerender.keepDistServer` to `true` then Vike doesn't remove the `dist/server/` directory.
 
 
 ## See also
