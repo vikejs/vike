@@ -25,9 +25,7 @@ async function resolvePrerenderConfigGlobal(vikeConfig: Pick<VikeConfigInternal,
   const prerenderSettings = prerenderConfigsResolved.filter(isObject2)
   const prerenderConfigGlobal = {
     partial: pickFirst(prerenderSettings.map((c) => c.partial)) ?? false,
-    redirects: pickFirst(prerenderSettings.map((c) => c.redirects)) ?? null,
     noExtraDir: pickFirst(prerenderSettings.map((c) => c.noExtraDir)) ?? null,
-    keepDistServer: pickFirst(prerenderSettings.map((c) => c.keepDistServer)) ?? false,
     parallel: pickFirst(prerenderSettings.map((c) => c.parallel)) ?? true,
     disableAutoRun: pickFirst(prerenderSettings.map((c) => c.disableAutoRun)) ?? false,
   } satisfies Record<string, boolean | number | null>
@@ -51,10 +49,16 @@ async function resolvePrerenderConfigGlobal(vikeConfig: Pick<VikeConfigInternal,
   const pageConfigs = vikeConfig._pageConfigs
   const prerenderConfigLocalList = await Promise.all(pageConfigs.map(resolvePrerenderConfigLocal))
   const isEnable = (prerenderConfigLocal: PrerenderConfigLocal) => prerenderConfigLocal?.value ?? defaultLocalValue
+  const isPrerenderingEnabled = pageConfigs.length > 0 && prerenderConfigLocalList.some(isEnable)
+  const isPrerenderingEnabledForAllPages = pageConfigs.length > 0 && prerenderConfigLocalList.every(isEnable)
   objectAssign(prerenderConfigGlobal, {
     defaultLocalValue,
-    isPrerenderingEnabledForAllPages: pageConfigs.length > 0 && prerenderConfigLocalList.every(isEnable),
-    isPrerenderingEnabled: pageConfigs.length > 0 && prerenderConfigLocalList.some(isEnable),
+    isPrerenderingEnabled,
+    isPrerenderingEnabledForAllPages,
+    redirects: pickFirst(prerenderSettings.map((c) => c.redirects)) ?? isPrerenderingEnabledForAllPages,
+    keepDistServer: !isPrerenderingEnabledForAllPages
+      ? true
+      : (pickFirst(prerenderSettings.map((c) => c.keepDistServer)) ?? false),
   })
 
   // TO-DO/next-major-release: remove

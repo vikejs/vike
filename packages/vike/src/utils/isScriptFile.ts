@@ -57,7 +57,7 @@ const extTemplates = [
 ] as const
 
 const scriptFileExtensionList = [...extJsOrTs, ...extJsxOrTsx, ...extTemplates] as const
-const scriptFileExtensionPattern = '(' + scriptFileExtensionList.join('|') + ')'
+const scriptFileExtensionPattern = '{' + scriptFileExtensionList.join(',') + '}'
 
 function isScriptFile(filePath: string): boolean {
   return scriptFileExtensionList.some((ext) => filePath.endsWith('.' + ext))

@@ -83,12 +83,8 @@ function tolerateError({ logSource, logText, testInfo }) {
       // === Vite 8 beta
       // [11:49:08.085][/test/photon-cloudflare/.test-dev.test.ts][pnpm run dev][stderr] You or a plugin you are using have set `optimizeDeps.esbuildOptions` but this option is now deprecated. Vite now uses Rolldown to optimize the dependencies. Please use `optimizeDeps.rolldownOptions` instead.
       '`optimizeDeps.esbuildOptions` but this option is now deprecated',
-      // [11:16:04.458][/docs/.test-preview.test.ts][pnpm run preview][stderr] [PLUGIN_TIMINGS] Warning: Your build spent significant time in plugins. Here is a breakdown:
-      //   - vike:pluginExtractAssets:append-extractAssets-query (62%)
-      //   - @mdx-js/rollup (29%)
-      //   - @brillout/docpress:parsePageSections (6%)
-      // See https://rolldown.rs/options/checks#plugintimings for more details.
-      'Warning: Your build spent significant time in plugins',
+      // [11:27:26.381][\test\universal-middleware\test-preview.test.ts][npm run preview][stderr] [PLUGIN_TIMINGS] Warning: Your build spent significant time in plugin `vike:pluginExtractAssets:append-extractAssets-query`. See https://rolldown.rs/options/checks#plugintimings for more details.
+      'Warning: Your build spent significant time in plugin',
       // [11:16:03.710][/docs/.test-preview.test.ts][pnpm run preview][stderr] `transformWithEsbuild` is deprecated and will be removed in the future. Please migrate to `transformWithOxc`.
       '`transformWithEsbuild` is deprecated and will be removed in the future',
       // [09:50:40.332][/examples/react-full][npm run preview][stderr] [vite:react-swc] We recommend switching to `@vitejs/plugin-react` for improved performance as no swc plugins are used. More information at https://vite.dev/rolldown
