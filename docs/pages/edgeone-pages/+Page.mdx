@@ -5,12 +5,9 @@ import { Link } from '@brillout/docpress'
   staticHostLink={<>, such as <a href="https://pages.edgeone.ai/">EdgeOne Pages</a></>}
 />
 
-> For deploying with SSR, see <a href="https://pages.edgeone.ai/zh/document/framework-vike">EdgeOne Pages Vike Documentation</a>.
+## Static Site Generation (SSG)
 
-
-### Static Site Generation (SSG)
-
-To pre-render a page as static HTML at build time, set `prerender: true` in the page's `+config.ts`:
+To pre-render a page as static HTML at build time, set `prerender: true` in the page's `+config.ts`. For detailed SSG configuration, see <a href="https://pages.edgeone.ai/document/framework-vike">EdgeOne Pages Vike Documentation</a>.
 
 ```typescript
 // pages/about/+config.ts
@@ -19,5 +16,80 @@ export default {
 }
 ```
 
-During the build phase, static HTML files are generated. After deployment, routes with pre-rendered content directly serve these static files without server-side rendering on each request.
+## Server-Side Rendering (SSR)
 
+EdgeOne Pages supports deploying Vike applications with SSR capabilities through the `@edgeone/vite` adapter.
+
+### Installation
+
+Install the EdgeOne Vite adapter:
+
+```bash
+npm install @edgeone/vite
+```
+
+### Configuration
+
+Update your `vite.config.ts` (or `vite.config.js`) to include the adapter with `serverWrapper: 'vike'`:
+
+```typescript
+import { defineConfig } from 'vite'
+import vike from 'vike/plugin'
+import edgeone from '@edgeone/vite'
+
+export default defineConfig({
+  plugins: [vike(), edgeone({ serverWrapper: 'vike' })],
+})
+```
+
+The build command uses `npm run build` (which internally executes `vike build`), and the output directory is `dist`, which EdgeOne Pages will use.
+
+### Adapter Options
+
+The `edgeone()` function accepts the following optional configurations:
+
+- **`serverWrapper`** (`'vike' | 'autoDetect' | 'ssrRender' | 'webHandler'`): Server runtime mode. Set to `'vike'` when deploying Vike projects. `'autoDetect'` will automatically select based on whether the vike plugin is used.
+- **`clientBuildDir`** (string): Client build output directory. Overrides the default `dist/client` detection.
+- **`serverBuildDir`** (string): Server build output directory. Overrides the default `dist/server` detection.
+- **`serverEntry`** (string): Server entry file path. Overrides the default `entry-server.js` detection.
+- **`routes`** (string[]): Custom route list (e.g., `['/', '/about']`). When not provided, Vike automatically scans the `pages/` directory.
+- **`ssr`** (boolean): Enable SSR. By default, the adapter infers this based on your project.
+
+### Data Fetching
+
+Define server-side data functions in `+data.ts`. The return value is injected into `pageContext`, which page components can access via `usePageContext()` or props. Supports async operations for API requests, cookie reading, etc.
+
+```typescript
+// pages/user/+data.ts
+export async function data(pageContext) {
+  const user = await fetchUserData(pageContext.routeParams.id)
+  return { user }
+}
+```
+
+### Before Render Hook
+
+`+onBeforeRender.ts` executes before rendering, allowing you to modify `pageContext`, perform redirects, or conditionally render based on route parameters or request information.
+
+```typescript
+// pages/admin/+onBeforeRender.ts
+export async function onBeforeRender(pageContext) {
+  if (!isAdmin(pageContext)) {
+    throw redirect('/login')
+  }
+}
+```
+
+### Deployment
+
+#### Git Connection Deployment
+
+After integrating the adapter, push your project to GitHub or GitLab, then use Git connection deployment on EdgeOne Pages.
+
+#### CLI Deployment
+
+Install the EdgeOne CLI tool, then deploy using:
+
+```bash
+edgeone pages deploy
+```
