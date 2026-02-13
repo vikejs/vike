@@ -1,16 +1,13 @@
 import { StaticHostDocIntro, StaticHostDocOutro, StaticHostDocStrategies } from '../../components/static-host'
 import { Link } from '@brillout/docpress'
 
-<StaticHostDocIntro
-  staticHostLink={<>, such as <a href="https://pages.edgeone.ai/">EdgeOne Pages</a></>}
-/>
-
 ## Static Site Generation (SSG)
 
 To pre-render a page as static HTML at build time, set `prerender: true` in the page's `+config.ts`. For detailed SSG configuration, see <a href="https://pages.edgeone.ai/document/framework-vike">EdgeOne Pages Vike Documentation</a>.
 
 ```typescript
 // pages/about/+config.ts
+
 export default {
   prerender: true,
 }
@@ -24,61 +21,34 @@ EdgeOne Pages supports deploying Vike applications with SSR capabilities through
 
 Install the EdgeOne Vite adapter:
 
-```bash
+```shell
 npm install @edgeone/vite
 ```
 
-### Configuration
+```ts
+// vite.config.js
 
-Update your `vite.config.ts` (or `vite.config.js`) to include the adapter with `serverWrapper: 'vike'`:
-
-```typescript
 import { defineConfig } from 'vite'
 import vike from 'vike/plugin'
 import edgeone from '@edgeone/vite'
 
 export default defineConfig({
-  plugins: [vike(), edgeone({ serverWrapper: 'vike' })],
+  plugins: [vike(), edgeone({ serverWrapper: 'vike' })]
 })
 ```
 
-The build command uses `npm run build` (which internally executes `vike build`), and the output directory is `dist`, which EdgeOne Pages will use.
+The build command remains `vike build`.
 
-### Adapter Options
+### Settings
 
-The `edgeone()` function accepts the following optional configurations:
+The `edgeone()` Vite plugin accepts the following optional configurations:
 
-- **`serverWrapper`** (`'vike' | 'autoDetect' | 'ssrRender' | 'webHandler'`): Server runtime mode. Set to `'vike'` when deploying Vike projects. `'autoDetect'` will automatically select based on whether the vike plugin is used.
-- **`clientBuildDir`** (string): Client build output directory. Overrides the default `dist/client` detection.
-- **`serverBuildDir`** (string): Server build output directory. Overrides the default `dist/server` detection.
-- **`serverEntry`** (string): Server entry file path. Overrides the default `entry-server.js` detection.
-- **`routes`** (string[]): Custom route list (e.g., `['/', '/about']`). When not provided, Vike automatically scans the `pages/` directory.
-- **`ssr`** (boolean): Enable SSR. By default, the adapter infers this based on your project.
-
-### Data Fetching
-
-Define server-side data functions in `+data.ts`. The return value is injected into `pageContext`, which page components can access via `usePageContext()` or props. Supports async operations for API requests, cookie reading, etc.
-
-```typescript
-// pages/user/+data.ts
-export async function data(pageContext) {
-  const user = await fetchUserData(pageContext.routeParams.id)
-  return { user }
-}
-```
-
-### Before Render Hook
-
-`+onBeforeRender.ts` executes before rendering, allowing you to modify `pageContext`, perform redirects, or conditionally render based on route parameters or request information.
-
-```typescript
-// pages/admin/+onBeforeRender.ts
-export async function onBeforeRender(pageContext) {
-  if (!isAdmin(pageContext)) {
-    throw redirect('/login')
-  }
-}
-```
+- **`serverWrapper`** (`'vike' | 'autoDetect' | 'ssrRender' | 'webHandler'`): Server runtime mode. Set to `'vike'` when deploying Vike projects. `'autoDetect'` will automatically select based on whether the Vike plugin is used.
+- **`clientBuildDir`** (`string`): Client build output directory. Overrides the default `dist/client` detection.
+- **`serverBuildDir`** (`string`): Server build output directory. Overrides the default `dist/server` detection.
+- **`serverEntry`** (`string`): Server entry file path. Overrides the default `entry-server.js` detection.
+- **`routes`** (`string[]`): Custom route list (e.g., `['/', '/about']`). When not provided, Vike automatically scans the `pages/` directory.
+- **`ssr`** (`boolean`): Enable SSR. By default, the adapter infers this based on your project.
 
 ### Deployment
 
