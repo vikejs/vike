@@ -236,8 +236,7 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
   await prerenderPages(prerenderContext, concurrencyLimit, onComplete)
   warnContradictoryNoPrerenderList(prerenderContext._prerenderedPageContexts, doNotPrerenderList)
 
-  const { redirects, isPrerenderingEnabledForAllPages } = prerenderConfigGlobal
-  if (redirects !== null ? redirects : isPrerenderingEnabledForAllPages) {
+  if (prerenderConfigGlobal.redirects) {
     const showWarningUponDynamicRedirects = !prerenderConfigGlobal.partial
     await prerenderRedirects(globalContext, onComplete, showWarningUponDynamicRedirects)
   }
@@ -252,7 +251,7 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
   objectAssign(vikeConfig.prerenderContext, prerenderContextPublic, true)
   setGlobalContext_prerenderContext(prerenderContextPublic)
 
-  if (prerenderConfigGlobal.isPrerenderingEnabledForAllPages && !prerenderConfigGlobal.keepDistServer) {
+  if (!prerenderConfigGlobal.keepDistServer) {
     fs.rmSync(outDirServer, { recursive: true })
   }
 
