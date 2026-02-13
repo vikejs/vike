@@ -51,10 +51,12 @@ async function resolvePrerenderConfigGlobal(vikeConfig: Pick<VikeConfigInternal,
   const pageConfigs = vikeConfig._pageConfigs
   const prerenderConfigLocalList = await Promise.all(pageConfigs.map(resolvePrerenderConfigLocal))
   const isEnable = (prerenderConfigLocal: PrerenderConfigLocal) => prerenderConfigLocal?.value ?? defaultLocalValue
+  const isPrerenderingEnabled = pageConfigs.length > 0 && prerenderConfigLocalList.some(isEnable)
+  const isPrerenderingEnabledForAllPages = pageConfigs.length > 0 && prerenderConfigLocalList.every(isEnable)
   objectAssign(prerenderConfigGlobal, {
     defaultLocalValue,
-    isPrerenderingEnabledForAllPages: pageConfigs.length > 0 && prerenderConfigLocalList.every(isEnable),
-    isPrerenderingEnabled: pageConfigs.length > 0 && prerenderConfigLocalList.some(isEnable),
+    isPrerenderingEnabled,
+    isPrerenderingEnabledForAllPages,
   })
 
   // TO-DO/next-major-release: remove
