@@ -1,18 +1,20 @@
 import { useEffect, useRef, useState, type RefObject } from 'react'
+import { gsap } from 'gsap'
 import { useGSAP } from '@gsap/react'
 
 import { FlexGraphicHook, HOOK_NAME_KEYS } from '../../../util/constants'
 import { applyColor, applyStrokeWidth, createSlideshowScrollTrigger } from './animations'
-import { hookColors } from '../../../util/ui.constants'
-import { killTweens } from '../../../util/gsap.utils'
+import { debounce } from '../../../util/gsap.utils'
+import { hookColors, uiConfig } from '../../../util/ui.constants'
 
 const circuitDefaultColor = 'var(--color-grey-300-hex)'
 const baseStrokeWidth = 3
-const activeStrokeWidth = 4
-const hitboxStrokeWidth = 14
+const activeStrokeWidth = 3.5
+const hitboxStrokeWidth = 10
 
 const slideshowIntervalMs = 2000
 const slideshowResumeDelayMs = 600
+const highlightDebounceMs = 30
 
 const resolveCssColor = (color: string, root?: Element | null) => {
   const match = color.match(/^var\((--[^)]+)\)$/)
@@ -103,51 +105,97 @@ const useFlexGraphicInteractions = () => {
     onAfterRenderHtml: onAfterRenderHtmlRef,
   }
 
-  const hasInitializedRef = useRef(false)
+  const hookTimelinesRef = useRef<Partial<Record<FlexGraphicHook, gsap.core.Timeline>>>({})
+  const hasBuiltTimelinesRef = useRef(false)
 
-  // re-runs on [activeHooks] change, applies colors and stroke widths
-  // also kills tweens to prevent animation conflicts
-  // todo: refactor
-  // gsap.killTweensOf is harsh here - it known for causing lag if generally used
-  // instead of killing and applying all tweens state changes, we should pregenerate tweens in refs -> gsap.fromTo
-  // which we can then play, reverse or pause based on the states without recalculation or kill.
-  const { contextSafe } = useGSAP(
-    () => {
-      const baseMode = hasInitializedRef.current ? 'to' : 'set'
-      const themeRoot = getThemeRoot()
-      const baseColor = resolveCssColor(circuitDefaultColor, themeRoot)
-      const allTargets = collectAllTargets(hookRefMap)
-      const allElements = [...allTargets.strokeTargets, ...allTargets.fillTargets]
+  const buildHookTimelines = () => {
+    const themeRoot = getThemeRoot()
+    const baseColor = resolveCssColor(circuitDefaultColor, themeRoot)
+    const allTargets = collectAllTargets(hookRefMap)
 
-      // outchy
-      killTweens(allElements)
+    if (!allTargets.strokeTargets.length && !allTargets.fillTargets.length) {
+      return false
+    }
 
-      applyColor({ targets: allTargets.strokeTargets, color: baseColor, mode: baseMode, attr: 'stroke' })
-      applyColor({ targets: allTargets.fillTargets, color: baseColor, mode: baseMode, attr: 'fill' })
-      applyStrokeWidth(allTargets.strokeTargets, baseStrokeWidth, baseMode)
+    applyColor({ targets: allTargets.strokeTargets, color: baseColor, mode: 'set', attr: 'stroke' })
+    applyColor({ targets: allTargets.fillTargets, color: baseColor, mode: 'set', attr: 'fill' })
+    applyStrokeWidth(allTargets.strokeTargets, baseStrokeWidth, 'set')
 
-      if (activeHooks?.length) {
-        activeHooks.forEach((hookName) => {
-          const ref = hookRefMap[hookName]
-          if (!ref) {
-            return
-          }
+    const hookTimelines: Partial<Record<FlexGraphicHook, gsap.core.Timeline>> = {}
 
-          const targets = collectTargets(ref)
-          const hookColor = resolveCssColor(hookColors[hookName], themeRoot)
-
-          applyColor({ targets: targets.strokeTargets, color: hookColor, mode: 'to', attr: 'stroke' })
-          applyColor({ targets: targets.fillTargets, color: hookColor, mode: 'to', attr: 'fill' })
-          applyStrokeWidth(targets.strokeTargets, activeStrokeWidth, 'to')
-        })
+    HOOK_NAME_KEYS.forEach((hookName) => {
+      const ref = hookRefMap[hookName]
+      if (!ref?.current) {
+        return
       }
 
-      hasInitializedRef.current = true
+      const targets = collectTargets(ref)
+      if (!targets.strokeTargets.length && !targets.fillTargets.length) {
+        return
+      }
+
+      const hookColor = resolveCssColor(hookColors[hookName], themeRoot)
+      const timeline = gsap.timeline({
+        paused: true,
+        defaults: {
+          duration: uiConfig.transition.shortDuration,
+          ease: uiConfig.transition.easeOutGsap,
+          overwrite: 'auto',
+        },
+      })
+
+      if (targets.strokeTargets.length) {
+        timeline.to(
+          targets.strokeTargets,
+          {
+            attr: { stroke: hookColor, 'stroke-width': activeStrokeWidth },
+          },
+          0,
+        )
+      }
+
+      if (targets.fillTargets.length) {
+        timeline.to(targets.fillTargets, { attr: { fill: hookColor } }, 0)
+      }
+
+      hookTimelines[hookName] = timeline
+    })
+
+    hookTimelinesRef.current = hookTimelines
+    return true
+  }
+
+  const syncHookTimelines = (hooks: FlexGraphicHook[] | null) => {
+    const activeSet = new Set(hooks ?? [])
+    Object.entries(hookTimelinesRef.current).forEach(([hookName, timeline]) => {
+      if (!timeline) {
+        return
+      }
+      if (activeSet.has(hookName as FlexGraphicHook)) {
+        timeline.play()
+      } else {
+        timeline.reverse()
+      }
+    })
+  }
+
+  // build timelines once and then play/reverse them on state changes
+  const { contextSafe } = useGSAP(
+    () => {
+      if (!hasBuiltTimelinesRef.current) {
+        const didBuild = buildHookTimelines()
+        if (!didBuild) {
+          return
+        }
+        hasBuiltTimelinesRef.current = true
+      }
+
+      syncHookTimelines(activeHooks)
     },
     { dependencies: [activeHooks] },
   )
 
-  const onChangeHightlight = contextSafe((hooks: FlexGraphicHook[] | null) => {
+  const handleChangeHighlight = contextSafe((hooks: FlexGraphicHook[] | null) => {
     if (!isScrollActive) {
       return
     }
@@ -167,6 +215,25 @@ const useFlexGraphicInteractions = () => {
 
     setIsSlideshowMode(false)
   })
+
+  const handleChangeHighlightRef = useRef(handleChangeHighlight)
+  handleChangeHighlightRef.current = handleChangeHighlight
+  const debouncedChangeHighlightRef = useRef(
+    debounce((hooks: FlexGraphicHook[] | null) => {
+      handleChangeHighlightRef.current(hooks)
+    }, highlightDebounceMs),
+  )
+
+  useEffect(
+    () => () => {
+      debouncedChangeHighlightRef.current.cancel()
+    },
+    [],
+  )
+
+  const onChangeHightlight = (hooks: FlexGraphicHook[] | null) => {
+    debouncedChangeHighlightRef.current(hooks)
+  }
 
   // setup hitboxes
   useEffect(() => {

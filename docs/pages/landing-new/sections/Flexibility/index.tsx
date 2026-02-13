@@ -78,32 +78,32 @@ const FlexibilitySection = () => {
       </LayoutComponent>
 
       <div className="relative my-32" data-speed="0.87">
-      <LayoutComponent className="grid grid-cols-2 gap-10">
-        <div className="">
-          <H4Headline as="h3" className="mb-8">
-            Supported <GradientText color="green">tools</GradientText> (first-class support)
-          </H4Headline>
-          <BarChart
-            pollData={[
-              { label: 'other frameworks', percentage: 33 },
-              { label: 'Vike', percentage: 100 },
-            ]}
-            color="green"
-          />
-        </div>
-        <div className="">
-          <H4Headline as="h3" className="mb-8">
-            Supported <GradientText color="green">architectures</GradientText> (first-class support)
-          </H4Headline>
-          <BarChart
-            pollData={[
-              { label: 'other frameworks', percentage: 33 },
-              { label: 'Vike', percentage: 100 },
-            ]}
-            color="green"
-          />
-        </div>
-      </LayoutComponent>
+        <LayoutComponent className="grid grid-cols-2 gap-10">
+          <div className="">
+            <H4Headline as="h3" className="mb-8">
+              Supported <GradientText color="green">tools</GradientText> (first-class support)
+            </H4Headline>
+            <BarChart
+              pollData={[
+                { label: 'other frameworks', percentage: 33 },
+                { label: 'Vike', percentage: 100 },
+              ]}
+              color="green"
+            />
+          </div>
+          <div className="">
+            <H4Headline as="h3" className="mb-8">
+              Supported <GradientText color="green">architectures</GradientText> (first-class support)
+            </H4Headline>
+            <BarChart
+              pollData={[
+                { label: 'other frameworks', percentage: 33 },
+                { label: 'Vike', percentage: 100 },
+              ]}
+              color="green"
+            />
+          </div>
+        </LayoutComponent>
       </div>
 
       <LayoutComponent className="mt-20 mb-70">
