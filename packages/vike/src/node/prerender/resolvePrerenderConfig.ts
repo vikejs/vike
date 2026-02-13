@@ -56,7 +56,7 @@ async function resolvePrerenderConfigGlobal(vikeConfig: Pick<VikeConfigInternal,
     defaultLocalValue,
     isPrerenderingEnabled,
     isPrerenderingEnabledForAllPages,
-    redirects: pickFirst(prerenderSettings.map((c) => c.redirects)) ?? null,
+    redirects: pickFirst(prerenderSettings.map((c) => c.redirects)) ?? isPrerenderingEnabledForAllPages,
   })
 
   // TO-DO/next-major-release: remove
