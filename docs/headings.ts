@@ -56,6 +56,12 @@ const headings = [
   },
   {
     level: 2,
+    title: 'Introduction (old)',
+    titleDocument: 'Vike',
+    url: '/landing-old',
+  },
+  {
+    level: 2,
     title: 'FAQ',
     url: '/faq',
   },

@@ -1,3 +1,4 @@
 node_modules/
 # https://github.com/vikejs/vike/pull/1997
 /.pnpm-store/
+.DS_Store
