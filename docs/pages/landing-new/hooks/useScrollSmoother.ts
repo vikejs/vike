@@ -84,7 +84,7 @@ const useScrollSmoother = () => {
             end: 'bottom 10%',
             markers: false,
             scrub: true,
-            invalidateOnRefresh: true,
+            invalidateOnRefresh: false,
           },
         })
 

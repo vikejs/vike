@@ -14,10 +14,9 @@ interface SectionHeaderProps {
 
 const SectionHeader = ({ color, icon, main, sub }: SectionHeaderProps) => {
   // const speedValue = R(1.02, 1.06).toFixed(2)
-  const speedValue = 1
 
   return (
-    <div data-speed={`clamp(${speedValue})`}>
+    <div>
       <HeadlineGroup
         outerClassName="w-full sm:w-4/5 md:w-3/4 lg:w-2/3 mx-auto"
         headingStyle="h1"

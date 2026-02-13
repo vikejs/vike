@@ -74,11 +74,12 @@ const FlexibilitySection = () => {
             </div>
           </GlassContainer>
         </div>
-        <BlurDot type="green" size="xl" visibility="low" className="absolute top-0 -right-40 z-0" />
+        <BlurDot type="green" size="xl" visibility="low" className="absolute top-0 right-0 z-0" />
       </LayoutComponent>
 
-      <LayoutComponent className="my-32 grid grid-cols-2 gap-10">
-        <div className="" data-speed="0.85 ">
+      <div className="relative my-32" data-speed="0.87">
+      <LayoutComponent className="grid grid-cols-2 gap-10">
+        <div className="">
           <H4Headline as="h3" className="mb-8">
             Supported <GradientText color="green">tools</GradientText> (first-class support)
           </H4Headline>
@@ -90,7 +91,7 @@ const FlexibilitySection = () => {
             color="green"
           />
         </div>
-        <div className="" data-speed="0.85 ">
+        <div className="">
           <H4Headline as="h3" className="mb-8">
             Supported <GradientText color="green">architectures</GradientText> (first-class support)
           </H4Headline>
@@ -103,6 +104,7 @@ const FlexibilitySection = () => {
           />
         </div>
       </LayoutComponent>
+      </div>
 
       <LayoutComponent className="mt-20 mb-70">
         <div className="grid grid-cols-2 gap-10 relative z-2">
