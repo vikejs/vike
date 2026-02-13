@@ -56,7 +56,9 @@ async function resolvePrerenderConfigGlobal(vikeConfig: Pick<VikeConfigInternal,
     isPrerenderingEnabled,
     isPrerenderingEnabledForAllPages,
     redirects: pickFirst(prerenderSettings.map((c) => c.redirects)) ?? isPrerenderingEnabledForAllPages,
-    keepDistServer: pickFirst(prerenderSettings.map((c) => c.keepDistServer)) ?? false,
+    keepDistServer: !isPrerenderingEnabledForAllPages
+      ? true
+      : (pickFirst(prerenderSettings.map((c) => c.keepDistServer)) ?? false),
   })
 
   // TO-DO/next-major-release: remove

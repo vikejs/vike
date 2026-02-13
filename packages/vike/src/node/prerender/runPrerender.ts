@@ -251,7 +251,7 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
   objectAssign(vikeConfig.prerenderContext, prerenderContextPublic, true)
   setGlobalContext_prerenderContext(prerenderContextPublic)
 
-  if (prerenderConfigGlobal.isPrerenderingEnabledForAllPages && !prerenderConfigGlobal.keepDistServer) {
+  if (!prerenderConfigGlobal.keepDistServer) {
     fs.rmSync(outDirServer, { recursive: true })
   }
 
