@@ -33,8 +33,14 @@ function getPageContextPublicShared<PageContext extends PageContextPublicMinimum
     })
   }
 
-  // For a more readable `console.log(pageContext)` output
-  sortPageContext(pageContext)
+  // More readable `console.log(pageContext)` output
+  if (
+    // https://github.com/vikejs/vike/issues/3099
+    globalThis.__VIKE__IS_DEV ||
+    globalThis.__VIKE__IS_DEBUG
+  ) {
+    sortPageContext(pageContext)
+  }
 
   const globalContextPublic = getGlobalContextPublicShared(pageContext._globalContext)
   const pageContextPublic = getPublicProxy(

@@ -7,10 +7,10 @@ import { version as viteVersion } from 'vite'
 import { assertViteVersion } from '../../utils/assertViteVersion.js'
 import { installUncaughtErrorHandlers } from '../../utils/installUncaughtErrorHandlers.js'
 
-assertEnv()
+assertEnvVite()
 onLoad()
 
-function assertEnv() {
+function assertEnvVite() {
   markSetup_vikeVitePlugin()
   assertIsNotBrowser()
   assertNodeVersion()

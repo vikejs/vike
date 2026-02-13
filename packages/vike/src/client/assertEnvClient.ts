@@ -1,7 +1,7 @@
 import { assertIsBrowser } from '../utils/assertIsBrowser.js'
 
-assertEnv()
+assertEnvClient()
 
-function assertEnv() {
+function assertEnvClient() {
   assertIsBrowser()
 }
