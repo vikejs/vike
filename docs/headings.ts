@@ -254,7 +254,7 @@ const headings = [
   },
   {
     level: 4,
-    title: 'Serverless',
+    title: 'Full-stack (serverless)',
   },
   {
     level: 2,
@@ -279,7 +279,7 @@ const headings = [
   },
   {
     level: 4,
-    title: 'Full-stack',
+    title: 'Full-stack (self-hosted)',
   },
   {
     level: 2,
