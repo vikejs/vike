@@ -4,16 +4,12 @@ import { type InlineConfig, type Plugin, type ResolvedConfig, type UserConfig } 
 import { isDevCheck } from '../../../utils/isDev.js'
 import { isDocker } from '../../../utils/isDocker.js'
 import { isExactlyOneTruthy } from '../../../utils/isExactlyOneTruthy.js'
-import { isVitest } from '../../../utils/isVitest.js'
-import { assert, assertUsage, assertWarning } from '../../../utils/assert.js'
+import { assert, assertUsage } from '../../../utils/assert.js'
 import { hasProp } from '../../../utils/hasProp.js'
 import { isObject } from '../../../utils/isObject.js'
 import { assertRollupInput } from './build/pluginBuildConfig.js'
-import { installRequireShim_setUserRootDir } from '@brillout/require-shim'
 import pc from '@brillout/picocolors'
 import { assertResolveAlias } from './pluginCommon/assertResolveAlias.js'
-import { isViteCli } from '../shared/isViteCli.js'
-import { isVikeCliOrApi } from '../../../shared-server-node/api-context.js'
 import { getVikeConfigInternal, setVikeConfigContext } from '../shared/resolveVikeConfigInternal.js'
 import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/resolveViteConfigFromUser.js'
 import { temp_disablePrerenderAutoRun } from '../../prerender/context.js'
@@ -77,7 +73,6 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
         handler(config) {
           assertViteRoot(config._rootResolvedEarly!, config)
           assertSingleInstance(config)
-          installRequireShim_setUserRootDir(config.root)
         },
       },
     },
@@ -97,7 +92,6 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
           workaroundCI(config)
           assertRollupInput(config)
           assertResolveAlias(config)
-          assertVikeCliOrApi(config)
           temp_supportOldInterface(config)
           await emitServerEntryOnlyIfNeeded(config)
         },
@@ -105,8 +99,6 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
       config: {
         order: 'post',
         async handler(configFromUser) {
-          assertViteBuildSsr(configFromUser)
-
           let configFromVike: UserConfig = { server: {}, preview: {} }
           const vikeConfig = await getVikeConfigInternal()
 
@@ -177,34 +169,6 @@ function assertSingleInstance(config: ResolvedConfig) {
   )
 }
 
-function assertVikeCliOrApi(config: ResolvedConfig) {
-  if (isVikeCliOrApi()) return
-  if (isViteCli()) {
-    assert(!isVitest())
-    return
-  }
-  /* This warning is always shown: Vitest loads Vite *before* any Vike JavaScript API can be invoked.
-  if (isVitest()) {
-    assertWarning(
-      false,
-      `Unexpected Vitest setup: you seem to be using Vitest together with Vike's Vite plugin but without using Vike's JavaScript API which is unexpected, see ${pc.underline('https://vike.dev/vitest')}`,
-      { onlyOnce: true },
-    )
-    return
-  }
-  */
-  if (config.server.middlewareMode) {
-    assertWarning(
-      false,
-      `${pc.cyan('vite.createServer()')} is deprecated ${pc.underline('https://vike.dev/migration/cli#api')}`,
-      {
-        onlyOnce: true,
-      },
-    )
-    return
-  }
-}
-
 // TO-DO/next-major-release: remove https://github.com/vikejs/vike/issues/2122
 function temp_supportOldInterface(config: ResolvedConfig) {
   if (!('vitePluginSsr' in config)) return
@@ -232,9 +196,4 @@ async function emitServerEntryOnlyIfNeeded(config: ResolvedConfig) {
   if (config.vitePluginServerEntry?.inject && !vikeConfig.prerenderContext.isPrerenderingEnabled) {
     config.vitePluginServerEntry.disableServerEntryEmit = true
   }
-}
-
-function assertViteBuildSsr(configFromUser: UserConfig) {
-  // https://github.com/vikejs/vike/issues/3010
-  assertUsage(configFromUser.build?.ssr === undefined, "Don't set vite.build.ssr")
 }

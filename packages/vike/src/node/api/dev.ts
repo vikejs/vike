@@ -1,5 +1,5 @@
 export { dev }
-// TO-DO/eventually: remove if it doesn't end up being used
+// Enable vike-photon to call startupLog() — TO-DO/eventually: remove if it doesn't end up being used https://github.com/vikejs/vike-photon/issues/57
 export { startupLog }
 
 import { prepareViteApiCall } from './prepareViteApiCall.js'
@@ -12,7 +12,7 @@ import { colorVite } from '../../utils/colorsServer.js'
 import { PROJECT_VERSION } from '../../utils/PROJECT_VERSION.js'
 import pc from '@brillout/picocolors'
 import { processStartupLog } from '../vite/shared/loggerVite.js'
-import './assertEnvApi.js'
+import './assertEnvApiDev.js'
 assertIsNotProductionRuntime()
 
 /**
@@ -34,7 +34,7 @@ async function dev(
     if (viteServer.resolvedUrls) {
       startupLog(viteServer.resolvedUrls, viteServer)
     } else {
-      // TO-DO/eventually: remove if it doesn't end up being used
+      // Enable vike-photon to call startupLog() — TO-DO/eventually: remove if it doesn't end up being used https://github.com/vikejs/vike-photon/issues/57
       ;(viteConfig.server as Record<string, any>).startupLog = (resolvedUrls: ResolvedServerUrls) =>
         startupLog(resolvedUrls, viteServer)
     }

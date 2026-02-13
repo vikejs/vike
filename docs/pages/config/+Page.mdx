@@ -369,7 +369,7 @@ export default {
 export default false
 ```
 
-> `.jsx` or `.vue` files are client/server runtime code (they usually aren't used for configuration). Thus Vike treats `.jsx` and `.vue` imports as pointer imports.
+> The content of a `.jsx` or `.vue` file is runtime code for the client/server (it doesn't configure your app) and that's why Vike resolves it as pointer import.
 
 #### Config code isn't runtime code
 

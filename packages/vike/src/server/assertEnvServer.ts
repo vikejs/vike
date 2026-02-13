@@ -3,14 +3,13 @@ import '../utils/trackLogs.js' // should be loaded ASAP
 import { assertIsNotBrowser } from '../utils/assertIsNotBrowser.js'
 import { assertNodeVersion } from '../utils/assertNodeVersion.js'
 import { setAssertAlwaysShowStackTrace } from '../utils/assert.js'
-import { installRequireShim } from '@brillout/require-shim'
 import { isDebugError } from '../utils/debug.js'
 import { installUncaughtErrorHandlers } from '../utils/installUncaughtErrorHandlers.js'
 
-assertEnv()
+assertEnvServer()
 onLoad()
 
-function assertEnv() {
+function assertEnvServer() {
   assertIsNotBrowser()
   assertNodeVersion()
 }
@@ -23,7 +22,6 @@ function onLoad() {
     setAssertAlwaysShowStackTrace()
   }
   addEcosystemStamp()
-  installRequireShim()
 }
 
 // Used by:

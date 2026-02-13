@@ -771,14 +771,6 @@ describe('prepare()', () => {
                   "job": "Unit Tests E2E",
                 },
               },
-              "testFilePath": "test/require-shim/test-prod.test.ts",
-            },
-            {
-              "localConfig": {
-                "ci": {
-                  "job": "Unit Tests E2E",
-                },
-              },
               "testFilePath": "test/stream-vue-onServerPrefetch/test-dev.test.ts",
             },
             {
