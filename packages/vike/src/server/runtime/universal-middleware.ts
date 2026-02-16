@@ -1,12 +1,13 @@
 export default universalVikeHandler
 
+import type { RuntimeAdapterTarget } from '@universal-middleware/core'
 import { renderPageServer } from './renderPageServer.js'
 import '../assertEnvServer.js'
 
-async function universalVikeHandler(
+async function universalVikeHandler<T extends string>(
   request: Request,
-  context: Record<string, unknown>,
-  runtime: Record<string, unknown>,
+  context: Universal.Context,
+  runtime: RuntimeAdapterTarget<T>,
 ) {
   const pageContextInit = {
     ...context,
