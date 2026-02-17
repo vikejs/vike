@@ -13,7 +13,7 @@ const styleTierDescription = { color: '#6b7280', fontSize: '0.9em' } satisfies R
 function PricingTable() {
   return (
     <>
-      <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: 20, width: 1200, margin: 'auto' }}>
         <ColumnFree>Small team</ColumnFree>
         <Column>
           <TierName>Larger team</TierName>
@@ -77,7 +77,7 @@ function SubHeading({ children, style }: { children: React.ReactNode; style?: Re
 
 function ColumnFree({ children }: { children: string }) {
   return (
-    <Column style={{ flex: 0.5 }}>
+    <Column>
       <TierName>{children}</TierName>
       ≤2 <SoftwareDevelopers />
       <div style={styleTierDescription}></div>
