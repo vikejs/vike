@@ -13,56 +13,58 @@ const styleTierDescription = { color: '#6b7280', fontSize: '0.9em' } satisfies R
 function PricingTable() {
   return (
     <>
-      <div style={{ display: 'flex', gap: 20, marginLeft: -40, marginRight: -40, justifyContent: 'center' }}>
-        <Column>
-          <TierName>Small team</TierName>
-          ≤2 <SoftwareDevelopers />
-          <div style={styleTierDescription}></div>
-          <SubHeading style={{ visibility: 'hidden' }}>Invisible filler</SubHeading>
-          <Free />
-          <div>
-            <Check>Full access</Check>
-            <Check>Forever free</Check>
-            <Check>
-              No license key<NoteRef>2</NoteRef>
-            </Check>
-          </div>
-        </Column>
-        <Column>
-          <TierName>Larger team</TierName>
-          ≥3 <SoftwareDevelopers />
-          <div style={{ display: 'flex', gap: 20 }}>
+      <div style={{ marginLeft: -40, marginRight: -40 }}>
+        <div style={{ display: 'flex', gap: 20, justifyContent: 'center' }}>
+          <Column>
+            <TierName>Small team</TierName>
+            ≤2 <SoftwareDevelopers />
+            <div style={styleTierDescription}></div>
+            <SubHeading style={{ visibility: 'hidden' }}>Invisible filler</SubHeading>
+            <Free />
             <div>
-              <SubHeading>
-                Limited resources<NoteRef>3</NoteRef>
-              </SubHeading>
-              <Free />
               <Check>Full access</Check>
               <Check>Forever free</Check>
               <Check>
-                <a href="">Apply</a> for free license key
+                No license key<NoteRef>2</NoteRef>
               </Check>
             </div>
-            <div>
-              <SubHeading>
-                Sufficient resources<NoteRef style={{ visibility: 'hidden' }}>2</NoteRef>
-              </SubHeading>
-              <div
-                style={{ fontSize: fontSizePrice, color: '#2563eb', fontWeight: 700, marginTop: 8, marginBottom: 12 }}
-              >
-                <span style={{ fontSize: fontSizePrice }}>$5k</span>
-                <span style={{ fontSize: 16, color: '#6b7280', fontWeight: 400 }}> one time</span>
+          </Column>
+          <Column>
+            <TierName>Larger team</TierName>
+            ≥3 <SoftwareDevelopers />
+            <div style={{ display: 'flex', gap: 20 }}>
+              <div>
+                <SubHeading>
+                  Limited resources<NoteRef>3</NoteRef>
+                </SubHeading>
+                <Free />
+                <Check>Full access</Check>
+                <Check>Forever free</Check>
+                <Check>
+                  <a href="">Apply</a> for free license key
+                </Check>
               </div>
-              <Check>Full access</Check>
-              <Check>
-                Forever access<NoteRef>4</NoteRef>
-              </Check>
-              <Check>
-                Free trial: 6 months, <a href="">extendable</a>
-              </Check>
+              <div>
+                <SubHeading>
+                  Sufficient resources<NoteRef style={{ visibility: 'hidden' }}>2</NoteRef>
+                </SubHeading>
+                <div
+                  style={{ fontSize: fontSizePrice, color: '#2563eb', fontWeight: 700, marginTop: 8, marginBottom: 12 }}
+                >
+                  <span style={{ fontSize: fontSizePrice }}>$5k</span>
+                  <span style={{ fontSize: 16, color: '#6b7280', fontWeight: 400 }}> one time</span>
+                </div>
+                <Check>Full access</Check>
+                <Check>
+                  Forever access<NoteRef>4</NoteRef>
+                </Check>
+                <Check>
+                  Free trial: 6 months, <a href="">extendable</a>
+                </Check>
+              </div>
             </div>
-          </div>
-        </Column>
+          </Column>
+        </div>
       </div>
       <div style={{ marginTop: 20, display: 'flex', flexDirection: 'column', gap: 8 }}>
         <Note ref={1}>Only regular committers: occasional committers and bots don't count.</Note>
