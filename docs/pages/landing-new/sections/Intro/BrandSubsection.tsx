@@ -103,6 +103,18 @@ const BrandSubsection = () => {
           Use Cases
         </a>
       </div>
+      <Blockquote
+        className="md:w-4/5 mx-auto"
+        authorPictures={[
+          'https://github.com/brillout.png?size=100',
+          'https://github.com/magne4000.png?size=100',
+          'https://github.com/nitedani.png?size=100',
+          'https://github.com/phonzammi.png?size=100',
+        ]}
+      >
+        Vike is built on a stable, rock-solid core with powerful low-level hooks — a foundation companies can trust and
+        build upon with confidence.
+      </Blockquote>
     </GlassContainer>
   )
 }
