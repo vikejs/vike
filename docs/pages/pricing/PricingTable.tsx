@@ -16,9 +16,14 @@ function PricingTable() {
       <ColumnFree>Small team</ColumnFree>
       <Column>
         <TierName>Larger team</TierName>
+        ≥3 Software Developers
         <div style={{ display: 'flex', gap: 10 }}>
-          <div>bla</div>
           <div>
+            <div>Limited resources</div>
+            <Free />
+          </div>
+          <div>
+            <div>Sufficient resources</div>
             <div>
               <span style={{ color: 'blue', fontSize: fontSizePrice2 }}>$5k</span>
               <span style={{ color: '#777' }}> one time</span>
@@ -36,13 +41,9 @@ function ColumnFree({ children }: { children: string }) {
   return (
     <Column>
       <TierName>{children}</TierName>
-      <div style={styleTierDescription}>
-        <ul style={{ margin: 0, marginLeft: -20 }}>
-          <li>Personal usage (personal website, prototyping, ...)</li>
-          <li>Non-profit usage (education, open source, ...)</li>
-        </ul>
-      </div>
-      <Price color="#090">Free</Price>
+      ≤2 Software Developers
+      <div style={styleTierDescription}></div>
+      <Free />
       <div>
         <Check>No license key</Check>
         <Check>Unlimited access</Check>
@@ -50,6 +51,10 @@ function ColumnFree({ children }: { children: string }) {
       </div>
     </Column>
   )
+}
+
+function Free() {
+  return <Price color="#090">Free</Price>
 }
 
 function Price({ children, color }: { children: string; color: string }) {
