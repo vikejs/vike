@@ -46,7 +46,13 @@ function PricingTable() {
           </div>
         </Column>
       </div>
-      <div>(1): ewheuq</div>
+      <div>
+        <p>
+          <Note ref={1}>
+            License key isn't required: as a small team, you can use Vike just like any other open source tool.
+          </Note>
+        </p>
+      </div>
     </>
   )
 }
@@ -72,6 +78,13 @@ function ColumnFree({ children }: { children: string }) {
 
 function NoteRef({ children, style }: { children: string; style?: React.CSSProperties }) {
   return <sup {...{ style }}> ({children})</sup>
+}
+function Note({ children, ref }: { children: string; ref: number }) {
+  return (
+    <p style={{ color: '#666', fontSize: '0.94em' }}>
+      ({ref}) {children}
+    </p>
+  )
 }
 
 function SoftwareDevelopers() {
