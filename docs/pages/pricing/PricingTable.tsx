@@ -13,7 +13,7 @@ const styleTierDescription = { color: '#6b7280', fontSize: '0.9em' } satisfies R
 function PricingTable() {
   return (
     <>
-      <div style={{ display: 'flex', gap: 20, marginLeft: -40, marginRight: -40 }}>
+      <div style={{ display: 'flex', gap: 20, marginLeft: -40, marginRight: -40, justifyContent: 'center' }}>
         <Column>
           <TierName>Small team</TierName>
           ≤2 <SoftwareDevelopers />
