@@ -13,7 +13,7 @@ const styleTierDescription = { color: '#6b7280', fontSize: '0.9em' } satisfies R
 function PricingTable() {
   return (
     <>
-      <div style={{ display: 'flex', gap: 10 }}>
+      <div style={{ display: 'flex', gap: 20 }}>
         <Column>
           <TierName>Small team</TierName>
           ≤2 <SoftwareDevelopers />
@@ -31,7 +31,7 @@ function PricingTable() {
         <Column>
           <TierName>Larger team</TierName>
           ≥3 <SoftwareDevelopers />
-          <div style={{ display: 'flex', gap: 10 }}>
+          <div style={{ display: 'flex', gap: 20 }}>
             <div>
               <SubHeading>
                 Limited resources<NoteRef>3</NoteRef>
@@ -126,7 +126,7 @@ function Column({ children, style }: { children: React.ReactNode; style?: React.
     <div
       style={{
         border: '1px solid #e5e7eb',
-        padding: 17,
+        padding: 25,
         background: '#ffffff',
         borderRadius: 12,
         boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
