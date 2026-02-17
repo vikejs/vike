@@ -48,10 +48,9 @@ function PricingTable() {
                 <SubHeading>
                   Sufficient resources<NoteRef style={{ visibility: 'hidden' }}>2</NoteRef>
                 </SubHeading>
-                <div style={{ fontSize: fontSizePrice, fontWeight: 700, marginTop: 8, marginBottom: 12 }}>
-                  <span style={{ fontSize: fontSizePrice, color: '#2563eb' }}>$5k</span>
-                  <span style={{ fontSize: 16, color: '#6b7280', fontWeight: 400 }}> one time</span>
-                </div>
+                <Price color="#2563eb" suffix=" one time">
+                  $5k
+                </Price>
                 <Check>Full access</Check>
                 <Check>
                   Forever access<NoteRef>4</NoteRef>
@@ -111,9 +110,12 @@ function Free() {
   return <Price color="#059669">Free</Price>
 }
 
-function Price({ children, color }: { children: string; color: string }) {
+function Price({ children, color, suffix }: { children: string; color: string; suffix?: React.ReactNode }) {
   return (
-    <div style={{ fontSize: fontSizePrice, color, fontWeight: 700, marginTop: 8, marginBottom: 12 }}>{children}</div>
+    <div style={{ fontSize: fontSizePrice, color, fontWeight: 700, marginTop: 8, marginBottom: 12 }}>
+      {children}
+      {suffix && <span style={{ fontSize: 16, color: '#6b7280', fontWeight: 400 }}>{suffix}</span>}
+    </div>
   )
 }
 
