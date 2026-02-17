@@ -1,6 +1,7 @@
 export { PricingTable }
 
 import React from 'react'
+import './PricingTable.css'
 
 const fontSizePrice = 30
 const noteColor = '#6b7280'
@@ -12,7 +13,7 @@ const styleTierDescription = { color: '#6b7280', fontSize: '0.9em' } satisfies R
 
 function PricingTable() {
   return (
-    <>
+    <div id="pricing-table">
       <ExtraWidth width={100}>
         <div style={{ display: 'flex', gap: 20, justifyContent: 'center' }}>
           <Column>
@@ -62,20 +63,20 @@ function PricingTable() {
             </div>
           </Column>
         </div>
+        <div style={{ marginTop: 20, display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <Note ref={1}>Only regular committers: occasional committers and bots don't count.</Note>
+          <Note ref={2}>
+            License key isn't required: you use Vike just like any regular open source tool (zero encumbrance).
+          </Note>
+          <Note ref={3}>
+            Organizations with only a <a href="">few full-time employees</a> are considered resource-limited.
+          </Note>
+          <Note ref={4}>
+            One-time payment for a lifetime license key: valid forever, including all future Vike updates.
+          </Note>
+        </div>
       </ExtraWidth>
-      <div style={{ marginTop: 20, display: 'flex', flexDirection: 'column', gap: 8 }}>
-        <Note ref={1}>Only regular committers: occasional committers and bots don't count.</Note>
-        <Note ref={2}>
-          License key isn't required: you use Vike just like any regular open source tool (zero encumbrance).
-        </Note>
-        <Note ref={3}>
-          Organizations with only a <a href="">few full-time employees</a> are considered resource-limited.
-        </Note>
-        <Note ref={4}>
-          One-time payment for a lifetime license key: valid forever, including all future Vike updates.
-        </Note>
-      </div>
-    </>
+    </div>
   )
 }
 
