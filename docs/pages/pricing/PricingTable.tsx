@@ -14,7 +14,20 @@ function PricingTable() {
   return (
     <>
       <div style={{ display: 'flex', gap: 10 }}>
-        <ColumnFree>Small team</ColumnFree>
+        <Column>
+          <TierName>Small team</TierName>
+          ≤2 <SoftwareDevelopers />
+          <div style={styleTierDescription}></div>
+          <SubHeading style={{ visibility: 'hidden' }}>Invisible filler</SubHeading>
+          <Free />
+          <div>
+            <Check>Full access</Check>
+            <Check>Forever free</Check>
+            <Check>
+              No license key<NoteRef>2</NoteRef>
+            </Check>
+          </div>
+        </Column>
         <Column>
           <TierName>Larger team</TierName>
           ≥3 <SoftwareDevelopers />
@@ -72,25 +85,6 @@ function SubHeading({ children, style }: { children: React.ReactNode; style?: Re
     <div style={{ marginTop: 20, ...style }}>
       <b style={{ whiteSpace: 'nowrap' }}>{children}</b>
     </div>
-  )
-}
-
-function ColumnFree({ children }: { children: string }) {
-  return (
-    <Column>
-      <TierName>{children}</TierName>
-      ≤2 <SoftwareDevelopers />
-      <div style={styleTierDescription}></div>
-      <SubHeading style={{ visibility: 'hidden' }}>Invisible filler</SubHeading>
-      <Free />
-      <div>
-        <Check>Full access</Check>
-        <Check>Forever free</Check>
-        <Check>
-          No license key<NoteRef>2</NoteRef>
-        </Check>
-      </div>
-    </Column>
   )
 }
 
