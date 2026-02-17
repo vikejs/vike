@@ -4,18 +4,28 @@ import React from 'react'
 
 const fontSizePrice = 30
 const fontSizePrice2 = 25
+/*
+<div>{'=>'} Use Vike just like any other open source project</div>
+*/
 
 const styleTierDescription = { color: '#888', fontSize: '0.9em' } satisfies React.CSSProperties
 
 function PricingTable() {
   return (
     <div style={{ display: 'flex', gap: 10 }}>
-      <ColumnFree>Personal, non-profit, limited resources</ColumnFree>
+      <ColumnFree>Small team</ColumnFree>
       <Column>
-        <TierName>Company</TierName>
-        <div>
-          <span style={{ color: 'blue', fontSize: fontSizePrice2 }}>$5k</span>
-          <span style={{ color: '#777' }}> one time</span>
+        <TierName>Larger team</TierName>
+        <div style={{ display: 'flex', gap: 10 }}>
+          <div>bla</div>
+          <div>
+            <div>
+              <span style={{ color: 'blue', fontSize: fontSizePrice2 }}>$5k</span>
+              <span style={{ color: '#777' }}> one time</span>
+            </div>
+            <Check>Lifetime access</Check>
+            <Check>Unlimited access</Check>
+          </div>
         </div>
       </Column>
     </div>
@@ -28,22 +38,15 @@ function ColumnFree({ children }: { children: string }) {
       <TierName>{children}</TierName>
       <div style={styleTierDescription}>
         <ul style={{ margin: 0, marginLeft: -20 }}>
-          <li>Personal usage (personal website, working on your next big idea, ...)</li>
-          <li>Non-profit usage (education, NGO, ...)</li>
+          <li>Personal usage (personal website, prototyping, ...)</li>
+          <li>Non-profit usage (education, open source, ...)</li>
         </ul>
       </div>
       <Price color="#090">Free</Price>
       <div>
-        <div>
-          <GreenCheckmark /> No license key
-          <div>{'=>'} Use Vike just like any other open source project</div>
-        </div>
-        <div>
-          <GreenCheckmark /> Unlimited access
-        </div>
-        <div>
-          <GreenCheckmark /> Free forever
-        </div>
+        <Check>No license key</Check>
+        <Check>Unlimited access</Check>
+        <Check>Free forever</Check>
       </div>
     </Column>
   )
@@ -57,8 +60,16 @@ function TierName({ children }: { children: string }) {
   return <div style={{ fontSize: 30 }}>{children}</div>
 }
 
-function Column({ children }: { children: any }) {
+function Column({ children }: { children: React.ReactNode }) {
   return <div style={{ border: '1px solid #ddd', padding: 10, background: '#fcfcfc' }}>{children}</div>
+}
+
+function Check({ children }: { children: string }) {
+  return (
+    <div>
+      <GreenCheckmark /> {children}
+    </div>
+  )
 }
 
 function GreenCheckmark({ size = 18 }) {
