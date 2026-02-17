@@ -163,6 +163,6 @@ function GreenCheckmark({ size = 20 }) {
   )
 }
 
-function ExtraWidth({ children }: { children: React.ReactNode }) {
-  return <div style={{ marginLeft: -40, marginRight: -40 }}>{children}</div>
+function ExtraWidth({ children, margin = 40 }: { children: React.ReactNode; margin?: number }) {
+  return <div style={{ marginLeft: -margin, marginRight: -margin }}>{children}</div>
 }
