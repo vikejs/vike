@@ -52,7 +52,7 @@ function PricingTable() {
           License key isn't required: you use Vike just like any regular open source tool (zero encumbrance).
         </Note>
         <Note ref={3}>
-          Organizations are considered to have limited resources if they employ fewer than 5 paid full-time employees (total, including non-devs).
+          Organizations are considered to have limited resources if they employ fewer than 5 paid full-time employees (including non-devs).
         </Note>
       </div>
     </>
