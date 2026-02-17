@@ -15,66 +15,68 @@ function PricingTable() {
   return (
     <div id="pricing-table">
       <ExtraWidth width={100}>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-          <div style={{ display: 'flex', gap: 20 }}>
-            <Column>
-              <TierName>Small team</TierName>
-              ≤2 <SoftwareDevelopers />
-              <div style={styleTierDescription}></div>
-              <SubHeading style={{ visibility: 'hidden' }}>Invisible filler</SubHeading>
-              <Free />
-              <div>
-                <Check>Full access</Check>
-                <Check>Forever free</Check>
-                <Check>
-                  No license key<NoteRef>2</NoteRef>
-                </Check>
-              </div>
-            </Column>
-            <Column>
-              <TierName>Larger team</TierName>
-              ≥3 <SoftwareDevelopers />
-              <div style={{ display: 'flex', gap: 35 }}>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+            <div style={{ display: 'flex', gap: 20 }}>
+              <Column>
+                <TierName>Small team</TierName>
+                ≤2 <SoftwareDevelopers />
+                <div style={styleTierDescription}></div>
+                <SubHeading style={{ visibility: 'hidden' }}>Invisible filler</SubHeading>
+                <Free />
                 <div>
-                  <SubHeading>
-                    Limited resources<NoteRef>3</NoteRef>
-                  </SubHeading>
-                  <Free />
                   <Check>Full access</Check>
                   <Check>Forever free</Check>
                   <Check>
-                    <a href="">Apply</a> for free license key
+                    No license key<NoteRef>2</NoteRef>
                   </Check>
                 </div>
-                <div>
-                  <SubHeading>
-                    Sufficient resources<NoteRef style={{ visibility: 'hidden' }}>2</NoteRef>
-                  </SubHeading>
-                  <Price color="#2563eb" suffix=" one time">
-                    $5k
-                  </Price>
-                  <Check>Full access</Check>
-                  <Check>
-                    Forever access<NoteRef>4</NoteRef>
-                  </Check>
-                  <Check>
-                    Free trial: 6 months, <a href="">extendable</a>
-                  </Check>
+              </Column>
+              <Column>
+                <TierName>Larger team</TierName>
+                ≥3 <SoftwareDevelopers />
+                <div style={{ display: 'flex', gap: 35 }}>
+                  <div>
+                    <SubHeading>
+                      Limited resources<NoteRef>3</NoteRef>
+                    </SubHeading>
+                    <Free />
+                    <Check>Full access</Check>
+                    <Check>Forever free</Check>
+                    <Check>
+                      <a href="">Apply</a> for free license key
+                    </Check>
+                  </div>
+                  <div>
+                    <SubHeading>
+                      Sufficient resources<NoteRef style={{ visibility: 'hidden' }}>2</NoteRef>
+                    </SubHeading>
+                    <Price color="#2563eb" suffix=" one time">
+                      $5k
+                    </Price>
+                    <Check>Full access</Check>
+                    <Check>
+                      Forever access<NoteRef>4</NoteRef>
+                    </Check>
+                    <Check>
+                      Free trial: 6 months, <a href="">extendable</a>
+                    </Check>
+                  </div>
                 </div>
-              </div>
-            </Column>
-          </div>
-          <div style={{ marginTop: 20, display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <Note ref={1}>Only regular committers: occasional committers and bots don't count.</Note>
-            <Note ref={2}>
-              License key isn't required: you use Vike just like any regular open source tool (zero encumbrance).
-            </Note>
-            <Note ref={3}>
-              Organizations with only a <a href="">few full-time employees</a> are considered resource-limited.
-            </Note>
-            <Note ref={4}>
-              One-time payment for a lifetime license key: valid forever, including all future Vike updates.
-            </Note>
+              </Column>
+            </div>
+            <div style={{ marginTop: 20, display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <Note ref={1}>Only regular committers: occasional committers and bots don't count.</Note>
+              <Note ref={2}>
+                License key isn't required: you use Vike just like any regular open source tool (zero encumbrance).
+              </Note>
+              <Note ref={3}>
+                Organizations with only a <a href="">few full-time employees</a> are considered resource-limited.
+              </Note>
+              <Note ref={4}>
+                One-time payment for a lifetime license key: valid forever, including all future Vike updates.
+              </Note>
+            </div>
           </div>
         </div>
       </ExtraWidth>
