@@ -112,8 +112,8 @@ function Free() {
 
 function Price({ children, color, suffix }: { children: string; color: string; suffix?: React.ReactNode }) {
   return (
-    <div style={{ fontSize: fontSizePrice, color, fontWeight: 700, marginTop: 8, marginBottom: 12 }}>
-      {children}
+    <div style={{ marginTop: 8, marginBottom: 12 }}>
+      <span style={{ fontSize: fontSizePrice, color, fontWeight: 700 }}>{children}</span>
       {suffix && <span style={{ fontSize: 16, color: '#6b7280', fontWeight: 400 }}>{suffix}</span>}
     </div>
   )
