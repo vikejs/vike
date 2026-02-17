@@ -53,7 +53,6 @@ function PricingTable() {
         </Note>
         <Note ref={3}>
           Organizations are considered to have limited resources if they employ fewer than 5 paid full-time employees (dev or non-dev combined).
-          Organizations are considered to have limited resources if spends less than 5 full-time salaries (dev or non-dev combined).
         </Note>
       </div>
     </>
