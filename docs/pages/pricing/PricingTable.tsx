@@ -48,9 +48,7 @@ function PricingTable() {
                 <SubHeading>
                   Sufficient resources<NoteRef style={{ visibility: 'hidden' }}>2</NoteRef>
                 </SubHeading>
-                <div
-                  style={{ fontSize: fontSizePrice, fontWeight: 700, marginTop: 8, marginBottom: 12 }}
-                >
+                <div style={{ fontSize: fontSizePrice, fontWeight: 700, marginTop: 8, marginBottom: 12 }}>
                   <span style={{ fontSize: fontSizePrice, color: '#2563eb' }}>$5k</span>
                   <span style={{ fontSize: 16, color: '#6b7280', fontWeight: 400 }}> one time</span>
                 </div>
