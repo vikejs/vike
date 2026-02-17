@@ -12,39 +12,42 @@ const styleTierDescription = { color: '#888', fontSize: '0.9em' } satisfies Reac
 
 function PricingTable() {
   return (
-    <div style={{ display: 'flex', gap: 10 }}>
-      <ColumnFree>Small team</ColumnFree>
-      <Column>
-        <TierName>Larger team</TierName>
-        ≥3 <SoftwareDevelopers />
-        <div style={{ display: 'flex', gap: 10 }}>
-          <div>
-            <b>
-              Limited resources<NoteRef>3</NoteRef>
-            </b>
-            <Free />
-            <Check>Full access</Check>
-            <Check>Forever free</Check>
-            <Check>
-              <a href="">Apply</a> for free license key
-            </Check>
-          </div>
-          <div>
-            <b>
-              Sufficient resources<NoteRef style={{ visibility: 'hidden' }}>2</NoteRef>
-            </b>
+    <>
+      <div style={{ display: 'flex', gap: 10 }}>
+        <ColumnFree>Small team</ColumnFree>
+        <Column>
+          <TierName>Larger team</TierName>
+          ≥3 <SoftwareDevelopers />
+          <div style={{ display: 'flex', gap: 10 }}>
             <div>
-              <span style={{ color: 'blue', fontSize: fontSizePrice2 }}>$5k</span>
-              <span style={{ color: '#777' }}> one time</span>
+              <b>
+                Limited resources<NoteRef>3</NoteRef>
+              </b>
+              <Free />
+              <Check>Full access</Check>
+              <Check>Forever free</Check>
+              <Check>
+                <a href="">Apply</a> for free license key
+              </Check>
             </div>
-            <Check>Full access</Check>
-            <Check>
-              Forever access<NoteRef>4</NoteRef>
-            </Check>
+            <div>
+              <b>
+                Sufficient resources<NoteRef style={{ visibility: 'hidden' }}>2</NoteRef>
+              </b>
+              <div>
+                <span style={{ color: 'blue', fontSize: fontSizePrice2 }}>$5k</span>
+                <span style={{ color: '#777' }}> one time</span>
+              </div>
+              <Check>Full access</Check>
+              <Check>
+                Forever access<NoteRef>4</NoteRef>
+              </Check>
+            </div>
           </div>
-        </div>
-      </Column>
-    </div>
+        </Column>
+      </div>
+      <div>(1): ewheuq</div>
+    </>
   )
 }
 
