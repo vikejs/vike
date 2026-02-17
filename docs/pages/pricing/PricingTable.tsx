@@ -15,8 +15,8 @@ function PricingTable() {
   return (
     <div id="pricing-table">
       <ExtraWidth width={100}>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <div style={{ display: 'flex', gap: 20, justifyContent: 'center' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+          <div style={{ display: 'flex', gap: 20 }}>
             <Column>
               <TierName>Small team</TierName>
               ≤2 <SoftwareDevelopers />
