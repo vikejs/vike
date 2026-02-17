@@ -2,8 +2,7 @@ export { PricingTable }
 
 import React from 'react'
 
-const fontSizePrice = 36
-const fontSizePrice2 = 28
+const fontSizePrice = 30
 const noteColor = '#6b7280'
 /*
 <div>{'=>'} Use Vike just like any other open source project</div>
@@ -19,7 +18,7 @@ function PricingTable() {
         <Column>
           <TierName>Larger team</TierName>
           ≥3 <SoftwareDevelopers />
-          <div style={{ display: 'flex', gap: 15, marginTop: 20 }}>
+          <div style={{ display: 'flex', gap: 15 }}>
             <div>
               <SubHeading>
                 Limited resources<NoteRef>3</NoteRef>
@@ -38,7 +37,7 @@ function PricingTable() {
               <div
                 style={{ fontSize: fontSizePrice, color: '#2563eb', fontWeight: 700, marginTop: 8, marginBottom: 12 }}
               >
-                <span style={{ fontSize: fontSizePrice2 }}>$5k</span>
+                <span style={{ fontSize: fontSizePrice }}>$5k</span>
                 <span style={{ fontSize: 16, color: '#6b7280', fontWeight: 400 }}> one time</span>
               </div>
               <Check>Full access</Check>
@@ -68,13 +67,17 @@ function PricingTable() {
   )
 }
 
-function SubHeading({ children }: { children: React.ReactNode }) {
-  return <b style={{ whiteSpace: 'nowrap' }}>{children}</b>
+function SubHeading({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
+  return (
+    <div style={{ marginTop: 20, ...style }}>
+      <b style={{ whiteSpace: 'nowrap' }}>{children}</b>
+    </div>
+  )
 }
 
 function ColumnFree({ children }: { children: string }) {
   return (
-    <Column>
+    <Column style={{ flex: 0.5 }}>
       <TierName>{children}</TierName>
       ≤2 <SoftwareDevelopers />
       <div style={styleTierDescription}></div>
@@ -94,7 +97,7 @@ function ColumnFree({ children }: { children: string }) {
 function NoteRef({ children, style }: { children: string; style?: React.CSSProperties }) {
   return <sup style={{ color: noteColor, ...style }}> ({children})</sup>
 }
-function Note({ children, ref }: { children: string; ref: number }) {
+function Note({ children, ref }: { children: React.ReactNode; ref: number }) {
   return (
     <div style={{ color: noteColor, fontSize: '0.9em', lineHeight: 1.5 }}>
       ({ref}) {children}
@@ -124,7 +127,7 @@ function TierName({ children }: { children: string }) {
   return <div style={{ fontSize: 28, fontWeight: 600, marginBottom: 8, color: '#111827' }}>{children}</div>
 }
 
-function Column({ children }: { children: React.ReactNode }) {
+function Column({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
   return (
     <div
       style={{
@@ -134,6 +137,7 @@ function Column({ children }: { children: React.ReactNode }) {
         borderRadius: 12,
         boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
         flex: '1',
+        ...style,
       }}
     >
       {children}
