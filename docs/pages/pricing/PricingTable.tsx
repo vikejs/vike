@@ -52,8 +52,8 @@ function PricingTable() {
           License key isn't required: you use Vike just like any regular open source tool (zero encumbrance).
         </Note>
         <Note ref={3}>
-          Organizatoins are considered to have limited resources if it employees less than 5 paid full-time employees (dev or non-dev "confondu").
-          We generally consider teams to have limited resources if the organization has only few handfull of full-time paid employees. We
+          Organizations are considered to have limited resources if they employ fewer than 5 paid full-time employees (dev or non-dev combined).
+          Organizations are considered to have limited resources if spends less than 5 full-time salaries (dev or non-dev combined).
         </Note>
       </div>
     </>
