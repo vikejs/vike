@@ -4,6 +4,7 @@ import React from 'react'
 
 const fontSizePrice = 30
 const fontSizePrice2 = 25
+const noteColor = '#666'
 /*
 <div>{'=>'} Use Vike just like any other open source project</div>
 */
@@ -42,6 +43,9 @@ function PricingTable() {
               <Check>
                 Forever access<NoteRef>4</NoteRef>
               </Check>
+              <Check>
+                Six months free trial, <a href="">extendable</a>
+              </Check>
             </div>
           </div>
         </Column>
@@ -52,7 +56,7 @@ function PricingTable() {
           License key isn't required: you use Vike just like any regular open source tool (zero encumbrance).
         </Note>
         <Note ref={3}>
-          Organizations with under 5 paid full-time employees (all roles) are considered resource-limited.
+          Organizations with <a href="">few full-time employees</a> (all roles) are considered resource-limited.
         </Note>
         <Note ref={4}>
           One-time payment for a lifetime license key: valid forever, including all future Vike updates.
@@ -82,11 +86,11 @@ function ColumnFree({ children }: { children: string }) {
 }
 
 function NoteRef({ children, style }: { children: string; style?: React.CSSProperties }) {
-  return <sup {...{ style }}> ({children})</sup>
+  return <sup style={{ color: noteColor, ...style }}> ({children})</sup>
 }
 function Note({ children, ref }: { children: string; ref: number }) {
   return (
-    <div style={{ color: '#666', fontSize: '0.94em' }}>
+    <div style={{ color: noteColor, fontSize: '0.94em' }}>
       ({ref}) {children}
     </div>
   )
