@@ -13,7 +13,7 @@ const styleTierDescription = { color: '#6b7280', fontSize: '0.9em' } satisfies R
 function PricingTable() {
   return (
     <>
-      <div style={{ marginLeft: -40, marginRight: -40 }}>
+      <ExtraWidth>
         <div style={{ display: 'flex', gap: 20, justifyContent: 'center' }}>
           <Column>
             <TierName>Small team</TierName>
@@ -65,7 +65,7 @@ function PricingTable() {
             </div>
           </Column>
         </div>
-      </div>
+      </ExtraWidth>
       <div style={{ marginTop: 20, display: 'flex', flexDirection: 'column', gap: 8 }}>
         <Note ref={1}>Only regular committers: occasional committers and bots don't count.</Note>
         <Note ref={2}>
@@ -161,4 +161,8 @@ function GreenCheckmark({ size = 20 }) {
       <path d="M20 6L9 17l-5-5" stroke="#059669" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
+}
+
+function ExtraWidth({ children }: { children: React.ReactNode }) {
+  return <div style={{ marginLeft: -40, marginRight: -40 }}>{children}</div>
 }
