@@ -112,7 +112,6 @@ function pluginVirtualFiles(): Plugin[] {
               const code = generateVirtualFilePlusMiddlewares(plusMiddlewares)
               return code
             }
-            assert(false)
           }
         },
       },
