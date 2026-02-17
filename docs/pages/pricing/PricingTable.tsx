@@ -136,7 +136,6 @@ function Column({ children, style }: { children: React.ReactNode; style?: React.
         background: '#ffffff',
         borderRadius: 12,
         boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-        flex: '1',
         ...style,
       }}
     >
