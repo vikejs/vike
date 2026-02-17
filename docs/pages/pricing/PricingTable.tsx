@@ -18,35 +18,34 @@ function PricingTable() {
         <ColumnFree>Small team</ColumnFree>
         <Column>
           <TierName>Larger team</TierName>
-          ≥3 <SoftwareDevelopers />
-          <div style={{ display: 'flex', gap: 15, marginTop: 20 }}>
-            <div>
-              <b>
+          <div style={{ height: 24 }}>
+            ≥3 <SoftwareDevelopers />
+          </div>
+          <div style={{ display: 'flex', gap: 15 }}>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontWeight: 600, height: 24 }}>
                 Limited resources<NoteRef>3</NoteRef>
-              </b>
+              </div>
               <Free />
-              <Check>Full access</Check>
-              <Check>Forever free</Check>
-              <Check>
-                <a href="">Apply</a> for free license key
-              </Check>
             </div>
-            <div>
-              <b>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontWeight: 600, height: 24 }}>
                 Sufficient resources<NoteRef style={{ visibility: 'hidden' }}>2</NoteRef>
-              </b>
+              </div>
               <div>
                 <span style={{ color: '#2563eb', fontSize: fontSizePrice2, fontWeight: 600 }}>$5k</span>
                 <span style={{ color: '#6b7280' }}> one time</span>
               </div>
-              <Check>Full access</Check>
-              <Check>
-                Forever access<NoteRef>4</NoteRef>
-              </Check>
-              <Check>
-                Six months free trial, <a href="">extendable</a>
-              </Check>
             </div>
+          </div>
+          <div style={{ marginTop: 16 }}>
+            <Check>Full access</Check>
+            <Check>
+              Forever free / Forever access<NoteRef>4</NoteRef>
+            </Check>
+            <Check>
+              <a href="">Apply</a> for free license key / Six months free trial, <a href="">extendable</a>
+            </Check>
           </div>
         </Column>
       </div>
@@ -70,11 +69,11 @@ function ColumnFree({ children }: { children: string }) {
   return (
     <Column>
       <TierName>{children}</TierName>
-      ≤2 <SoftwareDevelopers />
-      <div style={{ visibility: 'hidden' }}>Invisible filler</div>
-      <div style={styleTierDescription}></div>
+      <div style={{ height: 24 }}>
+        ≤2 <SoftwareDevelopers />
+      </div>
       <Free />
-      <div>
+      <div style={{ marginTop: 16 }}>
         <Check>Full access</Check>
         <Check>Forever free</Check>
         <Check>
