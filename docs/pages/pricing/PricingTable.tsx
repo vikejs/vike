@@ -13,7 +13,7 @@ const styleTierDescription = { color: '#6b7280', fontSize: '0.9em' } satisfies R
 function PricingTable() {
   return (
     <>
-      <ExtraWidth>
+      <ExtraWidth width={100}>
         <div style={{ display: 'flex', gap: 20, justifyContent: 'center' }}>
           <Column>
             <TierName>Small team</TierName>
@@ -163,6 +163,6 @@ function GreenCheckmark({ size = 20 }) {
   )
 }
 
-function ExtraWidth({ children, margin = 40 }: { children: React.ReactNode; margin?: number }) {
-  return <div style={{ marginLeft: -margin, marginRight: -margin }}>{children}</div>
+function ExtraWidth({ children, width }: { children: React.ReactNode; width: number }) {
+  return <div style={{ marginLeft: - width/2, marginRight: - width/2 }}>{children}</div>
 }
