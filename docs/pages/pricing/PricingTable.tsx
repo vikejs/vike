@@ -24,7 +24,7 @@ function PricingTable() {
             </b>
             <Free />
             <Check>Unlimited access</Check>
-            <Check>Free forever</Check>
+            <Check>Forever free</Check>
             <Check>
               <a href="">Apply</a> for free license key
             </Check>
@@ -39,7 +39,7 @@ function PricingTable() {
             </div>
             <Check>Unlimited access</Check>
             <Check>
-              Lifetime access<NoteRef>4</NoteRef>
+              Forever access<NoteRef>4</NoteRef>
             </Check>
           </div>
         </div>
@@ -58,7 +58,7 @@ function ColumnFree({ children }: { children: string }) {
       <Free />
       <div>
         <Check>Unlimited access</Check>
-        <Check>Free forever</Check>
+        <Check>Forever free</Check>
         <Check>
           No license key<NoteRef>2</NoteRef>
         </Check>
