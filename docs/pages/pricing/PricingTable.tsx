@@ -51,7 +51,7 @@ function PricingTable() {
           </div>
         </Column>
       </div>
-      <div style={{ marginTop: 24, display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <div style={{ marginTop: 20, display: 'flex', flexDirection: 'column', gap: 8 }}>
         <Note ref={1}>Only regular committers: occasional committers and bots don't count.</Note>
         <Note ref={2}>
           License key isn't required: you use Vike just like any regular open source tool (zero encumbrance).
@@ -99,7 +99,7 @@ function NoteRef({ children, style }: { children: string; style?: React.CSSPrope
 }
 function Note({ children, ref }: { children: React.ReactNode; ref: number }) {
   return (
-    <div style={{ color: noteColor, fontSize: '0.9em', lineHeight: 1.5 }}>
+    <div style={{ color: noteColor, fontSize: '0.9em', lineHeight: 1.2 }}>
       ({ref}) {children}
     </div>
   )
