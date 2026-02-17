@@ -54,6 +54,9 @@ function PricingTable() {
         <Note ref={3}>
           Organizations with under 5 paid full-time employees (all roles) are considered resource-limited.
         </Note>
+        <Note ref={4}>
+          One-time payment for a lifetime license key: valid forever, including all future Vike updates.
+        </Note>
       </div>
     </>
   )
