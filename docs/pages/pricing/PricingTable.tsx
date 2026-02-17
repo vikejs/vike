@@ -118,7 +118,7 @@ function Price({ children, color }: { children: string; color: string }) {
 }
 
 function TierName({ children }: { children: string }) {
-  return <div style={{ fontSize: 28, fontWeight: 600, marginBottom: 8, color: '#111827' }}>{children}</div>
+  return <h2 style={{ fontSize: 25, fontWeight: 600, marginBottom: 8, color: '#111827', marginTop: 0 }}>{children}</h2>
 }
 
 function Column({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
@@ -126,7 +126,7 @@ function Column({ children, style }: { children: React.ReactNode; style?: React.
     <div
       style={{
         border: '1px solid #e5e7eb',
-        padding: 20,
+        padding: 17,
         background: '#ffffff',
         borderRadius: 12,
         boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
