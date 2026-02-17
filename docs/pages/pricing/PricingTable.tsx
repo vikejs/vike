@@ -120,7 +120,7 @@ function Price({ children, color }: { children: string; color: string }) {
 }
 
 function TierName({ children }: { children: string }) {
-  return <h2 style={{ fontSize: 25, fontWeight: 600, marginBottom: 8, color: '#111827', marginTop: 0 }}>{children}</h2>
+  return <h2 style={{ fontSize: 25, fontWeight: 600, marginBottom: 2, color: '#111827', marginTop: 0 }}>{children}</h2>
 }
 
 function Column({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
@@ -164,5 +164,5 @@ function GreenCheckmark({ size = 20 }) {
 }
 
 function ExtraWidth({ children, width }: { children: React.ReactNode; width: number }) {
-  return <div style={{ marginLeft: - width/2, marginRight: - width/2 }}>{children}</div>
+  return <div style={{ marginLeft: -width / 2, marginRight: -width / 2 }}>{children}</div>
 }
