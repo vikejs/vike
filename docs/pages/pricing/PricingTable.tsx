@@ -21,9 +21,9 @@ function PricingTable() {
           ≥3 <SoftwareDevelopers />
           <div style={{ display: 'flex', gap: 15, marginTop: 20 }}>
             <div>
-              <b>
+              <SubHeading>
                 Limited resources<NoteRef>3</NoteRef>
-              </b>
+              </SubHeading>
               <Free />
               <Check>Full access</Check>
               <Check>Forever free</Check>
@@ -32,9 +32,9 @@ function PricingTable() {
               </Check>
             </div>
             <div>
-              <b>
+              <SubHeading>
                 Sufficient resources<NoteRef style={{ visibility: 'hidden' }}>2</NoteRef>
-              </b>
+              </SubHeading>
               <div>
                 <span style={{ color: '#2563eb', fontSize: fontSizePrice2, fontWeight: 600 }}>$5k</span>
                 <span style={{ color: '#6b7280' }}> one time</span>
@@ -64,6 +64,10 @@ function PricingTable() {
       </div>
     </>
   )
+}
+
+function SubHeading({ children }: { children: React.ReactNode }) {
+  return <b style={{ whiteSpace: 'nowrap' }}>{children}</b>
 }
 
 function ColumnFree({ children }: { children: string }) {
@@ -128,7 +132,6 @@ function Column({ children }: { children: React.ReactNode }) {
         borderRadius: 12,
         boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
         flex: '1',
-        minWidth: 280,
       }}
     >
       {children}
