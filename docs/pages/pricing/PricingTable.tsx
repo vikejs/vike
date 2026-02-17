@@ -46,7 +46,7 @@ function PricingTable() {
           </div>
         </Column>
       </div>
-      <div style={{marginTop: 10}}>
+      <div style={{ marginTop: 10 }}>
         <Note ref={1}>Only regular committers: occasional committers and bots don't count.</Note>
         <Note ref={2}>
           License key isn't required: you use Vike just like any regular open source tool (zero encumbrance).
