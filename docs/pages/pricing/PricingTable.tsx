@@ -47,11 +47,10 @@ function PricingTable() {
         </Column>
       </div>
       <div>
-        <p>
-          <Note ref={1}>
-            License key isn't required: as a small team, you can use Vike just like any other open source tool.
-          </Note>
-        </p>
+        <Note ref={1}>Only regular committers are counted: occasional committers and bots are omitted.</Note>
+        <Note ref={2}>
+          License key isn't required: as a small team, you can use Vike just like any other open source tool.
+        </Note>
       </div>
     </>
   )
