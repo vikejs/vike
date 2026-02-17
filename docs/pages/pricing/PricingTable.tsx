@@ -23,7 +23,7 @@ function PricingTable() {
               Limited resources<NoteRef>3</NoteRef>
             </b>
             <Free />
-            <Check>Unlimited access</Check>
+            <Check>Full access</Check>
             <Check>Forever free</Check>
             <Check>
               <a href="">Apply</a> for free license key
@@ -37,7 +37,7 @@ function PricingTable() {
               <span style={{ color: 'blue', fontSize: fontSizePrice2 }}>$5k</span>
               <span style={{ color: '#777' }}> one time</span>
             </div>
-            <Check>Unlimited access</Check>
+            <Check>Full access</Check>
             <Check>
               Forever access<NoteRef>4</NoteRef>
             </Check>
@@ -57,7 +57,7 @@ function ColumnFree({ children }: { children: string }) {
       <div style={styleTierDescription}></div>
       <Free />
       <div>
-        <Check>Unlimited access</Check>
+        <Check>Full access</Check>
         <Check>Forever free</Check>
         <Check>
           No license key<NoteRef>2</NoteRef>
