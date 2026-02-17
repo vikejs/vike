@@ -2,17 +2,19 @@ export { PricingTable }
 
 import React from 'react'
 
-const fontSizePrice = 20
+const fontSizePrice = 30
+const fontSizePrice2 = 25
+
+const styleTierDescription = { color: '#888', fontSize: '0.9em' } satisfies React.CSSProperties
 
 function PricingTable() {
   return (
     <div style={{ display: 'flex', gap: 10 }}>
-      <ColumnFree>Personal</ColumnFree>
-      <ColumnFree>Non-profit</ColumnFree>
+      <ColumnFree>Personal, non-profit, limited resources</ColumnFree>
       <Column>
         <TierName>Company</TierName>
         <div>
-          <span style={{ color: 'blue', fontSize: fontSizePrice }}>$5k</span>
+          <span style={{ color: 'blue', fontSize: fontSizePrice2 }}>$5k</span>
           <span style={{ color: '#777' }}> one time</span>
         </div>
       </Column>
@@ -24,25 +26,31 @@ function ColumnFree({ children }: { children: string }) {
   return (
     <Column>
       <TierName>{children}</TierName>
+      <div style={styleTierDescription}>
+        <ul style={{ margin: 0, marginLeft: -20 }}>
+          <li>Personal usage (personal website, working on your next big idea, ...)</li>
+          <li>Non-profit usage (education, NGO, ...)</li>
+        </ul>
+      </div>
       <Price color="#090">Free</Price>
       <div>
         <div>
           <GreenCheckmark /> No license key
+          <div>{'=>'} Use Vike just like any other open source project</div>
         </div>
         <div>
           <GreenCheckmark /> Unlimited access
         </div>
         <div>
-          <GreenCheckmark /> Forever
+          <GreenCheckmark /> Free forever
         </div>
-        <div>{'=>'} Use Vike just like any other open source project</div>
       </div>
     </Column>
   )
 }
 
 function Price({ children, color }: { children: string; color: string }) {
-  return <div style={{ fontSize: 20, color }}>{children}</div>
+  return <div style={{ fontSize: fontSizePrice, color }}>{children}</div>
 }
 
 function TierName({ children }: { children: string }) {
