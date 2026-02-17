@@ -77,8 +77,8 @@ function ColumnFree({ children }: { children: string }) {
     <Column>
       <TierName>{children}</TierName>
       ≤2 <SoftwareDevelopers />
-      <div style={{ visibility: 'hidden' }}>Invisible filler</div>
       <div style={styleTierDescription}></div>
+      <SubHeading style={{ visibility: 'hidden' }}>Invisible filler</SubHeading>
       <Free />
       <div>
         <Check>Full access</Check>
