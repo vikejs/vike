@@ -46,10 +46,14 @@ function PricingTable() {
           </div>
         </Column>
       </div>
-      <div>
-        <Note ref={1}>Only regular committers are counted: occasional committers and bots are omitted.</Note>
+      <div style={{marginTop: 10}}>
+        <Note ref={1}>Only regular committers: occasional committers and bots don't count.</Note>
         <Note ref={2}>
-          License key isn't required: as a small team, you can use Vike just like any other open source tool.
+          License key isn't required: you use Vike just like any regular open source tool (zero encumbrance).
+        </Note>
+        <Note ref={3}>
+          Organizatoins are considered to have limited resources if it employees less than 5 paid full-time employees (dev or non-dev "confondu").
+          We generally consider teams to have limited resources if the organization has only few handfull of full-time paid employees. We
         </Note>
       </div>
     </>
@@ -80,9 +84,9 @@ function NoteRef({ children, style }: { children: string; style?: React.CSSPrope
 }
 function Note({ children, ref }: { children: string; ref: number }) {
   return (
-    <p style={{ color: '#666', fontSize: '0.94em' }}>
+    <div style={{ color: '#666', fontSize: '0.94em' }}>
       ({ref}) {children}
-    </p>
+    </div>
   )
 }
 
