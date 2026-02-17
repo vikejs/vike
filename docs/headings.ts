@@ -68,6 +68,9 @@ const headings = [
     level: 2,
     title: 'Open Source Pricing',
     url: '/pricing',
+    pageDesign: {
+      hideMenuLeft: true,
+    },
   },
   {
     level: 2,
