@@ -14,40 +14,64 @@ const styleTierDescription = { color: '#6b7280', fontSize: '0.9em' } satisfies R
 function PricingTable() {
   return (
     <>
-      <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
-        <ColumnFree>Small team</ColumnFree>
+      <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', alignItems: 'stretch' }}>
+        <Column>
+          <TierName>Small team</TierName>
+          <div>
+            ≤2 <SoftwareDevelopers />
+          </div>
+          <Free />
+          <CheckList>
+            <Check>Full access</Check>
+            <Check>Forever free</Check>
+            <Check>
+              No license key<NoteRef>2</NoteRef>
+            </Check>
+          </CheckList>
+        </Column>
         <Column>
           <TierName>Larger team</TierName>
-          ≥3 <SoftwareDevelopers />
-          <div style={{ display: 'flex', gap: 15, marginTop: 20 }}>
-            <div>
-              <b>
+          <div>
+            ≥3 <SoftwareDevelopers />
+          </div>
+          <div style={{ display: 'flex', gap: 15 }}>
+            <div style={{ flex: 1 }}>
+              <SubTier>
                 Limited resources<NoteRef>3</NoteRef>
-              </b>
+              </SubTier>
               <Free />
-              <Check>Full access</Check>
-              <Check>Forever free</Check>
-              <Check>
-                <a href="">Apply</a> for free license key
-              </Check>
             </div>
-            <div>
-              <b>
+            <div style={{ flex: 1 }}>
+              <SubTier>
                 Sufficient resources<NoteRef style={{ visibility: 'hidden' }}>2</NoteRef>
-              </b>
+              </SubTier>
               <div>
                 <span style={{ color: '#2563eb', fontSize: fontSizePrice2, fontWeight: 600 }}>$5k</span>
                 <span style={{ color: '#6b7280' }}> one time</span>
               </div>
-              <Check>Full access</Check>
-              <Check>
-                Forever access<NoteRef>4</NoteRef>
-              </Check>
-              <Check>
-                Six months free trial, <a href="">extendable</a>
-              </Check>
             </div>
           </div>
+          <CheckList>
+            <Check>Full access</Check>
+            <Check>
+              <div style={{ display: 'flex', gap: 15 }}>
+                <div style={{ flex: 1 }}>Forever free</div>
+                <div style={{ flex: 1 }}>
+                  Forever access<NoteRef>4</NoteRef>
+                </div>
+              </div>
+            </Check>
+            <Check>
+              <div style={{ display: 'flex', gap: 15 }}>
+                <div style={{ flex: 1 }}>
+                  <a href="">Apply</a> for free license key
+                </div>
+                <div style={{ flex: 1 }}>
+                  Six months free trial, <a href="">extendable</a>
+                </div>
+              </div>
+            </Check>
+          </CheckList>
         </Column>
       </div>
       <div style={{ marginTop: 24, display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -63,25 +87,6 @@ function PricingTable() {
         </Note>
       </div>
     </>
-  )
-}
-
-function ColumnFree({ children }: { children: string }) {
-  return (
-    <Column>
-      <TierName>{children}</TierName>
-      ≤2 <SoftwareDevelopers />
-      <div style={{ visibility: 'hidden' }}>Invisible filler</div>
-      <div style={styleTierDescription}></div>
-      <Free />
-      <div>
-        <Check>Full access</Check>
-        <Check>Forever free</Check>
-        <Check>
-          No license key<NoteRef>2</NoteRef>
-        </Check>
-      </div>
-    </Column>
   )
 }
 
@@ -134,6 +139,14 @@ function Column({ children }: { children: React.ReactNode }) {
       {children}
     </div>
   )
+}
+
+function CheckList({ children }: { children: React.ReactNode }) {
+  return <div style={{ marginTop: 16 }}>{children}</div>
+}
+
+function SubTier({ children }: { children: React.ReactNode }) {
+  return <div style={{ fontWeight: 600, minHeight: 24 }}>{children}</div>
 }
 
 function Check({ children }: { children: React.ReactNode }) {
