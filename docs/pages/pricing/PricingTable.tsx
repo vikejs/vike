@@ -16,20 +16,31 @@ function PricingTable() {
       <ColumnFree>Small team</ColumnFree>
       <Column>
         <TierName>Larger team</TierName>
-        ≥3 Software Developers
+        ≥3 <SoftwareDevelopers />
         <div style={{ display: 'flex', gap: 10 }}>
           <div>
-            <div>Limited resources</div>
+            <b>
+              Limited resources<NoteRef>3</NoteRef>
+            </b>
             <Free />
+            <Check>Unlimited access</Check>
+            <Check>Free forever</Check>
+            <Check>
+              <a href="">Apply</a> for free license key
+            </Check>
           </div>
           <div>
-            <div>Sufficient resources</div>
+            <b>
+              Sufficient resources<NoteRef style={{ visibility: 'hidden' }}>2</NoteRef>
+            </b>
             <div>
               <span style={{ color: 'blue', fontSize: fontSizePrice2 }}>$5k</span>
               <span style={{ color: '#777' }}> one time</span>
             </div>
-            <Check>Lifetime access</Check>
             <Check>Unlimited access</Check>
+            <Check>
+              Lifetime access<NoteRef>4</NoteRef>
+            </Check>
           </div>
         </div>
       </Column>
@@ -41,15 +52,30 @@ function ColumnFree({ children }: { children: string }) {
   return (
     <Column>
       <TierName>{children}</TierName>
-      ≤2 Software Developers
+      ≤2 <SoftwareDevelopers />
+      <div style={{ visibility: 'hidden' }}>Invisible filler</div>
       <div style={styleTierDescription}></div>
       <Free />
       <div>
-        <Check>No license key</Check>
         <Check>Unlimited access</Check>
         <Check>Free forever</Check>
+        <Check>
+          No license key<NoteRef>2</NoteRef>
+        </Check>
       </div>
     </Column>
+  )
+}
+
+function NoteRef({ children, style }: { children: string; style?: React.CSSProperties }) {
+  return <sup {...{ style }}> ({children})</sup>
+}
+
+function SoftwareDevelopers() {
+  return (
+    <>
+      Software Developers<NoteRef>1</NoteRef>
+    </>
   )
 }
 
@@ -69,7 +95,7 @@ function Column({ children }: { children: React.ReactNode }) {
   return <div style={{ border: '1px solid #ddd', padding: 10, background: '#fcfcfc' }}>{children}</div>
 }
 
-function Check({ children }: { children: string }) {
+function Check({ children }: { children: React.ReactNode }) {
   return (
     <div>
       <GreenCheckmark /> {children}
