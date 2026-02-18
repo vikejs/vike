@@ -127,7 +127,7 @@ function Column({ children, style }: { children: React.ReactNode; style?: React.
       style={{
         border: '1px solid #e2e8f0',
         padding: 28,
-        background: '#ffffff',
+        background: '#fefefe',
         borderRadius: 14,
         boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
         ...style,
