@@ -32,6 +32,7 @@ import { isPlusFile } from '../shared/resolveVikeConfigInternal/crawlPlusFilePat
 import { isTemporaryBuildFile } from '../shared/resolveVikeConfigInternal/transpileAndExecuteFile.js'
 import { debugFileChange, getVikeConfigError } from '../../../shared-server-node/getVikeConfigError.js'
 import '../assertEnvVite.js'
+import { getPlusMiddlewares } from '../shared/getPlusMiddlewares.js'
 
 // === Rolldown filter
 const filterRolldown = {
@@ -52,14 +53,7 @@ function pluginVirtualFiles(): Plugin[] {
         async handler(config_) {
           config = config_
           const vikeConfig = await getVikeConfigInternal()
-          plusMiddlewares = (vikeConfig._pageConfigGlobal.configValueSources.middleware ?? [])
-            .map((m) => {
-              if ('filePathAbsoluteFilesystem' in m.definedAt) {
-                return m.definedAt.filePathAbsoluteFilesystem
-              }
-              return null
-            })
-            .filter(Boolean) as string[]
+          plusMiddlewares = getPlusMiddlewares(vikeConfig)
           // TO-DO/next-major-release: remove
           if (!isV1Design()) config.experimental.importGlobRestoreExtension = true
         },
