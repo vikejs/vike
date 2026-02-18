@@ -4,8 +4,8 @@ export const uiConfig = {
   transition: {
     shortDuration: 0.12,
     shortDurationTw: 'duration-120',
-    mediumDuration: 0.25,
-    mediumDurationTw: 'duration-250',
+    mediumDuration: 0.35,
+    mediumDurationTw: 'duration-350',
     longDuration: 0.75,
     longDurationTw: 'duration-750',
     easeInTw: 'ease-in',

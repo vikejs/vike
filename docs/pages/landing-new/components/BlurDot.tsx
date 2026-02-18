@@ -20,7 +20,6 @@ const BlurDot = ({ type, lazy = true, visibility = 'medium', size = 'md', ...pro
     <>
       <StyledBlurDot $visibility={visibility} $size={size} className={`${props.className ?? ''}`}>
         <StyledBlurDotImage
-          // data-speed="0.8"
           crossOrigin="anonymous"
           width={sizePx}
           height={sizePx}

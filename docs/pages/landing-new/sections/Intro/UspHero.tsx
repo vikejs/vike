@@ -109,7 +109,8 @@ const StyledUspItemInner = cm.div<{ $hovered?: boolean }>`
   flex items-center
   absolute p-4 inset-0
   shadow-lg shadown-neutral/6
-  transition-all rounded-box 
+  transition-[transform,opacity] 
+  rounded-box 
   origin-bottom-center
   bg-white
   opacity-0

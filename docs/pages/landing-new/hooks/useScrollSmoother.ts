@@ -53,8 +53,8 @@ const useScrollSmoother = () => {
       registerScrollSmoother()
       registerScrollTrigger()
 
-      const wrapper = document.querySelector<HTMLElement>('#smooth-wrapper')
-      const content = document.querySelector<HTMLElement>('#smooth-content')
+      const wrapper = document.querySelector<HTMLElement>('body')
+      const content = document.querySelector<HTMLElement>('#page-view')
       if (!wrapper || !content) {
         return
       }

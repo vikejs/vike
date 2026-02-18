@@ -63,10 +63,15 @@ const motionConfig = {
     },
     orbitDurationSeconds: 10,
     opacity: {
-      range: {
-        blue: { min: 0.9, max: 1 },
-        green: { min: 0.9, max: 1 },
-        orange: { min: 0.9, max: 1 },
+      layerRange: {
+        min: 0.9,
+        max: 1,
+      },
+      pulse: {
+        min: 0.36,
+        fadeOutDuration: 0.2,
+        holdDuration: 0.18,
+        fadeInDuration: 0.28,
       },
       durationSeconds: { min: 1, max: 2.4 },
     },
@@ -127,6 +132,7 @@ const useHeroBackgroundMotion = ({ motionContainerRef, hoveredUspTarget }: HeroB
       const sectionRoot = motionContainer.closest<HTMLElement>('[data-intro-section-root="true"]')
       const queryScope: Document | HTMLElement = sectionRoot ?? document
       const blobLayer = motionContainer.querySelector<HTMLElement>('[data-blob-layer="true"]')
+      const blobOpacityLayer = motionContainer.querySelector<HTMLElement>('[data-blob-opacity-layer="true"]')
 
       const blobNodes = Array.from(motionContainer.querySelectorAll<HTMLDivElement>('[data-orbit-blob="true"]'))
       if (!blobNodes.length) {
@@ -201,7 +207,7 @@ const useHeroBackgroundMotion = ({ motionContainerRef, hoveredUspTarget }: HeroB
       let centerTween: gsap.core.Tween | null = null
       let modeTween: gsap.core.Tween | null = null
       let orbitTween: gsap.core.Tween | null = null
-      let opacityTweens: gsap.core.Tween[] = []
+      let opacityTweens: gsap.core.Animation[] = []
       let colorTweens: gsap.core.Tween[] = []
       let revealTween: gsap.core.Tween | null = null
       let isDisposed = false
@@ -340,36 +346,131 @@ const useHeroBackgroundMotion = ({ motionContainerRef, hoveredUspTarget }: HeroB
         orbitTween.resume()
       }
 
-      const startOpacityLoops = (mode: MotionMode, immediate = false) => {
-        killOpacityTweens()
-
-        if (mode === 'idle') {
-          gsap.to(
-            blobs.map((blob) => blob.target),
-            {
-              opacity: motionConfig.idle.opacity.value,
-              duration: immediate ? 0 : motionConfig.transition.duration,
-              ease: immediate ? 'none' : motionConfig.transition.ease,
-              overwrite: 'auto',
-            },
-          )
-          return
+      const createHoverOpacityLoop = () => {
+        if (!blobOpacityLayer) {
+          return [] as gsap.core.Animation[]
         }
 
         const durationRange = motionConfig.hover.opacity.durationSeconds
-        opacityTweens = blobs.map((blob) => {
-          const range = motionConfig.hover.opacity.range[blob.defaultColor]
+        const range = motionConfig.hover.opacity.layerRange
 
-          return gsap.to(blob.target, {
+        return [
+          gsap.to(blobOpacityLayer, {
             opacity: () => R(range.min, range.max),
             duration: () => R(durationRange.min, durationRange.max),
-            delay: immediate ? 0 : R(0.05, 0.35),
-            ease: mode === 'hover' ? 'power2.inOut' : 'sine.inOut',
+            delay: R(0.05, 0.35),
+            ease: 'power2.inOut',
             repeat: -1,
             repeatRefresh: true,
             yoyo: true,
-          })
+          }),
+        ]
+      }
+
+      const setBlobTargetsOpacity = (opacity: number, immediate = false) => {
+        gsap.set(
+          blobs.map((blob) => blob.target),
+          { opacity },
+        )
+      }
+
+      const setLayerOpacity = (opacity: number, immediate = false) => {
+        if (!blobOpacityLayer) {
+          return
+        }
+        gsap.to(blobOpacityLayer, {
+          opacity,
+          duration: immediate ? 0 : motionConfig.transition.duration,
+          ease: immediate ? 'none' : motionConfig.transition.ease,
+          overwrite: 'auto',
         })
+      }
+
+      const startLayerOpacityPulse = ({
+        immediate = false,
+        continueWithHoverLoop = false,
+        finalOpacityWhenDone,
+      }: {
+        immediate?: boolean
+        continueWithHoverLoop?: boolean
+        finalOpacityWhenDone?: number
+      }) => {
+        killOpacityTweens()
+
+        if (immediate || !blobOpacityLayer) {
+          if (!continueWithHoverLoop) {
+            setLayerOpacity(finalOpacityWhenDone ?? motionConfig.idle.opacity.value, true)
+            return
+          }
+          if (continueWithHoverLoop) {
+            opacityTweens = createHoverOpacityLoop()
+            if (!visibilityActive) {
+              opacityTweens.forEach((tween) => tween.pause())
+            }
+          }
+          return
+        }
+
+        const pulse = motionConfig.hover.opacity.pulse
+        const range = motionConfig.hover.opacity.layerRange
+        const finalOpacity = continueWithHoverLoop ? R(range.min, range.max) : (finalOpacityWhenDone ?? 1)
+
+        const pulseTimeline = gsap.timeline({
+          defaults: { overwrite: 'auto' },
+          onComplete: () => {
+            if (isDisposed) {
+              return
+            }
+            if (!continueWithHoverLoop) {
+              return
+            }
+            opacityTweens = createHoverOpacityLoop()
+            if (!visibilityActive) {
+              opacityTweens.forEach((tween) => tween.pause())
+            }
+          },
+        })
+        pulseTimeline.to(blobOpacityLayer, {
+          opacity: pulse.min,
+          duration: pulse.fadeOutDuration,
+          ease: 'power2.in',
+        })
+        pulseTimeline.to(blobOpacityLayer, {
+          opacity: pulse.min,
+          duration: pulse.holdDuration,
+          ease: 'none',
+        })
+        pulseTimeline.to(blobOpacityLayer, {
+          opacity: finalOpacity,
+          duration: pulse.fadeInDuration,
+          ease: 'power3.out',
+        })
+        opacityTweens = [pulseTimeline]
+        if (!visibilityActive) {
+          pulseTimeline.pause()
+        }
+      }
+
+      const startOpacityLoops = (mode: MotionMode, immediate = false, withHoverPulse = false) => {
+        killOpacityTweens()
+
+        if (mode === 'idle') {
+          setBlobTargetsOpacity(1, true)
+          setLayerOpacity(motionConfig.idle.opacity.value, immediate)
+          return
+        }
+
+        setBlobTargetsOpacity(1, true)
+        if (!blobOpacityLayer) {
+          return
+        }
+
+        if (withHoverPulse && !immediate) {
+          startLayerOpacityPulse({ immediate, continueWithHoverLoop: true })
+          return
+        }
+
+        opacityTweens = createHoverOpacityLoop()
 
         if (!visibilityActive) {
           opacityTweens.forEach((tween) => tween.pause())
@@ -427,7 +528,7 @@ const useHeroBackgroundMotion = ({ motionContainerRef, hoveredUspTarget }: HeroB
           })
 
           morphToColor(hoverTarget.color, immediate)
-          startOpacityLoops('hover', immediate)
+          startOpacityLoops('hover', immediate, true)
           updateLayout()
           return
         }
@@ -436,6 +537,16 @@ const useHeroBackgroundMotion = ({ motionContainerRef, hoveredUspTarget }: HeroB
         refreshIdleAnchors()
         setOrbitPlayback(false)
         killCenterTween()
+        if (!immediate) {
+          startLayerOpacityPulse({
+            immediate: false,
+            continueWithHoverLoop: false,
+            finalOpacityWhenDone: motionConfig.idle.opacity.value,
+          })
+        }
+        const applyIdleOpacity = () => {
+          startOpacityLoops('idle', true)
+        }
 
         modeTween = gsap.to(modeState, {
           progress: 0,
@@ -443,10 +554,21 @@ const useHeroBackgroundMotion = ({ motionContainerRef, hoveredUspTarget }: HeroB
           ease: immediate ? 'none' : motionConfig.transition.ease,
           overwrite: 'auto',
           onUpdate: updateLayout,
+          onComplete: () => {
+            if (modeFlags.isHoverMode) {
+              return
+            }
+            if (!immediate) {
+              return
+            }
+            applyIdleOpacity()
+          },
         })
 
         morphToColor(null, immediate)
-        startOpacityLoops('idle', immediate)
+        if (immediate) {
+          applyIdleOpacity()
+        }
         updateLayout()
       }
 
@@ -465,6 +587,9 @@ const useHeroBackgroundMotion = ({ motionContainerRef, hoveredUspTarget }: HeroB
       )
       if (blobLayer) {
         gsap.set(blobLayer, { autoAlpha: 0 })
+      }
+      if (blobOpacityLayer) {
+        gsap.set(blobOpacityLayer, { opacity: 1 })
       }
 
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
