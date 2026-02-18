@@ -2,10 +2,10 @@ import { FlexGraphicHook } from './constants'
 
 export const uiConfig = {
   transition: {
-    shortDuration: 0.12,
-    shortDurationTw: 'duration-120',
-    mediumDuration: 0.35,
-    mediumDurationTw: 'duration-350',
+    shortDuration: 0.15,
+    shortDurationTw: 'duration-150',
+    mediumDuration: 0.45,
+    mediumDurationTw: 'duration-450',
     longDuration: 0.75,
     longDurationTw: 'duration-750',
     easeInTw: 'ease-in',

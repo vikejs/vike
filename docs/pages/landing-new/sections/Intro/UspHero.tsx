@@ -6,6 +6,7 @@ import GradientText from '../../components/GradientText'
 import { uiConfig, UiVariantBtnColor } from '../../util/ui.constants'
 import { ChevronsRight } from 'lucide-react'
 import type { UspHoverTarget } from './intro.types'
+import BlurDot from '../../components/BlurDot'
 
 interface UspHeroProps {
   onHoverChange?: (hoverTarget: UspHoverTarget | null) => void
@@ -58,8 +59,8 @@ const UspHero = ({ onHoverChange }: UspHeroProps) => {
           return (
             <div
               className={cmMerge(
-                'relative p-4 cursor-pointer transition-[filter,opacity] duration-250 ease-out',
-                isMuted ? 'grayscale opacity-25' : 'grayscale-0 opacity-100',
+                `relative p-4 cursor-pointer transition-[filter,opacity] ${uiConfig.transition.mediumDurationTw} ${uiConfig.transition.easeInOutTw} rounded-lg`,
+                isMuted ? 'grayscale opacity-65' : 'grayscale-0 opacity-100',
               )}
               data-usp-color={usp.dotColor}
               data-usp-id={usp.id}
@@ -67,6 +68,12 @@ const UspHero = ({ onHoverChange }: UspHeroProps) => {
               onMouseEnter={(event) => handleMouseEnter(event, usp.id, usp.dotColor)}
               onMouseLeave={handleMouseLeave}
             >
+              <BlurDot
+                type={usp.dotColor}
+                size="md"
+                visibility="low"
+                className="left-1/2 top-20 -translate-x-1/2 -translate-y-1/2"
+              />
               <StyledUspItemInner $hovered={isHovered} />
               {/* <div className="absolute -inset-1 z-3 bg-linear-to-t to-base-300" /> */}
               <StyledTextContent $hovered={isHovered}>
@@ -87,7 +94,7 @@ const UspHero = ({ onHoverChange }: UspHeroProps) => {
                   <span
                     className={cmMerge(
                       UiVariantBtnColor[usp.dotColor],
-                      'btn btn-sm btn-ghost opacity-75 pointer-events-none',
+                      'btn btn-sm btn-ghost opacity-100 pointer-events-none',
                     )}
                   >
                     Learn more
@@ -109,7 +116,7 @@ const StyledUspItemInner = cm.div<{ $hovered?: boolean }>`
   flex items-center
   absolute p-4 inset-0
   shadow-lg shadown-neutral/6
-  transition-[transform,opacity] 
+  transition-[scale,opacity, transform]
   rounded-box 
   origin-bottom-center
   bg-white
@@ -118,21 +125,21 @@ const StyledUspItemInner = cm.div<{ $hovered?: boolean }>`
   translate-y-1
   z-3
   ${uiConfig.transition.mediumDurationTw}
-  ${uiConfig.transition.easeOutTw}
+  ${uiConfig.transition.easeInOutTw}
   ${({ $hovered }) => ($hovered ? 'scale-100 translate-y-0 opacity-70' : '')}
 `
 
 const StyledTitleShape = cm.span<{ $hovered?: boolean }>`
   transition-opacity z-3 relative
   ${uiConfig.transition.mediumDurationTw}
-  ${uiConfig.transition.easeOutTw}
-  ${({ $hovered }) => ($hovered ? `opacity-30` : `opacity-0`)}
+  ${uiConfig.transition.easeInOutTw}
+  ${({ $hovered }) => ($hovered ? `opacity-20` : `opacity-0`)}
 `
 
 const StyledTitle = cm.span`
   absolute left-0 top-0
   ${uiConfig.transition.mediumDurationTw}
-  ${uiConfig.transition.easeOutTw}
+  ${uiConfig.transition.easeInOutTw}
 `
 
 const StyledIconWrapper = cm.div`
@@ -146,6 +153,6 @@ const StyledTextContent = cm.div<{ $hovered?: boolean }>`
   min-h-56
   flex flex-col justify-between
   ${uiConfig.transition.mediumDurationTw}
-  ${uiConfig.transition.easeOutTw}
+  ${uiConfig.transition.easeInOutTw}
   ${({ $hovered }) => ($hovered ? `-translate-y-1` : `translate-y-0`)}
 `

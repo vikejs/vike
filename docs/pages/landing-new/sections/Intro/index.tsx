@@ -5,8 +5,11 @@ import UspHero from './UspHero'
 import Headline from '../../components/Headline'
 import BrandSubsection from './BrandSubsection'
 import HeroBackgroundMotion from './HeroBackgroundMotion'
-import type { UspHoverTarget } from './intro.types'
+import HeroBackgroundColorFade from './HeroBackgroundColorFade'
+import type { IntroBlobColor, UspHoverTarget } from './intro.types'
 import useIntroHeadlineGradientMotion from './useIntroHeadlineGradientMotion'
+
+const motionColors: IntroBlobColor[] = ['green', 'blue', 'orange']
 
 const IntroSection = () => {
   const [hoveredUspTarget, setHoveredUspTarget] = useState<UspHoverTarget | null>(null)
@@ -22,7 +25,11 @@ const IntroSection = () => {
   return (
     <>
       <div data-intro-section-root="true" className="relative">
-        <HeroBackgroundMotion hoveredUspTarget={hoveredUspTarget} />
+        <div className='absolute top-0 left-0 h-1/2 w-full bg-linear-to-t to-base-300 z-10' />
+        <HeroBackgroundColorFade hoveredColor={hoveredUspTarget?.color ?? null} />
+        {motionColors.map((color) => (
+          <HeroBackgroundMotion key={color} color={color} isActive={hoveredUspTarget?.color === color} />
+        ))}
         <LayoutComponent
           $size="sm"
           className="flex flex-col items-center text-center lg:min-h-[calc(100dvh-56*var(--spacing))] pb-20 overflow-hidden"
