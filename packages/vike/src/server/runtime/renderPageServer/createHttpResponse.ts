@@ -37,7 +37,6 @@ type HttpResponse = {
 const contentTypeJson = 'application/json'
 const contentTypeHtml = 'text/html;charset=utf-8'
 
-// Trick to improve TypeScript DX
 type StatusCode = 200 | 404 | 500 | RedirectStatusCode | AbortStatusCode
 type ContentType = 'application/json' | 'text/html;charset=utf-8'
 type ResponseHeaders = HttpResponse['headers']
