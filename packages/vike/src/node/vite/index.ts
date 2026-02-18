@@ -8,6 +8,8 @@ export type { VikeVitePluginOptions as UserConfig }
 export type { VikeVitePluginOptions }
 
 import type { Plugin } from 'vite'
+import { addEntry } from '@universal-deploy/store'
+import { catchAll } from '@universal-deploy/store/vite'
 import { getClientEntrySrcDev } from './shared/getClientEntrySrcDev.js'
 import { setGetClientEntrySrcDev } from '../../server/runtime/renderPageServer/getPageAssets/retrievePageAssetsDev.js'
 import { assertIsNotProductionRuntime } from '../../utils/assertSetup.js'
@@ -58,6 +60,16 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): Promise<Plug
     if (removeVitePlugin()) return []
     const vikeConfig = await getVikeConfigInternalEarly()
     const plugin: Plugin[] = [
+      {
+        name: 'UD',
+        config() {
+          addEntry({
+            id: 'vike/fetch',
+            route: '/**',
+          })
+        },
+      },
+      catchAll(),
       ...pluginCommon(vikeVitePluginOptions),
       ...pluginVirtualFiles(),
       ...pluginDev(),

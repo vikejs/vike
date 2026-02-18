@@ -84,6 +84,7 @@ import {
   type EnhancedMiddleware,
   type UniversalHandler,
 } from '@universal-middleware/core'
+import { createRequestAdapter } from '@universal-middleware/express'
 
 const globalObject = getGlobalObject('runtime/renderPageServer.ts', {
   httpRequestsCount: 0,
@@ -365,6 +366,7 @@ async function renderPageServerEntryRecursive_onError(
   return pageContextErrorPage
 }
 
+const requestAdapter = createRequestAdapter()
 async function renderPageServerEntryWithMiddlewares(
   pageContext: PageContextBegin,
   renderPageServerEntry: () => Promise<PageContextAfterRender>,
@@ -397,14 +399,13 @@ async function renderPageServerEntryWithMiddlewares(
   ])
   const handler = router[universalSymbol] as UniversalHandler
 
-  const url = new URL(pageContext.urlOriginal, 'http://localhost')
-  const res = await handler(
-    new Request(url.toString(), {
-      headers: pageContext.headers ?? {},
-    }),
-    {},
-    getAdapterRuntime('other', { params: undefined }),
-  )
+  const request = pageContext.req
+    ? requestAdapter(pageContext.req)
+    : new Request(new URL(pageContext.urlOriginal, 'http://localhost').toString(), {
+        headers: pageContext.headers ?? {},
+      })
+
+  const res = await handler(request, {}, getAdapterRuntime('other', { params: undefined }))
 
   const httpResponse = createHttpResponseFromUniversalMiddleware(res, httpResponseVikeCore?.earlyHints)
   objectAssign(pageContext, { httpResponse })
