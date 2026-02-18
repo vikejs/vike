@@ -1,5 +1,3 @@
-import { apply } from '@universal-middleware/srvx'
-
 export { renderPageServer }
 export { getRequestTag }
 export type { PageContextInit }
@@ -77,7 +75,15 @@ import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.
 import { forkPageContext } from '../../shared-server-client/forkPageContext.js'
 import { getAsyncLocalStorage, type AsyncStore } from './asyncHook.js'
 import '../assertEnvServer.js'
-import { enhance, EnhancedMiddleware } from '@universal-middleware/core'
+import {
+  enhance,
+  apply,
+  universalSymbol,
+  UniversalRouter,
+  EnhancedMiddleware,
+  getAdapterRuntime,
+  UniversalHandler,
+} from '@universal-middleware/core'
 
 const globalObject = getGlobalObject('runtime/renderPageServer.ts', {
   httpRequestsCount: 0,
@@ -189,8 +195,8 @@ async function renderPageServerEntryOnce(
   }
 
   if (middlewares.length > 0) {
-    // TODO Use apply from UM/core
-    const handler = apply([
+    const router = new UniversalRouter(true, false)
+    apply(router, [
       enhance(
         async function adaptRenderPageServerEntryOnceInternal(): Promise<Response> {
           const { httpResponse } = await renderPageServerEntryOnceInternal()
@@ -209,12 +215,15 @@ async function renderPageServerEntryOnce(
       ),
       ...middlewares,
     ])
+    const handler = router[universalSymbol] as UniversalHandler
 
     const url = new URL(pageContextBegin.urlOriginal, 'http://fake-origin.example.org')
     const res = await handler(
       new Request(url.toString(), {
         headers: pageContextBegin.headers ?? {},
       }),
+      {},
+      getAdapterRuntime('other', { params: undefined }),
     )
 
     const httpResponse = await createHttpResponseFetch(res)
