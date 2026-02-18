@@ -48,10 +48,10 @@ function PricingTable() {
                       $5k
                     </Price>
                     <Check>Full access</Check>
-                    <Check>
+                    <Check icon="🎁">
                       Forever access<NoteRef>4</NoteRef>
                     </Check>
-                    <Check>
+                    <Check icon="🎁">
                       Free trial: 6 months + <a href="">extendable</a>
                     </Check>
                   </div>
@@ -139,10 +139,10 @@ function Column({ children }: { children: React.ReactNode }) {
   )
 }
 
-function Check({ children }: { children: React.ReactNode }) {
+function Check({ children, icon }: { children: React.ReactNode; icon?: string }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 10 }}>
-      <GreenCheckmark /> <span>{children}</span>
+      {icon ? <span style={{ fontSize: 18 }}>{icon}</span> : <GreenCheckmark />} <span>{children}</span>
     </div>
   )
 }
