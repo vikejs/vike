@@ -59,7 +59,7 @@ function PricingTable() {
                       Forever access<NoteRef>4</NoteRef>
                     </Check>
                     <Check>
-                      Free trial: 6 months, <a href="">extendable</a>
+                      Free trial: 6 months + <a href="">extendable</a>
                     </Check>
                   </div>
                 </div>
