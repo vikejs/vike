@@ -121,7 +121,7 @@ function TierName({ children }: { children: string }) {
   return <h2 style={{ fontSize: 26, fontWeight: 700, marginBottom: 4, color: '#0f172a', marginTop: 0 }}>{children}</h2>
 }
 
-function Column({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
+function Column({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
@@ -130,7 +130,6 @@ function Column({ children, style }: { children: React.ReactNode; style?: React.
         background: '#fefefe',
         borderRadius: 14,
         boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
-        ...style,
       }}
     >
       {children}
