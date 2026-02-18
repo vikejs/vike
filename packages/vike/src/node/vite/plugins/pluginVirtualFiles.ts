@@ -1,5 +1,3 @@
-import { generateVirtualFilePlusMiddlewares } from './pluginVirtualFiles/generateVirtualFilePlusMiddlewares.js'
-
 export { pluginVirtualFiles }
 
 import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleNode, ModuleGraph } from 'vite'
@@ -18,12 +16,7 @@ import {
 import { assert } from '../../../utils/assert.js'
 import { assertPosixPath } from '../../../utils/path.js'
 import { parseVirtualFileId } from '../../../shared-server-node/virtualFileId.js'
-import {
-  reloadVikeConfig,
-  isV1Design,
-  getVikeConfigInternalOptional,
-  getVikeConfigInternal,
-} from '../shared/resolveVikeConfigInternal.js'
+import { reloadVikeConfig, isV1Design, getVikeConfigInternalOptional } from '../shared/resolveVikeConfigInternal.js'
 import pc from '@brillout/picocolors'
 import { logConfigInfo } from '../shared/loggerDev.js'
 import { getFilePathToShowToUserModule } from '../shared/getFilePath.js'
@@ -32,7 +25,6 @@ import { isPlusFile } from '../shared/resolveVikeConfigInternal/crawlPlusFilePat
 import { isTemporaryBuildFile } from '../shared/resolveVikeConfigInternal/transpileAndExecuteFile.js'
 import { debugFileChange, getVikeConfigError } from '../../../shared-server-node/getVikeConfigError.js'
 import '../assertEnvVite.js'
-import { getPlusMiddlewares } from '../shared/getPlusMiddlewares.js'
 
 // === Rolldown filter
 const filterRolldown = {
@@ -45,15 +37,12 @@ const filterFunction = (id: string) => isVirtualFileId(id)
 
 function pluginVirtualFiles(): Plugin[] {
   let config: ResolvedConfig
-  let plusMiddlewares: string[]
   return [
     {
       name: 'vike:pluginVirtualFiles',
       configResolved: {
         async handler(config_) {
           config = config_
-          const vikeConfig = await getVikeConfigInternal()
-          plusMiddlewares = getPlusMiddlewares(vikeConfig)
           // TO-DO/next-major-release: remove
           if (!isV1Design()) config.experimental.importGlobRestoreExtension = true
         },
@@ -100,10 +89,6 @@ function pluginVirtualFiles(): Plugin[] {
                 this.environment,
                 isDev,
               )
-              return code
-            }
-            if (idParsed.type === 'plus-middlewares') {
-              const code = generateVirtualFilePlusMiddlewares(plusMiddlewares)
               return code
             }
           }

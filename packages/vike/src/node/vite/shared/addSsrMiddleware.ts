@@ -3,24 +3,22 @@
 export { addSsrMiddleware }
 
 import { renderPageServer } from '../../../server/runtime/renderPageServer.js'
-import type { PreviewServer, ResolvedConfig, ViteDevServer } from 'vite'
+import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { assertWarning } from '../../../utils/assert.js'
 import pc from '@brillout/picocolors'
 import '../assertEnvVite.js'
-import { getVikeConfigInternal, type VikeConfigInternal } from './resolveVikeConfigInternal.js'
-import { getPlusMiddlewares } from './getPlusMiddlewares.js'
+type ConnectServer = ViteDevServer['middlewares']
 
 // TODO just use dev middleware from UD?
 //  or use viteDevServer.ssrLoadModule to load middlewares?
 function addSsrMiddleware(
-  server: ViteDevServer | PreviewServer,
+  middlewares: ConnectServer,
   config: ResolvedConfig,
   isPreview: boolean,
   isPrerenderingEnabled: boolean | null,
 ) {
-  let vikeConfig: VikeConfigInternal | undefined
   // const requestAdapter = createRequestAdapter({ trustProxy: true })
-  server.middlewares.use(async (req, res, next) => {
+  middlewares.use(async (req, res, next) => {
     if (res.headersSent) return next()
     const url = req.originalUrl || req.url
     if (!url) return next()
@@ -46,12 +44,6 @@ function addSsrMiddleware(
       },
       enumerable: false,
     })
-    if (!vikeConfig) {
-      vikeConfig = await getVikeConfigInternal()
-    }
-    const plusMiddlewares = getPlusMiddlewares(vikeConfig)
-
-    console.log({ plusMiddlewares })
 
     let pageContext: Awaited<ReturnType<typeof renderPageServer>>
     try {
