@@ -74,6 +74,11 @@ const headings = [
   },
   {
     level: 2,
+    title: '🎁 Gift Program',
+    url: '/gift',
+  },
+  {
+    level: 2,
     title: 'Extensions',
     url: '/extensions',
   },
