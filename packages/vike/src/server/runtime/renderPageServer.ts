@@ -157,6 +157,7 @@ async function renderPageServerEntryOnce(
     }
   }
   const { globalContext } = await getGlobalContextServerInternal()
+  console.log('+middleware files loaded: ', globalContext.config.middleware)
 
   const pageContextBegin = getPageContextBegin(pageContextInit, globalContext, requestId, asyncStore)
 
