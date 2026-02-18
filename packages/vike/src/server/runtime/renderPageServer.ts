@@ -371,7 +371,7 @@ async function renderPageServerEntryWithMiddlewares(
   middlewares: EnhancedMiddleware[],
 ) {
   const router = new UniversalRouter(true, false)
-  let httpResponseVikeCore: HttpResponse | undefined = undefined
+  let httpResponseVikeCore = undefined as undefined | HttpResponse
   // Wrap rendering into universal-middleware routing
   apply(router, [
     enhance(
