@@ -1,13 +1,13 @@
-import { enhance, type UniversalMiddleware } from "@universal-middleware/core";
+import { enhance, type UniversalMiddleware } from '@universal-middleware/core'
 
-const dummyUniversalMiddleware: UniversalMiddleware = async () => {
-  return new Response("OK");
-};
+const someUniversalMiddleware: UniversalMiddleware = async () => {
+  return new Response('OK')
+}
 
-const middlewareDummy = enhance(dummyUniversalMiddleware, {
-  name: "dummy",
-  method: "GET",
-  path: "/dummy",
-});
+const middleware = enhance(someUniversalMiddleware, {
+  name: 'middleware',
+  method: 'GET',
+  path: '/middleware',
+})
 
-export default middlewareDummy;
+export default middleware

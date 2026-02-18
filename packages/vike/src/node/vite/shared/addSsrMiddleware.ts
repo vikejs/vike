@@ -7,8 +7,6 @@ import pc from '@brillout/picocolors'
 import '../assertEnvVite.js'
 type ConnectServer = ViteDevServer['middlewares']
 
-// TODO just use dev middleware from UD?
-//  or use viteDevServer.ssrLoadModule to load middlewares?
 function addSsrMiddleware(
   middlewares: ConnectServer,
   config: ResolvedConfig,

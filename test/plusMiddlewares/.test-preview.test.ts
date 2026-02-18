@@ -1,3 +1,2 @@
 import { testRun } from './.testRun'
-
-testRun('pnpm run dev')
+testRun('pnpm run preview')
