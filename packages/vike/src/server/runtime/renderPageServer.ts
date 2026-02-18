@@ -195,40 +195,7 @@ async function renderPageServerEntryOnce(
   }
 
   if (middlewares.length > 0) {
-    const router = new UniversalRouter(true, false)
-    apply(router, [
-      enhance(
-        async function adaptRenderPageServerEntryOnceInternal(): Promise<Response> {
-          const { httpResponse } = await renderPageServerEntryOnceInternal()
-          const readable = httpResponse.getReadableWebStream()
-          return new Response(readable, {
-            status: httpResponse.statusCode,
-            headers: httpResponse.headers,
-          })
-        },
-        {
-          name: 'vike',
-          method: ['GET', 'POST', 'PUT', 'PATCH', 'HEAD', 'OPTIONS'],
-          path: '/**',
-          immutable: true,
-        },
-      ),
-      ...middlewares,
-    ])
-    const handler = router[universalSymbol] as UniversalHandler
-
-    const url = new URL(pageContextBegin.urlOriginal, 'http://fake-origin.example.org')
-    const res = await handler(
-      new Request(url.toString(), {
-        headers: pageContextBegin.headers ?? {},
-      }),
-      {},
-      getAdapterRuntime('other', { params: undefined }),
-    )
-
-    const httpResponse = await createHttpResponseFetch(res)
-    objectAssign(pageContextBegin, { httpResponse })
-    return pageContextBegin
+    return renderPageServerEntryWithMiddlewares(pageContextBegin, renderPageServerEntryOnceInternal, middlewares)
   }
 
   return renderPageServerEntryOnceInternal()
@@ -391,6 +358,48 @@ async function renderPageServerEntryRecursive_onError(
     return pageContextHttpErrorFallback
   }
   return pageContextErrorPage
+}
+
+async function renderPageServerEntryWithMiddlewares(
+  pageContext: ReturnType<typeof getPageContextBegin>,
+  renderPageServerEntryOnceInternal: () => Promise<PageContextAfterRender>,
+  middlewares: EnhancedMiddleware[],
+) {
+  const router = new UniversalRouter(true, false)
+  // Wrap rendering into universal-middleware routing
+  apply(router, [
+    enhance(
+      async function adaptRenderPageServerEntryOnceInternal(): Promise<Response> {
+        const { httpResponse } = await renderPageServerEntryOnceInternal()
+        const readable = httpResponse.getReadableWebStream()
+        return new Response(readable, {
+          status: httpResponse.statusCode,
+          headers: httpResponse.headers,
+        })
+      },
+      {
+        name: 'vike',
+        method: ['GET', 'POST', 'PUT', 'PATCH', 'HEAD', 'OPTIONS'],
+        path: '/**', // rou3 format
+        immutable: true, // avoids cloning the function we just created
+      },
+    ),
+    ...middlewares,
+  ])
+  const handler = router[universalSymbol] as UniversalHandler
+
+  const url = new URL(pageContext.urlOriginal, 'http://localhost')
+  const res = await handler(
+    new Request(url.toString(), {
+      headers: pageContext.headers ?? {},
+    }),
+    {},
+    getAdapterRuntime('other', { params: undefined }),
+  )
+
+  const httpResponse = await createHttpResponseFetch(res)
+  objectAssign(pageContext, { httpResponse })
+  return pageContext
 }
 
 function logHttpRequest(urlOriginal: string, pageContextInit: PageContextInit, requestId: number) {
