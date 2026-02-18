@@ -15,7 +15,9 @@ function PricingTable() {
               <Column>
                 <TierName>Small team</TierName>
                 ≤2 <SoftwareDevelopers />
-                <SubHeading style={{ visibility: 'hidden' }}>Invisible filler</SubHeading>
+                <SubHeading style={{ visibility: 'hidden' }}>
+                  Invisible filler<NoteRef>3</NoteRef>
+                </SubHeading>
                 <Free />
                 <div>
                   <Check>Full access</Check>
