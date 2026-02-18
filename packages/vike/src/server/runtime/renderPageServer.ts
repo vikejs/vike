@@ -115,7 +115,7 @@ async function renderPageServer<PageContextUserAdded extends {}, PageContextInit
 
   const asyncLocalStorage = await getAsyncLocalStorage()
   const asyncStore: AsyncStore = !asyncLocalStorage ? null : { requestId }
-  const render = async () => await renderPageServerEntryOnce(pageContextInit, requestId, asyncStore)
+  const render = async () => await renderPageServerEntryOnceBegin(pageContextInit, requestId, asyncStore)
   const pageContextFinish = !asyncLocalStorage ? await render() : await asyncLocalStorage.run(asyncStore, render)
 
   logHttpResponse(urlOriginalPretty, pageContextFinish)
@@ -125,7 +125,7 @@ async function renderPageServer<PageContextUserAdded extends {}, PageContextInit
   return pageContextFinish as any
 }
 
-async function renderPageServerEntryOnce(
+async function renderPageServerEntryOnceBegin(
   pageContextInit: PageContextInit,
   requestId: number,
   asyncStore: AsyncStore,
@@ -167,38 +167,43 @@ async function renderPageServerEntryOnce(
     }
   }
   const { globalContext } = await getGlobalContextServerInternal()
-  const middlewares = (globalContext.config.middleware ?? []).flat() as EnhancedMiddleware[]
 
   const pageContextBegin = getPageContextBegin(pageContextInit, globalContext, requestId, asyncStore)
 
-  async function renderPageServerEntryOnceInternal(): Promise<PageContextAfterRender> {
-    // Check Base URL
-    {
-      const pageContextHttpResponse = await checkBaseUrl(pageContextBegin, globalContext)
-      if (pageContextHttpResponse) return pageContextHttpResponse
-    }
+  const middlewares = (globalContext.config.middleware ?? []).flat() as EnhancedMiddleware[]
+  const renderCall = () => renderPageServerEntryOnce(pageContextBegin, globalContext, requestId)
+  if (middlewares.length === 0) {
+    return renderCall()
+  } else {
+    return renderPageServerEntryWithMiddlewares(pageContextBegin, renderCall, middlewares)
+  }
+}
 
-    // Normalize URL
-    {
-      const pageContextHttpResponse = await normalizeUrl(pageContextBegin, globalContext)
-      if (pageContextHttpResponse) return pageContextHttpResponse
-    }
-
-    // Permanent redirects (HTTP status code `301`)
-    {
-      const pageContextHttpResponse = await getPermanentRedirect(pageContextBegin, globalContext)
-      if (pageContextHttpResponse) return pageContextHttpResponse
-    }
-
-    // First renderPageServerEntryRecursive() call
-    return await renderPageServerEntryRecursive(pageContextBegin, globalContext, requestId)
+async function renderPageServerEntryOnce(
+  pageContextBegin: PageContextBegin,
+  globalContext: GlobalContextServerInternal,
+  requestId: number,
+) {
+  // Check Base URL
+  {
+    const pageContextHttpResponse = await checkBaseUrl(pageContextBegin, globalContext)
+    if (pageContextHttpResponse) return pageContextHttpResponse
   }
 
-  if (middlewares.length > 0) {
-    return renderPageServerEntryWithMiddlewares(pageContextBegin, renderPageServerEntryOnceInternal, middlewares)
+  // Normalize URL
+  {
+    const pageContextHttpResponse = await normalizeUrl(pageContextBegin, globalContext)
+    if (pageContextHttpResponse) return pageContextHttpResponse
   }
 
-  return renderPageServerEntryOnceInternal()
+  // Permanent redirects (HTTP status code `301`)
+  {
+    const pageContextHttpResponse = await getPermanentRedirect(pageContextBegin, globalContext)
+    if (pageContextHttpResponse) return pageContextHttpResponse
+  }
+
+  // First renderPageServerEntryRecursive() call
+  return await renderPageServerEntryRecursive(pageContextBegin, globalContext, requestId)
 }
 
 async function renderPageServerEntryRecursive(
