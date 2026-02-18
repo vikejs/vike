@@ -167,7 +167,7 @@ async function renderPageServerEntryOnce(
     }
   }
   const { globalContext } = await getGlobalContextServerInternal()
-  const middlewares = (globalContext.config.middleware ?? []) as EnhancedMiddleware[]
+  const middlewares = (globalContext.config.middleware ?? []).flat() as EnhancedMiddleware[]
 
   const pageContextBegin = getPageContextBegin(pageContextInit, globalContext, requestId, asyncStore)
 

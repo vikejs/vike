@@ -1,6 +1,4 @@
-export default universalVikeHandler
-
-import type { RuntimeAdapterTarget } from '@universal-middleware/core'
+import { enhance, type RuntimeAdapterTarget } from '@universal-middleware/core'
 import { renderPageServer } from './renderPageServer.js'
 import '../assertEnvServer.js'
 
@@ -24,3 +22,12 @@ async function universalVikeHandler<T extends string>(
     headers: response.headers,
   })
 }
+
+const universalVikeHandlerEnhanced = enhance(universalVikeHandler, {
+  name: 'vike',
+  method: ['GET', 'POST', 'PUT', 'PATCH', 'HEAD', 'OPTIONS'],
+  path: '/**',
+  immutable: true,
+})
+
+export default universalVikeHandlerEnhanced
