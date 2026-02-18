@@ -169,8 +169,13 @@ function createHttpResponseRedirect({ url, statusCode }: UrlRedirect, pageContex
   )
 }
 
-function createHttpResponseFromUniversalMiddleware(response: Response) {
-  const httpResponse = createHttpResponseCommon(response.status, Array.from(response.headers.entries()), response.body)
+function createHttpResponseFromUniversalMiddleware(response: Response, earlyHints?: EarlyHint[]) {
+  const httpResponse = createHttpResponseCommon(
+    response.status,
+    Array.from(response.headers.entries()),
+    response.body,
+    earlyHints,
+  )
   return httpResponse
 }
 
