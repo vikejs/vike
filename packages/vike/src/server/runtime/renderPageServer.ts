@@ -367,7 +367,7 @@ async function renderPageServerEntryRecursive_onError(
 
 async function renderPageServerEntryWithMiddlewares(
   pageContext: ReturnType<typeof getPageContextBegin>,
-  renderPageEntry: () => Promise<PageContextAfterRender>,
+  renderPageServerEntry: () => Promise<PageContextAfterRender>,
   middlewares: EnhancedMiddleware[],
 ) {
   const router = new UniversalRouter(true, false)
@@ -376,7 +376,7 @@ async function renderPageServerEntryWithMiddlewares(
   apply(router, [
     enhance(
       async function adaptRenderPageServerEntryOnceInternal(): Promise<Response> {
-        const pageContextHttpResponse = await renderPageEntry()
+        const pageContextHttpResponse = await renderPageServerEntry()
         httpResponseVikeCore = pageContextHttpResponse.httpResponse
         const readable = httpResponse.getReadableWebStream()
         return new Response(readable, {
