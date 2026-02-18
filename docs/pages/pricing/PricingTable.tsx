@@ -59,7 +59,7 @@ function PricingTable() {
                 </div>
               </Column>
             </div>
-            <div style={{ marginLeft: 10, marginTop: 20, display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div style={{ marginLeft: 10, marginTop: 20 }}>
               <Note ref={1}>
                 Only developers who regularly contribute code: occasional contributors and bots don't count.
               </Note>
@@ -93,7 +93,7 @@ function NoteRef({ children, style }: { children: string; style?: React.CSSPrope
 }
 function Note({ children, ref }: { children: React.ReactNode; ref: number }) {
   return (
-    <div style={{ color: noteColor, fontSize: '0.9em', lineHeight: 1.1 }}>
+    <div style={{ color: noteColor, fontSize: '0.94em', lineHeight: 1.5 }}>
       ({ref}) {children}
     </div>
   )
