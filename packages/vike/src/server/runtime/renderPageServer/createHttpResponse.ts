@@ -200,7 +200,7 @@ function createHttpResponseCommon(
   earlyHints: EarlyHint[] = [],
   renderHook: null | RenderHook = null,
 ): HttpResponse {
-  const contentType = headers.find(([k]) => k === 'content-type')?.[1]
+  const contentType = headers.find(([k]) => k.toLowerCase() === 'content-type')?.[1]
   if (htmlRender === null) {
     htmlRender = ''
   }
