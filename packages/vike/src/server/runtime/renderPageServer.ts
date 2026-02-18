@@ -366,7 +366,7 @@ async function renderPageServerEntryRecursive_onError(
 }
 
 async function renderPageServerEntryWithMiddlewares(
-  pageContext: ReturnType<typeof getPageContextBegin>,
+  pageContext: PageContextBegin,
   renderPageServerEntry: () => Promise<PageContextAfterRender>,
   middlewares: EnhancedMiddleware[],
 ) {
