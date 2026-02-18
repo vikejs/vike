@@ -1,33 +1,74 @@
-import React, { useState } from 'react'
-import BlurDot from '../../components/BlurDot'
+import React, { type MouseEvent, useEffect, useRef, useState } from 'react'
 import { H3Headline } from '../../components/Headline'
 import cm, { cmMerge } from '@classmatejs/react'
 import { landingPageHeroUsps } from '../../util/constants'
 import GradientText from '../../components/GradientText'
-import { BlurDotOpacity, uiConfig, UiVariantBtnColor } from '../../util/ui.constants'
-import { ChevronsDown, ChevronsRight } from 'lucide-react'
+import { uiConfig, UiVariantBtnColor } from '../../util/ui.constants'
+import { ChevronsRight } from 'lucide-react'
+import type { UspHoverTarget } from './intro.types'
 
-const UspHero = () => {
+interface UspHeroProps {
+  onHoverChange?: (hoverTarget: UspHoverTarget | null) => void
+}
+
+const UspHero = ({ onHoverChange }: UspHeroProps) => {
   const [hoveredUsp, setHoveredUsp] = useState<string | null>(null)
+  const hoverLeaveTimeoutRef = useRef<number | null>(null)
+  const clearHoverLeaveTimeout = () => {
+    if (hoverLeaveTimeoutRef.current === null) {
+      return
+    }
+    window.clearTimeout(hoverLeaveTimeoutRef.current)
+    hoverLeaveTimeoutRef.current = null
+  }
+
+  const handleMouseEnter = (event: MouseEvent<HTMLDivElement>, uspId: string, dotColor: UspHoverTarget['color']) => {
+    clearHoverLeaveTimeout()
+    const rect = event.currentTarget.getBoundingClientRect()
+    setHoveredUsp(uspId)
+    onHoverChange?.({
+      color: dotColor,
+      x: rect.left + rect.width / 2,
+      y: rect.top + rect.height / 2,
+    })
+  }
+
+  const handleMouseLeave = () => {
+    clearHoverLeaveTimeout()
+    hoverLeaveTimeoutRef.current = window.setTimeout(() => {
+      setHoveredUsp(null)
+      onHoverChange?.(null)
+      hoverLeaveTimeoutRef.current = null
+    }, 90)
+  }
+
+  useEffect(() => {
+    return () => {
+      clearHoverLeaveTimeout()
+    }
+  }, [])
 
   return (
     <div className="w-full">
-      <div className="grid grid-cols-3 gap-2 md:w-6/7 mx-auto">
+      <div className="grid grid-cols-3 gap-0 md:w-6/7 mx-auto">
         {landingPageHeroUsps.map((usp) => {
           const isHovered = hoveredUsp === usp.id
+          const isMuted = hoveredUsp !== null && !isHovered
 
           return (
             <div
-              className="relative p-4 cursor-pointer"
+              className={cmMerge(
+                'relative p-4 cursor-pointer transition-[filter,opacity] duration-250 ease-out',
+                isMuted ? 'grayscale opacity-25' : 'grayscale-0 opacity-100',
+              )}
+              data-usp-color={usp.dotColor}
+              data-usp-id={usp.id}
               key={usp.title}
-              onMouseEnter={() => setHoveredUsp(usp.id)}
-              onMouseLeave={() => setHoveredUsp(null)}
+              onMouseEnter={(event) => handleMouseEnter(event, usp.id, usp.dotColor)}
+              onMouseLeave={handleMouseLeave}
             >
               <StyledUspItemInner $hovered={isHovered} />
-              <div className="absolute inset-0 flex justify-center items-center z-4 pointer-events-none">
-                <StyledDot type={usp.dotColor} size="lg" visibility="high" $hovered={isHovered} />
-              </div>
-              <div className="absolute -inset-1 z-3 bg-linear-to-t to-base-300" />
+              {/* <div className="absolute -inset-1 z-3 bg-linear-to-t to-base-300" /> */}
               <StyledTextContent $hovered={isHovered}>
                 {/* todo: use more classmatejs */}
                 <StyledIconWrapper>{usp.icon}</StyledIconWrapper>
@@ -41,7 +82,7 @@ const UspHero = () => {
                         </StyledTitle>
                       </span>
                     </H3Headline>
-                    <p className="text-grey">{usp.description}</p>
+                    <p className="text-lg">{usp.description}</p>
                   </div>
                   <span
                     className={cmMerge(
@@ -67,24 +108,17 @@ const StyledUspItemInner = cm.div<{ $hovered?: boolean }>`
   pointer-events-none
   flex items-center
   absolute p-4 inset-0
-  shadow-lg shadow-base-200
+  shadow-lg shadown-neutral/6
   transition-all rounded-box 
   origin-bottom-center
   bg-white
   opacity-0
+  scale-95
   translate-y-1
   z-3
   ${uiConfig.transition.mediumDurationTw}
   ${uiConfig.transition.easeOutTw}
-  ${({ $hovered }) => ($hovered ? 'scale-102 translate-y-0 opacity-100' : '')}
-`
-
-const StyledDot = cm.extend(BlurDot)<{ $hovered?: boolean }>`
-  -mt-20 
-  transition-all
-  ${uiConfig.transition.mediumDurationTw}
-  ${uiConfig.transition.easeOutTw}
-  ${({ $hovered }) => ($hovered ? `-translate-y-4 scale-120 ${BlurDotOpacity.medium}` : `translate-y-0 scale-100 ${BlurDotOpacity.low}`)}
+  ${({ $hovered }) => ($hovered ? 'scale-100 translate-y-0 opacity-70' : '')}
 `
 
 const StyledTitleShape = cm.span<{ $hovered?: boolean }>`
@@ -96,7 +130,6 @@ const StyledTitleShape = cm.span<{ $hovered?: boolean }>`
 
 const StyledTitle = cm.span`
   absolute left-0 top-0
-  transition-opacity
   ${uiConfig.transition.mediumDurationTw}
   ${uiConfig.transition.easeOutTw}
 `

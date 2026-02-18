@@ -16,26 +16,29 @@ interface GradientTextProps extends React.HTMLAttributes<HTMLSpanElement> {
   color?: UiColorVariantKey
 }
 
-const GradientText = ({ children, color, startColor, endColor, rotation = 90, style, ...props }: GradientTextProps) => {
-  const isCustomGradient = Boolean(startColor && endColor)
-  const usedStartColor = isCustomGradient ? startColor : color ? defaultGradients[color].startColor : 'green'
-  const usedEndColor = isCustomGradient ? endColor : color ? defaultGradients[color].endColor : 'red'
+const GradientText = React.forwardRef<HTMLSpanElement, GradientTextProps>(
+  ({ children, color, startColor, endColor, rotation = 90, style, ...props }, ref) => {
+    const isCustomGradient = Boolean(startColor && endColor)
+    const usedStartColor = isCustomGradient ? startColor : color ? defaultGradients[color].startColor : 'green'
+    const usedEndColor = isCustomGradient ? endColor : color ? defaultGradients[color].endColor : 'red'
 
-  const styleBackgroundString = `linear-gradient(${rotation}deg, ${usedStartColor}, ${usedEndColor})`
+    const gradientStyle = {
+      '--gradient-start': usedStartColor,
+      '--gradient-end': usedEndColor,
+      background: `linear-gradient(${rotation}deg, var(--gradient-start), var(--gradient-end))`,
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+      ...style,
+    } as React.CSSProperties
 
-  return (
-    <span
-      style={{
-        background: styleBackgroundString,
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
-        ...style,
-      }}
-      {...props}
-    >
-      {children}
-    </span>
-  )
-}
+    return (
+      <span ref={ref} style={gradientStyle} {...props}>
+        {children}
+      </span>
+    )
+  },
+)
+
+GradientText.displayName = 'GradientText'
 
 export default GradientText
