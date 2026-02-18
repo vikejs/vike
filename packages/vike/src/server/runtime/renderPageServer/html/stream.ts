@@ -271,16 +271,7 @@ function pipeToStreamWritableNode(htmlRender: HtmlRender, writable: StreamWritab
     return true
   }
   if (isStreamReadableWeb(htmlRender)) {
-    streamReadableWebToStreamReadableNode(htmlRender)
-      .then((s) => s.pipe(writable))
-      .catch((err) => {
-        if (!isVikeBug(err)) {
-          console.error(err)
-          assert(false)
-        }
-
-        throw err
-      })
+    streamReadableWebToStreamReadableNode(htmlRender).then((s) => s.pipe(writable))
     return true
   }
   if (isStreamPipeWeb(htmlRender)) {
