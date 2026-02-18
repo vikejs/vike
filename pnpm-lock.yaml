@@ -808,7 +808,10 @@ importers:
         version: 0.7.18
       '@universal-middleware/core':
         specifier: ^0.4.16
-        version: 0.4.16(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
+        version: 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
+      '@universal-middleware/express':
+        specifier: ^0.4.23
+        version: 0.4.23(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
       '@universal-middleware/srvx':
         specifier: ^0.1.2
         version: 0.1.2(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.9.8)
@@ -867,6 +870,9 @@ importers:
       '@types/source-map-support':
         specifier: ^0.5.10
         version: 0.5.10
+      '@universal-deploy/store':
+        specifier: ^0.1.0
+        version: 0.1.0(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.9.8)(vite@7.2.7(@types/node@20.17.17)(terser@5.38.1)(tsx@4.20.6))
       react-streaming:
         specifier: ^0.4.15
         version: 0.4.15(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -1674,6 +1680,27 @@ importers:
       vite:
         specifier: ^7.0.6
         version: 7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
+
+  test/plusMiddlewares:
+    dependencies:
+      '@universal-middleware/core':
+        specifier: ^0.4.16
+        version: 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
+      '@vitejs/plugin-react':
+        specifier: ^4.7.0
+        version: 4.7.0(vite@6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
+      react:
+        specifier: ^19.2.4
+        version: 19.2.4
+      react-dom:
+        specifier: ^19.2.4
+        version: 19.2.4(react@19.2.4)
+      vike:
+        specifier: 0.4.253
+        version: 0.4.253(react-streaming@0.4.15(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(vite@6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
+      vite:
+        specifier: ^6.3.2
+        version: 6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
 
   test/preload:
     dependencies:
@@ -2558,6 +2585,9 @@ packages:
   '@brillout/replace@0.1.6':
     resolution: {integrity: sha512-pF3D0TEkxR3H0PpBRV0oiWbCNdpCexcoYn9k1ByTjGWZzmRJ2G+Se+Smr6QC+VZ7PKTpQuC4YBGyxnlbk89JkQ==}
     hasBin: true
+
+  '@brillout/require-shim@0.1.2':
+    resolution: {integrity: sha512-3I4LRHnVZXoSAsEoni5mosq9l6eiJED58d9V954W4CIZ88AUfYBanWGBGbJG3NztaRTpFHEA6wB3Hn93BmmJdg==}
 
   '@brillout/shell@0.2.1':
     resolution: {integrity: sha512-l5PTMWw6rndD7vZcMvw1bv31sTzpz0qP3q409PD50ATsfxhvbMvDVySnV73Okoskfd673oClIlt6OnupbQJqHA==}
@@ -4631,6 +4661,11 @@ packages:
   '@ungap/structured-clone@1.3.0':
     resolution: {integrity: sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g==}
 
+  '@universal-deploy/store@0.1.0':
+    resolution: {integrity: sha512-TAYomW4Q3N67eFFta/ThmU0L0B4Vr92mh3ku78J2iN+JPpDkt3fWvkXOsx0lX+JkSxCATtqnuXz6pLwt7H3lDw==}
+    peerDependencies:
+      vite: ^8.0.0-beta.13
+
   '@universal-middleware/cloudflare@0.4.10':
     resolution: {integrity: sha512-ZY+N0KKoH+H+BB3wsaD5yqTiiFtX7uklPyCBqGLqEijOtZA5ZgFIExfWDjiIUjezUBAbRB8kUZ/WlPITY+hyTg==}
 
@@ -4768,8 +4803,8 @@ packages:
   '@universal-middleware/elysia@0.4.8':
     resolution: {integrity: sha512-6cDEPq96blz5x17rsNJjRmDqD4o0XrGB+6lFElEThtIBAUn1Y38OqMn1+yf7Ycdc5w45mr4T1uimfH9tAdU2Ug==}
 
-  '@universal-middleware/express@0.4.22':
-    resolution: {integrity: sha512-4aIrnK52NJmYKokZnwpWja/vT2m/HoZ8zxQyYLdokkSQdx0B1k1VsmYGeWENvpDQBgLjnfyvDzyaxch6Tib/hA==}
+  '@universal-middleware/express@0.4.23':
+    resolution: {integrity: sha512-wFM9HQWIXrK+CJvld95bwkGbb1wA/bKkwBBKI5njPShVCMayFoSDb6FMrqezHqI3hGBcjUs9D17CVIJa6gzdPA==}
 
   '@universal-middleware/express@0.4.24':
     resolution: {integrity: sha512-CGAQfGZs90pM2n2JqZVvNhzk6amT8FGb+1nn/10M7ZC4K8nW6Bt3WzW55zqNeo2YRyZzDL5cxrxQhVpuXbLvKg==}
@@ -7511,6 +7546,9 @@ packages:
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
     hasBin: true
 
+  rou3@0.7.12:
+    resolution: {integrity: sha512-iFE4hLDuloSWcD7mjdCDhx2bKcIsYbtOTpfH5MHHLSKMOUyjqQXTeZVa289uuwEGEKFoE/BAPbhaU4B774nceg==}
+
   router@2.2.0:
     resolution: {integrity: sha512-nLTrUKm2UyiL7rlhapu/Zl45FwNgkZGaCpZbIHajDYgwlJCOzLSk+cIPAnsEqV955GjILJnKbdQC1nVPz+gAYQ==}
     engines: {node: '>= 18'}
@@ -8232,6 +8270,19 @@ packages:
     peerDependencies:
       vike: '>=0.4.191'
       vue: '>=3.0.0'
+
+  vike@0.4.253:
+    resolution: {integrity: sha512-glS8FidhqnK6I/wLs48BYtqsAMXs8QtOB0uxeZ0G93G2a0ZkymuZ5rjbcZHUCBLoUYS/8i0h4d4NhK2mAsUhTA==}
+    engines: {node: '>=20.19.0'}
+    hasBin: true
+    peerDependencies:
+      react-streaming: '>=0.3.42'
+      vite: '>=6.3.0'
+    peerDependenciesMeta:
+      react-streaming:
+        optional: true
+      vite:
+        optional: true
 
   vite-plugin-cjs-interop@2.3.0:
     resolution: {integrity: sha512-gNeh8anoG4QrdQf4LNcoQZTVEdqrrAdwjDDyNc4bHLi0u6XSXaaOiJiuKwwY38KWfYZdQsmoytBOHCRf+0gHjQ==}
@@ -9299,6 +9350,8 @@ snapshots:
     dependencies:
       '@brillout/picocolors': 1.0.29
       '@brillout/shell': 0.2.1
+
+  '@brillout/require-shim@0.1.2': {}
 
   '@brillout/shell@0.2.1':
     dependencies:
@@ -11163,6 +11216,23 @@ snapshots:
 
   '@ungap/structured-clone@1.3.0': {}
 
+  '@universal-deploy/store@0.1.0(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.9.8)(vite@7.2.7(@types/node@20.17.17)(terser@5.38.1)(tsx@4.20.6))':
+    dependencies:
+      '@universal-middleware/express': 0.4.23(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
+      magic-string: 0.30.21
+      rou3: 0.7.12
+      vite: 7.2.7(@types/node@20.17.17)(terser@5.38.1)(tsx@4.20.6)
+    transitivePeerDependencies:
+      - '@cloudflare/workers-types'
+      - '@hattip/core'
+      - '@types/express'
+      - '@webroute/route'
+      - elysia
+      - fastify
+      - h3
+      - hono
+      - srvx
+
   '@universal-middleware/cloudflare@0.4.10(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.9.8)':
     dependencies:
       '@universal-middleware/core': 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
@@ -11235,7 +11305,7 @@ snapshots:
       - hono
       - srvx
 
-  '@universal-middleware/express@0.4.22(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)':
+  '@universal-middleware/express@0.4.23(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)':
     dependencies:
       '@universal-middleware/core': 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
     transitivePeerDependencies:
@@ -14960,6 +15030,8 @@ snapshots:
       '@rollup/rollup-win32-x64-msvc': 4.43.0
       fsevents: 2.3.3
 
+  rou3@0.7.12: {}
+
   router@2.2.0:
     dependencies:
       debug: 4.4.3
@@ -15018,8 +15090,7 @@ snapshots:
 
   semver@7.7.3: {}
 
-  semver@7.7.4:
-    optional: true
+  semver@7.7.4: {}
 
   send@1.2.0:
     dependencies:
@@ -15853,7 +15924,7 @@ snapshots:
       '@universal-middleware/compress': 0.2.34
       '@universal-middleware/core': 0.4.13(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
       '@universal-middleware/elysia': 0.4.8(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
-      '@universal-middleware/express': 0.4.22(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
+      '@universal-middleware/express': 0.4.23(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
       '@universal-middleware/fastify': 0.5.22(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
       '@universal-middleware/h3': 0.4.14(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
       '@universal-middleware/hattip': 0.4.13(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
@@ -15881,7 +15952,7 @@ snapshots:
       '@universal-middleware/compress': 0.2.34
       '@universal-middleware/core': 0.4.13(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
       '@universal-middleware/elysia': 0.4.8(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
-      '@universal-middleware/express': 0.4.22(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
+      '@universal-middleware/express': 0.4.23(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
       '@universal-middleware/fastify': 0.5.22(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
       '@universal-middleware/h3': 0.4.14(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
       '@universal-middleware/hattip': 0.4.13(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
@@ -15909,7 +15980,7 @@ snapshots:
       '@universal-middleware/compress': 0.2.34
       '@universal-middleware/core': 0.4.13(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
       '@universal-middleware/elysia': 0.4.8(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
-      '@universal-middleware/express': 0.4.22(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
+      '@universal-middleware/express': 0.4.23(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
       '@universal-middleware/fastify': 0.5.22(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
       '@universal-middleware/h3': 0.4.14(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
       '@universal-middleware/hattip': 0.4.13(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
@@ -15951,6 +16022,31 @@ snapshots:
       oxc-walker: 0.6.0(oxc-parser@0.104.0)
       vike: link:packages/vike
       vue: 3.5.18(typescript@5.9.3)
+
+  vike@0.4.253(react-streaming@0.4.15(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(vite@6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)):
+    dependencies:
+      '@babel/core': 7.29.0
+      '@babel/types': 7.29.0
+      '@brillout/import': 0.2.6
+      '@brillout/json-serializer': 0.5.22
+      '@brillout/picocolors': 1.0.30
+      '@brillout/require-shim': 0.1.2
+      '@brillout/vite-plugin-server-entry': 0.7.18
+      cac: 6.7.14
+      es-module-lexer: 1.7.0
+      esbuild: 0.27.2
+      json5: 2.2.3
+      magic-string: 0.30.21
+      picomatch: 4.0.3
+      semver: 7.7.4
+      sirv: 3.0.2
+      source-map-support: 0.5.21
+      tinyglobby: 0.2.15
+    optionalDependencies:
+      react-streaming: 0.4.15(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      vite: 6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
+    transitivePeerDependencies:
+      - supports-color
 
   vite-plugin-cjs-interop@2.3.0(vite@6.3.5(@types/node@22.19.2)(terser@5.38.1)(tsx@4.20.6)):
     dependencies:

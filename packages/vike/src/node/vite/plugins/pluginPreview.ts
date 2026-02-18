@@ -51,7 +51,7 @@ function pluginPreview(): Plugin[] {
             addStaticAssetsMiddleware(server.middlewares)
 
             if (!isPrerenderingEnabledForAllPages) {
-              addSsrMiddleware(server.middlewares, config, true, isPrerenderingEnabled)
+              addSsrMiddleware(server, config, true, isPrerenderingEnabled)
             }
 
             addStatic404Middleware(server.middlewares)
