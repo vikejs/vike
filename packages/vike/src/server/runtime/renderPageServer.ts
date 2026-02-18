@@ -402,7 +402,7 @@ async function renderPageServerEntryWithMiddlewares(
     getAdapterRuntime('other', { params: undefined }),
   )
 
-  const httpResponse = await createHttpResponseFromUniversalMiddleware(res)
+  const httpResponse = createHttpResponseFromUniversalMiddleware(res)
   objectAssign(pageContext, { httpResponse })
   return pageContext
 }
