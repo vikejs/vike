@@ -1,4 +1,6 @@
 // Public usage
+import type { IncomingMessage } from 'node:http'
+
 export type { PageContext }
 export type { PageContextServer }
 export type { PageContextClient }
@@ -177,6 +179,7 @@ type PageContextInit = {
    * https://vike.dev/pageContext#headersOriginal
    */
   headersOriginal?: unknown // We set it to the type `unknown` instead of the type `HeadersInit` because `HeadersInit` isn't accurate: for example, `http.IncomingHttpHeaders` is a valid input for `new Headers()` but doesn't match the `HeadersInit` init.
+  req?: IncomingMessage
   /** @deprecated Set `pageContextInit.urlOriginal` instead  */ // TO-DO/next-major-release: remove
   url?: string
 }
