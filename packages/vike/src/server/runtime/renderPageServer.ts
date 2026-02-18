@@ -371,11 +371,13 @@ async function renderPageServerEntryWithMiddlewares(
   middlewares: EnhancedMiddleware[],
 ) {
   const router = new UniversalRouter(true, false)
+  let httpResponseVikeCore: HttpResponse | undefined
   // Wrap rendering into universal-middleware routing
   apply(router, [
     enhance(
       async function adaptRenderPageServerEntryOnceInternal(): Promise<Response> {
-        const { httpResponse } = await renderPageServerEntryOnceInternal()
+        const pageContextHttpResponse = await renderPageServerEntryOnceInternal()
+        httpResponseVikeCore = pageContextHttpResponse.httpResponse
         const readable = httpResponse.getReadableWebStream()
         return new Response(readable, {
           status: httpResponse.statusCode,
@@ -402,7 +404,7 @@ async function renderPageServerEntryWithMiddlewares(
     getAdapterRuntime('other', { params: undefined }),
   )
 
-  const httpResponse = createHttpResponseFromUniversalMiddleware(res)
+  const httpResponse = createHttpResponseFromUniversalMiddleware(res, httpResponseVikeCore?.earlyHints)
   objectAssign(pageContext, { httpResponse })
   return pageContext
 }
