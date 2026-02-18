@@ -3,8 +3,4 @@ import vike from 'vike/plugin'
 
 export default {
   plugins: [react(), vike()],
-  // TODO
-  // ssr: {
-  //   noExternal: ['vike']
-  // }
 }
