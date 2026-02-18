@@ -253,7 +253,6 @@
     "@types/picomatch": "^3.0.2",
     "@types/semver": "^7.5.8",
     "@types/source-map-support": "^0.5.10",
-    "@universal-deploy/store": "^0.1.0",
     "react-streaming": "^0.4.15",
     "rimraf": "^5.0.5",
     "typescript": "^5.9.3",
