@@ -30,7 +30,7 @@ function PricingTable() {
               <Column>
                 <TierName>Larger team</TierName>
                 ≥3 <SoftwareDevelopers />
-                <div style={{ display: 'flex', gap: 40 }}>
+                <div style={{ display: 'flex', gap: 40, flexWrap: 'wrap' }}>
                   <div>
                     <SubHeading>
                       Limited resources<NoteRef>3</NoteRef>
