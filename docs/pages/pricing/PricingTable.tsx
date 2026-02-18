@@ -118,7 +118,7 @@ function Price({ children, color, suffix }: { children: string; color: string; s
   return (
     <div style={{ marginTop: 8, marginBottom: 13 }}>
       <span style={{ fontSize: fontSizePrice, color, fontWeight: 700 }}>{children}</span>
-      {suffix && <span style={{ fontSize: 14, color: '#94a3b8', fontWeight: 500, marginLeft: 2 }}>{suffix}</span>}
+      {suffix && <span style={{ fontSize: 16, color: '#6b7280', fontWeight: 400 }}>{suffix}</span>}
     </div>
   )
 }
