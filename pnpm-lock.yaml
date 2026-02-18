@@ -1683,9 +1683,6 @@ importers:
       '@universal-middleware/core':
         specifier: ^0.4.16
         version: 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
-      '@vitejs/plugin-react':
-        specifier: ^4.7.0
-        version: 4.7.0(vite@6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
       react:
         specifier: ^19.2.4
         version: 19.2.4
@@ -1694,10 +1691,23 @@ importers:
         version: 19.2.4(react@19.2.4)
       vike:
         specifier: 0.4.253
-        version: 0.4.253(react-streaming@0.4.15(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(vite@6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
+        version: 0.4.253(react-streaming@0.4.15(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
+    devDependencies:
+      '@types/react':
+        specifier: ^19.2.11
+        version: 19.2.11
+      '@types/react-dom':
+        specifier: ^19.2.3
+        version: 19.2.3(@types/react@19.2.11)
+      '@vitejs/plugin-react':
+        specifier: ^5.1.3
+        version: 5.1.3(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
       vite:
-        specifier: ^6.3.2
-        version: 6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
+        specifier: ^7.3.1
+        version: 7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
 
   test/preload:
     dependencies:
@@ -16020,7 +16030,7 @@ snapshots:
       vike: link:packages/vike
       vue: 3.5.18(typescript@5.9.3)
 
-  vike@0.4.253(react-streaming@0.4.15(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(vite@6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)):
+  vike@0.4.253(react-streaming@0.4.15(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)):
     dependencies:
       '@babel/core': 7.29.0
       '@babel/types': 7.29.0
@@ -16041,7 +16051,7 @@ snapshots:
       tinyglobby: 0.2.15
     optionalDependencies:
       react-streaming: 0.4.15(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      vite: 6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
+      vite: 7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
     transitivePeerDependencies:
       - supports-color
 

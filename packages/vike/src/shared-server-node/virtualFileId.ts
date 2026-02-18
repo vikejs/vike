@@ -48,7 +48,12 @@ type VirtualFileIdEntryParsed =
 
 function parseVirtualFileId(id: string): false | VirtualFileIdEntryParsed {
   id = removeVirtualFileIdPrefix(id)
-  if (!id.startsWith(virtualFileIdGlobalEntryPrefix) && !id.startsWith(virtualFileIdPageEntryPrefix) && !id.startsWith(virtualPlusMiddlewares)) return false
+  if (
+    !id.startsWith(virtualFileIdGlobalEntryPrefix) &&
+    !id.startsWith(virtualFileIdPageEntryPrefix) &&
+    !id.startsWith(virtualPlusMiddlewares)
+  )
+    return false
 
   // Global entry
   if (id.includes(virtualFileIdGlobalEntryPrefix)) {
