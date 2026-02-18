@@ -85,7 +85,7 @@ function PricingTable() {
 
 function SubHeading({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
   return (
-    <div style={{ marginTop: 20, ...style }}>
+    <div style={{ marginTop: 23, ...style }}>
       <b style={{ whiteSpace: 'nowrap' }}>{children}</b>
     </div>
   )
@@ -96,7 +96,7 @@ function NoteRef({ children, style }: { children: string; style?: React.CSSPrope
 }
 function Note({ children, ref }: { children: React.ReactNode; ref: number }) {
   return (
-    <div style={{ color: noteColor, fontSize: '0.88em', lineHeight: 1.4 }}>
+    <div style={{ color: noteColor, fontSize: '0.9em', lineHeight: 1.1 }}>
       ({ref}) {children}
     </div>
   )
@@ -116,9 +116,9 @@ function Free() {
 
 function Price({ children, color, suffix }: { children: string; color: string; suffix?: React.ReactNode }) {
   return (
-    <div style={{ marginTop: 10, marginBottom: 14 }}>
+    <div style={{ marginTop: 8, marginBottom: 13 }}>
       <span style={{ fontSize: fontSizePrice, color, fontWeight: 700 }}>{children}</span>
-      {suffix && <span style={{ fontSize: 15, color: '#64748b', fontWeight: 400 }}>{suffix}</span>}
+      {suffix && <span style={{ fontSize: 16, color: '#6b7280', fontWeight: 400 }}>{suffix}</span>}
     </div>
   )
 }
