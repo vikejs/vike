@@ -171,11 +171,11 @@ async function renderPageServerEntryOnceBegin(
   const pageContextBegin = getPageContextBegin(pageContextInit, globalContext, requestId, asyncStore)
 
   const middlewares = (globalContext.config.middleware ?? []).flat() as EnhancedMiddleware[]
-  const renderCall = () => renderPageServerEntryOnce(pageContextBegin, globalContext, requestId)
+  const renderPageEntry = () => renderPageServerEntryOnce(pageContextBegin, globalContext, requestId)
   if (middlewares.length === 0) {
-    return renderCall()
+    return renderPageEntry()
   } else {
-    return renderPageServerEntryWithMiddlewares(pageContextBegin, renderCall, middlewares)
+    return renderPageServerEntryWithMiddlewares(pageContextBegin, renderPageEntry, middlewares)
   }
 }
 
@@ -367,7 +367,7 @@ async function renderPageServerEntryRecursive_onError(
 
 async function renderPageServerEntryWithMiddlewares(
   pageContext: ReturnType<typeof getPageContextBegin>,
-  renderPageServerEntryOnceInternal: () => Promise<PageContextAfterRender>,
+  renderPageEntry: () => Promise<PageContextAfterRender>,
   middlewares: EnhancedMiddleware[],
 ) {
   const router = new UniversalRouter(true, false)
@@ -376,7 +376,7 @@ async function renderPageServerEntryWithMiddlewares(
   apply(router, [
     enhance(
       async function adaptRenderPageServerEntryOnceInternal(): Promise<Response> {
-        const pageContextHttpResponse = await renderPageServerEntryOnceInternal()
+        const pageContextHttpResponse = await renderPageEntry()
         httpResponseVikeCore = pageContextHttpResponse.httpResponse
         const readable = httpResponse.getReadableWebStream()
         return new Response(readable, {
