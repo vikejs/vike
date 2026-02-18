@@ -6,6 +6,7 @@ export { createHttpResponseErrorFallbackJson }
 export { createHttpResponseRedirect }
 export { createHttpResponse404 }
 export { createHttpResponseBaseIsMissing }
+export { createHttpResponseFetch }
 export type { HttpResponse }
 
 import type { GetPageAssets } from './getPageAssets.js'
@@ -169,19 +170,57 @@ function createHttpResponseRedirect({ url, statusCode }: UrlRedirect, pageContex
   )
 }
 
+async function createHttpResponseFetch(response: Response) {
+  const httpResponse = createHttpResponse(
+    response.status,
+    null,
+    Array.from(response.headers.entries()),
+    response.body!,
+    undefined,
+    null,
+    true,
+  )
+  return httpResponse
+}
+
 function createHttpResponse(
   statusCode: StatusCode,
   contentType: ContentType,
   headers: ResponseHeaders,
   htmlRender: HtmlRender,
+  earlyHints?: EarlyHint[],
+  renderHook?: null | RenderHook,
+  isMiddleware?: false,
+): HttpResponse
+function createHttpResponse(
+  statusCode: number,
+  contentType: null,
+  headers: ResponseHeaders,
+  htmlRender: HtmlRender,
+  earlyHints: undefined,
+  renderHook: null,
+  isMiddleware: true,
+): HttpResponse
+function createHttpResponse(
+  statusCode: number,
+  contentType: string | null,
+  headers: ResponseHeaders,
+  htmlRender: HtmlRender,
   earlyHints: EarlyHint[] = [],
   renderHook: null | RenderHook = null,
+  isMiddleware?: boolean,
 ): HttpResponse {
-  headers.push(['Content-Type', contentType])
+  if (!isMiddleware) {
+    assert(contentType !== null)
+    headers.push(['Content-Type', contentType])
+  } else {
+    contentType = headers.find(([k]) => k === 'content-type')?.[1] ?? null
+  }
 
-  assert(renderHook || typeof htmlRender === 'string')
+  assert(renderHook || isMiddleware || typeof htmlRender === 'string')
   return {
-    statusCode,
+    // TODO typing
+    statusCode: statusCode as any,
     headers,
     // TO-DO/next-major-release: remove
     get contentType() {
@@ -190,7 +229,9 @@ function createHttpResponse(
         'pageContext.httpResponse.contentType is deprecated and will be removed in the next major release. Use pageContext.httpResponse.headers instead, see https://vike.dev/migration/0.4.134',
         { onlyOnce: true },
       )
-      return contentType
+      assert(contentType !== null)
+      // TODO typing
+      return contentType as any
     },
     earlyHints,
     get body() {

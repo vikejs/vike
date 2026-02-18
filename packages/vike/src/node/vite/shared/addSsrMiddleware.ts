@@ -1,8 +1,8 @@
-import { sendResponse, createRequestAdapter } from '@universal-middleware/express'
+// import { sendResponse, createRequestAdapter } from '@universal-middleware/express'
 
 export { addSsrMiddleware }
 
-// import { renderPageServer } from '../../../server/runtime/renderPageServer.js'
+import { renderPageServer } from '../../../server/runtime/renderPageServer.js'
 import type { PreviewServer, ResolvedConfig, ViteDevServer } from 'vite'
 import { assertWarning } from '../../../utils/assert.js'
 import pc from '@brillout/picocolors'
@@ -14,12 +14,12 @@ import { getPlusMiddlewares } from './getPlusMiddlewares.js'
 //  or use viteDevServer.ssrLoadModule to load middlewares?
 function addSsrMiddleware(
   server: ViteDevServer | PreviewServer,
-  _config: ResolvedConfig,
-  _isPreview: boolean,
-  _isPrerenderingEnabled: boolean | null,
+  config: ResolvedConfig,
+  isPreview: boolean,
+  isPrerenderingEnabled: boolean | null,
 ) {
   let vikeConfig: VikeConfigInternal | undefined
-  const requestAdapter = createRequestAdapter({ trustProxy: true })
+  // const requestAdapter = createRequestAdapter({ trustProxy: true })
   server.middlewares.use(async (req, res, next) => {
     if (res.headersSent) return next()
     const url = req.originalUrl || req.url
@@ -53,12 +53,12 @@ function addSsrMiddleware(
 
     console.log({ plusMiddlewares })
 
-    // let pageContext: Awaited<ReturnType<typeof renderPageServer>>
+    let pageContext: Awaited<ReturnType<typeof renderPageServer>>
     try {
-      const aaa = await (server as ViteDevServer).ssrLoadModule('vike/fetch')
-      const fetchResponse: Response = await aaa.default.fetch(requestAdapter(req))
-      return sendResponse(fetchResponse, res)
-      // pageContext = await renderPageServer(pageContextInit)
+      // const aaa = await (server as ViteDevServer).ssrLoadModule('vike/fetch')
+      // const fetchResponse: Response = await aaa.default.fetch(requestAdapter(req))
+      // return sendResponse(fetchResponse, res)
+      pageContext = await renderPageServer(pageContextInit)
     } catch (err) {
       // Throwing an error in a connect middleware shuts down the server
       console.error(err)
@@ -68,19 +68,19 @@ function addSsrMiddleware(
       return next()
     }
 
-    // if (pageContext.httpResponse.statusCode === 404 && isPreview && isPrerenderingEnabled) {
-    //   // Serve /dist/client/404.html instead
-    //   return next()
-    // }
-    //
-    // const configHeaders = (isPreview && config?.preview?.headers) || config?.server?.headers
-    // if (configHeaders) {
-    //   for (const [name, value] of Object.entries(configHeaders)) if (value) res.setHeader(name, value)
-    // }
-    //
-    // const { httpResponse } = pageContext
-    // httpResponse.headers.forEach(([name, value]) => res.setHeader(name, value))
-    // res.statusCode = httpResponse.statusCode
-    // httpResponse.pipe(res)
+    if (pageContext.httpResponse.statusCode === 404 && isPreview && isPrerenderingEnabled) {
+      // Serve /dist/client/404.html instead
+      return next()
+    }
+
+    const configHeaders = (isPreview && config?.preview?.headers) || config?.server?.headers
+    if (configHeaders) {
+      for (const [name, value] of Object.entries(configHeaders)) if (value) res.setHeader(name, value)
+    }
+
+    const { httpResponse } = pageContext
+    httpResponse.headers.forEach(([name, value]) => res.setHeader(name, value))
+    res.statusCode = httpResponse.statusCode
+    httpResponse.pipe(res)
   })
 }
