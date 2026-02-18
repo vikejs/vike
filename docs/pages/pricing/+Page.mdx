@@ -27,23 +27,11 @@ The *Open Source Pricing* is a novel business model built on these principles:
   <img src={OpenSourcePricingIllustration} style={{ maxWidth: '100%' }} />
 </div>
 
-<QuoteTeam style={{marginTop: 60, marginBottom: 45}}>Paying for Open Source isn't a bug, it's a feature — it's the guarantee Vike's interests are aligned with yours.</QuoteTeam>
 
-Vike will soon introduce what we call an *Open Source Pricing*: a new kind of business model that keeps Vike open source, as well as accessible (so that everyone, regardless of financial resources, can use Vike).
-
-- The entire code **stays 100% open source** (MIT License).
-- Everything **stays 100% gratis for engineers**. You don't need any license key and you can use Vike without any restrictions, just like any other open source tool.
-- **For companies:**
-  - **Pay what you can**. Companies choose the amount they want to pay while we trust them to make a fair choice. (If too many pay too little, we may switch to a fixed pricing.)
-  - **Free for small apps**. For new and small Vike apps, Vike is 100% gratis and you don't need any license key: everything works just like any other open source tool.
-  - **Apply for a free license key**. For larger apps, you can apply for a free license key if your team cannot afford one or didn't incorporate a company yet. Write two or three sentences explaining your situation and we will give you a free license key.
-
-The Open Source Pricing is a major milestone for Vike's growth. It preserves what makes open source special while aligning Vike's priorities with user interests, fostering a transparent and sustainable relationship.
-
+## FAQ
 
 #### Pricing
 
-<Link doNotInferSectionTitle href="#who-pays-and-how-much" /><br/>
 <Link doNotInferSectionTitle href="#do-sponsors-have-to-pay" /><br/>
 <Link doNotInferSectionTitle href="#how-does-it-apply-to-monorepos" /><br/>
 
@@ -53,58 +41,6 @@ The Open Source Pricing is a major milestone for Vike's growth. It preserves wha
 <Link doNotInferSectionTitle href="#why-zero-investors" /><br/>
 <Link doNotInferSectionTitle href="#is-vike-still-free-software" /><br/>
 <Link doNotInferSectionTitle href="#why-not-another-business-model" /><br/>
-
-
-## Who pays and how much?
-
-<RecommendedAmountTable />
-
-<br/>
-
-<Link href="#free-tier" /><br/>
-<Link href="#recommendation" /><br/>
-
-<div style={{ marginTop: -15 }} />
-
-### Free tier
-
-Vike's free tier cut-off is determined by what we call the *double-three-threshold*:
-
-- **`>=3` regular committers for the past `>=3` months**
-
-Consequently, Vike is free for:
-
-- Small projects. (Maintained by `<=2` regular committers.)
-- Large projects in their infancy. (With a 3-month free trial from the moment the project starts having `>=3` regular committers.)
-- Finished projects. (They can be maintained for free by up to two full-time developers.)
-
-If you are within the free tier then **you don't need any license key**: you can use Vike just like any other open source tool. See also <Link href="#how-does-it-work" />
-
-> Occasional contributors (bots, designers, technical managers, etc.) are ignored: they aren't counted as "regular committers".
-
-
-### Recommendation
-
-The table above is only a recommendation and you can choose any other amount instead &mdash; we trust companies to make a fair choice.
-
-> **Don't hesitate to apply for a free license key** if you have `>=3` regular committers but haven't incorporated yet, just want to experiment, or have a use case you believe should be free.
->
->Keeping Vike accessible to everyone is a primary objective of the Open Source Pricing.
-
-Size estimations:
-
-- **Small organization**: 0-20 employees.
-- **Midsize organization**: 20-70 employees.
-- **Large organization**: >70 employees. (Also counting the employees of parent companies.)
-
-<div style={{ marginTop: -15, height: 1 }}/>
-
-- **Hobby use case**: Vike is used for experimenting.
-- **Small use case**: Vike is used for developing a **project that plays only a marginal role** for your company. For example a landing page or a simple internal app.
-- **Midsize use case**: Vike is used for developing a **project that plays only a minor role**. For example a one-shot Vike usage for a significant internal app.
-- **Large use case**: Vike is used for developing a **project that plays a significant role**. For example an app with many users or building your own internal framework.
-
-
 
 
 ## Do sponsors have to pay?
@@ -145,8 +81,8 @@ In theory, since Vike is 100% open source, you could fork it, remove the pesky t
 #### 100% offline
 
 The implementation is 100% offline:
- - Uses asymmetric encryption to validate license keys
- - Reads your Vike configuration (e.g. number of `+Page.js` files) and Git history (e.g. number of Git committers) to distinguish small apps from larger apps
+ - Uses asymmetric encryption to validate license keys.
+ - Reads your Vike configuration (e.g. number of `+Page.js` files) and Git history (e.g. number of Git committers) to distinguish small apps from larger apps.
 
 No telemetry, zero server requests.
 
