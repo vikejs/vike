@@ -129,7 +129,6 @@
     "@brillout/picocolors": "^1.0.30",
     "@brillout/vite-plugin-server-entry": "0.7.18",
     "@universal-middleware/core": "^0.4.16",
-    "@universal-middleware/express": "^0.4.23",
     "@universal-middleware/srvx": "^0.1.2",
     "cac": "^6.0.0",
     "es-module-lexer": "^1.0.0",
