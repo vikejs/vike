@@ -2,6 +2,7 @@ export { PricingTable }
 
 import React from 'react'
 import './PricingTable.css'
+import { Link } from '@brillout/docpress'
 
 const noteColor = '#64748b'
 
@@ -39,7 +40,7 @@ function PricingTable() {
                     <Check>Full access</Check>
                     <Check>Forever free</Check>
                     <Check>
-                      <a href="">Apply</a> for free license key
+                      <Link href="/gift#limited-resources">Apply</Link> for free license key
                     </Check>
                   </div>
                   <div>
@@ -52,7 +53,7 @@ function PricingTable() {
                       Forever access<NoteRef>4</NoteRef>
                     </Check>
                     <Check>
-                      Free trial: 6 months + <a href="">extendable</a>
+                      Free trial: 6 months + <Link href="/gift#extended-free-trial">extendable</Link>
                     </Check>
                   </div>
                 </div>
@@ -66,7 +67,7 @@ function PricingTable() {
                 License key isn't required: you use Vike just like any regular open source tool (zero encumbrance).
               </Note>
               <Note ref={3}>
-                Organizations with <a href="">few employees</a> are considered resource-limited.
+                Organizations with <Link href="/gift#limited-resources">few employees</Link> are considered resource-limited.
               </Note>
               <Note ref={4}>
                 One-time payment for a lifetime license key: valid forever, including all future Vike updates.

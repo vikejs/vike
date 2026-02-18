@@ -75,6 +75,7 @@ const headings = [
   {
     level: 2,
     title: '🎁 Gift Program',
+    titleInNav: 'Gift Program',
     url: '/gift',
   },
   {
