@@ -25,7 +25,7 @@ const IntroSection = () => {
   return (
     <>
       <div data-intro-section-root="true" className="relative">
-        <div className='absolute top-0 left-0 h-1/2 w-full bg-linear-to-t to-base-300 z-10' />
+        <div className="absolute top-0 left-0 h-1/2 w-full bg-linear-to-t to-white z-10" />
         <HeroBackgroundColorFade hoveredColor={hoveredUspTarget?.color ?? null} />
         {motionColors.map((color) => (
           <HeroBackgroundMotion key={color} color={color} isActive={hoveredUspTarget?.color === color} />

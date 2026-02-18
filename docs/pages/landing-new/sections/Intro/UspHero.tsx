@@ -7,6 +7,7 @@ import { uiConfig, UiVariantBtnColor } from '../../util/ui.constants'
 import { ChevronsRight } from 'lucide-react'
 import type { UspHoverTarget } from './intro.types'
 import BlurDot from '../../components/BlurDot'
+import ledgeGraphic from '../../assets/decorators/box/ledge.png'
 
 interface UspHeroProps {
   onHoverChange?: (hoverTarget: UspHoverTarget | null) => void
@@ -51,7 +52,7 @@ const UspHero = ({ onHoverChange }: UspHeroProps) => {
 
   return (
     <div className="w-full">
-      <div className="grid grid-cols-3 gap-0 md:w-6/7 mx-auto">
+      <div className="grid grid-cols-3 md:w-6/7 mx-auto">
         {landingPageHeroUsps.map((usp) => {
           const isHovered = hoveredUsp === usp.id
           const isMuted = hoveredUsp !== null && !isHovered
@@ -59,7 +60,7 @@ const UspHero = ({ onHoverChange }: UspHeroProps) => {
           return (
             <div
               className={cmMerge(
-                `relative p-4 cursor-pointer transition-[filter,opacity] ${uiConfig.transition.mediumDurationTw} ${uiConfig.transition.easeInOutTw} rounded-lg`,
+                `relative cursor-pointer transition-[filter,opacity] ${uiConfig.transition.mediumDurationTw} ${uiConfig.transition.easeInOutTw} rounded-lg`,
                 isMuted ? 'grayscale opacity-65' : 'grayscale-0 opacity-100',
               )}
               data-usp-color={usp.dotColor}
@@ -68,19 +69,21 @@ const UspHero = ({ onHoverChange }: UspHeroProps) => {
               onMouseEnter={(event) => handleMouseEnter(event, usp.id, usp.dotColor)}
               onMouseLeave={handleMouseLeave}
             >
+                           
               <BlurDot
                 type={usp.dotColor}
                 size="md"
                 visibility="low"
                 className="left-1/2 top-20 -translate-x-1/2 -translate-y-1/2"
               />
-              <StyledUspItemInner $hovered={isHovered} />
-              {/* <div className="absolute -inset-1 z-3 bg-linear-to-t to-base-300" /> */}
+ <StyledUspItemInner $hovered={isHovered}>
+                <img src={ledgeGraphic} alt="" className="absolute w-full h-full z-2 object-cover" />
+              </StyledUspItemInner>
               <StyledTextContent $hovered={isHovered}>
                 {/* todo: use more classmatejs */}
                 <StyledIconWrapper>{usp.icon}</StyledIconWrapper>
-                <div className="text-center h-full flex flex-col flex-1">
-                  <div className="flex-1">
+                <div className="text-center h-full flex flex-col flex-1 p-5">
+                  <div className="flex-1 min-h-32">
                     <H3Headline as="h2" className="mb-3">
                       <span className="relative block w-fit mx-auto">
                         <StyledTitleShape $hovered={isHovered}>{usp.title}</StyledTitleShape>
@@ -114,19 +117,17 @@ export default UspHero
 const StyledUspItemInner = cm.div<{ $hovered?: boolean }>`
   pointer-events-none
   flex items-center
-  absolute p-4 inset-0
-  shadow-lg shadown-neutral/6
+  absolute inset-0
   transition-[scale,opacity, transform]
   rounded-box 
   origin-bottom-center
-  bg-white
   opacity-0
-  scale-95
+  scale-100
   translate-y-1
   z-3
   ${uiConfig.transition.mediumDurationTw}
   ${uiConfig.transition.easeInOutTw}
-  ${({ $hovered }) => ($hovered ? 'scale-100 translate-y-0 opacity-70' : '')}
+  ${({ $hovered }) => ($hovered ? 'scale-108 translate-y-0 opacity-100' : '')}
 `
 
 const StyledTitleShape = cm.span<{ $hovered?: boolean }>`

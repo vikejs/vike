@@ -1,6 +1,7 @@
 import { type RefObject, useEffect, useRef } from 'react'
 import { useGSAP } from '@gsap/react'
 import { gsap } from 'gsap'
+import { R } from '../../util/gsap.utils'
 import type { IntroBlobColor } from './intro.types'
 
 interface HeroBackgroundMotionRefs {
@@ -26,13 +27,21 @@ const motionConfig = {
     ease: 'power2.inOut',
     revealDuration: 0.9,
   },
-  hiddenScale: 0.2,
-  visibleScale: 0.4,
+  hiddenScale: 0.3,
+  visibleScale: 0.19,
   orbitRadiusRatio: {
-    x: 0.075,
-    y: 0.105,
+    x: 0.055,
+    y: 0.085,
   },
   orbitDurationSeconds: 9.5,
+  hoverOpacity: {
+    min: 0.76,
+    max: 0.9,
+    durationSeconds: {
+      min: 0.95,
+      max: 2.25,
+    },
+  },
   fallbackAnchors: {
     blue: { xRatio: 0.5, yRatio: 0.44 },
     green: { xRatio: 0.5, yRatio: 0.44 },
@@ -92,10 +101,12 @@ const useHeroBackgroundMotion = ({ motionContainerRef, targetColor, isActive }: 
       const anchorState = getAnchorPoint()
       const orbitState = { phase: 0 }
       const revealState = { progress: isActive ? 1 : 0 }
+      const blobOpacityStates = blobNodes.map(() => ({ value: 1 }))
 
       let revealTween: gsap.core.Tween | null = null
       let orbitTween: gsap.core.Tween | null = null
       let layerRevealTween: gsap.core.Tween | null = null
+      let opacityTweens: gsap.core.Tween[] = []
 
       const killRevealTween = () => {
         revealTween?.kill()
@@ -105,6 +116,44 @@ const useHeroBackgroundMotion = ({ motionContainerRef, targetColor, isActive }: 
       const killLayerRevealTween = () => {
         layerRevealTween?.kill()
         layerRevealTween = null
+      }
+
+      const killOpacityTweens = () => {
+        opacityTweens.forEach((tween) => tween.kill())
+        opacityTweens = []
+      }
+
+      const startOpacityDrift = () => {
+        if (prefersReducedMotion) {
+          return
+        }
+
+        killOpacityTweens()
+        const { min, max } = motionConfig.hoverOpacity
+        const duration = motionConfig.hoverOpacity.durationSeconds
+        blobOpacityStates.forEach((state) => {
+          state.value = R(min, max)
+        })
+        updateLayout()
+        opacityTweens = blobOpacityStates.map((state) =>
+          gsap.to(state, {
+            value: () => R(min, max),
+            duration: () => R(duration.min, duration.max),
+            ease: 'sine.inOut',
+            repeat: -1,
+            yoyo: true,
+            repeatRefresh: true,
+            overwrite: 'auto',
+            onUpdate: updateLayout,
+          }),
+        )
+      }
+
+      const resetOpacityDrift = () => {
+        killOpacityTweens()
+        blobOpacityStates.forEach((state) => {
+          state.value = 1
+        })
       }
 
       const updateLayout = () => {
@@ -125,7 +174,7 @@ const useHeroBackgroundMotion = ({ motionContainerRef, targetColor, isActive }: 
             x: x - containerCenterX,
             y: y - containerCenterY,
             scale,
-            opacity: revealProgress,
+            opacity: revealProgress * (blobOpacityStates[index]?.value ?? 1),
           })
         })
       }
@@ -143,6 +192,7 @@ const useHeroBackgroundMotion = ({ motionContainerRef, targetColor, isActive }: 
 
         if (!prefersReducedMotion && nextActive) {
           orbitTween?.resume()
+          startOpacityDrift()
         }
 
         revealTween = gsap.to(revealState, {
@@ -156,6 +206,8 @@ const useHeroBackgroundMotion = ({ motionContainerRef, targetColor, isActive }: 
               return
             }
             orbitTween?.pause()
+            resetOpacityDrift()
+            updateLayout()
           },
         })
       }
@@ -204,6 +256,7 @@ const useHeroBackgroundMotion = ({ motionContainerRef, targetColor, isActive }: 
         window.removeEventListener('resize', onResize)
         killRevealTween()
         killLayerRevealTween()
+        killOpacityTweens()
         orbitTween?.kill()
       }
     },
