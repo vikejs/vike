@@ -1,10 +1,10 @@
 import { dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import type { EnhancedMiddleware } from '@universal-middleware/core'
 import { apply } from '@universal-middleware/express'
 import express from 'express'
-import { createDevMiddleware, getGlobalContextAsync } from 'vike/server'
+import { createDevMiddleware } from 'vike/server'
+import vikeMiddleware from 'vike/universal-middleware'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -23,20 +23,11 @@ async function startServer() {
     app.use(devMiddleware)
   }
 
-  const middlewares = await getUniversalMiddlewares()
-  // @ts-ignore Typescript seems to think that apply requires express 5
-  apply(app, middlewares)
+  apply(app, [vikeMiddleware])
 
   app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`)
   })
 
   return app
-}
-
-async function getUniversalMiddlewares() {
-  const isProduction = process.env.NODE_ENV === 'production'
-  const globalContext = await getGlobalContextAsync(isProduction)
-  const middlewares = globalContext.config.middleware!.flat(Infinity) as EnhancedMiddleware[]
-  return middlewares
 }
