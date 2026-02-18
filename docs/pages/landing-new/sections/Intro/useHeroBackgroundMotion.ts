@@ -41,24 +41,13 @@ const motionConfig = {
   transition: {
     duration: 0.62,
     ease: 'power3.inOut',
+    revealDuration: 0.8,
   },
   idle: {
     yOffsetPx: -70,
     blobScale: 0.24,
     opacity: {
-      range: {
-        blue: { min: 0.4, max: 0.5 },
-        green: { min: 0.4, max: 0.5 },
-        orange: { min: 0.4, max: 0.5 },
-      },
-      durationSeconds: { min: 7.5, max: 13 },
-    },
-    drift: {
-      rangePx: {
-        x: { min: 6, max: 18 },
-        y: { min: 4, max: 14 },
-      },
-      durationSeconds: { min: 2.5, max: 5 },
+      value: 0.45,
     },
     fallbackAnchors: {
       blue: { xRatio: 0.72, yRatio: 0.8 },
@@ -117,11 +106,6 @@ const collectBlobLayers = (blobNode: HTMLDivElement): BlobLayerMap | null => {
   return layerMap as BlobLayerMap
 }
 
-const getRandomSignedOffset = (min: number, max: number) => {
-  const sign = Math.random() < 0.5 ? -1 : 1
-  return sign * R(min, max)
-}
-
 const lerp = (from: number, to: number, progress: number) => from + (to - from) * progress
 
 const useHeroBackgroundMotion = ({ motionContainerRef, hoveredUspTarget }: HeroBackgroundMotionRefs) => {
@@ -142,6 +126,7 @@ const useHeroBackgroundMotion = ({ motionContainerRef, hoveredUspTarget }: HeroB
 
       const sectionRoot = motionContainer.closest<HTMLElement>('[data-intro-section-root="true"]')
       const queryScope: Document | HTMLElement = sectionRoot ?? document
+      const blobLayer = motionContainer.querySelector<HTMLElement>('[data-blob-layer="true"]')
 
       const blobNodes = Array.from(motionContainer.querySelectorAll<HTMLDivElement>('[data-orbit-blob="true"]'))
       if (!blobNodes.length) {
@@ -175,7 +160,6 @@ const useHeroBackgroundMotion = ({ motionContainerRef, hoveredUspTarget }: HeroB
       }
       const modeFlags = {
         isHoverMode: Boolean(hoveredUspTarget),
-        driftEnabled: !hoveredUspTarget,
       }
       const orbitState = { phase: 0 }
       const hoverCenterState = hoveredUspTarget ? viewportToContainerPoint(hoveredUspTarget) : getContainerCenter()
@@ -212,14 +196,15 @@ const useHeroBackgroundMotion = ({ motionContainerRef, hoveredUspTarget }: HeroB
         return
       }
 
-      const driftStates = blobs.map(() => ({ x: 0, y: 0 }))
+      const blobImageNodes = blobs.flatMap((blob) => blobColors.map((color) => blob.layers[color]))
 
       let centerTween: gsap.core.Tween | null = null
       let modeTween: gsap.core.Tween | null = null
       let orbitTween: gsap.core.Tween | null = null
-      let driftTweens: gsap.core.Tween[] = []
       let opacityTweens: gsap.core.Tween[] = []
       let colorTweens: gsap.core.Tween[] = []
+      let revealTween: gsap.core.Tween | null = null
+      let isDisposed = false
       let visibilityActive = true
 
       const killCenterTween = () => {
@@ -240,6 +225,52 @@ const useHeroBackgroundMotion = ({ motionContainerRef, hoveredUspTarget }: HeroB
       const killColorTweens = () => {
         colorTweens.forEach((tween) => tween.kill())
         colorTweens = []
+      }
+      const killRevealTween = () => {
+        revealTween?.kill()
+        revealTween = null
+      }
+
+      const waitForBlobImagesReady = () =>
+        Promise.all(
+          blobImageNodes.map(
+            (imageNode) =>
+              new Promise<void>((resolve) => {
+                if (imageNode.complete) {
+                  resolve()
+                  return
+                }
+
+                const onDone = () => {
+                  imageNode.removeEventListener('load', onDone)
+                  imageNode.removeEventListener('error', onDone)
+                  resolve()
+                }
+                imageNode.addEventListener('load', onDone)
+                imageNode.addEventListener('error', onDone)
+              }),
+          ),
+        ).then(() => undefined)
+
+      const revealBlobLayerWhenReady = () => {
+        if (!blobLayer) {
+          return
+        }
+
+        void waitForBlobImagesReady().then(() => {
+          if (isDisposed) {
+            return
+          }
+
+          updateLayout()
+          killRevealTween()
+          revealTween = gsap.to(blobLayer, {
+            autoAlpha: 1,
+            duration: motionConfig.transition.revealDuration,
+            ease: motionConfig.transition.ease,
+            overwrite: 'auto',
+          })
+        })
       }
 
       const getIdleFallbackAnchor = (color: IntroBlobColor): Point => {
@@ -276,12 +307,8 @@ const useHeroBackgroundMotion = ({ motionContainerRef, hoveredUspTarget }: HeroB
         const containerCenterY = containerHeight * 0.5
         const modeProgress = modeState.progress
 
-        blobs.forEach((blob, index) => {
+        blobs.forEach((blob) => {
           const idleAnchor = idleAnchors[blob.defaultColor]
-          const drift = driftStates[index] ?? { x: 0, y: 0 }
-
-          const idleX = idleAnchor.x + drift.x
-          const idleY = idleAnchor.y + drift.y
 
           const orbitX =
             hoverCenterState.x +
@@ -290,8 +317,8 @@ const useHeroBackgroundMotion = ({ motionContainerRef, hoveredUspTarget }: HeroB
             hoverCenterState.y +
             Math.sin(orbitState.phase + blob.phaseOffset) * containerHeight * motionConfig.hover.orbitRadiusRatio.y
 
-          const x = lerp(idleX, orbitX, modeProgress)
-          const y = lerp(idleY, orbitY, modeProgress)
+          const x = lerp(idleAnchor.x, orbitX, modeProgress)
+          const y = lerp(idleAnchor.y, orbitY, modeProgress)
           const scale = lerp(motionConfig.idle.blobScale, motionConfig.hover.blobScale, modeProgress)
 
           gsap.set(blob.target, {
@@ -300,37 +327,6 @@ const useHeroBackgroundMotion = ({ motionContainerRef, hoveredUspTarget }: HeroB
             scale,
           })
         })
-      }
-
-      const pauseDriftTweens = () => {
-        driftTweens.forEach((tween) => tween.pause())
-      }
-
-      const resumeDriftTweens = () => {
-        if (!visibilityActive || !modeFlags.driftEnabled) {
-          pauseDriftTweens()
-          return
-        }
-        driftTweens.forEach((tween) => tween.resume())
-      }
-
-      const startDriftTweens = () => {
-        driftTweens.forEach((tween) => tween.kill())
-        driftTweens = driftStates.map((state) =>
-          gsap.to(state, {
-            x: () =>
-              getRandomSignedOffset(motionConfig.idle.drift.rangePx.x.min, motionConfig.idle.drift.rangePx.x.max),
-            y: () =>
-              getRandomSignedOffset(motionConfig.idle.drift.rangePx.y.min, motionConfig.idle.drift.rangePx.y.max),
-            duration: () => R(motionConfig.idle.drift.durationSeconds.min, motionConfig.idle.drift.durationSeconds.max),
-            ease: 'sine.inOut',
-            repeat: -1,
-            yoyo: true,
-            repeatRefresh: true,
-            onUpdate: updateLayout,
-          }),
-        )
-        resumeDriftTweens()
       }
 
       const setOrbitPlayback = (play: boolean) => {
@@ -344,53 +340,25 @@ const useHeroBackgroundMotion = ({ motionContainerRef, hoveredUspTarget }: HeroB
         orbitTween.resume()
       }
 
-      const getOpacityRange = (blob: BlobConfig, mode: MotionMode) => {
-        return mode === 'hover'
-          ? motionConfig.hover.opacity.range[blob.defaultColor]
-          : motionConfig.idle.opacity.range[blob.defaultColor]
-      }
-
-      const getOpacityDurationRange = (mode: MotionMode) => {
-        return mode === 'hover' ? motionConfig.hover.opacity.durationSeconds : motionConfig.idle.opacity.durationSeconds
-      }
-
       const startOpacityLoops = (mode: MotionMode, immediate = false) => {
         killOpacityTweens()
 
-        const durationRange = getOpacityDurationRange(mode)
         if (mode === 'idle') {
-          const range = motionConfig.idle.opacity.range.blue
-          const opacityState = { value: R(range.min, range.max) }
-
-          blobs.forEach((blob) => {
-            gsap.set(blob.target, { opacity: opacityState.value })
-          })
-
-          opacityTweens = [
-            gsap.to(opacityState, {
-              value: () => R(range.min, range.max),
-              duration: () => R(durationRange.min, durationRange.max),
-              delay: immediate ? 0 : R(0.05, 0.25),
-              ease: 'sine.inOut',
-              repeat: -1,
-              repeatRefresh: true,
-              yoyo: true,
-              onUpdate: () => {
-                blobs.forEach((blob) => {
-                  gsap.set(blob.target, { opacity: opacityState.value })
-                })
-              },
-            }),
-          ]
-
-          if (!visibilityActive) {
-            opacityTweens.forEach((tween) => tween.pause())
-          }
+          gsap.to(
+            blobs.map((blob) => blob.target),
+            {
+              opacity: motionConfig.idle.opacity.value,
+              duration: immediate ? 0 : motionConfig.transition.duration,
+              ease: immediate ? 'none' : motionConfig.transition.ease,
+              overwrite: 'auto',
+            },
+          )
           return
         }
 
+        const durationRange = motionConfig.hover.opacity.durationSeconds
         opacityTweens = blobs.map((blob) => {
-          const range = getOpacityRange(blob, mode)
+          const range = motionConfig.hover.opacity.range[blob.defaultColor]
 
           return gsap.to(blob.target, {
             opacity: () => R(range.min, range.max),
@@ -431,9 +399,6 @@ const useHeroBackgroundMotion = ({ motionContainerRef, hoveredUspTarget }: HeroB
 
         if (hoverTarget) {
           modeFlags.isHoverMode = true
-          modeFlags.driftEnabled = false
-
-          pauseDriftTweens()
           setOrbitPlayback(true)
 
           killCenterTween()
@@ -468,7 +433,6 @@ const useHeroBackgroundMotion = ({ motionContainerRef, hoveredUspTarget }: HeroB
         }
 
         modeFlags.isHoverMode = false
-        modeFlags.driftEnabled = false
         refreshIdleAnchors()
         setOrbitPlayback(false)
         killCenterTween()
@@ -479,13 +443,6 @@ const useHeroBackgroundMotion = ({ motionContainerRef, hoveredUspTarget }: HeroB
           ease: immediate ? 'none' : motionConfig.transition.ease,
           overwrite: 'auto',
           onUpdate: updateLayout,
-          onComplete: () => {
-            if (modeFlags.isHoverMode) {
-              return
-            }
-            modeFlags.driftEnabled = true
-            resumeDriftTweens()
-          },
         })
 
         morphToColor(null, immediate)
@@ -506,23 +463,28 @@ const useHeroBackgroundMotion = ({ motionContainerRef, hoveredUspTarget }: HeroB
         blobs.flatMap((blob) => blobColors.map((color) => blob.layers[color])),
         { force3D: true },
       )
+      if (blobLayer) {
+        gsap.set(blobLayer, { autoAlpha: 0 })
+      }
 
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         refreshIdleAnchors()
         setHoverTarget(hoveredUspTarget, true)
         updateLayout()
+        revealBlobLayerWhenReady()
         motionControllerRef.current = { setHoverTarget }
         return () => {
+          isDisposed = true
           motionControllerRef.current = null
           killCenterTween()
           killModeTween()
           killOpacityTweens()
           killColorTweens()
+          killRevealTween()
         }
       }
 
       refreshIdleAnchors()
-      startDriftTweens()
 
       orbitTween = gsap.to(orbitState, {
         phase: `+=${Math.PI * 2}`,
@@ -533,11 +495,8 @@ const useHeroBackgroundMotion = ({ motionContainerRef, hoveredUspTarget }: HeroB
       })
 
       setHoverTarget(hoveredUspTarget, true)
-      if (!hoveredUspTarget) {
-        modeFlags.driftEnabled = true
-        resumeDriftTweens()
-      }
       updateLayout()
+      revealBlobLayerWhenReady()
 
       const onResize = () => {
         refreshIdleAnchors()
@@ -550,7 +509,6 @@ const useHeroBackgroundMotion = ({ motionContainerRef, hoveredUspTarget }: HeroB
 
         if (!isActive) {
           orbitTween?.pause()
-          pauseDriftTweens()
           opacityTweens.forEach((tween) => tween.pause())
           centerTween?.pause()
           modeTween?.pause()
@@ -559,10 +517,8 @@ const useHeroBackgroundMotion = ({ motionContainerRef, hoveredUspTarget }: HeroB
 
         if (modeFlags.isHoverMode) {
           setOrbitPlayback(true)
-          pauseDriftTweens()
         } else {
           setOrbitPlayback(false)
-          resumeDriftTweens()
         }
         opacityTweens.forEach((tween) => tween.resume())
         centerTween?.resume()
@@ -583,6 +539,7 @@ const useHeroBackgroundMotion = ({ motionContainerRef, hoveredUspTarget }: HeroB
       motionControllerRef.current = { setHoverTarget }
 
       return () => {
+        isDisposed = true
         motionControllerRef.current = null
         window.removeEventListener('resize', onResize)
         visibilityTrigger.kill()
@@ -590,9 +547,9 @@ const useHeroBackgroundMotion = ({ motionContainerRef, hoveredUspTarget }: HeroB
         killCenterTween()
         killModeTween()
         orbitTween?.kill()
-        driftTweens.forEach((tween) => tween.kill())
         killOpacityTweens()
         killColorTweens()
+        killRevealTween()
       }
     },
     { dependencies: [] },

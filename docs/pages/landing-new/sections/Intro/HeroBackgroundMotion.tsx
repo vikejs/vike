@@ -18,7 +18,11 @@ const HeroBackgroundMotion = ({ hoveredUspTarget }: HeroBackgroundMotionProps) =
     <div ref={motionContainerRef} className="absolute inset-0 h-screen w-full">
       <div className="absolute z-4 w-full h-1/2 top-0 left-0 bg-linear-to-t to-base-300" />
       <div className="absolute z-1 w-full h-1/4 bottom-0 left-0 bg-linear-to-b to-base-300" />
-      <div className="absolute inset-0 overflow-x-hidden pointer-events-none select-none z-0" aria-hidden="true">
+      <div
+        data-blob-layer="true"
+        className="absolute inset-0 overflow-x-hidden pointer-events-none select-none z-0 opacity-0"
+        aria-hidden="true"
+      >
         <div
           data-orbit-blob="true"
           data-default-color="blue"
