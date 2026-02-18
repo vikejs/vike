@@ -150,17 +150,20 @@ function clone(c: UserConfig): UserConfig {
 async function findVikeVitePlugin(viteConfig: InlineConfig | UserConfig | undefined | null) {
   let vikeVitePluginOptions: Record<string, unknown> | undefined
   let vikeVitePuginFound = false
-  // TODO/ai fix bug
-  await Promise.all(viteConfig?.plugins?.map((async (p) => {
-    console.log(p)
-    if (p && '_vikeVitePluginOptions' in p) {
-    console.log(2222)
+
+  const plugins = viteConfig?.plugins ?? []
+  for (const p of plugins) {
+    // Await the plugin if it's a promise (Vike's plugin() returns a promise)
+    const plugin = await p
+
+    if (plugin && '_vikeVitePluginOptions' in plugin) {
       vikeVitePuginFound = true
-      const options = p._vikeVitePluginOptions
+      const options = plugin._vikeVitePluginOptions
       vikeVitePluginOptions ??= {}
       Object.assign(vikeVitePluginOptions, options)
     }
-  })()))
+  }
+
   if (!vikeVitePuginFound) return null
   return { vikeVitePluginOptions }
 }
