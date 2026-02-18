@@ -39,7 +39,6 @@ function addSsrMiddleware(
       },
       enumerable: false,
     })
-
     let pageContext: Awaited<ReturnType<typeof renderPageServer>>
     try {
       pageContext = await renderPageServer(pageContextInit)
