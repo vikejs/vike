@@ -3,13 +3,13 @@ export { PricingTable }
 import React from 'react'
 import './PricingTable.css'
 
-const fontSizePrice = 30
-const noteColor = '#6b7280'
+const fontSizePrice = 36
+const noteColor = '#64748b'
 /*
 <div>{'=>'} Use Vike just like any other open source project</div>
 */
 
-const styleTierDescription = { color: '#6b7280', fontSize: '0.9em' } satisfies React.CSSProperties
+const styleTierDescription = { color: '#64748b', fontSize: '0.9em' } satisfies React.CSSProperties
 
 function PricingTable() {
   return (
@@ -17,7 +17,7 @@ function PricingTable() {
       <ExtraWidth width={100}>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-            <div style={{ display: 'flex', gap: 20 }}>
+            <div style={{ display: 'flex', gap: 24 }}>
               <Column>
                 <TierName>Small team</TierName>
                 ≤2 <SoftwareDevelopers />
@@ -35,7 +35,7 @@ function PricingTable() {
               <Column>
                 <TierName>Larger team</TierName>
                 ≥3 <SoftwareDevelopers />
-                <div style={{ display: 'flex', gap: 35 }}>
+                <div style={{ display: 'flex', gap: 40 }}>
                   <div>
                     <SubHeading>
                       Limited resources<NoteRef>3</NoteRef>
@@ -65,7 +65,7 @@ function PricingTable() {
                 </div>
               </Column>
             </div>
-            <div style={{ marginLeft: 10, marginTop: 17, display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div style={{ marginLeft: 10, marginTop: 20, display: 'flex', flexDirection: 'column', gap: 10 }}>
               <Note ref={1}>
                 Only developers who regularly contribute code: occasional contributors and bots don't count.
               </Note>
@@ -99,7 +99,7 @@ function NoteRef({ children, style }: { children: string; style?: React.CSSPrope
 }
 function Note({ children, ref }: { children: React.ReactNode; ref: number }) {
   return (
-    <div style={{ color: noteColor, fontSize: '0.9em', lineHeight: 1.2 }}>
+    <div style={{ color: noteColor, fontSize: '0.88em', lineHeight: 1.4 }}>
       ({ref}) {children}
     </div>
   )
@@ -114,31 +114,31 @@ function SoftwareDevelopers() {
 }
 
 function Free() {
-  return <Price color="#059669">Free</Price>
+  return <Price color="#10b981">Free</Price>
 }
 
 function Price({ children, color, suffix }: { children: string; color: string; suffix?: React.ReactNode }) {
   return (
-    <div style={{ marginTop: 8, marginBottom: 12 }}>
+    <div style={{ marginTop: 10, marginBottom: 14 }}>
       <span style={{ fontSize: fontSizePrice, color, fontWeight: 700 }}>{children}</span>
-      {suffix && <span style={{ fontSize: 16, color: '#6b7280', fontWeight: 400 }}>{suffix}</span>}
+      {suffix && <span style={{ fontSize: 15, color: '#64748b', fontWeight: 400 }}>{suffix}</span>}
     </div>
   )
 }
 
 function TierName({ children }: { children: string }) {
-  return <h2 style={{ fontSize: 25, fontWeight: 600, marginBottom: 2, color: '#111827', marginTop: 0 }}>{children}</h2>
+  return <h2 style={{ fontSize: 26, fontWeight: 700, marginBottom: 4, color: '#0f172a', marginTop: 0 }}>{children}</h2>
 }
 
 function Column({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
   return (
     <div
       style={{
-        border: '1px solid #e5e7eb',
-        padding: 25,
+        border: '1px solid #e2e8f0',
+        padding: 28,
         background: '#ffffff',
-        borderRadius: 12,
-        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+        borderRadius: 14,
+        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
         ...style,
       }}
     >
@@ -149,13 +149,13 @@ function Column({ children, style }: { children: React.ReactNode; style?: React.
 
 function Check({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 8 }}>
-      <GreenCheckmark /> <span>{children}</span>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 10 }}>
+      <GreenCheckmark /> <span style={{ lineHeight: 1.5 }}>{children}</span>
     </div>
   )
 }
 
-function GreenCheckmark({ size = 20 }) {
+function GreenCheckmark({ size = 18 }) {
   return (
     <svg
       width={size}
@@ -165,7 +165,7 @@ function GreenCheckmark({ size = 20 }) {
       xmlns="http://www.w3.org/2000/svg"
       style={{ flexShrink: 0 }}
     >
-      <path d="M20 6L9 17l-5-5" stroke="#059669" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M20 6L9 17l-5-5" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
 }
