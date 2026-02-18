@@ -5,7 +5,6 @@ import './PricingTable.css'
 
 const fontSizePrice = 36
 const noteColor = '#64748b'
-
 const styleTierDescription = { color: '#64748b', fontSize: '0.9em' } satisfies React.CSSProperties
 
 function PricingTable() {
@@ -45,9 +44,7 @@ function PricingTable() {
                     </Check>
                   </div>
                   <div>
-                    <SubHeading>
-                      Sufficient resources<NoteRef style={{ visibility: 'hidden' }}>2</NoteRef>
-                    </SubHeading>
+                    <SubHeading>Sufficient resources</SubHeading>
                     <Price color="#2563eb" suffix=" one time">
                       $5k
                     </Price>
