@@ -3,13 +3,12 @@ import { sendResponse, createRequestAdapter } from '@universal-middleware/expres
 export { addSsrMiddleware }
 
 // import { renderPageServer } from '../../../server/runtime/renderPageServer.js'
-// import fetchVike from '../../../server/runtime/fetch.js'
 import type { PreviewServer, ResolvedConfig, ViteDevServer } from 'vite'
 import { assertWarning } from '../../../utils/assert.js'
 import pc from '@brillout/picocolors'
 import '../assertEnvVite.js'
-
-// const fetchConnectMiddleware = createMiddleware(() => fetchVike.fetch)();
+import { getVikeConfigInternal, type VikeConfigInternal } from './resolveVikeConfigInternal.js'
+import { getPlusMiddlewares } from './getPlusMiddlewares.js'
 
 // TODO just use dev middleware from UD?
 //  or use viteDevServer.ssrLoadModule to load middlewares?
@@ -19,7 +18,8 @@ function addSsrMiddleware(
   _isPreview: boolean,
   _isPrerenderingEnabled: boolean | null,
 ) {
-  const requestAdapter = createRequestAdapter({ trustProxy: true });
+  let vikeConfig: VikeConfigInternal | undefined
+  const requestAdapter = createRequestAdapter({ trustProxy: true })
   server.middlewares.use(async (req, res, next) => {
     if (res.headersSent) return next()
     const url = req.originalUrl || req.url
@@ -46,12 +46,18 @@ function addSsrMiddleware(
       },
       enumerable: false,
     })
+    if (!vikeConfig) {
+      vikeConfig = await getVikeConfigInternal()
+    }
+    const plusMiddlewares = getPlusMiddlewares(vikeConfig)
+
+    console.log({ plusMiddlewares })
+
     // let pageContext: Awaited<ReturnType<typeof renderPageServer>>
     try {
-      const aaa = await (server as ViteDevServer).ssrLoadModule('vike/fetch');
+      const aaa = await (server as ViteDevServer).ssrLoadModule('vike/fetch')
       const fetchResponse: Response = await aaa.default.fetch(requestAdapter(req))
-      return sendResponse(fetchResponse, res);
-      // fetchConnectMiddleware(req, res, next);
+      return sendResponse(fetchResponse, res)
       // pageContext = await renderPageServer(pageContextInit)
     } catch (err) {
       // Throwing an error in a connect middleware shuts down the server
