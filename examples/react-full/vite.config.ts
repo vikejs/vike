@@ -3,6 +3,13 @@ import mdx from '@mdx-js/rollup'
 import vike from 'vike/plugin'
 import type { UserConfig } from 'vite'
 
+const vikePromise = (async () => {
+  console.log('vikePromise init')
+  const vikePlugin = await vike()
+  console.log('vikePlugin', vikePlugin)
+  return vikePlugin
+})()
+
 export default {
-  plugins: [(async () => vike())(), mdx(), react()],
+  plugins: [vikePromise, mdx(), react()],
 } satisfies UserConfig

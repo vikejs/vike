@@ -112,7 +112,7 @@ async function getViteInfo(viteContext: ViteContext) {
   //   - TO-DO/next-major-release: remove
   // - Add Vike's Vite plugin if missing
   let vikeVitePluginOptions: Record<string, unknown> | undefined
-  const found = await findVikeVitePlugin(viteConfigResolved)
+  const found = await findVikeVitePlugin(viteConfigResolved, true)
   if (found) {
     vikeVitePluginOptions = found.vikeVitePluginOptions
   } else {
@@ -147,16 +147,20 @@ function clone(c: UserConfig): UserConfig {
   return mergeConfig({}, c)
 }
 
-async function findVikeVitePlugin(viteConfig: InlineConfig | UserConfig | undefined | null) {
+async function findVikeVitePlugin(viteConfig: InlineConfig | UserConfig | undefined | null, a?: true) {
+  console.log('findVikeVitePlugin()', new Error().stack)
   let vikeVitePluginOptions: Record<string, unknown> | undefined
   let vikeVitePuginFound = false
 
   const plugins = viteConfig?.plugins ?? []
   for (const p of plugins) {
     // Await the plugin if it's a promise (Vike's plugin() returns a promise)
-    const plugin = await p
+    console.log('p', p)
+    const plugin = a ? await p : p
+    console.log('plugin', plugin)
 
     if (plugin && '_vikeVitePluginOptions' in plugin) {
+      console.log('is Vike plugin')
       vikeVitePuginFound = true
       const options = plugin._vikeVitePluginOptions
       vikeVitePluginOptions ??= {}
