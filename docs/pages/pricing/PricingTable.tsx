@@ -11,8 +11,8 @@ function PricingTable() {
       <ExtraWidth width={100}>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-            <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
-              <Column style={{ minWidth: 280, flex: '1 1 280px' }}>
+            <div style={{ display: 'flex', gap: 24 }}>
+              <Column>
                 <TierName>Small team</TierName>
                 ≤2 <SoftwareDevelopers />
                 <SubHeading style={{ visibility: 'hidden' }}>
@@ -27,11 +27,11 @@ function PricingTable() {
                   </Check>
                 </div>
               </Column>
-              <Column style={{ minWidth: 280, flex: '1 1 280px' }}>
+              <Column>
                 <TierName>Larger team</TierName>
                 ≥3 <SoftwareDevelopers />
-                <div style={{ display: 'flex', gap: 40, flexWrap: 'wrap' }}>
-                  <div style={{ flex: '1 1 200px', minWidth: 200 }}>
+                <div style={{ display: 'flex', gap: 40 }}>
+                  <div>
                     <SubHeading>
                       Limited resources<NoteRef>3</NoteRef>
                     </SubHeading>
@@ -42,7 +42,7 @@ function PricingTable() {
                       <a href="">Apply</a> for free license key
                     </Check>
                   </div>
-                  <div style={{ flex: '1 1 200px', minWidth: 200 }}>
+                  <div>
                     <SubHeading>Sufficient resources</SubHeading>
                     <Price color="#2563eb" suffix=" one time">
                       $5k
