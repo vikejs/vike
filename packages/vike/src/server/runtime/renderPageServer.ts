@@ -80,9 +80,9 @@ import {
   apply,
   universalSymbol,
   UniversalRouter,
-  EnhancedMiddleware,
   getAdapterRuntime,
-  UniversalHandler,
+  type EnhancedMiddleware,
+  type UniversalHandler,
 } from '@universal-middleware/core'
 
 const globalObject = getGlobalObject('runtime/renderPageServer.ts', {
