@@ -94,10 +94,6 @@
       "browser": "./dist/client/node.js",
       "default": "./dist/server/runtime/universal-middleware.js"
     },
-    "./fetch": {
-      "types": "./dist/server/runtime/fetch.d.ts",
-      "default": "./dist/server/runtime/fetch.js"
-    },
     "./__internal": {
       "types": "./dist/server/__internal/index.d.ts",
       "node": "./dist/server/__internal/index.js",
@@ -214,9 +210,6 @@
       "universal-middleware": [
         "./dist/server/runtime/universal-middleware.d.ts"
       ],
-      "fetch": [
-        "./dist/server/runtime/fetch.d.ts"
-      ],
       "__internal": [
         "./dist/server/__internal/index.d.ts"
       ],
@@ -250,8 +243,7 @@
     "./routing.js",
     "./server.js",
     "./types.js",
-    "./universal-middleware.js",
-    "./fetch.js"
+    "./universal-middleware.js"
   ],
   "devDependencies": {
     "@brillout/release-me": "^0.4.12",

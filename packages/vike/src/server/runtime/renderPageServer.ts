@@ -162,7 +162,6 @@ async function renderPageServerEntryOnce(
   }
   const { globalContext } = await getGlobalContextServerInternal()
   const middlewares = (globalContext.config.middleware ?? []) as EnhancedMiddleware[]
-  console.log('+middleware files loaded: ', middlewares)
 
   const pageContextBegin = getPageContextBegin(pageContextInit, globalContext, requestId, asyncStore)
 
@@ -190,6 +189,7 @@ async function renderPageServerEntryOnce(
   }
 
   if (middlewares.length > 0) {
+    // TODO Use apply from UM/core
     const handler = apply([
       enhance(
         async function adaptRenderPageServerEntryOnceInternal(): Promise<Response> {
