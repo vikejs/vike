@@ -1,7 +1,13 @@
-@media screen and (min-width: 1100px) {
-  #pricing-table {
-    a {
-      text-decoration: underline;
-    }
+#pricing-table {
+  a {
+    text-decoration: underline;
+  }
+}
+@media screen and (max-width: 1050px) {
+  #pricing-table_extra-width {
+    margin: 0 !important;
+  }
+  #pricing-table_filler {
+    display: none;
   }
 }

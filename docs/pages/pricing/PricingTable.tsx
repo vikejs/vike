@@ -15,7 +15,7 @@ function PricingTable() {
               <Column>
                 <TierName>Small team</TierName>
                 ≤2 <SoftwareDevelopers />
-                <SubHeading style={{ visibility: 'hidden' }}>
+                <SubHeading id="pricing-table_filler" style={{ visibility: 'hidden' }}>
                   Invisible filler<NoteRef>3</NoteRef>
                 </SubHeading>
                 <Free />
@@ -79,9 +79,9 @@ function PricingTable() {
   )
 }
 
-function SubHeading({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
+function SubHeading({ children, id, style }: { children: React.ReactNode; style?: React.CSSProperties; id?: string }) {
   return (
-    <div style={{ marginTop: 23, ...style }}>
+    <div id={id} style={{ marginTop: 23, ...style }}>
       <b>{children}</b>
     </div>
   )
@@ -157,5 +157,9 @@ function GreenCheckmark() {
 }
 
 function ExtraWidth({ children, width }: { children: React.ReactNode; width: number }) {
-  return <div style={{ marginLeft: -width / 2, marginRight: -width / 2 }}>{children}</div>
+  return (
+    <div id="pricing-table_extra-width" style={{ marginLeft: -width / 2, marginRight: -width / 2 }}>
+      {children}
+    </div>
+  )
 }
