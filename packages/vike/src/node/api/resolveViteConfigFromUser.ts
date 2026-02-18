@@ -112,7 +112,7 @@ async function getViteInfo(viteContext: ViteContext) {
   //   - TO-DO/next-major-release: remove
   // - Add Vike's Vite plugin if missing
   let vikeVitePluginOptions: Record<string, unknown> | undefined
-  const found = findVikeVitePlugin(viteConfigResolved)
+  const found = await findVikeVitePlugin(viteConfigResolved)
   if (found) {
     vikeVitePluginOptions = found.vikeVitePluginOptions
   } else {
@@ -131,7 +131,7 @@ async function getViteInfo(viteContext: ViteContext) {
       ...viteConfigFromUserResolved,
       plugins: [...(viteConfigFromUserResolved?.plugins ?? []), vikePlugin()],
     }
-    const res = findVikeVitePlugin(viteConfigFromUserResolved)
+    const res = await findVikeVitePlugin(viteConfigFromUserResolved)
     assert(res)
     vikeVitePluginOptions = res.vikeVitePluginOptions
   }
@@ -147,17 +147,19 @@ function clone(c: UserConfig): UserConfig {
   return mergeConfig({}, c)
 }
 
-function findVikeVitePlugin(viteConfig: InlineConfig | UserConfig | undefined | null) {
+async function findVikeVitePlugin(viteConfig: InlineConfig | UserConfig | undefined | null) {
   let vikeVitePluginOptions: Record<string, unknown> | undefined
   let vikeVitePuginFound = false
-  viteConfig?.plugins?.forEach((p) => {
+  await Promise.all(viteConfig?.plugins?.map((async (p) => {
+    console.log(p)
     if (p && '_vikeVitePluginOptions' in p) {
+    console.log(2222)
       vikeVitePuginFound = true
       const options = p._vikeVitePluginOptions
       vikeVitePluginOptions ??= {}
       Object.assign(vikeVitePluginOptions, options)
     }
-  })
+  })()))
   if (!vikeVitePuginFound) return null
   return { vikeVitePluginOptions }
 }
