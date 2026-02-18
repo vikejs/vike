@@ -6,7 +6,7 @@ export { createHttpResponseErrorFallbackJson }
 export { createHttpResponseRedirect }
 export { createHttpResponse404 }
 export { createHttpResponseBaseIsMissing }
-export { createHttpResponseFetch }
+export { createHttpResponseFromUniversalMiddleware }
 export type { HttpResponse }
 
 import type { GetPageAssets } from './getPageAssets.js'
@@ -15,7 +15,7 @@ import { assert, assertWarning } from '../../../utils/assert.js'
 import type { HtmlRender } from './html/renderHtml.js'
 import { getErrorPageId, isErrorPage } from '../../../shared-server-client/error-page.js'
 import type { RenderHook } from './execHookOnRenderHtml.js'
-import type { RedirectStatusCode, AbortStatusCode, UrlRedirect } from '../../../shared-server-client/route/abort.js'
+import type { AbortStatusCode, RedirectStatusCode, UrlRedirect } from '../../../shared-server-client/route/abort.js'
 import { getHttpResponseBody, getHttpResponseBodyStreamHandlers, HttpResponseBody } from './getHttpResponseBody.js'
 import { getEarlyHints, type EarlyHint } from './getEarlyHints.js'
 import { assertNoInfiniteHttpRedirect } from './createHttpResponse/assertNoInfiniteHttpRedirect.js'
@@ -26,20 +26,20 @@ import { stringify } from '@brillout/json-serializer/stringify'
 import '../../assertEnvServer.js'
 
 type HttpResponse = {
-  statusCode: 200 | 404 | 500 | RedirectStatusCode | AbortStatusCode
+  statusCode: number
   headers: [string, string][]
   earlyHints: EarlyHint[]
   // We don't use @deprecated to avoid TypeScript to remove the JSDoc
   /** **Deprecated**: use `headers` instead, see https://vike.dev/migration/0.4.134 */
-  contentType: 'application/json' | 'text/html;charset=utf-8'
+  contentType: string | undefined
 } & HttpResponseBody
 
 const contentTypeJson = 'application/json'
 const contentTypeHtml = 'text/html;charset=utf-8'
 
 // Trick to improve TypeScript DX
-type StatusCode = HttpResponse['statusCode']
-type ContentType = HttpResponse['contentType']
+type StatusCode = 200 | 404 | 500 | RedirectStatusCode | AbortStatusCode
+type ContentType = 'application/json' | 'text/html;charset=utf-8'
 type ResponseHeaders = HttpResponse['headers']
 
 async function createHttpResponsePage(
@@ -170,16 +170,8 @@ function createHttpResponseRedirect({ url, statusCode }: UrlRedirect, pageContex
   )
 }
 
-async function createHttpResponseFetch(response: Response) {
-  const httpResponse = createHttpResponse(
-    response.status,
-    null,
-    Array.from(response.headers.entries()),
-    response.body!,
-    undefined,
-    null,
-    true,
-  )
+async function createHttpResponseFromUniversalMiddleware(response: Response) {
+  const httpResponse = createHttpResponseCommon(response.status, Array.from(response.headers.entries()), response.body)
   return httpResponse
 }
 
@@ -190,37 +182,27 @@ function createHttpResponse(
   htmlRender: HtmlRender,
   earlyHints?: EarlyHint[],
   renderHook?: null | RenderHook,
-  isMiddleware?: false,
-): HttpResponse
-function createHttpResponse(
+): HttpResponse {
+  headers.push(['Content-Type', contentType])
+
+  assert(renderHook || typeof htmlRender === 'string')
+  return createHttpResponseCommon(statusCode, headers, htmlRender, earlyHints, renderHook)
+}
+
+function createHttpResponseCommon(
   statusCode: number,
-  contentType: null,
   headers: ResponseHeaders,
-  htmlRender: HtmlRender,
-  earlyHints: undefined,
-  renderHook: null,
-  isMiddleware: true,
-): HttpResponse
-function createHttpResponse(
-  statusCode: number,
-  contentType: string | null,
-  headers: ResponseHeaders,
-  htmlRender: HtmlRender,
+  htmlRender: HtmlRender | null,
   earlyHints: EarlyHint[] = [],
   renderHook: null | RenderHook = null,
-  isMiddleware?: boolean,
 ): HttpResponse {
-  if (!isMiddleware) {
-    assert(contentType !== null)
-    headers.push(['Content-Type', contentType])
-  } else {
-    contentType = headers.find(([k]) => k === 'content-type')?.[1] ?? null
+  const contentType = headers.find(([k]) => k === 'content-type')?.[1]
+  if (htmlRender === null) {
+    htmlRender = ''
   }
 
-  assert(renderHook || isMiddleware || typeof htmlRender === 'string')
   return {
-    // TODO typing
-    statusCode: statusCode as any,
+    statusCode,
     headers,
     // TO-DO/next-major-release: remove
     get contentType() {
@@ -229,9 +211,7 @@ function createHttpResponse(
         'pageContext.httpResponse.contentType is deprecated and will be removed in the next major release. Use pageContext.httpResponse.headers instead, see https://vike.dev/migration/0.4.134',
         { onlyOnce: true },
       )
-      assert(contentType !== null)
-      // TODO typing
-      return contentType as any
+      return contentType
     },
     earlyHints,
     get body() {

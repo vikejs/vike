@@ -52,7 +52,7 @@ import {
   createHttpResponseErrorFallback,
   createHttpResponseErrorFallback_noGlobalContext,
   createHttpResponseBaseIsMissing,
-  createHttpResponseFetch,
+  createHttpResponseFromUniversalMiddleware,
 } from './renderPageServer/createHttpResponse.js'
 import { logRuntimeError, logRuntimeInfo } from './loggerRuntime.js'
 import { assertArguments } from './renderPageServer/assertArguments.js'
@@ -397,7 +397,7 @@ async function renderPageServerEntryWithMiddlewares(
     getAdapterRuntime('other', { params: undefined }),
   )
 
-  const httpResponse = await createHttpResponseFetch(res)
+  const httpResponse = await createHttpResponseFromUniversalMiddleware(res)
   objectAssign(pageContext, { httpResponse })
   return pageContext
 }
