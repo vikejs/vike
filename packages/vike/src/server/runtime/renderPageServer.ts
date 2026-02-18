@@ -1,3 +1,5 @@
+import { apply } from '@universal-middleware/srvx'
+
 export { renderPageServer }
 export { getRequestTag }
 export type { PageContextInit }
@@ -52,6 +54,7 @@ import {
   createHttpResponseErrorFallback,
   createHttpResponseErrorFallback_noGlobalContext,
   createHttpResponseBaseIsMissing,
+  createHttpResponseFetch,
 } from './renderPageServer/createHttpResponse.js'
 import { logRuntimeError, logRuntimeInfo } from './loggerRuntime.js'
 import { assertArguments } from './renderPageServer/assertArguments.js'
@@ -74,6 +77,7 @@ import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.
 import { forkPageContext } from '../../shared-server-client/forkPageContext.js'
 import { getAsyncLocalStorage, type AsyncStore } from './asyncHook.js'
 import '../assertEnvServer.js'
+import { enhance, EnhancedMiddleware } from '@universal-middleware/core'
 
 const globalObject = getGlobalObject('runtime/renderPageServer.ts', {
   httpRequestsCount: 0,
@@ -157,30 +161,68 @@ async function renderPageServerEntryOnce(
     }
   }
   const { globalContext } = await getGlobalContextServerInternal()
-  console.log('+middleware files loaded: ', globalContext.config.middleware)
+  const middlewares = (globalContext.config.middleware ?? []) as EnhancedMiddleware[]
+  console.log('+middleware files loaded: ', middlewares)
 
   const pageContextBegin = getPageContextBegin(pageContextInit, globalContext, requestId, asyncStore)
 
-  // Check Base URL
-  {
-    const pageContextHttpResponse = await checkBaseUrl(pageContextBegin, globalContext)
-    if (pageContextHttpResponse) return pageContextHttpResponse
+  async function renderPageServerEntryOnceInternal(): Promise<PageContextAfterRender> {
+    // Check Base URL
+    {
+      const pageContextHttpResponse = await checkBaseUrl(pageContextBegin, globalContext)
+      if (pageContextHttpResponse) return pageContextHttpResponse
+    }
+
+    // Normalize URL
+    {
+      const pageContextHttpResponse = await normalizeUrl(pageContextBegin, globalContext)
+      if (pageContextHttpResponse) return pageContextHttpResponse
+    }
+
+    // Permanent redirects (HTTP status code `301`)
+    {
+      const pageContextHttpResponse = await getPermanentRedirect(pageContextBegin, globalContext)
+      if (pageContextHttpResponse) return pageContextHttpResponse
+    }
+
+    // First renderPageServerEntryRecursive() call
+    return await renderPageServerEntryRecursive(pageContextBegin, globalContext, requestId)
   }
 
-  // Normalize URL
-  {
-    const pageContextHttpResponse = await normalizeUrl(pageContextBegin, globalContext)
-    if (pageContextHttpResponse) return pageContextHttpResponse
+  if (middlewares.length > 0) {
+    const handler = apply([
+      enhance(
+        async function adaptRenderPageServerEntryOnceInternal(): Promise<Response> {
+          const { httpResponse } = await renderPageServerEntryOnceInternal()
+          const readable = httpResponse.getReadableWebStream()
+          return new Response(readable, {
+            status: httpResponse.statusCode,
+            headers: httpResponse.headers,
+          })
+        },
+        {
+          name: 'vike',
+          method: ['GET', 'POST', 'PUT', 'PATCH', 'HEAD', 'OPTIONS'],
+          path: '/**',
+          immutable: true,
+        },
+      ),
+      ...middlewares,
+    ])
+
+    const url = new URL(pageContextBegin.urlOriginal, 'http://fake-origin.example.org')
+    const res = await handler(
+      new Request(url.toString(), {
+        headers: pageContextBegin.headers ?? {},
+      }),
+    )
+
+    const httpResponse = await createHttpResponseFetch(res)
+    objectAssign(pageContextBegin, { httpResponse })
+    return pageContextBegin
   }
 
-  // Permanent redirects (HTTP status code `301`)
-  {
-    const pageContextHttpResponse = await getPermanentRedirect(pageContextBegin, globalContext)
-    if (pageContextHttpResponse) return pageContextHttpResponse
-  }
-
-  // First renderPageServerEntryRecursive() call
-  return await renderPageServerEntryRecursive(pageContextBegin, globalContext, requestId)
+  return renderPageServerEntryOnceInternal()
 }
 
 async function renderPageServerEntryRecursive(
