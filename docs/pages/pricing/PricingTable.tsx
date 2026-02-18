@@ -66,12 +66,14 @@ function PricingTable() {
               </Column>
             </div>
             <div style={{ marginLeft: 10, marginTop: 17, display: 'flex', flexDirection: 'column', gap: 8 }}>
-              <Note ref={1}>Only regular committers: occasional committers and bots don't count.</Note>
+              <Note ref={1}>
+                Only developers who regularly contribute code: occasional contributors and bots don't count.
+              </Note>
               <Note ref={2}>
                 License key isn't required: you use Vike just like any regular open source tool (zero encumbrance).
               </Note>
               <Note ref={3}>
-                Organizations with only a <a href="">few full-time employees</a> are considered resource-limited.
+                Organizations with <a href="">few full-time employees</a> are considered resource-limited.
               </Note>
               <Note ref={4}>
                 One-time payment for a lifetime license key: valid forever, including all future Vike updates.
