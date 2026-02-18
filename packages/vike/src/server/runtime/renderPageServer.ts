@@ -377,6 +377,7 @@ async function renderPageServerEntryWithMiddlewares(
     enhance(
       async function adaptRenderPageServerEntryOnceInternal(): Promise<Response> {
         const pageContextHttpResponse = await renderPageServerEntry()
+        pageContext = pageContextHttpResponse as any
         httpResponseVikeCore = pageContextHttpResponse.httpResponse
         const readable = httpResponse.getReadableWebStream()
         return new Response(readable, {
