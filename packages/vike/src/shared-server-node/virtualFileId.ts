@@ -30,9 +30,6 @@ const virtualFileIdPageEntryServer =
   //
   'virtual:vike:page-entry:server:' //  ${pageId}
 
-// +middleware files
-const virtualPlusMiddlewares = 'virtual:vike:+middlewares'
-
 // Virtual ID prefixes
 const virtualFileIdPageEntryPrefix =
   //
@@ -44,16 +41,10 @@ const virtualFileIdGlobalEntryPrefix =
 type VirtualFileIdEntryParsed =
   | { type: 'global-entry'; isForClientSide: boolean; isClientRouting: boolean }
   | { type: 'page-entry'; isForClientSide: boolean; pageId: string; isExtractAssets: boolean }
-  | { type: 'plus-middlewares' }
 
 function parseVirtualFileId(id: string): false | VirtualFileIdEntryParsed {
   id = removeVirtualFileIdPrefix(id)
-  if (
-    !id.startsWith(virtualFileIdGlobalEntryPrefix) &&
-    !id.startsWith(virtualFileIdPageEntryPrefix) &&
-    !id.startsWith(virtualPlusMiddlewares)
-  )
-    return false
+  if (!id.startsWith(virtualFileIdGlobalEntryPrefix) && !id.startsWith(virtualFileIdPageEntryPrefix)) return false
 
   // Global entry
   if (id.includes(virtualFileIdGlobalEntryPrefix)) {
@@ -96,12 +87,6 @@ function parseVirtualFileId(id: string): false | VirtualFileIdEntryParsed {
     assert(false)
   }
 
-  // +middleware files
-  if (id.startsWith(virtualPlusMiddlewares)) {
-    return {
-      type: 'plus-middlewares',
-    }
-  }
   return false
 }
 
