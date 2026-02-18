@@ -3,9 +3,7 @@ export { PricingTable }
 import React from 'react'
 import './PricingTable.css'
 
-const fontSizePrice = 36
 const noteColor = '#64748b'
-const styleTierDescription = { color: '#64748b', fontSize: '0.9em' } satisfies React.CSSProperties
 
 function PricingTable() {
   return (
@@ -17,7 +15,6 @@ function PricingTable() {
               <Column>
                 <TierName>Small team</TierName>
                 ≤2 <SoftwareDevelopers />
-                <div style={styleTierDescription}></div>
                 <SubHeading style={{ visibility: 'hidden' }}>Invisible filler</SubHeading>
                 <Free />
                 <div>
@@ -83,7 +80,7 @@ function PricingTable() {
 function SubHeading({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
   return (
     <div style={{ marginTop: 23, ...style }}>
-      <b style={{ whiteSpace: 'nowrap' }}>{children}</b>
+      <b>{children}</b>
     </div>
   )
 }
@@ -114,8 +111,8 @@ function Free() {
 function Price({ children, color, suffix }: { children: string; color: string; suffix?: React.ReactNode }) {
   return (
     <div style={{ marginTop: 8, marginBottom: 13 }}>
-      <span style={{ fontSize: fontSizePrice, color, fontWeight: 700 }}>{children}</span>
-      {suffix && <span style={{ fontSize: 16, color: '#6b7280', fontWeight: 400 }}>{suffix}</span>}
+      <span style={{ fontSize: 36, color, fontWeight: 700 }}>{children}</span>
+      {suffix && <span style={{ color: '#6b7280' }}>{suffix}</span>}
     </div>
   )
 }
@@ -144,7 +141,7 @@ function Column({ children, style }: { children: React.ReactNode; style?: React.
 function Check({ children }: { children: React.ReactNode }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 10 }}>
-      <GreenCheckmark /> <span style={{ lineHeight: 1.5 }}>{children}</span>
+      <GreenCheckmark /> <span>{children}</span>
     </div>
   )
 }
