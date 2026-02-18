@@ -1,5 +1,3 @@
-// import { sendResponse, createRequestAdapter } from '@universal-middleware/express'
-
 export { addSsrMiddleware }
 
 import { renderPageServer } from '../../../server/runtime/renderPageServer.js'
@@ -17,7 +15,6 @@ function addSsrMiddleware(
   isPreview: boolean,
   isPrerenderingEnabled: boolean | null,
 ) {
-  // const requestAdapter = createRequestAdapter({ trustProxy: true })
   middlewares.use(async (req, res, next) => {
     if (res.headersSent) return next()
     const url = req.originalUrl || req.url
@@ -47,9 +44,6 @@ function addSsrMiddleware(
 
     let pageContext: Awaited<ReturnType<typeof renderPageServer>>
     try {
-      // const aaa = await (server as ViteDevServer).ssrLoadModule('vike/fetch')
-      // const fetchResponse: Response = await aaa.default.fetch(requestAdapter(req))
-      // return sendResponse(fetchResponse, res)
       pageContext = await renderPageServer(pageContextInit)
     } catch (err) {
       // Throwing an error in a connect middleware shuts down the server
