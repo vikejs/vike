@@ -48,10 +48,10 @@ function PricingTable() {
                       $5k
                     </Price>
                     <Check>Full access</Check>
-                    <Check icon="gift">
+                    <Check icon="🎁">
                       Forever access<NoteRef>4</NoteRef>
                     </Check>
-                    <Check icon="gift">
+                    <Check icon="🎁">
                       Free trial: 6 months + <a href="">extendable</a>
                     </Check>
                   </div>
@@ -139,38 +139,11 @@ function Column({ children }: { children: React.ReactNode }) {
   )
 }
 
-function Check({ children, icon }: { children: React.ReactNode; icon?: 'gift' }) {
+function Check({ children, icon }: { children: React.ReactNode; icon?: string }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 10 }}>
-      {icon === 'gift' ? <GiftIcon /> : <GreenCheckmark />} <span>{children}</span>
+      {icon ? <span style={{ fontSize: 18 }}>{icon}</span> : <GreenCheckmark />} <span>{children}</span>
     </div>
-  )
-}
-
-function GiftIcon() {
-  const size = 18
-  return (
-    <svg width={size} height={size} viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-      <path fill="#DD2E44" d="M33 15c0-4-4-7-7-7-3 0-6 2-6 5 0 0 0-3-6-5-6-2-8 3-8 7H0v3h36v-3z" />
-      <path fill="#A0041E" d="M0 15v3h36v-3H0z" />
-      <path fill="#DD2E44" d="M0 18v15c0 1.104.896 2 2 2h14V18H0z" />
-      <path fill="#DD2E44" d="M20 18v17h14c1.104 0 2-.896 2-2V18H20z" />
-      <path fill="#A0041E" d="M16 35h4V18h-4z" />
-      <circle fill="#FFCC4D" cx="14" cy="9" r="4" />
-      <circle fill="#FFCC4D" cx="22" cy="9" r="4" />
-      <path
-        fill="#FFAC33"
-        d="M18 11c-.772 0-1.467-.298-2-.78-.533.482-1.228.78-2 .78 1.105 0 2 .895 2 2 0-1.105.895-2 2-2z"
-      />
-      <path
-        fill="#77B255"
-        d="M15.999 13a2 2 0 0 1-2-2c0 .552-.448 1-1 1-.256 0-.487-.098-.667-.257C12.137 12.468 12 13.221 12 14c0 2.209 1.791 4 4 4v-5z"
-      />
-      <path
-        fill="#77B255"
-        d="M20 13a2 2 0 0 0 2-2c0 .552.448 1 1 1 .256 0 .487-.098.667-.257.195.725.333 1.478.333 2.257 0 2.209-1.791 4-4 4v-5z"
-      />
-    </svg>
   )
 }
 
