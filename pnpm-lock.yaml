@@ -42,8 +42,8 @@ importers:
         specifier: ^0.0.54
         version: 0.0.54
       '@brillout/docpress':
-        specifier: ^0.16.17
-        version: 0.16.17(@algolia/client-search@5.46.2)(@types/react@19.2.7)(@vitejs/plugin-react-swc@4.2.2(vite@6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(rollup@4.43.0)(search-insights@2.17.3)(typescript@5.9.3)(vike@packages+vike)(vite@6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
+        specifier: ^0.16.16
+        version: 0.16.16(@algolia/client-search@5.46.2)(@types/react@19.2.7)(@vitejs/plugin-react-swc@4.2.2(vite@6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(rollup@4.43.0)(search-insights@2.17.3)(typescript@5.9.3)(vike@packages+vike)(vite@6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
       '@types/react':
         specifier: ^19.0.2
         version: 19.2.7
@@ -63,7 +63,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../packages/vike
       vite:
         specifier: ^6.3.4
@@ -105,7 +105,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vike-react:
         specifier: ^0.6.20
@@ -126,7 +126,7 @@ importers:
         specifier: ^19.2.4
         version: 19.2.4(react@19.2.4)
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -156,7 +156,7 @@ importers:
         specifier: ^19.2.4
         version: 19.2.4(react@19.2.4)
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -186,7 +186,7 @@ importers:
         specifier: ^19.2.4
         version: 19.2.4(react@19.2.4)
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -210,7 +210,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^7.0.6
@@ -246,7 +246,7 @@ importers:
         specifier: ^0.4.15
         version: 0.4.15(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^7.0.6
@@ -270,7 +270,7 @@ importers:
         specifier: ^3.5.18
         version: 3.5.18(vue@3.5.18(typescript@5.9.3))
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^7.0.6
@@ -294,7 +294,7 @@ importers:
         specifier: ^19.2.4
         version: 19.2.4(react@19.2.4)
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -312,7 +312,7 @@ importers:
         specifier: ^19.2.4
         version: 19.2.4(react@19.2.4)
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -324,7 +324,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -345,7 +345,7 @@ importers:
         specifier: ^19.2.4
         version: 19.2.4(react@19.2.4)
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -387,7 +387,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -438,7 +438,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^7.2.6
@@ -456,7 +456,7 @@ importers:
         specifier: 18.2.0
         version: 18.2.0(react@18.2.0)
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
 
   examples/react-streaming:
@@ -489,7 +489,7 @@ importers:
         specifier: ^3.0.2
         version: 3.0.2
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^7.2.6
@@ -519,7 +519,7 @@ importers:
         specifier: ^2.0.0
         version: 2.0.4
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -555,7 +555,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^7.1.5
@@ -591,7 +591,7 @@ importers:
         specifier: ^0.26.2
         version: 0.26.3(rollup@4.43.0)(vite@6.3.5(@types/node@20.17.17)(terser@5.38.1)(tsx@4.20.6))
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -615,7 +615,7 @@ importers:
         specifier: ^3.2.47
         version: 3.5.18(vue@3.5.18(typescript@5.9.3))
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -660,7 +660,7 @@ importers:
         specifier: ^19.2.4
         version: 19.2.4(react@19.2.4)
       vike:
-        specifier: ^0.4.254
+        specifier: ^0.4.253
         version: link:../../vike
       vike-server:
         specifier: ^1.0.25
@@ -702,7 +702,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
       vike:
-        specifier: ^0.4.254
+        specifier: ^0.4.253
         version: link:../../vike
       vike-server:
         specifier: ^1.0.25
@@ -732,7 +732,7 @@ importers:
         specifier: ^3.3.2
         version: 3.3.2
       vike:
-        specifier: ^0.4.254
+        specifier: ^0.4.253
         version: link:../../vike
       vike-server:
         specifier: ^1.0.25
@@ -771,7 +771,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
       vike:
-        specifier: ^0.4.254
+        specifier: ^0.4.253
         version: link:../../vike
       vike-server:
         specifier: ^1.0.25
@@ -808,10 +808,7 @@ importers:
         version: 0.7.18
       '@universal-middleware/core':
         specifier: ^0.4.16
-        version: 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
-      '@universal-middleware/srvx':
-        specifier: ^0.1.2
-        version: 0.1.2(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.9.8)
+        version: 0.4.16(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
       cac:
         specifier: ^6.0.0
         version: 6.7.14
@@ -898,7 +895,7 @@ importers:
         specifier: ^19.2.4
         version: 19.2.4(react@19.2.4)
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -928,7 +925,7 @@ importers:
         specifier: ^19.2.4
         version: 19.2.4(react@19.2.4)
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -958,7 +955,7 @@ importers:
         specifier: ^19.2.4
         version: 19.2.4(react@19.2.4)
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -979,7 +976,7 @@ importers:
         specifier: ^19.2.4
         version: 19.2.4(react@19.2.4)
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: 6.3.0
@@ -1015,7 +1012,7 @@ importers:
         specifier: ^0.4.15
         version: 0.4.15(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -1039,7 +1036,7 @@ importers:
         specifier: ^3.2.47
         version: 3.5.18(vue@3.5.18(typescript@5.9.3))
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -1063,7 +1060,7 @@ importers:
         specifier: ^19.2.4
         version: 19.2.4(react@19.2.4)
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -1075,7 +1072,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -1096,7 +1093,7 @@ importers:
         specifier: ^19.2.4
         version: 19.2.4(react@19.2.4)
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -1141,7 +1138,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -1159,7 +1156,7 @@ importers:
         specifier: ^19.2.4
         version: 19.2.4(react@19.2.4)
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: 6.3.0
@@ -1192,7 +1189,7 @@ importers:
         specifier: ^2.0.2
         version: 2.0.4
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -1210,7 +1207,7 @@ importers:
         specifier: ^19.2.4
         version: 19.2.4(react@19.2.4)
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -1246,7 +1243,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: 6.3.0
@@ -1264,7 +1261,7 @@ importers:
         specifier: ^3.2.47
         version: 3.5.18(vue@3.5.18(typescript@5.9.3))
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -1303,7 +1300,7 @@ importers:
         specifier: ^0.24.3
         version: 0.24.3(rollup@4.43.0)(vite@6.3.0(@types/node@17.0.45)(terser@5.38.1)(tsx@4.20.6))
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: 6.3.0
@@ -1327,7 +1324,7 @@ importers:
         specifier: ^0.2.19
         version: 0.2.19(@babel/core@7.29.0)(@babel/parser@7.29.0)(@babel/types@7.29.0)(react-streaming@0.4.15(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vike-react:
         specifier: ^0.6.20
@@ -1388,7 +1385,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -1418,7 +1415,7 @@ importers:
         specifier: ^2.0.3
         version: 2.0.4
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -1436,7 +1433,7 @@ importers:
         specifier: ^19.2.4
         version: 19.2.4(react@19.2.4)
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -1454,7 +1451,7 @@ importers:
         specifier: ^19.2.4
         version: 19.2.4(react@19.2.4)
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -1475,7 +1472,7 @@ importers:
         specifier: ^19.2.4
         version: 19.2.4(react@19.2.4)
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vike-react:
         specifier: ^0.6.20
@@ -1499,7 +1496,7 @@ importers:
         specifier: ^19.2.4
         version: 19.2.4(react@19.2.4)
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vike-react:
         specifier: ^0.6.20
@@ -1529,7 +1526,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -1538,7 +1535,7 @@ importers:
   test/includeAssetsImportedByServer:
     dependencies:
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -1553,7 +1550,7 @@ importers:
         specifier: ^19.2.4
         version: 19.2.4(react@19.2.4)
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vike-photon:
         specifier: ^0.1.24
@@ -1596,7 +1593,7 @@ importers:
         specifier: ^19.2.4
         version: 19.2.4(react@19.2.4)
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vike-photon:
         specifier: ^0.1.24
@@ -1666,7 +1663,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vike-react:
         specifier: ^0.6.20
@@ -1679,7 +1676,7 @@ importers:
     dependencies:
       '@universal-middleware/core':
         specifier: ^0.4.16
-        version: 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
+        version: 0.4.16(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
       react:
         specifier: ^19.2.4
         version: 19.2.4
@@ -1688,7 +1685,7 @@ importers:
         version: 19.2.4(react@19.2.4)
       vike:
         specifier: 0.4.253
-        version: 0.4.253(react-streaming@0.4.15(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
+        version: link:../../packages/vike
     devDependencies:
       '@types/react':
         specifier: ^19.2.11
@@ -1721,7 +1718,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -1742,7 +1739,7 @@ importers:
         specifier: ^2.0.14
         version: 2.3.1(typescript@5.9.3)(vue@3.5.18(typescript@5.9.3))
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.2
@@ -1754,11 +1751,11 @@ importers:
   test/universal-middleware:
     dependencies:
       '@universal-middleware/core':
-        specifier: ^0.4.17
-        version: 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
+        specifier: ^0.4.16
+        version: 0.4.16(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
       '@universal-middleware/express':
-        specifier: ^0.4.24
-        version: 0.4.24(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
+        specifier: ^0.4.23
+        version: 0.4.23(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
       '@vitejs/plugin-react':
         specifier: ^4.7.0
         version: 4.7.0(vite@6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
@@ -1797,7 +1794,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^6.3.5
@@ -1818,7 +1815,7 @@ importers:
         specifier: ^19.2.4
         version: 19.2.4(react@19.2.4)
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vike-react:
         specifier: ^0.6.20
@@ -1873,7 +1870,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vike-react:
         specifier: 0.6.20
@@ -1909,7 +1906,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vike-react:
         specifier: 0.6.20
@@ -1945,7 +1942,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vike-react:
         specifier: 0.6.20
@@ -1978,7 +1975,7 @@ importers:
         specifier: ^19.2.4
         version: 19.2.4(react@19.2.4)
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vike-react:
         specifier: ^0.6.20
@@ -1999,7 +1996,7 @@ importers:
         specifier: ^1.9.10
         version: 1.9.10
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vike-solid:
         specifier: ^0.8.1
@@ -2036,7 +2033,7 @@ importers:
         specifier: ^28.3.1
         version: 28.3.1(vite@6.3.5(@types/node@22.19.2)(terser@5.38.1)(tsx@4.20.6))
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vike-vue:
         specifier: ^0.9.11
@@ -2066,7 +2063,7 @@ importers:
         specifier: ^3.0.1
         version: 3.0.3(typescript@5.9.3)(vue@3.5.18(typescript@5.9.3))
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vike-vue:
         specifier: ^0.9.11
@@ -2107,8 +2104,8 @@ importers:
         specifier: ^19.1.7
         version: 19.2.3(@types/react@19.2.7)
       '@universal-middleware/express':
-        specifier: ^0.4.24
-        version: 0.4.24(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
+        specifier: ^0.4.23
+        version: 0.4.23(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
       '@vercel/node':
         specifier: ^5.3.7
         version: 5.3.7(@swc/core@1.13.5)(rollup@4.43.0)
@@ -2128,7 +2125,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vike-react:
         specifier: ^0.6.20
@@ -2152,7 +2149,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vike-react:
         specifier: ^0.6.20
@@ -2179,7 +2176,7 @@ importers:
         specifier: ^6.0.1
         version: 6.0.1
       vike:
-        specifier: 0.4.254
+        specifier: 0.4.253
         version: link:../../packages/vike
       vite:
         specifier: ^7.1.4
@@ -2546,8 +2543,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@brillout/docpress@0.16.17':
-    resolution: {integrity: sha512-FutPOUAdFnQOWnd7Lvxlz34CP383QM5JszbX+A060jNFe5nFz7MA7npwEzu+QwGierGfhPWNHQm69YhQrGCdbw==}
+  '@brillout/docpress@0.16.16':
+    resolution: {integrity: sha512-6lVLj2a4TaK7RaRjJIT9SQprFt8E+Vm0qb+/C+Kte39ZhdScWcFzEVDKoocLvxqdoGL3JzjR4wLaxxn9PjzH6Q==}
     peerDependencies:
       '@vitejs/plugin-react-swc': '>=3.0.0'
       react: '>=18.0.0'
@@ -2589,9 +2586,6 @@ packages:
   '@brillout/replace@0.1.6':
     resolution: {integrity: sha512-pF3D0TEkxR3H0PpBRV0oiWbCNdpCexcoYn9k1ByTjGWZzmRJ2G+Se+Smr6QC+VZ7PKTpQuC4YBGyxnlbk89JkQ==}
     hasBin: true
-
-  '@brillout/require-shim@0.1.2':
-    resolution: {integrity: sha512-3I4LRHnVZXoSAsEoni5mosq9l6eiJED58d9V954W4CIZ88AUfYBanWGBGbJG3NztaRTpFHEA6wB3Hn93BmmJdg==}
 
   '@brillout/shell@0.2.1':
     resolution: {integrity: sha512-l5PTMWw6rndD7vZcMvw1bv31sTzpz0qP3q409PD50ATsfxhvbMvDVySnV73Okoskfd673oClIlt6OnupbQJqHA==}
@@ -4767,46 +4761,11 @@ packages:
       srvx:
         optional: true
 
-  '@universal-middleware/core@0.4.17':
-    resolution: {integrity: sha512-q+/nXW9DQ94RtmlghC57DhwEvjrqxX57EtU40iaM3U+eYTKc+FVnEdlpdrYX8kCAdEU7zVBLBlFgJre+VrXoUg==}
-    peerDependencies:
-      '@cloudflare/workers-types': ^4.20260302.0
-      '@hattip/core': ^0.0.49
-      '@types/express': ^4 || ^5
-      '@webroute/route': ^0.8.0
-      elysia: ^1.4.25
-      fastify: ^5.7.4
-      h3: ^1.15.5
-      hono: ^4.11.9
-      srvx: '>=0.8'
-    peerDependenciesMeta:
-      '@cloudflare/workers-types':
-        optional: true
-      '@hattip/core':
-        optional: true
-      '@types/express':
-        optional: true
-      '@webroute/route':
-        optional: true
-      elysia:
-        optional: true
-      fastify:
-        optional: true
-      h3:
-        optional: true
-      hono:
-        optional: true
-      srvx:
-        optional: true
-
   '@universal-middleware/elysia@0.4.8':
     resolution: {integrity: sha512-6cDEPq96blz5x17rsNJjRmDqD4o0XrGB+6lFElEThtIBAUn1Y38OqMn1+yf7Ycdc5w45mr4T1uimfH9tAdU2Ug==}
 
   '@universal-middleware/express@0.4.23':
     resolution: {integrity: sha512-wFM9HQWIXrK+CJvld95bwkGbb1wA/bKkwBBKI5njPShVCMayFoSDb6FMrqezHqI3hGBcjUs9D17CVIJa6gzdPA==}
-
-  '@universal-middleware/express@0.4.24':
-    resolution: {integrity: sha512-CGAQfGZs90pM2n2JqZVvNhzk6amT8FGb+1nn/10M7ZC4K8nW6Bt3WzW55zqNeo2YRyZzDL5cxrxQhVpuXbLvKg==}
 
   '@universal-middleware/fastify@0.5.22':
     resolution: {integrity: sha512-6axgXhhi69V4RHh6DjUxRmWnRN8U9cW/Ro/1lB0weTe4Y07pI/9603XGcg9iNltbqEhjRvK+Jch3WwwIfVdIBg==}
@@ -5021,6 +4980,9 @@ packages:
   '@vue/compiler-core@3.5.20':
     resolution: {integrity: sha512-8TWXUyiqFd3GmP4JTX9hbiTFRwYHgVL/vr3cqhr4YQ258+9FADwvj7golk2sWNGHR67QgmCZ8gz80nQcMokhwg==}
 
+  '@vue/compiler-core@3.5.26':
+    resolution: {integrity: sha512-vXyI5GMfuoBCnv5ucIT7jhHKl55Y477yxP6fc4eUswjP8FG3FFVFd41eNDArR+Uk3QKn2Z85NavjaxLxOC19/w==}
+
   '@vue/compiler-core@3.5.28':
     resolution: {integrity: sha512-kviccYxTgoE8n6OCw96BNdYlBg2GOWfBuOW4Vqwrt7mSKWKwFVvI8egdTltqRgITGPsTFYtKYfxIG8ptX2PJHQ==}
 
@@ -5130,6 +5092,9 @@ packages:
 
   '@vue/shared@3.5.20':
     resolution: {integrity: sha512-SoRGP596KU/ig6TfgkCMbXkr4YJ91n/QSdMuqeP5r3hVIYA3CPHUBCc7Skak0EAKV+5lL4KyIh61VA/pK1CIAA==}
+
+  '@vue/shared@3.5.26':
+    resolution: {integrity: sha512-7Z6/y3uFI5PRoKeorTOSXKcDj0MSasfNNltcslbFrPpcw6aXRUALq4IfJlaTRspiWIUOEZbrpM+iQGmCOiWe4A==}
 
   '@vue/shared@3.5.28':
     resolution: {integrity: sha512-cfWa1fCGBxrvaHRhvV3Is0MgmrbSCxYTXCSCau2I0a1Xw1N1pHAvkWCiXPRAqjvToILvguNyEwjevUqAuBQWvQ==}
@@ -5860,6 +5825,10 @@ packages:
 
   entities@6.0.1:
     resolution: {integrity: sha512-aN97NXWF6AWBTahfVOIrB/NShkzi5H7F9r1s9mD3cDj4Ko5f2qhhVoYMibXF7GlLveb/D2ioWay8lxI97Ven3g==}
+    engines: {node: '>=0.12'}
+
+  entities@7.0.0:
+    resolution: {integrity: sha512-FDWG5cmEYf2Z00IkYRhbFrwIwvdFKH07uV8dvNy0omp/Qb1xcyCWp2UDtcwJF4QZZvk0sLudP6/hAu42TaqVhQ==}
     engines: {node: '>=0.12'}
 
   entities@7.0.1:
@@ -7933,11 +7902,11 @@ packages:
     resolution: {integrity: sha512-PSkbLUoxOFRzJYjjxHJt9xro7D+iilgMX/C9lawzVuYiIdcihh9DXmVibBe8lmcFrRi/VzlPjBxbN7rH24q8/Q==}
     engines: {node: '>=14.0.0'}
 
-  tldts-core@7.0.23:
-    resolution: {integrity: sha512-0g9vrtDQLrNIiCj22HSe9d4mLVG3g5ph5DZ8zCKBr4OtrspmNB6ss7hVyzArAeE88ceZocIEGkyW1Ime7fxPtQ==}
+  tldts-core@7.0.19:
+    resolution: {integrity: sha512-lJX2dEWx0SGH4O6p+7FPwYmJ/bu1JbcGJ8RLaG9b7liIgZ85itUVEPbMtWRVrde/0fnDPEPHW10ZsKW3kVsE9A==}
 
-  tldts@7.0.23:
-    resolution: {integrity: sha512-ASdhgQIBSay0R/eXggAkQ53G4nTJqTXqC2kbaBbdDwM7SkjyZyO0OaaN1/FH7U/yCeqOHDwFO5j8+Os/IS1dXw==}
+  tldts@7.0.19:
+    resolution: {integrity: sha512-8PWx8tvC4jDB39BQw1m4x8y5MH1BcQ5xHeL2n7UVFulMPH/3Q0uiamahFJ3lXA0zO2SUyRXuVVbWSDmstlt9YA==}
     hasBin: true
 
   to-regex-range@5.0.1:
@@ -8266,19 +8235,6 @@ packages:
     peerDependencies:
       vike: '>=0.4.191'
       vue: '>=3.0.0'
-
-  vike@0.4.253:
-    resolution: {integrity: sha512-glS8FidhqnK6I/wLs48BYtqsAMXs8QtOB0uxeZ0G93G2a0ZkymuZ5rjbcZHUCBLoUYS/8i0h4d4NhK2mAsUhTA==}
-    engines: {node: '>=20.19.0'}
-    hasBin: true
-    peerDependencies:
-      react-streaming: '>=0.3.42'
-      vite: '>=6.3.0'
-    peerDependenciesMeta:
-      react-streaming:
-        optional: true
-      vite:
-        optional: true
 
   vite-plugin-cjs-interop@2.3.0:
     resolution: {integrity: sha512-gNeh8anoG4QrdQf4LNcoQZTVEdqrrAdwjDDyNc4bHLi0u6XSXaaOiJiuKwwY38KWfYZdQsmoytBOHCRf+0gHjQ==}
@@ -9286,7 +9242,7 @@ snapshots:
   '@biomejs/cli-win32-x64@1.9.4':
     optional: true
 
-  '@brillout/docpress@0.16.17(@algolia/client-search@5.46.2)(@types/react@19.2.7)(@vitejs/plugin-react-swc@4.2.2(vite@6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(rollup@4.43.0)(search-insights@2.17.3)(typescript@5.9.3)(vike@packages+vike)(vite@6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))':
+  '@brillout/docpress@0.16.16(@algolia/client-search@5.46.2)(@types/react@19.2.7)(@vitejs/plugin-react-swc@4.2.2(vite@6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(rollup@4.43.0)(search-insights@2.17.3)(typescript@5.9.3)(vike@packages+vike)(vite@6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))':
     dependencies:
       '@brillout/picocolors': 1.0.30
       '@docsearch/css': 3.9.0
@@ -9346,8 +9302,6 @@ snapshots:
     dependencies:
       '@brillout/picocolors': 1.0.29
       '@brillout/shell': 0.2.1
-
-  '@brillout/require-shim@0.1.2': {}
 
   '@brillout/shell@0.2.1':
     dependencies:
@@ -10493,8 +10447,8 @@ snapshots:
       '@brillout/vite-plugin-server-entry': 0.7.18
       '@universal-middleware/cloudflare': 0.4.10(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.9.8)
       '@universal-middleware/compress': 0.2.34
-      '@universal-middleware/core': 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
-      '@universal-middleware/express': 0.4.24(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
+      '@universal-middleware/core': 0.4.16(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
+      '@universal-middleware/express': 0.4.23(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
       '@universal-middleware/sirv': 0.1.24
       estree-walker: 3.0.3
       ts-deepmerge: 7.0.3
@@ -10517,8 +10471,8 @@ snapshots:
       '@brillout/vite-plugin-server-entry': 0.7.18
       '@universal-middleware/cloudflare': 0.4.10(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.9.8)
       '@universal-middleware/compress': 0.2.34
-      '@universal-middleware/core': 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
-      '@universal-middleware/express': 0.4.24(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
+      '@universal-middleware/core': 0.4.16(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
+      '@universal-middleware/express': 0.4.23(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
       '@universal-middleware/sirv': 0.1.24
       estree-walker: 3.0.3
       ts-deepmerge: 7.0.3
@@ -10540,7 +10494,7 @@ snapshots:
     dependencies:
       '@photonjs/core': 0.1.20(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.9.8)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
       '@photonjs/srvx': 0.1.12(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.9.8)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
-      '@universal-middleware/core': 0.4.16(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.9.8)
+      '@universal-middleware/core': 0.4.16(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
       '@universal-middleware/sirv': 0.1.24
       srvx: 0.9.8
       standaloner: 0.1.11(rollup@4.43.0)
@@ -10563,7 +10517,7 @@ snapshots:
     dependencies:
       '@photonjs/core': 0.1.20(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.9.8)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
       '@photonjs/srvx': 0.1.12(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.9.8)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
-      '@universal-middleware/core': 0.4.16(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.9.8)
+      '@universal-middleware/core': 0.4.16(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
       '@universal-middleware/sirv': 0.1.24
       srvx: 0.9.8
       standaloner: 0.1.11(rollup@4.43.0)
@@ -10622,7 +10576,7 @@ snapshots:
       '@manypkg/find-root': 3.1.0
       '@photonjs/core': 0.1.20(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.9.8)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
       '@photonjs/runtime': 0.1.16(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(rollup@4.43.0)(vite@7.2.7(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
-      '@universal-middleware/core': 0.4.16(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.9.8)
+      '@universal-middleware/core': 0.4.16(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
       '@universal-middleware/vercel': 0.4.29(@hattip/core@0.0.49)(@types/express@5.0.6)(@universal-middleware/h3@0.4.14(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.9.8))(express@5.2.1)(fastify@5.7.4)(srvx@0.9.8)
       '@vercel/build-utils': 13.2.4
       '@vercel/nft': 1.1.1(rollup@4.43.0)
@@ -10658,7 +10612,7 @@ snapshots:
       '@manypkg/find-root': 3.1.0
       '@photonjs/core': 0.1.20(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.9.8)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
       '@photonjs/runtime': 0.1.16(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(rollup@4.43.0)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
-      '@universal-middleware/core': 0.4.16(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.9.8)
+      '@universal-middleware/core': 0.4.16(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
       '@universal-middleware/vercel': 0.4.29(@hattip/core@0.0.49)(@types/express@5.0.6)(@universal-middleware/h3@0.4.14(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.9.8))(express@5.2.1)(fastify@5.7.4)(srvx@0.9.8)
       '@vercel/build-utils': 13.2.4
       '@vercel/nft': 1.1.1(rollup@4.43.0)
@@ -11214,7 +11168,7 @@ snapshots:
 
   '@universal-middleware/cloudflare@0.4.10(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.9.8)':
     dependencies:
-      '@universal-middleware/core': 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
+      '@universal-middleware/core': 0.4.16(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
     transitivePeerDependencies:
       - '@cloudflare/workers-types'
       - '@hattip/core'
@@ -11249,17 +11203,7 @@ snapshots:
       fastify: 5.7.4
       srvx: 0.9.8
 
-  '@universal-middleware/core@0.4.16(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.9.8)':
-    dependencies:
-      regexparam: 3.0.0
-      tough-cookie: 6.0.0
-    optionalDependencies:
-      '@hattip/core': 0.0.49
-      '@types/express': 5.0.6
-      fastify: 5.7.4
-      srvx: 0.9.8
-
-  '@universal-middleware/core@0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)':
+  '@universal-middleware/core@0.4.16(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)':
     dependencies:
       regexparam: 3.0.0
       tough-cookie: 6.0.0
@@ -11272,7 +11216,7 @@ snapshots:
 
   '@universal-middleware/elysia@0.4.8(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)':
     dependencies:
-      '@universal-middleware/core': 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
+      '@universal-middleware/core': 0.4.16(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
     transitivePeerDependencies:
       - '@cloudflare/workers-types'
       - '@hattip/core'
@@ -11286,21 +11230,7 @@ snapshots:
 
   '@universal-middleware/express@0.4.23(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)':
     dependencies:
-      '@universal-middleware/core': 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
-    transitivePeerDependencies:
-      - '@cloudflare/workers-types'
-      - '@hattip/core'
-      - '@types/express'
-      - '@webroute/route'
-      - elysia
-      - fastify
-      - h3
-      - hono
-      - srvx
-
-  '@universal-middleware/express@0.4.24(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)':
-    dependencies:
-      '@universal-middleware/core': 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
+      '@universal-middleware/core': 0.4.16(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
     transitivePeerDependencies:
       - '@cloudflare/workers-types'
       - '@hattip/core'
@@ -11314,8 +11244,8 @@ snapshots:
 
   '@universal-middleware/fastify@0.5.22(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)':
     dependencies:
-      '@universal-middleware/core': 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
-      '@universal-middleware/express': 0.4.24(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
+      '@universal-middleware/core': 0.4.16(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
+      '@universal-middleware/express': 0.4.23(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
       fastify-raw-body: 5.0.0
     transitivePeerDependencies:
       - '@cloudflare/workers-types'
@@ -11330,7 +11260,7 @@ snapshots:
 
   '@universal-middleware/h3@0.4.14(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)':
     dependencies:
-      '@universal-middleware/core': 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
+      '@universal-middleware/core': 0.4.16(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
     transitivePeerDependencies:
       - '@cloudflare/workers-types'
       - '@hattip/core'
@@ -11344,7 +11274,7 @@ snapshots:
 
   '@universal-middleware/hattip@0.4.13(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)':
     dependencies:
-      '@universal-middleware/core': 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
+      '@universal-middleware/core': 0.4.16(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
     transitivePeerDependencies:
       - '@cloudflare/workers-types'
       - '@hattip/core'
@@ -11358,7 +11288,7 @@ snapshots:
 
   '@universal-middleware/hono@0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)':
     dependencies:
-      '@universal-middleware/core': 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
+      '@universal-middleware/core': 0.4.16(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
     transitivePeerDependencies:
       - '@cloudflare/workers-types'
       - '@hattip/core'
@@ -11382,7 +11312,7 @@ snapshots:
 
   '@universal-middleware/srvx@0.1.2(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.9.8)':
     dependencies:
-      '@universal-middleware/core': 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
+      '@universal-middleware/core': 0.4.16(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
     transitivePeerDependencies:
       - '@cloudflare/workers-types'
       - '@hattip/core'
@@ -11396,8 +11326,8 @@ snapshots:
 
   '@universal-middleware/vercel@0.4.29(@hattip/core@0.0.49)(@types/express@5.0.6)(@universal-middleware/h3@0.4.14(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.9.8))(express@5.2.1)(fastify@5.7.4)(srvx@0.9.8)':
     dependencies:
-      '@universal-middleware/core': 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
-      '@universal-middleware/express': 0.4.24(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
+      '@universal-middleware/core': 0.4.16(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
+      '@universal-middleware/express': 0.4.23(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
     optionalDependencies:
       '@hattip/core': 0.0.49
       '@universal-middleware/h3': 0.4.14(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
@@ -11791,6 +11721,14 @@ snapshots:
       estree-walker: 2.0.2
       source-map-js: 1.2.1
 
+  '@vue/compiler-core@3.5.26':
+    dependencies:
+      '@babel/parser': 7.29.0
+      '@vue/shared': 3.5.26
+      entities: 7.0.0
+      estree-walker: 2.0.2
+      source-map-js: 1.2.1
+
   '@vue/compiler-core@3.5.28':
     dependencies:
       '@babel/parser': 7.29.0
@@ -11995,17 +11933,19 @@ snapshots:
 
   '@vue/shared@3.5.20': {}
 
+  '@vue/shared@3.5.26': {}
+
   '@vue/shared@3.5.28': {}
 
   '@vuedx/compiler-sfc@0.7.1':
     dependencies:
-      '@vue/compiler-core': 3.5.28
+      '@vue/compiler-core': 3.5.26
       lru-cache: 6.0.0
       source-map: 0.6.1
 
   '@vuedx/template-ast-types@0.7.1':
     dependencies:
-      '@vue/compiler-core': 3.5.28
+      '@vue/compiler-core': 3.5.26
 
   '@webassemblyjs/ast@1.14.1':
     dependencies:
@@ -12725,6 +12665,8 @@ snapshots:
   entities@4.5.0: {}
 
   entities@6.0.1: {}
+
+  entities@7.0.0: {}
 
   entities@7.0.1: {}
 
@@ -15067,7 +15009,8 @@ snapshots:
 
   semver@7.7.3: {}
 
-  semver@7.7.4: {}
+  semver@7.7.4:
+    optional: true
 
   send@1.2.0:
     dependencies:
@@ -15503,11 +15446,11 @@ snapshots:
 
   tinyrainbow@3.0.3: {}
 
-  tldts-core@7.0.23: {}
+  tldts-core@7.0.19: {}
 
-  tldts@7.0.23:
+  tldts@7.0.19:
     dependencies:
-      tldts-core: 7.0.23
+      tldts-core: 7.0.19
 
   to-regex-range@5.0.1:
     dependencies:
@@ -15522,7 +15465,7 @@ snapshots:
 
   tough-cookie@6.0.0:
     dependencies:
-      tldts: 7.0.23
+      tldts: 7.0.19
 
   tr46@0.0.3: {}
 
@@ -15999,31 +15942,6 @@ snapshots:
       oxc-walker: 0.6.0(oxc-parser@0.104.0)
       vike: link:packages/vike
       vue: 3.5.18(typescript@5.9.3)
-
-  vike@0.4.253(react-streaming@0.4.15(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)):
-    dependencies:
-      '@babel/core': 7.29.0
-      '@babel/types': 7.29.0
-      '@brillout/import': 0.2.6
-      '@brillout/json-serializer': 0.5.22
-      '@brillout/picocolors': 1.0.30
-      '@brillout/require-shim': 0.1.2
-      '@brillout/vite-plugin-server-entry': 0.7.18
-      cac: 6.7.14
-      es-module-lexer: 1.7.0
-      esbuild: 0.27.2
-      json5: 2.2.3
-      magic-string: 0.30.21
-      picomatch: 4.0.3
-      semver: 7.7.4
-      sirv: 3.0.2
-      source-map-support: 0.5.21
-      tinyglobby: 0.2.15
-    optionalDependencies:
-      react-streaming: 0.4.15(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      vite: 7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
-    transitivePeerDependencies:
-      - supports-color
 
   vite-plugin-cjs-interop@2.3.0(vite@6.3.5(@types/node@22.19.2)(terser@5.38.1)(tsx@4.20.6)):
     dependencies:
