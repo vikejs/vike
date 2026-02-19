@@ -38,6 +38,7 @@ function pluginUniversalDeployServer(vikeConfig: VikeConfigInternal): Plugin[] {
       ? vikeConfig.config.extends
       : [vikeConfig.config.extends]
     : []
+  // TODO if target supporting UD are used, like vite-plugin-vercel@11, we should also install some of those plugins
   if (serverConfig && 'filePathAbsoluteFilesystem' in serverConfig) {
     const serverPath = serverConfig['filePathAbsoluteFilesystem']
 
