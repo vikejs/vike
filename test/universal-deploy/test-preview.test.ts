@@ -1,2 +1,2 @@
-import { testRunClassic } from '../../test/utils'
-testRunClassic('npm run preview', { skipAboutPage: true, serverIsReadyMessage: 'Listening on:' })
+import { testRun } from './.testRun'
+testRun('npm run preview', { skipAboutPage: true, serverIsReadyMessage: 'Listening on:' })
