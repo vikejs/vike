@@ -17,7 +17,7 @@ const blurByColor: Record<IntroBlobColor, string> = {
   orange: blurOrange,
 }
 
-const HeroBackgroundMotion = ({ color, isActive }: HeroBackgroundMotionProps) => {
+const HeroBackgroundMotion = ({ color = 'green', isActive }: HeroBackgroundMotionProps) => {
   const motionContainerRef = useRef<HTMLDivElement>(null)
   useHeroBackgroundMotion({ motionContainerRef, targetColor: color, isActive })
   const blobImage = blurByColor[color]

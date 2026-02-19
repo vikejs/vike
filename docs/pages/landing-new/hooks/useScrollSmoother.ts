@@ -65,12 +65,16 @@ const useScrollSmoother = () => {
         content,
         smooth: 0,
         smoothTouch: 0,
-        effects: true,
+        effects: '[data-speed]',
       })
 
       const fadeTimelines: gsap.core.Timeline[] = []
       const speedTargets = Array.from(content.querySelectorAll<HTMLElement>('[data-speed]'))
-      speedTargets.forEach((target) => {
+
+      // find extra attr data-fade=true
+      const fadeTargets = speedTargets.filter((target) => target.getAttribute('data-fade') === 'true')
+
+      fadeTargets.forEach((target) => {
         const speedValue = getSpeedValue(target)
         if (speedValue === null || speedValue >= 1) {
           return
@@ -91,9 +95,9 @@ const useScrollSmoother = () => {
         gsap.set(target, { transformOrigin: 'center bottom' })
 
         timeline
-          .fromTo(target, { opacity: 0 }, { opacity: 1, duration: FADE_DURATION, ease: 'none' })
+          .fromTo(target, { opacity: 1 }, { opacity: 1, duration: FADE_DURATION, ease: 'none' })
           .to(target, { opacity: 1, duration: HOLD_DURATION, ease: 'none' })
-          .to(target, { opacity: 0, duration: FADE_DURATION, ease: 'none' })
+          .to(target, { opacity: 1, duration: FADE_DURATION, ease: 'none' })
 
         fadeTimelines.push(timeline)
       })

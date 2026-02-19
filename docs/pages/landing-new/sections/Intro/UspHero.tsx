@@ -1,48 +1,52 @@
-import React, { type MouseEvent, useEffect, useRef, useState } from 'react'
+import React, { type MouseEvent, useCallback, useEffect, useRef } from 'react'
 import { H3Headline } from '../../components/Headline'
 import cm, { cmMerge } from '@classmatejs/react'
 import { landingPageHeroUsps } from '../../util/constants'
 import GradientText from '../../components/GradientText'
-import { uiConfig, UiVariantBtnColor } from '../../util/ui.constants'
+import { uiConfig, UiVariantBgColor, UiVariantBtnColor } from '../../util/ui.constants'
 import { ChevronsRight } from 'lucide-react'
 import type { UspHoverTarget } from './intro.types'
 import BlurDot from '../../components/BlurDot'
 import ledgeGraphic from '../../assets/decorators/box/ledge.png'
 
 interface UspHeroProps {
+  activeUspId: string | null
+  slideshowProgress: number
+  isSlideshowMode: boolean
   onHoverChange?: (hoverTarget: UspHoverTarget | null) => void
 }
 
-const UspHero = ({ onHoverChange }: UspHeroProps) => {
-  const [hoveredUsp, setHoveredUsp] = useState<string | null>(null)
+const UspHero = ({ onHoverChange, activeUspId, slideshowProgress, isSlideshowMode }: UspHeroProps) => {
   const hoverLeaveTimeoutRef = useRef<number | null>(null)
-  const clearHoverLeaveTimeout = () => {
+  const clearHoverLeaveTimeout = useCallback(() => {
     if (hoverLeaveTimeoutRef.current === null) {
       return
     }
     window.clearTimeout(hoverLeaveTimeoutRef.current)
     hoverLeaveTimeoutRef.current = null
-  }
+  }, [])
 
-  const handleMouseEnter = (event: MouseEvent<HTMLDivElement>, uspId: string, dotColor: UspHoverTarget['color']) => {
-    clearHoverLeaveTimeout()
-    const rect = event.currentTarget.getBoundingClientRect()
-    setHoveredUsp(uspId)
-    onHoverChange?.({
-      color: dotColor,
-      x: rect.left + rect.width / 2,
-      y: rect.top + rect.height / 2,
-    })
-  }
+  const handleMouseEnter = useCallback(
+    (event: MouseEvent<HTMLDivElement>, uspId: string, dotColor: UspHoverTarget['color']) => {
+      clearHoverLeaveTimeout()
+      const rect = event.currentTarget.getBoundingClientRect()
+      onHoverChange?.({
+        id: uspId,
+        color: dotColor,
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height / 2,
+      })
+    },
+    [onHoverChange],
+  )
 
-  const handleMouseLeave = () => {
+  const handleMouseLeave = useCallback(() => {
     clearHoverLeaveTimeout()
     hoverLeaveTimeoutRef.current = window.setTimeout(() => {
-      setHoveredUsp(null)
       onHoverChange?.(null)
       hoverLeaveTimeoutRef.current = null
     }, 90)
-  }
+  }, [onHoverChange])
 
   useEffect(() => {
     return () => {
@@ -51,11 +55,11 @@ const UspHero = ({ onHoverChange }: UspHeroProps) => {
   }, [])
 
   return (
-    <div className="w-full">
+    <div className="w-full" data-usp-hero>
       <div className="grid grid-cols-3 md:w-6/7 mx-auto">
         {landingPageHeroUsps.map((usp) => {
-          const isHovered = hoveredUsp === usp.id
-          const isMuted = hoveredUsp !== null && !isHovered
+          const isHovered = activeUspId === usp.id
+          const isMuted = activeUspId !== null && !isHovered
 
           return (
             <div
@@ -69,14 +73,13 @@ const UspHero = ({ onHoverChange }: UspHeroProps) => {
               onMouseEnter={(event) => handleMouseEnter(event, usp.id, usp.dotColor)}
               onMouseLeave={handleMouseLeave}
             >
-                           
               <BlurDot
                 type={usp.dotColor}
                 size="md"
                 visibility="low"
-                className="left-1/2 top-20 -translate-x-1/2 -translate-y-1/2"
+                className="left-1/2 top-10 -translate-x-1/2 -translate-y-1/2"
               />
- <StyledUspItemInner $hovered={isHovered}>
+              <StyledUspItemInner $hovered={isHovered}>
                 <img src={ledgeGraphic} alt="" className="absolute w-full h-full z-2 object-cover" />
               </StyledUspItemInner>
               <StyledTextContent $hovered={isHovered}>
@@ -84,7 +87,7 @@ const UspHero = ({ onHoverChange }: UspHeroProps) => {
                 <StyledIconWrapper>{usp.icon}</StyledIconWrapper>
                 <div className="text-center h-full flex flex-col flex-1 p-5">
                   <div className="flex-1 min-h-32">
-                    <H3Headline as="h2" className="mb-3">
+                    <H3Headline as="h2" className="mb-2">
                       <span className="relative block w-fit mx-auto">
                         <StyledTitleShape $hovered={isHovered}>{usp.title}</StyledTitleShape>
                         <StyledTitle className={'absolute left-0 top-0 transition-opacity'}>
@@ -92,6 +95,22 @@ const UspHero = ({ onHoverChange }: UspHeroProps) => {
                         </StyledTitle>
                       </span>
                     </H3Headline>
+                    <div className="relative h-0.5 w-3/4 mb-2 mx-auto">
+                      {isSlideshowMode && isHovered && (
+                        <div className="pointer-events-none bottom-2 h-full w-full bg-white rounded-full overflow-hidden z-8">
+                          <div
+                            className={cmMerge(
+                              'h-full rounded-full transition-[width,opacity] duration-100 ease-linear mx-auto',
+                              UiVariantBgColor[usp.dotColor],
+                              isSlideshowMode && isHovered ? 'opacity-100' : 'opacity-0',
+                            )}
+                            style={{
+                              width: `${Math.max(0, Math.min(1, isSlideshowMode && isHovered ? slideshowProgress : 0)) * 100}%`,
+                            }}
+                          />
+                        </div>
+                      )}
+                    </div>
                     <p className="text-lg">{usp.description}</p>
                   </div>
                   <span

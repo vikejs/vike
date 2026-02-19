@@ -9,11 +9,12 @@ import type { IntroBlobColor } from './intro.types'
 interface UseIntroHeadlineGradientMotionArgs {
   firstTextRef: RefObject<HTMLSpanElement | null>
   secondTextRef: RefObject<HTMLSpanElement | null>
+  ctaButtonRef?: RefObject<HTMLElement | null>
   hoveredColor: IntroBlobColor | null
 }
 
 interface GradientLooper {
-  target: HTMLSpanElement
+  target: HTMLElement
   currentColor: IntroBlobColor
   delayedCall: gsap.core.Tween | null
   colorTween: gsap.core.Tween | null
@@ -57,6 +58,7 @@ const tweenGradientToColor = (entry: GradientLooper, color: IntroBlobColor, dura
 const useIntroHeadlineGradientMotion = ({
   firstTextRef,
   secondTextRef,
+  ctaButtonRef,
   hoveredColor,
 }: UseIntroHeadlineGradientMotionArgs) => {
   const controllerRef = useRef<GradientMotionController | null>(null)
@@ -65,6 +67,7 @@ const useIntroHeadlineGradientMotion = ({
     () => {
       const firstText = firstTextRef.current
       const secondText = secondTextRef.current
+      const ctaButton = ctaButtonRef?.current ?? null
       if (!firstText || !secondText) {
         return
       }
@@ -73,6 +76,9 @@ const useIntroHeadlineGradientMotion = ({
         { target: firstText, currentColor: 'blue', delayedCall: null, colorTween: null },
         { target: secondText, currentColor: 'blue', delayedCall: null, colorTween: null },
       ]
+      if (ctaButton) {
+        loopers.push({ target: ctaButton, currentColor: 'blue', delayedCall: null, colorTween: null })
+      }
 
       const state = { lockedColor: hoveredColor as IntroBlobColor | null }
 
