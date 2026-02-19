@@ -30,8 +30,17 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
 
 function pluginUniversalDeployServer(vikeConfig: VikeConfigInternal): Plugin[] {
   const serverConfig = vikeConfig._pageConfigGlobal.configValueSources.server?.[0]?.definedAt
+  const vikeExtends = vikeConfig.config.extends
+    ? Array.isArray(vikeConfig.config.extends)
+      ? vikeConfig.config.extends
+      : [vikeConfig.config.extends]
+    : []
   if (serverConfig && 'filePathAbsoluteFilesystem' in serverConfig) {
     const serverPath = serverConfig['filePathAbsoluteFilesystem']
+
+    // +server was also used by vike-server and vike-photon
+    const vikeExtendsNames = new Set(vikeExtends.map((vikePlugin) => vikePlugin.name))
+    if (vikeExtendsNames.has('vike-server') || vikeExtendsNames.has('vike-photon')) return []
 
     if (serverPath) {
       const filterRolldown = {
