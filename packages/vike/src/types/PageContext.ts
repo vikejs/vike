@@ -14,6 +14,7 @@ export type { PageContextInternalServer }
 export type { PageContextInternalClient }
 export type { PageContextInternalClient_ServerRouting }
 export type { PageContextInternalClient_ClientRouting }
+export type { PageContextInternalInit }
 export type { PageContextInit }
 
 // TO-DO/next-major-release: remove these three exports
@@ -179,10 +180,11 @@ type PageContextInit = {
    * https://vike.dev/pageContext#headersOriginal
    */
   headersOriginal?: unknown // We set it to the type `unknown` instead of the type `HeadersInit` because `HeadersInit` isn't accurate: for example, `http.IncomingHttpHeaders` is a valid input for `new Headers()` but doesn't match the `HeadersInit` init.
-  req?: IncomingMessage
   /** @deprecated Set `pageContextInit.urlOriginal` instead  */ // TO-DO/next-major-release: remove
   url?: string
 }
+
+type PageContextInternalInit = PageContextInit & { _reqDev?: IncomingMessage }
 
 type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
   PageContextInit &
