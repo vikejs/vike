@@ -13,7 +13,7 @@ async function universalVikeHandler<T extends string>(
     runtime,
     urlOriginal: request.url,
     headersOriginal: request.headers,
-    method: request.method,
+    _reqWeb: request,
   }
   const pageContext = await renderPageServer(pageContextInit)
   const response = pageContext.httpResponse
