@@ -94,6 +94,7 @@ type ConfigNameBuiltIn =
   | 'hooksTimeout'
   | 'clientHooks'
   | 'middleware'
+  | 'server'
 
 type ConfigNameGlobal =
   | 'onPrerenderStart'

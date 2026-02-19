@@ -336,6 +336,10 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     eager: true,
     global: true,
   },
+  server: {
+    env: { server: true },
+    global: true,
+  },
   cli: {
     env: { config: true },
     global: true,

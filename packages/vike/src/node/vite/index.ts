@@ -1,3 +1,5 @@
+import { pluginUniversalDeploy } from './plugins/pluginUniversalDeploy.js'
+
 export default plugin
 export { plugin }
 // TO-DO/next-major-release: remove
@@ -8,8 +10,6 @@ export type { VikeVitePluginOptions as UserConfig }
 export type { VikeVitePluginOptions }
 
 import type { Plugin } from 'vite'
-import { addEntry } from '@universal-deploy/store'
-import { catchAll } from '@universal-deploy/store/vite'
 import { getClientEntrySrcDev } from './shared/getClientEntrySrcDev.js'
 import { setGetClientEntrySrcDev } from '../../server/runtime/renderPageServer/getPageAssets/retrievePageAssetsDev.js'
 import { assertIsNotProductionRuntime } from '../../utils/assertSetup.js'
@@ -58,16 +58,6 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): Promise<Plug
     if (skip()) return []
     const vikeConfig = await getVikeConfigInternalEarly()
     const plugin: Plugin[] = [
-      {
-        name: 'UD',
-        config() {
-          addEntry({
-            id: 'vike/fetch',
-            route: '/**',
-          })
-        },
-      },
-      catchAll(),
       ...pluginCommon(vikeVitePluginOptions),
       ...pluginVirtualFiles(),
       ...pluginDev(),
@@ -85,6 +75,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): Promise<Plug
       ...pluginReplaceConstantsGlobalThis(),
       ...pluginStaticReplace(vikeConfig),
       ...pluginNonRunnabeDev(),
+      ...pluginUniversalDeploy(vikeConfig),
       ...(await pluginViteConfigVikeExtensions(vikeConfig)),
     ]
     Object.assign(plugin, pluginAddendum)
