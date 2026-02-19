@@ -6,6 +6,9 @@ import type { Plugin } from 'vite'
 import { VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 import '../assertEnvVite.js'
 import { catchAll, devServer } from '@universal-deploy/store/vite'
+import { serverEntryVirtualId } from '@brillout/vite-plugin-server-entry/plugin'
+import MagicString from 'magic-string'
+import { escapeRegex } from '../../../utils/escapeRegex.js'
 
 const catchAllRE = /^virtual:ud:catch-all$/
 
@@ -31,6 +34,12 @@ function pluginUniversalDeployServer(vikeConfig: VikeConfigInternal): Plugin[] {
     const serverPath = serverConfig['filePathAbsoluteFilesystem']
 
     if (serverPath) {
+      const filterRolldown = {
+        id: {
+          include: new RegExp(escapeRegex(serverPath)),
+        },
+      }
+
       return [
         {
           name: 'vike:pluginUniversalDeploy:server',
@@ -44,6 +53,34 @@ function pluginUniversalDeployServer(vikeConfig: VikeConfigInternal): Plugin[] {
               return this.resolve(serverPath)
             },
           },
+        },
+        {
+          name: 'vike:pluginUniversalDeploy:serverEntry',
+          apply: 'build',
+
+          applyToEnvironment(env) {
+            return env.config.consumer === 'server'
+          },
+
+          transform: {
+            order: 'post',
+            filter: filterRolldown,
+            handler(code, id) {
+              const ms = new MagicString(code)
+              // Inject Vike virtual server entry
+              ms.prepend(`import "${serverEntryVirtualId}";\n`)
+
+              return {
+                code: ms.toString(),
+                map: ms.generateMap({
+                  hires: true,
+                  source: id,
+                }),
+              }
+            },
+          },
+
+          sharedDuringBuild: true,
         },
         devServer(),
       ]
