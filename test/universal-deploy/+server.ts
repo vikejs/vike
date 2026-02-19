@@ -7,6 +7,9 @@ const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000
 
 async function serve() {
   const app = express()
+
+  app.get('/express', (_req, res) => res.send('Running express server'))
+
   apply(app, [vikeMiddleware])
 
   return toFetchHandler(app)

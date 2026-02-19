@@ -6,6 +6,11 @@ import { testRunClassic } from '../../test/utils'
 function testRun(...args: Parameters<typeof testRunClassic>) {
   testRunClassic(...args)
 
+  test('Running on Express', async () => {
+    const html = await fetchHtml('/express')
+    expect(html).toContain('Running express server')
+  })
+
   test('Add to-do item', async () => {
     await page.goto(`${getServerUrl()}/todo`)
 

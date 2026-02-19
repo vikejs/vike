@@ -5,7 +5,7 @@ export { pluginUniversalDeploy }
 import type { Plugin } from 'vite'
 import { VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 import '../assertEnvVite.js'
-import { catchAll } from '@universal-deploy/store/vite'
+import { catchAll, devServer } from '@universal-deploy/store/vite'
 
 const catchAllRE = /^virtual:ud:catch-all$/
 
@@ -45,6 +45,7 @@ function pluginUniversalDeployServer(vikeConfig: VikeConfigInternal): Plugin[] {
             },
           },
         },
+        devServer(),
       ]
     }
   }
