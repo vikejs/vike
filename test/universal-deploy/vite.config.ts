@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 import { defineConfig, type Plugin } from 'vite'
 import vike from 'vike/plugin'
 import { devServer } from '@universal-deploy/store/vite'
-// import { node } from '@universal-deploy/node/vite'
+import { node } from '@universal-deploy/node/vite'
 
 const re_catchAll = /^virtual:ud:catch-all$/
 
@@ -32,8 +32,7 @@ export default defineConfig({
     telefunc(),
     photon({ entry: './express-entry.ts' }),
     // FIXME fix conditions
-    // node(),
-    // FIXME fix telefunc
+    node(),
     devServer(),
   ],
 })

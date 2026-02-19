@@ -5,8 +5,6 @@ import { toFetchHandler } from 'srvx/node'
 
 const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000
 
-console.log('EXPRESS ENTRY')
-
 async function serve() {
   const app = express()
   apply(app, [vikeMiddleware])
