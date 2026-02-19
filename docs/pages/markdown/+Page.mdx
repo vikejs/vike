@@ -163,7 +163,7 @@ export default {
       eager: true,
       env: {
         server: true,
-        // Instead of `client: true`, we use onCreateGlobalContext() with passToClient to
+        // Instead of `client: true`, we use +onCreateGlobalContext with +passToClient to
         // be able to determine exactly what metadata is sent to the client-side.
         client: false
       }

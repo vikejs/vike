@@ -12,11 +12,13 @@ type Meta = {
     client?: boolean
     server?: boolean
     config?: boolean
+    production?: boolean
   }
   cumulative?: boolean
-  global?: boolean | ((value: unknown, info: { isGlobalLocation: boolean }) => boolean)
   eager?: boolean
+  global?: boolean | ((value: unknown, info: { isGlobalLocation: boolean }) => boolean)
   effect?: ((config: { configValue: unknown configDefinedAt: string }) => Config | undefined)
+  vite?: boolean
   isDefinedByPeerDependency?: true
 }
 ```
@@ -26,12 +28,13 @@ type Meta = {
   The `meta` setting is an advanced feature. Instead of using `meta`, consider using <Link href="/file-env" noBreadcrumb={true} /> or <Link href="/extensions">Vike Extensions</Link> (they use `meta` on your behalf).
 </Advanced>
 
-The `meta` settings enables you to create:
+The `meta` setting enables you to create:
  - **New settings**.
    - <Link href="#example-dataendpointurl" doNotInferSectionTitle />
    - <Link href="#example-sql" doNotInferSectionTitle />
    - <Link href="#example-title-and-description" doNotInferSectionTitle />
    - <Link href="#example-layout" doNotInferSectionTitle />
+   - <Link href="#example-metadata" doNotInferSectionTitle />
  - **New hooks**.
    - Example: `+onInit` or `+onBeforeFetchingData`
  - **Modifying the environment of existing hooks**.
@@ -85,6 +88,7 @@ async function data(pageContext: PageContextServer) {
   // ...
 }
 ```
+
 
 ## Example: `+sql`
 
@@ -383,6 +387,33 @@ async function onRenderClient(pageContext: PageContextClient) {
 ```
 
 
+## Example: `+metadata`
+
+Another common use case is defining page metadata.
+
+```ts
+// /pages/+config.ts
+
+import type { Config } from 'vike/types'
+
+export default {
+  meta: {
+    // Create +metadata setting
+    metadata: {
+      // Make +metadata available to all pages
+      eager: true,
+      env: {
+        server: true,
+        client: true
+      }
+    }
+  }
+} satisfies Config
+```
+
+See more examples at <Link href="/markdown#metadata" />.
+
+
 ## Example: modify `+data` env
 
 You can use `meta` to change the environment in which built-in hooks are loaded. For example, you can change the environment of the <Link href="/data">`data()` hook</Link> from `{ server: true, client: false }` to `{ server: true, client: true }`.
@@ -457,22 +488,31 @@ import type { Config } from 'vike/types'
 
 export default {
   meta: {
-    someSettingOrHook: {
-      // [Required] Defines the environment in which the config value is loaded.
+    someConfig: {
+      // [Required] Defines the environment in which the config value is loaded
       env: {
-        // Load the config value on the server. [Required]
+        // [Required] Load config value on the server
         server: true,
-        // Load the config value on the client. [Required]
+        // [Required] Load config value on the client
         client: true,
-        // Load the config value at config-time (when Vike loads +config.ts files). [Optional]
-        config: false // default value
+        // [Optional] Load config value at config-time (when Vike loads +config.ts files)
+        config: false, // default value
+        // [Optional] Load config value only in prod/dev (`true`/`false` => only prod/dev)
+        production: undefined // default value
       },
 
-      // [Optional] Whether config values should be merged (instead of overridden).
+      // [Optional] Whether config values should be merged (instead of overridden)
       cumulative: false, // default value
 
-      // [Optional] Function called when the config value is loaded at config-time.
-      // Requires `env.config` to be `true`.
+      // [Optional] Whether all config values should be loaded at initialization. This
+      // means that all values of all pages are always available.
+      eager: false, // default value
+
+      // [Optional] Whether the config value must be defined globally (not per-page)
+      global: false, // default value
+
+      // [Optional] Function called when the config value is loaded at config-time. Note
+      // that `effect()` requires `env.config` to be `true`.
       effect({ configDefinedAt, configValue }) {
         if (someCondition) {
           // This config object is merged with the current one.
@@ -485,7 +525,11 @@ export default {
             }
           }
         }
-      }
+      },
+
+      // [Optional] Whether the config value affects Vite's configuration and therefore
+      // whether a change during dev (HMR) should trigger Vite to reload its config.
+      vite: false // default value
     }
   }
 } satisfies Config
