@@ -184,7 +184,7 @@ type PageContextInit = {
   url?: string
 }
 
-type PageContextInternalInit = PageContextInit & { _reqDev?: IncomingMessage }
+type PageContextInternalInit = PageContextInit & { _reqDev?: IncomingMessage; _reqWeb?: Request }
 
 type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
   PageContextInit &

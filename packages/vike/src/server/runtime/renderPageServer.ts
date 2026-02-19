@@ -400,11 +400,13 @@ async function renderPageServerEntryWithMiddlewares(
   ])
   const handler = router[universalSymbol] as UniversalHandler
 
-  const request = pageContext._reqDev
-    ? requestAdapter(pageContext._reqDev)
-    : new Request(new URL(pageContext.urlOriginal, 'http://localhost').toString(), {
-        headers: pageContext.headers ?? {},
-      })
+  const request =
+    pageContext._reqWeb ??
+    (pageContext._reqDev
+      ? requestAdapter(pageContext._reqDev)
+      : new Request(new URL(pageContext.urlOriginal, 'http://localhost').toString(), {
+          headers: pageContext.headers ?? {},
+        }))
 
   const res = await handler(request, {}, getAdapterRuntime('other', { params: undefined }))
 
