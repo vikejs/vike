@@ -21,7 +21,7 @@ function addSsrMiddleware(
     const pageContextInit = {
       urlOriginal: url,
       headersOriginal: headers,
-      req,
+      _reqDev: req,
     }
     Object.defineProperty(pageContextInit, 'userAgent', {
       get() {
