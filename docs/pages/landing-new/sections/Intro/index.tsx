@@ -9,20 +9,52 @@ import HeroBackgroundColorFade from './HeroBackgroundColorFade'
 import type { IntroBlobColor, UspHoverTarget } from './intro.types'
 import useIntroHeadlineGradientMotion from './useIntroHeadlineGradientMotion'
 import { landingPageHeroUsps } from '../../util/constants'
+import { UiVariantTextColor } from '../../util/ui.constants'
 
 const motionColors: IntroBlobColor[] = ['green', 'blue', 'orange']
 const slideshowStepDurationMs = 4200
 const slideshowTickMs = 40
 const initialCtaColor: IntroBlobColor = 'green'
+type HeadlineKeyword = 'reliable' | 'empowering' | 'fast'
+const activeHeadlineWordByColor: Record<IntroBlobColor, HeadlineKeyword> = {
+  blue: 'reliable',
+  green: 'empowering',
+  orange: 'fast',
+}
+
+const HeadlineWord = ({
+  word,
+  isActive,
+  color,
+}: {
+  word: string
+  isActive: boolean
+  color: IntroBlobColor
+}) => {
+  return (
+    <span className="relative inline-block">
+      <span
+        className={`${UiVariantTextColor.neutral} transition-opacity duration-450 ease-in-out ${isActive ? 'opacity-0' : 'opacity-100'}`}
+      >
+        {word}
+      </span>
+      <GradientText
+        color={color}
+        className={`absolute inset-0 transition-opacity duration-450 ease-in-out ${isActive ? 'opacity-100' : 'opacity-0'}`}
+      >
+        {word}
+      </GradientText>
+    </span>
+  )
+}
 
 const IntroSection = () => {
   const [manualHoverTarget, setManualHoverTarget] = useState<UspHoverTarget | null>(null)
   const [slideshowState, setSlideshowState] = useState({ index: 0, progress: 0 })
-  const firstGradientRef = useRef<HTMLSpanElement>(null)
-  const secondGradientRef = useRef<HTMLSpanElement>(null)
   const getStartedButtonRef = useRef<HTMLAnchorElement>(null)
   const slideshowUsp = landingPageHeroUsps[slideshowState.index] ?? landingPageHeroUsps[0]
   const activeColor = manualHoverTarget?.color ?? slideshowUsp?.dotColor ?? 'blue'
+  const activeHeadlineWord = activeHeadlineWordByColor[activeColor]
   const activeUspId = manualHoverTarget?.id ?? slideshowUsp?.id ?? null
   const isSlideshowMode = manualHoverTarget === null
 
@@ -63,8 +95,6 @@ const IntroSection = () => {
   }
 
   useIntroHeadlineGradientMotion({
-    firstTextRef: firstGradientRef,
-    secondTextRef: secondGradientRef,
     ctaButtonRef: getStartedButtonRef,
     hoveredColor: activeColor,
   })
@@ -88,18 +118,13 @@ const IntroSection = () => {
             </span>
             <div className="relative">
               <Headline as="h1" variant="xlarge" className="mb-4">
-                {'Build '}
-                <GradientText ref={firstGradientRef} color="green">
-                  fast.
-                </GradientText>
-                {' Build '}
-                <GradientText ref={secondGradientRef} color="green" rotation={45}>
-                  right.
-                </GradientText>
+                <HeadlineWord word="Reliable." isActive={activeHeadlineWord === 'reliable'} color="blue" />{' '}
+                <HeadlineWord word="Empowering." isActive={activeHeadlineWord === 'empowering'} color="green" />{' '}
+                <HeadlineWord word="Fast." isActive={activeHeadlineWord === 'fast'} color="orange" />
               </Headline>
             </div>
             <p className="text-xl md:text-2xl text-grey text-center w-3/4 lg:w-3/5 mx-auto mb-6">
-              Plug-and-play composable framework for building applications with speed, flexibility, and stability.
+              The last JavaScript framework you'll need, powered by a next-gen architecture.
             </p>
             <div className="flex gap-2 items-center justify-center mb-16">
               <a

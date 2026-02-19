@@ -63,6 +63,7 @@ export const UiColorVariantKey = {
 export type UiColorVariantKey = (typeof UiColorVariantKey)[keyof typeof UiColorVariantKey]
 
 export const UiVariantTextColor = {
+  neutral: 'text-base-content',
   green: 'text-primary',
   blue: 'text-secondary',
   orange: 'text-accent',

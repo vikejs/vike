@@ -40,6 +40,7 @@ const HeroBackgroundColorFade = ({ hoveredColor }: HeroBackgroundColorFadeProps)
             }`}
           />
         ))}
+        <div className="absolute bottom-0 left-0 h-1/2 w-full bg-linear-to-b to-base-300 z-10" />
       </div>
     </div>
   )
