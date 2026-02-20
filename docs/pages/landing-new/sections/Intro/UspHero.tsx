@@ -1,4 +1,6 @@
 import React, { type MouseEvent, useCallback, useEffect, useRef } from 'react'
+import { useGSAP } from '@gsap/react'
+import { gsap } from 'gsap'
 import { H3Headline } from '../../components/Headline'
 import cm, { cmMerge } from '@classmatejs/react'
 import { landingPageHeroUsps } from '../../util/constants'
@@ -11,13 +13,22 @@ import ledgeGraphic from '../../assets/decorators/box/ledge.png'
 
 interface UspHeroProps {
   activeUspId: string | null
-  slideshowProgress: number
+  slideshowCycle: number
+  slideshowDurationMs: number
   isSlideshowMode: boolean
   onHoverChange?: (hoverTarget: UspHoverTarget | null) => void
 }
 
-const UspHero = ({ onHoverChange, activeUspId, slideshowProgress, isSlideshowMode }: UspHeroProps) => {
+const UspHero = ({
+  onHoverChange,
+  activeUspId,
+  slideshowCycle,
+  slideshowDurationMs,
+  isSlideshowMode,
+}: UspHeroProps) => {
   const hoverLeaveTimeoutRef = useRef<number | null>(null)
+  const progressFillRefs = useRef<Partial<Record<string, HTMLDivElement | null>>>({})
+  const progressTweenRef = useRef<gsap.core.Tween | null>(null)
   const clearHoverLeaveTimeout = useCallback(() => {
     if (hoverLeaveTimeoutRef.current === null) {
       return
@@ -48,11 +59,57 @@ const UspHero = ({ onHoverChange, activeUspId, slideshowProgress, isSlideshowMod
     }, 90)
   }, [onHoverChange])
 
+  useGSAP(
+    () => {
+      progressTweenRef.current?.kill()
+      progressTweenRef.current = null
+
+      const progressFills = Object.values(progressFillRefs.current).filter(
+        (node): node is HTMLDivElement => node !== null && node !== undefined,
+      )
+
+      if (!progressFills.length) {
+        return
+      }
+
+      gsap.set(progressFills, { scaleX: 0 })
+
+      if (!isSlideshowMode || !activeUspId) {
+        return
+      }
+
+      const activeProgressFill = progressFillRefs.current[activeUspId]
+      if (!activeProgressFill) {
+        return
+      }
+
+      const setScaleX = gsap.quickSetter(activeProgressFill, 'scaleX')
+      const progressState = { value: 0 }
+      progressTweenRef.current = gsap.to(progressState, {
+        value: 1,
+        duration: slideshowDurationMs / 1000,
+        ease: 'none',
+        overwrite: 'auto',
+        onUpdate: () => {
+          setScaleX(progressState.value)
+        },
+      })
+
+      return () => {
+        progressTweenRef.current?.kill()
+        progressTweenRef.current = null
+      }
+    },
+    { dependencies: [activeUspId, isSlideshowMode, slideshowCycle, slideshowDurationMs] },
+  )
+
   useEffect(() => {
     return () => {
       clearHoverLeaveTimeout()
+      progressTweenRef.current?.kill()
+      progressTweenRef.current = null
     }
-  }, [])
+  }, [clearHoverLeaveTimeout])
 
   return (
     <div className="w-full" data-usp-hero>
@@ -99,13 +156,15 @@ const UspHero = ({ onHoverChange, activeUspId, slideshowProgress, isSlideshowMod
                       {isSlideshowMode && isHovered && (
                         <div className="pointer-events-none bottom-2 h-full w-full bg-white rounded-full overflow-hidden z-8">
                           <div
+                            ref={(node) => {
+                              progressFillRefs.current[usp.id] = node
+                            }}
                             className={cmMerge(
-                              'h-full rounded-full transition-[width,opacity] duration-100 ease-linear mx-auto',
+                              'h-full w-full rounded-full origin-left',
                               UiVariantBgColor[usp.dotColor],
-                              isSlideshowMode && isHovered ? 'opacity-100' : 'opacity-0',
                             )}
                             style={{
-                              width: `${Math.max(0, Math.min(1, isSlideshowMode && isHovered ? slideshowProgress : 0)) * 100}%`,
+                              transform: 'scaleX(0)',
                             }}
                           />
                         </div>

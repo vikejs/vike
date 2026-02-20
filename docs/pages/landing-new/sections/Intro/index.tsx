@@ -13,7 +13,6 @@ import { UiVariantTextColor } from '../../util/ui.constants'
 
 const motionColors: IntroBlobColor[] = ['green', 'blue', 'orange']
 const slideshowStepDurationMs = 4200
-const slideshowTickMs = 40
 const initialCtaColor: IntroBlobColor = 'green'
 type HeadlineKeyword = 'reliable' | 'empowering' | 'fast'
 const activeHeadlineWordByColor: Record<IntroBlobColor, HeadlineKeyword> = {
@@ -32,7 +31,7 @@ const HeadlineWord = ({
   color: IntroBlobColor
 }) => {
   return (
-    <span className="relative inline-block">
+    <span className="relative inline-block min-h-20">
       <span
         className={`${UiVariantTextColor.neutral} transition-opacity duration-450 ease-in-out ${isActive ? 'opacity-0' : 'opacity-100'}`}
       >
@@ -50,7 +49,7 @@ const HeadlineWord = ({
 
 const IntroSection = () => {
   const [manualHoverTarget, setManualHoverTarget] = useState<UspHoverTarget | null>(null)
-  const [slideshowState, setSlideshowState] = useState({ index: 0, progress: 0 })
+  const [slideshowState, setSlideshowState] = useState({ index: 0, cycle: 0 })
   const getStartedButtonRef = useRef<HTMLAnchorElement>(null)
   const slideshowUsp = landingPageHeroUsps[slideshowState.index] ?? landingPageHeroUsps[0]
   const activeColor = manualHoverTarget?.color ?? slideshowUsp?.dotColor ?? 'blue'
@@ -64,14 +63,11 @@ const IntroSection = () => {
     }
 
     const intervalId = window.setInterval(() => {
-      setSlideshowState((prevState) => {
-        const nextProgress = prevState.progress + slideshowTickMs / slideshowStepDurationMs
-        if (nextProgress < 1) {
-          return { ...prevState, progress: nextProgress }
-        }
-        return { index: (prevState.index + 1) % landingPageHeroUsps.length, progress: 0 }
-      })
-    }, slideshowTickMs)
+      setSlideshowState((prevState) => ({
+        index: (prevState.index + 1) % landingPageHeroUsps.length,
+        cycle: prevState.cycle + 1,
+      }))
+    }, slideshowStepDurationMs)
 
     return () => {
       window.clearInterval(intervalId)
@@ -83,15 +79,13 @@ const IntroSection = () => {
       setManualHoverTarget(hoverTarget)
       const hoveredIndex = landingPageHeroUsps.findIndex((usp) => usp.id === hoverTarget.id)
       if (hoveredIndex >= 0) {
-        setSlideshowState((prevState) => ({ ...prevState, index: hoveredIndex, progress: 0 }))
-      } else {
-        setSlideshowState((prevState) => ({ ...prevState, progress: 0 }))
+        setSlideshowState((prevState) => ({ ...prevState, index: hoveredIndex }))
       }
       return
     }
 
     setManualHoverTarget(null)
-    setSlideshowState((prevState) => ({ ...prevState, progress: 0 }))
+    setSlideshowState((prevState) => ({ ...prevState, cycle: prevState.cycle + 1 }))
   }
 
   useIntroHeadlineGradientMotion({
@@ -118,8 +112,8 @@ const IntroSection = () => {
             </span>
             <div className="relative">
               <Headline as="h1" variant="xlarge" className="mb-4">
+                <HeadlineWord word="Open." isActive={activeHeadlineWord === 'empowering'} color="green" />{' '}
                 <HeadlineWord word="Reliable." isActive={activeHeadlineWord === 'reliable'} color="blue" />{' '}
-                <HeadlineWord word="Empowering." isActive={activeHeadlineWord === 'empowering'} color="green" />{' '}
                 <HeadlineWord word="Fast." isActive={activeHeadlineWord === 'fast'} color="orange" />
               </Headline>
             </div>
@@ -145,7 +139,8 @@ const IntroSection = () => {
             <UspHero
               onHoverChange={handleUspHoverChange}
               activeUspId={activeUspId}
-              slideshowProgress={slideshowState.progress}
+              slideshowCycle={slideshowState.cycle}
+              slideshowDurationMs={slideshowStepDurationMs}
               isSlideshowMode={isSlideshowMode}
             />
           </div>

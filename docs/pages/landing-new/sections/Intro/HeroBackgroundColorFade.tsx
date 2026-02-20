@@ -25,7 +25,7 @@ const HeroBackgroundColorFade = ({ hoveredColor }: HeroBackgroundColorFadeProps)
       className="absolute inset-0 h-screen w-full pointer-events-none select-none z-0 overflow-hidden"
       aria-hidden="true"
     >
-      <div className="absolute left-1/2 top-[44%] -translate-x-1/2 -translate-y-1/2 w-[clamp(44rem,110vw,130rem)] aspect-square">
+      <div className="absolute left-1/2 top-[24%] -translate-x-1/2 -translate-y-1/2 w-[clamp(44rem,110vw,130rem)] aspect-square">
         {colors.map((color) => (
           <img
             key={color}
@@ -36,7 +36,7 @@ const HeroBackgroundColorFade = ({ hoveredColor }: HeroBackgroundColorFadeProps)
             decoding="async"
             draggable={false}
             className={`absolute inset-0 w-full h-full object-cover will-change-opacity transition-opacity duration-700 ease-in-out ${
-              activeColor !== null && color === activeColor ? 'opacity-20' : 'opacity-0'
+              activeColor !== null && color === activeColor ? 'opacity-15' : 'opacity-0'
             }`}
           />
         ))}
