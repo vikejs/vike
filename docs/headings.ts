@@ -1119,8 +1119,8 @@ function misc() {
   return (
     [
       {
-        title: 'Accessible',
-        url: '/pricing/accessible',
+        title: 'Gift Program',
+        url: '/pricing/gift',
         category: 'Overview',
       },
       {
