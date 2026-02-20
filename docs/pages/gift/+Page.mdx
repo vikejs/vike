@@ -47,7 +47,18 @@ Contact us to apply.
   </TabList>
   <TabPanel>
 
-Email (pre-filled subject & body): <a href="/mailto:vike-gift-program@brillout.com">{'vike-gift-program@brillout.com'}</a>
+<span>Email (pre-filled subject & body): </span>
+<a
+  href={
+    "mailto:vike-gift-program@brillout.com" +
+    "?subject=" + encodeURIComponent("Request: free forever") +
+    "&body=" + encodeURIComponent(
+      "Website: TODO/1\n\nBecause: TODO/2"
+    )
+  }
+>
+  {'vike-gift-program@brillout.com'}
+</a>
 
 Subject:
 ```
@@ -66,7 +77,19 @@ Because: TODO/2
   </TabPanel>
   <TabPanel>
 
-Email (pre-filled subject & body): <a href="/mailto:vike-gift-program@brillout.com">{'vike-gift-program@brillout.com'}</a>
+<span>Email (pre-filled subject & body): </span>
+<a
+  href={
+    "mailto:vike-gift-program@brillout.com" +
+    "?subject=" + encodeURIComponent("Request: extended free trial") +
+    "&body=" + encodeURIComponent(
+      "Website: TODO/1\n\nBecause: TODO/2\n\nExtend period: two years"
+    )
+  }
+>
+  {'vike-gift-program@brillout.com'}
+</a>
+
 
 Subject:
 ```
