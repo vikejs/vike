@@ -67,7 +67,8 @@ function PricingTable() {
                 License key isn't required: you use Vike just like any regular open source tool (zero encumbrance).
               </Note>
               <Note ref={3}>
-                Organizations with <Link href="/gift">few employees</Link> are considered resource-limited.
+                E.g. organizations with <Link href="/gift#who-s-eligible">few employees</Link> are considered
+                resource-limited.
               </Note>
               <Note ref={4}>
                 One-time payment for a lifetime license key: valid forever, including all future Vike updates.
