@@ -23,6 +23,13 @@ const pinHeight = 2
 const pinWidth = 12
 const strokeWidth = 3
 
+const getBlocksForHooks = (hooks: FlexGraphicHook[]) => {
+  if (!hooks.length) {
+    return []
+  }
+  return extensionBlockKeys.filter((block) => extensionBlockConnectedHooks[block].some((hook) => hooks.includes(hook)))
+}
+
 const FlexGraphic = () => {
   const {
     onRenderClientRef,
@@ -50,15 +57,6 @@ const FlexGraphic = () => {
     }),
     [onChangeHightlight],
   )
-
-  const getBlocksForHooks = useCallback((hooks: FlexGraphicHook[]) => {
-    if (!hooks.length) {
-      return []
-    }
-    return extensionBlockKeys.filter((block) =>
-      extensionBlockConnectedHooks[block].some((hook) => hooks.includes(hook)),
-    )
-  }, [])
 
   const onBlockHover = useCallback(
     (block: ExtensionBlockVariants) => {

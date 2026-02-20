@@ -85,7 +85,7 @@ export const createSlideshowScrollTrigger = ({
     scroller,
     start: 'top 65%',
     end: 'bottom 45%',
-    markers: true,
+    markers: false,
     onEnter,
     onEnterBack,
     onLeave,

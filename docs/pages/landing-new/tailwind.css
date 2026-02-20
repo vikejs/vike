@@ -11,10 +11,11 @@
   --color-content: oklch(0.3 0 0);
   --color-grey: oklch(0.5553 0 0);
   --color-grey-100: oklch(0.7347 0 0);
+  --color-grey-100-hex: #a9a9a9;
   --color-grey-200: oklch(0.89 0 0);
-  --color-grey-200-hex: #b4c1ce;
+  --color-grey-200-hex: #dbdbdb;
   --color-grey-300: oklch(0.93 0 0);
-  --color-grey-300-hex: #c1cbd5;
+  --color-grey-300-hex: #e8e8e8;
   --color-grey-400: oklch(0.9502 0 0);
   --color-bg: oklch(0.9702 0 0);
   --color-white: oklch(1 0 0);

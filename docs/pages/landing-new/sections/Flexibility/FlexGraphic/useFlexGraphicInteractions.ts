@@ -6,9 +6,10 @@ import { FlexGraphicHook, HOOK_NAME_KEYS } from '../../../util/constants'
 import { applyColor, applyStrokeWidth, createSlideshowScrollTrigger } from './animations'
 import { debounce } from '../../../util/gsap.utils'
 import { hookColors, uiConfig } from '../../../util/ui.constants'
+import useMotionAllowed from '../../../hooks/useMotionAllowed'
 
-const circuitDefaultColor = 'var(--color-grey-300-hex)'
-const baseStrokeWidth = 3
+const circuitDefaultColor = 'var(--color-grey-200-hex)'
+const baseStrokeWidth = 2.75
 const activeStrokeWidth = 3.5
 const hitboxStrokeWidth = 10
 
@@ -82,6 +83,7 @@ const useFlexGraphicInteractions = () => {
   )
   const [isSlideshowMode, setIsSlideshowMode] = useState(true)
   const [isScrollActive, setIsScrollActive] = useState(false)
+  const isMotionAllowed = useMotionAllowed()
   const slideshowIndexRef = useRef(0)
   const slideshowResumeTimeoutRef = useRef<number | null>(null)
   const getThemeRoot = () => {
@@ -166,6 +168,13 @@ const useFlexGraphicInteractions = () => {
   }
 
   const syncHookTimelines = (hooks: FlexGraphicHook[] | null) => {
+    if (!isMotionAllowed) {
+      Object.values(hookTimelinesRef.current).forEach((timeline) => {
+        timeline?.pause(0)
+      })
+      return
+    }
+
     const activeSet = new Set(hooks ?? [])
     Object.entries(hookTimelinesRef.current).forEach(([hookName, timeline]) => {
       if (!timeline) {
@@ -192,11 +201,11 @@ const useFlexGraphicInteractions = () => {
 
       syncHookTimelines(activeHooks)
     },
-    { dependencies: [activeHooks] },
+    { dependencies: [activeHooks, isMotionAllowed] },
   )
 
   const handleChangeHighlight = contextSafe((hooks: FlexGraphicHook[] | null) => {
-    if (!isScrollActive) {
+    if (!isScrollActive || !isMotionAllowed) {
       return
     }
 
@@ -304,9 +313,21 @@ const useFlexGraphicInteractions = () => {
     })
   })
 
+  useEffect(() => {
+    if (isMotionAllowed) {
+      return
+    }
+    if (slideshowResumeTimeoutRef.current) {
+      window.clearTimeout(slideshowResumeTimeoutRef.current)
+      slideshowResumeTimeoutRef.current = null
+    }
+    setIsSlideshowMode(false)
+    setActiveHooks(null)
+  }, [isMotionAllowed])
+
   // slideshow effect
   useEffect(() => {
-    const isSlideshowActive = isSlideshowMode && isScrollActive
+    const isSlideshowActive = isSlideshowMode && isScrollActive && isMotionAllowed
     if (!isSlideshowActive || !HOOK_NAME_KEYS.length) {
       return
     }
@@ -318,7 +339,7 @@ const useFlexGraphicInteractions = () => {
     }, slideshowIntervalMs)
 
     return () => window.clearInterval(intervalId)
-  }, [isSlideshowMode, isScrollActive, slideshowIntervalMs])
+  }, [isSlideshowMode, isScrollActive, isMotionAllowed, slideshowIntervalMs])
 
   useEffect(
     () => () => {

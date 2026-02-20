@@ -4,13 +4,13 @@ import GradientText, { defaultGradients } from '../../components/GradientText'
 import UspHero from './UspHero'
 import Headline from '../../components/Headline'
 import BrandSubsection from './BrandSubsection'
-import HeroBackgroundMotion from './HeroBackgroundMotion'
 import HeroBackgroundColorFade from './HeroBackgroundColorFade'
 import type { UspHoverTarget } from './intro.types'
 import useIntroHeadlineGradientMotion from './useIntroHeadlineGradientMotion'
 import type { UspProgressAnimationMode } from './UspHero'
+import useMotionAllowed from '../../hooks/useMotionAllowed'
 import { landingPageHeroUsps } from '../../util/constants'
-import { UiColorVariantKey, UiColorVariantKeys, UiVariantTextColor } from '../../util/ui.constants'
+import { UiColorVariantKey, UiVariantTextColor } from '../../util/ui.constants'
 
 const slideshowStepDurationMs = 4200
 const initialCtaColor: UiColorVariantKey = 'green'
@@ -45,7 +45,10 @@ const HeadlineWord = ({
 const IntroSection = () => {
   const [manualHoverTarget, setManualHoverTarget] = useState<UspHoverTarget | null>(null)
   const [slideshowState, setSlideshowState] = useState({ index: 0, cycle: 0 })
+  const [isSlideshowActive, setIsSlideshowActive] = useState(false)
   const getStartedButtonRef = useRef<HTMLAnchorElement>(null)
+  const isMotionAllowed = useMotionAllowed()
+  const shouldAnimateIntro = isMotionAllowed && isSlideshowActive
   const slideshowUsp = landingPageHeroUsps[slideshowState.index] ?? landingPageHeroUsps[0]
   const activeColor = manualHoverTarget?.color ?? slideshowUsp?.dotColor ?? 'blue'
   const activeHeadlineWord = UiColorVariantKey[activeColor]
@@ -53,7 +56,7 @@ const IntroSection = () => {
   const isSlideshowMode = manualHoverTarget === null
 
   useEffect(() => {
-    if (!isSlideshowMode || landingPageHeroUsps.length <= 1) {
+    if (!isSlideshowMode || !shouldAnimateIntro || landingPageHeroUsps.length <= 1) {
       return
     }
 
@@ -67,7 +70,14 @@ const IntroSection = () => {
     return () => {
       window.clearInterval(intervalId)
     }
-  }, [isSlideshowMode])
+  }, [isSlideshowMode, shouldAnimateIntro])
+
+  useEffect(() => {
+    if (shouldAnimateIntro) {
+      return
+    }
+    setManualHoverTarget(null)
+  }, [shouldAnimateIntro])
 
   const handleUspHoverChange = (hoverTarget: UspHoverTarget | null) => {
     if (hoverTarget) {
@@ -93,9 +103,6 @@ const IntroSection = () => {
       <div data-intro-section-root="true" className="relative">
         <div className="absolute top-0 left-0 h-1/2 w-full bg-linear-to-t to-white z-10" />
         <HeroBackgroundColorFade hoveredColor={activeColor} />
-        {/* {UiColorVariantKeys.map((color) => (
-          <HeroBackgroundMotion key={color} color={color} isActive={activeColor === color} />
-        ))} */}
         <LayoutComponent
           $size="sm"
           className="flex flex-col items-center text-center lg:min-h-[calc(100dvh-56*var(--spacing))] pb-20 overflow-hidden"
@@ -137,7 +144,9 @@ const IntroSection = () => {
               slideshowCycle={slideshowState.cycle}
               slideshowDurationMs={slideshowStepDurationMs}
               isSlideshowMode={isSlideshowMode}
+              animationsEnabled={shouldAnimateIntro}
               progressAnimationMode={uspProgressAnimationMode}
+              onSlideshowActiveChange={setIsSlideshowActive}
             />
           </div>
         </LayoutComponent>
