@@ -1124,6 +1124,10 @@ function misc() {
         category: 'Overview',
       },
       {
+        title: 'Gift Program',
+        url: '/pricing/gift/apply',
+      },
+      {
         title: 'Consulting',
         url: '/consulting',
       },
