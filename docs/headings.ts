@@ -1124,10 +1124,6 @@ function misc() {
         category: 'Overview',
       },
       {
-        title: 'Gift Program: how to apply',
-        url: '/pricing/gift/apply',
-      },
-      {
         title: 'Consulting',
         url: '/consulting',
       },
