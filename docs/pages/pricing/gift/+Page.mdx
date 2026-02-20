@@ -1,4 +1,6 @@
 import { Link } from '@brillout/docpress'
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
+import '../../../components/tabs.css'
 
 export const TODO2 = ({ children }) => {
   return <p>
@@ -25,7 +27,14 @@ We tend to be generous, so don't hesitate to apply — it's easy and quick.
 
 Contact us to apply.
 
-### Free forever
+<Tabs>
+  <TabList>
+    <Tab>Free forever</Tab>
+    <Tab>Extended free trial</Tab>
+  </TabList>
+
+  <TabPanel>
+    <h3>Free forever</h3>
 
 Email (with pre-filled subject & body): <a href="/mailto:vike-gift-program@brillout.com">{'vike-gift-program@brillout.com'}</a>
 
@@ -44,9 +53,10 @@ Website: TODO/2
 ```
 
 {<TODO2> your organization has limited resources</TODO2>}
+  </TabPanel>
 
-
-### Extended free trial
+  <TabPanel>
+    <h3>Extended free trial</h3>
 
 Email (with pre-filled subject & body): <a href="/mailto:vike-gift-program@brillout.com">{'vike-gift-program@brillout.com'}</a>
 
@@ -65,6 +75,8 @@ Website: TODO/2
 ```
 
 {<TODO2></TODO2>}
+  </TabPanel>
+</Tabs>
 
 
 ## See also
