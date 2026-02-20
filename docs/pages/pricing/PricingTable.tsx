@@ -40,7 +40,7 @@ function PricingTable() {
                     <Check>Full access</Check>
                     <Check>Forever free</Check>
                     <Check>
-                      <Link href="/pricing/gift#limited-resources">Apply</Link> for free license key
+                      <Link href="/gift#limited-resources">Apply</Link> for free license key
                     </Check>
                   </div>
                   <div>
@@ -53,7 +53,7 @@ function PricingTable() {
                       Forever access<NoteRef>4</NoteRef>
                     </Check>
                     <Check>
-                      Free trial: 6 months + <Link href="/pricing/gift#extended-free-trial">extendable</Link>
+                      Free trial: 6 months + <Link href="/gift#extended-free-trial">extendable</Link>
                     </Check>
                   </div>
                 </div>
@@ -67,7 +67,7 @@ function PricingTable() {
                 License key isn't required: you use Vike just like any regular open source tool (zero encumbrance).
               </Note>
               <Note ref={3}>
-                Organizations with <Link href="/pricing/gift#limited-resources">few employees</Link> are considered
+                Organizations with <Link href="/gift#limited-resources">few employees</Link> are considered
                 resource-limited.
               </Note>
               <Note ref={4}>
