@@ -3,8 +3,6 @@ export { PricingTable }
 import React from 'react'
 import './PricingTable.css'
 import { Link } from '@brillout/docpress'
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
-import '../../components/tabs.css'
 
 const noteColor = '#64748b'
 
@@ -33,22 +31,20 @@ function PricingTable() {
               <Column>
                 <TierName>Larger team</TierName>
                 ≥3 <SoftwareDevelopers />
-                <Tabs>
-                  <TabList>
-                    <Tab>
+                <div style={{ display: 'flex', columnGap: 40, rowGap: 15, flexWrap: 'wrap' }}>
+                  <div>
+                    <SubHeading>
                       Limited resources<NoteRef>3</NoteRef>
-                    </Tab>
-                    <Tab>Sufficient resources</Tab>
-                  </TabList>
-                  <TabPanel>
+                    </SubHeading>
                     <Free />
                     <Check>Full access</Check>
                     <Check>Forever free</Check>
                     <Check>
                       <Link href="/pricing/gift#limited-resources">Apply</Link> for free license key
                     </Check>
-                  </TabPanel>
-                  <TabPanel>
+                  </div>
+                  <div>
+                    <SubHeading>Sufficient resources</SubHeading>
                     <Price color="#2563eb" suffix=" one time">
                       $5k
                     </Price>
@@ -59,8 +55,8 @@ function PricingTable() {
                     <Check>
                       Free trial: 6 months + <Link href="/pricing/gift#extended-free-trial">extendable</Link>
                     </Check>
-                  </TabPanel>
-                </Tabs>
+                  </div>
+                </div>
               </Column>
             </div>
             <div style={{ marginLeft: 10, marginTop: 20 }}>
