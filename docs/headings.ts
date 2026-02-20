@@ -68,6 +68,9 @@ const headings = [
     level: 2,
     title: 'Open Source Pricing',
     url: '/pricing',
+    pageDesign: {
+      hideMenuLeft: true,
+    },
   },
   {
     level: 2,
@@ -1116,6 +1119,11 @@ function misc() {
   return (
     [
       {
+        title: 'Gift',
+        url: '/gift',
+        category: 'Overview',
+      },
+      {
         title: 'Consulting',
         url: '/consulting',
       },
@@ -1198,7 +1206,7 @@ function misc() {
         url: '/nextjs',
       },
     ] as const
-  ).map((h) => ({ ...h, category: 'Miscellaneous' as const })) satisfies HeadingDetachedDefinition[]
+  ).map((h) => ({ category: 'Miscellaneous' as const, ...h })) satisfies HeadingDetachedDefinition[]
 }
 
 function guides() {
