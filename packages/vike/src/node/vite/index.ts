@@ -1,3 +1,5 @@
+import { pluginUniversalDeploy } from './plugins/pluginUniversalDeploy.js'
+
 export default plugin
 export { plugin }
 // TO-DO/next-major-release: remove
@@ -73,6 +75,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): Promise<Plug
       ...pluginReplaceConstantsGlobalThis(),
       ...pluginStaticReplace(vikeConfig),
       ...pluginNonRunnabeDev(),
+      ...pluginUniversalDeploy(vikeConfig),
       ...(await pluginViteConfigVikeExtensions(vikeConfig)),
     ]
     Object.assign(plugin, pluginAddendum)
