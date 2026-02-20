@@ -3,19 +3,19 @@ import React from 'react'
 import blurBlue from '../../assets/decorators/blur/big/blur-blue-big.avif'
 import blurGreen from '../../assets/decorators/blur/big/blur-green-big.avif'
 import blurOrange from '../../assets/decorators/blur/big/blur-orange.avif'
-import type { IntroBlobColor } from './intro.types'
+import { UiColorVariantKey } from '../../util/ui.constants'
 
 interface HeroBackgroundColorFadeProps {
-  hoveredColor: IntroBlobColor | null
+  hoveredColor: UiColorVariantKey | null
 }
 
-const colorToImage: Record<IntroBlobColor, string> = {
+const colorToImage: Record<UiColorVariantKey, string> = {
   blue: blurBlue,
   green: blurGreen,
   orange: blurOrange,
 }
 
-const colors: IntroBlobColor[] = ['green', 'blue', 'orange']
+const colors: UiColorVariantKey[] = ['green', 'blue', 'orange']
 
 const HeroBackgroundColorFade = ({ hoveredColor }: HeroBackgroundColorFadeProps) => {
   const activeColor = hoveredColor

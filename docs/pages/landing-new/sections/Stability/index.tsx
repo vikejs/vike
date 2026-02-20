@@ -28,7 +28,7 @@ const StabilitySection = () => {
           </p>
         </div>
       </LayoutComponent>
-      <LayoutComponent className="my-32 grid grid-cols-2 gap-10" data-speed="0.85 ">
+      <LayoutComponent className="my-32 grid grid-cols-2 gap-10">
         <div className="">
           <H4Headline as="h3" className="mb-8">
             Supported <GradientText color="blue">tools</GradientText> (first-class support)

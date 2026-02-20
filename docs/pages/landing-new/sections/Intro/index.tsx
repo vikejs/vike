@@ -6,20 +6,15 @@ import Headline from '../../components/Headline'
 import BrandSubsection from './BrandSubsection'
 import HeroBackgroundMotion from './HeroBackgroundMotion'
 import HeroBackgroundColorFade from './HeroBackgroundColorFade'
-import type { IntroBlobColor, UspHoverTarget } from './intro.types'
+import type { UspHoverTarget } from './intro.types'
 import useIntroHeadlineGradientMotion from './useIntroHeadlineGradientMotion'
+import type { UspProgressAnimationMode } from './UspHero'
 import { landingPageHeroUsps } from '../../util/constants'
-import { UiVariantTextColor } from '../../util/ui.constants'
+import { UiColorVariantKey, UiColorVariantKeys, UiVariantTextColor } from '../../util/ui.constants'
 
-const motionColors: IntroBlobColor[] = ['green', 'blue', 'orange']
 const slideshowStepDurationMs = 4200
-const initialCtaColor: IntroBlobColor = 'green'
-type HeadlineKeyword = 'reliable' | 'empowering' | 'fast'
-const activeHeadlineWordByColor: Record<IntroBlobColor, HeadlineKeyword> = {
-  blue: 'reliable',
-  green: 'empowering',
-  orange: 'fast',
-}
+const initialCtaColor: UiColorVariantKey = 'green'
+const uspProgressAnimationMode: UspProgressAnimationMode = 'css'
 
 const HeadlineWord = ({
   word,
@@ -28,7 +23,7 @@ const HeadlineWord = ({
 }: {
   word: string
   isActive: boolean
-  color: IntroBlobColor
+  color: UiColorVariantKey
 }) => {
   return (
     <span className="relative inline-block min-h-20">
@@ -53,7 +48,7 @@ const IntroSection = () => {
   const getStartedButtonRef = useRef<HTMLAnchorElement>(null)
   const slideshowUsp = landingPageHeroUsps[slideshowState.index] ?? landingPageHeroUsps[0]
   const activeColor = manualHoverTarget?.color ?? slideshowUsp?.dotColor ?? 'blue'
-  const activeHeadlineWord = activeHeadlineWordByColor[activeColor]
+  const activeHeadlineWord = UiColorVariantKey[activeColor]
   const activeUspId = manualHoverTarget?.id ?? slideshowUsp?.id ?? null
   const isSlideshowMode = manualHoverTarget === null
 
@@ -98,9 +93,9 @@ const IntroSection = () => {
       <div data-intro-section-root="true" className="relative">
         <div className="absolute top-0 left-0 h-1/2 w-full bg-linear-to-t to-white z-10" />
         <HeroBackgroundColorFade hoveredColor={activeColor} />
-        {motionColors.map((color) => (
+        {/* {UiColorVariantKeys.map((color) => (
           <HeroBackgroundMotion key={color} color={color} isActive={activeColor === color} />
-        ))}
+        ))} */}
         <LayoutComponent
           $size="sm"
           className="flex flex-col items-center text-center lg:min-h-[calc(100dvh-56*var(--spacing))] pb-20 overflow-hidden"
@@ -112,9 +107,9 @@ const IntroSection = () => {
             </span>
             <div className="relative">
               <Headline as="h1" variant="xlarge" className="mb-4">
-                <HeadlineWord word="Open." isActive={activeHeadlineWord === 'empowering'} color="green" />{' '}
-                <HeadlineWord word="Reliable." isActive={activeHeadlineWord === 'reliable'} color="blue" />{' '}
-                <HeadlineWord word="Fast." isActive={activeHeadlineWord === 'fast'} color="orange" />
+                <HeadlineWord word="Flexible." isActive={activeHeadlineWord === 'green'} color="green" />{' '}
+                <HeadlineWord word="Reliable." isActive={activeHeadlineWord === 'blue'} color="blue" />{' '}
+                <HeadlineWord word="Fast." isActive={activeHeadlineWord === 'orange'} color="orange" />
               </Headline>
             </div>
             <p className="text-xl md:text-2xl text-grey text-center w-3/4 lg:w-3/5 mx-auto mb-6">
@@ -142,6 +137,7 @@ const IntroSection = () => {
               slideshowCycle={slideshowState.cycle}
               slideshowDurationMs={slideshowStepDurationMs}
               isSlideshowMode={isSlideshowMode}
+              progressAnimationMode={uspProgressAnimationMode}
             />
           </div>
         </LayoutComponent>

@@ -11,11 +11,14 @@ import type { UspHoverTarget } from './intro.types'
 import BlurDot from '../../components/BlurDot'
 import ledgeGraphic from '../../assets/decorators/box/ledge.png'
 
+export type UspProgressAnimationMode = 'gsap' | 'css'
+
 interface UspHeroProps {
   activeUspId: string | null
   slideshowCycle: number
   slideshowDurationMs: number
   isSlideshowMode: boolean
+  progressAnimationMode?: UspProgressAnimationMode
   onHoverChange?: (hoverTarget: UspHoverTarget | null) => void
 }
 
@@ -25,6 +28,7 @@ const UspHero = ({
   slideshowCycle,
   slideshowDurationMs,
   isSlideshowMode,
+  progressAnimationMode = 'gsap',
 }: UspHeroProps) => {
   const hoverLeaveTimeoutRef = useRef<number | null>(null)
   const progressFillRefs = useRef<Partial<Record<string, HTMLDivElement | null>>>({})
@@ -64,6 +68,10 @@ const UspHero = ({
       progressTweenRef.current?.kill()
       progressTweenRef.current = null
 
+      if (progressAnimationMode !== 'gsap') {
+        return
+      }
+
       const progressFills = Object.values(progressFillRefs.current).filter(
         (node): node is HTMLDivElement => node !== null && node !== undefined,
       )
@@ -72,7 +80,7 @@ const UspHero = ({
         return
       }
 
-      gsap.set(progressFills, { scaleX: 0 })
+      gsap.set(progressFills, { xPercent: -100 })
 
       if (!isSlideshowMode || !activeUspId) {
         return
@@ -83,15 +91,15 @@ const UspHero = ({
         return
       }
 
-      const setScaleX = gsap.quickSetter(activeProgressFill, 'scaleX')
-      const progressState = { value: 0 }
+      const setXPercent = gsap.quickSetter(activeProgressFill, 'xPercent')
+      const progressState = { value: -100 }
       progressTweenRef.current = gsap.to(progressState, {
-        value: 1,
+        value: 0,
         duration: slideshowDurationMs / 1000,
         ease: 'none',
         overwrite: 'auto',
         onUpdate: () => {
-          setScaleX(progressState.value)
+          setXPercent(progressState.value)
         },
       })
 
@@ -100,7 +108,7 @@ const UspHero = ({
         progressTweenRef.current = null
       }
     },
-    { dependencies: [activeUspId, isSlideshowMode, slideshowCycle, slideshowDurationMs] },
+    { dependencies: [activeUspId, isSlideshowMode, slideshowCycle, slideshowDurationMs, progressAnimationMode] },
   )
 
   useEffect(() => {
@@ -152,20 +160,27 @@ const UspHero = ({
                         </StyledTitle>
                       </span>
                     </H3Headline>
-                    <div className="relative h-0.5 w-3/4 mb-2 mx-auto">
+                    <div className="relative h-0.5 w-3/4 mb-3 mx-auto">
                       {isSlideshowMode && isHovered && (
-                        <div className="pointer-events-none bottom-2 h-full w-full bg-white rounded-full overflow-hidden z-8">
+                        <div className="pointer-events-none bottom-2 h-full w-full bg-transparent rounded-full overflow-hidden z-8">
                           <div
-                            ref={(node) => {
-                              progressFillRefs.current[usp.id] = node
-                            }}
-                            className={cmMerge(
-                              'h-full w-full rounded-full origin-left',
-                              UiVariantBgColor[usp.dotColor],
-                            )}
-                            style={{
-                              transform: 'scaleX(0)',
-                            }}
+                            key={progressAnimationMode === 'css' ? `${usp.id}-${slideshowCycle}` : undefined}
+                            ref={
+                              progressAnimationMode === 'gsap'
+                                ? (node) => {
+                                    progressFillRefs.current[usp.id] = node
+                                  }
+                                : undefined
+                            }
+                            className={cmMerge('h-full w-full rounded-full', UiVariantBgColor[usp.dotColor])}
+                            style={
+                              {
+                                animation:
+                                  progressAnimationMode === 'css'
+                                    ? `usp-hero-progress-translate ${slideshowDurationMs}ms linear forwards`
+                                    : undefined,
+                              } as React.CSSProperties
+                            }
                           />
                         </div>
                       )}
@@ -187,6 +202,16 @@ const UspHero = ({
           )
         })}
       </div>
+      <style>{`
+        @keyframes usp-hero-progress-translate {
+          from {
+            transform: translateX(-100%);
+          }
+          to {
+            transform: translateX(0%);
+          }
+        }
+      `}</style>
     </div>
   )
 }
@@ -205,7 +230,7 @@ const StyledUspItemInner = cm.div<{ $hovered?: boolean }>`
   z-3
   ${uiConfig.transition.mediumDurationTw}
   ${uiConfig.transition.easeInOutTw}
-  ${({ $hovered }) => ($hovered ? 'scale-108 translate-y-0 opacity-100' : '')}
+  ${({ $hovered }) => ($hovered ? 'scale-104 translate-y-0 opacity-80' : '')}
 `
 
 const StyledTitleShape = cm.span<{ $hovered?: boolean }>`

@@ -2,11 +2,11 @@ import { type RefObject, useEffect, useRef } from 'react'
 import { useGSAP } from '@gsap/react'
 import { gsap } from 'gsap'
 import { R } from '../../util/gsap.utils'
-import type { IntroBlobColor } from './intro.types'
+import { UiColorVariantKey } from '../../util/ui.constants'
 
 interface HeroBackgroundMotionRefs {
   motionContainerRef: RefObject<HTMLDivElement | null>
-  targetColor: IntroBlobColor
+  targetColor: UiColorVariantKey
   isActive: boolean
 }
 
@@ -27,16 +27,16 @@ const motionConfig = {
     ease: 'power2.inOut',
     revealDuration: 0.9,
   },
-  hiddenScale: 0.3,
-  visibleScale: 0.19,
+  hiddenScale: 0.1,
+  visibleScale: 0.29,
   orbitRadiusRatio: {
-    x: 0.055,
-    y: 0.085,
+    x: 0.065,
+    y: 0.075,
   },
   orbitDurationSeconds: 9.5,
   hoverOpacity: {
-    min: 0.76,
-    max: 0.9,
+    min: 0.16,
+    max: 0.2,
     durationSeconds: {
       min: 0.95,
       max: 2.25,
@@ -46,7 +46,7 @@ const motionConfig = {
     blue: { xRatio: 0.5, yRatio: 0.44 },
     green: { xRatio: 0.5, yRatio: 0.44 },
     orange: { xRatio: 0.5, yRatio: 0.44 },
-  } as Record<IntroBlobColor, { xRatio: number; yRatio: number }>,
+  } as Record<UiColorVariantKey, { xRatio: number; yRatio: number }>,
 } as const
 
 const lerp = (from: number, to: number, progress: number) => from + (to - from) * progress

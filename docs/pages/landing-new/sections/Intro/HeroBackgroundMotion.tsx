@@ -4,14 +4,14 @@ import blurBlue from '../../assets/decorators/blur/raw/blur-blue.png'
 import blurGreen from '../../assets/decorators/blur/raw/blur-green.png'
 import blurOrange from '../../assets/decorators/blur/raw/blur-orange.png'
 import useHeroBackgroundMotion from './useHeroBackgroundMotion'
-import type { IntroBlobColor } from './intro.types'
+import { UiColorVariantKey } from '../../util/ui.constants'
 
 interface HeroBackgroundMotionProps {
-  color: IntroBlobColor
+  color: UiColorVariantKey
   isActive: boolean
 }
 
-const blurByColor: Record<IntroBlobColor, string> = {
+const blurByColor: Record<UiColorVariantKey, string> = {
   blue: blurBlue,
   green: blurGreen,
   orange: blurOrange,

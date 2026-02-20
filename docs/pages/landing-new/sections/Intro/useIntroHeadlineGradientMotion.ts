@@ -4,27 +4,27 @@ import { gsap } from 'gsap'
 
 import { defaultGradients } from '../../components/GradientText'
 import { R } from '../../util/gsap.utils'
-import type { IntroBlobColor } from './intro.types'
+import { UiColorVariantKey } from '../../util/ui.constants'
 
 interface UseIntroHeadlineGradientMotionArgs {
   firstTextRef?: RefObject<HTMLElement | null>
   secondTextRef?: RefObject<HTMLElement | null>
   ctaButtonRef?: RefObject<HTMLElement | null>
-  hoveredColor: IntroBlobColor | null
+  hoveredColor: UiColorVariantKey | null
 }
 
 interface GradientLooper {
   target: HTMLElement
-  currentColor: IntroBlobColor
+  currentColor: UiColorVariantKey
   delayedCall: gsap.core.Tween | null
   colorTween: gsap.core.Tween | null
 }
 
 interface GradientMotionController {
-  setLockedColor: (color: IntroBlobColor | null) => void
+  setLockedColor: (color: UiColorVariantKey | null) => void
 }
 
-const gradientColors: IntroBlobColor[] = ['blue', 'green', 'orange']
+const gradientColors: UiColorVariantKey[] = ['blue', 'green', 'orange']
 const randomSwapDelaySeconds = {
   min: 3.5,
   max: 8,
@@ -38,12 +38,12 @@ const lockedColorDurationSeconds = {
   max: 0.7,
 }
 
-const pickRandomColor = (currentColor: IntroBlobColor): IntroBlobColor => {
+const pickRandomColor = (currentColor: UiColorVariantKey): UiColorVariantKey => {
   const candidates = gradientColors.filter((color) => color !== currentColor)
   return candidates[Math.floor(Math.random() * candidates.length)] ?? currentColor
 }
 
-const tweenGradientToColor = (entry: GradientLooper, color: IntroBlobColor, duration: number) => {
+const tweenGradientToColor = (entry: GradientLooper, color: UiColorVariantKey, duration: number) => {
   const { startColor, endColor } = defaultGradients[color]
   entry.colorTween?.kill()
   entry.colorTween = gsap.to(entry.target, {
@@ -74,9 +74,9 @@ const useIntroHeadlineGradientMotion = ({
 
       const loopers: GradientLooper[] = [firstText, secondText, ctaButton]
         .filter((target): target is HTMLElement => target !== null)
-        .map((target) => ({ target, currentColor: 'blue' as IntroBlobColor, delayedCall: null, colorTween: null }))
+        .map((target) => ({ target, currentColor: 'blue' as UiColorVariantKey, delayedCall: null, colorTween: null }))
 
-      const state = { lockedColor: hoveredColor as IntroBlobColor | null }
+      const state = { lockedColor: hoveredColor as UiColorVariantKey | null }
 
       const clearDelayedCall = (entry: GradientLooper) => {
         entry.delayedCall?.kill()
@@ -100,7 +100,7 @@ const useIntroHeadlineGradientMotion = ({
         })
       }
 
-      const setLockedColor = (color: IntroBlobColor | null) => {
+      const setLockedColor = (color: UiColorVariantKey | null) => {
         state.lockedColor = color
         loopers.forEach((entry) => {
           clearDelayedCall(entry)

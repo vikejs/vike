@@ -29,9 +29,9 @@ const BarChart = ({ pollData, color, className, ...props }: BarChartProps) => {
             <div className="w-full h-4 to-base-200 via-base-200 via-60% bg-linear-to-l rounded-box">
               <StyledBar style={{ width: barWidth }} $color={color} $won={data.label === winningEntry.label}>
                 <span className="text-sm font-mono">{data.label}</span>
-                {data.label === winningEntry.label && (
+                {/* {data.label === winningEntry.label && (
                   <StyledWinDot $color={color}>{`~${winMultiplier}x`}</StyledWinDot>
-                )}
+                )} */}
               </StyledBar>
             </div>
           </div>

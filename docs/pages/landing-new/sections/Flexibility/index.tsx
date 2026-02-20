@@ -77,7 +77,7 @@ const FlexibilitySection = () => {
         <BlurDot type="green" size="xl" visibility="low" className="absolute top-0 right-0 z-0" />
       </LayoutComponent>
 
-      <div className="relative my-32" data-speed="0.87">
+      <div className="relative my-32">
         <LayoutComponent className="grid grid-cols-2 gap-10">
           <div className="">
             <H4Headline as="h3" className="mb-8">
@@ -138,14 +138,14 @@ const FlexibilitySection = () => {
         <BlurDot type="green" size="xxl" visibility="low" className="absolute top-20 -left-40 z-0" />
       </LayoutComponent>
 
-      <LayoutComponent $size="xs" className="my-24" data-speed="0.92">
+      <LayoutComponent $size="xs" className="my-24">
         <H3Headline className="text-center">
           Supported <GradientText color="green">use cases</GradientText>
         </H3Headline>
         <p className="mb-8 text-grey text-center">Vike's hooks support an unmatched amount of use cases.</p>
         <BarChart
           pollData={[
-            { label: 'other frameworks', percentage: 20 },
+            { label: 'other frameworks', percentage: 33 },
             { label: 'Vike', percentage: 100 },
           ]}
           color="green"

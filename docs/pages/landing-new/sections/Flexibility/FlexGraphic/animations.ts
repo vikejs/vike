@@ -77,7 +77,7 @@ export const createSlideshowScrollTrigger = ({
   registerScrollTrigger()
 
   const scroller =
-    typeof document === 'undefined' ? undefined : (document.querySelector<HTMLElement>('#smooth-wrapper') ?? undefined)
+    typeof document === 'undefined' ? undefined : (document.querySelector<HTMLElement>('body') ?? undefined)
 
   return ScrollTrigger.create({
     id: 'slideshow strt',
@@ -85,7 +85,7 @@ export const createSlideshowScrollTrigger = ({
     scroller,
     start: 'top 65%',
     end: 'bottom 45%',
-    markers: false,
+    markers: true,
     onEnter,
     onEnterBack,
     onLeave,

@@ -35,9 +35,9 @@ export const layoutComponentSizeMapping: { [key in LayoutSize]: string } = {
 } as const
 
 export const BlurDotOpacity = {
-  low: 'opacity-30',
-  medium: 'opacity-70',
-  high: 'opacity-100',
+  low: 'opacity-20',
+  medium: 'opacity-60',
+  high: 'opacity-80',
 } as const
 export type BlurDotOpacity = keyof typeof BlurDotOpacity
 
@@ -61,6 +61,7 @@ export const UiColorVariantKey = {
   orange: 'orange',
 } as const
 export type UiColorVariantKey = (typeof UiColorVariantKey)[keyof typeof UiColorVariantKey]
+export const UiColorVariantKeys = Object.values(UiColorVariantKey) as UiColorVariantKey[]
 
 export const UiVariantTextColor = {
   neutral: 'text-base-content',
