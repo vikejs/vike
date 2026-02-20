@@ -2,10 +2,12 @@ import { Link } from '@brillout/docpress'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import '../../components/tabs.css'
 
-export const TODO_APPLY = ({ children }) => {
+export const TODO_APPLY = ({ why, addendum }) => {
   return <p>
-    <code>TODO/1</code>: Your website URL (if nothing's public: the domain name where your app's client runs).<br/>
-    <code>TODO/2</code>: Explain why{children}.
+    <code>TODO/1</code>: Your website URL (if nothing's public: the domain name where your app's client runs).
+    <br/>
+    <code>TODO/2</code>: Explain why{why}.
+    {addendum}
   </p>
 }
 
@@ -47,14 +49,12 @@ Request: free forever
 
 Body:
 ```
-Hi, we'd like to use Vike for free forever.
-
 Website: TODO/1
 
 Because: TODO/2
 ```
 
-{<TODO_APPLY> your organization has limited resources</TODO_APPLY>}
+{<TODO_APPLY why=" your organization has limited resources" />}
 
   </TabPanel>
   <TabPanel>
@@ -68,14 +68,14 @@ Request: extended free trial
 
 Body:
 ```
-Hi, we'd like to extend our free trial for one year.
-
 Website: TODO/1
 
 Because: TODO/2
+
+Extend period: one year
 ```
 
-{<TODO_APPLY></TODO_APPLY>}
+{<TODO_APPLY addendum={<><br/><code>Extend period</code>: can be modified.</>} />}
 
   </TabPanel>
 </Tabs>
