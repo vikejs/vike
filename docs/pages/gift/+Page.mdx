@@ -4,9 +4,9 @@ import '../../components/tabs.css'
 
 export const TODO_APPLY = ({ why, addendum }) => {
   return <p>
-    <code>TODO/1</code>: Your website URL (if nothing's public: the domain name where your app's client runs).
+    <code>TODO_1</code>: Your website URL (if nothing's public: the domain name where your app's client runs).
     <br/>
-    <code>TODO/2</code>: Explain why{why}.
+    <code>TODO_2</code>: Explain why{why}.
     {addendum}
   </p>
 }
@@ -67,9 +67,13 @@ Request: free forever
 
 Body:
 ```
-Website: TODO/1
+== Website
 
-Because: TODO/2
+TODO_1
+
+== Reason
+
+TODO_2
 ```
 
 {<TODO_APPLY why=" your organization has limited resources" />}
@@ -98,11 +102,17 @@ Request: extended free trial
 
 Body:
 ```
-Website: TODO/1
+== Website
 
-Because: TODO/2
+TODO_1
 
-Extend period: two years
+== Reason
+
+TODO_2
+
+== Extend period
+
+Two years
 ```
 
 {<TODO_APPLY addendum={
