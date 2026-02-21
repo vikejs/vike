@@ -1,30 +1,11 @@
 import { useRef } from 'react'
 import { useGSAP } from '@gsap/react'
 import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ScrollSmoother } from 'gsap/ScrollSmoother'
+import { registerScrollSmoother, registerScrollTrigger } from '../util/gsap.utils'
 
 const FADE_DURATION = 0.6
 const HOLD_DURATION = 0.5
-
-let scrollSmootherRegistered = false
-let scrollTriggerRegistered = false
-
-const registerScrollSmoother = () => {
-  if (scrollSmootherRegistered || typeof window === 'undefined') {
-    return
-  }
-  gsap.registerPlugin(ScrollSmoother)
-  scrollSmootherRegistered = true
-}
-
-const registerScrollTrigger = () => {
-  if (scrollTriggerRegistered || typeof window === 'undefined') {
-    return
-  }
-  gsap.registerPlugin(ScrollTrigger)
-  scrollTriggerRegistered = true
-}
 
 const getSpeedValue = (element: Element) => {
   const speedAttr = element.getAttribute('data-speed')

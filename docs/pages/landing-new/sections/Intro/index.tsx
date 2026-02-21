@@ -7,14 +7,12 @@ import BrandSubsection from './BrandSubsection'
 import HeroBackgroundColorFade from './HeroBackgroundColorFade'
 import type { UspHoverTarget } from './intro.types'
 import useIntroHeadlineGradientMotion from './useIntroHeadlineGradientMotion'
-import type { UspProgressAnimationMode } from './UspHero'
 import useMotionAllowed from '../../hooks/useMotionAllowed'
 import { landingPageHeroUsps } from '../../util/constants'
 import { UiColorVariantKey, UiVariantTextColor } from '../../util/ui.constants'
 
 const slideshowStepDurationMs = 4200
 const initialCtaColor: UiColorVariantKey = 'green'
-const uspProgressAnimationMode: UspProgressAnimationMode = 'css'
 
 const HeadlineWord = ({
   word,
@@ -145,7 +143,6 @@ const IntroSection = () => {
               slideshowDurationMs={slideshowStepDurationMs}
               isSlideshowMode={isSlideshowMode}
               animationsEnabled={shouldAnimateIntro}
-              progressAnimationMode={uspProgressAnimationMode}
               onSlideshowActiveChange={setIsSlideshowActive}
             />
           </div>
