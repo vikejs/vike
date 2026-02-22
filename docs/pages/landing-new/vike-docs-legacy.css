@@ -12,6 +12,10 @@ Long term solution:
 - migrate vike docs to tailwindcss and daisyui
 */
 @layer components {
+  .nav-head {
+    z-index: 99;
+  }
+
   code {
     font-size: 1em;
   }

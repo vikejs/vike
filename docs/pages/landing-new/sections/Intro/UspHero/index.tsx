@@ -9,6 +9,7 @@ import type { UspHoverTarget } from '../intro.types'
 import BlurDot from '../../../components/BlurDot'
 import ledgeGraphic from '../../../assets/decorators/box/ledge.png'
 import useUspHero from './useUspHero'
+import vikeLogo from '../../../../../assets/logo/vike.svg'
 
 interface UspHeroProps {
   activeUspId: string | null
@@ -93,10 +94,11 @@ const UspHero = ({
 
   return (
     <div ref={rootRef} className="w-full" data-usp-hero>
+      <div className="fixed w-full h-24 top-0 left-0 z-20 bg-linear-to-t to-95% to-base-300" />
       <div data-usp-hero-nav="true" className="relative z-30 py-2">
         <div
           data-usp-hero-nav-chrome="true"
-          className="pointer-events-none absolute left-1/2 top-0 z-9 h-16 w-full max-w-[1100px] -translate-x-1/2 shadow rounded-box opacity-0 backdrop-blur-sm overflow-hidden"
+          className="pointer-events-none absolute left-1/2 top-0 z-9 h-16 w-full max-w-[1100px] -translate-x-1/2 shadow-neutral/10 shadow-lg rounded-box opacity-0 overflow-hidden bg-white/90"
         >
           <div className="relative z-10 grid grid-cols-3 md:w-6/7 mx-auto px-2">
             {landingPageHeroUsps.map((usp) => {
@@ -128,6 +130,13 @@ const UspHero = ({
         </div>
 
         {/* sticky */}
+        <div
+          data-usp-sticky-logo="true"
+          className="pointer-events-none absolute top-0 z-30 flex h-16 w-20 items-center"
+        >
+          <img src={vikeLogo} alt="" className="ml-4 h-auto w-10" />
+        </div>
+
         <div className="relative z-10 grid grid-cols-3 md:w-6/7 mx-auto px-2">
           {landingPageHeroUsps.map((usp) => {
             const visualState = uspVisualStateById.get(usp.id)
@@ -177,7 +186,7 @@ const UspHero = ({
           return (
             <div
               className={cmMerge(
-                `relative cursor-pointer transition-[filter,opacity] ${uiConfig.transition.mediumDurationTw} ${uiConfig.transition.easeInOutTw} rounded-lg -mt-5`,
+                `relative cursor-pointer transition-[filter,opacity] ${uiConfig.transition.mediumDurationTw} ${uiConfig.transition.easeInOutTw} rounded-lg -mt-5 `,
                 toneClass,
               )}
               data-usp-content-hit="true"
@@ -203,7 +212,7 @@ const UspHero = ({
 
               <div
                 data-usp-content-progress-track={usp.id}
-                className="relative h-0.5 w-18 mx-auto mb-2 rounded-full bg-base-content/8 overflow-hidden"
+                className="relative h-0.5 w-18 mx-auto mb-2 rounded-full overflow-hidden"
               >
                 {isSlideshowMode && isHovered && animationsEnabled && (
                   <div className="pointer-events-none absolute inset-0 h-full w-full rounded-full overflow-hidden z-8">

@@ -65,6 +65,7 @@ const useUspHero = ({ onSlideshowActiveChange, onSectionActiveChange }: UseUspHe
       const stickyInteractionNodes = Array.from(rootNode.querySelectorAll<HTMLElement>('[data-usp-sticky-hit="true"]'))
       const iconNodes = Array.from(rootNode.querySelectorAll<HTMLElement>('[data-usp-icon="true"]'))
       const blurDotNodes = Array.from(rootNode.querySelectorAll<HTMLElement>('[data-usp-scroll-dot]'))
+      const stickyLogoNodes = Array.from(rootNode.querySelectorAll<HTMLElement>('[data-usp-sticky-logo="true"]'))
       const sectionProgressFillNodes = Array.from(
         rootNode.querySelectorAll<HTMLElement>('[data-usp-scroll-progress-fill]'),
       )
@@ -102,6 +103,18 @@ const useUspHero = ({ onSlideshowActiveChange, onSectionActiveChange }: UseUspHe
           gsap.set(sectionFillNode, { scaleX: clampedProgress })
         }
       }
+      const scrollToSectionById = (id: UspId) => {
+        if (typeof window === 'undefined') {
+          return
+        }
+        const sectionNode = sectionNodesById.get(id)
+        if (!sectionNode) {
+          return
+        }
+        const sectionTop = sectionNode.getBoundingClientRect().top + window.scrollY
+        const top = Math.max(sectionTop - 96, 0)
+        window.scrollTo({ top, behavior: 'smooth' })
+      }
       const setIfAny = (targets: HTMLElement[], vars: gsap.TweenVars) => {
         if (!targets.length) {
           return
@@ -114,7 +127,6 @@ const useUspHero = ({ onSlideshowActiveChange, onSectionActiveChange }: UseUspHe
         scaleX: 0.86,
         scaleY: 1.6,
         transformOrigin: 'top center',
-        backgroundColor: 'rgba(255, 255, 255, 0.7)',
       })
       setIfAny(contentInteractionNodes, { pointerEvents: 'auto' })
       setIfAny(stickyInteractionNodes, { autoAlpha: 1, pointerEvents: 'none' })
@@ -123,8 +135,10 @@ const useUspHero = ({ onSlideshowActiveChange, onSectionActiveChange }: UseUspHe
       setIfAny(sectionProgressFillNodes, { transformOrigin: 'left center', scaleX: 0 })
       gsap.set([navChromeNode, ...iconNodes, ...blurDotNodes], { willChange: 'transform, opacity' })
       setIfAny(sectionProgressFillNodes, { willChange: 'transform' })
+      setIfAny(stickyLogoNodes, { willChange: 'opacity' })
       setIfAny(blurDotNodes, { autoAlpha: 0 })
       setIfAny(stickyProgressTrackNodes, { autoAlpha: 0 })
+      setIfAny(stickyLogoNodes, { autoAlpha: 0, x: 24 })
 
       const scroller = document.querySelector<HTMLElement>('body') ?? undefined
       const setInteractionMode = (isStickyMode: boolean) => {
@@ -146,8 +160,18 @@ const useUspHero = ({ onSlideshowActiveChange, onSectionActiveChange }: UseUspHe
                 overwrite: 'auto',
               })
             }
+            if (stickyLogoNodes.length) {
+              gsap.to(stickyLogoNodes, {
+                autoAlpha: 1,
+                x: 0,
+                duration: 0.35,
+                ease: uiConfig.transition.easeOutGsap,
+                overwrite: 'auto',
+              })
+            }
           } else {
             setIfAny(blurDotNodes, { autoAlpha: 1 })
+            setIfAny(stickyLogoNodes, { autoAlpha: 1 })
           }
         } else {
           gsap.killTweensOf(blurDotNodes, 'opacity,autoAlpha')
@@ -157,6 +181,20 @@ const useUspHero = ({ onSlideshowActiveChange, onSectionActiveChange }: UseUspHe
             ease: uiConfig.transition.easeOutGsap,
             overwrite: 'auto',
           })
+          gsap.killTweensOf(stickyLogoNodes, 'opacity,autoAlpha')
+          if (hasChanged) {
+            if (stickyLogoNodes.length) {
+              gsap.to(stickyLogoNodes, {
+                autoAlpha: 0,
+                x: 24,
+                duration: 0.25,
+                ease: uiConfig.transition.easeOutGsap,
+                overwrite: 'auto',
+              })
+            }
+          } else {
+            setIfAny(stickyLogoNodes, { autoAlpha: 0 })
+          }
         }
         if (hasChanged) {
           syncSlideshowActive()
@@ -166,6 +204,19 @@ const useUspHero = ({ onSlideshowActiveChange, onSectionActiveChange }: UseUspHe
       ScrollTrigger.getById('intro-usp-hero-sticky-nav-trigger')?.kill()
       sectionIds.forEach((id) => {
         ScrollTrigger.getById(`intro-usp-hero-section-progress-${id}`)?.kill()
+      })
+
+      const stickyClickListeners: Array<{ node: HTMLElement; handler: () => void }> = []
+      stickyInteractionNodes.forEach((node) => {
+        const id = node.dataset.uspId
+        if (!id) {
+          return
+        }
+        const handler = () => {
+          scrollToSectionById(id as UspId)
+        }
+        node.addEventListener('click', handler)
+        stickyClickListeners.push({ node, handler })
       })
 
       ScrollTrigger.create({
@@ -254,8 +305,8 @@ const useUspHero = ({ onSlideshowActiveChange, onSectionActiveChange }: UseUspHe
           trigger: node,
           endTrigger: nextEntry?.node,
           scroller,
-          start: 'top center',
-          end: nextEntry ? 'top center' : 'max',
+          start: 'top 10%',
+          end: nextEntry ? 'top top' : 'max',
           scrub: true,
           invalidateOnRefresh: true,
           markers: false,
@@ -287,8 +338,12 @@ const useUspHero = ({ onSlideshowActiveChange, onSectionActiveChange }: UseUspHe
 
       slideshowInViewRef.current = true
       applyCompactDockedState((compactTimeline.scrollTrigger?.progress ?? 0) >= 0.999)
+      syncSlideshowActive()
 
       return () => {
+        stickyClickListeners.forEach(({ node, handler }) => {
+          node.removeEventListener('click', handler)
+        })
         sectionProgressTriggers.forEach((trigger) => {
           trigger.kill()
         })

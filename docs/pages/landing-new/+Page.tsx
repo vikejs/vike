@@ -9,19 +9,17 @@ import useScrollSmoother from './hooks/useScrollSmoother'
 import './tailwind.css'
 
 const LandingPage = () => {
-  useScrollSmoother()
+  // useScrollSmoother()
 
   return (
-    <div id="smooth-wrapper">
-      <div id="smooth-content">
-        <div id="tailwind-portal" data-theme="vike" className="bg-base-300">
-          <IntroSection />
-          <FlexibilitySection />
-          <StabilitySection />
-          <DxSection />
-        </div>
+    <>
+      <div id="tailwind-portal" data-theme="vike" className="bg-base-300">
+        <IntroSection />
+        <FlexibilitySection />
+        <StabilitySection />
+        <DxSection />
       </div>
-    </div>
+    </>
   )
 }
 

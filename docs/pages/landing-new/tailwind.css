@@ -18,7 +18,7 @@
   --color-grey-300-hex: #e8e8e8;
   --color-grey-400: oklch(0.9502 0 0);
   --color-bg: oklch(0.9702 0 0);
-  --color-white: oklch(1 0 0);
+  --color-white: #fdfdfd;
 
   /* daisyUI specific */
   --d-color-info: oklch(60% 0.126 221.723);
