@@ -98,7 +98,7 @@ const UspHero = ({
       <div data-usp-hero-nav="true" className="relative z-30 py-2">
         <div
           data-usp-hero-nav-chrome="true"
-          className="pointer-events-none absolute left-1/2 top-0 z-9 h-16 w-full max-w-[1100px] -translate-x-1/2 shadow-neutral/10 shadow-lg rounded-box opacity-0 overflow-hidden bg-white/90"
+          className="pointer-events-none absolute left-1/2 top-0 z-9 h-16 w-full max-w-[1100px] -translate-x-1/2 shadow-neutral/10 shadow-lg rounded-box opacity-0 overflow-hidden bg-white/95"
         >
           <div className="relative z-10 grid grid-cols-3 md:w-6/7 mx-auto px-2">
             {landingPageHeroUsps.map((usp) => {
