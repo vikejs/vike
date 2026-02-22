@@ -156,7 +156,7 @@ const UspHero = ({
               </StyledUspItemInner>
               <StyledTextContent $hovered={isHovered}>
                 <div data-usp-copy-large="true" className="text-center h-full flex flex-col flex-1 p-5 pt-2">
-                  <div className="flex-1 min-h-32">
+                  <div className="flex-1 ">
                     <H3Headline as="h2" className="mb-2">
                       <span className="relative block w-fit mx-auto">
                         <StyledTitleShape $hovered={isHovered}>{usp.title}</StyledTitleShape>
@@ -238,14 +238,14 @@ const StyledTitle = cm.span`
 `
 
 const StyledIconWrapper = cm.div`
-  text-3xl md:text-5xl lg:text-7xl 
+  text-5xl lg:text-7xl 
   text-center block mb-2
 `
 
 const StyledTextContent = cm.div<{ $hovered?: boolean }>`
   relative z-6
   transition-transform
-  min-h-56
+  min-h-46
   flex flex-col justify-between
   pointer-events-none
   ${uiConfig.transition.mediumDurationTw}

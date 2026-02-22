@@ -102,7 +102,7 @@ const IntroSection = () => {
         <div className="absolute top-0 left-0 h-1/2 w-full bg-linear-to-t to-white z-10" />
         <HeroBackgroundColorFade hoveredColor={activeColor} />
         <LayoutComponent
-          $size="sm"
+          $size="md"
           className="flex flex-col items-center text-center lg:min-h-[calc(100dvh-56*var(--spacing))] pb-20 overflow-hidden"
         >
           <div className="relative z-10 flex flex-col items-center text-center w-full">
