@@ -24,7 +24,7 @@ const HeadlineWord = ({
   color: UiColorVariantKey
 }) => {
   return (
-    <span className="relative inline-block min-h-20">
+    <span className="relative inline-block min-h-16">
       <span
         className={`${UiVariantTextColor.neutral} transition-opacity duration-450 ease-in-out ${isActive ? 'opacity-0' : 'opacity-100'}`}
       >
@@ -111,7 +111,7 @@ const IntroSection = () => {
               <span className="block badge badge-neutral badge-ghost badge-sm">🏗️ Powered By Vite</span>
             </span>
             <div className="relative">
-              <Headline as="h1" variant="xlarge" className="mb-4">
+              <Headline as="h1" variant="xlarge">
                 <HeadlineWord word="Flexible." isActive={activeHeadlineWord === 'green'} color="green" />{' '}
                 <HeadlineWord word="Reliable." isActive={activeHeadlineWord === 'blue'} color="blue" />{' '}
                 <HeadlineWord word="Fast." isActive={activeHeadlineWord === 'orange'} color="orange" />

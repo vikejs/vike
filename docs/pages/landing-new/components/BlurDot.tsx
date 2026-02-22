@@ -12,13 +12,14 @@ import { BlurDotOpacity, UiColorVariantKey } from '../util/ui.constants'
 const BlurDot = ({ type, lazy = true, visibility = 'medium', size = 'md', ...props }: BlurDotProps) => {
   const sizePx = sizePxBySize[size]
   const mobileSizePx = Math.round(sizePx / 2)
+  const { className, ...restProps } = props
 
   const mobileImgUrl = type === 'blue' ? blurDotBlueSm : type === 'green' ? blurDotGreenSm : blurDotOrangeSm
   const imgUrl = type === 'blue' ? blurDotBlue : type === 'green' ? blurDotGreen : blurDotOrange
 
   return (
     <>
-      <StyledBlurDot $visibility={visibility} $size={size} className={`${props.className ?? ''}`}>
+      <StyledBlurDot $visibility={visibility} $size={size} className={className ?? ''} {...restProps}>
         <StyledBlurDotImage
           crossOrigin="anonymous"
           width={sizePx}
@@ -48,6 +49,7 @@ const StyledBlurDot = cm.div.variants<{ $size: BlurDotSize; $visibility: BlurDot
 `,
   variants: {
     $size: {
+      xs: 'w-30 h-30',
       sm: 'w-36 h-36',
       md: 'w-48 h-48',
       lg: 'w-96 h-96',

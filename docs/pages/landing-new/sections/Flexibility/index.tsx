@@ -12,10 +12,11 @@ import libraryRollImgMobile from '../../assets/libraryRoll@0.5.webp'
 import BlurDot from '../../components/BlurDot'
 import BarChart from '../../components/BarChart'
 import { H3Headline, H4Headline } from '../../components/Headline'
+import { UspCategoryId } from '../../util/constants'
 
 const FlexibilitySection = () => {
   return (
-    <>
+    <section data-usp-section={UspCategoryId.freedom}>
       <LayoutComponent className="mt-20 ">
         <SectionHeader
           icon={'🕊️'}
@@ -151,7 +152,7 @@ const FlexibilitySection = () => {
           color="green"
         />
       </LayoutComponent>
-    </>
+    </section>
   )
 }
 

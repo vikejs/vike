@@ -1,4 +1,4 @@
-import React, { type MouseEvent, useCallback, useEffect, useRef } from 'react'
+import React, { type MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { H3Headline } from '../../../components/Headline'
 import cm, { cmMerge } from '@classmatejs/react'
 import { landingPageHeroUsps } from '../../../util/constants'
@@ -31,9 +31,28 @@ const UspHero = ({
 }: UspHeroProps) => {
   const hoverLeaveTimeoutRef = useRef<number | null>(null)
   const progressFillRefs = useRef<Partial<Record<string, HTMLDivElement | null>>>({})
-  const progressTweenRef = useRef<gsap.core.Tween | null>(null)
+  const [scrollActiveUspId, setScrollActiveUspId] = useState<string | null>(null)
 
-  const { rootRef, setSlideshowActive } = useUspHero({ onSlideshowActiveChange })
+  const { rootRef, setSlideshowActive } = useUspHero({
+    onSlideshowActiveChange,
+    onSectionActiveChange: setScrollActiveUspId,
+  })
+  const highlightedUspId = isSlideshowMode && scrollActiveUspId ? scrollActiveUspId : activeUspId
+  const uspVisualStateById = useMemo(() => {
+    return new Map(
+      landingPageHeroUsps.map((usp) => {
+        const isActive = highlightedUspId === usp.id
+        const isMuted = highlightedUspId !== null && !isActive
+        return [
+          usp.id,
+          {
+            isActive,
+            toneClass: isMuted ? 'grayscale opacity-65' : 'grayscale-0 opacity-100',
+          },
+        ] as const
+      }),
+    )
+  }, [highlightedUspId])
 
   const clearHoverLeaveTimeout = useCallback(() => {
     if (hoverLeaveTimeoutRef.current === null) {
@@ -68,8 +87,6 @@ const UspHero = ({
   useEffect(() => {
     return () => {
       clearHoverLeaveTimeout()
-      progressTweenRef.current?.kill()
-      progressTweenRef.current = null
       setSlideshowActive(false)
     }
   }, [clearHoverLeaveTimeout, setSlideshowActive])
@@ -79,49 +96,69 @@ const UspHero = ({
       <div data-usp-hero-nav="true" className="relative z-30 py-2">
         <div
           data-usp-hero-nav-chrome="true"
-          className="pointer-events-none absolute left-1/2 top-0 z-1 h-16 w-full max-w-[1100px] -translate-x-1/2 shadow rounded-box overflow-hidden opacity-0"
-        />
+          className="pointer-events-none absolute left-1/2 top-0 z-9 h-16 w-full max-w-[1100px] -translate-x-1/2 shadow rounded-box opacity-0 backdrop-blur-sm overflow-hidden"
+        >
+          <div className="relative z-10 grid grid-cols-3 md:w-6/7 mx-auto px-2">
+            {landingPageHeroUsps.map((usp) => {
+              const visualState = uspVisualStateById.get(usp.id)
+              const toneClass = visualState?.toneClass ?? 'grayscale-0 opacity-100'
 
-        <div className="relative z-10 grid grid-cols-3 md:w-6/7 mx-auto px-2 py-2">
+              return (
+                <div
+                  key={`${usp.id}-nav`}
+                  data-usp-nav-hit="true"
+                  data-usp-id={usp.id}
+                  className={cmMerge(
+                    `z-1 relative transition-[filter,opacity] ${uiConfig.transition.mediumDurationTw} ${uiConfig.transition.easeInOutTw} rounded-lg`,
+                    toneClass,
+                  )}
+                >
+                  <div data-usp-scroll-dot={usp.id}>
+                    <BlurDot
+                      type={usp.dotColor}
+                      size="sm"
+                      visibility="low"
+                      className="left-1/2 top-8 -translate-x-1/2 -translate-y-1/2"
+                    />
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* sticky */}
+        <div className="relative z-10 grid grid-cols-3 md:w-6/7 mx-auto px-2">
           {landingPageHeroUsps.map((usp) => {
-            const isHovered = activeUspId === usp.id
-            const isMuted = activeUspId !== null && !isHovered
+            const visualState = uspVisualStateById.get(usp.id)
+            const toneClass = visualState?.toneClass ?? 'grayscale-0 opacity-100'
 
             return (
               <div
                 key={`${usp.id}-sticky`}
                 data-usp-sticky-hit="true"
+                data-usp-id={usp.id}
                 className={cmMerge(
                   `relative cursor-pointer transition-[filter,opacity] ${uiConfig.transition.mediumDurationTw} ${uiConfig.transition.easeInOutTw} rounded-lg`,
-                  isMuted ? 'grayscale opacity-65' : 'grayscale-0 opacity-100',
+                  toneClass,
                 )}
               >
                 <div className="pointer-events-none relative z-8 flex flex-col items-center pt-2">
-                  <BlurDot
-                    type={usp.dotColor}
-                    size="md"
-                    visibility="low"
-                    className="js-usp-blur-dot left-1/2 top-8 -translate-x-1/2 -translate-y-1/2"
-                  />
-                  <StyledIconWrapper data-usp-icon="true">{usp.icon}</StyledIconWrapper>
-                  <div className="relative mt-2 h-0.5 w-16">
-                    {isSlideshowMode && isHovered && animationsEnabled && (
-                      <div className="pointer-events-none h-full w-full rounded-full overflow-hidden z-8">
-                        <div
-                          key={`${usp.id}-${slideshowCycle}`}
-                          ref={(node) => {
-                            progressFillRefs.current[usp.id] = node
-                          }}
-                          className={cmMerge('h-full w-full rounded-full', UiVariantBgColor[usp.dotColor])}
-                          style={
-                            {
-                              transform: 'translateX(-100%)',
-                              animation: `usp-hero-progress-translate ${slideshowDurationMs}ms linear forwards`,
-                            } as React.CSSProperties
-                          }
-                        />
-                      </div>
-                    )}
+                  <StyledIconWrapper data-usp-icon="true" data-usp-icon-id={usp.id}>
+                    {usp.icon}
+                  </StyledIconWrapper>
+                  <div
+                    data-usp-sticky-progress-track={usp.id}
+                    className="top-9 absolute mt-2 h-0.5 w-16 rounded-full bg-base-content/3 overflow-hidden"
+                  >
+                    <div
+                      data-usp-sticky-progress-fill={usp.id}
+                      data-usp-scroll-progress-fill={usp.id}
+                      className={cmMerge(
+                        'h-full w-full rounded-full origin-left scale-x-0 opacity-55',
+                        UiVariantBgColor[usp.dotColor],
+                      )}
+                    />
                   </div>
                 </div>
               </div>
@@ -129,23 +166,26 @@ const UspHero = ({
           })}
         </div>
       </div>
-      <div className="relative z-10 grid grid-cols-3 md:w-6/7 mx-auto px-2 py-2">
+
+      {/* static scrolling */}
+      <div className="relative z-10 grid grid-cols-3 md:w-6/7 mx-auto px-2 py-2 ">
         {landingPageHeroUsps.map((usp) => {
-          const isHovered = activeUspId === usp.id
-          const isMuted = activeUspId !== null && !isHovered
+          const visualState = uspVisualStateById.get(usp.id)
+          const toneClass = visualState?.toneClass ?? 'grayscale-0 opacity-100'
+          const isHovered = visualState?.isActive ?? false
 
           return (
             <div
               className={cmMerge(
                 `relative cursor-pointer transition-[filter,opacity] ${uiConfig.transition.mediumDurationTw} ${uiConfig.transition.easeInOutTw} rounded-lg -mt-5`,
-                isMuted ? 'grayscale opacity-65' : 'grayscale-0 opacity-100',
+                toneClass,
               )}
               data-usp-content-hit="true"
               data-usp-color={usp.dotColor}
               data-usp-id={usp.id}
               key={usp.title}
             >
-              <div className="absolute right-0 left-0 -top-40 -bottom-50" />
+              {/* <div className="absolute right-0 left-0 -top-40 -bottom-50" /> */}
               <StyledUspItemInner $hovered={isHovered}>
                 <img
                   src={ledgeGraphic}
@@ -154,6 +194,36 @@ const UspHero = ({
                   className="absolute w-full h-full z-2 object-fill"
                 />
               </StyledUspItemInner>
+              <BlurDot
+                type={usp.dotColor}
+                size="md"
+                visibility="low"
+                className="left-1/2 top-0 z-4 -translate-x-1/2 -translate-y-40"
+              />
+
+              <div
+                data-usp-content-progress-track={usp.id}
+                className="relative h-0.5 w-18 mx-auto mb-2 rounded-full bg-base-content/8 overflow-hidden"
+              >
+                {isSlideshowMode && isHovered && animationsEnabled && (
+                  <div className="pointer-events-none absolute inset-0 h-full w-full rounded-full overflow-hidden z-8">
+                    <div
+                      key={`${usp.id}-${slideshowCycle}`}
+                      ref={(node) => {
+                        progressFillRefs.current[usp.id] = node
+                      }}
+                      className={cmMerge('h-full w-full rounded-full', UiVariantBgColor[usp.dotColor])}
+                      style={
+                        {
+                          transform: 'translateX(-100%)',
+                          animation: `usp-hero-progress-translate ${slideshowDurationMs}ms linear forwards`,
+                        } as React.CSSProperties
+                      }
+                    />
+                  </div>
+                )}
+              </div>
+
               <StyledTextContent $hovered={isHovered}>
                 <div data-usp-copy-large="true" className="text-center h-full flex flex-col flex-1 p-5 pt-2">
                   <div className="flex-1 ">
@@ -167,6 +237,7 @@ const UspHero = ({
                     </H3Headline>
                     <p className="text-lg">{usp.description}</p>
                   </div>
+
                   <span
                     className={cmMerge(
                       UiVariantBtnColor[usp.dotColor],

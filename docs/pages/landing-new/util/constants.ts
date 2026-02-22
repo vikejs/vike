@@ -75,12 +75,12 @@ export const extensionBlockConnectedHooks: { [key in ExtensionBlockVariants]: Fl
   ],
 }
 
-const UspCategoryId = {
+export const UspCategoryId = {
   freedom: 'freedom',
   stability: 'stability',
   lightningDx: 'lightning-dx',
 } as const
-type UspId = (typeof UspCategoryId)[keyof typeof UspCategoryId]
+export type UspId = (typeof UspCategoryId)[keyof typeof UspCategoryId]
 
 type Usp = {
   id: UspId

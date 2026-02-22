@@ -3,14 +3,20 @@ import { useRef, useCallback } from 'react'
 import { registerScrollTrigger } from '../../../util/gsap.utils'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { gsap } from 'gsap'
+import { landingPageHeroUsps, UspId } from '../../../util/constants'
+import { uiConfig } from '../../../util/ui.constants'
 
 interface UseUspHeroParams {
   onSlideshowActiveChange?: (isActive: boolean) => void
+  onSectionActiveChange?: (uspId: string | null) => void
 }
 
-const useUspHero = ({ onSlideshowActiveChange }: UseUspHeroParams) => {
+const clamp01 = (value: number) => Math.max(0, Math.min(1, value))
+
+const useUspHero = ({ onSlideshowActiveChange, onSectionActiveChange }: UseUspHeroParams) => {
   const rootRef = useRef<HTMLDivElement>(null)
   const slideshowActiveRef = useRef<boolean | null>(null)
+  const activeSectionRef = useRef<string | null>(null)
   const slideshowInViewRef = useRef(false)
   const isCompactDockedRef = useRef(false)
 
@@ -29,21 +35,22 @@ const useUspHero = ({ onSlideshowActiveChange }: UseUspHeroParams) => {
     setSlideshowActive(slideshowInViewRef.current && !isCompactDockedRef.current)
   }, [setSlideshowActive])
 
-  const updateCompactDocked = useCallback(
-    (isDocked: boolean) => {
-      if (isCompactDockedRef.current === isDocked) {
+  const setSectionActive = useCallback(
+    (uspId: string | null) => {
+      if (activeSectionRef.current === uspId) {
         return
       }
-      isCompactDockedRef.current = isDocked
-      syncSlideshowActive()
+      activeSectionRef.current = uspId
+      onSectionActiveChange?.(uspId)
     },
-    [syncSlideshowActive],
+    [onSectionActiveChange],
   )
 
   useGSAP(
     () => {
       const rootNode = rootRef.current
       if (!rootNode || typeof document === 'undefined') {
+        setSectionActive(null)
         setSlideshowActive(false)
         return
       }
@@ -57,11 +64,49 @@ const useUspHero = ({ onSlideshowActiveChange }: UseUspHeroParams) => {
       )
       const stickyInteractionNodes = Array.from(rootNode.querySelectorAll<HTMLElement>('[data-usp-sticky-hit="true"]'))
       const iconNodes = Array.from(rootNode.querySelectorAll<HTMLElement>('[data-usp-icon="true"]'))
-      const blurDotNodes = Array.from(rootNode.querySelectorAll<HTMLElement>('.js-usp-blur-dot'))
+      const blurDotNodes = Array.from(rootNode.querySelectorAll<HTMLElement>('[data-usp-scroll-dot]'))
+      const sectionProgressFillNodes = Array.from(
+        rootNode.querySelectorAll<HTMLElement>('[data-usp-scroll-progress-fill]'),
+      )
+      const stickyProgressTrackNodes = Array.from(
+        rootNode.querySelectorAll<HTMLElement>('[data-usp-sticky-progress-track]'),
+      )
 
       if (!navNode || !navChromeNode || !contentInteractionNodes.length || !stickyInteractionNodes.length) {
+        setSectionActive(null)
         setSlideshowActive(false)
         return
+      }
+
+      const sectionProgressFillById = new Map<string, HTMLElement>()
+      sectionProgressFillNodes.forEach((node) => {
+        const id = node.getAttribute('data-usp-scroll-progress-fill')
+        if (id) {
+          sectionProgressFillById.set(id, node)
+        }
+      })
+
+      const sectionIds = landingPageHeroUsps.map((usp) => usp.id)
+      const sectionNodesById = new Map(
+        sectionIds.map((id) => [id, document.querySelector<HTMLElement>(`[data-usp-section="${id}"]`)]),
+      )
+      const orderedSectionEntries = sectionIds
+        .map((id) => ({ id, node: sectionNodesById.get(id) }))
+        .filter((entry): entry is { id: UspId; node: HTMLElement } => Boolean(entry.node))
+
+      const setSectionProgress = (id: string, progress: number) => {
+        const clampedProgress = clamp01(progress)
+
+        const sectionFillNode = sectionProgressFillById.get(id)
+        if (sectionFillNode) {
+          gsap.set(sectionFillNode, { scaleX: clampedProgress })
+        }
+      }
+      const setIfAny = (targets: HTMLElement[], vars: gsap.TweenVars) => {
+        if (!targets.length) {
+          return
+        }
+        gsap.set(targets, vars)
       }
 
       gsap.set(navChromeNode, {
@@ -69,21 +114,59 @@ const useUspHero = ({ onSlideshowActiveChange }: UseUspHeroParams) => {
         scaleX: 0.86,
         scaleY: 1.6,
         transformOrigin: 'top center',
-        backgroundColor: 'rgb(255, 255, 255)',
+        backgroundColor: 'rgba(255, 255, 255, 0.7)',
       })
-      gsap.set(contentInteractionNodes, { pointerEvents: 'auto' })
-      gsap.set(stickyInteractionNodes, { autoAlpha: 1, pointerEvents: 'none' })
-      gsap.set(iconNodes, { transformOrigin: 'center center' })
-      gsap.set(blurDotNodes, { transformOrigin: 'center center' })
+      setIfAny(contentInteractionNodes, { pointerEvents: 'auto' })
+      setIfAny(stickyInteractionNodes, { autoAlpha: 1, pointerEvents: 'none' })
+      setIfAny(iconNodes, { transformOrigin: 'center center' })
+      setIfAny(blurDotNodes, { transformOrigin: 'center center' })
+      setIfAny(sectionProgressFillNodes, { transformOrigin: 'left center', scaleX: 0 })
       gsap.set([navChromeNode, ...iconNodes, ...blurDotNodes], { willChange: 'transform, opacity' })
+      setIfAny(sectionProgressFillNodes, { willChange: 'transform' })
+      setIfAny(blurDotNodes, { autoAlpha: 0 })
+      setIfAny(stickyProgressTrackNodes, { autoAlpha: 0 })
 
       const scroller = document.querySelector<HTMLElement>('body') ?? undefined
       const setInteractionMode = (isStickyMode: boolean) => {
-        gsap.set(contentInteractionNodes, { pointerEvents: isStickyMode ? 'none' : 'auto' })
-        gsap.set(stickyInteractionNodes, { pointerEvents: isStickyMode ? 'auto' : 'none' })
+        setIfAny(contentInteractionNodes, { pointerEvents: isStickyMode ? 'none' : 'auto' })
+        setIfAny(stickyInteractionNodes, { pointerEvents: isStickyMode ? 'auto' : 'none' })
+        setIfAny(stickyProgressTrackNodes, { autoAlpha: isStickyMode ? 1 : 0 })
+      }
+      const applyCompactDockedState = (isDocked: boolean) => {
+        const hasChanged = isCompactDockedRef.current !== isDocked
+        isCompactDockedRef.current = isDocked
+        setInteractionMode(isDocked)
+        if (isDocked) {
+          if (hasChanged) {
+            if (blurDotNodes.length) {
+              gsap.to(blurDotNodes, {
+                autoAlpha: 1,
+                duration: 0.35,
+                ease: uiConfig.transition.easeOutGsap,
+                overwrite: 'auto',
+              })
+            }
+          } else {
+            setIfAny(blurDotNodes, { autoAlpha: 1 })
+          }
+        } else {
+          gsap.killTweensOf(blurDotNodes, 'opacity,autoAlpha')
+          gsap.to(blurDotNodes, {
+            autoAlpha: 0,
+            duration: 0.35,
+            ease: uiConfig.transition.easeOutGsap,
+            overwrite: 'auto',
+          })
+        }
+        if (hasChanged) {
+          syncSlideshowActive()
+        }
       }
       ScrollTrigger.getById('intro-usp-hero-sticky-nav-pin')?.kill()
       ScrollTrigger.getById('intro-usp-hero-sticky-nav-trigger')?.kill()
+      sectionIds.forEach((id) => {
+        ScrollTrigger.getById(`intro-usp-hero-section-progress-${id}`)?.kill()
+      })
 
       ScrollTrigger.create({
         id: 'intro-usp-hero-sticky-nav-pin',
@@ -127,16 +210,16 @@ const useUspHero = ({ onSlideshowActiveChange }: UseUspHeroParams) => {
           invalidateOnRefresh: true,
           markers: false,
           onEnter: () => {
-            updateCompactDocked(false)
+            applyCompactDockedState(false)
           },
           onEnterBack: () => {
-            updateCompactDocked(false)
+            applyCompactDockedState(false)
           },
           onLeave: () => {
-            updateCompactDocked(true)
+            applyCompactDockedState(true)
           },
           onLeaveBack: () => {
-            updateCompactDocked(false)
+            applyCompactDockedState(false)
           },
         },
       })
@@ -154,36 +237,69 @@ const useUspHero = ({ onSlideshowActiveChange }: UseUspHeroParams) => {
       compactTimeline.to(
         iconNodes,
         {
-          scale: 0.58,
+          scale: 0.48,
           y: -20,
           duration: 1,
         },
         0,
       )
-      compactTimeline.to(
-        blurDotNodes,
-        {
-          scale: 0.5,
-          y: -24,
-          autoAlpha: 0.5,
-          duration: 1,
-        },
-        0,
-      )
+      const sectionProgressTriggers: ScrollTrigger[] = []
+      setSectionActive(null)
+      orderedSectionEntries.forEach(({ id, node }, index) => {
+        const nextEntry = orderedSectionEntries[index + 1]
+        const previousEntry = orderedSectionEntries[index - 1]
+
+        const sectionTrigger = ScrollTrigger.create({
+          id: `intro-usp-hero-section-progress-${id}`,
+          trigger: node,
+          endTrigger: nextEntry?.node,
+          scroller,
+          start: 'top center',
+          end: nextEntry ? 'top center' : 'max',
+          scrub: true,
+          invalidateOnRefresh: true,
+          markers: false,
+          onUpdate: (self) => {
+            setSectionProgress(id, self.progress)
+            if (self.isActive) {
+              setSectionActive(id)
+            }
+          },
+          onLeave: () => {
+            setSectionProgress(id, 1)
+            setSectionActive(nextEntry?.id ?? id)
+          },
+          onLeaveBack: () => {
+            setSectionProgress(id, 0)
+            setSectionActive(previousEntry?.id ?? null)
+          },
+          onEnterBack: () => {
+            setSectionActive(id)
+          },
+        })
+
+        sectionProgressTriggers.push(sectionTrigger)
+        setSectionProgress(id, sectionTrigger.progress)
+        if (sectionTrigger.isActive) {
+          setSectionActive(id)
+        }
+      })
 
       slideshowInViewRef.current = true
-      isCompactDockedRef.current = (compactTimeline.scrollTrigger?.progress ?? 0) >= 0.999
-      setInteractionMode(isCompactDockedRef.current)
-      syncSlideshowActive()
+      applyCompactDockedState((compactTimeline.scrollTrigger?.progress ?? 0) >= 0.999)
 
       return () => {
+        sectionProgressTriggers.forEach((trigger) => {
+          trigger.kill()
+        })
+        setSectionActive(null)
         setInteractionMode(false)
         slideshowInViewRef.current = false
         isCompactDockedRef.current = false
         setSlideshowActive(false)
       }
     },
-    { dependencies: [setSlideshowActive, syncSlideshowActive] },
+    { dependencies: [setSectionActive, setSlideshowActive, syncSlideshowActive] },
   )
 
   return {

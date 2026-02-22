@@ -4,10 +4,11 @@ import GradientText from '../../components/GradientText'
 import SectionHeader from '../../components/SectionHeader'
 import { H4Headline } from '../../components/Headline'
 import BarChart from '../../components/BarChart'
+import { UspCategoryId } from '../../util/constants'
 
 const StabilitySection = () => {
   return (
-    <>
+    <section data-usp-section={UspCategoryId.stability}>
       <LayoutComponent className="mt-40">
         <SectionHeader
           icon={'💎'}
@@ -54,7 +55,7 @@ const StabilitySection = () => {
           />
         </div>
       </LayoutComponent>
-    </>
+    </section>
   )
 }
 
