@@ -2,7 +2,7 @@
   "scripts": {
     "dev": "vike dev",
     "build": "vike build",
-    "preview": "vike build && vike preview"
+    "preview": "DEBUG=vite-plugin-server-entry vike build && DEBUG=vite-plugin-server-entry vike preview"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.7.0",
