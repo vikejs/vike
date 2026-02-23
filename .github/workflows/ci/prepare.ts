@@ -77,7 +77,7 @@ async function getJobs(testFiles: string[]): Promise<Job[]> {
       jobs.push({
         jobName: jobSpec.name,
         jobSetups: jobSpec.setups,
-        jobCmd: jobSpec.command ?? 'pnpm exec test-e2e',
+        jobCmd: jobSpec.command ?? 'pnpm exec test-e2e --verbose',
         jobTests: jobSpec.command ? null : [],
       })
     })
