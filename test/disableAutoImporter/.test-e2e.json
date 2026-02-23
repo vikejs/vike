@@ -1,1 +1,1 @@
-{ "ci": { "job": "Unit Tests E2E", "inspect": true } }
+{ "ci": { "job": "Unit Tests E2E" } }
