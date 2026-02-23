@@ -54,6 +54,8 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
                 edge: Boolean(edge),
               },
             })
+          } else if (edge || isr) {
+            // FIXME warn
           }
         }
 
