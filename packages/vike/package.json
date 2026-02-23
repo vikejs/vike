@@ -123,7 +123,7 @@
     "@brillout/import": "^0.2.6",
     "@brillout/json-serializer": "^0.5.22",
     "@brillout/picocolors": "^1.0.30",
-    "@brillout/vite-plugin-server-entry": "0.7.17-commit-63ac252",
+    "@brillout/vite-plugin-server-entry": "0.7.18",
     "cac": "^6.0.0",
     "es-module-lexer": "^1.0.0",
     "esbuild": ">=0.19.0",
