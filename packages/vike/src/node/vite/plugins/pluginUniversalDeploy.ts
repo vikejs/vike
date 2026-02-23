@@ -44,18 +44,20 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
             )
           }
 
-          if (route) {
-            addEntry({
-              id: 'vike/fetch',
-              route,
+          if (edge || isr) {
+            if (route) {
+              addEntry({
+                id: 'vike/fetch',
+                route,
 
-              vercel: {
-                isr: isr ? { expiration: isr } : undefined,
-                edge: Boolean(edge),
-              },
-            })
-          } else if (edge || isr) {
-            // FIXME warn
+                vercel: {
+                  isr: isr ? { expiration: isr } : undefined,
+                  edge: Boolean(edge),
+                },
+              })
+            } else {
+              // FIXME warn
+            }
           }
         }
 
