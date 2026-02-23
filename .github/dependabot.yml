@@ -4,7 +4,9 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-    # Only dependencies we control
+      time: "03:30"
+      timezone: "Europe/Berlin"
+    # Only dependencies maintained by the Vike team
     allow:
       - dependency-name: "@batijs/*"
       - dependency-name: "@brillout/*"
