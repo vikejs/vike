@@ -2,14 +2,15 @@
   "scripts": {
     "dev": "vike dev",
     "build": "vike build",
-    "preview": "DEBUG=vite-plugin-server-entry vike build && DEBUG=vite-plugin-server-entry vike preview"
+    "preview": "cross-env DEBUG=vite-plugin-server-entry vike build && cross-env DEBUG=vite-plugin-server-entry vike preview"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.7.0",
+    "cross-env": "^10.1.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "vite": "^6.3.2",
-    "vike": "0.4.253"
+    "vike": "0.4.253",
+    "vite": "^6.3.2"
   },
   "type": "module"
 }
