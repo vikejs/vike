@@ -1,82 +1,44 @@
 export { pluginAutoTarget }
 
 import type { ConfigEnv, ConfigPluginContext, Plugin, UserConfig } from 'vite'
-import { assert, assertUsage } from '../../../utils/assert.js'
-import { findPackageJson } from '../../../utils/findPackageJson.js'
+import { node } from '@universal-deploy/node/vite'
+import { assertUsage } from '../../../utils/assert.js'
+import { asyncFlatten } from '../../../utils/asyncFlatten.js'
 import '../assertEnvVite.js'
 
 function pluginAutoTarget(): Plugin[] {
-  return [
-    {
-      name: 'vike:pluginAutoTarget',
-      configResolved: {
-        async handler(config) {
-          const packageJson = findPackageJson(config.root)
-          assert(packageJson)
+  // Disable @universal-deploy/node if one of the following plugin is present
+  //  - vite-plugin-vercel
+  //  - @cloudflare/vite-plugin
+  async function condition(c: UserConfig) {
+    const plugins = await asyncFlatten((c.plugins ?? []) as Plugin[])
+    const resolvedPlugins = plugins.filter((p): p is Plugin => Boolean(p))
 
-          const photonVercel = isDependencyInstalledByUser(packageJson.packageJson, '@photonjs/vercel')
-          const photonCloudflare = isDependencyInstalledByUser(packageJson.packageJson, '@photonjs/cloudflare')
-          const vitePluginVercel = isDependencyInstalledByUser(packageJson.packageJson, 'vite-plugin-vercel')
-          const cloudflareVitePlugin = isDependencyInstalledByUser(packageJson.packageJson, '@cloudflare/vite-plugin')
+    const photonVercel = resolvedPlugins.some((p) => p.name.startsWith('photon:target-loader:vercel'))
+    const photonCloudflare = resolvedPlugins.some((p) => p.name.startsWith('photon:target-loader:cloudflare'))
 
-          assertUsage(
-            !photonVercel,
-            'Replace `@photonjs/vercel` by `vite-plugin-vercel@11`. See https://vike.dev/vercel',
-          )
-          assertUsage(
-            !photonCloudflare,
-            'Replace `@photonjs/cloudflare` by `@cloudflare/vite-plugin`. See https://vike.dev/cloudflare',
-          )
+    assertUsage(!photonVercel, 'Replace `@photonjs/vercel` by `vite-plugin-vercel@11`. See https://vike.dev/vercel')
+    assertUsage(
+      !photonCloudflare,
+      'Replace `@photonjs/cloudflare` by `@cloudflare/vite-plugin`. See https://vike.dev/cloudflare',
+    )
 
-          if (cloudflareVitePlugin) {
-            // @ts-expect-error peer dependency
-            return import('@cloudflare/vite-plugin').then((p) => p.cloudflare())
-          }
+    // vite-plugin-vercel
+    const vitePluginVercel = resolvedPlugins.some((p) => p.name.startsWith('vite-plugin-vercel:'))
+    // @cloudflare/vite-plugin
+    const cloudflareVitePlugin = resolvedPlugins.some((p) => p.name.startsWith('vite-plugin-cloudflare:'))
 
-          if (vitePluginVercel) {
-            // @ts-expect-error peer dependency
-            return import('vite-plugin-vercel').then((p) => p.vercel())
-          }
-
-          async function condition(c: UserConfig) {
-            const plugins = await asyncFlatten((c.plugins ?? []) as Plugin[])
-            const resolvedPlugins = plugins.filter((p): p is Plugin => Boolean(p))
-            const found = resolvedPlugins.find(
-              (p) => p.name === '@cloudflare/vite-plugin' || p.name === 'vite-plugin-vercel',
-            )
-
-            return Boolean(found)
-          }
-
-          return import('@universal-deploy/node/vite').then((p) => p.node().map((p2) => disableIf(condition, p2)))
-        },
-      },
-
-      sharedDuringBuild: true,
-    },
-  ]
-}
-
-type AsyncFlatten<T extends unknown[]> = T extends (infer U)[] ? Exclude<Awaited<U>, U[]>[] : never
-
-async function asyncFlatten<T extends unknown[]>(arr: T): Promise<AsyncFlatten<T>> {
-  do {
-    arr = (await Promise.all(arr)).flat(Infinity) as any
-  } while (arr.some((v: any) => v?.then))
-  return arr as unknown[] as AsyncFlatten<T>
-}
-
-function isDependencyInstalledByUser(packageJson: Record<string, unknown>, pkg: string): boolean {
-  for (const prop of ['devDependencies', 'dependencies']) {
-    if (packageJson[prop] && Object.keys(packageJson[prop]).includes(pkg)) {
-      return true
-    }
+    return vitePluginVercel || cloudflareVitePlugin
   }
-  return false
+
+  return node().map((p) => disableIf(condition, p))
 }
 
 type DisableCondition = (this: ConfigPluginContext, config: UserConfig, env: ConfigEnv) => boolean | Promise<boolean>
 
+/**
+ * Disables a plugin based on a specified condition callback which will be executed in the `config` hook.
+ */
 function disableIf(condition: DisableCondition, originalPlugin: Plugin): Plugin {
   const originalConfig = originalPlugin.config
 
