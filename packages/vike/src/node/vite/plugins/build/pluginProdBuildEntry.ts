@@ -15,7 +15,7 @@ import { getOutDirs } from '../../shared/getOutDirs.js'
 import { getViteConfigRuntime } from '../../shared/getViteConfigRuntime.js'
 import '../../assertEnvVite.js'
 type Bundle = Rollup.OutputBundle
-const ASSETS_MANIFEST = '__VITE_ASSETS_MANIFEST__'
+const ASSETS_MANIFEST = `__VITE_ASSETS_MANIFEST_${preventConstantFolding()}_`
 
 function pluginProdBuildEntry(): Plugin[] {
   let config: ResolvedConfig
@@ -91,15 +91,8 @@ function find_ASSETS_MANIFEST(bundle: Bundle) {
   let chunkPath: string | undefined
   for (const filePath in bundle) {
     const chunk = bundle[filePath]!
-    if (
-      'code' in chunk &&
-      chunk.code.includes(ASSETS_MANIFEST) &&
-      // Skip ASSETS_MANIFEST found in `node_modules/vike/` when server runtime imports Vike's Vite plugin: `import { prerender } from 'vike/api'` with ssr.noExternal.includes('vike')
-      Object.entries(chunk.modules).some(
-        ([moduleId, module]) => module.code?.includes(ASSETS_MANIFEST) && !moduleId.includes('node_modules'),
-      )
-    ) {
-      assert(!chunkPath, { chunkPath, filePath })
+    if ('code' in chunk && chunk.code.includes(ASSETS_MANIFEST)) {
+      assert(!chunkPath)
       chunkPath = filePath
     }
   }
@@ -118,4 +111,12 @@ function getImportPath(config: ResolvedConfig) {
     const filePathRelative = path.posix.relative(outDirServer, filePathAbsolute)
     return filePathRelative
   }
+}
+
+/** Prevent compilers from constant folding `'a' + 'b'` into `'ab'`*/
+function preventConstantFolding() {
+  // @ts-ignore
+  const undefined_ = globalThis.__vike_this_property_is_never_defined
+  if (undefined_) return 'this_value_is_never_used'
+  return ''
 }
