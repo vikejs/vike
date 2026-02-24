@@ -24,9 +24,9 @@ function pluginAutoTarget(): Plugin[] {
     )
 
     // vite-plugin-vercel
-    const vitePluginVercel = resolvedPlugins.some((p) => p.name.startsWith('vite-plugin-vercel:'))
+    const vitePluginVercel = resolvedPlugins.some((p) => p.name.match(/^vite-plugin-vercel:(?!.*:disabled$)/))
     // @cloudflare/vite-plugin
-    const cloudflareVitePlugin = resolvedPlugins.some((p) => p.name.startsWith('vite-plugin-cloudflare:'))
+    const cloudflareVitePlugin = resolvedPlugins.some((p) => p.name.match(/^vite-plugin-cloudflare:(?!.*:disabled$)/))
 
     return vitePluginVercel || cloudflareVitePlugin
   }
