@@ -931,8 +931,6 @@ async function write(
   const { urlOriginal } = pageContext
   assert(urlOriginal.startsWith('/'))
 
-  const { _outDirClient: outDirClient, _userRootDir: userRootDir } = prerenderContext
-
   let fileUrl: string
   if (fileType === 'HTML') {
     const doNotCreateExtraDirectory = prerenderContext._noExtraDir ?? pageContext.is404
@@ -950,6 +948,7 @@ async function write(
     // https://github.com/vikejs/vike/issues/1929
     { urlOriginal, fileUrl },
   )
+  const { _outDirClient: outDirClient } = prerenderContext
   assertPosixPath(outDirClient)
   assertPosixPath(filePathRelative)
   const filePath = path.posix.join(outDirClient, filePathRelative)
@@ -975,6 +974,7 @@ async function write(
     await mkdir(path.posix.dirname(filePath), { recursive: true })
     await writeFile(filePath, fileContent)
     if (logLevel === 'info') {
+      const { _userRootDir: userRootDir } = prerenderContext
       assertPosixPath(userRootDir)
       assertPosixPath(outDirClient)
       let outDirClientRelative = path.posix.relative(userRootDir, outDirClient)
