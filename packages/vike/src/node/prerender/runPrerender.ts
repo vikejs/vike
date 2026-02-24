@@ -163,11 +163,6 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
 
   await initGlobalContext_runPrerender()
   const { globalContext } = await getGlobalContextServerInternal()
-  const {
-    root,
-    build: { outDir: outDirRoot },
-  } = globalContext.viteConfigRuntime
-  const { outDirServer, outDirClient } = getOutDirsAllFromRootNormalized(outDirRoot, root)
 
   // TO-DO/eventually: remove getVikeConfigInternal() to completely remove Vite dependency
   // https://github.com/vikejs/vike/issues/3113
@@ -195,6 +190,11 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
 
   globalContext._pageFilesAll.forEach(assertExportNames)
 
+  const {
+    root,
+    build: { outDir: outDirRoot },
+  } = globalContext.viteConfigRuntime
+  const { outDirServer, outDirClient } = getOutDirsAllFromRootNormalized(outDirRoot, root)
   const prerenderContext: PrerenderContext = {
     pageContexts: [],
     output: [],
