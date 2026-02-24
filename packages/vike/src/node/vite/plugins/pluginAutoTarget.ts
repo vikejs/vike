@@ -31,7 +31,7 @@ function pluginAutoTarget(): Plugin[] {
     return vitePluginVercel || cloudflareVitePlugin
   }
 
-  return node().map((p) => disableIf(condition, p))
+  return node().map((p) => disablePluginIf(condition, p))
 }
 
 type DisableCondition = (this: ConfigPluginContext, config: UserConfig, env: ConfigEnv) => boolean | Promise<boolean>
@@ -39,7 +39,7 @@ type DisableCondition = (this: ConfigPluginContext, config: UserConfig, env: Con
 /**
  * Disables a plugin based on a specified condition callback which will be executed in the `config` hook.
  */
-function disableIf(condition: DisableCondition, originalPlugin: Plugin): Plugin {
+function disablePluginIf(condition: DisableCondition, originalPlugin: Plugin): Plugin {
   const originalConfig = originalPlugin.config
 
   originalPlugin.config = {
@@ -51,7 +51,7 @@ function disableIf(condition: DisableCondition, originalPlugin: Plugin): Plugin 
         originalPlugin.name += ':disabled'
         for (const key of keysToDelete) {
           // @ts-expect-error
-          delete p[key]
+          delete originalPlugin[key]
         }
       } else if (originalConfig) {
         if (typeof originalConfig === 'function') {
