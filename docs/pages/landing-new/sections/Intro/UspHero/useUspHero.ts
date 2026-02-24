@@ -1,6 +1,6 @@
 import { useGSAP } from '@gsap/react'
 import { useRef, useCallback } from 'react'
-import { registerScrollTrigger } from '../../../util/gsap.utils'
+import { registerScrollToPlugin, registerScrollTrigger } from '../../../util/gsap.utils'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { gsap } from 'gsap'
 import { landingPageHeroUsps, UspId } from '../../../util/constants'
@@ -56,6 +56,7 @@ const useUspHero = ({ onSlideshowActiveChange, onSectionActiveChange }: UseUspHe
       }
 
       registerScrollTrigger()
+      registerScrollToPlugin()
 
       const navNode = rootNode.querySelector<HTMLElement>('[data-usp-hero-nav="true"]')
       const navChromeNode = rootNode.querySelector<HTMLElement>('[data-usp-hero-nav-chrome="true"]')
@@ -113,7 +114,15 @@ const useUspHero = ({ onSlideshowActiveChange, onSectionActiveChange }: UseUspHe
         }
         const sectionTop = sectionNode.getBoundingClientRect().top + window.scrollY
         const top = Math.max(sectionTop - 96, 0)
-        window.scrollTo({ top, behavior: 'smooth' })
+        gsap.to(window, {
+          duration: uiConfig.transition.longDuration,
+          ease: uiConfig.transition.easeInOutGsap,
+          overwrite: 'auto',
+          scrollTo: { 
+            y: top, 
+            autoKill: true,
+          },
+        })
       }
       const setIfAny = (targets: HTMLElement[], vars: gsap.TweenVars) => {
         if (!targets.length) {
@@ -138,7 +147,7 @@ const useUspHero = ({ onSlideshowActiveChange, onSectionActiveChange }: UseUspHe
       setIfAny(stickyLogoNodes, { willChange: 'opacity' })
       setIfAny(blurDotNodes, { autoAlpha: 0 })
       setIfAny(stickyProgressTrackNodes, { autoAlpha: 0 })
-      setIfAny(stickyLogoNodes, { autoAlpha: 0, x: 24 })
+      setIfAny(stickyLogoNodes, { autoAlpha: 0, x: 16 })
 
       const scroller = document.querySelector<HTMLElement>('body') ?? undefined
       const setInteractionMode = (isStickyMode: boolean) => {
@@ -164,7 +173,7 @@ const useUspHero = ({ onSlideshowActiveChange, onSectionActiveChange }: UseUspHe
               gsap.to(stickyLogoNodes, {
                 autoAlpha: 1,
                 x: 0,
-                duration: 0.35,
+                duration: uiConfig.transition.shortDuration,
                 ease: uiConfig.transition.easeOutGsap,
                 overwrite: 'auto',
               })
@@ -186,8 +195,8 @@ const useUspHero = ({ onSlideshowActiveChange, onSectionActiveChange }: UseUspHe
             if (stickyLogoNodes.length) {
               gsap.to(stickyLogoNodes, {
                 autoAlpha: 0,
-                x: 24,
-                duration: 0.25,
+                x: 16,
+                duration: uiConfig.transition.shortDuration,
                 ease: uiConfig.transition.easeOutGsap,
                 overwrite: 'auto',
               })

@@ -24,7 +24,7 @@ const HeadlineWord = ({
   color: UiColorVariantKey
 }) => {
   return (
-    <span className="relative inline-block min-h-16">
+    <span className="relative inline-block">
       <span
         className={`${UiVariantTextColor.neutral} transition-opacity duration-450 ease-in-out ${isActive ? 'opacity-0' : 'opacity-100'}`}
       >
@@ -98,7 +98,6 @@ const IntroSection = () => {
 
   return (
     <>
-
       <div data-intro-section-root="true" className="relative">
         <div className="absolute top-0 left-0 h-1/2 w-full bg-linear-to-t to-white z-10" />
         <HeroBackgroundColorFade hoveredColor={activeColor} />
@@ -118,8 +117,8 @@ const IntroSection = () => {
                 <HeadlineWord word="Fast." isActive={activeHeadlineWord === 'orange'} color="orange" />
               </Headline>
             </div>
-            <p className="text-xl md:text-2xl text-grey text-center w-3/4 lg:w-3/5 mx-auto mb-6">
-              The last JavaScript framework you'll need, powered by a next-gen architecture.
+            <p className="text-xl md:text-2xl text-grey text-center w-3/4 lg:w-3/5 mx-auto mb-6 mt-4">
+              The last JavaScript framework you'll need, <br /> powered by a next-gen architecture.
             </p>
             <div className="flex gap-2 items-center justify-center mb-16">
               <a

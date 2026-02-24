@@ -1,6 +1,7 @@
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ScrollSmoother } from 'gsap/ScrollSmoother'
+import { ScrollToPlugin } from 'gsap/ScrollToPlugin'
 
 export const R = (min: number, max: number) => Math.random() * (max - min) + min
 
@@ -13,6 +14,7 @@ export const killTweens = (targets: Element[], props?: string | string[]) => {
 
 let scrollTriggerRegistered = false
 let scrollSmootherRegistered = false
+let scrollToPluginRegistered = false
 
 export const registerScrollSmoother = () => {
   if (scrollSmootherRegistered || typeof window === 'undefined') {
@@ -28,6 +30,14 @@ export const registerScrollTrigger = () => {
   }
   gsap.registerPlugin(ScrollTrigger)
   scrollTriggerRegistered = true
+}
+
+export const registerScrollToPlugin = () => {
+  if (scrollToPluginRegistered || typeof window === 'undefined') {
+    return
+  }
+  gsap.registerPlugin(ScrollToPlugin)
+  scrollToPluginRegistered = true
 }
 
 export const debounce = <T extends (...args: any[]) => void>(fn: T, waitMs: number) => {
