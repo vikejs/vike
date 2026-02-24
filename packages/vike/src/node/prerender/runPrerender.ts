@@ -163,7 +163,8 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
   const viteConfig = await resolveViteConfig(options.viteConfig || {}, 'build', 'production')
   const vikeConfig = await getVikeConfigInternal()
 
-  const { outDirServer } = getOutDirs(viteConfig, undefined)
+  const { outDirServer, outDirClient } = getOutDirs(viteConfig, undefined)
+  const userRootDir = viteConfig.root
   const prerenderConfigGlobal = await resolvePrerenderConfigGlobal(vikeConfig)
   const { partial, noExtraDir, parallel, defaultLocalValue, isPrerenderingEnabled } = prerenderConfigGlobal
   if (!isPrerenderingEnabled) {
@@ -230,6 +231,7 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
     if (pageId) {
       prerenderContext._prerenderedPageContexts[pageId] = htmlFile.pageContext
     }
+    // TODO/ai pass prerenderContext.userRootDir and prerenderContext.outDirClient instead of viteConfig
     await writeFiles(htmlFile, viteConfig, options.onPagePrerender, prerenderContext, logLevel)
   }
 
