@@ -336,6 +336,7 @@ async function collectDoNoPrerenderList(
   })
 }
 
+// TO-DO/next-major-release: remove
 function assertExportNames(pageFile: PageFile) {
   const { exportNames, fileType } = pageFile
   assert(exportNames || fileType === '.page.route' || fileType === '.css', pageFile.filePath)
