@@ -59,7 +59,7 @@ import { execHookSingleWithoutPageContext, isUserHookError } from '../../shared-
 import type { ApiOptions } from '../api/types.js'
 import { setWasPrerenderRun } from './context.js'
 import { resolvePrerenderConfigGlobal, resolvePrerenderConfigLocal } from './resolvePrerenderConfig.js'
-import { getOutDirs } from '../vite/shared/getOutDirs.js'
+import { getOutDirsAllFromRootNormalized } from '../vite/shared/getOutDirs.js'
 import fs from 'node:fs'
 import { getPublicProxy } from '../../shared-server-client/getPublicProxy.js'
 import { getStaticRedirectsForPrerender } from '../../server/runtime/renderPageServer/resolveRedirects.js'
@@ -163,13 +163,17 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
 
   await initGlobalContext_runPrerender()
   const { globalContext } = await getGlobalContextServerInternal()
+  const { viteConfigRuntime } = globalContext
+  const {
+    root,
+    build: { outDir: outDirRoot },
+  } = viteConfigRuntime
+  const { outDirServer, outDirClient } = getOutDirsAllFromRootNormalized(outDirRoot, root)
   const viteConfig = globalContext.viteConfig
   assert(viteConfig)
   const vikeConfig = await getVikeConfigInternalOptional()
   assert(vikeConfig)
 
-  const { outDirServer, outDirClient } = getOutDirs(viteConfig, undefined)
-  const userRootDir = viteConfig.root
   const prerenderConfigGlobal = await resolvePrerenderConfigGlobal(vikeConfig)
   const { partial, noExtraDir, parallel, defaultLocalValue, isPrerenderingEnabled } = prerenderConfigGlobal
   if (!isPrerenderingEnabled) {
@@ -198,7 +202,7 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
     _pageContextInit: options.pageContextInit ?? null,
     _prerenderedPageContexts: {},
     _requestIdCounter: 0,
-    _userRootDir: userRootDir,
+    _userRootDir: root,
     _outDirClient: outDirClient,
   }
 

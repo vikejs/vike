@@ -1,5 +1,6 @@
 export { getOutDirs }
 export { resolveOutDir }
+export { getOutDirsAllFromRootNormalized }
 export type { OutDirs }
 
 import type { UserConfig, ResolvedConfig } from 'vite'
