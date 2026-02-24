@@ -12,7 +12,7 @@ import './assertEnvApiDevAndProd.js'
  * https://vike.dev/api#prerender
  */
 async function prerender(options: PrerenderOptions = {}): Promise<{
-  viteConfig: ResolvedConfig
+  viteConfig: null | ResolvedConfig
 }> {
   const { viteConfigFromUserResolved } = await prepareViteApiCall(options, 'prerender')
   options.viteConfig = viteConfigFromUserResolved
