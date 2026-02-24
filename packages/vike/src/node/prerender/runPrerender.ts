@@ -53,7 +53,7 @@ import {
 } from '../../shared-server-client/hooks/getHook.js'
 import { noRouteMatch } from '../../shared-server-client/route/noRouteMatch.js'
 import type { PageConfigBuildTime } from '../../types/PageConfig.js'
-import { getVikeConfigInternalOptional } from '../vite/shared/resolveVikeConfigInternal.js'
+import { getVikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.js'
 import type { HookTimeout } from '../../shared-server-client/hooks/getHook.js'
 import { execHookSingleWithoutPageContext, isUserHookError } from '../../shared-server-client/hooks/execHook.js'
 import type { ApiOptions } from '../api/types.js'
@@ -169,9 +169,9 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
   } = globalContext.viteConfigRuntime
   const { outDirServer, outDirClient } = getOutDirsAllFromRootNormalized(outDirRoot, root)
 
-  // TO-DO/eventually: remove getVikeConfigInternalOptional() to completely remove Vite dependency
+  // TO-DO/eventually: remove getVikeConfigInternal() to completely remove Vite dependency
   // https://github.com/vikejs/vike/issues/3113
-  const vikeConfig = await getVikeConfigInternalOptional()
+  const vikeConfig = await getVikeConfigInternal()
   assert(vikeConfig)
 
   const prerenderConfigGlobal = await resolvePrerenderConfigGlobal(vikeConfig)
