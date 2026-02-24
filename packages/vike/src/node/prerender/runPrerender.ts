@@ -163,11 +163,10 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
 
   await initGlobalContext_runPrerender()
   const { globalContext } = await getGlobalContextServerInternal()
-  const { viteConfigRuntime } = globalContext
   const {
     root,
     build: { outDir: outDirRoot },
-  } = viteConfigRuntime
+  } = globalContext.viteConfigRuntime
   const { outDirServer, outDirClient } = getOutDirsAllFromRootNormalized(outDirRoot, root)
   const vikeConfig = await getVikeConfigInternalOptional()
   assert(vikeConfig)
