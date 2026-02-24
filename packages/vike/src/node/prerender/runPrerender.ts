@@ -37,7 +37,7 @@ import {
   setGlobalContext_isPrerendering,
   setGlobalContext_prerenderContext,
 } from '../../server/runtime/globalContext.js'
-import { type ResolvedConfig, resolveConfig as resolveViteConfig } from 'vite'
+import { resolveConfig as resolveViteConfig } from 'vite'
 import { getPageFilesServerSide } from '../../shared-server-client/getPageFiles.js'
 import { getPageContextRequestUrl } from '../../shared-server-client/getPageContextRequestUrl.js'
 import { getUrlFromRouteString } from '../../shared-server-client/route/resolveRouteString.js'
@@ -106,6 +106,8 @@ type PrerenderContext = {
   _noExtraDir: boolean | null
   _prerenderedPageContexts: PrerenderedPageContexts
   _requestIdCounter: number
+  userRootDir: string
+  outDirClient: string
 }
 type Output<PageContext = PageContextPrerendered> = {
   filePath: string
@@ -195,6 +197,8 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
     _pageContextInit: options.pageContextInit ?? null,
     _prerenderedPageContexts: {},
     _requestIdCounter: 0,
+    userRootDir,
+    outDirClient,
   }
 
   const doNotPrerenderList: DoNotPrerenderList = []
@@ -231,8 +235,7 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
     if (pageId) {
       prerenderContext._prerenderedPageContexts[pageId] = htmlFile.pageContext
     }
-    // TODO/ai pass prerenderContext.userRootDir and prerenderContext.outDirClient instead of viteConfig
-    await writeFiles(htmlFile, viteConfig, options.onPagePrerender, prerenderContext, logLevel)
+    await writeFiles(htmlFile, prerenderContext, options.onPagePrerender, logLevel)
   }
 
   await prerenderPages(prerenderContext, concurrencyLimit, onComplete)
@@ -906,16 +909,13 @@ async function warnMissingPages(
 
 async function writeFiles(
   { pageContext, htmlString, pageContextSerialized }: HtmlFile,
-  viteConfig: ResolvedConfig,
-  onPagePrerender: Function | undefined,
   prerenderContext: PrerenderContext,
+  onPagePrerender: Function | undefined,
   logLevel: 'warn' | 'info',
 ) {
-  const writeJobs = [write(pageContext, 'HTML', htmlString, viteConfig, onPagePrerender, prerenderContext, logLevel)]
+  const writeJobs = [write(pageContext, 'HTML', htmlString, onPagePrerender, prerenderContext, logLevel)]
   if (pageContextSerialized !== null) {
-    writeJobs.push(
-      write(pageContext, 'JSON', pageContextSerialized, viteConfig, onPagePrerender, prerenderContext, logLevel),
-    )
+    writeJobs.push(write(pageContext, 'JSON', pageContextSerialized, onPagePrerender, prerenderContext, logLevel))
   }
   await Promise.all(writeJobs)
 }
@@ -924,7 +924,6 @@ async function write(
   pageContext: PageContextPrerendered,
   fileType: FileType,
   fileContent: string,
-  viteConfig: ResolvedConfig,
   onPagePrerender: Function | undefined,
   prerenderContext: PrerenderContext,
   logLevel: 'info' | 'warn',
@@ -932,8 +931,7 @@ async function write(
   const { urlOriginal } = pageContext
   assert(urlOriginal.startsWith('/'))
 
-  const { outDirClient } = getOutDirs(viteConfig, undefined)
-  const { root } = viteConfig
+  const { outDirClient, userRootDir } = prerenderContext
 
   let fileUrl: string
   if (fileType === 'HTML') {
@@ -977,9 +975,9 @@ async function write(
     await mkdir(path.posix.dirname(filePath), { recursive: true })
     await writeFile(filePath, fileContent)
     if (logLevel === 'info') {
-      assertPosixPath(root)
+      assertPosixPath(userRootDir)
       assertPosixPath(outDirClient)
-      let outDirClientRelative = path.posix.relative(root, outDirClient)
+      let outDirClientRelative = path.posix.relative(userRootDir, outDirClient)
       if (!outDirClientRelative.endsWith('/')) {
         outDirClientRelative = outDirClientRelative + '/'
       }
