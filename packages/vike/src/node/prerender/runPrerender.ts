@@ -167,7 +167,6 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
   // TO-DO/eventually: remove getVikeConfigInternal() to completely remove Vite dependency
   // https://github.com/vikejs/vike/issues/3113
   const vikeConfig = await getVikeConfigInternal()
-  assert(vikeConfig)
 
   const prerenderConfigGlobal = await resolvePrerenderConfigGlobal(vikeConfig)
   const { partial, noExtraDir, parallel, defaultLocalValue, isPrerenderingEnabled } = prerenderConfigGlobal
