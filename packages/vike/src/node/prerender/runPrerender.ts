@@ -171,7 +171,6 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
   const { outDirServer, outDirClient } = getOutDirsAllFromRootNormalized(outDirRoot, root)
   const vikeConfig = await getVikeConfigInternalOptional()
   assert(vikeConfig)
-  const viteConfig = globalContext.viteConfig ?? null
 
   const prerenderConfigGlobal = await resolvePrerenderConfigGlobal(vikeConfig)
   const { partial, noExtraDir, parallel, defaultLocalValue, isPrerenderingEnabled } = prerenderConfigGlobal
@@ -185,7 +184,7 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
       `You're executing ${pc.cyan(standaloneTrigger)} but you didn't enable pre-rendering. Use the ${pc.cyan('prerender')} setting (${pc.underline('https://vike.dev/prerender')}) to enable pre-rendering for at least one page.`
     )
     */
-    return { viteConfig }
+    return
   }
 
   const concurrencyLimit = pLimit(
@@ -263,8 +262,6 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
   if (!prerenderConfigGlobal.keepDistServer) {
     fs.rmSync(outDirServer, { recursive: true })
   }
-
-  return { viteConfig }
 }
 
 async function collectDoNoPrerenderList(

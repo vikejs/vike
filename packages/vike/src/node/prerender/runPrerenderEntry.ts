@@ -10,11 +10,14 @@ import { isVikeCli } from '../cli/context.js'
 import { isViteCli } from '../vite/shared/isViteCli.js'
 import { PrerenderOptions, runPrerender } from './runPrerender.js'
 import { logErrorServer } from '../../server/runtime/logErrorServer.js'
+import { getGlobalContextServerInternal } from '../../server/runtime/globalContext.js'
 
 async function runPrerenderFromAPI(options: PrerenderOptions = {}): Promise<{ viteConfig: null | ResolvedConfig }> {
   // - We purposely propagate the error to the user land, so that the error interrupts the user land. It's also, I guess, a nice-to-have that the user has control over the error.
   // - We don't use addErrorHint() because we don't have control over what happens with the error. For example, if the user land purposely swallows the error then the hint shouldn't be logged. Also, it's best if the hint is shown to the user *after* the error, but we cannot do/guarentee that.
-  const { viteConfig } = await runPrerender(options, 'prerender()')
+  await runPrerender(options, 'prerender()')
+  const { globalContext } = await getGlobalContextServerInternal()
+  const viteConfig = globalContext.viteConfig ?? null
   return { viteConfig }
 }
 async function runPrerenderFromCLIPrerenderCommand(): Promise<void> {
