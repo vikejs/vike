@@ -106,8 +106,8 @@ type PrerenderContext = {
   _noExtraDir: boolean | null
   _prerenderedPageContexts: PrerenderedPageContexts
   _requestIdCounter: number
-  userRootDir: string
-  outDirClient: string
+  _userRootDir: string
+  _outDirClient: string
 }
 type Output<PageContext = PageContextPrerendered> = {
   filePath: string
@@ -197,8 +197,8 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
     _pageContextInit: options.pageContextInit ?? null,
     _prerenderedPageContexts: {},
     _requestIdCounter: 0,
-    userRootDir,
-    outDirClient,
+    _userRootDir: userRootDir,
+    _outDirClient: outDirClient,
   }
 
   const doNotPrerenderList: DoNotPrerenderList = []
@@ -931,7 +931,7 @@ async function write(
   const { urlOriginal } = pageContext
   assert(urlOriginal.startsWith('/'))
 
-  const { outDirClient, userRootDir } = prerenderContext
+  const { _outDirClient: outDirClient, _userRootDir: userRootDir } = prerenderContext
 
   let fileUrl: string
   if (fileType === 'HTML') {
