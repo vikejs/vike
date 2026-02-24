@@ -92,7 +92,7 @@ function find_ASSETS_MANIFEST(bundle: Bundle) {
   for (const filePath in bundle) {
     const chunk = bundle[filePath]!
     if ('code' in chunk && chunk.code.includes(ASSETS_MANIFEST)) {
-      assert(!chunkPath)
+      assert(!chunkPath, { chunkPath, filePath })
       chunkPath = filePath
     }
   }
