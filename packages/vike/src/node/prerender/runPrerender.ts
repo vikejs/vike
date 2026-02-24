@@ -37,7 +37,6 @@ import {
   setGlobalContext_isPrerendering,
   setGlobalContext_prerenderContext,
 } from '../../server/runtime/globalContext.js'
-import { resolveConfig as resolveViteConfig } from 'vite'
 import { getPageFilesServerSide } from '../../shared-server-client/getPageFiles.js'
 import { getPageContextRequestUrl } from '../../shared-server-client/getPageContextRequestUrl.js'
 import { getUrlFromRouteString } from '../../shared-server-client/route/resolveRouteString.js'
@@ -60,7 +59,7 @@ import { execHookSingleWithoutPageContext, isUserHookError } from '../../shared-
 import type { ApiOptions } from '../api/types.js'
 import { setWasPrerenderRun } from './context.js'
 import { resolvePrerenderConfigGlobal, resolvePrerenderConfigLocal } from './resolvePrerenderConfig.js'
-import { getOutDirs } from '../vite/shared/getOutDirs.js'
+import { getOutDirsAllFromRootNormalized } from '../vite/shared/getOutDirs.js'
 import fs from 'node:fs'
 import { getPublicProxy } from '../../shared-server-client/getPublicProxy.js'
 import { getStaticRedirectsForPrerender } from '../../server/runtime/renderPageServer/resolveRedirects.js'
@@ -162,11 +161,13 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
 
   await disableReactStreaming()
 
-  const viteConfig = await resolveViteConfig(options.viteConfig || {}, 'build', 'production')
+  await initGlobalContext_runPrerender()
+  const { globalContext } = await getGlobalContextServerInternal()
+
+  // TO-DO/eventually: remove getVikeConfigInternal() to completely remove Vite dependency
+  // https://github.com/vikejs/vike/issues/3113
   const vikeConfig = await getVikeConfigInternal()
 
-  const { outDirServer, outDirClient } = getOutDirs(viteConfig, undefined)
-  const userRootDir = viteConfig.root
   const prerenderConfigGlobal = await resolvePrerenderConfigGlobal(vikeConfig)
   const { partial, noExtraDir, parallel, defaultLocalValue, isPrerenderingEnabled } = prerenderConfigGlobal
   if (!isPrerenderingEnabled) {
@@ -179,17 +180,20 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
       `You're executing ${pc.cyan(standaloneTrigger)} but you didn't enable pre-rendering. Use the ${pc.cyan('prerender')} setting (${pc.underline('https://vike.dev/prerender')}) to enable pre-rendering for at least one page.`
     )
     */
-    return { viteConfig }
+    return
   }
 
   const concurrencyLimit = pLimit(
     parallel === false || parallel === 0 ? 1 : parallel === true || parallel === undefined ? cpus().length : parallel,
   )
 
-  await initGlobalContext_runPrerender()
-  const { globalContext } = await getGlobalContextServerInternal()
   globalContext._pageFilesAll.forEach(assertExportNames)
 
+  const {
+    root,
+    build: { outDir: outDirRoot },
+  } = globalContext.viteConfigRuntime
+  const { outDirServer, outDirClient } = getOutDirsAllFromRootNormalized(outDirRoot, root)
   const prerenderContext: PrerenderContext = {
     pageContexts: [],
     output: [],
@@ -197,7 +201,7 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
     _pageContextInit: options.pageContextInit ?? null,
     _prerenderedPageContexts: {},
     _requestIdCounter: 0,
-    _userRootDir: userRootDir,
+    _userRootDir: root,
     _outDirClient: outDirClient,
   }
 
@@ -259,8 +263,6 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
   if (!prerenderConfigGlobal.keepDistServer) {
     fs.rmSync(outDirServer, { recursive: true })
   }
-
-  return { viteConfig }
 }
 
 async function collectDoNoPrerenderList(
@@ -331,6 +333,7 @@ async function collectDoNoPrerenderList(
   })
 }
 
+// TO-DO/next-major-release: remove
 function assertExportNames(pageFile: PageFile) {
   const { exportNames, fileType } = pageFile
   assert(exportNames || fileType === '.page.route' || fileType === '.css', pageFile.filePath)
