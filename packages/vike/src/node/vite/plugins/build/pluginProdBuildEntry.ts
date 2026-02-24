@@ -15,7 +15,10 @@ import { getOutDirs } from '../../shared/getOutDirs.js'
 import { getViteConfigRuntime } from '../../shared/getViteConfigRuntime.js'
 import '../../assertEnvVite.js'
 type Bundle = Rollup.OutputBundle
-const ASSETS_MANIFEST = `__VITE_ASSETS_MANIFEST_${preventConstantFolding()}_`
+const ASSETS_MANIFEST = `__VITE_ASSETS_MANIFEST_${
+  // Avoid ASSETS_MANIFEST to be found in `node_modules/vike/` when server runtime imports Vike's Vite plugin: `import { prerender } from 'vike/api'` with ssr.noExternal.includes('vike')
+  preventConstantFolding()
+}_`
 
 function pluginProdBuildEntry(): Plugin[] {
   let config: ResolvedConfig
