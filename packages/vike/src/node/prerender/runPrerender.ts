@@ -37,7 +37,6 @@ import {
   setGlobalContext_isPrerendering,
   setGlobalContext_prerenderContext,
 } from '../../server/runtime/globalContext.js'
-import { resolveConfig as resolveViteConfig } from 'vite'
 import { getPageFilesServerSide } from '../../shared-server-client/getPageFiles.js'
 import { getPageContextRequestUrl } from '../../shared-server-client/getPageContextRequestUrl.js'
 import { getUrlFromRouteString } from '../../shared-server-client/route/resolveRouteString.js'
@@ -54,7 +53,7 @@ import {
 } from '../../shared-server-client/hooks/getHook.js'
 import { noRouteMatch } from '../../shared-server-client/route/noRouteMatch.js'
 import type { PageConfigBuildTime } from '../../types/PageConfig.js'
-import { getVikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.js'
+import { getVikeConfigInternalOptional } from '../vite/shared/resolveVikeConfigInternal.js'
 import type { HookTimeout } from '../../shared-server-client/hooks/getHook.js'
 import { execHookSingleWithoutPageContext, isUserHookError } from '../../shared-server-client/hooks/execHook.js'
 import type { ApiOptions } from '../api/types.js'
@@ -162,9 +161,12 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
 
   await disableReactStreaming()
 
-  // TODO/ai: remove the following two lines, and use `await getGlobalContextServerInternal()` instead — the goal is to avoid the Vite dependency
-  const viteConfig = await resolveViteConfig(options.viteConfig || {}, 'build', 'production')
-  const vikeConfig = await getVikeConfigInternal()
+  await initGlobalContext_runPrerender()
+  const { globalContext } = await getGlobalContextServerInternal()
+  const viteConfig = globalContext.viteConfig
+  assert(viteConfig)
+  const vikeConfig = await getVikeConfigInternalOptional()
+  assert(vikeConfig)
 
   const { outDirServer, outDirClient } = getOutDirs(viteConfig, undefined)
   const userRootDir = viteConfig.root
@@ -187,8 +189,6 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
     parallel === false || parallel === 0 ? 1 : parallel === true || parallel === undefined ? cpus().length : parallel,
   )
 
-  await initGlobalContext_runPrerender()
-  const { globalContext } = await getGlobalContextServerInternal()
   globalContext._pageFilesAll.forEach(assertExportNames)
 
   const prerenderContext: PrerenderContext = {
