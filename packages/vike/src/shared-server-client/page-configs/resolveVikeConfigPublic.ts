@@ -4,6 +4,7 @@ export { resolveGlobalConfigPublic }
 export { resolvePageContextConfig }
 export { resolveGlobalContextConfig }
 export type { PageContextConfig }
+export type { PageConfigPublicWithRoute }
 export type { GlobalConfigPublic }
 export type { Source }
 export type { Sources }

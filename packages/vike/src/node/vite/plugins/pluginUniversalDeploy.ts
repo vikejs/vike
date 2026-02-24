@@ -1,15 +1,14 @@
-import { addEntry } from '@universal-deploy/store'
-
 export { pluginUniversalDeploy }
 
 import type { Plugin } from 'vite'
+import { addEntry } from '@universal-deploy/store'
 import { getVikeConfigInternal, VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 import '../assertEnvVite.js'
 import { catchAll, devServer } from '@universal-deploy/store/vite'
 import { serverEntryVirtualId } from '@brillout/vite-plugin-server-entry/plugin'
 import MagicString from 'magic-string'
 import { escapeRegex } from '../../../utils/escapeRegex.js'
-import { assertUsage } from '../../../utils/assert.js'
+import { pageConfigToUniversalDeploy } from './pluginUniversalDeploy/pageConfigToUniversalDeploy.js'
 
 const catchAllRE = /^virtual:ud:catch-all$/
 
@@ -21,43 +20,13 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
         const vikeConfig = await getVikeConfigInternal()
 
         for (const [pageId, page] of Object.entries(vikeConfig.pages)) {
-          // Convert Vike's routes to rou3 format
-          const route = typeof page.route === 'string' ? getParametrizedRoute(page.route) : null
+          const additionalConfig = pageConfigToUniversalDeploy(pageId, page)
 
-          // FIXME refactor
-          const rawIsr = extractIsr(page.config)
-          let isr = assertIsr(page.config)
-          const edge = assertEdge(page.config)
-
-          if (typeof page.route === 'function' && isr) {
-            // FIXME reuse Vike utils
-            console.warn(
-              `Page ${pageId}: ISR is not supported when using route function. Remove \`{ isr }\` config or use a route string if possible.`,
-            )
-            isr = null
-          }
-
-          if (edge && rawIsr !== null && typeof rawIsr === 'object') {
-            // FIXME use assert
-            throw new Error(
-              `Page ${pageId}: ISR cannot be enabled for edge functions. Remove \`{ isr }\` config or set \`{ edge: false }\`.`,
-            )
-          }
-
-          if (edge || isr) {
-            if (route) {
-              addEntry({
-                id: 'vike/fetch',
-                route,
-
-                vercel: {
-                  isr: isr ? { expiration: isr } : undefined,
-                  edge: Boolean(edge),
-                },
-              })
-            } else {
-              // FIXME warn
-            }
+          if (additionalConfig !== null) {
+            addEntry({
+              id: 'vike/fetch',
+              ...additionalConfig,
+            })
           }
         }
 
@@ -150,59 +119,4 @@ function pluginUniversalDeployServer(vikeConfig: VikeConfigInternal): Plugin[] {
   }
 
   return []
-}
-
-function getSegmentRou3(segment: string): string {
-  if (segment.startsWith('@')) {
-    return `/:${segment.slice(1)}`
-  }
-  if (segment === '*') {
-    return '/**'
-  }
-  return `/${segment}`
-}
-
-function getParametrizedRoute(route: string): string {
-  const segments = (route.replace(/\/$/, '') || '/').slice(1).split('/')
-  return segments.map(getSegmentRou3).join('')
-}
-
-function extractIsr(exports: unknown) {
-  if (exports === null || typeof exports !== 'object') return null
-  if (!('isr' in exports)) return null
-  const isr = (exports as { isr: unknown }).isr
-
-  assertUsage(
-    typeof isr === 'object' &&
-      typeof (isr as Record<string, unknown>).expiration === 'number' &&
-      (
-        isr as {
-          expiration: number
-        }
-      ).expiration > 0,
-    ' `{ expiration }` must be a positive number',
-  )
-
-  return isr
-}
-
-function assertIsr(exports: unknown): number | null {
-  const isr = extractIsr(exports)
-  if (isr === null || isr === undefined) return null
-
-  return (
-    isr as {
-      expiration: number
-    }
-  ).expiration
-}
-
-function assertEdge(exports: unknown): boolean | null {
-  if (exports === null || typeof exports !== 'object') return null
-  if (!('edge' in exports)) return null
-  const edge = (exports as { edge: unknown }).edge
-
-  assertUsage(typeof edge === 'boolean', ' `{ edge }` must be a boolean')
-
-  return edge
 }
