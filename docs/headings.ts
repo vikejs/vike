@@ -281,6 +281,11 @@ const headings = [
     url: '/netlify-functions',
   },
   {
+    level: 2,
+    title: 'EdgeOne Pages',
+    url: '/edgeone-pages',
+  },
+  {
     level: 4,
     title: 'Full-stack (self-hosted)',
   },

@@ -1,0 +1,67 @@
+import { StaticHostDocIntro, StaticHostDocOutro, StaticHostDocStrategies } from '../../components/static-host'
+import { Link } from '@brillout/docpress'
+
+[EdgeOne Pages](https://edgeone.ai/products/pages) is a deployment platform developed by [Tencent](https://en.wikipedia.org/wiki/Tencent). It supports server capabilities such as <Link href="/ssr">SSR</Link> and <Link href="/stream">HTML streaming</Link>.
+
+See also: [EdgeOne Pages > Vike](https://pages.edgeone.ai/document/framework-vike).
+
+
+## Get started
+
+### 1. Install
+
+Install the EdgeOne Vite adapter:
+
+```shell
+npm install @edgeone/vite
+```
+
+```ts
+// vite.config.js
+
+import vike from 'vike/plugin'
+import edgeone from '@edgeone/vite'
+
+export default {
+  plugins: [vike(), edgeone({ serverWrapper: 'vike' })]
+}
+```
+
+> The build command remains `$ vike build`.
+
+### 2. Deploy
+
+#### Git Connection Deployment
+
+Push your project to [GitHub](http://github.com) or [GitLab](https://gitlab.com), then [connect it to EdgeOne Pages](https://pages.edgeone.ai/document/importing-a-git-repository).
+
+#### CLI Deployment
+
+Install the [EdgeOne CLI](https://pages.edgeone.ai/document/edgeone-cli):
+
+```shell
+npm install -g edgeone
+```
+
+Then deploy:
+
+```shell
+edgeone pages deploy
+```
+
+## Settings
+
+The `edgeone()` Vite plugin accepts the following optional configurations:
+
+- **`serverWrapper`** (`'vike' | 'autoDetect' | 'ssrRender' | 'webHandler'`): Server runtime mode. Set to `'vike'` when deploying Vike projects. `'autoDetect'` will automatically select based on whether the Vike plugin is used.
+- **`clientBuildDir`** (`string`): Client build output directory. Overrides the default `dist/client` detection.
+- **`serverBuildDir`** (`string`): Server build output directory. Overrides the default `dist/server` detection.
+- **`serverEntry`** (`string`): Server entry file path. Overrides the default `entry-server.js` detection.
+- **`routes`** (`string[]`): Custom route list (e.g., `['/', '/about']`). When not provided, Vike automatically scans the `pages/` directory.
+- **`ssr`** (`boolean`): Enable SSR. By default, the adapter infers this based on your project.
+
+See also: [EdgeOne Pages > Vike](https://pages.edgeone.ai/document/framework-vike).
+
+## See also
+
+- [EdgeOne Pages > Vike](https://pages.edgeone.ai/document/framework-vike)
