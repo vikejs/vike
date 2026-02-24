@@ -70,7 +70,7 @@ function getServerProductionEntryCode(config: ResolvedConfig): string {
 async function set_macro_ASSETS_MANIFEST(assetsJsonFilePath: string | undefined, bundle: Bundle, outDir: string) {
   assert(outDir)
   const chunkPath = find_ASSETS_MANIFEST(bundle)
-  // Some server builds don't contain __VITE_ASSETS_MANIFEST__ such as dist/rsc/ from vike-react-rsc
+  // Some server builds don't contain ASSETS_MANIFEST such as dist/rsc/ from vike-react-rsc
   if (!chunkPath) {
     const noop = true // no operation
     return noop
