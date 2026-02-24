@@ -162,6 +162,7 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
 
   await disableReactStreaming()
 
+  // TODO/ai: remove the following two lines, and use `await getGlobalContextServerInternal()` instead — the goal is to avoid the Vite dependency
   const viteConfig = await resolveViteConfig(options.viteConfig || {}, 'build', 'production')
   const vikeConfig = await getVikeConfigInternal()
 
