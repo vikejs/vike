@@ -91,8 +91,15 @@ function find_ASSETS_MANIFEST(bundle: Bundle) {
   let chunkPath: string | undefined
   for (const filePath in bundle) {
     const chunk = bundle[filePath]!
-    if ('code' in chunk && chunk.code.includes(ASSETS_MANIFEST)) {
-      assert(!chunkPath)
+    if (
+      'code' in chunk &&
+      chunk.code.includes(ASSETS_MANIFEST) &&
+      // Skip ASSETS_MANIFEST found in `node_modules/vike/` when server runtime imports Vike's Vite plugin: `import { prerender } from 'vike/api'` with ssr.noExternal.includes('vike')
+      Object.entries(chunk.modules).some(
+        ([moduleId, module]) => module.code?.includes(ASSETS_MANIFEST) && !moduleId.includes('node_modules'),
+      )
+    ) {
+      assert(!chunkPath, { chunkPath, filePath })
       chunkPath = filePath
     }
   }
