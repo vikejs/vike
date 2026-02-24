@@ -6,6 +6,7 @@ import { virtualFileIdGlobalEntryServer } from '../../../../shared-server-node/v
 import { PROJECT_VERSION } from '../../../../utils/PROJECT_VERSION.js'
 import { assert } from '../../../../utils/assert.js'
 import { requireResolveDistFile } from '../../../../utils/requireResolve.js'
+import { preventConstantFolding } from '../../../../utils/preventConstantFolding.js'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
@@ -114,12 +115,4 @@ function getImportPath(config: ResolvedConfig) {
     const filePathRelative = path.posix.relative(outDirServer, filePathAbsolute)
     return filePathRelative
   }
-}
-
-/** Prevent compilers from constant folding `'a' + 'b'` into `'ab'`*/
-function preventConstantFolding() {
-  // @ts-ignore
-  const undefined_ = globalThis.__vike_this_property_is_never_defined
-  if (undefined_) return 'this_value_is_never_used'
-  return ''
 }
