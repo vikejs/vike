@@ -31,9 +31,6 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
         }
 
         // Default catch-all route
-        // TODO support multiple entry, at least where configs are different (mostly related to Vercel ISR)
-        //  See https://github.com/vikejs/vike-photon/blob/438bffdb9a82650a49ee5345a82d0cc779afc3c8/packages/vike-photon/src/plugin/plugins/routes.ts#L22
-        //  and https://github.com/vikejs/vike-photon/blob/438bffdb9a82650a49ee5345a82d0cc779afc3c8/packages/vike-photon/src/targets/vercel/index.ts#L8
         addEntry({
           id: 'vike/fetch',
           route: '/**',
