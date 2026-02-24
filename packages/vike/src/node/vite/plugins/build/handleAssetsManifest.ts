@@ -390,12 +390,12 @@ async function handleAssetsManifest(
   if (isViteServerSide(config, viteEnv)) {
     const outDir = options.dir
     assert(outDir)
-    // Replace __VITE_ASSETS_MANIFEST__ in server builds
+    // Replace ASSETS_MANIFEST in server builds
     // - Always replace it in dist/server/
     // - Also in some other server builds such as dist/vercel/ from vike-vercel
-    // - Don't replace it in dist/rsc/ from vike-react-rsc since __VITE_ASSETS_MANIFEST__ doesn't exist there
+    // - Don't replace it in dist/rsc/ from vike-react-rsc since ASSETS_MANIFEST doesn't exist there
     const noop = await set_macro_ASSETS_MANIFEST(globalObject.assetsJsonFilePath, bundle, outDir)
-    if (isSsrEnv) assert(!noop) // dist/server should always contain __VITE_ASSETS_MANIFEST__
+    if (isSsrEnv) assert(!noop) // dist/server should always contain ASSETS_MANIFEST
   }
 }
 async function writeAssetsManifestFile(assetsJsonFilePath: string, config: ResolvedConfig) {

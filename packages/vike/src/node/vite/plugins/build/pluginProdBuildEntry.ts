@@ -6,6 +6,7 @@ import { virtualFileIdGlobalEntryServer } from '../../../../shared-server-node/v
 import { PROJECT_VERSION } from '../../../../utils/PROJECT_VERSION.js'
 import { assert } from '../../../../utils/assert.js'
 import { requireResolveDistFile } from '../../../../utils/requireResolve.js'
+import { preventConstantFolding } from '../../../../utils/preventConstantFolding.js'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
@@ -15,7 +16,11 @@ import { getOutDirs } from '../../shared/getOutDirs.js'
 import { getViteConfigRuntime } from '../../shared/getViteConfigRuntime.js'
 import '../../assertEnvVite.js'
 type Bundle = Rollup.OutputBundle
-const ASSETS_MANIFEST = '__VITE_ASSETS_MANIFEST__'
+const ASSETS_MANIFEST = `__VITE_ASSETS_MANIFEST_${
+  // Prevent ASSETS_MANIFEST to be found in `node_modules/vike/` when server runtime imports Vike's Vite plugin via `import { prerender } from 'vike/api'` with ssr.noExternal.includes('vike')
+  // https://github.com/vikejs/vike/issues/3113
+  preventConstantFolding()
+}_`
 
 function pluginProdBuildEntry(): Plugin[] {
   let config: ResolvedConfig
@@ -70,7 +75,7 @@ function getServerProductionEntryCode(config: ResolvedConfig): string {
 async function set_macro_ASSETS_MANIFEST(assetsJsonFilePath: string | undefined, bundle: Bundle, outDir: string) {
   assert(outDir)
   const chunkPath = find_ASSETS_MANIFEST(bundle)
-  // Some server builds don't contain __VITE_ASSETS_MANIFEST__ such as dist/rsc/ from vike-react-rsc
+  // Some server builds don't contain ASSETS_MANIFEST such as dist/rsc/ from vike-react-rsc
   if (!chunkPath) {
     const noop = true // no operation
     return noop
