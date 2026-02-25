@@ -2,12 +2,13 @@
   "scripts": {
     "dev": "vike dev",
     "build": "vike build",
-    "prod": "vike build && cross-env NODE_ENV=production node dist/server/index.js"
+    "prod": "vike build && node dist/server/index.mjs"
   },
   "dependencies": {
     "@types/node": "^22.10.2",
     "@types/react": "^19.0.1",
     "@types/react-dom": "^19.0.2",
+    "@universal-middleware/hono": "^0.4.20",
     "@vitejs/plugin-react": "^4.7.0",
     "cross-env": "^7.0.3",
     "hono": "^4.8.4",
@@ -16,7 +17,6 @@
     "react-dom": "^19.2.4",
     "typescript": "^5.9.3",
     "vike": "^0.4.254",
-    "vike-server": "^1.0.25",
     "vite": "^6.3.2"
   },
   "type": "module"
