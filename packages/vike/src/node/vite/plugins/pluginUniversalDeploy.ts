@@ -3,7 +3,7 @@ export { pluginUniversalDeploy }
 import type { ConfigEnv, ConfigPluginContext, Plugin, UserConfig } from 'vite'
 import { addEntry } from '@universal-deploy/store'
 import { node } from '@universal-deploy/node/vite'
-import { getVikeConfigInternal, VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
+import type { VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 import { catchAll, devServer } from '@universal-deploy/store/vite'
 import { serverEntryVirtualId } from '@brillout/vite-plugin-server-entry/plugin'
 import MagicString from 'magic-string'
@@ -21,9 +21,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
   return [
     {
       name: 'vike:pluginUniversalDeploy',
-      async config() {
-        const vikeConfig = await getVikeConfigInternal()
-
+      config() {
         for (const [pageId, page] of Object.entries(vikeConfig.pages)) {
           const additionalConfig = pageConfigToUniversalDeploy(pageId, page)
 
@@ -51,20 +49,21 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
 
 function pluginUniversalDeployServer(vikeConfig: VikeConfigInternal): Plugin[] {
   const serverConfig = vikeConfig._pageConfigGlobal.configValueSources.server?.[0]?.definedAt
-  const vikeExtends = vikeConfig.config.extends
-    ? Array.isArray(vikeConfig.config.extends)
-      ? vikeConfig.config.extends
-      : [vikeConfig.config.extends]
-    : []
+  // +server was also used by vike-server and vike-photon
+  const vikeExtendsNames = new Set(
+    vikeConfig._extensions
+      .map((plusFile) => ('fileExportsByConfigName' in plusFile ? plusFile.fileExportsByConfigName : {}))
+      .map((e) => e.name),
+  )
+  const hasVikeServerOrVikePhoton = vikeExtendsNames.has('vike-server') || vikeExtendsNames.has('vike-photon')
+  // TODO better warnings when using deployment targets
+  if (hasVikeServerOrVikePhoton) return []
+
   let filterRolldownId = catchAllRE
   let serverPath: string | null = null
-  // TODO if target supporting UD are used, like vite-plugin-vercel@11, we should also install some of those plugins
+
   if (serverConfig && 'filePathAbsoluteFilesystem' in serverConfig) {
     serverPath = serverConfig['filePathAbsoluteFilesystem']
-
-    // +server was also used by vike-server and vike-photon
-    const vikeExtendsNames = new Set(vikeExtends.map((vikePlugin) => vikePlugin.name))
-    if (vikeExtendsNames.has('vike-server') || vikeExtendsNames.has('vike-photon')) return []
 
     if (serverPath) {
       filterRolldownId = new RegExp(escapeRegex(serverPath))
