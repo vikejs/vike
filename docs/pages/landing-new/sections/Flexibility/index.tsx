@@ -48,7 +48,7 @@ const FlexibilitySection = () => {
             />
           </div>
           <GlassContainer>
-            <div className="flex flex-col gap-0 justify-center min-h-90">
+            <div className="flex flex-col gap-0 justify-center py-12">
               <HeadlineGroup
                 headingStyle="h2"
                 outerClassName="mb-8"
