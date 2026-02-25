@@ -4,10 +4,6 @@ export { getConfigExecutionErrorIntroMsg }
 export { isTemporaryBuildFile }
 export type { EsbuildCache }
 
-// TODO/ai:
-// - Improve transpilation by resolving any non-JavaScript import (e.g. `.svg`) to a constant string `'STATIC_FILE_NOT_AVAILABLE:/path/to/static/file'` so that + files with `env: { config: true, client: true }` can also be loaded in Node.js
-// - Use utils/isScriptFile.ts#L1
-
 import {
   build,
   type BuildResult,
@@ -30,7 +26,7 @@ import { genPromise } from '../../../../utils/genPromise.js'
 import { assertFilePathAbsoluteFilesystem } from '../../../../utils/isFilePathAbsoluteFilesystem.js'
 import { isImportPathRelative } from '../../../../utils/isImportPath.js'
 import { isObject } from '../../../../utils/isObject.js'
-import { isPlainScriptFile } from '../../../../utils/isScriptFile.js'
+import { isPlainScriptFile, isScriptFile } from '../../../../utils/isScriptFile.js'
 import { isVitest } from '../../../../utils/isVitest.js'
 import { assertIsImportPathNpmPackage, isImportPathNpmPackageOrPathAlias } from '../../../../utils/parseNpmPackage.js'
 import { assertPosixPath, toPosixPath } from '../../../../utils/path.js'
@@ -241,13 +237,23 @@ async function transpileWithEsbuild(
           //   - isImportPathNpmPackage(str, { cannotBePathAlias: true })
           assertFilePathAbsoluteFilesystem(importPathResolved)
 
+          // Non-script file (e.g. .svg, .css) => resolve to constant string so that files with
+          // `env: { config: true, client: true }` can also be loaded in Node.js
+          if (!isScriptFile(importPathResolved)) {
+            esbuildCache.vikeConfigDependencies.add(importPathResolved)
+            return {
+              path: importPathResolved,
+              namespace: 'vike-static-file',
+            }
+          }
+
           //  Should be remove this? See comment below.
           const isVikeExtensionImport =
             (path.startsWith('vike-') && path.endsWith('/config')) || importPathResolved.endsWith('+config.js')
 
           const isPointerImport =
             transformImports === 'all' ||
-            // .jsx, .vue, .svg, ... => obviously not config code => pointer import
+            // .jsx, .tsx, .vue, .svelte, ... => template/JSX files => pointer import
             !isPlainScriptFile(importPathResolved) ||
             // Import of a Vike extension config => make it a pointer import because we want to show nice error messages (that can display whether a config has been set by the user or by a Vike extension).
             //  - Should we stop doing this? (And instead let Node.js directly load Vike extensions.)
@@ -327,6 +333,12 @@ async function transpileWithEsbuild(
           )
           pointerImports[importPathTranspiled] = isPointerImport
           return { external: true, path: importPathTranspiled }
+        })
+        build.onLoad({ filter: /.*/, namespace: 'vike-static-file' }, (args) => {
+          return {
+            contents: `export default 'STATIC_FILE_NOT_AVAILABLE:${args.path}'`,
+            loader: 'js',
+          }
         })
       },
     },
