@@ -351,6 +351,7 @@ async function resolveVikeConfigInternal(
     _vikeConfigDependencies: esbuildCache.vikeConfigDependencies,
     _extensions,
   }
+  console.log('vikeConfig._extensions', vikeConfig._extensions)
   globalObject.vikeConfigSync = vikeConfig
 
   return vikeConfig
