@@ -15,6 +15,8 @@ import '../assertEnvVite.js'
 
 const catchAllRE = /^virtual:ud:catch-all$/
 
+// TODO refactor this file
+
 function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
   return [
     {
