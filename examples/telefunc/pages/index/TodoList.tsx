@@ -5,6 +5,7 @@ import { onNewTodo } from './TodoList.telefunc.js'
 import type { TodoItem } from '../../database/todoItems.js'
 
 function TodoList({ todoItemsInitial }: { todoItemsInitial: TodoItem[] }) {
+  var onNewTodo = enhance(onNewTodo)
   const [todoItems, setTodoItems] = useState(todoItemsInitial)
   const [draft, setDraft] = useState('')
   return (
@@ -29,4 +30,8 @@ function TodoList({ todoItemsInitial }: { todoItemsInitial: TodoItem[] }) {
       </ul>
     </>
   )
+}
+
+function enhance<T>(fn: T): T {
+  return fn
 }
