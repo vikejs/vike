@@ -44,7 +44,6 @@ import { isVikeCliOrApi } from '../../shared-server-node/api-context.js'
 import { pluginViteConfigVikeExtensions } from './plugins/pluginViteConfigVikeExtensions.js'
 import { getVikeConfigInternalEarly, isOnlyResolvingUserConfig } from '../api/resolveViteConfigFromUser.js'
 import './assertEnvVite.js'
-import { pluginAutoTarget } from './plugins/pluginAutoTarget.js'
 
 // We don't call this in ./onLoad.ts to avoid a cyclic dependency with utils.ts
 setGetClientEntrySrcDev(getClientEntrySrcDev)
@@ -77,7 +76,6 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): Promise<Plug
       ...pluginStaticReplace(vikeConfig),
       ...pluginNonRunnabeDev(),
       ...pluginUniversalDeploy(vikeConfig),
-      ...pluginAutoTarget(),
       ...(await pluginViteConfigVikeExtensions(vikeConfig)),
     ]
     Object.assign(plugin, pluginAddendum)

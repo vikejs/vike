@@ -730,7 +730,7 @@ function getPageContextSkipRequest(pageContextInit: PageContextInit, requestId: 
   checkType<PageContextAfterRender>(pageContext)
   return pageContext
 }
-
+F
 function getPageContextInvalidVikeConfig(err: unknown, pageContextInit: PageContextInit, requestId: number) {
   const pageContext = createPageContextServerWithoutGlobalContext(pageContextInit, requestId)
   logRuntimeInfo?.(pc.bold(pc.red('Error loading Vike config — see error above')), pageContext, 'error')
