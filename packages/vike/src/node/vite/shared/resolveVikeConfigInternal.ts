@@ -124,7 +124,7 @@ type VikeConfigInternal = GlobalConfigPublic & {
   _pageConfigs: PageConfigBuildTime[]
   _pageConfigGlobal: PageConfigGlobalBuildTime
   _vikeConfigDependencies: Set<string>
-  _extensionConfigs: PlusFile[]
+  _extensions: PlusFile[]
   prerenderContext: PrerenderContext
 }
 
@@ -339,9 +339,9 @@ async function resolveVikeConfigInternal(
     _pageConfigs: pageConfigs,
   })
 
-  const _extensionConfigs = Object.values(plusFilesByLocationId)
+  const _extensions = Object.values(plusFilesByLocationId)
     .flat()
-    .filter((pf) => pf.isConfigFile && pf.isExtensionConfig)
+    .filter((p) => p.isConfigFile && p.isExtensionConfig)
 
   const vikeConfig: VikeConfigInternal = {
     ...globalConfigPublic,
@@ -349,7 +349,7 @@ async function resolveVikeConfigInternal(
     _pageConfigs: pageConfigs,
     _pageConfigGlobal: pageConfigGlobal,
     _vikeConfigDependencies: esbuildCache.vikeConfigDependencies,
-    _extensionConfigs,
+    _extensions,
   }
   globalObject.vikeConfigSync = vikeConfig
 
@@ -1588,7 +1588,7 @@ async function getVikeConfigDummy(esbuildCache: EsbuildCache): Promise<VikeConfi
     ...globalConfigPublicDummy,
     prerenderContext: prerenderContextDummy,
     _vikeConfigDependencies: esbuildCache.vikeConfigDependencies,
-    _extensionConfigs: [],
+    _extensions: [],
   }
   globalObject.vikeConfigSync = vikeConfigDummy
   globalObject.isV1Design_ = true
