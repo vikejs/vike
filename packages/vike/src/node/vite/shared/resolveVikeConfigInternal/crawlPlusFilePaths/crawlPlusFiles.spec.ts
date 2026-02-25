@@ -14,6 +14,8 @@ describe('crawlPlusFilePaths()', () => {
       'pages/git-ignored/+bla.mdx',
       'pages/about/+ignored.telefunc.ts',
       'pages/about/+ignored.generated.js',
+      'pages/about/+ignored.spec.ts',
+      'pages/about/+ignored.test.ts',
       'pages/ejected/+ignored.js',
       'pages/node_modules/+ignored.js',
       'pages/manually/+ignored.js',
