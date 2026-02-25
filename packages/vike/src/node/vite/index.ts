@@ -53,7 +53,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): Promise<Plug
   // TO-DO/next-major-release: remove
   const pluginAddendum = { _vikeVitePluginOptions: vikeVitePluginOptions }
   const promise = (async () => {
-    if (skip()) return []
+    if (removeVitePlugin()) return []
     const vikeConfig = await getVikeConfigInternalEarly()
     const plugin: Plugin[] = [
       ...pluginCommon(vikeVitePluginOptions),
@@ -98,28 +98,32 @@ function pluginNonRunnabeDev() {
   return [...pluginViteRPC(), ...pluginReplaceConstantsNonRunnableDev()]
 }
 
-function skip() {
+function removeVitePlugin() {
   // Early resolving of user Vite configs
   if (isOnlyResolvingUserConfig()) {
     return true
   }
 
+  // *****************/
+  // **** Vitest *****/
+  // *****************/
   // For Vitest, we only add Vike's Vite plugin if Vike's JavaScript API is used.
   // - In the context of running unit tests with Vitest, Vike's Vite plugin doesn't add any value AFAICT.
-  // - If the user calls Vike's JavaScript API inside Vitest (e.g. `build()` inside `beforeAll()`)  => vite.config.js is loaded twice: once by Vitest and once by Vike => problematic because Vitest's environment is `development` whereas Vike's `build()` environment is `production` => the globalContext.ts isProd() function throws an assertion fail (I don't know why the two globalContext.ts instances aren't independent from each other) => that's why we skip Vike's Vite plugin when it's Vitest that loads vite.config.js
-  //   - When calling `$ vitest` Vitest loads vite.config.js if it lives at process.cwd()
-  // - The user is supposed to use Vike's API instead of Vite's API. Vike supports Vite's API only for third parties (e.g. Vitest or Storybook).
+  // - If the user calls Vike's JavaScript API inside Vitest (e.g. `build()` inside `beforeAll()`)
+  //   => vite.config.js is loaded twice: once by Vitest and once by Vike
+  //   => problematic because Vitest's environment is `development` whereas Vike's `build()` environment is `production`
+  //   => globalContext.ts internal logic isProd() is inconsistent and assertion fails.
+  //      I don't know why the two globalContext.ts instances aren't independent from each other.
+  //      https://github.com/vikejs/vike/blob/2d3be474441707f05a7932240f3506517a735f0d/packages/vike/src/server/runtime/globalContext.ts#L746-L753
+  //   => that's why we skip Vike's Vite plugin when it's Vitest that loads vite.config.js
+  // - When running `$ vitest` Vitest loads vite.config.js if it lives at process.cwd()
+  // - The user is supposed to use Vike's API instead of Vite's API. Vike supports Vite's API only for third parties (e.g. Vitest and Storybook).
   // - https://vike.dev/vitest
-  if (
-    /* Maybe also all third party tools such as Storybook?
-    !isViteCli() &&
-    /*/
-    isVitest() &&
-    ///*/
-    !isVikeCliOrApi()
-  ) {
+  if (isVitest() && !isVikeCliOrApi()) {
     return true
   }
+
+  // TO-DO/eventually: also skip for other third party tools such as Storybook?
 
   return false
 }
