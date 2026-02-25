@@ -72,6 +72,7 @@ function pluginUniversalDeployServer(vikeConfig: VikeConfigInternal): Plugin[] {
   }
 
   return [
+    // If +server is defined, virtual:ud:catch-all resolve to +server absolute path
     {
       name: 'vike:pluginUniversalDeploy:server',
       resolveId: {
@@ -121,24 +122,26 @@ function pluginUniversalDeployServer(vikeConfig: VikeConfigInternal): Plugin[] {
 
       sharedDuringBuild: true,
     },
+    // TODO enable conditionally
     devServer(),
-    ...node().map((p) => disablePluginIf(condition, p)),
+    // Enable node adapter only if +server is defined and no other deployment target has been found
+    ...node().map((p) => enablePluginIf((c) => Boolean(serverPath) && noDeploymentTargetFound(c), p)),
   ]
 }
 
-type DisableCondition = (this: ConfigPluginContext, config: UserConfig, env: ConfigEnv) => boolean | Promise<boolean>
+type EnableCondition = (this: ConfigPluginContext, config: UserConfig, env: ConfigEnv) => boolean | Promise<boolean>
 
 /**
- * Disables a plugin based on a specified condition callback which will be executed in the `config` hook.
+ * Enables a plugin based on a specified condition callback which will be executed in the `config` hook.
  */
-function disablePluginIf(condition: DisableCondition, originalPlugin: Plugin): Plugin {
+function enablePluginIf(condition: EnableCondition, originalPlugin: Plugin): Plugin {
   const originalConfig = originalPlugin.config
 
   originalPlugin.config = {
     order: originalConfig && 'order' in originalConfig ? originalConfig.order : 'pre',
     async handler(c, e) {
-      const disabled = await condition.call(this, c, e)
-      if (disabled) {
+      const enabled = await condition.call(this, c, e)
+      if (!enabled) {
         const keysToDelete = Object.keys(originalPlugin).filter((k) => k !== 'name')
         originalPlugin.name += ':disabled'
         for (const key of keysToDelete) {
@@ -160,7 +163,7 @@ function disablePluginIf(condition: DisableCondition, originalPlugin: Plugin): P
 // Disable a plugin if one of the following plugin is present
 //  - vite-plugin-vercel
 //  - @cloudflare/vite-plugin
-async function condition(c: UserConfig) {
+async function noDeploymentTargetFound(c: UserConfig) {
   const plugins = await asyncFlatten((c.plugins ?? []) as Plugin[])
   const resolvedPlugins = plugins.filter((p): p is Plugin => Boolean(p))
 
@@ -178,5 +181,5 @@ async function condition(c: UserConfig) {
   // @cloudflare/vite-plugin
   const cloudflareVitePlugin = resolvedPlugins.some((p) => p.name.match(/^vite-plugin-cloudflare:(?!.*:disabled$)/))
 
-  return vitePluginVercel || cloudflareVitePlugin
+  return !vitePluginVercel && !cloudflareVitePlugin
 }
