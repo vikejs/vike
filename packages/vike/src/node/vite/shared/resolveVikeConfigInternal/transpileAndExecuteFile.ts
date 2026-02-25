@@ -238,7 +238,7 @@ async function transpileWithEsbuild(
           assertFilePathAbsoluteFilesystem(importPathResolved)
 
           // Non-script file (e.g. .svg, .css) => resolve to constant string so that files with
-          // `env: { config: true, client: true }` can also be loaded in Node.js
+          // `meta.env: { config: true, client: true }` can also be loaded in Node.js
           if (!isScriptFile(importPathResolved)) {
             esbuildCache.vikeConfigDependencies.add(importPathResolved)
             return {
