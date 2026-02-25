@@ -1590,6 +1590,7 @@ async function getVikeConfigDummy(esbuildCache: EsbuildCache): Promise<VikeConfi
     _vikeConfigDependencies: esbuildCache.vikeConfigDependencies,
     _extensionConfigs: [],
   }
+  globalObject.vikeConfigSync = vikeConfigDummy
   globalObject.isV1Design_ = true
   return vikeConfigDummy
 }
