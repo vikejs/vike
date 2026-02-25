@@ -51,9 +51,9 @@ function pluginUniversalDeployServer(vikeConfig: VikeConfigInternal): Plugin[] {
   const serverConfig = vikeConfig._pageConfigGlobal.configValueSources.server?.[0]?.definedAt
   // +server was also used by vike-server and vike-photon
   const vikeExtendsNames = new Set(
-    vikeConfig._extensions
-      .map((plusFile) => ('fileExportsByConfigName' in plusFile ? plusFile.fileExportsByConfigName : {}))
-      .map((e) => e.name),
+    vikeConfig._extensions.map(
+      (plusFile) => ('fileExportsByConfigName' in plusFile ? plusFile.fileExportsByConfigName : {}).name,
+    ),
   )
   const hasVikeServerOrVikePhoton = vikeExtendsNames.has('vike-server') || vikeExtendsNames.has('vike-photon')
   // TODO better warnings when using deployment targets
@@ -70,25 +70,7 @@ function pluginUniversalDeployServer(vikeConfig: VikeConfigInternal): Plugin[] {
     }
   }
 
-  return [
-    // If +server is defined, virtual:ud:catch-all resolve to +server absolute path
-    {
-      name: 'vike:pluginUniversalDeploy:server',
-      resolveId: {
-        order: 'pre',
-        filter: {
-          id: catchAllRE,
-        },
-        handler() {
-          if (serverPath) {
-            // Will resolve the entry from the users project root
-            return this.resolve(serverPath)
-          }
-        },
-      },
-
-      sharedDuringBuild: true,
-    },
+  const plugins: Plugin[] = [
     {
       name: 'vike:pluginUniversalDeploy:serverEntry',
       apply: 'build',
@@ -121,11 +103,33 @@ function pluginUniversalDeployServer(vikeConfig: VikeConfigInternal): Plugin[] {
 
       sharedDuringBuild: true,
     },
-    // TODO enable conditionally
-    devServer(),
     // Enable node adapter only if +server is defined and no other deployment target has been found
     ...node().map((p) => enablePluginIf((c) => Boolean(serverPath) && noDeploymentTargetFound(c), p)),
   ]
+
+  if (serverPath) {
+    plugins.push(
+      // If +server is defined, virtual:ud:catch-all resolve to +server absolute path
+      {
+        name: 'vike:pluginUniversalDeploy:server',
+        resolveId: {
+          order: 'pre',
+          filter: {
+            id: catchAllRE,
+          },
+          handler() {
+            // Will resolve the entry from the users project root
+            return this.resolve(serverPath)
+          },
+        },
+
+        sharedDuringBuild: true,
+      },
+      devServer(),
+    )
+  }
+
+  return plugins
 }
 
 type EnableCondition = (this: ConfigPluginContext, config: UserConfig, env: ConfigEnv) => boolean | Promise<boolean>
