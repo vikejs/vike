@@ -9,16 +9,46 @@ import { serverEntryVirtualId } from '@brillout/vite-plugin-server-entry/plugin'
 import MagicString from 'magic-string'
 import { escapeRegex } from '../../../utils/escapeRegex.js'
 import { pageConfigToUniversalDeploy } from './pluginUniversalDeploy/pageConfigToUniversalDeploy.js'
-import { assertUsage } from '../../../utils/assert.js'
+import { assertUsage, assertWarning } from '../../../utils/assert.js'
 import { asyncFlatten } from '../../../utils/asyncFlatten.js'
 import '../assertEnvVite.js'
 
 const catchAllRE = /^virtual:ud:catch-all$/
 
-// TODO refactor this file
-
 function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
-  return [
+  const serverConfig = vikeConfig._pageConfigGlobal.configValueSources.server?.[0]?.definedAt
+  // +server was also used by vike-server and vike-photon
+  const vikeExtendsNames = new Set(
+    vikeConfig._extensions.map(
+      (plusFile) => ('fileExportsByConfigName' in plusFile ? plusFile.fileExportsByConfigName : {}).name,
+    ),
+  )
+  const vikeServerOrVikePhoton = vikeExtendsNames.has('vike-server')
+    ? 'vike-server'
+    : vikeExtendsNames.has('vike-photon')
+      ? 'vike-photon'
+      : null
+  if (vikeServerOrVikePhoton) {
+    assertWarning(
+      false,
+      `\`${vikeServerOrVikePhoton}\` is deprecated. See https://vike.dev/migration/universal-deploy`,
+      { onlyOnce: true },
+    )
+    return []
+  }
+
+  let filterRolldownId = catchAllRE
+  let serverPath: string | null = null
+
+  if (serverConfig && 'filePathAbsoluteFilesystem' in serverConfig) {
+    serverPath = serverConfig['filePathAbsoluteFilesystem']
+
+    if (serverPath) {
+      filterRolldownId = new RegExp(escapeRegex(serverPath))
+    }
+  }
+
+  const plugins: Plugin[] = [
     {
       name: 'vike:pluginUniversalDeploy',
       config() {
@@ -42,35 +72,6 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
 
       sharedDuringBuild: true,
     },
-    ...pluginUniversalDeployServer(vikeConfig),
-    catchAll(),
-  ]
-}
-
-function pluginUniversalDeployServer(vikeConfig: VikeConfigInternal): Plugin[] {
-  const serverConfig = vikeConfig._pageConfigGlobal.configValueSources.server?.[0]?.definedAt
-  // +server was also used by vike-server and vike-photon
-  const vikeExtendsNames = new Set(
-    vikeConfig._extensions.map(
-      (plusFile) => ('fileExportsByConfigName' in plusFile ? plusFile.fileExportsByConfigName : {}).name,
-    ),
-  )
-  const hasVikeServerOrVikePhoton = vikeExtendsNames.has('vike-server') || vikeExtendsNames.has('vike-photon')
-  // TODO better warnings when using deployment targets
-  if (hasVikeServerOrVikePhoton) return []
-
-  let filterRolldownId = catchAllRE
-  let serverPath: string | null = null
-
-  if (serverConfig && 'filePathAbsoluteFilesystem' in serverConfig) {
-    serverPath = serverConfig['filePathAbsoluteFilesystem']
-
-    if (serverPath) {
-      filterRolldownId = new RegExp(escapeRegex(serverPath))
-    }
-  }
-
-  const plugins: Plugin[] = [
     {
       name: 'vike:pluginUniversalDeploy:serverEntry',
       apply: 'build',
@@ -103,6 +104,7 @@ function pluginUniversalDeployServer(vikeConfig: VikeConfigInternal): Plugin[] {
 
       sharedDuringBuild: true,
     },
+    catchAll(),
     // Enable node adapter only if +server is defined and no other deployment target has been found
     ...node().map((p) => enablePluginIf((c) => Boolean(serverPath) && noDeploymentTargetFound(c), p)),
   ]
