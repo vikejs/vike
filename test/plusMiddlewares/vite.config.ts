@@ -4,19 +4,6 @@ import type { UserConfig } from 'vite'
 import { node } from '@universal-deploy/node/vite'
 
 export default {
+  // TODO remove node adapter
   plugins: [react(), vike(), node()],
-  build: {
-    rollupOptions: {
-      output: {
-        // TODO fix in UD (with also Vite@8 support)
-        manualChunks(id) {
-          if (id.includes('srvx')) {
-            return 'srvx'
-          }
-
-          return null
-        },
-      },
-    },
-  },
 } satisfies UserConfig

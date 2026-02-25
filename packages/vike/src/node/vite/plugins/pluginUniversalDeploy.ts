@@ -106,7 +106,9 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
     },
     catchAll(),
     // Enable node adapter only if +server is defined and no other deployment target has been found
-    ...node().map((p) => enablePluginIf((c) => Boolean(serverPath) && noDeploymentTargetFound(c), p)),
+    ...node({ importer: 'vike' }).map((p) =>
+      enablePluginIf((c) => Boolean(serverPath) && noDeploymentTargetFound(c), p),
+    ),
   ]
 
   if (serverPath) {
