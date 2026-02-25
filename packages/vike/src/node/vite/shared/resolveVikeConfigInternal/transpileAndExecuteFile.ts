@@ -4,6 +4,10 @@ export { getConfigExecutionErrorIntroMsg }
 export { isTemporaryBuildFile }
 export type { EsbuildCache }
 
+// TODO/ai:
+// - Improve transpilation by resolving any non-JavaScript import (e.g. `.svg`) to a constant string `'STATIC_FILE_NOT_AVAILABLE:/path/to/static/file'` so that + files with `env: { config: true, client: true }` can also be loaded in Node.js
+// - Use utils/isScriptFile.ts#L1
+
 import {
   build,
   type BuildResult,
