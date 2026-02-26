@@ -2,26 +2,16 @@ export { isViteCli }
 export { getViteConfigForBuildFromCli }
 export { getViteCommandFromCli }
 
-import { toPosixPath } from '../../../utils/path.js'
 import { assert } from '../../../utils/assert.js'
 import { isObject } from '../../../utils/isObject.js'
+import { isToolCli } from '../../../utils/isToolCli.js'
 import { cac } from 'cac'
 import '../assertEnvVite.js'
 
 const desc = 'vike:vite-cli-simulation'
 
 function isViteCli(): boolean {
-  let execPath = process.argv[1]
-  assert(execPath)
-  execPath = toPosixPath(execPath)
-  return (
-    // pnpm
-    execPath.endsWith('/bin/vite.js') ||
-    // npm & yarn
-    execPath.endsWith('/.bin/vite') ||
-    // Global install
-    execPath.endsWith('/bin/vite')
-  )
+  return isToolCli('vite')
 }
 
 type ConfigFromCli = { root: undefined | string; configFile: undefined | string } & Record<string, unknown> & {
