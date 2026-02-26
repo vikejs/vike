@@ -12,24 +12,19 @@ import '../assertEnvVite.js'
 // Match `with { type: 'vike-pointer' }` (with optional whitespace variations)
 const runtimeAttrRE = /\bwith\s*\{\s*type\s*:\s*['"]vike-pointer['"]\s*\}/g
 
-// === Rolldown filter
-const filterRolldown = {
-  code: {
-    include: 'vike-pointer',
-  },
-}
-const filterFunction = (code: string) => runtimeAttrRE.test(code)
-// ===
-
 function pluginStripPointerImportAttribute(): Plugin[] {
   return [
     {
-      name: 'vike:stripRuntimeImportAttribute',
+      name: 'vike:pluginStripPointerImportAttribute',
       transform: {
-        filter: filterRolldown,
+        filter: {
+          code: {
+            include: 'vike-pointer',
+          },
+        },
         handler(code, id) {
           runtimeAttrRE.lastIndex = 0
-          if (!filterFunction(code)) return
+          if (!runtimeAttrRE.test(code)) return
           const { magicString, getMagicStringResult } = getMagicString(code, id)
           runtimeAttrRE.lastIndex = 0
           let match: RegExpExecArray | null
