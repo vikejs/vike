@@ -6,6 +6,8 @@ import { Link } from '@brillout/docpress'
 
 const noteColor = '#64748b'
 
+// TODO/ai: make it visually clearer that "Sufficient resources" is a sperate section from "Enough resources"
+
 function PricingTable() {
   return (
     <div id="pricing-table">
