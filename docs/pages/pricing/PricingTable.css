@@ -3,20 +3,12 @@
     text-decoration: underline;
   }
 }
-#pricing-cards {
-  display: grid;
-  grid-template-columns: 1fr 1.8fr;
-  gap: 24px;
-  align-items: start;
-  max-width: 920px;
-  margin: 0 auto;
-}
 .pricing-section-divider {
   width: 1px;
   background-color: #e2e8f0;
   align-self: stretch;
-  margin-left: 4px;
-  margin-right: 4px;
+  margin-left: 9px;
+  margin-right: 7px;
   margin-top: 28px;
 }
 .pricing-section-divider-or {
@@ -28,9 +20,6 @@
   }
   #pricing-table_filler {
     display: none;
-  }
-  #pricing-cards {
-    grid-template-columns: 1fr;
   }
   .pricing-section-divider {
     width: 100%;

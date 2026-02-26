@@ -10,72 +10,76 @@ function PricingTable() {
   return (
     <div id="pricing-table">
       <ExtraWidth width={200}>
-        <div id="pricing-cards">
-          <Column>
-            <TierName>Small team</TierName>
-            ≤2 <SoftwareDevelopers />
-            <SubHeading id="pricing-table_filler" style={{ visibility: 'hidden' }}>
-              Invisible filler<NoteRef>3</NoteRef>
-            </SubHeading>
-            <div className="pricing-section-limited">
-              <Free />
-              <Check>Full access</Check>
-              <Check>Forever free</Check>
-              <Check>
-                No license key<NoteRef>2</NoteRef>
-              </Check>
-            </div>
-          </Column>
-          <Column>
-            <TierName>Larger team</TierName>
-            ≥3 <SoftwareDevelopers />
-            <div style={{ display: 'flex', columnGap: 28, rowGap: 15, flexWrap: 'wrap' }}>
-              <div>
-                <SubHeading>
-                  Limited resources<NoteRef>3</NoteRef>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+            <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
+              <Column>
+                <TierName>Small team</TierName>
+                ≤2 <SoftwareDevelopers />
+                <SubHeading id="pricing-table_filler" style={{ visibility: 'hidden' }}>
+                  Invisible filler<NoteRef>3</NoteRef>
                 </SubHeading>
                 <div className="pricing-section-limited">
                   <Free />
                   <Check>Full access</Check>
                   <Check>Forever free</Check>
                   <Check>
-                    <Link href="/gift">Apply</Link> for free license key
+                    No license key<NoteRef>2</NoteRef>
                   </Check>
                 </div>
-              </div>
-              <SectionDivider />
-              <div>
-                <SubHeading>Sufficient resources</SubHeading>
-                <div className="pricing-section-sufficient">
-                  <Price color="#2563eb" suffix=" one time">
-                    $5k
-                  </Price>
-                  <Check>Full access</Check>
-                  <Check>
-                    Forever access<NoteRef>4</NoteRef>
-                  </Check>
-                  <Check>
-                    Free trial: 6 months + <Link href="/gift">extendable</Link>
-                  </Check>
+              </Column>
+              <Column>
+                <TierName>Larger team</TierName>
+                ≥3 <SoftwareDevelopers />
+                <div style={{ display: 'flex', columnGap: 40, rowGap: 15, flexWrap: 'wrap' }}>
+                  <div>
+                    <SubHeading>
+                      Limited resources<NoteRef>3</NoteRef>
+                    </SubHeading>
+                    <div className="pricing-section-limited">
+                      <Free />
+                      <Check>Full access</Check>
+                      <Check>Forever free</Check>
+                      <Check>
+                        <Link href="/gift">Apply</Link> for free license key
+                      </Check>
+                    </div>
+                  </div>
+                  <SectionDivider />
+                  <div>
+                    <SubHeading>Sufficient resources</SubHeading>
+                    <div className="pricing-section-sufficient">
+                      <Price color="#2563eb" suffix=" one time">
+                        $5k
+                      </Price>
+                      <Check>Full access</Check>
+                      <Check>
+                        Forever access<NoteRef>4</NoteRef>
+                      </Check>
+                      <Check>
+                        Free trial: 6 months + <Link href="/gift">extendable</Link>
+                      </Check>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              </Column>
             </div>
-          </Column>
-        </div>
-        <div style={{ marginTop: 20 }}>
-          <Note ref={1}>
-            Only developers who regularly contribute code: occasional contributors and bots don't count.
-          </Note>
-          <Note ref={2}>
-            License key isn't required: you use Vike just like any regular open source tool (zero encumbrance).
-          </Note>
-          <Note ref={3}>
-            E.g. organizations with <Link href="/gift#who-s-eligible">few employees</Link> are considered
-            resource-limited.
-          </Note>
-          <Note ref={4}>
-            One-time payment for a lifetime license key: valid forever, including all future Vike updates.
-          </Note>
+            <div style={{ marginLeft: 10, marginTop: 20 }}>
+              <Note ref={1}>
+                Only developers who regularly contribute code: occasional contributors and bots don't count.
+              </Note>
+              <Note ref={2}>
+                License key isn't required: you use Vike just like any regular open source tool (zero encumbrance).
+              </Note>
+              <Note ref={3}>
+                E.g. organizations with <Link href="/gift#who-s-eligible">few employees</Link> are considered
+                resource-limited.
+              </Note>
+              <Note ref={4}>
+                One-time payment for a lifetime license key: valid forever, including all future Vike updates.
+              </Note>
+            </div>
+          </div>
         </div>
       </ExtraWidth>
     </div>
@@ -137,7 +141,6 @@ function TierName({ children }: { children: string }) {
 function Column({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className="pricing-column"
       style={{
         border: '1px solid #e2e8f0',
         padding: 28,
