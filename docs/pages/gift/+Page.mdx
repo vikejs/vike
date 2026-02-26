@@ -2,11 +2,11 @@ import { Link } from '@brillout/docpress'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import '../../components/tabs.css'
 
-export const TODO_APPLY = ({ why, addendum }) => {
+export const FillList = ({ why, addendum }) => {
   return <p>
-    <code>TODO_1</code>: Your website URL (if nothing's public: the domain name where your app's client runs).
+    <code>YOUR_WEBSITE</code>: Your website URL (if nothing's public: the domain name where your app's client runs).
     <br/>
-    <code>TODO_2</code>: Explain why{why}.
+    <code>YOUR_REASON</code>: Explain why{why}.
     {addendum}
   </p>
 }
@@ -53,7 +53,7 @@ Contact us to apply.
     "mailto:vike-gift@brillout.com" +
     "?subject=" + encodeURIComponent("Free forever") +
     "&body=" + encodeURIComponent(
-      "== Website\n\nTODO_1\n\n== Reason\n\nTODO_2"
+      "== Website\n\nYOUR_WEBSITE\n\n== Reason\n\nYOUR_REASON"
     )
   }
 >
@@ -69,14 +69,14 @@ Body:
 ```
 == Website
 
-TODO_1
+YOUR_WEBSITE
 
 == Reason
 
-TODO_2
+YOUR_REASON
 ```
 
-{<TODO_APPLY why=" your organization has limited resources" />}
+{<FillList why=" your organization has limited resources" />}
 
   </TabPanel>
   <TabPanel>
@@ -87,7 +87,7 @@ TODO_2
     "mailto:vike-gift@brillout.com" +
     "?subject=" + encodeURIComponent("Extended free trial") +
     "&body=" + encodeURIComponent(
-      "== Website\n\nTODO_1\n\n== Reason\n\nTODO_2\n\n== Extend period\n\nTwo years"
+      "== Website\n\nYOUR_WEBSITE\n\n== Reason\n\nYOUR_REASON\n\n== Extend period\n\nTwo years"
     )
   }
 >
@@ -103,18 +103,18 @@ Body:
 ```
 == Website
 
-TODO_1
+YOUR_WEBSITE
 
 == Reason
 
-TODO_2
+YOUR_REASON
 
 == Extend period
 
 Two years
 ```
 
-{<TODO_APPLY addendum={
+{<FillList addendum={
   <>
     <br />
     <code>Extend period</code>: can be modified. For example, you can set it to the duration after which you expect to easily afford a license key. You can apply again after the extended period ends.
