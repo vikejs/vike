@@ -237,9 +237,10 @@ async function transpileWithEsbuild(
           //   - isImportPathNpmPackage(str, { cannotBePathAlias: true })
           assertFilePathAbsoluteFilesystem(importPathResolved)
 
-          // Non-script file (e.g. .svg, .css) => resolve to constant string so that files with
-          // `env: { config: true, client: true }` can also be loaded in Node.js
-          if (!isScriptFile(importPathResolved)) {
+          // Non-script file (e.g. .svg, .css) or explicitly tagged as runtime-only
+          // (`import ... with { type: 'runtime' }`) => resolve to constant string so
+          // that files with `env: { config: true, client: true }` can also be loaded in Node.js
+          if (!isScriptFile(importPathResolved) || args.with?.['type'] === 'runtime') {
             esbuildCache.vikeConfigDependencies.add(importPathResolved)
             return {
               path: importPathResolved,
@@ -260,9 +261,7 @@ async function transpileWithEsbuild(
             //    - In principle, we can use the setting 'name' value of Vike extensions.
             //      - vike@0.4.162 started soft-requiring Vike extensions to set the name config.
             //    - In practice, it seems like it requires some (non-trivial?) refactoring.
-            isVikeExtensionImport ||
-            // Explicitly tagged as runtime code => pointer import
-            args.with?.['type'] === 'runtime'
+            isVikeExtensionImport
 
           assertPosixPath(importPathResolved)
           // `isNpmPkgImport` => `importPathOriginal` is most likely an npm package import, but it can also be a path alias that a) looks like an npm package import and b) resolves outside of `userRootDir`.
@@ -336,11 +335,14 @@ async function transpileWithEsbuild(
           pointerImports[importPathTranspiled] = isPointerImport
           return { external: true, path: importPathTranspiled }
         })
-        build.onLoad({ filter: /.*/, namespace: 'vike-static-file' }, (args) => {
-          return {
-            contents: `export default 'STATIC_FILE_NOT_AVAILABLE:${args.path}'`,
-            loader: 'js',
+        build.onLoad({ filter: /.*/, namespace: 'vike-static-file' }, async (args) => {
+          const stub = `'STATIC_FILE_NOT_AVAILABLE:${args.path}'`
+          const exportNames = await getStaticFileExportNames(args.path)
+          const lines = [`export default ${stub}`]
+          for (const name of exportNames) {
+            if (name !== 'default') lines.push(`export const ${name} = ${stub}`)
           }
+          return { contents: lines.join('\n'), loader: 'js' }
         })
       },
     },
@@ -550,6 +552,30 @@ function cleanEsbuildErrors(errors: Message[]) {
           !note.text.includes('as external to exclude it from the bundle'),
       )),
   )
+}
+
+const staticFileExportNamesCache = new Map<string, Promise<string[]>>()
+function getStaticFileExportNames(filePath: string): Promise<string[]> {
+  if (!staticFileExportNamesCache.has(filePath)) {
+    staticFileExportNamesCache.set(filePath, resolveStaticFileExportNames(filePath))
+  }
+  return staticFileExportNamesCache.get(filePath)!
+}
+async function resolveStaticFileExportNames(filePath: string): Promise<string[]> {
+  try {
+    const result = await build({
+      entryPoints: [filePath],
+      bundle: false,
+      write: false,
+      format: 'esm',
+      metafile: true,
+      logLevel: 'silent',
+    })
+    const output = Object.values(result.metafile!.outputs)[0]
+    return output?.exports ?? []
+  } catch {
+    return []
+  }
 }
 
 function installSourceMapSupport() {
