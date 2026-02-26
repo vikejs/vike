@@ -41,6 +41,7 @@ assertIsNotProductionRuntime()
 installSourceMapSupport()
 const debug = createDebug('vike:pointer-imports')
 const debugEsbuildResolve = createDebug('vike:esbuild-resolve')
+const debugConfig = createDebug('vike:config')
 if (debugEsbuildResolve.isActivated) debugEsbuildResolve('esbuild version', version)
 
 type FileExports = { fileExports: Record<string, unknown> }
@@ -92,10 +93,16 @@ async function transpileAndExecuteFile(
   let fileExports: FileExports['fileExports']
   if (isExtensionConfig && !isHeader && fileExtension.endsWith('js')) {
     // This doesn't track dependencies => we should never use this for user land configs
+    if (debugConfig.isActivated) {
+      debugConfig(filePathToShowToUserResolved, 'executed directly (no esbuild transpilation)')
+    }
     fileExports = await executeFile(filePathAbsoluteFilesystem, filePath)
   } else {
     const transformImports = isHeader ? 'all' : true
     const code = await transpileFile(filePath, transformImports, userRootDir, esbuildCache)
+    if (debugConfig.isActivated) {
+      debugConfig(filePathToShowToUserResolved, code)
+    }
     fileExports = await executeTranspiledFile(filePath, code)
   }
 
