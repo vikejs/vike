@@ -44,7 +44,7 @@ function PricingTable() {
                     </Check>
                   </div>
                   <SectionDivider />
-                  <div>
+                  <div className="pricing-section-sufficient">
                     <SubHeading>Sufficient resources</SubHeading>
                     <Price color="#2563eb" suffix=" one time">
                       $5k
@@ -83,7 +83,11 @@ function PricingTable() {
 }
 
 function SectionDivider() {
-  return <div className="pricing-section-divider" />
+  return (
+    <div className="pricing-section-divider">
+      <span className="pricing-section-divider-or">or</span>
+    </div>
+  )
 }
 
 function SubHeading({ children, id, style }: { children: React.ReactNode; style?: React.CSSProperties; id?: string }) {
