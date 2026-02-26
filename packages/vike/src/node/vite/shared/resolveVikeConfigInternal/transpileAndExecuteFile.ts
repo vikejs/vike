@@ -283,10 +283,10 @@ async function transpileWithEsbuild(
             return false
           })()
 
-          const isExternal = isPointerImport
-          // || TODO comment
-          // Performance: npm package imports can be externalized. (We could as well let esbuild transpile /node_modules/ code but it's useless as /node_modules/ code is already built. It would unnecessarily slow down transpilation.)
-          // isNpmPkgImport
+          const isExternal =
+            isPointerImport ||
+            // Performance: npm package imports can be externalized. (We could as well let esbuild transpile /node_modules/ code but it's useless as /node_modules/ code is already built. It would unnecessarily slow down transpilation.)
+            isNpmPkgImport
 
           if (!isExternal) {
             // User-land config code (i.e. not runtime code) => let esbuild transpile it
