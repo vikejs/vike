@@ -35,12 +35,15 @@
 * don't prettify pageContext in production (fix [#3099](https://github.com/vikejs/vike/issues/3099)) ([a8f23e5](https://github.com/vikejs/vike/commit/a8f23e5ca8eaef0242015f5e81205779a29c946e))
 
 
-### BREAKING CHANGES
+### MINOR BREAKING CHANGES
+
+> [!NOTE]
+> We recommend ignoring `MINOR BREAKING CHANGES` unless this version breaks your app, see [Vike Versioning](https://vike.dev/versioning).
 
 * Vike's Vite plugin automatically removes itself if
 Storybook is detected
 * `+*.spec.*` and `+*.test.*` files are now ignored by Vike
-* `prerender()` return value `viteConfig` can be `null`
+* `prerender()` returned value `viteConfig` can be `null`
 * Bare `import.meta.env` expression is replaced with `null` — use `import.meta.env.SONE_ENV` instead, see [vike.dev/env](https://vike.dev/env)
 
 
