@@ -13,7 +13,7 @@ function PricingTable() {
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
             <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
-              <Column>
+              <Column background="#f0fdf4">
                 <TierName>Small team</TierName>
                 ≤2 <SoftwareDevelopers />
                 <SubHeading id="pricing-table_filler" style={{ visibility: 'hidden' }}>
@@ -134,13 +134,13 @@ function TierName({ children }: { children: string }) {
   return <h2 style={{ fontSize: 26, fontWeight: 700, marginBottom: 4, color: '#0f172a', marginTop: 0 }}>{children}</h2>
 }
 
-function Column({ children }: { children: React.ReactNode }) {
+function Column({ children, background }: { children: React.ReactNode; background?: string }) {
   return (
     <div
       style={{
         border: '1px solid #e2e8f0',
         padding: 28,
-        background: '#fefefe',
+        background: background ?? '#fefefe',
         borderRadius: 14,
         boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
       }}
