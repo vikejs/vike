@@ -172,7 +172,7 @@ async function transpileWithEsbuild(
     bundle: true,
   }
 
-  const pointerImports: Record<string, boolean> = {}
+  const pointerImports: Record<string, boolean | 'static'> = {}
   options.plugins = [
     // Determine whether an import should be:
     //  - A pointer import
@@ -251,6 +251,10 @@ async function transpileWithEsbuild(
           const isVikeExtensionImport =
             (path.startsWith('vike-') && path.endsWith('/config')) || importPathResolved.endsWith('+config.js')
 
+          // `with { type: 'runtime' }` => treat as a static-stub pointer import so that
+          // transformPointerImports() replaces each specifier with STATIC_FILE_NOT_AVAILABLE
+          const isStaticStub = args.with?.['type'] === 'runtime'
+
           const isPointerImport =
             transformImports === 'all' ||
             // .jsx, .tsx, .vue, .svelte, ... => template/JSX files => pointer import
@@ -261,9 +265,7 @@ async function transpileWithEsbuild(
             //      - vike@0.4.162 started soft-requiring Vike extensions to set the name config.
             //    - In practice, it seems like it requires some (non-trivial?) refactoring.
             isVikeExtensionImport ||
-            // `with { type: 'runtime' }` => regular pointer import so that the pointer import
-            // mechanism correctly encodes path + export name (import:path:exportName).
-            args.with?.['type'] === 'runtime'
+            isStaticStub
 
           assertPosixPath(importPathResolved)
           // `isNpmPkgImport` => `importPathOriginal` is most likely an npm package import, but it can also be a path alias that a) looks like an npm package import and b) resolves outside of `userRootDir`.
@@ -334,15 +336,12 @@ async function transpileWithEsbuild(
               // Import of config code => loaded by Node.js at build-time
               isNpmPkgImport,
           )
-          pointerImports[importPathTranspiled] = isPointerImport
+          pointerImports[importPathTranspiled] = isStaticStub ? 'static' : isPointerImport
           return { external: true, path: importPathTranspiled }
         })
         build.onLoad({ filter: /.*/, namespace: 'vike-static-file' }, (args) => {
-          // args.path is an absolute filesystem path; convert to a Vite-compatible path.
-          const vitePath =
-            getFilePathAbsoluteUserRootDir({ filePathAbsoluteFilesystem: args.path, userRootDir }) ?? `/@fs${args.path}`
           return {
-            contents: `export default 'STATIC_FILE_NOT_AVAILABLE:${vitePath}'`,
+            contents: `export default 'STATIC_FILE_NOT_AVAILABLE:${args.path}'`,
             loader: 'js',
           }
         })
