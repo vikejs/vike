@@ -36,7 +36,7 @@ function transformPointerImports(
   code: string,
   filePathToShowToUser2: string,
   pointerImports:
-    | Record<string, boolean | 'static'>
+    | Record<string, boolean | string>
     // Used by ./transformPointerImports.spec.ts
     | 'all',
   // For ./transformPointerImports.spec.ts
@@ -59,14 +59,19 @@ function transformPointerImports(
     if (pointerImports !== 'all') {
       assert(importPath in pointerImports)
       const isPointerImport = pointerImports[importPath]
-      assert(isPointerImport === true || isPointerImport === false || isPointerImport === 'static')
+      assert(typeof isPointerImport === 'boolean' || typeof isPointerImport === 'string')
       if (!isPointerImport) return
     }
 
     const { start, end } = node
     const importStatementCode = code.slice(start, end)
 
-    const isStaticStub = pointerImports !== 'all' && pointerImports[importPath] === 'static'
+    // When the value is a string it holds the Vite-compatible import path for the static stub.
+    const staticStubVitePath =
+      pointerImports !== 'all' && typeof pointerImports[importPath] === 'string'
+        ? (pointerImports[importPath] as string)
+        : null
+    const isStaticStub = staticStubVitePath !== null
 
     // Bare `import './file' with { type: 'runtime' }` — no specifiers, nothing to stub
     if (isStaticStub && node.specifiers.length === 0) return
@@ -108,7 +113,7 @@ function transformPointerImports(
       )
       const importLocalName = specifier.local.name
       if (isStaticStub) {
-        replacement += `const ${importLocalName} = 'STATIC_FILE_NOT_AVAILABLE:${importPath}';`
+        replacement += `const ${importLocalName} = 'STATIC_FILE_NOT_AVAILABLE:${staticStubVitePath}';`
         return
       }
       const exportName = (() => {
