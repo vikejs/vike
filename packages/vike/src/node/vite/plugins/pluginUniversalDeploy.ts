@@ -39,11 +39,17 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
 
   let filterRolldownId = catchAllRE
   let serverPath: string | null = null
+  let isServerConfigEnabled = false
 
-  if (serverConfig && 'filePathAbsoluteFilesystem' in serverConfig) {
+  if (vikeConfig.config.server === false) {
+    return []
+  } else if (vikeConfig.config.server === true) {
+    isServerConfigEnabled = true
+  } else if (serverConfig && 'filePathAbsoluteFilesystem' in serverConfig) {
     serverPath = serverConfig['filePathAbsoluteFilesystem']
 
     if (serverPath) {
+      isServerConfigEnabled = true
       filterRolldownId = new RegExp(escapeRegex(serverPath))
     }
   }
@@ -107,7 +113,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
     catchAll(),
     // Enable node adapter only if +server is defined and no other deployment target has been found
     ...node({ importer: 'vike' }).map((p) =>
-      enablePluginIf((c) => Boolean(serverPath) && noDeploymentTargetFound(c), p),
+      enablePluginIf((c) => isServerConfigEnabled && noDeploymentTargetFound(c), p),
     ),
   ]
 
@@ -129,8 +135,11 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
 
         sharedDuringBuild: true,
       },
-      devServer(),
     )
+  }
+
+  if (isServerConfigEnabled) {
+    plugins.push(devServer())
   }
 
   return plugins
