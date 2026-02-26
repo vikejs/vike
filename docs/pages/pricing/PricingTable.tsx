@@ -28,7 +28,7 @@ function PricingTable() {
                   </Check>
                 </div>
               </Column>
-              <Column background="#eff6ff">
+              <Column>
                 <TierName>Larger team</TierName>
                 ≥3 <SoftwareDevelopers />
                 <div style={{ display: 'flex', columnGap: 40, rowGap: 15, flexWrap: 'wrap' }}>
