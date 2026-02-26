@@ -32,30 +32,34 @@ function PricingTable() {
                 <TierName>Larger team</TierName>
                 ≥3 <SoftwareDevelopers />
                 <div style={{ display: 'flex', columnGap: 40, rowGap: 15, flexWrap: 'wrap' }}>
-                  <div className="pricing-section-limited">
+                  <div>
                     <SubHeading>
                       Limited resources<NoteRef>3</NoteRef>
                     </SubHeading>
-                    <Free />
-                    <Check>Full access</Check>
-                    <Check>Forever free</Check>
-                    <Check>
-                      <Link href="/gift">Apply</Link> for free license key
-                    </Check>
+                    <div className="pricing-section-limited">
+                      <Free />
+                      <Check>Full access</Check>
+                      <Check>Forever free</Check>
+                      <Check>
+                        <Link href="/gift">Apply</Link> for free license key
+                      </Check>
+                    </div>
                   </div>
                   <SectionDivider />
-                  <div className="pricing-section-sufficient">
+                  <div>
                     <SubHeading>Sufficient resources</SubHeading>
-                    <Price color="#2563eb" suffix=" one time">
-                      $5k
-                    </Price>
-                    <Check>Full access</Check>
-                    <Check>
-                      Forever access<NoteRef>4</NoteRef>
-                    </Check>
-                    <Check>
-                      Free trial: 6 months + <Link href="/gift">extendable</Link>
-                    </Check>
+                    <div className="pricing-section-sufficient">
+                      <Price color="#2563eb" suffix=" one time">
+                        $5k
+                      </Price>
+                      <Check>Full access</Check>
+                      <Check>
+                        Forever access<NoteRef>4</NoteRef>
+                      </Check>
+                      <Check>
+                        Free trial: 6 months + <Link href="/gift">extendable</Link>
+                      </Check>
+                    </div>
                   </div>
                 </div>
               </Column>
