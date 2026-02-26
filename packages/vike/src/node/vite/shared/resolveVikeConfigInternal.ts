@@ -979,7 +979,11 @@ function getConfigValueSources(
       ...configValueSourceCommon,
       ...confVal,
       configEnv: configEnvResolved,
-      valueIsLoadedWithImport: !confVal.valueIsLoaded || !isJsonValue(confVal.value),
+      valueIsLoadedWithImport:
+        !confVal.valueIsLoaded ||
+        !isJsonValue(confVal.value) ||
+        !!configEnvResolved.client ||
+        !!configEnvResolved.server,
       valueIsDefinedByPlusValueFile: true,
       definedAt: {
         ...plusFile.filePath,
