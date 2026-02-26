@@ -32,7 +32,7 @@ function PricingTable() {
                 <TierName>Larger team</TierName>
                 ≥3 <SoftwareDevelopers />
                 <div style={{ display: 'flex', columnGap: 40, rowGap: 15, flexWrap: 'wrap' }}>
-                  <div>
+                  <div className="pricing-section-limited">
                     <SubHeading>
                       Limited resources<NoteRef>3</NoteRef>
                     </SubHeading>

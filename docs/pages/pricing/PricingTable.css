@@ -45,6 +45,12 @@
     text-transform: uppercase;
     letter-spacing: 0.08em;
   }
+  .pricing-section-limited {
+    background: #f0fdf4;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin: 0 -14px;
+  }
   .pricing-section-sufficient {
     background: #eff6ff;
     border-radius: 8px;
