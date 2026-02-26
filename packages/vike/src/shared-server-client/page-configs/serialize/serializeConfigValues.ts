@@ -392,6 +392,10 @@ function getDefinedAtFileSource(source: ConfigValueSource) {
   return definedAtFile
 }
 
+// Deduplication registry: maps an importStatements array to its {path:export -> importName} map.
+// Keyed by array reference so it's naturally scoped per virtual file.
+const importDedupeRegistry = new WeakMap<string[], Map<string, string>>()
+
 /*
  * Naming:
  *   `import { someExport as someImport } from './some-file'`
@@ -410,6 +414,19 @@ function addImportStatement(
   configEnv: ConfigEnvInternal,
   configName: string,
 ): { importName: string } {
+  // Always validate env (catches env conflicts even for duplicate imports)
+  assertFileEnv(importPath, configEnv, configName, filesEnv)
+
+  // Deduplicate: reuse existing import name when the same path+export was already added
+  let dedupeMap = importDedupeRegistry.get(importStatements)
+  if (!dedupeMap) {
+    dedupeMap = new Map()
+    importDedupeRegistry.set(importStatements, dedupeMap)
+  }
+  const dedupeKey = `${importPath}:${exportName}`
+  const existing = dedupeMap.get(dedupeKey)
+  if (existing) return { importName: existing }
+
   const importCounter = importStatements.length + 1
   const importName = `import${importCounter}` as const
   const importLiteral = (() => {
@@ -423,7 +440,7 @@ function addImportStatement(
   })()
   const importStatement = `import ${importLiteral} from '${importPath}';`
   importStatements.push(importStatement)
-  assertFileEnv(importPath, configEnv, configName, filesEnv)
+  dedupeMap.set(dedupeKey, importName)
   return { importName }
 }
 
