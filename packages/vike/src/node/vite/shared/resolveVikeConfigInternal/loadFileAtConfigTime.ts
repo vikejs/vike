@@ -21,7 +21,6 @@ import { getConfigFileExport } from './getConfigFileExport.js'
 import { PointerImport, resolvePointerImportData } from './resolvePointerImport.js'
 import type { ConfigDefinitionInternal, ConfigDefinitionsInternal } from './configDefinitionsBuiltIn.js'
 import { getConfigDefinedAt } from '../../../../shared-server-client/page-configs/getConfigDefinedAt.js'
-import { isPlainScriptFile } from '../../../../utils/isScriptFile.js'
 import '../../assertEnvVite.js'
 
 assertIsNotProductionRuntime()
@@ -80,10 +79,6 @@ async function loadValueFile(
   const configDef = getConfigDefinitionOptional(configDefinitions, configName)
   // Only load value files with `env.config===true`
   if (!configDef || !shouldBeLoadableAtBuildTime(configDef)) return
-  // Non-plain-script files (.tsx, .jsx, .vue, .svelte, etc.) are runtime-only and should not be
-  // loaded at config-time. Like pointer imports within config files, they are "obviously not config
-  // code" and are treated as plus-file pointer imports instead.
-  if (!isPlainScriptFile(interfaceValueFile.filePath.filePathAbsoluteFilesystem ?? '')) return
   interfaceValueFile.isNotLoaded = false
   assert(!interfaceValueFile.isNotLoaded)
   interfaceValueFile.fileExportsByConfigName = {}
