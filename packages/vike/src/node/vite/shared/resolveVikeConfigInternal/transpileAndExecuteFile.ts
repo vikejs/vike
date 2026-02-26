@@ -336,6 +336,7 @@ async function transpileWithEsbuild(
         })
         build.onLoad({ filter: /.*/, namespace: 'vike-static-file' }, (args) => {
           return {
+            // TODO/ai also do this for each import with import attribute `with { type: 'runtime' }`
             contents: `export default 'STATIC_FILE_NOT_AVAILABLE:${args.path}'`,
             loader: 'js',
           }
