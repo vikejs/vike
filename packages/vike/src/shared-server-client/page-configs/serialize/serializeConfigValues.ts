@@ -33,7 +33,6 @@ import {
 const stringifyOptions = { forbidReactElements: true as const }
 const REPLACE_ME_BEFORE = '__VIKE__REPLACE_ME_BEFORE__'
 const REPLACE_ME_AFTER = '__VIKE__REPLACE_ME_AFTER__'
-const STATIC_FILE_NOT_AVAILABLE_PREFIX = 'STATIC_FILE_NOT_AVAILABLE:'
 
 // This file is never loaded on the client-side but we save it under the vike/shared/ directory in order to collocate it with parsePageConfigsSerialized()
 // - vike/shared/page-configs/serialize/parsePageConfigsSerialized.ts
@@ -236,22 +235,6 @@ function valueToJson(
               importStatements,
               importData.importPath,
               importData.exportName,
-              filesEnv,
-              configEnv,
-              configName,
-            )
-            const replacement = [REPLACE_ME_BEFORE, importName, REPLACE_ME_AFTER].join('')
-            return { replacement }
-          }
-          // Handle STATIC_FILE_NOT_AVAILABLE strings: these are generated during config
-          // execution when a non-script file (e.g. .svg) or a `with { type: 'runtime' }`
-          // import is encountered. They must become runtime imports, not raw strings.
-          if (value.startsWith(STATIC_FILE_NOT_AVAILABLE_PREFIX)) {
-            const importPath = value.slice(STATIC_FILE_NOT_AVAILABLE_PREFIX.length)
-            const { importName } = addImportStatement(
-              importStatements,
-              importPath,
-              'default',
               filesEnv,
               configEnv,
               configName,
