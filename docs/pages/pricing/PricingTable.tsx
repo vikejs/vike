@@ -9,7 +9,7 @@ const noteColor = '#64748b'
 function PricingTable() {
   return (
     <div id="pricing-table">
-      <ExtraWidth width={100}>
+      <ExtraWidth width={200}>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
             <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
