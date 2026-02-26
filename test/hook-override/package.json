@@ -12,7 +12,7 @@
     "react-dom": "^19.2.4",
     "typescript": "^5.9.3",
     "vite": "^6.3.2",
-    "vike": "0.4.253"
+    "vike": "0.4.254"
   },
   "type": "module"
 }

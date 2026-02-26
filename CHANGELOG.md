@@ -1,3 +1,50 @@
+## [0.4.254](https://github.com/vikejs/vike/compare/v0.4.253...v0.4.254) (2026-02-26)
+
+
+### Bug Fixes
+
+* @brillout/vite-plugin-server-entry@^0.7.18 ([#3114](https://github.com/vikejs/vike/issues/3114)) ([a6d5391](https://github.com/vikejs/vike/commit/a6d5391001ee07d3add87bd11dca3d596f28205b))
+* `export type { EarlyHint }` ([2e9ec60](https://github.com/vikejs/vike/commit/2e9ec601bca5e22b1474bf4c37e8b7a989771f79))
+* exclude `*.spec.*` and `*.test.*` files from vike `+` file processing (fix [#3124](https://github.com/vikejs/vike/issues/3124)) ([#3125](https://github.com/vikejs/vike/issues/3125)) ([56475f3](https://github.com/vikejs/vike/commit/56475f31fac9932a574e040eed93d86d14633dee))
+* migrate glob "as" option to "query" ([eba39fd](https://github.com/vikejs/vike/commit/eba39fd3ce720b4c2efe98cb037bd4aaf294c13f))
+* more reliable tool CLI test ([cd1c053](https://github.com/vikejs/vike/commit/cd1c053fe122a2b9245c9899da2931f5ccb2e2a9))
+* reduce pre-render dependency on Vite ([#3113](https://github.com/vikejs/vike/issues/3113)) ([#3118](https://github.com/vikejs/vike/issues/3118)) ([2d3be47](https://github.com/vikejs/vike/commit/2d3be474441707f05a7932240f3506517a735f0d))
+* remove @brillout/require-shim ([#3091](https://github.com/vikejs/vike/issues/3091)) ([164918b](https://github.com/vikejs/vike/commit/164918b76d6aa8ad7a40da1aca9af806d9f86e02))
+* remove config.build.ssr assert ([#3096](https://github.com/vikejs/vike/issues/3096)) ([6cfeda2](https://github.com/vikejs/vike/commit/6cfeda2ec9c305ac7eaacb7265d3b4883f904229))
+* remove Vike's Vite plugin when running storybook ([98040ab](https://github.com/vikejs/vike/commit/98040abfd8eb895a7b7fb733b0bf618f7b1dd2ce))
+* replace `import.meta.env` with `null` (closes [#3078](https://github.com/vikejs/vike/issues/3078)) ([#3082](https://github.com/vikejs/vike/issues/3082)) ([c061f58](https://github.com/vikejs/vike/commit/c061f58e313eddede7ef3d67956818ff1d1e8645))
+* revive server-only pageContext types such as pageContext.headers (fix [#3087](https://github.com/vikejs/vike/issues/3087)) ([1658209](https://github.com/vikejs/vike/commit/165820957d784db7c92e4565d65ebaa4b38a79e8))
+* Safari WebKit TDZ bug in loadAndParseVirtualFilePageEntry (fix [#3121](https://github.com/vikejs/vike/issues/3121)) ([#3122](https://github.com/vikejs/vike/issues/3122)) ([1d110cc](https://github.com/vikejs/vike/commit/1d110cc54c75ab5afa48f94155f687bf2ca7f5d2))
+* stop showing warning when using vite.createServer() ([#3096](https://github.com/vikejs/vike/issues/3096)) ([c34c417](https://github.com/vikejs/vike/commit/c34c417b8a8480938e45d13183b9dbf3b89b10ad))
+* swallow noisy Vitest error ([0e038aa](https://github.com/vikejs/vike/commit/0e038aafc99293005efe9b69be6985687d0b8fe0))
+* tolerate `import { prerender } from 'vike/api'` in production (fix [#3094](https://github.com/vikejs/vike/issues/3094)) ([e3b56da](https://github.com/vikejs/vike/commit/e3b56da488b5d869cf590f158a7e3124608931f8))
+* tolerate importing Vike's Vite plugin in server runtime (fix [#3113](https://github.com/vikejs/vike/issues/3113)) ([#3115](https://github.com/vikejs/vike/issues/3115)) ([d6e725f](https://github.com/vikejs/vike/commit/d6e725f8ce89c5486e08069a8f91719b3475ee11))
+* tolerate static file imports in config files (brillout/docpress[#86](https://github.com/vikejs/vike/issues/86)) ([#3123](https://github.com/vikejs/vike/issues/3123)) ([b170368](https://github.com/vikejs/vike/commit/b170368938446da4fa8cba8f388e856230ee483d))
+* update glob pattern to work with Vite 8 ([22182f2](https://github.com/vikejs/vike/commit/22182f2dc8a4e8d258ed624582f7d72bea2dffe6))
+
+
+### Features
+
+* `vikeConfig._extensions` ([#3120](https://github.com/vikejs/vike/issues/3120)) ([d6aa272](https://github.com/vikejs/vike/commit/d6aa272952037b5fe4b6b9f678cbb783289f4f78))
+* `with { type: 'vike-pointer' }` (closes [#1500](https://github.com/vikejs/vike/issues/1500)) ([#3126](https://github.com/vikejs/vike/issues/3126)) ([332f31b](https://github.com/vikejs/vike/commit/332f31b5f71c951595478c9f44bbe4f194b6e3d7))
+* DEBUG=vike:config ([e22c133](https://github.com/vikejs/vike/commit/e22c13317335595d4ea1b03459da86738422c736))
+
+
+### Performance Improvements
+
+* don't prettify pageContext in production (fix [#3099](https://github.com/vikejs/vike/issues/3099)) ([a8f23e5](https://github.com/vikejs/vike/commit/a8f23e5ca8eaef0242015f5e81205779a29c946e))
+
+
+### BREAKING CHANGES
+
+* Vike's Vite plugin automatically removes itself if
+Storybook is detected
+* `+*.spec.*` and `+*.test.*` files are now ignored by Vike
+* `prerender()` return value `viteConfig` can be `null`
+* Bare `import.meta.env` expression is replaced with `null` — use `import.meta.env.SONE_ENV` instead, see [vike.dev/env](https://vike.dev/env)
+
+
+
 ## [0.4.253](https://github.com/vikejs/vike/compare/v0.4.252...v0.4.253) (2026-02-02)
 
 
