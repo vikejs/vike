@@ -93,7 +93,7 @@ function getValueSerializedFromSource(
   filesEnv: FilesEnv,
 ) {
   let valueData: ValueData
-  if (configValueSource.valueIsLoaded && !configValueSource.valueIsLoadedWithImport) {
+  if (configValueSource.valueIsLoaded && !configValueSource.valueLoadedViaImport) {
     valueData = getValueSerializedWithJson(
       configValueSource.value,
       configName,

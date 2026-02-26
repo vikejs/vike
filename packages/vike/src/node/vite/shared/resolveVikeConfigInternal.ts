@@ -742,7 +742,7 @@ function getSourceNonConfigFile(
     definedAt,
     locationId: '/' as LocationId,
     plusFile: null,
-    valueIsLoadedWithImport: false,
+    valueLoadedViaImport: false,
     valueIsDefinedByPlusValueFile: false,
   }
   return source
@@ -923,7 +923,7 @@ function getConfigValueSources(
       value: valueFilePath,
       valueIsFilePath: true,
       configEnv: configDef.env,
-      valueIsLoadedWithImport: false,
+      valueLoadedViaImport: false,
       valueIsDefinedByPlusValueFile: false,
       definedAt: definedAtFilePath,
     }
@@ -950,7 +950,7 @@ function getConfigValueSources(
           ...configValueSourceCommon,
           ...value,
           configEnv: resolveConfigEnv(configDef.env, pointerImport.fileExportPath),
-          valueIsLoadedWithImport: true,
+          valueLoadedViaImport: true,
           valueIsDefinedByPlusValueFile: false,
           definedAt: pointerImport.fileExportPath,
         }
@@ -964,7 +964,7 @@ function getConfigValueSources(
       valueIsLoaded: true,
       value: confVal.value,
       configEnv: configDef.env,
-      valueIsLoadedWithImport: false,
+      valueLoadedViaImport: false,
       valueIsDefinedByPlusValueFile: false,
       definedAt: definedAtFilePath_,
     }
@@ -979,8 +979,7 @@ function getConfigValueSources(
       ...configValueSourceCommon,
       ...confVal,
       configEnv: configEnvResolved,
-      // TODO/now: rename valueIsLoadedWithImport valueLoadedViaImport
-      valueIsLoadedWithImport:
+      valueLoadedViaImport:
         // If +{configName}.js is (also) runtime code => always load it via import (not strictly required, but seems to be a good default)
         !!configEnvResolved.client ||
         !!configEnvResolved.server ||
@@ -1235,7 +1234,7 @@ function applyEffectConfVal(
       plusFile: sourceEffect.plusFile,
       locationId: sourceEffect.locationId,
       configEnv: configDef.env,
-      valueIsLoadedWithImport: false,
+      valueLoadedViaImport: false,
       valueIsDefinedByPlusValueFile: false,
       valueIsLoaded: true,
       value: configValue,

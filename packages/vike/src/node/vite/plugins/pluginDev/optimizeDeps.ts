@@ -197,7 +197,7 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
           }
           const sourcesRelevant = getConfigValueSourcesRelevant(configName, runtimeEnv, pageConfig)
           sourcesRelevant.forEach((configValueSource) => {
-            if (!configValueSource.valueIsLoadedWithImport && !configValueSource.valueIsFilePath) return
+            if (!configValueSource.valueLoadedViaImport && !configValueSource.valueIsFilePath) return
             const { definedAt } = configValueSource
 
             if (definedAt.definedBy) return
