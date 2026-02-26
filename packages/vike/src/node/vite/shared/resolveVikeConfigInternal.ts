@@ -984,9 +984,9 @@ function getConfigValueSources(
         // If +{configName}.js is (also) runtime code => always load it via import (not strictly required, but seems to be a good default)
         !!configEnvResolved.client ||
         !!configEnvResolved.server ||
-        // Not possible: value isn't loaded at config-time
+        // No choice: value isn't loaded at config-time
         !confVal.valueIsLoaded ||
-        // Not possible: value isn't serializable
+        // No choice: value isn't serializable
         !isJsonValue(confVal.value),
       valueIsDefinedByPlusValueFile: true,
       definedAt: {
