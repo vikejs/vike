@@ -396,11 +396,9 @@ You can manually mark an import to be a pointer import:
 // /pages/+config.ts
 // Environment: config
 
-import ssr from './ssr' with { type: 'pointer' }
+import ssr from './ssr' with { type: 'vike-pointer' }
 console.log(ssr) // import:./ssr:default
 ```
-
-<Construction>The `with { type: 'pointer' }` import attribute isn't implement yet, see workaround at [#1500](https://github.com/vikejs/vike/issues/1500).</Construction>
 
 
 ## See also

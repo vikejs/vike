@@ -41,14 +41,12 @@ Or this:
 // ✅ Allowed: same as defining +title.ts
 
 import type { Config } from 'vike/types'
-import title from './title' with { type: 'pointer' }
+import title from './title' with { type: 'vike-pointer' }
 
 export default {
   title
 } satisfies Config
 ```
-
-<Construction>The `with { type: 'pointer' }` import attribute isn't implement yet, see workaround at [#1500](https://github.com/vikejs/vike/issues/1500).</Construction>
 
 See <Link href="/config#pointer-imports" /> to understand why you cannot define runtime code inside `+config.js`.
 
