@@ -237,11 +237,9 @@ async function transpileWithEsbuild(
           //   - isImportPathNpmPackage(str, { cannotBePathAlias: true })
           assertFilePathAbsoluteFilesystem(importPathResolved)
 
-          // Non-script file (e.g. .svg, .css) or explicitly tagged as runtime-only
-          // (`import url from './logo.svg' with { type: 'runtime' }`) => resolve to
-          // constant string so that files with `env: { config: true, client: true }`
-          // can also be loaded in Node.js
-          if (!isScriptFile(importPathResolved) || args.with?.['type'] === 'runtime') {
+          // Non-script file (e.g. .svg, .css) => resolve to constant string so that files with
+          // `env: { config: true, client: true }` can also be loaded in Node.js
+          if (!isScriptFile(importPathResolved)) {
             esbuildCache.vikeConfigDependencies.add(importPathResolved)
             return {
               path: importPathResolved,
@@ -262,7 +260,9 @@ async function transpileWithEsbuild(
             //    - In principle, we can use the setting 'name' value of Vike extensions.
             //      - vike@0.4.162 started soft-requiring Vike extensions to set the name config.
             //    - In practice, it seems like it requires some (non-trivial?) refactoring.
-            isVikeExtensionImport
+            isVikeExtensionImport ||
+            // Explicitly tagged as runtime code => pointer import
+            args.with?.['type'] === 'runtime'
 
           assertPosixPath(importPathResolved)
           // `isNpmPkgImport` => `importPathOriginal` is most likely an npm package import, but it can also be a path alias that a) looks like an npm package import and b) resolves outside of `userRootDir`.
