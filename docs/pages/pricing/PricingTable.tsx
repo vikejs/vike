@@ -6,8 +6,6 @@ import { Link } from '@brillout/docpress'
 
 const noteColor = '#64748b'
 
-// TODO/ai: make it visually clearer that "Sufficient resources" is a sperate section from "Enough resources"
-
 function PricingTable() {
   return (
     <div id="pricing-table">
@@ -45,6 +43,7 @@ function PricingTable() {
                       <Link href="/gift">Apply</Link> for free license key
                     </Check>
                   </div>
+                  <SectionDivider />
                   <div>
                     <SubHeading>Sufficient resources</SubHeading>
                     <Price color="#2563eb" suffix=" one time">
@@ -81,6 +80,10 @@ function PricingTable() {
       </ExtraWidth>
     </div>
   )
+}
+
+function SectionDivider() {
+  return <div className="pricing-section-divider" />
 }
 
 function SubHeading({ children, id, style }: { children: React.ReactNode; style?: React.CSSProperties; id?: string }) {

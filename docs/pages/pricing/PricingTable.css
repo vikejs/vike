@@ -3,11 +3,22 @@
     text-decoration: underline;
   }
 }
+.pricing-section-divider {
+  width: 1px;
+  background-color: #e2e8f0;
+  align-self: stretch;
+  margin: 0 -16px;
+}
 @media screen and (max-width: 899px) {
   #pricing-table_extra-width {
     margin: 0 !important;
   }
   #pricing-table_filler {
     display: none;
+  }
+  .pricing-section-divider {
+    width: 100%;
+    height: 1px;
+    margin: 8px 0;
   }
 }
