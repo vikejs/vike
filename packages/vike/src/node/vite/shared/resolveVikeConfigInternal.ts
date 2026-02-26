@@ -979,7 +979,15 @@ function getConfigValueSources(
       ...configValueSourceCommon,
       ...confVal,
       configEnv: configEnvResolved,
-      valueIsLoadedWithImport: !confVal.valueIsLoaded || !isJsonValue(confVal.value),
+      // TODO/now: rename valueIsLoadedWithImport valueLoadedViaImport
+      valueIsLoadedWithImport:
+        // If +{configName}.js is (also) runtime code => always load it via import (not strictly required, but seems to be a good default)
+        !!configEnvResolved.client ||
+        !!configEnvResolved.server ||
+        // No choice: value isn't loaded at config-time
+        !confVal.valueIsLoaded ||
+        // No choice: value isn't serializable
+        !isJsonValue(confVal.value),
       valueIsDefinedByPlusValueFile: true,
       definedAt: {
         ...plusFile.filePath,
