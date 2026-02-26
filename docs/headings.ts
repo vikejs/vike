@@ -7,13 +7,16 @@ import {
   iconScroll,
   iconCompass,
   iconGear,
-  type HeadingDefinition,
   iconSeedling,
   iconGlobe,
   iconPlug,
   iconMegaphone,
+} from '@brillout/docpress' with { type: 'vike-pointer' }
+import type {
+  HeadingDefinition,
+  Config,
+  HeadingDetachedDefinition as HeadingDetachedDefinition_,
 } from '@brillout/docpress'
-import type { Config, HeadingDetachedDefinition as HeadingDetachedDefinition_ } from '@brillout/docpress'
 type HeadingDetachedDefinition = Omit<HeadingDetachedDefinition_, 'category'> & {
   category: CategoryNames | 'Miscellaneous'
 }
