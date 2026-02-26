@@ -106,7 +106,7 @@ const IntroSection = () => {
           className="flex flex-col items-center text-center lg:min-h-[calc(100dvh-56*var(--spacing))] pb-20 overflow-hidden"
         >
           <div className="relative z-10 flex flex-col items-center text-center w-full">
-            <span className="inline-flex flex-col sm:flex-row gap-1 mx-auto mb-4 mt-20">
+            <span className="inline-flex flex-col sm:flex-row gap-1 mx-auto mb-4 md:mt-16 xl:mt-20">
               <span className="block badge badge-neutral badge-ghost badge-sm">⭐️ Replaces Next.js / Nuxt / ...</span>
               <span className="block badge badge-neutral badge-ghost badge-sm">🏗️ Powered By Vite</span>
             </span>
@@ -123,14 +123,14 @@ const IntroSection = () => {
             <div className="flex gap-2 items-center justify-center mb-16">
               <a
                 ref={getStartedButtonRef}
-                className="btn text-white border-0"
-                style={
-                  {
-                    '--gradient-start': defaultGradients[initialCtaColor].startColor,
-                    '--gradient-end': defaultGradients[initialCtaColor].endColor,
-                    background: 'linear-gradient(90deg, var(--gradient-start), var(--gradient-end))',
-                  } as React.CSSProperties
-                }
+                className="btn text-white border-0 btn-neutral"
+                // style={
+                //   {
+                //     '--gradient-start': defaultGradients[initialCtaColor].startColor,
+                //     '--gradient-end': defaultGradients[initialCtaColor].endColor,
+                //     background: 'linear-gradient(90deg, var(--gradient-start), var(--gradient-end))',
+                //   } as React.CSSProperties
+                // }
               >
                 Get Started
               </a>
@@ -148,9 +148,11 @@ const IntroSection = () => {
           </div>
         </LayoutComponent>
       </div>
-      <LayoutComponent className="relative z-2">
-        <BrandSubsection />
-      </LayoutComponent>
+      <div className="w-full overflow-hidden">
+        <LayoutComponent className="relative z-2">
+          <BrandSubsection />
+        </LayoutComponent>
+      </div>
     </>
   )
 }

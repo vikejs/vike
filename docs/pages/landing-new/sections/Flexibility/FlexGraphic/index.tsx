@@ -15,8 +15,10 @@ import { hookColors } from '../../../util/ui.constants'
 const StyledOuter = cm.div`
   w-full
   relative
-  min-w-160
-  -ml-18
+  xl:min-w-164
+  xl:-ml-20
+  lg:min-w-160
+  md:min-w-140
 `
 
 const pinHeight = 2
@@ -79,7 +81,7 @@ const FlexGraphic = () => {
   }, [onChangeHightlight])
 
   return (
-    <div className="absolute left-0 -top-10 origin-center">
+    <div className="absolute left-0 -top-20 origin-center">
       <StyledOuter ref={containerRef}>
         <FlexGraphicBlocks
           activeHooks={activeHooks}
@@ -155,17 +157,12 @@ const FlexGraphic = () => {
               d="M268 86.5L275.317 80.0976C275.751 79.7178 276 79.1692 276 78.5925V73"
             />
             <line stroke={hookColors.Wrapper} strokeWidth={strokeWidth} x1="471" y1="159.73" x2="444" y2="159.73" />
-            <path stroke={hookColors.Wrapper} strokeWidth={strokeWidth} d="M242.5 92L242.5 8.07816" />
             <path
               stroke={hookColors.Wrapper}
               strokeWidth={strokeWidth}
               d="M474.5 156.73C476.157 156.73 477.5 158.074 477.5 159.73C477.5 161.387 476.157 162.73 474.5 162.73C472.843 162.73 471.5 161.387 471.5 159.73C471.5 158.074 472.843 156.73 474.5 156.73Z"
             />
-            <path
-              stroke={hookColors.Wrapper}
-              strokeWidth={strokeWidth}
-              d="M245.5 4.5C245.5 6.15685 244.157 7.5 242.5 7.5C240.843 7.5 239.5 6.15685 239.5 4.5C239.5 2.84315 240.843 1.5 242.5 1.5C244.157 1.5 245.5 2.84315 245.5 4.5Z"
-            />
+
             <path
               stroke={hookColors.Wrapper}
               strokeWidth={strokeWidth}

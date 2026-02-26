@@ -118,8 +118,8 @@ const useUspHero = ({ onSlideshowActiveChange, onSectionActiveChange }: UseUspHe
           duration: uiConfig.transition.longDuration,
           ease: uiConfig.transition.easeInOutGsap,
           overwrite: 'auto',
-          scrollTo: { 
-            y: top, 
+          scrollTo: {
+            y: top,
             autoKill: true,
           },
         })

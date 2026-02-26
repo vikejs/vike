@@ -7,8 +7,8 @@ import SectionHeader from '../../components/SectionHeader'
 import FlexGraphic from './FlexGraphic'
 import { ChevronsRight } from 'lucide-react'
 import GlassContainer from '../../components/GlassContainer'
-import libraryRollImg from '../../assets/libraryRoll.webp'
-import libraryRollImgMobile from '../../assets/libraryRoll@0.5.webp'
+import libraryRollImg from '../../assets/libraryRoll.avif'
+import libraryRollImgMobile from '../../assets/libraryRoll@0.5.avif'
 import BlurDot from '../../components/BlurDot'
 import BarChart from '../../components/BarChart'
 import { H3Headline, H4Headline } from '../../components/Headline'
@@ -33,10 +33,11 @@ const FlexibilitySection = () => {
 
       <LayoutComponent className="mt-20">
         <div className="grid grid-cols-2 gap-10 relative z-2">
-          <div className="relative -ml-3">
+          <div className="relative -ml-4 -mt-9">
             <img
               loading="lazy"
               src={libraryRollImg}
+              data-speed="0.96"
               alt="Library roll with various tools and frameworks"
               className="w-full h-auto hidden sm:block rounded-lg"
             />
@@ -75,7 +76,7 @@ const FlexibilitySection = () => {
             </div>
           </GlassContainer>
         </div>
-        <BlurDot type="green" size="xl" visibility="low" className="absolute top-0 right-0 z-0" />
+        <BlurDot type="green" size="xxl" visibility="low" className="absolute -top-20 -left-60 z-0" />
       </LayoutComponent>
 
       <div className="relative my-32">
@@ -107,51 +108,53 @@ const FlexibilitySection = () => {
         </LayoutComponent>
       </div>
 
-      <LayoutComponent className="mt-20 mb-70">
-        <div className="grid grid-cols-2 gap-10 relative z-2">
-          <GlassContainer>
-            <div className="flex flex-col gap-0 justify-center min-h-90">
-              <HeadlineGroup
-                headingStyle="h2"
-                outerClassName="mb-8"
-                centered={false}
-                main={
-                  <>
-                    <GradientText color="green">Powerful</GradientText> hooks
-                  </>
-                }
-                sub="Build what you want with powerful hooks."
-              />
-              <p className="mb-8">Vike's comprehensive list of hooks unlocks unprecedented flexibility.</p>
-              <p>
-                <a href="/docs/hooks/introduction">
-                  <GradientText color="green" className="flex gap-2 items-center ">
-                    Learn more about hooks <ChevronsRight className="w-4 h-4 text-primary" />
-                  </GradientText>
-                </a>
-              </p>
+      <div className="overflow-hidden w-full">
+        <LayoutComponent className="mt-20 mb-70">
+          <div className="grid lg:grid-cols-5 xl:grid-cols-2 gap-10 relative z-2">
+            <GlassContainer className="lg:col-span-2 xl:col-span-1">
+              <div className="flex flex-col gap-0 justify-center min-h-90">
+                <HeadlineGroup
+                  headingStyle="h2"
+                  outerClassName="mb-8"
+                  centered={false}
+                  main={
+                    <>
+                      <GradientText color="green">Powerful</GradientText> hooks
+                    </>
+                  }
+                  sub="Build what you want with powerful hooks."
+                />
+                <p className="mb-8">Vike's comprehensive list of hooks unlocks unprecedented flexibility.</p>
+                <p>
+                  <a href="/docs/hooks/introduction">
+                    <GradientText color="green" className="flex gap-2 items-center ">
+                      Learn more about hooks <ChevronsRight className="w-4 h-4 text-primary" />
+                    </GradientText>
+                  </a>
+                </p>
+              </div>
+            </GlassContainer>
+            <div className="relative lg:col-span-3 xl:col-span-1" data-speed="0.97">
+              <FlexGraphic />
             </div>
-          </GlassContainer>
-          <div className="relative">
-            <FlexGraphic />
           </div>
-        </div>
-        <BlurDot type="green" size="xxl" visibility="low" className="absolute top-20 -left-40 z-0" />
-      </LayoutComponent>
+          <BlurDot type="green" size="xxl" visibility="low" className="absolute -top-20 right-0 z-0 grayscale" />
+        </LayoutComponent>
 
-      <LayoutComponent $size="xs" className="my-24">
-        <H3Headline className="text-center">
-          Supported <GradientText color="green">use cases</GradientText>
-        </H3Headline>
-        <p className="mb-8 text-grey text-center">Vike's hooks support an unmatched amount of use cases.</p>
-        <BarChart
-          pollData={[
-            { label: 'other frameworks', percentage: 33 },
-            { label: 'Vike', percentage: 100 },
-          ]}
-          color="green"
-        />
-      </LayoutComponent>
+        <LayoutComponent $size="xs" className="my-24">
+          <H3Headline className="text-center">
+            Supported <GradientText color="green">use cases</GradientText>
+          </H3Headline>
+          <p className="mb-8 text-grey text-center">Vike's hooks support an unmatched amount of use cases.</p>
+          <BarChart
+            pollData={[
+              { label: 'other frameworks', percentage: 33 },
+              { label: 'Vike', percentage: 100 },
+            ]}
+            color="green"
+          />
+        </LayoutComponent>
+      </div>
     </section>
   )
 }

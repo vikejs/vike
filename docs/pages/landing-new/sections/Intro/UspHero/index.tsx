@@ -94,7 +94,7 @@ const UspHero = ({
 
   return (
     <div ref={rootRef} className="w-full" data-usp-hero>
-      <div className="fixed w-full h-24 top-0 left-0 z-20 bg-linear-to-t to-95% to-base-300" />
+      <div className="fixed w-full h-24 top-0 left-0 z-20 bg-linear-to-t to-95% to-base-300 pointer-events-none" />
       <div data-usp-hero-nav="true" className="relative z-30 py-2">
         <div
           data-usp-hero-nav-chrome="true"
@@ -244,9 +244,8 @@ const UspHero = ({
                         </StyledTitle>
                       </span>
                     </H3Headline>
-                    <p className="text-lg">{usp.description}</p>
+                    <p className="xl:text-lg">{usp.description}</p>
                   </div>
-
                   <span
                     className={cmMerge(
                       UiVariantBtnColor[usp.dotColor],
@@ -325,7 +324,7 @@ const StyledIconWrapper = cm.div`
 const StyledTextContent = cm.div<{ $hovered?: boolean }>`
   relative z-6
   transition-transform
-  min-h-46
+
   flex flex-col justify-between
   pointer-events-none
   ${uiConfig.transition.mediumDurationTw}

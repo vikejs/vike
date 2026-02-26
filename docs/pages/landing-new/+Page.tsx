@@ -9,11 +9,11 @@ import useScrollSmoother from './hooks/useScrollSmoother'
 import './tailwind.css'
 
 const LandingPage = () => {
-  // useScrollSmoother()
+  useScrollSmoother()
 
   return (
     <>
-      <div id="tailwind-portal" data-theme="vike" className="bg-base-300">
+      <div id="tailwind-portal" data-theme="vike" className="bg-base-300 overflow-x-clip">
         <IntroSection />
         <FlexibilitySection />
         <StabilitySection />

@@ -10,42 +10,45 @@ import GlassContainer from '../../components/GlassContainer'
 const StabilitySection = () => {
   return (
     <section data-usp-section={UspCategoryId.stability} className="w-full">
-      <LayoutComponent className="mt-40">
-        <SectionHeader
-          icon={'💎'}
-          badgeText="Stability"
-          main={
-            <>
-              Rock-solid <GradientText color="blue">foundation(s)</GradientText>
-            </>
-          }
-          sub="Vike is a stable foundation you can trust and build upon with confidence."
-          color="blue"
-        />
-        <div className="grid grid-cols-2 gap-10 mt-22">
-          <div></div>
-
-          <GlassContainer>
-            <div className="py-12">
-              <p className="mb-4">
-                Vike is built from stable components that will remain relevant for the foreseeable future (e.g.
-                SPA/SSR/SSG), making Vike a stable foundation.{' '}
-              </p>
-              <p>
-                Fast evolving components (e.g. RPC/GraphQL) aren't included and, instead, Vike extensions provide
-                first-class deep integrations via powerful hooks. This clear separation results in a foundation that is
-                stable as well as open to JavaScript's fast-evolving ecosystem.
-              </p>
-            </div>
-          </GlassContainer>
-        </div>
-      </LayoutComponent>
+      <div className="w-full overflow-hidden">
+        <LayoutComponent>
+          <SectionHeader
+            icon={'💎'}
+            badgeText="Stability"
+            main={
+              <>
+                Rock-solid <GradientText color="blue">foundation(s)</GradientText>
+              </>
+            }
+            sub="Vike is a stable foundation you can trust and build upon with confidence."
+            color="blue"
+          />
+          <div className="grid grid-cols-2 gap-10 mt-22">
+            <div aria-hidden="true" />
+            <GlassContainer>
+              <div className="py-12">
+                <p className="mb-4">
+                  Vike is built from stable components that will remain relevant for the foreseeable future (e.g.
+                  SPA/SSR/SSG), making Vike a stable foundation.{' '}
+                </p>
+                <p>
+                  Fast evolving components (e.g. RPC/GraphQL) aren't included and, instead, Vike extensions provide
+                  first-class deep integrations via powerful hooks. This clear separation results in a foundation that
+                  is stable as well as open to JavaScript's fast-evolving ecosystem.
+                </p>
+              </div>
+            </GlassContainer>
+          </div>
+        </LayoutComponent>
+      </div>
       <LayoutComponent className="grid grid-cols-2 gap-10 my-32">
         <div className="">
-          <H4Headline as="h3" className='mb-2'>
+          <H4Headline as="h3" className="mb-2">
             <GradientText color="blue">Long-term</GradientText> support
           </H4Headline>
-          <p className="mb-6">Vike's agnosticity is a stable foundation — use any stable stack for as long as you want.</p>
+          <p className="mb-6">
+            Vike's agnosticity is a stable foundation — use any stable stack for as long as you want.
+          </p>
           <BarChart
             pollData={[
               { label: 'other frameworks', percentage: 33 },
