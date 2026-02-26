@@ -172,8 +172,7 @@ async function transpileWithEsbuild(
     bundle: true,
   }
 
-  // Values: false = not a pointer import; true = regular pointer import; string = static stub Vite-compatible import path
-  const pointerImports: Record<string, boolean | string> = {}
+  const pointerImports: Record<string, boolean | 'static'> = {}
   options.plugins = [
     // Determine whether an import should be:
     //  - A pointer import
@@ -337,28 +336,12 @@ async function transpileWithEsbuild(
               // Import of config code => loaded by Node.js at build-time
               isNpmPkgImport,
           )
-          pointerImports[importPathTranspiled] = isStaticStub
-            ? // Store the Vite-compatible path so that transformPointerImports() can generate
-              // a correct STATIC_FILE_NOT_AVAILABLE string (path is later used as import path
-              // in the serialized virtual file).
-              isNpmPkgImport
-              ? importPathOriginal // npm package name is already Vite-compatible
-              : (getFilePathAbsoluteUserRootDir({ filePathAbsoluteFilesystem: importPathResolved, userRootDir }) ??
-                `/@fs${importPathResolved}`)
-            : isPointerImport
+          pointerImports[importPathTranspiled] = isStaticStub ? 'static' : isPointerImport
           return { external: true, path: importPathTranspiled }
         })
         build.onLoad({ filter: /.*/, namespace: 'vike-static-file' }, (args) => {
-          // args.path is an absolute filesystem path; convert to a Vite-compatible path.
-          const [pathWithoutQuery, ...queryParts] = args.path.split('?')
-          const query = queryParts.length > 0 ? '?' + queryParts.join('?') : ''
-          const rootRelativePath = getFilePathAbsoluteUserRootDir({
-            filePathAbsoluteFilesystem: pathWithoutQuery!,
-            userRootDir,
-          })
-          const viteImportPath = (rootRelativePath ?? `/@fs${pathWithoutQuery!}`) + query
           return {
-            contents: `export default 'STATIC_FILE_NOT_AVAILABLE:${viteImportPath}'`,
+            contents: `export default 'STATIC_FILE_NOT_AVAILABLE:${args.path}'`,
             loader: 'js',
           }
         })
