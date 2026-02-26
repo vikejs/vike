@@ -237,9 +237,11 @@ async function transpileWithEsbuild(
           //   - isImportPathNpmPackage(str, { cannotBePathAlias: true })
           assertFilePathAbsoluteFilesystem(importPathResolved)
 
-          // Non-script file (e.g. .svg, .css) => resolve to constant string so that files with
-          // `meta.env: { config: true, client: true }` can also be loaded in Node.js
-          if (!isScriptFile(importPathResolved)) {
+          // Non-script file (e.g. .svg, .css) or explicitly tagged as runtime-only
+          // (`import url from './logo.svg' with { type: 'runtime' }`) => resolve to
+          // constant string so that files with `env: { config: true, client: true }`
+          // can also be loaded in Node.js
+          if (!isScriptFile(importPathResolved) || args.with?.['type'] === 'runtime') {
             esbuildCache.vikeConfigDependencies.add(importPathResolved)
             return {
               path: importPathResolved,
@@ -336,7 +338,6 @@ async function transpileWithEsbuild(
         })
         build.onLoad({ filter: /.*/, namespace: 'vike-static-file' }, (args) => {
           return {
-            // TODO/ai also do this for each import with import attribute `with { type: 'runtime' }`
             contents: `export default 'STATIC_FILE_NOT_AVAILABLE:${args.path}'`,
             loader: 'js',
           }
