@@ -7,7 +7,9 @@
   width: 1px;
   background-color: #e2e8f0;
   align-self: stretch;
-  margin: 0 -16px;
+  margin-left: 9px;
+  margin-right: 7px;
+  margin-top: 28px;
 }
 @media screen and (max-width: 899px) {
   #pricing-table_extra-width {
