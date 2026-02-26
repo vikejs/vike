@@ -14,18 +14,6 @@
 .pricing-section-divider-or {
   display: none;
 }
-.pricing-section-limited {
-  background: #f0fdf4;
-  border-radius: 8px;
-  padding: 12px 14px;
-  margin-top: 8px;
-}
-.pricing-section-sufficient {
-  background: #eff6ff;
-  border-radius: 8px;
-  padding: 12px 14px;
-  margin-top: 8px;
-}
 @media screen and (max-width: 899px) {
   #pricing-table_extra-width {
     margin: 0 !important;
@@ -57,10 +45,14 @@
     text-transform: uppercase;
     letter-spacing: 0.08em;
   }
-  .pricing-section-limited,
+  .pricing-section-limited {
+    background: #f0fdf4;
+    padding: 12px 14px;
+    margin: 8px -14px 0;
+  }
   .pricing-section-sufficient {
-    margin-left: -14px;
-    margin-right: -14px;
-    border-radius: 0;
+    background: #eff6ff;
+    padding: 12px 14px;
+    margin: 8px -14px 0;
   }
 }
