@@ -1,4 +1,4 @@
-export { pluginStripRuntimeImportAttribute }
+export { pluginStripPointerImportAttribute }
 
 // Strip `with { type: 'vike-pointer' }` import attributes from files transpiled for the
 // client/server runtime. These attributes are only meaningful at config-time (they tell
@@ -21,7 +21,7 @@ const filterRolldown = {
 const filterFunction = (code: string) => runtimeAttrRE.test(code)
 // ===
 
-function pluginStripRuntimeImportAttribute(): Plugin[] {
+function pluginStripPointerImportAttribute(): Plugin[] {
   return [
     {
       name: 'vike:stripRuntimeImportAttribute',

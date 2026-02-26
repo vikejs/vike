@@ -40,7 +40,7 @@ import { pluginModuleBanner } from './plugins/build/pluginModuleBanner.js'
 import { pluginReplaceConstantsNonRunnableDev } from './plugins/non-runnable-dev/pluginReplaceConstantsNonRunnableDev.js'
 import { isVikeCliOrApi } from '../../shared-server-node/api-context.js'
 import { pluginViteConfigVikeExtensions } from './plugins/pluginViteConfigVikeExtensions.js'
-import { pluginStripRuntimeImportAttribute } from './plugins/pluginStripRuntimeImportAttribute.js'
+import { pluginStripPointerImportAttribute } from './plugins/pluginStripPointerImportAttribute.js'
 import { getVikeConfigInternalEarly, isOnlyResolvingUserConfig } from '../api/resolveViteConfigFromUser.js'
 import './assertEnvVite.js'
 
@@ -74,7 +74,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): Promise<Plug
       ...pluginReplaceConstantsGlobalThis(),
       ...pluginStaticReplace(vikeConfig),
       ...pluginNonRunnabeDev(),
-      ...pluginStripRuntimeImportAttribute(),
+      ...pluginStripPointerImportAttribute(),
       ...(await pluginViteConfigVikeExtensions(vikeConfig)),
     ]
     Object.assign(plugin, pluginAddendum)
