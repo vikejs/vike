@@ -43,6 +43,7 @@ import { pluginViteConfigVikeExtensions } from './plugins/pluginViteConfigVikeEx
 import { pluginStripPointerImportAttribute } from './plugins/pluginStripPointerImportAttribute.js'
 import { getVikeConfigInternalEarly, isOnlyResolvingUserConfig } from '../api/resolveViteConfigFromUser.js'
 import './assertEnvVite.js'
+import { isStorybook } from '../../utils/isStorybook.js'
 
 // We don't call this in ./onLoad.ts to avoid a cyclic dependency with utils.ts
 setGetClientEntrySrcDev(getClientEntrySrcDev)
@@ -125,7 +126,10 @@ function removeVitePlugin() {
     return true
   }
 
-  // TO-DO/eventually: also skip for other third party tools such as Storybook?
+  // https://github.com/vikejs/vike/issues/798#issuecomment-1531093835
+  if (isStorybook() && !isVikeCliOrApi()) {
+    return true
+  }
 
   return false
 }

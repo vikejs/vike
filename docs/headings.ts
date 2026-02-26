@@ -1048,6 +1048,10 @@ function tools() {
         url: '/vitest',
       },
       {
+        title: 'Storybook',
+        url: '/storybook',
+      },
+      {
         title: 'Lingui',
         url: '/lingui',
       },
