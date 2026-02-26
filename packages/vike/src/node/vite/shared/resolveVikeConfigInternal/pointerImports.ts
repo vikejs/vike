@@ -36,7 +36,7 @@ function transformPointerImports(
   code: string,
   filePathToShowToUser2: string,
   pointerImports:
-    | Record<string, boolean | 'static'>
+    | Record<string, boolean>
     // Used by ./transformPointerImports.spec.ts
     | 'all',
   // For ./transformPointerImports.spec.ts
@@ -59,17 +59,12 @@ function transformPointerImports(
     if (pointerImports !== 'all') {
       assert(importPath in pointerImports)
       const isPointerImport = pointerImports[importPath]
-      assert(isPointerImport === true || isPointerImport === false || isPointerImport === 'static')
+      assert(isPointerImport === true || isPointerImport === false)
       if (!isPointerImport) return
     }
 
     const { start, end } = node
     const importStatementCode = code.slice(start, end)
-
-    const isStaticStub = pointerImports !== 'all' && pointerImports[importPath] === 'static'
-
-    // Bare `import './file' with { type: 'runtime' }` — no specifiers, nothing to stub
-    if (isStaticStub && node.specifiers.length === 0) return
 
     /* Pointer import without importing any value => doesn't make sense and doesn't have any effect.
     ```js
@@ -78,7 +73,7 @@ function transformPointerImports(
     // Useless
     import './Layout.jsx'
     ``` */
-    if (!isStaticStub && node.specifiers.length === 0) {
+    if (node.specifiers.length === 0) {
       const isWarning = !styleFileRE.test(importPath)
       let quote = indent(importStatementCode)
       if (isWarning) {
@@ -107,10 +102,6 @@ function transformPointerImports(
           specifier.type === 'ImportNamespaceSpecifier',
       )
       const importLocalName = specifier.local.name
-      if (isStaticStub) {
-        replacement += `const ${importLocalName} = 'STATIC_FILE_NOT_AVAILABLE:${importPath}';`
-        return
-      }
       const exportName = (() => {
         if (specifier.type === 'ImportDefaultSpecifier') return 'default'
         if (specifier.type === 'ImportNamespaceSpecifier') return '*'
