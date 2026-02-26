@@ -981,7 +981,7 @@ function getConfigValueSources(
       configEnv: configEnvResolved,
       // TODO/now: rename valueIsLoadedWithImport valueLoadedViaImport
       valueIsLoadedWithImport:
-        // If contains runtime code => always load via import (not strictly required, but seems to be a good default)
+        // If +{configName}.js is (also) runtime code => always load it via import (not strictly required, but seems to be a good default)
         !!configEnvResolved.client ||
         !!configEnvResolved.server ||
         // Not possible: value isn't loaded at config-time
