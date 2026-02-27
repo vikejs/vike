@@ -237,7 +237,7 @@ async function transpileWithEsbuild(
           //   - isImportPathNpmPackage(str, { cannotBePathAlias: true })
           assertFilePathAbsoluteFilesystem(importPathResolved)
 
-          //  Should be remove this? See comment below.
+          //  Should we remove this? See comment below.
           const isVikeExtensionImport =
             (path.startsWith('vike-') && path.endsWith('/config')) || importPathResolved.endsWith('+config.js')
 
