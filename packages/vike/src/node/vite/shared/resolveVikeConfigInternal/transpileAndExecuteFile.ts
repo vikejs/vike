@@ -266,7 +266,6 @@ async function transpileWithEsbuild(
             isPointerImport ||
             // Performance: npm package imports can be externalized. (We could as well let esbuild transpile /node_modules/ code but it's useless as /node_modules/ code is already built. It would unnecessarily slow down transpilation.)
             (isMostLikelyNpmPkgImport && isPlainJavaScriptFile(importPathResolved))
-
           if (!isExternal) {
             // User-land config code (i.e. not runtime code) => let esbuild transpile it
             assert(!isPointerImport)
@@ -303,7 +302,6 @@ async function transpileWithEsbuild(
 
           if (debug.isActivated)
             debug('onResolve() [external]', { args, resolved, importPathTranspiled, isPointerImport, isExternal })
-          assert(isExternal)
           pointerImports[importPathTranspiled] = isPointerImport
           return { external: true, path: importPathTranspiled }
         })
