@@ -94,6 +94,7 @@ type ConfigNameBuiltIn =
   | 'hooksTimeout'
   | 'clientHooks'
   | 'middleware'
+  | 'server'
 
 type ConfigNameGlobal =
   | 'onPrerenderStart'
@@ -637,6 +638,18 @@ type ConfigBuiltIn = {
 
   /** @experimental */
   middleware?: Function
+
+  /** Server configuration.
+   *
+   * Set it to `false` to disable support for server entries.
+   *
+   * Set it to `true` to build a default server entry targeting node.
+   *
+   * Set it to a string that points to a server entry for advanced server integration.
+   *
+   * https://vike.dev/server
+   */
+  server?: boolean | string
 
   cli?: {
     /** @experimental

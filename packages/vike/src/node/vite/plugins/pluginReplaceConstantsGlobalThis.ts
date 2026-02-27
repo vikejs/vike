@@ -62,9 +62,11 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
         },
       },
       configEnvironment: {
+        order: 'pre',
         handler(name, config) {
           const isClientSide = !isViteServerSide_configEnvironment(name, config)
           return {
+            consumer: isClientSide ? 'client' : 'server',
             define: {
               'globalThis.__VIKE__IS_CLIENT': JSON.stringify(isClientSide),
             },

@@ -34,6 +34,7 @@ function testRun(
   run(cmd, {
     // HMR tests are flaky (I couldn't make them reliable)
     isFlaky: testHMR,
+    serverIsReadyMessage: isProd ? 'Listening on:' : 'Local:',
   })
 
   test('page content is rendered to HTML', async () => {
@@ -111,7 +112,7 @@ function testRun(
   test('error page', async () => {
     await page.goto(getServerUrl() + '/does-not-exist')
     expect(await page.textContent('#page-content')).toBe('Page not found.')
-    expectLog('Failed to load resource: the server responded with a status of 404 (Not Found)', {
+    expectLog('Failed to load resource: the server responded with a status of 404', {
       filter: (log) =>
         log.logSource === 'Browser Error' && partRegex`http://${/[^\/]+/}:3000/does-not-exist`.test(log.logInfo),
     })

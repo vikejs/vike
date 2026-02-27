@@ -94,6 +94,10 @@
       "browser": "./dist/client/node.js",
       "default": "./dist/server/runtime/universal-middleware.js"
     },
+    "./fetch": {
+      "types": "./dist/server/runtime/fetch.d.ts",
+      "default": "./dist/server/runtime/fetch.js"
+    },
     "./__internal": {
       "types": "./dist/server/__internal/index.d.ts",
       "node": "./dist/server/__internal/index.js",
@@ -124,6 +128,10 @@
     "@brillout/json-serializer": "^0.5.22",
     "@brillout/picocolors": "^1.0.30",
     "@brillout/vite-plugin-server-entry": "0.7.18",
+    "@universal-deploy/node": "^0.1.1",
+    "@universal-deploy/store": "^0.1.0",
+    "@universal-middleware/core": "^0.4.17",
+    "@universal-middleware/express": "^0.4.25",
     "cac": "^6.0.0",
     "es-module-lexer": "^1.0.0",
     "esbuild": ">=0.19.0",
@@ -208,6 +216,9 @@
       "universal-middleware": [
         "./dist/server/runtime/universal-middleware.d.ts"
       ],
+      "fetch": [
+        "./dist/server/runtime/fetch.d.ts"
+      ],
       "__internal": [
         "./dist/server/__internal/index.d.ts"
       ],
@@ -241,7 +252,8 @@
     "./routing.js",
     "./server.js",
     "./types.js",
-    "./universal-middleware.js"
+    "./universal-middleware.js",
+    "./fetch.js"
   ],
   "devDependencies": {
     "@brillout/release-me": "^0.4.12",

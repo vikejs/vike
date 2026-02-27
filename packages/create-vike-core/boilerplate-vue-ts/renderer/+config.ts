@@ -1,14 +1,9 @@
 export { config as default }
 
 import type { Config } from 'vike/types'
-import vikeServer from 'vike-server/config'
 
 // https://vike.dev/config
 const config = {
-  // https://vike.dev/vike-server
-  extends: [vikeServer],
-  server: 'server/index.ts',
-
   // https://vike.dev/clientRouting
   clientRouting: true,
   hydrationCanBeAborted: false,

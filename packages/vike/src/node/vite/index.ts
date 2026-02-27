@@ -1,3 +1,5 @@
+import { pluginUniversalDeploy } from './plugins/pluginUniversalDeploy.js'
+
 export default plugin
 export { plugin }
 // TO-DO/next-major-release: remove
@@ -40,10 +42,8 @@ import { pluginModuleBanner } from './plugins/build/pluginModuleBanner.js'
 import { pluginReplaceConstantsNonRunnableDev } from './plugins/non-runnable-dev/pluginReplaceConstantsNonRunnableDev.js'
 import { isVikeCliOrApi } from '../../shared-server-node/api-context.js'
 import { pluginViteConfigVikeExtensions } from './plugins/pluginViteConfigVikeExtensions.js'
-import { pluginStripPointerImportAttribute } from './plugins/pluginStripPointerImportAttribute.js'
 import { getVikeConfigInternalEarly, isOnlyResolvingUserConfig } from '../api/resolveViteConfigFromUser.js'
 import './assertEnvVite.js'
-import { isStorybook } from '../../utils/isStorybook.js'
 
 // We don't call this in ./onLoad.ts to avoid a cyclic dependency with utils.ts
 setGetClientEntrySrcDev(getClientEntrySrcDev)
@@ -75,7 +75,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): Promise<Plug
       ...pluginReplaceConstantsGlobalThis(),
       ...pluginStaticReplace(vikeConfig),
       ...pluginNonRunnabeDev(),
-      ...pluginStripPointerImportAttribute(),
+      ...pluginUniversalDeploy(vikeConfig),
       ...(await pluginViteConfigVikeExtensions(vikeConfig)),
     ]
     Object.assign(plugin, pluginAddendum)
@@ -126,10 +126,7 @@ function removeVitePlugin() {
     return true
   }
 
-  // https://github.com/vikejs/vike/issues/798#issuecomment-1531093835
-  if (isStorybook() && !isVikeCliOrApi()) {
-    return true
-  }
+  // TO-DO/eventually: also skip for other third party tools such as Storybook?
 
   return false
 }
