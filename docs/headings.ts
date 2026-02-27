@@ -3,7 +3,15 @@ export { headingsDetached }
 export { categories }
 export type { HeadingsURL }
 
-import { iconScroll, iconCompass, iconGear, iconSeedling, iconGlobe, iconPlug, iconMegaphone } from '@brillout/docpress'
+import {
+  iconScroll,
+  iconCompass,
+  iconGear,
+  iconSeedling,
+  iconGlobe,
+  iconPlug,
+  iconMegaphone,
+} from '@brillout/docpress' with { type: 'vike:pointer' }
 import type {
   HeadingDefinition,
   Config,
