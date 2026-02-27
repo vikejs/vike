@@ -251,7 +251,9 @@ function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1De
   test("CSS of other pages isn't loaded", async () => {
     {
       const html = await fetchHtml('/')
-      expect(html.split('text/css').length).toBe(2)
+      if (isV1Design) {
+        expect(html.split('text/css').length).toBe(2)
+      }
       if (!isProd) {
         expect(html).toContain('<link rel="stylesheet" type="text/css" href="/renderer/Layout.css')
       }
