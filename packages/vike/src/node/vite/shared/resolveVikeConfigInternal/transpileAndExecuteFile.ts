@@ -304,12 +304,6 @@ async function transpileWithEsbuild(
           if (debug.isActivated)
             debug('onResolve() [external]', { args, resolved, importPathTranspiled, isPointerImport, isExternal })
           assert(isExternal)
-          assert(
-            // Import of runtime code => handled by Vike
-            isPointerImport ||
-              // Import of config code => loaded by Node.js at build-time
-              isNpmPkgImport,
-          )
           pointerImports[importPathTranspiled] = isPointerImport
           return { external: true, path: importPathTranspiled }
         })
