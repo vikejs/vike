@@ -1,3 +1,5 @@
+// TODO/now: rename isImportPath isImport
+
 export { isImportPathNpmPackage }
 export { isImportPathNpmPackageOrPathAlias }
 export { assertIsImportPathNpmPackage }

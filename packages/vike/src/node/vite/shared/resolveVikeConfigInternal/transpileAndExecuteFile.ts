@@ -26,7 +26,7 @@ import { genPromise } from '../../../../utils/genPromise.js'
 import { assertFilePathAbsoluteFilesystem } from '../../../../utils/isFilePathAbsoluteFilesystem.js'
 import { isImportPathRelative } from '../../../../utils/isImportPath.js'
 import { isObject } from '../../../../utils/isObject.js'
-import { isPlainScriptFile } from '../../../../utils/isScriptFile.js'
+import { isPlainJavaScriptFile, isPlainScriptFile } from '../../../../utils/isScriptFile.js'
 import { isVitest } from '../../../../utils/isVitest.js'
 import { assertIsImportPathNpmPackage, isImportPathNpmPackageOrPathAlias } from '../../../../utils/parseNpmPackage.js'
 import { assertPosixPath, toPosixPath } from '../../../../utils/path.js'
@@ -254,34 +254,22 @@ async function transpileWithEsbuild(
             args.with?.['type'] === 'vike-pointer'
 
           assertPosixPath(importPathResolved)
-          // `isNpmPkgImport` => `importPathOriginal` is most likely an npm package import, but it can also be a path alias that a) looks like an npm package import and b) resolves outside of `userRootDir`.
-          const isNpmPkgImport: boolean = (() => {
-            if (importPathResolved.includes('/node_modules/')) {
-              // So far I can't think of a use case where this assertion would fail, but let's eventually remove it to avoid artificially restricting the user.
-              assert(isImportPathNpmPackageOrPathAlias(importPathOriginal))
-              return true
-            }
-            // Linked npm packages
-            if (
-              // Assuming path aliases usually resolve inside `userRootDir`.
-              // - This isn't always the case: https://github.com/vikejs/vike/issues/2326
-              !importPathResolved.startsWith(userRootDir) &&
-              // False positive if `importPathOriginal` is a path alias that a) looks like an npm package import and b) resolves outside of `userRootDir` => we then we wrongfully assume that `importPathOriginal` is an npm package import.
-              isImportPathNpmPackageOrPathAlias(importPathOriginal)
-            ) {
-              return true
-            }
-            return false
-          })()
+          // False positive if `importPathOriginal` is a path alias that a) looks like an npm package import and b) resolves outside of `userRootDir` => we then we wrongfully assume that `importPathOriginal` is an npm package import.
+          // - For example: https://github.com/vikejs/vike/issues/2326
+          const isNpmPkgImport =
+            isImportPathNpmPackageOrPathAlias(importPathOriginal) &&
+            (importPathResolved.includes('/node_modules/') ||
+              // Linked npm package
+              !importPathResolved.startsWith(userRootDir))
 
           const isExternal =
             isPointerImport ||
             // Performance: npm package imports can be externalized. (We could as well let esbuild transpile /node_modules/ code but it's useless as /node_modules/ code is already built. It would unnecessarily slow down transpilation.)
-            isNpmPkgImport
+            (isNpmPkgImport && isPlainJavaScriptFile(importPathResolved))
 
           if (!isExternal) {
             // User-land config code (i.e. not runtime code) => let esbuild transpile it
-            assert(!isPointerImport && !isNpmPkgImport)
+            assert(!isPointerImport)
             if (debug.isActivated) debug('onResolve() [non-external]', { args, resolved, isPointerImport, isExternal })
             return resolved
           }

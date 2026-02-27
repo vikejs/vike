@@ -1,5 +1,6 @@
 export { isScriptFile }
 export { isPlainScriptFile }
+export { isPlainJavaScriptFile }
 export { isTemplateFile }
 export { scriptFileExtensionList }
 export { scriptFileExtensionPattern }
@@ -65,6 +66,10 @@ function isScriptFile(filePath: string): boolean {
 
 function isPlainScriptFile(filePath: string) {
   return extJsOrTs.some((ext) => filePath.endsWith('.' + ext))
+}
+
+function isPlainJavaScriptFile(filePath: string) {
+  return extJs.some((ext) => filePath.endsWith('.' + ext))
 }
 
 function isTemplateFile(filePath: string) {
