@@ -45,10 +45,23 @@
     text-transform: uppercase;
     letter-spacing: 0.08em;
   }
-  .pricing-section-sufficient {
-    background: #eff6ff;
+  .pricing-section {
+    position: relative;
+  }
+  .pricing-section::before {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: -15px;
+    height: 100%;
+    content: '';
+    width: 10px;
     border-radius: 8px;
-    padding: 12px 14px;
-    margin: 0 -14px;
+  }
+  .pricing-section-sufficient::before {
+    background: #f0fdf4;
+  }
+  .pricing-section-limited::before {
+    background: #eff6ff;
   }
 }

@@ -32,7 +32,7 @@ function PricingTable() {
                 <TierName>Larger team</TierName>
                 ≥3 <SoftwareDevelopers />
                 <div style={{ display: 'flex', columnGap: 40, rowGap: 15, flexWrap: 'wrap' }}>
-                  <div>
+                  <div className="pricing-section pricing-section-limited">
                     <SubHeading>
                       Limited resources<NoteRef>3</NoteRef>
                     </SubHeading>
@@ -44,7 +44,7 @@ function PricingTable() {
                     </Check>
                   </div>
                   <SectionDivider />
-                  <div className="pricing-section-sufficient">
+                  <div className="pricing-section pricing-section-sufficient">
                     <SubHeading>Sufficient resources</SubHeading>
                     <Price color="#2563eb" suffix=" one time">
                       $5k
