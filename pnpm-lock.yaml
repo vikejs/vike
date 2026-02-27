@@ -663,7 +663,7 @@ importers:
         specifier: ^19.2.4
         version: 19.2.4(react@19.2.4)
       vike:
-        specifier: ^0.4.253
+        specifier: ^0.4.254
         version: link:../../vike
       vite:
         specifier: ^6.3.2
@@ -1563,14 +1563,14 @@ importers:
         version: link:../../packages/vike
       vike-photon:
         specifier: ^0.1.24
-        version: 0.1.24(tzv6bqfocdailzkjspt67krrkm)
+        version: 0.1.24(oxll7kawxqscnnreoqvk3rs6i4)
       vike-react:
         specifier: ^0.6.20
         version: 0.6.20(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(vike@packages+vike)
     devDependencies:
       '@photonjs/cloudflare':
         specifier: ^0.1.13
-        version: 0.1.13(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.5)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))(wrangler@4.68.1)
+        version: 0.1.13(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.9.8)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))(wrangler@4.68.1)
       '@photonjs/runtime':
         specifier: ^0.1.16
         version: 0.1.16(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(rollup@4.43.0)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
@@ -1693,8 +1693,8 @@ importers:
         specifier: ^19.2.4
         version: 19.2.4(react@19.2.4)
       vike:
-        specifier: 0.4.253
-        version: 0.4.253(react-streaming@0.4.15(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
+        specifier: 0.4.254
+        version: link:../../packages/vike
     devDependencies:
       '@types/react':
         specifier: ^19.2.11
@@ -1788,7 +1788,7 @@ importers:
         version: 0.2.19(@babel/core@7.29.0)(@babel/parser@7.29.0)(@babel/types@7.29.0)(react-streaming@0.4.15(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
       vike-react:
         specifier: ^0.6.20
-        version: 0.6.20(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(vike@0.4.253(react-streaming@0.4.15(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)))
+        version: 0.6.20(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(vike@packages+vike)
     devDependencies:
       '@types/express':
         specifier: ^5.0.6
@@ -1806,8 +1806,8 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
       vike:
-        specifier: 0.4.253
-        version: 0.4.253(react-streaming@0.4.15(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
+        specifier: 0.4.254
+        version: link:../../packages/vike
       vite:
         specifier: ^7.3.0
         version: 7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
@@ -2516,9 +2516,6 @@ packages:
   '@brillout/replace@0.1.6':
     resolution: {integrity: sha512-pF3D0TEkxR3H0PpBRV0oiWbCNdpCexcoYn9k1ByTjGWZzmRJ2G+Se+Smr6QC+VZ7PKTpQuC4YBGyxnlbk89JkQ==}
     hasBin: true
-
-  '@brillout/require-shim@0.1.2':
-    resolution: {integrity: sha512-3I4LRHnVZXoSAsEoni5mosq9l6eiJED58d9V954W4CIZ88AUfYBanWGBGbJG3NztaRTpFHEA6wB3Hn93BmmJdg==}
 
   '@brillout/shell@0.2.1':
     resolution: {integrity: sha512-l5PTMWw6rndD7vZcMvw1bv31sTzpz0qP3q409PD50ATsfxhvbMvDVySnV73Okoskfd673oClIlt6OnupbQJqHA==}
@@ -7554,19 +7551,6 @@ packages:
       vike: '>=0.4.191'
       vue: '>=3.0.0'
 
-  vike@0.4.253:
-    resolution: {integrity: sha512-glS8FidhqnK6I/wLs48BYtqsAMXs8QtOB0uxeZ0G93G2a0ZkymuZ5rjbcZHUCBLoUYS/8i0h4d4NhK2mAsUhTA==}
-    engines: {node: '>=20.19.0'}
-    hasBin: true
-    peerDependencies:
-      react-streaming: '>=0.3.42'
-      vite: '>=6.3.0'
-    peerDependenciesMeta:
-      react-streaming:
-        optional: true
-      vite:
-        optional: true
-
   vite-plugin-cjs-interop@2.3.0:
     resolution: {integrity: sha512-gNeh8anoG4QrdQf4LNcoQZTVEdqrrAdwjDDyNc4bHLi0u6XSXaaOiJiuKwwY38KWfYZdQsmoytBOHCRf+0gHjQ==}
     peerDependencies:
@@ -8395,8 +8379,6 @@ snapshots:
       '@brillout/picocolors': 1.0.30
       '@brillout/shell': 0.2.1
 
-  '@brillout/require-shim@0.1.2': {}
-
   '@brillout/shell@0.2.1':
     dependencies:
       '@brillout/picocolors': 1.0.30
@@ -9208,27 +9190,6 @@ snapshots:
 
   '@oxc-project/types@0.98.0': {}
 
-  '@photonjs/cloudflare@0.1.13(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.5)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))(wrangler@4.68.1)':
-    dependencies:
-      '@cloudflare/vite-plugin': 1.25.5(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))(workerd@1.20260302.0)(wrangler@4.68.1)
-      '@photonjs/core': 0.1.20(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.5)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
-      '@universal-middleware/cloudflare': 0.4.10(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.5)
-    transitivePeerDependencies:
-      - '@cloudflare/workers-types'
-      - '@hattip/core'
-      - '@types/express'
-      - '@webroute/route'
-      - bufferutil
-      - elysia
-      - fastify
-      - h3
-      - hono
-      - srvx
-      - utf-8-validate
-      - vite
-      - workerd
-      - wrangler
-
   '@photonjs/cloudflare@0.1.13(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.9.8)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))(wrangler@4.68.1)':
     dependencies:
       '@cloudflare/vite-plugin': 1.25.5(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))(workerd@1.20260302.0)(wrangler@4.68.1)
@@ -9249,31 +9210,6 @@ snapshots:
       - vite
       - workerd
       - wrangler
-    optional: true
-
-  '@photonjs/core@0.1.20(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.5)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))':
-    dependencies:
-      '@brillout/vite-plugin-server-entry': 0.7.18
-      '@universal-middleware/cloudflare': 0.4.10(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.5)
-      '@universal-middleware/compress': 0.2.34
-      '@universal-middleware/core': 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.5)
-      '@universal-middleware/express': 0.4.25(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.5)
-      '@universal-middleware/sirv': 0.1.24
-      estree-walker: 3.0.3
-      ts-deepmerge: 7.0.3
-      zod: 4.3.6
-    optionalDependencies:
-      vite: 7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
-    transitivePeerDependencies:
-      - '@cloudflare/workers-types'
-      - '@hattip/core'
-      - '@types/express'
-      - '@webroute/route'
-      - elysia
-      - fastify
-      - h3
-      - hono
-      - srvx
 
   '@photonjs/core@0.1.20(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.9.8)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))':
     dependencies:
@@ -9338,43 +9274,6 @@ snapshots:
       - h3
       - hono
       - srvx
-
-  '@photonjs/vercel@0.1.22(@hattip/core@0.0.49)(@photonjs/core@0.1.20(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.5)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)))(@photonjs/runtime@0.1.16(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(rollup@4.43.0)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)))(@types/express@5.0.6)(@universal-middleware/h3@0.4.14(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.5))(express@5.2.1)(fastify@5.7.4)(rollup@4.43.0)(srvx@0.11.5)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))':
-    dependencies:
-      '@brillout/libassert': 0.5.8
-      '@manypkg/find-root': 3.1.0
-      '@photonjs/core': 0.1.20(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.5)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
-      '@photonjs/runtime': 0.1.16(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(rollup@4.43.0)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
-      '@universal-middleware/core': 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.5)
-      '@universal-middleware/vercel': 0.4.29(@hattip/core@0.0.49)(@types/express@5.0.6)(@universal-middleware/h3@0.4.14(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.5))(express@5.2.1)(fastify@5.7.4)(srvx@0.11.5)
-      '@vercel/build-utils': 13.2.4
-      '@vercel/nft': 1.1.1(rollup@4.43.0)
-      '@vercel/routing-utils': 5.3.1
-      '@vite-plugin-vercel/schemas': 1.0.0
-      convert-route: 0.1.2
-      esbuild: 0.27.3
-      fast-glob: 3.3.3
-      magicast: 0.5.1
-      path-to-regexp: 8.3.0
-      strip-ansi: 7.1.2
-      vite: 7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
-      vite-plugin-wasm: 3.5.0(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
-    transitivePeerDependencies:
-      - '@cloudflare/workers-types'
-      - '@hattip/core'
-      - '@types/express'
-      - '@universal-middleware/h3'
-      - '@webroute/route'
-      - elysia
-      - encoding
-      - express
-      - fastify
-      - h3
-      - hono
-      - rollup
-      - srvx
-      - supports-color
-    optional: true
 
   '@photonjs/vercel@0.1.22(@hattip/core@0.0.49)(@photonjs/core@0.1.20(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.9.8)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)))(@photonjs/runtime@0.1.16(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(rollup@4.43.0)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)))(@types/express@5.0.6)(@universal-middleware/h3@0.4.14(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.9.8))(express@5.2.1)(fastify@5.7.4)(rollup@4.43.0)(srvx@0.9.8)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))':
     dependencies:
@@ -10004,20 +9903,6 @@ snapshots:
       - hono
       - srvx
 
-  '@universal-middleware/cloudflare@0.4.10(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.5)':
-    dependencies:
-      '@universal-middleware/core': 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.5)
-    transitivePeerDependencies:
-      - '@cloudflare/workers-types'
-      - '@hattip/core'
-      - '@types/express'
-      - '@webroute/route'
-      - elysia
-      - fastify
-      - h3
-      - hono
-      - srvx
-
   '@universal-middleware/cloudflare@0.4.10(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.9.8)':
     dependencies:
       '@universal-middleware/core': 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.9.8)
@@ -10212,22 +10097,6 @@ snapshots:
       - h3
       - hono
       - srvx
-
-  '@universal-middleware/vercel@0.4.29(@hattip/core@0.0.49)(@types/express@5.0.6)(@universal-middleware/h3@0.4.14(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.5))(express@5.2.1)(fastify@5.7.4)(srvx@0.11.5)':
-    dependencies:
-      '@universal-middleware/core': 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.5)
-      '@universal-middleware/express': 0.4.25(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.5)
-    optionalDependencies:
-      '@hattip/core': 0.0.49
-      '@universal-middleware/h3': 0.4.14(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.5)
-      express: 5.2.1
-      fastify: 5.7.4
-      srvx: 0.11.5
-    transitivePeerDependencies:
-      - '@cloudflare/workers-types'
-      - '@types/express'
-      - '@webroute/route'
-    optional: true
 
   '@universal-middleware/vercel@0.4.29(@hattip/core@0.0.49)(@types/express@5.0.6)(@universal-middleware/h3@0.4.14(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.9.8))(express@5.2.1)(fastify@5.7.4)(srvx@0.9.8)':
     dependencies:
@@ -14306,36 +14175,6 @@ snapshots:
       - srvx
       - supports-color
 
-  vike-photon@0.1.24(tzv6bqfocdailzkjspt67krrkm):
-    dependencies:
-      '@brillout/picocolors': 1.0.30
-      '@brillout/vite-plugin-server-entry': 0.7.18
-      '@photonjs/core': 0.1.20(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.5)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
-      '@photonjs/runtime': 0.1.16(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(rollup@4.43.0)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
-      '@universal-middleware/compress': 0.2.34
-      '@universal-middleware/core': 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.5)
-      '@universal-middleware/sirv': 0.1.24
-      pkg-types: 2.3.0
-      standaloner: 0.1.11(rollup@4.43.0)
-      vike: link:packages/vike
-    optionalDependencies:
-      '@photonjs/cloudflare': 0.1.13(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.5)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))(wrangler@4.68.1)
-      '@photonjs/vercel': 0.1.22(@hattip/core@0.0.49)(@photonjs/core@0.1.20(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.5)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)))(@photonjs/runtime@0.1.16(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(rollup@4.43.0)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)))(@types/express@5.0.6)(@universal-middleware/h3@0.4.14(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.5))(express@5.2.1)(fastify@5.7.4)(rollup@4.43.0)(srvx@0.11.5)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
-      vite: 7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
-    transitivePeerDependencies:
-      - '@cloudflare/workers-types'
-      - '@hattip/core'
-      - '@types/express'
-      - '@webroute/route'
-      - elysia
-      - encoding
-      - fastify
-      - h3
-      - hono
-      - rollup
-      - srvx
-      - supports-color
-
   vike-react-redux@0.1.3(react-redux@9.2.0(@types/react@19.2.11)(react@19.2.4)(redux@5.0.1))(react@19.2.4)(vike-react@0.6.20(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(vike@packages+vike))(vike@packages+vike):
     dependencies:
       react: 19.2.4
@@ -14356,13 +14195,6 @@ snapshots:
       zustand: 5.0.9(@types/react@19.2.11)(immer@10.2.0)(react@19.2.4)(use-sync-external-store@1.5.0(react@19.2.4))
     transitivePeerDependencies:
       - supports-color
-
-  vike-react@0.6.20(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(vike@0.4.253(react-streaming@0.4.15(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))):
-    dependencies:
-      react: 19.2.4
-      react-dom: 19.2.4(react@19.2.4)
-      react-streaming: 0.4.15(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      vike: 0.4.253(react-streaming@0.4.15(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
 
   vike-react@0.6.20(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(vike@packages+vike):
     dependencies:
@@ -14420,31 +14252,6 @@ snapshots:
       oxc-walker: 0.6.0(oxc-parser@0.104.0)
       vike: link:packages/vike
       vue: 3.5.18(typescript@5.9.3)
-
-  vike@0.4.253(react-streaming@0.4.15(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)):
-    dependencies:
-      '@babel/core': 7.29.0
-      '@babel/types': 7.29.0
-      '@brillout/import': 0.2.6
-      '@brillout/json-serializer': 0.5.22
-      '@brillout/picocolors': 1.0.30
-      '@brillout/require-shim': 0.1.2
-      '@brillout/vite-plugin-server-entry': 0.7.18
-      cac: 6.7.14
-      es-module-lexer: 1.7.0
-      esbuild: 0.27.3
-      json5: 2.2.3
-      magic-string: 0.30.21
-      picomatch: 4.0.3
-      semver: 7.7.4
-      sirv: 3.0.2
-      source-map-support: 0.5.21
-      tinyglobby: 0.2.15
-    optionalDependencies:
-      react-streaming: 0.4.15(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      vite: 7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
-    transitivePeerDependencies:
-      - supports-color
 
   vite-plugin-cjs-interop@2.3.0(vite@6.3.5(@types/node@22.19.2)(terser@5.38.1)(tsx@4.20.6)):
     dependencies:
