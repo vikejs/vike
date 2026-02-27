@@ -256,7 +256,7 @@ async function transpileWithEsbuild(
           assertPosixPath(importPathResolved)
           // False positive if `importPathOriginal` is a path alias that a) looks like an npm package import and b) resolves outside of `userRootDir` => we then we wrongfully assume that `importPathOriginal` is an npm package import.
           // - For example: https://github.com/vikejs/vike/issues/2326
-          const isNpmPkgImport =
+          const isMostLikelyNpmPkgImport =
             isImportPathNpmPackageOrPathAlias(importPathOriginal) &&
             (importPathResolved.includes('/node_modules/') ||
               // Linked npm package
@@ -265,7 +265,7 @@ async function transpileWithEsbuild(
           const isExternal =
             isPointerImport ||
             // Performance: npm package imports can be externalized. (We could as well let esbuild transpile /node_modules/ code but it's useless as /node_modules/ code is already built. It would unnecessarily slow down transpilation.)
-            (isNpmPkgImport && isPlainJavaScriptFile(importPathResolved))
+            (isMostLikelyNpmPkgImport && isPlainJavaScriptFile(importPathResolved))
 
           if (!isExternal) {
             // User-land config code (i.e. not runtime code) => let esbuild transpile it
@@ -286,7 +286,7 @@ async function transpileWithEsbuild(
               filePathAbsoluteFilesystem: importPathResolved,
               userRootDir,
             })
-            if (filePathAbsoluteUserRootDir && !isNpmPkgImport) {
+            if (filePathAbsoluteUserRootDir && !isMostLikelyNpmPkgImport) {
               // `importPathOriginal` is most likely a path alias.
               // - We have to use esbuild's path alias resolution, because:
               //   - Vike doesn't resolve path aliases at all.
