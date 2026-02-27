@@ -1,3 +1,19 @@
+## [0.4.255](https://github.com/vikejs/vike/compare/v0.4.254...v0.4.255) (2026-02-27)
+
+
+### Bug Fixes
+
+* hoist pointer imports ([#3132](https://github.com/vikejs/vike/issues/3132)) ([bc71fe9](https://github.com/vikejs/vike/commit/bc71fe95362bcdafb4078fa20693cce70fd4f83d))
+* improve config external heuristic ([#3130](https://github.com/vikejs/vike/issues/3130)) ([e8f42ac](https://github.com/vikejs/vike/commit/e8f42ac6f64777bcfddef6ec59c5645442ffe4a3))
+* rename vike-pointer => vike:pointer ([31aa0e3](https://github.com/vikejs/vike/commit/31aa0e3d2303dd840cfbe353788a5abd5525dbf2))
+
+
+### BREAKING CHANGES
+
+* `with { type: 'vike-pointer' }` renamed to `with { type: 'vike:pointer' }`
+
+
+
 ## [0.4.254](https://github.com/vikejs/vike/compare/v0.4.253...v0.4.254) (2026-02-26)
 
 

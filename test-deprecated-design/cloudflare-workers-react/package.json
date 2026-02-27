@@ -10,7 +10,7 @@
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "vite": "6.3.0",
-    "vike": "0.4.254",
+    "vike": "0.4.255",
     "wrangler": "^4.56.0"
   },
   "type": "module"
