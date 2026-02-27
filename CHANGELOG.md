@@ -8,7 +8,10 @@
 * rename vike-pointer => vike:pointer ([31aa0e3](https://github.com/vikejs/vike/commit/31aa0e3d2303dd840cfbe353788a5abd5525dbf2))
 
 
-### BREAKING CHANGES
+### MINOR BREAKING CHANGES
+
+> [!NOTE]
+> We recommend ignoring `MINOR BREAKING CHANGES` unless this version breaks your app, see [Vike Versioning](https://vike.dev/versioning).
 
 * `with { type: 'vike-pointer' }` renamed to `with { type: 'vike:pointer' }`
 
