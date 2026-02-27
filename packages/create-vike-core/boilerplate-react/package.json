@@ -5,7 +5,7 @@
     "prod": "vike build && node dist/server/index.mjs"
   },
   "dependencies": {
-    "@universal-middleware/hono": "^0.4.20",
+    "@universal-middleware/hono": "^0.4.21",
     "@vitejs/plugin-react": "^4.7.0",
     "cross-env": "^7.0.3",
     "hono": "^4.8.4",

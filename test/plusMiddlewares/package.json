@@ -5,7 +5,7 @@
     "preview": "vike build && vike preview"
   },
   "dependencies": {
-    "@universal-middleware/core": "^0.4.16",
+    "@universal-middleware/core": "^0.4.17",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "vike": "0.4.253"

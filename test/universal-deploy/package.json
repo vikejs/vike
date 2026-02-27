@@ -6,8 +6,8 @@
     "server:prod": "node dist/server/index.mjs"
   },
   "dependencies": {
-    "@universal-middleware/core": "^0.4.16",
-    "@universal-middleware/express": "^0.4.23",
+    "@universal-middleware/core": "^0.4.17",
+    "@universal-middleware/express": "^0.4.25",
     "@vitejs/plugin-react": "^4.7.0",
     "express": "^5.2.1",
     "react": "^19.2.4",
