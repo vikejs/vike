@@ -1,7 +1,7 @@
 export { retrievePageAssetsProd }
 export { resolveIncludeAssetsImportedByServer }
 
-import { isImportPathNpmPackage } from '../../../../utils/parseNpmPackage.js'
+import { isImportNpmPackage } from '../../../../utils/parseNpmPackage.js'
 import { assert } from '../../../../utils/assert.js'
 import type { ViteManifest } from '../../../../types/ViteManifest.js'
 import { getManifestEntry } from './getManifestEntry.js'
@@ -47,7 +47,7 @@ function getAssetsUrl(
       onlyAssets &&
       id.includes('.page.server.') &&
       // We assume that all npm packages have already built their files: bundlers (Rollup, esbuild, tsup, ...) extract the CSS out of JavaScript => we can assume JavaScript to not import any CSS/assets.
-      !isImportPathNpmPackage(id, {
+      !isImportNpmPackage(id, {
         // I presume Vite already resolves path aliases when Vite sets the module's id
         cannotBePathAlias: true,
       })

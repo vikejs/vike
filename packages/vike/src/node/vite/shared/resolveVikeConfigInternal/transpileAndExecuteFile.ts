@@ -28,7 +28,7 @@ import { isImportPathRelative } from '../../../../utils/isImportPath.js'
 import { isObject } from '../../../../utils/isObject.js'
 import { isPlainJavaScriptFile, isPlainScriptFile } from '../../../../utils/isScriptFile.js'
 import { isVitest } from '../../../../utils/isVitest.js'
-import { assertIsImportPathNpmPackage, isImportPathNpmPackageOrPathAlias } from '../../../../utils/parseNpmPackage.js'
+import { assertIsImportNpmPackage, isImportNpmPackageOrPathAlias } from '../../../../utils/parseNpmPackage.js'
 import { assertPosixPath, toPosixPath } from '../../../../utils/path.js'
 import { requireResolveOptionalDir } from '../../../../utils/requireResolve.js'
 import { transformPointerImports } from './pointerImports.js'
@@ -233,8 +233,8 @@ async function transpileWithEsbuild(
 
           // Esbuild resolves path aliases.
           // - Enabling us to use:
-          //   - assertIsImportPathNpmPackage()
-          //   - isImportPathNpmPackage(str, { cannotBePathAlias: true })
+          //   - assertIsImportNpmPackage()
+          //   - isImportNpmPackage(str, { cannotBePathAlias: true })
           assertFilePathAbsoluteFilesystem(importPathResolved)
 
           //  Should we remove this? See comment below.
@@ -257,7 +257,7 @@ async function transpileWithEsbuild(
           // False positive if `importPathOriginal` is a path alias that a) looks like an npm package import and b) resolves outside of `userRootDir` => we then we wrongfully assume that `importPathOriginal` is an npm package import.
           // - For example: https://github.com/vikejs/vike/issues/2326
           const isMostLikelyNpmPkgImport =
-            isImportPathNpmPackageOrPathAlias(importPathOriginal) &&
+            isImportNpmPackageOrPathAlias(importPathOriginal) &&
             (importPathResolved.includes('/node_modules/') ||
               // Linked npm package
               !importPathResolved.startsWith(userRootDir))
@@ -294,7 +294,7 @@ async function transpileWithEsbuild(
               importPathTranspiled = importPathResolved
             } else {
               // `importPathOriginal` is most likely an npm package import.
-              assertIsImportPathNpmPackage(importPathOriginal)
+              assertIsImportNpmPackage(importPathOriginal)
               // For improved error messages, let the resolution be handled by Vike or Node.js.
               importPathTranspiled = importPathOriginal
             }

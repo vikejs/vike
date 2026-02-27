@@ -11,7 +11,7 @@ import { assertPosixPath, toPosixPath } from './path.js'
 import { scriptFileExtensionList } from './isScriptFile.js'
 import { createRequire } from 'node:module'
 import path from 'node:path'
-import { assertIsImportPathNpmPackage, isImportPathNpmPackageOrPathAlias } from './parseNpmPackage.js'
+import { assertIsImportNpmPackage, isImportNpmPackageOrPathAlias } from './parseNpmPackage.js'
 import { isNotNullish } from './isNullish.js'
 import { createDebug } from './debug.js'
 const importMetaUrl = import.meta.url
@@ -119,7 +119,7 @@ function requireResolveNpmPackage({
   importPathNpmPackage,
   userRootDir,
 }: { importPathNpmPackage: string; userRootDir: string }): string {
-  assertIsImportPathNpmPackage(importPathNpmPackage)
+  assertIsImportNpmPackage(importPathNpmPackage)
   const importerFilePath = getFakeImporterFile(userRootDir)
   const res = requireResolve_(importPathNpmPackage, importerFilePath, userRootDir)
   if (res.hasFailed) throw res.err
@@ -149,7 +149,7 @@ function requireResolveDistFile(distFile: `dist/${string}.js`) {
 
 function addExtraContextForNpmPackageImport(contexts: string[], importPath: string, userRootDir: string | null) {
   // We should add extra context only for npm packages, but unfortunately we cannot always disambiguate between npm package imports and path aliases.
-  if (!isImportPathNpmPackageOrPathAlias(importPath)) return
+  if (!isImportNpmPackageOrPathAlias(importPath)) return
 
   const userRootDirFakeFile = userRootDir && getFakeImporterFile(userRootDir)
   ;[
