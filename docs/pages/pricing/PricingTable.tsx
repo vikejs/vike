@@ -31,7 +31,7 @@ function PricingTable() {
               <Column>
                 <TierName>Larger team</TierName>
                 ≥3 <SoftwareDevelopers />
-                <div style={{ display: 'flex', columnGap: 40, rowGap: 15, flexWrap: 'wrap' }}>
+                <div className="pricing-inner-columns" style={{ columnGap: 40, rowGap: 15, flexWrap: 'wrap' }}>
                   <div className="pricing-section pricing-section-limited">
                     <SubHeading>
                       Limited funds<NoteRef>3</NoteRef>
