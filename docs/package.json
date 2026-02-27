@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "@batijs/elements": "^0.0.54",
-    "@brillout/docpress": "^0.16.17",
+    "@brillout/docpress": "^0.16.18",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
     "react": "^19.2.4",
