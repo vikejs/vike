@@ -1,7 +1,7 @@
 export { isImportNpmPackage }
 export { isImportNpmPackageOrPathAlias }
 export { assertImportIsNpmPackage }
-export { isPathAliasRecommended }
+export { isPathAliasRecommendation }
 export { getNpmPackageName }
 
 // For ./isNpmPackage.spec.ts
@@ -50,7 +50,7 @@ function assertImportIsNpmPackage(str: string): void {
     str,
   )
 }
-function isPathAliasRecommended(alias: string): boolean {
+function isPathAliasRecommendation(alias: string): boolean {
   // Cannot be distinguished from npm package names
   if (!isDistinguishable(alias)) return false
 
