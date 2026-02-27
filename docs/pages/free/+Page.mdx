@@ -1,10 +1,131 @@
 import { Link } from '@brillout/docpress'
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
+import '../../components/tabs.css'
 
-Vike aims to be 100% accessible: everyone, regardless of financial resources, should be able to use Vike.
+export const FillList = ({ why, addendum }) => {
+  return <p>
+    <code>YOUR_WEBSITE</code>: Your website URL (if nothing's public: the domain name where your app's client runs).
+    <br/>
+    <code>YOUR_REASON</code>: Explain why{why}.
+    {addendum}
+  </p>
+}
 
-If your app is considered large but your company isn't large enough to pay for a license key, then reach out to <Link href="/team">Vike's lead maintainer</Link> and we will give you a free license key.
+The free program ensures everyone can use Vike.
+
+There are two programs:
+- Free forever
+- Extended free trial
+
+
+## Who's eligible?
+
+Your team is eligible if it has limited financial resources: purchasing a license would be too expensive.
+
+> We consider an organization eligible if it has **fewer than 10 employees**, while **countries with lower income can have more employees**.
+
+If you expect more resources in the future, apply for an extended free trial.
+
+> Eligible examples:
+> - Startup
+> - Open Source (without much revenue)
+> - Amateur sports club
+
+You can also apply for an extended free trial for other reasons (e.g. pending clearance from your company's finance department).
+
+We tend to be generous, so don't hesitate to apply — it's easy and quick.
+
+
+## How to apply?
+
+Contact us to apply.
+
+<Tabs>
+  <TabList>
+    <Tab>Free forever</Tab>
+    <Tab>Extended free trial</Tab>
+  </TabList>
+  <TabPanel>
+
+<span>Email (pre-filled subject & body): </span>
+<a
+  href={
+    "mailto:vike-gift@brillout.com" +
+    "?subject=" + encodeURIComponent("Free forever") +
+    "&body=" + encodeURIComponent(
+      "== Website\n\nYOUR_WEBSITE\n\n== Reason\n\nYOUR_REASON"
+    )
+  }
+>
+  {'vike-gift@brillout.com'}
+</a>
+
+Subject:
+```
+Free forever
+```
+
+Body:
+```
+== Website
+
+YOUR_WEBSITE
+
+== Reason
+
+YOUR_REASON
+```
+
+{<FillList why=" your organization has limited resources" />}
+
+  </TabPanel>
+  <TabPanel>
+
+<span>Email (pre-filled subject & body): </span>
+<a
+  href={
+    "mailto:vike-gift@brillout.com" +
+    "?subject=" + encodeURIComponent("Extended free trial") +
+    "&body=" + encodeURIComponent(
+      "== Website\n\nYOUR_WEBSITE\n\n== Reason\n\nYOUR_REASON\n\n== Extend period\n\nTwo years"
+    )
+  }
+>
+  {'vike-gift@brillout.com'}
+</a>
+
+Subject:
+```
+Extended free trial
+```
+
+Body:
+```
+== Website
+
+YOUR_WEBSITE
+
+== Reason
+
+YOUR_REASON
+
+== Extend period
+
+Two years
+```
+
+{<FillList addendum={
+  <>
+    <br />
+    <code>Extend period</code>: can be modified. For example, you can set it to the duration after which you expect to easily afford a license. You can apply again after the extended period ends.
+
+  </>
+} />}
+
+  </TabPanel>
+</Tabs>
+
 
 ## See also
 
 - <Link href="/pricing" />
-- <Link href="/buy" />

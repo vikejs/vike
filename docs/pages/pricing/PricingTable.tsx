@@ -40,7 +40,7 @@ function PricingTable() {
                     <Check>Full access</Check>
                     <Check>Forever free</Check>
                     <Check>
-                      <Link href="/gift">Apply</Link> for free license key
+                      <Link href="/free">Apply</Link> for free license key
                     </Check>
                   </div>
                   <SectionDivider />
@@ -56,7 +56,7 @@ function PricingTable() {
                       Forever access<NoteRef>4</NoteRef>
                     </Check>
                     <Check>
-                      Free trial: 6 months + <Link href="/gift">extendable</Link>
+                      Free trial: 6 months + <Link href="/free">extendable</Link>
                     </Check>
                   </div>
                 </div>
@@ -67,7 +67,7 @@ function PricingTable() {
                 Only developers who regularly contribute code: occasional contributors and bots don't count.
               </Note>
               <Note ref={2}>
-                For example, organizations with <Link href="/gift#who-s-eligible">few employees</Link> are considered
+                For example, organizations with <Link href="/free#who-s-eligible">few employees</Link> are considered
                 resource-limited.
               </Note>
               <Note ref={3}>
