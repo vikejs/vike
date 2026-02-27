@@ -258,9 +258,8 @@ async function transpileWithEsbuild(
           // - For example: https://github.com/vikejs/vike/issues/2326
           const isNpmPkgImport =
             isImportPathNpmPackageOrPathAlias(importPathOriginal) &&
-            // Npm package
             (importPathResolved.includes('/node_modules/') ||
-              // Linked npm packages
+              // Linked npm package
               !importPathResolved.startsWith(userRootDir))
 
           const isExternal =
