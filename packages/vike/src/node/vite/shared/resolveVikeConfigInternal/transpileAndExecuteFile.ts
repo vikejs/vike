@@ -28,7 +28,7 @@ import { isImportPathRelative } from '../../../../utils/isImportPath.js'
 import { isObject } from '../../../../utils/isObject.js'
 import { isPlainJavaScriptFile, isPlainScriptFile } from '../../../../utils/isScriptFile.js'
 import { isVitest } from '../../../../utils/isVitest.js'
-import { assertIsImportNpmPackage, isImportNpmPackageOrPathAlias } from '../../../../utils/parseNpmPackage.js'
+import { assertImportIsNpmPackage, isImportNpmPackageOrPathAlias } from '../../../../utils/parseNpmPackage.js'
 import { assertPosixPath, toPosixPath } from '../../../../utils/path.js'
 import { requireResolveOptionalDir } from '../../../../utils/requireResolve.js'
 import { transformPointerImports } from './pointerImports.js'
@@ -233,7 +233,7 @@ async function transpileWithEsbuild(
 
           // Esbuild resolves path aliases.
           // - Enabling us to use:
-          //   - assertIsImportNpmPackage()
+          //   - assertImportIsNpmPackage()
           //   - isImportNpmPackage(str, { cannotBePathAlias: true })
           assertFilePathAbsoluteFilesystem(importPathResolved)
 
@@ -294,7 +294,7 @@ async function transpileWithEsbuild(
               importPathTranspiled = importPathResolved
             } else {
               // `importPathOriginal` is most likely an npm package import.
-              assertIsImportNpmPackage(importPathOriginal)
+              assertImportIsNpmPackage(importPathOriginal)
               // For improved error messages, let the resolution be handled by Vike or Node.js.
               importPathTranspiled = importPathOriginal
             }

@@ -5,7 +5,7 @@ export { analyzeClientEntries }
 import { assert, setAssertOnBeforeLog, assertUsage } from '../../../../utils/assert.js'
 import { onSetupBuild } from '../../../../utils/assertSetup.js'
 import { injectRollupInputs, normalizeRollupInput } from '../../../../utils/injectRollupInputs.js'
-import { assertIsImportNpmPackage } from '../../../../utils/parseNpmPackage.js'
+import { assertImportIsNpmPackage } from '../../../../utils/parseNpmPackage.js'
 import { removeFileExtension } from '../../../../utils/removeFileExtension.js'
 import { requireResolveDistFile } from '../../../../utils/requireResolve.js'
 import { unique } from '../../../../utils/unique.js'
@@ -168,7 +168,7 @@ async function getPageFileEntries(config: ResolvedConfig, includeAssetsImportedB
 
 function getEntryFromClientEntry(clientEntry: string, config: ResolvedConfig, addExtractAssetsQuery?: boolean) {
   if (!clientEntry.startsWith('/')) {
-    assertIsImportNpmPackage(clientEntry)
+    assertImportIsNpmPackage(clientEntry)
     const entryTarget = clientEntry
     const entryName = prependEntriesDir(clientEntry)
     return { entryName, entryTarget }

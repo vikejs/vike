@@ -1,6 +1,6 @@
 export { isImportNpmPackage }
 export { isImportNpmPackageOrPathAlias }
-export { assertIsImportNpmPackage }
+export { assertImportIsNpmPackage }
 export { isPathAliasRecommended }
 export { getNpmPackageName }
 
@@ -41,10 +41,10 @@ function isImportNpmPackageOrPathAlias(str: string): boolean {
   const res = parseNpmPackage(str)
   return res !== null
 }
-function assertIsImportNpmPackage(str: string): void {
+function assertImportIsNpmPackage(str: string): void {
   assert(
     isImportNpmPackage(str, {
-      // If `str` is a path alias that looks like an npm package => assertIsImportNpmPackage() is erroneous but that's okay because the assertion will eventually fail for some other user using a disambiguated path alias.
+      // If `str` is a path alias that looks like an npm package => assertImportIsNpmPackage() is erroneous but that's okay because the assertion will eventually fail for some other user using a disambiguated path alias.
       cannotBePathAlias: true,
     }),
     str,

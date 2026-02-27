@@ -7,7 +7,7 @@ import { assert } from '../../../../utils/assert.js'
 import { createDebug } from '../../../../utils/debug.js'
 import { isArray } from '../../../../utils/isArray.js'
 import { isFilePathAbsoluteFilesystem } from '../../../../utils/isFilePathAbsoluteFilesystem.js'
-import { assertIsImportNpmPackage, getNpmPackageName } from '../../../../utils/parseNpmPackage.js'
+import { assertImportIsNpmPackage, getNpmPackageName } from '../../../../utils/parseNpmPackage.js'
 import { requireResolveOptional } from '../../../../utils/requireResolve.js'
 import { isVirtualFileId } from '../../../../utils/virtualFileId.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
@@ -164,7 +164,7 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
     // optimizeDeps.include expects npm packages
     assert(!e.startsWith('/'))
     // Shouldn't be a path alias, as path aliases would need to be added to optimizeDeps.entries instead of optimizeDeps.include
-    assertIsImportNpmPackage(e)
+    assertImportIsNpmPackage(e)
 
     if (isExcluded(e, isForClientSide, definedAt)) return
 
