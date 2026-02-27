@@ -9,7 +9,7 @@ const noteColor = '#64748b'
 function PricingTable() {
   return (
     <div id="pricing-table">
-      <ExtraWidth width={200}>
+      <ExtraWidth width={100}>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
             <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
@@ -19,8 +19,8 @@ function PricingTable() {
                 <SubHeading id="pricing-table_filler" style={{ visibility: 'hidden' }}>
                   Invisible filler<NoteRef>3</NoteRef>
                 </SubHeading>
-                <div className="pricing-section-limited">
-                  <Free />
+                <Free />
+                <div>
                   <Check>Full access</Check>
                   <Check>Forever free</Check>
                   <Check>
@@ -36,30 +36,26 @@ function PricingTable() {
                     <SubHeading>
                       Limited resources<NoteRef>3</NoteRef>
                     </SubHeading>
-                    <div className="pricing-section-limited">
-                      <Free />
-                      <Check>Full access</Check>
-                      <Check>Forever free</Check>
-                      <Check>
-                        <Link href="/gift">Apply</Link> for free license key
-                      </Check>
-                    </div>
+                    <Free />
+                    <Check>Full access</Check>
+                    <Check>Forever free</Check>
+                    <Check>
+                      <Link href="/gift">Apply</Link> for free license key
+                    </Check>
                   </div>
                   <SectionDivider />
-                  <div>
+                  <div className="pricing-section-sufficient">
                     <SubHeading>Sufficient resources</SubHeading>
-                    <div className="pricing-section-sufficient">
-                      <Price color="#2563eb" suffix=" one time">
-                        $5k
-                      </Price>
-                      <Check>Full access</Check>
-                      <Check>
-                        Forever access<NoteRef>4</NoteRef>
-                      </Check>
-                      <Check>
-                        Free trial: 6 months + <Link href="/gift">extendable</Link>
-                      </Check>
-                    </div>
+                    <Price color="#2563eb" suffix=" one time">
+                      $5k
+                    </Price>
+                    <Check>Full access</Check>
+                    <Check>
+                      Forever access<NoteRef>4</NoteRef>
+                    </Check>
+                    <Check>
+                      Free trial: 6 months + <Link href="/gift">extendable</Link>
+                    </Check>
                   </div>
                 </div>
               </Column>
