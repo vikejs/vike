@@ -77,6 +77,11 @@ const headings = [
   },
   {
     level: 2,
+    title: 'Free Program',
+    url: '/free',
+  },
+  {
+    level: 2,
     title: 'Extensions',
     url: '/extensions',
   },
@@ -1131,11 +1136,6 @@ function misc() {
   return (
     [
       {
-        title: 'Free Program',
-        url: '/free',
-        category: 'Overview',
-      },
-      {
         title: 'Consulting',
         url: '/consulting',
       },
@@ -1167,11 +1167,6 @@ function misc() {
       {
         title: 'RPC',
         url: '/RPC',
-      },
-      {
-        title: 'Get a free license key',
-        url: '/free',
-        category: 'Overview',
       },
       {
         title: 'SPA',
