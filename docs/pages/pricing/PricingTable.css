@@ -2,6 +2,10 @@
   a {
     text-decoration: underline;
   }
+  h3 {
+    margin-top: 23px;
+    font-size: 1.1em;
+  }
 }
 .pricing-section-divider {
   width: 1px;
@@ -15,6 +19,11 @@
   display: none;
 }
 @media screen and (max-width: 899px) {
+  #pricing-table {
+    h3 {
+      margin-top: 0;
+    }
+  }
   #pricing-table_extra-width {
     margin: 0 !important;
   }
@@ -25,7 +34,9 @@
     width: 100%;
     height: auto;
     background: none;
-    margin: 16px 0;
+    margin: 0;
+    margin-top: 10px;
+    margin-bottom: -12px;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -47,15 +58,18 @@
   }
   .pricing-section {
     position: relative;
+    margin-left: 20px;
+    margin-top: 30px;
+    padding-bottom: 10px;
   }
   .pricing-section::before {
     display: block;
     position: absolute;
     top: 0;
-    left: -15px;
+    left: -20px;
     height: 100%;
     content: '';
-    width: 10px;
+    width: 8px;
     border-radius: 8px;
   }
   .pricing-section-sufficient::before {

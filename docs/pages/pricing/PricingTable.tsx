@@ -9,7 +9,7 @@ const noteColor = '#64748b'
 function PricingTable() {
   return (
     <div id="pricing-table">
-      <ExtraWidth width={100}>
+      <ExtraWidth width={200}>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
             <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
@@ -34,7 +34,7 @@ function PricingTable() {
                 <div style={{ display: 'flex', columnGap: 40, rowGap: 15, flexWrap: 'wrap' }}>
                   <div className="pricing-section pricing-section-limited">
                     <SubHeading>
-                      Limited resources<NoteRef>3</NoteRef>
+                      Limited funds<NoteRef>3</NoteRef>
                     </SubHeading>
                     <Free />
                     <Check>Full access</Check>
@@ -45,7 +45,9 @@ function PricingTable() {
                   </div>
                   <SectionDivider />
                   <div className="pricing-section pricing-section-sufficient">
-                    <SubHeading>Sufficient resources</SubHeading>
+                    <SubHeading>
+                      Sufficient funds<NoteRef>3</NoteRef>
+                    </SubHeading>
                     <Price color="#2563eb" suffix=" one time">
                       $5k
                     </Price>
@@ -92,9 +94,9 @@ function SectionDivider() {
 
 function SubHeading({ children, id, style }: { children: React.ReactNode; style?: React.CSSProperties; id?: string }) {
   return (
-    <div id={id} style={{ marginTop: 23, ...style }}>
+    <h3 id={id} style={{ fontWeight: 400, ...style }}>
       <b>{children}</b>
-    </div>
+    </h3>
   )
 }
 
