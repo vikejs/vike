@@ -7,6 +7,7 @@
     font-size: 1.1em;
   }
 }
+
 @media screen and (min-width: 900px) {
   .pricing-inner-columns {
     display: flex;
@@ -23,6 +24,7 @@
     display: none;
   }
 }
+
 @media screen and (max-width: 899px) {
   #pricing-table {
     h3 {
