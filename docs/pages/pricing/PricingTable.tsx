@@ -167,7 +167,12 @@ function Check({ children }: { children: React.ReactNode }) {
 function GreenCheckmark() {
   const size = 18
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      style={{ width: size, height: size, flexShrink: 0 }}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <path d="M20 6L9 17l-5-5" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
