@@ -1,6 +1,5 @@
 export { transformPointerImports }
 export { parsePointerImportData }
-export { isPointerImportData }
 export { assertPointerImportPath }
 export type { PointerImportData }
 
