@@ -71,11 +71,12 @@
     content: '';
     width: 8px;
     border-radius: 8px;
+    opacity: 0.12;
   }
   .pricing-section-sufficient::before {
-    background: #f0fdf4;
+    background: #2563eb;
   }
   .pricing-section-limited::before {
-    background: #eff6ff;
+    background: #10b981;
   }
 }
