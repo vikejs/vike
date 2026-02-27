@@ -19,6 +19,7 @@ function getNpmPackageName(str: string): null | string {
   if (!res) return null
   return res.pkgName
 }
+
 /* Currently not used
 export function isNpmPackageName(str: string | undefined): boolean {
   const res = parseNpmPackage(str)
