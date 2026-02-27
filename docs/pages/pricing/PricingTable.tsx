@@ -67,7 +67,7 @@ function PricingTable() {
                 Only developers who regularly contribute code: occasional contributors and bots don't count.
               </Note>
               <Note ref={2}>
-                E.g. organizations with <Link href="/gift#who-s-eligible">few employees</Link> are considered
+                For example, organizations with <Link href="/gift#who-s-eligible">few employees</Link> are considered
                 resource-limited.
               </Note>
               <Note ref={3}>
