@@ -15,6 +15,7 @@
   .pricing-inner-columns {
     display: flex;
   }
+
   .pricing-section-divider {
     width: 1px;
     background-color: #e2e8f0;
@@ -43,6 +44,31 @@
   .pricing-table_filler {
     display: none;
   }
+
+  .pricing-section {
+    position: relative;
+    margin-left: 20px;
+    margin-top: 30px;
+    padding-bottom: 10px;
+  }
+  .pricing-section::before {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: -20px;
+    height: 100%;
+    content: '';
+    width: 8px;
+    border-radius: 8px;
+    opacity: 0.12;
+  }
+  .pricing-section-sufficient::before {
+    background: #2563eb;
+  }
+  .pricing-section-limited::before {
+    background: #10b981;
+  }
+
   .pricing-section-divider {
     width: 100%;
     height: auto;
@@ -68,28 +94,5 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-  }
-  .pricing-section {
-    position: relative;
-    margin-left: 20px;
-    margin-top: 30px;
-    padding-bottom: 10px;
-  }
-  .pricing-section::before {
-    display: block;
-    position: absolute;
-    top: 0;
-    left: -20px;
-    height: 100%;
-    content: '';
-    width: 8px;
-    border-radius: 8px;
-    opacity: 0.12;
-  }
-  .pricing-section-sufficient::before {
-    background: #2563eb;
-  }
-  .pricing-section-limited::before {
-    background: #10b981;
   }
 }
