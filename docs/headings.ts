@@ -1174,11 +1174,6 @@ function misc() {
         category: 'Overview',
       },
       {
-        title: 'Buying a license key',
-        url: '/buy',
-        category: 'Overview',
-      },
-      {
         title: 'SPA',
         url: '/spa',
         category: 'Glossary',
