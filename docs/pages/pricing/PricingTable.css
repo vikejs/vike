@@ -37,10 +37,10 @@
       margin-top: 0;
     }
   }
-  #pricing-table_extra-width {
+  .pricing-table_extra-width {
     margin: 0 !important;
   }
-  #pricing-table_filler {
+  .pricing-table_filler {
     display: none;
   }
   .pricing-section-divider {
