@@ -8,6 +8,9 @@
   }
 }
 
+/***********/
+/* DESKTOP */
+/***********/
 @media screen and (min-width: 900px) {
   .pricing-inner-columns {
     display: flex;
@@ -25,6 +28,9 @@
   }
 }
 
+/**********/
+/* MOBILE */
+/**********/
 @media screen and (max-width: 899px) {
   #pricing-table {
     h3 {
