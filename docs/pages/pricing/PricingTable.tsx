@@ -17,14 +17,14 @@ function PricingTable() {
                 <TierName>Small team</TierName>
                 ≤2 <SoftwareDevelopers />
                 <SubHeading className="pricing-table_filler" style={{ visibility: 'hidden' }}>
-                  Invisible filler<NoteRef>3</NoteRef>
+                  Invisible filler<NoteRef>2</NoteRef>
                 </SubHeading>
                 <Free />
                 <div>
                   <Check>Full access</Check>
                   <Check>Forever free</Check>
                   <Check>
-                    No license key<NoteRef>2</NoteRef>
+                    No license key<NoteRef>3</NoteRef>
                   </Check>
                 </div>
               </Column>
@@ -34,7 +34,7 @@ function PricingTable() {
                 <div className="pricing-inner-columns" style={{ columnGap: 40, rowGap: 15, flexWrap: 'wrap' }}>
                   <div className="pricing-section pricing-section-limited">
                     <SubHeading>
-                      Limited funds<NoteRef>3</NoteRef>
+                      Limited funds<NoteRef>2</NoteRef>
                     </SubHeading>
                     <Free />
                     <Check>Full access</Check>
@@ -46,7 +46,7 @@ function PricingTable() {
                   <SectionDivider />
                   <div className="pricing-section pricing-section-sufficient">
                     <SubHeading>
-                      Sufficient funds<NoteRef>3</NoteRef>
+                      Sufficient funds<NoteRef>2</NoteRef>
                     </SubHeading>
                     <Price color="#2563eb" suffix=" one time">
                       $5k
@@ -67,11 +67,11 @@ function PricingTable() {
                 Only developers who regularly contribute code: occasional contributors and bots don't count.
               </Note>
               <Note ref={2}>
-                License key isn't required: you use Vike just like any regular open source tool (zero encumbrance).
-              </Note>
-              <Note ref={3}>
                 E.g. organizations with <Link href="/gift#who-s-eligible">few employees</Link> are considered
                 resource-limited.
+              </Note>
+              <Note ref={3}>
+                License key isn't required: you use Vike just like any regular open source tool (zero encumbrance).
               </Note>
               <Note ref={4}>
                 One-time payment for a lifetime license key: valid forever, including all future Vike updates.
