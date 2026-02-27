@@ -12,7 +12,7 @@
 /***********/
 /* DESKTOP */
 /***********/
-@media screen and (min-width: 900px) {
+@media screen and (min-width: 920px) {
   .pricing-inner-columns {
     display: flex;
   }
@@ -33,7 +33,7 @@
 /**********/
 /* MOBILE */
 /**********/
-@media screen and (max-width: 899px) {
+@media screen and (max-width: 919px) {
   #pricing-table {
     h3 {
       padding-top: 2px;
