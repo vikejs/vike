@@ -19,7 +19,7 @@ function getNpmPackageName(str: string): null | string {
 }
 
 /* Currently not used
-export function isNpmPackageName(str: string | undefined): boolean {
+export function isValidNpmPackageName(str: string | undefined): boolean {
   const res = parseNpmPackage(str)
   return res !== null && res.importPath === null
 }
@@ -72,7 +72,7 @@ function isDistinguishable(alias: string): boolean {
     parseNpmPackage(`${alias}/fake-path`) === null &&
     parseNpmPackage(`${alias}fake/deep/path`) === null &&
     parseNpmPackage(`${alias}/fake/deep/path`) === null &&
-    // See note about '-' in ./isNpmPackageName.spec.ts
+    // See note about '-' in ./parseNpmPackage.spec.ts
     // ```ts
     // expect(parseNpmPackage('-')).toBe(null) // actually wrong: https://www.npmjs.com/package/-
     // ```
