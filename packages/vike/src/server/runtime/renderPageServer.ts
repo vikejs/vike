@@ -85,7 +85,7 @@ import {
   type EnhancedMiddleware,
   type UniversalHandler,
 } from '@universal-middleware/core'
-import { createRequestAdapter } from '@universal-middleware/express'
+import { createRequestAdapter } from '@universal-middleware/express/request'
 
 const globalObject = getGlobalObject('runtime/renderPageServer.ts', {
   httpRequestsCount: 0,
