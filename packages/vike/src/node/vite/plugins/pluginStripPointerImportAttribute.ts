@@ -1,6 +1,6 @@
 export { pluginStripPointerImportAttribute }
 
-// Strip `with { type: 'vike-pointer' }` import attributes from files transpiled for the
+// Strip `with { type: 'vike:pointer' }` import attributes from files transpiled for the
 // client/server runtime. These attributes are only meaningful at config-time (they tell
 // Vike to treat the import as a pointer import); leaving them in runtime bundles would
 // break bundlers/runtimes that don't support unknown import attributes.
@@ -9,8 +9,8 @@ import type { Plugin } from 'vite'
 import { getMagicString } from '../shared/getMagicString.js'
 import '../assertEnvVite.js'
 
-// Match `with { type: 'vike-pointer' }` (with optional whitespace variations)
-const runtimeAttrRE = /\bwith\s*\{\s*type\s*:\s*['"]vike-pointer['"]\s*\}/g
+// Match `with { type: 'vike:pointer' }` (with optional whitespace variations)
+const runtimeAttrRE = /\bwith\s*\{\s*type\s*:\s*['"]vike:pointer['"]\s*\}/g
 
 function pluginStripPointerImportAttribute(): Plugin[] {
   return [
@@ -19,7 +19,7 @@ function pluginStripPointerImportAttribute(): Plugin[] {
       transform: {
         filter: {
           code: {
-            include: 'vike-pointer',
+            include: 'vike:pointer',
           },
         },
         handler(code, id) {

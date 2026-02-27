@@ -251,7 +251,7 @@ async function transpileWithEsbuild(
             //      - vike@0.4.162 started soft-requiring Vike extensions to set the name config.
             //    - In practice, it seems like it requires some (non-trivial?) refactoring.
             isVikeExtensionImport ||
-            args.with?.['type'] === 'vike-pointer'
+            args.with?.['type'] === 'vike:pointer'
 
           assertPosixPath(importPathResolved)
           // False positive if `importPathOriginal` is a path alias that a) looks like an npm package import and b) resolves outside of `userRootDir` => we then we wrongfully assume that `importPathOriginal` is an npm package import.

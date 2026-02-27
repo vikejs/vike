@@ -11,7 +11,7 @@ import {
   iconGlobe,
   iconPlug,
   iconMegaphone,
-} from '@brillout/docpress' with { type: 'vike-pointer' }
+} from '@brillout/docpress' with { type: 'vike:pointer' }
 import type {
   HeadingDefinition,
   Config,
