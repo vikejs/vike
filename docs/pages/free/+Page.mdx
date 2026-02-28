@@ -4,24 +4,26 @@ import '../../components/tabs.css'
 
 const freeForeverBody = `== Website
 
-[your app's URL]
+[URL]
 
 == Reason
 
-[why your organization has limited financial resources]`
+[WHY]`
 
-const extendedBody = `== Website
-
-[your app's URL]
-
-== Reason
-
-[why you need an extended free trial]
+const extendedBody = `${freeForeverBody}
 
 == Extend duration
 
 Two years`
 
+export const FillList = ({ why, addendum }) => {
+  return <p>
+    <code>URL</code>: Your app's URL (if nothing's public: the domain name where your app's client runs).
+    <br/>
+    <code>WHY</code>: Explain why{why}.
+    {addendum}
+  </p>
+}
 export const EmailBody = ({ extended = false }) => {
   const body = extended ? extendedBody : freeForeverBody
   return <blockquote><pre>{body}</pre></blockquote>
@@ -83,6 +85,8 @@ Body:
 
 <EmailBody />
 
+{<FillList why=" your organization has limited financial resources" />}
+
   </TabPanel>
   <TabPanel>
 
@@ -106,7 +110,13 @@ Body:
 
 <EmailBody extended />
 
-`Extend duration` can be modified. For example, you can set it to the duration after which you expect to easily afford a license. You can apply again after the extended period ends.
+{<FillList addendum={
+  <>
+    <br />
+    <code>Extend duration</code>: can be modified. For example, you can set it to the duration after which you expect to easily afford a license. You can apply again after the extended period ends.
+
+  </>
+} />}
 
   </TabPanel>
 </Tabs>
