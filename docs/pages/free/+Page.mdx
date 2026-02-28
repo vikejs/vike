@@ -2,7 +2,7 @@ import { Link } from '@brillout/docpress'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import '../../components/tabs.css'
 
-const freeForeverBody = `== URL
+export const freeForeverBody = `== URL
 
 [Your app's URL (if it isn't public: the domain name where your app's client runs)]
 
@@ -10,7 +10,7 @@ const freeForeverBody = `== URL
 
 [Why your organization has limited financial resources]`
 
-const extendedBody = `${freeForeverBody}
+export const extendedBody = `${freeForeverBody}
 
 == Extend duration
 
@@ -18,7 +18,7 @@ Two years`
 
 export const EmailBody = ({ extended = false }) => {
   const body = extended ? extendedBody : freeForeverBody
-  return <blockquote><pre>{body}</pre></blockquote>
+  return <pre><code>{body}</code></pre>
 }
 
 The free program ensures everyone can use Vike.
