@@ -16,11 +16,6 @@ export const extendedBody = `${freeForeverBody}
 
 Two years`
 
-export const EmailBody = ({ extended = false }) => {
-  const body = extended ? extendedBody : freeForeverBody
-  return <pre><code>{body}</code></pre>
-}
-
 The free program ensures everyone can use Vike.
 
 There are two programs:
@@ -75,7 +70,15 @@ Free forever
 
 Body:
 
-<EmailBody />
+```
+== URL
+
+[Your app's URL (if it isn't public: the domain name where your app's client runs)]
+
+== Reason
+
+[Why your organization has limited financial resources]
+```
 
   </TabPanel>
   <TabPanel>
@@ -98,7 +101,19 @@ Extended free trial
 
 Body:
 
-<EmailBody extended />
+```
+== URL
+
+[Your app's URL (if it isn't public: the domain name where your app's client runs)]
+
+== Reason
+
+[Why your organization has limited financial resources]
+
+== Extend duration
+
+Two years
+```
 
 `Extend duration` can be modified. For example, you can set it to the duration after which you expect to easily afford a license. You can apply again after the extended period ends.
 
