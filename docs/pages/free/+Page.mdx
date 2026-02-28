@@ -4,7 +4,7 @@ import '../../components/tabs.css'
 
 export const FillList = ({ why, addendum }) => {
   return <p>
-    <code>YOUR_WEBSITE</code>: Your website URL (if nothing's public: the domain name where your app's client runs).
+    <code>YOUR_WEBSITE</code>: Your app's URL (if nothing's public: the domain name where your app's client runs).
     <br/>
     <code>YOUR_REASON</code>: Explain why{why}.
     {addendum}
@@ -20,9 +20,9 @@ There are two programs:
 
 ## Who's eligible?
 
-Your team is eligible if it has limited financial resources: purchasing a license would be too expensive.
+Your organization is eligible if it has limited financial resources and purchasing a license would be too expensive.
 
-> We consider an organization eligible if it has **fewer than 10 employees**, while **countries with lower income can have more employees**.
+> An organization is eligible if it has **fewer than 10 employees**, while **countries with lower income can have more employees**.
 
 Do you expect more financial resources in the future? Apply for `Extended free trial`; if not, `Free forever`.
 
@@ -50,14 +50,14 @@ Contact us to apply.
 <span>Email (pre-filled subject & body): </span>
 <a
   href={
-    "mailto:vike-gift@brillout.com" +
+    "mailto:vike-free@brillout.com" +
     "?subject=" + encodeURIComponent("Free forever") +
     "&body=" + encodeURIComponent(
       "== Website\n\nYOUR_WEBSITE\n\n== Reason\n\nYOUR_REASON"
     )
   }
 >
-  {'vike-gift@brillout.com'}
+  {'vike-free@brillout.com'}
 </a>
 
 Subject:
@@ -76,7 +76,7 @@ YOUR_WEBSITE
 YOUR_REASON
 ```
 
-{<FillList why=" your organization has limited resources" />}
+{<FillList why=" your organization has limited financial resources" />}
 
   </TabPanel>
   <TabPanel>
@@ -84,14 +84,14 @@ YOUR_REASON
 <span>Email (pre-filled subject & body): </span>
 <a
   href={
-    "mailto:vike-gift@brillout.com" +
+    "mailto:vike-free@brillout.com" +
     "?subject=" + encodeURIComponent("Extended free trial") +
     "&body=" + encodeURIComponent(
       "== Website\n\nYOUR_WEBSITE\n\n== Reason\n\nYOUR_REASON\n\n== Extend duration\n\nTwo years"
     )
   }
 >
-  {'vike-gift@brillout.com'}
+  {'vike-free@brillout.com'}
 </a>
 
 Subject:
