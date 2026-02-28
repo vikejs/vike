@@ -1,0 +1,18 @@
+import{o as a,a as l}from"../chunks/chunk-CxIOOiKX.js";import{j as e}from"../chunks/chunk-B35a6FX-.js";import{L as s}from"../chunks/chunk-BbfG-aTg.js";/* empty css                      *//* empty css                      *//* empty css                      *//* empty css                      *//* empty css                      *//* empty css                      *//* empty css                      *//* empty css                      */import{u as r}from"../chunks/chunk-CJvpbNqo.js";import{C as d}from"../chunks/chunk-Xc0ZlJJz.js";import{E as o}from"../chunks/chunk-C63C6Qu-.js";/* empty css                      *//* empty css                      *//* empty css                      *//* empty css                      *//* empty css                      */import"../chunks/chunk-4VEk4LmV.js";const u=[{pageSectionId:"manual-integration",pageSectionLevel:2,pageSectionTitle:"Manual integration"}];function n(i){const t={a:"a",blockquote:"blockquote",code:"code",li:"li",p:"p",ul:"ul",...r(),...i.components};return e.jsxs(e.Fragment,{children:[e.jsx(d,{url:"https://vuetifyjs.com"}),`
+`,e.jsxs(t.p,{children:["If you are using ",e.jsx(s,{href:"/vike-vue",children:e.jsx(t.code,{children:"vike-vue"})}),", you can use ",e.jsx(t.a,{href:"https://github.com/Mahdi-heydari/vike-vue-vuetify#readme",children:e.jsx(t.code,{children:"vike-vue-vuetify"})})," for seamless integration."]}),`
+`,e.jsx("h2",{id:"manual-integration",children:"Manual integration"}),`
+`,e.jsx(t.p,{children:"Examples of manually integrating Vuetify:"}),`
+`,e.jsxs(t.ul,{children:[`
+`,e.jsxs(t.li,{children:[`
+`,e.jsx(o,{timestamp:"2024.03",repo:"IT4Change/boilerplate-frontend"}),`
+`]}),`
+`,e.jsxs(t.li,{children:[`
+`,e.jsx(o,{timestamp:"2022.12",repo:"brillout/vite-plugin-ssr-vuetify"}),`
+`]}),`
+`,e.jsxs(t.li,{children:[`
+`,e.jsx(o,{timestamp:"2021.11",repo:"jamesladd/aws-vite-ssr-vuetify"}),`
+`]}),`
+`]}),`
+`,e.jsxs(t.blockquote,{children:[`
+`,e.jsxs(t.p,{children:["vite-plugin-ssr was the ",e.jsx(t.a,{href:"https://vite-plugin-ssr.com/vike",children:"previous name of Vike"}),"."]}),`
+`]})]})}function p(i={}){const{wrapper:t}={...r(),...i.components};return t?e.jsx(t,{...i,children:e.jsx(n,{...i})}):n(i)}const m=Object.freeze(Object.defineProperty({__proto__:null,default:p,pageSectionsExport:u},Symbol.toStringTag,{value:"Module"})),U={hasServerOnlyHook:{type:"computed",definedAtData:null,valueSerialized:{type:"js-serialized",value:!1}},isClientRuntimeLoaded:{type:"computed",definedAtData:null,valueSerialized:{type:"js-serialized",value:!0}},onBeforeRenderEnv:{type:"computed",definedAtData:null,valueSerialized:{type:"js-serialized",value:null}},dataEnv:{type:"computed",definedAtData:null,valueSerialized:{type:"js-serialized",value:null}},guardEnv:{type:"computed",definedAtData:null,valueSerialized:{type:"js-serialized",value:null}},onRenderClient:{type:"standard",definedAtData:{filePathToShowToUser:"@brillout/docpress/renderer/onRenderClient",fileExportPathToShowToUser:[]},valueSerialized:{type:"pointer-import",value:l}},onCreatePageContext:{type:"cumulative",definedAtData:[{filePathToShowToUser:"@brillout/docpress/renderer/onCreatePageContext",fileExportPathToShowToUser:[]}],valueSerialized:[{type:"pointer-import",value:a}]},Page:{type:"standard",definedAtData:{filePathToShowToUser:"/pages/vuetify/+Page.mdx",fileExportPathToShowToUser:[]},valueSerialized:{type:"plus-file",exportValues:m}},hydrationCanBeAborted:{type:"standard",definedAtData:{filePathToShowToUser:"@brillout/docpress/config",fileExportPathToShowToUser:["default","hydrationCanBeAborted"]},valueSerialized:{type:"js-serialized",value:!0}}};export{U as configValuesSerialized};

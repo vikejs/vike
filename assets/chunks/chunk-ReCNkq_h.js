@@ -1,0 +1,9 @@
+import{j as e}from"./chunk-B35a6FX-.js";import{L as t}from"./chunk-BbfG-aTg.js";/* empty css              *//* empty css              *//* empty css              *//* empty css              *//* empty css              *//* empty css              *//* empty css              *//* empty css              */import{u as o}from"./chunk-CJvpbNqo.js";import{P as a}from"./chunk-DPWqfRGw.js";function i(n){const r={p:"p",...o(),...n.components};return e.jsxs(e.Fragment,{children:[e.jsxs(r.p,{children:["We recommend using ",e.jsx(t,{href:"/blog/photon",children:"Photon"})," for a seamless and full-fledged ",e.jsx("a",{href:n.link,children:n.provider})," integration."]}),`
+`,e.jsxs(r.p,{children:["The entire documentation for using Photon with ",n.provider," is contained on this page and the ",e.jsx(t,{href:"/vike-photon"})," page."]})]})}function M(n={}){const{wrapper:r}={...o(),...n.components};return r?e.jsx(r,{...n,children:e.jsx(i,{...n})}):i(n)}function s(n){const r={blockquote:"blockquote",p:"p",...o(),...n.components};return e.jsxs(e.Fragment,{children:[e.jsxs(r.blockquote,{children:[`
+`,e.jsxs(r.p,{children:["Alternatively, for more control, you can ",e.jsxs(t,{href:"#manual-integration",children:["manually integrate ",n.provider]})," instead of using Photon."]}),`
+`]}),`
+`,e.jsx(a,{}),`
+`,e.jsxs(r.p,{children:["You can use ",n.provider," to deploy ",e.jsx(t,{href:"/pre-rendering",children:"static websites"})," as well as ",e.jsx(t,{href:"/ssr",children:"SSR"}),"."]}),`
+`,e.jsxs(r.blockquote,{children:[`
+`,e.jsxs(r.p,{children:["If you ",e.jsx(t,{href:"/pre-rendering#partial",children:"pre-render partially"}),", then your pre-rendered pages are statically deployed while your SSR pages are served dynamically."]}),`
+`]})]})}function k(n={}){const{wrapper:r}={...o(),...n.components};return r?e.jsx(r,{...n,children:e.jsx(s,{...n})}):s(n)}export{M,k as a};
