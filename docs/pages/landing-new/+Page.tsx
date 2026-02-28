@@ -9,7 +9,7 @@ import useScrollSmoother from './hooks/useScrollSmoother'
 import './tailwind.css'
 
 const LandingPage = () => {
-  useScrollSmoother()
+  // useScrollSmoother()
 
   return (
     <>

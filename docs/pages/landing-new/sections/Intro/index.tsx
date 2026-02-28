@@ -1,17 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import LayoutComponent from '../../components/LayoutComponent'
-import GradientText, { defaultGradients } from '../../components/GradientText'
+import GradientText from '../../components/GradientText'
 import UspHero from './UspHero'
 import Headline from '../../components/Headline'
 import BrandSubsection from './BrandSubsection'
 import HeroBackgroundColorFade from './HeroBackgroundColorFade'
 import type { UspHoverTarget } from './intro.types'
 import useIntroHeadlineGradientMotion from './useIntroHeadlineGradientMotion'
-import useMotionAllowed from '../../hooks/useMotionAllowed'
-import { landingPageHeroUsps } from '../../util/constants'
 import { UiColorVariantKey, UiVariantTextColor } from '../../util/ui.constants'
 
-const slideshowStepDurationMs = 4200
 const initialCtaColor: UiColorVariantKey = 'green'
 
 const HeadlineWord = ({
@@ -42,53 +39,18 @@ const HeadlineWord = ({
 
 const IntroSection = () => {
   const [manualHoverTarget, setManualHoverTarget] = useState<UspHoverTarget | null>(null)
-  const [slideshowState, setSlideshowState] = useState({ index: 0, cycle: 0 })
-  const [isSlideshowActive, setIsSlideshowActive] = useState(false)
+  const [lastHoveredColor, setLastHoveredColor] = useState<UiColorVariantKey>(initialCtaColor)
   const getStartedButtonRef = useRef<HTMLAnchorElement>(null)
-  const isMotionAllowed = useMotionAllowed()
-  const shouldAnimateIntro = isMotionAllowed && isSlideshowActive
-  const slideshowUsp = landingPageHeroUsps[slideshowState.index] ?? landingPageHeroUsps[0]
-  const activeColor = manualHoverTarget?.color ?? slideshowUsp?.dotColor ?? 'blue'
+  const activeColor = manualHoverTarget?.color ?? lastHoveredColor
+  const fadeColor = manualHoverTarget?.color ?? null
   const activeHeadlineWord = UiColorVariantKey[activeColor]
-  const activeUspId = manualHoverTarget?.id ?? slideshowUsp?.id ?? null
-  const isSlideshowMode = manualHoverTarget === null
-
-  useEffect(() => {
-    if (!isSlideshowMode || !shouldAnimateIntro || landingPageHeroUsps.length <= 1) {
-      return
-    }
-
-    const intervalId = window.setInterval(() => {
-      setSlideshowState((prevState) => ({
-        index: (prevState.index + 1) % landingPageHeroUsps.length,
-        cycle: prevState.cycle + 1,
-      }))
-    }, slideshowStepDurationMs)
-
-    return () => {
-      window.clearInterval(intervalId)
-    }
-  }, [isSlideshowMode, shouldAnimateIntro])
-
-  useEffect(() => {
-    if (shouldAnimateIntro) {
-      return
-    }
-    setManualHoverTarget(null)
-  }, [shouldAnimateIntro])
+  const activeUspId = manualHoverTarget?.id ?? null
 
   const handleUspHoverChange = (hoverTarget: UspHoverTarget | null) => {
     if (hoverTarget) {
-      setManualHoverTarget(hoverTarget)
-      const hoveredIndex = landingPageHeroUsps.findIndex((usp) => usp.id === hoverTarget.id)
-      if (hoveredIndex >= 0) {
-        setSlideshowState((prevState) => ({ ...prevState, index: hoveredIndex }))
-      }
-      return
+      setLastHoveredColor(hoverTarget.color)
     }
-
-    setManualHoverTarget(null)
-    setSlideshowState((prevState) => ({ ...prevState, cycle: prevState.cycle + 1 }))
+    setManualHoverTarget(hoverTarget)
   }
 
   useIntroHeadlineGradientMotion({
@@ -100,7 +62,7 @@ const IntroSection = () => {
     <>
       <div data-intro-section-root="true" className="relative">
         <div className="absolute top-0 left-0 h-1/2 w-full bg-linear-to-t to-white z-10" />
-        <HeroBackgroundColorFade hoveredColor={activeColor} />
+        <HeroBackgroundColorFade hoveredColor={fadeColor} />
         <LayoutComponent
           $size="md"
           className="flex flex-col items-center text-center lg:min-h-[calc(100dvh-56*var(--spacing))] pb-20 overflow-hidden"
@@ -136,15 +98,7 @@ const IntroSection = () => {
               </a>
               <a className="btn btn-neutral btn-outline">Scaffold new App</a>
             </div>
-            <UspHero
-              onHoverChange={handleUspHoverChange}
-              activeUspId={activeUspId}
-              slideshowCycle={slideshowState.cycle}
-              slideshowDurationMs={slideshowStepDurationMs}
-              isSlideshowMode={isSlideshowMode}
-              animationsEnabled={shouldAnimateIntro}
-              onSlideshowActiveChange={setIsSlideshowActive}
-            />
+            <UspHero onHoverChange={handleUspHoverChange} activeUspId={activeUspId} />
           </div>
         </LayoutComponent>
       </div>

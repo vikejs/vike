@@ -35,7 +35,7 @@ export const layoutComponentSizeMapping: { [key in LayoutSize]: string } = {
 } as const
 
 export const BlurDotOpacity = {
-  low: 'opacity-10',
+  low: 'opacity-15',
   medium: 'opacity-60',
   high: 'opacity-80',
 } as const

@@ -1,4 +1,4 @@
-import React, { type MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { type MouseEvent, useCallback, useEffect, useMemo, useRef } from 'react'
 import { H3Headline } from '../../../components/Headline'
 import cm, { cmMerge } from '@classmatejs/react'
 import { landingPageHeroUsps } from '../../../util/constants'
@@ -13,32 +13,14 @@ import vikeLogo from '../../../../../assets/logo/vike.svg'
 
 interface UspHeroProps {
   activeUspId: string | null
-  slideshowCycle: number
-  slideshowDurationMs: number
-  isSlideshowMode: boolean
-  animationsEnabled?: boolean
   onHoverChange?: (hoverTarget: UspHoverTarget | null) => void
-  onSlideshowActiveChange?: (isActive: boolean) => void
 }
 
-const UspHero = ({
-  onHoverChange,
-  activeUspId,
-  slideshowCycle,
-  slideshowDurationMs,
-  isSlideshowMode,
-  animationsEnabled = true,
-  onSlideshowActiveChange,
-}: UspHeroProps) => {
+const UspHero = ({ onHoverChange, activeUspId }: UspHeroProps) => {
   const hoverLeaveTimeoutRef = useRef<number | null>(null)
-  const progressFillRefs = useRef<Partial<Record<string, HTMLDivElement | null>>>({})
-  const [scrollActiveUspId, setScrollActiveUspId] = useState<string | null>(null)
+  const { rootRef } = useUspHero()
 
-  const { rootRef, setSlideshowActive } = useUspHero({
-    onSlideshowActiveChange,
-    onSectionActiveChange: setScrollActiveUspId,
-  })
-  const highlightedUspId = isSlideshowMode && scrollActiveUspId ? scrollActiveUspId : activeUspId
+  const highlightedUspId = activeUspId
   const uspVisualStateById = useMemo(() => {
     return new Map(
       landingPageHeroUsps.map((usp) => {
@@ -88,9 +70,8 @@ const UspHero = ({
   useEffect(() => {
     return () => {
       clearHoverLeaveTimeout()
-      setSlideshowActive(false)
     }
-  }, [clearHoverLeaveTimeout, setSlideshowActive])
+  }, [clearHoverLeaveTimeout])
 
   return (
     <div ref={rootRef} className="w-full" data-usp-hero>
@@ -210,28 +191,7 @@ const UspHero = ({
                 className="left-1/2 top-0 z-4 -translate-x-1/2 -translate-y-40"
               />
 
-              <div
-                data-usp-content-progress-track={usp.id}
-                className="relative h-0.5 w-18 mx-auto mb-2 rounded-full overflow-hidden"
-              >
-                {isSlideshowMode && isHovered && animationsEnabled && (
-                  <div className="pointer-events-none absolute inset-0 h-full w-full rounded-full overflow-hidden z-8">
-                    <div
-                      key={`${usp.id}-${slideshowCycle}`}
-                      ref={(node) => {
-                        progressFillRefs.current[usp.id] = node
-                      }}
-                      className={cmMerge('h-full w-full rounded-full', UiVariantBgColor[usp.dotColor])}
-                      style={
-                        {
-                          transform: 'translateX(-100%)',
-                          animation: `usp-hero-progress-translate ${slideshowDurationMs}ms linear forwards`,
-                        } as React.CSSProperties
-                      }
-                    />
-                  </div>
-                )}
-              </div>
+              <div data-usp-content-progress-track={usp.id} className="relative h-0.5 w-18 mx-auto mb-2 rounded-full" />
 
               <StyledTextContent $hovered={isHovered}>
                 <div data-usp-copy-large="true" className="text-center h-full flex flex-col flex-1 p-5 pt-2">
@@ -273,16 +233,6 @@ const UspHero = ({
           ))}
         </div>
       </div>
-      <style>{`
-        @keyframes usp-hero-progress-translate {
-          from {
-            transform: translateX(-100%);
-          }
-          to {
-            transform: translateX(0%);
-          }
-        }
-      `}</style>
     </div>
   )
 }

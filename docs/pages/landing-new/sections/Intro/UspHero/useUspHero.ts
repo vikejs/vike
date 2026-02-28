@@ -1,57 +1,21 @@
 import { useGSAP } from '@gsap/react'
-import { useRef, useCallback } from 'react'
+import { useRef } from 'react'
 import { registerScrollToPlugin, registerScrollTrigger } from '../../../util/gsap.utils'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { gsap } from 'gsap'
 import { landingPageHeroUsps, UspId } from '../../../util/constants'
 import { uiConfig } from '../../../util/ui.constants'
 
-interface UseUspHeroParams {
-  onSlideshowActiveChange?: (isActive: boolean) => void
-  onSectionActiveChange?: (uspId: string | null) => void
-}
-
 const clamp01 = (value: number) => Math.max(0, Math.min(1, value))
 
-const useUspHero = ({ onSlideshowActiveChange, onSectionActiveChange }: UseUspHeroParams) => {
+const useUspHero = () => {
   const rootRef = useRef<HTMLDivElement>(null)
-  const slideshowActiveRef = useRef<boolean | null>(null)
-  const activeSectionRef = useRef<string | null>(null)
-  const slideshowInViewRef = useRef(false)
   const isCompactDockedRef = useRef(false)
-
-  const setSlideshowActive = useCallback(
-    (isActive: boolean) => {
-      if (slideshowActiveRef.current === isActive) {
-        return
-      }
-      slideshowActiveRef.current = isActive
-      onSlideshowActiveChange?.(isActive)
-    },
-    [onSlideshowActiveChange],
-  )
-
-  const syncSlideshowActive = useCallback(() => {
-    setSlideshowActive(slideshowInViewRef.current && !isCompactDockedRef.current)
-  }, [setSlideshowActive])
-
-  const setSectionActive = useCallback(
-    (uspId: string | null) => {
-      if (activeSectionRef.current === uspId) {
-        return
-      }
-      activeSectionRef.current = uspId
-      onSectionActiveChange?.(uspId)
-    },
-    [onSectionActiveChange],
-  )
 
   useGSAP(
     () => {
       const rootNode = rootRef.current
       if (!rootNode || typeof document === 'undefined') {
-        setSectionActive(null)
-        setSlideshowActive(false)
         return
       }
 
@@ -75,8 +39,6 @@ const useUspHero = ({ onSlideshowActiveChange, onSectionActiveChange }: UseUspHe
       )
 
       if (!navNode || !navChromeNode || !contentInteractionNodes.length || !stickyInteractionNodes.length) {
-        setSectionActive(null)
-        setSlideshowActive(false)
         return
       }
 
@@ -205,9 +167,6 @@ const useUspHero = ({ onSlideshowActiveChange, onSectionActiveChange }: UseUspHe
             setIfAny(stickyLogoNodes, { autoAlpha: 0 })
           }
         }
-        if (hasChanged) {
-          syncSlideshowActive()
-        }
       }
       ScrollTrigger.getById('intro-usp-hero-sticky-nav-pin')?.kill()
       ScrollTrigger.getById('intro-usp-hero-sticky-nav-trigger')?.kill()
@@ -239,22 +198,6 @@ const useUspHero = ({ onSlideshowActiveChange, onSectionActiveChange }: UseUspHe
         anticipatePin: 0.3,
         invalidateOnRefresh: true,
         markers: false,
-        onEnter: () => {
-          slideshowInViewRef.current = false
-          syncSlideshowActive()
-        },
-        onEnterBack: () => {
-          slideshowInViewRef.current = false
-          syncSlideshowActive()
-        },
-        onLeave: () => {
-          slideshowInViewRef.current = true
-          syncSlideshowActive()
-        },
-        onLeaveBack: () => {
-          slideshowInViewRef.current = true
-          syncSlideshowActive()
-        },
       })
 
       const compactTimeline = gsap.timeline({
@@ -304,10 +247,8 @@ const useUspHero = ({ onSlideshowActiveChange, onSectionActiveChange }: UseUspHe
         0,
       )
       const sectionProgressTriggers: ScrollTrigger[] = []
-      setSectionActive(null)
       orderedSectionEntries.forEach(({ id, node }, index) => {
         const nextEntry = orderedSectionEntries[index + 1]
-        const previousEntry = orderedSectionEntries[index - 1]
 
         const sectionTrigger = ScrollTrigger.create({
           id: `intro-usp-hero-section-progress-${id}`,
@@ -321,33 +262,20 @@ const useUspHero = ({ onSlideshowActiveChange, onSectionActiveChange }: UseUspHe
           markers: false,
           onUpdate: (self) => {
             setSectionProgress(id, self.progress)
-            if (self.isActive) {
-              setSectionActive(id)
-            }
           },
           onLeave: () => {
             setSectionProgress(id, 1)
-            setSectionActive(nextEntry?.id ?? id)
           },
           onLeaveBack: () => {
             setSectionProgress(id, 0)
-            setSectionActive(previousEntry?.id ?? null)
-          },
-          onEnterBack: () => {
-            setSectionActive(id)
           },
         })
 
         sectionProgressTriggers.push(sectionTrigger)
         setSectionProgress(id, sectionTrigger.progress)
-        if (sectionTrigger.isActive) {
-          setSectionActive(id)
-        }
       })
 
-      slideshowInViewRef.current = true
       applyCompactDockedState((compactTimeline.scrollTrigger?.progress ?? 0) >= 0.999)
-      syncSlideshowActive()
 
       return () => {
         stickyClickListeners.forEach(({ node, handler }) => {
@@ -356,18 +284,14 @@ const useUspHero = ({ onSlideshowActiveChange, onSectionActiveChange }: UseUspHe
         sectionProgressTriggers.forEach((trigger) => {
           trigger.kill()
         })
-        setSectionActive(null)
         setInteractionMode(false)
-        slideshowInViewRef.current = false
         isCompactDockedRef.current = false
-        setSlideshowActive(false)
       }
     },
-    { dependencies: [setSectionActive, setSlideshowActive, syncSlideshowActive] },
+    { dependencies: [] },
   )
 
   return {
-    setSlideshowActive,
     rootRef,
   }
 }
