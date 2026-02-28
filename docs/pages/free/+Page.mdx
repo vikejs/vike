@@ -6,7 +6,7 @@ export const FillList = ({ why, addendum }) => {
   return <p>
     <code>URL</code>: Your app's URL (if nothing's public: the domain name where your app's client runs).
     <br/>
-    <code>YOUR_REASON</code>: Explain why{why}.
+    <code>WHY</code>: Explain why{why}.
     {addendum}
   </p>
 }
@@ -53,7 +53,7 @@ Contact us to apply.
     "mailto:vike-free@brillout.com" +
     "?subject=" + encodeURIComponent("Free forever") +
     "&body=" + encodeURIComponent(
-      "== Website\n\nURL\n\n== Reason\n\nYOUR_REASON"
+      "== Website\n\nURL\n\n== Reason\n\nWHY"
     )
   }
 >
@@ -73,7 +73,7 @@ URL
 
 == Reason
 
-YOUR_REASON
+WHY
 ```
 
 {<FillList why=" your organization has limited financial resources" />}
@@ -87,7 +87,7 @@ YOUR_REASON
     "mailto:vike-free@brillout.com" +
     "?subject=" + encodeURIComponent("Extended free trial") +
     "&body=" + encodeURIComponent(
-      "== Website\n\nURL\n\n== Reason\n\nYOUR_REASON\n\n== Extend duration\n\nTwo years"
+      "== Website\n\nURL\n\n== Reason\n\nWHY\n\n== Extend duration\n\nTwo years"
     )
   }
 >
@@ -107,7 +107,7 @@ URL
 
 == Reason
 
-YOUR_REASON
+WHY
 
 == Extend duration
 
