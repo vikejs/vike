@@ -102,7 +102,7 @@ const IntroSection = () => {
           </div>
         </LayoutComponent>
       </div>
-      <div className="w-full overflow-hidden">
+      <div className="w-full">
         <LayoutComponent className="relative z-2">
           <BrandSubsection />
         </LayoutComponent>
