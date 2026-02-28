@@ -2,6 +2,20 @@ import { Link } from '@brillout/docpress'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import '../../components/tabs.css'
 
+const freeForeverBody = `== Website
+
+URL
+
+== Reason
+
+WHY`
+
+const extendedBody = `${freeForeverBody}
+
+== Extend duration
+
+Two years`
+
 export const FillList = ({ why, addendum }) => {
   return <p>
     <code>URL</code>: Your app's URL (if nothing's public: the domain name where your app's client runs).
@@ -10,9 +24,9 @@ export const FillList = ({ why, addendum }) => {
     {addendum}
   </p>
 }
-export const EmailBody = () => {
-  // TODO/ai move the email body in here
-  return <blockquote></blockquote>
+export const EmailBody = ({ extended = false }) => {
+  const body = extended ? extendedBody : freeForeverBody
+  return <blockquote><pre>{body}</pre></blockquote>
 }
 
 The free program ensures everyone can use Vike.
@@ -56,9 +70,7 @@ Contact us to apply.
   href={
     "mailto:vike-free@brillout.com" +
     "?subject=" + encodeURIComponent("Free forever") +
-    "&body=" + encodeURIComponent(
-      "== Website\n\nURL\n\n== Reason\n\nWHY"
-    )
+    "&body=" + encodeURIComponent(freeForeverBody)
   }
 >
   {'vike-free@brillout.com'}
@@ -70,15 +82,8 @@ Free forever
 ```
 
 Body:
-```
-== Website
 
-URL
-
-== Reason
-
-WHY
-```
+<EmailBody />
 
 {<FillList why=" your organization has limited financial resources" />}
 
@@ -90,9 +95,7 @@ WHY
   href={
     "mailto:vike-free@brillout.com" +
     "?subject=" + encodeURIComponent("Extended free trial") +
-    "&body=" + encodeURIComponent(
-      "== Website\n\nURL\n\n== Reason\n\nWHY\n\n== Extend duration\n\nTwo years"
-    )
+    "&body=" + encodeURIComponent(extendedBody)
   }
 >
   {'vike-free@brillout.com'}
@@ -104,19 +107,8 @@ Extended free trial
 ```
 
 Body:
-```
-== Website
 
-URL
-
-== Reason
-
-WHY
-
-== Extend duration
-
-Two years
-```
+<EmailBody extended />
 
 {<FillList addendum={
   <>
