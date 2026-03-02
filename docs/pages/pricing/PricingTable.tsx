@@ -9,42 +9,45 @@ const noteColor = '#64748b'
 function PricingTable() {
   return (
     <div id="pricing-table">
-      <ExtraWidth width={100}>
+      <ExtraWidth width={110}>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
             <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
               <Column>
                 <TierName>Small team</TierName>
                 ≤2 <SoftwareDevelopers />
-                <SubHeading id="pricing-table_filler" style={{ visibility: 'hidden' }}>
-                  Invisible filler<NoteRef>3</NoteRef>
+                <SubHeading className="pricing-table_filler" style={{ visibility: 'hidden' }}>
+                  Invisible filler<NoteRef>2</NoteRef>
                 </SubHeading>
                 <Free />
                 <div>
                   <Check>Full access</Check>
                   <Check>Forever free</Check>
                   <Check>
-                    No license key<NoteRef>2</NoteRef>
+                    No license key<NoteRef>3</NoteRef>
                   </Check>
                 </div>
               </Column>
               <Column>
                 <TierName>Larger team</TierName>
                 ≥3 <SoftwareDevelopers />
-                <div style={{ display: 'flex', columnGap: 40, rowGap: 15, flexWrap: 'wrap' }}>
-                  <div>
+                <div className="pricing-inner-columns" style={{ columnGap: 40, rowGap: 15, flexWrap: 'wrap' }}>
+                  <div className="pricing-section pricing-section-limited">
                     <SubHeading>
-                      Limited resources<NoteRef>3</NoteRef>
+                      Limited funds<NoteRef>2</NoteRef>
                     </SubHeading>
                     <Free />
                     <Check>Full access</Check>
                     <Check>Forever free</Check>
                     <Check>
-                      <Link href="/gift">Apply</Link> for free license key
+                      <Link href="/free">Apply</Link> for free license key
                     </Check>
                   </div>
-                  <div>
-                    <SubHeading>Sufficient resources</SubHeading>
+                  <SectionDivider />
+                  <div className="pricing-section pricing-section-sufficient">
+                    <SubHeading>
+                      Sufficient funds<NoteRef>2</NoteRef>
+                    </SubHeading>
                     <Price color="#2563eb" suffix=" one time">
                       $5k
                     </Price>
@@ -53,7 +56,7 @@ function PricingTable() {
                       Forever access<NoteRef>4</NoteRef>
                     </Check>
                     <Check>
-                      Free trial: 6 months + <Link href="/gift">extendable</Link>
+                      Free trial: 6 months + <Link href="/free">extendable</Link>
                     </Check>
                   </div>
                 </div>
@@ -64,11 +67,11 @@ function PricingTable() {
                 Only developers who regularly contribute code: occasional contributors and bots don't count.
               </Note>
               <Note ref={2}>
-                License key isn't required: you use Vike just like any regular open source tool (zero encumbrance).
+                For example, organizations with <Link href="/free#who-s-eligible">few employees</Link> are considered
+                resource-limited.
               </Note>
               <Note ref={3}>
-                E.g. organizations with <Link href="/gift#who-s-eligible">few employees</Link> are considered
-                resource-limited.
+                License key isn't required: you use Vike just like any regular open source tool (zero encumbrance).
               </Note>
               <Note ref={4}>
                 One-time payment for a lifetime license key: valid forever, including all future Vike updates.
@@ -81,11 +84,23 @@ function PricingTable() {
   )
 }
 
-function SubHeading({ children, id, style }: { children: React.ReactNode; style?: React.CSSProperties; id?: string }) {
+function SectionDivider() {
   return (
-    <div id={id} style={{ marginTop: 23, ...style }}>
-      <b>{children}</b>
+    <div className="pricing-section-divider">
+      <span className="pricing-section-divider-or">or</span>
     </div>
+  )
+}
+
+function SubHeading({
+  children,
+  className,
+  style,
+}: { children: React.ReactNode; style?: React.CSSProperties; className?: string }) {
+  return (
+    <h3 className={className} style={{ fontWeight: 400, ...style }}>
+      <b>{children}</b>
+    </h3>
   )
 }
 
@@ -152,7 +167,12 @@ function Check({ children }: { children: React.ReactNode }) {
 function GreenCheckmark() {
   const size = 18
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      style={{ width: size, height: size, flexShrink: 0 }}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <path d="M20 6L9 17l-5-5" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
@@ -160,7 +180,7 @@ function GreenCheckmark() {
 
 function ExtraWidth({ children, width }: { children: React.ReactNode; width: number }) {
   return (
-    <div id="pricing-table_extra-width" style={{ marginLeft: -width / 2, marginRight: -width / 2 }}>
+    <div className="pricing-table_extra-width" style={{ marginLeft: -width / 2, marginRight: -width / 2 }}>
       {children}
     </div>
   )

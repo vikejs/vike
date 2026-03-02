@@ -1,9 +1,7 @@
-// TODO/now: rename isImportPath isImport
-
-export { isImportPathNpmPackage }
-export { isImportPathNpmPackageOrPathAlias }
-export { assertIsImportPathNpmPackage }
-export { isPathAliasRecommended }
+export { isImportNpmPackage }
+export { isImportNpmPackageOrPathAlias }
+export { assertImportIsNpmPackage }
+export { isPathAliasRecommendation }
 export { getNpmPackageName }
 
 // For ./isNpmPackage.spec.ts
@@ -19,8 +17,9 @@ function getNpmPackageName(str: string): null | string {
   if (!res) return null
   return res.pkgName
 }
+
 /* Currently not used
-export function isNpmPackageName(str: string | undefined): boolean {
+export function isValidNpmPackageName(str: string | undefined): boolean {
   const res = parseNpmPackage(str)
   return res !== null && res.importPath === null
 }
@@ -33,25 +32,25 @@ export function getNpmPackageImportPath(str: string): null | string {
 }
 //*/
 
-function isImportPathNpmPackage(str: string, { cannotBePathAlias }: { cannotBePathAlias: true }): boolean {
+function isImportNpmPackage(str: string, { cannotBePathAlias }: { cannotBePathAlias: true }): boolean {
   assert(cannotBePathAlias)
-  return isImportPathNpmPackageOrPathAlias(str)
+  return isImportNpmPackageOrPathAlias(str)
 }
 // We cannot distinguish path aliases that look like npm package imports
-function isImportPathNpmPackageOrPathAlias(str: string): boolean {
+function isImportNpmPackageOrPathAlias(str: string): boolean {
   const res = parseNpmPackage(str)
   return res !== null
 }
-function assertIsImportPathNpmPackage(str: string): void {
+function assertImportIsNpmPackage(str: string): void {
   assert(
-    isImportPathNpmPackage(str, {
-      // If `str` is a path alias that looks like an npm package => assertIsImportPathNpmPackage() is erroneous but that's okay because the assertion will eventually fail for some other user using a disambiguated path alias.
+    isImportNpmPackage(str, {
+      // If `str` is a path alias that looks like an npm package => assertImportIsNpmPackage() is erroneous but that's okay because the assertion will eventually fail for some other user using a disambiguated path alias.
       cannotBePathAlias: true,
     }),
     str,
   )
 }
-function isPathAliasRecommended(alias: string): boolean {
+function isPathAliasRecommendation(alias: string): boolean {
   // Cannot be distinguished from npm package names
   if (!isDistinguishable(alias)) return false
 
@@ -73,7 +72,7 @@ function isDistinguishable(alias: string): boolean {
     parseNpmPackage(`${alias}/fake-path`) === null &&
     parseNpmPackage(`${alias}fake/deep/path`) === null &&
     parseNpmPackage(`${alias}/fake/deep/path`) === null &&
-    // See note about '-' in ./isNpmPackageName.spec.ts
+    // See note about '-' in ./parseNpmPackage.spec.ts
     // ```ts
     // expect(parseNpmPackage('-')).toBe(null) // actually wrong: https://www.npmjs.com/package/-
     // ```

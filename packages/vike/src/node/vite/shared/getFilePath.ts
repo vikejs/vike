@@ -8,7 +8,7 @@ export { assertModuleId }
 
 import path from 'node:path'
 import { assertFilePathAbsoluteFilesystem } from '../../../utils/isFilePathAbsoluteFilesystem.js'
-import { assertIsImportPathNpmPackage } from '../../../utils/parseNpmPackage.js'
+import { assertImportIsNpmPackage } from '../../../utils/parseNpmPackage.js'
 import { toPosixPath } from '../../../utils/path.js'
 import { assert } from '../../../utils/assert.js'
 import { assertPosixPath } from '../../../utils/path.js'
@@ -59,7 +59,7 @@ function getComputedProps(
   if ('filePathAbsoluteUserRootDir' in args) {
     const importPathAbsolute = args.importPathAbsolute ?? null
     const { filePathAbsoluteUserRootDir } = args
-    if (importPathAbsolute) assertIsImportPathNpmPackage(importPathAbsolute)
+    if (importPathAbsolute) assertImportIsNpmPackage(importPathAbsolute)
     return {
       importPathAbsolute,
       filePathAbsoluteUserRootDir,
@@ -72,7 +72,7 @@ function getComputedProps(
 }
 function getComputedPropsImportPathAbsolute(args: { importPathAbsolute: string }) {
   const { importPathAbsolute } = args
-  assertIsImportPathNpmPackage(importPathAbsolute)
+  assertImportIsNpmPackage(importPathAbsolute)
   return {
     filePathAbsoluteUserRootDir: null,
     importPathAbsolute,

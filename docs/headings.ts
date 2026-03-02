@@ -11,7 +11,7 @@ import {
   iconGlobe,
   iconPlug,
   iconMegaphone,
-} from '@brillout/docpress' with { type: 'vike-pointer' }
+} from '@brillout/docpress' with { type: 'vike:pointer' }
 import type {
   HeadingDefinition,
   Config,
@@ -74,6 +74,11 @@ const headings = [
     pageDesign: {
       hideMenuLeft: true,
     },
+  },
+  {
+    level: 2,
+    title: 'Free Program',
+    url: '/free',
   },
   {
     level: 2,
@@ -1131,11 +1136,6 @@ function misc() {
   return (
     [
       {
-        title: 'Gift',
-        url: '/gift',
-        category: 'Overview',
-      },
-      {
         title: 'Consulting',
         url: '/consulting',
       },
@@ -1167,16 +1167,6 @@ function misc() {
       {
         title: 'RPC',
         url: '/RPC',
-      },
-      {
-        title: 'Get a free license key',
-        url: '/free',
-        category: 'Overview',
-      },
-      {
-        title: 'Buying a license key',
-        url: '/buy',
-        category: 'Overview',
       },
       {
         title: 'SPA',

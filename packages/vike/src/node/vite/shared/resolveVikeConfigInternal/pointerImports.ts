@@ -42,6 +42,10 @@ function transformPointerImports(
   skipWarnings?: true,
 ): string | null {
   const spliceOperations: SpliceOperation[] = []
+  // Collect all const declarations to prepend at the top, so that they are
+  // available before any code runs (import declarations are hoisted but const
+  // is not, so we must place them at the top to avoid TDZ errors).
+  const constDeclarations: string[] = []
 
   // Performance trick
   if (!code.includes('import')) return null
@@ -93,7 +97,7 @@ function transformPointerImports(
       }
     }
 
-    let replacement = ''
+    let constDeclaration = ''
     node.specifiers.forEach((specifier) => {
       assert(
         specifier.type === 'ImportSpecifier' ||
@@ -111,18 +115,22 @@ function transformPointerImports(
         return importLocalName
       })()
       const importString = serializePointerImportData({ importPath, exportName, importStringWasGenerated: true })
-      replacement += `const ${importLocalName} = '${importString}';`
+      constDeclaration += `const ${importLocalName} = '${importString}';`
     })
 
+    if (constDeclaration) constDeclarations.push(constDeclaration)
+    // Replace the import with blank lines to preserve source map line numbers.
     spliceOperations.push({
       start,
       end,
-      replacement,
+      replacement: '\n'.repeat(importStatementCode.split('\n').length - 1),
     })
   })
 
-  const codeMod = spliceMany(code, spliceOperations)
-  return codeMod
+  if (constDeclarations.length === 0 && spliceOperations.length === 0) return null
+  const codeWithImportsRemoved = spliceMany(code, spliceOperations)
+  if (constDeclarations.length === 0) return codeWithImportsRemoved
+  return constDeclarations.join('') + '\n' + codeWithImportsRemoved
 }
 function getImports(code: string): ImportDeclaration[] {
   const result = parseSync(code, {
