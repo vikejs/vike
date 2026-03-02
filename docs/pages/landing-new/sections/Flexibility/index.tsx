@@ -76,7 +76,7 @@ const FlexibilitySection = () => {
             </div>
           </GlassContainer>
         </div>
-        <BlurDot type="green" size="xxl" visibility="low" className="absolute -top-20 -left-60 z-0" />
+        {/* <BlurDot type="green" size="xxl" visibility="low" className="absolute -top-20 -left-60 z-0" /> */}
       </LayoutComponent>
 
       <div className="relative my-32">

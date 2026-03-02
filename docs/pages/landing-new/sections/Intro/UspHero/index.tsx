@@ -158,7 +158,7 @@ const UspHero = ({ onHoverChange, activeUspId }: UspHeroProps) => {
       </div>
 
       {/* static scrolling */}
-      <div className="relative z-10 grid grid-cols-3 md:w-6/7 mx-auto px-2 py-2 ">
+      <div className="relative z-10 grid grid-cols-3 md:w-6/7 mx-auto px-2 py-2">
         {landingPageHeroUsps.map((usp) => {
           const visualState = uspVisualStateById.get(usp.id)
           const toneClass = visualState?.toneClass ?? 'grayscale-0 opacity-100'

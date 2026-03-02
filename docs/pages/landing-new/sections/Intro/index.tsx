@@ -4,7 +4,6 @@ import GradientText from '../../components/GradientText'
 import UspHero from './UspHero'
 import Headline from '../../components/Headline'
 import BrandSubsection from './BrandSubsection'
-import HeroBackgroundColorFade from './HeroBackgroundColorFade'
 import type { UspHoverTarget } from './intro.types'
 import useIntroHeadlineGradientMotion from './useIntroHeadlineGradientMotion'
 import { UiColorVariantKey, UiVariantTextColor } from '../../util/ui.constants'
@@ -62,7 +61,6 @@ const IntroSection = () => {
     <>
       <div data-intro-section-root="true" className="relative">
         <div className="absolute top-0 left-0 h-1/2 w-full bg-linear-to-t to-white z-10" />
-        <HeroBackgroundColorFade hoveredColor={fadeColor} />
         <LayoutComponent
           $size="md"
           className="flex flex-col items-center text-center lg:min-h-[calc(100dvh-56*var(--spacing))] pb-20 overflow-hidden"
@@ -74,9 +72,10 @@ const IntroSection = () => {
             </span>
             <div className="relative">
               <Headline as="h1" variant="xlarge">
-                <HeadlineWord word="Flexible." isActive={activeHeadlineWord === 'green'} color="green" />{' '}
+                Build <GradientText color='orange'>fast</GradientText>, build <GradientText color='blue'>right</GradientText>
+                {/* <HeadlineWord word="Flexible." isActive={activeHeadlineWord === 'green'} color="green" />{' '}
                 <HeadlineWord word="Reliable." isActive={activeHeadlineWord === 'blue'} color="blue" />{' '}
-                <HeadlineWord word="Fast." isActive={activeHeadlineWord === 'orange'} color="orange" />
+                <HeadlineWord word="Fast." isActive={activeHeadlineWord === 'orange'} color="orange" /> */}
               </Headline>
             </div>
             <p className="text-xl md:text-2xl text-grey text-center w-3/4 lg:w-3/5 mx-auto mb-6 mt-4">
