@@ -60,12 +60,12 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
       name: 'vike:pluginUniversalDeploy',
       config() {
         for (const [pageId, page] of Object.entries(vikeConfig.pages)) {
-          const additionalConfig = getDeployConfigs(pageId, page)
+          const deployConfigs = getDeployConfigs(pageId, page)
 
-          if (additionalConfig !== null) {
+          if (deployConfigs !== null) {
             addEntry({
               id: 'vike/fetch',
-              ...additionalConfig,
+              ...deployConfigs,
             })
           }
         }
