@@ -17,25 +17,7 @@ import pc from '@brillout/picocolors'
 const virtualFileIdCatchAll = /^virtual:ud:catch-all$/
 
 function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
-  // +server was also used by vike-server and vike-photon
-  const vikeExtendsNames = new Set(
-    vikeConfig._extensions.map(
-      (plusFile) => ('fileExportsByConfigName' in plusFile ? plusFile.fileExportsByConfigName : {}).name,
-    ),
-  )
-  const vikeServerOrVikePhoton = vikeExtendsNames.has('vike-server')
-    ? 'vike-server'
-    : vikeExtendsNames.has('vike-photon')
-      ? 'vike-photon'
-      : null
-  if (vikeServerOrVikePhoton) {
-    assertWarning(
-      false,
-      `${pc.cyan(vikeServerOrVikePhoton)} is deprecated, see ${pc.underline('https://vike.dev/migration/universal-deploy')}`,
-      { onlyOnce: true },
-    )
-    return []
-  }
+  if (hasVikeServerOrVikePhoton(vikeConfig)) return []
 
   const serverConfig = vikeConfig._pageConfigGlobal.configValueSources.server?.[0]?.definedAt
   let serverEntryId = virtualFileIdCatchAll
@@ -203,4 +185,26 @@ async function noDeploymentTargetFound(c: UserConfig) {
   const cloudflareVitePlugin = resolvedPlugins.some((p) => p.name.match(/^vite-plugin-cloudflare:(?!.*:disabled$)/))
 
   return !vitePluginVercel && !cloudflareVitePlugin
+}
+
+function hasVikeServerOrVikePhoton(vikeConfig: VikeConfigInternal) {
+  // +server was also used by vike-server and vike-photon
+  const vikeExtendsNames = new Set(
+    vikeConfig._extensions.map(
+      (plusFile) => ('fileExportsByConfigName' in plusFile ? plusFile.fileExportsByConfigName : {}).name,
+    ),
+  )
+  const vikeServerOrVikePhoton = vikeExtendsNames.has('vike-server')
+    ? 'vike-server'
+    : vikeExtendsNames.has('vike-photon')
+      ? 'vike-photon'
+      : null
+  if (vikeServerOrVikePhoton) {
+    assertWarning(
+      false,
+      `${pc.cyan(vikeServerOrVikePhoton)} is deprecated, see ${pc.underline('https://vike.dev/migration/universal-deploy')}`,
+      { onlyOnce: true },
+    )
+    return true
+  }
 }
