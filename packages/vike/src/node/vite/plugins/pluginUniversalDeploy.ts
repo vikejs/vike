@@ -21,7 +21,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
 
   const serverConfig = vikeConfig._pageConfigGlobal.configValueSources.server?.[0]
   let serverEntryId = virtualFileIdCatchAll
-  let serverPath: string | null = null
+  let serverFilePath: string | null = null
   let isServerConfigEnabled = false
 
   if (vikeConfig.config.server === false) {
@@ -30,11 +30,11 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
     isServerConfigEnabled = true
   } else if (serverConfig) {
     assert('filePathAbsoluteFilesystem' in serverConfig.definedAt)
-    serverPath = serverConfig.definedAt.filePathAbsoluteFilesystem
+    serverFilePath = serverConfig.definedAt.filePathAbsoluteFilesystem
 
-    if (serverPath) {
+    if (serverFilePath) {
       isServerConfigEnabled = true
-      serverEntryId = new RegExp(escapeRegex(serverPath))
+      serverEntryId = new RegExp(escapeRegex(serverFilePath))
     }
   }
 
@@ -105,7 +105,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
         )),
   ]
 
-  if (serverPath) {
+  if (serverFilePath) {
     plugins.push(
       // If +server is defined, virtual:ud:catch-all resolve to +server absolute path
       {
@@ -117,7 +117,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
           },
           handler() {
             // Will resolve the entry from the users project root
-            return this.resolve(serverPath)
+            return this.resolve(serverFilePath)
           },
         },
 
