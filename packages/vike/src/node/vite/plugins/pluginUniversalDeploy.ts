@@ -37,6 +37,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
       serverEntryId = new RegExp(escapeRegex(serverFilePath))
     }
   }
+  if (!isServerConfigEnabled) return []
 
   const plugins: Plugin[] = [
     {
