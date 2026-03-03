@@ -14,7 +14,7 @@ import { asyncFlatten } from '../../../utils/asyncFlatten.js'
 import '../assertEnvVite.js'
 import pc from '@brillout/picocolors'
 
-const catchAllRE = /^virtual:ud:catch-all$/
+const virtualFileIdCatchAll = /^virtual:ud:catch-all$/
 
 function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
   const serverConfig = vikeConfig._pageConfigGlobal.configValueSources.server?.[0]?.definedAt
@@ -38,7 +38,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
     return []
   }
 
-  let filterRolldownId = catchAllRE
+  let filterRolldownId = virtualFileIdCatchAll
   let serverPath: string | null = null
   let isServerConfigEnabled = false
 
@@ -130,7 +130,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
         resolveId: {
           order: 'pre',
           filter: {
-            id: catchAllRE,
+            id: virtualFileIdCatchAll,
           },
           handler() {
             // Will resolve the entry from the users project root
