@@ -5,7 +5,7 @@ import { addEntry } from '@universal-deploy/store'
 import { node } from '@universal-deploy/node/vite'
 import type { VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 import { catchAll, devServer } from '@universal-deploy/store/vite'
-import { serverEntryVirtualId } from '@brillout/vite-plugin-server-entry/plugin'
+import { serverEntryVirtualId as vikeEntryId } from '@brillout/vite-plugin-server-entry/plugin'
 import MagicString from 'magic-string'
 import { escapeRegex } from '../../../utils/escapeRegex.js'
 import { getDeployConfigs } from './pluginUniversalDeploy/getDeployConfigs.js'
@@ -81,7 +81,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
           // TODO/ai use getMagicString()
           const ms = new MagicString(code)
           // Inject Vike virtual server entry
-          ms.prepend(`import "${serverEntryVirtualId}";\n`)
+          ms.prepend(`import "${vikeEntryId}";\n`)
 
           return {
             code: ms.toString(),
