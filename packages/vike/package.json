@@ -96,6 +96,10 @@
     },
     "./fetch": {
       "types": "./dist/server/runtime/fetch.d.ts",
+      "worker": "./dist/server/runtime/fetch.js",
+      "workerd": "./dist/server/runtime/fetch.js",
+      "node": "./dist/server/runtime/fetch.js",
+      "browser": "./dist/client/node.js",
       "default": "./dist/server/runtime/fetch.js"
     },
     "./__internal": {
