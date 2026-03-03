@@ -34,7 +34,7 @@ function PricingTable() {
                 <div className="pricing-inner-columns" style={{ columnGap: 40, rowGap: 15, flexWrap: 'wrap' }}>
                   <div className="pricing-section pricing-section-limited">
                     <SubHeading>
-                      Limited funds<NoteRef>2</NoteRef>
+                      Low financial resources<NoteRef>2</NoteRef>
                     </SubHeading>
                     <Free />
                     <Check>Full access</Check>
@@ -46,7 +46,7 @@ function PricingTable() {
                   <SectionDivider />
                   <div className="pricing-section pricing-section-sufficient">
                     <SubHeading>
-                      Sufficient funds<NoteRef>2</NoteRef>
+                      Enough financial resources<NoteRef>2</NoteRef>
                     </SubHeading>
                     <Price color="#2563eb" suffix=" one time">
                       $5k
@@ -105,7 +105,7 @@ function SubHeading({
 }
 
 function NoteRef({ children, style }: { children: string; style?: React.CSSProperties }) {
-  return <sup style={{ color: noteColor, ...style }}> ({children})</sup>
+  return <sup style={{ color: noteColor, ...style }}>&nbsp;({children})</sup>
 }
 function Note({ children, ref }: { children: React.ReactNode; ref: number }) {
   return (
