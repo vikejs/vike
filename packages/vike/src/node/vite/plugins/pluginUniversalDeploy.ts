@@ -21,7 +21,6 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
 
   let serverEntryId = virtualFileIdCatchAll
   let serverFilePath: string | null = null
-
   const serverConfig = vikeConfig.config.server
   if (serverConfig === false) return []
   const serverPlusFile = vikeConfig._pageConfigGlobal.configValueSources.server?.[0]
@@ -46,7 +45,6 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
       config() {
         for (const [pageId, page] of Object.entries(vikeConfig.pages)) {
           const deployConfigs = getDeployConfigs(pageId, page)
-
           if (deployConfigs !== null) {
             addEntry({
               id: 'vike/fetch',
@@ -54,24 +52,20 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
             })
           }
         }
-
         // Default catch-all route
         addEntry({
           id: 'vike/fetch',
           route: '/**',
         })
       },
-
       sharedDuringBuild: true,
     },
     {
       name: 'vike:pluginUniversalDeploy:serverEntry',
       apply: 'build',
-
       applyToEnvironment(env) {
         return env.config.consumer === 'server'
       },
-
       transform: {
         order: 'post',
         filter: {
@@ -86,7 +80,6 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
           return getMagicStringResult()
         },
       },
-
       sharedDuringBuild: true,
     },
   ]
@@ -106,7 +99,6 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
             return this.resolve(serverFilePath)
           },
         },
-
         sharedDuringBuild: true,
       },
     )
