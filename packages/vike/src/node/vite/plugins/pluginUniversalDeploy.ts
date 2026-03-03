@@ -40,6 +40,13 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
   if (!isServerConfigEnabled) return []
 
   const plugins: Plugin[] = [
+    catchAll(),
+    devServer(),
+    // Enable node adapter only if +server is defined and no other deployment target has been found
+    ...node({ importer: 'vike' }).map((p) =>
+      // Disable node() plugin later when Vite's config() hook runs, because noDeploymentTargetFound() requires `config`
+      enablePluginIf((config) => noDeploymentTargetFound(config), p),
+    ),
     {
       name: 'vike:pluginUniversalDeploy',
       config() {
@@ -96,13 +103,6 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
 
       sharedDuringBuild: true,
     },
-    catchAll(),
-    devServer(),
-    // Enable node adapter only if +server is defined and no other deployment target has been found
-    ...node({ importer: 'vike' }).map((p) =>
-      // Disable node() plugin later when Vite's config() hook runs, because noDeploymentTargetFound() requires `config`
-      enablePluginIf((config) => noDeploymentTargetFound(config), p),
-    ),
   ]
 
   if (serverFilePath) {
