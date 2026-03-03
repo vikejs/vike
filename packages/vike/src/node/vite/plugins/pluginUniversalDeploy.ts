@@ -58,10 +58,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
           route: '/**',
         })
       },
-      applyToEnvironment(env) {
-        return env.config.consumer === 'server'
-      },
-      sharedDuringBuild: true,
+      ...pluginOptions,
     },
     {
       name: 'vike:pluginUniversalDeploy:serverEntry',
@@ -80,10 +77,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
           return getMagicStringResult()
         },
       },
-      applyToEnvironment(env) {
-        return env.config.consumer === 'server'
-      },
-      sharedDuringBuild: true,
+      ...pluginOptions,
     },
   ]
 
@@ -102,16 +96,20 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
             return this.resolve(serverFilePath)
           },
         },
-        applyToEnvironment(env) {
-          return env.config.consumer === 'server'
-        },
-        sharedDuringBuild: true,
+        ...pluginOptions,
       },
     )
   }
 
   return plugins
 }
+
+const pluginOptions = {
+  applyToEnvironment(env) {
+    return env.config.consumer === 'server'
+  },
+  sharedDuringBuild: true,
+} satisfies Partial<Plugin>
 
 /**
  * Enables a plugin based on a specified condition callback which will be executed in the `config` hook.
