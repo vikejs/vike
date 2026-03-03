@@ -19,12 +19,12 @@ const virtualFileIdCatchAll = /^virtual:ud:catch-all$/
 function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
   if (hasVikeServerOrVikePhoton(vikeConfig)) return []
 
-  const serverConfig = vikeConfig._pageConfigGlobal.configValueSources.server?.[0]
   let serverEntryId = virtualFileIdCatchAll
   let serverFilePath: string | null = null
 
   const { server } = vikeConfig.config
   if (server === false) return []
+  const serverConfig = vikeConfig._pageConfigGlobal.configValueSources.server?.[0]
   if (serverConfig) {
     assert('filePathAbsoluteFilesystem' in serverConfig.definedAt)
     serverFilePath = serverConfig.definedAt.filePathAbsoluteFilesystem
