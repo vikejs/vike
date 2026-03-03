@@ -7,7 +7,7 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     serverUrl: 'http://localhost:3000',
     tolerateError({ logText, logSource }) {
       return (
-        (logText.includes('`vike-photon` is deprecated') && logSource === 'stderr') ||
+        (logText.includes('vike-photon is deprecated') && logSource === 'stderr') ||
         logText.includes("Vite's CLI is deprecated") ||
         logText.includes('Run the built server entry')
       )

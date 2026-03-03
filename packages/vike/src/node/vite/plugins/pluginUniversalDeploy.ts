@@ -32,7 +32,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
   if (vikeServerOrVikePhoton) {
     assertWarning(
       false,
-      `\`${vikeServerOrVikePhoton}\` is deprecated, see ${pc.underline('https://vike.dev/migration/universal-deploy')}`,
+      `${pc.cyan(vikeServerOrVikePhoton)} is deprecated, see ${pc.underline('https://vike.dev/migration/universal-deploy')}`,
       { onlyOnce: true },
     )
     return []
