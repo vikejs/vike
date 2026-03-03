@@ -34,7 +34,7 @@ function PricingTable() {
                 <div className="pricing-inner-columns" style={{ columnGap: 40, rowGap: 15, flexWrap: 'wrap' }}>
                   <div className="pricing-section pricing-section-limited">
                     <SubHeading>
-                      Limited funds<NoteRef>2</NoteRef>
+                      Low financial resources<NoteRef>2</NoteRef>
                     </SubHeading>
                     <Free />
                     <Check>Full access</Check>
@@ -46,7 +46,7 @@ function PricingTable() {
                   <SectionDivider />
                   <div className="pricing-section pricing-section-sufficient">
                     <SubHeading>
-                      Sufficient funds<NoteRef>2</NoteRef>
+                      Enough financial resources<NoteRef>2</NoteRef>
                     </SubHeading>
                     <Price color="#2563eb" suffix=" one time">
                       $5k
@@ -67,8 +67,8 @@ function PricingTable() {
                 Only developers who regularly contribute code: occasional contributors and bots don't count.
               </Note>
               <Note ref={2}>
-                For example, organizations with <Link href="/free#who-s-eligible">few employees</Link> are considered
-                resource-limited.
+                Small organizations with few employees <Link href="/free#who-s-eligible">are eligible</Link> to use Vike
+                for free.
               </Note>
               <Note ref={3}>
                 License key isn't required: you use Vike just like any regular open source tool (zero encumbrance).
@@ -105,7 +105,7 @@ function SubHeading({
 }
 
 function NoteRef({ children, style }: { children: string; style?: React.CSSProperties }) {
-  return <sup style={{ color: noteColor, ...style }}> ({children})</sup>
+  return <sup style={{ color: noteColor, ...style }}>&nbsp;({children})</sup>
 }
 function Note({ children, ref }: { children: React.ReactNode; ref: number }) {
   return (
