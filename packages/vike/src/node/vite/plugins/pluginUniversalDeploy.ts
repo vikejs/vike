@@ -17,7 +17,6 @@ import pc from '@brillout/picocolors'
 const virtualFileIdCatchAll = /^virtual:ud:catch-all$/
 
 function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
-  const serverConfig = vikeConfig._pageConfigGlobal.configValueSources.server?.[0]?.definedAt
   // +server was also used by vike-server and vike-photon
   const vikeExtendsNames = new Set(
     vikeConfig._extensions.map(
@@ -38,6 +37,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
     return []
   }
 
+  const serverConfig = vikeConfig._pageConfigGlobal.configValueSources.server?.[0]?.definedAt
   let serverEntryId = virtualFileIdCatchAll
   let serverPath: string | null = null
   let isServerConfigEnabled = false
