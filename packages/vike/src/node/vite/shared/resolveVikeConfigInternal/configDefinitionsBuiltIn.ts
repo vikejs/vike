@@ -107,6 +107,7 @@ type ConfigDefinitionsInternal = Record<
   ConfigDefinitionInternal
 >
 type ConfigDefinitionsBuiltIn = Record<ConfigNameBuiltIn | ConfigNameGlobal, ConfigDefinitionInternal>
+// TODO/after-PR-merge: rename_full configDefinitionsBuiltIn metaBuiltIn
 const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   onRenderHtml: {
     env: { server: true },
