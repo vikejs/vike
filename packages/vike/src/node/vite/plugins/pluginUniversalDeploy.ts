@@ -95,6 +95,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
           },
         },
         handler(code, id) {
+          // TODO/ai use getMagicString()
           const ms = new MagicString(code)
           // Inject Vike virtual server entry
           ms.prepend(`import "${serverEntryVirtualId}";\n`)
