@@ -11,7 +11,7 @@ function pageConfigToUniversalDeploy(pageId: string, page: PageConfigPublicWithR
   // Vercel specific configs
   const rawIsr = extractIsr(page.config)
   let isr = assertIsr(rawIsr)
-  const edge = assertEdge(page.config)
+  const edge = extractEdge(page.config)
 
   if (typeof page.route === 'function' && isr) {
     assertWarning(
@@ -90,7 +90,7 @@ function assertIsr(isr: object | null | undefined): number | null {
   ).expiration
 }
 
-function assertEdge(exports: unknown): boolean | null {
+function extractEdge(exports: unknown): boolean | null {
   if (exports === null || typeof exports !== 'object') return null
   if (!('edge' in exports)) return null
   const edge = (exports as { edge: unknown }).edge
