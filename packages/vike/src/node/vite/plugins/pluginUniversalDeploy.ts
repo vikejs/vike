@@ -113,8 +113,6 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
   return plugins
 }
 
-type EnableCondition = (this: ConfigPluginContext, config: UserConfig, env: ConfigEnv) => boolean | Promise<boolean>
-
 /**
  * Enables a plugin based on a specified condition callback which will be executed in the `config` hook.
  */
@@ -143,6 +141,7 @@ function enablePluginIf(condition: EnableCondition, originalPlugin: Plugin): Plu
 
   return originalPlugin
 }
+type EnableCondition = (this: ConfigPluginContext, config: UserConfig, env: ConfigEnv) => boolean | Promise<boolean>
 
 // Disable a plugin if one of the following plugin is present
 //  - vite-plugin-vercel
