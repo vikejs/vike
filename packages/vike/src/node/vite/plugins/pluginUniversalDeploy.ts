@@ -48,7 +48,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
       enablePluginIf((config) => noDeploymentTargetFound(config), p),
     ),
     {
-      name: 'vike:pluginUniversalDeploy',
+      name: 'vike:pluginUniversalDeploy:entries',
       config() {
         for (const [pageId, page] of Object.entries(vikeConfig.pages)) {
           const deployConfigs = getDeployConfigs(pageId, page)
