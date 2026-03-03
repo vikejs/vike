@@ -9,7 +9,7 @@ import { serverEntryVirtualId } from '@brillout/vite-plugin-server-entry/plugin'
 import MagicString from 'magic-string'
 import { escapeRegex } from '../../../utils/escapeRegex.js'
 import { getDeployConfigs } from './pluginUniversalDeploy/getDeployConfigs.js'
-import { assertUsage, assertWarning } from '../../../utils/assert.js'
+import { assert, assertUsage, assertWarning } from '../../../utils/assert.js'
 import { asyncFlatten } from '../../../utils/asyncFlatten.js'
 import '../assertEnvVite.js'
 import pc from '@brillout/picocolors'
@@ -19,7 +19,7 @@ const virtualFileIdCatchAll = /^virtual:ud:catch-all$/
 function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
   if (hasVikeServerOrVikePhoton(vikeConfig)) return []
 
-  const serverConfig = vikeConfig._pageConfigGlobal.configValueSources.server?.[0]?.definedAt
+  const serverConfig = vikeConfig._pageConfigGlobal.configValueSources.server?.[0]
   let serverEntryId = virtualFileIdCatchAll
   let serverPath: string | null = null
   let isServerConfigEnabled = false
@@ -28,8 +28,9 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
     return []
   } else if (vikeConfig.config.server === true) {
     isServerConfigEnabled = true
-  } else if (serverConfig && 'filePathAbsoluteFilesystem' in serverConfig) {
-    serverPath = serverConfig['filePathAbsoluteFilesystem']
+  } else if (serverConfig) {
+    assert('filePathAbsoluteFilesystem' in serverConfig.definedAt)
+    serverPath = serverConfig.definedAt.filePathAbsoluteFilesystem
 
     if (serverPath) {
       isServerConfigEnabled = true
