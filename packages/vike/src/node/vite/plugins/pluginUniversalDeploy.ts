@@ -175,10 +175,13 @@ async function noDeploymentTargetFound(c: UserConfig) {
   const photonVercel = resolvedPlugins.some((p) => p.name.startsWith('photon:target-loader:vercel'))
   const photonCloudflare = resolvedPlugins.some((p) => p.name.startsWith('photon:target-loader:cloudflare'))
 
-  assertUsage(!photonVercel, 'Replace `@photonjs/vercel` by `vite-plugin-vercel@11`. See https://vike.dev/vercel')
+  assertUsage(
+    !photonVercel,
+    'Replace `@photonjs/vercel` by `vite-plugin-vercel@11`, see https://vike.dev/migration/universal-deploy',
+  )
   assertUsage(
     !photonCloudflare,
-    'Replace `@photonjs/cloudflare` by `@cloudflare/vite-plugin`. See https://vike.dev/cloudflare',
+    'Replace `@photonjs/cloudflare` by `@cloudflare/vite-plugin`, see https://vike.dev/migration/universal-deploy',
   )
 
   // vite-plugin-vercel
