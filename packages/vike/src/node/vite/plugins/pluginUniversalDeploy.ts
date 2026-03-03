@@ -169,21 +169,21 @@ function enablePluginIf(condition: EnableCondition, originalPlugin: Plugin): Plu
 //  - vite-plugin-vercel
 //  - @cloudflare/vite-plugin
 async function noDeploymentTargetFound(c: UserConfig) {
-  const resolvedPlugins = (await asyncFlatten((c.plugins ?? []) as Plugin[])).filter((p): p is Plugin => Boolean(p))
+  const plugins = (await asyncFlatten((c.plugins ?? []) as Plugin[])).filter((p): p is Plugin => Boolean(p))
 
   assertUsage(
-    !resolvedPlugins.some((p) => p.name.startsWith('photon:target-loader:vercel')),
+    !plugins.some((p) => p.name.startsWith('photon:target-loader:vercel')),
     'Replace `@photonjs/vercel` by `vite-plugin-vercel@11`, see https://vike.dev/migration/universal-deploy',
   )
   assertUsage(
-    !resolvedPlugins.some((p) => p.name.startsWith('photon:target-loader:cloudflare')),
+    !plugins.some((p) => p.name.startsWith('photon:target-loader:cloudflare')),
     'Replace `@photonjs/cloudflare` by `@cloudflare/vite-plugin`, see https://vike.dev/migration/universal-deploy',
   )
 
   // vite-plugin-vercel
-  const vitePluginVercel = resolvedPlugins.some((p) => p.name.match(/^vite-plugin-vercel:(?!.*:disabled$)/))
+  const vitePluginVercel = plugins.some((p) => p.name.match(/^vite-plugin-vercel:(?!.*:disabled$)/))
   // @cloudflare/vite-plugin
-  const cloudflareVitePlugin = resolvedPlugins.some((p) => p.name.match(/^vite-plugin-cloudflare:(?!.*:disabled$)/))
+  const cloudflareVitePlugin = plugins.some((p) => p.name.match(/^vite-plugin-cloudflare:(?!.*:disabled$)/))
 
   return !vitePluginVercel && !cloudflareVitePlugin
 }
