@@ -38,7 +38,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
     return []
   }
 
-  let filterRolldownId = virtualFileIdCatchAll
+  let serverEntryId = virtualFileIdCatchAll
   let serverPath: string | null = null
   let isServerConfigEnabled = false
 
@@ -51,7 +51,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
 
     if (serverPath) {
       isServerConfigEnabled = true
-      filterRolldownId = new RegExp(escapeRegex(serverPath))
+      serverEntryId = new RegExp(escapeRegex(serverPath))
     }
   }
 
@@ -91,7 +91,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
         order: 'post',
         filter: {
           id: {
-            include: filterRolldownId,
+            include: serverEntryId,
           },
         },
         handler(code, id) {
