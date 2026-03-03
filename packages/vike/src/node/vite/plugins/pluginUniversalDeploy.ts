@@ -22,16 +22,16 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
   let serverEntryId = virtualFileIdCatchAll
   let serverFilePath: string | null = null
 
-  const { server } = vikeConfig.config
-  if (server === false) return []
-  const serverConfig = vikeConfig._pageConfigGlobal.configValueSources.server?.[0]
-  if (serverConfig) {
-    assert('filePathAbsoluteFilesystem' in serverConfig.definedAt)
-    serverFilePath = serverConfig.definedAt.filePathAbsoluteFilesystem
+  const serverConfig = vikeConfig.config.server
+  if (serverConfig === false) return []
+  const serverPlusFile = vikeConfig._pageConfigGlobal.configValueSources.server?.[0]
+  if (serverPlusFile) {
+    assert('filePathAbsoluteFilesystem' in serverPlusFile.definedAt)
+    serverFilePath = serverPlusFile.definedAt.filePathAbsoluteFilesystem
     assert(serverFilePath)
     serverEntryId = new RegExp(escapeRegex(serverFilePath))
   }
-  if (server !== true && !serverFilePath) return []
+  if (serverConfig !== true && !serverFilePath) return []
 
   const plugins: Plugin[] = [
     catchAll(),
