@@ -12,6 +12,7 @@ import { pageConfigToUniversalDeploy } from './pluginUniversalDeploy/pageConfigT
 import { assertUsage, assertWarning } from '../../../utils/assert.js'
 import { asyncFlatten } from '../../../utils/asyncFlatten.js'
 import '../assertEnvVite.js'
+import pc from '@brillout/picocolors'
 
 const catchAllRE = /^virtual:ud:catch-all$/
 
@@ -31,7 +32,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
   if (vikeServerOrVikePhoton) {
     assertWarning(
       false,
-      `\`${vikeServerOrVikePhoton}\` is deprecated. See https://vike.dev/migration/universal-deploy`,
+      `\`${vikeServerOrVikePhoton}\` is deprecated, see ${pc.underline('https://vike.dev/migration/universal-deploy')}`,
       { onlyOnce: true },
     )
     return []
