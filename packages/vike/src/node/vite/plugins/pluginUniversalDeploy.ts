@@ -24,6 +24,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
   let serverFilePath: string | null = null
   let isServerConfigEnabled = false
 
+  // TODO/ai simplify this block from HERE....
   if (vikeConfig.config.server === false) {
     return []
   } else if (vikeConfig.config.server === true) {
@@ -38,6 +39,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
     }
   }
   if (!isServerConfigEnabled) return []
+  // ... to HERE
 
   const plugins: Plugin[] = [
     catchAll(),
