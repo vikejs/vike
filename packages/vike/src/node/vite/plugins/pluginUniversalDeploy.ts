@@ -188,7 +188,6 @@ async function noDeploymentTargetFound(c: UserConfig) {
 }
 
 function hasVikeServerOrVikePhoton(vikeConfig: VikeConfigInternal) {
-  // +server was also used by vike-server and vike-photon
   const vikeExtendsNames = new Set(
     vikeConfig._extensions.map(
       (plusFile) => ('fileExportsByConfigName' in plusFile ? plusFile.fileExportsByConfigName : {}).name,
