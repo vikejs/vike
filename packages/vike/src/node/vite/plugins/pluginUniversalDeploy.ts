@@ -8,7 +8,7 @@ import { catchAll, devServer } from '@universal-deploy/store/vite'
 import { serverEntryVirtualId } from '@brillout/vite-plugin-server-entry/plugin'
 import MagicString from 'magic-string'
 import { escapeRegex } from '../../../utils/escapeRegex.js'
-import { pageConfigToUniversalDeploy } from './pluginUniversalDeploy/pageConfigToUniversalDeploy.js'
+import { getDeployConfigs } from './pluginUniversalDeploy/getDeployConfigs.js'
 import { assertUsage, assertWarning } from '../../../utils/assert.js'
 import { asyncFlatten } from '../../../utils/asyncFlatten.js'
 import '../assertEnvVite.js'
@@ -60,7 +60,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
       name: 'vike:pluginUniversalDeploy',
       config() {
         for (const [pageId, page] of Object.entries(vikeConfig.pages)) {
-          const additionalConfig = pageConfigToUniversalDeploy(pageId, page)
+          const additionalConfig = getDeployConfigs(pageId, page)
 
           if (additionalConfig !== null) {
             addEntry({

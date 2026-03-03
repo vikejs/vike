@@ -1,10 +1,10 @@
-export { pageConfigToUniversalDeploy }
+export { getDeployConfigs }
 
 import { assertUsage, assertWarning } from '../../../../utils/assert.js'
 import type { PageConfigPublicWithRoute } from '../../../../shared-server-client/page-configs/resolveVikeConfigPublic.js'
 import '../../assertEnvVite.js'
 
-function pageConfigToUniversalDeploy(pageId: string, page: PageConfigPublicWithRoute) {
+function getDeployConfigs(pageId: string, page: PageConfigPublicWithRoute) {
   // Convert Vike's routes to rou3 format
   const route = typeof page.route === 'string' ? getParametrizedRoute(page.route) : null
 
