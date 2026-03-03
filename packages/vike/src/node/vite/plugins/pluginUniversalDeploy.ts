@@ -115,7 +115,8 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
     catchAll(),
     // Enable node adapter only if +server is defined and no other deployment target has been found
     ...node({ importer: 'vike' }).map((p) =>
-      enablePluginIf((c) => isServerConfigEnabled && noDeploymentTargetFound(c), p),
+      // Disables the node() plugin later when Vite's config() hook runs, because noDeploymentTargetFound() requires `config`
+      enablePluginIf((config) => isServerConfigEnabled && noDeploymentTargetFound(config), p),
     ),
   ]
 
