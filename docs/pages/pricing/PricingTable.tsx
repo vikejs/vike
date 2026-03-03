@@ -74,7 +74,7 @@ function PricingTable() {
                 License key isn't required: you use Vike just like any regular open source tool (zero encumbrance).
               </Note>
               <Note ref={4}>
-                One-time payment for a lifetime license key: valid forever, including all future Vike updates.
+                One-time payment for a lifetime license: valid forever, including all future Vike updates.
               </Note>
             </div>
           </div>
