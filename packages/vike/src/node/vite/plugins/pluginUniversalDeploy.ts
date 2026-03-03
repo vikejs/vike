@@ -93,7 +93,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
 
   if (serverFilePath) {
     plugins.push(
-      // If +server is defined, virtual:ud:catch-all resolve to +server absolute path
+      // If +server.js is defined, virtual:ud:catch-all resolve to +server absolute path
       {
         name: 'vike:pluginUniversalDeploy:server',
         resolveId: {
