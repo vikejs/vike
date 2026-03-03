@@ -58,14 +58,14 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
           route: '/**',
         })
       },
+      applyToEnvironment(env) {
+        return env.config.consumer === 'server'
+      },
       sharedDuringBuild: true,
     },
     {
       name: 'vike:pluginUniversalDeploy:serverEntry',
       apply: 'build',
-      applyToEnvironment(env) {
-        return env.config.consumer === 'server'
-      },
       transform: {
         order: 'post',
         filter: {
@@ -79,6 +79,9 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
           magicString.prepend(`import "${vikeEntryId}";\n`)
           return getMagicStringResult()
         },
+      },
+      applyToEnvironment(env) {
+        return env.config.consumer === 'server'
       },
       sharedDuringBuild: true,
     },
@@ -98,6 +101,9 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
             // Will resolve the entry from the users project root
             return this.resolve(serverFilePath)
           },
+        },
+        applyToEnvironment(env) {
+          return env.config.consumer === 'server'
         },
         sharedDuringBuild: true,
       },
