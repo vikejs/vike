@@ -639,21 +639,13 @@ type ConfigBuiltIn = {
   /** @experimental */
   middleware?: Function
 
-  /**
-   * Define JavaScript Server.
+  /** Server configuration.
    *
-   * T
+   * Set it to `false` to disable support for server entries.
    *
-   * Alternatively, instead of defining +server.js you can 
-   * You can define your JavaScript server (Hono/Express.js/...) entry as +server.js file that 
-   * Define the JavaScript
-   *
-   * Either:
-   * - Set it to `false` to disable support for server entries.
-   * - 
    * Set it to `true` to build a default server entry targeting node.
    *
-   * Define a +server.js file
+   * Set it to a string that points to a server entry for advanced server integration.
    *
    * https://vike.dev/server
    */
