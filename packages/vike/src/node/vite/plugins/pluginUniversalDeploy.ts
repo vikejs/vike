@@ -25,7 +25,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
 
   const { server } = vikeConfig.config
   if (server === false) return []
-  if (server !== true && serverConfig) {
+  if (serverConfig) {
     assert('filePathAbsoluteFilesystem' in serverConfig.definedAt)
     serverFilePath = serverConfig.definedAt.filePathAbsoluteFilesystem
     if (serverFilePath) serverEntryId = new RegExp(escapeRegex(serverFilePath))
