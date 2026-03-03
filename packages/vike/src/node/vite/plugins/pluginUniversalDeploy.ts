@@ -98,12 +98,10 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
     },
     catchAll(),
     // Enable node adapter only if +server is defined and no other deployment target has been found
-    ...(!isServerConfigEnabled
-      ? []
-      : node({ importer: 'vike' }).map((p) =>
-          // Disable node() plugin later when Vite's config() hook runs, because noDeploymentTargetFound() requires `config`
-          enablePluginIf((config) => noDeploymentTargetFound(config), p),
-        )),
+    ...node({ importer: 'vike' }).map((p) =>
+      // Disable node() plugin later when Vite's config() hook runs, because noDeploymentTargetFound() requires `config`
+      enablePluginIf((config) => noDeploymentTargetFound(config), p),
+    ),
   ]
 
   if (serverFilePath) {
@@ -127,9 +125,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
     )
   }
 
-  if (isServerConfigEnabled) {
-    plugins.push(devServer())
-  }
+  plugins.push(devServer())
 
   return plugins
 }
