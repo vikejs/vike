@@ -639,17 +639,14 @@ type ConfigBuiltIn = {
   /** @experimental */
   middleware?: Function
 
-  /** Server configuration.
+  /**
+   * Set to `false` to disable Vike's automatic server integration mechanism (e.g. for integrating a JavaScript server manually via `renderPage()`).
    *
-   * Set it to `false` to disable support for server entries.
-   *
-   * Set it to `true` to build a default server entry targeting node.
-   *
-   * Set it to a string that points to a server entry for advanced server integration.
+   * Set to `true` to use Vike's built-in server (no need to define `+server.js`).
    *
    * https://vike.dev/server
    */
-  server?: boolean | string
+  server?: boolean
 
   cli?: {
     /** @experimental
