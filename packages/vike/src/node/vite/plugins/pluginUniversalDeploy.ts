@@ -169,8 +169,7 @@ function enablePluginIf(condition: EnableCondition, originalPlugin: Plugin): Plu
 //  - vite-plugin-vercel
 //  - @cloudflare/vite-plugin
 async function noDeploymentTargetFound(c: UserConfig) {
-  const plugins = await asyncFlatten((c.plugins ?? []) as Plugin[])
-  const resolvedPlugins = plugins.filter((p): p is Plugin => Boolean(p))
+  const resolvedPlugins = (await asyncFlatten((c.plugins ?? []) as Plugin[])).filter((p): p is Plugin => Boolean(p))
 
   assertUsage(
     !resolvedPlugins.some((p) => p.name.startsWith('photon:target-loader:vercel')),
