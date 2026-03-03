@@ -67,8 +67,8 @@ function PricingTable() {
                 Only developers who regularly contribute code: occasional contributors and bots don't count.
               </Note>
               <Note ref={2}>
-                For example, organizations with <Link href="/free#who-s-eligible">few employees</Link> are considered
-                resource-limited.
+                Small organizations with few employees <Link href="/free#who-s-eligible">are eligible</Link> to use Vike
+                for free.
               </Note>
               <Note ref={3}>
                 License key isn't required: you use Vike just like any regular open source tool (zero encumbrance).
