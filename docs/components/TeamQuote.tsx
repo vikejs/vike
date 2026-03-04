@@ -7,7 +7,11 @@ import React from 'react'
 const overlap = -7
 const lineSize = 4
 
-function TeamQuote({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
+function TeamQuote({
+  children,
+  style,
+  maxWidth,
+}: { children: React.ReactNode; style?: React.CSSProperties; maxWidth?: number | null }) {
   const avatarSize = 25
   return (
     <div className="quote-team" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', ...style }}>
@@ -23,7 +27,7 @@ function TeamQuote({ children, style }: { children: React.ReactNode; style?: Rea
             flexShrink: 0,
           }}
         />
-        <i style={{ maxWidth: 495 }}>{children}</i>
+        <i style={{ maxWidth: maxWidth === undefined ? 495 : (maxWidth ?? undefined) }}>{children}</i>
       </span>
       <a
         className="quote-team-author"

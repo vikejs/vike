@@ -3,14 +3,15 @@ export { PricingTable }
 import React from 'react'
 import './PricingTable.css'
 import { Link } from '@brillout/docpress'
+import { ExtraWidth } from '../../components/ExtraWidth'
 
 const noteColor = '#64748b'
 
 function PricingTable() {
   return (
     <div id="pricing-table">
-      <ExtraWidth width={110}>
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
+      <ExtraWidth>
+        <>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
             <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
               <Column>
@@ -78,7 +79,7 @@ function PricingTable() {
               </Note>
             </div>
           </div>
-        </div>
+        </>
       </ExtraWidth>
     </div>
   )
@@ -175,13 +176,5 @@ function GreenCheckmark() {
     >
       <path d="M20 6L9 17l-5-5" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
-  )
-}
-
-function ExtraWidth({ children, width }: { children: React.ReactNode; width: number }) {
-  return (
-    <div className="pricing-table_extra-width" style={{ marginLeft: -width / 2, marginRight: -width / 2 }}>
-      {children}
-    </div>
   )
 }
