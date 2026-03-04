@@ -1,13 +1,13 @@
-export { QuoteTeam }
+export { TeamQuote }
 
-import './QuoteTeam.css'
+import './TeamQuote.css'
 import { getMaintainerAvatar, maintainersList } from '../pages/team/maintainersList'
 import React from 'react'
 
 const overlap = -7
 const lineSize = 4
 
-function QuoteTeam({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
+function TeamQuote({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
   const avatarSize = 25
   return (
     <div className="quote-team" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', ...style }}>
