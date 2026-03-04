@@ -2094,8 +2094,8 @@ importers:
   test/vite-plugin-vercel:
     dependencies:
       vite-plugin-vercel:
-        specifier: ^11.0.0-beta.20
-        version: 11.0.0-beta.20(@hattip/core@0.0.49)(@types/express@5.0.6)(@universal-middleware/h3@0.4.14(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8))(express@5.2.1)(fastify@5.7.4)(hono@4.10.4)(rollup@4.43.0)(srvx@0.9.8)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
+        specifier: ^11.0.0-beta.21
+        version: 11.0.0-beta.21(@hattip/core@0.0.49)(@types/express@5.0.6)(@universal-middleware/h3@0.4.14(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8))(express@5.2.1)(fastify@5.7.4)(hono@4.10.4)(rollup@4.43.0)(srvx@0.9.8)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
     devDependencies:
       '@types/node':
         specifier: ^24.1.0
@@ -7509,8 +7509,8 @@ packages:
     peerDependencies:
       vite: '>=2.6.0'
 
-  vite-plugin-vercel@11.0.0-beta.20:
-    resolution: {integrity: sha512-IpfNFb0ygUteVavp109EB1UHnWpWn4RCaOmPRtjp/m9FdOLe3gS1mRj6kVTT4xt8ngQ5MFQ+RMTZ/u36NwL0lg==}
+  vite-plugin-vercel@11.0.0-beta.21:
+    resolution: {integrity: sha512-YoWt3JNXITz+VAgGCBGm+Pw1hhl0n+EkitpEihyAyZStQlh51aatMMUhxmNVgcqgw6WDiv2greotKpjig4g47g==}
     peerDependencies:
       vite: '>=7.1'
 
@@ -14132,7 +14132,7 @@ snapshots:
       - supports-color
       - typescript
 
-  vite-plugin-vercel@11.0.0-beta.20(@hattip/core@0.0.49)(@types/express@5.0.6)(@universal-middleware/h3@0.4.14(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8))(express@5.2.1)(fastify@5.7.4)(hono@4.10.4)(rollup@4.43.0)(srvx@0.9.8)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)):
+  vite-plugin-vercel@11.0.0-beta.21(@hattip/core@0.0.49)(@types/express@5.0.6)(@universal-middleware/h3@0.4.14(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8))(express@5.2.1)(fastify@5.7.4)(hono@4.10.4)(rollup@4.43.0)(srvx@0.9.8)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)):
     dependencies:
       '@manypkg/find-root': 3.1.0
       '@universal-deploy/store': 0.1.3(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
