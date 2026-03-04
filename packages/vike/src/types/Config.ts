@@ -95,6 +95,8 @@ type ConfigNameBuiltIn =
   | 'clientHooks'
   | 'middleware'
   | 'server'
+  | 'isr'
+  | 'edge'
 
 type ConfigNameGlobal =
   | 'onPrerenderStart'

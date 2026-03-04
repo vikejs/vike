@@ -417,6 +417,13 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     global: true,
     vite: true,
   },
+  // -- Vercel --
+  isr: {
+    env: { config: true },
+  },
+  edge: {
+    env: { config: true },
+  },
 }
 
 function getConfigEnv(pageConfig: PageConfigBuildTimeBeforeComputed, configName: string): null | ConfigEnvInternal {
