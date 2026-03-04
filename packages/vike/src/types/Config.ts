@@ -670,6 +670,18 @@ type ConfigBuiltIn = {
    * @experimental
    */
   staticReplace?: StaticReplace[]
+
+  /** Incremental Static Regeneration (ISR).
+   *
+   * https://vike.dev/vercel#isr
+   */
+  isr?: { expiration: number }
+
+  /** Deploy on Vercel Edge.
+   *
+   * https://vike.dev/vercel
+   */
+  edge?: boolean
 }
 
 type PrerenderSetting =
