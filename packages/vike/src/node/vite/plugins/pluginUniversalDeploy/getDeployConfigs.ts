@@ -1,3 +1,5 @@
+import pc from '@brillout/picocolors'
+
 export { getDeployConfigs }
 
 import { assertUsage, assertWarning } from '../../../../utils/assert.js'
@@ -12,11 +14,12 @@ function getDeployConfigs(pageId: string, page: PageConfigPublicWithRoute) {
   const rawIsr = extractIsr(page.config)
   let isr = assertIsr(rawIsr)
   const edge = extractEdge(page.config)
+  const isrOrEdge = isr ? 'isr' : edge ? 'edge' : null
 
-  if (typeof page.route === 'function' && isr) {
+  if (typeof page.route === 'function' && isrOrEdge) {
     assertWarning(
       false,
-      `Page ${pageId}: ISR is not supported when using route function. Remove \`{ isr }\` config or use a route string if possible.`,
+      `Page ${pageId}: ${pc.cyan(isrOrEdge)} is not supported when using route function. Remove ${pc.cyan(isrOrEdge)} config or use a route string if possible.`,
       { onlyOnce: true },
     )
     isr = null
@@ -25,21 +28,17 @@ function getDeployConfigs(pageId: string, page: PageConfigPublicWithRoute) {
   if (edge && rawIsr !== null && typeof rawIsr === 'object') {
     assertUsage(
       false,
-      `Page ${pageId}: ISR cannot be enabled for edge functions. Remove \`{ isr }\` config or set \`{ edge: false }\`.`,
+      `Page ${pageId}: ISR cannot be enabled for edge functions. Remove ${pc.cyan('isr')} config or set \`{ edge: false }\`.`,
     )
   }
 
-  if (edge || isr) {
-    if (route) {
-      return {
-        route,
-        vercel: {
-          isr: isr ? { expiration: isr } : undefined,
-          edge: Boolean(edge),
-        },
-      }
-    } else {
-      assertUsage(false, `Page ${pageId}: ISR is not compatible with Route Functions.`)
+  if (isrOrEdge && route) {
+    return {
+      route,
+      vercel: {
+        isr: isr ? { expiration: isr } : undefined,
+        edge: Boolean(edge),
+      },
     }
   }
 
