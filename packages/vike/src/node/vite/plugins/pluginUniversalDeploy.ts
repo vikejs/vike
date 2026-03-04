@@ -47,14 +47,14 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
           const deployConfigs = getDeployConfigs(pageId, page)
           if (deployConfigs !== null) {
             addEntry({
-              id: 'vike/fetch',
+              id: serverFilePath ?? 'vike/fetch',
               ...deployConfigs,
             })
           }
         }
         // Default catch-all route
         addEntry({
-          id: 'vike/fetch',
+          id: serverFilePath ?? 'vike/fetch',
           route: '/**',
         })
       },
@@ -67,7 +67,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
         order: 'post',
         filter: {
           id: {
-            include: serverEntryId,
+            include: [serverEntryId],
           },
         },
         handler(code, id) {

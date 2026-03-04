@@ -13,5 +13,12 @@ export default {
   title: 'My Vike App',
   description: 'Demo showcasing Vike',
 
+  // FIXME /isr 404, and edge
+  ssr: true,
+
+  // FIXME Navigating to a +isr route should always call the server?
+  // FIXME Navigating between Edge and Node should also be done server side?
+  clientRouting: false,
+
   extends: vikeReact,
 } satisfies Config

@@ -419,10 +419,12 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   },
   // -- Vercel --
   isr: {
-    env: { config: true },
+    env: { server: true, config: true },
+    eager: true,
   },
   edge: {
-    env: { config: true },
+    env: { server: true, config: true },
+    eager: true,
   },
 }
 
