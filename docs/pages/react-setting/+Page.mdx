@@ -7,9 +7,13 @@ import { ProvidedBy, ConfigSpec } from '../../components'
   providedBy={<ProvidedBy list={['vike-react']} noCustomGuide={true}>the <code>+react</code> setting</ProvidedBy>}
 />
 
-Add options to the React functions that `vike-react` calls.
+Set the options passed to the React and [`react-streaming`](https://github.com/brillout/react-streaming) functions that `vike-react` calls.
 
-On the client-side, you can set the options of React's [`hydrateRoot()`](https://react.dev/reference/react-dom/client/hydrateRoot) and [`createRoot()`](https://react.dev/reference/react-dom/client/createRoot).
+## Client
+
+On the client-side, you can set the options of following functions:
+- React's [`hydrateRoot()`](https://react.dev/reference/react-dom/client/hydrateRoot)
+- React's [`createRoot()`](https://react.dev/reference/react-dom/client/createRoot)
 
 ```ts
 // pages/+react.client.ts
@@ -19,7 +23,7 @@ import type { Config } from 'vike/types'
 
 export default {
   hydrateRootOptions: {
-    onUncaughtError
+    onUncaughtError: (err) => { /*...*/ }
     /*
     onCaughtError,
     onRecoverableError,
@@ -27,7 +31,7 @@ export default {
     */
   },
   createRootOptions: {
-    onUncaughtError
+    onUncaughtError: (err) => { /*...*/ }
     /*
     onCaughtError,
     onRecoverableError,
@@ -41,24 +45,33 @@ function onUncaughtError(err) {
 }
 ```
 
-> Make sure you define these in <code>react.<b>client</b>.js</code>.
+> Make sure you define these in <code>react.<Link href="/file-env"><b>client.js</b></Link></code>.
 
-You can also use <Link href="/pageContext">`pageContext`</Link>:
+> You can access <Link href="/pageContext">`pageContext`</Link>:
+>
+> ```ts
+> // pages/+react.client.ts
+>
+> import type { Config, PageContextClient } from 'vike/types'
+>
+> export const react: Config['react'] = (pageContext: PageContextClient) => {
+>   return {
+>     hydrateRootOptions: {
+>       /* ... */
+>     },
+>     createRootOptions: {
+>       /* ... */
+>     }
+>   }
+> }
+> ```
 
-```ts
-// pages/+react.client.ts
 
-import type { Config, PageContextClient } from 'vike/types'
+## Server
 
-export const react: Config['react'] = (pageContext: PageContextClient) => {
-  return {
-    hydrateRootOptions,
-    createRootOptions
-  }
-}
-```
-
-On the server-side, you can set the options of React's [`renderToString()`](https://react.dev/reference/react-dom/server/renderToString).
+On the server-side, you can set the options of following functions:
+- React's [`renderToString()`](https://react.dev/reference/react-dom/server/renderToString)
+- `react-streaming`'s [`renderToStream`](https://github.com/brillout/react-streaming#options)
 
 ```ts
 // pages/+react.server.ts
@@ -69,14 +82,46 @@ import type { Config } from 'vike/types'
 export default {
   renderToStringOptions: {
     identifierPrefix: 'some-id-prefix'
+    /* ... */
+  },
+  renderToStreamOptions: {
+    onBoundaryError: (err) => { /* ... */ }
+    /*
+    onTimeout,
+    seoStrategy,
+    streamOptions,
+    ...
+    */
   }
 } satisfies Config['react']
 ```
 
-> Make sure you define these in <code>react.<b>server</b>.js</code>.
+> Make sure you define these in <code>react.<Link href="/file-env"><b>server.js</b></Link></code>.
+
+> You can access <Link href="/pageContext">`pageContext`</Link>:
+>
+> ```ts
+> // pages/+react.server.ts
+>
+> import type { Config, PageContextServer } from 'vike/types'
+>
+> export const react: Config['react'] = (pageContext: PageContextServer) => {
+>   return {
+>     renderToStringOptions: {
+>       /*...*/
+>     },
+>     renderToStreamOptions: {
+>       /*...*/
+>     }
+>   }
+> }
+> ```
 
 
 ## See also
 
+- [`react-streaming`](https://github.com/brillout/react-streaming)
+- [`react-streaming` > options](https://github.com/brillout/react-streaming#options)
 - <Link href="/vike-react" />
+- <Link href="/file-env" />
 - <Link href="/settings" />
