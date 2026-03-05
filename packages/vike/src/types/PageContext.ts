@@ -1,4 +1,6 @@
 // Public usage
+import type { IncomingMessage } from 'node:http'
+
 export type { PageContext }
 export type { PageContextServer }
 export type { PageContextClient }
@@ -12,6 +14,7 @@ export type { PageContextInternalServer }
 export type { PageContextInternalClient }
 export type { PageContextInternalClient_ServerRouting }
 export type { PageContextInternalClient_ClientRouting }
+export type { PageContextInternalInit }
 export type { PageContextInit }
 
 // TO-DO/next-major-release: remove these three exports
@@ -180,6 +183,8 @@ type PageContextInit = {
   /** @deprecated Set `pageContextInit.urlOriginal` instead  */ // TO-DO/next-major-release: remove
   url?: string
 }
+
+type PageContextInternalInit = PageContextInit & { _reqDev?: IncomingMessage; _reqWeb?: Request }
 
 type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
   PageContextInit &

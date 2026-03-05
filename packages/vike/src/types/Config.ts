@@ -94,6 +94,9 @@ type ConfigNameBuiltIn =
   | 'hooksTimeout'
   | 'clientHooks'
   | 'middleware'
+  | 'server'
+  | 'isr'
+  | 'edge'
 
 type ConfigNameGlobal =
   | 'onPrerenderStart'
@@ -638,6 +641,15 @@ type ConfigBuiltIn = {
   /** @experimental */
   middleware?: Function
 
+  /**
+   * Set to `false` to disable Vike's automatic server integration mechanism (e.g. for integrating a JavaScript server manually via `renderPage()`).
+   *
+   * Set to `true` to use Vike's built-in server (no need to define `+server.js`).
+   *
+   * https://vike.dev/server
+   */
+  server?: boolean
+
   cli?: {
     /** @experimental
      *
@@ -658,6 +670,18 @@ type ConfigBuiltIn = {
    * @experimental
    */
   staticReplace?: StaticReplace[]
+
+  /** Incremental Static Regeneration (ISR).
+   *
+   * https://vike.dev/vercel#isr
+   */
+  isr?: { expiration: number }
+
+  /** Deploy on Vercel Edge.
+   *
+   * https://vike.dev/vercel
+   */
+  edge?: boolean
 }
 
 type PrerenderSetting =
