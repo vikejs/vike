@@ -34,7 +34,7 @@ function getDeployConfigs(pageId: string, page: PageConfigPublicWithRoute) {
 
   if (isrOrEdge && route) {
     return {
-      route,
+      route: [route, `${route}.pageContext.json`],
       vercel: {
         isr: isr ? { expiration: isr } : undefined,
         edge: Boolean(edge),
