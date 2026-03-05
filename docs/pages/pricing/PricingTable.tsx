@@ -3,84 +3,83 @@ export { PricingTable }
 import React from 'react'
 import './PricingTable.css'
 import { Link } from '@brillout/docpress'
+import { ExtraWidth } from '../../components/ExtraWidth'
 
 const noteColor = '#64748b'
 
 function PricingTable() {
   return (
-    <div id="pricing-table">
-      <ExtraWidth width={110}>
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-            <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
-              <Column>
-                <TierName>Small team</TierName>
-                ≤2 <SoftwareDevelopers />
-                <SubHeading className="pricing-table_filler" style={{ visibility: 'hidden' }}>
-                  Invisible filler<NoteRef>2</NoteRef>
-                </SubHeading>
-                <Free />
-                <div>
+    <ExtraWidth>
+      <div id="pricing-table">
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+          <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
+            <Column>
+              <TierName>Small team</TierName>
+              ≤2 <SoftwareDevelopers />
+              <SubHeading className="pricing-table_filler" style={{ visibility: 'hidden' }}>
+                Invisible filler<NoteRef>2</NoteRef>
+              </SubHeading>
+              <Free />
+              <div>
+                <Check>Full access</Check>
+                <Check>Forever free</Check>
+                <Check>
+                  No license key<NoteRef>3</NoteRef>
+                </Check>
+              </div>
+            </Column>
+            <Column>
+              <TierName>Larger team</TierName>
+              ≥3 <SoftwareDevelopers />
+              <div className="pricing-inner-columns" style={{ columnGap: 40, rowGap: 15, flexWrap: 'wrap' }}>
+                <div className="pricing-section pricing-section-limited">
+                  <SubHeading>
+                    Low financial resources<NoteRef>2</NoteRef>
+                  </SubHeading>
+                  <Free />
                   <Check>Full access</Check>
                   <Check>Forever free</Check>
                   <Check>
-                    No license key<NoteRef>3</NoteRef>
+                    <Link href="/free">Apply</Link> for free license key
                   </Check>
                 </div>
-              </Column>
-              <Column>
-                <TierName>Larger team</TierName>
-                ≥3 <SoftwareDevelopers />
-                <div className="pricing-inner-columns" style={{ columnGap: 40, rowGap: 15, flexWrap: 'wrap' }}>
-                  <div className="pricing-section pricing-section-limited">
-                    <SubHeading>
-                      Low financial resources<NoteRef>2</NoteRef>
-                    </SubHeading>
-                    <Free />
-                    <Check>Full access</Check>
-                    <Check>Forever free</Check>
-                    <Check>
-                      <Link href="/free">Apply</Link> for free license key
-                    </Check>
-                  </div>
-                  <SectionDivider />
-                  <div className="pricing-section pricing-section-sufficient">
-                    <SubHeading>
-                      Enough financial resources<NoteRef>2</NoteRef>
-                    </SubHeading>
-                    <Price color="#2563eb" suffix=" one time">
-                      $5k
-                    </Price>
-                    <Check>Full access</Check>
-                    <Check>
-                      Forever access<NoteRef>4</NoteRef>
-                    </Check>
-                    <Check>
-                      Free trial: 6 months + <Link href="/free">extendable</Link>
-                    </Check>
-                  </div>
+                <SectionDivider />
+                <div className="pricing-section pricing-section-sufficient">
+                  <SubHeading>
+                    Enough financial resources<NoteRef>2</NoteRef>
+                  </SubHeading>
+                  <Price color="#2563eb" suffix=" one time">
+                    $5k
+                  </Price>
+                  <Check>Full access</Check>
+                  <Check>
+                    Forever access<NoteRef>4</NoteRef>
+                  </Check>
+                  <Check>
+                    Free trial: 6 months + <Link href="/free">extendable</Link>
+                  </Check>
                 </div>
-              </Column>
-            </div>
-            <div style={{ marginLeft: 10, marginTop: 20 }}>
-              <Note ref={1}>
-                Only developers who regularly contribute code: occasional contributors and bots don't count.
-              </Note>
-              <Note ref={2}>
-                Small organizations with few employees <Link href="/free#who-s-eligible">are eligible</Link> to use Vike
-                for free.
-              </Note>
-              <Note ref={3}>
-                License key isn't required: you use Vike just like any regular open source tool (zero encumbrance).
-              </Note>
-              <Note ref={4}>
-                One-time payment for a lifetime license key: valid forever, including all future Vike updates.
-              </Note>
-            </div>
+              </div>
+            </Column>
+          </div>
+          <div style={{ marginLeft: 10, marginTop: 20 }}>
+            <Note ref={1}>
+              Only developers who regularly contribute code: occasional contributors and bots don't count.
+            </Note>
+            <Note ref={2}>
+              Small organizations with few employees <Link href="/free#who-s-eligible">are eligible</Link> to use Vike
+              for free.
+            </Note>
+            <Note ref={3}>
+              License key isn't required: you use Vike just like any regular open source tool (zero encumbrance).
+            </Note>
+            <Note ref={4}>
+              One-time payment for a lifetime license: valid forever, including all future Vike updates.
+            </Note>
           </div>
         </div>
-      </ExtraWidth>
-    </div>
+      </div>
+    </ExtraWidth>
   )
 }
 
@@ -175,13 +174,5 @@ function GreenCheckmark() {
     >
       <path d="M20 6L9 17l-5-5" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
-  )
-}
-
-function ExtraWidth({ children, width }: { children: React.ReactNode; width: number }) {
-  return (
-    <div className="pricing-table_extra-width" style={{ marginLeft: -width / 2, marginRight: -width / 2 }}>
-      {children}
-    </div>
   )
 }

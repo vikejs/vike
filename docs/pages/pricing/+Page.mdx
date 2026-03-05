@@ -1,17 +1,21 @@
 import { Link, Construction } from '@brillout/docpress'
 import StateOfTheArt from './StateOfTheArt.mdx'
 import { PricingTable } from './PricingTable'
+import { TeamQuote, ExtraWidth } from '../../components'
 
 <Construction>
-The Open Source Pricing isn't implemented yet (companies can use Vike for free in the meantime). Questions welcome at [#1932](https://github.com/vikejs/vike/discussions/1932).
+The Open Source Pricing isn't implemented yet (everyone can use Vike for free in the meantime). Questions welcome at [#1932](https://github.com/vikejs/vike/discussions/1932).
 </Construction>
 
 The *Open Source Pricing* is a novel business model guaranteeing the following:
 
 - ✅ **Fully open source**: 100% MIT License
-- ✅ **Fully accessible**: everyone can use Vike (gratis if limited financial resources)
+- ✅ **Fully accessible**: everyone can use Vike (for free if limited financial resources)
 - ✅ **Fully transparent**: Vike's financial incentives are aligned with users' interests
 
+<ExtraWidth>
+  <TeamQuote style={{marginTop: 16}} maxWidth={723}>We designed it <Link href="#is-vike-still-free-software">to preserve Open Source values</Link>, while <Link href="#why-zero-investors">making Vike a sustainable tool you can trust</Link> and confidently build upon, as well as enabling us to design the DX of the future.</TeamQuote>
+</ExtraWidth>
 
 ## Pricing
 
@@ -32,7 +36,7 @@ The *Open Source Pricing* is a novel business model guaranteeing the following:
 
 #### The idea
 
-As a small team, you can use Vike just like any other open-source tool: 100% gratis and without any license key.
+As a small team, you can use Vike just like any other open-source tool — 100% free, without any license key (zero encumbrance).
 
 As a large team, you will see a pesky toaster `Get your license key at ...` in development (it's never shown in production). You can remove it by purchasing a license key and adding it to `+config.js` or by setting the `VIKE_KEY` environment variable.
 
@@ -55,7 +59,7 @@ The implementation is 100% offline (no server requests):
 
 Vike is still free as in "free speech" (not as in "free beer"), see explanations [by the Free Software Foundation](https://www.gnu.org/philosophy/free-sw.en.html) and [by Wikipedia](https://en.wikipedia.org/wiki/Free_software).
 
-We believe in Libre Software: we invented the Open Source Pricing precisely because other business models <Link doNotInferSectionTitle href="#why-not-another-business-model" >contradict the value of Libre Software</Link>.
+We believe in Libre Software: we invented the Open Source Pricing precisely because other business models <Link doNotInferSectionTitle href="#why-not-another-business-model" >contradict the values of Libre Software</Link>.
 
 Code remains not only 100% open source, but also 100% accessible: we believe money (and the lack thereof) should never prevent anyone from using code.
 
@@ -66,7 +70,7 @@ Code remains not only 100% open source, but also 100% accessible: we believe mon
 We believe other business models are flawed in fundamental ways.
 
 The Open Source Pricing means:
-- As an engineer, a much better software while everything stays 100% gratis.
+- As an engineer, a much better software while everything stays 100% free.
 - As a company, a transparent and sustainable relationship with a tool that is foundational to your stack.
 
 Compared to other business models:
@@ -78,14 +82,14 @@ Compared to other business models:
 
 If a project accepts investor funding, it will eventually have to take radical decisions to generate massive amounts of revenue — typically aiming for $100 million annually which is the kind of return investors hope for when they invest.
 
-This is often achieved through aggressive techniques, such as hidden vendor lock-in and steep fee increases, which inevitably leave you, the user, paying a hefty bill in one form or another.
+This is often achieved through aggressive tactics, like hidden vendor lock-in and/or sudden fee hikes, leaving you with a hefty, unexpected bill.
 
-In contrast, the Open Source Pricing introduces a business relationship with users that is transparent, sustainable and stable.
+In contrast, the Open Source Pricing introduces a transparent and stable business relationship.
 
 
 ## Do sponsors have to pay?
 
-No, Vike stays gratis for companies sponsoring Vike — reach out to get your free license key.
+No, Vike stays free for companies sponsoring Vike — reach out to get your free license key.
 
 
 ## How does it apply to monorepos?
