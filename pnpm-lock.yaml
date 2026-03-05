@@ -821,6 +821,9 @@ importers:
       cac:
         specifier: ^6.0.0
         version: 6.7.14
+      convert-route:
+        specifier: ^1.1.1
+        version: 1.1.1
       es-module-lexer:
         specifier: ^1.0.0
         version: 1.7.0
@@ -5203,6 +5206,9 @@ packages:
 
   convert-route@1.0.0:
     resolution: {integrity: sha512-nztGBAS0A9YfDx5nP6YMrFCxMJMwgi14dcwL7jNJ2osNYx2mvXvm8cFSv1TWGB9EOn9becVaGSRXT0DhPrxeRA==}
+
+  convert-route@1.1.1:
+    resolution: {integrity: sha512-FENJ90K52uyE/qpbjy0i0gbglgKaL50BweqXx2OPaSG/pby2woRrnAdSVcGCdFFVvb/u/UTGqKybohiqcFWCMQ==}
 
   convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
@@ -11218,6 +11224,8 @@ snapshots:
   convert-route@0.1.2: {}
 
   convert-route@1.0.0: {}
+
+  convert-route@1.1.1: {}
 
   convert-source-map@2.0.0: {}
 

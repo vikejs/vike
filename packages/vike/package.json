@@ -137,6 +137,7 @@
     "@universal-middleware/core": "^0.4.17",
     "@universal-middleware/node": "^0.1.0",
     "cac": "^6.0.0",
+    "convert-route": "^1.1.1",
     "es-module-lexer": "^1.0.0",
     "esbuild": ">=0.19.0",
     "json5": "^2.0.0",

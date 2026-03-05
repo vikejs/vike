@@ -2,13 +2,14 @@ import pc from '@brillout/picocolors'
 
 export { getDeployConfigs }
 
-import { assertUsage, assertWarning } from '../../../../utils/assert.js'
+import { fromVike, toRou3 } from 'convert-route'
+import { assert, assertUsage, assertWarning } from '../../../../utils/assert.js'
 import type { PageConfigPublicWithRoute } from '../../../../shared-server-client/page-configs/resolveVikeConfigPublic.js'
 import '../../assertEnvVite.js'
 
 function getDeployConfigs(pageId: string, page: PageConfigPublicWithRoute) {
   // Convert Vike's routes to rou3 format
-  const route = typeof page.route === 'string' ? getParametrizedRoute(page.route) : null
+  const routeIr = typeof page.route === 'string' ? fromVike(page.route) : null
 
   // Vercel specific configs
   const rawIsr = extractIsr(page.config)
@@ -32,9 +33,9 @@ function getDeployConfigs(pageId: string, page: PageConfigPublicWithRoute) {
     )
   }
 
-  if (isrOrEdge && route) {
+  if (isrOrEdge && routeIr) {
     return {
-      route: [route, `${route}.pageContext.json`],
+      route: [...new Set([...toRou3(routeIr), ...getPageContextRoute(routeIr)])],
       vercel: {
         isr: isr ? { expiration: isr } : undefined,
         edge: Boolean(edge),
@@ -43,21 +44,6 @@ function getDeployConfigs(pageId: string, page: PageConfigPublicWithRoute) {
   }
 
   return null
-}
-
-function getSegmentRou3(segment: string): string {
-  if (segment.startsWith('@')) {
-    return `/:${segment.slice(1)}`
-  }
-  if (segment === '*') {
-    return '/**'
-  }
-  return `/${segment}`
-}
-
-function getParametrizedRoute(route: string): string {
-  const segments = (route.replace(/\/$/, '') || '/').slice(1).split('/')
-  return segments.map(getSegmentRou3).join('')
 }
 
 function extractIsr(exports: unknown) {
@@ -97,4 +83,23 @@ function extractEdge(exports: unknown): boolean | null {
   assertUsage(typeof edge === 'boolean', ' `{ edge }` must be a boolean')
 
   return edge
+}
+
+function getPageContextRoute(routeIr: ReturnType<typeof fromVike>) {
+  const lastSegment = routeIr.pathname.at(-1)
+  assert(lastSegment)
+  if (!lastSegment.catchAll) {
+    const pageContextIr = {
+      pathname: [
+        ...routeIr.pathname.slice(0, -1),
+        {
+          ...lastSegment,
+          value: `${lastSegment.value}.pageContext.json`,
+        },
+      ],
+    }
+
+    return toRou3(pageContextIr)
+  }
+  return []
 }
