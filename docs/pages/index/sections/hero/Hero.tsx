@@ -73,7 +73,7 @@ function HeroTagline({
           }}
         >
           <div
-            id="tagline-main"
+            id="tagline-primary"
             style={{
               letterSpacing: 0.7,
               opacity: 0.9,

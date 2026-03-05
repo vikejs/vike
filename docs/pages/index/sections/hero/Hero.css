@@ -1,14 +1,14 @@
 .landingpage-hero-headline {
   grid-column: 3 / span 8;
 }
-#tagline-main {
+#tagline-primary {
   font-size: 60px;
 }
 #tagline-secondary {
   font-size: 27px;
 }
 @media screen and (max-width: 768px) {
-  #tagline-main {
+  #tagline-primary {
     font-size: 50px;
     line-height: 1.2;
     margin-bottom: 30px;
