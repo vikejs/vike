@@ -600,6 +600,15 @@ type ConfigBuiltIn = {
   force?: boolean
 
   /**
+   * Vike license key.
+   *
+   * Required for larger teams. Alternatively, set the `VIKE_KEY` environment variable.
+   *
+   * https://vike.dev/pricing
+   */
+  vikeKey?: string
+
+  /**
    * Content Security Policy (CSP).
    *
    * https://vike.dev/csp
