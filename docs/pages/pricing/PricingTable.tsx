@@ -58,6 +58,7 @@ function PricingTable() {
                   <Check>
                     Free trial: 6 months + <Link href="/free">extendable</Link>
                   </Check>
+                  <BuyButton />
                 </div>
               </div>
             </Column>
@@ -174,5 +175,26 @@ function GreenCheckmark() {
     >
       <path d="M20 6L9 17l-5-5" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
+  )
+}
+
+function BuyButton() {
+  return (
+    <a
+      href="https://buy.stripe.com/REPLACE_WITH_PAYMENT_LINK_ID"
+      style={{
+        display: 'inline-block',
+        marginTop: 20,
+        padding: '10px 22px',
+        background: '#2563eb',
+        color: '#fff',
+        borderRadius: 8,
+        fontWeight: 600,
+        fontSize: 15,
+        textDecoration: 'none',
+      }}
+    >
+      Buy License — $5,000
+    </a>
   )
 }
