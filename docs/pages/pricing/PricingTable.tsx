@@ -180,21 +180,22 @@ function GreenCheckmark() {
 
 function BuyButton() {
   return (
-    <a
-      href="https://buy.stripe.com/REPLACE_WITH_PAYMENT_LINK_ID"
-      style={{
-        display: 'inline-block',
-        marginTop: 20,
-        padding: '10px 22px',
-        background: '#2563eb',
-        color: '#fff',
-        borderRadius: 8,
-        fontWeight: 600,
-        fontSize: 15,
-        textDecoration: 'none',
-      }}
-    >
-      Buy License
-    </a>
+    <div style={{ textAlign: 'center', marginTop: 20 }}>
+      <a
+        href="https://buy.stripe.com/REPLACE_WITH_PAYMENT_LINK_ID"
+        style={{
+          display: 'inline-block',
+          padding: '10px 22px',
+          background: '#2563eb',
+          color: '#fff',
+          borderRadius: 8,
+          fontWeight: 600,
+          fontSize: 15,
+          textDecoration: 'none',
+        }}
+      >
+        Buy License
+      </a>
+    </div>
   )
 }
