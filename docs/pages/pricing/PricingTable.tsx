@@ -190,15 +190,14 @@ function BuyButton() {
       href="https://buy.stripe.com/REPLACE_WITH_PAYMENT_LINK_ID"
       style={{
         display: 'inline-block',
-        padding: '6px 14px',
-        background: '#2563eb',
-        color: '#fff',
-        borderRadius: 8,
+        padding: '4px 12px',
+        background: '#eff6ff',
+        color: '#2563eb',
+        borderRadius: 20,
         fontWeight: 600,
-        fontSize: 15,
+        fontSize: 13,
         textDecoration: 'none',
-        border: '1.5px solid #1d4ed8',
-        cursor: 'pointer',
+        border: '1px solid #bfdbfe',
       }}
     >
       Buy
