@@ -412,7 +412,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     global: true,
     vite: true,
   },
-  license: {
+  licenseKey: {
     env: { config: true },
     global: true,
   },

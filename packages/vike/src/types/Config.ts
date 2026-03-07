@@ -664,7 +664,7 @@ type ConfigBuiltIn = {
    *
    * https://vike.dev/pricing
    */
-  license?: string
+  licenseKey?: string
 }
 
 type PrerenderSetting =
