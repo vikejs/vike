@@ -180,21 +180,8 @@ function GreenCheckmark() {
 
 function BuyButton() {
   return (
-    <a
-      href="https://buy.stripe.com/REPLACE_WITH_PAYMENT_LINK_ID"
-      style={{
-        display: 'inline-block',
-        marginTop: 20,
-        padding: '10px 22px',
-        background: '#2563eb',
-        color: '#fff',
-        borderRadius: 8,
-        fontWeight: 600,
-        fontSize: 15,
-        textDecoration: 'none',
-      }}
-    >
-      Buy License
+    <a href="https://buy.stripe.com/REPLACE_WITH_PAYMENT_LINK_ID" className="buy-button">
+      Buy License <span className="buy-button-arrow">→</span>
     </a>
   )
 }
