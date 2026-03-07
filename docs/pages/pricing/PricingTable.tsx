@@ -136,7 +136,7 @@ function Price({
     <div style={{ marginTop: 8, marginBottom: 13, display: 'flex', alignItems: 'center', gap: 12 }}>
       <div>
         <span style={{ fontSize: 36, color, fontWeight: 700 }}>{children}</span>
-        {suffix && <span style={{ color: '#6b7280' }}>{suffix}</span>}
+        {suffix && <span style={{ color: '#94a3b8', fontSize: 13 }}>{suffix}</span>}
       </div>
       {action}
     </div>
