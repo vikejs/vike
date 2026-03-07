@@ -191,7 +191,7 @@ function BuyButton() {
       style={{
         display: 'inline-block',
         padding: '4px 12px',
-        background: '#dbeafe',
+        background: 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)',
         color: '#2563eb',
         borderRadius: 20,
         fontWeight: 600,
