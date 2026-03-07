@@ -48,7 +48,15 @@ function PricingTable() {
                   <SubHeading>
                     Enough financial resources<NoteRef>2</NoteRef>
                   </SubHeading>
-                  <Price color="#2563eb" suffix=" one time" action={<BuyButton />}>
+                  <Price
+                    color="#2563eb"
+                    suffix={
+                      <>
+                        <OneTime />
+                        <BuyButton />
+                      </>
+                    }
+                  >
                     $5k
                   </Price>
                   <Check>Full access</Check>
@@ -135,11 +143,23 @@ function Price({
   return (
     <div style={{ marginTop: 8, marginBottom: 13, display: 'flex', alignItems: 'center', gap: 10 }}>
       <span style={{ fontSize: 36, color, fontWeight: 700 }}>{children}</span>
-      {suffix && <span style={{ color: '#94a3b8', fontSize: 13 }}>{suffix}</span>}
-      {suffix && action && <span style={{ color: '#cbd5e1', fontSize: 13 }}>·</span>}
+      {suffix}
       {action}
     </div>
   )
+}
+
+function OneTime() {
+  return (
+    <>
+      <Separator />
+      <span style={{ color: '#94a3b8', fontSize: 16 }}>one time</span>
+      <Separator />
+    </>
+  )
+}
+function Separator() {
+  return <span style={{ color: '#aaa', fontSize: 16 }}>·</span>
 }
 
 function TierName({ children }: { children: string }) {
@@ -190,12 +210,12 @@ function BuyButton() {
       href="https://buy.stripe.com/REPLACE_WITH_PAYMENT_LINK_ID"
       style={{
         display: 'inline-block',
-        padding: '4px 12px',
+        padding: '6px 16px',
         background: 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)',
         color: '#2563eb',
-        borderRadius: 20,
+        borderRadius: 8,
         fontWeight: 600,
-        fontSize: 13,
+        fontSize: 14,
         textDecoration: 'none',
         border: '1px solid #93c5fd',
       }}
