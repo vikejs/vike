@@ -48,12 +48,9 @@ function PricingTable() {
                   <SubHeading>
                     Enough financial resources<NoteRef>2</NoteRef>
                   </SubHeading>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <Price color="#2563eb" suffix=" one time">
-                      $5k
-                    </Price>
-                    <BuyButton />
-                  </div>
+                  <Price color="#2563eb" suffix=" one time" action={<BuyButton />}>
+                    $5k
+                  </Price>
                   <Check>Full access</Check>
                   <Check>
                     Forever access<NoteRef>4</NoteRef>
@@ -129,11 +126,19 @@ function Free() {
   return <Price color="#10b981">Free</Price>
 }
 
-function Price({ children, color, suffix }: { children: string; color: string; suffix?: React.ReactNode }) {
+function Price({
+  children,
+  color,
+  suffix,
+  action,
+}: { children: string; color: string; suffix?: React.ReactNode; action?: React.ReactNode }) {
   return (
-    <div style={{ marginTop: 8, marginBottom: 13 }}>
-      <span style={{ fontSize: 36, color, fontWeight: 700 }}>{children}</span>
-      {suffix && <span style={{ color: '#6b7280' }}>{suffix}</span>}
+    <div style={{ marginTop: 8, marginBottom: 13, display: 'flex', alignItems: 'center', gap: 12 }}>
+      <div>
+        <span style={{ fontSize: 36, color, fontWeight: 700 }}>{children}</span>
+        {suffix && <span style={{ color: '#6b7280' }}>{suffix}</span>}
+      </div>
+      {action}
     </div>
   )
 }
