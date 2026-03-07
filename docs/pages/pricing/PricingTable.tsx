@@ -194,7 +194,7 @@ function BuyButton() {
         textDecoration: 'none',
       }}
     >
-      Buy License — $5,000
+      Buy License
     </a>
   )
 }
