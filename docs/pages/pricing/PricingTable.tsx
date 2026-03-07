@@ -6,6 +6,7 @@ import { Link } from '@brillout/docpress'
 import { ExtraWidth } from '../../components/ExtraWidth'
 
 const noteColor = '#64748b'
+const colorSeparatorLine = '#e2e8f0'
 
 function PricingTable() {
   return (
@@ -151,11 +152,11 @@ function Price({
 }
 
 function OneTime() {
-  return <span style={{ color: '#94a3b8', fontSize: 16, marginLeft: 10 }}>one time</span>
+  return <span style={{ color: 'var(--color-black)', fontSize: '1em', marginLeft: 10 }}>one time</span>
 }
 
 function Separator() {
-  return <div style={{ width: 1, height: 12, background: '#e2e8f0', borderRadius: 1, marginLeft: 18 }} />
+  return <div style={{ width: 1, height: 17, background: colorSeparatorLine, borderRadius: 1, marginLeft: 18, marginRight: 18 }} />
 }
 
 function TierName({ children }: { children: string }) {
@@ -166,7 +167,7 @@ function Column({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
-        border: '1px solid #e2e8f0',
+        border: `1px solid ${colorSeparatorLine}`,
         padding: 28,
         background: '#fefefe',
         borderRadius: 14,
@@ -207,13 +208,14 @@ function BuyButton() {
       style={{
         display: 'inline-block',
         padding: '6px 16px',
-        background: 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)',
-        color: '#2563eb',
+        background: 'linear-gradient(135deg, #f8f9fb 0%, #dbeafe 100%)',
+        color: '#4167bb',
         borderRadius: 8,
         fontWeight: 600,
         fontSize: 14,
         textDecoration: 'none',
-        border: '1px solid #93c5fd',
+        // https://caniuse.com/css-rrggbbaa
+        border: '1px solid #93c5fd4a',
       }}
     >
       Buy
