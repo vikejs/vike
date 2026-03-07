@@ -1,36 +1,3 @@
-.buy-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 20px;
-  padding: 11px 24px;
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-  color: #fff !important;
-  border-radius: 10px;
-  font-weight: 600;
-  font-size: 15px;
-  text-decoration: none !important;
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
-  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
-  letter-spacing: 0.01em;
-}
-.buy-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.45);
-  filter: brightness(1.08);
-}
-.buy-button:active {
-  transform: translateY(0);
-  box-shadow: 0 3px 10px rgba(37, 99, 235, 0.3);
-  filter: brightness(0.97);
-}
-.buy-button-arrow {
-  transition: transform 0.15s ease;
-}
-.buy-button:hover .buy-button-arrow {
-  transform: translateX(3px);
-}
-
 #pricing-table {
   a {
     text-decoration: underline;

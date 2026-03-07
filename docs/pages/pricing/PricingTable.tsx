@@ -179,9 +179,32 @@ function GreenCheckmark() {
 }
 
 function BuyButton() {
+  const [hovered, setHovered] = React.useState(false)
   return (
-    <a href="https://buy.stripe.com/REPLACE_WITH_PAYMENT_LINK_ID" className="buy-button">
-      Buy License <span className="buy-button-arrow">→</span>
+    <a
+      href="https://buy.stripe.com/REPLACE_WITH_PAYMENT_LINK_ID"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 6,
+        marginTop: 20,
+        padding: '11px 24px',
+        background: hovered ? '#1d4ed8' : '#2563eb',
+        color: '#fff',
+        borderRadius: 10,
+        fontWeight: 600,
+        fontSize: 15,
+        textDecoration: 'none',
+        boxShadow: hovered ? '0 8px 20px rgba(37,99,235,0.45)' : '0 4px 14px rgba(37,99,235,0.35)',
+        transform: hovered ? 'translateY(-2px)' : 'translateY(0)',
+        transition: 'background 0.15s, box-shadow 0.15s, transform 0.15s',
+        letterSpacing: '0.01em',
+      }}
+    >
+      Buy License{' '}
+      <span style={{ transition: 'transform 0.15s', transform: hovered ? 'translateX(3px)' : 'translateX(0)' }}>→</span>
     </a>
   )
 }
