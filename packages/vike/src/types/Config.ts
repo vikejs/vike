@@ -660,16 +660,11 @@ type ConfigBuiltIn = {
   staticReplace?: StaticReplace[]
 
   /**
-   * License for larger teams. (Small teams can use Vike for free without any license.)
+   * License key for larger teams. (Small teams can use Vike for free without any license key.)
    *
    * https://vike.dev/pricing
    */
-  license?: {
-    /** List of root domains the license is valid for. */
-    domains: string[]
-    /** License key. */
-    key: string
-  }
+  license?: string
 }
 
 type PrerenderSetting =
