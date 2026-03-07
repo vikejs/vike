@@ -133,10 +133,10 @@ function Price({
   action,
 }: { children: string; color: string; suffix?: React.ReactNode; action?: React.ReactNode }) {
   return (
-    <div style={{ marginTop: 8, marginBottom: 13 }}>
+    <div style={{ marginTop: 8, marginBottom: 13, display: 'flex', alignItems: 'center', gap: 10 }}>
       <span style={{ fontSize: 36, color, fontWeight: 700 }}>{children}</span>
       {suffix && <span style={{ color: '#94a3b8', fontSize: 13 }}>{suffix}</span>}
-      {suffix && action && <span style={{ color: '#cbd5e1', margin: '0 6px' }}>·</span>}
+      {suffix && action && <span style={{ color: '#cbd5e1', fontSize: 13 }}>·</span>}
       {action}
     </div>
   )
@@ -190,7 +190,6 @@ function BuyButton() {
       href="https://buy.stripe.com/REPLACE_WITH_PAYMENT_LINK_ID"
       style={{
         display: 'inline-block',
-        verticalAlign: 'middle',
         padding: '6px 14px',
         background: '#2563eb',
         color: '#fff',
