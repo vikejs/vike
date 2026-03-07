@@ -11,25 +11,28 @@ const PUBLIC_KEY_PEM = readFileSync(path.join(fileURLToPath(import.meta.url), '.
 type ValidationResult = { valid: true; domains: string[] } | { valid: false; reason: 'malformed' | 'invalid_signature' }
 
 function validateLicenseKey(licenseKey: string): ValidationResult {
-  const parts = licenseKey.split('.')
-  if (parts.length !== 2 || !parts[0] || !parts[1]) {
-    return { valid: false, reason: 'malformed' }
-  }
-  const [encodedPayload, encodedSignature] = parts as [string, string]
-  let domains: unknown
+  let combined: Buffer
   try {
-    domains = JSON.parse(Buffer.from(encodedPayload, 'base64url').toString('utf8'))
+    combined = Buffer.from(licenseKey, 'base64')
   } catch {
     return { valid: false, reason: 'malformed' }
   }
-  if (!Array.isArray(domains) || !domains.every((d) => typeof d === 'string')) {
+  // Ed25519 signatures are always 64 bytes; payload + space precede them
+  const SIG_LENGTH = 64
+  if (combined.length < SIG_LENGTH + 2) {
+    // minimum: 1 domain char + space + 64 sig bytes
     return { valid: false, reason: 'malformed' }
   }
-  const payload = Buffer.from(encodedPayload, 'base64url')
-  const signature = Buffer.from(encodedSignature, 'base64url')
-  const isValid = verify(null, payload, createPublicKey(PUBLIC_KEY_PEM), signature)
+  const payloadBytes = combined.subarray(0, combined.length - SIG_LENGTH - 1)
+  const spaceByte = combined[combined.length - SIG_LENGTH - 1]
+  const sigBytes = combined.subarray(combined.length - SIG_LENGTH)
+  if (spaceByte !== 0x20) return { valid: false, reason: 'malformed' }
+  const payloadStr = payloadBytes.toString('utf8')
+  const domains = payloadStr.split(',').filter(Boolean)
+  if (domains.length === 0) return { valid: false, reason: 'malformed' }
+  const isValid = verify(null, payloadBytes, createPublicKey(PUBLIC_KEY_PEM), sigBytes)
   if (!isValid) return { valid: false, reason: 'invalid_signature' }
-  return { valid: true, domains: domains as string[] }
+  return { valid: true, domains }
 }
 
 function getRootDomain(hostname: string): string {
