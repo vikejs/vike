@@ -48,9 +48,12 @@ function PricingTable() {
                   <SubHeading>
                     Enough financial resources<NoteRef>2</NoteRef>
                   </SubHeading>
-                  <Price color="#2563eb" suffix=" one time">
-                    $5k
-                  </Price>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <Price color="#2563eb" suffix=" one time">
+                      $5k
+                    </Price>
+                    <BuyButton />
+                  </div>
                   <Check>Full access</Check>
                   <Check>
                     Forever access<NoteRef>4</NoteRef>
@@ -58,7 +61,6 @@ function PricingTable() {
                   <Check>
                     Free trial: 6 months + <Link href="/free">extendable</Link>
                   </Check>
-                  <BuyButton />
                 </div>
               </div>
             </Column>
@@ -180,22 +182,20 @@ function GreenCheckmark() {
 
 function BuyButton() {
   return (
-    <div style={{ textAlign: 'center', marginTop: 20 }}>
-      <a
-        href="https://buy.stripe.com/REPLACE_WITH_PAYMENT_LINK_ID"
-        style={{
-          display: 'inline-block',
-          padding: '10px 22px',
-          background: '#2563eb',
-          color: '#fff',
-          borderRadius: 8,
-          fontWeight: 600,
-          fontSize: 15,
-          textDecoration: 'none',
-        }}
-      >
-        Buy License
-      </a>
-    </div>
+    <a
+      href="https://buy.stripe.com/REPLACE_WITH_PAYMENT_LINK_ID"
+      style={{
+        display: 'inline-block',
+        padding: '6px 14px',
+        background: '#2563eb',
+        color: '#fff',
+        borderRadius: 8,
+        fontWeight: 600,
+        fontSize: 15,
+        textDecoration: 'none',
+      }}
+    >
+      Buy
+    </a>
   )
 }
