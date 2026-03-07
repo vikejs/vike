@@ -412,10 +412,6 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     global: true,
     vite: true,
   },
-  vikeKey: {
-    env: { config: true },
-    global: true,
-  },
 }
 
 function getConfigEnv(pageConfig: PageConfigBuildTimeBeforeComputed, configName: string): null | ConfigEnvInternal {
