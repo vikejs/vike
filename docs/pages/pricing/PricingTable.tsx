@@ -197,6 +197,8 @@ function BuyButton() {
         fontWeight: 600,
         fontSize: 15,
         textDecoration: 'none',
+        border: '1.5px solid #1d4ed8',
+        cursor: 'pointer',
       }}
     >
       Buy
