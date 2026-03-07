@@ -53,6 +53,7 @@ function PricingTable() {
                     suffix={
                       <>
                         <OneTime />
+                        <Separator />
                         <BuyButton />
                       </>
                     }
@@ -150,7 +151,11 @@ function Price({
 }
 
 function OneTime() {
-  return <span style={{ color: '#94a3b8', fontSize: 13, marginLeft: 10 }}>one time</span>
+  return <span style={{ color: '#94a3b8', fontSize: 16, marginLeft: 10 }}>one time</span>
+}
+
+function Separator() {
+  return <div style={{ width: 1, height: 12, background: '#e2e8f0', borderRadius: 1, marginLeft: 18 }} />
 }
 
 function TierName({ children }: { children: string }) {
@@ -201,7 +206,6 @@ function BuyButton() {
       href="https://buy.stripe.com/REPLACE_WITH_PAYMENT_LINK_ID"
       style={{
         display: 'inline-block',
-        marginLeft: 18,
         padding: '6px 16px',
         background: 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)',
         color: '#2563eb',
