@@ -191,13 +191,13 @@ function BuyButton() {
       style={{
         display: 'inline-block',
         padding: '4px 12px',
-        background: '#eff6ff',
+        background: '#dbeafe',
         color: '#2563eb',
         borderRadius: 20,
         fontWeight: 600,
         fontSize: 13,
         textDecoration: 'none',
-        border: '1px solid #bfdbfe',
+        border: '1px solid #93c5fd',
       }}
     >
       Buy
