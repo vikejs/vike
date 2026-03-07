@@ -156,7 +156,11 @@ function OneTime() {
 }
 
 function Separator() {
-  return <div style={{ width: 1, height: 17, background: colorSeparatorLine, borderRadius: 1, marginLeft: 18, marginRight: 18 }} />
+  return (
+    <div
+      style={{ width: 1, height: 17, background: colorSeparatorLine, borderRadius: 1, marginLeft: 18, marginRight: 18 }}
+    />
+  )
 }
 
 function TierName({ children }: { children: string }) {
