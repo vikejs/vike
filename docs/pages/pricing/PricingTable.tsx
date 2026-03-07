@@ -159,7 +159,7 @@ function OneTime() {
   )
 }
 function Separator() {
-  return <span style={{ color: '#aaa', fontSize: 16 }}>·</span>
+  return <div style={{ width: 1, height: 12, background: '#e2e8f0', borderRadius: 1 }} />
 }
 
 function TierName({ children }: { children: string }) {
