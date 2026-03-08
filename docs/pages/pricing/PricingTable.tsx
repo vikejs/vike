@@ -48,7 +48,7 @@ function PricingTable() {
                 <SectionDivider />
                 <div className="pricing-section pricing-section-sufficient">
                   <SubHeading>
-                    Enough financial resources<NoteRef>2</NoteRef>
+                    High financial resources<NoteRef>2</NoteRef>
                   </SubHeading>
                   <Price
                     color="#2563eb"
