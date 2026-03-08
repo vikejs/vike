@@ -1179,6 +1179,10 @@ function misc() {
         category: 'Overview',
       },
       {
+        title: '`+license`',
+        url: '/license',
+      },
+      {
         title: 'Glossary',
         url: '/glossary',
       },

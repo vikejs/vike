@@ -1,0 +1,32 @@
+import { Link } from '@brillout/docpress'
+import { ConfigSpec } from '../../components'
+
+<ConfigSpec
+  env="config"
+  global
+  isTypeOneLiner
+>
+`string {:ts}`
+</ConfigSpec>
+
+License key for larger teams.
+
+> If you're a small team, you don't need a license key — you can use Vike for free, without a license, just like any regular open source tool (zero hurdle). See <Link href="/pricing" />.
+
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
+
+export default {
+  license: 'your-license-key'
+} satisfies Config
+```
+
+> The license key isn't a secret — you can safely make it public (for example, you can commit it to a public repository).
+
+
+## See also
+
+- <Link href="/pricing" />
+- <Link href="/free" />
