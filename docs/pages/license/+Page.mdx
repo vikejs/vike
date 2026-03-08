@@ -9,9 +9,13 @@ import { ConfigSpec } from '../../components'
 `string {:ts}`
 </ConfigSpec>
 
-License key for larger teams.
+The license key for larger teams.
 
-> If you're a small team, you don't need a license key — you can use Vike for free, without a license, just like any regular open source tool (zero hurdle). See <Link href="/pricing" />.
+> If you're a small team, you don't need a license key — you can use Vike for free, without a license, just like any regular open source tool. See <Link href="/pricing" />.
+
+## Installation
+
+To install the license key, add it to your <Link href="/config">`+config.js`</Link> file:
 
 ```ts
 // pages/+config.ts
@@ -19,11 +23,17 @@ License key for larger teams.
 import type { Config } from 'vike/types'
 
 export default {
-  license: 'your-license-key'
+  license: 'REPLACE_WITH_YOUR_KEY' // [!code ++]
 } satisfies Config
 ```
 
-> The license key isn't a secret — you can safely make it public (for example, you can commit it to a public repository).
+> Your license key isn't secret — it's safe to make public (for example, you can commit it to a public repository).
+
+## Update domain names
+
+Your license key is valid for any subdomain of the root domains you entered when purchasing the license.
+
+You can add or update your list of root domain names (for free) by <a href="mailto:support@vike.dev">contacting us</a> (we will eventually automate this process).
 
 
 ## See also

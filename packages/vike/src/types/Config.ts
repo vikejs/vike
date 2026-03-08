@@ -660,7 +660,7 @@ type ConfigBuiltIn = {
   staticReplace?: StaticReplace[]
 
   /**
-   * License key for larger teams.
+   * The license key for larger teams.
    *
    * https://vike.dev/license
    * https://vike.dev/pricing
