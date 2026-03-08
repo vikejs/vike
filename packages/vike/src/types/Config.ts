@@ -658,6 +658,15 @@ type ConfigBuiltIn = {
    * @experimental
    */
   staticReplace?: StaticReplace[]
+
+  /**
+   * License key for larger teams.
+   *
+   * Small teams don't need a license key — they can use Vike for free, without a license, just like any regular open source tool.
+   *
+   * https://vike.dev/pricing
+   */
+  license?: string
 }
 
 type PrerenderSetting =
