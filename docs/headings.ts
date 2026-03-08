@@ -1183,13 +1183,6 @@ function misc() {
         url: '/glossary',
       },
       {
-        title: 'Payment Success',
-        url: '/payment-success',
-        pageDesign: {
-          hideTitle: true,
-        },
-      },
-      {
         title: 'Languages',
         url: '/languages',
       },
