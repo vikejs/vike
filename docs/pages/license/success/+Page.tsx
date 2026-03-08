@@ -12,7 +12,7 @@ function Page() {
       </p>
       <p style={{ color: '#475569', fontSize: 16, lineHeight: 1.6, marginBottom: 32 }}>
         If you don't receive it within 10 minutes, please check your spam folder or{' '}
-        <a href="mailto:license@vike.dev" style={{ color: '#2563eb' }}>
+        <a href="mailto:support@vike.dev" style={{ color: '#2563eb' }}>
           contact us
         </a>
         .
