@@ -1187,8 +1187,8 @@ function misc() {
         url: '/glossary',
       },
       {
-        title: 'Payment Success',
-        url: '/payment-success',
+        title: 'License Success',
+        url: '/license/success',
         pageDesign: {
           hideTitle: true,
         },
