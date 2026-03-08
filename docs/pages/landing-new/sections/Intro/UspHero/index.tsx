@@ -17,7 +17,6 @@ interface UspHeroProps {
 }
 
 const UspHero = ({ onHoverChange, activeUspId }: UspHeroProps) => {
-  const hoverLeaveTimeoutRef = useRef<number | null>(null)
   const { rootRef } = useUspHero()
 
   const highlightedUspId = activeUspId
@@ -37,17 +36,8 @@ const UspHero = ({ onHoverChange, activeUspId }: UspHeroProps) => {
     )
   }, [highlightedUspId])
 
-  const clearHoverLeaveTimeout = useCallback(() => {
-    if (hoverLeaveTimeoutRef.current === null) {
-      return
-    }
-    window.clearTimeout(hoverLeaveTimeoutRef.current)
-    hoverLeaveTimeoutRef.current = null
-  }, [])
-
   const handleMouseEnter = useCallback(
     (event: MouseEvent<HTMLDivElement>, uspId: string, dotColor: UspHoverTarget['color']) => {
-      clearHoverLeaveTimeout()
       const rect = event.currentTarget.getBoundingClientRect()
       onHoverChange?.({
         id: uspId,
@@ -56,22 +46,12 @@ const UspHero = ({ onHoverChange, activeUspId }: UspHeroProps) => {
         y: rect.top + rect.height / 2,
       })
     },
-    [clearHoverLeaveTimeout, onHoverChange],
+    [onHoverChange],
   )
 
   const handleMouseLeave = useCallback(() => {
-    clearHoverLeaveTimeout()
-    hoverLeaveTimeoutRef.current = window.setTimeout(() => {
-      onHoverChange?.(null)
-      hoverLeaveTimeoutRef.current = null
-    }, 90)
-  }, [clearHoverLeaveTimeout, onHoverChange])
-
-  useEffect(() => {
-    return () => {
-      clearHoverLeaveTimeout()
-    }
-  }, [clearHoverLeaveTimeout])
+    onHoverChange?.(null)
+  }, [onHoverChange])
 
   return (
     <div ref={rootRef} className="w-full" data-usp-hero>
