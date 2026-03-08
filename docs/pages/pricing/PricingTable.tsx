@@ -5,7 +5,9 @@ import './PricingTable.css'
 import { Link } from '@brillout/docpress'
 import { ExtraWidth } from '../../components/ExtraWidth'
 
-const noteColor = '#64748b'
+const colorNote = '#64748b'
+const colorSeparatorLine = '#e2e8f0'
+const colorFree = '#10b981'
 
 function PricingTable() {
   return (
@@ -48,7 +50,18 @@ function PricingTable() {
                   <SubHeading>
                     Enough financial resources<NoteRef>2</NoteRef>
                   </SubHeading>
-                  <Price color="#2563eb" suffix=" one time">
+                  <Price
+                    color="#2563eb"
+                    suffix={
+                      <>
+                        <OneTime />
+                        {/*
+                        <Separator />
+                        <BuyButton />
+                        */}
+                      </>
+                    }
+                  >
                     $5k
                   </Price>
                   <Check>Full access</Check>
@@ -56,7 +69,8 @@ function PricingTable() {
                     Forever access<NoteRef>4</NoteRef>
                   </Check>
                   <Check>
-                    Free trial: 6 months + <Link href="/free">extendable</Link>
+                    <span style={{ color: colorFree, fontWeight: 700, fontSize: '1.1em' }}>Free</span> trial: 6 months +{' '}
+                    <Link href="/free">extendable</Link>
                   </Check>
                 </div>
               </div>
@@ -104,11 +118,11 @@ function SubHeading({
 }
 
 function NoteRef({ children, style }: { children: string; style?: React.CSSProperties }) {
-  return <sup style={{ color: noteColor, ...style }}>&nbsp;({children})</sup>
+  return <sup style={{ color: colorNote, ...style }}>&nbsp;({children})</sup>
 }
 function Note({ children, ref }: { children: React.ReactNode; ref: number }) {
   return (
-    <div style={{ color: noteColor, fontSize: '0.94em', lineHeight: 1.5 }}>
+    <div style={{ color: colorNote, fontSize: '0.94em', lineHeight: 1.5 }}>
       ({ref}) {children}
     </div>
   )
@@ -123,15 +137,33 @@ function SoftwareDevelopers() {
 }
 
 function Free() {
-  return <Price color="#10b981">Free</Price>
+  return <Price color={colorFree}>Free</Price>
 }
 
-function Price({ children, color, suffix }: { children: string; color: string; suffix?: React.ReactNode }) {
+function Price({
+  children,
+  color,
+  suffix,
+  action,
+}: { children: string; color: string; suffix?: React.ReactNode; action?: React.ReactNode }) {
   return (
-    <div style={{ marginTop: 8, marginBottom: 13 }}>
+    <div style={{ marginTop: 8, marginBottom: 13, display: 'flex', alignItems: 'center' }}>
       <span style={{ fontSize: 36, color, fontWeight: 700 }}>{children}</span>
-      {suffix && <span style={{ color: '#6b7280' }}>{suffix}</span>}
+      {suffix}
+      {action}
     </div>
+  )
+}
+
+function OneTime() {
+  return <span style={{ color: 'var(--color-black)', fontSize: '1em', marginLeft: 10 }}>one time</span>
+}
+
+function Separator() {
+  return (
+    <div
+      style={{ width: 1, height: 17, background: colorSeparatorLine, borderRadius: 1, marginLeft: 18, marginRight: 18 }}
+    />
   )
 }
 
@@ -143,7 +175,7 @@ function Column({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
-        border: '1px solid #e2e8f0',
+        border: `1px solid ${colorSeparatorLine}`,
         padding: 28,
         background: '#fefefe',
         borderRadius: 14,
@@ -174,5 +206,27 @@ function GreenCheckmark() {
     >
       <path d="M20 6L9 17l-5-5" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
+  )
+}
+
+function BuyButton() {
+  return (
+    <a
+      href="https://buy.stripe.com/REPLACE_WITH_PAYMENT_LINK_ID"
+      style={{
+        display: 'inline-block',
+        padding: '6px 16px',
+        background: 'linear-gradient(135deg, #f8f9fb 0%, #dbeafe 100%)',
+        color: '#4167bb',
+        borderRadius: 8,
+        fontWeight: 600,
+        fontSize: 14,
+        textDecoration: 'none',
+        // https://caniuse.com/css-rrggbbaa
+        border: '1px solid #93c5fd4a',
+      }}
+    >
+      Buy
+    </a>
   )
 }
