@@ -1,10 +1,131 @@
-import { Link, Warning } from '@brillout/docpress'
-import { WhyPhoton } from '../vike-photon/components'
+import { Link, Warning, FileAdded } from '@brillout/docpress'
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
+import '../../components/tabs.css'
+import { JustAMiddleware } from '../../components'
 
-<Warning>
-  The `+server` setting has been replaced by <Link href="/photon">`+photon`</Link>, see:
-  - <Link href="/vike-server" />
-  - <Link href="/migration/vike-photon" />
-</Warning>
+The `+server.ts` (or `+server.js`) file defines your server entry point. It's the recommended way to integrate Vike with your server and to enable universal deployment.
 
-> <WhyPhoton />
+It should export a default object with a `fetch` property. This makes your server compatible with various platforms and allows Vike to automatically deploy it.
+
+```ts
+// +server.ts
+
+import { Hono } from 'hono'
+import { apply } from '@universal-middleware/hono'
+import vike from 'vike/universal-middleware'
+
+const app = new Hono()
+apply(app, [vike])
+
+export default {
+  fetch: app.fetch
+}
+```
+
+## `vike/universal-middleware`
+
+Vike provides a universal middleware that can be used with any server framework. It handles the rendering of your pages.
+
+It's recommended to move your server entry to `+server.ts` and use `vike/universal-middleware` with the `export default { fetch }` syntax.
+
+<Tabs>
+  <TabList>
+    <Tab>Hono</Tab>
+    <Tab>Express.js</Tab>
+    <Tab>Fastify</Tab>
+    <Tab>H3</Tab>
+    <Tab>Elysia</Tab>
+  </TabList>
+  <TabPanel>
+    ```ts
+    // +server.ts
+
+    import { Hono } from 'hono'
+    import { apply } from '@universal-middleware/hono'
+    import vike from 'vike/universal-middleware'
+
+    const app = new Hono()
+    apply(app, [vike])
+
+    export default {
+      fetch: app.fetch
+    }
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```ts
+    // +server.ts
+
+    import express from 'express'
+    import { apply } from '@universal-middleware/express'
+    import vike from 'vike/universal-middleware'
+    import { toFetchHandler } from 'srvx/node'
+
+    const app = express()
+    apply(app, [vike])
+
+    export default {
+      fetch: toFetchHandler(app)
+    }
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```ts
+    // +server.ts
+
+    import fastify from 'fastify'
+    import { apply } from '@universal-middleware/fastify'
+    import vike from 'vike/universal-middleware'
+    import { toFetchHandler } from 'srvx/node'
+
+    const app = fastify()
+    await apply(app, [vike])
+
+    export default {
+      fetch: toFetchHandler(app)
+    }
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```ts
+    // +server.ts
+
+    import { createApp, toWebHandler } from 'h3'
+    import { apply } from '@universal-middleware/h3'
+    import vike from 'vike/universal-middleware'
+
+    const app = createApp()
+    apply(app, [vike])
+
+    export default {
+      fetch: toWebHandler(app)
+    }
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```ts
+    // +server.ts
+
+    import { Elysia } from 'elysia'
+    import { apply } from '@universal-middleware/elysia'
+    import vike from 'vike/universal-middleware'
+
+    const app = new Elysia()
+    apply(app, [vike])
+
+    export default {
+      fetch: app.fetch
+    }
+    ```
+  </TabPanel>
+</Tabs>
+
+## Universal Deployment
+
+When you define a `+server.ts` file, Vike can automatically build and deploy your app to various platforms like <Link href="/vercel">Vercel</Link> or <Link href="/cloudflare">Cloudflare</Link>.
+
+## See also
+
+- <Link href="/migration/universal-deploy" />
+- <Link href="/vercel" />
+- <Link href="/cloudflare" />

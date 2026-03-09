@@ -136,7 +136,7 @@ export default {
 
 ## 4. Move server entry to `+server.ts`
 
-Replace `@photonjs/*` with `@universal-middleware/*` and use `vike/universal-middleware`. It's recommended to move your server entry to `+server.ts`.
+Replace `@photonjs/*` with `@universal-middleware/*` and use `vike/universal-middleware`. It's recommended to move your server entry to `+server.ts` and use the `export default { fetch }` syntax.
 
 <Tabs>
   <TabList>
@@ -157,7 +157,10 @@ Replace `@photonjs/*` with `@universal-middleware/*` and use `vike/universal-mid
 
     const app = new Hono()
     apply(app, [vike]) // [!code ++]
-    // ...
+
+    export default { // [!code ++]
+      fetch: app.fetch // [!code ++]
+    } // [!code ++]
     ```
   </TabPanel>
   <TabPanel>
@@ -168,10 +171,14 @@ Replace `@photonjs/*` with `@universal-middleware/*` and use `vike/universal-mid
     import { apply } from '@photonjs/express' // [!code --]
     // @docpress-uncomment import { apply } from '@universal-middleware/express' // [!code ++]
     import vike from 'vike/universal-middleware' // [!code ++]
+    import { toFetchHandler } from 'srvx/node' // [!code ++]
 
     const app = express()
     apply(app, [vike]) // [!code ++]
-    // ...
+
+    export default { // [!code ++]
+      fetch: toFetchHandler(app) // [!code ++]
+    } // [!code ++]
     ```
   </TabPanel>
   <TabPanel>
@@ -182,24 +189,32 @@ Replace `@photonjs/*` with `@universal-middleware/*` and use `vike/universal-mid
     import { apply } from '@photonjs/fastify' // [!code --]
     // @docpress-uncomment import { apply } from '@universal-middleware/fastify' // [!code ++]
     import vike from 'vike/universal-middleware' // [!code ++]
+    import { toFetchHandler } from 'srvx/node' // [!code ++]
 
     const app = fastify()
     await apply(app, [vike]) // [!code ++]
-    // ...
+
+    export default { // [!code ++]
+      fetch: toFetchHandler(app) // [!code ++]
+    } // [!code ++]
     ```
   </TabPanel>
   <TabPanel>
     ```ts
     // +server.ts
 
-    import { createApp } from 'h3'
+    import { createApp, toWebHandler } from 'h3' // [!code ++]
+    import { createApp } from 'h3' // [!code --]
     import { apply } from '@photonjs/h3' // [!code --]
     // @docpress-uncomment import { apply } from '@universal-middleware/h3' // [!code ++]
     import vike from 'vike/universal-middleware' // [!code ++]
 
     const app = createApp()
     apply(app, [vike]) // [!code ++]
-    // ...
+
+    export default { // [!code ++]
+      fetch: toWebHandler(app) // [!code ++]
+    } // [!code ++]
     ```
   </TabPanel>
   <TabPanel>
@@ -213,7 +228,10 @@ Replace `@photonjs/*` with `@universal-middleware/*` and use `vike/universal-mid
 
     const app = new Elysia()
     app.use(apply([vike])) // [!code ++]
-    // ...
+
+    export default { // [!code ++]
+      fetch: app.fetch // [!code ++]
+    } // [!code ++]
     ```
   </TabPanel>
 </Tabs>
