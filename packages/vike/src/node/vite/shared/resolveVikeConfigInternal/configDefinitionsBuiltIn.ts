@@ -417,8 +417,11 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     global: true,
     vite: true,
   },
+  license: {
+    env: { config: true },
+    global: true,
+  },
   // -- Vercel --
-  // FIXME(magne4000) handle .pageContext.json URLs in Vercel's routing mapping
   isr: {
     env: { server: true, config: true },
     eager: true,

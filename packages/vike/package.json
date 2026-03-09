@@ -261,7 +261,7 @@
     "./fetch.js"
   ],
   "devDependencies": {
-    "@brillout/release-me": "^0.4.12",
+    "@brillout/release-me": "^0.4.13",
     "@types/babel__core": "^7.20.5",
     "@types/estree": "^1.0.5",
     "@types/node": "^20.10.5",

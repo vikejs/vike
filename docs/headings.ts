@@ -59,13 +59,13 @@ const headings = [
   },
   {
     level: 2,
-    title: 'FAQ',
-    url: '/faq',
+    title: 'Why Vike',
+    url: '/why',
   },
   {
     level: 2,
-    title: 'Why Vike',
-    url: '/why',
+    title: 'FAQ',
+    url: '/faq',
   },
   {
     level: 2,
@@ -1179,8 +1179,19 @@ function misc() {
         category: 'Overview',
       },
       {
+        title: '`+license`',
+        url: '/license',
+      },
+      {
         title: 'Glossary',
         url: '/glossary',
+      },
+      {
+        title: 'License Success',
+        url: '/license/success',
+        pageDesign: {
+          hideTitle: true,
+        },
       },
       {
         title: 'Languages',

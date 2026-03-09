@@ -671,6 +671,14 @@ type ConfigBuiltIn = {
    */
   staticReplace?: StaticReplace[]
 
+  /**
+   * The license key for larger teams.
+   *
+   * https://vike.dev/license
+   * https://vike.dev/pricing
+   */
+  license?: string
+
   /** Incremental Static Regeneration (ISR).
    *
    * https://vike.dev/vercel#isr
