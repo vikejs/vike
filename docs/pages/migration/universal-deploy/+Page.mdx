@@ -50,7 +50,58 @@ You should also install the corresponding `@vikejs/*` package for your server.
   </TabPanel>
 </Tabs>
 
-## 2. Update `+config.ts`
+## 2. Update `vite.config.ts` (optional)
+
+If you are using Vercel or Cloudflare, you should now use their native Vite plugins instead of `@photonjs/vercel` or `@photonjs/cloudflare`.
+
+<Tabs>
+  <TabList>
+    <Tab>Vercel</Tab>
+    <Tab>Cloudflare</Tab>
+  </TabList>
+  <TabPanel>
+    ```shell
+    npm install vite-plugin-vercel@11
+    ```
+
+    ```ts
+    // vite.config.ts
+
+    import vike from 'vike/plugin'
+    import { vercel } from 'vite-plugin-vercel/vite' // [!code ++]
+
+    export default {
+      plugins: [
+        vike(),
+        vercel() // [!code ++]
+      ]
+    }
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    npm install @cloudflare/vite-plugin
+    ```
+
+    ```ts
+    // vite.config.ts
+
+    import vike from 'vike/plugin'
+    import { cloudflare } from '@cloudflare/vite-plugin' // [!code ++]
+
+    export default {
+      plugins: [
+        cloudflare({ // [!code ++]
+          viteEnvironment: { name: 'ssr' } // [!code ++]
+        }), // [!code ++]
+        vike()
+      ]
+    }
+    ```
+  </TabPanel>
+</Tabs>
+
+## 3. Update `+config.ts`
 
 Remove `vike-photon` extension and move `photon` settings to top-level or `+server.ts`.
 
@@ -83,7 +134,7 @@ export default {
 }
 ```
 
-## 3. Move server entry to `+server.ts`
+## 4. Move server entry to `+server.ts`
 
 Replace `@photonjs/*` with `@universal-middleware/*` and use `vike/universal-middleware`. It's recommended to move your server entry to `+server.ts`.
 
