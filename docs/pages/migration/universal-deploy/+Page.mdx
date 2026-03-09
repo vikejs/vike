@@ -1,0 +1,174 @@
+import { Link } from '@brillout/docpress'
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
+import '../../../components/tabs.css'
+
+Guide to migrate from <Link href="/vike-photon">`vike-photon`</Link> to native `universal-deploy`.
+
+> `vike-photon` is being replaced by a native implementation of universal deployment in Vike.
+
+## 1. Update dependencies
+
+```shell
+npm uninstall vike-photon @photonjs/hono @photonjs/express @photonjs/fastify @photonjs/h3 @photonjs/elysia @photonjs/cloudflare @photonjs/vercel
+npm install vike@latest
+```
+
+You should also install the corresponding `@vikejs/*` package for your server.
+
+<Tabs>
+  <TabList>
+    <Tab>Hono</Tab>
+    <Tab>Express.js</Tab>
+    <Tab>Fastify</Tab>
+    <Tab>H3</Tab>
+    <Tab>Elysia</Tab>
+  </TabList>
+  <TabPanel>
+    ```shell
+    npm install @vikejs/hono
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    npm install @vikejs/express
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    npm install @vikejs/fastify
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    npm install @vikejs/h3
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    npm install @vikejs/elysia
+    ```
+  </TabPanel>
+</Tabs>
+
+## 2. Update `+config.ts`
+
+Remove `vike-photon` extension and move `photon` settings to top-level or `+server.ts`.
+
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
+import vikePhoton from 'vike-photon/config' // [!code --]
+
+export default {
+  extends: [
+    // ...
+    vikePhoton // [!code --]
+  ],
+  photon: { // [!code --]
+    server: 'server/index.ts' // [!code --]
+  } // [!code --]
+} satisfies Config
+```
+
+If you used `isr` or `edge` settings, they are now built-in:
+
+```ts
+// pages/+config.ts
+
+export default {
+  // ...
+  isr: { expiration: 30 }, // [!code ++]
+  edge: true // [!code ++]
+}
+```
+
+## 3. Move server entry to `+server.ts`
+
+Replace `@photonjs/*` with `@universal-middleware/*` and use `vike/universal-middleware`. It's recommended to move your server entry to `+server.ts`.
+
+<Tabs>
+  <TabList>
+    <Tab>Hono</Tab>
+    <Tab>Express.js</Tab>
+    <Tab>Fastify</Tab>
+    <Tab>H3</Tab>
+    <Tab>Elysia</Tab>
+  </TabList>
+  <TabPanel>
+    ```ts
+    // +server.ts
+
+    import { Hono } from 'hono'
+    import { apply } from '@photonjs/hono' // [!code --]
+    // @docpress-uncomment import { apply } from '@universal-middleware/hono' // [!code ++]
+    import vike from 'vike/universal-middleware' // [!code ++]
+
+    const app = new Hono()
+    apply(app, [vike]) // [!code ++]
+    // ...
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```ts
+    // +server.ts
+
+    import express from 'express'
+    import { apply } from '@photonjs/express' // [!code --]
+    // @docpress-uncomment import { apply } from '@universal-middleware/express' // [!code ++]
+    import vike from 'vike/universal-middleware' // [!code ++]
+
+    const app = express()
+    apply(app, [vike]) // [!code ++]
+    // ...
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```ts
+    // +server.ts
+
+    import fastify from 'fastify'
+    import { apply } from '@photonjs/fastify' // [!code --]
+    // @docpress-uncomment import { apply } from '@universal-middleware/fastify' // [!code ++]
+    import vike from 'vike/universal-middleware' // [!code ++]
+
+    const app = fastify()
+    await apply(app, [vike]) // [!code ++]
+    // ...
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```ts
+    // +server.ts
+
+    import { createApp } from 'h3'
+    import { apply } from '@photonjs/h3' // [!code --]
+    // @docpress-uncomment import { apply } from '@universal-middleware/h3' // [!code ++]
+    import vike from 'vike/universal-middleware' // [!code ++]
+
+    const app = createApp()
+    apply(app, [vike]) // [!code ++]
+    // ...
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```ts
+    // +server.ts
+
+    import { Elysia } from 'elysia'
+    import { apply } from '@photonjs/elysia' // [!code --]
+    // @docpress-uncomment import { apply } from '@universal-middleware/elysia' // [!code ++]
+    import vike from 'vike/universal-middleware' // [!code ++]
+
+    const app = new Elysia()
+    app.use(apply([vike])) // [!code ++]
+    // ...
+    ```
+  </TabPanel>
+</Tabs>
+
+## See also
+
+- <Link href="/vike-photon" />
+- <Link href="/vercel" />
+- <Link href="/cloudflare" />
