@@ -204,7 +204,7 @@ Replace `@photonjs/*` with `@universal-middleware/*` and use `vike/universal-mid
     // +server.ts
 
     import { createApp, toWebHandler } from 'h3' // [!code ++]
-    import { createApp } from 'h3' // [!code --]
+    // @docpress-uncomment import { createApp } from 'h3' // [!code --]
     import { apply } from '@photonjs/h3' // [!code --]
     // @docpress-uncomment import { apply } from '@universal-middleware/h3' // [!code ++]
     import vike from 'vike/universal-middleware' // [!code ++]
