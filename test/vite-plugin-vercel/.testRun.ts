@@ -14,6 +14,10 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
 
   testRunClassic(cmd, {
     skipAboutPage: true,
+    tolerateError({ logText, logSource }) {
+      // rolldown warning
+      return logText.includes('legalComments') && logSource === 'stderr'
+    },
   })
 
   test('Index page', async () => {
