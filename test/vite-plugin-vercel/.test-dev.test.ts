@@ -1,4 +1,3 @@
-import { testRunClassic } from '../../test/utils'
+import { testRun } from './.testRun'
 
-// FIXME(magne4000) Custom tests for Vercel (including tests for `.pageContext.json` routing)
-testRunClassic('npm run dev')
+testRun('npm run dev')
