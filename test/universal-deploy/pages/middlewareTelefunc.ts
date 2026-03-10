@@ -4,12 +4,8 @@ import { type UniversalMiddleware, enhance } from '@universal-middleware/core'
 import { telefunc } from 'telefunc'
 
 const telefuncUniversalMiddleware: UniversalMiddleware = async (request, context, runtime) => {
-  const url = request.url.toString()
-
   const httpResponse = await telefunc({
-    url,
-    method: request.method,
-    body: await request.text(),
+    request,
     context: {
       ...context,
       ...runtime,
