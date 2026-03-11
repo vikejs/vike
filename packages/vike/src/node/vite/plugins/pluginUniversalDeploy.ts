@@ -19,7 +19,7 @@ const virtualFileIdCatchAll = /^virtual:ud:catch-all$/
 function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
   if (hasVikeServerOrVikePhoton(vikeConfig)) return []
 
-  let serverEntryId = virtualFileIdCatchAll
+  let serverEntryId: RegExp
   let serverFilePath: string | null = null
   const serverConfig = vikeConfig.config.server
   if (serverConfig === false) return []
@@ -29,6 +29,8 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
     serverFilePath = serverPlusFile.definedAt.filePathAbsoluteFilesystem
     assert(serverFilePath)
     serverEntryId = new RegExp(escapeRegex(serverFilePath))
+  } else {
+    serverEntryId = virtualFileIdCatchAll
   }
   if (serverConfig !== true && !serverFilePath) return []
 
