@@ -1,6 +1,5 @@
-import { apply } from '@universal-middleware/hono'
+import { addVikeMiddleware } from '@vikejs/hono'
 import { Hono } from 'hono'
-import vikeMiddleware from 'vike/universal-middleware'
 
 function serve() {
   const app = new Hono()
@@ -9,7 +8,7 @@ function serve() {
     return new Response('Hello')
   })
 
-  apply(app, [vikeMiddleware])
+  addVikeMiddleware(app)
 
   return app.fetch
 }

@@ -1,9 +1,8 @@
 import { Hono } from 'hono'
-import vike from 'vike/universal-middleware'
-import { apply } from '@universal-middleware/hono'
+import { addVikeMiddleware } from '@vikejs/hono'
 
 const app = new Hono()
-apply(app, [vike])
+addVikeMiddleware(app)
 
 const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000
 

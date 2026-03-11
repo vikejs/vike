@@ -136,7 +136,7 @@ export default {
 
 ## 4. Move server entry to `+server.ts`
 
-Replace `@photonjs/*` with `@universal-middleware/*` and use `vike/universal-middleware`. It's recommended to move your server entry to `+server.ts` and use the `export default { fetch }` syntax.
+Replace `@photonjs/*` with `@vikejs/*`. It's recommended to move your server entry to `+server.ts` and use the `export default { fetch }` syntax.
 
 <Tabs>
   <TabList>
@@ -151,12 +151,10 @@ Replace `@photonjs/*` with `@universal-middleware/*` and use `vike/universal-mid
     // +server.ts
 
     import { Hono } from 'hono'
-    import { apply } from '@photonjs/hono' // [!code --]
-    // @docpress-uncomment import { apply } from '@universal-middleware/hono' // [!code ++]
-    import vike from 'vike/universal-middleware' // [!code ++]
+    // @docpress-uncomment import { addVikeMiddleware } from '@vikejs/hono' // [!code ++]
 
     const app = new Hono()
-    apply(app, [vike]) // [!code ++]
+    addVikeMiddleware(app) // [!code ++]
 
     export default { // [!code ++]
       fetch: app.fetch // [!code ++]
@@ -168,13 +166,11 @@ Replace `@photonjs/*` with `@universal-middleware/*` and use `vike/universal-mid
     // +server.ts
 
     import express from 'express'
-    import { apply } from '@photonjs/express' // [!code --]
-    // @docpress-uncomment import { apply } from '@universal-middleware/express' // [!code ++]
-    import vike from 'vike/universal-middleware' // [!code ++]
+    // @docpress-uncomment import { addVikeMiddleware } from '@vikejs/express' // [!code ++]
     import { toFetchHandler } from 'srvx/node' // [!code ++]
 
     const app = express()
-    apply(app, [vike]) // [!code ++]
+    addVikeMiddleware(app) // [!code ++]
 
     export default { // [!code ++]
       fetch: toFetchHandler(app) // [!code ++]
@@ -186,13 +182,11 @@ Replace `@photonjs/*` with `@universal-middleware/*` and use `vike/universal-mid
     // +server.ts
 
     import fastify from 'fastify'
-    import { apply } from '@photonjs/fastify' // [!code --]
-    // @docpress-uncomment import { apply } from '@universal-middleware/fastify' // [!code ++]
-    import vike from 'vike/universal-middleware' // [!code ++]
+    // @docpress-uncomment import { addVikeMiddleware } from '@vikejs/fastify' // [!code ++]
     import { toFetchHandler } from 'srvx/node' // [!code ++]
 
     const app = fastify()
-    await apply(app, [vike]) // [!code ++]
+    await addVikeMiddleware(app) // [!code ++]
 
     export default { // [!code ++]
       fetch: toFetchHandler(app) // [!code ++]
@@ -205,12 +199,10 @@ Replace `@photonjs/*` with `@universal-middleware/*` and use `vike/universal-mid
 
     import { createApp, toWebHandler } from 'h3' // [!code ++]
     // @docpress-uncomment import { createApp } from 'h3' // [!code --]
-    import { apply } from '@photonjs/h3' // [!code --]
-    // @docpress-uncomment import { apply } from '@universal-middleware/h3' // [!code ++]
-    import vike from 'vike/universal-middleware' // [!code ++]
+    // @docpress-uncomment import { addVikeMiddleware } from '@vikejs/h3' // [!code ++]
 
     const app = createApp()
-    apply(app, [vike]) // [!code ++]
+    addVikeMiddleware(app) // [!code ++]
 
     export default { // [!code ++]
       fetch: toWebHandler(app) // [!code ++]
@@ -222,12 +214,10 @@ Replace `@photonjs/*` with `@universal-middleware/*` and use `vike/universal-mid
     // +server.ts
 
     import { Elysia } from 'elysia'
-    import { apply } from '@photonjs/elysia' // [!code --]
-    // @docpress-uncomment import { apply } from '@universal-middleware/elysia' // [!code ++]
-    import vike from 'vike/universal-middleware' // [!code ++]
+    // @docpress-uncomment import { addVikeMiddleware } from '@vikejs/elysia' // [!code ++]
 
     const app = new Elysia()
-    app.use(apply([vike])) // [!code ++]
+    addVikeMiddleware(app) // [!code ++]
 
     export default { // [!code ++]
       fetch: app.fetch // [!code ++]

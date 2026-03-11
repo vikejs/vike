@@ -11,11 +11,10 @@ It should export a default object with a `fetch` property. This makes your serve
 // +server.ts
 
 import { Hono } from 'hono'
-import { apply } from '@universal-middleware/hono'
-import vike from 'vike/universal-middleware'
+import { addVikeMiddleware } from '@vikejs/hono'
 
 const app = new Hono()
-apply(app, [vike])
+addVikeMiddleware(app)
 
 export default {
   fetch: app.fetch
@@ -26,7 +25,7 @@ export default {
 
 Vike provides a universal middleware that can be used with any server framework. It handles the rendering of your pages.
 
-It's recommended to move your server entry to `+server.ts` and use `vike/universal-middleware` with the `export default { fetch }` syntax.
+It's recommended to move your server entry to `+server.ts`.
 
 <Tabs>
   <TabList>
@@ -41,11 +40,10 @@ It's recommended to move your server entry to `+server.ts` and use `vike/univers
     // +server.ts
 
     import { Hono } from 'hono'
-    import { apply } from '@universal-middleware/hono'
-    import vike from 'vike/universal-middleware'
+    import { addVikeMiddleware } from '@vikejs/hono'
 
     const app = new Hono()
-    apply(app, [vike])
+    addVikeMiddleware(app)
 
     export default {
       fetch: app.fetch
@@ -57,12 +55,11 @@ It's recommended to move your server entry to `+server.ts` and use `vike/univers
     // +server.ts
 
     import express from 'express'
-    import { apply } from '@universal-middleware/express'
-    import vike from 'vike/universal-middleware'
+    import { addVikeMiddleware } from '@vikejs/express'
     import { toFetchHandler } from 'srvx/node'
 
     const app = express()
-    apply(app, [vike])
+    addVikeMiddleware(app)
 
     export default {
       fetch: toFetchHandler(app)
@@ -74,12 +71,11 @@ It's recommended to move your server entry to `+server.ts` and use `vike/univers
     // +server.ts
 
     import fastify from 'fastify'
-    import { apply } from '@universal-middleware/fastify'
-    import vike from 'vike/universal-middleware'
+    import { addVikeMiddleware } from '@vikejs/fastify'
     import { toFetchHandler } from 'srvx/node'
 
     const app = fastify()
-    await apply(app, [vike])
+    await addVikeMiddleware(app)
 
     export default {
       fetch: toFetchHandler(app)
@@ -91,11 +87,10 @@ It's recommended to move your server entry to `+server.ts` and use `vike/univers
     // +server.ts
 
     import { createApp, toWebHandler } from 'h3'
-    import { apply } from '@universal-middleware/h3'
-    import vike from 'vike/universal-middleware'
+    import { addVikeMiddleware } from '@vikejs/h3'
 
     const app = createApp()
-    apply(app, [vike])
+    addVikeMiddleware(app)
 
     export default {
       fetch: toWebHandler(app)
@@ -107,11 +102,10 @@ It's recommended to move your server entry to `+server.ts` and use `vike/univers
     // +server.ts
 
     import { Elysia } from 'elysia'
-    import { apply } from '@universal-middleware/elysia'
-    import vike from 'vike/universal-middleware'
+    import { addVikeMiddleware } from '@vikejs/elysia'
 
     const app = new Elysia()
-    apply(app, [vike])
+    addVikeMiddleware(app)
 
     export default {
       fetch: app.fetch

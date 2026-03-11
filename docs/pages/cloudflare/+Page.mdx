@@ -80,7 +80,7 @@ export default {
 
 #### 4. Server (optional)
 
-It's recommended to move your server entry to `+server.ts` and use `vike/universal-middleware`.
+It's recommended to move your server entry to `+server.ts`.
 
 <Tabs>
   <TabList>
@@ -95,11 +95,10 @@ It's recommended to move your server entry to `+server.ts` and use `vike/univers
     // +server.ts
 
     import { Hono } from 'hono'
-    import { apply } from '@universal-middleware/hono'
-    import vike from 'vike/universal-middleware'
+    import { addVikeMiddleware } from '@vikejs/hono'
 
     const app = new Hono()
-    apply(app, [vike])
+    addVikeMiddleware(app)
     // ...
     ```
   </TabPanel>
@@ -108,11 +107,10 @@ It's recommended to move your server entry to `+server.ts` and use `vike/univers
     // +server.ts
 
     import express from 'express'
-    import { apply } from '@universal-middleware/express'
-    import vike from 'vike/universal-middleware'
+    import { addVikeMiddleware } from '@vikejs/express'
 
     const app = express()
-    apply(app, [vike])
+    addVikeMiddleware(app)
     // ...
     ```
   </TabPanel>
@@ -121,11 +119,10 @@ It's recommended to move your server entry to `+server.ts` and use `vike/univers
     // +server.ts
 
     import fastify from 'fastify'
-    import { apply } from '@universal-middleware/fastify'
-    import vike from 'vike/universal-middleware'
+    import { addVikeMiddleware } from '@vikejs/fastify'
 
     const app = fastify()
-    await apply(app, [vike])
+    await addVikeMiddleware(app)
     // ...
     ```
   </TabPanel>
@@ -134,11 +131,10 @@ It's recommended to move your server entry to `+server.ts` and use `vike/univers
     // +server.ts
 
     import { createApp } from 'h3'
-    import { apply } from '@universal-middleware/h3'
-    import vike from 'vike/universal-middleware'
+    import { addVikeMiddleware } from '@vikejs/h3'
 
     const app = createApp()
-    apply(app, [vike])
+    addVikeMiddleware(app)
     // ...
     ```
   </TabPanel>
@@ -147,11 +143,10 @@ It's recommended to move your server entry to `+server.ts` and use `vike/univers
     // +server.ts
 
     import { Elysia } from 'elysia'
-    import { apply } from '@universal-middleware/elysia'
-    import vike from 'vike/universal-middleware'
+    import { addVikeMiddleware } from '@vikejs/elysia'
 
     const app = new Elysia()
-    app.use(apply([vike]))
+    addVikeMiddleware(app)
     // ...
     ```
   </TabPanel>
