@@ -35,9 +35,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
   const serverEntryVike = serverFilePath ?? 'vike/fetch'
 
   const plugins: Plugin[] = [
-    ...auto({
-      node: { importer: 'vike' },
-    }),
+    ...auto(),
     {
       name: 'vike:pluginUniversalDeploy:entries',
       config() {
