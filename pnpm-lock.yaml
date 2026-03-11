@@ -638,9 +638,9 @@ importers:
 
   packages/create-vike-core/boilerplate-react:
     dependencies:
-      '@universal-middleware/hono':
-        specifier: ^0.4.21
-        version: 0.4.21(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.9)
+      '@vikejs/hono':
+        specifier: ^0.1.0
+        version: 0.1.0(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.9)(vike@packages+vike)
       '@vitejs/plugin-react':
         specifier: ^4.7.0
         version: 4.7.0(vite@6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
@@ -680,9 +680,9 @@ importers:
       '@types/react-dom':
         specifier: ^19.0.2
         version: 19.2.3(@types/react@19.2.11)
-      '@universal-middleware/hono':
-        specifier: ^0.4.21
-        version: 0.4.21(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.9)
+      '@vikejs/hono':
+        specifier: ^0.1.0
+        version: 0.1.0(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.9)(vike@packages+vike)
       '@vitejs/plugin-react':
         specifier: ^4.7.0
         version: 4.7.0(vite@6.3.5(@types/node@22.19.2)(terser@5.38.1)(tsx@4.20.6))
@@ -713,9 +713,9 @@ importers:
 
   packages/create-vike-core/boilerplate-vue:
     dependencies:
-      '@universal-middleware/hono':
-        specifier: ^0.4.21
-        version: 0.4.21(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.9)
+      '@vikejs/hono':
+        specifier: ^0.1.0
+        version: 0.1.0(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.9)(vike@packages+vike)
       '@vitejs/plugin-vue':
         specifier: ^6.0.1
         version: 6.0.1(vite@6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))(vue@3.5.18(typescript@5.9.3))
@@ -749,9 +749,9 @@ importers:
       '@types/node':
         specifier: ^22.10.2
         version: 22.19.2
-      '@universal-middleware/hono':
-        specifier: ^0.4.21
-        version: 0.4.21(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.9)
+      '@vikejs/hono':
+        specifier: ^0.1.0
+        version: 0.1.0(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.9)(vike@packages+vike)
       '@vitejs/plugin-vue':
         specifier: ^6.0.1
         version: 6.0.1(vite@6.3.5(@types/node@22.19.2)(terser@5.38.1)(tsx@4.20.6))(vue@3.5.18(typescript@5.9.3))
@@ -1765,9 +1765,9 @@ importers:
       '@universal-middleware/core':
         specifier: ^0.4.17
         version: 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.9)
-      '@universal-middleware/express':
-        specifier: ^0.4.26
-        version: 0.4.26(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.9)
+      '@vikejs/express':
+        specifier: ^0.1.0
+        version: 0.1.0(@hattip/core@0.0.49)(@types/express@5.0.6)(express@5.2.1)(fastify@5.7.4)(srvx@0.11.9)(vike@packages+vike)
       '@vitejs/plugin-react':
         specifier: ^4.7.0
         version: 4.7.0(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
@@ -2109,9 +2109,9 @@ importers:
       '@types/react-dom':
         specifier: ^19.1.7
         version: 19.2.3(@types/react@19.2.11)
-      '@universal-middleware/hono':
-        specifier: ^0.4.21
-        version: 0.4.21(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
+      '@vikejs/hono':
+        specifier: ^0.1.0
+        version: 0.1.0(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)(vike@packages+vike)
       '@vitejs/plugin-react-swc':
         specifier: ^3.11.0
         version: 3.11.0(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
@@ -4522,6 +4522,18 @@ packages:
 
   '@vercel/routing-utils@5.3.1':
     resolution: {integrity: sha512-HlqFRdB6Dm20xgEWtEatchf9X28NifweXPdDoEGyj5ItngaiqpywtkgkuiAk3xK9eAu2oXM36wEJbDDTxMblUg==}
+
+  '@vikejs/express@0.1.0':
+    resolution: {integrity: sha512-gQuwoxbgtqk3k3sWJxn/SxI97V28sbKp3bL/ks1Ot7B66xoAd1CBlU0smV6tAm3H6FDwEaAbxEq6f2GBH4kCUQ==}
+    peerDependencies:
+      express: ^4.0.0 || ^5.0.0
+      vike: ^0.4.255
+
+  '@vikejs/hono@0.1.0':
+    resolution: {integrity: sha512-/yoxvMGspFg6Nxvy6Nseghg2K4VgPrVhK0n3zIz/TMZwPUjRNYlsrlV0NvbTJRZV8q2mwdtjss0Oxc3Zjnngvg==}
+    peerDependencies:
+      hono: ^4.0.0
+      vike: ^0.4.255
 
   '@vite-plugin-vercel/schemas@1.0.0':
     resolution: {integrity: sha512-iUEJwHmAD4wFem5iI1Jmtcj4CO49PVBBUGDA8R8yWKC72/n1FLiQ6AgaetLqFTTT7KCbA32o9T6P3XJow4vCsg==}
@@ -10218,6 +10230,52 @@ snapshots:
       path-to-regexp-updated: path-to-regexp@6.3.0
     optionalDependencies:
       ajv: 6.12.6
+
+  '@vikejs/express@0.1.0(@hattip/core@0.0.49)(@types/express@5.0.6)(express@5.2.1)(fastify@5.7.4)(srvx@0.11.9)(vike@packages+vike)':
+    dependencies:
+      '@universal-middleware/express': 0.4.26(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.9)
+      express: 5.2.1
+      vike: link:packages/vike
+    transitivePeerDependencies:
+      - '@cloudflare/workers-types'
+      - '@hattip/core'
+      - '@types/express'
+      - '@webroute/route'
+      - elysia
+      - fastify
+      - h3
+      - hono
+      - srvx
+
+  '@vikejs/hono@0.1.0(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.9)(vike@packages+vike)':
+    dependencies:
+      '@universal-middleware/hono': 0.4.21(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.9)
+      hono: 4.10.4
+      vike: link:packages/vike
+    transitivePeerDependencies:
+      - '@cloudflare/workers-types'
+      - '@hattip/core'
+      - '@types/express'
+      - '@webroute/route'
+      - elysia
+      - fastify
+      - h3
+      - srvx
+
+  '@vikejs/hono@0.1.0(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)(vike@packages+vike)':
+    dependencies:
+      '@universal-middleware/hono': 0.4.21(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.9.8)
+      hono: 4.10.4
+      vike: link:packages/vike
+    transitivePeerDependencies:
+      - '@cloudflare/workers-types'
+      - '@hattip/core'
+      - '@types/express'
+      - '@webroute/route'
+      - elysia
+      - fastify
+      - h3
+      - srvx
 
   '@vite-plugin-vercel/schemas@1.0.0':
     dependencies:
