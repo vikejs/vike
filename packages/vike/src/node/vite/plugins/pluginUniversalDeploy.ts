@@ -1,18 +1,17 @@
 export { pluginUniversalDeploy }
 
-import type { ConfigEnv, ConfigPluginContext, Plugin, UserConfig } from 'vite'
+import type { Plugin } from 'vite'
 import { addEntry } from '@universal-deploy/store'
-import { node } from '@universal-deploy/node/vite'
+// TODO @universal-deploy/vite
+import { auto } from '@universal-deploy/auto/vite'
 import type { VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
-import { catchAll, devServer } from '@universal-deploy/store/vite'
 import { serverEntryVirtualId as vikeEntryId } from '@brillout/vite-plugin-server-entry/plugin'
 import { getMagicString } from '../shared/getMagicString.js'
 import { escapeRegex } from '../../../utils/escapeRegex.js'
 import { getDeployConfigs } from './pluginUniversalDeploy/getDeployConfigs.js'
-import { assert, assertUsage, assertWarning } from '../../../utils/assert.js'
-import { asyncFlatten } from '../../../utils/asyncFlatten.js'
-import '../assertEnvVite.js'
+import { assert, assertWarning } from '../../../utils/assert.js'
 import pc from '@brillout/picocolors'
+import '../assertEnvVite.js'
 
 const virtualFileIdCatchAll = 'virtual:ud:catch-all'
 
@@ -36,13 +35,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
   const serverEntryVike = serverFilePath ?? 'vike/fetch'
 
   const plugins: Plugin[] = [
-    catchAll(),
-    devServer(),
-    // Enable node adapter only if +server is defined and no other deployment target has been found
-    ...node({ importer: 'vike' }).map((p) =>
-      // Disable node() plugin later when Vite's config() hook runs, because noDeploymentTargetFound() requires `config`
-      enablePluginIf((config) => noDeploymentTargetFound(config), p),
-    ),
+    ...auto(),
     {
       name: 'vike:pluginUniversalDeploy:entries',
       config() {
@@ -113,59 +106,6 @@ const pluginCommon = {
   },
   sharedDuringBuild: true,
 } satisfies Partial<Plugin>
-
-/**
- * Enables a plugin based on a specified condition callback which will be executed in the `config` hook.
- */
-function enablePluginIf(condition: EnableCondition, originalPlugin: Plugin): Plugin {
-  const originalConfig = originalPlugin.config
-
-  originalPlugin.config = {
-    order: originalConfig && 'order' in originalConfig ? originalConfig.order : 'pre',
-    async handler(c, e) {
-      const enabled = await condition.call(this, c, e)
-      if (!enabled) {
-        const keysToDelete = Object.keys(originalPlugin).filter((k) => k !== 'name')
-        originalPlugin.name += ':disabled'
-        for (const key of keysToDelete) {
-          // @ts-expect-error
-          delete originalPlugin[key]
-        }
-      } else if (originalConfig) {
-        if (typeof originalConfig === 'function') {
-          return originalConfig.call(this, c, e)
-        }
-        return originalConfig.handler.call(this, c, e)
-      }
-    },
-  }
-
-  return originalPlugin
-}
-type EnableCondition = (this: ConfigPluginContext, config: UserConfig, env: ConfigEnv) => boolean | Promise<boolean>
-
-// Disable a plugin if one of the following plugin is present
-//  - vite-plugin-vercel
-//  - @cloudflare/vite-plugin
-async function noDeploymentTargetFound(c: UserConfig) {
-  const plugins = (await asyncFlatten((c.plugins ?? []) as Plugin[])).filter((p): p is Plugin => Boolean(p))
-
-  assertUsage(
-    !plugins.some((p) => p.name.startsWith('photon:target-loader:vercel')),
-    'Replace `@photonjs/vercel` by `vite-plugin-vercel@11`, see https://vike.dev/migration/universal-deploy',
-  )
-  assertUsage(
-    !plugins.some((p) => p.name.startsWith('photon:target-loader:cloudflare')),
-    'Replace `@photonjs/cloudflare` by `@cloudflare/vite-plugin`, see https://vike.dev/migration/universal-deploy',
-  )
-
-  // vite-plugin-vercel
-  const vitePluginVercel = plugins.some((p) => p.name.match(/^vite-plugin-vercel:(?!.*:disabled$)/))
-  // @cloudflare/vite-plugin
-  const cloudflareVitePlugin = plugins.some((p) => p.name.match(/^vite-plugin-cloudflare:(?!.*:disabled$)/))
-
-  return !vitePluginVercel && !cloudflareVitePlugin
-}
 
 function hasVikeServerOrVikePhoton(vikeConfig: VikeConfigInternal) {
   const vikeExtendsNames = new Set(
