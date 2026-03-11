@@ -61,7 +61,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
           route: '/**',
         })
       },
-      ...pluginOptions,
+      ...pluginCommon,
     },
     {
       name: 'vike:pluginUniversalDeploy:serverEntry',
@@ -80,7 +80,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
           return getMagicStringResult()
         },
       },
-      ...pluginOptions,
+      ...pluginCommon,
     },
   ]
 
@@ -99,7 +99,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
             return this.resolve(serverFilePath)
           },
         },
-        ...pluginOptions,
+        ...pluginCommon,
       },
     )
   }
@@ -107,7 +107,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
   return plugins
 }
 
-const pluginOptions = {
+const pluginCommon = {
   applyToEnvironment(env) {
     return env.config.consumer === 'server'
   },
