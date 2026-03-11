@@ -806,12 +806,12 @@ importers:
       '@brillout/vite-plugin-server-entry':
         specifier: 0.7.18
         version: 0.7.18
-      '@universal-deploy/auto':
-        specifier: ^0.1.0
-        version: 0.1.0(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.9)(vite@7.3.1(@types/node@20.17.17)(terser@5.38.1)(tsx@4.20.6))
       '@universal-deploy/store':
         specifier: ^0.2.0
         version: 0.2.0
+      '@universal-deploy/vite':
+        specifier: ^0.1.0
+        version: 0.1.0(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.9)(vite@7.3.1(@types/node@20.17.17)(terser@5.38.1)(tsx@4.20.6))
       '@universal-middleware/core':
         specifier: ^0.4.17
         version: 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.9)
@@ -4368,14 +4368,6 @@ packages:
   '@ungap/structured-clone@1.3.0':
     resolution: {integrity: sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g==}
 
-  '@universal-deploy/auto@0.1.0':
-    resolution: {integrity: sha512-3N/rwe47f5odqK1fE3Mc2lornq8rNRbPo+t9rWdLw9a6UuOfQhI1A/m+7XyrlVEx0E1mCDL02nYgYrmLrgx/zw==}
-    peerDependencies:
-      vite: '>=7.1'
-    peerDependenciesMeta:
-      vite:
-        optional: true
-
   '@universal-deploy/node@0.1.3':
     resolution: {integrity: sha512-6/MKvzJsN5Zm+MDIWgVaWbiXe27tuNx3ymWnkiE8jUWXY3FGn3RwtqD7pqE++YbSrFEdKBJX4nFizRXlRQ9aEA==}
     peerDependencies:
@@ -4383,11 +4375,6 @@ packages:
     peerDependenciesMeta:
       vite:
         optional: true
-
-  '@universal-deploy/store@0.1.4':
-    resolution: {integrity: sha512-CnBrQKT239MKjAPusQRpByRk2agnkpF1sXnF4VBvDXP6FzRg5UFxz1CSdtLCcEMiUskBkBDaBw39qZM8L+W8qQ==}
-    peerDependencies:
-      vite: ^8.0.0-beta.13
 
   '@universal-deploy/store@0.2.0':
     resolution: {integrity: sha512-raHulMaGTtT1sK26wT8ERHeAcKLxM5Dkglo0iFjiFKJFVY34vrkHFP1qu1L+64j7zPTM3hszUaBCbR6rbqo1/A==}
@@ -9859,23 +9846,6 @@ snapshots:
 
   '@ungap/structured-clone@1.3.0': {}
 
-  '@universal-deploy/auto@0.1.0(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.9)(vite@7.3.1(@types/node@20.17.17)(terser@5.38.1)(tsx@4.20.6))':
-    dependencies:
-      '@universal-deploy/node': 0.1.3(vite@7.3.1(@types/node@20.17.17)(terser@5.38.1)(tsx@4.20.6))
-      '@universal-deploy/store': 0.1.4(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.9)(vite@7.3.1(@types/node@20.17.17)(terser@5.38.1)(tsx@4.20.6))
-    optionalDependencies:
-      vite: 7.3.1(@types/node@20.17.17)(terser@5.38.1)(tsx@4.20.6)
-    transitivePeerDependencies:
-      - '@cloudflare/workers-types'
-      - '@hattip/core'
-      - '@types/express'
-      - '@webroute/route'
-      - elysia
-      - fastify
-      - h3
-      - hono
-      - srvx
-
   '@universal-deploy/node@0.1.3(vite@7.3.1(@types/node@20.17.17)(terser@5.38.1)(tsx@4.20.6))':
     dependencies:
       '@universal-deploy/store': 0.2.0
@@ -9890,23 +9860,6 @@ snapshots:
     optionalDependencies:
       vite: 7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
 
-  '@universal-deploy/store@0.1.4(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.9)(vite@7.3.1(@types/node@20.17.17)(terser@5.38.1)(tsx@4.20.6))':
-    dependencies:
-      '@universal-middleware/express': 0.4.26(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.9)
-      magic-string: 0.30.21
-      rou3: 0.8.1
-      vite: 7.3.1(@types/node@20.17.17)(terser@5.38.1)(tsx@4.20.6)
-    transitivePeerDependencies:
-      - '@cloudflare/workers-types'
-      - '@hattip/core'
-      - '@types/express'
-      - '@webroute/route'
-      - elysia
-      - fastify
-      - h3
-      - hono
-      - srvx
-
   '@universal-deploy/store@0.2.0':
     dependencies:
       rou3: 0.8.1
@@ -9920,6 +9873,26 @@ snapshots:
       rou3: 0.8.1
     optionalDependencies:
       vite: 7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
+    transitivePeerDependencies:
+      - '@cloudflare/workers-types'
+      - '@hattip/core'
+      - '@types/express'
+      - '@webroute/route'
+      - elysia
+      - fastify
+      - h3
+      - hono
+      - srvx
+
+  '@universal-deploy/vite@0.1.0(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.9)(vite@7.3.1(@types/node@20.17.17)(terser@5.38.1)(tsx@4.20.6))':
+    dependencies:
+      '@universal-deploy/node': 0.1.3(vite@7.3.1(@types/node@20.17.17)(terser@5.38.1)(tsx@4.20.6))
+      '@universal-deploy/store': 0.2.0
+      '@universal-middleware/express': 0.4.26(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.9)
+      magic-string: 0.30.21
+      rou3: 0.8.1
+    optionalDependencies:
+      vite: 7.3.1(@types/node@20.17.17)(terser@5.38.1)(tsx@4.20.6)
     transitivePeerDependencies:
       - '@cloudflare/workers-types'
       - '@hattip/core'

@@ -2,8 +2,7 @@ export { pluginUniversalDeploy }
 
 import type { Plugin } from 'vite'
 import { addEntry } from '@universal-deploy/store'
-// TODO @universal-deploy/vite
-import { auto } from '@universal-deploy/auto/vite'
+import universalDeploy from '@universal-deploy/vite'
 import type { VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 import { serverEntryVirtualId as vikeVirtualEntry } from '@brillout/vite-plugin-server-entry/plugin'
 import { getMagicString } from '../shared/getMagicString.js'
@@ -35,7 +34,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
   const serverEntryVike = serverFilePath ?? 'vike/fetch'
 
   const plugins: Plugin[] = [
-    ...auto(),
+    ...universalDeploy(),
     {
       name: 'vike:pluginUniversalDeploy:entries',
       config() {
