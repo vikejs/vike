@@ -14,12 +14,12 @@ import { asyncFlatten } from '../../../utils/asyncFlatten.js'
 import '../assertEnvVite.js'
 import pc from '@brillout/picocolors'
 
-const virtualFileIdCatchAll = /^virtual:ud:catch-all$/
+const virtualFileIdCatchAll = 'virtual:ud:catch-all'
 
 function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
   if (hasVikeServerOrVikePhoton(vikeConfig)) return []
 
-  let serverEntryId: RegExp
+  let serverEntryId: string
   let serverFilePath: string | null = null
   const serverConfig = vikeConfig.config.server
   if (serverConfig === false) return []
@@ -28,7 +28,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
     assert('filePathAbsoluteFilesystem' in serverPlusFile.definedAt)
     serverFilePath = serverPlusFile.definedAt.filePathAbsoluteFilesystem
     assert(serverFilePath)
-    serverEntryId = new RegExp(escapeRegex(serverFilePath))
+    serverEntryId = serverFilePath
   } else {
     serverEntryId = virtualFileIdCatchAll
   }
@@ -91,7 +91,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
         resolveId: {
           order: 'pre',
           filter: {
-            id: virtualFileIdCatchAll,
+            id: new RegExp(escapeRegex(serverFilePath)),
           },
           handler() {
             // Will resolve the entry from the users project root
