@@ -1,2 +1,2 @@
-import { testRunClassic } from '../../test/utils'
-testRunClassic('npm run prod')
+import { testRun } from './.testRun'
+testRun('npm run prod')

@@ -44,6 +44,7 @@ import { pluginStripPointerImportAttribute } from './plugins/pluginStripPointerI
 import { getVikeConfigInternalEarly, isOnlyResolvingUserConfig } from '../api/resolveViteConfigFromUser.js'
 import './assertEnvVite.js'
 import { isStorybook } from '../../utils/isStorybook.js'
+import { pluginUniversalDeploy } from './plugins/pluginUniversalDeploy.js'
 
 // We don't call this in ./onLoad.ts to avoid a cyclic dependency with utils.ts
 setGetClientEntrySrcDev(getClientEntrySrcDev)
@@ -76,6 +77,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): Promise<Plug
       ...pluginStaticReplace(vikeConfig),
       ...pluginNonRunnabeDev(),
       ...pluginStripPointerImportAttribute(),
+      ...pluginUniversalDeploy(vikeConfig),
       ...(await pluginViteConfigVikeExtensions(vikeConfig)),
     ]
     Object.assign(plugin, pluginAddendum)

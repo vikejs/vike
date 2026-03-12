@@ -1,47 +1,117 @@
 import { Link, Warning } from '@brillout/docpress'
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import '../../components/tabs.css'
-import { UseScaffolder } from '../../components'
-import { Example } from '../../components'
-import { PhotonBuiltInServer, PhotonBetaWarning, PhotonAutoLoad, PhotonDeploymentProviderIntroPart1, PhotonDeploymentProviderIntroPart2 } from '../vike-photon/components'
+import { Example, StaticSsrIntro, UseScaffolder } from '../../components'
 
-<PhotonDeploymentProviderIntroPart1 provider="Vercel" link="https://vercel.com" />
-<PhotonDeploymentProviderIntroPart2 provider="Vercel" />
+<StaticSsrIntro provider="Vercel" />
+
+<Warning>
+  `vike-photon` is being replaced by a native implementation of universal deployment in Vike. See [Migration to `universal-deploy`](/migration/universal-deploy).
+</Warning>
 
 
 ## Get started
 
 ### New app
 
-<UseScaffolder>Vercel with Photon</UseScaffolder>
+<UseScaffolder>Vercel</UseScaffolder>
 
 ### Add to existing app
-
-> If you're using `vike-server` then  <Link href="/migration/vike-photon">migrate to `vike-photon`</Link>.
 
 #### 1. Install
 
 ```shell
-npm i vike-photon @photonjs/vercel
+npm install vite-plugin-vercel@11
 ```
 
 ```ts
-// pages/+config.ts
+// vite.config.ts
 
-import type { Config } from 'vike/types'
-import vikePhoton from 'vike-photon/config' // [!code ++]
+import vike from 'vike/plugin'
+import { vercel } from 'vite-plugin-vercel/vite'
 
 export default {
-  extends: [vikePhoton] // [!code ++]
-} satisfies Config
+  plugins: [
+    vike(),
+    vercel()
+  ]
+}
 ```
-
-<PhotonAutoLoad pkg="vercel" />
-
-> Under the hood, `@photonjs/vercel` uses Vercel's [Build Output API](https://vercel.com/docs/build-output-api/v3).
 
 #### 2. Server (optional)
 
-<PhotonBuiltInServer />
+It's recommended to move your server entry to `+server.ts`.
+
+<Tabs>
+  <TabList>
+    <Tab>Hono</Tab>
+    <Tab>Express.js</Tab>
+    <Tab>Fastify</Tab>
+    <Tab>H3</Tab>
+    <Tab>Elysia</Tab>
+  </TabList>
+  <TabPanel>
+    ```ts
+    // +server.ts
+
+    import { Hono } from 'hono'
+    import { addVikeMiddleware } from '@vikejs/hono'
+
+    const app = new Hono()
+    addVikeMiddleware(app)
+    // ...
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```ts
+    // +server.ts
+
+    import express from 'express'
+    import { addVikeMiddleware } from '@vikejs/express'
+
+    const app = express()
+    addVikeMiddleware(app)
+    // ...
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```ts
+    // +server.ts
+
+    import fastify from 'fastify'
+    import { addVikeMiddleware } from '@vikejs/fastify'
+
+    const app = fastify()
+    await addVikeMiddleware(app)
+    // ...
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```ts
+    // +server.ts
+
+    import { createApp } from 'h3'
+    import { addVikeMiddleware } from '@vikejs/h3'
+
+    const app = createApp()
+    addVikeMiddleware(app)
+    // ...
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```ts
+    // +server.ts
+
+    import { Elysia } from 'elysia'
+    import { addVikeMiddleware } from '@vikejs/elysia'
+
+    const app = new Elysia()
+    addVikeMiddleware(app)
+    // ...
+    ```
+  </TabPanel>
+</Tabs>
+
 
 #### 3. Deployment
 
@@ -64,7 +134,7 @@ See the [official documentation](https://vercel.com/docs/git#deploying-a-git-rep
 
 ## ISR
 
-Vike supports [Incremental Static Regeneration (ISR)](https://vercel.com/docs/concepts/incremental-static-regeneration/overview) when using Photon.
+Vike supports [Incremental Static Regeneration (ISR)](https://vercel.com/docs/concepts/incremental-static-regeneration/overview).
 
 ```ts
 // pages/some-route/+config.ts
@@ -77,6 +147,20 @@ export default {
     // Expiration time (in seconds) before the cached asset is re-generated
     expiration: 30
   },
+} satisfies Config
+```
+
+## Edge Runtime
+
+Vike supports [Vercel Edge Runtime](https://vercel.com/docs/functions/edge-functions/edge-runtime).
+
+```ts
+// pages/some-route/+config.ts
+
+import type { Config } from 'vike/types'
+
+export default {
+  edge: true
 } satisfies Config
 ```
 
