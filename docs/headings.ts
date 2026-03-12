@@ -358,6 +358,11 @@ const headings = [
   },
   {
     level: 2,
+    title: 'GraphQL',
+    url: '/graphql',
+  },
+  {
+    level: 2,
     titleInNav: '... more',
     title: 'Integration (more)',
     url: '/integration',
