@@ -6,7 +6,7 @@ import linesRight from '../../../assets/stability/lines-right.png'
 import linesLeft from '../../../assets/stability/lines-left.png'
 
 const ImageGroup = () => (
-  <div className='absolute inset-0 pointer-events-none'>
+  <div className="absolute inset-0 pointer-events-none select-none">
     <img
       suppressHydrationWarning
       loading="lazy"

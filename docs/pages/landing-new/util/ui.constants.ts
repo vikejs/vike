@@ -81,4 +81,3 @@ export const UiVariantBgColor = {
   blue: 'bg-secondary',
   orange: 'bg-accent',
 } as const
-

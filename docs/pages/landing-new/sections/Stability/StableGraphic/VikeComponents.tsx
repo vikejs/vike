@@ -1,34 +1,8 @@
 import cm from '@classmatejs/react'
 import React from 'react'
-
-type VikeComponentSize = 'big' | 'small'
-
-type VikeComponent = {
-  name: string
-  link: string
-  size: VikeComponentSize
-}
-
-/*
-
-- Big
-  - [SPA/SSR/SSG](https://vike.dev/SSR-vs-SPA)
-  - [HTML Streaming](https://vike.dev/stream)
-  - [Filesystem Routing](https://vike.dev/filesystem-routing)
-  - [Client Routing](https://vike.dev/client-routing)
-  - [Data fetching](https://vike.dev/data-fetching)
-  - [Powerful hooks](https://vike.dev/hooks)
-  - [Config inheritance](https://vike.dev/config#inheritance)
-- Small
-  - [Error handling](https://vike.dev/error-page)
-  - [`pageContext`](https://vike.dev/pageContext)
-  - [`globalContext`](https://vike.dev/globalContext)
-  - [URL handling](https://vike.dev/pageContext#urlParsed)
-  - [CSP](https://vike.dev/csp)
-  - [Layouts](https://vike.dev/Layout)
-  - [Route Guards](https://vike.dev/guard)
-
-*/
+import { splitIntoRows, VikeComponent, VikeComponentSize } from './grid.utils'
+import { H4Headline, H5Headline } from '../../../components/Headline'
+import vikeLogo from '../../../../../assets/logo/vike.svg'
 
 const bigComponents: VikeComponent[] = [
   {
@@ -106,52 +80,75 @@ const smallComponents: VikeComponent[] = [
   },
 ]
 
-// map tailwind col-span to constants
-export const UiColSpan = {
-  1: 'col-span-1',
-  2: 'col-span-2',
-  3: 'col-span-3',
-  4: 'col-span-4',
-  5: 'col-span-5',
-  6: 'col-span-6',
-  7: 'col-span-7',
-  8: 'col-span-8',
-  9: 'col-span-9',
-  10: 'col-span-10',
-  11: 'col-span-11',
-  12: 'col-span-12',
-} as const
+// shuffle - start with big then small, then big, then small, etc.
+const components = bigComponents.reduce((acc, bigComponent, index) => {
+  const smallComponent = smallComponents[index]
+  if (smallComponent) {
+    acc.push(bigComponent, smallComponent)
+  } else {
+    acc.push(bigComponent)
+  }
+  return acc
+}, [] as VikeComponent[])
 
-const minColSpan = 3
-const maxColSpan = 6
+const rowCount = 3
 
-const components = [...bigComponents, ...smallComponents]
+const componentRows = splitIntoRows(components, rowCount)
 
 const Box = cm.li.variants<{ $size: VikeComponentSize }>({
   base: `
-  border-2 border-primary rounded-box
-  p-4
-  mb-4
+  inset-ring-1
+  inset-ring-secondary/50 hover:inset-ring-secondary
+  rounded-field
+  bg-gradient-to-bl to-secondary/7 hover:to-secondary/12
+  text-base-content/90 hover:text-base-content
+  flex
+  lg:flex-1 lg:basis-0 lg:min-w-max
+  items-center justify-center
+  text-center text-xs md:text-sm
+  relative
 `,
   variants: {
     $size: {
-      big: 'text-lg',
-      small: 'text-sm',
+      big: 'font-medium',
+      small: '',
     },
   },
 })
 
+const InnerLink = cm.a`
+  py-1 px-2
+  w-full
+`
+
 const VikeComponents = () => {
   return (
-    <ul className="list-none grid grid-cols-12">
-      {components.map((component) => (
-        <Box key={component.name} $size={component.size}>
-          <a href={component.link} target="_blank">
-            {component.name}
-          </a>
-        </Box>
-      ))}
-    </ul>
+    <div className='p-3'>
+      <div className='flex gap-2 items-center mb-4'>
+        <img src={vikeLogo} alt="" className="h-auto w-5" />
+        <H5Headline as="h3">Vike's components</H5Headline>
+      </div>
+
+      <ul className="list-none flex flex-wrap gap-1 lg:hidden">
+        {components.map((component) => (
+          <Box key={component.name} $size={component.size}>
+            <InnerLink href={component.link}>{component.name}</InnerLink>
+          </Box>
+        ))}
+      </ul>
+
+      <div className="hidden lg:flex lg:flex-col lg:gap-1.5">
+        {componentRows.map((row, rowIndex) => (
+          <ul key={rowIndex} className="list-none flex flex-wrap gap-1.5">
+            {row.map((component) => (
+              <Box key={component.name} $size={component.size}>
+                <InnerLink href={component.link}>{component.name}</InnerLink>
+              </Box>
+            ))}
+          </ul>
+        ))}
+      </div>
+    </div>
   )
 }
 

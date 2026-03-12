@@ -23,7 +23,7 @@ const headlineVariants: VariantsConfig<HeadlineVariantProps, HeadlineVariantProp
       h2: 'text-2xl! md:text-3xl! xl:text-4xl!',
       h3: 'text-xl! md:text-2xl! xl:text-3xl ',
       h4: 'text-lg! xl:text-xl!',
-      h5: 'text-lg! ',
+      h5: 'text-base!',
       h6: 'text-base ',
       p: 'text-base',
     },
