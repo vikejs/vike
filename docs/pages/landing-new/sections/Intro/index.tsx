@@ -72,7 +72,8 @@ const IntroSection = () => {
             </span>
             <div className="relative">
               <Headline as="h1" variant="xlarge">
-                Build <GradientText color='orange'>fast</GradientText>, build <GradientText color='blue'>right</GradientText>
+                Build <GradientText color="orange">fast</GradientText>, build{' '}
+                <GradientText color="blue">right</GradientText>
                 {/* <HeadlineWord word="Flexible." isActive={activeHeadlineWord === 'green'} color="green" />{' '}
                 <HeadlineWord word="Reliable." isActive={activeHeadlineWord === 'blue'} color="blue" />{' '}
                 <HeadlineWord word="Fast." isActive={activeHeadlineWord === 'orange'} color="orange" /> */}

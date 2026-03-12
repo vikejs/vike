@@ -6,11 +6,12 @@ import { H2Headline, H3Headline, H4Headline } from '../../components/Headline'
 import BarChart from '../../components/BarChart'
 import { UspCategoryId } from '../../util/constants'
 import GlassContainer from '../../components/GlassContainer'
+import StableGraphic from './StableGraphic'
 
 const StabilitySection = () => {
   return (
     <section data-usp-section={UspCategoryId.stability} className="w-full">
-      <div className="w-full overflow-hidden">
+      <div className="w-full ">
         <LayoutComponent>
           <SectionHeader
             icon={'💎'}
@@ -23,6 +24,7 @@ const StabilitySection = () => {
             sub="Vike is a stable foundation you can trust and build upon with confidence."
             color="blue"
           />
+          <StableGraphic />
           <div className="grid grid-cols-2 gap-10 mt-22">
             <div aria-hidden="true" />
             <GlassContainer>
