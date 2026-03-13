@@ -123,12 +123,7 @@ const InnerLink = cm.a`
 
 const VikeComponents = () => {
   return (
-    <div className='p-3'>
-      <div className='flex gap-2 items-center mb-4'>
-        <img src={vikeLogo} alt="" className="h-auto w-5" />
-        <H5Headline as="h3">Vike's components</H5Headline>
-      </div>
-
+    <div className="p-3">
       <ul className="list-none flex flex-wrap gap-1 lg:hidden">
         {components.map((component) => (
           <Box key={component.name} $size={component.size}>
@@ -147,6 +142,10 @@ const VikeComponents = () => {
             ))}
           </ul>
         ))}
+      </div>
+      <div className="flex gap-2 items-center mb-4">
+        <img src={vikeLogo} alt="" className="h-auto w-5" />
+        <H5Headline as="h3">Vike's components</H5Headline>
       </div>
     </div>
   )

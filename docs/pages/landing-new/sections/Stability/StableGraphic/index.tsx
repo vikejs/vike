@@ -6,7 +6,7 @@ import EcoComponents from './EcoComponents'
 
 const Outer = cm.div`
   relative
-  min-h-50 md:w-[90%] mt-40 md:mt-60
+  min-h-50 md:w-[90%] mt-60 md:mt-70
   mx-auto  
   bg-linear-to-t to-white via-white 
   rounded-box

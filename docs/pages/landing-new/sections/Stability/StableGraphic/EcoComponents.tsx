@@ -18,8 +18,8 @@ const Box = cm.li.variants<{ $size?: VikeComponentSize; $type: 'lib' | 'category
       lib: `
         px-2 py-0.5
         inset-ring-1
-        inset-ring-accent/50
-        bg-gradient-to-bl to-accent/7
+        inset-ring-accent/30
+        bg-white
         rounded-field
         `,
       category: `
@@ -71,17 +71,18 @@ const ecosystemComponents: Record<VikeEcoComponentCategory, EcoComponent[]> = {
 
 const EcoComponents = () => {
   return (
-    <div className="-top-40 absolute md:-inset-x-[5%] inset-x-0 inset-y-0">
-      <div className="flex gap-2 md:gap-6">
+    <div className="-top-55 absolute md:-inset-x-[5%] inset-x-0 inset-y-0">
+      <div className="flex gap-2 md:gap-4">
         {Object.entries(ecosystemComponents).map(([category, components]) => (
           <div key={category} className="flex flex-col items-center gap-1 flex-1">
-            <Box className="text-sm font-semibold text-accent" $type="category">
+            <Box className="text-sm font-semibold text-grey" $type="category">
               {category.toUpperCase()}
             </Box>
             <div className="flex-1">
               <ul className="list-none flex flex-wrap gap-1.5 justify-center">
                 {components.map((component) => (
                   <Box key={component.name} $type="lib">
+                    <div className='        bg-linear-to-bl  to-accent/7 absolute inset-0 pointer-events-none select-none' />
                     <a href={component.link} target="_blank" className="py-1 px-2 w-full">
                       {component.name}
                     </a>
