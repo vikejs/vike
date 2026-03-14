@@ -313,59 +313,133 @@ First-class SSR integration with tools
 </DX_Small>
 </DX_Feature>
 
+<DX_Feature advanced>
+Redirections
+<DX_Small>
+<Link href="/redirect">Programmatic redirections</Link>, <Link href="/redirects">static reirections</Link>, <Link href="/render">programmatic URL rewrites</Link>, <Link href="/auth#login-flow">novel authentication flow</Link>.
+</DX_Small>
+</DX_Feature>
+
+<DX_Feature advanced>
+Routing
+<DX_Small>
+Programmatically <Link href="/route-function">define</Link> and <Link href="/guard">protect</Link> routes, Filesystem routing with <Link href="/file-structure">domain-driven file structure</Link>.
+</DX_Small>
+</DX_Feature>
+
+<DX_Feature advanced>
+Base URL
+<DX_Small>
+Base URL for static assets (CDN deployments) + (different) Base URL for SSR server.
+</DX_Small>
+</DX_Feature>
+
+<DX_Feature advanced>
+I18n
+<DX_Small>
+Low-level hook +onBeforeRoute for full control over i18n
+</DX_Small>
+</DX_Feature>
+
+<DX_Feature advanced>
+Instrumentation
+<DX_Small>
+Hook measurement, slow hook warnings, multi-level error-tracking, ...
+</DX_Small>
+</DX_Feature>
+
 Layouts
 
 Link prefetching
 
 Link preloading
 
-</DX_FeatureWall>
+<DX_Feature>
+CSP
+<DX_Small>
+PCI DSS compliance
+</DX_Small>
+</DX_Feature>
 
-- CSP
-  - PCI DSS compliance
-- Any JavaScript runtime
-  - Works with any JavaScript runtime (Node.js, Bun, Deno, Workers, Electron, Tauri, [Electrobun](http://blackboard.sh/electrobun), ...)
-- ISR
-- `throw render()`
-  - Programmatically determine URL rewrites
-  - Novel authentication flow
-- `throw redirect()`
-  - Programmatically determine redirection
-- Route Guards
-  - Programmatically protect your pages
-- Route Functions
-  - Programmatically define routes
-- Advanced Base URLs
-  - Base URL for static assets (CDN deployments) and different Base URL for SSR server.
-- Advanced i18n
-  - Low-level hook +onBeforeRoute for full control over i18n
-- Rich context
-  - Page context
-    - Packed with infos: `pageContext.isBackwardsNavigation`, `pageCotenxt.`
-  - Global context
-    - Packed with infos
-- Tolerates duplicated Vike runtime instances
-  - Vike can be loaded twice (or more) on the server-side, (some deployment architectures need this)
-- Infinite loop protections
-  - Catches infinite URL redirects/rewrites, preventing self DDoS.
-- `@vitejs/plugin-legacy` support
-  - https://github.com/vitejs/vite/tree/main/packages/plugin-legacy
-- Advanced instrumentation
-  - Hook measurement, slow hook warnings, multi-level error-tracking, ...
-- Filesystem Routing
-  - Domain-driven file structure
-- Synced deploys
-  - [Automatic frontend deployment synchronization](https://vike.dev/deploy-sync)
-- Helpful errors & warnings
-  - `93` warnings && `294` helpful error messages
-    - [Example] Warning is shown when a hook takes more than 4 seconds to resolve (avoiding the user to ask himself "why is my Vike app hanging?")
-    - [Example] Typo in option name (with "Did you mean xxx instead?")
-  - React component stack injected in error stack trace
-- Internals access escape hatch
-  - pageContext.dangerouslyUseInternals
-    - https://vike.dev/warning/internals
-    - Explain why + give example => Vike's philosophy to treat blockers as high prio and minimize them as much as possible
-- Part of Vite's CI
+<DX_Feature>
+Any JavaScript runtime
+<DX_Small>
+</DX_Small>
+Works with any JavaScript runtime (Node.js, Bun, Deno, Workers, Electron, Tauri, [Electrobun](http://blackboard.sh/electrobun), ...)
+</DX_Feature>
+
+ISR
+
+<DX_Feature>
+Rich context objects
+<DX_Small>
+  Packed with infos:
+  <Link href="/globalContext#pages">`globalContext.pages`</Link>,
+  <Link href="/globalContext#config">`globalContext.config`</Link>,
+  <Link href="/pageContext#isHistoryNavigation">`pageContext.isHistoryNavigation`</Link>,
+  <Link href="/pageContext#isBackwardsNavigation">`pageContext.isBackwardsNavigation`</Link>,
+  <Link href="/pageContext#isPrerendering">`pageContext.isPrerendering`</Link>,
+  <Link href="/pageContext#previousPageContext">`pageContext.previousPageContext`</Link>,
+  ...
+</DX_Small>
+</DX_Feature>
+
+<DX_Feature>
+Fault tolerant
+<DX_Small>
+E.g. Vike's runtime can be loaded twice, which is needed for some deployments.
+</DX_Small>
+</DX_Feature>
+
+<DX_Feature>
+Infinite loop protections
+<DX_Small>
+Catches infinite URL redirects/rewrites, preventing self DDoS.
+</DX_Small>
+</DX_Feature>
+
+<DX_Feature>
+`@vitejs/plugin-legacy` support
+<DX_Small>
+https://github.com/vitejs/vite/tree/main/packages/plugin-legacy
+</DX_Small>
+</DX_Feature>
+
+<DX_Feature>
+Synced deploys
+<DX_Small>
+[Automatic frontend deployment synchronization](https://vike.dev/deploy-sync)
+</DX_Small>
+</DX_Feature>
+
+<DX_Feature>
+Helpful errors & warnings
+<DX_Small>
+- `93` warnings && `294` helpful error messages
+  - [Example] Warning is shown when a hook takes more than 4 seconds to resolve (avoiding the user to ask himself "why is my Vike app hanging?")
+  - [Example] Typo in option name (with "Did you mean xxx instead?")
+- React component stack injected in error stack trace
+</DX_Small>
+</DX_Feature>
+
+<DX_Feature>
+Internals escape hatch
+<DX_Small>
+- pageContext.dangerouslyUseInternals
+  - https://vike.dev/warning/internals
+  - Explain why + give example => Vike's philosophy to treat blockers as high prio and minimize them as much as possible
+</DX_Small>
+</DX_Feature>
+
+<DX_Feature>
+Included in Vite CI
+<DX_Small>
+[Vike is part of Vite's CI](https://github.com/vitejs/vite-ecosystem-ci/blob/main/tests/vike.ts)
+</DX_Small>
+</DX_Feature>
+
+
+</DX_FeatureWall>
 
 ### Polished
 

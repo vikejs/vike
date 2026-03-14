@@ -1,10 +1,24 @@
 .feature-wall {
+  /*
   display: flex;
   flex-wrap: wrap;
+  */
 }
 .feature-wall > * {
+  display: inline-block;
   border: 1px solid #aaa;
   margin: 10px;
   padding: 10px;
   max-width: 300px;
+}
+.feature-advanced {
+  position: relative;
+}
+.feature-advanced:before {
+  content: 'Advanced';
+  background: #aaa;
+  border: 1px solid yellow;
+  position: absolute;
+  top: -0.8em;
+  right: -1px;
 }
