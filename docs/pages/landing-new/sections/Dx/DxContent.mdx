@@ -1,0 +1,372 @@
+import './DxContent.css'
+import { Link } from '@brillout/docpress'
+
+export const DX_TwoColumnLayout = ({children, cut}) => <div style={{ display: 'grid', gridTemplateColumns: `${cut*100}% 1fr`, gap: '1rem' }}>{children}</div>
+export const DX_Small = ({ children }) => <span style={{ fontSize: '0.84em', color: '#aaa' }}>{children}</span>
+export const DX_Center = ({ children }) => <div style={{ display: 'flex', justifyContent: 'center' }}>{children}</div>
+export const DX_H3 = ({ children }) => <h3 style={{textAlign: 'center', margin: 30}}>{children}</h3>
+export const DX_FeatureWall = ({ children }) => <DX_Center><div className="feature-wall">{children}</div></DX_Center>
+export const DX_Feature = ({ children, advanced }) => <div className={advanced && 'feature-advanced'}>{children}</div>
+
+<DX_H3>
+First-class SSR/SPA/SSG
+</DX_H3>
+
+<DX_TwoColumnLayout cut={0.55}>
+<div>
+
+<div style={{fontSize: '1.4em'}}>
+
+[SSR]()/[SPA]()/[SSG]() toogle, page-by-page powered by [Vike's config inheritance]().
+
+</div>
+
+```yaml
+# SPA (SSR disabled) // [!code highlight]
+/pages/admin/products/+Page.ts    # URL: /admin/products
+/pages/admin/users/+Page.ts       # URL: /admin/users
+
+# SSG (pre-rendering) // [!code highlight]
+/pages/index/+Page.ts             # URL: /
+/pages/about/+Page.ts             # URL: /about
+/pages/jobs/+Page.ts              # URL: /jobs
+
+# SSR (not pre-rendering) // [!code highlight]
+/pages/product/@id/+Page.ts       # URL: /product/42
+/pages/product/@id/buy/+Page.ts   # URL: /product/42/buy
+```
+
+</div>
+<div>
+
+```js
+// /pages/admin-panel/+config.js
+// Config for /pages/admin-panel/**/+Page.ts (admin pages) // [!code highlight]
+export default {
+  ssr: false // [!code highlight]
+}
+```
+```js
+// /pages/+config.js
+// Config for /pages/**/+Page.ts (all pages) // [!code highlight]
+export default {
+  prerender: true // i.e. SSG // [!code highlight]
+}
+```
+```ts
+// /pages/product/+config.js
+// Config for /pages/product/**/+Page.ts (product pages) // [!code highlight]
+export default {
+  ssr: true, // [!code highlight]
+  prerender: false // i.e. SSG // [!code highlight]
+}
+```
+</div>
+
+</DX_TwoColumnLayout>
+
+### Powerful hooks
+
+Lots of hooks, for unprecedented deep control.
+
+<hr/>
+
+Extended control over global data.
+
+```js
+// pages/+onCreateGlobalContext.server.js
+// Environment: server
+export async function onCreateGlobalContext() {
+  const dataFromAPI = await fetchDataFromAPI()
+  const someGlobalData = select(dataFromAPI)
+  globalContext.someGlobalData = someGlobalData
+}
+```
+```js
+// pages/+config.js
+export default {
+  passToClient: 'someGlobalData'
+}
+```
+```js
+// Anywhere (client & server)
+import { getGlobalContext } from 'vike'
+const { someGlobalData } = await getGlobalContext()
+```
+
+Extended control over data flow/environment.
+
+
+Instrumentation.
+
+```ts
+// pages/+onHookCall.server.ts
+// Environment: server
+
+import type { Config, PageContextServer, Hook } from 'vike/types'
+
+// Called whenever a Vike hook is executed.
+
+export async function onHookCall(hook: Hook, pageContext: PageContextServer) {
+  console.log('before', hook.name, hook.filePath)
+  await hook.call()
+  console.log('after', hook.name, hook.filePath)
+}
+```
+
+
+- Unprecedented control over data lifecyle
+
+- Authorization
+```ts
+// /pages/admin/+guard.ts
+
+import type { PageContextServer } from 'vike/types'
+import { render } from 'vike/abort'
+
+// This guard() hook protects all pages /pages/admin/**/+Page.ts
+
+export async function guard(pageContext: PageContextServer) {
+  if (!pageContext.user.isAdmin) {
+    throw render(401, "You aren't allowed to access this page.")
+  }
+}
+```
+- Flexible i18n integration.
+
+- `renderPage()`
+  - From a server-perspective, Vike is just a middleware (a pure function)
+  - Vike can be easily integrated into any deployment strategy
+  - Low-level primitives allowing users to deeply integrate with data fetching tools.
+    - For example, Vike sponsors use it to deeply integrate Relay. (Facebook's internal framework deeply integrates with Relay in ways that aren't possible with Next.js.)
+
+### API
+
+First-class integration with API tools.
+
+Next-gen RPC (aka Server Functions) via [Telefunc](https://telefunc.com) (or tRPC, oRPC, ...)
+
+```ts
+// CreateTodo.telefunc.ts
+// Environment: server
+
+// Telefunc makes onNewTodo() remotely callable
+// from the browser.
+export { onNewTodo }
+
+import { getContext } from 'telefunc'
+
+// Telefunction arguments are automatically validated
+// at runtime, so `text` is guaranteed to be a string.
+async function onNewTodo(text: string) {
+  const { user } = getContext()
+
+  // With an ORM
+  await Todo.create({ text, authorId: user.id })
+
+  // With SQL
+  await sql(
+    'INSERT INTO todo_items VALUES (:text, :authorId)',
+    { text, authorId: user.id }
+  )
+}
+```
+```ts
+// CreateTodo.tsx
+// Environment: client
+
+// CreateTodo.telefunc.ts isn't actually loaded;
+// Telefunc transforms it into a thin HTTP client.
+import { onNewTodo } from './CreateTodo.telefunc.ts'
+
+async function onClick(form) {
+  const text = form.input.value
+  // Behind the scenes, Telefunc makes an HTTP request
+  // to the server.
+  await onNewTodo(text)
+}
+
+function CreateTodo() {
+  return (
+    <form>
+      <input input="text"></input>
+      <button onClick={onClick}>Add To-Do</button>
+    </form>
+  )
+}
+```
+
+
+GraphQL via exensions like [`vike-react-apollo`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-apollo#readme), or via [custom integration]().
+
+```ts
+// Countries.jsx
+
+import { useSuspenseQuery, gql } from '@apollo/client/index.js'
+
+const Countries = () => {
+  const { data } = useSuspenseQuery(gql`
+    {
+      countries {
+        code
+        name
+      }
+    }
+  `)
+
+  return (
+    <ul>
+      {data.countries.map((country) => (
+        <li key={country.code}>{country.name}</li>
+      ))}
+    </ul>
+  )
+}
+```
+
+RESTful API via [+data](https://vike.dev/data) or extensions such as [vike-react-query](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query#readme)/[vike-vue-query](https://github.com/vikejs/vike-vue/tree/main/packages/vike-vue-query#readme)/[vike-solid-query](https://github.com/vikejs/vike-solid/tree/main/packages/vike-solid-query#readme).
+
+```ts
+import { useSuspenseQuery } from '@tanstack/react-query'
+
+const Movie = ({ id }) => {
+  const result = useSuspenseQuery({
+    queryKey: ['movie', id],
+    queryFn: () =>
+      fetch(`https://brillout.github.io/star-wars/api/films/${id}.json`)
+      .then((res) => res.json())
+  })
+
+  const { title } = result.data
+
+  return (
+    <div>
+      Title: <b>{title}</b>
+    </div>
+  )
+}
+```
+
+### Powerful extensions
+
+Zero-config deep integrations.
+Deep, zero-config integrations.
+
+> Powered by the same hooks users can use.
+
+Deep UI framework integrations...
+- vike-react / vike-react-rsc
+- vike-vue / vike-solid
+
+Deep tool integrations
+- vike-react-sentry
+- vike-react-zustand
+
+Growing extension ecosystem
+
+[list-all]
+
+
+<DX_H3>Full-fledged</DX_H3>
+
+<DX_FeatureWall>
+
+<DX_Feature advanced>
+Data fetching
+<DX_Small>
+Fetch data where you (client or server, or both) and when you want (server start, browser start, page render).
+</DX_Small>
+</DX_Feature>
+
+<DX_Feature advanced>
+HTML streaming
+<DX_Small>
+- Progressive rendering (e.g. via [`react-streaming`](https://github.com/brillout/react-streaming)), Web Stream + Node.js Stream
+</DX_Small>
+</DX_Feature>
+
+<DX_Feature advanced>
+Client-side Routing
+<DX_Small>
+- Scroll restoration, <Link href="/navigate#history-pushstate">doesn't break `history.pushState()`</Link>, [supports URL text fragments](https://github.com/vikejs/vike/issues/2114).
+</DX_Small>
+</DX_Feature>
+
+<DX_Feature advanced>
+Config inheritance
+<DX_Small>
+<Link href="/config#inheritance">Apply configs to a single/group/all pages</Link>, <Link href="/meta">create your own configs</Link> and [build your own framework](https://land.vike.dev/#framework-as-a-product).
+</DX_Small>
+</DX_Feature>
+
+<DX_Feature advanced>
+Pre-rendering (aka SSG)
+<DX_Small>
+<Link href="/prerender#redirects">Redirects</Link>, <Link href="/data#client-js">client-side data fetching</Link>, partial pre-rendering, ISR.
+</DX_Small>
+</DX_Feature>
+
+<DX_Feature advanced>
+Server-side Rendering (SSR)
+<DX_Small>
+First-class SSR integration with tools
+</DX_Small>
+</DX_Feature>
+
+Layouts
+
+Link prefetching
+
+Link preloading
+
+</DX_FeatureWall>
+
+- CSP
+  - PCI DSS compliance
+- Any JavaScript runtime
+  - Works with any JavaScript runtime (Node.js, Bun, Deno, Workers, Electron, Tauri, [Electrobun](http://blackboard.sh/electrobun), ...)
+- ISR
+- `throw render()`
+  - Programmatically determine URL rewrites
+  - Novel authentication flow
+- `throw redirect()`
+  - Programmatically determine redirection
+- Route Guards
+  - Programmatically protect your pages
+- Route Functions
+  - Programmatically define routes
+- Advanced Base URLs
+  - Base URL for static assets (CDN deployments) and different Base URL for SSR server.
+- Advanced i18n
+  - Low-level hook +onBeforeRoute for full control over i18n
+- Rich context
+  - Page context
+    - Packed with infos: `pageContext.isBackwardsNavigation`, `pageCotenxt.`
+  - Global context
+    - Packed with infos
+- Tolerates duplicated Vike runtime instances
+  - Vike can be loaded twice (or more) on the server-side, (some deployment architectures need this)
+- Infinite loop protections
+  - Catches infinite URL redirects/rewrites, preventing self DDoS.
+- `@vitejs/plugin-legacy` support
+  - https://github.com/vitejs/vite/tree/main/packages/plugin-legacy
+- Advanced instrumentation
+  - Hook measurement, slow hook warnings, multi-level error-tracking, ...
+- Filesystem Routing
+  - Domain-driven file structure
+- Synced deploys
+  - [Automatic frontend deployment synchronization](https://vike.dev/deploy-sync)
+- Helpful errors & warnings
+  - `93` warnings && `294` helpful error messages
+    - [Example] Warning is shown when a hook takes more than 4 seconds to resolve (avoiding the user to ask himself "why is my Vike app hanging?")
+    - [Example] Typo in option name (with "Did you mean xxx instead?")
+  - React component stack injected in error stack trace
+- Internals access escape hatch
+  - pageContext.dangerouslyUseInternals
+    - https://vike.dev/warning/internals
+    - Explain why + give example => Vike's philosophy to treat blockers as high prio and minimize them as much as possible
+- Part of Vite's CI
+
+### Polished
+
+Every single detail matters.

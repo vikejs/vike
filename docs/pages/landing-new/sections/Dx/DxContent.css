@@ -1,0 +1,10 @@
+.feature-wall {
+  display: flex;
+  flex-wrap: wrap;
+}
+.feature-wall > * {
+  border: 1px solid #aaa;
+  margin: 10px;
+  padding: 10px;
+  max-width: 300px;
+}

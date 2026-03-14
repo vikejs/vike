@@ -4,6 +4,7 @@ import LayoutComponent from '../../components/LayoutComponent'
 import GradientText from '../../components/GradientText'
 import SectionHeader from '../../components/SectionHeader'
 import { UspCategoryId } from '../../util/constants'
+import DxContent from './DxContent.mdx'
 
 const DxSection = () => {
   return (
@@ -20,8 +21,8 @@ const DxSection = () => {
           sub="Build mission-critical apps — on a rock-solid foundation."
           color="orange"
         />
-        <div className="grid grid-cols-2 min-h-300 bg-base-200 mt-20">
-          <div>read-only editor here</div>
+        <div>
+          <DxContent />
         </div>
       </LayoutComponent>
     </section>
