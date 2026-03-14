@@ -13,6 +13,6 @@ describe('joinEnglish()', () => {
   })
 
   it('can colorize entries through options', () => {
-    expect(joinEnglish(['apples', 'bananas'], 'or', { colorizer: (s) => `[${s}]` })).toBe('[apples] or [bananas]')
+    expect(joinEnglish(['apples', 'bananas'], 'or', { color: (s) => `[${s}]` })).toBe('[apples] or [bananas]')
   })
 })
