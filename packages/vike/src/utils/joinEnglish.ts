@@ -6,6 +6,7 @@ import { assert } from './assert.js'
 function joinEnglish(
   arr: string[] | readonly string[],
   conjunction: 'or' | 'and',
+  // TODO/ai move colorizer to option object
   colorizer: (s: string) => string = (s) => s,
   { trailingComma = true }: { trailingComma?: boolean } = {},
 ): string {
