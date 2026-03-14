@@ -12,6 +12,7 @@ type Version = `${number}.${number}.${number}`
 function assertVersion(dependencyName: 'Vite' | 'Node.js', versionActual: string, versionExpectedList: Version[]) {
   assertUsage(
     isVersionMatch(versionActual, versionExpectedList),
+    // TODO/ai don't use trailing comma
     `${pc.bold(dependencyName)} ${pc.red(pc.bold(versionActual))} isn't supported, use ${pc.bold(dependencyName)} ${joinEnglish(
       [...versionExpectedList, 'above'].map((v) => pc.green(pc.bold(v))),
       'or',
