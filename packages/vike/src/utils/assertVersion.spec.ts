@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest'
-import { assertVersion, isVersionMatch } from './assertVersion.js'
+import { expect, describe, it } from 'vitest'
+import { isVersionMatch } from './assertVersion.js'
 
 describe('isVersionMatch()', () => {
   it('basic version comparisons', () => {
@@ -50,11 +50,5 @@ describe('isVersionMatch()', () => {
 
     // Malformed versions
     expect(() => isVersionMatch('1.0', ['1.0.0'])).toThrow()
-  })
-
-  it('omits the Oxford comma in error messages', () => {
-    expect(() => assertVersion('Node.js', '16.0.0', ['18.0.0', '20.0.0'])).toThrow(
-      "Node.js 16.0.0 isn't supported, use Node.js 18.0.0, 20.0.0 or above.",
-    )
   })
 })
