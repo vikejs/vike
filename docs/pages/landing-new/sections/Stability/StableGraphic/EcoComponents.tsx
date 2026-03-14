@@ -82,8 +82,8 @@ const EcoComponents = () => {
               <ul className="list-none flex flex-wrap gap-1.5 justify-center">
                 {components.map((component) => (
                   <Box key={component.name} $type="lib">
-                    <div className='        bg-linear-to-bl  to-accent/7 absolute inset-0 pointer-events-none select-none' />
-                    <a href={component.link} target="_blank" className="py-1 px-2 w-full">
+                    <div className="bg-linear-to-bl  to-accent/7 absolute inset-0 pointer-events-none select-none" />
+                    <a href={component.link} target="_blank" className="py-1 px-2 w-full text-accent">
                       {component.name}
                     </a>
                   </Box>

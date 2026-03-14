@@ -117,6 +117,7 @@ const Box = cm.li.variants<{ $size: VikeComponentSize }>({
 })
 
 const InnerLink = cm.a`
+  text-base-content  
   py-1 px-2
   w-full
 `
