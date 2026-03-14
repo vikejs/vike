@@ -127,6 +127,10 @@ async function stringToStreamReadableNode(str: string): Promise<StreamReadableNo
   const { Readable } = await loadStreamNodeModule()
   return Readable.from(str)
 }
+async function streamReadableWebToStreamReadableNode(stream: ReadableStream): Promise<StreamReadableNode> {
+  const { Readable } = await loadStreamNodeModule()
+  return Readable.fromWeb(stream as any)
+}
 function stringToStreamReadableWeb(str: string): StreamReadableWeb {
   // ReadableStream.from() spec discussion: https://github.com/whatwg/streams/issues/1018
   assertReadableStreamConstructor()
@@ -266,7 +270,11 @@ function pipeToStreamWritableNode(htmlRender: HtmlRender, writable: StreamWritab
     streamPipeNode(writable)
     return true
   }
-  if (isStreamReadableWeb(htmlRender) || isStreamPipeWeb(htmlRender)) {
+  if (isStreamReadableWeb(htmlRender)) {
+    streamReadableWebToStreamReadableNode(htmlRender).then((s) => s.pipe(writable))
+    return true
+  }
+  if (isStreamPipeWeb(htmlRender)) {
     return false
   }
   checkType<never>(htmlRender)

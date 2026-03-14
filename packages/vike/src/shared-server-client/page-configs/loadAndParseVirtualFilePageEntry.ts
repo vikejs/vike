@@ -29,7 +29,16 @@ async function loadAndParseVirtualFilePageEntry(
   // Catch @cloudflare/vite-plugin bug
   assertVirtualFileExports(moduleExports, () => 'configValuesSerialized' in moduleExports, moduleId)
   const virtualFileExportsPageEntry = moduleExports
-  const configValues = parseVirtualFileExportsPageEntry(virtualFileExportsPageEntry)
+  let configValues: ConfigValues
+  try {
+    configValues = parseVirtualFileExportsPageEntry(virtualFileExportsPageEntry)
+  } catch (e) {
+    if (!(e instanceof ReferenceError)) throw e
+    // Safari WebKit bug: dynamic import() may resolve before the module body executes,
+    // https://github.com/vikejs/vike/issues/3121
+    await new Promise<void>((resolve) => setTimeout(resolve))
+    configValues = parseVirtualFileExportsPageEntry(virtualFileExportsPageEntry)
+  }
   Object.assign(pageConfig.configValues, configValues)
   objectAssign(pageConfig, { isPageEntryLoaded: true as const })
   return pageConfig

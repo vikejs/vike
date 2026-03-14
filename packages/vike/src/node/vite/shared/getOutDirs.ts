@@ -1,5 +1,6 @@
 export { getOutDirs }
 export { resolveOutDir }
+export { getOutDirsAllFromRootNormalized }
 export type { OutDirs }
 
 import type { UserConfig, ResolvedConfig } from 'vite'
@@ -95,9 +96,9 @@ function getOutDirsAllFromRootNormalized(outDirRoot: string, root: string): OutD
   }
 
   let { outDirClient, outDirServer } = determineOutDirs(outDirRoot)
-  outDirRoot = outDirRoot + '/'
-  outDirClient = outDirClient + '/'
-  outDirServer = outDirServer + '/'
+  if (!outDirRoot.endsWith('/')) outDirRoot = outDirRoot + '/'
+  if (!outDirClient.endsWith('/')) outDirClient = outDirClient + '/'
+  if (!outDirServer.endsWith('/')) outDirServer = outDirServer + '/'
 
   assertNormalization(outDirRoot)
   assertNormalization(outDirClient)

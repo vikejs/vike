@@ -2,7 +2,7 @@ export { getClientEntrySrcDev }
 export type GetClientEntrySrcDev = typeof getClientEntrySrcDev
 
 import { assertIsNotProductionRuntime } from '../../../utils/assertSetup.js'
-import { assertIsImportPathNpmPackage } from '../../../utils/parseNpmPackage.js'
+import { assertImportIsNpmPackage } from '../../../utils/parseNpmPackage.js'
 import { toPosixPath, pathJoin } from '../../../utils/path.js'
 import { requireResolveNpmPackage, requireResolveDistFile } from '../../../utils/requireResolve.js'
 import { assert } from '../../../utils/assert.js'
@@ -37,7 +37,7 @@ function getClientEntrySrcDev(clientEntry: string, viteDevServer: ViteDevServer)
       assert(clientEntry.endsWith('.js'))
       filePath = requireResolveDistFile(`dist/${clientEntry.replace('@@vike/dist/', '') as `${string}.js`}`)
     } else {
-      assertIsImportPathNpmPackage(clientEntry)
+      assertImportIsNpmPackage(clientEntry)
       filePath = requireResolveNpmPackage({ importPathNpmPackage: clientEntry, userRootDir })
     }
   }

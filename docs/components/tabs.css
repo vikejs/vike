@@ -19,6 +19,12 @@
   /* lighten --color-text by 20% */
   color: color-mix(in srgb, var(--color-text) 80%, white 20%);
 }
+@media screen and (max-width: 400px) {
+  .react-tabs__tab {
+    padding: 6px 4px;
+    font-size: 0.87em;
+  }
+}
 
 .react-tabs__tab:hover {
   color: var(--color-text);

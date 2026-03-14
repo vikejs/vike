@@ -7,13 +7,16 @@ import {
   iconScroll,
   iconCompass,
   iconGear,
-  type HeadingDefinition,
   iconSeedling,
   iconGlobe,
   iconPlug,
   iconMegaphone,
+} from '@brillout/docpress' with { type: 'vike:pointer' }
+import type {
+  HeadingDefinition,
+  Config,
+  HeadingDetachedDefinition as HeadingDetachedDefinition_,
 } from '@brillout/docpress'
-import type { Config, HeadingDetachedDefinition as HeadingDetachedDefinition_ } from '@brillout/docpress'
 type HeadingDetachedDefinition = Omit<HeadingDetachedDefinition_, 'category'> & {
   category: CategoryNames | 'Miscellaneous'
 }
@@ -62,18 +65,26 @@ const headings = [
   },
   {
     level: 2,
-    title: 'FAQ',
-    url: '/faq',
-  },
-  {
-    level: 2,
     title: 'Why Vike',
     url: '/why',
   },
   {
     level: 2,
+    title: 'FAQ',
+    url: '/faq',
+  },
+  {
+    level: 2,
     title: 'Open Source Pricing',
     url: '/pricing',
+    pageDesign: {
+      hideMenuLeft: true,
+    },
+  },
+  {
+    level: 2,
+    title: 'Free Program',
+    url: '/free',
   },
   {
     level: 2,
@@ -284,6 +295,11 @@ const headings = [
     url: '/netlify-functions',
   },
   {
+    level: 2,
+    title: 'EdgeOne Pages',
+    url: '/edgeone-pages',
+  },
+  {
     level: 4,
     title: 'Full-stack (self-hosted)',
   },
@@ -345,6 +361,11 @@ const headings = [
     level: 2,
     title: 'Store (State Management)',
     url: '/store',
+  },
+  {
+    level: 2,
+    title: 'GraphQL',
+    url: '/graphql',
   },
   {
     level: 2,
@@ -1046,6 +1067,10 @@ function tools() {
         url: '/vitest',
       },
       {
+        title: 'Storybook',
+        url: '/storybook',
+      },
+      {
         title: 'Lingui',
         url: '/lingui',
       },
@@ -1155,16 +1180,6 @@ function misc() {
         url: '/RPC',
       },
       {
-        title: 'Get a free license key',
-        url: '/free',
-        category: 'Overview',
-      },
-      {
-        title: 'Buying a license key',
-        url: '/buy',
-        category: 'Overview',
-      },
-      {
         title: 'SPA',
         url: '/spa',
         category: 'Glossary',
@@ -1175,8 +1190,19 @@ function misc() {
         category: 'Overview',
       },
       {
+        title: '`+license`',
+        url: '/license',
+      },
+      {
         title: 'Glossary',
         url: '/glossary',
+      },
+      {
+        title: 'License Success',
+        url: '/license/success',
+        pageDesign: {
+          hideTitle: true,
+        },
       },
       {
         title: 'Languages',
@@ -1204,7 +1230,7 @@ function misc() {
         url: '/nextjs',
       },
     ] as const
-  ).map((h) => ({ ...h, category: 'Miscellaneous' as const })) satisfies HeadingDetachedDefinition[]
+  ).map((h) => ({ category: 'Miscellaneous' as const, ...h })) satisfies HeadingDetachedDefinition[]
 }
 
 function guides() {

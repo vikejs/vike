@@ -8,7 +8,7 @@ import { linkGetStarted } from '../../links'
 import { Link } from '@brillout/docpress'
 import '../../Page.css'
 import { UsedBy } from './UsedBy'
-import { QuoteTeam } from '../../../../components'
+import { TeamQuote } from '../../../../components'
 
 const quoteSentence =
   'Vike is built on a stable, rock-solid core with powerful low-level hooks\u00A0—\u00A0a\u00A0foundation companies can trust and build upon with confidence.'
@@ -31,7 +31,7 @@ function Hero() {
       <div style={{ height: 50 }} id="hero-margin-mid-1"></div>
       <GetStartedBtn />
       <div style={{ height: 52 }} id="hero-margin-mid-2"></div>
-      <QuoteTeam>{quoteSentence}</QuoteTeam>
+      <TeamQuote>{quoteSentence}</TeamQuote>
       <div style={{ height: 115 }} id="hero-margin-mid-3"></div>
       <UsedBy />
       <div style={{ height: 120 }} id="hero-margin-bot"></div>
@@ -73,7 +73,7 @@ function HeroTagline({
           }}
         >
           <div
-            id="tagline-main"
+            id="tagline-primary"
             style={{
               letterSpacing: 0.7,
               opacity: 0.9,

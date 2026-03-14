@@ -43,7 +43,7 @@ function addSsrMiddleware(
     try {
       pageContext = await renderPageServer(pageContextInit)
     } catch (err) {
-      // Throwing an error in a connect middleware shut downs the server
+      // Throwing an error in a connect middleware shuts down the server
       console.error(err)
       // - next(err) automatically uses buildErrorMessage() (pretty formatting of Rollup errors)
       //   - But it only works for users using Vite's standalone dev server (it doesn't work for users using Vite's dev middleware)

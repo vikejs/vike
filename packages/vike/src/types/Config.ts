@@ -658,6 +658,14 @@ type ConfigBuiltIn = {
    * @experimental
    */
   staticReplace?: StaticReplace[]
+
+  /**
+   * The license key for larger teams.
+   *
+   * https://vike.dev/license
+   * https://vike.dev/pricing
+   */
+  license?: string
 }
 
 type PrerenderSetting =

@@ -23,6 +23,7 @@ type PlusFileCommon = {
 }
 /** +config.js */
 type PlusFileConfig = PlusFileCommon & {
+  /** Whether file is `+config.js` or `+{configName}.js` */
   isConfigFile: true
   fileExportsByConfigName: Record<
     string, // configName
@@ -39,6 +40,7 @@ type PlusFileConfig = PlusFileCommon & {
 }
 /** +{configName}.js */
 type PlusFileValue = PlusFileCommon & {
+  /** Whether file is `+config.js` or `+{configName}.js` */
   isConfigFile: false
   configName: string
 } & (

@@ -14,4 +14,7 @@ export const ignorePatternsBuiltIn = [
   '**/.history/**',
   // https://github.com/vikejs/vike/discussions/2222
   '**/*.generated.*',
+  // https://github.com/vikejs/vike/issues/2347
+  '**/*.spec.*',
+  '**/*.test.*',
 ] as const

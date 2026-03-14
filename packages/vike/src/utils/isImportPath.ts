@@ -3,10 +3,10 @@ export { isImportPathRelative }
 
 import { assertPosixPath } from './path.js'
 import { assert } from './assert.js'
-import { isImportPathNpmPackageOrPathAlias } from './parseNpmPackage.js'
+import { isImportNpmPackageOrPathAlias } from './parseNpmPackage.js'
 
 function isImportPath(importPath: string) {
-  return isImportPathRelative(importPath) || isImportPathNpmPackageOrPathAlias(importPath)
+  return isImportPathRelative(importPath) || isImportNpmPackageOrPathAlias(importPath)
 }
 
 // See also `import { pathIsRelative } from './path'`

@@ -26,9 +26,9 @@ import { genPromise } from '../../../../utils/genPromise.js'
 import { assertFilePathAbsoluteFilesystem } from '../../../../utils/isFilePathAbsoluteFilesystem.js'
 import { isImportPathRelative } from '../../../../utils/isImportPath.js'
 import { isObject } from '../../../../utils/isObject.js'
-import { isPlainScriptFile } from '../../../../utils/isScriptFile.js'
+import { isPlainJavaScriptFile, isPlainScriptFile } from '../../../../utils/isScriptFile.js'
 import { isVitest } from '../../../../utils/isVitest.js'
-import { assertIsImportPathNpmPackage, isImportPathNpmPackageOrPathAlias } from '../../../../utils/parseNpmPackage.js'
+import { assertImportIsNpmPackage, isImportNpmPackageOrPathAlias } from '../../../../utils/parseNpmPackage.js'
 import { assertPosixPath, toPosixPath } from '../../../../utils/path.js'
 import { requireResolveOptionalDir } from '../../../../utils/requireResolve.js'
 import { transformPointerImports } from './pointerImports.js'
@@ -41,6 +41,7 @@ assertIsNotProductionRuntime()
 installSourceMapSupport()
 const debug = createDebug('vike:pointer-imports')
 const debugEsbuildResolve = createDebug('vike:esbuild-resolve')
+const debugConfig = createDebug('vike:config')
 if (debugEsbuildResolve.isActivated) debugEsbuildResolve('esbuild version', version)
 
 type FileExports = { fileExports: Record<string, unknown> }
@@ -92,10 +93,16 @@ async function transpileAndExecuteFile(
   let fileExports: FileExports['fileExports']
   if (isExtensionConfig && !isHeader && fileExtension.endsWith('js')) {
     // This doesn't track dependencies => we should never use this for user land configs
+    if (debugConfig.isActivated) {
+      debugConfig(filePathToShowToUserResolved, 'executed directly (no esbuild transpilation)')
+    }
     fileExports = await executeFile(filePathAbsoluteFilesystem, filePath)
   } else {
     const transformImports = isHeader ? 'all' : true
     const code = await transpileFile(filePath, transformImports, userRootDir, esbuildCache)
+    if (debugConfig.isActivated) {
+      debugConfig(filePathToShowToUserResolved, code)
+    }
     fileExports = await executeTranspiledFile(filePath, code)
   }
 
@@ -226,11 +233,11 @@ async function transpileWithEsbuild(
 
           // Esbuild resolves path aliases.
           // - Enabling us to use:
-          //   - assertIsImportPathNpmPackage()
-          //   - isImportPathNpmPackage(str, { cannotBePathAlias: true })
+          //   - assertImportIsNpmPackage()
+          //   - isImportNpmPackage(str, { cannotBePathAlias: true })
           assertFilePathAbsoluteFilesystem(importPathResolved)
 
-          //  Should be remove this? See comment below.
+          //  Should we remove this? See comment below.
           const isVikeExtensionImport =
             (path.startsWith('vike-') && path.endsWith('/config')) || importPathResolved.endsWith('+config.js')
 
@@ -243,37 +250,25 @@ async function transpileWithEsbuild(
             //    - In principle, we can use the setting 'name' value of Vike extensions.
             //      - vike@0.4.162 started soft-requiring Vike extensions to set the name config.
             //    - In practice, it seems like it requires some (non-trivial?) refactoring.
-            isVikeExtensionImport
+            isVikeExtensionImport ||
+            args.with?.['type'] === 'vike:pointer'
 
           assertPosixPath(importPathResolved)
-          // `isNpmPkgImport` => `importPathOriginal` is most likely an npm package import, but it can also be a path alias that a) looks like an npm package import and b) resolves outside of `userRootDir`.
-          const isNpmPkgImport: boolean = (() => {
-            if (importPathResolved.includes('/node_modules/')) {
-              // So far I can't think of a use case where this assertion would fail, but let's eventually remove it to avoid artificially restricting the user.
-              assert(isImportPathNpmPackageOrPathAlias(importPathOriginal))
-              return true
-            }
-            // Linked npm packages
-            if (
-              // Assuming path aliases usually resolve inside `userRootDir`.
-              // - This isn't always the case: https://github.com/vikejs/vike/issues/2326
-              !importPathResolved.startsWith(userRootDir) &&
-              // False positive if `importPathOriginal` is a path alias that a) looks like an npm package import and b) resolves outside of `userRootDir` => we then we wrongfully assume that `importPathOriginal` is an npm package import.
-              isImportPathNpmPackageOrPathAlias(importPathOriginal)
-            ) {
-              return true
-            }
-            return false
-          })()
+          // False positive if `importPathOriginal` is a path alias that a) looks like an npm package import and b) resolves outside of `userRootDir` => we then we wrongfully assume that `importPathOriginal` is an npm package import.
+          // - For example: https://github.com/vikejs/vike/issues/2326
+          const isMostLikelyNpmPkgImport =
+            isImportNpmPackageOrPathAlias(importPathOriginal) &&
+            (importPathResolved.includes('/node_modules/') ||
+              // Linked npm package
+              !importPathResolved.startsWith(userRootDir))
 
           const isExternal =
             isPointerImport ||
             // Performance: npm package imports can be externalized. (We could as well let esbuild transpile /node_modules/ code but it's useless as /node_modules/ code is already built. It would unnecessarily slow down transpilation.)
-            isNpmPkgImport
-
+            (isMostLikelyNpmPkgImport && isPlainJavaScriptFile(importPathResolved))
           if (!isExternal) {
             // User-land config code (i.e. not runtime code) => let esbuild transpile it
-            assert(!isPointerImport && !isNpmPkgImport)
+            assert(!isPointerImport)
             if (debug.isActivated) debug('onResolve() [non-external]', { args, resolved, isPointerImport, isExternal })
             return resolved
           }
@@ -290,7 +285,7 @@ async function transpileWithEsbuild(
               filePathAbsoluteFilesystem: importPathResolved,
               userRootDir,
             })
-            if (filePathAbsoluteUserRootDir && !isNpmPkgImport) {
+            if (filePathAbsoluteUserRootDir && !isMostLikelyNpmPkgImport) {
               // `importPathOriginal` is most likely a path alias.
               // - We have to use esbuild's path alias resolution, because:
               //   - Vike doesn't resolve path aliases at all.
@@ -299,7 +294,7 @@ async function transpileWithEsbuild(
               importPathTranspiled = importPathResolved
             } else {
               // `importPathOriginal` is most likely an npm package import.
-              assertIsImportPathNpmPackage(importPathOriginal)
+              assertImportIsNpmPackage(importPathOriginal)
               // For improved error messages, let the resolution be handled by Vike or Node.js.
               importPathTranspiled = importPathOriginal
             }
@@ -307,13 +302,6 @@ async function transpileWithEsbuild(
 
           if (debug.isActivated)
             debug('onResolve() [external]', { args, resolved, importPathTranspiled, isPointerImport, isExternal })
-          assert(isExternal)
-          assert(
-            // Import of runtime code => handled by Vike
-            isPointerImport ||
-              // Import of config code => loaded by Node.js at build-time
-              isNpmPkgImport,
-          )
           pointerImports[importPathTranspiled] = isPointerImport
           return { external: true, path: importPathTranspiled }
         })

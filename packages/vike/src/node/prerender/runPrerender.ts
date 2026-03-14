@@ -37,7 +37,6 @@ import {
   setGlobalContext_isPrerendering,
   setGlobalContext_prerenderContext,
 } from '../../server/runtime/globalContext.js'
-import { type ResolvedConfig, resolveConfig as resolveViteConfig } from 'vite'
 import { getPageFilesServerSide } from '../../shared-server-client/getPageFiles.js'
 import { getPageContextRequestUrl } from '../../shared-server-client/getPageContextRequestUrl.js'
 import { getUrlFromRouteString } from '../../shared-server-client/route/resolveRouteString.js'
@@ -60,7 +59,7 @@ import { execHookSingleWithoutPageContext, isUserHookError } from '../../shared-
 import type { ApiOptions } from '../api/types.js'
 import { setWasPrerenderRun } from './context.js'
 import { resolvePrerenderConfigGlobal, resolvePrerenderConfigLocal } from './resolvePrerenderConfig.js'
-import { getOutDirs } from '../vite/shared/getOutDirs.js'
+import { getOutDirsAllFromRootNormalized } from '../vite/shared/getOutDirs.js'
 import fs from 'node:fs'
 import { getPublicProxy } from '../../shared-server-client/getPublicProxy.js'
 import { getStaticRedirectsForPrerender } from '../../server/runtime/renderPageServer/resolveRedirects.js'
@@ -106,6 +105,8 @@ type PrerenderContext = {
   _noExtraDir: boolean | null
   _prerenderedPageContexts: PrerenderedPageContexts
   _requestIdCounter: number
+  _userRootDir: string
+  _outDirClient: string
 }
 type Output<PageContext = PageContextPrerendered> = {
   filePath: string
@@ -160,10 +161,13 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
 
   await disableReactStreaming()
 
-  const viteConfig = await resolveViteConfig(options.viteConfig || {}, 'build', 'production')
+  await initGlobalContext_runPrerender()
+  const { globalContext } = await getGlobalContextServerInternal()
+
+  // TO-DO/eventually: remove getVikeConfigInternal() to completely remove Vite dependency
+  // https://github.com/vikejs/vike/issues/3113
   const vikeConfig = await getVikeConfigInternal()
 
-  const { outDirServer } = getOutDirs(viteConfig, undefined)
   const prerenderConfigGlobal = await resolvePrerenderConfigGlobal(vikeConfig)
   const { partial, noExtraDir, parallel, defaultLocalValue, isPrerenderingEnabled } = prerenderConfigGlobal
   if (!isPrerenderingEnabled) {
@@ -176,17 +180,20 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
       `You're executing ${pc.cyan(standaloneTrigger)} but you didn't enable pre-rendering. Use the ${pc.cyan('prerender')} setting (${pc.underline('https://vike.dev/prerender')}) to enable pre-rendering for at least one page.`
     )
     */
-    return { viteConfig }
+    return
   }
 
   const concurrencyLimit = pLimit(
     parallel === false || parallel === 0 ? 1 : parallel === true || parallel === undefined ? cpus().length : parallel,
   )
 
-  await initGlobalContext_runPrerender()
-  const { globalContext } = await getGlobalContextServerInternal()
   globalContext._pageFilesAll.forEach(assertExportNames)
 
+  const {
+    root,
+    build: { outDir: outDirRoot },
+  } = globalContext.viteConfigRuntime
+  const { outDirServer, outDirClient } = getOutDirsAllFromRootNormalized(outDirRoot, root)
   const prerenderContext: PrerenderContext = {
     pageContexts: [],
     output: [],
@@ -194,6 +201,8 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
     _pageContextInit: options.pageContextInit ?? null,
     _prerenderedPageContexts: {},
     _requestIdCounter: 0,
+    _userRootDir: root,
+    _outDirClient: outDirClient,
   }
 
   const doNotPrerenderList: DoNotPrerenderList = []
@@ -230,7 +239,7 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
     if (pageId) {
       prerenderContext._prerenderedPageContexts[pageId] = htmlFile.pageContext
     }
-    await writeFiles(htmlFile, viteConfig, options.onPagePrerender, prerenderContext, logLevel)
+    await writeFiles(htmlFile, prerenderContext, options.onPagePrerender, logLevel)
   }
 
   await prerenderPages(prerenderContext, concurrencyLimit, onComplete)
@@ -254,8 +263,6 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
   if (!prerenderConfigGlobal.keepDistServer) {
     fs.rmSync(outDirServer, { recursive: true })
   }
-
-  return { viteConfig }
 }
 
 async function collectDoNoPrerenderList(
@@ -326,6 +333,7 @@ async function collectDoNoPrerenderList(
   })
 }
 
+// TO-DO/next-major-release: remove
 function assertExportNames(pageFile: PageFile) {
   const { exportNames, fileType } = pageFile
   assert(exportNames || fileType === '.page.route' || fileType === '.css', pageFile.filePath)
@@ -904,16 +912,13 @@ async function warnMissingPages(
 
 async function writeFiles(
   { pageContext, htmlString, pageContextSerialized }: HtmlFile,
-  viteConfig: ResolvedConfig,
-  onPagePrerender: Function | undefined,
   prerenderContext: PrerenderContext,
+  onPagePrerender: Function | undefined,
   logLevel: 'warn' | 'info',
 ) {
-  const writeJobs = [write(pageContext, 'HTML', htmlString, viteConfig, onPagePrerender, prerenderContext, logLevel)]
+  const writeJobs = [write(pageContext, 'HTML', htmlString, onPagePrerender, prerenderContext, logLevel)]
   if (pageContextSerialized !== null) {
-    writeJobs.push(
-      write(pageContext, 'JSON', pageContextSerialized, viteConfig, onPagePrerender, prerenderContext, logLevel),
-    )
+    writeJobs.push(write(pageContext, 'JSON', pageContextSerialized, onPagePrerender, prerenderContext, logLevel))
   }
   await Promise.all(writeJobs)
 }
@@ -922,16 +927,12 @@ async function write(
   pageContext: PageContextPrerendered,
   fileType: FileType,
   fileContent: string,
-  viteConfig: ResolvedConfig,
   onPagePrerender: Function | undefined,
   prerenderContext: PrerenderContext,
   logLevel: 'info' | 'warn',
 ) {
   const { urlOriginal } = pageContext
   assert(urlOriginal.startsWith('/'))
-
-  const { outDirClient } = getOutDirs(viteConfig, undefined)
-  const { root } = viteConfig
 
   let fileUrl: string
   if (fileType === 'HTML') {
@@ -950,6 +951,7 @@ async function write(
     // https://github.com/vikejs/vike/issues/1929
     { urlOriginal, fileUrl },
   )
+  const { _outDirClient: outDirClient } = prerenderContext
   assertPosixPath(outDirClient)
   assertPosixPath(filePathRelative)
   const filePath = path.posix.join(outDirClient, filePathRelative)
@@ -975,9 +977,10 @@ async function write(
     await mkdir(path.posix.dirname(filePath), { recursive: true })
     await writeFile(filePath, fileContent)
     if (logLevel === 'info') {
-      assertPosixPath(root)
+      const { _userRootDir: userRootDir } = prerenderContext
+      assertPosixPath(userRootDir)
       assertPosixPath(outDirClient)
-      let outDirClientRelative = path.posix.relative(root, outDirClient)
+      let outDirClientRelative = path.posix.relative(userRootDir, outDirClient)
       if (!outDirClientRelative.endsWith('/')) {
         outDirClientRelative = outDirClientRelative + '/'
       }

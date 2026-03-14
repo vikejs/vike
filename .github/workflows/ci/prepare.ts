@@ -30,7 +30,7 @@ type Job = {
   jobCmd: string
 }
 type Setup = { os: string; node_version: string }
-type LocalConfig = { ci: { job: string; inspect: true } }
+type LocalConfig = { ci: { job: string; inspect?: true; verbose?: true } }
 type GlobalConfig = {
   ci?: { jobs: { name: string; setups: Setup[]; command?: string }[] }
   tolerateError?: TolerateError
@@ -142,6 +142,13 @@ async function getMatrix(): Promise<MatrixEntry[]> {
       job.jobCmd = `${job.jobCmd} --inspect`
     })
   }
+
+  // Append --verbose
+  jobs.forEach((job) => {
+    if (job.jobTests?.some((t) => t.localConfig?.ci.verbose)) {
+      job.jobCmd = `${job.jobCmd} --verbose`
+    }
+  })
 
   const matrix: MatrixEntry[] = []
   jobs.forEach(({ jobName, jobTests, jobSetups, jobCmd }) => {

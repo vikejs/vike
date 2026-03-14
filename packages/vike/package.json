@@ -1,6 +1,6 @@
 {
   "name": "vike",
-  "version": "0.4.253",
+  "version": "0.4.255",
   "repository": "https://github.com/vikejs/vike",
   "exports": {
     "./server": {
@@ -121,9 +121,9 @@
     "@babel/core": "^7.28.5",
     "@babel/types": "^7.28.5",
     "@brillout/import": "^0.2.6",
-    "@brillout/json-serializer": "^0.5.21",
+    "@brillout/json-serializer": "^0.5.22",
     "@brillout/picocolors": "^1.0.30",
-    "@brillout/vite-plugin-server-entry": "^0.7.17",
+    "@brillout/vite-plugin-server-entry": "0.7.18",
     "cac": "^6.0.0",
     "es-module-lexer": "^1.0.0",
     "esbuild": ">=0.19.0",
@@ -244,14 +244,14 @@
     "./universal-middleware.js"
   ],
   "devDependencies": {
-    "@brillout/release-me": "^0.4.12",
+    "@brillout/release-me": "^0.4.13",
     "@types/babel__core": "^7.20.5",
     "@types/estree": "^1.0.5",
     "@types/node": "^20.10.5",
     "@types/picomatch": "^3.0.2",
     "@types/semver": "^7.5.8",
     "@types/source-map-support": "^0.5.10",
-    "react-streaming": "^0.4.15",
+    "react-streaming": "^0.4.16",
     "rimraf": "^5.0.5",
     "typescript": "^5.9.3",
     "vite": "^7.2.6"

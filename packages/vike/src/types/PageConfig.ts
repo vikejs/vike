@@ -118,7 +118,7 @@ type ConfigValueSource = {
   // TO-DO/next-major-release: remove `locationId` in favor of `plusFile.locationId`
   locationId: LocationId
   /** Whether the config value is loaded at runtime, for example config.Page or config.onBeforeRender */
-  valueIsLoadedWithImport: boolean
+  valueLoadedViaImport: boolean
   /** Whether the config value is a file path, this is currently only true for +client */
   valueIsFilePath?: true
   /** Whether the config value is defined by a +{configName}.js file */

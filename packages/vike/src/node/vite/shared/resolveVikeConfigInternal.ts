@@ -124,6 +124,7 @@ type VikeConfigInternal = GlobalConfigPublic & {
   _pageConfigs: PageConfigBuildTime[]
   _pageConfigGlobal: PageConfigGlobalBuildTime
   _vikeConfigDependencies: Set<string>
+  _extensions: PlusFile[]
   prerenderContext: PrerenderContext
 }
 
@@ -338,12 +339,17 @@ async function resolveVikeConfigInternal(
     _pageConfigs: pageConfigs,
   })
 
+  const _extensions = Object.values(plusFilesByLocationId)
+    .flat()
+    .filter((p) => p.isConfigFile && p.isExtensionConfig)
+
   const vikeConfig: VikeConfigInternal = {
     ...globalConfigPublic,
     prerenderContext,
     _pageConfigs: pageConfigs,
     _pageConfigGlobal: pageConfigGlobal,
     _vikeConfigDependencies: esbuildCache.vikeConfigDependencies,
+    _extensions,
   }
   globalObject.vikeConfigSync = vikeConfig
 
@@ -736,7 +742,7 @@ function getSourceNonConfigFile(
     definedAt,
     locationId: '/' as LocationId,
     plusFile: null,
-    valueIsLoadedWithImport: false,
+    valueLoadedViaImport: false,
     valueIsDefinedByPlusValueFile: false,
   }
   return source
@@ -917,7 +923,7 @@ function getConfigValueSources(
       value: valueFilePath,
       valueIsFilePath: true,
       configEnv: configDef.env,
-      valueIsLoadedWithImport: false,
+      valueLoadedViaImport: false,
       valueIsDefinedByPlusValueFile: false,
       definedAt: definedAtFilePath,
     }
@@ -944,7 +950,7 @@ function getConfigValueSources(
           ...configValueSourceCommon,
           ...value,
           configEnv: resolveConfigEnv(configDef.env, pointerImport.fileExportPath),
-          valueIsLoadedWithImport: true,
+          valueLoadedViaImport: true,
           valueIsDefinedByPlusValueFile: false,
           definedAt: pointerImport.fileExportPath,
         }
@@ -958,7 +964,7 @@ function getConfigValueSources(
       valueIsLoaded: true,
       value: confVal.value,
       configEnv: configDef.env,
-      valueIsLoadedWithImport: false,
+      valueLoadedViaImport: false,
       valueIsDefinedByPlusValueFile: false,
       definedAt: definedAtFilePath_,
     }
@@ -973,7 +979,14 @@ function getConfigValueSources(
       ...configValueSourceCommon,
       ...confVal,
       configEnv: configEnvResolved,
-      valueIsLoadedWithImport: !confVal.valueIsLoaded || !isJsonValue(confVal.value),
+      valueLoadedViaImport:
+        // If +{configName}.js is (also) runtime code => always load it via import (not strictly required, but seems to be a good default)
+        !!configEnvResolved.client ||
+        !!configEnvResolved.server ||
+        // No choice: value isn't loaded at config-time
+        !confVal.valueIsLoaded ||
+        // No choice: value isn't serializable
+        !isJsonValue(confVal.value),
       valueIsDefinedByPlusValueFile: true,
       definedAt: {
         ...plusFile.filePath,
@@ -1221,7 +1234,7 @@ function applyEffectConfVal(
       plusFile: sourceEffect.plusFile,
       locationId: sourceEffect.locationId,
       configEnv: configDef.env,
-      valueIsLoadedWithImport: false,
+      valueLoadedViaImport: false,
       valueIsDefinedByPlusValueFile: false,
       valueIsLoaded: true,
       value: configValue,
@@ -1582,6 +1595,7 @@ async function getVikeConfigDummy(esbuildCache: EsbuildCache): Promise<VikeConfi
     ...globalConfigPublicDummy,
     prerenderContext: prerenderContextDummy,
     _vikeConfigDependencies: esbuildCache.vikeConfigDependencies,
+    _extensions: [],
   }
   globalObject.vikeConfigSync = vikeConfigDummy
   globalObject.isV1Design_ = true

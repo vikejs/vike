@@ -22,9 +22,9 @@ function assertKeys<Keys extends readonly string[]>(
       [
         errPrefix,
         `unknown key${keysUnknown.length === 1 ? '' : 's'}`,
-        joinEnglish(keysUnknown, 'and', pc.cyan) + '.',
+        joinEnglish(keysUnknown, 'and', { color: pc.cyan }) + '.',
         'Only following keys are allowed:',
-        joinEnglish(keysExpected, 'and', pc.cyan) + '.',
+        joinEnglish(keysExpected, 'and', { color: pc.cyan }) + '.',
       ].join(' '),
     )
   }

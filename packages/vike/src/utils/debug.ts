@@ -12,6 +12,7 @@ import { isArray } from './isArray.js'
 import { isObject } from './isObject.js'
 const flags = [
   'vike',
+  'vike:config',
   'vike:crawl',
   'vike:file-change',
   'vike:error',

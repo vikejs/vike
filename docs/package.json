@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "@batijs/elements": "^0.0.54",
-    "@brillout/docpress": "^0.16.15",
+    "@brillout/docpress": "^0.16.24",
     "@classmatejs/react": "^0.2.1",
     "@gsap/react": "^2.1.2",
     "@types/react": "^19.0.2",
@@ -18,7 +18,7 @@
     "react-dom": "^19.2.4",
     "react-tabs": "^6.1.0",
     "typescript": "^5.9.3",
-    "vike": "0.4.253",
+    "vike": "0.4.255",
     "vite": "^6.3.4",
     "vite-plugin-svgr": "^4.3.0"
   },
