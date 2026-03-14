@@ -178,6 +178,10 @@
   #tailwind-portal blockquote {
     @apply !bg-transparent;
   }
+
+  #tailwind-portal select {
+    all: initial;
+  }
 }
 
 @source inline("bg-base-{100..300..100}");
