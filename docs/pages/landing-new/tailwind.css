@@ -109,7 +109,6 @@
 }
 
 @layer base {
-
   #tailwind-portal,
   #tailwind-portal *,
   #tailwind-portal ::before,
@@ -126,7 +125,8 @@
     tab-size: 4;
   }
 
-  #tailwind-portal :where(h1, h2, h3, h4, h5, h6, p, blockquote, figure, dl, dd) {
+  #tailwind-portal
+    :where(h1, h2, h3, h4, h5, h6, p, blockquote, figure, dl, dd) {
     margin: 0;
   }
 
@@ -141,7 +141,8 @@
     color: inherit;
   }
 
-  #tailwind-portal :where(img, svg, video, canvas, audio, iframe, embed, object) {
+  #tailwind-portal
+    :where(img, svg, video, canvas, audio, iframe, embed, object) {
     display: block;
     vertical-align: middle;
   }
@@ -159,7 +160,7 @@
     font-size: 1em;
   }
 
-  #tailwind-portal pre>code {
+  #tailwind-portal pre > code {
     @apply bg-base-100;
     @apply !text-[0.813rem];
   }
@@ -173,7 +174,6 @@
   #tailwind-portal th code {
     font-size: 0.9em !important;
   }
-
 
   #tailwind-portal blockquote {
     @apply !bg-transparent;
