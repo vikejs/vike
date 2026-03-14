@@ -7,8 +7,12 @@ describe('joinEnglish()', () => {
   })
 
   it('can omit the trailing comma', () => {
-    expect(joinEnglish(['apples', 'bananas', 'cherries'], 'and', undefined, { trailingComma: false })).toBe(
+    expect(joinEnglish(['apples', 'bananas', 'cherries'], 'and', { trailingComma: false })).toBe(
       'apples, bananas and cherries',
     )
+  })
+
+  it('can colorize entries through options', () => {
+    expect(joinEnglish(['apples', 'bananas'], 'or', { colorizer: (s) => `[${s}]` })).toBe('[apples] or [bananas]')
   })
 })
