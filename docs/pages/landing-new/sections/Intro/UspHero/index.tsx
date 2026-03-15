@@ -49,7 +49,6 @@ const UspHero = ({ onHoverChange, activeUspId }: UspHeroProps) => {
     [onHoverChange],
   )
 
-
   const handleMouseLeave = useCallback(() => {
     onHoverChange?.(null)
   }, [onHoverChange])
@@ -149,7 +148,7 @@ const UspHero = ({ onHoverChange, activeUspId }: UspHeroProps) => {
             <div
               className={cmMerge(
                 `relative cursor-pointer transition-[filter,opacity] ${uiConfig.transition.mediumDurationTw} ${uiConfig.transition.easeInOutTw} rounded-lg -mt-5 `,
-                
+
                 toneClass,
               )}
               data-usp-content-hit="true"

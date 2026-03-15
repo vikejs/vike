@@ -156,7 +156,7 @@
     z-index: 99;
   }
 
-  #tailwind-portal :where(code)  {
+  #tailwind-portal :where(code) {
     font-size: 1em;
   }
 
@@ -180,8 +180,8 @@
     @apply !border-l-0;
   }
 
-  #tailwind-portal select {
-    all: initial;
+  #tailwind-portal :where(select) {
+    @apply !text-sm !w-fit border border-grey;
   }
 }
 

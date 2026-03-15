@@ -68,7 +68,9 @@ const IntroSection = () => {
         >
           <div className="relative z-10 flex flex-col items-center text-center w-full">
             <span className="inline-flex sm:flex-row gap-1 mb-4 mt-10 lg:mt-16 xl:mt-20">
-              <span className="block badge badge-neutral badge-ghost badge-xs md:badge-sm">⭐️ Replaces Next.js / Nuxt / ...</span>
+              <span className="block badge badge-neutral badge-ghost badge-xs md:badge-sm">
+                ⭐️ Replaces Next.js / Nuxt / ...
+              </span>
               <span className="block badge badge-neutral badge-ghost badge-xs md:badge-sm">🏗️ Powered By Vite</span>
             </span>
             <div className="relative">
@@ -81,7 +83,8 @@ const IntroSection = () => {
               </Headline>
             </div>
             <p className="text-base md:text-2xl text-grey text-center w-3/4 lg:w-3/5 mx-auto mb-6 mt-4">
-              The last JavaScript framework you'll need, <br className='hidden md:block' /> powered by a next-gen architecture.
+              The last JavaScript framework you'll need, <br className="hidden md:block" /> powered by a next-gen
+              architecture.
             </p>
             <div className="flex gap-2 items-center justify-center mb-8 sm:mb-12">
               <a
