@@ -96,10 +96,10 @@ const brands: Brand[] = [
 ]
 
 const BrandsWrapper = cm.div`
-  flex gap-10 justify-center items-center flex-wrap mb-6 relative
+  flex justify-center items-center flex-wrap mb-6 relative
 `
 
-const BrandsContent = ({ type } : { type: "default" | "mobile"}) => {
+const BrandsContent = ({ type }: { type: 'default' | 'mobile' }) => {
   return (
     <>
       {brands.map((e, i) => (
@@ -111,7 +111,12 @@ const BrandsContent = ({ type } : { type: "default" | "mobile"}) => {
           data-label-position={i === brands.length - 1 ? 'top-left' : null}
           className="hero-usedby colorize-on-hover h-full flex justify-center items-center relative"
         >
-          <img className={cmMerge('decolorize-4 w-auto', type === "default" ? e.height.default : e.height.mobile)} src={e.logo} width={400} height={200} />
+          <img
+            className={cmMerge('decolorize-4 w-auto', type === 'default' ? e.height.default : e.height.mobile)}
+            src={e.logo}
+            width={400}
+            height={200}
+          />
         </a>
       ))}
     </>
@@ -121,20 +126,23 @@ const BrandsContent = ({ type } : { type: "default" | "mobile"}) => {
 const BrandSubsection = () => {
   return (
     <GlassContainer className="flex flex-col items-center justify-center gap-4 mx-auto py-5 md:mt-0">
-      <BrandsWrapper className="hidden lg:flex">
+      <BrandsWrapper className="hidden lg:flex gap-10 ">
         <BrandsContent type="default" />
       </BrandsWrapper>
-      <BrandsWrapper className="flex lg:hidden">
+
+      <BrandsWrapper className="flex lg:hidden gap-5">
         <BrandsContent type="mobile" />
       </BrandsWrapper>
-      <div className="text-grey text-sm w-fit mx-auto mb-12">
+
+      <div className="text-grey text-xs md:text-sm mx-auto mt-4 basis-full px-4 text-center">
         Used by large organizations to build mission-critical applications, see{' '}
         <a href="link" className="text-secondary">
           Use Cases
         </a>
       </div>
+      <hr className="border-t border-grey-200 w-1/2 mx-auto md:hidden mt-10" />
       <Blockquote
-        className="md:w-4/5 mx-auto"
+        className="mt-10 md:w-4/5 mx-auto"
         authorPictures={[
           'https://github.com/brillout.png?size=100',
           'https://github.com/magne4000.png?size=100',

@@ -156,7 +156,7 @@
     z-index: 99;
   }
 
-  #tailwind-portal code {
+  #tailwind-portal :where(code)  {
     font-size: 1em;
   }
 
@@ -175,8 +175,9 @@
     font-size: 0.9em !important;
   }
 
-  #tailwind-portal blockquote {
+  #tailwind-portal :where(blockquote) {
     @apply !bg-transparent;
+    @apply !border-l-0;
   }
 
   #tailwind-portal select {

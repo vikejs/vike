@@ -64,7 +64,7 @@ const IntroSection = () => {
         {/* <div className="absolute top-0 left-0 h-1/2 w-full bg-linear-to-t to-white z-10" /> */}
         <LayoutComponent
           $size="md"
-          className="flex flex-col items-center text-center min-h-[calc(100dvh-48*var(--spacing))]  overflow-hidden"
+          className="flex flex-col items-center text-center min-h-[calc(100svh-48*var(--spacing))]  overflow-hidden"
         >
           <div className="relative z-10 flex flex-col items-center text-center w-full">
             <span className="inline-flex sm:flex-row gap-1 mb-4 mt-10 lg:mt-16 xl:mt-20">
@@ -80,7 +80,7 @@ const IntroSection = () => {
                 <HeadlineWord word="Fast." isActive={activeHeadlineWord === 'orange'} color="orange" /> */}
               </Headline>
             </div>
-            <p className="text-lg md:text-2xl text-grey text-center w-3/4 lg:w-3/5 mx-auto mb-6 mt-4">
+            <p className="text-base md:text-2xl text-grey text-center w-3/4 lg:w-3/5 mx-auto mb-6 mt-4">
               The last JavaScript framework you'll need, <br className='hidden md:block' /> powered by a next-gen architecture.
             </p>
             <div className="flex gap-2 items-center justify-center mb-8 sm:mb-12">
