@@ -35,8 +35,8 @@ export const layoutComponentSizeMapping: { [key in LayoutSize]: string } = {
 } as const
 
 export const BlurDotOpacity = {
-  low: 'opacity-15',
-  medium: 'opacity-60',
+  low: 'opacity-10',
+  medium: 'opacity-30',
   high: 'opacity-80',
 } as const
 export type BlurDotOpacity = keyof typeof BlurDotOpacity
