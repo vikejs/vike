@@ -1,5 +1,5 @@
-import React, { type MouseEvent, useCallback, useEffect, useMemo, useRef } from 'react'
-import { H3Headline } from '../../../components/Headline'
+import React, { type MouseEvent, useCallback, useMemo } from 'react'
+import Headline from '../../../components/Headline'
 import cm, { cmMerge } from '@classmatejs/react'
 import { landingPageHeroUsps } from '../../../util/constants'
 import GradientText from '../../../components/GradientText'
@@ -49,19 +49,20 @@ const UspHero = ({ onHoverChange, activeUspId }: UspHeroProps) => {
     [onHoverChange],
   )
 
+
   const handleMouseLeave = useCallback(() => {
     onHoverChange?.(null)
   }, [onHoverChange])
 
   return (
-    <div ref={rootRef} className="w-full" data-usp-hero>
+    <div ref={rootRef} className="w-full hidden sm:block" data-usp-hero>
       <div className="fixed w-full h-24 top-0 left-0 z-20 bg-linear-to-t to-95% to-base-300 pointer-events-none" />
       <div data-usp-hero-nav="true" className="relative z-30 py-2">
         <div
           data-usp-hero-nav-chrome="true"
           className="pointer-events-none absolute left-1/2 top-0 z-9 h-16 w-full max-w-[1100px] -translate-x-1/2 shadow-neutral/10 shadow-lg rounded-box opacity-0 overflow-hidden bg-white/95"
         >
-          <div className="relative z-10 grid grid-cols-3 md:w-6/7 mx-auto px-2">
+          <div className="relative z-10 grid grid-cols-3 md:w-6/7 mx-auto">
             {landingPageHeroUsps.map((usp) => {
               const visualState = uspVisualStateById.get(usp.id)
               const toneClass = visualState?.toneClass ?? 'grayscale-0 opacity-100'
@@ -138,7 +139,7 @@ const UspHero = ({ onHoverChange, activeUspId }: UspHeroProps) => {
       </div>
 
       {/* static scrolling */}
-      <div className="relative z-10 grid grid-cols-3 md:w-6/7 mx-auto px-2 py-2">
+      <div className="relative z-10 grid grid-cols-3 md:w-6/7 mx-auto px-2 pt-2 pb-10">
         {landingPageHeroUsps.map((usp) => {
           const visualState = uspVisualStateById.get(usp.id)
           const toneClass = visualState?.toneClass ?? 'grayscale-0 opacity-100'
@@ -148,6 +149,7 @@ const UspHero = ({ onHoverChange, activeUspId }: UspHeroProps) => {
             <div
               className={cmMerge(
                 `relative cursor-pointer transition-[filter,opacity] ${uiConfig.transition.mediumDurationTw} ${uiConfig.transition.easeInOutTw} rounded-lg -mt-5 `,
+                
                 toneClass,
               )}
               data-usp-content-hit="true"
@@ -161,7 +163,7 @@ const UspHero = ({ onHoverChange, activeUspId }: UspHeroProps) => {
                   src={ledgeGraphic}
                   alt=""
                   data-usp-ledge="true"
-                  className="absolute w-full h-full z-2 object-fill"
+                  className="absolute w-full h-full z-2 object-fill hidden md:block"
                 />
               </StyledUspItemInner>
               <BlurDot
@@ -174,16 +176,16 @@ const UspHero = ({ onHoverChange, activeUspId }: UspHeroProps) => {
               <div data-usp-content-progress-track={usp.id} className="relative h-0.5 w-18 mx-auto mb-2 rounded-full" />
 
               <StyledTextContent $hovered={isHovered}>
-                <div data-usp-copy-large="true" className="text-center h-full flex flex-col flex-1 p-5 pt-2">
+                <div data-usp-copy-large="true" className="text-center h-full flex flex-col flex-1 p-0 md:p-5 pt-2">
                   <div className="flex-1 ">
-                    <H3Headline as="h2" className="mb-2">
+                    <Headline variant="h3" as="h2" className="mb-2">
                       <span className="relative block w-fit mx-auto">
                         <StyledTitleShape $hovered={isHovered}>{usp.title}</StyledTitleShape>
                         <StyledTitle className={'absolute left-0 top-0 transition-opacity'}>
                           <GradientText color={usp.dotColor}>{usp.title}</GradientText>
                         </StyledTitle>
                       </span>
-                    </H3Headline>
+                    </Headline>
                     <p className="xl:text-lg">{usp.description}</p>
                   </div>
                   <span
@@ -254,7 +256,7 @@ const StyledIconWrapper = cm.div`
 const StyledTextContent = cm.div<{ $hovered?: boolean }>`
   relative z-6
   transition-transform
-
+  text-xs sm:text-sm lg:text-base
   flex flex-col justify-between
   pointer-events-none
   ${uiConfig.transition.mediumDurationTw}

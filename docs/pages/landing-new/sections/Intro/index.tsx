@@ -7,6 +7,7 @@ import BrandSubsection from './BrandSubsection'
 import type { UspHoverTarget } from './intro.types'
 import useIntroHeadlineGradientMotion from './useIntroHeadlineGradientMotion'
 import { UiColorVariantKey, UiVariantTextColor } from '../../util/ui.constants'
+import UspHeroMobile from './UspHero/UspHeroMobile'
 
 const initialCtaColor: UiColorVariantKey = 'green'
 
@@ -60,15 +61,15 @@ const IntroSection = () => {
   return (
     <>
       <div data-intro-section-root="true" className="relative">
-        <div className="absolute top-0 left-0 h-1/2 w-full bg-linear-to-t to-white z-10" />
+        {/* <div className="absolute top-0 left-0 h-1/2 w-full bg-linear-to-t to-white z-10" /> */}
         <LayoutComponent
           $size="md"
-          className="flex flex-col items-center text-center lg:min-h-[calc(100dvh-56*var(--spacing))] pb-20 overflow-hidden"
+          className="flex flex-col items-center text-center min-h-[calc(100dvh-48*var(--spacing))]  overflow-hidden"
         >
           <div className="relative z-10 flex flex-col items-center text-center w-full">
-            <span className="inline-flex flex-col sm:flex-row gap-1 mx-auto mb-4 md:mt-16 xl:mt-20">
-              <span className="block badge badge-neutral badge-ghost badge-sm">⭐️ Replaces Next.js / Nuxt / ...</span>
-              <span className="block badge badge-neutral badge-ghost badge-sm">🏗️ Powered By Vite</span>
+            <span className="inline-flex sm:flex-row gap-1 mb-4 mt-10 lg:mt-16 xl:mt-20">
+              <span className="block badge badge-neutral badge-ghost badge-xs md:badge-sm">⭐️ Replaces Next.js / Nuxt / ...</span>
+              <span className="block badge badge-neutral badge-ghost badge-xs md:badge-sm">🏗️ Powered By Vite</span>
             </span>
             <div className="relative">
               <Headline as="h1" variant="xlarge">
@@ -79,13 +80,13 @@ const IntroSection = () => {
                 <HeadlineWord word="Fast." isActive={activeHeadlineWord === 'orange'} color="orange" /> */}
               </Headline>
             </div>
-            <p className="text-xl md:text-2xl text-grey text-center w-3/4 lg:w-3/5 mx-auto mb-6 mt-4">
-              The last JavaScript framework you'll need, <br /> powered by a next-gen architecture.
+            <p className="text-lg md:text-2xl text-grey text-center w-3/4 lg:w-3/5 mx-auto mb-6 mt-4">
+              The last JavaScript framework you'll need, <br className='hidden md:block' /> powered by a next-gen architecture.
             </p>
-            <div className="flex gap-2 items-center justify-center mb-16">
+            <div className="flex gap-2 items-center justify-center mb-8 sm:mb-12">
               <a
                 ref={getStartedButtonRef}
-                className="btn text-white border-0 btn-neutral"
+                className="btn btn-sm md:btn-md text-white border-0 btn-neutral"
                 // style={
                 //   {
                 //     '--gradient-start': defaultGradients[initialCtaColor].startColor,
@@ -96,9 +97,10 @@ const IntroSection = () => {
               >
                 Get Started
               </a>
-              <a className="btn btn-neutral btn-outline">Scaffold new App</a>
+              <a className="btn btn-sm md:btn-md btn-neutral btn-outline">Scaffold new App</a>
             </div>
             <UspHero onHoverChange={handleUspHoverChange} activeUspId={activeUspId} />
+            <UspHeroMobile />
           </div>
         </LayoutComponent>
       </div>

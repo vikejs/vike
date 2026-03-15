@@ -1,5 +1,5 @@
 import React from 'react'
-import { cmMerge } from '@classmatejs/react'
+import cm, { cmMerge } from '@classmatejs/react'
 
 import usedByBild from './../../assets/brands/bildde.svg'
 import usedBySpline from './../../assets/brands/spline.webp'
@@ -10,19 +10,34 @@ import usedByDia from './../../assets/brands/dia.svg'
 
 import GlassContainer from '../../components/GlassContainer'
 import Blockquote from '../../components/Quote'
+import useBreakpoints from '../../hooks/useBreakpoints'
+
+type HeightVariant = {
+  mobile: string
+  default: string
+}
+
+const heightVariant: Record<'small' | 'medium' | 'large', HeightVariant> = {
+  small: {
+    mobile: 'h-2.5',
+    default: 'h-4.5',
+  },
+  medium: {
+    mobile: 'h-3.5',
+    default: 'h6',
+  },
+  large: {
+    mobile: 'h-5.5',
+    default: 'h-8',
+  },
+}
 
 type Brand = {
   website: `https://${string}`
   logo: string
-  height: string
+  height: HeightVariant
   desc: string
   name: string
-}
-
-const heightVariant = {
-  small: 'h-4.5',
-  medium: 'h-6',
-  large: 'h-8',
 }
 
 const brands: Brand[] = [
@@ -80,23 +95,38 @@ const brands: Brand[] = [
   */
 ]
 
+const BrandsWrapper = cm.div`
+  flex gap-10 justify-center items-center flex-wrap mb-6 relative
+`
+
+const BrandsContent = ({ type } : { type: "default" | "mobile"}) => {
+  return (
+    <>
+      {brands.map((e, i) => (
+        <a
+          href={e.website}
+          target="_blank"
+          key={i}
+          aria-label={e.desc}
+          data-label-position={i === brands.length - 1 ? 'top-left' : null}
+          className="hero-usedby colorize-on-hover h-full flex justify-center items-center relative"
+        >
+          <img className={cmMerge('decolorize-4 w-auto', type === "default" ? e.height.default : e.height.mobile)} src={e.logo} width={400} height={200} />
+        </a>
+      ))}
+    </>
+  )
+}
+
 const BrandSubsection = () => {
   return (
-    <GlassContainer className="flex flex-col items-center justify-center gap-4 mx-auto py-10">
-      <div className="flex gap-10 justify-center items-center flex-wrap mb-6 relative">
-        {brands.map((e, i) => (
-          <a
-            href={e.website}
-            target="_blank"
-            key={i}
-            aria-label={e.desc}
-            data-label-position={i === brands.length - 1 ? 'top-left' : null}
-            className="hero-usedby colorize-on-hover h-full flex justify-center items-center relative"
-          >
-            <img className={cmMerge('decolorize-4 w-auto', e.height)} src={e.logo} width={400} height={200} />
-          </a>
-        ))}
-      </div>
+    <GlassContainer className="flex flex-col items-center justify-center gap-4 mx-auto py-5 md:mt-0">
+      <BrandsWrapper className="hidden lg:flex">
+        <BrandsContent type="default" />
+      </BrandsWrapper>
+      <BrandsWrapper className="flex lg:hidden">
+        <BrandsContent type="mobile" />
+      </BrandsWrapper>
       <div className="text-grey text-sm w-fit mx-auto mb-12">
         Used by large organizations to build mission-critical applications, see{' '}
         <a href="link" className="text-secondary">

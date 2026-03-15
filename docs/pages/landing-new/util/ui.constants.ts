@@ -81,3 +81,19 @@ export const UiVariantBgColor = {
   blue: 'bg-secondary',
   orange: 'bg-accent',
 } as const
+
+
+// sm	40rem (640px)	@media (width >= 40rem) { ... }
+// md	48rem (768px)	@media (width >= 48rem) { ... }
+// lg	64rem (1024px)	@media (width >= 64rem) { ... }
+// xl	80rem (1280px)	@media (width >= 80rem) { ... }
+// 2xl	96rem (1536px)	@media (width >= 96rem) { ... }
+
+export const BreakpointMediaQueries = {
+  sm: '(min-width: 640px)',
+  md: '(min-width: 768px)',
+  lg: '(min-width: 1024px)',
+  xl: '(min-width: 1280px)',
+  '2xl': '(min-width: 1536px)',
+} as const
+export type Breakpoint = keyof typeof BreakpointMediaQueries
