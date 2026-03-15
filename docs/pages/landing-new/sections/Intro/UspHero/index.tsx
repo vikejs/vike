@@ -119,7 +119,7 @@ const UspHero = ({ onHoverChange, activeUspId }: UspHeroProps) => {
                   </StyledIconWrapper>
                   <div
                     data-usp-sticky-progress-track={usp.id}
-                    className="top-9 absolute mt-2 h-0.5 w-16 rounded-full bg-base-content/3 overflow-hidden"
+                    className="top-10 absolute mt-2 h-0.5 w-16 rounded-full bg-base-content/3 overflow-hidden"
                   >
                     <div
                       data-usp-sticky-progress-fill={usp.id}
