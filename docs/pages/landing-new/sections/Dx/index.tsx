@@ -1,0 +1,32 @@
+import React from 'react'
+
+import LayoutComponent from '../../components/LayoutComponent'
+import GradientText from '../../components/GradientText'
+import SectionHeader from '../../components/SectionHeader'
+import { UspCategoryId } from '../../util/constants'
+import DxContent from './DxContent.mdx'
+
+const DxSection = () => {
+  return (
+    <section data-usp-section={UspCategoryId.lightningDx}>
+      <LayoutComponent className="mt-20">
+        <SectionHeader
+          icon={'⚡️'}
+          badgeText="Developer Experience"
+          main={
+            <>
+              <GradientText color="orange">Lightning</GradientText> DX
+            </>
+          }
+          sub="Build mission-critical apps — on a rock-solid foundation."
+          color="orange"
+        />
+        <div>
+          <DxContent />
+        </div>
+      </LayoutComponent>
+    </section>
+  )
+}
+
+export default DxSection
