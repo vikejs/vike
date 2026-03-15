@@ -12,7 +12,7 @@ export const ExtensionBlock = cm.div.variants<{
   font-mono
   bg-base-200
   border-2 border-grey-100
-  text-tiny sm:text-xs text-grey
+  text-tiny md:text-xs
   flex justify-center items-center
   transition-colors
   ${uiConfig.transition.shortDurationTw}
@@ -46,7 +46,7 @@ export const ExtensionBlock = cm.div.variants<{
       `,
     },
     $animationState: {
-      active: 'text-base-content ',
+      active: 'opacity-100',
       inactive: 'bg-base-200',
     },
   },

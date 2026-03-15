@@ -187,3 +187,4 @@
 
 @source inline("bg-base-{100..300..100}");
 @source inline("bg-base-100 bg-base-200 bg-base-300");
+@source inline("text-tiny");

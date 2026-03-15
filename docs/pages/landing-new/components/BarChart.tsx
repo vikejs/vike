@@ -26,9 +26,9 @@ const BarChart = ({ pollData, color, className, ...props }: BarChartProps) => {
         const barWidth = `${data.percentage}%`
         return (
           <div key={data.label}>
-            <div className="w-full h-4 to-base-200 via-base-200 via-60% bg-linear-to-l rounded-box">
+            <div className="w-full h-3 md:h-4 to-base-200 via-base-200 via-60% bg-linear-to-l rounded-box">
               <StyledBar style={{ width: barWidth }} $color={color} $won={data.label === winningEntry.label}>
-                <span className="text-sm font-mono">{data.label}</span>
+                <span className="text-xs md:text-sm font-mono whitespace-nowrap">{data.label}</span>
                 {/* {data.label === winningEntry.label && (
                   <StyledWinDot $color={color}>{`~${winMultiplier}x`}</StyledWinDot>
                 )} */}

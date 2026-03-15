@@ -23,7 +23,7 @@ const StyledGlassOuter = cm.div`
   absolute
   inset-0 lg:-inset-5
   z-0
-  bg-gradient-to-r
+  md:bg-gradient-to-r
   via-white/60
   from-10%
   to-90%
@@ -36,7 +36,7 @@ const StyledGlassBorder = cm.div.variants<{ $position: 'top' | 'bottom' }>({
     absolute
     left-0 right-0
     h-0.5
-    bg-gradient-to-r from-transparent via-white to-transparent
+    md:bg-gradient-to-r from-transparent via-white to-transparent
   `,
   variants: {
     $position: {

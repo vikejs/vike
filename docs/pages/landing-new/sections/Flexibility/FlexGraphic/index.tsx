@@ -19,6 +19,7 @@ const StyledOuter = cm.div`
   xl:-ml-20
   lg:min-w-160
   md:min-w-140
+  w-[120%] md:w-6/7 lg:w-full -ml-[12%] md:ml-0 md:mx-auto
 `
 
 const pinHeight = 2
@@ -81,7 +82,7 @@ const FlexGraphic = () => {
   }, [onChangeHightlight])
 
   return (
-    <div className="absolute left-0 -top-20 origin-center">
+    <div className="lg:absolute left-0 lg:-top-20 origin-center ">
       <StyledOuter ref={containerRef}>
         <FlexGraphicBlocks
           activeHooks={activeHooks}

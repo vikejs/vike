@@ -22,11 +22,11 @@ const SectionHeader = ({ color, icon, main, sub }: SectionHeaderProps) => {
         headingStyle="h1"
         pre={
           <span className="flex flex-col gap-4 mb-6">
-            <span className="text-8xl">{icon}</span>
+            <span className="text-6xl md:text-8xl">{icon}</span>
           </span>
         }
         main={main}
-        sub={sub}
+        sub={<span className='w-6/7 md:w-full block mx-auto'>{sub}</span>}
         blurColor={color}
       />
     </div>

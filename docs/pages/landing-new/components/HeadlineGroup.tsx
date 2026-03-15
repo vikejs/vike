@@ -32,7 +32,7 @@ const HeadlineGroup = ({
             {pre}
           </AuxHeadline>
         )}
-        <BaseHeadline className={`${sub ? 'mb-3' : ''}`} as="h1" variant={headingStyle} $centered={centered}>
+        <BaseHeadline className={`${sub ? 'mb-3' : ''}`} as="h1" variant={headingStyle === "h1" ? "h2" : "h3"} $centered={centered}>
           {main}
         </BaseHeadline>
         {sub && (
