@@ -109,6 +109,7 @@
 }
 
 @layer base {
+
   #tailwind-portal,
   #tailwind-portal *,
   #tailwind-portal ::before,
@@ -125,8 +126,7 @@
     tab-size: 4;
   }
 
-  #tailwind-portal
-    :where(h1, h2, h3, h4, h5, h6, p, blockquote, figure, dl, dd) {
+  #tailwind-portal :where(h1, h2, h3, h4, h5, h6, p, blockquote, figure, dl, dd) {
     margin: 0;
   }
 
@@ -141,10 +141,8 @@
     color: inherit;
   }
 
-  #tailwind-portal
-    :where(img, svg, video, canvas, audio, iframe, embed, object) {
+  #tailwind-portal :where(img, svg, video, canvas, audio, iframe, embed, object) {
     display: block;
-    vertical-align: middle;
   }
 
   #tailwind-portal :where(img, video) {
@@ -160,7 +158,7 @@
     font-size: 1em;
   }
 
-  #tailwind-portal pre > code {
+  #tailwind-portal pre>code {
     @apply bg-base-100;
     @apply !text-[0.813rem];
   }
@@ -185,6 +183,8 @@
   }
 }
 
+/* escape hatch: inline style classes which are may be only used in cm specific components, 
+thus maybe not picked up by tailwinds parser */
 @source inline("bg-base-{100..300..100}");
 @source inline("bg-base-100 bg-base-200 bg-base-300");
 @source inline("text-tiny");
