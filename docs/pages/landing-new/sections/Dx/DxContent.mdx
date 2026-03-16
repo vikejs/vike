@@ -5,7 +5,7 @@ import { ExtraWidth } from '../../../../components'
 export const DX_TwoColumnLayout = ({children, cut = 0.5}) => <div style={{ display: 'grid', gridTemplateColumns: `${cut*100}% 1fr`, gap: '1rem' }}>{children}</div>
 export const DX_Small = ({ children, style }) => <span style={{ fontSize: '0.84em', color: '#aaa', ...style }}>{children}</span>
 export const DX_Center = ({ children }) => <div style={{ display: 'flex', justifyContent: 'center' }}>{children}</div>
-export const DX_H3 = ({ children, style }) => <div style={{textAlign: 'center', fontSize: '1.8em', fontWeight: 600, margin: 20, marginTop: 70, ...style}}>{children}</div>
+export const DX_H3 = ({ children, style }) => <div style={{textAlign: 'center', fontSize: '1.8em', fontWeight: 600, margin: 15, marginTop: 80, ...style}}>{children}</div>
 export const DX_H4 = ({ children, style }) => <span style={{textAlign: 'center', fontSize: '1.3em', fontWeight: 500, margin: 15, display: 'block', ...style}}>{children}</span>
 export const DX_FeatureWall = ({ children }) => <ExtraWidth><DX_Center><div className="feature-wall">{children}</div></DX_Center></ExtraWidth>
 export const DX_Feature = ({ children, advanced }) => <div className={advanced && 'feature-advanced'}>{children}</div>
@@ -342,7 +342,9 @@ And a lot <Link href="/hooks">more hooks</Link>.
 
 <DX_H3>Powerful extensions</DX_H3>
 
+<DX_Center>
 <Link href="/extensions">Vike extensions</Link> powered by the same hooks you use, for deep and seamless integrations.
+</DX_Center>
 
 <DX_TwoColumnLayout>
 <div>
@@ -358,8 +360,6 @@ Also advanced integrations with RSC (React Server Components).
 </DX_TwoColumnLayout>
 
 <DX_H4>Deep tool integrations</DX_H4>
-
-Deep UI framework integrations...
 <DX_TwoColumnLayout>
 <div>
 - vike-react-sentry
