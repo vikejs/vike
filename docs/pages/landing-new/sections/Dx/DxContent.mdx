@@ -64,11 +64,11 @@ export default {
 
 </DX_TwoColumnLayout>
 
-<DX_H3>API integrations</DX_H3>
+<DX_H3>API</DX_H3>
 
-<DX_H4>Next-gen RPC (aka Server Functions)</DX_H4>
+<DX_H4>Next-gen RPC (aka Server Functions)...</DX_H4>
 
-Via the next-generation tool [Telefunc](https://telefunc.com) (created by the Vike team), or use classic tools such as tRPC, oRPC, ...
+...via the next-generation tool [Telefunc](https://telefunc.com) (maintained by the Vike team), or use classic tools such as tRPC.
 
 <DX_TwoColumnLayout>
 <div>
@@ -195,71 +195,102 @@ const Countries = () => {
 
 <DX_H3>Powerful hooks</DX_H3>
 
-Lots of hooks, for unprecedented deep control.
-
-<hr/>
-
-Extended control over global data.
-
+<DX_TwoColumnLayout cut={0.55}>
+<div>
+<DX_H4>Data fetching: where</DX_H4>
+Hooks give you control *where* data is fetched:
 ```js
+// [!code word:server.]
+// /pages/movie/@id/+data.server.js
+// Environment: server // [!code highlight]
+
+export async function data(pageContext) {
+  const { id } = pageContext.routeParams
+  // Fetching data on the server-side
+  const movie = await Movie.find({ where: { id } })
+  return { movie }
+}
+```
+```js
+// [!code word:client.]
+// /pages/movie/@id/+data.client.js
+// Environment: client // [!code highlight]
+
+export async function data(pageContext) {
+  const { id } = pageContext.routeParams
+  // Fetching data on the client-side
+  const response = await fetch(`https://swapi.info/api/films/${id}`)
+  const movie = await response.json()
+  return { movie }
+}
+```
+</div>
+<div>
+<DX_H4>Data fetching: when</DX_H4>
+Also control *when* data is fetched. When server starts:
+```js
+// [!code word:server.]
 // pages/+onCreateGlobalContext.server.js
 // Environment: server
+
 export async function onCreateGlobalContext() {
-  const dataFromAPI = await fetchDataFromAPI()
-  const someGlobalData = select(dataFromAPI)
-  globalContext.someGlobalData = someGlobalData
+  const someServerData = await fetchSomData()
+  globalContext.someServerData = someServerData
 }
 ```
+When client-side navigation starts:
 ```js
-// pages/+config.js
-export default {
-  passToClient: 'someGlobalData'
+// [!code word:client.]
+// pages/+onCreateGlobalContext.client.js
+// Environment: client
+
+export async function onCreateGlobalContext() {
+  const someClientData = await fetchSomData()
+  globalContext.someClientData = someClientData
 }
 ```
+<Link href="/globalContext">`globalContext`</Link> can be accessed anywhere:
 ```js
-// Anywhere (client & server)
 import { getGlobalContext } from 'vike'
 const { someGlobalData } = await getGlobalContext()
 ```
+</div>
+</DX_TwoColumnLayout>
 
-Extended control over data flow/environment.
-
-
-Instrumentation.
-
-```ts
-// pages/+onHookCall.server.ts
+<DX_TwoColumnLayout>
+<div>
+<DX_H4>Instrumentation</DX_H4>
+```js
+// pages/+onHookCall.server.js
 // Environment: server
-
-import type { Config, PageContextServer, Hook } from 'vike/types'
 
 // Called whenever a Vike hook is executed.
 
-export async function onHookCall(hook: Hook, pageContext: PageContextServer) {
+export async function onHookCall(hook, pageContext) {
   console.log('before', hook.name, hook.filePath)
   await hook.call()
   console.log('after', hook.name, hook.filePath)
 }
 ```
+</div>
+<div>
+<DX_H4>Authorization</DX_H4>
+```js
+// /pages/admin/+guard.js
+// Applies to all admin pages: /pages/admin/**/+Page.js
 
-
-- Unprecedented control over data lifecyle
-
-- Authorization
-```ts
-// /pages/admin/+guard.ts
-
-import type { PageContextServer } from 'vike/types'
 import { render } from 'vike/abort'
 
-// This guard() hook protects all pages /pages/admin/**/+Page.ts
-
-export async function guard(pageContext: PageContextServer) {
+export async function guard(pageContext) {
   if (!pageContext.user.isAdmin) {
-    throw render(401, "You aren't allowed to access this page.")
+    throw render(401, "Access forbidden")
   }
 }
 ```
+</div>
+</DX_TwoColumnLayout>
+
+
 - Flexible i18n integration.
 
 - `renderPage()`
