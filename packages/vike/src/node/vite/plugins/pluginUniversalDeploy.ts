@@ -4,40 +4,27 @@ import type { Plugin } from 'vite'
 import { addEntry } from '@universal-deploy/store'
 import universalDeploy from '@universal-deploy/vite'
 import type { VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
-import { serverEntryVirtualId as vikeVirtualEntry } from '@brillout/vite-plugin-server-entry/plugin'
-import { getMagicString } from '../shared/getMagicString.js'
-import { escapeRegex } from '../../../utils/escapeRegex.js'
+import { pluginVikeVirtualEntry } from './pluginUniversalDeploy/pluginVikeVirtualEntry.js'
 import { getDeployConfigs } from './pluginUniversalDeploy/getDeployConfigs.js'
-import { assert, assertWarning } from '../../../utils/assert.js'
-import pc from '@brillout/picocolors'
-import '../assertEnvVite.js'
+import { pluginCommon } from './pluginUniversalDeploy/common.js'
+import { hasVikeServerOrVikePhoton } from './pluginUniversalDeploy/detectDeprecated.js'
+import { getServerInfo } from './pluginUniversalDeploy/getServerInfo.js'
 
-const virtualFileIdCatchAll = 'virtual:ud:catch-all'
+import '../assertEnvVite.js'
 
 function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
   if (hasVikeServerOrVikePhoton(vikeConfig)) return []
+  const serverInfo = getServerInfo(vikeConfig)
 
-  let serverEntryId: string
-  let serverFilePath: string | null = null
-  const serverConfig = vikeConfig.config.server
-  if (serverConfig === false) return []
-  const serverPlusFile = vikeConfig._pageConfigGlobal.configValueSources.server?.[0]
-  if (serverPlusFile) {
-    assert('filePathAbsoluteFilesystem' in serverPlusFile.definedAt)
-    serverFilePath = serverPlusFile.definedAt.filePathAbsoluteFilesystem
-    assert(serverFilePath)
-    serverEntryId = serverFilePath
-  } else {
-    serverEntryId = virtualFileIdCatchAll
-  }
-  if (serverConfig !== true && !serverFilePath) return []
-  const serverEntryVike = serverFilePath ?? 'vike/fetch'
+  if (!serverInfo) return []
+  const { serverEntryVike, serverEntryId, serverFilePath } = serverInfo
 
   const plugins: Plugin[] = [
     ...universalDeploy(),
     {
       name: 'vike:pluginUniversalDeploy:entries',
       config() {
+        // Map each Vike route to universal-deploy
         for (const [pageId, page] of Object.entries(vikeConfig.pages)) {
           const deployConfigs = getDeployConfigs(pageId, page)
           if (deployConfigs !== null) {
@@ -55,74 +42,12 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
       },
       ...pluginCommon,
     },
-    {
-      name: 'vike:pluginUniversalDeploy:serverEntry',
-      apply: 'build',
-      transform: {
-        order: 'post',
-        filter: {
-          id: {
-            include: [serverEntryId],
-          },
-        },
-        handler(code, id) {
-          const { magicString, getMagicStringResult } = getMagicString(code, id)
-          // Inject Vike virtual server entry
-          magicString.prepend(`import "${vikeVirtualEntry}";\n`)
-          return getMagicStringResult()
-        },
-      },
-      ...pluginCommon,
-    },
+    pluginVikeVirtualEntry(serverEntryId),
   ]
 
   if (serverFilePath) {
-    plugins.push(
-      // If +server.js is defined, make virtual:ud:catch-all resolve to +server.js absolute path
-      {
-        name: 'vike:pluginUniversalDeploy:server',
-        resolveId: {
-          order: 'pre',
-          filter: {
-            id: new RegExp(escapeRegex(serverFilePath)),
-          },
-          handler() {
-            // Will resolve the entry from the users project root
-            return this.resolve(serverFilePath)
-          },
-        },
-        ...pluginCommon,
-      },
-    )
+    plugins.push(pluginVikeVirtualEntry(serverFilePath))
   }
 
   return plugins
-}
-
-const pluginCommon = {
-  applyToEnvironment(env) {
-    return env.config.consumer === 'server'
-  },
-  sharedDuringBuild: true,
-} satisfies Partial<Plugin>
-
-function hasVikeServerOrVikePhoton(vikeConfig: VikeConfigInternal) {
-  const vikeExtendsNames = new Set(
-    vikeConfig._extensions.map(
-      (plusFile) => ('fileExportsByConfigName' in plusFile ? plusFile.fileExportsByConfigName : {}).name,
-    ),
-  )
-  const vikeServerOrVikePhoton = vikeExtendsNames.has('vike-server')
-    ? 'vike-server'
-    : vikeExtendsNames.has('vike-photon')
-      ? 'vike-photon'
-      : null
-  if (vikeServerOrVikePhoton) {
-    assertWarning(
-      false,
-      `${pc.cyan(vikeServerOrVikePhoton)} is deprecated, see ${pc.underline('https://vike.dev/migration/universal-deploy')}`,
-      { onlyOnce: true },
-    )
-    return true
-  }
 }

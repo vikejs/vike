@@ -36,6 +36,7 @@ function getDeployConfigs(pageId: string, page: PageConfigPublicWithRoute) {
   if (isrOrEdge && routeIr) {
     return {
       route: [...new Set([...toRou3(routeIr), ...getPageContextRoute(routeIr)])],
+      // Supported by vite-plugin-vercel@11
       vercel: {
         isr: isr ? { expiration: isr } : undefined,
         edge: Boolean(edge),
