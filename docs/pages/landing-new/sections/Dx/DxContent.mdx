@@ -5,8 +5,8 @@ import { ExtraWidth } from '../../../../components'
 export const DX_TwoColumnLayout = ({children, cut = 0.5}) => <div style={{ display: 'grid', gridTemplateColumns: `${cut*100}% 1fr`, gap: '1rem' }}>{children}</div>
 export const DX_Small = ({ children, style }) => <span style={{ fontSize: '0.84em', color: '#aaa', ...style }}>{children}</span>
 export const DX_Center = ({ children }) => <div style={{ display: 'flex', justifyContent: 'center' }}>{children}</div>
-export const DX_H3 = ({ children, style }) => <h3 style={{textAlign: 'center', margin: 30, fontSize: '1.8em', ...style}}>{children}</h3>
-export const DX_H4 = ({ children, style }) => <h4 style={{textAlign: 'center', margin: 15, fontSize: '1.3em', ...style}}>{children}</h4>
+export const DX_H3 = ({ children, style }) => <span style={{textAlign: 'center', margin: 30, fontSize: '1.8em', ...style}}>{children}</span>
+export const DX_H4 = ({ children, style }) => <span style={{textAlign: 'center', margin: 15, fontSize: '1.3em', ...style}}>{children}</span>
 export const DX_FeatureWall = ({ children }) => <ExtraWidth><DX_Center><div className="feature-wall">{children}</div></DX_Center></ExtraWidth>
 export const DX_Feature = ({ children, advanced }) => <div className={advanced && 'feature-advanced'}>{children}</div>
 export const DX_Hr = () => <hr style={{background: '#aaa', height: 1, margin: 20}}/>
@@ -491,8 +491,8 @@ Works with any JavaScript runtime (Node.js, Bun, Deno, Workers, Electron, Tauri,
 <DX_Feature>
 Rich context objects
 <DX_Small style={{fontSize: '0.82em'}}>
-  <Link href="/globalContext"><code>globalContext.{<>{'{'}<Link href="/globalContext#pages">pages</Link>{','}<Link href="/globalContext#config">config</Link>{',...}'}</>}</code></Link>  
-  <Link href="/pageContext"><code>pageContext.{<>{'{'}<Link href="/pageContext#pages">isHistoryNavigation</Link>{',...}'}</>}</code></Link>
+  <Link href="/globalContext">`globalContext.{pages,config,...}`</Link>  
+  <Link href="/pageContext">`pageContext.{isHistoryNavigation,...}`</Link>
 </DX_Small>
 </DX_Feature>
 
