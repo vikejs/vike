@@ -5,6 +5,7 @@ import type { UspHoverTarget } from '../intro.types'
 import useUspHero from './useUspHero'
 import UspStaticContent from './StaticContent'
 import UspStickyContent from './StickyContent'
+import { SharedOuterGrid } from './styled'
 
 interface UspHeroProps {
   activeUspId: string | null
@@ -52,15 +53,14 @@ const UspHero = ({ onHoverChange, activeUspId }: UspHeroProps) => {
 
   return (
     <div ref={rootRef} className="w-full hidden sm:block" data-usp-hero>
-
       {/* sticky */}
       <UspStickyContent isCompactDocked={isCompactDocked} uspVisualStateById={uspVisualStateById} />
 
       {/* static scrolling */}
       <UspStaticContent uspVisualStateById={uspVisualStateById} />
 
-      <div className="relative h-1 w-full left-0 -top-80 z-50 md:w-6/7 mx-auto">
-        <div className="z-40 grid grid-cols-3 gap-0 mx-auto w-full min-h-80 absolute top-0">
+      <div className="relative h-1 w-full left-0 -top-80 z-50 mx-auto">
+        <SharedOuterGrid className="z-40 min-h-80 top-0">
           {landingPageHeroUsps.map((usp) => (
             <div
               key={`${usp.id}-interaction`}
@@ -69,7 +69,7 @@ const UspHero = ({ onHoverChange, activeUspId }: UspHeroProps) => {
               onMouseLeave={handleMouseLeave}
             />
           ))}
-        </div>
+        </SharedOuterGrid>
       </div>
     </div>
   )

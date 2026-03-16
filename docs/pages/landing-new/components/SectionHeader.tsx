@@ -16,7 +16,7 @@ const SectionHeader = ({ color, icon, main, sub }: SectionHeaderProps) => {
   // const speedValue = R(1.02, 1.06).toFixed(2)
 
   return (
-    <div>
+    <div className="mt-24 lg:mt-32 mb-20 lg:mb-28">
       <HeadlineGroup
         outerClassName="w-full sm:w-4/5 md:w-3/4 lg:w-2/3 mx-auto"
         headingStyle="h1"

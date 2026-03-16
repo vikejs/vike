@@ -17,7 +17,7 @@ import { UspCategoryId } from '../../util/constants'
 const FlexibilitySection = () => {
   return (
     <section data-usp-section={UspCategoryId.freedom}>
-      <LayoutComponent className="mt-20 ">
+      <LayoutComponent>
         <SectionHeader
           icon={'🕊️'}
           badgeText="Flexibility"
@@ -31,7 +31,7 @@ const FlexibilitySection = () => {
         />
       </LayoutComponent>
 
-      <LayoutComponent className="md:mt-20">
+      <LayoutComponent>
         <div className="grid md:grid-cols-2 md:gap-10 relative z-2">
           <div className="relative lg:-ml-4 -mt-4 lg:-mt-9 max-w-120 md:max-w-none mx-auto select-none pointer-events-none">
             <img
@@ -109,7 +109,7 @@ const FlexibilitySection = () => {
       </div>
 
       <div className="w-full px-4 md:px-0">
-        <LayoutComponent className="lg:mb-70">
+        <LayoutComponent className="lg:mb-52">
           <div className="grid lg:grid-cols-5 xl:grid-cols-2 gap-0 lg:gap-10 relative z-2">
             <GlassContainer className="lg:col-span-2 xl:col-span-1">
               <div className="flex flex-col gap-0 justify-center lg:min-h-90 pt-16 lg:pb-20">
@@ -141,10 +141,10 @@ const FlexibilitySection = () => {
           <BlurDot type="green" size="xxl" visibility="low" className="absolute -top-20 right-0 z-0 grayscale" />
         </LayoutComponent>
 
-        <LayoutComponent $size="xs" className="mt-16 mb-24 lg:my-24">
-          <H3Headline className="mb-2">
+        <LayoutComponent $size="xs" className="mt-16 lg:mt-0">
+          <H4Headline className="mb-2">
             Supported <GradientText color="green">use cases</GradientText>
-          </H3Headline>
+          </H4Headline>
           <p className="mb-8 text-grey">Vike's hooks support an unmatched amount of use cases.</p>
           <BarChart
             pollData={[

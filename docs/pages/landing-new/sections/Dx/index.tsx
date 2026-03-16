@@ -9,7 +9,7 @@ import DxContent from './DxContent.mdx'
 const DxSection = () => {
   return (
     <section data-usp-section={UspCategoryId.lightningDx}>
-      <LayoutComponent className="mt-20">
+      <LayoutComponent>
         <SectionHeader
           icon={'⚡️'}
           badgeText="Developer Experience"
@@ -21,9 +21,7 @@ const DxSection = () => {
           sub="Build mission-critical apps — on a rock-solid foundation."
           color="orange"
         />
-        <div>
-          <DxContent />
-        </div>
+        <div className="min-h-2500">{/* <DxContent /> */}</div>
       </LayoutComponent>
     </section>
   )

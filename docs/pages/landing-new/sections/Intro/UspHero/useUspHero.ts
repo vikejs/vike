@@ -7,6 +7,7 @@ import { landingPageHeroUsps, UspId } from '../../../util/constants'
 import { uiConfig } from '../../../util/ui.constants'
 
 const clamp01 = (value: number) => Math.max(0, Math.min(1, value))
+const stickyNavOffset = 96
 
 const useUspHero = () => {
   const rootRef = useRef<HTMLDivElement>(null)
@@ -31,6 +32,9 @@ const useUspHero = () => {
         rootNode.querySelectorAll<HTMLElement>('[data-usp-content-hit="true"]'),
       )
       const stickyInteractionNodes = Array.from(rootNode.querySelectorAll<HTMLElement>('[data-usp-sticky-hit="true"]'))
+      const stickyExtraHitboxNodes = Array.from(
+        rootNode.querySelectorAll<HTMLElement>('[data-usp-extra-hitbox="true"]'),
+      )
       const iconNodes = Array.from(rootNode.querySelectorAll<HTMLElement>('[data-usp-icon="true"]'))
       const blurDotNodes = Array.from(rootNode.querySelectorAll<HTMLElement>('[data-usp-scroll-dot]'))
       const stickyLogoNodes = Array.from(rootNode.querySelectorAll<HTMLElement>('[data-usp-sticky-logo="true"]'))
@@ -70,7 +74,7 @@ const useUspHero = () => {
           return
         }
 
-        const viewportProbe = window.scrollY + window.innerHeight * 0.1
+        const viewportProbe = window.scrollY + stickyNavOffset + 1
         let nextActiveSectionId: UspId | null = null
 
         orderedSectionEntries.forEach(({ id, node }) => {
@@ -100,7 +104,7 @@ const useUspHero = () => {
           return
         }
         const sectionTop = sectionNode.getBoundingClientRect().top + window.scrollY
-        const top = Math.max(sectionTop - 96, 0)
+        const top = Math.max(sectionTop - stickyNavOffset, 0)
         gsap.to(window, {
           duration: uiConfig.transition.longDuration,
           ease: uiConfig.transition.easeInOutGsap,
@@ -126,19 +130,23 @@ const useUspHero = () => {
       })
       setIfAny(contentInteractionNodes, { pointerEvents: 'auto' })
       setIfAny(stickyInteractionNodes, { autoAlpha: 1, pointerEvents: 'none' })
+      setIfAny(stickyExtraHitboxNodes, { pointerEvents: 'none'})
       setIfAny(iconNodes, { transformOrigin: 'center center' })
       setIfAny(blurDotNodes, { transformOrigin: 'center center' })
       setIfAny(sectionProgressFillNodes, { transformOrigin: 'left center', scaleX: 0 })
       gsap.set([navChromeNode, ...iconNodes, ...blurDotNodes], { willChange: 'transform, opacity' })
       setIfAny(sectionProgressFillNodes, { willChange: 'transform' })
       setIfAny(stickyLogoNodes, { willChange: 'opacity' })
+      setIfAny(stickyExtraHitboxNodes, { willChange: 'opacity' })
       setIfAny(blurDotNodes, { autoAlpha: 0 })
       setIfAny(stickyLogoNodes, { autoAlpha: 0, x: 16 })
+      setIfAny(stickyExtraHitboxNodes, { autoAlpha: 0,  xPercent: 5  })
 
       const scroller = document.querySelector<HTMLElement>('body') ?? undefined
       const setInteractionMode = (isStickyMode: boolean) => {
         setIfAny(contentInteractionNodes, { pointerEvents: isStickyMode ? 'none' : 'auto' })
         setIfAny(stickyInteractionNodes, { pointerEvents: isStickyMode ? 'auto' : 'none' })
+        setIfAny(stickyExtraHitboxNodes, { pointerEvents: isStickyMode ? 'auto' : 'none' })
       }
       const applyCompactDockedState = (isDocked: boolean) => {
         const hasChanged = isCompactDockedRef.current !== isDocked
@@ -166,9 +174,20 @@ const useUspHero = () => {
                 overwrite: 'auto',
               })
             }
+            if (stickyExtraHitboxNodes.length) {
+              gsap.to(stickyExtraHitboxNodes, {
+                autoAlpha: 1,
+                stagger: 0.05,
+                xPercent: 0,
+                duration: uiConfig.transition.shortDuration,
+                ease: uiConfig.transition.easeOutGsap,
+                overwrite: 'auto',
+              })
+            }
           } else {
             setIfAny(blurDotNodes, { autoAlpha: 1 })
             setIfAny(stickyLogoNodes, { autoAlpha: 1 })
+            setIfAny(stickyExtraHitboxNodes, { autoAlpha: 1,xPercent: 0 })
           }
         } else {
           gsap.killTweensOf(blurDotNodes, 'opacity,autoAlpha')
@@ -192,6 +211,20 @@ const useUspHero = () => {
           } else {
             setIfAny(stickyLogoNodes, { autoAlpha: 0 })
           }
+          gsap.killTweensOf(stickyExtraHitboxNodes, 'opacity,autoAlpha')
+          if (hasChanged) {
+            if (stickyExtraHitboxNodes.length) {
+              gsap.to(stickyExtraHitboxNodes, {
+                autoAlpha: 0,
+                xPercent: 5,
+                duration: uiConfig.transition.shortDuration,
+                ease: uiConfig.transition.easeOutGsap,
+                overwrite: 'auto',
+              })
+            }
+          } else {
+            setIfAny(stickyExtraHitboxNodes, { autoAlpha: 0 })
+          }
         }
       }
       ScrollTrigger.getById('intro-usp-hero-sticky-nav-pin')?.kill()
@@ -201,7 +234,7 @@ const useUspHero = () => {
       })
 
       const stickyClickListeners: Array<{ node: HTMLElement; handler: () => void }> = []
-      stickyInteractionNodes.forEach((node) => {
+      ;[...stickyInteractionNodes, ...stickyExtraHitboxNodes].forEach((node) => {
         const id = node.dataset.uspId
         if (!id) {
           return
@@ -268,8 +301,8 @@ const useUspHero = () => {
       compactTimeline.to(
         iconNodes,
         {
-          scale: 0.60,
-          y: -16,
+          scale: 0.6,
+          y: -14,
           duration: 1,
         },
         0,

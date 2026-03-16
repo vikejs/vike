@@ -4,9 +4,9 @@ import cm, { cmMerge } from '@classmatejs/react'
 import { uiConfig, UiVariantBtnColor } from '../../../util/ui.constants'
 
 import BlurDot from '../../../components/BlurDot'
-import Headline from '../../../components/Headline'
 import GradientText from '../../../components/GradientText'
 import { ChevronsRight } from 'lucide-react'
+import { SharedOuterGrid } from './styled'
 
 interface UspStaticContentProps {
   uspVisualStateById: Map<
@@ -19,7 +19,7 @@ interface UspStaticContentProps {
 }
 
 const UspStaticContent = ({ uspVisualStateById }: UspStaticContentProps) => (
-  <div className="relative z-10 grid grid-cols-3 md:w-6/7 mx-auto px-2 pt-2 pb-10 gap-10">
+  <SharedOuterGrid className="pb-16">
     {landingPageHeroUsps.map((usp) => {
       const visualState = uspVisualStateById.get(usp.id)
       const toneClass = visualState?.toneClass ?? 'grayscale-0 opacity-100'
@@ -29,7 +29,6 @@ const UspStaticContent = ({ uspVisualStateById }: UspStaticContentProps) => (
         <div
           className={cmMerge(
             `relative cursor-pointer transition-[filter,opacity] ${uiConfig.transition.mediumDurationTw} ${uiConfig.transition.easeInOutTw} rounded-lg -mt-5 `,
-
             toneClass,
           )}
           data-usp-content-hit="true"
@@ -82,7 +81,7 @@ const UspStaticContent = ({ uspVisualStateById }: UspStaticContentProps) => (
         </div>
       )
     })}
-  </div>
+  </SharedOuterGrid>
 )
 
 export default UspStaticContent
@@ -122,6 +121,7 @@ const StyledTextContent = cm.div<{ $hovered?: boolean }>`
   flex flex-col justify-between
   pointer-events-none
   md:min-h-40 md:min-h-32
+  mt-8
   ${uiConfig.transition.mediumDurationTw}
   ${uiConfig.transition.easeInOutTw}
   ${({ $hovered }) => ($hovered ? `-translate-y-0.5` : `translate-y-0`)}

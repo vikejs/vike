@@ -11,7 +11,7 @@ import StableGraphic from './StableGraphic'
 const StabilitySection = () => {
   return (
     <section data-usp-section={UspCategoryId.stability} className="w-full">
-      <div className="w-full ">
+      <div className="w-full">
         <LayoutComponent>
           <SectionHeader
             icon={'💎'}
