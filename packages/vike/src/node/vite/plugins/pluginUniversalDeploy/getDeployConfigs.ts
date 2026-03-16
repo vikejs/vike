@@ -2,14 +2,13 @@ import pc from '@brillout/picocolors'
 
 export { getDeployConfigs }
 
-import { fromVike, toRou3 } from 'convert-route'
+import type { fromVike } from 'convert-route'
 import { assert, assertUsage, assertWarning } from '../../../../utils/assert.js'
 import type { PageConfigPublicWithRoute } from '../../../../shared-server-client/page-configs/resolveVikeConfigPublic.js'
 import '../../assertEnvVite.js'
 
 function getDeployConfigs(pageId: string, page: PageConfigPublicWithRoute) {
-  // Convert Vike's routes to rou3 format
-  const routeIr = typeof page.route === 'string' ? fromVike(page.route) : null
+  const route = typeof page.route === 'string' ? page.route : null
 
   // Vercel specific configs
   const rawIsr = extractIsr(page.config)
@@ -33,9 +32,10 @@ function getDeployConfigs(pageId: string, page: PageConfigPublicWithRoute) {
     )
   }
 
-  if (isrOrEdge && routeIr) {
+  if (isrOrEdge && route) {
     return {
-      route: [...new Set([...toRou3(routeIr), ...getPageContextRoute(routeIr)])],
+      route,
+      // route: [...new Set([...toRou3(routeIr), ...getPageContextRoute(routeIr)])],
       // Supported by vite-plugin-vercel@11
       vercel: {
         isr: isr ? { expiration: isr } : undefined,
@@ -86,21 +86,21 @@ function extractEdge(exports: unknown): boolean | null {
   return edge
 }
 
-function getPageContextRoute(routeIr: ReturnType<typeof fromVike>) {
+export function getPageContextRoute(routeIr: ReturnType<typeof fromVike>) {
   const lastSegment = routeIr.pathname.at(-1)
   assert(lastSegment)
-  if (!lastSegment.catchAll) {
-    const pageContextIr = {
-      pathname: [
-        ...routeIr.pathname.slice(0, -1),
-        {
-          ...lastSegment,
-          value: `${lastSegment.value}.pageContext.json`,
-        },
-      ],
-    }
-
-    return toRou3(pageContextIr)
+  if (lastSegment.catchAll) return
+  return {
+    pathname: [
+      ...routeIr.pathname.slice(0, -1),
+      {
+        ...lastSegment,
+        value: `${lastSegment.value}.pageContext.json`,
+      },
+    ],
   }
-  return []
+}
+
+export function dedupeRoute(...routes: string[]) {
+  return [...new Set(routes)]
 }
