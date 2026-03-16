@@ -67,7 +67,7 @@ const IntroSection = () => {
           className="flex flex-col items-center text-center min-h-[calc(100svh-48*var(--spacing))]  overflow-hidden"
         >
           <div className="relative z-10 flex flex-col items-center text-center w-full">
-            <span className="inline-flex sm:flex-row gap-1 mb-4 mt-10 lg:mt-16 xl:mt-20">
+            <span className="inline-flex sm:flex-row gap-1 mb-4 mt-6 lg:mt-16 xl:mt-20">
               <span className="block badge badge-neutral badge-ghost badge-xs md:badge-sm">
                 ⭐️ Replaces Next.js / Nuxt / ...
               </span>

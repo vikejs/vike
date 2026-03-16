@@ -9,7 +9,7 @@ const UspHeroMobile = () => {
       {landingPageHeroUsps.map((usp) => (
         <div
           key={usp.id}
-          className="rounded-field py-2 px-4 bg-base-200 border border-base-100 relative overflow-hidden"
+          className="rounded-field py-2 px-2 bg-base-200 border border-base-100 relative overflow-hidden"
         >
           <div className="relative z-2">
             <H5Headline as="h2">

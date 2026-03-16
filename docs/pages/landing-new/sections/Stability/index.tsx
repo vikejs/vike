@@ -25,25 +25,24 @@ const StabilitySection = () => {
             color="blue"
           />
           <StableGraphic />
-          <div className="grid grid-cols-2 gap-10 mt-22">
-            <div aria-hidden="true" />
-            <GlassContainer>
-              <div className="py-12">
-                <p className="mb-4">
-                  Vike is built from stable components that will remain relevant for the foreseeable future (e.g.
-                  SPA/SSR/SSG), making Vike a stable foundation.{' '}
-                </p>
-                <p>
-                  Fast evolving components (e.g. RPC/GraphQL) aren't included and, instead, Vike extensions provide
-                  first-class deep integrations via powerful hooks. This clear separation results in a foundation that
-                  is stable as well as open to JavaScript's fast-evolving ecosystem.
-                </p>
-              </div>
-            </GlassContainer>
+        </LayoutComponent>
+        <LayoutComponent $size="sm" className='mt-10'>
+          <div className="">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
+              <p>
+                Vike is built from stable components that will remain relevant for the foreseeable future (e.g.
+                SPA/SSR/SSG), making Vike a stable foundation.{' '}
+              </p>
+              <p>
+                Fast evolving components (e.g. RPC/GraphQL) aren't included and, instead, Vike extensions provide
+                first-class deep integrations via powerful hooks. This clear separation results in a foundation that is
+                stable as well as open to JavaScript's fast-evolving ecosystem.
+              </p>
+            </div>
           </div>
         </LayoutComponent>
       </div>
-      <LayoutComponent className="grid grid-cols-2 gap-10 my-32">
+      <LayoutComponent className="grid lg:grid-cols-2 gap-10 my-12 md:my-24">
         <div className="">
           <H4Headline as="h3" className="mb-2">
             <GradientText color="blue">Long-term</GradientText> support
@@ -75,7 +74,7 @@ const StabilitySection = () => {
       </LayoutComponent>
       <LayoutComponent>
         <GlassContainer>
-          <div className="grid grid-cols-2 gap-10 py-6">
+          <div className="grid grid-cols-2 gap4 md:gap-10 py-6">
             <H2Headline>
               Stable stack, or cutting edge? <br />
               Your <GradientText color="blue">choice.</GradientText>

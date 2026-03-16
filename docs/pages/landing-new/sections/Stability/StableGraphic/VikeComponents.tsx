@@ -1,8 +1,7 @@
 import cm from '@classmatejs/react'
 import React from 'react'
 import { splitIntoRows, VikeComponent, VikeComponentSize } from './grid.utils'
-import { H4Headline, H5Headline } from '../../../components/Headline'
-import vikeLogo from '../../../../../assets/logo/vike.svg'
+import ImageGroup from './ImageGroup'
 
 const bigComponents: VikeComponent[] = [
   {
@@ -95,7 +94,7 @@ const rowCount = 3
 
 const componentRows = splitIntoRows(components, rowCount)
 
-const Box = cm.li.variants<{ $size: VikeComponentSize }>({
+export const BoxBlue = cm.li.variants<{ $size: VikeComponentSize }>({
   base: `
   inset-ring-1
   inset-ring-secondary/50 hover:inset-ring-secondary
@@ -124,29 +123,25 @@ const InnerLink = cm.a`
 
 const VikeComponents = () => {
   return (
-    <div className="p-3">
+    <div className="p-3 bg-linear-to-t to-white via-white rounded-box relative md:w-[90%] md:mx-auto">
+      <ImageGroup />
       <ul className="list-none flex flex-wrap gap-1 lg:hidden">
         {components.map((component) => (
-          <Box key={component.name} $size={component.size}>
+          <BoxBlue key={component.name} $size={component.size}>
             <InnerLink href={component.link}>{component.name}</InnerLink>
-          </Box>
+          </BoxBlue>
         ))}
       </ul>
-
       <div className="hidden lg:flex lg:flex-col lg:gap-1.5">
         {componentRows.map((row, rowIndex) => (
           <ul key={rowIndex} className="list-none flex flex-wrap gap-1.5">
             {row.map((component) => (
-              <Box key={component.name} $size={component.size}>
+              <BoxBlue key={component.name} $size={component.size}>
                 <InnerLink href={component.link}>{component.name}</InnerLink>
-              </Box>
+              </BoxBlue>
             ))}
           </ul>
         ))}
-      </div>
-      <div className="flex gap-2 items-center mb-4">
-        <img src={vikeLogo} alt="" className="h-auto w-5" />
-        <H5Headline as="h3">Vike's components</H5Headline>
       </div>
     </div>
   )

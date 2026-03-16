@@ -49,7 +49,7 @@ const FlexibilitySection = () => {
             />
           </div>
           <GlassContainer>
-            <div className="flex flex-col gap-0 justify-center py-12 px-4 md:px-0">
+            <div className="flex flex-col gap-0 justify-center py-12">
               <HeadlineGroup
                 headingStyle="h2"
                 outerClassName="mb-8"
@@ -79,7 +79,7 @@ const FlexibilitySection = () => {
         {/* <BlurDot type="green" size="xxl" visibility="low" className="absolute -top-20 -left-60 z-0" /> */}
       </LayoutComponent>
 
-      <div className="relative my-0 md:my-16 lg:my-32 px-4 md:px-0">
+      <div className="relative my-0 md:my-16 lg:my-32">
         <LayoutComponent className="grid md:grid-cols-2 gap-10">
           <div className="">
             <H4Headline as="h3" className="mb-4 md:mb-8">
@@ -108,11 +108,11 @@ const FlexibilitySection = () => {
         </LayoutComponent>
       </div>
 
-      <div className="w-full px-4 md:px-0">
+      <div className="w-full">
         <LayoutComponent className="lg:mb-52">
           <div className="grid lg:grid-cols-5 xl:grid-cols-2 gap-0 lg:gap-10 relative z-2">
             <GlassContainer className="lg:col-span-2 xl:col-span-1">
-              <div className="flex flex-col gap-0 justify-center lg:min-h-90 pt-16 lg:pb-20">
+              <div className="flex flex-col gap-0 justify-center lg:min-h-90 lg:pt-16 py-6 lg:pb-20 mt-16 lg:mt-0">
                 <HeadlineGroup
                   headingStyle="h2"
                   outerClassName="mb-8"
