@@ -259,21 +259,6 @@ const { someGlobalData } = await getGlobalContext()
 
 <DX_TwoColumnLayout>
 <div>
-<DX_H4>Instrumentation</DX_H4>
-```js
-// pages/+onHookCall.server.js
-// Environment: server
-
-// Called whenever a Vike hook is executed.
-
-export async function onHookCall(hook, pageContext) {
-  console.log('before', hook.name, hook.filePath)
-  await hook.call()
-  console.log('after', hook.name, hook.filePath)
-}
-```
-</div>
-<div>
 <DX_H4>Authorization</DX_H4>
 ```js
 // /pages/admin/+guard.js
@@ -285,6 +270,21 @@ export async function guard(pageContext) {
   if (!pageContext.user.isAdmin) {
     throw render(401, "Access forbidden")
   }
+}
+```
+</div>
+<div>
+<DX_H4>Instrumentation</DX_H4>
+```js
+// pages/+onHookCall.server.js
+// Environment: server
+
+// Called whenever a Vike hook is executed.
+
+export async function onHookCall(hook, pageContext) {
+  console.log('before', hook.name, hook.filePath)
+  await hook.call()
+  console.log('after', hook.name, hook.filePath)
 }
 ```
 </div>
