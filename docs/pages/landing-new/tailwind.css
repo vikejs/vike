@@ -185,6 +185,6 @@
 
 /* escape hatch: inline style classes which are may be only used in cm specific components, 
 thus maybe not picked up by tailwinds parser */
-@source inline("bg-base-{100..300..100}");
+/* @source inline("bg-base-{100..300..100}");
 @source inline("bg-base-100 bg-base-200 bg-base-300");
-@source inline("text-tiny");
+@source inline("text-tiny"); */
