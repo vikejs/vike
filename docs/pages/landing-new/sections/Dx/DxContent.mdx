@@ -5,8 +5,8 @@ import { ExtraWidth } from '../../../../components'
 export const DX_TwoColumnLayout = ({children, cut = 0.5}) => <div style={{ display: 'grid', gridTemplateColumns: `${cut*100}% 1fr`, gap: '1rem' }}>{children}</div>
 export const DX_Small = ({ children, style }) => <span style={{ fontSize: '0.84em', color: '#aaa', ...style }}>{children}</span>
 export const DX_Center = ({ children }) => <div style={{ display: 'flex', justifyContent: 'center' }}>{children}</div>
-export const DX_H3 = ({ children, style }) => <span style={{textAlign: 'center', margin: 30, fontSize: '1.8em', ...style}}>{children}</span>
-export const DX_H4 = ({ children, style }) => <span style={{textAlign: 'center', margin: 15, fontSize: '1.3em', ...style}}>{children}</span>
+export const DX_H3 = ({ children, style }) => <div style={{textAlign: 'center', margin: 30, fontSize: '1.8em', fontWeight: 600, ...style}}>{children}</div>
+export const DX_H4 = ({ children, style }) => <div style={{textAlign: 'center', margin: 15, fontSize: '1.3em', fontWeight: 500, ...style}}>{children}</div>
 export const DX_FeatureWall = ({ children }) => <ExtraWidth><DX_Center><div className="feature-wall">{children}</div></DX_Center></ExtraWidth>
 export const DX_Feature = ({ children, advanced }) => <div className={advanced && 'feature-advanced'}>{children}</div>
 export const DX_Hr = () => <hr style={{background: '#aaa', height: 1, margin: 20}}/>
@@ -347,9 +347,7 @@ Vike extensions are powered by the same hooks you can use, enabling deep and sea
 <DX_TwoColumnLayout>
 <div>
 <DX_H4>UI framework extensions</DX_H4>
-Vike can integrate with any UI framework. Use Vike extensions for a quick start, or <Link href="/integration#ui-framework">manually integrate</Link> for extended control and flexibility.
-Zero-config deep integrations.
-Deep, zero-config integrations.
+Use Vike with any UI framework — via Vike extensions for a quick start, or via <Link href="/integration#ui-framework">manual integration</Link> for maximum control and flexibility.
 </div>
 <div>
 <DX_H4>Advanced UI framework integration</DX_H4>
