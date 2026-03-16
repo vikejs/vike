@@ -62,82 +62,6 @@ export default {
 
 </DX_TwoColumnLayout>
 
-<DX_H3>Powerful hooks</DX_H3>
-
-Lots of hooks, for unprecedented deep control.
-
-<hr/>
-
-Extended control over global data.
-
-```js
-// pages/+onCreateGlobalContext.server.js
-// Environment: server
-export async function onCreateGlobalContext() {
-  const dataFromAPI = await fetchDataFromAPI()
-  const someGlobalData = select(dataFromAPI)
-  globalContext.someGlobalData = someGlobalData
-}
-```
-```js
-// pages/+config.js
-export default {
-  passToClient: 'someGlobalData'
-}
-```
-```js
-// Anywhere (client & server)
-import { getGlobalContext } from 'vike'
-const { someGlobalData } = await getGlobalContext()
-```
-
-Extended control over data flow/environment.
-
-
-Instrumentation.
-
-```ts
-// pages/+onHookCall.server.ts
-// Environment: server
-
-import type { Config, PageContextServer, Hook } from 'vike/types'
-
-// Called whenever a Vike hook is executed.
-
-export async function onHookCall(hook: Hook, pageContext: PageContextServer) {
-  console.log('before', hook.name, hook.filePath)
-  await hook.call()
-  console.log('after', hook.name, hook.filePath)
-}
-```
-
-
-- Unprecedented control over data lifecyle
-
-- Authorization
-```ts
-// /pages/admin/+guard.ts
-
-import type { PageContextServer } from 'vike/types'
-import { render } from 'vike/abort'
-
-// This guard() hook protects all pages /pages/admin/**/+Page.ts
-
-export async function guard(pageContext: PageContextServer) {
-  if (!pageContext.user.isAdmin) {
-    throw render(401, "You aren't allowed to access this page.")
-  }
-}
-```
-- Flexible i18n integration.
-
-- `renderPage()`
-  - From a server-perspective, Vike is just a middleware (a pure function)
-  - Vike can be easily integrated into any deployment strategy
-  - Low-level primitives allowing users to deeply integrate with data fetching tools.
-    - For example, Vike sponsors use it to deeply integrate Relay. (Facebook's internal framework deeply integrates with Relay in ways that aren't possible with Next.js.)
-
-
 ### API
 
 First-class integration with API tools.
@@ -244,6 +168,84 @@ const Movie = ({ id }) => {
   )
 }
 ```
+
+
+<DX_H3>Powerful hooks</DX_H3>
+
+Lots of hooks, for unprecedented deep control.
+
+<hr/>
+
+Extended control over global data.
+
+```js
+// pages/+onCreateGlobalContext.server.js
+// Environment: server
+export async function onCreateGlobalContext() {
+  const dataFromAPI = await fetchDataFromAPI()
+  const someGlobalData = select(dataFromAPI)
+  globalContext.someGlobalData = someGlobalData
+}
+```
+```js
+// pages/+config.js
+export default {
+  passToClient: 'someGlobalData'
+}
+```
+```js
+// Anywhere (client & server)
+import { getGlobalContext } from 'vike'
+const { someGlobalData } = await getGlobalContext()
+```
+
+Extended control over data flow/environment.
+
+
+Instrumentation.
+
+```ts
+// pages/+onHookCall.server.ts
+// Environment: server
+
+import type { Config, PageContextServer, Hook } from 'vike/types'
+
+// Called whenever a Vike hook is executed.
+
+export async function onHookCall(hook: Hook, pageContext: PageContextServer) {
+  console.log('before', hook.name, hook.filePath)
+  await hook.call()
+  console.log('after', hook.name, hook.filePath)
+}
+```
+
+
+- Unprecedented control over data lifecyle
+
+- Authorization
+```ts
+// /pages/admin/+guard.ts
+
+import type { PageContextServer } from 'vike/types'
+import { render } from 'vike/abort'
+
+// This guard() hook protects all pages /pages/admin/**/+Page.ts
+
+export async function guard(pageContext: PageContextServer) {
+  if (!pageContext.user.isAdmin) {
+    throw render(401, "You aren't allowed to access this page.")
+  }
+}
+```
+- Flexible i18n integration.
+
+- `renderPage()`
+  - From a server-perspective, Vike is just a middleware (a pure function)
+  - Vike can be easily integrated into any deployment strategy
+  - Low-level primitives allowing users to deeply integrate with data fetching tools.
+    - For example, Vike sponsors use it to deeply integrate Relay. (Facebook's internal framework deeply integrates with Relay in ways that aren't possible with Next.js.)
+
+
 
 ### Powerful extensions
 
