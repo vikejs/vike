@@ -5,16 +5,18 @@ import { ExtraWidth } from '../../../../components'
 export const DX_TwoColumnLayout = ({children, cut = 0.5}) => <div style={{ display: 'grid', gridTemplateColumns: `${cut*100}% 1fr`, gap: '1rem' }}>{children}</div>
 export const DX_Small = ({ children, style }) => <span style={{ fontSize: '0.84em', color: '#aaa', ...style }}>{children}</span>
 export const DX_Center = ({ children }) => <div style={{ display: 'flex', justifyContent: 'center' }}>{children}</div>
-export const DX_H3 = ({ children, style }) => <div style={{textAlign: 'center', margin: 30, fontSize: '1.8em', fontWeight: 600, ...style}}>{children}</div>
-export const DX_H4 = ({ children, style }) => <div style={{textAlign: 'center', margin: 15, fontSize: '1.3em', fontWeight: 500, ...style}}>{children}</div>
+export const DX_H3 = ({ children, style }) => <div style={{textAlign: 'center', fontSize: '1.8em', fontWeight: 600, margin: 20, marginTop: 70, ...style}}>{children}</div>
+export const DX_H4 = ({ children, style }) => <div style={{textAlign: 'center', fontSize: '1.3em', fontWeight: 500, margin: 15, ...style}}>{children}</div>
 export const DX_FeatureWall = ({ children }) => <ExtraWidth><DX_Center><div className="feature-wall">{children}</div></DX_Center></ExtraWidth>
 export const DX_Feature = ({ children, advanced }) => <div className={advanced && 'feature-advanced'}>{children}</div>
 export const DX_Hr = () => <hr style={{background: '#aaa', height: 1, margin: 20}}/>
+export const DX_ClosingWord = ({ children }) => <DX_Center><div style={{fontSize: '2em'}}>{children}</div></DX_Center>
+
 
 <DX_TwoColumnLayout>
 <div>
 
-<DX_H3 style={{marginBottom: 22}}>
+<DX_H3 style={{marginBottom: 22, marginTop: 22}}>
 First-class SSR/SPA/SSG support
 </DX_H3>
 
@@ -334,40 +336,40 @@ export function onBeforeRoute(pageContext) {
 </DX_TwoColumnLayout>
 
 
-<DX_Center>
-<div style={{fontSize: '2.3em'}}>
+<DX_ClosingWord>
 And a lot <Link href="/hooks">more hooks</Link>.
-</div>
-</DX_Center>
+</DX_ClosingWord>
 
 <DX_H3>Powerful extensions</DX_H3>
 
-Vike extensions are powered by the same hooks you can use, enabling deep and seamless integrations.
+<Link href="/extensions">Vike extensions</Link> powered by the same hooks you use, for deep and seamless integrations.
 
 <DX_TwoColumnLayout>
 <div>
 <DX_H4>UI framework extensions</DX_H4>
 Use Vike with any UI framework — via Vike extensions for a quick start, or via <Link href="/integration#ui-framework">manual integration</Link> for maximum control and flexibility.
+- vike-react / vike-vue / vike-solid
 </div>
 <div>
 <DX_H4>Advanced UI framework integration</DX_H4>
-Also advanced integrations React Server Components.
+Also advanced integrations with RSC (React Server Components).
+- vike-react-rsc
 </div>
 </DX_TwoColumnLayout>
 
-> Powered by the same hooks users can use.
+<DX_H4>Deep tool integrations</DX_H4>
 
 Deep UI framework integrations...
-- vike-react / vike-react-rsc
-- vike-vue / vike-solid
-
-Deep tool integrations
+<DX_TwoColumnLayout>
+<div>
 - vike-react-sentry
+</div>
+<div>
 - vike-react-zustand
+</div>
+</DX_TwoColumnLayout>
 
-Growing extension ecosystem
-
-[list-all]
+<DX_ClosingWord>Growing extension ecosystem</DX_ClosingWord>
 
 
 <DX_H3>Full-fledged</DX_H3>
