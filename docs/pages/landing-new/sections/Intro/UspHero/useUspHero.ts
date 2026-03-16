@@ -130,7 +130,7 @@ const useUspHero = () => {
       })
       setIfAny(contentInteractionNodes, { pointerEvents: 'auto' })
       setIfAny(stickyInteractionNodes, { autoAlpha: 1, pointerEvents: 'none' })
-      setIfAny(stickyExtraHitboxNodes, { pointerEvents: 'none'})
+      setIfAny(stickyExtraHitboxNodes, { pointerEvents: 'none' })
       setIfAny(iconNodes, { transformOrigin: 'center center' })
       setIfAny(blurDotNodes, { transformOrigin: 'center center' })
       setIfAny(sectionProgressFillNodes, { transformOrigin: 'left center', scaleX: 0 })
@@ -140,7 +140,7 @@ const useUspHero = () => {
       setIfAny(stickyExtraHitboxNodes, { willChange: 'opacity' })
       setIfAny(blurDotNodes, { autoAlpha: 0 })
       setIfAny(stickyLogoNodes, { autoAlpha: 0, x: 16 })
-      setIfAny(stickyExtraHitboxNodes, { autoAlpha: 0,  xPercent: 5  })
+      setIfAny(stickyExtraHitboxNodes, { autoAlpha: 0, xPercent: 5 })
 
       const scroller = document.querySelector<HTMLElement>('body') ?? undefined
       const setInteractionMode = (isStickyMode: boolean) => {
@@ -187,7 +187,7 @@ const useUspHero = () => {
           } else {
             setIfAny(blurDotNodes, { autoAlpha: 1 })
             setIfAny(stickyLogoNodes, { autoAlpha: 1 })
-            setIfAny(stickyExtraHitboxNodes, { autoAlpha: 1,xPercent: 0 })
+            setIfAny(stickyExtraHitboxNodes, { autoAlpha: 1, xPercent: 0 })
           }
         } else {
           gsap.killTweensOf(blurDotNodes, 'opacity,autoAlpha')
