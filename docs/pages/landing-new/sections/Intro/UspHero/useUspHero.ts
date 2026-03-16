@@ -1,5 +1,5 @@
 import { useGSAP } from '@gsap/react'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { registerScrollToPlugin, registerScrollTrigger } from '../../../util/gsap.utils'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { gsap } from 'gsap'
@@ -11,6 +11,9 @@ const clamp01 = (value: number) => Math.max(0, Math.min(1, value))
 const useUspHero = () => {
   const rootRef = useRef<HTMLDivElement>(null)
   const isCompactDockedRef = useRef(false)
+  const activeSectionIdRef = useRef<UspId | null>(null)
+  const [activeSectionId, setActiveSectionId] = useState<UspId | null>(null)
+  const [isCompactDocked, setIsCompactDocked] = useState(false)
 
   useGSAP(
     () => {
@@ -34,9 +37,6 @@ const useUspHero = () => {
       const sectionProgressFillNodes = Array.from(
         rootNode.querySelectorAll<HTMLElement>('[data-usp-scroll-progress-fill]'),
       )
-      const stickyProgressTrackNodes = Array.from(
-        rootNode.querySelectorAll<HTMLElement>('[data-usp-sticky-progress-track]'),
-      )
 
       if (!navNode || !navChromeNode || !contentInteractionNodes.length || !stickyInteractionNodes.length) {
         return
@@ -57,6 +57,31 @@ const useUspHero = () => {
       const orderedSectionEntries = sectionIds
         .map((id) => ({ id, node: sectionNodesById.get(id) }))
         .filter((entry): entry is { id: UspId; node: HTMLElement } => Boolean(entry.node))
+      const syncActiveSectionId = (nextActiveSectionId: UspId | null) => {
+        if (activeSectionIdRef.current === nextActiveSectionId) {
+          return
+        }
+        activeSectionIdRef.current = nextActiveSectionId
+        setActiveSectionId(nextActiveSectionId)
+      }
+      const resolveActiveSectionId = () => {
+        if (typeof window === 'undefined' || !orderedSectionEntries.length) {
+          syncActiveSectionId(null)
+          return
+        }
+
+        const viewportProbe = window.scrollY + window.innerHeight * 0.1
+        let nextActiveSectionId: UspId | null = null
+
+        orderedSectionEntries.forEach(({ id, node }) => {
+          const sectionTop = node.getBoundingClientRect().top + window.scrollY
+          if (sectionTop <= viewportProbe) {
+            nextActiveSectionId = id
+          }
+        })
+
+        syncActiveSectionId(nextActiveSectionId)
+      }
 
       const setSectionProgress = (id: string, progress: number) => {
         const clampedProgress = clamp01(progress)
@@ -108,18 +133,19 @@ const useUspHero = () => {
       setIfAny(sectionProgressFillNodes, { willChange: 'transform' })
       setIfAny(stickyLogoNodes, { willChange: 'opacity' })
       setIfAny(blurDotNodes, { autoAlpha: 0 })
-      setIfAny(stickyProgressTrackNodes, { autoAlpha: 0 })
       setIfAny(stickyLogoNodes, { autoAlpha: 0, x: 16 })
 
       const scroller = document.querySelector<HTMLElement>('body') ?? undefined
       const setInteractionMode = (isStickyMode: boolean) => {
         setIfAny(contentInteractionNodes, { pointerEvents: isStickyMode ? 'none' : 'auto' })
         setIfAny(stickyInteractionNodes, { pointerEvents: isStickyMode ? 'auto' : 'none' })
-        setIfAny(stickyProgressTrackNodes, { autoAlpha: isStickyMode ? 1 : 0 })
       }
       const applyCompactDockedState = (isDocked: boolean) => {
         const hasChanged = isCompactDockedRef.current !== isDocked
         isCompactDockedRef.current = isDocked
+        if (hasChanged) {
+          setIsCompactDocked(isDocked)
+        }
         setInteractionMode(isDocked)
         if (isDocked) {
           if (hasChanged) {
@@ -220,9 +246,11 @@ const useUspHero = () => {
           },
           onLeave: () => {
             applyCompactDockedState(true)
+            resolveActiveSectionId()
           },
           onLeaveBack: () => {
             applyCompactDockedState(false)
+            resolveActiveSectionId()
           },
         },
       })
@@ -240,8 +268,8 @@ const useUspHero = () => {
       compactTimeline.to(
         iconNodes,
         {
-          scale: 0.48,
-          y: -20,
+          scale: 0.60,
+          y: -16,
           duration: 1,
         },
         0,
@@ -262,12 +290,21 @@ const useUspHero = () => {
           markers: false,
           onUpdate: (self) => {
             setSectionProgress(id, self.progress)
+            resolveActiveSectionId()
+          },
+          onEnter: () => {
+            resolveActiveSectionId()
+          },
+          onEnterBack: () => {
+            resolveActiveSectionId()
           },
           onLeave: () => {
             setSectionProgress(id, 1)
+            resolveActiveSectionId()
           },
           onLeaveBack: () => {
             setSectionProgress(id, 0)
+            resolveActiveSectionId()
           },
         })
 
@@ -275,6 +312,7 @@ const useUspHero = () => {
         setSectionProgress(id, sectionTrigger.progress)
       })
 
+      resolveActiveSectionId()
       applyCompactDockedState((compactTimeline.scrollTrigger?.progress ?? 0) >= 0.999)
 
       return () => {
@@ -286,12 +324,15 @@ const useUspHero = () => {
         })
         setInteractionMode(false)
         isCompactDockedRef.current = false
+        activeSectionIdRef.current = null
       }
     },
     { dependencies: [] },
   )
 
   return {
+    activeSectionId,
+    isCompactDocked,
     rootRef,
   }
 }

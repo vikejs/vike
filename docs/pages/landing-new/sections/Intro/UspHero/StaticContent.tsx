@@ -3,7 +3,6 @@ import { landingPageHeroUsps, UspId } from '../../../util/constants'
 import cm, { cmMerge } from '@classmatejs/react'
 import { uiConfig, UiVariantBtnColor } from '../../../util/ui.constants'
 
-import ledgeGraphic from '../../../assets/decorators/box/ledge.png'
 import BlurDot from '../../../components/BlurDot'
 import Headline from '../../../components/Headline'
 import GradientText from '../../../components/GradientText'
@@ -20,7 +19,7 @@ interface UspStaticContentProps {
 }
 
 const UspStaticContent = ({ uspVisualStateById }: UspStaticContentProps) => (
-  <div className="relative z-10 grid grid-cols-3 md:w-6/7 mx-auto px-2 pt-2 pb-10">
+  <div className="relative z-10 grid grid-cols-3 md:w-6/7 mx-auto px-2 pt-2 pb-10 gap-10">
     {landingPageHeroUsps.map((usp) => {
       const visualState = uspVisualStateById.get(usp.id)
       const toneClass = visualState?.toneClass ?? 'grayscale-0 opacity-100'
@@ -40,12 +39,12 @@ const UspStaticContent = ({ uspVisualStateById }: UspStaticContentProps) => (
         >
           {/* <div className="absolute right-0 left-0 -top-40 -bottom-50" /> */}
           <StyledUspItemInner $hovered={isHovered}>
-            <img
+            {/* <img
               src={ledgeGraphic}
               alt=""
               data-usp-ledge="true"
               className="absolute w-full h-full z-2 object-fill hidden md:block"
-            />
+            /> */}
           </StyledUspItemInner>
           <BlurDot
             type={usp.dotColor}
@@ -57,17 +56,17 @@ const UspStaticContent = ({ uspVisualStateById }: UspStaticContentProps) => (
           <div data-usp-content-progress-track={usp.id} className="relative h-0.5 w-18 mx-auto mb-2 rounded-full" />
 
           <StyledTextContent $hovered={isHovered}>
-            <div data-usp-copy-large="true" className="text-center h-full flex flex-col flex-1 p-0 md:p-5 pt-2">
+            <div data-usp-copy-large="true" className="text-center h-full flex flex-col flex-1">
               <div className="flex-1 ">
-                <Headline variant="h3" as="h2" className="mb-2">
+                <StyledHeadline>
                   <span className="relative block w-fit mx-auto">
                     <StyledTitleShape $hovered={isHovered}>{usp.title}</StyledTitleShape>
                     <StyledTitle className={'absolute left-0 top-0 transition-opacity'}>
                       <GradientText color={usp.dotColor}>{usp.title}</GradientText>
                     </StyledTitle>
                   </span>
-                </Headline>
-                <p className="xl:text-lg">{usp.description}</p>
+                </StyledHeadline>
+                <p className="">{usp.description}</p>
               </div>
               <span
                 className={cmMerge(
@@ -119,10 +118,20 @@ const StyledTitle = cm.span`
 const StyledTextContent = cm.div<{ $hovered?: boolean }>`
   relative z-6
   transition-transform
-  text-xs sm:text-sm lg:text-base
+  text-sm lg:text-base 
   flex flex-col justify-between
   pointer-events-none
+  md:min-h-40 md:min-h-32
   ${uiConfig.transition.mediumDurationTw}
   ${uiConfig.transition.easeInOutTw}
-  ${({ $hovered }) => ($hovered ? `-translate-y-1` : `translate-y-0`)}
+  ${({ $hovered }) => ($hovered ? `-translate-y-0.5` : `translate-y-0`)}
+`
+
+const StyledHeadline = cm.h2`
+  text-center
+  mb-2
+  relative
+  z-10
+  text-xl! lg:text-2xl!
+  font-bold
 `
