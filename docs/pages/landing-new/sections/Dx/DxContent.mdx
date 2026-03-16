@@ -27,11 +27,11 @@ Toggle <Link href="/ssr">SSR</Link>/<Link href="/SSR-vs-SPA">SPA</Link>/<Link hr
 /pages/product/@id/+Page.ts         # URL: /product/42
 /pages/product/@id/buy/+Page.ts     # URL: /product/42/buy
 
-# SPA pages (SSR disabled) // [!code highlight]
+# SPA pages (i.e. SSR disabled) // [!code highlight]
 /pages/admin/products/+Page.ts      # URL: /admin/products
 /pages/admin/users/+Page.ts         # URL: /admin/users
 
-# SSG pages (pre-rendering) // [!code highlight]
+# SSG pages (i.e. pre-rendering) // [!code highlight]
 /pages/(marketing)/index/+Page.ts   # URL: /
 /pages/(marketing)/about/+Page.ts   # URL: /about
 ```
@@ -41,21 +41,21 @@ Toggle <Link href="/ssr">SSR</Link>/<Link href="/SSR-vs-SPA">SPA</Link>/<Link hr
 
 ```ts
 // /pages/product/+config.js
-// Config for /pages/product/**/+Page.ts (product pages) // [!code highlight]
+// Config for product pages: /pages/product/**/+Page.ts // [!code highlight]
 export default {
   ssr: true // [!code highlight]
 }
 ```
 ```js
 // /pages/admin/+config.js
-// Config for /pages/admin/**/+Page.ts (admin pages) // [!code highlight]
+// Config for admin pages: /pages/admin/**/+Page.ts // [!code highlight]
 export default {
   ssr: false // SPA // [!code highlight]
 }
 ```
 ```js
 // /pages/(marketing)/+config.js
-// Config for /pages/(marketing)/**/+Page.ts (all pages) // [!code highlight]
+// Config for marketing pages: /pages/(marketing)/**/+Page.ts // [!code highlight]
 export default {
   prerender: true // SSG // [!code highlight]
 }
