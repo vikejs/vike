@@ -21,7 +21,7 @@ const DxSection = () => {
           sub="Build mission-critical apps — on a rock-solid foundation."
           color="orange"
         />
-        <div className="min-h-2500">
+        <div>
           <DxContent />
         </div>
       </LayoutComponent>
