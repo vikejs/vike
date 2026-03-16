@@ -5,51 +5,48 @@ import { ExtraWidth } from '../../../../components'
 export const DX_TwoColumnLayout = ({children, cut}) => <div style={{ display: 'grid', gridTemplateColumns: `${cut*100}% 1fr`, gap: '1rem' }}>{children}</div>
 export const DX_Small = ({ children, style }) => <span style={{ fontSize: '0.84em', color: '#aaa', ...style }}>{children}</span>
 export const DX_Center = ({ children }) => <div style={{ display: 'flex', justifyContent: 'center' }}>{children}</div>
-export const DX_H3 = ({ children }) => <h3 style={{textAlign: 'center', margin: 30}}>{children}</h3>
+export const DX_H3 = ({ children, style }) => <h3 style={{textAlign: 'center', margin: 30, fontSize: '2em', ...style}}>{children}</h3>
 export const DX_FeatureWall = ({ children }) => <ExtraWidth><DX_Center><div className="feature-wall">{children}</div></DX_Center></ExtraWidth>
 export const DX_Feature = ({ children, advanced }) => <div className={advanced && 'feature-advanced'}>{children}</div>
 
-<DX_H3>
+<DX_TwoColumnLayout cut={0.5}>
+<div>
+
+<DX_H3 style={{marginBottom: 22}}>
 First-class SSR/SPA/SSG
 </DX_H3>
 
-<DX_TwoColumnLayout cut={0.55}>
-<div>
-
 <div style={{fontSize: '1.4em'}}>
-
-[SSR]()/[SPA]()/[SSG]() toogle, page-by-page powered by [Vike's config inheritance]().
-
+Toggle <Link href="/ssr">SSR</Link>/<Link href="/SSR-vs-SPA">SPA</Link>/<Link href="/pre-rendering">SSG</Link> on a page-by-page basis, powered by <Link href="/config#inheritance">Vike's config inheritance</Link>.
 </div>
 
 ```yaml
-# SPA (SSR disabled) // [!code highlight]
-/pages/admin/products/+Page.ts    # URL: /admin/products
-/pages/admin/users/+Page.ts       # URL: /admin/users
+# SPA pages (i.e. SSR disabled) // [!code highlight]
+/pages/admin/products/+Page.ts      # URL: /admin/products
+/pages/admin/users/+Page.ts         # URL: /admin/users
 
-# SSG (pre-rendering) // [!code highlight]
-/pages/index/+Page.ts             # URL: /
-/pages/about/+Page.ts             # URL: /about
-/pages/jobs/+Page.ts              # URL: /jobs
+# SSG pages (i.e. pre-rendering) // [!code highlight]
+/pages/(marketing)/index/+Page.ts   # URL: /
+/pages/(marketing)/about/+Page.ts   # URL: /about
 
-# SSR (not pre-rendering) // [!code highlight]
-/pages/product/@id/+Page.ts       # URL: /product/42
-/pages/product/@id/buy/+Page.ts   # URL: /product/42/buy
+# SSR pages // [!code highlight]
+/pages/product/@id/+Page.ts         # URL: /product/42
+/pages/product/@id/buy/+Page.ts     # URL: /product/42/buy
 ```
 
 </div>
 <div>
 
 ```js
-// /pages/admin-panel/+config.js
-// Config for /pages/admin-panel/**/+Page.ts (admin pages) // [!code highlight]
+// /pages/admin/+config.js
+// Config for /pages/admin/**/+Page.ts (admin pages) // [!code highlight]
 export default {
-  ssr: false // [!code highlight]
+  ssr: false // i.e. SPA // [!code highlight]
 }
 ```
 ```js
-// /pages/+config.js
-// Config for /pages/**/+Page.ts (all pages) // [!code highlight]
+// /pages/(marketing)/+config.js
+// Config for /pages/(marketing)/**/+Page.ts (all pages) // [!code highlight]
 export default {
   prerender: true // i.e. SSG // [!code highlight]
 }
@@ -58,8 +55,7 @@ export default {
 // /pages/product/+config.js
 // Config for /pages/product/**/+Page.ts (product pages) // [!code highlight]
 export default {
-  ssr: true, // [!code highlight]
-  prerender: false // i.e. SSG // [!code highlight]
+  ssr: true // [!code highlight]
 }
 ```
 </div>
