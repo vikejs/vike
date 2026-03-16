@@ -290,18 +290,57 @@ export async function onHookCall(hook, pageContext) {
 </div>
 </DX_TwoColumnLayout>
 
+<DX_TwoColumnLayout cut={0.53}>
+<div>
+<DX_H4>Server integration</DX_H4>
+Vike is just a middleware you can embed into any server.
+```js
+import { renderPage } from 'vike/server'
 
-- Flexible i18n integration.
+// Any server: Hono, Express.js, Cloudflare Worker, ...
+server.addMiddleware({
+  method: 'GET',
+  route: '*', // catch-all
+  async handler(request) {
+    const pageContextInit = { urlOriginal: request.url }
+    const pageContext = await renderPage(pageContextInit)
+    const { body, statusCode, headers } = pageContext.httpResponse
+    const response = { body, statusCode, headers }
+    return response
+  }
+})
+```
+</div>
+<div>
+<DX_H4>i18n</DX_H4>
+Hooks give you full control over i18n integration.
+```js
+// pages/+onBeforeRoute.js
 
-- `renderPage()`
-  - From a server-perspective, Vike is just a middleware (a pure function)
-  - Vike can be easily integrated into any deployment strategy
-  - Low-level primitives allowing users to deeply integrate with data fetching tools.
-    - For example, Vike sponsors use it to deeply integrate Relay. (Facebook's internal framework deeply integrates with Relay in ways that aren't possible with Next.js.)
+export function onBeforeRoute(pageContext) {
+  console.log(pageContext.urlOriginal) // /de-DE/filme
+  const ret = extractLocale(pageContext.urlOriginal)
+  const { urlWithoutLocale, locale } = ret
+  console.log(locale) // de-DE
+  console.log(urlWithoutLocale) // /movie
+  // Make locale available as pageContext.locale
+  pageContext.locale = locale
+  // Vike's router will use pageContext.urlLogical
+  // instead of pageContext.urlOriginal
+  pageContext.urlLogical = urlWithoutLocale
+}
+```
+</div>
+</DX_TwoColumnLayout>
 
 
+<DX_Center>
+<div style={{fontSize: '2.3em'}}>
+And a lot <Link href="/hooks">more hooks</Link>.
+</div>
+</DX_Center>
 
-### Powerful extensions
+<DX_H3>Powerful extensions</DX_H3>
 
 Zero-config deep integrations.
 Deep, zero-config integrations.
