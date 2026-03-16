@@ -2,7 +2,7 @@ import { getMagicString } from '../../shared/getMagicString.js'
 import { serverEntryVirtualId as vikeVirtualEntry } from '@brillout/vite-plugin-server-entry/plugin'
 import type { Plugin } from 'vite'
 import { pluginCommon } from './common.js'
-import '../assertEnvVite.js'
+import '../../assertEnvVite.js'
 
 export function pluginVikeVirtualEntry(serverEntryId: string): Plugin {
   return {

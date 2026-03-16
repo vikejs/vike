@@ -1,7 +1,7 @@
 import type { VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { assertWarning } from '../../../../utils/assert.js'
 import pc from '@brillout/picocolors'
-import '../assertEnvVite.js'
+import '../../assertEnvVite.js'
 
 export function hasVikeServerOrVikePhoton(vikeConfig: VikeConfigInternal) {
   const vikeExtendsNames = new Set(

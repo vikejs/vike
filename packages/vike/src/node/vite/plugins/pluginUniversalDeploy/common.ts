@@ -1,5 +1,5 @@
 import type { Plugin } from 'vite'
-import '../assertEnvVite.js'
+import '../../assertEnvVite.js'
 
 export const pluginCommon = {
   applyToEnvironment(env) {
