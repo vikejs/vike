@@ -12,6 +12,7 @@ import { dedupeRoute, getDeployConfigs, getPageContextRoute } from './pluginUniv
 import { pluginCommon } from './pluginUniversalDeploy/common.js'
 import { hasVikeServerOrVikePhoton } from './pluginUniversalDeploy/detectDeprecated.js'
 import { getServerInfo } from './pluginUniversalDeploy/getServerInfo.js'
+import { pluginResolveAlias } from './pluginUniversalDeploy/pluginResolveAlias.js'
 
 import '../assertEnvVite.js'
 
@@ -52,6 +53,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
       ...pluginCommon,
     },
     pluginVikeVirtualEntry(serverEntryId),
+    pluginResolveAlias(),
   ]
 
   if (serverFilePath) {
