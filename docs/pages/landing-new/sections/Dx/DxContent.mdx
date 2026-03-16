@@ -2,18 +2,19 @@ import './DxContent.css'
 import { Link } from '@brillout/docpress'
 import { ExtraWidth } from '../../../../components'
 
-export const DX_TwoColumnLayout = ({children, cut}) => <div style={{ display: 'grid', gridTemplateColumns: `${cut*100}% 1fr`, gap: '1rem' }}>{children}</div>
+export const DX_TwoColumnLayout = ({children, cut = 0.5}) => <div style={{ display: 'grid', gridTemplateColumns: `${cut*100}% 1fr`, gap: '1rem' }}>{children}</div>
 export const DX_Small = ({ children, style }) => <span style={{ fontSize: '0.84em', color: '#aaa', ...style }}>{children}</span>
 export const DX_Center = ({ children }) => <div style={{ display: 'flex', justifyContent: 'center' }}>{children}</div>
-export const DX_H3 = ({ children, style }) => <h3 style={{textAlign: 'center', margin: 30, fontSize: '2em', ...style}}>{children}</h3>
+export const DX_H3 = ({ children, style }) => <h3 style={{textAlign: 'center', margin: 30, fontSize: '1.8em', ...style}}>{children}</h3>
 export const DX_FeatureWall = ({ children }) => <ExtraWidth><DX_Center><div className="feature-wall">{children}</div></DX_Center></ExtraWidth>
 export const DX_Feature = ({ children, advanced }) => <div className={advanced && 'feature-advanced'}>{children}</div>
+export const DX_Hr = () => <hr style={{background: '#aaa', height: 1, margin: 20}}/>
 
 <DX_TwoColumnLayout cut={0.5}>
 <div>
 
 <DX_H3 style={{marginBottom: 22}}>
-First-class SSR/SPA/SSG
+First-class SSR/SPA/SSG support
 </DX_H3>
 
 <div style={{fontSize: '1.4em'}}>
@@ -62,12 +63,12 @@ export default {
 
 </DX_TwoColumnLayout>
 
-### API
+<DX_H3>Next-gen API integrations</DX_H3>
 
-First-class integration with API tools.
+Next-gen RPC (aka Server Functions) via [Telefunc](https://telefunc.com) (or alternatives such as tRPC, oRPC, ...).
 
-Next-gen RPC (aka Server Functions) via [Telefunc](https://telefunc.com) (or tRPC, oRPC, ...)
-
+<DX_TwoColumnLayout>
+<div>
 ```ts
 // CreateTodo.telefunc.ts
 // Environment: server
@@ -93,6 +94,8 @@ async function onNewTodo(text: string) {
   )
 }
 ```
+</div>
+<div>
 ```ts
 // CreateTodo.tsx
 // Environment: client
@@ -117,7 +120,10 @@ function CreateTodo() {
   )
 }
 ```
+</div>
+</DX_TwoColumnLayout>
 
+<DX_Hr/>
 
 GraphQL via exensions like [`vike-react-apollo`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-apollo#readme), or via [custom integration]().
 
