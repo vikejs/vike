@@ -10,7 +10,7 @@ export const DX_H4 = ({ children, style }) => <span style={{textAlign: 'center',
 export const DX_FeatureWall = ({ children }) => <ExtraWidth><DX_Center><div className="feature-wall">{children}</div></DX_Center></ExtraWidth>
 export const DX_Feature = ({ children, advanced }) => <div className={advanced && 'feature-advanced'}>{children}</div>
 export const DX_Hr = () => <hr style={{background: '#aaa', height: 1, margin: 20}}/>
-export const DX_ClosingWord = ({ children }) => <DX_Center><div style={{fontSize: '2em'}}>{children}</div></DX_Center>
+export const DX_ClosingWord = ({ children }) => <DX_Center><div style={{fontSize: '1.4em'}}>{children}</div></DX_Center>
 
 
 <DX_TwoColumnLayout>
@@ -337,7 +337,7 @@ export function onBeforeRoute(pageContext) {
 
 
 <DX_ClosingWord>
-And a lot <Link href="/hooks">more hooks</Link>.
+Growing <Link href="/hooks">hooks suite</Link>.
 </DX_ClosingWord>
 
 <DX_H3>Powerful extensions</DX_H3>
@@ -349,28 +349,45 @@ And a lot <Link href="/hooks">more hooks</Link>.
 <DX_TwoColumnLayout>
 <div>
 <DX_H4>UI framework extensions</DX_H4>
-Use Vike with any UI framework — via Vike extensions for a quick start, or via <Link href="/integration#ui-framework">manual integration</Link> for maximum control and flexibility.
+Use Vike with any UI framework — via Vike extensions for a quick start, or via <Link href="/integration#ui-framework">manual integration</Link> for maximum flexibility.
 - vike-react / vike-vue / vike-solid
 </div>
 <div>
 <DX_H4>Advanced UI framework integration</DX_H4>
-Also advanced integrations with RSC (React Server Components).
+Extensions are powerful enough to integrate advanced technologies. Also advanced integrations with RSC (React Server Components).
 - vike-react-rsc
 </div>
 </DX_TwoColumnLayout>
 
-<DX_H4>Deep tool integrations</DX_H4>
 <DX_TwoColumnLayout>
 <div>
-- vike-react-sentry
+<DX_H4>[`vike-react-zustand`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-zustand#readme)</DX_H4>
+```js
+// This create() has the same API as Zustand's create() but
+// comes with seamless SSR integration. // [!code highlight]
+import { create } from 'vike-react-zustand'
+
+interface Store {
+  counter: number
+  increment: () => void
+}
+
+export const useStore = create<Store>()((set) => ({
+  counter: 0,
+  increment: () => set((state) => ({ counter: state.counter + 1 }))
+}))
+```
 </div>
 <div>
-- vike-react-zustand
+<DX_H4>[`vike-react-sentry`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-sentry#readme)</DX_H4>
+Full-fledged & seamless Sentry integration.
+- Browser and server error tracking
+- Performance monitoring and tracing
+- Automatic source map upload
 </div>
 </DX_TwoColumnLayout>
 
-<DX_ClosingWord>Growing extension ecosystem</DX_ClosingWord>
-
+<DX_ClosingWord>Growing <Link href="/extensions">extension ecosystem</Link>.</DX_ClosingWord>
 
 <DX_H3>Full-fledged</DX_H3>
 
