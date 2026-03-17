@@ -4,7 +4,6 @@
 // Environment: client // [!code highlight]
 
 export async function onCreateGlobalContext() {
-  const someClientData = await fetchSomData()
-  globalContext.someClientData = someClientData
+  globalContext.someClientData = await fetchSomeData()
 }
 ```
