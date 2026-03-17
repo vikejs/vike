@@ -1,5 +1,5 @@
 import React from 'react'
-import type { PropsWithChildren, ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { Link } from '@brillout/docpress'
 import AdminAndMarketingConfigs from './snippets/AdminAndMarketingConfigs.mdx'
 import ApolloExample from './snippets/ApolloExample.mdx'
@@ -20,7 +20,7 @@ import TelefuncServerExample from './snippets/TelefuncServerExample.mdx'
 import ZustandExample from './snippets/ZustandExample.mdx'
 import cm from '@classmatejs/react'
 
-function DxContent() {
+const DxContent = () => {
   return (
     <div className="space-y-16">
       <TwoColumn>
