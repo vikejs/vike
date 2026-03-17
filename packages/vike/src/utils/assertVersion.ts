@@ -15,6 +15,7 @@ function assertVersion(dependencyName: 'Vite' | 'Node.js', versionActual: string
     `${pc.bold(dependencyName)} ${pc.red(pc.bold(versionActual))} isn't supported, use ${pc.bold(dependencyName)} ${joinEnglish(
       [...versionExpectedList, 'above'].map((v) => pc.green(pc.bold(v))),
       'or',
+      { trailingComma: false },
     )}.`,
   )
 }

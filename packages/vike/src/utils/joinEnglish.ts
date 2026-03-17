@@ -6,12 +6,12 @@ import { assert } from './assert.js'
 function joinEnglish(
   arr: string[] | readonly string[],
   conjunction: 'or' | 'and',
-  colorizer: (s: string) => string = (s) => s,
+  { color = (s) => s, trailingComma = true }: { color?: (s: string) => string; trailingComma?: boolean } = {},
 ): string {
   assert(arr.length > 0)
-  if (arr.length === 1) return colorizer(arr[0]!)
+  if (arr.length === 1) return color(arr[0]!)
   const firsts = arr.slice(0, arr.length - 1)
   const last = arr[arr.length - 1]!
-  const lastComma = arr.length > 2 ? ',' : ''
-  return firsts.map(colorizer).join(', ') + `${lastComma} ${conjunction} ` + colorizer(last)
+  const lastComma = trailingComma && arr.length > 2 ? ',' : ''
+  return firsts.map(color).join(', ') + `${lastComma} ${conjunction} ` + color(last)
 }
