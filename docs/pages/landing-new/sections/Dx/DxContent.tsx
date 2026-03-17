@@ -217,6 +217,7 @@ const DxContent = () => {
 }
 
 const Section = cm.section`space-y-8`
+// TODO/ai re-implement the cut parameter you removed at git show 26c36a23cf637b88b8c414f01d9fb11a5901ba41
 const TwoColumn = cm.div`grid gap-8 md:grid-cols-2`
 const Block = cm.div`space-y-4`
 const SectionTitle = cm.h3`text-2xl font-semibold`
