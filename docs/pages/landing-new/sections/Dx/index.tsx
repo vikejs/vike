@@ -9,7 +9,7 @@ import FeatureWall from './FeatureWall'
 
 const DxSection = () => {
   return (
-    <section data-usp-section={UspCategoryId.lightningDx}>
+    <section data-usp-section={UspCategoryId.lightningDx} className="pb-20">
       <LayoutComponent>
         <SectionHeader
           icon={'⚡️'}

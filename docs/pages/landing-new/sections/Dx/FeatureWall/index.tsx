@@ -6,8 +6,8 @@ import GradientText from '../../../components/GradientText'
 
 const FeatureWall = () => {
   return (
-    <LayoutComponent className="mt-10 grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-5" $size="xl">
-      <H2Headline as="h3" className="mb-4 text-center col-span-full">
+    <LayoutComponent className="mt-24 grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-5" $size="xl">
+      <H2Headline as="h3" className="mb-10 text-center col-span-full">
         Full-<GradientText color="orange">fledged</GradientText>
       </H2Headline>
       {features.map((feature, featureIndex) => {

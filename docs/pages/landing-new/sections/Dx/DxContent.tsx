@@ -19,29 +19,36 @@ import TelefuncClientExample from './snippets/TelefuncClientExample.mdx'
 import TelefuncServerExample from './snippets/TelefuncServerExample.mdx'
 import ZustandExample from './snippets/ZustandExample.mdx'
 import cm from '@classmatejs/react'
+import { H3Headline, H4Headline } from '../../components/Headline'
+import HeadlineGroup from '../../components/HeadlineGroup'
+import GlassContainer from '../../components/GlassContainer'
+import { ChevronsRight } from 'lucide-react'
 
 const DxContent = () => {
   return (
     <div className="space-y-16">
-      <TwoColumn>
-        <Block>
-          <SectionTitle>First-class SSR/SPA/SSG support</SectionTitle>
-          <p>
-            Toggle <Link href="/ssr">SSR</Link>/<Link href="/SSR-vs-SPA">SPA</Link>/
-            <Link href="/pre-rendering">SSG</Link> on a page-by-page basis, powered by{' '}
-            <Link href="/config#inheritance">config inheritance</Link>.
-          </p>
-          <SsrSpaSsgTree />
-        </Block>
-        <Block>
-          <ProductConfigExample />
-          <AdminAndMarketingConfigs />
-        </Block>
-      </TwoColumn>
+      <GlassContainer>
+        <Section className="py-10">
+          <SectionTitle className="text-center mb-10">First-class SSR/SPA/SSG support</SectionTitle>
+          <TwoColumn>
+            <Block>
+              <p className="text-lg">
+                Toggle <Link href="/ssr">SSR</Link>/<Link href="/SSR-vs-SPA">SPA</Link>/
+                <Link href="/pre-rendering">SSG</Link> on a page-by-page basis, powered by{' '}
+                <Link href="/config#inheritance">config inheritance</Link>.
+              </p>
+              <SsrSpaSsgTree />
+            </Block>
+            <Block>
+              <ProductConfigExample />
+              <AdminAndMarketingConfigs />
+            </Block>
+          </TwoColumn>
+        </Section>
+      </GlassContainer>
 
       <Section>
-        <SectionTitle>API</SectionTitle>
-        <SubSectionTitle>Next-gen RPC (aka Server Functions)...</SubSectionTitle>
+        <HeadlineGroup main="API" sub="Next-gen RPC (aka Server Functions)..." outerClassName="mb-10" />
         <p>
           ...via <a href="https://telefunc.com">Telefunc</a> (tool maintained by the Vike team), or use classic tools
           such as tRPC.
@@ -50,49 +57,49 @@ const DxContent = () => {
           <TelefuncServerExample />
           <TelefuncClientExample />
         </TwoColumn>
-      </Section>
 
-      <TwoColumn>
-        <Block>
-          <SubSectionTitle>First-class REST</SubSectionTitle>
-          <p>
-            Consume REST APIs via Vike&apos;s built-in hook{' '}
-            <Link href="/data">
-              <code>+data</code>
-            </Link>
-            , or via extensions such as{' '}
-            <a href="https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query#readme">
-              <code>vike-react-query</code>
-            </a>
-            {' / '}
-            <a href="https://github.com/vikejs/vike-vue/tree/main/packages/vike-vue-query#readme">
-              <code>vike-vue-query</code>
-            </a>
-            {' / '}
-            <a href="https://github.com/vikejs/vike-solid/tree/main/packages/vike-solid-query#readme">
-              <code>vike-solid-query</code>
-            </a>
-            .
-          </p>
-          <ReactQueryExample />
-        </Block>
-        <Block>
-          <SubSectionTitle>First-class GraphQL</SubSectionTitle>
-          <p>
-            Consume GraphQL APIs via extensions such as{' '}
-            <a href="https://github.com/vikejs/vike-react/tree/main/packages/vike-react-apollo#readme">
-              <code>vike-react-apollo</code>
-            </a>
-            , or via a <Link href="/graphql">custom integration</Link>.
-          </p>
-          <ApolloExample />
-        </Block>
-      </TwoColumn>
-
-      <Section>
-        <SectionTitle>Powerful hooks</SectionTitle>
         <TwoColumn>
           <Block>
+            <SubSectionTitle>First-class REST</SubSectionTitle>
+            <p>
+              Consume REST APIs via Vike&apos;s built-in hook{' '}
+              <Link href="/data">
+                <code>+data</code>
+              </Link>
+              , or via extensions such as{' '}
+              <a href="https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query#readme">
+                <code>vike-react-query</code>
+              </a>
+              {' / '}
+              <a href="https://github.com/vikejs/vike-vue/tree/main/packages/vike-vue-query#readme">
+                <code>vike-vue-query</code>
+              </a>
+              {' / '}
+              <a href="https://github.com/vikejs/vike-solid/tree/main/packages/vike-solid-query#readme">
+                <code>vike-solid-query</code>
+              </a>
+              .
+            </p>
+            <ReactQueryExample />
+          </Block>
+          <Block>
+            <SubSectionTitle>First-class GraphQL</SubSectionTitle>
+            <p>
+              Consume GraphQL APIs via extensions such as{' '}
+              <a href="https://github.com/vikejs/vike-react/tree/main/packages/vike-react-apollo#readme">
+                <code>vike-react-apollo</code>
+              </a>
+              , or via a <Link href="/graphql">custom integration</Link>.
+            </p>
+            <ApolloExample />
+          </Block>
+        </TwoColumn>
+      </Section>
+
+      <Section>
+        <SectionTitle className="mb-10 text-center">Powerful hooks</SectionTitle>
+        <div className="grid grid-cols-1 md:grid-cols-11 gap-4 lg:gap-8">
+          <Block className="md:col-span-6">
             <SubSectionTitle>
               Data fetching: <i>where</i>
             </SubSectionTitle>
@@ -100,7 +107,7 @@ const DxContent = () => {
             <DataServerExample />
             <DataClientExample />
           </Block>
-          <Block>
+          <Block className="md:col-span-5">
             <SubSectionTitle>
               Data fetching: <i>when</i>
             </SubSectionTitle>
@@ -117,46 +124,51 @@ const DxContent = () => {
             </p>
             <GetGlobalContextExample />
           </Block>
-        </TwoColumn>
+        </div>
 
-        <TwoColumn>
-          <Block>
+        <div className="grid grid-cols-1 md:grid-cols-11 gap-4 lg:gap-8">
+          <Block className="md:col-span-6">
             <SubSectionTitle>Authorization</SubSectionTitle>
             <GuardExample />
           </Block>
-          <Block>
+          <Block className="md:col-span-5">
             <SubSectionTitle>Instrumentation</SubSectionTitle>
             <InstrumentationExample />
           </Block>
-        </TwoColumn>
+        </div>
 
-        <TwoColumn>
-          <Block>
+        <div className="grid grid-cols-1 md:grid-cols-11 gap-4 lg:gap-8">
+          <Block className="md:col-span-6">
             <SubSectionTitle>Server integration</SubSectionTitle>
             <p>Vike is just a middleware you can embed into any server.</p>
             <ServerIntegrationExample />
           </Block>
-          <Block>
+          <Block className="md:col-span-5">
             <SubSectionTitle>i18n</SubSectionTitle>
             <p>Hooks give you full control over i18n integration.</p>
             <I18nExample />
           </Block>
-        </TwoColumn>
+        </div>
 
-        <ClosingWords>
-          Growing suite of <Link href="/hooks">hooks</Link>.
+        <ClosingWords href="/hooks">
+          See the growing suite of hooks. <ChevronsRight className="w-4 h-4 md:w-5 md:h-5" />
         </ClosingWords>
       </Section>
 
       <Section>
-        <SectionTitle>Powerful extensions</SectionTitle>
+        {/* <SectionTitle>Powerful extensions</SectionTitle>
         <div>
           <Link href="/extensions">Extensions</Link> use the same powerful hooks users use — enabling deep and seamless
           integrations.
-        </div>
+        </div> */}
+        <HeadlineGroup
+          main="Powerful extensions"
+          sub="Extensions use the same powerful hooks users use — enabling deep and seamless integrations."
+          outerClassName="mb-10 max-w-2xl mx-auto"
+        />
 
-        <TwoColumn>
-          <Block>
+        <div className="grid grid-cols-1 md:grid-cols-11 gap-4 lg:gap-8">
+          <Block className="md:col-span-6">
             <SubSectionTitle>UI frameworks</SubSectionTitle>
             <p>
               Use your favorite UI framework via an extension for getting started quickly, or{' '}
@@ -176,7 +188,7 @@ const DxContent = () => {
               </Link>
             </CenterText>
           </Block>
-          <Block>
+          <Block className="md:col-span-5">
             <SubSectionTitle>Advanced integrations</SubSectionTitle>
             <p>
               Extensions can use all of Vike's powerful hooks for advanced integrations such as React Server Components.
@@ -187,10 +199,10 @@ const DxContent = () => {
               </a>
             </CenterText>
           </Block>
-        </TwoColumn>
+        </div>
 
-        <TwoColumn>
-          <Block>
+        <div className="grid grid-cols-1 md:grid-cols-11 gap-4 lg:gap-8">
+          <Block className="md:col-span-6">
             <SubSectionTitle>State management</SubSectionTitle>
             <p>
               Vike's powerful hooks also enable extensions to deeply integrate with state management tools.
@@ -210,7 +222,7 @@ const DxContent = () => {
             </p>
             <ZustandExample />
           </Block>
-          <Block>
+          <Block className="md:col-span-5">
             <SubSectionTitle>Error tracking</SubSectionTitle>
             <p>
               Hooks such as{' '}
@@ -242,25 +254,26 @@ const DxContent = () => {
               ]}
             />
           </Block>
-        </TwoColumn>
+        </div>
 
-        <ClosingWords>
-          Growing ecosystem of <Link href="/extensions">extensions</Link>.
+        <ClosingWords href="/extensions">
+          See the growing ecosystem of extensions
+          <ChevronsRight className="w-4 h-4 md:w-5 md:h-5" />
         </ClosingWords>
       </Section>
     </div>
   )
 }
 
-const Section = cm.section`space-y-8`
+const Section = cm.section`space-y-6`
 
-const TwoColumn = cm.div`grid gap-8 md:grid-cols-2`
+const TwoColumn = cm.div`grid gap-4 lg:gap-8 md:grid-cols-2`
 const Block = cm.div`space-y-4`
-const SectionTitle = cm.h3`text-2xl font-semibold`
-const SubSectionTitle = cm.h4`text-lg font-medium`
+const SectionTitle = H3Headline
+const SubSectionTitle = H4Headline
 const CenterText = cm.span`text-center block`
 const Divider = cm.hr`border-grey-200`
-const ClosingWords = cm.div`text-2xl text-center`
+const ClosingWords = cm.a`flex btn sm:btn-lg btn-neutral mx-auto w-fit btn-outline text-center`
 
 const List = ({ items }: { items: ReactNode[] | string[] }) => {
   return (
