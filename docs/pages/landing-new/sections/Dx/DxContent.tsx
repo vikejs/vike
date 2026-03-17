@@ -54,8 +54,6 @@ const DxContent = () => {
         </TwoColumn>
       </Section>
 
-      <Divider />
-
       <TwoColumn>
         <Block>
           <SubSectionTitle>First-class REST</SubSectionTitle>
@@ -163,8 +161,8 @@ const DxContent = () => {
           <Block>
             <SubSectionTitle>UI frameworks</SubSectionTitle>
             <p>
-              Use your favorite UI framework via an extension for a quick start, or via{' '}
-              <Link href="/integration#ui-framework">manual integration</Link> for maximum flexibility.
+              Use your favorite UI framework via an extension for getting started quickly, or {' '}
+              <Link href="/integration#ui-framework">integrate it manually</Link> for maximum flexibility.
             </p>
             <CenterText>
               <Link href="/vike-react">
@@ -183,7 +181,7 @@ const DxContent = () => {
           <Block>
             <SubSectionTitle>Advanced integrations</SubSectionTitle>
             <p>
-              Extensions use Vike's powerful hooks to integrate any advanced technologies such React Server Components.
+              Extensions can use all of Vike's powerful hooks for advanced integrations such as React Server Components.
             </p>
             <CenterText>
               <a href="https://github.com/nitedani/vike-react-rsc#vike-react-rsc">
@@ -197,7 +195,7 @@ const DxContent = () => {
           <Block>
             <SubSectionTitle>State management</SubSectionTitle>
             <p>
-              Powerful hooks also enable extensions to deeply & seamlessly integrate with state management tools.
+              Vike's powerful hooks also enable extensions to deeply integrate with state management tools.
               <CenterText>
                 <a href="https://github.com/vikejs/vike-react/tree/main/packages/vike-react-redux#readme">
                   <code>vike-react-redux</code>
