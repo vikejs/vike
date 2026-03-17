@@ -165,12 +165,12 @@ const DxContent = () => {
             <CenterText>
               <Link href="/vike-react">
                 <code>vike-react</code>
-              </Link>{' '}
-              /{' '}
+              </Link>
+              {' / '}
               <Link href="/vike-vue">
                 <code>vike-vue</code>
-              </Link>{' '}
-              /{' '}
+              </Link>
+              {' / '}
               <Link href="/vike-solid">
                 <code>vike-solid</code>
               </Link>
