@@ -101,4 +101,3 @@ export const BoxOrange = cm.li.variants<{ $size?: VikeComponentSize; $type: 'lib
     $size: 'big',
   },
 })
-
