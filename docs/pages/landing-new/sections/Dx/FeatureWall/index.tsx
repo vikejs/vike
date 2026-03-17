@@ -16,9 +16,9 @@ const FeatureWall = () => {
         return (
           <div
             key={feature.title}
-            className="relative rounded-field border border-grey-200 p-4 bg-base-200 flex flex-col overflow-hidden"
+            className="relative rounded-field border border-grey-200 p-4 bg-base-200 flex flex-col"
           >
-            <div className="absolute inset-0 bg-linear-to-t to-base-300/50 z-0"></div>
+            <div className="absolute inset-0 bg-linear-to-t to-base-300/50 z-0 rounded-field"></div>
             <div className="mb-3 flex items-center justify-between gap-3 z-2">
               <H5Headline as="h4" className="font-normal leading-tight">
                 {feature.title}
@@ -27,11 +27,16 @@ const FeatureWall = () => {
                 <Icon aria-hidden className="w-4 h-4" strokeWidth={2.3} />
               </div>
             </div>
-            <div className="flex flex-1 flex-col justify-end z-2">
+            <div className="flex flex-1 flex-col z-2">
               <p className="text-xs sm:text-sm text-grey [&_a]:underline [&_a]:decoration-current/30 [&_a]:underline-offset-2">
                 {feature.content}
               </p>
             </div>
+            {feature.advanced && (
+              <div className="badge badge-xs badge-neutral absolute -bottom-2 right-3 z-2">
+                Advanced
+              </div>
+            )}
           </div>
         )
       })}
