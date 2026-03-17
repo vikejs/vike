@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { features } from './features'
 import { H5Headline } from '../../../components/Headline'
 import LayoutComponent from '../../../components/LayoutComponent'
@@ -8,23 +8,24 @@ const featureRows = Array.from({ length: 3 }, (_, rowIndex) => features.filter((
 
 const FeatureWall = () => {
   const { rootRef, pause, resume } = useFeatureWall()
+  const [showIsolated, setShowIsolated] = useState(false)
 
   return (
-    <LayoutComponent className="mt-10  max-w-500" $size="full">
+    <LayoutComponent className="mt-10 max-w-500" $size="full">
       {/* <H2Headline as="h3" className="mb-4 text-center">
         Full-<GradientText color="orange">fledged</GradientText>
       </H2Headline> */}
       <div
         ref={rootRef}
         className="overflow-hidden"
-        onPointerEnter={pause}
-        onPointerLeave={resume}
-        onFocusCapture={pause}
-        onBlurCapture={(event) => {
-          if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
-            resume()
-          }
-        }}
+        // onPointerEnter={pause}
+        // onPointerLeave={resume}
+        // onFocusCapture={pause}
+        // onBlurCapture={(event) => {
+        //   if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+        //     resume()
+        //   }
+        // }}
       >
         <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-10 bg-linear-to-r from-base-300 via-base-300/90 to-transparent sm:w-20" />
         <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-10 bg-linear-to-l from-base-300 via-base-300/90 to-transparent sm:w-20" />
@@ -60,9 +61,9 @@ const FeatureWall = () => {
                             <Icon aria-hidden className="h-4 w-4" strokeWidth={2.3} />
                           </div>
                           <div className="z-2 flex flex-1 flex-col">
-                            <p className="text-xs text-grey sm:text-sm [&_a]:underline [&_a]:decoration-current/30 [&_a]:underline-offset-2">
+                            <div className="text-xs text-grey sm:text-sm [&_a]:underline [&_a]:decoration-current/30 [&_a]:underline-offset-2">
                               {feature.content}
-                            </p>
+                            </div>
                           </div>
                           {feature.advanced && (
                             <div className="badge badge-xs badge-grey absolute right-3 -top-2 z-2 border-grey-200 text-grey">

@@ -28,7 +28,7 @@ const StabilitySection = () => {
         </LayoutComponent>
         <LayoutComponent $size="sm" className="mt-10">
           <div className="">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 text-sm">
               <p>
                 Vike is built from stable components that will remain relevant for the foreseeable future (e.g.
                 SPA/SSR/SSG), making Vike a stable foundation.{' '}

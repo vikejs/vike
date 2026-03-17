@@ -94,33 +94,6 @@ const rowCount = 3
 
 const componentRows = splitIntoRows(components, rowCount)
 
-export const BoxBlue = cm.li.variants<{ $size: VikeComponentSize }>({
-  base: `
-  inset-ring-1
-  inset-ring-secondary/50 hover:inset-ring-secondary
-  rounded-field
-  bg-gradient-to-bl to-secondary/7 hover:to-secondary/12
-  text-base-content/90 hover:text-base-content
-  flex
-  lg:flex-1 lg:basis-0 lg:min-w-max
-  items-center justify-center
-  text-center text-xs md:text-sm
-  relative
-`,
-  variants: {
-    $size: {
-      big: 'font-medium',
-      small: '',
-    },
-  },
-})
-
-const InnerLink = cm.a`
-  text-base-content  
-  py-1 px-2
-  w-full
-`
-
 const VikeComponents = () => {
   return (
     <div className="p-3 bg-linear-to-t to-white via-white rounded-box relative md:w-[90%] md:mx-auto">
@@ -148,3 +121,30 @@ const VikeComponents = () => {
 }
 
 export default VikeComponents
+
+export const BoxBlue = cm.li.variants<{ $size: VikeComponentSize }>({
+  base: `
+  inset-ring-1
+  inset-ring-secondary/50 hover:inset-ring-secondary
+  rounded-field
+  bg-gradient-to-bl to-secondary/7 hover:to-secondary/12
+  text-base-content/90 hover:text-base-content
+  flex
+  lg:flex-1 lg:basis-0 lg:min-w-max
+  items-center justify-center
+  text-center text-xs md:text-sm
+  relative
+`,
+  variants: {
+    $size: {
+      big: 'font-bold',
+      small: '',
+    },
+  },
+})
+
+const InnerLink = cm.a`
+  text-base-content  
+  py-1 px-2
+  w-full
+`

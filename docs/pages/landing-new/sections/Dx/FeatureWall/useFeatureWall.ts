@@ -1,8 +1,10 @@
 import { useRef } from 'react'
 import { useGSAP } from '@gsap/react'
 import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 import useMotionAllowed from '../../../hooks/useMotionAllowed'
+import { registerScrollTrigger } from '../../../util/gsap.utils'
 
 interface UseFeatureWallOptions {
   pixelsPerSecond?: number
@@ -12,11 +14,12 @@ interface UseFeatureWallOptions {
 const defaultRowSpeedFactors = [1, 0.92, 1.08]
 
 const useFeatureWall = ({
-  pixelsPerSecond = 36,
+  pixelsPerSecond = 40,
   rowSpeedFactors = defaultRowSpeedFactors,
 }: UseFeatureWallOptions = {}) => {
   const rootRef = useRef<HTMLDivElement>(null)
   const tweensRef = useRef<gsap.core.Tween[]>([])
+  const isInViewRef = useRef(false)
   const interactivelyPausedRef = useRef(false)
   const isMotionAllowed = useMotionAllowed()
 
@@ -25,17 +28,26 @@ const useFeatureWall = ({
     tweensRef.current = []
   }
 
+  const syncPlayback = () => {
+    const shouldPlay = isMotionAllowed && isInViewRef.current && !interactivelyPausedRef.current
+
+    tweensRef.current.forEach((tween) => {
+      if (shouldPlay) {
+        tween.play()
+      } else {
+        tween.pause()
+      }
+    })
+  }
+
   const pause = () => {
     interactivelyPausedRef.current = true
-    tweensRef.current.forEach((tween) => tween.pause())
+    syncPlayback()
   }
 
   const resume = () => {
     interactivelyPausedRef.current = false
-    if (!isMotionAllowed) {
-      return
-    }
-    tweensRef.current.forEach((tween) => tween.play())
+    syncPlayback()
   }
 
   useGSAP(
@@ -53,11 +65,40 @@ const useFeatureWall = ({
       killTweens()
 
       if (!tracks.length || !isMotionAllowed) {
+        isInViewRef.current = false
         tracks.forEach((track) => {
           gsap.set(track, { clearProps: 'transform,willChange' })
         })
         return
       }
+
+      registerScrollTrigger()
+
+      const scroller =
+        typeof document === 'undefined' ? undefined : (document.querySelector<HTMLElement>('body') ?? undefined)
+      const viewTrigger = ScrollTrigger.create({
+        trigger: root,
+        scroller,
+        start: 'top bottom',
+        end: 'bottom top',
+        markers: false,
+        onEnter: () => {
+          isInViewRef.current = true
+          syncPlayback()
+        },
+        onEnterBack: () => {
+          isInViewRef.current = true
+          syncPlayback()
+        },
+        onLeave: () => {
+          isInViewRef.current = false
+          syncPlayback()
+        },
+        onLeaveBack: () => {
+          isInViewRef.current = false
+          syncPlayback()
+        },
+      })
 
       const build = () => {
         killTweens()
@@ -80,15 +121,14 @@ const useFeatureWall = ({
             x: -distance,
             duration,
             ease: 'none',
+            paused: true,
             repeat: -1,
           })
 
-          if (interactivelyPausedRef.current) {
-            tween.pause()
-          }
-
           tweensRef.current.push(tween)
         })
+
+        syncPlayback()
       }
 
       let rebuildFrame = 0
@@ -103,6 +143,8 @@ const useFeatureWall = ({
       }
 
       build()
+      isInViewRef.current = viewTrigger.isActive
+      syncPlayback()
 
       const resizeObserver = new ResizeObserver(() => {
         requestBuild()
@@ -115,6 +157,8 @@ const useFeatureWall = ({
         if (rebuildFrame) {
           window.cancelAnimationFrame(rebuildFrame)
         }
+        viewTrigger.kill()
+        isInViewRef.current = false
         resizeObserver.disconnect()
         killTweens()
         tracks.forEach((track) => {

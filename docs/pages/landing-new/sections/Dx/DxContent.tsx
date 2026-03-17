@@ -1,5 +1,5 @@
 import React from 'react'
-import type { ComponentProps, CSSProperties, ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { Link } from '@brillout/docpress'
 import AdminAndMarketingConfigs from './snippets/AdminAndMarketingConfigs.mdx'
 import ApolloExample from './snippets/ApolloExample.mdx'
@@ -18,14 +18,12 @@ import SsrSpaSsgTree from './snippets/SsrSpaSsgTree.mdx'
 import TelefuncClientExample from './snippets/TelefuncClientExample.mdx'
 import TelefuncServerExample from './snippets/TelefuncServerExample.mdx'
 import ZustandExample from './snippets/ZustandExample.mdx'
-import cm, { cmMerge } from '@classmatejs/react'
-
-const cutPowerfulHooks = 0.53
+import cm from '@classmatejs/react'
 
 const DxContent = () => {
   return (
     <div className="space-y-16">
-      <TwoColumn cut={0.46}>
+      <TwoColumn>
         <Block>
           <SectionTitle>First-class SSR/SPA/SSG support</SectionTitle>
           <p>
@@ -93,7 +91,7 @@ const DxContent = () => {
 
       <Section>
         <SectionTitle>Powerful hooks</SectionTitle>
-        <TwoColumn cut={cutPowerfulHooks}>
+        <TwoColumn>
           <Block>
             <SubSectionTitle>
               Data fetching: <i>where</i>
@@ -121,7 +119,7 @@ const DxContent = () => {
           </Block>
         </TwoColumn>
 
-        <TwoColumn cut={cutPowerfulHooks}>
+        <TwoColumn>
           <Block>
             <SubSectionTitle>Authorization</SubSectionTitle>
             <GuardExample />
@@ -132,7 +130,7 @@ const DxContent = () => {
           </Block>
         </TwoColumn>
 
-        <TwoColumn cut={cutPowerfulHooks}>
+        <TwoColumn>
           <Block>
             <SubSectionTitle>Server integration</SubSectionTitle>
             <p>Vike is just a middleware you can embed into any server.</p>
@@ -157,7 +155,7 @@ const DxContent = () => {
           integrations.
         </div>
 
-        <TwoColumn cut={0.54}>
+        <TwoColumn>
           <Block>
             <SubSectionTitle>UI frameworks</SubSectionTitle>
             <p>
@@ -191,7 +189,7 @@ const DxContent = () => {
           </Block>
         </TwoColumn>
 
-        <TwoColumn cut={0.54}>
+        <TwoColumn>
           <Block>
             <SubSectionTitle>State management</SubSectionTitle>
             <p>
@@ -219,11 +217,11 @@ const DxContent = () => {
               <Link href="/onError">
                 <code>+onError</code>
               </Link>
-              ,{' '}
+              {', '}
               <Link href="/onHookCall">
                 <code>+onHookCall</code>
               </Link>
-              , and{' '}
+              {' , and '}
               <Link href="/onCreateGlobalContext">
                 <code>+onCreateGlobalContext</code>
               </Link>{' '}
@@ -255,40 +253,14 @@ const DxContent = () => {
 }
 
 const Section = cm.section`space-y-8`
-type TwoColumnProps = ComponentProps<'div'> & {
-  cut?: number
-}
 
-type TwoColumnStyle = CSSProperties & {
-  '--dx-two-column-cut'?: string
-}
-
-const TwoColumn = ({ children, className, cut = 0.5, style, ...props }: TwoColumnProps) => {
-  if (!(cut > 0 && cut < 1)) {
-    throw new Error(`TwoColumn cut must be between 0 and 1 (received ${cut}).`)
-  }
-
-  const styleWithCut: TwoColumnStyle = {
-    ...style,
-    '--dx-two-column-cut': `${cut * 100}%`,
-  }
-
-  return (
-    <div
-      className={cmMerge('grid gap-8 md:[grid-template-columns:var(--dx-two-column-cut)_1fr]', className)}
-      style={styleWithCut}
-      {...props}
-    >
-      {children}
-    </div>
-  )
-}
+const TwoColumn = cm.div`grid gap-8 md:grid-cols-2`
 const Block = cm.div`space-y-4`
 const SectionTitle = cm.h3`text-2xl font-semibold`
 const SubSectionTitle = cm.h4`text-lg font-medium`
-const CenterText = cm.p`text-center`
+const CenterText = cm.span`text-center block`
 const Divider = cm.hr`border-grey-200`
-const ClosingWords = cm.p`text-2xl text-center`
+const ClosingWords = cm.div`text-2xl text-center`
 
 const List = ({ items }: { items: ReactNode[] | string[] }) => {
   return (

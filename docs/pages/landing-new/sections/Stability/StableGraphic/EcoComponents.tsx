@@ -2,39 +2,6 @@ import React from 'react'
 import { VikeComponentSize, VikeEcoComponentCategory } from './grid.utils'
 import cm from '@classmatejs/react'
 
-export const BoxOrange = cm.li.variants<{ $size?: VikeComponentSize; $type: 'lib' | 'category' }>({
-  base: `
-  flex
-  items-center justify-center
-  text-center text-sm 
-  relative
-`,
-  variants: {
-    $size: {
-      big: 'font-medium',
-      small: '',
-    },
-    $type: {
-      lib: `
-        inset-ring-1
-        inset-ring-accent/30
-        bg-white
-        rounded-field
-        `,
-      category: `
-        mb-3
-        inset-ring-1
-        inset-ring-grey/30
-        py-1 md:py-2 px-3 md:px-5
-        rounded-field
-      `,
-    },
-  },
-  defaultVariants: {
-    $size: 'big',
-  },
-})
-
 type EcoComponent = {
   name: string
   link?: string
@@ -60,9 +27,9 @@ const ecosystemComponents: Record<VikeEcoComponentCategory, EcoComponent[]> = {
     { name: 'Cloudflare', link: 'https://www.cloudflare.com/', size: 'big' },
     { name: 'Vercel', link: 'https://vercel.com/', size: 'big' },
     { name: 'AWS', link: 'https://aws.amazon.com/', size: 'big' },
-    // { name: 'Netlify', link: 'https://www.netlify.com/', size: 'small' },
-    // { name: 'Google Cloud', link: 'https://cloud.google.com/', size: 'small' },
-    // { name: 'Azure', link: 'https://azure.microsoft.com/', size: 'small' },
+    { name: 'Netlify', link: 'https://www.netlify.com/', size: 'small' },
+    { name: 'Google Cloud', link: 'https://cloud.google.com/', size: 'small' },
+    { name: 'Azure', link: 'https://azure.microsoft.com/', size: 'small' },
   ],
   server: [
     { name: 'Hono', link: 'https://hono.dev/', size: 'big' },
@@ -89,7 +56,7 @@ const EcoComponents = () => {
                     <a
                       href={component.link}
                       target="_blank"
-                      className="py-0.5 px-0.5 md:py-1 md:px-2 w-full text-accent/70 hover:text-accent text-tiny md:text-sm"
+                      className="py-0.5 px-0.5 md:py-1 md:px-2 w-full text-accent/70 hover:text-accent text-tiny md:text-xs"
                     >
                       {component.name}
                     </a>
@@ -105,3 +72,33 @@ const EcoComponents = () => {
 }
 
 export default EcoComponents
+
+export const BoxOrange = cm.li.variants<{ $size?: VikeComponentSize; $type: 'lib' | 'category' }>({
+  base: `
+  flex
+  items-center justify-center
+  text-center text-sm
+  relative
+`,
+  variants: {
+    $size: {
+      big: 'font-medium',
+      small: '',
+    },
+    $type: {
+      lib: `
+        inset-ring-1
+        inset-ring-accent/30
+        bg-white
+        rounded-field
+        `,
+      category: `
+        mb-3
+      `,
+    },
+  },
+  defaultVariants: {
+    $size: 'big',
+  },
+})
+
