@@ -8,6 +8,7 @@ export const DX_H3 = ({ children, style }) => <div style={{textAlign: 'center', 
 export const DX_H4 = ({ children, style }) => <span style={{textAlign: 'center', fontSize: '1.3em', fontWeight: 500, margin: 15, display: 'block', ...style}}>{children}</span>
 export const DX_Hr = () => <hr style={{background: '#aaa', height: 1, margin: 20}}/>
 export const DX_ClosingWord = ({ children }) => <DX_Center><div style={{fontSize: '1.4em'}}>{children}</div></DX_Center>
+export const DX_InlineHighlight = ({ children, color }) => <span style={{ backgroundColor: color, borderRadius: 4, padding: '0.04em 0.22em' }}>{children}</span>
 
 
 <DX_TwoColumnLayout>
@@ -18,8 +19,7 @@ First-class SSR/SPA/SSG support
 </DX_H3>
 
 <div style={{fontSize: '1.4em'}}>
-// TODO/ai add background color to "SSR"/... and "config inheritance" matching the highlight colors bellow
-Toggle <Link href="/ssr">SSR</Link>/<Link href="/SSR-vs-SPA">SPA</Link>/<Link href="/pre-rendering">SSG</Link> on a page-by-page basis, powered by <Link href="/config#inheritance">config inheritance</Link>.
+Toggle <DX_InlineHighlight color="#b8d4eb"><Link href="/ssr">SSR</Link></DX_InlineHighlight>/<DX_InlineHighlight color="#c0ebb8"><Link href="/SSR-vs-SPA">SPA</Link></DX_InlineHighlight>/<DX_InlineHighlight color="#e9b8e8"><Link href="/pre-rendering">SSG</Link></DX_InlineHighlight> on a page-by-page basis, powered by <DX_InlineHighlight color="#f4f5a6"><Link href="/config#inheritance">config inheritance</Link></DX_InlineHighlight>.
 </div>
 
 ```yaml
