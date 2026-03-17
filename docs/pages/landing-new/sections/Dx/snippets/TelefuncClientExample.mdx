@@ -1,0 +1,24 @@
+```ts
+// CreateTodo.tsx
+// Environment: client
+
+// CreateTodo.telefunc.ts isn't actually loaded;
+// Telefunc transforms it into a thin HTTP client.
+import { onNewTodo } from './CreateTodo.telefunc.ts'
+
+async function onClick(form) {
+  const text = form.input.value
+  // Behind the scenes, Telefunc makes an HTTP request
+  // to the server.
+  await onNewTodo(text)
+}
+
+function CreateTodo() {
+  return (
+    <form>
+      <input input="text"></input>
+      <button onClick={onClick}>Add To-Do</button>
+    </form>
+  )
+}
+```

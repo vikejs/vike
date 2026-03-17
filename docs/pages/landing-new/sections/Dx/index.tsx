@@ -4,8 +4,7 @@ import LayoutComponent from '../../components/LayoutComponent'
 import GradientText from '../../components/GradientText'
 import SectionHeader from '../../components/SectionHeader'
 import { UspCategoryId } from '../../util/constants'
-import DxContent from './DxContent.mdx'
-import { Layout } from 'lucide-react'
+import DxContent from './DxContent'
 import FeatureWall from './FeatureWall'
 
 const DxSection = () => {
@@ -23,11 +22,14 @@ const DxSection = () => {
           sub="Build mission-critical apps — on a rock-solid foundation."
           color="orange"
         />
-        <div>
+        {/* <div>
           <DxContent />
-        </div>
+        </div> */}
       </LayoutComponent>
       <FeatureWall />
+      <LayoutComponent>
+        <DxContent />
+      </LayoutComponent>
     </section>
   )
 }
