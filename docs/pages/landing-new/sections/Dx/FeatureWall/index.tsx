@@ -6,7 +6,7 @@ import GradientText from '../../../components/GradientText'
 
 const FeatureWall = () => {
   return (
-    <LayoutComponent className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" $size="xl">
+    <LayoutComponent className="grid gap-3 lg:gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" $size="xl">
       <H2Headline as="h3" className="col-span-full mb-4 mt-10 text-center">
         Full-<GradientText color="orange">fledged</GradientText>
       </H2Headline>
@@ -20,7 +20,7 @@ const FeatureWall = () => {
           >
             <div className="absolute inset-0 bg-linear-to-t to-base-300/50 z-0"></div>
             <div className="mb-3 flex items-center justify-between gap-3 z-2">
-              <H5Headline as="h4" className="pt-1 font-normal leading-tight">
+              <H5Headline as="h4" className="font-normal leading-tight">
                 {feature.title}
               </H5Headline>
               <div className="flex size-9 shrink-0 items-center justify-center">
@@ -28,7 +28,7 @@ const FeatureWall = () => {
               </div>
             </div>
             <div className="flex flex-1 flex-col justify-end z-2">
-              <p className="text-sm text-grey [&_a]:underline [&_a]:decoration-current/30 [&_a]:underline-offset-2">
+              <p className="text-xs sm:text-sm text-grey [&_a]:underline [&_a]:decoration-current/30 [&_a]:underline-offset-2">
                 {feature.content}
               </p>
             </div>

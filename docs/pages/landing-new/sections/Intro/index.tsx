@@ -60,7 +60,7 @@ const IntroSection = () => {
 
   return (
     <>
-      <div data-intro-section-root="true" className="relative">
+      <div data-intro-section-root="true" className="relative z-20">
         {/* <div className="absolute top-0 left-0 h-1/2 w-full bg-linear-to-t to-white z-10" /> */}
         <LayoutComponent
           $size="md"

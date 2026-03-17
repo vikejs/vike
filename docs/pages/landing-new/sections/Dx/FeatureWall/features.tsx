@@ -4,6 +4,7 @@ import { Link } from '@brillout/docpress'
 import type { LucideIcon } from 'lucide-react'
 import {
   Blocks,
+  CircleCheckBig,
   CloudSync,
   Cpu,
   DatabaseZap,
@@ -23,7 +24,6 @@ import {
   ServerCog,
   Shield,
   ShieldCheck,
-  TestTube,
   TriangleAlert,
   Waves,
   Wrench,
@@ -147,7 +147,7 @@ export const features: Feature[] = [
   {
     title: 'Internationalization (i18n)',
     icon: Languages,
-    content: <>Low-level hook +onBeforeRoute for full control over i18n.</>,
+    content: <>Low-level hook <Link href='/i18n'>+onBeforeRoute</Link> for full control over i18n.</>,
     advanced: true,
   },
   {
@@ -264,7 +264,7 @@ export const features: Feature[] = [
   },
   {
     title: 'Included in Vite CI',
-    icon: TestTube,
+    icon: CircleCheckBig,
     content: (
       <>
         <ExternalLink href="https://github.com/vitejs/vite-ecosystem-ci/blob/main/tests/vike.ts">

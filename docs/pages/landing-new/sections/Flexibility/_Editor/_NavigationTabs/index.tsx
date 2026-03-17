@@ -8,7 +8,7 @@ import useNavigationTabsInteractions from './useNavigationTabsInteractions'
 const StyledWrapper = cm.div`
   mx-auto w-6/7 
   grid grid-cols-3 gap-10
-  z-20
+  z-2
   mt-14
   relative
   overflow-hidden
