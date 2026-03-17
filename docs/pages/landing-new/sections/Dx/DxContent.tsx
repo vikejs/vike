@@ -43,8 +43,8 @@ const DxContent = () => {
         <SectionTitle>API</SectionTitle>
         <SubSectionTitle>Next-gen RPC (aka Server Functions)...</SubSectionTitle>
         <p>
-          ...via <a href="https://telefunc.com">Telefunc</a> (tool maintained by the Vike team), or
-          use classic tools such as tRPC.
+          ...via <a href="https://telefunc.com">Telefunc</a> (tool maintained by the Vike team), or use classic tools
+          such as tRPC.
         </p>
         <TwoColumn>
           <TelefuncServerExample />
@@ -58,13 +58,19 @@ const DxContent = () => {
         <Block>
           <SubSectionTitle>First-class REST</SubSectionTitle>
           <p>
-            Consume REST APIs via Vike&apos;s built-in hook <Link href="/data"><code>+data</code></Link>, or via extensions such as{' '}
+            Consume REST APIs via Vike&apos;s built-in hook{' '}
+            <Link href="/data">
+              <code>+data</code>
+            </Link>
+            , or via extensions such as{' '}
             <a href="https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query#readme">
               <code>vike-react-query</code>
             </a>
-    {' / '}<a href="https://github.com/vikejs/vike-vue/tree/main/packages/vike-vue-query#readme">
-    <code>vike-vue-query</code>
-    </a>{' / '}
+            {' / '}
+            <a href="https://github.com/vikejs/vike-vue/tree/main/packages/vike-vue-query#readme">
+              <code>vike-vue-query</code>
+            </a>
+            {' / '}
             <a href="https://github.com/vikejs/vike-solid/tree/main/packages/vike-solid-query#readme">
               <code>vike-solid-query</code>
             </a>
@@ -76,7 +82,7 @@ const DxContent = () => {
           <p>
             Consume GraphQL APIs via extensions such as{' '}
             <a href="https://github.com/vikejs/vike-react/tree/main/packages/vike-react-apollo#readme">
-            <code>vike-react-apollo</code>
+              <code>vike-react-apollo</code>
             </a>
             , or via a <Link href="/graphql">custom integration</Link>.
           </p>
@@ -92,13 +98,17 @@ const DxContent = () => {
         <SectionTitle>Powerful hooks</SectionTitle>
         <TwoColumn cut={0.54}>
           <Block>
-            <SubSectionTitle>Data fetching: <i>where</i></SubSectionTitle>
+            <SubSectionTitle>
+              Data fetching: <i>where</i>
+            </SubSectionTitle>
             <p>Hooks give you control where data is fetched:</p>
             <DataServerExample />
             <DataClientExample />
           </Block>
           <Block>
-            <SubSectionTitle>Data fetching: <i>when</i></SubSectionTitle>
+            <SubSectionTitle>
+              Data fetching: <i>when</i>
+            </SubSectionTitle>
             <p>Also control when data is fetched. When the server starts:</p>
             <GlobalContextServerExample />
             <p>When client-side navigation starts:</p>
