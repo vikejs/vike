@@ -24,10 +24,7 @@ interface QuoteProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const Blockquote = ({ children, authorPictures, className, ...props }: QuoteProps) => {
   return (
-    <div
-      className={cmMerge('flex flex-col md:flex-row items-center gap-3 justify-between', className)}
-      {...props}
-    >
+    <div className={cmMerge('flex flex-col md:flex-row items-center gap-3 justify-between', className)} {...props}>
       <div className="flex flex-1 order-2">
         <QuoteSvgIcon />
         <blockquote className="italic text-grey">{children}</blockquote>

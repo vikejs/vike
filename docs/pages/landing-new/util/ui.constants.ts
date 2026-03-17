@@ -23,6 +23,8 @@ export const LayoutSize = {
   sm: 'sm',
   md: 'md',
   lg: 'lg',
+  xl: 'xl',
+  full: 'full',
 } as const
 export type LayoutSize = (typeof LayoutSize)[keyof typeof LayoutSize]
 
@@ -32,6 +34,8 @@ export const layoutComponentSizeMapping: { [key in LayoutSize]: string } = {
   sm: 'max-w-[960px]',
   md: 'max-w-[1100px]', // 1140 base header width - 2 x 20px padding from header elements..
   lg: 'max-w-[1280px]',
+  xl: 'max-w-[1440px]',
+  full: 'max-w-full',
 } as const
 
 export const BlurDotOpacity = {

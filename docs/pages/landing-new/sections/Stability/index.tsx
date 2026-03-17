@@ -26,7 +26,7 @@ const StabilitySection = () => {
           />
           <StableGraphic />
         </LayoutComponent>
-        <LayoutComponent $size="sm" className='mt-10'>
+        <LayoutComponent $size="sm" className="mt-10">
           <div className="">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
               <p>

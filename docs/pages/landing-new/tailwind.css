@@ -155,8 +155,8 @@
     z-index: 99;
   }
 
-  #tailwind-portal :where(code) {
-    font-size: 1em;
+  #tailwind-portal code {
+    font-size: 1em !important;
   }
 
   #tailwind-portal pre > code {
