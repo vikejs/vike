@@ -102,7 +102,11 @@ const DxContent = () => {
             <p>When client-side navigation starts:</p>
             <GlobalContextClientExample />
             <p>
-              While <Link href="/globalContext"><code>globalContext</code></Link> can be accessed anywhere:
+              While{' '}
+              <Link href="/globalContext">
+                <code>globalContext</code>
+              </Link>{' '}
+              can be accessed anywhere:
             </p>
             <GetGlobalContextExample />
           </Block>
@@ -167,7 +171,9 @@ const DxContent = () => {
           </Block>
           <Block>
             <SubSectionTitle>Advanced integrations</SubSectionTitle>
-            <p>Extensions use Vike's powerful hooks to integrate any advanced technologies such React Server Components.</p>
+            <p>
+              Extensions use Vike's powerful hooks to integrate any advanced technologies such React Server Components.
+            </p>
             <CenterText>
               <a href="https://github.com/nitedani/vike-react-rsc#vike-react-rsc">
                 <code>vike-react-rsc</code>
@@ -181,27 +187,45 @@ const DxContent = () => {
             <SubSectionTitle>State management</SubSectionTitle>
             <p>
               Powerful hooks also enable extensions to deeply & seamlessly integrate with state management tools.
-            <CenterText>
-              <a href="https://github.com/vikejs/vike-react/tree/main/packages/vike-react-redux#readme"><code>vike-react-redux</code></a>
-    {' / '}
-              <a href="https://github.com/vikejs/vike-react/tree/main/packages/vike-react-zustand#readme">
-                <code>vike-react-zustand</code>
-              </a>
-    {' / '}
-              <a href="https://github.com/vikejs/vike-vue/tree/main/packages/vike-vue-pinia#readme">
-                <code>vike-vue-pinia</code>
-              </a>
-            </CenterText>
+              <CenterText>
+                <a href="https://github.com/vikejs/vike-react/tree/main/packages/vike-react-redux#readme">
+                  <code>vike-react-redux</code>
+                </a>
+                {' / '}
+                <a href="https://github.com/vikejs/vike-react/tree/main/packages/vike-react-zustand#readme">
+                  <code>vike-react-zustand</code>
+                </a>
+                {' / '}
+                <a href="https://github.com/vikejs/vike-vue/tree/main/packages/vike-vue-pinia#readme">
+                  <code>vike-vue-pinia</code>
+                </a>
+              </CenterText>
             </p>
             <ZustandExample />
           </Block>
           <Block>
             <SubSectionTitle>Error tracking</SubSectionTitle>
             <p>
-              Hooks such as <Link href="/onError"><code>+onError</code></Link>, <Link href="/onHookCall"><code>+onHookCall</code></Link>, and <Link href="/onCreateGlobalContext"><code>+onCreateGlobalContext</code></Link> enable extensions (and users) deep integration with error tracking tools.
+              Hooks such as{' '}
+              <Link href="/onError">
+                <code>+onError</code>
+              </Link>
+              ,{' '}
+              <Link href="/onHookCall">
+                <code>+onHookCall</code>
+              </Link>
+              , and{' '}
+              <Link href="/onCreateGlobalContext">
+                <code>+onCreateGlobalContext</code>
+              </Link>{' '}
+              enable extensions (and users) deep integration with error tracking tools.
             </p>
             <p>
-     For example, <a href="https://github.com/vikejs/vike-react/tree/main/packages/vike-react-sentry#readme"><code>vike-react-sentry</code></a> is full-fledged Sentry integration:{' '}
+              For example,{' '}
+              <a href="https://github.com/vikejs/vike-react/tree/main/packages/vike-react-sentry#readme">
+                <code>vike-react-sentry</code>
+              </a>{' '}
+              is full-fledged Sentry integration:{' '}
             </p>
             <List
               items={[
