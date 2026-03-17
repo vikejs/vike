@@ -22,11 +22,9 @@ const DxSection = () => {
           sub="Build mission-critical apps — on a rock-solid foundation."
           color="orange"
         />
-      </LayoutComponent>
-      <FeatureWall />
-      <LayoutComponent>
         <DxContent />
       </LayoutComponent>
+      <FeatureWall />
     </section>
   )
 }
