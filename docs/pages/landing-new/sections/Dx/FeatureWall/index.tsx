@@ -16,7 +16,7 @@ const FeatureWall = () => {
       </H2Headline> */}
       <div
         ref={rootRef}
-        className='overflow-hidden'
+        className="overflow-hidden"
         onPointerEnter={pause}
         onPointerLeave={resume}
         onFocusCapture={pause}
