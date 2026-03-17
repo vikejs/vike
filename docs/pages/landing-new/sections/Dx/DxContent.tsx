@@ -140,54 +140,67 @@ const DxContent = () => {
       <Section>
         <SectionTitle>Powerful extensions</SectionTitle>
         <CenterText>
-          <Link href="/extensions">Vike extensions</Link> powered by the same hooks you use, for deep and seamless
+          <Link href="/extensions">Extensions</Link> use the same powerful hooks you use, enabling deep and seamless
           integrations.
         </CenterText>
 
         <TwoColumn>
           <Block>
-            <SubSectionTitle>UI framework extensions</SubSectionTitle>
+            <SubSectionTitle>UI frameworks</SubSectionTitle>
             <p>
-              Use Vike with any UI framework via Vike extensions for a quick start, or via{' '}
+              Use any UI framework via an extension for a quick zero-config start, or via{' '}
               <Link href="/integration#ui-framework">manual integration</Link> for maximum flexibility.
             </p>
-            <List
-              items={[
-                <span key="frameworks">
-                  <code>vike-react</code> / <code>vike-vue</code> / <code>vike-solid</code>
-                </span>,
-              ]}
-            />
+            <CenterText>
+              <Link href="/vike-react">
+                <code>vike-react</code>
+              </Link>{' '}
+              /{' '}
+              <Link href="/vike-vue">
+                <code>vike-vue</code>
+              </Link>{' '}
+              /{' '}
+              <Link href="/vike-solid">
+                <code>vike-solid</code>
+              </Link>
+            </CenterText>
           </Block>
           <Block>
-            <SubSectionTitle>Advanced UI framework integration</SubSectionTitle>
-            <p>
-              Extensions are powerful enough to integrate advanced technologies, including RSC (React Server
-              Components).
-            </p>
-            <List items={[<code key="rsc">vike-react-rsc</code>]} />
+            <SubSectionTitle>Advanced integrations</SubSectionTitle>
+            <p>Extensions are powerful enough to integrate any advanced technologies such React Server Components.</p>
+            <CenterText>
+              <a href="https://github.com/nitedani/vike-react-rsc#vike-react-rsc">
+                <code>vike-react-rsc</code>
+              </a>
+            </CenterText>
           </Block>
         </TwoColumn>
 
-        <TwoColumn>
+        <TwoColumn className="md:[grid-template-columns:0.54fr_1fr]">
           <Block>
-            <SubSectionTitle>
+            <SubSectionTitle>State management</SubSectionTitle>
+            <p>
+              The <a href="https://zustand.docs.pmnd.rs/learn/getting-started/introduction">Zustand</a> integration{' '}
               <a href="https://github.com/vikejs/vike-react/tree/main/packages/vike-react-zustand#readme">
-                vike-react-zustand
-              </a>
-            </SubSectionTitle>
+                <code>vike-react-zustand</code>
+              </a>{' '}
+              is a deep integration.
+            </p>
             <ZustandExample />
           </Block>
           <Block>
-            <SubSectionTitle>
+            <SubSectionTitle>Error tracking</SubSectionTitle>
+            <p>
+              The{' '}
               <a href="https://github.com/vikejs/vike-react/tree/main/packages/vike-react-sentry#readme">
-                vike-react-sentry
-              </a>
-            </SubSectionTitle>
+                <code>vike-react-sentry</code>
+              </a>{' '}
+              integration is a deep integration.
+            </p>
             <p>Full-fledged and seamless Sentry integration.</p>
             <List
               items={[
-                'Browser and server error tracking',
+                'Browser & server error tracking',
                 'Performance monitoring and tracing',
                 'Automatic source map upload',
               ]}
@@ -196,7 +209,7 @@ const DxContent = () => {
         </TwoColumn>
 
         <CenterText>
-          Growing <Link href="/extensions">extension ecosystem</Link>.
+          Growing ecosystem of <Link href="/extensions">extensions</Link>.
         </CenterText>
       </Section>
     </div>
