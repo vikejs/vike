@@ -20,6 +20,8 @@ import TelefuncServerExample from './snippets/TelefuncServerExample.mdx'
 import ZustandExample from './snippets/ZustandExample.mdx'
 import cm, { cmMerge } from '@classmatejs/react'
 
+const cutPowerfulHooks = 0.53
+
 const DxContent = () => {
   return (
     <div className="space-y-16">
@@ -96,7 +98,7 @@ const DxContent = () => {
 
       <Section>
         <SectionTitle>Powerful hooks</SectionTitle>
-        <TwoColumn cut={0.54}>
+        <TwoColumn cut={cutPowerfulHooks}>
           <Block>
             <SubSectionTitle>
               Data fetching: <i>where</i>
@@ -124,7 +126,7 @@ const DxContent = () => {
           </Block>
         </TwoColumn>
 
-        <TwoColumn>
+        <TwoColumn cut={cutPowerfulHooks}>
           <Block>
             <SubSectionTitle>Authorization</SubSectionTitle>
             <GuardExample />
@@ -135,7 +137,7 @@ const DxContent = () => {
           </Block>
         </TwoColumn>
 
-        <TwoColumn>
+        <TwoColumn cut={cutPowerfulHooks}>
           <Block>
             <SubSectionTitle>Server integration</SubSectionTitle>
             <p>Vike is just a middleware you can embed into any server.</p>
