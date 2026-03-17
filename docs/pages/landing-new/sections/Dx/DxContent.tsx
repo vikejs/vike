@@ -18,6 +18,7 @@ import SsrSpaSsgTree from './snippets/SsrSpaSsgTree.mdx'
 import TelefuncClientExample from './snippets/TelefuncClientExample.mdx'
 import TelefuncServerExample from './snippets/TelefuncServerExample.mdx'
 import ZustandExample from './snippets/ZustandExample.mdx'
+import cm from '@classmatejs/react'
 
 function DxContent() {
   return (
@@ -202,35 +203,16 @@ function DxContent() {
   )
 }
 
-function Section({ children }: PropsWithChildren) {
-  return <section className="space-y-8">{children}</section>
-}
+// todo: convert to cm (@classmatejs)
+const Section = cm.section`space-y-8`
+const TwoColumn = cm.div`grid gap-8 md:grid-cols-2`
+const Block = cm.div`space-y-4`
+const SectionTitle = cm.h3`text-2xl font-semibold`
+const SubSectionTitle = cm.h4`text-lg font-medium`
+const CenterText = cm.p`text-center`
+const Divider = cm.hr`border-grey-200`
 
-function TwoColumn({ children }: PropsWithChildren) {
-  return <div className="grid gap-8 md:grid-cols-2">{children}</div>
-}
-
-function Block({ children }: PropsWithChildren) {
-  return <div className="space-y-4">{children}</div>
-}
-
-function SectionTitle({ children }: PropsWithChildren) {
-  return <h3 className="text-2xl font-semibold">{children}</h3>
-}
-
-function SubSectionTitle({ children }: PropsWithChildren) {
-  return <h4 className="text-lg font-medium">{children}</h4>
-}
-
-function CenterText({ children }: PropsWithChildren) {
-  return <p className="text-center">{children}</p>
-}
-
-function Divider() {
-  return <hr className="border-grey-200" />
-}
-
-function List({ items }: { items: ReactNode[] | string[] }) {
+const List = ({ items }: { items: ReactNode[] | string[] }) => {
   return (
     <ul className="list-disc space-y-2 pl-5">
       {items.map((item, index) => (
