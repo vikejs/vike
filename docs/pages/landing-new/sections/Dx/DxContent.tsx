@@ -176,7 +176,7 @@ const DxContent = () => {
           </Block>
         </TwoColumn>
 
-        <TwoColumn cut={0.54}>
+        <TwoColumn cut={0.64}>
           <Block>
             <SubSectionTitle>State management</SubSectionTitle>
             <p>
@@ -225,7 +225,7 @@ type TwoColumnStyle = CSSProperties & {
   '--dx-two-column-cut'?: string
 }
 
-const TwoColumn = ({ children, className, cut = 0.5, style, ...props }: TwoColumnProps) => {
+const TwoColumn = ({ children, className, cut = 0.2, style, ...props }: TwoColumnProps) => {
   if (!(cut > 0 && cut < 1)) {
     throw new Error(`TwoColumn cut must be between 0 and 1 (received ${cut}).`)
   }
