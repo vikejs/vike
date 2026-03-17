@@ -1,8 +1,7 @@
 import React from 'react'
 import { features } from './features'
-import { H2Headline, H5Headline } from '../../../components/Headline'
+import { H5Headline } from '../../../components/Headline'
 import LayoutComponent from '../../../components/LayoutComponent'
-import GradientText from '../../../components/GradientText'
 import useFeatureWall from './useFeatureWall'
 
 const featureRows = Array.from({ length: 3 }, (_, rowIndex) => features.filter((_, index) => index % 3 === rowIndex))

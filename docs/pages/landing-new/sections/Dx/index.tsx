@@ -4,7 +4,7 @@ import LayoutComponent from '../../components/LayoutComponent'
 import GradientText from '../../components/GradientText'
 import SectionHeader from '../../components/SectionHeader'
 import { UspCategoryId } from '../../util/constants'
-import DxContent from './DxContent.mdx'
+import DxContent from './DxContent'
 import FeatureWall from './FeatureWall'
 
 const DxSection = () => {
@@ -24,7 +24,7 @@ const DxSection = () => {
         />
       </LayoutComponent>
       <FeatureWall />
-      <LayoutComponent className="mt-10">
+      <LayoutComponent>
         <DxContent />
       </LayoutComponent>
     </section>

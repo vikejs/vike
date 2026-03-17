@@ -1,0 +1,10 @@
+```js
+// [!code word:client.]
+// pages/+onCreateGlobalContext.client.js
+// Environment: client
+
+export async function onCreateGlobalContext() {
+  const someClientData = await fetchSomData()
+  globalContext.someClientData = someClientData
+}
+```

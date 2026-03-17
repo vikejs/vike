@@ -1,0 +1,12 @@
+```js
+// pages/+onHookCall.server.js
+// Environment: server
+
+// Called whenever a Vike hook is executed.
+
+export async function onHookCall(hook, pageContext) {
+  console.log('before', hook.name, hook.filePath)
+  await hook.call()
+  console.log('after', hook.name, hook.filePath)
+}
+```

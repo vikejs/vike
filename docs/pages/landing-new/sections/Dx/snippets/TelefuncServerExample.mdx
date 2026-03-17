@@ -1,0 +1,25 @@
+```ts
+// CreateTodo.telefunc.ts
+// Environment: server
+
+// Telefunc makes onNewTodo() remotely callable
+// from the browser.
+export { onNewTodo }
+
+import { getContext } from 'telefunc'
+
+// Telefunction arguments are automatically validated
+// at runtime, so `text` is guaranteed to be a string.
+async function onNewTodo(text: string) {
+  const { user } = getContext()
+
+  // With an ORM
+  await Todo.create({ text, authorId: user.id })
+
+  // With SQL
+  await sql(
+    'INSERT INTO todo_items VALUES (:text, :authorId)',
+    { text, authorId: user.id }
+  )
+}
+```
