@@ -20,17 +20,20 @@ First-class SSR/SPA/SSG support
 Toggle <DX_InlineHighlight color="#b8d4eb"><Link href="/ssr">SSR</Link></DX_InlineHighlight>/<DX_InlineHighlight color="#c0ebb8"><Link href="/SSR-vs-SPA">SPA</Link></DX_InlineHighlight>/<DX_InlineHighlight color="#e9b8e8"><Link href="/pre-rendering">SSG</Link></DX_InlineHighlight> on a page-by-page basis, powered by <DX_InlineHighlight color="#f4f5a6"><Link href="/config#inheritance">config inheritance</Link></DX_InlineHighlight>.
 </div>
 ```yaml
+/pages/product/+config.js # [!code highlight:#f4f5a6]
 # SSR pages // [!code highlight:#b8d4eb]
-/pages/product/@id/+Page.js         # URL: /product/42 // [!code highlight:#b8d4eb]
-/pages/product/@id/buy/+Page.js     # URL: /product/42/buy // [!code highlight:#b8d4eb]
+/pages/product/@id/+Page.js         # URL: /product/42 # [!code highlight:#b8d4eb]
+/pages/product/@id/buy/+Page.js     # URL: /product/42/buy # [!code highlight:#b8d4eb]
 
+/pages/admin/+config.js # [!code highlight:#f4f5a6]
 # SPA pages (i.e. SSR disabled) // [!code highlight:#c0ebb8]
-/pages/admin/products/+Page.js      # URL: /admin/products // [!code highlight:#c0ebb8]
-/pages/admin/users/+Page.js         # URL: /admin/users // [!code highlight:#c0ebb8]
+/pages/admin/products/+Page.js      # URL: /admin/products # [!code highlight:#c0ebb8]
+/pages/admin/users/+Page.js         # URL: /admin/users # [!code highlight:#c0ebb8]
 
+/pages/(marketing)/+config.js # [!code highlight:#f4f5a6]
 # SSG pages (i.e. pre-rendering) // [!code highlight:#e9b8e8]
-/pages/(marketing)/index/+Page.js   # URL: / // [!code highlight:#e9b8e8]
-/pages/(marketing)/about/+Page.js   # URL: /about // [!code highlight:#e9b8e8]
+/pages/(marketing)/index/+Page.js   # URL: / # [!code highlight:#e9b8e8]
+/pages/(marketing)/about/+Page.js   # URL: /about # [!code highlight:#e9b8e8]
 ```
 </div>
 <div>
