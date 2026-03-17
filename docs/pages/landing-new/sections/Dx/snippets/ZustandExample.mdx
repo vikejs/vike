@@ -1,7 +1,9 @@
 ```js
-// This create() has the same API as Zustand's create() but
-// comes with seamless SSR integration. // [!code highlight]
-import { create } from 'vike-react-zustand'
+import {
+  // Same as Zustand's create() (transparent wrapper) but with
+  // seamless SSR integration // [!code highlight]
+  create
+} from 'vike-react-zustand'
 
 interface Store {
   counter: number

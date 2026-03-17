@@ -23,7 +23,7 @@ import cm, { cmMerge } from '@classmatejs/react'
 const DxContent = () => {
   return (
     <div className="space-y-16">
-      <TwoColumn>
+      <TwoColumn cut={0.46}>
         <Block>
           <SectionTitle>First-class SSR/SPA/SSG support</SectionTitle>
           <p>
@@ -102,7 +102,7 @@ const DxContent = () => {
             <p>When client-side navigation starts:</p>
             <GlobalContextClientExample />
             <p>
-              <Link href="/globalContext">globalContext</Link> can be accessed anywhere:
+              While <Link href="/globalContext"><code>globalContext</code></Link> can be accessed anywhere:
             </p>
             <GetGlobalContextExample />
           </Block>
@@ -132,23 +132,23 @@ const DxContent = () => {
           </Block>
         </TwoColumn>
 
-        <CenterText>
-          Growing <Link href="/hooks">hooks suite</Link>.
-        </CenterText>
+        <ClosingWords>
+          Growing suite of <Link href="/hooks">hooks</Link>.
+        </ClosingWords>
       </Section>
 
       <Section>
         <SectionTitle>Powerful extensions</SectionTitle>
         <div>
-          <Link href="/extensions">Extensions</Link> use the same powerful hooks you use, enabling deep and seamless
+          <Link href="/extensions">Extensions</Link> use the same powerful hooks users use — enabling deep and seamless
           integrations.
         </div>
 
-        <TwoColumn>
+        <TwoColumn cut={0.54}>
           <Block>
             <SubSectionTitle>UI frameworks</SubSectionTitle>
             <p>
-              Use any UI framework via an extension for a quick zero-config start, or via{' '}
+              Use your favorite UI framework via an extension for a quick start, or via{' '}
               <Link href="/integration#ui-framework">manual integration</Link> for maximum flexibility.
             </p>
             <CenterText>
@@ -167,7 +167,7 @@ const DxContent = () => {
           </Block>
           <Block>
             <SubSectionTitle>Advanced integrations</SubSectionTitle>
-            <p>Extensions are powerful enough to integrate any advanced technologies such React Server Components.</p>
+            <p>Extensions use Vike's powerful hooks to integrate any advanced technologies such React Server Components.</p>
             <CenterText>
               <a href="https://github.com/nitedani/vike-react-rsc#vike-react-rsc">
                 <code>vike-react-rsc</code>
@@ -180,24 +180,29 @@ const DxContent = () => {
           <Block>
             <SubSectionTitle>State management</SubSectionTitle>
             <p>
-              The <a href="https://zustand.docs.pmnd.rs/learn/getting-started/introduction">Zustand</a> integration{' '}
+              Powerful hooks also enable extensions to deeply & seamlessly integrate with state management tools.
+            <CenterText>
+              <a href="https://github.com/vikejs/vike-react/tree/main/packages/vike-react-redux#readme"><code>vike-react-redux</code></a>
+    {' / '}
               <a href="https://github.com/vikejs/vike-react/tree/main/packages/vike-react-zustand#readme">
                 <code>vike-react-zustand</code>
-              </a>{' '}
-              is a deep integration.
+              </a>
+    {' / '}
+              <a href="https://github.com/vikejs/vike-vue/tree/main/packages/vike-vue-pinia#readme">
+                <code>vike-vue-pinia</code>
+              </a>
+            </CenterText>
             </p>
             <ZustandExample />
           </Block>
           <Block>
             <SubSectionTitle>Error tracking</SubSectionTitle>
             <p>
-              The{' '}
-              <a href="https://github.com/vikejs/vike-react/tree/main/packages/vike-react-sentry#readme">
-                <code>vike-react-sentry</code>
-              </a>{' '}
-              integration is a deep integration.
+              Hooks such as <Link href="/onError"><code>+onError</code></Link>, <Link href="/onHookCall"><code>+onHookCall</code></Link>, and <Link href="/onCreateGlobalContext"><code>+onCreateGlobalContext</code></Link> enable extensions (and users) deep integration with error tracking tools.
             </p>
-            <p>Full-fledged and seamless Sentry integration.</p>
+            <p>
+     For example, <a href="https://github.com/vikejs/vike-react/tree/main/packages/vike-react-sentry#readme"><code>vike-react-sentry</code></a> is full-fledged Sentry integration:{' '}
+            </p>
             <List
               items={[
                 'Browser & server error tracking',
@@ -208,9 +213,9 @@ const DxContent = () => {
           </Block>
         </TwoColumn>
 
-        <CenterText>
+        <ClosingWords>
           Growing ecosystem of <Link href="/extensions">extensions</Link>.
-        </CenterText>
+        </ClosingWords>
       </Section>
     </div>
   )
@@ -250,6 +255,7 @@ const SectionTitle = cm.h3`text-2xl font-semibold`
 const SubSectionTitle = cm.h4`text-lg font-medium`
 const CenterText = cm.p`text-center`
 const Divider = cm.hr`border-grey-200`
+const ClosingWords = cm.p`text-2xl text-center`
 
 const List = ({ items }: { items: ReactNode[] | string[] }) => {
   return (
