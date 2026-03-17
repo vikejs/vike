@@ -78,6 +78,7 @@ const DxContent = () => {
             </a>
             .
           </p>
+          <ReactQueryExample />
         </Block>
         <Block>
           <SubSectionTitle>First-class GraphQL</SubSectionTitle>
@@ -88,12 +89,8 @@ const DxContent = () => {
             </a>
             , or via a <Link href="/graphql">custom integration</Link>.
           </p>
+          <ApolloExample />
         </Block>
-      </TwoColumn>
-
-      <TwoColumn>
-        <ReactQueryExample />
-        <ApolloExample />
       </TwoColumn>
 
       <Section>
