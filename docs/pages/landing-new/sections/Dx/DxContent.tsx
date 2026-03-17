@@ -203,7 +203,6 @@ function DxContent() {
   )
 }
 
-// todo: convert to cm (@classmatejs)
 const Section = cm.section`space-y-8`
 const TwoColumn = cm.div`grid gap-8 md:grid-cols-2`
 const Block = cm.div`space-y-4`
