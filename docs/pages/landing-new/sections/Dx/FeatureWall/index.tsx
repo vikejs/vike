@@ -33,7 +33,7 @@ const FeatureWall = () => {
               </p>
             </div>
             {feature.advanced && (
-              <div className="badge badge-xs badge-neutral absolute -bottom-2 right-3 z-2">
+              <div className="badge badge-xs badge-grey border-grey-200 text-grey absolute -top-2 right-3 z-2">
                 Advanced
               </div>
             )}
