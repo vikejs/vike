@@ -43,7 +43,7 @@ const DxContent = () => {
         <SectionTitle>API</SectionTitle>
         <SubSectionTitle>Next-gen RPC (aka Server Functions)...</SubSectionTitle>
         <p>
-          ...via the next-generation tool <a href="https://telefunc.com">Telefunc</a> (maintained by the Vike team), or
+          ...via <a href="https://telefunc.com">Telefunc</a> (tool maintained by the Vike team), or
           use classic tools such as tRPC.
         </p>
         <TwoColumn>
@@ -58,13 +58,15 @@ const DxContent = () => {
         <Block>
           <SubSectionTitle>First-class REST</SubSectionTitle>
           <p>
-            Consume REST APIs via Vike&apos;s built-in hook <Link href="/data">+data</Link>, or via extensions such as{' '}
+            Consume REST APIs via Vike&apos;s built-in hook <Link href="/data"><code>+data</code></Link>, or via extensions such as{' '}
             <a href="https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query#readme">
-              vike-react-query
+              <code>vike-react-query</code>
             </a>
-            /<a href="https://github.com/vikejs/vike-vue/tree/main/packages/vike-vue-query#readme">vike-vue-query</a>/
+    {' / '}<a href="https://github.com/vikejs/vike-vue/tree/main/packages/vike-vue-query#readme">
+    <code>vike-vue-query</code>
+    </a>{' / '}
             <a href="https://github.com/vikejs/vike-solid/tree/main/packages/vike-solid-query#readme">
-              vike-solid-query
+              <code>vike-solid-query</code>
             </a>
             .
           </p>
@@ -74,9 +76,9 @@ const DxContent = () => {
           <p>
             Consume GraphQL APIs via extensions such as{' '}
             <a href="https://github.com/vikejs/vike-react/tree/main/packages/vike-react-apollo#readme">
-              vike-react-apollo
+            <code>vike-react-apollo</code>
             </a>
-            , or via <Link href="/graphql">custom integrations</Link>.
+            , or via a <Link href="/graphql">custom integration</Link>.
           </p>
         </Block>
       </TwoColumn>
@@ -88,15 +90,15 @@ const DxContent = () => {
 
       <Section>
         <SectionTitle>Powerful hooks</SectionTitle>
-        <TwoColumn>
+        <TwoColumn cut={0.54}>
           <Block>
-            <SubSectionTitle>Data fetching: where</SubSectionTitle>
+            <SubSectionTitle>Data fetching: <i>where</i></SubSectionTitle>
             <p>Hooks give you control where data is fetched:</p>
             <DataServerExample />
             <DataClientExample />
           </Block>
           <Block>
-            <SubSectionTitle>Data fetching: when</SubSectionTitle>
+            <SubSectionTitle>Data fetching: <i>when</i></SubSectionTitle>
             <p>Also control when data is fetched. When the server starts:</p>
             <GlobalContextServerExample />
             <p>When client-side navigation starts:</p>

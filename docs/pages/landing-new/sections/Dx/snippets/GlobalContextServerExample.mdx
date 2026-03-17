@@ -1,7 +1,7 @@
 ```js
 // [!code word:server.]
-// pages/+onCreateGlobalContext.server.js
-// Environment: server
+// /pages/+onCreateGlobalContext.server.js
+// Environment: server // [!code highlight]
 
 export async function onCreateGlobalContext() {
   const someServerData = await fetchSomData()
