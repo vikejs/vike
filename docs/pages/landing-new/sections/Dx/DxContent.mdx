@@ -9,7 +9,11 @@ export const DX_H4 = ({ children, style }) => <span style={{textAlign: 'center',
 export const DX_Hr = () => <hr style={{background: '#aaa', height: 1, margin: 20}}/>
 export const DX_ClosingWord = ({ children }) => <DX_Center><div style={{fontSize: '1.4em'}}>{children}</div></DX_Center>
 export const DX_InlineHighlight = ({ children, color }) => <span style={{ backgroundColor: color, borderRadius: 4, padding: '0.04em 0.22em' }}>{children}</span>
-
+export const DX_Extension = ({ children, href, link }) => {
+  const content = <span style={{fontSize: '1.4em'}}>{children}</span>
+  if (link) return <Link href={link}>{content}</Link>
+  if (href) return <a href={href}>{content}</a>
+}
 
 <DX_TwoColumnLayout cut={0.47}>
 <div>
@@ -338,29 +342,34 @@ Growing <Link href="/hooks">hooks suite</Link>.
 <DX_H3>Powerful extensions</DX_H3>
 
 <DX_Center>
-<Link href="/extensions">Vike extensions</Link> powered by the same hooks you use, for deep and seamless integrations.
+<Link href="/extensions">Extensions</Link> use the same powerful hooks you use, enabling deep and seamless integrations.
 </DX_Center>
 
 <DX_TwoColumnLayout>
 <div>
-<DX_H4>UI framework extensions</DX_H4>
-Use Vike with any UI framework — via Vike extensions for a quick start, or via <Link href="/integration#ui-framework">manual integration</Link> for maximum flexibility.
-- vike-react / vike-vue / vike-solid
+<DX_H4>UI frameworks</DX_H4>
+Use any UI framework — via an extension for quick zero-config start, or via <Link href="/integration#ui-framework">manual integration</Link> for maximum flexibility.
+<DX_Center>
+<DX_Extension link="/vike-react">`vike-react`</DX_Extension> /
+<DX_Extension link="/vike-vue">`vike-vue`</DX_Extension> /
+<DX_Extension link="/vike-solid">`vike-solid`</DX_Extension>
+</DX_Center>
 </div>
 <div>
-<DX_H4>Advanced UI framework integration</DX_H4>
-Extensions are powerful enough to integrate advanced technologies. Also advanced integrations with RSC (React Server Components).
-- vike-react-rsc
+<DX_H4>Advanced integrations</DX_H4>
+Extensions are powerful enough to integrate any advanced technologies such React Server Components.
+<DX_Extension href="https://github.com/nitedani/vike-react-rsc#vike-react-rsc">`vike-react-rsc`</DX_Extension>
 </div>
 </DX_TwoColumnLayout>
-
-<DX_TwoColumnLayout>
+<DX_TwoColumnLayout cut={0.54}>
 <div>
-<DX_H4>[`vike-react-zustand`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-zustand#readme)</DX_H4>
+<DX_H4>State mangagement</DX_H4>
+The [Zustand](https://zustand.docs.pmnd.rs/learn/getting-started/introduction) integration [`vike-react-zustand`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-zustand#readme) is a deep integration.
 ```js
-// This create() has the same API as Zustand's create() but
-// comes with seamless SSR integration. // [!code highlight]
-import { create } from 'vike-react-zustand'
+import {
+  // Same as Zustand's create() but with seamless SSR integration // [!code highlight]
+  create
+} from 'vike-react-zustand'
 
 interface Store {
   counter: number
@@ -374,12 +383,13 @@ export const useStore = create<Store>()((set) => ({
 ```
 </div>
 <div>
-<DX_H4>[`vike-react-sentry`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-sentry#readme)</DX_H4>
+<DX_H4>Error tracking</DX_H4>
+The Sentry integration [`vike-react-sentry`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-sentry#readme) is a deep integration.
 Full-fledged & seamless Sentry integration.
-- Browser and server error tracking
-- Performance monitoring and tracing
+- Browser & server error tracking
+- Performance monitoring  tracing
 - Automatic source map upload
 </div>
 </DX_TwoColumnLayout>
 
-<DX_ClosingWord>Growing <Link href="/extensions">extension ecosystem</Link>.</DX_ClosingWord>
+<DX_ClosingWord>Growing ecosystem of <Link href="/extensions">extensions</Link>.</DX_ClosingWord>

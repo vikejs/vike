@@ -1,30 +1,8 @@
-.feature-wall {
-  display: inline-block;
-  /*
-  display: flex;
-  flex-wrap: wrap;
-  */
+li {
+  display: list-item;
 }
-.feature-wall > * {
-  border: 1px solid #aaa;
-  display: inline-block;
-  vertical-align: top;
-  margin: 10px;
-  padding: 10px;
-  width: 300px;
+
+ul {
+  list-style-type: disc;
+  margin-left: 24px;
 }
-/* Don't show `advanced` label — let's keep it simple for now.
-.feature-advanced {
-  position: relative;
-}
-.feature-advanced:before {
-  content: 'Advanced';
-  font-size: 0.85em;
-  padding: 2px 5px;
-  background: #aaa;
-  border: 1px solid yellow;
-  position: absolute;
-  top: -1.2em;
-  right: 10px;
-}
-*/
