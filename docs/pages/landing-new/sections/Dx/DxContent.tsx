@@ -237,10 +237,7 @@ const TwoColumn = ({ children, className, cut = 0.5, style, ...props }: TwoColum
 
   return (
     <div
-      className={cmMerge(
-        'grid gap-8 md:grid-cols-2 md:[grid-template-columns:var(--dx-two-column-cut)_1fr]',
-        className,
-      )}
+      className={cmMerge('grid gap-8 md:[grid-template-columns:var(--dx-two-column-cut)_1fr]', className)}
       style={styleWithCut}
       {...props}
     >
