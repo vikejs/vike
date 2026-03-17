@@ -161,7 +161,7 @@ const DxContent = () => {
           <Block>
             <SubSectionTitle>UI frameworks</SubSectionTitle>
             <p>
-              Use your favorite UI framework via an extension for getting started quickly, or {' '}
+              Use your favorite UI framework via an extension for getting started quickly, or{' '}
               <Link href="/integration#ui-framework">integrate it manually</Link> for maximum flexibility.
             </p>
             <CenterText>
