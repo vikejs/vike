@@ -11,17 +11,14 @@ export const DX_ClosingWord = ({ children }) => <DX_Center><div style={{fontSize
 export const DX_InlineHighlight = ({ children, color }) => <span style={{ backgroundColor: color, borderRadius: 4, padding: '0.04em 0.22em' }}>{children}</span>
 
 
-<DX_TwoColumnLayout>
+<DX_TwoColumnLayout cut={0.47}>
 <div>
-
 <DX_H3 style={{marginBottom: 22, marginTop: 22}}>
 First-class SSR/SPA/SSG support
 </DX_H3>
-
 <div style={{fontSize: '1.4em'}}>
 Toggle <DX_InlineHighlight color="#b8d4eb"><Link href="/ssr">SSR</Link></DX_InlineHighlight>/<DX_InlineHighlight color="#c0ebb8"><Link href="/SSR-vs-SPA">SPA</Link></DX_InlineHighlight>/<DX_InlineHighlight color="#e9b8e8"><Link href="/pre-rendering">SSG</Link></DX_InlineHighlight> on a page-by-page basis, powered by <DX_InlineHighlight color="#f4f5a6"><Link href="/config#inheritance">config inheritance</Link></DX_InlineHighlight>.
 </div>
-
 ```yaml
 # SSR pages // [!code highlight:#b8d4eb]
 /pages/product/@id/+Page.js         # URL: /product/42 // [!code highlight:#b8d4eb]
@@ -35,33 +32,30 @@ Toggle <DX_InlineHighlight color="#b8d4eb"><Link href="/ssr">SSR</Link></DX_Inli
 /pages/(marketing)/index/+Page.js   # URL: / // [!code highlight:#e9b8e8]
 /pages/(marketing)/about/+Page.js   # URL: /about // [!code highlight:#e9b8e8]
 ```
-
 </div>
 <div>
-
 ```js
-// /pages/product/+config.js
-// Config for product pages: /pages/product/**/+Page.js // [!code highlight:#f4f5a6]
+// /pages/product/+config.js // [!code highlight:#f4f5a6]
+// => config for product pages: /pages/product/**/+Page.js // [!code highlight:#f4f5a6]
 export default {
   ssr: true // [!code highlight:#b8d4eb]
 }
 ```
 ```js
-// /pages/admin/+config.js
-// Config for admin pages: /pages/admin/**/+Page.js // [!code highlight:#f4f5a6]
+// /pages/admin/+config.js // [!code highlight:#f4f5a6]
+// => config for admin pages: /pages/admin/**/+Page.js // [!code highlight:#f4f5a6]
 export default {
   ssr: false // => SPA // [!code highlight:#c0ebb8]
 }
 ```
 ```js
-// /pages/(marketing)/+config.js
-// Config for marketing pages: /pages/(marketing)/**/+Page.js // [!code highlight:#f4f5a6]
+// /pages/(marketing)/+config.js // [!code highlight:#f4f5a6]
+// => config for marketing pages: /pages/(marketing)/**/+Page.js // [!code highlight:#f4f5a6]
 export default {
   prerender: true // aka SSG // [!code highlight:#e9b8e8]
 }
 ```
 </div>
-
 </DX_TwoColumnLayout>
 
 <DX_H3>API</DX_H3>
