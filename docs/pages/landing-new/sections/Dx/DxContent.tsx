@@ -139,10 +139,10 @@ const DxContent = () => {
 
       <Section>
         <SectionTitle>Powerful extensions</SectionTitle>
-        <CenterText>
+        <div>
           <Link href="/extensions">Extensions</Link> use the same powerful hooks you use, enabling deep and seamless
           integrations.
-        </CenterText>
+        </div>
 
         <TwoColumn>
           <Block>
