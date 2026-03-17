@@ -24,38 +24,38 @@ Toggle <DX_InlineHighlight color="#b8d4eb"><Link href="/ssr">SSR</Link></DX_Inli
 
 ```yaml
 # SSR pages // [!code highlight:#b8d4eb]
-/pages/product/@id/+Page.ts         # URL: /product/42 // [!code highlight:#b8d4eb]
-/pages/product/@id/buy/+Page.ts     # URL: /product/42/buy // [!code highlight:#b8d4eb]
+/pages/product/@id/+Page.js         # URL: /product/42 // [!code highlight:#b8d4eb]
+/pages/product/@id/buy/+Page.js     # URL: /product/42/buy // [!code highlight:#b8d4eb]
 
 # SPA pages (i.e. SSR disabled) // [!code highlight:#c0ebb8]
-/pages/admin/products/+Page.ts      # URL: /admin/products // [!code highlight:#c0ebb8]
-/pages/admin/users/+Page.ts         # URL: /admin/users // [!code highlight:#c0ebb8]
+/pages/admin/products/+Page.js      # URL: /admin/products // [!code highlight:#c0ebb8]
+/pages/admin/users/+Page.js         # URL: /admin/users // [!code highlight:#c0ebb8]
 
 # SSG pages (i.e. pre-rendering) // [!code highlight:#e9b8e8]
-/pages/(marketing)/index/+Page.ts   # URL: / // [!code highlight:#e9b8e8]
-/pages/(marketing)/about/+Page.ts   # URL: /about // [!code highlight:#e9b8e8]
+/pages/(marketing)/index/+Page.js   # URL: / // [!code highlight:#e9b8e8]
+/pages/(marketing)/about/+Page.js   # URL: /about // [!code highlight:#e9b8e8]
 ```
 
 </div>
 <div>
 
-```ts
+```js
 // /pages/product/+config.js
-// Config for product pages: /pages/product/**/+Page.ts // [!code highlight:#f4f5a6]
+// Config for product pages: /pages/product/**/+Page.js // [!code highlight:#f4f5a6]
 export default {
   ssr: true // [!code highlight:#b8d4eb]
 }
 ```
 ```js
 // /pages/admin/+config.js
-// Config for admin pages: /pages/admin/**/+Page.ts // [!code highlight:#f4f5a6]
+// Config for admin pages: /pages/admin/**/+Page.js // [!code highlight:#f4f5a6]
 export default {
   ssr: false // => SPA // [!code highlight:#c0ebb8]
 }
 ```
 ```js
 // /pages/(marketing)/+config.js
-// Config for marketing pages: /pages/(marketing)/**/+Page.ts // [!code highlight:#f4f5a6]
+// Config for marketing pages: /pages/(marketing)/**/+Page.js // [!code highlight:#f4f5a6]
 export default {
   prerender: true // aka SSG // [!code highlight:#e9b8e8]
 }
