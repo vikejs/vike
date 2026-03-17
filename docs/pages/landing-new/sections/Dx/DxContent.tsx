@@ -1,5 +1,5 @@
 import React from 'react'
-import type { ReactNode } from 'react'
+import type { ComponentProps, CSSProperties, ReactNode } from 'react'
 import { Link } from '@brillout/docpress'
 import AdminAndMarketingConfigs from './snippets/AdminAndMarketingConfigs.mdx'
 import ApolloExample from './snippets/ApolloExample.mdx'
@@ -18,7 +18,7 @@ import SsrSpaSsgTree from './snippets/SsrSpaSsgTree.mdx'
 import TelefuncClientExample from './snippets/TelefuncClientExample.mdx'
 import TelefuncServerExample from './snippets/TelefuncServerExample.mdx'
 import ZustandExample from './snippets/ZustandExample.mdx'
-import cm from '@classmatejs/react'
+import cm, { cmMerge } from '@classmatejs/react'
 
 const DxContent = () => {
   return (
@@ -176,7 +176,7 @@ const DxContent = () => {
           </Block>
         </TwoColumn>
 
-        <TwoColumn className="md:[grid-template-columns:0.54fr_1fr]">
+        <TwoColumn cut={0.54}>
           <Block>
             <SubSectionTitle>State management</SubSectionTitle>
             <p>
@@ -217,8 +217,37 @@ const DxContent = () => {
 }
 
 const Section = cm.section`space-y-8`
-// TODO/ai re-implement the cut parameter you removed at git show 26c36a23cf637b88b8c414f01d9fb11a5901ba41
-const TwoColumn = cm.div`grid gap-8 md:grid-cols-2`
+type TwoColumnProps = ComponentProps<'div'> & {
+  cut?: number
+}
+
+type TwoColumnStyle = CSSProperties & {
+  '--dx-two-column-cut'?: string
+}
+
+const TwoColumn = ({ children, className, cut = 0.5, style, ...props }: TwoColumnProps) => {
+  if (!(cut > 0 && cut < 1)) {
+    throw new Error(`TwoColumn cut must be between 0 and 1 (received ${cut}).`)
+  }
+
+  const styleWithCut: TwoColumnStyle = {
+    ...style,
+    '--dx-two-column-cut': `${cut * 100}%`,
+  }
+
+  return (
+    <div
+      className={cmMerge(
+        'grid gap-8 md:grid-cols-2 md:[grid-template-columns:var(--dx-two-column-cut)_1fr]',
+        className,
+      )}
+      style={styleWithCut}
+      {...props}
+    >
+      {children}
+    </div>
+  )
+}
 const Block = cm.div`space-y-4`
 const SectionTitle = cm.h3`text-2xl font-semibold`
 const SubSectionTitle = cm.h4`text-lg font-medium`
