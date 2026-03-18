@@ -1,0 +1,233 @@
+import { Link } from '@brillout/docpress'
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
+import '../../../components/tabs.css'
+
+Guide to migrate from <Link href="/vike-photon">`vike-photon`</Link> to native `universal-deploy`.
+
+> `vike-photon` is being replaced by a native implementation of universal deployment in Vike.
+
+## 1. Update dependencies
+
+```shell
+npm uninstall vike-photon @photonjs/hono @photonjs/express @photonjs/fastify @photonjs/h3 @photonjs/elysia @photonjs/cloudflare @photonjs/vercel
+npm install vike@latest
+```
+
+You should also install the corresponding `@vikejs/*` package for your server.
+
+<Tabs>
+  <TabList>
+    <Tab>Hono</Tab>
+    <Tab>Express.js</Tab>
+    <Tab>Fastify</Tab>
+    <Tab>H3</Tab>
+    <Tab>Elysia</Tab>
+  </TabList>
+  <TabPanel>
+    ```shell
+    npm install @vikejs/hono
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    npm install @vikejs/express
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    npm install @vikejs/fastify
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    npm install @vikejs/h3
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    npm install @vikejs/elysia
+    ```
+  </TabPanel>
+</Tabs>
+
+## 2. Update `vite.config.ts` (optional)
+
+If you are using Vercel or Cloudflare, you should now use their native Vite plugins instead of `@photonjs/vercel` or `@photonjs/cloudflare`.
+
+<Tabs>
+  <TabList>
+    <Tab>Vercel</Tab>
+    <Tab>Cloudflare</Tab>
+  </TabList>
+  <TabPanel>
+    ```shell
+    npm install vite-plugin-vercel@11
+    ```
+
+    ```ts
+    // vite.config.ts
+
+    import vike from 'vike/plugin'
+    import { vercel } from 'vite-plugin-vercel/vite' // [!code ++]
+
+    export default {
+      plugins: [
+        vike(),
+        vercel() // [!code ++]
+      ]
+    }
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    npm install @cloudflare/vite-plugin
+    ```
+
+    ```ts
+    // vite.config.ts
+
+    import vike from 'vike/plugin'
+    import { cloudflare } from '@cloudflare/vite-plugin' // [!code ++]
+
+    export default {
+      plugins: [
+        cloudflare({ // [!code ++]
+          viteEnvironment: { name: 'ssr' } // [!code ++]
+        }), // [!code ++]
+        vike()
+      ]
+    }
+    ```
+  </TabPanel>
+</Tabs>
+
+## 3. Update `+config.ts`
+
+Remove `vike-photon` extension and move `photon` settings to top-level or `+server.ts`.
+
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
+import vikePhoton from 'vike-photon/config' // [!code --]
+
+export default {
+  extends: [
+    // ...
+    vikePhoton // [!code --]
+  ],
+  photon: { // [!code --]
+    server: 'server/index.ts' // [!code --]
+  } // [!code --]
+} satisfies Config
+```
+
+If you used `isr` or `edge` settings, they are now built-in:
+
+```ts
+// pages/+config.ts
+
+export default {
+  // ...
+  isr: { expiration: 30 }, // [!code ++]
+  edge: true // [!code ++]
+}
+```
+
+## 4. Move server entry to `+server.ts`
+
+Replace `@photonjs/*` with `@vikejs/*`. It's recommended to move your server entry to `+server.ts` and use the `export default { fetch }` syntax.
+
+<Tabs>
+  <TabList>
+    <Tab>Hono</Tab>
+    <Tab>Express.js</Tab>
+    <Tab>Fastify</Tab>
+    <Tab>H3</Tab>
+    <Tab>Elysia</Tab>
+  </TabList>
+  <TabPanel>
+    ```ts
+    // +server.ts
+
+    import { Hono } from 'hono'
+    // @docpress-uncomment import { addVikeMiddleware } from '@vikejs/hono' // [!code ++]
+
+    const app = new Hono()
+    addVikeMiddleware(app) // [!code ++]
+
+    export default { // [!code ++]
+      fetch: app.fetch // [!code ++]
+    } // [!code ++]
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```ts
+    // +server.ts
+
+    import express from 'express'
+    // @docpress-uncomment import { addVikeMiddleware } from '@vikejs/express' // [!code ++]
+    import { toFetchHandler } from 'srvx/node' // [!code ++]
+
+    const app = express()
+    addVikeMiddleware(app) // [!code ++]
+
+    export default { // [!code ++]
+      fetch: toFetchHandler(app) // [!code ++]
+    } // [!code ++]
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```ts
+    // +server.ts
+
+    import fastify from 'fastify'
+    // @docpress-uncomment import { addVikeMiddleware } from '@vikejs/fastify' // [!code ++]
+    import { toFetchHandler } from 'srvx/node' // [!code ++]
+
+    const app = fastify()
+    await addVikeMiddleware(app) // [!code ++]
+
+    export default { // [!code ++]
+      fetch: toFetchHandler(app) // [!code ++]
+    } // [!code ++]
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```ts
+    // +server.ts
+
+    import { createApp, toWebHandler } from 'h3' // [!code ++]
+    // @docpress-uncomment import { createApp } from 'h3' // [!code --]
+    // @docpress-uncomment import { addVikeMiddleware } from '@vikejs/h3' // [!code ++]
+
+    const app = createApp()
+    addVikeMiddleware(app) // [!code ++]
+
+    export default { // [!code ++]
+      fetch: toWebHandler(app) // [!code ++]
+    } // [!code ++]
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```ts
+    // +server.ts
+
+    import { Elysia } from 'elysia'
+    // @docpress-uncomment import { addVikeMiddleware } from '@vikejs/elysia' // [!code ++]
+
+    const app = new Elysia()
+    addVikeMiddleware(app) // [!code ++]
+
+    export default { // [!code ++]
+      fetch: app.fetch // [!code ++]
+    } // [!code ++]
+    ```
+  </TabPanel>
+</Tabs>
+
+## See also
+
+- <Link href="/vike-photon" />
+- <Link href="/vercel" />
+- <Link href="/cloudflare" />

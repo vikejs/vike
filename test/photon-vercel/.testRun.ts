@@ -5,8 +5,12 @@ import { autoRetry, expect, fetch, fetchHtml, getServerUrl, page, run, test } fr
 function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   run(cmd, {
     serverUrl: 'http://localhost:3000',
-    tolerateError({ logText }) {
-      return logText.includes("Vite's CLI is deprecated") || logText.includes('Run the built server entry')
+    tolerateError({ logText, logSource }) {
+      return (
+        (logText.includes('vike-photon is deprecated') && logSource === 'stderr') ||
+        logText.includes("Vite's CLI is deprecated") ||
+        logText.includes('Run the built server entry')
+      )
     },
   })
 
