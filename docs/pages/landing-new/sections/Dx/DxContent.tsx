@@ -299,11 +299,13 @@ function HighlightedLink({
   children: ReactNode
 }) {
   return (
-    <span
-      className={`inline-block rounded-[0.35rem] px-1.5 py-0.5 decoration-transparent transition-colors hover:decoration-current ${className}`}
-    >
-      <Link href={href}>{children}</Link>
-    </span>
+    <Link href={href}>
+      <span
+        className={`inline-block rounded-[0.35rem] px-1.5 py-0.5 decoration-transparent transition-colors hover:decoration-current ${className}`}
+      >
+        {children}
+      </span>
+    </Link>
   )
 }
 
