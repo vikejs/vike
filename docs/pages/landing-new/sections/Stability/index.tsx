@@ -10,7 +10,7 @@ import StableGraphic from './StableGraphic'
 
 const StabilitySection = () => {
   return (
-    <section id="stable" data-usp-section={UspCategoryId.stability} className="w-full">
+    <section data-usp-section={UspCategoryId.stability} className="w-full">
       <div className="w-full">
         <LayoutComponent>
           <SectionHeader

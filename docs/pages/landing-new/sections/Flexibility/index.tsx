@@ -16,7 +16,7 @@ import { UspCategoryId } from '../../util/constants'
 
 const FlexibilitySection = () => {
   return (
-    <section id="flexible" data-usp-section={UspCategoryId.freedom}>
+    <section data-usp-section={UspCategoryId.freedom}>
       <LayoutComponent>
         <SectionHeader
           icon={'🕊️'}
