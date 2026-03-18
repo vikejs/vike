@@ -41,18 +41,12 @@ jobs:
             const version = require('./packages/vike/package.json').version
             const versionTag = `v${version}`
 
-            const { data: { body } } = await github.rest.repos.generateReleaseNotes({
-              owner,
-              repo,
-              tag_name: versionTag,
-              target_commitish: defaultBranch,
-              previous_tag_name: previousRelease?.tag_name,
-            })
+            const changelog = fs.readFileSync('./CHANGELOG.md', 'utf8')
 
-            const releaseNotes = body.split('\n')
-              .filter((line) => !line.includes('[Release] v'))
-              .join('\n')
-            
+            const startOfContent = changelog.indexOf('\n')
+            const endOfContent = changelog.indexOf('\n## [', startOfContent)
+            const releaseNotes = changelog.substring(startOfContent, endOfContent).trim()
+
             await github.rest.repos.createRelease({
               owner,
               repo,
