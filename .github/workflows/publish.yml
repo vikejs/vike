@@ -36,6 +36,7 @@ jobs:
         uses: actions/github-script@v8
         with:
           script: |
+            const fs = require('fs')
             const { owner, repo } = context.repo
             const { data: releases } = await github.rest.repos.listReleases({
               owner,
