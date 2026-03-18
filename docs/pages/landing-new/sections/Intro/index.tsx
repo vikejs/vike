@@ -81,12 +81,15 @@ const IntroSection = () => {
                       lineHeight: 1.35,
                       fontWeight: 450,
                       color: '#878787',
-                      maxWidth: 700,
-                      fontSize: 23,
+                      maxWidth: 800,
+                      fontSize: 22,
                     }}
                   >
-                    Vike is a minimal-lock-in framework prioritizing application stability and user freedom, with a
-                    novel architecture that embraces JavaScript&apos;s fast-moving ecosystem.
+                    Vike is a minimal-lock-in framework prioritizing application stability
+                    <br />
+                    and development freedom, with a novel architecture that
+                    <br />
+                    embraces JavaScript&apos;s fast-moving ecosystem.
                   </div>
                 </h1>
               </div>
