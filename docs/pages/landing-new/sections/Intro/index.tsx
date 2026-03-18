@@ -45,7 +45,7 @@ const IntroSection = () => {
           className="flex flex-col items-center text-center min-h-[calc(100svh-48*var(--spacing))]  overflow-hidden"
         >
           <div className="relative z-10 flex flex-col items-center text-center w-full">
-            <div className="mt-[45px] md:mt-[76px]">
+            <div className="mb-[15px] mt-[45px] md:mt-[76px]">
               <ReplacesLabel />
             </div>
             <div style={{ height: 0 }} id="hero-margin-top-2" />
@@ -61,10 +61,14 @@ const IntroSection = () => {
                     width: '100%',
                     marginBottom: 0,
                     fontWeight: 580,
+                    lineHeight: '1.3em',
+                    fontSize: '4.2em',
                   }}
                 >
-                  <div id="tagline-primary" style={{ letterSpacing: 0.7, opacity: 0.9 }}>
-                    The Framework for <GradientText color="blue">Stability</GradientText> and{' '}
+                  <div id="tagline-primary" style={{ letterSpacing: 0.7, opacity: 0.9, fontSize: 'inherit' }}>
+                    Framework for
+                    <br />
+                    <GradientText color="blue">Stability</GradientText> and{' '}
                     <GradientText color="green">Freedom</GradientText>.
                   </div>
                   <div
@@ -73,11 +77,12 @@ const IntroSection = () => {
                       textAlign: 'center',
                       width: '100%',
                       margin: 'auto',
-                      marginTop: 10,
+                      marginTop: 20,
                       lineHeight: 1.35,
                       fontWeight: 450,
                       color: '#878787',
-                      maxWidth: 800,
+                      maxWidth: 700,
+                      fontSize: 23,
                     }}
                   >
                     Vike is a minimal-lock-in framework prioritizing application stability and user freedom, with a
