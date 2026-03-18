@@ -34,21 +34,21 @@ const DxContent = () => {
             <Block>
               <p className="text-lg">
                 Toggle{' '}
-                <HighlightedLink href="/ssr" className="bg-orange-200/70">
-                  SSR
-                </HighlightedLink>
+                <DX_InlineHighlight color="#b8d4eb">
+                  <Link href="/ssr">SSR</Link>
+                </DX_InlineHighlight>
                 /
-                <HighlightedLink href="/SSR-vs-SPA" className="bg-amber-200/70">
-                  SPA
-                </HighlightedLink>
+                <DX_InlineHighlight color="#c0ebb8">
+                  <Link href="/SSR-vs-SPA">SPA</Link>
+                </DX_InlineHighlight>
                 /
-                <HighlightedLink href="/pre-rendering" className="bg-yellow-200/80">
-                  SSG
-                </HighlightedLink>{' '}
+                <DX_InlineHighlight color="#e9b8e8">
+                  <Link href="/pre-rendering">SSG</Link>
+                </DX_InlineHighlight>{' '}
                 on a page-by-page basis, powered by{' '}
-                <HighlightedLink href="/config#inheritance" className="bg-orange-100/80">
-                  config inheritance
-                </HighlightedLink>
+                <DX_InlineHighlight color="#f4f5a6">
+                  <Link href="/config#inheritance">config inheritance</Link>
+                </DX_InlineHighlight>
                 .
               </p>
               <SsrSpaSsgTree />
@@ -289,23 +289,24 @@ const CenterText = cm.span`text-center block`
 const Divider = cm.hr`border-grey-200`
 const ClosingWords = cm.a`flex btn sm:btn-lg btn-neutral mx-auto w-fit btn-outline text-center`
 
-function HighlightedLink({
-  href,
-  className,
+function DX_InlineHighlight({
+  color,
   children,
 }: {
-  href: string
-  className: string
+  color: string
   children: ReactNode
 }) {
   return (
-    <Link href={href}>
-      <span
-        className={`inline-block rounded-[0.35rem] px-1.5 py-0.5 decoration-transparent transition-colors hover:decoration-current ${className}`}
-      >
-        {children}
-      </span>
-    </Link>
+    <span
+      style={{
+        backgroundColor: color,
+        borderRadius: 4,
+        paddingLeft: 4,
+        paddingRight: 4,
+      }}
+    >
+      {children}
+    </span>
   )
 }
 
