@@ -41,33 +41,66 @@ jobs:
         with:
           script: |
             const fs = require('fs')
+
+            // Create sections object from CHANGELOG.md
+            const changelog = fs.readFileSync('./CHANGELOG.md', 'utf8')
+            const sections = {}
+            const regex = /^## \[([^\]]+)\]/gm
+            let match
+            const matches = []
+
+            while ((match = regex.exec(changelog)) !== null) {
+              matches.push({ version: match[1], index: match.index })
+            }
+
+            for (let i = 0; i < matches.length; i++) {
+              const start = changelog.indexOf('\n', matches[i].index)
+              const end = i + 1 < matches.length ? matches[i + 1].index : changelog.length
+              const notes = changelog.substring(start, end).trim()
+              const tag = `v${matches[i].version}`
+              sections[tag] = notes
+            }
+
             const { owner, repo } = context.repo
+
             const { data: releases } = await github.rest.repos.listReleases({
               owner,
-              repo
+              repo,
+              per_page: 100 // Default is 30
             })
 
-            const previousRelease = releases[0]
             const defaultBranch = '${{ github.event.repository.default_branch }}'
             const version = require('./packages/vike/package.json').version
             const versionTag = `v${version}`
 
-            const changelog = fs.readFileSync('./CHANGELOG.md', 'utf8')
+            // Create release
+            if (releases.length === 0 || releases[0].tag_name !== versionTag) {
+              await github.rest.repos.createRelease({
+                owner,
+                repo,
+                tag_name: versionTag,
+                target_commitish: defaultBranch,
+                name: versionTag,
+                body: sections[versionTag],
+                draft: false,
+                prerelease: false,
+                generate_release_notes: false
+              })
 
-            const startOfContent = changelog.indexOf('\n')
-            const endOfContent = changelog.indexOf('\n## [', startOfContent)
-            const releaseNotes = changelog.substring(startOfContent, endOfContent).trim()
+              console.log(`Created release ${versionTag}`)
+            }
 
-            await github.rest.repos.createRelease({
-              owner,
-              repo,
-              tag_name: versionTag,
-              target_commitish: defaultBranch,
-              name: versionTag,
-              body: releaseNotes,
-              draft: false,
-              prerelease: false,
-              generate_release_notes: false
-            })
+            // Update releases
+            for (const release of releases) {
+              const body = sections[release.tag_name]
+              if (body && body !== release.body) {
+                await github.rest.repos.updateRelease({
+                  owner,
+                  repo,
+                  release_id: release.id,
+                  body
+                })
 
-            console.log(`Release ${versionTag} created`)
+                console.log(`Updated release ${release.tag_name}`)
+              }
+            }
