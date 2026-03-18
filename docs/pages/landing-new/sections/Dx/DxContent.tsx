@@ -33,9 +33,23 @@ const DxContent = () => {
           <TwoColumn>
             <Block>
               <p className="text-lg">
-                Toggle <Link href="/ssr">SSR</Link>/<Link href="/SSR-vs-SPA">SPA</Link>/
-                <Link href="/pre-rendering">SSG</Link> on a page-by-page basis, powered by{' '}
-                <Link href="/config#inheritance">config inheritance</Link>.
+                Toggle{' '}
+                <HighlightedLink href="/ssr" className="bg-orange-200/70">
+                  SSR
+                </HighlightedLink>
+                /
+                <HighlightedLink href="/SSR-vs-SPA" className="bg-amber-200/70">
+                  SPA
+                </HighlightedLink>
+                /
+                <HighlightedLink href="/pre-rendering" className="bg-yellow-200/80">
+                  SSG
+                </HighlightedLink>{' '}
+                on a page-by-page basis, powered by{' '}
+                <HighlightedLink href="/config#inheritance" className="bg-orange-100/80">
+                  config inheritance
+                </HighlightedLink>
+                .
               </p>
               <SsrSpaSsgTree />
             </Block>
@@ -274,6 +288,25 @@ const SubSectionTitle = H4Headline
 const CenterText = cm.span`text-center block`
 const Divider = cm.hr`border-grey-200`
 const ClosingWords = cm.a`flex btn sm:btn-lg btn-neutral mx-auto w-fit btn-outline text-center`
+
+function HighlightedLink({
+  href,
+  className,
+  children,
+}: {
+  href: string
+  className: string
+  children: ReactNode
+}) {
+  return (
+    <Link
+      href={href}
+      className={`rounded-[0.35rem] px-1.5 py-0.5 decoration-transparent transition-colors hover:decoration-current ${className}`}
+    >
+      {children}
+    </Link>
+  )
+}
 
 const List = ({ items }: { items: ReactNode[] | string[] }) => {
   return (
