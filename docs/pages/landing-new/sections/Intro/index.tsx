@@ -1,13 +1,16 @@
 import React, { useRef, useState } from 'react'
+import { Link } from '@brillout/docpress'
 import LayoutComponent from '../../components/LayoutComponent'
 import GradientText from '../../components/GradientText'
 import UspHero from './UspHero'
-import Headline from '../../components/Headline'
 import BrandSubsection from './BrandSubsection'
 import type { UspHoverTarget } from './intro.types'
 import useIntroHeadlineGradientMotion from './useIntroHeadlineGradientMotion'
-import { UiColorVariantKey, UiVariantTextColor } from '../../util/ui.constants'
+import { UiColorVariantKey } from '../../util/ui.constants'
 import UspHeroMobile from './UspHero/UspHeroMobile'
+import { Button } from '../../../index/components/button/Button'
+import { linkGetStarted } from '../../../index/links'
+import '../../../index/sections/hero/Hero.css'
 
 const initialCtaColor: UiColorVariantKey = 'green'
 
@@ -16,6 +19,7 @@ function ReplacesLabel() {
 
   return (
     <span
+      id="hero-badge"
       className="inline-flex overflow-hidden rounded-[6px] border border-[#d1d5db] text-[11px] font-semibold shadow-[0_1px_3px_rgba(0,0,0,0.12)]"
       style={{ marginTop: -6, marginBottom: 6 }}
     >
@@ -28,39 +32,37 @@ function ReplacesLabel() {
   )
 }
 
-const HeadlineWord = ({
-  word,
-  isActive,
+function LinkTagline({
   color,
+  href,
+  children,
 }: {
-  word: string
-  isActive: boolean
-  color: UiColorVariantKey
-}) => {
+  color: string
+  href: string
+  children: React.ReactNode
+}) {
   return (
-    <span className="relative inline-block">
-      <span
-        className={`${UiVariantTextColor.neutral} transition-opacity duration-450 ease-in-out ${isActive ? 'opacity-0' : 'opacity-100'}`}
-      >
-        {word}
-      </span>
-      <GradientText
-        color={color}
-        className={`absolute inset-0 transition-opacity duration-450 ease-in-out ${isActive ? 'opacity-100' : 'opacity-0'}`}
-      >
-        {word}
-      </GradientText>
-    </span>
+    <a
+      href={href}
+      onClick={(ev) => {
+        if (!href.startsWith('#')) return
+        ev.preventDefault()
+        document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' })
+      }}
+      data-vike={!href.startsWith('#')}
+      style={{ color, borderBottom: `2px dotted ${color}` }}
+    >
+      {children}
+    </a>
   )
 }
 
 const IntroSection = () => {
   const [manualHoverTarget, setManualHoverTarget] = useState<UspHoverTarget | null>(null)
   const [lastHoveredColor, setLastHoveredColor] = useState<UiColorVariantKey>(initialCtaColor)
-  const getStartedButtonRef = useRef<HTMLAnchorElement>(null)
+  const firstTaglineRef = useRef<HTMLSpanElement>(null)
+  const secondTaglineRef = useRef<HTMLSpanElement>(null)
   const activeColor = manualHoverTarget?.color ?? lastHoveredColor
-  const fadeColor = manualHoverTarget?.color ?? null
-  const activeHeadlineWord = UiColorVariantKey[activeColor]
   const activeUspId = manualHoverTarget?.id ?? null
 
   const handleUspHoverChange = (hoverTarget: UspHoverTarget | null) => {
@@ -71,7 +73,8 @@ const IntroSection = () => {
   }
 
   useIntroHeadlineGradientMotion({
-    ctaButtonRef: getStartedButtonRef,
+    firstTextRef: firstTaglineRef,
+    secondTextRef: secondTaglineRef,
     hoveredColor: activeColor,
   })
 
@@ -84,38 +87,87 @@ const IntroSection = () => {
           className="flex flex-col items-center text-center min-h-[calc(100svh-48*var(--spacing))]  overflow-hidden"
         >
           <div className="relative z-10 flex flex-col items-center text-center w-full">
-            <div className="mb-4 mt-6 lg:mt-16 xl:mt-20">
+            <div className="mt-[45px] md:mt-[76px]">
               <ReplacesLabel />
             </div>
-            <div className="relative">
-              <Headline as="h1" variant="xlarge">
-                Build <GradientText color="orange">fast</GradientText>, build{' '}
-                <GradientText color="blue">right</GradientText>
-                {/* <HeadlineWord word="Flexible." isActive={activeHeadlineWord === 'green'} color="green" />{' '}
-                <HeadlineWord word="Reliable." isActive={activeHeadlineWord === 'blue'} color="blue" />{' '}
-                <HeadlineWord word="Fast." isActive={activeHeadlineWord === 'orange'} color="orange" /> */}
-              </Headline>
-            </div>
-            <p className="text-base md:text-2xl text-grey text-center w-3/4 lg:w-3/5 mx-auto mb-6 mt-4">
-              The last JavaScript framework you'll need, <br className="hidden md:block" /> powered by a next-gen
-              architecture.
-            </p>
-            <div className="flex gap-2 items-center justify-center mb-8 sm:mb-12">
-              <a
-                ref={getStartedButtonRef}
-                className="btn btn-sm md:btn-md text-white border-0 btn-neutral"
-                // style={
-                //   {
-                //     '--gradient-start': defaultGradients[initialCtaColor].startColor,
-                //     '--gradient-end': defaultGradients[initialCtaColor].endColor,
-                //     background: 'linear-gradient(90deg, var(--gradient-start), var(--gradient-end))',
-                //   } as React.CSSProperties
-                // }
+            <div style={{ height: 0 }} id="hero-margin-top-2" />
+            <div id="hero-taglines">
+              <div
+                className="landingpage-hero-headline"
+                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
               >
-                Get Started
-              </a>
-              <a className="btn btn-sm md:btn-md btn-neutral btn-outline">Scaffold new App</a>
+                <h1
+                  style={{
+                    color: '#000000',
+                    textAlign: 'center',
+                    width: '100%',
+                    marginBottom: 0,
+                    fontWeight: 580,
+                  }}
+                >
+                  <div id="tagline-primary" style={{ letterSpacing: 0.7, opacity: 0.9 }}>
+                    <span style={{ whiteSpace: 'nowrap' }}>
+                      Build{' '}
+                      <GradientText ref={firstTaglineRef} color="orange" rotation={315} style={{ fontWeight: 700 }}>
+                        fast
+                      </GradientText>
+                      .
+                    </span>{' '}
+                    <span style={{ whiteSpace: 'nowrap' }}>
+                      Build{' '}
+                      <GradientText ref={secondTaglineRef} color="blue" rotation={315} style={{ fontWeight: 700 }}>
+                        right
+                      </GradientText>
+                      .
+                    </span>
+                  </div>
+                  <div
+                    id="tagline-secondary"
+                    style={{
+                      textAlign: 'center',
+                      width: '100%',
+                      margin: 'auto',
+                      marginTop: 10,
+                      lineHeight: 1.35,
+                      fontWeight: 450,
+                      color: '#878787',
+                      maxWidth: 800,
+                    }}
+                  >
+                    <>
+                      Composable framework to build advanced applications, with blazing-fast{' '}
+                      <LinkTagline href="/new" color="#fe9618">
+                        quick&nbsp;start
+                      </LinkTagline>
+                      , next-generation{' '}
+                      <LinkTagline href="#full-fledged" color="#fed518">
+                        DX
+                      </LinkTagline>
+                      , unprecedented{' '}
+                      <LinkTagline href="#flexible" color="#18cbfa">
+                        flexibility
+                      </LinkTagline>
+                      , and foundational{' '}
+                      <LinkTagline href="#stable" color="#1878ed">
+                        stability
+                      </LinkTagline>
+                      .
+                    </>
+                  </div>
+                </h1>
+              </div>
             </div>
+            <div style={{ height: 37 }} className="md:hidden" />
+            <div style={{ height: 50 }} className="hidden md:block" id="hero-margin-mid-1" />
+            <div className="flex justify-center">
+              <Link href={linkGetStarted}>
+                <Button type="default" big>
+                  Get Started
+                </Button>
+              </Link>
+            </div>
+            <div style={{ height: 43 }} className="md:hidden" />
+            <div style={{ height: 52 }} className="hidden md:block" id="hero-margin-mid-2" />
             <UspHero onHoverChange={handleUspHoverChange} activeUspId={activeUspId} />
             <UspHeroMobile />
           </div>
