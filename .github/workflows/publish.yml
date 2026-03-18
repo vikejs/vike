@@ -1,0 +1,68 @@
+name: Publish new Release
+
+on: workflow_dispatch
+
+permissions:
+  contents: read
+
+jobs:
+  publish_package:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    environment: release
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install modules
+        run: pnpm install --filter ./packages/vike
+      - name: Create NPM release
+        working-directory: ./packages/vike
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Create GitHub release
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const { owner, repo } = context.repo
+            const { data: releases } = await github.rest.repos.listReleases({
+              owner,
+              repo
+            })
+
+            const previousRelease = releases[0]
+            const defaultBranch = '${{ github.event.repository.default_branch }}'
+            const version = require('./packages/vike/package.json').version
+            const versionTag = `v${version}`
+
+            const { data: { body } } = await github.rest.repos.generateReleaseNotes({
+              owner,
+              repo,
+              tag_name: versionTag,
+              target_commitish: defaultBranch,
+              previous_tag_name: previousRelease?.tag_name,
+            })
+
+            const releaseNotes = body.split('\n')
+              .filter((line) => !line.includes('[Release] v'))
+              .join('\n')
+            
+            await github.rest.repos.createRelease({
+              owner,
+              repo,
+              tag_name: versionTag,
+              target_commitish: defaultBranch,
+              name: versionTag,
+              body: releaseNotes,
+              draft: false,
+              prerelease: false,
+              generate_release_notes: false
+            })
+
+            console.log(`Release ${versionTag} created`)
