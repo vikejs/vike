@@ -11,6 +11,23 @@ import UspHeroMobile from './UspHero/UspHeroMobile'
 
 const initialCtaColor: UiColorVariantKey = 'green'
 
+function ReplacesLabel() {
+  const slashOpacity = 0.65
+
+  return (
+    <span
+      className="inline-flex overflow-hidden rounded-[6px] border border-[#d1d5db] text-[11px] font-semibold shadow-[0_1px_3px_rgba(0,0,0,0.12)]"
+      style={{ marginTop: -6, marginBottom: 6 }}
+    >
+      <span className="flex items-center bg-[#eee] px-[10px] pr-2 tracking-[0.05em] leading-[1.3]">REPLACES</span>
+      <span className="bg-[#8d8d8d] px-[11px] py-1 pl-2 text-[1.19em] leading-[1.2] font-[550] text-white">
+        Next.js <span style={{ opacity: slashOpacity }}>/</span> Nuxt{' '}
+        <span style={{ opacity: slashOpacity }}>/ ...</span>
+      </span>
+    </span>
+  )
+}
+
 const HeadlineWord = ({
   word,
   isActive,
@@ -67,12 +84,9 @@ const IntroSection = () => {
           className="flex flex-col items-center text-center min-h-[calc(100svh-48*var(--spacing))]  overflow-hidden"
         >
           <div className="relative z-10 flex flex-col items-center text-center w-full">
-            <span className="inline-flex sm:flex-row gap-1 mb-4 mt-6 lg:mt-16 xl:mt-20">
-              <span className="block badge badge-neutral badge-ghost badge-xs md:badge-sm">
-                ⭐️ Replaces Next.js / Nuxt / ...
-              </span>
-              <span className="block badge badge-neutral badge-ghost badge-xs md:badge-sm">🏗️ Powered By Vite</span>
-            </span>
+            <div className="mb-4 mt-6 lg:mt-16 xl:mt-20">
+              <ReplacesLabel />
+            </div>
             <div className="relative">
               <Headline as="h1" variant="xlarge">
                 Build <GradientText color="orange">fast</GradientText>, build{' '}
