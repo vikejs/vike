@@ -39,11 +39,11 @@ importers:
   docs:
     dependencies:
       '@batijs/elements':
-        specifier: ^0.0.54
-        version: 0.0.54
+        specifier: ^0.0.56
+        version: 0.0.56
       '@brillout/docpress':
-        specifier: ^0.16.25
-        version: 0.16.25(@algolia/client-search@5.49.2)(@types/react@19.2.11)(@vitejs/plugin-react-swc@4.2.2(vite@6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(rollup@4.43.0)(search-insights@2.17.3)(typescript@5.9.3)(vike@packages+vike)(vite@6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
+        specifier: ^0.16.26
+        version: 0.16.26(@algolia/client-search@5.49.2)(@types/react@19.2.11)(@vitejs/plugin-react-swc@4.2.2(vite@6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(rollup@4.43.0)(search-insights@2.17.3)(typescript@5.9.3)(vike@packages+vike)(vite@6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
       '@types/react':
         specifier: ^19.0.2
         version: 19.2.11
@@ -2411,8 +2411,8 @@ packages:
     resolution: {integrity: sha512-LwdZHpScM4Qz8Xw2iKSzS+cfglZzJGvofQICy7W7v4caru4EaAmyUuO6BGrbyQ2mYV11W0U8j5mBhd14dd3B0A==}
     engines: {node: '>=6.9.0'}
 
-  '@batijs/elements@0.0.54':
-    resolution: {integrity: sha512-n5LYJ+dD390c22Zres0sYocqTOWT1VA67xFEfV9t10zlrYu0gTO5b8sTruEfrI96fftHdEZJOX0LSGeeiz5JiQ==}
+  '@batijs/elements@0.0.56':
+    resolution: {integrity: sha512-SKSozBIvHjqOhg25xeLfkpEl78G7ssGNbDcgJH/7njv+mbMpmezE8UuvJtBhY+hWvPcKbUaIaOBoE10J+Frzbg==}
 
   '@biomejs/biome@1.9.4':
     resolution: {integrity: sha512-1rkd7G70+o9KkTn5KLmDYXihGoTaIGO9PIIN2ZB7UJxFrWw04CZHPYiMRjYsaDvVV7hP1dYNRLxSANLaBFGpog==}
@@ -2467,8 +2467,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@brillout/docpress@0.16.25':
-    resolution: {integrity: sha512-3K90xH2tcuSqPtIwjX0p1oy9N8XloWUKgyLNy6W4jA/OYnas5tGd1wSN1V/0dl65cw5Dqjc/feDVOE8MY6YYvA==}
+  '@brillout/docpress@0.16.26':
+    resolution: {integrity: sha512-T+HlhJWSa7/k9knE/ozTsKupew3oPn2Fe0f9AuYHGp1UWSsAE1Pu+7FOI6SrlrF/IIwToYcbrsB7iZBwb725NQ==}
     peerDependencies:
       '@vitejs/plugin-react-swc': '>=3.0.0'
       react: '>=18.0.0'
@@ -2507,6 +2507,10 @@ packages:
 
   '@brillout/shell@0.2.1':
     resolution: {integrity: sha512-l5PTMWw6rndD7vZcMvw1bv31sTzpz0qP3q409PD50ATsfxhvbMvDVySnV73Okoskfd673oClIlt6OnupbQJqHA==}
+
+  '@brillout/shiki-transformers@4.0.2':
+    resolution: {integrity: sha512-LELxHWwiIcYoUc/V0KWgfQMWOjRXNebJt9Z1NM9InjPUQ8fsL0ZxttD7qoBzFvaFIbEUJre3N5jc9FmM5b5MBQ==}
+    engines: {node: '>=20'}
 
   '@brillout/spellcheck@0.1.2':
     resolution: {integrity: sha512-DNJKsGPRps/3rwezmtMMoNwrcIpqnDPkqArEK5eS3vpkRJGzVaSH8suGf1+TmgUIsHn2Y1bgLIz9jh7w0EqwHw==}
@@ -4050,8 +4054,24 @@ packages:
   '@shikijs/core@1.2.0':
     resolution: {integrity: sha512-OlFvx+nyr5C8zpcMBnSGir0YPD6K11uYhouqhNmm1qLiis4GA7SsGtu07r9gKS9omks8RtQqHrJL4S+lqWK01A==}
 
-  '@shikijs/transformers@1.2.0':
-    resolution: {integrity: sha512-xKn7DtA65DQV4FOfYsrvqM80xOy2xuXnxWWKsZmHv1VII/IOuDUDsWDu3KnpeLH6wqNJWp1GRoNUsHR1aw/VhQ==}
+  '@shikijs/core@4.0.2':
+    resolution: {integrity: sha512-hxT0YF4ExEqB8G/qFdtJvpmHXBYJ2lWW7qTHDarVkIudPFE6iCIrqdgWxGn5s+ppkGXI0aEGlibI0PAyzP3zlw==}
+    engines: {node: '>=20'}
+
+  '@shikijs/primitive@4.0.2':
+    resolution: {integrity: sha512-M6UMPrSa3fN5ayeJwFVl9qWofl273wtK1VG8ySDZ1mQBfhCpdd8nEx7nPZ/tk7k+TYcpqBZzj/AnwxT9lO+HJw==}
+    engines: {node: '>=20'}
+
+  '@shikijs/transformers@4.0.2':
+    resolution: {integrity: sha512-1+L0gf9v+SdDXs08vjaLb3mBFa8U7u37cwcBQIv/HCocLwX69Tt6LpUCjtB+UUTvQxI7BnjZKhN/wMjhHBcJGg==}
+    engines: {node: '>=20'}
+
+  '@shikijs/types@4.0.2':
+    resolution: {integrity: sha512-qzbeRooUTPnLE+sHD/Z8DStmaDgnbbc/pMrU203950aRqjX/6AFHeDYT+j00y2lPdz0ywJKx7o/7qnqTivtlXg==}
+    engines: {node: '>=20'}
+
+  '@shikijs/vscode-textmate@10.0.2':
+    resolution: {integrity: sha512-83yeghZ2xxin3Nj8z1NMd/NCuca+gsYXswywDy5bHvwlWL8tpTQmzGeUuHd9FC3E/SBEMvzJRwWEOz5gGes9Qg==}
 
   '@simple-libs/child-process-utils@1.0.2':
     resolution: {integrity: sha512-/4R8QKnd/8agJynkNdJmNw2MBxuFTRcNFnE5Sg/G+jkSsV8/UBgULMzhizWWW42p8L5H7flImV2ATi79Ove2Tw==}
@@ -5776,6 +5796,9 @@ packages:
   hast-util-to-estree@3.1.3:
     resolution: {integrity: sha512-48+B/rJWAp0jamNbAAf9M7Uf//UVqAoMmgXhBdxTDJLGKY+LRnZ99qcG+Qjl5HfMpYNzS5v4EAwVEF34LeAj7w==}
 
+  hast-util-to-html@9.0.5:
+    resolution: {integrity: sha512-OguPdidb+fbHQSU4Q4ZiLKnzWo8Wwsf5bZfbvu7//a9oTYoqD/fWpe96NuHkoS9h0ccGOTe0C4NGXdtS0iObOw==}
+
   hast-util-to-jsx-runtime@2.3.6:
     resolution: {integrity: sha512-zl6s8LwNyo1P9uw+XJGvZtdFF1GdAkOg8ujOw+4Pyb76874fLps4ueHXDhXWdk6YHQ6OgUtinliG7RsYvCbbBg==}
 
@@ -5805,6 +5828,9 @@ packages:
 
   html-entities@2.3.3:
     resolution: {integrity: sha512-DV5Ln36z34NNTDgnz0EWGBLZENelNAtkiFA4kyNOG2tDI6Mz1uSWiq1wAKdyjnJwyDiDO7Fa2SO1CTxPXL8VxA==}
+
+  html-void-elements@3.0.0:
+    resolution: {integrity: sha512-bEqo66MRXsUGxWHV5IP0PUiAWwoEjba4VCzg0LjFJBpchPaTfyfCKTG6bc5F8ucKec3q5y6qOdGyYTSBEvhCrg==}
 
   http-errors@2.0.1:
     resolution: {integrity: sha512-4FbRdAX+bSdmo4AUFuS0WNiPz8NgFt+r8ThgNWmlrjQjt1Q7ZR9+zTlce2859x4KSXrwIsaeTqDoKQmtP8pLmQ==}
@@ -8288,7 +8314,7 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.28.5
 
-  '@batijs/elements@0.0.54': {}
+  '@batijs/elements@0.0.56': {}
 
   '@biomejs/biome@1.9.4':
     optionalDependencies:
@@ -8325,15 +8351,16 @@ snapshots:
   '@biomejs/cli-win32-x64@1.9.4':
     optional: true
 
-  '@brillout/docpress@0.16.25(@algolia/client-search@5.49.2)(@types/react@19.2.11)(@vitejs/plugin-react-swc@4.2.2(vite@6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(rollup@4.43.0)(search-insights@2.17.3)(typescript@5.9.3)(vike@packages+vike)(vite@6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))':
+  '@brillout/docpress@0.16.26(@algolia/client-search@5.49.2)(@types/react@19.2.11)(@vitejs/plugin-react-swc@4.2.2(vite@6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(rollup@4.43.0)(search-insights@2.17.3)(typescript@5.9.3)(vike@packages+vike)(vite@6.3.5(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))':
     dependencies:
       '@brillout/picocolors': 1.0.30
+      '@brillout/shiki-transformers': 4.0.2
       '@docsearch/css': 3.9.0
       '@docsearch/react': 3.9.0(@algolia/client-search@5.49.2)(@types/react@19.2.11)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(search-insights@2.17.3)
       '@mdx-js/mdx': 3.0.1
       '@mdx-js/react': 3.0.1(@types/react@19.2.11)(react@19.2.4)
       '@mdx-js/rollup': 3.0.1(rollup@4.43.0)
-      '@shikijs/transformers': 1.2.0
+      '@shikijs/transformers': 4.0.2
       detype: 2.0.5
       estree-util-value-to-estree: 3.5.0
       npm-to-yarn: 3.0.1
@@ -8385,6 +8412,11 @@ snapshots:
   '@brillout/shell@0.2.1':
     dependencies:
       '@brillout/picocolors': 1.0.30
+
+  '@brillout/shiki-transformers@4.0.2':
+    dependencies:
+      '@shikijs/core': 4.0.2
+      '@shikijs/types': 4.0.2
 
   '@brillout/spellcheck@0.1.2':
     dependencies:
@@ -9660,9 +9692,31 @@ snapshots:
 
   '@shikijs/core@1.2.0': {}
 
-  '@shikijs/transformers@1.2.0':
+  '@shikijs/core@4.0.2':
     dependencies:
-      shiki: 1.2.0
+      '@shikijs/primitive': 4.0.2
+      '@shikijs/types': 4.0.2
+      '@shikijs/vscode-textmate': 10.0.2
+      '@types/hast': 3.0.4
+      hast-util-to-html: 9.0.5
+
+  '@shikijs/primitive@4.0.2':
+    dependencies:
+      '@shikijs/types': 4.0.2
+      '@shikijs/vscode-textmate': 10.0.2
+      '@types/hast': 3.0.4
+
+  '@shikijs/transformers@4.0.2':
+    dependencies:
+      '@shikijs/core': 4.0.2
+      '@shikijs/types': 4.0.2
+
+  '@shikijs/types@4.0.2':
+    dependencies:
+      '@shikijs/vscode-textmate': 10.0.2
+      '@types/hast': 3.0.4
+
+  '@shikijs/vscode-textmate@10.0.2': {}
 
   '@simple-libs/child-process-utils@1.0.2':
     dependencies:
@@ -12027,6 +12081,20 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  hast-util-to-html@9.0.5:
+    dependencies:
+      '@types/hast': 3.0.4
+      '@types/unist': 3.0.3
+      ccount: 2.0.1
+      comma-separated-tokens: 2.0.3
+      hast-util-whitespace: 3.0.0
+      html-void-elements: 3.0.0
+      mdast-util-to-hast: 13.2.1
+      property-information: 7.1.0
+      space-separated-tokens: 2.0.2
+      stringify-entities: 4.0.4
+      zwitch: 2.0.4
+
   hast-util-to-jsx-runtime@2.3.6:
     dependencies:
       '@types/estree': 1.0.8
@@ -12074,6 +12142,8 @@ snapshots:
       lru-cache: 10.4.3
 
   html-entities@2.3.3: {}
+
+  html-void-elements@3.0.0: {}
 
   http-errors@2.0.1:
     dependencies:
