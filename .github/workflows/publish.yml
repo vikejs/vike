@@ -1,6 +1,12 @@
 name: Publish new Release
 
-on: workflow_dispatch
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'CHANGELOG.md'
+  workflow_dispatch:
 
 permissions:
   contents: read
