@@ -1,18 +1,14 @@
-import React, { useRef, useState } from 'react'
+import React, { useState } from 'react'
 import { Link } from '@brillout/docpress'
 import LayoutComponent from '../../components/LayoutComponent'
 import GradientText from '../../components/GradientText'
 import UspHero from './UspHero'
 import BrandSubsection from './BrandSubsection'
 import type { UspHoverTarget } from './intro.types'
-import useIntroHeadlineGradientMotion from './useIntroHeadlineGradientMotion'
-import { UiColorVariantKey } from '../../util/ui.constants'
 import UspHeroMobile from './UspHero/UspHeroMobile'
 import { Button } from '../../../index/components/button/Button'
 import { linkGetStarted } from '../../../index/links'
 import '../../../index/sections/hero/Hero.css'
-
-const initialCtaColor: UiColorVariantKey = 'green'
 
 function ReplacesLabel() {
   const slashOpacity = 0.65
@@ -32,51 +28,13 @@ function ReplacesLabel() {
   )
 }
 
-function LinkTagline({
-  color,
-  href,
-  children,
-}: {
-  color: string
-  href: string
-  children: React.ReactNode
-}) {
-  return (
-    <a
-      href={href}
-      onClick={(ev) => {
-        if (!href.startsWith('#')) return
-        ev.preventDefault()
-        document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' })
-      }}
-      data-vike={!href.startsWith('#')}
-      style={{ color, borderBottom: `2px dotted ${color}` }}
-    >
-      {children}
-    </a>
-  )
-}
-
 const IntroSection = () => {
   const [manualHoverTarget, setManualHoverTarget] = useState<UspHoverTarget | null>(null)
-  const [lastHoveredColor, setLastHoveredColor] = useState<UiColorVariantKey>(initialCtaColor)
-  const firstTaglineRef = useRef<HTMLSpanElement>(null)
-  const secondTaglineRef = useRef<HTMLSpanElement>(null)
-  const activeColor = manualHoverTarget?.color ?? lastHoveredColor
   const activeUspId = manualHoverTarget?.id ?? null
 
   const handleUspHoverChange = (hoverTarget: UspHoverTarget | null) => {
-    if (hoverTarget) {
-      setLastHoveredColor(hoverTarget.color)
-    }
     setManualHoverTarget(hoverTarget)
   }
-
-  useIntroHeadlineGradientMotion({
-    firstTextRef: firstTaglineRef,
-    secondTextRef: secondTaglineRef,
-    hoveredColor: activeColor,
-  })
 
   return (
     <>
@@ -106,20 +64,8 @@ const IntroSection = () => {
                   }}
                 >
                   <div id="tagline-primary" style={{ letterSpacing: 0.7, opacity: 0.9 }}>
-                    <span style={{ whiteSpace: 'nowrap' }}>
-                      Build{' '}
-                      <GradientText ref={firstTaglineRef} color="orange" rotation={315} style={{ fontWeight: 700 }}>
-                        fast
-                      </GradientText>
-                      .
-                    </span>{' '}
-                    <span style={{ whiteSpace: 'nowrap' }}>
-                      Build{' '}
-                      <GradientText ref={secondTaglineRef} color="blue" rotation={315} style={{ fontWeight: 700 }}>
-                        right
-                      </GradientText>
-                      .
-                    </span>
+                    The Framework for <GradientText color="blue">Stability</GradientText> and{' '}
+                    <GradientText color="green">Freedom</GradientText>.
                   </div>
                   <div
                     id="tagline-secondary"
@@ -134,25 +80,8 @@ const IntroSection = () => {
                       maxWidth: 800,
                     }}
                   >
-                    <>
-                      Composable framework to build advanced applications, with blazing-fast{' '}
-                      <LinkTagline href="/new" color="#fe9618">
-                        quick&nbsp;start
-                      </LinkTagline>
-                      , next-generation{' '}
-                      <LinkTagline href="#full-fledged" color="#fed518">
-                        DX
-                      </LinkTagline>
-                      , unprecedented{' '}
-                      <LinkTagline href="#flexible" color="#18cbfa">
-                        flexibility
-                      </LinkTagline>
-                      , and foundational{' '}
-                      <LinkTagline href="#stable" color="#1878ed">
-                        stability
-                      </LinkTagline>
-                      .
-                    </>
+                    Vike is a minimal-lock-in framework prioritizing application stability and user freedom, with a
+                    novel architecture that embraces JavaScript&apos;s fast-moving ecosystem.
                   </div>
                 </h1>
               </div>
