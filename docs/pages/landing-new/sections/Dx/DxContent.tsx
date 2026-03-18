@@ -34,20 +34,20 @@ const DxContent = () => {
             <Block>
               <p className="text-lg">
                 Toggle{' '}
-                <DX_InlineHighlight color="#b8d4eb">
-                  <Link href="/ssr">SSR</Link>
+                <DX_InlineHighlight color="#b8d4eb" href="/ssr">
+                  SSR
                 </DX_InlineHighlight>
                 /
-                <DX_InlineHighlight color="#c0ebb8">
-                  <Link href="/SSR-vs-SPA">SPA</Link>
+                <DX_InlineHighlight color="#c0ebb8" href="/SSR-vs-SPA">
+                  SPA
                 </DX_InlineHighlight>
                 /
-                <DX_InlineHighlight color="#e9b8e8">
-                  <Link href="/pre-rendering">SSG</Link>
+                <DX_InlineHighlight color="#e9b8e8" href="/pre-rendering">
+                  SSG
                 </DX_InlineHighlight>{' '}
                 on a page-by-page basis, powered by{' '}
-                <DX_InlineHighlight color="#f4f5a6">
-                  <Link href="/config#inheritance">config inheritance</Link>
+                <DX_InlineHighlight color="#f4f5a6" href="/config#inheritance">
+                  config inheritance
                 </DX_InlineHighlight>
                 .
               </p>
@@ -291,22 +291,27 @@ const ClosingWords = cm.a`flex btn sm:btn-lg btn-neutral mx-auto w-fit btn-outli
 
 function DX_InlineHighlight({
   color,
+  href,
   children,
 }: {
   color: string
+  href: string
   children: ReactNode
 }) {
   return (
-    <span
-      style={{
-        backgroundColor: color,
-        borderRadius: 4,
-        paddingLeft: 4,
-        paddingRight: 4,
-      }}
-    >
-      {children}
-    </span>
+    <Link href={href}>
+      <span
+        style={{
+          backgroundColor: color,
+          color: 'var(--color-text)',
+          borderRadius: 4,
+          paddingLeft: 4,
+          paddingRight: 4,
+        }}
+      >
+        {children}
+      </span>
+    </Link>
   )
 }
 
