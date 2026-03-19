@@ -1,3 +1,5 @@
+// TODO/ai rename publish.yml => sync-github-releases.yml and move this script to sync-github-releases/sync-releases.ts
+
 // Keeps GitHub releases aligned with `CHANGELOG.md` for the current package version:
 // it derives release notes from the changelog, creates the current release if needed,
 // and updates existing releases whose published notes are stale.
