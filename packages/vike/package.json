@@ -252,7 +252,7 @@
     "@types/semver": "^7.7.1",
     "@types/source-map-support": "^0.5.10",
     "react-streaming": "^0.4.16",
-    "rimraf": "^5.0.5",
+    "rimraf": "^6.1.3",
     "typescript": "^5.9.3",
     "vite": "^7.2.6"
   },
