@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { getReleasePlan, getReleaseSections } from './publish'
+import { getReleasePlan, getReleaseSections } from './sync-releases'
 
 describe('getReleaseSections()', () => {
   it('maps changelog headings to version tags', () => {

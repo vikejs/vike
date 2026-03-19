@@ -1,5 +1,3 @@
-// TODO/ai rename publish.yml => sync-github-releases.yml and move this script to sync-github-releases/sync-releases.ts
-
 // Keeps GitHub releases aligned with `CHANGELOG.md` for the current package version:
 // it derives release notes from the changelog, creates the current release if needed,
 // and updates existing releases whose published notes are stale.
@@ -159,7 +157,7 @@ async function githubRequest<T = void>(
       Accept: 'application/vnd.github+json',
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
-      'User-Agent': 'vike-release-workflow',
+      'User-Agent': 'vike-sync-github-releases-workflow',
       'X-GitHub-Api-Version': '2022-11-28',
     },
     body: body ? JSON.stringify(body) : undefined,

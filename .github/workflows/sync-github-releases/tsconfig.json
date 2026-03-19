@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "moduleResolution": "bundler",
+    "noImplicitAny": true,
+    "checkJs": true,
+    "esModuleInterop": true,
+    "module": "ESNext",
+    "skipLibCheck": true
+  }
+}
