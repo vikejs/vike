@@ -31,14 +31,18 @@ type ReleaseUpdateInput = {
 export function getReleaseSections(changelog: string): ReleaseSections {
   const sections: ReleaseSections = {}
   const regex = /^## \[([^\]]+)\]/gm
-  const matches = [...changelog.matchAll(regex)]
+  const matches: { version: string; index: number }[] = []
+
+  let match: RegExpExecArray | null
+  while ((match = regex.exec(changelog)) !== null) {
+    matches.push({ version: match[1], index: match.index })
+  }
 
   matches.forEach((match, index) => {
-    const version = match[1]
     const start = changelog.indexOf('\n', match.index)
     const end = matches[index + 1]?.index ?? changelog.length
     const notes = changelog.slice(start, end).trim()
-    sections[`v${version}`] = notes
+    sections[`v${match.version}`] = notes
   })
 
   return sections
