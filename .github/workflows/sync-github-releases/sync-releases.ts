@@ -92,6 +92,8 @@ function getReleasePlan({
 }
 
 async function main(): Promise<void> {
+  // Local testing:
+  // GITHUB_TOKEN=<contents:write token> bun ./.github/workflows/sync-github-releases/sync-releases.ts
   const { owner, repo } = getRepository()
   const token = getEnv('GITHUB_TOKEN')
   const defaultBranch = getDefaultBranch()
