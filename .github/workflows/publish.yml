@@ -81,10 +81,7 @@ jobs:
                 tag_name: versionTag,
                 target_commitish: defaultBranch,
                 name: versionTag,
-                body: sections[versionTag],
-                draft: false,
-                prerelease: false,
-                generate_release_notes: false
+                body: sections[versionTag]
               })
 
               console.log(`Created release ${versionTag}`)
