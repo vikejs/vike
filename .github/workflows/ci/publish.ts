@@ -1,3 +1,7 @@
+// TODO/ai: implement high-level comment what this file does
+// TODO/ai: document each GitHub API usage with a link to official GitHub doc
+// TODO/ai: move all `export` here (top of file)
+
 import assert from 'node:assert'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
