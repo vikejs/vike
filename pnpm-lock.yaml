@@ -825,8 +825,8 @@ importers:
         specifier: ^4.0.2
         version: 4.0.3
       semver:
-        specifier: ^7.0.0
-        version: 7.7.3
+        specifier: ^7.7.4
+        version: 7.7.4
       sirv:
         specifier: ^3.0.1
         version: 3.0.2
@@ -856,8 +856,8 @@ importers:
         specifier: ^3.0.2
         version: 3.0.2
       '@types/semver':
-        specifier: ^7.5.8
-        version: 7.5.8
+        specifier: ^7.7.1
+        version: 7.7.1
       '@types/source-map-support':
         specifier: ^0.5.10
         version: 0.5.10
@@ -4628,8 +4628,8 @@ packages:
   '@types/react@19.2.7':
     resolution: {integrity: sha512-MWtvHrGZLFttgeEj28VXHxpmwYbor/ATPYbBfSFZEIRK0ecCFLl2Qo55z52Hss+UV9CRN7trSeq1zbgx7YDWWg==}
 
-  '@types/semver@7.5.8':
-    resolution: {integrity: sha512-I8EUhyrgfLrcTkzV3TSsGyl1tSuPrEDzr0yd5m90UgNxQkyDXULk3b6MlQqTCpZpNtWe1K0hzclnZkTcLBe2UQ==}
+  '@types/semver@7.7.1':
+    resolution: {integrity: sha512-FmgJfu+MOcQ370SD0ev7EI8TlCAfKYU+B4m5T3yXc1CiRN94g/SZPtsCkk506aUDtlMnFZvasDwHHUcZUEaYuA==}
 
   '@types/send@1.2.1':
     resolution: {integrity: sha512-arsCikDvlU99zl1g69TcAB3mzZPpxgw0UQnaHeC1Nwb015xp8bknZv5rIfri9xTOcMuaVgvabfIRA7PSZVuZIQ==}
@@ -11230,7 +11230,7 @@ snapshots:
     dependencies:
       csstype: 3.2.3
 
-  '@types/semver@7.5.8': {}
+  '@types/semver@7.7.1': {}
 
   '@types/send@1.2.1':
     dependencies:
