@@ -4,6 +4,8 @@
 
 export { getReleasePlan }
 export { getReleaseSections }
+export { getDefaultBranch }
+export { getRepository }
 
 import assert from 'node:assert'
 import { readFile } from 'node:fs/promises'
@@ -92,7 +94,7 @@ function getReleasePlan({
 async function main(): Promise<void> {
   const { owner, repo } = getRepository()
   const token = getEnv('GITHUB_TOKEN')
-  const defaultBranch = getEnv('GITHUB_DEFAULT_BRANCH')
+  const defaultBranch = getDefaultBranch()
   const versionTag = `v${version}`
   const changelog = await readRepositoryFile('CHANGELOG.md')
   const sections = getReleaseSections(changelog)
@@ -125,10 +127,14 @@ async function main(): Promise<void> {
 }
 
 function getRepository(): { owner: string; repo: string } {
-  const repository = getEnv('GITHUB_REPOSITORY')
+  const repository = process.env.GITHUB_REPOSITORY ?? 'vikejs/vike'
   const [owner, repo] = repository.split('/')
   assert(owner && repo, `Invalid GITHUB_REPOSITORY value: ${repository}`)
   return { owner, repo }
+}
+
+function getDefaultBranch(): string {
+  return process.env.GITHUB_DEFAULT_BRANCH ?? 'main'
 }
 
 function getEnv(name: string): string {

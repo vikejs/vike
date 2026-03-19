@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { getReleasePlan, getReleaseSections } from './sync-releases'
+import { getDefaultBranch, getReleasePlan, getReleaseSections, getRepository } from './sync-releases'
 
 describe('getReleaseSections()', () => {
   it('maps changelog headings to version tags', () => {
@@ -75,5 +75,35 @@ describe('getReleasePlan()', () => {
         releases: [],
       }),
     ).toThrow('Missing changelog entry for v1.0.1')
+  })
+})
+
+describe('local fallbacks', () => {
+  it('falls back to the production repository when run locally', () => {
+    const previous = process.env.GITHUB_REPOSITORY
+    try {
+      delete process.env.GITHUB_REPOSITORY
+      expect(getRepository()).toEqual({ owner: 'vikejs', repo: 'vike' })
+    } finally {
+      if (previous === undefined) {
+        delete process.env.GITHUB_REPOSITORY
+      } else {
+        process.env.GITHUB_REPOSITORY = previous
+      }
+    }
+  })
+
+  it('falls back to the main branch when run locally', () => {
+    const previous = process.env.GITHUB_DEFAULT_BRANCH
+    try {
+      delete process.env.GITHUB_DEFAULT_BRANCH
+      expect(getDefaultBranch()).toBe('main')
+    } finally {
+      if (previous === undefined) {
+        delete process.env.GITHUB_DEFAULT_BRANCH
+      } else {
+        process.env.GITHUB_DEFAULT_BRANCH = previous
+      }
+    }
   })
 })
