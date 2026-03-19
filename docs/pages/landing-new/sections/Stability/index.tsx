@@ -43,37 +43,7 @@ const StabilitySection = () => {
           </div>
         </LayoutComponent>
       </div>
-      <LayoutComponent className="grid lg:grid-cols-2 gap-10 my-12 md:my-24">
-        <div className="">
-          <H4Headline as="h3" className="mb-2">
-            <GradientText color="blue">Long-term</GradientText> support
-          </H4Headline>
-          <p className="mb-6">
-            Vike's agnosticity is a stable foundation — use any stable stack for as long as you want.
-          </p>
-          <BarChart
-            pollData={[
-              { label: textOtherFrameworks, percentage: 33 },
-              { label: 'Vike', percentage: 100 },
-            ]}
-            color="blue"
-          />
-        </div>
-        <div className="">
-          <H4Headline as="h3" className="mb-2">
-            <GradientText color="blue">Cutting-edge </GradientText> support
-          </H4Headline>
-          <p className="mb-6">Powerful hooks provide all the flexibility you need to adopt the cutting-edge.</p>
-          <BarChart
-            pollData={[
-              { label: textOtherFrameworks, percentage: 33 },
-              { label: 'Vike', percentage: 100 },
-            ]}
-            color="blue"
-          />
-        </div>
-      </LayoutComponent>
-      <LayoutComponent>
+      <LayoutComponent className="md:my-24">
         <GlassContainer>
           <div className="grid grid-cols-2 gap4 md:gap-10 py-6">
             <H2Headline>
@@ -84,6 +54,36 @@ const StabilitySection = () => {
               You can choose between stable & battle-tested stacks with unprecedented long-term support, or the
               cutting-edge with unprecedented flexibility. Learn more.
             </p>
+          </div>
+          <div className="grid lg:grid-cols-2 gap-10 my-12 md:my-24">
+            <div className="">
+              <H4Headline as="h3" className="mb-2">
+                <GradientText color="blue">Long-term</GradientText> support
+              </H4Headline>
+              <p className="mb-6">
+                Vike's agnosticity is a stable foundation — use any stable stack for as long as you want.
+              </p>
+              <BarChart
+                pollData={[
+                  { label: textOtherFrameworks, percentage: 33 },
+                  { label: 'Vike', percentage: 100 },
+                ]}
+                color="blue"
+              />
+            </div>
+            <div className="">
+              <H4Headline as="h3" className="mb-2">
+                <GradientText color="blue">Cutting-edge </GradientText> support
+              </H4Headline>
+              <p className="mb-6">Powerful hooks provide all the flexibility you need to adopt the cutting-edge.</p>
+              <BarChart
+                pollData={[
+                  { label: textOtherFrameworks, percentage: 33 },
+                  { label: 'Vike', percentage: 100 },
+                ]}
+                color="blue"
+              />
+            </div>
           </div>
         </GlassContainer>
       </LayoutComponent>
