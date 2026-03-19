@@ -2,6 +2,9 @@
 // it derives release notes from the changelog, creates the current release if needed,
 // and updates existing releases whose published notes are stale.
 
+export { getReleasePlan }
+export { getReleaseSections }
+
 import assert from 'node:assert'
 import { readFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
@@ -31,8 +34,6 @@ type ReleaseUpdateInput = {
   tag_name: string
   body: string
 }
-
-export { getReleasePlan, getReleaseSections }
 
 function getReleaseSections(changelog: string): ReleaseSections {
   const sections: ReleaseSections = {}
