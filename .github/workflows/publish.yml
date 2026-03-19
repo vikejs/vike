@@ -20,6 +20,10 @@ jobs:
     environment: release
     steps:
       - uses: actions/checkout@v6
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          version: 1.2.19
       - name: Install pnpm
         uses: pnpm/action-setup@v5
         with:
@@ -36,69 +40,8 @@ jobs:
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      # TODO/ai can we make this script external as .ts then run it with Bun? Will the GitHub API still work then?
       - name: Create GitHub release
-        uses: actions/github-script@v8
-        with:
-          script: |
-            const fs = require('fs')
-
-            // Create sections object from CHANGELOG.md
-            const changelog = fs.readFileSync('./CHANGELOG.md', 'utf8')
-            const sections = {}
-            const regex = /^## \[([^\]]+)\]/gm
-            let match
-            const matches = []
-
-            while ((match = regex.exec(changelog)) !== null) {
-              matches.push({ version: match[1], index: match.index })
-            }
-
-            for (let i = 0; i < matches.length; i++) {
-              const start = changelog.indexOf('\n', matches[i].index)
-              const end = i + 1 < matches.length ? matches[i + 1].index : changelog.length
-              const notes = changelog.substring(start, end).trim()
-              const tag = `v${matches[i].version}`
-              sections[tag] = notes
-            }
-
-            const { owner, repo } = context.repo
-
-            const { data: releases } = await github.rest.repos.listReleases({
-              owner,
-              repo,
-              per_page: 100 // Default is 30
-            })
-
-            const defaultBranch = '${{ github.event.repository.default_branch }}'
-            const version = require('./packages/vike/package.json').version
-            const versionTag = `v${version}`
-
-            // Create release
-            if (releases.length === 0 || releases[0].tag_name !== versionTag) {
-              await github.rest.repos.createRelease({
-                owner,
-                repo,
-                tag_name: versionTag,
-                target_commitish: defaultBranch,
-                name: versionTag,
-                body: sections[versionTag]
-              })
-
-              console.log(`Created release ${versionTag}`)
-            }
-
-            // Update releases
-            for (const release of releases) {
-              const body = sections[release.tag_name]
-              if (body && body !== release.body) {
-                await github.rest.repos.updateRelease({
-                  owner,
-                  repo,
-                  release_id: release.id,
-                  body
-                })
-
-                console.log(`Updated release ${release.tag_name}`)
-              }
-            }
+        run: bun ./.github/workflows/ci/publish.ts
+        env:
+          GITHUB_DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          GITHUB_TOKEN: ${{ github.token }}
