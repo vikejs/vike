@@ -95,8 +95,8 @@ const FlexibilitySection = () => {
             </H4Headline>
             <BarChart
               pollData={[
-                { label: textOtherFrameworks, percentage: 33 },
                 { label: 'Vike', percentage: 100 },
+                { label: textOtherFrameworks, percentage: 33 },
               ]}
               color="green"
             />
@@ -107,8 +107,8 @@ const FlexibilitySection = () => {
             </H4Headline>
             <BarChart
               pollData={[
-                { label: textOtherFrameworks, percentage: 33 },
                 { label: 'Vike', percentage: 100 },
+                { label: textOtherFrameworks, percentage: 33 },
               ]}
               color="green"
             />
@@ -162,8 +162,8 @@ const FlexibilitySection = () => {
           */}
           <BarChart
             pollData={[
-              { label: textOtherFrameworks, percentage: 33 },
               { label: 'Vike', percentage: 100 },
+              { label: textOtherFrameworks, percentage: 33 },
             ]}
             color="green"
           />

@@ -65,8 +65,8 @@ const StabilitySection = () => {
               </p>
               <BarChart
                 pollData={[
-                  { label: textOtherFrameworks, percentage: 33 },
                   { label: 'Vike', percentage: 100 },
+                  { label: textOtherFrameworks, percentage: 33 },
                 ]}
                 color="blue"
               />
@@ -78,8 +78,8 @@ const StabilitySection = () => {
               <p className="mb-6">Powerful hooks provide all the flexibility you need to adopt the cutting-edge.</p>
               <BarChart
                 pollData={[
-                  { label: textOtherFrameworks, percentage: 33 },
                   { label: 'Vike', percentage: 100 },
+                  { label: textOtherFrameworks, percentage: 33 },
                 ]}
                 color="blue"
               />
