@@ -6,8 +6,8 @@ updates:
       interval: "daily"
       time: "03:30"
       timezone: "Europe/Berlin"
-    # Only dependencies maintained by the Vike team
     allow:
+      # Dependencies maintained by the Vike team
       - dependency-name: "@batijs/*"
       - dependency-name: "@brillout/*"
       - dependency-name: "@photonjs/*"
@@ -16,3 +16,5 @@ updates:
       - dependency-name: "telefunc"
       - dependency-name: "vike-*"
       - dependency-name: "vite-plugin-vercel"
+      # Dependencies *not* maintained by the Vike team
+      - dependency-name: "vitest"
