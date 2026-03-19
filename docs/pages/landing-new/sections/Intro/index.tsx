@@ -26,12 +26,9 @@ const IntroSection = () => {
             </span>
             <div className="relative">
               <Headline as="h1" variant="xlarge" className="mx-auto">
-                The Framework for <br />
+                Framework for <br />
                 <GradientText color="blue">Stability</GradientText> and{' '}
                 <GradientText color="green">Freedom</GradientText>
-                {/* <HeadlineWord word="Flexible." isActive={activeHeadlineWord === 'green'} color="green" />{' '}
-                <HeadlineWord word="Reliable." isActive={activeHeadlineWord === 'blue'} color="blue" />{' '}
-                <HeadlineWord word="Fast." isActive={activeHeadlineWord === 'orange'} color="orange" /> */}
               </Headline>
             </div>
             <p className="text-base md:text-2xl text-grey text-center w-3/4 lg:w-4/5 mx-auto mb-6 mt-4">
