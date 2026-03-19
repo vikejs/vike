@@ -34,7 +34,11 @@ const bigComponents: VikeComponent[] = (
       link: 'https://vike.dev/config#inheritance',
     },
   ] as const
-).map((c) => ({ ...c, size: 'big' }))
+).map((c) => ({
+  ...c,
+  // size: 'big',
+  size: 'small',
+}))
 
 const smallComponents: VikeComponent[] = (
   [
@@ -86,7 +90,7 @@ const componentRows = splitIntoRows(components, rowCount)
 
 const VikeComponents = () => {
   return (
-    <div className="p-3 bg-linear-to-t to-white via-white rounded-box relative md:w-[90%] md:mx-auto">
+    <div className="p-3 bg-linear-to-t to-white via-white rounded-box relative md:w-[90%] md:mx-auto border-[3px] border-[#e7eaf3]">
       <ImageGroup />
       <ul className="list-none flex flex-wrap gap-1 lg:hidden">
         {components.map((component) => (
