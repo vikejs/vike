@@ -6,6 +6,9 @@ import Headline from '../../components/Headline'
 import BrandSubsection from './BrandSubsection'
 import UspHeroMobile from './UspHero/UspHeroMobile'
 
+const taglineSecondary =
+  "Vike is a minimal-lock-in framework that prioritizes application stability and development freedom, powered by an open foundation built for JavaScript's rapidly evolving ecosystem."
+
 const IntroSection = () => {
   const getStartedButtonRef = useRef<HTMLAnchorElement>(null)
 
@@ -32,8 +35,7 @@ const IntroSection = () => {
               </Headline>
             </div>
             <p className="text-base md:text-2xl text-grey text-center w-3/4 lg:w-4/5 mx-auto mb-6 mt-4">
-              Vike is a minimal-lock-in framework prioritizing application stability and development freedom, with a
-              novel architecture that embraces JavaScript&apos;s fast-moving ecosystem.
+              {taglineSecondary}
             </p>
             <div className="flex gap-2 items-center justify-center mb-8 sm:mb-12">
               <a
