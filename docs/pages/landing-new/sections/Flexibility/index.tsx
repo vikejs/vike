@@ -65,16 +65,19 @@ const FlexibilitySection = () => {
               <p className="mb-8">
                 <ul>
                   <li>
-                    - <b>Any frontend</b>: React/Vue/Solid/... with SPA/SSG/SSR/...
+                    - <b>Any frontend</b>: React/Vue/Solid/...
+                  </li>
+                  <li>
+                    - <b>Any rendering</b>: SPA/SSG/SSR/...
                   </li>
                   <li>
                     - <b>Any API</b>: RPC/REST/GraphQL
                   </li>
                   <li>
-                    - <b>Any backend</b>: Hono/Express.js/Fastify/..., or Laravel/Java/Django/...
+                    - <b>Any backend</b>: Hono/Express.js/Laravel/Java/...
                   </li>
                   <li>
-                    - <b>Any deployment</b>: Cloudflare/Vercel/Netlify/AWS/Docker/...
+                    - <b>Any deployment</b>: Self-hosted/Cloudflare/Vercel/...
                   </li>
                 </ul>
               </p>
@@ -151,10 +154,12 @@ const FlexibilitySection = () => {
         </LayoutComponent>
 
         <LayoutComponent $size="xs" className="mt-16 lg:mt-0">
-          <H4Headline className="mb-2">
+          <H4Headline className="mb-7">
             Supported <GradientText color="green">use cases</GradientText>
           </H4Headline>
+          {/*
           <p className="mb-8 text-grey">Vike supports an unmatched amount of use cases.</p>
+          */}
           <BarChart
             pollData={[
               { label: textOtherFrameworks, percentage: 33 },
