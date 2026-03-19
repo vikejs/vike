@@ -36,6 +36,7 @@ jobs:
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # TODO/ai can we make this script external as .ts then run it with Bun? Will the GitHub API still work then?
       - name: Create GitHub release
         uses: actions/github-script@v8
         with:
