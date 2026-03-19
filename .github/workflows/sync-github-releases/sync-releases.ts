@@ -105,26 +105,47 @@ async function main(): Promise<void> {
   const releases = await githubRequest<Release[]>(`/repos/${owner}/${repo}/releases?per_page=100`, {
     token,
   })
-  const { releaseToCreate, releasesToUpdate } = getReleasePlan({ defaultBranch, releases, sections, versionTag })
 
-  if (releaseToCreate) {
-    // https://docs.github.com/en/rest/releases/releases#create-a-release
-    await githubRequest(`/repos/${owner}/${repo}/releases`, {
-      token,
-      method: 'POST',
-      body: releaseToCreate,
-    })
-    console.log(`Created release ${versionTag}`)
-  }
+  if (releases.length === 0) {
+    // Pulbish releases that are in CHANGELOG but not published
+    // Create release from oldest to newest, so that the release list
+    // is sorted by creation date in the same order as the changelog sections
+    const allTagReleasesToCreate = Object.keys(sections).reverse()
+    for (const tagName of allTagReleasesToCreate) {
+      await githubRequest(`/repos/${owner}/${repo}/releases`, {
+        token,
+        method: 'POST',
+        body: {
+          name: tagName,
+          tag_name: tagName,
+          target_commitish: defaultBranch,
+          body: sections[tagName]
+        }
+      })
+      console.log(`Created release ${tagName}`)
+    }
+  } else {
+    const { releaseToCreate, releasesToUpdate } = getReleasePlan({ defaultBranch, releases, sections, versionTag })
 
-  for (const release of releasesToUpdate) {
-    // https://docs.github.com/en/rest/releases/releases#update-a-release
-    await githubRequest(`/repos/${owner}/${repo}/releases/${release.release_id}`, {
-      token,
-      method: 'PATCH',
-      body: { body: release.body },
-    })
-    console.log(`Updated release ${release.tag_name}`)
+    if (releaseToCreate) {
+      // https://docs.github.com/en/rest/releases/releases#create-a-release
+      await githubRequest(`/repos/${owner}/${repo}/releases`, {
+        token,
+        method: 'POST',
+        body: releaseToCreate,
+      })
+      console.log(`Created release ${versionTag}`)
+    }
+
+    for (const release of releasesToUpdate) {
+      // https://docs.github.com/en/rest/releases/releases#update-a-release
+      await githubRequest(`/repos/${owner}/${repo}/releases/${release.release_id}`, {
+        token,
+        method: 'PATCH',
+        body: { body: release.body },
+      })
+      console.log(`Updated release ${release.tag_name}`)
+    }
   }
 }
 
