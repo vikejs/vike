@@ -9,7 +9,7 @@ export default defineConfig({
     projects: [
       {
         test: {
-          include: ['packages/**/*.spec.ts'],
+          include: ['packages/**/*.spec.ts', '.github/**/*.spec.ts'],
           name: 'unit',
           env,
         },
