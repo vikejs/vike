@@ -29,7 +29,7 @@ const DxContent = () => {
     <div className="space-y-16">
       <GlassContainer>
         <Section className="py-10">
-          <SectionTitle className="text-center mb-10">First-class SSR/SPA/SSG support</SectionTitle>
+          <SectionTitle className="text-center mb-10">First-class SSR/SPA/SSG</SectionTitle>
           <TwoColumn>
             <Block>
               <p className="text-lg">
@@ -111,7 +111,7 @@ const DxContent = () => {
       </Section>
 
       <Section>
-        <SectionTitle className="mb-10 text-center">Powerful hooks</SectionTitle>
+        <SectionTitle className="mb-10 text-center">Hooks</SectionTitle>
         <div className="grid grid-cols-1 md:grid-cols-11 gap-4 lg:gap-8">
           <Block className="md:col-span-6">
             <SubSectionTitle>
