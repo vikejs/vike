@@ -51,18 +51,15 @@ const StabilitySection = () => {
               Your <GradientText color="blue">choice.</GradientText>
             </H2Headline>
             <p className="mb-4">
-              You can choose between stable & battle-tested stacks with unprecedented long-term support, or the
-              cutting-edge with unprecedented flexibility.
+              Choose between a stable stack with unprecedented long-term support (thanks for Vike's agnostic
+              foundation), or the cutting-edge with unprecedented flexibility (thanks to powerful hooks).
             </p>
           </div>
           <div className="grid lg:grid-cols-2 gap-10 my-12 md:my-0">
             <div className="">
-              <H4Headline as="h3" className="mb-2">
-                <GradientText color="blue">Long-term</GradientText> support
+              <H4Headline as="h3" className="mb-7">
+                <GradientText color="blue">Legacy</GradientText> support
               </H4Headline>
-              <p className="mb-6">
-                Vike's agnosticity is a stable foundation — use any stable stack for as long as you want.
-              </p>
               <BarChart
                 pollData={[
                   { label: 'Vike', percentage: 100 },
@@ -72,16 +69,15 @@ const StabilitySection = () => {
               />
             </div>
             <div className="">
-              <H4Headline as="h3" className="mb-2">
-                <GradientText color="blue">Cutting-edge </GradientText> support
+              <H4Headline as="h3" className="mb-7">
+                <GradientText color="green">Cutting-edge </GradientText> support
               </H4Headline>
-              <p className="mb-6">Powerful hooks provide all the flexibility you need to adopt the cutting-edge.</p>
               <BarChart
                 pollData={[
                   { label: 'Vike', percentage: 100 },
                   { label: textOtherFrameworks, percentage: 33 },
                 ]}
-                color="blue"
+                color="green"
               />
             </div>
           </div>
