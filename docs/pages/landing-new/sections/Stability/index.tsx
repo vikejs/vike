@@ -52,10 +52,10 @@ const StabilitySection = () => {
             </H2Headline>
             <p className="mb-4">
               You can choose between stable & battle-tested stacks with unprecedented long-term support, or the
-              cutting-edge with unprecedented flexibility. Learn more.
+              cutting-edge with unprecedented flexibility.
             </p>
           </div>
-          <div className="grid lg:grid-cols-2 gap-10 my-12 md:my-24">
+          <div className="grid lg:grid-cols-2 gap-10 my-12 md:my-0">
             <div className="">
               <H4Headline as="h3" className="mb-2">
                 <GradientText color="blue">Long-term</GradientText> support

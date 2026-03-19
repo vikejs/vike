@@ -5,7 +5,7 @@ import HeadlineGroup from '../../components/HeadlineGroup'
 import GradientText from '../../components/GradientText'
 import SectionHeader from '../../components/SectionHeader'
 import FlexGraphic from './FlexGraphic'
-import { ChevronsRight } from 'lucide-react'
+import { ChevronDown, ChevronsDown, ChevronsRight } from 'lucide-react'
 import GlassContainer from '../../components/GlassContainer'
 import libraryRollImg from '../../assets/libraryRoll.avif'
 import libraryRollImgMobile from '../../assets/libraryRoll@0.5.avif'
@@ -129,22 +129,13 @@ const FlexibilitySection = () => {
                   }
                 />
                 <p className="mb-8">
-                  <b>Use powerful hooks for unprecedented flexibility</b>, such as:
+                  Use powerful hooks for <b>unprecedented flexibility</b> and extensive control over tool integration, data lifecycle, pre-rendering, state managment, and more.
                 </p>
-                <ul>
-                  <li>- Novel DX for faster development (e.g. `+guard`)</li>
-                  <li>- Advanced control over data lifecycle (e.g. precise control of data sent to the client)</li>
-                  <li>
-                    - Integrate tools with unprecedented flexibility (e.g. tight integration with state management
-                    tools)
-                  </li>
-                  <li>- Advanced use cases (e.g. extra control over pre-rendering)</li>
-                </ul>
                 <p>
-                  <a href="/docs/hooks/introduction">
+                  <a href="#hooks">
                     <GradientText color="green" className="flex gap-2 items-center ">
                       <ClosingWords>
-                        See list of hooks <ChevronsRight className="w-4 h-4 text-primary" />
+                        See use cases <ChevronsDown className="w-4 h-4 text-primary" />
                       </ClosingWords>
                     </GradientText>
                   </a>

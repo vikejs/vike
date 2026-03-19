@@ -111,7 +111,7 @@ const DxContent = () => {
       </Section>
 
       <Section>
-        <SectionTitle className="mb-10 text-center">Hooks</SectionTitle>
+        <SectionTitle id="hooks" className="mb-10 text-center">Hooks</SectionTitle>
         <div className="grid grid-cols-1 md:grid-cols-11 gap-4 lg:gap-8">
           <Block className="md:col-span-6">
             <SubSectionTitle>
