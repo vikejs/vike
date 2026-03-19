@@ -35,8 +35,8 @@ const StabilitySection = () => {
                 future, making Vike a stable foundation.{' '}
               </p>
               <p>
-                <b>Fast evolving JavaScript tools aren't built into Vike by design</b>. Instead, Vike extensions provide
-                deep and first-class integrations via powerful hooks.
+                <b>Fast evolving JavaScript tools aren't built into Vike by design</b> — instead, Vike extensions
+                provide deep and first-class integrations via powerful hooks.
               </p>
             </div>
           </div>
