@@ -31,6 +31,9 @@ const useUspHero = () => {
       const contentInteractionNodes = Array.from(
         rootNode.querySelectorAll<HTMLElement>('[data-usp-content-hit="true"]'),
       )
+      const heroInteractionNodes = Array.from(
+        rootNode.querySelectorAll<HTMLElement>('[data-usp-hero-interaction="true"]'),
+      )
       const stickyInteractionNodes = Array.from(rootNode.querySelectorAll<HTMLElement>('[data-usp-sticky-hit="true"]'))
       const stickyExtraHitboxNodes = Array.from(
         rootNode.querySelectorAll<HTMLElement>('[data-usp-extra-hitbox="true"]'),
@@ -115,6 +118,20 @@ const useUspHero = () => {
           },
         })
       }
+      const scrollToTop = () => {
+        if (typeof window === 'undefined') {
+          return
+        }
+        gsap.to(window, {
+          duration: uiConfig.transition.longDuration,
+          ease: uiConfig.transition.easeInOutGsap,
+          overwrite: 'auto',
+          scrollTo: {
+            y: 0,
+            autoKill: true,
+          },
+        })
+      }
       const setIfAny = (targets: HTMLElement[], vars: gsap.TweenVars) => {
         if (!targets.length) {
           return
@@ -129,6 +146,7 @@ const useUspHero = () => {
         transformOrigin: 'top center',
       })
       setIfAny(contentInteractionNodes, { pointerEvents: 'auto' })
+      setIfAny(heroInteractionNodes, { pointerEvents: 'auto' })
       setIfAny(stickyInteractionNodes, { autoAlpha: 1, pointerEvents: 'none' })
       setIfAny(stickyExtraHitboxNodes, { pointerEvents: 'none' })
       setIfAny(iconNodes, { transformOrigin: 'center center' })
@@ -145,8 +163,10 @@ const useUspHero = () => {
       const scroller = document.querySelector<HTMLElement>('body') ?? undefined
       const setInteractionMode = (isStickyMode: boolean) => {
         setIfAny(contentInteractionNodes, { pointerEvents: isStickyMode ? 'none' : 'auto' })
+        setIfAny(heroInteractionNodes, { pointerEvents: isStickyMode ? 'none' : 'auto' })
         setIfAny(stickyInteractionNodes, { pointerEvents: isStickyMode ? 'auto' : 'none' })
         setIfAny(stickyExtraHitboxNodes, { pointerEvents: isStickyMode ? 'auto' : 'none' })
+        setIfAny(stickyLogoNodes, { pointerEvents: isStickyMode ? 'auto' : 'none' })
       }
       const applyCompactDockedState = (isDocked: boolean) => {
         const hasChanged = isCompactDockedRef.current !== isDocked
@@ -244,6 +264,26 @@ const useUspHero = () => {
         }
         node.addEventListener('click', handler)
         stickyClickListeners.push({ node, handler })
+      })
+      const heroClickListeners: Array<{ node: HTMLElement; handler: () => void }> = []
+      heroInteractionNodes.forEach((node) => {
+        const id = node.dataset.uspId
+        if (!id) {
+          return
+        }
+        const handler = () => {
+          scrollToSectionById(id as UspId)
+        }
+        node.addEventListener('click', handler)
+        heroClickListeners.push({ node, handler })
+      })
+      const logoClickListeners: Array<{ node: HTMLElement; handler: () => void }> = []
+      stickyLogoNodes.forEach((node) => {
+        const handler = () => {
+          scrollToTop()
+        }
+        node.addEventListener('click', handler)
+        logoClickListeners.push({ node, handler })
       })
 
       ScrollTrigger.create({
@@ -350,6 +390,12 @@ const useUspHero = () => {
 
       return () => {
         stickyClickListeners.forEach(({ node, handler }) => {
+          node.removeEventListener('click', handler)
+        })
+        heroClickListeners.forEach(({ node, handler }) => {
+          node.removeEventListener('click', handler)
+        })
+        logoClickListeners.forEach(({ node, handler }) => {
           node.removeEventListener('click', handler)
         })
         sectionProgressTriggers.forEach((trigger) => {

@@ -43,7 +43,12 @@ const UspHero = () => {
       <div className="relative h-1 w-full left-0 -top-80 z-50 mx-auto">
         <SharedOuterGrid className="z-40 min-h-80 top-0">
           {landingPageHeroUsps.map((usp) => (
-            <div key={`${usp.id}-interaction`} className="relative z-300 cursor-pointer" />
+            <div
+              key={`${usp.id}-interaction`}
+              data-usp-hero-interaction="true"
+              data-usp-id={usp.id}
+              className="relative z-300 cursor-pointer"
+            />
           ))}
         </SharedOuterGrid>
       </div>

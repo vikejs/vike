@@ -97,7 +97,7 @@ const UspStickyContent = ({ isCompactDocked, uspVisualStateById }: UspStickyCont
                   <div
                     data-usp-sticky-progress-track={usp.id}
                     className={cmMerge(
-                      `top-12 lg:left-24 w-32 lg:w-44 absolute mt-2 h-0.5 rounded-full bg-base-content/3 transition-opacity ${uiConfig.transition.shortDurationTw} ${uiConfig.transition.easeOutTw}`,
+                      `top-12 lg:left-24 w-32 lg:w-44 absolute mt-2 h-0.5 rounded-full bg-base-200 `,
                       showStickyProgress ? 'opacity-100' : 'opacity-0',
                     )}
                   >
