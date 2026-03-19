@@ -1,5 +1,5 @@
 import React from 'react'
-import { VikeComponentSize, VikeEcoComponentCategory } from './grid.utils'
+import { ecoComponentCategoryNames, VikeComponentSize, VikeEcoComponentCategory } from './grid.utils'
 import cm from '@classmatejs/react'
 
 type EcoComponent = {
@@ -43,10 +43,10 @@ const EcoComponents = () => {
   return (
     <div className="relative z-10 mb-10">
       <div className="flex gap-1 md:gap-4">
-        {Object.entries(ecosystemComponents).map(([category, components]) => (
+        {objectEntries(ecosystemComponents).map(([category, components]) => (
           <div key={category} className="flex flex-col items-center gap-1 flex-1">
             <BoxOrange className="text-xs text-grey" $type="category">
-              {category.charAt(0).toUpperCase() + category.slice(1)}
+              {ecoComponentCategoryNames[category]}
             </BoxOrange>
             <div className="flex-1">
               <ul className="list-none flex flex-wrap gap-1 md:gap-2 justify-center">
@@ -101,3 +101,9 @@ export const BoxOrange = cm.li.variants<{ $size?: VikeComponentSize; $type: 'lib
     $size: 'big',
   },
 })
+
+// https://stackoverflow.com/questions/60141960/typescript-key-value-relation-preserving-object-entries-type/75337277#75337277
+/** Same as Object.entries() but with type inference */
+function objectEntries<T extends object>(obj: T): [keyof T, T[keyof T]][] {
+  return Object.entries(obj) as any
+}
