@@ -6,6 +6,7 @@
     "checkJs": true,
     "esModuleInterop": true,
     "module": "ESNext",
+    "types": ["node"],
     "skipLibCheck": true
   }
 }
