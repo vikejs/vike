@@ -25,6 +25,7 @@
     "release:minor": "cd ./packages/vike/ && pnpm run release:minor",
     "release:major": "cd ./packages/vike/ && pnpm run release:major",
     "release:commit": "cd ./packages/vike/ && pnpm run release:commit",
+    "release:sync-github-releases": "bun ./.github/workflows/sync-github-releases/sync-releases.ts",
     "========= Formatting": "",
     "format": "biome check --write --unsafe",
     "format:check": "biome ci && echo '\\033[1;32mFormatting is correct.\\033[0m' || (echo '\\033[1;34mFix formatting by running `$ pnpm run format`.\\033[0m' && exit 1)",
