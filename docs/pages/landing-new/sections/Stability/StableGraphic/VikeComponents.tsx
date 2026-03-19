@@ -34,7 +34,11 @@ const bigComponents: VikeComponent[] = (
       link: 'https://vike.dev/config#inheritance',
     },
   ] as const
-).map((c) => ({ ...c, size: 'big' }))
+).map((c) => ({
+  ...c,
+  // size: 'big',
+  size: 'small',
+}))
 
 const smallComponents: VikeComponent[] = (
   [
