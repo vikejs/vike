@@ -35,7 +35,7 @@ const HeadlineGroup = ({
         <BaseHeadline
           className={`${sub ? 'mb-3' : ''}`}
           as={headingStyle === 'xlarge' ? 'h1' : headingStyle}
-          variant={headingStyle === 'h1' ? 'h2' : 'h3'}
+          variant={headingStyle}
           $centered={centered}
         >
           {main}

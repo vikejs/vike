@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef } from 'react'
 import LayoutComponent from '../../components/LayoutComponent'
 import GradientText from '../../components/GradientText'
 import UspHero from './UspHero'
@@ -14,7 +14,7 @@ const IntroSection = () => {
 
   return (
     <>
-      <div data-intro-section-root="true" className="relative z-20">
+      <div data-intro-section-root="true" className="relative z-20" id="intro-section">
         {/* <div className="absolute top-0 left-0 h-1/2 w-full bg-linear-to-t to-white z-10" /> */}
         <LayoutComponent
           $size="md"
@@ -41,6 +41,7 @@ const IntroSection = () => {
               <a
                 ref={getStartedButtonRef}
                 className="btn btn-md md:btn-lg text-white border-0 btn-neutral"
+                href="/new"
                 // style={
                 //   {
                 //     '--gradient-start': defaultGradients[initialCtaColor].startColor,

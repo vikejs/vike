@@ -7,6 +7,7 @@ import DxSection from './sections/Dx'
 import useScrollSmoother from './hooks/useScrollSmoother'
 
 import './tailwind.css'
+import Footer from './sections/Footer'
 
 const LandingPage = () => {
   // useScrollSmoother()
@@ -18,6 +19,7 @@ const LandingPage = () => {
         <FlexibilitySection />
         <StabilitySection />
         <DxSection />
+        <Footer />
       </div>
     </>
   )
