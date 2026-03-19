@@ -9,7 +9,7 @@ interface SectionHeaderProps {
   badgeText?: string
   color: UiColorVariantKey
   main: string | React.ReactNode
-  sub: string | React.ReactNode
+  sub?: string | React.ReactNode
 }
 
 const SectionHeader = ({ color, icon, main, sub }: SectionHeaderProps) => {
@@ -26,7 +26,7 @@ const SectionHeader = ({ color, icon, main, sub }: SectionHeaderProps) => {
           </span>
         }
         main={main}
-        sub={<span className="w-6/7 md:w-full block mx-auto">{sub}</span>}
+        sub={sub ? <span className="w-6/7 md:w-full block mx-auto">{sub}</span> : undefined}
         blurColor={color}
       />
     </div>
