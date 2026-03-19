@@ -6,4 +6,4 @@ packages:
   - 'test/'
   - 'test/*'
   - 'test-deprecated-design/*'
-  - '.github/workflows/ci'
+  - '.github/workflows/*'
