@@ -62,22 +62,20 @@ const FlexibilitySection = () => {
                   </>
                 }
               />
-              <p className="mb-8">
-                <ul>
-                  <li>
-                    - <b>Any frontend</b>: React/Vue/Solid/... with SPA/SSG/SSR/...
-                  </li>
-                  <li>
-                    - <b>Any API</b>: RPC/REST/GraphQL
-                  </li>
-                  <li>
-                    - <b>Any backend</b>: Hono/Express.js/Fastify/..., or Laravel/Java/Django/...
-                  </li>
-                  <li>
-                    - <b>Any deployment</b>: Cloudflare/Vercel/Netlify/AWS/Docker/...
-                  </li>
-                </ul>
-              </p>
+              <ul className="mb-8">
+                <li>
+                  - <b>Any frontend</b>: React/Vue/Solid/... with SPA/SSG/SSR/...
+                </li>
+                <li>
+                  - <b>Any API</b>: RPC/REST/GraphQL
+                </li>
+                <li>
+                  - <b>Any backend</b>: Hono/Express.js/Fastify/..., or Laravel/Java/Django/...
+                </li>
+                <li>
+                  - <b>Any deployment</b>: Cloudflare/Vercel/Netlify/AWS/Docker/...
+                </li>
+              </ul>
             </div>
           </GlassContainer>
         </div>
@@ -133,13 +131,9 @@ const FlexibilitySection = () => {
                   data lifecycle, pre-rendering, state managment, and more.
                 </p>
                 <p>
-                  <a href="#hooks">
-                    <GradientText color="green" className="flex gap-2 items-center ">
-                      <ClosingWords>
-                        See use cases <ChevronsDown className="w-4 h-4 text-primary" />
-                      </ClosingWords>
-                    </GradientText>
-                  </a>
+                  <ClosingWords href="#hooks" className="btn-primary">
+                    See use cases <ChevronsDown className="w-4 h-4" />
+                  </ClosingWords>
                 </p>
               </div>
             </GlassContainer>
