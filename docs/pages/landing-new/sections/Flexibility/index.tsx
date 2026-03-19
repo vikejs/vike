@@ -131,7 +131,7 @@ const FlexibilitySection = () => {
                   data lifecycle, pre-rendering, state managment, and more.
                 </p>
                 <p>
-                  <ClosingWords href="#hooks" className="btn-primary">
+                  <ClosingWords href="#hooks" className="btn-primary mx-0">
                     See use cases <ChevronsDown className="w-4 h-4" />
                   </ClosingWords>
                 </p>
