@@ -90,8 +90,8 @@ const FlexibilitySection = () => {
             </H4Headline>
             <BarChart
               pollData={[
-                { label: textOtherFrameworks, percentage: 33 },
                 { label: 'Vike', percentage: 100 },
+                { label: textOtherFrameworks, percentage: 33 },
               ]}
               color="green"
             />
@@ -102,8 +102,8 @@ const FlexibilitySection = () => {
             </H4Headline>
             <BarChart
               pollData={[
-                { label: textOtherFrameworks, percentage: 33 },
                 { label: 'Vike', percentage: 100 },
+                { label: textOtherFrameworks, percentage: 33 },
               ]}
               color="green"
             />
@@ -145,14 +145,16 @@ const FlexibilitySection = () => {
         </LayoutComponent>
 
         <LayoutComponent $size="xs" className="mt-16 lg:mt-0">
-          <H4Headline className="mb-2">
+          <H4Headline className="mb-7">
             Supported <GradientText color="green">use cases</GradientText>
           </H4Headline>
+          {/*
           <p className="mb-8 text-grey">Vike supports an unmatched amount of use cases.</p>
+          */}
           <BarChart
             pollData={[
-              { label: textOtherFrameworks, percentage: 33 },
               { label: 'Vike', percentage: 100 },
+              { label: textOtherFrameworks, percentage: 33 },
             ]}
             color="green"
           />
