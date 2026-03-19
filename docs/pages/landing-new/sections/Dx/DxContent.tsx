@@ -326,3 +326,4 @@ const List = ({ items }: { items: ReactNode[] | string[] }) => {
 }
 
 export default DxContent
+export { ClosingWords }

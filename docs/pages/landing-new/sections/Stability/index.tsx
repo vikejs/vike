@@ -7,6 +7,7 @@ import BarChart from '../../components/BarChart'
 import { UspCategoryId } from '../../util/constants'
 import GlassContainer from '../../components/GlassContainer'
 import StableGraphic from './StableGraphic'
+import { textOtherFrameworks } from '../Flexibility'
 
 const StabilitySection = () => {
   return (
@@ -18,7 +19,7 @@ const StabilitySection = () => {
             badgeText="Stability"
             main={
               <>
-                Rock-solid <GradientText color="blue">foundation(s)</GradientText>
+                <GradientText color="blue">Stable foundation</GradientText>
               </>
             }
             sub="Vike is a stable foundation you can trust and build upon with confidence."
@@ -52,7 +53,7 @@ const StabilitySection = () => {
           </p>
           <BarChart
             pollData={[
-              { label: 'other frameworks', percentage: 33 },
+              { label: textOtherFrameworks, percentage: 33 },
               { label: 'Vike', percentage: 100 },
             ]}
             color="blue"
@@ -65,7 +66,7 @@ const StabilitySection = () => {
           <p className="mb-6">Powerful hooks provide all the flexibility you need to adopt the cutting-edge.</p>
           <BarChart
             pollData={[
-              { label: 'other frameworks', percentage: 33 },
+              { label: textOtherFrameworks, percentage: 33 },
               { label: 'Vike', percentage: 100 },
             ]}
             color="blue"

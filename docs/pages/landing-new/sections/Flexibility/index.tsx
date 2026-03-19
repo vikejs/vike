@@ -13,6 +13,9 @@ import BlurDot from '../../components/BlurDot'
 import BarChart from '../../components/BarChart'
 import { H3Headline, H4Headline } from '../../components/Headline'
 import { UspCategoryId } from '../../util/constants'
+import { ClosingWords } from '../Dx/DxContent'
+
+export const textOtherFrameworks = 'Other'
 
 const FlexibilitySection = () => {
   return (
@@ -23,10 +26,9 @@ const FlexibilitySection = () => {
           badgeText="Flexibility"
           main={
             <>
-              Your stack, your <GradientText color="green">choice</GradientText>
+              <GradientText color="green">Freedom</GradientText>
             </>
           }
-          sub="Any tools. Any API. Any backend. Any rendering. Any deployment."
           color="green"
         />
       </LayoutComponent>
@@ -56,22 +58,25 @@ const FlexibilitySection = () => {
                 centered={false}
                 main={
                   <>
-                    <GradientText color="green">Limitless</GradientText> design
+                    <GradientText color="green">Your stack, your choice</GradientText>
                   </>
                 }
-                sub="Build anything you want"
               />
               <p className="mb-8">
-                Vike has <b>first-class</b> support for common architectures, and Vike's flexible design enables deep
-                integration with tools — use Vike extensions for automatic integration or integrate manually for maximum
-                flexibility.
-              </p>
-              <p>
-                <a href="/docs/hooks/introduction">
-                  <GradientText color="green" className="flex gap-2 items-center ">
-                    Learn more about hooks <ChevronsRight className="w-4 h-4 text-primary" />
-                  </GradientText>
-                </a>
+                <ul>
+                  <li>
+                    - <b>Any frontend</b>: React/Vue/Solid/... with SPA/SSG/SSR/...
+                  </li>
+                  <li>
+                    - <b>Any API</b>: RPC/REST/GraphQL
+                  </li>
+                  <li>
+                    - <b>Any backend</b>: Hono/Express.js/Fastify/..., or Laravel/Java/Django/...
+                  </li>
+                  <li>
+                    - <b>Any deployment</b>: Cloudflare/Vercel/Netlify/AWS/Docker/...
+                  </li>
+                </ul>
               </p>
             </div>
           </GlassContainer>
@@ -83,11 +88,11 @@ const FlexibilitySection = () => {
         <LayoutComponent className="grid md:grid-cols-2 gap-10">
           <div className="">
             <H4Headline as="h3" className="mb-4 md:mb-8">
-              Supported <GradientText color="green">tools</GradientText> (first-class support)
+              Supported <GradientText color="green">tools</GradientText>
             </H4Headline>
             <BarChart
               pollData={[
-                { label: 'other frameworks', percentage: 33 },
+                { label: textOtherFrameworks, percentage: 33 },
                 { label: 'Vike', percentage: 100 },
               ]}
               color="green"
@@ -95,11 +100,11 @@ const FlexibilitySection = () => {
           </div>
           <div className="">
             <H4Headline as="h3" className="mb-4 md:mb-8">
-              Supported <GradientText color="green">architectures</GradientText> (first-class support)
+              Supported <GradientText color="green">stacks</GradientText>
             </H4Headline>
             <BarChart
               pollData={[
-                { label: 'other frameworks', percentage: 33 },
+                { label: textOtherFrameworks, percentage: 33 },
                 { label: 'Vike', percentage: 100 },
               ]}
               color="green"
@@ -119,16 +124,28 @@ const FlexibilitySection = () => {
                   centered={false}
                   main={
                     <>
-                      <GradientText color="green">Powerful</GradientText> hooks
+                      <GradientText color="green">Powerful hooks</GradientText>
                     </>
                   }
-                  sub="Build what you want with powerful hooks."
                 />
-                <p className="mb-8">Vike's comprehensive list of hooks unlocks unprecedented flexibility.</p>
+                <p className="mb-8">
+                  <b>Use powerful hooks for unprecedented flexibility</b>, such as:
+                </p>
+                <ul>
+                  <li>- Novel DX for faster development (e.g. `+guard`)</li>
+                  <li>- Advanced control over data lifecycle (e.g. precise control of data sent to the client)</li>
+                  <li>
+                    - Integrate tools with unprecedented flexibility (e.g. tight integration with state management
+                    tools)
+                  </li>
+                  <li>- Advanced use cases (e.g. extra control over pre-rendering)</li>
+                </ul>
                 <p>
                   <a href="/docs/hooks/introduction">
                     <GradientText color="green" className="flex gap-2 items-center ">
-                      Learn more about hooks <ChevronsRight className="w-4 h-4 text-primary" />
+                      <ClosingWords>
+                        See list of hooks <ChevronsRight className="w-4 h-4 text-primary" />
+                      </ClosingWords>
                     </GradientText>
                   </a>
                 </p>
@@ -145,10 +162,10 @@ const FlexibilitySection = () => {
           <H4Headline className="mb-2">
             Supported <GradientText color="green">use cases</GradientText>
           </H4Headline>
-          <p className="mb-8 text-grey">Vike's hooks support an unmatched amount of use cases.</p>
+          <p className="mb-8 text-grey">Vike supports an unmatched amount of use cases.</p>
           <BarChart
             pollData={[
-              { label: 'other frameworks', percentage: 33 },
+              { label: textOtherFrameworks, percentage: 33 },
               { label: 'Vike', percentage: 100 },
             ]}
             color="green"
