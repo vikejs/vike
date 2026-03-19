@@ -516,8 +516,8 @@ importers:
         specifier: ^19.2.4
         version: 19.2.4(react@19.2.4)
       sirv:
-        specifier: ^2.0.0
-        version: 2.0.4
+        specifier: ^3.0.2
+        version: 3.0.2
       vike:
         specifier: 0.4.255
         version: link:../../packages/vike
@@ -828,7 +828,7 @@ importers:
         specifier: ^7.7.4
         version: 7.7.4
       sirv:
-        specifier: ^3.0.1
+        specifier: ^3.0.2
         version: 3.0.2
       source-map-support:
         specifier: ^0.5.0
@@ -1183,8 +1183,8 @@ importers:
         specifier: ^0.4.16
         version: 0.4.16(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       sirv:
-        specifier: ^2.0.2
-        version: 2.0.4
+        specifier: ^3.0.2
+        version: 3.0.2
       vike:
         specifier: 0.4.255
         version: link:../../packages/vike
@@ -1409,8 +1409,8 @@ importers:
         specifier: ^19.2.4
         version: 19.2.4(react@19.2.4)
       sirv:
-        specifier: ^2.0.3
-        version: 2.0.4
+        specifier: ^3.0.2
+        version: 3.0.2
       vike:
         specifier: 0.4.255
         version: link:../../packages/vike
@@ -4037,8 +4037,8 @@ packages:
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
 
-  '@polka/url@1.0.0-next.28':
-    resolution: {integrity: sha512-8LduaNlMZGwdZ6qWrKlfa+2M4gahzFkprZiAt2TF8uS0qQgBizKXpXURqvTJ4WtmupWxaLqjRb2UCTe72mu+Aw==}
+  '@polka/url@1.0.0-next.29':
+    resolution: {integrity: sha512-wwQAWhWSuHaag8c4q/KN/vCoeOJYshAIvMQwD4GpSb3OiZklFfvAgmj0VCBBImRpuF/aFgIRzllXlVX93Jevww==}
 
   '@poppinss/colors@4.1.5':
     resolution: {integrity: sha512-FvdDqtcRCtz6hThExcFOgW0cWX+xwSMWcRuQe5ZEb2m7cVQOAVZOIMt+/v9RxGiD9/OY16qJBXK4CVKWAPalBw==}
@@ -7716,10 +7716,6 @@ packages:
   simple-swizzle@0.2.4:
     resolution: {integrity: sha512-nAu1WFPQSMNr2Zn9PGSZK9AGn4t/y97lEm+MXTtUDwfP0ksAIX4nO+6ruD9Jwut4C49SB1Ws+fbXsm/yScWOHw==}
 
-  sirv@2.0.4:
-    resolution: {integrity: sha512-94Bdh3cC2PKrbgSOUqTiGPWVZeSiXfKOVZNJniWoqrWrRkB1CJzBU3NEbiTsPcYy1lDsANA/THzS+9WBiy5nfQ==}
-    engines: {node: '>= 10'}
-
   sirv@3.0.2:
     resolution: {integrity: sha512-2wcC/oGxHis/BoHkkPwldgiPSYcpZK3JU28WoMVv55yHJgcZ8rlXvuG9iZggz+sU1d4bRgIGASwyWqjxu3FM0g==}
     engines: {node: '>=18'}
@@ -10714,7 +10710,7 @@ snapshots:
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
-  '@polka/url@1.0.0-next.28': {}
+  '@polka/url@1.0.0-next.29': {}
 
   '@poppinss/colors@4.1.5':
     dependencies:
@@ -15366,15 +15362,9 @@ snapshots:
     dependencies:
       is-arrayish: 0.3.4
 
-  sirv@2.0.4:
-    dependencies:
-      '@polka/url': 1.0.0-next.28
-      mrmime: 2.0.1
-      totalist: 3.0.1
-
   sirv@3.0.2:
     dependencies:
-      '@polka/url': 1.0.0-next.28
+      '@polka/url': 1.0.0-next.29
       mrmime: 2.0.1
       totalist: 3.0.1
 
