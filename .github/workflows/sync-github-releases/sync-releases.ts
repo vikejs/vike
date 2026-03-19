@@ -11,6 +11,7 @@ import assert from 'node:assert'
 import { readFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import path from 'node:path'
+import { setTimeout } from 'node:timers/promises'
 import { fileURLToPath } from 'node:url'
 const require = createRequire(import.meta.url)
 const { version } = require('../../../packages/vike/package.json') as { version: string }
@@ -123,6 +124,8 @@ async function main(): Promise<void> {
         }
       })
       console.log(`Created release ${tagName}`)
+      // Avoid hitting GitHub abuse rate limits
+      await setTimeout(500)
     }
   } else {
     const { releaseToCreate, releasesToUpdate } = getReleasePlan({ defaultBranch, releases, sections, versionTag })
@@ -145,6 +148,8 @@ async function main(): Promise<void> {
         body: { body: release.body },
       })
       console.log(`Updated release ${release.tag_name}`)
+      // Avoid hitting GitHub abuse rate limits
+      await setTimeout(500)
     }
   }
 }
