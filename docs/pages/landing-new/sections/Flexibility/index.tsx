@@ -129,7 +129,8 @@ const FlexibilitySection = () => {
                   }
                 />
                 <p className="mb-8">
-                  Use powerful hooks for <b>unprecedented flexibility</b> and extensive control over tool integration, data lifecycle, pre-rendering, state managment, and more.
+                  Use powerful hooks for <b>unprecedented flexibility</b> and extensive control over tool integration,
+                  data lifecycle, pre-rendering, state managment, and more.
                 </p>
                 <p>
                   <a href="#hooks">
