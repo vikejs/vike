@@ -1,11 +1,11 @@
-// TODO/ai: implement high-level comment what this file does
-// TODO/ai: document each GitHub API usage with a link to official GitHub doc
-// TODO/ai: move all `export` here (top of file)
+// Keeps GitHub releases aligned with `CHANGELOG.md` for the current package version:
+// it derives release notes from the changelog, creates the current release if needed,
+// and updates existing releases whose published notes are stale.
 
 import assert from 'node:assert'
 import { readFile } from 'node:fs/promises'
-import path from 'node:path'
 import { createRequire } from 'node:module'
+import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const require = createRequire(import.meta.url)
@@ -32,7 +32,9 @@ type ReleaseUpdateInput = {
   body: string
 }
 
-export function getReleaseSections(changelog: string): ReleaseSections {
+export { getReleasePlan, getReleaseSections }
+
+function getReleaseSections(changelog: string): ReleaseSections {
   const sections: ReleaseSections = {}
   const regex = /^## \[([^\]]+)\]/gm
   const matches: { version: string; index: number }[] = []
@@ -52,7 +54,7 @@ export function getReleaseSections(changelog: string): ReleaseSections {
   return sections
 }
 
-export function getReleasePlan({
+function getReleasePlan({
   defaultBranch,
   releases,
   sections,
@@ -95,12 +97,14 @@ async function main(): Promise<void> {
   const changelog = await readRepositoryFile('CHANGELOG.md')
   const sections = getReleaseSections(changelog)
 
+  // https://docs.github.com/en/rest/releases/releases#list-releases
   const releases = await githubRequest<Release[]>(`/repos/${owner}/${repo}/releases?per_page=100`, {
     token,
   })
   const { releaseToCreate, releasesToUpdate } = getReleasePlan({ defaultBranch, releases, sections, versionTag })
 
   if (releaseToCreate) {
+    // https://docs.github.com/en/rest/releases/releases#create-a-release
     await githubRequest(`/repos/${owner}/${repo}/releases`, {
       token,
       method: 'POST',
@@ -110,6 +114,7 @@ async function main(): Promise<void> {
   }
 
   for (const release of releasesToUpdate) {
+    // https://docs.github.com/en/rest/releases/releases#update-a-release
     await githubRequest(`/repos/${owner}/${repo}/releases/${release.release_id}`, {
       token,
       method: 'PATCH',
