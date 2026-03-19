@@ -3,81 +3,71 @@ import React from 'react'
 import { splitIntoRows, VikeComponent, VikeComponentSize } from './grid.utils'
 import ImageGroup from './ImageGroup'
 
-const bigComponents: VikeComponent[] = [
-  {
-    name: 'SPA/SSR/SSG',
-    link: 'https://vike.dev/SSR-vs-SPA',
-    size: 'big',
-  },
-  {
-    name: 'HTML Streaming',
-    link: 'https://vike.dev/stream',
-    size: 'big',
-  },
-  {
-    name: 'Filesystem Routing',
-    link: 'https://vike.dev/filesystem-routing',
-    size: 'big',
-  },
-  {
-    name: 'Client Routing',
-    link: 'https://vike.dev/client-routing',
-    size: 'big',
-  },
-  {
-    name: 'Data fetching',
-    link: 'https://vike.dev/data-fetching',
-    size: 'big',
-  },
-  {
-    name: 'Powerful hooks',
-    link: 'https://vike.dev/hooks',
-    size: 'big',
-  },
-  {
-    name: 'Config inheritance',
-    link: 'https://vike.dev/config#inheritance',
-    size: 'big',
-  },
-]
+const bigComponents: VikeComponent[] = (
+  [
+    {
+      name: 'SPA/SSR/SSG',
+      link: 'https://vike.dev/SSR-vs-SPA',
+    },
+    {
+      name: 'HTML Streaming',
+      link: 'https://vike.dev/stream',
+    },
+    {
+      name: 'Filesystem Routing',
+      link: 'https://vike.dev/filesystem-routing',
+    },
+    {
+      name: 'Client Routing',
+      link: 'https://vike.dev/client-routing',
+    },
+    {
+      name: 'Data fetching',
+      link: 'https://vike.dev/data-fetching',
+    },
+    {
+      name: 'Powerful hooks',
+      link: 'https://vike.dev/hooks',
+    },
+    {
+      name: 'Config inheritance',
+      link: 'https://vike.dev/config#inheritance',
+    },
+  ] as const
+).map((c) => ({ ...c, size: 'big' }))
 
-const smallComponents: VikeComponent[] = [
-  {
-    name: 'Error handling',
-    link: 'https://vike.dev/error-page',
-    size: 'small',
-  },
-  {
-    name: '`pageContext`',
-    link: 'https://vike.dev/pageContext',
-    size: 'small',
-  },
-  {
-    name: '`globalContext`',
-    link: 'https://vike.dev/globalContext',
-    size: 'small',
-  },
-  {
-    name: 'URL handling',
-    link: 'https://vike.dev/pageContext#urlParsed',
-    size: 'small',
-  },
-  {
-    name: 'CSP',
-    link: 'https://vike.dev/csp',
-    size: 'small',
-  },
-  {
-    name: 'Layouts',
-    link: 'https://vike.dev/Layout',
-    size: 'small',
-  },
-  {
-    name: 'Route Guards',
-    link: 'https://vike.dev/guard',
-    size: 'small',
-  },
-]
+const smallComponents: VikeComponent[] = (
+  [
+    {
+      name: 'Error handling',
+      link: 'https://vike.dev/error-page',
+    },
+    {
+      name: '`pageContext`',
+      link: 'https://vike.dev/pageContext',
+    },
+    {
+      name: '`globalContext`',
+      link: 'https://vike.dev/globalContext',
+    },
+    {
+      name: 'URL handling',
+      link: 'https://vike.dev/pageContext#urlParsed',
+    },
+    {
+      name: 'CSP',
+      link: 'https://vike.dev/csp',
+    },
+    {
+      name: 'Layouts',
+      link: 'https://vike.dev/Layout',
+    },
+    {
+      name: 'Route Guards',
+      link: 'https://vike.dev/guard',
+    },
+  ] as const
+).map((c) => ({ ...c, size: 'small' }))
 
 // shuffle - start with big then small, then big, then small, etc.
 const components = bigComponents.reduce((acc, bigComponent, index) => {
