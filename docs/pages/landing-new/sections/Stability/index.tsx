@@ -22,17 +22,17 @@ const StabilitySection = () => {
                 <GradientText color="blue">Stable foundation</GradientText>
               </>
             }
-            sub="Vike is a stable foundation you can trust and build upon with confidence."
+            sub="Vike is a stable foundation you can build upon with confidence."
             color="blue"
           />
           <StableGraphic />
         </LayoutComponent>
-        <LayoutComponent $size="sm" className="mt-10">
+        <LayoutComponent $size="sm" className="mt-3">
           <div className="">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 text-sm">
               <p>
-                Vike is built from stable components that will remain relevant for the foreseeable future (e.g.
-                SPA/SSR/SSG), making Vike a stable foundation.{' '}
+                Vike's <b>internal components are stable features</b> that will remain relevant for the foreseeable
+                future, making Vike a stable foundation.{' '}
               </p>
               <p>
                 Fast evolving components (e.g. RPC/GraphQL) aren't included and, instead, Vike extensions provide
