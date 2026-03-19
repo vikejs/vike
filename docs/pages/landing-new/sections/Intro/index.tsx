@@ -3,7 +3,7 @@ import LayoutComponent from '../../components/LayoutComponent'
 import GradientText from '../../components/GradientText'
 import UspHero from './UspHero'
 import Headline from '../../components/Headline'
-import BrandSubsection from './BrandSubsection'
+import BrandSubsection, { TeamQuote } from './BrandSubsection'
 import UspHeroMobile from './UspHero/UspHeroMobile'
 
 const taglineSecondary =
@@ -55,6 +55,7 @@ const IntroSection = () => {
             </div>
             <UspHero />
             <UspHeroMobile />
+            <TeamQuote />
           </div>
         </LayoutComponent>
       </div>
