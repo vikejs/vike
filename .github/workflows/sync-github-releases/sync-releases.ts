@@ -10,7 +10,6 @@ import { readFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-
 const require = createRequire(import.meta.url)
 const { version } = require('../../../packages/vike/package.json') as { version: string }
 
