@@ -10,6 +10,7 @@ export default defineConfig({
       {
         test: {
           include: ['packages/**/*.spec.ts', '.github/**/*.spec.ts'],
+          exclude: ['**/node_modules/**', '.github/workflows/ci/prepare.spec.ts'],
           name: 'unit',
           env,
         },
