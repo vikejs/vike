@@ -21,7 +21,7 @@ const IntroSection = () => {
           className="flex flex-col items-center text-center min-h-[calc(100svh-48*var(--spacing))]  overflow-hidden"
         >
           <div className="relative z-10 flex flex-col items-center text-center w-full">
-            <span className="sm:flex-row mb-8 mt-6 lg:mt-16 xl:mt-20 join rounded shadow">
+            <span className="sm:flex-row mb-4 lg:mb-8 mt-6 lg:mt-16 xl:mt-20 join rounded shadow">
               <span className="join-item py-1 px-2 bg-base-200 uppercase font-medium text-xs">Replaces:</span>
               <span className="join-item  py-1 px-2 bg-grey text-base-300 font-medium text-xs">
                 Next.js / Nuxt / ...
@@ -34,7 +34,7 @@ const IntroSection = () => {
                 <GradientText color="green">Freedom</GradientText>
               </Headline>
             </div>
-            <p className="text-base md:text-2xl text-grey text-center w-3/4 lg:w-4/5 mx-auto mb-6 mt-4">
+            <p className="text-base md:text-2xl text-grey text-center w-9/10 md:w-3/4 lg:w-4/5 mx-auto mb-6 mt-4">
               {taglineSecondary}
             </p>
             <div className="flex gap-2 items-center justify-center mb-8 sm:mb-12">

@@ -83,7 +83,7 @@
   --color-accent: var(--d-color-accent);
   --color-accent-content: var(--color-bg);
 
-  --color-neutral: var(--color-black);
+  --color-neutral: var(--color-content);
   --color-neutral-content: var(--color-bg);
   --color-info: var(--d-color-info);
   --color-info-content: var(--color-bg);
