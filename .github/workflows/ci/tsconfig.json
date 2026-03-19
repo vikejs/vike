@@ -6,6 +6,7 @@
     "checkJs": true,
     "esModuleInterop": true,
     "module": "ESNext",
+    "typeRoots": ["../../../packages/vike/node_modules/@types"],
     "types": ["node"],
     "skipLibCheck": true
   }

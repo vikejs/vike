@@ -44,7 +44,6 @@
     "@brillout/spellcheck": "^0.1.2",
     "@brillout/test-e2e": "^0.6.22",
     "@brillout/test-types": "^0.1.13",
-    "@types/node": "^24.10.2",
     "playwright-chromium": "1.57.0",
     "vitest": "^4.1.0"
   },

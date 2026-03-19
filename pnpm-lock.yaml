@@ -23,9 +23,6 @@ importers:
       '@brillout/test-types':
         specifier: ^0.1.13
         version: 0.1.15(typescript@5.9.3)
-      '@types/node':
-        specifier: ^24.10.2
-        version: 24.10.2
       playwright-chromium:
         specifier: 1.57.0
         version: 1.57.0
@@ -16309,7 +16306,7 @@ snapshots:
       esbuild: 0.27.2
       fdir: 6.5.0(picomatch@4.0.3)
       picomatch: 4.0.3
-      postcss: 8.5.6
+      postcss: 8.5.8
       rollup: 4.43.0
       tinyglobby: 0.2.15
     optionalDependencies:
