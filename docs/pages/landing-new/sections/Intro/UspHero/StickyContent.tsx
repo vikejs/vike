@@ -55,7 +55,7 @@ const UspStickyContent = ({ isCompactDocked, uspVisualStateById }: UspStickyCont
 
         <div
           data-usp-sticky-logo="true"
-          className="pointer-events-none absolute top-0 z-30 hidden lg:flex h-16 w-20 items-center opacity-0 "
+          className="pointer-events-none absolute top-0 z-30 hidden lg:flex h-16 w-20 items-center opacity-0 cursor-pointer"
         >
           <img src={vikeLogo} alt="" className="ml-4 h-auto w-10" />
         </div>
