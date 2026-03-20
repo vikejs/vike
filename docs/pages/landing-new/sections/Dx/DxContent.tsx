@@ -60,7 +60,6 @@ const DxContent = () => {
           </TwoColumn>
         </Section>
       </GlassContainer>
-
       <Section>
         <HeadlineGroup main="API" sub="" outerClassName="mb-10" />
         <SubSectionTitle>First-class RPC</SubSectionTitle>
@@ -72,7 +71,6 @@ const DxContent = () => {
           <TelefuncServerExample />
           <TelefuncClientExample />
         </TwoColumn>
-
         <TwoColumn>
           <Block>
             <SubSectionTitle>First-class REST</SubSectionTitle>
@@ -111,6 +109,8 @@ const DxContent = () => {
         </TwoColumn>
       </Section>
 
+      <Divider />
+
       <Section>
         <SectionTitle id="hooks" className="mb-10 text-center">
           Hooks
@@ -141,7 +141,6 @@ const DxContent = () => {
             <GetGlobalContextExample />
           </Block>
         </TwoColumn>
-
         <TwoColumn>
           <Block>
             <SubSectionTitle>Authorization</SubSectionTitle>
@@ -152,7 +151,6 @@ const DxContent = () => {
             <InstrumentationExample />
           </Block>
         </TwoColumn>
-
         <TwoColumn>
           <Block>
             <SubSectionTitle>Server integration</SubSectionTitle>
@@ -165,11 +163,12 @@ const DxContent = () => {
             <I18nExample />
           </Block>
         </TwoColumn>
-
         <ClosingWords href="/hooks">
           See the list of hooks <ChevronsRight className="w-4 h-4 md:w-5 md:h-5" />
         </ClosingWords>
       </Section>
+
+      <Divider />
 
       <Section>
         {/* <SectionTitle>Powerful extensions</SectionTitle>
@@ -182,7 +181,6 @@ const DxContent = () => {
           sub="Extensions use the same powerful hooks users use — enabling deep and seamless integrations."
           outerClassName="mb-10 max-w-2xl mx-auto"
         />
-
         <TwoColumn>
           <Block>
             <SubSectionTitle>UI frameworks</SubSectionTitle>
@@ -216,7 +214,6 @@ const DxContent = () => {
             </CenterText>
           </Block>
         </TwoColumn>
-
         <TwoColumn>
           <Block>
             <SubSectionTitle>State management</SubSectionTitle>
@@ -271,7 +268,6 @@ const DxContent = () => {
             />
           </Block>
         </TwoColumn>
-
         <ClosingWords href="/extensions">
           See the growing ecosystem of extensions
           <ChevronsRight className="w-4 h-4 md:w-5 md:h-5" />
@@ -288,7 +284,7 @@ const Block = cm.div`space-y-4`
 const SectionTitle = H3Headline
 const SubSectionTitle = H4Headline
 const CenterText = cm.span`text-center block`
-const Divider = cm.hr`border-grey-200`
+const Divider = cm.hr`h-1 bg-gray-200`
 const ClosingWords = cm.a`flex btn sm:btn-lg btn-neutral mx-auto w-fit btn-outline text-center`
 
 function DX_InlineHighlight({
