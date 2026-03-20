@@ -1,7 +1,7 @@
 import React from 'react'
 import type { ReactNode } from 'react'
 import { Link } from '@brillout/docpress'
-import AdminAndMarketingConfigs from './snippets/AdminAndMarketingConfigs.mdx'
+import SsrSpaSsgConfigs from './snippets/SsrSpaSsgConfigs.mdx'
 import ApolloExample from './snippets/ApolloExample.mdx'
 import DataClientExample from './snippets/DataClientExample.mdx'
 import DataServerExample from './snippets/DataServerExample.mdx'
@@ -54,7 +54,7 @@ const DxContent = () => {
               <SsrSpaSsgTree />
             </Block>
             <Block>
-              <AdminAndMarketingConfigs />
+              <SsrSpaSsgConfigs />
             </Block>
           </TwoColumn>
         </Section>
