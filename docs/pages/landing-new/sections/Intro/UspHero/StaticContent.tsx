@@ -5,7 +5,7 @@ import { uiConfig, UiVariantBtnColor } from '../../../util/ui.constants'
 
 import BlurDot from '../../../components/BlurDot'
 import GradientText from '../../../components/GradientText'
-import { ChevronsRight } from 'lucide-react'
+import { ChevronsDown } from 'lucide-react'
 import { SharedOuterGrid } from './styled'
 
 interface UspStaticContentProps {
@@ -73,8 +73,9 @@ const UspStaticContent = ({ uspVisualStateById }: UspStaticContentProps) => (
                   'btn btn-sm btn-ghost opacity-100 pointer-events-none',
                 )}
               >
+                <ChevronsDown className="inline-block w-3 h-3" />
                 Learn more
-                <ChevronsRight className="inline-block w-3 h-3" />
+                <ChevronsDown className="inline-block w-3 h-3" />
               </span>
             </div>
           </StyledTextContent>
