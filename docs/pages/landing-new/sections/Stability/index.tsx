@@ -57,7 +57,7 @@ const StabilitySection = () => {
             Your choice.
           </H2Headline>
           <p className="mb-4 z-2 ">
-            Choose between a stable stack with unprecedented long-term support (thanks for Vike's stable foundation), or
+            Choose between a stable stack with unmatched long-term support (thanks to Vike's stable foundation), or
             the cutting-edge with unprecedented flexibility (thanks to Vike's powerful hooks).
           </p>
         </div>
