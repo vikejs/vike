@@ -2,7 +2,7 @@ import React from 'react'
 import LayoutComponent from '../../components/LayoutComponent'
 import GradientText from '../../components/GradientText'
 import SectionHeader from '../../components/SectionHeader'
-import { H2Headline, H3Headline, H4Headline } from '../../components/Headline'
+import { H2Headline, H4Headline } from '../../components/Headline'
 import BarChart from '../../components/BarChart'
 import { UspCategoryId } from '../../util/constants'
 import GlassContainer from '../../components/GlassContainer'
@@ -86,19 +86,19 @@ const StabilitySection = () => {
           </div>
         </GlassContainer>
       </LayoutComponent>
-      <LayoutComponent className="md:my-24">
+      <LayoutComponent className="md:mb-44 md:mt-40">
         <GlassContainer>
           <div className="grid lg:grid-cols-5 xl:grid-cols-2 gap-0 lg:gap-10 relative z-2">
             <div className="lg:col-span-2 xl:col-span-1">
               <H2Headline>
-                <GradientText color="blue">Aligned interests</GradientText>
+                <GradientText color="blue">Stable interests</GradientText>
               </H2Headline>
               <p className="my-5">
-                Instead of hidden monetization mechanisms, we prefer upfront and transparent pricing.
+                Upfront and transparent pricing you can trust, instead of hidden monetization lock-in mechanisms.
               </p>
               <p>
                 <ClosingWords href="/pricing" className="btn-secondary mx-0">
-                  See full pricing <ChevronsRight className="w-4 h-4" />
+                  See pricing <ChevronsRight className="w-4 h-4" />
                 </ClosingWords>
               </p>
             </div>

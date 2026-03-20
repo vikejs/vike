@@ -39,16 +39,14 @@ function MiniPricingStrip() {
             className={`relative flex min-h-42 flex-col items-center justify-center px-4 py-7 text-center md:px-6 ${column.panelClassName}`}
           >
             <div className={`absolute inset-0 bg-gradient-to-b ${column.toneClassName}`} />
-            <div className="relative text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-slate-500">
-              {column.title}
-            </div>
-            <div className="relative mt-1 min-h-4 text-[0.64rem] font-medium uppercase tracking-[0.16em] text-slate-400">
+            <div className="relative text-[0.9rem] font-semibold tracking-[0.1em] text-slate-500">{column.title}</div>
+            <div className="relative mt-1 min-h-4 text-[0.67rem] font-medium uppercase tracking-[0.16em] text-slate-400 whitespace-nowrap">
               {column.subtitle || '\u00A0'}
             </div>
             <div className="relative mt-5 text-[1.7rem] font-semibold tracking-[-0.03em] md:text-[2rem]">
               <GradientText color={column.priceColor}>{column.price}</GradientText>
             </div>
-            <div className="relative mt-1 text-[0.66rem] font-medium uppercase tracking-[0.16em] text-slate-400">
+            <div className="relative mt-1 text-[0.66rem] font-medium uppercase tracking-[0.16em] text-slate-500">
               {column.suffix || '\u00A0'}
             </div>
           </div>
