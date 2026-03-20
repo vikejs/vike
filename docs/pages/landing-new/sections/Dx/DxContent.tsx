@@ -115,8 +115,8 @@ const DxContent = () => {
         <SectionTitle id="hooks" className="mb-10 text-center">
           Hooks
         </SectionTitle>
-        <div className="grid grid-cols-1 md:grid-cols-11 gap-4 lg:gap-8">
-          <Block className="md:col-span-6">
+        <TwoColumn>
+          <Block>
             <SubSectionTitle>
               Data fetching: <i>where</i>
             </SubSectionTitle>
@@ -124,48 +124,47 @@ const DxContent = () => {
             <DataServerExample />
             <DataClientExample />
           </Block>
-          <Block className="md:col-span-5">
+          <Block>
             <SubSectionTitle>
               Data fetching: <i>when</i>
             </SubSectionTitle>
-            <p>Also control when data is fetched. When the server starts:</p>
+            <p>Also control when data is fetched. When server starts:</p>
             <GlobalContextServerExample />
             <p>When client-side navigation starts:</p>
             <GlobalContextClientExample />
             <p>
-              While{' '}
               <Link href="/globalContext">
                 <code>globalContext</code>
               </Link>{' '}
-              can be accessed anywhere:
+              is accessible anywhere:
             </p>
             <GetGlobalContextExample />
           </Block>
-        </div>
+        </TwoColumn>
 
-        <div className="grid grid-cols-1 md:grid-cols-11 gap-4 lg:gap-8">
-          <Block className="md:col-span-6">
+        <TwoColumn>
+          <Block>
             <SubSectionTitle>Authorization</SubSectionTitle>
             <GuardExample />
           </Block>
-          <Block className="md:col-span-5">
+          <Block>
             <SubSectionTitle>Instrumentation</SubSectionTitle>
             <InstrumentationExample />
           </Block>
-        </div>
+        </TwoColumn>
 
-        <div className="grid grid-cols-1 md:grid-cols-11 gap-4 lg:gap-8">
-          <Block className="md:col-span-6">
+        <TwoColumn>
+          <Block>
             <SubSectionTitle>Server integration</SubSectionTitle>
             <p>Vike is just a middleware you can embed into any server.</p>
             <ServerIntegrationExample />
           </Block>
-          <Block className="md:col-span-5">
+          <Block>
             <SubSectionTitle>i18n</SubSectionTitle>
             <p>Hooks give you full control over i18n integration.</p>
             <I18nExample />
           </Block>
-        </div>
+        </TwoColumn>
 
         <ClosingWords href="/hooks">
           See the list of hooks <ChevronsRight className="w-4 h-4 md:w-5 md:h-5" />
@@ -184,8 +183,8 @@ const DxContent = () => {
           outerClassName="mb-10 max-w-2xl mx-auto"
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-11 gap-4 lg:gap-8">
-          <Block className="md:col-span-6">
+        <TwoColumn>
+          <Block>
             <SubSectionTitle>UI frameworks</SubSectionTitle>
             <p>
               Use your favorite UI framework via an extension for getting started quickly, or{' '}
@@ -205,7 +204,7 @@ const DxContent = () => {
               </Link>
             </CenterText>
           </Block>
-          <Block className="md:col-span-5">
+          <Block>
             <SubSectionTitle>Advanced integrations</SubSectionTitle>
             <p>
               Extensions can use all of Vike's powerful hooks for advanced integrations such as React Server Components.
@@ -216,10 +215,10 @@ const DxContent = () => {
               </a>
             </CenterText>
           </Block>
-        </div>
+        </TwoColumn>
 
-        <div className="grid grid-cols-1 md:grid-cols-11 gap-4 lg:gap-8">
-          <Block className="md:col-span-6">
+        <TwoColumn>
+          <Block>
             <SubSectionTitle>State management</SubSectionTitle>
             <p>
               Vike's powerful hooks also enable extensions to deeply integrate with state management tools.
@@ -239,7 +238,7 @@ const DxContent = () => {
             </p>
             <ZustandExample />
           </Block>
-          <Block className="md:col-span-5">
+          <Block>
             <SubSectionTitle>Error tracking</SubSectionTitle>
             <p>
               Hooks such as{' '}
@@ -271,7 +270,7 @@ const DxContent = () => {
               ]}
             />
           </Block>
-        </div>
+        </TwoColumn>
 
         <ClosingWords href="/extensions">
           See the growing ecosystem of extensions

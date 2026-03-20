@@ -6,8 +6,9 @@
 export async function data(pageContext) {
   const { id } = pageContext.routeParams
   // Fetching data on the client-side
-  const response = await fetch(`https://swapi.info/api/films/${id}`)
-  const movie = await response.json()
+  const movie = await (
+    await fetch(`https://swapi.info/api/films/${id}`)
+  ).json()
   return { movie }
 }
 ```

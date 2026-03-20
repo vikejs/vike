@@ -8,8 +8,8 @@ server.addMiddleware({
   async handler(request) {
     const pageContextInit = { urlOriginal: request.url }
     const pageContext = await renderPage(pageContextInit)
-    const { body, statusCode, headers } = pageContext.httpResponse
-    const response = { body, statusCode, headers }
+    const { body, statusCode } = pageContext.httpResponse
+    const response = { body, statusCode }
     return response
   }
 })
