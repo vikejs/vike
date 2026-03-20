@@ -133,7 +133,7 @@ const FlexibilitySection = () => {
                   Use powerful hooks for <b>unprecedented flexibility</b> and extensive control over tool integration,
                   data lifecycle, pre-rendering, state managment, and more.
                 </p>
-                <p className="mt-0 mb-12">
+                <div className="mt-0 mb-12">
                   <H4Headline className="mb-3">
                     Supported <GradientText color="green">use cases</GradientText>
                   </H4Headline>
@@ -148,7 +148,7 @@ const FlexibilitySection = () => {
                     ]}
                     color="green"
                   />
-                </p>
+                </div>
                 <p>
                   <ClosingWords href="#hooks" className="btn-primary mx-0">
                     <ChevronsDown className="w-4 h-4" /> See use cases <ChevronsDown className="w-4 h-4" />
