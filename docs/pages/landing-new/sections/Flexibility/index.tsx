@@ -85,7 +85,10 @@ const FlexibilitySection = () => {
         {/* <BlurDot type="green" size="xxl" visibility="low" className="absolute -top-20 -left-60 z-0" /> */}
       </LayoutComponent>
 
+      {/*
       <div className="relative my-0 md:my-16 lg:my-32">
+      */}
+      <div className="relative mt-15 mb-60">
         <LayoutComponent className="grid md:grid-cols-2 gap-10">
           <div className="">
             <H4Headline as="h3" className="mb-4 md:mb-8">
