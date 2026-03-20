@@ -24,7 +24,7 @@ const heightVariant: Record<'small' | 'medium' | 'large', HeightVariant> = {
   },
   medium: {
     mobile: 'h-3.5',
-    default: 'h6',
+    default: 'h-6',
   },
   large: {
     mobile: 'h-5.5',
