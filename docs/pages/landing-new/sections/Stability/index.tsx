@@ -97,7 +97,7 @@ const StabilitySection = () => {
               </p>
               <Link
                 href="/pricing"
-                className="inline-flex items-center justify-center rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white no-underline transition-colors hover:bg-slate-950 hover:text-white"
+                className="inline-flex items-center justify-center rounded-full border border-slate-900/10 bg-slate-900 px-4 py-2 text-sm font-medium text-white no-underline shadow-[0_10px_25px_rgba(15,23,42,0.14)] transition-all hover:-translate-y-0.5 hover:bg-slate-950 hover:text-white hover:shadow-[0_14px_30px_rgba(15,23,42,0.18)]"
               >
                 See full pricing
               </Link>
