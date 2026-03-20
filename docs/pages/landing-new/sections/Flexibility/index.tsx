@@ -79,16 +79,8 @@ const FlexibilitySection = () => {
                   - <b>Any deployment</b>: Self-hosted/Cloudflare/Vercel/...
                 </li>
               </ul>
-            </div>
-          </GlassContainer>
-        </div>
-        {/* <BlurDot type="green" size="xxl" visibility="low" className="absolute -top-20 -left-60 z-0" /> */}
-      </LayoutComponent>
-
-      <div className="relative my-0 md:my-16 lg:my-32">
-        <LayoutComponent className="grid md:grid-cols-2 gap-10">
           <div className="">
-            <H4Headline as="h3" className="mb-4 md:mb-8">
+            <H4Headline as="h3" className="md:mb-2">
               Supported <GradientText color="green">tools</GradientText>
             </H4Headline>
             <BarChart
@@ -100,7 +92,7 @@ const FlexibilitySection = () => {
             />
           </div>
           <div className="">
-            <H4Headline as="h3" className="mb-4 md:mb-8">
+            <H4Headline as="h3" className="mt-5 md:mb-2">
               Supported <GradientText color="green">stacks</GradientText>
             </H4Headline>
             <BarChart
@@ -111,10 +103,13 @@ const FlexibilitySection = () => {
               color="green"
             />
           </div>
-        </LayoutComponent>
-      </div>
+            </div>
+          </GlassContainer>
+        </div>
+        {/* <BlurDot type="green" size="xxl" visibility="low" className="absolute -top-20 -left-60 z-0" /> */}
+      </LayoutComponent>
 
-      <div className="w-full">
+      <div className="w-full mt-40">
         <LayoutComponent className="lg:mb-52">
           <div className="grid lg:grid-cols-5 xl:grid-cols-2 gap-0 lg:gap-10 relative z-2">
             <GlassContainer className="lg:col-span-2 xl:col-span-1">
