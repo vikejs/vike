@@ -274,6 +274,7 @@ const DxContent = () => {
           <ChevronsRight className="w-4 h-4 md:w-5 md:h-5" />
         </ClosingWords>
       </Section>
+      <Divider />
     </div>
   )
 }
