@@ -94,7 +94,7 @@ export const landingPageHeroUsps: Usp[] = [
   {
     id: UspCategoryId.freedom,
     title: 'Freedom',
-    description: 'Build without artificial limits.',
+    description: 'Build without artificial limitations.',
     icon: '🕊️',
     dotColor: 'green',
   },
