@@ -83,6 +83,22 @@ const StabilitySection = () => {
           </div>
         </GlassContainer>
       </LayoutComponent>
+      <LayoutComponent className="md:my-24">
+        <GlassContainer>
+          <div className="grid lg:grid-cols-5 xl:grid-cols-2 gap-0 lg:gap-10 relative z-2">
+            <div className="lg:col-span-2 xl:col-span-1">
+              <H2Headline>
+                <GradientText color="blue">Aligned interests</GradientText>
+              </H2Headline>
+              <p className="my-5">
+                Instead of hidden monetization mechanisms, we prefer upfront and transparent pricing.
+              </p>
+            </div>
+            <div className="relative lg:col-span-3 xl:col-span-1" data-speed="0.97">
+            </div>
+          </div>
+        </GlassContainer>
+      </LayoutComponent>
     </section>
   )
 }
