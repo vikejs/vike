@@ -62,12 +62,13 @@ const DxContent = () => {
       </GlassContainer>
 
       <Section>
-        <HeadlineGroup main="API" sub="Next-gen RPC (aka Server Functions)..." outerClassName="mb-10" />
-        <p>
-          ...via <a href="https://telefunc.com">Telefunc</a> (tool maintained by the Vike team), or use classic tools
-          such as tRPC.
+        <HeadlineGroup main="API" sub="" outerClassName="mb-10" />
+        <SubSectionTitle>First-class RPC</SubSectionTitle>
+        <p className="mb-0">
+          Next-gen RPC (aka Server Functions) via <a href="https://telefunc.com">Telefunc</a> (maintained by the Vike
+          team), or classic RPC via tools such as tRPC.
         </p>
-        <TwoColumn>
+        <TwoColumn className="mt-0">
           <TelefuncServerExample />
           <TelefuncClientExample />
         </TwoColumn>
