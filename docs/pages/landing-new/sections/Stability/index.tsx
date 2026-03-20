@@ -31,8 +31,8 @@ const StabilitySection = () => {
           <div className="">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 text-sm">
               <p>
-                Vike's <b>internal components are stable features</b> and will remain relevant for the foreseeable
-                future, making Vike a stable foundation.{' '}
+                Vike's <b>internal components are stable features</b> that remain relevant for the foreseeable future,
+                making Vike a stable foundation.{' '}
               </p>
               <p>
                 <b>Fast evolving JavaScript tools aren't built into Vike by design</b> — instead, Vike extensions
@@ -46,12 +46,13 @@ const StabilitySection = () => {
         <GlassContainer>
           <div className="grid grid-cols-2 gap4 md:gap-10 py-6">
             <H2Headline>
-              Stable stack, or cutting edge? <br />
-              Your <GradientText color="blue">choice.</GradientText>
+              <GradientText color="blue">Stable stack</GradientText> or{' '}
+              <GradientText color="green">cutting edge</GradientText>? <br />
+              Your choice.
             </H2Headline>
             <p className="mb-4">
-              Choose between a stable stack with unprecedented long-term support (thanks for Vike's agnostic
-              foundation), or the cutting-edge with unprecedented flexibility (thanks to powerful hooks).
+              Choose between a stable stack with unprecedented long-term support (thanks for Vike's stable foundation),
+              or the cutting-edge with unprecedented flexibility (thanks to Vike's powerful hooks).
             </p>
           </div>
           <div className="grid lg:grid-cols-2 gap-10 my-12 md:my-0">

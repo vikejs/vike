@@ -17,7 +17,7 @@ const StableGraphicLegend = () => {
             <div className="bg-linear-to-bl to-accent/7 absolute inset-0 pointer-events-none select-none" />
             <span className="w-10 h-4 block"></span>
           </BoxOrange>
-          <p className="flex-1 font-bold text-grey text-xs md:text-sm">JavaScript ecoystem</p>
+          <p className="flex-1 font-bold text-grey text-xs md:text-sm">JavaScript ecosystem</p>
         </div>
       </div>
     </LayoutComponent>

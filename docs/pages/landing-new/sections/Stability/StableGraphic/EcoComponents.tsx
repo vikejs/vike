@@ -19,7 +19,7 @@ const ecosystemComponents: Record<VikeEcoComponentCategory, EcoComponent[]> = {
   ],
   api: [
     { name: 'RPC', link: 'https://en.wikipedia.org/wiki/Remote_procedure_call', size: 'big' },
-    { name: 'REST', link: 'https://restfulapi.net/', size: 'big' },
+    { name: 'REST', link: 'https://en.wikipedia.org/wiki/REST', size: 'big' },
     { name: 'GraphQL', link: 'https://graphql.org/', size: 'big' },
   ],
   deploy: [
