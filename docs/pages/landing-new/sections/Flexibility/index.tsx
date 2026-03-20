@@ -132,7 +132,7 @@ const FlexibilitySection = () => {
                 </p>
                 <p>
                   <ClosingWords href="#hooks" className="btn-primary mx-0">
-                    See use cases <ChevronsDown className="w-4 h-4" />
+                    <ChevronsDown className="w-4 h-4" /> See use cases <ChevronsDown className="w-4 h-4" />
                   </ClosingWords>
                 </p>
               </div>
