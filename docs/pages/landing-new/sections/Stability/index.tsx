@@ -57,8 +57,8 @@ const StabilitySection = () => {
             Your choice.
           </H2Headline>
           <p className="mb-4 z-2 ">
-            Choose between a stable stack with unmatched long-term support (thanks to Vike's stable foundation), or
-            the cutting-edge with unprecedented flexibility (thanks to Vike's powerful hooks).
+            Choose between a stable stack with unmatched long-term support (thanks to Vike's stable foundation), or the
+            cutting-edge with unprecedented flexibility (thanks to Vike's powerful hooks).
           </p>
         </div>
         <div className="grid lg:grid-cols-2 gap-10 my-12 md:my-0">
@@ -98,6 +98,7 @@ const StabilitySection = () => {
               <p className="my-5">
                 Upfront and transparent pricing you can trust, instead of hidden monetization lock-in mechanisms.
               </p>
+              <p className="my-5">It's the guarantee Vike's interests are and remain aligned with yours.</p>
               <p>
                 <ClosingWords href="/pricing" className="btn-secondary mx-0">
                   See pricing <ChevronsRight className="w-4 h-4" />
