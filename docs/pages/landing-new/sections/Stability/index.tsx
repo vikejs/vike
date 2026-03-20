@@ -49,8 +49,8 @@ const StabilitySection = () => {
         </LayoutComponent>
       </div>
       <LayoutComponent className="md:my-24 relative">
-        <div className={cmMerge("grid grid-cols-2 gap4 md:gap-10 py-0", verticalPaddingClass)}>
-          <GlassContainer className={cmMerge("w-1/2 right-0 h-[120%] absolute z-0 -translate-y-[20%]", )} />
+        <div className={cmMerge('grid grid-cols-2 gap4 md:gap-10 py-0', verticalPaddingClass)}>
+          <GlassContainer className={cmMerge('w-1/2 right-0 h-[120%] absolute z-0 -translate-y-[20%]')} />
           <H2Headline className="z-2 relative">
             <GradientText color="blue">Stable stack</GradientText> or{' '}
             <GradientText color="green">cutting edge</GradientText>? <br />
