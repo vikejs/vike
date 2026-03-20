@@ -95,6 +95,7 @@ const StabilitySection = () => {
               </p>
             </div>
             <div className="relative lg:col-span-3 xl:col-span-1" data-speed="0.97">
+              TODO/ai/plan: create mini version of the PricingTable to be inserted here
             </div>
           </div>
         </GlassContainer>
