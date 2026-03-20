@@ -8,8 +8,9 @@ import { UspCategoryId } from '../../util/constants'
 import GlassContainer from '../../components/GlassContainer'
 import StableGraphic from './StableGraphic'
 import { textOtherFrameworks } from '../Flexibility'
-import { Link } from '@brillout/docpress'
 import MiniPricingStrip from './MiniPricingStrip'
+import { ChevronsRight } from 'lucide-react'
+import { ClosingWords } from '../Dx/DxContent'
 
 const StabilitySection = () => {
   return (
@@ -95,12 +96,11 @@ const StabilitySection = () => {
               <p className="my-5">
                 Instead of hidden monetization mechanisms, we prefer upfront and transparent pricing.
               </p>
-              <Link
-                href="/pricing"
-                className="inline-flex items-center justify-center rounded-full border border-slate-900/10 bg-slate-900 px-4 py-2 text-sm font-medium text-white no-underline shadow-[0_10px_25px_rgba(15,23,42,0.14)] transition-all hover:-translate-y-0.5 hover:bg-slate-950 hover:text-white hover:shadow-[0_14px_30px_rgba(15,23,42,0.18)]"
-              >
-                See full pricing
-              </Link>
+              <p>
+                <ClosingWords href="/pricing" className="btn-primary mx-0">
+                  See full pricing <ChevronsRight className="w-4 h-4" />
+                </ClosingWords>
+              </p>
             </div>
             <div className="relative lg:col-span-3 xl:col-span-1 lg:pl-4" data-speed="0.97">
               <MiniPricingStrip />

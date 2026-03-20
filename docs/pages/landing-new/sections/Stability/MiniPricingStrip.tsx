@@ -7,7 +7,6 @@ const columns = [
     subtitle: '',
     price: 'Free',
     toneClassName: 'from-emerald-500/10 via-emerald-500/4 to-transparent',
-    borderClassName: 'border-emerald-200/80',
     priceColor: 'green' as const,
   },
   {
@@ -15,7 +14,6 @@ const columns = [
     subtitle: 'Low money',
     price: 'Free',
     toneClassName: 'from-emerald-500/10 via-emerald-500/4 to-transparent',
-    borderClassName: 'border-emerald-200/80',
     priceColor: 'green' as const,
   },
   {
@@ -23,7 +21,6 @@ const columns = [
     subtitle: 'High money',
     price: '$5k',
     toneClassName: 'from-blue-500/12 via-violet-500/5 to-transparent',
-    borderClassName: 'border-blue-200/80',
     priceColor: 'blue' as const,
     suffix: 'one time',
   },
@@ -39,9 +36,6 @@ function MiniPricingStrip() {
             className="relative flex min-h-42 flex-col items-center justify-center px-4 py-7 text-center md:px-6"
           >
             <div className={`absolute inset-x-0 top-0 h-20 bg-gradient-to-b ${column.toneClassName}`} />
-            <div
-              className={`absolute inset-y-5 inset-x-3 rounded-[1.15rem] border ${column.borderClassName} bg-white/72`}
-            />
             <div className="relative text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-slate-500">
               {column.title}
             </div>
