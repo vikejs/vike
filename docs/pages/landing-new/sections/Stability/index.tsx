@@ -8,6 +8,8 @@ import { UspCategoryId } from '../../util/constants'
 import GlassContainer from '../../components/GlassContainer'
 import StableGraphic from './StableGraphic'
 import { textOtherFrameworks } from '../Flexibility'
+import { Link } from '@brillout/docpress'
+import MiniPricingStrip from './MiniPricingStrip'
 
 const StabilitySection = () => {
   return (
@@ -93,9 +95,15 @@ const StabilitySection = () => {
               <p className="my-5">
                 Instead of hidden monetization mechanisms, we prefer upfront and transparent pricing.
               </p>
+              <Link
+                href="/pricing"
+                className="inline-flex items-center justify-center rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white no-underline transition-colors hover:bg-slate-950 hover:text-white"
+              >
+                See full pricing
+              </Link>
             </div>
-            <div className="relative lg:col-span-3 xl:col-span-1" data-speed="0.97">
-              TODO/ai/plan: create mini version of the PricingTable to be inserted here
+            <div className="relative lg:col-span-3 xl:col-span-1 lg:pl-4" data-speed="0.97">
+              <MiniPricingStrip />
             </div>
           </div>
         </GlassContainer>
