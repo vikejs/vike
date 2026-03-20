@@ -19,7 +19,6 @@ const DxSection = () => {
               <GradientText color="orange">Lightning</GradientText> DX
             </>
           }
-          sub="Build mission-critical apps — on a rock-solid foundation."
           color="orange"
         />
         <DxContent />
