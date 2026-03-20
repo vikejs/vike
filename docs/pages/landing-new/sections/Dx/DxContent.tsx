@@ -11,7 +11,6 @@ import GlobalContextServerExample from './snippets/GlobalContextServerExample.md
 import GuardExample from './snippets/GuardExample.mdx'
 import I18nExample from './snippets/I18nExample.mdx'
 import InstrumentationExample from './snippets/InstrumentationExample.mdx'
-import ProductConfigExample from './snippets/ProductConfigExample.mdx'
 import ReactQueryExample from './snippets/ReactQueryExample.mdx'
 import ServerIntegrationExample from './snippets/ServerIntegrationExample.mdx'
 import SsrSpaSsgTree from './snippets/SsrSpaSsgTree.mdx'
@@ -55,7 +54,6 @@ const DxContent = () => {
               <SsrSpaSsgTree />
             </Block>
             <Block>
-              <ProductConfigExample />
               <AdminAndMarketingConfigs />
             </Block>
           </TwoColumn>
