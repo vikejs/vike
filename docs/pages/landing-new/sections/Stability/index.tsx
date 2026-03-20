@@ -8,6 +8,7 @@ import { UspCategoryId } from '../../util/constants'
 import GlassContainer from '../../components/GlassContainer'
 import StableGraphic from './StableGraphic'
 import { textOtherFrameworks } from '../Flexibility'
+import MiniPricingTeaser from './MiniPricingTeaser'
 
 const StabilitySection = () => {
   return (
@@ -94,8 +95,8 @@ const StabilitySection = () => {
                 Instead of hidden monetization mechanisms, we prefer upfront and transparent pricing.
               </p>
             </div>
-            <div className="relative lg:col-span-3 xl:col-span-1" data-speed="0.97">
-              TODO/ai/plan: create mini version of the PricingTable to be inserted here
+            <div className="relative lg:col-span-3 xl:col-span-1 lg:pl-4" data-speed="0.97">
+              <MiniPricingTeaser />
             </div>
           </div>
         </GlassContainer>
