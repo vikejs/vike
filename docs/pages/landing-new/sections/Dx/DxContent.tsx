@@ -116,18 +116,18 @@ const DxContent = () => {
         </SectionTitle>
         <TwoColumn>
           <Block>
-            <SubSectionTitle>
-              Data fetching: <i>where</i>
-            </SubSectionTitle>
-            <p>Hooks give you control where data is fetched:</p>
+            <SubSectionTitle>Data fetching: where</SubSectionTitle>
+            <p>
+              Hooks give you control <i>where</i> data is fetched:
+            </p>
             <DataServerExample />
             <DataClientExample />
           </Block>
           <Block>
-            <SubSectionTitle>
-              Data fetching: <i>when</i>
-            </SubSectionTitle>
-            <p>Also control when data is fetched. When server starts:</p>
+            <SubSectionTitle>Data fetching: when</SubSectionTitle>
+            <p>
+              Also control <i>when</i> data is fetched. When server starts:
+            </p>
             <GlobalContextServerExample />
             <p>When client-side navigation starts:</p>
             <GlobalContextClientExample />
@@ -158,7 +158,7 @@ const DxContent = () => {
           </Block>
           <Block>
             <SubSectionTitle>i18n</SubSectionTitle>
-            <p>Hooks give you full control over i18n integration.</p>
+            <p>Full control over i18n integration.</p>
             <I18nExample />
           </Block>
         </TwoColumn>
@@ -177,7 +177,7 @@ const DxContent = () => {
         </div> */}
         <HeadlineGroup
           main="Powerful extensions"
-          sub="Extensions use the same powerful hooks users use — enabling deep and seamless integrations."
+          sub="Extensions use the same powerful hooks you use — enabling deep and seamless integrations."
           outerClassName="mb-10 max-w-2xl mx-auto"
         />
         <TwoColumn>
@@ -203,9 +203,7 @@ const DxContent = () => {
           </Block>
           <Block>
             <SubSectionTitle>Advanced integrations</SubSectionTitle>
-            <p>
-              Extensions can use all of Vike's powerful hooks for advanced integrations such as React Server Components.
-            </p>
+            <p>Extensions can use all powerful hooks for advanced integrations such as React Server Components.</p>
             <CenterText>
               <a href="https://github.com/nitedani/vike-react-rsc#vike-react-rsc">
                 <code>vike-react-rsc</code>
@@ -217,27 +215,28 @@ const DxContent = () => {
           <Block>
             <SubSectionTitle>State management</SubSectionTitle>
             <p>
-              Vike's powerful hooks also enable extensions to deeply integrate with state management tools.
-              <CenterText>
-                <a href="https://github.com/vikejs/vike-react/tree/main/packages/vike-react-redux#readme">
-                  <code>vike-react-redux</code>
-                </a>
-                {' / '}
-                <a href="https://github.com/vikejs/vike-react/tree/main/packages/vike-react-zustand#readme">
-                  <code>vike-react-zustand</code>
-                </a>
-                {' / '}
-                <a href="https://github.com/vikejs/vike-vue/tree/main/packages/vike-vue-pinia#readme">
-                  <code>vike-vue-pinia</code>
-                </a>
-              </CenterText>
+              Powerful hooks also enable extensions to deeply integrate with state management tools with unprecedented
+              seamless DX.
             </p>
+            <CenterText>
+              <a href="https://github.com/vikejs/vike-react/tree/main/packages/vike-react-redux#readme">
+                <code>vike-react-redux</code>
+              </a>
+              {' / '}
+              <a href="https://github.com/vikejs/vike-react/tree/main/packages/vike-react-zustand#readme">
+                <code>vike-react-zustand</code>
+              </a>
+              {' / '}
+              <a href="https://github.com/vikejs/vike-vue/tree/main/packages/vike-vue-pinia#readme">
+                <code>vike-vue-pinia</code>
+              </a>
+            </CenterText>
             <ZustandExample />
           </Block>
           <Block>
             <SubSectionTitle>Error tracking</SubSectionTitle>
             <p>
-              Hooks such as{' '}
+              THe hooks{' '}
               <Link href="/onError">
                 <code>+onError</code>
               </Link>
@@ -249,14 +248,14 @@ const DxContent = () => {
               <Link href="/onCreateGlobalContext">
                 <code>+onCreateGlobalContext</code>
               </Link>{' '}
-              enable extensions (and users) deep integration with error tracking tools.
+              enable extensions (and users) deep integration with error tracking.
             </p>
             <p>
               For example,{' '}
               <a href="https://github.com/vikejs/vike-react/tree/main/packages/vike-react-sentry#readme">
                 <code>vike-react-sentry</code>
               </a>{' '}
-              is full-fledged Sentry integration:{' '}
+              is a full-fledged Sentry integration:{' '}
             </p>
             <List
               items={[
