@@ -10,7 +10,7 @@ import { hookColors } from '../../../util/ui.constants'
 
 const blocks: { type: ExtensionBlockVariants; label: ReactNode }[] = [
   { type: 'react', label: 'vike-react' },
-  { type: 'core', label: 'vike-core' },
+  { type: 'core', label: 'vike' },
   { type: 'apollo', label: 'vike-react-apollo' },
   { type: 'styledjsx', label: 'vike-react-styled-jsx' },
   { type: 'redux', label: 'vike-react-redux' },
