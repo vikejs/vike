@@ -118,7 +118,7 @@ const FlexibilitySection = () => {
         <LayoutComponent className="lg:mb-52">
           <div className="grid lg:grid-cols-5 xl:grid-cols-2 gap-0 lg:gap-10 relative z-2">
             <GlassContainer className="lg:col-span-2 xl:col-span-1">
-              <div className="flex flex-col gap-0 justify-center lg:min-h-90 lg:pt-16 py-6 lg:pb-20 mt-16 lg:mt-0">
+              <div className="flex flex-col gap-0 justify-center lg:min-h-90 lg:pt-12 py-6 lg:pb-20 mt-16 lg:mt-0">
                 <HeadlineGroup
                   headingStyle="h2"
                   outerClassName="mb-8"
@@ -133,6 +133,22 @@ const FlexibilitySection = () => {
                   Use powerful hooks for <b>unprecedented flexibility</b> and extensive control over tool integration,
                   data lifecycle, pre-rendering, state managment, and more.
                 </p>
+        <p className="mt-0 mb-12">
+          <H4Headline className="mb-3">
+            Supported <GradientText color="green">use cases</GradientText>
+          </H4Headline>
+          {/*
+          <p className="mb-8 text-grey">Vike supports an unmatched amount of use cases.</p>
+          */}
+          <BarChart
+            className='pr-7'
+            pollData={[
+              { label: 'Vike', percentage: 100 },
+              { label: textOtherFrameworks, percentage: 33 },
+            ]}
+            color="green"
+          />
+        </p>
                 <p>
                   <ClosingWords href="#hooks" className="btn-primary mx-0">
                     <ChevronsDown className="w-4 h-4" /> See use cases <ChevronsDown className="w-4 h-4" />
@@ -147,21 +163,6 @@ const FlexibilitySection = () => {
           <BlurDot type="green" size="xxl" visibility="low" className="absolute -top-20 right-0 z-0 grayscale" />
         </LayoutComponent>
 
-        <LayoutComponent $size="xs" className="mt-16 lg:mt-0">
-          <H4Headline className="mb-7">
-            Supported <GradientText color="green">use cases</GradientText>
-          </H4Headline>
-          {/*
-          <p className="mb-8 text-grey">Vike supports an unmatched amount of use cases.</p>
-          */}
-          <BarChart
-            pollData={[
-              { label: 'Vike', percentage: 100 },
-              { label: textOtherFrameworks, percentage: 33 },
-            ]}
-            color="green"
-          />
-        </LayoutComponent>
       </div>
     </section>
   )
