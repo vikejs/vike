@@ -133,22 +133,22 @@ const FlexibilitySection = () => {
                   Use powerful hooks for <b>unprecedented flexibility</b> and extensive control over tool integration,
                   data lifecycle, pre-rendering, state managment, and more.
                 </p>
-        <p className="mt-0 mb-12">
-          <H4Headline className="mb-3">
-            Supported <GradientText color="green">use cases</GradientText>
-          </H4Headline>
-          {/*
+                <p className="mt-0 mb-12">
+                  <H4Headline className="mb-3">
+                    Supported <GradientText color="green">use cases</GradientText>
+                  </H4Headline>
+                  {/*
           <p className="mb-8 text-grey">Vike supports an unmatched amount of use cases.</p>
           */}
-          <BarChart
-            className='pr-7'
-            pollData={[
-              { label: 'Vike', percentage: 100 },
-              { label: textOtherFrameworks, percentage: 33 },
-            ]}
-            color="green"
-          />
-        </p>
+                  <BarChart
+                    className="pr-7"
+                    pollData={[
+                      { label: 'Vike', percentage: 100 },
+                      { label: textOtherFrameworks, percentage: 33 },
+                    ]}
+                    color="green"
+                  />
+                </p>
                 <p>
                   <ClosingWords href="#hooks" className="btn-primary mx-0">
                     <ChevronsDown className="w-4 h-4" /> See use cases <ChevronsDown className="w-4 h-4" />
@@ -162,7 +162,6 @@ const FlexibilitySection = () => {
           </div>
           <BlurDot type="green" size="xxl" visibility="low" className="absolute -top-20 right-0 z-0 grayscale" />
         </LayoutComponent>
-
       </div>
     </section>
   )
