@@ -165,7 +165,7 @@ const DxContent = () => {
           </Block>
         </TwoColumn>
         <ClosingWords href="/hooks">
-          See the list of hooks <ChevronsRight className="w-4 h-4 md:w-5 md:h-5" />
+          See list of hooks <ChevronsRight className="w-4 h-4 md:w-5 md:h-5" />
         </ClosingWords>
       </Section>
 
@@ -270,7 +270,7 @@ const DxContent = () => {
           </Block>
         </TwoColumn>
         <ClosingWords href="/extensions">
-          See the growing ecosystem of extensions
+          See growing ecosystem of extensions
           <ChevronsRight className="w-4 h-4 md:w-5 md:h-5" />
         </ClosingWords>
       </Section>
