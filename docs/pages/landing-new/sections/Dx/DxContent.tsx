@@ -63,8 +63,8 @@ const DxContent = () => {
         <HeadlineGroup main="API" sub="" outerClassName="mb-10" />
         <SubSectionTitle>First-class RPC</SubSectionTitle>
         <p className="mb-0">
-          Next-gen RPC (aka Server Functions) via <a href="https://telefunc.com">Telefunc</a> (maintained by the Vike
-          team), or classic RPC via tools such as tRPC.
+          Next-gen RPC (aka Server Functions) with <a href="https://telefunc.com">Telefunc</a> (maintained by the Vike
+          team), or classic RPC with tools such as tRPC.
         </p>
         <TwoColumn className="mt-0">
           <TelefuncServerExample />
@@ -74,11 +74,11 @@ const DxContent = () => {
           <Block>
             <SubSectionTitle>First-class REST</SubSectionTitle>
             <p>
-              Consume REST APIs via Vike&apos;s built-in hook{' '}
+              Consume REST APIs with Vike&apos;s built-in hook{' '}
               <Link href="/data">
                 <code>+data</code>
               </Link>
-              , or via extensions such as{' '}
+              , or with extensions such as{' '}
               <a href="https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query#readme">
                 <code>vike-react-query</code>
               </a>
@@ -97,11 +97,11 @@ const DxContent = () => {
           <Block>
             <SubSectionTitle>First-class GraphQL</SubSectionTitle>
             <p>
-              Consume GraphQL APIs via extensions such as{' '}
+              Consume GraphQL APIs with extensions such as{' '}
               <a href="https://github.com/vikejs/vike-react/tree/main/packages/vike-react-apollo#readme">
                 <code>vike-react-apollo</code>
               </a>
-              , or via a <Link href="/graphql">custom integration</Link>.
+              , or with a <Link href="/graphql">custom integration</Link>.
             </p>
             <ApolloExample />
           </Block>
