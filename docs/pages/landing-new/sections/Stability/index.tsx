@@ -97,7 +97,7 @@ const StabilitySection = () => {
                 Instead of hidden monetization mechanisms, we prefer upfront and transparent pricing.
               </p>
               <p>
-                <ClosingWords href="/pricing" className="btn-primary mx-0">
+                <ClosingWords href="/pricing" className="btn-secondary mx-0">
                   See full pricing <ChevronsRight className="w-4 h-4" />
                 </ClosingWords>
               </p>

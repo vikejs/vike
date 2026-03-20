@@ -6,21 +6,24 @@ const columns = [
     title: 'Small team',
     subtitle: '',
     price: 'Free',
-    toneClassName: 'from-emerald-500/10 via-emerald-500/4 to-transparent',
+    toneClassName: 'from-emerald-500/14 via-emerald-500/6 to-white/70',
+    panelClassName: 'bg-emerald-50/65',
     priceColor: 'green' as const,
   },
   {
     title: 'Larger team',
-    subtitle: 'Low money',
+    subtitle: 'Low resources',
     price: 'Free',
-    toneClassName: 'from-emerald-500/10 via-emerald-500/4 to-transparent',
+    toneClassName: 'from-emerald-500/14 via-emerald-500/6 to-white/70',
+    panelClassName: 'bg-emerald-50/65',
     priceColor: 'green' as const,
   },
   {
     title: 'Larger team',
-    subtitle: 'High money',
+    subtitle: 'High resources',
     price: '$5k',
-    toneClassName: 'from-blue-500/12 via-violet-500/5 to-transparent',
+    toneClassName: 'from-blue-500/16 via-violet-500/8 to-white/70',
+    panelClassName: 'bg-blue-50/60',
     priceColor: 'blue' as const,
     suffix: 'one time',
   },
@@ -29,13 +32,13 @@ const columns = [
 function MiniPricingStrip() {
   return (
     <div className="mx-auto w-full max-w-2xl overflow-hidden rounded-[1.6rem] border border-white/80 bg-white/88 shadow-[0_24px_70px_rgba(15,23,42,0.08)] ring-1 ring-slate-200/40 backdrop-blur-md">
-      <div className="grid grid-cols-3 divide-x divide-slate-200/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.95),rgba(248,250,252,0.88))]">
+      <div className="grid grid-cols-3 divide-x divide-slate-200/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.95),rgba(248,250,252,0.9))]">
         {columns.map((column) => (
           <div
             key={`${column.title}-${column.subtitle}`}
-            className="relative flex min-h-42 flex-col items-center justify-center px-4 py-7 text-center md:px-6"
+            className={`relative flex min-h-42 flex-col items-center justify-center px-4 py-7 text-center md:px-6 ${column.panelClassName}`}
           >
-            <div className={`absolute inset-x-0 top-0 h-20 bg-gradient-to-b ${column.toneClassName}`} />
+            <div className={`absolute inset-0 bg-gradient-to-b ${column.toneClassName}`} />
             <div className="relative text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-slate-500">
               {column.title}
             </div>
