@@ -23,6 +23,7 @@ import { H3Headline, H4Headline } from '../../components/Headline'
 import HeadlineGroup from '../../components/HeadlineGroup'
 import GlassContainer from '../../components/GlassContainer'
 import { ChevronsRight } from 'lucide-react'
+import './DxContent.css'
 
 const DxContent = () => {
   return (

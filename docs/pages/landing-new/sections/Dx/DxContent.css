@@ -1,8 +1,13 @@
+/*
 li {
   display: list-item;
 }
-
 ul {
   list-style-type: disc;
   margin-left: 24px;
+}
+*/
+
+#feature-wall code {
+  padding: 2px 4px !important;
 }
