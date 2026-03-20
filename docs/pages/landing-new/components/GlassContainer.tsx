@@ -29,6 +29,7 @@ const StyledGlassOuter = cm.div`
   to-90%
   from-transparent
   to-transparent
+  pointer-events-none
 `
 
 const StyledGlassBorder = cm.div.variants<{ $position: 'top' | 'bottom' }>({

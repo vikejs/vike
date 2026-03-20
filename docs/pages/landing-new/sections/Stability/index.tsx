@@ -11,6 +11,9 @@ import { textOtherFrameworks } from '../Flexibility'
 import MiniPricingStrip from './MiniPricingStrip'
 import { ChevronsRight } from 'lucide-react'
 import { ClosingWords } from '../Dx/DxContent'
+import { cmMerge } from '@classmatejs/react'
+
+const verticalPaddingClass = 'py-12 md:py-20'
 
 const StabilitySection = () => {
   return (
@@ -45,51 +48,50 @@ const StabilitySection = () => {
           </div>
         </LayoutComponent>
       </div>
-      <LayoutComponent className="md:my-24">
-        <GlassContainer>
-          <div className="grid grid-cols-2 gap4 md:gap-10 py-6">
-            <H2Headline>
-              <GradientText color="blue">Stable stack</GradientText> or{' '}
-              <GradientText color="green">cutting edge</GradientText>? <br />
-              Your choice.
-            </H2Headline>
-            <p className="mb-4">
-              Choose between a stable stack with unprecedented long-term support (thanks for Vike's stable foundation),
-              or the cutting-edge with unprecedented flexibility (thanks to Vike's powerful hooks).
-            </p>
+      <LayoutComponent className="md:my-24 relative">
+        <div className={cmMerge("grid grid-cols-2 gap4 md:gap-10 py-0", verticalPaddingClass)}>
+          <GlassContainer className={cmMerge("w-1/2 right-0 h-[120%] absolute z-0 -translate-y-[20%]", )} />
+          <H2Headline className="z-2 relative">
+            <GradientText color="blue">Stable stack</GradientText> or{' '}
+            <GradientText color="green">cutting edge</GradientText>? <br />
+            Your choice.
+          </H2Headline>
+          <p className="mb-4 z-2 ">
+            Choose between a stable stack with unprecedented long-term support (thanks for Vike's stable foundation), or
+            the cutting-edge with unprecedented flexibility (thanks to Vike's powerful hooks).
+          </p>
+        </div>
+        <div className="grid lg:grid-cols-2 gap-10 my-12 md:my-0">
+          <div className="relative z-2">
+            <H4Headline as="h3" className="mb-7">
+              <GradientText color="blue">Legacy</GradientText> support
+            </H4Headline>
+            <BarChart
+              pollData={[
+                { label: 'Vike', percentage: 100 },
+                { label: textOtherFrameworks, percentage: 33 },
+              ]}
+              color="blue"
+            />
           </div>
-          <div className="grid lg:grid-cols-2 gap-10 my-12 md:my-0">
-            <div className="">
-              <H4Headline as="h3" className="mb-7">
-                <GradientText color="blue">Legacy</GradientText> support
-              </H4Headline>
-              <BarChart
-                pollData={[
-                  { label: 'Vike', percentage: 100 },
-                  { label: textOtherFrameworks, percentage: 33 },
-                ]}
-                color="blue"
-              />
-            </div>
-            <div className="">
-              <H4Headline as="h3" className="mb-7">
-                <GradientText color="green">Cutting-edge </GradientText> support
-              </H4Headline>
-              <BarChart
-                pollData={[
-                  { label: 'Vike', percentage: 100 },
-                  { label: textOtherFrameworks, percentage: 33 },
-                ]}
-                color="green"
-              />
-            </div>
+          <div className="relative z-2">
+            <H4Headline as="h3" className="mb-7">
+              <GradientText color="green">Cutting-edge </GradientText> support
+            </H4Headline>
+            <BarChart
+              pollData={[
+                { label: 'Vike', percentage: 100 },
+                { label: textOtherFrameworks, percentage: 33 },
+              ]}
+              color="green"
+            />
           </div>
-        </GlassContainer>
+        </div>
       </LayoutComponent>
-      <LayoutComponent className="md:mb-44 md:mt-40">
-        <GlassContainer>
-          <div className="grid lg:grid-cols-5 xl:grid-cols-2 gap-0 lg:gap-10 relative z-2">
-            <div className="lg:col-span-2 xl:col-span-1">
+      <LayoutComponent className="md:mb-44 md:mt-32">
+        <div className="grid lg:grid-cols-2">
+          <GlassContainer>
+            <div className={verticalPaddingClass}>
               <H2Headline>
                 <GradientText color="blue">Stable interests</GradientText>
               </H2Headline>
@@ -102,11 +104,11 @@ const StabilitySection = () => {
                 </ClosingWords>
               </p>
             </div>
-            <div className="relative lg:col-span-3 xl:col-span-1 lg:pl-4" data-speed="0.97">
-              <MiniPricingStrip />
-            </div>
+          </GlassContainer>
+          <div className={cmMerge(verticalPaddingClass, 'relative lg:pl-4')} data-speed="0.97">
+            <MiniPricingStrip />
           </div>
-        </GlassContainer>
+        </div>
       </LayoutComponent>
     </section>
   )

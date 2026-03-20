@@ -42,7 +42,7 @@ const ecosystemComponents: Record<VikeEcoComponentCategory, EcoComponent[]> = {
 const EcoComponents = () => {
   return (
     <div className="relative z-10 mb-10">
-      <div className="flex gap-1 md:gap-4">
+      <div className="md:-mt-4 flex gap-1 md:gap-4">
         {objectEntries(ecosystemComponents).map(([category, components]) => (
           <div key={category} className="flex flex-col items-center gap-1 flex-1">
             <BoxOrange className="text-xs text-grey" $type="category">
