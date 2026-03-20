@@ -22,7 +22,7 @@ const IntroSection = () => {
         >
           <div className="relative z-10 flex flex-col items-center text-center w-full">
             <span className="sm:flex-row mb-4 lg:mb-8 mt-6 lg:mt-16 xl:mt-20 join rounded shadow">
-              <span className="join-item py-1 px-2 bg-base-200 uppercase font-medium text-xs">Replaces:</span>
+              <span className="join-item py-1 px-2 bg-base-200 font-medium text-xs tracking-wide">REPLACES</span>
               <span className="join-item  py-1 px-2 bg-grey text-base-300 font-medium text-xs">
                 Next.js / Nuxt / ...
               </span>
