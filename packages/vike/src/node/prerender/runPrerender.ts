@@ -449,22 +449,22 @@ async function callOnBeforePrerenderStartHooks(
   const existingUrlsMap: Record<string, PageContextPrerendered> = {}
   for (const pageContext of prerenderContext.pageContexts) {
     const { urlOriginal } = pageContext
-    const normalizedUrl = normalizeUrl(urlOriginal)
-    const existingUrl = existingUrlsMap[normalizedUrl]
-    if (existingUrl !== undefined) {
-      assert(existingUrl._providedByHook)
+    const urlNormalized = normalizeUrl(urlOriginal)
+    const pageContextSameUrl = existingUrlsMap[urlNormalized]
+    if (pageContextSameUrl) {
+      assert(pageContextSameUrl._providedByHook)
       assert(pageContext._providedByHook)
       const { hookName, hookFilePath } = pageContext._providedByHook
       const providedTwice =
-        hookFilePath === existingUrl._providedByHook.hookFilePath
+        hookFilePath === pageContextSameUrl._providedByHook.hookFilePath
           ? (`twice by the ${hookName}() hook (${hookFilePath})` as const)
-          : (`twice: by the ${hookName}() hook (${hookFilePath}) as well as by the hook ${existingUrl._providedByHook.hookFilePath}() (${existingUrl._providedByHook.hookName})` as const)
+          : (`twice: by the ${hookName}() hook (${hookFilePath}) as well as by the hook ${pageContextSameUrl._providedByHook.hookFilePath}() (${pageContextSameUrl._providedByHook.hookName})` as const)
       assertUsage(
         false,
-        `URL ${pc.cyan(normalizedUrl)} provided ${providedTwice}. Make sure to provide the URL only once instead.`,
+        `URL ${pc.cyan(urlNormalized)} provided ${providedTwice}. Make sure to provide the URL only once instead.`,
       )
     }
-    existingUrlsMap[normalizedUrl] = pageContext
+    existingUrlsMap[urlNormalized] = pageContext
   }
 }
 
