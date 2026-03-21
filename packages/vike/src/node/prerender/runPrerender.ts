@@ -446,11 +446,11 @@ async function callOnBeforePrerenderStartHooks(
 
   // Assert no duplicate URLs
   // If duplicate URL is found an error will be issued
-  const existingUrlsMap: Record<string, PageContextPrerendered> = {}
+  const pageContextsByUrl: Record<string, PageContextPrerendered> = {}
   for (const pageContext of prerenderContext.pageContexts) {
     const { urlOriginal } = pageContext
     const urlNormalized = normalizeUrl(urlOriginal)
-    const pageContextSameUrl = existingUrlsMap[urlNormalized]
+    const pageContextSameUrl = pageContextsByUrl[urlNormalized]
     if (pageContextSameUrl) {
       assert(pageContextSameUrl._providedByHook)
       assert(pageContext._providedByHook)
@@ -464,7 +464,7 @@ async function callOnBeforePrerenderStartHooks(
         `URL ${pc.cyan(urlNormalized)} provided ${providedTwice}. Make sure to provide the URL only once instead.`,
       )
     }
-    existingUrlsMap[urlNormalized] = pageContext
+    pageContextsByUrl[urlNormalized] = pageContext
   }
 }
 
