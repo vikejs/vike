@@ -446,28 +446,31 @@ async function callOnBeforePrerenderStartHooks(
 
   // Assert no duplicate URLs
   // If duplicate URL is found an error will be issued
-  prerenderContext.pageContexts.reduce((existingUrlsMap, pageContext) => {
-    const { urlOriginal } = pageContext
-    const normalizedUrl = normalizeUrl(urlOriginal)
+  prerenderContext.pageContexts.reduce(
+    (existingUrlsMap, pageContext) => {
+      const { urlOriginal } = pageContext
+      const normalizedUrl = normalizeUrl(urlOriginal)
 
-    const existingUrl = existingUrlsMap[normalizedUrl] 
-    if (existingUrl !== undefined) {
-      assert(existingUrl._providedByHook)
-      assert(pageContext._providedByHook)
-      const { hookName, hookFilePath } = pageContext._providedByHook
-      const providedTwice =
-        hookFilePath === existingUrl._providedByHook.hookFilePath
-          ? (`twice by the ${hookName}() hook (${hookFilePath})` as const)
-          : (`twice: by the ${hookName}() hook (${hookFilePath}) as well as by the hook ${existingUrl._providedByHook.hookFilePath}() (${existingUrl._providedByHook.hookName})` as const)
-      assertUsage(
-        false,
-        `URL ${pc.cyan(normalizedUrl)} provided ${providedTwice}. Make sure to provide the URL only once instead.`,
-      )
-    }
+      const existingUrl = existingUrlsMap[normalizedUrl]
+      if (existingUrl !== undefined) {
+        assert(existingUrl._providedByHook)
+        assert(pageContext._providedByHook)
+        const { hookName, hookFilePath } = pageContext._providedByHook
+        const providedTwice =
+          hookFilePath === existingUrl._providedByHook.hookFilePath
+            ? (`twice by the ${hookName}() hook (${hookFilePath})` as const)
+            : (`twice: by the ${hookName}() hook (${hookFilePath}) as well as by the hook ${existingUrl._providedByHook.hookFilePath}() (${existingUrl._providedByHook.hookName})` as const)
+        assertUsage(
+          false,
+          `URL ${pc.cyan(normalizedUrl)} provided ${providedTwice}. Make sure to provide the URL only once instead.`,
+        )
+      }
 
-    existingUrlsMap[normalizedUrl] = pageContext
-    return existingUrlsMap
-  }, {} as Record<string, PageContextPrerendered>)
+      existingUrlsMap[normalizedUrl] = pageContext
+      return existingUrlsMap
+    },
+    {} as Record<string, PageContextPrerendered>,
+  )
 }
 
 function getUrlListFromPagesWithStaticRoute(
