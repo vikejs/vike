@@ -448,11 +448,11 @@ async function callOnBeforePrerenderStartHooks(
   // If duplicate URL is found an error will be issued
   const pageContextsByUrl: Record<string, PageContextPrerendered> = {}
   for (const pageContext of prerenderContext.pageContexts) {
+    assert(pageContext._providedByHook)
     const urlNormalized = normalizeUrl(pageContext.urlOriginal)
     const pageContextSameUrl = pageContextsByUrl[urlNormalized]
     if (pageContextSameUrl) {
       assert(pageContextSameUrl._providedByHook)
-      assert(pageContext._providedByHook)
       const { hookName, hookFilePath } = pageContext._providedByHook
       const providedTwice =
         hookFilePath === pageContextSameUrl._providedByHook.hookFilePath
