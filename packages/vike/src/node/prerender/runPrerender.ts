@@ -446,8 +446,8 @@ async function callOnBeforePrerenderStartHooks(
 
   // Assert no duplicate URLs
   // If duplicate URL is found an error will be issued
-  prerenderContext.pageContexts.reduce(
-    (existingUrlsMap, pageContext) => {
+  const existingUrlsMap: Record<string, PageContextPrerendered> = {}
+  for (const pageContext of prerenderContext.pageContexts) {
       const { urlOriginal } = pageContext
       const normalizedUrl = normalizeUrl(urlOriginal)
 
@@ -467,10 +467,7 @@ async function callOnBeforePrerenderStartHooks(
       }
 
       existingUrlsMap[normalizedUrl] = pageContext
-      return existingUrlsMap
-    },
-    {} as Record<string, PageContextPrerendered>,
-  )
+    }
 }
 
 function getUrlListFromPagesWithStaticRoute(
