@@ -1,4 +1,4 @@
-name: Spellcheck
+name: Format
 on: [ push, pull_request ]
 jobs:
   main:
@@ -9,4 +9,4 @@ jobs:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
       - run: pnpm install
-      - run: pnpm run spellcheck:check
+      - run: pnpm run format:check
