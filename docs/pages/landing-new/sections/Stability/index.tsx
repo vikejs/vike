@@ -33,23 +33,19 @@ const StabilitySection = () => {
           />
           <StableGraphic />
         </LayoutComponent>
-        <LayoutComponent $size="sm">
-          <div className="">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 text-sm">
-              <p>
-                Vike's <b>internal components are stable features</b> that remain relevant for the foreseeable future,
-                making Vike a stable foundation.{' '}
-              </p>
-              <p>
-                <b>Fast evolving JavaScript tools aren't built into Vike by design</b> — instead, Vike extensions
-                provide deep and first-class integrations via powerful hooks.
-              </p>
-            </div>
-          </div>
+        <LayoutComponent $size="sm" className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 text-sm">
+          <p>
+            Vike's <b>internal components are stable features</b> that remain relevant for the foreseeable future,
+            making Vike a stable foundation.{' '}
+          </p>
+          <p>
+            <b>Fast evolving JavaScript tools aren't built into Vike by design</b> — instead, Vike extensions provide
+            deep and first-class integrations via powerful hooks.
+          </p>
         </LayoutComponent>
       </div>
       <LayoutComponent className="md:my-24 relative">
-        <div className={cmMerge('grid grid-cols-2 gap-4 md:gap-10 py-0', verticalPaddingClass)}>
+        <div className={cmMerge('grid md:grid-cols-2 gap-4 md:gap-10 py-0', verticalPaddingClass)}>
           <GlassContainer className={cmMerge('w-1/2 right-0 h-[120%] absolute z-0 -translate-y-[20%]')} />
           <H2Headline className="z-2 relative">
             <GradientText color="blue">Stable stack</GradientText> or{' '}

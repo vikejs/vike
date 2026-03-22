@@ -17,7 +17,7 @@ const Footer = () => {
   return (
     <footer className="bg-gray-100 py-8">
       <div className="container mx-auto text-center">
-        <div onClick={handleScrollToTopClick} className='cursor-pointer'>
+        <div onClick={handleScrollToTopClick} className="cursor-pointer">
           <video
             poster="https://github.com/vikejs/vike-logo-3d/raw/refs/heads/main/vike-logo-animdated-cover.webp"
             src="https://github.com/vikejs/vike-logo-3d/raw/refs/heads/main/vike-logo-animdated.webm"
