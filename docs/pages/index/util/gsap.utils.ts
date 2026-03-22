@@ -42,7 +42,7 @@ export const registerScrollToPlugin = () => {
   scrollToPluginRegistered = true
 }
 
-export const smoothScrollToTarget = (sectionNode: Element, offset?: number) => {
+export const smoothScrollToTarget = (sectionNode: Element, offset = 0) => {
   registerScrollToPlugin()
   const top = Math.max(sectionNode.getBoundingClientRect().top + window.scrollY - stickyNavOffset + offset, 0)
   gsap.to(window, {
