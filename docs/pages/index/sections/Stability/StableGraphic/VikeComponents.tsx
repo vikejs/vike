@@ -47,10 +47,12 @@ const smallComponents: VikeComponent[] = (
       link: 'https://vike.dev/error-page',
     },
     {
+      // TOOD/ai set `name` to <code>pageContext</code>
       name: '`pageContext`',
       link: 'https://vike.dev/pageContext',
     },
     {
+      // TOOD/ai set `name` to <code>globalContext</code>
       name: '`globalContext`',
       link: 'https://vike.dev/globalContext',
     },
