@@ -1,0 +1,19 @@
+```js
+import {
+  // Same as Zustand's create() but with
+  // seamless SSR integration // [!code highlight]
+  create
+} from 'vike-react-zustand'
+
+interface Store {
+  counter: number
+  increment: () => void
+}
+
+export const useStore = create()((set) => ({
+  counter: 0,
+  increment: () => set((state) =>
+    ({ counter: state.counter + 1 })
+  )
+}))
+```

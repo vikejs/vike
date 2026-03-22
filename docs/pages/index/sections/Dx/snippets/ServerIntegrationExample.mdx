@@ -1,0 +1,16 @@
+```js
+import { renderPage } from 'vike/server'
+
+// Any server: Hono, Express.js, Cloudflare Worker, ...
+server.addMiddleware({
+  method: 'GET',
+  route: '*', // catch-all
+  async handler(request) {
+    const pageContextInit = { urlOriginal: request.url }
+    const pageContext = await renderPage(pageContextInit)
+    const { body, statusCode } = pageContext.httpResponse
+    const response = { body, statusCode }
+    return response
+  }
+})
+```

@@ -1,0 +1,14 @@
+```js
+// [!code word:client.]
+// /pages/movie/@id/+data.client.js
+// Environment: client // [!code highlight]
+
+export async function data(pageContext) {
+  const { id } = pageContext.routeParams
+  // Fetching data on the client-side
+  const movie = await (
+    await fetch(`https://swapi.info/api/films/${id}`)
+  ).json()
+  return { movie }
+}
+```

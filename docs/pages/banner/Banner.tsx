@@ -5,7 +5,7 @@ export { BannerSlides }
 export { BannerVikings }
 
 import React from 'react'
-import { HeroTagline } from '../index/sections/hero/Hero'
+import { HeroTagline } from '../../components/HeroTagline'
 import vikeLogo from '../../assets/logo/vike-shadow.svg'
 import './Banner.css'
 

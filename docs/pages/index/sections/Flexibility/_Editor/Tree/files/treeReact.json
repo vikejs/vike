@@ -1,0 +1,14 @@
+{
+  "type": "root",
+  "uri": "website-project-folder",
+  "children": [
+    {
+      "type": "disabled-file",
+      "uri": ".babelrc"
+    },
+    {
+      "type": "disabled-dir",
+      "uri": "node_modules"
+    }
+  ]
+}

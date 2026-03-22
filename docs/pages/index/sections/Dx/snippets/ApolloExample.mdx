@@ -1,0 +1,24 @@
+```jsx
+// Powered by vike-react-apollo
+
+import { useSuspenseQuery, gql } from '@apollo/client'
+
+const Countries = () => {
+  const { data } = useSuspenseQuery(gql`
+    {
+      countries {
+        code
+        name
+      }
+    }
+  `)
+
+  return (
+    <ul>
+      {data.countries.map((country) => (
+        <li key={country.code}>{country.name}</li>
+      ))}
+    </ul>
+  )
+}
+```
