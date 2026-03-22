@@ -281,7 +281,7 @@ const useUspHero = () => {
         id: 'intro-usp-hero-sticky-nav-pin',
         trigger: rootNode,
         scroller,
-        start: 'top top+=8',
+        start: 'top top+=4',
         end: 'max',
         pin: navNode,
         pinSpacing: false,
