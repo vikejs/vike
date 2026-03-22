@@ -1,5 +1,7 @@
 export { UsedByList }
 
+import React from 'react'
+
 type UsedByEntry = {
   website: `https://${string}`
   desc: string
