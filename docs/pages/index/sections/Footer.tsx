@@ -15,7 +15,7 @@ const Footer = () => {
   })
 
   return (
-    <footer className="bg-gray-100 py-8">
+    <footer className="bg-gray-100">
       <div className="container mx-auto text-center">
         <div onClick={handleScrollToTopClick} className="cursor-pointer">
           <video
@@ -26,13 +26,16 @@ const Footer = () => {
             autoPlay
             muted
             loop
-            className="hidden md:block mx-auto w-30"
+            className="hidden md:block mx-auto w-30 py-8 mt-20"
           />
+          <img
+            src={vikeLogo}
+            width="150"
+            className="block md:hidden mx-auto w-12 sm:w-24 h-auto mt-10"
+            loading="lazy"
+          />
+          <div className="h-7 md:h-14" />
         </div>
-        <img src={vikeLogo} width="150" className="block md:hidden mx-auto w-12 sm:w-24 h-auto" loading="lazy" />
-        <a href="#intro-section" onClick={handleScrollToTopClick} className="text-grey mt-6 inline-block underline!">
-          return to top
-        </a>
       </div>
     </footer>
   )
