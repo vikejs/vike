@@ -143,7 +143,7 @@ const BrandSubsection = () => {
 const TeamQuote = () => {
   return (
     <Blockquote
-      className="mt-2 mb-10 pb-10 md:w-4/5 mx-auto"
+      className="mt-15 mb-3 md:mt-2 md:mb-10 pb-10 md:w-4/5 mx-auto"
       authorPictures={[
         'https://github.com/phonzammi.png?size=100',
         'https://github.com/richard-unterberg.png?size=100',

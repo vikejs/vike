@@ -26,13 +26,13 @@ const FlexibilitySection = () => {
           badgeText="Flexibility"
           main={<GradientText color="green">Freedom</GradientText>}
           color="green"
-          outerClassName="mb-28 mt-22 md:mt-37"
+          outerClassName="mb-20 mt-16 md:mb-28 md:mt-37"
         />
       </LayoutComponent>
       <LayoutComponent className="md:mb-32">
         <HeadlineGroup
           headingStyle="h2"
-          outerClassName="mb-14"
+          outerClassName="mb-6 md:mb-14"
           main={
             <>
               <GradientText color="green">Your stack, your choice</GradientText>
@@ -57,7 +57,7 @@ const FlexibilitySection = () => {
             />
           </div>
           <GlassContainer>
-            <div className="flex flex-col gap-0 justify-center pt-8">
+            <div className="flex flex-col gap-0 justify-center pt-4">
               <ul className="mb-8">
                 <li>
                   - <b>Any frontend</b>: React/Vue/Solid/...
@@ -76,7 +76,7 @@ const FlexibilitySection = () => {
                 </li>
               </ul>
               <div className="">
-                <H4Headline as="h3" className="mb-4 md:mb-8">
+                <H4Headline as="h3" className="mb-2 -mt-2 md:mb-3">
                   Supported <GradientText color="green">tools</GradientText>
                 </H4Headline>
                 <BarChart
@@ -88,7 +88,7 @@ const FlexibilitySection = () => {
                 />
               </div>
               <div className="">
-                <H4Headline as="h3" className="mb-4 md:mb-8">
+                <H4Headline as="h3" className="mb-2 mt-6 md:mb-3 mb:mt-8">
                   Supported <GradientText color="green">stacks</GradientText>
                 </H4Headline>
                 <BarChart
