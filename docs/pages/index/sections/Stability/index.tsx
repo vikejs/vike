@@ -44,7 +44,7 @@ const StabilitySection = () => {
           </p>
         </LayoutComponent>
       </div>
-      <LayoutComponent className="md:my-24 relative">
+      <LayoutComponent className="mt-12 md:my-24 relative">
         <div className={cmMerge('grid md:grid-cols-2 gap-4 md:gap-10 py-0', verticalPaddingClass)}>
           <GlassContainer className={cmMerge('w-1/2 right-0 h-[120%] absolute z-0 -translate-y-[20%]')} />
           <H2Headline className="z-2 relative">
@@ -52,12 +52,12 @@ const StabilitySection = () => {
             <GradientText color="green">cutting edge</GradientText>? <br />
             Your choice.
           </H2Headline>
-          <p className="mb-4 z-2 ">
+          <p className="mb-1 z-2 ">
             Choose between a stable stack with unmatched long-term support (thanks to Vike's stable foundation), or the
             cutting-edge with unprecedented flexibility (thanks to Vike's powerful hooks).
           </p>
           <div className="relative z-2">
-            <H4Headline as="h3" className="mb-7">
+            <H4Headline as="h3" className="mb-2 md:mb-3">
               <GradientText color="blue">Legacy</GradientText> support
             </H4Headline>
             <BarChart
@@ -69,7 +69,7 @@ const StabilitySection = () => {
             />
           </div>
           <div className="relative z-2">
-            <H4Headline as="h3" className="mb-7">
+            <H4Headline as="h3" className="mt-2 mb-2 md:mb-3 md:mt-0">
               <GradientText color="green">Cutting-edge </GradientText> support
             </H4Headline>
             <BarChart
@@ -100,7 +100,7 @@ const StabilitySection = () => {
               </p>
             </div>
           </GlassContainer>
-          <div className={cmMerge(verticalPaddingClass, 'relative lg:pl-4')} data-speed="0.97">
+          <div className={cmMerge(verticalPaddingClass, 'relative lg:pl-4 -mt-16 md:mt-0')} data-speed="0.97">
             <MiniPricingStrip />
           </div>
         </div>
