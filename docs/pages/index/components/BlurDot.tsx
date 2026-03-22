@@ -2,11 +2,8 @@ import cm from '@classmatejs/react'
 import React, { HTMLAttributes } from 'react'
 
 import blurDotGreenSm from './../assets/decorators/blur/raw/blur-green@0.5.png'
-import blurDotGreen from './../assets/decorators/blur/raw/blur-green.png'
 import blurDotBlueSm from './../assets/decorators/blur/raw/blur-blue@0.5.png'
-import blurDotBlue from './../assets/decorators/blur/raw/blur-blue.png'
 import blurDotOrangeSm from './../assets/decorators/blur/raw/blur-orange@0.5.png'
-import blurDotOrange from './../assets/decorators/blur/raw/blur-orange.png'
 import { BlurDotOpacity, UiColorVariantKey } from '../util/ui.constants'
 
 const BlurDot = ({ type, lazy = true, visibility = 'medium', size = 'md', ...props }: BlurDotProps) => {
@@ -14,8 +11,7 @@ const BlurDot = ({ type, lazy = true, visibility = 'medium', size = 'md', ...pro
   const mobileSizePx = Math.round(sizePx / 2)
   const { className, ...restProps } = props
 
-  const mobileImgUrl = type === 'blue' ? blurDotBlueSm : type === 'green' ? blurDotGreenSm : blurDotOrangeSm
-  const imgUrl = type === 'blue' ? blurDotBlue : type === 'green' ? blurDotGreen : blurDotOrange
+  const imgUrl = type === 'blue' ? blurDotBlueSm : type === 'green' ? blurDotGreenSm : blurDotOrangeSm
 
   return (
     <>
@@ -25,7 +21,6 @@ const BlurDot = ({ type, lazy = true, visibility = 'medium', size = 'md', ...pro
           width={sizePx}
           height={sizePx}
           src={imgUrl}
-          srcSet={`${mobileImgUrl} ${mobileSizePx}w, ${imgUrl} ${sizePx}w`}
           sizes={`(max-width: 600px) ${mobileSizePx}px, ${sizePx}px`}
           fetchPriority={lazy ? 'low' : 'auto'}
           loading={lazy ? 'lazy' : 'eager'}
