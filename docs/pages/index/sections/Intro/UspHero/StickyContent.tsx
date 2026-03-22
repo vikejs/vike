@@ -21,7 +21,12 @@ interface UspStickyContentProps {
 const UspStickyContent = ({ isCompactDocked, uspVisualStateById }: UspStickyContentProps) => {
   return (
     <>
-      <div className="fixed w-full h-24 top-0 left-0 z-20 bg-linear-to-t to-95% to-base-300 pointer-events-none" />
+      <div
+        className={cmMerge(
+          'fixed w-full h-24 top-0 left-0 z-20 bg-linear-to-t to-95% to-base-300 pointer-events-none transition-opacity duration-150',
+          isCompactDocked ? 'opacity-100' : 'opacity-0',
+        )}
+      />
       <div data-usp-hero-nav="true" className="relative z-30 py-2">
         <StyledHeroChrome data-usp-hero-nav-chrome="true">
           <SharedOuterGrid>
