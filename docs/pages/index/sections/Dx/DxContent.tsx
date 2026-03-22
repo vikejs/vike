@@ -26,36 +26,36 @@ import './DxContent.css'
 const DxContent = () => {
   return (
     <div className="space-y-16">
-        <Section className="py-10">
-          <SectionTitle className="text-center mb-10">First-class SSR/SPA/SSG</SectionTitle>
-          <TwoColumn>
-            <Block>
-              <p className="text-lg">
-                Toggle{' '}
-                <DX_InlineHighlight color="#b8d4eb" href="/ssr">
-                  SSR
-                </DX_InlineHighlight>
-                /
-                <DX_InlineHighlight color="#c0ebb8" href="/SSR-vs-SPA">
-                  SPA
-                </DX_InlineHighlight>
-                /
-                <DX_InlineHighlight color="#e9b8e8" href="/pre-rendering">
-                  SSG
-                </DX_InlineHighlight>{' '}
-                on a page-by-page basis, powered by{' '}
-                <DX_InlineHighlight color="#f4f5a6" href="/config#inheritance">
-                  config inheritance
-                </DX_InlineHighlight>
-                .
-              </p>
-              <SsrSpaSsgTree />
-            </Block>
-            <Block>
-              <SsrSpaSsgConfigs />
-            </Block>
-          </TwoColumn>
-        </Section>
+      <Section className="py-10">
+        <SectionTitle className="text-center mb-10">First-class SSR/SPA/SSG</SectionTitle>
+        <TwoColumn>
+          <Block>
+            <p className="text-lg">
+              Toggle{' '}
+              <DX_InlineHighlight color="#b8d4eb" href="/ssr">
+                SSR
+              </DX_InlineHighlight>
+              /
+              <DX_InlineHighlight color="#c0ebb8" href="/SSR-vs-SPA">
+                SPA
+              </DX_InlineHighlight>
+              /
+              <DX_InlineHighlight color="#e9b8e8" href="/pre-rendering">
+                SSG
+              </DX_InlineHighlight>{' '}
+              on a page-by-page basis, powered by{' '}
+              <DX_InlineHighlight color="#f4f5a6" href="/config#inheritance">
+                config inheritance
+              </DX_InlineHighlight>
+              .
+            </p>
+            <SsrSpaSsgTree />
+          </Block>
+          <Block>
+            <SsrSpaSsgConfigs />
+          </Block>
+        </TwoColumn>
+      </Section>
       <Section>
         <HeadlineGroup main="API" sub="" outerClassName="mb-10" />
         <SubSectionTitle>First-class RPC</SubSectionTitle>
