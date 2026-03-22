@@ -49,7 +49,7 @@ const UspStaticContent = ({ uspVisualStateById }: UspStaticContentProps) => (
             type={usp.dotColor}
             size="md"
             visibility="low"
-            className="left-1/2 top-0 z-4 -translate-x-1/2 -translate-y-40"
+            className="left-1/2 top-14 z-4 -translate-x-1/2 -translate-y-40"
           />
 
           <div data-usp-content-progress-track={usp.id} className="relative h-0.5 w-18 mx-auto mb-2 rounded-full" />
