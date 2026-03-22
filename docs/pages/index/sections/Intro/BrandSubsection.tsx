@@ -7,9 +7,9 @@ import usedByEcosia from './../../assets/brands/ecosia.svg'
 import usedByContra from './../../assets/brands/contra.svg'
 import usedByName from './../../assets/brands/namecom.svg'
 import usedByDia from './../../assets/brands/dia.svg'
-
 import GlassContainer from '../../components/GlassContainer'
 import Blockquote from '../../components/Quote'
+import { Link } from '@brillout/docpress'
 
 type HeightVariant = {
   mobile: string
@@ -134,10 +134,7 @@ const BrandSubsection = () => {
       </BrandsWrapper>
 
       <div className="text-grey text-xs md:text-sm mx-auto mt-4 basis-full px-4 text-center">
-        Used by large organizations to build mission-critical applications, see{' '}
-        <a href="link" className="text-secondary">
-          Use Cases
-        </a>
+        Used by large organizations to build mission-critical applications, see <Link href="/use-cases">Use Cases</Link>
       </div>
     </GlassContainer>
   )
