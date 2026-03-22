@@ -1,11 +1,6 @@
 import { useGSAP } from '@gsap/react'
 import { useRef, useState } from 'react'
-import {
-  registerScrollToPlugin,
-  registerScrollTrigger,
-  smoothScrollToTarget,
-  stickyNavOffset,
-} from '../../../util/gsap.utils'
+import { registerScrollToPlugin, registerScrollTrigger, smoothScrollToTarget } from '../../../util/gsap.utils'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { gsap } from 'gsap'
 import { landingPageHeroUsps, UspId } from '../../../util/constants'
@@ -75,25 +70,6 @@ const useUspHero = () => {
         activeSectionIdRef.current = nextActiveSectionId
         setActiveSectionId(nextActiveSectionId)
       }
-      const resolveActiveSectionId = () => {
-        if (typeof window === 'undefined' || !orderedSectionEntries.length) {
-          syncActiveSectionId(null)
-          return
-        }
-
-        const viewportProbe = window.scrollY + stickyNavOffset + 1
-        let nextActiveSectionId: UspId | null = null
-
-        orderedSectionEntries.forEach(({ id, node }) => {
-          const sectionTop = node.getBoundingClientRect().top + window.scrollY
-          if (sectionTop <= viewportProbe) {
-            nextActiveSectionId = id
-          }
-        })
-
-        syncActiveSectionId(nextActiveSectionId)
-      }
-
       const setSectionProgress = (id: string, progress: number) => {
         const clampedProgress = clamp01(progress)
 
@@ -310,11 +286,11 @@ const useUspHero = () => {
           },
           onLeave: () => {
             applyCompactDockedState(true)
-            resolveActiveSectionId()
+            syncActiveSectionIdFromProgressTriggers()
           },
           onLeaveBack: () => {
             applyCompactDockedState(false)
-            resolveActiveSectionId()
+            syncActiveSectionIdFromProgressTriggers()
           },
         },
       })
@@ -338,8 +314,20 @@ const useUspHero = () => {
         },
         0,
       )
+      const sectionProgressEntries: Array<{ id: UspId; trigger: ScrollTrigger }> = []
+      const syncActiveSectionIdFromProgressTriggers = () => {
+        const activeEntry = sectionProgressEntries.find(({ trigger }) => trigger.isActive)
+        if (activeEntry) {
+          syncActiveSectionId(activeEntry.id)
+          return
+        }
+
+        const progressedEntry = [...sectionProgressEntries].reverse().find(({ trigger }) => trigger.progress > 0)
+        syncActiveSectionId(progressedEntry?.id ?? null)
+      }
       const sectionProgressTriggers: ScrollTrigger[] = []
       orderedSectionEntries.forEach(({ id, node }, index) => {
+        const previousEntry = orderedSectionEntries[index - 1]
         const nextEntry = orderedSectionEntries[index + 1]
 
         const sectionTrigger = ScrollTrigger.create({
@@ -354,29 +342,29 @@ const useUspHero = () => {
           markers: false,
           onUpdate: (self) => {
             setSectionProgress(id, self.progress)
-            resolveActiveSectionId()
           },
           onEnter: () => {
-            resolveActiveSectionId()
+            syncActiveSectionId(id)
           },
           onEnterBack: () => {
-            resolveActiveSectionId()
+            syncActiveSectionId(id)
           },
           onLeave: () => {
             setSectionProgress(id, 1)
-            resolveActiveSectionId()
+            syncActiveSectionId(nextEntry?.id ?? id)
           },
           onLeaveBack: () => {
             setSectionProgress(id, 0)
-            resolveActiveSectionId()
+            syncActiveSectionId(previousEntry?.id ?? null)
           },
         })
 
+        sectionProgressEntries.push({ id, trigger: sectionTrigger })
         sectionProgressTriggers.push(sectionTrigger)
         setSectionProgress(id, sectionTrigger.progress)
       })
 
-      resolveActiveSectionId()
+      syncActiveSectionIdFromProgressTriggers()
       applyCompactDockedState((compactTimeline.scrollTrigger?.progress ?? 0) >= 0.999)
 
       return () => {
