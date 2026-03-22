@@ -16,7 +16,7 @@ const DxSection = () => {
           badgeText="Developer Experience"
           main={
             <>
-              <GradientText color="orange">Lightning</GradientText> DX
+              <GradientText color="orange">Lightning DX</GradientText>
             </>
           }
           color="orange"
