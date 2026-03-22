@@ -12,7 +12,6 @@ import { landingPageHeroUsps, UspId } from '../../../util/constants'
 import { uiConfig } from '../../../util/ui.constants'
 
 const clamp01 = (value: number) => Math.max(0, Math.min(1, value))
-const activeSectionViewportRatio = 0.5
 
 const useUspHero = () => {
   const rootRef = useRef<HTMLDivElement>(null)
@@ -82,8 +81,7 @@ const useUspHero = () => {
           return
         }
 
-        const viewportProbeOffset = Math.max(window.innerHeight * activeSectionViewportRatio, stickyNavOffset + 1)
-        const viewportProbe = window.scrollY + viewportProbeOffset
+        const viewportProbe = window.scrollY + stickyNavOffset + 1
         let nextActiveSectionId: UspId | null = null
 
         orderedSectionEntries.forEach(({ id, node }) => {
