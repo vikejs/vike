@@ -40,6 +40,8 @@ const bigComponents: VikeComponent[] = (
   size: 'small',
 }))
 
+const Code = ({ children }: { children: string }) => <code className="!px-[4px] !py-[2px]">{children}</code>
+
 const smallComponents: VikeComponent[] = (
   [
     {
@@ -47,11 +49,11 @@ const smallComponents: VikeComponent[] = (
       link: 'https://vike.dev/error-page',
     },
     {
-      name: <code>pageContext</code>,
+      name: <Code>pageContext</Code>,
       link: 'https://vike.dev/pageContext',
     },
     {
-      name: <code>globalContext</code>,
+      name: <Code>globalContext</Code>,
       link: 'https://vike.dev/globalContext',
     },
     {
