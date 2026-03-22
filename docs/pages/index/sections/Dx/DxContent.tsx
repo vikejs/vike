@@ -26,7 +26,7 @@ import './DxContent.css'
 const DxContent = () => {
   return (
     <div className="space-y-16">
-      <Section className="py-10">
+      <Section>
         <SectionTitle className="text-center mb-10">First-class SSR/SPA/SSG</SectionTitle>
         <TwoColumn>
           <Block>
@@ -268,7 +268,7 @@ const DxContent = () => {
   )
 }
 
-const Section = cm.section`space-y-6`
+const Section = cm.section`space-y-6 py-10`
 
 const TwoColumn = cm.div`grid gap-4 lg:gap-8 md:grid-cols-2`
 const Block = cm.div`space-y-4`
