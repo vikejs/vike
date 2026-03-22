@@ -15,11 +15,6 @@ interface BarChartProps extends React.HTMLAttributes<HTMLDivElement> {
 const BarChart = ({ pollData, color, className, ...props }: BarChartProps) => {
   const winningEntry = pollData.reduce((prev, current) => (prev.percentage > current.percentage ? prev : current))
 
-  // bar chart only supports two entries, se want want to know how (x) is the winning entry ahead of the losing entry, so we can use that to determine the width of the winning bar
-  const winMultiplier = (
-    winningEntry.percentage / pollData.find((entry) => entry.label !== winningEntry.label)!.percentage
-  ).toFixed(1)
-
   return (
     <div className={cmMerge('flex flex-col gap-1', className)} {...props}>
       {pollData.map((data) => {
@@ -29,9 +24,6 @@ const BarChart = ({ pollData, color, className, ...props }: BarChartProps) => {
             <div className="w-full h-3 md:h-4 to-base-200 via-base-200 via-60% bg-linear-to-l rounded-box">
               <StyledBar style={{ width: barWidth }} $color={color} $won={data.label === winningEntry.label}>
                 <span className="text-xs md:text-sm font-mono whitespace-nowrap">{data.label}</span>
-                {/* {data.label === winningEntry.label && (
-                  <StyledWinDot $color={color}>{`~${winMultiplier}x`}</StyledWinDot>
-                )} */}
               </StyledBar>
             </div>
           </div>
