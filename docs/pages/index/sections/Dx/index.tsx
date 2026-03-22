@@ -3,7 +3,7 @@ import React from 'react'
 import LayoutComponent from '../../components/LayoutComponent'
 import GradientText from '../../components/GradientText'
 import SectionHeader from '../../components/SectionHeader'
-import { lightningDxUspImg, UspCategoryId } from '../../util/constants'
+import { lightningDxUspImg, taglineDX, UspCategoryId } from '../../util/constants'
 import DxContent from './DxContent'
 import FeatureWall from './FeatureWall'
 
@@ -19,6 +19,7 @@ const DxSection = () => {
               <GradientText color="orange">Lightning DX</GradientText>
             </>
           }
+          sub={taglineDX}
           color="orange"
         />
         <DxContent />

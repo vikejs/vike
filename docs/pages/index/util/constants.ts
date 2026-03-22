@@ -95,25 +95,29 @@ type Usp = {
   dotColor: UiColorVariantKey
 }
 
+export const taglineFreedom = 'Build with minimal limitations.'
+export const taglineStability = 'Build on a stable foundation you can rely on.'
+export const taglineDX = 'Experience state-of-the-art and novel DX.'
+
 export const landingPageHeroUsps: Usp[] = [
   {
     id: UspCategoryId.freedom,
     title: 'Freedom',
-    description: 'Build with minimal limitations.',
+    description: taglineFreedom,
     icon: freedomUspImg,
     dotColor: 'green',
   },
   {
     id: UspCategoryId.stability,
     title: 'Stability',
-    description: 'Build on a stable foundation you can rely on.',
+    description: taglineStability,
     icon: stabilityUspImg,
     dotColor: 'blue',
   },
   {
     id: UspCategoryId.lightningDx,
     title: 'Lightning DX',
-    description: 'Experience state-of-the-art and novel DX.',
+    description: taglineDX,
     icon: lightningDxUspImg,
     dotColor: 'orange',
   },

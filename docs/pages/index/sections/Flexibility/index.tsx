@@ -12,7 +12,7 @@ import libraryRollImgMobile from '../../assets/libraryRoll@0.5.avif'
 import BlurDot from '../../components/BlurDot'
 import BarChart from '../../components/BarChart'
 import { H4Headline } from '../../components/Headline'
-import { freedomUspImg, UspCategoryId } from '../../util/constants'
+import { freedomUspImg, taglineFreedom, UspCategoryId } from '../../util/constants'
 import { smoothScrollToSelector } from '../../util/gsap.utils'
 import { ClosingWords } from '../Dx/DxContent'
 
@@ -31,6 +31,7 @@ const FlexibilitySection = () => {
           iconSrc={freedomUspImg}
           badgeText="Flexibility"
           main={<GradientText color="green">Freedom</GradientText>}
+          sub={taglineFreedom}
           color="green"
           outerClassName="mb-20 mt-16 md:mb-28 md:mt-37"
         />
