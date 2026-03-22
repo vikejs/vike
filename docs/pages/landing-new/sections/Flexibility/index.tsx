@@ -34,7 +34,7 @@ const FlexibilitySection = () => {
           }
         />
       </LayoutComponent>
-      <LayoutComponent className="mb-28">
+      <LayoutComponent className="md:mb-32">
         <div className="grid md:grid-cols-2 md:gap-x-10 relative z-2">
           <div className="md:col-span-2"></div>
           <div className="relative lg:-ml-4 -mt-4 lg:-mt-9 max-w-120 md:max-w-none mx-auto select-none pointer-events-none">

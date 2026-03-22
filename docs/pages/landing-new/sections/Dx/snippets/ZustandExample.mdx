@@ -1,6 +1,6 @@
 ```js
 import {
-  // Same as Zustand's create() (transparent wrapper) but with
+  // Same as Zustand's create() but with
   // seamless SSR integration // [!code highlight]
   create
 } from 'vike-react-zustand'
@@ -10,8 +10,10 @@ interface Store {
   increment: () => void
 }
 
-export const useStore = create<Store>()((set) => ({
+export const useStore = create()((set) => ({
   counter: 0,
-  increment: () => set((state) => ({ counter: state.counter + 1 }))
+  increment: () => set((state) =>
+    ({ counter: state.counter + 1 })
+  )
 }))
 ```

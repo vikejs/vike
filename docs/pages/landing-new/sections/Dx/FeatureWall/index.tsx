@@ -6,7 +6,11 @@ import GradientText from '../../../components/GradientText'
 
 const FeatureWall = () => {
   return (
-    <LayoutComponent className="mt-24 grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-5" $size="xl">
+    <LayoutComponent
+      id="feature-wall"
+      className="mt-24 grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-5"
+      $size="xl"
+    >
       <H2Headline as="h3" className="mb-10 text-center col-span-full">
         Full-<GradientText color="orange">fledged</GradientText>
       </H2Headline>
@@ -26,11 +30,13 @@ const FeatureWall = () => {
               <Icon aria-hidden className="h-4 w-4" strokeWidth={2.3} />
             </div>
             <div className="text-sm text-grey">{feature.content}</div>
+            {/* Permantly removed the `advanced` label? I think so because it doesn't re-assure the user? it's kinda "panicking" for juniors?
             {feature.advanced && (
               <div className="badge badge-xs badge-grey absolute left-3 -top-2 z-2 border-grey-200 text-grey">
                 Advanced
               </div>
             )}
+            */}
           </article>
         )
       })}

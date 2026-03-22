@@ -1,7 +1,7 @@
 import React from 'react'
 import type { ReactNode } from 'react'
 import { Link } from '@brillout/docpress'
-import AdminAndMarketingConfigs from './snippets/AdminAndMarketingConfigs.mdx'
+import SsrSpaSsgConfigs from './snippets/SsrSpaSsgConfigs.mdx'
 import ApolloExample from './snippets/ApolloExample.mdx'
 import DataClientExample from './snippets/DataClientExample.mdx'
 import DataServerExample from './snippets/DataServerExample.mdx'
@@ -11,7 +11,6 @@ import GlobalContextServerExample from './snippets/GlobalContextServerExample.md
 import GuardExample from './snippets/GuardExample.mdx'
 import I18nExample from './snippets/I18nExample.mdx'
 import InstrumentationExample from './snippets/InstrumentationExample.mdx'
-import ProductConfigExample from './snippets/ProductConfigExample.mdx'
 import ReactQueryExample from './snippets/ReactQueryExample.mdx'
 import ServerIntegrationExample from './snippets/ServerIntegrationExample.mdx'
 import SsrSpaSsgTree from './snippets/SsrSpaSsgTree.mdx'
@@ -23,6 +22,7 @@ import { H3Headline, H4Headline } from '../../components/Headline'
 import HeadlineGroup from '../../components/HeadlineGroup'
 import GlassContainer from '../../components/GlassContainer'
 import { ChevronsRight } from 'lucide-react'
+import './DxContent.css'
 
 const DxContent = () => {
   return (
@@ -54,34 +54,31 @@ const DxContent = () => {
               <SsrSpaSsgTree />
             </Block>
             <Block>
-              <ProductConfigExample />
-              <AdminAndMarketingConfigs />
+              <SsrSpaSsgConfigs />
             </Block>
           </TwoColumn>
         </Section>
       </GlassContainer>
-
       <Section>
         <HeadlineGroup main="API" sub="" outerClassName="mb-10" />
         <SubSectionTitle>First-class RPC</SubSectionTitle>
         <p className="mb-0">
-          Next-gen RPC (aka Server Functions) via <a href="https://telefunc.com">Telefunc</a> (maintained by the Vike
-          team), or classic RPC via tools such as tRPC.
+          Next-gen RPC (aka Server Functions) with <a href="https://telefunc.com">Telefunc</a> (maintained by the Vike
+          team), or classic RPC with tools such as tRPC.
         </p>
         <TwoColumn className="mt-0">
           <TelefuncServerExample />
           <TelefuncClientExample />
         </TwoColumn>
-
         <TwoColumn>
           <Block>
             <SubSectionTitle>First-class REST</SubSectionTitle>
             <p>
-              Consume REST APIs via Vike&apos;s built-in hook{' '}
+              Consume REST APIs with Vike&apos;s built-in hook{' '}
               <Link href="/data">
                 <code>+data</code>
               </Link>
-              , or via extensions such as{' '}
+              , or with extensions such as{' '}
               <a href="https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query#readme">
                 <code>vike-react-query</code>
               </a>
@@ -100,77 +97,77 @@ const DxContent = () => {
           <Block>
             <SubSectionTitle>First-class GraphQL</SubSectionTitle>
             <p>
-              Consume GraphQL APIs via extensions such as{' '}
+              Consume GraphQL APIs with extensions such as{' '}
               <a href="https://github.com/vikejs/vike-react/tree/main/packages/vike-react-apollo#readme">
                 <code>vike-react-apollo</code>
               </a>
-              , or via a <Link href="/graphql">custom integration</Link>.
+              , or with a <Link href="/graphql">custom integration</Link>.
             </p>
             <ApolloExample />
           </Block>
         </TwoColumn>
       </Section>
 
+      <Divider />
+
       <Section>
         <SectionTitle id="hooks" className="mb-10 text-center">
           Hooks
         </SectionTitle>
-        <div className="grid grid-cols-1 md:grid-cols-11 gap-4 lg:gap-8">
-          <Block className="md:col-span-6">
-            <SubSectionTitle>
-              Data fetching: <i>where</i>
-            </SubSectionTitle>
-            <p>Hooks give you control where data is fetched:</p>
+        <TwoColumn>
+          <Block>
+            <SubSectionTitle>Data fetching: where</SubSectionTitle>
+            <p>
+              Hooks give you control <i>where</i> data is fetched:
+            </p>
             <DataServerExample />
             <DataClientExample />
           </Block>
-          <Block className="md:col-span-5">
-            <SubSectionTitle>
-              Data fetching: <i>when</i>
-            </SubSectionTitle>
-            <p>Also control when data is fetched. When the server starts:</p>
+          <Block>
+            <SubSectionTitle>Data fetching: when</SubSectionTitle>
+            <p>
+              Also control <i>when</i> data is fetched. When server starts:
+            </p>
             <GlobalContextServerExample />
             <p>When client-side navigation starts:</p>
             <GlobalContextClientExample />
             <p>
-              While{' '}
               <Link href="/globalContext">
                 <code>globalContext</code>
               </Link>{' '}
-              can be accessed anywhere:
+              is accessible anywhere:
             </p>
             <GetGlobalContextExample />
           </Block>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-11 gap-4 lg:gap-8">
-          <Block className="md:col-span-6">
+        </TwoColumn>
+        <TwoColumn>
+          <Block>
             <SubSectionTitle>Authorization</SubSectionTitle>
             <GuardExample />
           </Block>
-          <Block className="md:col-span-5">
+          <Block>
             <SubSectionTitle>Instrumentation</SubSectionTitle>
             <InstrumentationExample />
           </Block>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-11 gap-4 lg:gap-8">
-          <Block className="md:col-span-6">
+        </TwoColumn>
+        <TwoColumn>
+          <Block>
             <SubSectionTitle>Server integration</SubSectionTitle>
             <p>Vike is just a middleware you can embed into any server.</p>
             <ServerIntegrationExample />
           </Block>
-          <Block className="md:col-span-5">
+          <Block>
             <SubSectionTitle>i18n</SubSectionTitle>
-            <p>Hooks give you full control over i18n integration.</p>
+            <p>Full control over i18n integration.</p>
             <I18nExample />
           </Block>
-        </div>
-
+        </TwoColumn>
         <ClosingWords href="/hooks">
-          See the list of hooks <ChevronsRight className="w-4 h-4 md:w-5 md:h-5" />
+          See list of hooks <ChevronsRight className="w-4 h-4 md:w-5 md:h-5" />
         </ClosingWords>
       </Section>
+
+      <Divider />
 
       <Section>
         {/* <SectionTitle>Powerful extensions</SectionTitle>
@@ -180,12 +177,11 @@ const DxContent = () => {
         </div> */}
         <HeadlineGroup
           main="Powerful extensions"
-          sub="Extensions use the same powerful hooks users use — enabling deep and seamless integrations."
+          sub="Extensions use the same powerful hooks you use — enabling deep and seamless integrations."
           outerClassName="mb-10 max-w-2xl mx-auto"
         />
-
-        <div className="grid grid-cols-1 md:grid-cols-11 gap-4 lg:gap-8">
-          <Block className="md:col-span-6">
+        <TwoColumn>
+          <Block>
             <SubSectionTitle>UI frameworks</SubSectionTitle>
             <p>
               Use your favorite UI framework via an extension for getting started quickly, or{' '}
@@ -205,44 +201,42 @@ const DxContent = () => {
               </Link>
             </CenterText>
           </Block>
-          <Block className="md:col-span-5">
+          <Block>
             <SubSectionTitle>Advanced integrations</SubSectionTitle>
-            <p>
-              Extensions can use all of Vike's powerful hooks for advanced integrations such as React Server Components.
-            </p>
+            <p>Extensions can use all powerful hooks for advanced integrations such as React Server Components.</p>
             <CenterText>
               <a href="https://github.com/nitedani/vike-react-rsc#vike-react-rsc">
                 <code>vike-react-rsc</code>
               </a>
             </CenterText>
           </Block>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-11 gap-4 lg:gap-8">
-          <Block className="md:col-span-6">
+        </TwoColumn>
+        <TwoColumn>
+          <Block>
             <SubSectionTitle>State management</SubSectionTitle>
             <p>
-              Vike's powerful hooks also enable extensions to deeply integrate with state management tools.
-              <CenterText>
-                <a href="https://github.com/vikejs/vike-react/tree/main/packages/vike-react-redux#readme">
-                  <code>vike-react-redux</code>
-                </a>
-                {' / '}
-                <a href="https://github.com/vikejs/vike-react/tree/main/packages/vike-react-zustand#readme">
-                  <code>vike-react-zustand</code>
-                </a>
-                {' / '}
-                <a href="https://github.com/vikejs/vike-vue/tree/main/packages/vike-vue-pinia#readme">
-                  <code>vike-vue-pinia</code>
-                </a>
-              </CenterText>
+              Powerful hooks also enable extensions to deeply integrate with state management tools with unprecedented
+              seamless DX.
             </p>
+            <CenterText>
+              <a href="https://github.com/vikejs/vike-react/tree/main/packages/vike-react-redux#readme">
+                <code>vike-react-redux</code>
+              </a>
+              {' / '}
+              <a href="https://github.com/vikejs/vike-react/tree/main/packages/vike-react-zustand#readme">
+                <code>vike-react-zustand</code>
+              </a>
+              {' / '}
+              <a href="https://github.com/vikejs/vike-vue/tree/main/packages/vike-vue-pinia#readme">
+                <code>vike-vue-pinia</code>
+              </a>
+            </CenterText>
             <ZustandExample />
           </Block>
-          <Block className="md:col-span-5">
+          <Block>
             <SubSectionTitle>Error tracking</SubSectionTitle>
             <p>
-              Hooks such as{' '}
+              THe hooks{' '}
               <Link href="/onError">
                 <code>+onError</code>
               </Link>
@@ -254,14 +248,14 @@ const DxContent = () => {
               <Link href="/onCreateGlobalContext">
                 <code>+onCreateGlobalContext</code>
               </Link>{' '}
-              enable extensions (and users) deep integration with error tracking tools.
+              enable extensions (and users) deep integration with error tracking.
             </p>
             <p>
               For example,{' '}
               <a href="https://github.com/vikejs/vike-react/tree/main/packages/vike-react-sentry#readme">
                 <code>vike-react-sentry</code>
               </a>{' '}
-              is full-fledged Sentry integration:{' '}
+              is a full-fledged Sentry integration:{' '}
             </p>
             <List
               items={[
@@ -271,13 +265,13 @@ const DxContent = () => {
               ]}
             />
           </Block>
-        </div>
-
+        </TwoColumn>
         <ClosingWords href="/extensions">
-          See the growing ecosystem of extensions
+          See growing ecosystem of extensions
           <ChevronsRight className="w-4 h-4 md:w-5 md:h-5" />
         </ClosingWords>
       </Section>
+      <Divider />
     </div>
   )
 }
@@ -289,7 +283,7 @@ const Block = cm.div`space-y-4`
 const SectionTitle = H3Headline
 const SubSectionTitle = H4Headline
 const CenterText = cm.span`text-center block`
-const Divider = cm.hr`border-grey-200`
+const Divider = cm.hr`h-1 bg-gray-200`
 const ClosingWords = cm.a`flex btn sm:btn-lg btn-neutral mx-auto w-fit btn-outline text-center`
 
 function DX_InlineHighlight({

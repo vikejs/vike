@@ -24,7 +24,7 @@ const heightVariant: Record<'small' | 'medium' | 'large', HeightVariant> = {
   },
   medium: {
     mobile: 'h-3.5',
-    default: 'h6',
+    default: 'h-6',
   },
   large: {
     mobile: 'h-5.5',
@@ -49,6 +49,13 @@ const brands: Brand[] = [
     height: heightVariant.small,
   },
   {
+    website: 'https://contra.com',
+    desc: 'Upwork alternative',
+    name: 'Contra',
+    logo: usedByContra,
+    height: heightVariant.medium,
+  },
+  {
     website: 'https://app.spline.design',
     desc: 'Advanced 3D design web app',
     name: 'Spline',
@@ -56,10 +63,10 @@ const brands: Brand[] = [
     logo: usedBySpline,
   },
   {
-    website: 'https://contra.com',
-    desc: 'Upwork alternative',
-    name: 'Contra',
-    logo: usedByContra,
+    website: 'https://ecosia.org',
+    desc: 'Google alternative',
+    name: 'Ecosia',
+    logo: usedByEcosia,
     height: heightVariant.medium,
   },
   {
@@ -68,13 +75,6 @@ const brands: Brand[] = [
     name: 'Bild.de',
     height: heightVariant.large,
     logo: usedByBild,
-  },
-  {
-    website: 'https://ecosia.org',
-    desc: 'Google alternative',
-    name: 'Ecosia',
-    logo: usedByEcosia,
-    height: heightVariant.medium,
   },
   {
     website: 'https://dia.es',

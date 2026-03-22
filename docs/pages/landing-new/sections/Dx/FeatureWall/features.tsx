@@ -49,9 +49,7 @@ export const features: Feature[] = [
     title: 'Data fetching',
     icon: DatabaseZap,
     content: (
-      <>
-        Fetch data where you (client or server, or both) and when you want (server start, browser start, page render).
-      </>
+      <>Fetch data anywhere (client, server, or both) and anytime (server start, browser start, or page render).</>
     ),
     advanced: true,
   },
@@ -64,7 +62,7 @@ export const features: Feature[] = [
         <ExternalLink href="https://github.com/brillout/react-streaming">
           <code>react-streaming</code>
         </ExternalLink>
-        ), Web Stream + Node.js Stream
+        ), Web Stream & Node.js Stream.
       </>
     ),
     advanced: true,
@@ -78,8 +76,7 @@ export const features: Feature[] = [
         <Link href="/navigate#history-pushstate">
           doesn&apos;t break <code>history.pushState()</code>
         </Link>
-        , and <ExternalLink href="https://github.com/vikejs/vike/issues/2114">supports URL text fragments</ExternalLink>
-        .
+        , <ExternalLink href="https://github.com/vikejs/vike/issues/2114">supports URL text fragments</ExternalLink>.
       </>
     ),
     advanced: true,
@@ -89,8 +86,8 @@ export const features: Feature[] = [
     icon: GitBranch,
     content: (
       <>
-        <Link href="/config#inheritance">Apply configs to a single/group/all pages</Link>,{' '}
-        <Link href="/meta">create your own configs</Link> and{' '}
+        <Link href="/config#inheritance">Apply configs to single/group/all pages</Link>,{' '}
+        <Link href="/meta">create your own configs</Link>,{' '}
         <ExternalLink href="https://land.vike.dev/#framework-as-a-product">build your own framework</ExternalLink>.
       </>
     ),
@@ -102,7 +99,7 @@ export const features: Feature[] = [
     content: (
       <>
         <Link href="/prerender#redirects">Redirects</Link>,{' '}
-        <Link href="/data#client-js">client-side data fetching</Link>, partial pre-rendering, and ISR.
+        <Link href="/data#client-js">client-side data fetching</Link>, partial pre-rendering, ISR.
       </>
     ),
     advanced: true,
@@ -112,7 +109,7 @@ export const features: Feature[] = [
     icon: ServerCog,
     content: (
       <>
-        First-class SSR integration with tools via powerful <Link href="/extensions">extensions</Link>/
+        First-class SSR integration with tools via powerful <Link href="/extensions">extensions</Link> and{' '}
         <Link href="/hooks">hooks</Link>.
       </>
     ),
@@ -123,7 +120,7 @@ export const features: Feature[] = [
     icon: Replace,
     content: (
       <>
-        <Link href="/redirect">Programmatic redirections</Link>, <Link href="/redirects">static redirects</Link>,{' '}
+        <Link href="/redirect">Programmatic redirects</Link>, <Link href="/redirects">static redirects</Link>,{' '}
         <Link href="/render">programmatic URL rewrites</Link>,{' '}
         <Link href="/auth#login-flow">novel authentication flow</Link>.
       </>
@@ -136,7 +133,7 @@ export const features: Feature[] = [
     content: (
       <>
         Programmatically <Link href="/route-function">define</Link> and <Link href="/guard">protect</Link> routes,
-        Filesystem routing with <Link href="/file-structure">domain-driven file structure</Link>.
+        Filesystem Routing with <Link href="/file-structure">domain-driven file structure</Link>.
       </>
     ),
     advanced: true,
@@ -144,19 +141,27 @@ export const features: Feature[] = [
   {
     title: 'Base URL',
     icon: Link2,
-    content: <>Base URL for static assets (CDN deployments) + (different) Base URL for SSR server</>,
+    content: <>Base URL for static assets (CDN deployment), Base URL for SSR server.</>,
     advanced: true,
   },
   {
     title: 'Internationalization (i18n)',
     icon: Languages,
-    content: <>Low-level hook +onBeforeRoute for full control over i18n</>,
+    content: (
+      <>
+        Low-level hook{' '}
+        <Link href="/onBeforeRoute">
+          <code>+onBeforeRoute</code>
+        </Link>{' '}
+        for full control over i18n.
+      </>
+    ),
     advanced: true,
   },
   {
     title: 'Instrumentation',
     icon: Gauge,
-    content: <>Hook measurement, slow hook warnings, multi-level error-tracking, ...</>,
+    content: <>Hook measurement, slow hook warnings, deep error tracking.</>,
     advanced: true,
   },
   {
@@ -164,7 +169,7 @@ export const features: Feature[] = [
     icon: LayoutTemplate,
     content: (
       <>
-        <Link href="/Layout">Layouts</Link> and <Link href="/Layout#nested">nested layouts</Link>.
+        <Link href="/Layout">Layouts</Link> & <Link href="/Layout#nested">nested layouts</Link>.
       </>
     ),
   },
@@ -173,8 +178,7 @@ export const features: Feature[] = [
     icon: MousePointerClick,
     content: (
       <>
-        <Link href="/prefetchStaticAssets">Links are prefetched</Link> upon mouse hover (or optionally upon entering the
-        viewport).
+        <Link href="/prefetchStaticAssets">Links are prefetched</Link> upon mouse hover, or upon entering the viewport.
       </>
     ),
   },
@@ -183,22 +187,22 @@ export const features: Feature[] = [
     icon: HardDriveDownload,
     content: (
       <>
-        <Link href="/preloading">Assets are preloaded</Link> for quicker pages loads.
+        <Link href="/preloading">Assets are preloaded</Link> for faster page loads.
       </>
     ),
   },
   {
     title: 'CSP',
     icon: ShieldCheck,
-    content: <>PCI DSS compliance</>,
+    content: <>PCI DSS compliance.</>,
   },
   {
     title: 'Any JavaScript runtime',
     icon: Cpu,
     content: (
       <>
-        Works with any JavaScript runtime (Node.js, Bun, Deno, Workers, Electron, Tauri,{' '}
-        <ExternalLink href="http://blackboard.sh/electrobun">Electrobun</ExternalLink>, ...)
+        Node.js, Bun, Deno, Workers, Electron, Tauri,{' '}
+        <ExternalLink href="http://blackboard.sh/electrobun">Electrobun</ExternalLink>, ...
       </>
     ),
   },
@@ -206,7 +210,7 @@ export const features: Feature[] = [
     title: 'Rich context objects',
     icon: Blocks,
     content: (
-      <>
+      <div className="text-xs leading-5.5">
         <Link href="/globalContext">
           <code>globalContext.{'{pages,config,...}'}</code>
         </Link>
@@ -214,46 +218,46 @@ export const features: Feature[] = [
         <Link href="/pageContext">
           <code>pageContext.{'{isHistoryNavigation,...}'}</code>
         </Link>
-      </>
+      </div>
     ),
   },
   {
     title: 'Fault tolerant',
     icon: Shield,
-    content: <>E.g. Vike&apos;s runtime can be loaded twice (needed for some deployment strategies).</>,
+    content: <>E.g. Vike&apos;s runtime can be loaded twice.</>,
   },
   {
     title: 'Infinite loop protections',
     icon: RefreshCcwDot,
-    content: <>Infinite URL redirects/rewrites are catched, preventing self-DDoS.</>,
+    content: <>E.g. infinite redirects are detected to prevent self-DDoS.</>,
   },
   {
     title: 'Conservative browser support',
     icon: MonitorCheck,
     content: (
       <>
-        Supports{' '}
+        Supports legacy browsers via{' '}
         <ExternalLink href="https://github.com/vitejs/vite/tree/main/packages/plugin-legacy">
           <code>@vitejs/plugin-legacy</code>
-        </ExternalLink>{' '}
-        for legacy browsers.
+        </ExternalLink>
+        .
       </>
     ),
   },
   {
-    title: 'Synced deploys',
+    title: 'Skew protection',
     icon: CloudSync,
     content: (
       <>
-        Frontend <ExternalLink href="https://vike.dev/deploy-sync">automatically synced</ExternalLink> with the SSR
-        server.
+        <ExternalLink href="https://vike.dev/deploy-sync">Automatically synced</ExternalLink> frontend with SSR server
+        that works with any deployment provider/strategy.
       </>
     ),
   },
   {
     title: 'Helpful warnings & errors',
     icon: TriangleAlert,
-    content: <>≥400 warnings/errors guiding DX/performance/security, component stack injected in stack trace.</>,
+    content: <>≥400 warnings/errors that assist DX/performance/security, component stack injected in stack trace.</>,
   },
   {
     title: 'Hackable',
@@ -261,20 +265,21 @@ export const features: Feature[] = [
     content: (
       <>
         Access Vike internals via{' '}
-        <Link href="/warning/internals">
-          <code>pageContext.dangerouslyUseInternals</code>
-        </Link>
-        .
+        <span className="text-xs">
+          <Link href="/warning/internals">
+            <code>pageContext.dangerouslyUseInternals</code>.
+          </Link>
+        </span>
       </>
     ),
   },
   {
-    title: 'Included in Vite CI',
+    title: "Part of Vite's CI",
     icon: CircleCheckBig,
     content: (
       <>
         <ExternalLink href="https://github.com/vitejs/vite-ecosystem-ci/blob/main/tests/vike.ts">
-          Vike is part of Vite&apos;s CI
+          Vite tests changes against Vike's CI.
         </ExternalLink>
       </>
     ),
