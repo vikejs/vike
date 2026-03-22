@@ -84,11 +84,13 @@ const UspStickyContent = ({ isCompactDocked, uspVisualStateById }: UspStickyCont
                 <div
                   data-usp-extra-hitbox="true"
                   data-usp-id={usp.id}
-                  className="absolute w-full h-full translate-x-20 text-left pl-16 pt-4.5 hidden lg:block opacity-0"
+                  className="absolute w-full h-full translate-x-20 text-left pl-16 pt-4.5 hidden lg:block opacity-0 text-center font-bold"
                 >
-                  <GradientText color={usp.dotColor} className="text-center font-bold">
-                    {usp.title}
-                  </GradientText>
+                  {!visualState?.isActive ? (
+                    <span className="opacity-55">{usp.title}</span>
+                  ) : (
+                    <GradientText color={usp.dotColor}>{usp.title}</GradientText>
+                  )}
                 </div>
                 <div className="pointer-events-none relative z-8 flex flex-col items-center pt-4">
                   <StyledIconWrapper data-usp-icon="true" data-usp-icon-id={usp.id}>
