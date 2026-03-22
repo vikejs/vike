@@ -11,7 +11,7 @@ import libraryRollImg from '../../assets/libraryRoll.avif'
 import libraryRollImgMobile from '../../assets/libraryRoll@0.5.avif'
 import BlurDot from '../../components/BlurDot'
 import BarChart from '../../components/BarChart'
-import { H2Headline, H4Headline } from '../../components/Headline'
+import { H4Headline } from '../../components/Headline'
 import { UspCategoryId } from '../../util/constants'
 import { ClosingWords } from '../Dx/DxContent'
 
@@ -24,17 +24,21 @@ const FlexibilitySection = () => {
         <SectionHeader
           icon={'🕊️'}
           badgeText="Flexibility"
-          main={<>Freedom</>}
+          main={<GradientText color="green">Freedom</GradientText>}
           color="green"
-          outerClassName="mb-12!"
-          sub={
-            <H2Headline className="text-center">
-              <GradientText color="green">Your stack, your choice</GradientText>
-            </H2Headline>
-          }
+          outerClassName="mb-28! mt-37!"
         />
       </LayoutComponent>
       <LayoutComponent className="md:mb-32">
+        <HeadlineGroup
+          headingStyle="h2"
+          outerClassName="mb-14"
+          main={
+            <>
+              <GradientText color="green">Your stack, your choice</GradientText>
+            </>
+          }
+        />
         <div className="grid md:grid-cols-2 md:gap-x-10 relative z-2">
           <div className="md:col-span-2"></div>
           <div className="relative lg:-ml-4 -mt-4 lg:-mt-9 max-w-120 md:max-w-none mx-auto select-none pointer-events-none">
