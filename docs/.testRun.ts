@@ -2,7 +2,7 @@ export { testRun }
 
 import { page, test, expect, run, fetchHtml, getServerUrl } from '@brillout/test-e2e'
 
-const text = 'Choose between stable and cutting-edge extensions'
+const text = 'Your stack, your choice'
 
 function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   const isDev = cmd === 'pnpm run dev'

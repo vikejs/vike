@@ -1,0 +1,12 @@
+```js
+// [!code word:server.]
+// /pages/movie/@id/+data.server.js
+// Environment: server // [!code highlight]
+
+export async function data(pageContext) {
+  const { id } = pageContext.routeParams
+  // Fetching data on the server-side
+  const movie = await Movie.find({ where: { id } })
+  return { movie }
+}
+```
