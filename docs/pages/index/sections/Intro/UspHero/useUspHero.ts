@@ -76,7 +76,6 @@ const useUspHero = () => {
         setActiveSectionId(nextActiveSectionId)
       }
       const resolveActiveSectionId = () => {
-        // console.log('resolveActiveSectionId')
         if (typeof window === 'undefined' || !orderedSectionEntries.length) {
           syncActiveSectionId(null)
           return
@@ -91,7 +90,6 @@ const useUspHero = () => {
             nextActiveSectionId = id
           }
         })
-        // console.log('nextActiveSectionId', nextActiveSectionId)
 
         syncActiveSectionId(nextActiveSectionId)
       }
@@ -349,30 +347,26 @@ const useUspHero = () => {
           trigger: node,
           endTrigger: nextEntry?.node,
           scroller,
-          start: 'top 100%',
-          end: nextEntry ? 'top 100%' : 'max',
+          start: 'top 10%',
+          end: nextEntry ? 'top top' : 'max',
           scrub: true,
           invalidateOnRefresh: true,
-          markers: true,
+          markers: false,
           onUpdate: (self) => {
             setSectionProgress(id, self.progress)
             resolveActiveSectionId()
           },
           onEnter: () => {
-            console.log('onEnter id', id)
             resolveActiveSectionId()
           },
           onEnterBack: () => {
-            console.log('onEnterBack id', id)
             resolveActiveSectionId()
           },
           onLeave: () => {
-            console.log('onLeave id', id)
             setSectionProgress(id, 1)
             resolveActiveSectionId()
           },
           onLeaveBack: () => {
-            console.log('onLeaveBack id', id)
             setSectionProgress(id, 0)
             resolveActiveSectionId()
           },
