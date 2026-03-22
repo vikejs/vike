@@ -13,7 +13,7 @@ const columns = [
   },
   {
     title: 'Larger team',
-    subtitle: 'Low resources',
+    subtitle: 'LOW RESOURCES',
     price: 'Free',
     toneClassName: 'from-emerald-500/14 via-emerald-500/6 to-white/70',
     panelClassName: 'bg-emerald-50/65',
@@ -22,12 +22,12 @@ const columns = [
   },
   {
     title: 'Larger team',
-    subtitle: 'High resources',
+    subtitle: 'HIGH RESOURCES',
     price: '$5k',
     toneClassName: 'from-blue-500/16 via-violet-500/8 to-white/70',
     panelClassName: 'bg-blue-50/60',
     priceColor: 'blue' as const,
-    suffix: 'one time',
+    suffix: 'ONE TIME',
   },
 ] as const
 
@@ -42,13 +42,13 @@ function MiniPricingStrip() {
           >
             <div className={`absolute inset-0 bg-gradient-to-b ${column.toneClassName}`} />
             <div className="relative text-[0.9rem] font-semibold tracking-[0.1em] text-slate-500">{column.title}</div>
-            <div className="relative mt-1 min-h-4 text-[0.67rem] font-medium uppercase tracking-[0.16em] text-slate-400 whitespace-nowrap">
+            <div className="relative mt-1 min-h-4 text-[0.67rem] font-medium tracking-[0.16em] text-slate-400 whitespace-nowrap">
               {column.subtitle || '\u00A0'}
             </div>
             <div className="relative mt-5 text-[1.7rem] font-semibold tracking-[-0.03em] md:text-[2rem]">
               <GradientText color={column.priceColor}>{column.price}</GradientText>
             </div>
-            <div className="relative mt-1 text-[0.66rem] font-medium uppercase tracking-[0.16em] text-slate-500">
+            <div className="relative mt-1 text-[0.66rem] font-medium tracking-[0.16em] text-slate-500">
               {column.suffix || '\u00A0'}
             </div>
           </div>
