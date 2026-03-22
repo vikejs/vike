@@ -9,6 +9,7 @@ const columns = [
     toneClassName: 'from-emerald-500/14 via-emerald-500/6 to-white/70',
     panelClassName: 'bg-emerald-50/65',
     priceColor: 'green' as const,
+    suffix: undefined,
   },
   {
     title: 'Larger team',
@@ -17,6 +18,7 @@ const columns = [
     toneClassName: 'from-emerald-500/14 via-emerald-500/6 to-white/70',
     panelClassName: 'bg-emerald-50/65',
     priceColor: 'green' as const,
+    suffix: undefined,
   },
   {
     title: 'Larger team',
