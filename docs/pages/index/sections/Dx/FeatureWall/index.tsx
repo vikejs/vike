@@ -2,7 +2,6 @@ import React from 'react'
 import { features } from './features'
 import { H2Headline, H5Headline } from '../../../components/Headline'
 import LayoutComponent from '../../../components/LayoutComponent'
-import GradientText from '../../../components/GradientText'
 
 const FeatureWall = () => {
   return (
@@ -12,7 +11,7 @@ const FeatureWall = () => {
       $size="xl"
     >
       <H2Headline as="h3" className="mb-10 text-center col-span-full">
-        Full-<GradientText color="orange">fledged</GradientText>
+        Full-fledged
       </H2Headline>
       {features.map((feature, featureIndex) => {
         const Icon = feature.icon
