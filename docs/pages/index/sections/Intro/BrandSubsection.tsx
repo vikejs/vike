@@ -4,7 +4,8 @@ import cm, { cmMerge } from '@classmatejs/react'
 import usedByBild from './../../assets/brands/bildde.svg'
 import usedBySpline from './../../assets/brands/spline.webp'
 import usedByEcosia from './../../assets/brands/ecosia.svg'
-import usedBySlite from './../../assets/brands/slite.svg'
+// spellcheck-ignore
+import usedBySlite from './../../assets/brands/sliteapp.svg'
 import usedByContra from './../../assets/brands/contra.svg'
 import usedByName from './../../assets/brands/namecom.svg'
 import usedByDia from './../../assets/brands/dia.svg'
@@ -49,9 +50,12 @@ const brands: Brand[] = [
     height: heightVariant.small,
   },
   {
+    // spellcheck-ignore
     website: 'https://slite.com',
     desc: 'AI-powered knowledge base',
+    // spellcheck-ignore
     name: 'Slite',
+    // spellcheck-ignore
     logo: usedBySlite,
     height: heightVariant.medium,
   },
