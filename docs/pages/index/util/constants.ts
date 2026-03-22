@@ -10,7 +10,12 @@ import reduxImg from '../assets/tech-icons/redux.svg'
 import vercelImg from '../assets/tech-icons/vercel.svg'
 import sentryImg from '../assets/tech-icons/sentry.svg'
 import solidImg from '../assets/tech-icons/solid.svg'
+import freedomUspImg from '../assets/usp-freedom.svg'
+import stabilityUspImg from '../assets/usp-stability.svg'
+import lightningDxUspImg from '../assets/usp-lightning-dx.svg'
 import { BrickWallShield, LucideIcon, ShoppingCart } from 'lucide-react'
+
+export { freedomUspImg, stabilityUspImg, lightningDxUspImg }
 
 export const FlexGraphicHook = {
   onBeforeRenderClient: 'onBeforeRenderClient',
@@ -95,21 +100,21 @@ export const landingPageHeroUsps: Usp[] = [
     id: UspCategoryId.freedom,
     title: 'Freedom',
     description: 'Build with minimal limitations.',
-    icon: '🕊️',
+    icon: freedomUspImg,
     dotColor: 'green',
   },
   {
     id: UspCategoryId.stability,
     title: 'Stability',
     description: 'Build on a stable foundation you can rely on.',
-    icon: '💎',
+    icon: stabilityUspImg,
     dotColor: 'blue',
   },
   {
     id: UspCategoryId.lightningDx,
     title: 'Lightning DX',
     description: 'Experience state-of-the-art and novel DX.',
-    icon: '⚡️',
+    icon: lightningDxUspImg,
     dotColor: 'orange',
   },
 ]

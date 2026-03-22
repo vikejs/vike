@@ -4,7 +4,7 @@ import GradientText from '../../components/GradientText'
 import SectionHeader from '../../components/SectionHeader'
 import { H2Headline, H4Headline } from '../../components/Headline'
 import BarChart from '../../components/BarChart'
-import { UspCategoryId } from '../../util/constants'
+import { stabilityUspImg, UspCategoryId } from '../../util/constants'
 import GlassContainer from '../../components/GlassContainer'
 import StableGraphic from './StableGraphic'
 import { textOtherFrameworks } from '../Flexibility'
@@ -21,7 +21,7 @@ const StabilitySection = () => {
       <div className="w-full">
         <LayoutComponent>
           <SectionHeader
-            icon={'💎'}
+            iconSrc={stabilityUspImg}
             badgeText="Stability"
             main={
               <>

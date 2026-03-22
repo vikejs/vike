@@ -12,7 +12,7 @@ import libraryRollImgMobile from '../../assets/libraryRoll@0.5.avif'
 import BlurDot from '../../components/BlurDot'
 import BarChart from '../../components/BarChart'
 import { H4Headline } from '../../components/Headline'
-import { UspCategoryId } from '../../util/constants'
+import { freedomUspImg, UspCategoryId } from '../../util/constants'
 import { smoothScrollToSelector } from '../../util/gsap.utils'
 import { ClosingWords } from '../Dx/DxContent'
 
@@ -28,7 +28,7 @@ const FlexibilitySection = () => {
     <section data-usp-section={UspCategoryId.freedom}>
       <LayoutComponent>
         <SectionHeader
-          icon={'🕊️'}
+          iconSrc={freedomUspImg}
           badgeText="Flexibility"
           main={<GradientText color="green">Freedom</GradientText>}
           color="green"

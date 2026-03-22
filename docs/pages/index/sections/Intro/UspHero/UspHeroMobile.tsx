@@ -18,8 +18,9 @@ const UspHeroMobile = () => {
           onClick={() => smoothScrollToSelector(`[data-usp-section="${usp.id}"]`, 50)}
         >
           <div className="relative z-2">
-            <H5Headline as="h2">
-              {usp.icon} {usp.title}
+            <H5Headline as="h2" className="flex items-center justify-center gap-2">
+              <img src={usp.icon} className="h-5 w-5 object-contain shrink-0" />
+              <span>{usp.title}</span>
             </H5Headline>
             <p className="text-xs text-grey text-center">{usp.description}</p>
           </div>

@@ -92,9 +92,9 @@ const UspStickyContent = ({ isCompactDocked, uspVisualStateById }: UspStickyCont
                     <GradientText color={usp.dotColor}>{usp.title}</GradientText>
                   )}
                 </div>
-                <div className="pointer-events-none relative z-8 flex flex-col items-center pt-4">
+                <div className="pointer-events-none relative z-8 flex flex-col items-center pt-2">
                   <StyledIconWrapper data-usp-icon="true" data-usp-icon-id={usp.id}>
-                    {usp.icon}
+                    <img src={usp.icon} alt="" className="h-17 w-17" />
                   </StyledIconWrapper>
                   {/* <div className="absolute left-[40%] top-3 w-50 hidden lg:block">
                     <GradientText color={usp.dotColor} className="text-center font-bold">
@@ -149,8 +149,9 @@ const UspStickyContent = ({ isCompactDocked, uspVisualStateById }: UspStickyCont
 export default UspStickyContent
 
 const StyledIconWrapper = cm.div`
-  text-6xl
-  text-center block mb-2
+  flex items-center justify-center
+  h-20
+  block mb-2
 `
 
 const StyledHeroChrome = cm.div`
