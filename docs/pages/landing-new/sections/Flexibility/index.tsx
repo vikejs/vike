@@ -118,7 +118,7 @@ const FlexibilitySection = () => {
                 />
                 <p className="mb-8">
                   Use powerful hooks for <b>unprecedented flexibility</b> and extensive control over tool integration,
-                  data lifecycle, pre-rendering, state managment, and more.
+                  data lifecycle, pre-rendering, state management, and more.
                 </p>
                 <div className="mt-0 mb-12">
                   <H4Headline className="mb-3">

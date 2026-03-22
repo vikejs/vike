@@ -30,7 +30,7 @@ const FeatureWall = () => {
               <Icon aria-hidden className="h-4 w-4" strokeWidth={2.3} />
             </div>
             <div className="text-sm text-grey">{feature.content}</div>
-            {/* Permantly removed the `advanced` label? I think so because it doesn't re-assure the user? it's kinda "panicking" for juniors?
+            {/* Permanently removed the `advanced` label? I think so because it doesn't re-assure the user? it's kinda "panicking" for juniors?
             {feature.advanced && (
               <div className="badge badge-xs badge-grey absolute left-3 -top-2 z-2 border-grey-200 text-grey">
                 Advanced

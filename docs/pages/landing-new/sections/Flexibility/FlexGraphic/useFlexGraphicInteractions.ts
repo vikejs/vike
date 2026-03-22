@@ -240,7 +240,7 @@ const useFlexGraphicInteractions = () => {
     [],
   )
 
-  const onChangeHightlight = (hooks: FlexGraphicHook[] | null) => {
+  const onChangeHighlight = (hooks: FlexGraphicHook[] | null) => {
     debouncedChangeHighlightRef.current(hooks)
   }
 
@@ -363,7 +363,7 @@ const useFlexGraphicInteractions = () => {
     onRenderHtmlRef,
     onAfterRenderHtmlRef,
     onBeforeRenderClientRef,
-    onChangeHightlight,
+    onChangeHighlight,
     activeHooks,
     isSlideshowMode,
   }

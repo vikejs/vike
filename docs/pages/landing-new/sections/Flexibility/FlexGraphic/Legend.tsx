@@ -5,12 +5,12 @@ import { StyledLegendItem } from './styled'
 import { hookColors } from '../../../util/ui.constants'
 
 interface LegendProps {
-  onChangeHightlight: (hooks: FlexGraphicHook[] | null) => void
+  onChangeHighlight: (hooks: FlexGraphicHook[] | null) => void
   activeHooks: FlexGraphicHook[] | null
   isSlideshowMode: boolean
 }
 
-const Legend = ({ onChangeHightlight, activeHooks, isSlideshowMode }: LegendProps) => {
+const Legend = ({ onChangeHighlight, activeHooks, isSlideshowMode }: LegendProps) => {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 md:pr-4">
       {Object.entries(hookColors).map(([key, color]) => {
@@ -23,8 +23,8 @@ const Legend = ({ onChangeHightlight, activeHooks, isSlideshowMode }: LegendProp
           <StyledLegendItem key={key} $type={type}>
             {/* extra hover area -> prevent style jitter on hover */}
             <div
-              onMouseEnter={() => onChangeHightlight([hookName])}
-              onMouseLeave={() => onChangeHightlight(null)}
+              onMouseEnter={() => onChangeHighlight([hookName])}
+              onMouseLeave={() => onChangeHighlight(null)}
               className="absolute inset-0"
             />
             <div className="w-1 md:w-4 h-4 rounded" style={{ backgroundColor: color }}></div>

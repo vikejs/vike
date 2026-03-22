@@ -47,7 +47,7 @@ const FlexGraphic = () => {
     onRenderHtmlRef,
     onAfterRenderHtmlRef,
     onBeforeRenderClientRef,
-    onChangeHightlight,
+    onChangeHighlight,
     activeHooks,
     isSlideshowMode,
   } = useFlexGraphicInteractions()
@@ -55,10 +55,10 @@ const FlexGraphic = () => {
 
   const getHoverHandlers = useCallback(
     (hookName: FlexGraphicHook) => ({
-      onMouseEnter: () => onChangeHightlight([hookName]),
-      onMouseLeave: () => onChangeHightlight(null),
+      onMouseEnter: () => onChangeHighlight([hookName]),
+      onMouseLeave: () => onChangeHighlight(null),
     }),
-    [onChangeHightlight],
+    [onChangeHighlight],
   )
 
   const onBlockHover = useCallback(
@@ -67,19 +67,19 @@ const FlexGraphic = () => {
       // todo: maybe later -> current problem:
       // when user hovers e.g. react redux also all the other library blocks light up,
       // that causes confusion because the libs have nothing to do with each other
-      // only hightlight vike-core and vike-react in that situation but also only color the circuits
+      // only highlight vike-core and vike-react in that situation but also only color the circuits
       // that are related to the hovered block (e.g. in that case only the react and redux circuit but not the head or onRenderClient circuit)
       const hooks = extensionBlockConnectedHooks[block]
       setActiveBlocks(hooks.length ? getBlocksForHooks(hooks) : [block])
-      onChangeHightlight(hooks)
+      onChangeHighlight(hooks)
     },
-    [getBlocksForHooks, onChangeHightlight],
+    [getBlocksForHooks, onChangeHighlight],
   )
 
   const onBlockLeave = useCallback(() => {
     setActiveBlocks(null)
-    onChangeHightlight(null)
-  }, [onChangeHightlight])
+    onChangeHighlight(null)
+  }, [onChangeHighlight])
 
   return (
     <div className="lg:absolute left-0 lg:-top-20 origin-center ">
@@ -238,7 +238,7 @@ const FlexGraphic = () => {
           </g>
         </svg>
       </StyledOuter>
-      <Legend activeHooks={activeHooks} onChangeHightlight={onChangeHightlight} isSlideshowMode={isSlideshowMode} />
+      <Legend activeHooks={activeHooks} onChangeHighlight={onChangeHighlight} isSlideshowMode={isSlideshowMode} />
     </div>
   )
 }
