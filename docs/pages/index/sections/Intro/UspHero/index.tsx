@@ -1,6 +1,5 @@
-import React, { type MouseEvent, useCallback, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { landingPageHeroUsps } from '../../../util/constants'
-import type { UspHoverTarget } from '../intro.types'
 
 import useUspHero from './useUspHero'
 import UspStaticContent from './StaticContent'
