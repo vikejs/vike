@@ -64,22 +64,22 @@ const FlexibilitySection = () => {
             />
           </div>
           <GlassContainer>
-            <div className="flex flex-col gap-0 justify-center pt-4">
-              <ul className="mb-8">
+            <div className="flex flex-col gap-0 justify-center pt-3">
+              <ul className="mb-8 list-disc pl-4">
                 <li>
-                  - <b>Any frontend</b>: React/Vue/Solid/...
+                  <b>Any frontend</b>: React/Vue/Solid/...
                 </li>
                 <li>
-                  - <b>Any rendering</b>: SPA/SSG/SSR/...
+                  <b>Any rendering</b>: SPA/SSG/SSR/...
                 </li>
                 <li>
-                  - <b>Any API</b>: RPC/REST/GraphQL
+                  <b>Any API</b>: RPC/REST/GraphQL
                 </li>
                 <li>
-                  - <b>Any backend</b>: Hono/Express.js/Laravel/Java/...
+                  <b>Any backend</b>: Hono/Express.js/Laravel/Java/...
                 </li>
                 <li>
-                  - <b>Any deployment</b>: Self-hosted/Cloudflare/Vercel/...
+                  <b>Any deployment</b>: Self-hosted/Cloudflare/Vercel/...
                 </li>
               </ul>
               <div className="">
