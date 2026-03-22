@@ -20,14 +20,12 @@ import ZustandExample from './snippets/ZustandExample.mdx'
 import cm from '@classmatejs/react'
 import { H3Headline, H4Headline } from '../../components/Headline'
 import HeadlineGroup from '../../components/HeadlineGroup'
-import GlassContainer from '../../components/GlassContainer'
 import { ChevronsRight } from 'lucide-react'
 import './DxContent.css'
 
 const DxContent = () => {
   return (
     <div className="space-y-16">
-      <GlassContainer>
         <Section className="py-10">
           <SectionTitle className="text-center mb-10">First-class SSR/SPA/SSG</SectionTitle>
           <TwoColumn>
@@ -58,7 +56,6 @@ const DxContent = () => {
             </Block>
           </TwoColumn>
         </Section>
-      </GlassContainer>
       <Section>
         <HeadlineGroup main="API" sub="" outerClassName="mb-10" />
         <SubSectionTitle>First-class RPC</SubSectionTitle>
