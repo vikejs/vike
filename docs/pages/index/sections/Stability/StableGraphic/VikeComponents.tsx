@@ -92,7 +92,7 @@ const VikeComponents = () => {
   return (
     <div className="p-3 bg-linear-to-t to-white via-white rounded-box relative md:w-[90%] md:mx-auto border-3 border-[#e7eaf3]">
       <ImageGroup />
-      <ul className="list-none flex flex-wrap gap-1 lg:hidden">
+      <ul className="list-none flex flex-wrap gap-1 lg:hidden justify-center">
         {components.map((component) => (
           <BoxBlue key={component.link} $size={component.size}>
             <InnerLink href={component.link}>{component.name}</InnerLink>
