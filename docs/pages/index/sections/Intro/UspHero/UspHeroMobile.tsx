@@ -11,7 +11,10 @@ const UspHeroMobile = () => {
         <button
           type="button"
           key={usp.id}
-          className="rounded-field py-2 px-2 bg-base-200 border border-base-100 relative overflow-hidden w-full cursor-pointer"
+          style={{
+            borderColor: '#e5e5e5',
+          }}
+          className="rounded-field py-2 px-2 bg-base-200 border relative overflow-hidden w-full cursor-pointer"
           onClick={() => smoothScrollToSelector(`[data-usp-section="${usp.id}"]`, 50)}
         >
           <div className="relative z-2">
