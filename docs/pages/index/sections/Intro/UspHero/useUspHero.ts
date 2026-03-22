@@ -1,13 +1,17 @@
 import { useGSAP } from '@gsap/react'
 import { useRef, useState } from 'react'
-import { registerScrollToPlugin, registerScrollTrigger } from '../../../util/gsap.utils'
+import {
+  registerScrollToPlugin,
+  registerScrollTrigger,
+  smoothScrollToTarget,
+  stickyNavOffset,
+} from '../../../util/gsap.utils'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { gsap } from 'gsap'
 import { landingPageHeroUsps, UspId } from '../../../util/constants'
 import { uiConfig } from '../../../util/ui.constants'
 
 const clamp01 = (value: number) => Math.max(0, Math.min(1, value))
-const stickyNavOffset = 96
 
 const useUspHero = () => {
   const rootRef = useRef<HTMLDivElement>(null)
@@ -99,24 +103,11 @@ const useUspHero = () => {
         }
       }
       const scrollToSectionById = (id: UspId) => {
-        if (typeof window === 'undefined') {
-          return
-        }
         const sectionNode = sectionNodesById.get(id)
         if (!sectionNode) {
           return
         }
-        const sectionTop = sectionNode.getBoundingClientRect().top + window.scrollY
-        const top = Math.max(sectionTop - stickyNavOffset, 0)
-        gsap.to(window, {
-          duration: uiConfig.transition.longDuration,
-          ease: uiConfig.transition.easeInOutGsap,
-          overwrite: 'auto',
-          scrollTo: {
-            y: top,
-            autoKill: true,
-          },
-        })
+        smoothScrollToTarget(sectionNode)
       }
       const scrollToTop = () => {
         if (typeof window === 'undefined') {

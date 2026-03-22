@@ -2,8 +2,10 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ScrollSmoother } from 'gsap/ScrollSmoother'
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin'
+import { uiConfig } from './ui.constants'
 
 export const R = (min: number, max: number) => Math.random() * (max - min) + min
+export const stickyNavOffset = 96
 
 export const killTweens = (targets: Element[], props?: string | string[]) => {
   if (!targets.length) {
@@ -38,6 +40,23 @@ export const registerScrollToPlugin = () => {
   }
   gsap.registerPlugin(ScrollToPlugin)
   scrollToPluginRegistered = true
+}
+
+export const smoothScrollToTarget = (sectionNode: Element, offset?: number) => {
+  registerScrollToPlugin()
+  const top = Math.max(sectionNode.getBoundingClientRect().top + window.scrollY - stickyNavOffset + offset, 0)
+  gsap.to(window, {
+    duration: uiConfig.transition.longDuration,
+    ease: uiConfig.transition.easeInOutGsap,
+    overwrite: 'auto',
+    scrollTo: {
+      y: top,
+      autoKill: true,
+    },
+  })
+}
+export const smoothScrollToSelector = (selector: string, offset?: number) => {
+  smoothScrollToTarget(document.querySelector(selector)!, offset)
 }
 
 export const debounce = <T extends (...args: any[]) => void>(fn: T, waitMs: number) => {

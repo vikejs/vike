@@ -13,11 +13,17 @@ import BlurDot from '../../components/BlurDot'
 import BarChart from '../../components/BarChart'
 import { H4Headline } from '../../components/Headline'
 import { UspCategoryId } from '../../util/constants'
+import { smoothScrollToSelector } from '../../util/gsap.utils'
 import { ClosingWords } from '../Dx/DxContent'
 
 export const textOtherFrameworks = 'Other'
 
 const FlexibilitySection = () => {
+  const onSeeUseCasesClick = (ev: React.MouseEvent<HTMLAnchorElement>) => {
+    ev.preventDefault()
+    smoothScrollToSelector('#hooks')
+  }
+
   return (
     <section data-usp-section={UspCategoryId.freedom}>
       <LayoutComponent>
@@ -141,7 +147,7 @@ const FlexibilitySection = () => {
                   />
                 </div>
                 <p>
-                  <ClosingWords href="#hooks" className="btn-primary mx-0">
+                  <ClosingWords href="#hooks" className="btn-primary mx-0" onClick={onSeeUseCasesClick}>
                     <ChevronsDown className="w-4 h-4" /> See use cases <ChevronsDown className="w-4 h-4" />
                   </ClosingWords>
                 </p>
