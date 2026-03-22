@@ -11,7 +11,7 @@ import libraryRollImg from '../../assets/libraryRoll.avif'
 import libraryRollImgMobile from '../../assets/libraryRoll@0.5.avif'
 import BlurDot from '../../components/BlurDot'
 import BarChart from '../../components/BarChart'
-import { H4Headline } from '../../components/Headline'
+import { H2Headline, H4Headline } from '../../components/Headline'
 import { UspCategoryId } from '../../util/constants'
 import { ClosingWords } from '../Dx/DxContent'
 
@@ -24,17 +24,19 @@ const FlexibilitySection = () => {
         <SectionHeader
           icon={'🕊️'}
           badgeText="Flexibility"
-          main={
-            <>
-              <GradientText color="green">Freedom</GradientText>
-            </>
-          }
+          main={<>Freedom</>}
           color="green"
+          outerClassName="mb-12!"
+          sub={
+            <H2Headline className="text-center">
+              <GradientText color="green">Your stack, your choice</GradientText>
+            </H2Headline>
+          }
         />
       </LayoutComponent>
-
-      <LayoutComponent>
-        <div className="grid md:grid-cols-2 md:gap-10 relative z-2">
+      <LayoutComponent className="mb-28">
+        <div className="grid md:grid-cols-2 md:gap-x-10 relative z-2">
+          <div className="md:col-span-2"></div>
           <div className="relative lg:-ml-4 -mt-4 lg:-mt-9 max-w-120 md:max-w-none mx-auto select-none pointer-events-none">
             <img
               loading="lazy"
@@ -51,17 +53,7 @@ const FlexibilitySection = () => {
             />
           </div>
           <GlassContainer>
-            <div className="flex flex-col gap-0 justify-center py-12">
-              <HeadlineGroup
-                headingStyle="h2"
-                outerClassName="mb-8"
-                centered={false}
-                main={
-                  <>
-                    <GradientText color="green">Your stack, your choice</GradientText>
-                  </>
-                }
-              />
+            <div className="flex flex-col gap-0 justify-center pt-8">
               <ul className="mb-8">
                 <li>
                   - <b>Any frontend</b>: React/Vue/Solid/...
@@ -79,40 +71,35 @@ const FlexibilitySection = () => {
                   - <b>Any deployment</b>: Self-hosted/Cloudflare/Vercel/...
                 </li>
               </ul>
+              <div className="">
+                <H4Headline as="h3" className="mb-4 md:mb-8">
+                  Supported <GradientText color="green">tools</GradientText>
+                </H4Headline>
+                <BarChart
+                  pollData={[
+                    { label: 'Vike', percentage: 100 },
+                    { label: textOtherFrameworks, percentage: 33 },
+                  ]}
+                  color="green"
+                />
+              </div>
+              <div className="">
+                <H4Headline as="h3" className="mb-4 md:mb-8">
+                  Supported <GradientText color="green">stacks</GradientText>
+                </H4Headline>
+                <BarChart
+                  pollData={[
+                    { label: 'Vike', percentage: 100 },
+                    { label: textOtherFrameworks, percentage: 33 },
+                  ]}
+                  color="green"
+                />
+              </div>
             </div>
           </GlassContainer>
         </div>
         {/* <BlurDot type="green" size="xxl" visibility="low" className="absolute -top-20 -left-60 z-0" /> */}
       </LayoutComponent>
-
-      <div className="relative my-0 md:my-16 lg:my-32">
-        <LayoutComponent className="grid md:grid-cols-2 gap-10">
-          <div className="">
-            <H4Headline as="h3" className="mb-4 md:mb-8">
-              Supported <GradientText color="green">tools</GradientText>
-            </H4Headline>
-            <BarChart
-              pollData={[
-                { label: 'Vike', percentage: 100 },
-                { label: textOtherFrameworks, percentage: 33 },
-              ]}
-              color="green"
-            />
-          </div>
-          <div className="">
-            <H4Headline as="h3" className="mb-4 md:mb-8">
-              Supported <GradientText color="green">stacks</GradientText>
-            </H4Headline>
-            <BarChart
-              pollData={[
-                { label: 'Vike', percentage: 100 },
-                { label: textOtherFrameworks, percentage: 33 },
-              ]}
-              color="green"
-            />
-          </div>
-        </LayoutComponent>
-      </div>
 
       <div className="w-full">
         <LayoutComponent className="lg:mb-52">

@@ -13,7 +13,7 @@ import { ChevronsRight } from 'lucide-react'
 import { ClosingWords } from '../Dx/DxContent'
 import { cmMerge } from '@classmatejs/react'
 
-const verticalPaddingClass = 'py-12 md:py-20'
+const verticalPaddingClass = 'py-12 md:py-14'
 
 const StabilitySection = () => {
   return (
@@ -33,7 +33,7 @@ const StabilitySection = () => {
           />
           <StableGraphic />
         </LayoutComponent>
-        <LayoutComponent $size="sm" className="mt-3">
+        <LayoutComponent $size="sm">
           <div className="">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 text-sm">
               <p>
@@ -49,8 +49,8 @@ const StabilitySection = () => {
         </LayoutComponent>
       </div>
       <LayoutComponent className="md:my-24 relative">
-        <div className={cmMerge("grid grid-cols-2 gap4 md:gap-10 py-0", verticalPaddingClass)}>
-          <GlassContainer className={cmMerge("w-1/2 right-0 h-[120%] absolute z-0 -translate-y-[20%]", )} />
+        <div className={cmMerge('grid grid-cols-2 gap-4 md:gap-10 py-0', verticalPaddingClass)}>
+          <GlassContainer className={cmMerge('w-1/2 right-0 h-[120%] absolute z-0 -translate-y-[20%]')} />
           <H2Headline className="z-2 relative">
             <GradientText color="blue">Stable stack</GradientText> or{' '}
             <GradientText color="green">cutting edge</GradientText>? <br />
@@ -60,8 +60,6 @@ const StabilitySection = () => {
             Choose between a stable stack with unprecedented long-term support (thanks for Vike's stable foundation), or
             the cutting-edge with unprecedented flexibility (thanks to Vike's powerful hooks).
           </p>
-        </div>
-        <div className="grid lg:grid-cols-2 gap-10 my-12 md:my-0">
           <div className="relative z-2">
             <H4Headline as="h3" className="mb-7">
               <GradientText color="blue">Legacy</GradientText> support

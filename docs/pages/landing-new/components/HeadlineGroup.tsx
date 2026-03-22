@@ -64,7 +64,7 @@ const HeadlineGroup = ({
 
 export default HeadlineGroup
 
-const AuxHeadline = cm.p.variants<{ $centered?: boolean; $type: 'sub' | 'pre' }>({
+const AuxHeadline = cm.div.variants<{ $centered?: boolean; $type: 'sub' | 'pre' }>({
   base: ({ $centered }) => `
     md:text-lg lg:text-xl
     text-grey
