@@ -7,7 +7,7 @@ import BrandSubsection, { TeamQuote } from './BrandSubsection'
 import UspHeroMobile from './UspHero/UspHeroMobile'
 
 const taglineSecondary =
-  "Vike is a minimal-lock-in framework that prioritizes application stability and development freedom, powered by an open foundation built for JavaScript's rapidly evolving ecosystem."
+  "Minimal-lock-in framework that prioritizes application stability and development freedom, powered by an open foundation built for JavaScript's rapidly evolving ecosystem."
 
 const IntroSection = () => {
   const getStartedButtonRef = useRef<HTMLAnchorElement>(null)
@@ -34,7 +34,7 @@ const IntroSection = () => {
                 <GradientText color="green">Freedom</GradientText>
               </Headline>
             </div>
-            <p className="text-base md:text-2xl text-grey text-center w-9/10 md:w-3/4 lg:w-4/5 mx-auto mb-6 mt-4">
+            <p className="text-base md:text-2xl text-grey text-center w-9/10 md:w-3/4 mx-auto mb-6 mt-4">
               {taglineSecondary}
             </p>
             <div className="flex gap-2 items-center justify-center mb-8 sm:mb-12">

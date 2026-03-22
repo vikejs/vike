@@ -153,7 +153,7 @@ const TeamQuote = () => {
       ]}
     >
       We started Vike 5 years ago with a bold mission: build the last framework you'll need — a rock-solid foundation
-      with powerful hooks, ready to embrace the future of JavaScript.
+      with powerful hooks, ready to embrace JavaScript's future.
     </Blockquote>
   )
 }
