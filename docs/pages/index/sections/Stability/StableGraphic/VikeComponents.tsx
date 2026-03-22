@@ -47,13 +47,11 @@ const smallComponents: VikeComponent[] = (
       link: 'https://vike.dev/error-page',
     },
     {
-      // TOOD/ai set `name` to <code>pageContext</code>
-      name: '`pageContext`',
+      name: <code>pageContext</code>,
       link: 'https://vike.dev/pageContext',
     },
     {
-      // TOOD/ai set `name` to <code>globalContext</code>
-      name: '`globalContext`',
+      name: <code>globalContext</code>,
       link: 'https://vike.dev/globalContext',
     },
     {
@@ -96,7 +94,7 @@ const VikeComponents = () => {
       <ImageGroup />
       <ul className="list-none flex flex-wrap gap-1 lg:hidden">
         {components.map((component) => (
-          <BoxBlue key={component.name} $size={component.size}>
+          <BoxBlue key={component.link} $size={component.size}>
             <InnerLink href={component.link}>{component.name}</InnerLink>
           </BoxBlue>
         ))}
@@ -105,7 +103,7 @@ const VikeComponents = () => {
         {componentRows.map((row, rowIndex) => (
           <ul key={rowIndex} className="list-none flex flex-wrap gap-1.5">
             {row.map((component) => (
-              <BoxBlue key={component.name} $size={component.size}>
+              <BoxBlue key={component.link} $size={component.size}>
                 <InnerLink href={component.link}>{component.name}</InnerLink>
               </BoxBlue>
             ))}

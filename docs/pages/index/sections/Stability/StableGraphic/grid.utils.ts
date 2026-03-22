@@ -1,3 +1,6 @@
+import { Children, isValidElement } from 'react'
+import type { ReactNode } from 'react'
+
 export type VikeComponentSize = 'big' | 'small'
 export type VikeEcoComponentCategory = 'framework' | 'api' | 'deploy' | 'server'
 
@@ -9,13 +12,22 @@ export const ecoComponentCategoryNames: Record<VikeEcoComponentCategory, string>
 }
 
 export type VikeComponent = {
-  name: string
+  name: ReactNode
   link: string
   size: VikeComponentSize
 }
 
+const getComponentNameText = (name: ReactNode): string =>
+  Children.toArray(name)
+    .map((child) => {
+      if (typeof child === 'string' || typeof child === 'number') return String(child)
+      if (isValidElement<{ children?: ReactNode }>(child)) return getComponentNameText(child.props.children)
+      return ''
+    })
+    .join('')
+
 export const estimateWidth = (component: VikeComponent) =>
-  component.name.replaceAll('`', '').length + (component.size === 'big' ? 8 : 6)
+  getComponentNameText(component.name).replaceAll('`', '').length + (component.size === 'big' ? 8 : 6)
 
 export const splitIntoRows = (items: VikeComponent[], targetRowCount: number) => {
   if (items.length <= targetRowCount) {
