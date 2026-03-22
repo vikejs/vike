@@ -45,7 +45,7 @@
     "@brillout/test-e2e": "^0.6.22",
     "@brillout/test-types": "^0.1.13",
     "playwright-chromium": "1.57.0",
-    "vitest": "^4.0.18"
+    "vitest": "^4.1.0"
   },
   "packageManager": "pnpm@9.15.9"
 }

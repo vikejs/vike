@@ -423,24 +423,6 @@ async function callOnBeforePrerenderStartHooks(
         // Handle result
         await Promise.all(
           result.map(async ({ url, pageContext }) => {
-            // Assert no duplication
-            {
-              const pageContextFound: PageContext | undefined = prerenderContext.pageContexts.find((pageContext) =>
-                isSameUrl(pageContext.urlOriginal, url),
-              )
-              if (pageContextFound) {
-                assert(pageContextFound._providedByHook)
-                const providedTwice =
-                  hookFilePath === pageContextFound._providedByHook.hookFilePath
-                    ? (`twice by the ${hookName}() hook (${hookFilePath})` as const)
-                    : (`twice: by the ${hookName}() hook (${hookFilePath}) as well as by the hook ${pageContextFound._providedByHook.hookFilePath}() (${pageContextFound._providedByHook.hookName})` as const)
-                assertUsage(
-                  false,
-                  `URL ${pc.cyan(url)} provided ${providedTwice}. Make sure to provide the URL only once instead.`,
-                )
-              }
-            }
-
             // Add result
             const providedByHook = { hookFilePath, hookName }
             const pageContextNew = await createPageContextPrerendering(
@@ -461,6 +443,28 @@ async function callOnBeforePrerenderStartHooks(
       }),
     ),
   )
+
+  // Assert no duplicate URLs
+  // If duplicate URL is found an error will be issued
+  const pageContextsByUrl: Record<string, PageContextPrerendered> = {}
+  for (const pageContext of prerenderContext.pageContexts) {
+    assert(pageContext._providedByHook)
+    const urlNormalized = normalizeUrl(pageContext.urlOriginal)
+    const pageContextSameUrl = pageContextsByUrl[urlNormalized]
+    if (pageContextSameUrl) {
+      assert(pageContextSameUrl._providedByHook)
+      const { hookName, hookFilePath } = pageContext._providedByHook
+      const providedTwice =
+        hookFilePath === pageContextSameUrl._providedByHook.hookFilePath
+          ? (`twice by the ${hookName}() hook (${hookFilePath})` as const)
+          : (`twice: by the ${hookName}() hook (${hookFilePath}) as well as by the hook ${pageContextSameUrl._providedByHook.hookFilePath}() (${pageContextSameUrl._providedByHook.hookName})` as const)
+      assertUsage(
+        false,
+        `URL ${pc.cyan(urlNormalized)} provided ${providedTwice}. Make sure to provide the URL only once instead.`,
+      )
+    }
+    pageContextsByUrl[urlNormalized] = pageContext
+  }
 }
 
 function getUrlListFromPagesWithStaticRoute(
