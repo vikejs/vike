@@ -105,8 +105,6 @@ const DxContent = () => {
         </TwoColumn>
       </Section>
 
-      <Divider />
-
       <Section>
         <SectionTitle id="hooks" className="mb-10 text-center">
           Hooks
@@ -163,8 +161,6 @@ const DxContent = () => {
           See list of hooks <ChevronsRight className="w-4 h-4 md:w-5 md:h-5" />
         </ClosingWords>
       </Section>
-
-      <Divider />
 
       <Section>
         {/* <SectionTitle>Powerful extensions</SectionTitle>
@@ -268,7 +264,6 @@ const DxContent = () => {
           <ChevronsRight className="w-4 h-4 md:w-5 md:h-5" />
         </ClosingWords>
       </Section>
-      <Divider />
     </div>
   )
 }
@@ -280,7 +275,6 @@ const Block = cm.div`space-y-4`
 const SectionTitle = H3Headline
 const SubSectionTitle = H4Headline
 const CenterText = cm.span`text-center block`
-const Divider = cm.hr`h-1 bg-gray-200`
 const ClosingWords = cm.a`flex btn sm:btn-lg btn-neutral mx-auto w-fit btn-outline text-center`
 
 function DX_InlineHighlight({
