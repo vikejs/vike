@@ -10,7 +10,6 @@ import usedByDia from './../../assets/brands/dia.svg'
 
 import GlassContainer from '../../components/GlassContainer'
 import Blockquote from '../../components/Quote'
-import useBreakpoints from '../../hooks/useBreakpoints'
 
 type HeightVariant = {
   mobile: string
