@@ -24,6 +24,8 @@ const FlexibilitySection = () => {
     smoothScrollToSelector('#hooks')
   }
 
+  const chevronsDown = <ChevronsDown className="w-4 h-4 mt-[2px]" />
+
   return (
     <section data-usp-section={UspCategoryId.freedom}>
       <LayoutComponent>
@@ -149,7 +151,7 @@ const FlexibilitySection = () => {
                 </div>
                 <p>
                   <ClosingWords href="#hooks" className="btn-primary mx-0" onClick={onSeeUseCasesClick}>
-                    <ChevronsDown className="w-4 h-4" /> See use cases <ChevronsDown className="w-4 h-4" />
+                    {chevronsDown} See use cases {chevronsDown}
                   </ClosingWords>
                 </p>
               </div>
