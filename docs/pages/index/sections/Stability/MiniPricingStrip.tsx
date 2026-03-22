@@ -42,7 +42,7 @@ function MiniPricingStrip() {
           >
             <div className={`absolute inset-0 bg-gradient-to-b ${column.toneClassName}`} />
             <div className="relative text-[0.9rem] font-semibold tracking-[0.1em] text-slate-500">{column.title}</div>
-            <div className="relative mt-1 min-h-4 text-[0.67rem] font-medium tracking-[0.16em] text-slate-400 whitespace-nowrap">
+            <div className="relative mt-1 min-h-4 text-[0.67rem] font-medium tracking-[0.16em] text-slate-400">
               {column.subtitle || '\u00A0'}
             </div>
             <div className="relative mt-5 text-[1.7rem] font-semibold tracking-[-0.03em] md:text-[2rem]">
