@@ -140,7 +140,6 @@ const BrandSubsection = () => {
           Use Cases
         </a>
       </div>
-      <hr className="border-t border-grey-200 w-1/2 mx-auto md:hidden mt-10" />
     </GlassContainer>
   )
 }

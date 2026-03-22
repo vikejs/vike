@@ -26,7 +26,7 @@ const FlexibilitySection = () => {
           badgeText="Flexibility"
           main={<GradientText color="green">Freedom</GradientText>}
           color="green"
-          outerClassName="mb-28! mt-37!"
+          outerClassName="mb-28 mt-22 md:mt-37"
         />
       </LayoutComponent>
       <LayoutComponent className="md:mb-32">
