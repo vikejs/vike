@@ -18,8 +18,8 @@ type Brand = {
   logo: string
   desc: string
   name: string
-  shrink?: number
-  offset?: number
+  top?: string
+  scale?: number
   order: number
 }
 
@@ -29,28 +29,28 @@ const brands: Brand[] = [
     name: 'Name.com',
     desc: 'Popular domain registrar',
     logo: usedByName,
-    offset: 5,
+    scale: 0.54,
+    top: '0.2em',
     order: 0,
   },
-  /*
-    {
-      // spellcheck-ignore
-      website: 'https://slite.com',
-      desc: 'AI-powered knowledge base',
-      // spellcheck-ignore
-      name: 'Slite',
-      // spellcheck-ignore
-      logo: usedBySlite,
-      order: 50,
-    },
-    */
+  {
+    // spellcheck-ignore
+    website: 'https://slite.com',
+    desc: 'AI-powered knowledge base',
+    // spellcheck-ignore
+    name: 'Slite',
+    // spellcheck-ignore
+    logo: usedBySlite,
+    scale: 1.08,
+    order: 50,
+  },
   {
     website: 'https://contra.com',
     desc: 'Upwork alternative',
     name: 'Contra',
     logo: usedByContra,
-    shrink: 40,
-    offset: 4,
+    scale: 0.82,
+    top: '0.18em',
     order: 200,
   },
   {
@@ -58,6 +58,7 @@ const brands: Brand[] = [
     desc: 'Advanced 3D design web app',
     name: 'Spline',
     logo: usedBySpline,
+    scale: 1.4,
     order: -200,
   },
   {
@@ -65,8 +66,8 @@ const brands: Brand[] = [
     desc: 'Google alternative',
     name: 'Ecosia',
     logo: usedByEcosia,
-    shrink: 55,
-    offset: -1,
+    scale: 0.9,
+    top: '-0.02em',
     order: -50,
   },
   {
@@ -74,6 +75,7 @@ const brands: Brand[] = [
     desc: "Germany's most read newspaper",
     name: 'Bild.de',
     logo: usedByBild,
+    scale: 1.3,
     order: -100,
   },
   {
@@ -81,6 +83,7 @@ const brands: Brand[] = [
     desc: "Spain's supermarket with the most stores",
     name: 'Dia.es',
     logo: usedByDia,
+    scale: 1.3,
     order: 100,
   },
   /*
@@ -100,8 +103,6 @@ const BrandsWrapper = cm.div`
 `
 
 const BrandsContent = () => {
-  const height = 70
-  const padding = 10
   return (
     <>
       {brands.map((e, i) => (
@@ -111,22 +112,17 @@ const BrandsContent = () => {
           key={i}
           aria-label={e.desc}
           data-label-position={i === brands.length - 1 ? 'top-left' : null}
-          className="colorize-on-hover text-center p-10"
-          style={{
-            height,
-            padding,
-          }}
+          className="colorize-on-hover text-center py-2"
         >
           <img
             className="decolorize-4"
             src={e.logo}
             style={{
               display: 'block',
-              maxWidth: `${180 - (e.shrink ?? 0)}px`,
-              height: height - 2 * padding,
+              height: `${2 * (e.scale ?? 1)}em`,
               objectFit: 'contain',
               position: 'relative',
-              top: e.offset,
+              top: e.top,
             }}
           />
         </a>
@@ -137,7 +133,7 @@ const BrandsContent = () => {
 
 const BrandSubsection = () => {
   return (
-    <GlassContainer className="flex flex-col items-center justify-center gap-4 mx-auto py-5 md:mt-0">
+    <GlassContainer className="flex flex-col items-center justify-center gap-4 mx-auto pt-2 pb-4 md:mt-0">
       <BrandsWrapper className="hidden lg:flex gap-10 ">
         <BrandsContent />
       </BrandsWrapper>
@@ -146,7 +142,7 @@ const BrandSubsection = () => {
         <BrandsContent />
       </BrandsWrapper>
 
-      <div className="text-grey text-xs md:text-sm mx-auto mt-4 basis-full px-4 text-center">
+      <div className="text-grey text-xs md:text-sm mx-auto -mt-3 basis-full px-4 text-center">
         Used by large organizations to build mission-critical applications, see <Link href="/use-cases">Use Cases</Link>
       </div>
     </GlassContainer>
