@@ -51,7 +51,8 @@ export const smoothScrollToTarget = (sectionNode: Element, offset = 0) => {
     scrollTo: {
       y: sectionNode,
       offsetY: stickyNavOffset - offset,
-      // we don't user device interfere with the scroll (setting it to true is buggy on mobile)
+      // we don't want user/device interfere with the ongoing scroll 
+      // (setting it to true is buggy on mobile)
       autoKill: false,
     },
   })
