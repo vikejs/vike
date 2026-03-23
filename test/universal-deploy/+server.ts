@@ -1,4 +1,4 @@
-import { addVikeMiddleware } from '@vikejs/express'
+import vike from '@vikejs/express'
 import express from 'express'
 import { toFetchHandler } from 'srvx/node'
 
@@ -9,7 +9,7 @@ async function serve() {
 
   app.get('/express', (_req, res) => res.send('Running express server'))
 
-  addVikeMiddleware(app)
+  vike(app)
 
   return toFetchHandler(app)
 }

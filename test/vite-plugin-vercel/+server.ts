@@ -1,4 +1,4 @@
-import { addVikeMiddleware } from '@vikejs/hono'
+import vike from '@vikejs/hono'
 import { Hono } from 'hono'
 
 function serve() {
@@ -8,7 +8,7 @@ function serve() {
     return new Response('Hello')
   })
 
-  addVikeMiddleware(app)
+  vike(app)
 
   return app.fetch
 }

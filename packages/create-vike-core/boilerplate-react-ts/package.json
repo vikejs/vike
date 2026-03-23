@@ -8,7 +8,7 @@
     "@types/node": "^22.10.2",
     "@types/react": "^19.0.1",
     "@types/react-dom": "^19.0.2",
-    "@vikejs/hono": "^0.1.0",
+    "@vikejs/hono": "^0.2.0",
     "@vitejs/plugin-react": "^4.7.0",
     "cross-env": "^7.0.3",
     "hono": "^4.8.4",

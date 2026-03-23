@@ -151,10 +151,10 @@ Replace `@photonjs/*` with `@vikejs/*`. It's recommended to move your server ent
     // +server.ts
 
     import { Hono } from 'hono'
-    // @docpress-uncomment import { addVikeMiddleware } from '@vikejs/hono' // [!code ++]
+    // @docpress-uncomment import vike from '@vikejs/hono' // [!code ++]
 
     const app = new Hono()
-    addVikeMiddleware(app) // [!code ++]
+    vike(app) // [!code ++]
 
     export default { // [!code ++]
       fetch: app.fetch // [!code ++]
@@ -166,11 +166,11 @@ Replace `@photonjs/*` with `@vikejs/*`. It's recommended to move your server ent
     // +server.ts
 
     import express from 'express'
-    // @docpress-uncomment import { addVikeMiddleware } from '@vikejs/express' // [!code ++]
+    // @docpress-uncomment import vike from '@vikejs/express' // [!code ++]
     import { toFetchHandler } from 'srvx/node' // [!code ++]
 
     const app = express()
-    addVikeMiddleware(app) // [!code ++]
+    vike(app) // [!code ++]
 
     export default { // [!code ++]
       fetch: toFetchHandler(app) // [!code ++]
@@ -182,11 +182,11 @@ Replace `@photonjs/*` with `@vikejs/*`. It's recommended to move your server ent
     // +server.ts
 
     import fastify from 'fastify'
-    // @docpress-uncomment import { addVikeMiddleware } from '@vikejs/fastify' // [!code ++]
+    // @docpress-uncomment import vike from '@vikejs/fastify' // [!code ++]
     import { toFetchHandler } from 'srvx/node' // [!code ++]
 
     const app = fastify()
-    await addVikeMiddleware(app) // [!code ++]
+    await vike(app) // [!code ++]
 
     export default { // [!code ++]
       fetch: toFetchHandler(app) // [!code ++]
@@ -199,10 +199,10 @@ Replace `@photonjs/*` with `@vikejs/*`. It's recommended to move your server ent
 
     import { createApp, toWebHandler } from 'h3' // [!code ++]
     // @docpress-uncomment import { createApp } from 'h3' // [!code --]
-    // @docpress-uncomment import { addVikeMiddleware } from '@vikejs/h3' // [!code ++]
+    // @docpress-uncomment import vike from '@vikejs/h3' // [!code ++]
 
     const app = createApp()
-    addVikeMiddleware(app) // [!code ++]
+    vike(app) // [!code ++]
 
     export default { // [!code ++]
       fetch: toWebHandler(app) // [!code ++]
@@ -214,10 +214,10 @@ Replace `@photonjs/*` with `@vikejs/*`. It's recommended to move your server ent
     // +server.ts
 
     import { Elysia } from 'elysia'
-    // @docpress-uncomment import { addVikeMiddleware } from '@vikejs/elysia' // [!code ++]
+    // @docpress-uncomment import vike from '@vikejs/elysia' // [!code ++]
 
     const app = new Elysia()
-    addVikeMiddleware(app) // [!code ++]
+    vike(app) // [!code ++]
 
     export default { // [!code ++]
       fetch: app.fetch // [!code ++]

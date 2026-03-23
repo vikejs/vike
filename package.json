@@ -47,5 +47,10 @@
     "playwright-chromium": "1.57.0",
     "vitest": "^4.0.18"
   },
+  "pnpm": {
+    "overrides": {
+      "srvx": "^0.11.5"
+    }
+  },
   "packageManager": "pnpm@9.15.9"
 }

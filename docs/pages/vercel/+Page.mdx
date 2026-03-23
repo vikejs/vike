@@ -55,10 +55,10 @@ It's recommended to move your server entry to `+server.ts`.
     // +server.ts
 
     import { Hono } from 'hono'
-    import { addVikeMiddleware } from '@vikejs/hono'
+    import vike from '@vikejs/hono'
 
     const app = new Hono()
-    addVikeMiddleware(app)
+    vike(app)
     // ...
     ```
   </TabPanel>
@@ -67,10 +67,10 @@ It's recommended to move your server entry to `+server.ts`.
     // +server.ts
 
     import express from 'express'
-    import { addVikeMiddleware } from '@vikejs/express'
+    import vike from '@vikejs/express'
 
     const app = express()
-    addVikeMiddleware(app)
+    vike(app)
     // ...
     ```
   </TabPanel>
@@ -79,10 +79,10 @@ It's recommended to move your server entry to `+server.ts`.
     // +server.ts
 
     import fastify from 'fastify'
-    import { addVikeMiddleware } from '@vikejs/fastify'
+    import vike from '@vikejs/fastify'
 
     const app = fastify()
-    await addVikeMiddleware(app)
+    await vike(app)
     // ...
     ```
   </TabPanel>
@@ -91,10 +91,10 @@ It's recommended to move your server entry to `+server.ts`.
     // +server.ts
 
     import { createApp } from 'h3'
-    import { addVikeMiddleware } from '@vikejs/h3'
+    import vike from '@vikejs/h3'
 
     const app = createApp()
-    addVikeMiddleware(app)
+    vike(app)
     // ...
     ```
   </TabPanel>
@@ -103,10 +103,10 @@ It's recommended to move your server entry to `+server.ts`.
     // +server.ts
 
     import { Elysia } from 'elysia'
-    import { addVikeMiddleware } from '@vikejs/elysia'
+    import vike from '@vikejs/elysia'
 
     const app = new Elysia()
-    addVikeMiddleware(app)
+    vike(app)
     // ...
     ```
   </TabPanel>
