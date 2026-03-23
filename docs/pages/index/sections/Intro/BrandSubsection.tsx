@@ -1,5 +1,5 @@
 import React from 'react'
-import cm, { cmMerge } from '@classmatejs/react'
+import cm from '@classmatejs/react'
 
 import usedByBild from './../../assets/brands/bildde.svg'
 import usedBySpline from './../../assets/brands/spline.webp'
@@ -13,30 +13,9 @@ import GlassContainer from '../../components/GlassContainer'
 import Blockquote from '../../components/Quote'
 import { Link } from '@brillout/docpress'
 
-type HeightVariant = {
-  mobile: string
-  default: string
-}
-
-const heightVariant: Record<'small' | 'medium' | 'large', HeightVariant> = {
-  small: {
-    mobile: 'h-2.5',
-    default: 'h-4.5',
-  },
-  medium: {
-    mobile: 'h-3.5',
-    default: 'h-6',
-  },
-  large: {
-    mobile: 'h-5.5',
-    default: 'h-8',
-  },
-}
-
 type Brand = {
   website: `https://${string}`
   logo: string
-  height: HeightVariant
   desc: string
   name: string
   shrink?: number
@@ -51,7 +30,6 @@ const brands: Brand[] = (
       name: 'Name.com',
       desc: 'Popular domain registrar',
       logo: usedByName,
-      height: heightVariant.small,
       offset: 5,
       order: 0,
     },
@@ -63,7 +41,6 @@ const brands: Brand[] = (
       name: 'Slite',
       // spellcheck-ignore
       logo: usedBySlite,
-      height: heightVariant.medium,
       order: 50,
     },
     {
@@ -71,7 +48,6 @@ const brands: Brand[] = (
       desc: 'Upwork alternative',
       name: 'Contra',
       logo: usedByContra,
-      height: heightVariant.medium,
       shrink: 40,
       offset: 4,
       order: 200,
@@ -80,7 +56,6 @@ const brands: Brand[] = (
       website: 'https://app.spline.design',
       desc: 'Advanced 3D design web app',
       name: 'Spline',
-      height: heightVariant.large,
       logo: usedBySpline,
       order: -200,
     },
@@ -89,7 +64,6 @@ const brands: Brand[] = (
       desc: 'Google alternative',
       name: 'Ecosia',
       logo: usedByEcosia,
-      height: heightVariant.medium,
       shrink: 55,
       offset: -1,
       order: -50,
@@ -98,7 +72,6 @@ const brands: Brand[] = (
       website: 'https://bild.de',
       desc: "Germany's most read newspaper",
       name: 'Bild.de',
-      height: heightVariant.large,
       logo: usedByBild,
       order: -100,
     },
@@ -106,7 +79,6 @@ const brands: Brand[] = (
       website: 'https://dia.es',
       desc: "Spain's supermarket with the most stores",
       name: 'Dia.es',
-      height: heightVariant.large,
       logo: usedByDia,
       order: 100,
     },
@@ -127,7 +99,7 @@ const BrandsWrapper = cm.div`
   flex justify-center items-center flex-wrap mb-6 relative
 `
 
-const BrandsContent = ({ type }: { type: 'default' | 'mobile' }) => {
+const BrandsContent = () => {
   return (
     <>
       {brands.map((e, i) => (
@@ -138,15 +110,21 @@ const BrandsContent = ({ type }: { type: 'default' | 'mobile' }) => {
           aria-label={e.desc}
           data-label-position={i === brands.length - 1 ? 'top-left' : null}
           className="hero-usedby colorize-on-hover h-full flex justify-center items-center relative"
-          style={{ order: e.order }}
+          style={{
+            boxSizing: 'border-box',
+            height: 70,
+            order: e.order,
+            padding: 10,
+          }}
         >
           <img
-            className={cmMerge('decolorize-4 w-auto', type === 'default' ? e.height.default : e.height.mobile)}
+            className="decolorize-4"
             src={e.logo}
             width={400}
             height={200}
             style={{
               display: 'block',
+              height: '100%',
               maxWidth: `${180 - (e.shrink ?? 0)}px`,
               objectFit: 'contain',
               position: 'relative',
@@ -163,11 +141,11 @@ const BrandSubsection = () => {
   return (
     <GlassContainer className="flex flex-col items-center justify-center gap-4 mx-auto py-5 md:mt-0">
       <BrandsWrapper className="hidden lg:flex gap-10 ">
-        <BrandsContent type="default" />
+        <BrandsContent />
       </BrandsWrapper>
 
       <BrandsWrapper className="flex lg:hidden gap-5">
-        <BrandsContent type="mobile" />
+        <BrandsContent />
       </BrandsWrapper>
 
       <div className="text-grey text-xs md:text-sm mx-auto mt-4 basis-full px-4 text-center">
