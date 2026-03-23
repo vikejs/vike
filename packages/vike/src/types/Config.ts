@@ -648,7 +648,7 @@ type ConfigBuiltIn = {
    *
    * https://vike.dev/server
    */
-  server?: boolean
+  server?: boolean | ImportStringList
 
   cli?: {
     /** @experimental
