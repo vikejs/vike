@@ -1,5 +1,6 @@
 export { brands }
 
+// TODO/ai move all images to components/brands/
 import usedByBild from './../../assets/brands/bildde.svg'
 import usedBySpline from './../../assets/brands/spline.webp'
 import usedByEcosia from './../../assets/brands/ecosia.svg'
