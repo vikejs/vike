@@ -332,7 +332,7 @@ const useUspHero = () => {
         0,
       )
       const sectionProgressEntries: Array<{ id: UspId; trigger: ScrollTrigger }> = []
-      const stickyProgressStart = `top top+=${stickyNavOffset - stickyProgressOffsetPx}`
+      const stickyProgressStart = 'top 70%'
       const syncActiveSectionIdFromProgressTriggers = () => {
         const activeEntry = sectionProgressEntries.find(({ trigger }) => trigger.isActive)
         if (activeEntry) {
