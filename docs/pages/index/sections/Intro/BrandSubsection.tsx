@@ -33,6 +33,7 @@ const brands: Brand[] = (
       offset: 5,
       order: 0,
     },
+    /*
     {
       // spellcheck-ignore
       website: 'https://slite.com',
@@ -43,6 +44,7 @@ const brands: Brand[] = (
       logo: usedBySlite,
       order: 50,
     },
+    */
     {
       website: 'https://contra.com',
       desc: 'Upwork alternative',
@@ -93,13 +95,15 @@ const brands: Brand[] = (
   }
   */
   ] satisfies Brand[]
-).sort((a, b) => a.order - b.order)
+)
 
 const BrandsWrapper = cm.div`
   flex justify-center items-center flex-wrap mb-6 relative
 `
 
 const BrandsContent = () => {
+  const height = 70
+  const padding = 10
   return (
     <>
       {brands.map((e, i) => (
@@ -109,23 +113,18 @@ const BrandsContent = () => {
           key={i}
           aria-label={e.desc}
           data-label-position={i === brands.length - 1 ? 'top-left' : null}
-          className="hero-usedby colorize-on-hover h-full flex justify-center items-center relative"
-          style={{
-            boxSizing: 'border-box',
-            height: 70,
-            order: e.order,
-            padding: 10,
-          }}
+          className="colorize-on-hover text-center p-10"
+            style={{
+              height, padding
+            }}
         >
           <img
             className="decolorize-4"
             src={e.logo}
-            width={400}
-            height={200}
             style={{
               display: 'block',
-              height: '100%',
               maxWidth: `${180 - (e.shrink ?? 0)}px`,
+              height: height - 2 * padding,
               objectFit: 'contain',
               position: 'relative',
               top: e.offset,
