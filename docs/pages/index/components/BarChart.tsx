@@ -36,7 +36,7 @@ const BarChart = ({ pollData, color, className, ...props }: BarChartProps) => {
 export default BarChart
 
 const StyledBar = cm.div.variants<{ $color: UiColorVariantKey; $won: boolean }>({
-  base: 'h-full rounded-lg flex items-center pl-3 relative',
+  base: 'h-full rounded-md md:rounded-lg flex items-center pl-3 relative',
   variants: {
     $color: UiVariantBgColor,
     $won: {
