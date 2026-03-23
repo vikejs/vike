@@ -1,10 +1,28 @@
-import { UsedByList } from '../../components/UsedBy'
+import { brands } from '../../components'
 import { Link } from '@brillout/docpress'
+
+export function Internal__UsedByList() {
+  return (
+    <ul>
+      {brands
+        .slice()
+        .sort((entry1, entry2) => entry1.useCasesOrder - entry2.useCasesOrder)
+        .map((entry) => (
+          <li key={entry.website}>
+            <a href={entry.website} target="_blank">
+              {entry.name}
+            </a>{' '}
+            - {entry.desc}
+          </li>
+        ))}
+    </ul>
+  )
+}
 
 Vike is used by all kinds of organizations, from small startups to large companies, across a wide range of use cases.
 
 Examples of popular websites using Vike:
-<UsedByList />
+<Internal__UsedByList />
 
 > You can check whether a website is using Vike by searching for <Link href="/pageContext">`pageContext`</Link> in its HTML.
 > Note that Spline and Contra don't use Vike for their landing page but for their main app:
