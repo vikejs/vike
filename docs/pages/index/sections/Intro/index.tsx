@@ -124,7 +124,7 @@ const BrandsContent = () => {
               height: `${2 * (e.logoScale ?? 1)}em`,
               objectFit: 'contain',
               position: 'relative',
-              top: e.top,
+              top: e.logoTop,
             }}
           />
         </a>

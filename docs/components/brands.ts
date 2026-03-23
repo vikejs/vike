@@ -14,8 +14,8 @@ type Brand = {
   logo: string
   desc: string
   name: string
-  top?: string
-  scale?: number
+  logoTop?: string
+  logoScale?: number
   order: number
 }
 
@@ -25,8 +25,8 @@ const brands: Brand[] = [
     name: 'Name.com',
     desc: 'Popular domain registrar',
     logo: usedByName,
-    scale: 0.54,
-    top: '0.2em',
+    logoScale: 0.54,
+    logoTop: '0.2em',
     order: 0,
   },
   {
@@ -37,7 +37,7 @@ const brands: Brand[] = [
     name: 'Slite',
     // spellcheck-ignore
     logo: usedBySlite,
-    scale: 1.08,
+    logoScale: 1.08,
     order: -25,
   },
   {
@@ -45,8 +45,8 @@ const brands: Brand[] = [
     desc: 'Upwork alternative',
     name: 'Contra',
     logo: usedByContra,
-    scale: 0.82,
-    top: '0.18em',
+    logoScale: 0.82,
+    logoTop: '0.18em',
     order: 200,
   },
   {
@@ -54,7 +54,7 @@ const brands: Brand[] = [
     desc: 'Advanced 3D design web app',
     name: 'Spline',
     logo: usedBySpline,
-    scale: 1.4,
+    logoScale: 1.4,
     order: -200,
   },
   {
@@ -62,8 +62,8 @@ const brands: Brand[] = [
     desc: 'Google alternative',
     name: 'Ecosia',
     logo: usedByEcosia,
-    scale: 0.9,
-    top: '-0.02em',
+    logoScale: 0.9,
+    logoTop: '-0.02em',
     order: -50,
   },
   {
@@ -71,7 +71,7 @@ const brands: Brand[] = [
     desc: "Germany's most read newspaper",
     name: 'Bild.de',
     logo: usedByBild,
-    scale: 1.3,
+    logoScale: 1.3,
     order: -100,
   },
   {
@@ -79,7 +79,7 @@ const brands: Brand[] = [
     desc: "Spain's supermarket with the most stores",
     name: 'Dia.es',
     logo: usedByDia,
-    scale: 1.3,
+    logoScale: 1.3,
     order: 100,
   },
   /*
