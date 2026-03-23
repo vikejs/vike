@@ -1,14 +1,13 @@
 export { brands }
 
-// TODO/ai move all images to components/brands/
-import usedByBild from './../../assets/brands/bildde.svg'
-import usedBySpline from './../../assets/brands/spline.webp'
-import usedByEcosia from './../../assets/brands/ecosia.svg'
+import usedByBild from './brands/bildde.svg'
+import usedBySpline from './brands/spline.webp'
+import usedByEcosia from './brands/ecosia.svg'
 // spellcheck-ignore
-import usedBySlite from './../../assets/brands/sliteapp.svg'
-import usedByContra from './../../assets/brands/contra.svg'
-import usedByName from './../../assets/brands/namecom.svg'
-import usedByDia from './../../assets/brands/dia.svg'
+import usedBySlite from './brands/sliteapp.svg'
+import usedByContra from './brands/contra.svg'
+import usedByName from './brands/namecom.svg'
+import usedByDia from './brands/dia.svg'
 
 type Brand = {
   website: `https://${string}`
