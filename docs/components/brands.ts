@@ -16,7 +16,7 @@ type Brand = {
   name: string
   logoTop?: string
   logoScale?: number
-  order: number
+  useCasesOrder: number
 }
 
 const brands: Brand[] = [
@@ -27,7 +27,7 @@ const brands: Brand[] = [
     logo: usedByName,
     logoScale: 0.54,
     logoTop: '0.2em',
-    order: 0,
+    useCasesOrder: 0,
   },
   {
     // spellcheck-ignore
@@ -38,7 +38,7 @@ const brands: Brand[] = [
     // spellcheck-ignore
     logo: usedBySlite,
     logoScale: 1.08,
-    order: -25,
+    useCasesOrder: -25,
   },
   {
     website: 'https://contra.com',
@@ -47,7 +47,7 @@ const brands: Brand[] = [
     logo: usedByContra,
     logoScale: 0.82,
     logoTop: '0.18em',
-    order: 200,
+    useCasesOrder: 200,
   },
   {
     website: 'https://app.spline.design',
@@ -55,7 +55,7 @@ const brands: Brand[] = [
     name: 'Spline',
     logo: usedBySpline,
     logoScale: 1.4,
-    order: -200,
+    useCasesOrder: -200,
   },
   {
     website: 'https://ecosia.org',
@@ -64,7 +64,7 @@ const brands: Brand[] = [
     logo: usedByEcosia,
     logoScale: 0.9,
     logoTop: '-0.02em',
-    order: -50,
+    useCasesOrder: -50,
   },
   {
     website: 'https://bild.de',
@@ -72,7 +72,7 @@ const brands: Brand[] = [
     name: 'Bild.de',
     logo: usedByBild,
     logoScale: 1.3,
-    order: -100,
+    useCasesOrder: -100,
   },
   {
     website: 'https://dia.es',
@@ -80,7 +80,7 @@ const brands: Brand[] = [
     name: 'Dia.es',
     logo: usedByDia,
     logoScale: 1.3,
-    order: 100,
+    useCasesOrder: 100,
   },
   /*
   {
@@ -89,7 +89,7 @@ const brands: Brand[] = [
     name: 'Chip.de',
     logo: usedByChip,
     shrink: 60,
-    order: -99
+    useCasesOrder: -99
   }
   */
 ] satisfies Brand[]

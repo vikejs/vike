@@ -6,7 +6,7 @@ export function Internal__UsedByList() {
     <ul>
       {brands
         .slice()
-        .sort((entry1, entry2) => entry1.order - entry2.order)
+        .sort((entry1, entry2) => entry1.useCasesOrder - entry2.useCasesOrder)
         .map((entry) => (
           <li key={entry.website}>
             <a href={entry.website} target="_blank">
