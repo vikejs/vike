@@ -121,7 +121,7 @@ const BrandsContent = () => {
             src={e.logo}
             style={{
               display: 'block',
-              height: `${2 * (e.scale ?? 1)}em`,
+              height: `${2 * (e.logoScale ?? 1)}em`,
               objectFit: 'contain',
               position: 'relative',
               top: e.top,
