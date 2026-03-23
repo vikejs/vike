@@ -98,10 +98,6 @@ const brands: Brand[] = [
   */
 ] satisfies Brand[]
 
-const BrandsWrapper = cm.div`
-  flex justify-center items-center flex-wrap mb-6 relative
-`
-
 const BrandsContent = () => {
   return (
     <>
@@ -112,7 +108,7 @@ const BrandsContent = () => {
           key={i}
           aria-label={e.desc}
           data-label-position={i === brands.length - 1 ? 'top-left' : null}
-          className="colorize-on-hover text-center py-2"
+          className="colorize-on-hover text-center py-2 text-xs lg:text-base"
         >
           <img
             className="decolorize-4"
@@ -133,16 +129,11 @@ const BrandsContent = () => {
 
 const BrandSubsection = () => {
   return (
-    <GlassContainer className="flex flex-col items-center justify-center gap-4 mx-auto pt-2 pb-4 md:mt-0">
-      <BrandsWrapper className="hidden lg:flex gap-10 ">
+    <GlassContainer className="pt-2 pb-4 mt-1">
+      <div className="flex items-center flex-wrap mb-6 gap-x-5 gap-y-2 justify-center lg:justify-between">
         <BrandsContent />
-      </BrandsWrapper>
-
-      <BrandsWrapper className="flex lg:hidden gap-5">
-        <BrandsContent />
-      </BrandsWrapper>
-
-      <div className="text-grey text-xs md:text-sm mx-auto -mt-3 basis-full px-4 text-center">
+      </div>
+      <div className="text-grey text-xs md:text-sm mx-auto -mt-2 basis-full px-4 text-center">
         Used by large organizations to build mission-critical applications, see <Link href="/use-cases">Use Cases</Link>
       </div>
     </GlassContainer>
