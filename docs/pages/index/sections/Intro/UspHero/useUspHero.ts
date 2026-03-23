@@ -1,6 +1,11 @@
 import { useGSAP } from '@gsap/react'
 import { useRef, useState } from 'react'
-import { registerScrollToPlugin, registerScrollTrigger, smoothScrollToTarget } from '../../../util/gsap.utils'
+import {
+  registerScrollToPlugin,
+  registerScrollTrigger,
+  smoothScrollToTarget,
+  stickyNavOffset,
+} from '../../../util/gsap.utils'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { gsap } from 'gsap'
 import { landingPageHeroUsps, UspId } from '../../../util/constants'
@@ -61,8 +66,18 @@ const useUspHero = () => {
         sectionIds.map((id) => [id, document.querySelector<HTMLElement>(`[data-usp-section="${id}"]`)]),
       )
       const orderedSectionEntries = sectionIds
-        .map((id) => ({ id, node: sectionNodesById.get(id) }))
-        .filter((entry): entry is { id: UspId; node: HTMLElement } => Boolean(entry.node))
+        .map((id) => {
+          const sectionNode = sectionNodesById.get(id)
+          if (!sectionNode) {
+            return null
+          }
+
+          const progressNode =
+            sectionNode.querySelector<HTMLElement>('[data-usp-progress-anchor="true"]') ?? sectionNode
+          return { id, progressNode }
+        })
+        .filter((entry): entry is { id: UspId; progressNode: HTMLElement } => Boolean(entry))
+      const sectionProgressNodesById = new Map(orderedSectionEntries.map(({ id, progressNode }) => [id, progressNode]))
       const syncActiveSectionId = (nextActiveSectionId: UspId | null) => {
         if (activeSectionIdRef.current === nextActiveSectionId) {
           return
@@ -79,11 +94,11 @@ const useUspHero = () => {
         }
       }
       const scrollToSectionById = (id: UspId) => {
-        const sectionNode = sectionNodesById.get(id)
-        if (!sectionNode) {
+        const scrollTargetNode = sectionProgressNodesById.get(id) ?? sectionNodesById.get(id)
+        if (!scrollTargetNode) {
           return
         }
-        smoothScrollToTarget(sectionNode)
+        smoothScrollToTarget(scrollTargetNode, -20)
       }
       const scrollToTop = () => {
         if (typeof window === 'undefined') {
@@ -326,17 +341,18 @@ const useUspHero = () => {
         syncActiveSectionId(progressedEntry?.id ?? null)
       }
       const sectionProgressTriggers: ScrollTrigger[] = []
-      orderedSectionEntries.forEach(({ id, node }, index) => {
+      orderedSectionEntries.forEach(({ id, progressNode }, index) => {
         const previousEntry = orderedSectionEntries[index - 1]
         const nextEntry = orderedSectionEntries[index + 1]
 
+        const stickyProgressStart = 'top 70%'
         const sectionTrigger = ScrollTrigger.create({
           id: `intro-usp-hero-section-progress-${id}`,
-          trigger: node,
-          endTrigger: nextEntry?.node,
+          trigger: progressNode,
+          endTrigger: nextEntry?.progressNode,
           scroller,
-          start: 'top 50%',
-          end: nextEntry ? 'top 50%' : 'max',
+          start: stickyProgressStart,
+          end: nextEntry ? stickyProgressStart : 'max',
           scrub: true,
           invalidateOnRefresh: true,
           markers: false,
