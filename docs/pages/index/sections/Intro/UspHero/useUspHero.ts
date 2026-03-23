@@ -330,7 +330,6 @@ const useUspHero = () => {
         0,
       )
       const sectionProgressEntries: Array<{ id: UspId; trigger: ScrollTrigger }> = []
-      const stickyProgressStart = 'top 70%'
       const syncActiveSectionIdFromProgressTriggers = () => {
         const activeEntry = sectionProgressEntries.find(({ trigger }) => trigger.isActive)
         if (activeEntry) {
@@ -346,6 +345,7 @@ const useUspHero = () => {
         const previousEntry = orderedSectionEntries[index - 1]
         const nextEntry = orderedSectionEntries[index + 1]
 
+        const stickyProgressStart = 'top 70%'
         const sectionTrigger = ScrollTrigger.create({
           id: `intro-usp-hero-section-progress-${id}`,
           trigger: progressNode,
