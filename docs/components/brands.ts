@@ -88,7 +88,6 @@ const brands: Brand[] = [
     desc: "Germany's most read consumer news",
     name: 'Chip.de',
     logo: usedByChip,
-    shrink: 60,
     useCasesOrder: -99
   }
   */
