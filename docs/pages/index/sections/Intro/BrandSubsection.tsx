@@ -106,6 +106,120 @@ const brands: Brand[] = [
   */
 ]
 
+// TODO/ai use the following old data, see commit 1b27705947c3c9b9ee0464d99539f966aa9ca482
+//const brands: {
+//  website: `https://${string}`
+//  logo: string
+//  shrink?: number
+//  offset?: number
+//  desc: string
+//  name: string
+//  order: number
+//}[] = [
+//  {
+//    website: 'https://name.com',
+//    name: 'Name.com',
+//    desc: 'Popular domain registrar',
+//    logo: usedByName,
+//    offset: 5,
+//    order: 0,
+//  },
+//  {
+//    website: 'https://contra.com',
+//    desc: 'Upwork alternative',
+//    name: 'Contra',
+//    logo: usedByContra,
+//    shrink: 40,
+//    offset: 4,
+//    order: 200,
+//  },
+//  {
+//    website: 'https://app.spline.design',
+//    desc: 'Advanced 3D design web app',
+//    name: 'Spline',
+//    logo: usedBySpline,
+//    order: -200,
+//  },
+//  {
+//    website: 'https://ecosia.org',
+//    desc: 'Google alternative',
+//    name: 'Ecosia',
+//    logo: usedByEcosia,
+//    shrink: 55,
+//    offset: -1,
+//    order: -50,
+//  },
+//  {
+//    website: 'https://bild.de',
+//    desc: "Germany's most read newspaper",
+//    name: 'Bild.de',
+//    logo: usedByBild,
+//    order: -100,
+//  },
+//  {
+//    website: 'https://dia.es',
+//    desc: "Spain's supermarket with the most stores",
+//    name: 'Dia.es',
+//    logo: usedByDia,
+//    order: 100,
+//    logo: usedBySpline,
+//    order: -200,
+//  },
+//  {
+//    website: 'https://ecosia.org',
+//    desc: 'Google alternative',
+//    name: 'Ecosia',
+//    logo: usedByEcosia,
+//    shrink: 55,
+//    offset: -1,
+//    order: -50,
+//  },
+//  {
+//    offset: 4,
+//    order: 200,
+//  },
+//  {
+//    website: 'https://app.spline.design',
+//    desc: 'Advanced 3D design web app',
+//    name: 'Spline',
+//    logo: usedBySpline,
+//    order: -200,
+//  },
+//  {
+//    website: 'https://ecosia.org',
+//    desc: 'Google alternative',
+//    name: 'Ecosia',
+//    logo: usedByEcosia,
+//    shrink: 55,
+//    offset: -1,
+//    order: -50,
+//  },
+//  {
+//    website: 'https://bild.de',
+//    desc: "Germany's most read newspaper",
+//    name: 'Bild.de',
+//    logo: usedByBild,
+//    order: -100,
+//  },
+//  {
+//    website: 'https://dia.es',
+//    desc: "Spain's supermarket with the most stores",
+//    name: 'Dia.es',
+//    logo: usedByDia,
+//    order: 100,
+//  },
+//  /*
+//  {
+//    website: 'https://chip.de',
+//    desc: "Germany's most read consumer news",
+//    name: 'Chip.de',
+//    logo: usedByChip,
+//    shrink: 60,
+//    order: -99
+//  }
+//  */
+//]
+
 const BrandsWrapper = cm.div`
   flex justify-center items-center flex-wrap mb-6 relative
 `
