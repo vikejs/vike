@@ -93,7 +93,7 @@ const TeamQuote = () => {
 
 const BrandSubsection = () => {
   return (
-    <GlassContainer className="pt-2 pb-4 mt-1">
+    <GlassContainer className="pt-1 pb-4 mt-1">
       <div className="flex items-center flex-wrap mb-6 gap-x-5 gap-y-2 justify-center lg:justify-between">
         <BrandsContent />
       </div>
