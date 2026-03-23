@@ -39,62 +39,78 @@ type Brand = {
   height: HeightVariant
   desc: string
   name: string
+  shrink?: number
+  offset?: number
+  order: number
 }
 
-const brands: Brand[] = [
-  {
-    website: 'https://name.com',
-    name: 'Name.com',
-    desc: 'Popular domain registrar',
-    logo: usedByName,
-    height: heightVariant.small,
-  },
-  {
-    // spellcheck-ignore
-    website: 'https://slite.com',
-    desc: 'AI-powered knowledge base',
-    // spellcheck-ignore
-    name: 'Slite',
-    // spellcheck-ignore
-    logo: usedBySlite,
-    height: heightVariant.medium,
-  },
-  {
-    website: 'https://contra.com',
-    desc: 'Upwork alternative',
-    name: 'Contra',
-    logo: usedByContra,
-    height: heightVariant.medium,
-  },
-  {
-    website: 'https://app.spline.design',
-    desc: 'Advanced 3D design web app',
-    name: 'Spline',
-    height: heightVariant.large,
-    logo: usedBySpline,
-  },
-  {
-    website: 'https://ecosia.org',
-    desc: 'Google alternative',
-    name: 'Ecosia',
-    logo: usedByEcosia,
-    height: heightVariant.medium,
-  },
-  {
-    website: 'https://bild.de',
-    desc: "Germany's most read newspaper",
-    name: 'Bild.de',
-    height: heightVariant.large,
-    logo: usedByBild,
-  },
-  {
-    website: 'https://dia.es',
-    desc: "Spain's supermarket with the most stores",
-    name: 'Dia.es',
-    height: heightVariant.large,
-    logo: usedByDia,
-  },
-  /*
+const brands: Brand[] = (
+  [
+    {
+      website: 'https://name.com',
+      name: 'Name.com',
+      desc: 'Popular domain registrar',
+      logo: usedByName,
+      height: heightVariant.small,
+      offset: 5,
+      order: 0,
+    },
+    {
+      // spellcheck-ignore
+      website: 'https://slite.com',
+      desc: 'AI-powered knowledge base',
+      // spellcheck-ignore
+      name: 'Slite',
+      // spellcheck-ignore
+      logo: usedBySlite,
+      height: heightVariant.medium,
+      order: 50,
+    },
+    {
+      website: 'https://contra.com',
+      desc: 'Upwork alternative',
+      name: 'Contra',
+      logo: usedByContra,
+      height: heightVariant.medium,
+      shrink: 40,
+      offset: 4,
+      order: 200,
+    },
+    {
+      website: 'https://app.spline.design',
+      desc: 'Advanced 3D design web app',
+      name: 'Spline',
+      height: heightVariant.large,
+      logo: usedBySpline,
+      order: -200,
+    },
+    {
+      website: 'https://ecosia.org',
+      desc: 'Google alternative',
+      name: 'Ecosia',
+      logo: usedByEcosia,
+      height: heightVariant.medium,
+      shrink: 55,
+      offset: -1,
+      order: -50,
+    },
+    {
+      website: 'https://bild.de',
+      desc: "Germany's most read newspaper",
+      name: 'Bild.de',
+      height: heightVariant.large,
+      logo: usedByBild,
+      order: -100,
+    },
+    {
+      website: 'https://dia.es',
+      desc: "Spain's supermarket with the most stores",
+      name: 'Dia.es',
+      height: heightVariant.large,
+      logo: usedByDia,
+      order: 100,
+    },
+    /*
   {
     website: 'https://chip.de',
     desc: "Germany's most read consumer news",
@@ -104,121 +120,8 @@ const brands: Brand[] = [
     order: -99
   }
   */
-]
-
-// TODO/ai use the following old data, see commit 1b27705947c3c9b9ee0464d99539f966aa9ca482
-//const brands: {
-//  website: `https://${string}`
-//  logo: string
-//  shrink?: number
-//  offset?: number
-//  desc: string
-//  name: string
-//  order: number
-//}[] = [
-//  {
-//    website: 'https://name.com',
-//    name: 'Name.com',
-//    desc: 'Popular domain registrar',
-//    logo: usedByName,
-//    offset: 5,
-//    order: 0,
-//  },
-//  {
-//    website: 'https://contra.com',
-//    desc: 'Upwork alternative',
-//    name: 'Contra',
-//    logo: usedByContra,
-//    shrink: 40,
-//    offset: 4,
-//    order: 200,
-//  },
-//  {
-//    website: 'https://app.spline.design',
-//    desc: 'Advanced 3D design web app',
-//    name: 'Spline',
-//    logo: usedBySpline,
-//    order: -200,
-//  },
-//  {
-//    website: 'https://ecosia.org',
-//    desc: 'Google alternative',
-//    name: 'Ecosia',
-//    logo: usedByEcosia,
-//    shrink: 55,
-//    offset: -1,
-//    order: -50,
-//  },
-//  {
-//    website: 'https://bild.de',
-//    desc: "Germany's most read newspaper",
-//    name: 'Bild.de',
-//    logo: usedByBild,
-//    order: -100,
-//  },
-//  {
-//    website: 'https://dia.es',
-//    desc: "Spain's supermarket with the most stores",
-//    name: 'Dia.es',
-//    logo: usedByDia,
-//    order: 100,
-//    logo: usedBySpline,
-//    order: -200,
-//  },
-//  {
-//    website: 'https://ecosia.org',
-//    desc: 'Google alternative',
-//    name: 'Ecosia',
-//    logo: usedByEcosia,
-//    shrink: 55,
-//    offset: -1,
-//    order: -50,
-//  },
-//  {
-//    offset: 4,
-//    order: 200,
-//  },
-//  {
-//    website: 'https://app.spline.design',
-//    desc: 'Advanced 3D design web app',
-//    name: 'Spline',
-//    logo: usedBySpline,
-//    order: -200,
-//  },
-//  {
-//    website: 'https://ecosia.org',
-//    desc: 'Google alternative',
-//    name: 'Ecosia',
-//    logo: usedByEcosia,
-//    shrink: 55,
-//    offset: -1,
-//    order: -50,
-//  },
-//  {
-//    website: 'https://bild.de',
-//    desc: "Germany's most read newspaper",
-//    name: 'Bild.de',
-//    logo: usedByBild,
-//    order: -100,
-//  },
-//  {
-//    website: 'https://dia.es',
-//    desc: "Spain's supermarket with the most stores",
-//    name: 'Dia.es',
-//    logo: usedByDia,
-//    order: 100,
-//  },
-//  /*
-//  {
-//    website: 'https://chip.de',
-//    desc: "Germany's most read consumer news",
-//    name: 'Chip.de',
-//    logo: usedByChip,
-//    shrink: 60,
-//    order: -99
-//  }
-//  */
-//]
+  ] satisfies Brand[]
+).sort((a, b) => a.order - b.order)
 
 const BrandsWrapper = cm.div`
   flex justify-center items-center flex-wrap mb-6 relative
@@ -235,12 +138,20 @@ const BrandsContent = ({ type }: { type: 'default' | 'mobile' }) => {
           aria-label={e.desc}
           data-label-position={i === brands.length - 1 ? 'top-left' : null}
           className="hero-usedby colorize-on-hover h-full flex justify-center items-center relative"
+          style={{ order: e.order }}
         >
           <img
             className={cmMerge('decolorize-4 w-auto', type === 'default' ? e.height.default : e.height.mobile)}
             src={e.logo}
             width={400}
             height={200}
+            style={{
+              display: 'block',
+              maxWidth: `${180 - (e.shrink ?? 0)}px`,
+              objectFit: 'contain',
+              position: 'relative',
+              top: e.offset,
+            }}
           />
         </a>
       ))}
