@@ -45,10 +45,3 @@ const StyledBar = cm.div.variants<{ $color: UiColorVariantKey; $won: boolean }>(
     },
   },
 })
-
-const StyledWinDot = cm.div.variants<{ $color: UiColorVariantKey }>({
-  base: 'w-10 h-10 rounded-full absolute flex items-center justify-center text-sm font-bold -top-3 -right-3',
-  variants: {
-    $color: UiVariantBgColor,
-  },
-})
