@@ -23,7 +23,7 @@ const BarChart = ({ pollData, color, className, ...props }: BarChartProps) => {
           <div key={data.label}>
             <div className="w-full h-4 md:h-5 to-base-200 via-base-200 via-60% bg-linear-to-l">
               <StyledBar style={{ width: barWidth }} $color={color} $won={data.label === winningEntry.label}>
-                <span className="text-xs md:text-sm font-mono whitespace-nowrap relative top-[1px]">{data.label}</span>
+                <span className="text-xs md:text-sm font-mono whitespace-nowrap relative md:top-[1px]">{data.label}</span>
               </StyledBar>
             </div>
           </div>
