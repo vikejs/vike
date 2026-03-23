@@ -9,7 +9,6 @@ import usedByContra from './../../assets/brands/contra.svg'
 import usedByName from './../../assets/brands/namecom.svg'
 import usedByDia from './../../assets/brands/dia.svg'
 import GlassContainer from '../../components/GlassContainer'
-import Blockquote from '../../components/Quote'
 import { Link } from '@brillout/docpress'
 
 type Brand = {
@@ -139,23 +138,4 @@ const BrandSubsection = () => {
   )
 }
 
-const TeamQuote = () => {
-  return (
-    <Blockquote
-      className="mt-15 mb-3 md:mt-2 md:mb-10 pb-10 md:w-4/5 mx-auto"
-      authorPictures={[
-        'https://github.com/phonzammi.png?size=100',
-        'https://github.com/richard-unterberg.png?size=100',
-        'https://github.com/nitedani.png?size=100',
-        'https://github.com/magne4000.png?size=100',
-        'https://github.com/brillout.png?size=100',
-      ]}
-    >
-      We started Vike 5 years ago with a bold mission: build the last framework you'll need — a rock-solid foundation
-      with powerful hooks, ready to embrace JavaScript's future.
-    </Blockquote>
-  )
-}
-
-export { TeamQuote }
 export default BrandSubsection

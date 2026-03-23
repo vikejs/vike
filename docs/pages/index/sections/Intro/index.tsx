@@ -3,6 +3,7 @@ import LayoutComponent from '../../components/LayoutComponent'
 import GradientText from '../../components/GradientText'
 import UspHero from './UspHero'
 import Headline from '../../components/Headline'
+import Blockquote from '../../components/Quote'
 import BrandSubsection, { TeamQuote } from './BrandSubsection'
 import UspHeroMobile from './UspHero/UspHeroMobile'
 
@@ -69,3 +70,21 @@ const IntroSection = () => {
 }
 
 export default IntroSection
+
+const TeamQuote = () => {
+  return (
+    <Blockquote
+      className="mt-15 mb-3 md:mt-2 md:mb-10 pb-10 md:w-4/5 mx-auto"
+      authorPictures={[
+        'https://github.com/phonzammi.png?size=100',
+        'https://github.com/richard-unterberg.png?size=100',
+        'https://github.com/nitedani.png?size=100',
+        'https://github.com/magne4000.png?size=100',
+        'https://github.com/brillout.png?size=100',
+      ]}
+    >
+      We started Vike 5 years ago with a bold mission: build the last framework you'll need — a rock-solid foundation
+      with powerful hooks, ready to embrace JavaScript's future.
+    </Blockquote>
+  )
+}
