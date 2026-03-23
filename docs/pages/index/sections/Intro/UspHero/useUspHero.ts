@@ -78,7 +78,7 @@ const useUspHero = () => {
         })
         .filter((entry): entry is { id: UspId; progressNode: HTMLElement } => Boolean(entry))
       const sectionProgressNodesById = new Map(orderedSectionEntries.map(({ id, progressNode }) => [id, progressNode]))
-      const stickyProgressOffsetPx = 8
+      const stickyProgressOffsetPx = -32
       const stickyProgressClickOffsetPx = stickyProgressOffsetPx + 12
       const syncActiveSectionId = (nextActiveSectionId: UspId | null) => {
         if (activeSectionIdRef.current === nextActiveSectionId) {
