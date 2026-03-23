@@ -38,7 +38,7 @@ const brands: Brand[] = [
     // spellcheck-ignore
     logo: usedBySlite,
     scale: 1.08,
-    order: 50,
+    order: -25,
   },
   {
     website: 'https://contra.com',
