@@ -78,9 +78,8 @@ const useUspHero = () => {
         })
         .filter((entry): entry is { id: UspId; progressNode: HTMLElement } => Boolean(entry))
       const sectionProgressNodesById = new Map(orderedSectionEntries.map(({ id, progressNode }) => [id, progressNode]))
-      const offset = 8
-      const stickyProgressOffsetPx = stickyNavOffset - offset
-      const stickyProgressClickOffsetPx = offset + 12
+      const stickyProgressOffsetPx = 8
+      const stickyProgressClickOffsetPx = stickyProgressOffsetPx + 12
       const syncActiveSectionId = (nextActiveSectionId: UspId | null) => {
         if (activeSectionIdRef.current === nextActiveSectionId) {
           return
@@ -333,7 +332,7 @@ const useUspHero = () => {
         0,
       )
       const sectionProgressEntries: Array<{ id: UspId; trigger: ScrollTrigger }> = []
-      const stickyProgressStart = `top top+=${stickyProgressOffsetPx}`
+      const stickyProgressStart = `top top+=${stickyNavOffset - stickyProgressOffsetPx}`
       const syncActiveSectionIdFromProgressTriggers = () => {
         const activeEntry = sectionProgressEntries.find(({ trigger }) => trigger.isActive)
         if (activeEntry) {
