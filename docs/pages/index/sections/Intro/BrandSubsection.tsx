@@ -1,5 +1,4 @@
 import React from 'react'
-import cm from '@classmatejs/react'
 
 import usedByBild from './../../assets/brands/bildde.svg'
 import usedBySpline from './../../assets/brands/spline.webp'
