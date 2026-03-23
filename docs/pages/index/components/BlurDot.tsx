@@ -1,9 +1,9 @@
 import cm from '@classmatejs/react'
 import React, { HTMLAttributes } from 'react'
 
-import blurDotGreenSm from './../assets/decorators/blur/raw/blur-green@0.5.png'
-import blurDotBlueSm from './../assets/decorators/blur/raw/blur-blue@0.5.png'
-import blurDotOrangeSm from './../assets/decorators/blur/raw/blur-orange@0.5.png'
+import blurDotGreenSm from './../assets/decorators/blur/blur-green@0.5.avif'
+import blurDotBlueSm from './../assets/decorators/blur/blur-blue@0.5.avif'
+import blurDotOrangeSm from './../assets/decorators/blur/blur-orange@0.5.avif'
 import { BlurDotOpacity, UiColorVariantKey } from '../util/ui.constants'
 
 const BlurDot = ({ type, lazy = true, visibility = 'medium', size = 'md', ...props }: BlurDotProps) => {

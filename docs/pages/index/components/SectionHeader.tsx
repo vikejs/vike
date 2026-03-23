@@ -15,7 +15,7 @@ interface SectionHeaderProps {
 
 const SectionHeader = ({ color, icon, iconSrc, main, sub, outerClassName }: SectionHeaderProps) => {
   return (
-    <div className={cmMerge('mt-24 lg:mt-32 mb-12 lg:mb-20', outerClassName)}>
+    <div data-usp-progress-anchor="true" className={cmMerge('mt-24 lg:mt-32 mb-12 lg:mb-20', outerClassName)}>
       <HeadlineGroup
         outerClassName="w-full sm:w-4/5 md:w-3/4 lg:w-2/3 mx-auto"
         headingStyle="h1"
