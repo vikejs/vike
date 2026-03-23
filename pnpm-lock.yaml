@@ -18,8 +18,8 @@ importers:
         specifier: ^0.1.2
         version: 0.1.2
       '@brillout/test-e2e':
-        specifier: ^0.6.22
-        version: 0.6.22
+        specifier: ^0.6.23
+        version: 0.6.23
       '@brillout/test-types':
         specifier: ^0.1.13
         version: 0.1.15(typescript@5.9.3)
@@ -2589,8 +2589,8 @@ packages:
     resolution: {integrity: sha512-DNJKsGPRps/3rwezmtMMoNwrcIpqnDPkqArEK5eS3vpkRJGzVaSH8suGf1+TmgUIsHn2Y1bgLIz9jh7w0EqwHw==}
     hasBin: true
 
-  '@brillout/test-e2e@0.6.22':
-    resolution: {integrity: sha512-MKF/Vi6iFo8cLReV3+xmpIhVkeHYQ65j4+lZMX9r3WzyBE352YfN5BBdkB4M1K1hQIJw76wL0EOGooMJTEg0SA==}
+  '@brillout/test-e2e@0.6.23':
+    resolution: {integrity: sha512-qtWFnI/tRt3A9+ymdBatCxeyCTJgZNYYqhI9VKmewMEXevEGZoUmV4SWOzSUqkQlOMdn1AEQuDCkqOh/JgfJjQ==}
     hasBin: true
 
   '@brillout/test-types@0.1.15':
@@ -8026,6 +8026,10 @@ packages:
     resolution: {integrity: sha512-gmBGslpoQJtgnMAvOVqGZpEz9dyoKTCzy2nfz/n8aIFhN/jCE/rCmcxabB6jOOHV+0WNnylOxaxBQPSvcWklhA==}
     engines: {node: '>=12'}
 
+  strip-ansi@7.2.0:
+    resolution: {integrity: sha512-yDPMNjp4WyfYBkHnjIRLfca1i6KMyGCtsVgoKe/z1+6vukgaENdgGBZt+ZmKPc4gavvEZ5OgHfHdrazhgNyG7w==}
+    engines: {node: '>=12'}
+
   strip-bom-string@1.0.0:
     resolution: {integrity: sha512-uCC2VHvQRYu+lMh4My/sFNmF2klFymLX1wHJeXnbEJERpV/ZsVuonzerjfrGpIGF7LBVa1O7i9kjiWvJiFck8g==}
     engines: {node: '>=0.10.0'}
@@ -9589,7 +9593,7 @@ snapshots:
       '@brillout/picocolors': 1.0.29
       '@brillout/shell': 0.2.1
 
-  '@brillout/test-e2e@0.6.22':
+  '@brillout/test-e2e@0.6.23':
     dependencies:
       '@brillout/part-regex': 0.1.4
       '@brillout/picocolors': 1.0.30
@@ -10361,7 +10365,7 @@ snapshots:
     dependencies:
       string-width: 5.1.2
       string-width-cjs: string-width@4.2.3
-      strip-ansi: 7.1.2
+      strip-ansi: 7.2.0
       strip-ansi-cjs: strip-ansi@6.0.1
       wrap-ansi: 8.1.0
       wrap-ansi-cjs: wrap-ansi@7.0.0
@@ -15860,7 +15864,7 @@ snapshots:
     dependencies:
       eastasianwidth: 0.2.0
       emoji-regex: 9.2.2
-      strip-ansi: 7.1.2
+      strip-ansi: 7.2.0
 
   stringify-entities@4.0.4:
     dependencies:
@@ -15872,6 +15876,10 @@ snapshots:
       ansi-regex: 5.0.1
 
   strip-ansi@7.1.2:
+    dependencies:
+      ansi-regex: 6.2.2
+
+  strip-ansi@7.2.0:
     dependencies:
       ansi-regex: 6.2.2
 
@@ -16959,7 +16967,7 @@ snapshots:
     dependencies:
       ansi-styles: 6.2.3
       string-width: 5.1.2
-      strip-ansi: 7.1.2
+      strip-ansi: 7.2.0
 
   wrappy@1.0.2: {}
 
