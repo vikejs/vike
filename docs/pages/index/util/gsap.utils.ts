@@ -44,19 +44,25 @@ export const registerScrollToPlugin = () => {
 
 export const smoothScrollToTarget = (sectionNode: Element, offset = 0) => {
   registerScrollToPlugin()
-  const top = Math.max(sectionNode.getBoundingClientRect().top + window.scrollY - stickyNavOffset + offset, 0)
   gsap.to(window, {
     duration: uiConfig.transition.longDuration,
     ease: uiConfig.transition.easeInOutGsap,
     overwrite: 'auto',
     scrollTo: {
-      y: top,
-      autoKill: true,
+      y: sectionNode,
+      offsetY: stickyNavOffset - offset,
+      // we don't want user/device interfere with the ongoing scroll
+      // (setting it to true is buggy on mobile)
+      autoKill: false,
     },
   })
 }
 export const smoothScrollToSelector = (selector: string, offset?: number) => {
-  smoothScrollToTarget(document.querySelector(selector)!, offset)
+  const sectionNode = document.querySelector(selector)
+  if (!sectionNode) {
+    return
+  }
+  smoothScrollToTarget(sectionNode, offset)
 }
 
 export const debounce = <T extends (...args: any[]) => void>(fn: T, waitMs: number) => {
