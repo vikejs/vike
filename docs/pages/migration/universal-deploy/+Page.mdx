@@ -151,7 +151,7 @@ Replace `@photonjs/*` with `@vikejs/*`. It's recommended to move your server ent
     // +server.ts
 
     import { Hono } from 'hono'
-    // @docpress-uncomment import vike from '@vikejs/hono' // [!code ++]
+    import vike from '@vikejs/hono' // [!code ++]
 
     const app = new Hono()
     vike(app) // [!code ++]
@@ -166,7 +166,7 @@ Replace `@photonjs/*` with `@vikejs/*`. It's recommended to move your server ent
     // +server.ts
 
     import express from 'express'
-    // @docpress-uncomment import vike from '@vikejs/express' // [!code ++]
+    import vike from '@vikejs/express' // [!code ++]
     import { toFetchHandler } from 'srvx/node' // [!code ++]
 
     const app = express()
@@ -182,7 +182,7 @@ Replace `@photonjs/*` with `@vikejs/*`. It's recommended to move your server ent
     // +server.ts
 
     import fastify from 'fastify'
-    // @docpress-uncomment import vike from '@vikejs/fastify' // [!code ++]
+    import vike from '@vikejs/fastify' // [!code ++]
     import { toFetchHandler } from 'srvx/node' // [!code ++]
 
     const app = fastify()
@@ -199,7 +199,7 @@ Replace `@photonjs/*` with `@vikejs/*`. It's recommended to move your server ent
 
     import { createApp, toWebHandler } from 'h3' // [!code ++]
     // @docpress-uncomment import { createApp } from 'h3' // [!code --]
-    // @docpress-uncomment import vike from '@vikejs/h3' // [!code ++]
+    import vike from '@vikejs/h3' // [!code ++]
 
     const app = createApp()
     vike(app) // [!code ++]
@@ -214,7 +214,7 @@ Replace `@photonjs/*` with `@vikejs/*`. It's recommended to move your server ent
     // +server.ts
 
     import { Elysia } from 'elysia'
-    // @docpress-uncomment import vike from '@vikejs/elysia' // [!code ++]
+    import vike from '@vikejs/elysia' // [!code ++]
 
     const app = new Elysia()
     vike(app) // [!code ++]
@@ -225,6 +225,66 @@ Replace `@photonjs/*` with `@vikejs/*`. It's recommended to move your server ent
     ```
   </TabPanel>
 </Tabs>
+
+## 5. Advanced `photon` options
+
+Make sure that all `photon` options are removed from `+config.ts`:
+
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
+
+export default {
+  photon: { // [!code --]
+    // ... // [!code --]
+  } // [!code --]
+} satisfies Config
+```
+
+`photon.standalone`: Replace with [standaloner](https://github.com/nitedani/standaloner/?tab=readme-ov-file#with-vite):
+
+```ts
+// vite.config.ts
+
+import { defineConfig } from 'vite'
+import standaloner from 'standaloner/vite'
+
+export default defineConfig({
+  plugins: [standaloner()]
+});
+```
+
+`photon.compress`: Replace with [compress](https://universal-middleware.dev/middlewares/compress):
+
+```ts
+// +server.ts
+
+import compress from '@universal-middleware/compress'
+import { Hono } from 'hono'
+import vike from '@vikejs/hono'
+
+const app = new Hono()
+// Add middleware here
+vike(app, [compress()]) // [!code ++]
+```
+
+`photon.static`: Replace with `static` option in your server entry:
+
+```ts
+// +server.ts
+
+export default {
+  // ...
+  // Will serve static files automatically (default)
+  // @docpress-uncomment static: true // [!code ++]
+  // Can be disabled with
+  // @docpress-uncomment static: false // [!code ++]
+  // Or serve from a custom folder
+  // @docpress-uncomment static: './public' // [!code ++]
+}
+```
+
 
 ## See also
 

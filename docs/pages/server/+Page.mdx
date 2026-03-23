@@ -21,11 +21,9 @@ export default {
 }
 ```
 
-## `vike/universal-middleware`
+## Integrating Vike with your server
 
-Vike provides a universal middleware that can be used with any server framework. It handles the rendering of your pages.
-
-It's recommended to move your server entry to `+server.ts`.
+Vike provides a middleware that can be used with any server framework. It handles the rendering of your pages.
 
 <Tabs>
   <TabList>
@@ -117,6 +115,24 @@ It's recommended to move your server entry to `+server.ts`.
 ## Universal Deployment
 
 When you define a `+server.ts` file, Vike can automatically build and deploy your app to various platforms like <Link href="/vercel">Vercel</Link> or <Link href="/cloudflare">Cloudflare</Link>.
+
+## Supported options
+
+### `static`
+
+```ts
+// +server.ts
+
+export default {
+  // ...
+  // Will serve static files automatically (default)
+  // @docpress-uncomment static: true // [!code ++]
+  // Can be disabled with
+  // @docpress-uncomment static: false // [!code ++]
+  // Or serve from a custom folder
+  // @docpress-uncomment static: './public' // [!code ++]
+}
+```
 
 ## See also
 
