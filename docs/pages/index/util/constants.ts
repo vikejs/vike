@@ -33,6 +33,19 @@ export const FlexGraphicHook = {
 export type FlexGraphicHook = (typeof FlexGraphicHook)[keyof typeof FlexGraphicHook]
 
 export const HOOK_NAME_KEYS = Object.keys(FlexGraphicHook) as FlexGraphicHook[]
+export const flexGraphicHookRoutes = {
+  onBeforeRenderClient: '/onBeforeRenderClient',
+  Wrapper: '/Wrapper',
+  onCreatePageContext: '/onCreatePageContext',
+  Head: '/Head',
+  onHookCall: '/onHookCall',
+  onBeforeRenderHtml: '/onBeforeRenderHtml',
+  onRenderClient: '/onRenderClient',
+  onCreateGlobalContext: '/onCreateGlobalContext',
+  onError: '/onError',
+  onRenderHtml: '/onRenderHtml',
+  onAfterRenderHtml: '/onAfterRenderHtml',
+} as const satisfies Record<FlexGraphicHook, `/${string}`>
 
 export const ExtensionBlockVariants = {
   react: 'react',

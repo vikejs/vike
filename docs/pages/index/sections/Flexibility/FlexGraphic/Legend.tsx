@@ -1,6 +1,7 @@
 import React from 'react'
+import { Link } from '@brillout/docpress'
 
-import { FlexGraphicHook } from '../../../util/constants'
+import { flexGraphicHookRoutes, FlexGraphicHook } from '../../../util/constants'
 import { StyledLegendItem } from './styled'
 import { hookColors } from '../../../util/ui.constants'
 
@@ -20,7 +21,8 @@ const Legend = ({ onChangeHighlight, activeHooks, isSlideshowMode }: LegendProps
         const type = isActive ? 'active' : isSlideshowMode ? 'disabled' : isInteractiveActive ? 'inactive' : 'paused'
 
         return (
-          <StyledLegendItem key={key} $type={type}>
+          <Link href={flexGraphicHookRoutes[hookName]} key={key} className="text-inherit">
+          <StyledLegendItem $type={type}>
             {/* extra hover area -> prevent style jitter on hover */}
             <div
               onMouseEnter={() => onChangeHighlight([hookName])}
@@ -30,6 +32,7 @@ const Legend = ({ onChangeHighlight, activeHooks, isSlideshowMode }: LegendProps
             <div className="w-1 md:w-4 h-4 rounded" style={{ backgroundColor: color }}></div>
             <span className="text-xs">+{key}</span>
           </StyledLegendItem>
+          </Link>
         )
       })}
     </div>
