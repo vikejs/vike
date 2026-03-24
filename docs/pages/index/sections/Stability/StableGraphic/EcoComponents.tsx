@@ -40,11 +40,11 @@ const ecosystemComponents: Record<VikeEcoComponentCategory, EcoComponent[]> = {
 }
 
 const MUTED_COMPONENT_RATIO = 0.3
-const MUTED_OPACITY = 0.5
-const TRANSITION_DURATION = 1100
-const TRANSITION_OVERLAP = 160
+const MUTED_OPACITY = 0.2
+const TRANSITION_DURATION = 1000
+const TRANSITION_OVERLAP = 0
 const TRANSITION_STYLE = `opacity ${TRANSITION_DURATION}ms linear`
-const INITIAL_UPDATE_STAGGER = 550
+const INITIAL_UPDATE_STAGGER = 1000
 
 type CategoryDecorations = Record<VikeEcoComponentCategory, Record<string, number>>
 
