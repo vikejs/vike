@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ecoComponentCategoryNames, VikeComponentSize, VikeEcoComponentCategory } from './grid.utils'
 import cm from '@classmatejs/react'
 
@@ -49,12 +49,6 @@ type CategoryDecorations = Record<VikeEcoComponentCategory, Record<string, numbe
 
 const EcoComponents = () => {
   const [decorations, setDecorations] = useState<CategoryDecorations>(() => createCategoryDecorations(1))
-  const lastMutedByCategory = useRef<Record<VikeEcoComponentCategory, string | null>>({
-    framework: null,
-    api: null,
-    deploy: null,
-    server: null,
-  })
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -71,17 +65,12 @@ const EcoComponents = () => {
         const timeoutId = window.setTimeout(() => {
           setDecorations((currentDecorations) => ({
             ...currentDecorations,
-            [category]: (() => {
-              const transferResult = transferComponentOpacity(
-                currentDecorations[category] ??
-                  createComponentDecorations(componentNames, Math.floor(globalRandom() * 2 ** 31)),
-                componentNames,
-                categoryRandom,
-                lastMutedByCategory.current[category],
-              )
-              lastMutedByCategory.current[category] = transferResult.lastMutedName
-              return transferResult.decorations
-            })(),
+            [category]: transferComponentOpacity(
+              currentDecorations[category] ??
+                createComponentDecorations(componentNames, Math.floor(globalRandom() * 2 ** 31)),
+              componentNames,
+              categoryRandom,
+            ),
           }))
 
           scheduleNextUpdate(TRANSITION_DURATION)
@@ -215,31 +204,35 @@ function transferComponentOpacity(
   currentDecorations: Record<string, number>,
   componentNames: string[],
   random: () => number,
-  lastMutedName: string | null,
-): { decorations: Record<string, number>; lastMutedName: string } {
+): Record<string, number> {
   const mutedNames = componentNames.filter((componentName) => currentDecorations[componentName] === MUTED_OPACITY)
   const activeNames = componentNames.filter((componentName) => currentDecorations[componentName] !== MUTED_OPACITY)
-  const eligibleActiveNames = activeNames.filter((componentName) => componentName !== lastMutedName)
 
   if (mutedNames.length === 0 || activeNames.length === 0) {
-    return {
-      decorations: currentDecorations,
-      lastMutedName: lastMutedName ?? componentNames[0],
-    }
+    return currentDecorations
   }
+
+  const nextMutedNames = new Set<string>()
+  const shuffledActiveNames = [...activeNames]
+
+  for (let index = shuffledActiveNames.length - 1; index > 0; index--) {
+    const swapIndex = Math.floor(random() * (index + 1))
+    ;[shuffledActiveNames[index], shuffledActiveNames[swapIndex]] = [
+      shuffledActiveNames[swapIndex],
+      shuffledActiveNames[index],
+    ]
+  }
+
+  shuffledActiveNames.slice(0, mutedNames.length).forEach((componentName) => {
+    nextMutedNames.add(componentName)
+  })
 
   const nextDecorations = { ...currentDecorations }
-  const mutedName = mutedNames[Math.floor(random() * mutedNames.length)]
-  const candidateActiveNames = eligibleActiveNames.length > 0 ? eligibleActiveNames : activeNames
-  const activeName = candidateActiveNames[Math.floor(random() * candidateActiveNames.length)]
+  componentNames.forEach((componentName) => {
+    nextDecorations[componentName] = nextMutedNames.has(componentName) ? MUTED_OPACITY : 1
+  })
 
-  nextDecorations[mutedName] = 1
-  nextDecorations[activeName] = MUTED_OPACITY
-
-  return {
-    decorations: nextDecorations,
-    lastMutedName: activeName,
-  }
+  return nextDecorations
 }
 
 function createPseudoRandomNumberGenerator(seed: number) {
