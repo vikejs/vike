@@ -39,41 +39,53 @@ const ecosystemComponents: Record<VikeEcoComponentCategory, EcoComponent[]> = {
   ],
 }
 
-const ecosystemComponentNames = Object.values(ecosystemComponents)
-  .flat()
-  .map(({ name }) => name)
-
-const HIGHLIGHTED_COMPONENT_RATIO = 0.3
+const MUTED_COMPONENT_RATIO = 0.3
 const MUTED_OPACITY = 0.2
-const ROTATION_RANGE = 7
-const TRANSITION_STYLE = 'opacity 900ms ease, transform 900ms ease'
-const SHUFFLE_INTERVAL = 2600
+const TRANSITION_STYLE = 'opacity 900ms ease'
+const SHUFFLE_INTERVAL_BASE = 2200
+const SHUFFLE_INTERVAL_VARIANCE = 1800
+const INITIAL_UPDATE_STAGGER = 550
 
-type ComponentDecoration = {
-  opacity: number
-  rotateDeg: number
-}
+type CategoryDecorations = Record<VikeEcoComponentCategory, Record<string, number>>
 
 const EcoComponents = () => {
-  const [decorations, setDecorations] = useState<Record<string, ComponentDecoration>>(() =>
-    createComponentDecorations(ecosystemComponentNames, 1),
-  )
+  const [decorations, setDecorations] = useState<CategoryDecorations>(() => createCategoryDecorations(1))
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
     if (prefersReducedMotion.matches) return
 
-    let seed = Math.floor(Math.random() * 2 ** 31)
-    const updateDecorations = () => {
-      seed += 1
-      setDecorations(createComponentDecorations(ecosystemComponentNames, seed))
-    }
+    const globalRandom = createPseudoRandomNumberGenerator(Math.floor(Math.random() * 2 ** 31))
+    const timeoutIds: number[] = []
 
-    updateDecorations()
-    const intervalId = window.setInterval(updateDecorations, SHUFFLE_INTERVAL)
+    objectEntries(ecosystemComponents).forEach(([category, components], index) => {
+      const categoryRandom = createPseudoRandomNumberGenerator(Math.floor(globalRandom() * 2 ** 31))
+      let seed = Math.floor(globalRandom() * 2 ** 31)
+
+      const scheduleNextUpdate = (delay: number) => {
+        const timeoutId = window.setTimeout(() => {
+          seed += 1
+          setDecorations((currentDecorations) => ({
+            ...currentDecorations,
+            [category]: createComponentDecorations(
+              components.map((component) => component.name),
+              seed,
+            ),
+          }))
+
+          scheduleNextUpdate(SHUFFLE_INTERVAL_BASE + Math.floor(categoryRandom() * SHUFFLE_INTERVAL_VARIANCE))
+        }, delay)
+
+        timeoutIds.push(timeoutId)
+      }
+
+      scheduleNextUpdate(INITIAL_UPDATE_STAGGER * (index + 1) + Math.floor(categoryRandom() * INITIAL_UPDATE_STAGGER))
+    })
 
     return () => {
-      window.clearInterval(intervalId)
+      timeoutIds.forEach((timeoutId) => {
+        window.clearTimeout(timeoutId)
+      })
     }
   }, [])
 
@@ -88,15 +100,14 @@ const EcoComponents = () => {
             <div className="flex-1">
               <ul className="list-none flex flex-wrap gap-1 md:gap-2 justify-center">
                 {components.map((component) => {
-                  const decoration = decorations[component.name] ?? { opacity: 1, rotateDeg: 0 }
+                  const opacity = decorations[category]?.[component.name] ?? 1
 
                   return (
                     <BoxOrange
                       key={component.name}
                       $type="lib"
                       style={{
-                        opacity: decoration.opacity,
-                        transform: `rotate(${decoration.rotateDeg}deg)`,
+                        opacity,
                         transition: TRANSITION_STYLE,
                       }}
                     >
@@ -128,7 +139,6 @@ export const BoxOrange = cm.li.variants<{ $size?: VikeComponentSize; $type: 'lib
   items-center justify-center
   text-center text-sm
   relative
-  transform-gpu
   `,
   variants: {
     $size: {
@@ -158,7 +168,21 @@ function objectEntries<T extends object>(obj: T): [keyof T, T[keyof T]][] {
   return Object.entries(obj) as any
 }
 
-function createComponentDecorations(componentNames: string[], seed: number): Record<string, ComponentDecoration> {
+function createCategoryDecorations(seed: number): CategoryDecorations {
+  const random = createPseudoRandomNumberGenerator(seed)
+
+  return Object.fromEntries(
+    objectEntries(ecosystemComponents).map(([category, components]) => [
+      category,
+      createComponentDecorations(
+        components.map((component) => component.name),
+        Math.floor(random() * 2 ** 31),
+      ),
+    ]),
+  ) as CategoryDecorations
+}
+
+function createComponentDecorations(componentNames: string[], seed: number): Record<string, number> {
   const random = createPseudoRandomNumberGenerator(seed)
   const shuffledNames = [...componentNames]
 
@@ -167,25 +191,13 @@ function createComponentDecorations(componentNames: string[], seed: number): Rec
     ;[shuffledNames[index], shuffledNames[swapIndex]] = [shuffledNames[swapIndex], shuffledNames[index]]
   }
 
-  const highlightedNames = new Set(
-    shuffledNames.slice(0, Math.max(1, Math.round(componentNames.length * HIGHLIGHTED_COMPONENT_RATIO))),
+  const mutedNames = new Set(
+    shuffledNames.slice(0, Math.max(1, Math.round(componentNames.length * MUTED_COMPONENT_RATIO))),
   )
 
   return Object.fromEntries(
-    componentNames.map((componentName) => [
-      componentName,
-      highlightedNames.has(componentName)
-        ? {
-            opacity: MUTED_OPACITY,
-            rotateDeg: randomBetween(random, -ROTATION_RANGE, ROTATION_RANGE),
-          }
-        : { opacity: 1, rotateDeg: 0 },
-    ]),
+    componentNames.map((componentName) => [componentName, mutedNames.has(componentName) ? MUTED_OPACITY : 1]),
   )
-}
-
-function randomBetween(random: () => number, min: number, max: number) {
-  return Math.round((min + (max - min) * random()) * 10) / 10
 }
 
 function createPseudoRandomNumberGenerator(seed: number) {
