@@ -63,8 +63,8 @@ const FlexGraphic = () => {
 
   const onBlockHover = useCallback(
     (block: ExtensionBlockVariants) => {
-      return
-      // todo: maybe later -> current problem:
+      /*
+      // TO-DO/eventually: maybe later -> current problem:
       // when user hovers e.g. react redux also all the other library blocks light up,
       // that causes confusion because the libs have nothing to do with each other
       // only highlight vike-core and vike-react in that situation but also only color the circuits
@@ -72,6 +72,7 @@ const FlexGraphic = () => {
       const hooks = extensionBlockConnectedHooks[block]
       setActiveBlocks(hooks.length ? getBlocksForHooks(hooks) : [block])
       onChangeHighlight(hooks)
+      */
     },
     [getBlocksForHooks, onChangeHighlight],
   )
@@ -82,7 +83,7 @@ const FlexGraphic = () => {
   }, [onChangeHighlight])
 
   return (
-    <div className="lg:absolute left-0 lg:-top-20 origin-center ">
+    <div className="lg:absolute left-0 lg:-top-2 origin-center ">
       <StyledOuter ref={containerRef}>
         <FlexGraphicBlocks
           activeHooks={activeHooks}

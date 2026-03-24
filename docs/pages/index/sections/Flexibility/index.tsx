@@ -135,9 +135,9 @@ const FlexibilitySection = () => {
                   data lifecycle, pre-rendering, state management, and more.
                 </p>
                 <p className="my-5">
-                  They unlock unprecedented deep integrations — use them directly for maximum control, or use Vike
-                  extensions such as <code>vike-react</code> and <code>vike-react-apollo</code> powered by the same
-                  hooks you can use.
+                  Hooks unlock unprecedented deep integrations — use them directly for maximum control, or via Vike
+                  extensions such as <code>vike-react</code> and <code>vike-react-apollo</code> for zero-config
+                  integration.
                 </p>
                 <div className="mt-0 mb-12">
                   <H4Headline className="mb-3">
