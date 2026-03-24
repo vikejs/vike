@@ -41,7 +41,7 @@ const ecosystemComponents: Record<VikeEcoComponentCategory, EcoComponent[]> = {
 
 const MUTED_COMPONENT_RATIO = 0.3
 const MUTED_OPACITY = 0.5
-const TRANSITION_DURATION = 1800
+const TRANSITION_DURATION = 1100
 const TRANSITION_STYLE = `opacity ${TRANSITION_DURATION}ms linear`
 const INITIAL_UPDATE_STAGGER = 550
 
