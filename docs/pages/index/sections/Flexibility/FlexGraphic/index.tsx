@@ -63,8 +63,8 @@ const FlexGraphic = () => {
 
   const onBlockHover = useCallback(
     (block: ExtensionBlockVariants) => {
-      return
-      // todo: maybe later -> current problem:
+      /*
+      // TO-DO/eventually: maybe later -> current problem:
       // when user hovers e.g. react redux also all the other library blocks light up,
       // that causes confusion because the libs have nothing to do with each other
       // only highlight vike-core and vike-react in that situation but also only color the circuits
@@ -72,6 +72,7 @@ const FlexGraphic = () => {
       const hooks = extensionBlockConnectedHooks[block]
       setActiveBlocks(hooks.length ? getBlocksForHooks(hooks) : [block])
       onChangeHighlight(hooks)
+      */
     },
     [getBlocksForHooks, onChangeHighlight],
   )
@@ -82,7 +83,7 @@ const FlexGraphic = () => {
   }, [onChangeHighlight])
 
   return (
-    <div className="lg:absolute left-0 lg:-top-20 origin-center ">
+    <div className="lg:absolute left-0 lg:-top-8 origin-center ">
       <StyledOuter ref={containerRef}>
         <FlexGraphicBlocks
           activeHooks={activeHooks}
@@ -107,9 +108,9 @@ const FlexGraphic = () => {
               <path
                 stroke={hookColors.onRenderClient}
                 strokeWidth={strokeWidth}
-                d="M24.5 165.5C26.15685 165.5 27.5 166.843 27.5 168.5C27.5 170.157 26.15685 171.5 24.5 171.5C22.84314 171.5 21.5 170.157 21.5 168.5C21.5 166.843 22.84315 165.5 24.5 165.5Z"
+                d="M42.5 165.5C44.15685 165.5 45.5 166.843 45.5 168.5C45.5 170.157 44.15685 171.5 42.5 171.5C40.84314 171.5 39.5 170.157 39.5 168.5C39.5 166.843 40.84315 165.5 42.5 165.5Z"
               />
-              <path stroke={hookColors.onRenderClient} strokeWidth={strokeWidth} d="M75 168.5L27.77758 168.5" />
+              <path stroke={hookColors.onRenderClient} strokeWidth={strokeWidth} d="M75 168.5L45.77758 168.5" />
             </g>
           </g>
 

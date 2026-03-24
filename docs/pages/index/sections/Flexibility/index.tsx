@@ -122,7 +122,7 @@ const FlexibilitySection = () => {
               <div className="flex flex-col gap-0 justify-center lg:min-h-90 lg:pt-12 py-6 lg:pb-20 mt-16 lg:mt-0">
                 <HeadlineGroup
                   headingStyle="h2"
-                  outerClassName="mb-8"
+                  outerClassName="mb-5"
                   centered={false}
                   main={
                     <>
@@ -135,11 +135,11 @@ const FlexibilitySection = () => {
                   data lifecycle, pre-rendering, state management, and more.
                 </p>
                 <p className="my-5">
-                  They unlock unprecedented deep integrations — use them directly for maximum control, or use Vike
-                  extensions such as <code>vike-react</code> and <code>vike-react-apollo</code> powered by the same
-                  hooks you can use.
+                  Hooks unlock unprecedented deep integrations — use them directly for maximum control, or via Vike
+                  extensions such as <code>vike-react</code> and <code>vike-react-apollo</code> for zero-config
+                  integration.
                 </p>
-                <div className="mt-0 mb-12">
+                <div className="mt-1 mb-9">
                   <H4Headline className="mb-3">
                     Supported <GradientText color="green">use cases</GradientText>
                   </H4Headline>

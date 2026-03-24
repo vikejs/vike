@@ -94,7 +94,7 @@ const StabilitySection = () => {
               </p>
               <p className="my-5">It's the guarantee Vike's interests are and remain aligned with yours.</p>
               <p>
-                <ClosingWords href="/pricing" className="btn-secondary mx-0">
+                <ClosingWords href="/pricing" className="btn-secondary mx-0 mt-6">
                   See pricing <ChevronsRight className="w-4 h-4 mt-[1px]" />
                 </ClosingWords>
               </p>
