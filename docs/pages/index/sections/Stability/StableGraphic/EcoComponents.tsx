@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { ecoComponentCategoryNames, VikeComponentSize, VikeEcoComponentCategory } from './grid.utils'
 import cm from '@classmatejs/react'
 
@@ -39,7 +39,44 @@ const ecosystemComponents: Record<VikeEcoComponentCategory, EcoComponent[]> = {
   ],
 }
 
+const ecosystemComponentNames = Object.values(ecosystemComponents)
+  .flat()
+  .map(({ name }) => name)
+
+const HIGHLIGHTED_COMPONENT_RATIO = 0.3
+const MUTED_OPACITY = 0.2
+const ROTATION_RANGE = 7
+const TRANSITION_STYLE = 'opacity 900ms ease, transform 900ms ease'
+const SHUFFLE_INTERVAL = 2600
+
+type ComponentDecoration = {
+  opacity: number
+  rotateDeg: number
+}
+
 const EcoComponents = () => {
+  const [decorations, setDecorations] = useState<Record<string, ComponentDecoration>>(() =>
+    createComponentDecorations(ecosystemComponentNames, 1),
+  )
+
+  useEffect(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+    if (prefersReducedMotion.matches) return
+
+    let seed = Math.floor(Math.random() * 2 ** 31)
+    const updateDecorations = () => {
+      seed += 1
+      setDecorations(createComponentDecorations(ecosystemComponentNames, seed))
+    }
+
+    updateDecorations()
+    const intervalId = window.setInterval(updateDecorations, SHUFFLE_INTERVAL)
+
+    return () => {
+      window.clearInterval(intervalId)
+    }
+  }, [])
+
   return (
     <div className="relative z-10 mb-10">
       <div className="md:-mt-4 flex gap-1 md:gap-4">
@@ -50,18 +87,30 @@ const EcoComponents = () => {
             </BoxOrange>
             <div className="flex-1">
               <ul className="list-none flex flex-wrap gap-1 md:gap-2 justify-center">
-                {components.map((component) => (
-                  <BoxOrange key={component.name} $type="lib">
-                    <div className="bg-linear-to-bl  to-accent/7 absolute inset-0 pointer-events-none select-none" />
-                    <a
-                      href={component.link}
-                      target="_blank"
-                      className="py-0.5 px-0.5 md:py-1 md:px-2 w-full text-accent/70 hover:text-accent text-tiny md:text-xs"
+                {components.map((component) => {
+                  const decoration = decorations[component.name] ?? { opacity: 1, rotateDeg: 0 }
+
+                  return (
+                    <BoxOrange
+                      key={component.name}
+                      $type="lib"
+                      style={{
+                        opacity: decoration.opacity,
+                        transform: `rotate(${decoration.rotateDeg}deg)`,
+                        transition: TRANSITION_STYLE,
+                      }}
                     >
-                      {component.name}
-                    </a>
-                  </BoxOrange>
-                ))}
+                      <div className="bg-linear-to-bl  to-accent/7 absolute inset-0 pointer-events-none select-none" />
+                      <a
+                        href={component.link}
+                        target="_blank"
+                        className="py-0.5 px-0.5 md:py-1 md:px-2 w-full text-accent/70 hover:text-accent text-tiny md:text-xs"
+                      >
+                        {component.name}
+                      </a>
+                    </BoxOrange>
+                  )
+                })}
               </ul>
             </div>
           </div>
@@ -79,7 +128,8 @@ export const BoxOrange = cm.li.variants<{ $size?: VikeComponentSize; $type: 'lib
   items-center justify-center
   text-center text-sm
   relative
-`,
+  transform-gpu
+  `,
   variants: {
     $size: {
       big: 'font-medium',
@@ -106,4 +156,46 @@ export const BoxOrange = cm.li.variants<{ $size?: VikeComponentSize; $type: 'lib
 /** Same as Object.entries() but with type inference */
 function objectEntries<T extends object>(obj: T): [keyof T, T[keyof T]][] {
   return Object.entries(obj) as any
+}
+
+function createComponentDecorations(componentNames: string[], seed: number): Record<string, ComponentDecoration> {
+  const random = createPseudoRandomNumberGenerator(seed)
+  const shuffledNames = [...componentNames]
+
+  for (let index = shuffledNames.length - 1; index > 0; index--) {
+    const swapIndex = Math.floor(random() * (index + 1))
+    ;[shuffledNames[index], shuffledNames[swapIndex]] = [shuffledNames[swapIndex], shuffledNames[index]]
+  }
+
+  const highlightedNames = new Set(
+    shuffledNames.slice(0, Math.max(1, Math.round(componentNames.length * HIGHLIGHTED_COMPONENT_RATIO))),
+  )
+
+  return Object.fromEntries(
+    componentNames.map((componentName) => [
+      componentName,
+      highlightedNames.has(componentName)
+        ? {
+            opacity: MUTED_OPACITY,
+            rotateDeg: randomBetween(random, -ROTATION_RANGE, ROTATION_RANGE),
+          }
+        : { opacity: 1, rotateDeg: 0 },
+    ]),
+  )
+}
+
+function randomBetween(random: () => number, min: number, max: number) {
+  return Math.round((min + (max - min) * random()) * 10) / 10
+}
+
+function createPseudoRandomNumberGenerator(seed: number) {
+  let current = seed
+
+  return () => {
+    current += 0x6d2b79f5
+    let t = current
+    t = Math.imul(t ^ (t >>> 15), t | 1)
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  }
 }
