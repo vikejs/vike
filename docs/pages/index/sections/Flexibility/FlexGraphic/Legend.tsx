@@ -22,16 +22,16 @@ const Legend = ({ onChangeHighlight, activeHooks, isSlideshowMode }: LegendProps
 
         return (
           <Link href={flexGraphicHookRoutes[hookName]} key={key} className="text-inherit">
-          <StyledLegendItem $type={type}>
-            {/* extra hover area -> prevent style jitter on hover */}
-            <div
-              onMouseEnter={() => onChangeHighlight([hookName])}
-              onMouseLeave={() => onChangeHighlight(null)}
-              className="absolute inset-0"
-            />
-            <div className="w-1 md:w-4 h-4 rounded" style={{ backgroundColor: color }}></div>
-            <span className="text-xs">+{key}</span>
-          </StyledLegendItem>
+            <StyledLegendItem $type={type}>
+              {/* extra hover area -> prevent style jitter on hover */}
+              <div
+                onMouseEnter={() => onChangeHighlight([hookName])}
+                onMouseLeave={() => onChangeHighlight(null)}
+                className="absolute inset-0"
+              />
+              <div className="w-1 md:w-4 h-4 rounded" style={{ backgroundColor: color }}></div>
+              <span className="text-xs">+{key}</span>
+            </StyledLegendItem>
           </Link>
         )
       })}
