@@ -39,11 +39,17 @@ const ecosystemComponents: Record<VikeEcoComponentCategory, EcoComponent[]> = {
   ],
 }
 
+// Share of blocks per category that should be dimmed at any given time.
 const MUTED_COMPONENT_RATIO = 0.3
+// Target opacity applied to dimmed blocks during the animation.
 const MUTED_OPACITY = 0.2
+// Duration of each opacity handoff from one muted set to the next.
 const TRANSITION_DURATION = 1000
+// Amount of time the next handoff starts before the current one fully ends.
 const TRANSITION_OVERLAP = 0
+// CSS transition applied to every block whenever its opacity changes.
 const TRANSITION_STYLE = `opacity ${TRANSITION_DURATION}ms linear`
+// Initial per-category offset so columns don't all start animating at once.
 const INITIAL_UPDATE_STAGGER = 1000
 
 type CategoryDecorations = Record<VikeEcoComponentCategory, Record<string, number>>
