@@ -108,9 +108,9 @@ const FlexGraphic = () => {
               <path
                 stroke={hookColors.onRenderClient}
                 strokeWidth={strokeWidth}
-                d="M34.5 165.5C36.15685 165.5 37.5 166.843 37.5 168.5C37.5 170.157 36.15685 171.5 34.5 171.5C32.84314 171.5 31.5 170.157 31.5 168.5C31.5 166.843 32.84315 165.5 34.5 165.5Z"
+                d="M42.5 165.5C44.15685 165.5 45.5 166.843 45.5 168.5C45.5 170.157 44.15685 171.5 42.5 171.5C40.84314 171.5 39.5 170.157 39.5 168.5C39.5 166.843 40.84315 165.5 42.5 165.5Z"
               />
-              <path stroke={hookColors.onRenderClient} strokeWidth={strokeWidth} d="M75 168.5L37.77758 168.5" />
+              <path stroke={hookColors.onRenderClient} strokeWidth={strokeWidth} d="M75 168.5L45.77758 168.5" />
             </g>
           </g>
 
