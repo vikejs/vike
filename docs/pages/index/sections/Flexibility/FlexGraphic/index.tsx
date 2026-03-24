@@ -83,7 +83,7 @@ const FlexGraphic = () => {
   }, [onChangeHighlight])
 
   return (
-    <div className="lg:absolute left-0 lg:-top-2 origin-center ">
+    <div className="lg:absolute left-0 lg:-top-8 origin-center ">
       <StyledOuter ref={containerRef}>
         <FlexGraphicBlocks
           activeHooks={activeHooks}
