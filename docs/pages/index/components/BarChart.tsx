@@ -23,7 +23,9 @@ const BarChart = ({ pollData, color, className, ...props }: BarChartProps) => {
           <div key={data.label}>
             <div className="w-full h-4 md:h-5 to-base-200 via-base-200 via-60% bg-linear-to-l">
               <StyledBar style={{ width: barWidth }} $color={color} $won={data.label === winningEntry.label}>
-                <span className="text-xs md:text-sm font-mono whitespace-nowrap relative top-[1px]">{data.label}</span>
+                <span className="text-xs md:text-sm font-mono whitespace-nowrap relative md:top-[1px]">
+                  {data.label}
+                </span>
               </StyledBar>
             </div>
           </div>
@@ -36,19 +38,12 @@ const BarChart = ({ pollData, color, className, ...props }: BarChartProps) => {
 export default BarChart
 
 const StyledBar = cm.div.variants<{ $color: UiColorVariantKey; $won: boolean }>({
-  base: 'h-full rounded-lg flex items-center pl-3 relative',
+  base: 'h-full rounded-md md:rounded-lg flex items-center pl-3 relative',
   variants: {
     $color: UiVariantBgColor,
     $won: {
       false: 'bg-grey-100 text-white',
       true: ' text-primary-content',
     },
-  },
-})
-
-const StyledWinDot = cm.div.variants<{ $color: UiColorVariantKey }>({
-  base: 'w-10 h-10 rounded-full absolute flex items-center justify-center text-sm font-bold -top-3 -right-3',
-  variants: {
-    $color: UiVariantBgColor,
   },
 })
