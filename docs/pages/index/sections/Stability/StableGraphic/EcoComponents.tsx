@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { ecoComponentCategoryNames, VikeComponentSize, VikeEcoComponentCategory } from './grid.utils'
 import cm from '@classmatejs/react'
 
@@ -39,7 +39,63 @@ const ecosystemComponents: Record<VikeEcoComponentCategory, EcoComponent[]> = {
   ],
 }
 
+// Share of blocks per category that should be dimmed at any given time.
+const MUTED_COMPONENT_RATIO = 0.6
+// Target opacity applied to dimmed blocks during the animation.
+const MUTED_OPACITY = 0.2
+// Duration of each opacity handoff from one muted set to the next.
+const TRANSITION_DURATION = 1200
+// Amount of time the next handoff starts before the current one fully ends.
+const TRANSITION_OVERLAP = 0
+// CSS transition applied to every block whenever its opacity changes.
+const TRANSITION_STYLE = `opacity ${TRANSITION_DURATION}ms linear`
+// Initial per-category offset so columns don't all start animating at once.
+const INITIAL_UPDATE_STAGGER = 133
+
+type CategoryDecorations = Record<VikeEcoComponentCategory, Record<string, number>>
+
 const EcoComponents = () => {
+  const [decorations, setDecorations] = useState<CategoryDecorations>(() => createCategoryDecorations(1))
+
+  useEffect(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+    if (prefersReducedMotion.matches) return
+
+    const globalRandom = createPseudoRandomNumberGenerator(Math.floor(Math.random() * 2 ** 31))
+    const timeoutIds: number[] = []
+
+    objectEntries(ecosystemComponents).forEach(([category, components], index) => {
+      const categoryRandom = createPseudoRandomNumberGenerator(Math.floor(globalRandom() * 2 ** 31))
+      const componentNames = components.map((component) => component.name)
+
+      const scheduleNextUpdate = (delay: number) => {
+        const timeoutId = window.setTimeout(() => {
+          setDecorations((currentDecorations) => ({
+            ...currentDecorations,
+            [category]: transferComponentOpacity(
+              currentDecorations[category] ??
+                createComponentDecorations(componentNames, Math.floor(globalRandom() * 2 ** 31)),
+              componentNames,
+              categoryRandom,
+            ),
+          }))
+
+          scheduleNextUpdate(Math.max(1, TRANSITION_DURATION - TRANSITION_OVERLAP))
+        }, delay)
+
+        timeoutIds.push(timeoutId)
+      }
+
+      scheduleNextUpdate(INITIAL_UPDATE_STAGGER * (index + 1) + Math.floor(categoryRandom() * INITIAL_UPDATE_STAGGER))
+    })
+
+    return () => {
+      timeoutIds.forEach((timeoutId) => {
+        window.clearTimeout(timeoutId)
+      })
+    }
+  }, [])
+
   return (
     <div className="relative z-10 mb-10">
       <div className="md:-mt-4 flex gap-1 md:gap-4">
@@ -50,18 +106,29 @@ const EcoComponents = () => {
             </BoxOrange>
             <div className="flex-1">
               <ul className="list-none flex flex-wrap gap-1 md:gap-2 justify-center">
-                {components.map((component) => (
-                  <BoxOrange key={component.name} $type="lib">
-                    <div className="bg-linear-to-bl  to-accent/7 absolute inset-0 pointer-events-none select-none" />
-                    <a
-                      href={component.link}
-                      target="_blank"
-                      className="py-0.5 px-0.5 md:py-1 md:px-2 w-full text-accent/70 hover:text-accent text-tiny md:text-xs"
+                {components.map((component) => {
+                  const opacity = decorations[category]?.[component.name] ?? 1
+
+                  return (
+                    <BoxOrange
+                      key={component.name}
+                      $type="lib"
+                      style={{
+                        opacity,
+                        transition: TRANSITION_STYLE,
+                      }}
                     >
-                      {component.name}
-                    </a>
-                  </BoxOrange>
-                ))}
+                      <div className="bg-linear-to-bl  to-accent/7 absolute inset-0 pointer-events-none select-none" />
+                      <a
+                        href={component.link}
+                        target="_blank"
+                        className="py-0.5 px-0.5 md:py-1 md:px-2 w-full text-accent/70 hover:text-accent text-tiny md:text-xs"
+                      >
+                        {component.name}
+                      </a>
+                    </BoxOrange>
+                  )
+                })}
               </ul>
             </div>
           </div>
@@ -79,7 +146,7 @@ export const BoxOrange = cm.li.variants<{ $size?: VikeComponentSize; $type: 'lib
   items-center justify-center
   text-center text-sm
   relative
-`,
+  `,
   variants: {
     $size: {
       big: 'font-medium',
@@ -106,4 +173,83 @@ export const BoxOrange = cm.li.variants<{ $size?: VikeComponentSize; $type: 'lib
 /** Same as Object.entries() but with type inference */
 function objectEntries<T extends object>(obj: T): [keyof T, T[keyof T]][] {
   return Object.entries(obj) as any
+}
+
+function createCategoryDecorations(seed: number): CategoryDecorations {
+  const random = createPseudoRandomNumberGenerator(seed)
+
+  return Object.fromEntries(
+    objectEntries(ecosystemComponents).map(([category, components]) => [
+      category,
+      createComponentDecorations(
+        components.map((component) => component.name),
+        Math.floor(random() * 2 ** 31),
+      ),
+    ]),
+  ) as CategoryDecorations
+}
+
+function createComponentDecorations(componentNames: string[], seed: number): Record<string, number> {
+  const random = createPseudoRandomNumberGenerator(seed)
+  const shuffledNames = [...componentNames]
+
+  for (let index = shuffledNames.length - 1; index > 0; index--) {
+    const swapIndex = Math.floor(random() * (index + 1))
+    ;[shuffledNames[index], shuffledNames[swapIndex]] = [shuffledNames[swapIndex], shuffledNames[index]]
+  }
+
+  const mutedNames = new Set(
+    shuffledNames.slice(0, Math.max(1, Math.round(componentNames.length * MUTED_COMPONENT_RATIO))),
+  )
+
+  return Object.fromEntries(
+    componentNames.map((componentName) => [componentName, mutedNames.has(componentName) ? MUTED_OPACITY : 1]),
+  )
+}
+
+function transferComponentOpacity(
+  currentDecorations: Record<string, number>,
+  componentNames: string[],
+  random: () => number,
+): Record<string, number> {
+  const mutedNames = componentNames.filter((componentName) => currentDecorations[componentName] === MUTED_OPACITY)
+  const activeNames = componentNames.filter((componentName) => currentDecorations[componentName] !== MUTED_OPACITY)
+
+  if (mutedNames.length === 0 || activeNames.length === 0) {
+    return currentDecorations
+  }
+
+  const nextMutedNames = new Set<string>()
+  const shuffledActiveNames = [...activeNames]
+
+  for (let index = shuffledActiveNames.length - 1; index > 0; index--) {
+    const swapIndex = Math.floor(random() * (index + 1))
+    ;[shuffledActiveNames[index], shuffledActiveNames[swapIndex]] = [
+      shuffledActiveNames[swapIndex],
+      shuffledActiveNames[index],
+    ]
+  }
+
+  shuffledActiveNames.slice(0, mutedNames.length).forEach((componentName) => {
+    nextMutedNames.add(componentName)
+  })
+
+  const nextDecorations = { ...currentDecorations }
+  componentNames.forEach((componentName) => {
+    nextDecorations[componentName] = nextMutedNames.has(componentName) ? MUTED_OPACITY : 1
+  })
+
+  return nextDecorations
+}
+
+function createPseudoRandomNumberGenerator(seed: number) {
+  let current = seed
+
+  return () => {
+    current += 0x6d2b79f5
+    let t = current
+    t = Math.imul(t ^ (t >>> 15), t | 1)
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  }
 }
