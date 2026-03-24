@@ -40,10 +40,9 @@ const ecosystemComponents: Record<VikeEcoComponentCategory, EcoComponent[]> = {
 }
 
 const MUTED_COMPONENT_RATIO = 0.3
-const MUTED_OPACITY = 0.2
-const TRANSITION_STYLE = 'opacity 900ms ease'
-const SHUFFLE_INTERVAL_BASE = 2200
-const SHUFFLE_INTERVAL_VARIANCE = 1800
+const MUTED_OPACITY = 0.5
+const TRANSITION_DURATION = 1800
+const TRANSITION_STYLE = `opacity ${TRANSITION_DURATION}ms linear`
 const INITIAL_UPDATE_STAGGER = 550
 
 type CategoryDecorations = Record<VikeEcoComponentCategory, Record<string, number>>
@@ -60,20 +59,21 @@ const EcoComponents = () => {
 
     objectEntries(ecosystemComponents).forEach(([category, components], index) => {
       const categoryRandom = createPseudoRandomNumberGenerator(Math.floor(globalRandom() * 2 ** 31))
-      let seed = Math.floor(globalRandom() * 2 ** 31)
+      const componentNames = components.map((component) => component.name)
 
       const scheduleNextUpdate = (delay: number) => {
         const timeoutId = window.setTimeout(() => {
-          seed += 1
           setDecorations((currentDecorations) => ({
             ...currentDecorations,
-            [category]: createComponentDecorations(
-              components.map((component) => component.name),
-              seed,
+            [category]: transferComponentOpacity(
+              currentDecorations[category] ??
+                createComponentDecorations(componentNames, Math.floor(globalRandom() * 2 ** 31)),
+              componentNames,
+              categoryRandom,
             ),
           }))
 
-          scheduleNextUpdate(SHUFFLE_INTERVAL_BASE + Math.floor(categoryRandom() * SHUFFLE_INTERVAL_VARIANCE))
+          scheduleNextUpdate(TRANSITION_DURATION)
         }, delay)
 
         timeoutIds.push(timeoutId)
@@ -198,6 +198,28 @@ function createComponentDecorations(componentNames: string[], seed: number): Rec
   return Object.fromEntries(
     componentNames.map((componentName) => [componentName, mutedNames.has(componentName) ? MUTED_OPACITY : 1]),
   )
+}
+
+function transferComponentOpacity(
+  currentDecorations: Record<string, number>,
+  componentNames: string[],
+  random: () => number,
+): Record<string, number> {
+  const mutedNames = componentNames.filter((componentName) => currentDecorations[componentName] === MUTED_OPACITY)
+  const activeNames = componentNames.filter((componentName) => currentDecorations[componentName] !== MUTED_OPACITY)
+
+  if (mutedNames.length === 0 || activeNames.length === 0) {
+    return currentDecorations
+  }
+
+  const nextDecorations = { ...currentDecorations }
+  const mutedName = mutedNames[Math.floor(random() * mutedNames.length)]
+  const activeName = activeNames[Math.floor(random() * activeNames.length)]
+
+  nextDecorations[mutedName] = 1
+  nextDecorations[activeName] = MUTED_OPACITY
+
+  return nextDecorations
 }
 
 function createPseudoRandomNumberGenerator(seed: number) {
