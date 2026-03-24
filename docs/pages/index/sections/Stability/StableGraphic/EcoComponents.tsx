@@ -42,6 +42,7 @@ const ecosystemComponents: Record<VikeEcoComponentCategory, EcoComponent[]> = {
 const MUTED_COMPONENT_RATIO = 0.3
 const MUTED_OPACITY = 0.5
 const TRANSITION_DURATION = 1100
+const TRANSITION_OVERLAP = 160
 const TRANSITION_STYLE = `opacity ${TRANSITION_DURATION}ms linear`
 const INITIAL_UPDATE_STAGGER = 550
 
@@ -73,7 +74,7 @@ const EcoComponents = () => {
             ),
           }))
 
-          scheduleNextUpdate(TRANSITION_DURATION)
+          scheduleNextUpdate(Math.max(1, TRANSITION_DURATION - TRANSITION_OVERLAP))
         }, delay)
 
         timeoutIds.push(timeoutId)
