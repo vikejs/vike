@@ -33,7 +33,7 @@ const DecouplingDivider = () => (
           className="h-full w-4 md:w-5"
           style={{
             backgroundImage:
-              'linear-gradient(to bottom, #d8d8d8 0%, #d8d8d8 100%), linear-gradient(to right, #90e5d9 0%, #90e5d9 100%)',
+              'linear-gradient(to bottom, #d8d8d8 0%, #d8d8d8 100%), linear-gradient(to right, #d8d8d8 0%, #d8d8d8 100%)',
             backgroundPosition: 'center top, center bottom',
             backgroundRepeat: 'no-repeat',
             backgroundSize: '3px 100%, 16px 1px',
