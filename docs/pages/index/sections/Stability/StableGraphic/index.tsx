@@ -24,7 +24,7 @@ const SectionFrame = cm.div.variants<{ $tone: 'ecosystem' | 'vike' }>({
 })
 
 const DecouplingDivider = () => (
-  <div className="relative flex min-h-18 items-center justify-center md:min-h-22">
+  <div className="relative flex min-h-[2.25rem] items-center justify-center md:min-h-[2.75rem]">
     <div className="absolute inset-0 flex items-stretch justify-center gap-3.5 py-0 md:gap-12">
       {Array.from({ length: 10 }, (_, barIndex) => barIndex).map((barIndex) => (
         <span
