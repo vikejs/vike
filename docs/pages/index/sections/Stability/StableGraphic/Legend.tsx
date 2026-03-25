@@ -14,10 +14,10 @@ const legendCopy: Record<StableGraphicLegendKind, string> = {
   hooks: 'Vike hooks',
 }
 
-const legendToneClass: Record<StableGraphicLegendKind, string> = {
-  vike: 'border-secondary/15 bg-white/90 text-secondary/90 shadow-secondary/10',
-  ecosystem: 'border-accent/15 bg-white/90 text-accent/90 shadow-accent/10',
-  hooks: 'border-base-300 bg-white/85 text-base-content/60 shadow-base-300/10',
+const legendTextClass: Record<StableGraphicLegendKind, string> = {
+  vike: 'text-secondary/90',
+  ecosystem: 'text-accent/90',
+  hooks: 'text-base-content/60',
 }
 
 const StableGraphicLegend = ({ kind }: StableGraphicLegendProps) => {
@@ -26,9 +26,7 @@ const StableGraphicLegend = ({ kind }: StableGraphicLegendProps) => {
 
   return (
     <div className="flex justify-center">
-      <div
-        className={`inline-flex items-center gap-2.5 rounded-full border px-3 py-2 shadow-xs backdrop-blur-sm ${legendToneClass[kind]}`}
-      >
+      <div className="inline-flex items-center gap-2.5 px-2 py-1">
         {isVike ? (
           <BoxBlue $size="big" className="m-0! h-6! w-8! flex-none!" />
         ) : isHooks ? (
@@ -48,7 +46,9 @@ const StableGraphicLegend = ({ kind }: StableGraphicLegendProps) => {
             <span className="block h-4 w-10"></span>
           </BoxOrange>
         )}
-        <p className="text-xs font-semibold tracking-[0.02em] md:text-sm">{legendCopy[kind]}</p>
+        <p className={`text-xs font-semibold tracking-[0.02em] md:text-sm ${legendTextClass[kind]}`}>
+          {legendCopy[kind]}
+        </p>
       </div>
     </div>
   )
