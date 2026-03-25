@@ -140,6 +140,7 @@ const FlexibilitySection = () => {
                   integration.
                 </p>
                 <div className="mt-1 mb-9">
+                  {/* TODO/ai move H4Headline inside BarChart, do this for every <BarChart> usage */}
                   <H4Headline className="mb-3">
                     Supported <GradientText color="green">use cases</GradientText>
                   </H4Headline>
