@@ -42,7 +42,7 @@ const DecouplingDivider = () => (
       ))}
     </div>
     <span
-      className="relative rounded-full border border-base-300/70 px-3 py-0.75 text-[10px] font-semibold tracking-[0.24em] text-base-content/75 md:text-xs"
+      className="relative px-4 py-1 text-[10px] font-semibold tracking-[0.24em] text-base-content/75 md:text-xs"
       style={{
         backgroundImage:
           'linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.92) 18%, rgba(255,255,255,0.92) 82%, rgba(255,255,255,0) 100%)',
