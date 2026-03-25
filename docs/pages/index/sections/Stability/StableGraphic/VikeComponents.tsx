@@ -127,7 +127,9 @@ export const BoxBlue = cm.li.variants<{ $size: VikeComponentSize }>({
   flex
   lg:flex-1 lg:basis-0 lg:min-w-max
   items-center justify-center
-  text-center text-xs md:text-sm
+  text-center
+  text-tiny md:text-xs
+  hover:text-accent/70
   relative
 `,
   variants: {
