@@ -24,21 +24,9 @@ const SectionFrame = cm.div.variants<{ $tone: 'ecosystem' | 'vike' }>({
   },
 })
 
-const HooksBars = () => (
-  <div className="pointer-events-none absolute inset-x-0 top-1/2 flex -translate-y-1/2 justify-center gap-8 md:gap-14">
-    {[0, 1, 2].map((barIndex) => (
-      <div key={barIndex} className="flex flex-col items-center gap-3 md:gap-4">
-        <span className="block h-4 w-1 rounded-full bg-base-300 md:h-6" />
-        <span className="block h-4 w-1 rounded-full bg-base-300 md:h-6" />
-      </div>
-    ))}
-  </div>
-)
-
 const DecouplingDivider = () => (
-  <div className="relative flex items-center justify-center py-3 md:py-4">
-    <div className="absolute inset-x-0 h-px bg-base-300/70" />
-    <HooksBars />
+  <div className="relative flex items-center justify-center py-1 md:py-2">
+    <div className="absolute inset-x-0 h-px bg-linear-to-r from-accent/0 via-base-300 to-secondary/0" />
     <span className="relative rounded-full border border-base-300 bg-white/90 px-4 py-1 text-[10px] font-semibold tracking-[0.28em] text-secondary/80 shadow-xs shadow-base-300/40 md:text-xs">
       CLEAN DECOUPLING
     </span>
