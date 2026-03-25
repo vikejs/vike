@@ -28,13 +28,19 @@ const DecouplingDivider = () => (
   <div className="relative flex min-h-28 items-center justify-center md:min-h-36">
     <div className="absolute inset-0 flex items-stretch justify-center gap-8 py-0 md:gap-12">
       {[0, 1, 2, 3, 4].map((barIndex) => (
-        <span key={barIndex} className="relative h-full w-[3px] bg-[#d8d8d8] md:w-[4px]">
-          <span className="absolute inset-y-0 left-0 w-px bg-white/70" />
-          <span className="absolute inset-y-0 right-0 w-px bg-black/4" />
-        </span>
+        <span
+          key={barIndex}
+          className="h-full w-4 md:w-5"
+          style={{
+            backgroundImage:
+              'linear-gradient(to bottom, #d8d8d8 0%, #d8d8d8 100%), linear-gradient(to right, #90e5d9 0%, #90e5d9 100%)',
+            backgroundPosition: 'center top, center bottom',
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: '3px 100%, 16px 1px',
+          }}
+        />
       ))}
     </div>
-    <div className="absolute bottom-0 left-1/2 h-px w-36 -translate-x-1/2 bg-[#90e5d9]/70 md:w-52" />
     <span className="relative rounded-full border border-base-300 bg-white/90 px-4 py-1 text-[10px] font-semibold tracking-[0.28em] text-secondary/80 shadow-xs shadow-base-300/40 md:text-xs">
       CLEAN DECOUPLING
     </span>
