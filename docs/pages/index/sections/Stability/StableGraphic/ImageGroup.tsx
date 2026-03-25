@@ -10,7 +10,7 @@ const ImageGroup = () => {
         {barIndexesDesktop.map((barIndex) => (
           <span
             key={barIndex}
-            className="block h-14 w-3 rounded-md bg-linear-to-b from-base-300/0 via-base-300/18 to-base-300/0 blur-[1px]"
+            className="block h-16 w-4 rounded-md bg-linear-to-b from-base-300/0 via-base-300/38 to-base-300/0"
           />
         ))}
       </div>
@@ -18,7 +18,7 @@ const ImageGroup = () => {
         {barIndexesMobile.map((barIndex) => (
           <span
             key={barIndex}
-            className="block h-12 w-2.5 rounded-md bg-linear-to-b from-base-300/0 via-base-300/20 to-base-300/0 blur-[1px]"
+            className="block h-14 w-3 rounded-md bg-linear-to-b from-base-300/0 via-base-300/34 to-base-300/0"
           />
         ))}
       </div>
