@@ -4,7 +4,7 @@ import VikeComponents from './VikeComponents'
 import EcoComponents from './EcoComponents'
 import StableGraphicLegend from './Legend'
 
-const Outer = cm.div`relative mx-auto flex flex-col gap-5 md:gap-7`
+const Outer = cm.div`relative mx-auto flex flex-col`
 
 const SectionFrame = cm.div.variants<{ $tone: 'ecosystem' | 'vike' }>({
   base: `
@@ -25,8 +25,15 @@ const SectionFrame = cm.div.variants<{ $tone: 'ecosystem' | 'vike' }>({
 })
 
 const DecouplingDivider = () => (
-  <div className="relative flex items-center justify-center py-1 md:py-2">
-    <div className="absolute inset-x-0 h-px bg-linear-to-r from-accent/0 via-base-300 to-secondary/0" />
+  <div className="relative flex min-h-28 items-center justify-center md:min-h-36">
+    <div className="absolute inset-0 flex items-stretch justify-center gap-8 py-3 md:gap-12 md:py-4">
+      {[0, 1, 2, 3, 4].map((barIndex) => (
+        <span
+          key={barIndex}
+          className="h-full w-1.5 rounded-full bg-linear-to-b from-base-300/0 via-base-300/55 to-base-300/0 md:w-2"
+        />
+      ))}
+    </div>
     <span className="relative rounded-full border border-base-300 bg-white/90 px-4 py-1 text-[10px] font-semibold tracking-[0.28em] text-secondary/80 shadow-xs shadow-base-300/40 md:text-xs">
       CLEAN DECOUPLING
     </span>
