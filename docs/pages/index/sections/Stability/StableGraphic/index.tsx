@@ -24,55 +24,9 @@ const SectionFrame = cm.div.variants<{ $tone: 'ecosystem' | 'vike' }>({
   },
 })
 
-const HooksBridge = () => (
-  <div className="pointer-events-none absolute inset-x-0 top-1/2 flex -translate-y-1/2 justify-center">
-    <svg
-      viewBox="0 0 720 96"
-      aria-hidden="true"
-      className="h-20 w-full max-w-4xl overflow-visible md:h-24"
-      preserveAspectRatio="none"
-    >
-      <defs>
-        <linearGradient id="hooks-bridge-gradient" x1="0%" x2="100%" y1="0%" y2="0%">
-          <stop offset="0%" stopColor="rgb(251 146 60 / 0.45)" />
-          <stop offset="50%" stopColor="rgb(148 163 184 / 0.28)" />
-          <stop offset="100%" stopColor="rgb(96 165 250 / 0.45)" />
-        </linearGradient>
-      </defs>
-      {[
-        { startX: 120, endX: 250, midX: 200 },
-        { startX: 360, endX: 360, midX: 360 },
-        { startX: 600, endX: 470, midX: 520 },
-      ].map(({ startX, endX, midX }) => (
-        <g key={`${startX}-${endX}`}>
-          <path
-            d={`M ${startX} 10 C ${startX} 28 ${midX} 26 ${midX} 40`}
-            fill="none"
-            stroke="url(#hooks-bridge-gradient)"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-          />
-          <path
-            d={`M ${midX} 56 C ${midX} 70 ${endX} 68 ${endX} 86`}
-            fill="none"
-            stroke="url(#hooks-bridge-gradient)"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-          />
-          <circle cx={startX} cy="10" r="4" fill="rgb(251 146 60 / 0.7)" />
-          <circle cx={endX} cy="86" r="4" fill="rgb(96 165 250 / 0.7)" />
-          <circle cx={midX} cy="40" r="3" fill="rgb(251 146 60 / 0.35)" />
-          <circle cx={midX} cy="56" r="3" fill="rgb(96 165 250 / 0.35)" />
-        </g>
-      ))}
-    </svg>
-  </div>
-)
-
 const DecouplingDivider = () => (
-  <div className="relative flex items-center justify-center py-3 md:py-4">
+  <div className="relative flex items-center justify-center py-1 md:py-2">
     <div className="absolute inset-x-0 h-px bg-linear-to-r from-accent/0 via-base-300 to-secondary/0" />
-    <HooksBridge />
     <span className="relative rounded-full border border-base-300 bg-white/90 px-4 py-1 text-[10px] font-semibold tracking-[0.28em] text-secondary/80 shadow-xs shadow-base-300/40 md:text-xs">
       CLEAN DECOUPLING
     </span>
