@@ -22,27 +22,25 @@ const StabilitySection = () => {
           <SectionHeader
             iconSrc={stabilityUspImg}
             badgeText="Stability"
+            outerClassName="mb-4 lg:mb-6"
             main={
               <>
                 <GradientText color="blue">Stable foundation</GradientText>
               </>
             }
             sub=<>
-              Vike is <b>decoupled</b> from fast-moving JavaScript tools.
+              Vike is <b className="font-extrabold">decoupled</b> from unstable fast-moving JavaScript tools.
             </>
             color="blue"
           />
+          <LayoutComponent $size="sm" className="mb-8 md:w-3/4 lg:w-2/3 mx-auto">
+            <p>
+              Vike's internal components are <b className="font-semibold">stable primitives</b> tha remain relevant for
+              the foreseeable future. <b className="font-normal">Unstable tools aren't built into Vike by design</b> —
+              instead, Vike extensions provide deep and first-class integrations with cutting-edge tools.
+            </p>
+          </LayoutComponent>
           <StableGraphic />
-        </LayoutComponent>
-        <LayoutComponent $size="sm" className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 text-sm">
-          <p>
-            Vike's <b>internal components are stable primitives</b> that remain relevant for the foreseeable future,
-            making Vike a stable foundation.{' '}
-          </p>
-          <p>
-            <b>Fast evolving JavaScript tools aren't built into Vike by design</b> — instead, Vike extensions provide
-            deep and first-class integrations.
-          </p>
         </LayoutComponent>
       </div>
       <LayoutComponent className="mt-12 md:my-24 relative">
