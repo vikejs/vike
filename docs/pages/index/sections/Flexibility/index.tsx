@@ -92,6 +92,7 @@ const FlexibilitySection = () => {
                       Supported <GradientText color="green">tools</GradientText>
                     </>
                   }
+                  // TODO/ai remove pollData (observe that all <BarChart> usage have the exact same pollData, define `pollData` as an internal const)
                   pollData={[
                     { label: 'Vike', percentage: 100 },
                     { label: textOtherFrameworks, percentage: 33 },
