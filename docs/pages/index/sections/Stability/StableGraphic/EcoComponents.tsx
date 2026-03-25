@@ -163,14 +163,12 @@ export const BoxOrange = cm.li.variants<{ $size?: VikeComponentSize; $type: 'lib
         `,
       category: `
         rounded-full
-        bg-accent/8
         px-2
         py-0.75
         text-[11px]
         font-semibold
         tracking-[0.12em]
         text-accent/80
-        uppercase
       `,
     },
   },
