@@ -29,15 +29,15 @@ const StabilitySection = () => {
               </>
             }
             sub=<>
-              <b className="font-extrabold">Decoupled</b> from unstable fast-evolving tools.
+              <b className="font-bold">Decoupled</b> from unstable fast-evolving tools.
             </>
             color="blue"
           />
           <LayoutComponent $size="sm" className="mb-7 mt-6 md:w-3/4 lg:w-2/3 mx-auto">
             <p>
-              Vike's internal components are <b className="font-semibold">stable primitives</b>, while{' '}
-              <b className="font-normal">unstable and/or fast-evolving tools aren't built into Vike</b> — instead, Vike
-              extensions provide zero-config deep integrations.
+              Vike's <b className="font-normal">internal components are stable primitives</b>, while unstable and/or{' '}
+              <b className="font-normal">fast-evolving tools aren't built into Vike</b> — instead, Vike extensions
+              provide zero-config deep integrations.
             </p>
           </LayoutComponent>
           <StableGraphic />
