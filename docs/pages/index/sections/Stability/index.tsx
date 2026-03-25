@@ -2,7 +2,7 @@ import React from 'react'
 import LayoutComponent from '../../components/LayoutComponent'
 import GradientText from '../../components/GradientText'
 import SectionHeader from '../../components/SectionHeader'
-import { H2Headline, H4Headline } from '../../components/Headline'
+import { H2Headline } from '../../components/Headline'
 import BarChart from '../../components/BarChart'
 import { stabilityUspImg, UspCategoryId } from '../../util/constants'
 import GlassContainer from '../../components/GlassContainer'
@@ -59,10 +59,12 @@ const StabilitySection = () => {
             cutting-edge with unprecedented flexibility (thanks to Vike's powerful hooks).
           </p>
           <div className="relative z-2">
-            <H4Headline as="h3" className="mb-2 md:mb-3">
-              <GradientText color="blue">Legacy</GradientText> support
-            </H4Headline>
             <BarChart
+              label={
+                <>
+                  <GradientText color="blue">Legacy</GradientText> support
+                </>
+              }
               pollData={[
                 { label: 'Vike', percentage: 100 },
                 { label: textOtherFrameworks, percentage: 33 },
@@ -71,10 +73,13 @@ const StabilitySection = () => {
             />
           </div>
           <div className="relative z-2">
-            <H4Headline as="h3" className="mt-2 mb-2 md:mb-3 md:mt-0">
-              <GradientText color="green">Cutting-edge </GradientText> support
-            </H4Headline>
             <BarChart
+              className="mt-2 md:mt-0"
+              label={
+                <>
+                  <GradientText color="green">Cutting-edge </GradientText> support
+                </>
+              }
               pollData={[
                 { label: 'Vike', percentage: 100 },
                 { label: textOtherFrameworks, percentage: 33 },
