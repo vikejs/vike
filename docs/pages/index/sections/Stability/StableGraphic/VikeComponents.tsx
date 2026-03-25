@@ -1,7 +1,6 @@
 import cm from '@classmatejs/react'
 import React from 'react'
 import { splitIntoRows, VikeComponent, VikeComponentSize } from './grid.utils'
-import ImageGroup from './ImageGroup'
 
 const bigComponents: VikeComponent[] = (
   [
@@ -93,7 +92,6 @@ const componentRows = splitIntoRows(components, rowCount)
 const VikeComponents = () => {
   return (
     <div className="relative pt-2 md:pt-3">
-      <ImageGroup />
       <ul className="relative z-10 list-none flex flex-wrap justify-center gap-1.5 md:gap-2 lg:hidden">
         {components.map((component) => (
           <BoxBlue key={component.link} $size={component.size}>
