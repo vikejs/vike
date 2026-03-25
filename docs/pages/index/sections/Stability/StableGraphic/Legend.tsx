@@ -33,6 +33,7 @@ const StableGraphicLegend = ({ kind }: StableGraphicLegendProps) => {
           <span
             className="h-6 w-8 flex-none"
             style={{
+              // TODO/ai make the bottom line thicker
               backgroundImage:
                 'linear-gradient(to bottom, #d8d8d8 0%, #d8d8d8 100%), linear-gradient(to right, #d8d8d8 0%, #d8d8d8 100%)',
               backgroundPosition: 'center top, center bottom',
