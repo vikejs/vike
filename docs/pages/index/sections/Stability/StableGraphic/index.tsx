@@ -64,8 +64,8 @@ const VikeSection = () => (
 const StableGraphic = () => {
   return (
     <Outer>
-      <div className="grid gap-2 md:hidden">
-        <div className="grid gap-1.5">
+      <div className="grid md:hidden">
+        <div className="grid gap-1.5 mb-4">
           <StableGraphicLegend kind="ecosystem" />
           <StableGraphicLegend kind="hooks" />
           <StableGraphicLegend kind="vike" />
@@ -75,7 +75,7 @@ const StableGraphic = () => {
         <VikeSection />
       </div>
 
-      <div className="hidden md:grid md:grid-cols-[13rem_minmax(0,1fr)] md:gap-x-4">
+      <div className="hidden md:grid md:grid-cols-[10rem_minmax(0,1fr)] md:gap-x-2">
         <div className="col-start-1 row-start-1 flex items-center">
           <StableGraphicLegend kind="ecosystem" />
         </div>

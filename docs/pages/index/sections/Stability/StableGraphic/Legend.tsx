@@ -10,7 +10,7 @@ interface StableGraphicLegendProps {
 
 const legendCopy: Record<StableGraphicLegendKind, string> = {
   vike: 'Vike internal components',
-  ecosystem: 'JavaScript ecosystem',
+  ecosystem: 'JavaScript tools',
   hooks: 'Vike hooks',
 }
 
@@ -25,7 +25,7 @@ const StableGraphicLegend = ({ kind }: StableGraphicLegendProps) => {
   const isHooks = kind === 'hooks'
 
   return (
-    <div className="flex justify-center">
+    <div className="flex">
       <div className="inline-flex items-center gap-2.5 px-2 py-1">
         {isVike ? (
           <BoxBlue $size="big" className="m-0! h-6! w-8! flex-none!" />
