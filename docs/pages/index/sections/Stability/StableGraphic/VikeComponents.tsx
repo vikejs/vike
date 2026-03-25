@@ -92,7 +92,7 @@ const componentRows = splitIntoRows(components, rowCount)
 
 const VikeComponents = () => {
   return (
-    <div className="relative overflow-hidden rounded-[1.75rem] border border-secondary/15 bg-linear-to-b from-white via-white to-secondary/6 px-3 pb-3 pt-8 shadow-[0_20px_70px_-40px_rgba(37,99,235,0.45)] md:mx-auto md:w-[92%] md:px-4 md:pb-4 md:pt-10">
+    <div className="relative overflow-hidden rounded-[1.75rem] border border-secondary/15 bg-linear-to-b from-white via-white to-secondary/6 px-3 pb-3 pt-14 shadow-[0_20px_70px_-40px_rgba(37,99,235,0.45)] md:mx-auto md:w-[92%] md:px-4 md:pb-4 md:pt-16">
       <div className="pointer-events-none absolute inset-x-10 bottom-0 h-24 rounded-full bg-secondary/10 blur-3xl" />
       <ImageGroup />
       <ul className="relative z-10 list-none flex flex-wrap justify-center gap-1.5 md:gap-2 lg:hidden">
