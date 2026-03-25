@@ -16,7 +16,7 @@ const pollData: [BarChartData, BarChartData] = [
 /** Truly zero-padding text block if text has no descenders (like p, g, y).
  *  - `leading-none` => `line-height: 1`
  */
-const heightText = 'leading-none h-[0.8em]'
+const heightText = 'leading-none h-[0.85em]'
 
 interface BarChartProps extends React.HTMLAttributes<HTMLDivElement> {
   pollData?: [BarChartData, BarChartData]
