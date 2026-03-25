@@ -10,7 +10,7 @@ type BarChartData = {
 
 const pollData: [BarChartData, BarChartData] = [
   { label: 'Vike', percentage: 100 },
-  { label: 'Other', percentage: 33 },
+  { label: 'Other framework', percentage: 33 },
 ]
 
 interface BarChartProps extends React.HTMLAttributes<HTMLDivElement> {
