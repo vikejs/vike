@@ -28,7 +28,7 @@ const StabilitySection = () => {
               </>
             }
             sub=<>
-              Clean <b>decoupling</b> between Vike and the fast-moving JavaScript ecosystem — a stable foundation.
+              Vike is <b>decoupled</b> from fast-moving JavaScript tools.
             </>
             color="blue"
           />
@@ -36,7 +36,7 @@ const StabilitySection = () => {
         </LayoutComponent>
         <LayoutComponent $size="sm" className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 text-sm">
           <p>
-            Vike's <b>internal components are all stable primitives</b> that remain relevant for the foreseeable future,
+            Vike's <b>internal components are stable primitives</b> that remain relevant for the foreseeable future,
             making Vike a stable foundation.{' '}
           </p>
           <p>
