@@ -25,11 +25,10 @@ interface BarChartProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const BarChart = ({ color, className, label, ...props }: BarChartProps) => {
-  const { ...divProps } = props
   const winningEntry = pollData.reduce((prev, current) => (prev.percentage > current.percentage ? prev : current))
 
   return (
-    <div className={className} {...divProps}>
+    <div className={className} {...props}>
       <H4Headline className="mb-1 md:mb-2">{label}:</H4Headline>
       <div className="flex flex-col gap-1">
         {pollData.map((data) => {
