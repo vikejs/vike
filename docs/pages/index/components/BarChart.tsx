@@ -41,9 +41,7 @@ const BarChart = ({ color, className, label, ...props }: BarChartProps) => {
             <div key={data.label}>
               <div className="w-full h-4 md:h-5 to-base-200 via-base-200 via-60% bg-linear-to-l">
                 <StyledBar style={barStyle} $color={color} $won={data.label === winningEntry.label}>
-                  <span className={`text-tiny md:text-sm font-mono whitespace-nowrap ${heightText}`}>
-                    {data.label}
-                  </span>
+                  <span className={`text-tiny md:text-sm font-mono whitespace-nowrap ${heightText}`}>{data.label}</span>
                 </StyledBar>
               </div>
             </div>
