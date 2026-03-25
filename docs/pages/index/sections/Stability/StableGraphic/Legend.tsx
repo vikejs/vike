@@ -37,7 +37,7 @@ const StableGraphicLegend = ({ kind }: StableGraphicLegendProps) => {
                 'linear-gradient(to bottom, #d8d8d8 0%, #d8d8d8 100%), linear-gradient(to right, #d8d8d8 0%, #d8d8d8 100%)',
               backgroundPosition: 'center top, center bottom',
               backgroundRepeat: 'no-repeat',
-              backgroundSize: '3px 100%, 16px 2px',
+              backgroundSize: '4px 100%, 21px 4px',
             }}
           />
         ) : (
