@@ -50,7 +50,7 @@ const StabilitySection = () => {
           <GlassContainer className={cmMerge('w-1/2 right-0 h-[120%] absolute z-0 -translate-y-[20%]')} />
           <H2Headline className="z-2 relative">
             <GradientText color="blue">Stable stack</GradientText> or{' '}
-            <GradientText color="green">cutting edge</GradientText>? <br />
+            <GradientText color="blue">cutting edge</GradientText>? <br />
             Your choice.
           </H2Headline>
           <p className="mb-1 z-2 ">
@@ -72,10 +72,10 @@ const StabilitySection = () => {
               className="mt-2 md:mt-0"
               label={
                 <>
-                  <GradientText color="green">Cutting-edge </GradientText> support
+                  <GradientText color="blue">Cutting-edge </GradientText> support
                 </>
               }
-              color="green"
+              color="blue"
             />
           </div>
         </div>
