@@ -41,6 +41,9 @@ const DecouplingDivider = () => (
         />
       ))}
     </div>
+    <span className="absolute bottom-2 left-1/2 -translate-x-1/2 rounded-full border border-base-300 bg-white/80 px-2.5 py-1 text-[10px] font-medium tracking-[0.12em] text-base-content/55 uppercase shadow-xs md:bottom-3">
+      Vike hooks
+    </span>
     <span className="relative rounded-full border border-base-300 bg-white/90 px-4 py-1 text-[10px] font-semibold tracking-[0.28em] text-secondary/80 shadow-xs shadow-base-300/40 md:text-xs">
       CLEAN DECOUPLING
     </span>
