@@ -98,14 +98,17 @@ const EcoComponents = () => {
 
   return (
     <div className="relative z-10">
-      <div className="flex gap-1 md:gap-4">
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
         {objectEntries(ecosystemComponents).map(([category, components]) => (
-          <div key={category} className="flex flex-col items-center gap-1 flex-1">
+          <div
+            key={category}
+            className="flex min-h-full flex-col items-center gap-2 rounded-[1.25rem] border border-accent/10 bg-white/75 px-2 py-3 shadow-xs shadow-accent/5 md:px-3 md:py-4"
+          >
             <BoxOrange className="text-xs text-grey" $type="category">
               {ecoComponentCategoryNames[category]}
             </BoxOrange>
             <div className="flex-1">
-              <ul className="list-none flex flex-wrap gap-1 md:gap-2 justify-center">
+              <ul className="list-none flex flex-wrap justify-center gap-1 md:gap-2">
                 {components.map((component) => {
                   const opacity = decorations[category]?.[component.name] ?? 1
 
@@ -156,11 +159,21 @@ export const BoxOrange = cm.li.variants<{ $size?: VikeComponentSize; $type: 'lib
       lib: `
         inset-ring-1
         inset-ring-accent/30
-        bg-white
+        bg-linear-to-br from-white to-accent/6
         rounded-field
+        shadow-xs
+        shadow-accent/5
         `,
       category: `
-        mb-3
+        rounded-full
+        bg-accent/8
+        px-2.5
+        py-1
+        text-[11px]
+        font-semibold
+        tracking-[0.12em]
+        text-accent/80
+        uppercase
       `,
     },
   },

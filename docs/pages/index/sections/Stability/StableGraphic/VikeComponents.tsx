@@ -92,18 +92,19 @@ const componentRows = splitIntoRows(components, rowCount)
 
 const VikeComponents = () => {
   return (
-    <div className="p-3 bg-linear-to-t to-white via-white rounded-box relative md:w-[90%] md:mx-auto border-3 border-[#e7eaf3]">
+    <div className="relative overflow-hidden rounded-[1.75rem] border border-secondary/15 bg-linear-to-b from-white via-white to-secondary/6 p-3 shadow-[0_20px_70px_-40px_rgba(37,99,235,0.45)] md:mx-auto md:w-[92%] md:p-4">
+      <div className="pointer-events-none absolute inset-x-10 bottom-0 h-24 rounded-full bg-secondary/10 blur-3xl" />
       <ImageGroup />
-      <ul className="list-none flex flex-wrap gap-1 lg:hidden justify-center">
+      <ul className="relative z-10 list-none flex flex-wrap justify-center gap-1.5 md:gap-2 lg:hidden">
         {components.map((component) => (
           <BoxBlue key={component.link} $size={component.size}>
             <InnerLink href={component.link}>{component.name}</InnerLink>
           </BoxBlue>
         ))}
       </ul>
-      <div className="hidden lg:flex lg:flex-col lg:gap-1.5">
+      <div className="relative z-10 hidden lg:flex lg:flex-col lg:gap-2">
         {componentRows.map((row, rowIndex) => (
-          <ul key={rowIndex} className="list-none flex flex-wrap gap-1.5">
+          <ul key={rowIndex} className="list-none flex flex-wrap gap-2">
             {row.map((component) => (
               <BoxBlue key={component.link} $size={component.size}>
                 <InnerLink href={component.link}>{component.name}</InnerLink>
@@ -121,10 +122,11 @@ export default VikeComponents
 export const BoxBlue = cm.li.variants<{ $size: VikeComponentSize }>({
   base: `
   inset-ring-1
-  inset-ring-secondary/50 hover:inset-ring-secondary
-  rounded-field
-  bg-gradient-to-bl to-secondary/7 hover:to-secondary/12
+  inset-ring-secondary/45 hover:inset-ring-secondary
+  rounded-[1rem]
+  bg-gradient-to-br from-white to-secondary/7 hover:to-secondary/14
   text-base-content/90 hover:text-base-content
+  shadow-xs shadow-secondary/10
   flex
   lg:flex-1 lg:basis-0 lg:min-w-max
   items-center justify-center
