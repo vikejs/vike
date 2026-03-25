@@ -42,7 +42,7 @@ const DecouplingDivider = () => (
       ))}
     </div>
     <span className="relative rounded-full border border-base-300 bg-white/90 px-3 py-0.75 text-[10px] font-semibold tracking-[0.24em] text-secondary/80 shadow-xs shadow-base-300/40 md:text-xs">
-      CLEAN DECOUPLING
+      DECOUPLED
     </span>
   </div>
 )
