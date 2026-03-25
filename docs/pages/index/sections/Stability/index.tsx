@@ -28,19 +28,21 @@ const StabilitySection = () => {
                 <GradientText color="blue">Stable foundation</GradientText>
               </>
             }
-            sub="Clear separation between Vike and the JavaScript ecosystem — a stable foundation."
+            sub=<>
+              Clean <b>decoupling</b> between Vike and the fast-moving JavaScript ecosystem — a stable foundation.
+            </>
             color="blue"
           />
           <StableGraphic />
         </LayoutComponent>
         <LayoutComponent $size="sm" className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 text-sm">
           <p>
-            Vike's <b>internal components are stable features</b> that remain relevant for the foreseeable future,
+            Vike's <b>internal components are all stable primitives</b> that remain relevant for the foreseeable future,
             making Vike a stable foundation.{' '}
           </p>
           <p>
             <b>Fast evolving JavaScript tools aren't built into Vike by design</b> — instead, Vike extensions provide
-            deep and first-class integrations via powerful hooks.
+            deep and first-class integrations.
           </p>
         </LayoutComponent>
       </div>
