@@ -40,15 +40,6 @@ const DecouplingDivider = () => (
         />
       ))}
     </div>
-    <span
-      className="relative px-8 py-2 text-[10px] font-semibold tracking-[0.24em] text-base-content/75 md:text-xs"
-      style={{
-        backgroundImage:
-          'radial-gradient(ellipse 78% 155% at center, var(--color-base-300) 0%, var(--color-base-300) 52%, transparent 100%)',
-      }}
-    >
-      DECOUPLED
-    </span>
   </div>
 )
 
