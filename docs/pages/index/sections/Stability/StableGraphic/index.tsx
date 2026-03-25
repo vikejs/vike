@@ -12,8 +12,8 @@ const SectionFrame = cm.div.variants<{ $tone: 'ecosystem' | 'vike' }>({
     overflow-hidden
     rounded-[2rem]
     border
-    px-3 py-4
-    md:px-5 md:py-5
+    px-2.5 py-3
+    md:px-4 md:py-4
     shadow-[0_24px_80px_-44px_rgba(15,23,42,0.35)]
   `,
   variants: {
@@ -25,23 +25,23 @@ const SectionFrame = cm.div.variants<{ $tone: 'ecosystem' | 'vike' }>({
 })
 
 const DecouplingDivider = () => (
-  <div className="relative flex min-h-28 items-center justify-center md:min-h-36">
-    <div className="absolute inset-0 flex items-stretch justify-center gap-8 py-0 md:gap-12">
+  <div className="relative flex min-h-22 items-center justify-center md:min-h-28">
+    <div className="absolute inset-0 flex items-stretch justify-center gap-6 py-0 md:gap-10">
       {[0, 1, 2, 3, 4].map((barIndex) => (
         <span
           key={barIndex}
-          className="h-full w-4 md:w-5"
+          className="h-full w-3.5 md:w-4.5"
           style={{
             backgroundImage:
               'linear-gradient(to bottom, #d8d8d8 0%, #d8d8d8 100%), linear-gradient(to right, #d8d8d8 0%, #d8d8d8 100%)',
             backgroundPosition: 'center top, center bottom',
             backgroundRepeat: 'no-repeat',
-            backgroundSize: '4px 100%, 21px 4px',
+            backgroundSize: '4px 100%, 18px 4px',
           }}
         />
       ))}
     </div>
-    <span className="relative rounded-full border border-base-300 bg-white/90 px-4 py-1 text-[10px] font-semibold tracking-[0.28em] text-secondary/80 shadow-xs shadow-base-300/40 md:text-xs">
+    <span className="relative rounded-full border border-base-300 bg-white/90 px-3 py-1 text-[10px] font-semibold tracking-[0.24em] text-secondary/80 shadow-xs shadow-base-300/40 md:text-xs">
       CLEAN DECOUPLING
     </span>
   </div>
@@ -49,7 +49,7 @@ const DecouplingDivider = () => (
 
 const EcosystemSection = () => (
   <SectionFrame $tone="ecosystem">
-    <div className="pointer-events-none absolute inset-x-8 top-0 h-24 rounded-full bg-accent/10 blur-3xl" />
+    <div className="pointer-events-none absolute inset-x-8 top-0 h-18 rounded-full bg-accent/10 blur-3xl" />
     <div className="relative z-10">
       <EcoComponents />
     </div>
@@ -58,7 +58,7 @@ const EcosystemSection = () => (
 
 const VikeSection = () => (
   <SectionFrame $tone="vike">
-    <div className="pointer-events-none absolute inset-x-10 bottom-0 h-28 rounded-full bg-secondary/10 blur-3xl" />
+    <div className="pointer-events-none absolute inset-x-10 bottom-0 h-20 rounded-full bg-secondary/10 blur-3xl" />
     <div className="relative z-10">
       <VikeComponents />
     </div>
@@ -68,8 +68,8 @@ const VikeSection = () => (
 const StableGraphic = () => {
   return (
     <Outer>
-      <div className="grid gap-3 md:hidden">
-        <div className="grid gap-2">
+      <div className="grid gap-2.5 md:hidden">
+        <div className="grid gap-1.5">
           <StableGraphicLegend kind="ecosystem" />
           <StableGraphicLegend kind="hooks" />
           <StableGraphicLegend kind="vike" />
@@ -79,7 +79,7 @@ const StableGraphic = () => {
         <VikeSection />
       </div>
 
-      <div className="hidden md:grid md:grid-cols-[15rem_minmax(0,1fr)] md:gap-x-6">
+      <div className="hidden md:grid md:grid-cols-[13rem_minmax(0,1fr)] md:gap-x-4">
         <div className="col-start-1 row-start-1 flex items-center">
           <StableGraphicLegend kind="ecosystem" />
         </div>

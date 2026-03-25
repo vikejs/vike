@@ -98,14 +98,14 @@ const EcoComponents = () => {
 
   return (
     <div className="relative z-10">
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
+      <div className="grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-3">
         {objectEntries(ecosystemComponents).map(([category, components]) => (
-          <div key={category} className="flex min-h-full flex-col items-center gap-2 px-1 py-2 md:px-2 md:py-3">
+          <div key={category} className="flex min-h-full flex-col items-center gap-1.5 px-1 py-1.5 md:px-1.5 md:py-2">
             <BoxOrange className="text-xs text-grey" $type="category">
               {ecoComponentCategoryNames[category]}
             </BoxOrange>
             <div className="flex-1">
-              <ul className="list-none flex flex-wrap justify-center gap-1 md:gap-2">
+              <ul className="list-none flex flex-wrap justify-center gap-1 md:gap-1.5">
                 {components.map((component) => {
                   const opacity = decorations[category]?.[component.name] ?? 1
 
@@ -164,8 +164,8 @@ export const BoxOrange = cm.li.variants<{ $size?: VikeComponentSize; $type: 'lib
       category: `
         rounded-full
         bg-accent/8
-        px-2.5
-        py-1
+        px-2
+        py-0.75
         text-[11px]
         font-semibold
         tracking-[0.12em]
