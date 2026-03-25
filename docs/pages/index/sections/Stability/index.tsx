@@ -53,7 +53,7 @@ const StabilitySection = () => {
           </H2Headline>
           <p className="mb-1 z-2 ">
             Choose between a stable stack with unmatched long-term support (thanks to Vike's stable foundation), or the
-            cutting-edge with unprecedented flexibility (thanks to Vike's powerful hooks).
+            cutting-edge with unmatched flexibility (thanks to Vike's powerful hooks).
           </p>
           <div className="relative z-2">
             <BarChart

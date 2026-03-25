@@ -208,7 +208,7 @@ const DxContent = () => {
           <Block>
             <SubSectionTitle>State management</SubSectionTitle>
             <p>
-              Powerful hooks also enable extensions to deeply integrate with state management tools with unprecedented
+              Powerful hooks also enable extensions to deeply integrate with state management tools with unmatched
               seamless DX.
             </p>
             <CenterText>
