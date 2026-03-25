@@ -97,15 +97,15 @@ const EcoComponents = () => {
   }, [])
 
   return (
-    <div className="relative z-10 mb-10">
-      <div className="md:-mt-4 flex gap-1 md:gap-4">
+    <div className="relative z-10">
+      <div className="grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-3">
         {objectEntries(ecosystemComponents).map(([category, components]) => (
-          <div key={category} className="flex flex-col items-center gap-1 flex-1">
+          <div key={category} className="flex min-h-full flex-col items-center gap-1.5 px-1 py-1 md:px-1.5 md:py-1.5">
             <BoxOrange className="text-xs text-grey" $type="category">
               {ecoComponentCategoryNames[category]}
             </BoxOrange>
             <div className="flex-1">
-              <ul className="list-none flex flex-wrap gap-1 md:gap-2 justify-center">
+              <ul className="list-none flex flex-wrap justify-center gap-1 md:gap-1.5">
                 {components.map((component) => {
                   const opacity = decorations[category]?.[component.name] ?? 1
 
@@ -122,7 +122,7 @@ const EcoComponents = () => {
                       <a
                         href={component.link}
                         target="_blank"
-                        className="py-0.5 px-0.5 md:py-1 md:px-2 w-full text-accent/70 hover:text-accent text-tiny md:text-xs"
+                        className="py-0.5 px-1 md:py-1 md:px-2 w-full text-accent/70 hover:text-accent text-tiny md:text-xs"
                       >
                         {component.name}
                       </a>
@@ -156,11 +156,19 @@ export const BoxOrange = cm.li.variants<{ $size?: VikeComponentSize; $type: 'lib
       lib: `
         inset-ring-1
         inset-ring-accent/30
-        bg-white
+        bg-linear-to-br from-white to-accent/6
         rounded-field
+        shadow-xs
+        shadow-accent/5
         `,
       category: `
-        mb-3
+        rounded-full
+        px-2
+        py-0.75
+        text-[11px]
+        font-semibold
+        tracking-[0.12em]
+        text-accent/80
       `,
     },
   },

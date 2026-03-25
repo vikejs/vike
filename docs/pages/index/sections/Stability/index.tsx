@@ -22,27 +22,25 @@ const StabilitySection = () => {
           <SectionHeader
             iconSrc={stabilityUspImg}
             badgeText="Stability"
+            outerClassName="mb-4 lg:mb-6"
             main={
               <>
                 <GradientText color="blue">Stable foundation</GradientText>
               </>
             }
             sub=<>
-              Vike is <b>decoupled</b> from fast-moving JavaScript tools.
+              <b className="font-bold">Decoupled</b> from unstable fast-evolving tools.
             </>
             color="blue"
           />
+          <LayoutComponent $size="sm" className="mb-7 mt-6 md:w-3/4 lg:w-2/3 mx-auto">
+            <p>
+              Vike's <b className="font-normal">internal components are stable primitives</b>, while unstable and/or{' '}
+              <b className="font-normal">fast-evolving tools aren't built into Vike</b> — instead, Vike extensions
+              provide zero-config deep integrations.
+            </p>
+          </LayoutComponent>
           <StableGraphic />
-        </LayoutComponent>
-        <LayoutComponent $size="sm" className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 text-sm">
-          <p>
-            Vike's <b>internal components are stable primitives</b> that remain relevant for the foreseeable future,
-            making Vike a stable foundation.{' '}
-          </p>
-          <p>
-            <b>Fast evolving JavaScript tools aren't built into Vike by design</b> — instead, Vike extensions provide
-            deep and first-class integrations.
-          </p>
         </LayoutComponent>
       </div>
       <LayoutComponent className="mt-12 md:my-24 relative">
@@ -55,7 +53,7 @@ const StabilitySection = () => {
           </H2Headline>
           <p className="mb-1 z-2 ">
             Choose between a stable stack with unmatched long-term support (thanks to Vike's stable foundation), or the
-            cutting-edge with unprecedented flexibility (thanks to Vike's powerful hooks).
+            cutting-edge with unmatched flexibility (thanks to Vike's powerful hooks).
           </p>
           <div className="relative z-2">
             <BarChart

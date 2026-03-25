@@ -126,13 +126,12 @@ const FlexibilitySection = () => {
                   }
                 />
                 <p>
-                  Use powerful hooks for <b>unprecedented flexibility</b> and extensive control over tool integration,
-                  data lifecycle, pre-rendering, state management, and more.
+                  Use powerful hooks for <b>unmatched flexibility</b> and extensive control over tool integration, data
+                  lifecycle, pre-rendering, state management, and more.
                 </p>
                 <p className="my-5">
-                  Hooks unlock unprecedented deep integrations — use them directly for maximum control, or via Vike
-                  extensions such as <code>vike-react</code> and <code>vike-react-apollo</code> for zero-config
-                  integration.
+                  Hooks unlock deep integrations — use them directly for maximum control, or via Vike extensions such as{' '}
+                  <code>vike-react</code> and <code>vike-react-apollo</code> for zero-config integrations.
                 </p>
                 <div className="mt-1 mb-9">
                   {/*

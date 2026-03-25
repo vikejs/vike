@@ -1,26 +1,56 @@
 import React from 'react'
-import LayoutComponent from '../../../components/LayoutComponent'
 import { BoxOrange } from './EcoComponents'
 import { BoxBlue } from './VikeComponents'
 
-const StableGraphicLegend = () => {
+type StableGraphicLegendKind = 'vike' | 'ecosystem' | 'hooks'
+
+interface StableGraphicLegendProps {
+  kind: StableGraphicLegendKind
+}
+
+const legendCopy: Record<StableGraphicLegendKind, string> = {
+  vike: 'Vike internal components',
+  ecosystem: 'Tools',
+  hooks: 'Vike hooks',
+}
+
+const legendTextClass: Record<StableGraphicLegendKind, string> = {
+  vike: 'text-secondary/90',
+  ecosystem: 'text-accent/90',
+  hooks: 'text-base-content/60',
+}
+
+const StableGraphicLegend = ({ kind }: StableGraphicLegendProps) => {
+  const isVike = kind === 'vike'
+  const isHooks = kind === 'hooks'
+
   return (
-    <LayoutComponent $size="sm">
-      <div className="mt-4 grid md:grid-cols-2 gap-2 md:gap-10">
-        {/* <img src={vikeLogo} alt="" className="h-auto w-5" /> */}
-        <div className="flex gap-2 items-center">
-          <BoxBlue $size="big" className="w-8! h-6! flex-none! m-0!" />
-          <p className="flex-1 font-bold text-grey text-xs md:text-sm">Vike internal components</p>
-        </div>
-        <div className="flex gap-2 items-center">
-          <BoxOrange $size="big" $type="lib" className="w-8! h-6! flex-none! m-0!">
+    <div className="flex">
+      <div className="inline-flex items-center gap-2.5 py-1">
+        {isVike ? (
+          <BoxBlue $size="big" className="m-0! h-6! w-8! flex-none!" />
+        ) : isHooks ? (
+          <span
+            className="h-6 w-8 flex-none"
+            style={{
+              backgroundImage:
+                'linear-gradient(to bottom, #d8d8d8 0%, #d8d8d8 100%), linear-gradient(to right, #d8d8d8 0%, #d8d8d8 100%)',
+              backgroundPosition: 'center top, center bottom',
+              backgroundRepeat: 'no-repeat',
+              backgroundSize: '4px 100%, 21px 4px',
+            }}
+          />
+        ) : (
+          <BoxOrange $size="big" $type="lib" className="m-0! h-6! w-8! flex-none!">
             <div className="bg-linear-to-bl to-accent/7 absolute inset-0 pointer-events-none select-none" />
-            <span className="w-10 h-4 block"></span>
+            <span className="block h-4 w-10"></span>
           </BoxOrange>
-          <p className="flex-1 font-bold text-grey text-xs md:text-sm">JavaScript ecosystem</p>
-        </div>
+        )}
+        <p className={`text-xs font-semibold tracking-[0.02em] md:text-sm ${legendTextClass[kind]}`}>
+          {legendCopy[kind]}
+        </p>
       </div>
-    </LayoutComponent>
+    </div>
   )
 }
 
