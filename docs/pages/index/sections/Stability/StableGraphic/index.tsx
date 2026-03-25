@@ -12,8 +12,8 @@ const SectionFrame = cm.div.variants<{ $tone: 'ecosystem' | 'vike' }>({
     overflow-hidden
     rounded-[2rem]
     border
-    px-2.5 py-3
-    md:px-4 md:py-4
+    px-2.5 py-2.5
+    md:px-4 md:py-3
     shadow-[0_24px_80px_-44px_rgba(15,23,42,0.35)]
   `,
   variants: {
@@ -25,7 +25,7 @@ const SectionFrame = cm.div.variants<{ $tone: 'ecosystem' | 'vike' }>({
 })
 
 const DecouplingDivider = () => (
-  <div className="relative flex min-h-22 items-center justify-center md:min-h-28">
+  <div className="relative flex min-h-18 items-center justify-center md:min-h-22">
     <div className="absolute inset-0 flex items-stretch justify-center gap-6 py-0 md:gap-10">
       {[0, 1, 2, 3, 4].map((barIndex) => (
         <span
@@ -41,7 +41,7 @@ const DecouplingDivider = () => (
         />
       ))}
     </div>
-    <span className="relative rounded-full border border-base-300 bg-white/90 px-3 py-1 text-[10px] font-semibold tracking-[0.24em] text-secondary/80 shadow-xs shadow-base-300/40 md:text-xs">
+    <span className="relative rounded-full border border-base-300 bg-white/90 px-3 py-0.75 text-[10px] font-semibold tracking-[0.24em] text-secondary/80 shadow-xs shadow-base-300/40 md:text-xs">
       CLEAN DECOUPLING
     </span>
   </div>
@@ -68,7 +68,7 @@ const VikeSection = () => (
 const StableGraphic = () => {
   return (
     <Outer>
-      <div className="grid gap-2.5 md:hidden">
+      <div className="grid gap-2 md:hidden">
         <div className="grid gap-1.5">
           <StableGraphicLegend kind="ecosystem" />
           <StableGraphicLegend kind="hooks" />

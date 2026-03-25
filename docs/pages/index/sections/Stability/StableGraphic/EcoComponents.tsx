@@ -100,7 +100,7 @@ const EcoComponents = () => {
     <div className="relative z-10">
       <div className="grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-3">
         {objectEntries(ecosystemComponents).map(([category, components]) => (
-          <div key={category} className="flex min-h-full flex-col items-center gap-1.5 px-1 py-1.5 md:px-1.5 md:py-2">
+          <div key={category} className="flex min-h-full flex-col items-center gap-1.5 px-1 py-1 md:px-1.5 md:py-1.5">
             <BoxOrange className="text-xs text-grey" $type="category">
               {ecoComponentCategoryNames[category]}
             </BoxOrange>

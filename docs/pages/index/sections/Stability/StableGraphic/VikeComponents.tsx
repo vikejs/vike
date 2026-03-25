@@ -91,7 +91,7 @@ const componentRows = splitIntoRows(components, rowCount)
 
 const VikeComponents = () => {
   return (
-    <div className="relative pt-1 md:pt-2">
+    <div className="relative pt-0.5 md:pt-1">
       <ul className="relative z-10 list-none flex flex-wrap justify-center gap-1 md:gap-1.5 lg:hidden">
         {components.map((component) => (
           <BoxBlue key={component.link} $size={component.size}>
