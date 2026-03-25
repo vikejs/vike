@@ -45,7 +45,7 @@ const DecouplingDivider = () => (
       className="relative px-4 py-1 text-[10px] font-semibold tracking-[0.24em] text-base-content/75 md:text-xs"
       style={{
         backgroundImage:
-          'linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.92) 18%, rgba(255,255,255,0.92) 82%, rgba(255,255,255,0) 100%)',
+          'linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.28) 18%, rgba(255,255,255,0.28) 82%, rgba(255,255,255,0) 100%)',
       }}
     >
       DECOUPLED
