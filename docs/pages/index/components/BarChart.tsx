@@ -8,7 +8,7 @@ type BarChartData = {
   percentage: number
 }
 
-const pollDataDefault: [BarChartData, BarChartData] = [
+const pollData: [BarChartData, BarChartData] = [
   { label: 'Vike', percentage: 100 },
   { label: 'Other', percentage: 33 },
 ]
@@ -19,7 +19,7 @@ interface BarChartProps extends React.HTMLAttributes<HTMLDivElement> {
   label?: React.ReactNode
 }
 
-const BarChart = ({ pollData = pollDataDefault, color, className, label, ...props }: BarChartProps) => {
+const BarChart = ({ color, className, label, ...props }: BarChartProps) => {
   const winningEntry = pollData.reduce((prev, current) => (prev.percentage > current.percentage ? prev : current))
 
   return (
