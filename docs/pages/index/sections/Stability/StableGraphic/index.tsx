@@ -4,10 +4,7 @@ import VikeComponents from './VikeComponents'
 import EcoComponents from './EcoComponents'
 import StableGraphicLegend from './Legend'
 
-const Outer = cm.div`
-  relative
-  mx-auto  
-`
+const Outer = cm.div`relative mx-auto`
 
 const StableGraphic = () => {
   return (
