@@ -4,7 +4,7 @@ import VikeComponents from './VikeComponents'
 import EcoComponents from './EcoComponents'
 import StableGraphicLegend from './Legend'
 
-const Outer = cm.div`relative mx-auto flex flex-col`
+const Outer = cm.div`relative mx-auto`
 
 const SectionFrame = cm.div.variants<{ $tone: 'ecosystem' | 'vike' }>({
   base: `
@@ -41,33 +41,66 @@ const DecouplingDivider = () => (
         />
       ))}
     </div>
-    <span className="absolute bottom-2 left-1/2 -translate-x-1/2 rounded-full border border-base-300 bg-white/80 px-2.5 py-1 text-[10px] font-medium tracking-[0.12em] text-base-content/55 uppercase shadow-xs md:bottom-3">
-      Vike hooks
-    </span>
     <span className="relative rounded-full border border-base-300 bg-white/90 px-4 py-1 text-[10px] font-semibold tracking-[0.28em] text-secondary/80 shadow-xs shadow-base-300/40 md:text-xs">
       CLEAN DECOUPLING
     </span>
   </div>
 )
 
+const EcosystemSection = () => (
+  <SectionFrame $tone="ecosystem">
+    <div className="pointer-events-none absolute inset-x-8 top-0 h-24 rounded-full bg-accent/10 blur-3xl" />
+    <div className="relative z-10">
+      <EcoComponents />
+    </div>
+  </SectionFrame>
+)
+
+const VikeSection = () => (
+  <SectionFrame $tone="vike">
+    <div className="pointer-events-none absolute inset-x-10 bottom-0 h-28 rounded-full bg-secondary/10 blur-3xl" />
+    <div className="relative z-10">
+      <VikeComponents />
+    </div>
+  </SectionFrame>
+)
+
 const StableGraphic = () => {
   return (
     <Outer>
-      <SectionFrame $tone="ecosystem">
-        <div className="pointer-events-none absolute inset-x-8 top-0 h-24 rounded-full bg-accent/10 blur-3xl" />
-        <div className="relative z-10 flex flex-col gap-4">
+      <div className="grid gap-3 md:hidden">
+        <div className="grid gap-2">
           <StableGraphicLegend kind="ecosystem" />
-          <EcoComponents />
-        </div>
-      </SectionFrame>
-      <DecouplingDivider />
-      <SectionFrame $tone="vike">
-        <div className="pointer-events-none absolute inset-x-10 bottom-0 h-28 rounded-full bg-secondary/10 blur-3xl" />
-        <div className="relative z-10 flex flex-col gap-4">
-          <VikeComponents />
+          <StableGraphicLegend kind="hooks" />
           <StableGraphicLegend kind="vike" />
         </div>
-      </SectionFrame>
+        <EcosystemSection />
+        <DecouplingDivider />
+        <VikeSection />
+      </div>
+
+      <div className="hidden md:grid md:grid-cols-[15rem_minmax(0,1fr)] md:gap-x-6">
+        <div className="col-start-1 row-start-1 flex items-center">
+          <StableGraphicLegend kind="ecosystem" />
+        </div>
+        <div className="col-start-2 row-start-1">
+          <EcosystemSection />
+        </div>
+
+        <div className="col-start-1 row-start-2 flex items-center">
+          <StableGraphicLegend kind="hooks" />
+        </div>
+        <div className="col-start-2 row-start-2">
+          <DecouplingDivider />
+        </div>
+
+        <div className="col-start-1 row-start-3 flex items-center">
+          <StableGraphicLegend kind="vike" />
+        </div>
+        <div className="col-start-2 row-start-3">
+          <VikeSection />
+        </div>
+      </div>
     </Outer>
   )
 }
