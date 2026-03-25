@@ -75,7 +75,7 @@ const StableGraphic = () => {
         <VikeSection />
       </div>
 
-      <div className="hidden md:grid md:grid-cols-[10rem_minmax(0,1fr)] md:gap-x-2">
+      <div className="hidden md:grid md:grid-cols-[9rem_minmax(0,1fr)] md:gap-x-2">
         <div className="col-start-1 row-start-1 flex items-center">
           <StableGraphicLegend kind="ecosystem" />
         </div>

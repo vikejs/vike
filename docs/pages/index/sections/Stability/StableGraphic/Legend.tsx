@@ -26,7 +26,7 @@ const StableGraphicLegend = ({ kind }: StableGraphicLegendProps) => {
 
   return (
     <div className="flex">
-      <div className="inline-flex items-center gap-2.5 px-2 py-1">
+      <div className="inline-flex items-center gap-2.5 py-1">
         {isVike ? (
           <BoxBlue $size="big" className="m-0! h-6! w-8! flex-none!" />
         ) : isHooks ? (
