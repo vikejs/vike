@@ -10,7 +10,8 @@ type BarChartData = {
 
 const pollData: [BarChartData, BarChartData] = [
   { label: 'Vike', percentage: 100 },
-  { label: 'Other framework', percentage: 33 },
+  // TODO/ai implement minWidth
+  { label: 'Other framework', percentage: 33, minWidth: 110 },
 ]
 
 interface BarChartProps extends React.HTMLAttributes<HTMLDivElement> {
