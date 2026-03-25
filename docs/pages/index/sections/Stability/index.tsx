@@ -2,12 +2,11 @@ import React from 'react'
 import LayoutComponent from '../../components/LayoutComponent'
 import GradientText from '../../components/GradientText'
 import SectionHeader from '../../components/SectionHeader'
-import { H2Headline, H4Headline } from '../../components/Headline'
+import { H2Headline } from '../../components/Headline'
 import BarChart from '../../components/BarChart'
 import { stabilityUspImg, UspCategoryId } from '../../util/constants'
 import GlassContainer from '../../components/GlassContainer'
 import StableGraphic from './StableGraphic'
-import { textOtherFrameworks } from '../Flexibility'
 import MiniPricingStrip from './MiniPricingStrip'
 import { ChevronsRight } from 'lucide-react'
 import { ClosingWords } from '../Dx/DxContent'
@@ -28,19 +27,21 @@ const StabilitySection = () => {
                 <GradientText color="blue">Stable foundation</GradientText>
               </>
             }
-            sub="Clear separation between Vike and the JavaScript ecosystem — a stable foundation."
+            sub=<>
+              Clean <b>decoupling</b> between Vike and the fast-moving JavaScript ecosystem — a stable foundation.
+            </>
             color="blue"
           />
           <StableGraphic />
         </LayoutComponent>
         <LayoutComponent $size="sm" className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 text-sm">
           <p>
-            Vike's <b>internal components are stable features</b> that remain relevant for the foreseeable future,
+            Vike's <b>internal components are all stable primitives</b> that remain relevant for the foreseeable future,
             making Vike a stable foundation.{' '}
           </p>
           <p>
             <b>Fast evolving JavaScript tools aren't built into Vike by design</b> — instead, Vike extensions provide
-            deep and first-class integrations via powerful hooks.
+            deep and first-class integrations.
           </p>
         </LayoutComponent>
       </div>
@@ -49,7 +50,7 @@ const StabilitySection = () => {
           <GlassContainer className={cmMerge('w-1/2 right-0 h-[120%] absolute z-0 -translate-y-[20%]')} />
           <H2Headline className="z-2 relative">
             <GradientText color="blue">Stable stack</GradientText> or{' '}
-            <GradientText color="green">cutting edge</GradientText>? <br />
+            <GradientText color="blue">cutting edge</GradientText>? <br />
             Your choice.
           </H2Headline>
           <p className="mb-1 z-2 ">
@@ -57,27 +58,24 @@ const StabilitySection = () => {
             cutting-edge with unprecedented flexibility (thanks to Vike's powerful hooks).
           </p>
           <div className="relative z-2">
-            <H4Headline as="h3" className="mb-2 md:mb-3">
-              <GradientText color="blue">Legacy</GradientText> support
-            </H4Headline>
             <BarChart
-              pollData={[
-                { label: 'Vike', percentage: 100 },
-                { label: textOtherFrameworks, percentage: 33 },
-              ]}
+              label={
+                <>
+                  <GradientText color="blue">Legacy</GradientText> support
+                </>
+              }
               color="blue"
             />
           </div>
           <div className="relative z-2">
-            <H4Headline as="h3" className="mt-2 mb-2 md:mb-3 md:mt-0">
-              <GradientText color="green">Cutting-edge </GradientText> support
-            </H4Headline>
             <BarChart
-              pollData={[
-                { label: 'Vike', percentage: 100 },
-                { label: textOtherFrameworks, percentage: 33 },
-              ]}
-              color="green"
+              className="mt-2 md:mt-0"
+              label={
+                <>
+                  <GradientText color="blue">Cutting-edge </GradientText> support
+                </>
+              }
+              color="blue"
             />
           </div>
         </div>
@@ -87,7 +85,7 @@ const StabilitySection = () => {
           <GlassContainer>
             <div className={verticalPaddingClass}>
               <H2Headline>
-                <GradientText color="blue">Stable interests</GradientText>
+                <GradientText color="blue">Stable, aligned interests</GradientText>
               </H2Headline>
               <p className="my-5">
                 Upfront and transparent pricing you can trust, instead of hidden monetization lock-in mechanisms.

@@ -11,12 +11,9 @@ import libraryRollImg from '../../assets/libraryRoll.avif'
 import libraryRollImgMobile from '../../assets/libraryRoll@0.5.avif'
 import BlurDot from '../../components/BlurDot'
 import BarChart from '../../components/BarChart'
-import { H4Headline } from '../../components/Headline'
 import { freedomUspImg, taglineFreedom, UspCategoryId } from '../../util/constants'
 import { smoothScrollToSelector } from '../../util/gsap.utils'
 import { ClosingWords } from '../Dx/DxContent'
-
-export const textOtherFrameworks = 'Other'
 
 const FlexibilitySection = () => {
   const onSeeUseCasesClick = (ev: React.MouseEvent<HTMLAnchorElement>) => {
@@ -86,26 +83,24 @@ const FlexibilitySection = () => {
                 </li>
               </ul>
               <div className="">
-                <H4Headline as="h3" className="mb-2 -mt-2 md:mb-3">
-                  Supported <GradientText color="green">tools</GradientText>
-                </H4Headline>
                 <BarChart
-                  pollData={[
-                    { label: 'Vike', percentage: 100 },
-                    { label: textOtherFrameworks, percentage: 33 },
-                  ]}
+                  className="-mt-2"
+                  label={
+                    <>
+                      Supported <GradientText color="green">tools</GradientText>
+                    </>
+                  }
                   color="green"
                 />
               </div>
               <div className="">
-                <H4Headline as="h3" className="mb-2 mt-6 md:mb-3 mb:mt-8">
-                  Supported <GradientText color="green">stacks</GradientText>
-                </H4Headline>
                 <BarChart
-                  pollData={[
-                    { label: 'Vike', percentage: 100 },
-                    { label: textOtherFrameworks, percentage: 33 },
-                  ]}
+                  className="mt-6 md:mt-8"
+                  label={
+                    <>
+                      Supported <GradientText color="green">stacks</GradientText>
+                    </>
+                  }
                   color="green"
                 />
               </div>
@@ -140,18 +135,15 @@ const FlexibilitySection = () => {
                   integration.
                 </p>
                 <div className="mt-1 mb-9">
-                  <H4Headline className="mb-3">
-                    Supported <GradientText color="green">use cases</GradientText>
-                  </H4Headline>
                   {/*
           <p className="mb-8 text-grey">Vike supports an unmatched amount of use cases.</p>
           */}
                   <BarChart
-                    className="pr-7"
-                    pollData={[
-                      { label: 'Vike', percentage: 100 },
-                      { label: textOtherFrameworks, percentage: 33 },
-                    ]}
+                    label={
+                      <>
+                        Supported <GradientText color="green">use cases</GradientText>
+                      </>
+                    }
                     color="green"
                   />
                 </div>
