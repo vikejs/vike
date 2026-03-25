@@ -25,7 +25,7 @@ const bigComponents: VikeComponent[] = (
       link: 'https://vike.dev/data-fetching',
     },
     {
-      name: 'Powerful hooks',
+      name: 'Hooks',
       link: 'https://vike.dev/hooks',
     },
     {

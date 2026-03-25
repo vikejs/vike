@@ -130,9 +130,8 @@ const FlexibilitySection = () => {
                   lifecycle, pre-rendering, state management, and more.
                 </p>
                 <p className="my-5">
-                  Hooks unlock unmatched deep integrations — use them directly for maximum control, or via Vike
-                  extensions such as <code>vike-react</code> and <code>vike-react-apollo</code> for zero-config
-                  integration.
+                  Hooks unlock deep integrations — use them directly for maximum control, or via Vike extensions such as{' '}
+                  <code>vike-react</code> and <code>vike-react-apollo</code> for zero-config integrations.
                 </p>
                 <div className="mt-1 mb-9">
                   {/*
