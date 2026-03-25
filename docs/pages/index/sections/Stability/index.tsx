@@ -89,7 +89,7 @@ const StabilitySection = () => {
           <GlassContainer>
             <div className={verticalPaddingClass}>
               <H2Headline>
-                <GradientText color="blue">Stable interests</GradientText>
+                <GradientText color="blue">Stable, aligned interests</GradientText>
               </H2Headline>
               <p className="my-5">
                 Upfront and transparent pricing you can trust, instead of hidden monetization lock-in mechanisms.

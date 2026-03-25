@@ -110,7 +110,7 @@ type Usp = {
 
 export const taglineFreedom = 'Build with minimal limitations.'
 export const taglineStability = 'Build on a stable foundation you can rely on.'
-export const taglineDX = 'Experience state-of-the-art and novel DX.'
+export const taglineDX = 'State-of-the-art and novel Developer Experiences.'
 
 export const landingPageHeroUsps: Usp[] = [
   {

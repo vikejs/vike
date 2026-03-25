@@ -9,8 +9,12 @@ import GlassContainer from '../../components/GlassContainer'
 import { Link } from '@brillout/docpress'
 import { brands } from '../../../../components'
 
-const taglineSecondary =
-  "Minimal-lock-in framework that prioritizes application stability and development freedom, powered by an open foundation built for JavaScript's rapidly evolving ecosystem."
+const taglineSecondary = (
+  <>
+    Vike is a <b className="font-semibold">minimal-lock-in</b> framework that powers mission-critical applications with
+    unmatched stability and development freedom.
+  </>
+)
 
 const IntroSection = () => {
   const getStartedButtonRef = useRef<HTMLAnchorElement>(null)
@@ -85,8 +89,8 @@ const TeamQuote = () => {
         'https://github.com/brillout.png?size=100',
       ]}
     >
-      We started Vike 5 years ago with a bold mission: build the last framework you'll need — a rock-solid foundation
-      with powerful hooks, ready to embrace JavaScript's future.
+      We started Vike 5 years ago with a bold mission — to build the last framework you'll need — powered by a stable
+      foundation, with powerful hooks ready to embrace JavaScript's future.
     </Blockquote>
   )
 }
