@@ -13,6 +13,10 @@ const defaultPollData: [BarChartData, BarChartData] = [
   { label: 'Vike', percentage: 100 },
   { label: 'Other frameworks', percentage: 33, minWidth: 108 },
 ]
+/** Truly zero-padding text block if text has no descenders (like p, g, y).
+ *  - `leading-none` => `line-height: 1`
+ */
+const heightText = 'leading-none h-[0.8em]'
 
 interface BarChartProps extends React.HTMLAttributes<HTMLDivElement> {
   pollData?: [BarChartData, BarChartData]
@@ -37,7 +41,7 @@ const BarChart = ({ color, className, label, ...props }: BarChartProps) => {
             <div key={data.label}>
               <div className="w-full h-4 md:h-5 to-base-200 via-base-200 via-60% bg-linear-to-l">
                 <StyledBar style={barStyle} $color={color} $won={data.label === winningEntry.label}>
-                  <span className="text-tiny md:text-sm font-mono whitespace-nowrap relative md:top-[1px]">
+                  <span className={`text-tiny md:text-sm font-mono whitespace-nowrap ${heightText}`}>
                     {data.label}
                   </span>
                 </StyledBar>
