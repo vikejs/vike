@@ -122,7 +122,7 @@ const EcoComponents = () => {
                       <a
                         href={component.link}
                         target="_blank"
-                        className="py-0.5 px-0.5 md:py-1 md:px-2 w-full text-accent/70 hover:text-accent text-tiny md:text-xs"
+                        className="py-0.5 px-1 md:py-1 md:px-2 w-full text-accent/70 hover:text-accent text-tiny md:text-xs"
                       >
                         {component.name}
                       </a>
