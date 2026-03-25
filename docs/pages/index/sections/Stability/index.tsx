@@ -7,7 +7,6 @@ import BarChart from '../../components/BarChart'
 import { stabilityUspImg, UspCategoryId } from '../../util/constants'
 import GlassContainer from '../../components/GlassContainer'
 import StableGraphic from './StableGraphic'
-import { textOtherFrameworks } from '../Flexibility'
 import MiniPricingStrip from './MiniPricingStrip'
 import { ChevronsRight } from 'lucide-react'
 import { ClosingWords } from '../Dx/DxContent'
@@ -65,10 +64,6 @@ const StabilitySection = () => {
                   <GradientText color="blue">Legacy</GradientText> support
                 </>
               }
-              pollData={[
-                { label: 'Vike', percentage: 100 },
-                { label: textOtherFrameworks, percentage: 33 },
-              ]}
               color="blue"
             />
           </div>
@@ -80,10 +75,6 @@ const StabilitySection = () => {
                   <GradientText color="green">Cutting-edge </GradientText> support
                 </>
               }
-              pollData={[
-                { label: 'Vike', percentage: 100 },
-                { label: textOtherFrameworks, percentage: 33 },
-              ]}
               color="green"
             />
           </div>

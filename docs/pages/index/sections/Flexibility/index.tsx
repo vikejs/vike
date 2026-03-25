@@ -15,8 +15,6 @@ import { freedomUspImg, taglineFreedom, UspCategoryId } from '../../util/constan
 import { smoothScrollToSelector } from '../../util/gsap.utils'
 import { ClosingWords } from '../Dx/DxContent'
 
-export const textOtherFrameworks = 'Other'
-
 const FlexibilitySection = () => {
   const onSeeUseCasesClick = (ev: React.MouseEvent<HTMLAnchorElement>) => {
     ev.preventDefault()
@@ -92,11 +90,6 @@ const FlexibilitySection = () => {
                       Supported <GradientText color="green">tools</GradientText>
                     </>
                   }
-                  // TODO/ai remove pollData (observe that all <BarChart> usage have the exact same pollData, define `pollData` as an internal const)
-                  pollData={[
-                    { label: 'Vike', percentage: 100 },
-                    { label: textOtherFrameworks, percentage: 33 },
-                  ]}
                   color="green"
                 />
               </div>
@@ -108,10 +101,6 @@ const FlexibilitySection = () => {
                       Supported <GradientText color="green">stacks</GradientText>
                     </>
                   }
-                  pollData={[
-                    { label: 'Vike', percentage: 100 },
-                    { label: textOtherFrameworks, percentage: 33 },
-                  ]}
                   color="green"
                 />
               </div>
@@ -156,10 +145,6 @@ const FlexibilitySection = () => {
                         Supported <GradientText color="green">use cases</GradientText>
                       </>
                     }
-                    pollData={[
-                      { label: 'Vike', percentage: 100 },
-                      { label: textOtherFrameworks, percentage: 33 },
-                    ]}
                     color="green"
                   />
                 </div>
