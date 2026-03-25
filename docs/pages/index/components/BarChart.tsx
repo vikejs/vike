@@ -19,7 +19,7 @@ const BarChart = ({ pollData, color, className, label, ...props }: BarChartProps
 
   return (
     <div className={className} {...props}>
-      {label && <H4Headline className="mb-2 md:mb-3">{label}</H4Headline>}
+      <H4Headline className="mb-2 md:mb-3">{label}</H4Headline>
       <div className="flex flex-col gap-1">
         {pollData.map((data) => {
           const barWidth = `${data.percentage}%`
