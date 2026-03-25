@@ -10,7 +10,7 @@ interface StableGraphicLegendProps {
 
 const legendCopy: Record<StableGraphicLegendKind, string> = {
   vike: 'Vike internal components',
-  ecosystem: 'JavaScript tools',
+  ecosystem: 'Tools',
   hooks: 'Vike hooks',
 }
 

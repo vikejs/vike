@@ -29,7 +29,7 @@ const StabilitySection = () => {
               </>
             }
             sub=<>
-              <b className="font-extrabold">Decoupled</b> from unstable fast-evolving JavaScript tools.
+              <b className="font-extrabold">Decoupled</b> from unstable fast-evolving tools.
             </>
             color="blue"
           />
