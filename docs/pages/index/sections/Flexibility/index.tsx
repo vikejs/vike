@@ -139,7 +139,6 @@ const FlexibilitySection = () => {
           <p className="mb-8 text-grey">Vike supports an unmatched amount of use cases.</p>
           */}
                   <BarChart
-                    className="pr-7"
                     label={
                       <>
                         Supported <GradientText color="green">use cases</GradientText>

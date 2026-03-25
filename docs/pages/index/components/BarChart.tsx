@@ -11,7 +11,7 @@ type BarChartData = {
 
 const defaultPollData: [BarChartData, BarChartData] = [
   { label: 'Vike', percentage: 100 },
-  { label: 'Other framework', percentage: 33, minWidth: 132 },
+  { label: 'Other frameworks', percentage: 33, minWidth: 108 },
 ]
 
 interface BarChartProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -37,7 +37,7 @@ const BarChart = ({ color, className, label, ...props }: BarChartProps) => {
             <div key={data.label}>
               <div className="w-full h-4 md:h-5 to-base-200 via-base-200 via-60% bg-linear-to-l">
                 <StyledBar style={barStyle} $color={color} $won={data.label === winningEntry.label}>
-                  <span className="text-xs md:text-sm font-mono whitespace-nowrap relative md:top-[1px]">
+                  <span className="text-tiny md:text-sm font-mono whitespace-nowrap relative md:top-[1px]">
                     {data.label}
                   </span>
                 </StyledBar>
@@ -53,7 +53,7 @@ const BarChart = ({ color, className, label, ...props }: BarChartProps) => {
 export default BarChart
 
 const StyledBar = cm.div.variants<{ $color: UiColorVariantKey; $won: boolean }>({
-  base: 'h-full rounded-md md:rounded-lg flex items-center pl-3 relative',
+  base: 'h-full rounded-md md:rounded-lg flex items-center pl-1 md:pl-3 relative',
   variants: {
     $color: UiVariantBgColor,
     $won: {
