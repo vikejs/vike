@@ -36,7 +36,8 @@ const StabilitySection = () => {
           <LayoutComponent $size="sm" className="mb-8 md:w-3/4 lg:w-2/3 mx-auto">
             <p>
               Vike's internal components are <b className="font-semibold">stable primitives</b> that remain relevant for
-              the foreseeable future. <b className="font-normal">Unstable and/or fast-evolving tools aren't built into Vike by design</b> —
+              the foreseeable future.{' '}
+              <b className="font-normal">Unstable and/or fast-evolving tools aren't built into Vike by design</b> —
               instead, Vike extensions provide deep and first-class integrations with cutting-edge tools.
             </p>
           </LayoutComponent>
