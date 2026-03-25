@@ -14,7 +14,6 @@ const SectionFrame = cm.div.variants<{ $tone: 'ecosystem' | 'vike' }>({
     border
     px-2.5 py-2.5
     md:px-4 md:py-3
-    shadow-[0_24px_80px_-44px_rgba(15,23,42,0.35)]
   `,
   variants: {
     $tone: {
