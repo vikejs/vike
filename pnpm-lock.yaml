@@ -1571,8 +1571,8 @@ importers:
         specifier: 0.4.255
         version: link:../../packages/vike
       vike-photon:
-        specifier: ^0.1.25
-        version: 0.1.25(cgbnbrkmqugzq7n472zf3lkfq4)
+        specifier: ^0.1.26
+        version: 0.1.26(cgbnbrkmqugzq7n472zf3lkfq4)
       vike-react:
         specifier: ^0.6.21
         version: 0.6.21(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(vike@packages+vike)
@@ -1614,8 +1614,8 @@ importers:
         specifier: 0.4.255
         version: link:../../packages/vike
       vike-photon:
-        specifier: ^0.1.25
-        version: 0.1.25(y3udayy66yfkfldeeexwwue47u)
+        specifier: ^0.1.26
+        version: 0.1.26(y3udayy66yfkfldeeexwwue47u)
       vike-react:
         specifier: ^0.6.21
         version: 0.6.21(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(vike@packages+vike)
@@ -5177,11 +5177,6 @@ packages:
     engines: {node: '>=20'}
     hasBin: true
 
-  '@vercel/nft@1.4.0':
-    resolution: {integrity: sha512-rr7JVnI7YGjA4lngucrWjZ7eCOJZZQaDHB+5NRGOuNc+k4PU2Lb9PmYm8uBmW8qichF7WkR2RmwmhXHBhx6wzw==}
-    engines: {node: '>=20'}
-    hasBin: true
-
   '@vercel/nft@1.5.0':
     resolution: {integrity: sha512-IWTDeIoWhQ7ZtRO/JRKH+jhmeQvZYhtGPmzw/QGDY+wDCQqfm25P9yIdoAFagu4fWsK4IwZXDFIjrmp5rRm/sA==}
     engines: {node: '>=20'}
@@ -8634,8 +8629,8 @@ packages:
   vfile@6.0.3:
     resolution: {integrity: sha512-KzIbH/9tXat2u30jf+smMwFCsno4wHVdNmzFyL+T/L3UGqqk6JKfVqOFOZEpZSHADH1k40ab6NUIXZq422ov3Q==}
 
-  vike-photon@0.1.25:
-    resolution: {integrity: sha512-vvK2cDmhG+VKijg4Ec1Fq3ZlNplOj/OjI7i1wSp2QPtDUbCZhzKObvM3ZLGTTDkf6fEas0mPXGqLRyRnD0yyuA==}
+  vike-photon@0.1.26:
+    resolution: {integrity: sha512-3Z3bfc10bTnKOJsRJm9Bo+ykaJ/K8+9OFkR7jIKSL4qhE5nqh2Hrs60tDATW7/UaUF972kPWCNp+AEyintiXCA==}
     peerDependencies:
       '@photonjs/cloudflare': '>=0.0.9'
       '@photonjs/core': ^0.1.0
@@ -12145,25 +12140,6 @@ snapshots:
       bindings: 1.5.0
       estree-walker: 2.0.2
       glob: 13.0.0
-      graceful-fs: 4.2.11
-      node-gyp-build: 4.8.4
-      picomatch: 4.0.4
-      resolve-from: 5.0.0
-    transitivePeerDependencies:
-      - encoding
-      - rollup
-      - supports-color
-
-  '@vercel/nft@1.4.0(rollup@4.43.0)':
-    dependencies:
-      '@mapbox/node-pre-gyp': 2.0.3
-      '@rollup/pluginutils': 5.3.0(rollup@4.43.0)
-      acorn: 8.16.0
-      acorn-import-attributes: 1.9.5(acorn@8.16.0)
-      async-sema: 3.1.1
-      bindings: 1.5.0
-      estree-walker: 2.0.2
-      glob: 13.0.6
       graceful-fs: 4.2.11
       node-gyp-build: 4.8.4
       picomatch: 4.0.4
@@ -16233,7 +16209,7 @@ snapshots:
 
   standaloner@0.2.2(rollup@4.43.0):
     dependencies:
-      '@vercel/nft': 1.4.0(rollup@4.43.0)
+      '@vercel/nft': 1.5.0(rollup@4.43.0)
       acorn: 8.16.0
       estree-walker: 3.0.3
       magic-string: 0.30.21
@@ -16725,7 +16701,7 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.2
 
-  vike-photon@0.1.25(cgbnbrkmqugzq7n472zf3lkfq4):
+  vike-photon@0.1.26(cgbnbrkmqugzq7n472zf3lkfq4):
     dependencies:
       '@brillout/picocolors': 1.0.30
       '@brillout/vite-plugin-server-entry': 0.7.18
@@ -16755,7 +16731,7 @@ snapshots:
       - srvx
       - supports-color
 
-  vike-photon@0.1.25(y3udayy66yfkfldeeexwwue47u):
+  vike-photon@0.1.26(y3udayy66yfkfldeeexwwue47u):
     dependencies:
       '@brillout/picocolors': 1.0.30
       '@brillout/vite-plugin-server-entry': 0.7.18
