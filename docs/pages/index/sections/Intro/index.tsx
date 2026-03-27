@@ -11,8 +11,8 @@ import { brands } from '../../../../components'
 
 const taglineSecondary = (
   <>
-    Vike is a <b className="font-semibold">minimal-lock-in</b> framework that powers mission-critical applications with
-    unmatched stability and development freedom.
+    <b className="font-semibold">Minimal-lock-in</b> framework powering mission-critical applications with unmatched
+    stability and development freedom.
   </>
 )
 
