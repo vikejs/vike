@@ -1,3 +1,4 @@
+export { Abort }
 export { redirect }
 export { render }
 export { RenderErrorPage }
@@ -71,6 +72,21 @@ function redirect(url: string, statusCode?: 301 | 302): AbortRedirect {
       url,
       statusCode,
     },
+  })
+  return AbortRender(pageContextAbort)
+}
+
+/**
+ * Abort page navigation
+ */
+function Abort() {
+  const abortCaller = 'throw Abort()' as const
+
+  const pageContextAbort = {}
+  objectAssign(pageContextAbort, {
+    _abortCaller: abortCaller,
+    _abortCall: `Abort()` as const,
+    _navAbort: true,
   })
   return AbortRender(pageContextAbort)
 }

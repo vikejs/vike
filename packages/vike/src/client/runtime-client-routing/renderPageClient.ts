@@ -461,6 +461,13 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     addNewPageContextAborted(pageContextsAborted, pageContext, pageContextAbort, getPageContextPublicClientMinimal)
 
+    // throw Abort()
+    if (pageContextAbort._navAbort) {
+      console.log(pageContext.urlOriginal)
+      redirectHard(pageContext.urlOriginal)
+      return { skip: true }
+    }
+
     // throw render('/some-url')
     if (pageContextAbort._urlRewrite) {
       await renderPageClient({
