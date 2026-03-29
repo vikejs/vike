@@ -52,9 +52,9 @@ In theory, since Vike is 100% open source, you could fork it, remove the pesky t
 
 The implementation is 100% offline (no server requests):
  - Asymmetric encryption to validate license keys.
- - Reads your Vike configuration (e.g. number of `+Page.js` files) and Git history (e.g. number of Git commits) to distinguish small apps from larger apps.
+ - Offline heuristic: the `vike` npm package analyzes your Vike configuration (e.g. number of `+Page.js` files) and Git history (e.g. commit count) to distinguish small apps from larger ones.
 
-**Your privacy is fully preserved**: no telemetry, no server requests. The only information Vike collects about you is when you purchase a license — just like a SaaS.
+**Your privacy is fully preserved**: no telemetry, no server requests. The only personal information Vike collects is when you purchase a license — just like a SaaS.
 
 
 ## Is Vike still Free Software?
