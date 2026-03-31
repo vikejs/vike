@@ -10,6 +10,9 @@
 ### Performance Improvements
 
 * remove slow plugin when not needed (fix [#3086](https://github.com/vikejs/vike/issues/3086)) ([#3187](https://github.com/vikejs/vike/issues/3187)) ([567fe61](https://github.com/vikejs/vike/commit/567fe61f1d7a0c9854219cc1bdf9add967d4bf05))
+
+
+
 ## [0.4.255](https://github.com/vikejs/vike/compare/v0.4.254...v0.4.255) (2026-02-27)
 
 
