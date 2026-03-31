@@ -47,10 +47,5 @@
     "playwright-chromium": "1.57.0",
     "vitest": "^4.1.2"
   },
-  "packageManager": "pnpm@9.15.9",
-  "pnpm": {
-    "overrides": {
-      "react-streaming": "^0.4.17"
-    }
-  }
+  "packageManager": "pnpm@9.15.9"
 }
