@@ -7,12 +7,11 @@
   },
   "dependencies": {
     "@universal-middleware/core": "^0.4.17",
-    "@vikejs/express": "^0.2.0",
+    "@vikejs/express": "^0.2.1",
     "@vitejs/plugin-react": "^4.7.0",
     "express": "^5.2.1",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "srvx": "^0.11.5",
     "telefunc": "^0.2.19",
     "vike-react": "^0.6.21"
   },

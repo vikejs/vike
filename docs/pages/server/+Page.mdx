@@ -53,8 +53,7 @@ Vike provides a middleware that can be used with any server framework. It handle
     // +server.ts
 
     import express from 'express'
-    import vike from '@vikejs/express'
-    import { toFetchHandler } from 'srvx/node'
+    import vike, { toFetchHandler } from '@vikejs/express'
 
     const app = express()
     vike(app)
@@ -69,8 +68,7 @@ Vike provides a middleware that can be used with any server framework. It handle
     // +server.ts
 
     import fastify from 'fastify'
-    import vike from '@vikejs/fastify'
-    import { toFetchHandler } from 'srvx/node'
+    import vike, { toFetchHandler } from '@vikejs/fastify'
 
     const app = fastify()
     await vike(app)

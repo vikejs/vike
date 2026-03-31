@@ -166,8 +166,7 @@ Replace `@photonjs/*` with `@vikejs/*`. It's recommended to move your server ent
     // +server.ts
 
     import express from 'express'
-    import vike from '@vikejs/express' // [!code ++]
-    import { toFetchHandler } from 'srvx/node' // [!code ++]
+    import vike, { toFetchHandler } from '@vikejs/express' // [!code ++]
 
     const app = express()
     vike(app) // [!code ++]
@@ -182,8 +181,7 @@ Replace `@photonjs/*` with `@vikejs/*`. It's recommended to move your server ent
     // +server.ts
 
     import fastify from 'fastify'
-    import vike from '@vikejs/fastify' // [!code ++]
-    import { toFetchHandler } from 'srvx/node' // [!code ++]
+    import vike, { toFetchHandler } from '@vikejs/fastify' // [!code ++]
 
     const app = fastify()
     await vike(app) // [!code ++]

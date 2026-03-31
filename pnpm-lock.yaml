@@ -1769,8 +1769,8 @@ importers:
         specifier: ^0.4.17
         version: 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.9)
       '@vikejs/express':
-        specifier: ^0.2.0
-        version: 0.2.0(@hattip/core@0.0.49)(@types/express@5.0.6)(express@5.2.1)(fastify@5.7.4)(srvx@0.11.9)(vike@packages+vike)
+        specifier: ^0.2.1
+        version: 0.2.1(@hattip/core@0.0.49)(@types/express@5.0.6)(express@5.2.1)(fastify@5.7.4)(vike@packages+vike)
       '@vitejs/plugin-react':
         specifier: ^4.7.0
         version: 4.7.0(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
@@ -1783,9 +1783,6 @@ importers:
       react-dom:
         specifier: ^19.2.4
         version: 19.2.4(react@19.2.4)
-      srvx:
-        specifier: ^0.11.5
-        version: 0.11.9
       telefunc:
         specifier: ^0.2.19
         version: 0.2.19(@babel/core@7.29.0)(@babel/parser@7.29.0)(@babel/types@7.29.0)(react-streaming@0.4.16(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
@@ -4585,8 +4582,8 @@ packages:
   '@vercel/routing-utils@6.0.2':
     resolution: {integrity: sha512-XFsvKoRhwwxKC8jnnefhjYG02g5qpHc2PCxd2EKEVLiHQLF9un8HEA6+R0OfazN0daVj3SxjTDVnFClVREjg1Q==}
 
-  '@vikejs/express@0.2.0':
-    resolution: {integrity: sha512-n6WMt4N7hS1+KbxFaeJEnKSaLmNVthuEo2ov2JPISCL9KnghRFF5TVnXLdff4XyHNdm8+4AdqG66hU/NQjvD2A==}
+  '@vikejs/express@0.2.1':
+    resolution: {integrity: sha512-cam/I3skoxHc2GFNfcV4Icj6T2AM1cisXoN5BXsxphpAKciP+Z8RvIaEWBCBBVmEmUMST4IQ6nC6f4XMScfdvQ==}
     peerDependencies:
       express: ^4.0.0 || ^5.0.0
       vike: ^0.4.255
@@ -10288,10 +10285,11 @@ snapshots:
     optionalDependencies:
       ajv: 6.12.6
 
-  '@vikejs/express@0.2.0(@hattip/core@0.0.49)(@types/express@5.0.6)(express@5.2.1)(fastify@5.7.4)(srvx@0.11.9)(vike@packages+vike)':
+  '@vikejs/express@0.2.1(@hattip/core@0.0.49)(@types/express@5.0.6)(express@5.2.1)(fastify@5.7.4)(vike@packages+vike)':
     dependencies:
       '@universal-middleware/express': 0.4.26(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.9)
       express: 5.2.1
+      srvx: 0.11.9
       vike: link:packages/vike
     transitivePeerDependencies:
       - '@cloudflare/workers-types'
@@ -10302,7 +10300,6 @@ snapshots:
       - fastify
       - h3
       - hono
-      - srvx
 
   '@vikejs/hono@0.2.0(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.9)(vike@packages+vike)':
     dependencies:

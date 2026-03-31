@@ -1,6 +1,5 @@
-import vike from '@vikejs/express'
+import vike, { toFetchHandler } from '@vikejs/express'
 import express from 'express'
-import { toFetchHandler } from 'srvx/node'
 
 const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000
 
