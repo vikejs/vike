@@ -1,4 +1,4 @@
-import { Link } from '@brillout/docpress'
+import { Link, Warning } from '@brillout/docpress'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import '../../../components/tabs.css'
 
@@ -229,7 +229,101 @@ Replace `@photonjs/*` with `@vikejs/*`. Your server entry should now be named `+
   </TabPanel>
 </Tabs>
 
-## 5. Advanced `photon` options
+## 5. `serve()` options
+
+<Warning>
+  <p>Previously, `serve()` options impacted both the dev server and the production server.
+    Now, those options only impact the production server.</p>
+
+  If you need the equivalent options for the dev server, please refer to the [Vite documentation](https://vite.dev/config/server-options).
+  <p></p>
+</Warning>
+
+Most `serve()` options have their equivalent in `+server.ts`, under the `prod` property:
+
+#### `port`
+
+```ts
+// +server.ts
+
+export default {
+  // ...
+  prod: { // [!code ++]
+    port: 3000 // [!code ++]
+  } // [!code ++]
+}
+```
+
+#### `hostname`
+
+```ts
+// +server.ts
+
+export default {
+  // ...
+  prod: { // [!code ++]
+    hostname: 'localhost' // [!code ++]
+  } // [!code ++]
+}
+```
+
+#### `onReady`
+
+```ts
+// +server.ts
+
+export default {
+  // ...
+  prod: { // [!code ++]
+    onReady(server) { // [!code ++]
+      // `server` is now an instance of srvx Server. See https://srvx.h3.dev/guide/server
+    }, // [!code ++]
+  } // [!code ++]
+}
+```
+
+#### `onCreate`
+
+```ts
+// +server.ts
+
+export default {
+  // ...
+  prod: { // [!code ++]
+    onCreate(server) { // [!code ++]
+      // `server` is now an instance of srvx Server. See https://srvx.h3.dev/guide/server
+    }, // [!code ++]
+  } // [!code ++]
+}
+```
+
+#### `createServer`
+
+This is now built-in. This can safely be removed.
+
+#### TLS options (`serverOptions`)
+
+```ts
+// +server.ts
+
+export default {
+  // ...
+  prod: { // [!code ++]
+    tls: { // [!code ++]
+      cert: './server.crt', // [!code ++]
+      key: './server.key', // [!code ++]
+      // optional
+      passphrase: 'passphrase' // [!code ++]
+    } // [!code ++]
+  } // [!code ++]
+}
+```
+
+#### Advanced `serverOptions`
+
+Those options should now be passed to `prod.node`, `prod.bun` or `prod.deno`. See https://srvx.h3.dev/guide/options#nodejs
+
+## 6. Advanced `photon` options
 
 Make sure that all `photon` options are removed from `+config.ts`:
 
@@ -245,7 +339,9 @@ export default {
 } satisfies Config
 ```
 
-`photon.standalone`: Replace with [standaloner](https://github.com/nitedani/standaloner/?tab=readme-ov-file#with-vite):
+#### `photon.standalone`
+
+Replace with [standaloner](https://github.com/nitedani/standaloner/?tab=readme-ov-file#with-vite)
 
 ```ts
 // vite.config.ts
@@ -258,7 +354,9 @@ export default defineConfig({
 });
 ```
 
-`photon.compress`: Replace with [compress](https://universal-middleware.dev/middlewares/compress):
+#### `photon.compress`
+
+Replace with [compress](https://universal-middleware.dev/middlewares/compress)
 
 ```ts
 // +server.ts
@@ -272,7 +370,9 @@ const app = new Hono()
 vike(app, [compress()]) // [!code ++]
 ```
 
-`photon.static`: Replace with `static` option in your server entry:
+#### `photon.static`
+
+Replace with `static` option in your server entry
 
 ```ts
 // +server.ts
