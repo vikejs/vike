@@ -117,3 +117,5 @@ import { PageContextBuiltInServer } from './PageContext.js'
  */
 type PageContextBuiltIn<Page = any> = PageContextBuiltInServer<Page>
 export type { PageContextBuiltIn }
+
+export type { Server } from './Server.js'

@@ -1,3 +1,4 @@
+import type { Server } from 'vike/types'
 import vike, { toFetchHandler } from '@vikejs/express'
 import express from 'express'
 
@@ -15,5 +16,5 @@ async function serve() {
 
 export default {
   fetch: await serve(),
-  port,
-}
+  prod: { port },
+} satisfies Server

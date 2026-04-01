@@ -13,6 +13,7 @@ import { pluginCommon } from './pluginUniversalDeploy/common.js'
 import { hasVikeServerOrVikePhoton } from './pluginUniversalDeploy/detectDeprecated.js'
 import { getServerInfo } from './pluginUniversalDeploy/getServerInfo.js'
 import { pluginResolveAlias } from './pluginUniversalDeploy/pluginResolveAlias.js'
+import { pluginUnwrapProdOptions } from './pluginUniversalDeploy/pluginUnwrapProdOptions.js'
 
 import '../assertEnvVite.js'
 
@@ -52,12 +53,12 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
       },
       ...pluginCommon,
     },
-    pluginVikeVirtualEntry(serverEntryId),
+    pluginVikeVirtualEntry(serverFilePath ?? serverEntryId),
     pluginResolveAlias(),
   ]
 
   if (serverFilePath) {
-    plugins.push(pluginVikeVirtualEntry(serverFilePath))
+    plugins.push(pluginUnwrapProdOptions(serverFilePath))
   }
 
   return plugins
