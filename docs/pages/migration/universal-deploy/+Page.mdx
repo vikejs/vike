@@ -136,7 +136,7 @@ export default {
 
 ## 4. Move server entry to `+server.ts`
 
-Replace `@photonjs/*` with `@vikejs/*`. It's recommended to move your server entry to `+server.ts` and use the `export default { fetch }` syntax.
+Replace `@photonjs/*` with `@vikejs/*`. Your server entry should now be named `+server.ts` at the root of your project, and use the `export default { fetch }` syntax.
 
 <Tabs>
   <TabList>
@@ -150,6 +150,7 @@ Replace `@photonjs/*` with `@vikejs/*`. It's recommended to move your server ent
     ```ts
     // +server.ts
 
+    import type { Server } from 'vike/types' // [!code ++]
     import { Hono } from 'hono'
     import vike from '@vikejs/hono' // [!code ++]
 
@@ -158,13 +159,14 @@ Replace `@photonjs/*` with `@vikejs/*`. It's recommended to move your server ent
 
     export default { // [!code ++]
       fetch: app.fetch // [!code ++]
-    } // [!code ++]
+    } satisfies Server // [!code ++]
     ```
   </TabPanel>
   <TabPanel>
     ```ts
     // +server.ts
 
+    import type { Server } from 'vike/types' // [!code ++]
     import express from 'express'
     import vike, { toFetchHandler } from '@vikejs/express' // [!code ++]
 
@@ -173,13 +175,14 @@ Replace `@photonjs/*` with `@vikejs/*`. It's recommended to move your server ent
 
     export default { // [!code ++]
       fetch: toFetchHandler(app) // [!code ++]
-    } // [!code ++]
+    } satisfies Server // [!code ++]
     ```
   </TabPanel>
   <TabPanel>
     ```ts
     // +server.ts
 
+    import type { Server } from 'vike/types' // [!code ++]
     import fastify from 'fastify'
     import vike, { toFetchHandler } from '@vikejs/fastify' // [!code ++]
 
@@ -188,13 +191,14 @@ Replace `@photonjs/*` with `@vikejs/*`. It's recommended to move your server ent
 
     export default { // [!code ++]
       fetch: toFetchHandler(app) // [!code ++]
-    } // [!code ++]
+    } satisfies Server // [!code ++]
     ```
   </TabPanel>
   <TabPanel>
     ```ts
     // +server.ts
 
+    import type { Server } from 'vike/types' // [!code ++]
     import { createApp, toWebHandler } from 'h3' // [!code ++]
     // @docpress-uncomment import { createApp } from 'h3' // [!code --]
     import vike from '@vikejs/h3' // [!code ++]
@@ -204,13 +208,14 @@ Replace `@photonjs/*` with `@vikejs/*`. It's recommended to move your server ent
 
     export default { // [!code ++]
       fetch: toWebHandler(app) // [!code ++]
-    } // [!code ++]
+    } satisfies Server // [!code ++]
     ```
   </TabPanel>
   <TabPanel>
     ```ts
     // +server.ts
 
+    import type { Server } from 'vike/types' // [!code ++]
     import { Elysia } from 'elysia'
     import vike from '@vikejs/elysia' // [!code ++]
 
@@ -219,7 +224,7 @@ Replace `@photonjs/*` with `@vikejs/*`. It's recommended to move your server ent
 
     export default { // [!code ++]
       fetch: app.fetch // [!code ++]
-    } // [!code ++]
+    } satisfies Server // [!code ++]
     ```
   </TabPanel>
 </Tabs>
@@ -274,12 +279,14 @@ vike(app, [compress()]) // [!code ++]
 
 export default {
   // ...
-  // Will serve static files automatically (default)
-  // @docpress-uncomment static: true // [!code ++]
-  // Can be disabled with
-  // @docpress-uncomment static: false // [!code ++]
-  // Or serve from a custom folder
-  // @docpress-uncomment static: './public' // [!code ++]
+  prod: {
+    // Will serve static files automatically (default)
+    // @docpress-uncomment static: true // [!code ++]
+    // Can be disabled with
+    // @docpress-uncomment static: false // [!code ++]
+    // Or serve from a custom folder
+    // @docpress-uncomment static: './public' // [!code ++]
+  }
 }
 ```
 

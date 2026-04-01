@@ -9,6 +9,7 @@ It should export a default object with a `fetch` property. This makes your serve
 ```ts
 // +server.ts
 
+import type { Server } from 'vike/types'
 import { Hono } from 'hono'
 import vike from '@vikejs/hono'
 
@@ -17,7 +18,7 @@ vike(app)
 
 export default {
   fetch: app.fetch
-}
+} satisfies Server
 ```
 
 ## Integrating Vike with your server
@@ -41,6 +42,7 @@ Vike provides a middleware that can be used with any server framework. It handle
     ```ts
     // +server.ts
 
+    import type { Server } from 'vike/types'
     import { Hono } from 'hono'
     import vike from '@vikejs/hono'
 
@@ -49,7 +51,7 @@ Vike provides a middleware that can be used with any server framework. It handle
 
     export default {
       fetch: app.fetch
-    }
+    } satisfies Server
     ```
     </FileAdded>
   </TabPanel>
@@ -62,6 +64,7 @@ Vike provides a middleware that can be used with any server framework. It handle
     ```ts
     // +server.ts
 
+    import type { Server } from 'vike/types'
     import express from 'express'
     import vike, { toFetchHandler } from '@vikejs/express'
 
@@ -70,7 +73,7 @@ Vike provides a middleware that can be used with any server framework. It handle
 
     export default {
       fetch: toFetchHandler(app)
-    }
+    } satisfies Server
     ```
     </FileAdded>
   </TabPanel>
@@ -83,6 +86,7 @@ Vike provides a middleware that can be used with any server framework. It handle
     ```ts
     // +server.ts
 
+    import type { Server } from 'vike/types'
     import fastify from 'fastify'
     import vike, { toFetchHandler } from '@vikejs/fastify'
 
@@ -91,7 +95,7 @@ Vike provides a middleware that can be used with any server framework. It handle
 
     export default {
       fetch: toFetchHandler(app)
-    }
+    } satisfies Server
     ```
     </FileAdded>
   </TabPanel>
@@ -104,6 +108,7 @@ Vike provides a middleware that can be used with any server framework. It handle
     ```ts
     // +server.ts
 
+    import type { Server } from 'vike/types'
     import { createApp, toWebHandler } from 'h3'
     import vike from '@vikejs/h3'
 
@@ -112,7 +117,7 @@ Vike provides a middleware that can be used with any server framework. It handle
 
     export default {
       fetch: toWebHandler(app)
-    }
+    } satisfies Server
     ```
     </FileAdded>
   </TabPanel>
@@ -125,6 +130,7 @@ Vike provides a middleware that can be used with any server framework. It handle
     ```ts
     // +server.ts
 
+    import type { Server } from 'vike/types'
     import { Elysia } from 'elysia'
     import vike from '@vikejs/elysia'
 
@@ -133,7 +139,7 @@ Vike provides a middleware that can be used with any server framework. It handle
 
     export default {
       fetch: app.fetch
-    }
+    } satisfies Server
     ```
     </FileAdded>
   </TabPanel>
