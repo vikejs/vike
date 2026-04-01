@@ -810,11 +810,11 @@ importers:
         specifier: 0.7.18
         version: 0.7.18
       '@universal-deploy/store':
-        specifier: ^0.2.0
-        version: 0.2.0
+        specifier: ^0.2.1
+        version: 0.2.1(srvx@0.11.9)
       '@universal-deploy/vite':
-        specifier: ^0.1.0
-        version: 0.1.0(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.9)(vite@7.3.1(@types/node@20.17.17)(terser@5.38.1)(tsx@4.20.6))
+        specifier: ^0.1.1
+        version: 0.1.1(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.9)(vite@7.3.1(@types/node@20.17.17)(terser@5.38.1)(tsx@4.20.6))
       '@universal-middleware/core':
         specifier: ^0.4.17
         version: 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.9)
@@ -4415,19 +4415,24 @@ packages:
   '@ungap/structured-clone@1.3.0':
     resolution: {integrity: sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g==}
 
-  '@universal-deploy/node@0.1.3':
-    resolution: {integrity: sha512-6/MKvzJsN5Zm+MDIWgVaWbiXe27tuNx3ymWnkiE8jUWXY3FGn3RwtqD7pqE++YbSrFEdKBJX4nFizRXlRQ9aEA==}
+  '@universal-deploy/node@0.1.4':
+    resolution: {integrity: sha512-k2AXn8B76LKAb9ENL9YLFu99JIGrsYiqk2fitHikaDMCJq75q/NwIoMNHzPuypNo4IiKPW99CXPJAgR9nlu5tA==}
     peerDependencies:
       vite: '>=7.1'
     peerDependenciesMeta:
       vite:
         optional: true
 
-  '@universal-deploy/store@0.2.0':
-    resolution: {integrity: sha512-raHulMaGTtT1sK26wT8ERHeAcKLxM5Dkglo0iFjiFKJFVY34vrkHFP1qu1L+64j7zPTM3hszUaBCbR6rbqo1/A==}
+  '@universal-deploy/store@0.2.1':
+    resolution: {integrity: sha512-9CYaStacvufXAaVmaf8dxEVptqpcX5m9+vz1PIlN4gjYKlXfOdbZTuhv2xLwp3mj4jBR2/8VYdF5Vviw9cBYEA==}
+    peerDependencies:
+      srvx: ^0.11.5
+    peerDependenciesMeta:
+      srvx:
+        optional: true
 
-  '@universal-deploy/vite@0.1.0':
-    resolution: {integrity: sha512-ROv+lMpOk9Ws5CplOefv+bwxm2LeLIPD39E2xZFirRfZ0gZIXpUQh/fzVzU+B8t0Uy1Q6Lyu6xj1ON6V1iVDxQ==}
+  '@universal-deploy/vite@0.1.1':
+    resolution: {integrity: sha512-8hbVysF6arC68HAaQcRbX8ROSLU0RwO9eNR7379khAtTCw9fvZnos0oPbeE0NMTkw5gU58QJfj7memzD/tRFVQ==}
     peerDependencies:
       vite: '>=7.1'
     peerDependenciesMeta:
@@ -4530,33 +4535,39 @@ packages:
 
   '@vavite/connect@5.1.0':
     resolution: {integrity: sha512-45FfwXeMUU4SOIZNAerRwoW1agE2l2cd614Pxk0DE+YZN5xhKym/z9oGB0ueuxtFM4IhuhITUgkHZG7MOm/hlg==}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
     peerDependencies:
       vite: ^2.8.1 || 3 || 4 || 5 || 6
 
   '@vavite/expose-vite-dev-server@5.1.0':
     resolution: {integrity: sha512-IBdwcCzdksksClxH3rmf8jEKW5RS19+rJGNOin8pC4fAwrrKGFOyg2t4bnn13tzEthkyEbMrcffTNoYsxBdJWw==}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
     peerDependencies:
       vite: ^2.8.1 || 3 || 4 || 5 || 6
 
   '@vavite/multibuild-cli@5.1.0':
     resolution: {integrity: sha512-xNYolnJEHbbA/DD6xjYIbdeJZErYpvUGfWebWuRE9HZIZ+RtnALypziHpkjPFtgvwa0SlD7HLwB9JN0CIOxIKw==}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
     hasBin: true
     peerDependencies:
       vite: ^2.8.1 || 3 || 4 || 5 || 6
 
   '@vavite/multibuild@5.1.0':
     resolution: {integrity: sha512-xhJS6oAhQqDCRFFmpZWNCcAJw7145pvlfKX/IOCQX7oqulbw9amH9rdrNXmwz79UeYgOwxXpWfEavyYTPLY1KQ==}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
     peerDependencies:
       vite: ^2.8.1 || 3 || 4 || 5 || 6
 
   '@vavite/node-loader@5.1.0':
     resolution: {integrity: sha512-1cYxl6zDS661if6nudr8vWGC3uAZ5yaFTzHUaEBk4tsssjAsQ3ibHAQ3lLz0Vy/CsPRzoe7wTdRtl6NRAX8Iug==}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
     hasBin: true
     peerDependencies:
       vite: ^2.8.1 || 3 || 4 || 5 || 6
 
   '@vavite/reloader@5.1.0':
     resolution: {integrity: sha512-PTTClxgZOqx9D2Ll4hJM1Ra7V0aUzEt2Sse4QQZvh6Vxv/GAc4p5PbBGPFXuA6T4Fh9TPQIpAh3WT811SFCo+Q==}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
     peerDependencies:
       vite: ^2.8.1 || 3 || 4 || 5 || 6
 
@@ -9967,28 +9978,30 @@ snapshots:
 
   '@ungap/structured-clone@1.3.0': {}
 
-  '@universal-deploy/node@0.1.3(vite@7.3.1(@types/node@20.17.17)(terser@5.38.1)(tsx@4.20.6))':
+  '@universal-deploy/node@0.1.4(vite@7.3.1(@types/node@20.17.17)(terser@5.38.1)(tsx@4.20.6))':
     dependencies:
-      '@universal-deploy/store': 0.2.0
+      '@universal-deploy/store': 0.2.1(srvx@0.11.9)
       srvx: 0.11.9
     optionalDependencies:
       vite: 7.3.1(@types/node@20.17.17)(terser@5.38.1)(tsx@4.20.6)
 
-  '@universal-deploy/node@0.1.3(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))':
+  '@universal-deploy/node@0.1.4(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))':
     dependencies:
-      '@universal-deploy/store': 0.2.0
+      '@universal-deploy/store': 0.2.1(srvx@0.11.9)
       srvx: 0.11.9
     optionalDependencies:
       vite: 7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)
 
-  '@universal-deploy/store@0.2.0':
+  '@universal-deploy/store@0.2.1(srvx@0.11.9)':
     dependencies:
       rou3: 0.8.1
+    optionalDependencies:
+      srvx: 0.11.9
 
-  '@universal-deploy/vite@0.1.0(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.9)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))':
+  '@universal-deploy/vite@0.1.1(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.9)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))':
     dependencies:
-      '@universal-deploy/node': 0.1.3(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
-      '@universal-deploy/store': 0.2.0
+      '@universal-deploy/node': 0.1.4(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
+      '@universal-deploy/store': 0.2.1(srvx@0.11.9)
       '@universal-middleware/express': 0.4.26(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.9)
       magic-string: 0.30.21
       rou3: 0.8.1
@@ -10005,10 +10018,10 @@ snapshots:
       - hono
       - srvx
 
-  '@universal-deploy/vite@0.1.0(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.9)(vite@7.3.1(@types/node@20.17.17)(terser@5.38.1)(tsx@4.20.6))':
+  '@universal-deploy/vite@0.1.1(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.9)(vite@7.3.1(@types/node@20.17.17)(terser@5.38.1)(tsx@4.20.6))':
     dependencies:
-      '@universal-deploy/node': 0.1.3(vite@7.3.1(@types/node@20.17.17)(terser@5.38.1)(tsx@4.20.6))
-      '@universal-deploy/store': 0.2.0
+      '@universal-deploy/node': 0.1.4(vite@7.3.1(@types/node@20.17.17)(terser@5.38.1)(tsx@4.20.6))
+      '@universal-deploy/store': 0.2.1(srvx@0.11.9)
       '@universal-middleware/express': 0.4.26(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.9)
       magic-string: 0.30.21
       rou3: 0.8.1
@@ -14262,8 +14275,8 @@ snapshots:
   vite-plugin-vercel@11.0.3(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(rollup@4.43.0)(srvx@0.11.9)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6)):
     dependencies:
       '@manypkg/find-root': 3.1.0
-      '@universal-deploy/store': 0.2.0
-      '@universal-deploy/vite': 0.1.0(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.9)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
+      '@universal-deploy/store': 0.2.1(srvx@0.11.9)
+      '@universal-deploy/vite': 0.1.1(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.9)(vite@7.3.1(@types/node@24.10.2)(terser@5.38.1)(tsx@4.20.6))
       '@vercel/build-utils': 13.8.1
       '@vercel/nft': 1.3.2(rollup@4.43.0)
       '@vercel/routing-utils': 6.0.2
