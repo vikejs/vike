@@ -1,7 +1,6 @@
 import { Link, Warning, FileAdded } from '@brillout/docpress'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import '../../components/tabs.css'
-import { JustAMiddleware } from '../../components'
 
 The `+server.ts` (or `+server.js`) file defines your server entry point. It's the recommended way to integrate Vike with your server and to enable universal deployment.
 
@@ -34,6 +33,11 @@ Vike provides a middleware that can be used with any server framework. It handle
     <Tab>Elysia</Tab>
   </TabList>
   <TabPanel>
+    ```shell
+    npm i hono @vikejs/hono
+    ```
+
+    <FileAdded>
     ```ts
     // +server.ts
 
@@ -47,8 +51,14 @@ Vike provides a middleware that can be used with any server framework. It handle
       fetch: app.fetch
     }
     ```
+    </FileAdded>
   </TabPanel>
   <TabPanel>
+    ```shell
+    npm i express @vikejs/express
+    ```
+
+    <FileAdded>
     ```ts
     // +server.ts
 
@@ -62,8 +72,14 @@ Vike provides a middleware that can be used with any server framework. It handle
       fetch: toFetchHandler(app)
     }
     ```
+    </FileAdded>
   </TabPanel>
   <TabPanel>
+    ```shell
+    npm i fastify @vikejs/fastify
+    ```
+
+    <FileAdded>
     ```ts
     // +server.ts
 
@@ -77,8 +93,14 @@ Vike provides a middleware that can be used with any server framework. It handle
       fetch: toFetchHandler(app)
     }
     ```
+    </FileAdded>
   </TabPanel>
   <TabPanel>
+    ```shell
+    npm i h3 @vikejs/h3
+    ```
+
+    <FileAdded>
     ```ts
     // +server.ts
 
@@ -92,8 +114,14 @@ Vike provides a middleware that can be used with any server framework. It handle
       fetch: toWebHandler(app)
     }
     ```
+    </FileAdded>
   </TabPanel>
   <TabPanel>
+    ```shell
+    npm i elysia @vikejs/elysia
+    ```
+
+    <FileAdded>
     ```ts
     // +server.ts
 
@@ -107,12 +135,24 @@ Vike provides a middleware that can be used with any server framework. It handle
       fetch: app.fetch
     }
     ```
+    </FileAdded>
   </TabPanel>
 </Tabs>
 
-## Universal Deployment
+## Deployment
 
-When you define a `+server.ts` file, Vike can automatically build and deploy your app to various platforms like <Link href="/vercel">Vercel</Link> or <Link href="/cloudflare">Cloudflare</Link>.
+#### Node/Bun/Deno
+
+In production, run `$ node ./dist/server/index.mjs` (or Bun/Deno).
+
+#### Vercel
+
+See <Link href="/vercel" />.
+
+#### Cloudflare
+
+See <Link href="/cloudflare" />.
+
 
 ## Supported options
 
