@@ -1,5 +1,6 @@
 import { Link, Warning } from '@brillout/docpress'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
+import { default as DeprecatedServers } from '../../../components/DeprecatedServers.mdx'
 import '../../../components/tabs.css'
 
 Guide to migrate from <Link href="/vike-photon">`vike-photon`</Link> to native `universal-deploy`.
@@ -163,6 +164,8 @@ Replace `@photonjs/*` with `@vikejs/*`. Your server entry should now be named `+
     ```
   </TabPanel>
   <TabPanel>
+    <DeprecatedServers />
+
     ```ts
     // +server.ts
 
@@ -179,6 +182,8 @@ Replace `@photonjs/*` with `@vikejs/*`. Your server entry should now be named `+
     ```
   </TabPanel>
   <TabPanel>
+    <DeprecatedServers />
+
     ```ts
     // +server.ts
 

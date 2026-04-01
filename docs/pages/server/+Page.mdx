@@ -1,5 +1,6 @@
-import { Link, FileAdded } from '@brillout/docpress'
+import { Link, FileAdded, Warning } from '@brillout/docpress'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
+import { default as DeprecatedServers } from '../../components/DeprecatedServers.mdx'
 import '../../components/tabs.css'
 
 The `+server.ts` (or `+server.js`) file defines your server entry point and is the recommended way to integrate Vike with your server for universal deployment.
@@ -45,6 +46,8 @@ Vike provides a middleware that can be used with any server framework. It handle
     </FileAdded>
   </TabPanel>
   <TabPanel>
+    <DeprecatedServers />
+
     ```shell
     npm i express @vikejs/express
     ```
@@ -67,6 +70,8 @@ Vike provides a middleware that can be used with any server framework. It handle
     </FileAdded>
   </TabPanel>
   <TabPanel>
+    <DeprecatedServers />
+
     ```shell
     npm i fastify @vikejs/fastify
     ```
