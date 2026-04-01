@@ -223,6 +223,14 @@ export default {
 }
 ```
 
+<blockquote>
+  The above options apply exclusively to the production build and have no effect on the dev server.
+
+  Most of them have dev server equivalents available via the [Vite config](https://vite.dev/config/server-options).
+
+  ❓ If you have a use case that would benefit from centralizing these options, feel free to [open a discussion](https://github.com/vikejs/vike/discussions/new/choose).
+</blockquote>
+
 ## Standalone
 
 Using [standaloner](https://github.com/nitedani/standaloner/?tab=readme-ov-file#with-vite), the build output directory ([`dist/`](https://vite.dev/config/build-options.html#build-outdir)) contains everything needed for deployment. This means that, in production, only the `dist/` directory is required (you can remove `node_modules/` and skip `$ npm install`).
