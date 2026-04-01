@@ -1,0 +1,12 @@
+```js
+// /pages/admin/+guard.js
+// Applies to all admin pages: /pages/admin/**/+Page.js
+
+import { render } from 'vike/abort'
+
+export async function guard(pageContext) {
+  if (!pageContext.user.isAdmin) {
+    throw render(401, "Access forbidden")
+  }
+}
+```

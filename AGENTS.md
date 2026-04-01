@@ -28,3 +28,4 @@ List of `AGENTS.md` files:
 **MANDATORY:** After completing a task and if you made changes:
 1. Run `$ pnpm run -w format`
 2. Follow user preferences from ~/.config/AGENTS.md for commits and notifications
+3. When developing docs, do not run `pnpm run docs:build` as a validation step unless the user explicitly asks for it

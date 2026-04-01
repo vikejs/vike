@@ -1,0 +1,16 @@
+```js
+// pages/+onBeforeRoute.js
+
+export function onBeforeRoute(pageContext) {
+  console.log(pageContext.urlOriginal) // /de-DE/filme
+  const ret = extractLocale(pageContext.urlOriginal)
+  const { urlWithoutLocale, locale } = ret
+  console.log(locale) // de-DE
+  console.log(urlWithoutLocale) // /movie
+  // Make locale available as pageContext.locale
+  pageContext.locale = locale
+  // Vike's router will use pageContext.urlLogical
+  // instead of pageContext.urlOriginal
+  pageContext.urlLogical = urlWithoutLocale
+}
+```
