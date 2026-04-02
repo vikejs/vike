@@ -195,7 +195,7 @@ Replace `@photonjs/*` with `@vikejs/*`. Your server entry should now be named `+
     await vike(app) // [!code ++]
 
     export default { // [!code ++]
-      fetch: toFetchHandler(app) // [!code ++]
+      fetch: toFetchHandler(app.routing) // [!code ++]
     } satisfies Server // [!code ++]
     ```
   </TabPanel>
