@@ -8,9 +8,9 @@ The `+server.js` file defines the server entry (Hono, Express.js, ...). For exam
 ```ts
 // +server.ts
 
-import type { Server } from 'vike/types'
 import { Hono } from 'hono'
 import vike from '@vikejs/hono'
+import type { Server } from 'vike/types'
 
 const app = new Hono()
 vike(app)
@@ -47,9 +47,9 @@ It's optional — if you don't define `+server.js`, Vike uses a lightweight buil
     ```ts
     // +server.ts
 
-    import type { Server } from 'vike/types'
     import { Hono } from 'hono'
     import vike from '@vikejs/hono'
+    import type { Server } from 'vike/types'
 
     const app = new Hono()
     vike(app)
@@ -71,9 +71,9 @@ It's optional — if you don't define `+server.js`, Vike uses a lightweight buil
     ```ts
     // +server.ts
 
-    import type { Server } from 'vike/types'
     import express from 'express'
     import vike, { toFetchHandler } from '@vikejs/express'
+    import type { Server } from 'vike/types'
 
     const app = express()
     vike(app)
@@ -95,9 +95,9 @@ It's optional — if you don't define `+server.js`, Vike uses a lightweight buil
     ```ts
     // +server.ts
 
-    import type { Server } from 'vike/types'
     import fastify from 'fastify'
     import vike, { toFetchHandler } from '@vikejs/fastify'
+    import type { Server } from 'vike/types'
 
     const app = fastify()
     await vike(app)
@@ -117,9 +117,9 @@ It's optional — if you don't define `+server.js`, Vike uses a lightweight buil
     ```ts
     // +server.ts
 
-    import type { Server } from 'vike/types'
     import { createApp, toWebHandler } from 'h3'
     import vike from '@vikejs/h3'
+    import type { Server } from 'vike/types'
 
     const app = createApp()
     vike(app)
@@ -139,9 +139,9 @@ It's optional — if you don't define `+server.js`, Vike uses a lightweight buil
     ```ts
     // +server.ts
 
-    import type { Server } from 'vike/types'
     import { Elysia } from 'elysia'
     import vike from '@vikejs/elysia'
+    import type { Server } from 'vike/types'
 
     const app = new Elysia()
     vike(app)
