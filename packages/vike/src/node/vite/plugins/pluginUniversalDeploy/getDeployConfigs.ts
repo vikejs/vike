@@ -4,8 +4,10 @@ export { getDeployConfigs }
 
 import type { fromVike } from 'convert-route'
 import { assert, assertUsage, assertWarning } from '../../../../utils/assert.js'
+import { isObject } from '../../../../utils/isObject.js'
 import type { PageConfigPublicWithRoute } from '../../../../shared-server-client/page-configs/resolveVikeConfigPublic.js'
 import '../../assertEnvVite.js'
+import type { ConfigResolved } from '../../../../types/index.js'
 
 function getDeployConfigs(pageId: string, page: PageConfigPublicWithRoute) {
   const route = typeof page.route === 'string' ? page.route : null
@@ -47,14 +49,12 @@ function getDeployConfigs(pageId: string, page: PageConfigPublicWithRoute) {
   return null
 }
 
-function extractIsr(exports: unknown) {
-  if (exports === null || typeof exports !== 'object') return null
-  if (!('isr' in exports)) return null
-  const isr = (exports as { isr: unknown }).isr
-
+function extractIsr(pageConfig: ConfigResolved) {
+  if (!pageConfig.isr) return null
+  const isr = pageConfig.isr as unknown
   assertUsage(
-    typeof isr === 'object' &&
-      typeof (isr as Record<string, unknown>).expiration === 'number' &&
+    isObject(isr) &&
+      typeof isr.expiration === 'number' &&
       (
         isr as {
           expiration: number
@@ -62,7 +62,6 @@ function extractIsr(exports: unknown) {
       ).expiration > 0,
     ' `{ expiration }` must be a positive number',
   )
-
   return isr
 }
 
