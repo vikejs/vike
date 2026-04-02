@@ -3,9 +3,9 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import { DeprecatedServer } from '../../../components'
 import '../../../components/tabs.css'
 
-Guide to migrate from <Link href="/vike-photon">`vike-photon`</Link> to native `universal-deploy`.
+Guide to migrate from <Link href="/vike-photon">`vike-photon`</Link> to <Link href="/server">`+server.js`</Link>.
 
-> `vike-photon` is being replaced by a native implementation of universal deployment in Vike.
+> `vike-photon` is deprecated — Vike now has built-in support for server integration (via <Link href="/server">`+server.js`</Link>) and deployment (via [Universal Deploy](https://github.com/universal-deploy/universal-deploy)).
 
 ## 1. Update dependencies
 
@@ -204,8 +204,8 @@ Replace `@photonjs/*` with `@vikejs/*`. Your server entry should now be named `+
     // +server.ts
 
     import type { Server } from 'vike/types' // [!code ++]
-    import { createApp, toWebHandler } from 'h3' // [!code ++]
     // @docpress-uncomment import { createApp } from 'h3' // [!code --]
+    import { createApp, toWebHandler } from 'h3' // [!code ++]
     import vike from '@vikejs/h3' // [!code ++]
 
     const app = createApp()
