@@ -1,4 +1,4 @@
-export { pluginResolveAlias }
+export { pluginServerEntryAlias }
 
 import type { Plugin } from 'vite'
 import { pluginCommon } from './common.js'
@@ -6,7 +6,7 @@ import { escapeRegex } from '../../../../utils/escapeRegex.js'
 import { catchAllEntry } from '@universal-deploy/store'
 import '../../assertEnvVite.js'
 
-function pluginResolveAlias(): Plugin {
+function pluginServerEntryAlias(): Plugin {
   return {
     name: 'vike:pluginUniversalDeploy:alias',
     resolveId: {
