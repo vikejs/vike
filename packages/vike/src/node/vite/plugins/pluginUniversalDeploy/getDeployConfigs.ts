@@ -1,7 +1,6 @@
-import pc from '@brillout/picocolors'
-
 export { getDeployConfigs }
 
+import pc from '@brillout/picocolors'
 import type { fromVike } from 'convert-route'
 import { assert, assertUsage, assertWarning } from '../../../../utils/assert.js'
 import { isObject } from '../../../../utils/isObject.js'
