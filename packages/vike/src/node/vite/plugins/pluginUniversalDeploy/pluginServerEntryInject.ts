@@ -4,7 +4,7 @@ import type { Plugin } from 'vite'
 import { pluginCommon } from './common.js'
 import '../../assertEnvVite.js'
 
-export function pluginVikeVirtualEntry(serverEntryId: string): Plugin {
+export function pluginServerEntryInject(serverEntryId: string): Plugin {
   return {
     name: 'vike:pluginUniversalDeploy:serverEntry',
     apply: 'build',
