@@ -29,13 +29,13 @@ npm install wrangler @cloudflare/vite-plugin
 // vite.config.ts
 
 import vike from 'vike/plugin'
-import { cloudflare } from '@cloudflare/vite-plugin'
+import { cloudflare } from '@cloudflare/vite-plugin' // [!code ++]
 
 export default {
   plugins: [
-    cloudflare({
-       viteEnvironment: { name: 'ssr' }
-    }),
+    cloudflare({ // [!code ++]
+      viteEnvironment: { name: 'ssr' } // [!code ++]
+    }), // [!code ++]
     vike()
   ]
 }
@@ -43,7 +43,7 @@ export default {
 
 #### 2. Scripts
 
-```json
+```json5
 // package.json
 
 {
