@@ -1,6 +1,6 @@
 import { Link, FileAdded, Warning } from '@brillout/docpress'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
-import { DeprecatedServers } from '../../components'
+import { DeprecatedServer } from '../../components'
 import '../../components/tabs.css'
 
 The `+server.js` file defines the server entry (Hono, Express.js, ...). For example with Hono:
@@ -61,7 +61,7 @@ It's optional — if you don't define `+server.js`, Vike uses an built-in fallba
     </FileAdded>
   </TabPanel>
   <TabPanel>
-    <DeprecatedServers name="Express.js" />
+    <DeprecatedServer name="Express.js" />
 
     ```shell
     npm i express @vikejs/express
@@ -85,7 +85,7 @@ It's optional — if you don't define `+server.js`, Vike uses an built-in fallba
     </FileAdded>
   </TabPanel>
   <TabPanel>
-    <DeprecatedServers name="Fastify" />
+    <DeprecatedServer name="Fastify" />
 
     ```shell
     npm i fastify @vikejs/fastify
