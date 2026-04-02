@@ -3,16 +3,31 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import { default as DeprecatedServers } from '../../components/DeprecatedServers.mdx'
 import '../../components/tabs.css'
 
-The `+server.ts` (or `+server.js`) file defines your server entry point and is the recommended way to integrate Vike with your server for universal deployment.
+The `+server.js` file defines the server entry (Hono, Express.js, ...). For example with Hono:
 
-It should export a default object with a `fetch` property, making your server compatible with various platforms.
+```ts
+// +server.ts
 
-Note that this file is optional — if you don't declare one, Vike internally provides a default server entry point automatically.
+import type { Server } from 'vike/types'
+import { Hono } from 'hono'
+import vike from '@vikejs/hono'
+
+const app = new Hono()
+vike(app)
+
+export default {
+  fetch: app.fetch
+} satisfies Server
+```
+
+It's optional — if you don't define `+server.js`, Vike uses an built-in fallback server.
+
+> Vike uses [Universal Deploy](https://github.com/universal-deploy/universal-deploy) for deploying `+server.js` to any deployment provider.
+
+> Defining a `+server.js` file is the recommended way to integrate Vike with a server, but you can also use <Link href="/renderPage" /> instead.
 
 
-## Integrating Vike with your server
-
-Vike provides a middleware that can be used with any server framework. It handles the rendering of your pages.
+## Getting started
 
 <Tabs>
   <TabList>
@@ -138,7 +153,7 @@ Vike provides a middleware that can be used with any server framework. It handle
     </FileAdded>
   </TabPanel>
   <TabPanel>
-    If your server isn't supported by Vike, or you're not using a server framework, you can use `vike/fetch`:
+    If Vike doesn't have an adapter for you server, or if you aren't using any server framework, you can use `vike/fetch`:
 
     <FileAdded>
       ```ts
@@ -159,9 +174,14 @@ Vike provides a middleware that can be used with any server framework. It handle
 
 ## Deployment
 
-#### Node.js/Bun/Deno
+#### Self-hosting
 
-In production, run `$ node ./dist/server/index.mjs` (or Bun/Deno).
+```shell
+# Build for production
+vike build
+# Run the production build
+node ./dist/server/index.mjs # or Bun/Deno
+```
 
 #### Vercel
 
@@ -178,55 +198,53 @@ See <Link href="/cloudflare" />.
 // +server.ts
 
 export default {
-  // ...
-
+  // Production settings
   prod: {
     // Server port, defaults to 3000. It's ignored in Cloudflare and Vercel Edge (there
-    // isn't any server in serverless deployment).
+    // isn't any server in serverless deployments).
     port: 3000,
 
     hostname: 'localhost',
 
-    // Called once the server is accepting connections
+    // Called once the server is accepting connections.
+    // - The `server` object comes from srvx, see https://srvx.h3.dev/guide/server
+    // - This hook isn't called on Cloudflare and Vercel Edge (there isn't
+    //   any server in serverless deployments).
     onReady(server) {
-      // `server` is an instance of srvx Server. See https://srvx.h3.dev/guide/server
-
-      // This hook will not be called on Cloudflare and Vercel Edge (there
-      // isn't any server in serverless deployment)
       console.log('Server is ready.')
     },
 
     // Called once the server is created
+    // - The `server` object comes from srvx, see https://srvx.h3.dev/guide/server
+    // - This hook isn't called on Cloudflare and Vercel Edge (there isn't
+    //   any server in serverless deployments).
     onCreate(server) {
-      // `server` is an instance of srvx Server. See https://srvx.h3.dev/guide/server
-
-      // This hook will not be called on Cloudflare and Vercel Edge (there
-      // isn't any server in serverless deployment)
+      console.log('Server created.')
     },
 
-    // HTTPS Options (Node.js/Bun/Deno only)
+    // HTTPS Options (Node.js/Bun/Deno)
     tls: {
       // For example SSL/TLS key and certificate for HTTPS
       key: fs.readFileSync('/etc/letsencrypt/live/example.com/privkey.pem'),
       cert: fs.readFileSync('/etc/letsencrypt/live/example.com/fullchain.pem'),
-      // optional
+      // Optional
       passphrase: 'passphrase'
     },
 
-    // Will serve static files automatically (default)
-    static: true,
-    // Can be disabled with
+    // Serve static files automatically
+    static: true, // Default value
+    // Can be disabled:
     static: false,
-    // Or serve from a custom folder
+    // Or serve from a custom folder:
     static: './public'
   }
 }
 ```
 
 <blockquote>
-  The above settings only apply to production. For development, use [Vite's server settings](https://vite.dev/config/server-options) instead.
+  The above settings only apply to production. For development, use [Vite's server settings](https://vite.dev/config/server-options).
 
-  🚧 Server settings are separate on purpose — values usually differ between dev and prod. If you have a use case where settings share the same value in dev and prod, then [reach out](https://github.com/vikejs/vike/discussions) and we'll create server settings that apply to both dev an prod.
+  🚧 Server settings are separate because values usually differ between dev and prod. If you have a use case where settings share the same value in dev and prod, then [reach out](https://github.com/vikejs/vike/discussions) and we'll create server settings that apply to both dev an prod.
 </blockquote>
 
 ## Standalone
@@ -276,6 +294,6 @@ vike(app, [compress()]) // [!code ++]
 
 ## See also
 
-- <Link href="/migration/universal-deploy" />
 - <Link href="/vercel" />
 - <Link href="/cloudflare" />
+- <Link href="/migration/universal-deploy" />
