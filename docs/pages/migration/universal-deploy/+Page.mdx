@@ -244,7 +244,7 @@ Replace `@photonjs/*` with `@vikejs/*`. Your server entry should now be named `+
   <p></p>
 </Warning>
 
-Most `serve()` options have their equivalent in `+server.ts`, under the `prod` property:
+Most `serve()` options have their equivalent in <Link href="/server">`+server.js`</Link>, under the `prod` property:
 
 #### `port`
 
@@ -281,7 +281,6 @@ export default {
   // ...
   prod: { // [!code ++]
     onReady(server) { // [!code ++]
-      // `server` is now an instance of srvx Server. See https://srvx.h3.dev/guide/server
     }, // [!code ++]
   } // [!code ++]
 }
@@ -296,7 +295,6 @@ export default {
   // ...
   prod: { // [!code ++]
     onCreate(server) { // [!code ++]
-      // `server` is now an instance of srvx Server. See https://srvx.h3.dev/guide/server
     }, // [!code ++]
   } // [!code ++]
 }
@@ -346,7 +344,7 @@ export default {
 
 #### `photon.standalone`
 
-Replace with [standaloner](https://github.com/nitedani/standaloner/?tab=readme-ov-file#with-vite):
+Replace with [standaloner](https://github.com/nitedani/standaloner#readme):
 
 ```ts
 // vite.config.ts
@@ -366,9 +364,9 @@ Replace with [compress](https://universal-middleware.dev/middlewares/compress):
 ```ts
 // +server.ts
 
-import compress from '@universal-middleware/compress'
 import { Hono } from 'hono'
 import vike from '@vikejs/hono'
+import compress from '@universal-middleware/compress' // [!code ++]
 
 const app = new Hono()
 // Add middleware here
@@ -377,7 +375,7 @@ vike(app, [compress()]) // [!code ++]
 
 #### `photon.static`
 
-Replace with `static` option in your server entry:
+Replace with `static` option in <Link href="/server">`+server.js`</Link>:
 
 ```ts
 // +server.ts
