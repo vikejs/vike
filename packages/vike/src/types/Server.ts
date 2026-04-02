@@ -7,5 +7,5 @@ import type { Fetchable, ServerOptions } from '@universal-deploy/store'
  * https://vike.dev/server
  */
 interface Server extends Fetchable {
-  prod?: Omit<ServerOptions, 'fetch'>
+  prod?: Omit<ServerOptions, 'fetch'> & { static?: boolean | string }
 }
