@@ -2,7 +2,8 @@ export type { Server }
 
 import type { Fetchable, ServerOptions } from '@universal-deploy/store'
 
-/** Server options.
+/**
+ * Server settings.
  *
  * https://vike.dev/server
  */
