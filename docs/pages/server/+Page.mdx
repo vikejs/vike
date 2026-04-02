@@ -172,7 +172,7 @@ See <Link href="/vercel" />.
 See <Link href="/cloudflare" />.
 
 
-## Supported options
+## Settings
 
 ```js
 // +server.ts
@@ -224,11 +224,9 @@ export default {
 ```
 
 <blockquote>
-  The above options apply exclusively to the production build and have no effect on the dev server.
+  The above settings only apply to production. For development, use [Vite's server settings](https://vite.dev/config/server-options) instead.
 
-  Most of them have dev server equivalents available via the [Vite config](https://vite.dev/config/server-options).
-
-  ❓ If you have a use case that would benefit from centralizing these options, feel free to [open a discussion](https://github.com/vikejs/vike/discussions/new/choose).
+  🚧 Server settings are separate on purpose — values usually differ between dev and prod. If you have a use case where settings share the same value in dev and prod, then [reach out](https://github.com/vikejs/vike/discussions) and we'll create server settings that apply to both dev an prod.
 </blockquote>
 
 ## Standalone
