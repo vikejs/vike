@@ -2,7 +2,6 @@ import type { Plugin } from 'vite'
 import { pluginCommon } from './common.js'
 import { escapeRegex } from '../../../../utils/escapeRegex.js'
 import { catchAllEntry } from '@universal-deploy/store'
-
 import '../../assertEnvVite.js'
 
 export function pluginResolveAlias(): Plugin {
