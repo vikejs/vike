@@ -1,7 +1,6 @@
-import { toRou3 } from 'convert-route'
-
 export { pluginUniversalDeploy }
 
+import { toRou3 } from 'convert-route'
 import type { Plugin } from 'vite'
 import { addEntry } from '@universal-deploy/store'
 import universalDeploy from '@universal-deploy/vite'
