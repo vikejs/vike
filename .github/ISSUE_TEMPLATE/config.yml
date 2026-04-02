@@ -1,7 +1,7 @@
 blank_issues_enabled: false
 contact_links:
   - name: "🗨️ Discussion"
-    url: https://github.com/vikejs/vike/discussions
+    url: https://github.com/vikejs/vike/discussions/new?category=discussion
     about: "[GitHub Discussions] Get official help from Vike maintainers, ask questions, give feedback, ..."
   - name: "💬 Chat"
     url: https://discord.com/invite/hfHhnJyVg8
