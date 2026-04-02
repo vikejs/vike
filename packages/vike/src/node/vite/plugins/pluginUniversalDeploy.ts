@@ -14,7 +14,6 @@ import { hasVikeServerOrVikePhoton } from './pluginUniversalDeploy/detectDepreca
 import { getServerInfo } from './pluginUniversalDeploy/getServerInfo.js'
 import { pluginResolveAlias } from './pluginUniversalDeploy/pluginResolveAlias.js'
 import { pluginUnwrapProdOptions } from './pluginUniversalDeploy/pluginUnwrapProdOptions.js'
-
 import '../assertEnvVite.js'
 
 function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
