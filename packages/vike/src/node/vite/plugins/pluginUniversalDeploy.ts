@@ -24,7 +24,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
   if (!serverInfo) return []
   const { serverEntryVike, serverEntryId, serverFilePath } = serverInfo
 
-  const plugins: Plugin[] = [
+  return [
     ...universalDeploy(),
     {
       name: 'vike:pluginUniversalDeploy:entries',
@@ -55,11 +55,6 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
     },
     pluginServerEntryInject(serverFilePath ?? serverEntryId),
     pluginServerEntryAlias(),
-  ]
-
-  if (serverFilePath) {
-    plugins.push(pluginUnwrapProdOptions(serverFilePath))
-  }
-
-  return plugins
+    !serverFilePath ? null : pluginUnwrapProdOptions(serverFilePath),
+  ].filter((p) => p !== null)
 }
