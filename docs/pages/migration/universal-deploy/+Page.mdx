@@ -326,7 +326,7 @@ export default {
 
 #### Advanced `serverOptions`
 
-Those options should now be passed to `prod.node`, `prod.bun` or `prod.deno`. See https://srvx.h3.dev/guide/options#nodejs
+Those options should now be passed to `prod.node`, `prod.bun` or `prod.deno`, see [srvx > Runtime Specific Options](https://srvx.h3.dev/guide/options#runtime-specific-options).
 
 ## 6. Advanced `photon` options
 
@@ -346,7 +346,7 @@ export default {
 
 #### `photon.standalone`
 
-Replace with [standaloner](https://github.com/nitedani/standaloner/?tab=readme-ov-file#with-vite)
+Replace with [standaloner](https://github.com/nitedani/standaloner/?tab=readme-ov-file#with-vite):
 
 ```ts
 // vite.config.ts
@@ -361,7 +361,7 @@ export default defineConfig({
 
 #### `photon.compress`
 
-Replace with [compress](https://universal-middleware.dev/middlewares/compress)
+Replace with [compress](https://universal-middleware.dev/middlewares/compress):
 
 ```ts
 // +server.ts
@@ -377,7 +377,7 @@ vike(app, [compress()]) // [!code ++]
 
 #### `photon.static`
 
-Replace with `static` option in your server entry
+Replace with `static` option in your server entry:
 
 ```ts
 // +server.ts
