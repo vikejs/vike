@@ -194,13 +194,15 @@ See <Link href="/cloudflare" />.
 
 ## Settings
 
-```js
+```ts
 // +server.ts
+
+import type { Server } from 'vike/types'
 
 export default {
   // Production settings
   prod: {
-    // Server port, defaults to 3000. It's ignored in Cloudflare and Vercel Edge (there
+    // Server port, defaults to 3000. It's ignored on Cloudflare and Vercel Edge (there
     // isn't any server in serverless deployments).
     port: 3000,
 
@@ -214,7 +216,7 @@ export default {
       console.log('Server is ready.')
     },
 
-    // Called once the server is created
+    // Called once the server is created.
     // - The `server` object comes from srvx, see https://srvx.h3.dev/guide/server
     // - This hook isn't called on Cloudflare and Vercel Edge (there isn't
     //   any server in serverless deployments).
@@ -238,7 +240,7 @@ export default {
     // Or serve from a custom folder:
     static: './public'
   }
-}
+} satisfies Server
 ```
 
 <blockquote>
@@ -249,7 +251,7 @@ export default {
 
 ## Standalone
 
-Using [standaloner](https://github.com/nitedani/standaloner/?tab=readme-ov-file#with-vite), the build output directory ([`dist/`](https://vite.dev/config/build-options.html#build-outdir)) contains everything needed for deployment. This means that, in production, only the `dist/` directory is required (you can remove `node_modules/` and skip `$ npm install`).
+Use [standaloner](https://github.com/nitedani/standaloner#readme) to have the build output directory ([`dist/`](https://vite.dev/config/build-options.html#build-outdir)) contain everything needed for deployment. This means that, in production, only the `dist/` directory is required (you can remove `node_modules/` and skip `$ npm install`).
 
 > Skipping `node_modules/` massively reduces disk usage in production, which can be important, for example to [reduce the size of Docker images](https://github.com/photon-js/photon/issues/42#issuecomment-3549657194).
 
@@ -261,7 +263,7 @@ import standaloner from 'standaloner/vite'
 
 export default defineConfig({
   plugins: [standaloner()]
-});
+})
 ```
 
 ## HMR
@@ -273,7 +275,7 @@ If HMR isn't what you want (for example if you modify the database connection) y
 
 ## Compression
 
-You can compress all server responses using the universal [compress](https://universal-middleware.dev/middlewares/compress) middleware:
+You can compress all server responses by using the [universal compress middleware](https://universal-middleware.dev/middlewares/compress):
 
 ```shell
 npm i @universal-middleware/compress
@@ -282,12 +284,12 @@ npm i @universal-middleware/compress
 ```ts
 // +server.ts
 
-import compress from '@universal-middleware/compress'
 import { Hono } from 'hono'
 import vike from '@vikejs/hono'
+import compress from '@universal-middleware/compress' // [!code ++]
 
 const app = new Hono()
-// Add middleware here
+// Add universal middleware here (same for Express.js, Fastify, ...) // [!code ++]
 vike(app, [compress()]) // [!code ++]
 ```
 
