@@ -37,7 +37,7 @@ function getDeployConfigs(pageId: string, page: PageConfigPublicWithRoute) {
   if (isrOrEdge && route) {
     return {
       route,
-      // route: [...new Set([...toRou3(routeIr), ...getPageContextRoute(routeIr)])],
+      // route: [...new Set([...toRou3(routeIr), ...getRoutePageContextJson(routeIr)])],
       // Supported by vite-plugin-vercel@11
       vercel: {
         isr: isr ? { expiration: isr } : undefined,
@@ -85,7 +85,7 @@ function extractEdge(exports: unknown): boolean | null {
   return edge
 }
 
-export function getPageContextRoute(routeIr: ReturnType<typeof fromVike>) {
+export function getRoutePageContextJson(routeIr: ReturnType<typeof fromVike>) {
   const lastSegment = routeIr.pathname.at(-1)
   assert(lastSegment)
   if (lastSegment.catchAll) return

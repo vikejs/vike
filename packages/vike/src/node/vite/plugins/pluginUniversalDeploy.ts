@@ -8,7 +8,7 @@ import universalDeploy from '@universal-deploy/vite'
 import { fromVike } from 'convert-route/vike'
 import type { VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 import { pluginVikeVirtualEntry } from './pluginUniversalDeploy/pluginVikeVirtualEntry.js'
-import { getDeployConfigs, getPageContextRoute } from './pluginUniversalDeploy/getDeployConfigs.js'
+import { getDeployConfigs, getRoutePageContextJson } from './pluginUniversalDeploy/getDeployConfigs.js'
 import { pluginCommon } from './pluginUniversalDeploy/common.js'
 import { hasVikeServerOrVikePhoton } from './pluginUniversalDeploy/detectDeprecated.js'
 import { getServerInfo } from './pluginUniversalDeploy/getServerInfo.js'
@@ -36,7 +36,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
           if (deployConfigs !== null) {
             const { route, ...additionalConfigs } = deployConfigs
             const routeIr = fromVike(route)
-            const routeIrPageContextJson = getPageContextRoute(routeIr)
+            const routeIrPageContextJson = getRoutePageContextJson(routeIr)
             addEntry({
               ...additionalConfigs,
               id: serverEntryVike,
