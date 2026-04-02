@@ -1,5 +1,5 @@
 import { getMagicString } from '../../shared/getMagicString.js'
-import { serverEntryVirtualId as vikeVirtualEntry } from '@brillout/vite-plugin-server-entry/plugin'
+import { serverEntryVirtualId } from '@brillout/vite-plugin-server-entry/plugin'
 import type { Plugin } from 'vite'
 import { pluginCommon } from './common.js'
 import '../../assertEnvVite.js'
@@ -18,7 +18,7 @@ export function pluginVikeVirtualEntry(serverEntryId: string): Plugin {
       handler(code, id) {
         const { magicString, getMagicStringResult } = getMagicString(code, id)
         // Inject Vike virtual server entry
-        magicString.prepend(`import "${vikeVirtualEntry}";\n`)
+        magicString.prepend(`import "${serverEntryVirtualId}";\n`)
         return getMagicStringResult()
       },
     },
