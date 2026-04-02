@@ -36,12 +36,12 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
           if (deployConfigs !== null) {
             const { route, ...additionalConfigs } = deployConfigs
             const routeIr = fromVike(route)
-            const pageContextRouteIr = getPageContextRoute(routeIr)
+            const routeIrPageContextJson = getPageContextRoute(routeIr)
             addEntry({
               ...additionalConfigs,
               id: serverEntryVike,
               // Map Vike routes to rou3 format
-              route: unique([...toRou3(routeIr), ...(pageContextRouteIr ? toRou3(pageContextRouteIr) : [])]),
+              route: unique([...toRou3(routeIr), ...(routeIrPageContextJson ? toRou3(routeIrPageContextJson) : [])]),
             })
           }
         }
