@@ -8,13 +8,14 @@ import universalDeploy from '@universal-deploy/vite'
 import { fromVike } from 'convert-route/vike'
 import type { VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 import { pluginVikeVirtualEntry } from './pluginUniversalDeploy/pluginVikeVirtualEntry.js'
-import { dedupeRoute, getDeployConfigs, getPageContextRoute } from './pluginUniversalDeploy/getDeployConfigs.js'
+import { getDeployConfigs, getPageContextRoute } from './pluginUniversalDeploy/getDeployConfigs.js'
 import { pluginCommon } from './pluginUniversalDeploy/common.js'
 import { hasVikeServerOrVikePhoton } from './pluginUniversalDeploy/detectDeprecated.js'
 import { getServerInfo } from './pluginUniversalDeploy/getServerInfo.js'
 import { pluginResolveAlias } from './pluginUniversalDeploy/pluginResolveAlias.js'
 import { pluginUnwrapProdOptions } from './pluginUniversalDeploy/pluginUnwrapProdOptions.js'
 import '../assertEnvVite.js'
+import { unique } from '../../../utils/unique.js'
 
 function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
   if (hasVikeServerOrVikePhoton(vikeConfig)) return []
@@ -40,7 +41,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
               ...additionalConfigs,
               id: serverEntryVike,
               // Map Vike routes to rou3 format
-              route: dedupeRoute(...toRou3(routeIr), ...(pageContextRouteIr ? toRou3(pageContextRouteIr) : [])),
+              route: unique([...toRou3(routeIr), ...(pageContextRouteIr ? toRou3(pageContextRouteIr) : [])]),
             })
           }
         }

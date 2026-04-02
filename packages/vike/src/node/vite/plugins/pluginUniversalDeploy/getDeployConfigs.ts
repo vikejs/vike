@@ -100,7 +100,3 @@ export function getPageContextRoute(routeIr: ReturnType<typeof fromVike>) {
     ],
   }
 }
-
-export function dedupeRoute(...routes: string[]) {
-  return [...new Set(routes)]
-}
