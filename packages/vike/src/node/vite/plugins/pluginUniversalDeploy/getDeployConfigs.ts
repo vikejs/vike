@@ -34,7 +34,7 @@ function getDeployConfigs(pageId: string, page: PageConfigPublicWithRoute) {
 
   if (isCallable(route)) {
     const errMsg = (configName: '+isr' | '+edge') =>
-      `The route of the page ${pageId} is defined via a Route Function — ${configName} isn't supported. Remove ${configName} or define the page's route using a Route String (or Filesytem Routing) instead of a Route Function.`
+      `The route of the page ${pageId} is defined via a Route Function — ${configName} isn't supported. Remove ${configName} or define the page's route using a Route String (or Filesystem Routing) instead of a Route Function.`
     assertWarning(!isr, errMsg('+isr'), { onlyOnce: true })
     assertWarning(!edge, errMsg('+edge'), { onlyOnce: true })
     return null
