@@ -6,7 +6,8 @@ import '../../assertEnvVite.js'
 export function getServerInfo(vikeConfig: VikeConfigInternal) {
   let serverEntryId: string
   let serverFilePath: string | null = null
-  const serverConfig = vikeConfig.config.server
+  let serverEntryVike: string
+  const serverConfig = vikeConfig.config.server ?? true
   // universal-deploy support manually disabled by user
   if (serverConfig === false) return
   const serverPlusFile = vikeConfig._pageConfigGlobal.configValueSources.server?.[0]
@@ -15,11 +16,11 @@ export function getServerInfo(vikeConfig: VikeConfigInternal) {
     serverFilePath = serverPlusFile.definedAt.filePathAbsoluteFilesystem
     assert(serverFilePath)
     serverEntryId = serverFilePath
+    serverEntryVike = serverFilePath
   } else {
     serverEntryId = catchAllEntry
+    serverEntryVike = 'vike/fetch'
   }
-  if (serverConfig !== true && !serverFilePath) return
-  const serverEntryVike = serverFilePath ?? 'vike/fetch'
 
   return {
     // Used to filter which module ID to transform.
