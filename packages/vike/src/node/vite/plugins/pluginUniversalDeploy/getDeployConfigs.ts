@@ -1,87 +1,51 @@
 export { getDeployConfigs }
 
-import pc from '@brillout/picocolors'
 import type { fromVike } from 'convert-route'
 import { assert, assertUsage, assertWarning } from '../../../../utils/assert.js'
 import { isObject } from '../../../../utils/isObject.js'
 import type { PageConfigPublicWithRoute } from '../../../../shared-server-client/page-configs/resolveVikeConfigPublic.js'
 import '../../assertEnvVite.js'
-import type { ConfigResolved } from '../../../../types/index.js'
+import { isCallable } from '../../../../utils/isCallable.js'
 
 function getDeployConfigs(pageId: string, page: PageConfigPublicWithRoute) {
-  const route = typeof page.route === 'string' ? page.route : null
+  const { route } = page
+  if (!route) return null
 
-  // Vercel specific configs
-  const rawIsr = extractIsr(page.config)
-  let isr = assertIsr(rawIsr)
-  const edge = extractEdge(page.config)
-  const isrOrEdge = isr ? 'isr' : edge ? 'edge' : null
-
-  if (typeof page.route === 'function' && isrOrEdge) {
-    assertWarning(
-      false,
-      `Page ${pageId}: ${pc.cyan(isrOrEdge)} is not supported when using route function. Remove ${pc.cyan(isrOrEdge)} config or use a route string if possible.`,
-      { onlyOnce: true },
-    )
-    isr = null
+  // Vercel setting: +edge
+  const { edge } = page.config
+  if (edge) {
+    assertUsage(typeof edge === 'boolean', '+edge must be a boolean')
   }
 
-  if (edge && rawIsr !== null && typeof rawIsr === 'object') {
-    assertUsage(
-      false,
-      `Page ${pageId}: ISR cannot be enabled for edge functions. Remove ${pc.cyan('isr')} config or set \`{ edge: false }\`.`,
-    )
+  // Vercel setting: +isr
+  let { isr } = page.config
+  if (isr) {
+    assertUsage(isObject(isr), '+isr must be an object')
+    assertUsage(typeof isr.expiration === 'number' && isr.expiration > 0, '+isr.expiration must be a positive number')
+  }
+  if (edge) {
+    assertWarning(!isr, `Page ${pageId} — ISR isn't supported for edge functions — remove +isr or +edge`, {
+      onlyOnce: true,
+    })
+    isr = undefined
   }
 
-  if (isrOrEdge && route) {
-    return {
-      route,
-      // route: [...new Set([...toRou3(routeIr), ...getRoutePageContextJson(routeIr)])],
-      // Supported by vite-plugin-vercel@11
-      vercel: {
-        isr: isr ? { expiration: isr } : undefined,
-        edge: Boolean(edge),
-      },
-    }
+  if (!edge && !isr) return null
+
+  if (isCallable(route)) {
+    const errMsg = (configName: '+isr' | '+edge') =>
+      `The route of the page ${pageId} is defined via a Route Function — ${configName} isn't supported. Remove ${configName} or define the page's route using a Route String (or Filesytem Routing) instead of a Route Function.`
+    assertWarning(!isr, errMsg('+isr'), { onlyOnce: true })
+    assertWarning(!edge, errMsg('+edge'), { onlyOnce: true })
+    return null
   }
 
-  return null
-}
-
-function extractIsr(pageConfig: ConfigResolved) {
-  if (!pageConfig.isr) return null
-  const isr = pageConfig.isr as unknown
-  assertUsage(
-    isObject(isr) &&
-      typeof isr.expiration === 'number' &&
-      (
-        isr as {
-          expiration: number
-        }
-      ).expiration > 0,
-    ' `{ expiration }` must be a positive number',
-  )
-  return isr
-}
-
-function assertIsr(isr: object | null | undefined): number | null {
-  if (isr === null || isr === undefined) return null
-
-  return (
-    isr as {
-      expiration: number
-    }
-  ).expiration
-}
-
-function extractEdge(exports: unknown): boolean | null {
-  if (exports === null || typeof exports !== 'object') return null
-  if (!('edge' in exports)) return null
-  const edge = (exports as { edge: unknown }).edge
-
-  assertUsage(typeof edge === 'boolean', ' `{ edge }` must be a boolean')
-
-  return edge
+  return {
+    route,
+    // route: [...new Set([...toRou3(routeIr), ...getRoutePageContextJson(routeIr)])],
+    // Supported by vite-plugin-vercel@11
+    vercel: { isr, edge },
+  }
 }
 
 export function getRoutePageContextJson(routeIr: ReturnType<typeof fromVike>) {
