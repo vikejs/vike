@@ -10,7 +10,7 @@ export function getServerInfo(vikeConfig: VikeConfigInternal) {
   // universal-deploy support manually disabled by user
   if (serverConfig === false) return
   const serverPlusFile = vikeConfig._pageConfigGlobal.configValueSources.server?.[0]
-  if (serverPlusFile) {
+  if (serverPlusFile?.valueIsDefinedByPlusValueFile) {
     assert('filePathAbsoluteFilesystem' in serverPlusFile.definedAt)
     serverFilePath = serverPlusFile.definedAt.filePathAbsoluteFilesystem
     assert(serverFilePath)

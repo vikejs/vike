@@ -65,7 +65,8 @@ const optimizeDeps = {
       exclude: [
         '@brillout/import',
         '@brillout/json-serializer',
-        '@brillout/picocolors',
+        // FIXME Breaks @cloudflare/vite-plugin. Remove me if CI passes
+        // '@brillout/picocolors',
         '@brillout/vite-plugin-server-entry',
         'vike',
       ],
