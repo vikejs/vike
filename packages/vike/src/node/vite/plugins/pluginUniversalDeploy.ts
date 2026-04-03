@@ -3,7 +3,7 @@ export { pluginUniversalDeploy }
 import { toRou3 } from 'convert-route'
 import type { Plugin } from 'vite'
 import { addEntry } from '@universal-deploy/store'
-import universalDeploy from '@universal-deploy/vite'
+import universalDeploy, { resolveTargets } from '@universal-deploy/vite'
 import { fromVike } from 'convert-route/vike'
 import type { VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 import { pluginServerEntryInject } from './pluginUniversalDeploy/pluginServerEntryInject.js'
@@ -13,14 +13,26 @@ import { hasVikeServerOrVikePhoton } from './pluginUniversalDeploy/detectDepreca
 import { getServerInfo } from './pluginUniversalDeploy/getServerInfo.js'
 import { pluginServerEntryAlias } from './pluginUniversalDeploy/pluginServerEntryAlias.js'
 import { pluginUnwrapProdOptions } from './pluginUniversalDeploy/pluginUnwrapProdOptions.js'
-import '../assertEnvVite.js'
 import { unique } from '../../../utils/unique.js'
+import { assertUsage } from '../../../utils/assert.js'
+import '../assertEnvVite.js'
 
 function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
   if (hasVikeServerOrVikePhoton(vikeConfig)) return []
   const serverInfo = getServerInfo(vikeConfig)
 
-  if (!serverInfo) return []
+  if (!serverInfo)
+    return [
+      resolveTargets(({ vercel, node, netlify }) => {
+        // Cloudflare is supported even without universal-deploy
+        const target = vercel ? 'Vercel' : node ? 'Node.js' : netlify ? 'Netlify' : null
+        assertUsage(
+          target === null,
+          `Cannot target ${target} without a server entry. Either set \`server: true\` in +config.js or create a \`+server.js\` file.`,
+        )
+      }),
+    ]
+
   const { serverEntryVike, serverEntryId, serverFilePath } = serverInfo
 
   return [
