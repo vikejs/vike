@@ -3,6 +3,7 @@ import { serverEntryVirtualId } from '@brillout/vite-plugin-server-entry/plugin'
 import type { Plugin } from 'vite'
 import { pluginCommon } from './common.js'
 import '../../assertEnvVite.js'
+import { escapeRegex } from '../../../../utils/escapeRegex.js'
 
 export function pluginServerEntryInject(serverEntryId: string): Plugin {
   return {
@@ -11,9 +12,7 @@ export function pluginServerEntryInject(serverEntryId: string): Plugin {
     transform: {
       order: 'post',
       filter: {
-        id: {
-          include: [serverEntryId],
-        },
+        id: new RegExp(escapeRegex(serverEntryId)),
       },
       handler(code, id) {
         const { magicString, getMagicStringResult } = getMagicString(code, id)
