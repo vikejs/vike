@@ -8,7 +8,12 @@ export function getServerInfo(vikeConfig: VikeConfigInternal) {
   let serverFilePath: string | null = null
   let serverEntryVike: string
   // universal-deploy support must be manually enabled
-  const serverConfig = vikeConfig.config.server ?? false
+  const serverConfig: boolean =
+    // +config.js > `export default { server: true }`
+    vikeConfig.config.server ||
+    // +server.js exists
+    !!vikeConfig._pageConfigGlobal.configValueSources.server ||
+    false
   if (serverConfig === false) return
   const serverPlusFile = vikeConfig._pageConfigGlobal.configValueSources.server?.[0]
   if (serverPlusFile?.valueIsDefinedByPlusValueFile) {
