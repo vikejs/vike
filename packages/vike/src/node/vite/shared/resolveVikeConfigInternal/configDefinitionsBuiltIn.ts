@@ -338,7 +338,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     global: true,
   },
   server: {
-    env: { server: true, config: true },
+    env: { server: true },
     global: true,
   },
   cli: {
