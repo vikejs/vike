@@ -1,2 +1,2 @@
 import { testRun } from '../.testRun'
-testRun('npm run prod', { uiFramewok: 'react' })
+testRun('pnpm run prod', { uiFramewok: 'react' })

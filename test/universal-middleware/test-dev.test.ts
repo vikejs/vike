@@ -1,2 +1,2 @@
 import { testRunClassic } from '../../test/utils'
-testRunClassic('npm run dev', { skipAboutPage: true })
+testRunClassic('pnpm run dev', { skipAboutPage: true })

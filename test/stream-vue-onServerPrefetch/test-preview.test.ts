@@ -1,2 +1,2 @@
 import { test } from './test'
-test('npm run preview')
+test('pnpm run preview')

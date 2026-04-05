@@ -1,2 +1,2 @@
 import { testRun } from '../react-full/.testRun'
-testRun('vue', 'npm run preview', true)
+testRun('vue', 'pnpm run preview', true)

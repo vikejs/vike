@@ -1,2 +1,2 @@
 import { testRun } from '../.testRun'
-testRun('npm run dev', { uiFramewok: 'vue' })
+testRun('pnpm run dev', { uiFramewok: 'vue' })

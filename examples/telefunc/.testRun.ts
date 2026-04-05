@@ -2,7 +2,7 @@ export { testRun }
 
 import { page, test, expect, run, getServerUrl, autoRetry, fetchHtml } from '@brillout/test-e2e'
 
-function testRun(cmd: 'npm run dev' | 'npm run prod') {
+function testRun(cmd: 'pnpm run dev' | 'pnpm run prod') {
   run(cmd)
 
   test('HTML', async () => {

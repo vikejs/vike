@@ -14,10 +14,10 @@ import {
 } from '@brillout/test-e2e'
 import { ensureWasClientSideRouted, testCounter } from '../../test/utils'
 
-function testRun(uiFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
+function testRun(uiFramework: 'vue' | 'react', cmd: 'pnpm run dev' | 'pnpm run preview', isV1Design?: true) {
   run(cmd)
 
-  const isDev = cmd === 'npm run dev'
+  const isDev = cmd === 'pnpm run dev'
 
   test('page content is rendered to HTML', async () => {
     const html = await fetchHtml('/')

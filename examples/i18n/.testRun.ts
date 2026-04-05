@@ -2,7 +2,7 @@ export { testRun }
 
 import { run, page, test, expect, getServerUrl, fetchHtml, autoRetry } from '@brillout/test-e2e'
 
-function testRun(cmd: 'npm run dev' | 'npm run preview', isDeprecatedDesign?: true) {
+function testRun(cmd: 'pnpm run dev' | 'pnpm run preview', isDeprecatedDesign?: true) {
   run(cmd)
 
   test('localized content is rendered to HTML', async () => {

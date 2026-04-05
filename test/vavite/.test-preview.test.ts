@@ -1,5 +1,5 @@
 import { testRunClassic } from '../utils'
 
-testRunClassic('npm run preview', {
+testRunClassic('pnpm run preview', {
   serverIsReadyMessage: 'Server listening',
 })

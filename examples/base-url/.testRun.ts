@@ -5,7 +5,7 @@ import { ensureWasClientSideRouted, testCounter } from '../../test/utils'
 import assert from 'node:assert'
 
 function testRun(
-  cmd: 'npm run dev' | 'npm run preview' | 'npm run start',
+  cmd: 'pnpm run dev' | 'pnpm run preview' | 'pnpm run start',
   {
     baseServer,
     baseAssets,
@@ -16,7 +16,7 @@ function testRun(
 ) {
   const addBaseServer = (url: string) => join(baseServer, url)
   const addBaseAssets = (url: string) => join(baseAssets, url)
-  const isDev = cmd === 'npm run dev'
+  const isDev = cmd === 'pnpm run dev'
 
   run(cmd)
 

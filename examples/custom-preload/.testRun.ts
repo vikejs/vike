@@ -2,7 +2,7 @@ import { test, expect, run, partRegex, fetchHtml } from '@brillout/test-e2e'
 
 export { testRun }
 
-function testRun(cmd: 'npm run preview') {
+function testRun(cmd: 'pnpm run preview') {
   run(cmd)
 
   const hash = /[a-zA-Z0-9_-]+/
