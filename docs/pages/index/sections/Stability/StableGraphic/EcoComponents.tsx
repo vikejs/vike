@@ -25,11 +25,12 @@ const ecosystemComponents: Record<VikeEcoComponentCategory, EcoComponent[]> = {
   deploy: [
     { name: 'Self-hosting', link: 'https://en.wikipedia.org/wiki/Self-hosting_(web_services)', size: 'big' },
     { name: 'Cloudflare', link: 'https://www.cloudflare.com/', size: 'big' },
+    { name: 'EdgeOne', link: 'https://pages.edgeone.ai/', size: 'big' },
     { name: 'Vercel', link: 'https://vercel.com/', size: 'big' },
     { name: 'AWS', link: 'https://aws.amazon.com/', size: 'big' },
     { name: 'Netlify', link: 'https://www.netlify.com/', size: 'small' },
     { name: 'Google Cloud', link: 'https://cloud.google.com/', size: 'small' },
-    { name: 'Azure', link: 'https://azure.microsoft.com/', size: 'small' },
+    // { name: 'Azure', link: 'https://azure.microsoft.com/', size: 'small' },
   ],
   server: [
     { name: 'Hono', link: 'https://hono.dev/', size: 'big' },

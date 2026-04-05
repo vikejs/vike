@@ -2,10 +2,10 @@ import { test, expect, partRegex, run, fetchHtml, fetch, getServerUrl } from '@b
 
 export { testRun }
 
-function testRun(cmd: 'npm run dev' | 'npm run preview') {
+function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   run(cmd)
 
-  const isDev = cmd === 'npm run dev'
+  const isDev = cmd === 'pnpm run dev'
 
   test('config includeAssetsImportedByServer', async () => {
     const html = await fetchHtml('/')

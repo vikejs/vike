@@ -3,7 +3,7 @@ import { testCounter } from '../../test/utils'
 
 import { test, page, getServerUrl, expectLog } from '@brillout/test-e2e'
 
-run('npm run dev', { tolerateError: true })
+run('pnpm run dev', { tolerateError: true })
 
 test('forbidden import', async () => {
   await page.goto(getServerUrl() + '/')

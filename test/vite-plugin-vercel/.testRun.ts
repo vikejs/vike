@@ -9,8 +9,8 @@ import { fileURLToPath } from 'node:url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const outputDir = path.join(__dirname, '.vercel', 'output')
 
-function testRun(cmd: 'npm run dev' | 'npm run prod') {
-  const isDev = cmd === 'npm run dev'
+function testRun(cmd: 'pnpm run dev' | 'pnpm run prod') {
+  const isDev = cmd === 'pnpm run dev'
 
   testRunClassic(cmd, {
     skipAboutPage: true,

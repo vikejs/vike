@@ -1,2 +1,2 @@
 import { testRunClassic } from '../../test/utils'
-testRunClassic('npm run preview', { skipViteEcosystemCi: true })
+testRunClassic('pnpm run preview', { skipViteEcosystemCi: true })
