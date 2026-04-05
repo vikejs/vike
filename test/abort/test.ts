@@ -4,14 +4,14 @@ import { run, page, test, expect, getServerUrl, fetchHtml, autoRetry, expectLog,
 import { ensureWasClientSideRouted, expectUrl, testCounter, expectPageContextJsonRequest } from '../utils'
 
 function testRun(
-  cmd: 'npm run dev:server' | 'npm run dev' | 'npm run preview' | 'npm run prod',
+  cmd: 'pnpm run dev:server' | 'pnpm run dev' | 'pnpm run preview' | 'pnpm run prod',
   pageContextInitIsPassedToClient = false,
 ) {
   run(cmd)
 
   // See `someFakeData` in server/index.js
-  const isMakingPageContextJsonRequest = cmd === 'npm run dev:server' || cmd === 'npm run prod'
-  const isDev = cmd === 'npm run dev' || cmd === 'npm run dev:server'
+  const isMakingPageContextJsonRequest = cmd === 'pnpm run dev:server' || cmd === 'pnpm run prod'
+  const isDev = cmd === 'pnpm run dev' || cmd === 'pnpm run dev:server'
 
   test('HTML', async () => {
     const t = async (url: string) => {
@@ -69,7 +69,7 @@ function testRun(
     const url = getServerUrl() + '/show-error-page'
     const expectErrServer = () => {
       // Maybe we should also show a log in production?
-      if (cmd === 'npm run prod') return
+      if (cmd === 'pnpm run prod') return
       expectLog(partRegex`HTTP response ${/.*/} /show-error-page 666`, { filter: (log) => log.logSource === 'stderr' })
     }
     const expectErrClient = () =>

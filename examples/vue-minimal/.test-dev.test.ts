@@ -1,2 +1,2 @@
 import { testRunClassic } from '../../test/utils'
-testRunClassic('npm run dev', { isVue: true })
+testRunClassic('pnpm run dev', { isVue: true })

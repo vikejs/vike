@@ -3,12 +3,12 @@ import { autoRetry, page, test, expect, run, getServerUrl, fetchHtml } from '@br
 export { testRun }
 
 function testRun(
-  cmd: 'npm run dev' | 'npm run prod' | 'npm run prod:static',
+  cmd: 'pnpm run dev' | 'pnpm run prod' | 'pnpm run prod:static',
   { isOldDesign }: { isOldDesign?: true } = {},
 ) {
   run(cmd)
 
-  const isProd = cmd !== 'npm run dev'
+  const isProd = cmd !== 'pnpm run dev'
 
   test(`Counter works`, async () => {
     page.goto(`${getServerUrl()}/`)

@@ -2,7 +2,7 @@ export { testRun }
 
 import { run, fetchHtml, test, expect, expectLog } from '@brillout/test-e2e'
 
-function testRun(cmd: 'npm run dev' | 'npm run preview') {
+function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   run(cmd)
 
   const isDev = !cmd.includes('preview')

@@ -1,2 +1,2 @@
 import { testRun } from './.testRun'
-testRun('npm run dev', { hasStarWarsPage: true })
+testRun('pnpm run dev', { hasStarWarsPage: true })

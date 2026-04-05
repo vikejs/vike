@@ -10,15 +10,15 @@ import { testCloudflareBindings } from '../../test/@cloudflare_vite-plugin/testR
 // urlBaseChange('http://127.0.0.1:3000')
 
 function testRun(
-  cmd: 'npm run dev' | 'npm run preview',
+  cmd: 'pnpm run dev' | 'pnpm run preview',
   {
     hasStarWarsPage,
     testNodeEnv,
     testBindings,
   }: { hasStarWarsPage: boolean; testNodeEnv?: boolean; testBindings?: true },
 ) {
-  const isWrangler = cmd === 'npm run preview'
-  const isProd = cmd !== 'npm run dev'
+  const isWrangler = cmd === 'pnpm run preview'
+  const isProd = cmd !== 'pnpm run dev'
 
   /* Manually disabled
   if (isWrangler) {

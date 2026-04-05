@@ -34,12 +34,12 @@ import { testGuardClientOnly } from './pages/guard-client-only/e2e-test'
 
 const rootDir = path.dirname(fileURLToPath(import.meta.url))
 
-function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run preview:build-twice') {
-  if (cmd === 'npm run preview:build-twice' && !isCI()) {
+function testRun(cmd: 'pnpm run dev' | 'pnpm run preview' | 'pnpm run preview:build-twice') {
+  if (cmd === 'pnpm run preview:build-twice' && !isCI()) {
     skip('SKIPPED: we only run this test in the CI (to avoid slowing down running test/playground locally)')
     return
   }
-  const isDev = cmd === 'npm run dev'
+  const isDev = cmd === 'pnpm run dev'
   testRunClassic(cmd, { testHmr: './pages/index/Page.tsx' })
   testSettingsInheritance({ isDev })
   testMarkdown()
