@@ -17,7 +17,7 @@ import {
 import assert from 'node:assert'
 
 function testRun(
-  cmd: 'npm run dev' | 'npm run prod' | 'npm run preview',
+  cmd: 'pnpm run dev' | 'pnpm run prod' | 'pnpm run preview',
   {
     uiFramewok,
     lang,
@@ -27,7 +27,7 @@ function testRun(
     isSPA?: true
   },
 ) {
-  const isProd = cmd === 'npm run prod' || cmd === 'npm run preview'
+  const isProd = cmd === 'pnpm run prod' || cmd === 'pnpm run preview'
   const isDev = !isProd
   const testHMR = isDev && (uiFramewok === 'react' || uiFramewok === 'vue')
 
