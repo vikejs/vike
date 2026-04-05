@@ -107,6 +107,7 @@ type ConfigDefinitionsInternal = Record<
   ConfigDefinitionInternal
 >
 type ConfigDefinitionsBuiltIn = Record<ConfigNameBuiltIn | ConfigNameGlobal, ConfigDefinitionInternal>
+// TODO/after-PR-merge: rename_full configDefinitionsBuiltIn metaBuiltIn
 const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   onRenderHtml: {
     env: { server: true },
@@ -336,6 +337,10 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     eager: true,
     global: true,
   },
+  server: {
+    env: { server: true },
+    global: true,
+  },
   cli: {
     env: { config: true },
     global: true,
@@ -415,6 +420,15 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   license: {
     env: { config: true },
     global: true,
+  },
+  // -- Vercel --
+  isr: {
+    env: { server: true, config: true },
+    eager: true,
+  },
+  edge: {
+    env: { server: true, config: true },
+    eager: true,
   },
 }
 

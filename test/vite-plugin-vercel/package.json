@@ -2,7 +2,7 @@
   "name": "vite-plugin-vercel-simple",
   "type": "module",
   "scripts": {
-    "dev": "tsx ./express-entry.ts",
+    "dev": "vike dev",
     "build": "vike build",
     "prod": "vike build && vike preview",
     "typecheck": "tsc -p tsconfig.json --noEmit"
@@ -10,22 +10,19 @@
   "keywords": [],
   "author": "",
   "devDependencies": {
-    "@types/express": "^5.0.6",
     "@types/node": "^24.1.0",
     "@types/react": "^19.1.9",
     "@types/react-dom": "^19.1.7",
-    "@universal-middleware/express": "^0.4.26",
-    "@vercel/node": "^5.3.7",
+    "@vikejs/hono": "^0.2.0",
     "@vitejs/plugin-react-swc": "^3.11.0",
-    "express": "^5.2.1",
+    "hono": "^4.8.4",
     "react": "^19.2.4",
-    "tsx": "^4.20.3",
     "typescript": "^5.9.3",
     "vike": "0.4.256",
     "vike-react": "^0.6.21",
     "vite": "^7.0.6"
   },
   "dependencies": {
-    "vite-plugin-vercel": "^9.1.1"
+    "vite-plugin-vercel": "^11.0.3"
   }
 }

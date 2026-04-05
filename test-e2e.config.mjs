@@ -92,6 +92,7 @@ function tolerateError({ logSource, logText, testInfo }) {
       // [09:37:55.007][/examples/react-full][npm run preview][stderr] 9:37:55 AM [vite] warning: `esbuild` option was specified by "vite:react-swc" plugin. This option is deprecated, please use `oxc` instead.
       '`esbuild` option was specified by',
       // ===
+      'WARN  legalComments option is deprecated',
 
       // Error: clientOnly() is deprecated — use <ClientOnly> https://vike.dev/ClientOnly
       'clientOnly() is deprecated',

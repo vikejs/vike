@@ -12,15 +12,9 @@ Source code: [GitHub > `vikejs/vike-photon`](https://github.com/vikejs/vike-phot
 
 The `vike-photon` extension <PhotonDescription /> It's powered by <Link href="/blog/photon">Photon</Link>.
 
-
-The entire documentation for using Photon is contained on this page, <Link href="/cloudflare"/> and <Link href="/vercel" />.
-
-<PhotonBetaWarning />
-
-> Alternatively, instead of using a server, you can <Link href="/pre-rendering">pre-render</Link> your pages and deploy to a <Link href="/static-hosts">static host</Link>.
-
-> If you want more control over server integration, see <Link href="/server-integration#manual-integration" />.
-
+<Warning>
+  `vike-photon` is being replaced by a native implementation of universal deployment in Vike. See [Migration to `universal-deploy`](/migration/universal-deploy).
+</Warning>
 
 ## Get started
 
@@ -453,7 +447,7 @@ export default {
 
 ## Static files
 
-In production, Photon uses [`@universal-middleware/sirv`](https://universal-middleware.dev/middlewares/sirv) to serve static files.
+In production, Photon uses [`@vikejs/sirv`](https://universal-middleware.dev/middlewares/sirv) to serve static files.
 
 > In development, static files are served by [Vite](https://vitejs.dev)'s development server.
 

@@ -1,0 +1,10 @@
+import { Warning } from '@brillout/docpress'
+
+<Warning>
+  Because {props.name} doesn't follow modern JavaScript standards (such as `fetch`), it currently doesn't work with the following:
+   - Bun
+   - Deno
+   - Cloudflare
+
+  See also: [srvx#132 - `toFetchHandler` do not work in Deno and Bun](https://github.com/h3js/srvx/issues/132)
+</Warning>
