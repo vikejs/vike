@@ -1,5 +1,5 @@
 import { testRun } from './.testRun'
-testRun('npm run dev', {
+testRun('pnpm run dev', {
   skipAboutPage: true,
   tolerateExitCode: [143],
   tolerateError({ logText, logSource }) {
