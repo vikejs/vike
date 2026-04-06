@@ -249,6 +249,42 @@ export default {
   🚧 Server settings are separate because values usually differ between dev and prod. If you have a use case where settings share the same value in dev and prod, then [reach out](https://github.com/vikejs/vike/discussions) and we'll create server settings that apply to both dev an prod.
 </blockquote>
 
+
+## `pageContext.runtime`
+
+You can use `pageContext.runtime` to access the HTTP request object, for example:
+
+```ts
+// pages/product/@id/+data.ts
+
+import type { PageContextServer } from 'vike/types'
+
+export type Data = Awaited<ReturnType<typeof data>>
+export async function data(pageContext: PageContextServer) {
+  // Using pageContext.runtime.req to access the logged-in user
+  const { user } = pageContext.runtime.req
+  // ...
+}
+
+declare global {
+  namespace Vike {
+    interface Photon {
+      // 👉 Pick your server (for correct pageContext.runtime type)
+      server: 'hono' // | 'express' | 'fastify' | 'hattip' | 'srvx' | 'elysia' | 'h3'
+    }
+  }
+}
+```
+
+> You can use <Link href="/onCreatePageContext">`+onCreatePageContext`</Link> to define custom `pageContext` properties, see <Link href="/pageContext#custom" />.
+>
+> For example, you can define `pageContext.user` as an alias of `pageContext.runtime.req.user` for convenience, see <Link href="/auth#pagecontext-user" doNotInferSectionTitle />.
+
+See also:
+- <Link href="/pageContext#runtime">API > `pageContext.runtime`</Link>
+- <Link href="/auth" />
+
+
 ## Standalone
 
 Use [standaloner](https://github.com/nitedani/standaloner#readme) to have the build output directory ([`dist/`](https://vite.dev/config/build-options.html#build-outdir)) contain everything needed for deployment. This means that, in production, only the `dist/` directory is required (you can remove `node_modules/` and skip `$ npm install`).
