@@ -331,6 +331,11 @@ const headings = [
   },
   {
     level: 2,
+    title: 'Server',
+    url: '/server',
+  },
+  {
+    level: 2,
     title: 'Server integration',
     url: '/server-integration',
     sectionTitles: ['Non-JavaScript Backend'],
@@ -1091,12 +1096,6 @@ function extensions() {
         title: '`vike-solid`',
         url: '/vike-solid',
       },
-      {
-        title: '`vike-photon`',
-        url: '/vike-photon',
-        sectionTitles: ['HTTPS', '`pageContext.runtime`'],
-        category: 'Overview',
-      },
     ] as const
   ).map((h) => ({ ...h, category: 'Extensions' as const })) satisfies HeadingDetachedDefinition[]
 }
@@ -1602,12 +1601,12 @@ function deprecated() {
         url: '/_default.page.route.js',
       },
       {
-        title: '`+server.js`',
-        url: '/server',
-      },
-      {
         title: '`vike-server`',
         url: '/vike-server',
+      },
+      {
+        title: '`vike-photon`',
+        url: '/vike-photon',
       },
     ] as const
   ).map((h) => ({ ...h, category: 'Deprecated' as const })) satisfies HeadingDetachedDefinition[]
