@@ -16,7 +16,7 @@ If you use **TypeScript**, you must define your path aliases also at:
 - <Link href="#tsconfig-json">`tsconfig.json` > `compilerOptions.paths`</Link>
   > You must define them twice — inside `vite.config.js` *and* `tsconfig.json`. (It's temporary: [Vite will soon support path aliases set in `tsconfig.json`](https://github.com/vikejs/vike/issues/1547#issuecomment-3085232187).)
 
-If you use a custom server integration (**you don't use `vike-photon`**), also define them at:
+If you use a custom server integration (**you don't use `+server.js`**), also define them at:
 - <Link href="#package-json">`package.json` > `imports`</Link>
 
 
@@ -44,7 +44,7 @@ See also:
 > The following are processed by Vite:
 > - All client-side code.
 > - All <Link href="/config#files">`+` files</Link> loaded at runtime (client or server).
-> - Your server code if you use <Link href="/vike-photon">`vike-photon`</Link>.
+> - Your server code if you use <Link href="/server">`+server.js`</Link>.
 >
 > Config files, such as `vite.config.js` or `+config.js` aren't processed by Vite. See <Link href="#config-files" />.
 

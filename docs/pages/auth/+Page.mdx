@@ -21,7 +21,7 @@ import type { PageContextServer } from 'vike/types'
 
 // This hook is called upon new incoming HTTP requests
 export async function onCreatePageContext(pageContext: PageContextServer) {
-  // vike-photon exposes the request object at pageContext.runtime.req
+  // `+server.js` exposes the request object at pageContext.runtime.req
   const { req } = pageContext.runtime
 
   // Authentication middlewares (e.g. Passport.js and Grant) usually set req.user
