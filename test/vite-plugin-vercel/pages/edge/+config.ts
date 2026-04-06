@@ -2,5 +2,5 @@ import type { Config } from 'vike/types'
 
 export default {
   // https://vike.dev/vercel#edge
-  edge: true,
+  vercel: { edge: true },
 } satisfies Config
