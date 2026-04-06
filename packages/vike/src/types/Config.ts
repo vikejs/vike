@@ -95,8 +95,7 @@ type ConfigNameBuiltIn =
   | 'clientHooks'
   | 'middleware'
   | 'server'
-  | 'isr'
-  | 'edge'
+  | 'vercel'
 
 type ConfigNameGlobal =
   | 'onPrerenderStart'
