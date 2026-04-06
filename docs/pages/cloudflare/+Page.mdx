@@ -28,6 +28,7 @@ npm install wrangler @cloudflare/vite-plugin
 ```ts
 // vite.config.ts
 
+import type { UserConfig } from 'vite'
 import vike from 'vike/plugin'
 import { cloudflare } from '@cloudflare/vite-plugin' // [!code ++]
 
@@ -38,7 +39,7 @@ export default {
     }), // [!code ++]
     vike()
   ]
-}
+} satisfies UserConfig
 ```
 
 #### 2. Scripts

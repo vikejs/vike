@@ -25,6 +25,7 @@ npm install vite-plugin-vercel
 ```ts
 // vite.config.ts
 
+import type { UserConfig } from 'vite'
 import vike from 'vike/plugin'
 import { vercel } from 'vite-plugin-vercel/vite'
 
@@ -33,7 +34,7 @@ export default {
     vike(),
     vercel()
   ]
-}
+} satisfies UserConfig
 ```
 
 #### 2. Server
