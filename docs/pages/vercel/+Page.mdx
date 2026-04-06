@@ -19,7 +19,7 @@ import { Example, StaticSsrIntro, UseScaffolder } from '../../components'
 #### 1. Install
 
 ```shell
-npm install vite-plugin-vercel@11
+npm install vite-plugin-vercel
 ```
 
 ```ts
@@ -36,79 +36,18 @@ export default {
 }
 ```
 
-#### 2. Server (optional)
+#### 2. Server
 
-It's recommended to move your server entry to `+server.ts`.
+```ts
+// pages/+config.ts
 
-<Tabs>
-  <TabList>
-    <Tab>Hono</Tab>
-    <Tab>Express.js</Tab>
-    <Tab>Fastify</Tab>
-    <Tab>H3</Tab>
-    <Tab>Elysia</Tab>
-  </TabList>
-  <TabPanel>
-    ```ts
-    // +server.ts
+export default {
+  // ...
+  server: true, // [!code ++]
+}
+```
 
-    import { Hono } from 'hono'
-    import vike from '@vikejs/hono'
-
-    const app = new Hono()
-    vike(app)
-    // ...
-    ```
-  </TabPanel>
-  <TabPanel>
-    ```ts
-    // +server.ts
-
-    import express from 'express'
-    import vike from '@vikejs/express'
-
-    const app = express()
-    vike(app)
-    // ...
-    ```
-  </TabPanel>
-  <TabPanel>
-    ```ts
-    // +server.ts
-
-    import fastify from 'fastify'
-    import vike from '@vikejs/fastify'
-
-    const app = fastify()
-    await vike(app)
-    // ...
-    ```
-  </TabPanel>
-  <TabPanel>
-    ```ts
-    // +server.ts
-
-    import { createApp } from 'h3'
-    import vike from '@vikejs/h3'
-
-    const app = createApp()
-    vike(app)
-    // ...
-    ```
-  </TabPanel>
-  <TabPanel>
-    ```ts
-    // +server.ts
-
-    import { Elysia } from 'elysia'
-    import vike from '@vikejs/elysia'
-
-    const app = new Elysia()
-    vike(app)
-    // ...
-    ```
-  </TabPanel>
-</Tabs>
+> See <Link href="/server" /> for advanced server configuration.
 
 
 #### 3. Deployment

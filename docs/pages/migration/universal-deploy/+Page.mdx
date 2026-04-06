@@ -123,6 +123,18 @@ export default {
 } satisfies Config
 ```
 
+If you were not using a custom server entry, enable the built-in server:
+
+```ts
+// pages/+config.ts
+
+export default {
+  // ...
+  server: true, // [!code ++]
+}
+```
+
+
 If you used `isr` or `edge` settings, they are now built-in:
 
 ```ts
