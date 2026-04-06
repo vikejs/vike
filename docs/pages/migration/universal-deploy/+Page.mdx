@@ -10,7 +10,7 @@ Guide to migrate from <Link href="/vike-photon">`vike-photon`</Link> to <Link hr
 ## 1. Update dependencies
 
 ```shell
-npm uninstall vike-photon @photonjs/hono @photonjs/express @photonjs/fastify @photonjs/h3 @photonjs/elysia @photonjs/cloudflare @photonjs/vercel
+npm uninstall vike-photon
 npm install vike@latest
 ```
 
@@ -26,26 +26,31 @@ You should also install the corresponding `@vikejs/*` package for your server.
   </TabList>
   <TabPanel>
     ```shell
+    npm uninstall @photonjs/hono
     npm install @vikejs/hono
     ```
   </TabPanel>
   <TabPanel>
     ```shell
+    npm uninstall @photonjs/express
     npm install @vikejs/express
     ```
   </TabPanel>
   <TabPanel>
     ```shell
+    npm uninstall @photonjs/fastify
     npm install @vikejs/fastify
     ```
   </TabPanel>
   <TabPanel>
     ```shell
+    npm uninstall @photonjs/h3
     npm install @vikejs/h3
     ```
   </TabPanel>
   <TabPanel>
     ```shell
+    npm uninstall @photonjs/elysia
     npm install @vikejs/elysia
     ```
   </TabPanel>
@@ -62,7 +67,8 @@ If you are using Vercel or Cloudflare, you should now use their native Vite plug
   </TabList>
   <TabPanel>
     ```shell
-    npm install vite-plugin-vercel@11
+    npm uninstall @photonjs/vercel
+    npm install vite-plugin-vercel
     ```
 
     ```ts
@@ -81,6 +87,7 @@ If you are using Vercel or Cloudflare, you should now use their native Vite plug
   </TabPanel>
   <TabPanel>
     ```shell
+    npm uninstall @photonjs/cloudflare
     npm install @cloudflare/vite-plugin
     ```
 
@@ -149,7 +156,7 @@ export default {
 
 ## 4. Move server entry to `+server.ts`
 
-Replace `@photonjs/*` with `@vikejs/*`. Your server entry should now be named `+server.ts` at the root of your project, and use the `export default { fetch }` syntax.
+Your server entry should now be named <Link href="/server">`+server.js`</Link> at the root of your project, and use the `export default { fetch }` syntax.
 
 <Tabs>
   <TabList>
@@ -165,11 +172,14 @@ Replace `@photonjs/*` with `@vikejs/*`. Your server entry should now be named `+
 
     import type { Server } from 'vike/types' // [!code ++]
     import { Hono } from 'hono'
+    import { apply, serve } from '@photonjs/hono' // [!code --]
     import vike from '@vikejs/hono' // [!code ++]
 
     const app = new Hono()
+    apply(app) // [!code --]
     vike(app) // [!code ++]
 
+    export default serve(app) // [!code --]
     export default { // [!code ++]
       fetch: app.fetch // [!code ++]
     } satisfies Server // [!code ++]
@@ -183,11 +193,14 @@ Replace `@photonjs/*` with `@vikejs/*`. Your server entry should now be named `+
 
     import type { Server } from 'vike/types' // [!code ++]
     import express from 'express'
+    import { apply, serve } from '@photonjs/express' // [!code --]
     import vike, { toFetchHandler } from '@vikejs/express' // [!code ++]
 
     const app = express()
+    apply(app) // [!code --]
     vike(app) // [!code ++]
 
+    export default serve(app) // [!code --]
     export default { // [!code ++]
       fetch: toFetchHandler(app) // [!code ++]
     } satisfies Server // [!code ++]
@@ -201,11 +214,14 @@ Replace `@photonjs/*` with `@vikejs/*`. Your server entry should now be named `+
 
     import type { Server } from 'vike/types' // [!code ++]
     import fastify from 'fastify'
+    import { apply, serve } from '@photonjs/fastify' // [!code --]
     import vike, { toFetchHandler } from '@vikejs/fastify' // [!code ++]
 
     const app = fastify()
+    await apply(app) // [!code --]
     await vike(app) // [!code ++]
 
+    export default serve(app) // [!code --]
     export default { // [!code ++]
       fetch: toFetchHandler(app.routing) // [!code ++]
     } satisfies Server // [!code ++]
@@ -218,11 +234,14 @@ Replace `@photonjs/*` with `@vikejs/*`. Your server entry should now be named `+
     import type { Server } from 'vike/types' // [!code ++]
     // @docpress-uncomment import { createApp } from 'h3' // [!code --]
     import { createApp, toWebHandler } from 'h3' // [!code ++]
+    import { apply, serve } from '@photonjs/h3' // [!code --]
     import vike from '@vikejs/h3' // [!code ++]
 
     const app = createApp()
+    apply(app) // [!code --]
     vike(app) // [!code ++]
 
+    export default serve(app) // [!code --]
     export default { // [!code ++]
       fetch: toWebHandler(app) // [!code ++]
     } satisfies Server // [!code ++]
@@ -234,11 +253,14 @@ Replace `@photonjs/*` with `@vikejs/*`. Your server entry should now be named `+
 
     import type { Server } from 'vike/types' // [!code ++]
     import { Elysia } from 'elysia'
+    import { apply, serve } from '@photonjs/elysia' // [!code --]
     import vike from '@vikejs/elysia' // [!code ++]
 
     const app = new Elysia()
+    apply(app) // [!code --]
     vike(app) // [!code ++]
 
+    export default serve(app) // [!code --]
     export default { // [!code ++]
       fetch: app.fetch // [!code ++]
     } satisfies Server // [!code ++]
