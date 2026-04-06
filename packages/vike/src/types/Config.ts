@@ -679,17 +679,22 @@ type ConfigBuiltIn = {
    */
   license?: string
 
-  /** Incremental Static Regeneration (ISR).
-   *
-   * https://vike.dev/vercel#isr
+  /**
+   * Vercel options
    */
-  isr?: { expiration: number }
+  vercel?: {
+    /** Incremental Static Regeneration (ISR).
+     *
+     * https://vike.dev/vercel#isr
+     */
+    isr?: { expiration: number }
 
-  /** Deploy on Vercel Edge.
-   *
-   * https://vike.dev/vercel
-   */
-  edge?: boolean
+    /** Deploy on Vercel Edge.
+     *
+     * https://vike.dev/vercel
+     */
+    edge?: boolean
+  }
 }
 
 type PrerenderSetting =

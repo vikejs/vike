@@ -149,8 +149,12 @@ If you used `isr` or `edge` settings, they are now built-in:
 
 export default {
   // ...
-  isr: { expiration: 30 }, // [!code ++]
-  edge: true // [!code ++]
+  isr: { expiration: 30 }, // [!code --]
+  edge: true, // [!code --]}
+  vercel: {
+    isr: { expiration: 30 }, // [!code ++]
+    edge: true // [!code ++]}
+  }
 }
 ```
 

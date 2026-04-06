@@ -80,10 +80,12 @@ import type { Config } from 'vike/types'
 
 export default {
   // Options
-  isr: {
-    // Expiration time (in seconds) before the cached asset is re-generated
-    expiration: 30
-  },
+  vercel: {
+    isr: {
+      // Expiration time (in seconds) before the cached asset is re-generated
+      expiration: 30
+    },
+  }
 } satisfies Config
 ```
 
@@ -97,7 +99,9 @@ Vike supports [Vercel Edge Runtime](https://vercel.com/docs/functions/edge-funct
 import type { Config } from 'vike/types'
 
 export default {
-  edge: true
+  vercel: {
+    edge: true
+  }
 } satisfies Config
 ```
 

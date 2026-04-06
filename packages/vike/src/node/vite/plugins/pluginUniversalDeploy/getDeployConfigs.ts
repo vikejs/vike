@@ -12,13 +12,13 @@ function getDeployConfigs(pageId: string, page: PageConfigPublicWithRoute) {
   if (!route) return null
 
   // Vercel setting: +edge
-  const { edge } = page.config
+  const { edge } = page.config?.vercel ?? {}
   if (edge) {
     assertUsage(typeof edge === 'boolean', '+edge must be a boolean')
   }
 
   // Vercel setting: +isr
-  let { isr } = page.config
+  let { isr } = page.config?.vercel ?? {}
   if (isr) {
     assertUsage(isObject(isr), '+isr must be an object')
     assertUsage(typeof isr.expiration === 'number' && isr.expiration > 0, '+isr.expiration must be a positive number')
