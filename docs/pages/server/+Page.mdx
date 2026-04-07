@@ -52,7 +52,7 @@ It's optional — if you don't define `+server.js`, Vike uses a lightweight buil
     import type { Server } from 'vike/types'
 
     const app = new Hono()
-    vike(app)
+    vike(app) // Attaches Vike
 
     export default {
       fetch: app.fetch
@@ -76,7 +76,7 @@ It's optional — if you don't define `+server.js`, Vike uses a lightweight buil
     import type { Server } from 'vike/types'
 
     const app = express()
-    vike(app)
+    vike(app) // Attaches Vike
 
     export default {
       fetch: toFetchHandler(app)
@@ -100,7 +100,7 @@ It's optional — if you don't define `+server.js`, Vike uses a lightweight buil
     import type { Server } from 'vike/types'
 
     const app = fastify()
-    await vike(app)
+    await vike(app) // Attaches Vike
 
     export default {
       fetch: toFetchHandler(app.routing)
@@ -122,7 +122,7 @@ It's optional — if you don't define `+server.js`, Vike uses a lightweight buil
     import type { Server } from 'vike/types'
 
     const app = createApp()
-    vike(app)
+    vike(app) // Attaches Vike
 
     export default {
       fetch: toWebHandler(app)
@@ -144,7 +144,7 @@ It's optional — if you don't define `+server.js`, Vike uses a lightweight buil
     import type { Server } from 'vike/types'
 
     const app = new Elysia()
-    vike(app)
+    vike(app) // Attaches Vike
 
     export default {
       fetch: app.fetch
