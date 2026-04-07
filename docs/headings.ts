@@ -773,6 +773,11 @@ const headings = [
   },
   {
     level: 2,
+    title: 'Universal Deploy',
+    url: '/blog/universal-deploy',
+  },
+  {
+    level: 2,
     title: 'Why Vite 6 is a groundbreaking release',
     url: '/blog/vite-6',
   },
