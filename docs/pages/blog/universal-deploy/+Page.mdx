@@ -23,17 +23,17 @@ For Vike users, the story is now refreshingly simple:
 
 ```ts
 // +server.ts
+
 import { Hono } from 'hono'
-import { apply } from '@vikejs/hono'
+import vike from '@vikejs/hono'
+import type { Server } from 'vike/types'
 
 const app = new Hono()
+vike(app) // Attaches Vike
 
-// Vike is automatically attached to your server
-apply(app)
-
-app.get('/api/hello', (c) => c.json({ hello: 'world' }))
-
-export default app
+export default {
+  fetch: app.fetch
+} satisfies Server
 ```
 
 Deploy it to Cloudflare? Add `@cloudflare/vite-plugin`. Deploy to Netlify? Add `@netlify/vite-plugin`. Deploy to EdgeOne? Add `@edgeone/vite`. Self-host on Node.js? Don't add anything. Same `+server.ts`, same Vike app, every target.
