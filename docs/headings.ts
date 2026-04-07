@@ -758,7 +758,7 @@ const headings = [
   /* TODO
   {
     level: 2,
-    title: 'Universal Deploy',
+    title: 'Introducing Universal Deploy',
     url: '/blog/universal-deploy',
   },
   */
@@ -1537,7 +1537,7 @@ function workInProgress() {
       { title: 'TypeScript', url: '/typescript' },
       // TODO
       {
-        title: 'Universal Deploy',
+        title: 'Introducing Universal Deploy',
         url: '/blog/universal-deploy',
       },
     ] as const
