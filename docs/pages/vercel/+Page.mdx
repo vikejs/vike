@@ -27,12 +27,12 @@ npm install vite-plugin-vercel
 
 import type { UserConfig } from 'vite'
 import vike from 'vike/plugin'
-import { vercel } from 'vite-plugin-vercel/vite'
+import { vercel } from 'vite-plugin-vercel/vite' // [!code ++]
 
 export default {
   plugins: [
     vike(),
-    vercel()
+    vercel() // [!code ++]
   ]
 } satisfies UserConfig
 ```
@@ -82,10 +82,10 @@ import type { Config } from 'vike/types'
 export default {
   // Options
   vercel: {
-    isr: {
+    isr: { // [!code ++]
       // Expiration time (in seconds) before the cached asset is re-generated
-      expiration: 30
-    },
+      expiration: 30 // [!code ++]
+    }, // [!code ++]
   }
 } satisfies Config
 ```
@@ -101,7 +101,7 @@ import type { Config } from 'vike/types'
 
 export default {
   vercel: {
-    edge: true
+    edge: true // [!code ++]
   }
 } satisfies Config
 ```
