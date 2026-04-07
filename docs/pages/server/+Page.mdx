@@ -3,31 +3,18 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import { DeprecatedServer } from '../../components'
 import '../../components/tabs.css'
 
-The `+server.js` file defines the server entry (Hono, Express.js, ...). For example with Hono:
+The `+server` config defines the server (Hono, Express.js, ...).
 
-```ts
-// +server.ts
+> Under the hood, Vike uses [Universal Deploy](https://github.com/universal-deploy/universal-deploy) to deploy the server to any deployment provider.
 
-import { Hono } from 'hono'
-import vike from '@vikejs/hono'
-import type { Server } from 'vike/types'
-
-const app = new Hono()
-vike(app)
-
-export default {
-  fetch: app.fetch
-} satisfies Server
-```
-
-It's optional — if you don't define `+server.js`, Vike uses a lightweight built-in server.
-
-> Vike uses [Universal Deploy](https://github.com/universal-deploy/universal-deploy) for deploying `+server.js` to any deployment provider.
-
-> Defining a `+server.js` file is the recommended way to integrate Vike with a server, but you can also use <Link href="/renderPage" /> instead.
+> Using `+server` is the recommended way for a seamless integration, but you can also use <Link href="/renderPage">`renderPage()`</Link> to integrate manually instead.
 
 
 ## Get started
+
+### `+server.js`
+
+You can define `+server.js` to seamlessly integrate your favorite server:
 
 <Tabs>
   <TabList>
@@ -172,9 +159,23 @@ It's optional — if you don't define `+server.js`, Vike uses a lightweight buil
   </TabPanel>
 </Tabs>
 
+### `+server: true`
+
+Alternatively, instead of creating `+server.js`, you can use Vike's built-in lightweight server:
+
+```ts
+// +config.ts
+
+export default {
+  // Use Vike's built-in server
+  server: true
+}
+```
+
+
 ## Deployment
 
-#### Self-hosting
+#### Self-host
 
 ```shell
 # Build for production
