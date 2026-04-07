@@ -17,7 +17,7 @@ export function hasVikeServerOrVikePhoton(vikeConfig: VikeConfigInternal) {
   if (vikeServerOrVikePhoton) {
     assertWarning(
       false,
-      `${pc.cyan(vikeServerOrVikePhoton)} is deprecated, see ${pc.underline('https://vike.dev/migration/universal-deploy')}`,
+      `${pc.cyan(vikeServerOrVikePhoton)} is deprecated, see ${pc.underline('https://vike.dev/migration/server')}`,
       { onlyOnce: true },
     )
     return true
