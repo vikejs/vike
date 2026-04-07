@@ -755,6 +755,13 @@ const headings = [
     color: '#ff4343',
     menuModalFullWidth: true,
   },
+  /* TODO
+  {
+    level: 2,
+    title: 'Introducing Universal Deploy',
+    url: '/blog/universal-deploy',
+  },
+  */
   {
     level: 2,
     title: 'Introducing Photon',
@@ -1528,6 +1535,11 @@ function workInProgress() {
         url: '/react-tour',
       },
       { title: 'TypeScript', url: '/typescript' },
+      // TODO
+      {
+        title: 'Introducing Universal Deploy',
+        url: '/blog/universal-deploy',
+      },
     ] as const
   ).map((h) => ({ ...h, category: 'Work-in-progress' as const })) satisfies HeadingDetachedDefinition[]
 }
