@@ -1,7 +1,7 @@
 import React from 'react'
 import { UiColorVariantKey } from '../util/ui.constants'
 
-// TODO: defined new colors in tailwind config and use those instead of hex values
+// TO-DO/eventually: defined new colors in tailwind config and use those instead of hex values
 export const defaultGradients: Record<UiColorVariantKey, { startColor: string; endColor: string }> = {
   blue: { startColor: '#7F5AF0', endColor: '#3B82F6' },
   orange: { startColor: '#fe9618', endColor: '#febc18' },
