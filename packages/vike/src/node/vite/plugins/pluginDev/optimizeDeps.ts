@@ -62,14 +62,7 @@ const optimizeDeps = {
   },
   ssr: {
     optimizeDeps: {
-      exclude: [
-        '@brillout/import',
-        '@brillout/json-serializer',
-        // FIXME Breaks @cloudflare/vite-plugin. Remove me if CI passes
-        // '@brillout/picocolors',
-        '@brillout/vite-plugin-server-entry',
-        'vike',
-      ],
+      exclude: ['@brillout/import', '@brillout/json-serializer', '@brillout/vite-plugin-server-entry', 'vike'],
     },
   },
 } as const satisfies UserConfig
