@@ -73,7 +73,7 @@ Universal Deploy is the third — and we hope last — iteration of the same ide
 
 **Universal Deploy** *(April 2026)* takes that one step further. Photon was framework-agnostic, but it was still its own opinionated stack. The conversations sparked by [Netlify's RFC on Vite](https://github.com/vitejs/vite/discussions/20907) — and the [related ecosystem RFC](https://github.com/vitejs/ecosystem/issues/3) about aligning on Vite's intended scope to allow framework-agnostic provider plugins — made it clear that what the ecosystem really needed was something even smaller and even more neutral: a tiny convention layer that *everyone* — frameworks, deployment providers, and Vite itself — could adopt without buying into a particular implementation.
 
-That's what Universal Deploy is. It's the smallest possible thing that could solve the deployment fragmentation problem.
+That's what Universal Deploy is. It's an unopinionated and flexible infrastructure to solve the deployment fragmentation problem.
 
 ## Aligned with Netlify's RFC
 
@@ -82,7 +82,7 @@ Universal Deploy is a direct response to (and a proof-of-concept for) [Netlify's
 1. **Server entry point location** — how does a deployment provider find the server entries that a framework wants to deploy?
 2. **Routing metadata** — how does it know which routes go where, and which methods they handle?
 
-The `@universal-deploy/*` packages are a working answer to those questions. Our hope is that the conventions land in the broader Vite ecosystem so that, eventually, much of Universal Deploy can be absorbed into Vite itself or its surrounding plugins. Until that happens, Universal Deploy is the bridge — and it works today.
+The `@universal-deploy/*` packages are a working answer to those questions. We're working towards making these conventions land in the broader Vite ecosystem while ensuring that Universal Deploy doesn't represent any lock-in whatsoever.
 
 We're also continuing to collaborate with other teams. The more participants converge on the same low-level conventions, the better it gets for everyone.
 
