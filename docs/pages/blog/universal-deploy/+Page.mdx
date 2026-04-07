@@ -18,25 +18,24 @@ Universal Deploy supersedes Photon. It's the next — and we believe final — s
 For Vike users, the story is now refreshingly simple:
 
 - **Define your server (optional)** with `+server.js`. Use any server framework you like — Hono, Express.js, Fastify, Elysia, H3, Hattip — or skip it entirely and let Vike's built-in server handle things.
-- **Pick a deployment target** by installing your provider's official Vite plugin: `@cloudflare/vite-plugin`, `@netlify/vite-plugin`, `@edgeone/vite`, `vite-plugin-vercel`, or nothing at all to deploy to Node.js / Bun / Deno.
-- **That's it.** No `vike-photon`, no `vike-server`, no `vike-cloudflare`, no glue packages. Vike and your deployment provider talk to each other directly through Universal Deploy.
+  ```ts ts-only
+  // +server.ts
 
-```ts ts-only
-// +server.ts
+  import { Hono } from 'hono'
+  import vike from '@vikejs/hono'
+  import type { Server } from 'vike/types'
 
-import { Hono } from 'hono'
-import vike from '@vikejs/hono'
-import type { Server } from 'vike/types'
+  const app = new Hono()
+  vike(app) // Attaches Vike
 
-const app = new Hono()
-vike(app) // Attaches Vike
+  export default {
+    fetch: app.fetch
+  } satisfies Server
+  ```
 
-export default {
-  fetch: app.fetch
-} satisfies Server
-```
+- **Pick a deployment target** by installing its official Vite plugin: `@edgeone/vite`, `@cloudflare/vite-plugin`, `@netlify/vite-plugin`, `vite-plugin-vercel`, or nothing at all to self-host with Node.js / Bun / Deno.
 
-Deploy it to Cloudflare? Add `@cloudflare/vite-plugin`. Deploy to Netlify? Add `@netlify/vite-plugin`. Deploy to EdgeOne? Add `@edgeone/vite`. Self-host on Node.js? Don't add anything. Same `+server.ts`, same Vike app, every target.
+**That's it.** No `vike-photon`, no `vike-server`, no `vike-cloudflare`, no glue packages. Vike and your deployment provider talk to each other directly through Universal Deploy.
 
 ## What is Universal Deploy?
 
