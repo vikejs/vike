@@ -190,14 +190,16 @@ See:
 
 ## Settings
 
+All settings are defined over `export default { prod: { /*...*/ } }`:
+
 ```ts
 // +server.ts
 
 import type { Server } from 'vike/types'
 
 export default {
-  // Production settings
-  prod: {
+  // Production settings // [!code highlight]
+  prod: { // [!code highlight]
     // Server port, defaults to 3000. It's ignored on Cloudflare and Vercel Edge (there
     // isn't any server in serverless deployments).
     port: 3000,

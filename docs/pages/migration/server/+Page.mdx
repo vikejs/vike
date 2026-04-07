@@ -5,7 +5,7 @@ import '../../../components/tabs.css'
 
 Guide to migrate from <Link href="/vike-photon">`vike-photon`</Link> to <Link href="/server">`+server.js`</Link>.
 
-> `vike-photon` is deprecated — it has been replaced by `+server`, see [Migration to `+server`](/migration/server).
+> `vike-photon` is deprecated — it has been replaced by `+server`.
 
 ## 1. Update dependencies
 
@@ -58,7 +58,7 @@ You should also install the corresponding `@vikejs/*` package for your server.
 
 ## 2. Update `vite.config.ts` (optional)
 
-If you are using Vercel or Cloudflare, you should now use their dedicated Vite plugins instead of their Photon alternatives.
+If you are using Vercel or Cloudflare, you should now use their Vite plugins instead of Photon plugins.
 
 <Tabs>
   <TabList>
@@ -111,7 +111,7 @@ If you are using Vercel or Cloudflare, you should now use their dedicated Vite p
 
 ## 3. Update `+config.ts`
 
-Remove `vike-photon` extension and `photon` settings.
+Remove `vike-photon` extension and `+photon` settings.
 
 ```ts
 // pages/+config.ts
@@ -141,7 +141,7 @@ export default {
 ```
 
 
-If you used `isr` or `edge` settings, they are now built-in:
+If you used `isr` or `edge` settings, they are now live at `+vercel.{isr,edge}`:
 
 ```ts
 // pages/+config.ts
@@ -171,7 +171,8 @@ Your server entry should now be named <Link href="/server">`+server.js`</Link> a
   </TabList>
   <TabPanel>
     ```ts
-    // +server.ts
+    // server/index.ts // [!code --]
+    // +server.ts // [!code ++]
 
     import type { Server } from 'vike/types' // [!code ++]
     import { Hono } from 'hono'
@@ -273,103 +274,25 @@ Your server entry should now be named <Link href="/server">`+server.js`</Link> a
 
 ## 5. `serve()` options
 
+Most `serve()` options have their equivalent at <Link href="/server#settings" />.
+
 <Warning>
   <p>Previously, `serve()` options impacted both the dev server and the production server.
     Now, those options only impact the production server.</p>
 
-  If you need the equivalent options for the dev server, please refer to the [Vite documentation](https://vite.dev/config/server-options).
+  If you need the equivalent options for the dev server, use [Vite's server settings](https://vite.dev/config/server-options).
+
+  🚧 Server settings are separate because values usually differ between dev and prod. If you have a use case where settings share the same value in dev and prod, then [reach out](https://github.com/vikejs/vike/discussions) and we'll create server settings that apply to both dev an prod.
 </Warning>
 
->  If you have a use case where settings share the same value in dev and prod, then [reach out](https://github.com/vikejs/vike/discussions) and we'll create server settings that apply to both dev an prod.
 
+> Note that `createServer` is now built-in and can safely be removed.
 
-Most `serve()` options have their equivalent in <Link href="/server">`+server.js`</Link>, under the `prod` property:
+> Advanced `serverOptions` should now be passed to `prod.node`, `prod.bun` or `prod.deno`, see [srvx > Runtime Specific Options](https://srvx.h3.dev/guide/options#runtime-specific-options).
 
-#### `port`
+## 6. `+photon` options
 
-```ts
-// +server.ts
-
-export default {
-  // ...
-  prod: { // [!code ++]
-    port: 3000 // [!code ++]
-  } // [!code ++]
-}
-```
-
-#### `hostname`
-
-```ts
-// +server.ts
-
-export default {
-  // ...
-  prod: { // [!code ++]
-    hostname: 'localhost' // [!code ++]
-  } // [!code ++]
-}
-```
-
-#### `onReady`
-
-```ts
-// +server.ts
-
-export default {
-  // ...
-  prod: { // [!code ++]
-    onReady(server) { // [!code ++]
-      // The `server` object now comes from srvx, see https://srvx.h3.dev/guide/server
-    }, // [!code ++]
-  } // [!code ++]
-}
-```
-
-#### `onCreate`
-
-```ts
-// +server.ts
-
-export default {
-  // ...
-  prod: { // [!code ++]
-    onCreate(server) { // [!code ++]
-      // The `server` object now comes from srvx, see https://srvx.h3.dev/guide/server
-    }, // [!code ++]
-  } // [!code ++]
-}
-```
-
-#### `createServer`
-
-This is now built-in. This can safely be removed.
-
-#### TLS options (`serverOptions`)
-
-```ts
-// +server.ts
-
-export default {
-  // ...
-  prod: { // [!code ++]
-    tls: { // [!code ++]
-      cert: './server.crt', // [!code ++]
-      key: './server.key', // [!code ++]
-      // optional
-      passphrase: 'passphrase' // [!code ++]
-    } // [!code ++]
-  } // [!code ++]
-}
-```
-
-#### Advanced `serverOptions`
-
-Those options should now be passed to `prod.node`, `prod.bun` or `prod.deno`, see [srvx > Runtime Specific Options](https://srvx.h3.dev/guide/options#runtime-specific-options).
-
-## 6. Advanced `photon` options
-
-Make sure that all `photon` options are removed from `+config.ts`:
+Remove all `photon` options and replace them with the following.
 
 ```ts
 // pages/+config.ts
@@ -424,7 +347,7 @@ vike(app, [compress()]) // [!code ++]
 
 #### `photon.static`
 
-Replace with `prod.static` option in <Link href="/server">`+server.js`</Link>:
+Replace with the `prod.static` setting in <Link href="/server">`+server.js`</Link>:
 
 ```ts
 // +server.ts
@@ -432,12 +355,12 @@ Replace with `prod.static` option in <Link href="/server">`+server.js`</Link>:
 export default {
   // ...
   prod: {
-    // Will serve static files automatically (default)
-    // @docpress-uncomment static: true // [!code ++]
-    // Can be disabled with
-    // @docpress-uncomment static: false // [!code ++]
-    // Or serve from a custom folder
-    // @docpress-uncomment static: './public' // [!code ++]
+    // Serve static files automatically
+    static: true, // Default value // [!code ++]
+    // Can be disabled:
+    static: false, // [!code ++]
+    // Or serve from a custom folder:
+    static: './public' // [!code ++]
   }
 }
 ```
@@ -445,6 +368,10 @@ export default {
 
 ## See also
 
+- <Link href="/server" />
 - <Link href="/vike-photon" />
+{/* TODO
+- <Link href="/blog/universal-deploy" />
+*/}
 - <Link href="/vercel" />
 - <Link href="/cloudflare" />
