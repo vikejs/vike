@@ -5,16 +5,14 @@ import '../../components/tabs.css'
 
 The `+server` config defines the server (Hono, Express.js, ...).
 
-> Under the hood, Vike uses [Universal Deploy](https://github.com/universal-deploy/universal-deploy) to deploy the server to any deployment provider.
-
-> Using `+server` is the recommended way for a seamless integration, but you can also use <Link href="/renderPage">`renderPage()`</Link> to integrate manually instead.
+> Using `+server` is the recommended way for a seamless server integration, but you can also use <Link href="/renderPage">`renderPage()`</Link> to manually integrate the server instead.
 
 
 ## Get started
 
 ### `+server.js`
 
-You can define `+server.js` to seamlessly integrate your favorite server:
+You can define `+server.js` to seamlessly integrate a server:
 
 <Tabs>
   <TabList>
@@ -164,11 +162,10 @@ You can define `+server.js` to seamlessly integrate your favorite server:
 Alternatively, instead of creating `+server.js`, you can use Vike's built-in lightweight server:
 
 ```ts
-// +config.ts
+// pages/+config.ts
 
 export default {
-  // Use Vike's built-in server
-  server: true
+  server: true // Use Vike's built-in server // [!code ++]
 }
 ```
 
@@ -184,14 +181,12 @@ vike build
 node ./dist/server/index.mjs # or Bun/Deno
 ```
 
-#### Vercel
+#### Deployment providers
 
-See <Link href="/vercel" />.
-
-#### Cloudflare
-
-See <Link href="/cloudflare" />.
-
+See:
+- <Link href="/cloudflare" />
+- <Link href="/edgeone-pages" />
+- <Link href="/vercel" />
 
 ## Settings
 
