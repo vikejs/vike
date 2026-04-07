@@ -58,7 +58,7 @@ You should also install the corresponding `@vikejs/*` package for your server.
 
 ## 2. Update `vite.config.ts` (optional)
 
-If you are using Vercel or Cloudflare, you should now use their native Vite plugins instead of `@photonjs/vercel` or `@photonjs/cloudflare`.
+If you are using Vercel or Cloudflare, you should now use their dedicated Vite plugins instead of their Photon alternatives.
 
 <Tabs>
   <TabList>
@@ -121,7 +121,6 @@ import vikePhoton from 'vike-photon/config' // [!code --]
 
 export default {
   extends: [
-    // ...
     vikePhoton // [!code --]
   ],
   photon: { // [!code --]
@@ -150,10 +149,10 @@ If you used `isr` or `edge` settings, they are now built-in:
 export default {
   // ...
   isr: { expiration: 30 }, // [!code --]
-  edge: true, // [!code --]}
+  edge: true, // [!code --]
   vercel: {
     isr: { expiration: 30 }, // [!code ++]
-    edge: true // [!code ++]}
+    edge: true // [!code ++]
   }
 }
 ```
@@ -321,6 +320,7 @@ export default {
   // ...
   prod: { // [!code ++]
     onReady(server) { // [!code ++]
+      // The `server` object now comes from srvx, see https://srvx.h3.dev/guide/server
     }, // [!code ++]
   } // [!code ++]
 }
@@ -335,6 +335,7 @@ export default {
   // ...
   prod: { // [!code ++]
     onCreate(server) { // [!code ++]
+      // The `server` object now comes from srvx, see https://srvx.h3.dev/guide/server
     }, // [!code ++]
   } // [!code ++]
 }
@@ -386,6 +387,10 @@ export default {
 
 Replace with [standaloner](https://github.com/nitedani/standaloner#readme):
 
+```shell
+npm i standaloner
+```
+
 ```ts
 // vite.config.ts
 
@@ -401,6 +406,10 @@ export default defineConfig({
 
 Replace with [compress](https://universal-middleware.dev/middlewares/compress):
 
+```shell
+npm i @universal-middleware/compress
+```
+
 ```ts
 // +server.ts
 
@@ -415,7 +424,7 @@ vike(app, [compress()]) // [!code ++]
 
 #### `photon.static`
 
-Replace with `static` option in <Link href="/server">`+server.js`</Link>:
+Replace with `prod.static` option in <Link href="/server">`+server.js`</Link>:
 
 ```ts
 // +server.ts
