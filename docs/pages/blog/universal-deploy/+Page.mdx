@@ -21,7 +21,7 @@ For Vike users, the story is now refreshingly simple:
 - **Pick a deployment target** by installing your provider's official Vite plugin: `@cloudflare/vite-plugin`, `@netlify/vite-plugin`, `@edgeone/vite`, `vite-plugin-vercel`, or nothing at all to deploy to Node.js / Bun / Deno.
 - **That's it.** No `vike-photon`, no `vike-server`, no `vike-cloudflare`, no glue packages. Vike and your deployment provider talk to each other directly through Universal Deploy.
 
-```ts
+```ts ts-only
 // +server.ts
 
 import { Hono } from 'hono'
