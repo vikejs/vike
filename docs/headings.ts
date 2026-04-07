@@ -757,6 +757,11 @@ const headings = [
   },
   {
     level: 2,
+    title: 'Universal Deploy',
+    url: '/blog/universal-deploy',
+  },
+  {
+    level: 2,
     title: 'Introducing Photon',
     url: '/blog/photon',
     sectionTitles: ['Why Photon?'],
@@ -770,11 +775,6 @@ const headings = [
     level: 2,
     title: 'Introducing `vike-server`',
     url: '/blog/vike-server',
-  },
-  {
-    level: 2,
-    title: 'Universal Deploy',
-    url: '/blog/universal-deploy',
   },
   {
     level: 2,
