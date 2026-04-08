@@ -1,4 +1,5 @@
 export { getServerConfig }
+export { isUniversalDeployEnabled }
 
 import { assert } from '../../../../utils/assert.js'
 import { catchAllEntry } from '@universal-deploy/store'
@@ -38,4 +39,9 @@ function getServerConfig(vikeConfig: VikeConfigInternal) {
     serverEntryVike,
     serverFilePath,
   }
+}
+
+function isUniversalDeployEnabled(vikeConfig: VikeConfigInternal) {
+  const serverConfig = getServerConfig(vikeConfig)
+  return !!serverConfig
 }
