@@ -204,6 +204,8 @@ function getFlagsActivated() {
 function getDEBUG(): string | undefined | null {
   assert(isUsed)
 
+  return 'vike:globalContext'
+
   // ssr.noExternal
   // - @cloudflare/vite-plugin
   try {
