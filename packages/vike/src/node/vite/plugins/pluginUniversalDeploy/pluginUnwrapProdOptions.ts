@@ -17,6 +17,8 @@ function pluginUnwrapProdOptions(serverFilePath: string): Plugin {
     load(id) {
       return `
 import mod from ${JSON.stringify(id)};
+
+export * from ${JSON.stringify(id)};
 export default { ...mod, ...mod?.prod };
 `
     },

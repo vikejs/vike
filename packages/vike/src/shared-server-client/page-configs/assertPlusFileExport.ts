@@ -10,7 +10,8 @@ const SIDE_EXPORTS_TOLERATE = [
   '_rerender_only',
 ]
 // Tolerate `export { frontmatter }` in .mdx files
-const SIDE_EXPORTS_DO_NOT_CHECK = ['.md', '.mdx'] as const
+// Tolerate any exports from `+server.ts` for Cloudflare Durable Object
+const SIDE_EXPORTS_DO_NOT_CHECK = ['.md', '.mdx', '+server.ts', '+server.js'] as const
 
 function assertPlusFileExport(fileExports: Record<string, unknown>, filePathToShowToUser: string, configName: string) {
   const exportNames = Object.keys(fileExports)

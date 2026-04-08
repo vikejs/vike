@@ -61,7 +61,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
       ...pluginCommon,
     },
     pluginServerEntryInject(serverFilePath ?? serverEntryId),
-    pluginServerEntryAlias(),
+    pluginServerEntryAlias(serverFilePath),
     !serverFilePath ? null : pluginUnwrapProdOptions(serverFilePath),
   ].filter((p) => p !== null)
 }

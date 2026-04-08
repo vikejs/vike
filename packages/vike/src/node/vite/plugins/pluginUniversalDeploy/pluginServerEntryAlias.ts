@@ -1,21 +1,44 @@
 export { pluginServerEntryAlias }
 
 import type { Plugin } from 'vite'
+import { catchAllEntry } from '@universal-deploy/store'
 import { pluginCommon } from './common.js'
 import { escapeRegex } from '../../../../utils/escapeRegex.js'
-import { catchAllEntry } from '@universal-deploy/store'
+import { assert } from '../../../../utils/assert.js'
 import '../../assertEnvVite.js'
 
-function pluginServerEntryAlias(): Plugin {
+function pluginServerEntryAlias(serverFilePath?: string | null): Plugin {
+  const filterId = 'vike:server-entry'
+  const virtualFilterId = '\0vike:server-entry'
+
+  // === Rolldown filter
+  const filterRolldown = {
+    id: {
+      include: [new RegExp(escapeRegex(filterId)), new RegExp(escapeRegex(virtualFilterId))],
+    },
+  }
+  // ===
+
   return {
     name: 'vike:pluginUniversalDeploy:alias',
     resolveId: {
-      filter: {
-        // User facing alias for virtual:ud:catch-all
-        id: new RegExp(escapeRegex('vike:server-entry')),
-      },
+      filter: filterRolldown,
       handler() {
-        return this.resolve(catchAllEntry)
+        // Alias for virtual:ud:catch if no userland server entry
+        if (!serverFilePath) return catchAllEntry
+        return virtualFilterId
+      },
+    },
+    load: {
+      filter: filterRolldown,
+      handler() {
+        assert(serverFilePath)
+        // Also re-export non-default exports, to support Durable Objects
+        return `import mod from ${JSON.stringify(catchAllEntry)};
+
+export * from ${JSON.stringify(serverFilePath)};
+export default mod;
+`
       },
     },
     ...pluginCommon,
