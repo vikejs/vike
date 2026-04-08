@@ -1,9 +1,11 @@
+export { getServerConfig }
+
 import { assert } from '../../../../utils/assert.js'
 import { catchAllEntry } from '@universal-deploy/store'
 import type { VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import '../../assertEnvVite.js'
 
-export function getServerConfig(vikeConfig: VikeConfigInternal) {
+function getServerConfig(vikeConfig: VikeConfigInternal) {
   let serverEntryId: string
   let serverFilePath: string | null = null
   let serverEntryVike: string
