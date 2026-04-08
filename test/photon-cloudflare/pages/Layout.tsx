@@ -1,7 +1,7 @@
 export { Layout }
 
+import React from 'react'
 import type { PropsWithChildren } from 'react'
-
 import './Layout.css'
 
 function Layout({ children }: PropsWithChildren) {
