@@ -28,6 +28,7 @@ async function preview(options: ApiOptions = {}): Promise<{ viteServer?: Preview
   const useVite =
     cliPreview === 'vite' || (cliPreview === undefined && !viteConfigResolved.vitePluginServerEntry?.inject)
   if (!useVite) {
+    // TODO/ai also use this branch if +server is defined
     // Dynamically import() server production entry dist/server/index.js
     const outDir = getOutDirs(viteConfigResolved, undefined).outDirRoot
     const { outServerIndex } = await importServerProductionIndex({ outDir })
