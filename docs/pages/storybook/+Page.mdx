@@ -5,9 +5,35 @@ import { CommunityNote, Example } from '../../components'
 
 [Storybook](https://storybook.js.org) is a frontend workshop for building UI components and pages in isolation.
 
-// TODO/ai: add content, see for example https://analogjs.org/docs/integrations/storybook and https://storybook.nuxtjs.org/getting-started/setup/ — only add content that makes sense for Vike. Take your time and do some extra research.
+## Installation
 
-We desgined Vike so that using Vike with Storybook works out of the box.
+Run the following command in your project's root directory:
+
+```sh
+npx storybook@latest init
+```
+
+Storybook auto-detects your setup. When prompted for a framework, pick the one matching your UI framework:
+
+| UI Framework | Storybook Framework |
+|---|---|
+| React | `@storybook/react-vite` |
+| Vue | `@storybook/vue3-vite` |
+| Svelte | `@storybook/svelte-vite` |
+| Solid | `@storybook/solid-vite` |
+| Preact | `@storybook/preact-vite` |
+
+After installation, run Storybook:
+
+```sh
+# Development server (http://localhost:6006)
+storybook dev -p 6006
+
+# Production build
+storybook build
+```
+
+We designed Vike so that using Vike with Storybook works out of the box.
 
 > By default, <Link href="/vite-plugin">Vike's Vite plugin</Link> isn't loaded when running Storybook.
 >
