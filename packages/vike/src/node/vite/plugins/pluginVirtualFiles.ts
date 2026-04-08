@@ -125,6 +125,7 @@ async function onFileModified(ctx: HmrContext, config: ResolvedConfig) {
     assert(!isViteModule)
     */
 
+    ctx.read()
     reloadAll(file, config, 'modified', server)
 
     // Trigger a full page reload. (Because files such as +config.js can potentially modify Vike's virtual files.)
