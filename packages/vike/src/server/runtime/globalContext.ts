@@ -48,6 +48,7 @@ import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import { hasProp } from '../../utils/hasProp.js'
 import { isObject } from '../../utils/isObject.js'
 import { objectAssign } from '../../utils/objectAssign.js'
+import { isCloudflareWorkers } from '../../utils/isCloudflareWorkers.js'
 import type { ViteManifest } from '../../types/ViteManifest.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/runtime'
@@ -313,7 +314,11 @@ function assertViteManifest(manifest: unknown): asserts manifest is ViteManifest
   */
 }
 
-async function loadProdBuildEntry(isInit: boolean, outDir?: string) {
+async function loadProdBuildEntry(
+  // Whether loadProdBuildEntry() is called at module initialization (when JavaScript modules are loaded), e.g. it's `false` when loadProdBuildEntry() was triggered by renderPage()
+  isModuleInit: boolean,
+  outDir?: string,
+) {
   debug('loadProdBuildEntry()')
   if (globalObject.globalContext) {
     debug('loadProdBuildEntry() - already done')
@@ -343,7 +348,11 @@ async function loadProdBuildEntry(isInit: boolean, outDir?: string) {
   assertProdBuildEntry(prodBuildEntry)
   globalObject.assetsManifest = prodBuildEntry.assetsManifest
   globalObject.buildInfo = prodBuildEntry.buildInfo
-  if (!isInit) await createGlobalContext(prodBuildEntry.virtualFileExportsGlobalEntry)
+  // Don't call +onCreateGlobalContext() during module initialization in Cloudflare Workers, to avoid the error "Disallowed operation called within global scope", see https://github.com/vikejs/vike/pull/3106#issuecomment-4209583465
+  const skipGlobalContextInit = isCloudflareWorkers() && isModuleInit
+  if (!skipGlobalContextInit) {
+    await createGlobalContext(prodBuildEntry.virtualFileExportsGlobalEntry)
+  }
 }
 
 // This is the production entry, see:
@@ -357,7 +366,6 @@ async function setGlobalContext_prodBuildEntry(prodBuildEntry: unknown) {
   globalObject.prodBuildEntryPrevious = prodBuildEntry
   assert(globalObject.prodBuildEntry) // ensure no infinite loop
   await loadProdBuildEntry(true)
-  // assertGlobalContextIsDefined()
   debug('setGlobalContext_prodBuildEntry() - done')
 }
 
