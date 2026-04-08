@@ -81,6 +81,8 @@ function tolerateError({ logSource, logText, testInfo }) {
   return (
     [
       // === Vite 8
+      // [vite:react-babel] We recommend switching to `@vitejs/plugin-react-oxc` for improved performance. More information at https://vite.dev/rolldown (x2)
+      '`@vitejs/plugin-react-oxc` for improved performance',
       // [15:57:24.609][/test-preview.test.ts][pnpm run preview][stderr] [PLUGIN_TIMINGS] Warning: Your build spent significant time in plugins. Here is a breakdown:
       //   - vike:build:pluginModuleBanner (54%)
       //   - vite-plugin-cloudflare:virtual-modules (13%)
