@@ -1,6 +1,6 @@
 import { Hono } from 'hono'
 import vike from '@vikejs/hono'
-import { Server } from 'vike/types'
+import type { Server } from 'vike/types'
 
 const app = new Hono()
 vike(app)
