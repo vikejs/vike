@@ -67,5 +67,12 @@ declare global {
     interface GlobalContextServer {
       _interfaceIsNotAny?: never // https://typescript-eslint.io/rules/no-empty-object-type/
     }
+    /** Extend the `Server` type to infer the `runtime` property of `PageContextServer` (`import type { PageContextServer } from 'vike/types'`).
+     *
+     *  https://vike.dev/server
+     */
+    interface Server {
+      _interfaceIsNotAny?: never // https://typescript-eslint.io/rules/no-empty-object-type/
+    }
   }
 }

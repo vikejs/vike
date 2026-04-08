@@ -22,6 +22,7 @@ export type { PageContextBuiltInServer_deprecated as PageContextBuiltInServer }
 export type { PageContextBuiltInClientWithClientRouting_deprecated as PageContextBuiltInClientWithClientRouting }
 export type { PageContextBuiltInClientWithServerRouting_deprecated as PageContextBuiltInClientWithServerRouting }
 
+import type { RuntimeAdapterTarget } from '@universal-middleware/core'
 import type {
   PageContextUrlInternal,
   PageContextUrlClient,
@@ -47,6 +48,7 @@ type PageContextServer<Data = unknown> = PageContextBuiltInServer<Data> & {
   dangerouslyUseInternals: DangerouslyUseInternals<
     PageContextInternalServer & PageContextAfterRender & PageContextPublicServer
   >
+  runtime: Vike.Server extends { server: string } ? RuntimeAdapterTarget<Vike.Server['server']> : never
 } & Vike.PageContext &
   Vike.PageContextServer
 

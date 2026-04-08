@@ -266,7 +266,7 @@ export async function data(pageContext: PageContextServer) {
 
 declare global {
   namespace Vike {
-    interface Photon {
+    interface Server {
       // 👉 Pick your server (for correct pageContext.runtime type)
       server: 'hono' // | 'express' | 'fastify' | 'hattip' | 'srvx' | 'elysia' | 'h3'
     }

@@ -365,6 +365,21 @@ export default {
 }
 ```
 
+## 7. Typescript (optional)
+
+The following is only required if you rely on `pageContext.runtime` typing override:
+
+```ts
+declare global {
+  namespace Vike {
+    // @docpress-uncomment interface Photon {  // [!code --]
+    interface Server { // [!code ++]
+      // Pick your server (for correct pageContext.runtime type)
+      server: 'hono' // 'express' | 'fastify' | 'hattip' | 'srvx' | 'elysia' | 'h3'
+    }
+  }
+}
+```
 
 ## See also
 
