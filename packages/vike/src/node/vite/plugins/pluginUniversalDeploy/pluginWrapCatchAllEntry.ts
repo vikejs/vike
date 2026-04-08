@@ -20,11 +20,13 @@ import mod from ${JSON.stringify(id)};
 import serverMod from ${JSON.stringify(serverFilePath)};
 
 const serverModObj = serverMod && typeof serverMod === 'object' ? serverMod : {};
-const { fetch: _fetchUnused, ...serverModRest } = serverModObj;
+const { fetch: _serverFetch, ...serverModRest } = serverModObj;
 const fetch = typeof mod?.fetch === 'function' ? mod.fetch : undefined;
+const userServerEntry = { ...mod, ...serverModRest };
+if (fetch) userServerEntry.fetch = fetch;
 
 export * from ${JSON.stringify(serverFilePath)};
-export default { ...mod, ...serverModRest, ...(fetch ? { fetch } : {}) };
+export default userServerEntry;
 `
     },
   })
