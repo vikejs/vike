@@ -26,7 +26,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
       resolveTargets((targets) => {
         // Cloudflare is supported even without universal-deploy
         const target = targets.filter((t) => t !== '@cloudflare/vite-plugin')[0]
-        assertUsage(target === undefined, `${target} requires +server. See https://vike.dev/server`)
+        assertUsage(target === undefined, `${target} requires +server — see https://vike.dev/server`)
       }),
     ]
   const { serverEntryVike, serverEntryId, serverFilePath } = serverConfig
