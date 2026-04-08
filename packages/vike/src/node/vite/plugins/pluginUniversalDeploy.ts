@@ -19,8 +19,8 @@ import '../assertEnvVite.js'
 
 function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
   if (hasVikeServerOrVikePhoton(vikeConfig)) return []
-  const serverConfig = getServerConfig(vikeConfig)
 
+  const serverConfig = getServerConfig(vikeConfig)
   if (!serverConfig)
     return [
       resolveTargets(({ vercel, node, netlify }) => {
@@ -32,7 +32,6 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
         )
       }),
     ]
-
   const { serverEntryVike, serverEntryId, serverFilePath } = serverConfig
 
   return [
