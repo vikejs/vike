@@ -116,14 +116,12 @@ function testRunClassic(
   cmd: 'pnpm run dev' | 'pnpm run preview' | 'pnpm run prod' | 'pnpm run preview:build-twice',
   {
     skipAboutPage,
-    sleepBeforeAboutPage,
     skipViteEcosystemCi,
     testHmr,
     isVue,
     ...runOptions
   }: {
     skipAboutPage?: true
-    sleepBeforeAboutPage?: number
     skipViteEcosystemCi?: true
     testHmr?: false | string
     isVue?: true
@@ -176,7 +174,6 @@ function testRunClassic(
 
   if (!skipAboutPage) {
     test('about page', async () => {
-      if (sleepBeforeAboutPage) await sleep(sleepBeforeAboutPage)
       await page.click('a[href="/about"]')
       await autoRetry(async () => {
         expect(await page.textContent('h1')).toBe('About')
