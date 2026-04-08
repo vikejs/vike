@@ -1,9 +1,10 @@
 export { getServerConfig }
-export { isUniversalDeployEnabled }
+export { isUniversalDeployVitePreview }
 
-import { assert } from '../../../../utils/assert.js'
+import type { ResolvedConfig } from 'vite'
 import { catchAllEntry } from '@universal-deploy/store'
 import type { VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
+import { assert } from '../../../../utils/assert.js'
 import '../../assertEnvVite.js'
 
 function getServerConfig(vikeConfig: VikeConfigInternal) {
@@ -41,7 +42,12 @@ function getServerConfig(vikeConfig: VikeConfigInternal) {
   }
 }
 
-function isUniversalDeployEnabled(vikeConfig: VikeConfigInternal) {
-  const serverConfig = getServerConfig(vikeConfig)
-  return !!serverConfig
+function isUniversalDeployVitePreview(vikeConfig: VikeConfigInternal, viteConfigResolved: ResolvedConfig) {
+  const isServerConfig = getServerConfig(vikeConfig)
+  if (!isServerConfig) return false
+
+  // @universal-deploy/node -> real preview
+  // else -> vite preview
+  const udNodePlugin = viteConfigResolved.plugins.find((p) => p.name.startsWith('ud:node:emit'))
+  return !udNodePlugin
 }
