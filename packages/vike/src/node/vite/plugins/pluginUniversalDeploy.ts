@@ -13,6 +13,7 @@ import { hasVikeServerOrVikePhoton } from './pluginUniversalDeploy/detectDepreca
 import { getServerConfig } from './pluginUniversalDeploy/getServerConfig.js'
 import { pluginServerEntryAlias } from './pluginUniversalDeploy/pluginServerEntryAlias.js'
 import { pluginUnwrapProdOptions } from './pluginUniversalDeploy/pluginUnwrapProdOptions.js'
+import { pluginWrapCatchAllEntry } from './pluginUniversalDeploy/pluginWrapCatchAllEntry.js'
 import { unique } from '../../../utils/unique.js'
 import { assertUsage } from '../../../utils/assert.js'
 import '../assertEnvVite.js'
@@ -63,5 +64,6 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
     pluginServerEntryInject(serverFilePath ?? serverEntryId),
     pluginServerEntryAlias(serverFilePath),
     !serverFilePath ? null : pluginUnwrapProdOptions(serverFilePath),
+    !serverFilePath ? null : pluginWrapCatchAllEntry(serverFilePath),
   ].filter((p) => p !== null)
 }
