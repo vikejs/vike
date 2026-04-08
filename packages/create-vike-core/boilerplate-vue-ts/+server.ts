@@ -1,5 +1,6 @@
 import { Hono } from 'hono'
 import vike from '@vikejs/hono'
+// TODO/ai apply git show HEAD~ everywhere (also in the docs)
 import type { Server } from 'vike/types'
 
 const app = new Hono()
