@@ -7,7 +7,11 @@ import { testCounter, testRunClassic } from '../../test/utils'
 function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   const isDev = cmd === 'pnpm run dev'
   testCloudflareBindings()
-  testRunClassic(cmd, { sleepBeforeAboutPage: 300 })
+  testRunClassic(cmd, {
+    // Avoid this error: https://github.com/vikejs/vike/pull/3106#issuecomment-4206563474
+    // We don't know why this is needed: https://github.com/vikejs/vike/pull/3106#issuecomment-4207829993
+    sleepBeforeAboutPage: 300,
+  })
   testTodolist(isDev)
 }
 
