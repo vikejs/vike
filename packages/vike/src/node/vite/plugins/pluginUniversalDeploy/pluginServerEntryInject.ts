@@ -1,3 +1,5 @@
+export { pluginServerEntryInject }
+
 import { getMagicString } from '../../shared/getMagicString.js'
 import { serverEntryVirtualId } from '@brillout/vite-plugin-server-entry/plugin'
 import type { Plugin } from 'vite'
@@ -5,7 +7,7 @@ import { pluginCommon } from './common.js'
 import '../../assertEnvVite.js'
 import { escapeRegex } from '../../../../utils/escapeRegex.js'
 
-export function pluginServerEntryInject(serverEntryId: string): Plugin {
+function pluginServerEntryInject(serverEntryId: string): Plugin {
   return {
     name: 'vike:pluginUniversalDeploy:serverEntry',
     apply: 'build',

@@ -1,4 +1,3 @@
-// TODO/ai apply git show HEAD~ everywhere in the PR git diff origin/main...HEAD
 export { getServerConfig }
 
 import { assert } from '../../../../utils/assert.js'
