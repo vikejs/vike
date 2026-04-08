@@ -14,7 +14,7 @@ function pluginWorkaroundVite6HmrRegression(): Plugin[] {
       enforce: 'post',
       hotUpdate: {
         order: 'post',
-        handler({ modules, server, timestamp }) {
+        async handler({ modules, server, timestamp, read }) {
           if (this.environment.name !== 'ssr') return
 
           let hasSsrOnlyModules = false
@@ -30,6 +30,8 @@ function pluginWorkaroundVite6HmrRegression(): Plugin[] {
           }
 
           if (hasSsrOnlyModules) {
+            // Wait for updated file to be ready
+            await read()
             server.ws.send({ type: 'full-reload' })
             return []
           }

@@ -7,7 +7,7 @@ import { testCounter, testRunClassic } from '../../test/utils'
 function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   const isDev = cmd === 'pnpm run dev'
   testCloudflareBindings()
-  testRunClassic(cmd, { sleepBeforeAboutPage: 300 })
+  testRunClassic(cmd)
   testTodolist(isDev)
 }
 
