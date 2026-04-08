@@ -855,8 +855,8 @@ importers:
         specifier: ^0.5.0
         version: 0.5.21
       tinyglobby:
-        specifier: ^0.2.10
-        version: 0.2.15
+        specifier: ^0.2.16
+        version: 0.2.16
       vite:
         specifier: '>=6.3.0'
         version: 7.2.7(@types/node@20.17.17)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.38.1)(tsx@4.20.6)
@@ -9909,7 +9909,7 @@ snapshots:
       get-port: 7.1.0
       miniflare: 4.20251217.0
       picocolors: 1.1.1
-      tinyglobby: 0.2.15
+      tinyglobby: 0.2.16
       unenv: 2.0.0-rc.24
       vite: 7.2.7(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.38.1)(tsx@4.20.6)
       wrangler: 4.62.0
@@ -9928,7 +9928,7 @@ snapshots:
       get-port: 7.1.0
       miniflare: 4.20251217.0
       picocolors: 1.1.1
-      tinyglobby: 0.2.15
+      tinyglobby: 0.2.16
       unenv: 2.0.0-rc.24
       vite: 7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.38.1)(tsx@4.20.6)
       wrangler: 4.62.0

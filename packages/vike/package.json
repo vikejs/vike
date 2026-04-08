@@ -133,7 +133,7 @@
     "semver": "^7.7.4",
     "sirv": "^3.0.2",
     "source-map-support": "^0.5.0",
-    "tinyglobby": "^0.2.10",
+    "tinyglobby": "^0.2.16",
     "vite": ">=6.3.0"
   },
   "peerDependencies": {
