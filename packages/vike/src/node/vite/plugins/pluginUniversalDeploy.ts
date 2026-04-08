@@ -19,9 +19,9 @@ import '../assertEnvVite.js'
 
 function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
   if (hasVikeServerOrVikePhoton(vikeConfig)) return []
-  const serverInfo = getServerConfig(vikeConfig)
+  const serverConfig = getServerConfig(vikeConfig)
 
-  if (!serverInfo)
+  if (!serverConfig)
     return [
       resolveTargets(({ vercel, node, netlify }) => {
         // Cloudflare is supported even without universal-deploy
@@ -33,7 +33,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
       }),
     ]
 
-  const { serverEntryVike, serverEntryId, serverFilePath } = serverInfo
+  const { serverEntryVike, serverEntryId, serverFilePath } = serverConfig
 
   return [
     ...universalDeploy(),
