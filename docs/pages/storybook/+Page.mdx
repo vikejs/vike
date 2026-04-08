@@ -1,15 +1,13 @@
 import { Link } from '@brillout/docpress'
 import { CommunityNote, Example } from '../../components'
 
-<CommunityNote url="https://storybook.js.org" />
-
 [Storybook](https://storybook.js.org) is a tool for developing, testing, and documenting UI components in isolation.
 
 Vike works with Storybook out-of-the-box.
 
 ## Get started
 
-You can scaffold a new Vike app with Storybook at <Link href="/new">https://vike.dev/new</Link>.
+You can scaffold a new Vike app with Storybook at <Link href="/new">vike.dev/new</Link>.
 
 > <Link href="/vite-plugin">Vike's Vite plugin</Link> isn't loaded when running Storybook.
 >
@@ -22,7 +20,7 @@ You can scaffold a new Vike app with Storybook at <Link href="/new">https://vike
 
 Since Storybook renders components in isolation — without Vike's runtime — write stories for the UI components used by your <Link href="/Page">`+Page`</Link> files, rather than for `+Page` files themselves.
 
-`+Page` files often depend on Vike features (such as <Link href="/data">`data()`</Link>, <Link href="/pageContext">`pageContext`</Link>, and <Link href="/Layout">`+Layout`</Link>) which aren't available inside Storybook. Keeping Vike-specific logic in `+Page` files and your reusable UI in plain components makes both Vike and Storybook happy.
+`+Page` files often depend on Vike features (such as <Link href="/data">`+data`</Link>, <Link href="/pageContext">`pageContext`</Link>, and <Link href="/Layout">`+Layout`</Link>) which aren't available inside Storybook. Keeping Vike-specific logic in `+Page` files and your reusable UI in plain components makes both Vike and Storybook happy.
 
 
 ## Example
