@@ -30,7 +30,8 @@ async function preview(options: ApiOptions = {}): Promise<{ viteServer?: Preview
   const isUD = isUniversalDeployEnabled(vikeConfig)
   const useVitePreviewServer =
     cliPreviewConfig === 'vite' ||
-    (cliPreviewConfig === undefined && !viteConfigResolved.vitePluginServerEntry?.inject && !isUD)
+    (cliPreviewConfig === undefined && !viteConfigResolved.vitePluginServerEntry?.inject) ||
+    isUD
   if (!useVitePreviewServer) {
     // Dynamically import() server production entry dist/server/index.js
     const outDir = getOutDirs(viteConfigResolved, undefined).outDirRoot
