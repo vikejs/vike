@@ -36,6 +36,7 @@ async function preview(options: ApiOptions = {}): Promise<{ viteServer?: Preview
     const outDir = getOutDirs(viteConfigResolved, undefined).outDirRoot
     const { outServerIndex } = await importServerProductionIndex({ outDir })
     const outServerIndexRelative = path.relative(viteConfigResolved.root, outServerIndex)
+    // TODO/after-PR-merge: always show a warning
     assertWarning(
       false,
       `Never run ${pc.cyan('$ vike preview')} in production, run ${pc.cyan(`$ node ${outServerIndexRelative}`)} instead (or Bun/Deno).`,
