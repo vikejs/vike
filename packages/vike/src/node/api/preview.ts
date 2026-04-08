@@ -12,6 +12,7 @@ import { isCallable } from '../../utils/isCallable.js'
 import pc from '@brillout/picocolors'
 import path from 'node:path'
 import { getVikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.js'
+import { getServerInfo } from '../vite/plugins/pluginUniversalDeploy/getServerInfo.js'
 import './assertEnvApiDev.js'
 
 /**
@@ -23,12 +24,14 @@ async function preview(options: ApiOptions = {}): Promise<{ viteServer?: Preview
   onSetupPreview()
   const { viteConfigFromUserResolved, viteConfigResolved } = await prepareViteApiCall(options, 'preview')
 
-  const cliPreview = await resolveCliPreviewConfig()
+  const vikeConfig = await getVikeConfigInternal()
+  const cliPreview = await resolveCliPreviewConfig(vikeConfig)
   assertUsage(cliPreview !== false, `${pc.cyan('$ vike preview')} isn't supported`)
+  const serverInfo = getServerInfo(vikeConfig)
   const useVite =
-    cliPreview === 'vite' || (cliPreview === undefined && !viteConfigResolved.vitePluginServerEntry?.inject)
+    cliPreview === 'vite' ||
+    (cliPreview === undefined && !viteConfigResolved.vitePluginServerEntry?.inject && !serverInfo)
   if (!useVite) {
-    // TODO/ai also use this branch if +server is defined
     // Dynamically import() server production entry dist/server/index.js
     const outDir = getOutDirs(viteConfigResolved, undefined).outDirRoot
     const { outServerIndex } = await importServerProductionIndex({ outDir })
@@ -51,8 +54,9 @@ async function preview(options: ApiOptions = {}): Promise<{ viteServer?: Preview
   }
 }
 
-async function resolveCliPreviewConfig(): Promise<CliPreviewValue> {
-  const vikeConfig = await getVikeConfigInternal()
+async function resolveCliPreviewConfig(
+  vikeConfig: Awaited<ReturnType<typeof getVikeConfigInternal>>,
+): Promise<CliPreviewValue> {
   const val = vikeConfig.config.cli?.preview
   if (!isCallable(val)) {
     return val
