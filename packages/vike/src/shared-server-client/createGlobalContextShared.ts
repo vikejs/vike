@@ -35,7 +35,6 @@ async function createGlobalContextShared<GlobalContextAdded extends {}, GlobalCo
   addGlobalContextTmp?: (globalContext: GlobalContextBase) => Promise<GlobalContextAdded>,
   addGlobalContextAsync?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddedAsync>,
 ) {
-  console.log('createGlobalContextShared()')
   const { previousCreateGlobalContextPromise } = globalObject
   const { promise, resolve } = genPromise({
     // Avoid this Cloudflare Worker error:
@@ -49,7 +48,6 @@ async function createGlobalContextShared<GlobalContextAdded extends {}, GlobalCo
     assert(globalObject.globalContext)
     await previousCreateGlobalContextPromise
   }
-  console.log('createGlobalContextShared() 1')
 
   try {
     const globalContext = createGlobalContextBase(virtualFileExportsGlobalEntry)
@@ -64,7 +62,6 @@ async function createGlobalContextShared<GlobalContextAdded extends {}, GlobalCo
       isNewGlobalContext = true
     }
 
-    console.log('createGlobalContextShared() 2')
     if (
       addGlobalContext &&
       // TO-DO/next-major-release: remove
@@ -76,25 +73,20 @@ async function createGlobalContextShared<GlobalContextAdded extends {}, GlobalCo
       const globalContextAdded = await addGlobalContextTmp?.(globalContext)
       objectAssign(globalContext, globalContextAdded)
     }
-    console.log('createGlobalContextShared() 3')
 
     {
       const globalContextAddedAsync = await addGlobalContextAsync?.(globalContext)
       objectAssign(globalContext, globalContextAddedAsync)
     }
 
-    console.log('createGlobalContextShared() 4')
     const onCreateGlobalContextHooks = getHooksFromPageConfigGlobalCumulative(
       globalContext._pageConfigGlobal,
       'onCreateGlobalContext',
     )
     let hooksCalled = false
-    console.log('createGlobalContextShared() hooksCalled', hooksCalled)
     if (!hooksAreEqual(globalObject.onCreateGlobalContextHooks ?? [], onCreateGlobalContextHooks)) {
       globalObject.onCreateGlobalContextHooks = onCreateGlobalContextHooks
-      console.log('createGlobalContextShared() hooks exec before')
       await execHookGlobal('onCreateGlobalContext', globalContext, getGlobalContextPublicShared)
-      console.log('createGlobalContextShared() hooks exec after')
       hooksCalled = true
     }
 

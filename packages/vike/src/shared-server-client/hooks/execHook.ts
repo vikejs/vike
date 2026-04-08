@@ -49,22 +49,9 @@ async function execHookGlobal(
 ) {
   const hooks = getHooksFromPageConfigGlobalCumulative(globalContext._pageConfigGlobal, hookName)
   const globalContextPublic = getGlobalContextPublic(globalContext)
-  console.log('execHookGlobal()', hooks)
   await Promise.all(
     hooks.map(async (hook) => {
-      await execHookBaseAsync(
-        async () => {
-          console.log('executing hook before', hook.hookFilePath)
-          const ret = hook.hookFn(globalContextPublic)
-          console.log('executing hook after', hook.hookFilePath)
-          const ret2 = await ret
-          console.log('executing hook after promise', hook.hookFilePath)
-          return ret2
-        },
-        hook,
-        globalContext,
-        null,
-      )
+      await execHookBaseAsync(() => hook.hookFn(globalContextPublic), hook, globalContext, null)
     }),
   )
 }
@@ -147,7 +134,6 @@ function execHookBaseAsync<HookReturn>(
   globalContext: GlobalContextPublicMinimum,
   pageContextPublic: null | PageContextExecHook,
 ): Promise<HookReturn> {
-  console.log('execHookBaseAsync()', hook)
   const {
     hookName,
     hookFilePath,
@@ -166,13 +152,11 @@ function execHookBaseAsync<HookReturn>(
       reject_(err)
     }
   })
-  console.log('execHookBaseAsync() 2')
 
   const clearTimeouts = () => {
     if (currentTimeoutWarn) clearTimeout(currentTimeoutWarn)
     if (currentTimeoutErr) clearTimeout(currentTimeoutErr)
   }
-  console.log('execHookBaseAsync() 2.1')
   const currentTimeoutWarn =
     isNotDisabled(timeoutWarn) &&
     setTimeout(() => {
@@ -184,7 +168,6 @@ function execHookBaseAsync<HookReturn>(
         { onlyOnce: false },
       )
     }, timeoutWarn)
-  console.log('execHookBaseAsync() 2.2')
   const currentTimeoutErr =
     isNotDisabled(timeoutErr) &&
     setTimeout(() => {
@@ -195,7 +178,6 @@ function execHookBaseAsync<HookReturn>(
       )
       reject(err)
     }, timeoutErr)
-  console.log('execHookBaseAsync() 3')
   ;(async () => {
     try {
       const ret = await execHookBase(hookFnCaller, hook, globalContext, pageContextPublic)
@@ -208,7 +190,6 @@ function execHookBaseAsync<HookReturn>(
     }
   })()
 
-  console.log('execHookBaseAsync() 4')
   return promise
 }
 
@@ -219,13 +200,11 @@ function execHookBase<HookReturn>(
   globalContext: GlobalContextPublicMinimum,
   pageContext: PageContextExecHook | null,
 ): HookReturn | Promise<HookReturn> {
-  console.log('execHookBase()', hook)
   const { hookName, hookFilePath } = hook
   assert(hookName !== 'onHookCall') // ensure no infinite loop
   const configValue = globalContext._pageConfigGlobal.configValues['onHookCall']
 
   const callOriginal = () => {
-    console.log('execHookBase() callOriginal()', hook)
     providePageContextInternal(pageContext)
     return hookFnCaller()
   }
