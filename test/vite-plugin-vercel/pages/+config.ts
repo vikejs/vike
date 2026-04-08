@@ -13,5 +13,8 @@ export default {
   title: 'My Vike App',
   description: 'Demo showcasing Vike',
 
+  // TODO: remove temp workaround
+  cli: { preview: 'vite' },
+
   extends: vikeReact,
 } satisfies Config
