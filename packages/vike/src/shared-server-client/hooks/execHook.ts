@@ -158,6 +158,8 @@ function execHookBaseAsync<HookReturn>(
     if (currentTimeoutErr) clearTimeout(currentTimeoutErr)
   }
   const currentTimeoutWarn =
+    // TODO: remove temp workaround
+    (false as boolean) &&
     isNotDisabled(timeoutWarn) &&
     setTimeout(() => {
       assertWarning(
@@ -169,6 +171,8 @@ function execHookBaseAsync<HookReturn>(
       )
     }, timeoutWarn)
   const currentTimeoutErr =
+    // TODO: remove temp workaround
+    (false as boolean) &&
     isNotDisabled(timeoutErr) &&
     setTimeout(() => {
       const err = getProjectError(
