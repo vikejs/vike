@@ -48,9 +48,9 @@ type PageContextServer<Data = unknown> = PageContextBuiltInServer<Data> & {
   dangerouslyUseInternals: DangerouslyUseInternals<
     PageContextInternalServer & PageContextAfterRender & PageContextPublicServer
   >
-  runtime: Vike.Server extends { server: string } ? RuntimeAdapterTarget<Vike.Server['server']> : never
 } & Vike.PageContext &
-  Vike.PageContextServer
+  Vike.PageContextServer &
+  (Vike.Server extends { server: string } ? { runtime: RuntimeAdapterTarget<Vike.Server['server']> } : {})
 
 // With Client Routing
 //  - Because of vike-{react/vue/solid} most users will eventually be using Client Routing => we give out the succinct type names `PageContext` and `PageContextClient` to these users
