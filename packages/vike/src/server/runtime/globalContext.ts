@@ -293,7 +293,7 @@ async function initGlobalContext(): Promise<void> {
     assert(globalObject.waitForUserFilesUpdate)
     await globalObject.waitForUserFilesUpdate
   } else {
-    await loadProdBuildEntry(globalObject.viteConfigRuntime?.build.outDir)
+    await loadProdBuildEntry(false, globalObject.viteConfigRuntime?.build.outDir)
   }
   assertGlobalContextIsDefined()
   globalObject.isInitialized = true
@@ -313,7 +313,7 @@ function assertViteManifest(manifest: unknown): asserts manifest is ViteManifest
   */
 }
 
-async function loadProdBuildEntry(outDir?: string) {
+async function loadProdBuildEntry(isInit: boolean, outDir?: string) {
   debug('loadProdBuildEntry()')
   if (globalObject.globalContext) {
     debug('loadProdBuildEntry() - already done')
@@ -343,7 +343,7 @@ async function loadProdBuildEntry(outDir?: string) {
   assertProdBuildEntry(prodBuildEntry)
   globalObject.assetsManifest = prodBuildEntry.assetsManifest
   globalObject.buildInfo = prodBuildEntry.buildInfo
-  await createGlobalContext(prodBuildEntry.virtualFileExportsGlobalEntry)
+  if (!isInit) await createGlobalContext(prodBuildEntry.virtualFileExportsGlobalEntry)
 }
 
 // This is the production entry, see:
@@ -356,8 +356,8 @@ async function setGlobalContext_prodBuildEntry(prodBuildEntry: unknown) {
   globalObject.prodBuildEntry = prodBuildEntry
   globalObject.prodBuildEntryPrevious = prodBuildEntry
   assert(globalObject.prodBuildEntry) // ensure no infinite loop
-  await loadProdBuildEntry()
-  assertGlobalContextIsDefined()
+  await loadProdBuildEntry(true)
+  // assertGlobalContextIsDefined()
   debug('setGlobalContext_prodBuildEntry() - done')
 }
 
