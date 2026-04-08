@@ -3,7 +3,7 @@ import { catchAllEntry } from '@universal-deploy/store'
 import type { VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import '../../assertEnvVite.js'
 
-export function getServerInfo(vikeConfig: VikeConfigInternal) {
+export function getServerConfig(vikeConfig: VikeConfigInternal) {
   let serverEntryId: string
   let serverFilePath: string | null = null
   let serverEntryVike: string

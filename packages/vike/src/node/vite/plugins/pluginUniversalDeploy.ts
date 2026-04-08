@@ -10,7 +10,7 @@ import { pluginServerEntryInject } from './pluginUniversalDeploy/pluginServerEnt
 import { getDeployConfigs, getRoutePageContextJson } from './pluginUniversalDeploy/getDeployConfigs.js'
 import { pluginCommon } from './pluginUniversalDeploy/common.js'
 import { hasVikeServerOrVikePhoton } from './pluginUniversalDeploy/detectDeprecated.js'
-import { getServerInfo } from './pluginUniversalDeploy/getServerInfo.js'
+import { getServerConfig } from './pluginUniversalDeploy/getServerConfig.js'
 import { pluginServerEntryAlias } from './pluginUniversalDeploy/pluginServerEntryAlias.js'
 import { pluginUnwrapProdOptions } from './pluginUniversalDeploy/pluginUnwrapProdOptions.js'
 import { unique } from '../../../utils/unique.js'
@@ -19,7 +19,7 @@ import '../assertEnvVite.js'
 
 function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
   if (hasVikeServerOrVikePhoton(vikeConfig)) return []
-  const serverInfo = getServerInfo(vikeConfig)
+  const serverInfo = getServerConfig(vikeConfig)
 
   if (!serverInfo)
     return [

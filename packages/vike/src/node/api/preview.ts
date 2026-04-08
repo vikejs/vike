@@ -12,7 +12,7 @@ import { isCallable } from '../../utils/isCallable.js'
 import pc from '@brillout/picocolors'
 import path from 'node:path'
 import { getVikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.js'
-import { getServerInfo } from '../vite/plugins/pluginUniversalDeploy/getServerInfo.js'
+import { getServerConfig } from '../vite/plugins/pluginUniversalDeploy/getServerConfig.js'
 import './assertEnvApiDev.js'
 
 /**
@@ -27,7 +27,7 @@ async function preview(options: ApiOptions = {}): Promise<{ viteServer?: Preview
   const vikeConfig = await getVikeConfigInternal()
   const cliPreview = await resolveCliPreviewConfig(vikeConfig)
   assertUsage(cliPreview !== false, `${pc.cyan('$ vike preview')} isn't supported`)
-  const serverInfo = getServerInfo(vikeConfig)
+  const serverInfo = getServerConfig(vikeConfig)
   const useVite =
     cliPreview === 'vite' ||
     (cliPreview === undefined && !viteConfigResolved.vitePluginServerEntry?.inject && !serverInfo)
