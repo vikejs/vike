@@ -19,10 +19,12 @@ function pluginWrapCatchAllEntry(serverFilePath: string): Plugin {
 import mod from ${JSON.stringify(id)};
 import serverMod from ${JSON.stringify(serverFilePath)};
 
-const { fetch: _fetch, ...serverModRest } = serverMod;
+const serverModObj = serverMod && typeof serverMod === 'object' ? serverMod : {};
+const { fetch: _fetchUnused, ...serverModRest } = serverModObj;
+const fetch = typeof mod?.fetch === 'function' ? mod.fetch : undefined;
 
 export * from ${JSON.stringify(serverFilePath)};
-export default { ...mod, ...serverModRest, fetch: mod.fetch };
+export default { ...mod, ...serverModRest, ...(fetch ? { fetch } : {}) };
 `
     },
   })
