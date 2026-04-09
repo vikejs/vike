@@ -14,7 +14,8 @@ function pluginWorkaroundVite6HmrRegression(): Plugin[] {
       enforce: 'post',
       hotUpdate: {
         order: 'post',
-        async handler({ modules, server, timestamp, read }) {
+        async handler(ctx) {
+          const { modules, server, timestamp } = ctx
           if (this.environment.name !== 'ssr') return
 
           let hasSsrOnlyModules = false
@@ -30,8 +31,7 @@ function pluginWorkaroundVite6HmrRegression(): Plugin[] {
           }
 
           if (hasSsrOnlyModules) {
-            // Wait for updated file to be ready
-            await read()
+            await ctx.read() // https://imgur.com/a/Z1XG5pc https://vite.dev/guide/api-environment-plugins
             server.ws.send({ type: 'full-reload' })
             return []
           }
