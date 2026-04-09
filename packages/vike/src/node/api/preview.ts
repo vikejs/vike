@@ -11,7 +11,7 @@ import { onSetupPreview } from '../../utils/assertSetup.js'
 import { isCallable } from '../../utils/isCallable.js'
 import pc from '@brillout/picocolors'
 import path from 'node:path'
-import { getVikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.js'
+import { getVikeConfigInternal, type VikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.js'
 import { isUniversalDeployVitePreview } from '../vite/plugins/pluginUniversalDeploy/getServerConfig.js'
 import './assertEnvApiDev.js'
 
@@ -56,9 +56,7 @@ async function preview(options: ApiOptions = {}): Promise<{ viteServer?: Preview
   }
 }
 
-async function resolveCliPreviewConfig(
-  vikeConfig: Awaited<ReturnType<typeof getVikeConfigInternal>>,
-): Promise<CliPreviewValue> {
+async function resolveCliPreviewConfig(vikeConfig: VikeConfigInternal): Promise<CliPreviewValue> {
   const val = vikeConfig.config.cli?.preview
   if (!isCallable(val)) {
     return val
