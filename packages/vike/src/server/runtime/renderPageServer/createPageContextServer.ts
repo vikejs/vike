@@ -9,7 +9,7 @@ import { objectAssign } from '../../../utils/objectAssign.js'
 import { updateType } from '../../../utils/updateType.js'
 import { getPageContextUrlComputed } from '../../../shared-server-client/getPageContextUrlComputed.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
-import type { PageContextInit, PageContextInternalInit } from '../renderPageServer.js'
+import type { PageContextInit, PageContextInitInternal } from '../renderPageServer.js'
 import {
   createPageContextObject,
   createPageContextShared,
@@ -18,7 +18,7 @@ import '../../assertEnvServer.js'
 
 type PageContextCreatedServer = Awaited<ReturnType<typeof createPageContextServer>>
 function createPageContextServer(
-  pageContextInit: PageContextInternalInit & {
+  pageContextInit: PageContextInitInternal & {
     // TO-DO/next-major-release: remove
     headers?: Record<string, unknown>
   },
@@ -93,7 +93,7 @@ function createPageContextServerWithoutGlobalContext(pageContextInit: PageContex
 }
 
 function createPageContextBase(
-  pageContextInit: PageContextInternalInit | null,
+  pageContextInit: PageContextInitInternal | null,
   isPrerendering: boolean,
   requestId: number,
 ) {

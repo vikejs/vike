@@ -1,7 +1,7 @@
 export { renderPageServer }
 export { getRequestTag }
 export type { PageContextInit }
-export type { PageContextInternalInit }
+export type { PageContextInitInternal }
 export type { PageContextBegin }
 export type { RequestTag }
 
@@ -71,7 +71,7 @@ import {
   type PageContext_loadPageConfigsLazyServerSide,
 } from './renderPageServer/loadPageConfigsLazyServerSide.js'
 import { resolveRedirects } from './renderPageServer/resolveRedirects.js'
-import type { PageContextInit, PageContextInternalInit, PageContextInternalServer } from '../../types/PageContext.js'
+import type { PageContextInit, PageContextInitInternal, PageContextInternalServer } from '../../types/PageContext.js'
 import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.js'
 import { forkPageContext } from '../../shared-server-client/forkPageContext.js'
 import { getAsyncLocalStorage, type AsyncStore } from './asyncHook.js'
@@ -98,7 +98,7 @@ type PageContextAfterRender = PageContextCreatedServerWithoutGlobalContext & {
 type PageContextBegin = ReturnType<typeof getPageContextBegin>
 
 // `renderPageServer()` calls `renderPageServerNominal()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that Vike never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
-async function renderPageServer<PageContextUserAdded extends {}, PageContextInitUser extends PageContextInternalInit>(
+async function renderPageServer<PageContextUserAdded extends {}, PageContextInitUser extends PageContextInitInternal>(
   pageContextInit: PageContextInitUser,
 ): Promise<
   // Partial because rendering may fail at any user hook.
@@ -128,7 +128,7 @@ async function renderPageServer<PageContextUserAdded extends {}, PageContextInit
 }
 
 async function renderPageServerEntryOnceBegin(
-  pageContextInit: PageContextInternalInit,
+  pageContextInit: PageContextInitInternal,
   requestId: number,
   asyncStore: AsyncStore,
 ): Promise<PageContextAfterRender> {
@@ -502,7 +502,7 @@ function getPageContextHttpErrorFallback_noGlobalContext(
 }
 
 function getPageContextBegin(
-  pageContextInit: PageContextInternalInit,
+  pageContextInit: PageContextInitInternal,
   globalContext: GlobalContextServerInternal,
   requestId: number,
   asyncStore: AsyncStore,

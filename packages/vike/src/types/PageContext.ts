@@ -14,7 +14,7 @@ export type { PageContextInternalServer }
 export type { PageContextInternalClient }
 export type { PageContextInternalClient_ServerRouting }
 export type { PageContextInternalClient_ClientRouting }
-export type { PageContextInternalInit }
+export type { PageContextInitInternal }
 export type { PageContextInit }
 
 // TO-DO/next-major-release: remove these three exports
@@ -186,7 +186,7 @@ type PageContextInit = {
   url?: string
 }
 
-type PageContextInternalInit = PageContextInit & { _reqDev?: IncomingMessage; _reqWeb?: Request }
+type PageContextInitInternal = PageContextInit & { _reqDev?: IncomingMessage; _reqWeb?: Request }
 
 type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
   PageContextInit &
