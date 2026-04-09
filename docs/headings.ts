@@ -271,7 +271,7 @@ const headings = [
     level: 2,
     title: 'Cloudflare',
     url: '/cloudflare',
-    sectionTitles: ['Cloudflare Pages', 'Cloudflare APIs'],
+    sectionTitles: ['Cloudflare APIs'],
   },
   {
     level: 2,

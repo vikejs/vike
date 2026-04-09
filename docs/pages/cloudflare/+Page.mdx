@@ -192,22 +192,7 @@ By default the bundle size of your worker cannot exceed 3MB, but you can request
 
 ## Manual integration
 
-Instead of using [`@cloudflare/vite-plugin`](https://www.npmjs.com/package/@cloudflare/vite-plugin), you can integrate Cloudflare yourself.
-
-### Cloudflare Pages
-
-For a manual integration, we generally recommend using:
- - [Cloudflare Pages](https://developers.cloudflare.com/pages/) for static assets and <Link href="/pre-rendering">pre-rendered pages</Link>, and
- - [Pages Functions](https://developers.cloudflare.com/pages/platform/functions/) for <Link href="/ssr">SSR'd pages</Link>.
-
-Examples:
- - <Example timestamp="2024.01" repo="travis-r6s/vike-cf-pages" /> - Advanced demo showcasing a lot of integrations such as REST, tRPC, GraphQL, Sentry, and Thumbprint.
- - <Example timestamp="2022.04" repo="Immortalin/vite-plugin-ssr-cloudflare-pages-demo" />
-   > vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike).
-
-### Workers
-
-You can also directly use [Cloudflare Workers](https://workers.cloudflare.com) instead of using Cloudflare Pages.
+Instead of using [`@cloudflare/vite-plugin`](https://www.npmjs.com/package/@cloudflare/vite-plugin), you can integrate [Cloudflare Workers](https://workers.cloudflare.com) yourself.
 
 Cloudflare Workers requires your entire worker code to be bundled into a single file — you can use [Wrangler](https://github.com/cloudflare/workers-sdk) to achieve that (it uses [esbuild](https://esbuild.github.io/) under the hood).
 
