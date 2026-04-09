@@ -7,7 +7,7 @@ import universalDeploy, { resolveTargets } from '@universal-deploy/vite'
 import { fromVike } from 'convert-route/vike'
 import type { VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 import { pluginServerEntryInject } from './pluginUniversalDeploy/pluginServerEntryInject.js'
-import { getDeployConfigs, getRoutePageContextJson } from './pluginUniversalDeploy/getDeployConfigs.js'
+import { getDeployConfig, getRoutePageContextJson } from './pluginUniversalDeploy/getDeployConfig.js'
 import { pluginCommon } from './pluginUniversalDeploy/common.js'
 import { hasVikeServerOrVikePhoton } from './pluginUniversalDeploy/detectDeprecated.js'
 import { getServerConfig } from './pluginUniversalDeploy/getServerConfig.js'
@@ -38,10 +38,10 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
       config() {
         // Map each Vike route to universal-deploy
         for (const [pageId, page] of Object.entries(vikeConfig.pages)) {
-          const deployConfigs = getDeployConfigs(pageId, page)
+          const deployConfig = getDeployConfig(pageId, page)
           // Skip pages without deploy configs, as they will be handled by the catch-all route
-          if (deployConfigs !== null) {
-            const { route, ...additionalConfigs } = deployConfigs
+          if (deployConfig !== null) {
+            const { route, ...additionalConfigs } = deployConfig
             const routeIr = fromVike(route)
             const routeIrPageContextJson = getRoutePageContextJson(routeIr)
             addEntry({

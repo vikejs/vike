@@ -1,4 +1,4 @@
-export { getDeployConfigs }
+export { getDeployConfig }
 
 import type { fromVike } from 'convert-route'
 import { assert, assertUsage, assertWarning } from '../../../../utils/assert.js'
@@ -7,7 +7,7 @@ import type { PageConfigPublicWithRoute } from '../../../../shared-server-client
 import '../../assertEnvVite.js'
 import { isCallable } from '../../../../utils/isCallable.js'
 
-function getDeployConfigs(pageId: string, page: PageConfigPublicWithRoute) {
+function getDeployConfig(pageId: string, page: PageConfigPublicWithRoute) {
   const { route } = page
   if (!route) return null
 
