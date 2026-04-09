@@ -331,7 +331,8 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Server',
+    title: '`+server`',
+    titleInNav: 'Server',
     url: '/server',
   },
   {
@@ -365,6 +366,7 @@ const headings = [
     titleInNav: '... more',
     title: 'Integration (more)',
     url: '/integration',
+    sectionTitles: ['Server (Manual integration)'],
   },
   {
     level: 1,

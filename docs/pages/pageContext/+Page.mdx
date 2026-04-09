@@ -142,9 +142,7 @@ The headers of the HTTP Response, see <Link href="/headersResponse"/>.
 
 <Prop name="runtime" />
 
-The [`RuntimeAdapter`](https://universal-middleware.dev/reference/runtime-adapter) object set by <Link href="/server">`+server.js`</Link> (which uses [`universal-middleware`](https://universal-middleware.dev/) under the hood).
-
-> It's only available if you use `+server.js`.
+The [`RuntimeAdapter`](https://universal-middleware.dev/reference/runtime-adapter) object set by <Link href="/server">`+server`</Link> (which uses [`universal-middleware`](https://universal-middleware.dev/) under the hood).
 
 ```ts
 // Environment: server
@@ -167,6 +165,8 @@ declare global {
 > When using Node.js:
 > - `pageContext.runtime.req` is [`IncomingMessage`](https://nodejs.org/api/http.html#class-httpincomingmessage)
 > - `pageContext.runtime.res` is [`ServerResponse`](https://nodejs.org/api/http.html#class-httpserverresponse)
+
+> It's only available if you use <Link href="/server">`+server`</Link>. If you don't use `+server`, then <Link href="#custom">define a custom `pageContext` property</Link> (e.g. `pageContext.req`) to access the request object.
 
 <Prop name="config" />
 
