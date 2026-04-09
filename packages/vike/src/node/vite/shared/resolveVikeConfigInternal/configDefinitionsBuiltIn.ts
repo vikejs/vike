@@ -422,7 +422,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     global: true,
   },
   vercel: {
-    env: { server: true, config: true },
+    env: { config: true },
   },
 }
 
