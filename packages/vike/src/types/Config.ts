@@ -680,17 +680,21 @@ type ConfigBuiltIn = {
 
   /**
    * Vercel options
+   *
+   * https://vike.dev/vercel
    */
   vercel?: {
-    /** Incremental Static Regeneration (ISR).
+    /**
+     * Incremental Static Regeneration (ISR).
      *
      * https://vike.dev/vercel#isr
      */
     isr?: { expiration: number }
 
-    /** Deploy on Vercel Edge.
+    /**
+     * Deploy on Vercel Edge.
      *
-     * https://vike.dev/vercel
+     * https://vike.dev/vercel#edge
      */
     edge?: boolean
   }
