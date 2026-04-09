@@ -47,7 +47,11 @@ type ConfigDefinition_ = {
    */
   effect?: ConfigEffect
   /**
-   * Always load the configuration value, and as soon as possible.
+   * Load the configuration of *all* pages (regardless of what page is being rendered).
+   *
+   * WARNING: this might bloat server- and client-side KBs.
+   *
+   * By default, to save server- and client-side KBs, the configuration of a page is only loaded when rendering that page.
    *
    * @default false
    *
