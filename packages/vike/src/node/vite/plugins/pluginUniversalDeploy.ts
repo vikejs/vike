@@ -38,11 +38,11 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
         // Map each Vike route to universal-deploy
         for (const [pageId, page] of Object.entries(vikeConfig.pages)) {
           const deployConfig = getDeployConfig(pageId, page)
-          // Skip pages without deploy configs, as they will be handled by the catch-all route
-          if (deployConfig !== null) {
-            const { route, ...additionalConfigs } = deployConfig
+          // Skip pages without a deploy configuration, as they will be handled by the catch-all route
+          if (deployConfig) {
+            const { route, ...config } = deployConfig
             addEntry({
-              ...additionalConfigs,
+              ...config,
               id: serverEntryVike,
               // Map Vike routes to rou3 format
               route: unique(route.map(toRou3).flat()),
