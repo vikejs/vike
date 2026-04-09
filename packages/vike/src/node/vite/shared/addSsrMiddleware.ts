@@ -1,6 +1,6 @@
 export { addSsrMiddleware }
 
-import { PageContextInternalInit, renderPageServer } from '../../../server/runtime/renderPageServer.js'
+import { type PageContextInternalInit, renderPageServer } from '../../../server/runtime/renderPageServer.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { assertWarning } from '../../../utils/assert.js'
 import pc from '@brillout/picocolors'
