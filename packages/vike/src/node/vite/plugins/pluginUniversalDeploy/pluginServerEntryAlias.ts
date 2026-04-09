@@ -18,13 +18,13 @@ const filterRolldown = {
 }
 // ===
 
+/** Alias for virtual:ud:catch if no userland server entry */
 function pluginServerEntryAlias(serverFilePath?: string | null): Plugin {
   return {
     name: 'vike:pluginUniversalDeploy:alias',
     resolveId: {
       filter: filterRolldown,
       handler() {
-        // Alias for virtual:ud:catch if no userland server entry
         if (!serverFilePath) return catchAllEntry
         return virtualFileId
       },
