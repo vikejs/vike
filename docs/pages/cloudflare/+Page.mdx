@@ -4,7 +4,7 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import '../../components/tabs.css'
 import Examples from './Examples.mdx'
 
-<StaticSsrIntro provider="Cloudflare" />
+<StaticSsrIntro provider={<a href="https://cloudflare.com">Cloudflare</a>} />
 
 > In development, your server code runs inside [`workerd`](https://github.com/cloudflare/workerd), the same runtime Cloudflare uses in production.
 
@@ -240,6 +240,7 @@ Example: <RepoLink path='/examples/cloudflare-workers-react-full#universal-fetch
 
 ## See also
 
-- <Link href="/cloudflare-pages" />
+- <Link href="/server" />
 - [Cloudflare Workers](https://developers.cloudflare.com/workers/)
-- [Cloudflare](https://cloudflare.com)
+- <Link href="/blog/universal-deploy" />
+- <Link href="/cloudflare-pages" />

@@ -3,7 +3,7 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import '../../components/tabs.css'
 import { Example, StaticSsrIntro, UseScaffolder } from '../../components'
 
-<StaticSsrIntro provider="Vercel" />
+<StaticSsrIntro provider={<a href="https://vercel.com">Vercel</a>} />
 
 > If you're using `vike-photon`, then <Link href="/migration/server">migrate to `+server`</Link>.
 
@@ -54,7 +54,7 @@ You can deploy your app using either Vercel's CLI or Vercel's Git integration.
 
 ### CLI
 
-Install the [Vercel CLI](https://vercel.com/docs/cli), then run the `vercel` command.
+Install the [Vercel CLI](https://vercel.com/docs/cli), then run the `$ vercel` command.
 The CLI will guide you through the necessary steps.
 
 ### Git
@@ -84,7 +84,7 @@ export default {
 
 ## Edge
 
-To deploy to [Vercel's Edge Runtime](https://vercel.com/docs/functions/edge-functions/edge-runtime):
+To deploy to [Vercel Edge](https://vercel.com/docs/functions/edge-functions/edge-runtime):
 
 ```ts
 // pages/some-route/+config.ts
@@ -139,3 +139,9 @@ This is usually easy to achieve as most data layer tools integrate using a singl
 In other words, you can add a data layer by:
  - Creating a new Vercel API Route, integrating that single endpoint.
  - Creating a new route to your local development server (e.g. Express.js), integrating that single endpoint.
+
+
+## See also
+
+- <Link href="/server" />
+- <Link href="/blog/universal-deploy" />

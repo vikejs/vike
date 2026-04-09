@@ -344,6 +344,7 @@ import compress from '@universal-middleware/compress' // [!code ++]
 
 const app = new Hono()
 vike(app) // [!code --]
+// Add universal middlewares here (same for Express.js, Fastify, ...) // [!code ++]
 vike(app, [compress()]) // [!code ++]
 ```
 
