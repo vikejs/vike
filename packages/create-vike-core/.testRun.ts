@@ -34,7 +34,7 @@ function testRun(
   run(cmd, {
     // HMR tests are flaky (I couldn't make them reliable)
     isFlaky: testHMR,
-    serverIsReadyMessage: isProd ? 'Listening on:' : 'Local:',
+    serverIsReadyMessage: isProd ? 'Listening on:' : undefined,
   })
 
   test('page content is rendered to HTML', async () => {
