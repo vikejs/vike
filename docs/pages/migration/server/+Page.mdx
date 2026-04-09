@@ -6,6 +6,8 @@ import '../../../components/tabs.css'
 Guide to migrate from <Link href="/vike-photon">`vike-photon`</Link> to <Link href="/server">`+server.js`</Link>.
 
 > `vike-photon` is deprecated — it has been replaced by `+server`.
+>
+> See: <Link href="/blog/universal-deploy" />.
 
 ## 1. Update dependencies
 
@@ -13,8 +15,6 @@ Guide to migrate from <Link href="/vike-photon">`vike-photon`</Link> to <Link hr
 npm uninstall vike-photon
 npm install vike@latest
 ```
-
-You should also install the corresponding `@vikejs/*` package for your server.
 
 <Tabs>
   <TabList>
@@ -129,19 +129,7 @@ export default {
 } satisfies Config
 ```
 
-If you were not using a custom server entry, enable the built-in server:
-
-```ts
-// pages/+config.ts
-
-export default {
-  // ...
-  server: true, // [!code ++]
-}
-```
-
-
-If you used `isr` or `edge` settings, they are now live at `+vercel.{isr,edge}`:
+If you used the `isr` or `edge` settings, they now live at `+vercel.{isr,edge}`:
 
 ```ts
 // pages/+config.ts
@@ -159,7 +147,7 @@ export default {
 
 ## 4. Move server entry to `+server.ts`
 
-Your server entry should now be named <Link href="/server">`+server.js`</Link> at the root of your project, and use the `export default { fetch }` syntax.
+Rename your server entry to <Link href="/server">`+server.js`</Link> (we recommend to move it at your root directory), and use the standard syntax `export default { fetch }`.
 
 <Tabs>
   <TabList>
@@ -272,17 +260,29 @@ Your server entry should now be named <Link href="/server">`+server.js`</Link> a
   </TabPanel>
 </Tabs>
 
+> If you weren't using a server entry, enable Vike's built-in server instead of creating `+server.js`:
+>
+> ```ts
+> // pages/+config.ts
+>
+> export default {
+>   // ...
+>   server: true, // [!code ++]
+> }
+> ```
+> See also: <Link href="/server#server-true">`+server: true`</Link>.
+
 ## 5. `serve()` options
 
-Most `serve()` options have their equivalent at <Link href="/server#settings" />.
+Most `serve()` options have their equivalent, see <Link href="/server#settings" />.
 
 <Warning>
-  <p>Previously, `serve()` options impacted both the dev server and the production server.
-    Now, those options only impact the production server.</p>
+  <p>Previously, `serve()` options applied to both the development and production server.
+    Now, those options only apply to the production server.</p>
 
   If you need the equivalent options for the dev server, use [Vite's server settings](https://vite.dev/config/server-options).
 
-  🚧 Server settings are separate because values usually differ between dev and prod. If you have a use case where settings share the same value in dev and prod, then [reach out](https://github.com/vikejs/vike/discussions) and we'll create server settings that apply to both dev an prod.
+  🚧 Server settings are now separate because values usually differ between dev and prod. If you have a use case where settings share the same value in dev and prod, then [reach out](https://github.com/vikejs/vike/discussions) and we'll create server settings that apply to both dev an prod.
 </Warning>
 
 
@@ -318,10 +318,12 @@ npm i standaloner
 // vite.config.ts
 
 import { defineConfig } from 'vite'
-import standaloner from 'standaloner/vite'
+import standaloner from 'standaloner/vite' // [!code ++]
 
 export default defineConfig({
-  plugins: [standaloner()]
+  plugins: [
+    standaloner() // [!code ++]
+  ]
 });
 ```
 
@@ -341,7 +343,7 @@ import vike from '@vikejs/hono'
 import compress from '@universal-middleware/compress' // [!code ++]
 
 const app = new Hono()
-// Add middleware here
+vike(app) // [!code --]
 vike(app, [compress()]) // [!code ++]
 ```
 
@@ -367,7 +369,7 @@ export default {
 
 ## 7. Typescript (optional)
 
-The following is only required if you rely on `pageContext.runtime` typing override:
+If you use `pageContext.runtime` and TypeScript:
 
 ```ts
 declare global {
