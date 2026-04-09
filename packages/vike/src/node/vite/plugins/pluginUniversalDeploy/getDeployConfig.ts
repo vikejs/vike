@@ -6,7 +6,7 @@ import { isObject } from '../../../../utils/isObject.js'
 import type { PageConfigPublicWithRoute } from '../../../../shared-server-client/page-configs/resolveVikeConfigPublic.js'
 import '../../assertEnvVite.js'
 import { isCallable } from '../../../../utils/isCallable.js'
-import { getPageContextRequestUrl } from '../../../../shared-server-client/getPageContextRequestUrl.js'
+import { pageContextJsonFileExtension } from '../../../../shared-server-client/getPageContextRequestUrl.js'
 import type { Vercel } from '../../../../types/Config.js'
 type RouteIr = ReturnType<typeof fromVike>
 
@@ -60,7 +60,7 @@ function getRouteIrPageContextJson(routeIr: RouteIr) {
       ...routeIr.pathname.slice(0, -1),
       {
         ...lastSegment,
-        value: getPageContextRequestUrl(lastSegment.value),
+        value: lastSegment.value + pageContextJsonFileExtension,
       },
     ],
   }
