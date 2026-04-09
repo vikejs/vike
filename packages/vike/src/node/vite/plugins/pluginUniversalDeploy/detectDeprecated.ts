@@ -1,19 +1,20 @@
 export { hasVikeServerOrVikePhoton }
 
 import type { VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
-import { assertWarning } from '../../../../utils/assert.js'
+import { assert, assertWarning } from '../../../../utils/assert.js'
 import pc from '@brillout/picocolors'
 import '../../assertEnvVite.js'
 
 function hasVikeServerOrVikePhoton(vikeConfig: VikeConfigInternal) {
-  const vikeExtendsNames = new Set(
-    vikeConfig._extensions.map(
-      (plusFile) => ('fileExportsByConfigName' in plusFile ? plusFile.fileExportsByConfigName : {}).name,
-    ),
-  )
-  const vikeServerOrVikePhoton = vikeExtendsNames.has('vike-server')
+  const vikeExtensionNames = vikeConfig._extensions.map((plusFile) => {
+    assert(plusFile.isConfigFile)
+    const { name } = plusFile.fileExportsByConfigName
+    assert(typeof name === 'string')
+    return name
+  })
+  const vikeServerOrVikePhoton = vikeExtensionNames.includes('vike-server')
     ? 'vike-server'
-    : vikeExtendsNames.has('vike-photon')
+    : vikeExtensionNames.includes('vike-photon')
       ? 'vike-photon'
       : null
   if (vikeServerOrVikePhoton) {
