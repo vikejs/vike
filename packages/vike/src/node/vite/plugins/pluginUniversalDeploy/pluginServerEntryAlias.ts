@@ -7,18 +7,18 @@ import { escapeRegex } from '../../../../utils/escapeRegex.js'
 import { assert } from '../../../../utils/assert.js'
 import '../../assertEnvVite.js'
 
+const serverEntryAlias = 'vike:server-entry'
+const virtualFileId = '\0' + serverEntryAlias
+
+// === Rolldown filter
+const filterRolldown = {
+  id: {
+    include: [new RegExp(escapeRegex(serverEntryAlias)), new RegExp(escapeRegex(virtualFileId))],
+  },
+}
+// ===
+
 function pluginServerEntryAlias(serverFilePath?: string | null): Plugin {
-  const filterId = 'vike:server-entry'
-  const virtualFilterId = '\0vike:server-entry'
-
-  // === Rolldown filter
-  const filterRolldown = {
-    id: {
-      include: [new RegExp(escapeRegex(filterId)), new RegExp(escapeRegex(virtualFilterId))],
-    },
-  }
-  // ===
-
   return {
     name: 'vike:pluginUniversalDeploy:alias',
     resolveId: {
@@ -26,7 +26,7 @@ function pluginServerEntryAlias(serverFilePath?: string | null): Plugin {
       handler() {
         // Alias for virtual:ud:catch if no userland server entry
         if (!serverFilePath) return catchAllEntry
-        return virtualFilterId
+        return virtualFileId
       },
     },
     load: {
