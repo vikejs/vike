@@ -423,7 +423,6 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   },
   vercel: {
     env: { server: true, config: true },
-    eager: true,
   },
 }
 
