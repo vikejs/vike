@@ -4,10 +4,9 @@ import { toRou3 } from 'convert-route'
 import type { Plugin } from 'vite'
 import { addEntry } from '@universal-deploy/store'
 import universalDeploy, { resolveTargets } from '@universal-deploy/vite'
-import { fromVike } from 'convert-route/vike'
 import type { VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 import { pluginServerEntryInject } from './pluginUniversalDeploy/pluginServerEntryInject.js'
-import { getDeployConfig, getRoutePageContextJson } from './pluginUniversalDeploy/getDeployConfig.js'
+import { getDeployConfig } from './pluginUniversalDeploy/getDeployConfig.js'
 import { pluginCommon } from './pluginUniversalDeploy/common.js'
 import { hasVikeServerOrVikePhoton } from './pluginUniversalDeploy/detectDeprecated.js'
 import { getServerConfig } from './pluginUniversalDeploy/getServerConfig.js'
@@ -42,13 +41,11 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
           // Skip pages without deploy configs, as they will be handled by the catch-all route
           if (deployConfig !== null) {
             const { route, ...additionalConfigs } = deployConfig
-            const routeIr = fromVike(route)
-            const routeIrPageContextJson = getRoutePageContextJson(routeIr)
             addEntry({
               ...additionalConfigs,
               id: serverEntryVike,
               // Map Vike routes to rou3 format
-              route: unique([...toRou3(routeIr), ...(routeIrPageContextJson ? toRou3(routeIrPageContextJson) : [])]),
+              route: unique(route.map(toRou3).flat()),
             })
           }
         }

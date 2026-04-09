@@ -10,6 +10,7 @@ export type { HookNamePage }
 export type { HookNameGlobal }
 export type { Route }
 export type { KeepScrollPosition }
+export type { Vercel }
 
 // TO-DO/next-major-release: remove
 export type { DataAsync }
@@ -683,21 +684,23 @@ type ConfigBuiltIn = {
    *
    * https://vike.dev/vercel
    */
-  vercel?: {
-    /**
-     * Incremental Static Regeneration (ISR).
-     *
-     * https://vike.dev/vercel#isr
-     */
-    isr?: { expiration: number }
+  vercel?: Vercel
+}
 
-    /**
-     * Deploy on Vercel Edge.
-     *
-     * https://vike.dev/vercel#edge
-     */
-    edge?: boolean
-  }
+type Vercel = {
+  /**
+   * Incremental Static Regeneration (ISR).
+   *
+   * https://vike.dev/vercel#isr
+   */
+  isr?: { expiration: number }
+
+  /**
+   * Deploy on Vercel Edge.
+   *
+   * https://vike.dev/vercel#edge
+   */
+  edge?: boolean
 }
 
 type PrerenderSetting =

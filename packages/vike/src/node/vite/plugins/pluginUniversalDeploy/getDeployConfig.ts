@@ -1,13 +1,16 @@
 export { getDeployConfig }
 
-import type { fromVike } from 'convert-route'
+import { fromVike } from 'convert-route/vike'
 import { assert, assertUsage, assertWarning } from '../../../../utils/assert.js'
 import { isObject } from '../../../../utils/isObject.js'
 import type { PageConfigPublicWithRoute } from '../../../../shared-server-client/page-configs/resolveVikeConfigPublic.js'
 import '../../assertEnvVite.js'
 import { isCallable } from '../../../../utils/isCallable.js'
+import { getPageContextRequestUrl } from '../../../../shared-server-client/getPageContextRequestUrl.js'
+import type { Vercel } from '../../../../types/Config.js'
+type RouteIr = ReturnType<typeof fromVike>
 
-function getDeployConfig(pageId: string, page: PageConfigPublicWithRoute) {
+function getDeployConfig(pageId: string, page: PageConfigPublicWithRoute): null | { route: RouteIr[]; vercel: Vercel } {
   const { route } = page
   if (!route) return null
 
@@ -40,15 +43,15 @@ function getDeployConfig(pageId: string, page: PageConfigPublicWithRoute) {
     return null
   }
 
+  const routeIr: RouteIr = fromVike(route)
   return {
-    route,
-    // route: [...new Set([...toRou3(routeIr), ...getRoutePageContextJson(routeIr)])],
+    route: [routeIr, getRouteIrPageContextJson(routeIr)].filter((r) => r !== undefined),
     // Supported by vite-plugin-vercel@11
     vercel: { isr, edge },
   }
 }
 
-export function getRoutePageContextJson(routeIr: ReturnType<typeof fromVike>) {
+function getRouteIrPageContextJson(routeIr: RouteIr) {
   const lastSegment = routeIr.pathname.at(-1)
   assert(lastSegment)
   if (lastSegment.catchAll) return
@@ -57,7 +60,7 @@ export function getRoutePageContextJson(routeIr: ReturnType<typeof fromVike>) {
       ...routeIr.pathname.slice(0, -1),
       {
         ...lastSegment,
-        value: `${lastSegment.value}.pageContext.json`,
+        value: getPageContextRequestUrl(lastSegment.value),
       },
     ],
   }
