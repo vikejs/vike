@@ -31,7 +31,6 @@ function pluginWorkaroundVite6HmrRegression(): Plugin[] {
           }
 
           if (hasSsrOnlyModules) {
-            await ctx.read() // https://imgur.com/a/Z1XG5pc https://vite.dev/guide/api-environment-plugins
             server.ws.send({ type: 'full-reload' })
             return []
           }
