@@ -1,2 +1,2 @@
 // Automatically updated by @brillout/release-me
-export const PROJECT_VERSION = '0.4.256' as const
+export const PROJECT_VERSION = '0.4.257' as const
