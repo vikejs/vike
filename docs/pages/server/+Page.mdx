@@ -1,10 +1,349 @@
-import { Link, Warning } from '@brillout/docpress'
-import { WhyPhoton } from '../vike-photon/components'
+import { Link, FileAdded, Warning } from '@brillout/docpress'
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
+import { DeprecatedServer } from '../../components'
+import '../../components/tabs.css'
 
-<Warning>
-  The `+server` setting has been replaced by <Link href="/photon">`+photon`</Link>, see:
-  - <Link href="/vike-server" />
-  - <Link href="/migration/vike-photon" />
-</Warning>
+Define `+server.js` to seamlessly integrate a server framework (Hono, Express.js, ...), or set `+server: true` to use Vike's built-in lightweight server.
 
-> <WhyPhoton />
+> Using `+server` is the recommended way for a seamless server integration, but you can also use <Link href="/renderPage">`renderPage()`</Link> to manually integrate the server instead.
+
+> `vike-photon` is deprecated — it has been replaced by `+server`, see:
+> - <Link href="/migration/server" />
+> - <Link href="/blog/universal-deploy" />
+
+
+## Get started
+
+### `+server.js`
+
+Define `+server.js` to integrate a server:
+
+<Tabs>
+  <TabList>
+    <Tab>Hono</Tab>
+    <Tab>Express.js</Tab>
+    <Tab>Fastify</Tab>
+    <Tab>H3</Tab>
+    <Tab>Elysia</Tab>
+    <Tab>Other</Tab>
+  </TabList>
+  <TabPanel>
+    ```shell
+    npm i hono @vikejs/hono
+    ```
+
+    <FileAdded>
+    ```ts
+    // +server.ts
+
+    import { Hono } from 'hono'
+    import vike from '@vikejs/hono'
+    import type { Server } from 'vike/types'
+
+    const app = new Hono()
+    vike(app) // Attaches Vike
+
+    export default {
+      fetch: app.fetch
+    } satisfies Server
+    ```
+    </FileAdded>
+  </TabPanel>
+  <TabPanel>
+    <DeprecatedServer name="Express.js" />
+
+    ```shell
+    npm i express @vikejs/express
+    ```
+
+    <FileAdded>
+    ```ts
+    // +server.ts
+
+    import express from 'express'
+    import vike, { toFetchHandler } from '@vikejs/express'
+    import type { Server } from 'vike/types'
+
+    const app = express()
+    vike(app) // Attaches Vike
+
+    export default {
+      fetch: toFetchHandler(app)
+    } satisfies Server
+    ```
+    </FileAdded>
+  </TabPanel>
+  <TabPanel>
+    <DeprecatedServer name="Fastify" />
+
+    ```shell
+    npm i fastify @vikejs/fastify
+    ```
+
+    <FileAdded>
+    ```ts
+    // +server.ts
+
+    import fastify from 'fastify'
+    import vike, { toFetchHandler } from '@vikejs/fastify'
+    import type { Server } from 'vike/types'
+
+    const app = fastify()
+    await vike(app) // Attaches Vike
+
+    export default {
+      fetch: toFetchHandler(app.routing)
+    } satisfies Server
+    ```
+    </FileAdded>
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    npm i h3 @vikejs/h3
+    ```
+
+    <FileAdded>
+    ```ts
+    // +server.ts
+
+    import { createApp, toWebHandler } from 'h3'
+    import vike from '@vikejs/h3'
+    import type { Server } from 'vike/types'
+
+    const app = createApp()
+    vike(app) // Attaches Vike
+
+    export default {
+      fetch: toWebHandler(app)
+    } satisfies Server
+    ```
+    </FileAdded>
+  </TabPanel>
+  <TabPanel>
+    ```shell
+    npm i elysia @vikejs/elysia
+    ```
+
+    <FileAdded>
+    ```ts
+    // +server.ts
+
+    import { Elysia } from 'elysia'
+    import vike from '@vikejs/elysia'
+    import type { Server } from 'vike/types'
+
+    const app = new Elysia()
+    vike(app) // Attaches Vike
+
+    export default {
+      fetch: app.fetch
+    } satisfies Server
+    ```
+    </FileAdded>
+  </TabPanel>
+  <TabPanel>
+    If Vike doesn't have an adapter for you server, or if you aren't using any server framework, you can use `vike/fetch`:
+
+    <FileAdded>
+      ```ts
+      // +server.ts
+
+      import vike from 'vike/fetch'
+
+      export default {
+        fetch(request) {
+          console.log('Incoming request:', request.url)
+          return vike.fetch(request)
+        }
+      } satisfies Server
+      ```
+    </FileAdded>
+  </TabPanel>
+</Tabs>
+
+### `+server: true`
+
+Alternatively, instead of creating `+server.js`, you can use Vike's built-in lightweight server:
+
+```ts
+// pages/+config.ts
+
+export default {
+  server: true // Use Vike's built-in server // [!code ++]
+}
+```
+
+
+## Deployment
+
+#### Self-host
+
+```shell
+# Build for production
+vike build
+# Run the production build
+node ./dist/server/index.mjs # or Bun/Deno
+```
+
+#### Deployment providers
+
+- <Link href="/cloudflare" />
+- <Link href="/edgeone-pages" />
+- <Link href="/vercel" />
+
+## Settings
+
+All settings are defined over `export default { prod: { /*...*/ } }`:
+
+```ts
+// +server.ts
+
+import type { Server } from 'vike/types'
+
+export default {
+  // Production settings // [!code highlight]
+  prod: { // [!code highlight]
+    // Server port, defaults to 3000. It's ignored on Cloudflare and Vercel Edge (there
+    // isn't any server in serverless deployments).
+    port: 3000,
+
+    hostname: 'localhost',
+
+    // Called once the server is accepting connections.
+    // - The `server` object comes from srvx, see https://srvx.h3.dev/guide/server
+    // - This hook isn't called on Cloudflare and Vercel Edge (there isn't
+    //   any server in serverless deployments).
+    onReady(server) {
+      console.log('Server is ready.')
+    },
+
+    // Called once the server is created.
+    // - The `server` object comes from srvx, see https://srvx.h3.dev/guide/server
+    // - This hook isn't called on Cloudflare and Vercel Edge (there isn't
+    //   any server in serverless deployments).
+    onCreate(server) {
+      console.log('Server created.')
+    },
+
+    // HTTPS Options (Node.js/Bun/Deno)
+    tls: {
+      // For example SSL/TLS key and certificate for HTTPS
+      key: fs.readFileSync('/etc/letsencrypt/live/example.com/privkey.pem'),
+      cert: fs.readFileSync('/etc/letsencrypt/live/example.com/fullchain.pem'),
+      // Optional
+      passphrase: 'passphrase'
+    },
+
+    // Serve static files automatically
+    static: true, // Default value
+    // Can be disabled:
+    static: false,
+    // Or serve from a custom folder:
+    static: './public'
+  }
+} satisfies Server
+```
+
+<blockquote>
+  The above settings only apply to production. For development, use [Vite's server settings](https://vite.dev/config/server-options).
+
+  🚧 Server settings are separate because values usually differ between dev and prod. If you have a use case where settings share the same value in dev and prod, then [reach out](https://github.com/vikejs/vike/discussions) and we'll create server settings that apply to both dev an prod.
+</blockquote>
+
+
+## `pageContext.runtime`
+
+You can use `pageContext.runtime` to access the HTTP request object, for example:
+
+```ts
+// pages/product/@id/+data.ts
+
+import type { PageContextServer } from 'vike/types'
+
+export type Data = Awaited<ReturnType<typeof data>>
+export async function data(pageContext: PageContextServer) {
+  // Using pageContext.runtime.req to access the logged-in user
+  const { user } = pageContext.runtime.req
+  // ...
+}
+
+declare global {
+  namespace Vike {
+    interface Server {
+      // 👉 Pick your server (for correct pageContext.runtime type)
+      server: 'hono' // | 'express' | 'fastify' | 'hattip' | 'srvx' | 'elysia' | 'h3'
+    }
+  }
+}
+```
+
+> You can use <Link href="/onCreatePageContext">`+onCreatePageContext`</Link> to define custom `pageContext` properties, see <Link href="/pageContext#custom" />.
+>
+> For example, you can define `pageContext.user` as an alias of `pageContext.runtime.req.user` for convenience, see <Link href="/auth#pagecontext-user" doNotInferSectionTitle />.
+
+See also:
+- <Link href="/pageContext#runtime">API > `pageContext.runtime`</Link>
+- <Link href="/auth" />
+
+
+## Standalone
+
+Use [standaloner](https://github.com/nitedani/standaloner#readme) to have the build output directory ([`dist/`](https://vite.dev/config/build-options.html#build-outdir)) contain everything needed for deployment. This means that, in production, only the `dist/` directory is required (you can remove `node_modules/` and skip `$ npm install`).
+
+> Skipping `node_modules/` massively reduces disk usage in production, which can be important, for example to [reduce the size of Docker images](https://github.com/photon-js/photon/issues/42#issuecomment-3549657194).
+
+```shell
+npm i standaloner
+```
+
+```ts
+// vite.config.ts
+
+import { defineConfig } from 'vite'
+import standaloner from 'standaloner/vite' // [!code ++]
+
+export default defineConfig({
+  plugins: [
+    standaloner() // [!code ++]
+  ]
+})
+```
+
+## HMR
+
+If you change a server file, the server code is automatically updated: the next HTTP response will be generated by the latest server code. No full server reload is required.
+
+If HMR isn't what you want (for example if you modify the database connection) you can manually trigger a full server reload by pressing `r + enter`.
+
+
+## Compression
+
+You can compress all server responses by using the [compress universal middleware](https://universal-middleware.dev/middlewares/compress):
+
+```shell
+npm i @universal-middleware/compress
+```
+
+```ts
+// +server.ts
+
+import { Hono } from 'hono'
+import vike from '@vikejs/hono'
+import compress from '@universal-middleware/compress' // [!code ++]
+
+const app = new Hono() // [!code --]
+// Add universal middlewares here (same for Express.js, Fastify, ...) // [!code ++]
+vike(app, [compress()]) // [!code ++]
+```
+
+
+## See also
+
+- <Link href="/cloudflare" />
+- <Link href="/edgeone-pages" />
+- <Link href="/vercel" />
+- <Link href="/migration/server" />
+- <Link href="/blog/universal-deploy" />
+- <Link href="/integration#server-manual-integration" doNotInferSectionTitle />
+- <Link href="/integration#non-javascript-backend" doNotInferSectionTitle />
+- <Link href="/renderPage" />

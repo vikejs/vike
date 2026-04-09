@@ -1,0 +1,27 @@
+{
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite build && vite preview",
+    "deploy": "vite build && wrangler deploy",
+    "cf-typegen": "wrangler types"
+  },
+  "dependencies": {
+    "@universal-middleware/core": "^0.4.17",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "telefunc": "^0.2.19",
+    "vike": "0.4.256",
+    "vike-react": "^0.6.21"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.31.1",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "typescript": "^6.0.2",
+    "vite": "^8.0.7",
+    "wrangler": "^4.81.0"
+  },
+  "type": "module"
+}

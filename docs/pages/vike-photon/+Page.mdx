@@ -2,7 +2,7 @@ import { Link, Warning, FileAdded } from '@brillout/docpress'
 import { PageHeader, UseScaffolder } from '../../components'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import '../../components/tabs.css'
-import { PhotonDescription, PhotonBuiltInServer, PhotonBetaWarning } from './components.ts'
+import { PhotonDescription, PhotonBuiltInServer } from './components.ts'
 
 <PageHeader>
 Version history: [`CHANGELOG.md`](https://github.com/vikejs/vike-photon/blob/main/CHANGELOG.md)<br/>
@@ -12,15 +12,9 @@ Source code: [GitHub > `vikejs/vike-photon`](https://github.com/vikejs/vike-phot
 
 The `vike-photon` extension <PhotonDescription /> It's powered by <Link href="/blog/photon">Photon</Link>.
 
-
-The entire documentation for using Photon is contained on this page, <Link href="/cloudflare"/> and <Link href="/vercel" />.
-
-<PhotonBetaWarning />
-
-> Alternatively, instead of using a server, you can <Link href="/pre-rendering">pre-render</Link> your pages and deploy to a <Link href="/static-hosts">static host</Link>.
-
-> If you want more control over server integration, see <Link href="/server-integration#manual-integration" />.
-
+<Warning>
+  `vike-photon` is deprecated — it has been replaced by `+server`, see <Link href="/migration/server">Migration to `+server`</Link>.
+</Warning>
 
 ## Get started
 
@@ -509,6 +503,5 @@ serve(app, {
 - <Link href="/migration/vike-photon" />
 - <Link href="/vercel" />
 - <Link href="/cloudflare" />
-- <Link href="/server-integration#manual-integration" />
-- <Link href="/server-integration#non-javascript-backend" doNotInferSectionTitle />
+- <Link href="/integration#server-manual-integration" doNotInferSectionTitle />
 - <Link href="/renderPage" />

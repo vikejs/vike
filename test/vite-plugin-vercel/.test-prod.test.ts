@@ -1,2 +1,2 @@
-import { testRunClassic } from '../../test/utils'
-testRunClassic('pnpm run prod')
+import { testRun } from './.testRun'
+testRun('pnpm run prod')

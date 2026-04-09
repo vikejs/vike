@@ -14,7 +14,8 @@ function pluginWorkaroundVite6HmrRegression(): Plugin[] {
       enforce: 'post',
       hotUpdate: {
         order: 'post',
-        handler({ modules, server, timestamp }) {
+        async handler(ctx) {
+          const { modules, server, timestamp } = ctx
           if (this.environment.name !== 'ssr') return
 
           let hasSsrOnlyModules = false

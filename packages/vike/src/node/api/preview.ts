@@ -11,7 +11,8 @@ import { onSetupPreview } from '../../utils/assertSetup.js'
 import { isCallable } from '../../utils/isCallable.js'
 import pc from '@brillout/picocolors'
 import path from 'node:path'
-import { getVikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.js'
+import { getVikeConfigInternal, type VikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.js'
+import { isUniversalDeployVitePreview } from '../vite/plugins/pluginUniversalDeploy/getServerConfig.js'
 import './assertEnvApiDev.js'
 
 /**
@@ -23,15 +24,24 @@ async function preview(options: ApiOptions = {}): Promise<{ viteServer?: Preview
   onSetupPreview()
   const { viteConfigFromUserResolved, viteConfigResolved } = await prepareViteApiCall(options, 'preview')
 
-  const cliPreview = await resolveCliPreviewConfig()
-  assertUsage(cliPreview !== false, `${pc.cyan('$ vike preview')} isn't supported`)
-  const useVite =
-    cliPreview === 'vite' || (cliPreview === undefined && !viteConfigResolved.vitePluginServerEntry?.inject)
-  if (!useVite) {
+  const vikeConfig = await getVikeConfigInternal()
+  const cliPreviewConfig = await resolveCliPreviewConfig(vikeConfig)
+  assertUsage(cliPreviewConfig !== false, `${pc.cyan('$ vike preview')} isn't supported`)
+  const isUDVitePreview = isUniversalDeployVitePreview(vikeConfig, viteConfigResolved)
+  const useVitePreviewServer =
+    cliPreviewConfig === 'vite' ||
+    (cliPreviewConfig === undefined &&
+      // dist/server/index.mjs exists when using @brillout/vite-plugin-server-entry inject mode; otherwise it's missing -> we must use Vite's preview server
+      (!viteConfigResolved.vitePluginServerEntry?.inject ||
+        // dist/server/index.mjs doesn't exist with some deployment plugins such as vite-plugin-vercel -> we must use Vite's preview server
+        isUDVitePreview))
+
+  if (!useVitePreviewServer) {
     // Dynamically import() server production entry dist/server/index.js
     const outDir = getOutDirs(viteConfigResolved, undefined).outDirRoot
     const { outServerIndex } = await importServerProductionIndex({ outDir })
     const outServerIndexRelative = path.relative(viteConfigResolved.root, outServerIndex)
+    // TODO/after-PR-merge: always show a warning
     assertWarning(
       false,
       `Never run ${pc.cyan('$ vike preview')} in production, run ${pc.cyan(`$ node ${outServerIndexRelative}`)} instead (or Bun/Deno).`,
@@ -50,8 +60,7 @@ async function preview(options: ApiOptions = {}): Promise<{ viteServer?: Preview
   }
 }
 
-async function resolveCliPreviewConfig(): Promise<CliPreviewValue> {
-  const vikeConfig = await getVikeConfigInternal()
+async function resolveCliPreviewConfig(vikeConfig: VikeConfigInternal): Promise<CliPreviewValue> {
   const val = vikeConfig.config.cli?.preview
   if (!isCallable(val)) {
     return val

@@ -1,57 +1,60 @@
 import { RepoLink, Link, FileAdded, Warning } from '@brillout/docpress'
-import { Example, UseScaffolder } from '../../components'
+import { Example, StaticSsrIntro, UseScaffolder } from '../../components'
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import '../../components/tabs.css'
 import Examples from './Examples.mdx'
-import { PhotonBuiltInServer, PhotonBetaWarning, PhotonAutoLoad, PhotonDeploymentProviderIntroPart1, PhotonDeploymentProviderIntroPart2 } from '../vike-photon/components'
 
-{/* See https://github.com/vikejs/vike/pull/2605 for a test of applying the following vike-cloudflare install instructions to packages/create-vike-core/boilerplate-react/ and examples/react-full/ */ }
+<StaticSsrIntro provider={<a href="https://cloudflare.com">Cloudflare</a>} />
 
-<PhotonDeploymentProviderIntroPart1 provider="Cloudflare" link="https://www.cloudflare.com" />
+> In development, your server code runs inside [`workerd`](https://github.com/cloudflare/workerd), the same runtime Cloudflare uses in production.
 
-> In development, your server code runs inside `workerd` (the runtime Cloudflare uses in production), so you're developing in an environment similar to production. This is a <Link href="/blog/photon#cloudflare">new Cloudflare feature that Photon supports</Link>.
-
-<PhotonDeploymentProviderIntroPart2 provider="Cloudflare" />
+> If you're using `vike-photon`, then <Link href="/migration/server">migrate to `+server`</Link>.
 
 
 ## Get started
 
 ### New app
 
-<UseScaffolder>Cloudflare with Photon</UseScaffolder>
+<UseScaffolder>Cloudflare</UseScaffolder>
 
 ### Add to existing app
-
-> If you're using `vike-server` then  <Link href="/migration/vike-photon">migrate to `vike-photon`</Link>.
 
 #### 1. Install
 
 ```shell
-npm i wrangler vike-photon @photonjs/cloudflare
+npm install wrangler @cloudflare/vite-plugin
 ```
 
 ```ts
-// pages/+config.ts
+// vite.config.ts
 
-import type { Config } from 'vike/types'
-import vikePhoton from 'vike-photon/config' // [!code ++]
+import type { UserConfig } from 'vite'
+import vike from 'vike/plugin'
+import { cloudflare } from '@cloudflare/vite-plugin' // [!code ++]
 
 export default {
-  extends: [vikePhoton] // [!code ++]
-} satisfies Config
+  plugins: [
+    cloudflare({ // [!code ++]
+      viteEnvironment: { name: 'ssr' } // [!code ++]
+    }), // [!code ++]
+    vike()
+  ]
+} satisfies UserConfig
 ```
 
-<PhotonAutoLoad pkg="cloudflare" />
+> The entire docs of using Vike with [`@cloudflare/vite-plugin`](https://www.npmjs.com/package/@cloudflare/vite-plugin) is documented on this page.
 
 #### 2. Scripts
 
-```json
+```json5
 // package.json
 
 {
   "scripts": {
     "dev": "vike dev",
     "preview": "vike build && vike preview", // [!code ++]
-    "deploy": "vike build && wrangler deploy" // [!code ++]
+    "deploy": "vike build && wrangler deploy", // [!code ++]
+    // ...
   }
 }
 ```
@@ -64,9 +67,9 @@ export default {
 
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "compatibility_date": "2025-08-06",
+  "compatibility_date": "2026-03-09",
   "name": "my-vike-cloudflare-app",
-  "main": "virtual:photon:cloudflare:server-entry",
+  "main": "vike:server-entry",
   // Only required if your app (or one of your libraries) uses a Node.js API
   "compatibility_flags": ["nodejs_compat"]
 }
@@ -79,14 +82,14 @@ export default {
 .wrangler/ # [!code ++]
 ```
 
-#### 4. Server (optional)
+#### 4. Server
 
-<PhotonBuiltInServer />
+If you didn't already, <Link href="/server">create `+server.js` or set `+server` to `true`.</Link>
 
 
 ## Cloudflare APIs
 
-To access Cloudflare APIs (such as [D1](https://developers.cloudflare.com/d1/) and [KV](https://developers.cloudflare.com/kv/)), use [Cloudflare's bindings](https://developers.cloudflare.com/workers/runtime-apis/bindings/) which are available via the `env` object [imported from `cloudflare:workers`](https://developers.cloudflare.com/workers/runtime-apis/bindings/#importing-env-as-a-global).
+To access Cloudflare APIs (such as [D1](https://developers.cloudflare.com/d1/) and [KV](https://developers.cloudflare.com/kv/)), use [Cloudflare's bindings](https://developers.cloudflare.com/workers/runtime-apis/bindings/) which are available via the `env` object [imported from `cloudflare:workers`](https://developers.cloudflare.com/workers/runtime-apis/bindings/#importing-env-as-global).
 
 ```ts
 // Environment: server
@@ -106,7 +109,7 @@ env.LOG_LEVEL
 >
 > Or go to <Link href="/new">vike.dev/new</Link> and select `Cloudflare` with an ORM.
 
-> To make environment variables available on the client-side, you can use <Link href="/onCreateGlobalContext">+onCreateGlobalContext.server.js</Link> with a <Link href="/globalContext#custom">custom `globalContext` property</Link> and <Link href="/passToClient">`passToClient`</Link>.
+> To make environment variables available on the client-side, you can use <Link href="/onCreateGlobalContext">`+onCreateGlobalContext.server.js`</Link> with a <Link href="/globalContext#custom">custom `globalContext` property</Link> and <Link href="/passToClient">`passToClient`</Link>.
 >
 > ```ts
 > // pages/+onCreateGlobalContext.server.ts
@@ -189,22 +192,7 @@ By default the bundle size of your worker cannot exceed 3MB, but you can request
 
 ## Manual integration
 
-Instead of using `vike-photon`, you can manually integrate your app with Cloudflare yourself.
-
-### Cloudflare Pages
-
-For a manual integration, we generally recommend using:
- - [Cloudflare Pages](https://developers.cloudflare.com/pages/) for static assets and <Link href="/pre-rendering">pre-rendered pages</Link>, and
- - [Pages Functions](https://developers.cloudflare.com/pages/platform/functions/) for <Link href="/ssr">SSR'd pages</Link>.
-
-Examples:
- - <Example timestamp="2024.01" repo="travis-r6s/vike-cf-pages" /> - Advanced demo showcasing a lot of integrations such as REST, tRPC, GraphQL, Sentry, and Thumbprint.
- - <Example timestamp="2022.04" repo="Immortalin/vite-plugin-ssr-cloudflare-pages-demo" />
-   > vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike).
-
-### Workers
-
-You can also directly use [Cloudflare Workers](https://workers.cloudflare.com) instead of using Cloudflare Pages.
+Instead of using [`@cloudflare/vite-plugin`](https://www.npmjs.com/package/@cloudflare/vite-plugin), you can integrate [Cloudflare Workers](https://workers.cloudflare.com) yourself.
 
 Cloudflare Workers requires your entire worker code to be bundled into a single file — you can use [Wrangler](https://github.com/cloudflare/workers-sdk) to achieve that (it uses [esbuild](https://esbuild.github.io/) under the hood).
 
@@ -219,7 +207,7 @@ For a significantly faster development experience we recommend, whenever possibl
 In other words:
  - Skip `wrangler` / Cloudflare Workers altogether while developing your app.
  - Use `wrangler dev` to preview your worker.
- - Use `wrangler publish` to deploy your worker to Cloudflare Workers.
+ - Use `wrangler deploy` to deploy your worker to Cloudflare Workers.
 
 <Examples />
 
@@ -237,6 +225,7 @@ Example: <RepoLink path='/examples/cloudflare-workers-react-full#universal-fetch
 
 ## See also
 
-- <Link href="/cloudflare-pages" />
+- <Link href="/server" />
 - [Cloudflare Workers](https://developers.cloudflare.com/workers/)
-- [Cloudflare](https://cloudflare.com)
+- <Link href="/blog/universal-deploy" />
+- <Link href="/cloudflare-pages" />

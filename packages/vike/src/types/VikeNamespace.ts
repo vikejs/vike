@@ -67,5 +67,12 @@ declare global {
     interface GlobalContextServer {
       _interfaceIsNotAny?: never // https://typescript-eslint.io/rules/no-empty-object-type/
     }
+    /** Defines the type of `pageContext.runtime`.
+     *
+     *  https://vike.dev/server#pagecontext-runtime
+     */
+    interface Server {
+      _interfaceIsNotAny?: never // https://typescript-eslint.io/rules/no-empty-object-type/
+    }
   }
 }

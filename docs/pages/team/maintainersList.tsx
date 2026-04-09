@@ -30,16 +30,13 @@ const maintainersList = [
     firstName: 'Joël',
     isCoreTeam: true,
     roles: [
-      <>Bati (Lead Maintainer, Creator)</>,
       <>
         <code>universal-middleware</code> (Lead Maintainer, Creator)
       </>,
       <>
-        <code>photon</code> (Lead Maintainer, Creator)
+        <code>universal-deploy</code> (Lead Maintainer, Creator)
       </>,
-      <>
-        <code>vike-photon</code> (Lead Maintainer, Creator)
-      </>,
+      <>Bati (Lead Maintainer, Creator)</>,
       <>
         <code>vike-solid</code> (Lead Maintainer, Creator)
       </>,

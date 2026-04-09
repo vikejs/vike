@@ -65,7 +65,9 @@ const optimizeDeps = {
       exclude: [
         '@brillout/import',
         '@brillout/json-serializer',
+        /* Adding @brillout/picocolors breaks the UD + Cloudflare test, we don't know why. TO-DO/eventually: re-add it and see if Vike's CI is green.
         '@brillout/picocolors',
+        */
         '@brillout/vite-plugin-server-entry',
         'vike',
       ],
