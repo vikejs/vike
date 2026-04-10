@@ -33,9 +33,14 @@ async function loadAndParseVirtualFilePageEntry(
   try {
     configValues = parseVirtualFileExportsPageEntry(virtualFileExportsPageEntry)
   } catch (e) {
-    if (!(e instanceof ReferenceError)) throw e
-    // Safari WebKit bug: dynamic import() may resolve before the module body executes,
-    // https://github.com/vikejs/vike/issues/3121
+    // Safari WebKit bug: dynamic import() may resolve before the module body executes.
+    if (
+      // Throwing ReferenceError (TDZ): https://github.com/vikejs/vike/issues/3121
+      !(e instanceof ReferenceError) &&
+      // Or TypeError (undefined exports) on some WebKit builds: https://github.com/vikejs/vike/issues/3199
+      !(e instanceof TypeError)
+    )
+      throw e
     await new Promise<void>((resolve) => setTimeout(resolve))
     configValues = parseVirtualFileExportsPageEntry(virtualFileExportsPageEntry)
   }
