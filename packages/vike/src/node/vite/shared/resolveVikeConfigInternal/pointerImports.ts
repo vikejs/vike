@@ -159,10 +159,13 @@ const zeroWidthSpace = '\u200b'
  * We discard the import name `someImport` because we don't need it.
  */
 type PointerImportData = {
-  importPath: string
-  exportName: string
-  importString: string
   importStringWasGenerated: boolean
+  /** For example: `import:./some-file:someExport` */
+  importString: string
+  /** For example: `./some-file` */
+  importPath: string
+  /** For example: `someExport` */
+  exportName: string
 }
 function serializePointerImportData({
   importPath,
