@@ -185,7 +185,11 @@ function getRepositoryFromGit(): string {
 function getGithubToken(): string {
   const token = process.env.GITHUB_TOKEN
   if (!token) {
-    console.error('GITHUB_TOKEN is not set. Usage: GITHUB_TOKEN=<token> pnpm run run, or pnpm run try for a dry-run.')
+    console.error(
+      'GITHUB_TOKEN is not set.\n' +
+        '  GITHUB_TOKEN=<token> pnpm run run\n' +
+        '  pnpm run try',
+    )
     process.exit(1)
   }
   return token
