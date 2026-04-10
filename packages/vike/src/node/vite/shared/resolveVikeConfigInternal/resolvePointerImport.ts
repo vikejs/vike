@@ -113,6 +113,7 @@ function resolveImportPathWithNode(
     userRootDir,
   })
   if (!filePathAbsoluteFilesystem) {
+    // TODO/ai implement assertUsage()
     assert(!isImportPathRelative(pointerImportData.importPath))
     /* This assertion fails if the npm package has a wrongly defined package.json#exports
     // Libraries don't use path aliases => filePathAbsoluteFilesystem should be defined
