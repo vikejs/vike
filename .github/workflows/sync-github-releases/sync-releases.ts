@@ -56,7 +56,11 @@ async function main(): Promise<void> {
     return
   }
 
-  const token = getEnv('GITHUB_TOKEN')
+  const token = process.env.GITHUB_TOKEN
+  if (!token) {
+    console.error('GITHUB_TOKEN is not set. Use --dry-run to preview without a token.')
+    process.exit(1)
+  }
 
   // https://docs.github.com/en/rest/releases/releases#list-releases
   const releases = await githubRequest<Release[]>(`/repos/${owner}/${repo}/releases?per_page=100`, {
@@ -184,12 +188,6 @@ function getRepositoryFromGit(): string {
 
 function getDefaultBranch(): string {
   return process.env.GITHUB_DEFAULT_BRANCH ?? 'main'
-}
-
-function getEnv(name: string): string {
-  const value = process.env[name]
-  assert(value, `Missing environment variable ${name}`)
-  return value
 }
 
 async function readRepositoryFile(relativePath: string): Promise<string> {
