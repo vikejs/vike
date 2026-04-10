@@ -9,6 +9,9 @@
 ### Features
 
 * built-in +server support (via Universal Deploy, deprecating `vike-photon`) ([#3106](https://github.com/vikejs/vike/issues/3106)) ([5449ce0](https://github.com/vikejs/vike/commit/5449ce09122b9e169c8c7281350acad72b6dcdaa))
+
+
+
 ## [0.4.256](https://github.com/vikejs/vike/compare/v0.4.255...v0.4.256) (2026-03-31)
 
 
