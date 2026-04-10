@@ -1,3 +1,5 @@
 /node_modules/
 # https://github.com/vikejs/vike/pull/1997
 /.pnpm-store/
+.claude/settings.local.json
+mcp-vscode.json
