@@ -110,7 +110,6 @@ async function main(): Promise<void> {
   }
 }
 
-
 function getReleaseSections(changelog: string): ReleaseSections {
   const sections: ReleaseSections = {}
   // Matches changelog headings: `## [0.4.257](...)` or `# [0.1.0-beta.6](...)`
@@ -186,9 +185,12 @@ function getGithubToken(): string {
   const token = process.env.GITHUB_TOKEN
   if (!token) {
     console.error(
-      'GITHUB_TOKEN is not set.\n' +
-        '  GITHUB_TOKEN=<token> pnpm run run\n' +
+      [
+        'GITHUB_TOKEN is not set, run:',
+        '  GITHUB_TOKEN=<token> pnpm run run',
+        'Or dry-run (no token needed):',
         '  pnpm run try',
+      ].join('\n'),
     )
     process.exit(1)
   }
