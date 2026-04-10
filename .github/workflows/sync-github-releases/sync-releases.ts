@@ -108,7 +108,7 @@ async function main(): Promise<void> {
   })
 
   if (releases.length === 0) {
-    // Pulbish releases that are in CHANGELOG but not published
+    // Publish releases that are in CHANGELOG but not published
     // Create release from oldest to newest, so that the release list
     // is sorted by creation date in the same order as the changelog sections
     const allTagReleasesToCreate = Object.keys(sections).reverse()
@@ -120,8 +120,8 @@ async function main(): Promise<void> {
           name: tagName,
           tag_name: tagName,
           target_commitish: defaultBranch,
-          body: sections[tagName]
-        }
+          body: sections[tagName],
+        },
       })
       console.log(`Created release ${tagName}`)
       // Avoid hitting GitHub abuse rate limits
