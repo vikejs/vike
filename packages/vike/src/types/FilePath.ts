@@ -17,7 +17,7 @@ type FilePathResolved = FilePathCommon & {
   filePathAbsoluteFilesystem: string
 
   /**
-   * The file's path, shown to the user in logs.
+   * The file path shown to the user in logs.
    *
    * Its value is: `filePath.filePathAbsoluteUserRootDir ?? filePath.filePathAbsoluteFilesystem`.
    *
@@ -58,11 +58,11 @@ type FilePathAbsoluteUserRootDir = {
 }
 type FilePathCommon = {
   /**
-   * The file's path, shown to the user in logs.
+   * The file or import path shown to the user in logs.
    *
    * Its value is: `filePath.filePathAbsoluteUserRootDir ?? filePath.importPathAbsolute`.
    *
-   * Note that if `filePath.filePathAbsoluteUserRootDir` isn't define then it shows an import path (e.g. `vike-react/config`) instead of a file path.
+   * Note that if `filePath.filePathAbsoluteUserRootDir` isn't defined then it shows the import path (e.g. `vike-react/config`) instead of a file path.
    */
   filePathToShowToUser: string
 
