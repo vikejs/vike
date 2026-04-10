@@ -1,24 +1,33 @@
-## [0.9.11](https://github.com/vikejs/vike-vue/compare/vike-vue@0.9.10...vike-vue@0.9.11) (2026-02-03)
-
-
-### Bug Fixes
-
-* fix support for Cloudflare Workers (fix photon-js/photon[#64](https://github.com/vikejs/vike-vue/issues/64)) ([7d546d4](https://github.com/vikejs/vike-vue/commit/7d546d4))
-
-
-
-## [0.9.10](https://github.com/vikejs/vike-vue/compare/vike-vue@0.9.9...vike-vue@0.9.10) (2026-01-25)
-
+## [0.2.3](https://github.com/vikejs/vike-vue/compare/v0.2.2...v0.2.3) (2023-09-08)
 
 ### Bug Fixes
 
-* add clientOnly() deprecation warning ([#232](https://github.com/vikejs/vike-vue/issues/232)) ([d92699c](https://github.com/vikejs/vike-vue/commit/d92699c))
+- Fix `__name is not defined` ([11417ca](https://github.com/vikejs/vike-vue/commit/11417ca))
 
+## [0.2.2](https://github.com/vikejs/vike-vue/compare/v0.2.1...v0.2.2) (2023-09-05)
 
+### Bug Fixes
 
-## [0.9.9](https://github.com/vikejs/vike-vue/compare/vike-vue@0.9.8...vike-vue@0.9.9) (2025-12-22)
+- Fix 'Error: Cannot find module' ([6b35d81](https://github.com/vikejs/vike-vue/commit/6b35d81))
 
+## [0.2.1](https://github.com/vikejs/vike-vue/compare/v0.2.0...v0.2.1) (2023-08-29)
+
+- Fix peer dependency on `vite-plugin-ssr`.
+
+## [0.2.0](https://github.com/vikejs/vike-vue/compare/v0.1.1...v0.2.0) (2023-08-28)
+
+### Bug Fixes
+
+- Actually support `config.meta.ssr = false` ([3ee182a](https://github.com/vikejs/vike-vue/commit/3ee182a))
 
 ### Features
 
-* <ClientOnly> & `useHydrated()` ([#229](https://github.com/vikejs/vike-vue/issues/229)) ([35b0a18](https://github.com/vikejs/vike-vue/commit/35b0a18))
+- Add `Head` config option ([75cd700](https://github.com/vikejs/vike-vue/commit/75cd700))
+
+## [0.1.1](https://github.com/vikejs/vike-vue/compare/v0.1.0...v0.1.1) (2023-08-20)
+
+- Add README content to [npm package](https://www.npmjs.com/package/vike-vue)
+
+## 0.1.0 (2023-08-20)
+
+- Initial version

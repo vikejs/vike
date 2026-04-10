@@ -1,31 +1,59 @@
-## [0.4.257](https://github.com/vikejs/vike/compare/v0.4.256...v0.4.257) (2026-04-09)
+# [0.1.0-beta.10](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.8...v0.1.0-beta.10) (2021-03-05)
 
 
 ### Bug Fixes
 
-* improve +meta.eager jsdocs ([2e38a9b](https://github.com/vikejs/vike/commit/2e38a9b))
+* convert windows path to posix for micromatch ([cc9c405](https://github.com/brillout/vite-plugin-ssr/commit/cc9c405)), closes [#4](https://github.com/brillout/vite-plugin-ssr/issues/4)
+* don't try to inject dynamic import polyfill ([fdffd37](https://github.com/brillout/vite-plugin-ssr/commit/fdffd37))
+* **boilerplates:** remove duplicated file ([4421aa6](https://github.com/brillout/vite-plugin-ssr/commit/4421aa6))
 
 
 ### Features
 
-* built-in +server support (via Universal Deploy, deprecating `vike-photon`) ([#3106](https://github.com/vikejs/vike/issues/3106)) ([5449ce0](https://github.com/vikejs/vike/commit/5449ce0))
-## [0.4.256](https://github.com/vikejs/vike/compare/v0.4.255...v0.4.256) (2026-03-31)
+* allow render hook to return an object instead of HTML ([a649eaf](https://github.com/brillout/vite-plugin-ssr/commit/a649eaf))
+* support _500.page.js and improve error handling ([d492b9c](https://github.com/brillout/vite-plugin-ssr/commit/d492b9c))
+* support `html` tag composition ([9a57006](https://github.com/brillout/vite-plugin-ssr/commit/9a57006))
+
+
+
+# [0.1.0-beta.9](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.8...v0.1.0-beta.9) (2021-03-01)
+
+### Bug Fixes
+
+* Fix released build
+
+
+
+# [0.1.0-beta.8](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.7...v0.1.0-beta.8) (2021-03-01)
 
 
 ### Bug Fixes
 
-* duplicate URL verification on pre-rendering ([#3156](https://github.com/vikejs/vike/issues/3156)) ([7723d45](https://github.com/vikejs/vike/commit/7723d45))
+* re-export default ([cd43e6e](https://github.com/brillout/vite-plugin-ssr/commit/cd43e6e))
+* use `in` operator only on objects ([819dfe1](https://github.com/brillout/vite-plugin-ssr/commit/819dfe1))
 
 
-### Performance Improvements
+### Features
 
-* remove slow plugin when not needed (fix [#3086](https://github.com/vikejs/vike/issues/3086)) ([#3187](https://github.com/vikejs/vike/issues/3187)) ([567fe61](https://github.com/vikejs/vike/commit/567fe61))
-
-
-
-## [0.4.255](https://github.com/vikejs/vike/compare/v0.4.254...v0.4.255) (2026-02-27)
+* remove html.sanitize and make sanitized automatic ([95d145c](https://github.com/brillout/vite-plugin-ssr/commit/95d145c))
 
 
-### Bug Fixes
+### BREAKING CHANGES
 
-* hoist pointer imports ([#3132](https://github.com/vikejs/vike/issues/3132)) ([bc71fe9](https://github.com/vikejs/vike/commit/bc71fe9))
+* Removed `html.sanitize()`; simply directly insert the
+string and vite-plugin-ssr will automatically sanitize it
+
+
+
+# [0.1.0-beta.7](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.6...v0.1.0-beta.7) (2021-02-28)
+
+
+### Features
+
+* Pass `Page` to addContextProps. ([2512ee3](https://github.com/brillout/vite-plugin-ssr/commit/2512ee3))
+
+
+
+# [0.1.0-beta.6](https://github.com/brillout/vite-plugin-ssr/tree/963afbafa5697d7745b6803bf1475b4aad7559c2) (2021-02-22)
+
+Initial public release

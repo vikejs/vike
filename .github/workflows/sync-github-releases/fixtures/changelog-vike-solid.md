@@ -1,24 +1,58 @@
-## [0.8.2](https://github.com/vikejs/vike-solid/compare/vike-solid@0.8.1...vike-solid@0.8.2) (2026-03-30)
+## [0.7.2](https://github.com/vikejs/vike-solid/compare/v0.7.1...v0.7.2) (2024-08-17)
 
 
 ### Bug Fixes
 
-* type of usePageContext ([#227](https://github.com/vikejs/vike-solid/issues/227)) ([93ea4cc](https://github.com/vikejs/vike-solid/commit/93ea4cc))
+* enable useConfig() after hydration ([#179](https://github.com/vikejs/vike-solid/issues/179)) ([0d28905](https://github.com/vikejs/vike-solid/commit/0d28905))
 
-# [0.8.0](https://github.com/vikejs/vike-solid/compare/vike-solid@0.7.20...vike-solid@0.8.0) (2026-01-27)
+
+
+## [0.7.1](https://github.com/vikejs/vike-solid/compare/v0.7.0...v0.7.1) (2024-08-12)
 
 
 ### Bug Fixes
 
-* set `vite-plugin-solid` as `peerDependency` ([d7ace38](https://github.com/vikejs/vike-solid/commit/d7ace38))
+* don't unnecessarily pass useConfig() values to client-side ([613bce3](https://github.com/vikejs/vike-solid/commit/613bce3))
+
+
+### Features
+
+* new [components `<Head>` and `<Config>`](https://vike.dev/useConfig#config-head) ([#104](https://github.com/vikejs/vike-solid/issues/104)) ([ed1c070](https://github.com/vikejs/vike-solid/commit/ed1c070))
+
+
+
+# [0.7.0](https://github.com/vikejs/vike-solid/compare/v0.6.2...v0.7.0) (2024-08-06)
+
+
+### Bug Fixes
+
+* avoid the default of title/lang setting to override Head setting ([1f91f16](https://github.com/vikejs/vike-solid/commit/1f91f16))
+* export Vike config only at /config ([d66c678](https://github.com/vikejs/vike-solid/commit/d66c678))
+
+
+### Features
+
+* [useConfig()](https://vike.dev/useConfig) ([88496ed](https://github.com/vikejs/vike-solid/commit/88496ed))
+* new hook [`onAfterRenderClient`](https://vike.dev/onAfterRenderClient) ([149f555](https://github.com/vikejs/vike-solid/commit/149f555))
+
 
 ### BREAKING CHANGES
 
-* Add `vite-plugin-solid` to `devDependencies`
+* component `<ClientOnly>` removed: use `clientOnly()` helper instead https://vike.dev/clientOnly
+* Update to `vike@0.4.191` or above.
 
-## [0.7.20](https://github.com/vikejs/vike-solid/compare/vike-solid@0.7.19...vike-solid@0.7.20) (2026-01-25)
 
 
-### Bug Fixes
+## [0.6.2](https://github.com/vikejs/vike-solid/compare/v0.6.1...v0.6.2) (2024-06-25)
 
-* add clientOnly() deprecation warning ([#211](https://github.com/vikejs/vike-solid/issues/211)) ([d233336](https://github.com/vikejs/vike-solid/commit/d233336))
+
+### Features
+
+* Add streaming support for Web Stream ([69ac3cd](https://github.com/vikejs/vike-solid/commit/69ac3cd))
+
+
+
+## [0.6.1](https://github.com/vikejs/vike-solid/compare/v0.6.0...v0.6.1) (2024-06-22)
+
+
+**For previous versions, see [MIGRATION.md](https://github.com/vikejs/vike-solid/blob/main/MIGRATION.md).**

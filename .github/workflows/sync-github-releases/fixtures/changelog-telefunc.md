@@ -1,29 +1,31 @@
-## [0.2.19](https://github.com/brillout/telefunc/compare/v0.2.18...v0.2.19) (2026-02-22)
+## [0.1.2](https://github.com/brillout/telefunc/compare/v0.1.1...v0.1.2) (2022-01-25)
 
 
 ### Bug Fixes
 
-* @brillout/json-serializer@^0.5.22 ([604a8cf](https://github.com/brillout/telefunc/commit/604a8cf))
-
-
-### Features
-
-* file uploads ([#234](https://github.com/brillout/telefunc/issues/234)) ([cb80f02](https://github.com/brillout/telefunc/commit/cb80f02))
+* improve TelefunctionError type ([41a572a](https://github.com/brillout/telefunc/commit/41a572a))
+* make error handling consistent between remote call and SSR call ([10edb6a](https://github.com/brillout/telefunc/commit/10edb6a))
 
 
 
-## [0.2.18](https://github.com/brillout/telefunc/compare/v0.2.17...v0.2.18) (2026-02-13)
+## [0.1.1](https://github.com/brillout/telefunc/compare/0.1.0...0.1.1) (2022-01-24)
 
 
 ### Bug Fixes
 
-* update glob pattern to work with Vite 8 ([a6c047b](https://github.com/brillout/telefunc/commit/a6c047b))
+* enable isomorphic imports by refactoring source code file structure and adopting new TS/ESM/CJS strategy ([d0c182d](https://github.com/brillout/telefunc/commit/d0c182d))
+* warn user upon incorrect usage of isomorphic imports ([72700ca](https://github.com/brillout/telefunc/commit/72700ca))
 
 
 
-## [0.2.17](https://github.com/brillout/telefunc/compare/v0.2.16...v0.2.17) (2025-11-13)
+# Telefunc (new 2021/2022 version) `0.1.0`
 
+Initial release.
 
-### Bug Fixes
+# Telefunc (old 2020 version) `0.0.26`
 
-* remove 'telefunc' from optimizeDeps.include ([#223](https://github.com/brillout/telefunc/issues/223)) ([8075bda](https://github.com/brillout/telefunc/commit/8075bda))
+See [github.com/brillout/telefunc-old](https://github.com/brillout/telefunc-old).
+
+# Wildcard API `v0.5.3`
+
+See [github.com/brillout/wildcard-api](https://github.com/brillout/wildcard-api).

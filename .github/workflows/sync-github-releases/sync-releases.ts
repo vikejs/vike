@@ -39,7 +39,7 @@ type ReleaseUpdateInput = {
 
 function getReleaseSections(changelog: string): ReleaseSections {
   const sections: ReleaseSections = {}
-  const regex = /^##? \[(\d+\.\d+\.\d+)\]/gm
+  const regex = /^##? \[(\d+\.\d+\.\d+[^\]]*)\]/gm
   const matches: { version: string; index: number }[] = []
 
   let match: RegExpExecArray | null
