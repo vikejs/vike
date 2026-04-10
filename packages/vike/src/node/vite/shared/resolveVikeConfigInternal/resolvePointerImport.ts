@@ -115,10 +115,11 @@ function resolveImportPathWithNode(
   if (!filePathAbsoluteFilesystem) {
     if (isImportPathRelative(pointerImportData.importPath)) {
       const { importPath, importStringWasGenerated, importString } = pointerImportData
-      const { filePathToShowToUser } = importerFilePath
+      const { filePathToShowToUserResolved } = importerFilePath
+      assert(filePathToShowToUserResolved)
       const errIntro = importStringWasGenerated
-        ? `The import path ${pc.cyan(importPath)} in ${filePathToShowToUser}`
-        : `The import ${pc.cyan(importString)} defined by ${filePathToShowToUser}`
+        ? `The import path ${pc.cyan(importPath)} in ${filePathToShowToUserResolved}`
+        : `The import ${pc.cyan(importString)} defined by ${filePathToShowToUserResolved}`
       assertUsage(false, `${errIntro} couldn't be resolved: does ${pc.cyan(importPath)} point to an existing file?`)
     }
     /* This assertion fails if the npm package has a wrongly defined package.json#exports
