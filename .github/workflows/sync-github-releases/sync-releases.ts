@@ -39,6 +39,7 @@ type ReleaseUpdateInput = {
 
 function getReleaseSections(changelog: string): ReleaseSections {
   const sections: ReleaseSections = {}
+  // Matches changelog headings: `## [0.4.257](...)` or `# [0.1.0-beta.6](...)`
   const regex = /^##? \[(\d+\.\d+\.\d+[^\]]*)\]/gm
   const matches: { version: string; index: number }[] = []
 
