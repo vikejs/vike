@@ -113,8 +113,16 @@ function resolveImportPathWithNode(
     userRootDir,
   })
   if (!filePathAbsoluteFilesystem) {
-    // TODO/ai implement assertUsage()
-    assert(!isImportPathRelative(pointerImportData.importPath))
+    const { importPath, importStringWasGenerated, importString } = pointerImportData
+    const { filePathToShowToUser } = importerFilePath
+    const importPathString = pc.code(importPath)
+    const errIntro = importStringWasGenerated
+      ? `The import path ${importPathString} in ${filePathToShowToUser}`
+      : `The import ${pc.code(importString)} defined by ${filePathToShowToUser}`
+    assertUsage(
+      !isImportPathRelative(importPath),
+      `${errIntro} couldn't be resolved: does ${importPathString} point to an existing file?`,
+    )
     /* This assertion fails if the npm package has a wrongly defined package.json#exports
     // Libraries don't use path aliases => filePathAbsoluteFilesystem should be defined
     assert(!importerFilePathAbsolute.includes('node_modules'))
