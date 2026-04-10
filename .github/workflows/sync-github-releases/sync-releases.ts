@@ -43,7 +43,7 @@ async function main(): Promise<void> {
   const { owner, repo } = getRepository()
   const defaultBranch = getDefaultBranch()
   const versionTag = `v${version}`
-  const changelog = await readRepositoryFile('CHANGELOG.md')
+  const changelog = await readRepositoryFile('packages/vike/CHANGELOG.md')
   const sections = getReleaseSections(changelog)
 
   if (dryRun) {
