@@ -1,5 +1,11 @@
+import { readFileSync } from 'node:fs'
+import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { getDefaultBranch, getReleasePlan, getReleaseSections, getRepository } from './sync-releases'
+
+function readFixture(name: string): string {
+  return readFileSync(path.join(__dirname, 'fixtures', name), 'utf8')
+}
 
 describe('getReleaseSections()', () => {
   it('maps changelog headings to version tags', () => {
@@ -20,6 +26,40 @@ describe('getReleaseSections()', () => {
       'v1.0.1': '### Features\n\n* Added release automation.',
       'v1.0.0': '### Bug Fixes\n\n* Fixed old release notes.',
     })
+  })
+
+  it('handles single # headings (vike-solid style)', () => {
+    const sections = getReleaseSections(readFixture('changelog-vike-solid.md'))
+    expect(Object.keys(sections)).toEqual(['v0.8.2', 'v0.8.0', 'v0.7.20'])
+    expect(sections['v0.8.0']).toContain('### Bug Fixes')
+    expect(sections['v0.8.0']).toContain('### BREAKING CHANGES')
+  })
+
+  it('parses Vike changelog', () => {
+    const sections = getReleaseSections(readFixture('changelog-vike.md'))
+    expect(Object.keys(sections)).toEqual(['v0.4.257', 'v0.4.256', 'v0.4.255'])
+    expect(sections['v0.4.257']).toContain('### Bug Fixes')
+    expect(sections['v0.4.257']).toContain('### Features')
+    expect(sections['v0.4.256']).toContain('### Performance Improvements')
+  })
+
+  it('parses Telefunc changelog', () => {
+    const sections = getReleaseSections(readFixture('changelog-telefunc.md'))
+    expect(Object.keys(sections)).toEqual(['v0.2.19', 'v0.2.18', 'v0.2.17'])
+    expect(sections['v0.2.19']).toContain('### Features')
+    expect(sections['v0.2.19']).toContain('file uploads')
+  })
+
+  it('parses vike-vue changelog', () => {
+    const sections = getReleaseSections(readFixture('changelog-vike-vue.md'))
+    expect(Object.keys(sections)).toEqual(['v0.9.11', 'v0.9.10', 'v0.9.9'])
+    expect(sections['v0.9.9']).toContain('<ClientOnly>')
+  })
+
+  it('parses vike-react changelog', () => {
+    const sections = getReleaseSections(readFixture('changelog-vike-react.md'))
+    expect(Object.keys(sections)).toEqual(['v0.6.21', 'v0.6.20'])
+    expect(sections['v0.6.21']).toContain('+react.renderToStreamOptions')
   })
 })
 

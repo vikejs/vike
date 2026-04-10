@@ -95,12 +95,26 @@ function getReleasePlan({
 async function main(): Promise<void> {
   // Local testing:
   // GITHUB_TOKEN=<contents:write token> bun ./.github/workflows/sync-github-releases/sync-releases.ts
+  // Dry-run (no GitHub token needed):
+  // bun ./.github/workflows/sync-github-releases/sync-releases.ts --dry-run
+  const dryRun = process.argv.includes('--dry-run')
   const { owner, repo } = getRepository()
-  const token = getEnv('GITHUB_TOKEN')
   const defaultBranch = getDefaultBranch()
   const versionTag = `v${version}`
   const changelog = await readRepositoryFile('CHANGELOG.md')
   const sections = getReleaseSections(changelog)
+
+  if (dryRun) {
+    console.log(`Dry-run mode — no GitHub API calls will be made.`)
+    console.log(`Repository: ${owner}/${repo}`)
+    console.log(`Version tag: ${versionTag}`)
+    console.log(`Changelog sections found: ${Object.keys(sections).join(', ')}`)
+    assert(sections[versionTag], `Missing changelog entry for ${versionTag}`)
+    console.log(`\nRelease notes for ${versionTag}:\n${sections[versionTag]}`)
+    return
+  }
+
+  const token = getEnv('GITHUB_TOKEN')
 
   // https://docs.github.com/en/rest/releases/releases#list-releases
   const releases = await githubRequest<Release[]>(`/repos/${owner}/${repo}/releases?per_page=100`, {
