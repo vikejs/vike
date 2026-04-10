@@ -20,76 +20,17 @@ type Release = {
   tag_name: string
   body: string | null
 }
-
 type ReleaseSections = Record<string, string>
-
 type ReleaseCreateInput = {
   tag_name: string
   target_commitish: string
   name: string
   body: string
 }
-
 type ReleaseUpdateInput = {
   release_id: number
   tag_name: string
   body: string
-}
-
-function getReleaseSections(changelog: string): ReleaseSections {
-  const sections: ReleaseSections = {}
-  // Matches changelog headings: `## [0.4.257](...)` or `# [0.1.0-beta.6](...)`
-  const regex = /^##? \[(\d+\.\d+\.\d+[^\]]*)\]/gm
-  const matches: { version: string; index: number }[] = []
-
-  let match: RegExpExecArray | null
-  while ((match = regex.exec(changelog)) !== null) {
-    matches.push({ version: match[1], index: match.index })
-  }
-
-  matches.forEach((match, index) => {
-    const start = changelog.indexOf('\n', match.index)
-    const end = matches[index + 1]?.index ?? changelog.length
-    const notes = changelog.slice(start, end).trim()
-    sections[`v${match.version}`] = notes
-  })
-
-  return sections
-}
-
-function getReleasePlan({
-  defaultBranch,
-  releases,
-  sections,
-  versionTag,
-}: {
-  defaultBranch: string
-  releases: Release[]
-  sections: ReleaseSections
-  versionTag: string
-}): {
-  releaseToCreate: ReleaseCreateInput | null
-  releasesToUpdate: ReleaseUpdateInput[]
-} {
-  const currentBody = sections[versionTag]
-  assert(currentBody, `Missing changelog entry for ${versionTag}`)
-
-  const releaseToCreate = releases.some((release) => release.tag_name === versionTag)
-    ? null
-    : {
-        tag_name: versionTag,
-        target_commitish: defaultBranch,
-        name: versionTag,
-        body: currentBody,
-      }
-
-  const releasesToUpdate = releases.flatMap((release) => {
-    const body = sections[release.tag_name]
-    if (!body || body === release.body) return []
-    return [{ release_id: release.id, tag_name: release.tag_name, body }]
-  })
-
-  return { releaseToCreate, releasesToUpdate }
 }
 
 async function main(): Promise<void> {
@@ -166,6 +107,63 @@ async function main(): Promise<void> {
       await setTimeout(500)
     }
   }
+}
+
+
+function getReleaseSections(changelog: string): ReleaseSections {
+  const sections: ReleaseSections = {}
+  // Matches changelog headings: `## [0.4.257](...)` or `# [0.1.0-beta.6](...)`
+  const regex = /^##? \[(\d+\.\d+\.\d+[^\]]*)\]/gm
+  const matches: { version: string; index: number }[] = []
+
+  let match: RegExpExecArray | null
+  while ((match = regex.exec(changelog)) !== null) {
+    matches.push({ version: match[1], index: match.index })
+  }
+
+  matches.forEach((match, index) => {
+    const start = changelog.indexOf('\n', match.index)
+    const end = matches[index + 1]?.index ?? changelog.length
+    const notes = changelog.slice(start, end).trim()
+    sections[`v${match.version}`] = notes
+  })
+
+  return sections
+}
+
+function getReleasePlan({
+  defaultBranch,
+  releases,
+  sections,
+  versionTag,
+}: {
+  defaultBranch: string
+  releases: Release[]
+  sections: ReleaseSections
+  versionTag: string
+}): {
+  releaseToCreate: ReleaseCreateInput | null
+  releasesToUpdate: ReleaseUpdateInput[]
+} {
+  const currentBody = sections[versionTag]
+  assert(currentBody, `Missing changelog entry for ${versionTag}`)
+
+  const releaseToCreate = releases.some((release) => release.tag_name === versionTag)
+    ? null
+    : {
+        tag_name: versionTag,
+        target_commitish: defaultBranch,
+        name: versionTag,
+        body: currentBody,
+      }
+
+  const releasesToUpdate = releases.flatMap((release) => {
+    const body = sections[release.tag_name]
+    if (!body || body === release.body) return []
+    return [{ release_id: release.id, tag_name: release.tag_name, body }]
+  })
+
+  return { releaseToCreate, releasesToUpdate }
 }
 
 function getRepository(): { owner: string; repo: string } {
