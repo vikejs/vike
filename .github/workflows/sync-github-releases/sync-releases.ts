@@ -10,6 +10,7 @@ import assert from 'node:assert'
 import { readFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import path from 'node:path'
+import { execSync } from 'node:child_process'
 import { setTimeout } from 'node:timers/promises'
 import { fileURLToPath } from 'node:url'
 const require = createRequire(import.meta.url)
@@ -167,10 +168,18 @@ function getReleasePlan({
 }
 
 function getRepository(): { owner: string; repo: string } {
-  const repository = process.env.GITHUB_REPOSITORY ?? 'vikejs/vike'
+  const repository = process.env.GITHUB_REPOSITORY ?? getRepositoryFromGit()
   const [owner, repo] = repository.split('/')
   assert(owner && repo, `Invalid GITHUB_REPOSITORY value: ${repository}`)
   return { owner, repo }
+}
+
+function getRepositoryFromGit(): string {
+  const url = execSync('git remote get-url origin', { encoding: 'utf8' }).trim()
+  // Handles both https://github.com/owner/repo.git and git@github.com:owner/repo.git
+  const match = url.match(/github\.com[:/](.+?)(?:\.git)?$/)
+  assert(match, `Cannot parse GitHub repository from git remote: ${url}`)
+  return match[1]
 }
 
 function getDefaultBranch(): string {
