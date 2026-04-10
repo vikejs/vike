@@ -1,2 +1,2 @@
 import { testRun } from '../../examples/render-modes/.testRun'
-testRun('npm run dev')
+testRun('pnpm run dev')

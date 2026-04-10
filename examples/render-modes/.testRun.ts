@@ -21,13 +21,13 @@ export { testRun }
 const disableTestHtmlOnlyHMR = true
 
 // TO-DO/next-major-release: remove non-V1 design case
-function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1Design?: true) {
+function testRun(cmd: 'pnpm run dev' | 'pnpm run prod' | 'pnpm run preview', isV1Design?: true) {
   run(cmd, {
     // HMR tests are flaky (I couldn't make them reliable)
     isFlaky: true,
   })
 
-  const isProd = cmd !== 'npm run dev'
+  const isProd = cmd !== 'pnpm run dev'
 
   const hash = /[a-zA-Z0-9_-]+/
   const path = /[^\>]+/

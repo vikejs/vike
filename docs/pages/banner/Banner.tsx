@@ -5,7 +5,6 @@ export { BannerSlides }
 export { BannerVikings }
 
 import React from 'react'
-import { HeroTagline } from '../index/sections/hero/Hero'
 import vikeLogo from '../../assets/logo/vike-shadow.svg'
 import './Banner.css'
 
@@ -156,21 +155,7 @@ function BannerCommon({
             </span>
           </div>
         )}
-        {logo !== true && (
-          <HeroTagline
-            style={{ marginTop: -0 }}
-            styleH1={styleH1}
-            taglineStyle={{ fontSize: 50 * logoScale, marginBottom: 25, ...taglineStyle }}
-            taglineSecondary={taglineSecondary}
-            taglineSecondaryStyle={{
-              marginTop: 19,
-              fontSize: 28 * logoScale,
-              maxWidth: 800 * logoScale,
-              lineHeight: 1.3,
-              ...taglineSecondaryStyle,
-            }}
-          />
-        )}
+        {logo !== true && 'TO-DO: insert new hero'}
       </div>
     </div>
   )

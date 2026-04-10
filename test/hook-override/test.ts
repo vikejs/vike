@@ -3,10 +3,10 @@ export { testRun as test }
 import { run, page, test, expect, getServerUrl, fetchHtml, expectLog, autoRetry } from '@brillout/test-e2e'
 import { ensureWasClientSideRouted, expectPageContextJsonRequest, testCounter } from '../utils'
 
-function testRun(cmd: 'npm run dev' | 'npm run preview') {
+function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   run(cmd)
 
-  const isDev = cmd === 'npm run dev'
+  const isDev = cmd === 'pnpm run dev'
 
   test('HTML', async () => {
     const t = async (

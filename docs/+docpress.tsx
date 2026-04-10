@@ -8,7 +8,7 @@ import { discordInvite } from './links'
 import { TopNavigation } from './TopNavigation'
 import React from 'react'
 
-const config: Config = {
+const config = {
   name: 'Vike',
   version: PROJECT_VERSION,
   url: 'https://vike.dev',

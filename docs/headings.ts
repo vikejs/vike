@@ -271,7 +271,12 @@ const headings = [
     level: 2,
     title: 'Cloudflare',
     url: '/cloudflare',
-    sectionTitles: ['Cloudflare Pages', 'Cloudflare APIs'],
+    sectionTitles: ['Cloudflare APIs'],
+  },
+  {
+    level: 2,
+    title: 'EdgeOne Pages',
+    url: '/edgeone-pages',
   },
   {
     level: 2,
@@ -287,11 +292,6 @@ const headings = [
     level: 2,
     title: 'Netlify Functions',
     url: '/netlify-functions',
-  },
-  {
-    level: 2,
-    title: 'EdgeOne Pages',
-    url: '/edgeone-pages',
   },
   {
     level: 4,
@@ -331,9 +331,9 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Server integration',
-    url: '/server-integration',
-    sectionTitles: ['Non-JavaScript Backend'],
+    title: '`+server`',
+    titleInNav: 'Server',
+    url: '/server',
   },
   {
     level: 2,
@@ -366,6 +366,7 @@ const headings = [
     titleInNav: '... more',
     title: 'Integration (more)',
     url: '/integration',
+    sectionTitles: ['Server (Manual integration)', 'Non-JavaScript Backend'],
   },
   {
     level: 1,
@@ -757,6 +758,11 @@ const headings = [
   },
   {
     level: 2,
+    title: 'Introducing Universal Deploy',
+    url: '/blog/universal-deploy',
+  },
+  {
+    level: 2,
     title: 'Introducing Photon',
     url: '/blog/photon',
     sectionTitles: ['Why Photon?'],
@@ -1090,12 +1096,6 @@ function extensions() {
       {
         title: '`vike-solid`',
         url: '/vike-solid',
-      },
-      {
-        title: '`vike-photon`',
-        url: '/vike-photon',
-        sectionTitles: ['HTTPS', '`pageContext.runtime`'],
-        category: 'Overview',
       },
     ] as const
   ).map((h) => ({ ...h, category: 'Extensions' as const })) satisfies HeadingDetachedDefinition[]
@@ -1602,12 +1602,12 @@ function deprecated() {
         url: '/_default.page.route.js',
       },
       {
-        title: '`+server.js`',
-        url: '/server',
-      },
-      {
         title: '`vike-server`',
         url: '/vike-server',
+      },
+      {
+        title: '`vike-photon`',
+        url: '/vike-photon',
       },
     ] as const
   ).map((h) => ({ ...h, category: 'Deprecated' as const })) satisfies HeadingDetachedDefinition[]
@@ -1664,6 +1664,10 @@ function migrations() {
       {
         title: 'Migration to `vike-photon`',
         url: '/migration/vike-photon',
+      },
+      {
+        title: 'Migration to `+server`',
+        url: '/migration/server',
       },
     ] as const
   ).map((h) => ({ ...h, category: 'Migration' as const })) satisfies HeadingDetachedDefinition[]

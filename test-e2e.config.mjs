@@ -80,6 +80,18 @@ function getCiJobs() {
 function tolerateError({ logSource, logText, testInfo }) {
   return (
     [
+      // === Vite 8
+      // [vite:react-babel] We recommend switching to `@vitejs/plugin-react-oxc` for improved performance. More information at https://vite.dev/rolldown (x2)
+      '`@vitejs/plugin-react-oxc` for improved performance',
+      // TODO/after-PR-merge: look into it
+      // [15:57:24.609][/test-preview.test.ts][pnpm run preview][stderr] [PLUGIN_TIMINGS] Warning: Your build spent significant time in plugins. Here is a breakdown:
+      //   - vike:build:pluginModuleBanner (54%)
+      //   - vite-plugin-cloudflare:virtual-modules (13%)
+      //   - vike:pluginVirtualFiles (6%)
+      //   - telefunc:pluginVirtualFileEntry (6%)
+      //   - vite:css (6%)
+      // See https://rolldown.rs/options/checks#plugintimings for more details.
+      'Your build spent significant time in plugins',
       // === Vite 8 beta
       // [11:49:08.085][/test/photon-cloudflare/.test-dev.test.ts][pnpm run dev][stderr] You or a plugin you are using have set `optimizeDeps.esbuildOptions` but this option is now deprecated. Vite now uses Rolldown to optimize the dependencies. Please use `optimizeDeps.rolldownOptions` instead.
       '`optimizeDeps.esbuildOptions` but this option is now deprecated',
@@ -92,6 +104,8 @@ function tolerateError({ logSource, logText, testInfo }) {
       // [09:37:55.007][/examples/react-full][npm run preview][stderr] 9:37:55 AM [vite] warning: `esbuild` option was specified by "vite:react-swc" plugin. This option is deprecated, please use `oxc` instead.
       '`esbuild` option was specified by',
       // ===
+      // TODO/after-PR-merge: look into it
+      'WARN  legalComments option is deprecated',
 
       // Error: clientOnly() is deprecated — use <ClientOnly> https://vike.dev/ClientOnly
       'clientOnly() is deprecated',

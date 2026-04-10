@@ -113,21 +113,23 @@ declare global {
 }
 
 function testRunClassic(
-  cmd: 'npm run dev' | 'npm run preview' | 'npm run prod' | 'npm run preview:build-twice',
+  cmd: 'pnpm run dev' | 'pnpm run preview' | 'pnpm run prod' | 'pnpm run preview:build-twice',
   {
     skipAboutPage,
+    sleepBeforeAboutPage,
     skipViteEcosystemCi,
     testHmr,
     isVue,
     ...runOptions
   }: {
     skipAboutPage?: true
+    sleepBeforeAboutPage?: number
     skipViteEcosystemCi?: true
     testHmr?: false | string
     isVue?: true
   } & Parameters<typeof run>[1] = {},
 ) {
-  const isDev = cmd === 'npm run dev'
+  const isDev = cmd === 'pnpm run dev'
 
   if (skipViteEcosystemCi && process.env.VITE_ECOSYSTEM_CI) {
     skip("SKIPPED: skipping this test from Vite's ecosystem CI, see https://github.com/vikejs/vike/pull/2220")
@@ -174,6 +176,7 @@ function testRunClassic(
 
   if (!skipAboutPage) {
     test('about page', async () => {
+      if (sleepBeforeAboutPage) await sleep(sleepBeforeAboutPage)
       await page.click('a[href="/about"]')
       await autoRetry(async () => {
         expect(await page.textContent('h1')).toBe('About')

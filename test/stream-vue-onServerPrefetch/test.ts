@@ -3,7 +3,7 @@ export { testRun as test }
 import { fetchHtml, run, page, test, expect, getServerUrl, autoRetry } from '@brillout/test-e2e'
 
 function testRun() {
-  run('npm run dev')
+  run('pnpm run dev')
 
   test('server-side', async () => {
     const html = await fetchHtml('/')

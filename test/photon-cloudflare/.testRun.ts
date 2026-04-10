@@ -1,12 +1,16 @@
 export { testRun }
 
-import { autoRetry, expect, fetch, fetchHtml, getServerUrl, page, run, skip, test } from '@brillout/test-e2e'
+import { autoRetry, expect, fetch, fetchHtml, getServerUrl, page, run, test } from '@brillout/test-e2e'
 
 function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   run(cmd, {
     serverUrl: 'http://localhost:3000',
-    tolerateError({ logText }) {
-      return logText.includes("Vite's CLI is deprecated") || logText.includes('Run the built server entry')
+    tolerateError({ logText, logSource }) {
+      return (
+        (logText.includes('vike-photon is deprecated') && logSource === 'stderr') ||
+        logText.includes("Vite's CLI is deprecated") ||
+        logText.includes('Run the built server entry')
+      )
     },
   })
 

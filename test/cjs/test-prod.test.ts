@@ -1,2 +1,2 @@
 import { testRun } from './testRun'
-testRun('npm run prod')
+testRun('pnpm run prod')

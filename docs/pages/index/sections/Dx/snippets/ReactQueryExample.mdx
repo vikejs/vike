@@ -1,0 +1,22 @@
+```jsx
+// Powered by vike-react-query
+
+import { useSuspenseQuery } from '@tanstack/react-query'
+
+const Movie = ({ id }) => {
+  const result = useSuspenseQuery({
+    queryKey: ['movie', id],
+    queryFn: () =>
+      fetch(`https://swapi.info/api/films/${id}`)
+      .then((res) => res.json())
+  })
+
+  const { title } = result.data
+
+  return (
+    <div>
+      Title: <b>{title}</b>
+    </div>
+  )
+}
+```

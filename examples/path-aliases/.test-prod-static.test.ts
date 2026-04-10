@@ -1,2 +1,2 @@
 import { testRun } from './.testRun'
-testRun('npm run prod:static')
+testRun('pnpm run prod:static')

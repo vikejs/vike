@@ -1,4 +1,6 @@
 // Public usage
+import type { IncomingMessage } from 'node:http'
+
 export type { PageContext }
 export type { PageContextServer }
 export type { PageContextClient }
@@ -12,6 +14,7 @@ export type { PageContextInternalServer }
 export type { PageContextInternalClient }
 export type { PageContextInternalClient_ServerRouting }
 export type { PageContextInternalClient_ClientRouting }
+export type { PageContextInitInternal }
 export type { PageContextInit }
 
 // TO-DO/next-major-release: remove these three exports
@@ -19,6 +22,7 @@ export type { PageContextBuiltInServer_deprecated as PageContextBuiltInServer }
 export type { PageContextBuiltInClientWithClientRouting_deprecated as PageContextBuiltInClientWithClientRouting }
 export type { PageContextBuiltInClientWithServerRouting_deprecated as PageContextBuiltInClientWithServerRouting }
 
+import type { RuntimeAdapterTarget } from '@universal-middleware/core'
 import type {
   PageContextUrlInternal,
   PageContextUrlClient,
@@ -45,7 +49,8 @@ type PageContextServer<Data = unknown> = PageContextBuiltInServer<Data> & {
     PageContextInternalServer & PageContextAfterRender & PageContextPublicServer
   >
 } & Vike.PageContext &
-  Vike.PageContextServer
+  Vike.PageContextServer &
+  (Vike.Server extends { server: string } ? { runtime: RuntimeAdapterTarget<Vike.Server['server']> } : {})
 
 // With Client Routing
 //  - Because of vike-{react/vue/solid} most users will eventually be using Client Routing => we give out the succinct type names `PageContext` and `PageContextClient` to these users
@@ -180,6 +185,8 @@ type PageContextInit = {
   /** @deprecated Set `pageContextInit.urlOriginal` instead  */ // TO-DO/next-major-release: remove
   url?: string
 }
+
+type PageContextInitInternal = PageContextInit & { _reqDev?: IncomingMessage; _reqWeb?: Request }
 
 type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
   PageContextInit &
@@ -382,7 +389,7 @@ type PageContextInternalClient_ServerRouting = Omit<PageContextBuiltInClientWith
  *   ```
  * With:
  *   ```
- *   import { PageContextServer } from 'vike/types'
+ *   import type { PageContextServer } from 'vike/types'
  *   ```
  *
  * See https://vike.dev/pageContext#typescript
@@ -395,7 +402,7 @@ type PageContextBuiltInServer_deprecated<_Page = never> = PageContextBuiltInServ
  *   ```
  * With:
  *   ```
- *   import { PageContextClient } from 'vike/types'
+ *   import type { PageContextClient } from 'vike/types'
  *   ```
  *
  * See https://vike.dev/pageContext#typescript
@@ -409,7 +416,7 @@ type PageContextBuiltInClientWithClientRouting_deprecated<_Page = never> =
  *   ```
  * With:
  *   ```
- *   import { PageContextClientWithServerRouting as PageContextClient } from 'vike/types'
+ *   import type { PageContextClientWithServerRouting as PageContextClient } from 'vike/types'
  *   ```
  *
  * See https://vike.dev/pageContext#typescript

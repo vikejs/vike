@@ -47,7 +47,11 @@ type ConfigDefinition_ = {
    */
   effect?: ConfigEffect
   /**
-   * Always load the configuration value, and as soon as possible.
+   * Load the configuration of *all* pages (regardless of what page is being rendered).
+   *
+   * WARNING: this might bloat server- and client-side KBs.
+   *
+   * By default, to save server- and client-side KBs, the configuration of a page is only loaded when rendering that page.
    *
    * @default false
    *
@@ -107,6 +111,7 @@ type ConfigDefinitionsInternal = Record<
   ConfigDefinitionInternal
 >
 type ConfigDefinitionsBuiltIn = Record<ConfigNameBuiltIn | ConfigNameGlobal, ConfigDefinitionInternal>
+// TODO/after-PR-merge: rename_full configDefinitionsBuiltIn metaBuiltIn
 const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   onRenderHtml: {
     env: { server: true },
@@ -336,6 +341,10 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     eager: true,
     global: true,
   },
+  server: {
+    env: { server: true },
+    global: true,
+  },
   cli: {
     env: { config: true },
     global: true,
@@ -415,6 +424,9 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   license: {
     env: { config: true },
     global: true,
+  },
+  vercel: {
+    env: { config: true },
   },
 }
 

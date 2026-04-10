@@ -9,19 +9,19 @@
   "dependencies": {
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "vike": "0.4.255",
-    "vike-photon": "^0.1.24",
+    "vike": "0.4.257",
+    "vike-photon": "^0.1.26",
     "vike-react": "^0.6.21"
   },
   "devDependencies": {
     "@photonjs/cloudflare": "^0.1.13",
     "@photonjs/runtime": "^0.1.16",
-    "@types/react": "^19.2.11",
+    "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.3",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.2",
     "vite": "^7.3.1",
-    "wrangler": "^4.62.0"
+    "wrangler": "^4.81.0"
   },
   "type": "module"
 }

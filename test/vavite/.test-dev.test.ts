@@ -1,3 +1,3 @@
 import { testRunClassic } from '../utils'
 
-testRunClassic('npm run dev')
+testRunClassic('pnpm run dev')

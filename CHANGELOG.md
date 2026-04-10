@@ -1,3 +1,32 @@
+## [0.4.257](https://github.com/vikejs/vike/compare/v0.4.256...v0.4.257) (2026-04-09)
+
+
+### Bug Fixes
+
+* improve +meta.eager jsdocs ([2e38a9b](https://github.com/vikejs/vike/commit/2e38a9b749ed3dfedce7edf995ae7fc5d237dccc))
+
+
+### Features
+
+* built-in +server support (via Universal Deploy, deprecating `vike-photon`) ([#3106](https://github.com/vikejs/vike/issues/3106)) ([5449ce0](https://github.com/vikejs/vike/commit/5449ce09122b9e169c8c7281350acad72b6dcdaa))
+
+
+
+## [0.4.256](https://github.com/vikejs/vike/compare/v0.4.255...v0.4.256) (2026-03-31)
+
+
+### Bug Fixes
+
+* duplicate URL verification on pre-rendering ([#3156](https://github.com/vikejs/vike/issues/3156)) ([7723d45](https://github.com/vikejs/vike/commit/7723d45ec06b51a0f1077ee6e88eb73f92ebc2f9))
+* polish node unsupported version error ([#3148](https://github.com/vikejs/vike/issues/3148)) ([279f79c](https://github.com/vikejs/vike/commit/279f79c89c44a57e11e409bd571df8cc41efd2ad))
+
+
+### Performance Improvements
+
+* remove slow plugin when not needed (fix [#3086](https://github.com/vikejs/vike/issues/3086)) ([#3187](https://github.com/vikejs/vike/issues/3187)) ([567fe61](https://github.com/vikejs/vike/commit/567fe61f1d7a0c9854219cc1bdf9add967d4bf05))
+
+
+
 ## [0.4.255](https://github.com/vikejs/vike/compare/v0.4.254...v0.4.255) (2026-02-27)
 
 

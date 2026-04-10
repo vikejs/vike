@@ -16,5 +16,15 @@ updates:
       - dependency-name: "telefunc"
       - dependency-name: "vike-*"
       - dependency-name: "vite-plugin-vercel"
-      # Dependencies *not* maintained by the Vike team
+      # devDependencies
       - dependency-name: "vitest"
+      - dependency-name: "typescript"
+      - dependency-name: "rimraf"
+      # dependencies
+      - dependency-name: "json5"
+      - dependency-name: "magic-string"
+      - dependency-name: "picomatch"
+      - dependency-name: "semver"
+      - dependency-name: "sirv"
+      - dependency-name: "source-map-support"
+      - dependency-name: "tinyglobby"

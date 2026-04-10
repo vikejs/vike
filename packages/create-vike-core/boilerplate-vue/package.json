@@ -2,17 +2,17 @@
   "scripts": {
     "dev": "vike dev",
     "build": "vike build",
-    "prod": "vike build && cross-env NODE_ENV=production node dist/server/index.js"
+    "prod": "vike build && node dist/server/index.mjs"
   },
   "dependencies": {
+    "@vikejs/hono": "^0.2.0",
     "@vitejs/plugin-vue": "^6.0.1",
     "@vue/compiler-sfc": "^3.5.13",
     "@vue/server-renderer": "^3.5.13",
     "cross-env": "^7.0.3",
     "hono": "^4.8.4",
     "node-fetch": "^3.3.2",
-    "vike": "^0.4.255",
-    "vike-server": "^1.0.25",
+    "vike": "^0.4.257",
     "vite": "^6.3.2",
     "vue": "^3.5.13"
   },

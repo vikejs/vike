@@ -142,9 +142,7 @@ The headers of the HTTP Response, see <Link href="/headersResponse"/>.
 
 <Prop name="runtime" />
 
-The [`RuntimeAdapter`](https://universal-middleware.dev/reference/runtime-adapter) object set by <Link href="/vike-photon">`vike-photon`</Link> (which uses [`universal-middleware`](https://universal-middleware.dev/) under the hood).
-
-> It's only available if you use `vike-photon`.
+The [`RuntimeAdapter`](https://universal-middleware.dev/reference/runtime-adapter) object set by <Link href="/server">`+server`</Link> (which uses [`universal-middleware`](https://universal-middleware.dev/) under the hood).
 
 ```ts
 // Environment: server
@@ -156,7 +154,7 @@ pageContext.runtime.res
 
 declare global {
   namespace Vike {
-    interface Photon {
+    interface Server {
       // 👉 Pick your server (for correct pageContext.runtime type)
       server: 'hono' // | 'express' | 'fastify' | 'hattip' | 'srvx' | 'elysia' | 'h3'
     }
@@ -168,8 +166,7 @@ declare global {
 > - `pageContext.runtime.req` is [`IncomingMessage`](https://nodejs.org/api/http.html#class-httpincomingmessage)
 > - `pageContext.runtime.res` is [`ServerResponse`](https://nodejs.org/api/http.html#class-httpserverresponse)
 
-See also:
-- <Link href="/vike-photon#pagecontext-runtime" doNotInferSectionTitle />
+> It's only available if you use <Link href="/server">`+server`</Link>. If you don't use `+server`, then <Link href="#custom">define a custom `pageContext` property</Link> (e.g. `pageContext.req`) to access the request object.
 
 <Prop name="config" />
 
@@ -426,9 +423,9 @@ declare global {
 
 ### `renderPage()`
 
-If you don't use <Link href="/vike-photon">`vike-photon`</Link>, you can define custom properties at <Link href="/renderPage">`renderPage()`</Link>.
+If you don't use <Link href="/server">`+server.js`</Link>, you can define custom properties at <Link href="/renderPage">`renderPage()`</Link>.
 
-> If you use `vike-photon`, use <Link href="/onCreatePageContext">`+onCreatePageContext`</Link> instead.
+> If you use `+server.js`, use <Link href="/onCreatePageContext">`+onCreatePageContext`</Link> instead.
 
 ```ts
 // Your Vike server middleware integration

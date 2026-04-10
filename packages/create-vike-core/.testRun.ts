@@ -17,7 +17,7 @@ import {
 import assert from 'node:assert'
 
 function testRun(
-  cmd: 'npm run dev' | 'npm run prod' | 'npm run preview',
+  cmd: 'pnpm run dev' | 'pnpm run prod' | 'pnpm run preview',
   {
     uiFramewok,
     lang,
@@ -27,13 +27,14 @@ function testRun(
     isSPA?: true
   },
 ) {
-  const isProd = cmd === 'npm run prod' || cmd === 'npm run preview'
+  const isProd = cmd === 'pnpm run prod' || cmd === 'pnpm run preview'
   const isDev = !isProd
   const testHMR = isDev && (uiFramewok === 'react' || uiFramewok === 'vue')
 
   run(cmd, {
     // HMR tests are flaky (I couldn't make them reliable)
     isFlaky: testHMR,
+    serverIsReadyMessage: isProd ? 'Listening on:' : undefined,
   })
 
   test('page content is rendered to HTML', async () => {
@@ -111,7 +112,7 @@ function testRun(
   test('error page', async () => {
     await page.goto(getServerUrl() + '/does-not-exist')
     expect(await page.textContent('#page-content')).toBe('Page not found.')
-    expectLog('Failed to load resource: the server responded with a status of 404 (Not Found)', {
+    expectLog('Failed to load resource: the server responded with a status of 404', {
       filter: (log) =>
         log.logSource === 'Browser Error' && partRegex`http://${/[^\/]+/}:3000/does-not-exist`.test(log.logInfo),
     })

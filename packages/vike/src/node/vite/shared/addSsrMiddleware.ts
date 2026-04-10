@@ -1,6 +1,6 @@
 export { addSsrMiddleware }
 
-import { renderPageServer } from '../../../server/runtime/renderPageServer.js'
+import { type PageContextInitInternal, renderPageServer } from '../../../server/runtime/renderPageServer.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { assertWarning } from '../../../utils/assert.js'
 import pc from '@brillout/picocolors'
@@ -18,9 +18,10 @@ function addSsrMiddleware(
     const url = req.originalUrl || req.url
     if (!url) return next()
     const { headers } = req
-    const pageContextInit = {
+    const pageContextInit: PageContextInitInternal = {
       urlOriginal: url,
       headersOriginal: headers,
+      _reqDev: req,
     }
     Object.defineProperty(pageContextInit, 'userAgent', {
       get() {

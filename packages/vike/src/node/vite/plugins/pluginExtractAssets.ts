@@ -52,6 +52,7 @@ const filterFunction = (id: string) => extractAssetsRE.test(id)
 function pluginExtractAssets(): Plugin[] {
   let config: ResolvedConfig
   let vikeConfig: VikeConfigInternal
+  if (handleAssetsManifest_isFixEnabled()) return []
   let isFixEnabled: boolean
   return [
     // This plugin removes all JavaScript from server-side only code, so that only CSS imports remains. (And also static files imports e.g. `import logoURL from './logo.svg.js'`).

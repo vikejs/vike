@@ -1,6 +1,6 @@
 {
   "name": "vike",
-  "version": "0.4.255",
+  "version": "0.4.257",
   "repository": "https://github.com/vikejs/vike",
   "exports": {
     "./server": {
@@ -94,6 +94,14 @@
       "browser": "./dist/client/node.js",
       "default": "./dist/server/runtime/universal-middleware.js"
     },
+    "./fetch": {
+      "types": "./dist/server/runtime/fetch.d.ts",
+      "worker": "./dist/server/runtime/fetch.js",
+      "workerd": "./dist/server/runtime/fetch.js",
+      "node": "./dist/server/runtime/fetch.js",
+      "browser": "./dist/client/node.js",
+      "default": "./dist/server/runtime/fetch.js"
+    },
     "./__internal": {
       "types": "./dist/server/__internal/index.d.ts",
       "node": "./dist/server/__internal/index.js",
@@ -124,17 +132,23 @@
     "@brillout/json-serializer": "^0.5.22",
     "@brillout/picocolors": "^1.0.30",
     "@brillout/vite-plugin-server-entry": "0.7.18",
+    "@universal-deploy/store": "^0.2.1",
+    "@universal-deploy/vite": "^0.1.6",
+    "@universal-middleware/core": "^0.4.17",
+    "@universal-middleware/node": "^0.1.0",
     "cac": "^6.0.0",
+    "convert-route": "^1.1.1",
     "es-module-lexer": "^1.0.0",
     "esbuild": ">=0.19.0",
     "json5": "^2.0.0",
     "magic-string": "^0.30.17",
-    "picomatch": "^4.0.2",
-    "semver": "^7.0.0",
-    "sirv": "^3.0.1",
+    "picomatch": "^4.0.4",
+    "semver": "^7.7.4",
+    "sirv": "^3.0.2",
     "source-map-support": "^0.5.0",
-    "tinyglobby": "^0.2.10",
-    "vite": ">=6.3.0"
+    "tinyglobby": "^0.2.16",
+    "vite": ">=6.3.0",
+    "vite-plugin-wrapper": "^0.1.0"
   },
   "peerDependencies": {
     "react-streaming": ">=0.3.42",
@@ -208,6 +222,9 @@
       "universal-middleware": [
         "./dist/server/runtime/universal-middleware.d.ts"
       ],
+      "fetch": [
+        "./dist/server/runtime/fetch.d.ts"
+      ],
       "__internal": [
         "./dist/server/__internal/index.d.ts"
       ],
@@ -241,18 +258,19 @@
     "./routing.js",
     "./server.js",
     "./types.js",
-    "./universal-middleware.js"
+    "./universal-middleware.js",
+    "./fetch.js"
   ],
   "devDependencies": {
     "@brillout/release-me": "^0.4.13",
     "@types/babel__core": "^7.20.5",
     "@types/estree": "^1.0.5",
     "@types/node": "^20.10.5",
-    "@types/picomatch": "^3.0.2",
-    "@types/semver": "^7.5.8",
+    "@types/picomatch": "^4.0.2",
+    "@types/semver": "^7.7.1",
     "@types/source-map-support": "^0.5.10",
-    "react-streaming": "^0.4.16",
-    "rimraf": "^5.0.5",
+    "react-streaming": "^0.4.17",
+    "rimraf": "^6.1.3",
     "typescript": "^5.9.3",
     "vite": "^7.2.6"
   },

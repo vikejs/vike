@@ -1,0 +1,21 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "compatibility_date": "2026-04-08",
+  "name": "vike_test_cloudflare_vite-plugin",
+  "vars": { "SOME_ENV_VAR": "some-value" },
+  "main": "vike:server-entry",
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "TO_DO_LIST_DURABLE_OBJECTS",
+        "class_name": "TodoListDurableObject"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["TodoListDurableObject"]
+    }
+  ]
+}
