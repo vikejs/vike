@@ -56,11 +56,7 @@ async function main(): Promise<void> {
     return
   }
 
-  const token = process.env.GITHUB_TOKEN
-  if (!token) {
-    console.error('GITHUB_TOKEN is not set. Use --dry-run to preview without a token.')
-    process.exit(1)
-  }
+  const token = getGithubToken()
 
   // https://docs.github.com/en/rest/releases/releases#list-releases
   const releases = await githubRequest<Release[]>(`/repos/${owner}/${repo}/releases?per_page=100`, {
@@ -184,6 +180,15 @@ function getRepositoryFromGit(): string {
   const match = url.match(/github\.com[:/](.+?)(?:\.git)?$/)
   assert(match, `Cannot parse GitHub repository from git remote: ${url}`)
   return match[1]
+}
+
+function getGithubToken(): string {
+  const token = process.env.GITHUB_TOKEN
+  if (!token) {
+    console.error('GITHUB_TOKEN is not set. Use --dry-run to preview without a token.')
+    process.exit(1)
+  }
+  return token
 }
 
 function getDefaultBranch(): string {
