@@ -10,7 +10,7 @@
     "@universal-middleware/core": "^0.4.17",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "telefunc": "^0.2.19",
+    "telefunc": "^0.2.20",
     "vike": "0.4.257",
     "vike-react": "^0.6.21"
   },
