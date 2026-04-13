@@ -827,6 +827,9 @@ importers:
       '@brillout/vite-plugin-server-entry':
         specifier: 0.7.18
         version: 0.7.18
+      '@universal-deploy/netlify':
+        specifier: ^0.2.1
+        version: 0.2.1(srvx@0.11.15)(vite@7.3.1(@types/node@20.17.17)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
       '@universal-deploy/store':
         specifier: ^0.2.1
         version: 0.2.1(srvx@0.11.15)
@@ -4591,6 +4594,11 @@ packages:
 
   '@ungap/structured-clone@1.3.0':
     resolution: {integrity: sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g==}
+
+  '@universal-deploy/netlify@0.2.1':
+    resolution: {integrity: sha512-z6xoW3wcJP93HUiYFXu2u1gwJOgYUr91IHEskFtWdyIksdcCGpu404j+QUkZkp8Vh4KJjHvwSDCwvI5eUfMTsw==}
+    peerDependencies:
+      vite: ^8.0.0-beta.13
 
   '@universal-deploy/node@0.1.5':
     resolution: {integrity: sha512-Zys7cnZSrhmy7iaXphIAC/CbdE92GY73BONtmXaLmVYk89AxKpsad4rNJ5a2v+/VnkVxdPme7dttsu610imRDQ==}
@@ -10428,6 +10436,14 @@ snapshots:
   '@types/use-sync-external-store@0.0.6': {}
 
   '@ungap/structured-clone@1.3.0': {}
+
+  '@universal-deploy/netlify@0.2.1(srvx@0.11.15)(vite@7.3.1(@types/node@20.17.17)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))':
+    dependencies:
+      '@universal-deploy/store': 0.2.1(srvx@0.11.15)
+      rou3: 0.8.1
+      vite: 7.3.1(@types/node@20.17.17)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)
+    transitivePeerDependencies:
+      - srvx
 
   '@universal-deploy/node@0.1.5(vite@7.3.1(@types/node@20.17.17)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))':
     dependencies:

@@ -135,6 +135,7 @@
     "@universal-deploy/store": "^0.2.1",
     "@universal-deploy/vite": "^0.1.6",
     "@universal-middleware/core": "^0.4.17",
+    "@universal-deploy/netlify": "^0.2.1",
     "@universal-middleware/node": "^0.1.0",
     "cac": "^6.0.0",
     "convert-route": "^1.1.1",

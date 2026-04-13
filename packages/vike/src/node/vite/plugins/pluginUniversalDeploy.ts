@@ -12,6 +12,7 @@ import { hasVikeServerOrVikePhoton } from './pluginUniversalDeploy/detectDepreca
 import { getServerConfig } from './pluginUniversalDeploy/getServerConfig.js'
 import { pluginServerEntryAlias } from './pluginUniversalDeploy/pluginServerEntryAlias.js'
 import { pluginUnwrapProdOptions } from './pluginUniversalDeploy/pluginUnwrapProdOptions.js'
+import { pluginNetlifyGlue } from './pluginUniversalDeploy/pluginNetlifyGlue.js'
 import { unique } from '../../../utils/unique.js'
 import { assertUsage } from '../../../utils/assert.js'
 import '../assertEnvVite.js'
@@ -60,5 +61,6 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
     pluginServerEntryInject(serverFilePath ?? serverEntryId),
     pluginServerEntryAlias(serverFilePath),
     !serverFilePath ? null : pluginUnwrapProdOptions(serverFilePath),
+    ...pluginNetlifyGlue(),
   ].filter((p) => p !== null)
 }
