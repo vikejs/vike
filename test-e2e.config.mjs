@@ -91,6 +91,14 @@ function tolerateError({ logSource, logText, testInfo }) {
       'We recommend switching to `@vitejs/plugin-react`',
       // [09:37:55.007][/examples/react-full][npm run preview][stderr] 9:37:55 AM [vite] warning: `esbuild` option was specified by "vite:react-swc" plugin. This option is deprecated, please use `oxc` instead.
       '`esbuild` option was specified by',
+      // [13:08:35.618][\test\universal-deploy\test-preview.test.ts][pnpm run preview][stderr] [PLUGIN_TIMINGS] Warning: Your build spent significant time in plugins. Here is a breakdown:
+      //   - vite:asset (20%)
+      //   - ud:catch-all (20%)
+      //   - telefunc:pluginVirtualFileEntry (19%)
+      //   - vite:css (19%)
+      //   - telefunc:pluginTransformTelefuncFiles (19%)
+      // See https://rolldown.rs/options/checks#plugintimings for more details.
+      'Your build spent significant time in plugins',
 
       // Error: clientOnly() is deprecated — use <ClientOnly> https://vike.dev/ClientOnly
       'clientOnly() is deprecated',
