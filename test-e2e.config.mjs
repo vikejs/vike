@@ -100,6 +100,16 @@ function tolerateError({ logSource, logText, testInfo }) {
       // See https://rolldown.rs/options/checks#plugintimings for more details.
       'Your build spent significant time in plugins',
 
+      // TODO/after-PR-merge: look into it
+      // === Vite 8 beta
+      // [11:27:26.381][\test\universal-middleware\test-preview.test.ts][npm run preview][stderr] [PLUGIN_TIMINGS] Warning: Your build spent significant time in plugin `vike:pluginExtractAssets:append-extractAssets-query`. See https://rolldown.rs/options/checks#plugintimings for more details.
+      'Warning: Your build spent significant time in plugin',
+      // [11:16:03.710][/docs/.test-preview.test.ts][pnpm run preview][stderr] `transformWithEsbuild` is deprecated and will be removed in the future. Please migrate to `transformWithOxc`.
+      '`transformWithEsbuild` is deprecated and will be removed in the future',
+      // ===
+      // TODO/after-PR-merge: look into it
+      'WARN  legalComments option is deprecated',
+
       // Error: clientOnly() is deprecated — use <ClientOnly> https://vike.dev/ClientOnly
       'clientOnly() is deprecated',
       /*
