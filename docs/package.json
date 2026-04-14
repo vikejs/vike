@@ -22,7 +22,7 @@
     "tailwindcss": "^4.1.18",
     "typescript": "^5.9.3",
     "vike": "0.4.257",
-    "vite": "^6.3.4",
+    "vite": "^8.0.8",
     "vite-plugin-svgr": "^4.3.0"
   },
   "type": "module"
