@@ -6,7 +6,7 @@ import { preview as previewVite, type ResolvedConfig, type PreviewServer } from 
 import { importServerProductionIndex } from '@brillout/vite-plugin-server-entry/runtime'
 import type { ApiOptions } from './types.js'
 import { getOutDirs } from '../vite/shared/getOutDirs.js'
-import { assertUsage, assertWarning } from '../../utils/assert.js'
+import { assertInfo, assertUsage } from '../../utils/assert.js'
 import { onSetupPreview } from '../../utils/assertSetup.js'
 import { isCallable } from '../../utils/isCallable.js'
 import pc from '@brillout/picocolors'
@@ -41,23 +41,29 @@ async function preview(options: ApiOptions = {}): Promise<{ viteServer?: Preview
     const outDir = getOutDirs(viteConfigResolved, undefined).outDirRoot
     const { outServerIndex } = await importServerProductionIndex({ outDir })
     const outServerIndexRelative = path.relative(viteConfigResolved.root, outServerIndex)
-    // TODO/after-PR-merge: always show a warning
-    assertWarning(
-      false,
-      `Never run ${pc.cyan('$ vike preview')} in production, run ${pc.cyan(`$ node ${outServerIndexRelative}`)} instead (or Bun/Deno).`,
-      { onlyOnce: true },
-    )
+    logHint(`, run ${pc.cyan(`$ node ${outServerIndexRelative}`)} instead (or Bun/Deno).`)
     return {
       viteConfig: viteConfigResolved,
     }
   } else {
     // Use Vite's preview server
     const server = await previewVite(viteConfigFromUserResolved)
+    logHint(
+      vikeConfig.prerenderContext.isPrerenderingEnabledForAllPages
+        ? ' — your app is fully pre-rendered and can be statically deployed.'
+        : '',
+    )
     return {
       viteServer: server,
       viteConfig: server.config,
     }
   }
+}
+
+function logHint(hint = '') {
+  setTimeout(() => {
+    assertInfo(false, `Don't use ${pc.cyan('$ vike preview')} for production${hint}`, { onlyOnce: true })
+  }, 0)
 }
 
 async function resolveCliPreviewConfig(vikeConfig: VikeConfigInternal): Promise<CliPreviewValue> {

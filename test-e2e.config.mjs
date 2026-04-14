@@ -127,6 +127,9 @@ function tolerateError({ logSource, logText, testInfo }) {
       */
       'Invalid source URL: first path segment in URL cannot contain colon',
 
+      // [19:47:21.367][/examples/file-structure-domain-driven][pnpm run preview][stderr] 9:55:14 AM [vike][Warning] Don't use $ vike preview for production — your app is fully pre-rendered and can be statically deployed.
+      "Don't use $ vike preview for production",
+
       /*
       ```console
       [19:47:21.367][/][npm run dev][stderr] The latest compatibility date supported by the installed Cloudflare Workers Runtime is "2025-07-12",
