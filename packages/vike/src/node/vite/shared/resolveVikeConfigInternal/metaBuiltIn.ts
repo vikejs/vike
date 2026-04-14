@@ -1,4 +1,4 @@
-export { configDefinitionsBuiltIn }
+export { metaBuiltIn }
 export type { ConfigDefinition }
 export type { ConfigDefinitions }
 export type { ConfigDefinitionsInternal }
@@ -111,8 +111,8 @@ type ConfigDefinitionsInternal = Record<
   ConfigDefinitionInternal
 >
 type ConfigDefinitionsBuiltIn = Record<ConfigNameBuiltIn | ConfigNameGlobal, ConfigDefinitionInternal>
-// TODO/after-PR-merge: rename_full configDefinitionsBuiltIn metaBuiltIn
-const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
+// TODO/after-PR-merge: rename_full metaBuiltIn metaBuiltIn
+const metaBuiltIn: ConfigDefinitionsBuiltIn = {
   onRenderHtml: {
     env: { server: true },
   },

@@ -60,7 +60,7 @@ export type { ConfigEnv } from './PageConfig.js'
 export type {
   ConfigDefinition,
   ConfigEffect,
-} from '../node/vite/shared/resolveVikeConfigInternal/configDefinitionsBuiltIn.js'
+} from '../node/vite/shared/resolveVikeConfigInternal/metaBuiltIn.js'
 export type { ConfigEntries } from '../shared-server-client/page-configs/resolveVikeConfigPublic.js'
 
 export type { VikeConfig } from '../node/vite/shared/resolveVikeConfigInternal.js'
@@ -83,7 +83,7 @@ import type { ConfigEnv } from './PageConfig.js'
 type Env = ConfigEnv
 export type { Env }
 
-import type { ConfigEffect } from '../node/vite/shared/resolveVikeConfigInternal/configDefinitionsBuiltIn.js'
+import type { ConfigEffect } from '../node/vite/shared/resolveVikeConfigInternal/metaBuiltIn.js'
 // TO-DO/next-major-release: remove
 /** @deprecated Replace:
  *   `import type { Effect } from 'vike/types'`

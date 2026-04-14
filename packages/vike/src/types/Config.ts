@@ -42,7 +42,7 @@ import type {
   PrefetchSetting,
   PrefetchStaticAssets,
 } from '../client/runtime-client-routing/prefetch/PrefetchSetting.js'
-import type { ConfigDefinition } from '../node/vite/shared/resolveVikeConfigInternal/configDefinitionsBuiltIn.js'
+import type { ConfigDefinition } from '../node/vite/shared/resolveVikeConfigInternal/metaBuiltIn.js'
 import type { DocumentHtml } from '../server/runtime/renderPageServer/html/renderHtml.js'
 import type { InjectFilterEntry } from './index.js'
 import type { VikeVitePluginOptions } from '../node/vite/index.js'
