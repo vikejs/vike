@@ -25,6 +25,7 @@ async function preview(options: ApiOptions = {}): Promise<{ viteServer?: Preview
   const { viteConfigFromUserResolved, viteConfigResolved } = await prepareViteApiCall(options, 'preview')
 
   const vikeConfig = await getVikeConfigInternal()
+  vikeConfig.prerenderContext.isPrerenderingEnabledForAllPages
   const cliPreviewConfig = await resolveCliPreviewConfig(vikeConfig)
   assertUsage(cliPreviewConfig !== false, `${pc.cyan('$ vike preview')} isn't supported`)
   const isUDVitePreview = isUniversalDeployVitePreview(vikeConfig, viteConfigResolved)
@@ -41,23 +42,27 @@ async function preview(options: ApiOptions = {}): Promise<{ viteServer?: Preview
     const outDir = getOutDirs(viteConfigResolved, undefined).outDirRoot
     const { outServerIndex } = await importServerProductionIndex({ outDir })
     const outServerIndexRelative = path.relative(viteConfigResolved.root, outServerIndex)
-    // TODO/after-PR-merge: always show a warning
-    assertWarning(
-      false,
-      `Never run ${pc.cyan('$ vike preview')} in production, run ${pc.cyan(`$ node ${outServerIndexRelative}`)} instead (or Bun/Deno).`,
-      { onlyOnce: true },
-    )
+    logWarning(`, run ${pc.cyan(`$ node ${outServerIndexRelative}`)} instead (or Bun/Deno).`)
     return {
       viteConfig: viteConfigResolved,
     }
   } else {
     // Use Vite's preview server
     const server = await previewVite(viteConfigFromUserResolved)
+    logWarning(
+      vikeConfig.prerenderContext.isPrerenderingEnabledForAllPages
+        ? '— your app is fully pre-rendered so you can statically deploy it instead.'
+        : '',
+    )
     return {
       viteServer: server,
       viteConfig: server.config,
     }
   }
+}
+
+function logWarning(hint = '') {
+  assertWarning(false, `Never run ${pc.cyan('$ vike preview')} in production${hint}`, { onlyOnce: true })
 }
 
 async function resolveCliPreviewConfig(vikeConfig: VikeConfigInternal): Promise<CliPreviewValue> {
