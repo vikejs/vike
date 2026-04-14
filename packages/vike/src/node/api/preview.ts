@@ -6,7 +6,7 @@ import { preview as previewVite, type ResolvedConfig, type PreviewServer } from 
 import { importServerProductionIndex } from '@brillout/vite-plugin-server-entry/runtime'
 import type { ApiOptions } from './types.js'
 import { getOutDirs } from '../vite/shared/getOutDirs.js'
-import { assertUsage, assertWarning } from '../../utils/assert.js'
+import { assertInfo, assertUsage } from '../../utils/assert.js'
 import { onSetupPreview } from '../../utils/assertSetup.js'
 import { isCallable } from '../../utils/isCallable.js'
 import pc from '@brillout/picocolors'
@@ -61,7 +61,7 @@ async function preview(options: ApiOptions = {}): Promise<{ viteServer?: Preview
 }
 
 function logHint(hint = '') {
-  assertWarning(false, `Don't use ${pc.cyan('$ vike preview')} for production${hint}`, { onlyOnce: true })
+  assertInfo(false, `Don't use ${pc.cyan('$ vike preview')} for production${hint}`, { onlyOnce: true })
 }
 
 async function resolveCliPreviewConfig(vikeConfig: VikeConfigInternal): Promise<CliPreviewValue> {
