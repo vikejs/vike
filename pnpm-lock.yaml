@@ -42,8 +42,8 @@ importers:
         specifier: ^0.0.61
         version: 0.0.61
       '@brillout/docpress':
-        specifier: ^0.16.27
-        version: 0.16.27(@algolia/client-search@5.49.2)(@types/react@19.2.14)(@vitejs/plugin-react-swc@4.2.2(vite@6.3.5(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(rollup@4.43.0)(search-insights@2.17.3)(typescript@5.9.3)(vike@packages+vike)(vite@6.3.5(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
+        specifier: ^0.16.29
+        version: 0.16.29(@algolia/client-search@5.49.2)(@types/react@19.2.14)(@vitejs/plugin-react@6.0.1(vite@6.3.5(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(rollup@4.43.0)(search-insights@2.17.3)(typescript@5.9.3)(vike@packages+vike)(vite@6.3.5(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
       '@classmatejs/react':
         specifier: ^0.2.1
         version: 0.2.1(react@19.2.4)
@@ -2531,17 +2531,17 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@brillout/docpress@0.16.27':
-    resolution: {integrity: sha512-WOCzGVnwVMlYLcwt8yAwweOR2d+vvjJvwMaBO3iudvBIeWm70rrJpI1RxpgmBV5McSJvy6N2BsKUk/EA0Fu9dA==}
+  '@brillout/docpress@0.16.29':
+    resolution: {integrity: sha512-gg9UeSP5ZMw5Qf7iVk8ZLyxSVhnFJTv69q/iTz5JwkUPlaeW5HoV8LSE4WO1iTHulr27LWBKpL/G5j+W3u7Tqg==}
     peerDependencies:
-      '@vitejs/plugin-react-swc': '>=3.0.0'
+      '@vitejs/plugin-react': '>=6.0.0'
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
       typescript: '>=5.0.0'
       vike: '>=0.4.234'
       vite: '>=5.2.0'
     peerDependenciesMeta:
-      '@vitejs/plugin-react-swc':
+      '@vitejs/plugin-react':
         optional: true
       vite:
         optional: true
@@ -8695,7 +8695,7 @@ snapshots:
   '@biomejs/cli-win32-x64@1.9.4':
     optional: true
 
-  '@brillout/docpress@0.16.27(@algolia/client-search@5.49.2)(@types/react@19.2.14)(@vitejs/plugin-react-swc@4.2.2(vite@6.3.5(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(rollup@4.43.0)(search-insights@2.17.3)(typescript@5.9.3)(vike@packages+vike)(vite@6.3.5(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))':
+  '@brillout/docpress@0.16.29(@algolia/client-search@5.49.2)(@types/react@19.2.14)(@vitejs/plugin-react@6.0.1(vite@6.3.5(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(rollup@4.43.0)(search-insights@2.17.3)(typescript@5.9.3)(vike@packages+vike)(vite@6.3.5(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))':
     dependencies:
       '@brillout/picocolors': 1.0.30
       '@brillout/shiki-transformers': 4.0.2
@@ -8718,7 +8718,7 @@ snapshots:
       unist-util-visit: 5.1.0
       vike: link:packages/vike
     optionalDependencies:
-      '@vitejs/plugin-react-swc': 4.2.2(vite@6.3.5(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
+      '@vitejs/plugin-react': 6.0.1(vite@6.3.5(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
       vite: 6.3.5(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)
     transitivePeerDependencies:
       - '@algolia/client-search'
@@ -10807,15 +10807,6 @@ snapshots:
     transitivePeerDependencies:
       - '@swc/helpers'
 
-  '@vitejs/plugin-react-swc@4.2.2(vite@6.3.5(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))':
-    dependencies:
-      '@rolldown/pluginutils': 1.0.0-beta.47
-      '@swc/core': 1.13.5
-      vite: 6.3.5(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)
-    transitivePeerDependencies:
-      - '@swc/helpers'
-    optional: true
-
   '@vitejs/plugin-react-swc@4.2.2(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))':
     dependencies:
       '@rolldown/pluginutils': 1.0.0-beta.47
@@ -10907,6 +10898,12 @@ snapshots:
       vite: 7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)
     transitivePeerDependencies:
       - supports-color
+
+  '@vitejs/plugin-react@6.0.1(vite@6.3.5(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))':
+    dependencies:
+      '@rolldown/pluginutils': 1.0.0-rc.7
+      vite: 6.3.5(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)
+    optional: true
 
   '@vitejs/plugin-react@6.0.1(vite@8.0.7(@types/node@24.10.2)(esbuild@0.27.3)(jiti@2.6.1)(terser@5.38.1)(tsx@4.20.6))':
     dependencies:
