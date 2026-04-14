@@ -48,6 +48,6 @@ function isUniversalDeployVitePreview(vikeConfig: VikeConfigInternal, viteConfig
 
   // @universal-deploy/node -> real preview
   // else -> vite preview
-  const udNodePlugin = viteConfigResolved.plugins.find((p) => p.name.startsWith('ud:node:emit'))
+  const udNodePlugin = viteConfigResolved.plugins.find((p) => p.name.match(/^ud:node:(?!.*:disabled$)/))
   return !udNodePlugin
 }
