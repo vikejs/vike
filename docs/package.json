@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "@batijs/elements": "^0.0.61",
-    "@brillout/docpress": "^0.16.27",
+    "@brillout/docpress": "^0.16.28",
     "@classmatejs/react": "^0.2.1",
     "@gsap/react": "^2.1.2",
     "@tailwindcss/vite": "^4.1.18",
