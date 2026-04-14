@@ -50,11 +50,11 @@ import type {
 } from '../../../types/PageConfig.js'
 import type { Config } from '../../../types/Config.js'
 import {
-  configDefinitionsBuiltIn,
+  metaBuiltIn,
   type ConfigDefinitionsInternal,
   type ConfigDefinitionInternal,
   type ConfigDefinitions,
-} from './resolveVikeConfigInternal/configDefinitionsBuiltIn.js'
+} from './resolveVikeConfigInternal/metaBuiltIn.js'
 import { getFileSuffixes } from '../../../shared-server-node/getFileSuffixes.js'
 import {
   type LocationId,
@@ -733,8 +733,8 @@ function getSourceNonConfigFile(
   value: unknown,
   definedAt: DefinedAtFilePath | DefinedBy,
 ): ConfigValueSource {
-  assert(includes(objectKeys(configDefinitionsBuiltIn), configName))
-  const configDef = configDefinitionsBuiltIn[configName]
+  assert(includes(objectKeys(metaBuiltIn), configName))
+  const configDef = metaBuiltIn[configName]
   const source: ConfigValueSource = {
     valueIsLoaded: true,
     value,
@@ -1042,7 +1042,7 @@ function getConfigDefinitions(
   plusFilesRelevant: PlusFile[],
   filter?: (configDef: ConfigDefinitionInternal) => boolean,
 ): ConfigDefinitionsInternal {
-  let configDefinitions: ConfigDefinitionsInternal = { ...configDefinitionsBuiltIn }
+  let configDefinitions: ConfigDefinitionsInternal = { ...metaBuiltIn }
 
   // Add user-land meta configs
   plusFilesRelevant
