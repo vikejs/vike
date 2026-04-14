@@ -89,6 +89,8 @@ function tolerateError({ logSource, logText, testInfo }) {
       '`manualChunks` option is ignored because the `codeSplitting`',
       // [12:52:00.813][/examples/react-full][pnpm run dev][stderr] [vite:react-swc] We recommend switching to `@vitejs/plugin-react` for improved performance as no swc plugins are used. More information at https://vite.dev/rolldown
       'We recommend switching to `@vitejs/plugin-react`',
+      // [09:37:55.007][/examples/react-full][npm run preview][stderr] 9:37:55 AM [vite] warning: `esbuild` option was specified by "vite:react-swc" plugin. This option is deprecated, please use `oxc` instead.
+      '`esbuild` option was specified by',
 
       // Error: clientOnly() is deprecated — use <ClientOnly> https://vike.dev/ClientOnly
       'clientOnly() is deprecated',
