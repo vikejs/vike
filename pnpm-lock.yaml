@@ -87,7 +87,7 @@ importers:
         specifier: 0.4.257
         version: link:../packages/vike
       vite:
-        specifier: 7.3.1
+        specifier: ^7.3.1
         version: 7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)
       vite-plugin-svgr:
         specifier: ^4.3.0
