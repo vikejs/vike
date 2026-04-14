@@ -7,6 +7,7 @@ import { PROJECT_VERSION } from '../../utils/PROJECT_VERSION.js'
 import pc from '@brillout/picocolors'
 import { assert } from '../../utils/assert.js'
 import { processStartupLog } from '../vite/shared/loggerVite.js'
+import './assertEnvApiDevAndProd.js'
 
 const startTime = performance.now()
 function getStartupLogFirstLine(viteConfig: ResolvedConfig, veryCompact?: boolean) {
