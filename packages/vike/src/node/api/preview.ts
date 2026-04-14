@@ -61,7 +61,9 @@ async function preview(options: ApiOptions = {}): Promise<{ viteServer?: Preview
 }
 
 function logHint(hint = '') {
-  assertInfo(false, `Don't use ${pc.cyan('$ vike preview')} for production${hint}`, { onlyOnce: true })
+  setTimeout(() => {
+    assertInfo(false, `Don't use ${pc.cyan('$ vike preview')} for production${hint}`, { onlyOnce: true })
+  }, 0)
 }
 
 async function resolveCliPreviewConfig(vikeConfig: VikeConfigInternal): Promise<CliPreviewValue> {
