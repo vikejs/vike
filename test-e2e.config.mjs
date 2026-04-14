@@ -87,6 +87,8 @@ function tolerateError({ logSource, logText, testInfo }) {
       '`optimizeDeps.esbuildOptions` but this option is now deprecated',
       // [12:23:29.908][/test/universal-deploy/test-preview.test.ts][pnpm run preview][stderr] [warn] `manualChunks` option is ignored because the `codeSplitting` option is specified.
       '`manualChunks` option is ignored because the `codeSplitting`',
+      // [12:52:00.813][/examples/react-full][pnpm run dev][stderr] [vite:react-swc] We recommend switching to `@vitejs/plugin-react` for improved performance as no swc plugins are used. More information at https://vite.dev/rolldown
+      'We recommend switching to `@vitejs/plugin-react`',
 
       // Error: clientOnly() is deprecated — use <ClientOnly> https://vike.dev/ClientOnly
       'clientOnly() is deprecated',
