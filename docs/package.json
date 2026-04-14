@@ -13,6 +13,7 @@
     "@tailwindcss/vite": "^4.1.18",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
+    "@vitejs/plugin-react": "^5.0.0",
     "daisyui": "^5.5.14",
     "gsap": "^3.14.2",
     "lucide-react": "^0.563.0",
