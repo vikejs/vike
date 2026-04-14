@@ -75,7 +75,7 @@ function intercept(loggerType: LoggerType, config: ResolvedConfig) {
 
 // - Clears screen if zero previous log
 // - Manages new lines
-function processStartupLog(firstLine: string, config: ResolvedConfig) {
+function processStartupLog(firstLine: string, config: ResolvedConfig, veryCompact?: boolean) {
   const shouldClear = processStartupLog_shouldClear(config)
   if (shouldClear) {
     config.logger.clearScreen('info')
@@ -83,7 +83,7 @@ function processStartupLog(firstLine: string, config: ResolvedConfig) {
     // Remove leading new line (for both Vite and Vike's startup log)
     firstLine = removeEmptyLines(firstLine)
   }
-  return { firstLine, isCompact: !shouldClear }
+  return { firstLine, isCompact: veryCompact || !shouldClear }
 }
 function processStartupLog_shouldClear(config: ResolvedConfig) {
   const hasLoggedBefore = process.stdout.bytesWritten !== 0 || process.stderr.bytesWritten !== 0
