@@ -5,6 +5,9 @@ import { cloudflare } from '@cloudflare/vite-plugin'
 import { telefunc } from 'telefunc/vite'
 
 export default defineConfig({
+  build: {
+    minify: false
+  },
   plugins: [
     telefunc(),
     react(),
