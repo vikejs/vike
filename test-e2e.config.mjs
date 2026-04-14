@@ -80,8 +80,13 @@ function getCiJobs() {
 function tolerateError({ logSource, logText, testInfo }) {
   return (
     [
+      // === Vite 8
       // [11:59:51.238][/examples/react-minimal][pnpm run dev][stderr] [vite:react-babel] We recommend switching to `@vitejs/plugin-react-oxc` for improved performance. More information at https://vite.dev/rolldown
       '`@vitejs/plugin-react-oxc` for improved performance',
+      // [12:21:54.297][/test/photon-vercel/.test-dev.test.ts][pnpm run dev][stderr] You or a plugin you are using have set `optimizeDeps.esbuildOptions` but this option is now deprecated. Vite now uses Rolldown to optimize the dependencies. Please use `optimizeDeps.rolldownOptions` instead.
+      '`optimizeDeps.esbuildOptions` but this option is now deprecated',
+      // [12:23:29.908][/test/universal-deploy/test-preview.test.ts][pnpm run preview][stderr] [warn] `manualChunks` option is ignored because the `codeSplitting` option is specified.
+      '`manualChunks` option is ignored because the `codeSplitting`',
 
       // Error: clientOnly() is deprecated — use <ClientOnly> https://vike.dev/ClientOnly
       'clientOnly() is deprecated',
