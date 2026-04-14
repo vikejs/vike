@@ -51,7 +51,7 @@ async function preview(options: ApiOptions = {}): Promise<{ viteServer?: Preview
     const server = await previewVite(viteConfigFromUserResolved)
     logWarning(
       vikeConfig.prerenderContext.isPrerenderingEnabledForAllPages
-        ? '— your app is fully pre-rendered so you can statically deploy it instead.'
+        ? ' — your app is fully pre-rendered and can be statically deployed.'
         : '',
     )
     return {
@@ -62,7 +62,7 @@ async function preview(options: ApiOptions = {}): Promise<{ viteServer?: Preview
 }
 
 function logWarning(hint = '') {
-  assertWarning(false, `Never run ${pc.cyan('$ vike preview')} in production${hint}`, { onlyOnce: true })
+  assertWarning(false, `Don't use ${pc.cyan('$ vike preview')} for production${hint}`, { onlyOnce: true })
 }
 
 async function resolveCliPreviewConfig(vikeConfig: VikeConfigInternal): Promise<CliPreviewValue> {
