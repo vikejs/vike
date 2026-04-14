@@ -46,7 +46,7 @@ async function dev(
 async function startupLog(resolvedUrls: ResolvedServerUrls, viteServer: ViteDevServer) {
   const viteConfig = viteServer.config
 
-  const { startupLogFirstLine, isCompact } = getStartupLogFirstLine(viteConfig)
+  const { startupLogFirstLine, isStartupLogCompact } = getStartupLogFirstLine(viteConfig)
   console.log(startupLogFirstLine)
 
   // We don't call viteServer.printUrls() because Vite throws an error if `resolvedUrls` is missing:
@@ -55,7 +55,7 @@ async function startupLog(resolvedUrls: ResolvedServerUrls, viteServer: ViteDevS
 
   viteServer.bindCLIShortcuts({ print: true })
 
-  if (!isCompact) console.log()
+  if (!isStartupLogCompact) console.log()
 }
 
 // Copied & adapted from Vite

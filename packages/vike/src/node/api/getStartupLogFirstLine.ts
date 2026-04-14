@@ -21,5 +21,5 @@ function getStartupLogFirstLine(viteConfig: ResolvedConfig) {
   const ret = processStartupLog(firstLine, viteConfig)
   const startupLogFirstLine = ret.firstLine
   const { isCompact } = ret
-  return { startupLogFirstLine, isCompact }
+  return { startupLogFirstLine, isStartupLogCompact: isCompact }
 }

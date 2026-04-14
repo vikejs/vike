@@ -37,7 +37,7 @@ async function preview(options: ApiOptions = {}): Promise<{ viteServer?: Preview
         // dist/server/index.mjs doesn't exist with some deployment plugins such as vite-plugin-vercel -> we must use Vite's preview server
         isUDVitePreview))
 
-  const { startupLogFirstLine, isCompact } = getStartupLogFirstLine(viteConfigResolved)
+  const { startupLogFirstLine, isStartupLogCompact } = getStartupLogFirstLine(viteConfigResolved)
   console.log(startupLogFirstLine)
 
   if (!useVitePreviewServer) {
@@ -45,7 +45,7 @@ async function preview(options: ApiOptions = {}): Promise<{ viteServer?: Preview
     const outDir = getOutDirs(viteConfigResolved, undefined).outDirRoot
     const { outServerIndex } = await importServerProductionIndex({ outDir })
     const outServerIndexRelative = path.relative(viteConfigResolved.root, outServerIndex)
-    logHint(`, run ${pc.cyan(`$ node ${outServerIndexRelative}`)} instead (or Bun/Deno).`, isCompact)
+    logHint(`, run ${pc.cyan(`$ node ${outServerIndexRelative}`)} instead (or Bun/Deno).`, isStartupLogCompact)
     return {
       viteConfig: viteConfigResolved,
     }
@@ -56,7 +56,7 @@ async function preview(options: ApiOptions = {}): Promise<{ viteServer?: Preview
       vikeConfig.prerenderContext.isPrerenderingEnabledForAllPages
         ? ' — your app is fully pre-rendered and can be statically deployed.'
         : '',
-      isCompact,
+      isStartupLogCompact,
     )
     return {
       viteServer: server,
@@ -65,9 +65,9 @@ async function preview(options: ApiOptions = {}): Promise<{ viteServer?: Preview
   }
 }
 
-function logHint(hint = '', isCompact: boolean) {
+function logHint(hint = '', isStartupLogCompact: boolean) {
   setTimeout(() => {
-    if (!isCompact) console.log()
+    if (!isStartupLogCompact) console.log()
     assertInfo(false, `Don't use ${pc.cyan('$ vike preview')} for production${hint}`, { onlyOnce: true })
   }, 0)
 }
