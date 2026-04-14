@@ -14,6 +14,7 @@ import path from 'node:path'
 import { getVikeConfigInternal, type VikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.js'
 import { isUniversalDeployVitePreview } from '../vite/plugins/pluginUniversalDeploy/getServerConfig.js'
 import './assertEnvApiDev.js'
+import { getStartupLogFirstLine } from './getStartupLogFirstLine.js'
 
 /**
  * Programmatically trigger `$ vike preview`
@@ -36,12 +37,15 @@ async function preview(options: ApiOptions = {}): Promise<{ viteServer?: Preview
         // dist/server/index.mjs doesn't exist with some deployment plugins such as vite-plugin-vercel -> we must use Vite's preview server
         isUDVitePreview))
 
+  const { startupLogFirstLine, isCompact } = getStartupLogFirstLine(viteConfigResolved)
+  console.log(startupLogFirstLine)
+
   if (!useVitePreviewServer) {
     // Dynamically import() server production entry dist/server/index.js
     const outDir = getOutDirs(viteConfigResolved, undefined).outDirRoot
     const { outServerIndex } = await importServerProductionIndex({ outDir })
     const outServerIndexRelative = path.relative(viteConfigResolved.root, outServerIndex)
-    logHint(`, run ${pc.cyan(`$ node ${outServerIndexRelative}`)} instead (or Bun/Deno).`)
+    logHint(`, run ${pc.cyan(`$ node ${outServerIndexRelative}`)} instead (or Bun/Deno).`, isCompact)
     return {
       viteConfig: viteConfigResolved,
     }
@@ -52,6 +56,7 @@ async function preview(options: ApiOptions = {}): Promise<{ viteServer?: Preview
       vikeConfig.prerenderContext.isPrerenderingEnabledForAllPages
         ? ' — your app is fully pre-rendered and can be statically deployed.'
         : '',
+      isCompact,
     )
     return {
       viteServer: server,
@@ -60,8 +65,9 @@ async function preview(options: ApiOptions = {}): Promise<{ viteServer?: Preview
   }
 }
 
-function logHint(hint = '') {
+function logHint(hint = '', isCompact: boolean) {
   setTimeout(() => {
+    if (!isCompact) console.log()
     assertInfo(false, `Don't use ${pc.cyan('$ vike preview')} for production${hint}`, { onlyOnce: true })
   }, 0)
 }
