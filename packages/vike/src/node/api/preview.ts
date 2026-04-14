@@ -37,7 +37,7 @@ async function preview(options: ApiOptions = {}): Promise<{ viteServer?: Preview
         // dist/server/index.mjs doesn't exist with some deployment plugins such as vite-plugin-vercel -> we must use Vite's preview server
         isUDVitePreview))
 
-  const { startupLogFirstLine, isStartupLogCompact } = getStartupLogFirstLine(viteConfigResolved)
+  const { startupLogFirstLine, isStartupLogCompact } = getStartupLogFirstLine(viteConfigResolved, !useVitePreviewServer)
   console.log(startupLogFirstLine)
 
   if (!useVitePreviewServer) {

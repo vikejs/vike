@@ -9,7 +9,7 @@ import { assert } from '../../utils/assert.js'
 import { processStartupLog } from '../vite/shared/loggerVite.js'
 
 const startTime = performance.now()
-function getStartupLogFirstLine(viteConfig: ResolvedConfig) {
+function getStartupLogFirstLine(viteConfig: ResolvedConfig, veryCompact?: boolean) {
   const viteVersion = viteConfig._viteVersionResolved
   assert(viteVersion)
   const startupDurationString = pc.dim(
@@ -17,8 +17,8 @@ function getStartupLogFirstLine(viteConfig: ResolvedConfig) {
   )
   const sep = pc.dim('·' as '-')
   const firstLine =
-    `\n  ${colorVike('Vike')} ${pc.yellow(`v${PROJECT_VERSION}`)} ${sep} ${colorVite('Vite')} ${pc.cyan(`v${viteVersion}`)} ${sep} ${startupDurationString}\n` as const
-  const ret = processStartupLog(firstLine, viteConfig)
+    `${veryCompact ? '' : '\n  '}${colorVike('Vike')} ${pc.yellow(`v${PROJECT_VERSION}`)} ${sep} ${colorVite('Vite')} ${pc.cyan(`v${viteVersion}`)} ${sep} ${startupDurationString}${veryCompact ? '' : '\n'}` as const
+  const ret = processStartupLog(firstLine, viteConfig, veryCompact)
   const startupLogFirstLine = ret.firstLine
   const { isCompact } = ret
   return { startupLogFirstLine, isStartupLogCompact: isCompact }
