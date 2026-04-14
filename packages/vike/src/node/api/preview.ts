@@ -41,14 +41,14 @@ async function preview(options: ApiOptions = {}): Promise<{ viteServer?: Preview
     const outDir = getOutDirs(viteConfigResolved, undefined).outDirRoot
     const { outServerIndex } = await importServerProductionIndex({ outDir })
     const outServerIndexRelative = path.relative(viteConfigResolved.root, outServerIndex)
-    logWarning(`, run ${pc.cyan(`$ node ${outServerIndexRelative}`)} instead (or Bun/Deno).`)
+    logHint(`, run ${pc.cyan(`$ node ${outServerIndexRelative}`)} instead (or Bun/Deno).`)
     return {
       viteConfig: viteConfigResolved,
     }
   } else {
     // Use Vite's preview server
     const server = await previewVite(viteConfigFromUserResolved)
-    logWarning(
+    logHint(
       vikeConfig.prerenderContext.isPrerenderingEnabledForAllPages
         ? ' — your app is fully pre-rendered and can be statically deployed.'
         : '',
@@ -60,7 +60,7 @@ async function preview(options: ApiOptions = {}): Promise<{ viteServer?: Preview
   }
 }
 
-function logWarning(hint = '') {
+function logHint(hint = '') {
   assertWarning(false, `Don't use ${pc.cyan('$ vike preview')} for production${hint}`, { onlyOnce: true })
 }
 
