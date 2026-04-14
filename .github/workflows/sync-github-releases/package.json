@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "run": "bun ./sync-releases.ts ",
+    "run": "bun ./sync-releases.ts",
     "try": "bun ./sync-releases.ts --dry-run"
   },
   "devDependencies": {
