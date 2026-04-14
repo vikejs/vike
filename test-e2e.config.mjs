@@ -80,8 +80,25 @@ function getCiJobs() {
 function tolerateError({ logSource, logText, testInfo }) {
   return (
     [
+      // === Vite 8
       // [11:59:51.238][/examples/react-minimal][pnpm run dev][stderr] [vite:react-babel] We recommend switching to `@vitejs/plugin-react-oxc` for improved performance. More information at https://vite.dev/rolldown
       '`@vitejs/plugin-react-oxc` for improved performance',
+      // [12:21:54.297][/test/photon-vercel/.test-dev.test.ts][pnpm run dev][stderr] You or a plugin you are using have set `optimizeDeps.esbuildOptions` but this option is now deprecated. Vite now uses Rolldown to optimize the dependencies. Please use `optimizeDeps.rolldownOptions` instead.
+      '`optimizeDeps.esbuildOptions` but this option is now deprecated',
+      // [12:23:29.908][/test/universal-deploy/test-preview.test.ts][pnpm run preview][stderr] [warn] `manualChunks` option is ignored because the `codeSplitting` option is specified.
+      '`manualChunks` option is ignored because the `codeSplitting`',
+      // [12:52:00.813][/examples/react-full][pnpm run dev][stderr] [vite:react-swc] We recommend switching to `@vitejs/plugin-react` for improved performance as no swc plugins are used. More information at https://vite.dev/rolldown
+      'We recommend switching to `@vitejs/plugin-react`',
+      // [09:37:55.007][/examples/react-full][npm run preview][stderr] 9:37:55 AM [vite] warning: `esbuild` option was specified by "vite:react-swc" plugin. This option is deprecated, please use `oxc` instead.
+      '`esbuild` option was specified by',
+      // [13:08:35.618][\test\universal-deploy\test-preview.test.ts][pnpm run preview][stderr] [PLUGIN_TIMINGS] Warning: Your build spent significant time in plugins. Here is a breakdown:
+      //   - vite:asset (20%)
+      //   - ud:catch-all (20%)
+      //   - telefunc:pluginVirtualFileEntry (19%)
+      //   - vite:css (19%)
+      //   - telefunc:pluginTransformTelefuncFiles (19%)
+      // See https://rolldown.rs/options/checks#plugintimings for more details.
+      'Your build spent significant time in plugins',
 
       // Error: clientOnly() is deprecated — use <ClientOnly> https://vike.dev/ClientOnly
       'clientOnly() is deprecated',
