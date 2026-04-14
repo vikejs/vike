@@ -25,7 +25,6 @@ async function preview(options: ApiOptions = {}): Promise<{ viteServer?: Preview
   const { viteConfigFromUserResolved, viteConfigResolved } = await prepareViteApiCall(options, 'preview')
 
   const vikeConfig = await getVikeConfigInternal()
-  vikeConfig.prerenderContext.isPrerenderingEnabledForAllPages
   const cliPreviewConfig = await resolveCliPreviewConfig(vikeConfig)
   assertUsage(cliPreviewConfig !== false, `${pc.cyan('$ vike preview')} isn't supported`)
   const isUDVitePreview = isUniversalDeployVitePreview(vikeConfig, viteConfigResolved)
