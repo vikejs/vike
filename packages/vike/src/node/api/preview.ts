@@ -29,7 +29,13 @@ async function preview(options: ApiOptions = {}): Promise<{ viteServer?: Preview
   const cliPreviewConfig = await resolveCliPreviewConfig(vikeConfig)
   assertUsage(cliPreviewConfig !== false, `${pc.cyan('$ vike preview')} isn't supported`)
   const isUDVitePreview = isUniversalDeployVitePreview(vikeConfig, viteConfigResolved)
-  const useVitePreviewServer = false
+  const useVitePreviewServer =
+    cliPreviewConfig === 'vite' ||
+    (cliPreviewConfig === undefined &&
+      // dist/server/index.mjs exists when using @brillout/vite-plugin-server-entry inject mode; otherwise it's missing -> we must use Vite's preview server
+      (!viteConfigResolved.vitePluginServerEntry?.inject ||
+        // dist/server/index.mjs doesn't exist with some deployment plugins such as vite-plugin-vercel -> we must use Vite's preview server
+        isUDVitePreview))
 
   const { startupLogFirstLine, isStartupLogCompact } = getStartupLogFirstLine(viteConfigResolved, !useVitePreviewServer)
   console.log(startupLogFirstLine)
