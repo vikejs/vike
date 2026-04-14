@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "@batijs/elements": "^0.0.61",
-    "@brillout/docpress": "^0.16.29",
+    "@brillout/docpress": "^0.16.27",
     "@classmatejs/react": "^0.2.1",
     "@gsap/react": "^2.1.2",
     "@tailwindcss/vite": "^4.1.18",
@@ -22,7 +22,7 @@
     "tailwindcss": "^4.1.18",
     "typescript": "^5.9.3",
     "vike": "0.4.257",
-    "vite": "^7.0.0",
+    "vite": "^6.3.4",
     "vite-plugin-svgr": "^4.3.0"
   },
   "type": "module"
