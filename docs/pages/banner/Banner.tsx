@@ -94,8 +94,7 @@ function BannerCommon({
           alignItems: 'center',
           gap: 24,
           padding: '0 24px',
-          // Don't center completely
-          marginTop: -24,
+          zoom: 1.2,
         }}
       >
         {logo !== false && (
