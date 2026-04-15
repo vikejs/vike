@@ -6,6 +6,7 @@ export { BannerVikings }
 
 import React from 'react'
 import vikeLogo from '../../assets/logo/vike-shadow.svg'
+import { Hero } from '../index/sections/Intro/Hero'
 import './Banner.css'
 
 function Banner() {
@@ -15,37 +16,16 @@ function BannerCover() {
   return <BannerCommon logo={false} />
 }
 function BannerMinimal() {
-  return <BannerMinimalCommon style={{ background: 'white' }} styleH1={{ color: '#000' }} />
+  return <BannerMinimalCommon style={{ background: 'white' }} />
 }
 function BannerMinimalBlack() {
-  return <BannerMinimalCommon style={{ background: 'black' }} styleH1={{ color: '#eee' }} />
+  return <BannerMinimalCommon style={{ background: 'black' }} />
 }
-function BannerMinimalCommon({
-  style,
-  styleH1,
-}: {
-  style?: React.CSSProperties
-  styleH1?: React.CSSProperties
-}) {
-  return (
-    <BannerCommon
-      logo={false}
-      taglineSecondaryStyle={{ display: 'none' }}
-      logoScale={1.1}
-      style={style}
-      styleH1={styleH1}
-    />
-  )
+function BannerMinimalCommon({ style }: { style?: React.CSSProperties }) {
+  return <BannerCommon logo={false} logoScale={1.1} style={style} />
 }
 function BannerSlides() {
-  return (
-    <BannerCommon
-      taglineSecondary="Composable framework to build advanced applications"
-      taglineSecondaryStyle={{ marginTop: -20 }}
-      taglineStyle={{ marginTop: -20 }}
-      style={{ background: 'white' }}
-    />
-  )
+  return <BannerCommon style={{ background: 'white' }} />
 }
 function BannerVikings() {
   return (
@@ -79,26 +59,18 @@ function BannerVikings() {
 
 function BannerCommon({
   style,
-  styleH1,
   logo,
   logoText = 'Vike',
   logoScale = 1.3,
   logoStyle,
   logoTextStyle,
-  taglineStyle,
-  taglineSecondary,
-  taglineSecondaryStyle,
 }: {
   style?: React.CSSProperties
-  styleH1?: React.CSSProperties
   logo?: boolean
   logoText?: string
   logoScale?: number
   logoStyle?: React.CSSProperties
   logoTextStyle?: React.CSSProperties
-  taglineStyle?: React.CSSProperties
-  taglineSecondary?: string
-  taglineSecondaryStyle?: React.CSSProperties
 }) {
   return (
     <div
@@ -155,7 +127,11 @@ function BannerCommon({
             </span>
           </div>
         )}
-        {logo !== true && 'TODO/ai: insert new hero'}
+        {logo !== true && (
+          <div className="text-center">
+            <Hero />
+          </div>
+        )}
       </div>
     </div>
   )

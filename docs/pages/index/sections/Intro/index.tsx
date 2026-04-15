@@ -1,20 +1,12 @@
 import React, { useRef } from 'react'
 import LayoutComponent from '../../components/LayoutComponent'
-import GradientText from '../../components/GradientText'
 import UspHero from './UspHero'
-import Headline from '../../components/Headline'
 import Blockquote from '../../components/Quote'
 import UspHeroMobile from './UspHero/UspHeroMobile'
 import GlassContainer from '../../components/GlassContainer'
 import { Link } from '@brillout/docpress'
 import { brands } from '../../../../components'
-
-const taglineSecondary = (
-  <>
-    <b className="font-semibold">Minimal-lock-in</b> framework powering mission-critical applications with unmatched
-    stability and development freedom.
-  </>
-)
+import { Hero } from './Hero'
 
 const IntroSection = () => {
   const getStartedButtonRef = useRef<HTMLAnchorElement>(null)
@@ -34,16 +26,7 @@ const IntroSection = () => {
                 Next.js / Nuxt / ...
               </span>
             </span>
-            <div className="relative">
-              <Headline as="h1" variant="xlarge" className="mx-auto">
-                Framework for <br />
-                <GradientText color="blue">Stability</GradientText> and{' '}
-                <GradientText color="green">Freedom</GradientText>
-              </Headline>
-            </div>
-            <p className="text-base md:text-2xl text-grey text-center w-9/10 md:w-3/4 mx-auto mb-6 mt-4">
-              {taglineSecondary}
-            </p>
+            <Hero />
             <div className="flex gap-2 items-center justify-center mb-8 sm:mb-12">
               <a
                 ref={getStartedButtonRef}
