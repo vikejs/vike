@@ -374,10 +374,10 @@ export default {
 
 If you use TypeScript and `pageContext.runtime`:
 
-```ts
+```ts ts-only
 declare global {
   namespace Vike {
-    // @docpress-uncomment interface Photon {  // [!code --]
+    interface Photon {  // [!code --]
     interface Server { // [!code ++]
       // Pick your server (for correct pageContext.runtime type)
       server: 'hono' // 'express' | 'fastify' | 'hattip' | 'srvx' | 'elysia' | 'h3'
