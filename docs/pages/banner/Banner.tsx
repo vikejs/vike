@@ -155,7 +155,7 @@ function BannerCommon({
             </span>
           </div>
         )}
-        {logo !== true && 'TO-DO: insert new hero'}
+        {logo !== true && 'TODO/ai: insert new hero'}
       </div>
     </div>
   )
