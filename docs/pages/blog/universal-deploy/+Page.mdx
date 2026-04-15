@@ -83,21 +83,21 @@ Universal Deploy is the third — and we hope last — iteration of the same ide
 
 That's what Universal Deploy is. It's an unopinionated and flexible infrastructure to solve the deployment fragmentation problem.
 
-## Aligned with Netlify's RFC
+## Collaborating with Vite ecosystem
 
 Universal Deploy is a direct response to [Netlify's RFC](https://github.com/vitejs/vite/discussions/20907). Specifically, it tackles two of the issues raised in the RFC:
 
 1. **Server entry point location** — how does a deployment provider find the server entries that a framework wants to deploy?
 2. **Routing metadata** — how does it know which routes go where, and which methods they handle?
 
-The `@universal-deploy/*` packages are a concrete answer to those questions, and we're working to bring these conventions to the broader Vite ecosystem (not just to Universal Deploy).
+The `@universal-deploy/*` packages are a concrete answer to those questions, and we're working to bring these conventions to the broader Vite and JavaScript ecosystem (not just to Universal Deploy).
 
-We're also continuing to collaborate with other teams. The more participants converge on the same low-level conventions, the better it gets for everyone.
+We're continuing to collaborate with the Vite team and ecosystem. The more participants converge on the same low-level conventions, the better it gets for everyone.
 
 
-## Collaborating with Tencent EdgeOne 🤝
+## Collaborating with Tencent EdgeOne
 
-The EdgeOne team were the first to adopt and work on integrating Universal Deploy into `@edgeone/vite`. This means any UD-aware Vite framework, including Vike, can now deploy to EdgeOne Pages with zero glue code. Just add `@edgeone/vite` to your Vite config alongside Vike, and the adapter handles server entry detection, route mapping, and edge function bundling automatically.
+The EdgeOne team were the first to adopt and work on integrating Universal Deploy into `@edgeone/vite`. This means any UD-aware Vite framework, including Vike, can now deploy to EdgeOne Pages with zero glue code — just add `@edgeone/vite` to your Vite config.
 
 > Tencent's [EdgeOne Pages](https://edgeone.ai/products/pages) is an edge-first platform for deploying full-stack web apps. With its global edge network, your Vike app's SSR routes are rendered at the edge node closest to each user, pre-rendered pages are served directly from CDN cache, and streaming responses start delivering content immediately — all without managing any infrastructure.
 >
