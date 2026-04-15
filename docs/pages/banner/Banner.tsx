@@ -6,9 +6,11 @@ export { BannerVikings }
 
 import React from 'react'
 import vikeLogo from '../../assets/logo/vike-shadow.svg'
-import { Hero } from '../index/sections/Intro/Hero'
 import '../index/tailwind.css'
 import './Banner.css'
+import Headline from '../index/components/Headline'
+import GradientText from '../index/components/GradientText'
+import { heroTaglineSecondary } from '../index/sections/Intro/Hero'
 
 function Banner() {
   return <BannerCommon />
@@ -130,7 +132,7 @@ function BannerCommon({
           </div>
         )}
         {logo !== true && (
-          <div className="text-center flex flex-col items-center" style={{ gap: 13, maxWidth: 990 }}>
+          <div className="text-center flex flex-col items-center" style={{ gap: 13, maxWidth: 750 }}>
             <Hero />
           </div>
         )}
@@ -138,3 +140,15 @@ function BannerCommon({
     </div>
   )
 }
+
+const Hero = () => (
+  <>
+    <div className="relative">
+      <Headline as="h1" variant="xlarge" className="mx-auto">
+        Framework for <br />
+        <GradientText color="blue">Stability</GradientText> and <GradientText color="green">Freedom</GradientText>
+      </Headline>
+    </div>
+    <p className="text-base md:text-2xl text-grey text-center mx-auto mb-6 mt-4">{heroTaglineSecondary}</p>
+  </>
+)
