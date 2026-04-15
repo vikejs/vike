@@ -102,6 +102,8 @@ function BannerCommon({
             style={{
               display: 'flex',
               alignItems: 'center',
+              marginLeft: -10,
+              marginBottom: -10,
             }}
           >
             <img
@@ -109,7 +111,6 @@ function BannerCommon({
               style={{
                 height: 60 * logoScale,
                 objectFit: 'contain',
-                marginRight: 14,
                 ...logoStyle,
               }}
             />
@@ -117,10 +118,10 @@ function BannerCommon({
               className="logo-font"
               style={{
                 fontSize: 40 * logoScale,
-                letterSpacing: '-0.01em',
-                fontWeight: 380,
-                color: '#555',
+                fontWeight: 440,
+                color: '#666',
                 lineHeight: '1.2em',
+                marginLeft: -1,
                 ...logoTextStyle,
               }}
             >
@@ -129,11 +130,8 @@ function BannerCommon({
           </div>
         )}
         {logo !== true && (
-          <div className="text-center flex flex-col items-center" style={{ gap: 28 }}>
+          <div className="text-center flex flex-col items-center" style={{ gap: 13, maxWidth: 990 }}>
             <Hero />
-            <a className="btn btn-lg text-white border-0 btn-neutral" href="/new">
-              Get Started
-            </a>
           </div>
         )}
       </div>
