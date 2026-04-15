@@ -8,7 +8,6 @@ import React from 'react'
 import vikeLogo from '../../assets/logo/vike-shadow.svg'
 import '../index/tailwind.css'
 import './Banner.css'
-import Headline from '../index/components/Headline'
 import GradientText from '../index/components/GradientText'
 import { heroTaglineSecondary } from '../index/sections/Intro/Hero'
 
@@ -143,12 +142,10 @@ function BannerCommon({
 
 const Hero = () => (
   <>
-    <div className="relative">
-      <Headline as="h1" variant="xlarge" className="mx-auto">
-        Framework for <br />
-        <GradientText color="blue">Stability</GradientText> and <GradientText color="green">Freedom</GradientText>
-      </Headline>
-    </div>
+    <h1 className="text-3xl! sm:text-4xl! md:text-5xl! xl:text-6xl! font-bold mx-auto">
+      Framework for <br />
+      <GradientText color="blue">Stability</GradientText> and <GradientText color="green">Freedom</GradientText>
+    </h1>
     <p className="text-base md:text-2xl text-grey text-center mx-auto mb-6 mt-4">{heroTaglineSecondary}</p>
   </>
 )
