@@ -142,7 +142,7 @@ function BannerCommon({
 
 const Hero = () => (
   <>
-    <h1 className="text-3xl! sm:text-4xl! md:text-5xl! xl:text-6xl! font-bold mx-auto">
+    <h1 className="text-6xl! font-bold mx-auto">
       Framework for <br />
       <GradientText color="blue">Stability</GradientText> and <GradientText color="green">Freedom</GradientText>
     </h1>
