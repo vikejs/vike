@@ -7,6 +7,7 @@ export { BannerVikings }
 import React from 'react'
 import vikeLogo from '../../assets/logo/vike-shadow.svg'
 import { Hero } from '../index/sections/Intro/Hero'
+import '../index/tailwind.css'
 import './Banner.css'
 
 function Banner() {
@@ -74,6 +75,8 @@ function BannerCommon({
 }) {
   return (
     <div
+      id="tailwind-portal"
+      data-theme="vike"
       style={{
         display: 'flex',
         alignItems: 'center',
