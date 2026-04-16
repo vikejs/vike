@@ -22,7 +22,7 @@
     "react-tabs": "^6.1.0",
     "tailwindcss": "^4.1.18",
     "typescript": "^5.9.3",
-    "vike": "0.4.257",
+    "vike": "0.4.258",
     "vite": "^7.3.1",
     "vite-plugin-svgr": "^4.3.0"
   },
