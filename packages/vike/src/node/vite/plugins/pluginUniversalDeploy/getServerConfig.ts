@@ -14,7 +14,7 @@ function getServerConfig(vikeConfig: VikeConfigInternal) {
   // universal-deploy support must be manually enabled
   const serverConfig: boolean =
     // +config.js > `export default { server: true }`
-    vikeConfig.config.server ||
+    !!vikeConfig.config.server ||
     // +server.js exists
     !!vikeConfig._pageConfigGlobal.configValueSources.server ||
     false
@@ -26,6 +26,9 @@ function getServerConfig(vikeConfig: VikeConfigInternal) {
     assert(serverFilePath)
     serverEntryId = serverFilePath
     serverEntryVike = serverFilePath
+  } else if (!vikeConfig._pageConfigGlobal.configValueSources.server) {
+    serverEntryId = vikeConfig.config.server
+    serverEntryVike = vikeConfig.config.server
   } else {
     serverEntryId = catchAllEntry
     serverEntryVike = 'vike/fetch'

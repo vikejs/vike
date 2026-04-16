@@ -15,7 +15,7 @@ const SEP = ':'
 /** `import:${importPath}:${exportName}`
  * @example import:./Layout:default
  */
-type ImportString = `import:${string}:${string}`
+type ImportString = `import:${string}:${string}` | string
 type ImportStringList = ImportString | ImportString[]
 type ImportStringParsed = {
   importPath: string
