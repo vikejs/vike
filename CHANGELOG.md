@@ -8,11 +8,10 @@
 * improve workaround for WebKit import() bug (fix [#3199](https://github.com/vikejs/vike/issues/3199)) ([3b8b557](https://github.com/vikejs/vike/commit/3b8b55735a925eb1ee15e3305dc0f5a6c1a8f542))
 * show helpful error upon wrong import string (fix [#3196](https://github.com/vikejs/vike/issues/3196)) ([#3198](https://github.com/vikejs/vike/issues/3198)) ([c6e29ea](https://github.com/vikejs/vike/commit/c6e29ea035143d8c46eccdc10f8e08bfcce3a483))
 * skip pluginModuleBanner for Vite 8 ([#3211](https://github.com/vikejs/vike/issues/3211)) ([4c3eb79](https://github.com/vikejs/vike/commit/4c3eb79ff84f8d75edf3d5d10e278ba35b917eb8))
-
-
-### Features
-
 * bump UD/vite (auto installs UD/netlify) ([#3207](https://github.com/vikejs/vike/issues/3207)) ([df64460](https://github.com/vikejs/vike/commit/df644603a9b9ccdc6c1449868d7e7a6d4e8a7241))
+
+
+
 ## [0.4.257](https://github.com/vikejs/vike/compare/v0.4.256...v0.4.257) (2026-04-09)
 
 
