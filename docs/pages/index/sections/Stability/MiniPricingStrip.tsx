@@ -1,4 +1,5 @@
 import React from 'react'
+import { Check } from 'lucide-react'
 import GradientText from '../../components/GradientText'
 
 const columns = [
@@ -58,12 +59,13 @@ function MiniPricingStrip() {
           </div>
         ))}
       </div>
-      <div className="flex flex-wrap items-center justify-center gap-2 border-t border-slate-200/70 bg-white/70 px-4 py-3">
+      <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-1.5 border-t border-slate-200/50 px-5 py-3">
         {trustLabels.map((label) => (
           <span
             key={label}
-            className="rounded-full border border-slate-200/80 bg-white/90 px-3 py-1 text-[0.66rem] font-medium tracking-[0.16em] text-slate-500"
+            className="inline-flex items-center gap-1.5 text-[0.72rem] font-medium text-slate-500"
           >
+            <Check className="h-3 w-3 text-emerald-500" strokeWidth={3} aria-hidden />
             {label}
           </span>
         ))}
