@@ -14,7 +14,7 @@ const columns = [
   },
   {
     title: 'Larger team',
-    subtitle: 'LOW RESOURCES',
+    subtitle: 'SMALL ORG',
     price: 'Free',
     toneClassName: 'from-emerald-500/14 via-emerald-500/6 to-white/30',
     panelClassName: 'bg-emerald-50/65',
@@ -23,7 +23,7 @@ const columns = [
   },
   {
     title: 'Larger team',
-    subtitle: 'HIGH RESOURCES',
+    subtitle: 'LARGER ORG',
     price: '$5k',
     toneClassName: 'from-blue-500/16 via-violet-500/8 to-white/30',
     panelClassName: 'bg-blue-50/60',
@@ -41,10 +41,10 @@ function MiniPricingStrip() {
         {trustLabels.map((label) => (
           <span
             key={label}
-            className="inline-flex items-center gap-1.5 rounded-full bg-white/85 px-3 py-1 text-[0.74rem] font-medium text-slate-600 ring-1 ring-inset ring-slate-200/70 backdrop-blur-md"
+            className="inline-flex items-center gap-1.5 rounded-full bg-white/85 px-3 py-1 text-[0.75rem] font-medium text-slate-600 ring-1 ring-inset ring-slate-200/70 backdrop-blur-md"
           >
             <Check className="h-3 w-3 text-emerald-500" strokeWidth={3} aria-hidden />
-            {label}
+            <span style={{ position: 'relative', top: 0 }}>{label}</span>
           </span>
         ))}
       </div>
