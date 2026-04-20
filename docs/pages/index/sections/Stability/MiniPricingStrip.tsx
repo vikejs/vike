@@ -32,16 +32,19 @@ const columns = [
   },
 ] as const
 
-const trustLabels = ['100% MIT License', 'Zero investors'] as const
+const trustLabels = [
+  { label: '100% MIT License', href: '/pricing#how-does-it-work' },
+  { label: 'Zero investors', href: '/pricing#why-zero-investors' },
+] as const
 
 function MiniPricingStrip() {
   return (
     <div className="mx-auto w-full max-w-2xl">
       <div className="mb-3 flex flex-wrap items-center justify-center gap-2">
-        {trustLabels.map((label) => (
+        {trustLabels.map(({ label, href }) => (
           <a
             key={label}
-            href="/pricing"
+            href={href}
             className="inline-flex items-center gap-1.5 rounded-full bg-white/85 px-3 py-1 text-[0.75rem] font-medium text-slate-600 ring-1 ring-inset ring-slate-200/70 backdrop-blur-md transition hover:bg-white hover:text-slate-900 hover:ring-slate-300"
           >
             <Check className="h-3 w-3 text-emerald-500" strokeWidth={3} aria-hidden />
@@ -50,7 +53,7 @@ function MiniPricingStrip() {
         ))}
       </div>
       <a
-        href="/pricing"
+        href="/pricing#how-does-it-work"
         className="block overflow-hidden rounded-[1.6rem] border border-white/80 bg-white/88 ring-1 ring-slate-200/70 backdrop-blur-md transition hover:ring-slate-300"
       >
         <div className="grid grid-cols-3 divide-x divide-slate-200/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.95),rgba(248,250,252,0.9))]">
