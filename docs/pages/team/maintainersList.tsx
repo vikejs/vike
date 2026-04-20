@@ -31,12 +31,14 @@ const maintainersList = [
     isCoreTeam: true,
     roles: [
       <>
-        <code>universal-middleware</code> (Lead Maintainer, Creator)
+        <a href="https://github.com/universal-deploy/universal-deploy">Universal Deploy</a> (Lead Maintainer, Creator)
       </>,
       <>
-        <code>universal-deploy</code> (Lead Maintainer, Creator)
+        <a href="https://github.com/magne4000/universal-middleware">Universal Middleware</a> (Lead Maintainer, Creator)
       </>,
-      <>Bati (Lead Maintainer, Creator)</>,
+      <>
+        <a href="https://github.com/vikejs/bati">Bati</a> (Lead Maintainer, Creator)
+      </>,
       <>
         <code>vike-solid</code> (Lead Maintainer, Creator)
       </>,
@@ -48,6 +50,9 @@ const maintainersList = [
     firstName: 'Dániel',
     isCoreTeam: true,
     roles: [
+      <>
+        🚧 <a href="https://github.com/telefunc/telefunc/pull/236">Telefunc streaming</a>
+      </>,
       <>
         <code>vike-react-query</code> (Lead Maintainer, Creator)
       </>,
@@ -67,11 +72,34 @@ const maintainersList = [
     ],
   },
   {
+    username: 'richard-unterberg',
+    firstName: 'Richard',
+    isCoreTeam: true,
+    roles: [
+      <>Vike's landing page</>,
+      <>
+        🚧 <a href="https://github.com/richard-unterberg/nivel">Nivel</a> — Vike's new documentation website
+      </>,
+    ],
+  },
+  {
+    username: 'ambergristle',
+    firstName: 'Aristo',
+    isCoreTeam: true,
+    roles: [
+      <>
+        🚧 <a href="https://github.com/telefunc/telefunc/pull/240">Telefunc docs rehaul</a>
+      </>,
+    ],
+  },
+  {
     username: 'phonzammi',
     firstName: 'Muhammad',
     isCoreTeam: true,
     roles: [
-      <>DocPress (Major Contributor)</>,
+      <>
+        <a href="https://github.com/brillout/docpress">DocPress</a> (Major Contributor)
+      </>,
       <>
         <code>vike-vue</code> (Contributor)
       </>,
