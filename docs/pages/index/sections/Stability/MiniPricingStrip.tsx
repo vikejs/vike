@@ -53,7 +53,7 @@ function MiniPricingStrip() {
         ))}
       </div>
       <a
-        href="/pricing#how-does-it-work"
+        href="/pricing"
         className="block overflow-hidden rounded-[1.6rem] border border-white/80 bg-white/88 ring-1 ring-slate-200/70 backdrop-blur-md transition hover:ring-slate-300"
       >
         <div className="grid grid-cols-3 divide-x divide-slate-200/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.95),rgba(248,250,252,0.9))]">
