@@ -41,7 +41,7 @@ function MiniPricingStrip() {
         {trustLabels.map((label) => (
           <span
             key={label}
-            className="inline-flex items-center gap-1.5 rounded-full bg-white/85 px-3 py-1 text-[0.7rem] font-medium text-slate-600 ring-1 ring-inset ring-slate-200/70 backdrop-blur-md"
+            className="inline-flex items-center gap-1.5 rounded-full bg-white/85 px-3 py-1 text-[0.74rem] font-medium text-slate-600 ring-1 ring-inset ring-slate-200/70 backdrop-blur-md"
           >
             <Check className="h-3 w-3 text-emerald-500" strokeWidth={3} aria-hidden />
             {label}
