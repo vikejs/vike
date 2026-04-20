@@ -77,7 +77,7 @@ const maintainersList = [
     isCoreTeam: true,
     roles: [
       <>
-        🚧 <a href="https://github.com/richard-unterberg/nivel">Nivel</a> — Vike's new documentation website
+        🚧 <a href="https://github.com/richard-unterberg/nivel">Nivel</a> — Vike's new docs website
       </>,
       <>Vike's landing page</>,
     ],
