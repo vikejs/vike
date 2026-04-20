@@ -31,6 +31,8 @@ const columns = [
   },
 ] as const
 
+const trustLabels = ['100% MIT License', 'Zero investors'] as const
+
 function MiniPricingStrip() {
   return (
     <div className="mx-auto w-full max-w-2xl overflow-hidden rounded-[1.6rem] border border-white/80 bg-white/88 shadow-[0_24px_70px_rgba(15,23,42,0.08)] ring-1 ring-slate-200/40 backdrop-blur-md">
@@ -54,6 +56,16 @@ function MiniPricingStrip() {
               {column.suffix || '\u00A0'}
             </div>
           </div>
+        ))}
+      </div>
+      <div className="flex flex-wrap items-center justify-center gap-2 border-t border-slate-200/70 bg-white/70 px-4 py-3">
+        {trustLabels.map((label) => (
+          <span
+            key={label}
+            className="rounded-full border border-slate-200/80 bg-white/90 px-3 py-1 text-[0.66rem] font-medium tracking-[0.16em] text-slate-500"
+          >
+            {label}
+          </span>
         ))}
       </div>
     </div>
