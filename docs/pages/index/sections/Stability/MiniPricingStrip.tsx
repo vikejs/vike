@@ -61,18 +61,16 @@ function MiniPricingStrip() {
           ))}
         </div>
       </div>
-      <div className="mt-3.5 flex justify-center">
-        <div className="inline-flex items-center gap-3 rounded-full bg-white/90 px-4 py-1.5 text-[0.72rem] font-medium text-slate-600 shadow-[0_6px_20px_rgba(15,23,42,0.06)] ring-1 ring-inset ring-slate-200/70 backdrop-blur-md">
-          {trustLabels.map((label, i) => (
-            <React.Fragment key={label}>
-              {i > 0 && <span className="h-3 w-px bg-slate-300/70" aria-hidden />}
-              <span className="inline-flex items-center gap-1.5">
-                <Check className="h-3 w-3 text-emerald-500" strokeWidth={3} aria-hidden />
-                {label}
-              </span>
-            </React.Fragment>
-          ))}
-        </div>
+      <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
+        {trustLabels.map((label) => (
+          <span
+            key={label}
+            className="inline-flex items-center gap-1.5 rounded-full bg-slate-100/70 px-3 py-1 text-[0.7rem] font-medium text-slate-600 ring-1 ring-inset ring-slate-200/70"
+          >
+            <Check className="h-3 w-3 text-emerald-500" strokeWidth={3} aria-hidden />
+            {label}
+          </span>
+        ))}
       </div>
     </div>
   )
