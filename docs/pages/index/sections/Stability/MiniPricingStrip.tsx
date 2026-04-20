@@ -39,16 +39,20 @@ function MiniPricingStrip() {
     <div className="mx-auto w-full max-w-2xl">
       <div className="mb-3 flex flex-wrap items-center justify-center gap-2">
         {trustLabels.map((label) => (
-          <span
+          <a
             key={label}
-            className="inline-flex items-center gap-1.5 rounded-full bg-white/85 px-3 py-1 text-[0.75rem] font-medium text-slate-600 ring-1 ring-inset ring-slate-200/70 backdrop-blur-md"
+            href="/pricing"
+            className="inline-flex items-center gap-1.5 rounded-full bg-white/85 px-3 py-1 text-[0.75rem] font-medium text-slate-600 ring-1 ring-inset ring-slate-200/70 backdrop-blur-md transition hover:bg-white hover:text-slate-900 hover:ring-slate-300"
           >
             <Check className="h-3 w-3 text-emerald-500" strokeWidth={3} aria-hidden />
             <span style={{ position: 'relative', top: 0 }}>{label}</span>
-          </span>
+          </a>
         ))}
       </div>
-      <div className="overflow-hidden rounded-[1.6rem] border border-white/80 bg-white/88 ring-1 ring-slate-200/70 backdrop-blur-md">
+      <a
+        href="/pricing"
+        className="block overflow-hidden rounded-[1.6rem] border border-white/80 bg-white/88 ring-1 ring-slate-200/70 backdrop-blur-md transition hover:ring-slate-300"
+      >
         <div className="grid grid-cols-3 divide-x divide-slate-200/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.95),rgba(248,250,252,0.9))]">
           {columns.map((column) => (
             <div
@@ -71,7 +75,7 @@ function MiniPricingStrip() {
             </div>
           ))}
         </div>
-      </div>
+      </a>
     </div>
   )
 }
