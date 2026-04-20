@@ -19,6 +19,7 @@ Alongside Universal Deploy, we're releasing **built-in <Link href="/server">`+se
 
 Universal Deploy supersedes <Link href="/blog/photon">Photon</Link>. It's the next — and we believe final — step in a journey that started with `vike-server` and continued with Photon. This is a big deal not just for Vike, but for the whole Vite ecosystem.
 
+
 ## What changes for users
 
 For Vike users, the story is now refreshingly simple:
@@ -44,6 +45,7 @@ For Vike users, the story is now refreshingly simple:
 **That's it.** No `vike-photon`, no `vike-server`, no `vike-cloudflare`, no glue packages. Vike and your deployment provider talk to each other directly through Universal Deploy.
 
 > Manual integration via <Link href="/renderPage">`renderPage()`</Link> is still supported and remains unchanged. We care about both zero-config integrations and manual integrations — ensuring both workflows are fully supported and maintained.
+
 
 ## What is Universal Deploy?
 
@@ -71,6 +73,7 @@ addEntry({
 
 While deployment providers read from the store.
 
+
 ## Why we built it (a short history)
 
 Universal Deploy is the third — and we hope last — iteration of the same idea.
@@ -82,6 +85,7 @@ Universal Deploy is the third — and we hope last — iteration of the same ide
 **Universal Deploy** *(April 2026)* takes that one step further. Photon was framework-agnostic, but it was still its own opinionated stack. The conversations sparked by [Netlify's RFC on Vite](https://github.com/vitejs/vite/discussions/20907) — and the [related ecosystem RFC](https://github.com/vitejs/ecosystem/issues/3) about aligning on Vite's intended scope to allow framework-agnostic provider plugins — made it clear that what the ecosystem really needed was something even smaller and even more neutral: a tiny convention layer that *everyone* — frameworks, deployment providers, and Vite itself — could adopt without buying into a particular implementation.
 
 That's what Universal Deploy is. It's an unopinionated and flexible infrastructure to solve the deployment fragmentation problem.
+
 
 ## Collaborating with the Vite ecosystem
 
