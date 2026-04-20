@@ -69,7 +69,7 @@ function PricingTable() {
                     Forever access<NoteRef>4</NoteRef>
                   </Check>
                   <Check>
-                    <span style={{ color: colorFree, fontWeight: 700, fontSize: '1.1em' }}>Free</span> trial: 6 months +{' '}
+                    <span style={{ color: colorFree, fontWeight: 700, fontSize: '1.1em' }}>Free trial</span>: 6 months +{' '}
                     <Link href="/free">extendable</Link>
                   </Check>
                 </div>
@@ -78,7 +78,7 @@ function PricingTable() {
           </div>
           <div style={{ marginLeft: 10, marginTop: 20, maxWidth: 830 }}>
             <Note ref={1}>
-              Only developers who contribute code to your Vike app(s) regularly (occasional contributors and bots don't
+              Developers who contribute code to your Vike app(s) regularly (occasional contributors, AI, and bots don't
               count).
             </Note>
             <Note ref={2}>
