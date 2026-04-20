@@ -37,6 +37,17 @@ const trustLabels = ['100% MIT License', 'Zero investors'] as const
 function MiniPricingStrip() {
   return (
     <div className="mx-auto w-full max-w-2xl">
+      <div className="mb-3 flex flex-wrap items-center justify-center gap-2">
+        {trustLabels.map((label) => (
+          <span
+            key={label}
+            className="inline-flex items-center gap-1.5 rounded-full bg-white/85 px-3 py-1 text-[0.7rem] font-medium text-slate-600 shadow-[0_4px_14px_rgba(15,23,42,0.06)] ring-1 ring-inset ring-emerald-200/60 backdrop-blur-md"
+          >
+            <Check className="h-3 w-3 text-emerald-500" strokeWidth={3} aria-hidden />
+            {label}
+          </span>
+        ))}
+      </div>
       <div className="overflow-hidden rounded-[1.6rem] border border-white/80 bg-white/88 shadow-[0_24px_70px_rgba(15,23,42,0.08)] ring-1 ring-slate-200/40 backdrop-blur-md">
         <div className="grid grid-cols-3 divide-x divide-slate-200/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.95),rgba(248,250,252,0.9))]">
           {columns.map((column) => (
@@ -60,17 +71,6 @@ function MiniPricingStrip() {
             </div>
           ))}
         </div>
-      </div>
-      <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
-        {trustLabels.map((label) => (
-          <span
-            key={label}
-            className="inline-flex items-center gap-1.5 rounded-full bg-slate-100/70 px-3 py-1 text-[0.7rem] font-medium text-slate-600 ring-1 ring-inset ring-slate-200/70"
-          >
-            <Check className="h-3 w-3 text-emerald-500" strokeWidth={3} aria-hidden />
-            {label}
-          </span>
-        ))}
       </div>
     </div>
   )
