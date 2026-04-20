@@ -76,10 +76,10 @@ const maintainersList = [
     firstName: 'Richard',
     isCoreTeam: true,
     roles: [
-      <>Vike's landing page</>,
       <>
         🚧 <a href="https://github.com/richard-unterberg/nivel">Nivel</a> — Vike's new documentation website
       </>,
+      <>Vike's landing page</>,
     ],
   },
   {
@@ -88,7 +88,7 @@ const maintainersList = [
     isCoreTeam: true,
     roles: [
       <>
-        🚧 <a href="https://github.com/telefunc/telefunc/pull/240">Telefunc docs rehaul</a>
+        🚧 <a href="https://github.com/telefunc/telefunc/pull/240">Telefunc docs overhaul</a>
       </>,
     ],
   },
