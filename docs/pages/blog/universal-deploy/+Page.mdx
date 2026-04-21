@@ -1,19 +1,15 @@
 import { BlogHeader } from '../BlogHeader'
-import { Link, Warning } from '@brillout/docpress'
+import { Link } from '@brillout/docpress'
 
 <BlogHeader authors={['magne4000', 'brillout']} date={new Date('2026-04-21')} />
 
-<Warning>
- **Early draft**: This blog post is an early draft, and Universal Deploy is going to be officially announced next week (ETA: April 21). That said, you can already use <Link href="/server">`+server`</Link> today (starting from `0.4.257`).
-</Warning>
-
-Today, we are thrilled to introduce [Universal Deploy](https://github.com/universal-deploy/universal-deploy) — a new infrastructure to deploy Vite apps anywhere with zero configuration.
+Today, we are thrilled to introduce [Universal Deploy](https://github.com/universal-deploy/universal-deploy) — a new infrastructure to deploy Vite apps (not only Vike apps) anywhere with zero configuration.
 
 We're also thrilled to announce <Link href="#collaborating-with-tencent-edgeone">a collaboration with Tencent EdgeOne</Link>.
 
 Alongside Universal Deploy, we're releasing **built-in <Link href="/server">`+server.js`</Link> support in Vike**, powered by Universal Deploy.
 
-> **This means `vike-photon` is now deprecated**: everything it did is now part of Vike core or Universal Deploy, with a simpler DX and no extra packages to install.
+> **This means `vike-photon` is now deprecated**: everything it did is now part of Vike core and Universal Deploy, with a simpler DX and no extra packages to install.
 >
 > If you use `vike-photon` (or still `vike-server`), we recommend <Link href="/migration/server">migrating to `+server.js`</Link>.
 
@@ -44,7 +40,7 @@ For Vike users, the story is now refreshingly simple:
 
 **That's it.** No `vike-photon`, no `vike-server`, no `vike-cloudflare`, no glue packages. Vike and your deployment provider talk to each other directly through Universal Deploy.
 
-> Manual integration via <Link href="/renderPage">`renderPage()`</Link> is still supported and remains unchanged. We care about both zero-config integrations and manual integrations — ensuring both workflows are fully supported and maintained.
+> Manual integration via <Link href="/renderPage">`renderPage()`</Link> is still supported and remains unchanged. We care equally about manual integrations — both workflows are fully supported and maintained.
 
 
 ## What is Universal Deploy?
@@ -57,7 +53,7 @@ In concrete terms, Universal Deploy provides:
 - **A common routing format** that every participant understands.
 - **Minimal Vite plugins** that deployment Vite plugins can use to automatically integrate with frameworks.
 
-The idea: instead of every framework writing custom integration code for every deployment provider (and vice versa), everyone agrees on a small, low-level convention. Frameworks register what they want to deploy; providers read it and deploy it. Say goodbye to [N×M adapters](https://github.com/vitejs/vite/discussions/20907) 👋
+The idea: instead of every framework writing custom integration code for every deployment provider (and vice versa), everyone agrees on a small, low-level convention. Frameworks register what they want to deploy; providers read it and deploy it. Say goodbye to [N×M glue code](https://github.com/vitejs/vite/discussions/20907) 👋
 
 For framework authors, registering an entry looks like this:
 
@@ -76,13 +72,13 @@ While deployment providers read from the store.
 
 ## Why we built it (a short history)
 
-Universal Deploy is the third — and we hope last — iteration of the same idea.
+Universal Deploy is the third — and we hope last — iteration.
 
 **[`vike-server`](/blog/vike-server)** *(March 2025)* was a Vike extension that integrated Vite with any JavaScript server (Express.js, Hono, Fastify, …) and any deployment target. While building it, we realized that **most of the code wasn't actually Vike-specific**.
 
 **[Photon](/blog/photon)** *(October 2025)* was our answer to that observation: we extracted everything we learned from `vike-server`, `vike-cloudflare`, and `vite-plugin-vercel` into a fully framework-agnostic project. Photon brought first-class Cloudflare support (with the dev server running inside `workerd`, the same runtime as production), HMR for server code, and zero-config deployment.
 
-**Universal Deploy** *(April 2026)* takes that one step further. Photon was framework-agnostic, but it was still its own opinionated stack. The conversations sparked by [Netlify's RFC on Vite](https://github.com/vitejs/vite/discussions/20907) — and the [related ecosystem RFC](https://github.com/vitejs/ecosystem/issues/3) about aligning on Vite's intended scope to allow framework-agnostic provider plugins — made it clear that what the ecosystem really needed was something even smaller and even more neutral: a tiny convention layer that *everyone* — frameworks, deployment providers, and Vite itself — could adopt without buying into a particular implementation.
+**Universal Deploy** *(April 2026)* takes that one step further. Photon was framework-agnostic, but it was still its own somewhat opinionated stack. Conversations sparked by [Netlify's Vite RFC](https://github.com/vitejs/vite/discussions/20907) made it clear that what the ecosystem really needed was something even smaller and even more neutral: a tiny convention layer that *everyone* — frameworks, deployment providers, and Vite itself — could adopt without buying into a particular implementation.
 
 That's what Universal Deploy is. It's an unopinionated and flexible infrastructure to solve the deployment fragmentation problem.
 
@@ -94,7 +90,7 @@ Universal Deploy is a direct response to [Netlify's Vite RFC](https://github.com
 1. **Server entry point location** — how does a deployment provider find the server entries that a framework wants to deploy?
 2. **Routing metadata** — how does the deployment provider know which routes go where, and which methods they handle?
 
-The `@universal-deploy/*` packages are a direct answer to those questions, and we're working with the Vite team to bring conventions to the broader Vite and JavaScript ecosystem (not just to Universal Deploy). The more participants converge on the same low-level conventions, the better the outcome for everyone.
+The `@universal-deploy/*` packages are a direct answer to those questions, and we're working with the Vite team to bring new conventions to the Vite and JavaScript ecosystem.
 
 
 ## Collaborating with Tencent EdgeOne
@@ -125,7 +121,7 @@ Huge thanks to everyone who's contributed to `vike-server`, Photon, the Netlify 
 - <Link href="/server" />
 - <Link href="/migration/server" />
 - [Universal Deploy on GitHub](https://github.com/universal-deploy/universal-deploy)
-- [Netlify's RFC on Vite](https://github.com/vitejs/vite/discussions/20907)
-- [RFC: Align on Vite's intended scope to allow for framework-agnostic provider plugins](https://github.com/vitejs/ecosystem/issues/3)
+- [Netlify's Vite RFC](https://github.com/vitejs/vite/discussions/20907)
+- [Vite RFC: Align on Vite's intended scope to allow for framework-agnostic provider plugins](https://github.com/vitejs/ecosystem/issues/3)
 - <Link href="/blog/photon" />
 - <Link href="/blog/vike-server" />
