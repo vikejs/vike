@@ -1,7 +1,15 @@
 import { BlogHeader } from '../BlogHeader'
 import { Link } from '@brillout/docpress'
 
-<BlogHeader authors={['magne4000', 'brillout']} date={new Date('2026-04-21')} />
+<BlogHeader
+  authors={['magne4000', 'brillout']}
+  date={new Date('2026-04-21')}
+  social={{
+    bluesky: 'https://bsky.app/profile/brillout.com/post/3mjz3riomr22r',
+    twitter: 'https://x.com/brillout/status/2046580791493156891',
+    linkedin: 'https://www.linkedin.com/posts/brillout_vike-share-7452349887070760961-O2DT',
+  }}
+/>
 
 Today, we are thrilled to introduce [Universal Deploy](https://github.com/universal-deploy/universal-deploy) — a new infrastructure to deploy Vite apps (not only Vike apps) anywhere with zero configuration.
 
