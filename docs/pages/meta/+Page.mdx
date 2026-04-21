@@ -79,7 +79,6 @@ export { data }
 export type Data = Awaited<ReturnType<typeof data>>
 
 import type { PageContextServer } from 'vike/types'
-import fetch from 'node-fetch'
 
 async function data(pageContext: PageContextServer) {
   // The value exported by /pages/countries/+dataEndpointUrl.ts is
