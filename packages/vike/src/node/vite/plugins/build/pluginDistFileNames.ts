@@ -14,6 +14,7 @@ import type { Plugin, ResolvedConfig, Rollup } from 'vite'
 import { getAssetsDir } from '../../shared/getAssetsDir.js'
 import { assertModuleId, getFilePathToShowToUserModule } from '../../shared/getFilePath.js'
 import '../../assertEnvVite.js'
+import { isVersionMatch } from '../../../../utils/assertVersion.js'
 type PreRenderedChunk = Rollup.PreRenderedChunk
 type PreRenderedAsset = Rollup.PreRenderedAsset
 
@@ -52,7 +53,9 @@ function pluginDistFileNames(): Plugin[] {
                 "Setting Vite's configuration build.rollupOptions.output.assetFileNames is currently forbidden. Reach out if you need to use it.",
               )
             }
-            {
+
+            // TO-DO/eventually: remove
+            if (!isManualChunksDeprecated(config)) {
               const manualChunksOriginal = rollupOutput.manualChunks
               rollupOutput.manualChunks = function (id, ...args) {
                 if (manualChunksOriginal) {
@@ -291,4 +294,12 @@ function getRollupOutputs(config: ResolvedConfig) {
     return [output]
   }
   return output
+}
+
+// Vite 8 doesn't support `manualChunks` anymore.
+// https://vite.dev/guide/migration#removed-object-form-build-rollupoptions-output-manualchunks-and-deprecate-function-form-one
+function isManualChunksDeprecated(config: ResolvedConfig) {
+  const viteVersion = config._viteVersionResolved
+  assert(viteVersion)
+  return isVersionMatch(viteVersion, ['8.0.0'])
 }
