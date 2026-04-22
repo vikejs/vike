@@ -48,12 +48,12 @@ function BlogHeader({
         style={{
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center',
+          alignItems: 'flex-end',
         }}
       >
         <div
           style={{
-            color: '#999',
+            color: '#777',
             fontWeight: 400,
             fontSize: 15,
             fontStyle: 'italic',
@@ -121,13 +121,13 @@ function SocialLinks({ social }: { social: Social }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center' }}>
       {social.bluesky && <SocialLink href={social.bluesky} label="Bluesky" icon={iconBluesky} />}
-      {social.twitter && <SocialLink href={social.twitter} label="Twitter / X" icon={iconTwitter} />}
+      {social.twitter && <SocialLink href={social.twitter} label="X" icon={iconTwitter} />}
       {social.linkedin && <SocialLink href={social.linkedin} label="LinkedIn" icon={iconLinkedin} />}
     </div>
   )
 }
 
-function SocialLink({ href, label, icon }: { href: string; label: string; icon: string }) {
+function SocialLink({ href, label, icon }: { href: string; label: 'Bluesky' | 'X' | 'LinkedIn'; icon: string }) {
   const size = 18
   const padding = 2
   const sizeOuter = size + padding * 2
@@ -143,7 +143,12 @@ function SocialLink({ href, label, icon }: { href: string; label: string; icon: 
         justifyContent: 'center',
       }}
     >
-      <img className="decolorize-4" src={icon} style={{ height: sizeOuter, width: sizeOuter, padding }} alt={label} />
+      <img
+        className={`decolorize-${label === 'X' ? 4 : 6}`}
+        src={icon}
+        style={{ height: sizeOuter, width: sizeOuter, padding }}
+        alt={label}
+      />
     </a>
   )
 }
