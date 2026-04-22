@@ -72,8 +72,8 @@ const TeamQuote = () => {
         'https://github.com/brillout.png?size=100',
       ]}
     >
-      We started Vike 5 years ago with a bold mission — to build the last framework you'll need — powered by a stable
-      foundation, with powerful hooks ready to embrace JavaScript's future.
+      We started Vike five years ago with a bold mission: build the last framework you'll ever need — a framework with a
+      stable core and powerful hooks ready to embrace JavaScript's future.
     </Blockquote>
   )
 }
