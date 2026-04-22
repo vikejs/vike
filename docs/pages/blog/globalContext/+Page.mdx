@@ -2,7 +2,14 @@ import { Link } from '@brillout/docpress'
 import { TeamQuote } from '../../../components'
 import { BlogHeader } from '../BlogHeader'
 
-<BlogHeader authors={['brillout']} date={new Date('2025-04-29')} />
+<BlogHeader
+  authors={['brillout']}
+  date={new Date('2025-04-29')}
+  social={{
+    bluesky: 'https://bsky.app/profile/brillout.com/post/3lnxhig7lw22e',
+    twitter: 'https://x.com/brillout/status/1917220169924886885',
+  }}
+/>
 
 We are thrilled to unveil `globalContext`, available starting from `0.4.229`.
 - <Link href="/globalContext" />

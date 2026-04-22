@@ -3,7 +3,14 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import '../../../components/tabs.css'
 import { BlogHeader } from '../BlogHeader'
 
-<BlogHeader authors={['magne4000', 'nitedani', 'brillout']} date={new Date('2025-03-26')} />
+<BlogHeader
+  authors={['magne4000', 'nitedani', 'brillout']}
+  date={new Date('2025-03-26')}
+  social={{
+    bluesky: 'https://bsky.app/profile/brillout.com/post/3llbpq6p75c2p',
+    twitter: 'https://x.com/brillout/status/1904863046561825072',
+  }}
+/>
 
 We (<Link href="/team">Joël, Dani, and Rom</Link>) have been working on a <Link href="/vike-server">new Vike extension `vike-server`</Link> which can integrate Vite with any server (Express.js, Hono, Fastify, Elysia, H3, ...) and any deployment (VPS, Netlify, Cloudflare, Vercel, ...).
 
