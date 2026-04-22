@@ -19,7 +19,7 @@ interface UspStaticContentProps {
 }
 
 const UspStaticContent = ({ uspVisualStateById }: UspStaticContentProps) => (
-  <SharedOuterGrid className="pb-16">
+  <SharedOuterGrid className="pb-10">
     {landingPageHeroUsps.map((usp) => {
       const visualState = uspVisualStateById.get(usp.id)
       const toneClass = visualState?.toneClass ?? 'grayscale-0 opacity-100'
@@ -121,7 +121,7 @@ const StyledTextContent = cm.div<{ $hovered?: boolean }>`
   text-sm lg:text-base 
   flex flex-col justify-between
   pointer-events-none
-  md:min-h-40 md:min-h-32
+  min-h-24 lg:min-h-26
   mt-8
   ${uiConfig.transition.mediumDurationTw}
   ${uiConfig.transition.easeInOutTw}
