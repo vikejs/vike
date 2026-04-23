@@ -5,21 +5,6 @@ import { cloudflare } from '@cloudflare/vite-plugin'
 import { telefunc } from 'telefunc/vite'
 
 export default defineConfig({
-  build: {
-    rolldownOptions: {
-      output: {
-        codeSplitting: {
-          minSize: 20000,
-          groups: [
-            {
-              name: 'vendor',
-              test: /node_modules/,
-            },
-          ],
-        },
-      },
-    },
-  },
   plugins: [
     telefunc(),
     react(),
