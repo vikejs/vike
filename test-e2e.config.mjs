@@ -85,8 +85,6 @@ function tolerateError({ logSource, logText, testInfo }) {
       '`@vitejs/plugin-react-oxc` for improved performance',
       // [12:21:54.297][/test/photon-vercel/.test-dev.test.ts][pnpm run dev][stderr] You or a plugin you are using have set `optimizeDeps.esbuildOptions` but this option is now deprecated. Vite now uses Rolldown to optimize the dependencies. Please use `optimizeDeps.rolldownOptions` instead.
       '`optimizeDeps.esbuildOptions` but this option is now deprecated',
-      // [12:23:29.908][/test/universal-deploy/test-preview.test.ts][pnpm run preview][stderr] [warn] `manualChunks` option is ignored because the `codeSplitting` option is specified.
-      '`manualChunks` option is ignored because the `codeSplitting`',
       // [12:52:00.813][/examples/react-full][pnpm run dev][stderr] [vite:react-swc] We recommend switching to `@vitejs/plugin-react` for improved performance as no swc plugins are used. More information at https://vite.dev/rolldown
       'We recommend switching to `@vitejs/plugin-react`',
       // [09:37:55.007][/examples/react-full][npm run preview][stderr] 9:37:55 AM [vite] warning: `esbuild` option was specified by "vite:react-swc" plugin. This option is deprecated, please use `oxc` instead.
