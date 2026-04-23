@@ -55,7 +55,11 @@ function pluginDistFileNames(): Plugin[] {
             }
 
             // TO-DO/eventually: remove
-            if (!isManualChunksDeprecated(config)) {
+            if (
+              !isManualChunksDeprecated(config) ||
+              // @ts-ignore
+              !config.build?.rolldownOptions?.output?.codeSplitting
+            ) {
               const manualChunksOriginal = rollupOutput.manualChunks
               rollupOutput.manualChunks = function (id, ...args) {
                 if (manualChunksOriginal) {
