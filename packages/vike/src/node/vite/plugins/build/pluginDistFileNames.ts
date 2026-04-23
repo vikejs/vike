@@ -54,12 +54,7 @@ function pluginDistFileNames(): Plugin[] {
               )
             }
 
-            // TO-DO/eventually: remove
-            if (
-              !isManualChunksDeprecated(config) ||
-              // @ts-ignore
-              !config.build?.rolldownOptions?.output?.codeSplitting
-            ) {
+            if (disableCSSBundling(config)) {
               const manualChunksOriginal = rollupOutput.manualChunks
               rollupOutput.manualChunks = function (id, ...args) {
                 if (manualChunksOriginal) {
@@ -74,8 +69,6 @@ function pluginDistFileNames(): Plugin[] {
                   }
                 }
 
-                // Disable CSS bundling to workaround https://github.com/vikejs/vike/issues/1815
-                // TO-DO/eventually: let's bundle CSS again once Rolldown replaces Rollup
                 if (id.endsWith('.css')) {
                   const userRootDir = config.root
                   if (id.startsWith(userRootDir)) {
@@ -300,9 +293,22 @@ function getRollupOutputs(config: ResolvedConfig) {
   return output
 }
 
-// Vite 8 doesn't support `manualChunks` anymore.
-// https://vite.dev/guide/migration#removed-object-form-build-rollupoptions-output-manualchunks-and-deprecate-function-form-one
-function isManualChunksDeprecated(config: ResolvedConfig) {
+function disableCSSBundling(config: ResolvedConfig) {
+  // Vite 7 => disable CSS bundling, see: https://github.com/vikejs/vike/issues/1815
+  if (!isVite8OrAbove(config)) return true
+
+  // Vite 8 doesn't support `manualChunks` when `codeSplitting` is used.
+  // - It does, however, support `manualChunks` if `codeSplitting` isn't used (despite what the following migration guide says)
+  // - https://vite.dev/guide/migration#removed-object-form-build-rollupoptions-output-manualchunks-and-deprecate-function-form-one
+  // @ts-ignore
+  if (!config.build?.rolldownOptions?.output?.codeSplitting) return true
+
+  // TO-DO/eventually: we should probably show a warning, because Vite 8 still builds the client and server separately (potentially leading to the CSS duplication bug):
+  // https://github.com/vitejs/ecosystem/issues/6
+  return false
+}
+
+function isVite8OrAbove(config: ResolvedConfig) {
   const viteVersion = config._viteVersionResolved
   assert(viteVersion)
   return isVersionMatch(viteVersion, ['8.0.0'])
