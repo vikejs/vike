@@ -116,7 +116,7 @@ async function getAllReleases(owner: string, repo: string, token: string): Promi
     // https://docs.github.com/en/rest/releases/releases#list-releases
     const releases = await githubRequest<Release[]>(
       `/repos/${owner}/${repo}/releases?per_page=${perPage}&page=${page}`,
-      { token }
+      { token },
     )
 
     if (releases.length === 0) break
