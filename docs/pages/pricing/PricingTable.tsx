@@ -36,7 +36,7 @@ function PricingTable() {
               <div className="pricing-inner-columns" style={{ columnGap: 40, rowGap: 15, flexWrap: 'wrap' }}>
                 <div className="pricing-section pricing-section-limited">
                   <SubHeading>
-                    Low financial resources<NoteRef>2</NoteRef>
+                    Small organization<NoteRef>2</NoteRef>
                   </SubHeading>
                   <Free />
                   <Check>Full access</Check>
@@ -48,7 +48,7 @@ function PricingTable() {
                 <SectionDivider />
                 <div className="pricing-section pricing-section-sufficient">
                   <SubHeading>
-                    High financial resources<NoteRef>2</NoteRef>
+                    Larger organization<NoteRef>2</NoteRef>
                   </SubHeading>
                   <Price
                     color="#2563eb"
@@ -69,26 +69,28 @@ function PricingTable() {
                     Forever access<NoteRef>4</NoteRef>
                   </Check>
                   <Check>
-                    <span style={{ color: colorFree, fontWeight: 700, fontSize: '1.1em' }}>Free</span> trial: 6 months +{' '}
+                    <span style={{ color: colorFree, fontWeight: 700, fontSize: '1.1em' }}>Free trial</span>: 6 months +{' '}
                     <Link href="/free">extendable</Link>
                   </Check>
                 </div>
               </div>
             </Column>
           </div>
-          <div style={{ marginLeft: 10, marginTop: 20 }}>
+          <div style={{ marginLeft: 10, marginTop: 20, maxWidth: 830 }}>
             <Note ref={1}>
-              Only developers who regularly contribute code: occasional contributors and bots don't count.
+              Developers who contribute code to your Vike app(s) regularly (occasional contributors, AI, and bots don't
+              count).
             </Note>
             <Note ref={2}>
-              Small organizations with few employees <Link href="/free#who-s-eligible">are eligible</Link> to use Vike
-              for free.
+              Organizations with few employees <Link href="/free#who-s-eligible">are eligible</Link> to use Vike for
+              free.
             </Note>
             <Note ref={3}>
-              License key isn't required: you use Vike like any regular open source tool — zero hurdle.
+              License key isn't required: you use Vike like any other open source tool, with zero friction.
             </Note>
             <Note ref={4}>
-              One-time payment for a lifetime license: valid forever, including all future Vike updates.
+              One-time payment for a lifetime license: valid forever (including all future Vike updates) for an
+              unlimited number of Vike apps.
             </Note>
           </div>
         </div>
@@ -122,7 +124,7 @@ function NoteRef({ children, style }: { children: string; style?: React.CSSPrope
 }
 function Note({ children, ref }: { children: React.ReactNode; ref: number }) {
   return (
-    <div style={{ color: colorNote, fontSize: '0.94em', lineHeight: 1.5 }}>
+    <div style={{ color: colorNote, fontSize: '0.94em', marginBottom: 5, lineHeight: 1.3 }}>
       ({ref}) {children}
     </div>
   )

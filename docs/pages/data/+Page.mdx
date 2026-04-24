@@ -24,16 +24,11 @@ export { data }
 export type Data = Awaited<ReturnType<typeof data>>
 
 import type { PageContextServer } from 'vike/types'
-// Note how we use `node-fetch`; this file is only run on the server-side, thus we don't need
-// to use an isomorphic (aka universal) implementation such as `cross-fetch`.
-import fetch from 'node-fetch'
 
 async function data(pageContext: PageContextServer) {
-  const response = await fetch('https://star-wars.brillout.com/api/films.json')
-  let { movies } = await response.json()
-  /* Or with an ORM:
-  let movies = await Movie.findAll() */
-  /* Or with SQL:
+  // With ORM:
+  let movies = await Movie.findAll()
+  /* With SQL:
   let movies = await sql.run('SELECT * FROM movies;') */
 
   // `movies` is serialized and passed to the client. Therefore, we pick only the
@@ -61,7 +56,6 @@ export { data }
 export type Data = Awaited<ReturnType<typeof data>>
 
 import type { PageContextServer } from 'vike/types'
-import fetch from 'node-fetch'
 import { render, redirect } from 'vike/abort'
 
 async function data(pageContext: PageContextServer) {

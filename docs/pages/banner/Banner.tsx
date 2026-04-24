@@ -6,7 +6,10 @@ export { BannerVikings }
 
 import React from 'react'
 import vikeLogo from '../../assets/logo/vike-shadow.svg'
+import '../index/tailwind.css'
 import './Banner.css'
+import GradientText from '../index/components/GradientText'
+import { heroTaglineSecondary } from '../index/sections/Intro/Hero'
 
 function Banner() {
   return <BannerCommon />
@@ -15,37 +18,16 @@ function BannerCover() {
   return <BannerCommon logo={false} />
 }
 function BannerMinimal() {
-  return <BannerMinimalCommon style={{ background: 'white' }} styleH1={{ color: '#000' }} />
+  return <BannerMinimalCommon style={{ background: 'white' }} />
 }
 function BannerMinimalBlack() {
-  return <BannerMinimalCommon style={{ background: 'black' }} styleH1={{ color: '#eee' }} />
+  return <BannerMinimalCommon style={{ background: 'black' }} />
 }
-function BannerMinimalCommon({
-  style,
-  styleH1,
-}: {
-  style?: React.CSSProperties
-  styleH1?: React.CSSProperties
-}) {
-  return (
-    <BannerCommon
-      logo={false}
-      taglineSecondaryStyle={{ display: 'none' }}
-      logoScale={1.1}
-      style={style}
-      styleH1={styleH1}
-    />
-  )
+function BannerMinimalCommon({ style }: { style?: React.CSSProperties }) {
+  return <BannerCommon logo={false} logoScale={1.1} style={style} />
 }
 function BannerSlides() {
-  return (
-    <BannerCommon
-      taglineSecondary="Composable framework to build advanced applications"
-      taglineSecondaryStyle={{ marginTop: -20 }}
-      taglineStyle={{ marginTop: -20 }}
-      style={{ background: 'white' }}
-    />
-  )
+  return <BannerCommon style={{ background: 'white' }} />
 }
 function BannerVikings() {
   return (
@@ -79,29 +61,23 @@ function BannerVikings() {
 
 function BannerCommon({
   style,
-  styleH1,
   logo,
   logoText = 'Vike',
   logoScale = 1.3,
   logoStyle,
   logoTextStyle,
-  taglineStyle,
-  taglineSecondary,
-  taglineSecondaryStyle,
 }: {
   style?: React.CSSProperties
-  styleH1?: React.CSSProperties
   logo?: boolean
   logoText?: string
   logoScale?: number
   logoStyle?: React.CSSProperties
   logoTextStyle?: React.CSSProperties
-  taglineStyle?: React.CSSProperties
-  taglineSecondary?: string
-  taglineSecondaryStyle?: React.CSSProperties
 }) {
   return (
     <div
+      id="tailwind-portal"
+      data-theme="vike"
       style={{
         display: 'flex',
         alignItems: 'center',
@@ -116,8 +92,9 @@ function BannerCommon({
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          // Don't center completely
-          marginTop: -8,
+          gap: 24,
+          padding: '0 24px',
+          zoom: 1.2,
         }}
       >
         {logo !== false && (
@@ -125,8 +102,8 @@ function BannerCommon({
             style={{
               display: 'flex',
               alignItems: 'center',
-              marginBottom: -7,
-              marginLeft: -25,
+              marginLeft: -10,
+              marginBottom: -10,
             }}
           >
             <img
@@ -134,8 +111,6 @@ function BannerCommon({
               style={{
                 height: 60 * logoScale,
                 objectFit: 'contain',
-                marginTop: -8,
-                marginRight: 14,
                 ...logoStyle,
               }}
             />
@@ -143,11 +118,10 @@ function BannerCommon({
               className="logo-font"
               style={{
                 fontSize: 40 * logoScale,
-                letterSpacing: '-0.01em',
-                marginLeft: -10,
-                fontWeight: 380,
-                color: '#555',
+                fontWeight: 440,
+                color: '#666',
                 lineHeight: '1.2em',
+                marginLeft: -1,
                 ...logoTextStyle,
               }}
             >
@@ -155,8 +129,22 @@ function BannerCommon({
             </span>
           </div>
         )}
-        {logo !== true && 'TO-DO: insert new hero'}
+        {logo !== true && (
+          <div className="text-center flex flex-col items-center" style={{ gap: 13, maxWidth: 750 }}>
+            <Hero />
+          </div>
+        )}
       </div>
     </div>
   )
 }
+
+const Hero = () => (
+  <>
+    <h1 className="text-6xl! font-bold mx-auto leading-16">
+      Framework for <br />
+      <GradientText color="blue">Stability</GradientText> and <GradientText color="green">Freedom</GradientText>
+    </h1>
+    <p className="text-base md:text-2xl text-grey text-center mx-auto mb-6 mt-4">{heroTaglineSecondary}</p>
+  </>
+)

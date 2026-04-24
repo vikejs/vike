@@ -145,7 +145,6 @@ export default '/star-wars/@movieId'
 export { data }
 export type Data = Awaited<ReturnType<typeof data>>
 
-import fetch from 'node-fetch';
 import type { PageContextServer } from 'vike/types'
 
 async function data(pageContext: PageContextServer) {

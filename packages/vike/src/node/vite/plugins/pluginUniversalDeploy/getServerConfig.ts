@@ -44,10 +44,10 @@ function getServerConfig(vikeConfig: VikeConfigInternal) {
 
 function isUniversalDeployVitePreview(vikeConfig: VikeConfigInternal, viteConfigResolved: ResolvedConfig) {
   const isServerConfig = getServerConfig(vikeConfig)
-  if (!isServerConfig) return false
+  if (!isServerConfig) return null // not UD
 
   // @universal-deploy/node -> real preview
   // else -> vite preview
-  const udNodePlugin = viteConfigResolved.plugins.find((p) => p.name.startsWith('ud:node:emit'))
+  const udNodePlugin = viteConfigResolved.plugins.find((p) => p.name.match(/^ud:node:(?!.*:disabled$)/))
   return !udNodePlugin
 }

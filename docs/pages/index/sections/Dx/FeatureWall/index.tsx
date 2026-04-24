@@ -11,7 +11,7 @@ const FeatureWall = () => {
       $size="xl"
     >
       <H2Headline as="h3" className="mb-10 text-center col-span-full">
-        Full-fledged
+        Jam-packed
       </H2Headline>
       {features.map((feature, featureIndex) => {
         const Icon = feature.icon

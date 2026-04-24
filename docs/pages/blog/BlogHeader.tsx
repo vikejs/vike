@@ -2,8 +2,23 @@ export { BlogHeader }
 
 import { getMaintainer, getMaintainerAvatar, type Maintainer, type MaintainerUsername } from '../team/maintainersList'
 import React from 'react'
+import { iconBluesky, iconTwitter, iconLinkedin } from '@brillout/docpress'
 
-function BlogHeader({ authors, date }: { authors: MaintainerUsername[]; date: Date }) {
+type Social = {
+  bluesky?: string
+  twitter?: string
+  linkedin?: string
+}
+
+function BlogHeader({
+  authors,
+  date,
+  social,
+}: {
+  authors: MaintainerUsername[]
+  date: Date
+  social?: Social
+}) {
   const maintainers = authors.map(getMaintainer)
   return (
     <div
@@ -12,7 +27,7 @@ function BlogHeader({ authors, date }: { authors: MaintainerUsername[]; date: Da
         marginBottom: 24,
         display: 'flex',
         flexWrap: 'wrap',
-        alignItems: 'flex-start',
+        alignItems: social ? 'center' : 'flex-start',
         justifyContent: 'space-between',
         gap: 16,
       }}
@@ -31,17 +46,26 @@ function BlogHeader({ authors, date }: { authors: MaintainerUsername[]; date: Da
       </div>
       <div
         style={{
-          color: '#999',
-          fontWeight: 400,
-          fontSize: 15,
-          fontStyle: 'italic',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-end',
         }}
       >
-        {date.toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        })}
+        <div
+          style={{
+            color: '#777',
+            fontWeight: 400,
+            fontSize: 15,
+            fontStyle: 'italic',
+          }}
+        >
+          {date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          })}
+        </div>
+        {social && <SocialLinks social={social} />}
       </div>
     </div>
   )
@@ -89,6 +113,42 @@ function Author({ maintainer }: { maintainer: Maintainer }) {
         <div style={{ fontWeight: 600, fontSize: 14, color: '#333' }}>{maintainer.firstName}</div>
         <div style={{ fontSize: 12, color: '#666' }}>{maintainer.username}</div>
       </div>
+    </a>
+  )
+}
+
+function SocialLinks({ social }: { social: Social }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+      {social.bluesky && <SocialLink href={social.bluesky} label="Bluesky" icon={iconBluesky} />}
+      {social.twitter && <SocialLink href={social.twitter} label="X" icon={iconTwitter} />}
+      {social.linkedin && <SocialLink href={social.linkedin} label="LinkedIn" icon={iconLinkedin} />}
+    </div>
+  )
+}
+
+function SocialLink({ href, label, icon }: { href: string; label: 'Bluesky' | 'X' | 'LinkedIn'; icon: string }) {
+  const size = 18
+  const padding = 2
+  const sizeOuter = size + padding * 2
+  return (
+    <a
+      className="colorize-on-hover"
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <img
+        className={`decolorize-${label === 'X' ? 4 : 6}`}
+        src={icon}
+        style={{ height: sizeOuter, width: sizeOuter, padding }}
+        alt={label}
+      />
     </a>
   )
 }

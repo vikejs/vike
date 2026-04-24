@@ -1,6 +1,7 @@
 = TO-DO/after-open-source-pricing
 - Add assertWarning() deprecations:
   - `pageContext.exports`
+  - `pageContext.pageExports`
   - `pageContext.configEntries`
 - Soft deprecate returning `pageContext` from `onBeforeRender()`
   - Also `documentHtml` — use pageContext.html instead
@@ -20,6 +21,7 @@
 - Remove TS helpers such as OnRenderHtmlAsync https://vike.dev/onRenderHtml#typescript
 - Make routing fully sync
   - Forbid async Route Functions
+- Move all extensions to @vikejs
 == Prio
 - pageContext.url + soft deprecate pageContext.urlParsed
   - Recommend users to `$ rename urlParsed url` (grep w/ sed + @brillout/replace)

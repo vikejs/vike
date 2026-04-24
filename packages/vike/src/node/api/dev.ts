@@ -7,12 +7,9 @@ import { createServer, type ResolvedConfig, type ViteDevServer } from 'vite'
 import type { ApiOptions } from './types.js'
 import { assert } from '../../utils/assert.js'
 import { assertIsNotProductionRuntime } from '../../utils/assertSetup.js'
-import { colorVike } from '../../utils/colorsClient.js'
-import { colorVite } from '../../utils/colorsServer.js'
-import { PROJECT_VERSION } from '../../utils/PROJECT_VERSION.js'
 import pc from '@brillout/picocolors'
-import { processStartupLog } from '../vite/shared/loggerVite.js'
 import './assertEnvApiDev.js'
+import { getStartupLogFirstLine } from './getStartupLogFirstLine.js'
 assertIsNotProductionRuntime()
 
 /**
@@ -46,22 +43,11 @@ async function dev(
   }
 }
 
-const startTime = performance.now()
 async function startupLog(resolvedUrls: ResolvedServerUrls, viteServer: ViteDevServer) {
   const viteConfig = viteServer.config
-  const viteVersion = viteConfig._viteVersionResolved
-  assert(viteVersion)
 
-  const startupDurationString = pc.dim(
-    `ready in ${pc.reset(pc.bold(String(Math.ceil(performance.now() - startTime))))} ms`,
-  )
-  const sep = pc.dim('·' as '-')
-  const firstLine =
-    `\n  ${colorVike('Vike')} ${pc.yellow(`v${PROJECT_VERSION}`)} ${sep} ${colorVite('Vite')} ${pc.cyan(`v${viteVersion}`)} ${sep} ${startupDurationString}\n` as const
-
-  const ret = processStartupLog(firstLine, viteConfig)
-  console.log(ret.firstLine)
-  const { isCompact } = ret
+  const { startupLogFirstLine, isStartupLogCompact } = getStartupLogFirstLine(viteConfig)
+  console.log(startupLogFirstLine)
 
   // We don't call viteServer.printUrls() because Vite throws an error if `resolvedUrls` is missing:
   // https://github.com/vitejs/vite/blob/df5a30d2690a2ebc4824a79becdcef30538dc602/packages/vite/src/node/server/index.ts#L745
@@ -69,7 +55,7 @@ async function startupLog(resolvedUrls: ResolvedServerUrls, viteServer: ViteDevS
 
   viteServer.bindCLIShortcuts({ print: true })
 
-  if (!isCompact) console.log()
+  if (!isStartupLogCompact) console.log()
 }
 
 // Copied & adapted from Vite

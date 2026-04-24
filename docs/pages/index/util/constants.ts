@@ -13,7 +13,6 @@ import solidImg from '../assets/tech-icons/solid.svg'
 import freedomUspImg from '../assets/usp-freedom.svg'
 import stabilityUspImg from '../assets/usp-stability.svg'
 import lightningDxUspImg from '../assets/usp-lightning-dx.svg'
-import { BrickWallShield, LucideIcon, ShoppingCart } from 'lucide-react'
 
 export { freedomUspImg, stabilityUspImg, lightningDxUspImg }
 
@@ -108,9 +107,9 @@ type Usp = {
   dotColor: UiColorVariantKey
 }
 
-export const taglineFreedom = 'Build with minimal limitations.'
-export const taglineStability = 'Build on a stable foundation you can rely on.'
-export const taglineDX = 'State-of-the-art and novel Developer Experiences.'
+export const taglineFreedom = 'Build without limits.'
+export const taglineStability = 'Build on a stable foundation.'
+export const taglineDX = 'State-of-the-art and novel DX.'
 
 export const landingPageHeroUsps: Usp[] = [
   {

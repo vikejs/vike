@@ -2,6 +2,7 @@ export { pluginModuleBanner }
 
 import type { ResolvedConfig, Plugin } from 'vite'
 import { assert } from '../../../../utils/assert.js'
+import { isVersionMatch } from '../../../../utils/assertVersion.js'
 import { removeVirtualFileIdPrefix } from '../../../../utils/virtualFileId.js'
 import { getMagicString } from '../../shared/getMagicString.js'
 import '../../assertEnvVite.js'
@@ -58,9 +59,18 @@ function pluginModuleBanner(): Plugin[] {
 function checkIsEnabled(config: ResolvedConfig) {
   const { minify } = config.build
   assert(minify === false || minify, { minify })
-  const isEnabled = !minify
+  const isEnabled = !minify && !hasNativeModuleRegions(config)
   // Avoid the legal comments inserted in the transform() hook to be removed.
   // https://github.com/vitejs/vite/issues/21085#issuecomment-3502781005
   if (isEnabled && config.esbuild) config.esbuild.legalComments = 'inline'
   return isEnabled
+}
+
+// Vite 8 / Rolldown already emits native `//#region /path/...` markers for non-minified builds.
+// - https://github.com/vitejs/vite/issues/21228#issuecomment-3627899741
+// - TO-DO/eventually: remove this file once Vike requires Vite 8 or above
+function hasNativeModuleRegions(config: ResolvedConfig) {
+  const viteVersion = config._viteVersionResolved
+  assert(viteVersion)
+  return isVersionMatch(viteVersion, ['8.0.0'])
 }

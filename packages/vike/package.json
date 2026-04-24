@@ -1,6 +1,6 @@
 {
   "name": "vike",
-  "version": "0.4.257",
+  "version": "0.4.258",
   "repository": "https://github.com/vikejs/vike",
   "exports": {
     "./server": {
@@ -133,7 +133,7 @@
     "@brillout/picocolors": "^1.0.30",
     "@brillout/vite-plugin-server-entry": "0.7.18",
     "@universal-deploy/store": "^0.2.1",
-    "@universal-deploy/vite": "^0.1.6",
+    "@universal-deploy/vite": "^0.1.7",
     "@universal-middleware/core": "^0.4.17",
     "@universal-middleware/node": "^0.1.0",
     "cac": "^6.0.0",
@@ -262,7 +262,7 @@
     "./fetch.js"
   ],
   "devDependencies": {
-    "@brillout/release-me": "^0.4.13",
+    "@brillout/release-me": "^0.4.15",
     "@types/babel__core": "^7.20.5",
     "@types/estree": "^1.0.5",
     "@types/node": "^20.10.5",

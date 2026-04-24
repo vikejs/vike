@@ -758,7 +758,7 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Introducing Universal Deploy',
+    title: 'Introducing Universal Deploy (`+server`)',
     url: '/blog/universal-deploy',
   },
   {

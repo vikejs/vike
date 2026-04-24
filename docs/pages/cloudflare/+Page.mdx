@@ -86,6 +86,8 @@ export default {
 
 If you didn't already, <Link href="/server">create `+server.js` or set `+server` to `true`.</Link>
 
+> You can export Durable Objects inside `+server.js`, see section below <Link href="#durable-objects" />.
+
 
 ## Cloudflare APIs
 
@@ -154,6 +156,34 @@ env.LOG_LEVEL
 > console.log(globalContext.logLevel)
 > ```
 
+## Durable Objects
+
+You can export [Durable Objects](https://developers.cloudflare.com/durable-objects) inside your <Link href="/server">`+server.js`</Link> file:
+
+```ts
+// +server.ts
+
+// ...
+
+export class MyDurableObject extends DurableObject { // [!code ++]
+  // ... // [!code ++]
+} // [!code ++]
+```
+
+> If you use Vike's built-in server (<Link href="/server#server-true">`+server: true`</Link>), then define the following `+server.js` instead:
+>
+> ```ts
+> // +server.ts
+>
+> // 1. Use Vike's built-in server
+> import vike from 'vike/fetch'
+> export default vike
+>
+> // 2. Export Durable Object
+> export class MyDurableObject extends DurableObject {
+>   // ...
+> }
+> ```
 
 ## TypeScript
 
@@ -219,8 +249,6 @@ You can define a fetch function at `pageContext.fetch` that works in all environ
 The trick is to add a different `fetch()` implementation to `pageContextInit` at <Link text={<code>renderPage(pageContextInit)</code>} href="/renderPage" />.
 
 Example: <RepoLink path='/examples/cloudflare-workers-react-full#universal-fetch' />.
-
-> Libraries such as `node-fetch` or `cross-fetch` typically don't work with Cloudflare Workers.
 
 
 ## See also

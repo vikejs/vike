@@ -4,7 +4,7 @@ export type { PlusFile }
 export type { PlusFilesByLocationId }
 
 import { assert } from '../../../../utils/assert.js'
-import { configDefinitionsBuiltIn } from './configDefinitionsBuiltIn.js'
+import { metaBuiltIn } from './metaBuiltIn.js'
 import { type LocationId, getLocationId } from './filesystemRouting.js'
 import { type EsbuildCache } from './transpileAndExecuteFile.js'
 import { crawlPlusFilePaths, getPlusFileValueConfigName } from './crawlPlusFilePaths.js'
@@ -128,7 +128,7 @@ async function getPlusFilesByLocationId(
         // We don't have access to the custom config definitions defined by the user yet.
         //  - If `configDef` is `undefined` => we load the file +{configName}.js later.
         //  - We already need to load +meta.js here (to get the custom config definitions defined by the user)
-        await loadValueFile(plusFile, configDefinitionsBuiltIn, userRootDir, esbuildCache)
+        await loadValueFile(plusFile, metaBuiltIn, userRootDir, esbuildCache)
       }
     }),
   )

@@ -17,7 +17,6 @@ You can fetch the initial data of a page by using <Link href="/data">Vike's `+da
 export { data }
 export type Data = Awaited<ReturnType<typeof data>>
 
-import fetch from 'node-fetch'
 import type { PageContextServer } from 'vike/types'
 
 async function data(pageContext: PageContextServer) {
@@ -29,7 +28,7 @@ async function data(pageContext: PageContextServer) {
   // data the client needs in order to minimize what is sent over the network.
   movie = { title: movie.title, release_date: movie.release_date }
 
-  // data() runs only on the server-side by default, we can therefore use ORM/SQL queries.
+  // By default, +data runs only on the server-side, we can therefore use ORM/SQL queries.
   /* With an ORM:
   const movies = await Movie.findAll({ select: ['title', 'release_date'] }) */
   /* With SQL:
@@ -108,7 +107,7 @@ With Vike, you can manually integrate GraphQL tools yourself, giving you complet
 
 ## Pre-rendering (SSG)
 
-For <Link href="/pre-rendering">pre-rendered pages / SSG apps</Link>, in order to fetch dynamic data from an external server, make sure to load and execute `data()` only on the client-side, see <Link href="/data#environment" />.
+For <Link href="/pre-rendering">pre-rendered pages / SSG apps</Link>, in order to fetch dynamic data from an external server, make sure to load and execute `+data` only on the client-side, see <Link href="/data#environment" />.
 
 
 ## Global data

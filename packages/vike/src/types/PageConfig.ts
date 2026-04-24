@@ -25,7 +25,7 @@ export type { VirtualFileExportsPageEntry }
 import type { ConfigValueSerialized } from '../shared-server-client/page-configs/serialize/PageConfigSerialized.js'
 import type { LocationId } from '../node/vite/shared/resolveVikeConfigInternal/filesystemRouting.js'
 import type { FilePath } from './FilePath.js'
-import type { ConfigDefinitionsInternal } from '../node/vite/shared/resolveVikeConfigInternal/configDefinitionsBuiltIn.js'
+import type { ConfigDefinitionsInternal } from '../node/vite/shared/resolveVikeConfigInternal/metaBuiltIn.js'
 import type { PlusFile } from '../node/vite/shared/resolveVikeConfigInternal/getPlusFilesByLocationId.js'
 import type { ApiOperation } from '../node/api/types.js'
 
