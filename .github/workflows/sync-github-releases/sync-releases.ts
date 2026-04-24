@@ -58,10 +58,7 @@ async function main(): Promise<void> {
 
   const token = getGithubToken()
 
-  // https://docs.github.com/en/rest/releases/releases#list-releases
-  const releases = await githubRequest<Release[]>(`/repos/${owner}/${repo}/releases?per_page=100`, {
-    token,
-  })
+  const releases = await getAllReleases(owner, repo, token)
 
   if (releases.length === 0) {
     // Publish releases that are in CHANGELOG but not published
@@ -108,6 +105,32 @@ async function main(): Promise<void> {
       await setTimeout(500)
     }
   }
+}
+
+async function getAllReleases(owner: string, repo: string, token: string): Promise<Release[]> {
+  const allReleases: Release[] = []
+  let page = 1
+  const perPage = 100
+
+  while (true) {
+    // https://docs.github.com/en/rest/releases/releases#list-releases
+    const releases = await githubRequest<Release[]>(
+      `/repos/${owner}/${repo}/releases?per_page=${perPage}&page=${page}`,
+      { token }
+    )
+
+    if (releases.length === 0) break
+
+    allReleases.push(...releases)
+
+    if (releases.length < perPage) break
+
+    page++
+
+    await setTimeout(500)
+  }
+
+  return allReleases
 }
 
 function getReleaseSections(changelog: string): ReleaseSections {
