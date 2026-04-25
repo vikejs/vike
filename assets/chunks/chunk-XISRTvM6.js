@@ -1,0 +1,5 @@
+import{j as e}from"./chunk-DwiNVRgZ.js";/* empty css              */import{W as s}from"./chunk-DWPyntoE.js";/* empty css              *//* empty css              *//* empty css              *//* empty css              *//* empty css              *//* empty css              */import{u as r}from"./chunk-J_XZ44Ks.js";function t(o){const n={a:"a",code:"code",li:"li",p:"p",ul:"ul",...r(),...o.components};return e.jsxs(s,{children:[e.jsxs(n.p,{children:["Because ",o.name," doesn't follow modern JavaScript standards (such as ",e.jsx(n.code,{children:"fetch"}),"), it currently doesn't work with the following:"]}),e.jsxs(n.ul,{children:[`
+`,e.jsx(n.li,{children:"Bun"}),`
+`,e.jsx(n.li,{children:"Deno"}),`
+`,e.jsx(n.li,{children:"Cloudflare"}),`
+`]}),e.jsxs(n.p,{children:["See also: ",e.jsxs(n.a,{href:"https://github.com/h3js/srvx/issues/132",children:["srvx#132 - ",e.jsx(n.code,{children:"toFetchHandler"})," do not work in Deno and Bun"]})]})]})}function j(o={}){const{wrapper:n}={...r(),...o.components};return n?e.jsx(n,{...o,children:e.jsx(t,{...o})}):t(o)}export{j as M};
