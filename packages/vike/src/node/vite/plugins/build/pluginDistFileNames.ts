@@ -292,7 +292,6 @@ function disableCSSBundlingViaCodeSplitting(config: ResolvedConfig) {
       test: /\.css$/,
       name: (moduleId: string) => getCssChunkName(moduleId, config) ?? null,
     })
-    console.log('codeSplitting', codeSplitting)
   }
 }
 // Track which codeSplitting objects have already received Vike's CSS group, to guard against double-injection.
