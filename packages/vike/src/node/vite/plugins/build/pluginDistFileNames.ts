@@ -54,6 +54,11 @@ function pluginDistFileNames(): Plugin[] {
               )
             }
 
+            // Vite 7 => disable CSS bundling, see: https://github.com/vikejs/vike/issues/1815
+            // Vite 8 doesn't support `manualChunks` when `codeSplitting` is used.
+            // - It does, however, support `manualChunks` if `codeSplitting` isn't used (despite what the following migration guide says)
+            // - https://vite.dev/guide/migration#removed-object-form-build-rollupoptions-output-manualchunks-and-deprecate-function-form-one
+            // - When `codeSplitting` is set as an object, the workaround is applied via addCssCodeSplittingGroup() instead.
             if (!isVite8OrAbove(config)) {
               const manualChunksOriginal = rollupOutput.manualChunks
               rollupOutput.manualChunks = function (id, ...args) {
@@ -74,6 +79,8 @@ function pluginDistFileNames(): Plugin[] {
             }
           })
 
+          // TO-DO/eventually: we should probably show a warning, because Vite 8 still builds the client and server separately (potentially leading to the CSS duplication bug):
+          // https://github.com/vitejs/ecosystem/issues/6
           if (isVite8OrAbove(config)) {
             addCssCodeSplittingGroup(config)
           }
@@ -255,22 +262,6 @@ function getRollupOutputs(config: ResolvedConfig) {
     return [output]
   }
   return output
-}
-
-function disableCSSBundling(config: ResolvedConfig) {
-  // Vite 7 => disable CSS bundling, see: https://github.com/vikejs/vike/issues/1815
-  if (!isVite8OrAbove(config)) return true
-
-  // Vite 8 doesn't support `manualChunks` when `codeSplitting` is used.
-  // - It does, however, support `manualChunks` if `codeSplitting` isn't used (despite what the following migration guide says)
-  // - https://vite.dev/guide/migration#removed-object-form-build-rollupoptions-output-manualchunks-and-deprecate-function-form-one
-  // - When `codeSplitting` is set as an object, the workaround is applied via addCssCodeSplittingGroup() instead.
-  // @ts-ignore
-  if (!config.build?.rolldownOptions?.output?.codeSplitting) return true
-
-  // TO-DO/eventually: we should probably show a warning, because Vite 8 still builds the client and server separately (potentially leading to the CSS duplication bug):
-  // https://github.com/vitejs/ecosystem/issues/6
-  return false
 }
 
 // Inject a CSS-bundling group into `rolldownOptions.output.codeSplitting.groups` for Vite 8 users
