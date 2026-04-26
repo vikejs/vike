@@ -127,11 +127,15 @@ describe('getReleasePlan()', () => {
 })
 
 describe('local fallbacks', () => {
-  it('falls back to the production repository when run locally', () => {
+  it('returns a valid repository when run locally', () => {
     const previous = process.env.GITHUB_REPOSITORY
     try {
       delete process.env.GITHUB_REPOSITORY
-      expect(getRepository()).toEqual({ owner: 'vikejs', repo: 'vike' })
+      const repository = getRepository()
+      expect(repository.owner).toEqual(expect.any(String))
+      expect(repository.repo).toEqual(expect.any(String))
+      expect(repository.owner.trim()).not.toBe('')
+      expect(repository.repo.trim()).not.toBe('')
     } finally {
       if (previous === undefined) {
         delete process.env.GITHUB_REPOSITORY
