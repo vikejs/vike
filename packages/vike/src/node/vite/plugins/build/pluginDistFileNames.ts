@@ -272,7 +272,7 @@ function disableCSSBundlingViaCodeSplitting(config: ResolvedConfig) {
   if (!rolldownOutput) return
   const outputs = isArray(rolldownOutput) ? rolldownOutput : [rolldownOutput]
   for (const output of outputs) {
-    if (!output) continue
+    assert(output)
     let codeSplitting = output.codeSplitting
 
     // `codeSplitting: false` => user opted into single-bundle mode (all dynamic imports inlined into one bundle).
