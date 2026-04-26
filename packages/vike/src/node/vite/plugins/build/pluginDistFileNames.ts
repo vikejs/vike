@@ -259,6 +259,10 @@ function disableCSSBundlingViaManualChunks(config: ResolvedConfig, rollupOutput:
   }
 }
 
+// Track which codeSplitting objects have already received Vike's CSS group, to guard against double-injection.
+// We can't tag the codeSplitting object directly because Rolldown rejects unknown keys with "Invalid output options".
+const codeSplittingWithVikeCssGroup = new WeakSet<object>()
+
 // Workaround for Vite CSS duplication bug: https://github.com/vikejs/vike/issues/1815
 // - Inject a CSS-bundling group into `rolldownOptions.output.codeSplitting.groups` for Vite 8 users who set `codeSplitting`.
 // - Vite 8 doesn't support `manualChunks` when `codeSplitting` is used.
@@ -286,9 +290,8 @@ function disableCSSBundlingViaCodeSplitting(config: ResolvedConfig) {
 
     assert(codeSplitting && typeof codeSplitting === 'object', { codeSplitting })
 
-    // Guard against double-injection — same rationale as `isTheOneSetByVike` above
-    if (codeSplitting.hasVikeCssGroup) continue
-    codeSplitting.hasVikeCssGroup = true
+    if (codeSplittingWithVikeCssGroup.has(codeSplitting)) continue
+    codeSplittingWithVikeCssGroup.add(codeSplitting)
     codeSplitting.groups ??= []
     codeSplitting.groups.push({
       test: /\.css$/,
