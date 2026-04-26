@@ -269,7 +269,7 @@ function disableCSSBundlingViaCodeSplitting(config: ResolvedConfig) {
   if (!isVite8OrAbove(config)) return
   // @ts-ignore
   const rolldownOutput = config.build?.rolldownOptions?.output
-  if (!rolldownOutput) return
+  assert(rolldownOutput)
   const outputs = isArray(rolldownOutput) ? rolldownOutput : [rolldownOutput]
   for (const output of outputs) {
     assert(output)
