@@ -240,23 +240,23 @@ function getRollupOutputs(config: ResolvedConfig) {
 
 // Workaround for Vite CSS duplication bug: https://github.com/vikejs/vike/issues/1815
 function disableCSSBundlingViaManualChunks(config: ResolvedConfig, rollupOutput: Rollup.OutputOptions) {
-            if (isVite8OrAbove(config)) return
-              const manualChunksOriginal = rollupOutput.manualChunks
-              rollupOutput.manualChunks = function (id, ...args) {
-                if (manualChunksOriginal) {
-                  if (isCallable(manualChunksOriginal)) {
-                    const result = manualChunksOriginal.call(this, id, ...args)
-                    if (result !== undefined) return result
-                  } else {
-                    assertUsage(
-                      false,
-                      "The Vite's configuration build.rollupOptions.output.manualChunks must be a function. Reach out if you need to set it to another value.",
-                    )
-                  }
-                }
+  if (isVite8OrAbove(config)) return
+  const manualChunksOriginal = rollupOutput.manualChunks
+  rollupOutput.manualChunks = function (id, ...args) {
+    if (manualChunksOriginal) {
+      if (isCallable(manualChunksOriginal)) {
+        const result = manualChunksOriginal.call(this, id, ...args)
+        if (result !== undefined) return result
+      } else {
+        assertUsage(
+          false,
+          "The Vite's configuration build.rollupOptions.output.manualChunks must be a function. Reach out if you need to set it to another value.",
+        )
+      }
+    }
 
-                return getCssChunkName(id, config)
-              }
+    return getCssChunkName(id, config)
+  }
 }
 
 // Workaround for Vite CSS duplication bug: https://github.com/vikejs/vike/issues/1815
