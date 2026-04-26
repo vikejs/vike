@@ -278,17 +278,15 @@ function disableCSSBundlingViaCodeSplitting(config: ResolvedConfig) {
   const outputs = isArray(rolldownOutput) ? rolldownOutput : [rolldownOutput]
   for (const output of outputs) {
     assert(output)
-    let codeSplitting = output.codeSplitting
+    let { codeSplitting } = output
 
     // `codeSplitting: false` => user opted into single-bundle mode (all dynamic imports inlined into one bundle).
     // Respect that — there are no chunks for the workaround to apply to.
     if (codeSplitting === false) continue
-
     // `codeSplitting: true` (or unset, since `true` is Rolldown's default) => upgrade to object form so the workaround can be injected.
     if (codeSplitting === true || codeSplitting === undefined) {
       codeSplitting = output.codeSplitting = {}
     }
-
     assert(codeSplitting && typeof codeSplitting === 'object')
 
     if (codeSplittingWithVikeCssGroup.has(codeSplitting)) continue
