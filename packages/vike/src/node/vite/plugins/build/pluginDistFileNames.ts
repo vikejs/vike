@@ -54,7 +54,7 @@ function pluginDistFileNames(): Plugin[] {
               )
             }
 
-            if (disableCSSBundling(config)) {
+            if (!isVite8OrAbove(config)) {
               const manualChunksOriginal = rollupOutput.manualChunks
               rollupOutput.manualChunks = function (id, ...args) {
                 if (manualChunksOriginal) {
@@ -74,7 +74,9 @@ function pluginDistFileNames(): Plugin[] {
             }
           })
 
-          addCssCodeSplittingGroup(config)
+          if (isVite8OrAbove(config)) {
+            addCssCodeSplittingGroup(config)
+          }
         },
       },
     },
