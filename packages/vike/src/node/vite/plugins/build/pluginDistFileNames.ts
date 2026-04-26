@@ -296,6 +296,7 @@ function disableCSSBundlingViaCodeSplitting(config: ResolvedConfig) {
       test: /\.css$/,
       name: (moduleId: string) => getCssChunkName(moduleId, config) ?? null,
     })
+    console.log('codeSplitting', codeSplitting)
   }
 }
 
