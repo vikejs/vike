@@ -271,6 +271,7 @@ const codeSplittingWithVikeCssGroup = new WeakSet<object>()
 // - The group is appended with default priority — user-defined groups with the same priority appear earlier in the array and win the match (https://rolldown.rs/options/output-advanced-chunks), preserving the same precedence as the manualChunks wrapper above.
 function disableCSSBundlingViaCodeSplitting(config: ResolvedConfig) {
   if (!isVite8OrAbove(config)) return
+
   // @ts-ignore
   const rolldownOutput = config.build?.rolldownOptions?.output
   assert(rolldownOutput)
@@ -288,7 +289,7 @@ function disableCSSBundlingViaCodeSplitting(config: ResolvedConfig) {
       codeSplitting = output.codeSplitting = {}
     }
 
-    assert(codeSplitting && typeof codeSplitting === 'object', { codeSplitting })
+    assert(codeSplitting && typeof codeSplitting === 'object')
 
     if (codeSplittingWithVikeCssGroup.has(codeSplitting)) continue
     codeSplittingWithVikeCssGroup.add(codeSplitting)
