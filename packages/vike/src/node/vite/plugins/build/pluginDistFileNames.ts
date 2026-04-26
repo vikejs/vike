@@ -54,29 +54,10 @@ function pluginDistFileNames(): Plugin[] {
               )
             }
 
-            if (!isVite8OrAbove(config)) {
-              const manualChunksOriginal = rollupOutput.manualChunks
-              rollupOutput.manualChunks = function (id, ...args) {
-                if (manualChunksOriginal) {
-                  if (isCallable(manualChunksOriginal)) {
-                    const result = manualChunksOriginal.call(this, id, ...args)
-                    if (result !== undefined) return result
-                  } else {
-                    assertUsage(
-                      false,
-                      "The Vite's configuration build.rollupOptions.output.manualChunks must be a function. Reach out if you need to set it to another value.",
-                    )
-                  }
-                }
-
-                return getCssChunkName(id, config)
-              }
-            }
+            disableCSSBundlingViaManualChunks(config, rollupOutput)
           })
 
-          if (isVite8OrAbove(config)) {
-            addCssCodeSplittingGroup(config)
-          }
+          disableCSSBundlingViaCodeSplitting(config)
         },
       },
     },
@@ -257,28 +238,34 @@ function getRollupOutputs(config: ResolvedConfig) {
   return output
 }
 
-function disableCSSBundling(config: ResolvedConfig) {
-  // Vite 7 => disable CSS bundling, see: https://github.com/vikejs/vike/issues/1815
-  if (!isVite8OrAbove(config)) return true
+// Workaround for Vite CSS duplication bug: https://github.com/vikejs/vike/issues/1815
+function disableCSSBundlingViaManualChunks(config: ResolvedConfig, rollupOutput: Rollup.OutputOptions) {
+            if (isVite8OrAbove(config)) return
+              const manualChunksOriginal = rollupOutput.manualChunks
+              rollupOutput.manualChunks = function (id, ...args) {
+                if (manualChunksOriginal) {
+                  if (isCallable(manualChunksOriginal)) {
+                    const result = manualChunksOriginal.call(this, id, ...args)
+                    if (result !== undefined) return result
+                  } else {
+                    assertUsage(
+                      false,
+                      "The Vite's configuration build.rollupOptions.output.manualChunks must be a function. Reach out if you need to set it to another value.",
+                    )
+                  }
+                }
 
-  // Vite 8 doesn't support `manualChunks` when `codeSplitting` is used.
-  // - It does, however, support `manualChunks` if `codeSplitting` isn't used (despite what the following migration guide says)
-  // - https://vite.dev/guide/migration#removed-object-form-build-rollupoptions-output-manualchunks-and-deprecate-function-form-one
-  // - When `codeSplitting` is set as an object, the workaround is applied via addCssCodeSplittingGroup() instead.
-  // @ts-ignore
-  if (!config.build?.rolldownOptions?.output?.codeSplitting) return true
-
-  // TO-DO/eventually: we should probably show a warning, because Vite 8 still builds the client and server separately (potentially leading to the CSS duplication bug):
-  // https://github.com/vitejs/ecosystem/issues/6
-  return false
+                return getCssChunkName(id, config)
+              }
 }
 
-// Inject a CSS-bundling group into `rolldownOptions.output.codeSplitting.groups` for Vite 8 users
-// who set `codeSplitting`. The group is appended with default priority — user-defined groups with
-// the same priority appear earlier in the array and win the match (https://rolldown.rs/options/output-advanced-chunks),
-// preserving the same precedence as the manualChunks wrapper above.
-// Workaround for: https://github.com/vikejs/vike/issues/1815
-function addCssCodeSplittingGroup(config: ResolvedConfig) {
+// Workaround for Vite CSS duplication bug: https://github.com/vikejs/vike/issues/1815
+// - Inject a CSS-bundling group into `rolldownOptions.output.codeSplitting.groups` for Vite 8 users who set `codeSplitting`.
+// - Vite 8 doesn't support `manualChunks` when `codeSplitting` is used.
+//   - It does, however, support `manualChunks` if `codeSplitting` isn't used (despite what the following migration guide says).
+//   - https://vite.dev/guide/migration#removed-object-form-build-rollupoptions-output-manualchunks-and-deprecate-function-form-one
+// - The group is appended with default priority — user-defined groups with the same priority appear earlier in the array and win the match (https://rolldown.rs/options/output-advanced-chunks), preserving the same precedence as the manualChunks wrapper above.
+function disableCSSBundlingViaCodeSplitting(config: ResolvedConfig) {
   if (!isVite8OrAbove(config)) return
   // @ts-ignore
   const rolldownOutput = config.build?.rolldownOptions?.output
