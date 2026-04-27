@@ -240,7 +240,12 @@ function getRollupOutputs(config: ResolvedConfig) {
 
 // Workaround for Vite CSS duplication bug: https://github.com/vikejs/vike/issues/1815
 function disableCSSBundlingViaManualChunks(config: ResolvedConfig, rollupOutput: Rollup.OutputOptions) {
-  if (isVite8OrAbove(config)) return
+  // Use the codeSplitting branch instead when:
+  //  - the user explicitly set `codeSplitting` as an object (Rolldown ignores `manualChunks` in that case), OR
+  //  - the user explicitly set `codeSplitting: false` (single-bundle mode — the workaround doesn't apply).
+  // Otherwise (Vite 7, or Vite 8 with `codeSplitting` unset / `true`) we keep wrapping `manualChunks`:
+  // it preserves the user's own `manualChunks` function, and Rolldown auto-converts the wrapper to a group at runtime.
+  if (isVite8OrAbove(config) && hasExplicitCodeSplitting(config)) return
   const manualChunksOriginal = rollupOutput.manualChunks
   rollupOutput.manualChunks = function (id, ...args) {
     if (manualChunksOriginal) {
@@ -260,9 +265,9 @@ function disableCSSBundlingViaManualChunks(config: ResolvedConfig, rollupOutput:
 }
 
 // Workaround for Vite CSS duplication bug: https://github.com/vikejs/vike/issues/1815
-// - Inject a CSS-bundling group into `rolldownOptions.output.codeSplitting.groups` for Vite 8 users who set `codeSplitting`.
-// - Vite 8 doesn't support `manualChunks` when `codeSplitting` is used.
-//   - It does, however, support `manualChunks` if `codeSplitting` isn't used (despite what the following migration guide says).
+// - Inject a CSS-bundling group into `rolldownOptions.output.codeSplitting.groups` for Vite 8 users who set `codeSplitting` as an object.
+// - Vite 8 doesn't support `manualChunks` when `codeSplitting` is used as an object.
+//   - It does, however, support `manualChunks` if `codeSplitting` isn't used as an object (despite what the following migration guide says).
 //   - https://vite.dev/guide/migration#removed-object-form-build-rollupoptions-output-manualchunks-and-deprecate-function-form-one
 // - The group is appended with default priority — user-defined groups with the same priority appear earlier in the array and win the match (https://rolldown.rs/options/output-advanced-chunks), preserving the same precedence as the manualChunks wrapper above.
 function disableCSSBundlingViaCodeSplitting(config: ResolvedConfig) {
@@ -270,20 +275,16 @@ function disableCSSBundlingViaCodeSplitting(config: ResolvedConfig) {
 
   // @ts-ignore
   const rolldownOutput = config.build?.rolldownOptions?.output
-  assert(rolldownOutput)
+  if (!rolldownOutput) return
   const outputs = isArray(rolldownOutput) ? rolldownOutput : [rolldownOutput]
   for (const output of outputs) {
-    assert(output)
-    let { codeSplitting } = output
+    if (!output) continue
+    const { codeSplitting } = output
 
-    // `codeSplitting: false` => user opted into single-bundle mode (all dynamic imports inlined into one bundle).
-    // Respect that — there are no chunks for the workaround to apply to.
-    if (codeSplitting === false) continue
-    // `codeSplitting: true` (or unset, since `true` is Rolldown's default) => upgrade to object form so the workaround can be injected.
-    if (codeSplitting === true || codeSplitting === undefined) {
-      codeSplitting = output.codeSplitting = {}
-    }
-    assert(codeSplitting && typeof codeSplitting === 'object')
+    // Only inject when the user explicitly set `codeSplitting` as an object.
+    // - `codeSplitting: false` => single-bundle mode; respect it.
+    // - `codeSplitting: true` / unset => the manualChunks wrapper handles it (Rolldown auto-converts it to a group).
+    if (!codeSplitting || typeof codeSplitting !== 'object') continue
 
     if (codeSplittingWithVikeCssGroup.has(codeSplitting)) continue
     codeSplittingWithVikeCssGroup.add(codeSplitting)
@@ -293,6 +294,20 @@ function disableCSSBundlingViaCodeSplitting(config: ResolvedConfig) {
       name: (moduleId: string) => getCssChunkName(moduleId, config) ?? null,
     })
   }
+}
+
+// Returns true when the user explicitly set `codeSplitting` (object form or `false`) on any output.
+// In those cases `disableCSSBundlingViaManualChunks` defers to `disableCSSBundlingViaCodeSplitting` (or skips entirely).
+function hasExplicitCodeSplitting(config: ResolvedConfig): boolean {
+  // @ts-ignore
+  const rolldownOutput = config.build?.rolldownOptions?.output
+  if (!rolldownOutput) return false
+  const outputs = isArray(rolldownOutput) ? rolldownOutput : [rolldownOutput]
+  return outputs.some((output) => {
+    if (!output) return false
+    const cs = output.codeSplitting
+    return cs === false || (cs !== undefined && cs !== true && typeof cs === 'object')
+  })
 }
 // Track which codeSplitting objects have already received Vike's CSS group, to guard against double-injection.
 // We can't tag the codeSplitting object directly because Rolldown rejects unknown keys with "Invalid output options".
