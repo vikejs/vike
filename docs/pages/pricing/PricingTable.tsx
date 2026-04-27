@@ -214,6 +214,7 @@ function GreenCheckmark() {
 function BuyButton() {
   return (
     <a
+      // TODO/osp
       href="https://buy.stripe.com/REPLACE_WITH_PAYMENT_LINK_ID"
       style={{
         display: 'inline-block',
