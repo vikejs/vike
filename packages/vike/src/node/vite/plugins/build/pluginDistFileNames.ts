@@ -54,6 +54,9 @@ function pluginDistFileNames(): Plugin[] {
               )
             }
 
+            // TODO/ai:
+            // - Merge disableCSSBundlingViaManualChunks and disableCSSBundlingViaCodeSplitting in a single new function disableCSSBundling
+            // - For Vite 8 define manualChunks on build.rolldownOptions instead of build.rollupOptions
             disableCSSBundlingViaManualChunks(config, rollupOutput)
           })
 
