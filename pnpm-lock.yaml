@@ -912,9 +912,6 @@ importers:
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
-      vite8:
-        specifier: npm:vite@8
-        version: vite@8.0.7(@types/node@20.17.17)(esbuild@0.27.3)(jiti@2.6.1)(terser@5.38.1)(tsx@4.20.6)
 
   test:
     dependencies:
@@ -11107,7 +11104,7 @@ snapshots:
       '@vue/shared': 3.5.18
       estree-walker: 2.0.2
       magic-string: 0.30.21
-      postcss: 8.5.10
+      postcss: 8.5.8
       source-map-js: 1.2.1
 
   '@vue/compiler-sfc@3.5.30':
@@ -15097,26 +15094,11 @@ snapshots:
       terser: 5.38.1
       tsx: 4.20.6
 
-  vite@8.0.7(@types/node@20.17.17)(esbuild@0.27.3)(jiti@2.6.1)(terser@5.38.1)(tsx@4.20.6):
-    dependencies:
-      lightningcss: 1.32.0
-      picomatch: 4.0.4
-      postcss: 8.5.10
-      rolldown: 1.0.0-rc.13
-      tinyglobby: 0.2.16
-    optionalDependencies:
-      '@types/node': 20.17.17
-      esbuild: 0.27.3
-      fsevents: 2.3.3
-      jiti: 2.6.1
-      terser: 5.38.1
-      tsx: 4.20.6
-
   vite@8.0.7(@types/node@24.10.2)(esbuild@0.27.3)(jiti@2.6.1)(terser@5.38.1)(tsx@4.20.6):
     dependencies:
       lightningcss: 1.32.0
       picomatch: 4.0.4
-      postcss: 8.5.10
+      postcss: 8.5.8
       rolldown: 1.0.0-rc.13
       tinyglobby: 0.2.16
     optionalDependencies:
