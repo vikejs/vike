@@ -54,65 +54,10 @@ function pluginDistFileNames(): Plugin[] {
               )
             }
 
-            if (disableCSSBundling(config)) {
-              const manualChunksOriginal = rollupOutput.manualChunks
-              rollupOutput.manualChunks = function (id, ...args) {
-                if (manualChunksOriginal) {
-                  if (isCallable(manualChunksOriginal)) {
-                    const result = manualChunksOriginal.call(this, id, ...args)
-                    if (result !== undefined) return result
-                  } else {
-                    assertUsage(
-                      false,
-                      "The Vite's configuration build.rollupOptions.output.manualChunks must be a function. Reach out if you need to set it to another value.",
-                    )
-                  }
-                }
-
-                if (id.endsWith('.css')) {
-                  const userRootDir = config.root
-                  if (id.startsWith(userRootDir)) {
-                    assertPosixPath(id)
-                    assertModuleId(id)
-
-                    let name: string
-                    const isNodeModules = id.match(/node_modules\/([^\/]+)\/(?!.*node_modules)/)
-                    if (isNodeModules) {
-                      name = isNodeModules[1]!
-                    } else {
-                      const filePath = getFilePathToShowToUserModule(id, config)
-                      name = filePath
-                      name = name.split('.').slice(0, -1).join('.') // remove file extension
-                      name = name.split('/').filter(Boolean).join('_')
-                    }
-
-                    // Make fileHash the same between local development and CI
-                    const idStable = path.posix.relative(userRootDir, id)
-                    // Don't remove `?` queries because each `id` should belong to a unique bundle.
-                    const hash = getIdHash(idStable)
-
-                    return `${name}-${hash}`
-                  } else {
-                    let name: string
-                    const isVirtualModule = id.match(/virtual:([^:]+):/)
-                    if (isVirtualModule) {
-                      name = isVirtualModule[1]!
-                      assert(name)
-                    } else if (
-                      // https://github.com/vikejs/vike/issues/1818#issuecomment-2298478321
-                      id.startsWith('/__uno')
-                    ) {
-                      name = 'uno'
-                    } else {
-                      name = 'style'
-                    }
-                    const hash = getIdHash(id)
-                    return `${name}-${hash}`
-                  }
-                }
-              }
-            }
+            disableCSSBundlingViaManualChunks(config, rollupOutput)
           })
+
+          disableCSSBundlingViaCodeSplitting(config)
         },
       },
     },
@@ -293,19 +238,108 @@ function getRollupOutputs(config: ResolvedConfig) {
   return output
 }
 
-function disableCSSBundling(config: ResolvedConfig) {
-  // Vite 7 => disable CSS bundling, see: https://github.com/vikejs/vike/issues/1815
-  if (!isVite8OrAbove(config)) return true
+// Workaround for Vite CSS duplication bug: https://github.com/vikejs/vike/issues/1815
+function disableCSSBundlingViaManualChunks(config: ResolvedConfig, rollupOutput: Rollup.OutputOptions) {
+  if (isVite8OrAbove(config)) return
+  const manualChunksOriginal = rollupOutput.manualChunks
+  rollupOutput.manualChunks = function (id, ...args) {
+    if (manualChunksOriginal) {
+      if (isCallable(manualChunksOriginal)) {
+        const result = manualChunksOriginal.call(this, id, ...args)
+        if (result !== undefined) return result
+      } else {
+        assertUsage(
+          false,
+          "The Vite's configuration build.rollupOptions.output.manualChunks must be a function. Reach out if you need to set it to another value.",
+        )
+      }
+    }
 
-  // Vite 8 doesn't support `manualChunks` when `codeSplitting` is used.
-  // - It does, however, support `manualChunks` if `codeSplitting` isn't used (despite what the following migration guide says)
-  // - https://vite.dev/guide/migration#removed-object-form-build-rollupoptions-output-manualchunks-and-deprecate-function-form-one
+    return getCssChunkName(id, config)
+  }
+}
+
+// Workaround for Vite CSS duplication bug: https://github.com/vikejs/vike/issues/1815
+// - Inject a CSS-bundling group into `rolldownOptions.output.codeSplitting.groups` for Vite 8 users who set `codeSplitting`.
+// - Vite 8 doesn't support `manualChunks` when `codeSplitting` is used.
+//   - It does, however, support `manualChunks` if `codeSplitting` isn't used (despite what the following migration guide says).
+//   - https://vite.dev/guide/migration#removed-object-form-build-rollupoptions-output-manualchunks-and-deprecate-function-form-one
+// - The group is appended with default priority — user-defined groups with the same priority appear earlier in the array and win the match (https://rolldown.rs/options/output-advanced-chunks), preserving the same precedence as the manualChunks wrapper above.
+function disableCSSBundlingViaCodeSplitting(config: ResolvedConfig) {
+  if (!isVite8OrAbove(config)) return
+
   // @ts-ignore
-  if (!config.build?.rolldownOptions?.output?.codeSplitting) return true
+  const rolldownOutput = config.build?.rolldownOptions?.output
+  assert(rolldownOutput)
+  const outputs = isArray(rolldownOutput) ? rolldownOutput : [rolldownOutput]
+  for (const output of outputs) {
+    assert(output)
+    let { codeSplitting } = output
 
-  // TO-DO/eventually: we should probably show a warning, because Vite 8 still builds the client and server separately (potentially leading to the CSS duplication bug):
-  // https://github.com/vitejs/ecosystem/issues/6
-  return false
+    // `codeSplitting: false` => user opted into single-bundle mode (all dynamic imports inlined into one bundle).
+    // Respect that — there are no chunks for the workaround to apply to.
+    if (codeSplitting === false) continue
+    // `codeSplitting: true` (or unset, since `true` is Rolldown's default) => upgrade to object form so the workaround can be injected.
+    if (codeSplitting === true || codeSplitting === undefined) {
+      codeSplitting = output.codeSplitting = {}
+    }
+    assert(codeSplitting && typeof codeSplitting === 'object')
+
+    if (codeSplittingWithVikeCssGroup.has(codeSplitting)) continue
+    codeSplittingWithVikeCssGroup.add(codeSplitting)
+    codeSplitting.groups ??= []
+    codeSplitting.groups.push({
+      test: /\.css$/,
+      name: (moduleId: string) => getCssChunkName(moduleId, config) ?? null,
+    })
+  }
+}
+// Track which codeSplitting objects have already received Vike's CSS group, to guard against double-injection.
+// We can't tag the codeSplitting object directly because Rolldown rejects unknown keys with "Invalid output options".
+const codeSplittingWithVikeCssGroup = new WeakSet<object>()
+
+function getCssChunkName(id: string, config: ResolvedConfig): string | undefined {
+  if (!id.endsWith('.css')) return undefined
+
+  const userRootDir = config.root
+  if (id.startsWith(userRootDir)) {
+    assertPosixPath(id)
+    assertModuleId(id)
+
+    let name: string
+    const isNodeModules = id.match(/node_modules\/([^\/]+)\/(?!.*node_modules)/)
+    if (isNodeModules) {
+      name = isNodeModules[1]!
+    } else {
+      const filePath = getFilePathToShowToUserModule(id, config)
+      name = filePath
+      name = name.split('.').slice(0, -1).join('.') // remove file extension
+      name = name.split('/').filter(Boolean).join('_')
+    }
+
+    // Make fileHash the same between local development and CI
+    const idStable = path.posix.relative(userRootDir, id)
+    // Don't remove `?` queries because each `id` should belong to a unique bundle.
+    const hash = getIdHash(idStable)
+
+    return `${name}-${hash}`
+  } else {
+    let name: string
+    const isVirtualModule = id.match(/virtual:([^:]+):/)
+    if (isVirtualModule) {
+      name = isVirtualModule[1]!
+      assert(name)
+    } else if (
+      // https://github.com/vikejs/vike/issues/1818#issuecomment-2298478321
+      id.startsWith('/__uno')
+    ) {
+      name = 'uno'
+    } else {
+      name = 'style'
+    }
+    const hash = getIdHash(id)
+    return `${name}-${hash}`
+  }
 }
 
 function isVite8OrAbove(config: ResolvedConfig) {
