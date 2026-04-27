@@ -22,9 +22,13 @@ function Page() {
             </blockquote>
           </li>
           <li>
-            Final step: install the license key, see <Link href="/license#installation" />.
+            Add your license key to your app, see <Link href="/license#installation" />.
           </li>
         </ol>
+        That's it — you can now use Vike unrestricted and forever.
+        <blockquote>
+          To update your list of domain names, see <Link href="/license#update-domain-names" />.
+        </blockquote>
       </div>
     </>
   )
