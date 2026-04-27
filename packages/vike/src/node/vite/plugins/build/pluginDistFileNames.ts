@@ -297,6 +297,8 @@ function wrapManualChunks(
   optsName: 'rollupOptions' | 'rolldownOptions',
 ) {
   const manualChunksOriginal = output.manualChunks
+  // This Vite plugin is sometimes applied twice => skip if we already wrapped — same rationale as `isTheOneSetByVike` for assetFileNames above.
+  if ((manualChunksOriginal as any)?.isTheOneSetByVike) return
   output.manualChunks = function (id: string, ...args: unknown[]) {
     if (manualChunksOriginal) {
       if (isCallable(manualChunksOriginal)) {
@@ -316,6 +318,7 @@ function wrapManualChunks(
     }
     return getCssChunkName(id, config)
   }
+  ;(output.manualChunks as any).isTheOneSetByVike = true
 }
 
 function getCssChunkName(id: string, config: ResolvedConfig): string | undefined {
