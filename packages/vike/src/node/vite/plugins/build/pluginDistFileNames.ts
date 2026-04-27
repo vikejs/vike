@@ -264,20 +264,15 @@ function getRolldownOutputs(config: ResolvedConfig): Rolldown.OutputOptions[] {
 //    - Rolldown supports `manualChunks` whenever `codeSplitting` isn't an object (despite what the migration guide implies):
 //      https://vite.dev/guide/migration#removed-object-form-build-rollupoptions-output-manualchunks-and-deprecate-function-form-one
 function disableCSSBundling(config: ResolvedConfig) {
-  const isVite8 = isVite8OrAbove(config)
-  // @ts-ignore
-  const outputs: Rolldown.OutputOptions[] | Rollup.OutputOptions[] = isVite8
-    ? getRolldownOutputs(config)
-    : getRollupOutputs(config)
-  const optsName = isVite8 ? 'rolldownOptions' : 'rollupOptions'
-
-  // TODO/ai use two different for-blocks, one for Vite 8 and one for Vite 7
-  for (const output of outputs) {
-    if (!output) continue
-
-    if (isVite8) {
+  if (isVite8OrAbove(config)) {
+    for (const output of getRolldownOutputs(config)) {
+      if (!output) continue
       const codeSplitting = (output as any).codeSplitting
+
+      // `codeSplitting: false` => single-bundle mode; respect the user's choice.
       if (codeSplitting === false) continue
+
+      // `codeSplitting` set as an object => Rolldown ignores `manualChunks`, so inject a group into `codeSplitting.groups` instead.
       if (codeSplitting && typeof codeSplitting === 'object') {
         if (codeSplittingWithVikeCssGroup.has(codeSplitting)) continue
         codeSplittingWithVikeCssGroup.add(codeSplitting)
@@ -288,23 +283,37 @@ function disableCSSBundling(config: ResolvedConfig) {
         })
         continue
       }
-    }
 
-    const manualChunksOriginal = output.manualChunks
-    ;(output as Rollup.OutputOptions).manualChunks = function (id, ...args) {
-      if (manualChunksOriginal) {
-        if (isCallable(manualChunksOriginal)) {
-          const result = manualChunksOriginal.call(this, id, ...args)
-          if (result !== undefined) return result
-        } else {
-          assertUsage(
-            false,
-            `The Vite's configuration build.${optsName}.output.manualChunks must be a function. Reach out if you need to set it to another value.`,
-          )
-        }
-      }
-      return getCssChunkName(id, config)
+      // `codeSplitting` unset / `true` => wrap `manualChunks` (Rolldown auto-converts it to a group at runtime).
+      wrapManualChunks(output as unknown as Rollup.OutputOptions, config, 'rolldownOptions')
     }
+  } else {
+    for (const output of getRollupOutputs(config)) {
+      if (!output) continue
+      wrapManualChunks(output, config, 'rollupOptions')
+    }
+  }
+}
+
+function wrapManualChunks(
+  output: Rollup.OutputOptions,
+  config: ResolvedConfig,
+  optsName: 'rollupOptions' | 'rolldownOptions',
+) {
+  const manualChunksOriginal = output.manualChunks
+  output.manualChunks = function (id, ...args) {
+    if (manualChunksOriginal) {
+      if (isCallable(manualChunksOriginal)) {
+        const result = manualChunksOriginal.call(this, id, ...args)
+        if (result !== undefined) return result
+      } else {
+        assertUsage(
+          false,
+          `The Vite's configuration build.${optsName}.output.manualChunks must be a function. Reach out if you need to set it to another value.`,
+        )
+      }
+    }
+    return getCssChunkName(id, config)
   }
 }
 
