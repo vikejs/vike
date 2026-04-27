@@ -236,8 +236,6 @@ function getRollupOutputs(config: ResolvedConfig) {
   }
   return output
 }
-
-// Vite 8 alternative to getRollupOutputs(): build.rollupOptions is renamed to build.rolldownOptions.
 function getRolldownOutputs(config: ResolvedConfig): Rollup.OutputOptions[] {
   // @ts-expect-error is read-only
   config.build ??= {}
@@ -250,7 +248,7 @@ function getRolldownOutputs(config: ResolvedConfig): Rollup.OutputOptions[] {
   if (!isArray(output)) {
     return [output]
   }
-  return output
+  return output as any[]
 }
 
 // Workaround for Vite CSS duplication bug: https://github.com/vikejs/vike/issues/1815
