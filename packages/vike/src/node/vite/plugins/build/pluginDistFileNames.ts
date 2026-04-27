@@ -252,17 +252,6 @@ function getRolldownOutputs(config: ResolvedConfig): RolldownOutputOptions[] {
 }
 
 // Workaround for Vite CSS duplication bug: https://github.com/vikejs/vike/issues/1815
-//
-// Per Vite version / `codeSplitting` value:
-//  - Vite 7 => wrap `build.rollupOptions.output.manualChunks`.
-//  - Vite 8 + `codeSplitting === false` (single-bundle mode) => skip; respect the user's choice.
-//  - Vite 8 + `codeSplitting` set as an object => inject a CSS group into `codeSplitting.groups`.
-//    - Rolldown ignores `manualChunks` when `codeSplitting` is an object, so we use the group API.
-//    - The group is appended with default priority — user-defined groups with the same priority appear earlier in the array and win the match
-//      (https://rolldown.rs/options/output-advanced-chunks), preserving the same precedence as the manualChunks wrapper.
-//  - Vite 8 + `codeSplitting` unset / `true` => wrap `build.rolldownOptions.output.manualChunks` (Rolldown auto-converts it to a group at runtime).
-//    - Rolldown supports `manualChunks` whenever `codeSplitting` isn't an object (despite what the migration guide implies):
-//      https://vite.dev/guide/migration#removed-object-form-build-rollupoptions-output-manualchunks-and-deprecate-function-form-one
 function disableCSSBundling(config: ResolvedConfig) {
   if (isVite8OrAbove(config)) {
     for (const output of getRolldownOutputs(config)) {
@@ -280,11 +269,17 @@ function disableCSSBundling(config: ResolvedConfig) {
         codeSplitting.groups.push({
           test: /\.css$/,
           name: (moduleId: string) => getCssChunkName(moduleId, config) ?? null,
+          /*
+          // Default priority — user-defined groups with the same priority appear earlier in the array and win the match.
+          // https://rolldown.rs/options/output-advanced-chunks
+          priority: 0
+          */
         })
         continue
       }
 
-      // `codeSplitting` unset / `true` => wrap `manualChunks` (Rolldown auto-converts it to a group at runtime).
+      // `codeSplitting` unset / `true` => wrap `manualChunks` (Rolldown auto-converts it to a group).
+      // - Rolldown supports `manualChunks` whenever `codeSplitting` isn't an object (despite what the migration guide implies).
       wrapManualChunks(output, config, 'rolldownOptions')
     }
   } else {
