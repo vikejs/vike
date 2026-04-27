@@ -11,7 +11,7 @@ import { assertPosixPath } from '../../../../utils/path.js'
 import path from 'node:path'
 import crypto from 'node:crypto'
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
-import type { Rolldown } from 'vite8'
+import type { OutputOptions as RolldownOutputOptions } from 'rolldown'
 import { getAssetsDir } from '../../shared/getAssetsDir.js'
 import { assertModuleId, getFilePathToShowToUserModule } from '../../shared/getFilePath.js'
 import '../../assertEnvVite.js'
@@ -236,16 +236,19 @@ function getRollupOutputs(config: ResolvedConfig): Rollup.OutputOptions[] {
   }
   return output
 }
-function getRolldownOutputs(config: ResolvedConfig): Rolldown.OutputOptions[] {
+function getRolldownOutputs(config: ResolvedConfig): RolldownOutputOptions[] {
   // @ts-expect-error is read-only
   config.build ??= {}
+  // @ts-ignore
   config.build.rolldownOptions ??= {}
+  // @ts-ignore
   config.build.rolldownOptions.output ??= {}
+  // @ts-ignore
   const { output } = config.build.rolldownOptions
   if (!isArray(output)) {
     return [output]
   }
-  return output
+  return output as any[]
 }
 
 // Workaround for Vite CSS duplication bug: https://github.com/vikejs/vike/issues/1815
@@ -293,15 +296,20 @@ function disableCSSBundling(config: ResolvedConfig) {
 }
 
 function wrapManualChunks(
-  output: Rollup.OutputOptions | Rolldown.OutputOptions,
+  output: Rollup.OutputOptions | RolldownOutputOptions,
   config: ResolvedConfig,
   optsName: 'rollupOptions' | 'rolldownOptions',
 ) {
   const manualChunksOriginal = output.manualChunks
-  output.manualChunks = function (id, ...args) {
+  output.manualChunks = function (id: string, ...args: unknown[]) {
     if (manualChunksOriginal) {
       if (isCallable(manualChunksOriginal)) {
-        const result = manualChunksOriginal.call(this, id, ...args)
+        const result = manualChunksOriginal.call(
+          this,
+          id,
+          // @ts-ignore
+          ...args,
+        )
         if (result !== undefined) return result
       } else {
         assertUsage(
