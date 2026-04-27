@@ -56,7 +56,7 @@ function pluginDistFileNames(): Plugin[] {
             }
           })
 
-          disableCSSCodeSplitting(config)
+          disableCSSBundling(config)
         },
       },
     },
@@ -252,7 +252,7 @@ function getRolldownOutputs(config: ResolvedConfig): RolldownOutputOptions[] {
 }
 
 // Workaround for Vite CSS duplication bug: https://github.com/vikejs/vike/issues/1815
-function disableCSSCodeSplitting(config: ResolvedConfig) {
+function disableCSSBundling(config: ResolvedConfig) {
   if (isVite8OrAbove(config)) {
     for (const output of getRolldownOutputs(config)) {
       assert(output)
