@@ -11,6 +11,7 @@ import { assertPosixPath } from '../../../../utils/path.js'
 import path from 'node:path'
 import crypto from 'node:crypto'
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
+import type { Rolldown } from 'vite8'
 import { getAssetsDir } from '../../shared/getAssetsDir.js'
 import { assertModuleId, getFilePathToShowToUserModule } from '../../shared/getFilePath.js'
 import '../../assertEnvVite.js'
@@ -53,7 +54,6 @@ function pluginDistFileNames(): Plugin[] {
                 "Setting Vite's configuration build.rollupOptions.output.assetFileNames is currently forbidden. Reach out if you need to use it.",
               )
             }
-
           })
 
           disableCSSBundling(config)
@@ -225,7 +225,7 @@ function workaroundGlob(name: string) {
   return name
 }
 
-function getRollupOutputs(config: ResolvedConfig) {
+function getRollupOutputs(config: ResolvedConfig): Rollup.OutputOptions[] {
   // @ts-expect-error is read-only
   config.build ??= {}
   config.build.rollupOptions ??= {}
@@ -236,7 +236,7 @@ function getRollupOutputs(config: ResolvedConfig) {
   }
   return output
 }
-function getRolldownOutputs(config: ResolvedConfig): Rollup.OutputOptions[] {
+function getRolldownOutputs(config: ResolvedConfig): Rolldown.OutputOptions[] {
   // @ts-expect-error is read-only
   config.build ??= {}
   // @ts-ignore rolldownOptions doesn't exist on Vite 7 types
@@ -265,9 +265,13 @@ function getRolldownOutputs(config: ResolvedConfig): Rollup.OutputOptions[] {
 //      https://vite.dev/guide/migration#removed-object-form-build-rollupoptions-output-manualchunks-and-deprecate-function-form-one
 function disableCSSBundling(config: ResolvedConfig) {
   const isVite8 = isVite8OrAbove(config)
-  const outputs = isVite8 ? getRolldownOutputs(config) : getRollupOutputs(config)
+  // @ts-ignore
+  const outputs: Rolldown.OutputOptions[] | Rollup.OutputOptions[] = isVite8
+    ? getRolldownOutputs(config)
+    : getRollupOutputs(config)
   const optsName = isVite8 ? 'rolldownOptions' : 'rollupOptions'
 
+  // TODO/ai use two different for-blocks, one for Vite 8 and one for Vite 7
   for (const output of outputs) {
     if (!output) continue
 
