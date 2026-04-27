@@ -239,16 +239,13 @@ function getRollupOutputs(config: ResolvedConfig): Rollup.OutputOptions[] {
 function getRolldownOutputs(config: ResolvedConfig): Rolldown.OutputOptions[] {
   // @ts-expect-error is read-only
   config.build ??= {}
-  // @ts-ignore rolldownOptions doesn't exist on Vite 7 types
   config.build.rolldownOptions ??= {}
-  // @ts-ignore
   config.build.rolldownOptions.output ??= {}
-  // @ts-ignore
   const { output } = config.build.rolldownOptions
   if (!isArray(output)) {
     return [output]
   }
-  return output as any[]
+  return output
 }
 
 // Workaround for Vite CSS duplication bug: https://github.com/vikejs/vike/issues/1815
@@ -267,7 +264,7 @@ function disableCSSBundling(config: ResolvedConfig) {
   if (isVite8OrAbove(config)) {
     for (const output of getRolldownOutputs(config)) {
       if (!output) continue
-      const codeSplitting = (output as any).codeSplitting
+      const { codeSplitting } = output
 
       // `codeSplitting: false` => single-bundle mode; respect the user's choice.
       if (codeSplitting === false) continue
@@ -285,7 +282,7 @@ function disableCSSBundling(config: ResolvedConfig) {
       }
 
       // `codeSplitting` unset / `true` => wrap `manualChunks` (Rolldown auto-converts it to a group at runtime).
-      wrapManualChunks(output as unknown as Rollup.OutputOptions, config, 'rolldownOptions')
+      wrapManualChunks(output, config, 'rolldownOptions')
     }
   } else {
     for (const output of getRollupOutputs(config)) {
@@ -296,7 +293,7 @@ function disableCSSBundling(config: ResolvedConfig) {
 }
 
 function wrapManualChunks(
-  output: Rollup.OutputOptions,
+  output: Rollup.OutputOptions | Rolldown.OutputOptions,
   config: ResolvedConfig,
   optsName: 'rollupOptions' | 'rolldownOptions',
 ) {
