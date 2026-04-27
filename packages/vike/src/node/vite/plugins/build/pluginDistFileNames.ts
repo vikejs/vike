@@ -263,8 +263,8 @@ function disableCSSBundling(config: ResolvedConfig) {
 
       // `codeSplitting` set as an object => Rolldown ignores `manualChunks`, so inject a group into `codeSplitting.groups` instead.
       if (codeSplitting && typeof codeSplitting === 'object') {
-        if (codeSplittingWithVikeCssGroup.has(codeSplitting)) continue
-        codeSplittingWithVikeCssGroup.add(codeSplitting)
+        if (codeSplittingHasWorkaround.has(codeSplitting)) continue
+        codeSplittingHasWorkaround.add(codeSplitting)
         codeSplitting.groups ??= []
         codeSplitting.groups.push({
           test: /\.css$/,
@@ -289,7 +289,7 @@ function disableCSSBundling(config: ResolvedConfig) {
     }
   }
 }
-const codeSplittingWithVikeCssGroup = new WeakSet<object>()
+const codeSplittingHasWorkaround = new WeakSet<object>()
 
 function wrapManualChunks(
   output: Rollup.OutputOptions | RolldownOutputOptions,
