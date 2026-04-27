@@ -255,7 +255,7 @@ function getRolldownOutputs(config: ResolvedConfig): RolldownOutputOptions[] {
 function disableCSSCodeSplitting(config: ResolvedConfig) {
   if (isVite8OrAbove(config)) {
     for (const output of getRolldownOutputs(config)) {
-      if (!output) continue
+      assert(output)
       const { codeSplitting } = output
 
       // `codeSplitting: false` => single-bundle mode; respect the user's choice.
@@ -284,7 +284,7 @@ function disableCSSCodeSplitting(config: ResolvedConfig) {
     }
   } else {
     for (const output of getRollupOutputs(config)) {
-      if (!output) continue
+      assert(output)
       wrapManualChunks(output, config, 'rollupOptions')
     }
   }
