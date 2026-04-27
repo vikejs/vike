@@ -39,8 +39,8 @@ function pluginDistFileNames(): Plugin[] {
             if (!('assetFileNames' in rollupOutput)) {
               rollupOutput.assetFileNames = (chunkInfo) => getAssetFileName(chunkInfo, config)
 
-              // This Vite plugin is sometimes applied twice => avoid assertUsage() error below
-              // - I don't know why this plugin can be applied twice for the same config. It happened when there was multiple Vike instances installed with one instance being a link to ~/code/vike/packages/vike/
+              // Sometimes applied twice => avoid assertUsage() error below
+              // - I don't know why it can be applied twice for the same config. It happened when there was multiple Vike instances installed with one instance being a link to ~/code/vike/packages/vike/
               ;(rollupOutput.assetFileNames as any).isTheOneSetByVike = true
               assert((rollupOutput.assetFileNames as any).isTheOneSetByVike)
             } else {
@@ -225,32 +225,6 @@ function workaroundGlob(name: string) {
   return name
 }
 
-function getRollupOutputs(config: ResolvedConfig): Rollup.OutputOptions[] {
-  // @ts-expect-error is read-only
-  config.build ??= {}
-  config.build.rollupOptions ??= {}
-  config.build.rollupOptions.output ??= {}
-  const { output } = config.build.rollupOptions
-  if (!isArray(output)) {
-    return [output]
-  }
-  return output
-}
-function getRolldownOutputs(config: ResolvedConfig): RolldownOutputOptions[] {
-  // @ts-expect-error is read-only
-  config.build ??= {}
-  // @ts-ignore
-  config.build.rolldownOptions ??= {}
-  // @ts-ignore
-  config.build.rolldownOptions.output ??= {}
-  // @ts-ignore
-  const { output } = config.build.rolldownOptions
-  if (!isArray(output)) {
-    return [output]
-  }
-  return output as any[]
-}
-
 // Workaround for Vite CSS duplication bug: https://github.com/vikejs/vike/issues/1815
 function disableCSSBundling(config: ResolvedConfig) {
   if (isVite8OrAbove(config)) {
@@ -297,7 +271,7 @@ function wrapManualChunks(
   optsName: 'rollupOptions' | 'rolldownOptions',
 ) {
   const manualChunksOriginal = output.manualChunks
-  // This Vite plugin is sometimes applied twice => skip if we already wrapped — same rationale as `isTheOneSetByVike` for assetFileNames above.
+  // Sometimes applied twice => skip if we already wrapped — same rationale as `isTheOneSetByVike` for assetFileNames above.
   if ((manualChunksOriginal as any)?.isTheOneSetByVike) return
   output.manualChunks = function (id: string, ...args: unknown[]) {
     if (manualChunksOriginal) {
@@ -369,4 +343,30 @@ function isVite8OrAbove(config: ResolvedConfig) {
   const viteVersion = config._viteVersionResolved
   assert(viteVersion)
   return isVersionMatch(viteVersion, ['8.0.0'])
+}
+
+function getRollupOutputs(config: ResolvedConfig): Rollup.OutputOptions[] {
+  // @ts-expect-error is read-only
+  config.build ??= {}
+  config.build.rollupOptions ??= {}
+  config.build.rollupOptions.output ??= {}
+  const { output } = config.build.rollupOptions
+  if (!isArray(output)) {
+    return [output]
+  }
+  return output
+}
+function getRolldownOutputs(config: ResolvedConfig): RolldownOutputOptions[] {
+  // @ts-expect-error is read-only
+  config.build ??= {}
+  // @ts-ignore
+  config.build.rolldownOptions ??= {}
+  // @ts-ignore
+  config.build.rolldownOptions.output ??= {}
+  // @ts-ignore
+  const { output } = config.build.rolldownOptions
+  if (!isArray(output)) {
+    return [output]
+  }
+  return output as any[]
 }
