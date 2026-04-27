@@ -85,10 +85,10 @@ const maintainersList = [
   {
     username: 'ambergristle',
     firstName: 'Aristo',
-    isCoreTeam: true,
+    isCoreTeam: false,
     roles: [
       <>
-        🚧 <a href="https://github.com/telefunc/telefunc/pull/240">Telefunc docs overhaul</a>
+        <a href="https://github.com/telefunc/telefunc/pull/240">Telefunc docs overhaul</a>
       </>,
     ],
   },
