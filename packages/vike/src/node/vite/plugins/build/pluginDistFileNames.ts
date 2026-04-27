@@ -294,6 +294,7 @@ function disableCSSBundling(config: ResolvedConfig) {
     }
   }
 }
+const codeSplittingWithVikeCssGroup = new WeakSet<object>()
 
 function wrapManualChunks(
   output: Rollup.OutputOptions | RolldownOutputOptions,
@@ -321,10 +322,6 @@ function wrapManualChunks(
     return getCssChunkName(id, config)
   }
 }
-
-// Track which codeSplitting objects have already received Vike's CSS group, to guard against double-injection.
-// We can't tag the codeSplitting object directly because Rolldown rejects unknown keys with "Invalid output options".
-const codeSplittingWithVikeCssGroup = new WeakSet<object>()
 
 function getCssChunkName(id: string, config: ResolvedConfig): string | undefined {
   if (!id.endsWith('.css')) return undefined
