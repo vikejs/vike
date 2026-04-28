@@ -55,7 +55,7 @@ function PricingTable() {
                     suffix={
                       <>
                         <OneTime />
-                        {/*
+                        {/* TODO
                         <Separator />
                         <BuyButton />
                         */}
@@ -214,8 +214,7 @@ function GreenCheckmark() {
 function BuyButton() {
   return (
     <a
-      // TODO/osp
-      href="https://buy.stripe.com/REPLACE_WITH_PAYMENT_LINK_ID"
+      href="https://buy.stripe.com/00wdRa2NT2tmbhL8Rcg3600"
       style={{
         display: 'inline-block',
         padding: '6px 16px',

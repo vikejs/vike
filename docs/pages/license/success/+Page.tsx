@@ -27,7 +27,9 @@ function Page() {
         </ol>
         That's it — you can now use Vike unrestricted and forever.
         <blockquote>
-          To update your list of domain names, see <Link href="/license#update-domain-names" />.
+          <p>
+            To update your list of domain names, see <Link href="/license#update-domain-names" />.
+          </p>
         </blockquote>
       </div>
     </>
