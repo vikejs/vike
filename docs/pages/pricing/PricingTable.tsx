@@ -62,7 +62,7 @@ function PricingTable() {
                       </>
                     }
                   >
-                    $5k
+                    €5k
                   </Price>
                   <Check>Full access</Check>
                   <Check>
