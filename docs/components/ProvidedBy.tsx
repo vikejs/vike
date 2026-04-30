@@ -34,7 +34,7 @@ function ProvidedBy({
           width={iconSize}
           style={{ display: 'inline-block', position: 'relative', top: 5 }}
         />{' '}
-        Provided by:{' '}
+        Config for{' '}
         {core ? (
           <>
             <a href="https://npmjs.com/package/vike">
