@@ -22,7 +22,7 @@ function Page() {
             </blockquote>
           </li>
           <li>
-            <Link href="/license#installation">Install your license key</Link>
+            <Link href="/license#install">Install your license key</Link>
           </li>
         </ol>
         That's it — you can now use Vike, forever without restrictions.
