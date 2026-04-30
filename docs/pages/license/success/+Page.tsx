@@ -14,7 +14,7 @@ function Page() {
         Next steps:
         <ol>
           <li>
-            You'll receive your license key by email.
+            You'll receive your license key by email
             <blockquote>
               <p>
                 If you don't, check your spam folder or <a href="mailto:support@vike.dev">contact us</a>.
@@ -22,10 +22,10 @@ function Page() {
             </blockquote>
           </li>
           <li>
-            Add your license key to your app, see <Link href="/license#installation" />.
+            <Link href="/license#installation">Install your license key</Link>
           </li>
         </ol>
-        That's it — you can now use Vike unrestricted and forever.
+        That's it — you can now use Vike, forever without restrictions.
         <blockquote>
           <p>
             To update your list of domain names, see <Link href="/license#update-domain-names" />.
