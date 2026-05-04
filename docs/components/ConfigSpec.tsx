@@ -169,10 +169,9 @@ function ProvidedBy({
   providedByExtension: ProvidedByExtension
 }) {
   const { kind, name, extension } = providedByExtension
-  let { noCustomGuide } = providedByExtension
   const single = typeof extension === 'string' ? extension : undefined
   const list = Array.isArray(extension) ? extension : undefined
-  if (noCustomGuide === undefined && single) noCustomGuide = true
+  const noCustomGuide = providedByExtension.noCustomGuide ?? !!single
   const extensionList = single ? (
     <Link href={`/${single}`}>
       <code>{single}</code>
@@ -194,20 +193,18 @@ function ProvidedBy({
   const iconSize = 20
   return (
     <div style={{ marginBottom: 10 }}>
-      <>
-        <img
-          src="https://i.imgur.com/XsdeDvz.png"
-          width={iconSize}
-          style={{ display: 'inline-block', position: 'relative', top: 5 }}
-        />{' '}
-        {extensionList}
-        {kind === 'hook' || kind === 'setting' ? (
-          <>
-            {' '}
-            <Link href={`/${kind}s`}>{kind}</Link>
-          </>
-        ) : null}
-      </>
+      <img
+        src="https://i.imgur.com/XsdeDvz.png"
+        width={iconSize}
+        style={{ display: 'inline-block', position: 'relative', top: 5 }}
+      />{' '}
+      {extensionList}
+      {kind === 'hook' || kind === 'setting' ? (
+        <>
+          {' '}
+          <Link href={`/${kind}s`}>{kind}</Link>
+        </>
+      ) : null}
       <blockquote style={{ marginLeft: iconSize + 6, marginTop: 7, marginBottom: 13 }}>
         <p style={{ marginTop: 7, marginBottom: 10 }}>
           You need {extensionList} to be able to use {subject}.
