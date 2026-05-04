@@ -76,7 +76,6 @@ describe('getReleasePlan()', () => {
   it('creates missing past releases alongside the current release and updates stale notes', () => {
     const plan = getReleasePlan({
       defaultBranch: 'main',
-      versionTag: 'v1.0.1',
       sections: {
         'v1.0.1': 'New release notes',
         'v1.0.0': 'Updated old notes',
@@ -111,7 +110,6 @@ describe('getReleasePlan()', () => {
   it('updates the current release instead of creating a duplicate', () => {
     const plan = getReleasePlan({
       defaultBranch: 'main',
-      versionTag: 'v1.0.1',
       sections: {
         'v1.0.1': 'Fresh release notes',
       },
@@ -122,17 +120,6 @@ describe('getReleasePlan()', () => {
       releasesToCreate: [],
       releasesToUpdate: [{ release_id: 3, tag_name: 'v1.0.1', body: 'Fresh release notes' }],
     })
-  })
-
-  it('throws when the current version is missing from the changelog', () => {
-    expect(() =>
-      getReleasePlan({
-        defaultBranch: 'main',
-        versionTag: 'v1.0.1',
-        sections: {},
-        releases: [],
-      }),
-    ).toThrow('Missing changelog entry for v1.0.1')
   })
 })
 

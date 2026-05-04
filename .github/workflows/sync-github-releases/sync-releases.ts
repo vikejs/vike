@@ -61,13 +61,14 @@ async function main(): Promise<void> {
   const changelog = await readFile(changelogPath, 'utf8')
   const sections = getReleaseSections(changelog)
 
+  checkLatestRelease(versionTag, sections)
+
   const dryRun = args.includes('--dry-run')
   if (dryRun) {
     console.log(`Dry-run mode — no GitHub API calls will be made.`)
     console.log(`Repository: ${owner}/${repo}`)
     console.log(`Version tag: ${versionTag}`)
     console.log(`Changelog sections found: ${Object.keys(sections).join(', ')}`)
-    assert(sections[versionTag], `Missing changelog entry for ${versionTag}`)
     console.log(`\nRelease notes for ${versionTag}:\n${sections[versionTag]}`)
     return
   }
@@ -76,7 +77,7 @@ async function main(): Promise<void> {
 
   const releases = await getAllReleases(owner, repo, token)
 
-  const { releasesToCreate, releasesToUpdate } = getReleasePlan({ defaultBranch, releases, sections, versionTag })
+  const { releasesToCreate, releasesToUpdate } = getReleasePlan({ defaultBranch, releases, sections })
 
   for (const releaseToCreate of releasesToCreate) {
     // https://docs.github.com/en/rest/releases/releases#create-a-release
@@ -128,19 +129,14 @@ function getReleasePlan({
   defaultBranch,
   releases,
   sections,
-  versionTag,
 }: {
   defaultBranch: string
   releases: Release[]
   sections: ReleaseSections
-  versionTag: string
 }): {
   releasesToCreate: ReleaseCreateInput[]
   releasesToUpdate: ReleaseUpdateInput[]
 } {
-  const currentBody = sections[versionTag]
-  assert(currentBody, `Missing changelog entry for ${versionTag}`)
-
   const releasesToCreate: ReleaseCreateInput[] = Object.keys(sections)
     .filter((tagName) => !releases.some((release) => release.tag_name === tagName))
     .reverse()
@@ -158,4 +154,14 @@ function getReleasePlan({
   })
 
   return { releasesToCreate, releasesToUpdate }
+}
+
+const checkLatestRelease = (versionTag: string, sections: ReleaseSections) => {
+  const latestRelease = Object.keys(sections)[0]
+  assert(
+    latestRelease === versionTag,
+    `The latest changelog entry is ${latestRelease}, but the current version is ${versionTag}`,
+  )
+  const currentBody = sections[versionTag]
+  assert(currentBody, `Missing changelog entry for ${versionTag}`)
 }
