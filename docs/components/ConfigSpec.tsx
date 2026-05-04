@@ -58,7 +58,7 @@ function ConfigSpec({
   cumulative?: true
   global?: true | false
   providedBy?: React.ReactNode
-  kind: ProvidedByKind
+  kind?: ProvidedByKind
   default?: React.ReactNode
   requires?: React.ReactNode
   children?: React.ReactNode
