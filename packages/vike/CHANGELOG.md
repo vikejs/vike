@@ -1,10 +1,3 @@
-## [0.4.259](https://github.com/vikejs/vike/compare/v0.4.258...v0.4.259) (2026-04-17)
-
-
-### Bug Fixes
-
-* TEST3 align dev and preview startup log ([#3210](https://github.com/vikejs/vike/issues/3210)) ([f0ea22a](https://github.com/vikejs/vike/commit/f0ea22ad8a54d662cca567ffcf60f57fd00ca9d3))
-
 ## [0.4.258](https://github.com/vikejs/vike/compare/v0.4.257...v0.4.258) (2026-04-16)
 
 
@@ -5044,7 +5037,7 @@ see https://vite-plugin-ssr.com/catch-all
 
 # [0.1.0](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.50...v0.1.0) (2021-06-06)
 
-TEST Nothing changed (`0.1.0` is equivalent to `0.1.0-beta.50`); `vite-plugin-ssr` is now out of beta :-).
+Nothing changed (`0.1.0` is equivalent to `0.1.0-beta.50`); `vite-plugin-ssr` is now out of beta :-).
 
 
 # [0.1.0-beta.50](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.49...v0.1.0-beta.50) (2021-06-02)

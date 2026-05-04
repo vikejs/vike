@@ -2,9 +2,8 @@ name: Publish new Release
 
 on:
   push:
-    # TODO: Restore after testing
-    # branches:
-    #   - main
+    branches:
+      - main
     paths:
       - 'packages/**/CHANGELOG.md'
   workflow_dispatch:
