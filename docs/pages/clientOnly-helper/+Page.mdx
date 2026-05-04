@@ -1,9 +1,9 @@
 import { Link, Warning, Danger } from '@brillout/docpress'
-import { UiFrameworkExtension, ProvidedBy, ConfigSpec } from '../../components'
+import { UiFrameworkExtension, ConfigSpec } from '../../components'
 
 <ConfigSpec
   env="client, server"
-  providedBy={<ProvidedBy kind="helper" name="clientOnly()" />}
+  providedByExtension={{ kind: 'helper', name: 'clientOnly()' }}
   global={null}
 />
 

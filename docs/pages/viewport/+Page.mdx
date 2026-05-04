@@ -1,11 +1,11 @@
 import { Link } from '@brillout/docpress'
 
-import { ProvidedBy, ConfigSpec } from '../../components'
+import { ConfigSpec } from '../../components'
 
 <ConfigSpec
   env="server"
   default={<code>'responsive'</code>}
-  providedBy={<ProvidedBy kind="setting" noCustomGuide />}
+  providedByExtension={{ kind: 'setting', noCustomGuide: true }}
 >
 ```ts ts-only hide-menu
 type Value = 'responsive' | number | null | undefined

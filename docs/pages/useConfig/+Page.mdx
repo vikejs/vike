@@ -1,9 +1,9 @@
 import { Link, Contribution } from '@brillout/docpress'
-import { ProvidedBy, ConfigSpec } from '../../components'
+import { ConfigSpec } from '../../components'
 
 <ConfigSpec
   env="client, server"
-  providedBy={<ProvidedBy kind="component-hook" name="useConfig()" noCustomGuide={true} />}
+  providedByExtension={{ kind: 'component-hook', name: 'useConfig()', noCustomGuide: true }}
   global={null}
 />
 

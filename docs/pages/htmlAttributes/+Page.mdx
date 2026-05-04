@@ -1,12 +1,12 @@
 import { Link } from '@brillout/docpress'
 
-import { UiFrameworkExtension, ProvidedBy, ConfigSpec } from '../../components'
+import { UiFrameworkExtension, ConfigSpec } from '../../components'
 
 <ConfigSpec
   env="server"
   cumulative
   global
-  providedBy={<ProvidedBy kind="setting" noCustomGuide />}
+  providedByExtension={{ kind: 'setting', noCustomGuide: true }}
 >
 ```ts ts-only hide-menu
 type Value = Record<string, string>

@@ -1,10 +1,10 @@
 import { Link } from '@brillout/docpress'
-import { ProvidedBy, ConfigSpec } from '../../components'
+import { ConfigSpec } from '../../components'
 
 <ConfigSpec
   env="client, server"
   cumulative
-  providedBy={<ProvidedBy kind="setting" name="+react" list={['vike-react']} noCustomGuide={true} />}
+  providedByExtension={{ kind: 'setting', name: '+react', extension: ['vike-react'], noCustomGuide: true }}
 />
 
 Set the options passed to the React and [`react-streaming`](https://github.com/brillout/react-streaming) functions that `vike-react` calls.
