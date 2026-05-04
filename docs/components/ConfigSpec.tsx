@@ -11,7 +11,6 @@ import iconPage from '../assets/icons/page.svg'
 import iconSparkles from '../assets/icons/sparkles.svg'
 import iconLink from '../assets/icons/link.svg'
 import iconTypescript from '../assets/icons/typescript.svg'
-import { ProvidedBy, type ProvidedByKind } from './ProvidedBy'
 import './ConfigSpec.css'
 
 /*
@@ -48,7 +47,6 @@ function ConfigSpec({
   cumulative,
   global,
   providedBy,
-  kind,
   requires,
   children,
   isTypeOneLiner,
@@ -58,7 +56,6 @@ function ConfigSpec({
   cumulative?: true
   global?: true | false
   providedBy?: React.ReactNode
-  kind?: ProvidedByKind
   default?: React.ReactNode
   requires?: React.ReactNode
   children?: React.ReactNode
