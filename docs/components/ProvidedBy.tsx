@@ -5,7 +5,7 @@ import { Link } from '@brillout/docpress'
 import { UiFrameworkExtension, type UiFrameworkExtensionList } from '../components/UiFrameworkExtension'
 import React from 'react'
 
-type ProvidedByKind = 'hook' | 'setting' | 'component' | 'helper'
+type ProvidedByKind = 'hook' | 'component-hook' | 'setting' | 'component' | 'helper'
 
 function ProvidedBy({
   kind,
@@ -30,14 +30,15 @@ function ProvidedBy({
     <UiFrameworkExtension name list={list} />
   )
   if (noCustomGuide === undefined && extension) noCustomGuide = true
+  const kindText = kind === 'component-hook' ? 'component hook' : kind
   const subject =
     name === undefined ? (
-      `this ${kind}`
-    ) : kind !== 'setting' ? (
+      `this ${kindText}`
+    ) : kind === 'hook' ? (
       <code>{name}</code>
     ) : (
       <>
-        the <code>{name}</code> {kind}
+        the <code>{name}</code> {kindText}
       </>
     )
   const iconSize = 20
