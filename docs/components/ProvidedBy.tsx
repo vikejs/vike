@@ -34,7 +34,6 @@ function ProvidedBy({
           width={iconSize}
           style={{ display: 'inline-block', position: 'relative', top: 5 }}
         />{' '}
-        Config for{' '}
         {core ? (
           <>
             <a href="https://npmjs.com/package/vike">
@@ -43,7 +42,8 @@ function ProvidedBy({
           </>
         ) : (
           extensionList
-        )}
+        )}{' '}
+        <Link href="/config">config</Link>
       </>
       {core ? null : (
         <blockquote style={{ marginLeft: iconSize + 6, marginTop: 7, marginBottom: 13 }}>
