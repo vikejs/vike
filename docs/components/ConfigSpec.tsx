@@ -143,6 +143,7 @@ function ConfigSpec({
           <br />
         </>
       )}
+      {/* TODO/ai I don't think that's accurate? How about also adding `kind` to <ConfigSpec>? */}
       {providedBy ?? <ProvidedBy kind="setting" core />}
     </PageHeader>
   )
