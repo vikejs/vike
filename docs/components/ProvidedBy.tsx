@@ -13,14 +13,12 @@ function ProvidedBy({
   extension,
   list,
   noCustomGuide,
-  core,
 }: {
   kind: ProvidedByKind
   name?: string
   extension?: `vike-${string}`
   list?: UiFrameworkExtensionList
   noCustomGuide?: true
-  core?: true
 }) {
   const extensionList = extension ? (
     <Link href={`/${extension}`}>
@@ -50,15 +48,7 @@ function ProvidedBy({
           width={iconSize}
           style={{ display: 'inline-block', position: 'relative', top: 5 }}
         />{' '}
-        {core ? (
-          <>
-            <a href="https://npmjs.com/package/vike">
-              <code>vike</code>
-            </a>
-          </>
-        ) : (
-          extensionList
-        )}
+        {extensionList}
         {kind === 'hook' || kind === 'setting' ? (
           <>
             {' '}
@@ -66,20 +56,18 @@ function ProvidedBy({
           </>
         ) : null}
       </>
-      {core ? null : (
-        <blockquote style={{ marginLeft: iconSize + 6, marginTop: 7, marginBottom: 13 }}>
-          <p style={{ marginTop: 7, marginBottom: 10 }}>
-            You need {extensionList} to be able to use {subject}.
-            {!noCustomGuide && (
-              <>
-                {' '}
-                If you don't use {<UiFrameworkExtension succinct list={list} />} then see{' '}
-                <Link href="#without-vike-react-vue-solid" />.
-              </>
-            )}
-          </p>
-        </blockquote>
-      )}
+      <blockquote style={{ marginLeft: iconSize + 6, marginTop: 7, marginBottom: 13 }}>
+        <p style={{ marginTop: 7, marginBottom: 10 }}>
+          You need {extensionList} to be able to use {subject}.
+          {!noCustomGuide && (
+            <>
+              {' '}
+              If you don't use {<UiFrameworkExtension succinct list={list} />} then see{' '}
+              <Link href="#without-vike-react-vue-solid" />.
+            </>
+          )}
+        </p>
+      </blockquote>
     </div>
   )
 }
