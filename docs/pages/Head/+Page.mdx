@@ -1,10 +1,10 @@
-import { UiFrameworkExtension, ProvidedBy, ConfigSpec } from '../../components'
+import { UiFrameworkExtension, ConfigSpec } from '../../components'
 import { Link, Warning } from '@brillout/docpress'
 
 <ConfigSpec
   env="server"
   cumulative
-  providedBy={<ProvidedBy noCustomGuide />}
+  providedByExtension={{ kind: 'setting', name: '+Head', noCustomGuide: true }}
 />
 
 The `+Head` setting allows you to add `<head>` tags to your pages.

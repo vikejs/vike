@@ -1,10 +1,10 @@
 import { Link } from '@brillout/docpress'
-import { ProvidedBy, UiFrameworkExtension, ConfigSpec } from '../../components'
+import { UiFrameworkExtension, ConfigSpec } from '../../components'
 
 <ConfigSpec
   env="server"
   cumulative
-  providedBy={<ProvidedBy list={['vike-react', 'vike-vue']}><code>onAfterRenderHtml()</code></ProvidedBy>}
+  providedByExtension={{ kind: 'hook', name: 'onAfterRenderHtml()', extension: ['vike-react', 'vike-vue'] }}
 />
 
 Hook called right after the <Link href="/Page">the `+Page` component</Link> is rendered to HTML.

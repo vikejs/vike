@@ -1,9 +1,9 @@
 import { Link } from '@brillout/docpress'
-import { UiFrameworkExtension, ConfigSpec, ProvidedBy, TreeShaking } from '../../components'
+import { UiFrameworkExtension, ConfigSpec, TreeShaking } from '../../components'
 
 <ConfigSpec
   env="client, server"
-  providedBy={<ProvidedBy><code>&lt;ClientOnly&gt;</code></ProvidedBy>}
+  providedByExtension={{ kind: 'component', name: '<ClientOnly>' }}
   global={null}
 />
 

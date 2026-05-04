@@ -1,9 +1,9 @@
 import { Link } from '@brillout/docpress'
-import { UiFrameworkExtension, ProvidedBy, ConfigSpec } from '../../components'
+import { UiFrameworkExtension, ConfigSpec } from '../../components'
 
 <ConfigSpec
   default={<code>true</code>}
-  providedBy={<ProvidedBy>the <code>ssr</code> setting</ProvidedBy>}
+  providedByExtension={{ kind: 'setting', name: 'ssr' }}
   isTypeOneLiner
 >
 `boolean {:ts}`

@@ -1,11 +1,11 @@
 import { Link, Warning } from '@brillout/docpress'
-import { ProvidedBy, ConfigSpec } from '../../components'
+import { ConfigSpec } from '../../components'
 
 <ConfigSpec
   env="server"
   cumulative
   global
-  providedBy={<ProvidedBy list={['vike-vue', 'vike-react']} noCustomGuide><code>headHtmlEnd</code></ProvidedBy>}
+  providedByExtension={{ kind: 'setting', name: 'headHtmlEnd', extension: ['vike-vue', 'vike-react'], noCustomGuide: true }}
 />
 
 <Warning>

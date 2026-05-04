@@ -11,8 +11,10 @@ import iconPage from '../assets/icons/page.svg'
 import iconSparkles from '../assets/icons/sparkles.svg'
 import iconLink from '../assets/icons/link.svg'
 import iconTypescript from '../assets/icons/typescript.svg'
-import { ProvidedBy } from './ProvidedBy'
+import { UiFrameworkExtension, type UiFrameworkExtensionList } from './UiFrameworkExtension'
 import './ConfigSpec.css'
+
+type ProvidedByKind = 'hook' | 'component-hook' | 'setting' | 'component' | 'helper'
 
 /*
 Emoji package
@@ -43,25 +45,38 @@ https://i.imgur.com/nkHZhEo.png
 https://i.imgur.com/yYDvhGa.png
 */
 
+type ProvidedByExtension = {
+  kind: ProvidedByKind
+  name?: string
+  extension?: `vike-${string}` | UiFrameworkExtensionList
+  noCustomGuide?: true
+}
+
 function ConfigSpec({
   env,
   cumulative,
   global,
-  providedBy,
   requires,
   children,
   isTypeOneLiner,
+  providedByExtension,
   ...prop
 }: {
   env: React.ReactNode
   cumulative?: true
   global?: true | false
-  providedBy?: React.ReactNode
   default?: React.ReactNode
   requires?: React.ReactNode
   children?: React.ReactNode
   isTypeOneLiner?: true
+  providedByExtension?: ProvidedByExtension
 }) {
+  let providedBy: React.ReactNode
+  if (providedByExtension === undefined) {
+    providedBy = <div style={{ marginBottom: 10 }} />
+  } else {
+    providedBy = <ProvidedBy providedByExtension={providedByExtension} />
+  }
   return (
     <PageHeader
       style={{
@@ -143,8 +158,69 @@ function ConfigSpec({
           <br />
         </>
       )}
-      {providedBy ?? <ProvidedBy core />}
+      {providedBy}
     </PageHeader>
+  )
+}
+
+function ProvidedBy({
+  providedByExtension,
+}: {
+  providedByExtension: ProvidedByExtension
+}) {
+  const { kind, name, extension } = providedByExtension
+  let { noCustomGuide } = providedByExtension
+  const single = typeof extension === 'string' ? extension : undefined
+  const list = Array.isArray(extension) ? extension : undefined
+  if (noCustomGuide === undefined && single) noCustomGuide = true
+  const extensionList = single ? (
+    <Link href={`/${single}`}>
+      <code>{single}</code>
+    </Link>
+  ) : (
+    <UiFrameworkExtension name list={list} />
+  )
+  const kindText = kind === 'component-hook' ? 'component hook' : kind
+  const subject =
+    name === undefined ? (
+      `this ${kindText}`
+    ) : kind === 'hook' ? (
+      <code>{name}</code>
+    ) : (
+      <>
+        the <code>{name}</code> {kindText}
+      </>
+    )
+  const iconSize = 20
+  return (
+    <div style={{ marginBottom: 10 }}>
+      <>
+        <img
+          src="https://i.imgur.com/XsdeDvz.png"
+          width={iconSize}
+          style={{ display: 'inline-block', position: 'relative', top: 5 }}
+        />{' '}
+        {extensionList}
+        {kind === 'hook' || kind === 'setting' ? (
+          <>
+            {' '}
+            <Link href={`/${kind}s`}>{kind}</Link>
+          </>
+        ) : null}
+      </>
+      <blockquote style={{ marginLeft: iconSize + 6, marginTop: 7, marginBottom: 13 }}>
+        <p style={{ marginTop: 7, marginBottom: 10 }}>
+          You need {extensionList} to be able to use {subject}.
+          {!noCustomGuide && (
+            <>
+              {' '}
+              If you don't use {<UiFrameworkExtension succinct list={list} />} then see{' '}
+              <Link href="#without-vike-react-vue-solid" />.
+            </>
+          )}
+        </p>
+      </blockquote>
+    </div>
   )
 }
 
