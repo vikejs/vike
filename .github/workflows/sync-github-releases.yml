@@ -24,13 +24,20 @@ jobs:
           bun-version: 1.3.13
       - uses: actions/checkout@v6
         with:
-          fetch-depth: 2
+          fetch-depth: 0
       - name: Create GitHub release
         run: |
-          for file in $(git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | grep CHANGELOG.md); do
-            package_dir=$(dirname $file)
+          if [ "${{ github.event_name }}" = "push" ] && [ -n "${{ github.event.before }}" ]; then
+            changelog_files="$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}")"
+          else
+            changelog_files="$(find packages -type f -name 'CHANGELOG.md' | sort)"
+          fi
+          printf '%s\n' "$changelog_files" | while IFS= read -r file; do
+            [ -n "$file" ] || continue
+            [ "$(basename "$file")" = "CHANGELOG.md" ] || continue
+            package_dir=$(dirname "$file")
             echo "Syncing GitHub releases for package directory: $package_dir"
-            bun ./.github/workflows/sync-github-releases/sync-releases.ts $package_dir
+            bun ./.github/workflows/sync-github-releases/sync-releases.ts "$package_dir"
           done
         env:
           GITHUB_DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
