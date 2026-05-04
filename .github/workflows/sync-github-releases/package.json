@@ -1,7 +1,8 @@
 {
   "scripts": {
     "run": "bun ./sync-releases.ts",
-    "try": "bun ./sync-releases.ts --dry-run"
+    "try": "bun ./sync-releases.ts --dry-run",
+    "delete-all": "bun ./remove-all-releases.ts"
   },
   "devDependencies": {
     "@types/node": "^24.10.2",
