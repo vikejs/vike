@@ -145,7 +145,7 @@ function ConfigSpec({
           <br />
         </>
       )}
-      {providedBy ?? <ProvidedBy kind={kind} core />}
+      {providedBy ?? <div style={{ marginBottom: 10 }} />}
     </PageHeader>
   )
 }

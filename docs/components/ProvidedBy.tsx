@@ -33,12 +33,12 @@ function ProvidedBy({
   const subject =
     name === undefined ? (
       `this ${kind}`
-    ) : kind === 'setting' ? (
-      <>
-        the <code>{name}</code> setting
-      </>
-    ) : (
+    ) : kind !== 'setting' ? (
       <code>{name}</code>
+    ) : (
+      <>
+        the <code>{name}</code> {kind}
+      </>
     )
   const iconSize = 20
   return (
@@ -57,8 +57,13 @@ function ProvidedBy({
           </>
         ) : (
           extensionList
-        )}{' '}
-        <Link href="/config">config</Link>
+        )}
+        {kind === 'hook' || kind === 'setting' ? (
+          <>
+            {' '}
+            <Link href={`/${kind}s`}>{kind}</Link>
+          </>
+        ) : null}
       </>
       {core ? null : (
         <blockquote style={{ marginLeft: iconSize + 6, marginTop: 7, marginBottom: 13 }}>
