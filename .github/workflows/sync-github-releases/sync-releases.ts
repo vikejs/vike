@@ -1,3 +1,5 @@
+// TODO/ai: Is the following file header comment still accurate? If not, update it.
+
 /* === WHAT IS THIS?
 Keeps GitHub releases aligned with `CHANGELOG.md`.
 => It derives release notes from `CHANGELOG.md`, creates the current release if needed, and updates inspected existing releases whose published notes are outdated (e.g. if `CHANGELOG.md` was manually edited).
