@@ -1,8 +1,11 @@
 export { ProvidedBy }
+export type { ProvidedByKind }
 
 import { Link } from '@brillout/docpress'
 import { UiFrameworkExtension, type UiFrameworkExtensionList } from '../components/UiFrameworkExtension'
 import React from 'react'
+
+type ProvidedByKind = 'hook' | 'setting' | 'component' | 'helper'
 
 function ProvidedBy({
   kind,
@@ -12,7 +15,7 @@ function ProvidedBy({
   noCustomGuide,
   core,
 }: {
-  kind: 'hook' | 'setting' | 'component' | 'helper'
+  kind: ProvidedByKind
   name?: string
   extension?: `vike-${string}`
   list?: UiFrameworkExtensionList
