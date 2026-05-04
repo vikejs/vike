@@ -12,6 +12,7 @@ function ProvidedBy({
   core,
 }: {
   extension?: `vike-${string}`
+  // TODO/ai Can we remove `children` in favor of `type: 'hook' | 'setting'`, or am I missing a use case for `children`?
   children?: React.ReactNode
   list?: UiFrameworkExtensionList
   noCustomGuide?: true
