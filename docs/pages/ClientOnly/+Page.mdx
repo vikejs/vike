@@ -3,7 +3,7 @@ import { UiFrameworkExtension, ConfigSpec, ProvidedBy, TreeShaking } from '../..
 
 <ConfigSpec
   env="client, server"
-  providedBy={<ProvidedBy><code>&lt;ClientOnly&gt;</code></ProvidedBy>}
+  providedBy={<ProvidedBy kind="component" name="<ClientOnly>" />}
   global={null}
 />
 

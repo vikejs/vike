@@ -4,7 +4,7 @@ import { ProvidedBy, ConfigSpec } from '../../components'
 <ConfigSpec
   env="server"
   global
-  providedBy={<ProvidedBy noCustomGuide />}
+  providedBy={<ProvidedBy kind="setting" noCustomGuide />}
 >
 ```ts ts-only hide-menu
 type Value = string | null | undefined

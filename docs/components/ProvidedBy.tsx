@@ -5,15 +5,16 @@ import { UiFrameworkExtension, type UiFrameworkExtensionList } from '../componen
 import React from 'react'
 
 function ProvidedBy({
-  children,
+  kind,
+  name,
   extension,
   list,
   noCustomGuide,
   core,
 }: {
+  kind: 'hook' | 'setting' | 'component' | 'helper'
+  name?: string
   extension?: `vike-${string}`
-  // TODO/ai Can we remove `children` in favor of `type: 'hook' | 'setting'`, or am I missing a use case for `children`?
-  children?: React.ReactNode
   list?: UiFrameworkExtensionList
   noCustomGuide?: true
   core?: true
@@ -26,6 +27,16 @@ function ProvidedBy({
     <UiFrameworkExtension name list={list} />
   )
   if (noCustomGuide === undefined && extension) noCustomGuide = true
+  const subject =
+    name === undefined ? (
+      `this ${kind}`
+    ) : kind === 'setting' ? (
+      <>
+        the <code>{name}</code> setting
+      </>
+    ) : (
+      <code>{name}</code>
+    )
   const iconSize = 20
   return (
     <div style={{ marginBottom: 10 }}>
@@ -49,7 +60,7 @@ function ProvidedBy({
       {core ? null : (
         <blockquote style={{ marginLeft: iconSize + 6, marginTop: 7, marginBottom: 13 }}>
           <p style={{ marginTop: 7, marginBottom: 10 }}>
-            You need {extensionList} to be able to use {children ?? 'this setting'}.
+            You need {extensionList} to be able to use {subject}.
             {!noCustomGuide && (
               <>
                 {' '}

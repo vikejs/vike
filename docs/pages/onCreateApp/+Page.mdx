@@ -5,7 +5,7 @@ import { ProvidedBy, ConfigSpec } from '../../components'
   env="client, server"
   cumulative
   global
-  providedBy={<ProvidedBy list={['vike-vue']} noCustomGuide={true}><code>onCreateApp()</code></ProvidedBy>}
+  providedBy={<ProvidedBy kind="hook" name="onCreateApp()" list={['vike-vue']} noCustomGuide={true} />}
 />
 
 The `onCreateApp()` hook is called whenever `vike-vue` creates a new [Vue `app` instance](https://vuejs.org/api/application.html),

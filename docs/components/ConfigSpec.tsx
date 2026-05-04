@@ -143,7 +143,7 @@ function ConfigSpec({
           <br />
         </>
       )}
-      {providedBy ?? <ProvidedBy core />}
+      {providedBy ?? <ProvidedBy kind="setting" core />}
     </PageHeader>
   )
 }

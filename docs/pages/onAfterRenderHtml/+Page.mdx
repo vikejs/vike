@@ -4,7 +4,7 @@ import { ProvidedBy, UiFrameworkExtension, ConfigSpec } from '../../components'
 <ConfigSpec
   env="server"
   cumulative
-  providedBy={<ProvidedBy list={['vike-react', 'vike-vue']}><code>onAfterRenderHtml()</code></ProvidedBy>}
+  providedBy={<ProvidedBy kind="hook" name="onAfterRenderHtml()" list={['vike-react', 'vike-vue']} />}
 />
 
 Hook called right after the <Link href="/Page">the `+Page` component</Link> is rendered to HTML.

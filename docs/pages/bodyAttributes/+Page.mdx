@@ -6,7 +6,7 @@ import { UiFrameworkExtension, ProvidedBy, ConfigSpec } from '../../components'
   env="server"
   cumulative
   global
-  providedBy={<ProvidedBy noCustomGuide />}
+  providedBy={<ProvidedBy kind="setting" noCustomGuide />}
 >
 ```ts ts-only hide-menu
 type Value = Record<string, string>

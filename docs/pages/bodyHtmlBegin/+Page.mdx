@@ -5,7 +5,7 @@ import { ProvidedBy, ConfigSpec } from '../../components'
   env="server"
   cumulative
   global
-  providedBy={<ProvidedBy list={['vike-vue', 'vike-react']} noCustomGuide><code>bodyHtmlBegin</code></ProvidedBy>}
+  providedBy={<ProvidedBy kind="setting" name="bodyHtmlBegin" list={['vike-vue', 'vike-react']} noCustomGuide />}
 />
 
 Setting for inserting HTML at the beginning of the `<body>` tag, see the documentation at <Link href="/bodyHtmlEnd">`bodyHtmlEnd`</Link>.

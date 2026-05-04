@@ -5,7 +5,7 @@ import { ProvidedBy, UiFrameworkExtension, ConfigSpec } from '../../components'
   env="server"
   cumulative
   global
-  providedBy={<ProvidedBy list={['vike-vue', 'vike-react']} noCustomGuide><code>bodyHtmlEnd</code></ProvidedBy>}
+  providedBy={<ProvidedBy kind="setting" name="bodyHtmlEnd" list={['vike-vue', 'vike-react']} noCustomGuide />}
 />
 
 The settings `bodyHtmlEnd`/<Link href="/bodyHtmlBegin" /> enable you to insert HTML at the beginning/end of the `<body>` tag.

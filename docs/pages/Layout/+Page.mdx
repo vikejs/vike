@@ -4,7 +4,7 @@ import { UiFrameworkExtension, ConfigSpec, ProvidedBy } from '../../components'
 <ConfigSpec
   env={<>client, and server if <Link href="/ssr"><code>ssr: true</code></Link></>}
   cumulative
-  providedBy={<ProvidedBy>the <code>+Layout</code> setting</ProvidedBy>}
+  providedBy={<ProvidedBy kind="setting" name="+Layout" />}
 />
 
 > **What are layouts?**

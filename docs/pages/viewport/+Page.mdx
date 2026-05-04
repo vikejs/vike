@@ -5,7 +5,7 @@ import { ProvidedBy, ConfigSpec } from '../../components'
 <ConfigSpec
   env="server"
   default={<code>'responsive'</code>}
-  providedBy={<ProvidedBy noCustomGuide />}
+  providedBy={<ProvidedBy kind="setting" noCustomGuide />}
 >
 ```ts ts-only hide-menu
 type Value = 'responsive' | number | null | undefined

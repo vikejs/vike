@@ -4,7 +4,7 @@ import { UiFrameworkExtension, ProvidedBy, ConfigSpec } from '../../components'
 <ConfigSpec
   env="server"
   default={<code>'en'</code>}
-  providedBy={<ProvidedBy />}
+  providedBy={<ProvidedBy kind="setting" />}
 >
 ```ts ts-only hide-menu
 type Value = string | null | undefined

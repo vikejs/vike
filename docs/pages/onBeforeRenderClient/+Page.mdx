@@ -5,7 +5,7 @@ import { UiFrameworkExtension } from '../../components'
 <ConfigSpec
   env="client"
   cumulative
-  providedBy={<ProvidedBy list={['vike-react', 'vike-vue']}><code>onBeforeRenderClient()</code></ProvidedBy>}
+  providedBy={<ProvidedBy kind="hook" name="onBeforeRenderClient()" list={['vike-react', 'vike-vue']} />}
 />
 
 Hook called at the beginning of rendering the page on the client-side. It's usually used for integrating tools, such as state management tools.

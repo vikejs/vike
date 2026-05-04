@@ -3,7 +3,7 @@ import { UiFrameworkExtension, ConfigSpec, ProvidedBy } from '../../components'
 
 <ConfigSpec
   env="client, server"
-  providedBy={<ProvidedBy><code>useHydrated()</code></ProvidedBy>}
+  providedBy={<ProvidedBy kind="hook" name="useHydrated()" />}
   global={null}
 />
 

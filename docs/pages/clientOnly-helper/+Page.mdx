@@ -3,7 +3,7 @@ import { UiFrameworkExtension, ProvidedBy, ConfigSpec } from '../../components'
 
 <ConfigSpec
   env="client, server"
-  providedBy={<ProvidedBy><code>clientOnly()</code></ProvidedBy>}
+  providedBy={<ProvidedBy kind="helper" name="clientOnly()" />}
   global={null}
 />
 
