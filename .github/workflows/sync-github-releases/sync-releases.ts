@@ -156,7 +156,7 @@ function getReleasePlan({
   return { releasesToCreate, releasesToUpdate }
 }
 
-const checkLatestRelease = (versionTag: string, sections: ReleaseSections) => {
+function checkLatestRelease(versionTag: string, sections: ReleaseSections) {
   const latestRelease = Object.keys(sections)[0]
   assert(
     latestRelease === versionTag,
