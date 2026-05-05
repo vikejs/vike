@@ -1,18 +1,18 @@
 /* === WHAT IS THIS?
 Keeps GitHub releases aligned with `CHANGELOG.md`.
-=> It derives release notes from `CHANGELOG.md`, creates the current release if needed, and updates inspected existing releases whose published notes are outdated (e.g. if `CHANGELOG.md` was manually edited).
+=> It derives release notes from `CHANGELOG.md`, creates any missing releases (including the current version and any older versions not yet published on GitHub), and updates existing releases whose published notes drifted from the changelog (e.g. if `CHANGELOG.md` was manually edited).
 */
 
 /* === FLOW
 1. Resolve repository (`owner/repo`), default branch, and the current version tag (from `<package-dir>/package.json`).
 2. Parse `<package-dir>/CHANGELOG.md` into per-version sections via `getReleaseSections()`.
-3. If `--dry-run`, log what would happen and exit without hitting the GitHub API.
-4. Otherwise, fetch all existing GitHub releases (paginated) via `getAllReleases()`.
-5. If no releases exist yet: bootstrap by creating one release per changelog section, oldest first (so the GitHub release list ends up in the same order as the changelog).
-6. Otherwise, `getReleasePlan()` computes:
-   - `releaseToCreate`: the current version, if not yet published.
+3. Sanity-check via `checkLatestRelease()` that the newest changelog section matches the current `package.json` version.
+4. If `--dry-run`, log what would happen and exit without hitting the GitHub API.
+5. Otherwise, fetch all existing GitHub releases (paginated) via `getAllReleases()`.
+6. `getReleasePlan()` computes:
+   - `releasesToCreate`: every changelog section that has no matching GitHub release yet, ordered oldest-first so the GitHub release list ends up in the same order as the changelog.
    - `releasesToUpdate`: existing releases whose body drifted from the matching changelog section.
-   Both are then applied via authenticated GitHub API calls (POST to create, PATCH to update), throttled to avoid abuse rate limits.
+   Both are then applied via authenticated GitHub API calls (POST to create, PATCH to update), throttled to avoid abuse rate limits and to keep release timestamps strictly increasing.
 */
 
 // This file is executed by sync-github-releases.yml
