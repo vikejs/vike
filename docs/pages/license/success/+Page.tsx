@@ -8,7 +8,7 @@ function Page() {
     <>
       <div style={{ textAlign: 'center', marginTop: 40 }}>
         <div style={{ fontSize: 48, marginBottom: 16 }}>🎉</div>
-        <h1 style={{ fontSize: 28, fontWeight: 700 }}>Thank you for your purchase</h1>
+        <h1 style={{ fontSize: 28, fontWeight: 700 }}>Purchase successful</h1>
       </div>
       <div style={{ maxWidth: 550, margin: 'auto' }}>
         Next steps:
