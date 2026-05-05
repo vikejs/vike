@@ -14,7 +14,7 @@ function Page() {
         Next steps:
         <ol>
           <li>
-            You'll receive your license key by email
+            You'll receive your license key by email.
             <blockquote>
               <p>
                 If you don't, check your spam folder or <a href="mailto:support@vike.dev">contact us</a>.
@@ -22,7 +22,7 @@ function Page() {
             </blockquote>
           </li>
           <li>
-            <Link href="/license#install">Install your license key</Link>
+            <Link href="/license#install">Install your license key</Link>.
           </li>
         </ol>
         That's it — you can now use Vike, forever without restrictions.
