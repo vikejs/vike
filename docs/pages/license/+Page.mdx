@@ -11,11 +11,12 @@ import { ConfigSpec } from '../../components'
 
 The license key for larger teams.
 
-> If you're a small team, you don't need a license key — you can use Vike for free, without a license, just like any regular open source tool. See <Link href="/pricing" />.
+> If you're a small team, you don't need a license key — you can use Vike for free, just like any other open source tool. See <Link href="/pricing" />.
 
-## Installation
 
-To install the license key, add it to your <Link href="/config">`+config.js`</Link> file:
+## Install
+
+To install your license key, add it to <Link href="/config">`+config.js`</Link>:
 
 ```ts
 // pages/+config.ts
@@ -23,17 +24,23 @@ To install the license key, add it to your <Link href="/config">`+config.js`</Li
 import type { Config } from 'vike/types'
 
 export default {
-  license: 'REPLACE_WITH_YOUR_KEY' // [!code ++]
+  license: 'YOUR_LICENSE_KEY' // [!code ++]
 } satisfies Config
 ```
 
-> Your license key isn't secret — it's safe to make public (for example, you can commit it to a public repository).
+> Your license key isn't a secret — it's safe to share publicly (for example, you can commit it to a public repository).
+
+That's it — your app can now use Vike forever without restrictions.
+
+> To update your list of domain names, see <Link href="#update-domain-names" />.
 
 ## Update domain names
 
-Your license key is valid for any subdomain of the root domains you entered when purchasing the license.
+Your license key is valid for the root domains you listed when purchasing your license.
 
-You can add or update your list of domain names (for free) by <a href="mailto:support@vike.dev">contacting us</a> (we will eventually automate this process).
+> It's also valid for all subdomains. For example, if one of your root domains is `example.com`, then the license key is also valid for `foo.example.com`, `bar.example.com`, etc.
+
+You can add or update your list of root domains at any time (for free) by <a href="mailto:support@vike.dev">contacting us</a> (we'll automate this in the future).
 
 
 ## See also

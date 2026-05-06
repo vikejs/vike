@@ -40,6 +40,7 @@ import { getBetterError } from '../../../utils/getBetterError.js'
 import { getRequestId_withAsyncHook } from '../../../server/runtime/asyncHook.js'
 import { getRequestTag, type RequestTag } from '../../../server/runtime/renderPageServer.js'
 import '../assertEnvVite.js'
+import { isDeno } from '../../../utils/isDeno.js'
 
 assertIsNotProductionRuntime()
 setLogRuntimeDev(logErrorServerDev, logRuntimeInfoDev)
@@ -172,7 +173,11 @@ function logDev(msg: string, logType: LogType, tagSource: TagSource | null, tagT
 
 function getTagSource(requestId: number | null = null): TagSource | null {
   const requestIdFromStore = getRequestId_withAsyncHook()
-  if (requestIdFromStore !== null) {
+  if (
+    requestIdFromStore !== null &&
+    // Workaround for Deno bug: https://github.com/vikejs/vike/issues/3240
+    !isDeno()
+  ) {
     if (requestId === null) {
       requestId = requestIdFromStore
     } else {

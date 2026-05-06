@@ -11,6 +11,7 @@ import { assertPosixPath } from '../../../../utils/path.js'
 import path from 'node:path'
 import crypto from 'node:crypto'
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
+import type { OutputOptions as RolldownOutputOptions } from 'rolldown'
 import { getAssetsDir } from '../../shared/getAssetsDir.js'
 import { assertModuleId, getFilePathToShowToUserModule } from '../../shared/getFilePath.js'
 import '../../assertEnvVite.js'
@@ -38,8 +39,8 @@ function pluginDistFileNames(): Plugin[] {
             if (!('assetFileNames' in rollupOutput)) {
               rollupOutput.assetFileNames = (chunkInfo) => getAssetFileName(chunkInfo, config)
 
-              // This Vite plugin is sometimes applied twice => avoid assertUsage() error below
-              // - I don't know why this plugin can be applied twice for the same config. It happened when there was multiple Vike instances installed with one instance being a link to ~/code/vike/packages/vike/
+              // Sometimes applied twice => avoid assertUsage() error below
+              // - I don't know why it can be applied twice for the same config. It happened when there was multiple Vike instances installed with one instance being a link to ~/code/vike/packages/vike/
               ;(rollupOutput.assetFileNames as any).isTheOneSetByVike = true
               assert((rollupOutput.assetFileNames as any).isTheOneSetByVike)
             } else {
@@ -53,66 +54,9 @@ function pluginDistFileNames(): Plugin[] {
                 "Setting Vite's configuration build.rollupOptions.output.assetFileNames is currently forbidden. Reach out if you need to use it.",
               )
             }
-
-            if (disableCSSBundling(config)) {
-              const manualChunksOriginal = rollupOutput.manualChunks
-              rollupOutput.manualChunks = function (id, ...args) {
-                if (manualChunksOriginal) {
-                  if (isCallable(manualChunksOriginal)) {
-                    const result = manualChunksOriginal.call(this, id, ...args)
-                    if (result !== undefined) return result
-                  } else {
-                    assertUsage(
-                      false,
-                      "The Vite's configuration build.rollupOptions.output.manualChunks must be a function. Reach out if you need to set it to another value.",
-                    )
-                  }
-                }
-
-                if (id.endsWith('.css')) {
-                  const userRootDir = config.root
-                  if (id.startsWith(userRootDir)) {
-                    assertPosixPath(id)
-                    assertModuleId(id)
-
-                    let name: string
-                    const isNodeModules = id.match(/node_modules\/([^\/]+)\/(?!.*node_modules)/)
-                    if (isNodeModules) {
-                      name = isNodeModules[1]!
-                    } else {
-                      const filePath = getFilePathToShowToUserModule(id, config)
-                      name = filePath
-                      name = name.split('.').slice(0, -1).join('.') // remove file extension
-                      name = name.split('/').filter(Boolean).join('_')
-                    }
-
-                    // Make fileHash the same between local development and CI
-                    const idStable = path.posix.relative(userRootDir, id)
-                    // Don't remove `?` queries because each `id` should belong to a unique bundle.
-                    const hash = getIdHash(idStable)
-
-                    return `${name}-${hash}`
-                  } else {
-                    let name: string
-                    const isVirtualModule = id.match(/virtual:([^:]+):/)
-                    if (isVirtualModule) {
-                      name = isVirtualModule[1]!
-                      assert(name)
-                    } else if (
-                      // https://github.com/vikejs/vike/issues/1818#issuecomment-2298478321
-                      id.startsWith('/__uno')
-                    ) {
-                      name = 'uno'
-                    } else {
-                      name = 'style'
-                    }
-                    const hash = getIdHash(id)
-                    return `${name}-${hash}`
-                  }
-                }
-              }
-            }
           })
+
+          disableCSSBundling(config)
         },
       },
     },
@@ -281,7 +225,127 @@ function workaroundGlob(name: string) {
   return name
 }
 
-function getRollupOutputs(config: ResolvedConfig) {
+// Workaround for Vite CSS duplication bug: https://github.com/vikejs/vike/issues/1815
+function disableCSSBundling(config: ResolvedConfig) {
+  if (isVite8OrAbove(config)) {
+    for (const output of getRolldownOutputs(config)) {
+      assert(output)
+      const { codeSplitting } = output
+
+      // `codeSplitting: false` => single-bundle mode; respect the user's choice.
+      if (codeSplitting === false) continue
+
+      // `codeSplitting` set as an object => Rolldown ignores `manualChunks`, so inject a group into `codeSplitting.groups` instead.
+      if (codeSplitting && typeof codeSplitting === 'object') {
+        if (codeSplittingHasWorkaround.has(codeSplitting)) continue
+        codeSplittingHasWorkaround.add(codeSplitting)
+        codeSplitting.groups ??= []
+        codeSplitting.groups.push({
+          test: /\.css$/,
+          name: (moduleId: string) => getCssChunkName(moduleId, config) ?? null,
+          /*
+          // Default priority — user-defined groups with the same priority appear earlier in the array and win the match.
+          // https://rolldown.rs/options/output-advanced-chunks
+          priority: 0
+          */
+        })
+        continue
+      }
+
+      // `codeSplitting` unset / `true` => wrap `manualChunks` (Rolldown auto-converts it to a group).
+      // - Rolldown supports `manualChunks` whenever `codeSplitting` isn't an object (despite what the migration guide implies).
+      wrapManualChunks(output, config, 'rolldownOptions')
+    }
+  } else {
+    for (const output of getRollupOutputs(config)) {
+      assert(output)
+      wrapManualChunks(output, config, 'rollupOptions')
+    }
+  }
+}
+const codeSplittingHasWorkaround = new WeakSet<object>()
+
+function wrapManualChunks(
+  output: Rollup.OutputOptions | RolldownOutputOptions,
+  config: ResolvedConfig,
+  optsName: 'rollupOptions' | 'rolldownOptions',
+) {
+  const manualChunksOriginal = output.manualChunks
+  // Sometimes applied twice => skip if we already wrapped — same rationale as `isTheOneSetByVike` for assetFileNames above.
+  if ((manualChunksOriginal as any)?.isTheOneSetByVike) return
+  output.manualChunks = function (id: string, ...args: unknown[]) {
+    if (manualChunksOriginal) {
+      if (isCallable(manualChunksOriginal)) {
+        const result = manualChunksOriginal.call(
+          this,
+          id,
+          // @ts-ignore
+          ...args,
+        )
+        if (result !== undefined) return result
+      } else {
+        assertUsage(
+          false,
+          `The Vite's configuration build.${optsName}.output.manualChunks must be a function. Reach out if you need to set it to another value.`,
+        )
+      }
+    }
+    return getCssChunkName(id, config)
+  }
+  ;(output.manualChunks as any).isTheOneSetByVike = true
+}
+
+function getCssChunkName(id: string, config: ResolvedConfig): string | undefined {
+  if (!id.endsWith('.css')) return undefined
+
+  const userRootDir = config.root
+  if (id.startsWith(userRootDir)) {
+    assertPosixPath(id)
+    assertModuleId(id)
+
+    let name: string
+    const isNodeModules = id.match(/node_modules\/([^\/]+)\/(?!.*node_modules)/)
+    if (isNodeModules) {
+      name = isNodeModules[1]!
+    } else {
+      const filePath = getFilePathToShowToUserModule(id, config)
+      name = filePath
+      name = name.split('.').slice(0, -1).join('.') // remove file extension
+      name = name.split('/').filter(Boolean).join('_')
+    }
+
+    // Make fileHash the same between local development and CI
+    const idStable = path.posix.relative(userRootDir, id)
+    // Don't remove `?` queries because each `id` should belong to a unique bundle.
+    const hash = getIdHash(idStable)
+
+    return `${name}-${hash}`
+  } else {
+    let name: string
+    const isVirtualModule = id.match(/virtual:([^:]+):/)
+    if (isVirtualModule) {
+      name = isVirtualModule[1]!
+      assert(name)
+    } else if (
+      // https://github.com/vikejs/vike/issues/1818#issuecomment-2298478321
+      id.startsWith('/__uno')
+    ) {
+      name = 'uno'
+    } else {
+      name = 'style'
+    }
+    const hash = getIdHash(id)
+    return `${name}-${hash}`
+  }
+}
+
+function isVite8OrAbove(config: ResolvedConfig) {
+  const viteVersion = config._viteVersionResolved
+  assert(viteVersion)
+  return isVersionMatch(viteVersion, ['8.0.0'])
+}
+
+function getRollupOutputs(config: ResolvedConfig): Rollup.OutputOptions[] {
   // @ts-expect-error is read-only
   config.build ??= {}
   config.build.rollupOptions ??= {}
@@ -292,24 +356,17 @@ function getRollupOutputs(config: ResolvedConfig) {
   }
   return output
 }
-
-function disableCSSBundling(config: ResolvedConfig) {
-  // Vite 7 => disable CSS bundling, see: https://github.com/vikejs/vike/issues/1815
-  if (!isVite8OrAbove(config)) return true
-
-  // Vite 8 doesn't support `manualChunks` when `codeSplitting` is used.
-  // - It does, however, support `manualChunks` if `codeSplitting` isn't used (despite what the following migration guide says)
-  // - https://vite.dev/guide/migration#removed-object-form-build-rollupoptions-output-manualchunks-and-deprecate-function-form-one
+function getRolldownOutputs(config: ResolvedConfig): RolldownOutputOptions[] {
+  // @ts-expect-error is read-only
+  config.build ??= {}
   // @ts-ignore
-  if (!config.build?.rolldownOptions?.output?.codeSplitting) return true
-
-  // TO-DO/eventually: we should probably show a warning, because Vite 8 still builds the client and server separately (potentially leading to the CSS duplication bug):
-  // https://github.com/vitejs/ecosystem/issues/6
-  return false
-}
-
-function isVite8OrAbove(config: ResolvedConfig) {
-  const viteVersion = config._viteVersionResolved
-  assert(viteVersion)
-  return isVersionMatch(viteVersion, ['8.0.0'])
+  config.build.rolldownOptions ??= {}
+  // @ts-ignore
+  config.build.rolldownOptions.output ??= {}
+  // @ts-ignore
+  const { output } = config.build.rolldownOptions
+  if (!isArray(output)) {
+    return [output]
+  }
+  return output as any[]
 }

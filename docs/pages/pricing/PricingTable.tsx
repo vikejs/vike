@@ -55,14 +55,14 @@ function PricingTable() {
                     suffix={
                       <>
                         <OneTime />
-                        {/*
+                        {/* TODO
                         <Separator />
                         <BuyButton />
                         */}
                       </>
                     }
                   >
-                    $5k
+                    €5k
                   </Price>
                   <Check>Full access</Check>
                   <Check>
@@ -214,7 +214,7 @@ function GreenCheckmark() {
 function BuyButton() {
   return (
     <a
-      href="https://buy.stripe.com/REPLACE_WITH_PAYMENT_LINK_ID"
+      href="https://buy.stripe.com/00wdRa2NT2tmbhL8Rcg3600"
       style={{
         display: 'inline-block',
         padding: '6px 16px',

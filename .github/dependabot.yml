@@ -12,6 +12,7 @@ updates:
       - dependency-name: "@brillout/*"
       - dependency-name: "@photonjs/*"
       - dependency-name: "@universal-middleware/*"
+      - dependency-name: "@universal-deploy/*"
       - dependency-name: "react-streaming"
       - dependency-name: "telefunc"
       - dependency-name: "vike-*"

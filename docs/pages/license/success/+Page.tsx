@@ -8,7 +8,7 @@ function Page() {
     <>
       <div style={{ textAlign: 'center', marginTop: 40 }}>
         <div style={{ fontSize: 48, marginBottom: 16 }}>🎉</div>
-        <h1 style={{ fontSize: 28, fontWeight: 700 }}>Thank you for your purchase</h1>
+        <h1 style={{ fontSize: 28, fontWeight: 700 }}>Purchase successful</h1>
       </div>
       <div style={{ maxWidth: 550, margin: 'auto' }}>
         Next steps:
@@ -22,9 +22,15 @@ function Page() {
             </blockquote>
           </li>
           <li>
-            Final step: install the license key, see <Link href="/license#installation" />.
+            <Link href="/license#install">Install your license key</Link>.
           </li>
         </ol>
+        That's it — you can now use Vike, forever without restrictions.
+        <blockquote>
+          <p>
+            To update your list of domain names, see <Link href="/license#update-domain-names" />.
+          </p>
+        </blockquote>
       </div>
     </>
   )

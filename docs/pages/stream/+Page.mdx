@@ -1,12 +1,12 @@
 import { Link } from '@brillout/docpress'
 
-import { UiFrameworkExtension, ProvidedBy, ConfigSpec } from '../../components'
+import { UiFrameworkExtension, ConfigSpec } from '../../components'
 
 <ConfigSpec
   default={<>
     <code>false</code> (or <code>true</code> if using a <Link href="/extensions">Vike extension</Link> that requires streaming)
   </>}
-  providedBy={<ProvidedBy>the <code>stream</code> setting</ProvidedBy>}
+  providedByExtension={{ kind: 'setting', name: 'stream' }}
   requires={<Link href="/ssr"><code>ssr: true</code></Link>}
   isTypeOneLiner
 >

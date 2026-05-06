@@ -1,3 +1,15 @@
+## [0.4.259](https://github.com/vikejs/vike/compare/v0.4.258...v0.4.259) (2026-05-06)
+
+
+### Bug Fixes
+
+* bump @universal-deploy/store@^0.2.1 @universal-deploy/vite@^0.1.8 ([a5ce88c](https://github.com/vikejs/vike/commit/a5ce88c385e0864437eac9dcb6e7e05882dbbcb8))
+* implement CSS duplication workaround for Vite 8 + `codeSplitting` (fix [#3227](https://github.com/vikejs/vike/issues/3227)) ([#3236](https://github.com/vikejs/vike/issues/3236)) ([9593ea2](https://github.com/vikejs/vike/commit/9593ea27e4d9edd0f414f594c2dd5ee70eaca15f))
+* skip `manualChunks` if Vite 8's `codeSplitting` is used ([#3227](https://github.com/vikejs/vike/issues/3227)) ([#3230](https://github.com/vikejs/vike/issues/3230)) ([e168602](https://github.com/vikejs/vike/commit/e168602edfd9123d18edc1b8d6e1cd45f0ffd6c0))
+* workaround Deno asynclocalstorage bug (fix [#3240](https://github.com/vikejs/vike/issues/3240)) ([040eb9f](https://github.com/vikejs/vike/commit/040eb9fe16ac54f27694dcd189feef2886ecd315))
+
+
+
 ## [0.4.258](https://github.com/vikejs/vike/compare/v0.4.257...v0.4.258) (2026-04-16)
 
 

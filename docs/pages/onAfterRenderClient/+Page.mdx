@@ -1,10 +1,10 @@
 import { Link } from '@brillout/docpress'
-import { ProvidedBy, ConfigSpec } from '../../components'
+import { ConfigSpec } from '../../components'
 
 <ConfigSpec
   env="client"
   cumulative
-  providedBy={<ProvidedBy noCustomGuide={true}><code>onAfterRenderClient()</code></ProvidedBy>}
+  providedByExtension={{ kind: 'hook', name: 'onAfterRenderClient()', noCustomGuide: true }}
 />
 
 Same as <Link href="/onBeforeRenderClient">`onBeforeRenderClient()`</Link> but called after rendering the page on the client-side.
