@@ -80,6 +80,10 @@ function getCiJobs() {
 function tolerateError({ logSource, logText, testInfo }) {
   return (
     [
+      // TODO: remove
+      // [07:46:18.648][/test/universal-deploy/test-preview.test.ts][pnpm run preview][stderr] [plugin vite:reporter] (!) /home/runner/work/vike/vike/test/universal-deploy/+server.ts?wrapper_0rl57cjlo&wrapper_0rl57cjlo is dynamically imported by virtual:ud:catch-all but also statically imported by virtual:ud:catch-all, dynamic import will not move module into another chunk.
+      'dynamic import will not move module into another chunk',
+
       // === Vite 8
       // [11:59:51.238][/examples/react-minimal][pnpm run dev][stderr] [vite:react-babel] We recommend switching to `@vitejs/plugin-react-oxc` for improved performance. More information at https://vite.dev/rolldown
       '`@vitejs/plugin-react-oxc` for improved performance',
