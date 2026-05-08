@@ -8,6 +8,20 @@ function readFixture(name: string): string {
   return readFileSync(path.join(__dirname, 'fixtures', name), 'utf8')
 }
 
+function withEnvUnset(name: string, fn: () => void): void {
+  const previous = process.env[name]
+  try {
+    delete process.env[name]
+    fn()
+  } finally {
+    if (previous === undefined) {
+      delete process.env[name]
+    } else {
+      process.env[name] = previous
+    }
+  }
+}
+
 describe('parseChangelog()', () => {
   it('maps changelog headings to version tags', () => {
     const changelog = `## [1.0.1](https://example.org) (2026-03-01)
@@ -125,21 +139,13 @@ describe('getReleasePlan()', () => {
 
 describe('local fallbacks', () => {
   it('returns a valid repository when run locally', () => {
-    const previous = process.env.GITHUB_REPOSITORY
-    try {
-      delete process.env.GITHUB_REPOSITORY
+    withEnvUnset('GITHUB_REPOSITORY', () => {
       const repository = getRepository()
       expect(repository.owner).toEqual(expect.any(String))
       expect(repository.repo).toEqual(expect.any(String))
       expect(repository.owner.trim()).not.toBe('')
       expect(repository.repo.trim()).not.toBe('')
-    } finally {
-      if (previous === undefined) {
-        delete process.env.GITHUB_REPOSITORY
-      } else {
-        process.env.GITHUB_REPOSITORY = previous
-      }
-    }
+    })
   })
 
 })
