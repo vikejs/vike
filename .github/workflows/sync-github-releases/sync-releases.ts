@@ -2,6 +2,7 @@
 Keeps GitHub releases aligned with `CHANGELOG.md`: creates any missing releases, and updates any whose body has drifted from the changelog.
 */
 
+// TODO/ai double check whether git show HEAD~ is accurate?
 /* === FLOW
 1. Read CHANGELOG.md and parse the changelog sections.
 2. Fetch existing GitHub releases.
