@@ -57,15 +57,13 @@ async function main(): Promise<void> {
 
   checkLatestRelease(versionTag, sections)
 
-  const dryRun = args.includes('--dry-run')
-  if (dryRun) console.log(`Dry-run mode — POST/PATCH calls will be logged instead of sent.`)
-
   const token = getGithubToken()
 
   const releases = await getAllReleases(owner, repo, token)
 
   const { releasesToCreate, releasesToUpdate } = getReleasePlan({ defaultBranch, releases, sections })
 
+  const dryRun = args.includes('--dry-run')
   for (const releaseToCreate of releasesToCreate) {
     if (dryRun) {
       console.log(`[dry-run] POST /repos/${owner}/${repo}/releases`)
