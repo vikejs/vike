@@ -3,15 +3,11 @@ Keeps GitHub releases aligned with `CHANGELOG.md`: creates any missing releases,
 */
 
 /* === FLOW
-1. Resolve repository (`owner/repo`), default branch, and the current version tag (from `<package-dir>/package.json`).
-2. Parse `<package-dir>/CHANGELOG.md` into per-version sections via `getReleaseSections()`.
-3. Sanity-check via `checkLatestRelease()` that the newest changelog section matches the current `package.json` version.
-4. Fetch all existing GitHub releases (paginated) via `getAllReleases()`.
-5. `getReleasePlan()` computes:
-   - `releasesToCreate`: every changelog section that has no matching GitHub release yet, ordered oldest-first so the GitHub release list ends up in the same order as the changelog.
-   - `releasesToUpdate`: existing releases whose body drifted from the matching changelog section.
-   Both are then applied via authenticated GitHub API calls (POST to create, PATCH to update), throttled to avoid GitHub abuse rate limits.
-6. With `--dry-run`, the same pipeline runs end-to-end but the POST/PATCH mutations are logged instead of sent (read-only GETs still execute, so a token is still required, so that the printed plan matches what a real run would do).
+1. Read the current version and per-version changelog sections from the package directory.
+2. Sanity-check that the newest changelog section matches the current version.
+3. Fetch existing GitHub releases.
+4. Diff the changelog against the releases to determine which need to be created and which need their body updated.
+5. Apply the plan via the GitHub API (or, in `--dry-run`, log what would be done).
 */
 
 // This file is executed by sync-github-releases.yml
