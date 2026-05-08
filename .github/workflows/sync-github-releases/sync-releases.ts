@@ -2,7 +2,6 @@
 Keeps GitHub releases aligned with `CHANGELOG.md`: creates any missing releases, and updates any whose body has drifted from the changelog.
 */
 
-// TODO/ai double check whether git show HEAD~ is accurate?
 /* === FLOW
 1. Read CHANGELOG.md and parse the changelog sections.
 2. Fetch existing GitHub releases.
@@ -64,40 +63,33 @@ async function main(): Promise<void> {
 
   const dryRun = args.includes('--dry-run')
   for (const releaseToCreate of releasesToCreate) {
-    // TODO/ai move --dry-run logic inside githubRequest() is a lot more DRY?
-    if (dryRun) {
-      console.log(`[dry-run] POST /repos/${owner}/${repo}/releases`)
-      console.log(JSON.stringify(releaseToCreate, null, 2))
-      continue
-    }
     // https://docs.github.com/en/rest/releases/releases#create-a-release
     await githubRequest(`/repos/${owner}/${repo}/releases`, {
       token,
       method: 'POST',
       body: releaseToCreate,
+      dryRun,
     })
-    console.log(`Created release ${releaseToCreate.tag_name}`)
-    // Avoid hitting GitHub abuse rate limits
-    await setTimeout(500)
+    if (!dryRun) {
+      console.log(`Created release ${releaseToCreate.tag_name}`)
+      // Avoid hitting GitHub abuse rate limits
+      await setTimeout(500)
+    }
   }
 
   for (const releaseToUpdate of releasesToUpdate) {
-    if (dryRun) {
-      console.log(
-        `[dry-run] PATCH /repos/${owner}/${repo}/releases/${releaseToUpdate.release_id} (${releaseToUpdate.tag_name})`,
-      )
-      console.log(JSON.stringify({ body: releaseToUpdate.body }, null, 2))
-      continue
-    }
     // https://docs.github.com/en/rest/releases/releases#update-a-release
     await githubRequest(`/repos/${owner}/${repo}/releases/${releaseToUpdate.release_id}`, {
       token,
       method: 'PATCH',
       body: { body: releaseToUpdate.body },
+      dryRun,
     })
-    console.log(`Updated release ${releaseToUpdate.tag_name}`)
-    // Avoid hitting GitHub abuse rate limits
-    await setTimeout(500)
+    if (!dryRun) {
+      console.log(`Updated release ${releaseToUpdate.tag_name}`)
+      // Avoid hitting GitHub abuse rate limits
+      await setTimeout(500)
+    }
   }
 }
 

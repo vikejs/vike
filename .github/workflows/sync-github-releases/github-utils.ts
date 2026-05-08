@@ -32,8 +32,23 @@ export async function getAllReleases(owner: string, repo: string, token: string)
 
 export async function githubRequest<T = void>(
   pathname: string,
-  { body, method = 'GET', token }: { body?: unknown; method?: 'GET' | 'PATCH' | 'POST' | 'DELETE'; token: string },
+  {
+    body,
+    method = 'GET',
+    token,
+    dryRun = false,
+  }: {
+    body?: unknown
+    method?: 'GET' | 'PATCH' | 'POST' | 'DELETE'
+    token: string
+    dryRun?: boolean
+  },
 ): Promise<T> {
+  if (dryRun && method !== 'GET') {
+    console.log(`[dry-run] ${method} ${pathname}`)
+    if (body !== undefined) console.log(JSON.stringify(body, null, 2))
+    return undefined as T
+  }
   const apiUrl = process.env.GITHUB_API_URL ?? 'https://api.github.com'
   const response = await fetch(new URL(pathname, apiUrl), {
     method,
