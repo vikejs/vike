@@ -15,6 +15,7 @@
 
 ### Bug Fixes
 
+* test
 * align dev and preview startup log ([#3210](https://github.com/vikejs/vike/issues/3210)) ([f0ea22a](https://github.com/vikejs/vike/commit/f0ea22ad8a54d662cca567ffcf60f57fd00ca9d3))
 * fix Uniersal Deploy preview ([32dff29](https://github.com/vikejs/vike/commit/32dff29fd376462f29676c5614c7271d052dce04))
 * improve workaround for WebKit import() bug (fix [#3199](https://github.com/vikejs/vike/issues/3199)) ([3b8b557](https://github.com/vikejs/vike/commit/3b8b55735a925eb1ee15e3305dc0f5a6c1a8f542))
