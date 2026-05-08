@@ -3,9 +3,9 @@ Keeps GitHub releases aligned with `CHANGELOG.md`: creates any missing releases,
 */
 
 /* === FLOW
-1. Read the per-version changelog sections from the package directory.
+1. Read CHANGELOG.md and parse the changelog sections.
 2. Fetch existing GitHub releases.
-3. Diff the changelog against the releases to determine which need to be created and which need their body updated.
+3. Diff the changelog sections against the GitHub releases, to determine which need to be created and which need their body updated.
 4. Apply the plan via the GitHub API (or, in `--dry-run`, log what would be done).
 */
 
