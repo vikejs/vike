@@ -1,5 +1,3 @@
-// TODO/ai suggest cleanup opportunites for this entire PR (git diff origin/main...HEAD)
-
 /* === WHAT IS THIS?
 Keeps GitHub releases aligned with `CHANGELOG.md`: creates any missing releases, and updates any whose body has drifted from the changelog.
 */
