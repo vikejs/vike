@@ -4,6 +4,9 @@ import { setTimeout } from 'node:timers/promises'
 
 import type { Release } from './types.js'
 
+const API_URL = process.env.GITHUB_API_URL ?? 'https://api.github.com'
+const REPOSITORY = process.env.GITHUB_REPOSITORY ?? getRepositoryFromGit()
+const DEFAULT_BRANCH = process.env.GITHUB_DEFAULT_BRANCH ?? 'main'
 // Avoid hitting GitHub abuse rate limits
 const RATE_LIMIT_DELAY_MS = 500
 
@@ -50,8 +53,7 @@ export async function githubRequest<T = void>(
     if (body !== undefined) console.log(JSON.stringify(body, null, 2))
     return undefined as T
   }
-  const apiUrl = process.env.GITHUB_API_URL ?? 'https://api.github.com'
-  const response = await fetch(new URL(pathname, apiUrl), {
+  const response = await fetch(new URL(pathname, API_URL), {
     method,
     headers: {
       Accept: 'application/vnd.github+json',
@@ -91,13 +93,12 @@ export function getGithubToken(): string {
 }
 
 export function getDefaultBranch(): string {
-  return process.env.GITHUB_DEFAULT_BRANCH ?? 'main'
+  return DEFAULT_BRANCH
 }
 
 export function getRepository(): { owner: string; repo: string } {
-  const repository = process.env.GITHUB_REPOSITORY ?? getRepositoryFromGit()
-  const [owner, repo] = repository.split('/')
-  assert(owner && repo, `Invalid GITHUB_REPOSITORY value: ${repository}`)
+  const [owner, repo] = REPOSITORY.split('/')
+  assert(owner && repo, `Invalid GITHUB_REPOSITORY value: ${REPOSITORY}`)
   return { owner, repo }
 }
 
