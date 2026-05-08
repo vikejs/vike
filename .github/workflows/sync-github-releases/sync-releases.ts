@@ -133,7 +133,7 @@ function getReleasePlan({
 
   const releasesToUpdate = releases.flatMap((release) => {
     const body = sections[release.tag_name]
-    if (!body || body === release.body) return []
+    if (!body || body === release.body?.trim()) return []
     return [{ release_id: release.id, tag_name: release.tag_name, body }]
   })
 
