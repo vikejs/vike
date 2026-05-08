@@ -54,7 +54,8 @@ async function main(): Promise<void> {
   const defaultBranch = getDefaultBranch()
   const versionTag = `v${packageJson.version}`
   const changelog = await readFile(changelogPath, 'utf8')
-  const sections = getChangelogSections(changelog, versionTag)
+  const sections = parseChangelog(changelog)
+  assertChangelog(versionTag, sections)
 
   const token = getGithubToken()
 
@@ -86,11 +87,6 @@ async function main(): Promise<void> {
   }
 }
 
-function getChangelogSections(changelog: string, versionTag: string): ReleaseSections {
-  const sections = parseChangelog(changelog)
-  assertChangelog(versionTag, sections)
-  return sections
-}
 function parseChangelog(changelog: string): ReleaseSections {
   const sections: ReleaseSections = {}
   // Matches changelog headings: `## [0.4.257](...)` or `# [0.1.0-beta.6](...)`
