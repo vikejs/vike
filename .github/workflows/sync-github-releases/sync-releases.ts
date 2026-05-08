@@ -63,6 +63,7 @@ async function main(): Promise<void> {
 
   const dryRun = args.includes('--dry-run')
   for (const releaseToCreate of releasesToCreate) {
+    // TODO/ai move --dry-run logic inside githubRequest() is a lot more DRY?
     if (dryRun) {
       console.log(`[dry-run] POST /repos/${owner}/${repo}/releases`)
       console.log(JSON.stringify(releaseToCreate, null, 2))
