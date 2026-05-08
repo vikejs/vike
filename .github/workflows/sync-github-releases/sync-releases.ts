@@ -1,5 +1,3 @@
-// TODO/ai: Is the following file header comment still accurate? If not, update it.
-
 /* === WHAT IS THIS?
 Keeps GitHub releases aligned with `CHANGELOG.md`.
 => It derives release notes from `CHANGELOG.md`, creates any missing releases (including the current version and any older versions not yet published on GitHub), and updates existing releases whose published notes drifted from the changelog (e.g. if `CHANGELOG.md` was manually edited).
@@ -14,7 +12,7 @@ Keeps GitHub releases aligned with `CHANGELOG.md`.
 6. `getReleasePlan()` computes:
    - `releasesToCreate`: every changelog section that has no matching GitHub release yet, ordered oldest-first so the GitHub release list ends up in the same order as the changelog.
    - `releasesToUpdate`: existing releases whose body drifted from the matching changelog section.
-   Both are then applied via authenticated GitHub API calls (POST to create, PATCH to update), throttled to avoid abuse rate limits and to keep release timestamps strictly increasing.
+   Both are then applied via authenticated GitHub API calls (POST to create, PATCH to update), throttled to avoid GitHub abuse rate limits.
 */
 
 // This file is executed by sync-github-releases.yml
