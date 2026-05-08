@@ -103,7 +103,6 @@ function getChangelogSections(changelog: string, versionTag: string): ReleaseSec
   assertChangelog(versionTag, sections)
   return sections
 }
-
 function parseChangelog(changelog: string): ReleaseSections {
   const sections: ReleaseSections = {}
   // Matches changelog headings: `## [0.4.257](...)` or `# [0.1.0-beta.6](...)`
@@ -124,6 +123,16 @@ function parseChangelog(changelog: string): ReleaseSections {
 
   return sections
 }
+function assertChangelog(versionTag: string, sections: ReleaseSections) {
+  const latestRelease = Object.keys(sections)[0]
+  assert(
+    latestRelease === versionTag,
+    `The latest changelog entry is ${latestRelease}, but the current version is ${versionTag}`,
+  )
+  const currentBody = sections[versionTag]
+  assert(currentBody, `Missing changelog entry for ${versionTag}`)
+}
+
 
 function getReleasePlan({
   defaultBranch,
@@ -154,14 +163,4 @@ function getReleasePlan({
   })
 
   return { releasesToCreate, releasesToUpdate }
-}
-
-function assertChangelog(versionTag: string, sections: ReleaseSections) {
-  const latestRelease = Object.keys(sections)[0]
-  assert(
-    latestRelease === versionTag,
-    `The latest changelog entry is ${latestRelease}, but the current version is ${versionTag}`,
-  )
-  const currentBody = sections[versionTag]
-  assert(currentBody, `Missing changelog entry for ${versionTag}`)
 }
