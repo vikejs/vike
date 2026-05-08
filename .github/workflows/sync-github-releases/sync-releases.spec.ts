@@ -2,13 +2,13 @@ import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { getDefaultBranch, getRepository } from './github-utils'
-import { getReleasePlan, getReleaseSections } from './sync-releases'
+import { getReleasePlan, parseChangelog } from './sync-releases'
 
 function readFixture(name: string): string {
   return readFileSync(path.join(__dirname, 'fixtures', name), 'utf8')
 }
 
-describe('getReleaseSections()', () => {
+describe('parseChangelog()', () => {
   it('maps changelog headings to version tags', () => {
     const changelog = `## [1.0.1](https://example.org) (2026-03-01)
 
@@ -23,14 +23,14 @@ describe('getReleaseSections()', () => {
 * Fixed old release notes.
 `
 
-    expect(getReleaseSections(changelog)).toEqual({
+    expect(parseChangelog(changelog)).toEqual({
       'v1.0.1': '### Features\n\n* Added release automation.',
       'v1.0.0': '### Bug Fixes\n\n* Fixed old release notes.',
     })
   })
 
   it('parses oldest Vike entries (single # headings, pre-release versions)', () => {
-    const sections = getReleaseSections(readFixture('changelog-vike.md'))
+    const sections = parseChangelog(readFixture('changelog-vike.md'))
     expect(Object.keys(sections)).toEqual([
       'v0.1.0-beta.10',
       'v0.1.0-beta.9',
@@ -44,28 +44,28 @@ describe('getReleaseSections()', () => {
   })
 
   it('parses oldest Telefunc entries (trailing non-versioned sections)', () => {
-    const sections = getReleaseSections(readFixture('changelog-telefunc.md'))
+    const sections = parseChangelog(readFixture('changelog-telefunc.md'))
     expect(Object.keys(sections)).toEqual(['v0.1.2', 'v0.1.1'])
     expect(sections['v0.1.2']).toContain('improve TelefunctionError type')
     expect(sections['v0.1.1']).toContain('isomorphic imports')
   })
 
   it('parses oldest vike-vue entries (no-link headings, dash bullets)', () => {
-    const sections = getReleaseSections(readFixture('changelog-vike-vue.md'))
+    const sections = parseChangelog(readFixture('changelog-vike-vue.md'))
     expect(Object.keys(sections)).toEqual(['v0.2.3', 'v0.2.2', 'v0.2.1', 'v0.2.0', 'v0.1.1'])
     expect(sections['v0.2.1']).toContain('Fix peer dependency')
     expect(sections['v0.2.0']).toContain('Add `Head` config option')
   })
 
   it('parses oldest vike-solid entries (single # headings, mixed formats)', () => {
-    const sections = getReleaseSections(readFixture('changelog-vike-solid.md'))
+    const sections = parseChangelog(readFixture('changelog-vike-solid.md'))
     expect(Object.keys(sections)).toEqual(['v0.7.2', 'v0.7.1', 'v0.7.0', 'v0.6.2', 'v0.6.1'])
     expect(sections['v0.7.0']).toContain('### BREAKING CHANGES')
     expect(sections['v0.6.1']).toContain('MIGRATION.md')
   })
 
   it('parses oldest vike-react entries (no-link initial version)', () => {
-    const sections = getReleaseSections(readFixture('changelog-vike-react.md'))
+    const sections = parseChangelog(readFixture('changelog-vike-react.md'))
     expect(Object.keys(sections)).toEqual(['v0.1.6', 'v0.1.5', 'v0.1.4', 'v0.1.3', 'v0.1.2', 'v0.1.1'])
     expect(sections['v0.1.6']).toContain("fix 'vike-react' type")
     expect(sections['v0.1.1']).toContain('fix ESM import paths')

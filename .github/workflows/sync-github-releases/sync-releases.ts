@@ -19,7 +19,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 
 // Only used by ./sync-releases.spec.ts
 export { getReleasePlan }
-export { getReleaseSections }
+export { parseChangelog }
 
 import assert from 'node:assert'
 import { readFile } from 'node:fs/promises'
@@ -53,9 +53,7 @@ async function main(): Promise<void> {
   const defaultBranch = getDefaultBranch()
   const versionTag = `v${packageJson.version}`
   const changelog = await readFile(changelogPath, 'utf8')
-  const sections = getReleaseSections(changelog)
-
-  checkLatestRelease(versionTag, sections)
+  const sections = getChangelogSections(changelog, versionTag)
 
   const token = getGithubToken()
 
@@ -99,9 +97,13 @@ async function main(): Promise<void> {
   }
 }
 
-// TODO/ai rename to getChangelogSections()
-function getReleaseSections(changelog: string): ReleaseSections {
-  // TODO/ai move content in a new function parseChangelog()
+function getChangelogSections(changelog: string, versionTag: string): ReleaseSections {
+  const sections = parseChangelog(changelog)
+  assertChangelog(versionTag, sections)
+  return sections
+}
+
+function parseChangelog(changelog: string): ReleaseSections {
   const sections: ReleaseSections = {}
   // Matches changelog headings: `## [0.4.257](...)` or `# [0.1.0-beta.6](...)`
   const regex = /^##? \[(\d+\.\d+\.\d+[^\]]*)\]/gm
@@ -153,8 +155,7 @@ function getReleasePlan({
   return { releasesToCreate, releasesToUpdate }
 }
 
-// TODO/ai: rename to assertChangelog() and move it inside getChangelogSections()
-function checkLatestRelease(versionTag: string, sections: ReleaseSections) {
+function assertChangelog(versionTag: string, sections: ReleaseSections) {
   const latestRelease = Object.keys(sections)[0]
   assert(
     latestRelease === versionTag,
