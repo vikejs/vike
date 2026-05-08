@@ -3,11 +3,10 @@ Keeps GitHub releases aligned with `CHANGELOG.md`: creates any missing releases,
 */
 
 /* === FLOW
-1. Read the current version and per-version changelog sections from the package directory.
-2. Sanity-check that the newest changelog section matches the current version.
-3. Fetch existing GitHub releases.
-4. Diff the changelog against the releases to determine which need to be created and which need their body updated.
-5. Apply the plan via the GitHub API (or, in `--dry-run`, log what would be done).
+1. Read the per-version changelog sections from the package directory.
+2. Fetch existing GitHub releases.
+3. Diff the changelog against the releases to determine which need to be created and which need their body updated.
+4. Apply the plan via the GitHub API (or, in `--dry-run`, log what would be done).
 */
 
 // This file is executed by sync-github-releases.yml
