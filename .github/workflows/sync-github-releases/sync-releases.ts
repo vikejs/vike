@@ -9,12 +9,12 @@ Keeps GitHub releases aligned with `CHANGELOG.md`.
 1. Resolve repository (`owner/repo`), default branch, and the current version tag (from `<package-dir>/package.json`).
 2. Parse `<package-dir>/CHANGELOG.md` into per-version sections via `getReleaseSections()`.
 3. Sanity-check via `checkLatestRelease()` that the newest changelog section matches the current `package.json` version.
-4. If `--dry-run`, log what would happen and exit without hitting the GitHub API.
-5. Otherwise, fetch all existing GitHub releases (paginated) via `getAllReleases()`.
-6. `getReleasePlan()` computes:
+4. Fetch all existing GitHub releases (paginated) via `getAllReleases()`.
+5. `getReleasePlan()` computes:
    - `releasesToCreate`: every changelog section that has no matching GitHub release yet, ordered oldest-first so the GitHub release list ends up in the same order as the changelog.
    - `releasesToUpdate`: existing releases whose body drifted from the matching changelog section.
    Both are then applied via authenticated GitHub API calls (POST to create, PATCH to update), throttled to avoid GitHub abuse rate limits.
+6. With `--dry-run`, the same pipeline runs end-to-end but the POST/PATCH mutations are logged instead of sent (read-only GETs still execute, so a token is still required, so that the printed plan matches what a real run would do).
 */
 
 // This file is executed by sync-github-releases.yml
@@ -55,8 +55,8 @@ async function main(): Promise<void> {
 
   // Local testing:
   // GITHUB_TOKEN=<contents:write token> bun ./.github/workflows/sync-github-releases/sync-releases.ts packages/vike
-  // Dry-run (no GitHub token needed):
-  // bun ./.github/workflows/sync-github-releases/sync-releases.ts packages/vike --dry-run
+  // Dry-run (still needs a token for read-only GETs):
+  // GITHUB_TOKEN=<contents:read token> bun ./.github/workflows/sync-github-releases/sync-releases.ts packages/vike --dry-run
   const { owner, repo } = getRepository()
   const defaultBranch = getDefaultBranch()
   const versionTag = `v${packageJson.version}`
@@ -66,14 +66,7 @@ async function main(): Promise<void> {
   checkLatestRelease(versionTag, sections)
 
   const dryRun = args.includes('--dry-run')
-  if (dryRun) {
-    console.log(`Dry-run mode — no GitHub API calls will be made.`)
-    console.log(`Repository: ${owner}/${repo}`)
-    console.log(`Version tag: ${versionTag}`)
-    console.log(`Changelog sections found: ${Object.keys(sections).join(', ')}`)
-    console.log(`\nRelease notes for ${versionTag}:\n${sections[versionTag]}`)
-    return
-  }
+  if (dryRun) console.log(`Dry-run mode — POST/PATCH calls will be logged instead of sent.`)
 
   const token = getGithubToken()
 
@@ -82,6 +75,11 @@ async function main(): Promise<void> {
   const { releasesToCreate, releasesToUpdate } = getReleasePlan({ defaultBranch, releases, sections })
 
   for (const releaseToCreate of releasesToCreate) {
+    if (dryRun) {
+      console.log(`[dry-run] POST /repos/${owner}/${repo}/releases`)
+      console.log(JSON.stringify(releaseToCreate, null, 2))
+      continue
+    }
     // https://docs.github.com/en/rest/releases/releases#create-a-release
     await githubRequest(`/repos/${owner}/${repo}/releases`, {
       token,
@@ -94,6 +92,11 @@ async function main(): Promise<void> {
   }
 
   for (const releaseToUpdate of releasesToUpdate) {
+    if (dryRun) {
+      console.log(`[dry-run] PATCH /repos/${owner}/${repo}/releases/${releaseToUpdate.release_id} (${releaseToUpdate.tag_name})`)
+      console.log(JSON.stringify({ body: releaseToUpdate.body }, null, 2))
+      continue
+    }
     // https://docs.github.com/en/rest/releases/releases#update-a-release
     await githubRequest(`/repos/${owner}/${repo}/releases/${releaseToUpdate.release_id}`, {
       token,

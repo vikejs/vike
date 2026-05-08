@@ -65,8 +65,8 @@ export function getGithubToken(): string {
       [
         'GITHUB_TOKEN is not set, run:',
         '  GITHUB_TOKEN=<token> pnpm -C .github/workflows/sync-github-releases run run -- <package-dir>',
-        'Or dry-run (no token needed):',
-        '  pnpm -C .github/workflows/sync-github-releases run try -- <package-dir>',
+        'Or dry-run (read-only token still needed, to fetch existing releases):',
+        '  GITHUB_TOKEN=<token> pnpm -C .github/workflows/sync-github-releases run try -- <package-dir>',
       ].join('\n'),
     )
   }
