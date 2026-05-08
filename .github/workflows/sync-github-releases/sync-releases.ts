@@ -1,9 +1,6 @@
 /* === WHAT IS THIS?
-Keeps GitHub releases aligned with `CHANGELOG.md`.
-=> It derives release notes from `CHANGELOG.md`, creates any missing releases (including the current version and any older versions not yet published on GitHub), and updates existing releases whose published notes drifted from the changelog (e.g. if `CHANGELOG.md` was manually edited).
+Keeps GitHub releases aligned with `CHANGELOG.md`: creates any missing releases, and updates any whose body has drifted from the changelog.
 */
-
-// TODO/ai improve this header comment, it's hard to read because it mixes low-level concerns with hgih-level flow. Make it *only* about the high-level flow.
 
 /* === FLOW
 1. Resolve repository (`owner/repo`), default branch, and the current version tag (from `<package-dir>/package.json`).
