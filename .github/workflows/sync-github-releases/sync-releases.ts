@@ -101,7 +101,9 @@ async function main(): Promise<void> {
   }
 }
 
+// TODO/ai rename to getChangelogSections()
 function getReleaseSections(changelog: string): ReleaseSections {
+  // TODO/ai move content in a new function parseChangelog()
   const sections: ReleaseSections = {}
   // Matches changelog headings: `## [0.4.257](...)` or `# [0.1.0-beta.6](...)`
   const regex = /^##? \[(\d+\.\d+\.\d+[^\]]*)\]/gm
@@ -153,6 +155,7 @@ function getReleasePlan({
   return { releasesToCreate, releasesToUpdate }
 }
 
+// TODO/ai: rename to assertChangelog() and move it inside getChangelogSections()
 function checkLatestRelease(versionTag: string, sections: ReleaseSections) {
   const latestRelease = Object.keys(sections)[0]
   assert(
