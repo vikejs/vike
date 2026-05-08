@@ -87,8 +87,8 @@ async function main(): Promise<void> {
       body: releaseToCreate,
     })
     console.log(`Created release ${releaseToCreate.tag_name}`)
-    // Avoid hitting GitHub abuse rate limits and ensure chronological order (timestamps differ by at least 1s)
-    await setTimeout(1500)
+    // Avoid hitting GitHub abuse rate limits
+    await setTimeout(500)
   }
 
   for (const releaseToUpdate of releasesToUpdate) {
