@@ -147,5 +147,4 @@ describe('local fallbacks', () => {
       expect(repository.repo.trim()).not.toBe('')
     })
   })
-
 })
