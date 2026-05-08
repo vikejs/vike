@@ -4,6 +4,9 @@ import { setTimeout } from 'node:timers/promises'
 
 import type { Release } from './types.js'
 
+// Avoid hitting GitHub abuse rate limits
+const RATE_LIMIT_DELAY_MS = 500
+
 export async function getAllReleases(owner: string, repo: string, token: string): Promise<Release[]> {
   const allReleases: Release[] = []
   let page = 1
@@ -23,8 +26,6 @@ export async function getAllReleases(owner: string, repo: string, token: string)
     if (releases.length < perPage) break
 
     page++
-
-    await setTimeout(500)
   }
 
   return allReleases
@@ -69,8 +70,9 @@ export async function githubRequest<T = void>(
     )
   }
 
-  if (response.status === 204) return undefined as T
-  return (await response.json()) as T
+  const data = response.status === 204 ? undefined : await response.json()
+  await setTimeout(RATE_LIMIT_DELAY_MS)
+  return data as T
 }
 
 export function getGithubToken(): string {

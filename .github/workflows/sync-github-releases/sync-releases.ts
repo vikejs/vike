@@ -27,7 +27,6 @@ import assert from 'node:assert'
 import { readFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import path from 'node:path'
-import { setTimeout } from 'node:timers/promises'
 import { fileURLToPath } from 'node:url'
 import type { Release, ReleaseCreateInput, ReleaseSections, ReleaseUpdateInput } from './types'
 import { getAllReleases, getDefaultBranch, getGithubToken, getRepository, githubRequest } from './github-utils'
@@ -72,11 +71,7 @@ async function main(): Promise<void> {
       body: releaseToCreate,
       dryRun,
     })
-    if (!dryRun) {
-      console.log(`Created release ${releaseToCreate.tag_name}`)
-      // Avoid hitting GitHub abuse rate limits
-      await setTimeout(500)
-    }
+    if (!dryRun) console.log(`Created release ${releaseToCreate.tag_name}`)
   }
 
   for (const releaseToUpdate of releasesToUpdate) {
@@ -87,11 +82,7 @@ async function main(): Promise<void> {
       body: { body: releaseToUpdate.body },
       dryRun,
     })
-    if (!dryRun) {
-      console.log(`Updated release ${releaseToUpdate.tag_name}`)
-      // Avoid hitting GitHub abuse rate limits
-      await setTimeout(500)
-    }
+    if (!dryRun) console.log(`Updated release ${releaseToUpdate.tag_name}`)
   }
 }
 
