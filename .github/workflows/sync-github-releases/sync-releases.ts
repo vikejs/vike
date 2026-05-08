@@ -90,19 +90,13 @@ async function main(): Promise<void> {
 function parseChangelog(changelog: string): ReleaseSections {
   const sections: ReleaseSections = {}
   // Matches changelog headings: `## [0.4.257](...)` or `# [0.1.0-beta.6](...)`
-  const regex = /^##? \[(\d+\.\d+\.\d+[^\]]*)\]/gm
-  const matches: { version: string; index: number }[] = []
-
-  let match: RegExpExecArray | null
-  while ((match = regex.exec(changelog)) !== null) {
-    matches.push({ version: match[1], index: match.index })
-  }
+  const matches = [...changelog.matchAll(/^##? \[(\d+\.\d+\.\d+[^\]]*)\]/gm)]
 
   matches.forEach((match, index) => {
     const start = changelog.indexOf('\n', match.index)
     const end = matches[index + 1]?.index ?? changelog.length
     const notes = changelog.slice(start, end).trim()
-    sections[`v${match.version}`] = notes
+    sections[`v${match[1]}`] = notes
   })
 
   return sections
