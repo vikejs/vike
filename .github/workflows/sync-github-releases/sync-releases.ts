@@ -82,7 +82,9 @@ async function main(): Promise<void> {
 
   for (const releaseToUpdate of releasesToUpdate) {
     if (dryRun) {
-      console.log(`[dry-run] PATCH /repos/${owner}/${repo}/releases/${releaseToUpdate.release_id} (${releaseToUpdate.tag_name})`)
+      console.log(
+        `[dry-run] PATCH /repos/${owner}/${repo}/releases/${releaseToUpdate.release_id} (${releaseToUpdate.tag_name})`,
+      )
       console.log(JSON.stringify({ body: releaseToUpdate.body }, null, 2))
       continue
     }
@@ -132,7 +134,6 @@ function assertChangelog(versionTag: string, sections: ReleaseSections) {
   const currentBody = sections[versionTag]
   assert(currentBody, `Missing changelog entry for ${versionTag}`)
 }
-
 
 function getReleasePlan({
   defaultBranch,
