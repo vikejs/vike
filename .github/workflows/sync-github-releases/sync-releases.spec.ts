@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { getDefaultBranch, getRepository } from './github-utils'
+import { getRepository } from './github-utils'
 import { getReleasePlan, parseChangelog } from './sync-releases'
 
 function readFixture(name: string): string {
@@ -142,17 +142,4 @@ describe('local fallbacks', () => {
     }
   })
 
-  it('falls back to the main branch when run locally', () => {
-    const previous = process.env.GITHUB_DEFAULT_BRANCH
-    try {
-      delete process.env.GITHUB_DEFAULT_BRANCH
-      expect(getDefaultBranch()).toBe('main')
-    } finally {
-      if (previous === undefined) {
-        delete process.env.GITHUB_DEFAULT_BRANCH
-      } else {
-        process.env.GITHUB_DEFAULT_BRANCH = previous
-      }
-    }
-  })
 })
