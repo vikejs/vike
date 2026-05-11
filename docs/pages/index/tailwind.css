@@ -21,16 +21,48 @@
   --color-bg: oklch(0.9702 0 0);
   --color-white: #fdfdfd;
 
-  /* daisyUI specific */
-  --d-color-info: oklch(60% 0.126 221.723);
-  --d-color-success: oklch(62% 0.194 149.214);
-  --d-color-warning: oklch(80% 0.199 91.936);
-  --d-color-error: oklch(57% 0.245 27.325);
+  --theme-base-100: var(--color-grey-300);
+  --theme-base-200: var(--color-grey-400);
+  --theme-base-300: var(--color-bg);
+  --theme-base-content: var(--color-content);
 
-  /* define ui variant colors while re-using pregenerated daisy variants */
-  --d-color-primary: #13ad6a;
-  --d-color-secondary: #4198db;
-  --d-color-accent: #b5721b;
+  --theme-primary: #13ad6a;
+  --theme-primary-content: var(--color-bg);
+  --theme-secondary: #4198db;
+  --theme-secondary-content: var(--color-bg);
+  --theme-accent: #b5721b;
+  --theme-accent-content: var(--color-bg);
+  --theme-neutral: var(--color-content);
+  --theme-neutral-content: var(--color-bg);
+  --theme-info: oklch(60% 0.126 221.723);
+  --theme-info-content: var(--color-bg);
+  --theme-success: oklch(62% 0.194 149.214);
+  --theme-success-content: var(--color-bg);
+  --theme-warning: oklch(80% 0.199 91.936);
+  --theme-warning-content: var(--color-black);
+  --theme-error: oklch(57% 0.245 27.325);
+  --theme-error-content: var(--color-bg);
+
+  --color-base-100: var(--theme-base-100);
+  --color-base-200: var(--theme-base-200);
+  --color-base-300: var(--theme-base-300);
+  --color-base-content: var(--theme-base-content);
+  --color-primary: var(--theme-primary);
+  --color-primary-content: var(--theme-primary-content);
+  --color-secondary: var(--theme-secondary);
+  --color-secondary-content: var(--theme-secondary-content);
+  --color-accent: var(--theme-accent);
+  --color-accent-content: var(--theme-accent-content);
+  --color-neutral: var(--theme-neutral);
+  --color-neutral-content: var(--theme-neutral-content);
+  --color-info: var(--theme-info);
+  --color-info-content: var(--theme-info-content);
+  --color-success: var(--theme-success);
+  --color-success-content: var(--theme-success-content);
+  --color-warning: var(--theme-warning);
+  --color-warning-content: var(--theme-warning-content);
+  --color-error: var(--theme-error);
+  --color-error-content: var(--theme-error-content);
 
   /* colors for hooks */
   --color-onBeforeRenderClient: oklch(0.819 0.0686 339.84);
@@ -55,60 +87,36 @@
   --color-onRenderHtml-hex: #6fbe59;
   --color-onAfterRenderHtml: oklch(0.8549 0.1547 94.42);
   --color-onAfterRenderHtml-hex: #f0cd42;
-}
-
-@plugin "daisyui" {
-  root: '#tailwind-portal';
-  /* leave this here - seems playwright or other headless browsers are not able to support @property css attributes */
-  exclude: properties;
-  themes: vike --default;
-}
-
-@plugin "daisyui/theme" {
-  name: 'vike';
-  --color-base-100: var(--color-grey-300);
-  --color-base-200: var(--color-grey-400);
-  --color-base-300: var(--color-bg);
-  --color-base-content: var(--color-content);
-
-  /* flexibility - green */
-  --color-primary: var(--d-color-primary);
-  --color-primary-content: var(--color-bg);
-
-  /* stability - blue */
-  --color-secondary: var(--d-color-secondary);
-  --color-secondary-content: var(--color-bg);
-
-  /* dx - orange */
-  --color-accent: var(--d-color-accent);
-  --color-accent-content: var(--color-bg);
-
-  --color-neutral: var(--color-content);
-  --color-neutral-content: var(--color-bg);
-  --color-info: var(--d-color-info);
-  --color-info-content: var(--color-bg);
-  --color-success: var(--d-color-success);
-  --color-success-content: var(--color-bg);
-  --color-warning: var(--d-color-warning);
-  --color-warning-content: var(--color-black);
-  --color-error: var(--d-color-error);
-  --color-error-content: var(--color-bg);
-  /* .rounded-selector = 0.25rem */
   --radius-selector: 0.25rem;
-  /* .rounded-field = 0.5rem */
   --radius-field: 0.35rem;
-  /* .rounded-box = 1rem */
   --radius-box: 0.75rem;
-  /* 4px */
-  --size-selector: 0.25rem;
-  --size-field: 0.25rem;
-  --border: 1.5px;
-
-  --depth: 0;
-  --noise: 0;
 }
 
 @layer base {
+  #tailwind-portal[data-theme='vike'] {
+    --theme-base-100: var(--color-grey-300);
+    --theme-base-200: var(--color-grey-400);
+    --theme-base-300: var(--color-bg);
+    --theme-base-content: var(--color-content);
+    --theme-primary: #13ad6a;
+    --theme-primary-content: var(--color-bg);
+    --theme-secondary: #4198db;
+    --theme-secondary-content: var(--color-bg);
+    --theme-accent: #b5721b;
+    --theme-accent-content: var(--color-bg);
+    --theme-neutral: var(--color-content);
+    --theme-neutral-content: var(--color-bg);
+    --theme-info: oklch(60% 0.126 221.723);
+    --theme-info-content: var(--color-bg);
+    --theme-success: oklch(62% 0.194 149.214);
+    --theme-success-content: var(--color-bg);
+    --theme-warning: oklch(80% 0.199 91.936);
+    --theme-warning-content: var(--color-black);
+    --theme-error: oklch(57% 0.245 27.325);
+    --theme-error-content: var(--color-bg);
+    --theme-border-size: 1.5px;
+  }
+
   #tailwind-portal,
   #tailwind-portal *,
   #tailwind-portal ::before,
@@ -181,6 +189,166 @@
 
   #tailwind-portal :where(select) {
     @apply !text-sm !w-fit border border-grey;
+  }
+}
+
+@layer components {
+  /* Local DaisyUI compatibility subset used by the docs site. */
+  #tailwind-portal .rounded-field {
+    border-radius: var(--radius-field);
+  }
+
+  #tailwind-portal .rounded-box {
+    border-radius: var(--radius-box);
+  }
+
+  #tailwind-portal .join {
+    display: inline-flex;
+    align-items: stretch;
+  }
+
+  #tailwind-portal .join > .join-item {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  #tailwind-portal .join > .join-item:first-child:not(:last-child) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  #tailwind-portal .join > .join-item:last-child:not(:first-child) {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  #tailwind-portal .join > .join-item:not(:first-child):not(:last-child) {
+    border-radius: 0;
+  }
+
+  #tailwind-portal .badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 1.25rem;
+    padding-inline: 0.5rem;
+    border: 1px solid currentColor;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  #tailwind-portal .badge-xs {
+    min-height: 1rem;
+    padding-inline: 0.375rem;
+    font-size: 0.65rem;
+  }
+
+  #tailwind-portal .badge-grey {
+    background-color: var(--color-grey-300);
+    color: var(--color-grey);
+  }
+
+  #tailwind-portal .btn {
+    --btn-color: var(--theme-neutral);
+    --btn-content: var(--theme-neutral-content);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding-inline: 1rem;
+    border: var(--theme-border-size) solid var(--btn-color);
+    border-radius: var(--radius-field);
+    background-color: var(--btn-color);
+    color: var(--btn-content);
+    font-weight: 600;
+    line-height: 1.2;
+    text-decoration: none;
+    white-space: nowrap;
+    transition:
+      color 150ms ease,
+      background-color 150ms ease,
+      border-color 150ms ease,
+      opacity 150ms ease;
+  }
+
+  #tailwind-portal .btn-neutral {
+    --btn-color: var(--theme-neutral);
+    --btn-content: var(--theme-neutral-content);
+  }
+
+  #tailwind-portal .btn-primary {
+    --btn-color: var(--theme-primary);
+    --btn-content: var(--theme-primary-content);
+  }
+
+  #tailwind-portal .btn-secondary {
+    --btn-color: var(--theme-secondary);
+    --btn-content: var(--theme-secondary-content);
+  }
+
+  #tailwind-portal .btn-accent {
+    --btn-color: var(--theme-accent);
+    --btn-content: var(--theme-accent-content);
+  }
+
+  #tailwind-portal .btn-outline {
+    background-color: transparent;
+    color: var(--btn-color);
+  }
+
+  #tailwind-portal .btn-outline:hover,
+  #tailwind-portal .btn-outline:focus-visible {
+    background-color: var(--btn-color);
+    color: var(--btn-content);
+  }
+
+  #tailwind-portal .btn-ghost {
+    background-color: transparent;
+    border-color: transparent;
+    color: var(--btn-color);
+  }
+
+  #tailwind-portal .btn-ghost:hover,
+  #tailwind-portal .btn-ghost:focus-visible {
+    background-color: color-mix(in oklab, var(--btn-color) 10%, transparent);
+  }
+
+  #tailwind-portal .btn-sm {
+    min-height: 2rem;
+    padding-inline: 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  #tailwind-portal .btn-md {
+    min-height: 2.75rem;
+    padding-inline: 1rem;
+    font-size: 0.875rem;
+  }
+
+  #tailwind-portal .btn-lg {
+    min-height: 3.5rem;
+    padding-inline: 1.25rem;
+    font-size: 1rem;
+  }
+
+  @media (width >= 40rem) {
+    #tailwind-portal .sm\:btn-lg {
+      min-height: 3.5rem;
+      padding-inline: 1.25rem;
+      font-size: 1rem;
+    }
+  }
+
+  @media (width >= 48rem) {
+    #tailwind-portal .md\:btn-lg {
+      min-height: 3.5rem;
+      padding-inline: 1.25rem;
+      font-size: 1rem;
+    }
   }
 }
 
