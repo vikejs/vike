@@ -1,4 +1,5 @@
 export { metaBuiltIn }
+// TODO: rename exports
 export type { ConfigDefinition }
 export type { ConfigDefinitions }
 export type { ConfigDefinitionsInternal }
@@ -82,12 +83,12 @@ type ConfigDefinitionDefinedByPeerDependency = {
  * https://vike.dev/meta
  */
 type ConfigEffect = (config: {
-  /** The config value.
+  /** The config's value.
    *
    * https://vike.dev/meta
    */
   configValue: unknown
-  /** Where the config value is defined.
+  /** Where the config's value is defined.
    *
    * https://vike.dev/meta
    */
