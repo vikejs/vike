@@ -70,7 +70,7 @@ const UspStaticContent = ({ uspVisualStateById }: UspStaticContentProps) => (
               <span
                 className={cmMerge(
                   UiVariantBtnColor[usp.dotColor],
-                  'btn btn-sm btn-ghost opacity-100 pointer-events-none',
+                  'daisy-btn daisy-btn-sm daisy-btn-ghost opacity-100 pointer-events-none',
                 )}
               >
                 <ChevronsDown className="inline-block w-3 h-3" />

@@ -81,7 +81,7 @@ const StyledToolBlock = cm.div.variants<{ $isEmpty: boolean }>({
   h-9
   pl-3
   items-center
-  rounded-field
+  daisy-rounded-field
   border-1 
   `,
   variants: {

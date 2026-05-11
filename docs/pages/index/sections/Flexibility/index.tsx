@@ -147,7 +147,7 @@ const FlexibilitySection = () => {
                   />
                 </div>
                 <p>
-                  <ClosingWords href="#hooks" className="btn-primary mx-0" onClick={onSeeUseCasesClick}>
+                  <ClosingWords href="#hooks" className="daisy-btn-primary mx-0" onClick={onSeeUseCasesClick}>
                     {chevronsDown} See use cases {chevronsDown}
                   </ClosingWords>
                 </p>
