@@ -12,6 +12,7 @@ import { isArrayOfStrings } from '../../../../utils/isArrayOfStrings.js'
 import { isObject } from '../../../../utils/isObject.js'
 import type { FilePathResolved } from '../../../../types/FilePath.js'
 import { type EsbuildCache, transpileAndExecuteFile } from './transpileAndExecuteFile.js'
+import { getConfigDefinitionOptional } from '../resolveVikeConfigInternal.js'
 import type { PlusFileValue } from './getPlusFilesByLocationId.js'
 import { assertPlusFileExport } from '../../../../shared-server-client/page-configs/assertPlusFileExport.js'
 import pc from '@brillout/picocolors'
@@ -40,7 +41,7 @@ async function loadPointerImport(
 ): Promise<unknown> {
   // The value of `extends` was already loaded and already used: we don't need the value of `extends` anymore
   if (configName === 'extends') return
-  const configDef = configDefinitions[configName] ?? null
+  const configDef = getConfigDefinitionOptional(configDefinitions, configName)
   // Only load pointer import if `env.config===true`
   if (!configDef || !shouldBeLoadableAtBuildTime(configDef)) return
 
@@ -75,7 +76,7 @@ async function loadValueFile(
   esbuildCache: EsbuildCache,
 ): Promise<void> {
   const { configName } = interfaceValueFile
-  const configDef = configDefinitions[configName] ?? null
+  const configDef = getConfigDefinitionOptional(configDefinitions, configName)
   // Only load value files with `env.config===true`
   if (!configDef || !shouldBeLoadableAtBuildTime(configDef)) return
   interfaceValueFile.isNotLoaded = false
