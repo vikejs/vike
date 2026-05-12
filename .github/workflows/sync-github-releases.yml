@@ -1,4 +1,4 @@
-name: Publish new Release
+name: Sync GitHub Releases
 
 on:
   push:
@@ -12,7 +12,7 @@ permissions:
   contents: read
 
 jobs:
-  publish_package:
+  sync_github_releases:
     runs-on: ubuntu-latest
     permissions:
       contents: write
