@@ -402,6 +402,9 @@ async function resolveConfigDefinitions(
       const configDefinitions = getConfigDefinitions(plusFilesRelevant, (configDef) => configDef.global !== true)
       await loadCustomConfigBuildTimeFiles(plusFiles, configDefinitions, userRootDir, esbuildCache)
       const configNamesKnownLocal = unique([
+        /* TODO/ai how about this?
+      [...Object.keys(configDefinitions), ...configNamesKnownGlobal, getConfigNamesPeerDependencies()]
+         */
         ...getConfigNames(plusFilesRelevant, (configDef) => configDef.global !== true),
         ...configNamesKnownGlobal,
       ])
