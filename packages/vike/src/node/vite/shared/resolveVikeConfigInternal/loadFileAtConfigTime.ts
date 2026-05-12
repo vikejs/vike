@@ -194,6 +194,7 @@ function getExtendsPointerImportData(configFileExports: Record<string, unknown>,
 }
 
 function shouldBeLoadableAtBuildTime(configDef: ConfigDefinitionInternalUnresolved): boolean {
+  // TODO/ai: this is also a smell that configDef.isDefinedByPeerDependency should be pruned earlier?
   if (configDef.isDefinedByPeerDependency) return false
   return !!configDef.env.config && !configDef._valueIsFilePath
 }
