@@ -379,7 +379,7 @@ async function resolveConfigDefinitions(
   )
   await loadCustomConfigBuildTimeFiles(plusFilesByLocationId, configDefinitionsGlobal, userRootDir, esbuildCache)
 
-  const configNamesKnownAll = getConfigDefinitionNames(Object.values(plusFilesByLocationId).flat())
+  const configNamesKnownAll = getConfigNames(Object.values(plusFilesByLocationId).flat())
   const configNamesKnownGlobal = Object.keys(configDefinitionsGlobal)
   assert(configNamesKnownGlobal.every((configName) => configNamesKnownAll.includes(configName)))
 
@@ -404,7 +404,7 @@ async function resolveConfigDefinitions(
       const configDefinitions = getConfigDefinitions(plusFilesRelevant, (configDef) => configDef.global !== true)
       await loadCustomConfigBuildTimeFiles(plusFiles, configDefinitions, userRootDir, esbuildCache)
       const configNamesKnownLocal = unique([
-        ...getConfigDefinitionNames(
+        ...getConfigNames(
           plusFilesRelevant,
           (configDef) => configDef.isDefinedByPeerDependency || configDef.global !== true,
         ),
@@ -1045,7 +1045,7 @@ function getConfigNamesSetByPlusFile(plusFile: PlusFile): string[] {
   }
 }
 
-function getConfigDefinitionNames(
+function getConfigNames(
   plusFilesRelevant: PlusFile[],
   filter?: (configDef: ConfigDefinitionInternalUnresolved) => boolean,
 ): string[] {
