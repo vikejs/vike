@@ -146,12 +146,13 @@ function getReleasePlan({
       body: changelogSections[tagName],
     }))
 
-  // TODO/ai simplify this function
-  const releasesToUpdate: ReleasesToUpdate[] = githubReleases.flatMap((release) => {
-    const body = changelogSections[release.tag_name]
-    if (!body || body === release.body?.trim()) return []
-    return [{ release_id: release.id, tag_name: release.tag_name, body }]
-  })
+  const releasesToUpdate: ReleasesToUpdate[] = githubReleases
+    .map((release) => {
+      const body = changelogSections[release.tag_name]
+      if (!body || body === release.body?.trim()) return null
+      return { release_id: release.id, tag_name: release.tag_name, body }
+    })
+    .filter((release) => release !== null)
 
   return { releasesToCreate, releasesToUpdate }
 }
