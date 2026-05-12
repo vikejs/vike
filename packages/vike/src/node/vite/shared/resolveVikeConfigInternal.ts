@@ -53,7 +53,6 @@ import {
   metaBuiltIn,
   type ConfigDefinitionsInternal,
   type ConfigDefinitionInternal,
-  type ConfigDefinitionsInternalUnresolved,
   type ConfigDefinitions,
 } from './resolveVikeConfigInternal/metaBuiltIn.js'
 import { getFileSuffixes } from '../../../shared-server-node/getFileSuffixes.js'
@@ -403,10 +402,7 @@ async function resolveConfigDefinitions(
       const configDefinitions = getConfigDefinitions(plusFilesRelevant, (configDef) => configDef.global !== true)
       await loadCustomConfigBuildTimeFiles(plusFiles, configDefinitions, userRootDir, esbuildCache)
       const configNamesKnownLocal = unique([
-        ...getConfigNames(
-          plusFilesRelevant,
-          (configDef) => configDef.isDefinedByPeerDependency || configDef.global !== true,
-        ),
+        ...getConfigNames(plusFilesRelevant, (configDef) => configDef.global !== true),
         ...configNamesKnownGlobal,
       ])
       assert(configNamesKnownLocal.every((configName) => configNamesKnownAll.includes(configName)))
@@ -1047,25 +1043,24 @@ function getConfigNames(
   plusFilesRelevant: PlusFile[],
   filter?: (configDef: ConfigDefinitionInternal) => boolean,
 ): string[] {
-  return Object.keys(collectConfigDefinitions(plusFilesRelevant, filter))
+  const { configDefinitions, peerDependencyConfigNames } = collectConfigDefinitions(plusFilesRelevant, filter)
+  return [...Object.keys(configDefinitions), ...peerDependencyConfigNames]
 }
 function getConfigDefinitions(
   plusFilesRelevant: PlusFile[],
   filter?: (configDef: ConfigDefinitionInternal) => boolean,
 ): ConfigDefinitionsInternal {
-  const configDefinitionsUnresolved = collectConfigDefinitions(plusFilesRelevant, filter)
-  const configDefinitions: ConfigDefinitionsInternal = {}
-  objectEntries(configDefinitionsUnresolved).forEach(([configName, configDef]) => {
-    if (configDef.isDefinedByPeerDependency) return
-    configDefinitions[configName] = configDef
-  })
-  return configDefinitions
+  return collectConfigDefinitions(plusFilesRelevant, filter).configDefinitions
 }
 function collectConfigDefinitions(
   plusFilesRelevant: PlusFile[],
   filter?: (configDef: ConfigDefinitionInternal) => boolean,
-) {
-  let configDefinitions: ConfigDefinitionsInternalUnresolved = { ...metaBuiltIn }
+): {
+  configDefinitions: ConfigDefinitionsInternal
+  peerDependencyConfigNames: Set<string>
+} {
+  let configDefinitions: ConfigDefinitionsInternal = { ...metaBuiltIn }
+  const peerDependencyConfigNames = new Set<string>()
 
   // Add user-land meta configs
   plusFilesRelevant
@@ -1091,34 +1086,26 @@ function collectConfigDefinitions(
 
       objectEntries(meta).forEach(([configName, configDefinitionUserLand]) => {
         if ('isDefinedByPeerDependency' in configDefinitionUserLand) {
-          /* vike-server@1.0.24 wrongfully sets `stream: { env: { config: true }, isDefinedByPeerDependency: true }`
-          assert(deepEqual(Object.keys(configDefinitionUserLand), ['isDefinedByPeerDependency']))
-          //*/
-          if (!configDefinitions[configName]) {
-            configDefinitions[configName] = {
-              env: { client: false, server: false, config: false },
-            }
-          }
+          // vike-server@1.0.24 wrongfully sets `stream: { env: { config: true }, isDefinedByPeerDependency: true }` — any non-`isDefinedByPeerDependency` fields are ignored.
+          if (!configDefinitions[configName]) peerDependencyConfigNames.add(configName)
           return
         }
-        // User can override an existing config definition
+        // User can override an existing config definition (including overriding a previously-seen peer-dependency declaration)
         configDefinitions[configName] = {
           ...configDefinitions[configName],
           ...configDefinitionUserLand,
         }
+        peerDependencyConfigNames.delete(configName)
       })
     })
 
   if (filter) {
     configDefinitions = Object.fromEntries(
-      Object.entries(configDefinitions).filter(([_configName, configDef]) => {
-        if (configDef.isDefinedByPeerDependency) return true
-        return filter(configDef)
-      }),
+      Object.entries(configDefinitions).filter(([_configName, configDef]) => filter(configDef)),
     )
   }
 
-  return configDefinitions
+  return { configDefinitions, peerDependencyConfigNames }
 }
 
 function assertMetaUsage(

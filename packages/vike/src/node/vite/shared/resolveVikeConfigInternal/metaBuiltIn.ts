@@ -4,8 +4,6 @@ export type { ConfigDefinition }
 export type { ConfigDefinitions }
 export type { ConfigDefinitionsInternal }
 export type { ConfigDefinitionInternal }
-export type { ConfigDefinitionsInternalUnresolved }
-export type { ConfigDefinitionInternalUnresolved }
 export type { ConfigEffect }
 
 import type { ConfigEnvInternal, ConfigEnv, DefinedAtFilePath } from '../../../../types/PageConfig.js'
@@ -110,15 +108,13 @@ type ConfigDefinition =
       env: ConfigEnv
     })
   | ConfigDefinitionDefinedByPeerDependency
-type ConfigDefinitionInternalUnresolved = ConfigDefinition
-// TODO: rename to ConfigDefinitionsResolved
-type ConfigDefinitionInternal = Exclude<ConfigDefinitionInternalUnresolved, ConfigDefinitionDefinedByPeerDependency>
+// TODO: rename to ConfigDefinitionResolved
+type ConfigDefinitionInternal = Exclude<ConfigDefinition, ConfigDefinitionDefinedByPeerDependency>
 
 type ConfigDefinitions = Record<
   string, // configName
   ConfigDefinition
 >
-type ConfigDefinitionsInternalUnresolved = ConfigDefinitions
 // TODO: rename to ConfigDefinitionsResolved
 type ConfigDefinitionsInternal = Record<
   string, // configName
