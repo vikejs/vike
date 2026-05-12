@@ -8,7 +8,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 }
 
 import { fileURLToPath } from 'node:url'
-import { getAllReleases, getGithubToken, getRepository, githubRequest } from './github-utils'
+import { fetchGithubReleases, getGithubToken, getRepository, githubRequest } from './github-utils'
 
 async function removeAllReleases() {
   const token = getGithubToken()
@@ -16,7 +16,7 @@ async function removeAllReleases() {
   const { owner, repo } = getRepository()
   console.log(`Fetching releases for ${owner}/${repo} …`)
 
-  const githubReleases = await getAllReleases(owner, repo, token)
+  const githubReleases = await fetchGithubReleases(owner, repo, token)
 
   console.log(`Starting delete of ${githubReleases.length} releases …`)
 

@@ -10,7 +10,7 @@ const DEFAULT_BRANCH = process.env.GITHUB_DEFAULT_BRANCH ?? 'main'
 // Avoid hitting GitHub abuse rate limits
 const RATE_LIMIT_DELAY_MS = 500
 
-export async function getAllReleases(owner: string, repo: string, token: string): Promise<Release[]> {
+export async function fetchGithubReleases(owner: string, repo: string, token: string): Promise<Release[]> {
   const githubReleases: Release[] = []
   let page = 1
   const perPage = 100

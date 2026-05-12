@@ -29,7 +29,7 @@ import { createRequire } from 'node:module'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import type { Release } from './types'
-import { getAllReleases, getDefaultBranch, getGithubToken, getRepository, githubRequest } from './github-utils'
+import { fetchGithubReleases, getDefaultBranch, getGithubToken, getRepository, githubRequest } from './github-utils'
 
 async function main(): Promise<void> {
   const require = createRequire(import.meta.url)
@@ -59,7 +59,7 @@ async function main(): Promise<void> {
 
   const token = getGithubToken()
 
-  const githubReleases = await getAllReleases(owner, repo, token)
+  const githubReleases = await fetchGithubReleases(owner, repo, token)
 
   const { releasesToCreate, releasesToUpdate } = getReleasePlan({
     defaultBranch,
