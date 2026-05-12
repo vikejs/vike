@@ -399,13 +399,14 @@ async function resolveConfigDefinitions(
         .map(([, plusFiles]) => plusFiles)
         .flat()
         .sort((plusFile1, plusFile2) => sortAfterInheritanceOrderPage(plusFile1, plusFile2, locationIdPage, null))
-      const configDefinitions = getConfigDefinitions(plusFilesRelevant, (configDef) => configDef.global !== true)
+      const { configDefinitions, peerDependencyConfigNames } = collectConfigDefinitions(
+        plusFilesRelevant,
+        (configDef) => configDef.global !== true,
+      )
       await loadCustomConfigBuildTimeFiles(plusFiles, configDefinitions, userRootDir, esbuildCache)
       const configNamesKnownLocal = unique([
-        /* TODO/ai how about this?
-      [...Object.keys(configDefinitions), ...configNamesKnownGlobal, getConfigNamesPeerDependencies()]
-         */
-        ...getConfigNames(plusFilesRelevant, (configDef) => configDef.global !== true),
+        ...Object.keys(configDefinitions),
+        ...peerDependencyConfigNames,
         ...configNamesKnownGlobal,
       ])
       assert(configNamesKnownLocal.every((configName) => configNamesKnownAll.includes(configName)))
