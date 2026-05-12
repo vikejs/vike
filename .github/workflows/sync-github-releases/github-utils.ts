@@ -1,3 +1,9 @@
+export { fetchGithubReleases }
+export { githubRequest }
+export { getGithubToken }
+export { getDefaultBranch }
+export { getRepository }
+
 import assert from 'node:assert'
 import { execSync } from 'node:child_process'
 import { setTimeout } from 'node:timers/promises'
@@ -9,7 +15,7 @@ const DEFAULT_BRANCH = process.env.GITHUB_DEFAULT_BRANCH ?? 'main'
 // Avoid hitting GitHub abuse rate limits
 const RATE_LIMIT_DELAY_MS = 500
 
-export async function fetchGithubReleases(owner: string, repo: string, token: string): Promise<Release[]> {
+async function fetchGithubReleases(owner: string, repo: string, token: string): Promise<Release[]> {
   const githubReleases: Release[] = []
   let page = 1
   const perPage = 100
@@ -33,7 +39,7 @@ export async function fetchGithubReleases(owner: string, repo: string, token: st
   return githubReleases
 }
 
-export async function githubRequest<T = void>(
+async function githubRequest<T = void>(
   pathname: string,
   {
     body,
@@ -76,7 +82,7 @@ export async function githubRequest<T = void>(
   return data as T
 }
 
-export function getGithubToken(): string {
+function getGithubToken(): string {
   const token = process.env.GITHUB_TOKEN
   if (!token) {
     throw new Error(
@@ -91,11 +97,11 @@ export function getGithubToken(): string {
   return token
 }
 
-export function getDefaultBranch(): string {
+function getDefaultBranch(): string {
   return DEFAULT_BRANCH
 }
 
-export function getRepository(): { owner: string; repo: string } {
+function getRepository(): { owner: string; repo: string } {
   const [owner, repo] = REPOSITORY.split('/')
   assert(owner && repo, `Invalid GITHUB_REPOSITORY value: ${REPOSITORY}`)
   return { owner, repo }
