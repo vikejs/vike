@@ -4,7 +4,7 @@ export type Release = {
   body: string | null
 }
 export type ChangelogSections = Record<string, string>
-export type ReleaseCreateInput = {
+export type ReleasesToCreate = {
   tag_name: string
   target_commitish: string
   name: string
