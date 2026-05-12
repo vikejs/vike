@@ -12,14 +12,13 @@ import { isArrayOfStrings } from '../../../../utils/isArrayOfStrings.js'
 import { isObject } from '../../../../utils/isObject.js'
 import type { FilePathResolved } from '../../../../types/FilePath.js'
 import { type EsbuildCache, transpileAndExecuteFile } from './transpileAndExecuteFile.js'
-import { getConfigDefinitionOptional } from '../resolveVikeConfigInternal.js'
 import type { PlusFileValue } from './getPlusFilesByLocationId.js'
 import { assertPlusFileExport } from '../../../../shared-server-client/page-configs/assertPlusFileExport.js'
 import pc from '@brillout/picocolors'
 import { type PointerImportData, parsePointerImportData } from './pointerImports.js'
 import { getConfigFileExport } from './getConfigFileExport.js'
 import { PointerImport, resolvePointerImportData } from './resolvePointerImport.js'
-import type { ConfigDefinitionInternal, ConfigDefinitionsInternal } from './metaBuiltIn.js'
+import type { ConfigDefinitionInternalUnresolved, ConfigDefinitionsInternal, ConfigDefinitionsInternalUnresolved } from './metaBuiltIn.js'
 import { getConfigDefinedAt } from '../../../../shared-server-client/page-configs/getConfigDefinedAt.js'
 import '../../assertEnvVite.js'
 
@@ -36,12 +35,12 @@ async function loadPointerImport(
   pointerImport: PointerImportLoaded,
   userRootDir: string,
   configName: string,
-  configDefinitions: ConfigDefinitionsInternal,
+  configDefinitions: ConfigDefinitionsInternal | ConfigDefinitionsInternalUnresolved,
   esbuildCache: EsbuildCache,
 ): Promise<unknown> {
   // The value of `extends` was already loaded and already used: we don't need the value of `extends` anymore
   if (configName === 'extends') return
-  const configDef = getConfigDefinitionOptional(configDefinitions, configName)
+  const configDef = configDefinitions[configName] ?? null
   // Only load pointer import if `env.config===true`
   if (!configDef || !shouldBeLoadableAtBuildTime(configDef)) return
 
@@ -71,12 +70,12 @@ type PointerImportLoaded = PointerImport &
 // Load +{configName}.js
 async function loadValueFile(
   interfaceValueFile: PlusFileValue,
-  configDefinitions: ConfigDefinitionsInternal,
+  configDefinitions: ConfigDefinitionsInternal | ConfigDefinitionsInternalUnresolved,
   userRootDir: string,
   esbuildCache: EsbuildCache,
 ): Promise<void> {
   const { configName } = interfaceValueFile
-  const configDef = getConfigDefinitionOptional(configDefinitions, configName)
+  const configDef = configDefinitions[configName] ?? null
   // Only load value files with `env.config===true`
   if (!configDef || !shouldBeLoadableAtBuildTime(configDef)) return
   interfaceValueFile.isNotLoaded = false
@@ -190,6 +189,7 @@ function getExtendsPointerImportData(configFileExports: Record<string, unknown>,
   return { extendsPointerImportData, extendsConfigs }
 }
 
-function shouldBeLoadableAtBuildTime(configDef: ConfigDefinitionInternal): boolean {
+function shouldBeLoadableAtBuildTime(configDef: ConfigDefinitionInternalUnresolved): boolean {
+  if (configDef.isDefinedByPeerDependency) return false
   return !!configDef.env.config && !configDef._valueIsFilePath
 }

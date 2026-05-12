@@ -48,11 +48,13 @@ import type {
   PageConfigRoute,
   DefinedBy,
 } from '../../../types/PageConfig.js'
-import type { Config } from '../../../types/Config.js'
+import type { Config, ConfigPeers } from '../../../types/Config.js'
 import {
   metaBuiltIn,
   type ConfigDefinitionsInternal,
+  type ConfigDefinitionsInternalUnresolved,
   type ConfigDefinitionInternal,
+  type ConfigDefinitionInternalUnresolved,
   type ConfigDefinitions,
 } from './resolveVikeConfigInternal/metaBuiltIn.js'
 import { getFileSuffixes } from '../../../shared-server-node/getFileSuffixes.js'
@@ -377,8 +379,7 @@ async function resolveConfigDefinitions(
   )
   await loadCustomConfigBuildTimeFiles(plusFilesByLocationId, configDefinitionsGlobal, userRootDir, esbuildCache)
 
-  const configDefinitionsAll = getConfigDefinitions(Object.values(plusFilesByLocationId).flat())
-  const configNamesKnownAll = Object.keys(configDefinitionsAll)
+  const configNamesKnownAll = getConfigDefinitionNames(Object.values(plusFilesByLocationId).flat())
   const configNamesKnownGlobal = Object.keys(configDefinitionsGlobal)
   assert(configNamesKnownGlobal.every((configName) => configNamesKnownAll.includes(configName)))
 
@@ -402,7 +403,13 @@ async function resolveConfigDefinitions(
         .sort((plusFile1, plusFile2) => sortAfterInheritanceOrderPage(plusFile1, plusFile2, locationIdPage, null))
       const configDefinitions = getConfigDefinitions(plusFilesRelevant, (configDef) => configDef.global !== true)
       await loadCustomConfigBuildTimeFiles(plusFiles, configDefinitions, userRootDir, esbuildCache)
-      const configNamesKnownLocal = unique([...Object.keys(configDefinitions), ...configNamesKnownGlobal])
+      const configNamesKnownLocal = unique([
+        ...getConfigDefinitionNames(
+          plusFilesRelevant,
+          (configDef) => configDef.isDefinedByPeerDependency || configDef.global !== true,
+        ),
+        ...configNamesKnownGlobal,
+      ])
       assert(configNamesKnownLocal.every((configName) => configNamesKnownAll.includes(configName)))
       configDefinitionsLocal[locationIdPage] = {
         configDefinitions,
@@ -416,7 +423,6 @@ async function resolveConfigDefinitions(
   const configDefinitionsResolved = {
     configDefinitionsGlobal,
     configDefinitionsLocal,
-    configDefinitionsAll,
     configNamesKnownAll,
     configNamesKnownGlobal,
   }
@@ -735,6 +741,7 @@ function getSourceNonConfigFile(
 ): ConfigValueSource {
   assert(includes(objectKeys(metaBuiltIn), configName))
   const configDef = metaBuiltIn[configName]
+  assert(!configDef.isDefinedByPeerDependency)
   const source: ConfigValueSource = {
     valueIsLoaded: true,
     value,
@@ -1038,11 +1045,30 @@ function getConfigNamesSetByPlusFile(plusFile: PlusFile): string[] {
   }
 }
 
+function getConfigDefinitionNames(
+  plusFilesRelevant: PlusFile[],
+  filter?: (configDef: ConfigDefinitionInternalUnresolved) => boolean,
+): string[] {
+  return Object.keys(collectConfigDefinitions(plusFilesRelevant, filter))
+}
 function getConfigDefinitions(
   plusFilesRelevant: PlusFile[],
   filter?: (configDef: ConfigDefinitionInternal) => boolean,
 ): ConfigDefinitionsInternal {
-  let configDefinitions: ConfigDefinitionsInternal = { ...metaBuiltIn }
+  const configDefinitionsUnresolved = collectConfigDefinitions(plusFilesRelevant)
+  const configDefinitions: ConfigDefinitionsInternal = {}
+  objectEntries(configDefinitionsUnresolved).forEach(([configName, configDef]) => {
+    if (configDef.isDefinedByPeerDependency) return
+    if (filter && !filter(configDef)) return
+    configDefinitions[configName] = configDef
+  })
+  return configDefinitions
+}
+function collectConfigDefinitions(
+  plusFilesRelevant: PlusFile[],
+  filter?: (configDef: ConfigDefinitionInternalUnresolved) => boolean,
+): ConfigDefinitionsInternalUnresolved {
+  let configDefinitions: ConfigDefinitionsInternalUnresolved = { ...metaBuiltIn }
 
   // Add user-land meta configs
   plusFilesRelevant
@@ -1216,7 +1242,7 @@ function runEffect(configName: string, configDef: ConfigDefinitionInternal, sour
   return configModFromEffect
 }
 function applyEffectConfVal(
-  configModFromEffect: Config,
+  configModFromEffect: Config | ConfigPeers,
   sourceEffect: ConfigValueSource,
   configValueSources: ConfigValueSources,
   configNameEffect: string,
@@ -1224,7 +1250,7 @@ function applyEffectConfVal(
   configDefinitions: ConfigDefinitionsInternal,
   plusFilesByLocationId: PlusFilesByLocationId,
 ) {
-  objectEntries(configModFromEffect).forEach(([configNameTarget, configValue]) => {
+  Object.entries(configModFromEffect).forEach(([configNameTarget, configValue]) => {
     if (configNameTarget === 'meta') return
     const configDef = configDefinitions[configNameTarget]
     assert(configDef)
@@ -1253,13 +1279,13 @@ function applyEffectConfVal(
   })
 }
 function applyEffectMetaEnv(
-  configModFromEffect: Config,
+  configModFromEffect: Config | ConfigPeers,
   configValueSources: ConfigValueSources,
   configDefEffect: ConfigDefinitionInternal,
 ) {
   const notSupported =
     `${pc.cyan('meta.effect')} currently only supports setting the value of a config, or modifying the ${pc.cyan('meta.env')} of a config.` as const
-  objectEntries(configModFromEffect).forEach(([configNameTarget, configValue]) => {
+  Object.entries(configModFromEffect).forEach(([configNameTarget, configValue]) => {
     if (configNameTarget !== 'meta') return
     let configDefinedAt: Parameters<typeof assertMetaUsage>[1]
     if (configDefEffect._userEffectDefinedAtFilePath) {

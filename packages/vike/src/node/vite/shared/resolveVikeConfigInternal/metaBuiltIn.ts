@@ -4,6 +4,8 @@ export type { ConfigDefinition }
 export type { ConfigDefinitions }
 export type { ConfigDefinitionsInternal }
 export type { ConfigDefinitionInternal }
+export type { ConfigDefinitionsInternalUnresolved }
+export type { ConfigDefinitionInternalUnresolved }
 export type { ConfigEffect }
 
 import type { ConfigEnvInternal, ConfigEnv, DefinedAtFilePath } from '../../../../types/PageConfig.js'
@@ -97,22 +99,30 @@ type ConfigEffect = (config: {
 }) => Config | ConfigPeers | undefined
 
 /** For Vike internal use */
-type ConfigDefinitionInternal = (Omit<ConfigDefinition_, 'env'> & {
+type ConfigDefinitionInternalUnresolved = (Omit<ConfigDefinition_, 'env'> & {
   _computed?: (pageConfig: PageConfigBuildTimeBeforeComputed) => unknown
   _valueIsFilePath?: true
   _userEffectDefinedAtFilePath?: DefinedAtFilePath
   env: ConfigEnvInternal
 }) | ConfigDefinitionDefinedByPeerDependency
+type ConfigDefinitionInternal = Exclude<ConfigDefinitionInternalUnresolved, ConfigDefinitionDefinedByPeerDependency>
 
 type ConfigDefinitions = Record<
   string, // configName
   ConfigDefinition
 >
+type ConfigDefinitionsInternalUnresolved = Record<
+  string, // configName
+  ConfigDefinitionInternalUnresolved
+>
 type ConfigDefinitionsInternal = Record<
   string, // configName
   ConfigDefinitionInternal
 >
-type ConfigDefinitionsBuiltIn = Record<ConfigNameBuiltIn | ConfigNameGlobal | keyof ConfigPeers, ConfigDefinitionInternal>
+type ConfigDefinitionsBuiltIn = Record<
+  ConfigNameBuiltIn | ConfigNameGlobal | keyof ConfigPeers,
+  ConfigDefinitionInternalUnresolved
+>
 const metaBuiltIn: ConfigDefinitionsBuiltIn = {
   onRenderHtml: {
     env: { server: true },
@@ -446,7 +456,6 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { config: true },
   },
 } satisfies ConfigDefinitionsBuiltIn
-
 function getConfigEnv(pageConfig: PageConfigBuildTimeBeforeComputed, configName: string): null | ConfigEnvInternal {
   const source = getConfigValueSourceRelevantAnyEnv(configName, pageConfig)
   if (!source) return null
