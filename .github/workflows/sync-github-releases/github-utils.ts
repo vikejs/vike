@@ -11,27 +11,27 @@ const DEFAULT_BRANCH = process.env.GITHUB_DEFAULT_BRANCH ?? 'main'
 const RATE_LIMIT_DELAY_MS = 500
 
 export async function getAllReleases(owner: string, repo: string, token: string): Promise<Release[]> {
-  const allReleases: Release[] = []
+  const releases: Release[] = []
   let page = 1
   const perPage = 100
 
   while (true) {
     // https://docs.github.com/en/rest/releases/releases#list-releases
-    const releases = await githubRequest<Release[]>(
+    const releaseList = await githubRequest<Release[]>(
       `/repos/${owner}/${repo}/releases?per_page=${perPage}&page=${page}`,
       { token },
     )
 
-    if (releases.length === 0) break
+    if (releaseList.length === 0) break
 
-    allReleases.push(...releases)
+    releases.push(...releaseList)
 
-    if (releases.length < perPage) break
+    if (releaseList.length < perPage) break
 
     page++
   }
 
-  return allReleases
+  return releases
 }
 
 export async function githubRequest<T = void>(
