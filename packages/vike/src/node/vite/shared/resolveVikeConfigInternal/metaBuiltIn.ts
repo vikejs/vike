@@ -111,16 +111,15 @@ type ConfigDefinition =
     })
   | ConfigDefinitionDefinedByPeerDependency
 type ConfigDefinitionInternalUnresolved = ConfigDefinition
+// TODO: rename to ConfigDefinitionsResolved
 type ConfigDefinitionInternal = Exclude<ConfigDefinitionInternalUnresolved, ConfigDefinitionDefinedByPeerDependency>
 
 type ConfigDefinitions = Record<
   string, // configName
   ConfigDefinition
 >
-type ConfigDefinitionsInternalUnresolved = Record<
-  string, // configName
-  ConfigDefinition
->
+type ConfigDefinitionsInternalUnresolved = ConfigDefinitions
+// TODO: rename to ConfigDefinitionsResolved
 type ConfigDefinitionsInternal = Record<
   string, // configName
   ConfigDefinitionInternal
