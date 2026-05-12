@@ -101,14 +101,12 @@ type ConfigEffect = (config: {
   configDefinedAt: ConfigDefinedAt
 }) => Config | undefined
 
-// TODO: rename to ConfigDefinitionResolved
 type ConfigDefinitionInternal = Exclude<ConfigDefinition, ConfigDefinitionDefinedByPeerDependency>
 
 type ConfigDefinitions = Record<
   string, // configName
   ConfigDefinition
 >
-// TODO: rename to ConfigDefinitionsResolved
 type ConfigDefinitionsInternal = Record<
   string, // configName
   ConfigDefinitionInternal
