@@ -24,6 +24,7 @@ import type { PageConfigBuildTimeBeforeComputed } from '../resolveVikeConfigInte
 import { getFileSuffixes } from '../../../../shared-server-node/getFileSuffixes.js'
 import '../../assertEnvVite.js'
 
+// TODO: merge ConfigDefinition_ into ConfigDefinition
 // For users
 /** The meta definition of a config.
  *
