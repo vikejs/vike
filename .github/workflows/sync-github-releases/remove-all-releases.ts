@@ -16,11 +16,11 @@ async function removeAllReleases() {
   const { owner, repo } = getRepository()
   console.log(`Fetching releases for ${owner}/${repo} …`)
 
-  const releases = await getAllReleases(owner, repo, token)
+  const githubReleases = await getAllReleases(owner, repo, token)
 
-  console.log(`Starting delete of ${releases.length} releases …`)
+  console.log(`Starting delete of ${githubReleases.length} releases …`)
 
-  for (const release of releases) {
+  for (const release of githubReleases) {
     console.log(`Deleting release ${release.tag_name} (ID: ${release.id}) …`)
 
     // https://docs.github.com/en/rest/releases/releases#delete-a-release
@@ -30,5 +30,5 @@ async function removeAllReleases() {
     })
   }
 
-  console.log(`Deleted ${releases.length} releases.`)
+  console.log(`Deleted ${githubReleases.length} releases.`)
 }

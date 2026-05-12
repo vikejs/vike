@@ -96,7 +96,7 @@ describe('getReleasePlan()', () => {
         'v0.9.0': 'Existing notes',
         'v0.8.0': 'Missing past notes',
       },
-      releases: [
+      githubReleases: [
         { id: 1, tag_name: 'v1.0.0', body: 'Outdated old notes' },
         { id: 2, tag_name: 'v0.9.0', body: 'Existing notes' },
       ],
@@ -127,7 +127,7 @@ describe('getReleasePlan()', () => {
       changelogSections: {
         'v1.0.1': 'Fresh release notes',
       },
-      releases: [{ id: 3, tag_name: 'v1.0.1', body: 'Stale release notes' }],
+      githubReleases: [{ id: 3, tag_name: 'v1.0.1', body: 'Stale release notes' }],
     })
 
     expect(plan).toEqual({

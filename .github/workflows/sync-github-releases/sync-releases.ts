@@ -59,11 +59,11 @@ async function main(): Promise<void> {
 
   const token = getGithubToken()
 
-  const releases = await getAllReleases(owner, repo, token)
+  const githubReleases = await getAllReleases(owner, repo, token)
 
   const { releasesToCreate, releasesToUpdate } = getReleasePlan({
     defaultBranch,
-    releases,
+    githubReleases,
     changelogSections,
   })
 
@@ -129,15 +129,15 @@ type ReleasesToUpdate = {
 }
 function getReleasePlan({
   defaultBranch,
-  releases,
+  githubReleases,
   changelogSections,
 }: {
   defaultBranch: string
-  releases: Release[]
+  githubReleases: Release[]
   changelogSections: ChangelogSections
 }) {
   const releasesToCreate: ReleasesToCreate[] = Object.keys(changelogSections)
-    .filter((tagName) => !releases.some((release) => release.tag_name === tagName))
+    .filter((tagName) => !githubReleases.some((release) => release.tag_name === tagName))
     .reverse()
     .map((tagName) => ({
       tag_name: tagName,
@@ -146,7 +146,7 @@ function getReleasePlan({
       body: changelogSections[tagName],
     }))
 
-  const releasesToUpdate: ReleasesToUpdate[] = releases.flatMap((release) => {
+  const releasesToUpdate: ReleasesToUpdate[] = githubReleases.flatMap((release) => {
     const body = changelogSections[release.tag_name]
     if (!body || body === release.body?.trim()) return []
     return [{ release_id: release.id, tag_name: release.tag_name, body }]
