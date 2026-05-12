@@ -377,8 +377,7 @@ async function resolveConfigDefinitions(
   )
   await loadCustomConfigBuildTimeFiles(plusFilesByLocationId, configDefinitionsGlobal, userRootDir, esbuildCache)
 
-  const configDefinitionsAll = getConfigDefinitions(Object.values(plusFilesByLocationId).flat())
-  const configNamesKnownAll = Object.keys(configDefinitionsAll)
+  const configNamesKnownAll = getConfigNames(Object.values(plusFilesByLocationId).flat())
   const configNamesKnownGlobal = Object.keys(configDefinitionsGlobal)
   assert(configNamesKnownGlobal.every((configName) => configNamesKnownAll.includes(configName)))
 
@@ -400,9 +399,16 @@ async function resolveConfigDefinitions(
         .map(([, plusFiles]) => plusFiles)
         .flat()
         .sort((plusFile1, plusFile2) => sortAfterInheritanceOrderPage(plusFile1, plusFile2, locationIdPage, null))
-      const configDefinitions = getConfigDefinitions(plusFilesRelevant, (configDef) => configDef.global !== true)
+      const { configDefinitions, peerDependencyConfigNames } = collectConfigDefinitions(
+        plusFilesRelevant,
+        (configDef) => configDef.global !== true,
+      )
       await loadCustomConfigBuildTimeFiles(plusFiles, configDefinitions, userRootDir, esbuildCache)
-      const configNamesKnownLocal = unique([...Object.keys(configDefinitions), ...configNamesKnownGlobal])
+      const configNamesKnownLocal = unique([
+        ...Object.keys(configDefinitions),
+        ...peerDependencyConfigNames,
+        ...configNamesKnownGlobal,
+      ])
       assert(configNamesKnownLocal.every((configName) => configNamesKnownAll.includes(configName)))
       configDefinitionsLocal[locationIdPage] = {
         configDefinitions,
@@ -416,7 +422,6 @@ async function resolveConfigDefinitions(
   const configDefinitionsResolved = {
     configDefinitionsGlobal,
     configDefinitionsLocal,
-    configDefinitionsAll,
     configNamesKnownAll,
     configNamesKnownGlobal,
   }
@@ -1038,11 +1043,28 @@ function getConfigNamesSetByPlusFile(plusFile: PlusFile): string[] {
   }
 }
 
+function getConfigNames(
+  plusFilesRelevant: PlusFile[],
+  filter?: (configDef: ConfigDefinitionInternal) => boolean,
+): string[] {
+  const { configDefinitions, peerDependencyConfigNames } = collectConfigDefinitions(plusFilesRelevant, filter)
+  return [...Object.keys(configDefinitions), ...peerDependencyConfigNames]
+}
 function getConfigDefinitions(
   plusFilesRelevant: PlusFile[],
   filter?: (configDef: ConfigDefinitionInternal) => boolean,
 ): ConfigDefinitionsInternal {
+  return collectConfigDefinitions(plusFilesRelevant, filter).configDefinitions
+}
+function collectConfigDefinitions(
+  plusFilesRelevant: PlusFile[],
+  filter?: (configDef: ConfigDefinitionInternal) => boolean,
+): {
+  configDefinitions: ConfigDefinitionsInternal
+  peerDependencyConfigNames: Set<string>
+} {
   let configDefinitions: ConfigDefinitionsInternal = { ...metaBuiltIn }
+  const peerDependencyConfigNames = new Set<string>()
 
   // Add user-land meta configs
   plusFilesRelevant
@@ -1068,14 +1090,8 @@ function getConfigDefinitions(
 
       objectEntries(meta).forEach(([configName, configDefinitionUserLand]) => {
         if ('isDefinedByPeerDependency' in configDefinitionUserLand) {
-          /* vike-server@1.0.24 wrongfully sets `stream: { env: { config: true }, isDefinedByPeerDependency: true }`
           assert(deepEqual(Object.keys(configDefinitionUserLand), ['isDefinedByPeerDependency']))
-          //*/
-          if (!configDefinitions[configName]) {
-            configDefinitions[configName] = {
-              env: { client: false, server: false, config: false },
-            }
-          }
+          if (!configDefinitions[configName]) peerDependencyConfigNames.add(configName)
           return
         }
         // User can override an existing config definition
@@ -1083,6 +1099,7 @@ function getConfigDefinitions(
           ...configDefinitions[configName],
           ...configDefinitionUserLand,
         }
+        peerDependencyConfigNames.delete(configName)
       })
     })
 
@@ -1092,7 +1109,7 @@ function getConfigDefinitions(
     )
   }
 
-  return configDefinitions
+  return { configDefinitions, peerDependencyConfigNames }
 }
 
 function assertMetaUsage(

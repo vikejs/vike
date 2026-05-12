@@ -22,12 +22,12 @@ import type { PageConfigBuildTimeBeforeComputed } from '../resolveVikeConfigInte
 import { getFileSuffixes } from '../../../../shared-server-node/getFileSuffixes.js'
 import '../../assertEnvVite.js'
 
+// TODO: merge ConfigDefinition_ into ConfigDefinition
 // For users
 /** The meta definition of a config.
  *
  * https://vike.dev/meta
  */
-type ConfigDefinition = ConfigDefinition_ | ConfigDefinitionDefinedByPeerDependency
 type ConfigDefinition_ = {
   /** In what environment(s) the config value is loaded.
    *
@@ -69,6 +69,7 @@ type ConfigDefinition_ = {
   global?: boolean | ((value: unknown, moreInfo: { isGlobalLocation: boolean }) => boolean)
   /** Whether changes to the configuration should trigger a Vite restart. */
   vite?: boolean
+  isDefinedByPeerDependency?: undefined
 }
 type ConfigDefinitionDefinedByPeerDependency = {
   /**
@@ -96,17 +97,25 @@ type ConfigEffect = (config: {
 }) => Config | undefined
 
 /** For Vike internal use */
-type ConfigDefinitionInternal = Omit<ConfigDefinition_, 'env'> & {
-  _computed?: (pageConfig: PageConfigBuildTimeBeforeComputed) => unknown
-  _valueIsFilePath?: true
-  _userEffectDefinedAtFilePath?: DefinedAtFilePath
-  env: ConfigEnvInternal
-}
+type ConfigDefinition =
+  | (Omit<ConfigDefinition_, 'env'> & {
+      /** @experimental */
+      _computed?: (pageConfig: PageConfigBuildTimeBeforeComputed) => unknown
+      /** @experimental */
+      _valueIsFilePath?: true
+      /** @experimental */
+      _userEffectDefinedAtFilePath?: DefinedAtFilePath
+      env: ConfigEnv
+    })
+  | ConfigDefinitionDefinedByPeerDependency
+// TODO: rename to ConfigDefinitionResolved
+type ConfigDefinitionInternal = Exclude<ConfigDefinition, ConfigDefinitionDefinedByPeerDependency>
 
 type ConfigDefinitions = Record<
   string, // configName
   ConfigDefinition
 >
+// TODO: rename to ConfigDefinitionsResolved
 type ConfigDefinitionsInternal = Record<
   string, // configName
   ConfigDefinitionInternal
@@ -428,8 +437,7 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
   vercel: {
     env: { config: true },
   },
-}
-
+} satisfies ConfigDefinitionsBuiltIn
 function getConfigEnv(pageConfig: PageConfigBuildTimeBeforeComputed, configName: string): null | ConfigEnvInternal {
   const source = getConfigValueSourceRelevantAnyEnv(configName, pageConfig)
   if (!source) return null
