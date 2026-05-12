@@ -146,6 +146,7 @@ function getReleasePlan({
       body: changelogSections[tagName],
     }))
 
+  // TODO/ai simplify this function
   const releasesToUpdate: ReleasesToUpdate[] = githubReleases.flatMap((release) => {
     const body = changelogSections[release.tag_name]
     if (!body || body === release.body?.trim()) return []
