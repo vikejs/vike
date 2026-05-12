@@ -740,7 +740,6 @@ function getSourceNonConfigFile(
 ): ConfigValueSource {
   assert(includes(objectKeys(metaBuiltIn), configName))
   const configDef = metaBuiltIn[configName]
-  assert(!configDef.isDefinedByPeerDependency)
   const source: ConfigValueSource = {
     valueIsLoaded: true,
     value,

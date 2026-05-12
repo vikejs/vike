@@ -18,11 +18,7 @@ import pc from '@brillout/picocolors'
 import { type PointerImportData, parsePointerImportData } from './pointerImports.js'
 import { getConfigFileExport } from './getConfigFileExport.js'
 import { PointerImport, resolvePointerImportData } from './resolvePointerImport.js'
-import type {
-  ConfigDefinitionInternalUnresolved,
-  ConfigDefinitionsInternal,
-  ConfigDefinitionsInternalUnresolved,
-} from './metaBuiltIn.js'
+import type { ConfigDefinitionInternal, ConfigDefinitionsInternal } from './metaBuiltIn.js'
 import { getConfigDefinedAt } from '../../../../shared-server-client/page-configs/getConfigDefinedAt.js'
 import '../../assertEnvVite.js'
 
@@ -74,7 +70,7 @@ type PointerImportLoaded = PointerImport &
 // Load +{configName}.js
 async function loadValueFile(
   interfaceValueFile: PlusFileValue,
-  configDefinitions: ConfigDefinitionsInternal | ConfigDefinitionsInternalUnresolved,
+  configDefinitions: ConfigDefinitionsInternal,
   userRootDir: string,
   esbuildCache: EsbuildCache,
 ): Promise<void> {
@@ -193,8 +189,6 @@ function getExtendsPointerImportData(configFileExports: Record<string, unknown>,
   return { extendsPointerImportData, extendsConfigs }
 }
 
-function shouldBeLoadableAtBuildTime(configDef: ConfigDefinitionInternalUnresolved): boolean {
-  // TODO/ai: this is also a smell that configDef.isDefinedByPeerDependency should be pruned earlier?
-  if (configDef.isDefinedByPeerDependency) return false
+function shouldBeLoadableAtBuildTime(configDef: ConfigDefinitionInternal): boolean {
   return !!configDef.env.config && !configDef._valueIsFilePath
 }
