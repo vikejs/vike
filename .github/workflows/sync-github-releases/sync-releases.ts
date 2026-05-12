@@ -54,14 +54,18 @@ async function main(): Promise<void> {
   const defaultBranch = getDefaultBranch()
   const versionTag = `v${packageJson.version}`
   const changelog = await readFile(changelogPath, 'utf8')
-  const sections = parseChangelog(changelog)
-  assertChangelog(versionTag, sections)
+  const changelogSections = parseChangelog(changelog)
+  assertChangelog(versionTag, changelogSections)
 
   const token = getGithubToken()
 
   const releases = await getAllReleases(owner, repo, token)
 
-  const { releasesToCreate, releasesToUpdate } = getReleasePlan({ defaultBranch, releases, sections })
+  const { releasesToCreate, releasesToUpdate } = getReleasePlan({
+    defaultBranch,
+    releases,
+    changelogSections,
+  })
 
   const dryRun = args.includes('--dry-run')
   for (const releaseToCreate of releasesToCreate) {
@@ -89,8 +93,7 @@ async function main(): Promise<void> {
 
 type ChangelogSections = Record<string, string>
 function parseChangelog(changelog: string): ChangelogSections {
-  // TODO/ai rename the variable `sections` to `changelogSections` everywhere
-  const sections: ChangelogSections = {}
+  const changelogSections: ChangelogSections = {}
   // Matches changelog headings: `## [0.4.257](...)` or `# [0.1.0-beta.6](...)`
   const matches = [...changelog.matchAll(/^##? \[(\d+\.\d+\.\d+[^\]]*)\]/gm)]
 
@@ -98,18 +101,18 @@ function parseChangelog(changelog: string): ChangelogSections {
     const start = changelog.indexOf('\n', match.index)
     const end = matches[index + 1]?.index ?? changelog.length
     const notes = changelog.slice(start, end).trim()
-    sections[`v${match[1]}`] = notes
+    changelogSections[`v${match[1]}`] = notes
   })
 
-  return sections
+  return changelogSections
 }
-function assertChangelog(versionTag: string, sections: ChangelogSections) {
-  const latestRelease = Object.keys(sections)[0]
+function assertChangelog(versionTag: string, changelogSections: ChangelogSections) {
+  const latestRelease = Object.keys(changelogSections)[0]
   assert(
     latestRelease === versionTag,
     `The latest changelog entry is ${latestRelease}, but the current version is ${versionTag}`,
   )
-  const currentBody = sections[versionTag]
+  const currentBody = changelogSections[versionTag]
   assert(currentBody, `Missing changelog entry for ${versionTag}`)
 }
 
@@ -127,24 +130,24 @@ type ReleasesToUpdate = {
 function getReleasePlan({
   defaultBranch,
   releases,
-  sections,
+  changelogSections,
 }: {
   defaultBranch: string
   releases: Release[]
-  sections: ChangelogSections
+  changelogSections: ChangelogSections
 }) {
-  const releasesToCreate: ReleasesToCreate[] = Object.keys(sections)
+  const releasesToCreate: ReleasesToCreate[] = Object.keys(changelogSections)
     .filter((tagName) => !releases.some((release) => release.tag_name === tagName))
     .reverse()
     .map((tagName) => ({
       tag_name: tagName,
       target_commitish: defaultBranch,
       name: tagName,
-      body: sections[tagName],
+      body: changelogSections[tagName],
     }))
 
   const releasesToUpdate: ReleasesToUpdate[] = releases.flatMap((release) => {
-    const body = sections[release.tag_name]
+    const body = changelogSections[release.tag_name]
     if (!body || body === release.body?.trim()) return []
     return [{ release_id: release.id, tag_name: release.tag_name, body }]
   })

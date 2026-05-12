@@ -44,45 +44,45 @@ describe('parseChangelog()', () => {
   })
 
   it('parses oldest Vike entries (single # headings, pre-release versions)', () => {
-    const sections = parseChangelog(readFixture('changelog-vike.md'))
-    expect(Object.keys(sections)).toEqual([
+    const changelogSections = parseChangelog(readFixture('changelog-vike.md'))
+    expect(Object.keys(changelogSections)).toEqual([
       'v0.1.0-beta.10',
       'v0.1.0-beta.9',
       'v0.1.0-beta.8',
       'v0.1.0-beta.7',
       'v0.1.0-beta.6',
     ])
-    expect(sections['v0.1.0-beta.10']).toContain('### Features')
-    expect(sections['v0.1.0-beta.8']).toContain('### BREAKING CHANGES')
-    expect(sections['v0.1.0-beta.6']).toContain('Initial public release')
+    expect(changelogSections['v0.1.0-beta.10']).toContain('### Features')
+    expect(changelogSections['v0.1.0-beta.8']).toContain('### BREAKING CHANGES')
+    expect(changelogSections['v0.1.0-beta.6']).toContain('Initial public release')
   })
 
   it('parses oldest Telefunc entries (trailing non-versioned sections)', () => {
-    const sections = parseChangelog(readFixture('changelog-telefunc.md'))
-    expect(Object.keys(sections)).toEqual(['v0.1.2', 'v0.1.1'])
-    expect(sections['v0.1.2']).toContain('improve TelefunctionError type')
-    expect(sections['v0.1.1']).toContain('isomorphic imports')
+    const changelogSections = parseChangelog(readFixture('changelog-telefunc.md'))
+    expect(Object.keys(changelogSections)).toEqual(['v0.1.2', 'v0.1.1'])
+    expect(changelogSections['v0.1.2']).toContain('improve TelefunctionError type')
+    expect(changelogSections['v0.1.1']).toContain('isomorphic imports')
   })
 
   it('parses oldest vike-vue entries (no-link headings, dash bullets)', () => {
-    const sections = parseChangelog(readFixture('changelog-vike-vue.md'))
-    expect(Object.keys(sections)).toEqual(['v0.2.3', 'v0.2.2', 'v0.2.1', 'v0.2.0', 'v0.1.1'])
-    expect(sections['v0.2.1']).toContain('Fix peer dependency')
-    expect(sections['v0.2.0']).toContain('Add `Head` config option')
+    const changelogSections = parseChangelog(readFixture('changelog-vike-vue.md'))
+    expect(Object.keys(changelogSections)).toEqual(['v0.2.3', 'v0.2.2', 'v0.2.1', 'v0.2.0', 'v0.1.1'])
+    expect(changelogSections['v0.2.1']).toContain('Fix peer dependency')
+    expect(changelogSections['v0.2.0']).toContain('Add `Head` config option')
   })
 
   it('parses oldest vike-solid entries (single # headings, mixed formats)', () => {
-    const sections = parseChangelog(readFixture('changelog-vike-solid.md'))
-    expect(Object.keys(sections)).toEqual(['v0.7.2', 'v0.7.1', 'v0.7.0', 'v0.6.2', 'v0.6.1'])
-    expect(sections['v0.7.0']).toContain('### BREAKING CHANGES')
-    expect(sections['v0.6.1']).toContain('MIGRATION.md')
+    const changelogSections = parseChangelog(readFixture('changelog-vike-solid.md'))
+    expect(Object.keys(changelogSections)).toEqual(['v0.7.2', 'v0.7.1', 'v0.7.0', 'v0.6.2', 'v0.6.1'])
+    expect(changelogSections['v0.7.0']).toContain('### BREAKING CHANGES')
+    expect(changelogSections['v0.6.1']).toContain('MIGRATION.md')
   })
 
   it('parses oldest vike-react entries (no-link initial version)', () => {
-    const sections = parseChangelog(readFixture('changelog-vike-react.md'))
-    expect(Object.keys(sections)).toEqual(['v0.1.6', 'v0.1.5', 'v0.1.4', 'v0.1.3', 'v0.1.2', 'v0.1.1'])
-    expect(sections['v0.1.6']).toContain("fix 'vike-react' type")
-    expect(sections['v0.1.1']).toContain('fix ESM import paths')
+    const changelogSections = parseChangelog(readFixture('changelog-vike-react.md'))
+    expect(Object.keys(changelogSections)).toEqual(['v0.1.6', 'v0.1.5', 'v0.1.4', 'v0.1.3', 'v0.1.2', 'v0.1.1'])
+    expect(changelogSections['v0.1.6']).toContain("fix 'vike-react' type")
+    expect(changelogSections['v0.1.1']).toContain('fix ESM import paths')
   })
 })
 
@@ -90,7 +90,7 @@ describe('getReleasePlan()', () => {
   it('creates missing past releases alongside the current release and updates stale notes', () => {
     const plan = getReleasePlan({
       defaultBranch: 'main',
-      sections: {
+      changelogSections: {
         'v1.0.1': 'New release notes',
         'v1.0.0': 'Updated old notes',
         'v0.9.0': 'Existing notes',
@@ -124,7 +124,7 @@ describe('getReleasePlan()', () => {
   it('updates the current release instead of creating a duplicate', () => {
     const plan = getReleasePlan({
       defaultBranch: 'main',
-      sections: {
+      changelogSections: {
         'v1.0.1': 'Fresh release notes',
       },
       releases: [{ id: 3, tag_name: 'v1.0.1', body: 'Stale release notes' }],
