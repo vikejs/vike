@@ -23,6 +23,6 @@
     "vite": "^7.0.6"
   },
   "dependencies": {
-    "vite-plugin-vercel": "^11.0.3"
+    "vite-plugin-vercel": "^11.1.0"
   }
 }
