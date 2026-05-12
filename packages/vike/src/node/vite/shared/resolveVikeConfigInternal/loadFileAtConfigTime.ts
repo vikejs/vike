@@ -39,7 +39,7 @@ async function loadPointerImport(
   pointerImport: PointerImportLoaded,
   userRootDir: string,
   configName: string,
-  configDefinitions: ConfigDefinitionsInternal | ConfigDefinitionsInternalUnresolved,
+  configDefinitions: ConfigDefinitionsInternal,
   esbuildCache: EsbuildCache,
 ): Promise<unknown> {
   // The value of `extends` was already loaded and already used: we don't need the value of `extends` anymore

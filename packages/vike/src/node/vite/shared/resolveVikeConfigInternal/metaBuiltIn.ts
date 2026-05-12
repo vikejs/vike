@@ -118,7 +118,7 @@ type ConfigDefinitions = Record<
 >
 type ConfigDefinitionsInternalUnresolved = Record<
   string, // configName
-  ConfigDefinitionInternalUnresolved
+  ConfigDefinition
 >
 type ConfigDefinitionsInternal = Record<
   string, // configName
