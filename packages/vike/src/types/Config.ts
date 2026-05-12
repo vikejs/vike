@@ -98,7 +98,6 @@ type ConfigNameBuiltIn =
   | 'server'
   | 'vercel'
 
-// TODO: rename
 type ConfigNameBuiltInGlobal =
   | 'onPrerenderStart'
   | 'onBeforeRoute'
