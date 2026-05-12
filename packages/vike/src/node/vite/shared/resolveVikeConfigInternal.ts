@@ -38,7 +38,7 @@ import { unique } from '../../../utils/unique.js'
 import { assertPosixPath } from '../../../utils/path.js'
 import type {
   PageConfigGlobalBuildTime,
-  ConfigEnvInternal,
+  ConfigEnv,
   ConfigValueSource,
   ConfigValueSources,
   PageConfigBuildTime,
@@ -1137,7 +1137,7 @@ function assertMetaUsage(
     if (def.isDefinedByPeerDependency) return
 
     // env
-    let configEnv: ConfigEnvInternal
+    let configEnv: ConfigEnv
     {
       assert(metaConfigDefinedAt) // We expect internal effects to return a valid meta value
       if (!('env' in def)) {
@@ -1476,13 +1476,13 @@ function getConfigEnvValue(
   errMsgIntro: `Config meta defined at ${string} sets meta.${
     string // configName
   }.env to`,
-): ConfigEnvInternal {
+): ConfigEnv {
   const errInvalidValue = `${errMsgIntro} an invalid value ${pc.cyan(JSON.stringify(val))}`
 
   // Legacy outdated values
   // TO-DO/next-major-release: remove
   if (typeof val === 'string') {
-    const valConverted: ConfigEnvInternal = (() => {
+    const valConverted: ConfigEnv = (() => {
       if (val === 'client-only') return { client: true }
       if (val === 'server-only') return { server: true }
       if (val === 'server-and-client') return { server: true, client: true }
@@ -1530,7 +1530,7 @@ function getConfVal(
   return confVal
 }
 
-function resolveConfigEnv(configEnv: ConfigEnvInternal, filePath: FilePath) {
+function resolveConfigEnv(configEnv: ConfigEnv, filePath: FilePath) {
   const configEnvResolved = { ...configEnv }
 
   if (filePath.filePathAbsoluteFilesystem) {

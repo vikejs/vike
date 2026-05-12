@@ -4,7 +4,6 @@ export type { PageConfigBuildTime }
 export type { PageConfigCommon }
 export type { PageConfigRoute }
 export type { ConfigEnv }
-export type { ConfigEnvInternal }
 export type { PageConfigGlobalRuntime }
 export type { PageConfigGlobalBuildTime }
 export type { ConfigValue }
@@ -108,15 +107,13 @@ type ConfigEnv = (
   /** Load value only in production (`true`), or only in development (`false`), or always (`undefined`). */
   production?: boolean
 }
-// TODO: remove
-type ConfigEnvInternal = ConfigEnv
 
 type ConfigValueSources = Record<
   string, // configName
   ConfigValueSource[]
 >
 type ConfigValueSource = {
-  configEnv: ConfigEnvInternal
+  configEnv: ConfigEnv
   definedAt: DefinedAtFilePath | DefinedBy
   plusFile:
     | PlusFile
@@ -145,7 +142,7 @@ type DefinedAtFilePath = DefinedAtFile & FilePath & { fileExportName?: string }
 type ConfigValuesComputed = Record<
   string, // configName
   {
-    configEnv: ConfigEnvInternal
+    configEnv: ConfigEnv
     value: unknown
   }
 >

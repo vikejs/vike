@@ -11,7 +11,7 @@ import { deepEqual } from '../../../utils/deepEqual.js'
 import { getPropAccessNotation } from '../../../utils/getPropAccessNotation.js'
 import { isImportPathRelative } from '../../../utils/isImportPath.js'
 import type {
-  ConfigEnvInternal,
+  ConfigEnv,
   ConfigValue,
   ConfigValueSource,
   DefinedAt,
@@ -200,7 +200,7 @@ function getValueSerializedWithJson(
   definedAtData: DefinedAtData,
   importStatements: string[],
   filesEnv: FilesEnv,
-  configEnv: ConfigEnvInternal,
+  configEnv: ConfigEnv,
 ): ValueData {
   const valueAsJsCode = valueToJson(value, configName, definedAtData, importStatements, filesEnv, configEnv)
   return {
@@ -214,7 +214,7 @@ function valueToJson(
   definedAtData: DefinedAtData,
   importStatements: string[],
   filesEnv: FilesEnv,
-  configEnv: ConfigEnvInternal,
+  configEnv: ConfigEnv,
 ): string {
   const valueName = `config${getPropAccessNotation(configName)}`
 
@@ -344,7 +344,7 @@ type ConfigValuesBase = (
         definedAtData: null
       }
       value: unknown
-      configEnv: ConfigEnvInternal
+      configEnv: ConfigEnv
       configName: string
     }
   | {
@@ -390,7 +390,7 @@ function addImportStatement(
   importPath: string,
   exportName: string,
   filesEnv: FilesEnv,
-  configEnv: ConfigEnvInternal,
+  configEnv: ConfigEnv,
   configName: string,
 ): { importName: string } {
   const importCounter = importStatements.length + 1
@@ -410,8 +410,8 @@ function addImportStatement(
   return { importName }
 }
 
-type FilesEnv = Map<string, { configEnv: ConfigEnvInternal; configName: string }[]>
-function assertFileEnv(importPath: string, configEnv: ConfigEnvInternal, configName: string, filesEnv: FilesEnv) {
+type FilesEnv = Map<string, { configEnv: ConfigEnv; configName: string }[]>
+function assertFileEnv(importPath: string, configEnv: ConfigEnv, configName: string, filesEnv: FilesEnv) {
   assert(!isImportPathRelative(importPath))
   const key = importPath
   assert(key)

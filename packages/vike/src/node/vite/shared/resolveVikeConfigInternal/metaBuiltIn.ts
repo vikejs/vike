@@ -5,7 +5,7 @@ export type { ConfigDefinitionsInternal }
 export type { ConfigDefinitionInternal }
 export type { ConfigEffect }
 
-import type { ConfigEnvInternal, ConfigEnv, DefinedAtFilePath } from '../../../../types/PageConfig.js'
+import type { ConfigEnv, DefinedAtFilePath } from '../../../../types/PageConfig.js'
 import type { Config, ConfigNameBuiltIn, ConfigNameGlobal } from '../../../../types/Config.js'
 import { assert, assertUsage } from '../../../../utils/assert.js'
 import {
@@ -274,7 +274,7 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
   onBeforeRenderEnv: {
     env: { client: true },
     eager: true,
-    _computed: (pageConfig): null | ConfigEnvInternal => {
+    _computed: (pageConfig): null | ConfigEnv => {
       return !isConfigSet(pageConfig, 'onBeforeRender') ? null : getConfigEnv(pageConfig, 'onBeforeRender')
     },
   },
@@ -282,7 +282,7 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
   dataEnv: {
     env: { client: true },
     eager: true,
-    _computed: (pageConfig): null | ConfigEnvInternal => {
+    _computed: (pageConfig): null | ConfigEnv => {
       return !isConfigSet(pageConfig, 'data') ? null : getConfigEnv(pageConfig, 'data')
     },
   },
@@ -290,7 +290,7 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
   guardEnv: {
     env: { client: true },
     eager: true,
-    _computed: (pageConfig): null | ConfigEnvInternal => {
+    _computed: (pageConfig): null | ConfigEnv => {
       return !isConfigSet(pageConfig, 'guard') ? null : getConfigEnv(pageConfig, 'guard')
     },
   },
@@ -429,7 +429,7 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { config: true },
   },
 } satisfies ConfigDefinitionsBuiltIn
-function getConfigEnv(pageConfig: PageConfigBuildTimeBeforeComputed, configName: string): null | ConfigEnvInternal {
+function getConfigEnv(pageConfig: PageConfigBuildTimeBeforeComputed, configName: string): null | ConfigEnv {
   const source = getConfigValueSourceRelevantAnyEnv(configName, pageConfig)
   if (!source) return null
   const { configEnv } = source
