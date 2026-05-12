@@ -89,6 +89,7 @@ async function main(): Promise<void> {
 
 type ChangelogSections = Record<string, string>
 function parseChangelog(changelog: string): ChangelogSections {
+  // TODO/ai rename the variable `sections` to `changelogSections` everywhere
   const sections: ChangelogSections = {}
   // Matches changelog headings: `## [0.4.257](...)` or `# [0.1.0-beta.6](...)`
   const matches = [...changelog.matchAll(/^##? \[(\d+\.\d+\.\d+[^\]]*)\]/gm)]
