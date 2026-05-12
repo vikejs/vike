@@ -9,7 +9,7 @@ export type { ConfigDefinitionInternalUnresolved }
 export type { ConfigEffect }
 
 import type { ConfigEnvInternal, ConfigEnv, DefinedAtFilePath } from '../../../../types/PageConfig.js'
-import type { Config, ConfigPeers, ConfigNameBuiltIn, ConfigNameGlobal } from '../../../../types/Config.js'
+import type { Config, ConfigNameBuiltIn, ConfigNameGlobal } from '../../../../types/Config.js'
 import { assert, assertUsage } from '../../../../utils/assert.js'
 import {
   getConfigDefinedAt,
@@ -96,7 +96,7 @@ type ConfigEffect = (config: {
    * https://vike.dev/meta
    */
   configDefinedAt: ConfigDefinedAt
-}) => Config | ConfigPeers | undefined
+}) => Config | undefined
 
 /** For Vike internal use */
 type ConfigDefinitionInternalUnresolved = (Omit<ConfigDefinition_, 'env'> & {
@@ -120,7 +120,7 @@ type ConfigDefinitionsInternal = Record<
   ConfigDefinitionInternal
 >
 type ConfigDefinitionsBuiltIn = Record<
-  ConfigNameBuiltIn | ConfigNameGlobal | keyof ConfigPeers,
+  ConfigNameBuiltIn | ConfigNameGlobal,
   ConfigDefinitionInternalUnresolved
 >
 const metaBuiltIn: ConfigDefinitionsBuiltIn = {
@@ -355,22 +355,6 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
   server: {
     env: { server: true },
     global: true,
-    effect({ configValue }) {
-      // an actual ISR value exists for a Page, so we disable prerendering for it
-      if (configValue) {
-        return {
-          stream: {
-            enable: null,
-            // Universal Deploy doesn't support Node.js streams
-            type: "web" as const,
-          }
-        }
-      }
-    }
-  },
-  // +stream is defined by vike-{react,vue,solid} but we define it again here to avoid Vike throwing the "unknown config" error if the user doesn't use vike-{react,vue,solid}
-  stream: {
-    isDefinedByPeerDependency: true,
   },
   cli: {
     env: { config: true },

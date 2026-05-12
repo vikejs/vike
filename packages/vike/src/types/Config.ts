@@ -1,7 +1,6 @@
 export type { Config }
 export type { ConfigBuiltIn }
 export type { ConfigBuiltInResolved }
-export type { ConfigPeers }
 export type { ConfigNameBuiltIn }
 export type { ConfigNameGlobal }
 export type { ConfigMeta }
@@ -790,15 +789,3 @@ type ConfigBuiltInResolved = {
 }
 
 type ConfigMeta = Record<string, ConfigDefinition>
-
-type ConfigPeers = {
-      stream?:
-        | boolean
-        | 'node'
-        | 'web'
-        | {
-            type?: 'node' | 'web'
-            require?: boolean
-            enable?: boolean | null
-          }
-}

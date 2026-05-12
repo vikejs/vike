@@ -48,7 +48,7 @@ import type {
   PageConfigRoute,
   DefinedBy,
 } from '../../../types/PageConfig.js'
-import type { Config, ConfigPeers } from '../../../types/Config.js'
+import type { Config } from '../../../types/Config.js'
 import {
   metaBuiltIn,
   type ConfigDefinitionsInternal,
@@ -1242,7 +1242,7 @@ function runEffect(configName: string, configDef: ConfigDefinitionInternal, sour
   return configModFromEffect
 }
 function applyEffectConfVal(
-  configModFromEffect: Config | ConfigPeers,
+  configModFromEffect: Config,
   sourceEffect: ConfigValueSource,
   configValueSources: ConfigValueSources,
   configNameEffect: string,
@@ -1279,7 +1279,7 @@ function applyEffectConfVal(
   })
 }
 function applyEffectMetaEnv(
-  configModFromEffect: Config | ConfigPeers,
+  configModFromEffect: Config,
   configValueSources: ConfigValueSources,
   configDefEffect: ConfigDefinitionInternal,
 ) {
