@@ -28,7 +28,7 @@ import { readFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import type { Release, ReleasesToCreate, ChangelogSections, ReleasesToUpdate } from './types'
+import type { Release } from './types'
 import { getAllReleases, getDefaultBranch, getGithubToken, getRepository, githubRequest } from './github-utils'
 
 async function main(): Promise<void> {
@@ -87,6 +87,7 @@ async function main(): Promise<void> {
   }
 }
 
+type ChangelogSections = Record<string, string>
 function parseChangelog(changelog: string): ChangelogSections {
   const sections: ChangelogSections = {}
   // Matches changelog headings: `## [0.4.257](...)` or `# [0.1.0-beta.6](...)`
@@ -111,6 +112,17 @@ function assertChangelog(versionTag: string, sections: ChangelogSections) {
   assert(currentBody, `Missing changelog entry for ${versionTag}`)
 }
 
+export type ReleasesToCreate = {
+  tag_name: string
+  target_commitish: string
+  name: string
+  body: string
+}
+export type ReleasesToUpdate = {
+  release_id: number
+  tag_name: string
+  body: string
+}
 function getReleasePlan({
   defaultBranch,
   releases,
