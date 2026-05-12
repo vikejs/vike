@@ -1049,13 +1049,13 @@ function getConfigDefinitionNames(
   plusFilesRelevant: PlusFile[],
   filter?: (configDef: ConfigDefinitionInternalUnresolved) => boolean,
 ): string[] {
-  return Object.keys(collectConfigDefinitions(plusFilesRelevant, filter))
+  return Object.keys(collectConfigMeta(plusFilesRelevant, filter))
 }
 function getConfigDefinitions(
   plusFilesRelevant: PlusFile[],
   filter?: (configDef: ConfigDefinitionInternal) => boolean,
 ): ConfigDefinitionsInternal {
-  const configDefinitionsUnresolved = collectConfigDefinitions(plusFilesRelevant)
+  const configDefinitionsUnresolved = collectConfigMeta(plusFilesRelevant)
   const configDefinitions: ConfigDefinitionsInternal = {}
   objectEntries(configDefinitionsUnresolved).forEach(([configName, configDef]) => {
     if (configDef.isDefinedByPeerDependency) return
@@ -1064,7 +1064,7 @@ function getConfigDefinitions(
   })
   return configDefinitions
 }
-function collectConfigDefinitions(
+function collectConfigMeta(
   plusFilesRelevant: PlusFile[],
   filter?: (configDef: ConfigDefinitionInternalUnresolved) => boolean,
 ) {
