@@ -28,7 +28,7 @@ import { readFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import type { Release, ReleaseCreateInput, ReleaseSections, ReleaseUpdateInput } from './types'
+import type { Release, ReleaseCreateInput, ChangelogSections, ReleaseUpdateInput } from './types'
 import { getAllReleases, getDefaultBranch, getGithubToken, getRepository, githubRequest } from './github-utils'
 
 async function main(): Promise<void> {
@@ -87,8 +87,8 @@ async function main(): Promise<void> {
   }
 }
 
-function parseChangelog(changelog: string): ReleaseSections {
-  const sections: ReleaseSections = {}
+function parseChangelog(changelog: string): ChangelogSections {
+  const sections: ChangelogSections = {}
   // Matches changelog headings: `## [0.4.257](...)` or `# [0.1.0-beta.6](...)`
   const matches = [...changelog.matchAll(/^##? \[(\d+\.\d+\.\d+[^\]]*)\]/gm)]
 
@@ -101,7 +101,7 @@ function parseChangelog(changelog: string): ReleaseSections {
 
   return sections
 }
-function assertChangelog(versionTag: string, sections: ReleaseSections) {
+function assertChangelog(versionTag: string, sections: ChangelogSections) {
   const latestRelease = Object.keys(sections)[0]
   assert(
     latestRelease === versionTag,
@@ -118,7 +118,7 @@ function getReleasePlan({
 }: {
   defaultBranch: string
   releases: Release[]
-  sections: ReleaseSections
+  sections: ChangelogSections
 }): {
   releasesToCreate: ReleaseCreateInput[]
   releasesToUpdate: ReleaseUpdateInput[]

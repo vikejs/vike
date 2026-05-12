@@ -3,7 +3,7 @@ export type Release = {
   tag_name: string
   body: string | null
 }
-export type ReleaseSections = Record<string, string>
+export type ChangelogSections = Record<string, string>
 export type ReleaseCreateInput = {
   tag_name: string
   target_commitish: string
