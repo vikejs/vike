@@ -112,13 +112,13 @@ function assertChangelog(versionTag: string, sections: ChangelogSections) {
   assert(currentBody, `Missing changelog entry for ${versionTag}`)
 }
 
-export type ReleasesToCreate = {
+type ReleasesToCreate = {
   tag_name: string
   target_commitish: string
   name: string
   body: string
 }
-export type ReleasesToUpdate = {
+type ReleasesToUpdate = {
   release_id: number
   tag_name: string
   body: string
@@ -131,10 +131,7 @@ function getReleasePlan({
   defaultBranch: string
   releases: Release[]
   sections: ChangelogSections
-}): {
-  releasesToCreate: ReleasesToCreate[]
-  releasesToUpdate: ReleasesToUpdate[]
-} {
+}) {
   const releasesToCreate: ReleasesToCreate[] = Object.keys(sections)
     .filter((tagName) => !releases.some((release) => release.tag_name === tagName))
     .reverse()
@@ -145,7 +142,7 @@ function getReleasePlan({
       body: sections[tagName],
     }))
 
-  const releasesToUpdate = releases.flatMap((release) => {
+  const releasesToUpdate: ReleasesToUpdate[] = releases.flatMap((release) => {
     const body = sections[release.tag_name]
     if (!body || body === release.body?.trim()) return []
     return [{ release_id: release.id, tag_name: release.tag_name, body }]
