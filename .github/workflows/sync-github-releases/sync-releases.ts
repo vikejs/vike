@@ -28,7 +28,7 @@ import { readFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import type { Release, ReleasesToCreate, ChangelogSections, ReleaseUpdateInput } from './types'
+import type { Release, ReleasesToCreate, ChangelogSections, ReleasesToUpdate } from './types'
 import { getAllReleases, getDefaultBranch, getGithubToken, getRepository, githubRequest } from './github-utils'
 
 async function main(): Promise<void> {
@@ -121,7 +121,7 @@ function getReleasePlan({
   sections: ChangelogSections
 }): {
   releasesToCreate: ReleasesToCreate[]
-  releasesToUpdate: ReleaseUpdateInput[]
+  releasesToUpdate: ReleasesToUpdate[]
 } {
   const releasesToCreate: ReleasesToCreate[] = Object.keys(sections)
     .filter((tagName) => !releases.some((release) => release.tag_name === tagName))

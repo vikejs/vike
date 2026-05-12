@@ -10,7 +10,7 @@ export type ReleasesToCreate = {
   name: string
   body: string
 }
-export type ReleaseUpdateInput = {
+export type ReleasesToUpdate = {
   release_id: number
   tag_name: string
   body: string
