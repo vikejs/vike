@@ -54,7 +54,6 @@ import {
   type ConfigDefinitionsInternal,
   type ConfigDefinitionInternal,
   type ConfigDefinitionsInternalUnresolved,
-  type ConfigDefinitionInternalUnresolved,
   type ConfigDefinitions,
 } from './resolveVikeConfigInternal/metaBuiltIn.js'
 import { getFileSuffixes } from '../../../shared-server-node/getFileSuffixes.js'
@@ -1047,7 +1046,7 @@ function getConfigNamesSetByPlusFile(plusFile: PlusFile): string[] {
 
 function getConfigNames(
   plusFilesRelevant: PlusFile[],
-  filter?: (configDef: ConfigDefinitionInternalUnresolved) => boolean,
+  filter?: (configDef: ConfigDefinitionInternal) => boolean,
 ): string[] {
   return Object.keys(collectConfigMeta(plusFilesRelevant, filter))
 }
@@ -1055,22 +1054,17 @@ function getConfigDefinitions(
   plusFilesRelevant: PlusFile[],
   filter?: (configDef: ConfigDefinitionInternal) => boolean,
 ): ConfigDefinitionsInternal {
-  const configDefinitionsUnresolved = collectConfigMeta(
-    plusFilesRelevant
-    // TODO/ai pass `filter` here
-  )
+  const configDefinitionsUnresolved = collectConfigMeta(plusFilesRelevant, filter)
   const configDefinitions: ConfigDefinitionsInternal = {}
   objectEntries(configDefinitionsUnresolved).forEach(([configName, configDef]) => {
     if (configDef.isDefinedByPeerDependency) return
-    if (filter && !filter(configDef)) return
     configDefinitions[configName] = configDef
   })
   return configDefinitions
 }
 function collectConfigMeta(
   plusFilesRelevant: PlusFile[],
-  // TODO/ai make `configDef: ConfigDefinitionInternal` by applying `filter` only if `isDefinedByPeerDependency` is falsy
-  filter?: (configDef: ConfigDefinitionInternalUnresolved) => boolean,
+  filter?: (configDef: ConfigDefinitionInternal) => boolean,
 ) {
   let configDefinitions: ConfigDefinitionsInternalUnresolved = { ...metaBuiltIn }
 
@@ -1118,7 +1112,10 @@ function collectConfigMeta(
 
   if (filter) {
     configDefinitions = Object.fromEntries(
-      Object.entries(configDefinitions).filter(([_configName, configDef]) => filter(configDef)),
+      Object.entries(configDefinitions).filter(([_configName, configDef]) => {
+        if (configDef.isDefinedByPeerDependency) return true
+        return filter(configDef)
+      }),
     )
   }
 
