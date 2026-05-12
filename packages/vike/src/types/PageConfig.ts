@@ -91,17 +91,25 @@ type VirtualFileExportsPageEntry = {
  *
  * https://vike.dev/meta
  */
-type ConfigEnv = {
-  client?: boolean
+type ConfigEnv = (
+  | {
+      /** Load value on the client-side */
+      client?: boolean
+    }
+  | {
+      /** @experimental */
+      client?: 'if-client-routing'
+    }
+) & {
+  /** Load value on the server-side */
   server?: boolean
+  /** Load value for config files */
   config?: boolean
-}
-/** For Vike internal use */
-type ConfigEnvInternal = Omit<ConfigEnv, 'client'> & {
-  client?: boolean | 'if-client-routing'
-  /** Load value only in production, or only in development. */
+  /** Load value only in production (`true`), only in development (`false)`, or both (`undefined)`. */
   production?: boolean
 }
+// TODO: remove
+type ConfigEnvInternal = ConfigEnv
 
 type ConfigValueSources = Record<
   string, // configName

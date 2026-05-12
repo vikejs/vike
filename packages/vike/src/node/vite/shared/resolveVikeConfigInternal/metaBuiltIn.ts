@@ -29,7 +29,6 @@ import '../../assertEnvVite.js'
  *
  * https://vike.dev/meta
  */
-type ConfigDefinition = ConfigDefinition_ | ConfigDefinitionDefinedByPeerDependency
 type ConfigDefinition_ = {
   /** In what environment(s) the config value is loaded.
    *
@@ -99,7 +98,7 @@ type ConfigEffect = (config: {
 }) => Config | undefined
 
 /** For Vike internal use */
-type ConfigDefinitionInternalUnresolved =
+type ConfigDefinition =
   | (Omit<ConfigDefinition_, 'env'> & {
       _computed?: (pageConfig: PageConfigBuildTimeBeforeComputed) => unknown
       _valueIsFilePath?: true
@@ -107,6 +106,7 @@ type ConfigDefinitionInternalUnresolved =
       env: ConfigEnvInternal
     })
   | ConfigDefinitionDefinedByPeerDependency
+type ConfigDefinitionInternalUnresolved = ConfigDefinition
 type ConfigDefinitionInternal = Exclude<ConfigDefinitionInternalUnresolved, ConfigDefinitionDefinedByPeerDependency>
 
 type ConfigDefinitions = Record<
