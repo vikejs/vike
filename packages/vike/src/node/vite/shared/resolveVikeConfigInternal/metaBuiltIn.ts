@@ -1,5 +1,4 @@
 export { metaBuiltIn }
-// TODO: rename exports
 export type { ConfigDefinition }
 export type { ConfigDefinitions }
 export type { ConfigDefinitionsInternal }
@@ -22,55 +21,61 @@ import type { PageConfigBuildTimeBeforeComputed } from '../resolveVikeConfigInte
 import { getFileSuffixes } from '../../../../shared-server-node/getFileSuffixes.js'
 import '../../assertEnvVite.js'
 
-// TODO: merge ConfigDefinition_ into ConfigDefinition
-// For users
 /** The meta definition of a config.
  *
  * https://vike.dev/meta
  */
-type ConfigDefinition_ = {
-  /** In what environment(s) the config value is loaded.
-   *
-   * https://vike.dev/meta
-   */
-  env: ConfigEnv
-  /** Disable config overriding and make config values cumulative instead.
-   *
-   * @default false
-   *
-   * https://vike.dev/meta
-   */
-  cumulative?: boolean
-  /**
-   * Function called when the config value is defined.
-   *
-   * https://vike.dev/meta
-   */
-  effect?: ConfigEffect
-  /**
-   * Load the configuration of *all* pages (regardless of what page is being rendered).
-   *
-   * WARNING: this might bloat server- and client-side KBs.
-   *
-   * By default, to save server- and client-side KBs, the configuration of a page is only loaded when rendering that page.
-   *
-   * @default false
-   *
-   * https://vike.dev/meta
-   */
-  eager?: boolean
-  /**
-   * Whether the configuration always applies to all pages (no config inheritance).
-   *
-   * @default false
-   *
-   * https://vike.dev/extends#inheritance
-   */
-  global?: boolean | ((value: unknown, moreInfo: { isGlobalLocation: boolean }) => boolean)
-  /** Whether changes to the configuration should trigger a Vite restart. */
-  vite?: boolean
-  isDefinedByPeerDependency?: undefined
-}
+type ConfigDefinition =
+  | {
+      /** In what environment(s) the config value is loaded.
+       *
+       * https://vike.dev/meta
+       */
+      env: ConfigEnv
+      /** Disable config overriding and make config values cumulative instead.
+       *
+       * @default false
+       *
+       * https://vike.dev/meta
+       */
+      cumulative?: boolean
+      /**
+       * Function called when the config value is defined.
+       *
+       * https://vike.dev/meta
+       */
+      effect?: ConfigEffect
+      /**
+       * Load the configuration of *all* pages (regardless of what page is being rendered).
+       *
+       * WARNING: this might bloat server- and client-side KBs.
+       *
+       * By default, to save server- and client-side KBs, the configuration of a page is only loaded when rendering that page.
+       *
+       * @default false
+       *
+       * https://vike.dev/meta
+       */
+      eager?: boolean
+      /**
+       * Whether the configuration always applies to all pages (no config inheritance).
+       *
+       * @default false
+       *
+       * https://vike.dev/extends#inheritance
+       */
+      global?: boolean | ((value: unknown, moreInfo: { isGlobalLocation: boolean }) => boolean)
+      /** Whether changes to the configuration should trigger a Vite restart. */
+      vite?: boolean
+      /** @experimental */
+      _computed?: (pageConfig: PageConfigBuildTimeBeforeComputed) => unknown
+      /** @experimental */
+      _valueIsFilePath?: true
+      /** @experimental */
+      _userEffectDefinedAtFilePath?: DefinedAtFilePath
+      isDefinedByPeerDependency?: undefined
+    }
+  | ConfigDefinitionDefinedByPeerDependency
 type ConfigDefinitionDefinedByPeerDependency = {
   /**
    * Omit the "unknown config" error without defining the config — useful for optional peer dependencies: for example, vike-server sets +stream.require which is defined by vike-{react,vue,solid} but some users don't use vike-{react,vue,solid}
@@ -96,18 +101,6 @@ type ConfigEffect = (config: {
   configDefinedAt: ConfigDefinedAt
 }) => Config | undefined
 
-/** For Vike internal use */
-type ConfigDefinition =
-  | (Omit<ConfigDefinition_, 'env'> & {
-      /** @experimental */
-      _computed?: (pageConfig: PageConfigBuildTimeBeforeComputed) => unknown
-      /** @experimental */
-      _valueIsFilePath?: true
-      /** @experimental */
-      _userEffectDefinedAtFilePath?: DefinedAtFilePath
-      env: ConfigEnv
-    })
-  | ConfigDefinitionDefinedByPeerDependency
 // TODO: rename to ConfigDefinitionResolved
 type ConfigDefinitionInternal = Exclude<ConfigDefinition, ConfigDefinitionDefinedByPeerDependency>
 
