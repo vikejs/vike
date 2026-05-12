@@ -6,7 +6,7 @@ export type { ConfigDefinitionInternal }
 export type { ConfigEffect }
 
 import type { ConfigEnv, DefinedAtFilePath } from '../../../../types/PageConfig.js'
-import type { Config, ConfigNameBuiltIn, ConfigNameGlobal } from '../../../../types/Config.js'
+import type { Config, ConfigNameBuiltIn, ConfigNameBuiltInGlobal } from '../../../../types/Config.js'
 import { assert, assertUsage } from '../../../../utils/assert.js'
 import {
   getConfigDefinedAt,
@@ -111,7 +111,7 @@ type ConfigDefinitionsInternal = Record<
   string, // configName
   ConfigDefinitionInternal
 >
-type ConfigDefinitionsBuiltIn = Record<ConfigNameBuiltIn | ConfigNameGlobal, ConfigDefinitionInternal>
+type ConfigDefinitionsBuiltIn = Record<ConfigNameBuiltIn | ConfigNameBuiltInGlobal, ConfigDefinitionInternal>
 const metaBuiltIn: ConfigDefinitionsBuiltIn = {
   onRenderHtml: {
     env: { server: true },
