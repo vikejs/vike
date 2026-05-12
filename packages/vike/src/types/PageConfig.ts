@@ -105,7 +105,7 @@ type ConfigEnv = (
   server?: boolean
   /** Load value for config files */
   config?: boolean
-  /** Load value only in production (`true`), only in development (`false)`, or both (`undefined)`. */
+  /** Load value only in production (`true`), or only in development (`false`), or always (`undefined)`. */
   production?: boolean
 }
 // TODO: remove

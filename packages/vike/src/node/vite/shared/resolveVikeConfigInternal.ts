@@ -1090,7 +1090,7 @@ function collectConfigDefinitions(
           if (!configDefinitions[configName]) peerDependencyConfigNames.add(configName)
           return
         }
-        // User can override an existing config definition (including overriding a previously-seen peer-dependency declaration)
+        // User can override an existing config definition
         configDefinitions[configName] = {
           ...configDefinitions[configName],
           ...configDefinitionUserLand,
