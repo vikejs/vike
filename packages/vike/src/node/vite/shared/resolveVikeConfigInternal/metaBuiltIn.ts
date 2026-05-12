@@ -70,12 +70,12 @@ type ConfigDefinition_ = {
   global?: boolean | ((value: unknown, moreInfo: { isGlobalLocation: boolean }) => boolean)
   /** Whether changes to the configuration should trigger a Vite restart. */
   vite?: boolean
-  /**
-   * Omit the "unknown config" error without defining the config — useful for optional peer dependencies: for example, vike-server sets +stream.require which is defined by vike-{react,vue,solid} but some users don't use vike-{react,vue,solid}
-   */
   isDefinedByPeerDependency?: undefined
 }
 type ConfigDefinitionDefinedByPeerDependency = {
+  /**
+   * Omit the "unknown config" error without defining the config — useful for optional peer dependencies: for example, vike-server sets +stream.require which is defined by vike-{react,vue,solid} but some users don't use vike-{react,vue,solid}
+   */
   isDefinedByPeerDependency: true
 }
 
@@ -100,10 +100,13 @@ type ConfigEffect = (config: {
 /** For Vike internal use */
 type ConfigDefinition =
   | (Omit<ConfigDefinition_, 'env'> & {
+      /** @experimental */
       _computed?: (pageConfig: PageConfigBuildTimeBeforeComputed) => unknown
+      /** @experimental */
       _valueIsFilePath?: true
+      /** @experimental */
       _userEffectDefinedAtFilePath?: DefinedAtFilePath
-      env: ConfigEnvInternal
+      env: ConfigEnv
     })
   | ConfigDefinitionDefinedByPeerDependency
 type ConfigDefinitionInternalUnresolved = ConfigDefinition
