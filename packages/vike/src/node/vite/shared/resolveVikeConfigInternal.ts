@@ -52,8 +52,8 @@ import type { Config } from '../../../types/Config.js'
 import {
   metaBuiltIn,
   type ConfigDefinitionsInternal,
-  type ConfigDefinitionsInternalUnresolved,
   type ConfigDefinitionInternal,
+  type ConfigDefinitionsInternalUnresolved,
   type ConfigDefinitionInternalUnresolved,
   type ConfigDefinitions,
 } from './resolveVikeConfigInternal/metaBuiltIn.js'
@@ -1067,7 +1067,7 @@ function getConfigDefinitions(
 function collectConfigDefinitions(
   plusFilesRelevant: PlusFile[],
   filter?: (configDef: ConfigDefinitionInternalUnresolved) => boolean,
-): ConfigDefinitionsInternalUnresolved {
+) {
   let configDefinitions: ConfigDefinitionsInternalUnresolved = { ...metaBuiltIn }
 
   // Add user-land meta configs
@@ -1250,7 +1250,7 @@ function applyEffectConfVal(
   configDefinitions: ConfigDefinitionsInternal,
   plusFilesByLocationId: PlusFilesByLocationId,
 ) {
-  Object.entries(configModFromEffect).forEach(([configNameTarget, configValue]) => {
+  objectEntries(configModFromEffect).forEach(([configNameTarget, configValue]) => {
     if (configNameTarget === 'meta') return
     const configDef = configDefinitions[configNameTarget]
     assert(configDef)
@@ -1285,7 +1285,7 @@ function applyEffectMetaEnv(
 ) {
   const notSupported =
     `${pc.cyan('meta.effect')} currently only supports setting the value of a config, or modifying the ${pc.cyan('meta.env')} of a config.` as const
-  Object.entries(configModFromEffect).forEach(([configNameTarget, configValue]) => {
+  objectEntries(configModFromEffect).forEach(([configNameTarget, configValue]) => {
     if (configNameTarget !== 'meta') return
     let configDefinedAt: Parameters<typeof assertMetaUsage>[1]
     if (configDefEffect._userEffectDefinedAtFilePath) {
