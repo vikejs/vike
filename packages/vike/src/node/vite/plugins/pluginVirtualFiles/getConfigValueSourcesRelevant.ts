@@ -5,7 +5,7 @@ export { isConfigSourceValueNull }
 export type { RuntimeEnv }
 
 import type {
-  ConfigEnvInternal,
+  ConfigEnv,
   ConfigValueSource,
   PageConfigBuildTime,
   PageConfigGlobalBuildTime,
@@ -74,7 +74,7 @@ function getConfigValueSourceRelevantAnyEnv(
   return source
 }
 
-function isRuntimeEnvMatch(configEnv: ConfigEnvInternal, runtimeEnv: RuntimeEnv): boolean {
+function isRuntimeEnvMatch(configEnv: ConfigEnv, runtimeEnv: RuntimeEnv): boolean {
   if ('isForConfig' in runtimeEnv) return !!configEnv.config
 
   // Runtime

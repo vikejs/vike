@@ -2,7 +2,7 @@ export type { Config }
 export type { ConfigBuiltIn }
 export type { ConfigBuiltInResolved }
 export type { ConfigNameBuiltIn }
-export type { ConfigNameGlobal }
+export type { ConfigNameBuiltInGlobal }
 export type { ConfigMeta }
 export type { HookName }
 export type { HookNameOld }
@@ -98,8 +98,7 @@ type ConfigNameBuiltIn =
   | 'server'
   | 'vercel'
 
-// TODO: rename
-type ConfigNameGlobal =
+type ConfigNameBuiltInGlobal =
   | 'onPrerenderStart'
   | 'onBeforeRoute'
   | 'prerender'
