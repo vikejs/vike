@@ -39,8 +39,8 @@ importers:
   docs:
     dependencies:
       '@batijs/elements':
-        specifier: ^0.0.61
-        version: 0.0.61
+        specifier: ^0.0.64
+        version: 0.0.64
       '@brillout/docpress':
         specifier: ^0.16.34
         version: 0.16.34(@algolia/client-search@5.50.2)(@types/react@19.2.14)(@vitejs/plugin-react@5.1.3(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(rollup@4.43.0)(search-insights@2.17.3)(typescript@5.9.3)(vike@packages+vike)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
@@ -2486,8 +2486,8 @@ packages:
     resolution: {integrity: sha512-LwdZHpScM4Qz8Xw2iKSzS+cfglZzJGvofQICy7W7v4caru4EaAmyUuO6BGrbyQ2mYV11W0U8j5mBhd14dd3B0A==}
     engines: {node: '>=6.9.0'}
 
-  '@batijs/elements@0.0.61':
-    resolution: {integrity: sha512-/sALmKq338VPMop2lpYNnF4b1zq+6q3oxFhzkiQFgO8hGziMQG7jVkOT9SvBomolpkF0XuEkCdrtLb5KBZ62Zg==}
+  '@batijs/elements@0.0.64':
+    resolution: {integrity: sha512-Z+710DxWqT5rK34+qoM2TIsnsuR+KfnnXlbzwpGDyOsRZGWMk/A6tw4qoUAB1Lk3SLtGdeMrBdzD9SmYXefVQQ==}
 
   '@biomejs/biome@1.9.4':
     resolution: {integrity: sha512-1rkd7G70+o9KkTn5KLmDYXihGoTaIGO9PIIN2ZB7UJxFrWw04CZHPYiMRjYsaDvVV7hP1dYNRLxSANLaBFGpog==}
@@ -4930,6 +4930,9 @@ packages:
 
   '@vite-plugin-vercel/schemas@1.1.0':
     resolution: {integrity: sha512-Vl7r+Itu7oS2/Ypo0wyPOB87AHdoU4EsmDNkSjTeKc7wl9xxHafCMd2Uc9qLOcX0tlDtcwJkjvB4A//ObqL8/w==}
+
+  '@vite-plugin-vercel/schemas@1.1.1':
+    resolution: {integrity: sha512-Gkk5QUET2Rj6K0faYoYSh+R9D1XkqHJS/Eoh9emBYYimfKibtiFccVL37P4O6DBtosxoXXvxxgYT0ahVz3XF3g==}
 
   '@vitejs/plugin-react-swc@3.11.0':
     resolution: {integrity: sha512-YTJCGFdNMHCMfjODYtxRNVAYmTWQ1Lb8PulP/2/f/oEEtglw8oKxKIZmmRkyXrVrHfsKOaVkAc3NT9/dMutO5w==}
@@ -8838,7 +8841,7 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.28.5
 
-  '@batijs/elements@0.0.61': {}
+  '@batijs/elements@0.0.64': {}
 
   '@biomejs/biome@1.9.4':
     optionalDependencies:
@@ -9968,7 +9971,7 @@ snapshots:
       '@vercel/build-utils': 13.8.1
       '@vercel/nft': 1.3.2(rollup@4.43.0)
       '@vercel/routing-utils': 5.3.1
-      '@vite-plugin-vercel/schemas': 1.1.0
+      '@vite-plugin-vercel/schemas': 1.1.1
       convert-route: 0.1.2
       esbuild: 0.27.3
       fast-glob: 3.3.3
@@ -11060,6 +11063,10 @@ snapshots:
       - srvx
 
   '@vite-plugin-vercel/schemas@1.1.0':
+    dependencies:
+      zod: 4.4.3
+
+  '@vite-plugin-vercel/schemas@1.1.1':
     dependencies:
       zod: 4.4.3
 
