@@ -1086,7 +1086,7 @@ function collectConfigDefinitions(
 
       objectEntries(meta).forEach(([configName, configDefinitionUserLand]) => {
         if ('isDefinedByPeerDependency' in configDefinitionUserLand) {
-          // vike-server@1.0.24 wrongfully sets `stream: { env: { config: true }, isDefinedByPeerDependency: true }` — any non-`isDefinedByPeerDependency` fields are ignored.
+          assert(deepEqual(Object.keys(configDefinitionUserLand), ['isDefinedByPeerDependency']))
           if (!configDefinitions[configName]) peerDependencyConfigNames.add(configName)
           return
         }
