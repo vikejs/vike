@@ -18,7 +18,11 @@ import pc from '@brillout/picocolors'
 import { type PointerImportData, parsePointerImportData } from './pointerImports.js'
 import { getConfigFileExport } from './getConfigFileExport.js'
 import { PointerImport, resolvePointerImportData } from './resolvePointerImport.js'
-import type { ConfigDefinitionInternalUnresolved, ConfigDefinitionsInternal, ConfigDefinitionsInternalUnresolved } from './metaBuiltIn.js'
+import type {
+  ConfigDefinitionInternalUnresolved,
+  ConfigDefinitionsInternal,
+  ConfigDefinitionsInternalUnresolved,
+} from './metaBuiltIn.js'
 import { getConfigDefinedAt } from '../../../../shared-server-client/page-configs/getConfigDefinedAt.js'
 import '../../assertEnvVite.js'
 

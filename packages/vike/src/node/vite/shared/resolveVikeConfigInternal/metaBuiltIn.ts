@@ -99,12 +99,14 @@ type ConfigEffect = (config: {
 }) => Config | undefined
 
 /** For Vike internal use */
-type ConfigDefinitionInternalUnresolved = (Omit<ConfigDefinition_, 'env'> & {
-  _computed?: (pageConfig: PageConfigBuildTimeBeforeComputed) => unknown
-  _valueIsFilePath?: true
-  _userEffectDefinedAtFilePath?: DefinedAtFilePath
-  env: ConfigEnvInternal
-}) | ConfigDefinitionDefinedByPeerDependency
+type ConfigDefinitionInternalUnresolved =
+  | (Omit<ConfigDefinition_, 'env'> & {
+      _computed?: (pageConfig: PageConfigBuildTimeBeforeComputed) => unknown
+      _valueIsFilePath?: true
+      _userEffectDefinedAtFilePath?: DefinedAtFilePath
+      env: ConfigEnvInternal
+    })
+  | ConfigDefinitionDefinedByPeerDependency
 type ConfigDefinitionInternal = Exclude<ConfigDefinitionInternalUnresolved, ConfigDefinitionDefinedByPeerDependency>
 
 type ConfigDefinitions = Record<
@@ -119,10 +121,7 @@ type ConfigDefinitionsInternal = Record<
   string, // configName
   ConfigDefinitionInternal
 >
-type ConfigDefinitionsBuiltIn = Record<
-  ConfigNameBuiltIn | ConfigNameGlobal,
-  ConfigDefinitionInternalUnresolved
->
+type ConfigDefinitionsBuiltIn = Record<ConfigNameBuiltIn | ConfigNameGlobal, ConfigDefinitionInternalUnresolved>
 const metaBuiltIn: ConfigDefinitionsBuiltIn = {
   onRenderHtml: {
     env: { server: true },
