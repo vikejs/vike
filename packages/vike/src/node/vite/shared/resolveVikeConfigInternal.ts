@@ -1055,7 +1055,10 @@ function getConfigDefinitions(
   plusFilesRelevant: PlusFile[],
   filter?: (configDef: ConfigDefinitionInternal) => boolean,
 ): ConfigDefinitionsInternal {
-  const configDefinitionsUnresolved = collectConfigMeta(plusFilesRelevant)
+  const configDefinitionsUnresolved = collectConfigMeta(
+    plusFilesRelevant
+    // TODO/ai pass `filter` here
+  )
   const configDefinitions: ConfigDefinitionsInternal = {}
   objectEntries(configDefinitionsUnresolved).forEach(([configName, configDef]) => {
     if (configDef.isDefinedByPeerDependency) return
@@ -1066,6 +1069,7 @@ function getConfigDefinitions(
 }
 function collectConfigMeta(
   plusFilesRelevant: PlusFile[],
+  // TODO/ai make `configDef: ConfigDefinitionInternal` by applying `filter` only if `isDefinedByPeerDependency` is falsy
   filter?: (configDef: ConfigDefinitionInternalUnresolved) => boolean,
 ) {
   let configDefinitions: ConfigDefinitionsInternalUnresolved = { ...metaBuiltIn }
