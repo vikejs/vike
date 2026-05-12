@@ -7,7 +7,7 @@ export type { ConfigDefinitionInternal }
 export type { ConfigEffect }
 
 import type { ConfigEnvInternal, ConfigEnv, DefinedAtFilePath } from '../../../../types/PageConfig.js'
-import type { Config, ConfigNameBuiltIn, ConfigNameGlobal } from '../../../../types/Config.js'
+import type { Config, ConfigPeers, ConfigNameBuiltIn, ConfigNameGlobal } from '../../../../types/Config.js'
 import { assert, assertUsage } from '../../../../utils/assert.js'
 import {
   getConfigDefinedAt,
@@ -69,11 +69,12 @@ type ConfigDefinition_ = {
   global?: boolean | ((value: unknown, moreInfo: { isGlobalLocation: boolean }) => boolean)
   /** Whether changes to the configuration should trigger a Vite restart. */
   vite?: boolean
-}
-type ConfigDefinitionDefinedByPeerDependency = {
   /**
    * Omit the "unknown config" error without defining the config — useful for optional peer dependencies: for example, vike-server sets +stream.require which is defined by vike-{react,vue,solid} but some users don't use vike-{react,vue,solid}
    */
+  isDefinedByPeerDependency?: undefined
+}
+type ConfigDefinitionDefinedByPeerDependency = {
   isDefinedByPeerDependency: true
 }
 
@@ -93,15 +94,15 @@ type ConfigEffect = (config: {
    * https://vike.dev/meta
    */
   configDefinedAt: ConfigDefinedAt
-}) => Config | undefined
+}) => Config | ConfigPeers | undefined
 
 /** For Vike internal use */
-type ConfigDefinitionInternal = Omit<ConfigDefinition_, 'env'> & {
+type ConfigDefinitionInternal = (Omit<ConfigDefinition_, 'env'> & {
   _computed?: (pageConfig: PageConfigBuildTimeBeforeComputed) => unknown
   _valueIsFilePath?: true
   _userEffectDefinedAtFilePath?: DefinedAtFilePath
   env: ConfigEnvInternal
-}
+}) | ConfigDefinitionDefinedByPeerDependency
 
 type ConfigDefinitions = Record<
   string, // configName
@@ -111,7 +112,7 @@ type ConfigDefinitionsInternal = Record<
   string, // configName
   ConfigDefinitionInternal
 >
-type ConfigDefinitionsBuiltIn = Record<ConfigNameBuiltIn | ConfigNameGlobal, ConfigDefinitionInternal>
+type ConfigDefinitionsBuiltIn = Record<ConfigNameBuiltIn | ConfigNameGlobal | keyof ConfigPeers, ConfigDefinitionInternal>
 const metaBuiltIn: ConfigDefinitionsBuiltIn = {
   onRenderHtml: {
     env: { server: true },
@@ -344,6 +345,22 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
   server: {
     env: { server: true },
     global: true,
+    effect({ configValue }) {
+      // an actual ISR value exists for a Page, so we disable prerendering for it
+      if (configValue) {
+        return {
+          stream: {
+            enable: null,
+            // Universal Deploy doesn't support Node.js streams
+            type: "web" as const,
+          }
+        }
+      }
+    }
+  },
+  // +stream is defined by vike-{react,vue,solid} but we define it again here to avoid Vike throwing the "unknown config" error if the user doesn't use vike-{react,vue,solid}
+  stream: {
+    isDefinedByPeerDependency: true,
   },
   cli: {
     env: { config: true },
@@ -428,7 +445,7 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
   vercel: {
     env: { config: true },
   },
-}
+} satisfies ConfigDefinitionsBuiltIn
 
 function getConfigEnv(pageConfig: PageConfigBuildTimeBeforeComputed, configName: string): null | ConfigEnvInternal {
   const source = getConfigValueSourceRelevantAnyEnv(configName, pageConfig)
