@@ -8,6 +8,7 @@ Keeps GitHub releases aligned with `CHANGELOG.md`: creates any missing releases,
 3. getReleasePlan() compares the changelog sections against the GitHub releases, to determine which need to be created and which need their body updated.
    i. Build `releasesToCreate` from changelog sections that don't have a GitHub Release yet.
    ii. Build `releasesToUpdate` from existing GitHub releases whose body no longer matches the changelog section.
+   Note: GitHub appears to order releases by semantic version of the tag name rather than by release date, so backfilling older releases still places them in the correct order: https://github.com/vikejs/vike/pull/3157#issuecomment-4406846257 — in other words: the syncing is bullet-proof no matter the current state of GitHub Releases.
 4. Apply the plan via the GitHub API (or, in `--dry-run`, log what would be done).
 */
 
