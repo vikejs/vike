@@ -10,7 +10,7 @@ import { ChevronRight, ExternalLink } from 'lucide-react'
 const ReadOnlyEditor = () => {
   return (
     <>
-      <div className="grid grid-cols-2 min-h-100 bg-base-300 z-4 relative border-5 border-primary -mt-0.5 rounded-box">
+      <div className="grid grid-cols-2 min-h-100 bg-base-300 z-4 relative border-5 border-primary -mt-0.5 daisy-rounded-box">
         <FlexFileTree />
         <div>read-only editor here</div>
       </div>
@@ -25,10 +25,10 @@ const ReadOnlyEditor = () => {
           </Blockquote>
         </div>
         <div className="col-span-4 flex justify-end items-center gap-2">
-          <a className="btn btn-primary" href="/docs/hooks/introduction">
+          <a className="daisy-btn daisy-btn-primary" href="/docs/hooks/introduction">
             Spin it up on Stackblitz <ExternalLink className="w-4 h-4" />
           </a>
-          <a className="btn btn-primary" href="/docs/hooks/introduction">
+          <a className="daisy-btn daisy-btn-primary" href="/docs/hooks/introduction">
             Checkout the Stack (Bati) <ExternalLink className="w-4 h-4" />
           </a>
         </div>

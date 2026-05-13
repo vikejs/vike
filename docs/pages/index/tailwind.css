@@ -59,6 +59,7 @@
 
 @plugin "daisyui" {
   root: '#tailwind-portal';
+  prefix: daisy-;
   /* leave this here - seems playwright or other headless browsers are not able to support @property css attributes */
   exclude: properties;
   themes: vike --default;

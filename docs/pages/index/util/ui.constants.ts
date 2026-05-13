@@ -75,9 +75,9 @@ export const UiVariantTextColor = {
 } as const
 
 export const UiVariantBtnColor = {
-  green: 'btn-primary',
-  blue: 'btn-secondary',
-  orange: 'btn-accent',
+  green: 'daisy-btn-primary',
+  blue: 'daisy-btn-secondary',
+  orange: 'daisy-btn-accent',
 } as const
 
 export const UiVariantBgColor = {
