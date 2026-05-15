@@ -83,7 +83,7 @@ const rolesByUsername: Record<MaintainerUsername, React.ReactNode[]> = {
     <>Bati (Contributor)</>,
   ],
   NilsJacobsen: [<>Vike's landing page</>],
-  AurelienLourot: [
+  lourot: [
     <>
       <code>vike-vue</code> (Contributor)
     </>,
@@ -106,6 +106,11 @@ const rolesByUsername: Record<MaintainerUsername, React.ReactNode[]> = {
   Blankeos: [
     <>
       <code>vike-solid</code> (Contributor)
+    </>,
+  ],
+  louwers: [
+    <>
+      <a href="https://github.com/telefunc/telefunc/pull/25">Telefunc's runtime validation</a>
     </>,
   ],
 }
