@@ -17,7 +17,8 @@ Render components only on the client-side.
 import { SomeComponent } from './SomeComponent' // [!code --]
 
 <ClientOnly fallback={<p>Loading...</p>}>
-  <SomeComponent /> {/* 👈 Removed [!code --] */}
+  {/* [!code --] */}
+  <SomeComponent />
 </ClientOnly>
 ```
 
