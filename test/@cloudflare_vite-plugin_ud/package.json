@@ -12,7 +12,7 @@
     "react-dom": "^19.2.4",
     "telefunc": "^0.2.20",
     "vike": "0.4.259",
-    "vike-react": "^0.6.22"
+    "vike-react": "^0.6.23"
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "^1.31.1",
