@@ -2,12 +2,7 @@ import React from 'react'
 import Headline from '../../components/Headline'
 import GradientText from '../../components/GradientText'
 
-export const heroTaglineSecondary = (
-  <>
-    <b className="font-semibold">Minimal-lock-in</b> framework powering mission-critical applications with unmatched
-    stability and development freedom.
-  </>
-)
+export const heroTaglineSecondary = <>Build mission-critical applications with stability and development freedom.</>
 
 export const Hero = () => (
   <>

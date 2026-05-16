@@ -166,7 +166,7 @@
     "node": ">=20.19.0"
   },
   "license": "MIT",
-  "description": "(Replaces Next.js/Nuxt) 🔨 Composable framework to build advanced applications with flexibility and stability.",
+  "description": "(Replaces Next.js/Nuxt) 🔨 Build mission-critical applications with stability and development freedom.",
   "keywords": [
     "vite-plugin",
     "ssr",
