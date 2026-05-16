@@ -7,8 +7,7 @@
     "esModuleInterop": true,
     "target": "ES2020",
     "module": "ES2022",
-    "moduleResolution": "Bundler",
-    "exactOptionalPropertyTypes": true
+    "moduleResolution": "Bundler"
   },
   "include": [
     "**/*",

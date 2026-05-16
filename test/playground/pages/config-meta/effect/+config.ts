@@ -19,7 +19,7 @@ export default {
               env: { server: true, client: true },
             },
           },
-          ...(configValue === 'setEnvOnly' ? {} : { dependentSetting: 'set by settingWithEffect' }),
+          dependentSetting: configValue === 'setEnvOnly' ? undefined : 'set by settingWithEffect',
         }
       },
     },
