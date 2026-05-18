@@ -1,5 +1,5 @@
 import { UiFrameworkExtension, ConfigSpec } from '../../components'
-import { Link, Warning } from '@brillout/docpress'
+import { Link, Warning, Tabs } from '@brillout/docpress'
 
 <ConfigSpec
   env="server"
@@ -181,20 +181,29 @@ export function Head() {
 
 ## How to inject raw HTML?
 
-You can inject any arbitrary HTML string to the page's `<head>`. Examples using:
-
-- <Link href="#react">React</Link>
-- <Link href="#vue">Vue</Link>
-- <Link href="#solid">Solid</Link>
+You can inject any arbitrary HTML string to the page's `<head>`.
 
 <Warning>
 Be cautious about the security risk called [XSS injections](https://en.wikipedia.org/wiki/Cross-site_scripting).
 </Warning>
 
-### React
+<Tabs choice={'uiFramework'} />
 
+:::Choice{#React}
 You can use React's `dangerouslySetInnerHTML` to add raw HTML, for example:
+:::
 
+:::Choice{#Vue}
+You can use <Link href="/useConfig">`useConfig()`</Link> with Vue's `innerHTML` to add raw HTML, for example:
+:::
+
+:::Choice{#Solid}
+You can use `innerHTML` to add raw HTML, for example:
+:::
+
+{/* --- */}
+
+:::Choice{#React}
 ```tsx
 import React from 'react'
 import { Head } from 'vike-react/Head'
@@ -222,11 +231,9 @@ function Image({ src, author }: { src: string, author: string }) {
   )
 }
 ```
+:::
 
-### Vue
-
-You can use <Link href="/useConfig">`useConfig()`</Link> with Vue's `innerHTML` to add raw HTML, for example:
-
+:::Choice{#Vue}
 ```vue
 <template>
   <img :src v-bind="otherAttrs" />
@@ -254,11 +261,9 @@ config({
 })
 </script>
 ```
+:::
 
-### Solid
-
-You can use `innerHTML` to add raw HTML, for example:
-
+:::Choice{#Solid}
 ```tsx
 import { Head } from 'vike-solid/Head'
 
@@ -283,7 +288,7 @@ function Image({ src, author }: { src: string, author: string }) {
   )
 }
 ```
-
+:::
 
 ## Only HTML
 

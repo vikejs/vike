@@ -1,7 +1,5 @@
-import { Link, FileAdded, Warning } from '@brillout/docpress'
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
+import { Link, FileAdded, Warning, Tabs } from '@brillout/docpress'
 import { DeprecatedServer } from '../../components'
-import '../../components/tabs.css'
 
 Define `+server.js` to seamlessly integrate a server framework (Hono, Express.js, ...). Or set `+server: true` to use Vike's built-in lightweight server.
 
@@ -18,148 +16,127 @@ Define `+server.js` to seamlessly integrate a server framework (Hono, Express.js
 
 Define `+server.js` to integrate a server:
 
-<Tabs>
-  <TabList>
-    <Tab>Hono</Tab>
-    <Tab>Express.js</Tab>
-    <Tab>Fastify</Tab>
-    <Tab>H3</Tab>
-    <Tab>Elysia</Tab>
-    <Tab>Other</Tab>
-  </TabList>
-  <TabPanel>
-    ```shell
-    npm i hono @vikejs/hono
-    ```
+<Tabs choice={'server'} />
 
-    <FileAdded>
-    ```ts
-    // +server.ts
+:::Choice{id='Express.js'}
+<DeprecatedServer name="Express.js" />
+:::
 
-    import { Hono } from 'hono'
-    import vike from '@vikejs/hono'
-    import type { Server } from 'vike/types'
+:::Choice{#Fastify}
+<DeprecatedServer name="Fastify" />
+:::
 
-    const app = new Hono()
-    vike(app) // Attaches Vike
+:::Choice{#Other}
+If Vike doesn't have an adapter for you server, or if you aren't using any server framework, you can use `vike/fetch`:
+:::
 
-    export default {
-      fetch: app.fetch
-    } satisfies Server
-    ```
-    </FileAdded>
-  </TabPanel>
-  <TabPanel>
-    <DeprecatedServer name="Express.js" />
+```shell choice=Hono
+npm i hono @vikejs/hono
+```
 
-    ```shell
-    npm i express @vikejs/express
-    ```
+```shell choice=Express.js
+npm i express @vikejs/express
+```
 
-    <FileAdded>
-    ```ts
-    // +server.ts
+```shell choice=Fastify
+npm i fastify @vikejs/fastify
+```
 
-    import express from 'express'
-    import vike, { toFetchHandler } from '@vikejs/express'
-    import type { Server } from 'vike/types'
+```shell choice=H3
+npm i h3 @vikejs/h3
+```
 
-    const app = express()
-    vike(app) // Attaches Vike
+```shell choice=Elysia
+npm i elysia @vikejs/elysia
+```
 
-    export default {
-      fetch: toFetchHandler(app)
-    } satisfies Server
-    ```
-    </FileAdded>
-  </TabPanel>
-  <TabPanel>
-    <DeprecatedServer name="Fastify" />
+```ts file-added choice=Hono
+// +server.ts
 
-    ```shell
-    npm i fastify @vikejs/fastify
-    ```
+import { Hono } from 'hono'
+import vike from '@vikejs/hono'
+import type { Server } from 'vike/types'
 
-    <FileAdded>
-    ```ts
-    // +server.ts
+const app = new Hono()
+vike(app) // Attaches Vike
 
-    import fastify from 'fastify'
-    import vike, { toFetchHandler } from '@vikejs/fastify'
-    import type { Server } from 'vike/types'
+export default {
+  fetch: app.fetch
+} satisfies Server
+```
 
-    const app = fastify()
-    await vike(app) // Attaches Vike
+```ts file-added choice=Express.js
+// +server.ts
 
-    export default {
-      fetch: toFetchHandler(app.routing)
-    } satisfies Server
-    ```
-    </FileAdded>
-  </TabPanel>
-  <TabPanel>
-    ```shell
-    npm i h3 @vikejs/h3
-    ```
+import express from 'express'
+import vike, { toFetchHandler } from '@vikejs/express'
+import type { Server } from 'vike/types'
 
-    <FileAdded>
-    ```ts
-    // +server.ts
+const app = express()
+vike(app) // Attaches Vike
 
-    import { createApp, toWebHandler } from 'h3'
-    import vike from '@vikejs/h3'
-    import type { Server } from 'vike/types'
+export default {
+  fetch: toFetchHandler(app)
+} satisfies Server
+```
 
-    const app = createApp()
-    vike(app) // Attaches Vike
+```ts file-added choice=Fastify
+// +server.ts
 
-    export default {
-      fetch: toWebHandler(app)
-    } satisfies Server
-    ```
-    </FileAdded>
-  </TabPanel>
-  <TabPanel>
-    ```shell
-    npm i elysia @vikejs/elysia
-    ```
+import fastify from 'fastify'
+import vike, { toFetchHandler } from '@vikejs/fastify'
+import type { Server } from 'vike/types'
 
-    <FileAdded>
-    ```ts
-    // +server.ts
+const app = fastify()
+await vike(app) // Attaches Vike
 
-    import { Elysia } from 'elysia'
-    import vike from '@vikejs/elysia'
-    import type { Server } from 'vike/types'
+export default {
+  fetch: toFetchHandler(app.routing)
+} satisfies Server
+```
 
-    const app = new Elysia()
-    vike(app) // Attaches Vike
+```ts file-added choice=H3
+// +server.ts
 
-    export default {
-      fetch: app.fetch
-    } satisfies Server
-    ```
-    </FileAdded>
-  </TabPanel>
-  <TabPanel>
-    If Vike doesn't have an adapter for you server, or if you aren't using any server framework, you can use `vike/fetch`:
+import { createApp, toWebHandler } from 'h3'
+import vike from '@vikejs/h3'
+import type { Server } from 'vike/types'
 
-    <FileAdded>
-      ```ts
-      // +server.ts
+const app = createApp()
+vike(app) // Attaches Vike
 
-      import vike from 'vike/fetch'
+export default {
+  fetch: toWebHandler(app)
+} satisfies Server
+```
 
-      export default {
-        fetch(request) {
-          console.log('Incoming request:', request.url)
-          return vike.fetch(request)
-        }
-      } satisfies Server
-      ```
-    </FileAdded>
-  </TabPanel>
-</Tabs>
+```ts file-added choice=Elysia
+// +server.ts
+
+import { Elysia } from 'elysia'
+import vike from '@vikejs/elysia'
+import type { Server } from 'vike/types'
+
+const app = new Elysia()
+vike(app) // Attaches Vike
+
+export default {
+  fetch: app.fetch
+} satisfies Server
+```
+
+```ts file-added choice=Other
+// +server.ts
+
+import vike from 'vike/fetch'
+
+export default {
+  fetch(request) {
+    console.log('Incoming request:', request.url)
+    return vike.fetch(request)
+  }
+} satisfies Server
+```
 
 ### `+server: true`
 
@@ -324,6 +301,8 @@ You can compress all server responses by using the [compress universal middlewar
 npm i @universal-middleware/compress
 ```
 
+{/* TODO/after-merge: code block for each server */ }
+
 ```ts
 // +server.ts
 
@@ -331,7 +310,8 @@ import { Hono } from 'hono'
 import vike from '@vikejs/hono'
 import compress from '@universal-middleware/compress' // [!code ++]
 
-const app = new Hono() // [!code --]
+const app = new Hono()
+vike(app) // [!code --]
 // Add universal middlewares here (same for Express.js, Fastify, ...) // [!code ++]
 vike(app, [compress()]) // [!code ++]
 ```

@@ -1,4 +1,4 @@
-import { Link, Warning, Danger } from '@brillout/docpress'
+import { Link, Warning, Danger, Tabs } from '@brillout/docpress'
 import { UiFrameworkExtension, ConfigSpec } from '../../components'
 
 <ConfigSpec
@@ -15,17 +15,9 @@ The `clientOnly()` helper enables you to load and render a component only on the
 
 > Alternatively, you can set <Link href="/ssr">`ssr: false`</Link> to load and render the entire page on the client-side only.
 
-Common use cases:
+<Tabs choice={'uiFramework'} />
 
- - **Library components that don't support SSR**. A solution is to render and load the component only on the client-side.
-   > Most component libraries nowadays support SSR but some don't. Some even crash when they're merely loaded on the server-side (for example if the library has a hard reference to browser-only APIs such as `window`).
- - **Performance**. `clientOnly()` allows you to defer loading heavy components, such as a complex interactive map. That way, your users can already interact with your page before even the browser starts loading that heavy component.
-   > Vite code-splits dynamic imports such as `const { SomeComponent } = await import('./SomeComponent')`. In other words, the code of `<SomeComponent />` isn't included in the initial JavaScript client bundle: it's loaded only when/if `import()` is called.
-
-
-## React
-
-### Usage
+:::Choice{#React}
 
 ```tsx
 import { clientOnly } from 'vike-react/clientOnly'
@@ -67,31 +59,9 @@ Props:
    - [#2928 — `clientOnly` fallback resets component state when hydrated](https://github.com/vikejs/vike/issues/2928)
 </Warning>
 
+:::
 
-## Solid
-
-### Usage
-
-```tsx
-import { clientOnly } from 'vike-solid/clientOnly'
-
-const SomeComponent = clientOnly(() => import('./SomeComponent.tsx'))
-/* If the component isn't the default export:
-const SomeComponent = clientOnly(async () => (await import('some-library')).SomeComponent)
-*/
-
-function SomeWrapper() {
-  return <SomeComponent fallback={<Loading />} />
-}
-```
-
-Props:
-
-- **fallback**: Content shown while the component is being loaded.
-- All other props are passed to the loaded component.
-
-
-## Vue
+:::Choice{#Vue}
 
 ```vue
 <template>
@@ -121,6 +91,40 @@ All props are passed to the loaded component.
 - **client-only-fallback**: Use it instead of the `#fallback` slot in case of conflicts.
 
 All slots are passed to the loaded component.
+
+:::
+
+:::Choice{#Solid}
+
+```tsx
+import { clientOnly } from 'vike-solid/clientOnly'
+
+const SomeComponent = clientOnly(() => import('./SomeComponent.tsx'))
+/* If the component isn't the default export:
+const SomeComponent = clientOnly(async () => (await import('some-library')).SomeComponent)
+*/
+
+function SomeWrapper() {
+  return <SomeComponent fallback={<Loading />} />
+}
+```
+
+Props:
+
+- **fallback**: Content shown while the component is being loaded.
+- All other props are passed to the loaded component.
+
+:::
+
+
+## Use cases
+
+Common use cases:
+
+ - **Library components that don't support SSR**. A solution is to render and load the component only on the client-side.
+   > Most component libraries nowadays support SSR but some don't. Some even crash when they're merely loaded on the server-side (for example if the library has a hard reference to browser-only APIs such as `window`).
+ - **Performance**. `clientOnly()` allows you to defer loading heavy components, such as a complex interactive map. That way, your users can already interact with your page before even the browser starts loading that heavy component.
+   > Vite code-splits dynamic imports such as `const { SomeComponent } = await import('./SomeComponent')`. In other words, the code of `<SomeComponent />` isn't included in the initial JavaScript client bundle: it's loaded only when/if `import()` is called.
 
 
 ## Without `vike-{react,vue,solid}`
