@@ -9,38 +9,6 @@ import { UiFrameworkExtension, ConfigSpec, TreeShaking } from '../../components'
 
 Render components only on the client-side.
 
-<TreeShaking description={<>The children of <code>{'<ClientOnly>'}</code> are automatically removed and never loaded on the server.</>}>
-
-```jsx
-// Environment: server
-
-import { SomeComponent } from './SomeComponent' // [!code --]
-
-<ClientOnly fallback={<p>Loading...</p>}>
-  {/* [!code --] */}
-  <SomeComponent />
-</ClientOnly>
-```
-
-This means `<SomeComponent>` can use browser-only APIs.
-
-```js
-// SomeComponent.js
-
-export { SomeComponent }
-
-// ✅ Doesn't throw error "window is not defined" — this file is loaded only on the client
-console.log('Browser viewport width: ', window.innerWidth)
-
-function SomeComponent() {
-  // ...
-}
-```
-
-</TreeShaking>
-
-> `<ClientOnly>` supersedes <Link href="/clientOnly-helper">`clientOnly()`</Link> — it has better performance with a simpler DX.
-
 <Tabs choice={'uiFrameworkVikeExtension'} />
 
 :::Choice{#vike-react}
@@ -106,6 +74,40 @@ Props:
 
 :::
 
+
+> `<ClientOnly>` supersedes <Link href="/clientOnly-helper">`clientOnly()`</Link> — it has better performance with a simpler DX.
+
+<TreeShaking description={<>The children of <code>{'<ClientOnly>'}</code> are automatically removed and never loaded on the server.</>}>
+
+```jsx
+// Environment: server
+
+import { SomeComponent } from './SomeComponent' // [!code --]
+
+<ClientOnly fallback={<p>Loading...</p>}>
+  {/* [!code --] */}
+  <SomeComponent />
+</ClientOnly>
+```
+
+This means `<SomeComponent>` can use browser-only APIs.
+
+```js
+// SomeComponent.js
+
+export { SomeComponent }
+
+// ✅ Doesn't throw error "window is not defined" — this file is loaded only on the client
+console.log('Browser viewport width: ', window.innerWidth)
+
+function SomeComponent() {
+  // ...
+}
+```
+
+</TreeShaking>
+
+
 ## Without `vike-{react,vue,solid}`
 
 If you don't use a <UiFrameworkExtension />, you can implement `<ClientOnly>` yourself.
@@ -114,6 +116,7 @@ See the source code:
  - [GitHub > `vikejs/vike-react`](https://github.com/vikejs/vike-react)
  - [GitHub > `vikejs/vike-vue`](https://github.com/vikejs/vike-vue)
  - [GitHub > `vikejs/vike-solid`](https://github.com/vikejs/vike-solid)
+
 
 ## See also
 
