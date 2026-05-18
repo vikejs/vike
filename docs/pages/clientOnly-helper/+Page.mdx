@@ -61,28 +61,6 @@ Props:
 
 :::
 
-:::Choice{#vike-solid}
-
-```tsx
-import { clientOnly } from 'vike-solid/clientOnly'
-
-const SomeComponent = clientOnly(() => import('./SomeComponent.tsx'))
-/* If the component isn't the default export:
-const SomeComponent = clientOnly(async () => (await import('some-library')).SomeComponent)
-*/
-
-function SomeWrapper() {
-  return <SomeComponent fallback={<Loading />} />
-}
-```
-
-Props:
-
-- **fallback**: Content shown while the component is being loaded.
-- All other props are passed to the loaded component.
-
-:::
-
 :::Choice{#vike-vue}
 
 ```vue
@@ -113,6 +91,28 @@ All props are passed to the loaded component.
 - **client-only-fallback**: Use it instead of the `#fallback` slot in case of conflicts.
 
 All slots are passed to the loaded component.
+
+:::
+
+:::Choice{#vike-solid}
+
+```tsx
+import { clientOnly } from 'vike-solid/clientOnly'
+
+const SomeComponent = clientOnly(() => import('./SomeComponent.tsx'))
+/* If the component isn't the default export:
+const SomeComponent = clientOnly(async () => (await import('some-library')).SomeComponent)
+*/
+
+function SomeWrapper() {
+  return <SomeComponent fallback={<Loading />} />
+}
+```
+
+Props:
+
+- **fallback**: Content shown while the component is being loaded.
+- All other props are passed to the loaded component.
 
 :::
 

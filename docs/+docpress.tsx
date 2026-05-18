@@ -53,11 +53,11 @@ const config = {
       default: 'Hono',
     },
     uiFramework: {
-      choices: ['React', 'Solid', 'Vue'],
+      choices: ['React', 'Vue', 'Solid'],
       default: 'React',
     },
     uiFrameworkVikeExtension: {
-      choices: ['vike-react', 'vike-solid', 'vike-vue'],
+      choices: ['vike-react', 'vike-vue', 'vike-solid'],
       default: 'vike-react',
     },
   },

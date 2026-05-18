@@ -196,12 +196,12 @@ Be cautious about the security risk called [XSS injections](https://en.wikipedia
 You can use React's `dangerouslySetInnerHTML` to add raw HTML, for example:
 :::
 
-:::Choice{#vike-solid}
-You can use `innerHTML` to add raw HTML, for example:
-:::
-
 :::Choice{#vike-vue}
 You can use <Link href="/useConfig">`useConfig()`</Link> with Vue's `innerHTML` to add raw HTML, for example:
+:::
+
+:::Choice{#vike-solid}
+You can use `innerHTML` to add raw HTML, for example:
 :::
 
 {/* --- */}
@@ -228,33 +228,6 @@ function Image({ src, author }: { src: string, author: string }) {
               }
             })
           }}
-        ></script>
-      </Head>
-    </>
-  )
-}
-```
-:::
-
-:::Choice{#vike-solid}
-```tsx
-import { Head } from 'vike-solid/Head'
-
-function Image({ src, author }: { src: string, author: string }) {
-  return (
-    <>
-      <img src={src} />
-      <Head>
-        <script
-          type="application/ld+json"
-          innerHTML={JSON.stringify({
-            '@context': 'https://schema.org/',
-            contentUrl: { src },
-            creator: {
-              '@type': 'Person',
-              name: author
-            }
-          })}
         ></script>
       </Head>
     </>
@@ -290,6 +263,33 @@ config({
   })
 })
 </script>
+```
+:::
+
+:::Choice{#vike-solid}
+```tsx
+import { Head } from 'vike-solid/Head'
+
+function Image({ src, author }: { src: string, author: string }) {
+  return (
+    <>
+      <img src={src} />
+      <Head>
+        <script
+          type="application/ld+json"
+          innerHTML={JSON.stringify({
+            '@context': 'https://schema.org/',
+            contentUrl: { src },
+            creator: {
+              '@type': 'Person',
+              name: author
+            }
+          })}
+        ></script>
+      </Head>
+    </>
+  )
+}
 ```
 :::
 

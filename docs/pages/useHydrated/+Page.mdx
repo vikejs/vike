@@ -26,21 +26,6 @@ function SomeComponent() {
 ```
 :::
 
-:::Choice{#vike-solid}
-```tsx
-import { useHydrated } from 'vike-solid/useHydrated'
-
-function SomeComponent() {
-  const hydrated = useHydrated()
-  return (
-    <button type="button" disabled={!hydrated()} onClick={doSomething}>
-      Click me
-    </button>
-  )
-}
-```
-:::
-
 :::Choice{#vike-vue}
 ```vue
 <template>
@@ -53,6 +38,21 @@ function SomeComponent() {
 import { useHydrated } from 'vike-vue/useHydrated'
 const hydrated = useHydrated()
 </script>
+```
+:::
+
+:::Choice{#vike-solid}
+```tsx
+import { useHydrated } from 'vike-solid/useHydrated'
+
+function SomeComponent() {
+  const hydrated = useHydrated()
+  return (
+    <button type="button" disabled={!hydrated()} onClick={doSomething}>
+      Click me
+    </button>
+  )
+}
 ```
 :::
 
