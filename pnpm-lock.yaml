@@ -15,8 +15,8 @@ importers:
         specifier: ^0.1.6
         version: 0.1.6
       '@brillout/spellcheck':
-        specifier: ^0.1.2
-        version: 0.1.2
+        specifier: ^0.1.3
+        version: 0.1.3
       '@brillout/test-e2e':
         specifier: ^0.6.23
         version: 0.6.23
@@ -2570,6 +2570,9 @@ packages:
   '@brillout/picocolors@1.0.30':
     resolution: {integrity: sha512-xJjdgyN1H0qh2nB2xlzazIipiDixuUd9oD5msh/Qv5bXJG9j8MSD/m4lREt6Z10ej6FF31b8vB4tdT7lDUbiyA==}
 
+  '@brillout/picocolors@1.0.31':
+    resolution: {integrity: sha512-xFCPBefU/AevF8XkwXSd/jIHA0fWw+mZ/gd5x2WOc5ysG7keHnU8m0gwY2Bvq5lvTyjwT4tiyow6fnMoYdmSqw==}
+
   '@brillout/release-me@0.4.15':
     resolution: {integrity: sha512-HiWA4gojwDEKeQ7oCAGP2nc83FRJemTsP/LSQ7cid8tbGMS9HOSpV6dRdx7dEsNJpNJEQnIiDNFhhzmiXi2iKA==}
     hasBin: true
@@ -2581,12 +2584,15 @@ packages:
   '@brillout/shell@0.2.1':
     resolution: {integrity: sha512-l5PTMWw6rndD7vZcMvw1bv31sTzpz0qP3q409PD50ATsfxhvbMvDVySnV73Okoskfd673oClIlt6OnupbQJqHA==}
 
+  '@brillout/shell@0.2.2':
+    resolution: {integrity: sha512-lkf/SenGnAHxtutAgjmSji4n31CmOZyfcOxdSKrpnXFA8Ktup+CJudhBAi0QpUvT03SuXQvSA4+QQrDPkV+0iA==}
+
   '@brillout/shiki-transformers@4.0.2':
     resolution: {integrity: sha512-LELxHWwiIcYoUc/V0KWgfQMWOjRXNebJt9Z1NM9InjPUQ8fsL0ZxttD7qoBzFvaFIbEUJre3N5jc9FmM5b5MBQ==}
     engines: {node: '>=20'}
 
-  '@brillout/spellcheck@0.1.2':
-    resolution: {integrity: sha512-DNJKsGPRps/3rwezmtMMoNwrcIpqnDPkqArEK5eS3vpkRJGzVaSH8suGf1+TmgUIsHn2Y1bgLIz9jh7w0EqwHw==}
+  '@brillout/spellcheck@0.1.3':
+    resolution: {integrity: sha512-J01PT4Z1KwWtzj5A1/63je/Td7mA25QybRw2nImgxSiBQyJxNgTN5jmoIELfQMWWZULm/speuS4SGohLZ84Bcg==}
     hasBin: true
 
   '@brillout/test-e2e@0.6.23':
@@ -7833,8 +7839,8 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
-  thread-stream@4.1.0:
-    resolution: {integrity: sha512-Bw6h2iBDt16v6iHLChBIoVYU8CBo9GPsW8TG7h1hRVhqKhIkH6N8qkxNSmiOZTKsCLPbtWG4ViWLkU6KeKXpig==}
+  thread-stream@4.2.0:
+    resolution: {integrity: sha512-e2zZ96wSChazBsbENf/Pcm/4swHt2cEKQ92rhUjkL9GCKiTDJIaTBenjE/m9DXi0QBmTMDkFDdOomUy20A1tDQ==}
     engines: {node: '>=20'}
 
   tinybench@2.9.0:
@@ -7863,9 +7869,9 @@ packages:
     resolution: {integrity: sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==}
     engines: {node: '>=8.0'}
 
-  toad-cache@3.7.0:
-    resolution: {integrity: sha512-/m8M+2BJUpoJdgAHoG+baCwBT+tf2VraSfkBgl0Y00qIWt41DJ8R5B8nsEw0I58YwF5IZH6z24/2TobDKnqSWw==}
-    engines: {node: '>=12'}
+  toad-cache@3.7.1:
+    resolution: {integrity: sha512-5DXWzE4Vz7xNHsv+xQ+MGfJYyC78Aok3tEr0MNwHoRf7vZnga1mQXZ4/Nsodld4VR6Wd+VhfmqnNrsRJyYPfrQ==}
+    engines: {node: '>=20'}
 
   toidentifier@1.0.1:
     resolution: {integrity: sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==}
@@ -9022,6 +9028,8 @@ snapshots:
 
   '@brillout/picocolors@1.0.30': {}
 
+  '@brillout/picocolors@1.0.31': {}
+
   '@brillout/release-me@0.4.15(conventional-commits-filter@5.0.0)':
     dependencies:
       '@brillout/picocolors': 1.0.30
@@ -9042,15 +9050,19 @@ snapshots:
     dependencies:
       '@brillout/picocolors': 1.0.30
 
+  '@brillout/shell@0.2.2':
+    dependencies:
+      '@brillout/picocolors': 1.0.31
+
   '@brillout/shiki-transformers@4.0.2':
     dependencies:
       '@shikijs/core': 4.0.2
       '@shikijs/types': 4.0.2
 
-  '@brillout/spellcheck@0.1.2':
+  '@brillout/spellcheck@0.1.3':
     dependencies:
-      '@brillout/picocolors': 1.0.30
-      '@brillout/shell': 0.2.1
+      '@brillout/picocolors': 1.0.31
+      '@brillout/shell': 0.2.2
 
   '@brillout/test-e2e@0.6.23':
     dependencies:
@@ -12690,7 +12702,7 @@ snapshots:
       rfdc: 1.4.1
       secure-json-parse: 4.1.0
       semver: 7.8.0
-      toad-cache: 3.7.0
+      toad-cache: 3.7.1
     optional: true
 
   fastq@1.20.1:
@@ -14102,7 +14114,7 @@ snapshots:
       real-require: 0.2.0
       safe-stable-stringify: 2.5.0
       sonic-boom: 4.2.1
-      thread-stream: 4.1.0
+      thread-stream: 4.2.0
     optional: true
 
   pixelmatch@5.3.0:
@@ -14997,7 +15009,7 @@ snapshots:
       commander: 2.20.3
       source-map-support: 0.5.21
 
-  thread-stream@4.1.0:
+  thread-stream@4.2.0:
     dependencies:
       real-require: 1.0.0
     optional: true
@@ -15023,7 +15035,7 @@ snapshots:
     dependencies:
       is-number: 7.0.0
 
-  toad-cache@3.7.0:
+  toad-cache@3.7.1:
     optional: true
 
   toidentifier@1.0.1: {}
