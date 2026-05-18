@@ -59,6 +59,9 @@ importers:
       '@types/react-dom':
         specifier: ^19.0.2
         version: 19.2.3(@types/react@19.2.14)
+      '@vikejs/payment-components':
+        specifier: file:../../vike-payments/packages/payment-components
+        version: file:../vike-payments/packages/payment-components(react@19.2.4)
       '@vitejs/plugin-react':
         specifier: ^5.0.0
         version: 5.1.3(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
@@ -5030,6 +5033,11 @@ packages:
     peerDependencies:
       hono: ^4.0.0
       vike: ^0.4.255
+
+  '@vikejs/payment-components@file:../vike-payments/packages/payment-components':
+    resolution: {directory: ../vike-payments/packages/payment-components, type: directory}
+    peerDependencies:
+      react: ^18.0.0 || ^19.0.0
 
   '@vite-plugin-vercel/schemas@1.1.1':
     resolution: {integrity: sha512-Gkk5QUET2Rj6K0faYoYSh+R9D1XkqHJS/Eoh9emBYYimfKibtiFccVL37P4O6DBtosxoXXvxxgYT0ahVz3XF3g==}
@@ -11296,6 +11304,10 @@ snapshots:
       - fastify
       - h3
       - srvx
+
+  '@vikejs/payment-components@file:../vike-payments/packages/payment-components(react@19.2.4)':
+    dependencies:
+      react: 19.2.4
 
   '@vite-plugin-vercel/schemas@1.1.1':
     dependencies:
