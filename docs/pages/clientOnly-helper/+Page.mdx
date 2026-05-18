@@ -1,4 +1,4 @@
-import { Link, Warning, Danger } from '@brillout/docpress'
+import { Link, Warning, Danger, Tabs } from '@brillout/docpress'
 import { UiFrameworkExtension, ConfigSpec } from '../../components'
 
 <ConfigSpec
@@ -23,9 +23,11 @@ Common use cases:
    > Vite code-splits dynamic imports such as `const { SomeComponent } = await import('./SomeComponent')`. In other words, the code of `<SomeComponent />` isn't included in the initial JavaScript client bundle: it's loaded only when/if `import()` is called.
 
 
-## React
+## With `vike-{react,vue,solid}`
 
-### Usage
+<Tabs choice={'uiFrameworkVikeExtension'} />
+
+:::Choice{#vike-react}
 
 ```tsx
 import { clientOnly } from 'vike-react/clientOnly'
@@ -67,10 +69,9 @@ Props:
    - [#2928 — `clientOnly` fallback resets component state when hydrated](https://github.com/vikejs/vike/issues/2928)
 </Warning>
 
+:::
 
-## Solid
-
-### Usage
+:::Choice{#vike-solid}
 
 ```tsx
 import { clientOnly } from 'vike-solid/clientOnly'
@@ -90,8 +91,9 @@ Props:
 - **fallback**: Content shown while the component is being loaded.
 - All other props are passed to the loaded component.
 
+:::
 
-## Vue
+:::Choice{#vike-vue}
 
 ```vue
 <template>
@@ -122,6 +124,7 @@ All props are passed to the loaded component.
 
 All slots are passed to the loaded component.
 
+:::
 
 ## Without `vike-{react,vue,solid}`
 

@@ -1,5 +1,5 @@
 import { UiFrameworkExtension, ConfigSpec } from '../../components'
-import { Link, Warning } from '@brillout/docpress'
+import { Link, Warning, Tabs } from '@brillout/docpress'
 
 <ConfigSpec
   env="server"
@@ -142,6 +142,8 @@ export function Head() {
 
 Adding a `<script>` tag to only one/some pages isn't currently supported: [#2244 - Add `<script>` to only one/some pages](https://github.com/vikejs/vike/issues/2244).
 
+:::Choice{#vike-vue}
+
 ### Vue
 
 If you use Vue, [`<script>` tags cannot be defined inside Vue SFC `<template>`](https://stackoverflow.com/questions/71430887/running-script-tags-within-template-on-vue-js/71442718#71442718). Instead use <Link href="/useConfig">`useConfig()`</Link>:
@@ -162,6 +164,7 @@ config({
 
 See also: <Link href="#how-to-inject-raw-html" />
 
+:::
 
 ## `pageContext`
 
@@ -181,20 +184,29 @@ export function Head() {
 
 ## How to inject raw HTML?
 
-You can inject any arbitrary HTML string to the page's `<head>`. Examples using:
-
-- <Link href="#react">React</Link>
-- <Link href="#vue">Vue</Link>
-- <Link href="#solid">Solid</Link>
-
 <Warning>
 Be cautious about the security risk called [XSS injections](https://en.wikipedia.org/wiki/Cross-site_scripting).
 </Warning>
 
-### React
+You can inject any arbitrary HTML string to the page's `<head>`. Examples using:
 
+<Tabs choice={'uiFrameworkVikeExtension'} />
+
+:::Choice{#vike-react}
 You can use React's `dangerouslySetInnerHTML` to add raw HTML, for example:
+:::
 
+:::Choice{#vike-solid}
+You can use `innerHTML` to add raw HTML, for example:
+:::
+
+:::Choice{#vike-vue}
+You can use <Link href="/useConfig">`useConfig()`</Link> with Vue's `innerHTML` to add raw HTML, for example:
+:::
+
+{/* --- */}
+
+:::Choice{#vike-react}
 ```tsx
 import React from 'react'
 import { Head } from 'vike-react/Head'
@@ -222,11 +234,36 @@ function Image({ src, author }: { src: string, author: string }) {
   )
 }
 ```
+:::
 
-### Vue
+:::Choice{#vike-solid}
+```tsx
+import { Head } from 'vike-solid/Head'
 
-You can use <Link href="/useConfig">`useConfig()`</Link> with Vue's `innerHTML` to add raw HTML, for example:
+function Image({ src, author }: { src: string, author: string }) {
+  return (
+    <>
+      <img src={src} />
+      <Head>
+        <script
+          type="application/ld+json"
+          innerHTML={JSON.stringify({
+            '@context': 'https://schema.org/',
+            contentUrl: { src },
+            creator: {
+              '@type': 'Person',
+              name: author
+            }
+          })}
+        ></script>
+      </Head>
+    </>
+  )
+}
+```
+:::
 
+:::Choice{#vike-vue}
 ```vue
 <template>
   <img :src v-bind="otherAttrs" />
@@ -254,36 +291,7 @@ config({
 })
 </script>
 ```
-
-### Solid
-
-You can use `innerHTML` to add raw HTML, for example:
-
-```tsx
-import { Head } from 'vike-solid/Head'
-
-function Image({ src, author }: { src: string, author: string }) {
-  return (
-    <>
-      <img src={src} />
-      <Head>
-        <script
-          type="application/ld+json"
-          innerHTML={JSON.stringify({
-            '@context': 'https://schema.org/',
-            contentUrl: { src },
-            creator: {
-              '@type': 'Person',
-              name: author
-            }
-          })}
-        ></script>
-      </Head>
-    </>
-  )
-}
-```
-
+:::
 
 ## Only HTML
 

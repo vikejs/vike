@@ -1,4 +1,4 @@
-import { Link, Warning } from '@brillout/docpress'
+import { Link, Warning, Tabs } from '@brillout/docpress'
 import { UiFrameworkExtension, ConfigSpec } from '../../components'
 
 <ConfigSpec
@@ -44,7 +44,9 @@ Be cautious about the security risk called [XSS injections](https://en.wikipedia
 
 ## Use cases
 
-### React
+<Tabs choice={'uiFramework'} />
+
+:::Choice{#React}
 
 When using React, it's often used for portals.
 
@@ -68,8 +70,9 @@ You'll then get the following HTML:
   <div id="portal-root"></div>
 </body>
 ```
+:::
 
-### Vue
+:::Choice{#Vue}
 
 When using Vue, it's often used for adding the HTML targets of teleports.
 
@@ -94,7 +97,7 @@ Teleports work out of the box when using `<Teleport to="teleported">` and you do
 >   return `<div id="someTeleport">${content}</div>`
 > }
 > ```
-
+:::
 
 ## See also
 

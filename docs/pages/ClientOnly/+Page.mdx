@@ -1,4 +1,4 @@
-import { Link } from '@brillout/docpress'
+import { Link, Tabs } from '@brillout/docpress'
 import { UiFrameworkExtension, ConfigSpec, TreeShaking } from '../../components'
 
 <ConfigSpec
@@ -41,7 +41,11 @@ function SomeComponent() {
 
 > `<ClientOnly>` supersedes <Link href="/clientOnly-helper">`clientOnly()`</Link> — it has better performance with a simpler DX.
 
-## React
+## With `vike-{react,vue,solid}`
+
+<Tabs choice={'uiFrameworkVikeExtension'} />
+
+:::Choice{#vike-react}
 
 ```tsx
 import { ClientOnly } from 'vike-react/ClientOnly'
@@ -59,7 +63,29 @@ Props:
 - **children**: Content rendered only on the client-side after hydration.
 - **fallback** (optional): Content shown during SSR and before hydration completes.
 
-## Vue
+:::
+
+:::Choice{#vike-solid}
+
+```tsx
+import { ClientOnly } from 'vike-solid/ClientOnly'
+
+function Page() {
+  return (
+    <ClientOnly fallback={<p>Loading...</p>}>
+      <SomeComponent />
+    </ClientOnly>
+  )
+}
+```
+
+Props:
+- **children**: Content rendered only on the client-side after hydration.
+- **fallback** (optional): Content shown during SSR and before hydration completes.
+
+:::
+
+:::Choice{#vike-vue}
 
 ```vue
 <template>
@@ -80,23 +106,7 @@ Props:
 - **default slot**: Content rendered only on the client-side after hydration.
 - **fallback slot** (optional): Content shown during SSR and before hydration completes.
 
-## Solid
-
-```tsx
-import { ClientOnly } from 'vike-solid/ClientOnly'
-
-function Page() {
-  return (
-    <ClientOnly fallback={<p>Loading...</p>}>
-      <SomeComponent />
-    </ClientOnly>
-  )
-}
-```
-
-Props:
-- **children**: Content rendered only on the client-side after hydration.
-- **fallback** (optional): Content shown during SSR and before hydration completes.
+:::
 
 ## Without `vike-{react,vue,solid}`
 

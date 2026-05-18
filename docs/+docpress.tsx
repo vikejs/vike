@@ -47,4 +47,18 @@ const config = {
     fontSize: 21,
     marginLeft: 0,
   },
+  choices: {
+    server: {
+      choices: ['Hono', 'Express.js', 'Fastify', 'H3', 'Elysia', 'Other'],
+      default: 'Hono',
+    },
+    uiFramework: {
+      choices: ['React', 'Solid', 'Vue'],
+      default: 'React',
+    },
+    uiFrameworkVikeExtension: {
+      choices: ['vike-react', 'vike-solid', 'vike-vue'],
+      default: 'vike-react',
+    },
+  },
 } satisfies Config
