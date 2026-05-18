@@ -16,7 +16,7 @@ same way you install a paid license — see <Link href="/license#install" />.
 
 ## How it works
 
-The form posts to `https://payment.vike.dev/free-trial` with the domains you listed. The worker:
+The form posts to `https://payment.vike.dev/get-license-key` with the domains you listed and `freeTrial: true`. The worker:
 
 1. Checks each domain against the existing free-trial history.
 2. Issues a single signed key covering all requested domains, with a 3-month expiry.
