@@ -56,9 +56,5 @@ const config = {
       choices: ['React', 'Vue', 'Solid'],
       default: 'React',
     },
-    uiFrameworkVikeExtension: {
-      choices: ['vike-react', 'vike-vue', 'vike-solid'],
-      default: 'vike-react',
-    },
   },
 } satisfies Config
