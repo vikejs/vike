@@ -15,8 +15,8 @@ importers:
         specifier: ^0.1.6
         version: 0.1.6
       '@brillout/spellcheck':
-        specifier: ^0.1.2
-        version: 0.1.2
+        specifier: ^0.1.3
+        version: 0.1.3
       '@brillout/test-e2e':
         specifier: ^0.6.23
         version: 0.6.23
@@ -2584,12 +2584,15 @@ packages:
   '@brillout/shell@0.2.1':
     resolution: {integrity: sha512-l5PTMWw6rndD7vZcMvw1bv31sTzpz0qP3q409PD50ATsfxhvbMvDVySnV73Okoskfd673oClIlt6OnupbQJqHA==}
 
+  '@brillout/shell@0.2.2':
+    resolution: {integrity: sha512-lkf/SenGnAHxtutAgjmSji4n31CmOZyfcOxdSKrpnXFA8Ktup+CJudhBAi0QpUvT03SuXQvSA4+QQrDPkV+0iA==}
+
   '@brillout/shiki-transformers@4.0.2':
     resolution: {integrity: sha512-LELxHWwiIcYoUc/V0KWgfQMWOjRXNebJt9Z1NM9InjPUQ8fsL0ZxttD7qoBzFvaFIbEUJre3N5jc9FmM5b5MBQ==}
     engines: {node: '>=20'}
 
-  '@brillout/spellcheck@0.1.2':
-    resolution: {integrity: sha512-DNJKsGPRps/3rwezmtMMoNwrcIpqnDPkqArEK5eS3vpkRJGzVaSH8suGf1+TmgUIsHn2Y1bgLIz9jh7w0EqwHw==}
+  '@brillout/spellcheck@0.1.3':
+    resolution: {integrity: sha512-J01PT4Z1KwWtzj5A1/63je/Td7mA25QybRw2nImgxSiBQyJxNgTN5jmoIELfQMWWZULm/speuS4SGohLZ84Bcg==}
     hasBin: true
 
   '@brillout/test-e2e@0.6.23':
@@ -9055,15 +9058,19 @@ snapshots:
     dependencies:
       '@brillout/picocolors': 1.0.31
 
+  '@brillout/shell@0.2.2':
+    dependencies:
+      '@brillout/picocolors': 1.0.31
+
   '@brillout/shiki-transformers@4.0.2':
     dependencies:
       '@shikijs/core': 4.0.2
       '@shikijs/types': 4.0.2
 
-  '@brillout/spellcheck@0.1.2':
+  '@brillout/spellcheck@0.1.3':
     dependencies:
-      '@brillout/picocolors': 1.0.30
-      '@brillout/shell': 0.2.1
+      '@brillout/picocolors': 1.0.31
+      '@brillout/shell': 0.2.2
 
   '@brillout/test-e2e@0.6.23':
     dependencies:
