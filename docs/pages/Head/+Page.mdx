@@ -142,7 +142,7 @@ export function Head() {
 
 Adding a `<script>` tag to only one/some pages isn't currently supported: [#2244 - Add `<script>` to only one/some pages](https://github.com/vikejs/vike/issues/2244).
 
-:::Choice{#vike-vue}
+:::Choice{#Vue}
 
 ### Vue
 
@@ -190,23 +190,23 @@ You can inject any arbitrary HTML string to the page's `<head>`.
 Be cautious about the security risk called [XSS injections](https://en.wikipedia.org/wiki/Cross-site_scripting).
 </Warning>
 
-<Tabs choice={'uiFrameworkVikeExtension'} />
+<Tabs choice={'uiFramework'} />
 
-:::Choice{#vike-react}
+:::Choice{#React}
 You can use React's `dangerouslySetInnerHTML` to add raw HTML, for example:
 :::
 
-:::Choice{#vike-vue}
+:::Choice{#Vue}
 You can use <Link href="/useConfig">`useConfig()`</Link> with Vue's `innerHTML` to add raw HTML, for example:
 :::
 
-:::Choice{#vike-solid}
+:::Choice{#Solid}
 You can use `innerHTML` to add raw HTML, for example:
 :::
 
 {/* --- */}
 
-:::Choice{#vike-react}
+:::Choice{#React}
 ```tsx
 import React from 'react'
 import { Head } from 'vike-react/Head'
@@ -236,7 +236,7 @@ function Image({ src, author }: { src: string, author: string }) {
 ```
 :::
 
-:::Choice{#vike-vue}
+:::Choice{#Vue}
 ```vue
 <template>
   <img :src v-bind="otherAttrs" />
@@ -266,7 +266,7 @@ config({
 ```
 :::
 
-:::Choice{#vike-solid}
+:::Choice{#Solid}
 ```tsx
 import { Head } from 'vike-solid/Head'
 

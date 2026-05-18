@@ -9,9 +9,9 @@ import { UiFrameworkExtension, ConfigSpec } from '../../components'
 
 The `useHydrated()` hook returns whether the page has already been <Link href="/hydration">hydrated</Link>.
 
-<Tabs choice={'uiFrameworkVikeExtension'} />
+<Tabs choice={'uiFramework'} />
 
-:::Choice{#vike-react}
+:::Choice{#React}
 ```tsx
 import { useHydrated } from 'vike-react/useHydrated'
 
@@ -26,7 +26,7 @@ function SomeComponent() {
 ```
 :::
 
-:::Choice{#vike-vue}
+:::Choice{#Vue}
 ```vue
 <template>
   <button type="button" :disabled="!hydrated" @click="doSomething">
@@ -41,7 +41,7 @@ const hydrated = useHydrated()
 ```
 :::
 
-:::Choice{#vike-solid}
+:::Choice{#Solid}
 ```tsx
 import { useHydrated } from 'vike-solid/useHydrated'
 
