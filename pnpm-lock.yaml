@@ -825,8 +825,8 @@ importers:
         specifier: ^0.5.23
         version: 0.5.23
       '@brillout/picocolors':
-        specifier: ^1.0.30
-        version: 1.0.30
+        specifier: ^1.0.31
+        version: 1.0.31
       '@brillout/vite-plugin-server-entry':
         specifier: 0.7.18
         version: 0.7.18
@@ -2569,6 +2569,9 @@ packages:
 
   '@brillout/picocolors@1.0.30':
     resolution: {integrity: sha512-xJjdgyN1H0qh2nB2xlzazIipiDixuUd9oD5msh/Qv5bXJG9j8MSD/m4lREt6Z10ej6FF31b8vB4tdT7lDUbiyA==}
+
+  '@brillout/picocolors@1.0.31':
+    resolution: {integrity: sha512-xFCPBefU/AevF8XkwXSd/jIHA0fWw+mZ/gd5x2WOc5ysG7keHnU8m0gwY2Bvq5lvTyjwT4tiyow6fnMoYdmSqw==}
 
   '@brillout/release-me@0.4.15':
     resolution: {integrity: sha512-HiWA4gojwDEKeQ7oCAGP2nc83FRJemTsP/LSQ7cid8tbGMS9HOSpV6dRdx7dEsNJpNJEQnIiDNFhhzmiXi2iKA==}
@@ -7833,8 +7836,8 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
-  thread-stream@4.1.0:
-    resolution: {integrity: sha512-Bw6h2iBDt16v6iHLChBIoVYU8CBo9GPsW8TG7h1hRVhqKhIkH6N8qkxNSmiOZTKsCLPbtWG4ViWLkU6KeKXpig==}
+  thread-stream@4.2.0:
+    resolution: {integrity: sha512-e2zZ96wSChazBsbENf/Pcm/4swHt2cEKQ92rhUjkL9GCKiTDJIaTBenjE/m9DXi0QBmTMDkFDdOomUy20A1tDQ==}
     engines: {node: '>=20'}
 
   tinybench@2.9.0:
@@ -7863,9 +7866,9 @@ packages:
     resolution: {integrity: sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==}
     engines: {node: '>=8.0'}
 
-  toad-cache@3.7.0:
-    resolution: {integrity: sha512-/m8M+2BJUpoJdgAHoG+baCwBT+tf2VraSfkBgl0Y00qIWt41DJ8R5B8nsEw0I58YwF5IZH6z24/2TobDKnqSWw==}
-    engines: {node: '>=12'}
+  toad-cache@3.7.1:
+    resolution: {integrity: sha512-5DXWzE4Vz7xNHsv+xQ+MGfJYyC78Aok3tEr0MNwHoRf7vZnga1mQXZ4/Nsodld4VR6Wd+VhfmqnNrsRJyYPfrQ==}
+    engines: {node: '>=20'}
 
   toidentifier@1.0.1:
     resolution: {integrity: sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==}
@@ -9022,9 +9025,11 @@ snapshots:
 
   '@brillout/picocolors@1.0.30': {}
 
+  '@brillout/picocolors@1.0.31': {}
+
   '@brillout/release-me@0.4.15(conventional-commits-filter@5.0.0)':
     dependencies:
-      '@brillout/picocolors': 1.0.30
+      '@brillout/picocolors': 1.0.31
       commander: 11.1.0
       conventional-changelog: 7.0.2(conventional-commits-filter@5.0.0)
       conventional-changelog-angular: 8.0.0
@@ -9040,7 +9045,7 @@ snapshots:
 
   '@brillout/shell@0.2.1':
     dependencies:
-      '@brillout/picocolors': 1.0.30
+      '@brillout/picocolors': 1.0.31
 
   '@brillout/shiki-transformers@4.0.2':
     dependencies:
@@ -9075,7 +9080,7 @@ snapshots:
   '@brillout/vite-plugin-server-entry@0.7.18':
     dependencies:
       '@brillout/import': 0.2.6
-      '@brillout/picocolors': 1.0.30
+      '@brillout/picocolors': 1.0.31
 
   '@bytecodealliance/preview2-shim@0.17.6': {}
 
@@ -12690,7 +12695,7 @@ snapshots:
       rfdc: 1.4.1
       secure-json-parse: 4.1.0
       semver: 7.8.0
-      toad-cache: 3.7.0
+      toad-cache: 3.7.1
     optional: true
 
   fastq@1.20.1:
@@ -14102,7 +14107,7 @@ snapshots:
       real-require: 0.2.0
       safe-stable-stringify: 2.5.0
       sonic-boom: 4.2.1
-      thread-stream: 4.1.0
+      thread-stream: 4.2.0
     optional: true
 
   pixelmatch@5.3.0:
@@ -14997,7 +15002,7 @@ snapshots:
       commander: 2.20.3
       source-map-support: 0.5.21
 
-  thread-stream@4.1.0:
+  thread-stream@4.2.0:
     dependencies:
       real-require: 1.0.0
     optional: true
@@ -15023,7 +15028,7 @@ snapshots:
     dependencies:
       is-number: 7.0.0
 
-  toad-cache@3.7.0:
+  toad-cache@3.7.1:
     optional: true
 
   toidentifier@1.0.1: {}
