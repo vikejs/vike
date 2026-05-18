@@ -15,16 +15,6 @@ The `clientOnly()` helper enables you to load and render a component only on the
 
 > Alternatively, you can set <Link href="/ssr">`ssr: false`</Link> to load and render the entire page on the client-side only.
 
-Common use cases:
-
- - **Library components that don't support SSR**. A solution is to render and load the component only on the client-side.
-   > Most component libraries nowadays support SSR but some don't. Some even crash when they're merely loaded on the server-side (for example if the library has a hard reference to browser-only APIs such as `window`).
- - **Performance**. `clientOnly()` allows you to defer loading heavy components, such as a complex interactive map. That way, your users can already interact with your page before even the browser starts loading that heavy component.
-   > Vite code-splits dynamic imports such as `const { SomeComponent } = await import('./SomeComponent')`. In other words, the code of `<SomeComponent />` isn't included in the initial JavaScript client bundle: it's loaded only when/if `import()` is called.
-
-
-## With `vike-{react,vue,solid}`
-
 <Tabs choice={'uiFrameworkVikeExtension'} />
 
 :::Choice{#vike-react}
@@ -125,6 +115,17 @@ All props are passed to the loaded component.
 All slots are passed to the loaded component.
 
 :::
+
+
+## Use cases
+
+Common use cases:
+
+ - **Library components that don't support SSR**. A solution is to render and load the component only on the client-side.
+   > Most component libraries nowadays support SSR but some don't. Some even crash when they're merely loaded on the server-side (for example if the library has a hard reference to browser-only APIs such as `window`).
+ - **Performance**. `clientOnly()` allows you to defer loading heavy components, such as a complex interactive map. That way, your users can already interact with your page before even the browser starts loading that heavy component.
+   > Vite code-splits dynamic imports such as `const { SomeComponent } = await import('./SomeComponent')`. In other words, the code of `<SomeComponent />` isn't included in the initial JavaScript client bundle: it's loaded only when/if `import()` is called.
+
 
 ## Without `vike-{react,vue,solid}`
 
