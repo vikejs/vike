@@ -130,7 +130,7 @@
     "@babel/types": "^7.28.5",
     "@brillout/import": "^0.2.6",
     "@brillout/json-serializer": "^0.5.23",
-    "@brillout/picocolors": "^1.0.30",
+    "@brillout/picocolors": "^1.0.31",
     "@brillout/vite-plugin-server-entry": "0.7.18",
     "@universal-deploy/store": "^0.2.1",
     "@universal-deploy/vite": "^0.1.9",
