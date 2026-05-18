@@ -9,15 +9,6 @@ import { UiFrameworkExtension, ConfigSpec } from '../../components'
 
 The `useHydrated()` hook returns whether the page has already been <Link href="/hydration">hydrated</Link>.
 
-On the server, it always returns `false`. On the client, it returns `false` on first render and `true` after hydration completes.
-
-Common use case: disable interactive elements until hydration completes.
-
-> The difference with <Link href="/pageContext#isHydration">`pageContext.isClientSide && !pageContext.isHydration`</Link> (which returns the same value) is that `useHydrated()` triggers a re-render after the component hydrates.
-
-
-## With `vike-{react,vue,solid}`
-
 <Tabs choice={'uiFrameworkVikeExtension'} />
 
 :::Choice{#vike-react}
@@ -64,6 +55,13 @@ const hydrated = useHydrated()
 </script>
 ```
 :::
+
+On the server, it always returns `false`. On the client, it returns `false` on first render and `true` after hydration completes.
+
+Common use case: disable interactive elements until hydration completes.
+
+> The difference with <Link href="/pageContext#isHydration">`pageContext.isClientSide && !pageContext.isHydration`</Link> (which returns the same value) is that `useHydrated()` triggers a re-render after the component hydrates.
+
 
 ## Without `vike-{react,vue,solid}`
 
