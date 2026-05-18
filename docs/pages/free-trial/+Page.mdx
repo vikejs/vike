@@ -1,0 +1,45 @@
+import { Link } from '@brillout/docpress'
+import { FreeTrialForm } from '@vikejs/free-trial-component'
+
+A free 3-month trial license key, issued on the spot — no account, no email exchange.
+
+> Use this if you'd like to try Vike's licensed features for a few months. For long-term free
+> access (open source, non-profits, small teams), see <Link href="/free" /> instead — those
+> programs are maintainer-issued by email.
+
+## Get your trial key
+
+<FreeTrialForm defaultDomains="" />
+
+The key is returned in the response and valid for **3 months** from issuance. Install it the
+same way you install a paid license — see <Link href="/license#install" />.
+
+## How it works
+
+The form posts to `https://payment.vike.dev/free-trial` with the domains you listed. The worker:
+
+1. Checks each domain against the existing free-trial history.
+2. Issues a single signed key covering all requested domains, with a 3-month expiry.
+3. Records the issuance so the same domain can't claim another free trial later.
+
+### One trial per domain ever
+
+The endpoint enforces **one free trial per root domain ever**. If a domain you list has already
+been the subject of a previous trial, the response includes that domain as a warning — the new
+key still covers it for convenience, but the per-domain quota is used up. Once a domain has used
+its trial, the only paths to keep using Vike on it are:
+
+- Purchase a license — see <Link href="/pricing" />.
+- Request a maintainer-issued grant — see <Link href="/free" />.
+
+### Repeat requests are safe
+
+If your network drops the response, you can repeat the same request — the worker returns the
+same key it issued before. (Concretely: if the requested domain set exactly matches a previously
+issued trial, the response is the same as the first time.)
+
+## See also
+
+- <Link href="/license" />
+- <Link href="/pricing" />
+- <Link href="/free" />
