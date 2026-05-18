@@ -301,6 +301,8 @@ You can compress all server responses by using the [compress universal middlewar
 npm i @universal-middleware/compress
 ```
 
+{/* TODO/after-merge: code block for each server */ }
+
 ```ts
 // +server.ts
 
@@ -308,7 +310,8 @@ import { Hono } from 'hono'
 import vike from '@vikejs/hono'
 import compress from '@universal-middleware/compress' // [!code ++]
 
-const app = new Hono() // [!code --]
+const app = new Hono()
+vike(app) // [!code --]
 // Add universal middlewares here (same for Express.js, Fastify, ...) // [!code ++]
 vike(app, [compress()]) // [!code ++]
 ```
