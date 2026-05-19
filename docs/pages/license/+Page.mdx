@@ -6,7 +6,7 @@ import { ConfigSpec } from '../../components'
   global
   isTypeOneLiner
 >
-`string {:ts}`
+`Record<string, string | { expires: string; key: string }> {:ts}`
 </ConfigSpec>
 
 The license key for larger teams.
@@ -16,7 +16,7 @@ The license key for larger teams.
 
 ## Install
 
-To install your license key, add it to <Link href="/config">`+config.js`</Link>:
+License keys are a map: one entry per root domain you cover. Add it to <Link href="/config">`+config.js`</Link>:
 
 ```ts
 // pages/+config.ts
@@ -24,11 +24,16 @@ To install your license key, add it to <Link href="/config">`+config.js`</Link>:
 import type { Config } from 'vike/types'
 
 export default {
-  license: 'YOUR_LICENSE_KEY' // [!code ++]
+  license: { // [!code ++]
+    'foo.com': 'ABCDEFGHI…',                                              // forever-valid (paid or maintainer grant) // [!code ++]
+    'bar.com': { expires: '2026-12-31T00:00:00Z', key: 'JKLMNOPQR…' },    // free trial / extended trial             // [!code ++]
+  }, // [!code ++]
 } satisfies Config
 ```
 
-> Your license key isn't a secret — it's safe to share publicly (for example, you can commit it to a public repository).
+Each value is either a bare string (forever-valid) or an object `{ expires, key }` (time-limited). The `key` is a base64url Ed25519 signature ~86 chars long. Copy the map you received from your purchase email / the free-trial form / the maintainer.
+
+> Your license keys aren't secrets — they're safe to share publicly (for example, you can commit them to a public repository).
 
 That's it — your app can now use Vike forever without restrictions.
 
