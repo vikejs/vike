@@ -2581,9 +2581,6 @@ packages:
     resolution: {integrity: sha512-pF3D0TEkxR3H0PpBRV0oiWbCNdpCexcoYn9k1ByTjGWZzmRJ2G+Se+Smr6QC+VZ7PKTpQuC4YBGyxnlbk89JkQ==}
     hasBin: true
 
-  '@brillout/shell@0.2.1':
-    resolution: {integrity: sha512-l5PTMWw6rndD7vZcMvw1bv31sTzpz0qP3q409PD50ATsfxhvbMvDVySnV73Okoskfd673oClIlt6OnupbQJqHA==}
-
   '@brillout/shell@0.2.2':
     resolution: {integrity: sha512-lkf/SenGnAHxtutAgjmSji4n31CmOZyfcOxdSKrpnXFA8Ktup+CJudhBAi0QpUvT03SuXQvSA4+QQrDPkV+0iA==}
 
@@ -9052,11 +9049,7 @@ snapshots:
   '@brillout/replace@0.1.6':
     dependencies:
       '@brillout/picocolors': 1.0.30
-      '@brillout/shell': 0.2.1
-
-  '@brillout/shell@0.2.1':
-    dependencies:
-      '@brillout/picocolors': 1.0.31
+      '@brillout/shell': 0.2.2
 
   '@brillout/shell@0.2.2':
     dependencies:
