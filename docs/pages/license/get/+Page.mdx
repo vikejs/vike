@@ -1,0 +1,40 @@
+import { Link } from '@brillout/docpress'
+import { GetLicenseKeyForm } from '@vikejs/license-components'
+
+Generate Vike license keys for your domains.
+
+> Trial keys (3 months, one per root domain ever) are issued here without any account. If you
+> followed the link in your purchase receipt, the page automatically switches to "paid customer"
+> mode and issues forever-valid keys for any domain. See <Link href="/free-trial" /> for the
+> rules around free trials.
+
+## Get your keys
+
+<GetLicenseKeyForm defaultDomains="" />
+
+The keys come back in a `license: { [domain]: ... }` map. Install the snippet directly into
+your `+config.js` — see <Link href="/license#install" />.
+
+## Modes
+
+This page detects what to issue from the URL:
+
+- **Plain `https://vike.dev/license/get`** — anyone can request a free 3-month trial. Every
+  request returns a key for every domain you list; expired-trial domains come back with the
+  original past-dated `expires` so the page can warn you that the key is no longer in force.
+- **`https://vike.dev/license/get?customer-id=…&created-at=…&key=…`** — the magic link sent in
+  your purchase receipt. Each submission issues forever-valid keys for the domains you list.
+  You can come back to the link any time — add new domains, set up staging, change your apex.
+
+The signed `key` query parameter is an Ed25519 signature over `customer-id|created-at`;
+tampering with either field breaks the signature and the page rejects the request. Keep this
+link safe — anyone who has it can issue keys against your customer record. If you lose it or
+believe it's been leaked, email <a href="mailto:support@vike.dev">support@vike.dev</a> to have
+it rotated.
+
+## See also
+
+- <Link href="/license" />
+- <Link href="/free-trial" />
+- <Link href="/pricing" />
+- <Link href="/free" />
