@@ -1,6 +1,7 @@
 export { isViteCli }
 export { getViteConfigForBuildFromCli }
 export { getViteCommandFromCli }
+export { getRootAndConfigFileFromViteCli }
 
 import { assert } from '../../../utils/assert.js'
 import { isObject } from '../../../utils/isObject.js'
@@ -56,6 +57,31 @@ function getViteCommandFromCli(): ViteCommand | null {
   assert(command)
 
   return command
+}
+
+// Capture `[root]` positional and `-c/--config` across all Vite CLI commands.
+// Used to make Vike's early config resolution aware of Vite's CLI args (Vike loads vite.config.js
+// independently and would otherwise miss `vite tests` style invocations).
+function getRootAndConfigFileFromViteCli(): null | { root: string | undefined; configFile: string | undefined } {
+  if (!isViteCli()) return null
+
+  const cli = cac(desc)
+  cli.option('-c, --config <file>', desc)
+
+  let result: { root: string | undefined; configFile: string | undefined } | null = null
+  const setResult = (root: unknown, options: unknown) => {
+    assert(root === undefined || typeof root === 'string')
+    assert(isObject(options))
+    assert(options.config === undefined || typeof options.config === 'string')
+    result = { root, configFile: options.config }
+  }
+  cli.command('[root]', desc).alias('serve').alias('dev').action(setResult)
+  cli.command('build [root]', desc).action(setResult)
+  cli.command('optimize [root]', desc).action(setResult)
+  cli.command('preview [root]', desc).action(setResult)
+
+  cli.parse()
+  return result
 }
 
 function getViteConfigForBuildFromCli(): null | ConfigFromCli {

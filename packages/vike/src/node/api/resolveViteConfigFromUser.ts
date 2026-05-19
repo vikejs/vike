@@ -22,7 +22,7 @@ import { toPosixPath } from '../../utils/path.js'
 import pc from '@brillout/picocolors'
 import { getEnvVarObject } from '../vite/shared/getEnvVarObject.js'
 import { getVikeApiOperation, isVikeCliOrApi } from '../../shared-server-node/api-context.js'
-import { getViteCommandFromCli } from '../vite/shared/isViteCli.js'
+import { getViteCommandFromCli, getRootAndConfigFileFromViteCli } from '../vite/shared/isViteCli.js'
 import type { Config } from '../../types/index.js'
 import './assertEnvApiDevAndProd.js'
 
@@ -81,7 +81,8 @@ async function getViteInfo(viteContext: ViteContext) {
   // 1. (highest precedence)  |  viteConfigFromUserEnvVar          |  VITE_CONFIG
   // 2.                       |  viteConfigFromUserVikeMode        |  VIKE_CONFIG & Vike CLI options — only `+mode`
   // 2.                       |  viteConfigFromUserVikeApiOptions  |  Vike API options
-  // 3. (lowest precedence)   |  viteConfigFromUserViteFile        |  vite.config.js
+  // 3.                       |  viteConfigFromUserViteCli         |  Vite CLI args — `[root]` & `-c/--config`
+  // 4. (lowest precedence)   |  viteConfigFromUserViteFile        |  vite.config.js
 
   // Resolve Vike's +mode setting
   {
@@ -95,6 +96,19 @@ async function getViteInfo(viteContext: ViteContext) {
   const viteConfigFromUserEnvVar = getEnvVarObject('VITE_CONFIG')
   if (viteConfigFromUserEnvVar) {
     viteConfigFromUserResolved = merge(viteConfigFromUserResolved ?? {}, viteConfigFromUserEnvVar)
+  }
+
+  // Resolve Vite CLI args (when invoked via Vite's CLI rather than Vike's API).
+  // Without this, Vike loads vite.config.js blind to `vite [root]` / `-c <file>` and
+  // ends up with the wrong root when those CLI args are used.
+  const viteCliArgs = getRootAndConfigFileFromViteCli()
+  if (viteCliArgs) {
+    const fromCli: InlineConfig = {}
+    if (viteCliArgs.root !== undefined) fromCli.root = viteCliArgs.root
+    if (viteCliArgs.configFile !== undefined) fromCli.configFile = viteCliArgs.configFile
+    if (Object.keys(fromCli).length > 0) {
+      viteConfigFromUserResolved = merge(viteConfigFromUserResolved ?? {}, fromCli)
+    }
   }
 
   // Resolve vite.config.js
@@ -273,6 +287,6 @@ async function assertViteRoot2(
 function assertViteRoot(rootResolvedEarly: string, config: ResolvedConfig) {
   const rootResolved = config.root
   const rootGlobal = globalObject.root
-  if (rootGlobal) assert(normalizeViteRoot(rootGlobal) === normalizeViteRoot(rootResolvedEarly))
+  if (rootGlobal) assert(normalizeViteRoot(rootGlobal) === normalizeViteRoot(rootResolvedEarly), { rootResolved, rootGlobal, rootResolvedEarly });
   assertUsage(normalizeViteRoot(rootResolvedEarly) === normalizeViteRoot(rootResolved), errMsg)
 }
