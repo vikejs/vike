@@ -14,21 +14,23 @@ function Page() {
         Next steps:
         <ol>
           <li>
-            You'll receive your license key by email.
+            Check your inbox for a sign-in link to your dashboard at <a href="https://dash.vike.dev">dash.vike.dev</a>.
             <blockquote>
               <p>
-                If you don't, check your spam folder or <a href="mailto:support@vike.dev">contact us</a>.
+                If you don't receive it, check your spam folder or <a href="mailto:support@vike.dev">contact us</a>.
               </p>
             </blockquote>
           </li>
           <li>
-            <Link href="/license#install">Install your license key</Link>.
+            From the dashboard, generate forever-valid license keys for your domains and{' '}
+            <Link href="/license#install">install them in your <code>+config.js</code></Link>.
           </li>
         </ol>
         That's it — you can now use Vike, forever without restrictions.
         <blockquote>
           <p>
-            To update your list of domain names, see <Link href="/license#update-domain-names" />.
+            To change which domains your keys cover, sign back in at <a href="https://dash.vike.dev">dash.vike.dev</a>{' '}
+            and re-run the generator. Your sign-in link from the welcome email keeps working — bookmark it for later.
           </p>
         </blockquote>
       </div>
