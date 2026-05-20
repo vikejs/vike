@@ -22,7 +22,7 @@ import { toPosixPath } from '../../utils/path.js'
 import pc from '@brillout/picocolors'
 import { getEnvVarObject } from '../vite/shared/getEnvVarObject.js'
 import { getVikeApiOperation, isVikeCliOrApi } from '../../shared-server-node/api-context.js'
-import { getViteCommandFromCli, getViteCliArgs } from '../vite/shared/isViteCli.js'
+import { getViteCliCommand, getViteCliArgs } from '../vite/shared/isViteCli.js'
 import type { Config } from '../../types/index.js'
 import './assertEnvApiDevAndProd.js'
 
@@ -206,7 +206,7 @@ async function loadViteConfigFile(viteConfigFromUserResolved: InlineConfig | und
 type ViteContext = 'build' | 'preview' | 'dev'
 function getViteContext(): ViteContext {
   const vikeApiOperation = getVikeApiOperation()
-  const viteCommand = getViteCommandFromCli()
+  const viteCommand = getViteCliCommand()
   assert(!(viteCommand && vikeApiOperation))
 
   if (vikeApiOperation) return getViteContextWithOperation(vikeApiOperation.operation)
