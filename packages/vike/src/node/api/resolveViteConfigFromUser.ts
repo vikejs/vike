@@ -102,14 +102,9 @@ async function getViteInfo(viteContext: ViteContext) {
   // Resolve Vite CLI args (when invoked via Vite's CLI rather than Vike's API).
   // Without this, Vike loads vite.config.js blind to `vite [root]` / `-c <file>` and
   // ends up with the wrong root when those CLI args are used.
-  const viteCliArgs = getViteCliArgs()
-  if (viteCliArgs) {
-    const fromCli: InlineConfig = {}
-    if (viteCliArgs.root !== undefined) fromCli.root = viteCliArgs.root
-    if (viteCliArgs.configFile !== undefined) fromCli.configFile = viteCliArgs.configFile
-    if (Object.keys(fromCli).length > 0) {
-      viteConfigFromUserResolved = merge(viteConfigFromUserResolved ?? {}, fromCli)
-    }
+  const viteConfigFromUserViteCli = getViteCliArgs()
+  if (viteConfigFromUserViteCli) {
+    viteConfigFromUserResolved = merge(viteConfigFromUserResolved ?? {}, viteConfigFromUserViteCli)
   }
 
   // Resolve vite.config.js
