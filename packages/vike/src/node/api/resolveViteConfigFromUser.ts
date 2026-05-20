@@ -77,6 +77,7 @@ async function getViteInfo(viteContext: ViteContext) {
 
   let viteConfigFromUserResolved = clone(viteConfigFromUserVikeApiOptions ?? {})
 
+  // TODO: improve precedence?
   // Precedence:
   // 1. (highest precedence)  |  viteConfigFromUserEnvVar          |  VITE_CONFIG
   // 2.                       |  viteConfigFromUserVikeMode        |  VIKE_CONFIG & Vike CLI options — only `+mode`

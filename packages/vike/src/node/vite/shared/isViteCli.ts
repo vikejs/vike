@@ -1,4 +1,5 @@
 export { isViteCli }
+// TODO: rename export names
 export { getViteConfigForBuildFromCli }
 export { getViteCommandFromCli }
 export { getViteCliArgs }
