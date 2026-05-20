@@ -77,13 +77,20 @@ async function getViteInfo(viteContext: ViteContext) {
 
   let viteConfigFromUserResolved = clone(viteConfigFromUserVikeApiOptions ?? {})
 
-  // TODO: improve precedence?
   // Precedence:
   // 1. (highest precedence)  |  viteConfigFromUserEnvVar          |  VITE_CONFIG
   // 2.                       |  viteConfigFromUserVikeMode        |  VIKE_CONFIG & Vike CLI options — only `+mode`
-  // 2.                       |  viteConfigFromUserVikeApiOptions  |  Vike API options
   // 3.                       |  viteConfigFromUserViteCli         |  Vite CLI args — `[root]` & `-c/--config`
-  // 4. (lowest precedence)   |  viteConfigFromUserViteFile        |  vite.config.js
+  // 4.                       |  viteConfigFromUserVikeApiOptions  |  Vike API options
+  // 5. (lowest precedence)   |  viteConfigFromUserViteConfigFile  |  vite.config.js
+
+  // Resolve Vite CLI args (when invoked via Vite's CLI rather than Vike's API).
+  // Without this, Vike loads vite.config.js blind to `vite [root]` / `-c <file>` and
+  // ends up with the wrong root when those Vite CLI args are used.
+  const viteConfigFromUserViteCli = getViteCliArgs()
+  if (viteConfigFromUserViteCli) {
+    viteConfigFromUserResolved = merge(viteConfigFromUserResolved ?? {}, viteConfigFromUserViteCli)
+  }
 
   // Resolve Vike's +mode setting
   {
@@ -97,14 +104,6 @@ async function getViteInfo(viteContext: ViteContext) {
   const viteConfigFromUserEnvVar = getEnvVarObject('VITE_CONFIG')
   if (viteConfigFromUserEnvVar) {
     viteConfigFromUserResolved = merge(viteConfigFromUserResolved ?? {}, viteConfigFromUserEnvVar)
-  }
-
-  // Resolve Vite CLI args (when invoked via Vite's CLI rather than Vike's API).
-  // Without this, Vike loads vite.config.js blind to `vite [root]` / `-c <file>` and
-  // ends up with the wrong root when those Vite CLI args are used.
-  const viteConfigFromUserViteCli = getViteCliArgs()
-  if (viteConfigFromUserViteCli) {
-    viteConfigFromUserResolved = merge(viteConfigFromUserResolved ?? {}, viteConfigFromUserViteCli)
   }
 
   // Resolve vite.config.js
