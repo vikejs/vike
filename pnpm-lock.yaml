@@ -4910,16 +4910,16 @@ packages:
   '@universal-middleware/srvx@0.1.2':
     resolution: {integrity: sha512-9wae91aI+GD43IJEbf1Wbk/R0H2+zsh1dMbaWb1QDm83wd0yLWO3AiarcUaHDGJDweDPSlKBLOoPkI317EDSVw==}
 
-  '@universal-middleware/vercel@0.4.31':
-    resolution: {integrity: sha512-nwnuX2f3ZVIenTN5YOKhTPWcsZY0IisSfxGA1szBqU9RolrY7AdpHL5pgNH47FuxcWTRho54zAJJ5nJ38SLScA==}
+  '@universal-middleware/vercel@0.4.32':
+    resolution: {integrity: sha512-dvtMnmpoqZkqQ4cRocqwx+tW5Ep6eIPaFG1owctv9ZKlBz33PCq0eIDoGx7nYndjwYmzGkqjBh1e+zxrUOjZgg==}
     peerDependencies:
       '@hattip/core': ^0.0.49
       '@universal-middleware/h3': ^0.4.17
-      elysia: ^1.4.27
+      elysia: ^1.4.28
       express: ^5.2.1
-      fastify: ^5.7.4
-      h3: ^1.15.5
-      hono: ^4.12.3
+      fastify: ^5.8.5
+      h3: ^1.15.11
+      hono: ^4.12.19
       srvx: '>=0.8'
     peerDependenciesMeta:
       '@hattip/core':
@@ -10085,7 +10085,7 @@ snapshots:
       '@photonjs/core': 0.1.22(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.15)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
       '@photonjs/runtime': 0.1.17(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(rollup@4.43.0)(srvx@0.11.15)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
       '@universal-middleware/core': 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.15)
-      '@universal-middleware/vercel': 0.4.31(@hattip/core@0.0.49)(@types/express@5.0.6)(express@5.2.1)(fastify@5.7.4)(srvx@0.11.15)
+      '@universal-middleware/vercel': 0.4.32(@hattip/core@0.0.49)(@types/express@5.0.6)(express@5.2.1)(fastify@5.7.4)(srvx@0.11.15)
       '@vercel/build-utils': 13.8.1
       '@vercel/nft': 1.3.2(rollup@4.43.0)
       '@vercel/routing-utils': 5.3.1
@@ -11103,11 +11103,11 @@ snapshots:
       - hono
       - srvx
 
-  '@universal-middleware/vercel@0.4.31(@hattip/core@0.0.49)(@types/express@5.0.6)(express@5.2.1)(fastify@5.7.4)(srvx@0.11.15)':
+  '@universal-middleware/vercel@0.4.32(@hattip/core@0.0.49)(@types/express@5.0.6)(express@5.2.1)(fastify@5.7.4)(srvx@0.11.15)':
     dependencies:
       '@universal-middleware/core': 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.15)
       '@universal-middleware/express': 0.4.27(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.15)
-      '@universal-middleware/node': 0.1.0(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.15)
+      '@universal-middleware/node': 0.2.0(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.15)
     optionalDependencies:
       '@hattip/core': 0.0.49
       express: 5.2.1
