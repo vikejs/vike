@@ -201,10 +201,7 @@ You can use <Link href="/useConfig">`useConfig()`</Link> with Vue's `innerHTML` 
 You can use `innerHTML` to add raw HTML, for example:
 :::
 
-{/* --- */}
-
-:::Choice{#React}
-```tsx
+```tsx choice=React
 import React from 'react'
 import { Head } from 'vike-react/Head'
 
@@ -231,10 +228,8 @@ function Image({ src, author }: { src: string, author: string }) {
   )
 }
 ```
-:::
 
-:::Choice{#Vue}
-```vue
+```vue choice=Vue
 <template>
   <img :src v-bind="otherAttrs" />
 </template>
@@ -261,10 +256,8 @@ config({
 })
 </script>
 ```
-:::
 
-:::Choice{#Solid}
-```tsx
+```tsx choice=Solid
 import { Head } from 'vike-solid/Head'
 
 function Image({ src, author }: { src: string, author: string }) {
@@ -288,7 +281,6 @@ function Image({ src, author }: { src: string, author: string }) {
   )
 }
 ```
-:::
 
 ## Only HTML
 
