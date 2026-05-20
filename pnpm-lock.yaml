@@ -840,8 +840,8 @@ importers:
         specifier: ^0.4.17
         version: 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.15)
       '@universal-middleware/node':
-        specifier: ^0.1.0
-        version: 0.1.0(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.15)
+        specifier: ^0.2.0
+        version: 0.2.0(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.15)
       cac:
         specifier: ^6.0.0
         version: 6.7.14
@@ -4897,9 +4897,6 @@ packages:
 
   '@universal-middleware/hono@0.4.21':
     resolution: {integrity: sha512-HvzvJ/4DIbj8z/OWzirZZGBhWbv/w/UTNUMLKt35U3wVUJRPDZVRm3SzJR55jQfoN4MBD6DvAT5jKFjdZzsPQg==}
-
-  '@universal-middleware/node@0.1.0':
-    resolution: {integrity: sha512-I03mkOhw0Ka28MtALkpoGJYE8YYSJxmq/iambaqKGXxlFXgLI/VXlw0LmX9iansUzbolNq4hWFMfHyNp2xb4jA==}
 
   '@universal-middleware/node@0.2.0':
     resolution: {integrity: sha512-Q7ppCHGYw0wtlF5oW5pDaIimDbnSvbPGWcseXsRWDUvzqM1fI0B6G1r43+Bv7qgCKigj580JKjs+eR3GgzCBrw==}
@@ -11043,20 +11040,6 @@ snapshots:
       - srvx
 
   '@universal-middleware/hono@0.4.21(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.15)':
-    dependencies:
-      '@universal-middleware/core': 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.15)
-    transitivePeerDependencies:
-      - '@cloudflare/workers-types'
-      - '@hattip/core'
-      - '@types/express'
-      - '@webroute/route'
-      - elysia
-      - fastify
-      - h3
-      - hono
-      - srvx
-
-  '@universal-middleware/node@0.1.0(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.15)':
     dependencies:
       '@universal-middleware/core': 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.15)
     transitivePeerDependencies:
