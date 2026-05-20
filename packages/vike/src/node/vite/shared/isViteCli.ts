@@ -1,8 +1,8 @@
 export { isViteCli }
 // TODO: rename export names
+export { getViteCliArgs }
 export { getViteBuildCliArgs }
 export { getViteCliCommand }
-export { getViteCliArgs }
 
 import { assert } from '../../../utils/assert.js'
 import { isObject } from '../../../utils/isObject.js'
