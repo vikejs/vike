@@ -301,9 +301,7 @@ You can compress all server responses by using the [compress universal middlewar
 npm i @universal-middleware/compress
 ```
 
-{/* TODO/after-merge: code block for each server */ }
-
-```ts
+```ts choice=Hono
 // +server.ts
 
 import { Hono } from 'hono'
@@ -312,10 +310,71 @@ import compress from '@universal-middleware/compress' // [!code ++]
 
 const app = new Hono()
 vike(app) // [!code --]
-// Add universal middlewares here (same for Express.js, Fastify, ...) // [!code ++]
 vike(app, [compress()]) // [!code ++]
 ```
 
+```ts choice=Express.js
+// +server.ts
+
+import express from 'express'
+import vike, { toFetchHandler } from '@vikejs/express'
+import compress from '@universal-middleware/compress' // [!code ++]
+
+const app = express()
+vike(app) // [!code --]
+vike(app, [compress()]) // [!code ++]
+```
+
+```ts choice=Fastify
+// +server.ts
+
+import fastify from 'fastify'
+import vike, { toFetchHandler } from '@vikejs/fastify'
+import compress from '@universal-middleware/compress' // [!code ++]
+
+const app = fastify()
+await vike(app) // [!code --]
+await vike(app, [compress()]) // [!code ++]
+```
+
+```ts choice=H3
+// +server.ts
+
+import { createApp, toWebHandler } from 'h3'
+import vike from '@vikejs/h3'
+import compress from '@universal-middleware/compress' // [!code ++]
+
+const app = createApp()
+vike(app) // [!code --]
+vike(app, [compress()]) // [!code ++]
+```
+
+```ts choice=Elysia
+// +server.ts
+
+import { Elysia } from 'elysia'
+import vike from '@vikejs/elysia'
+import compress from '@universal-middleware/compress' // [!code ++]
+
+const app = new Elysia()
+vike(app) // [!code --]
+vike(app, [compress()]) // [!code ++]
+```
+
+```ts choice=Other
+// +server.ts
+
+import vike from 'vike/fetch'
+import compress from '@universal-middleware/compress' // [!code ++]
+
+export default {
+  fetch(request) {
+    // TODO: how to add `compress` here? // [!code ++]
+    console.log('Incoming request:', request.url)
+    return vike.fetch(request)
+  }
+} satisfies Server
+```
 
 ## See also
 
