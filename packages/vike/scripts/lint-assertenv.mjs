@@ -22,6 +22,8 @@ import { dirname, join } from 'node:path'
 // =============================================================================
 
 const WHITELIST_PATTERNS = [
+  'src/node/licenseKey/validateLicenseKey.ts',
+
   // Build-time code
   'src/node/prerender/**',
 
