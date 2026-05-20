@@ -287,11 +287,12 @@ async function assertViteRoot2(
 function assertViteRoot(rootResolvedEarly: string, config: ResolvedConfig) {
   const rootResolved = config.root
   const rootGlobal = globalObject.root
-  if (rootGlobal)
-    assert(normalizeViteRoot(rootGlobal) === normalizeViteRoot(rootResolvedEarly), {
+  if (rootGlobal && normalizeViteRoot(rootGlobal) !== normalizeViteRoot(rootResolvedEarly)) {
+    assert(false, {
       rootResolved,
       rootGlobal,
       rootResolvedEarly,
     })
+  }
   assertUsage(normalizeViteRoot(rootResolvedEarly) === normalizeViteRoot(rootResolved), errMsg)
 }
