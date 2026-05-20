@@ -22,7 +22,7 @@ import { toPosixPath } from '../../utils/path.js'
 import pc from '@brillout/picocolors'
 import { getEnvVarObject } from '../vite/shared/getEnvVarObject.js'
 import { getVikeApiOperation, isVikeCliOrApi } from '../../shared-server-node/api-context.js'
-import { getViteCommandFromCli, getRootAndConfigFileFromViteCli } from '../vite/shared/isViteCli.js'
+import { getViteCommandFromCli, getViteCliArgs } from '../vite/shared/isViteCli.js'
 import type { Config } from '../../types/index.js'
 import './assertEnvApiDevAndProd.js'
 
@@ -101,7 +101,7 @@ async function getViteInfo(viteContext: ViteContext) {
   // Resolve Vite CLI args (when invoked via Vite's CLI rather than Vike's API).
   // Without this, Vike loads vite.config.js blind to `vite [root]` / `-c <file>` and
   // ends up with the wrong root when those CLI args are used.
-  const viteCliArgs = getRootAndConfigFileFromViteCli()
+  const viteCliArgs = getViteCliArgs()
   if (viteCliArgs) {
     const fromCli: InlineConfig = {}
     if (viteCliArgs.root !== undefined) fromCli.root = viteCliArgs.root
@@ -287,6 +287,11 @@ async function assertViteRoot2(
 function assertViteRoot(rootResolvedEarly: string, config: ResolvedConfig) {
   const rootResolved = config.root
   const rootGlobal = globalObject.root
-  if (rootGlobal) assert(normalizeViteRoot(rootGlobal) === normalizeViteRoot(rootResolvedEarly), { rootResolved, rootGlobal, rootResolvedEarly });
+  if (rootGlobal)
+    assert(normalizeViteRoot(rootGlobal) === normalizeViteRoot(rootResolvedEarly), {
+      rootResolved,
+      rootGlobal,
+      rootResolvedEarly,
+    })
   assertUsage(normalizeViteRoot(rootResolvedEarly) === normalizeViteRoot(rootResolved), errMsg)
 }
