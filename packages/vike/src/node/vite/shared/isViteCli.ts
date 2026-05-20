@@ -1,6 +1,6 @@
 export { isViteCli }
 // TODO: rename export names
-export { getViteConfigForBuildFromCli }
+export { getViteBuildCliArgs }
 export { getViteCliCommand }
 export { getViteCliArgs }
 
@@ -60,7 +60,7 @@ function getViteCliCommand(): ViteCommand | null {
   return command
 }
 
-function getViteConfigForBuildFromCli(): null | ConfigFromCli {
+function getViteBuildCliArgs(): null | ConfigFromCli {
   if (!isViteCli()) return null
 
   // Copied & adapted from Vite

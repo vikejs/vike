@@ -8,7 +8,7 @@ import { onSetupBuild } from '../../../../utils/assertSetup.js'
 import { getGlobalObject } from '../../../../utils/getGlobalObject.js'
 import { isPrerenderAutoRunEnabled, wasPrerenderRun } from '../../../prerender/context.js'
 import type { VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
-import { isViteCli, getViteConfigForBuildFromCli } from '../../shared/isViteCli.js'
+import { isViteCli, getViteBuildCliArgs } from '../../shared/isViteCli.js'
 import pc from '@brillout/picocolors'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { isVikeCliOrApi } from '../../../../shared-server-node/api-context.js'
@@ -145,7 +145,7 @@ async function triggerPrerendering(config: ResolvedConfig, viteEnv: Environment,
 
 async function abortViteBuildSsr() {
   const vikeConfig = await getVikeConfigInternal()
-  if (vikeConfig.config.disableAutoFullBuild !== true && isViteCli() && getViteConfigForBuildFromCli()?.build.ssr) {
+  if (vikeConfig.config.disableAutoFullBuild !== true && isViteCli() && getViteBuildCliArgs()?.build.ssr) {
     assertWarning(
       false,
       `The CLI call ${pc.cyan('$ vite build --ssr')} is superfluous since ${pc.cyan(
@@ -174,7 +174,7 @@ function isPrerenderForceExit(): boolean {
 }
 
 function getFullBuildInlineConfig(config: ResolvedConfig): InlineConfig {
-  const configFromCli = !isViteCli() ? null : getViteConfigForBuildFromCli()
+  const configFromCli = !isViteCli() ? null : getViteBuildCliArgs()
   if (config._viteConfigFromUserResolved) {
     return config._viteConfigFromUserResolved
   } else {
