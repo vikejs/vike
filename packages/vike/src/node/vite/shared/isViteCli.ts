@@ -1,8 +1,7 @@
 export { isViteCli }
-// TODO: rename export names
-export { getViteConfigForBuildFromCli }
-export { getViteCommandFromCli }
 export { getViteCliArgs }
+export { getViteBuildCliArgs }
+export { getViteCliCommand }
 
 import { assert } from '../../../utils/assert.js'
 import { isObject } from '../../../utils/isObject.js'
@@ -21,7 +20,7 @@ type ConfigFromCli = { root: undefined | string; configFile: undefined | string 
   }
 
 type ViteCommand = 'dev' | 'build' | 'optimize' | 'preview'
-function getViteCommandFromCli(): ViteCommand | null {
+function getViteCliCommand(): ViteCommand | null {
   if (!isViteCli()) return null
 
   let command: ViteCommand | undefined
@@ -60,7 +59,7 @@ function getViteCommandFromCli(): ViteCommand | null {
   return command
 }
 
-function getViteConfigForBuildFromCli(): null | ConfigFromCli {
+function getViteBuildCliArgs(): null | ConfigFromCli {
   if (!isViteCli()) return null
 
   // Copied & adapted from Vite
