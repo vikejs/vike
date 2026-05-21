@@ -365,13 +365,15 @@ vike(app, [compress()]) // [!code ++]
 // +server.ts
 
 import vike from 'vike/fetch'
-import compress from '@universal-middleware/compress' // [!code ++]
+import compressMiddleware from '@universal-middleware/compress' // [!code ++]
+
+const compress = compressMiddleware({/* options */}) // [!code ++]
 
 export default {
-  fetch(request) {
-    // TODO: how to add `compress` here? // [!code ++]
+  async fetch(request) {
     console.log('Incoming request:', request.url)
-    return vike.fetch(request)
+    const res = await vike.fetch(request)
+    return compress(res) // [!code ++]
   }
 } satisfies Server
 ```
