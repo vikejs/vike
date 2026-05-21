@@ -4907,8 +4907,8 @@ packages:
   '@universal-middleware/sirv@0.1.26':
     resolution: {integrity: sha512-NkcW13KnqMGLUarrvZq6p2H0x9ux50cVldrmqhI/o70NLeLaEaKA9zg1q6sJed0dsZ6gZr4JcJfB3Zfs90yuGg==}
 
-  '@universal-middleware/srvx@0.1.2':
-    resolution: {integrity: sha512-9wae91aI+GD43IJEbf1Wbk/R0H2+zsh1dMbaWb1QDm83wd0yLWO3AiarcUaHDGJDweDPSlKBLOoPkI317EDSVw==}
+  '@universal-middleware/srvx@0.1.3':
+    resolution: {integrity: sha512-R45DiS878ez4xxP6Q9lSWK96RfjQ9OiDpgXLLwp2IQTf4W9d4Mx12NKPegyIPJG6ucGDJx+KWnq84tOtXRK8nQ==}
 
   '@universal-middleware/vercel@0.4.32':
     resolution: {integrity: sha512-dvtMnmpoqZkqQ4cRocqwx+tW5Ep6eIPaFG1owctv9ZKlBz33PCq0eIDoGx7nYndjwYmzGkqjBh1e+zxrUOjZgg==}
@@ -10064,7 +10064,7 @@ snapshots:
   '@photonjs/srvx@0.1.13(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.15)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))':
     dependencies:
       '@photonjs/core': 0.1.22(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.15)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
-      '@universal-middleware/srvx': 0.1.2(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.15)
+      '@universal-middleware/srvx': 0.1.3(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.15)
     optionalDependencies:
       srvx: 0.11.15
       vite: 7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)
@@ -11089,7 +11089,7 @@ snapshots:
       mrmime: 2.0.1
       totalist: 3.0.1
 
-  '@universal-middleware/srvx@0.1.2(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.15)':
+  '@universal-middleware/srvx@0.1.3(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.15)':
     dependencies:
       '@universal-middleware/core': 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.15)
     transitivePeerDependencies:
