@@ -13,6 +13,7 @@ updates:
       - dependency-name: "@photonjs/*"
       - dependency-name: "@universal-middleware/*"
       - dependency-name: "@universal-deploy/*"
+      - dependency-name: "@vikejs/*"
       - dependency-name: "react-streaming"
       - dependency-name: "telefunc"
       - dependency-name: "vike-*"
