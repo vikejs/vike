@@ -49,7 +49,7 @@ const config = {
   },
   choices: {
     server: {
-      choices: ['Hono', 'Express.js', 'Fastify', 'H3', 'Elysia', 'Other'],
+      choices: ['Hono', 'Express', 'Fastify', 'H3', 'Elysia', 'Other'],
       default: 'Hono',
     },
     uiFramework: {

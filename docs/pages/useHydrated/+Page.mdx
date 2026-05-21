@@ -11,8 +11,7 @@ The `useHydrated()` hook returns whether the page has already been <Link href="/
 
 <Tabs choice={'uiFramework'} />
 
-:::Choice{#React}
-```tsx
+```tsx choice=React
 import { useHydrated } from 'vike-react/useHydrated'
 
 function SomeComponent() {
@@ -24,14 +23,10 @@ function SomeComponent() {
   )
 }
 ```
-:::
 
-:::Choice{#Vue}
-```vue
+```vue choice=Vue
 <template>
-  <button type="button" :disabled="!hydrated" @click="doSomething">
-    Click me
-  </button>
+  <button type="button" :disabled="!hydrated" @click="doSomething">Click me</button>
 </template>
 
 <script setup lang="ts">
@@ -39,10 +34,8 @@ import { useHydrated } from 'vike-vue/useHydrated'
 const hydrated = useHydrated()
 </script>
 ```
-:::
 
-:::Choice{#Solid}
-```tsx
+```tsx choice=Solid
 import { useHydrated } from 'vike-solid/useHydrated'
 
 function SomeComponent() {
@@ -54,7 +47,6 @@ function SomeComponent() {
   )
 }
 ```
-:::
 
 On the server, it always returns `false`. On the client, it returns `false` on first render and `true` after hydration completes.
 

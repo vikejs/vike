@@ -18,7 +18,7 @@ Define `+server.js` to integrate a server:
 
 <Tabs choice={'server'} />
 
-:::Choice{id='Express.js'}
+:::Choice{#Express}
 <DeprecatedServer name="Express.js" />
 :::
 
@@ -34,7 +34,7 @@ If Vike doesn't have an adapter for you server, or if you aren't using any serve
 npm i hono @vikejs/hono
 ```
 
-```shell choice=Express.js
+```shell choice=Express
 npm i express @vikejs/express
 ```
 
@@ -65,7 +65,7 @@ export default {
 } satisfies Server
 ```
 
-```ts file-added choice=Express.js
+```ts file-added choice=Express
 // +server.ts
 
 import express from 'express'
@@ -313,7 +313,7 @@ vike(app) // [!code --]
 vike(app, [compress()]) // [!code ++]
 ```
 
-```ts choice=Express.js
+```ts choice=Express
 // +server.ts
 
 import express from 'express'
