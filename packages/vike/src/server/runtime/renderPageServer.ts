@@ -402,8 +402,8 @@ async function renderPageServerEntryWithMiddlewares(
 
   const request =
     pageContext._reqWeb ??
-    (pageContext._reqDev
-      ? requestAdapter(pageContext._reqDev)
+    (pageContext._nodeDev
+      ? requestAdapter(pageContext._nodeDev.req, pageContext._nodeDev.res)
       : new Request(new URL(pageContext.urlOriginal, 'http://localhost').toString(), {
           headers: pageContext.headers ?? {},
         }))

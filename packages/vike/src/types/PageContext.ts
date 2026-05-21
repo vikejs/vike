@@ -1,5 +1,5 @@
 // Public usage
-import type { IncomingMessage } from 'node:http'
+import type { IncomingMessage, ServerResponse } from 'node:http'
 
 export type { PageContext }
 export type { PageContextServer }
@@ -186,7 +186,13 @@ type PageContextInit = {
   url?: string
 }
 
-type PageContextInitInternal = PageContextInit & { _reqDev?: IncomingMessage; _reqWeb?: Request }
+type PageContextInitInternal = PageContextInit & {
+  _nodeDev?: {
+    req: IncomingMessage
+    res: ServerResponse
+  }
+  _reqWeb?: Request
+}
 
 type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
   PageContextInit &
