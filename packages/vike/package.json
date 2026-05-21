@@ -135,7 +135,7 @@
     "@universal-deploy/store": "^0.2.1",
     "@universal-deploy/vite": "^0.1.9",
     "@universal-middleware/core": "^0.4.17",
-    "@universal-middleware/node": "^0.1.0",
+    "@universal-middleware/node": "^0.2.0",
     "cac": "^6.0.0",
     "convert-route": "^1.1.1",
     "es-module-lexer": "^1.0.0",
