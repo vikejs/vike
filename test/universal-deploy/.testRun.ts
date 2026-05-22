@@ -1,6 +1,6 @@
 export { testRun }
 
-import { page, test, expect, getServerUrl, autoRetry, fetchHtml } from '@brillout/test-e2e'
+import { page, test, expect, getServerUrl, autoRetry, fetchHtml, sleep } from '@brillout/test-e2e'
 import { testRunClassic } from '../../test/utils'
 
 function testRun(...args: Parameters<typeof testRunClassic>) {
@@ -31,6 +31,8 @@ function testRun(...args: Parameters<typeof testRunClassic>) {
     await autoRetry(async () => {
       expect(await page.textContent('body')).toContain('Buy bananas')
     })
+    // avoid race condition of server closing too quickly
+    await sleep(100)
   })
 }
 
