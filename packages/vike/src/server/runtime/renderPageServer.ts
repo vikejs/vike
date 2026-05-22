@@ -403,7 +403,6 @@ async function renderPageServerEntryWithMiddlewares(
   const request =
     pageContext._reqWeb ??
     (pageContext._nodeDev
-      // @ts-expect-error TODO: fix
       ? requestAdapter(pageContext._nodeDev.req, pageContext._nodeDev.res)
       : new Request(new URL(pageContext.urlOriginal, 'http://localhost').toString(), {
           headers: pageContext.headers ?? {},
