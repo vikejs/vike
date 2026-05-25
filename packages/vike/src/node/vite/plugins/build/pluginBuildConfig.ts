@@ -9,6 +9,7 @@ import { assertImportIsNpmPackage } from '../../../../utils/parseNpmPackage.js'
 import { removeFileExtension } from '../../../../utils/removeFileExtension.js'
 import { requireResolveDistFile } from '../../../../utils/requireResolve.js'
 import { unique } from '../../../../utils/unique.js'
+import { objectMap } from '../../../../utils/objectMap.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { findPageFiles } from '../../shared/findPageFiles.js'
 import type { ResolvedConfig, Plugin } from 'vite'
@@ -17,7 +18,8 @@ import type { PageConfigBuildTime } from '../../../../types/PageConfig.js'
 import type { FileType } from '../../../../shared-server-client/getPageFiles/fileTypes.js'
 import { extractAssetsAddQuery } from '../../../../shared-server-node/extractAssetsQuery.js'
 import { prependEntriesDir } from '../../../../shared-server-node/prependEntriesDir.js'
-import { getFilePathResolved } from '../../shared/getFilePath.js'
+import { getFilePathResolved, getFilePathUnresolved } from '../../shared/getFilePath.js'
+import type { FilePath } from '../../../../types/FilePath.js'
 import { getConfigValueBuildTime } from '../../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
 import { isViteServerSide_viteEnvOptional } from '../../shared/isViteServerSide.js'
 import {
@@ -88,7 +90,7 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
       hasServerRouting = true
     }
     const entries: Record<string, string> = {
-      ...clientEntries,
+      ...objectMap(clientEntries, (clientEntry) => clientEntry.entryTarget),
       ...pageFileEntries,
     }
     const clientRoutingEntry = requireResolveDistFile('dist/client/runtime-client-routing/entry.js')
@@ -110,10 +112,11 @@ function getPageEntries(pageConfigs: PageConfigBuildTime[]) {
   })
   return pageEntries
 }
+type ClientEntry = { entryTarget: string; entryFilePath: null | FilePath }
 function analyzeClientEntries(pageConfigs: PageConfigBuildTime[], config: ResolvedConfig) {
   let hasClientRouting = false
   let hasServerRouting = false
-  let clientEntries: Record<string, string> = {}
+  let clientEntries: Record<string, ClientEntry> = {}
   let clientEntryList: string[] = []
   pageConfigs.forEach((pageConfig) => {
     const configValue = getConfigValueBuildTime(pageConfig, 'clientRouting', 'boolean')
@@ -124,8 +127,8 @@ function analyzeClientEntries(pageConfigs: PageConfigBuildTime[], config: Resolv
     }
     {
       // Ensure Rollup generates a bundle per page: https://github.com/vikejs/vike/issues/349#issuecomment-1166247275
-      const { entryName, entryTarget } = getEntryFromPageConfig(pageConfig, true)
-      clientEntries[entryName] = entryTarget
+      const { entryName, entryTarget, entryFilePath } = getEntryFromPageConfig(pageConfig, true)
+      clientEntries[entryName] = { entryTarget, entryFilePath }
     }
     {
       const clientEntry = getConfigValueBuildTime(pageConfig, 'client', 'string')?.value ?? null
@@ -136,8 +139,8 @@ function analyzeClientEntries(pageConfigs: PageConfigBuildTime[], config: Resolv
   })
   clientEntryList = unique(clientEntryList)
   clientEntryList.forEach((clientEntry) => {
-    const { entryName, entryTarget } = getEntryFromClientEntry(clientEntry, config)
-    clientEntries[entryName] = entryTarget
+    const { entryName, entryTarget, entryFilePath } = getEntryFromClientEntry(clientEntry, config)
+    clientEntries[entryName] = { entryTarget, entryFilePath }
   })
 
   return { hasClientRouting, hasServerRouting, clientEntries }
@@ -171,7 +174,8 @@ function getEntryFromClientEntry(clientEntry: string, config: ResolvedConfig, ad
     assertImportIsNpmPackage(clientEntry)
     const entryTarget = clientEntry
     const entryName = prependEntriesDir(clientEntry)
-    return { entryName, entryTarget }
+    const entryFilePath = getFilePathUnresolved({ importPathAbsolute: clientEntry })
+    return { entryName, entryTarget, entryFilePath }
   }
 
   const filePathAbsoluteUserRootDir = clientEntry
@@ -189,7 +193,7 @@ function getEntryFromClientEntry(clientEntry: string, config: ResolvedConfig, ad
   entryName = removeFileExtension(entryName)
   entryName = prependEntriesDir(entryName)
 
-  return { entryName, entryTarget }
+  return { entryName, entryTarget, entryFilePath: filePath }
 }
 function getEntryFromPageConfig(pageConfig: PageConfigBuildTime, isForClientSide: boolean) {
   let { pageId } = pageConfig
@@ -203,7 +207,7 @@ function getEntryFromPageConfig(pageConfig: PageConfigBuildTime, isForClientSide
   if (entryName === '/') entryName = 'root'
   entryName = prependEntriesDir(entryName)
   assert(!entryName.endsWith('/'))
-  return { entryName, entryTarget }
+  return { entryName, entryTarget, entryFilePath: null }
 }
 
 function addLogHook() {
