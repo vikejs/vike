@@ -7,10 +7,11 @@ import type { VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.
 import { assert } from '../../../../utils/assert.js'
 import '../../assertEnvVite.js'
 
-function getServerConfig(vikeConfig: VikeConfigInternal) {
+async function getServerConfig(vikeConfig: VikeConfigInternal) {
   let serverEntryId: string
   let serverFilePath: string | null = null
   let serverEntryVike: string
+  let isServerEntry: boolean = false
   // universal-deploy support must be manually enabled
   const serverConfig: boolean =
     // +config.js > `export default { server: true }`
@@ -24,8 +25,10 @@ function getServerConfig(vikeConfig: VikeConfigInternal) {
     assert('filePathAbsoluteFilesystem' in serverPlusFile.definedAt)
     serverFilePath = serverPlusFile.definedAt.filePathAbsoluteFilesystem
     assert(serverFilePath)
-    serverEntryId = serverFilePath
-    serverEntryVike = serverFilePath
+    // +server.js > `export default { entry: './server/entrypoint.ts' }`
+    let { entry } = await import(serverFilePath)
+    serverEntryVike = serverEntryId = entry ?? serverFilePath
+    isServerEntry = !!entry
   } else {
     serverEntryId = catchAllEntry
     serverEntryVike = 'vike/fetch'
@@ -39,6 +42,7 @@ function getServerConfig(vikeConfig: VikeConfigInternal) {
     // It either points to the default fetchable endpoint (vike/fetch), or one defined by the user through +server.
     serverEntryVike,
     serverFilePath,
+    isServerEntry,
   }
 }
 

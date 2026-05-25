@@ -16,10 +16,10 @@ import { unique } from '../../../utils/unique.js'
 import { assertUsage } from '../../../utils/assert.js'
 import '../assertEnvVite.js'
 
-function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
+async function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Promise<Plugin[]> {
   if (hasVikeServerOrVikePhoton(vikeConfig)) return []
 
-  const serverConfig = getServerConfig(vikeConfig)
+  const serverConfig = await getServerConfig(vikeConfig)
   if (!serverConfig)
     return [
       resolveTargets((targets) => {
@@ -28,10 +28,10 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
         assertUsage(target === undefined, `${target} requires +server — see https://vike.dev/server`)
       }),
     ]
-  const { serverEntryVike, serverEntryId, serverFilePath } = serverConfig
+  const { serverEntryVike, serverEntryId, serverFilePath, isServerEntry } = serverConfig
 
   return [
-    ...universalDeploy(),
+    ...universalDeploy({ entry: isServerEntry ? serverEntryVike : undefined }),
     {
       name: 'vike:pluginUniversalDeploy:entries',
       config() {
