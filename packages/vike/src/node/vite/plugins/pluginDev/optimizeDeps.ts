@@ -13,6 +13,7 @@ import { isVirtualFileId } from '../../../../utils/virtualFileId.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { analyzeClientEntries } from '../build/pluginBuildConfig.js'
 import type { DefinedAtFilePath, PageConfigBuildTime } from '../../../../types/PageConfig.js'
+import type { FilePath } from '../../../../types/FilePath.js'
 import {
   virtualFileIdGlobalEntryClientCR,
   virtualFileIdGlobalEntryClientSR,
@@ -176,6 +177,13 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
       includeServer.push(e)
     }
   }
+  const addEntryOrInclude = (filePath: FilePath, isForClientSide: boolean, definedAt?: DefinedAtFilePath) => {
+    if (filePath.filePathAbsoluteUserRootDir !== null) {
+      addEntry(filePath.filePathAbsoluteFilesystem, isForClientSide, definedAt)
+    } else {
+      addInclude(filePath.importPathAbsolute, isForClientSide, definedAt)
+    }
+  }
   const isExcluded = (e: string, isForClientSide: boolean, definedAt?: DefinedAtFilePath) => {
     const exclude = isForClientSide ? config.optimizeDeps.exclude : config.ssr.optimizeDeps.exclude
     if (!exclude) return false
@@ -204,21 +212,7 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
 
             if (definedAt.definedBy) return
 
-            if (definedAt.filePathAbsoluteUserRootDir !== null) {
-              addEntry(
-                // optimizeDeps.entries expects filesystem absolute paths
-                definedAt.filePathAbsoluteFilesystem,
-                isForClientSide,
-                definedAt,
-              )
-            } else {
-              addInclude(
-                // optimizeDeps.include expects npm packages
-                definedAt.importPathAbsolute,
-                isForClientSide,
-                definedAt,
-              )
-            }
+            addEntryOrInclude(definedAt, isForClientSide, definedAt)
           })
         })
       })
@@ -243,7 +237,14 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
   //     - If we do, then we need to adjust include/entries (maybe by making include === entries -> will Vite complain?)
   {
     const { hasClientRouting, hasServerRouting, clientEntries } = analyzeClientEntries(pageConfigs, config)
-    Object.values(clientEntries).forEach((e) => addEntry(e, true))
+    Object.values(clientEntries).forEach(({ entryTarget, entryFilePath }) => {
+      if (entryFilePath) {
+        addEntryOrInclude(entryFilePath, true)
+      } else {
+        // Page-entry virtual IDs have no file path.
+        addEntry(entryTarget, true)
+      }
+    })
     if (hasClientRouting) addEntry(virtualFileIdGlobalEntryClientCR, true)
     if (hasServerRouting) addEntry(virtualFileIdGlobalEntryClientSR, true)
   }
