@@ -25,6 +25,7 @@ const globalObject = getGlobalObject('build/pluginBuildApp.ts', {
 
 function pluginBuildApp(): Plugin[] {
   let config: ResolvedConfig
+  let skipBuildApp = false
   return [
     {
       name: 'vike:build:pluginBuildApp:pre',
@@ -37,10 +38,14 @@ function pluginBuildApp(): Plugin[] {
             builder: {
               // Can be overridden by another plugin e.g vike-vercel https://github.com/vikejs/vike/pull/2184#issuecomment-2659425195
               async buildApp(builder) {
+                if (skipBuildApp) return
+                skipBuildApp = true
                 assert(builder.environments.client)
                 assert(builder.environments.ssr)
                 await builder.build(builder.environments.client)
                 await builder.build(builder.environments.ssr)
+
+                await builder.buildApp()
 
                 if (isPrerenderForceExit()) {
                   runPrerender_forceExit()
