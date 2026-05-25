@@ -32,7 +32,10 @@ async function runPrerenderFromCLIPrerenderCommand(): Promise<void> {
   runPrerender_forceExit()
   assert(false)
 }
-async function runPrerenderFromAutoRun(viteConfig: InlineConfig | undefined): Promise<{ forceExit: boolean }> {
+async function runPrerenderFromAutoRun(
+  viteConfig: InlineConfig | undefined,
+  isServerConfig: boolean,
+): Promise<{ forceExit: boolean }> {
   try {
     await runPrerender({ viteConfig }, 'auto-run')
   } catch (err) {
@@ -40,7 +43,7 @@ async function runPrerenderFromAutoRun(viteConfig: InlineConfig | undefined): Pr
     logErrorServer(err, null)
     process.exit(1)
   }
-  const forceExit = isVikeCli() || isViteCli()
+  const forceExit = !isServerConfig && (isVikeCli() || isViteCli())
   return { forceExit }
 }
 

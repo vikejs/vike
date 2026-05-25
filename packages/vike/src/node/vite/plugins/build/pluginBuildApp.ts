@@ -17,6 +17,7 @@ import { isViteServerSide_onlySsrEnv } from '../../shared/isViteServerSide.js'
 import { runPrerenderFromAutoRun } from '../../../prerender/runPrerenderEntry.js'
 import { getManifestFilePathRelative } from '../../shared/getManifestFilePathRelative.js'
 import { logErrorServer } from '../../../../server/runtime/logErrorServer.js'
+import { getServerConfig } from '../pluginUniversalDeploy/getServerConfig.js'
 import '../../assertEnvVite.js'
 
 const globalObject = getGlobalObject('build/pluginBuildApp.ts', {
@@ -138,7 +139,8 @@ async function triggerPrerendering(config: ResolvedConfig, viteEnv: Environment,
   if (!(await isPrerenderAutoRunEnabled(vikeConfig))) return
 
   const configInline = getFullBuildInlineConfig(config)
-  const res = await runPrerenderFromAutoRun(configInline)
+  const isServerConfig = !!getServerConfig(vikeConfig)
+  const res = await runPrerenderFromAutoRun(configInline, isServerConfig)
   globalObject.forceExit = res.forceExit
   assert(wasPrerenderRun())
 }
