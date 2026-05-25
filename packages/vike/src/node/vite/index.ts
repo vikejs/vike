@@ -77,7 +77,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): Promise<Plug
       ...pluginStaticReplace(vikeConfig),
       ...pluginNonRunnabeDev(),
       ...pluginStripPointerImportAttribute(),
-      ...pluginUniversalDeploy(vikeConfig),
+      ...(await pluginUniversalDeploy(vikeConfig)),
       ...(await pluginViteConfigVikeExtensions(vikeConfig)),
     ]
     Object.assign(plugin, pluginAddendum)
