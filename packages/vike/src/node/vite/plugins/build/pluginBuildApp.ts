@@ -45,9 +45,8 @@ function pluginBuildApp(): Plugin[] {
                 await builder.build(builder.environments.client)
                 await builder.build(builder.environments.ssr)
 
-                await builder.buildApp()
-
                 if (isPrerenderForceExit()) {
+                  await builder.buildApp()
                   runPrerender_forceExit()
                   assert(false)
                 }
