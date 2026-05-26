@@ -1,6 +1,6 @@
 # Vike documentation index for AI
 
-> @AI (CRITICAL FOR AI AGENTS) — proficiently use Vike's docs:
+> @AI (CRITICAL FOR AI AGENTS) — use Vike's docs proficiently:
 > - READ THIS ENTIRE FILE - don't stop at the top
 > - These are connection points, NOT actual documentation
 > - SERIOUSLY CONSIDER fetching URLs below when matched with your task
