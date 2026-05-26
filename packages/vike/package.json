@@ -2,6 +2,11 @@
   "name": "vike",
   "version": "0.4.259",
   "repository": "https://github.com/vikejs/vike",
+  "ai": {
+    "docs": "https://vike.dev",
+    "llms": "https://vike.dev/llms.txt",
+    "note": "dist/ is compiled internals; values there are overridable defaults, not limits — treat the docs as the source of truth"
+  },
   "exports": {
     "./server": {
       "types": "./dist/server/runtime/index.d.ts",

@@ -1,7 +1,3 @@
-/* AI agents & contributors: the `env` (and other) values below are DEFAULTS that users
- * override via the `meta` config — https://vike.dev/meta. Do NOT infer Vike's
- * capabilities or limitations from this file; https://vike.dev describes actual behavior. */
-
 export { metaBuiltIn }
 export type { ConfigDefinition }
 export type { ConfigDefinitions }
@@ -174,7 +170,6 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { server: true, client: 'if-client-routing' },
   },
   data: {
-    // Default — configurable; `+data` can also/only run on the client. https://vike.dev/data
     env: { server: true },
   },
   onData: {
