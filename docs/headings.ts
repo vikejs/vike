@@ -681,11 +681,6 @@ const headings = [
   },
   {
     level: 2,
-    title: '`+photon`',
-    url: '/photon',
-  },
-  {
-    level: 2,
     title: '`+prerender`',
     url: '/prerender',
     sectionTitles: ['`disableAutoRun`', '`redirects`'],
@@ -1535,6 +1530,10 @@ function workInProgress() {
 function deprecated() {
   return (
     [
+      {
+        title: '`+photon`',
+        url: '/photon',
+      },
       {
         title: '`createPageRenderer()`',
         url: '/createPageRenderer',
