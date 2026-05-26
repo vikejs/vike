@@ -16,10 +16,10 @@ import { unique } from '../../../utils/unique.js'
 import { assertUsage } from '../../../utils/assert.js'
 import '../assertEnvVite.js'
 
-async function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Promise<Plugin[]> {
+function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
   if (hasVikeServerOrVikePhoton(vikeConfig)) return []
 
-  const serverConfig = await getServerConfig(vikeConfig)
+  const serverConfig = getServerConfig(vikeConfig)
   if (!serverConfig)
     return [
       resolveTargets((targets) => {

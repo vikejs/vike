@@ -8,7 +8,7 @@ import type { VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.
 import { assert } from '../../../../utils/assert.js'
 import '../../assertEnvVite.js'
 
-async function getServerConfig(vikeConfig: VikeConfigInternal) {
+function getServerConfig(vikeConfig: VikeConfigInternal) {
   let serverEntryId: string
   let serverFilePath: string | null = null
   let serverEntryVike: string
