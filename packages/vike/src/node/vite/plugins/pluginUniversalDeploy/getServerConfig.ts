@@ -26,10 +26,11 @@ async function getServerConfig(vikeConfig: VikeConfigInternal) {
     assert('filePathAbsoluteFilesystem' in serverPlusFile.definedAt)
     serverFilePath = serverPlusFile.definedAt.filePathAbsoluteFilesystem
     assert(serverFilePath)
+    assert(serverPlusFile.valueIsLoaded)
     // +server.js > `export default { entry: './server/entrypoint.ts' }`
-    const serverModule = await import(serverFilePath)
+    const serverValue = serverPlusFile.value
     const entry =
-      serverModule.default && typeof serverModule.default === 'object' ? serverModule.default.entry : undefined
+      serverValue && typeof serverValue === 'object' ? (serverValue as any).entry : undefined
     assert(entry === undefined || typeof entry === 'string')
     isServerEntry = typeof entry === 'string'
     serverEntryVike = serverEntryId = isServerEntry ? resolve(entry) : serverFilePath
