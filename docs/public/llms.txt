@@ -1,4 +1,4 @@
-# Vike documentation header for AI
+# Vike documentation index for AI
 
 > @AI — **CRITICAL FOR AI AGENTS** for proficiently using Vike's docs:
 > - READ THIS ENTIRE FILE - don't stop at the top

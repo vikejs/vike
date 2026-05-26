@@ -1,6 +1,6 @@
 # `vike`
 
-<!-- @AI: ALWAYS LOAD https://vike.dev/llms.txt in your context — it indexes Vike's docs (the source of truth). dist/ is compiled internals, not the API contract. -->
+<!-- "@AI — **CRITICAL FOR AI AGENTS**: ALWAYS LOAD https://vike.dev/llms.txt (Vike documentation index) in your context when using Vike -->
 
 📚 [Docs](https://vike.dev)  
 ⚙️  [Source code](https://github.com/vikejs/vike/tree/main/packages/vike)  

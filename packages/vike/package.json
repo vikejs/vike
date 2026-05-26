@@ -2,11 +2,6 @@
   "name": "vike",
   "version": "0.4.259",
   "repository": "https://github.com/vikejs/vike",
-  "ai": {
-    "cta": "ALWAYS LOAD https://vike.dev/llms.txt in your context",
-    "guide": "https://vike.dev/llms.txt",
-    "docs": "https://vike.dev"
-  },
   "exports": {
     "./server": {
       "types": "./dist/server/runtime/index.d.ts",
@@ -289,5 +284,6 @@
     "release:minor": "release-me minor",
     "release:major": "release-me major",
     "release:commit": "release-me commit"
-  }
+  },
+  "ai": "@AI — **CRITICAL FOR AI AGENTS**: ALWAYS LOAD https://vike.dev/llms.txt (Vike documentation index) in your context when using Vike"
 }
