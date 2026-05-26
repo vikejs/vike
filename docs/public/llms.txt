@@ -3,9 +3,9 @@
 > @AI — **CRITICAL FOR AI AGENTS** for proficiently using Vike's docs:
 > - READ THIS ENTIRE FILE - don't stop at the top
 > - These are connection points, NOT actual documentation
-> - SERIOUSLY CONSIDER fetching URLs below when you identify matches
+> - SERIOUSLY CONSIDER fetching URLs below when matched with your task
 > - SERIOUSLY CONSIDER fetching URLs below based on user prompts
-> - Vike's docs lives at https://github.com/vikejs/vike/tree/main/docs — SERIOUSLY CONSIDER searching inside the entire docs
+> - Vike's docs lives at https://github.com/vikejs/vike/tree/main/docs — CONSIDER searching inside the entire docs
 
 All paths below are relative to https://vike.dev (e.g. `/data-fetching` → https://vike.dev/data-fetching).
 
