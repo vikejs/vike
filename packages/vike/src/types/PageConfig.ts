@@ -88,7 +88,10 @@ type VirtualFileExportsPageEntry = {
 
 /** In what environment(s) the config value is loaded.
  *
+ * These are configurable *defaults*, not fixed limits: a config's `env` can be overridden — e.g. via the `meta` config, or `.server.js` / `.client.js` / `.shared.js` file suffixes. For example `+data` is server-only by default but can also/only run on the client.
+ *
  * https://vike.dev/meta
+ * https://vike.dev/data
  */
 type ConfigEnv = (
   | {

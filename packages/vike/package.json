@@ -242,6 +242,7 @@
   },
   "files": [
     "./bin.js",
+    "./AGENTS.md",
     "./dist/",
     "./abort.js",
     "./api.js",

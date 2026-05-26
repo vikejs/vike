@@ -93,6 +93,8 @@ type PageContextBuiltInCommon<Data> = PageContextConfig & {
 
   /** The page's data which was fetched using the data() hook.
    *
+   * The data() hook runs on the server by default, but its environment is configurable — it can also (or only) run on the client.
+   *
    * https://vike.dev/data
    * https://vike.dev/pageContext#data
    */
