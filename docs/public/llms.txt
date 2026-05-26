@@ -6,233 +6,335 @@
 > - MUST fetch actual pages when you identify matches
 > - MUST open relevant pages based on user prompts
 
-Vike = Vite-based full-stack framework (SSR/SSG/SPA), stack-agnostic, Next.js/Nuxt alternative. Paths below are relative to `https://vike.dev` (e.g. `/data` → `https://vike.dev/data`).
+Vike is a Vite-based framework for SSR, SSG, and SPA — flexible/unopinionated core extended by `vike-react` / `vike-vue` / `vike-solid`. Pages below are at `https://vike.dev<path>`.
 
-## Core architecture (read first)
-- `/render-modes` — SSR vs SSG (pre-render) vs SPA vs HTML-only; mix per page; chosen via where code runs
-- `/config` — `+config.js` files, cumulative config & inheritance, `.clear.js`/`.default.js`, pointer imports, global vs per-page
-- `/meta` — define/modify custom config settings & hooks; hook env (server/client/config/production); cumulative; effect
-- `/file-env` — `.server.js`/`.client.js`/`.shared.js`/`.ssr.js` suffixes control execution environment; protect secrets
-- `/file-structure` — project layout, `/pages/`, co-located `+Page`/`+Layout`/`+route`, domain-driven directories
-- `/extension-vs-custom` — `vike-react`/`vike-vue`/`vike-solid` vs manual integration; when to go custom
-- `/` — homepage / introduction
+# Core mental model
 
-## Get started
-- `/new` — scaffold new app (`npm create vike`, Bati generator), React/Vue/Solid
-- `/add` — add SSR/SSG to an existing Vite app
-- `/new/core` — scaffold without a framework extension (Vike core only)
+## Config files - https://vike.dev/config
+`+` config files, how Vike is configured, dir-based inheritance, defaults, cumulative configs, `.clear.js` / `.default.js`, global vs page config, pointer imports vs runtime code (config code isn't runtime code), groups
 
-## Framework extensions (recommended setup)
-- `/vike-react` — React: SSR/SSG, `useData`, layouts, streaming, Next.js-like DX
-- `/vike-vue` — Vue: SSR/SSG, composables, `onCreateApp`, Nuxt-like DX
-- `/vike-solid` — Solid: SSR/SSG, layouts, head tags, streaming
-- `/extensions` — what extensions are; ecosystem overview
-- `/extends` — install/compose extensions in `+config.js`
-- `/require` — declare required extension/Vike semver versions
-- `/react-setting` — `+react`: vike-react options (hydrateRoot/createRoot, render-to-string/stream, SEO strategy, error callbacks)
-- `/reactStrictMode` — `reactStrictMode`: toggle React StrictMode (vike-react)
+## https://vike.dev/pageContext
+per-request/per-page state object, built-in props (urlParsed, urlPathname, routeParams, data, headers, isHydration, isBackwardNavigation, isClientSide), custom props, access in hooks and via usePageContext(), passToClient, can-I-mutate, TypeScript narrowing, lifecycle, server vs client
 
-## Routing
-- `/routing` — overview: filesystem vs Route String vs Route Function, params, guards
-- `/filesystem-routing` — file-based URLs, ignored dirs (`pages`/`index`/`src`/`renderer`), `(groups)`, inheritance
-- `/route` — `+route` setting (string or function)
-- `/route-string` — `@param`, catch-all `*`, globs, precedence
-- `/route-function` — custom JS routing logic, precedence values, sync-only, conditional/auth routing
-- `/routing-precedence` — conflict resolution, specificity ranking
-- `/filesystemRoutingRoot` — remap a directory's filesystem path to a URL root
-- `/base-url` — `base`/`baseAssets`/`baseServer`, subdirectory hosting, CDN assets
-- `/active-links` — active-link styling via `usePageContext`
-- `/i18n` — locale routing (path/domain/header), `onBeforeRoute`, `modifyUrl`, per-locale pre-render
-- `/url-normalization` — trailing slash, duplicate-slash 301s, `disableUrlNormalization`
+## https://vike.dev/globalContext
+app-wide shared state (e.g. nav menu URL list), built-in & custom props, one per environment (server process / browser session), getGlobalContext(), pageContext.globalContext, lifecycle, TypeScript
 
-## Data fetching, pageContext & globalContext
-- `/data-fetching` — overview: `+data`, `useData`, RPC (Telefunc/tRPC), TanStack Query, GraphQL, mutations, global data
-- `/data` — `+data()` hook: server-side data loading (DB/ORM/SQL); pairs with `useData`
-- `/useData` — access `+data` result in components (typed)
-- `/onBeforeRender` — advanced data orchestration; set multiple `pageContext` values
-- `/onData` — runs after `+data`; store init; avoid hydration mismatch
-- `/pageContext` — built-in props (`urlParsed`, `routeParams`, `data`, …) + custom props; TS narrowing
-- `/usePageContext` — access `pageContext` in any component (no prop drilling)
-- `/passToClient` — serialize `pageContext`/`globalContext` to client (dot-path list)
-- `/globalContext` — app-wide shared state, pages list, runtime config
-- `/getGlobalContext` — access `globalContext` anywhere (incl. before requests)
-- `/getPageContext` — access `pageContext` fallback (Node async hooks); last resort
-- `/getPageContextClient` — client-only `pageContext` access after navigation
-- `/onCreatePageContext` — init custom props/instances when `pageContext` is created
-- `/onCreateGlobalContext` — app-wide init: global fetch, auth from cookies, store init
-- `/pageContext.json` — client-nav data requests; when triggered; perf
-- `/pageContext-manipulation` — extend `pageContext` immutably; anti-patterns
+## Custom settings & hooks - https://vike.dev/meta
+the `+meta` setting: create your own settings & hooks, change a hook's environment (server/client), examples (+sql, +title, +Layout, modify +data env); advanced
 
-## Rendering, hydration & SSR/SPA control
-- `/ssr` — `+ssr`: toggle SSR per page (SPA / client-only pages)
-- `/clientRouting` — `+clientRouting`: SPA navigation, intercept `<a>`, `data-vike=false`
-- `/client-routing` — client-side nav, state preservation, transitions, nested layouts
-- `/server-routing` — full-page-reload navigation (default), simplicity
-- `/server-routing-vs-client-routing` — tradeoffs, when to use which
-- `/streaming` — HTML/SSR streaming: `pipe`/web/node streams, `stampPipe`, edge/Node/Cloudflare
-- `/stream` — `+stream` setting (toggle/configure streaming)
-- `/Page` — `+Page` root component / page entry
-- `/Layout` — `+Layout` shared UI wrapper; nested/multiple layouts
-- `/Wrapper` — `+Wrapper` outermost wrapper for context providers (state/data/i18n)
-- `/error-page` — custom error page (`_error`): 404/401/403, `is404`, `abortReason`, prerendered `404.html`
-- `/Loading` — `<Loading>` Suspense fallback (vike-react)
-- `/ClientOnly` — render a component only on the client (avoids "window is not defined")
-- `/clientOnly-helper` — `clientOnly()` lazy client-only loader (prefer `<ClientOnly>`)
-- `/useHydrated` — false during SSR, true after hydration; conditional interactive UI
-- `/hydrationCanBeAborted` — allow aborting hydration on fast navigation
-- `/onRenderHtml` — server render glue to UI framework (custom integration)
-- `/onRenderClient` — client render/hydrate glue (custom integration)
+## Built-in hooks list - https://vike.dev/hooks
+index of all hooks with their environment (server/client/configurable): data, guard, onBeforeRender, onRenderHtml, onRenderClient, onHydrationEnd, transition/error/prerender lifecycle hooks; pointer to create-your-own
 
-## Head, SEO & HTML shell
-- `/head-tags` — overview: title/description/social image, favicon, `<Head>`, dynamic/data-driven, i18n
-- `/Head` — `+Head` custom head tags, raw HTML, favicon, OG/social meta, scripts
-- `/title` — `+title` (static or `pageContext` fn); also `og:title`
-- `/description` — `+description` meta + `og:description`
-- `/image` — `+image` social/OG/Twitter preview image
-- `/viewport` — `+viewport` meta (responsive/zoom; `null` to disable)
-- `/favicon` — `+favicon` (experimental; prefer `+Head`)
-- `/lang` — `+lang` HTML `lang` attribute (i18n/SEO)
-- `/htmlAttributes` — `<html>` attrs (dark-mode class, `lang`, …)
-- `/bodyAttributes` — `<body>` attrs
-- `/useConfig` — set head/shell settings imperatively from hooks/components (dynamic SEO from data)
-- `/head-manual` — head tags without `vike-{react,vue,solid}` (`onRenderHtml`, `escapeInject`)
-- `/headHtmlBegin` · `/headHtmlEnd` · `/bodyHtmlBegin` · `/bodyHtmlEnd` — inject raw HTML into `<head>`/`<body>` shell (portal/teleport roots; prefer `+Head`)
-- `/injectScriptsAt` — control script injection location (`HTML_BEGIN`/`HTML_END`/`STREAM`)
-- `/injectFilter` — control which preload/asset tags Vike injects
-- `/injectAssets` — auto-inject scripts/styles/preload (manual integration)
+## Built-in settings list - https://vike.dev/settings
+index of all settings, HTML shell settings, pointer to create custom settings
 
-## Lifecycle hooks
-Hooks are `+onX.js` config files; many require `vike-react`/`vue`/`solid`. Order & environments: `/hooks`.
-- `/hooks` — all hooks, execution order, environments (server/client/shared)
-- `/guard` — `+guard()` route protection/auth; runs before `+data`
-- `/onError` — server-side error tracking/logging (cumulative)
-- `/onBeforeRoute` — pre-routing: i18n/URL rewrite, locale extraction
-- `/onBeforeRenderHtml` · `/onAfterRenderHtml` — server, around Page→HTML (CSS-in-JS; HTML mutation; state dehydration)
-- `/onBeforeRenderClient` · `/onAfterRenderClient` — client, around render (state-mgmt init; post-mount/analytics)
-- `/onHydrationEnd` — once after first hydration (init analytics/listeners); Client Routing
-- `/onPageTransitionStart` · `/onPageTransitionEnd` — client-nav transition animations
-- `/client` — `+client.js`: runs once on load (analytics, error tracking, cookie consent)
-- `/clientHooks` — load client hooks per page (bundle size; HTML-only pages)
-- `/onCreateApp` — Vue-only: configure app instance / register plugins
-- `/onHookCall` — instrument every hook (tracing/perf; beta)
-- `/hooksTimeout` — per-hook warning/error timeouts
+# Getting started
 
-## Navigation & control flow
-- `/navigate` — programmatic client navigation (Client Routing)
-- `/reload` — re-render current page via client router
-- `/prefetch` — programmatically preload a page's assets
-- `/prefetchStaticAssets` — `+prefetchStaticAssets`: hover/viewport prefetch strategy
-- `/keepScrollPosition` — `+keepScrollPosition`: preserve scroll across navigation
-- `/redirect` — `throw redirect()` (302/301); auth flows; inside `guard`/`data`
-- `/render` — `throw render()`: show error page (401/403/404/…) or rewrite to another page, same URL
-- `/abort` — `throw redirect()` vs `throw render()` vs `navigate()`
-- `/modifyUrl` — build/modify URLs (mainly i18n locale)
+## Scaffold new Vike app - https://vike.dev/new
+create-vike CLI, scaffold projects (with `vike-react`/`vike-vue`/`vike-solid` or core-only), requirements (Node/Deno/Bun)
 
-## Server, API routes & JavaScript API
-- `/server` — `+server.js` entry; integrate Hono/Express/Fastify/H3/Elysia; built-in server; HMR; standalone deploy
-- `/renderPage` — SSR middleware entry: integrate Vike into any server; returns HTML/status/headers ("Vike is just middleware")
-- `/api-routes` — HTTP endpoints (GET/POST), file uploads; vs Telefunc RPC
-- `/api` — JS API: `dev()`/`build()`/`preview()`/`prerender()` for custom scripts/CLIs
-- `/cli` — Vike CLI (`dev`/`build`/`preview`/`prerender`), flags, `VIKE_CONFIG`
-- `/createDevMiddleware` — dev middleware (HMR) for custom servers
-- `/vite-plugin` — Vike's Vite plugin (configured via `+` files, no plugin options)
-- `/getVikeConfig` — read Vike config inside custom Vite plugins (build/dev)
-- `/escapeInject` — safe SSR HTML template tag; `dangerouslySkipEscape()`
-- `/host` · `/port` · `/force` · `/mode` — `+host`/`+port`/`+force`/`+mode` (aliases for Vite `--host`/`--port`/`--force`/`--mode`)
+## Add SSR/SSG to existing Vite app - https://vike.dev/add
+migrate a plain Vite app to Vike step-by-step, vite-to-vike examples (React/Vue)
 
-## Pre-rendering (SSG)
-- `/pre-rendering` — overview: build-time HTML, partial/selective, parameterized routes, SSG+SSR+SPA hybrid
-- `/prerender` — `+prerender`: `disableAutoRun`, `redirects`, `noExtraDir`, parallelism
-- `/onBeforePrerenderStart` — provide URLs for parameterized routes (build-time)
-- `/onPrerenderStart` — transform prerender list (e.g. i18n locale duplication)
+## Extensions overview - https://vike.dev/extensions
+`vike-react`/`vike-vue`/`vike-solid` (+ Svelte/Angular/server), what extensions do, extension vs manual integration
 
-## HTTP headers, env vars & security
-- `/headers` — read request headers/cookies (`pageContext.headers`)
-- `/headersResponse` — `+headersResponse`: response headers, `Set-Cookie`, cache/security (beta)
-- `/env` — env vars, `.env`, `PUBLIC_ENV__` prefix, client vs server, secrets, `import.meta.env`
-- `/csp` — `+csp`: Content Security Policy nonce, `pageContext.cspNonce`
-- `/redirects` — `+redirects`: 301 redirects, params, glob/wildcard, aliasing
+# Routing
 
-## Deployment
-Vike runs as server middleware, or as pre-rendered static output.
-- `/deploy` — overview: static vs serverless vs self-hosted
-- Static hosts: `/static-hosts` · `/github-pages` · `/netlify` · `/cloudflare-pages` (deprecated → `/cloudflare`)
-- Serverless/edge: `/cloudflare` (Workers, D1/KV/Durable Objects) · `/vercel` (ISR/edge, `vite-plugin-vercel`) · `/edgeone-pages` · `/aws-lambda` · `/netlify-functions`
-- Self-hosted: `/aws` · `/docker`
-- `/deploy-sync` — seamless deploys, hashed-asset detection, full-reload fallback
+## Routing overview - https://vike.dev/routing
+Filesystem Routing, parameterized routes (`@id`), route groups, `src/`, Route String vs Route Function, route guards, React Router / Vue Router interop
 
-## Integrations
-- `/auth` — authentication: `pageContext.user`, guards, redirects, SSR/SSG, Auth.js/Passport/Auth0
-- `/store` — state management + SSR hydration (Redux/Zustand/Pinia), `passToClient`
-- `/css-in-js` — CSS-in-JS SSR, FOUC prevention, style collection (styled-components, …)
-- `/markdown` — Markdown/MDX, frontmatter, blogs/docs
-- `/graphql` — GraphQL SSR (Apollo/Relay/urql)
-- `/error-tracking` — Sentry/Bugsnag via `+onError` and `+client.js`
-- `/integration` — third-party libs, analytics, service workers, view transitions, non-JS backends, manual server integration
+## https://vike.dev/filesystem-routing
+URL derived from file location, ignored dirs (`src/`, `index/`, `pages/`, `renderer/`), config inheritance, case sensitivity, crawling
 
-## Tool integration guides (one page per tool; index: `/tools`)
-Most are "how to use X with Vike" + example. Official `vike-*` extensions noted; otherwise community examples.
-- UI frameworks: React `/react` (`vike-react`; exp. RSC `vike-react-rsc`) · Vue `/vue` (`vike-vue`) · Solid `/solid` (`vike-solid`) · Preact `/preact` · Svelte `/svelte` · Angular `/angular` · VanJS `/vanjs`
-- Server frameworks: Express `/express` · Hono `/hono` · Fastify `/fastify` · H3 `/h3` · Nitro `/nitro` · Koa `/koa` · hapi `/hapi` · HatTip `/hattip` · Deno `/deno` · Firebase `/firebase` · Ruby on Rails `/ruby-on-rails` · Nginx `/nginx` · PM2 `/PM2`
-- Data fetching / RPC / realtime: Telefunc `/telefunc` · tRPC `/tRPC` · TanStack Query `/tanstack-query` (`vike-{react,vue,solid}-query`) · Vue Query `/vue-query` · Apollo `/apollo-graphql` (`vike-react-apollo`) · Relay `/relay` · urql `/urql` · gRPC `/grpc` · Socket.IO `/socket-io`
-- Routing libraries: React Router `/react-router` · Vue Router `/vue-router` · TanStack Router `/tanstack-router`
-- State management: Redux `/redux` · Pinia `/pinia` · Vuex `/vuex` · PullState `/pullstate` · Effector `/effector`
-- Styling / CSS: Tailwind CSS `/tailwind-css` · Panda CSS `/panda-css` · Sass/Less/Stylus `/sass` · styled-components `/styled-components` · styled-jsx `/styled-jsx` · Compiled `/compiled`
-- UI component libraries: MUI `/mui` · Ant Design `/antd` · Chakra UI `/chakra` · Mantine `/mantine` · daisyUI `/daisyui` · Vuetify `/vuetify` · PrimeReact `/primereact` · NextUI `/nextui` · Bootstrap `/bootstrap` · Grommet `/grommet` · Naive UI `/naive-ui` · Element Plus `/element-plus`
-- Auth: Auth.js `/Auth.js`
-- i18n: vue-i18n `/vue-i18n` · Lingui `/lingui`
-- Testing (note: Vike's Vite plugin is NOT loaded under these): Vitest `/vitest` (E2E via Vike JS API) · Storybook `/storybook` (target `+Page` UI components)
-- Other: Tauri `/tauri` · MDXEditor `/MDXEditor` · Payload CMS `/payload` · WSL `/wsl`
+## https://vike.dev/route-string
+Route String syntax in `+route.js`, params (`@id` → routeParams), globs, catch-all (`*`), precedence, escaping `@`
 
-## Build, performance & troubleshooting
-- `/common-issues` — troubleshooting hub (broken packages, `ssr.noExternal`, hydration mismatch)
-- `/broken-npm-package` — fix invalid-JS/CJS packages via `ssr.noExternal`; ESM/CJS errors
-- `/hints` — "window is not defined": server vs client, `.client.js`, `typeof window`
-- `/hydration-mismatch` — server/client HTML divergence; React/Vue suppressors; causes
-- `/debug` — `DEBUG=vike:*` flags, inspect dist, disable minification
-- `/client-runtimes-conflict` — both routing runtimes loaded (Rollup split misconfig)
-- `/client-runtime-duplicated` — Vike client runtime bundled twice
-- `/eject` — copy extension code into your repo for full customization
-- `/multiple-renderer` — multiple `renderer/` for per-section rendering / mixed frameworks
-- `/build-your-own-framework` — build a company framework on Vike (extensions, custom settings/CLI)
-- `/img` — image optimization (recommended libs; no built-in optimizer)
-- `/static-directory` — `public/` static assets, hashing/caching
-- `/path-aliases` — import aliases (vite.config + tsconfig + package.json)
-- `/preloading` — asset preloading, HTTP 103 Early Hints, `injectFilter`
-- `/lazy-transpiling` — on-demand per-page transpiling (dev perf at scale)
+## https://vike.dev/route-function
+programmatic routing, `resolveRoute()`, async, redirection, accessing routeParams, when to use vs guard()
 
-## Warnings & errors
-- `/warning/setup` — wrong setup (Vite/Vike plugin in prod); dev vs prod separation
-- `/warning/global-config` — don't define global configs locally
-- `/warning/version-mismatch` — don't load multiple Vike versions
-- `/warning/internals` — using Vike internals (`_`-props, `dangerouslyUseInternals`)
-- `/error/runtime-in-config` — no runtime code in `+config.js` (use pointer imports)
-- `/no-side-exports` — no side exports in `+` files (code-splitting/bundle size)
-- `/NODE_ENV` — `process.env.NODE_ENV` dev vs prod values
+## https://vike.dev/routing-precedence
+resolving route conflicts, specificity ordering (most → least specific) when multiple routes match a URL
 
-## Migration (upgrading existing Vike code)
-- `/migration` — index of breaking changes
-- `/migration/v1` — 0.4.x → 1.0.0 (types → `vike/types`, type renames)
-- `/migration/v1-design` — `.page.js` → `+config` files; `render()` → `onRenderClient`/`onRenderHtml`
-- `/why-the-v1-design` — rationale: extensibility, composable extensions, per-page framework/SSR
-- `/migration/settings` — settings from `vite.config.js` → `+config.js`
-- `/migration/hook-types` — use `PageContextServer`/`Client` instead of deprecated hook-type exports
-- `/migration/cli` — Vite CLI/JS API → Vike `dev`/`build`/`preview`; `createDevMiddleware`
-- `/migration/server` — `vike-photon` → `+server.js` (`export default fetch`)
-- `/migration/vike-photon` — `vike-server` → `vike-photon` (`@photonjs/*`)
-- `/migration/vike-cloudflare` — `vike-cloudflare` 0.1 → 0.2
-- `/migration/0.4` · `/migration/0.4.23` · `/migration/0.4.134` — version-specific breaking changes
+## +route setting - https://vike.dev/route
+point a page to its Route String or Route Function
 
-## Concepts, glossary & reference
-- `/what-is-SSR-and-SPA` — SSR vs SPA primer
-- `/SSR-vs-SPA` — SSR vs SPA tradeoffs; when to use `+ssr`
-- `/hydration` — what hydration is
-- `/ui-frameworks` — what "UI framework" means (React/Vue/Solid/Angular/Svelte/Preact)
-- `/spa` — SPA definition
-- `/RPC` — RPC definition (Telefunc/tRPC vs GraphQL/REST)
-- `/glossary` — terminology index (isomorphic, HMR, SSR/SSG/SPA)
-- `/settings` — settings reference index
-- `/license` — `+license` commercial license key (not secret; safe to commit)
-- `/versioning` — versioning policy (non-strict semver, deprecation warnings)
-- `/languages` — docs translations
-- `/faq` — support, contributing, CSS leakage, dev HTTP requests
+## Base URL - https://vike.dev/base-url
+serve site under a subpath, `base` / `baseAssets` / `baseServer`, Vite `base`, `import.meta.env.BASE_URL`, Base-URL-aware `<Link>`
+
+## Active links - https://vike.dev/active-links
+highlight the current page in navigation, custom `<Link>` using pageContext.urlPathname
+
+# Data fetching & state
+
+## Data fetching overview - https://vike.dev/data-fetching
+recommendations, initial data via `+data`/useData(), mutations & subsequent data (pagination) via RPC Telefunc/tRPC or TanStack Query, API routes, GraphQL, SSG data, global data, state management
+
+## +data() hook - https://vike.dev/data
+fetch a page's initial data, runs server-side by default (use ORM/SQL directly), configurable env (`.client.js`/`.shared.js`), error handling, paired with useData()
+
+## https://vike.dev/useData
+component hook to access the value returned by `+data`, typed; alternative pageContext.data
+
+## https://vike.dev/usePageContext
+access pageContext from any UI component, React Context / Vue provide-inject, implement without an extension
+
+## +onBeforeRender() hook - https://vike.dev/onBeforeRender
+advanced/low-level data hook, when to use vs data(), deep integration with data tools, `+meta` to change env, override
+
+## State management - https://vike.dev/store
+integrate stores (Redux, Pinia, Vuex, Zustand, ...), SSR state serialization/hydration, manual integration via +onCreatePageContext / +Wrapper
+
+## GraphQL - https://vike.dev/graphql
+manual GraphQL integration via hooks, Apollo / Relay / urql
+
+## API routes - https://vike.dev/api-routes
+Vike has no built-in API routes by design, prefer RPC (Telefunc) or `+server`, when API routes still make sense
+
+# Render control (SSR / SSG / SPA / streaming)
+
+## SSR vs SPA - https://vike.dev/SSR-vs-SPA
+choose per page, what each renders, hydration, combine with pre-rendering
+
+## https://vike.dev/pre-rendering
+pre-rendering aka SSG (render HTML at build time, `vike build`), deploy to static host, parameterized-route URLs, partial / opt-in / opt-out, dynamic condition, SSG vs SSR, SSG+SPA, SSG+SSR
+
+## +ssr setting - https://vike.dev/ssr
+enable/disable SSR globally or per page (boolean)
+
+## +stream setting - https://vike.dev/stream
+enable/disable HTML streaming, `'web'`|`'node'`, inheritance
+
+## +prerender setting - https://vike.dev/prerender
+config knobs: partial, redirects, noExtraDir, parallel, disableAutoRun, enable, keepDistServer (the guide is /pre-rendering)
+
+## +clientRouting setting - https://vike.dev/clientRouting
+Client Routing vs Server Routing, link interception, hooks, programmatic nav, state initialization, link-level settings (keep-scroll-position)
+
+## <head> tags overview - https://vike.dev/head-tags
+set document metadata via title/description/image/viewport settings or `+Head`, per-page vs global, data-driven head, i18n, markdown
+
+## +Head setting - https://vike.dev/Head
+add `<head>` tags (cumulative), inject `<script>`, raw HTML, only-HTML, vs the `<Head>` component (useConfig)
+
+## +Page setting - https://vike.dev/Page
+the page's root component (JSX/Vue), behavior set by UI-framework extension, manual integration
+
+## +Layout setting - https://vike.dev/Layout
+shared layout (header/sidebar/footer), multiple & nested layouts, layout data fetching, cumulative
+
+## +Wrapper setting - https://vike.dev/Wrapper
+wraps Page and all Layouts, used for tool integration (data fetching, state mgmt), cumulative, vs Layout
+
+## Error page - https://vike.dev/error-page
+`/pages/_error/+Page.js`, rendered on errors and `throw render(abortStatusCode)`, abortReason, pre-rendering
+
+# Lifecycle hooks
+
+## +guard() hook - https://vike.dev/guard
+protect pages from unauthorized access, async, applies to one/many pages, used with `throw render()`/`throw redirect()`, `.server`/`.client` env
+
+## +onHydrationEnd() hook - https://vike.dev/onHydrationEnd
+run code after hydration completes, requires Client Routing
+
+## +onError() hook - https://vike.dev/onError
+server-side error handler, cumulative/global, error tracking
+
+## +onHookCall() hook - https://vike.dev/onHookCall
+called on every Vike hook execution, instrumentation (Sentry/OpenTelemetry), logging (beta)
+
+## +onPageTransitionStart() hook - https://vike.dev/onPageTransitionStart
+page transition animations (with onPageTransitionEnd), requires Client Routing
+
+## +onCreatePageContext() hook - https://vike.dev/onCreatePageContext
+runs when pageContext is created (right after routing), init / computed props / store, `.server`/`.client`
+
+## +onCreateGlobalContext() hook - https://vike.dev/onCreateGlobalContext
+runs when globalContext is created, init / global data / auth / store
+
+## +onBeforePrerenderStart() hook - https://vike.dev/onBeforePrerenderStart
+provide URL list for parameterized pre-rendered routes, bulk data fetching, build-time only
+
+## +onPrerenderStart() hook - https://vike.dev/onPrerenderStart
+add/remove/modify the list of pageContext objects before pre-rendering, i18n
+
+# Control flow & utility functions
+
+## throw redirect() - https://vike.dev/redirect
+abort rendering and redirect (302 default, 301 permanent), auth flows, vs navigate() (after render) and throw render()
+
+## throw render() - https://vike.dev/render
+abort and render the error page or another URL while preserving the URL, status codes 401/403/404, abortReason, vs throw redirect()
+
+## navigate() - https://vike.dev/navigate
+programmatic client-side navigation (e.g. after form submit), options, history.pushState, vs throw redirect()
+
+## reload() - https://vike.dev/reload
+fast page reload via Client Router (vs window.location.reload), refresh on auth-cookie change
+
+## prefetch() - https://vike.dev/prefetch
+programmatically prefetch a page, requires Client Routing
+
+## renderPage() - https://vike.dev/renderPage
+manually embed Vike into any server (SSR), vs `+server.js`
+
+## escapeInject - https://vike.dev/escapeInject
+template tag to sanitize HTML (XSS) in onRenderHtml, HTML fragments, dangerouslySkipEscape
+
+## injectFilter() - https://vike.dev/injectFilter
+control where/what tags Vike injects (notably preload tags), vs injectScriptsAt
+
+## useConfig() - https://vike.dev/useConfig
+set settings (title/description/Head) from inside hooks and UI components, `<Config>`/`<Head>`, streaming, bots, call before `await`
+
+## useHydrated() - https://vike.dev/useHydrated
+whether the page is hydrated (false on server/first render), disable interactive elements until hydrated, triggers re-render
+
+## getGlobalContext() - https://vike.dev/getGlobalContext
+access globalContext anytime (e.g. at server start, before requests), assets manifest, async/sync variants
+
+## <ClientOnly> - https://vike.dev/ClientOnly
+render a component only client-side with an SSR fallback (React/Vue/Solid)
+
+## modifyUrl() - https://vike.dev/modifyUrl
+manipulate URLs, typically to extract the locale (i18n)
+
+# Integrations & guides
+
+## Authentication - https://vike.dev/auth
+any auth tool (Better Auth / Auth.js / Passport / Grant), pageContext.user, login flow, SSG, redirect & guard
+
+## Internationalization (i18n) - https://vike.dev/i18n
+locale extraction via onBeforeRoute(), localized `<Link>`, pre-rendering locales, `lang`, split locale data, modifyUrl
+
+## Environment variables - https://vike.dev/env
+`.env` files, `PUBLIC_ENV__` prefix to expose to client, secrets warning, static replacement, TypeScript, public allowlist
+
+## HTTP request headers - https://vike.dev/headers
+pageContext.headers (Vike-normalized) and pageContext.headersOriginal (response headers → /headersResponse)
+
+## File environment - https://vike.dev/file-env
+`.server.js`/`.client.js` guarantee a file's env; for `+` files `.server`/`.client`/`.shared`/`.ssr.js` modify env
+
+## Path aliases - https://vike.dev/path-aliases
+avoid relative imports, define in vite.config (resolve.alias) + tsconfig paths + package.json `#imports`
+
+## Preloading - https://vike.dev/preloading
+asset preloading & early hints, automatic `<script>`/`<link>` injection, assets manifest, injectFilter()
+
+## Static directory (public/) - https://vike.dev/static-directory
+serve static assets from `public/` (e.g. robots.txt), `dist/client/`, server static middleware
+
+## Markdown - https://vike.dev/markdown
+MDX/Markdown Vite plugins (Vue & React), frontmatter, global & page metadata, custom (eager) setting
+
+## CSS-in-JS - https://vike.dev/css-in-js
+collect styles during SSR to avoid FOUC, styled-components / Emotion / etc, onBeforeRenderHtml, without an extension
+
+## Error tracking - https://vike.dev/error-tracking
+client-side via `+client.js`, server-side via `+onError()`, Sentry & co
+
+## Common issues - https://vike.dev/common-issues
+broken npm packages (ssr.noExternal), hydration mismatch
+
+## +client.js - https://vike.dev/client
+add client-side JS (error/user tracking, cookie consent, CSS frameworks), runs first, not re-run on client-side navigation
+
+## +server - https://vike.dev/server
+integrate a server framework (Hono/Express/...) via `+server.js`, or `+server: true` built-in server, deployment, self-host, pageContext.runtime, standalone, HMR, compression
+
+## Integration guide - https://vike.dev/integration
+vanilla UI tools, analytics, component libraries, data fetching, service worker, view transitions, manual server integration, non-JavaScript backend
+
+## CLI - https://vike.dev/cli
+`vike dev`/`build`/`preview`/`prerender`, CLI options, `VIKE_CONFIG`/`VITE_CONFIG` env, JSON5
+
+## JavaScript API - https://vike.dev/api
+programmatic `dev()`/`build()`/`preview()`/`prerender()`, vikeConfig/viteConfig options, access globalContext
+
+## FAQ - https://vike.dev/faq
+getting help (Discord/GitHub), business inquiries, contributing, cryptic JS errors, CSS leaking across pages, many HTTP requests in dev
+
+# Deployment
+
+## Deployment overview - https://vike.dev/deploy
+pre-render to a static host, or run a production server
+
+## Cloudflare Workers - https://vike.dev/cloudflare
+@cloudflare/vite-plugin, `+server`, wrangler config, Cloudflare APIs, Durable Objects, extend 3MB limit, dev runtime (workerd), universal fetch()
+
+## Cloudflare Pages - https://vike.dev/cloudflare-pages
+being deprecated (prefer Workers), static/SSG hosting, manual integration
+
+## Vercel - https://vike.dev/vercel
+vite-plugin-vercel, `+server`, CLI/Git deploy, ISR, Edge, Build Output API, API routes
+
+## AWS (self-hosted) - https://vike.dev/aws
+full-stack deploy tools (SST / Flightcontrol / Argonaut), AWS Lambda
+
+## AWS Lambda - https://vike.dev/aws-lambda
+deploy to AWS Lambda (see /aws)
+
+## Netlify - https://vike.dev/netlify
+static/SSG hosting (SSR → /netlify-functions)
+
+## Netlify Functions - https://vike.dev/netlify-functions
+deploy SSR to Netlify Functions, examples
+
+## Docker - https://vike.dev/docker
+run as a Node.js container; dev HMR not working, can't access app, build out-of-memory
+
+## GitHub Pages - https://vike.dev/github-pages
+GitHub Pages Deploy Action, `.nojekyll`
+
+## Static hosts - https://vike.dev/static-hosts
+generic static hosting for pre-rendered (SSG) apps
+
+## EdgeOne Pages - https://vike.dev/edgeone-pages
+Tencent platform with SSR & HTML streaming, Vite adapter, Git/CLI deploy
+
+# Config settings (knobs)
+
+## +title - https://vike.dev/title
+set the `<title>` tag, static or dynamic (function/useConfig)
+
+## +description - https://vike.dev/description
+set `<meta name="description">` (SEO)
+
+## +image - https://vike.dev/image
+set `<meta property="og:image">` (preview image on URL sharing)
+
+## +viewport - https://vike.dev/viewport
+mobile viewport width, responsive vs zoomed-out
+
+## +htmlAttributes - https://vike.dev/htmlAttributes
+attributes on the `<html>` tag (cumulative/global; for `lang` see /lang)
+
+## +bodyAttributes - https://vike.dev/bodyAttributes
+attributes on the `<body>` tag (cumulative/global)
+
+## +redirects - https://vike.dev/redirects
+static redirect map (Record<string,string>), aliases, pre-rendering, client navigation, vs throw redirect()
+
+## +keepScrollPosition - https://vike.dev/keepScrollPosition
+prevent scroll-to-top on navigation (nested layouts/tabs), per-link override
+
+## +prefetchStaticAssets - https://vike.dev/prefetchStaticAssets
+prefetch strategy `'hover'`|`'viewport'`|`false`, per-link override, different mobile/desktop
+
+## +hooksTimeout - https://vike.dev/hooksTimeout
+configure or disable per-hook timeouts
+
+## +passToClient - https://vike.dev/passToClient
+expose pageContext/globalContext props to the client, serialization, escaping `.`
+
+## +headersResponse - https://vike.dev/headersResponse
+set HTTP response headers statically or dynamically via pageContext.headersResponse
+
+## +csp - https://vike.dev/csp
+Content Security Policy nonce, pageContext.cspNonce, random per request, PCI, default CSP header
+
+# Overview
+
+## Introduction - https://vike.dev/
+what Vike is: Vite-native full-stack framework for SSR/SSG/SPA, flexible & unopinionated ("do one thing well"), extensions ecosystem (vike-react/vue/solid)
