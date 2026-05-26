@@ -30,8 +30,8 @@ async function getServerConfig(vikeConfig: VikeConfigInternal) {
     // +server.js > `export default { entry: './server/entrypoint.ts' }`
     const serverValue = serverPlusFile.value
     const entry = serverValue && typeof serverValue === 'object' ? (serverValue as any).entry : undefined
-    assert(entry === undefined || typeof entry === 'string')
     isServerEntry = typeof entry === 'string'
+    assert(entry === undefined || isServerEntry)
     serverEntryVike = serverEntryId = isServerEntry ? resolve(entry) : serverFilePath
   } else {
     serverEntryId = catchAllEntry
