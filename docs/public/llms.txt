@@ -1,10 +1,11 @@
-# Vike docs — AI header
+# Vike documentation header for AI
 
-> **CRITICAL FOR AI AGENTS:**
+> @AI — **CRITICAL FOR AI AGENTS** for proficiently using Vike's docs:
 > - READ THIS ENTIRE FILE - don't stop at the top
 > - These are connection points, NOT actual documentation
-> - MUST fetch actual pages when you identify matches
-> - MUST open relevant pages based on user prompts
+> - SERIOUSLY CONSIDER fetching URLs below when you identify matches
+> - SERIOUSLY CONSIDER fetching URLs below based on user prompts
+> - Vike's docs lives at https://github.com/vikejs/vike/tree/main/docs — SERIOUSLY CONSIDER searching inside the entire docs
 
 Vike is a Vite-based framework for SSR, SSG, and SPA — flexible/unopinionated core extended by `vike-react` / `vike-vue` / `vike-solid`. Pages below are at `https://vike.dev<path>`.
 
@@ -29,6 +30,9 @@ index of all hooks with their environment (server/client/configurable): data, gu
 index of all settings, HTML shell settings, pointer to create custom settings
 
 # Getting started
+
+## Get started - https://vike.dev/start
+quick start & overview, pick a UI framework (React/Vue/Solid) and SSR/SSG/SPA, pointers to scaffold a new app or add Vike to an existing Vite app
 
 ## Scaffold new Vike app - https://vike.dev/new
 create-vike CLI, scaffold projects (with `vike-react`/`vike-vue`/`vike-solid` or core-only), requirements (Node/Deno/Bun)
@@ -333,8 +337,3 @@ set HTTP response headers statically or dynamically via pageContext.headersRespo
 
 ## +csp - https://vike.dev/csp
 Content Security Policy nonce, pageContext.cspNonce, random per request, PCI, default CSP header
-
-# Overview
-
-## Introduction - https://vike.dev/
-what Vike is: Vite-native full-stack framework for SSR/SSG/SPA, flexible & unopinionated ("do one thing well"), extensions ecosystem (vike-react/vue/solid)
