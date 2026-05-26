@@ -1,3 +1,3 @@
 # AGENTS.md — Vike
 
-@AI — ALWAYS LOAD https://vike.dev/llms.txt (Vike documentation index) in your context when using Vike.
+@AI (CRITICAL FOR AI AGENTS): ALWAYS LOAD https://vike.dev/llms.txt (Vike documentation index) in your context when using Vike to proficiently use Vike's docs.
