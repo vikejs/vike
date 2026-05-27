@@ -1,4 +1,4 @@
-import { RepoLink, Link, Warning } from '@brillout/docpress'
+import { Link } from '@brillout/docpress'
 import { JustAMiddleware, ConfigSpec } from '../../components'
 
 <ConfigSpec
@@ -6,20 +6,17 @@ import { JustAMiddleware, ConfigSpec } from '../../components'
   global={null}
 />
 
-The `renderPage()` function enables you to embed Vike into any server, see <Link href="/integration#server-manual-integration" doNotInferSectionTitle/>.
+The `renderPage()` function enables you to embed Vike into any server, see <Link href="/integration#server-manual-integration" doNotInferSectionTitle noBreadcrumb />.
 
-> We generally recommend using <Link href="/server">`+server.js`</Link> instead of directly using `renderPage()` yourself.
+> We generally recommend using <Link href="/server">`+server`</Link> instead of `renderPage()`.
+>
+> If you use <Link href="/server">`+server`</Link> then you don't need to call `renderPage()` yourself (`+server` already calls it).
+>
+> We recommend using `renderPage()` instead of `+server` only if you have a clear reason not to use `+server`.
 
 > You only need `renderPage()` if you use SSR, see [Optional](#optional).
 
 <JustAMiddleware noLink />
-
-## Examples
-
- - <RepoLink text='Express.js' path='/packages/create-vike-core/boilerplate-react/server/index.js' />
- - <RepoLink text='Express.js + TypeScript' path='/packages/create-vike-core/boilerplate-vue-ts/server/index.ts' />
- - <Link text="Cloudflare Workers" href="/cloudflare#manual-integration" />
- - <Link text="Vercel" href="/vercel#api-route" />
 
 
 ## Usage
@@ -105,11 +102,11 @@ The `renderPage()` function doesn't depend on Node.js and you can use `renderPag
 
 ## Optional
 
-If you <Link text="pre-render" href="/pre-rendering" /> all your pages then you don't need to use `renderPage()`, because:
+If you <Link text="pre-render" href="/pre-rendering" /> all your pages then `renderPage()` isn't needed, because:
  - Upon development (`$ vike dev`), Vike automatically embeds itself into Vite's development server.
- - Upon pre-rendering (`$ vike build`/`$ vike prerender`), Vike automatically renders all your pages.
+ - Upon pre-rendering (`$ vike build`/`$ vike prerender`), Vike renders your pages without server.
 
-But, if you use Server-Side Rendering (SSR) and you don't pre-render *all* your pages, then you need a production server and you need to use `renderPage()` in order to embed Vike into your server. See <Link href="/pre-rendering"/>.
+But, if you use Server-Side Rendering (SSR), then you need a production server and `renderPage()` is required. See <Link href="/pre-rendering"/>.
 
 ## See also
 
