@@ -713,11 +713,6 @@ const headings = [
   },
   {
     level: 2,
-    title: '`+clientRouting`',
-    url: '/clientRouting',
-  },
-  {
-    level: 2,
     title: '`+meta`',
     url: '/meta',
     sectionTitles: [
@@ -1448,6 +1443,10 @@ function api() {
       {
         title: '`+onAfterRenderHtml()` hook',
         url: '/onAfterRenderHtml',
+      },
+      {
+        title: '`+clientRouting`',
+        url: '/clientRouting',
       },
       {
         title: '`clientHooks`',
