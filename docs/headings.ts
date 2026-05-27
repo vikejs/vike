@@ -244,6 +244,11 @@ const headings = [
   },
   {
     level: 2,
+    title: 'Self-host',
+    url: '/self-host',
+  },
+  {
+    level: 2,
     title: 'Docker',
     url: '/docker',
   },
@@ -283,6 +288,12 @@ const headings = [
     url: '/aws',
   },
   {
+    level: 2,
+    title: 'Managed Hosts',
+    titleInNav: '... more',
+    url: '/managed-hosts',
+  },
+  {
     level: 4,
     title: 'Static hosts',
   },
@@ -301,16 +312,6 @@ const headings = [
     title: 'Static Hosts',
     titleInNav: '... more',
     url: '/static-hosts',
-  },
-  {
-    level: 4,
-    title: 'Other',
-  },
-  {
-    level: 2,
-    title: 'Deploy',
-    titleInNav: 'Other deployment',
-    url: '/deploy',
   },
   {
     level: 1,

@@ -1,0 +1,23 @@
+import { Link } from '@brillout/docpress'
+
+To [self-host](https://en.wikipedia.org/wiki/Self-hosting_(network)) your app:
+1. Define <Link href="/server#get-started">`+server.js`</Link> with your favorite server (Hono, Express, ...), or <Link href="/server#server-true">set `+server` to `true`</Link> to use Vike's built-in lightweight server.
+1. Build your app for production:
+   ```shell
+   $ vike build
+   ```
+   > This generates a `dist/` folder that you typically upload to your production server.
+1. Start your app in your production server:
+   ```shell
+   $ node ./dist/server/index.mjs # or Bun/Deno
+   ```
+
+We generally recommend using `+server`, but instead of `+server` you can also <Link href="/integration#server-manual-integration">manually integrate a server via `renderPage()`</Link>.
+
+## See also
+
+- <Link href="/managed-hosts" />
+- <Link href="/static-hosts" />
+- <Link href="/server" />
+- <Link href="/integration#server-manual-integration" />
+- <Link href="/renderPage" />
