@@ -10,6 +10,7 @@ type RedirectsURL = RemoveHash<(typeof redirects)[keyof typeof redirects]>
 checkType<HeadingsURL>(0 as any as RedirectsURL)
 
 const redirects = {
+  '/aws-lambda': '/aws',
   '/common-problems': '/common-issues',
   '/data-tools': '/data-fetching#page-data-with-tools',
   '/https': '/server#https',

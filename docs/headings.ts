@@ -240,32 +240,16 @@ const headings = [
   },
   {
     level: 4,
-    title: 'Static hosts',
+    title: 'Self-host',
   },
   {
     level: 2,
-    title: 'GitHub Pages',
-    url: '/github-pages',
-  },
-  {
-    level: 2,
-    title: 'Netlify',
-    url: '/netlify',
-  },
-  {
-    level: 2,
-    title: 'Cloudflare Pages',
-    url: '/cloudflare-pages',
-  },
-  {
-    level: 2,
-    title: 'Static Hosts',
-    titleInNav: '... more',
-    url: '/static-hosts',
+    title: 'Docker',
+    url: '/docker',
   },
   {
     level: 4,
-    title: 'Full-stack (serverless)',
+    title: 'Managed',
   },
   {
     level: 2,
@@ -280,13 +264,8 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Vercel',
-    url: '/vercel',
-  },
-  {
-    level: 2,
-    title: 'AWS Lambda',
-    url: '/aws-lambda',
+    title: 'Netlify',
+    url: '/netlify',
   },
   {
     level: 2,
@@ -294,8 +273,9 @@ const headings = [
     url: '/netlify-functions',
   },
   {
-    level: 4,
-    title: 'Full-stack (self-hosted)',
+    level: 2,
+    title: 'Vercel',
+    url: '/vercel',
   },
   {
     level: 2,
@@ -303,9 +283,24 @@ const headings = [
     url: '/aws',
   },
   {
+    level: 4,
+    title: 'Static hosts',
+  },
+  {
     level: 2,
-    title: 'Docker',
-    url: '/docker',
+    title: 'GitHub Pages',
+    url: '/github-pages',
+  },
+  {
+    level: 2,
+    title: 'Cloudflare Pages',
+    url: '/cloudflare-pages',
+  },
+  {
+    level: 2,
+    title: 'Static Hosts',
+    titleInNav: '... more',
+    url: '/static-hosts',
   },
   {
     level: 4,
