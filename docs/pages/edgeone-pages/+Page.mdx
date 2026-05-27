@@ -1,5 +1,5 @@
-import { StaticHostDocIntro, StaticHostDocOutro, StaticHostDocStrategies } from '../../components/static-host'
 import { Link } from '@brillout/docpress'
+import { ServerStep } from '../../components'
 
 [EdgeOne Pages](https://pages.edgeone.ai/) is a deployment platform developed by [Tencent](https://en.wikipedia.org/wiki/Tencent). It supports server capabilities such as <Link href="/ssr">SSR</Link> and <Link href="/stream">HTML streaming</Link>, as well as fully <Link href="/pre-rendering">static websites</Link>.
 
@@ -8,7 +8,11 @@ See also: [EdgeOne Pages > Vike](https://pages.edgeone.ai/document/framework-vik
 
 ## Get started
 
-### 1. Install
+### 1. Set `+server`
+
+<ServerStep />
+
+### 2. Install
 
 Install the EdgeOne Vite adapter:
 
@@ -32,7 +36,7 @@ export default {
 
 > The build command remains `$ vike build`.
 
-### 2. Deploy
+### 3. Deploy
 
 #### Git Connection Deployment
 

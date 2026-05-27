@@ -1,7 +1,8 @@
 import { Link } from '@brillout/docpress'
+import { ServerStep } from '../../components'
 
 To [self-host](https://en.wikipedia.org/wiki/Self-hosting_(network)) your app:
-1. Define <Link href="/server#get-started">`+server.js`</Link> with your favorite server (Hono, Express, ...), or <Link href="/server#server-true">set `+server` to `true`</Link> to use Vike's built-in lightweight server.
+1. <ServerStep />
 1. Build your app for production:
    ```shell
    $ vike build

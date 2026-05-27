@@ -274,11 +274,6 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Netlify Functions',
-    url: '/netlify-functions',
-  },
-  {
-    level: 2,
     title: 'Vercel',
     url: '/vercel',
   },
