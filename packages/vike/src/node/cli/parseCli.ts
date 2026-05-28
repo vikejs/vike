@@ -50,9 +50,13 @@ function getCliOptions() {
   const commitIfDefinedWithoutValue = () => {
     if (configNameCurrent) commit(true)
   }
-  const commit = (val: unknown) => {
+  const commitWithValue = (configValueStr: string) => {
     assert(configNameCurrent)
-    cliOptions[configNameCurrent] = val
+    commit(parseJson5(configValueStr, `CLI option --${configNameCurrent}`))
+  }
+  const commit = (configValue: unknown) => {
+    assert(configNameCurrent)
+    cliOptions[configNameCurrent] = configValue
     configNameCurrent = undefined
   }
 
@@ -60,10 +64,18 @@ function getCliOptions() {
     showHelpOrVersion(arg)
     if (arg.startsWith('--')) {
       commitIfDefinedWithoutValue()
-      configNameCurrent = arg.slice('--'.length)
+      const rest = arg.slice('--'.length)
+      const eqIdx = rest.indexOf('=')
+      if (eqIdx === -1) {
+        configNameCurrent = rest
+      } else {
+        configNameCurrent = rest.slice(0, eqIdx)
+        const configValue = rest.slice(eqIdx + 1)
+        commitWithValue(configValue)
+      }
     } else {
       if (!configNameCurrent) wrongUsage(`Unknown option ${pc.bold(arg)}`)
-      commit(parseJson5(arg, `CLI option --${configNameCurrent}`))
+      commitWithValue(arg)
     }
   }
   commitIfDefinedWithoutValue()
