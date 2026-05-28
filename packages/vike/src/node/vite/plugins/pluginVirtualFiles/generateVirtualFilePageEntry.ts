@@ -33,7 +33,7 @@ async function generateVirtualFilePageEntry(id: string, isDev: boolean): Promise
     assert(pageConfig)
   } else {
     if (!pageConfig) {
-      // Happens very seldomly and can't reproduce reliably. Some kind of HMR race condition? It still happens as of June 2026 with Cloudflare Workers in developement — but it isn't blocking, reloading the page fixes the issue.
+      // Happens very seldom and can't reproduce reliably. Some kind of HMR race condition? It still happens as of June 2026 with Cloudflare Workers in development — but it isn't blocking, reloading the page fixes the issue.
       throw getProjectError(`Outdated request. Try again. ${getDebugInfoStr({ id, pageId })}`)
     }
   }
