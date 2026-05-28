@@ -38,7 +38,25 @@ export default {
 
 > The build command remains `$ vike build`.
 
-{/* TODO: add `### 3. Deploy` section like EdgeOne https://vike.dev/edgeone-pages */}
+### 3. Deploy
+
+#### Git Connection Deployment
+
+Push your project to [GitHub](http://github.com), [GitLab](https://gitlab.com), or [Bitbucket](https://bitbucket.org), then [connect it to Netlify](https://docs.netlify.com/start/add-new-project/#import-from-an-existing-repository).
+
+#### CLI Deployment
+
+Install the [Netlify CLI](https://docs.netlify.com/api-and-cli-guides/cli-guides/get-started-with-cli/):
+
+```shell
+npm install -g netlify-cli
+```
+
+Then [deploy](https://cli.netlify.com/commands/deploy/):
+
+```shell
+netlify deploy --prod
+```
 
 
 ## Manual integration
