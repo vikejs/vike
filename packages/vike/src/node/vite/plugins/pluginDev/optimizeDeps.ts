@@ -241,10 +241,15 @@ async function getPageDeps(
   }
 
   // Add virtual files.
-  // - This doesn't work: Vite's dep optimizer doesn't seem to be able to crawl virtual files.
-  //   - Should we make it work? E.g. by creating a temporary file at node_modules/.vike/virtualFiles.js
-  //   - Or should we remove it? And make sure getPageDeps() also works for aliased import paths
-  //     - If we do, then we need to adjust include/entries (maybe by making include === entries -> will Vite complain?)
+  // - Vite 8+ (Rolldown-based dep scanner) crawls virtual IDs natively — its scanner routes
+  //   through `environment.pluginContainer.resolveId()`, so Vike's resolveId/load handlers
+  //   run during the scan and the virtual file's transitive deps are seen.
+  // - Vite ≤7 (esbuild-based dep scanner) cannot crawl virtual IDs — those virtuals' deps
+  //   surface lazily and trigger "✨ new dependencies optimized" reload cycles. As a
+  //   workaround we could materialize each virtual to a real file under
+  //   `node_modules/.vike/optimizeDeps-virtuals/`; an implementation lives in the reverted
+  //   commit https://github.com/vikejs/vike/commit/b068009c3 (re-apply if Vite ≤7 support
+  //   matters).
   {
     const { hasClientRouting, hasServerRouting, clientEntries } = analyzeClientEntries(pageConfigs, config)
     Object.values(clientEntries).forEach(({ entryTarget, entryFilePath }) => {
