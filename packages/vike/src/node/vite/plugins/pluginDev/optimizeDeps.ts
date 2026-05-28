@@ -135,14 +135,20 @@ async function resolveOptimizeDeps(config: ResolvedConfig) {
     env.optimizeDeps.entries = remove(env.optimizeDeps.entries ?? [])
   }
 
+  // Mirror SSR env entries back to the legacy `config.ssr.optimizeDeps.entries` slot — when
+  // a plugin sets it as a string (e.g. @cloudflare/vite-plugin via normalizePath(workerConfig.main)),
+  // `add()` allocates a new array that replaces only `env.optimizeDeps.entries`, leaving the
+  // legacy slot stale.
+  if (config.environments.ssr?.optimizeDeps.entries) {
+    // @ts-ignore Vite doesn't seem to support ssr.optimizeDeps.entries (vite@7.0.6, July 2025)
+    config.ssr.optimizeDeps.entries = config.environments.ssr.optimizeDeps.entries
+  }
+
   // Debug
   if (debug.isActivated) {
     // Sanity-check that the legacy `config.optimizeDeps` and `config.ssr.optimizeDeps` slots
     // stay in sync with the corresponding environment values — so logging only the env
-    // values isn't hiding anything. We don't assert SSR `entries`: when a plugin (e.g.
-    // @cloudflare/vite-plugin) sets it as a string, our `add()` allocates a new array which
-    // replaces only `env.optimizeDeps.entries`, leaving the legacy slot at the original
-    // string. Vite no longer reads `ssr.optimizeDeps.entries` anyway.
+    // values isn't hiding anything.
     const client = config.environments.client?.optimizeDeps
     assert(client)
     assert(deepEqual(config.optimizeDeps.entries, client.entries))
@@ -150,6 +156,8 @@ async function resolveOptimizeDeps(config: ResolvedConfig) {
     assert(deepEqual(config.optimizeDeps.exclude, client.exclude))
     const ssr = config.environments.ssr?.optimizeDeps
     assert(ssr)
+    // @ts-ignore Vite doesn't seem to support ssr.optimizeDeps.entries (vite@7.0.6, July 2025)
+    assert(deepEqual(config.ssr.optimizeDeps.entries, ssr.entries))
     assert(deepEqual(config.ssr.optimizeDeps.include, ssr.include))
     assert(deepEqual(config.ssr.optimizeDeps.exclude, ssr.exclude))
     const envs: Record<string, unknown> = {}
