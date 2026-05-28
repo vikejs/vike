@@ -327,7 +327,7 @@ async function resolveVikeConfigInternal(
   // Backwards compatibility for vike(options) in vite.config.js
   temp_interopVikeVitePlugin(pageConfigGlobal, vikeVitePluginOptions, userRootDir)
 
-  setCliAndApiOptions(pageConfigGlobal, configDefinitionsResolved)
+  setCliAndApiOptions(pageConfigGlobal, pageConfigs, configDefinitionsResolved)
 
   const globalConfigPublic = resolveGlobalConfig(pageConfigGlobal, pageConfigs)
 
@@ -681,6 +681,7 @@ function temp_interopVikeVitePlugin(
 }
 function setCliAndApiOptions(
   pageConfigGlobal: PageConfigGlobalBuildTime,
+  pageConfigs: PageConfigBuildTime[],
   configDefinitionsResolved: ConfigDefinitionsResolved,
 ) {
   // Vike API — passed options [lowest precedence]
@@ -709,15 +710,26 @@ function setCliAndApiOptions(
       const sourceName = `The ${getDefinedByString(definedBy, configName)}` as const
       const isUnknown = isUnknownConfig(
         configName,
-        configDefinitionsResolved.configNamesKnownGlobal,
+        configDefinitionsResolved.configNamesKnownAll,
         configDefinitionsResolved,
         '/' as LocationId,
         false,
         sourceName,
       )
       if (isUnknown) return
-      const sources = (pageConfigGlobal.configValueSources[configName] ??= [])
-      sources.unshift(getSourceNonConfigFile(configName, value, definedBy, pageConfigGlobal.configDefinitions))
+      if (configName in pageConfigGlobal.configDefinitions) {
+        const sources = (pageConfigGlobal.configValueSources[configName] ??= [])
+        const source = getSourceNonConfigFile(configName, value, definedBy, pageConfigGlobal.configDefinitions)
+        sources.unshift(source)
+        return
+      }
+      // Non-global config: inject into every page config that knows about it (highest precedence)
+      pageConfigs.forEach((pageConfig) => {
+        if (!(configName in pageConfig.configDefinitions)) return
+        const sources = (pageConfig.configValueSources[configName] ??= [])
+        const source = getSourceNonConfigFile(configName, value, definedBy, pageConfig.configDefinitions)
+        sources.unshift(source)
+      })
     })
   }
 }
