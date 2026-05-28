@@ -28,7 +28,7 @@ let viteServer: Awaited<ReturnType<typeof dev>>['viteServer']
 beforeAll(async () => {
   const { viteServer } = await dev({ viteConfig })
   await viteServer.listen()
-  await sleep(10) // avoid race condition of server not actually being ready
+  await sleep(100) // avoid race condition of server not actually being ready
 }, 10 * 1000)
 
 afterAll(async () => {
