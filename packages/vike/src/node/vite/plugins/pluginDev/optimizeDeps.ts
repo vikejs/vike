@@ -12,7 +12,7 @@ import { requireResolveOptional } from '../../../../utils/requireResolve.js'
 import { isVirtualFileId } from '../../../../utils/virtualFileId.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { analyzeClientEntries } from '../build/pluginBuildConfig.js'
-import type { DefinedAtFilePath, PageConfigBuildTime } from '../../../../types/PageConfig.js'
+import type { DefinedAtFilePath, PageConfigBuildTime, PageConfigGlobalBuildTime } from '../../../../types/PageConfig.js'
 import type { FilePath } from '../../../../types/FilePath.js'
 import {
   virtualFileIdGlobalEntryClientCR,
@@ -82,10 +82,14 @@ const optimizeDeps = {
 // - Make server environments inherit from ssr.optimizeDeps (it isn't the case by default)
 async function resolveOptimizeDeps(config: ResolvedConfig) {
   const vikeConfig = await getVikeConfigInternal()
-  const { _pageConfigs: pageConfigs } = vikeConfig
+  const { _pageConfigs: pageConfigs, _pageConfigGlobal: pageConfigGlobal } = vikeConfig
 
   // Retrieve user's + files (i.e. Vike entries)
-  const { entriesClient, entriesServer, includeClient, includeServer } = await getPageDeps(config, pageConfigs)
+  const { entriesClient, entriesServer, includeClient, includeServer } = await getPageDeps(
+    config,
+    pageConfigs,
+    pageConfigGlobal,
+  )
 
   // Add late discovered dependencies, if they exist
   LATE_DISCOVERED.forEach((dep) => {
@@ -131,7 +135,14 @@ async function resolveOptimizeDeps(config: ResolvedConfig) {
   }
 
   // Debug
-  if (debug.isActivated)
+  if (debug.isActivated) {
+    const envs: Record<string, unknown> = {}
+    for (const envName in config.environments) {
+      const env = config.environments[envName]!
+      envs[`config.environments.${envName}.optimizeDeps.entries`] = env.optimizeDeps.entries
+      envs[`config.environments.${envName}.optimizeDeps.include`] = env.optimizeDeps.include
+      envs[`config.environments.${envName}.optimizeDeps.exclude`] = env.optimizeDeps.exclude
+    }
     debug('optimizeDeps', {
       'config.optimizeDeps.entries': config.optimizeDeps.entries,
       'config.optimizeDeps.include': config.optimizeDeps.include,
@@ -140,10 +151,16 @@ async function resolveOptimizeDeps(config: ResolvedConfig) {
       'config.ssr.optimizeDeps.entries': config.ssr.optimizeDeps.entries,
       'config.ssr.optimizeDeps.include': config.ssr.optimizeDeps.include,
       'config.ssr.optimizeDeps.exclude': config.ssr.optimizeDeps.exclude,
+      ...envs,
     })
+  }
 }
 
-async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildTime[]) {
+async function getPageDeps(
+  config: ResolvedConfig,
+  pageConfigs: PageConfigBuildTime[],
+  pageConfigGlobal: PageConfigGlobalBuildTime,
+) {
   let entriesClient: string[] = []
   let entriesServer: string[] = []
   let includeClient: string[] = []
@@ -195,9 +212,13 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
   }
 
   // V1 design
+  // Iterate per-page configs AND global configs (e.g. +server, +middleware, +onError) so that
+  // entries reachable from +server.ts (Hono/Telefunc/Sentry/etc.) get scanned upfront —
+  // otherwise they're discovered lazily and trigger "✨ new dependencies optimized" + reload.
   {
+    const allPageConfigs: (PageConfigBuildTime | PageConfigGlobalBuildTime)[] = [...pageConfigs, pageConfigGlobal]
     ;[true, false].forEach((isForClientSide) => {
-      pageConfigs.forEach((pageConfig) => {
+      allPageConfigs.forEach((pageConfig) => {
         Object.entries(pageConfig.configValueSources).forEach(([configName]) => {
           const runtimeEnv = {
             isForClientSide,
