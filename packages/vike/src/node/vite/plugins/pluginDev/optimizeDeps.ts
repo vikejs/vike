@@ -137,7 +137,6 @@ async function resolveOptimizeDeps(config: ResolvedConfig) {
 
   // Debug
   if (debug.isActivated) {
-    assertEnvsInSyncWithLegacy(config)
     const envs: Record<string, unknown> = {}
     for (const envName in config.environments) {
       const env = config.environments[envName]!
@@ -146,6 +145,7 @@ async function resolveOptimizeDeps(config: ResolvedConfig) {
       envs[`config.environments.${envName}.optimizeDeps.exclude`] = env.optimizeDeps.exclude
     }
     debug('optimizeDeps', envs)
+    assertEnvsInSyncWithLegacy(config)
   }
 }
 
