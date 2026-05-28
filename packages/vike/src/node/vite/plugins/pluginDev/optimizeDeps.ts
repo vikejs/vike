@@ -5,6 +5,7 @@ import type { ResolvedConfig, UserConfig } from 'vite'
 import { findPageFiles } from '../../shared/findPageFiles.js'
 import { assert } from '../../../../utils/assert.js'
 import { createDebug } from '../../../../utils/debug.js'
+import { deepEqual } from '../../../../utils/deepEqual.js'
 import { isArray } from '../../../../utils/isArray.js'
 import { isFilePathAbsoluteFilesystem } from '../../../../utils/isFilePathAbsoluteFilesystem.js'
 import { assertImportIsNpmPackage, getNpmPackageName } from '../../../../utils/parseNpmPackage.js'
@@ -136,6 +137,21 @@ async function resolveOptimizeDeps(config: ResolvedConfig) {
 
   // Debug
   if (debug.isActivated) {
+    // Sanity-check that the legacy `config.optimizeDeps` and `config.ssr.optimizeDeps` slots
+    // stay in sync with the corresponding environment values — so logging only the env
+    // values isn't hiding anything. We don't assert `entries`: Vike writes server entries
+    // only to `env.optimizeDeps.entries` (Vite no longer reads `ssr.optimizeDeps.entries`),
+    // so the legacy SSR slot stays at whatever the user/plugins set initially.
+    const client = config.environments.client?.optimizeDeps
+    if (client) {
+      assert(deepEqual(config.optimizeDeps.include, client.include))
+      assert(deepEqual(config.optimizeDeps.exclude, client.exclude))
+    }
+    const ssr = config.environments.ssr?.optimizeDeps
+    if (ssr) {
+      assert(deepEqual(config.ssr.optimizeDeps.include, ssr.include))
+      assert(deepEqual(config.ssr.optimizeDeps.exclude, ssr.exclude))
+    }
     const envs: Record<string, unknown> = {}
     for (const envName in config.environments) {
       const env = config.environments[envName]!
@@ -143,18 +159,7 @@ async function resolveOptimizeDeps(config: ResolvedConfig) {
       envs[`config.environments.${envName}.optimizeDeps.include`] = env.optimizeDeps.include
       envs[`config.environments.${envName}.optimizeDeps.exclude`] = env.optimizeDeps.exclude
     }
-    debug('optimizeDeps', {
-      // TODO/ai dedupe from here...
-      'config.optimizeDeps.entries': config.optimizeDeps.entries,
-      'config.optimizeDeps.include': config.optimizeDeps.include,
-      'config.optimizeDeps.exclude': config.optimizeDeps.exclude,
-      // @ts-ignore Vite doesn't seem to support ssr.optimizeDeps.entries (vite@7.0.6, July 2025)
-      'config.ssr.optimizeDeps.entries': config.ssr.optimizeDeps.entries,
-      'config.ssr.optimizeDeps.include': config.ssr.optimizeDeps.include,
-      'config.ssr.optimizeDeps.exclude': config.ssr.optimizeDeps.exclude,
-      // ...to here — instead assert(deeepEqual()) the values with envName === client and envName === ssr
-      ...envs,
-    })
+    debug('optimizeDeps', envs)
   }
 }
 
