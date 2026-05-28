@@ -144,6 +144,7 @@ async function resolveOptimizeDeps(config: ResolvedConfig) {
       envs[`config.environments.${envName}.optimizeDeps.exclude`] = env.optimizeDeps.exclude
     }
     debug('optimizeDeps', {
+      // TODO/ai dedupe from here...
       'config.optimizeDeps.entries': config.optimizeDeps.entries,
       'config.optimizeDeps.include': config.optimizeDeps.include,
       'config.optimizeDeps.exclude': config.optimizeDeps.exclude,
@@ -151,6 +152,7 @@ async function resolveOptimizeDeps(config: ResolvedConfig) {
       'config.ssr.optimizeDeps.entries': config.ssr.optimizeDeps.entries,
       'config.ssr.optimizeDeps.include': config.ssr.optimizeDeps.include,
       'config.ssr.optimizeDeps.exclude': config.ssr.optimizeDeps.exclude,
+      // ...to here — instead assert(deeepEqual()) the values with envName === client and envName === ssr
       ...envs,
     })
   }
