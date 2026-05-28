@@ -1362,13 +1362,21 @@ function assertKnownConfig(
 
   const configNameColored = pc.cyan(configName)
 
+  // Unknown configs set via +config files are errors; via CLI/env/API/Vite-plugin they're warnings.
+  const fail = (msg: string): void => {
+    if (isPlusFile) {
+      assertUsage(false, msg, { exitOnError })
+    } else {
+      assertWarning(false, msg, { onlyOnce: true })
+    }
+  }
+
   // Inheritance issue: config is known but isn't defined at `locationId`
   if (configNamesKnownAll.includes(configName)) {
-    assertUsage(
-      false,
+    fail(
       `${sourceName} sets the value of the config ${configNameColored} which is a custom config that is defined with ${pc.underline('https://vike.dev/meta')} at a path that doesn't apply to ${locationId} — see ${pc.underline('https://vike.dev/config#inheritance')}` as const,
-      { exitOnError },
     )
+    return
   }
 
   const errMsg = isPlusFile
@@ -1397,7 +1405,8 @@ function assertKnownConfig(
       )
       const errMsgEnhanced =
         `${errMsg}. If you want to use the configuration ${configNameColored} documented at ${pc.underline(`https://vike.dev/${configName}`)} then make sure to install ${requiredVikeExtension}. (Alternatively, you can define ${configNameColored} yourself by using ${pc.cyan('meta')}, see ${pc.underline('https://vike.dev/meta')} for more information.)` as const
-      assertUsage(false, errMsgEnhanced, { exitOnError })
+      fail(errMsgEnhanced)
+      return
     }
   }
 
@@ -1416,10 +1425,11 @@ function assertKnownConfig(
         'P',
       )} because it defines a UI component: a ubiquitous JavaScript convention is that the name of UI components start with a capital letter.)` as const
     }
-    assertUsage(false, errMsgEnhanced, { exitOnError })
+    fail(errMsgEnhanced)
+    return
   }
 
-  assertUsage(false, errMsg, { exitOnError })
+  fail(errMsg)
 }
 
 function determineRouteFilesystem(locationId: LocationId, configValueSources: ConfigValueSources): PageConfigRoute {
