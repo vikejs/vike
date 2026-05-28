@@ -719,14 +719,16 @@ function setCliAndApiOptions(
       if (isUnknown) return
       if (configName in pageConfigGlobal.configDefinitions) {
         const sources = (pageConfigGlobal.configValueSources[configName] ??= [])
-        sources.unshift(getSourceNonConfigFile(configName, value, definedBy, pageConfigGlobal.configDefinitions))
+        const source = getSourceNonConfigFile(configName, value, definedBy, pageConfigGlobal.configDefinitions)
+        sources.unshift(source)
         return
       }
       // Non-global config: inject into every page config that knows about it (highest precedence)
       pageConfigs.forEach((pageConfig) => {
         if (!(configName in pageConfig.configDefinitions)) return
         const sources = (pageConfig.configValueSources[configName] ??= [])
-        sources.unshift(getSourceNonConfigFile(configName, value, definedBy, pageConfig.configDefinitions))
+        const source = getSourceNonConfigFile(configName, value, definedBy, pageConfig.configDefinitions)
+        sources.unshift(source)
       })
     })
   }
