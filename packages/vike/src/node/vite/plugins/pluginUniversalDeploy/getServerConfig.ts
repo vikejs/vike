@@ -1,7 +1,7 @@
 export { getServerConfig }
 export { isUniversalDeployVitePreview }
 
-import { resolve } from 'node:path'
+import { dirname, resolve } from 'node:path'
 import type { ResolvedConfig } from 'vite'
 import { catchAllEntry } from '@universal-deploy/store'
 import type { VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
@@ -33,7 +33,7 @@ function getServerConfig(vikeConfig: VikeConfigInternal) {
         : undefined
     isServerEntry = typeof entry === 'string'
     assert(entry === undefined || isServerEntry)
-    serverEntryVike = serverEntryId = isServerEntry ? resolve(entry) : serverFilePath
+    serverEntryVike = serverEntryId = isServerEntry ? resolve(dirname(entry)) : serverFilePath
   } else {
     serverEntryId = catchAllEntry
     serverEntryVike = 'vike/fetch'
