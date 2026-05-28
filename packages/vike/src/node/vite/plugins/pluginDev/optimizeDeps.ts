@@ -212,13 +212,9 @@ async function getPageDeps(
   }
 
   // V1 design
-  // Iterate per-page configs AND global configs (e.g. +server, +middleware, +onError) so that
-  // entries reachable from +server.ts (Hono/Telefunc/Sentry/etc.) get scanned upfront —
-  // otherwise they're discovered lazily and trigger "✨ new dependencies optimized" + reload.
   {
-    const allPageConfigs: (PageConfigBuildTime | PageConfigGlobalBuildTime)[] = [...pageConfigs, pageConfigGlobal]
     ;[true, false].forEach((isForClientSide) => {
-      allPageConfigs.forEach((pageConfig) => {
+      ;[...pageConfigs, pageConfigGlobal].forEach((pageConfig) => {
         Object.entries(pageConfig.configValueSources).forEach(([configName]) => {
           const runtimeEnv = {
             isForClientSide,
