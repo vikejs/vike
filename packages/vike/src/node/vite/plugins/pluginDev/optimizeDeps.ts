@@ -139,19 +139,19 @@ async function resolveOptimizeDeps(config: ResolvedConfig) {
   if (debug.isActivated) {
     // Sanity-check that the legacy `config.optimizeDeps` and `config.ssr.optimizeDeps` slots
     // stay in sync with the corresponding environment values — so logging only the env
-    // values isn't hiding anything. We don't assert `entries`: Vike writes server entries
-    // only to `env.optimizeDeps.entries` (Vite no longer reads `ssr.optimizeDeps.entries`),
-    // so the legacy SSR slot stays at whatever the user/plugins set initially.
+    // values isn't hiding anything. We don't assert SSR `entries`: when a plugin (e.g.
+    // @cloudflare/vite-plugin) sets it as a string, our `add()` allocates a new array which
+    // replaces only `env.optimizeDeps.entries`, leaving the legacy slot at the original
+    // string. Vite no longer reads `ssr.optimizeDeps.entries` anyway.
     const client = config.environments.client?.optimizeDeps
-    if (client) {
-      assert(deepEqual(config.optimizeDeps.include, client.include))
-      assert(deepEqual(config.optimizeDeps.exclude, client.exclude))
-    }
+    assert(client)
+    assert(deepEqual(config.optimizeDeps.entries, client.entries))
+    assert(deepEqual(config.optimizeDeps.include, client.include))
+    assert(deepEqual(config.optimizeDeps.exclude, client.exclude))
     const ssr = config.environments.ssr?.optimizeDeps
-    if (ssr) {
-      assert(deepEqual(config.ssr.optimizeDeps.include, ssr.include))
-      assert(deepEqual(config.ssr.optimizeDeps.exclude, ssr.exclude))
-    }
+    assert(ssr)
+    assert(deepEqual(config.ssr.optimizeDeps.include, ssr.include))
+    assert(deepEqual(config.ssr.optimizeDeps.exclude, ssr.exclude))
     const envs: Record<string, unknown> = {}
     for (const envName in config.environments) {
       const env = config.environments[envName]!
