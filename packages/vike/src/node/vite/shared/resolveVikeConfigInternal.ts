@@ -707,7 +707,7 @@ function setCliAndApiOptions(
   function addSources(configValues: Record<string, unknown>, definedBy: DefinedBy) {
     Object.entries(configValues).forEach(([configName, value]) => {
       const sourceName = `The ${getDefinedByString(definedBy, configName)}` as const
-      const isKnown = assertKnownConfig(
+      const isUnknown = isUnknownConfig(
         configName,
         configDefinitionsResolved.configNamesKnownGlobal,
         configDefinitionsResolved,
@@ -715,7 +715,7 @@ function setCliAndApiOptions(
         false,
         sourceName,
       )
-      if (!isKnown) return
+      if (isUnknown) return
       const sources = (pageConfigGlobal.configValueSources[configName] ??= [])
       sources.unshift(getSourceNonConfigFile(configName, value, definedBy, pageConfigGlobal.configDefinitions))
     })
@@ -1329,13 +1329,13 @@ function assertKnownConfigs(configDefinitionsResolved: ConfigDefinitionsResolved
         configNames.forEach((configName) => {
           const { locationId } = plusFile
           const sourceName = plusFile.filePath.filePathToShowToUser
-          assertKnownConfig(configName, configNamesKnownLocal, configDefinitionsResolved, locationId, true, sourceName)
+          isUnknownConfig(configName, configNamesKnownLocal, configDefinitionsResolved, locationId, true, sourceName)
         })
       })
     },
   )
 }
-function assertKnownConfig(
+function isUnknownConfig(
   configName: string,
   configNamesKnownRelevant: string[],
   configDefinitionsResolved: ConfigDefinitionsResolved,
@@ -1347,14 +1347,14 @@ function assertKnownConfig(
 
   if (configNamesKnownRelevant.includes(configName)) {
     assert(configNamesKnownAll.includes(configName))
-    return true
+    return false
   }
 
   const configNameColored = pc.cyan(configName)
 
   const warn = (msg: string): false => {
     assertWarning(false, msg, { onlyOnce: true })
-    return false
+    return true
   }
 
   // Inheritance issue: config is known but isn't defined at `locationId`
