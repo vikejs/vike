@@ -33,7 +33,7 @@ function getServerConfig(vikeConfig: VikeConfigInternal) {
         : undefined
     isServerEntry = typeof entry === 'string'
     assert(entry === undefined || isServerEntry)
-    serverEntryVike = serverEntryId = isServerEntry ? resolve(dirname(entry)) : serverFilePath
+    serverEntryVike = serverEntryId = isServerEntry ? resolve(dirname(entry!)) : serverFilePath
   } else {
     serverEntryId = catchAllEntry
     serverEntryVike = 'vike/fetch'
