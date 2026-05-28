@@ -47,38 +47,38 @@ function getCliOptions() {
   let cliOptions: CliOptions = {}
   let configNameCurrent: string | undefined
 
-  const commitIfDefinedWithoutValue = () => {
-    if (configNameCurrent) commit(true)
-  }
-  const commitWithValue = (configValueStr: string) => {
-    assert(configNameCurrent)
-    commit(parseJson5(configValueStr, `CLI option --${configNameCurrent}`))
-  }
-  const commit = (configValue: unknown) => {
+  const addConfig = (configValue: unknown) => {
     assert(configNameCurrent)
     cliOptions[configNameCurrent] = configValue
     configNameCurrent = undefined
+  }
+  const addConfigWithoutValue = () => {
+    if (configNameCurrent) addConfig(true)
+  }
+  const addConfigWithValue = (configValueStr: string) => {
+    assert(configNameCurrent)
+    addConfig(parseJson5(configValueStr, `CLI option --${configNameCurrent}`))
   }
 
   for (const arg of process.argv.slice(3)) {
     showHelpOrVersion(arg)
     if (arg.startsWith('--')) {
-      commitIfDefinedWithoutValue()
-      const rest = arg.slice('--'.length)
-      const eqIdx = rest.indexOf('=')
+      addConfigWithoutValue()
+      const str = arg.slice('--'.length)
+      const eqIdx = str.indexOf('=')
       if (eqIdx === -1) {
-        configNameCurrent = rest
+        configNameCurrent = str
       } else {
-        configNameCurrent = rest.slice(0, eqIdx)
-        const configValue = rest.slice(eqIdx + 1)
-        commitWithValue(configValue)
+        configNameCurrent = str.slice(0, eqIdx)
+        const configValueStr = str.slice(eqIdx + 1)
+        addConfigWithValue(configValueStr)
       }
     } else {
       if (!configNameCurrent) wrongUsage(`Unknown option ${pc.bold(arg)}`)
-      commitWithValue(arg)
+      addConfigWithValue(arg)
     }
   }
-  commitIfDefinedWithoutValue()
+  addConfigWithoutValue()
 
   return cliOptions
 }
