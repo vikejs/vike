@@ -149,24 +149,6 @@ async function resolveOptimizeDeps(config: ResolvedConfig) {
   }
 }
 
-// Sanity-check that the legacy `config.optimizeDeps` and `config.ssr.optimizeDeps` slots
-// stay in sync with the corresponding environment values — so logging only the env values
-// (above) isn't hiding anything.
-function assertEnvsInSyncWithLegacy(config: ResolvedConfig) {
-  const client = config.environments.client?.optimizeDeps
-  assert(client)
-  assert(deepEqual(config.optimizeDeps.entries, client.entries))
-  assert(deepEqual(config.optimizeDeps.include, client.include))
-  assert(deepEqual(config.optimizeDeps.exclude, client.exclude))
-  const ssr = config.environments.ssr?.optimizeDeps
-  assert(ssr)
-  /* Vite doesn't seem to support config.ssr.optimizeDeps.entries (vite@7.0.6, July 2025)
-  assert(deepEqual(config.ssr.optimizeDeps.entries, ssr.entries))
-  */
-  assert(deepEqual(config.ssr.optimizeDeps.include, ssr.include))
-  assert(deepEqual(config.ssr.optimizeDeps.exclude, ssr.exclude))
-}
-
 async function getPageDeps(
   config: ResolvedConfig,
   pageConfigs: PageConfigBuildTime[],
@@ -309,4 +291,21 @@ function remove(input: string[] | string | undefined) {
   let list = normalizeInput(input)
   list = list.filter((e) => !ALWAYS_REMOVE.includes(e))
   return list
+}
+// Sanity-check that the legacy `config.optimizeDeps` and `config.ssr.optimizeDeps` slots
+// stay in sync with the corresponding environment values — so logging only the env values
+// (above) isn't hiding anything.
+function assertEnvsInSyncWithLegacy(config: ResolvedConfig) {
+  const client = config.environments.client?.optimizeDeps
+  assert(client)
+  assert(deepEqual(config.optimizeDeps.entries, client.entries))
+  assert(deepEqual(config.optimizeDeps.include, client.include))
+  assert(deepEqual(config.optimizeDeps.exclude, client.exclude))
+  const ssr = config.environments.ssr?.optimizeDeps
+  assert(ssr)
+  /* Vite doesn't seem to support config.ssr.optimizeDeps.entries (vite@7.0.6, July 2025)
+  assert(deepEqual(config.ssr.optimizeDeps.entries, ssr.entries))
+  */
+  assert(deepEqual(config.ssr.optimizeDeps.include, ssr.include))
+  assert(deepEqual(config.ssr.optimizeDeps.exclude, ssr.exclude))
 }
