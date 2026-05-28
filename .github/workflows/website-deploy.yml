@@ -7,7 +7,7 @@ on:
     # Only run this workflow if there are changes in the following
     paths:
       - docs/**
-      - .github/workflows/website.yml
+      - .github/workflows/website-deploy.yml
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -21,7 +21,7 @@ jobs:
       - run: pnpm run docs:build
 
       - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@4.1.4
+        uses: JamesIves/github-pages-deploy-action@v4.8.0
         with:
           branch: gh-pages
           folder: docs/dist/client
