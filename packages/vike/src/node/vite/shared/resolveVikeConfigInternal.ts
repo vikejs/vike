@@ -686,26 +686,25 @@ function setCliAndApiOptions(
   // Vike API — passed options [lowest precedence]
   const vikeApiOperation = getVikeApiOperation()
   if (vikeApiOperation?.options.vikeConfig) {
-    addSources(
-      vikeApiOperation.options.vikeConfig as Record<string, unknown>,
-      { definedBy: 'api', operation: vikeApiOperation.operation },
-      false,
-    )
+    addSources(vikeApiOperation.options.vikeConfig as Record<string, unknown>, {
+      definedBy: 'api',
+      operation: vikeApiOperation.operation,
+    })
   }
 
   const { configFromCliOptions, configFromEnvVar } = getVikeConfigFromCliOrEnv()
   // Vike CLI options
   if (configFromCliOptions) {
-    addSources(configFromCliOptions, { definedBy: 'cli' }, true)
+    addSources(configFromCliOptions, { definedBy: 'cli' })
   }
   // VIKE_CONFIG [highest precedence]
   if (configFromEnvVar) {
-    addSources(configFromEnvVar, { definedBy: 'env' }, false)
+    addSources(configFromEnvVar, { definedBy: 'env' })
   }
 
   return
 
-  function addSources(configValues: Record<string, unknown>, definedBy: DefinedBy, exitOnError: boolean) {
+  function addSources(configValues: Record<string, unknown>, definedBy: DefinedBy) {
     Object.entries(configValues).forEach(([configName, value]) => {
       const sourceName = `The ${getDefinedByString(definedBy, configName)}` as const
       assertKnownConfig(
@@ -715,7 +714,6 @@ function setCliAndApiOptions(
         '/' as LocationId,
         false,
         sourceName,
-        exitOnError,
       )
       const sources = (pageConfigGlobal.configValueSources[configName] ??= [])
       sources.unshift(getSourceNonConfigFile(configName, value, definedBy, pageConfigGlobal.configDefinitions))
@@ -1337,7 +1335,6 @@ function assertKnownConfigs(configDefinitionsResolved: ConfigDefinitionsResolved
             locationId,
             true,
             sourceName,
-            false,
           )
         })
       })
@@ -1351,7 +1348,6 @@ function assertKnownConfig(
   locationId: LocationId,
   isPlusFile: boolean,
   sourceName: string,
-  exitOnError: boolean,
 ): void {
   const { configNamesKnownAll } = configDefinitionsResolved
 
@@ -1362,18 +1358,13 @@ function assertKnownConfig(
 
   const configNameColored = pc.cyan(configName)
 
-  // Unknown configs set via +config files are errors; via CLI/env/API/Vite-plugin they're warnings.
-  const fail = (msg: string): void => {
-    if (isPlusFile) {
-      assertUsage(false, msg, { exitOnError })
-    } else {
-      assertWarning(false, msg, { onlyOnce: true })
-    }
+  const warn = (msg: string): void => {
+    assertWarning(false, msg, { onlyOnce: true })
   }
 
   // Inheritance issue: config is known but isn't defined at `locationId`
   if (configNamesKnownAll.includes(configName)) {
-    fail(
+    warn(
       `${sourceName} sets the value of the config ${configNameColored} which is a custom config that is defined with ${pc.underline('https://vike.dev/meta')} at a path that doesn't apply to ${locationId} — see ${pc.underline('https://vike.dev/config#inheritance')}` as const,
     )
     return
@@ -1405,7 +1396,7 @@ function assertKnownConfig(
       )
       const errMsgEnhanced =
         `${errMsg}. If you want to use the configuration ${configNameColored} documented at ${pc.underline(`https://vike.dev/${configName}`)} then make sure to install ${requiredVikeExtension}. (Alternatively, you can define ${configNameColored} yourself by using ${pc.cyan('meta')}, see ${pc.underline('https://vike.dev/meta')} for more information.)` as const
-      fail(errMsgEnhanced)
+      warn(errMsgEnhanced)
       return
     }
   }
@@ -1425,11 +1416,11 @@ function assertKnownConfig(
         'P',
       )} because it defines a UI component: a ubiquitous JavaScript convention is that the name of UI components start with a capital letter.)` as const
     }
-    fail(errMsgEnhanced)
+    warn(errMsgEnhanced)
     return
   }
 
-  fail(errMsg)
+  warn(errMsg)
 }
 
 function determineRouteFilesystem(locationId: LocationId, configValueSources: ConfigValueSources): PageConfigRoute {
