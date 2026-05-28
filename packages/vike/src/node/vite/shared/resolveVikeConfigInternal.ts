@@ -664,15 +664,18 @@ function temp_interopVikeVitePlugin(
   Object.entries(vikeVitePluginOptions).forEach(([configName, value]) => {
     const sources = (pageConfigGlobal.configValueSources[configName] ??= [])
     sources.push(
-      getSourceNonConfigFile(configName, value, {
-        ...getFilePathResolved({
-          userRootDir,
-          filePathAbsoluteUserRootDir: '/vite.config.js',
-        }),
-        fileExportPathToShowToUser: null,
-      },
-      pageConfigGlobal.configDefinitions,
-    ),
+      getSourceNonConfigFile(
+        configName,
+        value,
+        {
+          ...getFilePathResolved({
+            userRootDir,
+            filePathAbsoluteUserRootDir: '/vite.config.js',
+          }),
+          fileExportPathToShowToUser: null,
+        },
+        pageConfigGlobal.configDefinitions,
+      ),
     )
   })
 }
