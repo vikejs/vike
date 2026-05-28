@@ -5,6 +5,7 @@ import type { ResolvedConfig, UserConfig } from 'vite'
 import { findPageFiles } from '../../shared/findPageFiles.js'
 import { assert } from '../../../../utils/assert.js'
 import { createDebug } from '../../../../utils/debug.js'
+import { deepEqual } from '../../../../utils/deepEqual.js'
 import { isArray } from '../../../../utils/isArray.js'
 import { isFilePathAbsoluteFilesystem } from '../../../../utils/isFilePathAbsoluteFilesystem.js'
 import { assertImportIsNpmPackage, getNpmPackageName } from '../../../../utils/parseNpmPackage.js'
@@ -12,7 +13,7 @@ import { requireResolveOptional } from '../../../../utils/requireResolve.js'
 import { isVirtualFileId } from '../../../../utils/virtualFileId.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { analyzeClientEntries } from '../build/pluginBuildConfig.js'
-import type { DefinedAtFilePath, PageConfigBuildTime } from '../../../../types/PageConfig.js'
+import type { DefinedAtFilePath, PageConfigBuildTime, PageConfigGlobalBuildTime } from '../../../../types/PageConfig.js'
 import type { FilePath } from '../../../../types/FilePath.js'
 import {
   virtualFileIdGlobalEntryClientCR,
@@ -82,10 +83,14 @@ const optimizeDeps = {
 // - Make server environments inherit from ssr.optimizeDeps (it isn't the case by default)
 async function resolveOptimizeDeps(config: ResolvedConfig) {
   const vikeConfig = await getVikeConfigInternal()
-  const { _pageConfigs: pageConfigs } = vikeConfig
+  const { _pageConfigs: pageConfigs, _pageConfigGlobal: pageConfigGlobal } = vikeConfig
 
   // Retrieve user's + files (i.e. Vike entries)
-  const { entriesClient, entriesServer, includeClient, includeServer } = await getPageDeps(config, pageConfigs)
+  const { entriesClient, entriesServer, includeClient, includeServer } = await getPageDeps(
+    config,
+    pageConfigs,
+    pageConfigGlobal,
+  )
 
   // Add late discovered dependencies, if they exist
   LATE_DISCOVERED.forEach((dep) => {
@@ -131,19 +136,24 @@ async function resolveOptimizeDeps(config: ResolvedConfig) {
   }
 
   // Debug
-  if (debug.isActivated)
-    debug('optimizeDeps', {
-      'config.optimizeDeps.entries': config.optimizeDeps.entries,
-      'config.optimizeDeps.include': config.optimizeDeps.include,
-      'config.optimizeDeps.exclude': config.optimizeDeps.exclude,
-      // @ts-ignore Vite doesn't seem to support ssr.optimizeDeps.entries (vite@7.0.6, July 2025)
-      'config.ssr.optimizeDeps.entries': config.ssr.optimizeDeps.entries,
-      'config.ssr.optimizeDeps.include': config.ssr.optimizeDeps.include,
-      'config.ssr.optimizeDeps.exclude': config.ssr.optimizeDeps.exclude,
-    })
+  if (debug.isActivated) {
+    const envs: Record<string, unknown> = {}
+    for (const envName in config.environments) {
+      const env = config.environments[envName]!
+      envs[`config.environments.${envName}.optimizeDeps.entries`] = env.optimizeDeps.entries
+      envs[`config.environments.${envName}.optimizeDeps.include`] = env.optimizeDeps.include
+      envs[`config.environments.${envName}.optimizeDeps.exclude`] = env.optimizeDeps.exclude
+    }
+    debug('optimizeDeps', envs)
+    assertEnvsInSyncWithLegacy(config)
+  }
 }
 
-async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildTime[]) {
+async function getPageDeps(
+  config: ResolvedConfig,
+  pageConfigs: PageConfigBuildTime[],
+  pageConfigGlobal: PageConfigGlobalBuildTime,
+) {
   let entriesClient: string[] = []
   let entriesServer: string[] = []
   let includeClient: string[] = []
@@ -197,7 +207,7 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
   // V1 design
   {
     ;[true, false].forEach((isForClientSide) => {
-      pageConfigs.forEach((pageConfig) => {
+      ;[...pageConfigs, pageConfigGlobal].forEach((pageConfig) => {
         Object.entries(pageConfig.configValueSources).forEach(([configName]) => {
           const runtimeEnv = {
             isForClientSide,
@@ -281,4 +291,21 @@ function remove(input: string[] | string | undefined) {
   let list = normalizeInput(input)
   list = list.filter((e) => !ALWAYS_REMOVE.includes(e))
   return list
+}
+// Sanity-check that the legacy `config.optimizeDeps` and `config.ssr.optimizeDeps` slots
+// stay in sync with the corresponding environment values — so logging only the env values
+// (above) isn't hiding anything.
+function assertEnvsInSyncWithLegacy(config: ResolvedConfig) {
+  const client = config.environments.client?.optimizeDeps
+  assert(client)
+  assert(deepEqual(config.optimizeDeps.entries, client.entries))
+  assert(deepEqual(config.optimizeDeps.include, client.include))
+  assert(deepEqual(config.optimizeDeps.exclude, client.exclude))
+  const ssr = config.environments.ssr?.optimizeDeps
+  assert(ssr)
+  /* Vite doesn't seem to support config.ssr.optimizeDeps.entries (vite@7.0.6, July 2025)
+  assert(deepEqual(config.ssr.optimizeDeps.entries, ssr.entries))
+  */
+  assert(deepEqual(config.ssr.optimizeDeps.include, ssr.include))
+  assert(deepEqual(config.ssr.optimizeDeps.exclude, ssr.exclude))
 }
