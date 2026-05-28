@@ -10,7 +10,6 @@ import {
   editFile,
   editFileRevert,
 } from '@brillout/test-e2e'
-import assert from 'node:assert'
 import { waitForNavigation, sleepBeforeEditFile } from '../../test/utils'
 
 export { testRun }
@@ -272,13 +271,15 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run prod' | 'pnpm run preview', isV
   return
 
   async function testColor(color: Color) {
-    await autoRetry(async () => {
-      const node = await page.$('.colored')
-      expect(node).not.toBe(null)
-      assert(node !== null)
-      const titleColor = await page.evaluate((node) => getComputedStyle(node).color, node)
-      expect(titleColor).toBe(getColorRgb(color))
-    })
+    const expectedRgb = getColorRgb(color)
+    await page.waitForFunction(
+      (expected) => {
+        const node = document.querySelector('.colored')
+        if (!node) return false
+        return getComputedStyle(node).color === expected
+      },
+      expectedRgb,
+    )
   }
   async function clickCounter() {
     // Wait until page has loaded
