@@ -21,7 +21,6 @@ import {
 } from '../../../../shared-server-node/virtualFileId.js'
 import { getFilePathResolved } from '../../shared/getFilePath.js'
 import { getConfigValueSourcesRelevant } from '../pluginVirtualFiles/getConfigValueSourcesRelevant.js'
-import { materializeVirtualEntries } from './materializeVirtualEntries.js'
 import '../../assertEnvVite.js'
 
 const debug = createDebug('vike:optimizeDeps')
@@ -87,16 +86,11 @@ async function resolveOptimizeDeps(config: ResolvedConfig) {
   const { _pageConfigs: pageConfigs, _pageConfigGlobal: pageConfigGlobal } = vikeConfig
 
   // Retrieve user's + files (i.e. Vike entries)
-  let { entriesClient, entriesServer, includeClient, includeServer } = await getPageDeps(
+  const { entriesClient, entriesServer, includeClient, includeServer } = await getPageDeps(
     config,
     pageConfigs,
     pageConfigGlobal,
   )
-
-  // Replace virtual entry IDs with materialized temp-file paths so esbuild's dep scanner
-  // can crawl them (it can't follow virtual IDs).
-  entriesClient = await materializeVirtualEntries(entriesClient, config)
-  entriesServer = await materializeVirtualEntries(entriesServer, config)
 
   // Add late discovered dependencies, if they exist
   LATE_DISCOVERED.forEach((dep) => {
