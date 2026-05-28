@@ -424,7 +424,7 @@ async function resolveConfigDefinitions(
     configNamesKnownGlobal,
   }
 
-  assertKnownConfigs(configDefinitionsResolved)
+  warnUnknownConfigs(configDefinitionsResolved)
 
   return configDefinitionsResolved
 }
@@ -1320,8 +1320,8 @@ function getComputed(pageConfig: PageConfigBuildTimeBeforeComputed) {
   return configValuesComputed
 }
 
-// Show error message upon unknown config
-function assertKnownConfigs(configDefinitionsResolved: ConfigDefinitionsResolved) {
+// Show warning upon unknown config
+function warnUnknownConfigs(configDefinitionsResolved: ConfigDefinitionsResolved) {
   objectEntries(configDefinitionsResolved.configDefinitionsLocal).forEach(
     ([_locationId, { configNamesKnownLocal, plusFiles }]) => {
       plusFiles.forEach((plusFile) => {
