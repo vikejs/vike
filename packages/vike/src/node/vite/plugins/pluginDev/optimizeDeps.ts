@@ -144,7 +144,7 @@ async function resolveOptimizeDeps(config: ResolvedConfig) {
     assert(deepEqual(config.optimizeDeps.exclude, client.exclude))
     const ssr = config.environments.ssr?.optimizeDeps
     assert(ssr)
-    /* Vite doesn't seem to support ssr.optimizeDeps.entries (vite@7.0.6, July 2025)
+    /* Vite doesn't seem to support config.ssr.optimizeDeps.entries (vite@7.0.6, July 2025)
     assert(deepEqual(config.ssr.optimizeDeps.entries, ssr.entries))
     */
     assert(deepEqual(config.ssr.optimizeDeps.include, ssr.include))
