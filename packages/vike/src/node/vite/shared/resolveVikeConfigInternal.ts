@@ -19,10 +19,8 @@ import { deepEqual } from '../../../utils/deepEqual.js'
 import { assertKeys } from '../../../utils/assertKeys.js'
 import { assertIsNotProductionRuntime } from '../../../utils/assertSetup.js'
 import { getMostSimilar } from '../../../utils/getMostSimilar.js'
-import { includes } from '../../../utils/includes.js'
 import { objectEntries } from '../../../utils/objectEntries.js'
 import { objectFromEntries } from '../../../utils/objectFromEntries.js'
-import { objectKeys } from '../../../utils/objectKeys.js'
 import { makeLast, type SortReturn } from '../../../utils/sorter.js'
 import { assert, assertUsage, assertWarning } from '../../../utils/assert.js'
 import { checkType } from '../../../utils/checkType.js'
@@ -672,7 +670,9 @@ function temp_interopVikeVitePlugin(
           filePathAbsoluteUserRootDir: '/vite.config.js',
         }),
         fileExportPathToShowToUser: null,
-      }),
+      },
+      pageConfigGlobal.configDefinitions,
+    ),
     )
   })
 }
@@ -715,7 +715,7 @@ function setCliAndApiOptions(
         exitOnError,
       )
       const sources = (pageConfigGlobal.configValueSources[configName] ??= [])
-      sources.unshift(getSourceNonConfigFile(configName, value, definedBy))
+      sources.unshift(getSourceNonConfigFile(configName, value, definedBy, pageConfigGlobal.configDefinitions))
     })
   }
 }
@@ -737,9 +737,10 @@ function getSourceNonConfigFile(
   configName: string,
   value: unknown,
   definedAt: DefinedAtFilePath | DefinedBy,
+  configDefinitions: ConfigDefinitionsInternal,
 ): ConfigValueSource {
-  assert(includes(objectKeys(metaBuiltIn), configName))
-  const configDef = metaBuiltIn[configName]
+  const configDef = configDefinitions[configName] ?? metaBuiltIn[configName as keyof typeof metaBuiltIn]
+  assert(configDef)
   const source: ConfigValueSource = {
     valueIsLoaded: true,
     value,
