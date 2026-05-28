@@ -9,6 +9,7 @@ import {
   partRegex,
   editFile,
   editFileRevert,
+  sleep as sleep_,
 } from '@brillout/test-e2e'
 import assert from 'node:assert'
 import { waitForNavigation, sleepBeforeEditFile } from '../../test/utils'
@@ -22,6 +23,7 @@ const disableTestHtmlOnlyHMR = true
 
 // TO-DO/next-major-release: remove non-V1 design case
 function testRun(cmd: 'pnpm run dev' | 'pnpm run prod' | 'pnpm run preview', isV1Design?: true) {
+  const sleep = () => (isV1Design ? sleepBeforeEditFile() : sleep_(2000))
   run(cmd, {
     // HMR tests are flaky (I couldn't make them reliable)
     isFlaky: true,
@@ -117,12 +119,12 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run prod' | 'pnpm run preview', isV
         {
           expect(await page.textContent('h1')).toBe('SPA')
           const file = isV1Design ? './pages/spa/+Page.jsx' : './pages/spa/index.page.client.jsx'
-          await sleepBeforeEditFile()
+          await sleep()
           editFile(file, (s) => s.replace('<h1>SPA</h1>', '<h1>SPA !</h1>'))
           await autoRetry(async () => {
             expect(await page.textContent('h1')).toBe('SPA !')
           })
-          await sleepBeforeEditFile()
+          await sleep()
           editFileRevert()
           await autoRetry(async () => {
             expect(await page.textContent('h1')).toBe('SPA')
@@ -132,10 +134,10 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run prod' | 'pnpm run preview', isV
         expect(await page.textContent('button')).toContain('Counter 1')
         {
           await testColor('green')
-          await sleepBeforeEditFile()
+          await sleep()
           editFile('./pages/spa/index.css', (s) => s.replace('color: green', 'color: gray'))
           await testColor('gray')
-          await sleepBeforeEditFile()
+          await sleep()
           editFileRevert()
           await testColor('green')
         }
@@ -221,12 +223,12 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run prod' | 'pnpm run preview', isV
       {
         expect(await page.textContent('h1')).toBe('SSR')
         const file = isV1Design ? './pages/ssr/+Page.jsx' : './pages/ssr/index.page.jsx'
-        await sleepBeforeEditFile()
+        await sleep()
         editFile(file, (s) => s.replace('<h1>SSR</h1>', '<h1>SSR !</h1>'))
         await autoRetry(async () => {
           expect(await page.textContent('h1')).toBe('SSR !')
         })
-        await sleepBeforeEditFile()
+        await sleep()
         editFileRevert()
         await autoRetry(async () => {
           expect(await page.textContent('h1')).toBe('SSR')
@@ -236,10 +238,10 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run prod' | 'pnpm run preview', isV
       expect(await page.textContent('button')).toContain('Counter 1')
       {
         await testColor('blue')
-        await sleepBeforeEditFile()
+        await sleep()
         editFile('./pages/ssr/index.css', (s) => s.replace('color: blue', 'color: gray'))
         await testColor('gray')
-        await sleepBeforeEditFile()
+        await sleep()
         editFileRevert()
         await testColor('blue')
       }
