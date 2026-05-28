@@ -1352,9 +1352,9 @@ function isUnknownConfig(
 
   const configNameColored = pc.cyan(configName)
 
-  const warn = (msg: string): false => {
+  const warn = (msg: string) => {
     assertWarning(false, msg, { onlyOnce: true })
-    return true
+    return true as const
   }
 
   // Inheritance issue: config is known but isn't defined at `locationId`
