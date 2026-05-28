@@ -740,9 +740,9 @@ function getSourceNonConfigFile(
   configName: string,
   value: unknown,
   definedAt: DefinedAtFilePath | DefinedBy,
-  configDefinitions: ConfigDefinitionsInternal,
+  configDefinitionsGlobal: ConfigDefinitionsInternal,
 ): ConfigValueSource {
-  const configDef = configDefinitions[configName] ?? metaBuiltIn[configName as keyof typeof metaBuiltIn]
+  const configDef = configDefinitionsGlobal[configName] ?? metaBuiltIn[configName as keyof typeof metaBuiltIn]
   assert(configDef)
   const source: ConfigValueSource = {
     valueIsLoaded: true,
