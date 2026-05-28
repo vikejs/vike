@@ -28,8 +28,8 @@ function getServerConfig(vikeConfig: VikeConfigInternal) {
     assert(serverFilePath)
     // +server.js > `export default { entry: './server/entrypoint.ts' }`
     const entry =
-      serverPlusFile.valueIsLoaded && serverPlusFile.value && typeof serverPlusFile.value === 'object' ?
-        (serverPlusFile.value as any).entry
+      serverPlusFile.valueIsLoaded && serverPlusFile.value && typeof serverPlusFile.value === 'object'
+        ? (serverPlusFile.value as any).entry
         : undefined
     isServerEntry = typeof entry === 'string'
     assert(entry === undefined || isServerEntry)
