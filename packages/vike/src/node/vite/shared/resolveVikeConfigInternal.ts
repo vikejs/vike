@@ -1329,14 +1329,7 @@ function assertKnownConfigs(configDefinitionsResolved: ConfigDefinitionsResolved
         configNames.forEach((configName) => {
           const { locationId } = plusFile
           const sourceName = plusFile.filePath.filePathToShowToUser
-          assertKnownConfig(
-            configName,
-            configNamesKnownLocal,
-            configDefinitionsResolved,
-            locationId,
-            true,
-            sourceName,
-          )
+          assertKnownConfig(configName, configNamesKnownLocal, configDefinitionsResolved, locationId, true, sourceName)
         })
       })
     },
