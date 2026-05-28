@@ -135,15 +135,6 @@ async function resolveOptimizeDeps(config: ResolvedConfig) {
     env.optimizeDeps.entries = remove(env.optimizeDeps.entries ?? [])
   }
 
-  // Mirror SSR env entries back to the legacy `config.ssr.optimizeDeps.entries` slot — when
-  // a plugin sets it as a string (e.g. @cloudflare/vite-plugin via normalizePath(workerConfig.main)),
-  // `add()` allocates a new array that replaces only `env.optimizeDeps.entries`, leaving the
-  // legacy slot stale.
-  if (config.environments.ssr?.optimizeDeps.entries) {
-    // @ts-ignore Vite doesn't seem to support ssr.optimizeDeps.entries (vite@7.0.6, July 2025)
-    config.ssr.optimizeDeps.entries = config.environments.ssr.optimizeDeps.entries
-  }
-
   // Debug
   if (debug.isActivated) {
     // Sanity-check that the legacy `config.optimizeDeps` and `config.ssr.optimizeDeps` slots
