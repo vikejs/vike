@@ -137,9 +137,6 @@ async function resolveOptimizeDeps(config: ResolvedConfig) {
 
   // Debug
   if (debug.isActivated) {
-    // Sanity-check that the legacy `config.optimizeDeps` and `config.ssr.optimizeDeps` slots
-    // stay in sync with the corresponding environment values — so logging only the env
-    // values isn't hiding anything.
     const client = config.environments.client?.optimizeDeps
     assert(client)
     assert(deepEqual(config.optimizeDeps.entries, client.entries))
@@ -147,8 +144,9 @@ async function resolveOptimizeDeps(config: ResolvedConfig) {
     assert(deepEqual(config.optimizeDeps.exclude, client.exclude))
     const ssr = config.environments.ssr?.optimizeDeps
     assert(ssr)
-    // @ts-ignore Vite doesn't seem to support ssr.optimizeDeps.entries (vite@7.0.6, July 2025)
+    /* Vite doesn't seem to support ssr.optimizeDeps.entries (vite@7.0.6, July 2025)
     assert(deepEqual(config.ssr.optimizeDeps.entries, ssr.entries))
+    */
     assert(deepEqual(config.ssr.optimizeDeps.include, ssr.include))
     assert(deepEqual(config.ssr.optimizeDeps.exclude, ssr.exclude))
     const envs: Record<string, unknown> = {}
