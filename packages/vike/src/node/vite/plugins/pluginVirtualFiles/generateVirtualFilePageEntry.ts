@@ -1,6 +1,6 @@
 export { generateVirtualFilePageEntry }
 
-import { assert, getProjectError } from '../../../../utils/assert.js'
+import { assert, getDebugInfoStr, getProjectError } from '../../../../utils/assert.js'
 import type { PageConfigBuildTime } from '../../../../types/PageConfig.js'
 import { parseVirtualFileId, generateVirtualFileId } from '../../../../shared-server-node/virtualFileId.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
@@ -32,11 +32,10 @@ async function generateVirtualFilePageEntry(id: string, isDev: boolean): Promise
   if (!isDev) {
     assert(pageConfig)
   } else {
-    /* This assertion sometimes fail. It happens very seldom and I couldn't reproduce it (https://gist.github.com/brillout/9e212ce829f4d62a912ca163ffa8881a). I suspect some kind of HMR race condition. UPDATE: [December 2024] This just happened at test/@cloudflare_vite-plugin/ — it isn't blocking, reloading the page fixes the issue.
-    assert(pageConfig, { id, pageId })
-    /*/
-    if (!pageConfig) throw getProjectError('Outdated request')
-    //*/
+    if (!pageConfig) {
+      // Happens very seldomly and can't reproduce reliably. Some kind of HMR race condition? It still happens as of June 2026 with Cloudflare Workers in developement — but it isn't blocking, reloading the page fixes the issue.
+      throw getProjectError(`Outdated request. Try again. ${getDebugInfoStr({ id, pageId })}`)
+    }
   }
 
   const code = getCode(
