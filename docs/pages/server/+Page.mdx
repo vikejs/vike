@@ -151,8 +151,11 @@ export default {
 ```
 
 ### Custom server entrypoint
-By default, `@universal-deploy` uses [serve](https://github.com/universal-deploy/universal-deploy/blob/49a45f6b21054b6ecf0ccf8b00ec6aa080d12773/packages/adapter-node/src/serve.ts) as server wrapper.
-If you want to use a different server wrapper, you can specify it with `entry` option in `+server`, for example:
+By default, `@universal-deploy` uses a [built-in serve wrapper](https://github.com/universal-deploy/universal-deploy/blob/49a45f6b21054b6ecf0ccf8b00ec6aa080d12773/packages/adapter-node/src/serve.ts) to start your server in production. This means that your server code is bundled by Vite and the server entrypoint is `vike/fetch`.
+This works for most use cases, but if you want to have a custom server entrypoint, you can specify it with `entry` option in `+server`.
+You can split your server logic into a separate file, run initialization code on startup, or export values needed by your deployment platform.
+
+For example:
 
 ```ts
 // +server.ts
@@ -162,23 +165,31 @@ import app from '../server/index'
 
 export default {
   fetch: app.fetch,
-  entry: './server/entrypoint.ts'
+  entry: './server/entrypoint.ts' // [!code ++]
 } satisfies Server
 
 // './server/index.ts'
 
-// Code of your server
+// Example with Hono
+import { Hono } from 'hono'
+import vike from '@vikejs/hono'
+
+const app = new Hono()
+vike(app) // Attaches Vike
 
 export default app
 
 // './server/entrypoint.ts'
 
-// Export the server
+// Re-export the server app so your deployment platform can use it and start the server
 export { default as app } from './index'
-
-// Eventually you can add some exports to use on necessity in production, for example:
-export const someValue = 42
+// Optionally export additional values to use in your deployment platform
+export const port = Number(process.env.PORT) || 3000
+export { getDocuments } from './dbQueries'
 ```
+
+Example:
+ - <Example timestamp="2026.06" repo="rtritto/vike-with-vercel" />
 
 
 ## Deployment
