@@ -108,9 +108,35 @@ Instead of using [`vite-plugin-vercel`](https://github.com/magne4000/vite-plugin
 A simple way to manually integrate Vercel is to create a Vercel API Route `api/ssr.js` that server-side renders your app.
 
 Example:
- - <Example timestamp="2026.06" repo="rtritto/vike-with-vercel" />
  - <Example timestamp="2026.04" repo="mrdsx/vike-with-vercel" />
  - <Example timestamp="2024.03" repo="brillout/vike-with-vercel" />
+<Warning>Make sure to properly set `OUTPUT DIRECTORY` in your Vercel dashboard, see the example's `README.md` instructions.</Warning>
+
+Using `+server` you can use the `entry` option ([+server Custom server entrypoint](https://vike.dev/vercel#custom-server-entrypoint)) to export the server and the optional exports.
+
+```js
+// api/ssr.js
+
+import { app } from '../dist/server/index.mjs'
+export const GET = app.fetch
+export const POST = app.fetch
+```
+
+I you are using additional exports in `+server`, for example `getDocuments`, you can also import them in the Vercel's API, for example with CRON jobs:
+
+```js
+// api/cron.js
+
+import { getDocuments } from '../dist/server/index.mjs'
+
+const documents = await getDocuments()
+
+// Do something with the documents
+console.log('Documents:', documents)
+```
+
+Example:
+ - <Example timestamp="2026.06" repo="rtritto/vike-with-vercel" />
 <Warning>Make sure to properly set `OUTPUT DIRECTORY` in your Vercel dashboard, see the example's `README.md` instructions.</Warning>
 
 > Using a Vercel API Route is a sturdy way to deploy to Vercel, as API Routes is a core Vercel feature: it's here to stay and, most importantly, stable. (Whereas Vercel's Build Output API is a moving target with occasional breaking changes.) Once you've set the server-side rendering API Route, you can expect it to work for the foreseeable future.

@@ -188,6 +188,27 @@ export const port = Number(process.env.PORT) || 3000
 export { getDocuments } from './dbQueries'
 ```
 
+The additional exports can be used, for example, to start the server or to run some scripts (e.g. CRON jobs). You can see an example with [Vercel's Manual integration](https://vike.dev/vercel#manual-integration) with Vercel'sAPI.
+
+```ts
+// startSever.ts
+import { serve } from '@hono/node-server'
+import { app, port, getDocuments } from './dist/server/index.mjs'
+
+// Get documents before starting the server
+const documents = await getDocuments()
+console.log('Documents:', documents)
+
+// Start the server
+serve(
+  {
+    fetch: app.fetch,
+    port
+  },
+  () => console.log(`Server is running on port ${port}`)
+)
+```
+
 Example:
  - <Example timestamp="2026.06" repo="rtritto/vike-with-vercel" />
 
