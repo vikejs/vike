@@ -182,7 +182,7 @@ export default app
 // './server/entrypoint.ts'
 
 // Re-export the server app so your deployment platform can use it and start the server
-export { default as app } from './index'
+export { default } from './index'
 // Optionally export additional values to use in your deployment platform
 export const port = Number(process.env.PORT) || 3000
 export { getDocuments } from './dbQueries'
@@ -193,7 +193,7 @@ The additional exports can be used, for example, to start the server or to run s
 ```ts
 // startSever.ts
 import { serve } from '@hono/node-server'
-import { app, port, getDocuments } from './dist/server/index.mjs'
+import app, { port, getDocuments } from './dist/server/index.mjs'
 
 // Get documents before starting the server
 const documents = await getDocuments()

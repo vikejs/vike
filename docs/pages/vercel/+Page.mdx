@@ -117,7 +117,7 @@ Using `+server` you can use the `entry` option ([+server Custom server entrypoin
 ```js
 // api/ssr.js
 
-import { app } from '../dist/server/index.mjs'
+import app from '../dist/server/index.mjs'
 export const GET = app.fetch
 export const POST = app.fetch
 ```
