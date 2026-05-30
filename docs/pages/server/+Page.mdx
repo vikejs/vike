@@ -167,10 +167,12 @@ export default {
   fetch: app.fetch,
   entry: './server/entrypoint.ts' // [!code ++]
 } satisfies Server
+```
 
+```ts
 // './server/index.ts'
 
-// Example with Hono
+// Example with Hono server
 import { Hono } from 'hono'
 import vike from '@vikejs/hono'
 
@@ -178,7 +180,9 @@ const app = new Hono()
 vike(app) // Attaches Vike
 
 export default app
+```
 
+```ts
 // './server/entrypoint.ts'
 
 // Re-export the server app so your deployment platform can use it and start the server
@@ -192,6 +196,7 @@ The additional exports can be used, for example, to start the server or to run s
 
 ```ts
 // startSever.ts
+
 import { serve } from '@hono/node-server'
 import app, { port, getDocuments } from './dist/server/index.mjs'
 
