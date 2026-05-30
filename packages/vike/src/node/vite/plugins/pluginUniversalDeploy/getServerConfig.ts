@@ -26,11 +26,10 @@ function getServerConfig(vikeConfig: VikeConfigInternal) {
     assert('filePathAbsoluteFilesystem' in serverPlusFile.definedAt)
     serverFilePath = serverPlusFile.definedAt.filePathAbsoluteFilesystem
     assert(serverFilePath)
+    assert(serverPlusFile.valueIsLoaded)
+    assert(typeof serverPlusFile.value === 'object')
     // +server.js > `export default { entry: './server/entrypoint.ts' }`
-    const entry =
-      serverPlusFile.valueIsLoaded && serverPlusFile.value && typeof serverPlusFile.value === 'object'
-        ? (serverPlusFile.value as { entry?: string }).entry
-        : undefined
+    const entry = (serverPlusFile.value as { entry?: string }).entry
     isServerEntry = typeof entry === 'string'
     assert(entry === undefined || isServerEntry)
     serverEntryVike = serverEntryId = isServerEntry ? resolve(dirname(entry!)) : serverFilePath
