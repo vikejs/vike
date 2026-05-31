@@ -184,6 +184,8 @@ export default app
 
 ```ts
 // './server/entrypoint.ts'
+// @ts-ignore
+import 'virtual:vike:global-entry:server'
 
 // Re-export the server app so your deployment platform can use it and start the server
 export { default } from './index'
