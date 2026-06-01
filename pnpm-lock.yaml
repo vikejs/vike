@@ -43,7 +43,7 @@ importers:
         version: 0.0.70
       '@brillout/docpress':
         specifier: ^0.16.39
-        version: 0.16.39(@algolia/client-search@5.52.1)(@types/react@19.2.14)(@vitejs/plugin-react@5.1.3(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(rollup@4.43.0)(search-insights@2.17.3)(typescript@5.9.3)(vike@packages+vike)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
+        version: 0.16.39(@algolia/client-search@5.52.1)(@types/react@19.2.15)(@vitejs/plugin-react@5.1.3(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(rollup@4.43.0)(search-insights@2.17.3)(typescript@5.9.3)(vike@packages+vike)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
       '@classmatejs/react':
         specifier: ^0.2.1
         version: 0.2.1(react@19.2.6)
@@ -54,11 +54,11 @@ importers:
         specifier: ^4.1.18
         version: 4.2.2(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
       '@types/react':
-        specifier: ^19.0.2
-        version: 19.2.14
+        specifier: ^19.2.15
+        version: 19.2.15
       '@types/react-dom':
-        specifier: ^19.0.2
-        version: 19.2.3(@types/react@19.2.14)
+        specifier: ^19.2.3
+        version: 19.2.3(@types/react@19.2.15)
       '@vitejs/plugin-react':
         specifier: ^5.0.0
         version: 5.1.3(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
@@ -102,11 +102,11 @@ importers:
         specifier: ^5.0.6
         version: 5.0.6
       '@types/react':
-        specifier: ^18.0.8
-        version: 18.3.18
+        specifier: ^19.2.15
+        version: 19.2.15
       '@types/react-dom':
-        specifier: ^18.0.3
-        version: 18.3.5(@types/react@18.3.18)
+        specifier: ^19.2.3
+        version: 19.2.3(@types/react@19.2.15)
       '@vitejs/plugin-react':
         specifier: ^4.7.0
         version: 4.7.0(vite@6.3.5(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
@@ -384,11 +384,11 @@ importers:
         specifier: ^17.0.31
         version: 17.0.45
       '@types/react':
-        specifier: ^18.0.8
-        version: 18.3.18
+        specifier: ^19.2.15
+        version: 19.2.15
       '@types/react-dom':
-        specifier: ^18.0.3
-        version: 18.3.5(@types/react@18.3.18)
+        specifier: ^19.2.3
+        version: 19.2.3(@types/react@19.2.15)
       '@vitejs/plugin-react':
         specifier: ^4.7.0
         version: 4.7.0(vite@6.3.5(@types/node@17.0.45)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
@@ -424,7 +424,7 @@ importers:
         version: 3.1.1
       '@mdx-js/react':
         specifier: ^3.1.1
-        version: 3.1.1(@types/react@19.2.14)(react@19.2.6)
+        version: 3.1.1(@types/react@19.2.15)(react@19.2.6)
       '@mdx-js/rollup':
         specifier: ^3.1.1
         version: 3.1.1(rollup@4.43.0)
@@ -435,11 +435,11 @@ importers:
         specifier: ^2.6.12
         version: 2.6.12
       '@types/react':
-        specifier: ^19.2.7
-        version: 19.2.14
+        specifier: ^19.2.15
+        version: 19.2.15
       '@types/react-dom':
         specifier: ^19.2.3
-        version: 19.2.3(@types/react@19.2.14)
+        version: 19.2.3(@types/react@19.2.15)
       '@vitejs/plugin-react-swc':
         specifier: ^4.2.2
         version: 4.2.2(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
@@ -552,11 +552,11 @@ importers:
   examples/telefunc:
     dependencies:
       '@types/react':
-        specifier: ^19.1.12
-        version: 19.2.14
+        specifier: ^19.2.15
+        version: 19.2.15
       '@types/react-dom':
-        specifier: ^19.1.9
-        version: 19.2.3(@types/react@19.2.14)
+        specifier: ^19.2.3
+        version: 19.2.3(@types/react@19.2.15)
       '@vitejs/plugin-react':
         specifier: ^5.0.2
         version: 5.1.3(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
@@ -699,11 +699,11 @@ importers:
         specifier: ^22.10.2
         version: 22.19.2
       '@types/react':
-        specifier: ^19.0.1
-        version: 19.2.14
+        specifier: ^19.2.15
+        version: 19.2.15
       '@types/react-dom':
-        specifier: ^19.0.2
-        version: 19.2.3(@types/react@19.2.14)
+        specifier: ^19.2.3
+        version: 19.2.3(@types/react@19.2.15)
       '@vikejs/hono':
         specifier: ^0.2.0
         version: 0.2.0(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.16)(vike@packages+vike)
@@ -1150,11 +1150,11 @@ importers:
         specifier: ^17.0.31
         version: 17.0.45
       '@types/react':
-        specifier: ^18.0.8
-        version: 18.3.18
+        specifier: ^19.2.15
+        version: 19.2.15
       '@types/react-dom':
-        specifier: ^18.0.3
-        version: 18.3.5(@types/react@18.3.18)
+        specifier: ^19.2.3
+        version: 19.2.3(@types/react@19.2.15)
       '@vitejs/plugin-react':
         specifier: ^4.7.0
         version: 4.7.0(vite@6.3.5(@types/node@17.0.45)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
@@ -1258,11 +1258,11 @@ importers:
   test-deprecated-design/telefunc:
     dependencies:
       '@types/react':
-        specifier: ^18.2.37
-        version: 18.3.18
+        specifier: ^19.2.15
+        version: 19.2.15
       '@types/react-dom':
-        specifier: ^18.2.15
-        version: 18.3.5(@types/react@18.3.18)
+        specifier: ^19.2.3
+        version: 19.2.3(@types/react@19.2.15)
       '@vitejs/plugin-react':
         specifier: ^4.7.0
         version: 4.7.0(vite@6.3.0(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
@@ -1376,11 +1376,11 @@ importers:
         specifier: ^1.25.5
         version: 1.31.1(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))(workerd@1.20260405.1)(wrangler@4.81.0)
       '@types/react':
-        specifier: ^19.2.7
-        version: 19.2.14
+        specifier: ^19.2.15
+        version: 19.2.15
       '@types/react-dom':
         specifier: ^19.2.3
-        version: 19.2.3(@types/react@19.2.14)
+        version: 19.2.3(@types/react@19.2.15)
       '@vitejs/plugin-react':
         specifier: ^5.1.2
         version: 5.1.3(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
@@ -1422,11 +1422,11 @@ importers:
         specifier: ^1.31.1
         version: 1.31.1(vite@8.0.7(@types/node@24.10.2)(esbuild@0.27.3)(jiti@2.6.1)(terser@5.38.1)(tsx@4.20.6))(workerd@1.20260405.1)(wrangler@4.81.0)
       '@types/react':
-        specifier: ^19.2.14
-        version: 19.2.14
+        specifier: ^19.2.15
+        version: 19.2.15
       '@types/react-dom':
         specifier: ^19.2.3
-        version: 19.2.3(@types/react@19.2.14)
+        version: 19.2.3(@types/react@19.2.15)
       '@vitejs/plugin-react':
         specifier: ^6.0.1
         version: 6.0.1(vite@8.0.7(@types/node@24.10.2)(esbuild@0.27.3)(jiti@2.6.1)(terser@5.38.1)(tsx@4.20.6))
@@ -1446,11 +1446,11 @@ importers:
         specifier: ^5.0.6
         version: 5.0.6
       '@types/react':
-        specifier: ^18.2.15
-        version: 18.3.18
+        specifier: ^19.2.15
+        version: 19.2.15
       '@types/react-dom':
-        specifier: ^18.2.7
-        version: 18.3.5(@types/react@18.3.18)
+        specifier: ^19.2.3
+        version: 19.2.3(@types/react@19.2.15)
       '@vitejs/plugin-react':
         specifier: ^4.7.0
         version: 4.7.0(vite@6.3.5(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
@@ -1545,8 +1545,8 @@ importers:
   test/environment-api:
     dependencies:
       '@types/react':
-        specifier: ^18.0.8
-        version: 18.3.18
+        specifier: ^19.2.15
+        version: 19.2.15
       '@vitejs/plugin-react':
         specifier: ^4.7.0
         version: 4.7.0(vite@6.3.5(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
@@ -1569,8 +1569,8 @@ importers:
   test/fileEnv:
     dependencies:
       '@types/react':
-        specifier: ^18.0.8
-        version: 18.3.18
+        specifier: ^19.2.15
+        version: 19.2.15
       '@vitejs/plugin-react':
         specifier: ^4.7.0
         version: 4.7.0(vite@6.3.5(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
@@ -1593,11 +1593,11 @@ importers:
   test/hook-override:
     dependencies:
       '@types/react':
-        specifier: ^18.2.15
-        version: 18.3.18
+        specifier: ^19.2.15
+        version: 19.2.15
       '@types/react-dom':
-        specifier: ^18.2.7
-        version: 18.3.5(@types/react@18.3.18)
+        specifier: ^19.2.3
+        version: 19.2.3(@types/react@19.2.15)
       '@vitejs/plugin-react':
         specifier: ^4.7.0
         version: 4.7.0(vite@6.3.5(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
@@ -1651,11 +1651,11 @@ importers:
         specifier: ^0.1.16
         version: 0.1.17(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(rollup@4.43.0)(srvx@0.11.16)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
       '@types/react':
-        specifier: ^19.2.14
-        version: 19.2.14
+        specifier: ^19.2.15
+        version: 19.2.15
       '@types/react-dom':
         specifier: ^19.2.3
-        version: 19.2.3(@types/react@19.2.14)
+        version: 19.2.3(@types/react@19.2.15)
       '@vitejs/plugin-react':
         specifier: ^5.1.3
         version: 5.1.3(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
@@ -1694,11 +1694,11 @@ importers:
         specifier: ^0.1.23
         version: 0.1.23(@hattip/core@0.0.49)(@photonjs/core@0.1.22(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.16)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)))(@photonjs/runtime@0.1.17(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(rollup@4.43.0)(srvx@0.11.16)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)))(@types/express@5.0.6)(@universal-middleware/h3@0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(srvx@0.11.16))(express@5.2.1)(fastify@5.7.4)(rollup@4.43.0)(srvx@0.11.16)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
       '@types/react':
-        specifier: ^19.2.7
-        version: 19.2.14
+        specifier: ^19.2.15
+        version: 19.2.15
       '@types/react-dom':
         specifier: ^19.2.3
-        version: 19.2.3(@types/react@19.2.14)
+        version: 19.2.3(@types/react@19.2.15)
       '@vitejs/plugin-react':
         specifier: ^5.1.2
         version: 5.1.3(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
@@ -1716,16 +1716,16 @@ importers:
         version: 3.1.1
       '@mdx-js/react':
         specifier: ^3.1.0
-        version: 3.1.1(@types/react@19.2.14)(react@19.2.6)
+        version: 3.1.1(@types/react@19.2.15)(react@19.2.6)
       '@mdx-js/rollup':
         specifier: ^3.1.0
         version: 3.1.1(rollup@4.43.0)
       '@types/react':
-        specifier: ^19.1.3
-        version: 19.2.14
+        specifier: ^19.2.15
+        version: 19.2.15
       '@types/react-dom':
-        specifier: ^19.1.4
-        version: 19.2.3(@types/react@19.2.14)
+        specifier: ^19.2.3
+        version: 19.2.3(@types/react@19.2.15)
       '@vitejs/plugin-react':
         specifier: ^4.7.0
         version: 4.7.0(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
@@ -1773,11 +1773,11 @@ importers:
         version: link:../../packages/vike
     devDependencies:
       '@types/react':
-        specifier: ^19.2.11
-        version: 19.2.14
+        specifier: ^19.2.15
+        version: 19.2.15
       '@types/react-dom':
         specifier: ^19.2.3
-        version: 19.2.3(@types/react@19.2.14)
+        version: 19.2.3(@types/react@19.2.15)
       '@vitejs/plugin-react':
         specifier: ^5.1.3
         version: 5.1.3(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
@@ -1864,11 +1864,11 @@ importers:
         specifier: ^5.0.6
         version: 5.0.6
       '@types/react':
-        specifier: ^19.1.3
-        version: 19.2.14
+        specifier: ^19.2.15
+        version: 19.2.15
       '@types/react-dom':
-        specifier: ^19.1.4
-        version: 19.2.3(@types/react@19.2.14)
+        specifier: ^19.2.3
+        version: 19.2.3(@types/react@19.2.15)
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -1904,11 +1904,11 @@ importers:
         specifier: ^5.0.6
         version: 5.0.6
       '@types/react':
-        specifier: ^19.2.7
-        version: 19.2.14
+        specifier: ^19.2.15
+        version: 19.2.15
       '@types/react-dom':
         specifier: ^19.2.3
-        version: 19.2.3(@types/react@19.2.14)
+        version: 19.2.3(@types/react@19.2.15)
       '@vitejs/plugin-react':
         specifier: ^5.1.2
         version: 5.1.3(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
@@ -1925,11 +1925,11 @@ importers:
   test/vike-react:
     dependencies:
       '@types/react':
-        specifier: ^19.1.10
-        version: 19.2.14
+        specifier: ^19.2.15
+        version: 19.2.15
       '@types/react-dom':
-        specifier: ^19.1.7
-        version: 19.2.3(@types/react@19.2.14)
+        specifier: ^19.2.3
+        version: 19.2.3(@types/react@19.2.15)
       '@vitejs/plugin-react':
         specifier: ^5.0.0
         version: 5.1.3(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
@@ -1962,13 +1962,13 @@ importers:
     dependencies:
       '@reduxjs/toolkit':
         specifier: ^2.6.1
-        version: 2.8.2(react-redux@9.2.0(@types/react@19.2.14)(react@19.2.6)(redux@5.0.1))(react@19.2.6)
+        version: 2.8.2(react-redux@9.2.0(@types/react@19.2.15)(react@19.2.6)(redux@5.0.1))(react@19.2.6)
       '@types/react':
-        specifier: ^19.0.10
-        version: 19.2.14
+        specifier: ^19.2.15
+        version: 19.2.15
       '@types/react-dom':
-        specifier: ^19.0.4
-        version: 19.2.3(@types/react@19.2.14)
+        specifier: ^19.2.3
+        version: 19.2.3(@types/react@19.2.15)
       '@vitejs/plugin-react':
         specifier: ^4.3.4
         version: 4.7.0(vite@6.3.5(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
@@ -1980,7 +1980,7 @@ importers:
         version: 19.2.6(react@19.2.6)
       react-redux:
         specifier: ^9.2.0
-        version: 9.2.0(@types/react@19.2.14)(react@19.2.6)(redux@5.0.1)
+        version: 9.2.0(@types/react@19.2.15)(react@19.2.6)(redux@5.0.1)
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -1992,7 +1992,7 @@ importers:
         version: 0.6.23(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vike@packages+vike)
       vike-react-redux:
         specifier: 0.1.3
-        version: 0.1.3(react-redux@9.2.0(@types/react@19.2.14)(react@19.2.6)(redux@5.0.1))(react@19.2.6)(vike-react@0.6.23(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vike@packages+vike))(vike@packages+vike)
+        version: 0.1.3(react-redux@9.2.0(@types/react@19.2.15)(react@19.2.6)(redux@5.0.1))(react@19.2.6)(vike-react@0.6.23(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vike@packages+vike))(vike@packages+vike)
       vite:
         specifier: ^6.2.5
         version: 6.3.5(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)
@@ -2000,11 +2000,11 @@ importers:
   test/vike-react-zustand:
     dependencies:
       '@types/react':
-        specifier: ^19.2.5
-        version: 19.2.14
+        specifier: ^19.2.15
+        version: 19.2.15
       '@types/react-dom':
         specifier: ^19.2.3
-        version: 19.2.3(@types/react@19.2.14)
+        version: 19.2.3(@types/react@19.2.15)
       '@vitejs/plugin-react':
         specifier: ^5.1.1
         version: 5.1.3(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
@@ -2028,13 +2028,13 @@ importers:
         version: 0.6.23(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vike@packages+vike)
       vike-react-zustand:
         specifier: ^0.1.9
-        version: 0.1.9(react-dom@19.2.6(react@19.2.6))(react-streaming@0.4.17(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(react@19.2.6)(vike-react@0.6.23(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vike@packages+vike))(vike@packages+vike)(zustand@5.0.9(@types/react@19.2.14)(immer@10.2.0)(react@19.2.6)(use-sync-external-store@1.5.0(react@19.2.6)))
+        version: 0.1.9(react-dom@19.2.6(react@19.2.6))(react-streaming@0.4.17(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(react@19.2.6)(vike-react@0.6.23(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vike@packages+vike))(vike@packages+vike)(zustand@5.0.9(@types/react@19.2.15)(immer@10.2.0)(react@19.2.6)(use-sync-external-store@1.5.0(react@19.2.6)))
       vite:
         specifier: ^7.2.2
         version: 7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)
       zustand:
         specifier: ^5.0.9
-        version: 5.0.9(@types/react@19.2.14)(immer@10.2.0)(react@19.2.6)(use-sync-external-store@1.5.0(react@19.2.6))
+        version: 5.0.9(@types/react@19.2.15)(immer@10.2.0)(react@19.2.6)(use-sync-external-store@1.5.0(react@19.2.6))
 
   test/vike-server:
     dependencies:
@@ -2174,11 +2174,11 @@ importers:
         specifier: ^24.1.0
         version: 24.10.2
       '@types/react':
-        specifier: ^19.1.9
-        version: 19.2.14
+        specifier: ^19.2.15
+        version: 19.2.15
       '@types/react-dom':
-        specifier: ^19.1.7
-        version: 19.2.3(@types/react@19.2.14)
+        specifier: ^19.2.3
+        version: 19.2.3(@types/react@19.2.15)
       '@vikejs/hono':
         specifier: ^0.2.0
         version: 0.2.0(@hattip/core@0.0.49)(@types/express@5.0.6)(fastify@5.7.4)(hono@4.10.4)(srvx@0.11.16)(vike@packages+vike)
@@ -4755,30 +4755,19 @@ packages:
   '@types/picomatch@4.0.2':
     resolution: {integrity: sha512-qHHxQ+P9PysNEGbALT8f8YOSHW0KJu6l2xU8DYY0fu/EmGxXdVnuTLvFUvBgPJMSqXq29SYHveejeAha+4AYgA==}
 
-  '@types/prop-types@15.7.14':
-    resolution: {integrity: sha512-gNMvNH49DJ7OJYv+KAKn0Xp45p8PLl6zo2YnvDIbTd4J6MER2BmWN49TG7n9LvkyihINxeKW8+3bfS2yDC9dzQ==}
-
   '@types/qs@6.14.0':
     resolution: {integrity: sha512-eOunJqu0K1923aExK6y8p6fsihYEn/BYuQ4g0CxAAgFc4b/ZLN4CrsRZ55srTdqoiLzU2B2evC+apEIxprEzkQ==}
 
   '@types/range-parser@1.2.7':
     resolution: {integrity: sha512-hKormJbkJqzQGhziax5PItDUTMAM9uE2XXQmM37dyd4hVM+5aVl7oVxMVUiVQn2oCQFN/LKCZdvSM0pFRqbSmQ==}
 
-  '@types/react-dom@18.3.5':
-    resolution: {integrity: sha512-P4t6saawp+b/dFrUr2cvkVsfvPguwsxtH6dNIYRllMsefqFzkZk5UIjzyDOv5g1dXIPdG4Sp1yCR4Z6RCUsG/Q==}
-    peerDependencies:
-      '@types/react': ^18.0.0
-
   '@types/react-dom@19.2.3':
     resolution: {integrity: sha512-jp2L/eY6fn+KgVVQAOqYItbF0VY/YApe5Mz2F0aykSO8gx31bYCZyvSeYxCHKvzHG5eZjc+zyaS5BrBWya2+kQ==}
     peerDependencies:
       '@types/react': ^19.2.0
 
-  '@types/react@18.3.18':
-    resolution: {integrity: sha512-t4yC+vtgnkYjNSKlFx1jkAhH8LgTo2N/7Qvi83kdEaUtMDiwpbLAktKDaAMlRcJ5eSxZkH74eEGt1ky31d7kfQ==}
-
-  '@types/react@19.2.14':
-    resolution: {integrity: sha512-ilcTH/UniCkMdtexkoCN0bI7pMcJDvmQFPvuPvmEaYA/NSfFTAgdUSLAoVjaRJm7+6PvcM+q1zYOwS4wTYMF9w==}
+  '@types/react@19.2.15':
+    resolution: {integrity: sha512-eRwcGNHve+E8qtEQSSRl6urh+rFop4v8gm6O8rGv25CodbvFdLjA1vVQ1KkiFE0w0UPOnb8tDiFKL5lp0rtY5Q==}
 
   '@types/semver@7.7.1':
     resolution: {integrity: sha512-FmgJfu+MOcQ370SD0ev7EI8TlCAfKYU+B4m5T3yXc1CiRN94g/SZPtsCkk506aUDtlMnFZvasDwHHUcZUEaYuA==}
@@ -8932,14 +8921,14 @@ snapshots:
   '@biomejs/cli-win32-x64@1.9.4':
     optional: true
 
-  '@brillout/docpress@0.16.39(@algolia/client-search@5.52.1)(@types/react@19.2.14)(@vitejs/plugin-react@5.1.3(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(rollup@4.43.0)(search-insights@2.17.3)(typescript@5.9.3)(vike@packages+vike)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))':
+  '@brillout/docpress@0.16.39(@algolia/client-search@5.52.1)(@types/react@19.2.15)(@vitejs/plugin-react@5.1.3(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(rollup@4.43.0)(search-insights@2.17.3)(typescript@5.9.3)(vike@packages+vike)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))':
     dependencies:
       '@brillout/picocolors': 1.0.31
       '@brillout/shiki-transformers': 4.0.2
       '@docsearch/css': 3.9.0
-      '@docsearch/react': 3.9.0(@algolia/client-search@5.52.1)(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(search-insights@2.17.3)
+      '@docsearch/react': 3.9.0(@algolia/client-search@5.52.1)(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(search-insights@2.17.3)
       '@mdx-js/mdx': 3.0.1
-      '@mdx-js/react': 3.0.1(@types/react@19.2.14)(react@19.2.6)
+      '@mdx-js/react': 3.0.1(@types/react@19.2.15)(react@19.2.6)
       '@mdx-js/rollup': 3.0.1(rollup@4.43.0)
       '@shikijs/transformers': 4.1.0
       '@vitejs/plugin-react': 5.1.3(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
@@ -9105,14 +9094,14 @@ snapshots:
 
   '@docsearch/css@3.9.0': {}
 
-  '@docsearch/react@3.9.0(@algolia/client-search@5.52.1)(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(search-insights@2.17.3)':
+  '@docsearch/react@3.9.0(@algolia/client-search@5.52.1)(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(search-insights@2.17.3)':
     dependencies:
       '@algolia/autocomplete-core': 1.17.9(@algolia/client-search@5.52.1)(algoliasearch@5.52.1)(search-insights@2.17.3)
       '@algolia/autocomplete-preset-algolia': 1.17.9(@algolia/client-search@5.52.1)(algoliasearch@5.52.1)
       '@docsearch/css': 3.9.0
       algoliasearch: 5.52.1
     optionalDependencies:
-      '@types/react': 19.2.14
+      '@types/react': 19.2.15
       react: 19.2.6
       react-dom: 19.2.6(react@19.2.6)
       search-insights: 2.17.3
@@ -9685,16 +9674,16 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@mdx-js/react@3.0.1(@types/react@19.2.14)(react@19.2.6)':
+  '@mdx-js/react@3.0.1(@types/react@19.2.15)(react@19.2.6)':
     dependencies:
       '@types/mdx': 2.0.13
-      '@types/react': 19.2.14
+      '@types/react': 19.2.15
       react: 19.2.6
 
-  '@mdx-js/react@3.1.1(@types/react@19.2.14)(react@19.2.6)':
+  '@mdx-js/react@3.1.1(@types/react@19.2.15)(react@19.2.6)':
     dependencies:
       '@types/mdx': 2.0.13
-      '@types/react': 19.2.14
+      '@types/react': 19.2.15
       react: 19.2.6
 
   '@mdx-js/rollup@3.0.1(rollup@4.43.0)':
@@ -10062,7 +10051,7 @@ snapshots:
 
   '@poppinss/exception@1.2.2': {}
 
-  '@reduxjs/toolkit@2.8.2(react-redux@9.2.0(@types/react@19.2.14)(react@19.2.6)(redux@5.0.1))(react@19.2.6)':
+  '@reduxjs/toolkit@2.8.2(react-redux@9.2.0(@types/react@19.2.15)(react@19.2.6)(redux@5.0.1))(react@19.2.6)':
     dependencies:
       '@standard-schema/spec': 1.1.0
       '@standard-schema/utils': 0.3.0
@@ -10072,7 +10061,7 @@ snapshots:
       reselect: 5.1.1
     optionalDependencies:
       react: 19.2.6
-      react-redux: 9.2.0(@types/react@19.2.14)(react@19.2.6)(redux@5.0.1)
+      react-redux: 9.2.0(@types/react@19.2.15)(react@19.2.6)(redux@5.0.1)
 
   '@renovatebot/pep440@4.2.1': {}
 
@@ -10763,26 +10752,15 @@ snapshots:
 
   '@types/picomatch@4.0.2': {}
 
-  '@types/prop-types@15.7.14': {}
-
   '@types/qs@6.14.0': {}
 
   '@types/range-parser@1.2.7': {}
 
-  '@types/react-dom@18.3.5(@types/react@18.3.18)':
+  '@types/react-dom@19.2.3(@types/react@19.2.15)':
     dependencies:
-      '@types/react': 18.3.18
+      '@types/react': 19.2.15
 
-  '@types/react-dom@19.2.3(@types/react@19.2.14)':
-    dependencies:
-      '@types/react': 19.2.14
-
-  '@types/react@18.3.18':
-    dependencies:
-      '@types/prop-types': 15.7.14
-      csstype: 3.2.3
-
-  '@types/react@19.2.14':
+  '@types/react@19.2.15':
     dependencies:
       csstype: 3.2.3
 
@@ -14141,13 +14119,13 @@ snapshots:
 
   react-is@16.13.1: {}
 
-  react-redux@9.2.0(@types/react@19.2.14)(react@19.2.6)(redux@5.0.1):
+  react-redux@9.2.0(@types/react@19.2.15)(react@19.2.6)(redux@5.0.1):
     dependencies:
       '@types/use-sync-external-store': 0.0.6
       react: 19.2.6
       use-sync-external-store: 1.5.0(react@19.2.6)
     optionalDependencies:
-      '@types/react': 19.2.14
+      '@types/react': 19.2.15
       redux: 5.0.1
 
   react-refresh@0.17.0: {}
@@ -15225,14 +15203,14 @@ snapshots:
       - srvx
       - supports-color
 
-  vike-react-redux@0.1.3(react-redux@9.2.0(@types/react@19.2.14)(react@19.2.6)(redux@5.0.1))(react@19.2.6)(vike-react@0.6.23(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vike@packages+vike))(vike@packages+vike):
+  vike-react-redux@0.1.3(react-redux@9.2.0(@types/react@19.2.15)(react@19.2.6)(redux@5.0.1))(react@19.2.6)(vike-react@0.6.23(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vike@packages+vike))(vike@packages+vike):
     dependencies:
       react: 19.2.6
-      react-redux: 9.2.0(@types/react@19.2.14)(react@19.2.6)(redux@5.0.1)
+      react-redux: 9.2.0(@types/react@19.2.15)(react@19.2.6)(redux@5.0.1)
       vike: link:packages/vike
       vike-react: 0.6.23(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vike@packages+vike)
 
-  vike-react-zustand@0.1.9(react-dom@19.2.6(react@19.2.6))(react-streaming@0.4.17(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(react@19.2.6)(vike-react@0.6.23(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vike@packages+vike))(vike@packages+vike)(zustand@5.0.9(@types/react@19.2.14)(immer@10.2.0)(react@19.2.6)(use-sync-external-store@1.5.0(react@19.2.6))):
+  vike-react-zustand@0.1.9(react-dom@19.2.6(react@19.2.6))(react-streaming@0.4.17(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(react@19.2.6)(vike-react@0.6.23(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vike@packages+vike))(vike@packages+vike)(zustand@5.0.9(@types/react@19.2.15)(immer@10.2.0)(react@19.2.6)(use-sync-external-store@1.5.0(react@19.2.6))):
     dependencies:
       '@babel/core': 7.29.0
       '@babel/types': 7.29.0
@@ -15242,7 +15220,7 @@ snapshots:
       react-streaming: 0.4.17(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       vike: link:packages/vike
       vike-react: 0.6.23(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vike@packages+vike)
-      zustand: 5.0.9(@types/react@19.2.14)(immer@10.2.0)(react@19.2.6)(use-sync-external-store@1.5.0(react@19.2.6))
+      zustand: 5.0.9(@types/react@19.2.15)(immer@10.2.0)(react@19.2.6)(use-sync-external-store@1.5.0(react@19.2.6))
     transitivePeerDependencies:
       - supports-color
 
@@ -15786,9 +15764,9 @@ snapshots:
 
   zod@4.4.3: {}
 
-  zustand@5.0.9(@types/react@19.2.14)(immer@10.2.0)(react@19.2.6)(use-sync-external-store@1.5.0(react@19.2.6)):
+  zustand@5.0.9(@types/react@19.2.15)(immer@10.2.0)(react@19.2.6)(use-sync-external-store@1.5.0(react@19.2.6)):
     optionalDependencies:
-      '@types/react': 19.2.14
+      '@types/react': 19.2.15
       immer: 10.2.0
       react: 19.2.6
       use-sync-external-store: 1.5.0(react@19.2.6)
