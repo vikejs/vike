@@ -79,7 +79,7 @@ async function getViteInfo(viteContext: ViteContext) {
 
   // Precedence:
   // 1. (highest precedence)  |  viteConfigFromUserEnvVar          |  VITE_CONFIG
-  // 2.                       |  viteConfigFromUserVikeMode        |  VIKE_CONFIG & Vike CLI options — only `+mode`
+  // 2.                       |  viteConfigFromUserVikeSettings    |  VIKE_CONFIG & Vike CLI options — only `+mode` & `+root`
   // 3.                       |  viteConfigFromUserViteCli         |  Vite CLI args — `[root]` & `-c/--config`
   // 4.                       |  viteConfigFromUserVikeApiOptions  |  Vike API options
   // 5. (lowest precedence)   |  viteConfigFromUserViteConfigFile  |  vite.config.js
@@ -92,11 +92,18 @@ async function getViteInfo(viteContext: ViteContext) {
     viteConfigFromUserResolved = merge(viteConfigFromUserResolved ?? {}, viteConfigFromUserViteCli)
   }
 
-  // Resolve Vike's +mode setting
+  // Resolve Vike's +mode and +root settings.
+  // These alias Vite settings that need to be resolved early: +root determines where Vike looks for
+  // +config.js files (so it can't be defined inside +config.js itself), and +mode affects which
+  // vite.config.js environment is loaded. That's why — unlike +host/+port/+force which are applied
+  // later from the resolved Vike config — they're read here from Vike's CLI options & VIKE_CONFIG only.
   {
-    const viteConfigFromUserVikeMode = pick(getVikeConfigFromCliOrEnv().vikeConfigFromCliOrEnv as Config, ['mode'])
-    if (Object.keys(viteConfigFromUserVikeMode).length > 0) {
-      viteConfigFromUserResolved = merge(viteConfigFromUserResolved ?? {}, viteConfigFromUserVikeMode)
+    const viteConfigFromUserVikeSettings = pick(getVikeConfigFromCliOrEnv().vikeConfigFromCliOrEnv as Config, [
+      'mode',
+      'root',
+    ])
+    if (Object.keys(viteConfigFromUserVikeSettings).length > 0) {
+      viteConfigFromUserResolved = merge(viteConfigFromUserResolved ?? {}, viteConfigFromUserVikeSettings)
     }
   }
 

@@ -102,6 +102,7 @@ function showHelp(): never {
         `vike dev ${pc.cyan('--port')} 80       ${TAB}${pc.dim('# Change the server port')}`,
         `vike build ${pc.cyan('--mode')} staging${TAB}${pc.dim('# Set the mode to run in')}`,
         `vike dev ${pc.cyan('--force')}         ${TAB}${pc.dim("# Disable Vite's cache")}`,
+        `vike dev ${pc.cyan('--root')} src      ${TAB}${pc.dim('# Set the project root directory')}`,
       ]
         .map((o) => `  ${pc.dim('$')} ${o}`)
         .join('\n'),

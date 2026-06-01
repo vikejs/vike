@@ -322,6 +322,11 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
     global: true,
     vite: true,
   },
+  root: {
+    env: { config: true },
+    global: true,
+    vite: true,
+  },
   csp: {
     env: { server: true },
   },

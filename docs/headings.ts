@@ -1409,6 +1409,10 @@ function api() {
         url: '/mode',
       },
       {
+        title: '`+root`',
+        url: '/root',
+      },
+      {
         title: '`getPageContext()`',
         url: '/getPageContext',
       },
