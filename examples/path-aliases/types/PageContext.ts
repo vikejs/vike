@@ -1,3 +1,5 @@
+import type { JSX } from 'react'
+
 export type { PageContextClient, PageContextServer } from 'vike/types'
 
 export type ReactComponent = () => JSX.Element
