@@ -81,17 +81,17 @@ async function resolve(viteContext: ViteContext) {
   // 5. (lowest precedence)   |  viteConfigFromViteFile      |  vite.config.js
   let viteConfigUser: UserConfig = {}
   // Merge `c` overriding viteConfigUser (`c` wins — higher precedence)
-  const add = (c: UserConfig) => {
-    viteConfigUser = mergeConfig(viteConfigUser, c)
+  const add = (c: UserConfig | null | undefined) => {
+    viteConfigUser = mergeConfig(viteConfigUser, c ?? {})
   }
   // Merge `c` underiding viteConfigUser (`c` loses — lower precedence)
-  const underride = (c: UserConfig) => {
-    return mergeConfig(c, viteConfigUser)
+  const underride = (c: UserConfig | null | undefined) => {
+    return mergeConfig(c ?? {}, viteConfigUser)
   }
 
   // Vike API args
   const { viteConfigFromVikeApi, vikeConfigFromApi } = getVikeApiContext()
-  add(viteConfigFromVikeApi ?? {}) // `viteConfig`
+  add(viteConfigFromVikeApi) // `viteConfig`
   add(pick(vikeConfigFromApi ?? {}, EARLY_SETTINGS)) // `+mode` & `+root`
 
   // Vite CLI args (when invoked via Vite's CLI rather than Vike's API).
