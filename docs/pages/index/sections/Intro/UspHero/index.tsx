@@ -39,8 +39,8 @@ const UspHero = () => {
       {/* static scrolling */}
       <UspStaticContent uspVisualStateById={uspVisualStateById} />
 
-      <div className="relative h-1 w-full left-0 -top-80 z-50 mx-auto">
-        <SharedOuterGrid className="z-40 min-h-80 top-0">
+      <div className="relative h-1 w-full left-0 -top-65 z-50 mx-auto">
+        <SharedOuterGrid className="z-40 min-h-65 top-0">
           {landingPageHeroUsps.map((usp) => (
             <div
               key={`${usp.id}-interaction`}
