@@ -329,7 +329,7 @@ async function resolveVikeConfigInternal(
 
   setCliAndApiOptions(pageConfigGlobal, pageConfigs, configDefinitionsResolved)
 
-  warnCliOnlySettings(pageConfigGlobal)
+  warnEarlySettingsInConfigFile(pageConfigGlobal)
 
   const globalConfigPublic = resolveGlobalConfig(pageConfigGlobal, pageConfigs)
 
@@ -735,14 +735,14 @@ function setCliAndApiOptions(
     })
   }
 }
-function warnCliOnlySettings(pageConfigGlobal: PageConfigGlobalBuildTime) {
-  const CLI_ONLY_SETTINGS = [
+function warnEarlySettingsInConfigFile(pageConfigGlobal: PageConfigGlobalBuildTime) {
+  const EARLY_SETTINGS = [
     // +root is needed before loading +config.js files
     'root',
     // +mode is needed to load the vite.config.js file
     'mode',
   ] as const
-  for (const configName of CLI_ONLY_SETTINGS) {
+  for (const configName of EARLY_SETTINGS) {
     const sources = pageConfigGlobal.configValueSources[configName]
     if (!sources) continue
     for (const source of sources) {
