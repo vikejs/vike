@@ -47,17 +47,17 @@ async function getVikeConfigInternalEarly() {
   assert(!globalObject.isResolvingViteConfigUser) // ensure no infinite loop
   if (!isVikeConfigContextSet()) {
     const viteContext = getViteContext()
-    const viteInfo = await resolve(viteContext)
-    setVikeConfigContext_(viteInfo, viteContext)
+    const resolved = await resolve(viteContext)
+    setVikeConfigContext_(resolved, viteContext)
   }
   return await getVikeConfigInternal()
 }
 
-function setVikeConfigContext_(viteInfo: ViteInfo, viteContext: ViteContext) {
+function setVikeConfigContext_(resolved: Resolved, viteContext: ViteContext) {
   setVikeConfigContext({
-    userRootDir: viteInfo.root,
+    userRootDir: resolved.root,
     isDev: viteContext === 'dev',
-    vikeVitePluginOptions: viteInfo.vikeVitePluginOptions,
+    vikeVitePluginOptions: resolved.vikeVitePluginOptions,
   })
 }
 
@@ -71,7 +71,7 @@ async function getViteRoot(viteContext: ViteContext) {
   return globalObject.root
 }
 
-type ViteInfo = Awaited<ReturnType<typeof resolve>>
+type Resolved = Awaited<ReturnType<typeof resolve>>
 async function resolve(viteContext: ViteContext) {
   // Precedence:
   // 1. (highest precedence)  |  viteConfigFromViteEnv       |  VITE_CONFIG
