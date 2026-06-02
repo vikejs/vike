@@ -84,49 +84,43 @@ async function getViteInfo(viteContext: ViteContext) {
   // 4.                       |  viteConfigFromVikeApi       |  Vike API options — `viteConfig`, and `+mode` & `+root` from `vikeConfig`
   // 5. (lowest precedence)   |  viteConfigFromViteFile      |  vite.config.js
   let viteConfigFromUserResolved: UserConfig = {}
+  // Merge `c` overriding viteConfigFromUserResolved (`c` wins — higher precedence).
+  const override = (c: UserConfig) => (viteConfigFromUserResolved = mergeConfig(viteConfigFromUserResolved, c))
+  // Merge `c` underring viteConfigFromUserResolved (`c` loses — lower precedence).
+  const underide = (c: UserConfig) => (viteConfigResolved = mergeConfig(c, viteConfigResolved))
 
   // Vike API args
   const { viteConfigFromVikeApi, vikeConfigFromApi } = getVikeApiContext()
-  // - Resolve `viteConfig` set over Vike's API
-  viteConfigFromUserResolved = merge(viteConfigFromUserResolved, viteConfigFromVikeApi ?? {})
-  // - Resolve +mode/+root set over Vike's API
-  {
-    const viteConfigFromVikeApi2 = pick(vikeConfigFromApi ?? {}, EARLY_SETTINGS)
-    viteConfigFromUserResolved = merge(viteConfigFromUserResolved ?? {}, viteConfigFromVikeApi2)
-  }
+  override(viteConfigFromVikeApi ?? {}) // `viteConfig`
+  override(pick(vikeConfigFromApi ?? {}, EARLY_SETTINGS)) // `+mode` & `+root`
 
   // Vite CLI args (when invoked via Vite's CLI rather than Vike's API).
   // - Without this, Vike loads vite.config.js blind to `vite [root]` / `-c <file>` and ends up with the wrong root when those Vite CLI args are used.
   const viteConfigFromViteCli = getViteCliArgs()
-  if (viteConfigFromViteCli) {
-    viteConfigFromUserResolved = merge(viteConfigFromUserResolved ?? {}, viteConfigFromViteCli)
-  }
+  if (viteConfigFromViteCli) override(viteConfigFromViteCli)
 
-  // Vike's CLI and VIKE_CONFIG
-  // - Resolve +mode/+root set over Vike's CLI or VIKE_CONFIG
+  // Vike's CLI and VIKE_CONFIG — `+mode` & `+root`
   {
     const viteConfigFromVikeCliOrEnv = pick(
       getVikeConfigFromCliOrEnv().vikeConfigFromCliOrEnv as Config,
       EARLY_SETTINGS,
     )
-    if (Object.keys(viteConfigFromVikeCliOrEnv).length > 0) {
-      viteConfigFromUserResolved = merge(viteConfigFromUserResolved ?? {}, viteConfigFromVikeCliOrEnv)
-    }
+    if (Object.keys(viteConfigFromVikeCliOrEnv).length > 0) override(viteConfigFromVikeCliOrEnv)
   }
 
-  // Resolve VITE_CONFIG
+  // VITE_CONFIG
   const viteConfigFromViteEnv = getEnvVarObject('VITE_CONFIG')
-  if (viteConfigFromViteEnv) {
-    viteConfigFromUserResolved = merge(viteConfigFromUserResolved ?? {}, viteConfigFromViteEnv)
-  }
+  if (viteConfigFromViteEnv) override(viteConfigFromViteEnv)
 
-  // Resolve vite.config.js
+  // vite.config.js — lowest precedence. Merged into a *separate* result (used only to compute `root` and to
+  // find the Vike plugin): it must not flow back into `viteConfigFromUserResolved`, which is handed to Vite —
+  // Vite loads vite.config.js itself, so merging it here would add the Vike plugin twice.
+  // Replicates Vite: https://github.com/vitejs/vite/blob/4f5845a3182fc950eb9cd76d7161698383113b18/packages/vite/src/node/config.ts#L1001
   globalObject.isOnlyResolvingUserConfig = true
   const viteConfigFromViteFile = await loadViteConfigFile(viteConfigFromUserResolved, viteContext)
   globalObject.isOnlyResolvingUserConfig = false
-  // Lowest precedence. The `merge()` applies the correct precedence and replicates Vite:
-  // https://github.com/vitejs/vite/blob/4f5845a3182fc950eb9cd76d7161698383113b18/packages/vite/src/node/config.ts#L1001
-  const viteConfigResolved = merge(viteConfigFromViteFile ?? {}, viteConfigFromUserResolved ?? {})
+  let viteConfigResolved = viteConfigFromUserResolved
+  underide(viteConfigFromViteFile ?? {})
 
   const root = normalizeViteRoot(viteConfigResolved.root ?? process.cwd())
   globalObject.root = root
@@ -161,10 +155,6 @@ async function getViteInfo(viteContext: ViteContext) {
   assert(vikeVitePluginOptions)
 
   return { root, vikeVitePluginOptions, viteConfigFromUserResolved }
-}
-/** `c2` overrides `c1` */
-function merge(c1: UserConfig, c2: UserConfig): UserConfig {
-  return mergeConfig(c1, c2)
 }
 
 function findVikeVitePlugin(viteConfig: InlineConfig | UserConfig | undefined | null) {
