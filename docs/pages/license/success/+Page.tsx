@@ -5,7 +5,8 @@ import React from 'react'
 
 const colorNote = '#64748b'
 const colorBorder = '#e2e8f0'
-const colorHeading = '#0f172a'
+// docpress's site-wide text color (the muted/border colors below have no docs-wide var)
+const colorHeading = 'var(--color-text)'
 
 function Page() {
   return (
