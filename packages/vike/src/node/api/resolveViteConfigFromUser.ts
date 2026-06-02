@@ -251,8 +251,7 @@ function getViteContextWithOperation(operation: ApiOperation): ViteContext {
 }
 function getVikeApiContext() {
   const vikeApiOperation = getVikeApiOperation()
-  if (!vikeApiOperation)
-    return { viteConfigFromVikeApi: null, vikeConfigFromApi: null, viteContext: null }
+  if (!vikeApiOperation) return { viteConfigFromVikeApi: null, vikeConfigFromApi: null, viteContext: null }
   const { options, operation } = vikeApiOperation!
   const viteConfigFromVikeApi = options.viteConfig
   const vikeConfigFromApi = options.vikeConfig
