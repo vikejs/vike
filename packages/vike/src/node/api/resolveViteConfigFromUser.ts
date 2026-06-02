@@ -76,6 +76,7 @@ type ViteInfo = Awaited<ReturnType<typeof getViteInfo>>
 // TODO rename to resolveViteConfig
 // TODO rename_all viteConfigFromUser viteConfigFrom
 // TODO rename_all vikeConfigFromUser vikeConfigFrom
+// TODO rename_all viteConfigFromUserVikeSettings viteConfigFromVikeCliOrEnv
 async function getViteInfo(viteContext: ViteContext) {
   const { viteConfigFromUserVikeApiOptions, vikeConfigFromUserVikeApiOptions } = getVikeApiContext()
 
@@ -88,7 +89,7 @@ async function getViteInfo(viteContext: ViteContext) {
   // 4.                       |  viteConfigFromUserVikeApiOptions  |  Vike API options — `viteConfig`, and `+mode`/`+root` from `vikeConfig`
   // 5. (lowest precedence)   |  viteConfigFromUserViteConfigFile  |  vite.config.js
 
-  // Resolve Vike's +mode/+root set over Vike's API (lowest precedence among the early sources, alongside `viteConfig`)
+  // Resolve +mode/+root — set over Vike's API
   if (vikeConfigFromUserVikeApiOptions) {
     const viteConfigFromUserVikeApiSettings = pick(vikeConfigFromUserVikeApiOptions, EARLY_SETTINGS)
     if (Object.keys(viteConfigFromUserVikeApiSettings).length > 0) {
@@ -97,14 +98,13 @@ async function getViteInfo(viteContext: ViteContext) {
   }
 
   // Resolve Vite CLI args (when invoked via Vite's CLI rather than Vike's API).
-  // Without this, Vike loads vite.config.js blind to `vite [root]` / `-c <file>` and
-  // ends up with the wrong root when those Vite CLI args are used.
+  // - Without this, Vike loads vite.config.js blind to `vite [root]` / `-c <file>` and ends up with the wrong root when those Vite CLI args are used.
   const viteConfigFromUserViteCli = getViteCliArgs()
   if (viteConfigFromUserViteCli) {
     viteConfigFromUserResolved = merge(viteConfigFromUserResolved ?? {}, viteConfigFromUserViteCli)
   }
 
-  // Resolve Vike's +mode/+root set over Vike's CLI options & VIKE_CONFIG
+  // Resolve +mode/+root — set over Vike's CLI or VIKE_CONFIG
   {
     const viteConfigFromUserVikeSettings = pick(
       getVikeConfigFromCliOrEnv().vikeConfigFromCliOrEnv as Config,
