@@ -110,7 +110,7 @@ async function resolve(viteContext: ViteContext) {
 
   // VITE_CONFIG
   const viteConfigFromViteEnv = getEnvVarObject('VITE_CONFIG')
-  if (viteConfigFromViteEnv) add(viteConfigFromViteEnv)
+  add(viteConfigFromViteEnv)
 
   // vite.config.js — lowest precedence. Merged into a *separate* result (used only to compute `root` and to
   // find the Vike plugin): it must not flow back into `viteConfigUser`, which is handed to Vite —
