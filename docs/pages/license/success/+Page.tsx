@@ -5,6 +5,8 @@ import React from 'react'
 
 const colorNote = '#64748b'
 const colorBorder = '#e2e8f0'
+// Matches the landing-page hero tagline (Tailwind `text-grey` → `--color-grey`, which isn't defined outside the landing page)
+const colorTagline = 'oklch(0.5553 0 0)'
 // docpress's site-wide text color (the muted/border colors below have no docs-wide var)
 const colorHeading = 'var(--color-text)'
 
@@ -14,7 +16,7 @@ function Page() {
       <div style={{ textAlign: 'center', marginTop: 20 }}>
         <div style={{ fontSize: 56, marginBottom: 12 }}>🎉</div>
         <h1 style={{ fontSize: 30, fontWeight: 700, color: colorHeading, marginBottom: 12 }}>You're all set</h1>
-        <p style={{ color: colorNote, fontSize: '1.05em', lineHeight: 1.5, margin: 0 }}>
+        <p style={{ color: colorTagline, fontSize: '1.05em', lineHeight: 1.5, margin: 0 }}>
           You can now use Vike fully unlocked, forever.
         </p>
       </div>
