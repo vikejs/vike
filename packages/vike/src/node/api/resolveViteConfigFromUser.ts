@@ -89,7 +89,9 @@ async function getViteInfo(viteContext: ViteContext) {
     viteConfigFromUserResolved = mergeConfig(viteConfigFromUserResolved, c)
   }
   // Merge `c` underiding viteConfigFromUserResolved (`c` loses — lower precedence)
-  const underide = (c: UserConfig) => mergeConfig(c, viteConfigFromUserResolved)
+  const underide = (c: UserConfig) => {
+    return mergeConfig(c, viteConfigFromUserResolved)
+  }
 
   // Vike API args
   const { viteConfigFromVikeApi, vikeConfigFromApi } = getVikeApiContext()
