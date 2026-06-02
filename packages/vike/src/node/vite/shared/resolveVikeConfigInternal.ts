@@ -735,11 +735,13 @@ function setCliAndApiOptions(
     })
   }
 }
-// +root/+mode alias Vite settings that Vike resolves before it crawls +config.js files (see getViteInfo()):
-// +root determines where Vike looks for +config.js files, and +mode is needed to load vite.config.js. So,
-// unlike other Vike settings, they can't be set from a +config.js file — warn if a user tries to.
 function warnCliOnlySettings(pageConfigGlobal: PageConfigGlobalBuildTime) {
-  const CLI_ONLY_SETTINGS = ['root', 'mode'] as const;
+  const CLI_ONLY_SETTINGS = [
+    // +root is needed before loading +config.js files
+    'root',
+    // +mode is needed to load the vite.config.js file
+    'mode',
+  ] as const
   for (const configName of CLI_ONLY_SETTINGS) {
     const sources = pageConfigGlobal.configValueSources[configName]
     if (!sources) continue
