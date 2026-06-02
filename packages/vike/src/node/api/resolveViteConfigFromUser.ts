@@ -85,7 +85,9 @@ async function getViteInfo(viteContext: ViteContext) {
   // 5. (lowest precedence)   |  viteConfigFromViteFile      |  vite.config.js
   let viteConfigFromUserResolved: UserConfig = {}
   // Merge `c` overriding viteConfigFromUserResolved (`c` wins — higher precedence)
-  const override = (c: UserConfig) => (viteConfigFromUserResolved = mergeConfig(viteConfigFromUserResolved, c))
+  const override = (c: UserConfig) => {
+    viteConfigFromUserResolved = mergeConfig(viteConfigFromUserResolved, c)
+  }
   // Merge `c` underiding viteConfigFromUserResolved (`c` loses — lower precedence)
   const underide = (c: UserConfig) => mergeConfig(c, viteConfigFromUserResolved)
 
