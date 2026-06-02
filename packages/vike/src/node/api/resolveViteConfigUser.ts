@@ -105,7 +105,7 @@ async function resolve(viteContext: ViteContext) {
       getVikeConfigFromCliOrEnv().vikeConfigFromCliOrEnv as Config,
       EARLY_SETTINGS,
     )
-    if (Object.keys(viteConfigFromVikeCliOrEnv).length > 0) add(viteConfigFromVikeCliOrEnv)
+    add(viteConfigFromVikeCliOrEnv)
   }
 
   // VITE_CONFIG
