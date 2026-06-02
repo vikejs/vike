@@ -73,16 +73,30 @@ async function getViteRoot(viteContext: ViteContext) {
 
 type ViteInfo = Awaited<ReturnType<typeof getViteInfo>>
 async function getViteInfo(viteContext: ViteContext) {
-  const { viteConfigFromUserVikeApiOptions } = getVikeApiContext()
+  const { viteConfigFromUserVikeApiOptions, vikeConfigFromUserVikeApiOptions } = getVikeApiContext()
 
   let viteConfigFromUserResolved = clone(viteConfigFromUserVikeApiOptions ?? {})
+
+  // The +mode and +root settings alias Vite settings that need to be resolved early: +root determines
+  // where Vike looks for +config.js files (so it can't be defined inside +config.js itself), and +mode
+  // affects which vite.config.js environment is loaded. That's why — unlike +host/+port/+force which are
+  // applied later from the resolved Vike config — they're read here from the sources available before
+  // Vike crawls +config.js files: Vike's API options, CLI options, and VIKE_CONFIG.
 
   // Precedence:
   // 1. (highest precedence)  |  viteConfigFromUserEnvVar          |  VITE_CONFIG
   // 2.                       |  viteConfigFromUserVikeSettings    |  VIKE_CONFIG & Vike CLI options — only `+mode` & `+root`
   // 3.                       |  viteConfigFromUserViteCli         |  Vite CLI args — `[root]` & `-c/--config`
-  // 4.                       |  viteConfigFromUserVikeApiOptions  |  Vike API options
+  // 4.                       |  viteConfigFromUserVikeApiOptions  |  Vike API options — `viteConfig`, and `+mode`/`+root` from `vikeConfig`
   // 5. (lowest precedence)   |  viteConfigFromUserViteConfigFile  |  vite.config.js
+
+  // Resolve Vike's +mode/+root set over Vike's API (lowest precedence among the early sources, alongside `viteConfig`)
+  if (vikeConfigFromUserVikeApiOptions) {
+    const viteConfigFromUserVikeApiSettings = pick(vikeConfigFromUserVikeApiOptions, ['mode', 'root'])
+    if (Object.keys(viteConfigFromUserVikeApiSettings).length > 0) {
+      viteConfigFromUserResolved = merge(viteConfigFromUserResolved ?? {}, viteConfigFromUserVikeApiSettings)
+    }
+  }
 
   // Resolve Vite CLI args (when invoked via Vite's CLI rather than Vike's API).
   // Without this, Vike loads vite.config.js blind to `vite [root]` / `-c <file>` and
@@ -92,11 +106,7 @@ async function getViteInfo(viteContext: ViteContext) {
     viteConfigFromUserResolved = merge(viteConfigFromUserResolved ?? {}, viteConfigFromUserViteCli)
   }
 
-  // Resolve Vike's +mode and +root settings.
-  // These alias Vite settings that need to be resolved early: +root determines where Vike looks for
-  // +config.js files (so it can't be defined inside +config.js itself), and +mode affects which
-  // vite.config.js environment is loaded. That's why — unlike +host/+port/+force which are applied
-  // later from the resolved Vike config — they're read here from Vike's CLI options & VIKE_CONFIG only.
+  // Resolve Vike's +mode/+root set over Vike's CLI options & VIKE_CONFIG
   {
     const viteConfigFromUserVikeSettings = pick(getVikeConfigFromCliOrEnv().vikeConfigFromCliOrEnv as Config, [
       'mode',
@@ -247,11 +257,13 @@ function getViteContextWithOperation(operation: ApiOperation): ViteContext {
 }
 function getVikeApiContext() {
   const vikeApiOperation = getVikeApiOperation()
-  if (!vikeApiOperation) return { viteConfigFromUserVikeApiOptions: null, viteContext: null }
+  if (!vikeApiOperation)
+    return { viteConfigFromUserVikeApiOptions: null, vikeConfigFromUserVikeApiOptions: null, viteContext: null }
   const { options, operation } = vikeApiOperation!
   const viteConfigFromUserVikeApiOptions = options.viteConfig
+  const vikeConfigFromUserVikeApiOptions = options.vikeConfig
   const viteContext = getViteContextWithOperation(operation)
-  return { viteConfigFromUserVikeApiOptions, viteContext }
+  return { viteConfigFromUserVikeApiOptions, vikeConfigFromUserVikeApiOptions, viteContext }
 }
 
 function resolveViteContext(inlineConfig: InlineConfig = {}, viteContext: ViteContext) {

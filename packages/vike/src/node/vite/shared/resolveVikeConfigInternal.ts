@@ -329,6 +329,8 @@ async function resolveVikeConfigInternal(
 
   setCliAndApiOptions(pageConfigGlobal, pageConfigs, configDefinitionsResolved)
 
+  warnIfViteAliasSettingSetInConfigFile(pageConfigGlobal)
+
   const globalConfigPublic = resolveGlobalConfig(pageConfigGlobal, pageConfigs)
 
   const prerenderContext = await resolvePrerenderContext({
@@ -731,6 +733,25 @@ function setCliAndApiOptions(
         sources.unshift(source)
       })
     })
+  }
+}
+// +root/+mode alias Vite settings that Vike resolves before it crawls +config.js files (see getViteInfo()):
+// +root determines where Vike looks for +config.js files, and +mode is needed to load vite.config.js. So,
+// unlike other Vike settings, they can't be set from a +config.js file — warn if a user tries to.
+function warnIfViteAliasSettingSetInConfigFile(pageConfigGlobal: PageConfigGlobalBuildTime) {
+  for (const configName of ['root', 'mode'] as const) {
+    const sources = pageConfigGlobal.configValueSources[configName]
+    if (!sources) continue
+    for (const source of sources) {
+      // CLI/env/API sources have `plusFile === null`; only +config.js (and +{configName}.js) sources set `plusFile`
+      if (!source.plusFile) continue
+      const configDefinedAt = getConfigDefinedAt('Config', configName, source.definedAt)
+      assertWarning(
+        false,
+        `${configDefinedAt} has no effect: the +${configName} setting can't be set from a +config.js file because Vike needs to resolve it before it can load your +config.js files. Set it over Vike's CLI (${pc.cyan(`--${configName}`)}), the ${pc.cyan('VIKE_CONFIG')} environment variable, ${pc.cyan('vite.config.js')}, or Vike's API instead — see ${pc.underline(`https://vike.dev/${configName}`)}`,
+        { onlyOnce: true },
+      )
+    }
   }
 }
 function getVikeConfigFromCliOrEnv() {
