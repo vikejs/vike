@@ -1,0 +1,15 @@
+/* Chrome styling for @vikejs/license-components' <FreeTrialForm>, owned here (vike.dev) rather than
+ * in the npm package — the component sets no font (text inherits) and no input/button styles, and
+ * takes className props instead. Input + label are copied from the dashboard's formStyles.ts
+ * (inputStyle) + styles.ts (label); the submit button gets the daisyUI "Get Started" classes,
+ * passed via buttonClassName in free/+Page.mdx. */
+.free-trial-input {
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+.free-trial-label {
+  font-size: 13px;
+  margin-bottom: 4px;
+}

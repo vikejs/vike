@@ -2,6 +2,7 @@ import { Link } from '@brillout/docpress'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import { FreeTrialForm } from '@vikejs/license-components'
 import '../../components/tabs.css'
+import '../../components/free-trial-form.css'
 
 export const freeForeverBody = `== URL
 
@@ -25,7 +26,11 @@ The free license program ensures everyone can use Vike.
 
 Get your key for a 3-month free trial for your domains:
 
-<FreeTrialForm />
+<FreeTrialForm
+  buttonClassName="daisy-btn daisy-btn-md md:daisy-btn-lg text-white border-0 daisy-btn-neutral"
+  inputClassName="free-trial-input"
+  labelClassName="free-trial-label"
+/>
 
 
 ## Grants
