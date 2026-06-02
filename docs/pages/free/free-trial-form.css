@@ -19,7 +19,6 @@
 
 .free-trial-input {
   width: 100%;
-  box-sizing: border-box;
   height: 48px;
   padding: 0 14px;
   font-size: 16px;
@@ -39,7 +38,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 48px;
+  height: 46px;
   padding: 0 20px;
   border: 0;
   border-radius: 5.6px;
