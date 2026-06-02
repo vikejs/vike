@@ -33,7 +33,7 @@ function Page() {
         <div style={{ fontWeight: 600, color: colorHeading, marginBottom: 6 }}>Next steps</div>
         <ol style={{ margin: 0, paddingLeft: 22, lineHeight: 1.7 }}>
           <li>
-            Check your inbox — we sent a sign-in link to the <a href="https://dash.vike.dev">Vike dashboard</a>
+            Check your inbox — we sent an email with a sign-in link to the <a href="https://dash.vike.dev">Vike dashboard</a>
           </li>
           <li>Use the dashboard to generate a license key for your domains</li>
           <li>
