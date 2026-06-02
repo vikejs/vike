@@ -736,7 +736,43 @@ function setCliAndApiOptions(
     })
   }
 }
-// Settings resolved before Vike crawls +config.js files (so they can't be set from one):
+function getVikeConfigFromCliOrEnv() {
+  const configFromCliOptions = getCliOptions()
+  const configFromEnvVar = getEnvVarObject('VIKE_CONFIG')
+  const vikeConfigFromCliOrEnv = {
+    ...configFromCliOptions, // Lower precedence
+    ...configFromEnvVar, // Higher precedence
+  }
+  return {
+    vikeConfigFromCliOrEnv,
+    configFromCliOptions,
+    configFromEnvVar,
+  }
+}
+function getSourceNonConfigFile(
+  configName: string,
+  value: unknown,
+  definedAt: DefinedAtFilePath | DefinedBy,
+  configDefinitionsGlobal: ConfigDefinitionsInternal,
+): ConfigValueSource {
+  const configDef = configDefinitionsGlobal[configName] ?? metaBuiltIn[configName as keyof typeof metaBuiltIn]
+  assert(configDef)
+  const source: ConfigValueSource = {
+    valueIsLoaded: true,
+    value,
+    configEnv: configDef.env,
+    definedAt,
+    locationId: '/' as LocationId,
+    plusFile: null,
+    valueLoadedViaImport: false,
+    valueIsDefinedByPlusValueFile: false,
+  }
+  return source
+}
+
+// Settings that must be resolved early before Vike crawls +config.js files:
+// - They can't be defined inside +config.js files
+// - They must be set early (via Vike's CLI/API options or VIKE_CONFIG) and read early before Vike's main config resolution.
 const EARLY_SETTINGS = [
   // +root determines where Vike looks for +config.js files (so it can't be defined inside +config.js itself)
   'root',
@@ -758,40 +794,6 @@ function warnEarlySettingsInConfigFile(pageConfigGlobal: PageConfigGlobalBuildTi
       )
     }
   }
-}
-function getVikeConfigFromCliOrEnv() {
-  const configFromCliOptions = getCliOptions()
-  const configFromEnvVar = getEnvVarObject('VIKE_CONFIG')
-  const vikeConfigFromCliOrEnv = {
-    ...configFromCliOptions, // Lower precedence
-    ...configFromEnvVar, // Higher precedence
-  }
-  return {
-    vikeConfigFromCliOrEnv,
-    configFromCliOptions,
-    configFromEnvVar,
-  }
-}
-
-function getSourceNonConfigFile(
-  configName: string,
-  value: unknown,
-  definedAt: DefinedAtFilePath | DefinedBy,
-  configDefinitionsGlobal: ConfigDefinitionsInternal,
-): ConfigValueSource {
-  const configDef = configDefinitionsGlobal[configName] ?? metaBuiltIn[configName as keyof typeof metaBuiltIn]
-  assert(configDef)
-  const source: ConfigValueSource = {
-    valueIsLoaded: true,
-    value,
-    configEnv: configDef.env,
-    definedAt,
-    locationId: '/' as LocationId,
-    plusFile: null,
-    valueLoadedViaImport: false,
-    valueIsDefinedByPlusValueFile: false,
-  }
-  return source
 }
 
 function sortConfigValueSources(configValueSources: ConfigValueSources, locationIdPage: LocationId | null) {
