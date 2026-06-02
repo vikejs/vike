@@ -14,17 +14,17 @@ function Page() {
         Next steps:
         <ol>
           <li>
-            Check your inbox for a sign-in link to your dashboard at <a href="https://dash.vike.dev">dash.vike.dev</a>.
+            Check your email inbox for a sign-in link to <a href="https://dash.vike.dev">Vike's dashboard</a>.
             <blockquote>
               <p>
-                If you don't receive it, check your spam folder or <a href="mailto:support@vike.dev">contact us</a>.
+                If you don't receive any email, check your spam folder or <a href="mailto:support@vike.dev">contact us</a>.
               </p>
             </blockquote>
           </li>
           <li>
-            From the dashboard, generate forever-valid license keys for your domains and{' '}
+            From the dashboard, generate a forever-valid license key for your domains and{' '}
             <Link href="/license#install">
-              install them in your <code>+config.js</code>
+              add it to your <code>+config.js</code>
             </Link>
             .
           </li>
