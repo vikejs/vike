@@ -603,6 +603,13 @@ type ConfigBuiltIn = {
   force?: boolean
 
   /**
+   * The root directory of your project.
+   *
+   * https://vike.dev/root
+   */
+  root?: string
+
+  /**
    * Content Security Policy (CSP).
    *
    * https://vike.dev/csp

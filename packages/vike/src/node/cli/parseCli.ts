@@ -99,9 +99,10 @@ function showHelp(): never {
       'Common CLI options:',
       [
         `vike dev ${pc.cyan('--host')}          ${TAB}${pc.dim('# Make server available over LAN and public addresses')}`,
-        `vike dev ${pc.cyan('--port')} 80       ${TAB}${pc.dim('# Change the server port')}`,
-        `vike build ${pc.cyan('--mode')} staging${TAB}${pc.dim('# Set the mode to run in')}`,
+        `vike dev ${pc.cyan('--port')} 80       ${TAB}${pc.dim('# Set server port')}`,
+        `vike build ${pc.cyan('--mode')} staging${TAB}${pc.dim('# Set mode (e.g. development, production, staging)')}`,
         `vike dev ${pc.cyan('--force')}         ${TAB}${pc.dim("# Disable Vite's cache")}`,
+        `vike dev ${pc.cyan('--root')} src      ${TAB}${pc.dim('# Set project root directory')}`,
       ]
         .map((o) => `  ${pc.dim('$')} ${o}`)
         .join('\n'),

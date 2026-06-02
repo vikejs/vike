@@ -12,6 +12,7 @@ export { isV1Design }
 export { getConfVal }
 export { getConfigDefinitionOptional }
 export { getVikeConfigFromCliOrEnv }
+export { EARLY_SETTINGS }
 export type { VikeConfigInternal }
 export type { PageConfigBuildTimeBeforeComputed }
 
@@ -328,6 +329,8 @@ async function resolveVikeConfigInternal(
   temp_interopVikeVitePlugin(pageConfigGlobal, vikeVitePluginOptions, userRootDir)
 
   setCliAndApiOptions(pageConfigGlobal, pageConfigs, configDefinitionsResolved)
+
+  warnEarlySettingsInConfigFile(pageConfigGlobal)
 
   const globalConfigPublic = resolveGlobalConfig(pageConfigGlobal, pageConfigs)
 
@@ -746,7 +749,6 @@ function getVikeConfigFromCliOrEnv() {
     configFromEnvVar,
   }
 }
-
 function getSourceNonConfigFile(
   configName: string,
   value: unknown,
@@ -766,6 +768,34 @@ function getSourceNonConfigFile(
     valueIsDefinedByPlusValueFile: false,
   }
   return source
+}
+
+// Settings that must be resolved early before Vike crawls +config.js files:
+// - They can't be defined inside +config.js files.
+// - They must be set early (via Vike's CLI/API options or VIKE_CONFIG), and read early before Vike's main config resolution.
+const EARLY_SETTINGS = [
+  // +root determines where Vike looks for +config.js files (so it can't be defined inside +config.js itself)
+  'root',
+  // +mode affects which vite.config.js environment is loaded
+  'mode',
+] as const
+function warnEarlySettingsInConfigFile(pageConfigGlobal: PageConfigGlobalBuildTime) {
+  for (const configName of EARLY_SETTINGS) {
+    const sources = pageConfigGlobal.configValueSources[configName]
+    if (!sources) continue
+    for (const source of sources) {
+      if (!source.plusFile) {
+        // `plusFile === null` => source comes from Vike CLI argument, Vike API option, or VIKE_CONFIG
+        continue
+      }
+      const configDefinedAt = getConfigDefinedAt('Config', configName, source.definedAt)
+      assertWarning(
+        false,
+        `${configDefinedAt} has no effect: it can't be set from a ${pc.cyan('+')} file — see ${pc.underline(`https://vike.dev/${configName}`)}`,
+        { onlyOnce: true },
+      )
+    }
+  }
 }
 
 function sortConfigValueSources(configValueSources: ConfigValueSources, locationIdPage: LocationId | null) {
