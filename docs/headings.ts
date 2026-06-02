@@ -1401,16 +1401,16 @@ function api() {
         url: '/port',
       },
       {
-        title: '`+force`',
-        url: '/force',
+        title: '`+root`',
+        url: '/root',
       },
       {
         title: '`+mode`',
         url: '/mode',
       },
       {
-        title: '`+root`',
-        url: '/root',
+        title: '`+force`',
+        url: '/force',
       },
       {
         title: '`getPageContext()`',
