@@ -12,6 +12,10 @@
   font-size: 13px;
   margin-bottom: 4px;
 }
+/* De-emphasise the "(comma or space-separated)" hint — mirrors the dashboard label's #888 span. */
+.free-trial-label span {
+  color: #888;
+}
 
 .free-trial-input {
   width: 100%;

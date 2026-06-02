@@ -13,7 +13,7 @@
     "@tailwindcss/vite": "^4.1.18",
     "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
-    "@vikejs/license-components": "^0.0.11",
+    "@vikejs/license-components": "^0.0.12",
     "@vitejs/plugin-react": "^5.0.0",
     "daisyui": "^5.5.14",
     "gsap": "^3.14.2",
