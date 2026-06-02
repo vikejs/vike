@@ -20,8 +20,8 @@ assertIsNotProductionRuntime()
 async function dev(
   options: ApiOptions & { startupLog?: boolean } = {},
 ): Promise<{ viteServer: ViteDevServer; viteConfig: ResolvedConfig; viteVersion: string }> {
-  const { viteConfigFromUserResolved } = await prepareViteApiCall(options, 'dev')
-  const server = await createServer(viteConfigFromUserResolved)
+  const { viteConfigUser } = await prepareViteApiCall(options, 'dev')
+  const server = await createServer(viteConfigUser)
   const viteServer = server
   const viteConfig = server.config
   const viteVersion = viteConfig._viteVersionResolved

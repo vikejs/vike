@@ -11,7 +11,7 @@ import { assertRollupInput } from './build/pluginBuildConfig.js'
 import pc from '@brillout/picocolors'
 import { assertResolveAlias } from './pluginCommon/assertResolveAlias.js'
 import { getVikeConfigInternal, setVikeConfigContext } from '../shared/resolveVikeConfigInternal.js'
-import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/resolveViteConfigFromUser.js'
+import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/resolveViteConfigUser.js'
 import { temp_disablePrerenderAutoRun } from '../../prerender/context.js'
 import type { VitePluginServerEntryOptions } from '@brillout/vite-plugin-server-entry/plugin'
 import { version as viteVersionVike } from 'vite'
@@ -25,7 +25,7 @@ declare module 'vite' {
     _rootResolvedEarly?: string
     _baseViteOriginal?: string
     // We'll be able to remove once we have one Rolldown build instead of two Rollup builds
-    _viteConfigFromUserResolved?: InlineConfig
+    _viteConfigUser?: InlineConfig
     _viteVersionResolved?: string
   }
 }
