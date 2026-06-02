@@ -77,7 +77,7 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Free Program',
+    title: 'Free license',
     url: '/free',
   },
   {
