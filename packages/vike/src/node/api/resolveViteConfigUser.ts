@@ -28,7 +28,7 @@ import type { Config } from '../../types/index.js'
 import './assertEnvApiDevAndProd.js'
 
 const globalObject = getGlobalObject<{ root?: string; isResolvingViteConfigUser?: boolean }>(
-  'api/prepareViteApiCall.ts',
+  'resolveViteConfigUser.ts',
   {},
 )
 
