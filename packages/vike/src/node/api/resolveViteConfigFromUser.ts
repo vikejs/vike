@@ -84,16 +84,16 @@ async function getViteInfo(viteContext: ViteContext) {
   // 4.                       |  viteConfigFromUserVikeApiOptions  |  Vike API options — `viteConfig`, and `+mode` & `+root` from `vikeConfig`
   // 5. (lowest precedence)   |  viteConfigFromUserViteConfigFile  |  vite.config.js
 
+  let viteConfigFromUserResolved: UserConfig = {}
+
   // Resolve Vike API args
   const { viteConfigFromUserVikeApiOptions, vikeConfigFromUserVikeApiOptions } = getVikeApiContext()
   // - Resolve `viteConfig` set over Vike's API
-  let viteConfigFromUserResolved = clone(viteConfigFromUserVikeApiOptions ?? {})
+  viteConfigFromUserResolved = merge(viteConfigFromUserResolved, viteConfigFromUserVikeApiOptions ?? {})
   // - Resolve +mode/+root set over Vike's API
-  if (vikeConfigFromUserVikeApiOptions) {
-    const viteConfigFromVikeApi2 = pick(vikeConfigFromUserVikeApiOptions, EARLY_SETTINGS)
-    if (Object.keys(viteConfigFromVikeApi2).length > 0) {
-      viteConfigFromUserResolved = merge(viteConfigFromUserResolved ?? {}, viteConfigFromVikeApi2)
-    }
+  {
+    const viteConfigFromVikeApi2 = pick(vikeConfigFromUserVikeApiOptions ?? {}, EARLY_SETTINGS)
+    viteConfigFromUserResolved = merge(viteConfigFromUserResolved ?? {}, viteConfigFromVikeApi2)
   }
 
   // Resolve Vite CLI args (when invoked via Vite's CLI rather than Vike's API).
@@ -165,9 +165,6 @@ async function getViteInfo(viteContext: ViteContext) {
 /** `c2` overrides `c1` */
 function merge(c1: UserConfig, c2: UserConfig): UserConfig {
   return mergeConfig(c1, c2)
-}
-function clone(c: UserConfig): UserConfig {
-  return mergeConfig({}, c)
 }
 
 function findVikeVitePlugin(viteConfig: InlineConfig | UserConfig | undefined | null) {
