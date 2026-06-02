@@ -119,16 +119,16 @@ async function getViteInfo(viteContext: ViteContext) {
   globalObject.isOnlyResolvingUserConfig = true
   const viteConfigFromViteFile = await loadViteConfigFile(viteConfigFromUserResolved, viteContext)
   globalObject.isOnlyResolvingUserConfig = false
-  const viteConfigResolved = underide(viteConfigFromViteFile ?? {})
+  const viteConfigAll = underide(viteConfigFromViteFile ?? {})
 
-  const root = normalizeViteRoot(viteConfigResolved.root ?? process.cwd())
+  const root = normalizeViteRoot(viteConfigAll.root ?? process.cwd())
   globalObject.root = root
 
   // - Find options `vike(options)` set in vite.config.js
   //   - TO-DO/next-major-release: remove
   // - Add Vike's Vite plugin if missing
   let vikeVitePluginOptions: Record<string, unknown> | undefined
-  const found = findVikeVitePlugin(viteConfigResolved)
+  const found = findVikeVitePlugin(viteConfigAll)
   if (found) {
     vikeVitePluginOptions = found.vikeVitePluginOptions
   } else {
