@@ -771,8 +771,8 @@ function getSourceNonConfigFile(
 }
 
 // Settings that must be resolved early before Vike crawls +config.js files:
-// - They can't be defined inside +config.js files
-// - They must be set early (via Vike's CLI/API options or VIKE_CONFIG) and read early before Vike's main config resolution.
+// - They can't be defined inside +config.js files.
+// - They must be set early (via Vike's CLI/API options or VIKE_CONFIG), and read early before Vike's main config resolution.
 const EARLY_SETTINGS = [
   // +root determines where Vike looks for +config.js files (so it can't be defined inside +config.js itself)
   'root',
@@ -784,8 +784,10 @@ function warnEarlySettingsInConfigFile(pageConfigGlobal: PageConfigGlobalBuildTi
     const sources = pageConfigGlobal.configValueSources[configName]
     if (!sources) continue
     for (const source of sources) {
-      // CLI/API/env sources have `plusFile === null`
-      if (!source.plusFile) continue
+      if (!source.plusFile) {
+        // `plusFile === null` => source comes from Vike CLI argument, Vike API option, or VIKE_CONFIG
+        continue
+      }
       const configDefinedAt = getConfigDefinedAt('Config', configName, source.definedAt)
       assertWarning(
         false,
