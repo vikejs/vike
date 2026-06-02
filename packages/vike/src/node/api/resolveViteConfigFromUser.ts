@@ -13,6 +13,7 @@ import {
   getVikeConfigFromCliOrEnv,
   setVikeConfigContext,
   isVikeConfigContextSet,
+  EARLY_SETTINGS,
 } from '../vite/shared/resolveVikeConfigInternal.js'
 import path from 'node:path'
 import { assert, assertUsage, assertWarning } from '../../utils/assert.js'
@@ -94,7 +95,7 @@ async function getViteInfo(viteContext: ViteContext) {
 
   // Resolve Vike's +mode/+root set over Vike's API (lowest precedence among the early sources, alongside `viteConfig`)
   if (vikeConfigFromUserVikeApiOptions) {
-    const viteConfigFromUserVikeApiSettings = pick(vikeConfigFromUserVikeApiOptions, ['mode', 'root'])
+    const viteConfigFromUserVikeApiSettings = pick(vikeConfigFromUserVikeApiOptions, EARLY_SETTINGS)
     if (Object.keys(viteConfigFromUserVikeApiSettings).length > 0) {
       viteConfigFromUserResolved = merge(viteConfigFromUserResolved ?? {}, viteConfigFromUserVikeApiSettings)
     }
@@ -110,10 +111,10 @@ async function getViteInfo(viteContext: ViteContext) {
 
   // Resolve Vike's +mode/+root set over Vike's CLI options & VIKE_CONFIG
   {
-    const viteConfigFromUserVikeSettings = pick(getVikeConfigFromCliOrEnv().vikeConfigFromCliOrEnv as Config, [
-      'mode',
-      'root',
-    ])
+    const viteConfigFromUserVikeSettings = pick(
+      getVikeConfigFromCliOrEnv().vikeConfigFromCliOrEnv as Config,
+      EARLY_SETTINGS,
+    )
     if (Object.keys(viteConfigFromUserVikeSettings).length > 0) {
       viteConfigFromUserResolved = merge(viteConfigFromUserResolved ?? {}, viteConfigFromUserVikeSettings)
     }

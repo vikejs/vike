@@ -12,6 +12,7 @@ export { isV1Design }
 export { getConfVal }
 export { getConfigDefinitionOptional }
 export { getVikeConfigFromCliOrEnv }
+export { EARLY_SETTINGS }
 export type { VikeConfigInternal }
 export type { PageConfigBuildTimeBeforeComputed }
 
@@ -735,13 +736,14 @@ function setCliAndApiOptions(
     })
   }
 }
+// Settings resolved before Vike crawls +config.js files (so they can't be set from one):
+const EARLY_SETTINGS = [
+  // +root determines where Vike looks for +config.js files (so it can't be defined inside +config.js itself)
+  'root',
+  // +mode affects which vite.config.js environment is loaded
+  'mode',
+] as const
 function warnEarlySettingsInConfigFile(pageConfigGlobal: PageConfigGlobalBuildTime) {
-  const EARLY_SETTINGS = [
-    // +root determines where Vike looks for +config.js files (so it can't be defined inside +config.js itself)
-    'root',
-    // +mode affects which vite.config.js environment is loaded
-    'mode',
-  ] as const
   for (const configName of EARLY_SETTINGS) {
     const sources = pageConfigGlobal.configValueSources[configName]
     if (!sources) continue
