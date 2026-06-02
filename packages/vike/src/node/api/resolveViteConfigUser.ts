@@ -81,7 +81,7 @@ async function resolve(viteContext: ViteContext) {
   // 5. (lowest precedence)   |  viteConfigFromViteFile      |  vite.config.js
   let viteConfigUser: UserConfig = {}
   // Merge `c` overriding viteConfigUser (`c` wins — higher precedence)
-  const add = (c: UserConfig | null | undefined) => {
+  const addConfig = (c: UserConfig | null | undefined) => {
     viteConfigUser = mergeConfig(viteConfigUser, c ?? {})
   }
   // Merge `c` underiding viteConfigUser (`c` loses — lower precedence)
@@ -92,15 +92,15 @@ async function resolve(viteContext: ViteContext) {
   // Vike API args
   {
     const { viteConfigFromVikeApi, vikeConfigFromApi } = getVikeApiContext()
-    add(viteConfigFromVikeApi) // `viteConfig`
-    add(pick(vikeConfigFromApi ?? {}, EARLY_SETTINGS)) // `+mode` & `+root`
+    addConfig(viteConfigFromVikeApi) // `viteConfig`
+    addConfig(pick(vikeConfigFromApi ?? {}, EARLY_SETTINGS)) // `+mode` & `+root`
   }
 
   // Vite CLI args (when invoked via Vite's CLI rather than Vike's API).
   // - Without this, Vike loads vite.config.js blind to `vite [root]` / `-c <file>` and ends up with the wrong root when those Vite CLI args are used.
   {
     const viteConfigFromViteCli = getViteCliArgs()
-    add(viteConfigFromViteCli)
+    addConfig(viteConfigFromViteCli)
   }
 
   // Vike's CLI and VIKE_CONFIG — `+mode` & `+root`
@@ -109,13 +109,13 @@ async function resolve(viteContext: ViteContext) {
       getVikeConfigFromCliOrEnv().vikeConfigFromCliOrEnv as Config,
       EARLY_SETTINGS,
     )
-    add(viteConfigFromVikeCliOrEnv)
+    addConfig(viteConfigFromVikeCliOrEnv)
   }
 
   // VITE_CONFIG
   {
     const viteConfigFromViteEnv = getEnvVarObject('VITE_CONFIG')
-    add(viteConfigFromViteEnv)
+    addConfig(viteConfigFromViteEnv)
   }
 
   // vite.config.js — lowest precedence. Merged into a *separate* result (used only to compute `root` and to
