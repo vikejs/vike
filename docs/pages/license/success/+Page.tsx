@@ -9,8 +9,8 @@ const colorHeading = '#0f172a'
 
 function Page() {
   return (
-    <div style={{ maxWidth: 560, margin: 'auto' }}>
-      <div style={{ textAlign: 'center', marginTop: 24 }}>
+    <div style={{ maxWidth: 580, margin: 'auto' }}>
+      <div style={{ textAlign: 'center', marginTop: 20 }}>
         <div style={{ fontSize: 56, marginBottom: 12 }}>🎉</div>
         <h1 style={{ fontSize: 30, fontWeight: 700, color: colorHeading, marginBottom: 12 }}>
           You're all set
@@ -33,20 +33,19 @@ function Page() {
         <div style={{ fontWeight: 600, color: colorHeading, marginBottom: 6 }}>Next steps</div>
         <ol style={{ margin: 0, paddingLeft: 22, lineHeight: 1.7 }}>
           <li>
-            Check your inbox — we just sent a sign-in link to the <a href="https://dash.vike.dev">Vike dashboard</a>.
+            Check your inbox — we sent a sign-in link to the <a href="https://dash.vike.dev">Vike dashboard</a>
           </li>
-          <li>Use the dashboard to generate a license key for your domains.</li>
+          <li>Use the dashboard to generate a license key for your domains</li>
           <li>
             <Link href="/license#install">
               Add the license key to <code>+config.js</code>
             </Link>
-            .
           </li>
         </ol>
       </div>
 
       <p style={{ textAlign: 'center', color: colorNote, fontSize: '0.9em', marginTop: 16 }}>
-        Having issues? <a href="mailto:support@vike.dev">Contact us</a> and we'll help.
+        Having issues? <a href="mailto:support@vike.dev">Contact us</a>.
       </p>
     </div>
   )
