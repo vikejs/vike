@@ -14,8 +14,8 @@ import './assertEnvApiDevAndProd.js'
 async function prerender(options: PrerenderOptions = {}): Promise<{
   viteConfig: null | ResolvedConfig
 }> {
-  const { viteConfigFromUserResolved } = await prepareViteApiCall(options, 'prerender')
-  options.viteConfig = viteConfigFromUserResolved
+  const { viteConfigFromUser } = await prepareViteApiCall(options, 'prerender')
+  options.viteConfig = viteConfigFromUser
   const { viteConfig } = await runPrerenderFromAPI(options)
   return {
     viteConfig,

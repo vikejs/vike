@@ -23,7 +23,7 @@ import { getStartupLogFirstLine } from './getStartupLogFirstLine.js'
  */
 async function preview(options: ApiOptions = {}): Promise<{ viteServer?: PreviewServer; viteConfig: ResolvedConfig }> {
   onSetupPreview()
-  const { viteConfigFromUserResolved, viteConfigResolved } = await prepareViteApiCall(options, 'preview')
+  const { viteConfigFromUser, viteConfigResolved } = await prepareViteApiCall(options, 'preview')
 
   const vikeConfig = await getVikeConfigInternal()
   const cliPreviewConfig = await resolveCliPreviewConfig(vikeConfig)
@@ -56,7 +56,7 @@ async function preview(options: ApiOptions = {}): Promise<{ viteServer?: Preview
     }
   } else {
     // Use Vite's preview server
-    const server = await previewVite(viteConfigFromUserResolved)
+    const server = await previewVite(viteConfigFromUser)
     logHint(
       vikeConfig.prerenderContext.isPrerenderingEnabledForAllPages
         ? ' — your app is fully pre-rendered and can be statically deployed.'
