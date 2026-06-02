@@ -16,7 +16,7 @@ The license key for larger teams.
 
 ## Install
 
-License keys are a map: one entry per root domain you cover. Add it to <Link href="/config">`+config.js`</Link>:
+To install your license key, add it to <Link href="/config">`+config.js`</Link>:
 
 ```ts
 // pages/+config.ts
@@ -25,15 +25,13 @@ import type { Config } from 'vike/types'
 
 export default {
   license: { // [!code ++]
-    'foo.com': 'ABCDEFGHI…', // [!code ++]
-    'bar.com': { expires: '2026-12-31T00:00:00Z', key: 'JKLMNOPQR…' }, // [!code ++]
+    'foo.com': 'lOK9uiUuCP75lMzQ…', // [!code ++]
+    'bar.com': { expires: '2026-12-31T00:00:00Z', key: 't2ZX4KY6kgmHSmj…' }, // [!code ++]
   }, // [!code ++]
 } satisfies Config
 ```
 
-Each value is either a bare string (forever-valid) or an object `{ expires, key }` (time-limited). The `key` is a base64url Ed25519 signature ~86 chars long. Copy the map you received from [the customer dashboard](https://dash.vike.dev) (paid) / [the free-trial form](/free) (trial) / the maintainer (grant).
-
-> Your license keys aren't secrets — they're safe to share publicly (for example, you can commit them to a public repository).
+> Your license key isn't a secret — it's safe to share publicly (for example, you can commit it to a public repository).
 
 That's it — your app can now use Vike forever without restrictions.
 
