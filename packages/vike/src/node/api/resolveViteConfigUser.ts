@@ -81,7 +81,7 @@ async function resolve(viteContext: ViteContext) {
   // 5. (lowest precedence)   |  viteConfigFromViteFile      |  vite.config.js
   let viteConfigUser: UserConfig = {}
   // Merge `c` overriding viteConfigUser (`c` wins — higher precedence)
-  const override = (c: UserConfig) => {
+  const add = (c: UserConfig) => {
     viteConfigUser = mergeConfig(viteConfigUser, c)
   }
   // Merge `c` underiding viteConfigUser (`c` loses — lower precedence)
@@ -91,13 +91,13 @@ async function resolve(viteContext: ViteContext) {
 
   // Vike API args
   const { viteConfigFromVikeApi, vikeConfigFromApi } = getVikeApiContext()
-  override(viteConfigFromVikeApi ?? {}) // `viteConfig`
-  override(pick(vikeConfigFromApi ?? {}, EARLY_SETTINGS)) // `+mode` & `+root`
+  add(viteConfigFromVikeApi ?? {}) // `viteConfig`
+  add(pick(vikeConfigFromApi ?? {}, EARLY_SETTINGS)) // `+mode` & `+root`
 
   // Vite CLI args (when invoked via Vite's CLI rather than Vike's API).
   // - Without this, Vike loads vite.config.js blind to `vite [root]` / `-c <file>` and ends up with the wrong root when those Vite CLI args are used.
   const viteConfigFromViteCli = getViteCliArgs()
-  if (viteConfigFromViteCli) override(viteConfigFromViteCli)
+  if (viteConfigFromViteCli) add(viteConfigFromViteCli)
 
   // Vike's CLI and VIKE_CONFIG — `+mode` & `+root`
   {
@@ -105,12 +105,12 @@ async function resolve(viteContext: ViteContext) {
       getVikeConfigFromCliOrEnv().vikeConfigFromCliOrEnv as Config,
       EARLY_SETTINGS,
     )
-    if (Object.keys(viteConfigFromVikeCliOrEnv).length > 0) override(viteConfigFromVikeCliOrEnv)
+    if (Object.keys(viteConfigFromVikeCliOrEnv).length > 0) add(viteConfigFromVikeCliOrEnv)
   }
 
   // VITE_CONFIG
   const viteConfigFromViteEnv = getEnvVarObject('VITE_CONFIG')
-  if (viteConfigFromViteEnv) override(viteConfigFromViteEnv)
+  if (viteConfigFromViteEnv) add(viteConfigFromViteEnv)
 
   // vite.config.js — lowest precedence. Merged into a *separate* result (used only to compute `root` and to
   // find the Vike plugin): it must not flow back into `viteConfigUser`, which is handed to Vite —
