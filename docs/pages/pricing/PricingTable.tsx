@@ -78,15 +78,14 @@ function PricingTable() {
           </div>
           <div style={{ marginLeft: 10, marginTop: 20, maxWidth: 830 }}>
             <Note ref={1}>
-              Developers who contribute code to your Vike app(s) regularly (occasional contributors, AI, and bots don't
-              count).
+              Human developers who regularly contribute to your Vike app(s) — occasional contributors, AI, and bots
+              don't count.
             </Note>
             <Note ref={2}>
-              Organizations with few employees <Link href="/free#who-s-eligible">are eligible</Link> to use Vike for
-              free.
+              Small organizations with few employees <Link href="/free#who-s-eligible">can use Vike for free</Link>.
             </Note>
             <Note ref={3}>
-              License key isn't required: you use Vike like any other open source tool, with zero friction.
+              License key isn't required: you use Vike just like any other open source tool — without any friction.
             </Note>
             <Note ref={4}>
               One-time payment for a lifetime license: valid forever (including all future Vike updates) for an

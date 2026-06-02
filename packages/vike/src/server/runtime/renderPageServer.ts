@@ -358,7 +358,7 @@ async function renderPageServerEntryRecursive_onError(
         return pageContextHttpErrorFallback
       }
     }
-    if (isSameErrorMessage(errErrorPage, err)) {
+    if (!isSameErrorMessage(errErrorPage, err)) {
       logRuntimeError(errErrorPage, pageContextErrorPageInit)
     }
     const pageContextHttpErrorFallback = getPageContextHttpErrorFallback(err, pageContextBegin)

@@ -46,7 +46,7 @@ function createRpcClient() {
           assert(hot)
           const callId = getRandomId()
 
-          const { promise, resolve } = genPromise<unknown>({ timeout: 3 * 1000 })
+          const { promise, resolve } = genPromise<unknown>({ timeout: 10 * 1000 })
           listeners.push({
             callId,
             cb: (functionReturn: unknown) => {

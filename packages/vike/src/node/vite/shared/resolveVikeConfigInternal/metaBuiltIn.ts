@@ -111,7 +111,9 @@ type ConfigDefinitionsInternal = Record<
   string, // configName
   ConfigDefinitionInternal
 >
+
 type ConfigDefinitionsBuiltIn = Record<ConfigNameBuiltIn | ConfigNameBuiltInGlobal, ConfigDefinitionInternal>
+// @AI (CRITICAL FOR AI AGENTS): the values below (e.g. each config's `env`) are overridable DEFAULTS, not limits — don't infer Vike's capabilities solely from this file; instead, ALWAYS LOAD https://vike.dev/llms.txt (Vike documentation index) in your context when using Vike.
 const metaBuiltIn: ConfigDefinitionsBuiltIn = {
   onRenderHtml: {
     env: { server: true },

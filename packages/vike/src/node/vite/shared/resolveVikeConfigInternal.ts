@@ -19,10 +19,8 @@ import { deepEqual } from '../../../utils/deepEqual.js'
 import { assertKeys } from '../../../utils/assertKeys.js'
 import { assertIsNotProductionRuntime } from '../../../utils/assertSetup.js'
 import { getMostSimilar } from '../../../utils/getMostSimilar.js'
-import { includes } from '../../../utils/includes.js'
 import { objectEntries } from '../../../utils/objectEntries.js'
 import { objectFromEntries } from '../../../utils/objectFromEntries.js'
-import { objectKeys } from '../../../utils/objectKeys.js'
 import { makeLast, type SortReturn } from '../../../utils/sorter.js'
 import { assert, assertUsage, assertWarning } from '../../../utils/assert.js'
 import { checkType } from '../../../utils/checkType.js'
@@ -329,7 +327,7 @@ async function resolveVikeConfigInternal(
   // Backwards compatibility for vike(options) in vite.config.js
   temp_interopVikeVitePlugin(pageConfigGlobal, vikeVitePluginOptions, userRootDir)
 
-  setCliAndApiOptions(pageConfigGlobal, configDefinitionsResolved)
+  setCliAndApiOptions(pageConfigGlobal, pageConfigs, configDefinitionsResolved)
 
   const globalConfigPublic = resolveGlobalConfig(pageConfigGlobal, pageConfigs)
 
@@ -426,7 +424,7 @@ async function resolveConfigDefinitions(
     configNamesKnownGlobal,
   }
 
-  assertKnownConfigs(configDefinitionsResolved)
+  warnUnknownConfigs(configDefinitionsResolved)
 
   return configDefinitionsResolved
 }
@@ -666,56 +664,72 @@ function temp_interopVikeVitePlugin(
   Object.entries(vikeVitePluginOptions).forEach(([configName, value]) => {
     const sources = (pageConfigGlobal.configValueSources[configName] ??= [])
     sources.push(
-      getSourceNonConfigFile(configName, value, {
-        ...getFilePathResolved({
-          userRootDir,
-          filePathAbsoluteUserRootDir: '/vite.config.js',
-        }),
-        fileExportPathToShowToUser: null,
-      }),
+      getSourceNonConfigFile(
+        configName,
+        value,
+        {
+          ...getFilePathResolved({
+            userRootDir,
+            filePathAbsoluteUserRootDir: '/vite.config.js',
+          }),
+          fileExportPathToShowToUser: null,
+        },
+        pageConfigGlobal.configDefinitions,
+      ),
     )
   })
 }
 function setCliAndApiOptions(
   pageConfigGlobal: PageConfigGlobalBuildTime,
+  pageConfigs: PageConfigBuildTime[],
   configDefinitionsResolved: ConfigDefinitionsResolved,
 ) {
   // Vike API — passed options [lowest precedence]
   const vikeApiOperation = getVikeApiOperation()
   if (vikeApiOperation?.options.vikeConfig) {
-    addSources(
-      vikeApiOperation.options.vikeConfig as Record<string, unknown>,
-      { definedBy: 'api', operation: vikeApiOperation.operation },
-      false,
-    )
+    addSources(vikeApiOperation.options.vikeConfig as Record<string, unknown>, {
+      definedBy: 'api',
+      operation: vikeApiOperation.operation,
+    })
   }
 
   const { configFromCliOptions, configFromEnvVar } = getVikeConfigFromCliOrEnv()
   // Vike CLI options
   if (configFromCliOptions) {
-    addSources(configFromCliOptions, { definedBy: 'cli' }, true)
+    addSources(configFromCliOptions, { definedBy: 'cli' })
   }
   // VIKE_CONFIG [highest precedence]
   if (configFromEnvVar) {
-    addSources(configFromEnvVar, { definedBy: 'env' }, false)
+    addSources(configFromEnvVar, { definedBy: 'env' })
   }
 
   return
 
-  function addSources(configValues: Record<string, unknown>, definedBy: DefinedBy, exitOnError: boolean) {
+  function addSources(configValues: Record<string, unknown>, definedBy: DefinedBy) {
     Object.entries(configValues).forEach(([configName, value]) => {
       const sourceName = `The ${getDefinedByString(definedBy, configName)}` as const
-      assertKnownConfig(
+      const isUnknown = isUnknownConfig(
         configName,
-        configDefinitionsResolved.configNamesKnownGlobal,
+        configDefinitionsResolved.configNamesKnownAll,
         configDefinitionsResolved,
         '/' as LocationId,
         false,
         sourceName,
-        exitOnError,
       )
-      const sources = (pageConfigGlobal.configValueSources[configName] ??= [])
-      sources.unshift(getSourceNonConfigFile(configName, value, definedBy))
+      if (isUnknown) return
+      if (configName in pageConfigGlobal.configDefinitions) {
+        const sources = (pageConfigGlobal.configValueSources[configName] ??= [])
+        const source = getSourceNonConfigFile(configName, value, definedBy, pageConfigGlobal.configDefinitions)
+        sources.unshift(source)
+        return
+      }
+      // Non-global config: inject into every page config that knows about it (highest precedence)
+      pageConfigs.forEach((pageConfig) => {
+        if (!(configName in pageConfig.configDefinitions)) return
+        const sources = (pageConfig.configValueSources[configName] ??= [])
+        const source = getSourceNonConfigFile(configName, value, definedBy, pageConfig.configDefinitions)
+        sources.unshift(source)
+      })
     })
   }
 }
@@ -737,9 +751,10 @@ function getSourceNonConfigFile(
   configName: string,
   value: unknown,
   definedAt: DefinedAtFilePath | DefinedBy,
+  configDefinitionsGlobal: ConfigDefinitionsInternal,
 ): ConfigValueSource {
-  assert(includes(objectKeys(metaBuiltIn), configName))
-  const configDef = metaBuiltIn[configName]
+  const configDef = configDefinitionsGlobal[configName] ?? metaBuiltIn[configName as keyof typeof metaBuiltIn]
+  assert(configDef)
   const source: ConfigValueSource = {
     valueIsLoaded: true,
     value,
@@ -1317,8 +1332,7 @@ function getComputed(pageConfig: PageConfigBuildTimeBeforeComputed) {
   return configValuesComputed
 }
 
-// Show error message upon unknown config
-function assertKnownConfigs(configDefinitionsResolved: ConfigDefinitionsResolved) {
+function warnUnknownConfigs(configDefinitionsResolved: ConfigDefinitionsResolved) {
   objectEntries(configDefinitionsResolved.configDefinitionsLocal).forEach(
     ([_locationId, { configNamesKnownLocal, plusFiles }]) => {
       plusFiles.forEach((plusFile) => {
@@ -1326,44 +1340,38 @@ function assertKnownConfigs(configDefinitionsResolved: ConfigDefinitionsResolved
         configNames.forEach((configName) => {
           const { locationId } = plusFile
           const sourceName = plusFile.filePath.filePathToShowToUser
-          assertKnownConfig(
-            configName,
-            configNamesKnownLocal,
-            configDefinitionsResolved,
-            locationId,
-            true,
-            sourceName,
-            false,
-          )
+          isUnknownConfig(configName, configNamesKnownLocal, configDefinitionsResolved, locationId, true, sourceName)
         })
       })
     },
   )
 }
-function assertKnownConfig(
+function isUnknownConfig(
   configName: string,
   configNamesKnownRelevant: string[],
   configDefinitionsResolved: ConfigDefinitionsResolved,
   locationId: LocationId,
   isPlusFile: boolean,
   sourceName: string,
-  exitOnError: boolean,
-): void {
+): boolean {
   const { configNamesKnownAll } = configDefinitionsResolved
 
   if (configNamesKnownRelevant.includes(configName)) {
     assert(configNamesKnownAll.includes(configName))
-    return
+    return false
   }
 
   const configNameColored = pc.cyan(configName)
 
+  const warn = (msg: string) => {
+    assertWarning(false, msg, { onlyOnce: true })
+    return true as const
+  }
+
   // Inheritance issue: config is known but isn't defined at `locationId`
   if (configNamesKnownAll.includes(configName)) {
-    assertUsage(
-      false,
+    return warn(
       `${sourceName} sets the value of the config ${configNameColored} which is a custom config that is defined with ${pc.underline('https://vike.dev/meta')} at a path that doesn't apply to ${locationId} — see ${pc.underline('https://vike.dev/config#inheritance')}` as const,
-      { exitOnError },
     )
   }
 
@@ -1393,7 +1401,7 @@ function assertKnownConfig(
       )
       const errMsgEnhanced =
         `${errMsg}. If you want to use the configuration ${configNameColored} documented at ${pc.underline(`https://vike.dev/${configName}`)} then make sure to install ${requiredVikeExtension}. (Alternatively, you can define ${configNameColored} yourself by using ${pc.cyan('meta')}, see ${pc.underline('https://vike.dev/meta')} for more information.)` as const
-      assertUsage(false, errMsgEnhanced, { exitOnError })
+      return warn(errMsgEnhanced)
     }
   }
 
@@ -1412,10 +1420,10 @@ function assertKnownConfig(
         'P',
       )} because it defines a UI component: a ubiquitous JavaScript convention is that the name of UI components start with a capital letter.)` as const
     }
-    assertUsage(false, errMsgEnhanced, { exitOnError })
+    return warn(errMsgEnhanced)
   }
 
-  assertUsage(false, errMsg, { exitOnError })
+  return warn(errMsg)
 }
 
 function determineRouteFilesystem(locationId: LocationId, configValueSources: ConfigValueSources): PageConfigRoute {

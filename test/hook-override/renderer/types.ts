@@ -1,3 +1,5 @@
+import type { JSX } from 'react'
+
 export type { GlobalData, PerPageData }
 
 type Page = (pageProps: PageProps) => JSX.Element

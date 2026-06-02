@@ -240,32 +240,21 @@ const headings = [
   },
   {
     level: 4,
-    title: 'Static hosts',
+    title: 'Self-host',
   },
   {
     level: 2,
-    title: 'GitHub Pages',
-    url: '/github-pages',
+    title: 'Self-host',
+    url: '/self-host',
   },
   {
     level: 2,
-    title: 'Netlify',
-    url: '/netlify',
-  },
-  {
-    level: 2,
-    title: 'Cloudflare Pages',
-    url: '/cloudflare-pages',
-  },
-  {
-    level: 2,
-    title: 'Static Hosts',
-    titleInNav: '... more',
-    url: '/static-hosts',
+    title: 'Docker',
+    url: '/docker',
   },
   {
     level: 4,
-    title: 'Full-stack (serverless)',
+    title: 'Managed',
   },
   {
     level: 2,
@@ -280,22 +269,13 @@ const headings = [
   },
   {
     level: 2,
+    title: 'Netlify',
+    url: '/netlify',
+  },
+  {
+    level: 2,
     title: 'Vercel',
     url: '/vercel',
-  },
-  {
-    level: 2,
-    title: 'AWS Lambda',
-    url: '/aws-lambda',
-  },
-  {
-    level: 2,
-    title: 'Netlify Functions',
-    url: '/netlify-functions',
-  },
-  {
-    level: 4,
-    title: 'Full-stack (self-hosted)',
   },
   {
     level: 2,
@@ -304,18 +284,29 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Docker',
-    url: '/docker',
+    title: 'Managed Hosts',
+    titleInNav: '... more',
+    url: '/managed-hosts',
   },
   {
     level: 4,
-    title: 'Other',
+    title: 'Static hosts',
   },
   {
     level: 2,
-    title: 'Deploy',
-    titleInNav: 'Other deployment',
-    url: '/deploy',
+    title: 'GitHub Pages',
+    url: '/github-pages',
+  },
+  {
+    level: 2,
+    title: 'Cloudflare Pages',
+    url: '/cloudflare-pages',
+  },
+  {
+    level: 2,
+    title: 'Static Hosts',
+    titleInNav: '... more',
+    url: '/static-hosts',
   },
   {
     level: 1,
@@ -366,7 +357,7 @@ const headings = [
     titleInNav: '... more',
     title: 'Integration (more)',
     url: '/integration',
-    sectionTitles: ['Server (Manual integration)', 'Non-JavaScript Backend'],
+    sectionTitles: ['Server (manual integration)', 'Non-JavaScript backend'],
   },
   {
     level: 1,
@@ -681,11 +672,6 @@ const headings = [
   },
   {
     level: 2,
-    title: '`+photon`',
-    url: '/photon',
-  },
-  {
-    level: 2,
     title: '`+prerender`',
     url: '/prerender',
     sectionTitles: ['`disableAutoRun`', '`redirects`'],
@@ -724,11 +710,6 @@ const headings = [
     level: 2,
     title: '`+csp`',
     url: '/csp',
-  },
-  {
-    level: 2,
-    title: '`+clientRouting`',
-    url: '/clientRouting',
   },
   {
     level: 2,
@@ -1464,6 +1445,10 @@ function api() {
         url: '/onAfterRenderHtml',
       },
       {
+        title: '`+clientRouting`',
+        url: '/clientRouting',
+      },
+      {
         title: '`clientHooks`',
         url: '/clientHooks',
       },
@@ -1535,6 +1520,10 @@ function workInProgress() {
 function deprecated() {
   return (
     [
+      {
+        title: '`+photon`',
+        url: '/photon',
+      },
       {
         title: '`createPageRenderer()`',
         url: '/createPageRenderer',

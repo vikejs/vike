@@ -133,7 +133,7 @@
     "@brillout/picocolors": "^1.0.31",
     "@brillout/vite-plugin-server-entry": "0.7.18",
     "@universal-deploy/store": "^0.2.1",
-    "@universal-deploy/vite": "^0.1.9",
+    "@universal-deploy/vite": "^0.1.10",
     "@universal-middleware/core": "^0.4.17",
     "@universal-middleware/node": "^0.2.0",
     "cac": "^6.0.0",
@@ -143,10 +143,10 @@
     "json5": "^2.0.0",
     "magic-string": "^0.30.17",
     "picomatch": "^4.0.4",
-    "semver": "^7.8.0",
+    "semver": "^7.8.1",
     "sirv": "^3.0.2",
     "source-map-support": "^0.5.0",
-    "tinyglobby": "^0.2.16",
+    "tinyglobby": "^0.2.17",
     "vite": ">=6.3.0",
     "vite-plugin-wrapper": "^0.1.0"
   },
@@ -242,6 +242,7 @@
   },
   "files": [
     "./bin.js",
+    "./AGENTS.md",
     "./dist/",
     "./abort.js",
     "./api.js",
@@ -283,5 +284,6 @@
     "release:minor": "release-me minor",
     "release:major": "release-me major",
     "release:commit": "release-me commit"
-  }
+  },
+  "ai": "@AI (CRITICAL FOR AI AGENTS): ALWAYS LOAD https://vike.dev/llms.txt (Vike documentation index) in your context when using Vike"
 }
