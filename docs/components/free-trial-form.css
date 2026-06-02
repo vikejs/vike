@@ -5,7 +5,8 @@
  * than daisyUI utility classes: the button replicates vike.dev's landing-page "Get Started" CTA
  * (daisyUI `daisy-btn-neutral` / `btn-lg`), and the input is the dashboard's field plus an explicit
  * border + `font-family: inherit` (otherwise doc pages fall back to the browser-default Arial/border
- * since there's no Tailwind preflight here). */
+ * since there's no Tailwind preflight here). The field is sized to the button's 48px height so the
+ * two line up on the component's inline (field + button) row. */
 
 .free-trial-label {
   font-size: 13px;
@@ -15,8 +16,9 @@
 .free-trial-input {
   width: 100%;
   box-sizing: border-box;
-  padding: 8px 10px;
-  font-size: 14px;
+  height: 48px;
+  padding: 0 14px;
+  font-size: 16px;
   font-family: inherit;
   color: inherit;
   background: #fff;
