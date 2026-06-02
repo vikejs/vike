@@ -90,9 +90,9 @@ async function getViteInfo(viteContext: ViteContext) {
 
   // Resolve +mode/+root — set over Vike's API
   if (vikeConfigFromUserVikeApiOptions) {
-    const viteConfigFromUserVikeApiSettings = pick(vikeConfigFromUserVikeApiOptions, EARLY_SETTINGS)
-    if (Object.keys(viteConfigFromUserVikeApiSettings).length > 0) {
-      viteConfigFromUserResolved = merge(viteConfigFromUserResolved ?? {}, viteConfigFromUserVikeApiSettings)
+    const viteConfigFromVikeApi2 = pick(vikeConfigFromUserVikeApiOptions, EARLY_SETTINGS)
+    if (Object.keys(viteConfigFromVikeApi2).length > 0) {
+      viteConfigFromUserResolved = merge(viteConfigFromUserResolved ?? {}, viteConfigFromVikeApi2)
     }
   }
 
