@@ -751,7 +751,7 @@ function warnEarlySettingsInConfigFile(pageConfigGlobal: PageConfigGlobalBuildTi
       const configDefinedAt = getConfigDefinedAt('Config', configName, source.definedAt)
       assertWarning(
         false,
-        `${configDefinedAt} has no effect: the +${configName} setting can't be set from a +config.js file because Vike needs to resolve it before it can load your +config.js files. Set it over Vike's CLI (${pc.cyan(`--${configName}`)}), the ${pc.cyan('VIKE_CONFIG')} environment variable, ${pc.cyan('vite.config.js')}, or Vike's API instead — see ${pc.underline(`https://vike.dev/${configName}`)}`,
+        `${configDefinedAt} has no effect: it can't be set from a ${pc.cyan('+')} file — see ${pc.underline(`https://vike.dev/${configName}`)}`,
         { onlyOnce: true },
       )
     }
