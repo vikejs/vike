@@ -84,9 +84,9 @@ async function getViteInfo(viteContext: ViteContext) {
   // 4.                       |  viteConfigFromVikeApi       |  Vike API options — `viteConfig`, and `+mode` & `+root` from `vikeConfig`
   // 5. (lowest precedence)   |  viteConfigFromViteFile      |  vite.config.js
   let viteConfigFromUserResolved: UserConfig = {}
-  // Merge `c` overriding viteConfigFromUserResolved (`c` wins — higher precedence).
+  // Merge `c` overriding viteConfigFromUserResolved (`c` wins — higher precedence)
   const override = (c: UserConfig) => (viteConfigFromUserResolved = mergeConfig(viteConfigFromUserResolved, c))
-  // Merge `c` under viteConfigFromUserResolved (`c` loses — lower precedence); returns the result (doesn't mutate).
+  // Merge `c` underiding viteConfigFromUserResolved (`c` loses — lower precedence)
   const underide = (c: UserConfig) => mergeConfig(c, viteConfigFromUserResolved)
 
   // Vike API args
