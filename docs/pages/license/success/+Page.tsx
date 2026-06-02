@@ -13,34 +13,12 @@ function Page() {
       <div style={{ textAlign: 'center', marginTop: 24 }}>
         <div style={{ fontSize: 56, marginBottom: 12 }}>🎉</div>
         <h1 style={{ fontSize: 30, fontWeight: 700, color: colorHeading, marginBottom: 12 }}>
-          Thank you for supporting Vike
+          You're all set
         </h1>
         <p style={{ color: colorNote, fontSize: '1.05em', lineHeight: 1.5, margin: 0 }}>
           You can now use Vike fully unlocked, forever.
         </p>
       </div>
-
-      <a
-        href="https://dash.vike.dev"
-        style={{
-          display: 'block',
-          textAlign: 'center',
-          maxWidth: 320,
-          margin: '28px auto 0',
-          padding: '12px 24px',
-          // Matches the pricing page's button styling.
-          background: 'linear-gradient(135deg, #f8f9fb 0%, #dbeafe 100%)',
-          color: '#4167bb',
-          borderRadius: 10,
-          fontWeight: 600,
-          fontSize: 16,
-          textDecoration: 'none',
-          // https://caniuse.com/css-rrggbbaa
-          border: '1px solid #93c5fd4a',
-        }}
-      >
-        Open the Vike dashboard →
-      </a>
 
       <div
         style={{
