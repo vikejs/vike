@@ -25,17 +25,11 @@ $ VIKE_CONFIG="{mode:'staging'}" vike build
 
 Both are equivalent to setting Vite's `mode` setting:
 
-```ts
-// vite.config.ts
-
-import type { UserConfig } from 'vite'
-
-export default {
-  mode: 'staging'
-} satisfies UserConfig
+```bash
+$ vite build --mode staging
 ```
 
-> Unlike most Vike settings, `+mode` can't be defined inside a `+config.js` file (Vike emits a warning if you try): it's resolved before Vike loads your `+config.js` files. Set it over the CLI, the `VIKE_CONFIG` environment variable, `vite.config.js`, or <Link href="/api">Vike's API</Link> instead.
+> Unlike most Vike settings, `+mode` can't be defined inside a `+config.js` file (Vike emits a warning if you try). Set it over the CLI, the `VIKE_CONFIG` environment variable, `vite.config.js`, or <Link href="/api">Vike's API</Link> instead.
 
 
 ## See also
