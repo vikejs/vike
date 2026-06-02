@@ -83,9 +83,9 @@ async function getViteInfo(viteContext: ViteContext) {
 
   // Precedence:
   // 1. (highest precedence)  |  viteConfigFromUserEnvVar          |  VITE_CONFIG
-  // 2.                       |  viteConfigFromVikeCliOrEnv        |  VIKE_CONFIG & Vike CLI options — only `+mode` & `+root`
+  // 2.                       |  viteConfigFromVikeCliOrEnv        |  VIKE_CONFIG & Vike CLI options — `+mode` & `+root`
   // 3.                       |  viteConfigFromUserViteCli         |  Vite CLI args — `[root]` & `-c/--config`
-  // 4.                       |  viteConfigFromUserVikeApiOptions  |  Vike API options — `viteConfig`, and `+mode`/`+root` from `vikeConfig`
+  // 4.                       |  viteConfigFromUserVikeApiOptions  |  Vike API options — `viteConfig`, and `+mode` & `+root` from `vikeConfig`
   // 5. (lowest precedence)   |  viteConfigFromUserViteConfigFile  |  vite.config.js
 
   // Resolve +mode/+root — set over Vike's API
