@@ -72,6 +72,9 @@ async function getViteRoot(viteContext: ViteContext) {
 }
 
 type ViteInfo = Awaited<ReturnType<typeof getViteInfo>>
+// TODO rename to resolveViteConfig
+// TODO rename_all viteConfigFromUser viteConfigFrom
+// TODO rename_all vikeConfigFromUser vikeConfigFrom
 async function getViteInfo(viteContext: ViteContext) {
   const { viteConfigFromUserVikeApiOptions, vikeConfigFromUserVikeApiOptions } = getVikeApiContext()
 
@@ -127,7 +130,7 @@ async function getViteInfo(viteContext: ViteContext) {
   globalObject.isOnlyResolvingUserConfig = true
   const viteConfigFromUserViteConfigFile = await loadViteConfigFile(viteConfigFromUserResolved, viteContext)
   globalObject.isOnlyResolvingUserConfig = false
-  // Correct precedence, replicates Vite:
+  // Lowest precedence. The `merge()` applies the correct precedence and replicates Vite:
   // https://github.com/vitejs/vite/blob/4f5845a3182fc950eb9cd76d7161698383113b18/packages/vite/src/node/config.ts#L1001
   const viteConfigResolved = merge(viteConfigFromUserViteConfigFile ?? {}, viteConfigFromUserResolved ?? {})
 
