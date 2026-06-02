@@ -41,7 +41,7 @@ import { pluginReplaceConstantsNonRunnableDev } from './plugins/non-runnable-dev
 import { isVikeCliOrApi } from '../../shared-server-node/api-context.js'
 import { pluginViteConfigVikeExtensions } from './plugins/pluginViteConfigVikeExtensions.js'
 import { pluginStripPointerImportAttribute } from './plugins/pluginStripPointerImportAttribute.js'
-import { getVikeConfigInternalEarly, isResolvingViteConfigUser } from '../api/resolveViteConfigFromUser.js'
+import { getVikeConfigInternalEarly, isResolvingViteConfigUser } from '../api/resolveViteConfigUser.js'
 import './assertEnvVite.js'
 import { isStorybook } from '../../utils/isStorybook.js'
 import { pluginUniversalDeploy } from './plugins/pluginUniversalDeploy.js'

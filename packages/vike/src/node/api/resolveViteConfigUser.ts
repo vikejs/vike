@@ -1,4 +1,4 @@
-export { resolveViteConfigFromUser }
+export { resolveViteConfigUser }
 export { isResolvingViteConfigUser }
 export { getVikeConfigInternalEarly }
 export { getViteRoot }
@@ -32,7 +32,7 @@ const globalObject = getGlobalObject<{ root?: string; isResolvingViteConfigUser?
   {},
 )
 
-async function resolveViteConfigFromUser() {
+async function resolveViteConfigUser() {
   const { viteContext } = getVikeApiContext()
   assert(viteContext)
   const { viteConfigUser, root } = await resolve(viteContext)
