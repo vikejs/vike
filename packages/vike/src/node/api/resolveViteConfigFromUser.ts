@@ -86,8 +86,8 @@ async function getViteInfo(viteContext: ViteContext) {
   let viteConfigFromUserResolved: UserConfig = {}
   // Merge `c` overriding viteConfigFromUserResolved (`c` wins — higher precedence).
   const override = (c: UserConfig) => (viteConfigFromUserResolved = mergeConfig(viteConfigFromUserResolved, c))
-  // Merge `c` underring viteConfigFromUserResolved (`c` loses — lower precedence).
-  const underide = (c: UserConfig) => (viteConfigResolved = mergeConfig(c, viteConfigResolved))
+  // Merge `c` under viteConfigFromUserResolved (`c` loses — lower precedence); returns the result (doesn't mutate).
+  const underide = (c: UserConfig) => mergeConfig(c, viteConfigFromUserResolved)
 
   // Vike API args
   const { viteConfigFromVikeApi, vikeConfigFromApi } = getVikeApiContext()
@@ -119,8 +119,7 @@ async function getViteInfo(viteContext: ViteContext) {
   globalObject.isOnlyResolvingUserConfig = true
   const viteConfigFromViteFile = await loadViteConfigFile(viteConfigFromUserResolved, viteContext)
   globalObject.isOnlyResolvingUserConfig = false
-  let viteConfigResolved = viteConfigFromUserResolved
-  underide(viteConfigFromViteFile ?? {})
+  const viteConfigResolved = underide(viteConfigFromViteFile ?? {})
 
   const root = normalizeViteRoot(viteConfigResolved.root ?? process.cwd())
   globalObject.root = root
