@@ -60,8 +60,8 @@ importers:
         specifier: ^19.0.2
         version: 19.2.3(@types/react@19.2.14)
       '@vikejs/license-components':
-        specifier: file:../../vike-payments/packages/license-components
-        version: file:../vike-payments/packages/license-components(react@19.2.4)
+        specifier: ^0.0.2
+        version: 0.0.2(react@19.2.4)
       '@vitejs/plugin-react':
         specifier: ^5.0.0
         version: 5.1.3(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
@@ -5034,8 +5034,8 @@ packages:
       hono: ^4.0.0
       vike: ^0.4.255
 
-  '@vikejs/license-components@file:../vike-payments/packages/license-components':
-    resolution: {directory: ../vike-payments/packages/license-components, type: directory}
+  '@vikejs/license-components@0.0.2':
+    resolution: {integrity: sha512-V+GlnkQiQ0LtVRE77un9/VQKwzYAAnV78I/zKnNzE4NQXV3gmemZDpfEzXbCpZhF5n0JAoqBEuH9KI397LUpjw==}
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
 
@@ -11305,7 +11305,7 @@ snapshots:
       - h3
       - srvx
 
-  '@vikejs/license-components@file:../vike-payments/packages/license-components(react@19.2.4)':
+  '@vikejs/license-components@0.0.2(react@19.2.4)':
     dependencies:
       react: 19.2.4
 
