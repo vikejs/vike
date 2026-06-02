@@ -80,12 +80,12 @@ async function resolve(viteContext: ViteContext) {
   // 4.                       |  viteConfigFromVikeApi       |  Vike API options — `viteConfig`, and `+mode` & `+root` from `vikeConfig`
   // 5. (lowest precedence)   |  viteConfigFromViteFile      |  vite.config.js
   let viteConfigUser: UserConfig = {}
-  // Merge `c` overriding viteConfigUser (`c` wins — higher precedence)
   const addConfig = (c: UserConfig | null | undefined) => {
+    // Merge `c` overriding viteConfigUser (`c` wins — higher precedence)
     viteConfigUser = mergeConfig(viteConfigUser, c ?? {})
   }
-  // Merge `c` underiding viteConfigUser (`c` loses — lower precedence)
   const underride = (c: UserConfig | null | undefined) => {
+    // Merge `c` underiding viteConfigUser (`c` loses — lower precedence)
     return mergeConfig(c ?? {}, viteConfigUser)
   }
 
