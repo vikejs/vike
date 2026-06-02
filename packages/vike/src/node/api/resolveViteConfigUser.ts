@@ -90,9 +90,11 @@ async function resolve(viteContext: ViteContext) {
   }
 
   // Vike API args
-  const { viteConfigFromVikeApi, vikeConfigFromApi } = getVikeApiContext()
-  add(viteConfigFromVikeApi) // `viteConfig`
-  add(pick(vikeConfigFromApi ?? {}, EARLY_SETTINGS)) // `+mode` & `+root`
+  {
+    const { viteConfigFromVikeApi, vikeConfigFromApi } = getVikeApiContext()
+    add(viteConfigFromVikeApi) // `viteConfig`
+    add(pick(vikeConfigFromApi ?? {}, EARLY_SETTINGS)) // `+mode` & `+root`
+  }
 
   // Vite CLI args (when invoked via Vite's CLI rather than Vike's API).
   // - Without this, Vike loads vite.config.js blind to `vite [root]` / `-c <file>` and ends up with the wrong root when those Vite CLI args are used.
