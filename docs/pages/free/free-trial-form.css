@@ -1,19 +1,20 @@
 /* Chrome styling for @vikejs/license-components' <FreeTrialForm>, owned here (vike.dev) — the
  * component sets no font (text inherits) and no input/button styles, and takes className props.
  *
- * Doc pages do NOT load the landing page's Tailwind/daisyUI bundle, so these are plain CSS. The input
- * + button adopt the /license/success page's design tokens (`#e2e8f0` borders, 14px radius, muted
- * `oklch(0.54 0 0)`); the button keeps the neutral CTA fill. `font-family: inherit` since there's no
- * Tailwind preflight here. The field is sized to the button's height so the two line up on the
- * component's inline (field + button) row. */
+ * Doc pages do NOT load the landing page's Tailwind/daisyUI bundle, so these are plain CSS rather
+ * than daisyUI utility classes: the button replicates vike.dev's landing-page "Get Started" CTA
+ * (daisyUI `daisy-btn-neutral` / `btn-lg`), and the input is the dashboard's field plus an explicit
+ * border + `font-family: inherit` (otherwise doc pages fall back to the browser-default Arial/border
+ * since there's no Tailwind preflight here). The field is sized to the button's 48px height so the
+ * two line up on the component's inline (field + button) row. */
 
 .free-trial-label {
   font-size: 13px;
   margin-bottom: 4px;
 }
-/* De-emphasise the "(comma or space-separated)" hint — /license/success muted token (WCAG AA). */
+/* De-emphasise the "(comma or space-separated)" hint — mirrors the dashboard label's #888 span. */
 .free-trial-label span {
-  color: oklch(0.54 0 0);
+  color: #888;
 }
 
 .free-trial-input {
@@ -24,15 +25,15 @@
   font-family: inherit;
   color: inherit;
   background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 14px;
+  border: 1px solid #d4d4d4;
+  border-radius: 5.6px;
 }
 .free-trial-input:focus {
   outline: none;
   border-color: oklch(0.32 0 0);
 }
 
-/* Neutral CTA fill (landing "Get Started"); 14px radius to match the input + /license/success tokens. */
+/* Mirrors the landing-page "Get Started" CTA computed style (daisy-btn-neutral, md:btn-lg). */
 .free-trial-button {
   display: inline-flex;
   align-items: center;
@@ -40,7 +41,7 @@
   height: 46px;
   padding: 0 20px;
   border: 0;
-  border-radius: 14px;
+  border-radius: 5.6px;
   background: oklch(0.32 0 0);
   color: #fdfdfd;
   font-family: inherit;
