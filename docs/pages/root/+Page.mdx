@@ -37,11 +37,12 @@ export default {
 } satisfies UserConfig
 ```
 
-> Unlike most Vike settings, `+root` can't be defined inside a `+config.js` file: Vike needs to know the root directory before it can find your `+config.js` files. Set it over the CLI or `VIKE_CONFIG` instead (or use Vite's `root` setting directly).
+> Unlike most Vike settings, `+root` can't be defined inside a `+config.js` file (Vike emits a warning if you try): Vike needs to know the root directory before it can find your `+config.js` files. Set it over the CLI, the `VIKE_CONFIG` environment variable, `vite.config.js`, or <Link href="/api">Vike's API</Link> instead.
 
 
 ## See also
 
 - [Vite > `root`](https://vite.dev/config/shared-options.html#root)
 - <Link href="/cli" />
+- <Link href="/api" />
 - <Link href="/settings" />
