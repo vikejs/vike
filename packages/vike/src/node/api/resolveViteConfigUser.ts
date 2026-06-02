@@ -85,7 +85,7 @@ async function resolve(viteContext: ViteContext) {
     viteConfigUser = mergeConfig(viteConfigUser, c)
   }
   // Merge `c` underiding viteConfigUser (`c` loses — lower precedence)
-  const underide = (c: UserConfig) => {
+  const underride = (c: UserConfig) => {
     return mergeConfig(c, viteConfigUser)
   }
 
@@ -119,7 +119,7 @@ async function resolve(viteContext: ViteContext) {
   globalObject.isResolvingViteConfigUser = true
   const viteConfigFromViteFile = await loadViteConfigFile(viteConfigUser, viteContext)
   globalObject.isResolvingViteConfigUser = false
-  const viteConfigAll = underide(viteConfigFromViteFile ?? {})
+  const viteConfigAll = underride(viteConfigFromViteFile ?? {})
 
   const root = normalizeViteRoot(viteConfigAll.root ?? process.cwd())
   globalObject.root = root
