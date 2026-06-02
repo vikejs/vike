@@ -77,10 +77,6 @@ type ViteInfo = Awaited<ReturnType<typeof getViteInfo>>
 // TODO rename_all viteConfigFromUser viteConfigFrom
 // TODO rename_all vikeConfigFromUser vikeConfigFrom
 async function getViteInfo(viteContext: ViteContext) {
-  const { viteConfigFromUserVikeApiOptions, vikeConfigFromUserVikeApiOptions } = getVikeApiContext()
-
-  let viteConfigFromUserResolved = clone(viteConfigFromUserVikeApiOptions ?? {})
-
   // Precedence:
   // 1. (highest precedence)  |  viteConfigFromUserEnvVar          |  VITE_CONFIG
   // 2.                       |  viteConfigFromVikeCliOrEnv        |  VIKE_CONFIG & Vike CLI options — `+mode` & `+root`
@@ -88,7 +84,11 @@ async function getViteInfo(viteContext: ViteContext) {
   // 4.                       |  viteConfigFromUserVikeApiOptions  |  Vike API options — `viteConfig`, and `+mode` & `+root` from `vikeConfig`
   // 5. (lowest precedence)   |  viteConfigFromUserViteConfigFile  |  vite.config.js
 
-  // Resolve +mode/+root — set over Vike's API
+  // Resolve Vike API args
+  const { viteConfigFromUserVikeApiOptions, vikeConfigFromUserVikeApiOptions } = getVikeApiContext()
+  // - Resolve `viteConfig` set over Vike's API
+  let viteConfigFromUserResolved = clone(viteConfigFromUserVikeApiOptions ?? {})
+  // - Resolve +mode/+root set over Vike's API
   if (vikeConfigFromUserVikeApiOptions) {
     const viteConfigFromVikeApi2 = pick(vikeConfigFromUserVikeApiOptions, EARLY_SETTINGS)
     if (Object.keys(viteConfigFromVikeApi2).length > 0) {
@@ -103,7 +103,7 @@ async function getViteInfo(viteContext: ViteContext) {
     viteConfigFromUserResolved = merge(viteConfigFromUserResolved ?? {}, viteConfigFromUserViteCli)
   }
 
-  // Resolve +mode/+root — set over Vike's CLI or VIKE_CONFIG
+  // Resolve +mode/+root set over Vike's CLI or VIKE_CONFIG
   {
     const viteConfigFromVikeCliOrEnv = pick(
       getVikeConfigFromCliOrEnv().vikeConfigFromCliOrEnv as Config,
