@@ -35,7 +35,7 @@ const globalObject = getGlobalObject<{ root?: string; isResolvingViteConfigUser?
 async function resolveViteConfigFromUser() {
   const { viteContext } = getVikeApiContext()
   assert(viteContext)
-  const { viteConfigUser, root } = await resolveViteConfigUser(viteContext)
+  const { viteConfigUser, root } = await resolve(viteContext)
   const { viteConfigResolved } = await assertViteRoot2(root, viteConfigUser, viteContext)
   return {
     viteConfigResolved, // ONLY USE if strictly necessary. (We plan to remove assertViteRoot2() as explained in the comments of that function.)
@@ -47,7 +47,7 @@ async function getVikeConfigInternalEarly() {
   assert(!globalObject.isResolvingViteConfigUser) // ensure no infinite loop
   if (!isVikeConfigContextSet()) {
     const viteContext = getViteContext()
-    const viteInfo = await resolveViteConfigUser(viteContext)
+    const viteInfo = await resolve(viteContext)
     setVikeConfigContext_(viteInfo, viteContext)
   }
   return await getVikeConfigInternal()
@@ -66,13 +66,13 @@ function isResolvingViteConfigUser() {
 }
 
 async function getViteRoot(viteContext: ViteContext) {
-  if (!globalObject.root) await resolveViteConfigUser(viteContext)
+  if (!globalObject.root) await resolve(viteContext)
   assert(globalObject.root)
   return globalObject.root
 }
 
-type ViteInfo = Awaited<ReturnType<typeof resolveViteConfigUser>>
-async function resolveViteConfigUser(viteContext: ViteContext) {
+type ViteInfo = Awaited<ReturnType<typeof resolve>>
+async function resolve(viteContext: ViteContext) {
   // Precedence:
   // 1. (highest precedence)  |  viteConfigFromViteEnv       |  VITE_CONFIG
   // 2.                       |  viteConfigFromVikeCliOrEnv  |  VIKE_CONFIG & Vike CLI options — `+mode` & `+root`
