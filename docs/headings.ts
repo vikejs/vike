@@ -1175,7 +1175,7 @@ function misc() {
         url: '/glossary',
       },
       {
-        title: 'License Success',
+        title: 'Purchase complete',
         url: '/license/success',
         pageDesign: {
           hideTitle: true,
