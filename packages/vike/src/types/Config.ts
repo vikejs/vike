@@ -605,10 +605,6 @@ type ConfigBuiltIn = {
   /**
    * The root directory of your project.
    *
-   * Can be an absolute path, or a path relative to the current working directory.
-   *
-   * @default process.cwd()
-   *
    * https://vike.dev/root
    */
   root?: string
