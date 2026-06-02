@@ -16,7 +16,7 @@ function Page() {
           Thank you for supporting Vike
         </h1>
         <p style={{ color: colorNote, fontSize: '1.05em', lineHeight: 1.5, margin: 0 }}>
-          Your license directly funds Vike's development. Your apps are now <b>fully unlocked</b>, forever. 🔓
+          You can now use Vike fully unlocked, forever.
         </p>
       </div>
 
@@ -68,7 +68,7 @@ function Page() {
       </div>
 
       <p style={{ textAlign: 'center', color: colorNote, fontSize: '0.9em', marginTop: 16 }}>
-        Email didn't arrive? <a href="mailto:support@vike.dev">Contact us</a> and we'll help.
+        Having issues? <a href="mailto:support@vike.dev">Contact us</a> and we'll help.
       </p>
     </div>
   )
