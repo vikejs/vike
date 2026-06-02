@@ -4,8 +4,8 @@ import { Link } from '@brillout/docpress'
 import React from 'react'
 
 const colorBorder = '#e2e8f0'
-// Muted text, matching the landing-page hero tagline (Tailwind `text-grey` → `--color-grey`, which isn't defined outside the landing page)
-const colorMuted = 'oklch(0.5553 0 0)'
+// Muted text, based on the landing-page hero tagline grey (`text-grey` → `--color-grey`), darkened slightly (0.5553 → 0.54) to meet WCAG AA contrast at this page's smaller text sizes
+const colorMuted = 'oklch(0.54 0 0)'
 // docpress's site-wide text color (the muted/border colors below have no docs-wide var)
 const colorHeading = 'var(--color-text)'
 
