@@ -1,5 +1,5 @@
 export { resolveViteConfigFromUser }
-export { isOnlyResolvingUserConfig }
+export { isResolvingViteConfigUser }
 export { getVikeConfigInternalEarly }
 export { getViteRoot }
 export { assertViteRoot }
@@ -27,7 +27,7 @@ import { getViteCliCommand, getViteCliArgs } from '../vite/shared/isViteCli.js'
 import type { Config } from '../../types/index.js'
 import './assertEnvApiDevAndProd.js'
 
-const globalObject = getGlobalObject<{ root?: string; isOnlyResolvingUserConfig?: boolean }>(
+const globalObject = getGlobalObject<{ root?: string; isResolvingViteConfigUser?: boolean }>(
   'api/prepareViteApiCall.ts',
   {},
 )
@@ -44,7 +44,7 @@ async function resolveViteConfigFromUser() {
 }
 
 async function getVikeConfigInternalEarly() {
-  assert(!globalObject.isOnlyResolvingUserConfig) // ensure no infinite loop
+  assert(!globalObject.isResolvingViteConfigUser) // ensure no infinite loop
   if (!isVikeConfigContextSet()) {
     const viteContext = getViteContext()
     const viteInfo = await resolveViteConfigUser(viteContext)
@@ -61,8 +61,8 @@ function setVikeConfigContext_(viteInfo: ViteInfo, viteContext: ViteContext) {
   })
 }
 
-function isOnlyResolvingUserConfig() {
-  return globalObject.isOnlyResolvingUserConfig
+function isResolvingViteConfigUser() {
+  return globalObject.isResolvingViteConfigUser
 }
 
 async function getViteRoot(viteContext: ViteContext) {
@@ -116,9 +116,9 @@ async function resolveViteConfigUser(viteContext: ViteContext) {
   // find the Vike plugin): it must not flow back into `viteConfigUser`, which is handed to Vite —
   // Vite loads vite.config.js itself, so merging it here would add the Vike plugin twice.
   // Replicates Vite: https://github.com/vitejs/vite/blob/4f5845a3182fc950eb9cd76d7161698383113b18/packages/vite/src/node/config.ts#L1001
-  globalObject.isOnlyResolvingUserConfig = true
+  globalObject.isResolvingViteConfigUser = true
   const viteConfigFromViteFile = await loadViteConfigFile(viteConfigUser, viteContext)
-  globalObject.isOnlyResolvingUserConfig = false
+  globalObject.isResolvingViteConfigUser = false
   const viteConfigAll = underide(viteConfigFromViteFile ?? {})
 
   const root = normalizeViteRoot(viteConfigAll.root ?? process.cwd())

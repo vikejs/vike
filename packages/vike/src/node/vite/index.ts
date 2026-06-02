@@ -41,7 +41,7 @@ import { pluginReplaceConstantsNonRunnableDev } from './plugins/non-runnable-dev
 import { isVikeCliOrApi } from '../../shared-server-node/api-context.js'
 import { pluginViteConfigVikeExtensions } from './plugins/pluginViteConfigVikeExtensions.js'
 import { pluginStripPointerImportAttribute } from './plugins/pluginStripPointerImportAttribute.js'
-import { getVikeConfigInternalEarly, isOnlyResolvingUserConfig } from '../api/resolveViteConfigFromUser.js'
+import { getVikeConfigInternalEarly, isResolvingViteConfigUser } from '../api/resolveViteConfigFromUser.js'
 import './assertEnvVite.js'
 import { isStorybook } from '../../utils/isStorybook.js'
 import { pluginUniversalDeploy } from './plugins/pluginUniversalDeploy.js'
@@ -105,7 +105,7 @@ function pluginNonRunnabeDev() {
 
 function removeVitePlugin() {
   // Early resolving of user Vite configs
-  if (isOnlyResolvingUserConfig()) {
+  if (isResolvingViteConfigUser()) {
     return true
   }
 
