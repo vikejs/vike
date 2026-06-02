@@ -35,7 +35,7 @@ const globalObject = getGlobalObject<{ root?: string; isOnlyResolvingUserConfig?
 async function resolveViteConfigFromUser() {
   const { viteContext } = getVikeApiContext()
   assert(viteContext)
-  const { viteConfigFromUser, root } = await getViteConfigFromUser(viteContext)
+  const { viteConfigFromUser, root } = await resolveViteConfigUser(viteContext)
   const { viteConfigResolved } = await assertViteRoot2(root, viteConfigFromUser, viteContext)
   return {
     viteConfigResolved, // ONLY USE if strictly necessary. (We plan to remove assertViteRoot2() as explained in the comments of that function.)
@@ -47,7 +47,7 @@ async function getVikeConfigInternalEarly() {
   assert(!globalObject.isOnlyResolvingUserConfig) // ensure no infinite loop
   if (!isVikeConfigContextSet()) {
     const viteContext = getViteContext()
-    const viteInfo = await getViteConfigFromUser(viteContext)
+    const viteInfo = await resolveViteConfigUser(viteContext)
     setVikeConfigContext_(viteInfo, viteContext)
   }
   return await getVikeConfigInternal()
@@ -66,13 +66,13 @@ function isOnlyResolvingUserConfig() {
 }
 
 async function getViteRoot(viteContext: ViteContext) {
-  if (!globalObject.root) await getViteConfigFromUser(viteContext)
+  if (!globalObject.root) await resolveViteConfigUser(viteContext)
   assert(globalObject.root)
   return globalObject.root
 }
 
-type ViteInfo = Awaited<ReturnType<typeof getViteConfigFromUser>>
-async function getViteConfigFromUser(viteContext: ViteContext) {
+type ViteInfo = Awaited<ReturnType<typeof resolveViteConfigUser>>
+async function resolveViteConfigUser(viteContext: ViteContext) {
   // Precedence:
   // 1. (highest precedence)  |  viteConfigFromViteEnv       |  VITE_CONFIG
   // 2.                       |  viteConfigFromVikeCliOrEnv  |  VIKE_CONFIG & Vike CLI options — `+mode` & `+root`
@@ -153,7 +153,7 @@ async function getViteConfigFromUser(viteContext: ViteContext) {
   }
   assert(vikeVitePluginOptions)
 
-  return { root, vikeVitePluginOptions, viteConfigFromUser }
+  return { viteConfigFromUser, root, vikeVitePluginOptions }
 }
 
 function findVikeVitePlugin(viteConfig: InlineConfig | UserConfig | undefined | null) {
