@@ -315,7 +315,7 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
   mode: {
     env: { config: true },
     global: true,
-    vite: true,
+    // vite: true, // +mode can't be set in +config.js, so a +config.js change never affects it — no Vite restart needed
   },
   force: {
     env: { config: true },
@@ -325,7 +325,7 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
   root: {
     env: { config: true },
     global: true,
-    vite: true,
+    // vite: true, // +root can't be set in +config.js, so a +config.js change never affects it — no Vite restart needed
   },
   csp: {
     env: { server: true },
