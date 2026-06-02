@@ -737,16 +737,16 @@ function setCliAndApiOptions(
 }
 function warnEarlySettingsInConfigFile(pageConfigGlobal: PageConfigGlobalBuildTime) {
   const EARLY_SETTINGS = [
-    // +root is needed before loading +config.js files
+    // +root determines where Vike looks for +config.js files (so it can't be defined inside +config.js itself)
     'root',
-    // +mode is needed to load the vite.config.js file
+    // +mode affects which vite.config.js environment is loaded
     'mode',
   ] as const
   for (const configName of EARLY_SETTINGS) {
     const sources = pageConfigGlobal.configValueSources[configName]
     if (!sources) continue
     for (const source of sources) {
-      // CLI/env/API sources have `plusFile === null`; only +config.js (and +{configName}.js) sources set `plusFile`
+      // CLI/API/env sources have `plusFile === null`
       if (!source.plusFile) continue
       const configDefinedAt = getConfigDefinedAt('Config', configName, source.definedAt)
       assertWarning(
