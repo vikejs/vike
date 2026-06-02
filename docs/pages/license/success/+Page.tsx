@@ -12,9 +12,7 @@ function Page() {
     <div style={{ maxWidth: 580, margin: 'auto' }}>
       <div style={{ textAlign: 'center', marginTop: 20 }}>
         <div style={{ fontSize: 56, marginBottom: 12 }}>🎉</div>
-        <h1 style={{ fontSize: 30, fontWeight: 700, color: colorHeading, marginBottom: 12 }}>
-          You're all set
-        </h1>
+        <h1 style={{ fontSize: 30, fontWeight: 700, color: colorHeading, marginBottom: 12 }}>You're all set</h1>
         <p style={{ color: colorNote, fontSize: '1.05em', lineHeight: 1.5, margin: 0 }}>
           You can now use Vike fully unlocked, forever.
         </p>
