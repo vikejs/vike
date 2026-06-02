@@ -23,7 +23,10 @@ function Page() {
           </li>
           <li>
             From the dashboard, generate forever-valid license keys for your domains and{' '}
-            <Link href="/license#install">install them in your <code>+config.js</code></Link>.
+            <Link href="/license#install">
+              install them in your <code>+config.js</code>
+            </Link>
+            .
           </li>
         </ol>
         That's it — you can now use Vike, forever without restrictions.

@@ -55,7 +55,7 @@ function PricingTable() {
                     suffix={
                       <>
                         <OneTime />
-                        {/* TODO
+                        {/* TODO/osp
                         <Separator />
                         <BuyButton />
                         */}
