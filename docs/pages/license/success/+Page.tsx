@@ -13,7 +13,9 @@ function Page() {
   return (
     <div style={{ maxWidth: 580, margin: 'auto' }}>
       <div style={{ textAlign: 'center', marginTop: 20 }}>
-        <div style={{ fontSize: 56, marginBottom: 12 }}>🎉</div>
+        <div role="img" aria-label="Celebration" style={{ fontSize: 56, marginBottom: 12 }}>
+          🎉
+        </div>
         <h1 style={{ fontSize: 30, fontWeight: 700, color: colorHeading, marginBottom: 12 }}>You're all set</h1>
         <p style={{ color: colorMuted, fontSize: '1.05em', lineHeight: 1.5, margin: 0 }}>
           You can now use Vike fully unlocked, forever.
@@ -30,7 +32,7 @@ function Page() {
           boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
         }}
       >
-        <div style={{ fontWeight: 600, color: colorHeading, marginBottom: 6 }}>Next steps</div>
+        <h2 style={{ fontSize: '1em', fontWeight: 600, color: colorHeading, margin: '0 0 6px' }}>Next steps</h2>
         <ol style={{ margin: 0, paddingLeft: 22, lineHeight: 1.7 }}>
           <li>
             Check your inbox — we sent an email with a sign-in link to the{' '}
