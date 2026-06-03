@@ -2,7 +2,7 @@
  * component sets no font (text inherits) and no input/button styles, and takes className props.
  *
  * Doc pages do NOT load the landing page's Tailwind/daisyUI bundle, so these are plain CSS rather
- * than daisyUI utility classes: the button replicates vike.dev's landing-page "Get Started" CTA
+ * than daisyUI utility classes: the button reuses vike.dev's landing-page "Get Started" CTA shape
  * (daisyUI `daisy-btn-neutral` / `btn-lg`), and the input is the dashboard's field plus an explicit
  * border + `font-family: inherit` (otherwise doc pages fall back to the browser-default Arial/border
  * since there's no Tailwind preflight here). The field is sized to the button's 48px height so the
@@ -33,7 +33,8 @@
   border-color: oklch(0.32 0 0);
 }
 
-/* Mirrors the landing-page "Get Started" CTA computed style (daisy-btn-neutral, md:btn-lg). */
+/* Landing-page "Get Started" CTA shape (daisy-btn-neutral, md:btn-lg), but a lighter fill: the
+ * landing stays the heavier primary CTA, so these form submits read a touch softer. */
 .free-trial-button {
   display: inline-flex;
   align-items: center;
@@ -42,7 +43,7 @@
   padding: 0 20px;
   border: 0;
   border-radius: 5.6px;
-  background: oklch(0.32 0 0);
+  background: oklch(0.40 0 0);
   color: #fdfdfd;
   font-family: inherit;
   font-size: 18px;
@@ -50,7 +51,7 @@
   cursor: pointer;
 }
 .free-trial-button:hover {
-  background: oklch(0.27 0 0);
+  background: oklch(0.35 0 0);
 }
 .free-trial-button:disabled {
   opacity: 0.6;
