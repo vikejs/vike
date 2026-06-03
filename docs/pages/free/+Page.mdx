@@ -1,4 +1,4 @@
-import { Link } from '@brillout/docpress'
+import { Link, Danger } from '@brillout/docpress'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import { FreeTrialForm } from '@vikejs/license-components'
 import '../../components/tabs.css'
@@ -35,6 +35,10 @@ Get your 3-month free trial.
   inputClassName="free-trial-input"
   labelClassName="free-trial-label"
 />
+
+<Danger>
+  Don't use it for now: this is under construction 🚧
+</Danger>
 
 > Enter **root domains**: subdomains are included — a key for `example.com` also covers `foo.example.com`, `bar.example.com`, etc.
 
