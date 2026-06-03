@@ -17,6 +17,7 @@ import {
 } from '../vite/shared/resolveVikeConfigInternal.js'
 import path from 'node:path'
 import { assert, assertUsage, assertWarning } from '../../utils/assert.js'
+import { createDebug } from '../../utils/debug.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import { pick } from '../../utils/pick.js'
 import { toPosixPath } from '../../utils/path.js'
@@ -26,11 +27,11 @@ import { getVikeApiOperation, isVikeCliOrApi } from '../../shared-server-node/ap
 import { getViteCliCommand, getViteCliArgs } from '../vite/shared/isViteCli.js'
 import type { Config } from '../../types/index.js'
 import './assertEnvApiDevAndProd.js'
-
 const globalObject = getGlobalObject<{ root?: string; isResolvingViteConfigUser?: boolean }>(
   'resolveViteConfigUser.ts',
   {},
 )
+const debug = createDebug('vike:vite-config-user')
 
 async function resolveViteConfigUser() {
   const { viteContext } = getVikeApiContext()
@@ -94,6 +95,8 @@ async function resolve(viteContext: ViteContext) {
     const { viteConfigFromVikeApi, vikeConfigFromApi } = getVikeApiContext()
     addConfig(viteConfigFromVikeApi) // `viteConfig`
     addConfig(pick(vikeConfigFromApi ?? {}, EARLY_SETTINGS)) // `+mode` & `+root`
+    if (debug.isActivated) debug('viteConfigFromVikeApi', viteConfigFromVikeApi)
+    if (debug.isActivated) debug('vikeConfigFromApi', vikeConfigFromApi)
   }
 
   // Vite CLI args (when invoked via Vite's CLI rather than Vike's API).
@@ -101,6 +104,7 @@ async function resolve(viteContext: ViteContext) {
   {
     const viteConfigFromViteCli = getViteCliArgs()
     addConfig(viteConfigFromViteCli)
+    if (debug.isActivated) debug('viteConfigFromViteCli', viteConfigFromViteCli)
   }
 
   // Vike's CLI and VIKE_CONFIG — `+mode` & `+root`
@@ -110,12 +114,14 @@ async function resolve(viteContext: ViteContext) {
       EARLY_SETTINGS,
     )
     addConfig(viteConfigFromVikeCliOrEnv)
+    if (debug.isActivated) debug('viteConfigFromVikeCliOrEnv', viteConfigFromVikeCliOrEnv)
   }
 
   // VITE_CONFIG
   {
     const viteConfigFromViteEnv = getEnvVarObject('VITE_CONFIG')
     addConfig(viteConfigFromViteEnv)
+    if (debug.isActivated) debug('viteConfigFromViteEnv', viteConfigFromViteEnv)
   }
 
   // vite.config.js — lowest precedence. Merged into a *separate* result (used only to compute `root` and to
@@ -159,6 +165,7 @@ async function resolve(viteContext: ViteContext) {
   }
   assert(vikeVitePluginOptions)
 
+  if (debug.isActivated) debug('viteConfigUser', viteConfigUser)
   return { viteConfigUser, root, vikeVitePluginOptions }
 }
 
