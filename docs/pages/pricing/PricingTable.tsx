@@ -24,7 +24,7 @@ function PricingTable() {
               <Free />
               <div>
                 <Check>Full access</Check>
-                <Check>Forever free</Check>
+                <Check>Free forever</Check>
                 <Check>
                   No license key<NoteRef>3</NoteRef>
                 </Check>
@@ -40,7 +40,7 @@ function PricingTable() {
                   </SubHeading>
                   <Free />
                   <Check>Full access</Check>
-                  <Check>Forever free</Check>
+                  <Check>Free forever</Check>
                   <Check>
                     <Link href="/free">Apply</Link> for free license key
                   </Check>
