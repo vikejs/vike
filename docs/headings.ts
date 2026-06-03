@@ -77,11 +77,6 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Free Program',
-    url: '/free',
-  },
-  {
-    level: 2,
     title: 'Extensions',
     url: '/extensions',
   },
@@ -1164,16 +1159,23 @@ function misc() {
         url: '/use-cases',
         category: 'Overview',
       },
+      // TODO/osp: move to API
       {
         title: '`+license`',
         url: '/license',
+      },
+      // TODO/osp: move to Overview, or new section Pricing?
+      {
+        level: 2,
+        title: 'Free access',
+        url: '/free',
       },
       {
         title: 'Glossary',
         url: '/glossary',
       },
       {
-        title: 'License Success',
+        title: 'Purchase complete',
         url: '/license/success',
         pageDesign: {
           hideTitle: true,

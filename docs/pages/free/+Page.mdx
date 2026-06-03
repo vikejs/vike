@@ -1,10 +1,12 @@
-import { Link } from '@brillout/docpress'
+import { Link, Danger } from '@brillout/docpress'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
+import { FreeTrialForm } from '@vikejs/license-components'
 import '../../components/tabs.css'
+import './free-trial-form.css'
 
 export const freeForeverBody = `== URL
 
-[Your app's URL (\`window.location.hostname\`)]
+[Your app's URL]
 
 == Reason
 
@@ -12,18 +14,43 @@ export const freeForeverBody = `== URL
 
 export const extendedBody = `${freeForeverBody}
 
-== Extend duration
+== Duration
 
 Two years`
 
-The free program ensures everyone can use Vike.
 
-There are two programs:
-1. `Free forever`
-2. `Extended free trial`
+The free access program ensures everyone can use Vike.
+- <Link href="#free-trial" /> — free for 3 months
+- <Link href="#grant" />:
+  - `Extended free trial` — free for longer than 3 months
+  - `Free forever` — free indefinitely
 
 
-## Who's eligible?
+## Free trial
+
+Get your 3-month free trial.
+
+<FreeTrialForm
+  buttonClassName="free-trial-button"
+  inputClassName="free-trial-input"
+  labelClassName="free-trial-label"
+/>
+
+<Danger>
+  Don't use it for now: this is under construction 🚧
+</Danger>
+
+> Enter **root domains**: subdomains are included — a key for `example.com` also covers `foo.example.com`, `bar.example.com`, etc.
+
+> You can re-request your key at any time (e.g. if you lose it) — but **the 3 months start from your first request**, so re-requesting won't extend the trial. To extend your free trial, see <Link href="#grant" />.
+
+## Grant
+
+If a license is too expensive for your organization, apply for a free grant:
+- `Extended free trial` (free for a set period), or
+- `Free forever` (free indefinitely).
+
+### Who's eligible?
 
 Your organization is eligible if it has limited financial resources and purchasing a license would be too expensive.
 
@@ -36,7 +63,7 @@ Apply for:
 - `Free forever` otherwise
 
 <p/>
-> For example:
+> Examples:
 > - Startup => `Extended free trial`
 > - Open Source (without much revenue) => `Free forever`
 > - Amateur sports club => `Free forever`
@@ -46,49 +73,18 @@ You can also apply for `Extended free trial` for other reasons (e.g. pending cle
 We tend to be generous, so don't hesitate to apply — it's easy and quick.
 
 
-## How to apply?
+### How to apply?
 
 Contact us to apply.
 
 <Tabs>
   <TabList>
-    <Tab>`Free forever`</Tab>
     <Tab>`Extended free trial`</Tab>
+    <Tab>`Free forever`</Tab>
   </TabList>
   <TabPanel>
 
-<span>Email (pre-filled subject & body): </span>
-<a
-  href={
-    "mailto:support@vike.dev" +
-    "?subject=" + encodeURIComponent("Free forever") +
-    "&body=" + encodeURIComponent(freeForeverBody)
-  }
->
-  {'support@vike.dev'}
-</a>
-
-Subject:
-```
-Free forever
-```
-
-Body:
-
-```
-== URL
-
-[Your app's URL (`window.location.hostname`)]
-
-== Reason
-
-[Why your organization has limited financial resources]
-```
-
-  </TabPanel>
-  <TabPanel>
-
-<span>Email (pre-filled subject & body): </span>
+<span>Email: </span>
 <a
   href={
     "mailto:support@vike.dev" +
@@ -96,7 +92,7 @@ Body:
     "&body=" + encodeURIComponent(extendedBody)
   }
 >
-  {'support@vike.dev'}
+  {'support@vike.dev (prefilled subject & body)'}
 </a>
 
 Subject:
@@ -109,16 +105,47 @@ Body:
 ```
 == URL
 
-[Your app's URL (`window.location.hostname`)]
+[Your app's URL]
 
 == Reason
 
 [Why your organization has limited financial resources]
 
-== Extend duration
+== Duration
 
 Two years. [Can be modified: for example, you can set it to the duration after which you
 expect to easily afford a license. You can apply again after the extended period ends.]
+```
+
+  </TabPanel>
+  <TabPanel>
+
+<span>Email: </span>
+<a
+  href={
+    "mailto:support@vike.dev" +
+    "?subject=" + encodeURIComponent("Free forever") +
+    "&body=" + encodeURIComponent(freeForeverBody)
+  }
+>
+  {'support@vike.dev (prefilled subject & body)'}
+</a>
+
+Subject:
+```
+Free forever
+```
+
+Body:
+
+```
+== URL
+
+[Your app's URL]
+
+== Reason
+
+[Why your organization has limited financial resources]
 ```
 
   </TabPanel>
@@ -128,3 +155,4 @@ expect to easily afford a license. You can apply again after the extended period
 ## See also
 
 - <Link href="/pricing" />
+- <Link href="/license" />

@@ -1,0 +1,60 @@
+/* Chrome styling for @vikejs/license-components' <FreeTrialForm>, owned here (vike.dev) — the
+ * component sets no font (text inherits) and no input/button styles, and takes className props.
+ *
+ * Doc pages do NOT load the landing page's Tailwind/daisyUI bundle, so these are plain CSS rather
+ * than daisyUI utility classes: the button reuses vike.dev's landing-page "Get Started" CTA shape
+ * (daisyUI `daisy-btn-neutral` / `btn-lg`), and the input is the dashboard's field plus an explicit
+ * border + `font-family: inherit` (otherwise doc pages fall back to the browser-default Arial/border
+ * since there's no Tailwind preflight here). The field is sized to the button's 48px height so the
+ * two line up on the component's inline (field + button) row. */
+
+.free-trial-label {
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+/* De-emphasise the "(comma or space-separated)" hint — mirrors the dashboard label's #888 span. */
+.free-trial-label span {
+  color: #888;
+}
+
+.free-trial-input {
+  width: 100%;
+  height: 48px;
+  padding: 0 14px;
+  font-size: 16px;
+  font-family: inherit;
+  color: inherit;
+  background: #fff;
+  border: 1px solid #d4d4d4;
+  border-radius: 5.6px;
+}
+.free-trial-input:focus {
+  outline: none;
+  border-color: oklch(0.32 0 0);
+}
+
+/* Same 48px pill as the landing "Get Started" CTA (daisy-btn-neutral, md:btn-lg), but a quiet
+ * light-gray fill + dark text: /free's primary action is the Grant offer, not this trial-key
+ * form, so its submit stays subdued (and matches the dashboard panels). */
+.free-trial-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 5.6px;
+  background: oklch(0.89 0 0);
+  color: oklch(0.33 0 0);
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.free-trial-button:hover {
+  background: oklch(0.78 0 0);
+}
+.free-trial-button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}

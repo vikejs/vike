@@ -24,7 +24,7 @@ function PricingTable() {
               <Free />
               <div>
                 <Check>Full access</Check>
-                <Check>Forever free</Check>
+                <Check>Free forever</Check>
                 <Check>
                   No license key<NoteRef>3</NoteRef>
                 </Check>
@@ -40,7 +40,7 @@ function PricingTable() {
                   </SubHeading>
                   <Free />
                   <Check>Full access</Check>
-                  <Check>Forever free</Check>
+                  <Check>Free forever</Check>
                   <Check>
                     <Link href="/free">Apply</Link> for free license key
                   </Check>
@@ -55,7 +55,7 @@ function PricingTable() {
                     suffix={
                       <>
                         <OneTime />
-                        {/* TODO
+                        {/* TODO/osp
                         <Separator />
                         <BuyButton />
                         */}
@@ -69,7 +69,7 @@ function PricingTable() {
                     Forever access<NoteRef>4</NoteRef>
                   </Check>
                   <Check>
-                    <span style={{ color: colorFree, fontWeight: 700, fontSize: '1.1em' }}>Free trial</span>: 6 months +{' '}
+                    <span style={{ color: colorFree, fontWeight: 700, fontSize: '1.1em' }}>Free trial</span>: 3 months +{' '}
                     <Link href="/free">extendable</Link>
                   </Check>
                 </div>
