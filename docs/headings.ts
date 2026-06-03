@@ -1167,7 +1167,7 @@ function misc() {
       // TODO/osp: move to Overview, or new section Pricing?
       {
         level: 2,
-        title: 'Free program',
+        title: 'Free access',
         url: '/free',
       },
       {
