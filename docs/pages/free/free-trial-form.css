@@ -33,8 +33,9 @@
   border-color: oklch(0.32 0 0);
 }
 
-/* Landing-page "Get Started" CTA shape (daisy-btn-neutral, md:btn-lg), but a lighter fill: the
- * landing stays the heavier primary CTA, so these form submits read a touch softer. */
+/* Same 48px pill as the landing "Get Started" CTA (daisy-btn-neutral, md:btn-lg), but a quiet
+ * light-gray fill + dark text: /free's primary action is the Grant offer, not this trial-key
+ * form, so its submit stays subdued (and matches the dashboard panels). */
 .free-trial-button {
   display: inline-flex;
   align-items: center;
@@ -43,15 +44,15 @@
   padding: 0 20px;
   border: 0;
   border-radius: 5.6px;
-  background: oklch(0.40 0 0);
-  color: #fdfdfd;
+  background: oklch(0.84 0 0);
+  color: oklch(0.30 0 0);
   font-family: inherit;
   font-size: 18px;
   font-weight: 600;
   cursor: pointer;
 }
 .free-trial-button:hover {
-  background: oklch(0.35 0 0);
+  background: oklch(0.78 0 0);
 }
 .free-trial-button:disabled {
   opacity: 0.6;
