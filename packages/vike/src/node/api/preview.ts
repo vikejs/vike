@@ -14,7 +14,7 @@ import path from 'node:path'
 import { getVikeConfigInternal, type VikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.js'
 import { isUniversalDeployVitePreview } from '../vite/plugins/pluginUniversalDeploy/getServerConfig.js'
 import './assertEnvApiDev.js'
-import { getStartupLogFirstLine } from './getStartupLogFirstLine.js'
+import { startupLog } from './startupLog.js'
 
 /**
  * Programmatically trigger `$ vike preview`
@@ -56,28 +56,19 @@ async function preview(
     }
   } else {
     // Use Vite's preview server
-    const server = await previewVite(viteConfigUser)
-    if (options.startupLog) startupLog(viteConfigResolved, server)
+    const viteServer = await previewVite(viteConfigUser)
+    const viteConfig = viteServer.config
+    if (options.startupLog) startupLog(viteConfig, viteServer)
     logHint(
       vikeConfig.prerenderContext.isPrerenderingEnabledForAllPages
         ? ' — your app is fully pre-rendered and can be statically deployed.'
         : '',
     )
     return {
-      viteServer: server,
-      viteConfig: server.config,
+      viteServer,
+      viteConfig,
     }
   }
-}
-
-function startupLog(viteConfigResolved: ResolvedConfig, vitePreviewServer: PreviewServer | null) {
-  const { startupLogFirstLine, isStartupLogCompact } = getStartupLogFirstLine(viteConfigResolved, !vitePreviewServer)
-  console.log(startupLogFirstLine)
-  if (vitePreviewServer) {
-    vitePreviewServer.printUrls()
-    vitePreviewServer.bindCLIShortcuts({ print: true })
-  }
-  if (!isStartupLogCompact) console.log()
 }
 
 function logHint(hint = '') {
