@@ -46,11 +46,7 @@ async function cmdBuild() {
 
 async function cmdPreview() {
   try {
-    const { viteServer } = await preview({ startupLog: true })
-    if (viteServer) {
-      viteServer.printUrls()
-      viteServer.bindCLIShortcuts({ print: true })
-    }
+    await preview({ startupLog: true })
   } catch (err) {
     console.error(pc.red(`Error while starting preview server:`))
     // Error comes from Vite; no need to use addErrorHint()

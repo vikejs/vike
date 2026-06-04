@@ -44,26 +44,24 @@ async function preview(
     return !viteConfigResolved.vitePluginServerEntry?.inject
   })()
 
-  const { startupLogFirstLine, isStartupLogCompact } = getStartupLogFirstLine(viteConfigResolved, !useVitePreviewServer)
-  if (options.startupLog) console.log(startupLogFirstLine)
-
   if (!useVitePreviewServer) {
     // Dynamically import() server production entry dist/server/index.js
     const outDir = getOutDirs(viteConfigResolved, undefined).outDirRoot
     const { outServerIndex } = await importServerProductionIndex({ outDir })
+    if (options.startupLog) startupLog(viteConfigResolved, null)
     const outServerIndexRelative = path.relative(viteConfigResolved.root, outServerIndex)
-    logHint(`, run ${pc.cyan(`$ node ${outServerIndexRelative}`)} instead (or Bun/Deno).`, isStartupLogCompact)
+    logHint(`, run ${pc.cyan(`$ node ${outServerIndexRelative}`)} instead (or Bun/Deno).`)
     return {
       viteConfig: viteConfigResolved,
     }
   } else {
     // Use Vite's preview server
     const server = await previewVite(viteConfigUser)
+    if (options.startupLog) startupLog(viteConfigResolved, server)
     logHint(
       vikeConfig.prerenderContext.isPrerenderingEnabledForAllPages
         ? ' — your app is fully pre-rendered and can be statically deployed.'
         : '',
-      isStartupLogCompact,
     )
     return {
       viteServer: server,
@@ -72,11 +70,18 @@ async function preview(
   }
 }
 
-function logHint(hint = '', isStartupLogCompact: boolean) {
-  setTimeout(() => {
-    if (!isStartupLogCompact) console.log()
-    assertInfo(false, `Don't use ${pc.cyan('$ vike preview')} for production${hint}`, { onlyOnce: true })
-  }, 0)
+function startupLog(viteConfigResolved: ResolvedConfig, vitePreviewServer: PreviewServer | null) {
+  const { startupLogFirstLine, isStartupLogCompact } = getStartupLogFirstLine(viteConfigResolved, !vitePreviewServer)
+  console.log(startupLogFirstLine)
+  if (vitePreviewServer) {
+    vitePreviewServer.printUrls()
+    vitePreviewServer.bindCLIShortcuts({ print: true })
+  }
+  if (!isStartupLogCompact) console.log()
+}
+
+function logHint(hint = '') {
+  assertInfo(false, `Don't use ${pc.cyan('$ vike preview')} for production${hint}`, { onlyOnce: true })
 }
 
 async function resolveCliPreviewConfig(vikeConfig: VikeConfigInternal): Promise<CliPreviewValue> {
