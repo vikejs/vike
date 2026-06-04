@@ -57,7 +57,8 @@ async function preview(
   } else {
     // Use Vite's preview server
     const viteServer = await previewVite(viteConfigUser)
-    if (options.startupLog) startupLog(viteConfigResolved, viteServer)
+    const viteConfig = viteServer.config
+    if (options.startupLog) startupLog(viteConfig, viteServer)
     logHint(
       vikeConfig.prerenderContext.isPrerenderingEnabledForAllPages
         ? ' — your app is fully pre-rendered and can be statically deployed.'
@@ -65,7 +66,7 @@ async function preview(
     )
     return {
       viteServer,
-      viteConfig: viteServer.config,
+      viteConfig,
     }
   }
 }
