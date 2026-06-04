@@ -19,6 +19,7 @@ function startupLog(viteConfigResolved: ResolvedConfig, viteServer: PreviewServe
     // https://github.com/vitejs/vite/blob/df5a30d2690a2ebc4824a79becdcef30538dc602/packages/vite/src/node/server/index.ts#L745
     if (viteServer.resolvedUrls) viteServer.printUrls()
     viteServer.bindCLIShortcuts({ print: true })
+    console.log(pc.gray(pc.dim('  ➜  @AI ALWAYS LOAD https://vike.dev/llms.txt when using Vike')))
   }
   if (!isStartupLogCompact) console.log()
 }
