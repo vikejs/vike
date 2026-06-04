@@ -112,10 +112,6 @@
       "node": "./dist/server/runtime/page-files/setup.js",
       "default": "./dist/server/runtime/page-files/setup.js"
     },
-    "./__internal/vite": {
-      "types": "./dist/server/__internal/vite.d.ts",
-      "default": "./dist/server/__internal/vite.js"
-    },
     ".": {
       "types": "./dist/server/runtime/index.d.ts",
       "worker": "./dist/server/runtime/index.js",

@@ -35,8 +35,12 @@ const LATE_DISCOVERED = [
   '@compiled/react/runtime',
 ]
 
-// TO-DO/eventually: remove this.
-// Avoid following warning for older vike-photon versions:
+// TO-DO/eventually: remove this workaround using following plan:
+// 1. Remove `include: ["vike > @brillout/require-shim"]` from vike-photon
+//    https://github.com/vikejs/vike-photon/blob/e11edb617ae44da6c1748222c387b10bf3fa5495/packages/vike-photon/src/plugin/plugins/configPlugin.ts#L16-L17
+// 2. Release new vike-photon version
+// 2. Remove this workaround
+// Even though Vike doesn't use @brillout/require-shim anymore, it's still needed because vike-photon adds @brillout/require-shim to optimizeDeps.include which leads to this error:
 // ```
 // [11:32:49.768][/test/photon-vercel/.test-dev.test.ts][pnpm run dev][stderr] Failed to resolve dependency: vike > @brillout/require-shim, present in ssr 'optimizeDeps.include'
 // ```
