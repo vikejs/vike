@@ -1,5 +1,4 @@
 export { startupLog }
-export { getStartupLogFirstLine }
 
 import type { PreviewServer, ResolvedConfig, ViteDevServer } from 'vite'
 import { colorVike } from '../../utils/colorsClient.js'
