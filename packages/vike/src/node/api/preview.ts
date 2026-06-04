@@ -14,7 +14,7 @@ import path from 'node:path'
 import { getVikeConfigInternal, type VikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.js'
 import { isUniversalDeployVitePreview } from '../vite/plugins/pluginUniversalDeploy/getServerConfig.js'
 import './assertEnvApiDev.js'
-import { getStartupLogFirstLine } from './getStartupLogFirstLine.js'
+import { startupLog } from './getStartupLogFirstLine.js'
 
 /**
  * Programmatically trigger `$ vike preview`
@@ -68,16 +68,6 @@ async function preview(
       viteConfig: server.config,
     }
   }
-}
-
-function startupLog(viteConfigResolved: ResolvedConfig, vitePreviewServer: PreviewServer | null) {
-  const { startupLogFirstLine, isStartupLogCompact } = getStartupLogFirstLine(viteConfigResolved, !vitePreviewServer)
-  console.log(startupLogFirstLine)
-  if (vitePreviewServer) {
-    vitePreviewServer.printUrls()
-    vitePreviewServer.bindCLIShortcuts({ print: true })
-  }
-  if (!isStartupLogCompact) console.log()
 }
 
 function logHint(hint = '') {
