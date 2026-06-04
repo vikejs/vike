@@ -4,7 +4,7 @@ export type { CliPreviewConfig }
 import { prepareViteApiCall } from './prepareViteApiCall.js'
 import { preview as previewVite, type ResolvedConfig, type PreviewServer } from 'vite'
 import { importServerProductionIndex } from '@brillout/vite-plugin-server-entry/runtime'
-import type { ApiOptions } from './types.js'
+import type { ApiOptions, ApiOptionsStartupLog } from './types.js'
 import { getOutDirs } from '../vite/shared/getOutDirs.js'
 import { assert, assertInfo, assertUsage } from '../../utils/assert.js'
 import { onSetupPreview } from '../../utils/assertSetup.js'
@@ -21,7 +21,9 @@ import { getStartupLogFirstLine } from './getStartupLogFirstLine.js'
  *
  * https://vike.dev/api#preview
  */
-async function preview(options: ApiOptions = {}): Promise<{ viteServer?: PreviewServer; viteConfig: ResolvedConfig }> {
+async function preview(
+  options: ApiOptions & ApiOptionsStartupLog = {},
+): Promise<{ viteServer?: PreviewServer; viteConfig: ResolvedConfig }> {
   onSetupPreview()
   const { viteConfigUser, viteConfigResolved } = await prepareViteApiCall(options, 'preview')
 
@@ -43,7 +45,7 @@ async function preview(options: ApiOptions = {}): Promise<{ viteServer?: Preview
   })()
 
   const { startupLogFirstLine, isStartupLogCompact } = getStartupLogFirstLine(viteConfigResolved, !useVitePreviewServer)
-  console.log(startupLogFirstLine)
+  if (options.startupLog) console.log(startupLogFirstLine)
 
   if (!useVitePreviewServer) {
     // Dynamically import() server production entry dist/server/index.js

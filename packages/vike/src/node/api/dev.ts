@@ -2,7 +2,7 @@ export { dev }
 
 import { prepareViteApiCall } from './prepareViteApiCall.js'
 import { createServer, type ResolvedConfig, type ViteDevServer } from 'vite'
-import type { ApiOptions } from './types.js'
+import type { ApiOptions, ApiOptionsStartupLog } from './types.js'
 import { assert } from '../../utils/assert.js'
 import { assertIsNotProductionRuntime } from '../../utils/assertSetup.js'
 import pc from '@brillout/picocolors'
@@ -16,7 +16,7 @@ assertIsNotProductionRuntime()
  * https://vike.dev/api#dev
  */
 async function dev(
-  options: ApiOptions & { startupLog?: boolean } = {},
+  options: ApiOptions & ApiOptionsStartupLog = {},
 ): Promise<{ viteServer: ViteDevServer; viteConfig: ResolvedConfig; viteVersion: string }> {
   const { viteConfigUser } = await prepareViteApiCall(options, 'dev')
   const server = await createServer(viteConfigUser)

@@ -46,7 +46,7 @@ async function cmdBuild() {
 
 async function cmdPreview() {
   try {
-    const { viteServer } = await preview()
+    const { viteServer } = await preview({ startupLog: true })
     if (viteServer) {
       viteServer.printUrls()
       viteServer.bindCLIShortcuts({ print: true })
