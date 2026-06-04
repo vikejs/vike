@@ -81,7 +81,7 @@ function startupLog(viteConfigResolved: ResolvedConfig, vitePreviewServer: Previ
 }
 
 function logHint(hint = '') {
-  assertInfo(false, `Don't use ${pc.cyan('$ vike preview')} for production${hint}`, { onlyOnce: true })
+  assertInfo(false, `Don't use ${pc.cyan('$ vike preview')} in production${hint}`, { onlyOnce: true })
 }
 
 async function resolveCliPreviewConfig(vikeConfig: VikeConfigInternal): Promise<CliPreviewValue> {
