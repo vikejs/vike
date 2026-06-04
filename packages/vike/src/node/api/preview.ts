@@ -14,7 +14,7 @@ import path from 'node:path'
 import { getVikeConfigInternal, type VikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.js'
 import { isUniversalDeployVitePreview } from '../vite/plugins/pluginUniversalDeploy/getServerConfig.js'
 import './assertEnvApiDev.js'
-import { startupLog } from './getStartupLogFirstLine.js'
+import { startupLog } from './startupLog.js'
 
 /**
  * Programmatically trigger `$ vike preview`

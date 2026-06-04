@@ -6,7 +6,7 @@ import type { ApiOptions, ApiOptionsStartupLog } from './types.js'
 import { assert } from '../../utils/assert.js'
 import { assertIsNotProductionRuntime } from '../../utils/assertSetup.js'
 import './assertEnvApiDev.js'
-import { startupLog } from './getStartupLogFirstLine.js'
+import { startupLog } from './startupLog.js'
 assertIsNotProductionRuntime()
 
 /**
