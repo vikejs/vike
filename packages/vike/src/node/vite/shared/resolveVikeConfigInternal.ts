@@ -1406,8 +1406,8 @@ function isUnknownConfig(
   }
 
   const errMsg = isPlusFile
-    ? (`${sourceName} sets an unknown config ${configNameColored}` as const)
-    : (`${sourceName} sets an unknown Vike config, see ${pc.underline('https://vike.dev/cli')} for the list of CLI options` as const)
+    ? (`${sourceName} sets an unknown config ${configNameColored} — for the list of built-in configs, see ${pc.underline('https://vike.dev/settings')} and ${pc.underline('https://vike.dev/hooks')}` as const)
+    : (`${sourceName} sets an unknown Vike config — see ${pc.underline('https://vike.dev/cli')} for the list of CLI options` as const)
   assert(errMsg.includes(configName))
 
   // Missing vike-{react,vue,solid} installation
