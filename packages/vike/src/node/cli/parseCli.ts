@@ -129,7 +129,7 @@ function showVersion(): never {
   process.exit(1)
 }
 
-function wrongUsage(msg: string): never {
+function wrongUsage(msg: `Unknown ${string}`): never {
   console.error(pc.red(msg))
   console.log()
   showHelp()
