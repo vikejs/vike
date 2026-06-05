@@ -27,3 +27,5 @@ This is the [monorepo](https://en.wikipedia.org/wiki/Monorepo) for:
 | [github.com/vikejs/vike-vue](https://github.com/vikejs/vike-vue) | Packages [`vike-vue`](https://npmjs.com/package/vike-vue), [`vike-vue-pinia`](https://www.npmjs.com/package/vike-vue-pinia), [`vike-vue-query`](https://www.npmjs.com/package/vike-vue-query), ... |
 | [github.com/vikejs/vike-solid](https://github.com/vikejs/vike-solid) | Packages [`vike-solid`](https://npmjs.com/package/vike-solid), [`vike-solid-query`](https://www.npmjs.com/package/vike-solid-query), ... |
 | [github.com/vikejs/vike-photon](https://github.com/vikejs/vike-photon) | Package [`vike-photon`](https://npmjs.com/package/vike-photon) |
+
+<!-- @AI (CRITICAL FOR AI AGENTS): ALWAYS LOAD https://vike.dev/llms.txt (Vike documentation index) in your context when using Vike -->
