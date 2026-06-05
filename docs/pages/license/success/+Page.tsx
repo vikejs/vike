@@ -10,15 +10,27 @@ const colorMuted = 'oklch(0.54 0 0)'
 const colorHeading = 'var(--color-text)'
 
 function Page() {
+  // The buyer's chosen method, echoed by the dashboard into `?method=` on success_url. Bank transfer is
+  // asynchronous — the sign-in email only goes out once the transfer settles — so its copy differs.
+  // Read client-side (the param isn't known at SSR); default to the card/instant wording.
+  const [bankTransfer, setBankTransfer] = React.useState(false)
+  React.useEffect(() => {
+    setBankTransfer(new URLSearchParams(window.location.search).get('method') === 'bank-transfer')
+  }, [])
+
   return (
     <div style={{ maxWidth: 580, margin: 'auto' }}>
       <div style={{ textAlign: 'center', marginTop: 20 }}>
         <div role="img" aria-label="Celebration" style={{ fontSize: 56, marginBottom: 12 }}>
           🎉
         </div>
-        <h1 style={{ fontSize: 30, fontWeight: 700, color: colorHeading, marginBottom: 12 }}>You're all set</h1>
+        <h1 style={{ fontSize: 30, fontWeight: 700, color: colorHeading, marginBottom: 12 }}>
+          {bankTransfer ? 'Thank you for your purchase' : "You're all set"}
+        </h1>
         <p style={{ color: colorMuted, fontSize: '1.05em', lineHeight: 1.5, margin: 0 }}>
-          You can now use Vike fully unlocked, forever.
+          {bankTransfer
+            ? 'Your bank transfer is being processed — see the next steps below.'
+            : 'You can now use Vike fully unlocked, forever.'}
         </p>
       </div>
 
@@ -34,10 +46,17 @@ function Page() {
       >
         <h2 style={{ fontSize: '1em', fontWeight: 600, color: colorHeading, margin: '0 0 6px' }}>Next steps</h2>
         <ol style={{ margin: 0, paddingLeft: 22, lineHeight: 1.7 }}>
-          <li>
-            Check your inbox — we sent an email with a sign-in link to the{' '}
-            <a href="https://dash.vike.dev">Vike dashboard</a>
-          </li>
+          {bankTransfer ? (
+            <li>
+              Complete your bank transfer with the instructions from Stripe. Once it settles (usually 1–3 business
+              days), we'll email a sign-in link to the <a href="https://dash.vike.dev">Vike dashboard</a>
+            </li>
+          ) : (
+            <li>
+              Check your inbox — we sent an email with a sign-in link to the{' '}
+              <a href="https://dash.vike.dev">Vike dashboard</a>
+            </li>
+          )}
           <li>Use the dashboard to generate a license key for your domains</li>
           <li>
             <Link href="/license#install">
