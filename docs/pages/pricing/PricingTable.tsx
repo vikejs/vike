@@ -2,6 +2,8 @@ export { PricingTable }
 
 import React from 'react'
 import './PricingTable.css'
+import './local-price.css'
+import { LocalPrice } from '@vikejs/license-components'
 import { Link } from '@brillout/docpress'
 import { ExtraWidth } from '../../components/ExtraWidth'
 
@@ -50,20 +52,7 @@ function PricingTable() {
                   <SubHeading>
                     Larger organization<NoteRef>2</NoteRef>
                   </SubHeading>
-                  <Price
-                    color="#2563eb"
-                    suffix={
-                      <>
-                        <OneTime />
-                        {/* TODO/osp
-                        <Separator />
-                        <BuyButton />
-                        */}
-                      </>
-                    }
-                  >
-                    €5k
-                  </Price>
+                  <PurchasePrice />
                   <Check>Full access</Check>
                   <Check>
                     Forever access<NoteRef>4</NoteRef>
@@ -156,15 +145,20 @@ function Price({
   )
 }
 
-function OneTime() {
-  return <span style={{ color: 'var(--color-black)', fontSize: '1em', marginLeft: 10 }}>one time</span>
-}
-
-function Separator() {
+// The larger-org price + buy: <LocalPrice> (from @vikejs/license-components) shows the price in the
+// visitor's currency and opens a Stripe Checkout Session via dash.vike.dev. Styling is ours, passed
+// through the className props — see local-price.css.
+function PurchasePrice() {
   return (
-    <div
-      style={{ width: 1, height: 17, background: colorSeparatorLine, borderRadius: 1, marginLeft: 18, marginRight: 18 }}
-    />
+    <div style={{ marginTop: 8, marginBottom: 13 }}>
+      <LocalPrice
+        className="pricing-local"
+        priceClassName="pricing-local-price"
+        selectClassName="pricing-local-select"
+        buttonClassName="pricing-local-buy"
+      />
+      <div style={{ color: 'var(--color-black)', fontSize: '0.9em', marginTop: 6 }}>one time</div>
+    </div>
   )
 }
 
@@ -210,24 +204,4 @@ function GreenCheckmark() {
   )
 }
 
-function BuyButton() {
-  return (
-    <a
-      href="https://buy.stripe.com/00wdRa2NT2tmbhL8Rcg3600"
-      style={{
-        display: 'inline-block',
-        padding: '6px 16px',
-        background: 'linear-gradient(135deg, #f8f9fb 0%, #dbeafe 100%)',
-        color: '#4167bb',
-        borderRadius: 8,
-        fontWeight: 600,
-        fontSize: 14,
-        textDecoration: 'none',
-        // https://caniuse.com/css-rrggbbaa
-        border: '1px solid #93c5fd4a',
-      }}
-    >
-      Buy
-    </a>
-  )
-}
+// (The old single-currency Stripe Payment Link button was replaced by <PurchasePrice> above.)

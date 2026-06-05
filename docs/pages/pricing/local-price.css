@@ -1,0 +1,38 @@
+/* Chrome for <LocalPrice> on the pricing page. The component itself sets no fonts/colors (the
+   consumer owns them), so these classes define the look: the local price, the currency <select>, and
+   the Buy button sit on one wrapping row; "one time" is rendered below by PricingTable. */
+.pricing-local {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.pricing-local-price {
+  font-size: 36px;
+  color: #2563eb;
+  font-weight: 700;
+}
+.pricing-local-select {
+  font-size: 14px;
+  padding: 5px 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+}
+.pricing-local-buy {
+  display: inline-block;
+  padding: 7px 18px;
+  background: linear-gradient(135deg, #f8f9fb 0%, #dbeafe 100%);
+  color: #4167bb;
+  /* https://caniuse.com/css-rrggbbaa */
+  border: 1px solid #93c5fd4a;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+}
+.pricing-local-buy:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
