@@ -12,10 +12,11 @@ const colorHeading = 'var(--color-text)'
 function Page() {
   // The buyer's chosen method, echoed by the dashboard into `?method=` on success_url. Bank transfer is
   // asynchronous — the sign-in email only goes out once the transfer settles — so its copy differs.
-  // Read client-side (the param isn't known at SSR); default to the card/instant wording.
-  const [bankTransfer, setBankTransfer] = React.useState(false)
+  // Read client-side (the param isn't known at SSR). Bank transfer is the preferred path we steer to,
+  // so it's the default; only an explicit `?method=card` shows the card wording.
+  const [bankTransfer, setBankTransfer] = React.useState(true)
   React.useEffect(() => {
-    setBankTransfer(new URLSearchParams(window.location.search).get('method') === 'bank-transfer')
+    setBankTransfer(new URLSearchParams(window.location.search).get('method') !== 'card')
   }, [])
 
   return (
