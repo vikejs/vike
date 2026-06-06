@@ -6,6 +6,7 @@
     "checkJs": true,
     "esModuleInterop": true,
     "module": "ESNext",
+    "target": "ES2022",
     "types": ["node"],
     "skipLibCheck": true
   }

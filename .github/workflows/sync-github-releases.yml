@@ -1,0 +1,44 @@
+name: Sync GitHub Releases
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'packages/**/CHANGELOG.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sync_github_releases:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    environment: release
+    steps:
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.13
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Create GitHub release
+        run: |
+          if [ "${{ github.event_name }}" = "push" ] && [ -n "${{ github.event.before }}" ]; then
+            changelog_files="$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}")"
+          else
+            changelog_files="$(find packages -type f -name 'CHANGELOG.md' | sort)"
+          fi
+          printf '%s\n' "$changelog_files" | while IFS= read -r file; do
+            [ -n "$file" ] || continue
+            [ "$(basename "$file")" = "CHANGELOG.md" ] || continue
+            package_dir=$(dirname "$file")
+            echo "Syncing GitHub releases for package directory: $package_dir"
+            bun ./.github/workflows/sync-github-releases/sync-releases.ts "$package_dir"
+          done
+        env:
+          GITHUB_DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          GITHUB_TOKEN: ${{ github.token }}

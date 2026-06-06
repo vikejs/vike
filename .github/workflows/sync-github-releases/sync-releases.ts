@@ -1,0 +1,159 @@
+/* === WHAT IS THIS?
+Keeps GitHub releases aligned with `CHANGELOG.md`: creates any missing releases, and updates any whose body has drifted from the changelog.
+*/
+
+/* === FLOW
+1. Read CHANGELOG.md and parse the changelog sections.
+2. Fetch existing GitHub releases.
+3. getReleasePlan() compares the changelog sections against the GitHub releases, to determine which need to be created and which need their body updated.
+   i. Build `releasesToCreate` from changelog sections that don't have a GitHub Release yet.
+   ii. Build `releasesToUpdate` from existing GitHub releases whose body no longer matches the changelog section.
+   Note: GitHub appears to order releases by semantic version of the tag name rather than by release date, so backfilling older releases still places them in the correct order: https://github.com/vikejs/vike/pull/3157#issuecomment-4406846257 — in other words: the syncing is bullet-proof no matter the current state of GitHub Releases.
+4. Apply the plan via the GitHub API (or, in `--dry-run`, log what would be done).
+*/
+
+// This file is executed by sync-github-releases.yml
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  await main().catch((err) => {
+    console.error(err)
+    process.exit(1)
+  })
+}
+
+// Only used by ./sync-releases.spec.ts
+export { getReleasePlan }
+export { parseChangelog }
+
+import assert from 'node:assert'
+import { readFile } from 'node:fs/promises'
+import { createRequire } from 'node:module'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+import type { Release } from './types'
+import { fetchGithubReleases, getDefaultBranch, getGithubToken, getRepository, githubRequest } from './github-utils'
+
+async function main(): Promise<void> {
+  const require = createRequire(import.meta.url)
+
+  const args = process.argv.slice(2)
+  const packageDir = args[0]
+  if (!packageDir) {
+    throw new Error('Usage: sync-releases <package-dir> [--dry-run]')
+  }
+
+  const packageDirPath = path.join(process.cwd(), packageDir)
+  const packageJsonPath = path.join(packageDirPath, 'package.json')
+  const changelogPath = path.join(packageDirPath, 'CHANGELOG.md')
+
+  const packageJson = require(packageJsonPath) as { version: string }
+
+  // Local testing:
+  // GITHUB_TOKEN=<contents:write token> bun ./.github/workflows/sync-github-releases/sync-releases.ts packages/vike
+  // Dry-run (still needs a token for read-only GETs):
+  // GITHUB_TOKEN=<contents:read token> bun ./.github/workflows/sync-github-releases/sync-releases.ts packages/vike --dry-run
+  const { owner, repo } = getRepository()
+  const defaultBranch = getDefaultBranch()
+  const versionTag = `v${packageJson.version}`
+  const changelog = await readFile(changelogPath, 'utf8')
+  const changelogSections = parseChangelog(changelog)
+  assertChangelog(versionTag, changelogSections)
+
+  const token = getGithubToken()
+
+  const githubReleases = await fetchGithubReleases(owner, repo, token)
+
+  const { releasesToCreate, releasesToUpdate } = getReleasePlan({
+    defaultBranch,
+    githubReleases,
+    changelogSections,
+  })
+
+  const dryRun = args.includes('--dry-run')
+  for (const releaseToCreate of releasesToCreate) {
+    // https://docs.github.com/en/rest/releases/releases#create-a-release
+    await githubRequest(`/repos/${owner}/${repo}/releases`, {
+      token,
+      method: 'POST',
+      body: releaseToCreate,
+      dryRun,
+    })
+    if (!dryRun) console.log(`Created release ${releaseToCreate.tag_name}`)
+  }
+
+  for (const releaseToUpdate of releasesToUpdate) {
+    // https://docs.github.com/en/rest/releases/releases#update-a-release
+    await githubRequest(`/repos/${owner}/${repo}/releases/${releaseToUpdate.release_id}`, {
+      token,
+      method: 'PATCH',
+      body: { body: releaseToUpdate.body },
+      dryRun,
+    })
+    if (!dryRun) console.log(`Updated release ${releaseToUpdate.tag_name}`)
+  }
+}
+
+type ChangelogSections = Record<string, string>
+function parseChangelog(changelog: string): ChangelogSections {
+  const changelogSections: ChangelogSections = {}
+  // Matches changelog headings: `## [0.4.257](...)` or `# [0.1.0-beta.6](...)`
+  const matches = [...changelog.matchAll(/^##? \[(\d+\.\d+\.\d+[^\]]*)\]/gm)]
+
+  matches.forEach((match, index) => {
+    const start = changelog.indexOf('\n', match.index)
+    const end = matches[index + 1]?.index ?? changelog.length
+    const notes = changelog.slice(start, end).trim()
+    changelogSections[`v${match[1]}`] = notes
+  })
+
+  return changelogSections
+}
+function assertChangelog(versionTag: string, changelogSections: ChangelogSections) {
+  const latestRelease = Object.keys(changelogSections)[0]
+  assert(
+    latestRelease === versionTag,
+    `The latest changelog entry is ${latestRelease}, but the current version is ${versionTag}`,
+  )
+  const currentBody = changelogSections[versionTag]
+  assert(currentBody, `Missing changelog entry for ${versionTag}`)
+}
+
+type ReleasesToCreate = {
+  tag_name: string
+  target_commitish: string
+  name: string
+  body: string
+}
+type ReleasesToUpdate = {
+  release_id: number
+  tag_name: string
+  body: string
+}
+function getReleasePlan({
+  defaultBranch,
+  githubReleases,
+  changelogSections,
+}: {
+  defaultBranch: string
+  githubReleases: Release[]
+  changelogSections: ChangelogSections
+}) {
+  const releasesToCreate: ReleasesToCreate[] = Object.keys(changelogSections)
+    .filter((tagName) => !githubReleases.some((release) => release.tag_name === tagName))
+    .reverse()
+    .map((tagName) => ({
+      tag_name: tagName,
+      target_commitish: defaultBranch,
+      name: tagName,
+      body: changelogSections[tagName],
+    }))
+
+  const releasesToUpdate: ReleasesToUpdate[] = githubReleases
+    .map((release) => {
+      const body = changelogSections[release.tag_name]
+      if (body === release.body?.trim()) return null
+      return { release_id: release.id, tag_name: release.tag_name, body }
+    })
+    .filter((release) => release !== null)
+
+  return { releasesToCreate, releasesToUpdate }
+}

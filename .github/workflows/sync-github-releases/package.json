@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "run": "sh -c 'bun ./sync-releases.ts \"$1\"' --",
+    "try": "sh -c 'bun ./sync-releases.ts \"$1\" --dry-run' --",
+    "delete-all": "sh -c 'bun ./remove-all-releases.ts' --"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.2",
+    "typescript": "^5.9.3"
+  }
+}
