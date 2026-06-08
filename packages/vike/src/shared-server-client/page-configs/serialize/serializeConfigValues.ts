@@ -33,7 +33,7 @@ import {
 const stringifyOptions = {
   forbidReactElements: true,
   htmlScriptSafe: {
-    // Could be set to `false` because serialized into JS code (not embedded in an HTML <script> tag), but we always use `htmlScriptSafe: true` to be safe
+    // Config values are inlined into JS code (not into an HTML <script> tag), so escaping `/` (escapeURLs) isn't needed — but we always escape `<` (escapeScripts) to be safe
     escapeScripts: true,
     escapeURLs: false,
   },
