@@ -93,7 +93,7 @@ function serializeObject(
 ) {
   let serialized: string
   try {
-    serialized = serializeValue(obj)
+    serialized = serializeValue(obj, isHtmlJsonScript)
   } catch (err) {
     const h = (s: string) => pc.cyan(s)
     let hasWarned = false
@@ -104,7 +104,7 @@ function serializeObject(
       const { value } = res
       const varName = `${objName}${getPropKeys(prop).map(getPropAccessNotation).join('')}` as const
       try {
-        serializeValue(value, varName)
+        serializeValue(value, isHtmlJsonScript, varName)
       } catch (err) {
         propsNonSerializable.push(prop)
 
@@ -142,17 +142,22 @@ function serializeObject(
       obj[getPropKeys(prop)[0]!] = NOT_SERIALIZABLE
     })
     try {
-      serialized = serializeValue(obj)
+      serialized = serializeValue(obj, isHtmlJsonScript)
     } catch (err) {
       assert(false)
     }
   }
   return serialized
 }
-function serializeValue(value: unknown, varName?: `pageContext${string}` | `globalContext${string}`): string {
+function serializeValue(
+  value: unknown,
+  isHtmlJsonScript: boolean,
+  varName?: `pageContext${string}` | `globalContext${string}`,
+): string {
   return stringify(value, {
     forbidReactElements: true,
     valueName: varName,
+    htmlScriptSafe: isHtmlJsonScript,
   })
 }
 type PassToClient = string[]
@@ -225,7 +230,7 @@ function getPageContextClientSerializedAbort(
       },
     )
   }
-  return serializeValue(pageContext)
+  return serializeValue(pageContext, isHtmlJsonScript)
 }
 
 function applyPassToClient(passToClient: PassToClient, obj: Record<string, unknown>) {
