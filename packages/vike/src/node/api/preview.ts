@@ -61,7 +61,7 @@ async function preview(
     if (options.startupLog) startupLog(viteConfig, viteServer)
     logHint(
       vikeConfig.prerenderContext.isPrerenderingEnabledForAllPages
-        ? ' — your app is fully pre-rendered and can be statically deployed.'
+        ? ': your app is fully pre-rendered and can be statically deployed instead.'
         : '',
     )
     return {
