@@ -158,7 +158,7 @@ function serializeValue(
     forbidReactElements: true,
     valueName: varName,
     htmlScriptSafe: {
-      // Could be set to `isHtmlJsonScript` but we always set `htmlScriptSafe.escapeScripts` to `true` to be extra safe
+      // Could be set to `isHtmlJsonScript` but we always use `htmlScriptSafe.escapeScripts` to be extra safe
       escapeScripts: true,
       escapeURLs: isHtmlJsonScript,
     },
