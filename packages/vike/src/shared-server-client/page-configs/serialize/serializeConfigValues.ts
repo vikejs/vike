@@ -30,11 +30,7 @@ import {
   isRuntimeEnvMatch,
   type RuntimeEnv,
 } from '../../../node/vite/plugins/pluginVirtualFiles/getConfigValueSourcesRelevant.js'
-const stringifyOptions = {
-  forbidReactElements: true,
-  // Serialized into JS code (not embedded in an HTML <script> tag)
-  htmlScriptSafe: false,
-} as const satisfies Parameters<typeof stringify>[1]
+const stringifyOptions = { forbidReactElements: true } as const satisfies Parameters<typeof stringify>[1]
 const REPLACE_ME_BEFORE = '__VIKE__REPLACE_ME_BEFORE__'
 const REPLACE_ME_AFTER = '__VIKE__REPLACE_ME_AFTER__'
 
