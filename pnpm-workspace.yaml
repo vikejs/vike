@@ -7,4 +7,12 @@ packages:
   - 'test/*'
   - 'test-deprecated-design/*'
   - '.github/workflows/ci'
+allowBuilds:
+  '@biomejs/biome': true
+  '@swc/core': true
+  esbuild: true
+  playwright-chromium: true
+  sharp: true
+  vue-demi: true
+  workerd: true
 minimumReleaseAge: 0
