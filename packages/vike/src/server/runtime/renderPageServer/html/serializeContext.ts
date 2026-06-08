@@ -157,10 +157,6 @@ function serializeValue(
   return stringify(value, {
     forbidReactElements: true,
     valueName: varName,
-    // Make the serialized value safe to embed in an HTML <script> tag (escape `<`) and prevent
-    // search engines from crawling URLs contained in the data (escape `/`).
-    // - https://github.com/vikejs/vike/pull/2603
-    // - https://github.com/brillout/json-serializer/blob/38edbb9945de4938da1e65d6285ce1dd123a45ef/test/main.spec.ts#L44-L95
     htmlScriptSafe: isHtmlJsonScript,
   })
 }

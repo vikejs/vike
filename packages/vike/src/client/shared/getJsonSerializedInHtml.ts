@@ -33,9 +33,6 @@ function findAndParseJson(id: string) {
   )
   const jsonStr = elem.textContent
   assert(jsonStr)
-  // The `<` and `/` escaping applied by stringify({ htmlScriptSafe: true }) is valid JSON and thus
-  // automatically reverted by JSON.parse() (which parse() uses under the hood).
-  // - https://github.com/vikejs/vike/pull/2603
   const json = parse(jsonStr)
   return json
 }
