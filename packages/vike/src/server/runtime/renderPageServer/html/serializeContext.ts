@@ -157,7 +157,11 @@ function serializeValue(
   return stringify(value, {
     forbidReactElements: true,
     valueName: varName,
-    htmlScriptSafe: isHtmlJsonScript,
+    htmlScriptSafe: {
+      // Could be set to `isHtmlJsonScript` (serialized into JS code, not embedded in an HTML <script> tag), but we always set `htmlScriptSafe.escapeScripts` to `true` to be safe
+      escapeScripts: true,
+      escapeURLs: isHtmlJsonScript,
+    },
   })
 }
 type PassToClient = string[]
