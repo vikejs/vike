@@ -30,7 +30,9 @@ import {
   isRuntimeEnvMatch,
   type RuntimeEnv,
 } from '../../../node/vite/plugins/pluginVirtualFiles/getConfigValueSourcesRelevant.js'
-const stringifyOptions = { forbidReactElements: true as const }
+// `htmlScriptSafe: false` because these config values are serialized into JS code (not embedded in
+// an HTML <script> tag), thus escaping `<` and `/` is unnecessary.
+const stringifyOptions = { forbidReactElements: true as const, htmlScriptSafe: false as const }
 const REPLACE_ME_BEFORE = '__VIKE__REPLACE_ME_BEFORE__'
 const REPLACE_ME_AFTER = '__VIKE__REPLACE_ME_AFTER__'
 
