@@ -825,8 +825,8 @@ importers:
         specifier: ^0.2.6
         version: 0.2.6
       '@brillout/json-serializer':
-        specifier: ^0.5.23
-        version: 0.5.23
+        specifier: ^0.5.25
+        version: 0.5.25
       '@brillout/picocolors':
         specifier: ^1.0.31
         version: 1.0.31
@@ -2555,6 +2555,9 @@ packages:
 
   '@brillout/json-serializer@0.5.23':
     resolution: {integrity: sha512-nM7okvu4UaoxYshKB+903s3/UpIBdkJl++iDT3gOLnHaSqY6HbhAXTsUTxrroAAcIt6RKQfShaKjCBlzR2A1Gg==}
+
+  '@brillout/json-serializer@0.5.25':
+    resolution: {integrity: sha512-/Ahv1XIHAYyROWfyOQZxbxmkvM3ef3aMPPzEC0EfkyZUFb88y/nFFwCFvYUjE20MGoF8/9Z1jIy7ihkpkE+maw==}
 
   '@brillout/libassert@0.5.8':
     resolution: {integrity: sha512-u/fu+jTRUdNdbLONGq1plCfh+k2/XjSbGVTfnF3rHnSPZd+ABWp0XinR5ifrFkyGOzMbzv8IiQ44lZ4U6ZGrGA==}
@@ -8968,6 +8971,8 @@ snapshots:
   '@brillout/import@0.2.6': {}
 
   '@brillout/json-serializer@0.5.23': {}
+
+  '@brillout/json-serializer@0.5.25': {}
 
   '@brillout/libassert@0.5.8': {}
 
