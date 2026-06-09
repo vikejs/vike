@@ -12,7 +12,7 @@
     "node-fetch": "^2.6.9",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
-    "react-streaming": "^0.4.17",
+    "react-streaming": "^0.4.19",
     "vike": "0.4.259",
     "vite": "^7.0.6",
     "wrangler": "^4.56.0"
