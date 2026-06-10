@@ -130,7 +130,7 @@
     "@brillout/vite-plugin-server-entry": "0.7.18",
     "@universal-deploy/store": "^0.2.1",
     "@universal-deploy/vite": "^0.1.10",
-    "@universal-middleware/core": "^0.4.17",
+    "@universal-middleware/core": "^0.4.18",
     "@universal-middleware/node": "^0.2.1",
     "cac": "^6.0.0",
     "convert-route": "^1.1.1",
