@@ -10,9 +10,9 @@ const colorMuted = 'oklch(0.54 0 0)'
 const colorHeading = 'var(--color-text)'
 
 function Page() {
-  // The buyer's chosen method, echoed by the dashboard into `?method=` on success_url. Bank transfer is
-  // asynchronous — the sign-in email only goes out once the transfer settles — so its copy differs.
-  // Read client-side (the param isn't known at SSR). Bank transfer is the preferred path we steer to,
+  // The buyer's chosen method, echoed by the dashboard into `?method=` on success_url. A bank payment
+  // (transfer or debit) is asynchronous — the sign-in email only goes out once it settles — so its copy
+  // differs. Read client-side (the param isn't known at SSR). Bank is the preferred path we steer to,
   // so it's the default; only an explicit `?method=card` shows the card wording.
   const [bankTransfer, setBankTransfer] = React.useState(true)
   React.useEffect(() => {
@@ -30,7 +30,7 @@ function Page() {
         </h1>
         <p style={{ color: colorMuted, fontSize: '1.05em', lineHeight: 1.5, margin: 0 }}>
           {bankTransfer
-            ? 'Your bank transfer is being processed — see the next steps below.'
+            ? 'Your bank payment is being processed — see the next steps below.'
             : 'You can now use Vike fully unlocked, forever.'}
         </p>
       </div>
@@ -49,8 +49,9 @@ function Page() {
         <ol style={{ margin: 0, paddingLeft: 22, lineHeight: 1.7 }}>
           {bankTransfer ? (
             <li>
-              Complete your bank transfer with the instructions from Stripe. Once it settles (usually 1–3 business
-              days), we'll email a sign-in link to the <a href="https://dash.vike.dev">Vike dashboard</a>
+              Once your bank payment settles (usually 1–3 business days), we'll email a sign-in link to the{' '}
+              <a href="https://dash.vike.dev">Vike dashboard</a>. If you chose bank transfer, complete it first
+              using the instructions from Stripe.
             </li>
           ) : (
             <li>
