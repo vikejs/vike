@@ -1,6 +1,6 @@
-/* Chrome for <LocalPrice> on the pricing page. The component itself sets no fonts/colors (the
-   consumer owns them), so these classes define the look: the local price, the currency <select>, and
-   the Buy button sit on one wrapping row; "one time" is rendered below by PricingTable. */
+/* Chrome for <LocalPrice> on the pricing + /license/buy pages. The component itself sets no
+   fonts/colors (the consumer owns them), so these classes define the look: the local price and the buy
+   button(s) sit on one wrapping row; "one time" is rendered below by PricingTable. */
 .pricing-local {
   display: flex;
   align-items: center;
@@ -11,14 +11,6 @@
   font-size: 36px;
   color: #2563eb;
   font-weight: 700;
-}
-.pricing-local-select {
-  font-size: 14px;
-  padding: 5px 8px;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  background: #fff;
-  cursor: pointer;
 }
 .pricing-local-buy {
   display: inline-block;

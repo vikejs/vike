@@ -154,7 +154,6 @@ function PurchasePrice() {
       <LocalPrice
         className="pricing-local"
         priceClassName="pricing-local-price"
-        selectClassName="pricing-local-select"
         buttonClassName="pricing-local-buy"
       />
       <div style={{ color: 'var(--color-black)', fontSize: '0.9em', marginTop: 6 }}>one time</div>
