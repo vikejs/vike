@@ -370,8 +370,8 @@ async function handleAssetsManifest_getBuildConfig(config: UserConfig) {
     // Required if `ssrEmitAssets: true`, see https://github.com/vitejs/vite/pull/11430#issuecomment-1454800934
     // We must force CSS minification (the SSR build doesn't minify CSS by default) but we mustn't force the
     // `'esbuild'` minifier: as of Vite 8 esbuild is an optional peer dependency (Lightning CSS is the new
-    // default), so forcing `'esbuild'` breaks setups that don't install esbuild such as Yarn PnP. Using `true`
-    // lets Vite use its bundled default minifier while still forcing minification.
+    // default), so forcing `'esbuild'` breaks setups that don't install esbuild. Using `true` lets Vite use
+    // its bundled default minifier while still forcing minification.
     // https://github.com/vikejs/vike/issues/3326
     cssMinify: isFixEnabled ? (isVite8OrAbove(config) ? true : 'esbuild') : undefined,
     manifest: true,
