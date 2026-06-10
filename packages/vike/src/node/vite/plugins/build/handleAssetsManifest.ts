@@ -364,16 +364,19 @@ async function writeManifestFile(manifest: ViteManifest, manifestFilePath: strin
 
 async function handleAssetsManifest_getBuildConfig(config: UserConfig) {
   const isFixEnabled = handleAssetsManifest_isFixEnabled()
-  return {
+  // Set default values (i.e. allow user to override these values)
+  const build: UserConfig['build'] = {}
+  if (isFixEnabled) {
     // https://github.com/vikejs/vike/issues/1339
-    ssrEmitAssets: isFixEnabled ? true : undefined,
+    if (config.build?.ssrEmitAssets === undefined) build.ssrEmitAssets = true
     // Required if `ssrEmitAssets: true`, see https://github.com/vitejs/vite/pull/11430#issuecomment-1454800934
-    cssMinify: isFixEnabled ? (isVite8OrAbove(config) ? true : 'esbuild') : undefined,
-    manifest: true,
-    /* Already set by vike:build:pluginBuildApp
-    copyPublicDir: !isViteServerSide_viteEnvOptional(config),
-    */
-  } as const
+    if (config.build?.cssMinify === undefined) build.cssMinify = isVite8OrAbove(config) ? true : 'esbuild'
+  }
+  if (config.build?.manifest === undefined) build.manifest = true
+  /* Already set by vike:build:pluginBuildApp
+  if (config.build?.copyPublicDir === undefined) build.copyPublicDir = !isViteServerSide_viteEnvOptional(config)
+  */
+  return build
 }
 
 async function handleAssetsManifest(
