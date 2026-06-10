@@ -25,7 +25,7 @@ function Page() {
       </div>
 
       <p style={{ color: colorMuted, fontSize: '0.95em', marginTop: 18 }}>
-        Bank transfer is recommended — it keeps fees lowest. Card is available too.
+        Paying by bank is recommended — it keeps fees lowest. Card is available too.
       </p>
       <p style={{ color: colorMuted, fontSize: '0.9em', marginTop: 14 }}>
         Need another payment method (an invoice, a different currency)?{' '}
