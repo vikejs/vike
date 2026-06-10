@@ -51,9 +51,9 @@ function pluginBuildConfig(): Plugin[] {
       },
       config: {
         order: 'post',
-        async handler() {
+        async handler(config) {
           onSetupBuild()
-          const build = await handleAssetsManifest_getBuildConfig()
+          const build = await handleAssetsManifest_getBuildConfig(config)
           return { build }
         },
       },

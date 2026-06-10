@@ -2,9 +2,9 @@ export { pluginModuleBanner }
 
 import type { ResolvedConfig, Plugin } from 'vite'
 import { assert } from '../../../../utils/assert.js'
-import { isVersionMatch } from '../../../../utils/assertVersion.js'
 import { removeVirtualFileIdPrefix } from '../../../../utils/virtualFileId.js'
 import { getMagicString } from '../../shared/getMagicString.js'
+import { isVite8OrAbove } from '../../shared/isVite8OrAbove.js'
 import '../../assertEnvVite.js'
 
 // Misusing legal comments so that esbuild doesn't remove them.
@@ -70,7 +70,5 @@ function checkIsEnabled(config: ResolvedConfig) {
 // - https://github.com/vitejs/vite/issues/21228#issuecomment-3627899741
 // - TO-DO/eventually: remove this file once Vike requires Vite 8 or above
 function hasNativeModuleRegions(config: ResolvedConfig) {
-  const viteVersion = config._viteVersionResolved
-  assert(viteVersion)
-  return isVersionMatch(viteVersion, ['8.0.0'])
+  return isVite8OrAbove(config)
 }
