@@ -1188,6 +1188,13 @@ function misc() {
         },
       },
       {
+        title: 'Get license',
+        url: '/license/buy',
+        pageDesign: {
+          hideTitle: true,
+        },
+      },
+      {
         title: 'Languages',
         url: '/languages',
       },
