@@ -11,16 +11,15 @@ import path from 'node:path'
 import { existsSync } from 'node:fs'
 import type { ViteManifest, ViteManifestEntry } from '../../../../types/ViteManifest.js'
 import { assert, assertWarning } from '../../../../utils/assert.js'
-import { isVersionMatch } from '../../../../utils/assertVersion.js'
 import { getGlobalObject } from '../../../../utils/getGlobalObject.js'
 import { isEqualStringList } from '../../../../utils/isEqualStringList.js'
 import { isObject } from '../../../../utils/isObject.js'
 import { pLimit } from '../../../../utils/pLimit.js'
 import { unique } from '../../../../utils/unique.js'
 import { parseVirtualFileId } from '../../../../shared-server-node/virtualFileId.js'
-import type { Environment, ResolvedConfig, Rollup } from 'vite'
-import { version as viteVersion } from 'vite'
+import type { Environment, ResolvedConfig, Rollup, UserConfig } from 'vite'
 import { getAssetsDir } from '../../shared/getAssetsDir.js'
+import { isVite8OrAbove } from '../../shared/isVite8OrAbove.js'
 import pc from '@brillout/picocolors'
 import { isV1Design } from '../../shared/resolveVikeConfigInternal.js'
 import { getOutDirs } from '../../shared/getOutDirs.js'
@@ -363,7 +362,7 @@ async function writeManifestFile(manifest: ViteManifest, manifestFilePath: strin
   await fs.writeFile(manifestFilePath, manifestFileContent, 'utf-8')
 }
 
-async function handleAssetsManifest_getBuildConfig() {
+async function handleAssetsManifest_getBuildConfig(config: UserConfig) {
   const isFixEnabled = handleAssetsManifest_isFixEnabled()
   return {
     // https://github.com/vikejs/vike/issues/1339
@@ -374,15 +373,12 @@ async function handleAssetsManifest_getBuildConfig() {
     // default), so forcing `'esbuild'` breaks setups that don't install esbuild such as Yarn PnP. Using `true`
     // lets Vite use its bundled default minifier while still forcing minification.
     // https://github.com/vikejs/vike/issues/3326
-    cssMinify: isFixEnabled ? (isVite8OrAbove() ? true : 'esbuild') : undefined,
+    cssMinify: isFixEnabled ? (isVite8OrAbove(config) ? true : 'esbuild') : undefined,
     manifest: true,
     /* Already set by vike:build:pluginBuildApp
     copyPublicDir: !isViteServerSide_viteEnvOptional(config),
     */
   } as const
-}
-function isVite8OrAbove() {
-  return isVersionMatch(viteVersion, ['8.0.0'])
 }
 
 async function handleAssetsManifest(
