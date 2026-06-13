@@ -196,6 +196,8 @@ declare global {
 
 The full [`RuntimeAdapter`](https://universal-middleware.dev/reference/runtime-adapter) object set by <Link href="/server">`+server`</Link> (which uses [`universal-middleware`](https://universal-middleware.dev/) under the hood).
 
+> It's only available if you use <Link href="/server">`+server`</Link> with a server that exposes the HTTP request object (e.g. Express, Fastify, or Hono — but not Cloudflare Workers). If you don't use `+server`, then <Link href="#custom">define a custom `pageContext.req` property</Link> instead.
+
 <Prop name="config" />
 
 The page's runtime <Link href="/config">configuration</Link> (both <Link href="/settings">settings</Link> and <Link href="/hooks">hooks</Link>).
