@@ -4,7 +4,7 @@ import { PropPageContext as Prop, ConfigSpec, TreeShaking } from '../../componen
 export const ServerOnlyNote = ({ prop, kind }) => (
   <blockquote>
     <p>
-      It's only available if you use <Link href="/server"><code>+server</code></Link> with a server that exposes the HTTP {kind} object (e.g. Express, Fastify, or Hono — but not Cloudflare Workers). If you don't use <code>+server</code>, then <Link href="#custom">define a custom <code>pageContext.{prop}</code> property</Link> instead.
+      It's only available if you use <Link href="/server"><code>+server</code></Link> with a server that exposes the HTTP {kind} object (e.g. Express, Fastify, or Hono — but not Cloudflare Workers). If you don't use <code>+server</code>, you can <Link href="#custom">define a custom <code>pageContext.{prop}</code> property</Link> yourself.
     </p>
   </blockquote>
 )
@@ -212,7 +212,28 @@ declare global {
 
 The full [`RuntimeAdapter`](https://universal-middleware.dev/reference/runtime-adapter) object set by <Link href="/server">`+server`</Link> (which uses [`universal-middleware`](https://universal-middleware.dev/) under the hood).
 
+```ts
+// Environment: server
+
+pageContext.runtime.req
+pageContext.runtime.res
+// ...
+
+declare global {
+  namespace Vike {
+    interface Server {
+      // 👉 Pick your server (for correct pageContext.runtime type)
+      server: 'hono' // | 'express' | 'fastify' | 'hattip' | 'srvx' | 'elysia' | 'h3'
+    }
+  }
+}
+```
+
 > It's only available if you use <Link href="/server">`+server`</Link>.
+
+> See also:
+> - <Link href="#req" noWarning>`pageContext.req`</Link>
+> - <Link href="#res" noWarning>`pageContext.res`</Link>
 
 <Prop name="config" />
 
