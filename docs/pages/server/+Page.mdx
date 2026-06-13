@@ -220,7 +220,7 @@ export default {
 </blockquote>
 
 
-## `pageContext.runtime`
+## `pageContext.{req,res}`
 
 You can use `pageContext.req` and `pageContext.res` to access the HTTP request and response objects, for example:
 
@@ -239,14 +239,12 @@ export async function data(pageContext: PageContextServer) {
 declare global {
   namespace Vike {
     interface Server {
-      // 👉 Pick your server (for correct pageContext.req/pageContext.res type)
+      // 👉 Pick your server (for correct pageContext.{req,res} type)
       server: 'hono' // | 'express' | 'fastify' | 'hattip' | 'srvx' | 'elysia' | 'h3'
     }
   }
 }
 ```
-
-> The full [`pageContext.runtime`](https://universal-middleware.dev/reference/runtime-adapter) object exposes further runtime information. (Vike doesn't override `pageContext.req`/`pageContext.res` if you define them as <Link href="/pageContext#custom">custom properties</Link>.)
 
 > You can use <Link href="/onCreatePageContext">`+onCreatePageContext`</Link> to define custom `pageContext` properties, see <Link href="/pageContext#custom" />.
 >
@@ -255,7 +253,6 @@ declare global {
 See also:
 - <Link href="/pageContext#req">API > `pageContext.req`</Link>
 - <Link href="/pageContext#res">API > `pageContext.res`</Link>
-- <Link href="/pageContext#runtime">API > `pageContext.runtime`</Link>
 - <Link href="/auth" />
 
 
