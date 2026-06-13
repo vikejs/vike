@@ -9,6 +9,7 @@ import { debug } from './debug.js'
 import {
   FilesEnv,
   serializeConfigValues,
+  createImportStatements,
 } from '../../../../shared-server-client/page-configs/serialize/serializeConfigValues.js'
 import { handleAssetsManifest_isFixEnabled } from '../build/handleAssetsManifest.js'
 import { getConfigValueBuildTime } from '../../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
@@ -57,7 +58,7 @@ function getCode(
   isDev: boolean,
 ): string {
   const lines: string[] = []
-  const importStatements: string[] = []
+  const importStatements = createImportStatements()
   const filesEnv: FilesEnv = new Map()
   const isClientRouting = getConfigValueBuildTime(pageConfig, 'clientRouting', 'boolean')?.value ?? false
 
@@ -80,6 +81,6 @@ function getCode(
     )
   }
 
-  const code = [...importStatements, ...lines].join('\n')
+  const code = [...importStatements.toArray(), ...lines].join('\n')
   return code
 }

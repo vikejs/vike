@@ -6,7 +6,9 @@ import { debug } from './debug.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import {
   FilesEnv,
+  ImportStatements,
   serializeConfigValues,
+  createImportStatements,
 } from '../../../../shared-server-client/page-configs/serialize/serializeConfigValues.js'
 import { VIRTUAL_FILE_ID_constantsGlobalThis } from '../pluginReplaceConstantsGlobalThis.js'
 import '../../assertEnvVite.js'
@@ -31,7 +33,7 @@ function getCode(
   isClientRouting: boolean,
 ): string {
   const lines: string[] = []
-  const importStatements: string[] = []
+  const importStatements = createImportStatements()
   const filesEnv: FilesEnv = new Map()
 
   if (!isForClientSide) {
@@ -62,7 +64,7 @@ function getCode(
     lines.push('if (import.meta.hot) import.meta.hot.accept();')
   }
 
-  let code = [...importStatements, ...lines].join('\n')
+  let code = [...importStatements.toArray(), ...lines].join('\n')
 
   if (!isForClientSide) {
     code = `import '${VIRTUAL_FILE_ID_constantsGlobalThis}';\n` + code
@@ -77,7 +79,7 @@ function getCodePageConfigsSerialized(
   isForClientSide: boolean,
   isClientRouting: boolean,
   isDev: boolean,
-  importStatements: string[],
+  importStatements: ImportStatements,
   filesEnv: FilesEnv,
 ): string {
   const lines: string[] = []
@@ -116,7 +118,7 @@ function getCodePageConfigGlobalSerialized(
   isForClientSide: boolean,
   isClientRouting: boolean,
   isDev: boolean,
-  importStatements: string[],
+  importStatements: ImportStatements,
   filesEnv: FilesEnv,
 ) {
   const lines: string[] = []

@@ -1,7 +1,9 @@
 export { serializeConfigValues }
 export { getConfigValuesBase }
 export { isJsonValue }
+export { createImportStatements }
 export type { FilesEnv }
+export type { ImportStatements }
 
 import { assertIsNotProductionRuntime } from '../../../utils/assertSetup.js'
 import { assert, assertUsage } from '../../../utils/assert.js'
@@ -47,9 +49,37 @@ const REPLACE_ME_AFTER = '__VIKE__REPLACE_ME_AFTER__'
 assertIsNotBrowser()
 assertIsNotProductionRuntime()
 
+// Deduplicates import statements: the same (importPath, exportName) pair across pages
+// reuses the same import variable instead of emitting duplicate import declarations.
+class ImportStatements {
+  private readonly _list: string[] = []
+  private readonly _dedup = new Map<string, string>() // `${importPath}::${exportName}` → importName
+
+  get length(): number {
+    return this._list.length
+  }
+
+  getExisting(importPath: string, exportName: string): string | undefined {
+    return this._dedup.get(`${importPath}::${exportName}`)
+  }
+
+  add(statement: string, importPath: string, exportName: string, importName: string): void {
+    this._list.push(statement)
+    this._dedup.set(`${importPath}::${exportName}`, importName)
+  }
+
+  toArray(): string[] {
+    return this._list
+  }
+}
+
+function createImportStatements(): ImportStatements {
+  return new ImportStatements()
+}
+
 function serializeConfigValues(
   pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime,
-  importStatements: string[],
+  importStatements: ImportStatements,
   filesEnv: FilesEnv,
   runtimeEnv: RuntimeEnv,
   tabspace: string,
@@ -96,7 +126,7 @@ function serializeConfigValues(
 function getValueSerializedFromSource(
   configValueSource: ConfigValueSource,
   configName: string,
-  importStatements: string[],
+  importStatements: ImportStatements,
   filesEnv: FilesEnv,
 ) {
   let valueData: ValueData
@@ -175,7 +205,7 @@ function serializeConfigValue(
 
 function getValueSerializedWithImport(
   configValueSource: ConfigValueSource,
-  importStatements: string[],
+  importStatements: ImportStatements,
   filesEnv: FilesEnv,
   configName: string,
 ): ValueData {
@@ -205,7 +235,7 @@ function getValueSerializedWithJson(
   value: unknown,
   configName: string,
   definedAtData: DefinedAtData,
-  importStatements: string[],
+  importStatements: ImportStatements,
   filesEnv: FilesEnv,
   configEnv: ConfigEnv,
 ): ValueData {
@@ -219,7 +249,7 @@ function valueToJson(
   value: unknown,
   configName: string,
   definedAtData: DefinedAtData,
-  importStatements: string[],
+  importStatements: ImportStatements,
   filesEnv: FilesEnv,
   configEnv: ConfigEnv,
 ): string {
@@ -393,13 +423,21 @@ function getDefinedAtFileSource(source: ConfigValueSource) {
  *    `}`
  */
 function addImportStatement(
-  importStatements: string[],
+  importStatements: ImportStatements,
   importPath: string,
   exportName: string,
   filesEnv: FilesEnv,
   configEnv: ConfigEnv,
   configName: string,
 ): { importName: string } {
+  // Reuse an existing import when the same (importPath, exportName) was already emitted
+  // (e.g. a shared +route.ts inherited by N pages would otherwise produce N duplicate imports).
+  const existing = importStatements.getExisting(importPath, exportName)
+  if (existing) {
+    assertFileEnv(importPath, configEnv, configName, filesEnv)
+    return { importName: existing }
+  }
+
   const importCounter = importStatements.length + 1
   const importName = `import${importCounter}` as const
   const importLiteral = (() => {
@@ -412,7 +450,7 @@ function addImportStatement(
     return `{ ${exportName} as ${importName} }` as const
   })()
   const importStatement = `import ${importLiteral} from '${importPath}';`
-  importStatements.push(importStatement)
+  importStatements.add(importStatement, importPath, exportName, importName)
   assertFileEnv(importPath, configEnv, configName, filesEnv)
   return { importName }
 }
