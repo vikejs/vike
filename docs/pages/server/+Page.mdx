@@ -222,7 +222,7 @@ export default {
 
 ## `pageContext.runtime`
 
-You can use `pageContext.runtime` to access the HTTP request object, for example:
+You can use `pageContext.req` and `pageContext.res` to access the HTTP request and response objects, for example:
 
 ```ts
 // pages/product/@id/+data.ts
@@ -231,31 +231,31 @@ import type { PageContextServer } from 'vike/types'
 
 export type Data = Awaited<ReturnType<typeof data>>
 export async function data(pageContext: PageContextServer) {
-  // Using pageContext.runtime.req to access the logged-in user
-  const { user } = pageContext.runtime.req
+  // Using pageContext.req to access the logged-in user
+  const { user } = pageContext.req
   // ...
 }
 
 declare global {
   namespace Vike {
     interface Server {
-      // 👉 Pick your server (for correct pageContext.runtime type)
+      // 👉 Pick your server (for correct pageContext.req/pageContext.res type)
       server: 'hono' // | 'express' | 'fastify' | 'hattip' | 'srvx' | 'elysia' | 'h3'
     }
   }
 }
 ```
 
-> Vike also sets <Link href="/pageContext#req">`pageContext.req`</Link> and <Link href="/pageContext#res">`pageContext.res`</Link> as aliases of `pageContext.runtime.req` and `pageContext.runtime.res`. (Vike doesn't override them if you define a <Link href="/pageContext#custom">custom `pageContext.req`/`pageContext.res` property</Link>.)
+> `pageContext.req` and `pageContext.res` are convenient aliases of `pageContext.runtime.req` and `pageContext.runtime.res`. The full [`pageContext.runtime`](https://universal-middleware.dev/reference/runtime-adapter) object also exposes further runtime information. (Vike doesn't override `pageContext.req`/`pageContext.res` if you define them as <Link href="/pageContext#custom">custom properties</Link>.)
 
 > You can use <Link href="/onCreatePageContext">`+onCreatePageContext`</Link> to define custom `pageContext` properties, see <Link href="/pageContext#custom" />.
 >
-> For example, you can define `pageContext.user` as an alias of `pageContext.runtime.req.user` for convenience, see <Link href="/auth#pagecontext-user" doNotInferSectionTitle />.
+> For example, you can define `pageContext.user` as an alias of `pageContext.req.user` for convenience, see <Link href="/auth#pagecontext-user" doNotInferSectionTitle />.
 
 See also:
-- <Link href="/pageContext#runtime">API > `pageContext.runtime`</Link>
 - <Link href="/pageContext#req">API > `pageContext.req`</Link>
 - <Link href="/pageContext#res">API > `pageContext.res`</Link>
+- <Link href="/pageContext#runtime">API > `pageContext.runtime`</Link>
 - <Link href="/auth" />
 
 

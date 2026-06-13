@@ -90,7 +90,7 @@ Paths below are relative to https://vike.dev (e.g. `/data-fetching` → https://
 
 ## Server, headers & security
 
-- /server — `+server` integrate server framework (Hono/Express/Fastify/H3/Elysia), built-in dev server + HMR, `pageContext.runtime` request, `vike/fetch`, prod port/HTTPS, standalone deploy
+- /server — `+server` integrate server framework (Hono/Express/Fastify/H3/Elysia), built-in dev server + HMR, `pageContext.req`/`pageContext.res` (HTTP request/response), `vike/fetch`, prod port/HTTPS, standalone deploy
 - /api-routes — `+server.js` HTTP endpoints, framework integration, RPC (Telefunc), file uploads, HTTP caching, middleware
 - /headers — request headers: `pageContext.headers` (normalized) / `headersOriginal`, cookie parsing, Headers API
 - /headersResponse — `+headersResponse` response headers (static or fn), `pageContext.headersResponse`, `Set-Cookie`, server-only, beta

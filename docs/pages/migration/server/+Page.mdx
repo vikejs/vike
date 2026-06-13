@@ -372,14 +372,14 @@ export default {
 
 ## 7. Typescript (optional)
 
-If you use TypeScript and `pageContext.runtime`:
+If you use TypeScript and `pageContext.req`/`pageContext.res`/`pageContext.runtime`:
 
 ```ts ts-only
 declare global {
   namespace Vike {
     interface Photon {  // [!code --]
     interface Server { // [!code ++]
-      // Pick your server (for correct pageContext.runtime type)
+      // Pick your server (for correct pageContext.req/pageContext.res type)
       server: 'hono' // 'express' | 'fastify' | 'hattip' | 'srvx' | 'elysia' | 'h3'
     }
   }

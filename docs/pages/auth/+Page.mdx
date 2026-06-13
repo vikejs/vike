@@ -21,8 +21,8 @@ import type { PageContextServer } from 'vike/types'
 
 // This hook is called upon new incoming HTTP requests
 export async function onCreatePageContext(pageContext: PageContextServer) {
-  // The request object is available at pageContext.runtime.req
-  const { req } = pageContext.runtime
+  // The request object is available at pageContext.req
+  const { req } = pageContext
 
   // Authentication middlewares (e.g. Passport.js and Grant) usually set req.user
   // to expose information about the logged-in user.
@@ -47,14 +47,14 @@ declare global {
       }
     }
     interface Server {
-      // Pick your server (for correct pageContext.runtime type)
+      // Pick your server (for correct pageContext.req type)
       server: 'hono' // | 'express' | 'fastify' | 'hattip' | 'srvx' | 'elysia' | 'h3'
     }
   }
 }
 ```
 
-> See also: <Link href="/pageContext#runtime">API > `pageContext.runtime`</Link>
+> See also: <Link href="/pageContext#req">API > `pageContext.req`</Link>
 
 ```ts
 // pages/+config.ts
@@ -71,7 +71,7 @@ export default {
 
 > You can access `pageContext` in any UI component and Vike hook — see <Link href="/pageContext" />.
 
-> If you use <Link href="/server">`+server.js`</Link>, you can access the request object at <Link href="/server#pagecontext-runtime">`pageContext.runtime.req`</Link> (or its alias <Link href="/pageContext#req">`pageContext.req`</Link>).
+> If you use <Link href="/server">`+server.js`</Link>, you can access the request object at <Link href="/pageContext#req">`pageContext.req`</Link> (an alias of <Link href="/server#pagecontext-runtime">`pageContext.runtime.req`</Link>).
 >
 > If you don't use `+server.js`, you can define a custom property `pageContext.req` at <Link href="/renderPage">`renderPage()`</Link>:
 > ```ts
