@@ -164,7 +164,7 @@ declare global {
 
 > It's only available if you use <Link href="/server">`+server`</Link> with a server that exposes the HTTP request object (e.g. Express, Fastify, or Hono — but not Cloudflare Workers). If you don't use `+server`, then <Link href="#custom">define a custom `pageContext.req` property</Link> instead.
 
-> `pageContext.req` is a convenience alias of <Link href="#runtime" noWarning>`pageContext.runtime.req`</Link>. Vike doesn't override it if you define a <Link href="#custom">custom `pageContext.req` property</Link>.
+> Vike doesn't override `pageContext.req` if you define it as a <Link href="#custom">custom property</Link>.
 
 <Prop name="res" />
 
@@ -175,24 +175,28 @@ The HTTP response object.
 
 // The HTTP response object
 pageContext.res
+
+declare global {
+  namespace Vike {
+    interface Server {
+      // 👉 Pick your server (for correct pageContext.res type)
+      server: 'hono' // | 'express' | 'fastify' | 'hattip' | 'srvx' | 'elysia' | 'h3'
+    }
+  }
+}
 ```
 
 > When using Node.js, `pageContext.res` is [`ServerResponse`](https://nodejs.org/api/http.html#class-httpserverresponse).
 
-> `pageContext.res` is a convenience alias of <Link href="#runtime" noWarning>`pageContext.runtime.res`</Link>, see <Link href="#req" noWarning>`pageContext.req`</Link>.
+> It's only available if you use <Link href="/server">`+server`</Link> with a server that exposes the HTTP response object (e.g. Express, Fastify, or Hono — but not Cloudflare Workers). If you don't use `+server`, then <Link href="#custom">define a custom `pageContext.res` property</Link> instead.
+
+> Vike doesn't override `pageContext.res` if you define it as a <Link href="#custom">custom property</Link>.
 
 <Prop name="runtime" />
 
 The full [`RuntimeAdapter`](https://universal-middleware.dev/reference/runtime-adapter) object set by <Link href="/server">`+server`</Link> (which uses [`universal-middleware`](https://universal-middleware.dev/) under the hood).
 
-> To access the HTTP request and response objects, prefer the convenience aliases <Link href="#req" noWarning>`pageContext.req`</Link> and <Link href="#res" noWarning>`pageContext.res`</Link>.
-
-```ts
-// Environment: server
-
-pageContext.runtime.req // Same as pageContext.req
-pageContext.runtime.res // Same as pageContext.res
-```
+> Its HTTP request and response objects are also available as the aliases <Link href="#req" noWarning>`pageContext.req`</Link> and <Link href="#res" noWarning>`pageContext.res`</Link> — prefer using them.
 
 <Prop name="config" />
 

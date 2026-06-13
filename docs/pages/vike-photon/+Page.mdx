@@ -346,7 +346,7 @@ declare global {
 }
 ```
 
-> `pageContext.req` and `pageContext.res` are convenient aliases of `pageContext.runtime.req` and `pageContext.runtime.res`. The full [`pageContext.runtime`](https://universal-middleware.dev/reference/runtime-adapter) object also exposes further runtime information. (Vike doesn't override `pageContext.req`/`pageContext.res` if you define them as <Link href="/pageContext#custom">custom properties</Link>.)
+> The full [`pageContext.runtime`](https://universal-middleware.dev/reference/runtime-adapter) object exposes further runtime information. (Vike doesn't override `pageContext.req`/`pageContext.res` if you define them as <Link href="/pageContext#custom">custom properties</Link>.)
 
 > You can use <Link href="/onCreatePageContext">`+onCreatePageContext`</Link> to define custom `pageContext` properties, see <Link href="/pageContext#custom" />.
 >
