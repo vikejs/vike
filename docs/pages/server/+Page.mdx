@@ -220,7 +220,7 @@ export default {
 </blockquote>
 
 
-## `pageContext.{req,res}`
+## `pageContext.req` & `pageContext.res`
 
 You can use `pageContext.req` and `pageContext.res` to access the HTTP request and response objects, for example:
 
@@ -239,7 +239,7 @@ export async function data(pageContext: PageContextServer) {
 declare global {
   namespace Vike {
     interface Server {
-      // 👉 Pick your server (for correct pageContext.{req,res} type)
+      // 👉 Pick your server (for correct pageContext.req/pageContext.res type)
       server: 'hono' // | 'express' | 'fastify' | 'hattip' | 'srvx' | 'elysia' | 'h3'
     }
   }
