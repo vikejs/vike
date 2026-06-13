@@ -164,6 +164,8 @@ declare global {
 
 > It's only available if you use <Link href="/server">`+server`</Link> with a server that exposes the HTTP request object (e.g. Express, Fastify, or Hono — but not Cloudflare Workers). If you don't use `+server`, then <Link href="#custom">define a custom `pageContext.req` property</Link> instead.
 
+> `pageContext.req` is an alias of <Link href="#runtime" noWarning>`pageContext.runtime.req`</Link>.
+
 <Prop name="res" />
 
 The HTTP response object.
@@ -188,13 +190,11 @@ declare global {
 
 > It's only available if you use <Link href="/server">`+server`</Link> with a server that exposes the HTTP response object (e.g. Express, Fastify, or Hono — but not Cloudflare Workers). If you don't use `+server`, then <Link href="#custom">define a custom `pageContext.res` property</Link> instead.
 
+> `pageContext.res` is an alias of <Link href="#runtime" noWarning>`pageContext.runtime.res`</Link>.
+
 <Prop name="runtime" />
 
 The full [`RuntimeAdapter`](https://universal-middleware.dev/reference/runtime-adapter) object set by <Link href="/server">`+server`</Link> (which uses [`universal-middleware`](https://universal-middleware.dev/) under the hood).
-
-> Its HTTP request and response objects are also available as the aliases <Link href="#req" noWarning>`pageContext.req`</Link> and <Link href="#res" noWarning>`pageContext.res`</Link> — prefer using them.
-
-> It's only available if you use <Link href="/server">`+server`</Link> with a server that exposes the HTTP request object (e.g. Express, Fastify, or Hono — but not Cloudflare Workers). If you don't use `+server`, then <Link href="#custom">define a custom `pageContext.req` property</Link> instead.
 
 <Prop name="config" />
 
