@@ -1,6 +1,22 @@
 import { Link, Warning } from '@brillout/docpress'
 import { PropPageContext as Prop, ConfigSpec, TreeShaking } from '../../components'
 
+export const ServerOnlyNote = ({ prop, kind }) => (
+  <blockquote>
+    <p>
+      It's only available if you use <Link href="/server"><code>+server</code></Link> with a server that exposes the HTTP {kind} object (e.g. Express, Fastify, or Hono — but not Cloudflare Workers). If you don't use <code>+server</code>, you can <Link href="#custom">define a custom <code>pageContext.{prop}</code> property</Link> yourself.
+    </p>
+  </blockquote>
+)
+
+export const AliasNote = ({ prop }) => (
+  <blockquote>
+    <p>
+      <code>pageContext.{prop}</code> is an alias of <Link href="#runtime" noWarning><code>pageContext.runtime.{prop}</code></Link>.
+    </p>
+  </blockquote>
+)
+
 <ConfigSpec
   env="client, server"
   global={null}
@@ -140,17 +156,68 @@ The headers of the HTTP Request. The original object provided by the server, see
 
 The headers of the HTTP Response, see <Link href="/headersResponse"/>.
 
-<Prop name="runtime" />
+<Prop name="req" />
 
-The [`RuntimeAdapter`](https://universal-middleware.dev/reference/runtime-adapter) object set by <Link href="/server">`+server`</Link> (which uses [`universal-middleware`](https://universal-middleware.dev/) under the hood).
+The HTTP request object.
 
 ```ts
 // Environment: server
 
-// The original HTTP request object
+// The HTTP request object
+pageContext.req
+
+declare global {
+  namespace Vike {
+    interface Server {
+      // 👉 Pick your server (for correct pageContext.req type)
+      server: 'hono' // | 'express' | 'fastify' | 'hattip' | 'srvx' | 'elysia' | 'h3'
+    }
+  }
+}
+```
+
+> When using Node.js, `pageContext.req` is [`IncomingMessage`](https://nodejs.org/api/http.html#class-httpincomingmessage).
+
+<ServerOnlyNote prop="req" kind="request" />
+
+<AliasNote prop="req" />
+
+<Prop name="res" />
+
+The HTTP response object.
+
+```ts
+// Environment: server
+
+// The HTTP response object
+pageContext.res
+
+declare global {
+  namespace Vike {
+    interface Server {
+      // 👉 Pick your server (for correct pageContext.res type)
+      server: 'hono' // | 'express' | 'fastify' | 'hattip' | 'srvx' | 'elysia' | 'h3'
+    }
+  }
+}
+```
+
+> When using Node.js, `pageContext.res` is [`ServerResponse`](https://nodejs.org/api/http.html#class-httpserverresponse).
+
+<ServerOnlyNote prop="res" kind="response" />
+
+<AliasNote prop="res" />
+
+<Prop name="runtime" />
+
+The full [`RuntimeAdapter`](https://universal-middleware.dev/reference/runtime-adapter) object set by <Link href="/server">`+server`</Link> (which uses [`universal-middleware`](https://universal-middleware.dev/) under the hood).
+
+```ts
+// Environment: server
+
 pageContext.runtime.req
-// The original HTTP response object
 pageContext.runtime.res
+// ...
 
 declare global {
   namespace Vike {
@@ -162,11 +229,11 @@ declare global {
 }
 ```
 
-> When using Node.js:
-> - `pageContext.runtime.req` is [`IncomingMessage`](https://nodejs.org/api/http.html#class-httpincomingmessage)
-> - `pageContext.runtime.res` is [`ServerResponse`](https://nodejs.org/api/http.html#class-httpserverresponse)
+> It's only available if you use <Link href="/server">`+server`</Link>.
 
-> It's only available if you use <Link href="/server">`+server`</Link>. If you don't use `+server`, then <Link href="#custom">define a custom `pageContext` property</Link> (e.g. `pageContext.req`) to access the request object.
+> See also:
+> - <Link href="#req" noWarning>`pageContext.req`</Link>
+> - <Link href="#res" noWarning>`pageContext.res`</Link>
 
 <Prop name="config" />
 

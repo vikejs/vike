@@ -220,9 +220,9 @@ export default {
 </blockquote>
 
 
-## `pageContext.runtime`
+## `pageContext.req` & `pageContext.res`
 
-You can use `pageContext.runtime` to access the HTTP request object, for example:
+You can use `pageContext.req` and `pageContext.res` to access the HTTP request and response objects, for example:
 
 ```ts
 // pages/product/@id/+data.ts
@@ -231,15 +231,15 @@ import type { PageContextServer } from 'vike/types'
 
 export type Data = Awaited<ReturnType<typeof data>>
 export async function data(pageContext: PageContextServer) {
-  // Using pageContext.runtime.req to access the logged-in user
-  const { user } = pageContext.runtime.req
+  // Using pageContext.req to access the logged-in user
+  const { user } = pageContext.req
   // ...
 }
 
 declare global {
   namespace Vike {
     interface Server {
-      // 👉 Pick your server (for correct pageContext.runtime type)
+      // 👉 Pick your server (for correct pageContext.req/pageContext.res type)
       server: 'hono' // | 'express' | 'fastify' | 'hattip' | 'srvx' | 'elysia' | 'h3'
     }
   }
@@ -248,10 +248,11 @@ declare global {
 
 > You can use <Link href="/onCreatePageContext">`+onCreatePageContext`</Link> to define custom `pageContext` properties, see <Link href="/pageContext#custom" />.
 >
-> For example, you can define `pageContext.user` as an alias of `pageContext.runtime.req.user` for convenience, see <Link href="/auth#pagecontext-user" doNotInferSectionTitle />.
+> For example, you can define `pageContext.user` as an alias of `pageContext.req.user` for convenience, see <Link href="/auth#pagecontext-user" doNotInferSectionTitle />.
 
 See also:
-- <Link href="/pageContext#runtime">API > `pageContext.runtime`</Link>
+- <Link href="/pageContext#req">API > `pageContext.req`</Link>
+- <Link href="/pageContext#res">API > `pageContext.res`</Link>
 - <Link href="/auth" />
 
 
