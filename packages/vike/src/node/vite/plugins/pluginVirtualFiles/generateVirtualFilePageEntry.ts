@@ -76,11 +76,11 @@ function getCode(
   lines.push('};')
 
   if (!handleAssetsManifest_isFixEnabled() && includeAssetsImportedByServer && isForClientSide && !isDev) {
-    importStatements.push(
+    importStatements.list.push(
       `import '${extractAssetsAddQuery(generateVirtualFileId({ type: 'page-entry', pageId, isForClientSide: false }))}'`,
     )
   }
 
-  const code = [...importStatements.toArray(), ...lines].join('\n')
+  const code = [...importStatements.list, ...lines].join('\n')
   return code
 }

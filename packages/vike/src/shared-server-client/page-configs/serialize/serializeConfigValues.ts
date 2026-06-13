@@ -49,32 +49,10 @@ const REPLACE_ME_AFTER = '__VIKE__REPLACE_ME_AFTER__'
 assertIsNotBrowser()
 assertIsNotProductionRuntime()
 
-// Deduplicates import statements: the same (importPath, exportName) pair across pages
-// reuses the same import variable instead of emitting duplicate import declarations.
-class ImportStatements {
-  private readonly _list: string[] = []
-  private readonly _dedup = new Map<string, string>() // `${importPath}::${exportName}` → importName
-
-  get length(): number {
-    return this._list.length
-  }
-
-  getExisting(importPath: string, exportName: string): string | undefined {
-    return this._dedup.get(`${importPath}::${exportName}`)
-  }
-
-  add(statement: string, importPath: string, exportName: string, importName: string): void {
-    this._list.push(statement)
-    this._dedup.set(`${importPath}::${exportName}`, importName)
-  }
-
-  toArray(): string[] {
-    return this._list
-  }
-}
+type ImportStatements = { list: string[]; dedup: Map<string, string> }
 
 function createImportStatements(): ImportStatements {
-  return new ImportStatements()
+  return { list: [], dedup: new Map() }
 }
 
 function serializeConfigValues(
@@ -430,15 +408,14 @@ function addImportStatement(
   configEnv: ConfigEnv,
   configName: string,
 ): { importName: string } {
-  // Reuse an existing import when the same (importPath, exportName) was already emitted
-  // (e.g. a shared +route.ts inherited by N pages would otherwise produce N duplicate imports).
-  const existing = importStatements.getExisting(importPath, exportName)
-  if (existing) {
+  const dedupKey = `${importPath}::${exportName}`
+  const importNameExisting = importStatements.dedup.get(dedupKey)
+  if (importNameExisting) {
     assertFileEnv(importPath, configEnv, configName, filesEnv)
-    return { importName: existing }
+    return { importName: importNameExisting }
   }
 
-  const importCounter = importStatements.length + 1
+  const importCounter = importStatements.list.length + 1
   const importName = `import${importCounter}` as const
   const importLiteral = (() => {
     if (exportName === '*') {
@@ -450,7 +427,8 @@ function addImportStatement(
     return `{ ${exportName} as ${importName} }` as const
   })()
   const importStatement = `import ${importLiteral} from '${importPath}';`
-  importStatements.add(importStatement, importPath, exportName, importName)
+  importStatements.list.push(importStatement)
+  importStatements.dedup.set(dedupKey, importName)
   assertFileEnv(importPath, configEnv, configName, filesEnv)
   return { importName }
 }

@@ -37,7 +37,7 @@ function getCode(
   const filesEnv: FilesEnv = new Map()
 
   if (!isForClientSide) {
-    importStatements.push(`import '${VIRTUAL_FILE_ID_constantsGlobalThis}';`)
+    importStatements.list.push(`import '${VIRTUAL_FILE_ID_constantsGlobalThis}';`)
   }
 
   lines.push('export const pageConfigsSerialized = [')
@@ -64,7 +64,7 @@ function getCode(
     lines.push('if (import.meta.hot) import.meta.hot.accept();')
   }
 
-  let code = [...importStatements.toArray(), ...lines].join('\n')
+  let code = [...importStatements.list, ...lines].join('\n')
 
   if (!isForClientSide) {
     code = `import '${VIRTUAL_FILE_ID_constantsGlobalThis}';\n` + code
