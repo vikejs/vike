@@ -1,6 +1,22 @@
 import { Link, Warning } from '@brillout/docpress'
 import { PropPageContext as Prop, ConfigSpec, TreeShaking } from '../../components'
 
+export const ServerOnlyNote = ({ prop, kind }) => (
+  <blockquote>
+    <p>
+      It's only available if you use <Link href="/server"><code>+server</code></Link> with a server that exposes the HTTP {kind} object (e.g. Express, Fastify, or Hono — but not Cloudflare Workers). If you don't use <code>+server</code>, then <Link href="#custom">define a custom <code>pageContext.{prop}</code> property</Link> instead.
+    </p>
+  </blockquote>
+)
+
+export const AliasNote = ({ prop }) => (
+  <blockquote>
+    <p>
+      <code>pageContext.{prop}</code> is an alias of <Link href="#runtime" noWarning><code>pageContext.runtime.{prop}</code></Link>.
+    </p>
+  </blockquote>
+)
+
 <ConfigSpec
   env="client, server"
   global={null}
@@ -162,9 +178,9 @@ declare global {
 
 > When using Node.js, `pageContext.req` is [`IncomingMessage`](https://nodejs.org/api/http.html#class-httpincomingmessage).
 
-> It's only available if you use <Link href="/server">`+server`</Link> with a server that exposes the HTTP request object (e.g. Express, Fastify, or Hono — but not Cloudflare Workers). If you don't use `+server`, then <Link href="#custom">define a custom `pageContext.req` property</Link> instead.
+<ServerOnlyNote prop="req" kind="request" />
 
-> `pageContext.req` is an alias of <Link href="#runtime" noWarning>`pageContext.runtime.req`</Link>.
+<AliasNote prop="req" />
 
 <Prop name="res" />
 
@@ -188,15 +204,15 @@ declare global {
 
 > When using Node.js, `pageContext.res` is [`ServerResponse`](https://nodejs.org/api/http.html#class-httpserverresponse).
 
-> It's only available if you use <Link href="/server">`+server`</Link> with a server that exposes the HTTP response object (e.g. Express, Fastify, or Hono — but not Cloudflare Workers). If you don't use `+server`, then <Link href="#custom">define a custom `pageContext.res` property</Link> instead.
+<ServerOnlyNote prop="res" kind="response" />
 
-> `pageContext.res` is an alias of <Link href="#runtime" noWarning>`pageContext.runtime.res`</Link>.
+<AliasNote prop="res" />
 
 <Prop name="runtime" />
 
 The full [`RuntimeAdapter`](https://universal-middleware.dev/reference/runtime-adapter) object set by <Link href="/server">`+server`</Link> (which uses [`universal-middleware`](https://universal-middleware.dev/) under the hood).
 
-> It's only available if you use <Link href="/server">`+server`</Link> with a server that exposes the HTTP request object (e.g. Express, Fastify, or Hono — but not Cloudflare Workers). If you don't use `+server`, then <Link href="#custom">define a custom `pageContext.req` property</Link> instead.
+<ServerOnlyNote prop="req" kind="request" />
 
 <Prop name="config" />
 
