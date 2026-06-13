@@ -1,0 +1,38 @@
+import{o as d,a as c}from"../chunks/chunk-Cgz1GdgB.js";import{j as e}from"../chunks/chunk-Dn-Xi2p3.js";import{L as r}from"../chunks/chunk-Be1bryip.js";/* empty css                      *//* empty css                      *//* empty css                      *//* empty css                      *//* empty css                      *//* empty css                      *//* empty css                      *//* empty css                      *//* empty css                      */import{u as l}from"../chunks/chunk-IMAl7YcV.js";/* empty css                      */import"../chunks/chunk-CRkRl3Um.js";import{C as h}from"../chunks/chunk-DIXVUbBf.js";/* empty css                      *//* empty css                      *//* empty css                      */import"../chunks/chunk-BrBnlIOR.js";/* empty css                      */const p=[{pageSectionId:"see-also",pageSectionLevel:2,pageSectionTitle:"See also"}];function o(n){const t={a:"a",blockquote:"blockquote",code:"code",div:"div",figure:"figure",li:"li",p:"p",pre:"pre",span:"span",ul:"ul",...l(),...n.components},{ChoiceGroup:i,CustomSelectsContainer:s}=t;return i||a("ChoiceGroup"),s||a("CustomSelectsContainer"),e.jsxs(e.Fragment,{children:[e.jsx(h,{env:"client",default:e.jsx(t.code,{children:"false"})}),`
+`,e.jsx(s,{children:e.jsxs(i,{choiceGroup:{name:"codeLang",choices:["JavaScript","TypeScript"],default:"JavaScript",emptyChoices:[],hidden:!1,lvl:0},children:[e.jsx(t.div,{"data-choice-value":"JavaScript",className:"choice",children:e.jsx(t.figure,{"data-rehype-pretty-code-figure":"",children:e.jsx(t.pre,{tabIndex:"0","data-language":"js","data-theme":"github-light",children:e.jsxs(t.code,{"data-language":"js","data-theme":"github-light",style:{display:"grid"},children:[e.jsx(t.span,{"data-line":"",children:e.jsx(t.span,{style:{color:"#6A737D"},children:"// +config.js"})}),`
+`,e.jsx(t.span,{"data-line":"",children:" "}),`
+`,e.jsxs(t.span,{"data-line":"",children:[e.jsx(t.span,{style:{color:"#D73A49"},children:"export"}),e.jsx(t.span,{style:{color:"#D73A49"},children:" default"}),e.jsx(t.span,{style:{color:"#24292E"},children:" {"})]}),`
+`,e.jsxs(t.span,{"data-line":"",children:[e.jsx(t.span,{style:{color:"#24292E"},children:"  hydrationCanBeAborted: "}),e.jsx(t.span,{style:{color:"#005CC5"},children:"true"})]}),`
+`,e.jsx(t.span,{"data-line":"",children:e.jsx(t.span,{style:{color:"#24292E"},children:"}"})})]})})})}),e.jsx(t.div,{"data-choice-value":"TypeScript",className:"choice",children:e.jsx(t.figure,{"data-rehype-pretty-code-figure":"",children:e.jsx(t.pre,{tabIndex:"0","data-language":"ts","data-theme":"github-light",children:e.jsxs(t.code,{"data-language":"ts","data-theme":"github-light",style:{display:"grid"},children:[e.jsx(t.span,{"data-line":"",children:e.jsx(t.span,{style:{color:"#6A737D"},children:"// +config.ts"})}),`
+`,e.jsx(t.span,{"data-line":"",children:" "}),`
+`,e.jsxs(t.span,{"data-line":"",children:[e.jsx(t.span,{style:{color:"#D73A49"},children:"import"}),e.jsx(t.span,{style:{color:"#D73A49"},children:" type"}),e.jsx(t.span,{style:{color:"#24292E"},children:" { Config } "}),e.jsx(t.span,{style:{color:"#D73A49"},children:"from"}),e.jsx(t.span,{style:{color:"#032F62"},children:" 'vike/types'"})]}),`
+`,e.jsx(t.span,{"data-line":"",children:" "}),`
+`,e.jsxs(t.span,{"data-line":"",children:[e.jsx(t.span,{style:{color:"#D73A49"},children:"export"}),e.jsx(t.span,{style:{color:"#D73A49"},children:" default"}),e.jsx(t.span,{style:{color:"#24292E"},children:" {"})]}),`
+`,e.jsxs(t.span,{"data-line":"",children:[e.jsx(t.span,{style:{color:"#24292E"},children:"  hydrationCanBeAborted: "}),e.jsx(t.span,{style:{color:"#005CC5"},children:"true"})]}),`
+`,e.jsxs(t.span,{"data-line":"",children:[e.jsx(t.span,{style:{color:"#24292E"},children:"} "}),e.jsx(t.span,{style:{color:"#D73A49"},children:"satisfies"}),e.jsx(t.span,{style:{color:"#6F42C1"},children:" Config"})]})]})})})})]})}),`
+`,e.jsxs(t.blockquote,{children:[`
+`,e.jsxs(t.p,{children:["The ",e.jsx(t.code,{children:"hydrationCanBeAborted"})," setting only applies if you enabled ",e.jsx(r,{href:"/client-routing",children:"Client Routing"}),"."]}),`
+`]}),`
+`,e.jsxs(t.p,{children:["Whether your ",e.jsx(r,{href:"/ui-frameworks",children:"UI framework"})," allows the ",e.jsx(r,{href:"/hydration",children:"hydration"})," to be aborted."]}),`
+`,e.jsxs(t.p,{children:["Setting ",e.jsx(t.code,{children:"hydrationCanBeAborted"})," to ",e.jsx(t.code,{children:"true"})," tells Vike that the hydration can be aborted when the user clicks on a link before the hydration has finished."]}),`
+`,e.jsxs(t.p,{children:["React users can (and should) set ",e.jsx(t.code,{children:"hydrationCanBeAborted"})," to ",e.jsx(t.code,{children:"true"}),"."]}),`
+`,e.jsxs(t.blockquote,{children:[`
+`,e.jsxs(t.p,{children:[e.jsx(r,{href:"/vike-react",children:e.jsx(t.code,{children:"vike-react"})})," already sets ",e.jsx(t.code,{children:"hydrationCanBeAborted"})," to ",e.jsx(t.code,{children:"true"})," on your behalf."]}),`
+`]}),`
+`,e.jsxs(t.p,{children:["Vue crashes if the hydration is aborted (see ",e.jsx(t.a,{href:"https://github.com/vuejs/vue/issues/13235",children:"vuejs/vue#13235"}),"), thus ",e.jsx(t.code,{children:"hydrationCanBeAborted"})," must be set to ",e.jsx(t.code,{children:"false"}),"."]}),`
+`,e.jsxs(t.blockquote,{children:[`
+`,e.jsxs(t.p,{children:[e.jsx(r,{href:"/vike-vue",children:e.jsx(t.code,{children:"vike-vue"})})," already sets ",e.jsx(t.code,{children:"hydrationCanBeAborted"})," to ",e.jsx(t.code,{children:"false"})," on your behalf."]}),`
+`]}),`
+`,e.jsx("h2",{id:"see-also",children:"See also"}),`
+`,e.jsxs(t.ul,{children:[`
+`,e.jsxs(t.li,{children:[`
+`,e.jsx(r,{href:"/hydration",children:"hydration"}),`
+`]}),`
+`,e.jsx(t.li,{children:e.jsx(t.a,{href:"https://github.com/vuejs/vue/issues/13235",children:"vuejs/vue#13235 - [Feature Request] Be able to skip hydration"})}),`
+`,e.jsxs(t.li,{children:[`
+`,e.jsx(r,{href:"/clientRouting"}),`
+`]}),`
+`,e.jsxs(t.li,{children:[`
+`,e.jsx(r,{href:"/settings"}),`
+`]}),`
+`]})]})}function u(n={}){const{wrapper:t}={...l(),...n.components};return t?e.jsx(t,{...n,children:e.jsx(o,{...n})}):o(n)}function a(n,t){throw new Error("Expected component `"+n+"` to be defined: you likely forgot to import, pass, or provide it.")}const x=Object.freeze(Object.defineProperty({__proto__:null,default:u,pageSectionsExport:p},Symbol.toStringTag,{value:"Module"})),q={hasServerOnlyHook:{type:"computed",definedAtData:null,valueSerialized:{type:"js-serialized",value:!1}},isClientRuntimeLoaded:{type:"computed",definedAtData:null,valueSerialized:{type:"js-serialized",value:!0}},onBeforeRenderEnv:{type:"computed",definedAtData:null,valueSerialized:{type:"js-serialized",value:null}},dataEnv:{type:"computed",definedAtData:null,valueSerialized:{type:"js-serialized",value:null}},guardEnv:{type:"computed",definedAtData:null,valueSerialized:{type:"js-serialized",value:null}},onRenderClient:{type:"standard",definedAtData:{filePathToShowToUser:"@brillout/docpress/renderer/onRenderClient",fileExportPathToShowToUser:[]},valueSerialized:{type:"pointer-import",value:c}},onCreatePageContext:{type:"cumulative",definedAtData:[{filePathToShowToUser:"@brillout/docpress/renderer/onCreatePageContext",fileExportPathToShowToUser:[]}],valueSerialized:[{type:"pointer-import",value:d}]},Page:{type:"standard",definedAtData:{filePathToShowToUser:"/pages/hydrationCanBeAborted/+Page.mdx",fileExportPathToShowToUser:[]},valueSerialized:{type:"plus-file",exportValues:x}},hydrationCanBeAborted:{type:"standard",definedAtData:{filePathToShowToUser:"@brillout/docpress/config",fileExportPathToShowToUser:["default","hydrationCanBeAborted"]},valueSerialized:{type:"js-serialized",value:!0}}};export{q as configValuesSerialized};

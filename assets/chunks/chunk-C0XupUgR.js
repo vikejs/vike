@@ -1,0 +1,5 @@
+import{j as o}from"./chunk-Dn-Xi2p3.js";/* empty css              */import{W as s}from"./chunk-r8IY6BSZ.js";/* empty css              *//* empty css              *//* empty css              *//* empty css              *//* empty css              *//* empty css              *//* empty css              */import{u as r}from"./chunk-IMAl7YcV.js";function t(e){const n={a:"a",code:"code",li:"li",p:"p",ul:"ul",...r(),...e.components};return o.jsxs(s,{children:[o.jsxs(n.p,{children:["Because ",e.name," doesn't follow modern JavaScript standards, it currently doesn't work with the following:"]}),o.jsxs(n.ul,{children:[`
+`,o.jsx(n.li,{children:"Bun"}),`
+`,o.jsx(n.li,{children:"Deno"}),`
+`,o.jsx(n.li,{children:"Cloudflare"}),`
+`]}),o.jsxs(n.p,{children:["See also: ",o.jsxs(n.a,{href:"https://github.com/h3js/srvx/issues/132",children:["srvx#132 - ",o.jsx(n.code,{children:"toFetchHandler"})," do not work in Deno and Bun"]})]})]})}function f(e={}){const{wrapper:n}={...r(),...e.components};return n?o.jsx(n,{...e,children:o.jsx(t,{...e})}):t(e)}export{f as M};
