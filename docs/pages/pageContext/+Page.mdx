@@ -567,7 +567,8 @@ declare global {
   }
 }
 
-// Add this line if TypeScript complains about `declare global`.
+// Add this line if TypeScript complains about `declare global` (it requires the file
+// to have at least one `import` or `export` so that TypeScript treats it as a module).
 // https://typescriptlang.org/docs/handbook/2/modules.html#how-javascript-modules-are-defined
 export {}
 ```
