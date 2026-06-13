@@ -346,12 +346,16 @@ declare global {
 }
 ```
 
+> Vike also sets <Link href="/pageContext#req">`pageContext.req`</Link> and <Link href="/pageContext#res">`pageContext.res`</Link> as aliases of `pageContext.runtime.req` and `pageContext.runtime.res`. (Vike doesn't override them if you define a <Link href="/pageContext#custom">custom `pageContext.req`/`pageContext.res` property</Link>.)
+
 > You can use <Link href="/onCreatePageContext">`+onCreatePageContext`</Link> to define custom `pageContext` properties, see <Link href="/pageContext#custom" />.
 >
 > For example, you can define `pageContext.user` as an alias of `pageContext.runtime.req.user` for convenience, see <Link href="/auth#pagecontext-user" doNotInferSectionTitle />.
 
 See also:
 - <Link href="/pageContext#runtime">API > `pageContext.runtime`</Link>
+- <Link href="/pageContext#req">API > `pageContext.req`</Link>
+- <Link href="/pageContext#res">API > `pageContext.res`</Link>
 - <Link href="/auth" />
 
 

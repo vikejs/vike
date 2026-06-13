@@ -7,9 +7,19 @@ async function universalVikeHandler<T extends string>(
   context: Universal.Context,
   runtime: RuntimeAdapterTarget<T>,
 ) {
+  // Set pageContext.req and pageContext.res as aliases of pageContext.runtime.req and pageContext.runtime.res.
+  // https://vike.dev/pageContext#req
+  // The aliases don't override custom pageContext properties defined by the user:
+  //  - pageContext.req / pageContext.res defined by another universal middleware (via `context`) take precedence: `...context` is spread after `...reqResAlias`.
+  //  - pageContext.req / pageContext.res defined by +onCreatePageContext take precedence as well: +onCreatePageContext is executed later.
+  // We don't spread the whole `runtime` object (`...runtime`) to avoid polluting pageContext with all the runtime adapter's properties.
+  const reqResAlias: { req?: unknown; res?: unknown } = {}
+  if ('req' in runtime) reqResAlias.req = (runtime as { req: unknown }).req
+  if ('res' in runtime) reqResAlias.res = (runtime as { res: unknown }).res
+
   const pageContextInit = {
+    ...reqResAlias,
     ...context,
-    ...runtime,
     runtime,
     urlOriginal: request.url,
     headersOriginal: request.headers,

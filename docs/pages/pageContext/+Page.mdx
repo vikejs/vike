@@ -168,6 +168,18 @@ declare global {
 
 > It's only available if you use <Link href="/server">`+server`</Link>. If you don't use `+server`, then <Link href="#custom">define a custom `pageContext` property</Link> (e.g. `pageContext.req`) to access the request object.
 
+<Prop name="req" />
+
+Alias for <Link href="#runtime">`pageContext.runtime.req`</Link> (the HTTP request object).
+
+> It's only available if you use <Link href="/server">`+server`</Link> with a server that exposes the HTTP request object (e.g. Express, Fastify, or Hono — but not Cloudflare Workers).
+
+> If you define a <Link href="#custom">custom `pageContext.req` property</Link>, then Vike doesn't override it.
+
+<Prop name="res" />
+
+Alias for <Link href="#runtime">`pageContext.runtime.res`</Link> (the HTTP response object), see <Link href="#req">`pageContext.req`</Link>.
+
 <Prop name="config" />
 
 The page's runtime <Link href="/config">configuration</Link> (both <Link href="/settings">settings</Link> and <Link href="/hooks">hooks</Link>).

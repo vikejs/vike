@@ -1,6 +1,6 @@
 export { testRun }
 
-import { page, test, expect, getServerUrl, autoRetry, fetchHtml, sleep } from '@brillout/test-e2e'
+import { page, test, expect, getServerUrl, autoRetry, fetch, fetchHtml, sleep } from '@brillout/test-e2e'
 import { testRunClassic } from '../../test/utils'
 
 function testRun(...args: Parameters<typeof testRunClassic>) {
@@ -9,6 +9,13 @@ function testRun(...args: Parameters<typeof testRunClassic>) {
   test('Running on Express', async () => {
     const html = await fetchHtml('/express')
     expect(html).toContain('Running express server')
+  })
+
+  // pageContext.req/pageContext.res are aliases of pageContext.runtime.req/pageContext.runtime.res — set by +onCreatePageContext.server.ts
+  test('pageContext.req/pageContext.res alias pageContext.runtime.req/pageContext.runtime.res', async () => {
+    const response = await fetch(`${getServerUrl()}/`)
+    expect(response.headers.get('test-pagecontext-req-alias')).toBe('true')
+    expect(response.headers.get('test-pagecontext-res-alias')).toBe('true')
   })
 
   test('Add to-do item', async () => {
