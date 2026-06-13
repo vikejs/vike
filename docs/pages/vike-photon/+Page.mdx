@@ -322,7 +322,7 @@ serve(app, {
 
 ## `pageContext.runtime`
 
-You can use `pageContext.req` and `pageContext.res` to access the HTTP request and response objects, for example:
+You can use `pageContext.runtime` to access the HTTP request object, for example:
 
 ```ts
 // pages/product/@id/+data.ts
@@ -331,30 +331,26 @@ import type { PageContextServer } from 'vike/types'
 
 export type Data = Awaited<ReturnType<typeof data>>
 export async function data(pageContext: PageContextServer) {
-  // Using pageContext.req to access the logged-in user
-  const { user } = pageContext.req
+  // Using pageContext.runtime.req to access the logged-in user
+  const { user } = pageContext.runtime.req
   // ...
 }
 
 declare global {
   namespace Vike {
     interface Photon {
-      // 👉 Pick your server (for correct pageContext.req/pageContext.res type)
+      // 👉 Pick your server (for correct pageContext.runtime type)
       server: 'hono' // | 'express' | 'fastify' | 'hattip' | 'srvx' | 'elysia' | 'h3'
     }
   }
 }
 ```
 
-> The full [`pageContext.runtime`](https://universal-middleware.dev/reference/runtime-adapter) object exposes further runtime information. (Vike doesn't override `pageContext.req`/`pageContext.res` if you define them as <Link href="/pageContext#custom">custom properties</Link>.)
-
 > You can use <Link href="/onCreatePageContext">`+onCreatePageContext`</Link> to define custom `pageContext` properties, see <Link href="/pageContext#custom" />.
 >
-> For example, you can define `pageContext.user` as an alias of `pageContext.req.user` for convenience, see <Link href="/auth#pagecontext-user" doNotInferSectionTitle />.
+> For example, you can define `pageContext.user` as an alias of `pageContext.runtime.req.user` for convenience, see <Link href="/auth#pagecontext-user" doNotInferSectionTitle />.
 
 See also:
-- <Link href="/pageContext#req">API > `pageContext.req`</Link>
-- <Link href="/pageContext#res">API > `pageContext.res`</Link>
 - <Link href="/pageContext#runtime">API > `pageContext.runtime`</Link>
 - <Link href="/auth" />
 
