@@ -17,7 +17,7 @@ import { version as viteVersion } from 'vite'
 import { type FileType, fileTypes } from '../../../../shared-server-client/getPageFiles/fileTypes.js'
 import path from 'node:path'
 import { generateVirtualFileGlobalEntry } from './generateVirtualFileGlobalEntry.js'
-import { getVikeConfigInternal, isV1Design } from '../../shared/resolveVikeConfigInternal.js'
+import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { getOutDirs } from '../../shared/getOutDirs.js'
 import { isViteServerSide_extraSafe } from '../../shared/isViteServerSide.js'
 import { resolveIncludeAssetsImportedByServer } from '../../../../server/runtime/renderPageServer/getPageAssets/retrievePageAssetsProd.js'
@@ -128,11 +128,6 @@ export const neverLoaded = {};
 ${await generateVirtualFileGlobalEntry(isForClientSide, isDev, id, isClientRouting)}
 
 `
-
-  // Projects using the V1 design (+config.ts) have no .page.client/.page.server/.page.route files,
-  // so the glob calls below would expand to empty objects. Skip them entirely to keep the
-  // global-entry virtual module lean for the common case.
-  if (isV1Design()) return fileContent
 
   const vikeConfig = await getVikeConfigInternal()
 
