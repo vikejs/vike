@@ -127,7 +127,7 @@
     "@brillout/import": "^0.2.6",
     "@brillout/json-serializer": "^0.5.25",
     "@brillout/picocolors": "^1.0.31",
-    "@brillout/vite-plugin-server-entry": "0.7.18",
+    "@brillout/vite-plugin-server-entry": "0.7.19",
     "@universal-deploy/store": "^0.2.1",
     "@universal-deploy/vite": "^0.1.10",
     "@universal-middleware/core": "^0.4.18",
