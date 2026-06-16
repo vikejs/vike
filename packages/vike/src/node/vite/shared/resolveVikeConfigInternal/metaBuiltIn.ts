@@ -353,7 +353,7 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
     global: true,
   },
   server: {
-    env: { server: true },
+    env: { server: true, config: true },
     global: true,
   },
   cli: {
