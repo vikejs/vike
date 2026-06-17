@@ -25,6 +25,7 @@ import { pLimit, PLimit } from '../../utils/pLimit.js'
 import { preservePropertyGetters } from '../../utils/preservePropertyGetters.js'
 import { assertPosixPath } from '../../utils/path.js'
 import { urlToFile } from '../../utils/urlToFile.js'
+import { prependBase } from '../../utils/parseUrl-extras.js'
 import { prerenderPage } from '../../server/runtime/renderPageServer/renderPageServerAfterRoute.js'
 import { createPageContextServer } from '../../server/runtime/renderPageServer/createPageContextServer.js'
 import pc from '@brillout/picocolors'
@@ -1170,7 +1171,8 @@ async function prerenderRedirects(
   const redirectsStatic = getStaticRedirectsForPrerender(redirects, showWarningUponDynamicRedirects)
   for (const [urlSource, urlTarget] of Object.entries(redirectsStatic)) {
     const urlOriginal = urlSource
-    const htmlString = getRedirectHtml(urlTarget)
+    const urlTargetWithBase = urlTarget.startsWith('/') ? prependBase(urlTarget, globalContext.baseServer) : urlTarget
+    const htmlString = getRedirectHtml(urlTargetWithBase)
     await onComplete({
       pageContext: { urlOriginal, pageId: null, is404: false, isRedirect: true },
       htmlString,
