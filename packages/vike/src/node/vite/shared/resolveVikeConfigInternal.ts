@@ -904,14 +904,16 @@ function resolveConfigValueSources(
   isGlobal: boolean,
   plusFilesByLocationId: PlusFilesByLocationId,
 ): ConfigValueSource[] {
-  // dedupeExtensions(): make Vike extension installation idempotent — a Vike extension contributes
+  let plusFilesConfig = plusFilesRelevant.filter((plusFile) => isDefiningConfig(plusFile, configName))
+  // Make Vike extension installation idempotent. (Don't cumulate the configs twice of an extension installed twice.) Since `plusFilesRelevant` is ordered by inheritance the occurrence closest to the page's locationId is the one kept.
+  // — a Vike extension contributes
   // its config value at most once, however many times it's installed (over several `extends`, at
-  // different paths, or across config inheritance). For a page, `plusFilesRelevant` is ordered by
-  // inheritance, so the occurrence closest to the page's locationId is the one kept.
-  // https://github.com/vikejs/vike/issues/3354
-  let sources: ConfigValueSource[] = dedupeExtensions(
-    plusFilesRelevant.filter((plusFile) => isDefiningConfig(plusFile, configName)),
-  ).flatMap((plusFile) => getConfigValueSources(configName, plusFile, configDef, userRootDir))
+  // different paths, or across config inheritance).
+  plusFilesConfig = dedupeExtensions(plusFilesConfig)
+
+  let sources: ConfigValueSource[] = plusFilesConfig.flatMap((plusFile) =>
+    getConfigValueSources(configName, plusFile, configDef, userRootDir),
+  )
 
   // Filter hydrid global-local configs
   if (!isCallable(configDef.global)) {
@@ -933,14 +935,12 @@ function resolveConfigValueSources(
 function isDefiningConfig(plusFile: PlusFile, configName: string) {
   return getConfigNamesSetByPlusFile(plusFile).includes(configName)
 }
-// Dedupe Vike extensions by their `name` (extension identity), keeping the first occurrence.
-// Non-extension plus files are always kept.
 function dedupeExtensions(plusFiles: PlusFile[]): PlusFile[] {
   const seen = new Set<string>()
   return plusFiles.filter((plusFile) => {
     if (!plusFile.isConfigFile || !plusFile.isExtensionConfig) return true
-    // The extension's `name` is guaranteed by assertExtensionsConventions()
     const name = getNameValue(plusFile)
+    // The extension's `name` is guaranteed by assertExtensionsConventions()
     assert(name)
     if (seen.has(name)) return false
     seen.add(name)
