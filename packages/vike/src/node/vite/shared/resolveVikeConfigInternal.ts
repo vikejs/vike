@@ -905,8 +905,9 @@ function resolveConfigValueSources(
   plusFilesByLocationId: PlusFilesByLocationId,
 ): ConfigValueSource[] {
   // dedupeExtensions(): make Vike extension installation idempotent — a Vike extension contributes
-  // its config value at most once, however many times it's installed (reached over several
-  // `extends`, installed at different paths, or inherited across locationIds).
+  // its config value at most once, however many times it's installed (over several `extends`, at
+  // different paths, or across config inheritance). For a page, `plusFilesRelevant` is ordered by
+  // inheritance, so the occurrence closest to the page's locationId is the one kept.
   // https://github.com/vikejs/vike/issues/3354
   let sources: ConfigValueSource[] = dedupeExtensions(
     plusFilesRelevant.filter((plusFile) => isDefiningConfig(plusFile, configName)),
