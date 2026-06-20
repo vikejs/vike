@@ -56,6 +56,7 @@ import type { CliPreviewConfig } from '../node/api/preview.js'
 import type { StaticReplace } from '../node/vite/plugins/pluginStaticReplace/applyStaticReplace.js'
 import type { ImportStringList } from '../node/vite/shared/importString.js'
 import type { HookPublic } from '../shared-server-client/hooks/execHook.js'
+import type { EnhancedMiddleware } from '@universal-middleware/core'
 
 type HookNameOld = HookName | HookNameOldDesign
 type HookName = HookNamePage | HookNameGlobal
@@ -645,8 +646,16 @@ type ConfigBuiltIn = {
    */
   keepScrollPosition?: KeepScrollPosition
 
-  /** @experimental */
-  middleware?: Function
+  /**
+   * @experimental
+   *
+   * Add server middlewares.
+   *
+   * The middlewares defined via `+middleware` are so called "Universal Middleware" — they work with any JavaScript server (Hono, Express, Cloudflare, ...).
+   *
+   * https://github.com/magne4000/universal-middleware
+   */
+  middleware?: EnhancedMiddleware | EnhancedMiddleware[]
 
   /**
    * Set to `false` to disable Vike's automatic server integration mechanism (e.g. for integrating a JavaScript server manually via `renderPage()`).
@@ -789,7 +798,7 @@ type ConfigBuiltInResolved = {
   passToClient?: string[][]
   redirects?: Record<string, string>[]
   prerender?: Exclude<Config['prerender'], ImportStringList | undefined>[]
-  middleware?: Function[]
+  middleware?: (EnhancedMiddleware | EnhancedMiddleware[])[]
   headersResponse?: Exclude<Config['headersResponse'], ImportStringList | undefined>[]
   staticReplace?: StaticReplace[][]
 }

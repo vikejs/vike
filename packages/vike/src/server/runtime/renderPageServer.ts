@@ -172,7 +172,7 @@ async function renderPageServerEntryOnceBegin(
 
   const pageContextBegin = getPageContextBegin(pageContextInit, globalContext, requestId, asyncStore)
 
-  const middlewares = (globalContext.config.middleware ?? []).flat() as EnhancedMiddleware[]
+  const middlewares: EnhancedMiddleware[] = (globalContext.config.middleware ?? []).flat()
   const renderPageServerEntry = () => renderPageServerEntryOnce(pageContextBegin, globalContext, requestId)
   if (middlewares.length === 0) {
     return renderPageServerEntry()
