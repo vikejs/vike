@@ -1,5 +1,4 @@
 export { getPlusFilesByLocationId }
-export { dedupeExtensions }
 export type { PlusFileValue }
 export type { PlusFile }
 export type { PlusFilesByLocationId }
@@ -14,7 +13,7 @@ import { type ConfigFile, loadConfigFile, loadValueFile, PointerImportLoaded } f
 import { resolvePointerImport } from './resolvePointerImport.js'
 import { getFilePathResolved } from '../getFilePath.js'
 import type { FilePathResolved } from '../../../../types/FilePath.js'
-import { assertExtensionsConventions, assertExtensionsRequire, getNameValue } from './assertExtensions.js'
+import { assertExtensionsConventions, assertExtensionsRequire } from './assertExtensions.js'
 import '../../assertEnvVite.js'
 
 type PlusFile = PlusFileConfig | PlusFileValue
@@ -183,22 +182,6 @@ function getPlusFileFromConfigFile(
     extendsFilePaths,
   }
   return plusFile
-}
-
-// Keep each Vike extension at most once. Extensions are identified by their `name` setting: the
-// same extension can be reached over multiple `extends` and even live at different paths (e.g. two
-// extensions each bundling their own copy of it).
-function dedupeExtensions(plusFiles: PlusFile[]): PlusFile[] {
-  const seen = new Set<string>()
-  return plusFiles.filter((plusFile) => {
-    if (!plusFile.isConfigFile || !plusFile.isExtensionConfig) return true
-    // `name` is guaranteed by assertExtensionsConventions()
-    const name = getNameValue(plusFile)
-    assert(name)
-    if (seen.has(name)) return false
-    seen.add(name)
-    return true
-  })
 }
 
 // Make order deterministic (no other purpose)

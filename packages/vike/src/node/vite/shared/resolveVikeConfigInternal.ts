@@ -88,7 +88,6 @@ import {
 } from '../../../shared-server-client/page-configs/serialize/serializeConfigValues.js'
 import {
   getPlusFilesByLocationId,
-  dedupeExtensions,
   type PlusFile,
   type PlusFilesByLocationId,
 } from './resolveVikeConfigInternal/getPlusFilesByLocationId.js'
@@ -932,6 +931,22 @@ function resolveConfigValueSources(
 }
 function isDefiningConfig(plusFile: PlusFile, configName: string) {
   return getConfigNamesSetByPlusFile(plusFile).includes(configName)
+}
+// Dedupe Vike extensions by their `name` (extension identity), keeping the first occurrence.
+// Non-extension plus files are always kept.
+function dedupeExtensions(plusFiles: PlusFile[]): PlusFile[] {
+  const seen = new Set<string>()
+  return plusFiles.filter((plusFile) => {
+    if (!plusFile.isConfigFile || !plusFile.isExtensionConfig) return true
+    // The extension's `name` is guaranteed by assertExtensionsConventions()
+    const confVal = getConfVal(plusFile, 'name')
+    assert(confVal?.valueIsLoaded)
+    const name = confVal.value
+    assert(typeof name === 'string')
+    if (seen.has(name)) return false
+    seen.add(name)
+    return true
+  })
 }
 function getConfigValueSources(
   configName: string,

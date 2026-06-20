@@ -1,6 +1,5 @@
 export { assertExtensionsConventions }
 export { assertExtensionsRequire }
-export { getNameValue }
 
 import pc from '@brillout/picocolors'
 import { PROJECT_VERSION } from '../../../../utils/PROJECT_VERSION.js'
