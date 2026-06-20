@@ -134,12 +134,9 @@ async function getPlusFilesByLocationId(
     }),
   )
 
-  Object.entries(plusFilesByLocationId).forEach(([locationId, plusFiles]) => {
-    // Make lists element order deterministic
+  // Make lists element order deterministic
+  Object.entries(plusFilesByLocationId).forEach(([_locationId, plusFiles]) => {
     plusFiles.sort(sortMakeDeterministic)
-    // Make Vike extension installation idempotent: a Vike extension is added at most once per
-    // locationId. https://github.com/vikejs/vike/issues/3354
-    plusFilesByLocationId[locationId as LocationId] = dedupeExtensions(plusFiles)
   })
 
   assertPlusFiles(plusFilesByLocationId)
