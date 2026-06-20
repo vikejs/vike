@@ -13,7 +13,7 @@ import { type ConfigFile, loadConfigFile, loadValueFile, PointerImportLoaded } f
 import { resolvePointerImport } from './resolvePointerImport.js'
 import { getFilePathResolved } from '../getFilePath.js'
 import type { FilePathResolved } from '../../../../types/FilePath.js'
-import { assertExtensionsConventions, assertExtensionsRequire } from './assertExtensions.js'
+import { assertExtensionsConventions, assertExtensionsRequire, getNameValue } from './assertExtensions.js'
 import '../../assertEnvVite.js'
 
 type PlusFile = PlusFileConfig | PlusFileValue
@@ -83,7 +83,7 @@ async function getPlusFilesByLocationId(
 
         plusFilesByLocationId[locationId] = plusFilesByLocationId[locationId] ?? []
         plusFilesByLocationId[locationId]!.push(plusFile)
-        dedupeExtendsConfigs(extendsConfigs).forEach((extendsConfig) => {
+        extendsConfigs.forEach((extendsConfig) => {
           /* We purposely use the same locationId because the Vike extension's config should only apply to where it's being extended from, for example:
           ```js
           // /pages/admin/+config.js
@@ -133,9 +133,12 @@ async function getPlusFilesByLocationId(
     }),
   )
 
-  // Make lists element order deterministic
-  Object.entries(plusFilesByLocationId).forEach(([_locationId, plusFiles]) => {
+  Object.entries(plusFilesByLocationId).forEach(([locationId, plusFiles]) => {
+    // Make lists element order deterministic
     plusFiles.sort(sortMakeDeterministic)
+    // Make Vike extension installation idempotent: a Vike extension is added at most once per
+    // locationId. https://github.com/vikejs/vike/issues/3354
+    plusFilesByLocationId[locationId as LocationId] = dedupeExtensions(plusFiles)
   })
 
   assertPlusFiles(plusFilesByLocationId)
@@ -184,13 +187,18 @@ function getPlusFileFromConfigFile(
   return plusFile
 }
 
-// Make Vike extension installation idempotent
-function dedupeExtendsConfigs(extendsConfigs: ConfigFile[]): ConfigFile[] {
+// Keep each Vike extension at most once. Extensions are identified by their `name` setting: the
+// same extension can be reached over multiple `extends` and even live at different paths (e.g. two
+// extensions each bundling their own copy of it).
+function dedupeExtensions(plusFiles: PlusFile[]): PlusFile[] {
   const seen = new Set<string>()
-  return extendsConfigs.filter((extendsConfig) => {
-    const key = extendsConfig.filePath.filePathAbsoluteFilesystem
-    if (seen.has(key)) return false
-    seen.add(key)
+  return plusFiles.filter((plusFile) => {
+    if (!plusFile.isConfigFile || !plusFile.isExtensionConfig) return true
+    // `name` is guaranteed by assertExtensionsConventions()
+    const name = getNameValue(plusFile)
+    assert(name)
+    if (seen.has(name)) return false
+    seen.add(name)
     return true
   })
 }
