@@ -91,7 +91,7 @@ import {
   type PlusFile,
   type PlusFilesByLocationId,
 } from './resolveVikeConfigInternal/getPlusFilesByLocationId.js'
-import { getNameValue } from './resolveVikeConfigInternal/assertExtensions.js'
+import { getExtensionName } from './resolveVikeConfigInternal/assertExtensions.js'
 import { getEnvVarObject } from './getEnvVarObject.js'
 import { getVikeApiOperation } from '../../../shared-server-node/api-context.js'
 import { getCliOptions } from '../../cli/context.js'
@@ -936,7 +936,7 @@ function dedupeExtensions(plusFiles: PlusFile[]): PlusFile[] {
   const seen = new Set<string>()
   return plusFiles.filter((plusFile) => {
     if (!plusFile.isConfigFile || !plusFile.isExtensionConfig) return true
-    const name = getNameValue(plusFile)
+    const name = getExtensionName(plusFile)
     // The extension's `name` is guaranteed by assertExtensionsConventions()
     assert(name)
     if (seen.has(name)) return false

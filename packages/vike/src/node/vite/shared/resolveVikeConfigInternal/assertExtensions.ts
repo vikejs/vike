@@ -1,7 +1,6 @@
 export { assertExtensionsConventions }
 export { assertExtensionsRequire }
-// TODO/now rename getNameValue getNameConfigValue
-export { getNameValue }
+export { getExtensionName }
 
 import pc from '@brillout/picocolors'
 import { PROJECT_VERSION } from '../../../../utils/PROJECT_VERSION.js'
@@ -28,7 +27,7 @@ function assertConfigExportPath(plusFile: PlusFile): void {
     return
   }
 
-  const name = getNameValue(plusFile)
+  const name = getExtensionName(plusFile)
   assert(name) // already asserted in assertExtensionName()
   const importPathAbsoluteExpected = `${name}/config`
   assertWarning(
@@ -41,7 +40,7 @@ function assertConfigExportPath(plusFile: PlusFile): void {
 }
 function assertExtensionName(plusFile: PlusFile): void {
   const filePathToShowToUser = getFilePathToShowToUser(plusFile)
-  const name = getNameValue(plusFile)
+  const name = getExtensionName(plusFile)
   assertUsage(
     name,
     `Vike extension name missing: the config ${filePathToShowToUser} must define the setting ${pc.cyan('name')}`,
@@ -54,7 +53,7 @@ function assertExtensionsRequire(plusFiles: PlusFile[]): void {
   // Collect extensions
   const extensions: Record<string, string> = {}
   plusFilesRelevantList.forEach((plusFile) => {
-    const name = getNameValue(plusFile)
+    const name = getExtensionName(plusFile)
     if (name) {
       const version = getExtensionVersion(name, plusFile)
       extensions[name] = version
@@ -65,7 +64,7 @@ function assertExtensionsRequire(plusFiles: PlusFile[]): void {
   plusFilesRelevantList.forEach((plusFile) => {
     const require = resolveRequireSetting(plusFile)
     if (!require) return
-    const name = getNameValue(plusFile)
+    const name = getExtensionName(plusFile)
     const filePathToShowToUser = getFilePathToShowToUser(plusFile)
     assertUsage(
       name,
@@ -126,7 +125,7 @@ function resolveRequireSetting(plusFile: PlusFile): null | RequireSetting {
   return requireSetting
 }
 
-function getNameValue(plusFile: PlusFile): null | string {
+function getExtensionName(plusFile: PlusFile): null | string {
   const confVal = getConfVal(plusFile, 'name')
   if (!confVal) return null
   assert(confVal.valueIsLoaded)
