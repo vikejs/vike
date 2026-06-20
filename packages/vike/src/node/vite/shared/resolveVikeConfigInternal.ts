@@ -91,6 +91,7 @@ import {
   type PlusFile,
   type PlusFilesByLocationId,
 } from './resolveVikeConfigInternal/getPlusFilesByLocationId.js'
+import { getNameValue } from './resolveVikeConfigInternal/assertExtensions.js'
 import { getEnvVarObject } from './getEnvVarObject.js'
 import { getVikeApiOperation } from '../../../shared-server-node/api-context.js'
 import { getCliOptions } from '../../cli/context.js'
@@ -903,9 +904,13 @@ function resolveConfigValueSources(
   isGlobal: boolean,
   plusFilesByLocationId: PlusFilesByLocationId,
 ): ConfigValueSource[] {
-  let sources: ConfigValueSource[] = plusFilesRelevant
-    .filter((plusFile) => isDefiningConfig(plusFile, configName))
-    .flatMap((plusFile) => getConfigValueSources(configName, plusFile, configDef, userRootDir))
+  let plusFilesConfig = plusFilesRelevant.filter((plusFile) => isDefiningConfig(plusFile, configName))
+  // Make Vike extension installation idempotent. (Don't cumulate configs twice of an extension installed twice.) Since `plusFilesRelevant` is ordered by inheritance the occurrence closest to the page's locationId is the one kept.
+  plusFilesConfig = dedupeExtensions(plusFilesConfig)
+
+  let sources: ConfigValueSource[] = plusFilesConfig.flatMap((plusFile) =>
+    getConfigValueSources(configName, plusFile, configDef, userRootDir),
+  )
 
   // Filter hydrid global-local configs
   if (!isCallable(configDef.global)) {
@@ -926,6 +931,18 @@ function resolveConfigValueSources(
 }
 function isDefiningConfig(plusFile: PlusFile, configName: string) {
   return getConfigNamesSetByPlusFile(plusFile).includes(configName)
+}
+function dedupeExtensions(plusFiles: PlusFile[]): PlusFile[] {
+  const seen = new Set<string>()
+  return plusFiles.filter((plusFile) => {
+    if (!plusFile.isConfigFile || !plusFile.isExtensionConfig) return true
+    const name = getNameValue(plusFile)
+    // The extension's `name` is guaranteed by assertExtensionsConventions()
+    assert(name)
+    if (seen.has(name)) return false
+    seen.add(name)
+    return true
+  })
 }
 function getConfigValueSources(
   configName: string,

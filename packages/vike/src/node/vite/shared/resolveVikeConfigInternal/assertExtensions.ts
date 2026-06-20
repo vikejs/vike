@@ -1,5 +1,7 @@
 export { assertExtensionsConventions }
 export { assertExtensionsRequire }
+// TODO/now rename getNameValue getNameConfigValue
+export { getNameValue }
 
 import pc from '@brillout/picocolors'
 import { PROJECT_VERSION } from '../../../../utils/PROJECT_VERSION.js'
