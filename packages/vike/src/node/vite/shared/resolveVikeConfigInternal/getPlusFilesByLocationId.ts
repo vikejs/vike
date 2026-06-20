@@ -83,7 +83,8 @@ async function getPlusFilesByLocationId(
 
         plusFilesByLocationId[locationId] = plusFilesByLocationId[locationId] ?? []
         plusFilesByLocationId[locationId]!.push(plusFile)
-        extendsConfigs.forEach((extendsConfig) => {
+        // Make Vike extension installation idempotent: https://github.com/vikejs/vike/issues/3354
+        dedupeExtendsConfigs(extendsConfigs).forEach((extendsConfig) => {
           /* We purposely use the same locationId because the Vike extension's config should only apply to where it's being extended from, for example:
         ```js
         // /pages/admin/+config.js
@@ -182,6 +183,17 @@ function getPlusFileFromConfigFile(
     extendsFilePaths,
   }
   return plusFile
+}
+
+// Dedupe Vike extensions by their config file path (i.e. by extension identity).
+function dedupeExtendsConfigs(extendsConfigs: ConfigFile[]): ConfigFile[] {
+  const seen = new Set<string>()
+  return extendsConfigs.filter((extendsConfig) => {
+    const key = extendsConfig.filePath.filePathAbsoluteFilesystem
+    if (seen.has(key)) return false
+    seen.add(key)
+    return true
+  })
 }
 
 // Make order deterministic (no other purpose)
