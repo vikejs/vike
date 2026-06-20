@@ -88,6 +88,7 @@ import {
 } from '../../../shared-server-client/page-configs/serialize/serializeConfigValues.js'
 import {
   getPlusFilesByLocationId,
+  dedupeExtensions,
   type PlusFile,
   type PlusFilesByLocationId,
 } from './resolveVikeConfigInternal/getPlusFilesByLocationId.js'
@@ -395,11 +396,17 @@ async function resolveConfigDefinitions(
   > = {}
   await Promise.all(
     objectEntries(plusFilesByLocationId).map(async ([locationIdPage, plusFiles]) => {
-      const plusFilesRelevant: PlusFile[] = objectEntries(plusFilesByLocationId)
-        .filter(([locationId]) => isInherited(locationId, locationIdPage))
-        .map(([, plusFiles]) => plusFiles)
-        .flat()
-        .sort((plusFile1, plusFile2) => sortAfterInheritanceOrderPage(plusFile1, plusFile2, locationIdPage, null))
+      // dedupeExtensions(): make Vike extension installation idempotent across config inheritance
+      // — a Vike extension inherited from an ancestor isn't applied again at a descendant. The list
+      // is sorted by inheritance order, so the most-specific occurrence is kept.
+      // https://github.com/vikejs/vike/issues/3354
+      const plusFilesRelevant: PlusFile[] = dedupeExtensions(
+        objectEntries(plusFilesByLocationId)
+          .filter(([locationId]) => isInherited(locationId, locationIdPage))
+          .map(([, plusFiles]) => plusFiles)
+          .flat()
+          .sort((plusFile1, plusFile2) => sortAfterInheritanceOrderPage(plusFile1, plusFile2, locationIdPage, null)),
+      )
       const { configDefinitions, peerDependencyConfigNames } = collectConfigDefinitions(
         plusFilesRelevant,
         (configDef) => configDef.global !== true,
@@ -467,12 +474,24 @@ function getPageConfigsBuildTime(
     configDefinitions: configDefinitionsResolved.configDefinitionsGlobal,
     configValueSources: {},
   }
+  // dedupeExtensions(): a Vike extension contributes its global config at most once, even when
+  // installed at several locationIds. The list is sorted by global inheritance order, so the
+  // highest-precedence occurrence is kept. https://github.com/vikejs/vike/issues/3354
+  // We use all of `plusFilesByLocationId` (not just global locations) in order to allow non-global
+  // Vike extensions to create global configs, and to set the value of global configs such as
+  // `+vite` (enabling Vike extensions to add Vite plugins).
+  const plusFilesGlobal = dedupeExtensions(
+    Object.values(plusFilesByLocationId)
+      .flat()
+      .sort((plusFile1, plusFile2) =>
+        sortAfterInheritanceOrderGlobal(plusFile1, plusFile2, plusFilesByLocationId, null),
+      ),
+  )
   objectEntries(configDefinitionsResolved.configDefinitionsGlobal).forEach(([configName, configDef]) => {
     const sources = resolveConfigValueSources(
       configName,
       configDef,
-      // We use `plusFilesByLocationId` in order to allow non-global Vike extensions to create global configs, and to set the value of global configs such as `+vite` (enabling Vike extensions to add Vite plugins).
-      Object.values(plusFilesByLocationId).flat(),
+      plusFilesGlobal,
       userRootDir,
       true,
       plusFilesByLocationId,

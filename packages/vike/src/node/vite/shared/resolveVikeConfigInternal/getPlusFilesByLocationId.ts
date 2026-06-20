@@ -1,4 +1,5 @@
 export { getPlusFilesByLocationId }
+export { dedupeExtensions }
 export type { PlusFileValue }
 export type { PlusFile }
 export type { PlusFilesByLocationId }
