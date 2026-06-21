@@ -157,7 +157,9 @@ function addProgrammaticPages(plusFilesByLocationId: PlusFilesByLocationId, user
   // Snapshot the defining config files before mutating plusFilesByLocationId.
   const definingPlusFiles = Object.values(plusFilesByLocationId)
     .flat()
-    .filter((plusFile): plusFile is PlusFileConfig => plusFile.isConfigFile && 'pages' in plusFile.fileExportsByConfigName)
+    .filter(
+      (plusFile): plusFile is PlusFileConfig => plusFile.isConfigFile && 'pages' in plusFile.fileExportsByConfigName,
+    )
 
   const locationIdsSeen = new Set<LocationId>(Object.keys(plusFilesByLocationId) as LocationId[])
 
@@ -193,7 +195,12 @@ function addProgrammaticPages(plusFilesByLocationId: PlusFilesByLocationId, user
         filePath: definingPlusFile.filePath,
         extendsFilePaths: [],
       }
-      const plusFile = getPlusFileFromConfigFile(configFile, definingPlusFile.isExtensionConfig, locationId, userRootDir)
+      const plusFile = getPlusFileFromConfigFile(
+        configFile,
+        definingPlusFile.isExtensionConfig,
+        locationId,
+        userRootDir,
+      )
       plusFilesByLocationId[locationId] = [plusFile]
     })
   })
@@ -209,7 +216,10 @@ function getProgrammaticPageSlug(entry: Record<string, unknown>, i: number, defi
   } else if (typeof entry.route === 'string') {
     base = entry.route
   } else {
-    assertUsage(false, `${definedAtEntry} sets ${pc.cyan('route')} to a non-string value: set a unique ${pc.cyan('id')}.`)
+    assertUsage(
+      false,
+      `${definedAtEntry} sets ${pc.cyan('route')} to a non-string value: set a unique ${pc.cyan('id')}.`,
+    )
   }
   const slug = base
     .replace(/[^a-zA-Z0-9_-]/g, '-')
