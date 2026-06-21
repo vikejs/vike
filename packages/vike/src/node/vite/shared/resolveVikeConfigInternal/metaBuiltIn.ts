@@ -212,6 +212,11 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
   extends: {
     env: { config: true },
   },
+  pages: {
+    env: { config: true },
+    global: true,
+    cumulative: true,
+  },
   meta: {
     env: { config: true },
   },

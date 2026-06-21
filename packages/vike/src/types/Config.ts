@@ -85,7 +85,7 @@ type HookNameOldDesign = 'render' | 'prerender' | 'onBeforePrerender'
 type ConfigNameBuiltIn =
   | Exclude<
       keyof ConfigBuiltIn,
-      keyof VikeVitePluginOptions | 'onBeforeRoute' | 'onPrerenderStart' | 'vite' | 'redirects'
+      keyof VikeVitePluginOptions | 'onBeforeRoute' | 'onPrerenderStart' | 'vite' | 'redirects' | 'pages'
     >
   | 'prerender'
   | 'hasServerOnlyHook'
@@ -102,6 +102,7 @@ type ConfigNameBuiltIn =
 type ConfigNameBuiltInGlobal =
   | 'onPrerenderStart'
   | 'onBeforeRoute'
+  | 'pages'
   | 'prerender'
   | 'disableAutoFullBuild'
   | 'includeAssetsImportedByServer'
@@ -324,6 +325,13 @@ type ConfigBuiltIn = {
    *  https://vike.dev/route
    */
   route?: Route | ImportStringList
+
+  /**
+   * @experimental
+   *
+   * Programmatically define pages.
+   */
+  pages?: ConfigPageEntry[]
 
   /** Protect page(s), e.g. forbid unauthorized access.
    *
@@ -804,3 +812,11 @@ type ConfigBuiltInResolved = {
 }
 
 type ConfigMeta = Record<string, ConfigDefinition>
+
+type ConfigPageEntry = Omit<Config, 'pages' | 'extends' | 'route'> & {
+  /** The page's URL — a Route String or a Route Function.
+   *
+   *  https://vike.dev/route
+   */
+  route: Route
+}

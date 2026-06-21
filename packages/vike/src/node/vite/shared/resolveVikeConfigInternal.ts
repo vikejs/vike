@@ -75,6 +75,7 @@ import {
 } from '../../../shared-server-client/page-configs/getConfigDefinedAt.js'
 import { loadPointerImport, loadValueFile } from './resolveVikeConfigInternal/loadFileAtConfigTime.js'
 import { resolvePointerImport } from './resolveVikeConfigInternal/resolvePointerImport.js'
+import { parsePointerImportData } from './resolveVikeConfigInternal/pointerImports.js'
 import { getFilePathResolved } from './getFilePath.js'
 import type { FilePath } from '../../../types/FilePath.js'
 import { getConfigValueBuildTime } from '../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
@@ -88,9 +89,11 @@ import {
 } from '../../../shared-server-client/page-configs/serialize/serializeConfigValues.js'
 import {
   getPlusFilesByLocationId,
+  getPlusFileFromConfigFile,
   type PlusFile,
   type PlusFilesByLocationId,
 } from './resolveVikeConfigInternal/getPlusFilesByLocationId.js'
+import { assertRouteString } from '../../../shared-server-client/route/resolveRouteString.js'
 import { getExtensionName } from './resolveVikeConfigInternal/assertExtensions.js'
 import { getEnvVarObject } from './getEnvVarObject.js'
 import { getVikeApiOperation } from '../../../shared-server-node/api-context.js'
@@ -491,48 +494,174 @@ function getPageConfigsBuildTime(
 
   const pageConfigs: PageConfigBuildTime[] = objectEntries(configDefinitionsResolved.configDefinitionsLocal)
     .filter(([_locationId, { plusFiles }]) => isDefiningPage(plusFiles))
-    .map(([locationId, { configDefinitions, plusFilesRelevant }]) => {
-      const configDefinitionsLocal = configDefinitions
-
-      const configValueSources: ConfigValueSources = {}
-      objectEntries(configDefinitionsLocal)
-        .filter(([_configName, configDef]) => configDef.global !== true)
-        .forEach(([configName, configDef]) => {
-          const sources = resolveConfigValueSources(
-            configName,
-            configDef,
-            plusFilesRelevant,
-            userRootDir,
-            false,
-            plusFilesByLocationId,
-          )
-          if (sources.length === 0) return
-          configValueSources[configName] = sources
-        })
-
-      const pageConfigRoute = determineRouteFilesystem(locationId, configValueSources)
-
-      applyEffects(configValueSources, configDefinitionsLocal, plusFilesByLocationId)
-      sortConfigValueSources(configValueSources, locationId)
-
-      const pageConfig = {
-        pageId: locationId,
-        ...pageConfigRoute,
-        configDefinitions: configDefinitionsLocal,
-        plusFiles: plusFilesRelevant,
-        configValueSources,
-      }
-
-      const configValuesComputed = getComputed(pageConfig)
-      objectAssign(pageConfig, { configValuesComputed })
-
-      checkType<PageConfigBuildTime>(pageConfig)
-      return pageConfig
-    })
+    .map(([locationId, { configDefinitions, plusFilesRelevant }]) =>
+      resolvePageConfigBuildTime(
+        locationId,
+        locationId,
+        plusFilesRelevant,
+        configDefinitions,
+        plusFilesByLocationId,
+        userRootDir,
+      ),
+    )
+  // Pages defined programmatically via +pages
+  pageConfigs.push(...getProgrammaticPageConfigs(configDefinitionsResolved, plusFilesByLocationId, userRootDir))
   assertPageConfigs(pageConfigs)
 
   return { pageConfigs, pageConfigGlobal }
 }
+
+function resolvePageConfigBuildTime(
+  pageId: string,
+  locationId: LocationId,
+  plusFilesRelevant: PlusFile[],
+  configDefinitionsLocal: ConfigDefinitionsInternal,
+  plusFilesByLocationId: PlusFilesByLocationId,
+  userRootDir: string,
+): PageConfigBuildTime {
+  const configValueSources: ConfigValueSources = {}
+  objectEntries(configDefinitionsLocal)
+    .filter(([_configName, configDef]) => configDef.global !== true)
+    .forEach(([configName, configDef]) => {
+      const sources = resolveConfigValueSources(
+        configName,
+        configDef,
+        plusFilesRelevant,
+        userRootDir,
+        false,
+        plusFilesByLocationId,
+      )
+      if (sources.length === 0) return
+      configValueSources[configName] = sources
+    })
+
+  const pageConfigRoute = determineRouteFilesystem(locationId, configValueSources)
+
+  applyEffects(configValueSources, configDefinitionsLocal, plusFilesByLocationId)
+  sortConfigValueSources(configValueSources, locationId)
+
+  const pageConfig = {
+    pageId,
+    ...pageConfigRoute,
+    configDefinitions: configDefinitionsLocal,
+    plusFiles: plusFilesRelevant,
+    configValueSources,
+  }
+
+  const configValuesComputed = getComputed(pageConfig)
+  objectAssign(pageConfig, { configValuesComputed })
+
+  checkType<PageConfigBuildTime>(pageConfig)
+  return pageConfig
+}
+
+/**
+ * Get the pages defined programmatically via +pages
+ */
+function getProgrammaticPageConfigs(
+  configDefinitionsResolved: ConfigDefinitionsResolved,
+  plusFilesByLocationId: PlusFilesByLocationId,
+  userRootDir: string,
+): PageConfigBuildTime[] {
+  const pageConfigs: PageConfigBuildTime[] = []
+  const entryIndexByLocationId: Record<string, number> = {}
+
+  // +pages can be set in a +config.js or +pages.js file — getConfVal() handles both
+  const plusFilesDefiningPages = Object.values(plusFilesByLocationId)
+    .flat()
+    .filter((plusFile) => {
+      const confVal = getConfVal(plusFile, 'pages')
+      return !!confVal && confVal.valueIsLoaded
+    })
+
+  plusFilesDefiningPages.forEach((plusFileDefiningPages) => {
+    const locationIdAnchor = plusFileDefiningPages.locationId
+    const local = configDefinitionsResolved.configDefinitionsLocal[locationIdAnchor]
+    assert(local)
+
+    const confVal = getConfVal(plusFileDefiningPages, 'pages')
+    assert(confVal?.valueIsLoaded)
+    const pages = confVal.value
+    const definedAt = plusFileDefiningPages.filePath.filePathToShowToUser
+    assertUsage(
+      Array.isArray(pages),
+      `${definedAt} sets ${pc.cyan('+pages')} to an invalid value: it should be an array`,
+    )
+
+    pages.forEach((entry: unknown, i: number) => {
+      const definedAtEntry = `${definedAt} > ${pc.cyan(`pages[${i}]`)}`
+      assertUsage(isObject(entry), `${definedAtEntry} should be an object`)
+      assertUsage('route' in entry, `${definedAtEntry} should set ${pc.cyan('+route')}`)
+      // A Route Function can't be inlined (a function can't be serialized to the runtime): it must be a pointer import
+      assertUsage(
+        !isCallable(entry.route),
+        `${definedAtEntry} sets ${pc.cyan('+route')} to a function, but a Route Function can't be inlined — define the Route Function in a separate file and import it with ${pc.cyan("{ type: 'vike:pointer' }")} instead (so that Vike can load it at runtime)`,
+      )
+      assertUsage(
+        typeof entry.route === 'string',
+        `${definedAtEntry} should set ${pc.cyan('+route')} to a Route String or Route Function`,
+      )
+      // A Route String is validated now; a Route Function (pointer import) is validated at runtime.
+      if (!parsePointerImportData(entry.route)) assertRouteString(entry.route, `${definedAtEntry} sets an invalid`)
+      assertUsage(
+        !('extends' in entry),
+        `${definedAtEntry} sets ${pc.cyan('+extends')} which isn't supported for programmatically defined pages`,
+      )
+
+      const index = entryIndexByLocationId[locationIdAnchor] ?? 0
+      entryIndexByLocationId[locationIdAnchor] = index + 1
+      const base = locationIdAnchor === '/' ? '' : locationIdAnchor
+      // The page's virtual locationId = its inheritance position (a child of the +config.js that defines +pages) so that:
+      // - The page's own values (`entry`) only apply to that page
+      // - The page inherits as usual
+      const locationIdVirtual = `${base}/(+pages)/entry:${index}` as LocationId
+
+      // Hack: treat `entry` as the page's own +config.js — getPlusFileFromConfigFile() makes pointer imports (e.g. +Page) resolve to runtime imports.
+      const plusFileVirtual = getPlusFileFromConfigFile(
+        { fileExports: { default: entry }, filePath: plusFileDefiningPages.filePath, extendsFilePaths: [] },
+        false,
+        locationIdVirtual,
+        userRootDir,
+      )
+
+      getConfigNamesSetByPlusFile(plusFileVirtual).forEach((configName) => {
+        // Warn on unknown configs
+        isUnknownConfig(
+          configName,
+          local.configNamesKnownLocal,
+          configDefinitionsResolved,
+          locationIdAnchor,
+          true,
+          definedAtEntry,
+        )
+        // A global config (e.g. +onBeforeRoute) applies app-wide and can't be set on a single page. (We check `global === true` so conditionally-global configs such as +prerender, whose `global` is a function, are still allowed per-page.)
+        const configDefGlobal = configDefinitionsResolved.configDefinitionsGlobal[configName]
+        assertUsage(
+          configDefGlobal?.global !== true,
+          `${definedAtEntry} sets the global config ${pc.cyan(`+${configName}`)} which can't be set on a single page — set it at a global config file instead`,
+        )
+      })
+
+      // The page's own values (`entry`) first (most-specific), then the inherited configs
+      const plusFilesRelevant = [plusFileVirtual, ...local.plusFilesRelevant]
+
+      // Perf: resolvePageConfigBuildTime() re-resolves the inherited config per entry — fine for typical +pages array length. But for very large +pages arrays this might be too slow: consider resolving the inherited part once and re-use.
+      pageConfigs.push(
+        resolvePageConfigBuildTime(
+          locationIdVirtual,
+          locationIdVirtual,
+          plusFilesRelevant,
+          local.configDefinitions,
+          plusFilesByLocationId,
+          userRootDir,
+        ),
+      )
+    })
+  })
+
+  return pageConfigs
+}
+
 function assertPageConfigGlobal(
   pageConfigGlobal: PageConfigGlobalBuildTime,
   plusFilesByLocationId: PlusFilesByLocationId,
@@ -597,8 +726,16 @@ function assertGlobalConfigLocation(
   })
 }
 function assertPageConfigs(pageConfigs: PageConfigBuildTime[]) {
+  assertNoDuplicatePageIds(pageConfigs)
   pageConfigs.forEach((pageConfig) => {
     assertOnBeforeRenderEnv(pageConfig)
+  })
+}
+function assertNoDuplicatePageIds(pageConfigs: PageConfigBuildTime[]) {
+  const seen = new Set<string>()
+  pageConfigs.forEach(({ pageId }) => {
+    assert(!seen.has(pageId))
+    seen.add(pageId)
   })
 }
 function assertOnBeforeRenderEnv(pageConfig: PageConfigBuildTime) {
@@ -1080,6 +1217,9 @@ function isDefiningPage(plusFiles: PlusFile[]): boolean {
 }
 function isDefiningPageConfig(configName: string): boolean {
   return ['Page', 'route'].includes(configName)
+}
+function isDefiningProgrammaticPages(plusFiles: PlusFile[]): boolean {
+  return plusFiles.some((plusFile) => getConfigNamesSetByPlusFile(plusFile).includes('pages'))
 }
 function resolveIsGlobalValue(
   configDefGlobal: ConfigDefinitionInternal['global'],
@@ -1608,7 +1748,12 @@ function resolveConfigEnv(configEnv: ConfigEnv, filePath: FilePath) {
 /** Whether configs defined in `locationId` apply to every page */
 function isGlobalLocation(locationId: LocationId, plusFilesByLocationId: PlusFilesByLocationId): boolean {
   const locationIdsPage = objectEntries(plusFilesByLocationId)
-    .filter(([_locationId, plusFiles]) => isDefiningPage(plusFiles))
+    .filter(
+      ([_locationId, plusFiles]) =>
+        isDefiningPage(plusFiles) ||
+        // Also add locationId if it defines +pages — programmatic pages are anchored there, so a config that doesn't cover them isn't global.
+        isDefiningProgrammaticPages(plusFiles),
+    )
     .map(([locationId]) => locationId)
   return locationIdsPage.every((locId) => isInherited(locationId, locId))
 }

@@ -1,4 +1,5 @@
 export { getPlusFilesByLocationId }
+export { getPlusFileFromConfigFile }
 export type { PlusFileValue }
 export type { PlusFile }
 export type { PlusFilesByLocationId }
@@ -60,6 +61,7 @@ type PlusFileValue = PlusFileCommon & {
   }
 type PlusFilesByLocationId = Record<LocationId, PlusFile[]>
 
+// TODO/after-PR-merge rename getPlusFilesByLocationId getPlusFiles
 async function getPlusFilesByLocationId(
   userRootDir: string,
   esbuildCache: EsbuildCache,

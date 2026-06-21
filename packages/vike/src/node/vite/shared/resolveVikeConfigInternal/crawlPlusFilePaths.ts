@@ -31,6 +31,7 @@ const globalObject = getGlobalObject('getVikeConfig/crawlPlusFilePaths.ts', {
   gitIsNotUsable: false,
 })
 
+// TODO/after-PR-merge rename crawlPlusFilePaths crawlPlusFiles
 async function crawlPlusFilePaths(userRootDir: string): Promise<{ filePathAbsoluteUserRootDir: string }[]> {
   assertPosixPath(userRootDir)
   assertFilePathAbsoluteFilesystem(userRootDir)
