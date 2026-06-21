@@ -563,7 +563,7 @@ function getProgrammaticPageConfigs(
   userRootDir: string,
 ): PageConfigBuildTime[] {
   const pageConfigs: PageConfigBuildTime[] = []
-  const indexByLocationId: Record<string, number> = {}
+  const entryIndexByLocationId: Record<string, number> = {}
 
   // +pages can be set in a +config.js or +pages.js file — getConfVal() handles both
   const definingPlusFiles = Object.values(plusFilesByLocationId)
@@ -604,8 +604,8 @@ function getProgrammaticPageConfigs(
         `${definedAtEntry} sets ${pc.cyan('extends')} which isn't supported for programmatically defined pages`,
       )
 
-      const index = indexByLocationId[locationIdAnchor] ?? 0
-      indexByLocationId[locationIdAnchor] = index + 1
+      const index = entryIndexByLocationId[locationIdAnchor] ?? 0
+      entryIndexByLocationId[locationIdAnchor] = index + 1
       const base = locationIdAnchor === '/' ? '' : locationIdAnchor
       // The page's virtual locationId = its inheritance position (a child of the +config.js that defines +pages) so that:
       // - The page's own values (`entry`) only apply to that page.
