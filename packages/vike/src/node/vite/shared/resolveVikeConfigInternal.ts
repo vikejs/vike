@@ -90,7 +90,6 @@ import {
   getPlusFilesByLocationId,
   getPlusFileFromConfigFile,
   type PlusFile,
-  type PlusFileConfig,
   type PlusFilesByLocationId,
 } from './resolveVikeConfigInternal/getPlusFilesByLocationId.js'
 import { getExtensionName } from './resolveVikeConfigInternal/assertExtensions.js'
@@ -579,18 +578,22 @@ function getProgrammaticPageConfigs(
   const pageConfigs: PageConfigBuildTime[] = []
   const indexByLocationId: Record<string, number> = {}
 
+  // config.pages can be set in a +config.js (config.pages) or in a +pages.js value file — getConfVal() handles both.
   const definingPlusFiles = Object.values(plusFilesByLocationId)
     .flat()
-    .filter(
-      (plusFile): plusFile is PlusFileConfig => plusFile.isConfigFile && 'pages' in plusFile.fileExportsByConfigName,
-    )
+    .filter((plusFile) => {
+      const confVal = getConfVal(plusFile, 'pages')
+      return !!confVal && confVal.valueIsLoaded
+    })
 
   definingPlusFiles.forEach((definingPlusFile) => {
     const locationIdAnchor = definingPlusFile.locationId
     const local = configDefinitionsResolved.configDefinitionsLocal[locationIdAnchor]
     assert(local)
 
-    const pages = definingPlusFile.fileExportsByConfigName.pages
+    const confVal = getConfVal(definingPlusFile, 'pages')
+    assert(confVal?.valueIsLoaded)
+    const pages = confVal.value
     const definedAt = definingPlusFile.filePath.filePathToShowToUser
     assertUsage(
       Array.isArray(pages),
@@ -601,8 +604,8 @@ function getProgrammaticPageConfigs(
       const definedAtEntry = `${definedAt} > ${pc.cyan(`pages[${i}]`)}`
       assertUsage(isObject(entry), `${definedAtEntry} should be an object.`)
       assertUsage(
-        'route' in entry,
-        `${definedAtEntry} doesn't set ${pc.cyan('route')} but a programmatically defined page requires a ${pc.cyan('route')}.`,
+        'route' in entry && typeof entry.route === 'string',
+        `${definedAtEntry} should set ${pc.cyan('route')} to a string (a Route String) — Route Functions aren't supported for programmatically defined pages yet.`,
       )
 
       const index = indexByLocationId[locationIdAnchor] ?? 0
@@ -619,6 +622,19 @@ function getProgrammaticPageConfigs(
         locationId,
         userRootDir,
       )
+
+      // Warn on unknown configs set by the entry (e.g. typos), like Vike does for + files.
+      getConfigNamesSetByPlusFile(plusFileEntry).forEach((configName) => {
+        isUnknownConfig(
+          configName,
+          local.configNamesKnownLocal,
+          configDefinitionsResolved,
+          locationIdAnchor,
+          true,
+          definedAtEntry,
+        )
+      })
+
       // Most-specific first (the page's own values), then the config inherited at the defining location.
       const plusFilesRelevant = [plusFileEntry, ...local.plusFilesRelevant]
 

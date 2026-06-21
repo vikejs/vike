@@ -318,11 +318,13 @@ type Route = string | RouteSync | RouteAsync
  * https://vike.dev/pages
  */
 type ConfigPageEntry = Omit<Config, 'pages' | 'extends' | 'route'> & {
-  /** The page's URL(s).
+  /** The page's URL — a Route String.
+   *
+   * Route Functions aren't supported for programmatically defined pages yet.
    *
    *  https://vike.dev/route
    */
-  route: Route | ImportStringList
+  route: string
 }
 
 /** Page configuration.
@@ -343,7 +345,7 @@ type ConfigBuiltIn = {
    *
    * https://vike.dev/pages
    */
-  pages?: ConfigPageEntry[] | ImportStringList
+  pages?: ConfigPageEntry[]
 
   /** Protect page(s), e.g. forbid unauthorized access.
    *
