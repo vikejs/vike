@@ -493,44 +493,9 @@ function getPageConfigsBuildTime(
 
   const pageConfigs: PageConfigBuildTime[] = objectEntries(configDefinitionsResolved.configDefinitionsLocal)
     .filter(([_locationId, { plusFiles }]) => isDefiningPage(plusFiles))
-    .map(([locationId, { configDefinitions, plusFilesRelevant }]) => {
-      const configDefinitionsLocal = configDefinitions
-
-      const configValueSources: ConfigValueSources = {}
-      objectEntries(configDefinitionsLocal)
-        .filter(([_configName, configDef]) => configDef.global !== true)
-        .forEach(([configName, configDef]) => {
-          const sources = resolveConfigValueSources(
-            configName,
-            configDef,
-            plusFilesRelevant,
-            userRootDir,
-            false,
-            plusFilesByLocationId,
-          )
-          if (sources.length === 0) return
-          configValueSources[configName] = sources
-        })
-
-      const pageConfigRoute = determineRouteFilesystem(locationId, configValueSources)
-
-      applyEffects(configValueSources, configDefinitionsLocal, plusFilesByLocationId)
-      sortConfigValueSources(configValueSources, locationId)
-
-      const pageConfig = {
-        pageId: locationId,
-        ...pageConfigRoute,
-        configDefinitions: configDefinitionsLocal,
-        plusFiles: plusFilesRelevant,
-        configValueSources,
-      }
-
-      const configValuesComputed = getComputed(pageConfig)
-      objectAssign(pageConfig, { configValuesComputed })
-
-      checkType<PageConfigBuildTime>(pageConfig)
-      return pageConfig
-    })
+    .map(([locationId, { configDefinitions, plusFilesRelevant }]) =>
+      buildPageConfig(locationId, locationId, plusFilesRelevant, configDefinitions, plusFilesByLocationId, userRootDir),
+    )
 
   // Pages defined programmatically via config.pages
   pageConfigs.push(...getProgrammaticPageConfigs(configDefinitionsResolved, plusFilesByLocationId, userRootDir))
@@ -541,21 +506,69 @@ function getPageConfigsBuildTime(
   return { pageConfigs, pageConfigGlobal }
 }
 
-// Marker namespace for the pageId of programmatically defined pages (config.pages).
-// It's only an identity (these pages aren't backed by a filesystem location): config inheritance is anchored at the
-// +config.js that defines config.pages, not at this pageId.
+// Build a page config from its inheritance-ordered relevant + files. Used for both filesystem pages and
+// programmatically defined pages (config.pages) — so effects, computed values, precedence and routing are identical.
+function buildPageConfig(
+  pageId: string,
+  locationId: LocationId,
+  plusFilesRelevant: PlusFile[],
+  configDefinitions: ConfigDefinitionsInternal,
+  plusFilesByLocationId: PlusFilesByLocationId,
+  userRootDir: string,
+): PageConfigBuildTime {
+  const configValueSources: ConfigValueSources = {}
+  objectEntries(configDefinitions)
+    .filter(([_configName, configDef]) => configDef.global !== true)
+    .forEach(([configName, configDef]) => {
+      const sources = resolveConfigValueSources(
+        configName,
+        configDef,
+        plusFilesRelevant,
+        userRootDir,
+        false,
+        plusFilesByLocationId,
+      )
+      if (sources.length === 0) return
+      configValueSources[configName] = sources
+    })
+
+  const pageConfigRoute = determineRouteFilesystem(locationId, configValueSources)
+
+  applyEffects(configValueSources, configDefinitions, plusFilesByLocationId)
+  sortConfigValueSources(configValueSources, locationId)
+
+  const pageConfig = {
+    pageId,
+    ...pageConfigRoute,
+    configDefinitions,
+    plusFiles: plusFilesRelevant,
+    configValueSources,
+  }
+
+  const configValuesComputed = getComputed(pageConfig)
+  objectAssign(pageConfig, { configValuesComputed })
+
+  checkType<PageConfigBuildTime>(pageConfig)
+  return pageConfig
+}
+
+// Synthetic location for a programmatically defined page (config.pages): a child of the +config.js that defines
+// config.pages. It's both the page's inheritance position (so it inherits the renderer/title/… defined there) and its
+// identity (pageId) — but it's never added to plusFilesByLocationId (the filesystem crawl is left untouched). The index
+// is scoped per location so that multiple defining +config.js (e.g. via extends) don't collide.
 const programmaticPagesDir = '(programmatic)'
-function getProgrammaticPageId(locationIdAnchor: LocationId, index: number): string {
+function getProgrammaticPageLocationId(locationIdAnchor: LocationId, index: number): LocationId {
   const base = locationIdAnchor === '/' ? '' : locationIdAnchor
-  return `${base}/${programmaticPagesDir}/${index}`
+  return `${base}/${programmaticPagesDir}/${index}` as LocationId
 }
 /**
  * Build the page configs defined programmatically via config.pages.
  *
- * Each entry becomes a first-class page config whose *identity* (pageId) is decoupled from any filesystem location:
- *  - Config inheritance is anchored at the +config.js that defines config.pages, so the page inherits its surrounding
- *    config (renderer via `extends`, `title`, `ssr`, …) — exactly what a page at that location would inherit.
- *  - The entry's own values (route, Page, …) take highest precedence, like a filesystem page's own + files.
+ * Each entry becomes a first-class page config, built through the same pipeline as filesystem pages (buildPageConfig):
+ *  - The page sits at a synthetic location nested under the +config.js that defines config.pages, so it inherits that
+ *    location's config (renderer via `extends`, `title`, `ssr`, …) — exactly what a page there would inherit.
+ *  - The entry's own values (route, Page, …) are the page's most-specific source, so they win precedence AND are seen
+ *    by effects and computed values — like a filesystem page's own + files.
  *  - The entry's values attach to the page only (not to the anchor location), so they don't leak to sibling pages.
  */
 function getProgrammaticPageConfigs(
@@ -576,7 +589,6 @@ function getProgrammaticPageConfigs(
     const locationIdAnchor = definingPlusFile.locationId
     const local = configDefinitionsResolved.configDefinitionsLocal[locationIdAnchor]
     assert(local)
-    const { configDefinitions, plusFilesRelevant } = local
 
     const pages = definingPlusFile.fileExportsByConfigName.pages
     const definedAt = definingPlusFile.filePath.filePathToShowToUser
@@ -593,63 +605,31 @@ function getProgrammaticPageConfigs(
         `${definedAtEntry} doesn't set ${pc.cyan('route')} but a programmatically defined page requires a ${pc.cyan('route')}.`,
       )
 
-      // Identity: anchor location + index (scoped per location so multiple defining +config.js — e.g. via extends — don't collide).
       const index = indexByLocationId[locationIdAnchor] ?? 0
       indexByLocationId[locationIdAnchor] = index + 1
-      const pageId = getProgrammaticPageId(locationIdAnchor, index)
+      const locationId = getProgrammaticPageLocationId(locationIdAnchor, index)
 
-      // Config inherited at the defining +config.js location (renderer, title, ssr, …).
-      const configValueSources: ConfigValueSources = {}
-      objectEntries(configDefinitions)
-        .filter(([_configName, configDef]) => configDef.global !== true)
-        .forEach(([configName, configDef]) => {
-          const sources = resolveConfigValueSources(
-            configName,
-            configDef,
-            plusFilesRelevant,
-            userRootDir,
-            false,
-            plusFilesByLocationId,
-          )
-          if (sources.length === 0) return
-          configValueSources[configName] = sources
-        })
-      applyEffects(configValueSources, configDefinitions, plusFilesByLocationId)
-      sortConfigValueSources(configValueSources, locationIdAnchor)
-
-      // The page's own values (route, Page, …) take highest precedence — like a filesystem page's own + files.
-      // We build a throwaway PlusFile (never added to plusFilesByLocationId) to reuse pointer-import resolution
-      // (e.g. config.Page becomes a runtime import) and source/env handling.
+      // The entry is the page's own (most-specific) +config.js. We reuse getPlusFileFromConfigFile() so that pointer
+      // imports (e.g. config.Page) resolve to runtime imports. It's never added to plusFilesByLocationId.
       const plusFileEntry = getPlusFileFromConfigFile(
         { fileExports: { default: entry }, filePath: definingPlusFile.filePath, extendsFilePaths: [] },
         definingPlusFile.isExtensionConfig,
-        locationIdAnchor,
+        locationId,
         userRootDir,
       )
-      getConfigNamesSetByPlusFile(plusFileEntry).forEach((configName) => {
-        const configDef = configDefinitions[configName]
-        // Skip global configs (handled globally) and unknown configs (e.g. typos don't define a page value).
-        if (!configDef || configDef.global === true) return
-        const sources = getConfigValueSources(configName, plusFileEntry, configDef, userRootDir)
-        ;(configValueSources[configName] ??= []).unshift(...sources)
-      })
+      // Most-specific first (the page's own values), then the config inherited at the defining location.
+      const plusFilesRelevant = [plusFileEntry, ...local.plusFilesRelevant]
 
-      // Programmatic pages always set an explicit route, so the Filesystem Routing fallback is never used — but we
-      // populate it (from the anchor) to satisfy the page-config shape.
-      const pageConfigRoute = determineRouteFilesystem(locationIdAnchor, configValueSources)
-
-      const pageConfig = {
-        pageId,
-        ...pageConfigRoute,
-        configDefinitions,
-        plusFiles: plusFilesRelevant,
-        configValueSources,
-      }
-      const configValuesComputed = getComputed(pageConfig)
-      objectAssign(pageConfig, { configValuesComputed })
-
-      checkType<PageConfigBuildTime>(pageConfig)
-      pageConfigs.push(pageConfig)
+      pageConfigs.push(
+        buildPageConfig(
+          locationId,
+          locationId,
+          plusFilesRelevant,
+          local.configDefinitions,
+          plusFilesByLocationId,
+          userRootDir,
+        ),
+      )
     })
   })
 
