@@ -511,12 +511,12 @@ function buildPageConfig(
   pageId: string,
   locationId: LocationId,
   plusFilesRelevant: PlusFile[],
-  configDefinitions: ConfigDefinitionsInternal,
+  configDefinitionsLocal: ConfigDefinitionsInternal,
   plusFilesByLocationId: PlusFilesByLocationId,
   userRootDir: string,
 ): PageConfigBuildTime {
   const configValueSources: ConfigValueSources = {}
-  objectEntries(configDefinitions)
+  objectEntries(configDefinitionsLocal)
     .filter(([_configName, configDef]) => configDef.global !== true)
     .forEach(([configName, configDef]) => {
       const sources = resolveConfigValueSources(
@@ -533,13 +533,13 @@ function buildPageConfig(
 
   const pageConfigRoute = determineRouteFilesystem(locationId, configValueSources)
 
-  applyEffects(configValueSources, configDefinitions, plusFilesByLocationId)
+  applyEffects(configValueSources, configDefinitionsLocal, plusFilesByLocationId)
   sortConfigValueSources(configValueSources, locationId)
 
   const pageConfig = {
     pageId,
     ...pageConfigRoute,
-    configDefinitions,
+    configDefinitions: configDefinitionsLocal,
     plusFiles: plusFilesRelevant,
     configValueSources,
   }
