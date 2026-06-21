@@ -493,7 +493,14 @@ function getPageConfigsBuildTime(
   const pageConfigs: PageConfigBuildTime[] = objectEntries(configDefinitionsResolved.configDefinitionsLocal)
     .filter(([_locationId, { plusFiles }]) => isDefiningPage(plusFiles))
     .map(([locationId, { configDefinitions, plusFilesRelevant }]) =>
-      buildPageConfig(locationId, locationId, plusFilesRelevant, configDefinitions, plusFilesByLocationId, userRootDir),
+      createPageConfig(
+        locationId,
+        locationId,
+        plusFilesRelevant,
+        configDefinitions,
+        plusFilesByLocationId,
+        userRootDir,
+      ),
     )
   // Pages defined programmatically via +pages
   pageConfigs.push(...getProgrammaticPageConfigs(configDefinitionsResolved, plusFilesByLocationId, userRootDir))
@@ -502,7 +509,7 @@ function getPageConfigsBuildTime(
   return { pageConfigs, pageConfigGlobal }
 }
 
-function buildPageConfig(
+function createPageConfig(
   pageId: string,
   locationId: LocationId,
   plusFilesRelevant: PlusFile[],
@@ -558,7 +565,7 @@ function getProgrammaticPageLocationId(locationIdAnchor: LocationId, index: numb
 /**
  * Build the page configs defined programmatically via config.pages.
  *
- * Each entry becomes a first-class page config, built through the same pipeline as filesystem pages (buildPageConfig):
+ * Each entry becomes a first-class page config, built through the same pipeline as filesystem pages (createPageConfig):
  *  - The page sits at a synthetic location nested under the +config.js that defines config.pages, so it inherits that
  *    location's config (renderer via `extends`, `title`, `ssr`, …) — exactly what a page there would inherit.
  *  - The entry's own values (route, Page, …) are the page's most-specific source, so they win precedence AND are seen
@@ -638,7 +645,7 @@ function getProgrammaticPageConfigs(
       const plusFilesRelevant = [plusFileVirtual, ...local.plusFilesRelevant]
 
       pageConfigs.push(
-        buildPageConfig(
+        createPageConfig(
           locationId,
           locationId,
           plusFilesRelevant,
