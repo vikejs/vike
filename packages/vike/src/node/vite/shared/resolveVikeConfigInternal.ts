@@ -555,14 +555,13 @@ function createPageConfig(
 }
 
 /**
- * Build the page configs defined programmatically via config.pages.
+ * Build the page configs defined via +pages (config.pages).
  *
- * Each entry becomes a first-class page config, built through the same pipeline as filesystem pages (createPageConfig):
- *  - The page sits at a synthetic location nested under the +config.js that defines config.pages, so it inherits that
- *    location's config (renderer via `extends`, `title`, `ssr`, …) — exactly what a page there would inherit.
- *  - The entry's own values (route, Page, …) are the page's most-specific source, so they win precedence AND are seen
- *    by effects and computed values — like a filesystem page's own + files.
- *  - The entry's values attach to the page only (not to the anchor location), so they don't leak to sibling pages.
+ * Each entry becomes a normal page config, built with createPageConfig() just like a filesystem page:
+ *  - It lives at a virtual location under the +config.js defining +pages, so it inherits that location's config
+ *    (renderer via `extends`, `title`, `ssr`, …).
+ *  - The entry's own values are the page's most-specific source: they win precedence and are seen by effects/computed.
+ *  - They're scoped to this page, so they never leak to sibling pages.
  */
 function getProgrammaticPageConfigs(
   configDefinitionsResolved: ConfigDefinitionsResolved,
@@ -572,7 +571,7 @@ function getProgrammaticPageConfigs(
   const pageConfigs: PageConfigBuildTime[] = []
   const indexByLocationId: Record<string, number> = {}
 
-  // +pages can be set in a +config.js (config.pages) or in a +pages.js value file — getConfVal() handles both.
+  // +pages can be set via config.pages (in +config.js) or a +pages.js value file — getConfVal() reads both.
   const definingPlusFiles = Object.values(plusFilesByLocationId)
     .flat()
     .filter((plusFile) => {
@@ -599,7 +598,7 @@ function getProgrammaticPageConfigs(
       assertUsage(isObject(entry), `${definedAtEntry} should be an object`)
       const routeErr = `${definedAtEntry} should set ${pc.cyan('+route')} to a string`
       assertUsage('route' in entry, routeErr)
-      // A Route Function would need to be defined via a pointer import (it needs to be loaded at runtime)
+      // A Route Function can't be inlined in an entry: it would need a pointer import (to be loaded at runtime).
       assertUsage(
         !isCallable(entry.route),
         `${routeErr} — Route Functions aren't supported for programmatically defined pages (yet).`,
@@ -611,18 +610,16 @@ function getProgrammaticPageConfigs(
         `${definedAtEntry} sets ${pc.cyan('extends')} which isn't supported for programmatically defined pages`,
       )
 
-      // The page's synthetic location: a child of the +config.js that defines config.pages — both its inheritance
-      // position (so it inherits the renderer/title/… defined there) and its identity (pageId); it's never added to
-      // plusFilesByLocationId. The index is scoped per location so multiple defining +config.js (via extends) don't collide.
+      // The page's virtual location = its inheritance position (a child of the defining +config.js) and its pageId.
+      // Never added to plusFilesByLocationId. Index scoped per location so multiple +pages (e.g. via extends) don't collide.
       const index = indexByLocationId[locationIdAnchor] ?? 0
       indexByLocationId[locationIdAnchor] = index + 1
       const base = locationIdAnchor === '/' ? '' : locationIdAnchor
       const locationIdVirtual = `${base}/(+pages)/entry:${index}` as LocationId
 
-      // The entry is the page's own (most-specific) +config.js. We reuse getPlusFileFromConfigFile() so that pointer
-      // imports (e.g. config.Page) resolve to runtime imports. It's never added to plusFilesByLocationId.
-      // isExtensionConfig is false even when config.pages is defined by an extension: the entry is a concrete page
-      // definition (not a dedupe-able/low-precedence extension config).
+      // Treat the entry as the page's own +config.js — getPlusFileFromConfigFile() makes pointer imports (config.Page)
+      // resolve to runtime imports. isExtensionConfig=false even for extension-defined pages (the entry is a concrete
+      // page, not a dedupe-able/low-precedence extension config).
       const plusFileVirtual = getPlusFileFromConfigFile(
         { fileExports: { default: entry }, filePath: definingPlusFile.filePath, extendsFilePaths: [] },
         false,
@@ -631,7 +628,7 @@ function getProgrammaticPageConfigs(
       )
 
       getConfigNamesSetByPlusFile(plusFileVirtual).forEach((configName) => {
-        // Warn on unknown configs set by the entry (e.g. typos), like Vike does for + files.
+        // Warn on unknown configs (e.g. typos), like Vike does for + files.
         isUnknownConfig(
           configName,
           local.configNamesKnownLocal,
@@ -640,9 +637,8 @@ function getProgrammaticPageConfigs(
           true,
           definedAtEntry,
         )
-        // A global config (e.g. +onBeforeRoute) applies app-wide and can't be set on a single page. (We check
-        // `global === true` so conditionally-global configs such as +prerender, whose `global` is a function, are
-        // still allowed per-page.)
+        // A global config (e.g. +onBeforeRoute) applies app-wide and can't be set per-page. (`global === true` only:
+        // conditionally-global configs like +prerender, whose `global` is a function, stay allowed per-page.)
         const configDefGlobal = configDefinitionsResolved.configDefinitionsGlobal[configName]
         assertUsage(
           configDefGlobal?.global !== true,
@@ -650,11 +646,11 @@ function getProgrammaticPageConfigs(
         )
       })
 
-      // Most-specific first (the page's own values), then the config inherited at the defining location.
+      // Entry first (most-specific), then the inherited config.
       const plusFilesRelevant = [plusFileVirtual, ...local.plusFilesRelevant]
 
-      // Perf: createPageConfig() re-resolves the inherited config (local.plusFilesRelevant) for each entry. Negligible
-      // for typical page lists; for very large config.pages arrays the inherited part could be resolved once and reused.
+      // Perf: createPageConfig() re-resolves the inherited config per entry — fine for typical lists; for very large
+      // +pages arrays the inherited part could be resolved once and reused.
       pageConfigs.push(
         createPageConfig(
           locationIdVirtual,
