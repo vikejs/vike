@@ -9,7 +9,7 @@ export type { HookNameOld }
 export type { HookNamePage }
 export type { HookNameGlobal }
 export type { Route }
-export type { PageConfigEntry }
+export type { ConfigPageEntry }
 export type { KeepScrollPosition }
 export type { Vercel }
 
@@ -317,7 +317,7 @@ type Route = string | RouteSync | RouteAsync
  *
  * https://vike.dev/pages
  */
-type PageConfigEntry = Omit<Config, 'pages' | 'extends' | 'route'> & {
+type ConfigPageEntry = Omit<Config, 'pages' | 'extends' | 'route'> & {
   /** The page's URL(s).
    *
    *  https://vike.dev/route
@@ -348,7 +348,7 @@ type ConfigBuiltIn = {
    *
    * https://vike.dev/pages
    */
-  pages?: PageConfigEntry[] | ImportStringList
+  pages?: ConfigPageEntry[] | ImportStringList
 
   /** Protect page(s), e.g. forbid unauthorized access.
    *
