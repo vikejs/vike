@@ -502,8 +502,6 @@ function getPageConfigsBuildTime(
   return { pageConfigs, pageConfigGlobal }
 }
 
-// Build a page config from its inheritance-ordered relevant + files. Used for both filesystem pages and
-// programmatically defined pages (config.pages) — so effects, computed values, precedence and routing are identical.
 function buildPageConfig(
   pageId: string,
   locationId: LocationId,
