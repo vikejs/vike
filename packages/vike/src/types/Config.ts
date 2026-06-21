@@ -9,6 +9,7 @@ export type { HookNameOld }
 export type { HookNamePage }
 export type { HookNameGlobal }
 export type { Route }
+export type { PageConfigEntry }
 export type { KeepScrollPosition }
 export type { Vercel }
 
@@ -85,7 +86,7 @@ type HookNameOldDesign = 'render' | 'prerender' | 'onBeforePrerender'
 type ConfigNameBuiltIn =
   | Exclude<
       keyof ConfigBuiltIn,
-      keyof VikeVitePluginOptions | 'onBeforeRoute' | 'onPrerenderStart' | 'vite' | 'redirects'
+      keyof VikeVitePluginOptions | 'onBeforeRoute' | 'onPrerenderStart' | 'vite' | 'redirects' | 'pages'
     >
   | 'prerender'
   | 'hasServerOnlyHook'
@@ -102,6 +103,7 @@ type ConfigNameBuiltIn =
 type ConfigNameBuiltInGlobal =
   | 'onPrerenderStart'
   | 'onBeforeRoute'
+  | 'pages'
   | 'prerender'
   | 'disableAutoFullBuild'
   | 'includeAssetsImportedByServer'
@@ -311,6 +313,23 @@ type KeepScrollPosition =
  */
 type Route = string | RouteSync | RouteAsync
 
+/** A programmatically defined page.
+ *
+ * https://vike.dev/pages
+ */
+type PageConfigEntry = Omit<Config, 'pages' | 'extends' | 'route'> & {
+  /** The page's URL(s).
+   *
+   *  https://vike.dev/route
+   */
+  route: Route | ImportStringList
+  /** A unique identifier for the page.
+   *
+   * Required when `route` isn't a string, otherwise optional (derived from `route`).
+   */
+  id?: string
+}
+
 /** Page configuration.
  *
  * https://vike.dev/config
@@ -324,6 +343,12 @@ type ConfigBuiltIn = {
    *  https://vike.dev/route
    */
   route?: Route | ImportStringList
+
+  /** Programmatically define pages.
+   *
+   * https://vike.dev/pages
+   */
+  pages?: PageConfigEntry[]
 
   /** Protect page(s), e.g. forbid unauthorized access.
    *

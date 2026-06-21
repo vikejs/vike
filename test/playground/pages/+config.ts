@@ -1,8 +1,18 @@
 import type { Config } from 'vike/types'
 import vikeReact from 'vike-react/config'
+// TEST: programmatically defined pages (config.pages)
+import ProgrammaticPage from './programmatically-defined/ProgrammaticPage'
 
 export default {
   title: 'Big Playground',
+  // TEST: define pages programmatically instead of with +Page/+config files.
+  pages: [
+    {
+      route: '/programmatic',
+      Page: ProgrammaticPage,
+      prerender: true,
+    },
+  ],
   prerender: {
     redirects: true,
     // Suppress warning:

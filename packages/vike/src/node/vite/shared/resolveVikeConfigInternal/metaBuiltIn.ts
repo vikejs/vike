@@ -212,6 +212,12 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
   extends: {
     env: { config: true },
   },
+  // Programmatically defined pages are resolved at config-time: each entry creates a new page config (see addProgrammaticPages()).
+  pages: {
+    env: { config: true },
+    global: true,
+    cumulative: true,
+  },
   meta: {
     env: { config: true },
   },
