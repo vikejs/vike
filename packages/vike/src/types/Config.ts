@@ -9,7 +9,6 @@ export type { HookNameOld }
 export type { HookNamePage }
 export type { HookNameGlobal }
 export type { Route }
-export type { ConfigPageEntry }
 export type { KeepScrollPosition }
 export type { Vercel }
 
@@ -313,10 +312,6 @@ type KeepScrollPosition =
  */
 type Route = string | RouteSync | RouteAsync
 
-/** A programmatically defined page.
- *
- * https://vike.dev/pages
- */
 type ConfigPageEntry = Omit<Config, 'pages' | 'extends' | 'route'> & {
   /** The page's URL — a Route String.
    *
