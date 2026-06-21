@@ -33,14 +33,14 @@ function addProgrammaticPages(plusFilesByLocationId: PlusFilesByLocationId, user
     const definedAt = definingPlusFile.filePath.filePathToShowToUser
     assertUsage(
       Array.isArray(pages),
-      `${definedAt} sets the config ${pc.cyan('pages')} to an invalid value: it should be an array.`,
+      `${definedAt} sets ${pc.cyan('+pages')} to an invalid value: it should be an array`,
     )
     pages.forEach((entry: unknown, i: number) => {
       const definedAtEntry = `${definedAt} > ${pc.cyan(`pages[${i}]`)}`
       assertUsage(isObject(entry), `${definedAtEntry} should be an object.`)
       assertUsage(
         'route' in entry,
-        `${definedAtEntry} doesn't set ${pc.cyan('route')} but a programmatically defined page requires a ${pc.cyan('route')}.`,
+        `${definedAtEntry} must define ${pc.cyan('+route')}`,
       )
       const slug = getProgrammaticPageSlug(entry, i, definedAtEntry)
       const locationId = getProgrammaticPageLocationId(definingPlusFile.locationId, slug)

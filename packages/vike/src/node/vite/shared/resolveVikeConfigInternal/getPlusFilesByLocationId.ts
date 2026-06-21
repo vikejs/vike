@@ -137,7 +137,7 @@ async function getPlusFilesByLocationId(
     }),
   )
 
-  // Programmatically defined pages (config.pages) — resolved at config-time.
+  // Pages defined programmatically via +pages
   addProgrammaticPages(plusFilesByLocationId, userRootDir)
 
   // Make lists element order deterministic
