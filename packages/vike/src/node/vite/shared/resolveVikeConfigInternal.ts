@@ -494,7 +494,7 @@ function getPageConfigsBuildTime(
   const pageConfigs: PageConfigBuildTime[] = objectEntries(configDefinitionsResolved.configDefinitionsLocal)
     .filter(([_locationId, { plusFiles }]) => isDefiningPage(plusFiles))
     .map(([locationId, { configDefinitions, plusFilesRelevant }]) =>
-      createPageConfig(
+      resolvePageConfigBuildTime(
         locationId,
         locationId,
         plusFilesRelevant,
@@ -510,7 +510,7 @@ function getPageConfigsBuildTime(
   return { pageConfigs, pageConfigGlobal }
 }
 
-function createPageConfig(
+function resolvePageConfigBuildTime(
   pageId: string,
   locationId: LocationId,
   plusFilesRelevant: PlusFile[],
@@ -641,9 +641,9 @@ function getProgrammaticPageConfigs(
       // The page's own values (`entry`) first (most-specific), then the inherited config
       const plusFilesRelevant = [plusFileVirtual, ...local.plusFilesRelevant]
 
-      // Perf: createPageConfig() re-resolves the inherited config per entry — fine for typical +pages array length. But for very large +pages arrays this might be too slow: consider resolving the inherited part once and re-use.
+      // Perf: resolvePageConfigBuildTime() re-resolves the inherited config per entry — fine for typical +pages array length. But for very large +pages arrays this might be too slow: consider resolving the inherited part once and re-use.
       pageConfigs.push(
-        createPageConfig(
+        resolvePageConfigBuildTime(
           locationIdVirtual,
           locationIdVirtual,
           plusFilesRelevant,
