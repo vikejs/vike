@@ -566,22 +566,22 @@ function getProgrammaticPageConfigs(
   const entryIndexByLocationId: Record<string, number> = {}
 
   // +pages can be set in a +config.js or +pages.js file — getConfVal() handles both
-  const definingPlusFiles = Object.values(plusFilesByLocationId)
+  const plusFilesDefiningPages = Object.values(plusFilesByLocationId)
     .flat()
     .filter((plusFile) => {
       const confVal = getConfVal(plusFile, 'pages')
       return !!confVal && confVal.valueIsLoaded
     })
 
-  definingPlusFiles.forEach((definingPlusFile) => {
-    const locationIdAnchor = definingPlusFile.locationId
+  plusFilesDefiningPages.forEach((plusFileDefiningPages) => {
+    const locationIdAnchor = plusFileDefiningPages.locationId
     const local = configDefinitionsResolved.configDefinitionsLocal[locationIdAnchor]
     assert(local)
 
-    const confVal = getConfVal(definingPlusFile, 'pages')
+    const confVal = getConfVal(plusFileDefiningPages, 'pages')
     assert(confVal?.valueIsLoaded)
     const pages = confVal.value
-    const definedAt = definingPlusFile.filePath.filePathToShowToUser
+    const definedAt = plusFileDefiningPages.filePath.filePathToShowToUser
     assertUsage(
       Array.isArray(pages),
       `${definedAt} sets ${pc.cyan('+pages')} to an invalid value: it should be an array`,
@@ -614,7 +614,7 @@ function getProgrammaticPageConfigs(
 
       // Hack: treat `entry` as the page's own +config.js — getPlusFileFromConfigFile() makes pointer imports (e.g. +Page) resolve to runtime imports.
       const plusFileVirtual = getPlusFileFromConfigFile(
-        { fileExports: { default: entry }, filePath: definingPlusFile.filePath, extendsFilePaths: [] },
+        { fileExports: { default: entry }, filePath: plusFileDefiningPages.filePath, extendsFilePaths: [] },
         false,
         locationIdVirtual,
         userRootDir,
