@@ -12,6 +12,8 @@ function Page() {
       <h1>Programmatic Page</h1>
       <p>This page is defined programmatically.</p>
       <p>urlPathname: {pageContext.urlPathname}</p>
+      {/* Single text node (no `<!-- -->` markers) so it's easy to assert in both SSR'd HTML and the DOM. */}
+      <p>{'routeParamName: ' + (pageContext.routeParams?.name ?? '')}</p>
       <Counter />
     </>
   )

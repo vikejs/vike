@@ -6,7 +6,8 @@
     "types": ["vite/client"],
     "esModuleInterop": true,
     "target": "ES2020",
-    "module": "ES2022",
+    // ESNext (not ES2022) so that import attributes are supported: `with { type: 'vike:pointer' }`
+    "module": "ESNext",
     "moduleResolution": "Bundler"
   },
   "include": [

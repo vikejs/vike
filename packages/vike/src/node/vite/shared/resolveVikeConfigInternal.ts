@@ -75,6 +75,7 @@ import {
 } from '../../../shared-server-client/page-configs/getConfigDefinedAt.js'
 import { loadPointerImport, loadValueFile } from './resolveVikeConfigInternal/loadFileAtConfigTime.js'
 import { resolvePointerImport } from './resolveVikeConfigInternal/resolvePointerImport.js'
+import { parsePointerImportData } from './resolveVikeConfigInternal/pointerImports.js'
 import { getFilePathResolved } from './getFilePath.js'
 import type { FilePath } from '../../../types/FilePath.js'
 import { getConfigValueBuildTime } from '../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
@@ -590,15 +591,15 @@ function getProgrammaticPageConfigs(
     pages.forEach((entry: unknown, i: number) => {
       const definedAtEntry = `${definedAt} > ${pc.cyan(`pages[${i}]`)}`
       assertUsage(isObject(entry), `${definedAtEntry} should be an object`)
-      const routeErr = `${definedAtEntry} should set ${pc.cyan('+route')} to a string`
-      assertUsage('route' in entry, routeErr)
-      // We can support Route Functions. But note that it would have a bad DX: a Route Function would need to be defined via a pointer import (it needs to be loaded at runtime).
+      assertUsage('route' in entry, `${definedAtEntry} should set ${pc.cyan('+route')}`)
+      // A Route Function can't be inlined (a function can't be serialized to the runtime): it must be a
+      // pointer import, which makes entry.route an import string.
       assertUsage(
-        !isCallable(entry.route),
-        `${routeErr} — Route Functions aren't supported for programmatically defined pages (yet)`,
+        typeof entry.route === 'string',
+        `${definedAtEntry} should set ${pc.cyan('+route')} to a Route String, or to a Route Function imported with ${pc.cyan("{ type: 'vike:pointer' }")} (a Route Function can't be inlined)`,
       )
-      assertUsage(typeof entry.route === 'string', routeErr)
-      assertRouteString(entry.route, `${definedAtEntry} sets an invalid`)
+      // A Route String is validated now; a Route Function (pointer import) is validated at runtime.
+      if (!parsePointerImportData(entry.route)) assertRouteString(entry.route, `${definedAtEntry} sets an invalid`)
       assertUsage(
         !('extends' in entry),
         `${definedAtEntry} sets ${pc.cyan('+extends')} which isn't supported for programmatically defined pages`,

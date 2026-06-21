@@ -2,6 +2,8 @@ import type { Config } from 'vike/types'
 import vikeReact from 'vike-react/config'
 // TEST: programmatically defined pages (config.pages)
 import ProgrammaticPage from './programmatically-defined/ProgrammaticPage'
+// TEST: a Route Function for a programmatically defined page — it's a pointer import so Vike loads it at runtime.
+import programmaticRoute from './programmatically-defined/route' with { type: 'vike:pointer' }
 
 export default {
   title: 'Big Playground',
@@ -11,6 +13,11 @@ export default {
       route: '/programmatic',
       Page: ProgrammaticPage,
       prerender: true,
+    },
+    // TEST: a programmatically defined page using a Route Function.
+    {
+      route: programmaticRoute,
+      Page: ProgrammaticPage,
     },
   ],
   prerender: {
