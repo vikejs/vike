@@ -341,9 +341,10 @@ type ConfigBuiltIn = {
    */
   route?: Route | ImportStringList
 
-  /** Programmatically define pages.
+  /**
+   * @experimental
    *
-   * https://vike.dev/pages
+   * Programmatically define pages.
    */
   pages?: ConfigPageEntry[]
 
