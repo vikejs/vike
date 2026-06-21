@@ -553,15 +553,6 @@ function createPageConfig(
   return pageConfig
 }
 
-// Synthetic location for a programmatically defined page (config.pages): a child of the +config.js that defines
-// config.pages. It's both the page's inheritance position (so it inherits the renderer/title/… defined there) and its
-// identity (pageId) — but it's never added to plusFilesByLocationId (the filesystem crawl is left untouched). The index
-// is scoped per location so that multiple defining +config.js (e.g. via extends) don't collide.
-const programmaticPagesDir = '(programmatic)'
-function getProgrammaticPageLocationId(locationIdAnchor: LocationId, index: number): LocationId {
-  const base = locationIdAnchor === '/' ? '' : locationIdAnchor
-  return `${base}/${programmaticPagesDir}/${index}` as LocationId
-}
 /**
  * Build the page configs defined programmatically via config.pages.
  *
@@ -614,9 +605,13 @@ function getProgrammaticPageConfigs(
       )
       assertUsage(typeof entry.route === 'string', routeErr)
 
+      // The page's synthetic location: a child of the +config.js that defines config.pages — both its inheritance
+      // position (so it inherits the renderer/title/… defined there) and its identity (pageId); it's never added to
+      // plusFilesByLocationId. The index is scoped per location so multiple defining +config.js (via extends) don't collide.
       const index = indexByLocationId[locationIdAnchor] ?? 0
       indexByLocationId[locationIdAnchor] = index + 1
-      const locationId = getProgrammaticPageLocationId(locationIdAnchor, index)
+      const base = locationIdAnchor === '/' ? '' : locationIdAnchor
+      const locationId = `${base}/(programmatic)/${index}` as LocationId
 
       // The entry is the page's own (most-specific) +config.js. We reuse getPlusFileFromConfigFile() so that pointer
       // imports (e.g. config.Page) resolve to runtime imports. It's never added to plusFilesByLocationId.
