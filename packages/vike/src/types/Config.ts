@@ -323,11 +323,6 @@ type ConfigPageEntry = Omit<Config, 'pages' | 'extends' | 'route'> & {
    *  https://vike.dev/route
    */
   route: Route | ImportStringList
-  /** A unique identifier for the page.
-   *
-   * Required when `route` isn't a string, otherwise optional (derived from `route`).
-   */
-  id?: string
 }
 
 /** Page configuration.

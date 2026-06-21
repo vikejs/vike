@@ -42,21 +42,17 @@ function addProgrammaticPages(plusFilesByLocationId: PlusFilesByLocationId, user
         'route' in entry,
         `${definedAtEntry} must define ${pc.cyan('+route')}`,
       )
-      const slug = getProgrammaticPageSlug(entry, i, definedAtEntry)
+      const slug = getProgrammaticPageSlug(entry.route, i)
       const locationId = getProgrammaticPageLocationId(definingPlusFile.locationId, slug)
       assertUsage(
         !locationIdsSeen.has(locationId),
-        `${definedAtEntry} resolves to the same page as another page — set a unique ${pc.cyan('route')} or ${pc.cyan('id')}.`,
+        `${definedAtEntry} resolves to the same page as another page — set a unique ${pc.cyan('route')}.`,
       )
       locationIdsSeen.add(locationId)
 
-      // `id` is metadata used to compute the locationId — it isn't a config.
-      const fileExports = { default: { ...entry } }
-      delete (fileExports.default as Record<string, unknown>).id
-
       const configFile: ConfigFile = {
-        fileExports,
         // The page is defined by the +config.js setting config.pages: resolve pointer imports (e.g. config.Page) relative to it.
+        fileExports: { default: entry },
         filePath: definingPlusFile.filePath,
         extendsFilePaths: [],
       }
@@ -74,19 +70,10 @@ function getProgrammaticPageLocationId(definingLocationId: LocationId, slug: str
   const base = definingLocationId === '/' ? '' : definingLocationId
   return `${base}/${programmaticPagesDir}/${slug}` as LocationId
 }
-function getProgrammaticPageSlug(entry: Record<string, unknown>, i: number, definedAtEntry: string): string {
-  let base: string
-  if (typeof entry.id === 'string' && entry.id) {
-    base = entry.id
-  } else if (typeof entry.route === 'string') {
-    base = entry.route
-  } else {
-    assertUsage(
-      false,
-      `${definedAtEntry} sets ${pc.cyan('route')} to a non-string value: set a unique ${pc.cyan('id')}.`,
-    )
-  }
-  const slug = base
+function getProgrammaticPageSlug(route: unknown, i: number): string {
+  // Fall back to the array index when the route isn't a plain string (e.g. a Route Function).
+  if (typeof route !== 'string') return String(i)
+  const slug = route
     .replace(/[^a-zA-Z0-9_-]/g, '-')
     .replace(/-+/g, '-')
     .replace(/^-+|-+$/g, '')
