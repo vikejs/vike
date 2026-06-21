@@ -92,6 +92,7 @@ import {
   type PlusFile,
   type PlusFilesByLocationId,
 } from './resolveVikeConfigInternal/getPlusFilesByLocationId.js'
+import { assertRouteString } from '../../../shared-server-client/route/resolveRouteString.js'
 import { getExtensionName } from './resolveVikeConfigInternal/assertExtensions.js'
 import { getEnvVarObject } from './getEnvVarObject.js'
 import { getVikeApiOperation } from '../../../shared-server-node/api-context.js'
@@ -604,6 +605,11 @@ function getProgrammaticPageConfigs(
         `${routeErr} — Route Functions aren't supported for programmatically defined pages (yet).`,
       )
       assertUsage(typeof entry.route === 'string', routeErr)
+      assertRouteString(entry.route, `${definedAtEntry} sets an invalid`)
+      assertUsage(
+        !('extends' in entry),
+        `${definedAtEntry} sets ${pc.cyan('extends')} which isn't supported for programmatically defined pages`,
+      )
 
       // The page's synthetic location: a child of the +config.js that defines config.pages — both its inheritance
       // position (so it inherits the renderer/title/… defined there) and its identity (pageId); it's never added to
@@ -624,8 +630,8 @@ function getProgrammaticPageConfigs(
         userRootDir,
       )
 
-      // Warn on unknown configs set by the entry (e.g. typos), like Vike does for + files.
       getConfigNamesSetByPlusFile(plusFileVirtual).forEach((configName) => {
+        // Warn on unknown configs set by the entry (e.g. typos), like Vike does for + files.
         isUnknownConfig(
           configName,
           local.configNamesKnownLocal,
@@ -634,11 +640,21 @@ function getProgrammaticPageConfigs(
           true,
           definedAtEntry,
         )
+        // A global config (e.g. +onBeforeRoute) applies app-wide and can't be set on a single page. (We check
+        // `global === true` so conditionally-global configs such as +prerender, whose `global` is a function, are
+        // still allowed per-page.)
+        const configDefGlobal = configDefinitionsResolved.configDefinitionsGlobal[configName]
+        assertUsage(
+          configDefGlobal?.global !== true,
+          `${definedAtEntry} sets the global config ${pc.cyan(configName)} which can't be set on a single page — set it at a global config file instead`,
+        )
       })
 
       // Most-specific first (the page's own values), then the config inherited at the defining location.
       const plusFilesRelevant = [plusFileVirtual, ...local.plusFilesRelevant]
 
+      // Perf: createPageConfig() re-resolves the inherited config (local.plusFilesRelevant) for each entry. Negligible
+      // for typical page lists; for very large config.pages arrays the inherited part could be resolved once and reused.
       pageConfigs.push(
         createPageConfig(
           locationId,
