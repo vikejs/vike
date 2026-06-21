@@ -348,7 +348,7 @@ type ConfigBuiltIn = {
    *
    * https://vike.dev/pages
    */
-  pages?: PageConfigEntry[]
+  pages?: PageConfigEntry[] | ImportStringList
 
   /** Protect page(s), e.g. forbid unauthorized access.
    *
