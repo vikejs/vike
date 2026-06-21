@@ -1208,6 +1208,9 @@ function isDefiningPage(plusFiles: PlusFile[]): boolean {
 function isDefiningPageConfig(configName: string): boolean {
   return ['Page', 'route'].includes(configName)
 }
+function isDefiningProgrammaticPages(plusFiles: PlusFile[]): boolean {
+  return plusFiles.some((plusFile) => getConfigNamesSetByPlusFile(plusFile).includes('pages'))
+}
 function resolveIsGlobalValue(
   configDefGlobal: ConfigDefinitionInternal['global'],
   source: ConfigValueSource,
@@ -1741,9 +1744,6 @@ function isGlobalLocation(locationId: LocationId, plusFilesByLocationId: PlusFil
     .filter(([_locationId, plusFiles]) => isDefiningPage(plusFiles) || isDefiningProgrammaticPages(plusFiles))
     .map(([locationId]) => locationId)
   return locationIdsPage.every((locId) => isInherited(locationId, locId))
-}
-function isDefiningProgrammaticPages(plusFiles: PlusFile[]): boolean {
-  return plusFiles.some((plusFile) => getConfigNamesSetByPlusFile(plusFile).includes('pages'))
 }
 
 async function resolvePrerenderContext(vikeConfig: Parameters<typeof resolvePrerenderConfigGlobal>[0]) {
