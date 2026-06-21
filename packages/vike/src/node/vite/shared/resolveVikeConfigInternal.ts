@@ -495,12 +495,9 @@ function getPageConfigsBuildTime(
     .map(([locationId, { configDefinitions, plusFilesRelevant }]) =>
       buildPageConfig(locationId, locationId, plusFilesRelevant, configDefinitions, plusFilesByLocationId, userRootDir),
     )
-
-  // Pages defined programmatically via config.pages
+  // Pages defined programmatically via +pages
   pageConfigs.push(...getProgrammaticPageConfigs(configDefinitionsResolved, plusFilesByLocationId, userRootDir))
-
   assertPageConfigs(pageConfigs)
-  assertNoDuplicatePageIds(pageConfigs)
 
   return { pageConfigs, pageConfigGlobal }
 }
@@ -653,13 +650,6 @@ function getProgrammaticPageConfigs(
 
   return pageConfigs
 }
-function assertNoDuplicatePageIds(pageConfigs: PageConfigBuildTime[]) {
-  const seen = new Set<string>()
-  pageConfigs.forEach(({ pageId }) => {
-    assert(!seen.has(pageId))
-    seen.add(pageId)
-  })
-}
 function assertPageConfigGlobal(
   pageConfigGlobal: PageConfigGlobalBuildTime,
   plusFilesByLocationId: PlusFilesByLocationId,
@@ -724,8 +714,16 @@ function assertGlobalConfigLocation(
   })
 }
 function assertPageConfigs(pageConfigs: PageConfigBuildTime[]) {
+  assertNoDuplicatePageIds(pageConfigs)
   pageConfigs.forEach((pageConfig) => {
     assertOnBeforeRenderEnv(pageConfig)
+  })
+}
+function assertNoDuplicatePageIds(pageConfigs: PageConfigBuildTime[]) {
+  const seen = new Set<string>()
+  pageConfigs.forEach(({ pageId }) => {
+    assert(!seen.has(pageId))
+    seen.add(pageId)
   })
 }
 function assertOnBeforeRenderEnv(pageConfig: PageConfigBuildTime) {
