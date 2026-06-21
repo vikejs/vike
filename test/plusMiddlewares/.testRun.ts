@@ -28,7 +28,6 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     expect(await response.text()).toBe('OK')
   })
 
-  // https://github.com/vikejs/vike/issues/3357
   test('Middleware returning a redirect (3xx) Response', async () => {
     const response: Response = await fetch(`${getServerUrl()}/redirect-middleware`, { redirect: 'manual' })
 
