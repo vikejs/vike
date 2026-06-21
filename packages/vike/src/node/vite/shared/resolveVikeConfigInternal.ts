@@ -617,7 +617,7 @@ function getProgrammaticPageConfigs(
       const index = indexByLocationId[locationIdAnchor] ?? 0
       indexByLocationId[locationIdAnchor] = index + 1
       const base = locationIdAnchor === '/' ? '' : locationIdAnchor
-      const locationId = `${base}/(+pages)/entry:${index}` as LocationId
+      const locationIdVirtual = `${base}/(+pages)/entry:${index}` as LocationId
 
       // The entry is the page's own (most-specific) +config.js. We reuse getPlusFileFromConfigFile() so that pointer
       // imports (e.g. config.Page) resolve to runtime imports. It's never added to plusFilesByLocationId.
@@ -626,7 +626,7 @@ function getProgrammaticPageConfigs(
       const plusFileVirtual = getPlusFileFromConfigFile(
         { fileExports: { default: entry }, filePath: definingPlusFile.filePath, extendsFilePaths: [] },
         false,
-        locationId,
+        locationIdVirtual,
         userRootDir,
       )
 
@@ -657,8 +657,8 @@ function getProgrammaticPageConfigs(
       // for typical page lists; for very large config.pages arrays the inherited part could be resolved once and reused.
       pageConfigs.push(
         createPageConfig(
-          locationId,
-          locationId,
+          locationIdVirtual,
+          locationIdVirtual,
           plusFilesRelevant,
           local.configDefinitions,
           plusFilesByLocationId,
