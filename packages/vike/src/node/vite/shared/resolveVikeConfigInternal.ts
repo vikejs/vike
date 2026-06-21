@@ -592,7 +592,7 @@ function getProgrammaticPageConfigs(
       assertUsage(isObject(entry), `${definedAtEntry} should be an object`)
       const routeErr = `${definedAtEntry} should set ${pc.cyan('+route')} to a string`
       assertUsage('route' in entry, routeErr)
-      // A Route Function would need to be defined via a pointer import (it needs to be loaded at runtime)
+      // We can support Route Functions. But note that it would have a bad DX: a Route Function would need to be defined via a pointer import (it needs to be loaded at runtime).
       assertUsage(
         !isCallable(entry.route),
         `${routeErr} — Route Functions aren't supported for programmatically defined pages (yet).`,
