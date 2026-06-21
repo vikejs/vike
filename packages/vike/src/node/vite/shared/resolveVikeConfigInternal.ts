@@ -1738,10 +1738,12 @@ function resolveConfigEnv(configEnv: ConfigEnv, filePath: FilePath) {
 /** Whether configs defined in `locationId` apply to every page */
 function isGlobalLocation(locationId: LocationId, plusFilesByLocationId: PlusFilesByLocationId): boolean {
   const locationIdsPage = objectEntries(plusFilesByLocationId)
-    // Also count locations defining config.pages: programmatic pages are anchored there, so a config that doesn't
-    // cover them isn't global. (We can't fold this into isDefiningPage() — that would make getPageConfigsBuildTime()
-    // build a bogus filesystem page at the anchor.)
-    .filter(([_locationId, plusFiles]) => isDefiningPage(plusFiles) || isDefiningProgrammaticPages(plusFiles))
+    .filter(
+      ([_locationId, plusFiles]) =>
+        isDefiningPage(plusFiles) ||
+        // Also add locationId if it defines +pages — programmatic pages are anchored there, so a config that doesn't cover them isn't global.
+        isDefiningProgrammaticPages(plusFiles),
+    )
     .map(([locationId]) => locationId)
   return locationIdsPage.every((locId) => isInherited(locationId, locId))
 }
