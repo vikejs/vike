@@ -595,7 +595,7 @@ function getProgrammaticPageConfigs(
       // We can support Route Functions. But note that it would have a bad DX: a Route Function would need to be defined via a pointer import (it needs to be loaded at runtime).
       assertUsage(
         !isCallable(entry.route),
-        `${routeErr} — Route Functions aren't supported for programmatically defined pages (yet).`,
+        `${routeErr} — Route Functions aren't supported for programmatically defined pages (yet)`,
       )
       assertUsage(typeof entry.route === 'string', routeErr)
       assertRouteString(entry.route, `${definedAtEntry} sets an invalid`)
