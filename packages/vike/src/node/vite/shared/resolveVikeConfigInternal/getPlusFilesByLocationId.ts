@@ -2,7 +2,6 @@ export { getPlusFilesByLocationId }
 export { getPlusFileFromConfigFile }
 export type { PlusFileValue }
 export type { PlusFile }
-export type { PlusFileConfig }
 export type { PlusFilesByLocationId }
 
 import { assert } from '../../../../utils/assert.js'
