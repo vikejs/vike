@@ -312,16 +312,6 @@ type KeepScrollPosition =
  */
 type Route = string | RouteSync | RouteAsync
 
-type ConfigPageEntry = Omit<Config, 'pages' | 'extends' | 'route'> & {
-  /** The page's URL — a Route String.
-   *
-   * Route Functions aren't supported for programmatically defined pages yet.
-   *
-   *  https://vike.dev/route
-   */
-  route: string
-}
-
 /** Page configuration.
  *
  * https://vike.dev/config
@@ -822,3 +812,13 @@ type ConfigBuiltInResolved = {
 }
 
 type ConfigMeta = Record<string, ConfigDefinition>
+
+type ConfigPageEntry = Omit<Config, 'pages' | 'extends' | 'route'> & {
+  /** The page's URL — a Route String.
+   *
+   * Route Functions aren't supported for programmatically defined pages yet.
+   *
+   *  https://vike.dev/route
+   */
+  route: string
+}
