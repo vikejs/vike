@@ -595,11 +595,11 @@ function getProgrammaticPageConfigs(
       // A Route Function can't be inlined (a function can't be serialized to the runtime): it must be a pointer import
       assertUsage(
         !isCallable(entry.route),
-        `${definedAtEntry} sets ${pc.cyan('+route')} to a function, but a Route Function can't be inlined — import it with ${pc.cyan("{ type: 'vike:pointer' }")} instead (so that Vike can load it at runtime)`,
+        `${definedAtEntry} sets ${pc.cyan('+route')} to a function, but a Route Function can't be inlined — define the Route Function in a separate file and import it with ${pc.cyan("{ type: 'vike:pointer' }")} instead (so that Vike can load it at runtime)`,
       )
       assertUsage(
         typeof entry.route === 'string',
-        `${definedAtEntry} should set ${pc.cyan('+route')} to a Route String`,
+        `${definedAtEntry} should set ${pc.cyan('+route')} to a Route String or Route Function`,
       )
       // A Route String is validated now; a Route Function (pointer import) is validated at runtime.
       if (!parsePointerImportData(entry.route)) assertRouteString(entry.route, `${definedAtEntry} sets an invalid`)

@@ -816,11 +816,6 @@ type ConfigMeta = Record<string, ConfigDefinition>
 type ConfigPageEntry = Omit<Config, 'pages' | 'extends' | 'route'> & {
   /** The page's URL — a Route String or a Route Function.
    *
-   * A Route Function must be a pointer import, so that Vike can load it at runtime:
-   * ```js
-   * import route from './route' with { type: 'vike:pointer' }
-   * ```
-   *
    *  https://vike.dev/route
    */
   route: Route
