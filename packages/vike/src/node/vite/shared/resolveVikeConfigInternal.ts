@@ -1735,9 +1735,15 @@ function resolveConfigEnv(configEnv: ConfigEnv, filePath: FilePath) {
 /** Whether configs defined in `locationId` apply to every page */
 function isGlobalLocation(locationId: LocationId, plusFilesByLocationId: PlusFilesByLocationId): boolean {
   const locationIdsPage = objectEntries(plusFilesByLocationId)
-    .filter(([_locationId, plusFiles]) => isDefiningPage(plusFiles))
+    // Also count locations defining config.pages: programmatic pages are anchored there, so a config that doesn't
+    // cover them isn't global. (We can't fold this into isDefiningPage() — that would make getPageConfigsBuildTime()
+    // build a bogus filesystem page at the anchor.)
+    .filter(([_locationId, plusFiles]) => isDefiningPage(plusFiles) || isDefiningProgrammaticPages(plusFiles))
     .map(([locationId]) => locationId)
   return locationIdsPage.every((locId) => isInherited(locationId, locId))
+}
+function isDefiningProgrammaticPages(plusFiles: PlusFile[]): boolean {
+  return plusFiles.some((plusFile) => getConfigNamesSetByPlusFile(plusFile).includes('pages'))
 }
 
 async function resolvePrerenderContext(vikeConfig: Parameters<typeof resolvePrerenderConfigGlobal>[0]) {
