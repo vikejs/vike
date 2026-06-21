@@ -573,7 +573,7 @@ function getProgrammaticPageConfigs(
   const pageConfigs: PageConfigBuildTime[] = []
   const indexByLocationId: Record<string, number> = {}
 
-  // config.pages can be set in a +config.js (config.pages) or in a +pages.js value file — getConfVal() handles both.
+  // +pages can be set in a +config.js (config.pages) or in a +pages.js value file — getConfVal() handles both.
   const definingPlusFiles = Object.values(plusFilesByLocationId)
     .flat()
     .filter((plusFile) => {
@@ -592,16 +592,20 @@ function getProgrammaticPageConfigs(
     const definedAt = definingPlusFile.filePath.filePathToShowToUser
     assertUsage(
       Array.isArray(pages),
-      `${definedAt} sets the config ${pc.cyan('pages')} to an invalid value: it should be an array.`,
+      `${definedAt} sets ${pc.cyan('+pages')} to an invalid value: it should be an array`,
     )
 
     pages.forEach((entry: unknown, i: number) => {
       const definedAtEntry = `${definedAt} > ${pc.cyan(`pages[${i}]`)}`
-      assertUsage(isObject(entry), `${definedAtEntry} should be an object.`)
+      assertUsage(isObject(entry), `${definedAtEntry} should be an object`)
+      const routeErr = `${definedAtEntry} should set ${pc.cyan('+route')} to a string`
+      assertUsage('route' in entry, routeErr)
+      // A Route Function would need to be defined via a pointer import (it needs to be loaded at runtime)
       assertUsage(
-        'route' in entry && typeof entry.route === 'string',
-        `${definedAtEntry} should set ${pc.cyan('route')} to a string (a Route String) — Route Functions aren't supported for programmatically defined pages yet.`,
+        !isCallable(entry.route),
+        `${routeErr} — Route Functions aren't supported for programmatically defined pages (yet).`,
       )
+      assertUsage(typeof entry.route === 'string', routeErr)
 
       const index = indexByLocationId[locationIdAnchor] ?? 0
       indexByLocationId[locationIdAnchor] = index + 1
