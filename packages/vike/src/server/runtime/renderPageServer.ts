@@ -459,7 +459,9 @@ function logHttpResponse(urlOriginalPretty: string, pageContextReturn: PageConte
         const headerRedirect = pageContextReturn.httpResponse.headers
           .slice()
           .reverse()
-          .find((header) => header[0] === 'Location')
+          // Case-insensitive: a redirect returned by a +middleware comes from a Web Response whose
+          // Headers object lower-cases header names (`location`), while Vike's own redirect() uses `Location`.
+          .find((header) => header[0].toLowerCase() === 'location')
         assert(headerRedirect)
         const urlRedirect = headerRedirect[1]
         urlOriginalPretty = urlRedirect

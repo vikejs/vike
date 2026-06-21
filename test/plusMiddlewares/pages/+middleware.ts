@@ -10,4 +10,14 @@ const middleware = enhance(someUniversalMiddleware, {
   path: '/middleware',
 })
 
-export default middleware
+const redirectUniversalMiddleware: UniversalMiddleware = async () => {
+  return new Response(null, { status: 303, headers: { Location: '/' } })
+}
+
+const redirectMiddleware = enhance(redirectUniversalMiddleware, {
+  name: 'redirectMiddleware',
+  method: 'GET',
+  path: '/redirect-middleware',
+})
+
+export default [middleware, redirectMiddleware]
