@@ -611,9 +611,11 @@ function getProgrammaticPageConfigs(
 
       // The entry is the page's own (most-specific) +config.js. We reuse getPlusFileFromConfigFile() so that pointer
       // imports (e.g. config.Page) resolve to runtime imports. It's never added to plusFilesByLocationId.
+      // isExtensionConfig is false even when config.pages is defined by an extension: the entry is a concrete page
+      // definition (not a dedupe-able/low-precedence extension config).
       const plusFileEntry = getPlusFileFromConfigFile(
         { fileExports: { default: entry }, filePath: definingPlusFile.filePath, extendsFilePaths: [] },
-        definingPlusFile.isExtensionConfig,
+        false,
         locationId,
         userRootDir,
       )
