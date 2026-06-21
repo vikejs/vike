@@ -7,7 +7,6 @@ export type { PlusFilesByLocationId }
 
 import { assert } from '../../../../utils/assert.js'
 import { metaBuiltIn } from './metaBuiltIn.js'
-import { addProgrammaticPages } from './addProgrammaticPages.js'
 import { type LocationId, getLocationId } from './filesystemRouting.js'
 import { type EsbuildCache } from './transpileAndExecuteFile.js'
 import { crawlPlusFilePaths, getPlusFileValueConfigName } from './crawlPlusFilePaths.js'
@@ -136,9 +135,6 @@ async function getPlusFilesByLocationId(
       }
     }),
   )
-
-  // Pages defined programmatically via +pages
-  addProgrammaticPages(plusFilesByLocationId, userRootDir)
 
   // Make lists element order deterministic
   Object.entries(plusFilesByLocationId).forEach(([_locationId, plusFiles]) => {

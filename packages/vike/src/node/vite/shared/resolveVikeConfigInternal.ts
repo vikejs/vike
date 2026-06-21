@@ -88,7 +88,9 @@ import {
 } from '../../../shared-server-client/page-configs/serialize/serializeConfigValues.js'
 import {
   getPlusFilesByLocationId,
+  getPlusFileFromConfigFile,
   type PlusFile,
+  type PlusFileConfig,
   type PlusFilesByLocationId,
 } from './resolveVikeConfigInternal/getPlusFilesByLocationId.js'
 import { getExtensionName } from './resolveVikeConfigInternal/assertExtensions.js'
@@ -529,9 +531,136 @@ function getPageConfigsBuildTime(
       checkType<PageConfigBuildTime>(pageConfig)
       return pageConfig
     })
+
+  // Pages defined programmatically via config.pages
+  pageConfigs.push(...getProgrammaticPageConfigs(configDefinitionsResolved, plusFilesByLocationId, userRootDir))
+
   assertPageConfigs(pageConfigs)
+  assertNoDuplicatePageIds(pageConfigs)
 
   return { pageConfigs, pageConfigGlobal }
+}
+
+// Marker namespace for the pageId of programmatically defined pages (config.pages).
+// It's only an identity (these pages aren't backed by a filesystem location): config inheritance is anchored at the
+// +config.js that defines config.pages, not at this pageId.
+const programmaticPagesDir = '(programmatic)'
+function getProgrammaticPageId(locationIdAnchor: LocationId, index: number): string {
+  const base = locationIdAnchor === '/' ? '' : locationIdAnchor
+  return `${base}/${programmaticPagesDir}/${index}`
+}
+/**
+ * Build the page configs defined programmatically via config.pages.
+ *
+ * Each entry becomes a first-class page config whose *identity* (pageId) is decoupled from any filesystem location:
+ *  - Config inheritance is anchored at the +config.js that defines config.pages, so the page inherits its surrounding
+ *    config (renderer via `extends`, `title`, `ssr`, …) — exactly what a page at that location would inherit.
+ *  - The entry's own values (route, Page, …) take highest precedence, like a filesystem page's own + files.
+ *  - The entry's values attach to the page only (not to the anchor location), so they don't leak to sibling pages.
+ */
+function getProgrammaticPageConfigs(
+  configDefinitionsResolved: ConfigDefinitionsResolved,
+  plusFilesByLocationId: PlusFilesByLocationId,
+  userRootDir: string,
+): PageConfigBuildTime[] {
+  const pageConfigs: PageConfigBuildTime[] = []
+  const indexByLocationId: Record<string, number> = {}
+
+  const definingPlusFiles = Object.values(plusFilesByLocationId)
+    .flat()
+    .filter(
+      (plusFile): plusFile is PlusFileConfig => plusFile.isConfigFile && 'pages' in plusFile.fileExportsByConfigName,
+    )
+
+  definingPlusFiles.forEach((definingPlusFile) => {
+    const locationIdAnchor = definingPlusFile.locationId
+    const local = configDefinitionsResolved.configDefinitionsLocal[locationIdAnchor]
+    assert(local)
+    const { configDefinitions, plusFilesRelevant } = local
+
+    const pages = definingPlusFile.fileExportsByConfigName.pages
+    const definedAt = definingPlusFile.filePath.filePathToShowToUser
+    assertUsage(
+      Array.isArray(pages),
+      `${definedAt} sets the config ${pc.cyan('pages')} to an invalid value: it should be an array.`,
+    )
+
+    pages.forEach((entry: unknown, i: number) => {
+      const definedAtEntry = `${definedAt} > ${pc.cyan(`pages[${i}]`)}`
+      assertUsage(isObject(entry), `${definedAtEntry} should be an object.`)
+      assertUsage(
+        'route' in entry,
+        `${definedAtEntry} doesn't set ${pc.cyan('route')} but a programmatically defined page requires a ${pc.cyan('route')}.`,
+      )
+
+      // Identity: anchor location + index (scoped per location so multiple defining +config.js — e.g. via extends — don't collide).
+      const index = indexByLocationId[locationIdAnchor] ?? 0
+      indexByLocationId[locationIdAnchor] = index + 1
+      const pageId = getProgrammaticPageId(locationIdAnchor, index)
+
+      // Config inherited at the defining +config.js location (renderer, title, ssr, …).
+      const configValueSources: ConfigValueSources = {}
+      objectEntries(configDefinitions)
+        .filter(([_configName, configDef]) => configDef.global !== true)
+        .forEach(([configName, configDef]) => {
+          const sources = resolveConfigValueSources(
+            configName,
+            configDef,
+            plusFilesRelevant,
+            userRootDir,
+            false,
+            plusFilesByLocationId,
+          )
+          if (sources.length === 0) return
+          configValueSources[configName] = sources
+        })
+      applyEffects(configValueSources, configDefinitions, plusFilesByLocationId)
+      sortConfigValueSources(configValueSources, locationIdAnchor)
+
+      // The page's own values (route, Page, …) take highest precedence — like a filesystem page's own + files.
+      // We build a throwaway PlusFile (never added to plusFilesByLocationId) to reuse pointer-import resolution
+      // (e.g. config.Page becomes a runtime import) and source/env handling.
+      const plusFileEntry = getPlusFileFromConfigFile(
+        { fileExports: { default: entry }, filePath: definingPlusFile.filePath, extendsFilePaths: [] },
+        definingPlusFile.isExtensionConfig,
+        locationIdAnchor,
+        userRootDir,
+      )
+      getConfigNamesSetByPlusFile(plusFileEntry).forEach((configName) => {
+        const configDef = configDefinitions[configName]
+        // Skip global configs (handled globally) and unknown configs (e.g. typos don't define a page value).
+        if (!configDef || configDef.global === true) return
+        const sources = getConfigValueSources(configName, plusFileEntry, configDef, userRootDir)
+        ;(configValueSources[configName] ??= []).unshift(...sources)
+      })
+
+      // Programmatic pages always set an explicit route, so the Filesystem Routing fallback is never used — but we
+      // populate it (from the anchor) to satisfy the page-config shape.
+      const pageConfigRoute = determineRouteFilesystem(locationIdAnchor, configValueSources)
+
+      const pageConfig = {
+        pageId,
+        ...pageConfigRoute,
+        configDefinitions,
+        plusFiles: plusFilesRelevant,
+        configValueSources,
+      }
+      const configValuesComputed = getComputed(pageConfig)
+      objectAssign(pageConfig, { configValuesComputed })
+
+      checkType<PageConfigBuildTime>(pageConfig)
+      pageConfigs.push(pageConfig)
+    })
+  })
+
+  return pageConfigs
+}
+function assertNoDuplicatePageIds(pageConfigs: PageConfigBuildTime[]) {
+  const seen = new Set<string>()
+  pageConfigs.forEach(({ pageId }) => {
+    assert(!seen.has(pageId))
+    seen.add(pageId)
+  })
 }
 function assertPageConfigGlobal(
   pageConfigGlobal: PageConfigGlobalBuildTime,
