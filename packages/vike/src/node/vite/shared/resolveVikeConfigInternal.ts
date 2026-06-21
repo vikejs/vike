@@ -634,7 +634,7 @@ function getProgrammaticPageConfigs(
         const configDefGlobal = configDefinitionsResolved.configDefinitionsGlobal[configName]
         assertUsage(
           configDefGlobal?.global !== true,
-          `${definedAtEntry} sets the global config ${pc.cyan(configName)} which can't be set on a single page — set it at a global config file instead`,
+          `${definedAtEntry} sets the global config ${pc.cyan(`+${configName}`)} which can't be set on a single page — set it at a global config file instead`,
         )
       })
 
