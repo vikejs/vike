@@ -615,7 +615,7 @@ function getProgrammaticPageConfigs(
       // imports (e.g. config.Page) resolve to runtime imports. It's never added to plusFilesByLocationId.
       // isExtensionConfig is false even when config.pages is defined by an extension: the entry is a concrete page
       // definition (not a dedupe-able/low-precedence extension config).
-      const plusFileEntry = getPlusFileFromConfigFile(
+      const plusFileVirtual = getPlusFileFromConfigFile(
         { fileExports: { default: entry }, filePath: definingPlusFile.filePath, extendsFilePaths: [] },
         false,
         locationId,
@@ -623,7 +623,7 @@ function getProgrammaticPageConfigs(
       )
 
       // Warn on unknown configs set by the entry (e.g. typos), like Vike does for + files.
-      getConfigNamesSetByPlusFile(plusFileEntry).forEach((configName) => {
+      getConfigNamesSetByPlusFile(plusFileVirtual).forEach((configName) => {
         isUnknownConfig(
           configName,
           local.configNamesKnownLocal,
@@ -635,7 +635,7 @@ function getProgrammaticPageConfigs(
       })
 
       // Most-specific first (the page's own values), then the config inherited at the defining location.
-      const plusFilesRelevant = [plusFileEntry, ...local.plusFilesRelevant]
+      const plusFilesRelevant = [plusFileVirtual, ...local.plusFilesRelevant]
 
       pageConfigs.push(
         buildPageConfig(
