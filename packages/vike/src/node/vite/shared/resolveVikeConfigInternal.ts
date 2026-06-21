@@ -601,14 +601,14 @@ function getProgrammaticPageConfigs(
       assertRouteString(entry.route, `${definedAtEntry} sets an invalid`)
       assertUsage(
         !('extends' in entry),
-        `${definedAtEntry} sets ${pc.cyan('extends')} which isn't supported for programmatically defined pages`,
+        `${definedAtEntry} sets ${pc.cyan('+extends')} which isn't supported for programmatically defined pages`,
       )
 
       const index = entryIndexByLocationId[locationIdAnchor] ?? 0
       entryIndexByLocationId[locationIdAnchor] = index + 1
       const base = locationIdAnchor === '/' ? '' : locationIdAnchor
       // The page's virtual locationId = its inheritance position (a child of the +config.js that defines +pages) so that:
-      // - The page's own values (`entry`) only apply to that page.
+      // - The page's own values (`entry`) only apply to that page
       // - The page inherits as usual
       const locationIdVirtual = `${base}/(+pages)/entry:${index}` as LocationId
 
@@ -638,7 +638,7 @@ function getProgrammaticPageConfigs(
         )
       })
 
-      // The page's own values (`entry`) first (most-specific), then the inherited config
+      // The page's own values (`entry`) first (most-specific), then the inherited configs
       const plusFilesRelevant = [plusFileVirtual, ...local.plusFilesRelevant]
 
       // Perf: resolvePageConfigBuildTime() re-resolves the inherited config per entry — fine for typical +pages array length. But for very large +pages arrays this might be too slow: consider resolving the inherited part once and re-use.
