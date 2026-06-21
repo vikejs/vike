@@ -611,7 +611,7 @@ function getProgrammaticPageConfigs(
       const index = indexByLocationId[locationIdAnchor] ?? 0
       indexByLocationId[locationIdAnchor] = index + 1
       const base = locationIdAnchor === '/' ? '' : locationIdAnchor
-      const locationId = `${base}/(programmatic)/${index}` as LocationId
+      const locationId = `${base}/(+pages)/entry:${index}` as LocationId
 
       // The entry is the page's own (most-specific) +config.js. We reuse getPlusFileFromConfigFile() so that pointer
       // imports (e.g. config.Page) resolve to runtime imports. It's never added to plusFilesByLocationId.
