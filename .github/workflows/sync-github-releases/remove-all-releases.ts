@@ -9,7 +9,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 }
 
 import { fileURLToPath } from 'node:url'
-import { fetchGithubReleases, getGithubToken, getRepository, githubRequest } from './github.ts'
+import { fetchGithubReleases, getGithubToken, getRepository, githubRequest } from './utils/github.ts'
 
 async function removeAllReleases() {
   const token = getGithubToken()

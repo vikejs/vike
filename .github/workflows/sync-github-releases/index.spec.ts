@@ -1,9 +1,9 @@
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { parseChangelog } from './changelog.ts'
-import { toPackageDirs } from './git.ts'
-import { getRepository } from './github.ts'
+import { parseChangelog } from './utils/changelog.ts'
+import { toPackageDirs } from './utils/git.ts'
+import { getRepository } from './utils/github.ts'
 import { chooseCreateCommitish, getReleasePlan, getTagName, withSourceOfTruth } from './release-plan.ts'
 
 function readFixture(name: string): string {

@@ -10,17 +10,17 @@ import { readFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { parseChangelog } from './changelog.ts'
+import { parseChangelog } from './utils/changelog.ts'
 import {
   findReleaseCommit,
-  getPackageDirsToSync,
+  getPushedChangelogFiles,
   getRepoRoot,
   getTrackedChangelogFiles,
   gitTagExists,
   toPackageDirs,
-} from './git.ts'
+} from './utils/git.ts'
 import { chooseCreateCommitish, getReleasePlan, getTagName, withSourceOfTruth } from './release-plan.ts'
-import { fetchGithubReleases, getDefaultBranch, getGithubToken, getRepository, githubRequest } from './github.ts'
+import { fetchGithubReleases, getDefaultBranch, getGithubToken, getRepository, githubRequest } from './utils/github.ts'
 
 async function main(): Promise<void> {
   // The package.json scripts run from this folder; switch to the repo root so the git commands and
@@ -159,4 +159,12 @@ async function syncPackage({
     })
     if (!dryRun) console.log(`Deleted release ${releaseToDelete.tag_name}`)
   }
+}
+
+function getPackageDirsToSync(): string[] {
+  // On push, sync only the packages whose CHANGELOG.md changed; otherwise (manual workflow_dispatch
+  // or a local run with no <package-dir>) sync every package.
+  const pushedChangelogFiles = getPushedChangelogFiles()
+  if (pushedChangelogFiles) return toPackageDirs(pushedChangelogFiles)
+  return toPackageDirs(getTrackedChangelogFiles())
 }

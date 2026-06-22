@@ -2,20 +2,12 @@ export { getRepoRoot }
 export { gitTagExists }
 export { findReleaseCommit }
 export { getTrackedChangelogFiles }
-export { getPackageDirsToSync }
+export { getPushedChangelogFiles }
 export { toPackageDirs }
 
 import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
-
-function getPackageDirsToSync(): string[] {
-  // On push, sync only the packages whose CHANGELOG.md changed; otherwise (manual workflow_dispatch
-  // or a local run with no <package-dir>) sync every package.
-  const pushedChangelogFiles = getPushedChangelogFiles()
-  if (pushedChangelogFiles) return toPackageDirs(pushedChangelogFiles)
-  return toPackageDirs(getTrackedChangelogFiles())
-}
 
 function getRepoRoot(): string {
   return execFileSync('git', ['rev-parse', '--show-toplevel'], { encoding: 'utf8' }).trim()

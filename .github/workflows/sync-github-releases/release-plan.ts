@@ -3,8 +3,8 @@ export { getTagName }
 export { withSourceOfTruth }
 export { chooseCreateCommitish }
 
-import type { ChangelogSections } from './changelog.ts'
-import type { Release } from './types.ts'
+import type { ChangelogSections } from './utils/changelog.ts'
+import type { Release } from './utils/types.ts'
 
 type ReleasesToCreate = {
   tag_name: string
