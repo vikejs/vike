@@ -102,14 +102,11 @@ async function syncPackage({
   // releaseNotesByVersion is keyed by `vX.Y.Z`; map each release tag back to its raw changelog version
   // (for the changelog-history lookup) and remember the newest tag (the just-released version).
   const versionTags = Object.keys(releaseNotesByVersion)
+  const releaseTagOf = (versionTag: string) => getReleaseTag(versionTag, packageJson.name, hasMultiplePackages)
   const versionByTag = new Map(
-    versionTags.map((versionTag) => [
-      getReleaseTag(versionTag, packageJson.name, hasMultiplePackages),
-      versionTag.replace(/^v/, ''),
-    ]),
+    versionTags.map((versionTag) => [releaseTagOf(versionTag), versionTag.replace(/^v/, '')]),
   )
-  const newestReleaseTag =
-    versionTags.length > 0 ? getReleaseTag(versionTags[0], packageJson.name, hasMultiplePackages) : ''
+  const newestReleaseTag = versionTags.length > 0 ? releaseTagOf(versionTags[0]) : ''
 
   for (const releaseToCreate of releasesToCreate) {
     const releaseTag = releaseToCreate.tag_name
