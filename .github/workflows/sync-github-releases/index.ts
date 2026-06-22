@@ -11,6 +11,7 @@ export { getReleasePlan }
 export { parseChangelog }
 export { toPackageDirs }
 export { getTagName }
+export { withSourceOfTruth }
 
 import assert from 'node:assert'
 import { execFileSync } from 'node:child_process'
@@ -82,6 +83,13 @@ async function syncPackage({
   const changelog = await readFile(changelogPath, 'utf8')
   const changelogSections = parseChangelog(changelog)
   assertChangelog(versionTag, changelogSections)
+
+  // These releases are generated, so point each one back to the changelog it mirrors (the source of
+  // truth) to discourage editing the GitHub Release directly — a sync would overwrite it.
+  const changelogUrl = `https://github.com/${owner}/${repo}/blob/${defaultBranch}/${packageDir}/CHANGELOG.md`
+  for (const versionTag of Object.keys(changelogSections)) {
+    changelogSections[versionTag] = withSourceOfTruth(changelogSections[versionTag], changelogUrl)
+  }
 
   const githubReleases = await fetchGithubReleases(owner, repo, token)
 
@@ -232,6 +240,11 @@ function getTagName(versionTag: string, packageName: string, multiplePackages: b
 function isOwnedTag(tagName: string, packageName: string, multiplePackages: boolean): boolean {
   if (multiplePackages) return tagName.startsWith(`${packageName}@`)
   return /^v\d+\.\d+\.\d+/.test(tagName)
+}
+
+// Footer appended to every release body, linking back to the changelog the release is generated from.
+function withSourceOfTruth(body: string, changelogUrl: string): string {
+  return `${body}\n\n_Source of truth: [\`CHANGELOG.md\`](${changelogUrl})._`
 }
 
 function getReleasePlan({
