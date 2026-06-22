@@ -1,4 +1,6 @@
-// Deletes every GitHub Release in the repo — destructive maintenance, run via the `delete-all` script (see README.md).
+// Deletes every GitHub Release.
+// Run via the `delete-all` package.json script — see README.md
+
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   await removeAllReleases().catch((err) => {
     console.error(err)

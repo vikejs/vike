@@ -1,5 +1,4 @@
-// main() runs only when this file is the entry point (e.g. via sync-github-releases.yml),
-// not when index.spec.ts imports it.
+// Execute main() only when this file is the entry point (via sync-github-releases.yml or package.json script), not when index.spec.ts imports it.
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   await main().catch((err) => {
     console.error(err)
@@ -7,7 +6,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   })
 }
 
-// Exported only for index.spec.ts.
+// Exported only for index.spec.ts
 export { getReleasePlan }
 export { parseChangelog }
 export { toPackageDirs }
@@ -148,7 +147,6 @@ function getPushBeforeSha(): string | null {
   return before
 }
 
-// git ls-files returns only tracked files, so CHANGELOG.md files under node_modules are excluded.
 function getTrackedChangelogFiles(): string[] {
   // `*CHANGELOG.md` matches at any depth — git pathspecs aren't anchored to the repo root.
   const stdout = execFileSync('git', ['ls-files', '--', '*CHANGELOG.md'], { encoding: 'utf8' })

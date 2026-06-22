@@ -87,13 +87,7 @@ async function githubRequest<T = void>(
 function getGithubToken(): string {
   const token = process.env.GITHUB_TOKEN
   if (!token) {
-    throw new Error(
-      [
-        'GITHUB_TOKEN is not set, e.g.:',
-        '  GITHUB_TOKEN=<token> pnpm -C .github/workflows/sync-github-releases run try -- <package-dir>',
-        'See .github/workflows/sync-github-releases/README.md for all scripts and token scopes.',
-      ].join('\n'),
-    )
+    throw new Error( 'GITHUB_TOKEN must be set or use --dry-run — see README.md')
   }
   return token
 }

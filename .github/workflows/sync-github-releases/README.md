@@ -23,7 +23,7 @@ below run the same tooling by hand.
 4. **Plan the changes** (`getReleasePlan()`): create a release for every changelog version that doesn't have one yet, and update any whose notes have drifted from the changelog.
 5. **Apply** the plan through the GitHub API — or, with `--dry-run`, just log what would change.
 
-It's safe to run against any current state: older missing releases are created too, and GitHub orders the releases list by tag version, so they still land in the right place.
+It's safe to run against any current state: older missing releases are created too, and [GitHub orders the releases list by tag version](https://github.com/vikejs/vike/pull/3157#issuecomment-4406846257), so they still land in the right place.
 
 ## Scripts
 
@@ -53,12 +53,3 @@ GITHUB_TOKEN=<token> pnpm -C .github/workflows/sync-github-releases run run -- p
 ```
 
 > Requires [Bun](https://bun.sh) — the scripts run the TypeScript directly with `bun`.
-
-## Files
-
-| File | Purpose |
-| --- | --- |
-| `index.ts` | Entry point: picks which packages to sync, then plans and applies the release changes. |
-| `github-utils.ts` | GitHub REST helpers: auth, fetching releases, throttled requests. |
-| `remove-all-releases.ts` | The `delete-all` maintenance script. |
-| `index.spec.ts` | Unit tests for changelog parsing and release planning. |
