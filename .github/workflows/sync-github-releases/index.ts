@@ -19,7 +19,7 @@ import {
   gitTagExists,
   toPackageDirs,
 } from './utils/git.ts'
-import { chooseCreateCommitish, getReleasePlan, getReleaseTag, withSourceOfTruth } from './release-plan.ts'
+import { resolveTargetCommitish, getReleasePlan, getReleaseTag, withChangelogFooter } from './release-plan.ts'
 import { fetchGithubReleases, getDefaultBranch, getGithubToken, getRepository, githubRequest } from './utils/github.ts'
 
 async function main(): Promise<void> {
@@ -45,11 +45,11 @@ async function main(): Promise<void> {
   // When several packages publish to the same repo they share its tag namespace, so releases are
   // qualified with the package name (see getReleaseTag()). Determined from every tracked CHANGELOG.md,
   // not just the package(s) being synced now.
-  const multiplePackages = toPackageDirs(getTrackedChangelogFiles()).length > 1
+  const hasMultiplePackages = toPackageDirs(getTrackedChangelogFiles()).length > 1
 
   for (const packageDir of packageDirs) {
     console.log(`Syncing GitHub releases for package directory: ${packageDir}`)
-    await syncPackage({ packageDir, owner, repo, defaultBranch, token, dryRun, multiplePackages })
+    await syncPackage({ packageDir, owner, repo, defaultBranch, token, dryRun, hasMultiplePackages })
   }
 }
 
@@ -60,7 +60,7 @@ async function syncPackage({
   defaultBranch,
   token,
   dryRun,
-  multiplePackages,
+  hasMultiplePackages,
 }: {
   packageDir: string
   owner: string
@@ -68,7 +68,7 @@ async function syncPackage({
   defaultBranch: string
   token: string
   dryRun: boolean
-  multiplePackages: boolean
+  hasMultiplePackages: boolean
 }): Promise<void> {
   const require = createRequire(import.meta.url)
 
@@ -79,35 +79,35 @@ async function syncPackage({
   const packageJson = require(packageJsonPath) as { name: string }
 
   const changelog = await readFile(changelogPath, 'utf8')
-  const changelogSections = parseChangelog(changelog)
+  const releaseNotesByVersion = parseChangelog(changelog)
 
   // These releases are generated, so point each one back to the changelog it mirrors (the source of
   // truth) to discourage editing the GitHub Release directly — a sync would overwrite it.
   const changelogUrl = `https://github.com/${owner}/${repo}/blob/${defaultBranch}/${packageDir}/CHANGELOG.md`
-  for (const versionTag of Object.keys(changelogSections)) {
-    changelogSections[versionTag] = withSourceOfTruth(changelogSections[versionTag], changelogUrl)
+  for (const versionTag of Object.keys(releaseNotesByVersion)) {
+    releaseNotesByVersion[versionTag] = withChangelogFooter(releaseNotesByVersion[versionTag], changelogUrl)
   }
 
   const githubReleases = await fetchGithubReleases(owner, repo, token)
 
   const { releasesToCreate, releasesToUpdate, releasesToDelete } = getReleasePlan({
     githubReleases,
-    changelogSections,
+    releaseNotesByVersion,
     packageName: packageJson.name,
-    multiplePackages,
+    hasMultiplePackages,
   })
 
-  // changelogSections is keyed by `vX.Y.Z`; map each release tag back to its raw changelog version
+  // releaseNotesByVersion is keyed by `vX.Y.Z`; map each release tag back to its raw changelog version
   // (for the changelog-history lookup) and remember the newest tag (the just-released version).
-  const versionTags = Object.keys(changelogSections)
+  const versionTags = Object.keys(releaseNotesByVersion)
   const versionByTag = new Map(
     versionTags.map((versionTag) => [
-      getReleaseTag(versionTag, packageJson.name, multiplePackages),
+      getReleaseTag(versionTag, packageJson.name, hasMultiplePackages),
       versionTag.replace(/^v/, ''),
     ]),
   )
   const newestReleaseTag =
-    versionTags.length > 0 ? getReleaseTag(versionTags[0], packageJson.name, multiplePackages) : ''
+    versionTags.length > 0 ? getReleaseTag(versionTags[0], packageJson.name, hasMultiplePackages) : ''
 
   for (const releaseToCreate of releasesToCreate) {
     const releaseTag = releaseToCreate.tag_name
@@ -117,7 +117,7 @@ async function syncPackage({
     const tagExists = gitTagExists(releaseTag)
     const isNewest = releaseTag === newestReleaseTag
     const deducedCommit = !tagExists && !isNewest ? findReleaseCommit(versionByTag.get(releaseTag)!) : null
-    const targetCommitish = chooseCreateCommitish({ releaseTag, tagExists, isNewest, deducedCommit, defaultBranch })
+    const targetCommitish = resolveTargetCommitish({ releaseTag, tagExists, isNewest, deducedCommit, defaultBranch })
     if (!tagExists && !isNewest)
       console.warn(`Tag ${releaseTag} is missing — creating its release at deduced commit ${deducedCommit}`)
 
