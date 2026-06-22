@@ -34,7 +34,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Create GitHub releases
-        run: node ./.github/workflows/sync-github-releases/index.ts
+        run: node ./.github/workflows/sync-github-releases/sync.ts
         env:
           # GITHUB_EVENT_NAME, GITHUB_SHA and GITHUB_EVENT_PATH are provided automatically
           GITHUB_DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
