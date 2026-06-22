@@ -92,7 +92,6 @@ async function syncPackage({
   const githubReleases = await fetchGithubReleases(owner, repo, token)
 
   const { releasesToCreate, releasesToUpdate, releasesToDelete } = getReleasePlan({
-    defaultBranch,
     githubReleases,
     changelogSections,
     packageName: packageJson.name,
@@ -118,13 +117,7 @@ async function syncPackage({
     const tagExists = gitTagExists(tagName)
     const isNewest = tagName === newestTag
     const deducedCommit = !tagExists && !isNewest ? findReleaseCommit(versionByTag.get(tagName)!) : null
-    releaseToCreate.target_commitish = chooseCreateCommitish({
-      tagName,
-      tagExists,
-      isNewest,
-      deducedCommit,
-      defaultBranch,
-    })
+    const targetCommitish = chooseCreateCommitish({ tagName, tagExists, isNewest, deducedCommit, defaultBranch })
     if (!tagExists && !isNewest)
       console.warn(`Tag ${tagName} is missing — creating its release at deduced commit ${deducedCommit}`)
 
@@ -132,7 +125,16 @@ async function syncPackage({
     await githubRequest(`/repos/${owner}/${repo}/releases`, {
       token,
       method: 'POST',
-      body: releaseToCreate,
+      body: {
+        tag_name: tagName,
+        target_commitish: targetCommitish,
+        name: releaseToCreate.name,
+        body: releaseToCreate.body,
+        // Only the newest version may be the repo's "Latest". create-release otherwise defaults
+        // make_latest=true, so backfilling an older release while a newer one already exists would
+        // wrongly mark the old one Latest.
+        make_latest: isNewest ? 'true' : 'false',
+      },
       dryRun,
     })
     if (!dryRun) console.log(`Created release ${tagName}`)
@@ -249,7 +251,6 @@ function parseChangelog(changelog: string): ChangelogSections {
 
 type ReleasesToCreate = {
   tag_name: string
-  target_commitish: string
   name: string
   body: string
 }
@@ -317,13 +318,11 @@ function chooseCreateCommitish({
 }
 
 function getReleasePlan({
-  defaultBranch,
   githubReleases,
   changelogSections,
   packageName,
   multiplePackages,
 }: {
-  defaultBranch: string
   githubReleases: Release[]
   changelogSections: ChangelogSections
   packageName: string
@@ -338,18 +337,17 @@ function getReleasePlan({
   const releasesToCreate: ReleasesToCreate[] = []
   const releasesToUpdate: ReleasesToUpdate[] = []
 
-  // changelogSections is newest-first; iterate oldest-first so the newest release is created last.
-  // This matters because create-release defaults to make_latest=true: whichever release is created
-  // last becomes the repo's "Latest". (The releases list itself is ordered by GitHub on tag semver,
-  // not creation order, so backfilled older releases still slot in correctly:
-  // https://github.com/vikejs/vike/pull/3157#issuecomment-4406846257)
+  // changelogSections is newest-first; iterate oldest-first so releases are created (and their
+  // notifications sent) in chronological order. Which release is "Latest" is set explicitly via
+  // make_latest in syncPackage, not inferred from creation order. (GitHub orders the releases list by
+  // tag semver regardless: https://github.com/vikejs/vike/pull/3157#issuecomment-4406846257)
   for (const versionTag of Object.keys(changelogSections).reverse()) {
     const body = changelogSections[versionTag]
     const tagName = getTagName(versionTag, packageName, multiplePackages)
     expectedTags.add(tagName)
     const existingRelease = releasesByTag.get(tagName)
     if (!existingRelease) {
-      releasesToCreate.push({ tag_name: tagName, target_commitish: defaultBranch, name: tagName, body })
+      releasesToCreate.push({ tag_name: tagName, name: tagName, body })
     } else if (existingRelease.body?.trim() !== body) {
       releasesToUpdate.push({ release_id: existingRelease.id, tag_name: tagName, body })
     }
