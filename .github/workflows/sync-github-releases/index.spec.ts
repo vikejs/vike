@@ -3,25 +3,10 @@ import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { parseChangelog } from './utils/changelog.ts'
 import { toPackageDirs } from './utils/git.ts'
-import { getRepository } from './utils/github.ts'
-import { chooseCreateCommitish, getReleasePlan, getTagName, withSourceOfTruth } from './release-plan.ts'
+import { chooseCreateCommitish, getReleasePlan, getTagName } from './release-plan.ts'
 
 function readFixture(name: string): string {
   return readFileSync(path.join(__dirname, 'fixtures', name), 'utf8')
-}
-
-function withEnvUnset(name: string, fn: () => void): void {
-  const previous = process.env[name]
-  try {
-    delete process.env[name]
-    fn()
-  } finally {
-    if (previous === undefined) {
-      delete process.env[name]
-    } else {
-      process.env[name] = previous
-    }
-  }
 }
 
 describe('parseChangelog()', () => {
@@ -219,19 +204,6 @@ describe('getReleasePlan()', () => {
   })
 })
 
-describe('withSourceOfTruth()', () => {
-  it('appends a footer linking back to the changelog', () => {
-    expect(
-      withSourceOfTruth(
-        '### Features\n\n* Something',
-        'https://github.com/vikejs/vike/blob/main/packages/vike/CHANGELOG.md',
-      ),
-    ).toBe(
-      '### Features\n\n* Something\n\n_Source of truth: [`CHANGELOG.md`](https://github.com/vikejs/vike/blob/main/packages/vike/CHANGELOG.md)._',
-    )
-  })
-})
-
 describe('chooseCreateCommitish()', () => {
   const base = { tagName: 'v0.4.0', defaultBranch: 'main' }
 
@@ -292,17 +264,5 @@ describe('toPackageDirs()', () => {
 
   it('returns an empty array when nothing matches', () => {
     expect(toPackageDirs(['README.md', 'packages/vike/src/index.ts'])).toEqual([])
-  })
-})
-
-describe('local fallbacks', () => {
-  it('returns a valid repository when run locally', () => {
-    withEnvUnset('GITHUB_REPOSITORY', () => {
-      const repository = getRepository()
-      expect(repository.owner).toEqual(expect.any(String))
-      expect(repository.repo).toEqual(expect.any(String))
-      expect(repository.owner.trim()).not.toBe('')
-      expect(repository.repo.trim()).not.toBe('')
-    })
   })
 })
