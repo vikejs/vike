@@ -13,7 +13,6 @@ export { toPackageDirs }
 export { getTagName }
 export { withSourceOfTruth }
 
-import assert from 'node:assert'
 import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
@@ -77,12 +76,10 @@ async function syncPackage({
   const packageJsonPath = path.join(packageDirPath, 'package.json')
   const changelogPath = path.join(packageDirPath, 'CHANGELOG.md')
 
-  const packageJson = require(packageJsonPath) as { version: string; name: string }
+  const packageJson = require(packageJsonPath) as { name: string }
 
-  const versionTag = `v${packageJson.version}`
   const changelog = await readFile(changelogPath, 'utf8')
   const changelogSections = parseChangelog(changelog)
-  assertChangelog(versionTag, changelogSections)
 
   // These releases are generated, so point each one back to the changelog it mirrors (the source of
   // truth) to discourage editing the GitHub Release directly — a sync would overwrite it.
@@ -200,15 +197,6 @@ function parseChangelog(changelog: string): ChangelogSections {
   })
 
   return changelogSections
-}
-function assertChangelog(versionTag: string, changelogSections: ChangelogSections) {
-  const latestRelease = Object.keys(changelogSections)[0]
-  assert(
-    latestRelease === versionTag,
-    `The latest changelog entry is ${latestRelease}, but the current version is ${versionTag}`,
-  )
-  const currentBody = changelogSections[versionTag]
-  assert(currentBody, `Missing changelog entry for ${versionTag}`)
 }
 
 type ReleasesToCreate = {
