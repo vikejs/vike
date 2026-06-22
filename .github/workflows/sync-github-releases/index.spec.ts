@@ -99,7 +99,6 @@ describe('parseChangelog()', () => {
 describe('getReleasePlan()', () => {
   it('creates missing past releases alongside the current release and updates stale notes', () => {
     const plan = getReleasePlan({
-      defaultBranch: 'main',
       packageName: 'vike',
       multiplePackages: false,
       changelogSections: {
@@ -118,13 +117,11 @@ describe('getReleasePlan()', () => {
       releasesToCreate: [
         {
           tag_name: 'v0.8.0',
-          target_commitish: 'main',
           name: 'v0.8.0',
           body: 'Missing past notes',
         },
         {
           tag_name: 'v1.0.1',
-          target_commitish: 'main',
           name: 'v1.0.1',
           body: 'New release notes',
         },
@@ -136,7 +133,6 @@ describe('getReleasePlan()', () => {
 
   it('updates the current release instead of creating a duplicate', () => {
     const plan = getReleasePlan({
-      defaultBranch: 'main',
       packageName: 'vike',
       multiplePackages: false,
       changelogSections: {
@@ -154,7 +150,6 @@ describe('getReleasePlan()', () => {
 
   it('leaves releases we do not own untouched (no spurious update or delete)', () => {
     const plan = getReleasePlan({
-      defaultBranch: 'main',
       packageName: 'vike',
       multiplePackages: false,
       changelogSections: { 'v1.0.0': 'Notes' },
@@ -170,7 +165,6 @@ describe('getReleasePlan()', () => {
 
   it('deletes a release whose version was removed from the changelog', () => {
     const plan = getReleasePlan({
-      defaultBranch: 'main',
       packageName: 'vike',
       multiplePackages: false,
       changelogSections: { 'v1.0.0': 'Notes' },
@@ -190,7 +184,6 @@ describe('getReleasePlan()', () => {
 
   it('only deletes releases in its own namespace', () => {
     const plan = getReleasePlan({
-      defaultBranch: 'main',
       packageName: 'create-vike-core',
       multiplePackages: true,
       changelogSections: { 'v0.0.1': 'Notes' },
@@ -206,7 +199,6 @@ describe('getReleasePlan()', () => {
 
   it('qualifies tags with the package name when several packages share the repo', () => {
     const plan = getReleasePlan({
-      defaultBranch: 'main',
       packageName: 'create-vike-core',
       multiplePackages: true,
       changelogSections: {
@@ -222,7 +214,6 @@ describe('getReleasePlan()', () => {
       releasesToCreate: [
         {
           tag_name: 'create-vike-core@0.0.2',
-          target_commitish: 'main',
           name: 'create-vike-core@0.0.2',
           body: 'New notes',
         },

@@ -92,7 +92,6 @@ async function syncPackage({
   const githubReleases = await fetchGithubReleases(owner, repo, token)
 
   const { releasesToCreate, releasesToUpdate, releasesToDelete } = getReleasePlan({
-    defaultBranch,
     githubReleases,
     changelogSections,
     packageName: packageJson.name,
@@ -118,13 +117,7 @@ async function syncPackage({
     const tagExists = gitTagExists(tagName)
     const isNewest = tagName === newestTag
     const deducedCommit = !tagExists && !isNewest ? findReleaseCommit(versionByTag.get(tagName)!) : null
-    releaseToCreate.target_commitish = chooseCreateCommitish({
-      tagName,
-      tagExists,
-      isNewest,
-      deducedCommit,
-      defaultBranch,
-    })
+    const targetCommitish = chooseCreateCommitish({ tagName, tagExists, isNewest, deducedCommit, defaultBranch })
     if (!tagExists && !isNewest)
       console.warn(`Tag ${tagName} is missing — creating its release at deduced commit ${deducedCommit}`)
 
@@ -132,7 +125,12 @@ async function syncPackage({
     await githubRequest(`/repos/${owner}/${repo}/releases`, {
       token,
       method: 'POST',
-      body: releaseToCreate,
+      body: {
+        tag_name: tagName,
+        target_commitish: targetCommitish,
+        name: releaseToCreate.name,
+        body: releaseToCreate.body,
+      },
       dryRun,
     })
     if (!dryRun) console.log(`Created release ${tagName}`)
@@ -249,7 +247,6 @@ function parseChangelog(changelog: string): ChangelogSections {
 
 type ReleasesToCreate = {
   tag_name: string
-  target_commitish: string
   name: string
   body: string
 }
@@ -317,13 +314,11 @@ function chooseCreateCommitish({
 }
 
 function getReleasePlan({
-  defaultBranch,
   githubReleases,
   changelogSections,
   packageName,
   multiplePackages,
 }: {
-  defaultBranch: string
   githubReleases: Release[]
   changelogSections: ChangelogSections
   packageName: string
@@ -349,7 +344,7 @@ function getReleasePlan({
     expectedTags.add(tagName)
     const existingRelease = releasesByTag.get(tagName)
     if (!existingRelease) {
-      releasesToCreate.push({ tag_name: tagName, target_commitish: defaultBranch, name: tagName, body })
+      releasesToCreate.push({ tag_name: tagName, name: tagName, body })
     } else if (existingRelease.body?.trim() !== body) {
       releasesToUpdate.push({ release_id: existingRelease.id, tag_name: tagName, body })
     }
