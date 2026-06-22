@@ -2,9 +2,9 @@
 // Run via the `delete-all` package.json script — see README.md
 
 import { deleteRelease, fetchGithubReleases, getGithubToken, getRepository } from './utils/github.ts'
-import { runAsMain } from './utils/run-as-main.ts'
+import { runMainIfNotImported } from './utils/run-as-main.ts'
 
-runAsMain(import.meta.url, deleteAllReleases)
+runMainIfNotImported(import.meta.url, deleteAllReleases)
 
 async function deleteAllReleases() {
   const token = getGithubToken()

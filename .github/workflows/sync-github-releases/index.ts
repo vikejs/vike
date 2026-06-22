@@ -20,9 +20,9 @@ import {
   getRepository,
   updateReleaseBody,
 } from './utils/github.ts'
-import { runAsMain } from './utils/run-as-main.ts'
+import { runMainIfNotImported } from './utils/run-as-main.ts'
 
-runAsMain(import.meta.url, main)
+runMainIfNotImported(import.meta.url, main)
 
 async function main(): Promise<void> {
   // The package.json scripts run from this folder; switch to the repo root so the git commands and
