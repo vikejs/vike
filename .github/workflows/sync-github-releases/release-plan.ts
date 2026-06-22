@@ -6,17 +6,17 @@ export { chooseCreateCommitish }
 import type { ChangelogSections } from './utils/changelog.ts'
 import type { Release } from './utils/github.ts'
 
-type ReleasesToCreate = {
+type ReleaseToCreate = {
   tag_name: string
   name: string
   body: string
 }
-type ReleasesToUpdate = {
+type ReleaseToUpdate = {
   release_id: number
   tag_name: string
   body: string
 }
-type ReleasesToDelete = {
+type ReleaseToDelete = {
   release_id: number
   tag_name: string
 }
@@ -92,8 +92,8 @@ function getReleasePlan({
   // create and update off the changelog can only ever touch the versions the changelog declares.
   const releasesByTag = new Map(githubReleases.map((release) => [release.tag_name, release]))
   const expectedTags = new Set<string>()
-  const releasesToCreate: ReleasesToCreate[] = []
-  const releasesToUpdate: ReleasesToUpdate[] = []
+  const releasesToCreate: ReleaseToCreate[] = []
+  const releasesToUpdate: ReleaseToUpdate[] = []
 
   // changelogSections is newest-first; iterate oldest-first so releases are created (and their
   // notifications sent) in chronological order. Which release is "Latest" is set explicitly via
@@ -112,7 +112,7 @@ function getReleasePlan({
   }
 
   // Delete this package's releases whose version is no longer in the changelog (the source of truth).
-  const releasesToDelete: ReleasesToDelete[] = githubReleases
+  const releasesToDelete: ReleaseToDelete[] = githubReleases
     .filter(
       (release) => isOwnedTag(release.tag_name, packageName, multiplePackages) && !expectedTags.has(release.tag_name),
     )
