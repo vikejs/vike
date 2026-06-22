@@ -1,7 +1,8 @@
 # Sync GitHub Releases
 
 Keeps each package's [GitHub Releases](https://github.com/vikejs/vike/releases) in sync with its
-`CHANGELOG.md`: creates any missing release and rewrites any whose notes have drifted from the changelog.
+`CHANGELOG.md`: creates any missing release, rewrites any whose notes have drifted from the changelog,
+and deletes any whose version is no longer in the changelog.
 
 In CI this runs automatically via [`../sync-github-releases.yml`](../sync-github-releases.yml) — on every
 push to `main` that touches a `packages/**/CHANGELOG.md`, and on manual `workflow_dispatch`. The scripts
@@ -19,7 +20,7 @@ below run the same tooling by hand.
    Then, for each package:
 2. **Parse** its `CHANGELOG.md` into one entry per version (`parseChangelog()`).
 3. **Fetch** the package's existing GitHub Releases.
-4. **Plan the changes** (`getReleasePlan()`): create a release for every changelog version that doesn't have one yet, and update any whose notes have drifted from the changelog.
+4. **Plan the changes** (`getReleasePlan()`): create a release for every changelog version that doesn't have one yet, update any whose notes have drifted from the changelog, and delete any of the package's releases whose version is no longer in the changelog.
 5. **Apply** the plan through the GitHub API — or, with `--dry-run`, just log what would change.
 
 It's safe to run against any current state: older missing releases are created too, and [GitHub orders the releases list by tag version](https://github.com/vikejs/vike/pull/3157#issuecomment-4406846257), so they still land in the right place.

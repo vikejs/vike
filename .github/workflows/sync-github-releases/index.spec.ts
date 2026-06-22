@@ -120,6 +120,7 @@ describe('getReleasePlan()', () => {
         },
       ],
       releasesToUpdate: [{ release_id: 1, tag_name: 'v1.0.0', body: 'Updated old notes' }],
+      releasesToDelete: [],
     })
   })
 
@@ -137,10 +138,11 @@ describe('getReleasePlan()', () => {
     expect(plan).toEqual({
       releasesToCreate: [],
       releasesToUpdate: [{ release_id: 3, tag_name: 'v1.0.1', body: 'Fresh release notes' }],
+      releasesToDelete: [],
     })
   })
 
-  it('leaves GitHub releases without a matching changelog entry untouched', () => {
+  it('leaves releases we do not own untouched (no spurious update or delete)', () => {
     const plan = getReleasePlan({
       defaultBranch: 'main',
       packageName: 'vike',
@@ -148,12 +150,48 @@ describe('getReleasePlan()', () => {
       changelogSections: { 'v1.0.0': 'Notes' },
       githubReleases: [
         { id: 1, tag_name: 'v1.0.0', body: 'Notes' },
-        // No changelog entry for this tag — it must not be queued for a spurious (undefined-body) update.
-        { id: 2, tag_name: 'v0.0.1-orphan', body: 'Unrelated release' },
+        // Not one of our vX.Y.Z tags: must not be updated (no undefined body) nor deleted.
+        { id: 2, tag_name: 'nightly', body: 'Unrelated release' },
       ],
     })
 
-    expect(plan).toEqual({ releasesToCreate: [], releasesToUpdate: [] })
+    expect(plan).toEqual({ releasesToCreate: [], releasesToUpdate: [], releasesToDelete: [] })
+  })
+
+  it('deletes a release whose version was removed from the changelog', () => {
+    const plan = getReleasePlan({
+      defaultBranch: 'main',
+      packageName: 'vike',
+      multiplePackages: false,
+      changelogSections: { 'v1.0.0': 'Notes' },
+      githubReleases: [
+        { id: 1, tag_name: 'v1.0.0', body: 'Notes' },
+        // Owned tag, no longer in the changelog → delete.
+        { id: 2, tag_name: 'v0.9.0', body: 'Removed from changelog' },
+      ],
+    })
+
+    expect(plan).toEqual({
+      releasesToCreate: [],
+      releasesToUpdate: [],
+      releasesToDelete: [{ release_id: 2, tag_name: 'v0.9.0' }],
+    })
+  })
+
+  it('only deletes releases in its own namespace', () => {
+    const plan = getReleasePlan({
+      defaultBranch: 'main',
+      packageName: 'create-vike-core',
+      multiplePackages: true,
+      changelogSections: { 'v0.0.1': 'Notes' },
+      githubReleases: [
+        { id: 1, tag_name: 'create-vike-core@0.0.1', body: 'Notes' },
+        // Another package's release — not ours to delete.
+        { id: 2, tag_name: 'vike@0.4.0', body: 'Another package' },
+      ],
+    })
+
+    expect(plan).toEqual({ releasesToCreate: [], releasesToUpdate: [], releasesToDelete: [] })
   })
 
   it('qualifies tags with the package name when several packages share the repo', () => {
@@ -180,6 +218,7 @@ describe('getReleasePlan()', () => {
         },
       ],
       releasesToUpdate: [],
+      releasesToDelete: [],
     })
   })
 })

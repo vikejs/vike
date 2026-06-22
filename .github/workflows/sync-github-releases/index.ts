@@ -85,7 +85,7 @@ async function syncPackage({
 
   const githubReleases = await fetchGithubReleases(owner, repo, token)
 
-  const { releasesToCreate, releasesToUpdate } = getReleasePlan({
+  const { releasesToCreate, releasesToUpdate, releasesToDelete } = getReleasePlan({
     defaultBranch,
     githubReleases,
     changelogSections,
@@ -113,6 +113,16 @@ async function syncPackage({
       dryRun,
     })
     if (!dryRun) console.log(`Updated release ${releaseToUpdate.tag_name}`)
+  }
+
+  for (const releaseToDelete of releasesToDelete) {
+    // https://docs.github.com/en/rest/releases/releases#delete-a-release
+    await githubRequest(`/repos/${owner}/${repo}/releases/${releaseToDelete.release_id}`, {
+      token,
+      method: 'DELETE',
+      dryRun,
+    })
+    if (!dryRun) console.log(`Deleted release ${releaseToDelete.tag_name}`)
   }
 }
 
@@ -200,12 +210,24 @@ type ReleasesToUpdate = {
   tag_name: string
   body: string
 }
+type ReleasesToDelete = {
+  release_id: number
+  tag_name: string
+}
 // The git tag / GitHub Release tag for a changelog version. A single package keeps the historical
 // bare `vX.Y.Z`. Several packages share the repo's tag namespace, so their tags are qualified with
 // the package name (e.g. `create-vike-core@0.0.391`) to avoid collisions.
 function getTagName(versionTag: string, packageName: string, multiplePackages: boolean): string {
   if (!multiplePackages) return versionTag
   return `${packageName}@${versionTag.replace(/^v/, '')}`
+}
+
+// Whether a GitHub Release tag belongs to the package being synced — i.e. is a candidate for
+// deletion once its changelog entry is gone. Mirrors getTagName()'s two schemes, so a release of
+// another package (or a tag we never created, e.g. `nightly`) is never deleted.
+function isOwnedTag(tagName: string, packageName: string, multiplePackages: boolean): boolean {
+  if (multiplePackages) return tagName.startsWith(`${packageName}@`)
+  return /^v\d+\.\d+\.\d+/.test(tagName)
 }
 
 function getReleasePlan({
@@ -226,6 +248,7 @@ function getReleasePlan({
   // release of another package, or a manually-created one) with an `undefined` body. Driving both
   // create and update off the changelog can only ever touch the versions the changelog declares.
   const releasesByTag = new Map(githubReleases.map((release) => [release.tag_name, release]))
+  const expectedTags = new Set<string>()
   const releasesToCreate: ReleasesToCreate[] = []
   const releasesToUpdate: ReleasesToUpdate[] = []
 
@@ -237,6 +260,7 @@ function getReleasePlan({
   for (const versionTag of Object.keys(changelogSections).reverse()) {
     const body = changelogSections[versionTag]
     const tagName = getTagName(versionTag, packageName, multiplePackages)
+    expectedTags.add(tagName)
     const existingRelease = releasesByTag.get(tagName)
     if (!existingRelease) {
       releasesToCreate.push({ tag_name: tagName, target_commitish: defaultBranch, name: tagName, body })
@@ -245,5 +269,10 @@ function getReleasePlan({
     }
   }
 
-  return { releasesToCreate, releasesToUpdate }
+  // Delete this package's releases whose version is no longer in the changelog (the source of truth).
+  const releasesToDelete: ReleasesToDelete[] = githubReleases
+    .filter((release) => isOwnedTag(release.tag_name, packageName, multiplePackages) && !expectedTags.has(release.tag_name))
+    .map((release) => ({ release_id: release.id, tag_name: release.tag_name }))
+
+  return { releasesToCreate, releasesToUpdate, releasesToDelete }
 }
