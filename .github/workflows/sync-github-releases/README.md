@@ -14,8 +14,7 @@ below run the same tooling by hand.
 1. **Pick which package(s) to sync** (`getPackageDirsToSync()`):
    - an explicit `<package-dir>` argument, or
    - on `push` (CI): the packages whose `CHANGELOG.md` changed, or
-   - on `workflow_dispatch` (CI): every package, or
-   - locally: the sole package, or an error asking for an explicit `<package-dir>`.
+   - otherwise (manual `workflow_dispatch`, or no `<package-dir>`): every package.
 
    Then, for each package:
 2. **Parse** its `CHANGELOG.md` into one entry per version (`parseChangelog()`).
@@ -34,22 +33,22 @@ GITHUB_TOKEN=<token> pnpm -C .github/workflows/sync-github-releases run <script>
 ```
 
 Each script needs a `GITHUB_TOKEN` ([personal access token](https://github.com/settings/tokens)) with the
-scope below. `<package-dir>` is a path such as `packages/vike`.
+scope below. `<package-dir>` is a path such as `packages/vike`; omit it to sync every package.
 
 | Script | Description | Token scope |
 | --- | --- | --- |
-| `run -- <package-dir>` | Create/update the package's GitHub Releases from its `CHANGELOG.md`. | `contents: write` |
-| `try -- <package-dir>` | Dry-run of `run`: log what would change without writing anything. | `contents: read` |
+| `run [-- <package-dir>]` | Create/update GitHub Releases from `CHANGELOG.md`. Without a `<package-dir>`, syncs every package. | `contents: write` |
+| `check [-- <package-dir>]` | Dry-run of `run`: log what would change without writing anything. | `contents: read` |
 | `delete-all` | **Destructive** — delete every GitHub Release in the repo. | `contents: write` |
 
 ### Examples
 
 ```bash
 # Preview the changes for the `vike` package (no writes):
-GITHUB_TOKEN=<token> pnpm -C .github/workflows/sync-github-releases run try -- packages/vike
+GITHUB_TOKEN=<token> pnpm -C .github/workflows/sync-github-releases run check -- packages/vike
 
 # Create/update the releases for real:
 GITHUB_TOKEN=<token> pnpm -C .github/workflows/sync-github-releases run run -- packages/vike
 ```
 
-> Requires [Bun](https://bun.sh) — the scripts run the TypeScript directly with `bun`.
+> Requires [Node.js](https://nodejs.org) ≥ 22.6 — the scripts run the TypeScript directly via type stripping.

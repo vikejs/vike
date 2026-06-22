@@ -18,10 +18,14 @@ import { readFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import type { Release } from './types'
-import { fetchGithubReleases, getDefaultBranch, getGithubToken, getRepository, githubRequest } from './github-utils'
+import type { Release } from './types.ts'
+import { fetchGithubReleases, getDefaultBranch, getGithubToken, getRepository, githubRequest } from './github-utils.ts'
 
 async function main(): Promise<void> {
+  // The package.json scripts run from this folder; switch to the repo root so the git commands and
+  // package-dir paths below resolve against it.
+  process.chdir(getRepoRoot())
+
   const args = process.argv.slice(2)
   const dryRun = args.includes('--dry-run')
 
@@ -103,18 +107,15 @@ async function syncPackage({
 }
 
 function getPackageDirsToSync(): string[] {
+  // On push, sync only the packages whose CHANGELOG.md changed; otherwise (manual workflow_dispatch
+  // or a local run with no <package-dir>) sync every package.
   const pushedChangelogFiles = getPushedChangelogFiles()
   if (pushedChangelogFiles) return toPackageDirs(pushedChangelogFiles)
+  return toPackageDirs(getTrackedChangelogFiles())
+}
 
-  const packageDirs = toPackageDirs(getTrackedChangelogFiles())
-
-  // Other CI triggers (e.g. a manual workflow_dispatch) reach here: sync every package.
-  // GITHUB_ACTIONS is GitHub's documented signal for telling a CI run apart from a local one.
-  if (process.env.GITHUB_ACTIONS) return packageDirs
-
-  // Local run: default to the sole package, else require an explicit `<package-dir>`.
-  if (packageDirs.length === 1) return packageDirs
-  throw new Error('Usage: <package-dir> [--dry-run]')
+function getRepoRoot(): string {
+  return execFileSync('git', ['rev-parse', '--show-toplevel'], { encoding: 'utf8' }).trim()
 }
 
 function toPackageDirs(files: string[]): string[] {
