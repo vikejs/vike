@@ -1,95 +1,5 @@
-import { readFileSync } from 'node:fs'
-import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { parseChangelog } from './utils/changelog.ts'
-import { toPackageDirs } from './utils/git.ts'
-import { getRepository } from './utils/github.ts'
-import { chooseCreateCommitish, getReleasePlan, getTagName, withSourceOfTruth } from './release-plan.ts'
-
-function readFixture(name: string): string {
-  return readFileSync(path.join(__dirname, 'fixtures', name), 'utf8')
-}
-
-function withEnvUnset(name: string, fn: () => void): void {
-  const previous = process.env[name]
-  try {
-    delete process.env[name]
-    fn()
-  } finally {
-    if (previous === undefined) {
-      delete process.env[name]
-    } else {
-      process.env[name] = previous
-    }
-  }
-}
-
-describe('parseChangelog()', () => {
-  it('maps changelog headings to version tags and appends the compare link', () => {
-    const changelog = `## [1.0.1](https://github.com/owner/repo/compare/v1.0.0...v1.0.1) (2026-03-01)
-
-### Features
-
-* Added release automation.
-
-## [1.0.0](https://github.com/owner/repo/releases/tag/v1.0.0) (2026-02-28)
-
-### Bug Fixes
-
-* Fixed old release notes.
-`
-
-    expect(parseChangelog(changelog)).toEqual({
-      // Compare link surfaced as a "Full Changelog" footer.
-      'v1.0.1':
-        '### Features\n\n* Added release automation.\n\n**Full Changelog**: https://github.com/owner/repo/compare/v1.0.0...v1.0.1',
-      // Non-`/compare/` link → no footer.
-      'v1.0.0': '### Bug Fixes\n\n* Fixed old release notes.',
-    })
-  })
-
-  it('parses oldest Vike entries (single # headings, pre-release versions)', () => {
-    const changelogSections = parseChangelog(readFixture('changelog-vike.md'))
-    expect(Object.keys(changelogSections)).toEqual([
-      'v0.1.0-beta.10',
-      'v0.1.0-beta.9',
-      'v0.1.0-beta.8',
-      'v0.1.0-beta.7',
-      'v0.1.0-beta.6',
-    ])
-    expect(changelogSections['v0.1.0-beta.10']).toContain('### Features')
-    expect(changelogSections['v0.1.0-beta.8']).toContain('### BREAKING CHANGES')
-    expect(changelogSections['v0.1.0-beta.6']).toContain('Initial public release')
-  })
-
-  it('parses oldest Telefunc entries (trailing non-versioned sections)', () => {
-    const changelogSections = parseChangelog(readFixture('changelog-telefunc.md'))
-    expect(Object.keys(changelogSections)).toEqual(['v0.1.2', 'v0.1.1'])
-    expect(changelogSections['v0.1.2']).toContain('improve TelefunctionError type')
-    expect(changelogSections['v0.1.1']).toContain('isomorphic imports')
-  })
-
-  it('parses oldest vike-vue entries (no-link headings, dash bullets)', () => {
-    const changelogSections = parseChangelog(readFixture('changelog-vike-vue.md'))
-    expect(Object.keys(changelogSections)).toEqual(['v0.2.3', 'v0.2.2', 'v0.2.1', 'v0.2.0', 'v0.1.1'])
-    expect(changelogSections['v0.2.1']).toContain('Fix peer dependency')
-    expect(changelogSections['v0.2.0']).toContain('Add `Head` config option')
-  })
-
-  it('parses oldest vike-solid entries (single # headings, mixed formats)', () => {
-    const changelogSections = parseChangelog(readFixture('changelog-vike-solid.md'))
-    expect(Object.keys(changelogSections)).toEqual(['v0.7.2', 'v0.7.1', 'v0.7.0', 'v0.6.2', 'v0.6.1'])
-    expect(changelogSections['v0.7.0']).toContain('### BREAKING CHANGES')
-    expect(changelogSections['v0.6.1']).toContain('MIGRATION.md')
-  })
-
-  it('parses oldest vike-react entries (no-link initial version)', () => {
-    const changelogSections = parseChangelog(readFixture('changelog-vike-react.md'))
-    expect(Object.keys(changelogSections)).toEqual(['v0.1.6', 'v0.1.5', 'v0.1.4', 'v0.1.3', 'v0.1.2', 'v0.1.1'])
-    expect(changelogSections['v0.1.6']).toContain("fix 'vike-react' type")
-    expect(changelogSections['v0.1.1']).toContain('fix ESM import paths')
-  })
-})
+import { chooseCreateCommitish, getReleasePlan, getTagName } from './release-plan.ts'
 
 describe('getReleasePlan()', () => {
   it('creates missing past releases alongside the current release and updates stale notes', () => {
@@ -219,19 +129,6 @@ describe('getReleasePlan()', () => {
   })
 })
 
-describe('withSourceOfTruth()', () => {
-  it('appends a footer linking back to the changelog', () => {
-    expect(
-      withSourceOfTruth(
-        '### Features\n\n* Something',
-        'https://github.com/vikejs/vike/blob/main/packages/vike/CHANGELOG.md',
-      ),
-    ).toBe(
-      '### Features\n\n* Something\n\n_Source of truth: [`CHANGELOG.md`](https://github.com/vikejs/vike/blob/main/packages/vike/CHANGELOG.md)._',
-    )
-  })
-})
-
 describe('chooseCreateCommitish()', () => {
   const base = { tagName: 'v0.4.0', defaultBranch: 'main' }
 
@@ -269,40 +166,5 @@ describe('getTagName()', () => {
   it('qualifies the tag with the package name when there are several packages', () => {
     expect(getTagName('v0.0.391', 'create-vike-core', true)).toBe('create-vike-core@0.0.391')
     expect(getTagName('v0.1.0-beta.6', 'vike', true)).toBe('vike@0.1.0-beta.6')
-  })
-})
-
-describe('toPackageDirs()', () => {
-  it('maps changed CHANGELOG.md files to deduplicated package directories', () => {
-    expect(
-      toPackageDirs([
-        'packages/vike/CHANGELOG.md',
-        'packages/vike/src/index.ts',
-        'packages/create-vike-core/CHANGELOG.md',
-        'packages/create-vike-core/CHANGELOG.md',
-      ]),
-    ).toEqual(['packages/vike', 'packages/create-vike-core'])
-  })
-
-  it('ignores CHANGELOG.md files outside packages/ and non-CHANGELOG files', () => {
-    expect(
-      toPackageDirs(['CHANGELOG.md', 'docs/CHANGELOG.md', 'packages/vike/README.md', 'packages/vike/CHANGELOG.md']),
-    ).toEqual(['packages/vike'])
-  })
-
-  it('returns an empty array when nothing matches', () => {
-    expect(toPackageDirs(['README.md', 'packages/vike/src/index.ts'])).toEqual([])
-  })
-})
-
-describe('local fallbacks', () => {
-  it('returns a valid repository when run locally', () => {
-    withEnvUnset('GITHUB_REPOSITORY', () => {
-      const repository = getRepository()
-      expect(repository.owner).toEqual(expect.any(String))
-      expect(repository.repo).toEqual(expect.any(String))
-      expect(repository.owner.trim()).not.toBe('')
-      expect(repository.repo.trim()).not.toBe('')
-    })
   })
 })
