@@ -11,18 +11,18 @@ import './assertEnvApiDev.js'
  * https://vike.dev/api#build
  */
 async function build(options: ApiOptions = {}): Promise<{}> {
-  const { viteConfigFromUserResolved } = await prepareViteApiCall(options, 'build')
+  const { viteConfigUser } = await prepareViteApiCall(options, 'build')
 
   // Pass it to vike:build:pluginBuildApp
-  if (viteConfigFromUserResolved) viteConfigFromUserResolved._viteConfigFromUserResolved = viteConfigFromUserResolved
+  if (viteConfigUser) viteConfigUser._viteConfigUser = viteConfigUser
 
-  const builder = await createBuilder(viteConfigFromUserResolved)
+  const builder = await createBuilder(viteConfigUser)
   // buildApp() is implemented by vike:build:pluginBuildApp
   await builder.buildApp()
 
   return {
-    /* We don't return `viteConfig` because `viteConfigFromUserResolved` is `InlineConfig` not `ResolvedConfig`
-    viteConfig: viteConfigFromUserResolved,
+    /* We don't return `viteConfig` because `viteConfigUser` is `InlineConfig` not `ResolvedConfig`
+    viteConfig: viteConfigUser,
     */
   }
 }

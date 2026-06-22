@@ -1,9 +1,7 @@
-import { Link, FileAdded, Warning } from '@brillout/docpress'
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
+import { Link, FileAdded, Warning, Tabs } from '@brillout/docpress'
 import { DeprecatedServer } from '../../components'
-import '../../components/tabs.css'
 
-Define `+server.js` to seamlessly integrate a server framework (Hono, Express.js, ...). Or set `+server: true` to use Vike's built-in lightweight server.
+Define `+server.js` to seamlessly integrate a server framework (Hono, Express, ...). Or set `+server: true` to use Vike's built-in lightweight server.
 
 > Using `+server` is the recommended way for a seamless server integration, but you can also use <Link href="/renderPage">`renderPage()`</Link> to manually integrate the server instead.
 
@@ -18,148 +16,127 @@ Define `+server.js` to seamlessly integrate a server framework (Hono, Express.js
 
 Define `+server.js` to integrate a server:
 
-<Tabs>
-  <TabList>
-    <Tab>Hono</Tab>
-    <Tab>Express.js</Tab>
-    <Tab>Fastify</Tab>
-    <Tab>H3</Tab>
-    <Tab>Elysia</Tab>
-    <Tab>Other</Tab>
-  </TabList>
-  <TabPanel>
-    ```shell
-    npm i hono @vikejs/hono
-    ```
+<Tabs choice={'server'} />
 
-    <FileAdded>
-    ```ts
-    // +server.ts
+:::Choice{#Express}
+<DeprecatedServer name="Express" />
+:::
 
-    import { Hono } from 'hono'
-    import vike from '@vikejs/hono'
-    import type { Server } from 'vike/types'
+:::Choice{#Fastify}
+<DeprecatedServer name="Fastify" />
+:::
 
-    const app = new Hono()
-    vike(app) // Attaches Vike
+:::Choice{#Other}
+If Vike doesn't have an adapter for you server, or if you aren't using any server framework, you can use `vike/fetch`:
+:::
 
-    export default {
-      fetch: app.fetch
-    } satisfies Server
-    ```
-    </FileAdded>
-  </TabPanel>
-  <TabPanel>
-    <DeprecatedServer name="Express.js" />
+```shell choice=Hono
+npm i hono @vikejs/hono
+```
 
-    ```shell
-    npm i express @vikejs/express
-    ```
+```shell choice=Express
+npm i express @vikejs/express
+```
 
-    <FileAdded>
-    ```ts
-    // +server.ts
+```shell choice=Fastify
+npm i fastify @vikejs/fastify
+```
 
-    import express from 'express'
-    import vike, { toFetchHandler } from '@vikejs/express'
-    import type { Server } from 'vike/types'
+```shell choice=H3
+npm i h3 @vikejs/h3
+```
 
-    const app = express()
-    vike(app) // Attaches Vike
+```shell choice=Elysia
+npm i elysia @vikejs/elysia
+```
 
-    export default {
-      fetch: toFetchHandler(app)
-    } satisfies Server
-    ```
-    </FileAdded>
-  </TabPanel>
-  <TabPanel>
-    <DeprecatedServer name="Fastify" />
+```ts file-added choice=Hono
+// +server.ts
 
-    ```shell
-    npm i fastify @vikejs/fastify
-    ```
+import { Hono } from 'hono'
+import vike from '@vikejs/hono'
+import type { Server } from 'vike/types'
 
-    <FileAdded>
-    ```ts
-    // +server.ts
+const app = new Hono()
+vike(app) // Attaches Vike
 
-    import fastify from 'fastify'
-    import vike, { toFetchHandler } from '@vikejs/fastify'
-    import type { Server } from 'vike/types'
+export default {
+  fetch: app.fetch
+} satisfies Server
+```
 
-    const app = fastify()
-    await vike(app) // Attaches Vike
+```ts file-added choice=Express
+// +server.ts
 
-    export default {
-      fetch: toFetchHandler(app.routing)
-    } satisfies Server
-    ```
-    </FileAdded>
-  </TabPanel>
-  <TabPanel>
-    ```shell
-    npm i h3 @vikejs/h3
-    ```
+import express from 'express'
+import vike, { toFetchHandler } from '@vikejs/express'
+import type { Server } from 'vike/types'
 
-    <FileAdded>
-    ```ts
-    // +server.ts
+const app = express()
+vike(app) // Attaches Vike
 
-    import { createApp, toWebHandler } from 'h3'
-    import vike from '@vikejs/h3'
-    import type { Server } from 'vike/types'
+export default {
+  fetch: toFetchHandler(app)
+} satisfies Server
+```
 
-    const app = createApp()
-    vike(app) // Attaches Vike
+```ts file-added choice=Fastify
+// +server.ts
 
-    export default {
-      fetch: toWebHandler(app)
-    } satisfies Server
-    ```
-    </FileAdded>
-  </TabPanel>
-  <TabPanel>
-    ```shell
-    npm i elysia @vikejs/elysia
-    ```
+import fastify from 'fastify'
+import vike, { toFetchHandler } from '@vikejs/fastify'
+import type { Server } from 'vike/types'
 
-    <FileAdded>
-    ```ts
-    // +server.ts
+const app = fastify()
+await vike(app) // Attaches Vike
 
-    import { Elysia } from 'elysia'
-    import vike from '@vikejs/elysia'
-    import type { Server } from 'vike/types'
+export default {
+  fetch: toFetchHandler(app.routing)
+} satisfies Server
+```
 
-    const app = new Elysia()
-    vike(app) // Attaches Vike
+```ts file-added choice=H3
+// +server.ts
 
-    export default {
-      fetch: app.fetch
-    } satisfies Server
-    ```
-    </FileAdded>
-  </TabPanel>
-  <TabPanel>
-    If Vike doesn't have an adapter for you server, or if you aren't using any server framework, you can use `vike/fetch`:
+import { createApp, toWebHandler } from 'h3'
+import vike from '@vikejs/h3'
+import type { Server } from 'vike/types'
 
-    <FileAdded>
-      ```ts
-      // +server.ts
+const app = createApp()
+vike(app) // Attaches Vike
 
-      import vike from 'vike/fetch'
+export default {
+  fetch: toWebHandler(app)
+} satisfies Server
+```
 
-      export default {
-        fetch(request) {
-          console.log('Incoming request:', request.url)
-          return vike.fetch(request)
-        }
-      } satisfies Server
-      ```
-    </FileAdded>
-  </TabPanel>
-</Tabs>
+```ts file-added choice=Elysia
+// +server.ts
+
+import { Elysia } from 'elysia'
+import vike from '@vikejs/elysia'
+import type { Server } from 'vike/types'
+
+const app = new Elysia()
+vike(app) // Attaches Vike
+
+export default {
+  fetch: app.fetch
+} satisfies Server
+```
+
+```ts file-added choice=Other
+// +server.ts
+
+import vike from 'vike/fetch'
+
+export default {
+  fetch(request) {
+    console.log('Incoming request:', request.url)
+    return vike.fetch(request)
+  }
+} satisfies Server
+```
 
 ### `+server: true`
 
@@ -176,20 +153,12 @@ export default {
 
 ## Deployment
 
-#### Self-host
-
-```shell
-# Build for production
-vike build
-# Run the production build
-node ./dist/server/index.mjs # or Bun/Deno
-```
-
-#### Deployment providers
-
+See:
+- <Link href="/self-host" />
 - <Link href="/cloudflare" />
-- <Link href="/edgeone-pages" />
+- <Link href="/netlify" />
 - <Link href="/vercel" />
+- <Link href="/edgeone-pages" />
 
 ## Settings
 
@@ -251,9 +220,9 @@ export default {
 </blockquote>
 
 
-## `pageContext.runtime`
+## `pageContext.req` & `pageContext.res`
 
-You can use `pageContext.runtime` to access the HTTP request object, for example:
+You can use `pageContext.req` and `pageContext.res` to access the HTTP request and response objects, for example:
 
 ```ts
 // pages/product/@id/+data.ts
@@ -262,15 +231,15 @@ import type { PageContextServer } from 'vike/types'
 
 export type Data = Awaited<ReturnType<typeof data>>
 export async function data(pageContext: PageContextServer) {
-  // Using pageContext.runtime.req to access the logged-in user
-  const { user } = pageContext.runtime.req
+  // Using pageContext.req to access the logged-in user
+  const { user } = pageContext.req
   // ...
 }
 
 declare global {
   namespace Vike {
     interface Server {
-      // 👉 Pick your server (for correct pageContext.runtime type)
+      // 👉 Pick your server (for correct pageContext.req/pageContext.res type)
       server: 'hono' // | 'express' | 'fastify' | 'hattip' | 'srvx' | 'elysia' | 'h3'
     }
   }
@@ -279,10 +248,11 @@ declare global {
 
 > You can use <Link href="/onCreatePageContext">`+onCreatePageContext`</Link> to define custom `pageContext` properties, see <Link href="/pageContext#custom" />.
 >
-> For example, you can define `pageContext.user` as an alias of `pageContext.runtime.req.user` for convenience, see <Link href="/auth#pagecontext-user" doNotInferSectionTitle />.
+> For example, you can define `pageContext.user` as an alias of `pageContext.req.user` for convenience, see <Link href="/auth#pagecontext-user" doNotInferSectionTitle />.
 
 See also:
-- <Link href="/pageContext#runtime">API > `pageContext.runtime`</Link>
+- <Link href="/pageContext#req">API > `pageContext.req`</Link>
+- <Link href="/pageContext#res">API > `pageContext.res`</Link>
 - <Link href="/auth" />
 
 
@@ -324,18 +294,82 @@ You can compress all server responses by using the [compress universal middlewar
 npm i @universal-middleware/compress
 ```
 
-```ts
+```ts choice=Hono
 // +server.ts
 
 import { Hono } from 'hono'
 import vike from '@vikejs/hono'
 import compress from '@universal-middleware/compress' // [!code ++]
 
-const app = new Hono() // [!code --]
-// Add universal middlewares here (same for Express.js, Fastify, ...) // [!code ++]
+const app = new Hono()
+vike(app) // [!code --]
 vike(app, [compress()]) // [!code ++]
 ```
 
+```ts choice=Express
+// +server.ts
+
+import express from 'express'
+import vike, { toFetchHandler } from '@vikejs/express'
+import compress from '@universal-middleware/compress' // [!code ++]
+
+const app = express()
+vike(app) // [!code --]
+vike(app, [compress()]) // [!code ++]
+```
+
+```ts choice=Fastify
+// +server.ts
+
+import fastify from 'fastify'
+import vike, { toFetchHandler } from '@vikejs/fastify'
+import compress from '@universal-middleware/compress' // [!code ++]
+
+const app = fastify()
+await vike(app) // [!code --]
+await vike(app, [compress()]) // [!code ++]
+```
+
+```ts choice=H3
+// +server.ts
+
+import { createApp, toWebHandler } from 'h3'
+import vike from '@vikejs/h3'
+import compress from '@universal-middleware/compress' // [!code ++]
+
+const app = createApp()
+vike(app) // [!code --]
+vike(app, [compress()]) // [!code ++]
+```
+
+```ts choice=Elysia
+// +server.ts
+
+import { Elysia } from 'elysia'
+import vike from '@vikejs/elysia'
+import compress from '@universal-middleware/compress' // [!code ++]
+
+const app = new Elysia()
+vike(app) // [!code --]
+vike(app, [compress()]) // [!code ++]
+```
+
+```ts choice=Other
+// +server.ts
+
+import vike from 'vike/fetch'
+import compressMiddleware from '@universal-middleware/compress' // [!code ++]
+
+const compress = compressMiddleware({/* options */}) // [!code ++]
+
+export default {
+  async fetch(request) {
+    console.log('Incoming request:', request.url)
+    const res = await vike.fetch(request)
+    return compress(res) // [!code ++]
+  }
+} satisfies Server
+```
 
 ## See also
 

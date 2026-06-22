@@ -18,10 +18,10 @@ const FeatureWall = () => {
 
         return (
           <article
-            className="relative flex flex-col rounded-field border border-grey-200 bg-base-100/85 p-4"
+            className="relative flex flex-col daisy-rounded-field border border-grey-200 bg-base-100/85 p-4"
             key={`${feature.title}-${featureIndex}`}
           >
-            <div className="absolute inset-0 z-0 rounded-field bg-linear-to-t from-transparent to-base-300/45 pointer-events-none" />
+            <div className="absolute inset-0 z-0 daisy-rounded-field bg-linear-to-t from-transparent to-base-300/45 pointer-events-none" />
             <div className="z-2 mb-6 flex items-center justify-between gap-3 col-span-full">
               <H5Headline as="h4" className="font-normal">
                 {feature.title}
@@ -31,7 +31,7 @@ const FeatureWall = () => {
             <div className="text-sm text-grey">{feature.content}</div>
             {/* Permanently removed the `advanced` label? I think so because it doesn't re-assure the user? it's kinda "panicking" for juniors?
             {feature.advanced && (
-              <div className="badge badge-xs badge-grey absolute left-3 -top-2 z-2 border-grey-200 text-grey">
+              <div className="daisy-badge daisy-badge-xs daisy-badge-grey absolute left-3 -top-2 z-2 border-grey-200 text-grey">
                 Advanced
               </div>
             )}

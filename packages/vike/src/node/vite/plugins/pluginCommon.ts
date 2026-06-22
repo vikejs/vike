@@ -11,7 +11,7 @@ import { assertRollupInput } from './build/pluginBuildConfig.js'
 import pc from '@brillout/picocolors'
 import { assertResolveAlias } from './pluginCommon/assertResolveAlias.js'
 import { getVikeConfigInternal, setVikeConfigContext } from '../shared/resolveVikeConfigInternal.js'
-import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/resolveViteConfigFromUser.js'
+import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/resolveViteConfigUser.js'
 import { temp_disablePrerenderAutoRun } from '../../prerender/context.js'
 import type { VitePluginServerEntryOptions } from '@brillout/vite-plugin-server-entry/plugin'
 import { version as viteVersionVike } from 'vite'
@@ -25,7 +25,7 @@ declare module 'vite' {
     _rootResolvedEarly?: string
     _baseViteOriginal?: string
     // We'll be able to remove once we have one Rolldown build instead of two Rollup builds
-    _viteConfigFromUserResolved?: InlineConfig
+    _viteConfigUser?: InlineConfig
     _viteVersionResolved?: string
   }
 }
@@ -99,27 +99,31 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
       config: {
         order: 'post',
         async handler(configFromUser) {
-          let configFromVike: UserConfig = { server: {}, preview: {} }
+          const configFromVike: UserConfig = { server: {}, preview: {} }
           const vikeConfig = await getVikeConfigInternal()
+
+          // A value the user set through Vike (+config.js, CLI option, or VIKE_CONFIG) overrides vite.config.js:
+          // Vike's config has higher precedence than vite.config.js (see precedence list at resolveViteConfigUser.ts).
+          // Vike's own fallbacks (default port, Docker `--host`) use setDefault() so they don't override vite.config.js.
 
           if (vikeConfig.config.port !== undefined) {
             // https://vike.dev/port
-            setDefault('port', vikeConfig.config.port, configFromUser, configFromVike)
+            setOverride('port', vikeConfig.config.port, configFromVike)
           } else {
             // Change Vite's default port
             setDefault('port', 3000, configFromUser, configFromVike)
           }
 
-          if (vikeConfig.config.host) {
+          if (vikeConfig.config.host !== undefined) {
             // https://vike.dev/host
-            setDefault('host', vikeConfig.config.host, configFromUser, configFromVike)
+            setOverride('host', vikeConfig.config.host, configFromVike)
           } else if (isDocker()) {
             // Set `--host` for Docker/Podman
             setDefault('host', true, configFromUser, configFromVike)
           }
 
           // https://vike.dev/force
-          if (vikeConfig.config.force !== undefined && configFromUser.optimizeDeps?.force === undefined) {
+          if (vikeConfig.config.force !== undefined) {
             configFromVike.optimizeDeps ??= {}
             configFromVike.optimizeDeps.force = vikeConfig.config.force
           }
@@ -131,7 +135,17 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
   ]
 }
 
-// Override Vite's default value without overriding user settings
+// Apply a Vike-provided value, overriding vite.config.js (Vike's config has higher precedence than vite.config.js)
+function setOverride<Setting extends 'port' | 'host'>(
+  setting: Setting,
+  value: NonNullable<UserConfig['server'] | UserConfig['preview']>[Setting],
+  configFromVike: UserConfig,
+) {
+  configFromVike.server![setting] = value
+  configFromVike.preview![setting] = value
+}
+
+// Apply a Vike fallback without overriding the user's vite.config.js
 function setDefault<Setting extends 'port' | 'host'>(
   setting: Setting,
   value: NonNullable<UserConfig['server'] | UserConfig['preview']>[Setting],

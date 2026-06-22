@@ -158,7 +158,7 @@ export const BoxOrange = cm.li.variants<{ $size?: VikeComponentSize; $type: 'lib
         inset-ring-1
         inset-ring-accent/30
         bg-linear-to-br from-white to-accent/6
-        rounded-field
+        daisy-rounded-field
         shadow-xs
         shadow-accent/5
         `,

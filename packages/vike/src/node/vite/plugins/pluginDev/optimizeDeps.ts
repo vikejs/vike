@@ -5,6 +5,7 @@ import type { ResolvedConfig, UserConfig } from 'vite'
 import { findPageFiles } from '../../shared/findPageFiles.js'
 import { assert } from '../../../../utils/assert.js'
 import { createDebug } from '../../../../utils/debug.js'
+import { deepEqual } from '../../../../utils/deepEqual.js'
 import { isArray } from '../../../../utils/isArray.js'
 import { isFilePathAbsoluteFilesystem } from '../../../../utils/isFilePathAbsoluteFilesystem.js'
 import { assertImportIsNpmPackage, getNpmPackageName } from '../../../../utils/parseNpmPackage.js'
@@ -12,7 +13,8 @@ import { requireResolveOptional } from '../../../../utils/requireResolve.js'
 import { isVirtualFileId } from '../../../../utils/virtualFileId.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { analyzeClientEntries } from '../build/pluginBuildConfig.js'
-import type { DefinedAtFilePath, PageConfigBuildTime } from '../../../../types/PageConfig.js'
+import type { DefinedAtFilePath, PageConfigBuildTime, PageConfigGlobalBuildTime } from '../../../../types/PageConfig.js'
+import type { FilePath } from '../../../../types/FilePath.js'
 import {
   virtualFileIdGlobalEntryClientCR,
   virtualFileIdGlobalEntryClientSR,
@@ -33,8 +35,12 @@ const LATE_DISCOVERED = [
   '@compiled/react/runtime',
 ]
 
-// TO-DO/eventually: remove this.
-// Avoid following warning for older vike-photon versions:
+// TO-DO/eventually: remove this workaround using following plan:
+// 1. Remove `include: ["vike > @brillout/require-shim"]` from vike-photon
+//    https://github.com/vikejs/vike-photon/blob/e11edb617ae44da6c1748222c387b10bf3fa5495/packages/vike-photon/src/plugin/plugins/configPlugin.ts#L16-L17
+// 2. Release new vike-photon version
+// 2. Remove this workaround
+// Even though Vike doesn't use @brillout/require-shim anymore, it's still needed because vike-photon adds @brillout/require-shim to optimizeDeps.include which leads to this error:
 // ```
 // [11:32:49.768][/test/photon-vercel/.test-dev.test.ts][pnpm run dev][stderr] Failed to resolve dependency: vike > @brillout/require-shim, present in ssr 'optimizeDeps.include'
 // ```
@@ -81,10 +87,14 @@ const optimizeDeps = {
 // - Make server environments inherit from ssr.optimizeDeps (it isn't the case by default)
 async function resolveOptimizeDeps(config: ResolvedConfig) {
   const vikeConfig = await getVikeConfigInternal()
-  const { _pageConfigs: pageConfigs } = vikeConfig
+  const { _pageConfigs: pageConfigs, _pageConfigGlobal: pageConfigGlobal } = vikeConfig
 
   // Retrieve user's + files (i.e. Vike entries)
-  const { entriesClient, entriesServer, includeClient, includeServer } = await getPageDeps(config, pageConfigs)
+  const { entriesClient, entriesServer, includeClient, includeServer } = await getPageDeps(
+    config,
+    pageConfigs,
+    pageConfigGlobal,
+  )
 
   // Add late discovered dependencies, if they exist
   LATE_DISCOVERED.forEach((dep) => {
@@ -130,19 +140,24 @@ async function resolveOptimizeDeps(config: ResolvedConfig) {
   }
 
   // Debug
-  if (debug.isActivated)
-    debug('optimizeDeps', {
-      'config.optimizeDeps.entries': config.optimizeDeps.entries,
-      'config.optimizeDeps.include': config.optimizeDeps.include,
-      'config.optimizeDeps.exclude': config.optimizeDeps.exclude,
-      // @ts-ignore Vite doesn't seem to support ssr.optimizeDeps.entries (vite@7.0.6, July 2025)
-      'config.ssr.optimizeDeps.entries': config.ssr.optimizeDeps.entries,
-      'config.ssr.optimizeDeps.include': config.ssr.optimizeDeps.include,
-      'config.ssr.optimizeDeps.exclude': config.ssr.optimizeDeps.exclude,
-    })
+  if (debug.isActivated) {
+    const envs: Record<string, unknown> = {}
+    for (const envName in config.environments) {
+      const env = config.environments[envName]!
+      envs[`config.environments.${envName}.optimizeDeps.entries`] = env.optimizeDeps.entries
+      envs[`config.environments.${envName}.optimizeDeps.include`] = env.optimizeDeps.include
+      envs[`config.environments.${envName}.optimizeDeps.exclude`] = env.optimizeDeps.exclude
+    }
+    debug('optimizeDeps', envs)
+    assertEnvsInSyncWithLegacy(config)
+  }
 }
 
-async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildTime[]) {
+async function getPageDeps(
+  config: ResolvedConfig,
+  pageConfigs: PageConfigBuildTime[],
+  pageConfigGlobal: PageConfigGlobalBuildTime,
+) {
   let entriesClient: string[] = []
   let entriesServer: string[] = []
   let includeClient: string[] = []
@@ -176,6 +191,13 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
       includeServer.push(e)
     }
   }
+  const addEntryOrInclude = (filePath: FilePath, isForClientSide: boolean, definedAt?: DefinedAtFilePath) => {
+    if (filePath.filePathAbsoluteUserRootDir !== null) {
+      addEntry(filePath.filePathAbsoluteFilesystem, isForClientSide, definedAt)
+    } else {
+      addInclude(filePath.importPathAbsolute, isForClientSide, definedAt)
+    }
+  }
   const isExcluded = (e: string, isForClientSide: boolean, definedAt?: DefinedAtFilePath) => {
     const exclude = isForClientSide ? config.optimizeDeps.exclude : config.ssr.optimizeDeps.exclude
     if (!exclude) return false
@@ -189,7 +211,7 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
   // V1 design
   {
     ;[true, false].forEach((isForClientSide) => {
-      pageConfigs.forEach((pageConfig) => {
+      ;[...pageConfigs, pageConfigGlobal].forEach((pageConfig) => {
         Object.entries(pageConfig.configValueSources).forEach(([configName]) => {
           const runtimeEnv = {
             isForClientSide,
@@ -204,21 +226,7 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
 
             if (definedAt.definedBy) return
 
-            if (definedAt.filePathAbsoluteUserRootDir !== null) {
-              addEntry(
-                // optimizeDeps.entries expects filesystem absolute paths
-                definedAt.filePathAbsoluteFilesystem,
-                isForClientSide,
-                definedAt,
-              )
-            } else {
-              addInclude(
-                // optimizeDeps.include expects npm packages
-                definedAt.importPathAbsolute,
-                isForClientSide,
-                definedAt,
-              )
-            }
+            addEntryOrInclude(definedAt, isForClientSide, definedAt)
           })
         })
       })
@@ -237,13 +245,25 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
   }
 
   // Add virtual files.
-  // - This doesn't work: Vite's dep optimizer doesn't seem to be able to crawl virtual files.
-  //   - Should we make it work? E.g. by creating a temporary file at node_modules/.vike/virtualFiles.js
-  //   - Or should we remove it? And make sure getPageDeps() also works for aliased import paths
-  //     - If we do, then we need to adjust include/entries (maybe by making include === entries -> will Vite complain?)
+  // - Vite 8+ (Rolldown-based dep scanner) crawls virtual IDs natively — its scanner routes
+  //   through `environment.pluginContainer.resolveId()`, so Vike's resolveId/load handlers
+  //   run during the scan and the virtual file's transitive deps are seen.
+  // - Vite ≤7 (esbuild-based dep scanner) cannot crawl virtual IDs — those virtuals' deps
+  //   surface lazily and trigger "✨ new dependencies optimized" reload cycles. As a
+  //   workaround we could materialize each virtual to a real file under
+  //   `node_modules/.vike/optimizeDeps-virtuals/`; an implementation lives in the reverted
+  //   commit https://github.com/vikejs/vike/commit/b068009c3 (re-apply if Vite ≤7 support
+  //   matters).
   {
     const { hasClientRouting, hasServerRouting, clientEntries } = analyzeClientEntries(pageConfigs, config)
-    Object.values(clientEntries).forEach((e) => addEntry(e, true))
+    Object.values(clientEntries).forEach(({ entryTarget, entryFilePath }) => {
+      if (entryFilePath) {
+        addEntryOrInclude(entryFilePath, true)
+      } else {
+        // Page-entry virtual IDs have no file path.
+        addEntry(entryTarget, true)
+      }
+    })
     if (hasClientRouting) addEntry(virtualFileIdGlobalEntryClientCR, true)
     if (hasServerRouting) addEntry(virtualFileIdGlobalEntryClientSR, true)
   }
@@ -280,4 +300,21 @@ function remove(input: string[] | string | undefined) {
   let list = normalizeInput(input)
   list = list.filter((e) => !ALWAYS_REMOVE.includes(e))
   return list
+}
+// Sanity-check that the legacy `config.optimizeDeps` and `config.ssr.optimizeDeps` slots
+// stay in sync with the corresponding environment values — so logging only the env values
+// (above) isn't hiding anything.
+function assertEnvsInSyncWithLegacy(config: ResolvedConfig) {
+  const client = config.environments.client?.optimizeDeps
+  assert(client)
+  assert(deepEqual(config.optimizeDeps.entries, client.entries))
+  assert(deepEqual(config.optimizeDeps.include, client.include))
+  assert(deepEqual(config.optimizeDeps.exclude, client.exclude))
+  const ssr = config.environments.ssr?.optimizeDeps
+  assert(ssr)
+  /* Vite doesn't seem to support config.ssr.optimizeDeps.entries (vite@7.0.6, July 2025)
+  assert(deepEqual(config.ssr.optimizeDeps.entries, ssr.entries))
+  */
+  assert(deepEqual(config.ssr.optimizeDeps.include, ssr.include))
+  assert(deepEqual(config.ssr.optimizeDeps.exclude, ssr.exclude))
 }

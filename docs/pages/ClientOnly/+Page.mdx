@@ -1,4 +1,4 @@
-import { Link } from '@brillout/docpress'
+import { Link, Tabs } from '@brillout/docpress'
 import { UiFrameworkExtension, ConfigSpec, TreeShaking } from '../../components'
 
 <ConfigSpec
@@ -9,34 +9,9 @@ import { UiFrameworkExtension, ConfigSpec, TreeShaking } from '../../components'
 
 Render components only on the client-side.
 
-<TreeShaking description={<>The children of <code>{'<ClientOnly>'}</code> are automatically removed and never loaded on the server.</>}>
-```jsx
-import { SomeComponent } from './SomeComponent' // [!code --]
-<ClientOnly fallback={<p>Loading...</p>}>
-  <SomeComponent /> // [!code --]
-</ClientOnly>
-```
+<Tabs choice={'uiFramework'} />
 
-This means `<SomeComponent>` can use browser-only APIs.
-
-```js
-// SomeComponent.js
-
-export { SomeComponent }
-
-// ✅ Doesn't throw "window is not defined" error — it's loaded only on the client-side
-console.log('Browser viewport width: ', window.innerWidth)
-
-function SomeComponent() {
-  // ...
-}
-```
-
-</TreeShaking>
-
-> `<ClientOnly>` supersedes <Link href="/clientOnly-helper">`clientOnly()`</Link> — it has better performance with a simpler DX.
-
-## React
+:::Choice{#React}
 
 ```tsx
 import { ClientOnly } from 'vike-react/ClientOnly'
@@ -54,7 +29,9 @@ Props:
 - **children**: Content rendered only on the client-side after hydration.
 - **fallback** (optional): Content shown during SSR and before hydration completes.
 
-## Vue
+:::
+
+:::Choice{#Vue}
 
 ```vue
 <template>
@@ -75,7 +52,9 @@ Props:
 - **default slot**: Content rendered only on the client-side after hydration.
 - **fallback slot** (optional): Content shown during SSR and before hydration completes.
 
-## Solid
+:::
+
+:::Choice{#Solid}
 
 ```tsx
 import { ClientOnly } from 'vike-solid/ClientOnly'
@@ -93,6 +72,41 @@ Props:
 - **children**: Content rendered only on the client-side after hydration.
 - **fallback** (optional): Content shown during SSR and before hydration completes.
 
+:::
+
+> `<ClientOnly>` supersedes <Link href="/clientOnly-helper">`clientOnly()`</Link> — it has better performance with a simpler DX.
+
+<TreeShaking description={<>The children of <code>{'<ClientOnly>'}</code> are automatically removed and never loaded on the server.</>}>
+
+```jsx
+// Environment: server
+
+import { SomeComponent } from './SomeComponent' // [!code --]
+
+<ClientOnly fallback={<p>Loading...</p>}>
+  {/* [!code --] */}
+  <SomeComponent />
+</ClientOnly>
+```
+
+This means `<SomeComponent>` can use browser-only APIs.
+
+```js
+// SomeComponent.js
+
+export { SomeComponent }
+
+// ✅ Doesn't throw error "window is not defined" — this file is loaded only on the client
+console.log('Browser viewport width: ', window.innerWidth)
+
+function SomeComponent() {
+  // ...
+}
+```
+
+</TreeShaking>
+
+
 ## Without `vike-{react,vue,solid}`
 
 If you don't use a <UiFrameworkExtension />, you can implement `<ClientOnly>` yourself.
@@ -101,6 +115,7 @@ See the source code:
  - [GitHub > `vikejs/vike-react`](https://github.com/vikejs/vike-react)
  - [GitHub > `vikejs/vike-vue`](https://github.com/vikejs/vike-vue)
  - [GitHub > `vikejs/vike-solid`](https://github.com/vikejs/vike-solid)
+
 
 ## See also
 

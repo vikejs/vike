@@ -77,11 +77,6 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Free Program',
-    url: '/free',
-  },
-  {
-    level: 2,
     title: 'Extensions',
     url: '/extensions',
   },
@@ -240,32 +235,21 @@ const headings = [
   },
   {
     level: 4,
-    title: 'Static hosts',
+    title: 'Self-host',
   },
   {
     level: 2,
-    title: 'GitHub Pages',
-    url: '/github-pages',
+    title: 'Self-host',
+    url: '/self-host',
   },
   {
     level: 2,
-    title: 'Netlify',
-    url: '/netlify',
-  },
-  {
-    level: 2,
-    title: 'Cloudflare Pages',
-    url: '/cloudflare-pages',
-  },
-  {
-    level: 2,
-    title: 'Static Hosts',
-    titleInNav: '... more',
-    url: '/static-hosts',
+    title: 'Docker',
+    url: '/docker',
   },
   {
     level: 4,
-    title: 'Full-stack (serverless)',
+    title: 'Managed',
   },
   {
     level: 2,
@@ -280,22 +264,13 @@ const headings = [
   },
   {
     level: 2,
+    title: 'Netlify',
+    url: '/netlify',
+  },
+  {
+    level: 2,
     title: 'Vercel',
     url: '/vercel',
-  },
-  {
-    level: 2,
-    title: 'AWS Lambda',
-    url: '/aws-lambda',
-  },
-  {
-    level: 2,
-    title: 'Netlify Functions',
-    url: '/netlify-functions',
-  },
-  {
-    level: 4,
-    title: 'Full-stack (self-hosted)',
   },
   {
     level: 2,
@@ -304,18 +279,29 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Docker',
-    url: '/docker',
+    title: 'Managed Hosts',
+    titleInNav: '... more',
+    url: '/managed-hosts',
   },
   {
     level: 4,
-    title: 'Other',
+    title: 'Static hosts',
   },
   {
     level: 2,
-    title: 'Deploy',
-    titleInNav: 'Other deployment',
-    url: '/deploy',
+    title: 'GitHub Pages',
+    url: '/github-pages',
+  },
+  {
+    level: 2,
+    title: 'Cloudflare Pages',
+    url: '/cloudflare-pages',
+  },
+  {
+    level: 2,
+    title: 'Static Hosts',
+    titleInNav: '... more',
+    url: '/static-hosts',
   },
   {
     level: 1,
@@ -366,7 +352,7 @@ const headings = [
     titleInNav: '... more',
     title: 'Integration (more)',
     url: '/integration',
-    sectionTitles: ['Server (Manual integration)', 'Non-JavaScript Backend'],
+    sectionTitles: ['Server (manual integration)', 'Non-JavaScript backend'],
   },
   {
     level: 1,
@@ -681,11 +667,6 @@ const headings = [
   },
   {
     level: 2,
-    title: '`+photon`',
-    url: '/photon',
-  },
-  {
-    level: 2,
     title: '`+prerender`',
     url: '/prerender',
     sectionTitles: ['`disableAutoRun`', '`redirects`'],
@@ -724,11 +705,6 @@ const headings = [
     level: 2,
     title: '`+csp`',
     url: '/csp',
-  },
-  {
-    level: 2,
-    title: '`+clientRouting`',
-    url: '/clientRouting',
   },
   {
     level: 2,
@@ -1183,16 +1159,23 @@ function misc() {
         url: '/use-cases',
         category: 'Overview',
       },
+      // TODO/osp: move to API
       {
         title: '`+license`',
         url: '/license',
+      },
+      // TODO/osp: move to Overview, or new section Pricing?
+      {
+        level: 2,
+        title: 'Free access',
+        url: '/free',
       },
       {
         title: 'Glossary',
         url: '/glossary',
       },
       {
-        title: 'License Success',
+        title: 'Purchase complete',
         url: '/license/success',
         pageDesign: {
           hideTitle: true,
@@ -1420,12 +1403,16 @@ function api() {
         url: '/port',
       },
       {
-        title: '`+force`',
-        url: '/force',
+        title: '`+root`',
+        url: '/root',
       },
       {
         title: '`+mode`',
         url: '/mode',
+      },
+      {
+        title: '`+force`',
+        url: '/force',
       },
       {
         title: '`getPageContext()`',
@@ -1462,6 +1449,10 @@ function api() {
       {
         title: '`+onAfterRenderHtml()` hook',
         url: '/onAfterRenderHtml',
+      },
+      {
+        title: '`+clientRouting`',
+        url: '/clientRouting',
       },
       {
         title: '`clientHooks`',
@@ -1535,6 +1526,10 @@ function workInProgress() {
 function deprecated() {
   return (
     [
+      {
+        title: '`+photon`',
+        url: '/photon',
+      },
       {
         title: '`createPageRenderer()`',
         url: '/createPageRenderer',

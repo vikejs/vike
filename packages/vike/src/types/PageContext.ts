@@ -1,5 +1,5 @@
 // Public usage
-import type { IncomingMessage } from 'node:http'
+import type { IncomingMessage, ServerResponse } from 'node:http'
 
 export type { PageContext }
 export type { PageContextServer }
@@ -50,7 +50,22 @@ type PageContextServer<Data = unknown> = PageContextBuiltInServer<Data> & {
   >
 } & Vike.PageContext &
   Vike.PageContextServer &
-  (Vike.Server extends { server: string } ? { runtime: RuntimeAdapterTarget<Vike.Server['server']> } : {})
+  (Vike.Server extends { server: string }
+    ? { runtime: RuntimeAdapterTarget<Vike.Server['server']> } & PageContextReqResAlias<Vike.Server['server']>
+    : {})
+
+// pageContext.req and pageContext.res are aliases of pageContext.runtime.req and pageContext.runtime.res, set by +server.
+// https://vike.dev/pageContext#req
+// We only add the aliases:
+//  - if the runtime adapter exposes req/res (e.g. Node.js servers such as Express/Fastify/Hono do, but Cloudflare Workers don't), and
+//  - if the user didn't define a custom pageContext.req/pageContext.res — we don't override custom pageContext properties.
+type PageContextReqResAlias<Server extends string> = ReqResAlias<'req', RuntimeAdapterTarget<Server>> &
+  ReqResAlias<'res', RuntimeAdapterTarget<Server>>
+type ReqResAlias<Key extends 'req' | 'res', Runtime> = Key extends keyof (Vike.PageContext & Vike.PageContextServer)
+  ? unknown // The user defined a custom pageContext[Key] => don't override it.
+  : Key extends keyof Runtime
+    ? Record<Key, Runtime[Key]>
+    : unknown // The runtime adapter doesn't expose req/res (e.g. Cloudflare Workers).
 
 // With Client Routing
 //  - Because of vike-{react/vue/solid} most users will eventually be using Client Routing => we give out the succinct type names `PageContext` and `PageContextClient` to these users
@@ -186,7 +201,13 @@ type PageContextInit = {
   url?: string
 }
 
-type PageContextInitInternal = PageContextInit & { _reqDev?: IncomingMessage; _reqWeb?: Request }
+type PageContextInitInternal = PageContextInit & {
+  _nodeDev?: {
+    req: IncomingMessage
+    res: ServerResponse
+  }
+  _reqWeb?: Request
+}
 
 type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
   PageContextInit &

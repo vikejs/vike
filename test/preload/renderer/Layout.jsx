@@ -82,7 +82,9 @@ function Logo() {
       }}
     >
       <a href="/">
-        <img src={logoUrl} height={64} width={64} />
+        {/* fetchPriority="low" opts out of React 19's automatic <img> preloading,
+            so this test only exercises Vike's own preloading feature. */}
+        <img src={logoUrl} height={64} width={64} fetchPriority="low" />
       </a>
     </div>
   )

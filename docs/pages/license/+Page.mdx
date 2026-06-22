@@ -6,7 +6,7 @@ import { ConfigSpec } from '../../components'
   global
   isTypeOneLiner
 >
-`string {:ts}`
+`Record<string, string | { expires: string; key: string }> {:ts}`
 </ConfigSpec>
 
 The license key for larger teams.
@@ -24,23 +24,16 @@ To install your license key, add it to <Link href="/config">`+config.js`</Link>:
 import type { Config } from 'vike/types'
 
 export default {
-  license: 'YOUR_LICENSE_KEY' // [!code ++]
+  license: { // [!code ++]
+    'foo.com': 'lOK9uiUuCP75lMzQ…', // [!code ++]
+    'bar.com': { expires: '2026-12-31T00:00:00Z', key: 't2ZX4KY6kgmHSmj…' }, // [!code ++]
+  }, // [!code ++]
 } satisfies Config
 ```
 
 > Your license key isn't a secret — it's safe to share publicly (for example, you can commit it to a public repository).
 
-That's it — your app can now use Vike forever without restrictions.
-
-> To update your list of domain names, see <Link href="#update-domain-names" />.
-
-## Update domain names
-
-Your license key is valid for the root domains you listed when purchasing your license.
-
-> It's also valid for all subdomains. For example, if one of your root domains is `example.com`, then the license key is also valid for `foo.example.com`, `bar.example.com`, etc.
-
-You can add or update your list of root domains at any time (for free) by <a href="mailto:support@vike.dev">contacting us</a> (we'll automate this in the future).
+> It's valid for all subdomains — a key for `example.com` also covers `foo.example.com`, `bar.example.com`, etc.
 
 
 ## See also

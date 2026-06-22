@@ -1,5 +1,5 @@
-export { resolveViteConfigFromUser }
-export { isOnlyResolvingUserConfig }
+export { resolveViteConfigUser }
+export { isResolvingViteConfigUser }
 export { getVikeConfigInternalEarly }
 export { getViteRoot }
 export { assertViteRoot }
@@ -13,106 +13,134 @@ import {
   getVikeConfigFromCliOrEnv,
   setVikeConfigContext,
   isVikeConfigContextSet,
+  EARLY_SETTINGS,
 } from '../vite/shared/resolveVikeConfigInternal.js'
 import path from 'node:path'
 import { assert, assertUsage, assertWarning } from '../../utils/assert.js'
+import { createDebug } from '../../utils/debug.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import { pick } from '../../utils/pick.js'
 import { toPosixPath } from '../../utils/path.js'
 import pc from '@brillout/picocolors'
 import { getEnvVarObject } from '../vite/shared/getEnvVarObject.js'
 import { getVikeApiOperation, isVikeCliOrApi } from '../../shared-server-node/api-context.js'
-import { getViteCommandFromCli } from '../vite/shared/isViteCli.js'
+import { getViteCliCommand, getViteCliArgs } from '../vite/shared/isViteCli.js'
 import type { Config } from '../../types/index.js'
 import './assertEnvApiDevAndProd.js'
-
-const globalObject = getGlobalObject<{ root?: string; isOnlyResolvingUserConfig?: boolean }>(
-  'api/prepareViteApiCall.ts',
+const globalObject = getGlobalObject<{ root?: string; isResolvingViteConfigUser?: boolean }>(
+  'resolveViteConfigUser.ts',
   {},
 )
+const debug = createDebug('vike:vite-config-user')
 
-async function resolveViteConfigFromUser() {
+async function resolveViteConfigUser() {
   const { viteContext } = getVikeApiContext()
   assert(viteContext)
-  const viteInfo = await getViteInfo(viteContext)
-  const { viteConfigFromUserResolved } = viteInfo
-  const { viteConfigResolved } = await assertViteRoot2(viteInfo.root, viteConfigFromUserResolved, viteContext)
+  const { viteConfigUser, root } = await resolve(viteContext)
+  const { viteConfigResolved } = await assertViteRoot2(root, viteConfigUser, viteContext)
   return {
     viteConfigResolved, // ONLY USE if strictly necessary. (We plan to remove assertViteRoot2() as explained in the comments of that function.)
-    viteConfigFromUserResolved,
+    viteConfigUser,
   }
 }
 
 async function getVikeConfigInternalEarly() {
-  assert(!globalObject.isOnlyResolvingUserConfig) // ensure no infinite loop
+  assert(!globalObject.isResolvingViteConfigUser) // ensure no infinite loop
   if (!isVikeConfigContextSet()) {
     const viteContext = getViteContext()
-    const viteInfo = await getViteInfo(viteContext)
-    setVikeConfigContext_(viteInfo, viteContext)
+    const resolved = await resolve(viteContext)
+    setVikeConfigContext_(resolved, viteContext)
   }
   return await getVikeConfigInternal()
 }
 
-function setVikeConfigContext_(viteInfo: ViteInfo, viteContext: ViteContext) {
+function setVikeConfigContext_(resolved: Resolved, viteContext: ViteContext) {
   setVikeConfigContext({
-    userRootDir: viteInfo.root,
+    userRootDir: resolved.root,
     isDev: viteContext === 'dev',
-    vikeVitePluginOptions: viteInfo.vikeVitePluginOptions,
+    vikeVitePluginOptions: resolved.vikeVitePluginOptions,
   })
 }
 
-function isOnlyResolvingUserConfig() {
-  return globalObject.isOnlyResolvingUserConfig
+function isResolvingViteConfigUser() {
+  return globalObject.isResolvingViteConfigUser
 }
 
 async function getViteRoot(viteContext: ViteContext) {
-  if (!globalObject.root) await getViteInfo(viteContext)
+  if (!globalObject.root) await resolve(viteContext)
   assert(globalObject.root)
   return globalObject.root
 }
 
-type ViteInfo = Awaited<ReturnType<typeof getViteInfo>>
-async function getViteInfo(viteContext: ViteContext) {
-  const { viteConfigFromUserVikeApiOptions } = getVikeApiContext()
-
-  let viteConfigFromUserResolved = clone(viteConfigFromUserVikeApiOptions ?? {})
-
+type Resolved = Awaited<ReturnType<typeof resolve>>
+async function resolve(viteContext: ViteContext) {
   // Precedence:
-  // 1. (highest precedence)  |  viteConfigFromUserEnvVar          |  VITE_CONFIG
-  // 2.                       |  viteConfigFromUserVikeMode        |  VIKE_CONFIG & Vike CLI options — only `+mode`
-  // 2.                       |  viteConfigFromUserVikeApiOptions  |  Vike API options
-  // 3. (lowest precedence)   |  viteConfigFromUserViteFile        |  vite.config.js
+  // 1. (highest precedence)  |  viteConfigFromViteEnv       |  VITE_CONFIG
+  // 2.                       |  viteConfigFromVikeCliOrEnv  |  VIKE_CONFIG & Vike CLI options — `+mode` & `+root`
+  // 3.                       |  viteConfigFromViteCli       |  Vite CLI args — `[root]` & `-c/--config`
+  // 4.                       |  viteConfigFromVikeApi       |  Vike API options — `viteConfig`, and `+mode` & `+root` from `vikeConfig`
+  // 5. (lowest precedence)   |  viteConfigFromViteFile      |  vite.config.js
+  let viteConfigUser: UserConfig = {}
+  const addConfig = (c: UserConfig | null | undefined) => {
+    // Merge `c` overriding viteConfigUser (`c` wins — higher precedence)
+    viteConfigUser = mergeConfig(viteConfigUser, c ?? {})
+  }
+  const underride = (c: UserConfig | null | undefined) => {
+    // Merge `c` underiding viteConfigUser (`c` loses — lower precedence)
+    return mergeConfig(c ?? {}, viteConfigUser)
+  }
 
-  // Resolve Vike's +mode setting
+  // Vike API args
   {
-    const viteConfigFromUserVikeMode = pick(getVikeConfigFromCliOrEnv().vikeConfigFromCliOrEnv as Config, ['mode'])
-    if (Object.keys(viteConfigFromUserVikeMode).length > 0) {
-      viteConfigFromUserResolved = merge(viteConfigFromUserResolved ?? {}, viteConfigFromUserVikeMode)
-    }
+    const { viteConfigFromVikeApi, vikeConfigFromApi } = getVikeApiContext()
+    addConfig(viteConfigFromVikeApi) // `viteConfig`
+    addConfig(pick(vikeConfigFromApi ?? {}, EARLY_SETTINGS)) // `+mode` & `+root`
+    if (debug.isActivated) debug('viteConfigFromVikeApi', viteConfigFromVikeApi)
+    if (debug.isActivated) debug('vikeConfigFromApi', vikeConfigFromApi)
   }
 
-  // Resolve VITE_CONFIG
-  const viteConfigFromUserEnvVar = getEnvVarObject('VITE_CONFIG')
-  if (viteConfigFromUserEnvVar) {
-    viteConfigFromUserResolved = merge(viteConfigFromUserResolved ?? {}, viteConfigFromUserEnvVar)
+  // Vite CLI args (when invoked via Vite's CLI rather than Vike's API).
+  // - Without this, Vike loads vite.config.js blind to `vite [root]` / `-c <file>` and ends up with the wrong root when those Vite CLI args are used.
+  {
+    const viteConfigFromViteCli = getViteCliArgs()
+    addConfig(viteConfigFromViteCli)
+    if (debug.isActivated) debug('viteConfigFromViteCli', viteConfigFromViteCli)
   }
 
-  // Resolve vite.config.js
-  globalObject.isOnlyResolvingUserConfig = true
-  const viteConfigFromUserViteConfigFile = await loadViteConfigFile(viteConfigFromUserResolved, viteContext)
-  globalObject.isOnlyResolvingUserConfig = false
-  // Correct precedence, replicates Vite:
-  // https://github.com/vitejs/vite/blob/4f5845a3182fc950eb9cd76d7161698383113b18/packages/vite/src/node/config.ts#L1001
-  const viteConfigResolved = merge(viteConfigFromUserViteConfigFile ?? {}, viteConfigFromUserResolved ?? {})
+  // Vike's CLI and VIKE_CONFIG — `+mode` & `+root`
+  {
+    const viteConfigFromVikeCliOrEnv = pick(
+      getVikeConfigFromCliOrEnv().vikeConfigFromCliOrEnv as Config,
+      EARLY_SETTINGS,
+    )
+    addConfig(viteConfigFromVikeCliOrEnv)
+    if (debug.isActivated) debug('viteConfigFromVikeCliOrEnv', viteConfigFromVikeCliOrEnv)
+  }
 
-  const root = normalizeViteRoot(viteConfigResolved.root ?? process.cwd())
+  // VITE_CONFIG
+  {
+    const viteConfigFromViteEnv = getEnvVarObject('VITE_CONFIG')
+    addConfig(viteConfigFromViteEnv)
+    if (debug.isActivated) debug('viteConfigFromViteEnv', viteConfigFromViteEnv)
+  }
+
+  // vite.config.js — lowest precedence. Merged into a *separate* result (used only to compute `root` and to
+  // find the Vike plugin): it must not flow back into `viteConfigUser`, which is handed to Vite —
+  // Vite loads vite.config.js itself, so merging it here would add the Vike plugin twice.
+  // Replicates Vite: https://github.com/vitejs/vite/blob/4f5845a3182fc950eb9cd76d7161698383113b18/packages/vite/src/node/config.ts#L1001
+  globalObject.isResolvingViteConfigUser = true
+  const viteConfigFromViteFile = await loadViteConfigFile(viteConfigUser, viteContext)
+  globalObject.isResolvingViteConfigUser = false
+  const viteConfigAll = underride(viteConfigFromViteFile ?? {})
+
+  const root = normalizeViteRoot(viteConfigAll.root ?? process.cwd())
   globalObject.root = root
 
   // - Find options `vike(options)` set in vite.config.js
   //   - TO-DO/next-major-release: remove
   // - Add Vike's Vite plugin if missing
   let vikeVitePluginOptions: Record<string, unknown> | undefined
-  const found = findVikeVitePlugin(viteConfigResolved)
+  const found = findVikeVitePlugin(viteConfigAll)
   if (found) {
     vikeVitePluginOptions = found.vikeVitePluginOptions
   } else {
@@ -120,31 +148,25 @@ async function getViteInfo(viteContext: ViteContext) {
     // - Encourage users to define a vite.config.js file that also works with Vite's CLI (and potentially other third-party CLIs).
     // - Vike-based frameworks, such as DocPress, allow their users to omit defining a vite.config.js file.
     assertWarning(
-      !viteConfigFromUserViteConfigFile, // Only show the warning if the user defined a vite.config.js file
+      !viteConfigFromViteFile, // Only show the warning if the user defined a vite.config.js file
       "Omitting Vike's Vite plugin (inside your vite.config.js) is deprecated — make sure to always add Vike's Vite plugin https://vike.dev/vite-plugin",
       { onlyOnce: true },
     )
     // Add Vike to plugins if not present.
     // Using a dynamic import because the script calling the Vike API may not live in the same place as vite.config.js, thus vike/plugin may resolved to two different node_modules/vike directories.
     const { plugin: vikePlugin } = await import('../vite/index.js')
-    viteConfigFromUserResolved = {
-      ...viteConfigFromUserResolved,
-      plugins: [...(viteConfigFromUserResolved?.plugins ?? []), vikePlugin()],
+    viteConfigUser = {
+      ...viteConfigUser,
+      plugins: [...(viteConfigUser?.plugins ?? []), vikePlugin()],
     }
-    const res = findVikeVitePlugin(viteConfigFromUserResolved)
+    const res = findVikeVitePlugin(viteConfigUser)
     assert(res)
     vikeVitePluginOptions = res.vikeVitePluginOptions
   }
   assert(vikeVitePluginOptions)
 
-  return { root, vikeVitePluginOptions, viteConfigFromUserResolved }
-}
-/** `c2` overrides `c1` */
-function merge(c1: UserConfig, c2: UserConfig): UserConfig {
-  return mergeConfig(c1, c2)
-}
-function clone(c: UserConfig): UserConfig {
-  return mergeConfig({}, c)
+  if (debug.isActivated) debug('viteConfigUser', viteConfigUser)
+  return { viteConfigUser, root, vikeVitePluginOptions }
 }
 
 function findVikeVitePlugin(viteConfig: InlineConfig | UserConfig | undefined | null) {
@@ -163,8 +185,8 @@ function findVikeVitePlugin(viteConfig: InlineConfig | UserConfig | undefined | 
 }
 
 // Copied from https://github.com/vitejs/vite/blob/4f5845a3182fc950eb9cd76d7161698383113b18/packages/vite/src/node/config.ts#L961-L1005
-async function loadViteConfigFile(viteConfigFromUserResolved: InlineConfig | undefined, viteContext: ViteContext) {
-  const viteContextResolved = resolveViteContext(viteConfigFromUserResolved, viteContext)
+async function loadViteConfigFile(viteConfigUser: InlineConfig | undefined, viteContext: ViteContext) {
+  const viteContextResolved = resolveViteContext(viteConfigUser, viteContext)
   const [inlineConfig, command, defaultMode, _defaultNodeEnv, isPreview] = viteContextResolved
 
   let config = inlineConfig
@@ -196,7 +218,7 @@ async function loadViteConfigFile(viteConfigFromUserResolved: InlineConfig | und
 type ViteContext = 'build' | 'preview' | 'dev'
 function getViteContext(): ViteContext {
   const vikeApiOperation = getVikeApiOperation()
-  const viteCommand = getViteCommandFromCli()
+  const viteCommand = getViteCliCommand()
   assert(!(viteCommand && vikeApiOperation))
 
   if (vikeApiOperation) return getViteContextWithOperation(vikeApiOperation.operation)
@@ -231,11 +253,12 @@ function getViteContextWithOperation(operation: ApiOperation): ViteContext {
 }
 function getVikeApiContext() {
   const vikeApiOperation = getVikeApiOperation()
-  if (!vikeApiOperation) return { viteConfigFromUserVikeApiOptions: null, viteContext: null }
+  if (!vikeApiOperation) return { viteConfigFromVikeApi: null, vikeConfigFromApi: null, viteContext: null }
   const { options, operation } = vikeApiOperation!
-  const viteConfigFromUserVikeApiOptions = options.viteConfig
+  const viteConfigFromVikeApi = options.viteConfig
+  const vikeConfigFromApi = options.vikeConfig
   const viteContext = getViteContextWithOperation(operation)
-  return { viteConfigFromUserVikeApiOptions, viteContext }
+  return { viteConfigFromVikeApi, vikeConfigFromApi, viteContext }
 }
 
 function resolveViteContext(inlineConfig: InlineConfig = {}, viteContext: ViteContext) {
@@ -250,7 +273,7 @@ function resolveViteContext(inlineConfig: InlineConfig = {}, viteContext: ViteCo
 }
 
 function normalizeViteRoot(root: string) {
-  // `path.resolve(viteConfigFromUserViteFile.configFile, root)` could be more intuitive than `path.resolve(process.cwd(), root)` but we replicate Vite's behavior (`vite.config.js` should follow Vite's API), see:
+  // `path.resolve(viteConfigUserViteFile.configFile, root)` could be more intuitive than `path.resolve(process.cwd(), root)` but we replicate Vite's behavior (`vite.config.js` should follow Vite's API), see:
   // https://github.com/vitejs/vite/blob/4f5845a3182fc950eb9cd76d7161698383113b18/packages/vite/src/node/config.ts#L1063
   return toPosixPath(
     // Equivalent to `path.resolve(process.cwd(), root)`
@@ -259,12 +282,8 @@ function normalizeViteRoot(root: string) {
 }
 
 const errMsg = `A Vite plugin is modifying the Vite setting ${pc.cyan('root')} which is forbidden` as const
-async function assertViteRoot2(
-  root: string,
-  viteConfigFromUserResolved: InlineConfig | undefined,
-  viteContext: ViteContext,
-) {
-  const viteContextResolved = resolveViteContext(viteConfigFromUserResolved, viteContext)
+async function assertViteRoot2(root: string, viteConfigUser: InlineConfig | undefined, viteContext: ViteContext) {
+  const viteContextResolved = resolveViteContext(viteConfigUser, viteContext)
   // We can eventually remove this resolveConfig() call (along with removing the whole assertViteRoot2() function which is redundant with the assertViteRoot() function) so that Vike doesn't make any resolveConfig() (except for pre-rendering and preview which is required). But let's keep it for now, just to see whether calling resolveConfig() can be problematic.
   const viteConfigResolved = await resolveConfig(...viteContextResolved)
   assertUsage(normalizeViteRoot(viteConfigResolved.root) === normalizeViteRoot(root), errMsg)
@@ -273,6 +292,12 @@ async function assertViteRoot2(
 function assertViteRoot(rootResolvedEarly: string, config: ResolvedConfig) {
   const rootResolved = config.root
   const rootGlobal = globalObject.root
-  if (rootGlobal) assert(normalizeViteRoot(rootGlobal) === normalizeViteRoot(rootResolvedEarly))
+  if (rootGlobal && normalizeViteRoot(rootGlobal) !== normalizeViteRoot(rootResolvedEarly)) {
+    assert(false, {
+      rootResolved,
+      rootGlobal,
+      rootResolvedEarly,
+    })
+  }
   assertUsage(normalizeViteRoot(rootResolvedEarly) === normalizeViteRoot(rootResolved), errMsg)
 }

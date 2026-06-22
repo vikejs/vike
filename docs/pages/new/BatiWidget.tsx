@@ -18,7 +18,7 @@ function BatiWidget() {
   }
   return (
     <>
-      <div className="container">
+      <div className="container" style={{ display: 'flex', justifyContent: 'center' }}>
         {/* @ts-expect-error */}
         <bati-widget theme="light"></bati-widget>
       </div>

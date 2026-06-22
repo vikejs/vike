@@ -1,0 +1,48 @@
+import { Link } from '@brillout/docpress'
+import { ConfigSpec } from '../../components'
+
+<ConfigSpec
+  env="config"
+  global
+  isTypeOneLiner
+>
+`string {:ts}`
+</ConfigSpec>
+
+Vike's `+root` setting is just an alias for [Vite's `root` setting](https://vite.dev/config/shared-options.html#root) — the project root directory.
+
+It can be absolute, or relative to the current working directory.
+
+You can set it over Vike's <Link href="/cli">CLI</Link>:
+
+```bash
+$ vike dev --root src
+```
+
+Or over the `VIKE_CONFIG` environment variable:
+
+```bash
+$ VIKE_CONFIG="{root:'src'}" vike dev
+```
+
+Both are equivalent to setting Vite's `root` setting:
+
+```ts
+// vite.config.ts
+
+import type { UserConfig } from 'vite'
+
+export default {
+  root: 'src'
+} satisfies UserConfig
+```
+
+> Unlike most Vike settings, `+root` can't be defined inside a `+config.js` file (Vike emits a warning if you try): Vike needs to know the root directory before it can find your `+config.js` files. Set it over the CLI, the `VIKE_CONFIG` environment variable, `vite.config.js`, or <Link href="/api">Vike's API</Link> instead.
+
+
+## See also
+
+- [Vite > `root`](https://vite.dev/config/shared-options.html#root)
+- <Link href="/cli" />
+- <Link href="/api" />
+- <Link href="/settings" />

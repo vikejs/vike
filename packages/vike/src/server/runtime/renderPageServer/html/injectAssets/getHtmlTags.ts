@@ -11,7 +11,6 @@ import {
   getGlobalContextClientSerialized,
   getPageContextClientSerialized,
 } from '../serializeContext.js'
-import { sanitizeJson } from './sanitizeJson.js'
 import { inferAssetTag, inferPreloadTag } from './inferHtmlTags.js'
 import { mergeScriptTags } from './mergeScriptTags.js'
 import type { PageContextInjectAssets } from '../injectAssets.js'
@@ -257,7 +256,7 @@ function mergeScriptEntries(
 }
 
 function getPageContextJsonScriptTag(pageContext: PageContextSerialization): string {
-  const pageContextClientSerialized = sanitizeJson(getPageContextClientSerialized(pageContext, true))
+  const pageContextClientSerialized = getPageContextClientSerialized(pageContext, true)
   const nonceAttr = inferNonceAttr(pageContext)
   const htmlTag = `<script id="${htmlElementId_pageContext}" type="application/json"${nonceAttr}>${pageContextClientSerialized}</script>`
   // Used by contra.com https://github.com/gajus
@@ -266,7 +265,7 @@ function getPageContextJsonScriptTag(pageContext: PageContextSerialization): str
   return htmlTag
 }
 function getGlobalContextJsonScriptTag(pageContext: PageContextSerialization): string {
-  const globalContextClientSerialized = sanitizeJson(getGlobalContextClientSerialized(pageContext, true))
+  const globalContextClientSerialized = getGlobalContextClientSerialized(pageContext, true)
   const nonceAttr = inferNonceAttr(pageContext)
   const htmlTag = `<script id="${htmlElementId_globalContext}" type="application/json"${nonceAttr}>${globalContextClientSerialized}</script>`
   return htmlTag

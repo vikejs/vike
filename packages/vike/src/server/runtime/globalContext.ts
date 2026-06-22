@@ -556,10 +556,13 @@ async function createGlobalContext(virtualFileExportsGlobalEntry: unknown) {
   debug('createGlobalContext() - done [sync]')
   // We define an early globalContext version synchronously, so that getGlobalContextSync() can be called early.
   // - Required by vike-vercel
-  assert(globalObject.globalContext)
+  const globalContextIsSetEarly = !!globalObject.globalContext
+  assertWarning(globalContextIsSetEarly, "globalContext isn't set early", { onlyOnce: false })
 
   const globalContext = await globalContextPromise
   debug('createGlobalContext() - done [async]')
+  assert(globalContextIsSetEarly) // We deliberately assert after the `await` (otherwise it swallows promise rejections such as an assert() failing synchronously inside `async createGlobalContextShared()`).
+  assert(globalObject.globalContext)
 
   assertV1Design(
     // pageConfigs is PageConfigRuntime[] but assertV1Design() requires PageConfigBuildTime[]

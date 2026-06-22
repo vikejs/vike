@@ -172,7 +172,7 @@ async function renderPageServerEntryOnceBegin(
 
   const pageContextBegin = getPageContextBegin(pageContextInit, globalContext, requestId, asyncStore)
 
-  const middlewares = (globalContext.config.middleware ?? []).flat() as EnhancedMiddleware[]
+  const middlewares: EnhancedMiddleware[] = (globalContext.config.middleware ?? []).flat()
   const renderPageServerEntry = () => renderPageServerEntryOnce(pageContextBegin, globalContext, requestId)
   if (middlewares.length === 0) {
     return renderPageServerEntry()
@@ -358,7 +358,7 @@ async function renderPageServerEntryRecursive_onError(
         return pageContextHttpErrorFallback
       }
     }
-    if (isSameErrorMessage(errErrorPage, err)) {
+    if (!isSameErrorMessage(errErrorPage, err)) {
       logRuntimeError(errErrorPage, pageContextErrorPageInit)
     }
     const pageContextHttpErrorFallback = getPageContextHttpErrorFallback(err, pageContextBegin)
@@ -402,8 +402,8 @@ async function renderPageServerEntryWithMiddlewares(
 
   const request =
     pageContext._reqWeb ??
-    (pageContext._reqDev
-      ? requestAdapter(pageContext._reqDev)
+    (pageContext._nodeDev
+      ? requestAdapter(pageContext._nodeDev.req, pageContext._nodeDev.res)
       : new Request(new URL(pageContext.urlOriginal, 'http://localhost').toString(), {
           headers: pageContext.headers ?? {},
         }))
@@ -459,7 +459,9 @@ function logHttpResponse(urlOriginalPretty: string, pageContextReturn: PageConte
         const headerRedirect = pageContextReturn.httpResponse.headers
           .slice()
           .reverse()
-          .find((header) => header[0] === 'Location')
+          // Case-insensitive: a redirect returned by a +middleware comes from a Web Response whose
+          // Headers object lower-cases header names (`location`), while Vike's own redirect() uses `Location`.
+          .find((header) => header[0].toLowerCase() === 'location')
         assert(headerRedirect)
         const urlRedirect = headerRedirect[1]
         urlOriginalPretty = urlRedirect

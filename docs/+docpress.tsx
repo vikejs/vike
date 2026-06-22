@@ -12,8 +12,7 @@ const config = {
   name: 'Vike',
   version: PROJECT_VERSION,
   url: 'https://vike.dev',
-  tagline:
-    '(Replaces Next.js/Nuxt) 🔨 Composable framework to build advanced applications with flexibility and stability.',
+  tagline: '(Replaces Next.js/Nuxt) 🔨 Build mission-critical applications with stability and development freedom.',
   logo: logoWithShadow,
   favicon: {
     browser: '/favicon.svg',
@@ -47,5 +46,15 @@ const config = {
     fontWeight: 'normal',
     fontSize: 21,
     marginLeft: 0,
+  },
+  choices: {
+    server: {
+      choices: ['Hono', 'Express', 'Fastify', 'H3', 'Elysia', 'Other'],
+      default: 'Hono',
+    },
+    uiFramework: {
+      choices: ['React', 'Vue', 'Solid'],
+      default: 'React',
+    },
   },
 } satisfies Config

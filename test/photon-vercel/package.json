@@ -5,16 +5,16 @@
     "test:types": "tsc --noEmit"
   },
   "dependencies": {
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
     "vike": "0.4.259",
     "vike-photon": "^0.1.26",
-    "vike-react": "^0.6.21"
+    "vike-react": "^0.6.24"
   },
   "devDependencies": {
     "@photonjs/runtime": "^0.1.16",
     "@photonjs/vercel": "^0.1.23",
-    "@types/react": "^19.2.7",
+    "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.2",
     "typescript": "^5.9.3",

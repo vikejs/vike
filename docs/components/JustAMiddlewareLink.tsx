@@ -7,7 +7,7 @@ function JustAMiddlewareLink() {
   return (
     <>
       From the perspective of the server, Vike is{' '}
-      <Link text="just a server middleware" href="/integration#server-side-tools" />.
+      <Link text="just a server middleware" href="/integration#server-manual-integration" />.
     </>
   )
 }

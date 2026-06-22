@@ -32,6 +32,7 @@ const flags = [
   'vike:staticReplace',
   'vike:stream',
   'vike:virtualFiles',
+  'vike:vite-config-user',
   'vike:vite-rpc',
 ] as const satisfies (`vike:${string}` | 'vike')[]
 const flagsSkipWildcard = ['vike:log']

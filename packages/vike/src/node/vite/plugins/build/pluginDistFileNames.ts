@@ -15,7 +15,7 @@ import type { OutputOptions as RolldownOutputOptions } from 'rolldown'
 import { getAssetsDir } from '../../shared/getAssetsDir.js'
 import { assertModuleId, getFilePathToShowToUserModule } from '../../shared/getFilePath.js'
 import '../../assertEnvVite.js'
-import { isVersionMatch } from '../../../../utils/assertVersion.js'
+import { isVite8OrAbove } from '../../shared/isVite8OrAbove.js'
 type PreRenderedChunk = Rollup.PreRenderedChunk
 type PreRenderedAsset = Rollup.PreRenderedAsset
 
@@ -337,12 +337,6 @@ function getCssChunkName(id: string, config: ResolvedConfig): string | undefined
     const hash = getIdHash(id)
     return `${name}-${hash}`
   }
-}
-
-function isVite8OrAbove(config: ResolvedConfig) {
-  const viteVersion = config._viteVersionResolved
-  assert(viteVersion)
-  return isVersionMatch(viteVersion, ['8.0.0'])
 }
 
 function getRollupOutputs(config: ResolvedConfig): Rollup.OutputOptions[] {
