@@ -3,8 +3,8 @@
     "// Sync GitHub Releases with each package's CHANGELOG.md — see ./README.md for full usage": "",
     "// run <package-dir>: create/update the package's GitHub Releases (needs a contents:write token)": "",
     "run": "sh -c 'bun ./index.ts \"$1\"' --",
-    "// try <package-dir>: dry-run of `run`, logging changes without writing (needs a contents:read token)": "",
-    "try": "sh -c 'bun ./index.ts \"$1\" --dry-run' --",
+    "// check <package-dir>: dry-run of `run`, logging changes without writing (needs a contents:read token)": "",
+    "check": "sh -c 'bun ./index.ts \"$1\" --dry-run' --",
     "// delete-all: delete every GitHub Release in the repo — destructive (needs a contents:write token)": "",
     "delete-all": "sh -c 'bun ./remove-all-releases.ts' --"
   },

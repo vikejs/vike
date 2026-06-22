@@ -39,14 +39,14 @@ scope below. `<package-dir>` is a path such as `packages/vike`.
 | Script | Description | Token scope |
 | --- | --- | --- |
 | `run -- <package-dir>` | Create/update the package's GitHub Releases from its `CHANGELOG.md`. | `contents: write` |
-| `try -- <package-dir>` | Dry-run of `run`: log what would change without writing anything. | `contents: read` |
+| `check -- <package-dir>` | Dry-run of `run`: log what would change without writing anything. | `contents: read` |
 | `delete-all` | **Destructive** — delete every GitHub Release in the repo. | `contents: write` |
 
 ### Examples
 
 ```bash
 # Preview the changes for the `vike` package (no writes):
-GITHUB_TOKEN=<token> pnpm -C .github/workflows/sync-github-releases run try -- packages/vike
+GITHUB_TOKEN=<token> pnpm -C .github/workflows/sync-github-releases run check -- packages/vike
 
 # Create/update the releases for real:
 GITHUB_TOKEN=<token> pnpm -C .github/workflows/sync-github-releases run run -- packages/vike
