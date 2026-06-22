@@ -1,8 +1,8 @@
 export { pluginStripPointerImportAttribute }
 
-// Pointer import attributes (`with { type: 'vike:pointer' }`) are only meaningful at
-// config-time. Leaving them in the client/server runtime bundles would break
-// bundlers/runtimes that don't support unknown import attributes, so we strip them out.
+// Remove `with { type: 'vike:pointer' }` because:
+// - The import attribute `with { type: 'vike:pointer' }` is only meaningful for pointer imports at config-time.
+// - Leaving them in the client/server runtime bundles would break bundlers/runtimes that don't support unknown import attributes, so we strip them out.
 
 import type { Plugin } from 'vite'
 import type MagicString from 'magic-string'
@@ -10,7 +10,7 @@ import { getImportStatements } from '../shared/parseEsModule.js'
 import { getMagicString } from '../shared/getMagicString.js'
 import '../assertEnvVite.js'
 
-// e.g. `with { type: 'vike:pointer' }`
+// Match `with { type: 'vike:pointer' }` (with optional whitespace variations)
 const runtimeAttrRE = /\bwith\s*\{\s*type\s*:\s*['"]vike:pointer['"]\s*\}/g
 
 function pluginStripPointerImportAttribute(): Plugin[] {
@@ -43,8 +43,7 @@ async function stripPointerImportAttributes(code: string, id: string) {
   try {
     importStatements = await getImportStatements(code)
   } catch {
-    // Not parsable as an ES module (e.g. a raw Markdown file): leave it untouched.
-    // Falling back to a global strip here would re-introduce the bug above.
+    // Not parsable as an ES module (e.g. a raw Markdown file) => leave it untouched
     return
   }
 
