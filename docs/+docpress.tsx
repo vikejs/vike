@@ -6,6 +6,16 @@ import logoWithShadow from './assets/logo/vike-shadow.svg'
 import { PROJECT_VERSION } from './utils/PROJECT_VERSION'
 import { discordInvite } from './links'
 import { TopNavigation } from './TopNavigation'
+import {
+  iconHono,
+  iconExpress,
+  iconFastify,
+  iconH3,
+  iconElysia,
+  iconReact,
+  iconVue,
+  iconSolid,
+} from './assets/choices-icons'
 import React from 'react'
 
 const config = {
@@ -49,11 +59,22 @@ const config = {
   },
   choices: {
     server: {
-      choices: ['Hono', 'Express', 'Fastify', 'H3', 'Elysia', 'Other'],
+      choices: [
+        { name: 'Hono', icon: iconHono, iconStyle: { width: 13, height: 13 } },
+        { name: 'Express', icon: iconExpress },
+        { name: 'Fastify', icon: iconFastify, iconStyle: { position: 'relative', top: 1 } },
+        { name: 'H3', icon: iconH3 },
+        { name: 'Elysia', icon: iconElysia },
+        'Other',
+      ],
       default: 'Hono',
     },
     uiFramework: {
-      choices: ['React', 'Vue', 'Solid'],
+      choices: [
+        { name: 'React', icon: iconReact, iconStyle: { position: 'relative', top: -0.5, opacity: 1 } },
+        { name: 'Vue', icon: iconVue, iconStyle: { position: 'relative', top: -0.5 } },
+        { name: 'Solid', icon: iconSolid, iconStyle: { position: 'relative', top: -0.5 } },
+      ],
       default: 'React',
     },
   },
