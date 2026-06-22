@@ -21,12 +21,12 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - name: Create GitHub releases
-        run: node --experimental-strip-types --no-warnings=ExperimentalWarning ./.github/workflows/sync-github-releases/index.ts
+        run: node ./.github/workflows/sync-github-releases/index.ts
         env:
           # GITHUB_EVENT_NAME, GITHUB_SHA and GITHUB_EVENT_PATH are provided automatically
           GITHUB_DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
