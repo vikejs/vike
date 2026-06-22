@@ -666,8 +666,8 @@ importers:
   packages/create-vike-core/boilerplate-react:
     dependencies:
       '@vikejs/hono':
-        specifier: ^0.2.0
-        version: 0.2.0(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.11.16)(vike@packages+vike)
+        specifier: ^0.2.1
+        version: 0.2.1(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.11.16)(vike@packages+vike)
       '@vitejs/plugin-react':
         specifier: ^4.7.0
         version: 4.7.0(vite@6.3.5(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
@@ -708,8 +708,8 @@ importers:
         specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.15)
       '@vikejs/hono':
-        specifier: ^0.2.0
-        version: 0.2.0(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.11.16)(vike@packages+vike)
+        specifier: ^0.2.1
+        version: 0.2.1(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.11.16)(vike@packages+vike)
       '@vitejs/plugin-react':
         specifier: ^4.7.0
         version: 4.7.0(vite@6.3.5(@types/node@22.19.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
@@ -741,8 +741,8 @@ importers:
   packages/create-vike-core/boilerplate-vue:
     dependencies:
       '@vikejs/hono':
-        specifier: ^0.2.0
-        version: 0.2.0(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.11.16)(vike@packages+vike)
+        specifier: ^0.2.1
+        version: 0.2.1(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.11.16)(vike@packages+vike)
       '@vitejs/plugin-vue':
         specifier: ^6.0.1
         version: 6.0.1(vite@6.3.5(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))(vue@3.5.18(typescript@6.0.2))
@@ -777,8 +777,8 @@ importers:
         specifier: ^22.10.2
         version: 22.19.2
       '@vikejs/hono':
-        specifier: ^0.2.0
-        version: 0.2.0(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.11.16)(vike@packages+vike)
+        specifier: ^0.2.1
+        version: 0.2.1(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.11.16)(vike@packages+vike)
       '@vitejs/plugin-vue':
         specifier: ^6.0.1
         version: 6.0.1(vite@6.3.5(@types/node@22.19.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))(vue@3.5.18(typescript@5.9.3))
@@ -2183,8 +2183,8 @@ importers:
         specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.15)
       '@vikejs/hono':
-        specifier: ^0.2.0
-        version: 0.2.0(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.11.16)(vike@packages+vike)
+        specifier: ^0.2.1
+        version: 0.2.1(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.11.16)(vike@packages+vike)
       '@vitejs/plugin-react-swc':
         specifier: ^3.11.0
         version: 3.11.0(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
@@ -4968,8 +4968,8 @@ packages:
       express: ^4.0.0 || ^5.0.0
       vike: ^0.4.255
 
-  '@vikejs/hono@0.2.0':
-    resolution: {integrity: sha512-kM0CLN+qmjkJTvtHEHo7KiEbqnLAhibn7jqNWzlsfKXVjN0VIkY1U0E9hU7zIWYkxw6KCA2kNDt6IVRRixBsKw==}
+  '@vikejs/hono@0.2.1':
+    resolution: {integrity: sha512-p63PBM88spYeMe3nl8YKbgirsxlGptrBDrXb1SxqnOjXRsb7GWsmRbuGC8axDBguxHHLM8q8Zgi4pMSQPe3t2A==}
     peerDependencies:
       hono: ^4.0.0
       vike: ^0.4.255
@@ -10978,7 +10978,7 @@ snapshots:
       - h3
       - hono
 
-  '@vikejs/hono@0.2.0(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.11.16)(vike@packages+vike)':
+  '@vikejs/hono@0.2.1(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.11.16)(vike@packages+vike)':
     dependencies:
       '@universal-middleware/hono': 0.4.21(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.11.16)
       hono: 4.10.4
