@@ -19,7 +19,7 @@ import {
   gitTagExists,
   toPackageDirs,
 } from './utils/git.ts'
-import { chooseCreateCommitish, getReleasePlan, getTagName, withSourceOfTruth } from './release-plan.ts'
+import { chooseCreateCommitish, getReleasePlan, getReleaseTag, withSourceOfTruth } from './release-plan.ts'
 import { fetchGithubReleases, getDefaultBranch, getGithubToken, getRepository, githubRequest } from './utils/github.ts'
 
 async function main(): Promise<void> {
@@ -43,7 +43,7 @@ async function main(): Promise<void> {
   const token = getGithubToken()
 
   // When several packages publish to the same repo they share its tag namespace, so releases are
-  // qualified with the package name (see getTagName()). Determined from every tracked CHANGELOG.md,
+  // qualified with the package name (see getReleaseTag()). Determined from every tracked CHANGELOG.md,
   // not just the package(s) being synced now.
   const multiplePackages = toPackageDirs(getTrackedChangelogFiles()).length > 1
 
@@ -102,30 +102,31 @@ async function syncPackage({
   const versionTags = Object.keys(changelogSections)
   const versionByTag = new Map(
     versionTags.map((versionTag) => [
-      getTagName(versionTag, packageJson.name, multiplePackages),
+      getReleaseTag(versionTag, packageJson.name, multiplePackages),
       versionTag.replace(/^v/, ''),
     ]),
   )
-  const newestTag = versionTags.length > 0 ? getTagName(versionTags[0], packageJson.name, multiplePackages) : ''
+  const newestReleaseTag =
+    versionTags.length > 0 ? getReleaseTag(versionTags[0], packageJson.name, multiplePackages) : ''
 
   for (const releaseToCreate of releasesToCreate) {
-    const tagName = releaseToCreate.tag_name
+    const releaseTag = releaseToCreate.tag_name
     // A release needs a tag to point at. When the tag is missing, GitHub would otherwise create it at
     // the default branch's HEAD — the wrong commit for a backfilled release. Deduce the real commit
     // from the changelog's history and tag that instead (or refuse, rather than tag the wrong commit).
-    const tagExists = gitTagExists(tagName)
-    const isNewest = tagName === newestTag
-    const deducedCommit = !tagExists && !isNewest ? findReleaseCommit(versionByTag.get(tagName)!) : null
-    const targetCommitish = chooseCreateCommitish({ tagName, tagExists, isNewest, deducedCommit, defaultBranch })
+    const tagExists = gitTagExists(releaseTag)
+    const isNewest = releaseTag === newestReleaseTag
+    const deducedCommit = !tagExists && !isNewest ? findReleaseCommit(versionByTag.get(releaseTag)!) : null
+    const targetCommitish = chooseCreateCommitish({ releaseTag, tagExists, isNewest, deducedCommit, defaultBranch })
     if (!tagExists && !isNewest)
-      console.warn(`Tag ${tagName} is missing — creating its release at deduced commit ${deducedCommit}`)
+      console.warn(`Tag ${releaseTag} is missing — creating its release at deduced commit ${deducedCommit}`)
 
     // https://docs.github.com/en/rest/releases/releases#create-a-release
     await githubRequest(`/repos/${owner}/${repo}/releases`, {
       token,
       method: 'POST',
       body: {
-        tag_name: tagName,
+        tag_name: releaseTag,
         target_commitish: targetCommitish,
         name: releaseToCreate.name,
         body: releaseToCreate.body,
@@ -136,7 +137,7 @@ async function syncPackage({
       },
       dryRun,
     })
-    if (!dryRun) console.log(`Created release ${tagName}`)
+    if (!dryRun) console.log(`Created release ${releaseTag}`)
   }
 
   for (const releaseToUpdate of releasesToUpdate) {

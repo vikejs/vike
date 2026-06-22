@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { chooseCreateCommitish, getReleasePlan, getTagName } from './release-plan.ts'
+import { chooseCreateCommitish, getReleasePlan, getReleaseTag } from './release-plan.ts'
 
 describe('getReleasePlan()', () => {
   it('creates missing past releases alongside the current release and updates stale notes', () => {
@@ -130,7 +130,7 @@ describe('getReleasePlan()', () => {
 })
 
 describe('chooseCreateCommitish()', () => {
-  const base = { tagName: 'v0.4.0', defaultBranch: 'main' }
+  const base = { releaseTag: 'v0.4.0', defaultBranch: 'main' }
 
   it('uses the default branch when the tag already exists (GitHub ignores it)', () => {
     expect(chooseCreateCommitish({ ...base, tagExists: true, isNewest: false, deducedCommit: null })).toBe('main')
@@ -157,14 +157,14 @@ describe('chooseCreateCommitish()', () => {
   })
 })
 
-describe('getTagName()', () => {
+describe('getReleaseTag()', () => {
   it('keeps the bare vX.Y.Z tag for a single package', () => {
-    expect(getTagName('v0.4.259', 'vike', false)).toBe('v0.4.259')
-    expect(getTagName('v0.1.0-beta.6', 'vike', false)).toBe('v0.1.0-beta.6')
+    expect(getReleaseTag('v0.4.259', 'vike', false)).toBe('v0.4.259')
+    expect(getReleaseTag('v0.1.0-beta.6', 'vike', false)).toBe('v0.1.0-beta.6')
   })
 
   it('qualifies the tag with the package name when there are several packages', () => {
-    expect(getTagName('v0.0.391', 'create-vike-core', true)).toBe('create-vike-core@0.0.391')
-    expect(getTagName('v0.1.0-beta.6', 'vike', true)).toBe('vike@0.1.0-beta.6')
+    expect(getReleaseTag('v0.0.391', 'create-vike-core', true)).toBe('create-vike-core@0.0.391')
+    expect(getReleaseTag('v0.1.0-beta.6', 'vike', true)).toBe('vike@0.1.0-beta.6')
   })
 })

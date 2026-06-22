@@ -1,5 +1,5 @@
 export { getReleasePlan }
-export { getTagName }
+export { getReleaseTag }
 export { withSourceOfTruth }
 export { chooseCreateCommitish }
 
@@ -24,17 +24,17 @@ type ReleaseToDelete = {
 // The git tag / GitHub Release tag for a changelog version. A single package keeps the historical
 // bare `vX.Y.Z`. Several packages share the repo's tag namespace, so their tags are qualified with
 // the package name (e.g. `create-vike-core@0.0.391`) to avoid collisions.
-function getTagName(versionTag: string, packageName: string, multiplePackages: boolean): string {
+function getReleaseTag(versionTag: string, packageName: string, multiplePackages: boolean): string {
   if (!multiplePackages) return versionTag
   return `${packageName}@${versionTag.replace(/^v/, '')}`
 }
 
 // Whether a GitHub Release tag belongs to the package being synced — i.e. is a candidate for
-// deletion once its changelog entry is gone. Mirrors getTagName()'s two schemes, so a release of
+// deletion once its changelog entry is gone. Mirrors getReleaseTag()'s two schemes, so a release of
 // another package (or a tag we never created, e.g. `nightly`) is never deleted.
-function isOwnedTag(tagName: string, packageName: string, multiplePackages: boolean): boolean {
-  if (multiplePackages) return tagName.startsWith(`${packageName}@`)
-  return /^v\d+\.\d+\.\d+/.test(tagName)
+function isOwnedTag(releaseTag: string, packageName: string, multiplePackages: boolean): boolean {
+  if (multiplePackages) return releaseTag.startsWith(`${packageName}@`)
+  return /^v\d+\.\d+\.\d+/.test(releaseTag)
 }
 
 // Footer appended to every release body, linking back to the changelog the release is generated from.
@@ -49,13 +49,13 @@ function withSourceOfTruth(body: string, changelogUrl: string): string {
 //  - Tag missing on an older (backfilled) release: tag the commit deduced from the changelog history,
 //    or hard fail if it couldn't be deduced — never silently tag the wrong commit.
 function chooseCreateCommitish({
-  tagName,
+  releaseTag,
   tagExists,
   isNewest,
   deducedCommit,
   defaultBranch,
 }: {
-  tagName: string
+  releaseTag: string
   tagExists: boolean
   isNewest: boolean
   deducedCommit: string | null
@@ -64,12 +64,12 @@ function chooseCreateCommitish({
   if (tagExists) return defaultBranch
   if (isNewest) {
     throw new Error(
-      `Refusing to create release ${tagName}: its git tag is missing. The latest release must already be tagged — creating it now would tag the wrong commit (the default branch's HEAD).`,
+      `Refusing to create release ${releaseTag}: its git tag is missing. The latest release must already be tagged — creating it now would tag the wrong commit (the default branch's HEAD).`,
     )
   }
   if (!deducedCommit) {
     throw new Error(
-      `Refusing to create release ${tagName}: its git tag is missing and its release commit couldn't be deduced from the changelog history.`,
+      `Refusing to create release ${releaseTag}: its git tag is missing and its release commit couldn't be deduced from the changelog history.`,
     )
   }
   return deducedCommit
@@ -101,13 +101,13 @@ function getReleasePlan({
   // tag semver regardless: https://github.com/vikejs/vike/pull/3157#issuecomment-4406846257)
   for (const versionTag of Object.keys(changelogSections).reverse()) {
     const body = changelogSections[versionTag]
-    const tagName = getTagName(versionTag, packageName, multiplePackages)
-    expectedTags.add(tagName)
-    const existingRelease = releasesByTag.get(tagName)
+    const releaseTag = getReleaseTag(versionTag, packageName, multiplePackages)
+    expectedTags.add(releaseTag)
+    const existingRelease = releasesByTag.get(releaseTag)
     if (!existingRelease) {
-      releasesToCreate.push({ tag_name: tagName, name: tagName, body })
+      releasesToCreate.push({ tag_name: releaseTag, name: releaseTag, body })
     } else if (existingRelease.body?.trim() !== body) {
-      releasesToUpdate.push({ release_id: existingRelease.id, tag_name: tagName, body })
+      releasesToUpdate.push({ release_id: existingRelease.id, tag_name: releaseTag, body })
     }
   }
 

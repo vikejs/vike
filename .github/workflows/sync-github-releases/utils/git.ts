@@ -49,9 +49,9 @@ function getTrackedChangelogFiles(): string[] {
   return stdout.split('\n').filter(Boolean)
 }
 
-function gitTagExists(tagName: string): boolean {
+function gitTagExists(releaseTag: string): boolean {
   try {
-    execFileSync('git', ['rev-parse', '-q', '--verify', `refs/tags/${tagName}`], { stdio: 'ignore' })
+    execFileSync('git', ['rev-parse', '-q', '--verify', `refs/tags/${releaseTag}`], { stdio: 'ignore' })
     return true
   } catch {
     return false
