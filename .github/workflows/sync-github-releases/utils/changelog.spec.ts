@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest'
 import { parseChangelog } from './changelog.ts'
 
 function readFixture(name: string): string {
-  return readFileSync(path.join(__dirname, '..', 'fixtures', name), 'utf8')
+  return readFileSync(path.join(__dirname, 'changelog-spec-fixtures', name), 'utf8')
 }
 
 describe('parseChangelog()', () => {
