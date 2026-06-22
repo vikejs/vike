@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { getRepository } from './github-utils.ts'
-import { getReleasePlan, parseChangelog, toPackageDirs } from './index.ts'
+import { getReleasePlan, getTagName, parseChangelog, toPackageDirs } from './index.ts'
 
 function readFixture(name: string): string {
   return readFileSync(path.join(__dirname, 'fixtures', name), 'utf8')
@@ -90,6 +90,8 @@ describe('getReleasePlan()', () => {
   it('creates missing past releases alongside the current release and updates stale notes', () => {
     const plan = getReleasePlan({
       defaultBranch: 'main',
+      packageName: 'vike',
+      multiplePackages: false,
       changelogSections: {
         'v1.0.1': 'New release notes',
         'v1.0.0': 'Updated old notes',
@@ -124,6 +126,8 @@ describe('getReleasePlan()', () => {
   it('updates the current release instead of creating a duplicate', () => {
     const plan = getReleasePlan({
       defaultBranch: 'main',
+      packageName: 'vike',
+      multiplePackages: false,
       changelogSections: {
         'v1.0.1': 'Fresh release notes',
       },
@@ -139,6 +143,8 @@ describe('getReleasePlan()', () => {
   it('leaves GitHub releases without a matching changelog entry untouched', () => {
     const plan = getReleasePlan({
       defaultBranch: 'main',
+      packageName: 'vike',
+      multiplePackages: false,
       changelogSections: { 'v1.0.0': 'Notes' },
       githubReleases: [
         { id: 1, tag_name: 'v1.0.0', body: 'Notes' },
@@ -148,6 +154,45 @@ describe('getReleasePlan()', () => {
     })
 
     expect(plan).toEqual({ releasesToCreate: [], releasesToUpdate: [] })
+  })
+
+  it('qualifies tags with the package name when several packages share the repo', () => {
+    const plan = getReleasePlan({
+      defaultBranch: 'main',
+      packageName: 'create-vike-core',
+      multiplePackages: true,
+      changelogSections: {
+        'v0.0.2': 'New notes',
+        'v0.0.1': 'Old notes',
+      },
+      // The existing release is matched by its namespaced tag — no duplicate is created for it, and
+      // it isn't confused with another package's bare `v0.0.1` release.
+      githubReleases: [{ id: 1, tag_name: 'create-vike-core@0.0.1', body: 'Old notes' }],
+    })
+
+    expect(plan).toEqual({
+      releasesToCreate: [
+        {
+          tag_name: 'create-vike-core@0.0.2',
+          target_commitish: 'main',
+          name: 'create-vike-core@0.0.2',
+          body: 'New notes',
+        },
+      ],
+      releasesToUpdate: [],
+    })
+  })
+})
+
+describe('getTagName()', () => {
+  it('keeps the bare vX.Y.Z tag for a single package', () => {
+    expect(getTagName('v0.4.259', 'vike', false)).toBe('v0.4.259')
+    expect(getTagName('v0.1.0-beta.6', 'vike', false)).toBe('v0.1.0-beta.6')
+  })
+
+  it('qualifies the tag with the package name when there are several packages', () => {
+    expect(getTagName('v0.0.391', 'create-vike-core', true)).toBe('create-vike-core@0.0.391')
+    expect(getTagName('v0.1.0-beta.6', 'vike', true)).toBe('vike@0.1.0-beta.6')
   })
 })
 

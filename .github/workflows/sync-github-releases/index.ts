@@ -10,6 +10,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 export { getReleasePlan }
 export { parseChangelog }
 export { toPackageDirs }
+export { getTagName }
 
 import assert from 'node:assert'
 import { execFileSync } from 'node:child_process'
@@ -41,9 +42,14 @@ async function main(): Promise<void> {
   const defaultBranch = getDefaultBranch()
   const token = getGithubToken()
 
+  // When several packages publish to the same repo they share its tag namespace, so releases are
+  // qualified with the package name (see getTagName()). Determined from every tracked CHANGELOG.md,
+  // not just the package(s) being synced now.
+  const multiplePackages = toPackageDirs(getTrackedChangelogFiles()).length > 1
+
   for (const packageDir of packageDirs) {
     console.log(`Syncing GitHub releases for package directory: ${packageDir}`)
-    await syncPackage({ packageDir, owner, repo, defaultBranch, token, dryRun })
+    await syncPackage({ packageDir, owner, repo, defaultBranch, token, dryRun, multiplePackages })
   }
 }
 
@@ -54,6 +60,7 @@ async function syncPackage({
   defaultBranch,
   token,
   dryRun,
+  multiplePackages,
 }: {
   packageDir: string
   owner: string
@@ -61,6 +68,7 @@ async function syncPackage({
   defaultBranch: string
   token: string
   dryRun: boolean
+  multiplePackages: boolean
 }): Promise<void> {
   const require = createRequire(import.meta.url)
 
@@ -68,7 +76,7 @@ async function syncPackage({
   const packageJsonPath = path.join(packageDirPath, 'package.json')
   const changelogPath = path.join(packageDirPath, 'CHANGELOG.md')
 
-  const packageJson = require(packageJsonPath) as { version: string }
+  const packageJson = require(packageJsonPath) as { version: string; name: string }
 
   const versionTag = `v${packageJson.version}`
   const changelog = await readFile(changelogPath, 'utf8')
@@ -81,6 +89,8 @@ async function syncPackage({
     defaultBranch,
     githubReleases,
     changelogSections,
+    packageName: packageJson.name,
+    multiplePackages,
   })
 
   for (const releaseToCreate of releasesToCreate) {
@@ -190,14 +200,26 @@ type ReleasesToUpdate = {
   tag_name: string
   body: string
 }
+// The git tag / GitHub Release tag for a changelog version. A single package keeps the historical
+// bare `vX.Y.Z`. Several packages share the repo's tag namespace, so their tags are qualified with
+// the package name (e.g. `create-vike-core@0.0.391`) to avoid collisions.
+function getTagName(versionTag: string, packageName: string, multiplePackages: boolean): string {
+  if (!multiplePackages) return versionTag
+  return `${packageName}@${versionTag.replace(/^v/, '')}`
+}
+
 function getReleasePlan({
   defaultBranch,
   githubReleases,
   changelogSections,
+  packageName,
+  multiplePackages,
 }: {
   defaultBranch: string
   githubReleases: Release[]
   changelogSections: ChangelogSections
+  packageName: string
+  multiplePackages: boolean
 }) {
   // Reconcile from the changelog (the source of truth), not from the GitHub Releases: iterating the
   // releases for updates would try to rewrite any release whose tag isn't in the changelog (e.g. a
@@ -212,8 +234,9 @@ function getReleasePlan({
   // last becomes the repo's "Latest". (The releases list itself is ordered by GitHub on tag semver,
   // not creation order, so backfilled older releases still slot in correctly:
   // https://github.com/vikejs/vike/pull/3157#issuecomment-4406846257)
-  for (const tagName of Object.keys(changelogSections).reverse()) {
-    const body = changelogSections[tagName]
+  for (const versionTag of Object.keys(changelogSections).reverse()) {
+    const body = changelogSections[versionTag]
+    const tagName = getTagName(versionTag, packageName, multiplePackages)
     const existingRelease = releasesByTag.get(tagName)
     if (!existingRelease) {
       releasesToCreate.push({ tag_name: tagName, target_commitish: defaultBranch, name: tagName, body })
