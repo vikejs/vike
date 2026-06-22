@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "run": "sh -c 'bun ./sync-releases.ts \"$1\"' --",
-    "try": "sh -c 'bun ./sync-releases.ts \"$1\" --dry-run' --",
+    "run": "sh -c 'bun ./index.ts \"$1\"' --",
+    "try": "sh -c 'bun ./index.ts \"$1\" --dry-run' --",
     "delete-all": "sh -c 'bun ./remove-all-releases.ts' --"
   },
   "devDependencies": {

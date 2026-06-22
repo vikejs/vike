@@ -20,7 +20,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   })
 }
 
-// Only used by ./sync-releases.spec.ts
+// Only used by ./index.spec.ts
 export { getReleasePlan }
 export { parseChangelog }
 
@@ -38,7 +38,7 @@ async function main(): Promise<void> {
   const args = process.argv.slice(2)
   const packageDir = args[0]
   if (!packageDir) {
-    throw new Error('Usage: sync-releases <package-dir> [--dry-run]')
+    throw new Error('Usage: index <package-dir> [--dry-run]')
   }
 
   const packageDirPath = path.join(process.cwd(), packageDir)
@@ -48,9 +48,9 @@ async function main(): Promise<void> {
   const packageJson = require(packageJsonPath) as { version: string }
 
   // Local testing:
-  // GITHUB_TOKEN=<contents:write token> bun ./.github/workflows/sync-github-releases/sync-releases.ts packages/vike
+  // GITHUB_TOKEN=<contents:write token> bun ./.github/workflows/sync-github-releases/index.ts packages/vike
   // Dry-run (still needs a token for read-only GETs):
-  // GITHUB_TOKEN=<contents:read token> bun ./.github/workflows/sync-github-releases/sync-releases.ts packages/vike --dry-run
+  // GITHUB_TOKEN=<contents:read token> bun ./.github/workflows/sync-github-releases/index.ts packages/vike --dry-run
   const { owner, repo } = getRepository()
   const defaultBranch = getDefaultBranch()
   const versionTag = `v${packageJson.version}`

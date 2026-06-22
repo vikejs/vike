@@ -37,7 +37,7 @@ jobs:
             [ "$(basename "$file")" = "CHANGELOG.md" ] || continue
             package_dir=$(dirname "$file")
             echo "Syncing GitHub releases for package directory: $package_dir"
-            bun ./.github/workflows/sync-github-releases/sync-releases.ts "$package_dir"
+            bun ./.github/workflows/sync-github-releases/index.ts "$package_dir"
           done
         env:
           GITHUB_DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
