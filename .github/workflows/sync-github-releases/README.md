@@ -39,8 +39,8 @@ scope below.
 
 | Script | Description | Token scope |
 | --- | --- | --- |
-| `run [-- <package-dir>]` | Synchronize GitHub Releases from `CHANGELOG.md`. | `contents: write` |
-| `check [-- <package-dir>]` | Dry-run: log what would change without writing anything. | `contents: read` |
+| `sync [-- <package-dir>]` | Synchronize GitHub Releases from `CHANGELOG.md`. | `contents: write` |
+| `sync:check [-- <package-dir>]` | Dry-run: log what would change without writing anything. | `contents: read` |
 | `delete-all` | **Destructive** — delete all GitHub Releases. | `contents: write` |
 
 ### Examples
@@ -49,8 +49,8 @@ scope below.
 cd .github/workflows/sync-github-releases/
 
 # Preview the changes for all packages (no writes)
-GITHUB_TOKEN=<token> pnpm run check
+GITHUB_TOKEN=<token> pnpm run sync:check
 
 # Synchronize the releases of packages/vike
-GITHUB_TOKEN=<token> pnpm run run -- packages/vike
+GITHUB_TOKEN=<token> pnpm run sync -- packages/vike
 ```

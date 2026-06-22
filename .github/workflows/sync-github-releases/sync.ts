@@ -1,5 +1,5 @@
 // Synchronize CHANGELOG.md -> GitHub Releases.
-// Run via the package.json scripts `run` or `check` — see README.md
+// Run via the package.json scripts `sync` or `sync:check` — see README.md
 
 main()
 

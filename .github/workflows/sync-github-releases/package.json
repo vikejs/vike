@@ -1,8 +1,8 @@
 {
   "scripts": {
-    "run": "pnpm node-ts ./index.ts",
-    "check": "pnpm node-ts ./index.ts --dry-run",
-    "delete-all": "pnpm node-ts ./delete-all-releases.ts",
+    "sync": "pnpm node-ts ./sync.ts",
+    "sync:check": "pnpm node-ts ./sync.ts --dry-run",
+    "delete-all": "pnpm node-ts ./delete-all.ts",
     "===== Utils": "",
     "// Run a .ts file with Node.js <=23 — these two flags aren't needed anymore on Node.js 24+": "",
     "node-ts": "node --experimental-strip-types --no-warnings=ExperimentalWarning"
