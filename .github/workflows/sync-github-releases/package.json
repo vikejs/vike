@@ -5,7 +5,7 @@
     "// sync:check [<package-dir>]: dry-run of `sync`, logging changes without writing (needs a contents:read token, see ./README.md)": "",
     "sync:check": "pnpm node-ts ./sync.ts --dry-run",
     "// delete-all: delete every GitHub Release in the repo (needs a contents:write token, see ./README.md)": "",
-    "delete-all": "pnpm node-ts ./delete-all-releases.ts",
+    "delete-all": "pnpm node-ts ./delete-all.ts",
     "===== Utils": "",
     "// Run a .ts file with Node.js <=23 — these two flags aren't needed anymore on Node.js 24+": "",
     "node-ts": "node --experimental-strip-types --no-warnings=ExperimentalWarning"
