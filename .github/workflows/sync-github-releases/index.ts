@@ -20,7 +20,7 @@ import {
   toPackageDirs,
 } from './git.ts'
 import { chooseCreateCommitish, getReleasePlan, getTagName, withSourceOfTruth } from './release-plan.ts'
-import { fetchGithubReleases, getDefaultBranch, getGithubToken, getRepository, githubRequest } from './github-utils.ts'
+import { fetchGithubReleases, getDefaultBranch, getGithubToken, getRepository, githubRequest } from './github.ts'
 
 async function main(): Promise<void> {
   // The package.json scripts run from this folder; switch to the repo root so the git commands and

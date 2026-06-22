@@ -3,7 +3,7 @@ import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { parseChangelog } from './changelog.ts'
 import { toPackageDirs } from './git.ts'
-import { getRepository } from './github-utils.ts'
+import { getRepository } from './github.ts'
 import { chooseCreateCommitish, getReleasePlan, getTagName, withSourceOfTruth } from './release-plan.ts'
 
 function readFixture(name: string): string {
