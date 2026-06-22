@@ -31,8 +31,8 @@ describe('parseChangelog()', () => {
     })
   })
 
-  it('parses oldest Vike entries (single # headings, pre-release versions)', () => {
-    const changelogSections = parseChangelog(readFixture('changelog-vike.md'))
+  it('parses entries with single # headings and pre-release versions', () => {
+    const changelogSections = parseChangelog(readFixture('changelog-single-hash-headings.md'))
     expect(Object.keys(changelogSections)).toEqual([
       'v0.1.0-beta.10',
       'v0.1.0-beta.9',
@@ -45,31 +45,31 @@ describe('parseChangelog()', () => {
     expect(changelogSections['v0.1.0-beta.6']).toContain('Initial public release')
   })
 
-  it('parses oldest Telefunc entries (trailing non-versioned sections)', () => {
-    const changelogSections = parseChangelog(readFixture('changelog-telefunc.md'))
+  it('parses entries with trailing non-versioned sections', () => {
+    const changelogSections = parseChangelog(readFixture('changelog-trailing-sections.md'))
     expect(Object.keys(changelogSections)).toEqual(['v0.1.2', 'v0.1.1'])
-    expect(changelogSections['v0.1.2']).toContain('improve TelefunctionError type')
+    expect(changelogSections['v0.1.2']).toContain('improve error type')
     expect(changelogSections['v0.1.1']).toContain('isomorphic imports')
   })
 
-  it('parses oldest vike-vue entries (no-link headings, dash bullets)', () => {
-    const changelogSections = parseChangelog(readFixture('changelog-vike-vue.md'))
+  it('parses entries with no-link headings and dash bullets', () => {
+    const changelogSections = parseChangelog(readFixture('changelog-dash-bullets.md'))
     expect(Object.keys(changelogSections)).toEqual(['v0.2.3', 'v0.2.2', 'v0.2.1', 'v0.2.0', 'v0.1.1'])
     expect(changelogSections['v0.2.1']).toContain('Fix peer dependency')
     expect(changelogSections['v0.2.0']).toContain('Add `Head` config option')
   })
 
-  it('parses oldest vike-solid entries (single # headings, mixed formats)', () => {
-    const changelogSections = parseChangelog(readFixture('changelog-vike-solid.md'))
+  it('parses entries with a mix of # and ## headings', () => {
+    const changelogSections = parseChangelog(readFixture('changelog-mixed-hash-headings.md'))
     expect(Object.keys(changelogSections)).toEqual(['v0.7.2', 'v0.7.1', 'v0.7.0', 'v0.6.2', 'v0.6.1'])
     expect(changelogSections['v0.7.0']).toContain('### BREAKING CHANGES')
     expect(changelogSections['v0.6.1']).toContain('MIGRATION.md')
   })
 
-  it('parses oldest vike-react entries (no-link initial version)', () => {
-    const changelogSections = parseChangelog(readFixture('changelog-vike-react.md'))
+  it('parses entries with a no-link initial version', () => {
+    const changelogSections = parseChangelog(readFixture('changelog-no-link-initial.md'))
     expect(Object.keys(changelogSections)).toEqual(['v0.1.6', 'v0.1.5', 'v0.1.4', 'v0.1.3', 'v0.1.2', 'v0.1.1'])
-    expect(changelogSections['v0.1.6']).toContain("fix 'vike-react' type")
+    expect(changelogSections['v0.1.6']).toContain('fix type export')
     expect(changelogSections['v0.1.1']).toContain('fix ESM import paths')
   })
 })
