@@ -22,8 +22,7 @@ type ReleaseToDelete = {
 }
 
 // A single package keeps the historical bare `vX.Y.Z` tag. Several packages share the repo's tag
-// namespace, so their tags are qualified with the package name (e.g. `create-vike-core@0.0.391`) to
-// avoid collisions.
+// namespace, so their tags are qualified with the package name (e.g. `foo@1.2.3`) to avoid collisions.
 function getReleaseTag(versionTag: string, packageName: string, hasMultiplePackages: boolean): string {
   if (!hasMultiplePackages) return versionTag
   return `${packageName}@${versionTag.replace(/^v/, '')}`
@@ -97,7 +96,7 @@ function getReleasePlan({
   // releaseNotesByVersion is newest-first; iterate oldest-first so releases are created (and their
   // notifications sent) in chronological order. Which release is "Latest" is set explicitly via
   // make_latest in syncPackage, not inferred from creation order. (GitHub orders the releases list by
-  // tag semver regardless: https://github.com/vikejs/vike/pull/3157#issuecomment-4406846257)
+  // tag semver regardless of creation order.)
   for (const versionTag of Object.keys(releaseNotesByVersion).reverse()) {
     const body = releaseNotesByVersion[versionTag]
     const releaseTag = getReleaseTag(versionTag, packageName, hasMultiplePackages)
