@@ -6,22 +6,21 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   })
 }
 
-// Exported only for index.spec.ts
-export { getReleasePlan }
-export { parseChangelog }
-export { toPackageDirs }
-export { getTagName }
-export { withSourceOfTruth }
-export { chooseCreateCommitish }
-
-import { execFileSync } from 'node:child_process'
-import { readFileSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import type { Release } from './types.ts'
-import { fetchGithubReleases, getDefaultBranch, getGithubToken, getRepository, githubRequest } from './github-utils.ts'
+import { parseChangelog } from './utils/changelog.ts'
+import {
+  findReleaseCommit,
+  getPushedChangelogFiles,
+  getRepoRoot,
+  getTrackedChangelogFiles,
+  gitTagExists,
+  toPackageDirs,
+} from './utils/git.ts'
+import { chooseCreateCommitish, getReleasePlan, getTagName, withSourceOfTruth } from './release-plan.ts'
+import { fetchGithubReleases, getDefaultBranch, getGithubToken, getRepository, githubRequest } from './utils/github.ts'
 
 async function main(): Promise<void> {
   // The package.json scripts run from this folder; switch to the repo root so the git commands and
@@ -168,197 +167,4 @@ function getPackageDirsToSync(): string[] {
   const pushedChangelogFiles = getPushedChangelogFiles()
   if (pushedChangelogFiles) return toPackageDirs(pushedChangelogFiles)
   return toPackageDirs(getTrackedChangelogFiles())
-}
-
-function getRepoRoot(): string {
-  return execFileSync('git', ['rev-parse', '--show-toplevel'], { encoding: 'utf8' }).trim()
-}
-
-function toPackageDirs(files: string[]): string[] {
-  // git reports forward-slash paths on every OS, so parse them with path.posix.
-  const packageDirs = files
-    .filter((file) => file.startsWith('packages/') && path.posix.basename(file) === 'CHANGELOG.md')
-    .map((file) => path.posix.dirname(file))
-  return [...new Set(packageDirs)]
-}
-
-function getPushedChangelogFiles(): string[] | null {
-  if (process.env.GITHUB_EVENT_NAME !== 'push') return null
-  const beforeSha = getPushBeforeSha()
-  const sha = process.env.GITHUB_SHA
-  if (!beforeSha || !sha) return null
-  // execFileSync runs git without a shell, so the interpolated SHAs can't cause injection.
-  const stdout = execFileSync('git', ['diff', '--name-only', beforeSha, sha], { encoding: 'utf8' })
-  return stdout.split('\n').filter(Boolean)
-}
-
-// `before` is the commit the branch pointed at prior to the push. GitHub Actions writes the
-// triggering event's payload to the file at GITHUB_EVENT_PATH.
-function getPushBeforeSha(): string | null {
-  const eventPath = process.env.GITHUB_EVENT_PATH
-  if (!eventPath) return null
-  const event = JSON.parse(readFileSync(eventPath, 'utf8')) as { before?: string }
-  const before = event.before
-  // GitHub uses an all-zero SHA when there's no prior commit (e.g. a branch's first push).
-  if (!before || /^0+$/.test(before)) return null
-  return before
-}
-
-function getTrackedChangelogFiles(): string[] {
-  // `*CHANGELOG.md` matches at any depth — git pathspecs aren't anchored to the repo root.
-  const stdout = execFileSync('git', ['ls-files', '--', '*CHANGELOG.md'], { encoding: 'utf8' })
-  return stdout.split('\n').filter(Boolean)
-}
-
-function gitTagExists(tagName: string): boolean {
-  try {
-    execFileSync('git', ['rev-parse', '-q', '--verify', `refs/tags/${tagName}`], { stdio: 'ignore' })
-    return true
-  } catch {
-    return false
-  }
-}
-
-// The commit that introduced this version's changelog entry — i.e. the release commit, which is where
-// its tag belongs. Pickaxe (`-S`, a literal-string search) the changelog history for the heading's
-// link opener `[<version>](`; the oldest commit that changed its count is the one that added it.
-function findReleaseCommit(version: string): string | null {
-  const stdout = execFileSync('git', ['log', '--reverse', '--format=%H', `-S[${version}](`, '--', '*CHANGELOG.md'], {
-    encoding: 'utf8',
-  })
-  return stdout.split('\n').filter(Boolean)[0] ?? null
-}
-
-type ChangelogSections = Record<string, string>
-function parseChangelog(changelog: string): ChangelogSections {
-  const changelogSections: ChangelogSections = {}
-  // Group 1 is the version; group 2 (optional) is the heading's link. release-me links the version to
-  // a `…/compare/…` URL — `## [0.4.257](…/compare/…)` — which we surface as the release's "Full
-  // Changelog". (The very first release links to a `…/tree/…` URL instead, which we skip.)
-  const matches = [...changelog.matchAll(/^##? \[(\d+\.\d+\.\d+[^\]]*)\](?:\(([^)]+)\))?/gm)]
-
-  matches.forEach((match, index) => {
-    const start = changelog.indexOf('\n', match.index)
-    const end = matches[index + 1]?.index ?? changelog.length
-    let notes = changelog.slice(start, end).trim()
-    const headingUrl = match[2]
-    if (headingUrl?.includes('/compare/')) notes += `\n\n**Full Changelog**: ${headingUrl}`
-    changelogSections[`v${match[1]}`] = notes
-  })
-
-  return changelogSections
-}
-
-type ReleasesToCreate = {
-  tag_name: string
-  name: string
-  body: string
-}
-type ReleasesToUpdate = {
-  release_id: number
-  tag_name: string
-  body: string
-}
-type ReleasesToDelete = {
-  release_id: number
-  tag_name: string
-}
-// The git tag / GitHub Release tag for a changelog version. A single package keeps the historical
-// bare `vX.Y.Z`. Several packages share the repo's tag namespace, so their tags are qualified with
-// the package name (e.g. `create-vike-core@0.0.391`) to avoid collisions.
-function getTagName(versionTag: string, packageName: string, multiplePackages: boolean): string {
-  if (!multiplePackages) return versionTag
-  return `${packageName}@${versionTag.replace(/^v/, '')}`
-}
-
-// Whether a GitHub Release tag belongs to the package being synced — i.e. is a candidate for
-// deletion once its changelog entry is gone. Mirrors getTagName()'s two schemes, so a release of
-// another package (or a tag we never created, e.g. `nightly`) is never deleted.
-function isOwnedTag(tagName: string, packageName: string, multiplePackages: boolean): boolean {
-  if (multiplePackages) return tagName.startsWith(`${packageName}@`)
-  return /^v\d+\.\d+\.\d+/.test(tagName)
-}
-
-// Footer appended to every release body, linking back to the changelog the release is generated from.
-function withSourceOfTruth(body: string, changelogUrl: string): string {
-  return `${body}\n\n_Source of truth: [\`CHANGELOG.md\`](${changelogUrl})._`
-}
-
-// The commit a to-be-created release should be tagged at (its `target_commitish`).
-//  - Tag already exists: GitHub uses it and ignores target_commitish — pass the branch as a no-op.
-//  - Tag missing on the newest release: hard fail. The just-released version must already be tagged;
-//    tagging it now would point at the default branch's HEAD (the wrong commit).
-//  - Tag missing on an older (backfilled) release: tag the commit deduced from the changelog history,
-//    or hard fail if it couldn't be deduced — never silently tag the wrong commit.
-function chooseCreateCommitish({
-  tagName,
-  tagExists,
-  isNewest,
-  deducedCommit,
-  defaultBranch,
-}: {
-  tagName: string
-  tagExists: boolean
-  isNewest: boolean
-  deducedCommit: string | null
-  defaultBranch: string
-}): string {
-  if (tagExists) return defaultBranch
-  if (isNewest) {
-    throw new Error(
-      `Refusing to create release ${tagName}: its git tag is missing. The latest release must already be tagged — creating it now would tag the wrong commit (the default branch's HEAD).`,
-    )
-  }
-  if (!deducedCommit) {
-    throw new Error(
-      `Refusing to create release ${tagName}: its git tag is missing and its release commit couldn't be deduced from the changelog history.`,
-    )
-  }
-  return deducedCommit
-}
-
-function getReleasePlan({
-  githubReleases,
-  changelogSections,
-  packageName,
-  multiplePackages,
-}: {
-  githubReleases: Release[]
-  changelogSections: ChangelogSections
-  packageName: string
-  multiplePackages: boolean
-}) {
-  // Reconcile from the changelog (the source of truth), not from the GitHub Releases: iterating the
-  // releases for updates would try to rewrite any release whose tag isn't in the changelog (e.g. a
-  // release of another package, or a manually-created one) with an `undefined` body. Driving both
-  // create and update off the changelog can only ever touch the versions the changelog declares.
-  const releasesByTag = new Map(githubReleases.map((release) => [release.tag_name, release]))
-  const expectedTags = new Set<string>()
-  const releasesToCreate: ReleasesToCreate[] = []
-  const releasesToUpdate: ReleasesToUpdate[] = []
-
-  // changelogSections is newest-first; iterate oldest-first so releases are created (and their
-  // notifications sent) in chronological order. Which release is "Latest" is set explicitly via
-  // make_latest in syncPackage, not inferred from creation order. (GitHub orders the releases list by
-  // tag semver regardless: https://github.com/vikejs/vike/pull/3157#issuecomment-4406846257)
-  for (const versionTag of Object.keys(changelogSections).reverse()) {
-    const body = changelogSections[versionTag]
-    const tagName = getTagName(versionTag, packageName, multiplePackages)
-    expectedTags.add(tagName)
-    const existingRelease = releasesByTag.get(tagName)
-    if (!existingRelease) {
-      releasesToCreate.push({ tag_name: tagName, name: tagName, body })
-    } else if (existingRelease.body?.trim() !== body) {
-      releasesToUpdate.push({ release_id: existingRelease.id, tag_name: tagName, body })
-    }
-  }
-
-  // Delete this package's releases whose version is no longer in the changelog (the source of truth).
-  const releasesToDelete: ReleasesToDelete[] = githubReleases
-    .filter(
-      (release) => isOwnedTag(release.tag_name, packageName, multiplePackages) && !expectedTags.has(release.tag_name),
-    )
-    .map((release) => ({ release_id: release.id, tag_name: release.tag_name }))
-
-  return { releasesToCreate, releasesToUpdate, releasesToDelete }
 }
