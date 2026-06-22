@@ -12,10 +12,12 @@ import type { Release } from './types.ts'
 const API_URL = process.env.GITHUB_API_URL ?? 'https://api.github.com'
 const REPOSITORY = process.env.GITHUB_REPOSITORY ?? getRepositoryFromGit()
 const DEFAULT_BRANCH = process.env.GITHUB_DEFAULT_BRANCH ?? 'main'
-// Pause between requests so bursts (e.g. backfilling many releases) stay under GitHub's secondary
-// rate limit — its burst/concurrency limit, separate from the hourly primary quota.
+// Pause between write requests so bursts (e.g. backfilling many releases) stay under GitHub's
+// secondary rate limit — its burst/concurrency limit, separate from the hourly primary quota.
 // https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api
 const RATE_LIMIT_DELAY_MS = 500
+// Writes performed so far, to delay only *between* them (not before the first, nor after reads).
+let writeCount = 0
 
 async function fetchGithubReleases(owner: string, repo: string, token: string): Promise<Release[]> {
   const githubReleases: Release[] = []
@@ -60,6 +62,15 @@ async function githubRequest<T = void>(
     if (body !== undefined) console.log(JSON.stringify(body, null, 2))
     return undefined as T
   }
+
+  // Throttle between writes only: reads aren't the rate-limit concern, and a lone write — the common
+  // case of a single new release — shouldn't wait at all. So a backfill of N writes pays N-1 delays,
+  // while one write pays none.
+  if (method !== 'GET') {
+    if (writeCount > 0) await setTimeout(RATE_LIMIT_DELAY_MS)
+    writeCount++
+  }
+
   const response = await fetch(new URL(pathname, API_URL), {
     method,
     headers: {
@@ -79,9 +90,7 @@ async function githubRequest<T = void>(
     )
   }
 
-  const data = response.status === 204 ? undefined : await response.json()
-  await setTimeout(RATE_LIMIT_DELAY_MS)
-  return data as T
+  return response.status === 204 ? (undefined as T) : ((await response.json()) as T)
 }
 
 function getGithubToken(): string {
