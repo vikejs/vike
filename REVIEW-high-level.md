@@ -146,9 +146,9 @@ The public `getPageContext()` (server *and* client) reads a module-global that i
 before a hook runs and cleared on the **next microtask** (`Promise.resolve().then(() => … = null)`),
 i.e. valid only synchronously before the first `await`. Meanwhile Vike *already* uses
 `AsyncLocalStorage` on the server (`asyncHook.ts`, dev logging). Using a microtask-reset global for
-request-scoped state **on the server, where ALS is available**, is both a robustness smell
-(interleaving/concurrency) and an internal inconsistency. **Recommend:** back the server path with
-ALS; keep the global only for the client where ALS isn't available.
+request-scoped state **on the server, where `AsyncLocalStorage` is available**, is both a
+robustness smell (interleaving/concurrency) and an internal inconsistency. **Recommend:** back the
+server path with `AsyncLocalStorage`; keep the global only for the client where it isn't available.
 
 ### AR-3 — Cumulative hooks run in parallel by default (`Promise.all`) with no ordering guarantee · `Medium`
 `execHookList`/`execHookGlobal` fire all hooks of the same name concurrently. For cumulative hooks
@@ -218,7 +218,7 @@ In rough order of leverage — each links to the point that argues it:
    chunk of dev/prod divergence.
 3. **Typed pointer format + single-pass env resolution** (`AR-1`). Removes magic strings and the
    "4 places decide env" problem.
-4. **Unify `getPageContext()` on ALS server-side** (`AR-2`). Removes the microtask-global fragility.
+4. **Unify `getPageContext()` on `AsyncLocalStorage` server-side** (`AR-2`). Removes the microtask-global fragility.
 5. **Collapse public import paths** (`AR-7`). Smaller, teachable API surface.
 6. **Deterministic (or sequential) cumulative-hook ordering** (`AR-3`). De-risks the planned
    "cumulative by default" direction.
