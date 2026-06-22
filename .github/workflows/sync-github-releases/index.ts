@@ -199,28 +199,28 @@ function getReleasePlan({
   githubReleases: Release[]
   changelogSections: ChangelogSections
 }) {
-  // changelogSections is newest-first; .reverse() creates the missing releases oldest-first. This
-  // matters because create-release defaults to make_latest=true: whichever release is created last
-  // becomes the repo's "Latest", so the newest must go last. (The releases list itself is ordered by
-  // GitHub on tag semver, not creation order, so backfilled older releases still slot in correctly:
-  // https://github.com/vikejs/vike/pull/3157#issuecomment-4406846257)
-  const releasesToCreate: ReleasesToCreate[] = Object.keys(changelogSections)
-    .filter((tagName) => !githubReleases.some((release) => release.tag_name === tagName))
-    .reverse()
-    .map((tagName) => ({
-      tag_name: tagName,
-      target_commitish: defaultBranch,
-      name: tagName,
-      body: changelogSections[tagName],
-    }))
+  // Reconcile from the changelog (the source of truth), not from the GitHub Releases: iterating the
+  // releases for updates would try to rewrite any release whose tag isn't in the changelog (e.g. a
+  // release of another package, or a manually-created one) with an `undefined` body. Driving both
+  // create and update off the changelog can only ever touch the versions the changelog declares.
+  const releasesByTag = new Map(githubReleases.map((release) => [release.tag_name, release]))
+  const releasesToCreate: ReleasesToCreate[] = []
+  const releasesToUpdate: ReleasesToUpdate[] = []
 
-  const releasesToUpdate: ReleasesToUpdate[] = githubReleases
-    .map((release) => {
-      const body = changelogSections[release.tag_name]
-      if (body === release.body?.trim()) return null
-      return { release_id: release.id, tag_name: release.tag_name, body }
-    })
-    .filter((release) => release !== null)
+  // changelogSections is newest-first; iterate oldest-first so the newest release is created last.
+  // This matters because create-release defaults to make_latest=true: whichever release is created
+  // last becomes the repo's "Latest". (The releases list itself is ordered by GitHub on tag semver,
+  // not creation order, so backfilled older releases still slot in correctly:
+  // https://github.com/vikejs/vike/pull/3157#issuecomment-4406846257)
+  for (const tagName of Object.keys(changelogSections).reverse()) {
+    const body = changelogSections[tagName]
+    const existingRelease = releasesByTag.get(tagName)
+    if (!existingRelease) {
+      releasesToCreate.push({ tag_name: tagName, target_commitish: defaultBranch, name: tagName, body })
+    } else if (existingRelease.body?.trim() !== body) {
+      releasesToUpdate.push({ release_id: existingRelease.id, tag_name: tagName, body })
+    }
+  }
 
   return { releasesToCreate, releasesToUpdate }
 }

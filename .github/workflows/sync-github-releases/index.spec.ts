@@ -135,6 +135,20 @@ describe('getReleasePlan()', () => {
       releasesToUpdate: [{ release_id: 3, tag_name: 'v1.0.1', body: 'Fresh release notes' }],
     })
   })
+
+  it('leaves GitHub releases without a matching changelog entry untouched', () => {
+    const plan = getReleasePlan({
+      defaultBranch: 'main',
+      changelogSections: { 'v1.0.0': 'Notes' },
+      githubReleases: [
+        { id: 1, tag_name: 'v1.0.0', body: 'Notes' },
+        // No changelog entry for this tag — it must not be queued for a spurious (undefined-body) update.
+        { id: 2, tag_name: 'v0.0.1-orphan', body: 'Unrelated release' },
+      ],
+    })
+
+    expect(plan).toEqual({ releasesToCreate: [], releasesToUpdate: [] })
+  })
 })
 
 describe('toPackageDirs()', () => {
