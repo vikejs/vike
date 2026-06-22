@@ -1,15 +1,6 @@
-// Run main() only when this file is executed directly, not when imported.
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  await main().catch((err) => {
-    console.error(err)
-    process.exit(1)
-  })
-}
-
 import { readFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { parseChangelog } from './utils/changelog.ts'
 import {
   findReleaseCommit,
@@ -29,6 +20,9 @@ import {
   getRepository,
   updateReleaseBody,
 } from './utils/github.ts'
+import { runAsMain } from './utils/run-as-main.ts'
+
+runAsMain(import.meta.url, main)
 
 async function main(): Promise<void> {
   // The package.json scripts run from this folder; switch to the repo root so the git commands and

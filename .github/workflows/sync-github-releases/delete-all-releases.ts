@@ -1,15 +1,10 @@
 // Deletes every GitHub Release.
 // Run via the `delete-all` package.json script — see README.md
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  await deleteAllReleases().catch((err) => {
-    console.error(err)
-    process.exit(1)
-  })
-}
-
-import { fileURLToPath } from 'node:url'
 import { deleteRelease, fetchGithubReleases, getGithubToken, getRepository } from './utils/github.ts'
+import { runAsMain } from './utils/run-as-main.ts'
+
+runAsMain(import.meta.url, deleteAllReleases)
 
 async function deleteAllReleases() {
   const token = getGithubToken()
