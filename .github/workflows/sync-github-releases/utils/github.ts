@@ -7,7 +7,13 @@ export { getRepository }
 import assert from 'node:assert'
 import { execSync } from 'node:child_process'
 import { setTimeout } from 'node:timers/promises'
-import type { Release } from './types.ts'
+
+// The fields we use of a GitHub Release (https://docs.github.com/en/rest/releases/releases).
+export type Release = {
+  id: number
+  tag_name: string
+  body: string | null
+}
 
 const API_URL = process.env.GITHUB_API_URL ?? 'https://api.github.com'
 const REPOSITORY = process.env.GITHUB_REPOSITORY ?? getRepositoryFromGit()

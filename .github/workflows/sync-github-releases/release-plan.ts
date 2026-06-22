@@ -4,7 +4,7 @@ export { withSourceOfTruth }
 export { chooseCreateCommitish }
 
 import type { ChangelogSections } from './utils/changelog.ts'
-import type { Release } from './utils/types.ts'
+import type { Release } from './utils/github.ts'
 
 type ReleasesToCreate = {
   tag_name: string
