@@ -103,7 +103,10 @@ async function syncPackage({
   // (for the changelog-history lookup) and remember the newest tag (the just-released version).
   const versionTags = Object.keys(changelogSections)
   const versionByTag = new Map(
-    versionTags.map((versionTag) => [getTagName(versionTag, packageJson.name, multiplePackages), versionTag.replace(/^v/, '')]),
+    versionTags.map((versionTag) => [
+      getTagName(versionTag, packageJson.name, multiplePackages),
+      versionTag.replace(/^v/, ''),
+    ]),
   )
   const newestTag = versionTags.length > 0 ? getTagName(versionTags[0], packageJson.name, multiplePackages) : ''
 
@@ -115,8 +118,15 @@ async function syncPackage({
     const tagExists = gitTagExists(tagName)
     const isNewest = tagName === newestTag
     const deducedCommit = !tagExists && !isNewest ? findReleaseCommit(versionByTag.get(tagName)!) : null
-    releaseToCreate.target_commitish = chooseCreateCommitish({ tagName, tagExists, isNewest, deducedCommit, defaultBranch })
-    if (!tagExists && !isNewest) console.warn(`Tag ${tagName} is missing — creating its release at deduced commit ${deducedCommit}`)
+    releaseToCreate.target_commitish = chooseCreateCommitish({
+      tagName,
+      tagExists,
+      isNewest,
+      deducedCommit,
+      defaultBranch,
+    })
+    if (!tagExists && !isNewest)
+      console.warn(`Tag ${tagName} is missing — creating its release at deduced commit ${deducedCommit}`)
 
     // https://docs.github.com/en/rest/releases/releases#create-a-release
     await githubRequest(`/repos/${owner}/${repo}/releases`, {
@@ -347,7 +357,9 @@ function getReleasePlan({
 
   // Delete this package's releases whose version is no longer in the changelog (the source of truth).
   const releasesToDelete: ReleasesToDelete[] = githubReleases
-    .filter((release) => isOwnedTag(release.tag_name, packageName, multiplePackages) && !expectedTags.has(release.tag_name))
+    .filter(
+      (release) => isOwnedTag(release.tag_name, packageName, multiplePackages) && !expectedTags.has(release.tag_name),
+    )
     .map((release) => ({ release_id: release.id, tag_name: release.tag_name }))
 
   return { releasesToCreate, releasesToUpdate, releasesToDelete }

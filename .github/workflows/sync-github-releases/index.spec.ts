@@ -235,7 +235,12 @@ describe('getReleasePlan()', () => {
 
 describe('withSourceOfTruth()', () => {
   it('appends a footer linking back to the changelog', () => {
-    expect(withSourceOfTruth('### Features\n\n* Something', 'https://github.com/vikejs/vike/blob/main/packages/vike/CHANGELOG.md')).toBe(
+    expect(
+      withSourceOfTruth(
+        '### Features\n\n* Something',
+        'https://github.com/vikejs/vike/blob/main/packages/vike/CHANGELOG.md',
+      ),
+    ).toBe(
       '### Features\n\n* Something\n\n_Source of truth: [`CHANGELOG.md`](https://github.com/vikejs/vike/blob/main/packages/vike/CHANGELOG.md)._',
     )
   })
@@ -257,7 +262,9 @@ describe('chooseCreateCommitish()', () => {
   })
 
   it('tags an older release at the deduced commit', () => {
-    expect(chooseCreateCommitish({ ...base, tagExists: false, isNewest: false, deducedCommit: 'abc123' })).toBe('abc123')
+    expect(chooseCreateCommitish({ ...base, tagExists: false, isNewest: false, deducedCommit: 'abc123' })).toBe(
+      'abc123',
+    )
   })
 
   it('hard-fails when an older release has no tag and no deducible commit', () => {
