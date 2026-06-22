@@ -23,14 +23,14 @@ function withEnvUnset(name: string, fn: () => void): void {
 }
 
 describe('parseChangelog()', () => {
-  it('maps changelog headings to version tags', () => {
-    const changelog = `## [1.0.1](https://example.org) (2026-03-01)
+  it('maps changelog headings to version tags and appends the compare link', () => {
+    const changelog = `## [1.0.1](https://github.com/owner/repo/compare/v1.0.0...v1.0.1) (2026-03-01)
 
 ### Features
 
 * Added release automation.
 
-## [1.0.0](https://example.org) (2026-02-28)
+## [1.0.0](https://github.com/owner/repo/releases/tag/v1.0.0) (2026-02-28)
 
 ### Bug Fixes
 
@@ -38,7 +38,10 @@ describe('parseChangelog()', () => {
 `
 
     expect(parseChangelog(changelog)).toEqual({
-      'v1.0.1': '### Features\n\n* Added release automation.',
+      // Compare link surfaced as a "Full Changelog" footer.
+      'v1.0.1':
+        '### Features\n\n* Added release automation.\n\n**Full Changelog**: https://github.com/owner/repo/compare/v1.0.0...v1.0.1',
+      // Non-`/compare/` link → no footer.
       'v1.0.0': '### Bug Fixes\n\n* Fixed old release notes.',
     })
   })

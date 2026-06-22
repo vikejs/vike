@@ -177,13 +177,17 @@ function getTrackedChangelogFiles(): string[] {
 type ChangelogSections = Record<string, string>
 function parseChangelog(changelog: string): ChangelogSections {
   const changelogSections: ChangelogSections = {}
-  // Matches changelog headings: `## [0.4.257](...)` or `# [0.1.0-beta.6](...)`
-  const matches = [...changelog.matchAll(/^##? \[(\d+\.\d+\.\d+[^\]]*)\]/gm)]
+  // Group 1 is the version; group 2 (optional) is the heading's link. release-me links the version to
+  // a `…/compare/…` URL — `## [0.4.257](…/compare/…)` — which we surface as the release's "Full
+  // Changelog". (The very first release links to a `…/tree/…` URL instead, which we skip.)
+  const matches = [...changelog.matchAll(/^##? \[(\d+\.\d+\.\d+[^\]]*)\](?:\(([^)]+)\))?/gm)]
 
   matches.forEach((match, index) => {
     const start = changelog.indexOf('\n', match.index)
     const end = matches[index + 1]?.index ?? changelog.length
-    const notes = changelog.slice(start, end).trim()
+    let notes = changelog.slice(start, end).trim()
+    const headingUrl = match[2]
+    if (headingUrl?.includes('/compare/')) notes += `\n\n**Full Changelog**: ${headingUrl}`
     changelogSections[`v${match[1]}`] = notes
   })
 
