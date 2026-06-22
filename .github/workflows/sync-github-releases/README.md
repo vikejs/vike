@@ -4,6 +4,8 @@ Keeps each package's [GitHub Releases](https://github.com/vikejs/vike/releases) 
 `CHANGELOG.md`: creates any missing release, rewrites any whose notes have drifted from the changelog,
 and deletes any whose version is no longer in the changelog.
 
+The source of truth is `CHANGELOG.md` => GitHub Releases are derived from it.
+
 In CI this runs automatically via [`../sync-github-releases.yml`](../sync-github-releases.yml) — on every
 push to `main` that touches a `packages/**/CHANGELOG.md`, and on manual `workflow_dispatch`. The scripts
 below run the same tooling by hand.
@@ -40,18 +42,20 @@ scope below. `<package-dir>` is a path such as `packages/vike`; omit it to sync 
 
 | Script | Description | Token scope |
 | --- | --- | --- |
-| `run [-- <package-dir>]` | Create/update GitHub Releases from `CHANGELOG.md`. Without a `<package-dir>`, syncs every package. | `contents: write` |
-| `check [-- <package-dir>]` | Dry-run of `run`: log what would change without writing anything. | `contents: read` |
-| `delete-all` | **Destructive** — delete every GitHub Release in the repo. | `contents: write` |
+| `run [-- <package-dir>]` | Synchronize GitHub Releases from `CHANGELOG.md`. | `contents: write` |
+| `check [-- <package-dir>]` | Dry-run: log what would change without writing anything. | `contents: read` |
+| `delete-all` | **Destructive** — delete all GitHub Releases. | `contents: write` |
 
 ### Examples
 
 ```bash
-# Preview the changes for the `vike` package (no writes):
-GITHUB_TOKEN=<token> pnpm -C .github/workflows/sync-github-releases run check -- packages/vike
+cd .github/workflows/sync-github-releases/
 
-# Create/update the releases for real:
-GITHUB_TOKEN=<token> pnpm -C .github/workflows/sync-github-releases run run -- packages/vike
+# Preview the changes for all packages (no writes):
+GITHUB_TOKEN=<token> pnpm run check
+
+# Synchronize the releases of packages/vike:
+GITHUB_TOKEN=<token> pnpm run run -- packages/vike
 ```
 
 > Requires [Node.js](https://nodejs.org) ≥ 22.6 — the scripts run the TypeScript directly via type stripping.
