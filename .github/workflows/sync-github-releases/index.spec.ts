@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { getRepository } from './github-utils'
-import { getReleasePlan, parseChangelog } from './index'
+import { getReleasePlan, parseChangelog, toPackageDirs } from './index'
 
 function readFixture(name: string): string {
   return readFileSync(path.join(__dirname, 'fixtures', name), 'utf8')
@@ -134,6 +134,29 @@ describe('getReleasePlan()', () => {
       releasesToCreate: [],
       releasesToUpdate: [{ release_id: 3, tag_name: 'v1.0.1', body: 'Fresh release notes' }],
     })
+  })
+})
+
+describe('toPackageDirs()', () => {
+  it('maps changed CHANGELOG.md files to deduplicated package directories', () => {
+    expect(
+      toPackageDirs([
+        'packages/vike/CHANGELOG.md',
+        'packages/vike/src/index.ts',
+        'packages/create-vike-core/CHANGELOG.md',
+        'packages/create-vike-core/CHANGELOG.md',
+      ]),
+    ).toEqual(['packages/vike', 'packages/create-vike-core'])
+  })
+
+  it('ignores CHANGELOG.md files outside packages/ and non-CHANGELOG files', () => {
+    expect(
+      toPackageDirs(['CHANGELOG.md', 'docs/CHANGELOG.md', 'packages/vike/README.md', 'packages/vike/CHANGELOG.md']),
+    ).toEqual(['packages/vike'])
+  })
+
+  it('returns an empty array when nothing matches', () => {
+    expect(toPackageDirs(['README.md', 'packages/vike/src/index.ts'])).toEqual([])
   })
 })
 

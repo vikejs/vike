@@ -3,6 +3,13 @@ Keeps GitHub releases aligned with `CHANGELOG.md`: creates any missing releases,
 */
 
 /* === FLOW
+0. Determine which package directories to sync (getPackageDirsToSync()):
+   - Explicit `<package-dir>` argument, or
+   - On `push` (CI): the packages whose `CHANGELOG.md` changed, or
+   - On `workflow_dispatch` (CI): every package, or
+   - Run locally: the sole package — or, if there isn't exactly one, an error asking for an explicit `<package-dir>`.
+   This used to live as Bash glue in sync-github-releases.yml — it's now here so all the logic is in JS land.
+Then, for each package directory:
 1. Read CHANGELOG.md and parse the changelog sections.
 2. Fetch existing GitHub releases.
 3. getReleasePlan() compares the changelog sections against the GitHub releases, to determine which need to be created and which need their body updated.
@@ -23,8 +30,11 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 // Only used by ./index.spec.ts
 export { getReleasePlan }
 export { parseChangelog }
+export { toPackageDirs }
 
 import assert from 'node:assert'
+import { execFileSync } from 'node:child_process'
+import { readFileSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import path from 'node:path'
@@ -33,13 +43,47 @@ import type { Release } from './types'
 import { fetchGithubReleases, getDefaultBranch, getGithubToken, getRepository, githubRequest } from './github-utils'
 
 async function main(): Promise<void> {
-  const require = createRequire(import.meta.url)
-
   const args = process.argv.slice(2)
-  const packageDir = args[0]
-  if (!packageDir) {
-    throw new Error('Usage: <package-dir> [--dry-run]')
+  const dryRun = args.includes('--dry-run')
+
+  // Local testing:
+  // GITHUB_TOKEN=<contents:write token> bun ./.github/workflows/sync-github-releases/index.ts packages/vike
+  // Dry-run (still needs a token for read-only GETs):
+  // GITHUB_TOKEN=<contents:read token> bun ./.github/workflows/sync-github-releases/index.ts packages/vike --dry-run
+  const explicitPackageDirs = args.filter((arg) => !arg.startsWith('--'))
+  const packageDirs = explicitPackageDirs.length > 0 ? explicitPackageDirs : getPackageDirsToSync()
+
+  if (packageDirs.length === 0) {
+    console.log('No CHANGELOG.md changes detected — nothing to sync.')
+    return
   }
+
+  const { owner, repo } = getRepository()
+  const defaultBranch = getDefaultBranch()
+  const token = getGithubToken()
+
+  for (const packageDir of packageDirs) {
+    console.log(`Syncing GitHub releases for package directory: ${packageDir}`)
+    await syncPackage({ packageDir, owner, repo, defaultBranch, token, dryRun })
+  }
+}
+
+async function syncPackage({
+  packageDir,
+  owner,
+  repo,
+  defaultBranch,
+  token,
+  dryRun,
+}: {
+  packageDir: string
+  owner: string
+  repo: string
+  defaultBranch: string
+  token: string
+  dryRun: boolean
+}): Promise<void> {
+  const require = createRequire(import.meta.url)
 
   const packageDirPath = path.join(process.cwd(), packageDir)
   const packageJsonPath = path.join(packageDirPath, 'package.json')
@@ -47,18 +91,10 @@ async function main(): Promise<void> {
 
   const packageJson = require(packageJsonPath) as { version: string }
 
-  // Local testing:
-  // GITHUB_TOKEN=<contents:write token> bun ./.github/workflows/sync-github-releases/index.ts packages/vike
-  // Dry-run (still needs a token for read-only GETs):
-  // GITHUB_TOKEN=<contents:read token> bun ./.github/workflows/sync-github-releases/index.ts packages/vike --dry-run
-  const { owner, repo } = getRepository()
-  const defaultBranch = getDefaultBranch()
   const versionTag = `v${packageJson.version}`
   const changelog = await readFile(changelogPath, 'utf8')
   const changelogSections = parseChangelog(changelog)
   assertChangelog(versionTag, changelogSections)
-
-  const token = getGithubToken()
 
   const githubReleases = await fetchGithubReleases(owner, repo, token)
 
@@ -68,7 +104,6 @@ async function main(): Promise<void> {
     changelogSections,
   })
 
-  const dryRun = args.includes('--dry-run')
   for (const releaseToCreate of releasesToCreate) {
     // https://docs.github.com/en/rest/releases/releases#create-a-release
     await githubRequest(`/repos/${owner}/${repo}/releases`, {
@@ -90,6 +125,61 @@ async function main(): Promise<void> {
     })
     if (!dryRun) console.log(`Updated release ${releaseToUpdate.tag_name}`)
   }
+}
+
+// Determine which package directories to sync.
+// (This replaces the Bash glue that used to live in sync-github-releases.yml.)
+function getPackageDirsToSync(): string[] {
+  // On `push` (CI) we only sync the packages whose CHANGELOG.md actually changed.
+  const pushedChangelogFiles = getPushedChangelogFiles()
+  if (pushedChangelogFiles) return toPackageDirs(pushedChangelogFiles)
+
+  const packageDirs = toPackageDirs(getTrackedChangelogFiles())
+
+  // In GitHub Actions (e.g. a `workflow_dispatch` run) sync every package. GITHUB_ACTIONS is always
+  // 'true' there — it's GitHub's documented way to tell CI apart from a local run.
+  if (process.env.GITHUB_ACTIONS) return packageDirs
+
+  // Run locally: sync the sole package if there's exactly one, otherwise require an explicit `<package-dir>`.
+  if (packageDirs.length === 1) return packageDirs
+  throw new Error('Usage: <package-dir> [--dry-run]')
+}
+
+// Keep only `packages/**/CHANGELOG.md` files and map them to their (deduplicated) package directory.
+function toPackageDirs(files: string[]): string[] {
+  const packageDirs = files
+    .filter((file) => file.startsWith('packages/') && path.posix.basename(file) === 'CHANGELOG.md')
+    .map((file) => path.posix.dirname(file))
+  return [...new Set(packageDirs)]
+}
+
+// The `CHANGELOG.md` files changed by the push, or `null` if the workflow wasn't triggered by a (diff-able) push.
+function getPushedChangelogFiles(): string[] | null {
+  if (process.env.GITHUB_EVENT_NAME !== 'push') return null
+  const beforeSha = getPushBeforeSha()
+  const sha = process.env.GITHUB_SHA
+  if (!beforeSha || !sha) return null
+  // execFileSync (no shell) avoids any interpolation/injection concerns around the SHAs.
+  const stdout = execFileSync('git', ['diff', '--name-only', beforeSha, sha], { encoding: 'utf8' })
+  return stdout.split('\n').filter(Boolean)
+}
+
+// `github.event.before`: the commit the branch pointed at before the push, read from the event payload GitHub Actions writes to disk.
+function getPushBeforeSha(): string | null {
+  const eventPath = process.env.GITHUB_EVENT_PATH
+  if (!eventPath) return null
+  const event = JSON.parse(readFileSync(eventPath, 'utf8')) as { before?: string }
+  const before = event.before
+  // All-zeros when there's no previous commit to diff against (e.g. the branch's first push).
+  if (!before || /^0+$/.test(before)) return null
+  return before
+}
+
+// Every `CHANGELOG.md` tracked by git (so untracked files, e.g. under node_modules, are naturally excluded).
+function getTrackedChangelogFiles(): string[] {
+  // The `*CHANGELOG.md` pathspec matches across directories (git wildcards aren't path-bounded by default).
+  const stdout = execFileSync('git', ['ls-files', '--', '*CHANGELOG.md'], { encoding: 'utf8' })
+  return stdout.split('\n').filter(Boolean)
 }
 
 type ChangelogSections = Record<string, string>
