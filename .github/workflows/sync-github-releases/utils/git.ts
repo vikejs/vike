@@ -2,7 +2,7 @@ export { getRepoRoot }
 export { gitTagExists }
 export { findReleaseCommit }
 export { getTrackedChangelogFiles }
-export { getPushedChangelogFiles }
+export { getPushedFiles }
 export { toPackageDirs }
 
 import { execFileSync } from 'node:child_process'
@@ -21,26 +21,26 @@ function toPackageDirs(files: string[]): string[] {
   return [...new Set(packageDirs)]
 }
 
-function getPushedChangelogFiles(): string[] | null {
+function getPushedFiles(): string[] | null {
   if (process.env.GITHUB_EVENT_NAME !== 'push') return null
-  const beforeSha = getPushBeforeSha()
-  const sha = process.env.GITHUB_SHA
-  if (!beforeSha || !sha) return null
+  const beforeSha = getCommitBeforePush()
+  const headSha = process.env.GITHUB_SHA
+  if (!beforeSha || !headSha) return null
   // execFileSync runs git without a shell, so the interpolated SHAs can't cause injection.
-  const stdout = execFileSync('git', ['diff', '--name-only', beforeSha, sha], { encoding: 'utf8' })
+  const stdout = execFileSync('git', ['diff', '--name-only', beforeSha, headSha], { encoding: 'utf8' })
   return stdout.split('\n').filter(Boolean)
 }
 
-// `before` is the commit the branch pointed at prior to the push. GitHub Actions writes the
+// The commit the branch pointed at before the push (`github.event.before`). GitHub Actions writes the
 // triggering event's payload to the file at GITHUB_EVENT_PATH.
-function getPushBeforeSha(): string | null {
+function getCommitBeforePush(): string | null {
   const eventPath = process.env.GITHUB_EVENT_PATH
   if (!eventPath) return null
   const event = JSON.parse(readFileSync(eventPath, 'utf8')) as { before?: string }
-  const before = event.before
+  const beforeSha = event.before
   // GitHub uses an all-zero SHA when there's no prior commit (e.g. a branch's first push).
-  if (!before || /^0+$/.test(before)) return null
-  return before
+  if (!beforeSha || /^0+$/.test(beforeSha)) return null
+  return beforeSha
 }
 
 function getTrackedChangelogFiles(): string[] {

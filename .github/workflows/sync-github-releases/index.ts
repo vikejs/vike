@@ -13,7 +13,7 @@ import { fileURLToPath } from 'node:url'
 import { parseChangelog } from './utils/changelog.ts'
 import {
   findReleaseCommit,
-  getPushedChangelogFiles,
+  getPushedFiles,
   getRepoRoot,
   getTrackedChangelogFiles,
   gitTagExists,
@@ -164,7 +164,7 @@ async function syncPackage({
 function getPackageDirsToSync(): string[] {
   // On push, sync only the packages whose CHANGELOG.md changed; otherwise (manual workflow_dispatch
   // or a local run with no <package-dir>) sync every package.
-  const pushedChangelogFiles = getPushedChangelogFiles()
-  if (pushedChangelogFiles) return toPackageDirs(pushedChangelogFiles)
+  const pushedFiles = getPushedFiles()
+  if (pushedFiles) return toPackageDirs(pushedFiles)
   return toPackageDirs(getTrackedChangelogFiles())
 }

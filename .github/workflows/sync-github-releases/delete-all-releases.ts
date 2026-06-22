@@ -2,7 +2,7 @@
 // Run via the `delete-all` package.json script — see README.md
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  await removeAllReleases().catch((err) => {
+  await deleteAllReleases().catch((err) => {
     console.error(err)
     process.exit(1)
   })
@@ -11,7 +11,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 import { fileURLToPath } from 'node:url'
 import { fetchGithubReleases, getGithubToken, getRepository, githubRequest } from './utils/github.ts'
 
-async function removeAllReleases() {
+async function deleteAllReleases() {
   const token = getGithubToken()
 
   const { owner, repo } = getRepository()
