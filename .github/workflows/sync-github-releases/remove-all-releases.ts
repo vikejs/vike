@@ -1,5 +1,5 @@
-// Example usage:
-// GITHUB_TOKEN=<contents:write token> bun ./.github/workflows/sync-github-releases/remove-all-releases.ts
+// One-off maintenance: delete every GitHub Release in the repo.
+// GITHUB_TOKEN=<token> pnpm -C .github/workflows/sync-github-releases run delete-all
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   await removeAllReleases().catch((err) => {
     console.error(err)

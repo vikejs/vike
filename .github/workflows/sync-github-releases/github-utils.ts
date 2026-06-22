@@ -12,7 +12,7 @@ import type { Release } from './types.js'
 const API_URL = process.env.GITHUB_API_URL ?? 'https://api.github.com'
 const REPOSITORY = process.env.GITHUB_REPOSITORY ?? getRepositoryFromGit()
 const DEFAULT_BRANCH = process.env.GITHUB_DEFAULT_BRANCH ?? 'main'
-// Avoid hitting GitHub abuse rate limits
+// Stay under GitHub's secondary (abuse) rate limits.
 const RATE_LIMIT_DELAY_MS = 500
 
 async function fetchGithubReleases(owner: string, repo: string, token: string): Promise<Release[]> {

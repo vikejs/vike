@@ -1,11 +1,8 @@
-// Keeps GitHub releases aligned with each package's CHANGELOG.md: creates missing releases and
-// updates any whose body has drifted from the changelog.
-//
-// Safe to run against any state of GitHub Releases: GitHub orders releases by the tag's semantic
-// version rather than by creation date, so backfilling older releases still places them correctly.
-// https://github.com/vikejs/vike/pull/3157#issuecomment-4406846257
+// Keeps each package's GitHub Releases in sync with its CHANGELOG.md: creates any missing release
+// and rewrites any whose notes have drifted from the changelog.
 
-// This file is executed by sync-github-releases.yml
+// main() runs only when this file is the entry point (e.g. via sync-github-releases.yml),
+// not when index.spec.ts imports it.
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   await main().catch((err) => {
     console.error(err)
@@ -13,7 +10,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   })
 }
 
-// Only used by ./index.spec.ts
+// Exported only for index.spec.ts.
 export { getReleasePlan }
 export { parseChangelog }
 export { toPackageDirs }
@@ -32,10 +29,6 @@ async function main(): Promise<void> {
   const args = process.argv.slice(2)
   const dryRun = args.includes('--dry-run')
 
-  // Local testing:
-  // GITHUB_TOKEN=<contents:write token> bun ./.github/workflows/sync-github-releases/index.ts packages/vike
-  // Dry-run (still needs a token for read-only GETs):
-  // GITHUB_TOKEN=<contents:read token> bun ./.github/workflows/sync-github-releases/index.ts packages/vike --dry-run
   const explicitPackageDirs = args.filter((arg) => !arg.startsWith('--'))
   const packageDirs = explicitPackageDirs.length > 0 ? explicitPackageDirs : getPackageDirsToSync()
 
@@ -114,22 +107,22 @@ async function syncPackage({
 }
 
 function getPackageDirsToSync(): string[] {
-  // push: sync only the packages whose CHANGELOG.md changed.
   const pushedChangelogFiles = getPushedChangelogFiles()
   if (pushedChangelogFiles) return toPackageDirs(pushedChangelogFiles)
 
   const packageDirs = toPackageDirs(getTrackedChangelogFiles())
 
-  // Any other CI run (e.g. manual workflow_dispatch): sync every package. GITHUB_ACTIONS is
-  // GitHub's documented signal for telling CI apart from a local run.
+  // Other CI triggers (e.g. a manual workflow_dispatch) reach here: sync every package.
+  // GITHUB_ACTIONS is GitHub's documented signal for telling a CI run apart from a local one.
   if (process.env.GITHUB_ACTIONS) return packageDirs
 
-  // Local run: sync the sole package, otherwise require an explicit `<package-dir>`.
+  // Local run: default to the sole package, else require an explicit `<package-dir>`.
   if (packageDirs.length === 1) return packageDirs
   throw new Error('Usage: <package-dir> [--dry-run]')
 }
 
 function toPackageDirs(files: string[]): string[] {
+  // git reports forward-slash paths on every OS, so parse them with path.posix.
   const packageDirs = files
     .filter((file) => file.startsWith('packages/') && path.posix.basename(file) === 'CHANGELOG.md')
     .map((file) => path.posix.dirname(file))
@@ -141,26 +134,26 @@ function getPushedChangelogFiles(): string[] | null {
   const beforeSha = getPushBeforeSha()
   const sha = process.env.GITHUB_SHA
   if (!beforeSha || !sha) return null
-  // execFileSync (no shell) avoids any interpolation/injection concerns around the SHAs.
+  // execFileSync runs git without a shell, so the interpolated SHAs can't cause injection.
   const stdout = execFileSync('git', ['diff', '--name-only', beforeSha, sha], { encoding: 'utf8' })
   return stdout.split('\n').filter(Boolean)
 }
 
-// `github.event.before`: the commit the branch pointed at before the push. GitHub Actions writes
-// the event payload to GITHUB_EVENT_PATH.
+// `before` is the commit the branch pointed at prior to the push. GitHub Actions writes the
+// triggering event's payload to the file at GITHUB_EVENT_PATH.
 function getPushBeforeSha(): string | null {
   const eventPath = process.env.GITHUB_EVENT_PATH
   if (!eventPath) return null
   const event = JSON.parse(readFileSync(eventPath, 'utf8')) as { before?: string }
   const before = event.before
-  // All-zeros when there's no previous commit to diff against (e.g. the branch's first push).
+  // GitHub uses an all-zero SHA when there's no prior commit (e.g. a branch's first push).
   if (!before || /^0+$/.test(before)) return null
   return before
 }
 
-// git ls-files lists only tracked files, excluding e.g. the many CHANGELOG.md under node_modules.
+// git ls-files returns only tracked files, so CHANGELOG.md files under node_modules are excluded.
 function getTrackedChangelogFiles(): string[] {
-  // The `*CHANGELOG.md` pathspec matches across directories (git wildcards aren't path-bounded by default).
+  // `*CHANGELOG.md` matches at any depth — git pathspecs aren't anchored to the repo root.
   const stdout = execFileSync('git', ['ls-files', '--', '*CHANGELOG.md'], { encoding: 'utf8' })
   return stdout.split('\n').filter(Boolean)
 }
@@ -210,6 +203,11 @@ function getReleasePlan({
   githubReleases: Release[]
   changelogSections: ChangelogSections
 }) {
+  // changelogSections is newest-first; .reverse() creates the missing releases oldest-first. This
+  // matters because create-release defaults to make_latest=true: whichever release is created last
+  // becomes the repo's "Latest", so the newest must go last. (The releases list itself is ordered by
+  // GitHub on tag semver, not creation order, so backfilled older releases still slot in correctly:
+  // https://github.com/vikejs/vike/pull/3157#issuecomment-4406846257)
   const releasesToCreate: ReleasesToCreate[] = Object.keys(changelogSections)
     .filter((tagName) => !githubReleases.some((release) => release.tag_name === tagName))
     .reverse()
