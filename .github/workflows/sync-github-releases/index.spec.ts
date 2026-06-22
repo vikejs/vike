@@ -2,7 +2,14 @@ import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { getRepository } from './github-utils.ts'
-import { getReleasePlan, getTagName, parseChangelog, toPackageDirs, withSourceOfTruth } from './index.ts'
+import {
+  chooseCreateCommitish,
+  getReleasePlan,
+  getTagName,
+  parseChangelog,
+  toPackageDirs,
+  withSourceOfTruth,
+} from './index.ts'
 
 function readFixture(name: string): string {
   return readFileSync(path.join(__dirname, 'fixtures', name), 'utf8')
@@ -230,6 +237,32 @@ describe('withSourceOfTruth()', () => {
   it('appends a footer linking back to the changelog', () => {
     expect(withSourceOfTruth('### Features\n\n* Something', 'https://github.com/vikejs/vike/blob/main/packages/vike/CHANGELOG.md')).toBe(
       '### Features\n\n* Something\n\n_Source of truth: [`CHANGELOG.md`](https://github.com/vikejs/vike/blob/main/packages/vike/CHANGELOG.md)._',
+    )
+  })
+})
+
+describe('chooseCreateCommitish()', () => {
+  const base = { tagName: 'v0.4.0', defaultBranch: 'main' }
+
+  it('uses the default branch when the tag already exists (GitHub ignores it)', () => {
+    expect(chooseCreateCommitish({ ...base, tagExists: true, isNewest: false, deducedCommit: null })).toBe('main')
+    // Even for the newest release, an existing tag is fine.
+    expect(chooseCreateCommitish({ ...base, tagExists: true, isNewest: true, deducedCommit: null })).toBe('main')
+  })
+
+  it('hard-fails when the newest release has no tag', () => {
+    expect(() => chooseCreateCommitish({ ...base, tagExists: false, isNewest: true, deducedCommit: null })).toThrow(
+      /latest release must already be tagged/,
+    )
+  })
+
+  it('tags an older release at the deduced commit', () => {
+    expect(chooseCreateCommitish({ ...base, tagExists: false, isNewest: false, deducedCommit: 'abc123' })).toBe('abc123')
+  })
+
+  it('hard-fails when an older release has no tag and no deducible commit', () => {
+    expect(() => chooseCreateCommitish({ ...base, tagExists: false, isNewest: false, deducedCommit: null })).toThrow(
+      /couldn't be deduced/,
     )
   })
 })

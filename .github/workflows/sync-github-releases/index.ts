@@ -12,6 +12,7 @@ export { parseChangelog }
 export { toPackageDirs }
 export { getTagName }
 export { withSourceOfTruth }
+export { chooseCreateCommitish }
 
 import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
@@ -98,7 +99,25 @@ async function syncPackage({
     multiplePackages,
   })
 
+  // changelogSections is keyed by `vX.Y.Z`; map each release tag back to its raw changelog version
+  // (for the changelog-history lookup) and remember the newest tag (the just-released version).
+  const versionTags = Object.keys(changelogSections)
+  const versionByTag = new Map(
+    versionTags.map((versionTag) => [getTagName(versionTag, packageJson.name, multiplePackages), versionTag.replace(/^v/, '')]),
+  )
+  const newestTag = versionTags.length > 0 ? getTagName(versionTags[0], packageJson.name, multiplePackages) : ''
+
   for (const releaseToCreate of releasesToCreate) {
+    const tagName = releaseToCreate.tag_name
+    // A release needs a tag to point at. When the tag is missing, GitHub would otherwise create it at
+    // the default branch's HEAD — the wrong commit for a backfilled release. Deduce the real commit
+    // from the changelog's history and tag that instead (or refuse, rather than tag the wrong commit).
+    const tagExists = gitTagExists(tagName)
+    const isNewest = tagName === newestTag
+    const deducedCommit = !tagExists && !isNewest ? findReleaseCommit(versionByTag.get(tagName)!) : null
+    releaseToCreate.target_commitish = chooseCreateCommitish({ tagName, tagExists, isNewest, deducedCommit, defaultBranch })
+    if (!tagExists && !isNewest) console.warn(`Tag ${tagName} is missing — creating its release at deduced commit ${deducedCommit}`)
+
     // https://docs.github.com/en/rest/releases/releases#create-a-release
     await githubRequest(`/repos/${owner}/${repo}/releases`, {
       token,
@@ -106,7 +125,7 @@ async function syncPackage({
       body: releaseToCreate,
       dryRun,
     })
-    if (!dryRun) console.log(`Created release ${releaseToCreate.tag_name}`)
+    if (!dryRun) console.log(`Created release ${tagName}`)
   }
 
   for (const releaseToUpdate of releasesToUpdate) {
@@ -179,6 +198,25 @@ function getTrackedChangelogFiles(): string[] {
   return stdout.split('\n').filter(Boolean)
 }
 
+function gitTagExists(tagName: string): boolean {
+  try {
+    execFileSync('git', ['rev-parse', '-q', '--verify', `refs/tags/${tagName}`], { stdio: 'ignore' })
+    return true
+  } catch {
+    return false
+  }
+}
+
+// The commit that introduced this version's changelog entry — i.e. the release commit, which is where
+// its tag belongs. Pickaxe (`-S`, a literal-string search) the changelog history for the heading's
+// link opener `[<version>](`; the oldest commit that changed its count is the one that added it.
+function findReleaseCommit(version: string): string | null {
+  const stdout = execFileSync('git', ['log', '--reverse', '--format=%H', `-S[${version}](`, '--', '*CHANGELOG.md'], {
+    encoding: 'utf8',
+  })
+  return stdout.split('\n').filter(Boolean)[0] ?? null
+}
+
 type ChangelogSections = Record<string, string>
 function parseChangelog(changelog: string): ChangelogSections {
   const changelogSections: ChangelogSections = {}
@@ -233,6 +271,39 @@ function isOwnedTag(tagName: string, packageName: string, multiplePackages: bool
 // Footer appended to every release body, linking back to the changelog the release is generated from.
 function withSourceOfTruth(body: string, changelogUrl: string): string {
   return `${body}\n\n_Source of truth: [\`CHANGELOG.md\`](${changelogUrl})._`
+}
+
+// The commit a to-be-created release should be tagged at (its `target_commitish`).
+//  - Tag already exists: GitHub uses it and ignores target_commitish — pass the branch as a no-op.
+//  - Tag missing on the newest release: hard fail. The just-released version must already be tagged;
+//    tagging it now would point at the default branch's HEAD (the wrong commit).
+//  - Tag missing on an older (backfilled) release: tag the commit deduced from the changelog history,
+//    or hard fail if it couldn't be deduced — never silently tag the wrong commit.
+function chooseCreateCommitish({
+  tagName,
+  tagExists,
+  isNewest,
+  deducedCommit,
+  defaultBranch,
+}: {
+  tagName: string
+  tagExists: boolean
+  isNewest: boolean
+  deducedCommit: string | null
+  defaultBranch: string
+}): string {
+  if (tagExists) return defaultBranch
+  if (isNewest) {
+    throw new Error(
+      `Refusing to create release ${tagName}: its git tag is missing. The latest release must already be tagged — creating it now would tag the wrong commit (the default branch's HEAD).`,
+    )
+  }
+  if (!deducedCommit) {
+    throw new Error(
+      `Refusing to create release ${tagName}: its git tag is missing and its release commit couldn't be deduced from the changelog history.`,
+    )
+  }
+  return deducedCommit
 }
 
 function getReleasePlan({
