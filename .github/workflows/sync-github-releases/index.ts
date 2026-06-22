@@ -1,3 +1,5 @@
+main()
+
 import { readFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import path from 'node:path'
@@ -20,9 +22,6 @@ import {
   getRepository,
   updateReleaseBody,
 } from './utils/github.ts'
-import { runMainIfNotImported } from './utils/run-as-main.ts'
-
-runMainIfNotImported(import.meta.url, main)
 
 async function main(): Promise<void> {
   // The package.json scripts run from this folder; switch to the repo root so the git commands and
