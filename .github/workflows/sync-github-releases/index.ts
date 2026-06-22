@@ -1,3 +1,6 @@
+// Synchronize CHANGELOG.md -> GitHub Releases.
+// Run via the package.json scripts `run` or `check` — see README.md
+
 main()
 
 import { readFile } from 'node:fs/promises'
