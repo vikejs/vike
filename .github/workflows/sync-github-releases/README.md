@@ -7,7 +7,7 @@ and deletes any whose version is no longer in the changelog.
 The source of truth is `CHANGELOG.md` => GitHub Releases are derived from it.
 
 In CI this runs automatically via [`../sync-github-releases.yml`](../sync-github-releases.yml) — on every
-push to `main` that touches a `packages/**/CHANGELOG.md`, and on manual `workflow_dispatch`. The scripts
+push to `main` that touches a `CHANGELOG.md`, and on manual `workflow_dispatch`. The scripts
 below run the same tooling by hand.
 
 ## How it works

@@ -5,7 +5,9 @@ on:
     branches:
       - main
     paths:
-      - 'packages/**/CHANGELOG.md'
+      # Any CHANGELOG.md — at the repo root or nested (e.g. packages/vike/CHANGELOG.md).
+      - 'CHANGELOG.md'
+      - '**/CHANGELOG.md'
   workflow_dispatch:
 
 permissions:
