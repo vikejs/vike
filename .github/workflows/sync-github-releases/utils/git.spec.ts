@@ -13,10 +13,10 @@ describe('toPackageDirs()', () => {
     ).toEqual(['packages/vike', 'packages/create-vike-core'])
   })
 
-  it('ignores CHANGELOG.md files outside packages/ and non-CHANGELOG files', () => {
+  it('maps a CHANGELOG.md to its directory wherever it lives (root, nested) and skips non-CHANGELOG files', () => {
     expect(
       toPackageDirs(['CHANGELOG.md', 'docs/CHANGELOG.md', 'packages/vike/README.md', 'packages/vike/CHANGELOG.md']),
-    ).toEqual(['packages/vike'])
+    ).toEqual(['.', 'docs', 'packages/vike'])
   })
 
   it('returns an empty array when nothing matches', () => {

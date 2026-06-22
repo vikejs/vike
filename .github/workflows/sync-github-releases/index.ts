@@ -84,8 +84,10 @@ async function syncPackage({
   const releaseNotesByVersion = parseChangelog(changelog)
 
   // These releases are generated, so point each one back to the changelog it mirrors (the source of
-  // truth) to discourage editing the GitHub Release directly — a sync would overwrite it.
-  const changelogUrl = `https://github.com/${owner}/${repo}/blob/${defaultBranch}/${packageDir}/CHANGELOG.md`
+  // truth) to discourage editing the GitHub Release directly — a sync would overwrite it. path.posix.join
+  // keeps the URL clean when packageDir is '.' (a repo-root CHANGELOG.md): no `/./` segment.
+  const changelogRepoPath = path.posix.join(packageDir, 'CHANGELOG.md')
+  const changelogUrl = `https://github.com/${owner}/${repo}/blob/${defaultBranch}/${changelogRepoPath}`
   for (const versionTag of Object.keys(releaseNotesByVersion)) {
     releaseNotesByVersion[versionTag] = withChangelogFooter(releaseNotesByVersion[versionTag], changelogUrl)
   }

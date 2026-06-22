@@ -23,9 +23,11 @@ function getRepoRoot(): string {
 }
 
 function toPackageDirs(files: string[]): string[] {
-  // git reports forward-slash paths on every OS, so parse them with path.posix.
+  // A package is any directory containing a CHANGELOG.md, wherever it lives — `packages/vike`, a repo
+  // whose single CHANGELOG.md sits at the repo root (`.`), or any other layout. git reports
+  // forward-slash paths on every OS, so parse them with path.posix.
   const packageDirs = files
-    .filter((file) => file.startsWith('packages/') && path.posix.basename(file) === 'CHANGELOG.md')
+    .filter((file) => path.posix.basename(file) === 'CHANGELOG.md')
     .map((file) => path.posix.dirname(file))
   return [...new Set(packageDirs)]
 }

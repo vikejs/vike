@@ -7,7 +7,7 @@ and deletes any whose version is no longer in the changelog.
 The source of truth is `CHANGELOG.md` => GitHub Releases are derived from it.
 
 In CI this runs automatically via [`../sync-github-releases.yml`](../sync-github-releases.yml) — on every
-push to `main` that touches a `packages/**/CHANGELOG.md`, and on manual `workflow_dispatch`. The scripts
+push to `main` that touches a `CHANGELOG.md`, and on manual `workflow_dispatch`. The scripts
 below run the same tooling by hand.
 
 ## How it works
@@ -28,6 +28,20 @@ below run the same tooling by hand.
 It's safe to run against any current state: older missing releases are created too, and [GitHub orders the releases list by tag version](https://github.com/vikejs/vike/pull/3157#issuecomment-4406846257), so they still land in the right place.
 
 A release is tagged from its git tag. The newest version must already be tagged — the sync hard-fails rather than tag the wrong commit — while an older missing tag is recreated at the release commit deduced from the changelog's own history (and hard-fails if it can't be deduced).
+
+## Assumptions
+
+Nothing is hard-coded to this repo — repository, default branch and API URL come from the environment
+(`GITHUB_REPOSITORY`, `GITHUB_DEFAULT_BRANCH`, `GITHUB_API_URL`), so the tooling can be reused as-is in
+any project that follows the same conventions:
+
+- **A package per `CHANGELOG.md`.** A "package" is any directory that has a `CHANGELOG.md` next to a
+  `package.json` — the repo root, `packages/vike`, or any other path.
+- **Changelog format.** Each release is a Markdown heading `## [x.y.z](…)`, as produced by changelog
+  tools like [release-me](https://github.com/brillout/release-me) or release-please. A `…/compare/…`
+  link becomes the release's "Full Changelog" footer.
+- **Tags.** A single package keeps the bare `vX.Y.Z` tag; when several packages share the repo, their
+  tags are namespaced as `<package.json#name>@x.y.z`.
 
 ## Scripts
 
