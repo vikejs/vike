@@ -5,21 +5,21 @@ describe('toPackageDirs()', () => {
   it('maps changed CHANGELOG.md files to deduplicated package directories', () => {
     expect(
       toPackageDirs([
-        'packages/vike/CHANGELOG.md',
-        'packages/vike/src/index.ts',
-        'packages/create-vike-core/CHANGELOG.md',
-        'packages/create-vike-core/CHANGELOG.md',
+        'packages/foo/CHANGELOG.md',
+        'packages/foo/src/index.ts',
+        'packages/bar/CHANGELOG.md',
+        'packages/bar/CHANGELOG.md',
       ]),
-    ).toEqual(['packages/vike', 'packages/create-vike-core'])
+    ).toEqual(['packages/foo', 'packages/bar'])
   })
 
   it('ignores CHANGELOG.md files outside packages/ and non-CHANGELOG files', () => {
     expect(
-      toPackageDirs(['CHANGELOG.md', 'docs/CHANGELOG.md', 'packages/vike/README.md', 'packages/vike/CHANGELOG.md']),
-    ).toEqual(['packages/vike'])
+      toPackageDirs(['CHANGELOG.md', 'docs/CHANGELOG.md', 'packages/foo/README.md', 'packages/foo/CHANGELOG.md']),
+    ).toEqual(['packages/foo'])
   })
 
   it('returns an empty array when nothing matches', () => {
-    expect(toPackageDirs(['README.md', 'packages/vike/src/index.ts'])).toEqual([])
+    expect(toPackageDirs(['README.md', 'packages/foo/src/index.ts'])).toEqual([])
   })
 })

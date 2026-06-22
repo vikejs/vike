@@ -4,7 +4,7 @@ import { resolveTargetCommitish, getReleasePlan, getReleaseTag } from './release
 describe('getReleasePlan()', () => {
   it('creates missing past releases alongside the current release and updates stale notes', () => {
     const plan = getReleasePlan({
-      packageName: 'vike',
+      packageName: 'foo',
       hasMultiplePackages: false,
       releaseNotesByVersion: {
         'v1.0.1': 'New release notes',
@@ -38,7 +38,7 @@ describe('getReleasePlan()', () => {
 
   it('updates the current release instead of creating a duplicate', () => {
     const plan = getReleasePlan({
-      packageName: 'vike',
+      packageName: 'foo',
       hasMultiplePackages: false,
       releaseNotesByVersion: {
         'v1.0.1': 'Fresh release notes',
@@ -55,7 +55,7 @@ describe('getReleasePlan()', () => {
 
   it('leaves releases we do not own untouched (no spurious update or delete)', () => {
     const plan = getReleasePlan({
-      packageName: 'vike',
+      packageName: 'foo',
       hasMultiplePackages: false,
       releaseNotesByVersion: { 'v1.0.0': 'Notes' },
       githubReleases: [
@@ -70,7 +70,7 @@ describe('getReleasePlan()', () => {
 
   it('deletes a release whose version was removed from the changelog', () => {
     const plan = getReleasePlan({
-      packageName: 'vike',
+      packageName: 'foo',
       hasMultiplePackages: false,
       releaseNotesByVersion: { 'v1.0.0': 'Notes' },
       githubReleases: [
@@ -89,13 +89,13 @@ describe('getReleasePlan()', () => {
 
   it('only deletes releases in its own namespace', () => {
     const plan = getReleasePlan({
-      packageName: 'create-vike-core',
+      packageName: 'foo',
       hasMultiplePackages: true,
       releaseNotesByVersion: { 'v0.0.1': 'Notes' },
       githubReleases: [
-        { id: 1, tag_name: 'create-vike-core@0.0.1', body: 'Notes' },
+        { id: 1, tag_name: 'foo@0.0.1', body: 'Notes' },
         // Another package's release — not ours to delete.
-        { id: 2, tag_name: 'vike@0.4.0', body: 'Another package' },
+        { id: 2, tag_name: 'bar@0.4.0', body: 'Another package' },
       ],
     })
 
@@ -104,7 +104,7 @@ describe('getReleasePlan()', () => {
 
   it('qualifies tags with the package name when several packages share the repo', () => {
     const plan = getReleasePlan({
-      packageName: 'create-vike-core',
+      packageName: 'foo',
       hasMultiplePackages: true,
       releaseNotesByVersion: {
         'v0.0.2': 'New notes',
@@ -112,14 +112,14 @@ describe('getReleasePlan()', () => {
       },
       // The existing release is matched by its namespaced tag — no duplicate is created for it, and
       // it isn't confused with another package's bare `v0.0.1` release.
-      githubReleases: [{ id: 1, tag_name: 'create-vike-core@0.0.1', body: 'Old notes' }],
+      githubReleases: [{ id: 1, tag_name: 'foo@0.0.1', body: 'Old notes' }],
     })
 
     expect(plan).toEqual({
       releasesToCreate: [
         {
-          tag_name: 'create-vike-core@0.0.2',
-          name: 'create-vike-core@0.0.2',
+          tag_name: 'foo@0.0.2',
+          name: 'foo@0.0.2',
           body: 'New notes',
         },
       ],
@@ -159,12 +159,12 @@ describe('resolveTargetCommitish()', () => {
 
 describe('getReleaseTag()', () => {
   it('keeps the bare vX.Y.Z tag for a single package', () => {
-    expect(getReleaseTag('v0.4.259', 'vike', false)).toBe('v0.4.259')
-    expect(getReleaseTag('v0.1.0-beta.6', 'vike', false)).toBe('v0.1.0-beta.6')
+    expect(getReleaseTag('v1.2.3', 'foo', false)).toBe('v1.2.3')
+    expect(getReleaseTag('v1.0.0-beta.1', 'foo', false)).toBe('v1.0.0-beta.1')
   })
 
   it('qualifies the tag with the package name when there are several packages', () => {
-    expect(getReleaseTag('v0.0.391', 'create-vike-core', true)).toBe('create-vike-core@0.0.391')
-    expect(getReleaseTag('v0.1.0-beta.6', 'vike', true)).toBe('vike@0.1.0-beta.6')
+    expect(getReleaseTag('v2.3.4', 'foo', true)).toBe('foo@2.3.4')
+    expect(getReleaseTag('v1.0.0-beta.1', 'bar', true)).toBe('bar@1.0.0-beta.1')
   })
 })
