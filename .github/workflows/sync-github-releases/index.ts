@@ -1,15 +1,6 @@
-// Run main() only when this file is executed directly, not when imported.
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  await main().catch((err) => {
-    console.error(err)
-    process.exit(1)
-  })
-}
-
 import { readFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { parseChangelog } from './utils/changelog.ts'
 import {
   findReleaseCommit,
@@ -20,7 +11,18 @@ import {
   toPackageDirs,
 } from './utils/git.ts'
 import { resolveTargetCommitish, getReleasePlan, getReleaseTag, withChangelogFooter } from './release-plan.ts'
-import { fetchGithubReleases, getDefaultBranch, getGithubToken, getRepository, githubRequest } from './utils/github.ts'
+import {
+  createRelease,
+  deleteRelease,
+  fetchGithubReleases,
+  getDefaultBranch,
+  getGithubToken,
+  getRepository,
+  updateReleaseBody,
+} from './utils/github.ts'
+import { runAsMain } from './utils/run-as-main.ts'
+
+runAsMain(import.meta.url, main)
 
 async function main(): Promise<void> {
   // The package.json scripts run from this folder; switch to the repo root so the git commands and
@@ -100,14 +102,11 @@ async function syncPackage({
   // releaseNotesByVersion is keyed by `vX.Y.Z`; map each release tag back to its raw changelog version
   // (for the changelog-history lookup) and remember the newest tag (the just-released version).
   const versionTags = Object.keys(releaseNotesByVersion)
+  const releaseTagOf = (versionTag: string) => getReleaseTag(versionTag, packageJson.name, hasMultiplePackages)
   const versionByTag = new Map(
-    versionTags.map((versionTag) => [
-      getReleaseTag(versionTag, packageJson.name, hasMultiplePackages),
-      versionTag.replace(/^v/, ''),
-    ]),
+    versionTags.map((versionTag) => [releaseTagOf(versionTag), versionTag.replace(/^v/, '')]),
   )
-  const newestReleaseTag =
-    versionTags.length > 0 ? getReleaseTag(versionTags[0], packageJson.name, hasMultiplePackages) : ''
+  const newestReleaseTag = versionTags.length > 0 ? releaseTagOf(versionTags[0]) : ''
 
   for (const releaseToCreate of releasesToCreate) {
     const releaseTag = releaseToCreate.tag_name
@@ -121,11 +120,11 @@ async function syncPackage({
     if (!tagExists && !isNewest)
       console.warn(`Tag ${releaseTag} is missing — creating its release at deduced commit ${deducedCommit}`)
 
-    // https://docs.github.com/en/rest/releases/releases#create-a-release
-    await githubRequest(`/repos/${owner}/${repo}/releases`, {
+    await createRelease(
+      owner,
+      repo,
       token,
-      method: 'POST',
-      body: {
+      {
         tag_name: releaseTag,
         target_commitish: targetCommitish,
         name: releaseToCreate.name,
@@ -136,28 +135,17 @@ async function syncPackage({
         make_latest: isNewest ? 'true' : 'false',
       },
       dryRun,
-    })
+    )
     if (!dryRun) console.log(`Created release ${releaseTag}`)
   }
 
   for (const releaseToUpdate of releasesToUpdate) {
-    // https://docs.github.com/en/rest/releases/releases#update-a-release
-    await githubRequest(`/repos/${owner}/${repo}/releases/${releaseToUpdate.release_id}`, {
-      token,
-      method: 'PATCH',
-      body: { body: releaseToUpdate.body },
-      dryRun,
-    })
+    await updateReleaseBody(owner, repo, token, releaseToUpdate.release_id, releaseToUpdate.body, dryRun)
     if (!dryRun) console.log(`Updated release ${releaseToUpdate.tag_name}`)
   }
 
   for (const releaseToDelete of releasesToDelete) {
-    // https://docs.github.com/en/rest/releases/releases#delete-a-release
-    await githubRequest(`/repos/${owner}/${repo}/releases/${releaseToDelete.release_id}`, {
-      token,
-      method: 'DELETE',
-      dryRun,
-    })
+    await deleteRelease(owner, repo, token, releaseToDelete.release_id, dryRun)
     if (!dryRun) console.log(`Deleted release ${releaseToDelete.tag_name}`)
   }
 }

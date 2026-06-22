@@ -9,8 +9,17 @@ import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
 
+function git(args: string[]): string {
+  return execFileSync('git', args, { encoding: 'utf8' })
+}
+
+// git stdout as lines, dropping the trailing blank left by the final newline.
+function gitLines(args: string[]): string[] {
+  return git(args).split('\n').filter(Boolean)
+}
+
 function getRepoRoot(): string {
-  return execFileSync('git', ['rev-parse', '--show-toplevel'], { encoding: 'utf8' }).trim()
+  return git(['rev-parse', '--show-toplevel']).trim()
 }
 
 function toPackageDirs(files: string[]): string[] {
@@ -26,9 +35,8 @@ function getPushedFiles(): string[] | null {
   const beforeSha = getCommitBeforePush()
   const headSha = process.env.GITHUB_SHA
   if (!beforeSha || !headSha) return null
-  // execFileSync runs git without a shell, so the interpolated SHAs can't cause injection.
-  const stdout = execFileSync('git', ['diff', '--name-only', beforeSha, headSha], { encoding: 'utf8' })
-  return stdout.split('\n').filter(Boolean)
+  // The SHAs are passed as argv (git() uses no shell), so they can't cause injection.
+  return gitLines(['diff', '--name-only', beforeSha, headSha])
 }
 
 // The commit the branch pointed at before the push (`github.event.before`). GitHub Actions writes the
@@ -45,13 +53,13 @@ function getCommitBeforePush(): string | null {
 
 function getTrackedChangelogFiles(): string[] {
   // `*CHANGELOG.md` matches at any depth — git pathspecs aren't anchored to the repo root.
-  const stdout = execFileSync('git', ['ls-files', '--', '*CHANGELOG.md'], { encoding: 'utf8' })
-  return stdout.split('\n').filter(Boolean)
+  return gitLines(['ls-files', '--', '*CHANGELOG.md'])
 }
 
 function gitTagExists(releaseTag: string): boolean {
+  // `rev-parse --verify` exits non-zero (so git() throws) when the tag is missing.
   try {
-    execFileSync('git', ['rev-parse', '-q', '--verify', `refs/tags/${releaseTag}`], { stdio: 'ignore' })
+    git(['rev-parse', '-q', '--verify', `refs/tags/${releaseTag}`])
     return true
   } catch {
     return false
@@ -62,8 +70,5 @@ function gitTagExists(releaseTag: string): boolean {
 // its tag belongs. Pickaxe (`-S`, a literal-string search) the changelog history for the heading's
 // link opener `[<version>](`; the oldest commit that changed its count is the one that added it.
 function findReleaseCommit(version: string): string | null {
-  const stdout = execFileSync('git', ['log', '--reverse', '--format=%H', `-S[${version}](`, '--', '*CHANGELOG.md'], {
-    encoding: 'utf8',
-  })
-  return stdout.split('\n').filter(Boolean)[0] ?? null
+  return gitLines(['log', '--reverse', '--format=%H', `-S[${version}](`, '--', '*CHANGELOG.md'])[0] ?? null
 }
