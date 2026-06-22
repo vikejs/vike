@@ -1,9 +1,7 @@
 export { parseChangelog }
 
-// One entry per changelog version: `vX.Y.Z` → release notes (Markdown).
 export type ReleaseNotesByVersion = Record<string, string>
 
-// Parse a release-me CHANGELOG.md into per-version release notes.
 function parseChangelog(changelog: string): ReleaseNotesByVersion {
   const releaseNotesByVersion: ReleaseNotesByVersion = {}
   // Group 1 is the version; group 2 (optional) is the heading's link. release-me links the version to

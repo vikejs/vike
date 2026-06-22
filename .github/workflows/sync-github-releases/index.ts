@@ -1,4 +1,4 @@
-// Execute main() only when this file is the entry point (via sync-github-releases.yml or package.json script), not when index.spec.ts imports it.
+// Run main() only when this file is executed directly, not when imported.
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   await main().catch((err) => {
     console.error(err)

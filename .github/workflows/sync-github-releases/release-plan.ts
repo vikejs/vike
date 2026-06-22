@@ -21,9 +21,9 @@ type ReleaseToDelete = {
   tag_name: string
 }
 
-// The git tag / GitHub Release tag for a changelog version. A single package keeps the historical
-// bare `vX.Y.Z`. Several packages share the repo's tag namespace, so their tags are qualified with
-// the package name (e.g. `create-vike-core@0.0.391`) to avoid collisions.
+// A single package keeps the historical bare `vX.Y.Z` tag. Several packages share the repo's tag
+// namespace, so their tags are qualified with the package name (e.g. `create-vike-core@0.0.391`) to
+// avoid collisions.
 function getReleaseTag(versionTag: string, packageName: string, hasMultiplePackages: boolean): string {
   if (!hasMultiplePackages) return versionTag
   return `${packageName}@${versionTag.replace(/^v/, '')}`
@@ -37,7 +37,6 @@ function isOwnedTag(releaseTag: string, packageName: string, hasMultiplePackages
   return /^v\d+\.\d+\.\d+/.test(releaseTag)
 }
 
-// Footer appended to every release body, linking back to the changelog the release is generated from.
 function withChangelogFooter(body: string, changelogUrl: string): string {
   return `${body}\n\n_Source of truth: [\`CHANGELOG.md\`](${changelogUrl})._`
 }
