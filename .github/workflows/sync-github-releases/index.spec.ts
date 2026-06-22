@@ -1,15 +1,9 @@
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
+import { parseChangelog } from './changelog.ts'
 import { getRepository } from './github-utils.ts'
-import {
-  chooseCreateCommitish,
-  getReleasePlan,
-  getTagName,
-  parseChangelog,
-  toPackageDirs,
-  withSourceOfTruth,
-} from './index.ts'
+import { chooseCreateCommitish, getReleasePlan, getTagName, toPackageDirs, withSourceOfTruth } from './index.ts'
 
 function readFixture(name: string): string {
   return readFileSync(path.join(__dirname, 'fixtures', name), 'utf8')

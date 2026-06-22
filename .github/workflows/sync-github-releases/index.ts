@@ -8,7 +8,6 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 
 // Exported only for index.spec.ts
 export { getReleasePlan }
-export { parseChangelog }
 export { toPackageDirs }
 export { getTagName }
 export { withSourceOfTruth }
@@ -20,6 +19,7 @@ import { readFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { parseChangelog, type ChangelogSections } from './changelog.ts'
 import type { Release } from './types.ts'
 import { fetchGithubReleases, getDefaultBranch, getGithubToken, getRepository, githubRequest } from './github-utils.ts'
 
@@ -227,26 +227,6 @@ function findReleaseCommit(version: string): string | null {
     encoding: 'utf8',
   })
   return stdout.split('\n').filter(Boolean)[0] ?? null
-}
-
-type ChangelogSections = Record<string, string>
-function parseChangelog(changelog: string): ChangelogSections {
-  const changelogSections: ChangelogSections = {}
-  // Group 1 is the version; group 2 (optional) is the heading's link. release-me links the version to
-  // a `…/compare/…` URL — `## [0.4.257](…/compare/…)` — which we surface as the release's "Full
-  // Changelog". (The very first release links to a `…/tree/…` URL instead, which we skip.)
-  const matches = [...changelog.matchAll(/^##? \[(\d+\.\d+\.\d+[^\]]*)\](?:\(([^)]+)\))?/gm)]
-
-  matches.forEach((match, index) => {
-    const start = changelog.indexOf('\n', match.index)
-    const end = matches[index + 1]?.index ?? changelog.length
-    let notes = changelog.slice(start, end).trim()
-    const headingUrl = match[2]
-    if (headingUrl?.includes('/compare/')) notes += `\n\n**Full Changelog**: ${headingUrl}`
-    changelogSections[`v${match[1]}`] = notes
-  })
-
-  return changelogSections
 }
 
 type ReleasesToCreate = {
