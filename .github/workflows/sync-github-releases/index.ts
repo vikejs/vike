@@ -22,8 +22,7 @@ import type { Release } from './types.ts'
 import { fetchGithubReleases, getDefaultBranch, getGithubToken, getRepository, githubRequest } from './github-utils.ts'
 
 async function main(): Promise<void> {
-  // The package.json scripts run from this folder; switch to the repo root so the git commands and
-  // package-dir paths below resolve against it.
+  // The scripts run from this folder, but the git commands and package paths below assume the repo root.
   process.chdir(getRepoRoot())
 
   const args = process.argv.slice(2)
@@ -107,8 +106,7 @@ async function syncPackage({
 }
 
 function getPackageDirsToSync(): string[] {
-  // On push, sync only the packages whose CHANGELOG.md changed; otherwise (manual workflow_dispatch
-  // or a local run with no <package-dir>) sync every package.
+  // A push syncs only its changed packages; workflow_dispatch or a local run syncs every package.
   const pushedChangelogFiles = getPushedChangelogFiles()
   if (pushedChangelogFiles) return toPackageDirs(pushedChangelogFiles)
   return toPackageDirs(getTrackedChangelogFiles())
@@ -199,11 +197,9 @@ function getReleasePlan({
   githubReleases: Release[]
   changelogSections: ChangelogSections
 }) {
-  // changelogSections is newest-first; .reverse() creates the missing releases oldest-first. This
-  // matters because create-release defaults to make_latest=true: whichever release is created last
-  // becomes the repo's "Latest", so the newest must go last. (The releases list itself is ordered by
-  // GitHub on tag semver, not creation order, so backfilled older releases still slot in correctly:
-  // https://github.com/vikejs/vike/pull/3157#issuecomment-4406846257)
+  // changelogSections is newest-first; .reverse() creates the missing releases oldest-first so the
+  // newest is created last: create-release defaults to make_latest=true, so the last release
+  // created wins the repo's "Latest" badge.
   const releasesToCreate: ReleasesToCreate[] = Object.keys(changelogSections)
     .filter((tagName) => !githubReleases.some((release) => release.tag_name === tagName))
     .reverse()
