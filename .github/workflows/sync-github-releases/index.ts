@@ -20,7 +20,15 @@ import {
   toPackageDirs,
 } from './utils/git.ts'
 import { resolveTargetCommitish, getReleasePlan, getReleaseTag, withChangelogFooter } from './release-plan.ts'
-import { fetchGithubReleases, getDefaultBranch, getGithubToken, getRepository, githubRequest } from './utils/github.ts'
+import {
+  createRelease,
+  deleteRelease,
+  fetchGithubReleases,
+  getDefaultBranch,
+  getGithubToken,
+  getRepository,
+  updateReleaseBody,
+} from './utils/github.ts'
 
 async function main(): Promise<void> {
   // The package.json scripts run from this folder; switch to the repo root so the git commands and
@@ -121,11 +129,11 @@ async function syncPackage({
     if (!tagExists && !isNewest)
       console.warn(`Tag ${releaseTag} is missing — creating its release at deduced commit ${deducedCommit}`)
 
-    // https://docs.github.com/en/rest/releases/releases#create-a-release
-    await githubRequest(`/repos/${owner}/${repo}/releases`, {
+    await createRelease(
+      owner,
+      repo,
       token,
-      method: 'POST',
-      body: {
+      {
         tag_name: releaseTag,
         target_commitish: targetCommitish,
         name: releaseToCreate.name,
@@ -136,28 +144,17 @@ async function syncPackage({
         make_latest: isNewest ? 'true' : 'false',
       },
       dryRun,
-    })
+    )
     if (!dryRun) console.log(`Created release ${releaseTag}`)
   }
 
   for (const releaseToUpdate of releasesToUpdate) {
-    // https://docs.github.com/en/rest/releases/releases#update-a-release
-    await githubRequest(`/repos/${owner}/${repo}/releases/${releaseToUpdate.release_id}`, {
-      token,
-      method: 'PATCH',
-      body: { body: releaseToUpdate.body },
-      dryRun,
-    })
+    await updateReleaseBody(owner, repo, token, releaseToUpdate.release_id, releaseToUpdate.body, dryRun)
     if (!dryRun) console.log(`Updated release ${releaseToUpdate.tag_name}`)
   }
 
   for (const releaseToDelete of releasesToDelete) {
-    // https://docs.github.com/en/rest/releases/releases#delete-a-release
-    await githubRequest(`/repos/${owner}/${repo}/releases/${releaseToDelete.release_id}`, {
-      token,
-      method: 'DELETE',
-      dryRun,
-    })
+    await deleteRelease(owner, repo, token, releaseToDelete.release_id, dryRun)
     if (!dryRun) console.log(`Deleted release ${releaseToDelete.tag_name}`)
   }
 }

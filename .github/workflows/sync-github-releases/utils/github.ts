@@ -1,5 +1,7 @@
 export { fetchGithubReleases }
-export { githubRequest }
+export { createRelease }
+export { updateReleaseBody }
+export { deleteRelease }
 export { getGithubToken }
 export { getDefaultBranch }
 export { getRepository }
@@ -15,6 +17,14 @@ export type Release = {
   body: string | null
 }
 
+type NewRelease = {
+  tag_name: string
+  target_commitish: string
+  name: string
+  body: string
+  make_latest: 'true' | 'false'
+}
+
 const API_URL = process.env.GITHUB_API_URL ?? 'https://api.github.com'
 const REPOSITORY = process.env.GITHUB_REPOSITORY ?? getRepositoryFromGit()
 const DEFAULT_BRANCH = process.env.GITHUB_DEFAULT_BRANCH ?? 'main'
@@ -25,6 +35,10 @@ const RATE_LIMIT_DELAY_MS = 500
 // Writes performed so far, to delay only *between* them (not before the first, nor after reads).
 let writeCount = 0
 
+function releasesPath(owner: string, repo: string): string {
+  return `/repos/${owner}/${repo}/releases`
+}
+
 async function fetchGithubReleases(owner: string, repo: string, token: string): Promise<Release[]> {
   const githubReleases: Release[] = []
   let page = 1
@@ -33,8 +47,10 @@ async function fetchGithubReleases(owner: string, repo: string, token: string): 
   while (true) {
     // https://docs.github.com/en/rest/releases/releases#list-releases
     const releaseList = await githubRequest<Release[]>(
-      `/repos/${owner}/${repo}/releases?per_page=${perPage}&page=${page}`,
-      { token },
+      `${releasesPath(owner, repo)}?per_page=${perPage}&page=${page}`,
+      {
+        token,
+      },
     )
 
     if (releaseList.length === 0) break
@@ -47,6 +63,40 @@ async function fetchGithubReleases(owner: string, repo: string, token: string): 
   }
 
   return githubReleases
+}
+
+async function createRelease(
+  owner: string,
+  repo: string,
+  token: string,
+  release: NewRelease,
+  dryRun = false,
+): Promise<void> {
+  // https://docs.github.com/en/rest/releases/releases#create-a-release
+  await githubRequest(releasesPath(owner, repo), { token, method: 'POST', body: release, dryRun })
+}
+
+async function updateReleaseBody(
+  owner: string,
+  repo: string,
+  token: string,
+  releaseId: number,
+  body: string,
+  dryRun = false,
+): Promise<void> {
+  // https://docs.github.com/en/rest/releases/releases#update-a-release
+  await githubRequest(`${releasesPath(owner, repo)}/${releaseId}`, { token, method: 'PATCH', body: { body }, dryRun })
+}
+
+async function deleteRelease(
+  owner: string,
+  repo: string,
+  token: string,
+  releaseId: number,
+  dryRun = false,
+): Promise<void> {
+  // https://docs.github.com/en/rest/releases/releases#delete-a-release
+  await githubRequest(`${releasesPath(owner, repo)}/${releaseId}`, { token, method: 'DELETE', dryRun })
 }
 
 async function githubRequest<T = void>(
