@@ -11,7 +11,11 @@ async function serve() {
 
   vike(app)
 
-  return toFetchHandler(app)
+  // `toFetchHandler()` (i.e. `connectToWeb()`) resolves to `undefined` when no middleware
+  // handles the request. Vike's catch-all always responds, but we add a fallback to satisfy
+  // the `Server['fetch']` type which requires a `Response` to always be returned.
+  const handler = toFetchHandler(app)
+  return async (request: Request): Promise<Response> => (await handler(request)) ?? new Response(null, { status: 404 })
 }
 
 export default {
