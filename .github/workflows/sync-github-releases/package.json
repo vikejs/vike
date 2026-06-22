@@ -1,12 +1,14 @@
 {
   "scripts": {
     "// Sync GitHub Releases with each package's CHANGELOG.md — see ./README.md for full usage": "",
+    "// Run a .ts file with Node.js <=23 — these two flags aren't needed anymore on Node.js 24+": "",
+    "node-ts": "node --experimental-strip-types --no-warnings=ExperimentalWarning",
     "// run [<package-dir>]: create/update GitHub Releases; without an arg, syncs every package (needs a contents:write token)": "",
-    "run": "bun ./index.ts",
+    "run": "pnpm node-ts ./index.ts",
     "// check [<package-dir>]: dry-run of `run`, logging changes without writing (needs a contents:read token)": "",
-    "check": "bun ./index.ts --dry-run",
+    "check": "pnpm node-ts ./index.ts --dry-run",
     "// delete-all: delete every GitHub Release in the repo — destructive (needs a contents:write token)": "",
-    "delete-all": "bun ./remove-all-releases.ts"
+    "delete-all": "pnpm node-ts ./remove-all-releases.ts"
   },
   "devDependencies": {
     "@types/node": "^24.10.2",

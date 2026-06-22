@@ -7,7 +7,7 @@ export { getRepository }
 import assert from 'node:assert'
 import { execSync } from 'node:child_process'
 import { setTimeout } from 'node:timers/promises'
-import type { Release } from './types.js'
+import type { Release } from './types.ts'
 
 const API_URL = process.env.GITHUB_API_URL ?? 'https://api.github.com'
 const REPOSITORY = process.env.GITHUB_REPOSITORY ?? getRepositoryFromGit()
@@ -87,7 +87,7 @@ async function githubRequest<T = void>(
 function getGithubToken(): string {
   const token = process.env.GITHUB_TOKEN
   if (!token) {
-    throw new Error( 'GITHUB_TOKEN must be set or use --dry-run — see README.md')
+    throw new Error('GITHUB_TOKEN must be set or use --dry-run — see README.md')
   }
   return token
 }
