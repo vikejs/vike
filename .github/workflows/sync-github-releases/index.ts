@@ -38,7 +38,7 @@ async function main(): Promise<void> {
   const args = process.argv.slice(2)
   const packageDir = args[0]
   if (!packageDir) {
-    throw new Error('Usage: index <package-dir> [--dry-run]')
+    throw new Error('Usage: <package-dir> [--dry-run]')
   }
 
   const packageDirPath = path.join(process.cwd(), packageDir)
