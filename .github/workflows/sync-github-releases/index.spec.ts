@@ -3,7 +3,8 @@ import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { parseChangelog } from './changelog.ts'
 import { getRepository } from './github-utils.ts'
-import { chooseCreateCommitish, getReleasePlan, getTagName, toPackageDirs, withSourceOfTruth } from './index.ts'
+import { toPackageDirs } from './index.ts'
+import { chooseCreateCommitish, getReleasePlan, getTagName, withSourceOfTruth } from './release-plan.ts'
 
 function readFixture(name: string): string {
   return readFileSync(path.join(__dirname, 'fixtures', name), 'utf8')
