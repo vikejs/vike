@@ -4,8 +4,10 @@ Keeps GitHub releases aligned with `CHANGELOG.md`: creates any missing releases,
 
 /* === FLOW
 0. Determine which package directories to sync (getPackageDirsToSync()):
-   - Explicit `<package-dir>` argument (local usage), or
-   - The packages whose `CHANGELOG.md` changed in the push (CI usage), or all of them on `workflow_dispatch`.
+   - Explicit `<package-dir>` argument, or
+   - On `push` (CI): the packages whose `CHANGELOG.md` changed, or
+   - On `workflow_dispatch` (CI): every package, or
+   - Run locally: the sole package — or, if there isn't exactly one, an error asking for an explicit `<package-dir>`.
    This used to live as Bash glue in sync-github-releases.yml — it's now here so all the logic is in JS land.
 Then, for each package directory:
 1. Read CHANGELOG.md and parse the changelog sections.
@@ -32,7 +34,7 @@ export { toPackageDirs }
 
 import assert from 'node:assert'
 import { execFileSync } from 'node:child_process'
-import { readFileSync, readdirSync } from 'node:fs'
+import { readFileSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import path from 'node:path'
@@ -125,12 +127,22 @@ async function syncPackage({
   }
 }
 
-// Determine which package directories to sync, based on the GitHub Actions event that triggered the workflow.
+// Determine which package directories to sync.
 // (This replaces the Bash glue that used to live in sync-github-releases.yml.)
 function getPackageDirsToSync(): string[] {
-  // On `push` we only sync the packages whose CHANGELOG.md actually changed; otherwise (e.g. `workflow_dispatch`) we sync them all.
-  const changelogFiles = getPushedChangelogFiles() ?? findAllChangelogFiles()
-  return toPackageDirs(changelogFiles)
+  // On `push` (CI) we only sync the packages whose CHANGELOG.md actually changed.
+  const pushedChangelogFiles = getPushedChangelogFiles()
+  if (pushedChangelogFiles) return toPackageDirs(pushedChangelogFiles)
+
+  const packageDirs = toPackageDirs(getTrackedChangelogFiles())
+
+  // In GitHub Actions (e.g. a `workflow_dispatch` run) sync every package. GITHUB_ACTIONS is always
+  // 'true' there — it's GitHub's documented way to tell CI apart from a local run.
+  if (process.env.GITHUB_ACTIONS) return packageDirs
+
+  // Run locally: sync the sole package if there's exactly one, otherwise require an explicit `<package-dir>`.
+  if (packageDirs.length === 1) return packageDirs
+  throw new Error('Usage: <package-dir> [--dry-run]')
 }
 
 // Keep only `packages/**/CHANGELOG.md` files and map them to their (deduplicated) package directory.
@@ -163,22 +175,11 @@ function getPushBeforeSha(): string | null {
   return before
 }
 
-// Recursively find every `packages/**/CHANGELOG.md` (skipping node_modules and dot-directories).
-function findAllChangelogFiles(): string[] {
-  const changelogFiles: string[] = []
-  const walk = (dir: string): void => {
-    for (const entry of readdirSync(dir, { withFileTypes: true })) {
-      if (entry.name === 'node_modules' || entry.name.startsWith('.')) continue
-      const entryPath = path.posix.join(dir, entry.name)
-      if (entry.isDirectory()) {
-        walk(entryPath)
-      } else if (entry.name === 'CHANGELOG.md') {
-        changelogFiles.push(entryPath)
-      }
-    }
-  }
-  walk('packages')
-  return changelogFiles.sort()
+// Every `CHANGELOG.md` tracked by git (so untracked files, e.g. under node_modules, are naturally excluded).
+function getTrackedChangelogFiles(): string[] {
+  // The `*CHANGELOG.md` pathspec matches across directories (git wildcards aren't path-bounded by default).
+  const stdout = execFileSync('git', ['ls-files', '--', '*CHANGELOG.md'], { encoding: 'utf8' })
+  return stdout.split('\n').filter(Boolean)
 }
 
 type ChangelogSections = Record<string, string>
