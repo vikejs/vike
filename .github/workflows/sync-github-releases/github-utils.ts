@@ -87,10 +87,9 @@ function getGithubToken(): string {
   if (!token) {
     throw new Error(
       [
-        'GITHUB_TOKEN is not set, run:',
-        '  GITHUB_TOKEN=<token> pnpm -C .github/workflows/sync-github-releases run run -- <package-dir>',
-        'Or dry-run (read-only token still needed, to fetch existing releases):',
+        'GITHUB_TOKEN is not set, e.g.:',
         '  GITHUB_TOKEN=<token> pnpm -C .github/workflows/sync-github-releases run try -- <package-dir>',
+        'See .github/workflows/sync-github-releases/README.md for all scripts and token scopes.',
       ].join('\n'),
     )
   }

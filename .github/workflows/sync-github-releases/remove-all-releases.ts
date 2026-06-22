@@ -1,5 +1,4 @@
-// One-off maintenance: delete every GitHub Release in the repo.
-// GITHUB_TOKEN=<token> pnpm -C .github/workflows/sync-github-releases run delete-all
+// Deletes every GitHub Release in the repo — destructive maintenance, run via the `delete-all` script (see README.md).
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   await removeAllReleases().catch((err) => {
     console.error(err)
