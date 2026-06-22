@@ -87,7 +87,7 @@ async function githubRequest<T = void>(
 function getGithubToken(): string {
   const token = process.env.GITHUB_TOKEN
   if (!token) {
-    throw new Error( 'GITHUB_TOKEN must be set or use --dry-run — see README.md')
+    throw new Error('GITHUB_TOKEN must be set or use --dry-run — see README.md')
   }
   return token
 }
