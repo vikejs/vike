@@ -806,7 +806,7 @@ async function loadPageConfigsLazyClientSideAndExecHook<
   try {
     await execHook('onCreatePageContext', pageContext, getPageContextPublicClient)
   } catch (err_) {
-    err = err
+    err = err_
     hasErr = true
   }
   if (isRenderOutdated()) return { skip: true }

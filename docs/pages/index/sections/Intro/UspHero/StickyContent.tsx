@@ -164,7 +164,7 @@ const StyledHeroChrome = cm.div`
    max-w-[1100px] 
   -translate-x-1/2 
   shadow-neutral/10 shadow-lg 
-  rounded-box opacity-0 
+  daisy-rounded-box opacity-0 
   overflow-hidden 
   bg-white/95
 `

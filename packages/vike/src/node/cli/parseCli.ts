@@ -47,26 +47,38 @@ function getCliOptions() {
   let cliOptions: CliOptions = {}
   let configNameCurrent: string | undefined
 
-  const commitIfDefinedWithoutValue = () => {
-    if (configNameCurrent) commit(true)
-  }
-  const commit = (val: unknown) => {
+  const addConfig = (configValue: unknown) => {
     assert(configNameCurrent)
-    cliOptions[configNameCurrent] = val
+    cliOptions[configNameCurrent] = configValue
     configNameCurrent = undefined
+  }
+  const addConfigWithoutValue = () => {
+    if (configNameCurrent) addConfig(true)
+  }
+  const addConfigWithValue = (configValueStr: string) => {
+    assert(configNameCurrent)
+    addConfig(parseJson5(configValueStr, `CLI option --${configNameCurrent}`))
   }
 
   for (const arg of process.argv.slice(3)) {
     showHelpOrVersion(arg)
     if (arg.startsWith('--')) {
-      commitIfDefinedWithoutValue()
-      configNameCurrent = arg.slice('--'.length)
+      addConfigWithoutValue()
+      const str = arg.slice('--'.length)
+      const eqIdx = str.indexOf('=')
+      if (eqIdx === -1) {
+        configNameCurrent = str
+      } else {
+        configNameCurrent = str.slice(0, eqIdx)
+        const configValueStr = str.slice(eqIdx + 1)
+        addConfigWithValue(configValueStr)
+      }
     } else {
       if (!configNameCurrent) wrongUsage(`Unknown option ${pc.bold(arg)}`)
-      commit(parseJson5(arg, `CLI option --${configNameCurrent}`))
+      addConfigWithValue(arg)
     }
   }
-  commitIfDefinedWithoutValue()
+  addConfigWithoutValue()
 
   return cliOptions
 }
@@ -87,9 +99,10 @@ function showHelp(): never {
       'Common CLI options:',
       [
         `vike dev ${pc.cyan('--host')}          ${TAB}${pc.dim('# Make server available over LAN and public addresses')}`,
-        `vike dev ${pc.cyan('--port')} 80       ${TAB}${pc.dim('# Change the server port')}`,
-        `vike build ${pc.cyan('--mode')} staging${TAB}${pc.dim('# Set the mode to run in')}`,
+        `vike dev ${pc.cyan('--port')} 80       ${TAB}${pc.dim('# Set server port')}`,
+        `vike dev ${pc.cyan('--root')} src      ${TAB}${pc.dim('# Set project root directory')}`,
         `vike dev ${pc.cyan('--force')}         ${TAB}${pc.dim("# Disable Vite's cache")}`,
+        `vike build ${pc.cyan('--mode')} staging${TAB}${pc.dim('# Set mode (e.g. development, production, staging)')}`,
       ]
         .map((o) => `  ${pc.dim('$')} ${o}`)
         .join('\n'),
@@ -116,7 +129,7 @@ function showVersion(): never {
   process.exit(1)
 }
 
-function wrongUsage(msg: string): never {
+function wrongUsage(msg: `Unknown ${string}`): never {
   console.error(pc.red(msg))
   console.log()
   showHelp()

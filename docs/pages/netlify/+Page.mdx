@@ -1,12 +1,69 @@
-import { StaticHostDocIntro, StaticHostDocOutro, StaticHostDocStrategies } from '../../components/static-host'
 import { Link } from '@brillout/docpress'
+import { StaticSsrIntro, ServerStep, Example } from '../../components'
 
-<StaticHostDocIntro
-  staticHostLink={<>, such as <a href="https://www.netlify.com/">Netlify</a></>}
-/>
+<StaticSsrIntro provider={<a href="https://www.netlify.com/">Netlify</a>} />
 
-> For deploying SSR, see <Link href="/netlify-functions" />.
 
-<StaticHostDocStrategies />
+## Get started
 
-<StaticHostDocOutro />
+### 1. Set `+server`
+
+<ServerStep />
+
+### 2. Install
+
+Install the Netlify Vite adapter:
+
+```shell
+npm install @netlify/vite-plugin
+```
+
+```js
+// vite.config.js
+
+import vike from 'vike/plugin'
+import netlify from '@netlify/vite-plugin' // [!code ++]
+
+export default {
+  plugins: [
+    vike(),
+    netlify({ // [!code ++]
+      build: { // [!code ++]
+        enabled: true // [!code ++]
+      } // [!code ++]
+    }) // [!code ++]
+ ]
+}
+```
+
+> The build command remains `$ vike build`.
+
+### 3. Deploy
+
+#### Git Connection Deployment
+
+Push your project to [GitHub](http://github.com), [GitLab](https://gitlab.com), or [Bitbucket](https://bitbucket.org), then [connect it to Netlify](https://docs.netlify.com/start/add-new-project/#import-from-an-existing-repository).
+
+#### CLI Deployment
+
+Install the [Netlify CLI](https://docs.netlify.com/api-and-cli-guides/cli-guides/get-started-with-cli/):
+
+```shell
+npm install -g netlify-cli
+```
+
+Then [deploy](https://cli.netlify.com/commands/deploy/):
+
+```shell
+netlify deploy --prod
+```
+
+
+## Manual integration
+
+You can also manually integrate your Vike app with [Netlify Functions](https://www.netlify.com/products/functions/).
+
+Example:
+ - <Example timestamp="2023.09" repo="brunsten/vike-react-netlify" />
+ - <Example timestamp="2022.07" repo="AaronBeaudoin/vite-plugin-ssr-example-netlify" />
+   > vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike).

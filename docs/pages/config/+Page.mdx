@@ -149,7 +149,8 @@ pages/product/@id/+title.js
 
 ### `.clear.js`
 
-The `.clear.js` filename suffix resets the inheritance chain of <Link href="#cumulative">cumulative configs</Link>, preventing configurations from parent directories from being inherited.
+For <Link href="#cumulative">cumulative configurations</Link>, the `.clear.js` filename suffix resets the inheritance chain: configurations from parent directories aren't inherited.
+
 
 ```yaml
 pages/+Layout.jsx
@@ -164,13 +165,15 @@ pages/admin/dashboard/+Layout.jsx
 pages/admin/dashboard/users/+Page.jsx
 ```
 
-> See also:
-> - <Link href="#default-js" doNotInferSectionTitle />
-> - <Link href="/file-env" noBreadcrumb />
+> The `.clear.js` suffix applies only to cumulative configurations: non-cumulative configurations are already cleared.
+
+See also:
+- <Link href="#default-js" doNotInferSectionTitle />
+- <Link href="/file-env" noBreadcrumb />
 
 ### `.default.js`
 
-The `.default.js` filename suffix makes a <Link href="#cumulative">cumulative configuration</Link> act as a fallback — it's only used when no child directory defines the configuration.
+For <Link href="#cumulative">cumulative configurations</Link>, the `.default.js` filename suffix makes a configuration a fallback: it's used only for directories that don't define the configuration themselves.
 
 ```yaml
 # Default layout
@@ -184,9 +187,11 @@ pages/admin/+Layout.jsx
 pages/admin/dashboard/+Page.jsx
 ```
 
-> See also:
-> - <Link href="#clear-js" doNotInferSectionTitle />
-> - <Link href="/file-env" noBreadcrumb />
+> The `.default.js` suffix applies only to cumulative configurations: non-cumulative configurations already behave as defaults.
+
+See also:
+- <Link href="#clear-js" doNotInferSectionTitle />
+- <Link href="/file-env" noBreadcrumb />
 
 ### Global
 
@@ -392,8 +397,8 @@ console.log("I will never be logged in production")
 
 You can manually mark an import to be a pointer import:
 
-```ts
-// /pages/+config.ts
+```js
+// /pages/+config.js
 // Environment: config
 
 import ssr from './ssr' with { type: 'vike:pointer' }

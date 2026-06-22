@@ -8,7 +8,7 @@ import { onSetupBuild } from '../../../../utils/assertSetup.js'
 import { getGlobalObject } from '../../../../utils/getGlobalObject.js'
 import { isPrerenderAutoRunEnabled, wasPrerenderRun } from '../../../prerender/context.js'
 import type { VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
-import { isViteCli, getViteConfigForBuildFromCli } from '../../shared/isViteCli.js'
+import { isViteCli, getViteBuildCliArgs } from '../../shared/isViteCli.js'
 import pc from '@brillout/picocolors'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { isVikeCliOrApi } from '../../../../shared-server-node/api-context.js'
@@ -25,6 +25,7 @@ const globalObject = getGlobalObject('build/pluginBuildApp.ts', {
 
 function pluginBuildApp(): Plugin[] {
   let config: ResolvedConfig
+  let alreadyBuilt = false
   return [
     {
       name: 'vike:build:pluginBuildApp:pre',
@@ -37,12 +38,15 @@ function pluginBuildApp(): Plugin[] {
             builder: {
               // Can be overridden by another plugin e.g vike-vercel https://github.com/vikejs/vike/pull/2184#issuecomment-2659425195
               async buildApp(builder) {
+                if (alreadyBuilt) return
+                alreadyBuilt = true
                 assert(builder.environments.client)
                 assert(builder.environments.ssr)
                 await builder.build(builder.environments.client)
                 await builder.build(builder.environments.ssr)
 
                 if (isPrerenderForceExit()) {
+                  await builder.buildApp()
                   runPrerender_forceExit()
                   assert(false)
                 }
@@ -145,7 +149,7 @@ async function triggerPrerendering(config: ResolvedConfig, viteEnv: Environment,
 
 async function abortViteBuildSsr() {
   const vikeConfig = await getVikeConfigInternal()
-  if (vikeConfig.config.disableAutoFullBuild !== true && isViteCli() && getViteConfigForBuildFromCli()?.build.ssr) {
+  if (vikeConfig.config.disableAutoFullBuild !== true && isViteCli() && getViteBuildCliArgs()?.build.ssr) {
     assertWarning(
       false,
       `The CLI call ${pc.cyan('$ vite build --ssr')} is superfluous since ${pc.cyan(
@@ -174,9 +178,9 @@ function isPrerenderForceExit(): boolean {
 }
 
 function getFullBuildInlineConfig(config: ResolvedConfig): InlineConfig {
-  const configFromCli = !isViteCli() ? null : getViteConfigForBuildFromCli()
-  if (config._viteConfigFromUserResolved) {
-    return config._viteConfigFromUserResolved
+  const configFromCli = !isViteCli() ? null : getViteBuildCliArgs()
+  if (config._viteConfigUser) {
+    return config._viteConfigUser
   } else {
     return {
       ...configFromCli,

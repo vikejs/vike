@@ -157,16 +157,11 @@ function serializeValue(
   return stringify(value, {
     forbidReactElements: true,
     valueName: varName,
-    // Prevent Google from crawling URLs in JSON:
-    // - https://github.com/vikejs/vike/pull/2603
-    // - https://github.com/brillout/json-serializer/blob/38edbb9945de4938da1e65d6285ce1dd123a45ef/test/main.spec.ts#L44-L95
-    replacer: !isHtmlJsonScript
-      ? undefined
-      : (_key, value) => {
-          if (typeof value === 'string') {
-            return { replacement: value.replaceAll('/', '\\/'), resolved: false }
-          }
-        },
+    htmlScriptSafe: {
+      // Could be set to `isHtmlJsonScript` but we always use `htmlScriptSafe.escapeScripts` to be extra safe
+      escapeScripts: true,
+      escapeURLs: isHtmlJsonScript,
+    },
   })
 }
 type PassToClient = string[]

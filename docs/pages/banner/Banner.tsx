@@ -63,7 +63,7 @@ function BannerCommon({
   style,
   logo,
   logoText = 'Vike',
-  logoScale = 1.3,
+  logoScale = 1.5,
   logoStyle,
   logoTextStyle,
 }: {
@@ -111,6 +111,7 @@ function BannerCommon({
               style={{
                 height: 60 * logoScale,
                 objectFit: 'contain',
+                marginTop: -5,
                 ...logoStyle,
               }}
             />
@@ -118,8 +119,8 @@ function BannerCommon({
               className="logo-font"
               style={{
                 fontSize: 40 * logoScale,
-                fontWeight: 440,
-                color: '#666',
+                fontWeight: 450,
+                color: '#444',
                 lineHeight: '1.2em',
                 marginLeft: -1,
                 ...logoTextStyle,

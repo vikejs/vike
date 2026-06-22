@@ -9,33 +9,32 @@ import { ConfigSpec } from '../../components'
 `string {:ts}`
 </ConfigSpec>
 
-Vike's `+mode` setting is just an alias for [Vite's CLI `--mode` option](https://vite.dev/guide/cli.html#options) (which sets Vite's [mode configuration](https://vite.dev/guide/env-and-mode.html#modes)).
+Vike's `+mode` setting is just an alias for [Vite's `mode` setting](https://vite.dev/guide/env-and-mode.html#modes).
 
-This:
+You can set it over Vike's <Link href="/cli">CLI</Link>:
 
-```ts
-// +config.ts
-
-import type { Config } from 'vike/types'
-
-export default {
-  mode: 'staging'
-} satisfies Config
+```bash
+$ vike build --mode staging
 ```
 
-Is equivalent to that:
+Or over the `VIKE_CONFIG` environment variable:
 
-```ts
-// vite.config.ts
-
-import type { UserConfig } from 'vite'
-
-export default {
-  mode: 'staging'
-} satisfies UserConfig
+```bash
+$ VIKE_CONFIG="{mode:'staging'}" vike build
 ```
+
+Both are equivalent to setting Vite's `mode` setting:
+
+```bash
+$ vite build --mode staging
+```
+
+> Unlike most Vike settings, `+mode` can't be defined inside a `+config.js` file (Vike emits a warning if you try). Set it over the CLI, the `VIKE_CONFIG` environment variable, `vite.config.js`, or <Link href="/api">Vike's API</Link> instead.
+
 
 ## See also
 
 - [Vite > Env Variables and Modes](https://vite.dev/guide/env-and-mode.html)
+- <Link href="/cli" />
+- <Link href="/api" />
 - <Link href="/settings" />

@@ -17,8 +17,9 @@ import { isObject } from '../../../../utils/isObject.js'
 import { pLimit } from '../../../../utils/pLimit.js'
 import { unique } from '../../../../utils/unique.js'
 import { parseVirtualFileId } from '../../../../shared-server-node/virtualFileId.js'
-import type { Environment, ResolvedConfig, Rollup } from 'vite'
+import type { Environment, ResolvedConfig, Rollup, UserConfig } from 'vite'
 import { getAssetsDir } from '../../shared/getAssetsDir.js'
+import { isVite8OrAbove } from '../../shared/isVite8OrAbove.js'
 import pc from '@brillout/picocolors'
 import { isV1Design } from '../../shared/resolveVikeConfigInternal.js'
 import { getOutDirs } from '../../shared/getOutDirs.js'
@@ -361,18 +362,21 @@ async function writeManifestFile(manifest: ViteManifest, manifestFilePath: strin
   await fs.writeFile(manifestFilePath, manifestFileContent, 'utf-8')
 }
 
-async function handleAssetsManifest_getBuildConfig() {
+async function handleAssetsManifest_getBuildConfig(config: UserConfig) {
   const isFixEnabled = handleAssetsManifest_isFixEnabled()
-  return {
+  // Set default values (i.e. allow user to override these values)
+  const build: UserConfig['build'] = {}
+  if (isFixEnabled) {
     // https://github.com/vikejs/vike/issues/1339
-    ssrEmitAssets: isFixEnabled ? true : undefined,
+    if (config.build?.ssrEmitAssets === undefined) build.ssrEmitAssets = true
     // Required if `ssrEmitAssets: true`, see https://github.com/vitejs/vite/pull/11430#issuecomment-1454800934
-    cssMinify: isFixEnabled ? 'esbuild' : undefined,
-    manifest: true,
-    /* Already set by vike:build:pluginBuildApp
-    copyPublicDir: !isViteServerSide_viteEnvOptional(config),
-    */
-  } as const
+    if (config.build?.cssMinify === undefined) build.cssMinify = isVite8OrAbove(config) ? true : 'esbuild'
+  }
+  if (config.build?.manifest === undefined) build.manifest = true
+  /* Already set by vike:build:pluginBuildApp
+  if (config.build?.copyPublicDir === undefined) build.copyPublicDir = !isViteServerSide_viteEnvOptional(config)
+  */
+  return build
 }
 
 async function handleAssetsManifest(

@@ -18,7 +18,7 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
 
   test('DOM', async () => {
     await page.goto(getServerUrl() + '/')
-    await page.waitForFunction(() => !!(window as any)._vike?.fullyRenderedUrl)
+    await page.waitForFunction(() => !!window._vike?.fullyRenderedUrl)
     expect(await page.textContent('body')).toContain(text)
   })
 
@@ -31,4 +31,12 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     expect(logoSrc).toContain('<svg')
     expect(logoSrc).toContain('xmlns="http://www.w3.org/2000/svg')
   })
+}
+
+declare global {
+  interface Window {
+    _vike?: {
+      fullyRenderedUrl?: string
+    }
+  }
 }

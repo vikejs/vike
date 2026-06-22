@@ -275,7 +275,7 @@ const Block = cm.div`space-y-4`
 const SectionTitle = H3Headline
 const SubSectionTitle = H4Headline
 const CenterText = cm.span`text-center block`
-const ClosingWords = cm.a`flex btn sm:btn-lg btn-neutral mx-auto w-fit btn-outline text-center`
+const ClosingWords = cm.a`flex daisy-btn sm:daisy-btn-lg daisy-btn-neutral mx-auto w-fit daisy-btn-outline text-center`
 
 function DX_InlineHighlight({
   color,

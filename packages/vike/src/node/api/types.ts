@@ -1,4 +1,5 @@
 export type { ApiOptions }
+export type { ApiOptionsStartupLog }
 export type { ApiOperation }
 
 import type { InlineConfig } from 'vite'
@@ -17,6 +18,15 @@ type ApiOptions = {
    * https://vike.dev/api
    */
   vikeConfig?: Config
+}
+
+type ApiOptionsStartupLog = {
+  /**
+   * Whether to print Vike's startup log.
+   *
+   * https://vike.dev/api
+   */
+  startupLog?: boolean
 }
 
 type ApiOperation = 'build' | 'dev' | 'preview' | 'prerender'

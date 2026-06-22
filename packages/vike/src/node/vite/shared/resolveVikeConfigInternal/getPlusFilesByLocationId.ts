@@ -1,4 +1,5 @@
 export { getPlusFilesByLocationId }
+export { getPlusFileFromConfigFile }
 export type { PlusFileValue }
 export type { PlusFile }
 export type { PlusFilesByLocationId }
@@ -60,6 +61,7 @@ type PlusFileValue = PlusFileCommon & {
   }
 type PlusFilesByLocationId = Record<LocationId, PlusFile[]>
 
+// TODO/after-PR-merge rename getPlusFilesByLocationId getPlusFiles
 async function getPlusFilesByLocationId(
   userRootDir: string,
   esbuildCache: EsbuildCache,
@@ -85,21 +87,21 @@ async function getPlusFilesByLocationId(
         plusFilesByLocationId[locationId]!.push(plusFile)
         extendsConfigs.forEach((extendsConfig) => {
           /* We purposely use the same locationId because the Vike extension's config should only apply to where it's being extended from, for example:
-        ```js
-        // /pages/admin/+config.js
+          ```js
+          // /pages/admin/+config.js
 
-        import vikeVue from 'vike-vue/config'
-        // Should only apply to /pages/admin/**
-        export default { extends: [vikeVue] }
-        ```
-        ```js
-        // /pages/marketing/+config.js
+          import vikeVue from 'vike-vue/config'
+          // Should only apply to /pages/admin/**
+          export default { extends: [vikeVue] }
+          ```
+          ```js
+          // /pages/marketing/+config.js
 
-        import vikeReact from 'vike-react/config'
-        // Should only apply to /pages/marketing/**
-        export default { extends: [vikeReact] }
-        ```
-        */
+          import vikeReact from 'vike-react/config'
+          // Should only apply to /pages/marketing/**
+          export default { extends: [vikeReact] }
+          ```
+          */
           const plusFile = getPlusFileFromConfigFile(extendsConfig, true, locationId, userRootDir)
           assertExtensionsConventions(plusFile)
           plusFilesByLocationId[locationId]!.push(plusFile)

@@ -2,7 +2,7 @@ export type { Config }
 export type { ConfigBuiltIn }
 export type { ConfigBuiltInResolved }
 export type { ConfigNameBuiltIn }
-export type { ConfigNameGlobal }
+export type { ConfigNameBuiltInGlobal }
 export type { ConfigMeta }
 export type { HookName }
 export type { HookNameOld }
@@ -56,6 +56,7 @@ import type { CliPreviewConfig } from '../node/api/preview.js'
 import type { StaticReplace } from '../node/vite/plugins/pluginStaticReplace/applyStaticReplace.js'
 import type { ImportStringList } from '../node/vite/shared/importString.js'
 import type { HookPublic } from '../shared-server-client/hooks/execHook.js'
+import type { EnhancedMiddleware } from '@universal-middleware/core'
 
 type HookNameOld = HookName | HookNameOldDesign
 type HookName = HookNamePage | HookNameGlobal
@@ -84,7 +85,7 @@ type HookNameOldDesign = 'render' | 'prerender' | 'onBeforePrerender'
 type ConfigNameBuiltIn =
   | Exclude<
       keyof ConfigBuiltIn,
-      keyof VikeVitePluginOptions | 'onBeforeRoute' | 'onPrerenderStart' | 'vite' | 'redirects'
+      keyof VikeVitePluginOptions | 'onBeforeRoute' | 'onPrerenderStart' | 'vite' | 'redirects' | 'pages'
     >
   | 'prerender'
   | 'hasServerOnlyHook'
@@ -98,9 +99,10 @@ type ConfigNameBuiltIn =
   | 'server'
   | 'vercel'
 
-type ConfigNameGlobal =
+type ConfigNameBuiltInGlobal =
   | 'onPrerenderStart'
   | 'onBeforeRoute'
+  | 'pages'
   | 'prerender'
   | 'disableAutoFullBuild'
   | 'includeAssetsImportedByServer'
@@ -323,6 +325,13 @@ type ConfigBuiltIn = {
    *  https://vike.dev/route
    */
   route?: Route | ImportStringList
+
+  /**
+   * @experimental
+   *
+   * Programmatically define pages.
+   */
+  pages?: ConfigPageEntry[]
 
   /** Protect page(s), e.g. forbid unauthorized access.
    *
@@ -603,6 +612,13 @@ type ConfigBuiltIn = {
   force?: boolean
 
   /**
+   * The root directory of your project.
+   *
+   * https://vike.dev/root
+   */
+  root?: string
+
+  /**
    * Content Security Policy (CSP).
    *
    * https://vike.dev/csp
@@ -638,8 +654,16 @@ type ConfigBuiltIn = {
    */
   keepScrollPosition?: KeepScrollPosition
 
-  /** @experimental */
-  middleware?: Function
+  /**
+   * @experimental
+   *
+   * Add server middlewares.
+   *
+   * The middlewares defined via `+middleware` are so called "Universal Middleware" — they work with any JavaScript server (Hono, Express, Cloudflare, ...).
+   *
+   * https://github.com/magne4000/universal-middleware
+   */
+  middleware?: EnhancedMiddleware | EnhancedMiddleware[]
 
   /**
    * Set to `false` to disable Vike's automatic server integration mechanism (e.g. for integrating a JavaScript server manually via `renderPage()`).
@@ -782,9 +806,17 @@ type ConfigBuiltInResolved = {
   passToClient?: string[][]
   redirects?: Record<string, string>[]
   prerender?: Exclude<Config['prerender'], ImportStringList | undefined>[]
-  middleware?: Function[]
+  middleware?: (EnhancedMiddleware | EnhancedMiddleware[])[]
   headersResponse?: Exclude<Config['headersResponse'], ImportStringList | undefined>[]
   staticReplace?: StaticReplace[][]
 }
 
 type ConfigMeta = Record<string, ConfigDefinition>
+
+type ConfigPageEntry = Omit<Config, 'pages' | 'extends' | 'route'> & {
+  /** The page's URL — a Route String or a Route Function.
+   *
+   *  https://vike.dev/route
+   */
+  route: Route
+}

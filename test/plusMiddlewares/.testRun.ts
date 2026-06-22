@@ -27,6 +27,13 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     expect(response.status).toBe(200)
     expect(await response.text()).toBe('OK')
   })
+
+  test('Middleware returning a redirect (3xx) Response', async () => {
+    const response: Response = await fetch(`${getServerUrl()}/redirect-middleware`, { redirect: 'manual' })
+
+    expect(response.status).toBe(303)
+    expect(response.headers.get('Location')).toBe('/')
+  })
 }
 
 async function testCounter() {

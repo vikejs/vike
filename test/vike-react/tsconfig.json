@@ -8,7 +8,9 @@
     "types": ["vite/client"],
     "jsx": "react",
     "skipLibCheck": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    // Test `exactOptionalPropertyTypes` support — https://github.com/vikejs/vike/issues/3251
+    "exactOptionalPropertyTypes": true
   },
   "include": [
     "**/*",

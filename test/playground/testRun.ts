@@ -24,6 +24,7 @@ import { testDynamicImportFileEnv } from './pages/dynamic-import-file-env/e2e-te
 import { testMarkdown, testMarkdownClientFile, testMarkdownSideExports } from './pages/markdown/e2e-test'
 import { testNavigateEarly } from './pages/navigate-early/e2e-test'
 import { testNestedLayout } from './pages/nested-layout/e2e-test'
+import { testProgrammaticPage } from './pages/programmatically-defined/e2e-test'
 import { testPrerenderSettings } from './pages/prerender.e2e-test'
 import { testHistoryPushState } from './pages/pushState/e2e-test'
 import { testStarWars } from './pages/star-wars/e2e-test'
@@ -59,6 +60,7 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview' | 'pnpm run preview:bu
   testNavigateEarly()
   testDynamicImportFileEnv({ isDev })
   testNestedLayout()
+  testProgrammaticPage()
   testDefaultAndClearSuffixes()
   testHistoryPushState()
   testOtherFrameworkNavigation()

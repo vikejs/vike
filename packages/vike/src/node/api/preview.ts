@@ -4,7 +4,7 @@ export type { CliPreviewConfig }
 import { prepareViteApiCall } from './prepareViteApiCall.js'
 import { preview as previewVite, type ResolvedConfig, type PreviewServer } from 'vite'
 import { importServerProductionIndex } from '@brillout/vite-plugin-server-entry/runtime'
-import type { ApiOptions } from './types.js'
+import type { ApiOptions, ApiOptionsStartupLog } from './types.js'
 import { getOutDirs } from '../vite/shared/getOutDirs.js'
 import { assert, assertInfo, assertUsage } from '../../utils/assert.js'
 import { onSetupPreview } from '../../utils/assertSetup.js'
@@ -14,16 +14,18 @@ import path from 'node:path'
 import { getVikeConfigInternal, type VikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.js'
 import { isUniversalDeployVitePreview } from '../vite/plugins/pluginUniversalDeploy/getServerConfig.js'
 import './assertEnvApiDev.js'
-import { getStartupLogFirstLine } from './getStartupLogFirstLine.js'
+import { startupLog } from './startupLog.js'
 
 /**
  * Programmatically trigger `$ vike preview`
  *
  * https://vike.dev/api#preview
  */
-async function preview(options: ApiOptions = {}): Promise<{ viteServer?: PreviewServer; viteConfig: ResolvedConfig }> {
+async function preview(
+  options: ApiOptions & ApiOptionsStartupLog = {},
+): Promise<{ viteServer?: PreviewServer; viteConfig: ResolvedConfig }> {
   onSetupPreview()
-  const { viteConfigFromUserResolved, viteConfigResolved } = await prepareViteApiCall(options, 'preview')
+  const { viteConfigUser, viteConfigResolved } = await prepareViteApiCall(options, 'preview')
 
   const vikeConfig = await getVikeConfigInternal()
   const cliPreviewConfig = await resolveCliPreviewConfig(vikeConfig)
@@ -42,39 +44,35 @@ async function preview(options: ApiOptions = {}): Promise<{ viteServer?: Preview
     return !viteConfigResolved.vitePluginServerEntry?.inject
   })()
 
-  const { startupLogFirstLine, isStartupLogCompact } = getStartupLogFirstLine(viteConfigResolved, !useVitePreviewServer)
-  console.log(startupLogFirstLine)
-
   if (!useVitePreviewServer) {
     // Dynamically import() server production entry dist/server/index.js
     const outDir = getOutDirs(viteConfigResolved, undefined).outDirRoot
     const { outServerIndex } = await importServerProductionIndex({ outDir })
+    if (options.startupLog) startupLog(viteConfigResolved, null)
     const outServerIndexRelative = path.relative(viteConfigResolved.root, outServerIndex)
-    logHint(`, run ${pc.cyan(`$ node ${outServerIndexRelative}`)} instead (or Bun/Deno).`, isStartupLogCompact)
+    logHint(`, run ${pc.cyan(`$ node ${outServerIndexRelative}`)} instead (or Bun/Deno).`)
     return {
       viteConfig: viteConfigResolved,
     }
   } else {
     // Use Vite's preview server
-    const server = await previewVite(viteConfigFromUserResolved)
+    const viteServer = await previewVite(viteConfigUser)
+    const viteConfig = viteServer.config
+    if (options.startupLog) startupLog(viteConfig, viteServer)
     logHint(
       vikeConfig.prerenderContext.isPrerenderingEnabledForAllPages
-        ? ' — your app is fully pre-rendered and can be statically deployed.'
+        ? ': your app is fully pre-rendered and can be statically deployed instead.'
         : '',
-      isStartupLogCompact,
     )
     return {
-      viteServer: server,
-      viteConfig: server.config,
+      viteServer,
+      viteConfig,
     }
   }
 }
 
-function logHint(hint = '', isStartupLogCompact: boolean) {
-  setTimeout(() => {
-    if (!isStartupLogCompact) console.log()
-    assertInfo(false, `Don't use ${pc.cyan('$ vike preview')} for production${hint}`, { onlyOnce: true })
-  }, 0)
+function logHint(hint = '') {
+  assertInfo(false, `Don't use ${pc.cyan('$ vike preview')} in production${hint}`, { onlyOnce: true })
 }
 
 async function resolveCliPreviewConfig(vikeConfig: VikeConfigInternal): Promise<CliPreviewValue> {

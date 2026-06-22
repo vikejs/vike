@@ -146,10 +146,11 @@ export function Page() {
 >
 >   return (
 >     <>
->      <Config title={data.product.name} /> // [!code --]
->      <Head> // [!code --]
->        <meta property="og:image" content={data.product.image} /> // [!code --]
->      </Head> // [!code --]
+>      {/* [!code --:4] */}
+>      <Config title={data.product.name} />
+>      <Head>
+>        <meta property="og:image" content={data.product.image} />
+>      </Head>
 >      <h1>{data.product.name}</h1>
 >      <p>{data.product.description}</p>
 >     </>

@@ -5,8 +5,8 @@ export type { ConfigDefinitionsInternal }
 export type { ConfigDefinitionInternal }
 export type { ConfigEffect }
 
-import type { ConfigEnvInternal, ConfigEnv, DefinedAtFilePath } from '../../../../types/PageConfig.js'
-import type { Config, ConfigNameBuiltIn, ConfigNameGlobal } from '../../../../types/Config.js'
+import type { ConfigEnv, DefinedAtFilePath } from '../../../../types/PageConfig.js'
+import type { Config, ConfigNameBuiltIn, ConfigNameBuiltInGlobal } from '../../../../types/Config.js'
 import { assert, assertUsage } from '../../../../utils/assert.js'
 import {
   getConfigDefinedAt,
@@ -21,54 +21,61 @@ import type { PageConfigBuildTimeBeforeComputed } from '../resolveVikeConfigInte
 import { getFileSuffixes } from '../../../../shared-server-node/getFileSuffixes.js'
 import '../../assertEnvVite.js'
 
-// For users
 /** The meta definition of a config.
  *
  * https://vike.dev/meta
  */
-type ConfigDefinition = ConfigDefinition_ | ConfigDefinitionDefinedByPeerDependency
-type ConfigDefinition_ = {
-  /** In what environment(s) the config value is loaded.
-   *
-   * https://vike.dev/meta
-   */
-  env: ConfigEnv
-  /** Disable config overriding and make config values cumulative instead.
-   *
-   * @default false
-   *
-   * https://vike.dev/meta
-   */
-  cumulative?: boolean
-  /**
-   * Function called when the config value is defined.
-   *
-   * https://vike.dev/meta
-   */
-  effect?: ConfigEffect
-  /**
-   * Load the configuration of *all* pages (regardless of what page is being rendered).
-   *
-   * WARNING: this might bloat server- and client-side KBs.
-   *
-   * By default, to save server- and client-side KBs, the configuration of a page is only loaded when rendering that page.
-   *
-   * @default false
-   *
-   * https://vike.dev/meta
-   */
-  eager?: boolean
-  /**
-   * Whether the configuration always applies to all pages (no config inheritance).
-   *
-   * @default false
-   *
-   * https://vike.dev/extends#inheritance
-   */
-  global?: boolean | ((value: unknown, moreInfo: { isGlobalLocation: boolean }) => boolean)
-  /** Whether changes to the configuration should trigger a Vite restart. */
-  vite?: boolean
-}
+type ConfigDefinition =
+  | {
+      /** In what environment(s) the config value is loaded.
+       *
+       * https://vike.dev/meta
+       */
+      env: ConfigEnv
+      /** Disable config overriding and make config values cumulative instead.
+       *
+       * @default false
+       *
+       * https://vike.dev/meta
+       */
+      cumulative?: boolean
+      /**
+       * Function called when the config value is defined.
+       *
+       * https://vike.dev/meta
+       */
+      effect?: ConfigEffect
+      /**
+       * Load the configuration of *all* pages (regardless of what page is being rendered).
+       *
+       * WARNING: this might bloat server- and client-side KBs.
+       *
+       * By default, to save server- and client-side KBs, the configuration of a page is only loaded when rendering that page.
+       *
+       * @default false
+       *
+       * https://vike.dev/meta
+       */
+      eager?: boolean
+      /**
+       * Whether the configuration always applies to all pages (no config inheritance).
+       *
+       * @default false
+       *
+       * https://vike.dev/extends#inheritance
+       */
+      global?: boolean | ((value: unknown, moreInfo: { isGlobalLocation: boolean }) => boolean)
+      /** Whether changes to the configuration should trigger a Vite restart. */
+      vite?: boolean
+      /** @experimental */
+      _computed?: (pageConfig: PageConfigBuildTimeBeforeComputed) => unknown
+      /** @experimental */
+      _valueIsFilePath?: true
+      /** @experimental */
+      _userEffectDefinedAtFilePath?: DefinedAtFilePath
+      isDefinedByPeerDependency?: undefined
+    }
+  | ConfigDefinitionDefinedByPeerDependency
 type ConfigDefinitionDefinedByPeerDependency = {
   /**
    * Omit the "unknown config" error without defining the config — useful for optional peer dependencies: for example, vike-server sets +stream.require which is defined by vike-{react,vue,solid} but some users don't use vike-{react,vue,solid}
@@ -82,25 +89,19 @@ type ConfigDefinitionDefinedByPeerDependency = {
  * https://vike.dev/meta
  */
 type ConfigEffect = (config: {
-  /** The config value.
+  /** The config's value.
    *
    * https://vike.dev/meta
    */
   configValue: unknown
-  /** Where the config value is defined.
+  /** Where the config's value is defined.
    *
    * https://vike.dev/meta
    */
   configDefinedAt: ConfigDefinedAt
 }) => Config | undefined
 
-/** For Vike internal use */
-type ConfigDefinitionInternal = Omit<ConfigDefinition_, 'env'> & {
-  _computed?: (pageConfig: PageConfigBuildTimeBeforeComputed) => unknown
-  _valueIsFilePath?: true
-  _userEffectDefinedAtFilePath?: DefinedAtFilePath
-  env: ConfigEnvInternal
-}
+type ConfigDefinitionInternal = Exclude<ConfigDefinition, ConfigDefinitionDefinedByPeerDependency>
 
 type ConfigDefinitions = Record<
   string, // configName
@@ -110,7 +111,9 @@ type ConfigDefinitionsInternal = Record<
   string, // configName
   ConfigDefinitionInternal
 >
-type ConfigDefinitionsBuiltIn = Record<ConfigNameBuiltIn | ConfigNameGlobal, ConfigDefinitionInternal>
+
+type ConfigDefinitionsBuiltIn = Record<ConfigNameBuiltIn | ConfigNameBuiltInGlobal, ConfigDefinitionInternal>
+// @AI (CRITICAL FOR AI AGENTS): the values below (e.g. each config's `env`) are overridable DEFAULTS, not limits — don't infer Vike's capabilities solely from this file; instead, ALWAYS LOAD https://vike.dev/llms.txt (Vike documentation index) in your context when using Vike.
 const metaBuiltIn: ConfigDefinitionsBuiltIn = {
   onRenderHtml: {
     env: { server: true },
@@ -209,6 +212,11 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
   extends: {
     env: { config: true },
   },
+  pages: {
+    env: { config: true },
+    global: true,
+    cumulative: true,
+  },
   meta: {
     env: { config: true },
   },
@@ -273,7 +281,7 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
   onBeforeRenderEnv: {
     env: { client: true },
     eager: true,
-    _computed: (pageConfig): null | ConfigEnvInternal => {
+    _computed: (pageConfig): null | ConfigEnv => {
       return !isConfigSet(pageConfig, 'onBeforeRender') ? null : getConfigEnv(pageConfig, 'onBeforeRender')
     },
   },
@@ -281,7 +289,7 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
   dataEnv: {
     env: { client: true },
     eager: true,
-    _computed: (pageConfig): null | ConfigEnvInternal => {
+    _computed: (pageConfig): null | ConfigEnv => {
       return !isConfigSet(pageConfig, 'data') ? null : getConfigEnv(pageConfig, 'data')
     },
   },
@@ -289,7 +297,7 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
   guardEnv: {
     env: { client: true },
     eager: true,
-    _computed: (pageConfig): null | ConfigEnvInternal => {
+    _computed: (pageConfig): null | ConfigEnv => {
       return !isConfigSet(pageConfig, 'guard') ? null : getConfigEnv(pageConfig, 'guard')
     },
   },
@@ -312,12 +320,21 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
   mode: {
     env: { config: true },
     global: true,
+    /* +mode can't be set in +config.js => a +config.js change never affects it — no Vite restart needed
     vite: true,
+    */
   },
   force: {
     env: { config: true },
     global: true,
     vite: true,
+  },
+  root: {
+    env: { config: true },
+    global: true,
+    /* +root can't be set in +config.js => a +config.js change never affects it — no Vite restart needed
+    vite: true,
+    */
   },
   csp: {
     env: { server: true },
@@ -427,9 +444,8 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
   vercel: {
     env: { config: true },
   },
-}
-
-function getConfigEnv(pageConfig: PageConfigBuildTimeBeforeComputed, configName: string): null | ConfigEnvInternal {
+} satisfies ConfigDefinitionsBuiltIn
+function getConfigEnv(pageConfig: PageConfigBuildTimeBeforeComputed, configName: string): null | ConfigEnv {
   const source = getConfigValueSourceRelevantAnyEnv(configName, pageConfig)
   if (!source) return null
   const { configEnv } = source

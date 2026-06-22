@@ -1,4 +1,5 @@
 import { Link } from '@brillout/docpress'
+import { JustAMiddlewareLink } from '../../components'
 
 Vike differs from Next.js in three fundamental ways:
  1. Vike is agnostic to <Link href="#deployment-hosting" doNotInferSectionTitle />.
@@ -116,7 +117,7 @@ Edge deployment with Next.js is another story. [Cloudflare](https://blog.cloudfl
 
 Vike is server and deployment agnostic, which means you can use any hosting provider and any server/serverless setup of choice. Vike is built with Serverless and Edge compatibility from the start.
 
-From a server perspective, <Link text="Vike is just a middleware" href="/deploy" /> that doesn't depend on Node.js and that can run anywhere where JavaScript runs such as AWS, Vercel, Cloudflare, Deno Deploy, or even in the browser.
+<JustAMiddlewareLink /> It doesn't depend on Node.js — it can run anywhere where JavaScript runs such as Cloudflare Workers, Deno Deploy, ...
 
 You can develop apps with a server that doesn't depend on Node.js and deploy it anywhere.
 

@@ -4,7 +4,6 @@ export type { PageConfigBuildTime }
 export type { PageConfigCommon }
 export type { PageConfigRoute }
 export type { ConfigEnv }
-export type { ConfigEnvInternal }
 export type { PageConfigGlobalRuntime }
 export type { PageConfigGlobalBuildTime }
 export type { ConfigValue }
@@ -91,15 +90,21 @@ type VirtualFileExportsPageEntry = {
  *
  * https://vike.dev/meta
  */
-type ConfigEnv = {
-  client?: boolean
+type ConfigEnv = (
+  | {
+      /** Load value on the client-side */
+      client?: boolean
+    }
+  | {
+      /** @experimental */
+      client?: 'if-client-routing'
+    }
+) & {
+  /** Load value on the server-side */
   server?: boolean
+  /** Load value for config files */
   config?: boolean
-}
-/** For Vike internal use */
-type ConfigEnvInternal = Omit<ConfigEnv, 'client'> & {
-  client?: boolean | 'if-client-routing'
-  /** Load value only in production, or only in development. */
+  /** Load value only in production (`true`), or only in development (`false`), or always (`undefined`). */
   production?: boolean
 }
 
@@ -108,7 +113,7 @@ type ConfigValueSources = Record<
   ConfigValueSource[]
 >
 type ConfigValueSource = {
-  configEnv: ConfigEnvInternal
+  configEnv: ConfigEnv
   definedAt: DefinedAtFilePath | DefinedBy
   plusFile:
     | PlusFile
@@ -137,7 +142,7 @@ type DefinedAtFilePath = DefinedAtFile & FilePath & { fileExportName?: string }
 type ConfigValuesComputed = Record<
   string, // configName
   {
-    configEnv: ConfigEnvInternal
+    configEnv: ConfigEnv
     value: unknown
   }
 >
