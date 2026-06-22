@@ -1,5 +1,4 @@
-// Example usage:
-// GITHUB_TOKEN=<contents:write token> bun ./.github/workflows/sync-github-releases/remove-all-releases.ts
+// Deletes every GitHub Release in the repo — destructive maintenance, run via the `delete-all` script (see README.md).
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   await removeAllReleases().catch((err) => {
     console.error(err)

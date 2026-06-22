@@ -1,0 +1,64 @@
+# Sync GitHub Releases
+
+Keeps each package's [GitHub Releases](https://github.com/vikejs/vike/releases) in sync with its
+`CHANGELOG.md`: creates any missing release and rewrites any whose notes have drifted from the changelog.
+
+In CI this runs automatically via [`../sync-github-releases.yml`](../sync-github-releases.yml) — on every
+push to `main` that touches a `packages/**/CHANGELOG.md`, and on manual `workflow_dispatch`. The scripts
+below run the same tooling by hand.
+
+## How it works
+
+`index.ts` runs roughly like this:
+
+1. **Pick which package(s) to sync** (`getPackageDirsToSync()`):
+   - an explicit `<package-dir>` argument, or
+   - on `push` (CI): the packages whose `CHANGELOG.md` changed, or
+   - on `workflow_dispatch` (CI): every package, or
+   - locally: the sole package, or an error asking for an explicit `<package-dir>`.
+
+   Then, for each package:
+2. **Parse** its `CHANGELOG.md` into one entry per version (`parseChangelog()`).
+3. **Fetch** the package's existing GitHub Releases.
+4. **Plan the changes** (`getReleasePlan()`): create a release for every changelog version that doesn't have one yet, and update any whose notes have drifted from the changelog.
+5. **Apply** the plan through the GitHub API — or, with `--dry-run`, just log what would change.
+
+It's safe to run against any current state: older missing releases are created too, and GitHub orders the releases list by tag version, so they still land in the right place.
+
+## Scripts
+
+Run from anywhere in the repo:
+
+```bash
+GITHUB_TOKEN=<token> pnpm -C .github/workflows/sync-github-releases run <script>
+```
+
+Each script needs a `GITHUB_TOKEN` ([personal access token](https://github.com/settings/tokens)) with the
+scope below. `<package-dir>` is a path such as `packages/vike`.
+
+| Script | Description | Token scope |
+| --- | --- | --- |
+| `run -- <package-dir>` | Create/update the package's GitHub Releases from its `CHANGELOG.md`. | `contents: write` |
+| `try -- <package-dir>` | Dry-run of `run`: log what would change without writing anything. | `contents: read` |
+| `delete-all` | **Destructive** — delete every GitHub Release in the repo. | `contents: write` |
+
+### Examples
+
+```bash
+# Preview the changes for the `vike` package (no writes):
+GITHUB_TOKEN=<token> pnpm -C .github/workflows/sync-github-releases run try -- packages/vike
+
+# Create/update the releases for real:
+GITHUB_TOKEN=<token> pnpm -C .github/workflows/sync-github-releases run run -- packages/vike
+```
+
+> Requires [Bun](https://bun.sh) — the scripts run the TypeScript directly with `bun`.
+
+## Files
+
+| File | Purpose |
+| --- | --- |
+| `index.ts` | Entry point: picks which packages to sync, then plans and applies the release changes. |
+| `github-utils.ts` | GitHub REST helpers: auth, fetching releases, throttled requests. |
+| `remove-all-releases.ts` | The `delete-all` maintenance script. |
+| `index.spec.ts` | Unit tests for changelog parsing and release planning. |

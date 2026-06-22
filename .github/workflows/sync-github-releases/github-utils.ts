@@ -12,7 +12,9 @@ import type { Release } from './types.js'
 const API_URL = process.env.GITHUB_API_URL ?? 'https://api.github.com'
 const REPOSITORY = process.env.GITHUB_REPOSITORY ?? getRepositoryFromGit()
 const DEFAULT_BRANCH = process.env.GITHUB_DEFAULT_BRANCH ?? 'main'
-// Avoid hitting GitHub abuse rate limits
+// Pause between requests so bursts (e.g. backfilling many releases) stay under GitHub's secondary
+// rate limit — its burst/concurrency limit, separate from the hourly primary quota.
+// https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api
 const RATE_LIMIT_DELAY_MS = 500
 
 async function fetchGithubReleases(owner: string, repo: string, token: string): Promise<Release[]> {
@@ -87,10 +89,9 @@ function getGithubToken(): string {
   if (!token) {
     throw new Error(
       [
-        'GITHUB_TOKEN is not set, run:',
-        '  GITHUB_TOKEN=<token> pnpm -C .github/workflows/sync-github-releases run run -- <package-dir>',
-        'Or dry-run (read-only token still needed, to fetch existing releases):',
+        'GITHUB_TOKEN is not set, e.g.:',
         '  GITHUB_TOKEN=<token> pnpm -C .github/workflows/sync-github-releases run try -- <package-dir>',
+        'See .github/workflows/sync-github-releases/README.md for all scripts and token scopes.',
       ].join('\n'),
     )
   }
