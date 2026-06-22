@@ -1,10 +1,8 @@
 export { pluginStripPointerImportAttribute }
-export { stripPointerImportAttributes }
 
-// Strip `with { type: 'vike:pointer' }` import attributes from files transpiled for the
-// client/server runtime. These attributes are only meaningful at config-time (they tell
-// Vike to treat the import as a pointer import); leaving them in runtime bundles would
-// break bundlers/runtimes that don't support unknown import attributes.
+// Pointer import attributes (`with { type: 'vike:pointer' }`) are only meaningful at
+// config-time. Leaving them in the client/server runtime bundles would break
+// bundlers/runtimes that don't support unknown import attributes, so we strip them out.
 
 import type { Plugin } from 'vite'
 import type MagicString from 'magic-string'
@@ -12,7 +10,7 @@ import { getImportStatements } from '../shared/parseEsModule.js'
 import { getMagicString } from '../shared/getMagicString.js'
 import '../assertEnvVite.js'
 
-// Match `with { type: 'vike:pointer' }` (with optional whitespace variations)
+// e.g. `with { type: 'vike:pointer' }`
 const runtimeAttrRE = /\bwith\s*\{\s*type\s*:\s*['"]vike:pointer['"]\s*\}/g
 
 function pluginStripPointerImportAttribute(): Plugin[] {
@@ -34,22 +32,19 @@ function pluginStripPointerImportAttribute(): Plugin[] {
 }
 
 async function stripPointerImportAttributes(code: string, id: string) {
-  // Quick check: bail if the attribute isn't present at all.
+  // Fast path: skip parsing when there is nothing to strip
   runtimeAttrRE.lastIndex = 0
   if (!runtimeAttrRE.test(code)) return
 
-  // Only strip *real* import attributes — not occurrences inside string literals or
-  // comments, such as documentation code examples that contain
-  // `with { type: 'vike:pointer' }`. See: https://github.com/brillout/docpress/issues/167
-  // We use es-module-lexer to locate genuine `import` statements and only strip the
-  // attribute within their boundaries.
+  // Restrict stripping to genuine `import` statements, so that we don't touch occurrences
+  // inside string literals/comments (e.g. documentation code examples).
+  // https://github.com/brillout/docpress/issues/167
   let importStatements: Awaited<ReturnType<typeof getImportStatements>>
   try {
     importStatements = await getImportStatements(code)
   } catch {
-    // The code isn't a parsable ES module (e.g. a raw Markdown/MDX file being processed
-    // before compilation) => leave it untouched. (We deliberately don't fall back to
-    // stripping globally: that would wrongly remove the attribute from code examples.)
+    // Not parsable as an ES module (e.g. a raw Markdown file): leave it untouched.
+    // Falling back to a global strip here would re-introduce the bug above.
     return
   }
 
