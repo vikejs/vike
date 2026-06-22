@@ -1,6 +1,3 @@
-// Keeps each package's GitHub Releases in sync with its CHANGELOG.md: creates any missing release
-// and rewrites any whose notes have drifted from the changelog.
-
 // main() runs only when this file is the entry point (e.g. via sync-github-releases.yml),
 // not when index.spec.ts imports it.
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

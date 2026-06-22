@@ -7,6 +7,24 @@ In CI this runs automatically via [`../sync-github-releases.yml`](../sync-github
 push to `main` that touches a `packages/**/CHANGELOG.md`, and on manual `workflow_dispatch`. The scripts
 below run the same tooling by hand.
 
+## How it works
+
+`index.ts` runs roughly like this:
+
+1. **Pick which package(s) to sync** (`getPackageDirsToSync()`):
+   - an explicit `<package-dir>` argument, or
+   - on `push` (CI): the packages whose `CHANGELOG.md` changed, or
+   - on `workflow_dispatch` (CI): every package, or
+   - locally: the sole package, or an error asking for an explicit `<package-dir>`.
+
+   Then, for each package:
+2. **Parse** its `CHANGELOG.md` into one entry per version (`parseChangelog()`).
+3. **Fetch** the package's existing GitHub Releases.
+4. **Plan the changes** (`getReleasePlan()`): create a release for every changelog version that doesn't have one yet, and update any whose notes have drifted from the changelog.
+5. **Apply** the plan through the GitHub API — or, with `--dry-run`, just log what would change.
+
+It's safe to run against any current state: older missing releases are created too, and GitHub orders the releases list by tag version, so they still land in the right place.
+
 ## Scripts
 
 Run from anywhere in the repo:

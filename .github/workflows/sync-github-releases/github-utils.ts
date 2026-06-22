@@ -12,7 +12,9 @@ import type { Release } from './types.js'
 const API_URL = process.env.GITHUB_API_URL ?? 'https://api.github.com'
 const REPOSITORY = process.env.GITHUB_REPOSITORY ?? getRepositoryFromGit()
 const DEFAULT_BRANCH = process.env.GITHUB_DEFAULT_BRANCH ?? 'main'
-// Stay under GitHub's secondary (abuse) rate limits.
+// Pause between requests so bursts (e.g. backfilling many releases) stay under GitHub's secondary
+// rate limit — its burst/concurrency limit, separate from the hourly primary quota.
+// https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api
 const RATE_LIMIT_DELAY_MS = 500
 
 async function fetchGithubReleases(owner: string, repo: string, token: string): Promise<Release[]> {
