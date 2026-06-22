@@ -1,6 +1,6 @@
 # Sync GitHub Releases
 
-Keeps each package's [GitHub Releases](https://github.com/vikejs/vike/releases) in sync with its
+Keeps each package's GitHub Releases in sync with its
 `CHANGELOG.md`: creates any missing release, rewrites any whose notes have drifted from the changelog,
 and deletes any whose version is no longer in the changelog.
 
@@ -30,11 +30,12 @@ It's safe to run against any current state: older missing releases are created t
 Run from anywhere in the repo:
 
 ```bash
-GITHUB_TOKEN=<token> pnpm -C .github/workflows/sync-github-releases run <script>
+cd .github/workflows/sync-github-releases/
+GITHUB_TOKEN=<token> pnpm run <script>
 ```
 
 Each script needs a `GITHUB_TOKEN` ([personal access token](https://github.com/settings/tokens)) with the
-scope below. `<package-dir>` is a path such as `packages/vike`; omit it to sync every package.
+scope below.
 
 | Script | Description | Token scope |
 | --- | --- | --- |
@@ -47,11 +48,9 @@ scope below. `<package-dir>` is a path such as `packages/vike`; omit it to sync 
 ```bash
 cd .github/workflows/sync-github-releases/
 
-# Preview the changes for all packages (no writes):
+# Preview the changes for all packages (no writes)
 GITHUB_TOKEN=<token> pnpm run check
 
-# Synchronize the releases of packages/vike:
+# Synchronize the releases of packages/vike
 GITHUB_TOKEN=<token> pnpm run run -- packages/vike
 ```
-
-> Requires [Node.js](https://nodejs.org) ≥ 22.6 — the scripts run the TypeScript directly via type stripping.
