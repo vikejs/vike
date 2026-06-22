@@ -1,8 +1,8 @@
 {
   "scripts": {
-    "// run [<package-dir>]: synchronize GitHub Releases (needs a contents:write token, see ./README.md)": "",
-    "run": "pnpm node-ts ./index.ts",
-    "// check [<package-dir>]: dry-run of `run`, logging changes without writing (needs a contents:read token, see ./README.md)": "",
+    "// sync [<package-dir>]: synchronize GitHub Releases (needs a contents:write token, see ./README.md)": "",
+    "sync": "pnpm node-ts ./index.ts",
+    "// check [<package-dir>]: dry-run of `sync`, logging changes without writing (needs a contents:read token, see ./README.md)": "",
     "check": "pnpm node-ts ./index.ts --dry-run",
     "// delete-all: delete every GitHub Release in the repo (needs a contents:write token, see ./README.md)": "",
     "delete-all": "pnpm node-ts ./delete-all-releases.ts",
