@@ -1,44 +1,43 @@
 export { getReleasePlan }
-export { getTagName }
-export { withSourceOfTruth }
-export { chooseCreateCommitish }
+export { getReleaseTag }
+export { withChangelogFooter }
+export { resolveTargetCommitish }
 
-import type { ChangelogSections } from './utils/changelog.ts'
+import type { ReleaseNotesByVersion } from './utils/changelog.ts'
 import type { Release } from './utils/github.ts'
 
-type ReleasesToCreate = {
+type ReleaseToCreate = {
   tag_name: string
   name: string
   body: string
 }
-type ReleasesToUpdate = {
+type ReleaseToUpdate = {
   release_id: number
   tag_name: string
   body: string
 }
-type ReleasesToDelete = {
+type ReleaseToDelete = {
   release_id: number
   tag_name: string
 }
 
-// The git tag / GitHub Release tag for a changelog version. A single package keeps the historical
-// bare `vX.Y.Z`. Several packages share the repo's tag namespace, so their tags are qualified with
-// the package name (e.g. `create-vike-core@0.0.391`) to avoid collisions.
-function getTagName(versionTag: string, packageName: string, multiplePackages: boolean): string {
-  if (!multiplePackages) return versionTag
+// A single package keeps the historical bare `vX.Y.Z` tag. Several packages share the repo's tag
+// namespace, so their tags are qualified with the package name (e.g. `create-vike-core@0.0.391`) to
+// avoid collisions.
+function getReleaseTag(versionTag: string, packageName: string, hasMultiplePackages: boolean): string {
+  if (!hasMultiplePackages) return versionTag
   return `${packageName}@${versionTag.replace(/^v/, '')}`
 }
 
 // Whether a GitHub Release tag belongs to the package being synced — i.e. is a candidate for
-// deletion once its changelog entry is gone. Mirrors getTagName()'s two schemes, so a release of
+// deletion once its changelog entry is gone. Mirrors getReleaseTag()'s two schemes, so a release of
 // another package (or a tag we never created, e.g. `nightly`) is never deleted.
-function isOwnedTag(tagName: string, packageName: string, multiplePackages: boolean): boolean {
-  if (multiplePackages) return tagName.startsWith(`${packageName}@`)
-  return /^v\d+\.\d+\.\d+/.test(tagName)
+function isOwnedTag(releaseTag: string, packageName: string, hasMultiplePackages: boolean): boolean {
+  if (hasMultiplePackages) return releaseTag.startsWith(`${packageName}@`)
+  return /^v\d+\.\d+\.\d+/.test(releaseTag)
 }
 
-// Footer appended to every release body, linking back to the changelog the release is generated from.
-function withSourceOfTruth(body: string, changelogUrl: string): string {
+function withChangelogFooter(body: string, changelogUrl: string): string {
   return `${body}\n\n_Source of truth: [\`CHANGELOG.md\`](${changelogUrl})._`
 }
 
@@ -48,14 +47,14 @@ function withSourceOfTruth(body: string, changelogUrl: string): string {
 //    tagging it now would point at the default branch's HEAD (the wrong commit).
 //  - Tag missing on an older (backfilled) release: tag the commit deduced from the changelog history,
 //    or hard fail if it couldn't be deduced — never silently tag the wrong commit.
-function chooseCreateCommitish({
-  tagName,
+function resolveTargetCommitish({
+  releaseTag,
   tagExists,
   isNewest,
   deducedCommit,
   defaultBranch,
 }: {
-  tagName: string
+  releaseTag: string
   tagExists: boolean
   isNewest: boolean
   deducedCommit: string | null
@@ -64,12 +63,12 @@ function chooseCreateCommitish({
   if (tagExists) return defaultBranch
   if (isNewest) {
     throw new Error(
-      `Refusing to create release ${tagName}: its git tag is missing. The latest release must already be tagged — creating it now would tag the wrong commit (the default branch's HEAD).`,
+      `Refusing to create release ${releaseTag}: its git tag is missing. The latest release must already be tagged — creating it now would tag the wrong commit (the default branch's HEAD).`,
     )
   }
   if (!deducedCommit) {
     throw new Error(
-      `Refusing to create release ${tagName}: its git tag is missing and its release commit couldn't be deduced from the changelog history.`,
+      `Refusing to create release ${releaseTag}: its git tag is missing and its release commit couldn't be deduced from the changelog history.`,
     )
   }
   return deducedCommit
@@ -77,14 +76,14 @@ function chooseCreateCommitish({
 
 function getReleasePlan({
   githubReleases,
-  changelogSections,
+  releaseNotesByVersion,
   packageName,
-  multiplePackages,
+  hasMultiplePackages,
 }: {
   githubReleases: Release[]
-  changelogSections: ChangelogSections
+  releaseNotesByVersion: ReleaseNotesByVersion
   packageName: string
-  multiplePackages: boolean
+  hasMultiplePackages: boolean
 }) {
   // Reconcile from the changelog (the source of truth), not from the GitHub Releases: iterating the
   // releases for updates would try to rewrite any release whose tag isn't in the changelog (e.g. a
@@ -92,29 +91,30 @@ function getReleasePlan({
   // create and update off the changelog can only ever touch the versions the changelog declares.
   const releasesByTag = new Map(githubReleases.map((release) => [release.tag_name, release]))
   const expectedTags = new Set<string>()
-  const releasesToCreate: ReleasesToCreate[] = []
-  const releasesToUpdate: ReleasesToUpdate[] = []
+  const releasesToCreate: ReleaseToCreate[] = []
+  const releasesToUpdate: ReleaseToUpdate[] = []
 
-  // changelogSections is newest-first; iterate oldest-first so releases are created (and their
+  // releaseNotesByVersion is newest-first; iterate oldest-first so releases are created (and their
   // notifications sent) in chronological order. Which release is "Latest" is set explicitly via
   // make_latest in syncPackage, not inferred from creation order. (GitHub orders the releases list by
   // tag semver regardless: https://github.com/vikejs/vike/pull/3157#issuecomment-4406846257)
-  for (const versionTag of Object.keys(changelogSections).reverse()) {
-    const body = changelogSections[versionTag]
-    const tagName = getTagName(versionTag, packageName, multiplePackages)
-    expectedTags.add(tagName)
-    const existingRelease = releasesByTag.get(tagName)
+  for (const versionTag of Object.keys(releaseNotesByVersion).reverse()) {
+    const body = releaseNotesByVersion[versionTag]
+    const releaseTag = getReleaseTag(versionTag, packageName, hasMultiplePackages)
+    expectedTags.add(releaseTag)
+    const existingRelease = releasesByTag.get(releaseTag)
     if (!existingRelease) {
-      releasesToCreate.push({ tag_name: tagName, name: tagName, body })
+      releasesToCreate.push({ tag_name: releaseTag, name: releaseTag, body })
     } else if (existingRelease.body?.trim() !== body) {
-      releasesToUpdate.push({ release_id: existingRelease.id, tag_name: tagName, body })
+      releasesToUpdate.push({ release_id: existingRelease.id, tag_name: releaseTag, body })
     }
   }
 
   // Delete this package's releases whose version is no longer in the changelog (the source of truth).
-  const releasesToDelete: ReleasesToDelete[] = githubReleases
+  const releasesToDelete: ReleaseToDelete[] = githubReleases
     .filter(
-      (release) => isOwnedTag(release.tag_name, packageName, multiplePackages) && !expectedTags.has(release.tag_name),
+      (release) =>
+        isOwnedTag(release.tag_name, packageName, hasMultiplePackages) && !expectedTags.has(release.tag_name),
     )
     .map((release) => ({ release_id: release.id, tag_name: release.tag_name }))
 

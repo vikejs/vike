@@ -1,4 +1,4 @@
-// Execute main() only when this file is the entry point (via sync-github-releases.yml or package.json script), not when index.spec.ts imports it.
+// Run main() only when this file is executed directly, not when imported.
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   await main().catch((err) => {
     console.error(err)
@@ -13,13 +13,13 @@ import { fileURLToPath } from 'node:url'
 import { parseChangelog } from './utils/changelog.ts'
 import {
   findReleaseCommit,
-  getPushedChangelogFiles,
+  getPushedFiles,
   getRepoRoot,
   getTrackedChangelogFiles,
   gitTagExists,
   toPackageDirs,
 } from './utils/git.ts'
-import { chooseCreateCommitish, getReleasePlan, getTagName, withSourceOfTruth } from './release-plan.ts'
+import { resolveTargetCommitish, getReleasePlan, getReleaseTag, withChangelogFooter } from './release-plan.ts'
 import { fetchGithubReleases, getDefaultBranch, getGithubToken, getRepository, githubRequest } from './utils/github.ts'
 
 async function main(): Promise<void> {
@@ -43,13 +43,13 @@ async function main(): Promise<void> {
   const token = getGithubToken()
 
   // When several packages publish to the same repo they share its tag namespace, so releases are
-  // qualified with the package name (see getTagName()). Determined from every tracked CHANGELOG.md,
+  // qualified with the package name (see getReleaseTag()). Determined from every tracked CHANGELOG.md,
   // not just the package(s) being synced now.
-  const multiplePackages = toPackageDirs(getTrackedChangelogFiles()).length > 1
+  const hasMultiplePackages = toPackageDirs(getTrackedChangelogFiles()).length > 1
 
   for (const packageDir of packageDirs) {
     console.log(`Syncing GitHub releases for package directory: ${packageDir}`)
-    await syncPackage({ packageDir, owner, repo, defaultBranch, token, dryRun, multiplePackages })
+    await syncPackage({ packageDir, owner, repo, defaultBranch, token, dryRun, hasMultiplePackages })
   }
 }
 
@@ -60,7 +60,7 @@ async function syncPackage({
   defaultBranch,
   token,
   dryRun,
-  multiplePackages,
+  hasMultiplePackages,
 }: {
   packageDir: string
   owner: string
@@ -68,7 +68,7 @@ async function syncPackage({
   defaultBranch: string
   token: string
   dryRun: boolean
-  multiplePackages: boolean
+  hasMultiplePackages: boolean
 }): Promise<void> {
   const require = createRequire(import.meta.url)
 
@@ -79,53 +79,54 @@ async function syncPackage({
   const packageJson = require(packageJsonPath) as { name: string }
 
   const changelog = await readFile(changelogPath, 'utf8')
-  const changelogSections = parseChangelog(changelog)
+  const releaseNotesByVersion = parseChangelog(changelog)
 
   // These releases are generated, so point each one back to the changelog it mirrors (the source of
   // truth) to discourage editing the GitHub Release directly — a sync would overwrite it.
   const changelogUrl = `https://github.com/${owner}/${repo}/blob/${defaultBranch}/${packageDir}/CHANGELOG.md`
-  for (const versionTag of Object.keys(changelogSections)) {
-    changelogSections[versionTag] = withSourceOfTruth(changelogSections[versionTag], changelogUrl)
+  for (const versionTag of Object.keys(releaseNotesByVersion)) {
+    releaseNotesByVersion[versionTag] = withChangelogFooter(releaseNotesByVersion[versionTag], changelogUrl)
   }
 
   const githubReleases = await fetchGithubReleases(owner, repo, token)
 
   const { releasesToCreate, releasesToUpdate, releasesToDelete } = getReleasePlan({
     githubReleases,
-    changelogSections,
+    releaseNotesByVersion,
     packageName: packageJson.name,
-    multiplePackages,
+    hasMultiplePackages,
   })
 
-  // changelogSections is keyed by `vX.Y.Z`; map each release tag back to its raw changelog version
+  // releaseNotesByVersion is keyed by `vX.Y.Z`; map each release tag back to its raw changelog version
   // (for the changelog-history lookup) and remember the newest tag (the just-released version).
-  const versionTags = Object.keys(changelogSections)
+  const versionTags = Object.keys(releaseNotesByVersion)
   const versionByTag = new Map(
     versionTags.map((versionTag) => [
-      getTagName(versionTag, packageJson.name, multiplePackages),
+      getReleaseTag(versionTag, packageJson.name, hasMultiplePackages),
       versionTag.replace(/^v/, ''),
     ]),
   )
-  const newestTag = versionTags.length > 0 ? getTagName(versionTags[0], packageJson.name, multiplePackages) : ''
+  const newestReleaseTag =
+    versionTags.length > 0 ? getReleaseTag(versionTags[0], packageJson.name, hasMultiplePackages) : ''
 
   for (const releaseToCreate of releasesToCreate) {
-    const tagName = releaseToCreate.tag_name
+    const releaseTag = releaseToCreate.tag_name
     // A release needs a tag to point at. When the tag is missing, GitHub would otherwise create it at
     // the default branch's HEAD — the wrong commit for a backfilled release. Deduce the real commit
     // from the changelog's history and tag that instead (or refuse, rather than tag the wrong commit).
-    const tagExists = gitTagExists(tagName)
-    const isNewest = tagName === newestTag
-    const deducedCommit = !tagExists && !isNewest ? findReleaseCommit(versionByTag.get(tagName)!) : null
-    const targetCommitish = chooseCreateCommitish({ tagName, tagExists, isNewest, deducedCommit, defaultBranch })
+    const tagExists = gitTagExists(releaseTag)
+    const isNewest = releaseTag === newestReleaseTag
+    const deducedCommit = !tagExists && !isNewest ? findReleaseCommit(versionByTag.get(releaseTag)!) : null
+    const targetCommitish = resolveTargetCommitish({ releaseTag, tagExists, isNewest, deducedCommit, defaultBranch })
     if (!tagExists && !isNewest)
-      console.warn(`Tag ${tagName} is missing — creating its release at deduced commit ${deducedCommit}`)
+      console.warn(`Tag ${releaseTag} is missing — creating its release at deduced commit ${deducedCommit}`)
 
     // https://docs.github.com/en/rest/releases/releases#create-a-release
     await githubRequest(`/repos/${owner}/${repo}/releases`, {
       token,
       method: 'POST',
       body: {
-        tag_name: tagName,
+        tag_name: releaseTag,
         target_commitish: targetCommitish,
         name: releaseToCreate.name,
         body: releaseToCreate.body,
@@ -136,7 +137,7 @@ async function syncPackage({
       },
       dryRun,
     })
-    if (!dryRun) console.log(`Created release ${tagName}`)
+    if (!dryRun) console.log(`Created release ${releaseTag}`)
   }
 
   for (const releaseToUpdate of releasesToUpdate) {
@@ -164,7 +165,7 @@ async function syncPackage({
 function getPackageDirsToSync(): string[] {
   // On push, sync only the packages whose CHANGELOG.md changed; otherwise (manual workflow_dispatch
   // or a local run with no <package-dir>) sync every package.
-  const pushedChangelogFiles = getPushedChangelogFiles()
-  if (pushedChangelogFiles) return toPackageDirs(pushedChangelogFiles)
+  const pushedFiles = getPushedFiles()
+  if (pushedFiles) return toPackageDirs(pushedFiles)
   return toPackageDirs(getTrackedChangelogFiles())
 }
