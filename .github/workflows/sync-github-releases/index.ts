@@ -10,8 +10,10 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 export { getReleasePlan }
 export { parseChangelog }
 export { toPackageDirs }
+export { getTagName }
+export { withSourceOfTruth }
+export { chooseCreateCommitish }
 
-import assert from 'node:assert'
 import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
@@ -41,9 +43,14 @@ async function main(): Promise<void> {
   const defaultBranch = getDefaultBranch()
   const token = getGithubToken()
 
+  // When several packages publish to the same repo they share its tag namespace, so releases are
+  // qualified with the package name (see getTagName()). Determined from every tracked CHANGELOG.md,
+  // not just the package(s) being synced now.
+  const multiplePackages = toPackageDirs(getTrackedChangelogFiles()).length > 1
+
   for (const packageDir of packageDirs) {
     console.log(`Syncing GitHub releases for package directory: ${packageDir}`)
-    await syncPackage({ packageDir, owner, repo, defaultBranch, token, dryRun })
+    await syncPackage({ packageDir, owner, repo, defaultBranch, token, dryRun, multiplePackages })
   }
 }
 
@@ -54,6 +61,7 @@ async function syncPackage({
   defaultBranch,
   token,
   dryRun,
+  multiplePackages,
 }: {
   packageDir: string
   owner: string
@@ -61,6 +69,7 @@ async function syncPackage({
   defaultBranch: string
   token: string
   dryRun: boolean
+  multiplePackages: boolean
 }): Promise<void> {
   const require = createRequire(import.meta.url)
 
@@ -68,22 +77,57 @@ async function syncPackage({
   const packageJsonPath = path.join(packageDirPath, 'package.json')
   const changelogPath = path.join(packageDirPath, 'CHANGELOG.md')
 
-  const packageJson = require(packageJsonPath) as { version: string }
+  const packageJson = require(packageJsonPath) as { name: string }
 
-  const versionTag = `v${packageJson.version}`
   const changelog = await readFile(changelogPath, 'utf8')
   const changelogSections = parseChangelog(changelog)
-  assertChangelog(versionTag, changelogSections)
+
+  // These releases are generated, so point each one back to the changelog it mirrors (the source of
+  // truth) to discourage editing the GitHub Release directly — a sync would overwrite it.
+  const changelogUrl = `https://github.com/${owner}/${repo}/blob/${defaultBranch}/${packageDir}/CHANGELOG.md`
+  for (const versionTag of Object.keys(changelogSections)) {
+    changelogSections[versionTag] = withSourceOfTruth(changelogSections[versionTag], changelogUrl)
+  }
 
   const githubReleases = await fetchGithubReleases(owner, repo, token)
 
-  const { releasesToCreate, releasesToUpdate } = getReleasePlan({
+  const { releasesToCreate, releasesToUpdate, releasesToDelete } = getReleasePlan({
     defaultBranch,
     githubReleases,
     changelogSections,
+    packageName: packageJson.name,
+    multiplePackages,
   })
 
+  // changelogSections is keyed by `vX.Y.Z`; map each release tag back to its raw changelog version
+  // (for the changelog-history lookup) and remember the newest tag (the just-released version).
+  const versionTags = Object.keys(changelogSections)
+  const versionByTag = new Map(
+    versionTags.map((versionTag) => [
+      getTagName(versionTag, packageJson.name, multiplePackages),
+      versionTag.replace(/^v/, ''),
+    ]),
+  )
+  const newestTag = versionTags.length > 0 ? getTagName(versionTags[0], packageJson.name, multiplePackages) : ''
+
   for (const releaseToCreate of releasesToCreate) {
+    const tagName = releaseToCreate.tag_name
+    // A release needs a tag to point at. When the tag is missing, GitHub would otherwise create it at
+    // the default branch's HEAD — the wrong commit for a backfilled release. Deduce the real commit
+    // from the changelog's history and tag that instead (or refuse, rather than tag the wrong commit).
+    const tagExists = gitTagExists(tagName)
+    const isNewest = tagName === newestTag
+    const deducedCommit = !tagExists && !isNewest ? findReleaseCommit(versionByTag.get(tagName)!) : null
+    releaseToCreate.target_commitish = chooseCreateCommitish({
+      tagName,
+      tagExists,
+      isNewest,
+      deducedCommit,
+      defaultBranch,
+    })
+    if (!tagExists && !isNewest)
+      console.warn(`Tag ${tagName} is missing — creating its release at deduced commit ${deducedCommit}`)
+
     // https://docs.github.com/en/rest/releases/releases#create-a-release
     await githubRequest(`/repos/${owner}/${repo}/releases`, {
       token,
@@ -91,7 +135,7 @@ async function syncPackage({
       body: releaseToCreate,
       dryRun,
     })
-    if (!dryRun) console.log(`Created release ${releaseToCreate.tag_name}`)
+    if (!dryRun) console.log(`Created release ${tagName}`)
   }
 
   for (const releaseToUpdate of releasesToUpdate) {
@@ -103,6 +147,16 @@ async function syncPackage({
       dryRun,
     })
     if (!dryRun) console.log(`Updated release ${releaseToUpdate.tag_name}`)
+  }
+
+  for (const releaseToDelete of releasesToDelete) {
+    // https://docs.github.com/en/rest/releases/releases#delete-a-release
+    await githubRequest(`/repos/${owner}/${repo}/releases/${releaseToDelete.release_id}`, {
+      token,
+      method: 'DELETE',
+      dryRun,
+    })
+    if (!dryRun) console.log(`Deleted release ${releaseToDelete.tag_name}`)
   }
 }
 
@@ -154,29 +208,43 @@ function getTrackedChangelogFiles(): string[] {
   return stdout.split('\n').filter(Boolean)
 }
 
+function gitTagExists(tagName: string): boolean {
+  try {
+    execFileSync('git', ['rev-parse', '-q', '--verify', `refs/tags/${tagName}`], { stdio: 'ignore' })
+    return true
+  } catch {
+    return false
+  }
+}
+
+// The commit that introduced this version's changelog entry — i.e. the release commit, which is where
+// its tag belongs. Pickaxe (`-S`, a literal-string search) the changelog history for the heading's
+// link opener `[<version>](`; the oldest commit that changed its count is the one that added it.
+function findReleaseCommit(version: string): string | null {
+  const stdout = execFileSync('git', ['log', '--reverse', '--format=%H', `-S[${version}](`, '--', '*CHANGELOG.md'], {
+    encoding: 'utf8',
+  })
+  return stdout.split('\n').filter(Boolean)[0] ?? null
+}
+
 type ChangelogSections = Record<string, string>
 function parseChangelog(changelog: string): ChangelogSections {
   const changelogSections: ChangelogSections = {}
-  // Matches changelog headings: `## [0.4.257](...)` or `# [0.1.0-beta.6](...)`
-  const matches = [...changelog.matchAll(/^##? \[(\d+\.\d+\.\d+[^\]]*)\]/gm)]
+  // Group 1 is the version; group 2 (optional) is the heading's link. release-me links the version to
+  // a `…/compare/…` URL — `## [0.4.257](…/compare/…)` — which we surface as the release's "Full
+  // Changelog". (The very first release links to a `…/tree/…` URL instead, which we skip.)
+  const matches = [...changelog.matchAll(/^##? \[(\d+\.\d+\.\d+[^\]]*)\](?:\(([^)]+)\))?/gm)]
 
   matches.forEach((match, index) => {
     const start = changelog.indexOf('\n', match.index)
     const end = matches[index + 1]?.index ?? changelog.length
-    const notes = changelog.slice(start, end).trim()
+    let notes = changelog.slice(start, end).trim()
+    const headingUrl = match[2]
+    if (headingUrl?.includes('/compare/')) notes += `\n\n**Full Changelog**: ${headingUrl}`
     changelogSections[`v${match[1]}`] = notes
   })
 
   return changelogSections
-}
-function assertChangelog(versionTag: string, changelogSections: ChangelogSections) {
-  const latestRelease = Object.keys(changelogSections)[0]
-  assert(
-    latestRelease === versionTag,
-    `The latest changelog entry is ${latestRelease}, but the current version is ${versionTag}`,
-  )
-  const currentBody = changelogSections[versionTag]
-  assert(currentBody, `Missing changelog entry for ${versionTag}`)
 }
 
 type ReleasesToCreate = {
@@ -190,37 +258,109 @@ type ReleasesToUpdate = {
   tag_name: string
   body: string
 }
+type ReleasesToDelete = {
+  release_id: number
+  tag_name: string
+}
+// The git tag / GitHub Release tag for a changelog version. A single package keeps the historical
+// bare `vX.Y.Z`. Several packages share the repo's tag namespace, so their tags are qualified with
+// the package name (e.g. `create-vike-core@0.0.391`) to avoid collisions.
+function getTagName(versionTag: string, packageName: string, multiplePackages: boolean): string {
+  if (!multiplePackages) return versionTag
+  return `${packageName}@${versionTag.replace(/^v/, '')}`
+}
+
+// Whether a GitHub Release tag belongs to the package being synced — i.e. is a candidate for
+// deletion once its changelog entry is gone. Mirrors getTagName()'s two schemes, so a release of
+// another package (or a tag we never created, e.g. `nightly`) is never deleted.
+function isOwnedTag(tagName: string, packageName: string, multiplePackages: boolean): boolean {
+  if (multiplePackages) return tagName.startsWith(`${packageName}@`)
+  return /^v\d+\.\d+\.\d+/.test(tagName)
+}
+
+// Footer appended to every release body, linking back to the changelog the release is generated from.
+function withSourceOfTruth(body: string, changelogUrl: string): string {
+  return `${body}\n\n_Source of truth: [\`CHANGELOG.md\`](${changelogUrl})._`
+}
+
+// The commit a to-be-created release should be tagged at (its `target_commitish`).
+//  - Tag already exists: GitHub uses it and ignores target_commitish — pass the branch as a no-op.
+//  - Tag missing on the newest release: hard fail. The just-released version must already be tagged;
+//    tagging it now would point at the default branch's HEAD (the wrong commit).
+//  - Tag missing on an older (backfilled) release: tag the commit deduced from the changelog history,
+//    or hard fail if it couldn't be deduced — never silently tag the wrong commit.
+function chooseCreateCommitish({
+  tagName,
+  tagExists,
+  isNewest,
+  deducedCommit,
+  defaultBranch,
+}: {
+  tagName: string
+  tagExists: boolean
+  isNewest: boolean
+  deducedCommit: string | null
+  defaultBranch: string
+}): string {
+  if (tagExists) return defaultBranch
+  if (isNewest) {
+    throw new Error(
+      `Refusing to create release ${tagName}: its git tag is missing. The latest release must already be tagged — creating it now would tag the wrong commit (the default branch's HEAD).`,
+    )
+  }
+  if (!deducedCommit) {
+    throw new Error(
+      `Refusing to create release ${tagName}: its git tag is missing and its release commit couldn't be deduced from the changelog history.`,
+    )
+  }
+  return deducedCommit
+}
+
 function getReleasePlan({
   defaultBranch,
   githubReleases,
   changelogSections,
+  packageName,
+  multiplePackages,
 }: {
   defaultBranch: string
   githubReleases: Release[]
   changelogSections: ChangelogSections
+  packageName: string
+  multiplePackages: boolean
 }) {
-  // changelogSections is newest-first; .reverse() creates the missing releases oldest-first. This
-  // matters because create-release defaults to make_latest=true: whichever release is created last
-  // becomes the repo's "Latest", so the newest must go last. (The releases list itself is ordered by
-  // GitHub on tag semver, not creation order, so backfilled older releases still slot in correctly:
+  // Reconcile from the changelog (the source of truth), not from the GitHub Releases: iterating the
+  // releases for updates would try to rewrite any release whose tag isn't in the changelog (e.g. a
+  // release of another package, or a manually-created one) with an `undefined` body. Driving both
+  // create and update off the changelog can only ever touch the versions the changelog declares.
+  const releasesByTag = new Map(githubReleases.map((release) => [release.tag_name, release]))
+  const expectedTags = new Set<string>()
+  const releasesToCreate: ReleasesToCreate[] = []
+  const releasesToUpdate: ReleasesToUpdate[] = []
+
+  // changelogSections is newest-first; iterate oldest-first so the newest release is created last.
+  // This matters because create-release defaults to make_latest=true: whichever release is created
+  // last becomes the repo's "Latest". (The releases list itself is ordered by GitHub on tag semver,
+  // not creation order, so backfilled older releases still slot in correctly:
   // https://github.com/vikejs/vike/pull/3157#issuecomment-4406846257)
-  const releasesToCreate: ReleasesToCreate[] = Object.keys(changelogSections)
-    .filter((tagName) => !githubReleases.some((release) => release.tag_name === tagName))
-    .reverse()
-    .map((tagName) => ({
-      tag_name: tagName,
-      target_commitish: defaultBranch,
-      name: tagName,
-      body: changelogSections[tagName],
-    }))
+  for (const versionTag of Object.keys(changelogSections).reverse()) {
+    const body = changelogSections[versionTag]
+    const tagName = getTagName(versionTag, packageName, multiplePackages)
+    expectedTags.add(tagName)
+    const existingRelease = releasesByTag.get(tagName)
+    if (!existingRelease) {
+      releasesToCreate.push({ tag_name: tagName, target_commitish: defaultBranch, name: tagName, body })
+    } else if (existingRelease.body?.trim() !== body) {
+      releasesToUpdate.push({ release_id: existingRelease.id, tag_name: tagName, body })
+    }
+  }
 
-  const releasesToUpdate: ReleasesToUpdate[] = githubReleases
-    .map((release) => {
-      const body = changelogSections[release.tag_name]
-      if (body === release.body?.trim()) return null
-      return { release_id: release.id, tag_name: release.tag_name, body }
-    })
-    .filter((release) => release !== null)
+  // Delete this package's releases whose version is no longer in the changelog (the source of truth).
+  const releasesToDelete: ReleasesToDelete[] = githubReleases
+    .filter(
+      (release) => isOwnedTag(release.tag_name, packageName, multiplePackages) && !expectedTags.has(release.tag_name),
+    )
+    .map((release) => ({ release_id: release.id, tag_name: release.tag_name }))
 
-  return { releasesToCreate, releasesToUpdate }
+  return { releasesToCreate, releasesToUpdate, releasesToDelete }
 }

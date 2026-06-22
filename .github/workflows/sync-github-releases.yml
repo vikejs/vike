@@ -11,6 +11,12 @@ on:
 permissions:
   contents: read
 
+# Serialize runs: two quick CHANGELOG.md pushes would otherwise race to create the same release
+# (the loser fails with 422 already_exists). Don't cancel an in-progress run — let a backfill finish.
+concurrency:
+  group: sync-github-releases
+  cancel-in-progress: false
+
 jobs:
   sync_github_releases:
     runs-on: ubuntu-latest
