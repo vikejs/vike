@@ -5,16 +5,10 @@ main()
 
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
+import { applyReleasePlan } from './apply-release-plan.ts'
+import { getReleasePlan } from './release-plan.ts'
 import { parseChangelog, withChangelogFooter } from './utils/changelog.ts'
-import {
-  findReleaseCommit,
-  getPushedFiles,
-  getRepoRoot,
-  getTrackedChangelogFiles,
-  gitTagExists,
-  toPackageDirs,
-} from './utils/git.ts'
-import { getReleasePlan, resolveTargetCommitish, type ReleaseToCreate } from './release-plan.ts'
+import { getPushedFiles, getRepoRoot, getTrackedChangelogFiles, toPackageDirs } from './utils/git.ts'
 import {
   createReleasesClient,
   getDefaultBranch,
@@ -91,51 +85,6 @@ async function syncPackage({
     hasMultiplePackages,
   })
   await applyReleasePlan(plan, client, defaultBranch, dryRun)
-}
-
-async function applyReleasePlan(
-  plan: ReturnType<typeof getReleasePlan>,
-  client: ReleasesClient,
-  defaultBranch: string,
-  dryRun: boolean,
-): Promise<void> {
-  for (const release of plan.releasesToCreate) {
-    await client.create({
-      tag_name: release.tag_name,
-      name: release.tag_name,
-      body: release.body,
-      target_commitish: resolveCreateTarget(release, defaultBranch),
-      // Only the newest version may be the repo's "Latest". create-release otherwise defaults
-      // make_latest=true, so backfilling an older release while a newer one already exists would
-      // wrongly mark the old one Latest.
-      make_latest: release.isLatest ? 'true' : 'false',
-    })
-    if (!dryRun) console.log(`Created release ${release.tag_name}`)
-  }
-
-  for (const release of plan.releasesToUpdate) {
-    await client.update(release.release_id, release.body)
-    if (!dryRun) console.log(`Updated release ${release.tag_name}`)
-  }
-
-  for (const release of plan.releasesToDelete) {
-    await client.delete(release.release_id)
-    if (!dryRun) console.log(`Deleted release ${release.tag_name}`)
-  }
-}
-
-// The commit a to-be-created release is tagged at. A release needs a tag to point at; when it's
-// missing, GitHub would create it at the default branch's HEAD — the wrong commit for a backfilled
-// (older) release. So deduce the real commit from the changelog history and tag that instead.
-// resolveTargetCommitish() turns these git facts into the commitish, or refuses rather than tag the
-// wrong commit.
-function resolveCreateTarget(release: ReleaseToCreate, defaultBranch: string): string {
-  const { tag_name: releaseTag, version, isLatest } = release
-  const tagExists = gitTagExists(releaseTag)
-  const deducedCommit = !tagExists && !isLatest ? findReleaseCommit(version) : null
-  if (deducedCommit)
-    console.warn(`Tag ${releaseTag} is missing — creating its release at deduced commit ${deducedCommit}`)
-  return resolveTargetCommitish({ releaseTag, tagExists, isLatest, deducedCommit, defaultBranch })
 }
 
 // Which package directories to sync:
