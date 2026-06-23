@@ -24,8 +24,9 @@ type NewRelease = {
   make_latest: 'true' | 'false'
 }
 
-// A client for one repository's GitHub Releases. It binds the owner/repo/token (and --dry-run) once,
-// so callers just say what to do — not where, nor as whom.
+// A client for one repository's GitHub Releases. It binds the owner/repo/token once, so callers just
+// say what to do — not where, nor as whom. It's a plain transport: skipping writes under --dry-run is
+// the apply step's job (see applyReleasePlan()).
 type ReleasesClient = {
   list(): Promise<Release[]>
   create(release: NewRelease): Promise<void>
@@ -39,17 +40,7 @@ const API_URL = process.env.GITHUB_API_URL ?? 'https://api.github.com'
 // https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api
 const RATE_LIMIT_DELAY_MS = 500
 
-function createReleasesClient({
-  owner,
-  repo,
-  token,
-  dryRun = false,
-}: {
-  owner: string
-  repo: string
-  token: string
-  dryRun?: boolean
-}): ReleasesClient {
+function createReleasesClient({ owner, repo, token }: { owner: string; repo: string; token: string }): ReleasesClient {
   const releasesPath = `/repos/${owner}/${repo}/releases`
   // Writes performed so far, to delay only *between* them (not before the first, nor after reads).
   let writeCount = 0
@@ -58,12 +49,6 @@ function createReleasesClient({
     pathname: string,
     { body, method = 'GET' }: { body?: unknown; method?: 'GET' | 'PATCH' | 'POST' | 'DELETE' } = {},
   ): Promise<T> {
-    if (dryRun && method !== 'GET') {
-      console.log(`[dry-run] ${method} ${pathname}`)
-      if (body !== undefined) console.log(JSON.stringify(body, null, 2))
-      return undefined as T
-    }
-
     // Throttle between writes only: reads aren't the rate-limit concern, and a lone write — the common
     // case of a single new release — shouldn't wait at all. So a backfill of N writes pays N-1 delays,
     // while one write pays none.
@@ -124,7 +109,7 @@ function createReleasesClient({
 function getGithubToken(): string {
   const token = process.env.GITHUB_TOKEN
   if (!token) {
-    throw new Error('GITHUB_TOKEN must be set or use --dry-run — see README.md')
+    throw new Error('GITHUB_TOKEN must be set — see README.md')
   }
   return token
 }
