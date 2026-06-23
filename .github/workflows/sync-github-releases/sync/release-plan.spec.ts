@@ -19,7 +19,6 @@ describe('getReleasePlan()', () => {
     })
 
     expect(plan).toEqual({
-      // Oldest-first, and only the newest version is flagged isLatest.
       releasesToCreate: [
         { tag_name: 'v0.8.0', body: 'Missing past notes', version: '0.8.0', isLatest: false },
         { tag_name: 'v1.0.1', body: 'New release notes', version: '1.0.1', isLatest: true },
@@ -65,7 +64,6 @@ describe('getReleasePlan()', () => {
       releaseNotesByVersion: { '1.0.0': 'Notes' },
       githubReleases: [
         { id: 1, tag_name: 'v1.0.0', body: 'Notes' },
-        // Owned tag, no longer in the changelog → delete.
         { id: 2, tag_name: 'v0.9.0', body: 'Removed from changelog' },
       ],
     })
