@@ -7,6 +7,7 @@ export { gitLines }
 export { getRepoRoot }
 export { gitTagExists }
 export { findReleaseCommit }
+export { getReleaseDate }
 export { getTrackedChangelogFiles }
 export { toPackageDirs }
 
@@ -57,4 +58,15 @@ function gitTagExists(releaseTag: string): boolean {
 // link opener `[<version>](`; the oldest commit that changed its count is the one that added it.
 function findReleaseCommit(version: string): string | null {
   return gitLines(['log', '--reverse', '--format=%H', `-S[${version}](`, '--', CHANGELOG_PATHSPEC])[0] ?? null
+}
+
+// The date a version was released, as `YYYY-MM-DD`: the committer date of the commit its release points
+// to — the git tag's commit if the tag exists, otherwise the commit deduced from the changelog history
+// (the same commit apply-release-plan.ts would tag). null when neither resolves. The commit date is
+// what GitHub derives the release's own date (`created_at`) from, and what CHANGELOG.md headings show.
+function getReleaseDate(releaseTag: string, version: string): string | null {
+  const commitish = gitTagExists(releaseTag) ? `refs/tags/${releaseTag}` : findReleaseCommit(version)
+  if (!commitish) return null
+  // %cs is the committer date in short form (YYYY-MM-DD).
+  return git(['log', '-1', '--format=%cs', commitish]).trim()
 }

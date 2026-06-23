@@ -6,8 +6,9 @@ import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { applyReleasePlan } from './apply-release-plan.ts'
 import { getReleasePlan } from './release-plan.ts'
-import { getTagScheme } from './tag-scheme.ts'
-import { getReleaseNotesByVersion, type ReleaseNotesByVersion } from '../utils/changelog.ts'
+import { getTagScheme, type TagScheme } from './tag-scheme.ts'
+import { getReleaseNotesByVersion, withReleaseDate, type ReleaseNotesByVersion } from '../utils/changelog.ts'
+import { getReleaseDate } from '../utils/git.ts'
 import type { ReleasesClient } from '../utils/github.ts'
 
 // The loop-invariant inputs of a sync run, built once and shared across packages. owner/repo aren't
@@ -48,11 +49,23 @@ function createSyncContext({
 // them against the package's existing GitHub Releases into a plan, then apply that plan.
 async function syncPackage(packageDir: string, ctx: SyncContext): Promise<void> {
   const packageName = await readPackageName(packageDir)
-  const releaseNotesByVersion = await readReleaseNotes(packageDir, ctx.changelogUrlBase)
-  const githubReleases = await ctx.client.list()
   const tagScheme = getTagScheme(packageName, ctx.hasMultiplePackages)
+  const releaseNotesByVersion = stampReleaseDates(await readReleaseNotes(packageDir, ctx.changelogUrlBase), tagScheme)
+  const githubReleases = await ctx.client.list()
   const plan = getReleasePlan({ githubReleases, releaseNotesByVersion, tagScheme })
   await applyReleasePlan({ plan, client: ctx.client, defaultBranch: ctx.defaultBranch, dryRun: ctx.dryRun })
+}
+
+// Stamp each release's notes with the date it was released, derived from its git tag (getReleaseDate()).
+// Done here, not in readReleaseNotes(), so that reader stays a single-purpose disk read and the git
+// lookups need the tag scheme that turns a version into its tag.
+function stampReleaseDates(releaseNotesByVersion: ReleaseNotesByVersion, tagScheme: TagScheme): ReleaseNotesByVersion {
+  return Object.fromEntries(
+    Object.entries(releaseNotesByVersion).map(([version, body]) => [
+      version,
+      withReleaseDate(body, getReleaseDate(tagScheme.build(version), version)),
+    ]),
+  )
 }
 
 async function readPackageName(packageDir: string): Promise<string> {

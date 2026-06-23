@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { parseChangelog } from './changelog.ts'
+import { parseChangelog, withReleaseDate } from './changelog.ts'
 
 function readFixture(name: string): string {
   return readFileSync(path.join(__dirname, 'changelog-spec-fixtures', name), 'utf8')
@@ -70,5 +70,17 @@ describe('parseChangelog()', () => {
     expect(Object.keys(changelogSections)).toEqual(['0.1.6', '0.1.5', '0.1.4', '0.1.3', '0.1.2', '0.1.1'])
     expect(changelogSections['0.1.6']).toContain("fix 'vike-react' type")
     expect(changelogSections['0.1.1']).toContain('fix ESM import paths')
+  })
+})
+
+describe('withReleaseDate()', () => {
+  it('states the release date at the top of the notes', () => {
+    expect(withReleaseDate('### Bug Fixes\n\n* Fixed it.', '2026-05-06')).toBe(
+      '_Released on 2026-05-06._\n\n### Bug Fixes\n\n* Fixed it.',
+    )
+  })
+
+  it('leaves the notes unchanged when the date is unknown (no tag, no deducible commit)', () => {
+    expect(withReleaseDate('### Bug Fixes\n\n* Fixed it.', null)).toBe('### Bug Fixes\n\n* Fixed it.')
   })
 })
