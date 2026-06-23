@@ -56,37 +56,41 @@ async function applyWrite(
   console.log(`${pastTense[action]} release ${releaseTag}`)
 }
 
-// The commit a to-be-created release is tagged at. A release needs a tag to point at; when it's
-// missing, GitHub would create it at the default branch's HEAD — the wrong commit for a backfilled
-// (older) release. So deduce the real commit from the changelog history and tag that instead.
-// resolveTargetCommitish() turns these git facts into the commitish, or refuses rather than tag the
-// wrong commit.
+// The commit a to-be-created release is tagged at. Gathers the git facts and hands them to
+// resolveTargetCommitish(), which owns the decision; deducing the commit (a full-history changelog
+// search) is passed as a thunk so it runs only for the one case that needs it.
 function resolveCreateTarget(release: ReleaseToCreate, defaultBranch: string): string {
   const { tag_name: releaseTag, version, isLatest } = release
-  const tagExists = gitTagExists(releaseTag)
-  const deducedCommit = !tagExists && !isLatest ? findReleaseCommit(version) : null
-  if (deducedCommit)
-    console.warn(`Tag ${releaseTag} is missing — creating its release at deduced commit ${deducedCommit}`)
-  return resolveTargetCommitish({ releaseTag, tagExists, isLatest, deducedCommit, defaultBranch })
+  return resolveTargetCommitish({
+    releaseTag,
+    isLatest,
+    tagExists: gitTagExists(releaseTag),
+    deduceCommit: () => {
+      const commit = findReleaseCommit(version)
+      if (commit) console.warn(`Tag ${releaseTag} is missing — creating its release at deduced commit ${commit}`)
+      return commit
+    },
+    defaultBranch,
+  })
 }
 
 // The commit a to-be-created release should be tagged at (its `target_commitish`).
 //  - Tag already exists: GitHub uses it and ignores target_commitish — pass the branch as a no-op.
 //  - Tag missing on the latest release: hard fail. The just-released version must already be tagged;
 //    tagging it now would point at the default branch's HEAD (the wrong commit).
-//  - Tag missing on an older (backfilled) release: tag the commit deduced from the changelog history,
-//    or hard fail if it couldn't be deduced — never silently tag the wrong commit.
+//  - Tag missing on an older (backfilled) release: tag the commit deduced from the changelog history
+//    (deduceCommit()), or hard fail if it couldn't be deduced — never silently tag the wrong commit.
 function resolveTargetCommitish({
   releaseTag,
   tagExists,
   isLatest,
-  deducedCommit,
+  deduceCommit,
   defaultBranch,
 }: {
   releaseTag: string
   tagExists: boolean
   isLatest: boolean
-  deducedCommit: string | null
+  deduceCommit: () => string | null
   defaultBranch: string
 }): string {
   if (tagExists) return defaultBranch
@@ -95,6 +99,7 @@ function resolveTargetCommitish({
       `Refusing to create release ${releaseTag}: its git tag is missing. The latest release must already be tagged — creating it now would tag the wrong commit (the default branch's HEAD).`,
     )
   }
+  const deducedCommit = deduceCommit()
   if (!deducedCommit) {
     throw new Error(
       `Refusing to create release ${releaseTag}: its git tag is missing and its release commit couldn't be deduced from the changelog history.`,

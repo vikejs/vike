@@ -7,27 +7,37 @@ describe('resolveTargetCommitish()', () => {
   const base = { releaseTag: 'v0.4.0', defaultBranch: 'main' }
 
   it('uses the default branch when the tag already exists (GitHub ignores it)', () => {
-    expect(resolveTargetCommitish({ ...base, tagExists: true, isLatest: false, deducedCommit: null })).toBe('main')
+    expect(resolveTargetCommitish({ ...base, tagExists: true, isLatest: false, deduceCommit: () => null })).toBe('main')
     // Even for the latest release, an existing tag is fine.
-    expect(resolveTargetCommitish({ ...base, tagExists: true, isLatest: true, deducedCommit: null })).toBe('main')
+    expect(resolveTargetCommitish({ ...base, tagExists: true, isLatest: true, deduceCommit: () => null })).toBe('main')
   })
 
   it('hard-fails when the latest release has no tag', () => {
-    expect(() => resolveTargetCommitish({ ...base, tagExists: false, isLatest: true, deducedCommit: null })).toThrow(
-      /latest release must already be tagged/,
-    )
+    expect(() =>
+      resolveTargetCommitish({ ...base, tagExists: false, isLatest: true, deduceCommit: () => null }),
+    ).toThrow(/latest release must already be tagged/)
   })
 
   it('tags an older release at the deduced commit', () => {
-    expect(resolveTargetCommitish({ ...base, tagExists: false, isLatest: false, deducedCommit: 'abc123' })).toBe(
+    expect(resolveTargetCommitish({ ...base, tagExists: false, isLatest: false, deduceCommit: () => 'abc123' })).toBe(
       'abc123',
     )
   })
 
   it('hard-fails when an older release has no tag and no deducible commit', () => {
-    expect(() => resolveTargetCommitish({ ...base, tagExists: false, isLatest: false, deducedCommit: null })).toThrow(
-      /couldn't be deduced/,
-    )
+    expect(() =>
+      resolveTargetCommitish({ ...base, tagExists: false, isLatest: false, deduceCommit: () => null }),
+    ).toThrow(/couldn't be deduced/)
+  })
+
+  it('only deduces the commit for a backfilled older release (never when the tag exists or it is latest)', () => {
+    const deduceCommit = vi.fn(() => 'abc123')
+    resolveTargetCommitish({ ...base, tagExists: true, isLatest: false, deduceCommit })
+    expect(() => resolveTargetCommitish({ ...base, tagExists: false, isLatest: true, deduceCommit })).toThrow()
+    expect(deduceCommit).not.toHaveBeenCalled()
+
+    resolveTargetCommitish({ ...base, tagExists: false, isLatest: false, deduceCommit })
+    expect(deduceCommit).toHaveBeenCalledOnce()
   })
 })
 
