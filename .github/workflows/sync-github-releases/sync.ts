@@ -38,48 +38,49 @@ async function main(): Promise<void> {
 
   const { owner, repo } = getRepository()
   const defaultBranch = getDefaultBranch()
-  const client = createReleasesClient({ owner, repo, token: getGithubToken() })
+  const context: SyncContext = {
+    client: createReleasesClient({ owner, repo, token: getGithubToken() }),
+    defaultBranch,
+    hasMultiplePackages,
+    dryRun,
+    // The base of the GitHub web (blob) URL each release's CHANGELOG.md footer links back to —
+    // github.com is the web host, distinct from the API the client talks to.
+    changelogUrlBase: `https://github.com/${owner}/${repo}/blob/${defaultBranch}`,
+  }
 
   for (const packageDir of packageDirs) {
     console.log(`Syncing GitHub releases for package directory: ${packageDir}`)
-    await syncPackage({ packageDir, client, owner, repo, defaultBranch, hasMultiplePackages, dryRun })
+    await syncPackage(packageDir, context)
   }
 }
 
-async function syncPackage({
-  packageDir,
-  client,
-  owner,
-  repo,
-  defaultBranch,
-  hasMultiplePackages,
-  dryRun,
-}: {
-  packageDir: string
+// The loop-invariant inputs of a sync run, built once and shared across packages. owner/repo aren't
+// here: the client already binds them, and the changelog URL base bakes them in.
+type SyncContext = {
   client: ReleasesClient
-  owner: string
-  repo: string
   defaultBranch: string
   hasMultiplePackages: boolean
   dryRun: boolean
-}): Promise<void> {
+  changelogUrlBase: string
+}
+
+async function syncPackage(packageDir: string, ctx: SyncContext): Promise<void> {
   const packageDirPath = path.join(process.cwd(), packageDir)
   const packageJson = JSON.parse(await readFile(path.join(packageDirPath, 'package.json'), 'utf8')) as { name: string }
   const changelog = await readFile(path.join(packageDirPath, 'CHANGELOG.md'), 'utf8')
 
   // path.posix.join keeps the URL clean when packageDir is '.' (a repo-root CHANGELOG.md): no `/./`.
-  const changelogRepoPath = path.posix.join(packageDir, 'CHANGELOG.md')
-  const changelogUrl = `https://github.com/${owner}/${repo}/blob/${defaultBranch}/${changelogRepoPath}`
+  const changelogUrl = `${ctx.changelogUrlBase}/${path.posix.join(packageDir, 'CHANGELOG.md')}`
   const releaseNotesByVersion = getReleaseNotesByVersion(changelog, changelogUrl)
 
-  const githubReleases = await client.list()
+  const githubReleases = await ctx.client.list()
   const plan = getReleasePlan({
     githubReleases,
     releaseNotesByVersion,
     packageName: packageJson.name,
-    hasMultiplePackages,
+    hasMultiplePackages: ctx.hasMultiplePackages,
   })
-  await applyReleasePlan(plan, client, defaultBranch, dryRun)
+  await applyReleasePlan(plan, ctx.client, ctx.defaultBranch, ctx.dryRun)
 }
 
 // Which package directories to sync:
