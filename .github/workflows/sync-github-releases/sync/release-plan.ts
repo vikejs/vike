@@ -1,10 +1,10 @@
 export { getReleasePlan }
-export { getTagScheme }
 export type { ReleasePlan }
 export type { ReleaseToCreate }
 
 import type { ReleaseNotesByVersion } from '../utils/changelog.ts'
 import type { Release } from '../utils/github.ts'
+import type { TagScheme } from './tag-scheme.ts'
 
 type ReleasePlan = {
   releasesToCreate: ReleaseToCreate[]
@@ -29,45 +29,15 @@ type ReleaseToDelete = {
   tag_name: string
 }
 
-// A package's release-tag scheme, defined in one place so building a tag and recognizing one can't
-// drift apart. `build` turns a version into its tag; `owns` reports whether a release tag is this
-// package's — i.e. a candidate for deletion once its changelog entry is gone, never another package's
-// release nor a tag we don't create (e.g. `nightly`).
-//
-// A single package keeps the historical bare `vX.Y.Z` tag. Several packages share the repo's tag
-// namespace, so their tags are qualified with the package name (e.g. `create-vike-core@0.0.391`) to
-// avoid collisions.
-type TagScheme = {
-  build(version: string): string
-  owns(releaseTag: string): boolean
-}
-function getTagScheme(packageName: string, hasMultiplePackages: boolean): TagScheme {
-  if (hasMultiplePackages) {
-    const prefix = `${packageName}@`
-    return {
-      build: (version) => `${prefix}${version}`,
-      owns: (releaseTag) => releaseTag.startsWith(prefix),
-    }
-  }
-  return {
-    build: (version) => `v${version}`,
-    owns: (releaseTag) => /^v\d+\.\d+\.\d+/.test(releaseTag),
-  }
-}
-
 function getReleasePlan({
   githubReleases,
   releaseNotesByVersion,
-  packageName,
-  hasMultiplePackages,
+  tagScheme,
 }: {
   githubReleases: Release[]
   releaseNotesByVersion: ReleaseNotesByVersion
-  packageName: string
-  hasMultiplePackages: boolean
+  tagScheme: TagScheme
 }): ReleasePlan {
-  const tagScheme = getTagScheme(packageName, hasMultiplePackages)
-
   // Reconcile from the changelog (the source of truth), not from the GitHub Releases: iterating the
   // releases for updates would try to rewrite any release whose tag isn't in the changelog (e.g. a
   // release of another package, or a manually-created one) with an `undefined` body. Driving both

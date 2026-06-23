@@ -7,6 +7,7 @@ import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { applyReleasePlan } from './sync/apply-release-plan.ts'
 import { getReleasePlan } from './sync/release-plan.ts'
+import { getTagScheme } from './sync/tag-scheme.ts'
 import { getReleaseNotesByVersion, type ReleaseNotesByVersion } from './utils/changelog.ts'
 import { getPushedFiles, getRepoRoot, getTrackedChangelogFiles, toPackageDirs } from './utils/git.ts'
 import {
@@ -69,14 +70,11 @@ type SyncContext = {
 async function syncPackage(packageDir: string, ctx: SyncContext): Promise<void> {
   // The releases the package's CHANGELOG.md (the source of truth) says should exist …
   const { packageName, releaseNotesByVersion } = await readPackageReleaseNotes(packageDir, ctx.changelogUrlBase)
-  // … reconciled against the releases currently on GitHub.
+  // … reconciled against the releases currently on GitHub, using this package's tag scheme to match
+  // and name release tags.
   const githubReleases = await ctx.client.list()
-  const plan = getReleasePlan({
-    githubReleases,
-    releaseNotesByVersion,
-    packageName,
-    hasMultiplePackages: ctx.hasMultiplePackages,
-  })
+  const tagScheme = getTagScheme(packageName, ctx.hasMultiplePackages)
+  const plan = getReleasePlan({ githubReleases, releaseNotesByVersion, tagScheme })
   await applyReleasePlan(plan, ctx.client, ctx.defaultBranch, ctx.dryRun)
 }
 
