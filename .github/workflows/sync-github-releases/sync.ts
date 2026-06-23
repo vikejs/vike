@@ -75,7 +75,7 @@ async function syncPackage(packageDir: string, ctx: SyncContext): Promise<void> 
   const githubReleases = await ctx.client.list()
   const tagScheme = getTagScheme(packageName, ctx.hasMultiplePackages)
   const plan = getReleasePlan({ githubReleases, releaseNotesByVersion, tagScheme })
-  await applyReleasePlan(plan, ctx.client, ctx.defaultBranch, ctx.dryRun)
+  await applyReleasePlan({ plan, client: ctx.client, defaultBranch: ctx.defaultBranch, dryRun: ctx.dryRun })
 }
 
 // Read a package's identity (its package.json `name`) and the release notes derived from its
