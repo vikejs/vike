@@ -1,5 +1,5 @@
 export { parseChangelog }
-export { withChangelogFooter }
+export { getReleaseNotesByVersion }
 
 export type ReleaseNotesByVersion = Record<string, string>
 
@@ -22,6 +22,17 @@ function parseChangelog(changelog: string): ReleaseNotesByVersion {
   })
 
   return releaseNotesByVersion
+}
+
+// The release notes we publish for each changelog version: the parsed entry plus a footer linking back
+// to its CHANGELOG.md.
+function getReleaseNotesByVersion(changelog: string, changelogUrl: string): ReleaseNotesByVersion {
+  return Object.fromEntries(
+    Object.entries(parseChangelog(changelog)).map(([version, notes]) => [
+      version,
+      withChangelogFooter(notes, changelogUrl),
+    ]),
+  )
 }
 
 // These releases are generated, so point each one back to the CHANGELOG.md it mirrors (the source of

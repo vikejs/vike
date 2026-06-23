@@ -7,7 +7,7 @@ import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { applyReleasePlan } from './sync/apply-release-plan.ts'
 import { getReleasePlan } from './sync/release-plan.ts'
-import { parseChangelog, withChangelogFooter } from './utils/changelog.ts'
+import { getReleaseNotesByVersion } from './utils/changelog.ts'
 import { getPushedFiles, getRepoRoot, getTrackedChangelogFiles, toPackageDirs } from './utils/git.ts'
 import {
   createReleasesClient,
@@ -70,12 +70,7 @@ async function syncPackage({
   // path.posix.join keeps the URL clean when packageDir is '.' (a repo-root CHANGELOG.md): no `/./`.
   const changelogRepoPath = path.posix.join(packageDir, 'CHANGELOG.md')
   const changelogUrl = `https://github.com/${owner}/${repo}/blob/${defaultBranch}/${changelogRepoPath}`
-  const releaseNotesByVersion = Object.fromEntries(
-    Object.entries(parseChangelog(changelog)).map(([version, notes]) => [
-      version,
-      withChangelogFooter(notes, changelogUrl),
-    ]),
-  )
+  const releaseNotesByVersion = getReleaseNotesByVersion(changelog, changelogUrl)
 
   const githubReleases = await client.list()
   const plan = getReleasePlan({
