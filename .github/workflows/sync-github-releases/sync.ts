@@ -6,7 +6,7 @@ main()
 import { readFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import path from 'node:path'
-import { parseChangelog } from './utils/changelog.ts'
+import { parseChangelog, withChangelogFooter } from './utils/changelog.ts'
 import {
   findReleaseCommit,
   getPushedFiles,
@@ -15,15 +15,13 @@ import {
   gitTagExists,
   toPackageDirs,
 } from './utils/git.ts'
-import { resolveTargetCommitish, getReleasePlan, getReleaseTag, withChangelogFooter } from './release-plan.ts'
+import { getReleasePlan, resolveTargetCommitish, type ReleaseToCreate } from './release-plan.ts'
 import {
-  createRelease,
-  deleteRelease,
-  fetchGithubReleases,
+  createReleasesClient,
   getDefaultBranch,
   getGithubToken,
   getRepository,
-  updateReleaseBody,
+  type ReleasesClient,
 } from './utils/github.ts'
 
 async function main(): Promise<void> {
@@ -44,7 +42,7 @@ async function main(): Promise<void> {
 
   const { owner, repo } = getRepository()
   const defaultBranch = getDefaultBranch()
-  const token = getGithubToken()
+  const client = createReleasesClient({ owner, repo, token: getGithubToken(), dryRun })
 
   // When several packages publish to the same repo they share its tag namespace, so releases are
   // qualified with the package name (see getReleaseTag()). Determined from every tracked CHANGELOG.md,
@@ -53,105 +51,94 @@ async function main(): Promise<void> {
 
   for (const packageDir of packageDirs) {
     console.log(`Syncing GitHub releases for package directory: ${packageDir}`)
-    await syncPackage({ packageDir, owner, repo, defaultBranch, token, dryRun, hasMultiplePackages })
+    await syncPackage({ packageDir, client, owner, repo, defaultBranch, hasMultiplePackages, dryRun })
   }
 }
 
 async function syncPackage({
   packageDir,
+  client,
   owner,
   repo,
   defaultBranch,
-  token,
-  dryRun,
   hasMultiplePackages,
+  dryRun,
 }: {
   packageDir: string
+  client: ReleasesClient
   owner: string
   repo: string
   defaultBranch: string
-  token: string
-  dryRun: boolean
   hasMultiplePackages: boolean
+  dryRun: boolean
 }): Promise<void> {
-  const require = createRequire(import.meta.url)
-
   const packageDirPath = path.join(process.cwd(), packageDir)
-  const packageJsonPath = path.join(packageDirPath, 'package.json')
-  const changelogPath = path.join(packageDirPath, 'CHANGELOG.md')
+  const require = createRequire(import.meta.url)
+  const packageJson = require(path.join(packageDirPath, 'package.json')) as { name: string }
+  const changelog = await readFile(path.join(packageDirPath, 'CHANGELOG.md'), 'utf8')
 
-  const packageJson = require(packageJsonPath) as { name: string }
-
-  const changelog = await readFile(changelogPath, 'utf8')
-  const releaseNotesByVersion = parseChangelog(changelog)
-
-  // These releases are generated, so point each one back to the changelog it mirrors (the source of
-  // truth) to discourage editing the GitHub Release directly — a sync would overwrite it. path.posix.join
-  // keeps the URL clean when packageDir is '.' (a repo-root CHANGELOG.md): no `/./` segment.
+  // path.posix.join keeps the URL clean when packageDir is '.' (a repo-root CHANGELOG.md): no `/./`.
   const changelogRepoPath = path.posix.join(packageDir, 'CHANGELOG.md')
   const changelogUrl = `https://github.com/${owner}/${repo}/blob/${defaultBranch}/${changelogRepoPath}`
-  for (const versionTag of Object.keys(releaseNotesByVersion)) {
-    releaseNotesByVersion[versionTag] = withChangelogFooter(releaseNotesByVersion[versionTag], changelogUrl)
-  }
+  const releaseNotesByVersion = Object.fromEntries(
+    Object.entries(parseChangelog(changelog)).map(([version, notes]) => [
+      version,
+      withChangelogFooter(notes, changelogUrl),
+    ]),
+  )
 
-  const githubReleases = await fetchGithubReleases(owner, repo, token)
-
-  const { releasesToCreate, releasesToUpdate, releasesToDelete } = getReleasePlan({
+  const githubReleases = await client.list()
+  const plan = getReleasePlan({
     githubReleases,
     releaseNotesByVersion,
     packageName: packageJson.name,
     hasMultiplePackages,
   })
+  await applyReleasePlan(plan, client, defaultBranch, dryRun)
+}
 
-  // releaseNotesByVersion is keyed by `vX.Y.Z`; map each release tag back to its raw changelog version
-  // (for the changelog-history lookup) and remember the newest tag (the just-released version).
-  const versionTags = Object.keys(releaseNotesByVersion)
-  const releaseTagOf = (versionTag: string) => getReleaseTag(versionTag, packageJson.name, hasMultiplePackages)
-  const versionByTag = new Map(
-    versionTags.map((versionTag) => [releaseTagOf(versionTag), versionTag.replace(/^v/, '')]),
-  )
-  const newestReleaseTag = versionTags.length > 0 ? releaseTagOf(versionTags[0]) : ''
-
-  for (const releaseToCreate of releasesToCreate) {
-    const releaseTag = releaseToCreate.tag_name
-    // A release needs a tag to point at. When the tag is missing, GitHub would otherwise create it at
-    // the default branch's HEAD — the wrong commit for a backfilled release. Deduce the real commit
-    // from the changelog's history and tag that instead (or refuse, rather than tag the wrong commit).
-    const tagExists = gitTagExists(releaseTag)
-    const isNewest = releaseTag === newestReleaseTag
-    const deducedCommit = !tagExists && !isNewest ? findReleaseCommit(versionByTag.get(releaseTag)!) : null
-    const targetCommitish = resolveTargetCommitish({ releaseTag, tagExists, isNewest, deducedCommit, defaultBranch })
-    if (!tagExists && !isNewest)
-      console.warn(`Tag ${releaseTag} is missing — creating its release at deduced commit ${deducedCommit}`)
-
-    await createRelease(
-      owner,
-      repo,
-      token,
-      {
-        tag_name: releaseTag,
-        target_commitish: targetCommitish,
-        name: releaseToCreate.name,
-        body: releaseToCreate.body,
-        // Only the newest version may be the repo's "Latest". create-release otherwise defaults
-        // make_latest=true, so backfilling an older release while a newer one already exists would
-        // wrongly mark the old one Latest.
-        make_latest: isNewest ? 'true' : 'false',
-      },
-      dryRun,
-    )
-    if (!dryRun) console.log(`Created release ${releaseTag}`)
+async function applyReleasePlan(
+  plan: ReturnType<typeof getReleasePlan>,
+  client: ReleasesClient,
+  defaultBranch: string,
+  dryRun: boolean,
+): Promise<void> {
+  for (const release of plan.releasesToCreate) {
+    await client.create({
+      tag_name: release.tag_name,
+      name: release.tag_name,
+      body: release.body,
+      target_commitish: resolveCreateTarget(release, defaultBranch),
+      // Only the newest version may be the repo's "Latest". create-release otherwise defaults
+      // make_latest=true, so backfilling an older release while a newer one already exists would
+      // wrongly mark the old one Latest.
+      make_latest: release.isLatest ? 'true' : 'false',
+    })
+    if (!dryRun) console.log(`Created release ${release.tag_name}`)
   }
 
-  for (const releaseToUpdate of releasesToUpdate) {
-    await updateReleaseBody(owner, repo, token, releaseToUpdate.release_id, releaseToUpdate.body, dryRun)
-    if (!dryRun) console.log(`Updated release ${releaseToUpdate.tag_name}`)
+  for (const release of plan.releasesToUpdate) {
+    await client.update(release.release_id, release.body)
+    if (!dryRun) console.log(`Updated release ${release.tag_name}`)
   }
 
-  for (const releaseToDelete of releasesToDelete) {
-    await deleteRelease(owner, repo, token, releaseToDelete.release_id, dryRun)
-    if (!dryRun) console.log(`Deleted release ${releaseToDelete.tag_name}`)
+  for (const release of plan.releasesToDelete) {
+    await client.delete(release.release_id)
+    if (!dryRun) console.log(`Deleted release ${release.tag_name}`)
   }
+}
+
+// The commit a to-be-created release is tagged at. A release needs a tag to point at; when it's
+// missing, GitHub would create it at the default branch's HEAD — the wrong commit for a backfilled
+// (older) release. So deduce the real commit from the changelog history and tag that instead.
+// resolveTargetCommitish() turns these git facts into the commitish, or refuses rather than mis-tag.
+function resolveCreateTarget(release: ReleaseToCreate, defaultBranch: string): string {
+  const { tag_name: releaseTag, version, isLatest } = release
+  const tagExists = gitTagExists(releaseTag)
+  const deducedCommit = !tagExists && !isLatest ? findReleaseCommit(version) : null
+  if (deducedCommit)
+    console.warn(`Tag ${releaseTag} is missing — creating its release at deduced commit ${deducedCommit}`)
+  return resolveTargetCommitish({ releaseTag, tagExists, isLatest, deducedCommit, defaultBranch })
 }
 
 function getPackageDirsToSync(): string[] {

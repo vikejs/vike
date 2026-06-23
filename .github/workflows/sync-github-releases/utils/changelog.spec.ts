@@ -24,52 +24,52 @@ describe('parseChangelog()', () => {
 
     expect(parseChangelog(changelog)).toEqual({
       // Compare link surfaced as a "Full Changelog" footer.
-      'v1.0.1':
+      '1.0.1':
         '### Features\n\n* Added release automation.\n\n**Full Changelog**: https://github.com/owner/repo/compare/v1.0.0...v1.0.1',
       // Non-`/compare/` link → no footer.
-      'v1.0.0': '### Bug Fixes\n\n* Fixed old release notes.',
+      '1.0.0': '### Bug Fixes\n\n* Fixed old release notes.',
     })
   })
 
   it('parses oldest Vike entries (single # headings, pre-release versions)', () => {
     const changelogSections = parseChangelog(readFixture('changelog-vike.md'))
     expect(Object.keys(changelogSections)).toEqual([
-      'v0.1.0-beta.10',
-      'v0.1.0-beta.9',
-      'v0.1.0-beta.8',
-      'v0.1.0-beta.7',
-      'v0.1.0-beta.6',
+      '0.1.0-beta.10',
+      '0.1.0-beta.9',
+      '0.1.0-beta.8',
+      '0.1.0-beta.7',
+      '0.1.0-beta.6',
     ])
-    expect(changelogSections['v0.1.0-beta.10']).toContain('### Features')
-    expect(changelogSections['v0.1.0-beta.8']).toContain('### BREAKING CHANGES')
-    expect(changelogSections['v0.1.0-beta.6']).toContain('Initial public release')
+    expect(changelogSections['0.1.0-beta.10']).toContain('### Features')
+    expect(changelogSections['0.1.0-beta.8']).toContain('### BREAKING CHANGES')
+    expect(changelogSections['0.1.0-beta.6']).toContain('Initial public release')
   })
 
   it('parses oldest Telefunc entries (trailing non-versioned sections)', () => {
     const changelogSections = parseChangelog(readFixture('changelog-telefunc.md'))
-    expect(Object.keys(changelogSections)).toEqual(['v0.1.2', 'v0.1.1'])
-    expect(changelogSections['v0.1.2']).toContain('improve TelefunctionError type')
-    expect(changelogSections['v0.1.1']).toContain('isomorphic imports')
+    expect(Object.keys(changelogSections)).toEqual(['0.1.2', '0.1.1'])
+    expect(changelogSections['0.1.2']).toContain('improve TelefunctionError type')
+    expect(changelogSections['0.1.1']).toContain('isomorphic imports')
   })
 
   it('parses oldest vike-vue entries (no-link headings, dash bullets)', () => {
     const changelogSections = parseChangelog(readFixture('changelog-vike-vue.md'))
-    expect(Object.keys(changelogSections)).toEqual(['v0.2.3', 'v0.2.2', 'v0.2.1', 'v0.2.0', 'v0.1.1'])
-    expect(changelogSections['v0.2.1']).toContain('Fix peer dependency')
-    expect(changelogSections['v0.2.0']).toContain('Add `Head` config option')
+    expect(Object.keys(changelogSections)).toEqual(['0.2.3', '0.2.2', '0.2.1', '0.2.0', '0.1.1'])
+    expect(changelogSections['0.2.1']).toContain('Fix peer dependency')
+    expect(changelogSections['0.2.0']).toContain('Add `Head` config option')
   })
 
   it('parses oldest vike-solid entries (single # headings, mixed formats)', () => {
     const changelogSections = parseChangelog(readFixture('changelog-vike-solid.md'))
-    expect(Object.keys(changelogSections)).toEqual(['v0.7.2', 'v0.7.1', 'v0.7.0', 'v0.6.2', 'v0.6.1'])
-    expect(changelogSections['v0.7.0']).toContain('### BREAKING CHANGES')
-    expect(changelogSections['v0.6.1']).toContain('MIGRATION.md')
+    expect(Object.keys(changelogSections)).toEqual(['0.7.2', '0.7.1', '0.7.0', '0.6.2', '0.6.1'])
+    expect(changelogSections['0.7.0']).toContain('### BREAKING CHANGES')
+    expect(changelogSections['0.6.1']).toContain('MIGRATION.md')
   })
 
   it('parses oldest vike-react entries (no-link initial version)', () => {
     const changelogSections = parseChangelog(readFixture('changelog-vike-react.md'))
-    expect(Object.keys(changelogSections)).toEqual(['v0.1.6', 'v0.1.5', 'v0.1.4', 'v0.1.3', 'v0.1.2', 'v0.1.1'])
-    expect(changelogSections['v0.1.6']).toContain("fix 'vike-react' type")
-    expect(changelogSections['v0.1.1']).toContain('fix ESM import paths')
+    expect(Object.keys(changelogSections)).toEqual(['0.1.6', '0.1.5', '0.1.4', '0.1.3', '0.1.2', '0.1.1'])
+    expect(changelogSections['0.1.6']).toContain("fix 'vike-react' type")
+    expect(changelogSections['0.1.1']).toContain('fix ESM import paths')
   })
 })
