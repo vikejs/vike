@@ -1,13 +1,16 @@
+// Local git plumbing — runs the `git` CLI and shapes its output (e.g. turning its file lists into
+// package dirs). Knows nothing of the GitHub Actions environment (github-env.ts) nor the GitHub API
+// (github.ts).
+
 export { git }
+export { gitLines }
 export { getRepoRoot }
 export { gitTagExists }
 export { findReleaseCommit }
 export { getTrackedChangelogFiles }
-export { getPushedFiles }
 export { toPackageDirs }
 
 import { execFileSync } from 'node:child_process'
-import { readFileSync } from 'node:fs'
 import path from 'node:path'
 
 function git(args: string[]): string {
@@ -31,27 +34,6 @@ function toPackageDirs(files: string[]): string[] {
     .filter((file) => path.posix.basename(file) === 'CHANGELOG.md')
     .map((file) => path.posix.dirname(file))
   return [...new Set(packageDirs)]
-}
-
-function getPushedFiles(): string[] | null {
-  if (process.env.GITHUB_EVENT_NAME !== 'push') return null
-  const beforeSha = getCommitBeforePush()
-  const headSha = process.env.GITHUB_SHA
-  if (!beforeSha || !headSha) return null
-  // The SHAs are passed as argv (git() uses no shell), so they can't cause injection.
-  return gitLines(['diff', '--name-only', beforeSha, headSha])
-}
-
-// The commit the branch pointed at before the push (`github.event.before`). GitHub Actions writes the
-// triggering event's payload to the file at GITHUB_EVENT_PATH.
-function getCommitBeforePush(): string | null {
-  const eventPath = process.env.GITHUB_EVENT_PATH
-  if (!eventPath) return null
-  const event = JSON.parse(readFileSync(eventPath, 'utf8')) as { before?: string }
-  const beforeSha = event.before
-  // GitHub uses an all-zero SHA when there's no prior commit (e.g. a branch's first push).
-  if (!beforeSha || /^0+$/.test(beforeSha)) return null
-  return beforeSha
 }
 
 function getTrackedChangelogFiles(): string[] {

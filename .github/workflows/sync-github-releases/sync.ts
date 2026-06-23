@@ -4,8 +4,8 @@
 main()
 
 import { syncPackage, type SyncContext } from './sync/sync-package.ts'
-import { getPushedFiles, getRepoRoot, getTrackedChangelogFiles, toPackageDirs } from './utils/git.ts'
-import { createReleasesClientFromEnv, getDefaultBranch } from './utils/github-env.ts'
+import { getRepoRoot, getTrackedChangelogFiles, toPackageDirs } from './utils/git.ts'
+import { createReleasesClientFromEnv, getDefaultBranch, getPushedFiles } from './utils/github-env.ts'
 
 async function main(): Promise<void> {
   // The package.json scripts run from this folder; switch to the repo root so the git commands and

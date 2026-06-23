@@ -19,9 +19,9 @@ type NewRelease = {
   make_latest: 'true' | 'false'
 }
 
-// A client for one repository's GitHub Releases. It binds the owner/repo/token once, so callers just
-// say what to do — not where, nor as whom. It's a plain transport: skipping writes under --dry-run is
-// the apply step's job (see applyReleasePlan()).
+// A client for one repository's GitHub Releases. It binds the owner/repo/token and API base URL once,
+// so callers just say what to do — not where, nor as whom. It's a plain transport: skipping writes
+// under --dry-run is the apply step's job (see applyReleasePlan()).
 type ReleasesClient = {
   list(): Promise<Release[]>
   create(release: NewRelease): Promise<void>
@@ -29,13 +29,17 @@ type ReleasesClient = {
   delete(releaseId: number): Promise<void>
 }
 
-const API_URL = process.env.GITHUB_API_URL ?? 'https://api.github.com'
 // Pause between write requests so bursts (e.g. backfilling many releases) stay under GitHub's
 // secondary rate limit — its burst/concurrency limit, separate from the hourly primary quota.
 // https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api
 const RATE_LIMIT_DELAY_MS = 500
 
-function createReleasesClient({ owner, repo, token }: { owner: string; repo: string; token: string }): ReleasesClient {
+function createReleasesClient({
+  owner,
+  repo,
+  token,
+  apiUrl,
+}: { owner: string; repo: string; token: string; apiUrl: string }): ReleasesClient {
   const releasesPath = `/repos/${owner}/${repo}/releases`
   // Writes performed so far, to delay only *between* them (not before the first, nor after reads).
   let writeCount = 0
@@ -52,7 +56,7 @@ function createReleasesClient({ owner, repo, token }: { owner: string; repo: str
       writeCount++
     }
 
-    const response = await fetch(new URL(pathname, API_URL), {
+    const response = await fetch(new URL(pathname, apiUrl), {
       method,
       headers: {
         Accept: 'application/vnd.github+json',
