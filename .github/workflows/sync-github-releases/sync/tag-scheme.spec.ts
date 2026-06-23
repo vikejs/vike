@@ -7,7 +7,6 @@ describe('getTagScheme()', () => {
     expect(scheme.build('0.4.259')).toBe('v0.4.259')
     expect(scheme.build('0.1.0-beta.6')).toBe('v0.1.0-beta.6')
     expect(scheme.owns('v0.4.259')).toBe(true)
-    // A tag we never create — left untouched.
     expect(scheme.owns('nightly')).toBe(false)
   })
 
@@ -16,7 +15,6 @@ describe('getTagScheme()', () => {
     expect(scheme.build('0.0.391')).toBe('create-vike-core@0.0.391')
     expect(scheme.build('0.1.0-beta.6')).toBe('create-vike-core@0.1.0-beta.6')
     expect(scheme.owns('create-vike-core@0.0.391')).toBe(true)
-    // Another package's release — not ours.
     expect(scheme.owns('vike@0.4.0')).toBe(false)
   })
 })

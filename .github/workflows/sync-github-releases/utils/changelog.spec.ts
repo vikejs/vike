@@ -23,7 +23,6 @@ describe('parseChangelog()', () => {
 `
 
     expect(parseChangelog(changelog)).toEqual({
-      // Compare link surfaced as a "Full Changelog" footer.
       '1.0.1':
         '### Features\n\n* Added release automation.\n\n**Full Changelog**: https://github.com/owner/repo/compare/v1.0.0...v1.0.1',
       // Non-`/compare/` link → no footer.
