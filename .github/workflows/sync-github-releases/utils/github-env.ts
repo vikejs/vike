@@ -17,7 +17,7 @@ import { createReleasesClient, type ReleasesClient } from './github.ts'
 // (pure transport) doesn't expose.
 function createReleasesClientFromEnv(): { client: ReleasesClient; owner: string; repo: string } {
   const { owner, repo } = getRepository()
-  const client = createReleasesClient({ owner, repo, token: getGithubToken() })
+  const client = createReleasesClient({ owner, repo, token: getGithubToken(), apiUrl: getApiUrl() })
   return { client, owner, repo }
 }
 
@@ -27,6 +27,12 @@ function getGithubToken(): string {
     throw new Error('GITHUB_TOKEN must be set — see README.md')
   }
   return token
+}
+
+// The GitHub REST API base URL. GITHUB_API_URL is provided on GitHub Actions (and points at the right
+// host on GitHub Enterprise); fall back to the public API for local runs.
+function getApiUrl(): string {
+  return process.env.GITHUB_API_URL ?? 'https://api.github.com'
 }
 
 function getDefaultBranch(): string {
