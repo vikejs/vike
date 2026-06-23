@@ -40,15 +40,7 @@ const API_URL = process.env.GITHUB_API_URL ?? 'https://api.github.com'
 // https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api
 const RATE_LIMIT_DELAY_MS = 500
 
-function createReleasesClient({
-  owner,
-  repo,
-  token,
-}: {
-  owner: string
-  repo: string
-  token: string
-}): ReleasesClient {
+function createReleasesClient({ owner, repo, token }: { owner: string; repo: string; token: string }): ReleasesClient {
   const releasesPath = `/repos/${owner}/${repo}/releases`
   // Writes performed so far, to delay only *between* them (not before the first, nor after reads).
   let writeCount = 0
