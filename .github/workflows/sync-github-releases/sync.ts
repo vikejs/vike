@@ -5,8 +5,8 @@ main()
 
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
-import { applyReleasePlan } from './apply-release-plan.ts'
-import { getReleasePlan } from './release-plan.ts'
+import { applyReleasePlan } from './sync/apply-release-plan.ts'
+import { getReleasePlan } from './sync/release-plan.ts'
 import { parseChangelog, withChangelogFooter } from './utils/changelog.ts'
 import { getPushedFiles, getRepoRoot, getTrackedChangelogFiles, toPackageDirs } from './utils/git.ts'
 import {
