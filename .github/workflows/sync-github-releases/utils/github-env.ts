@@ -1,14 +1,16 @@
 export { createReleasesClientFromEnv }
 export { getDefaultBranch }
+export { getPushedFiles }
 
 import assert from 'node:assert'
-import { git } from './git.ts'
+import { readFileSync } from 'node:fs'
+import { git, gitLines } from './git.ts'
 import { createReleasesClient, type ReleasesClient } from './github.ts'
 
 // How a run discovers what to act on, as whom, and against which branch: the repository, the auth
-// token, and the default branch — read from the GitHub Actions environment, with fallbacks for local
-// runs. Kept apart from the API client (github.ts), which is pure transport and shouldn't care where
-// these values come from.
+// token, the default branch, and — on a push — which files changed. All read from the GitHub Actions
+// environment, with fallbacks for local runs. Kept apart from the API client (github.ts), which is
+// pure transport and shouldn't care where these values come from.
 
 // A GitHub Releases client for the repository this run targets, wired up from the environment. Returns
 // the resolved owner/repo too — callers need them for the web links and log lines that the client
@@ -44,4 +46,27 @@ function getRepositoryFromGit(): string {
   const match = url.match(/github\.com[:/](.+?)(?:\.git)?$/)
   assert(match, `Cannot parse GitHub repository from git remote: ${url}`)
   return match[1]
+}
+
+// The files the triggering push changed, or null when this isn't a push (manual workflow_dispatch, or
+// a local run) — the caller then falls back to syncing every package.
+function getPushedFiles(): string[] | null {
+  if (process.env.GITHUB_EVENT_NAME !== 'push') return null
+  const beforeSha = getCommitBeforePush()
+  const headSha = process.env.GITHUB_SHA
+  if (!beforeSha || !headSha) return null
+  // The SHAs are passed as argv (git() uses no shell), so they can't cause injection.
+  return gitLines(['diff', '--name-only', beforeSha, headSha])
+}
+
+// The commit the branch pointed at before the push (`github.event.before`). GitHub Actions writes the
+// triggering event's payload to the file at GITHUB_EVENT_PATH.
+function getCommitBeforePush(): string | null {
+  const eventPath = process.env.GITHUB_EVENT_PATH
+  if (!eventPath) return null
+  const event = JSON.parse(readFileSync(eventPath, 'utf8')) as { before?: string }
+  const beforeSha = event.before
+  // GitHub uses an all-zero SHA when there's no prior commit (e.g. a branch's first push).
+  if (!beforeSha || /^0+$/.test(beforeSha)) return null
+  return beforeSha
 }
