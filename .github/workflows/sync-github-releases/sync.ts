@@ -12,7 +12,6 @@ async function main(): Promise<void> {
   // package-dir paths below resolve against it.
   process.chdir(getRepoRoot())
 
-  // CLI args: an optional `--dry-run` flag, plus any number of explicit <package-dir> positionals.
   const args = process.argv.slice(2)
   const dryRun = args.includes('--dry-run')
   const explicitPackageDirs = args.filter((arg) => !arg.startsWith('--'))

@@ -41,7 +41,6 @@ function createReleasesClient({
   apiUrl,
 }: { owner: string; repo: string; token: string; apiUrl: string }): ReleasesClient {
   const releasesPath = `/repos/${owner}/${repo}/releases`
-  // Writes performed so far, to delay only *between* them (not before the first, nor after reads).
   let writeCount = 0
 
   async function request<T = void>(

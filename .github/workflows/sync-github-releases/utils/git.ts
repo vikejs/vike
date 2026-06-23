@@ -20,7 +20,6 @@ function git(args: string[]): string {
   return execFileSync('git', args, { encoding: 'utf8' })
 }
 
-// git stdout as lines, dropping the trailing blank left by the final newline.
 function gitLines(args: string[]): string[] {
   return git(args).split('\n').filter(Boolean)
 }
