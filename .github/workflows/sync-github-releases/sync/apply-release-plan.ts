@@ -1,6 +1,7 @@
 export { applyReleasePlan }
+export { resolveTargetCommitish }
 
-import { resolveTargetCommitish, type ReleasePlan, type ReleaseToCreate } from './release-plan.ts'
+import type { ReleasePlan, ReleaseToCreate } from './release-plan.ts'
 import { findReleaseCommit, gitTagExists } from '../utils/git.ts'
 import type { ReleasesClient } from '../utils/github.ts'
 
@@ -67,4 +68,37 @@ function resolveCreateTarget(release: ReleaseToCreate, defaultBranch: string): s
   if (deducedCommit)
     console.warn(`Tag ${releaseTag} is missing — creating its release at deduced commit ${deducedCommit}`)
   return resolveTargetCommitish({ releaseTag, tagExists, isLatest, deducedCommit, defaultBranch })
+}
+
+// The commit a to-be-created release should be tagged at (its `target_commitish`).
+//  - Tag already exists: GitHub uses it and ignores target_commitish — pass the branch as a no-op.
+//  - Tag missing on the latest release: hard fail. The just-released version must already be tagged;
+//    tagging it now would point at the default branch's HEAD (the wrong commit).
+//  - Tag missing on an older (backfilled) release: tag the commit deduced from the changelog history,
+//    or hard fail if it couldn't be deduced — never silently tag the wrong commit.
+function resolveTargetCommitish({
+  releaseTag,
+  tagExists,
+  isLatest,
+  deducedCommit,
+  defaultBranch,
+}: {
+  releaseTag: string
+  tagExists: boolean
+  isLatest: boolean
+  deducedCommit: string | null
+  defaultBranch: string
+}): string {
+  if (tagExists) return defaultBranch
+  if (isLatest) {
+    throw new Error(
+      `Refusing to create release ${releaseTag}: its git tag is missing. The latest release must already be tagged — creating it now would tag the wrong commit (the default branch's HEAD).`,
+    )
+  }
+  if (!deducedCommit) {
+    throw new Error(
+      `Refusing to create release ${releaseTag}: its git tag is missing and its release commit couldn't be deduced from the changelog history.`,
+    )
+  }
+  return deducedCommit
 }

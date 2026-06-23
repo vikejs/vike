@@ -1,6 +1,5 @@
 export { getReleasePlan }
 export { getTagScheme }
-export { resolveTargetCommitish }
 export type { ReleasePlan }
 export type { ReleaseToCreate }
 
@@ -54,39 +53,6 @@ function getTagScheme(packageName: string, hasMultiplePackages: boolean): TagSch
     build: (version) => `v${version}`,
     owns: (releaseTag) => /^v\d+\.\d+\.\d+/.test(releaseTag),
   }
-}
-
-// The commit a to-be-created release should be tagged at (its `target_commitish`).
-//  - Tag already exists: GitHub uses it and ignores target_commitish — pass the branch as a no-op.
-//  - Tag missing on the latest release: hard fail. The just-released version must already be tagged;
-//    tagging it now would point at the default branch's HEAD (the wrong commit).
-//  - Tag missing on an older (backfilled) release: tag the commit deduced from the changelog history,
-//    or hard fail if it couldn't be deduced — never silently tag the wrong commit.
-function resolveTargetCommitish({
-  releaseTag,
-  tagExists,
-  isLatest,
-  deducedCommit,
-  defaultBranch,
-}: {
-  releaseTag: string
-  tagExists: boolean
-  isLatest: boolean
-  deducedCommit: string | null
-  defaultBranch: string
-}): string {
-  if (tagExists) return defaultBranch
-  if (isLatest) {
-    throw new Error(
-      `Refusing to create release ${releaseTag}: its git tag is missing. The latest release must already be tagged — creating it now would tag the wrong commit (the default branch's HEAD).`,
-    )
-  }
-  if (!deducedCommit) {
-    throw new Error(
-      `Refusing to create release ${releaseTag}: its git tag is missing and its release commit couldn't be deduced from the changelog history.`,
-    )
-  }
-  return deducedCommit
 }
 
 function getReleasePlan({

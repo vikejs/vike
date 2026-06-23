@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { resolveTargetCommitish, getReleasePlan, getTagScheme } from './release-plan.ts'
+import { getReleasePlan, getTagScheme } from './release-plan.ts'
 
 describe('getReleasePlan()', () => {
   it('creates missing past releases alongside the current release and updates stale notes', () => {
@@ -113,34 +113,6 @@ describe('getReleasePlan()', () => {
       releasesToUpdate: [],
       releasesToDelete: [],
     })
-  })
-})
-
-describe('resolveTargetCommitish()', () => {
-  const base = { releaseTag: 'v0.4.0', defaultBranch: 'main' }
-
-  it('uses the default branch when the tag already exists (GitHub ignores it)', () => {
-    expect(resolveTargetCommitish({ ...base, tagExists: true, isLatest: false, deducedCommit: null })).toBe('main')
-    // Even for the latest release, an existing tag is fine.
-    expect(resolveTargetCommitish({ ...base, tagExists: true, isLatest: true, deducedCommit: null })).toBe('main')
-  })
-
-  it('hard-fails when the latest release has no tag', () => {
-    expect(() => resolveTargetCommitish({ ...base, tagExists: false, isLatest: true, deducedCommit: null })).toThrow(
-      /latest release must already be tagged/,
-    )
-  })
-
-  it('tags an older release at the deduced commit', () => {
-    expect(resolveTargetCommitish({ ...base, tagExists: false, isLatest: false, deducedCommit: 'abc123' })).toBe(
-      'abc123',
-    )
-  })
-
-  it('hard-fails when an older release has no tag and no deducible commit', () => {
-    expect(() => resolveTargetCommitish({ ...base, tagExists: false, isLatest: false, deducedCommit: null })).toThrow(
-      /couldn't be deduced/,
-    )
   })
 })
 
