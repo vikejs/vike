@@ -5,8 +5,7 @@ main()
 
 import { syncPackage, type SyncContext } from './sync/sync-package.ts'
 import { getPushedFiles, getRepoRoot, getTrackedChangelogFiles, toPackageDirs } from './utils/git.ts'
-import { createReleasesClient } from './utils/github.ts'
-import { getDefaultBranch, getGithubToken, getRepository } from './utils/github-env.ts'
+import { createReleasesClientFromEnv, getDefaultBranch } from './utils/github-env.ts'
 
 async function main(): Promise<void> {
   // The package.json scripts run from this folder; switch to the repo root so the git commands and
@@ -28,10 +27,10 @@ async function main(): Promise<void> {
     return
   }
 
-  const { owner, repo } = getRepository()
+  const { client, owner, repo } = createReleasesClientFromEnv()
   const defaultBranch = getDefaultBranch()
   const context: SyncContext = {
-    client: createReleasesClient({ owner, repo, token: getGithubToken() }),
+    client,
     defaultBranch,
     hasMultiplePackages: allPackageDirs.length > 1,
     dryRun,
