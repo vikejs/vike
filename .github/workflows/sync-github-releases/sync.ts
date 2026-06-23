@@ -131,7 +131,8 @@ async function applyReleasePlan(
 // The commit a to-be-created release is tagged at. A release needs a tag to point at; when it's
 // missing, GitHub would create it at the default branch's HEAD — the wrong commit for a backfilled
 // (older) release. So deduce the real commit from the changelog history and tag that instead.
-// resolveTargetCommitish() turns these git facts into the commitish, or refuses rather than mis-tag.
+// resolveTargetCommitish() turns these git facts into the commitish, or refuses rather than tag the
+// wrong commit.
 function resolveCreateTarget(release: ReleaseToCreate, defaultBranch: string): string {
   const { tag_name: releaseTag, version, isLatest } = release
   const tagExists = gitTagExists(releaseTag)
