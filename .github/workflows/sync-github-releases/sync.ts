@@ -7,7 +7,7 @@ import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { applyReleasePlan } from './sync/apply-release-plan.ts'
 import { getReleasePlan } from './sync/release-plan.ts'
-import { getReleaseNotesByVersion } from './utils/changelog.ts'
+import { getReleaseNotesByVersion, type ReleaseNotesByVersion } from './utils/changelog.ts'
 import { getPushedFiles, getRepoRoot, getTrackedChangelogFiles, toPackageDirs } from './utils/git.ts'
 import {
   createReleasesClient,
@@ -65,22 +65,34 @@ type SyncContext = {
 }
 
 async function syncPackage(packageDir: string, ctx: SyncContext): Promise<void> {
-  const packageDirPath = path.join(process.cwd(), packageDir)
-  const packageJson = JSON.parse(await readFile(path.join(packageDirPath, 'package.json'), 'utf8')) as { name: string }
-  const changelog = await readFile(path.join(packageDirPath, 'CHANGELOG.md'), 'utf8')
-
-  // path.posix.join keeps the URL clean when packageDir is '.' (a repo-root CHANGELOG.md): no `/./`.
-  const changelogUrl = `${ctx.changelogUrlBase}/${path.posix.join(packageDir, 'CHANGELOG.md')}`
-  const releaseNotesByVersion = getReleaseNotesByVersion(changelog, changelogUrl)
-
+  // The releases the package's CHANGELOG.md (the source of truth) says should exist …
+  const { packageName, releaseNotesByVersion } = await readPackageReleaseNotes(packageDir, ctx.changelogUrlBase)
+  // … reconciled against the releases currently on GitHub.
   const githubReleases = await ctx.client.list()
   const plan = getReleasePlan({
     githubReleases,
     releaseNotesByVersion,
-    packageName: packageJson.name,
+    packageName,
     hasMultiplePackages: ctx.hasMultiplePackages,
   })
   await applyReleasePlan(plan, ctx.client, ctx.defaultBranch, ctx.dryRun)
+}
+
+// Read a package's identity (its package.json `name`) and the release notes derived from its
+// CHANGELOG.md — keyed by version, each carrying a footer that links back to the changelog on GitHub.
+async function readPackageReleaseNotes(
+  packageDir: string,
+  changelogUrlBase: string,
+): Promise<{ packageName: string; releaseNotesByVersion: ReleaseNotesByVersion }> {
+  const packageDirPath = path.join(process.cwd(), packageDir)
+  const { name: packageName } = JSON.parse(await readFile(path.join(packageDirPath, 'package.json'), 'utf8')) as {
+    name: string
+  }
+  const changelog = await readFile(path.join(packageDirPath, 'CHANGELOG.md'), 'utf8')
+
+  // path.posix.join keeps the URL clean when packageDir is '.' (a repo-root CHANGELOG.md): no `/./`.
+  const changelogUrl = `${changelogUrlBase}/${path.posix.join(packageDir, 'CHANGELOG.md')}`
+  return { packageName, releaseNotesByVersion: getReleaseNotesByVersion(changelog, changelogUrl) }
 }
 
 // Which package directories to sync:
