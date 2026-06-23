@@ -48,5 +48,5 @@ function withChangelogFooter(body: string, changelogUrl: string): string {
 // leaves the notes unchanged.
 function withReleaseDate(body: string, releaseDate: string | null): string {
   if (!releaseDate) return body
-  return `_Released on ${releaseDate}._\n\n${body}`
+  return `_${releaseDate}_\n\n${body}`
 }

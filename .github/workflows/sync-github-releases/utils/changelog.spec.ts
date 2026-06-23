@@ -76,7 +76,7 @@ describe('parseChangelog()', () => {
 describe('withReleaseDate()', () => {
   it('states the release date at the top of the notes', () => {
     expect(withReleaseDate('### Bug Fixes\n\n* Fixed it.', '2026-05-06')).toBe(
-      '_Released on 2026-05-06._\n\n### Bug Fixes\n\n* Fixed it.',
+      '_2026-05-06_\n\n### Bug Fixes\n\n* Fixed it.',
     )
   })
 
