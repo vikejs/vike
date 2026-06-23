@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { resolveTargetCommitish, getReleasePlan, getReleaseTag } from './release-plan.ts'
+import { resolveTargetCommitish, getReleasePlan, getTagScheme } from './release-plan.ts'
 
 describe('getReleasePlan()', () => {
   it('creates missing past releases alongside the current release and updates stale notes', () => {
@@ -144,14 +144,22 @@ describe('resolveTargetCommitish()', () => {
   })
 })
 
-describe('getReleaseTag()', () => {
-  it('keeps the bare vX.Y.Z tag for a single package', () => {
-    expect(getReleaseTag('0.4.259', 'vike', false)).toBe('v0.4.259')
-    expect(getReleaseTag('0.1.0-beta.6', 'vike', false)).toBe('v0.1.0-beta.6')
+describe('getTagScheme()', () => {
+  it('keeps the bare vX.Y.Z tag for a single package, and owns only such tags', () => {
+    const scheme = getTagScheme('vike', false)
+    expect(scheme.build('0.4.259')).toBe('v0.4.259')
+    expect(scheme.build('0.1.0-beta.6')).toBe('v0.1.0-beta.6')
+    expect(scheme.owns('v0.4.259')).toBe(true)
+    // A tag we never create — left untouched.
+    expect(scheme.owns('nightly')).toBe(false)
   })
 
-  it('qualifies the tag with the package name when there are several packages', () => {
-    expect(getReleaseTag('0.0.391', 'create-vike-core', true)).toBe('create-vike-core@0.0.391')
-    expect(getReleaseTag('0.1.0-beta.6', 'vike', true)).toBe('vike@0.1.0-beta.6')
+  it('qualifies the tag with the package name when there are several packages, and owns only its own', () => {
+    const scheme = getTagScheme('create-vike-core', true)
+    expect(scheme.build('0.0.391')).toBe('create-vike-core@0.0.391')
+    expect(scheme.build('0.1.0-beta.6')).toBe('create-vike-core@0.1.0-beta.6')
+    expect(scheme.owns('create-vike-core@0.0.391')).toBe(true)
+    // Another package's release — not ours.
+    expect(scheme.owns('vike@0.4.0')).toBe(false)
   })
 })

@@ -27,7 +27,7 @@ async function main(): Promise<void> {
 
   // Every package tracked in the repo — one per CHANGELOG.md. Used both as the default set to sync and
   // to pick the tag scheme: when several packages share the repo they also share its tag namespace, so
-  // their release tags are qualified with the package name (see getReleaseTag()).
+  // their release tags are qualified with the package name (see getTagScheme()).
   const allPackageDirs = toPackageDirs(getTrackedChangelogFiles())
   const packageDirs = getPackageDirsToSync(args, allPackageDirs)
   if (packageDirs.length === 0) {
