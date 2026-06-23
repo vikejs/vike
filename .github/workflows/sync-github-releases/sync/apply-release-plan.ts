@@ -1,8 +1,8 @@
 export { applyReleasePlan }
 
 import { resolveTargetCommitish, type ReleasePlan, type ReleaseToCreate } from './release-plan.ts'
-import { findReleaseCommit, gitTagExists } from './utils/git.ts'
-import type { ReleasesClient } from './utils/github.ts'
+import { findReleaseCommit, gitTagExists } from '../utils/git.ts'
+import type { ReleasesClient } from '../utils/github.ts'
 
 // Carry out a plan from getReleasePlan() against GitHub: create, then update, then delete. Under
 // --dry-run the client logs each write instead of performing it, so the per-action confirmations

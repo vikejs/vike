@@ -4,8 +4,8 @@ export { resolveTargetCommitish }
 export type { ReleasePlan }
 export type { ReleaseToCreate }
 
-import type { ReleaseNotesByVersion } from './utils/changelog.ts'
-import type { Release } from './utils/github.ts'
+import type { ReleaseNotesByVersion } from '../utils/changelog.ts'
+import type { Release } from '../utils/github.ts'
 
 type ReleasePlan = {
   releasesToCreate: ReleaseToCreate[]
