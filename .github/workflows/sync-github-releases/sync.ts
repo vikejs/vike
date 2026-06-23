@@ -3,7 +3,7 @@
 
 main()
 
-import { syncPackage, type SyncContext } from './sync/sync-package.ts'
+import { createSyncContext, syncPackage } from './sync/sync-package.ts'
 import { getRepoRoot, getTrackedChangelogFiles, toPackageDirs } from './utils/git.ts'
 import { createReleasesClientFromEnv, getDefaultBranch, getPushedFiles } from './utils/github-env.ts'
 
@@ -28,16 +28,14 @@ async function main(): Promise<void> {
   }
 
   const { client, owner, repo } = createReleasesClientFromEnv()
-  const defaultBranch = getDefaultBranch()
-  const context: SyncContext = {
+  const context = createSyncContext({
     client,
-    defaultBranch,
+    owner,
+    repo,
+    defaultBranch: getDefaultBranch(),
     hasMultiplePackages: allPackageDirs.length > 1,
     dryRun,
-    // The base of the GitHub web (blob) URL each release's CHANGELOG.md footer links back to —
-    // github.com is the web host, distinct from the API the client talks to.
-    changelogUrlBase: `https://github.com/${owner}/${repo}/blob/${defaultBranch}`,
-  }
+  })
 
   for (const packageDir of packageDirs) {
     console.log(`Syncing GitHub releases for package directory: ${packageDir}`)

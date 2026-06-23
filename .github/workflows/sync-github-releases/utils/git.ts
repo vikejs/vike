@@ -13,6 +13,9 @@ export { toPackageDirs }
 import { execFileSync } from 'node:child_process'
 import path from 'node:path'
 
+// Matches any CHANGELOG.md at any depth — git pathspecs aren't anchored to the repo root.
+const CHANGELOG_PATHSPEC = '*CHANGELOG.md'
+
 function git(args: string[]): string {
   return execFileSync('git', args, { encoding: 'utf8' })
 }
@@ -37,8 +40,7 @@ function toPackageDirs(files: string[]): string[] {
 }
 
 function getTrackedChangelogFiles(): string[] {
-  // `*CHANGELOG.md` matches at any depth — git pathspecs aren't anchored to the repo root.
-  return gitLines(['ls-files', '--', '*CHANGELOG.md'])
+  return gitLines(['ls-files', '--', CHANGELOG_PATHSPEC])
 }
 
 function gitTagExists(releaseTag: string): boolean {
@@ -55,5 +57,5 @@ function gitTagExists(releaseTag: string): boolean {
 // its tag belongs. Pickaxe (`-S`, a literal-string search) the changelog history for the heading's
 // link opener `[<version>](`; the oldest commit that changed its count is the one that added it.
 function findReleaseCommit(version: string): string | null {
-  return gitLines(['log', '--reverse', '--format=%H', `-S[${version}](`, '--', '*CHANGELOG.md'])[0] ?? null
+  return gitLines(['log', '--reverse', '--format=%H', `-S[${version}](`, '--', CHANGELOG_PATHSPEC])[0] ?? null
 }

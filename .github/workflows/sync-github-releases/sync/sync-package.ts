@@ -1,4 +1,5 @@
 export { syncPackage }
+export { createSyncContext }
 export type { SyncContext }
 
 import { readFile } from 'node:fs/promises'
@@ -17,6 +18,34 @@ type SyncContext = {
   hasMultiplePackages: boolean
   dryRun: boolean
   changelogUrlBase: string
+}
+
+// Assemble the context from a run's resolved facts. Co-located with SyncContext so its one derived
+// field — the base of the GitHub web (blob) URL each release's CHANGELOG.md footer links back to — is
+// built where the type lives, not in the entry script. github.com is the web host, distinct from the
+// API the client talks to.
+function createSyncContext({
+  client,
+  owner,
+  repo,
+  defaultBranch,
+  hasMultiplePackages,
+  dryRun,
+}: {
+  client: ReleasesClient
+  owner: string
+  repo: string
+  defaultBranch: string
+  hasMultiplePackages: boolean
+  dryRun: boolean
+}): SyncContext {
+  return {
+    client,
+    defaultBranch,
+    hasMultiplePackages,
+    dryRun,
+    changelogUrlBase: `https://github.com/${owner}/${repo}/blob/${defaultBranch}`,
+  }
 }
 
 // Sync one package: derive its expected releases from CHANGELOG.md (the source of truth), reconcile

@@ -44,16 +44,16 @@ function decideTargetCommitish({
   defaultBranch: string
 }): string {
   if (tagExists) return defaultBranch
+  // Both refusals open the same way; only the reason they can't proceed differs.
+  const refusal = `Refusing to create release ${releaseTag}: its git tag is missing`
   if (isLatest) {
     throw new Error(
-      `Refusing to create release ${releaseTag}: its git tag is missing. The latest release must already be tagged — creating it now would tag the wrong commit (the default branch's HEAD).`,
+      `${refusal}. The latest release must already be tagged — creating it now would tag the wrong commit (the default branch's HEAD).`,
     )
   }
   const deducedCommit = deduceCommit()
   if (!deducedCommit) {
-    throw new Error(
-      `Refusing to create release ${releaseTag}: its git tag is missing and its release commit couldn't be deduced from the changelog history.`,
-    )
+    throw new Error(`${refusal} and its release commit couldn't be deduced from the changelog history.`)
   }
   return deducedCommit
 }
