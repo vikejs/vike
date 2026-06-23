@@ -3,7 +3,8 @@
 
 main()
 
-import { createReleasesClient, getGithubToken, getRepository } from './utils/github.ts'
+import { createReleasesClient } from './utils/github.ts'
+import { getGithubToken, getRepository } from './utils/github-env.ts'
 
 async function main() {
   const { owner, repo } = getRepository()

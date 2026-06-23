@@ -10,13 +10,8 @@ import { getReleasePlan } from './sync/release-plan.ts'
 import { getTagScheme } from './sync/tag-scheme.ts'
 import { getReleaseNotesByVersion, type ReleaseNotesByVersion } from './utils/changelog.ts'
 import { getPushedFiles, getRepoRoot, getTrackedChangelogFiles, toPackageDirs } from './utils/git.ts'
-import {
-  createReleasesClient,
-  getDefaultBranch,
-  getGithubToken,
-  getRepository,
-  type ReleasesClient,
-} from './utils/github.ts'
+import { createReleasesClient, type ReleasesClient } from './utils/github.ts'
+import { getDefaultBranch, getGithubToken, getRepository } from './utils/github-env.ts'
 
 async function main(): Promise<void> {
   // The package.json scripts run from this folder; switch to the repo root so the git commands and
