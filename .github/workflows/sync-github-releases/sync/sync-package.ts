@@ -26,27 +26,14 @@ type SyncContext = {
   changelogUrlBase: string
 }
 
-function createSyncContext({
-  client,
-  owner,
-  repo,
-  defaultBranch,
-  hasMultiplePackages,
-  dryRun,
-}: {
-  client: ReleasesClient
-  owner: string
-  repo: string
-  defaultBranch: string
-  hasMultiplePackages: boolean
-  dryRun: boolean
-}): SyncContext {
+// owner/repo are consumed only to bake the changelog URL base; every other field is the context as-is.
+function createSyncContext(
+  input: Omit<SyncContext, 'changelogUrlBase'> & { owner: string; repo: string },
+): SyncContext {
+  const { owner, repo, ...context } = input
   return {
-    client,
-    defaultBranch,
-    hasMultiplePackages,
-    dryRun,
-    changelogUrlBase: `https://github.com/${owner}/${repo}/blob/${defaultBranch}`,
+    ...context,
+    changelogUrlBase: `https://github.com/${owner}/${repo}/blob/${context.defaultBranch}`,
   }
 }
 
