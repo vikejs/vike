@@ -7,12 +7,17 @@ import type { ReleasesClient } from '../utils/github.ts'
 // Carry out a plan from getReleasePlan() against GitHub: create, then update, then delete. The
 // --dry-run gate lives here rather than in the client, so the client stays a plain transport and each
 // action is logged the same way whether or not it's actually performed.
-async function applyReleasePlan(
-  plan: ReleasePlan,
-  client: ReleasesClient,
-  defaultBranch: string,
-  dryRun: boolean,
-): Promise<void> {
+async function applyReleasePlan({
+  plan,
+  client,
+  defaultBranch,
+  dryRun,
+}: {
+  plan: ReleasePlan
+  client: ReleasesClient
+  defaultBranch: string
+  dryRun: boolean
+}): Promise<void> {
   for (const release of plan.releasesToCreate) {
     // Resolve (and validate) the tag's commit before the dry-run gate, so a dry run still surfaces a
     // missing-tag failure or a deduced-commit warning.

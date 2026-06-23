@@ -35,7 +35,7 @@ describe('applyReleasePlan()', () => {
     const log = vi.spyOn(console, 'log').mockImplementation(() => {})
     const { client, calls } = createFakeClient()
 
-    await applyReleasePlan(plan, client, 'main', false)
+    await applyReleasePlan({ plan, client, defaultBranch: 'main', dryRun: false })
 
     expect(calls).toEqual(['update:1', 'delete:2'])
     expect(log.mock.calls.flat()).toEqual(['Updated release v1.0.0', 'Deleted release v0.9.0'])
@@ -46,7 +46,7 @@ describe('applyReleasePlan()', () => {
     const log = vi.spyOn(console, 'log').mockImplementation(() => {})
     const { client, calls } = createFakeClient()
 
-    await applyReleasePlan(plan, client, 'main', true)
+    await applyReleasePlan({ plan, client, defaultBranch: 'main', dryRun: true })
 
     expect(calls).toEqual([])
     expect(log.mock.calls.flat()).toEqual([
