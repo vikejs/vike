@@ -4,7 +4,6 @@
 main()
 
 import { readFile } from 'node:fs/promises'
-import { createRequire } from 'node:module'
 import path from 'node:path'
 import { parseChangelog, withChangelogFooter } from './utils/changelog.ts'
 import {
@@ -71,8 +70,7 @@ async function syncPackage({
   dryRun: boolean
 }): Promise<void> {
   const packageDirPath = path.join(process.cwd(), packageDir)
-  const require = createRequire(import.meta.url)
-  const packageJson = require(path.join(packageDirPath, 'package.json')) as { name: string }
+  const packageJson = JSON.parse(await readFile(path.join(packageDirPath, 'package.json'), 'utf8')) as { name: string }
   const changelog = await readFile(path.join(packageDirPath, 'CHANGELOG.md'), 'utf8')
 
   // path.posix.join keeps the URL clean when packageDir is '.' (a repo-root CHANGELOG.md): no `/./`.
