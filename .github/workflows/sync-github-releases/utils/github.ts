@@ -1,13 +1,8 @@
 export { createReleasesClient }
-export { getGithubToken }
-export { getDefaultBranch }
-export { getRepository }
 export type { Release }
 export type { ReleasesClient }
 
-import assert from 'node:assert'
 import { setTimeout } from 'node:timers/promises'
-import { git } from './git.ts'
 
 // The fields we use of a GitHub Release (https://docs.github.com/en/rest/releases/releases).
 type Release = {
@@ -104,31 +99,4 @@ function createReleasesClient({ owner, repo, token }: { owner: string; repo: str
       return request(`${releasesPath}/${releaseId}`, { method: 'DELETE' })
     },
   }
-}
-
-function getGithubToken(): string {
-  const token = process.env.GITHUB_TOKEN
-  if (!token) {
-    throw new Error('GITHUB_TOKEN must be set — see README.md')
-  }
-  return token
-}
-
-function getDefaultBranch(): string {
-  return process.env.GITHUB_DEFAULT_BRANCH ?? 'main'
-}
-
-function getRepository(): { owner: string; repo: string } {
-  const repository = process.env.GITHUB_REPOSITORY ?? getRepositoryFromGit()
-  const [owner, repo] = repository.split('/')
-  assert(owner && repo, `Invalid GITHUB_REPOSITORY value: ${repository}`)
-  return { owner, repo }
-}
-
-function getRepositoryFromGit(): string {
-  const url = git(['remote', 'get-url', 'origin']).trim()
-  // Handles both https://github.com/owner/repo.git and git@github.com:owner/repo.git
-  const match = url.match(/github\.com[:/](.+?)(?:\.git)?$/)
-  assert(match, `Cannot parse GitHub repository from git remote: ${url}`)
-  return match[1]
 }
