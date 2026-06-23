@@ -1,8 +1,20 @@
 export { parseChangelog }
 export { getReleaseNotesByVersion }
+export { mapReleaseNotes }
 export { withReleaseDate }
 
 export type ReleaseNotesByVersion = Record<string, string>
+
+// Rewrite each version's notes while preserving the version keys and their newest-first order — the
+// shared shape behind every release-notes decoration (footer, release date, …).
+function mapReleaseNotes(
+  notesByVersion: ReleaseNotesByVersion,
+  transform: (notes: string, version: string) => string,
+): ReleaseNotesByVersion {
+  return Object.fromEntries(
+    Object.entries(notesByVersion).map(([version, notes]) => [version, transform(notes, version)]),
+  )
+}
 
 // Parse a CHANGELOG.md into release notes keyed by raw version (e.g. `0.4.257`, `0.1.0-beta.6`),
 // newest first. Decorating a version into its git tag is getTagScheme()'s job, not ours.
@@ -26,12 +38,7 @@ function parseChangelog(changelog: string): ReleaseNotesByVersion {
 // The release notes we publish for each changelog version: the parsed entry plus a footer linking back
 // to its CHANGELOG.md.
 function getReleaseNotesByVersion(changelog: string, changelogUrl: string): ReleaseNotesByVersion {
-  return Object.fromEntries(
-    Object.entries(parseChangelog(changelog)).map(([version, notes]) => [
-      version,
-      withChangelogFooter(notes, changelogUrl),
-    ]),
-  )
+  return mapReleaseNotes(parseChangelog(changelog), (notes) => withChangelogFooter(notes, changelogUrl))
 }
 
 // These releases are generated, so point each one back to the CHANGELOG.md it mirrors to discourage

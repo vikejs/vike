@@ -7,7 +7,12 @@ import path from 'node:path'
 import { applyReleasePlan } from './apply-release-plan.ts'
 import { getReleasePlan } from './release-plan.ts'
 import { getTagScheme, type TagScheme } from './tag-scheme.ts'
-import { getReleaseNotesByVersion, withReleaseDate, type ReleaseNotesByVersion } from '../utils/changelog.ts'
+import {
+  getReleaseNotesByVersion,
+  mapReleaseNotes,
+  withReleaseDate,
+  type ReleaseNotesByVersion,
+} from '../utils/changelog.ts'
 import { getReleaseDate } from '../utils/git.ts'
 import type { ReleasesClient } from '../utils/github.ts'
 
@@ -60,11 +65,8 @@ async function syncPackage(packageDir: string, ctx: SyncContext): Promise<void> 
 // Done here, not in readReleaseNotes(), so that reader stays a single-purpose disk read and the git
 // lookups need the tag scheme that turns a version into its tag.
 function stampReleaseDates(releaseNotesByVersion: ReleaseNotesByVersion, tagScheme: TagScheme): ReleaseNotesByVersion {
-  return Object.fromEntries(
-    Object.entries(releaseNotesByVersion).map(([version, body]) => [
-      version,
-      withReleaseDate(body, getReleaseDate(tagScheme.build(version), version)),
-    ]),
+  return mapReleaseNotes(releaseNotesByVersion, (body, version) =>
+    withReleaseDate(body, getReleaseDate(tagScheme.build(version), version)),
   )
 }
 
