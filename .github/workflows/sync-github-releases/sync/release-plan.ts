@@ -58,16 +58,12 @@ function getTagScheme(packageName: string, hasMultiplePackages: boolean): TagSch
 function getReleasePlan({
   githubReleases,
   releaseNotesByVersion,
-  packageName,
-  hasMultiplePackages,
+  tagScheme,
 }: {
   githubReleases: Release[]
   releaseNotesByVersion: ReleaseNotesByVersion
-  packageName: string
-  hasMultiplePackages: boolean
+  tagScheme: TagScheme
 }): ReleasePlan {
-  const tagScheme = getTagScheme(packageName, hasMultiplePackages)
-
   // Reconcile from the changelog (the source of truth), not from the GitHub Releases: iterating the
   // releases for updates would try to rewrite any release whose tag isn't in the changelog (e.g. a
   // release of another package, or a manually-created one) with an `undefined` body. Driving both
