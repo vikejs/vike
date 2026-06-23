@@ -9,6 +9,7 @@ Source of truth is `CHANGELOG.md`: GitHub Releases are completely derived from i
 
 Runs automatically via [`../sync-github-releases.yml`](../sync-github-releases.yml) — on every push to `main` that touches a `CHANGELOG.md`, and on manual `workflow_dispatch`. The scripts below run the same tooling by hand.
 
+
 ## How it works
 
 1. **Pick which package(s) to sync** (`getPackageDirsToSync()`):
@@ -24,9 +25,6 @@ Runs automatically via [`../sync-github-releases.yml`](../sync-github-releases.y
 
 It's safe to run against any current state: older missing releases are created too, and [GitHub orders the list of releases by tag version (not by creation date)](https://github.com/vikejs/vike/pull/3157#issuecomment-4406846257), so they still land in the right place.
 
-**Git tags:** each release is created at its git tag's commit. An existing tag is used as-is. A missing tag is deduced from the `CHANGELOG.md` history for older (backfilled) releases, or fails the sync for the latest release — which must already be tagged, to avoid tagging it at the wrong commit.
-
-**Release date:** each release's notes open with the date it shipped, read from that same tag commit. A created GitHub Release otherwise records when the sync ran (its `published_at`), not when the version was actually released — so the real date is stated in the notes instead.
 
 ## Scripts
 
