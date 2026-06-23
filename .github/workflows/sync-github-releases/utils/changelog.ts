@@ -19,6 +19,7 @@ function parseChangelog(changelog: string): ReleaseNotesByVersion {
       const notesStart = changelog.indexOf('\n', match.index)
       const notesEnd = matches[index + 1]?.index ?? changelog.length
       let notes = changelog.slice(notesStart, notesEnd).trim()
+      // TODO/now remove the `Full Changelog` line
       if (headingUrl?.includes('/compare/')) notes += `\n\n**Full Changelog**: ${headingUrl}`
       return [version, notes]
     }),
@@ -39,6 +40,7 @@ function getReleaseNotesByVersion(changelog: string, changelogUrl: string): Rele
 // These releases are generated, so point each one back to the CHANGELOG.md it mirrors (the source of
 // truth) to discourage editing the GitHub Release directly — a sync would overwrite it.
 function withChangelogFooter(body: string, changelogUrl: string): string {
+  // TODO/now change it to: `<sub>Automatically synced from [\`CHANGELOG.md\`](${changelogUrl})</sub>`
   return `${body}\n\n_Source of truth: [\`CHANGELOG.md\`](${changelogUrl})._`
 }
 
