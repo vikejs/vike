@@ -54,10 +54,16 @@ function getTrackedChangelogFiles(): string[] {
   return gitLines(['ls-files', '--', CHANGELOG_PATHSPEC])
 }
 
+// A release tag's fully-qualified ref. The `refs/tags/` prefix pins it to a tag, so git can't resolve
+// a like-named branch (or any other ref) instead.
+function tagRef(releaseTag: string): string {
+  return `refs/tags/${releaseTag}`
+}
+
 function gitTagExists(releaseTag: string): boolean {
   // `rev-parse --verify` exits non-zero (so git() throws) when the tag is missing.
   try {
-    git(['rev-parse', '-q', '--verify', `refs/tags/${releaseTag}`])
+    git(['rev-parse', '-q', '--verify', tagRef(releaseTag)])
     return true
   } catch {
     return false
@@ -76,7 +82,7 @@ function findReleaseCommit(version: string): string | null {
 // (the same commit apply-release-plan.ts would tag). null when neither resolves. The commit date is
 // what GitHub derives the release's own date (`created_at`) from, and what CHANGELOG.md headings show.
 function getReleaseDate(releaseTag: string, version: string): string | null {
-  const commitish = gitTagExists(releaseTag) ? `refs/tags/${releaseTag}` : findReleaseCommit(version)
+  const commitish = gitTagExists(releaseTag) ? tagRef(releaseTag) : findReleaseCommit(version)
   if (!commitish) return null
   // %cs is the committer date in short form (YYYY-MM-DD).
   return git(['log', '-1', '--format=%cs', commitish]).trim()
