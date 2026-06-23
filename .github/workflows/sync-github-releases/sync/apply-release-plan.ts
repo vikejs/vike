@@ -1,8 +1,7 @@
 export { applyReleasePlan }
-export { resolveTargetCommitish }
 
-import type { ReleasePlan, ReleaseToCreate } from './release-plan.ts'
-import { findReleaseCommit, gitTagExists } from '../utils/git.ts'
+import type { ReleasePlan } from './release-plan.ts'
+import { resolveTargetCommitish } from './target-commitish.ts'
 import type { ReleasesClient } from '../utils/github.ts'
 
 // Carry out a plan from getReleasePlan() against GitHub: create, then update, then delete. The
@@ -17,13 +16,13 @@ async function applyReleasePlan(
   for (const release of plan.releasesToCreate) {
     // Resolve (and validate) the tag's commit before the dry-run gate, so a dry run still surfaces a
     // missing-tag failure or a deduced-commit warning.
-    const target_commitish = resolveCreateTarget(release, defaultBranch)
+    const targetCommitish = resolveTargetCommitish(release, defaultBranch)
     await applyWrite(dryRun, 'create', release.tag_name, () =>
       client.create({
         tag_name: release.tag_name,
         name: release.tag_name,
         body: release.body,
-        target_commitish,
+        target_commitish: targetCommitish,
         // Only the newest version may be the repo's "Latest". create-release otherwise defaults
         // make_latest=true, so backfilling an older release while a newer one already exists would
         // wrongly mark the old one Latest.
@@ -54,56 +53,4 @@ async function applyWrite(
   }
   await write()
   console.log(`${pastTense[action]} release ${releaseTag}`)
-}
-
-// The commit a to-be-created release is tagged at. Gathers the git facts and hands them to
-// resolveTargetCommitish(), which owns the decision; deducing the commit (a full-history changelog
-// search) is passed as a thunk so it runs only for the one case that needs it.
-function resolveCreateTarget(release: ReleaseToCreate, defaultBranch: string): string {
-  const { tag_name: releaseTag, version, isLatest } = release
-  return resolveTargetCommitish({
-    releaseTag,
-    isLatest,
-    tagExists: gitTagExists(releaseTag),
-    deduceCommit: () => {
-      const commit = findReleaseCommit(version)
-      if (commit) console.warn(`Tag ${releaseTag} is missing — creating its release at deduced commit ${commit}`)
-      return commit
-    },
-    defaultBranch,
-  })
-}
-
-// The commit a to-be-created release should be tagged at (its `target_commitish`).
-//  - Tag already exists: GitHub uses it and ignores target_commitish — pass the branch as a no-op.
-//  - Tag missing on the latest release: hard fail. The just-released version must already be tagged;
-//    tagging it now would point at the default branch's HEAD (the wrong commit).
-//  - Tag missing on an older (backfilled) release: tag the commit deduced from the changelog history
-//    (deduceCommit()), or hard fail if it couldn't be deduced — never silently tag the wrong commit.
-function resolveTargetCommitish({
-  releaseTag,
-  tagExists,
-  isLatest,
-  deduceCommit,
-  defaultBranch,
-}: {
-  releaseTag: string
-  tagExists: boolean
-  isLatest: boolean
-  deduceCommit: () => string | null
-  defaultBranch: string
-}): string {
-  if (tagExists) return defaultBranch
-  if (isLatest) {
-    throw new Error(
-      `Refusing to create release ${releaseTag}: its git tag is missing. The latest release must already be tagged — creating it now would tag the wrong commit (the default branch's HEAD).`,
-    )
-  }
-  const deducedCommit = deduceCommit()
-  if (!deducedCommit) {
-    throw new Error(
-      `Refusing to create release ${releaseTag}: its git tag is missing and its release commit couldn't be deduced from the changelog history.`,
-    )
-  }
-  return deducedCommit
 }

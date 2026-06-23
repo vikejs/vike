@@ -1,49 +1,11 @@
 import { describe, expect, it, vi } from 'vitest'
-import { applyReleasePlan, resolveTargetCommitish } from './apply-release-plan.ts'
+import { applyReleasePlan } from './apply-release-plan.ts'
 import type { ReleasePlan } from './release-plan.ts'
 import type { Release, ReleasesClient } from '../utils/github.ts'
 
-describe('resolveTargetCommitish()', () => {
-  const base = { releaseTag: 'v0.4.0', defaultBranch: 'main' }
-
-  it('uses the default branch when the tag already exists (GitHub ignores it)', () => {
-    expect(resolveTargetCommitish({ ...base, tagExists: true, isLatest: false, deduceCommit: () => null })).toBe('main')
-    // Even for the latest release, an existing tag is fine.
-    expect(resolveTargetCommitish({ ...base, tagExists: true, isLatest: true, deduceCommit: () => null })).toBe('main')
-  })
-
-  it('hard-fails when the latest release has no tag', () => {
-    expect(() =>
-      resolveTargetCommitish({ ...base, tagExists: false, isLatest: true, deduceCommit: () => null }),
-    ).toThrow(/latest release must already be tagged/)
-  })
-
-  it('tags an older release at the deduced commit', () => {
-    expect(resolveTargetCommitish({ ...base, tagExists: false, isLatest: false, deduceCommit: () => 'abc123' })).toBe(
-      'abc123',
-    )
-  })
-
-  it('hard-fails when an older release has no tag and no deducible commit', () => {
-    expect(() =>
-      resolveTargetCommitish({ ...base, tagExists: false, isLatest: false, deduceCommit: () => null }),
-    ).toThrow(/couldn't be deduced/)
-  })
-
-  it('only deduces the commit for a backfilled older release (never when the tag exists or it is latest)', () => {
-    const deduceCommit = vi.fn(() => 'abc123')
-    resolveTargetCommitish({ ...base, tagExists: true, isLatest: false, deduceCommit })
-    expect(() => resolveTargetCommitish({ ...base, tagExists: false, isLatest: true, deduceCommit })).toThrow()
-    expect(deduceCommit).not.toHaveBeenCalled()
-
-    resolveTargetCommitish({ ...base, tagExists: false, isLatest: false, deduceCommit })
-    expect(deduceCommit).toHaveBeenCalledOnce()
-  })
-})
-
 describe('applyReleasePlan()', () => {
-  // No creates in the plan, so resolveCreateTarget() (which shells out to git) isn't exercised here.
-  // The dry-run gate is shared by all three actions via applyWrite(), so update + delete prove it.
+  // No creates in the plan, so resolveTargetCommitish() (which shells out to git) isn't exercised
+  // here. The dry-run gate is shared by all three actions via applyWrite(), so update + delete prove it.
   const plan: ReleasePlan = {
     releasesToCreate: [],
     releasesToUpdate: [{ release_id: 1, tag_name: 'v1.0.0', body: 'Fresh notes' }],
