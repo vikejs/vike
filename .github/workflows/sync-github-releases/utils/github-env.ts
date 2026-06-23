@@ -40,9 +40,10 @@ function getDefaultBranch(): string {
 }
 
 function getRepository(): { owner: string; repo: string } {
+  // Either source can be malformed, so keep the message source-neutral (it isn't always GITHUB_REPOSITORY).
   const repository = process.env.GITHUB_REPOSITORY ?? getRepositoryFromGit()
   const [owner, repo] = repository.split('/')
-  assert(owner && repo, `Invalid GITHUB_REPOSITORY value: ${repository}`)
+  assert(owner && repo, `Cannot parse owner/repo from repository: ${repository}`)
   return { owner, repo }
 }
 
