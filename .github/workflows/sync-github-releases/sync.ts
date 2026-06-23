@@ -7,7 +7,7 @@ import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { applyReleasePlan } from './sync/apply-release-plan.ts'
 import { getReleasePlan } from './sync/release-plan.ts'
-import { getReleaseNotesByVersion } from './utils/changelog.ts'
+import { getReleaseNotesByVersion, type ReleaseNotesByVersion } from './utils/changelog.ts'
 import { getPushedFiles, getRepoRoot, getTrackedChangelogFiles, toPackageDirs } from './utils/git.ts'
 import {
   createReleasesClient,
@@ -22,14 +22,16 @@ async function main(): Promise<void> {
   // package-dir paths below resolve against it.
   process.chdir(getRepoRoot())
 
+  // CLI args: an optional `--dry-run` flag, plus any number of explicit <package-dir> positionals.
   const args = process.argv.slice(2)
   const dryRun = args.includes('--dry-run')
+  const explicitPackageDirs = args.filter((arg) => !arg.startsWith('--'))
 
   // Every package tracked in the repo — one per CHANGELOG.md. Used both as the default set to sync and
   // to pick the tag scheme: when several packages share the repo they also share its tag namespace, so
   // their release tags are qualified with the package name (see getTagScheme()).
   const allPackageDirs = toPackageDirs(getTrackedChangelogFiles())
-  const packageDirs = getPackageDirsToSync(args, allPackageDirs)
+  const packageDirs = getPackageDirsToSync(explicitPackageDirs, allPackageDirs)
   if (packageDirs.length === 0) {
     console.log('No CHANGELOG.md changes detected — nothing to sync.')
     return
@@ -65,30 +67,41 @@ type SyncContext = {
 }
 
 async function syncPackage(packageDir: string, ctx: SyncContext): Promise<void> {
-  const packageDirPath = path.join(process.cwd(), packageDir)
-  const packageJson = JSON.parse(await readFile(path.join(packageDirPath, 'package.json'), 'utf8')) as { name: string }
-  const changelog = await readFile(path.join(packageDirPath, 'CHANGELOG.md'), 'utf8')
-
-  // path.posix.join keeps the URL clean when packageDir is '.' (a repo-root CHANGELOG.md): no `/./`.
-  const changelogUrl = `${ctx.changelogUrlBase}/${path.posix.join(packageDir, 'CHANGELOG.md')}`
-  const releaseNotesByVersion = getReleaseNotesByVersion(changelog, changelogUrl)
-
+  // The releases the package's CHANGELOG.md (the source of truth) says should exist …
+  const { packageName, releaseNotesByVersion } = await readPackageReleaseNotes(packageDir, ctx.changelogUrlBase)
+  // … reconciled against the releases currently on GitHub.
   const githubReleases = await ctx.client.list()
   const plan = getReleasePlan({
     githubReleases,
     releaseNotesByVersion,
-    packageName: packageJson.name,
+    packageName,
     hasMultiplePackages: ctx.hasMultiplePackages,
   })
   await applyReleasePlan(plan, ctx.client, ctx.defaultBranch, ctx.dryRun)
 }
 
-// Which package directories to sync:
-//  - an explicit <package-dir> argument (anything that isn't a --flag), or
+// Read a package's identity (its package.json `name`) and the release notes derived from its
+// CHANGELOG.md — keyed by version, each carrying a footer that links back to the changelog on GitHub.
+async function readPackageReleaseNotes(
+  packageDir: string,
+  changelogUrlBase: string,
+): Promise<{ packageName: string; releaseNotesByVersion: ReleaseNotesByVersion }> {
+  const packageDirPath = path.join(process.cwd(), packageDir)
+  const { name: packageName } = JSON.parse(await readFile(path.join(packageDirPath, 'package.json'), 'utf8')) as {
+    name: string
+  }
+  const changelog = await readFile(path.join(packageDirPath, 'CHANGELOG.md'), 'utf8')
+
+  // path.posix.join keeps the URL clean when packageDir is '.' (a repo-root CHANGELOG.md): no `/./`.
+  const changelogUrl = `${changelogUrlBase}/${path.posix.join(packageDir, 'CHANGELOG.md')}`
+  return { packageName, releaseNotesByVersion: getReleaseNotesByVersion(changelog, changelogUrl) }
+}
+
+// Which package directories to sync, in priority order:
+//  - the explicit <package-dir> arguments, if any, or
 //  - on push (CI): the packages whose CHANGELOG.md changed, or
 //  - otherwise (manual workflow_dispatch, or a local run with no <package-dir>): every package.
-function getPackageDirsToSync(args: string[], allPackageDirs: string[]): string[] {
-  const explicitPackageDirs = args.filter((arg) => !arg.startsWith('--'))
+function getPackageDirsToSync(explicitPackageDirs: string[], allPackageDirs: string[]): string[] {
   if (explicitPackageDirs.length > 0) return explicitPackageDirs
   const pushedFiles = getPushedFiles()
   if (pushedFiles) return toPackageDirs(pushedFiles)
