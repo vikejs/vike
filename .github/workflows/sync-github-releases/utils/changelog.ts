@@ -24,8 +24,6 @@ function parseChangelog(changelog: string): ReleaseNotesByVersion {
   )
 }
 
-// The release notes we publish for each changelog version: the parsed entry plus a footer linking back
-// to its CHANGELOG.md.
 function getReleaseNotesByVersion(changelog: string, changelogUrl: string): ReleaseNotesByVersion {
   return Object.fromEntries(
     Object.entries(parseChangelog(changelog)).map(([version, notes]) => [

@@ -1,5 +1,4 @@
 // Synchronize CHANGELOG.md -> GitHub Releases.
-// Run via the package.json scripts `sync` or `sync:check` — see README.md
 
 main()
 
@@ -42,10 +41,6 @@ async function main(): Promise<void> {
   }
 }
 
-// Which package directories to sync, in priority order:
-//  - the explicit <package-dir> arguments, if any, or
-//  - on push (CI): the packages whose CHANGELOG.md changed, or
-//  - otherwise (manual workflow_dispatch, or a local run with no <package-dir>): every package.
 function getPackageDirsToSync(explicitPackageDirs: string[], allPackageDirs: string[]): string[] {
   if (explicitPackageDirs.length > 0) return explicitPackageDirs
   const pushedFiles = getPushedFiles()

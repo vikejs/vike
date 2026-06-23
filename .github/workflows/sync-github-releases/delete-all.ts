@@ -1,5 +1,4 @@
 // Deletes every GitHub Release.
-// Run via the `delete-all` package.json script — see README.md
 
 main()
 

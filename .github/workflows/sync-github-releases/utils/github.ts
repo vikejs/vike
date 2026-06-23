@@ -78,26 +78,21 @@ function createReleasesClient({
   }
 
   return {
-    // https://docs.github.com/en/rest/releases/releases#list-releases
     async list(): Promise<Release[]> {
       const releases: Release[] = []
       const perPage = 100
-      // Keep paging until a short (or empty) page signals the end.
       for (let page = 1; ; page++) {
         const pageReleases = await request<Release[]>(`${releasesPath}?per_page=${perPage}&page=${page}`)
         releases.push(...pageReleases)
         if (pageReleases.length < perPage) return releases
       }
     },
-    // https://docs.github.com/en/rest/releases/releases#create-a-release
     create(release: NewRelease): Promise<void> {
       return request(releasesPath, { method: 'POST', body: release })
     },
-    // https://docs.github.com/en/rest/releases/releases#update-a-release
     update(releaseId: number, body: string): Promise<void> {
       return request(`${releasesPath}/${releaseId}`, { method: 'PATCH', body: { body } })
     },
-    // https://docs.github.com/en/rest/releases/releases#delete-a-release
     delete(releaseId: number): Promise<void> {
       return request(`${releasesPath}/${releaseId}`, { method: 'DELETE' })
     },
