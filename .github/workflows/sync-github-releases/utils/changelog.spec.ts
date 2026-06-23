@@ -1,14 +1,14 @@
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { parseChangelog, withReleaseDate } from './changelog.ts'
+import { getReleaseNotesByVersion, parseChangelog, withReleaseDate } from './changelog.ts'
 
 function readFixture(name: string): string {
   return readFileSync(path.join(__dirname, 'changelog-spec-fixtures', name), 'utf8')
 }
 
 describe('parseChangelog()', () => {
-  it('maps changelog headings to version tags and appends the compare link', () => {
+  it('maps changelog headings to versions, ignoring any heading link', () => {
     const changelog = `## [1.0.1](https://github.com/owner/repo/compare/v1.0.0...v1.0.1) (2026-03-01)
 
 ### Features
@@ -23,9 +23,7 @@ describe('parseChangelog()', () => {
 `
 
     expect(parseChangelog(changelog)).toEqual({
-      '1.0.1':
-        '### Features\n\n* Added release automation.\n\n**Full Changelog**: https://github.com/owner/repo/compare/v1.0.0...v1.0.1',
-      // Non-`/compare/` link → no footer.
+      '1.0.1': '### Features\n\n* Added release automation.',
       '1.0.0': '### Bug Fixes\n\n* Fixed old release notes.',
     })
   })
@@ -70,6 +68,21 @@ describe('parseChangelog()', () => {
     expect(Object.keys(changelogSections)).toEqual(['0.1.6', '0.1.5', '0.1.4', '0.1.3', '0.1.2', '0.1.1'])
     expect(changelogSections['0.1.6']).toContain("fix 'vike-react' type")
     expect(changelogSections['0.1.1']).toContain('fix ESM import paths')
+  })
+})
+
+describe('getReleaseNotesByVersion()', () => {
+  it('appends the synced-from-CHANGELOG.md footer to each version', () => {
+    const changelog = `## [1.0.0](https://github.com/owner/repo/compare/v0.9.0...v1.0.0) (2026-02-28)
+
+### Bug Fixes
+
+* Fixed it.
+`
+    expect(getReleaseNotesByVersion(changelog, 'https://example.com/CHANGELOG.md')).toEqual({
+      '1.0.0':
+        '### Bug Fixes\n\n* Fixed it.\n\n<sub>Automatically synced from [`CHANGELOG.md`](https://example.com/CHANGELOG.md)</sub>',
+    })
   })
 })
 
