@@ -32,22 +32,20 @@ async function main(): Promise<void> {
   const args = process.argv.slice(2)
   const dryRun = args.includes('--dry-run')
 
-  const explicitPackageDirs = args.filter((arg) => !arg.startsWith('--'))
-  const packageDirs = explicitPackageDirs.length > 0 ? explicitPackageDirs : getPackageDirsToSync()
-
+  // Every package tracked in the repo — one per CHANGELOG.md. Used both as the default set to sync and
+  // to pick the tag scheme: when several packages share the repo they also share its tag namespace, so
+  // their release tags are qualified with the package name (see getReleaseTag()).
+  const allPackageDirs = toPackageDirs(getTrackedChangelogFiles())
+  const packageDirs = getPackageDirsToSync(args, allPackageDirs)
   if (packageDirs.length === 0) {
     console.log('No CHANGELOG.md changes detected — nothing to sync.')
     return
   }
+  const hasMultiplePackages = allPackageDirs.length > 1
 
   const { owner, repo } = getRepository()
   const defaultBranch = getDefaultBranch()
   const client = createReleasesClient({ owner, repo, token: getGithubToken(), dryRun })
-
-  // When several packages publish to the same repo they share its tag namespace, so releases are
-  // qualified with the package name (see getReleaseTag()). Determined from every tracked CHANGELOG.md,
-  // not just the package(s) being synced now.
-  const hasMultiplePackages = toPackageDirs(getTrackedChangelogFiles()).length > 1
 
   for (const packageDir of packageDirs) {
     console.log(`Syncing GitHub releases for package directory: ${packageDir}`)
@@ -142,10 +140,14 @@ function resolveCreateTarget(release: ReleaseToCreate, defaultBranch: string): s
   return resolveTargetCommitish({ releaseTag, tagExists, isLatest, deducedCommit, defaultBranch })
 }
 
-function getPackageDirsToSync(): string[] {
-  // On push, sync only the packages whose CHANGELOG.md changed; otherwise (manual workflow_dispatch
-  // or a local run with no <package-dir>) sync every package.
+// Which package directories to sync:
+//  - an explicit <package-dir> argument (anything that isn't a --flag), or
+//  - on push (CI): the packages whose CHANGELOG.md changed, or
+//  - otherwise (manual workflow_dispatch, or a local run with no <package-dir>): every package.
+function getPackageDirsToSync(args: string[], allPackageDirs: string[]): string[] {
+  const explicitPackageDirs = args.filter((arg) => !arg.startsWith('--'))
+  if (explicitPackageDirs.length > 0) return explicitPackageDirs
   const pushedFiles = getPushedFiles()
   if (pushedFiles) return toPackageDirs(pushedFiles)
-  return toPackageDirs(getTrackedChangelogFiles())
+  return allPackageDirs
 }
