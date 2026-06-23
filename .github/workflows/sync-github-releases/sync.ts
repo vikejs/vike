@@ -38,7 +38,7 @@ async function main(): Promise<void> {
 
   const { owner, repo } = getRepository()
   const defaultBranch = getDefaultBranch()
-  const client = createReleasesClient({ owner, repo, token: getGithubToken(), dryRun })
+  const client = createReleasesClient({ owner, repo, token: getGithubToken() })
 
   for (const packageDir of packageDirs) {
     console.log(`Syncing GitHub releases for package directory: ${packageDir}`)
