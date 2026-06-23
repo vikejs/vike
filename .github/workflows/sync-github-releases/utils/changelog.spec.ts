@@ -74,10 +74,12 @@ describe('parseChangelog()', () => {
 })
 
 describe('withReleaseDate()', () => {
-  it('states the release date at the top of the notes', () => {
+  it('states the release date — human-friendly — at the top of the notes', () => {
     expect(withReleaseDate('### Bug Fixes\n\n* Fixed it.', '2026-05-06')).toBe(
-      '_2026-05-06_\n\n### Bug Fixes\n\n* Fixed it.',
+      '_May 6, 2026_\n\n### Bug Fixes\n\n* Fixed it.',
     )
+    // Two-digit day at year-end: guards against UTC date drift and confirms no leading zero on the day.
+    expect(withReleaseDate('* Note.', '2021-12-31')).toBe('_December 31, 2021_\n\n* Note.')
   })
 
   it('leaves the notes unchanged when the date is unknown (no tag, no deducible commit)', () => {

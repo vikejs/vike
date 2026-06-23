@@ -48,5 +48,17 @@ function withChangelogFooter(body: string, changelogUrl: string): string {
 // leaves the notes unchanged.
 function withReleaseDate(body: string, releaseDate: string | null): string {
   if (!releaseDate) return body
-  return `_${releaseDate}_\n\n${body}`
+  return `_${formatReleaseDate(releaseDate)}_\n\n${body}`
+}
+
+// Render an ISO date (`2026-05-06`) in a human-friendly long form (`May 6, 2026`). Formatted in UTC so
+// the day matches getReleaseDate()'s committer date regardless of the runner's timezone.
+const releaseDateFormatter = new Intl.DateTimeFormat('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  timeZone: 'UTC',
+})
+function formatReleaseDate(isoDate: string): string {
+  return releaseDateFormatter.format(new Date(`${isoDate}T00:00:00Z`))
 }
