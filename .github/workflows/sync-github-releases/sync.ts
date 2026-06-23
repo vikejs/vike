@@ -22,14 +22,16 @@ async function main(): Promise<void> {
   // package-dir paths below resolve against it.
   process.chdir(getRepoRoot())
 
+  // CLI args: an optional `--dry-run` flag, plus any number of explicit <package-dir> positionals.
   const args = process.argv.slice(2)
   const dryRun = args.includes('--dry-run')
+  const explicitPackageDirs = args.filter((arg) => !arg.startsWith('--'))
 
   // Every package tracked in the repo — one per CHANGELOG.md. Used both as the default set to sync and
   // to pick the tag scheme: when several packages share the repo they also share its tag namespace, so
   // their release tags are qualified with the package name (see getTagScheme()).
   const allPackageDirs = toPackageDirs(getTrackedChangelogFiles())
-  const packageDirs = getPackageDirsToSync(args, allPackageDirs)
+  const packageDirs = getPackageDirsToSync(explicitPackageDirs, allPackageDirs)
   if (packageDirs.length === 0) {
     console.log('No CHANGELOG.md changes detected — nothing to sync.')
     return
@@ -95,12 +97,11 @@ async function readPackageReleaseNotes(
   return { packageName, releaseNotesByVersion: getReleaseNotesByVersion(changelog, changelogUrl) }
 }
 
-// Which package directories to sync:
-//  - an explicit <package-dir> argument (anything that isn't a --flag), or
+// Which package directories to sync, in priority order:
+//  - the explicit <package-dir> arguments, if any, or
 //  - on push (CI): the packages whose CHANGELOG.md changed, or
 //  - otherwise (manual workflow_dispatch, or a local run with no <package-dir>): every package.
-function getPackageDirsToSync(args: string[], allPackageDirs: string[]): string[] {
-  const explicitPackageDirs = args.filter((arg) => !arg.startsWith('--'))
+function getPackageDirsToSync(explicitPackageDirs: string[], allPackageDirs: string[]): string[] {
   if (explicitPackageDirs.length > 0) return explicitPackageDirs
   const pushedFiles = getPushedFiles()
   if (pushedFiles) return toPackageDirs(pushedFiles)
