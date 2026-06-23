@@ -1,16 +1,22 @@
 export { getReleasePlan }
 export { getReleaseTag }
 export { resolveTargetCommitish }
+export type { ReleasePlan }
 export type { ReleaseToCreate }
 
 import type { ReleaseNotesByVersion } from './utils/changelog.ts'
 import type { Release } from './utils/github.ts'
 
+type ReleasePlan = {
+  releasesToCreate: ReleaseToCreate[]
+  releasesToUpdate: ReleaseToUpdate[]
+  releasesToDelete: ReleaseToDelete[]
+}
 type ReleaseToCreate = {
   tag_name: string
   body: string
-  // Carried for the apply step (sync.ts): the raw version locates the release commit when its tag is
-  // missing, and isLatest decides the GitHub "Latest" badge.
+  // Carried for the apply step (apply-release-plan.ts): the raw version locates the release commit
+  // when its tag is missing, and isLatest decides the GitHub "Latest" badge.
   version: string
   isLatest: boolean
 }
@@ -83,7 +89,7 @@ function getReleasePlan({
   releaseNotesByVersion: ReleaseNotesByVersion
   packageName: string
   hasMultiplePackages: boolean
-}) {
+}): ReleasePlan {
   // Reconcile from the changelog (the source of truth), not from the GitHub Releases: iterating the
   // releases for updates would try to rewrite any release whose tag isn't in the changelog (e.g. a
   // release of another package, or a manually-created one) with an `undefined` body. Driving both

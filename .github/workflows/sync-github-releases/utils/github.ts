@@ -6,8 +6,8 @@ export type { Release }
 export type { ReleasesClient }
 
 import assert from 'node:assert'
-import { execSync } from 'node:child_process'
 import { setTimeout } from 'node:timers/promises'
+import { git } from './git.ts'
 
 // The fields we use of a GitHub Release (https://docs.github.com/en/rest/releases/releases).
 type Release = {
@@ -141,7 +141,7 @@ function getRepository(): { owner: string; repo: string } {
 }
 
 function getRepositoryFromGit(): string {
-  const url = execSync('git remote get-url origin', { encoding: 'utf8' }).trim()
+  const url = git(['remote', 'get-url', 'origin']).trim()
   // Handles both https://github.com/owner/repo.git and git@github.com:owner/repo.git
   const match = url.match(/github\.com[:/](.+?)(?:\.git)?$/)
   assert(match, `Cannot parse GitHub repository from git remote: ${url}`)

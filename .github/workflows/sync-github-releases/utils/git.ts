@@ -1,3 +1,4 @@
+export { git }
 export { getRepoRoot }
 export { gitTagExists }
 export { findReleaseCommit }
