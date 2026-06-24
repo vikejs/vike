@@ -6,7 +6,7 @@ describe('getReleasePlan()', () => {
   it('creates missing past releases alongside the current release and updates stale notes', () => {
     const plan = getReleasePlan({
       tagScheme: getTagScheme('vike', false),
-      releaseNotesByVersion: {
+      releaseBodyByVersion: {
         '1.0.1': 'New release notes',
         '1.0.0': 'Updated old notes',
         '0.9.0': 'Existing notes',
@@ -31,7 +31,7 @@ describe('getReleasePlan()', () => {
   it('updates the current release instead of creating a duplicate', () => {
     const plan = getReleasePlan({
       tagScheme: getTagScheme('vike', false),
-      releaseNotesByVersion: {
+      releaseBodyByVersion: {
         '1.0.1': 'Fresh release notes',
       },
       githubReleases: [{ id: 3, tag_name: 'v1.0.1', body: 'Stale release notes' }],
@@ -47,7 +47,7 @@ describe('getReleasePlan()', () => {
   it('leaves releases we do not own untouched (no spurious update or delete)', () => {
     const plan = getReleasePlan({
       tagScheme: getTagScheme('vike', false),
-      releaseNotesByVersion: { '1.0.0': 'Notes' },
+      releaseBodyByVersion: { '1.0.0': 'Notes' },
       githubReleases: [
         { id: 1, tag_name: 'v1.0.0', body: 'Notes' },
         // Not one of our vX.Y.Z tags: must not be updated (no undefined body) nor deleted.
@@ -61,7 +61,7 @@ describe('getReleasePlan()', () => {
   it('deletes a release whose version was removed from the changelog', () => {
     const plan = getReleasePlan({
       tagScheme: getTagScheme('vike', false),
-      releaseNotesByVersion: { '1.0.0': 'Notes' },
+      releaseBodyByVersion: { '1.0.0': 'Notes' },
       githubReleases: [
         { id: 1, tag_name: 'v1.0.0', body: 'Notes' },
         { id: 2, tag_name: 'v0.9.0', body: 'Removed from changelog' },
@@ -78,7 +78,7 @@ describe('getReleasePlan()', () => {
   it('only deletes releases in its own namespace', () => {
     const plan = getReleasePlan({
       tagScheme: getTagScheme('create-vike-core', true),
-      releaseNotesByVersion: { '0.0.1': 'Notes' },
+      releaseBodyByVersion: { '0.0.1': 'Notes' },
       githubReleases: [
         { id: 1, tag_name: 'create-vike-core@0.0.1', body: 'Notes' },
         // Another package's release — not ours to delete.
@@ -92,7 +92,7 @@ describe('getReleasePlan()', () => {
   it('qualifies tags with the package name when several packages share the repo', () => {
     const plan = getReleasePlan({
       tagScheme: getTagScheme('create-vike-core', true),
-      releaseNotesByVersion: {
+      releaseBodyByVersion: {
         '0.0.2': 'New notes',
         '0.0.1': 'Old notes',
       },

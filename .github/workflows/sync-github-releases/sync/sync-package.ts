@@ -7,7 +7,12 @@ import path from 'node:path'
 import { applyReleasePlan } from './apply-release-plan.ts'
 import { getReleasePlan } from './release-plan.ts'
 import { getTagScheme, type TagScheme } from './tag-scheme.ts'
-import { buildReleaseBody, parseChangelog, type ReleaseNotesByVersion } from '../utils/changelog.ts'
+import {
+  buildReleaseBody,
+  parseChangelog,
+  type ReleaseBodyByVersion,
+  type ReleaseNotesByVersion,
+} from '../utils/changelog.ts'
 import { getReleaseDate } from '../utils/git.ts'
 import type { ReleasesClient } from '../utils/github.ts'
 
@@ -38,12 +43,10 @@ async function syncPackage(packageDir: string, context: SyncContext): Promise<vo
   const packageName = await readPackageName(packageDir)
   const tagScheme = getTagScheme(packageName, context.hasMultiplePackages)
   const changelogNotes = await readChangelogNotes(packageDir)
-  const releaseNotesByVersion = buildReleaseBodies(changelogNotes, {
-    tagScheme,
-    changelogUrl: getChangelogUrl(packageDir, context.changelogUrlBase),
-  })
+  const changelogUrl = getChangelogUrl(packageDir, context.changelogUrlBase)
+  const releaseBodyByVersion = buildReleaseBodies(changelogNotes, { tagScheme, changelogUrl })
   const githubReleases = await context.client.list()
-  const plan = getReleasePlan({ githubReleases, releaseNotesByVersion, tagScheme })
+  const plan = getReleasePlan({ githubReleases, releaseBodyByVersion, tagScheme })
   await applyReleasePlan({ plan, client: context.client, defaultBranch: context.defaultBranch, dryRun: context.dryRun })
 }
 
@@ -53,7 +56,7 @@ async function syncPackage(packageDir: string, context: SyncContext): Promise<vo
 function buildReleaseBodies(
   changelogNotes: ReleaseNotesByVersion,
   { tagScheme, changelogUrl }: { tagScheme: TagScheme; changelogUrl: string },
-): ReleaseNotesByVersion {
+): ReleaseBodyByVersion {
   return Object.fromEntries(
     Object.entries(changelogNotes).map(([version, notes]) => [
       version,

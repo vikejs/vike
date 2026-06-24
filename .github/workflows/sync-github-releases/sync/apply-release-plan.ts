@@ -2,7 +2,7 @@ export { applyReleasePlan }
 
 import type { ReleasePlan, ReleaseToCreate } from './release-plan.ts'
 import { findReleaseCommit, gitTagExists } from '../utils/git.ts'
-import type { ReleasesClient } from '../utils/github.ts'
+import type { NewRelease, ReleasesClient } from '../utils/github.ts'
 
 // Carry out a plan from getReleasePlan() against GitHub: create, then update, then delete. The
 // --dry-run gate lives here rather than in the client, so the client stays a plain transport and each
@@ -22,18 +22,7 @@ async function applyReleasePlan({
     // Resolve (and validate) the tag's commit before the dry-run gate, so a dry run still surfaces a
     // missing-tag failure or a deduced-commit warning.
     const targetCommitish = resolveTargetCommitish(release, defaultBranch)
-    await applyWrite(dryRun, 'create', release.tag_name, () =>
-      client.create({
-        tag_name: release.tag_name,
-        name: release.tag_name,
-        body: release.body,
-        target_commitish: targetCommitish,
-        // Only the newest version may be the repo's "Latest". create-release otherwise defaults
-        // make_latest=true, so backfilling an older release while a newer one already exists would
-        // wrongly mark the old one Latest.
-        make_latest: release.isLatest ? 'true' : 'false',
-      }),
-    )
+    await applyWrite(dryRun, 'create', release.tag_name, () => client.create(buildNewRelease(release, targetCommitish)))
   }
 
   for (const release of plan.releasesToUpdate)
@@ -64,6 +53,20 @@ function resolveTargetCommitish(release: ReleaseToCreate, defaultBranch: string)
   }
   console.warn(`Tag ${releaseTag} is missing — creating its release at deduced commit ${commit}`)
   return commit
+}
+
+// The GitHub create-release payload for one planned release, tagged at the already-resolved commit.
+function buildNewRelease(release: ReleaseToCreate, targetCommitish: string): NewRelease {
+  return {
+    tag_name: release.tag_name,
+    name: release.tag_name,
+    body: release.body,
+    target_commitish: targetCommitish,
+    // Only the newest version may be the repo's "Latest". create-release otherwise defaults
+    // make_latest=true, so backfilling an older release while a newer one already exists would
+    // wrongly mark the old one Latest.
+    make_latest: release.isLatest ? 'true' : 'false',
+  }
 }
 
 // Perform one write against GitHub — or, under --dry-run, just announce it.
