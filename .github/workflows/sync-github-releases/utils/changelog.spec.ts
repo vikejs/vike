@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { getReleaseNotesByVersion, parseChangelog, withReleaseDate } from './changelog.ts'
+import { buildReleaseBody, parseChangelog } from './changelog.ts'
 
 function readFixture(name: string): string {
   return readFileSync(path.join(__dirname, 'changelog-spec-fixtures', name), 'utf8')
@@ -71,31 +71,23 @@ describe('parseChangelog()', () => {
   })
 })
 
-describe('getReleaseNotesByVersion()', () => {
-  it('appends the synced-from-CHANGELOG.md footer to each version', () => {
-    const changelog = `## [1.0.0](https://github.com/owner/repo/compare/v0.9.0...v1.0.0) (2026-02-28)
+describe('buildReleaseBody()', () => {
+  const changelogUrl = 'https://example.com/CHANGELOG.md'
+  const footer = `<sub>Automatically synced from [\`CHANGELOG.md\`](${changelogUrl})</sub>`
 
-### Bug Fixes
-
-* Fixed it.
-`
-    expect(getReleaseNotesByVersion(changelog, 'https://example.com/CHANGELOG.md')).toEqual({
-      '1.0.0':
-        '### Bug Fixes\n\n* Fixed it.\n\n<sub>Automatically synced from [`CHANGELOG.md`](https://example.com/CHANGELOG.md)</sub>',
-    })
-  })
-})
-
-describe('withReleaseDate()', () => {
-  it('states the release date — human-friendly — at the top of the notes', () => {
-    expect(withReleaseDate('### Bug Fixes\n\n* Fixed it.', '2026-05-06')).toBe(
-      '_May 6, 2026_\n\n### Bug Fixes\n\n* Fixed it.',
+  it('tops the notes with the release date and tails them with the CHANGELOG.md footer', () => {
+    expect(buildReleaseBody('### Bug Fixes\n\n* Fixed it.', { releaseDate: '2026-05-06', changelogUrl })).toBe(
+      `_May 6, 2026_\n\n### Bug Fixes\n\n* Fixed it.\n\n${footer}`,
     )
     // Two-digit day at year-end: guards against UTC date drift and confirms no leading zero on the day.
-    expect(withReleaseDate('* Note.', '2021-12-31')).toBe('_December 31, 2021_\n\n* Note.')
+    expect(buildReleaseBody('* Note.', { releaseDate: '2021-12-31', changelogUrl })).toBe(
+      `_December 31, 2021_\n\n* Note.\n\n${footer}`,
+    )
   })
 
-  it('leaves the notes unchanged when the date is unknown (no tag, no deducible commit)', () => {
-    expect(withReleaseDate('### Bug Fixes\n\n* Fixed it.', null)).toBe('### Bug Fixes\n\n* Fixed it.')
+  it('omits the date line when the date is unknown (no tag, no deducible commit)', () => {
+    expect(buildReleaseBody('### Bug Fixes\n\n* Fixed it.', { releaseDate: null, changelogUrl })).toBe(
+      `### Bug Fixes\n\n* Fixed it.\n\n${footer}`,
+    )
   })
 })

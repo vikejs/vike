@@ -7,12 +7,7 @@ import path from 'node:path'
 import { applyReleasePlan } from './apply-release-plan.ts'
 import { getReleasePlan } from './release-plan.ts'
 import { getTagScheme, type TagScheme } from './tag-scheme.ts'
-import {
-  getReleaseNotesByVersion,
-  mapReleaseNotes,
-  withReleaseDate,
-  type ReleaseNotesByVersion,
-} from '../utils/changelog.ts'
+import { buildReleaseBody, parseChangelog, type ReleaseNotesByVersion } from '../utils/changelog.ts'
 import { getReleaseDate } from '../utils/git.ts'
 import type { ReleasesClient } from '../utils/github.ts'
 
@@ -42,18 +37,28 @@ function createSyncContext(
 async function syncPackage(packageDir: string, ctx: SyncContext): Promise<void> {
   const packageName = await readPackageName(packageDir)
   const tagScheme = getTagScheme(packageName, ctx.hasMultiplePackages)
-  const releaseNotesByVersion = stampReleaseDates(await readReleaseNotes(packageDir, ctx.changelogUrlBase), tagScheme)
+  const changelogNotes = await readChangelogNotes(packageDir)
+  const releaseNotesByVersion = buildReleaseBodies(changelogNotes, {
+    tagScheme,
+    changelogUrl: getChangelogUrl(packageDir, ctx.changelogUrlBase),
+  })
   const githubReleases = await ctx.client.list()
   const plan = getReleasePlan({ githubReleases, releaseNotesByVersion, tagScheme })
   await applyReleasePlan({ plan, client: ctx.client, defaultBranch: ctx.defaultBranch, dryRun: ctx.dryRun })
 }
 
-// Stamp each release's notes with the date it was released, derived from its git tag (getReleaseDate()).
-// Done here, not in readReleaseNotes(), so that reader stays a single-purpose disk read and the git
-// lookups need the tag scheme that turns a version into its tag.
-function stampReleaseDates(releaseNotesByVersion: ReleaseNotesByVersion, tagScheme: TagScheme): ReleaseNotesByVersion {
-  return mapReleaseNotes(releaseNotesByVersion, (body, version) =>
-    withReleaseDate(body, getReleaseDate(tagScheme.build(version), version)),
+// Turn each version's parsed changelog notes into the release body we publish (buildReleaseBody()). Kept
+// out of the disk read (readChangelogNotes()) because the release date is resolved from git — the tag
+// scheme turns a version into its tag (getReleaseDate()) — which the pure changelog parsing knows nothing of.
+function buildReleaseBodies(
+  changelogNotes: ReleaseNotesByVersion,
+  { tagScheme, changelogUrl }: { tagScheme: TagScheme; changelogUrl: string },
+): ReleaseNotesByVersion {
+  return Object.fromEntries(
+    Object.entries(changelogNotes).map(([version, notes]) => [
+      version,
+      buildReleaseBody(notes, { releaseDate: getReleaseDate(tagScheme.build(version), version), changelogUrl }),
+    ]),
   )
 }
 
@@ -62,9 +67,13 @@ async function readPackageName(packageDir: string): Promise<string> {
   return name
 }
 
-async function readReleaseNotes(packageDir: string, changelogUrlBase: string): Promise<ReleaseNotesByVersion> {
+async function readChangelogNotes(packageDir: string): Promise<ReleaseNotesByVersion> {
   const changelog = await readFile(path.resolve(packageDir, 'CHANGELOG.md'), 'utf8')
-  // path.posix.join keeps the URL clean when packageDir is '.' (a repo-root CHANGELOG.md): no `/./`.
-  const changelogUrl = `${changelogUrlBase}/${path.posix.join(packageDir, 'CHANGELOG.md')}`
-  return getReleaseNotesByVersion(changelog, changelogUrl)
+  return parseChangelog(changelog)
+}
+
+// The GitHub web (blob) URL of the package's CHANGELOG.md, which each release body's footer links back to.
+// path.posix.join keeps the URL clean when packageDir is '.' (a repo-root CHANGELOG.md): no `/./`.
+function getChangelogUrl(packageDir: string, changelogUrlBase: string): string {
+  return `${changelogUrlBase}/${path.posix.join(packageDir, 'CHANGELOG.md')}`
 }
