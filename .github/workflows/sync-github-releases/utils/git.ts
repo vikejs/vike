@@ -2,15 +2,16 @@
 // package dirs). Knows nothing of the GitHub Actions environment (github-env.ts) nor the GitHub API
 // (github.ts).
 
-export { git }
 export { gitLines }
 export { getRepoRoot }
+export { getRepositoryFromGitRemote }
 export { gitTagExists }
 export { findReleaseCommit }
 export { getReleaseDate }
 export { getTrackedChangelogFiles }
 export { toPackageDirs }
 
+import assert from 'node:assert'
 import { execFileSync } from 'node:child_process'
 import path from 'node:path'
 
@@ -27,6 +28,16 @@ function gitLines(args: string[]): string[] {
 
 function getRepoRoot(): string {
   return git(['rev-parse', '--show-toplevel']).trim()
+}
+
+// The repository's `owner/repo` slug, parsed from the origin remote's GitHub URL. A fallback for local
+// runs where GITHUB_REPOSITORY isn't set (see github-env.ts). Handles both
+// https://github.com/owner/repo.git and git@github.com:owner/repo.git.
+function getRepositoryFromGitRemote(): string {
+  const url = git(['remote', 'get-url', 'origin']).trim()
+  const match = url.match(/github\.com[:/](.+?)(?:\.git)?$/)
+  assert(match, `Cannot parse GitHub repository from git remote: ${url}`)
+  return match[1]
 }
 
 function toPackageDirs(files: string[]): string[] {

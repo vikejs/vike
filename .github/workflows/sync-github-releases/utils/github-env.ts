@@ -4,7 +4,7 @@ export { getPushedFiles }
 
 import assert from 'node:assert'
 import { readFileSync } from 'node:fs'
-import { git, gitLines } from './git.ts'
+import { getRepositoryFromGitRemote, gitLines } from './git.ts'
 import { createReleasesClient, type ReleasesClient } from './github.ts'
 
 // How a run discovers what to act on, as whom, and against which branch: the repository, the auth
@@ -41,18 +41,10 @@ function getDefaultBranch(): string {
 
 function getRepository(): { owner: string; repo: string } {
   // Either source can be malformed, so keep the message source-neutral (it isn't always GITHUB_REPOSITORY).
-  const repository = process.env.GITHUB_REPOSITORY ?? getRepositoryFromGit()
+  const repository = process.env.GITHUB_REPOSITORY ?? getRepositoryFromGitRemote()
   const [owner, repo] = repository.split('/')
   assert(owner && repo, `Cannot parse owner/repo from repository: ${repository}`)
   return { owner, repo }
-}
-
-function getRepositoryFromGit(): string {
-  const url = git(['remote', 'get-url', 'origin']).trim()
-  // Handles both https://github.com/owner/repo.git and git@github.com:owner/repo.git
-  const match = url.match(/github\.com[:/](.+?)(?:\.git)?$/)
-  assert(match, `Cannot parse GitHub repository from git remote: ${url}`)
-  return match[1]
 }
 
 // The files the triggering push changed, or null when this isn't a push (manual workflow_dispatch, or
