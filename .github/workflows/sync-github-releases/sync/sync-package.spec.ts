@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { createSyncContext, syncPackage } from './sync-package.ts'
+import { syncPackage, type SyncContext } from './sync-package.ts'
 import type { Release, ReleasesClient } from '../utils/github.ts'
 
 // syncPackage() reads package.json and CHANGELOG.md from disk; stub both so the test can hand it a
@@ -33,13 +33,13 @@ describe('syncPackage()', () => {
   it('skips the package when its CHANGELOG.md parses to zero versions, touching nothing', async () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
     const { client, calls } = createFakeClient()
-    const context = createSyncContext({
+    const context: SyncContext = {
       client,
       owner: 'vikejs',
       repo: 'vike',
       defaultBranch: 'main',
       hasMultiplePackages: false,
-    })
+    }
 
     await syncPackage('packages/vike', context)
 

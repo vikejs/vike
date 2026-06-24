@@ -1,5 +1,4 @@
 export { syncPackage }
-export { createSyncContext }
 export type { SyncContext }
 
 import { readFile } from 'node:fs/promises'
@@ -16,24 +15,15 @@ import {
 import { getReleaseDate } from '../utils/git.ts'
 import type { ReleasesClient } from '../utils/github.ts'
 
-// The loop-invariant inputs of a sync run, built once and shared across packages. owner/repo aren't
-// here: the client already binds them, and the changelog URL base bakes them in.
+// The loop-invariant inputs of a sync run, built once in main() and shared across every package.
+// owner/repo ride along so each package's changelog URL can be built (see getChangelogUrl); the client
+// also binds them internally for its own API calls.
 type SyncContext = {
   client: ReleasesClient
+  owner: string
+  repo: string
   defaultBranch: string
   hasMultiplePackages: boolean
-  changelogUrlBase: string
-}
-
-// owner/repo are consumed only to bake the changelog URL base; every other field is the context as-is.
-function createSyncContext(
-  input: Omit<SyncContext, 'changelogUrlBase'> & { owner: string; repo: string },
-): SyncContext {
-  const { owner, repo, ...context } = input
-  return {
-    ...context,
-    changelogUrlBase: `https://github.com/${owner}/${repo}/blob/${context.defaultBranch}`,
-  }
 }
 
 // Sync one package: derive its expected releases from CHANGELOG.md (the source of truth), reconcile
@@ -49,7 +39,7 @@ async function syncPackage(packageDir: string, context: SyncContext): Promise<vo
     console.warn(`No versions parsed from ${packageDir}/CHANGELOG.md — skipping it.`)
     return
   }
-  const changelogUrl = getChangelogUrl(packageDir, context.changelogUrlBase)
+  const changelogUrl = getChangelogUrl(packageDir, context)
   const releaseBodyByVersion = buildReleaseBodies(changelogNotes, { tagScheme, changelogUrl })
   const githubReleases = await context.client.list()
   const plan = getReleasePlan({ githubReleases, releaseBodyByVersion, tagScheme })
@@ -83,6 +73,6 @@ async function readChangelogNotes(packageDir: string): Promise<ReleaseNotesByVer
 
 // The GitHub web (blob) URL of the package's CHANGELOG.md, which each release body's footer links back to.
 // path.posix.join keeps the URL clean when packageDir is '.' (a repo-root CHANGELOG.md): no `/./`.
-function getChangelogUrl(packageDir: string, changelogUrlBase: string): string {
-  return `${changelogUrlBase}/${path.posix.join(packageDir, 'CHANGELOG.md')}`
+function getChangelogUrl(packageDir: string, { owner, repo, defaultBranch }: SyncContext): string {
+  return `https://github.com/${owner}/${repo}/blob/${defaultBranch}/${path.posix.join(packageDir, 'CHANGELOG.md')}`
 }
