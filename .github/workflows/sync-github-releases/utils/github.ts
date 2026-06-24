@@ -21,13 +21,14 @@ type NewRelease = {
 }
 
 // A client for one repository's GitHub Releases. It binds the owner/repo/token and API base URL once,
-// so callers just say what to do — not where, nor as whom. It's a plain transport: skipping writes
-// under --dry-run is the apply step's job (see applyReleasePlan()).
+// so callers just say what to do — not where, nor as whom. The write methods gate on --dry-run (logging
+// what they would do instead of doing it) and otherwise log what they did, so every caller — the sync
+// step and delete-all alike — narrates releases the same way.
 type ReleasesClient = {
   list(): Promise<Release[]>
   create(release: NewRelease): Promise<void>
-  update(releaseId: number, body: string): Promise<void>
-  delete(releaseId: number): Promise<void>
+  update(release: { release_id: number; tag_name: string; body: string }): Promise<void>
+  delete(release: { release_id: number; tag_name: string }): Promise<void>
 }
 
 // Pause between write requests so bursts (e.g. backfilling many releases) stay under GitHub's
@@ -35,12 +36,15 @@ type ReleasesClient = {
 // https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api
 const RATE_LIMIT_DELAY_MS = 500
 
+const pastTense = { create: 'Created', update: 'Updated', delete: 'Deleted' } as const
+
 function createReleasesClient({
   owner,
   repo,
   token,
   apiUrl,
-}: { owner: string; repo: string; token: string; apiUrl: string }): ReleasesClient {
+  dryRun,
+}: { owner: string; repo: string; token: string; apiUrl: string; dryRun: boolean }): ReleasesClient {
   const releasesPath = `/repos/${owner}/${repo}/releases`
   // Identical on every request of this client, so build them once.
   const headers = {
@@ -80,6 +84,17 @@ function createReleasesClient({
     return response.status === 204 ? (undefined as T) : ((await response.json()) as T)
   }
 
+  // Perform a write — or, under --dry-run, just announce it — and log the outcome. Shared by all three
+  // write methods so they gate and narrate identically.
+  async function write(action: keyof typeof pastTense, tagName: string, send: () => Promise<void>): Promise<void> {
+    if (dryRun) {
+      console.log(`[dry-run] Would ${action} release ${tagName}`)
+      return
+    }
+    await send()
+    console.log(`${pastTense[action]} release ${tagName}`)
+  }
+
   return {
     // https://docs.github.com/en/rest/releases/releases#list-releases
     async list(): Promise<Release[]> {
@@ -94,15 +109,19 @@ function createReleasesClient({
     },
     // https://docs.github.com/en/rest/releases/releases#create-a-release
     create(release: NewRelease): Promise<void> {
-      return request(releasesPath, { method: 'POST', body: release })
+      return write('create', release.tag_name, () => request(releasesPath, { method: 'POST', body: release }))
     },
     // https://docs.github.com/en/rest/releases/releases#update-a-release
-    update(releaseId: number, body: string): Promise<void> {
-      return request(`${releasesPath}/${releaseId}`, { method: 'PATCH', body: { body } })
+    update(release): Promise<void> {
+      return write('update', release.tag_name, () =>
+        request(`${releasesPath}/${release.release_id}`, { method: 'PATCH', body: { body: release.body } }),
+      )
     },
     // https://docs.github.com/en/rest/releases/releases#delete-a-release
-    delete(releaseId: number): Promise<void> {
-      return request(`${releasesPath}/${releaseId}`, { method: 'DELETE' })
+    delete(release): Promise<void> {
+      return write('delete', release.tag_name, () =>
+        request(`${releasesPath}/${release.release_id}`, { method: 'DELETE' }),
+      )
     },
   }
 }

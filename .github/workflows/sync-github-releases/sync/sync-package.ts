@@ -22,7 +22,6 @@ type SyncContext = {
   client: ReleasesClient
   defaultBranch: string
   hasMultiplePackages: boolean
-  dryRun: boolean
   changelogUrlBase: string
 }
 
@@ -47,7 +46,7 @@ async function syncPackage(packageDir: string, context: SyncContext): Promise<vo
   const releaseBodyByVersion = buildReleaseBodies(changelogNotes, { tagScheme, changelogUrl })
   const githubReleases = await context.client.list()
   const plan = getReleasePlan({ githubReleases, releaseBodyByVersion, tagScheme })
-  await applyReleasePlan({ plan, client: context.client, defaultBranch: context.defaultBranch, dryRun: context.dryRun })
+  await applyReleasePlan({ plan, client: context.client, defaultBranch: context.defaultBranch })
 }
 
 // Turn each version's parsed changelog notes into the release body we publish (buildReleaseBody()). Separate
