@@ -4,7 +4,7 @@ export { getPushedFiles }
 
 import assert from 'node:assert'
 import { readFileSync } from 'node:fs'
-import { getRepositoryFromGitRemote, gitLines } from './git.ts'
+import { getChangedFiles, getRepositoryFromGitRemote } from './git.ts'
 import { createReleasesClient, type ReleasesClient } from './github.ts'
 
 // How a run discovers what to act on, as whom, and against which branch: the repository, the auth
@@ -55,8 +55,7 @@ function getPushedFiles(): string[] | null {
   const beforeSha = getCommitBeforePush()
   const headSha = process.env.GITHUB_SHA
   if (!beforeSha || !headSha) return null
-  // The SHAs are passed as argv (git() uses no shell), so they can't cause injection.
-  return gitLines(['diff', '--name-only', beforeSha, headSha])
+  return getChangedFiles(beforeSha, headSha)
 }
 
 // The commit the branch pointed at before the push (`github.event.before`). GitHub Actions writes the

@@ -2,13 +2,13 @@
 // package dirs). Knows nothing of the GitHub Actions environment (github-env.ts) nor the GitHub API
 // (github.ts).
 
-export { gitLines }
 export { getRepoRoot }
 export { getRepositoryFromGitRemote }
 export { gitTagExists }
 export { findReleaseCommit }
 export { getReleaseDate }
 export { getTrackedChangelogFiles }
+export { getChangedFiles }
 export { toPackageDirs }
 
 import assert from 'node:assert'
@@ -52,6 +52,13 @@ function toPackageDirs(files: string[]): string[] {
 
 function getTrackedChangelogFiles(): string[] {
   return gitLines(['ls-files', '--', CHANGELOG_PATHSPEC])
+}
+
+// The files that changed between two commits, one path per line — used to scope a push to the packages
+// it touched (see getPushedFiles()).
+function getChangedFiles(beforeSha: string, headSha: string): string[] {
+  // The SHAs are passed as argv (git() uses no shell), so they can't cause injection.
+  return gitLines(['diff', '--name-only', beforeSha, headSha])
 }
 
 // A release tag's fully-qualified ref. The `refs/tags/` prefix pins it to a tag, so git can't resolve
