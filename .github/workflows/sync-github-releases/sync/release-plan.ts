@@ -42,7 +42,7 @@ function getReleasePlan({
   // releases for updates would try to rewrite any release whose tag isn't in the changelog (e.g. a
   // release of another package, or a manually-created one) with an `undefined` body. Driving both
   // create and update off the changelog can only ever touch the versions the changelog declares.
-  const releasesByTag = new Map(githubReleases.map((release) => [release.tag_name, release]))
+  const releaseByTag = new Map(githubReleases.map((release) => [release.tag_name, release]))
   const expectedTags = new Set<string>()
   const releasesToCreate: ReleaseToCreate[] = []
   const releasesToUpdate: ReleaseToUpdate[] = []
@@ -60,7 +60,7 @@ function getReleasePlan({
     const body = releaseBodyByVersion[version]
     const releaseTag = tagScheme.build(version)
     expectedTags.add(releaseTag)
-    const existingRelease = releasesByTag.get(releaseTag)
+    const existingRelease = releaseByTag.get(releaseTag)
     if (!existingRelease) {
       releasesToCreate.push({ tag_name: releaseTag, body, version, isLatest: version === latestVersion })
     } else if (existingRelease.body?.trim() !== body) {
