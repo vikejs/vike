@@ -42,6 +42,13 @@ async function syncPackage(packageDir: string, context: SyncContext): Promise<vo
   const packageName = await readPackageName(packageDir)
   const tagScheme = getTagScheme(packageName, context.hasMultiplePackages)
   const changelogNotes = await readChangelogNotes(packageDir)
+  if (Object.keys(changelogNotes).length === 0) {
+    // A tracked CHANGELOG.md that parses to zero versions points at a parser/format drift, not an
+    // intentional removal — so skip the package (loudly) rather than reconcile against an empty version
+    // set, which getReleasePlan() would read as "every release is gone from the changelog: delete them all".
+    console.warn(`No versions parsed from ${packageDir}/CHANGELOG.md — skipping it.`)
+    return
+  }
   const changelogUrl = getChangelogUrl(packageDir, context.changelogUrlBase)
   const releaseBodyByVersion = buildReleaseBodies(changelogNotes, { tagScheme, changelogUrl })
   const githubReleases = await context.client.list()
