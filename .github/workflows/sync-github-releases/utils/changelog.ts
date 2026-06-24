@@ -1,10 +1,14 @@
 export { parseChangelog }
 export { buildReleaseBody }
 
+// Release info keyed by raw version (e.g. `0.4.257`, `0.1.0-beta.6`), newest first — two stages of the
+// same shape: the notes parsed straight from CHANGELOG.md (ReleaseNotesByVersion) become the body we
+// publish (ReleaseBodyByVersion) once buildReleaseBody() adds a date line and a footer.
 export type ReleaseNotesByVersion = Record<string, string>
+export type ReleaseBodyByVersion = Record<string, string>
 
-// Parse a CHANGELOG.md into release notes keyed by raw version (e.g. `0.4.257`, `0.1.0-beta.6`),
-// newest first. Decorating a version into its git tag is getTagScheme()'s job, not ours.
+// Parse a CHANGELOG.md into one notes entry per version. Decorating a version into its git tag is
+// getTagScheme()'s job, not ours.
 function parseChangelog(changelog: string): ReleaseNotesByVersion {
   // Match each version heading, ignoring any link release-me appends after the version
   // (`## [0.4.257](…)`) — only the version itself is captured.
