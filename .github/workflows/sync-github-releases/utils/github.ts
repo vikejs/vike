@@ -20,6 +20,10 @@ type NewRelease = {
   make_latest: 'true' | 'false'
 }
 
+// A reference to an existing GitHub Release: the numeric id addresses it in the API; the tag_name rides
+// along only for the log line write() prints.
+type ReleaseRef = { release_id: number; tag_name: string }
+
 // A client for one repository's GitHub Releases. It binds the owner/repo/token and API base URL once,
 // so callers just say what to do — not where, nor as whom. The write methods gate on --dry-run (logging
 // what they would do instead of doing it) and otherwise log what they did, so every caller — the sync
@@ -27,8 +31,8 @@ type NewRelease = {
 type ReleasesClient = {
   list(): Promise<Release[]>
   create(release: NewRelease): Promise<void>
-  update(release: { release_id: number; tag_name: string; body: string }): Promise<void>
-  delete(release: { release_id: number; tag_name: string }): Promise<void>
+  update(release: ReleaseRef & { body: string }): Promise<void>
+  delete(release: ReleaseRef): Promise<void>
 }
 
 // Pause between write requests so bursts (e.g. backfilling many releases) stay under GitHub's
