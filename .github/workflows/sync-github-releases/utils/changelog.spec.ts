@@ -1,0 +1,93 @@
+import { readFileSync } from 'node:fs'
+import path from 'node:path'
+import { describe, expect, it } from 'vitest'
+import { buildReleaseBody, parseChangelog } from './changelog.ts'
+
+function readFixture(name: string): string {
+  return readFileSync(path.join(__dirname, 'changelog-spec-fixtures', name), 'utf8')
+}
+
+describe('parseChangelog()', () => {
+  it('maps changelog headings to versions, ignoring any heading link', () => {
+    const changelog = `## [1.0.1](https://github.com/owner/repo/compare/v1.0.0...v1.0.1) (2026-03-01)
+
+### Features
+
+* Added release automation.
+
+## [1.0.0](https://github.com/owner/repo/releases/tag/v1.0.0) (2026-02-28)
+
+### Bug Fixes
+
+* Fixed old release notes.
+`
+
+    expect(parseChangelog(changelog)).toEqual({
+      '1.0.1': '### Features\n\n* Added release automation.',
+      '1.0.0': '### Bug Fixes\n\n* Fixed old release notes.',
+    })
+  })
+
+  it('parses oldest Vike entries (single # headings, pre-release versions)', () => {
+    const changelogNotes = parseChangelog(readFixture('changelog-vike.md'))
+    expect(Object.keys(changelogNotes)).toEqual([
+      '0.1.0-beta.10',
+      '0.1.0-beta.9',
+      '0.1.0-beta.8',
+      '0.1.0-beta.7',
+      '0.1.0-beta.6',
+    ])
+    expect(changelogNotes['0.1.0-beta.10']).toContain('### Features')
+    expect(changelogNotes['0.1.0-beta.8']).toContain('### BREAKING CHANGES')
+    expect(changelogNotes['0.1.0-beta.6']).toContain('Initial public release')
+  })
+
+  it('parses oldest Telefunc entries (trailing non-versioned sections)', () => {
+    const changelogNotes = parseChangelog(readFixture('changelog-telefunc.md'))
+    expect(Object.keys(changelogNotes)).toEqual(['0.1.2', '0.1.1'])
+    expect(changelogNotes['0.1.2']).toContain('improve TelefunctionError type')
+    expect(changelogNotes['0.1.1']).toContain('isomorphic imports')
+  })
+
+  it('parses oldest vike-vue entries (no-link headings, dash bullets)', () => {
+    const changelogNotes = parseChangelog(readFixture('changelog-vike-vue.md'))
+    expect(Object.keys(changelogNotes)).toEqual(['0.2.3', '0.2.2', '0.2.1', '0.2.0', '0.1.1'])
+    expect(changelogNotes['0.2.1']).toContain('Fix peer dependency')
+    expect(changelogNotes['0.2.0']).toContain('Add `Head` config option')
+  })
+
+  it('parses oldest vike-solid entries (single # headings, mixed formats)', () => {
+    const changelogNotes = parseChangelog(readFixture('changelog-vike-solid.md'))
+    expect(Object.keys(changelogNotes)).toEqual(['0.7.2', '0.7.1', '0.7.0', '0.6.2', '0.6.1'])
+    expect(changelogNotes['0.7.0']).toContain('### BREAKING CHANGES')
+    expect(changelogNotes['0.6.1']).toContain('MIGRATION.md')
+  })
+
+  it('parses oldest vike-react entries (no-link initial version)', () => {
+    const changelogNotes = parseChangelog(readFixture('changelog-vike-react.md'))
+    expect(Object.keys(changelogNotes)).toEqual(['0.1.6', '0.1.5', '0.1.4', '0.1.3', '0.1.2', '0.1.1'])
+    expect(changelogNotes['0.1.6']).toContain("fix 'vike-react' type")
+    expect(changelogNotes['0.1.1']).toContain('fix ESM import paths')
+  })
+})
+
+describe('buildReleaseBody()', () => {
+  const changelogUrl = 'https://example.com/CHANGELOG.md'
+  const footer = `<sub>Automatically synced from [\`CHANGELOG.md\`](${changelogUrl})</sub>`
+
+  it('tops the notes with the release date and tails them with the CHANGELOG.md footer', () => {
+    expect(buildReleaseBody('### Bug Fixes\n\n* Fixed it.', { releaseDate: '2026-05-06', changelogUrl })).toBe(
+      `_May 6, 2026_\n\n### Bug Fixes\n\n* Fixed it.\n\n${footer}`,
+    )
+    // Two-digit day at year-end: guards against UTC date drift and confirms no leading zero on the day.
+    expect(buildReleaseBody('* Note.', { releaseDate: '2021-12-31', changelogUrl })).toBe(
+      `_December 31, 2021_\n\n* Note.\n\n${footer}`,
+    )
+  })
+
+  it('omits the date line when the date is unknown (no tag, no deducible commit)', () => {
+    expect(buildReleaseBody('### Bug Fixes\n\n* Fixed it.', { releaseDate: null, changelogUrl })).toBe(
+      `### Bug Fixes\n\n* Fixed it.\n\n${footer}`,
+    )
+  })
+})

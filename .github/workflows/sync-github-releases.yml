@@ -1,0 +1,41 @@
+name: Sync GitHub Releases
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      # Any CHANGELOG.md — at the repo root or nested (e.g. packages/vike/CHANGELOG.md).
+      - 'CHANGELOG.md'
+      - '**/CHANGELOG.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Serialize runs: two quick CHANGELOG.md pushes would otherwise race to create the same release
+# (the loser fails with 422 already_exists). Don't cancel an in-progress run — let a backfill finish.
+concurrency:
+  group: sync-github-releases
+  cancel-in-progress: false
+
+jobs:
+  sync_github_releases:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    environment: release
+    steps:
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Create GitHub releases
+        run: node ./.github/workflows/sync-github-releases/sync.ts
+        env:
+          # GITHUB_EVENT_NAME, GITHUB_SHA and GITHUB_EVENT_PATH are provided automatically
+          GITHUB_DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          GITHUB_TOKEN: ${{ github.token }}

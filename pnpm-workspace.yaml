@@ -6,7 +6,7 @@ packages:
   - 'test/'
   - 'test/*'
   - 'test-deprecated-design/*'
-  - '.github/workflows/ci'
+  - '.github/workflows/*'
 allowBuilds:
   '@biomejs/biome': true
   '@swc/core': true
