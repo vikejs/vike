@@ -64,6 +64,9 @@ function getReleasePlan({
     if (!existingRelease) {
       releasesToCreate.push({ tag_name: releaseTag, body, version, isLatest: version === latestVersion })
     } else if (existingRelease.body?.trim() !== body) {
+      // Only the stored body is trimmed: GitHub can hand it back padded with surrounding whitespace,
+      // whereas our freshly built body has none — without the trim, every sync would see a phantom
+      // drift and re-update.
       releasesToUpdate.push({ release_id: existingRelease.id, tag_name: releaseTag, body })
     }
   }
