@@ -40,7 +40,7 @@ type ReleasesClient = {
 // https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api
 const RATE_LIMIT_DELAY_MS = 500
 
-const pastTense = { create: 'Created', update: 'Updated', delete: 'Deleted' } as const
+const pastTenseByAction = { create: 'Created', update: 'Updated', delete: 'Deleted' } as const
 
 function createReleasesClient({
   owner,
@@ -82,17 +82,21 @@ function createReleasesClient({
 
   // Perform a write — or, under --dry-run, just announce it — and log the outcome. Shared by all three
   // write methods so they gate, throttle, and narrate identically.
-  async function write(action: keyof typeof pastTense, tagName: string, send: () => Promise<void>): Promise<void> {
+  async function write(
+    action: keyof typeof pastTenseByAction,
+    releaseTag: string,
+    sendRequest: () => Promise<void>,
+  ): Promise<void> {
     if (dryRun) {
-      console.log(`[dry-run] Would ${action} release ${tagName}`)
+      console.log(`[dry-run] Would ${action} release ${releaseTag}`)
       return
     }
     // Throttle between writes (see RATE_LIMIT_DELAY_MS): the first doesn't wait, so a lone write — the
     // common case of a single new release — pays nothing, while a backfill of N writes pays N-1 delays.
     if (hasWritten) await setTimeout(RATE_LIMIT_DELAY_MS)
     hasWritten = true
-    await send()
-    console.log(`${pastTense[action]} release ${tagName}`)
+    await sendRequest()
+    console.log(`${pastTenseByAction[action]} release ${releaseTag}`)
   }
 
   return {

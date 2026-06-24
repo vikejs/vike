@@ -31,7 +31,7 @@ function createFakeClient(): { client: ReleasesClient; calls: string[] } {
 
 describe('syncPackage()', () => {
   it('skips the package when its CHANGELOG.md parses to zero versions, touching nothing', async () => {
-    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
     const { client, calls } = createFakeClient()
     const context: SyncContext = {
       client,
@@ -45,7 +45,7 @@ describe('syncPackage()', () => {
 
     // It must not even fetch the releases, let alone delete them: an empty parse is never "delete everything".
     expect(calls).toEqual([])
-    expect(warn).toHaveBeenCalledWith(expect.stringContaining('No versions parsed'))
-    warn.mockRestore()
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('No versions parsed'))
+    warnSpy.mockRestore()
   })
 })

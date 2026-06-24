@@ -20,8 +20,8 @@ async function main(): Promise<void> {
   // to pick the tag scheme: when several packages share the repo they also share its tag namespace, so
   // their release tags are qualified with the package name (see getTagScheme()).
   const allPackageDirs = toPackageDirs(getTrackedChangelogFiles())
-  const packageDirs = getPackageDirsToSync(explicitPackageDirs, allPackageDirs)
-  if (packageDirs.length === 0) {
+  const packageDirsToSync = getPackageDirsToSync(explicitPackageDirs, allPackageDirs)
+  if (packageDirsToSync.length === 0) {
     console.log('No CHANGELOG.md changes detected — nothing to sync.')
     return
   }
@@ -35,7 +35,7 @@ async function main(): Promise<void> {
     hasMultiplePackages: allPackageDirs.length > 1,
   }
 
-  for (const packageDir of packageDirs) {
+  for (const packageDir of packageDirsToSync) {
     console.log(`Syncing GitHub releases for package directory: ${packageDir}`)
     await syncPackage(packageDir, context)
   }
