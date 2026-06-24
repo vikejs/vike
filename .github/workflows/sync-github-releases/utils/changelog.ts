@@ -1,20 +1,7 @@
 export { parseChangelog }
-export { getReleaseNotesByVersion }
-export { mapReleaseNotes }
-export { withReleaseDate }
+export { buildReleaseBody }
 
 export type ReleaseNotesByVersion = Record<string, string>
-
-// Rewrite each version's notes while preserving the version keys and their newest-first order — the
-// shared shape behind every release-notes decoration (footer, release date, …).
-function mapReleaseNotes(
-  notesByVersion: ReleaseNotesByVersion,
-  transform: (notes: string, version: string) => string,
-): ReleaseNotesByVersion {
-  return Object.fromEntries(
-    Object.entries(notesByVersion).map(([version, notes]) => [version, transform(notes, version)]),
-  )
-}
 
 // Parse a CHANGELOG.md into release notes keyed by raw version (e.g. `0.4.257`, `0.1.0-beta.6`),
 // newest first. Decorating a version into its git tag is getTagScheme()'s job, not ours.
@@ -35,25 +22,19 @@ function parseChangelog(changelog: string): ReleaseNotesByVersion {
   )
 }
 
-// The release notes we publish for each changelog version: the parsed entry plus a footer linking back
-// to its CHANGELOG.md.
-function getReleaseNotesByVersion(changelog: string, changelogUrl: string): ReleaseNotesByVersion {
-  return mapReleaseNotes(parseChangelog(changelog), (notes) => withChangelogFooter(notes, changelogUrl))
-}
-
-// These releases are generated, so point each one back to the CHANGELOG.md it mirrors to discourage
-// editing the GitHub Release directly — a sync would overwrite it.
-function withChangelogFooter(body: string, changelogUrl: string): string {
-  return `${body}\n\n<sub>Automatically synced from [\`CHANGELOG.md\`](${changelogUrl})</sub>`
-}
-
-// State, at the top of the notes, the date the version was released. A created GitHub Release records
-// the date the sync ran (its `published_at`), not when the version actually shipped — so we surface the
-// real date, taken from the git tag (see getReleaseDate()). A null date (no tag, no deducible commit)
-// leaves the notes unchanged.
-function withReleaseDate(body: string, releaseDate: string | null): string {
-  if (!releaseDate) return body
-  return `_${formatReleaseDate(releaseDate)}_\n\n${body}`
+// The body we publish for one changelog version, assembled here in a single place from its parsed notes:
+//  - topped with the release date, when known. A created GitHub Release otherwise only records when the
+//    sync ran (its `published_at`), not when the version shipped — so we surface the real date, taken
+//    from the git tag (see getReleaseDate()). A null date (no tag, no deducible commit) drops the line.
+//  - tailed with a footer pointing back to the CHANGELOG.md it mirrors, to discourage editing the
+//    GitHub Release directly — the next sync would overwrite it.
+function buildReleaseBody(
+  notes: string,
+  { releaseDate, changelogUrl }: { releaseDate: string | null; changelogUrl: string },
+): string {
+  const dateLine = releaseDate ? `_${formatReleaseDate(releaseDate)}_\n\n` : ''
+  const footer = `<sub>Automatically synced from [\`CHANGELOG.md\`](${changelogUrl})</sub>`
+  return `${dateLine}${notes}\n\n${footer}`
 }
 
 // Render an ISO date (`2026-05-06`) in a human-friendly long form (`May 6, 2026`). Formatted in UTC so
