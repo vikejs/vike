@@ -1,5 +1,6 @@
 export { createReleasesClient }
 export type { Release }
+export type { NewRelease }
 export type { ReleasesClient }
 
 import { setTimeout } from 'node:timers/promises'
