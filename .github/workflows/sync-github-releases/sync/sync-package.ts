@@ -46,9 +46,9 @@ async function syncPackage(packageDir: string, ctx: SyncContext): Promise<void> 
   await applyReleasePlan({ plan, client: ctx.client, defaultBranch: ctx.defaultBranch, dryRun: ctx.dryRun })
 }
 
-// Turn each version's parsed changelog notes into the release body we publish (buildReleaseBody()). Kept
-// out of the disk read (readChangelogNotes()) because the release date is resolved from git — the tag
-// scheme turns a version into its tag (getReleaseDate()) — which the pure changelog parsing knows nothing of.
+// Turn each version's parsed changelog notes into the release body we publish (buildReleaseBody()). Separate
+// from the disk read (readChangelogNotes()) because each body is stamped with the version's release date,
+// which is resolved from git (getReleaseDate()) — something the pure changelog parsing knows nothing of.
 function buildReleaseBodies(
   changelogNotes: ReleaseNotesByVersion,
   { tagScheme, changelogUrl }: { tagScheme: TagScheme; changelogUrl: string },
