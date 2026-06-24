@@ -66,7 +66,6 @@ function resolveTargetCommitish(release: ReleaseToCreate, defaultBranch: string)
   return commit
 }
 
-// Perform one write against GitHub — or, under --dry-run, just announce it.
 const pastTense = { create: 'Created', update: 'Updated', delete: 'Deleted' } as const
 async function applyWrite(
   dryRun: boolean,

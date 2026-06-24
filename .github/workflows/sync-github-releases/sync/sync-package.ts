@@ -21,7 +21,6 @@ type SyncContext = {
   changelogUrlBase: string
 }
 
-// owner/repo are consumed only to bake the changelog URL base; every other field is the context as-is.
 function createSyncContext(
   input: Omit<SyncContext, 'changelogUrlBase'> & { owner: string; repo: string },
 ): SyncContext {
