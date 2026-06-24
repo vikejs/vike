@@ -3,7 +3,7 @@
 
 main()
 
-import { createSyncContext, syncPackage } from './sync/sync-package.ts'
+import { syncPackage, type SyncContext } from './sync/sync-package.ts'
 import { getRepoRoot, getTrackedChangelogFiles, toPackageDirs } from './utils/git.ts'
 import { createReleasesClientFromEnv, getDefaultBranch, getPushedFiles } from './utils/github-env.ts'
 
@@ -27,13 +27,13 @@ async function main(): Promise<void> {
   }
 
   const { client, owner, repo } = createReleasesClientFromEnv(dryRun)
-  const context = createSyncContext({
+  const context: SyncContext = {
     client,
     owner,
     repo,
     defaultBranch: getDefaultBranch(),
     hasMultiplePackages: allPackageDirs.length > 1,
-  })
+  }
 
   for (const packageDir of packageDirs) {
     console.log(`Syncing GitHub releases for package directory: ${packageDir}`)
