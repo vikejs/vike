@@ -9,15 +9,15 @@ import { createReleasesClient, type ReleasesClient } from './github.ts'
 
 // How a run discovers what to act on, as whom, and against which branch: the repository, the auth
 // token, the default branch, and — on a push — which files changed. All read from the GitHub Actions
-// environment, with fallbacks for local runs. Kept apart from the API client (github.ts), which is
-// pure transport and shouldn't care where these values come from.
+// environment, with fallbacks for local runs. Kept apart from the API client (github.ts), which
+// shouldn't care where these values come from.
 
 // A GitHub Releases client for the repository this run targets, wired up from the environment. Returns
-// the resolved owner/repo too — callers need them for the web links and log lines that the client
-// (pure transport) doesn't expose.
-function createReleasesClientFromEnv(): { client: ReleasesClient; owner: string; repo: string } {
+// the resolved owner/repo too — callers need them for the web links and log lines the client doesn't
+// expose. dryRun is passed straight through to the client, which is what gates and logs the writes.
+function createReleasesClientFromEnv(dryRun: boolean): { client: ReleasesClient; owner: string; repo: string } {
   const { owner, repo } = getRepository()
-  const client = createReleasesClient({ owner, repo, token: getGithubToken(), apiUrl: getApiUrl() })
+  const client = createReleasesClient({ owner, repo, token: getGithubToken(), apiUrl: getApiUrl(), dryRun })
   return { client, owner, repo }
 }
 

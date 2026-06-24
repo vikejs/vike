@@ -6,15 +6,15 @@ main()
 import { createReleasesClientFromEnv } from './utils/github-env.ts'
 
 async function main(): Promise<void> {
-  const { client, owner, repo } = createReleasesClientFromEnv()
+  const { client, owner, repo } = createReleasesClientFromEnv(false)
 
   console.log(`Fetching releases for ${owner}/${repo} …`)
   const githubReleases = await client.list()
 
+  // The client logs each deletion (`Deleted release <tag>`).
   console.log(`Starting delete of ${githubReleases.length} releases …`)
   for (const release of githubReleases) {
-    console.log(`Deleting release ${release.tag_name} (ID: ${release.id}) …`)
-    await client.delete(release.id)
+    await client.delete({ release_id: release.id, tag_name: release.tag_name })
   }
 
   console.log(`Deleted ${githubReleases.length} releases.`)

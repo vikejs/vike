@@ -26,14 +26,13 @@ async function main(): Promise<void> {
     return
   }
 
-  const { client, owner, repo } = createReleasesClientFromEnv()
+  const { client, owner, repo } = createReleasesClientFromEnv(dryRun)
   const context = createSyncContext({
     client,
     owner,
     repo,
     defaultBranch: getDefaultBranch(),
     hasMultiplePackages: allPackageDirs.length > 1,
-    dryRun,
   })
 
   for (const packageDir of packageDirs) {

@@ -4,32 +4,27 @@ import type { ReleasePlan, ReleaseToCreate } from './release-plan.ts'
 import { findReleaseCommit, gitTagExists } from '../utils/git.ts'
 import type { NewRelease, ReleasesClient } from '../utils/github.ts'
 
-// Carry out a plan from getReleasePlan() against GitHub: create, then update, then delete. The
-// --dry-run gate lives here rather than in the client, so the client stays a plain transport and each
-// action is logged the same way whether or not it's actually performed.
+// Carry out a plan from getReleasePlan() against GitHub: create, then update, then delete. The client
+// gates each write on --dry-run and logs it (see createReleasesClient()); the one thing that must happen
+// here, before the client is even called, is resolving each create's target commit — so a dry run still
+// surfaces a missing-tag failure or a deduced-commit warning.
 async function applyReleasePlan({
   plan,
   client,
   defaultBranch,
-  dryRun,
 }: {
   plan: ReleasePlan
   client: ReleasesClient
   defaultBranch: string
-  dryRun: boolean
 }): Promise<void> {
   for (const release of plan.releasesToCreate) {
-    // Resolve (and validate) the tag's commit before the dry-run gate, so a dry run still surfaces a
-    // missing-tag failure or a deduced-commit warning.
     const targetCommitish = resolveTargetCommitish(release, defaultBranch)
-    await applyWrite(dryRun, 'create', release.tag_name, () => client.create(buildNewRelease(release, targetCommitish)))
+    await client.create(buildNewRelease(release, targetCommitish))
   }
 
-  for (const release of plan.releasesToUpdate)
-    await applyWrite(dryRun, 'update', release.tag_name, () => client.update(release.release_id, release.body))
+  for (const release of plan.releasesToUpdate) await client.update(release)
 
-  for (const release of plan.releasesToDelete)
-    await applyWrite(dryRun, 'delete', release.tag_name, () => client.delete(release.release_id))
+  for (const release of plan.releasesToDelete) await client.delete(release)
 }
 
 // The commit a to-be-created release is tagged at (its GitHub `target_commitish`):
@@ -67,20 +62,4 @@ function buildNewRelease(release: ReleaseToCreate, targetCommitish: string): New
     // wrongly mark the old one Latest.
     make_latest: release.isLatest ? 'true' : 'false',
   }
-}
-
-// Perform one write against GitHub — or, under --dry-run, just announce it.
-const pastTense = { create: 'Created', update: 'Updated', delete: 'Deleted' } as const
-async function applyWrite(
-  dryRun: boolean,
-  action: keyof typeof pastTense,
-  releaseTag: string,
-  write: () => Promise<void>,
-): Promise<void> {
-  if (dryRun) {
-    console.log(`[dry-run] Would ${action} release ${releaseTag}`)
-    return
-  }
-  await write()
-  console.log(`${pastTense[action]} release ${releaseTag}`)
 }
