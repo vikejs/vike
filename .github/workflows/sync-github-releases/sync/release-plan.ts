@@ -68,7 +68,6 @@ function getReleasePlan({
     }
   }
 
-  // Delete this package's releases whose version is no longer in the changelog (the source of truth).
   const releasesToDelete: ReleaseToDelete[] = githubReleases
     .filter((release) => tagScheme.owns(release.tag_name) && !expectedTags.has(release.tag_name))
     .map((release) => ({ release_id: release.id, tag_name: release.tag_name }))
