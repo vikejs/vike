@@ -27,7 +27,7 @@ describe('createReleasesClient() writes', () => {
 
   it('under --dry-run, logs what it would do and sends no request', async () => {
     const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(null, { status: 204 }))
-    const log = vi.spyOn(console, 'log').mockImplementation(() => {})
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
     const client = createClient(true)
 
     await client.create(newRelease)
@@ -35,7 +35,7 @@ describe('createReleasesClient() writes', () => {
     await client.delete({ release_id: 2, tag_name: 'v0.8.0' })
 
     expect(fetchSpy).not.toHaveBeenCalled()
-    expect(log.mock.calls.flat()).toEqual([
+    expect(logSpy.mock.calls.flat()).toEqual([
       '[dry-run] Would create release v1.0.0',
       '[dry-run] Would update release v0.9.0',
       '[dry-run] Would delete release v0.8.0',
@@ -44,7 +44,7 @@ describe('createReleasesClient() writes', () => {
 
   it('otherwise performs each write and logs it', async () => {
     const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(null, { status: 204 }))
-    const log = vi.spyOn(console, 'log').mockImplementation(() => {})
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
     const client = createClient(false)
 
     await client.create(newRelease)
@@ -52,7 +52,7 @@ describe('createReleasesClient() writes', () => {
     await client.delete({ release_id: 2, tag_name: 'v0.8.0' })
 
     expect(fetchSpy).toHaveBeenCalledTimes(3)
-    expect(log.mock.calls.flat()).toEqual([
+    expect(logSpy.mock.calls.flat()).toEqual([
       'Created release v1.0.0',
       'Updated release v0.9.0',
       'Deleted release v0.8.0',
