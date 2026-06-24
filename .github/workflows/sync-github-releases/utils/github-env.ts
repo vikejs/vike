@@ -14,8 +14,9 @@ import { createReleasesClient, type ReleasesClient } from './github.ts'
 
 // A GitHub Releases client for the repository this run targets, wired up from the environment. Returns
 // the resolved owner/repo too — callers need them for the web links and log lines the client doesn't
-// expose. dryRun is passed straight through to the client, which is what gates and logs the writes.
-function createReleasesClientFromEnv(dryRun: boolean): { client: ReleasesClient; owner: string; repo: string } {
+// expose. dryRun (passed straight through to the client, which gates and logs the writes) defaults to
+// false, for callers like delete-all that have no dry-run mode.
+function createReleasesClientFromEnv(dryRun = false): { client: ReleasesClient; owner: string; repo: string } {
   const { owner, repo } = getRepository()
   const client = createReleasesClient({ owner, repo, token: getGithubToken(), apiUrl: getApiUrl(), dryRun })
   return { client, owner, repo }
