@@ -5,7 +5,7 @@ main()
 
 import { createReleasesClientFromEnv } from './utils/github-env.ts'
 
-async function main() {
+async function main(): Promise<void> {
   const { client, owner, repo } = createReleasesClientFromEnv()
 
   console.log(`Fetching releases for ${owner}/${repo} …`)

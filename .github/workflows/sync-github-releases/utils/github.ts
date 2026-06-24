@@ -41,6 +41,14 @@ function createReleasesClient({
   apiUrl,
 }: { owner: string; repo: string; token: string; apiUrl: string }): ReleasesClient {
   const releasesPath = `/repos/${owner}/${repo}/releases`
+  // Identical on every request of this client, so build them once.
+  const headers = {
+    Accept: 'application/vnd.github+json',
+    Authorization: `Bearer ${token}`,
+    'Content-Type': 'application/json',
+    'User-Agent': 'sync-github-releases-workflow',
+    'X-GitHub-Api-Version': '2022-11-28',
+  }
   let writeCount = 0
 
   async function request<T = void>(
@@ -57,13 +65,7 @@ function createReleasesClient({
 
     const response = await fetch(new URL(pathname, apiUrl), {
       method,
-      headers: {
-        Accept: 'application/vnd.github+json',
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-        'User-Agent': 'sync-github-releases-workflow',
-        'X-GitHub-Api-Version': '2022-11-28',
-      },
+      headers,
       body: body ? JSON.stringify(body) : undefined,
     })
 
