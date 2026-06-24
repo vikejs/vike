@@ -84,11 +84,11 @@ function createReleasesClient({
   // write methods so they gate, throttle, and narrate identically.
   async function write(
     action: keyof typeof pastTenseByAction,
-    tagName: string,
+    releaseTag: string,
     sendRequest: () => Promise<void>,
   ): Promise<void> {
     if (dryRun) {
-      console.log(`[dry-run] Would ${action} release ${tagName}`)
+      console.log(`[dry-run] Would ${action} release ${releaseTag}`)
       return
     }
     // Throttle between writes (see RATE_LIMIT_DELAY_MS): the first doesn't wait, so a lone write — the
@@ -96,7 +96,7 @@ function createReleasesClient({
     if (hasWritten) await setTimeout(RATE_LIMIT_DELAY_MS)
     hasWritten = true
     await sendRequest()
-    console.log(`${pastTenseByAction[action]} release ${tagName}`)
+    console.log(`${pastTenseByAction[action]} release ${releaseTag}`)
   }
 
   return {
