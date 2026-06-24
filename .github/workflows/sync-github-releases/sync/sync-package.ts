@@ -33,17 +33,17 @@ function createSyncContext(
 
 // Sync one package: derive its expected releases from CHANGELOG.md (the source of truth), reconcile
 // them against the package's existing GitHub Releases into a plan, then apply that plan.
-async function syncPackage(packageDir: string, ctx: SyncContext): Promise<void> {
+async function syncPackage(packageDir: string, context: SyncContext): Promise<void> {
   const packageName = await readPackageName(packageDir)
-  const tagScheme = getTagScheme(packageName, ctx.hasMultiplePackages)
+  const tagScheme = getTagScheme(packageName, context.hasMultiplePackages)
   const changelogNotes = await readChangelogNotes(packageDir)
   const releaseNotesByVersion = buildReleaseBodies(changelogNotes, {
     tagScheme,
-    changelogUrl: getChangelogUrl(packageDir, ctx.changelogUrlBase),
+    changelogUrl: getChangelogUrl(packageDir, context.changelogUrlBase),
   })
-  const githubReleases = await ctx.client.list()
+  const githubReleases = await context.client.list()
   const plan = getReleasePlan({ githubReleases, releaseNotesByVersion, tagScheme })
-  await applyReleasePlan({ plan, client: ctx.client, defaultBranch: ctx.defaultBranch, dryRun: ctx.dryRun })
+  await applyReleasePlan({ plan, client: context.client, defaultBranch: context.defaultBranch, dryRun: context.dryRun })
 }
 
 // Turn each version's parsed changelog notes into the release body we publish (buildReleaseBody()). Separate
