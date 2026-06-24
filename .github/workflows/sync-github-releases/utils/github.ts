@@ -49,7 +49,7 @@ function createReleasesClient({
     'User-Agent': 'sync-github-releases-workflow',
     'X-GitHub-Api-Version': '2022-11-28',
   }
-  let writeCount = 0
+  let hasWritten = false
 
   async function request<T = void>(
     pathname: string,
@@ -59,8 +59,8 @@ function createReleasesClient({
     // case of a single new release — shouldn't wait at all. So a backfill of N writes pays N-1 delays,
     // while one write pays none.
     if (method !== 'GET') {
-      if (writeCount > 0) await setTimeout(RATE_LIMIT_DELAY_MS)
-      writeCount++
+      if (hasWritten) await setTimeout(RATE_LIMIT_DELAY_MS)
+      hasWritten = true
     }
 
     const response = await fetch(new URL(pathname, apiUrl), {
