@@ -6,6 +6,7 @@ import { optimizeDeps, resolveOptimizeDeps } from './pluginDev/optimizeDeps.js'
 import { determineFsAllowList } from './pluginDev/determineFsAllowList.js'
 import { logSkillHint } from './pluginDev/logSkillHint.js'
 import { addSsrMiddleware } from '../shared/addSsrMiddleware.js'
+import { addUniversalMiddlewares } from '../shared/addUniversalMiddlewares.js'
 import { isDebugError } from '../../../utils/debug.js'
 import { applyDev } from '../../../utils/isDev.js'
 import { isDocker } from '../../../utils/isDocker.js'
@@ -56,6 +57,8 @@ function pluginDev(): Plugin[] {
           const hasHonoViteDevServer = !!config.plugins.find((p) => p.name === '@hono/vite-dev-server')
           if (config.server.middlewareMode || hasHonoViteDevServer) return
           return () => {
+            // Apply `+middleware` (Universal Middlewares) before the SSR middleware, so they run for all URLs.
+            addUniversalMiddlewares(server.middlewares)
             addSsrMiddleware(server.middlewares, config, false, null)
           }
         },
