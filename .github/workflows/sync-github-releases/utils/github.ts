@@ -60,14 +60,6 @@ function createReleasesClient({
     pathname: string,
     { body, method = 'GET' }: { body?: unknown; method?: 'GET' | 'PATCH' | 'POST' | 'DELETE' } = {},
   ): Promise<T> {
-    // Throttle between writes only: reads aren't the rate-limit concern, and a lone write — the common
-    // case of a single new release — shouldn't wait at all. So a backfill of N writes pays N-1 delays,
-    // while one write pays none.
-    if (method !== 'GET') {
-      if (hasWritten) await setTimeout(RATE_LIMIT_DELAY_MS)
-      hasWritten = true
-    }
-
     const response = await fetch(new URL(pathname, apiUrl), {
       method,
       headers,
@@ -85,12 +77,16 @@ function createReleasesClient({
   }
 
   // Perform a write — or, under --dry-run, just announce it — and log the outcome. Shared by all three
-  // write methods so they gate and narrate identically.
+  // write methods so they gate, throttle, and narrate identically.
   async function write(action: keyof typeof pastTense, tagName: string, send: () => Promise<void>): Promise<void> {
     if (dryRun) {
       console.log(`[dry-run] Would ${action} release ${tagName}`)
       return
     }
+    // Throttle between writes (see RATE_LIMIT_DELAY_MS): the first doesn't wait, so a lone write — the
+    // common case of a single new release — pays nothing, while a backfill of N writes pays N-1 delays.
+    if (hasWritten) await setTimeout(RATE_LIMIT_DELAY_MS)
+    hasWritten = true
     await send()
     console.log(`${pastTense[action]} release ${tagName}`)
   }
