@@ -15,10 +15,10 @@ type TagScheme = {
 }
 function getTagScheme(packageName: string, hasMultiplePackages: boolean): TagScheme {
   if (hasMultiplePackages) {
-    const prefix = `${packageName}@`
+    const tagPrefix = `${packageName}@`
     return {
-      build: (version) => `${prefix}${version}`,
-      owns: (releaseTag) => releaseTag.startsWith(prefix),
+      build: (version) => `${tagPrefix}${version}`,
+      owns: (releaseTag) => releaseTag.startsWith(tagPrefix),
     }
   }
   return {
