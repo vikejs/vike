@@ -24,7 +24,7 @@
     "react-dom": "^19.2.6",
     "serve": "^14.2.5",
     "typescript": "^5.9.3",
-    "vike": "0.4.259",
+    "vike": "0.4.260",
     "vite": "^6.3.2"
   },
   "type": "module"

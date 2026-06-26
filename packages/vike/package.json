@@ -1,6 +1,6 @@
 {
   "name": "vike",
-  "version": "0.4.259",
+  "version": "0.4.260",
   "repository": "https://github.com/vikejs/vike",
   "exports": {
     "./server": {
