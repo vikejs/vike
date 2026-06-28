@@ -29,7 +29,7 @@ type SyncContext = {
 // Sync one package: derive its expected releases from CHANGELOG.md (the source of truth), reconcile
 // them against the package's existing GitHub Releases into a plan, then apply that plan.
 async function syncPackage(packageDir: string, context: SyncContext): Promise<void> {
-  const packageName = await readPackageName(packageDir)
+  const packageName = await readPackageName(packageDir, context)
   const tagScheme = getTagScheme(packageName, context.hasMultiplePackages)
   const changelogNotes = await readChangelogNotes(packageDir)
   if (Object.keys(changelogNotes).length === 0) {
@@ -61,9 +61,20 @@ function buildReleaseBodies(
   )
 }
 
-async function readPackageName(packageDir: string): Promise<string> {
-  const { name } = JSON.parse(await readFile(path.resolve(packageDir, 'package.json'), 'utf8')) as { name: string }
-  return name
+// A package's npm name, used to namespace its release tags when the repo has several packages. Falls
+// back to the repo name for a single, possibly nameless package (e.g. a repo-root package.json that's
+// just a workspace holder) — harmless there, since a lone package's tags are the bare `vX.Y.Z` and
+// don't use the name. With multiple packages a missing name is fatal: its tags would collide.
+async function readPackageName(
+  packageDir: string,
+  context: Pick<SyncContext, 'hasMultiplePackages' | 'repo'>,
+): Promise<string> {
+  const { name } = JSON.parse(await readFile(path.resolve(packageDir, 'package.json'), 'utf8')) as { name?: string }
+  if (name) return name
+  if (!context.hasMultiplePackages) return context.repo
+  throw new Error(
+    `Cannot sync ${packageDir}/CHANGELOG.md: ${packageDir}/package.json is missing "name", but multiple packages require namespaced tags.`,
+  )
 }
 
 async function readChangelogNotes(packageDir: string): Promise<ReleaseNotesByVersion> {
