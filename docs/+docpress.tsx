@@ -31,6 +31,7 @@ const config = {
   banner: 'https://vike.dev/banner.jpg',
 
   github: 'https://github.com/vikejs/vike',
+  changelog: 'https://github.com/vikejs/vike/blob/main/packages/vike/CHANGELOG.md',
   discord: discordInvite,
   twitter: '@vike_js',
   bluesky: 'vike.dev',
