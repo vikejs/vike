@@ -2093,8 +2093,8 @@ importers:
         specifier: 0.4.260
         version: link:../../packages/vike
       vike-solid:
-        specifier: ^0.8.2
-        version: 0.8.2(solid-js@1.9.10)(vike@packages+vike)(vite-plugin-solid@2.11.10(solid-js@1.9.10)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)))
+        specifier: ^0.8.3
+        version: 0.8.3(solid-js@1.9.10)(vike@packages+vike)(vite-plugin-solid@2.11.10(solid-js@1.9.10)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)))
     devDependencies:
       typescript:
         specifier: ^5.9.3
@@ -7990,8 +7990,8 @@ packages:
       vite:
         optional: true
 
-  vike-solid@0.8.2:
-    resolution: {integrity: sha512-O97t/MyeukOPdgdv0atKGBDQHp4MfF3njLcaQtKTR6QyIj1VYvjiD3oj1wrdpI0gdHV2g8axJQm/X5/Xel3FJg==}
+  vike-solid@0.8.3:
+    resolution: {integrity: sha512-0Nh903TLHgjzpL0OrwDUA9sXAGl3PEQ/R3njqjxWF6ABh0ppzvhN8dvKW9j35EuICzdX6cJmagwre2m9IS0ZVw==}
     peerDependencies:
       solid-js: ^1.8.7
       vike: '>=0.4.250'
@@ -14974,7 +14974,7 @@ snapshots:
       - hono
       - srvx
 
-  vike-solid@0.8.2(solid-js@1.9.10)(vike@packages+vike)(vite-plugin-solid@2.11.10(solid-js@1.9.10)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))):
+  vike-solid@0.8.3(solid-js@1.9.10)(vike@packages+vike)(vite-plugin-solid@2.11.10(solid-js@1.9.10)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))):
     dependencies:
       isbot-fast: 1.2.0
       solid-js: 1.9.10
