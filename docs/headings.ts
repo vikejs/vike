@@ -112,6 +112,7 @@ const headings = [
       hideTitle: true,
       hideMenuLeft: true,
       contentMaxWidth: 1200,
+      topNavSticky: false,
     },
     url: '/new',
   },
