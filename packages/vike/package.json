@@ -102,6 +102,14 @@
       "browser": "./dist/client/node.js",
       "default": "./dist/server/runtime/fetch.js"
     },
+    "./getUniversalMiddlewares": {
+      "types": "./dist/server/runtime/getUniversalMiddlewares.d.ts",
+      "worker": "./dist/server/runtime/getUniversalMiddlewares.js",
+      "workerd": "./dist/server/runtime/getUniversalMiddlewares.js",
+      "node": "./dist/server/runtime/getUniversalMiddlewares.js",
+      "browser": "./dist/client/node.js",
+      "default": "./dist/server/runtime/getUniversalMiddlewares.js"
+    },
     "./__internal": {
       "types": "./dist/server/__internal/index.d.ts",
       "node": "./dist/server/__internal/index.js",
@@ -221,6 +229,9 @@
       "fetch": [
         "./dist/server/runtime/fetch.d.ts"
       ],
+      "getUniversalMiddlewares": [
+        "./dist/server/runtime/getUniversalMiddlewares.d.ts"
+      ],
       "__internal": [
         "./dist/server/__internal/index.d.ts"
       ],
@@ -256,7 +267,8 @@
     "./server.js",
     "./types.js",
     "./universal-middleware.js",
-    "./fetch.js"
+    "./fetch.js",
+    "./getUniversalMiddlewares.js"
   ],
   "devDependencies": {
     "@brillout/release-me": "^0.4.16",
