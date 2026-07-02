@@ -80,6 +80,7 @@ function getCiJobs() {
 function tolerateError({ logSource, logText, testInfo }) {
   return (
     [
+      '[telefunc@0.2.21][Warning]',
       // === Vite 8
       // [11:59:51.238][/examples/react-minimal][pnpm run dev][stderr] [vite:react-babel] We recommend switching to `@vitejs/plugin-react-oxc` for improved performance. More information at https://vite.dev/rolldown
       '`@vitejs/plugin-react-oxc` for improved performance',
