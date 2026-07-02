@@ -5,7 +5,7 @@
 //  - To use your path aliases defined in your vite.config.js, you need to tell Node.js about them, see https://vike.dev/path-aliases
 
 import express from 'express'
-import { telefunc } from 'telefunc'
+import { serve } from 'telefunc'
 import { createDevMiddleware, renderPage } from 'vike/server'
 import { root } from './root.js'
 const isProduction = process.env.NODE_ENV === 'production'
@@ -25,9 +25,10 @@ async function startServer() {
   app.use(express.text()) // Parse & make HTTP request body available at `req.body`
   app.all('/_telefunc', async (req, res) => {
     const context = {}
-    const httpResponse = await telefunc({ url: req.originalUrl, method: req.method, body: req.body, context })
-    const { body, statusCode, contentType } = httpResponse
-    res.status(statusCode).type(contentType).send(body)
+    const httpResponse = await serve({ url: req.originalUrl, method: req.method, body: req.body, context })
+    const { body, statusCode, headers } = httpResponse
+    headers.forEach(([name, value]) => res.setHeader(name, value))
+    res.status(statusCode).send(body)
   })
 
   app.get('/{*vikeCatchAll}', async (req, res) => {
