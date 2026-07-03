@@ -229,7 +229,7 @@ const DxContent = () => {
           <Block>
             <SubSectionTitle>Error tracking</SubSectionTitle>
             <p>
-              THe hooks{' '}
+              The hooks{' '}
               <Link href="/onError">
                 <code>+onError</code>
               </Link>
@@ -237,7 +237,7 @@ const DxContent = () => {
               <Link href="/onHookCall">
                 <code>+onHookCall</code>
               </Link>
-              {' , and '}
+              {', and '}
               <Link href="/onCreateGlobalContext">
                 <code>+onCreateGlobalContext</code>
               </Link>{' '}
