@@ -61,20 +61,20 @@ const config = {
   choices: {
     server: {
       choices: [
-        { name: 'Hono', icon: iconHono, iconStyle: { width: 13, height: 13 } },
-        { name: 'Express', icon: iconExpress },
-        { name: 'Fastify', icon: iconFastify, iconStyle: { position: 'relative', top: 1 } },
-        { name: 'H3', icon: iconH3 },
-        { name: 'Elysia', icon: iconElysia },
+        { name: 'Hono', icon: iconHono, iconStyle: { marginBottom: '1.5px' } },
+        { name: 'Express', icon: iconExpress, iconStyle: { objectFit: 'contain' }, iconStyleTab: { height: '11.5px' } },
+        { name: 'Fastify', icon: iconFastify, iconStyleDropdown: { width: '14px' }, iconStyleTab: { width: '18px' } },
+        { name: 'H3', icon: iconH3, iconStyle: { marginBottom: '1.5px' } },
+        { name: 'Elysia', icon: iconElysia, iconStyleTab: { height: '14px' } },
         'Other',
       ],
       default: 'Hono',
     },
     uiFramework: {
       choices: [
-        { name: 'React', icon: iconReact, iconStyle: { position: 'relative', top: -0.5, opacity: 1 } },
-        { name: 'Vue', icon: iconVue, iconStyle: { position: 'relative', top: -0.5 } },
-        { name: 'Solid', icon: iconSolid, iconStyle: { position: 'relative', top: -0.5 } },
+        { name: 'React', icon: iconReact },
+        { name: 'Vue', icon: iconVue },
+        { name: 'Solid', icon: iconSolid, iconStyle: { marginBottom: '1px' }, iconStyleDropdown: { width: '12.5px' } },
       ],
       default: 'React',
     },
