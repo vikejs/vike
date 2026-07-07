@@ -7,7 +7,7 @@ import { ConfigSpec } from '../../components'
   providedByExtension={{ kind: 'setting', name: '+vue', extension: ['vike-vue'], noCustomGuide: true }}
 />
 
-The `+vue` setting sets Vue integration options. It's the Vue counterpart of <Link href="/react-setting">`+react`</Link>.
+Set sets Vue integration options.
 
 ```ts
 // pages/+vue.ts
@@ -68,37 +68,12 @@ export default {
 
 > The `include`/`exclude` props match against the [`name`](https://vuejs.org/api/options-misc.html#name) of your `+Page.vue` components.
 
-You can use Vue's [`onActivated()` and `onDeactivated()`](https://vuejs.org/guide/built-ins/keep-alive.html#lifecycle-of-cached-instance) lifecycle hooks inside your page components to react to the page being shown/hidden.
-
-### Why not `<KeepAlive>` inside `+Layout`?
-
-Wrapping `<slot />` with `<KeepAlive>` inside a <Link href="/Layout">`+Layout`</Link> component doesn't work:
-
-```vue
-<!-- pages/+Layout.vue -->
-<template>
-  <!-- ❌ Doesn't work -->
-  <KeepAlive>
-    <slot />
-  </KeepAlive>
-</template>
-```
-
-That's a Vue limitation: `<KeepAlive>` only caches its direct child component, whereas slot content is rendered as a [Fragment](https://vuejs.org/guide/extras/rendering-mechanism.html) which `<KeepAlive>` cannot cache.
-
-That's why `vike-vue` applies `<KeepAlive>` where it works: directly around the routed `Page` component (inside all `+Layout` components).
-
-### Caveat
-
-The `<KeepAlive>` cache only lives while `keepAlive` is enabled: if the user navigates to a page that doesn't enable `keepAlive`, then the cache is discarded (all cached page instances are unmounted).
-
-Thus, we recommend enabling `keepAlive` for all your pages (e.g. at `pages/+vue.ts`) and using the `include`/`exclude`/`max` props for fine-grained control over which page components are cached.
+> You can use Vue's [`onActivated()` and `onDeactivated()`](https://vuejs.org/guide/built-ins/keep-alive.html#lifecycle-of-cached-instance) lifecycle hooks inside your page components to react to the page being shown/hidden.
 
 
 ## See also
 
 - [Vue > `<KeepAlive>`](https://vuejs.org/guide/built-ins/keep-alive.html)
-- <Link href="/react-setting" />
 - <Link href="/Layout" />
 - <Link href="/vike-vue" />
 - <Link href="/settings" />
