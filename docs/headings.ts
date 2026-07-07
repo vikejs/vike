@@ -1392,6 +1392,10 @@ function api() {
         url: '/onCreateApp',
       },
       {
+        title: '`+vue`',
+        url: '/vue-setting',
+      },
+      {
         title: '`+react`',
         url: '/react-setting',
       },
