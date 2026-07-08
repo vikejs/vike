@@ -32,13 +32,13 @@ Finally, Vike is a community project: instead of leaning on a framework with bus
 | RSC (React Server Components)                                   | Yes, <Link href="/react#react-server-components">partially</Link> | Yes, experimental       |
 | <p align="center">**Routing**</p>                                                        |                                                            |                               |
 | Filesystem Routing                                              | Yes                                                        | Yes                           |
-| <Link text="Domain-driven Filesystem Routing" href="/file-structure" />                                        | Yes                                                        | No                            |
-| <Link text="Client Routing" href="/client-routing" />           | Yes                                                        | Yes, but [limited](https://github.com/vercel/next.js/discussions/64660) in SPA-only mode ***                           |
-| <Link text="Server Routing" href="/server-routing" />           | Yes                                                        | No                            |
-| <Link text="Base URL" href="/base-url" />                       | Yes                                                        | Limited                       |
+| <Link href="/file-structure">Domain-driven Filesystem Routing</Link>                                        | Yes                                                        | No                            |
+| <Link href="/client-routing">Client Routing</Link>           | Yes                                                        | Yes, but [limited](https://github.com/vercel/next.js/discussions/64660) in SPA-only mode ***                           |
+| <Link href="/server-routing">Server Routing</Link>           | Yes                                                        | No                            |
+| <Link href="/base-url">Base URL</Link>                       | Yes                                                        | Limited                       |
 | <p align="center">**Pre-rendering (SSG)**</p>                                                   |                                                            |                               |
 | Pre-rendering (SSG)                                    | Yes, for pages                                                        | Yes, for pages, or components ([Partial Pre-rendering](https://nextjs.org/learn/dashboard-app/partial-prerendering) using RSC)                               |
-| Incremental Static Regeneration (ISR)                  | No*, use <Link text="@photonjs/vercel" href="/vercel#isr" />        | Yes, in the Node.js runtime, on Vercel    |
+| Incremental Static Regeneration (ISR)                  | No*, use <Link href="/vercel#isr">@photonjs/vercel</Link>        | Yes, in the Node.js runtime, on Vercel    |
 | SPA-only mode (popular for PWAs) ***                   | Yes                                                        | Limited: [no dynamic routing in App Router](https://github.com/vercel/next.js/discussions/64660)                       |
 | <p align="center">**Integrations**</p>                                                    |                                                            |                               |
 HTTP server | No*, bring your own | Baked-in, custom server partially supported with caveats[[1]](https://github.com/vikejs/vike/issues/158#issuecomment-1355306156)[[2]](https://stackoverflow.com/questions/58742343/do-i-have-to-use-express-in-next-js-project/70945468#70945468) |
@@ -47,7 +47,7 @@ HTTP server | No*, bring your own | Baked-in, custom server partially supported 
 | <p align="center">**Extras**</p>                                |                                                            |                               |
 | Head component                                                  | No*, use a tool like [react-helmet](https://github.com/nfl/react-helmet). | Yes, next/head                |
 | Image component                                                 | No*, use an <Link href="/img">image optimizer tool</Link>. | Yes, next/image               |
-| API routes                                                      | No*, use your server or an <Link text="RPC tool" href="/api-routes" />.   | Yes                           |
+| API routes                                                      | No*, use your server or an <Link href="/api-routes">RPC tool</Link>.   | Yes                           |
 | Internationalization (i18n)                                     | Yes                                                         | Limited                       |
 | <Link href="/deploy-sync" />                                    | Yes                                                         | No                            |
 | [Build your own framework](https://land.vike.dev)                   | Yes                                                         | No                            |
@@ -195,7 +195,7 @@ Vike is made by the community and has no incentive to favor any side of the work
 ## UI Framework agnostic
 
 Next.js is deeply tied to React. So if you want to move to another UI framework later, like for instance [SolidJS](https://www.solidjs.com/), then it means a laborious refactor away from NextJS.
-But with Vike, you keep your options open, and can swap out your UI framework rather easily with various <Link text="UI extensions for Vike" href="/extensions" />.
+But with Vike, you keep your options open, and can swap out your UI framework rather easily with various <Link href="/extensions">UI extensions for Vike</Link>.
 
 > Vike is completely agnostic to React and its source code has zero dependency on React. You can actually use Vike with any other UI Framework (Vue, Preact, Solid, etc.).
 >

@@ -79,7 +79,7 @@ type PrerenderConfigPage = PageSetting | (() => PageSetting | Promise<PageSettin
 
 Stop showing a warning when pages cannot be pre-rendered.
 
-> Vike shows a warning when a page has a parameterized route (e.g. <Link text="Route String" href="/route-string" /> `/movie/@movieId`) while there isn't any <Link text={<><code>onBeforePrerenderStart()</code> hook</>} href="/onBeforePrerenderStart" /> that provides at least one URL matching the page's route (e.g. `/movie/42`).
+> Vike shows a warning when a page has a parameterized route (e.g. <Link href="/route-string">Route String</Link> `/movie/@movieId`) while there isn't any <Link href="/onBeforePrerenderStart"><code>onBeforePrerenderStart()</code> hook</Link> that provides at least one URL matching the page's route (e.g. `/movie/42`).
 This setting doesn't affect the pre-rendering process: it only suppresses the warning.
 
 Alternatively, set `+prerender` to `false` for the pages that cannot be pre-rendered — this also suppresses the warning. See <Link href="/pre-rendering#partial" />.
@@ -88,7 +88,7 @@ Alternatively, set `+prerender` to `false` for the pages that cannot be pre-rend
 >
 > That said, if you cannot or don't want to pre-render all your pages while still deploying to a <Link href="/static-hosts">static host</Link>, then see the workaround at [#1476 - Pre-rendered dynamic routes (static host deployment)](https://github.com/vikejs/vike/issues/1476).
 >
-> With <Link text={<code>vite-plugin-vercel</code>} href="/vercel#vite-plugin-vercel" />, you can statically deploy your pre-rendered pages while using a production server for your non-pre-rendered pages.
+> With <Link href="/vercel#vite-plugin-vercel"><code>vite-plugin-vercel</code></Link>, you can statically deploy your pre-rendered pages while using a production server for your non-pre-rendered pages.
 
 
 ## `redirects`
@@ -140,7 +140,7 @@ Set to `false` (or `1`) to disable concurrency.
 
 `boolean` (default: `false`)
 
-When running `$ vike build`, Vike automatically triggers <Link href="/pre-rendering">pre-rendering</Link>. (If you <Link text="enabled it" href="/pre-rendering#get-started" />.)
+When running `$ vike build`, Vike automatically triggers <Link href="/pre-rendering">pre-rendering</Link>. (If you <Link href="/pre-rendering#get-started">enabled it</Link>.)
 
 You can disable the automatic triggering:
 

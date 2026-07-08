@@ -109,7 +109,7 @@ This is the key difference between SPA and SSR: in SPA `div#root` is empty, wher
 This means that, with SPA, we use our server-side `onRenderHtml()` hook to generate HTML that is just an empty shell:
 the HTML doesn't contain the page's content.
 
-For production, we usually want to <Link text="pre-render" href="/pre-rendering" /> the HTML of our SPA pages in order to remove the need for a production Node.js server.
+For production, we usually want to <Link href="/pre-rendering">pre-render</Link> the HTML of our SPA pages in order to remove the need for a production Node.js server.
 
 We can also use our server-side `onRenderHtml()` hook to render `<head>`:
 

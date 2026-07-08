@@ -29,10 +29,10 @@ function route(pageContext: PageContext) {
 
 > The parameter `id` is available at <Link href="/pageContext">`pageContext.routeParams.id`</Link>.
 
-If you merely want to guard your page, then you can use a <Link text="Route String" href="/route-string" /> with a <Link text={<code>guard()</code>} href="/guard" /> hook instead of a Route Function.
+If you merely want to guard your page, then you can use a <Link href="/route-string">Route String</Link> with a <Link href="/guard"><code>guard()</code></Link> hook instead of a Route Function.
 
 You can use any routing tool you want, such as:
- - Vike's <Link text="Route String" href="/route-string" /> resolver [`resolveRoute()`](#resolveroute)
+ - Vike's <Link href="/route-string">Route String</Link> resolver [`resolveRoute()`](#resolveroute)
  - [partRegex](https://github.com/brillout/part-regex)
  - [path-to-regexp](https://www.npmjs.com/package/path-to-regexp) (the router used by Express.js)
  - etc.
@@ -59,7 +59,7 @@ function route(pageContext: PageContext) {
 
 ## `resolveRoute()`
 
-You can use <Link text="Route Strings" href="/route-string" /> inside Route Functions:
+You can use <Link href="/route-string">Route Strings</Link> inside Route Functions:
 
 ```ts
 // /pages/product/edit/+route.ts
@@ -133,7 +133,7 @@ function route(pageContext: PageContext) {
 
 Vike cannot know whether another Route Function will return a higher precedence number, therefore Vike has to execute all Route Functions.
 
-If you use <Link text="Client Routing" href="/client-routing" />, then *all* your Route Functions are loaded in the browser. This means that if a Route Function imports a lot of code, then all that code is loaded on the client-side of *every* page. A heavy Route Function slows down your whole app.
+If you use <Link href="/client-routing">Client Routing</Link>, then *all* your Route Functions are loaded in the browser. This means that if a Route Function imports a lot of code, then all that code is loaded on the client-side of *every* page. A heavy Route Function slows down your whole app.
 
 Route Functions should be lightweight and fast.
 
@@ -150,9 +150,9 @@ export default async () => { /* ... */ }
 ```
 
 The motivation for having an asynchronous Route Function is usually to redirect/protect a private
-page. You can achieve that by using <Link href="/render" text={<code>throw render()</code>} /> / <Link href="/redirect" text={<code>throw redirect()</code>} />
-with an async <Link text={<code>guard()</code>} href="/guard" />, async <Link text={<code>data()</code>} href="/data" />, or
-async <Link text={<code>onBeforeRender()</code>} href="/onBeforeRender" /> hook.
+page. You can achieve that by using <Link href="/render"><code>throw render()</code></Link> / <Link href="/redirect"><code>throw redirect()</code></Link>
+with an async <Link href="/guard"><code>guard()</code></Link>, async <Link href="/data"><code>data()</code></Link>, or
+async <Link href="/onBeforeRender"><code>onBeforeRender()</code></Link> hook.
 
 > An asynchronous Route Function would slow down your entire app: as explained in [Lightweight & fast](#lightweight-fast), every time the user navigates to a new page *all* your Route Functions are called. This means that a single slow Route Function slows down *all* your pages.
 
@@ -198,9 +198,9 @@ export default () => {
 ```
 
 But it isn't recommended: `pageContext.routeParams` is supposed to hold only a minimal amount of information. Instead,
-we recommend to implement complex logic in <Link text={<code>data()</code>} href="/data" />,
-<Link text={<code>onBeforeRender()</code>} href="/onBeforeRender" />, <Link text={<code>guard()</code>} href="/guard" />,
-or in a <Link text="custom hook" href="/meta" />.
+we recommend to implement complex logic in <Link href="/data"><code>data()</code></Link>,
+<Link href="/onBeforeRender"><code>onBeforeRender()</code></Link>, <Link href="/guard"><code>guard()</code></Link>,
+or in a <Link href="/meta">custom hook</Link>.
 
 ## See also
 

@@ -25,7 +25,7 @@ export function someHook() {
 ```
 
 - If the first argument is a URL, then that URL is rendered.
-- If the first argument is a status code, then the <Link text="error page" href="/error-page" /> is rendered.
+- If the first argument is a status code, then the <Link href="/error-page">error page</Link> is rendered.
   - [`401` Unauthorized](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401) - Access denied, the user isn't logged in.
   - [`403` Forbidden](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403) - Access denied, the user is logged in but isn't allowed.
   - [`404` Not Found](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404) - Page doesn't exist.

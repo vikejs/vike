@@ -8,9 +8,9 @@ Pre-rendering means to render the HTML of pages at build-time (when running <Lin
 
 Without pre-rendering, the HTML of a page is rendered at request-time (when the user goes to that page).
 
-If you pre-render all your pages, you don't need a production server: your app consists only of a static assets (HTML, JS, CSS, images, ...) that can be deployed to a static host (<Link href="/github-pages" text="GitHub Pages" />, <Link href="/cloudflare-pages">Cloudflare Pages</Link>, <Link href="/netlify">Netlify</Link>, ...).
+If you pre-render all your pages, you don't need a production server: your app consists only of a static assets (HTML, JS, CSS, images, ...) that can be deployed to a static host (<Link href="/github-pages">GitHub Pages</Link>, <Link href="/cloudflare-pages">Cloudflare Pages</Link>, <Link href="/netlify">Netlify</Link>, ...).
 
-If you don't pre-render, you need a production server to dynamically render your pages' HTML at request-time. (Deploying a [Node.js](https://nodejs.org) server to [AWS](https://aws.amazon.com), <Link href="/cloudflare" text="Cloudflare Workers" />, <Link href="/vercel" text="Vercel" />...)
+If you don't pre-render, you need a production server to dynamically render your pages' HTML at request-time. (Deploying a [Node.js](https://nodejs.org) server to [AWS](https://aws.amazon.com), <Link href="/cloudflare">Cloudflare Workers</Link>, <Link href="/vercel">Vercel</Link>...)
 
 > Tools that pre-render pages are also known as "SSG" (Static-Site Generators).
 
@@ -31,7 +31,7 @@ But **pre-rendering cannot be used for websites with content that changes very f
 
 **Pre-rendering can be used for websites with content that changes only occasionally**. For example, the content of `https://vike.dev` changes only when a maintainer updates the documentation — the entire website `https://vike.dev` can then be pre-rendered again every time there is change.
 
-> This website `https://vike.dev` uses pre-rendering and is deployed to <Link href="/github-pages" text="GitHub Pages" /> — a static host that is completely free, [easy to use](https://github.com/vikejs/vike/blob/main/.github/workflows/website-deploy.yml), and performant.
+> This website `https://vike.dev` uses pre-rendering and is deployed to <Link href="/github-pages">GitHub Pages</Link> — a static host that is completely free, [easy to use](https://github.com/vikejs/vike/blob/main/.github/workflows/website-deploy.yml), and performant.
 
 
 ## Get started

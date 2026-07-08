@@ -84,7 +84,7 @@ async function startServer() {
 ```
 
 The `pageContext.httpResponse.body` value is the HTML string returned by the
-<Link text={<><code>onRenderHtml()</code> hook</>} href="/onRenderHtml" /> with additional `<script>` and `<style>` tags
+<Link href="/onRenderHtml"><code>onRenderHtml()</code> hook</Link> with additional `<script>` and `<style>` tags
 automatically injected by Vike.
 
 > You can control where and what Vike injects using <Link href="/injectFilter" />.
@@ -102,7 +102,7 @@ The `renderPage()` function doesn't depend on Node.js and you can use `renderPag
 
 ## Optional
 
-If you <Link text="pre-render" href="/pre-rendering" /> all your pages then `renderPage()` isn't needed, because:
+If you <Link href="/pre-rendering">pre-render</Link> all your pages then `renderPage()` isn't needed, because:
  - Upon development (`$ vike dev`), Vike automatically embeds itself into Vite's development server.
  - Upon pre-rendering (`$ vike build`/`$ vike prerender`), Vike renders your pages without server.
 
