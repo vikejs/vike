@@ -6,7 +6,7 @@ import { Link } from '@brillout/docpress'
   global={null}
 />
 
-The `onRenderClient()` hook defines how pages are rendered/<Link text="hydrated" href="/hydration" /> on the client-side.
+The `onRenderClient()` hook defines how pages are rendered/<Link href="/hydration">hydrated</Link> on the client-side.
 
 The hooks `onRenderClient()` and <Link href="/onRenderHtml">`onRenderHtml()`</Link> are essentially the glue code between Vike and your UI framework (React/Vue/Solid/...).
 
@@ -45,8 +45,8 @@ You can use [`passToClient`](/passToClient) to determine what subset of `pageCon
 ## SPA vs SSR
 
 When implementing SSR, the client-side `onRenderClient()` hook works in tandem with the
-<Link text={<>server-side <code>onRenderHtml()</code> hook</>} href="/onRenderHtml" />: the server-side `onRenderHtml()`
-hook renders the page to HTML and the client-side `onRenderClient()` hook <Link text="hydrates" href="/hydration" /> the
+<Link href="/onRenderHtml">server-side <code>onRenderHtml()</code> hook</Link>: the server-side `onRenderHtml()`
+hook renders the page to HTML and the client-side `onRenderClient()` hook <Link href="/hydration">hydrates</Link> the
 HTML.
 
 When implementing an SPA, then the client-side `onRenderClient()` hook is solely responsible for rendering the page.

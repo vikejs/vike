@@ -10,9 +10,9 @@ import { UseVikeExtensionUiFramework, UiFrameworkExtension, ConfigSpec } from '.
 `boolean {:ts}`
 </ConfigSpec>
 
-If you don't use a <UiFrameworkExtension /> then Vike does <Link text="Server Routing" href="/server-routing" /> by default.
+If you don't use a <UiFrameworkExtension /> then Vike does <Link href="/server-routing">Server Routing</Link> by default.
 
-You can opt into <Link text="Client Routing" href="/client-routing" /> by using the `clientRouting` setting, see <Link href="#getting-started" />.
+You can opt into <Link href="/client-routing">Client Routing</Link> by using the `clientRouting` setting, see <Link href="#getting-started" />.
 
 <UseVikeExtensionUiFramework featureName="Client Routing" />
 
@@ -40,7 +40,7 @@ Vue example:
    } satisfies Config
    ```
 
-2. Adapt your <Link text={<><code>onRenderClient()</code></>} href="/onRenderClient" /> hook:
+2. Adapt your <Link href="/onRenderClient"><code>onRenderClient()</code></Link> hook:
 
    ```ts
    // /renderer/+onRenderClient.ts
@@ -107,7 +107,7 @@ And following hooks to implement page transition animations:
 
 Page settings:
 - `prefetchStaticAssets`: Link prefetching settings, see <Link href="/prefetchStaticAssets" />.
-- `hydrationCanBeAborted`: Whether the <Link text="UI framework" href="/ui-frameworks" /> allows the <Link href="/hydration">hydration</Link> to be aborted, see <Link href="/hydrationCanBeAborted" />.
+- `hydrationCanBeAborted`: Whether the <Link href="/ui-frameworks">UI framework</Link> allows the <Link href="/hydration">hydration</Link> to be aborted, see <Link href="/hydrationCanBeAborted" />.
 
 Anchor link options:
 - `<a href="/some/url" keep-scroll-position>`: Don't scroll to the top of the page, preserve the scroll position instead. See also:

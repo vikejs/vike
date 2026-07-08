@@ -7,7 +7,7 @@ import { ConfigSpec } from '../../components'
 />
 
 The error page, which is defined by `/pages/_error/+Page.js`, is rendered when an error occurs. It's also rendered when
-you call <Link href="/render" text={<code>throw render(abortStatusCode)</code>}></Link>.
+you call <Link href="/render"><code>throw render(abortStatusCode)</code></Link>.
 
 ```tsx
 // /pages/_error/+Page.ts
@@ -72,12 +72,12 @@ declare global {
 
 > The global interface `Vike.PageContext` allows you to define `pageContext` types in a global fashion, see <Link href="/pageContext#typescript" />.
 
-The `pageContext.abortReason` and `pageContext.abortStatusCode` values are set by <Link href="/render" text={<code>throw render(abortStatusCode, abortReason)</code>} />, and `pageContext.is404` is set by Vike.
+The `pageContext.abortReason` and `pageContext.abortStatusCode` values are set by <Link href="/render"><code>throw render(abortStatusCode, abortReason)</code></Link>, and `pageContext.is404` is set by Vike.
 
 The error page is rendered when:
  1. The URL didn't match the route of any of your pages (`404 Page Not Found`).
  2. Your code has a bug (`500 Internal Error`), technically speaking: one of your hooks threw an error.
- 3. One of your hooks used <Link href="/render" text={<code>throw render(abortStatusCode)</code>} />, for example: `throw render(401, "You don't have the permission to access this page.")`.
+ 3. One of your hooks used <Link href="/render"><code>throw render(abortStatusCode)</code></Link>, for example: `throw render(401, "You don't have the permission to access this page.")`.
 
 > Currently, you can define only one error page. See also:
 > - [Feature Request #1038 — Allow multiple error pages](https://github.com/vikejs/vike/issues/1038)
@@ -85,7 +85,7 @@ The error page is rendered when:
 
 ## Pre-rendering
 
-If you use <Link text="pre-rendering" href="/pre-rendering" />, then Vike uses the error page to generate
+If you use <Link href="/pre-rendering">pre-rendering</Link>, then Vike uses the error page to generate
 `/dist/client/404.html`.
 
 > Most Static Hosts follow the convention of using the file `404.html` as 404 page.

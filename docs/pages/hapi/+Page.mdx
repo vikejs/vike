@@ -16,6 +16,6 @@ This means that in development, Vite is responsible for serving the entire front
 >  - [GitHub > hapi > Express/Connect middleware support (#80)](https://github.com/hapijs/hapi/issues/80)
 
 In production, we use only *one* server:
- 1. Our hapi server that serves the backend *as well* as the frontend: it serves the static files living at `dist/client/` and does server-side rendering by using Vike's <Link text={<code>renderPage()</code>} href="/renderPage" />.
+ 1. Our hapi server that serves the backend *as well* as the frontend: it serves the static files living at `dist/client/` and does server-side rendering by using Vike's <Link href="/renderPage"><code>renderPage()</code></Link>.
 
 > See [GitHub > `vikejs/vike` > hapi (#366)](https://github.com/vikejs/vike/issues/366#issuecomment-1189144446).

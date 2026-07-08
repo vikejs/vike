@@ -137,7 +137,7 @@ Move your error page (if you defined one):
 
 Apply following additional steps if you've defined:
  - <Link href="#renamed-hooks" />
- - <Link text="Custom hooks/exports" href="#custom-hooks-exports" />
+ - <Link href="#custom-hooks-exports">Custom hooks/exports</Link>
  - [`onBeforeRender` in `.page.js`](#onbeforerender-in-page-js) (instead of `.page.server.js`)
  - <Link href="#client-init-code" />
 
@@ -299,16 +299,16 @@ export default {
 } satisfies Config
 ```
 
-For convenience, you can use <Link text={<code>meta</code>} href="/meta" /> in order to
+For convenience, you can use <Link href="/meta"><code>meta</code></Link> in order to
 [create a new config `dataIsomorph: boolean`](https://github.com/vikejs/vike/blob/43503a4829e4bb0171785bc8fa501c7ca096a150/examples/react-full/renderer/+config.ts#L14-L33) for a
 [page-per-page toggle](https://github.com/vikejs/vike/blob/43503a4829e4bb0171785bc8fa501c7ca096a150/examples/react-full/pages/star-wars/@id/+dataIsomorph.ts).
 
 
 ## Client init code
 
-The new config <Link text={<code>client</code>} href="/client" /> allows you to define client-side initialization code.
+The new config <Link href="/client"><code>client</code></Link> allows you to define client-side initialization code.
 
-> You can also keep using <Link text={<code>onHydrationEnd()</code>} href="/onHydrationEnd" />.
+> You can also keep using <Link href="/onHydrationEnd"><code>onHydrationEnd()</code></Link>.
 
 ```ts
 // +config.ts

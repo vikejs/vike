@@ -95,7 +95,7 @@ export function Link({ href, locale, ...props }: { locale: string } & AnchorElem
 
 ## Pre-rendering
 
-If you use <Link text="pre-rendering" href="/pre-rendering" /> then, in addition to defining <Link href="/onBeforeRoute">`onBeforeRoute()`</Link>, you also need to
+If you use <Link href="/pre-rendering">pre-rendering</Link> then, in addition to defining <Link href="/onBeforeRoute">`onBeforeRoute()`</Link>, you also need to
 define the <Link href="/onPrerenderStart">`onPrerenderStart()`</Link> hook:
 
 ```ts
@@ -137,7 +137,7 @@ async function onPrerenderStart(prerenderContext: PrerenderContext) {
 
 See <RepoLink path='/examples/i18n/' /> for an example using `onPrerenderStart()`.
 
-Your <Link text={<><code>onBeforePrerenderStart()</code> hooks</>} href="/onBeforePrerenderStart" /> (if you use any) return URLs without any locale (e.g. `onBeforePrerenderStart()` returning `/product/42`). Instead, it's your `onPrerenderStart()` hook that duplicates and modifies URLs for each locale (e.g. duplicating `/product/42` into `/en-US/product/42`, `/de-DE/product/42`, `/fr-FR/product/42`).
+Your <Link href="/onBeforePrerenderStart"><code>onBeforePrerenderStart()</code> hooks</Link> (if you use any) return URLs without any locale (e.g. `onBeforePrerenderStart()` returning `/product/42`). Instead, it's your `onPrerenderStart()` hook that duplicates and modifies URLs for each locale (e.g. duplicating `/product/42` into `/en-US/product/42`, `/de-DE/product/42`, `/fr-FR/product/42`).
 
 ```ts
 // pages/product/+onBeforePrerenderStart.ts

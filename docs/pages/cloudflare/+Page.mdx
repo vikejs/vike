@@ -244,7 +244,7 @@ In other words:
 When using Node.js(/Bun/Deno) for development and Cloudflare Workers for production, you may need a `fetch()` function that works in both environments.
 
 You can define a fetch function at `pageContext.fetch` that works in all environments.
-The trick is to add a different `fetch()` implementation to `pageContextInit` at <Link text={<code>renderPage(pageContextInit)</code>} href="/renderPage" />.
+The trick is to add a different `fetch()` implementation to `pageContextInit` at <Link href="/renderPage"><code>renderPage(pageContextInit)</code></Link>.
 
 Example: <RepoLink path='/examples/cloudflare-workers-react-full#universal-fetch' />.
 

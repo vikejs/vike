@@ -44,9 +44,9 @@ async function data(pageContext: PageContextServer) {
 
 ## Error handling
 
-If an error is thrown by `data()`, then Vike renders your <Link text="error page" href="/error-page" /> and there is usually nothing for you to do (beyond defining an error page `/pages/_error/+Page.js`).
+If an error is thrown by `data()`, then Vike renders your <Link href="/error-page">error page</Link> and there is usually nothing for you to do (beyond defining an error page `/pages/_error/+Page.js`).
 
-But if you want a more precise error handling (such as showing an insightful error message to the user instead of some generic "Something went wrong"), then use <Link href="/render" text={<code>throw render()</code>}></Link> and/or <Link href="/redirect" text={<code>throw redirect()</code>}></Link>.
+But if you want a more precise error handling (such as showing an insightful error message to the user instead of some generic "Something went wrong"), then use <Link href="/render"><code>throw render()</code></Link> and/or <Link href="/redirect"><code>throw redirect()</code></Link>.
 
 ```ts
 // /pages/movies/+data.ts
