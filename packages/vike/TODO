@@ -18,6 +18,7 @@
   - https://github.com/vikejs/vike-solid/pull/217
 - Release `vike-{react,vue,solid}@1.0.0`
   - https://github.com/vikejs/vike-vue/pull/215#issuecomment-3632362659
+- DocPress: https://github.com/brillout/docpress/issues/164 - Links that shouldn't be links in code blocks
 
 = TO-DO/next-major-release:
 == Highest Prio
