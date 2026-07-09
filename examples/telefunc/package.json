@@ -14,7 +14,7 @@
     "express": "^5.2.1",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
-    "telefunc": "^0.2.21",
+    "telefunc": "^0.2.22",
     "typescript": "^5.9.3",
     "vike": "0.4.260",
     "vite": "^7.1.5"
