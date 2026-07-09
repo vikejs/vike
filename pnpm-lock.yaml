@@ -588,8 +588,8 @@ importers:
         specifier: ^19.2.6
         version: 19.2.6(react@19.2.6)
       telefunc:
-        specifier: ^0.2.21
-        version: 0.2.21(@babel/core@7.29.7)(@babel/parser@7.29.7)(@babel/types@7.29.7)(react-streaming@0.4.20(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(react@19.2.6)(srvx@0.11.16)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
+        specifier: ^0.2.22
+        version: 0.2.22(@babel/core@7.29.7)(@babel/parser@7.29.7)(@babel/types@7.29.7)(react-streaming@0.4.20(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(react@19.2.6)(srvx@0.11.16)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -1294,8 +1294,8 @@ importers:
         specifier: ^19.2.6
         version: 19.2.6(react@19.2.6)
       telefunc:
-        specifier: ^0.2.21
-        version: 0.2.21(@babel/core@7.29.7)(@babel/parser@7.29.7)(@babel/types@7.29.7)(react-streaming@0.4.20(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(react@19.2.6)(srvx@0.11.16)(vite@6.3.0(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
+        specifier: ^0.2.22
+        version: 0.2.22(@babel/core@7.29.7)(@babel/parser@7.29.7)(@babel/types@7.29.7)(react-streaming@0.4.20(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(react@19.2.6)(srvx@0.11.16)(vite@6.3.0(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -1378,8 +1378,8 @@ importers:
         specifier: ^19.2.6
         version: 19.2.6(react@19.2.6)
       telefunc:
-        specifier: ^0.2.21
-        version: 0.2.21(@babel/core@7.29.7)(@babel/parser@7.29.7)(@babel/types@7.29.7)(react-streaming@0.4.20(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(react@19.2.6)(srvx@0.11.16)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
+        specifier: ^0.2.22
+        version: 0.2.22(@babel/core@7.29.7)(@babel/parser@7.29.7)(@babel/types@7.29.7)(react-streaming@0.4.20(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(react@19.2.6)(srvx@0.11.16)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
       vike:
         specifier: 0.4.260
         version: link:../../packages/vike
@@ -1424,8 +1424,8 @@ importers:
         specifier: ^19.2.6
         version: 19.2.6(react@19.2.6)
       telefunc:
-        specifier: ^0.2.21
-        version: 0.2.21(@babel/core@7.29.7)(@babel/parser@7.29.7)(@babel/types@7.29.7)(react-streaming@0.4.20(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(react@19.2.6)(srvx@0.11.16)(vite@8.0.7(@types/node@24.10.2)(esbuild@0.27.3)(jiti@2.6.1)(terser@5.38.1)(tsx@4.20.6))
+        specifier: ^0.2.22
+        version: 0.2.22(@babel/core@7.29.7)(@babel/parser@7.29.7)(@babel/types@7.29.7)(react-streaming@0.4.20(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(react@19.2.6)(srvx@0.11.16)(vite@8.0.7(@types/node@24.10.2)(esbuild@0.27.3)(jiti@2.6.1)(terser@5.38.1)(tsx@4.20.6))
       vike:
         specifier: 0.4.260
         version: link:../../packages/vike
@@ -1869,8 +1869,8 @@ importers:
         specifier: ^19.2.6
         version: 19.2.6(react@19.2.6)
       telefunc:
-        specifier: ^0.2.21
-        version: 0.2.21(@babel/core@7.29.7)(@babel/parser@7.29.7)(@babel/types@7.29.7)(react-streaming@0.4.20(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(react@19.2.6)(srvx@0.11.16)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
+        specifier: ^0.2.22
+        version: 0.2.22(@babel/core@7.29.7)(@babel/parser@7.29.7)(@babel/types@7.29.7)(react-streaming@0.4.20(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(react@19.2.6)(srvx@0.11.16)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
       vike-react:
         specifier: ^0.6.25
         version: 0.6.25(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vike@packages+vike)
@@ -5770,8 +5770,8 @@ packages:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
     engines: {node: '>= 8'}
 
-  crossws@0.4.7:
-    resolution: {integrity: sha512-N+BXE5AetLJ3/glz4DYLirKApAWg+V2guueoMenvAGVvqF/IA1PAzMYqYS+UfBkdz3tDXoQIevDaaxLy1Ch/4w==}
+  crossws@0.4.9:
+    resolution: {integrity: sha512-iWx+1OMSG2aOHpjyf9AESOzkwsVdS49cXM9dVrI2PDhxU5l2RIWE/KG56gk4BbAnsMoycvniJ9OnOxO9LRzHVA==}
     peerDependencies:
       srvx: '>=0.11.5'
     peerDependenciesMeta:
@@ -7687,8 +7687,8 @@ packages:
     engines: {node: '>=18'}
     deprecated: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
-  telefunc@0.2.21:
-    resolution: {integrity: sha512-8sTdXK9SiryN17hwtZrIU6VRjKNqdVZVpbZS1ZFouBq/jXz18jrNGXmm5cC4Env9V73Sl4yoYFnGuVkpP/ln9g==}
+  telefunc@0.2.22:
+    resolution: {integrity: sha512-ZFO1uQ3NIe9MN3ieDpqEmGOGhaAQMrrnCaYB2NU9Q6MUEDBw6pNOXPl986UJeVniZ1suJdsXTFsDIVfqUgbyyw==}
     engines: {node: '>=20'}
     peerDependencies:
       '@babel/core': '>=7.0.0'
@@ -12103,7 +12103,7 @@ snapshots:
       shebang-command: 2.0.0
       which: 2.0.2
 
-  crossws@0.4.7(srvx@0.11.16):
+  crossws@0.4.9(srvx@0.11.16):
     optionalDependencies:
       srvx: 0.11.16
 
@@ -14613,13 +14613,13 @@ snapshots:
       minizlib: 3.1.0
       yallist: 5.0.0
 
-  telefunc@0.2.21(@babel/core@7.29.7)(@babel/parser@7.29.7)(@babel/types@7.29.7)(react-streaming@0.4.20(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(react@19.2.6)(srvx@0.11.16)(vite@6.3.0(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)):
+  telefunc@0.2.22(@babel/core@7.29.7)(@babel/parser@7.29.7)(@babel/types@7.29.7)(react-streaming@0.4.20(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(react@19.2.6)(srvx@0.11.16)(vite@6.3.0(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)):
     dependencies:
       '@brillout/import': 0.2.6
       '@brillout/json-serializer': 0.5.25
       '@brillout/picocolors': 1.0.31
       '@brillout/vite-plugin-server-entry': 0.7.18
-      crossws: 0.4.7(srvx@0.11.16)
+      crossws: 0.4.9(srvx@0.11.16)
       es-module-lexer: 1.7.0
       magic-string: 0.30.21
       ts-morph: 26.0.0
@@ -14633,13 +14633,13 @@ snapshots:
     transitivePeerDependencies:
       - srvx
 
-  telefunc@0.2.21(@babel/core@7.29.7)(@babel/parser@7.29.7)(@babel/types@7.29.7)(react-streaming@0.4.20(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(react@19.2.6)(srvx@0.11.16)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)):
+  telefunc@0.2.22(@babel/core@7.29.7)(@babel/parser@7.29.7)(@babel/types@7.29.7)(react-streaming@0.4.20(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(react@19.2.6)(srvx@0.11.16)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)):
     dependencies:
       '@brillout/import': 0.2.6
       '@brillout/json-serializer': 0.5.25
       '@brillout/picocolors': 1.0.31
       '@brillout/vite-plugin-server-entry': 0.7.18
-      crossws: 0.4.7(srvx@0.11.16)
+      crossws: 0.4.9(srvx@0.11.16)
       es-module-lexer: 1.7.0
       magic-string: 0.30.21
       ts-morph: 26.0.0
@@ -14653,13 +14653,13 @@ snapshots:
     transitivePeerDependencies:
       - srvx
 
-  telefunc@0.2.21(@babel/core@7.29.7)(@babel/parser@7.29.7)(@babel/types@7.29.7)(react-streaming@0.4.20(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(react@19.2.6)(srvx@0.11.16)(vite@8.0.7(@types/node@24.10.2)(esbuild@0.27.3)(jiti@2.6.1)(terser@5.38.1)(tsx@4.20.6)):
+  telefunc@0.2.22(@babel/core@7.29.7)(@babel/parser@7.29.7)(@babel/types@7.29.7)(react-streaming@0.4.20(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(react@19.2.6)(srvx@0.11.16)(vite@8.0.7(@types/node@24.10.2)(esbuild@0.27.3)(jiti@2.6.1)(terser@5.38.1)(tsx@4.20.6)):
     dependencies:
       '@brillout/import': 0.2.6
       '@brillout/json-serializer': 0.5.25
       '@brillout/picocolors': 1.0.31
       '@brillout/vite-plugin-server-entry': 0.7.18
-      crossws: 0.4.7(srvx@0.11.16)
+      crossws: 0.4.9(srvx@0.11.16)
       es-module-lexer: 1.7.0
       magic-string: 0.30.21
       ts-morph: 26.0.0
