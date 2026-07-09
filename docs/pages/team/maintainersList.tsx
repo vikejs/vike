@@ -22,7 +22,7 @@ const rolesByUsername: Record<MaintainerUsername, React.ReactNode[]> = {
   ],
   nitedani: [
     <>
-      🚧 <a href="https://github.com/telefunc/telefunc/pull/236">Telefunc streaming</a>
+      <a href="https://telefunc.com/stream">Telefunc Stream</a>
     </>,
     <>
       <code>vike-react-query</code> (Lead Maintainer, Creator)
