@@ -20,21 +20,6 @@ const rolesByUsername: Record<MaintainerUsername, React.ReactNode[]> = {
       <code>vike-vue</code> (Contributor)
     </>,
   ],
-  magne4000: [
-    <>
-      <a href="https://github.com/universal-deploy/universal-deploy">Universal Deploy</a> (Lead Maintainer, Creator)
-    </>,
-    <>
-      <a href="https://github.com/magne4000/universal-middleware">Universal Middleware</a> (Lead Maintainer, Creator)
-    </>,
-    <>
-      <a href="https://github.com/vikejs/bati">Bati</a> (Lead Maintainer, Creator)
-    </>,
-    <>
-      <code>vike-solid</code> (Lead Maintainer, Creator)
-    </>,
-    <>Vike Core (Contributor)</>,
-  ],
   nitedani: [
     <>
       🚧 <a href="https://github.com/telefunc/telefunc/pull/236">Telefunc streaming</a>
@@ -53,6 +38,21 @@ const rolesByUsername: Record<MaintainerUsername, React.ReactNode[]> = {
     </>,
     <>
       <code>vike-server</code> (Creator)
+    </>,
+    <>Vike Core (Contributor)</>,
+  ],
+  magne4000: [
+    <>
+      <a href="https://github.com/universal-deploy/universal-deploy">Universal Deploy</a> (Lead Maintainer, Creator)
+    </>,
+    <>
+      <a href="https://github.com/magne4000/universal-middleware">Universal Middleware</a> (Lead Maintainer, Creator)
+    </>,
+    <>
+      <a href="https://github.com/vikejs/bati">Bati</a> (Lead Maintainer, Creator)
+    </>,
+    <>
+      <code>vike-solid</code> (Lead Maintainer, Creator)
     </>,
     <>Vike Core (Contributor)</>,
   ],
