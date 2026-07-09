@@ -3,7 +3,7 @@ export type { TeamMember }
 
 // Plain-data source of truth for the team list. Imported by:
 //   - pages/team/maintainersList.tsx (decorates each entry with JSX roles)
-//   - vite.config.ts (serves it as /team.json via teamJsonPlugin)
+//   - vite.config.ts (serves it as /team.json via teamJsonPlugin, for vike-talk)
 // Keep this file JSX-free so it can be loaded from vite.config.ts.
 
 type TeamMember = {
@@ -14,8 +14,8 @@ type TeamMember = {
 
 const teamData = [
   { username: 'brillout', firstName: 'Rom', isCoreTeam: true },
-  { username: 'magne4000', firstName: 'Joël', isCoreTeam: true },
   { username: 'nitedani', firstName: 'Dániel', isCoreTeam: true },
+  { username: 'magne4000', firstName: 'Joël', isCoreTeam: true },
   { username: 'richard-unterberg', firstName: 'Richard', isCoreTeam: true },
   { username: 'phonzammi', firstName: 'Muhammad', isCoreTeam: true },
   { username: 'NilsJacobsen', firstName: 'Nils', isCoreTeam: false },
