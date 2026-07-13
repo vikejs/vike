@@ -34,10 +34,12 @@ import type { PageFile } from '../../shared-server-client/getPageFiles.js'
 import {
   getGlobalContextServerInternal,
   type GlobalContextServerInternal,
+  getViteConfig,
   initGlobalContext_runPrerender,
   setGlobalContext_isPrerendering,
   setGlobalContext_prerenderContext,
 } from '../../server/runtime/globalContext.js'
+import * as vitePluginServerEntry from '@brillout/vite-plugin-server-entry/plugin'
 import { getPageFilesServerSide } from '../../shared-server-client/getPageFiles.js'
 import { getPageContextRequestUrl } from '../../shared-server-client/getPageContextRequestUrl.js'
 import { getUrlFromRouteString } from '../../shared-server-client/route/resolveRouteString.js'
@@ -263,6 +265,18 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
 
   if (!prerenderConfigGlobal.keepDistServer) {
     fs.rmSync(outDirServer, { recursive: true })
+    // The build pointed @brillout/vite-plugin-server-entry's autoImporter.js (a file living inside
+    // node_modules, potentially shared with other tools such as Telefunc) at the dist/server/entry.mjs file
+    // we just removed => reset it, so that runtimes fall back gracefully (crawling outDir, or e.g. Telefunc's
+    // telefunction registration) instead of importing a file that doesn't exist anymore.
+    // TO-DO/after-dep-bump: clearAutoImporters() exists as of @brillout/vite-plugin-server-entry@0.7.20 — once
+    // the dependency is bumped, replace this optional call (and its cast) with a plain named import.
+    ;(
+      vitePluginServerEntry as { clearAutoImporters?: (options: { viteConfig?: unknown; reason?: string }) => void }
+    ).clearAutoImporters?.({
+      viteConfig: getViteConfig() ?? undefined,
+      reason: 'Vike removed dist/server/ after pre-rendering (https://vike.dev/prerender#keepDistServer)',
+    })
   }
 }
 
