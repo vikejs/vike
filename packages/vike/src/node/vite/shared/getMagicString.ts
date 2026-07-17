@@ -11,7 +11,10 @@ function getMagicString(code: string, id: string) {
     if (!magicString.hasChanged()) return undefined
     return {
       code: magicString.toString(),
-      map: magicString.generateMap({ hires: true, source: id }),
+      // magic-string@1's SourceMap.sourcesContent is typed as (string | null)[], whereas Rollup's
+      // ExistingRawSourceMap expects string[]. We never pass `includeContent`, so sourcesContent is
+      // always undefined at runtime and this cast is safe.
+      map: magicString.generateMap({ hires: true, source: id }) as any,
     }
   }
 
