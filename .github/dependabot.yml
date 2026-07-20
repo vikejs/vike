@@ -18,6 +18,7 @@ updates:
       - dependency-name: "telefunc"
       - dependency-name: "vike-*"
       - dependency-name: "vite-plugin-vercel"
+      - dependency-name: "vite-plugin-wrapper"
       # devDependencies
       - dependency-name: "vitest"
       - dependency-name: "typescript"
