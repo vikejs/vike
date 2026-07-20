@@ -144,7 +144,7 @@
     "source-map-support": "^0.5.0",
     "tinyglobby": "^0.2.17",
     "vite": ">=6.3.0",
-    "vite-plugin-wrapper": "^0.1.0"
+    "vite-plugin-wrapper": "^0.1.1"
   },
   "peerDependencies": {
     "react-streaming": ">=0.3.42",
