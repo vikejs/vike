@@ -6,7 +6,7 @@
     "typecheck": "tsc --noEmit --watch"
   },
   "dependencies": {
-    "@batijs/elements": "^0.0.87",
+    "@batijs/elements": "^0.0.88",
     "@brillout/docpress": "^0.17.4",
     "@classmatejs/react": "^0.2.1",
     "@gsap/react": "^2.1.2",
