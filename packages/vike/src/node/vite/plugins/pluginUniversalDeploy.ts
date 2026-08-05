@@ -31,7 +31,9 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
   const { serverEntryVike, serverEntryId, serverFilePath } = serverConfig
 
   return [
-    ...universalDeploy(),
+    // Passed to the node adapter, which universal-deploy disables when another deployment target
+    // (Vercel, Cloudflare, Netlify) is found — those serve static assets at the platform layer.
+    ...universalDeploy({ node: { precompress: vikeConfig.config.precompress } }),
     {
       name: 'vike:pluginUniversalDeploy:entries',
       config() {
