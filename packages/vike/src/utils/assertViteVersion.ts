@@ -5,7 +5,7 @@ import { assertVersion } from './assertVersion.js'
 
 const viteVersionMin = '6.3.0'
 
-// node_modules/vike/package.json#peerDependencies isn't enough, as users often ignore it
+// package.json#peerDependencies isn't enough, as users often ignore it
 function assertViteVersion(viteVersion: string) {
   // - This assertion isn't reliable: the user may still use a Vite version older than 6.0.0 — see https://github.com/vitejs/vite/pull/19355
   //   - TO-DO/eventually: let's also use this.meta.viteVersion
