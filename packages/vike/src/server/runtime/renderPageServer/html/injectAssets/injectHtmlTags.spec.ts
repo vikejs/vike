@@ -21,6 +21,10 @@ const htmlBody3 = `<html>
 
 const tag1 = '<link href="/foo.ttf">'
 const tag2 = '<script src="/foo.js"></script>'
+// https://github.com/vikejs/vike/issues/3457
+const tag3 = `<script type="module">i.contentWindow?.document.write('<h1>Hello</h1>')</script>`
+const tag4 = '<style>a::before { content: "<" }</style>'
+const tag5 = '<meta name="foo" content="a < b">'
 
 describe('injectHtmlTags', () => {
   it('injectAtOpeningTag()', () => {
@@ -78,6 +82,22 @@ describe('injectHtmlTags', () => {
           <script src="/foo.js"></script>
           <link href="/foo.ttf">
           <script src="/foo.js"></script>
+        </body>
+      </html>"
+    `,
+    )
+  })
+
+  // https://github.com/vikejs/vike/issues/3457
+  it("doesn't inject line breaks inside inline <script>/<style> nor inside attributes", () => {
+    expect(injectAtClosingTag('body', htmlBody3, `${tag3}${tag4}${tag5}${tag1}`)).toMatchInlineSnapshot(
+      `
+      "<html>
+        <body>
+          <script type="module">i.contentWindow?.document.write('<h1>Hello</h1>')</script>
+          <style>a::before { content: "<" }</style>
+          <meta name="foo" content="a < b">
+          <link href="/foo.ttf">
         </body>
       </html>"
     `,
