@@ -48,7 +48,7 @@ async function preview(
     // Dynamically import() server production entry dist/server/index.js
     const outDir = getOutDirs(viteConfigResolved, undefined).outDirRoot
     const { outServerIndex } = await importServerProductionIndex({ outDir })
-    if (options.startupLog) startupLog(viteConfigResolved, null)
+    if (options.startupLog) await startupLog(viteConfigResolved, null)
     const outServerIndexRelative = path.relative(viteConfigResolved.root, outServerIndex)
     logHint(`, run ${pc.cyan(`$ node ${outServerIndexRelative}`)} instead (or Bun/Deno).`)
     return {
@@ -58,7 +58,7 @@ async function preview(
     // Use Vite's preview server
     const viteServer = await previewVite(viteConfigUser)
     const viteConfig = viteServer.config
-    if (options.startupLog) startupLog(viteConfig, viteServer)
+    if (options.startupLog) await startupLog(viteConfig, viteServer)
     logHint(
       vikeConfig.prerenderContext.isPrerenderingEnabledForAllPages
         ? ': your app is fully pre-rendered and can be statically deployed instead.'

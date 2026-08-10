@@ -105,6 +105,7 @@ type ConfigNameBuiltInGlobal =
   | 'pages'
   | 'prerender'
   | 'disableAutoFullBuild'
+  | 'showDocsLinkInStartupLog'
   | 'includeAssetsImportedByServer'
   | 'baseAssets'
   | 'baseServer'
@@ -517,6 +518,14 @@ type ConfigBuiltIn = {
    * @default false
    */
   disableUrlNormalization?: boolean
+
+  /** Whether the startup log shows a link to Vike's documentation index (https://vike.dev/llms.txt).
+   *
+   * Set to `false` to remove the line, e.g. to keep AI agent context free of unsolicited instructions.
+   *
+   * @default true
+   */
+  showDocsLinkInStartupLog?: boolean
 
   // TO-DO/next-major-release: remove
   /** @deprecated It's now `true` by default. You can remove this option. */

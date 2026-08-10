@@ -24,7 +24,7 @@ async function dev(
   const viteVersion = viteConfig._viteVersionResolved
   assert(viteVersion)
   if (viteServer.httpServer) await viteServer.listen()
-  if (options.startupLog) startupLog(viteConfig, viteServer)
+  if (options.startupLog) await startupLog(viteConfig, viteServer)
   return {
     viteServer,
     viteConfig,

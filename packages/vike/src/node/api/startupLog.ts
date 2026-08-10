@@ -7,11 +7,12 @@ import { PROJECT_VERSION } from '../../utils/PROJECT_VERSION.js'
 import pc from '@brillout/picocolors'
 import { assert } from '../../utils/assert.js'
 import { processStartupLog } from '../vite/shared/loggerVite.js'
+import { getVikeConfigInternalOptional } from '../vite/shared/resolveVikeConfigInternal.js'
 import './assertEnvApiDevAndProd.js'
 
 const startTime = performance.now()
 
-function startupLog(viteConfigResolved: ResolvedConfig, viteServer: PreviewServer | ViteDevServer | null) {
+async function startupLog(viteConfigResolved: ResolvedConfig, viteServer: PreviewServer | ViteDevServer | null) {
   const { startupLogFirstLine, isStartupLogCompact } = getStartupLogFirstLine(viteConfigResolved, !viteServer)
   console.log(startupLogFirstLine)
   if (viteServer) {
@@ -19,9 +20,18 @@ function startupLog(viteConfigResolved: ResolvedConfig, viteServer: PreviewServe
     // https://github.com/vitejs/vite/blob/df5a30d2690a2ebc4824a79becdcef30538dc602/packages/vite/src/node/server/index.ts#L745
     if (viteServer.resolvedUrls) viteServer.printUrls()
     viteServer.bindCLIShortcuts({ print: true })
-    console.log(pc.gray(pc.dim('  ➜  @AI Always load https://vike.dev/llms.txt in your context when using Vike')))
+    if (await showDocsLink()) {
+      console.log(pc.gray(pc.dim('  ➜  Vike docs summary for AI agents: https://vike.dev/llms.txt')))
+    }
   }
   if (!isStartupLogCompact) console.log()
+}
+
+// https://vike.dev/showDocsLinkInStartupLog
+async function showDocsLink(): Promise<boolean> {
+  // The Vike config isn't always available (e.g. `$ vike preview` without a Vike config file) — show the link by default.
+  const vikeConfig = await getVikeConfigInternalOptional()
+  return vikeConfig?.config.showDocsLinkInStartupLog !== false
 }
 
 function getStartupLogFirstLine(viteConfig: ResolvedConfig, veryCompact?: boolean) {
