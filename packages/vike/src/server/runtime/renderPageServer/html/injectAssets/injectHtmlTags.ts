@@ -122,7 +122,9 @@ function injectBreakLines(htmlFragment: string, before: string, after: string) {
   const whitespace = `${paddingParent}${whitespaceExtra}`
   const padding = `\n${whitespace}`
 
-  htmlFragment = htmlFragment.replace(/<[^\/]/g, (match) => `${padding}${match}`)
+  // Match whole tags, and whole raw text elements (their content isn't markup): injecting a line break inside `<script>document.write('<div>')</script>` or inside an attribute value would corrupt it. https://github.com/vikejs/vike/issues/3457
+  const tagRE = /<(script|style|textarea|title)\b[^>]*>[\s\S]*?<\/\1>|<[^\/][^>]*>/gi
+  htmlFragment = htmlFragment.replace(tagRE, (match) => `${padding}${match}`)
   if (isBlankLine) {
     assert(htmlFragment.startsWith(padding), { htmlFragment })
     htmlFragment = whitespaceExtra + htmlFragment.slice(padding.length)
