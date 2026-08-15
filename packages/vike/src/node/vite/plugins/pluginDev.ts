@@ -4,6 +4,8 @@ export { logDockerHint }
 import { type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
 import { optimizeDeps, resolveOptimizeDeps } from './pluginDev/optimizeDeps.js'
 import { determineFsAllowList } from './pluginDev/determineFsAllowList.js'
+import { autoAddAiSkill } from './pluginDev/autoAddAiSkill.js'
+import { getVikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 import { addSsrMiddleware } from '../shared/addSsrMiddleware.js'
 import { isDebugError } from '../../../utils/debug.js'
 import { applyDev } from '../../../utils/isDev.js'
@@ -35,6 +37,12 @@ function pluginDev(): Plugin[] {
           await determineFsAllowList(config)
           interceptViteLogs(config)
           logDockerHint(config.server.host)
+        },
+      },
+      configureServer: {
+        async handler() {
+          const vikeConfig = await getVikeConfigInternal()
+          autoAddAiSkill(config.root, vikeConfig)
         },
       },
     },

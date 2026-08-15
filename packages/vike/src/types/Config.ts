@@ -4,6 +4,7 @@ export type { ConfigBuiltInResolved }
 export type { ConfigNameBuiltIn }
 export type { ConfigNameBuiltInGlobal }
 export type { ConfigMeta }
+export type { ConfigAi }
 export type { HookName }
 export type { HookNameOld }
 export type { HookNamePage }
@@ -104,6 +105,7 @@ type ConfigNameBuiltInGlobal =
   | 'onBeforeRoute'
   | 'pages'
   | 'prerender'
+  | 'ai'
   | 'disableAutoFullBuild'
   | 'includeAssetsImportedByServer'
   | 'baseAssets'
@@ -709,6 +711,22 @@ type ConfigBuiltIn = {
    * https://vike.dev/vercel
    */
   vercel?: Vercel
+
+  /** AI settings.
+   *
+   * https://vike.dev/ai
+   */
+  ai?: ConfigAi
+}
+
+type ConfigAi = {
+  /** Whether Vike automatically creates and updates the skill file `.claude/skills/vike/SKILL.md` of your app's Git repository (Git-committing the change) — making AI agents automatically aware of Vike's documentation.
+   *
+   * @default true
+   *
+   * https://vike.dev/ai#skill
+   */
+  skill?: boolean
 }
 
 type Vercel = {

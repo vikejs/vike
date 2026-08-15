@@ -1055,6 +1055,10 @@ function tools() {
         title: 'Payload CMS',
         url: '/payload',
       },
+      {
+        title: 'AI',
+        url: '/ai',
+      },
     ] as const
   ).map((h) => ({ ...h, category: 'Guides (tools)' as const })) satisfies HeadingDetachedDefinition[]
 }

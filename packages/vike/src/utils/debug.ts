@@ -29,6 +29,7 @@ const flags = [
   'vike:requireResolve',
   'vike:routing',
   'vike:setup',
+  'vike:skill',
   'vike:staticReplace',
   'vike:stream',
   'vike:virtualFiles',

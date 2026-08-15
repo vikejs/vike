@@ -1,0 +1,54 @@
+Vike includes built-in integration with AI tools such as [Claude Code](https://claude.com/product/claude-code).
+
+## `llms.txt`
+
+The Vike documentation is indexed by [vike.dev/llms.txt](https://vike.dev/llms.txt) — a compact documentation index designed for AI agents.
+
+If your AI agent doesn't automatically load it (see the skill below), we recommend instructing your agent to load `https://vike.dev/llms.txt` in its context whenever it works with Vike.
+
+## Skill
+
+Vike automatically adds the following [skill](https://code.claude.com/docs/en/skills) file to your app's Git repository — making AI agents such as Claude Code automatically aware of the Vike documentation.
+
+```md
+// .claude/skills/vike/SKILL.md
+
+---
+name: "vike"
+description: "Vike documentation — consider reading it, e.g. when using uncommon Vike APIs or when stuck on a Vike problem"
+---
+
+See https://vike.dev/llms.txt
+```
+
+Upon running the development server, Vike creates the skill file (at the root of your app's Git repository) and automatically Git-commits it. If the skill file exists but is outdated, Vike updates it (and Git-commits the change).
+
+> The automatic Git commit only ever includes the skill file — it never includes other changes (e.g. files you staged).
+
+The feature is skipped if:
+- The setting `ai.skill` is `false` (see below).
+- Git isn't installed, or your app isn't inside a Git repository.
+- You're in a CI environment.
+
+> If you `.gitignore` the skill file (e.g. by adding `.claude/` to your `.gitignore`), then Vike still creates the file but doesn't Git-commit it.
+
+Use the `ai.skill` setting to disable the feature:
+
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
+
+export default {
+  ai: {
+    // Don't automatically add the skill file
+    skill: false
+  }
+} satisfies Config
+```
+
+## See also
+
+- [vike.dev/llms.txt](https://vike.dev/llms.txt)
+- [Agent Skills (open standard)](https://agentskills.io)
+- [Claude Code > Skills](https://code.claude.com/docs/en/skills)
