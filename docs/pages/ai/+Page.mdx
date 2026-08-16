@@ -1,22 +1,20 @@
-Vike has built-in integration with AI agents.
+Vike integration with AI agents.
 
 
-## `vike.dev/llms.txt`
+## `llms.txt`
 
 The Vike documentation is indexed by [vike.dev/llms.txt](https://vike.dev/llms.txt) — a compact documentation index for AI agents.
 
-> Most AI models are familiar and proficient with most of Vike's features. That said, agents often use advanced Vike features in an unidiomatic way.
+> Most AI models are familiar and proficient with Vike. But for advanced Vike features agents can make mistakes.
 >
-> Therefore, if your AI agent doesn't automatically load it (see the skill below), we recommend instructing your agent to load [vike.dev/llms.txt](https://vike.dev/llms.txt) in its context whenever it uses uncommon Vike APIs.
+> Therefore, if your AI agent doesn't automatically load it (see the skill below), we recommend instructing your agent to read [vike.dev/llms.txt](https://vike.dev/llms.txt) whenever it uses Vike in an uncommon way.
 
 
 ## Skill
 
-Vike automatically adds the following [agent skill](https://agentskills.io) making AI agents (Claude Code, Codex, Cursor, Gemini CLI, ...) automatically aware of the Vike documentation.
+Vike automatically adds the following `skills/vike/SKILL.md` to make AI agents (Claude Code, Codex, Cursor, Gemini CLI, ...) automatically aware of Vike's documentation.
 
 ```md
-// .agents/skills/vike/SKILL.md
-
 ---
 name: "vike"
 description: "Vike documentation — consider reading it, e.g. when using uncommon Vike APIs or when stuck on a Vike problem"
@@ -25,11 +23,11 @@ description: "Vike documentation — consider reading it, e.g. when using uncomm
 See https://vike.dev/llms.txt
 ```
 
-Upon running the development server, Vike adds the skill file to every existing skills directory (`**/skills/*/SKILL.md`) of your app's Git repository — e.g. `.claude/skills/` (Claude Code) and `.agents/skills/` (Codex, Gemini CLI, Cursor, and many others) — and automatically Git-commits it. If a skill file exists but is outdated, Vike updates it (and Git-commits the change).
+> Upon running the development server, Vike adds the skill file to every existing skills directory (`**/skills/*/SKILL.md`).
 
-It's skipped if:
-- Your app doesn't contain any skills directory. (Unless you use `+ai.skill` to set the list of directories.)
+Vike skips adding `skills/vike/SKILL.md` if:
 - The setting `+ai.skill` is `false`.
+- Your app doesn't contain any skills directory. (Unless you set `+ai.skill` to a list of directories.)
 - Your app isn't inside a Git repository.
 - You're in a CI environment.
 
@@ -42,9 +40,9 @@ import type { Config } from 'vike/types'
 
 export default {
   ai: {
-    // Never add the skill file
+    // Never add vike/SKILL.md
     skill: false,
-    // Add the skill file to exactly these directories (creating them if needed)
+    // Add vike/SKILL.md to exactly these directories
     skill: ['.agents/skills', '.claude/skills']
   }
 } satisfies Config
