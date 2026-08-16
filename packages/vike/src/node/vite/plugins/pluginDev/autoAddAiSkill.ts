@@ -6,19 +6,17 @@ export { skillFilePathRelative }
 
 import fs from 'node:fs/promises'
 import path from 'node:path'
-import { execFile } from 'node:child_process'
-import { promisify } from 'node:util'
 import pc from '@brillout/picocolors'
 import { assertInfo, assertUsage } from '../../../../utils/assert.js'
 import { assertKeys } from '../../../../utils/assertKeys.js'
 import { createDebug } from '../../../../utils/debug.js'
 import { getGlobalObject } from '../../../../utils/getGlobalObject.js'
+import { isGitNotUsable, runGitCommand } from '../../../../utils/git.js'
 import { getVikeConfigError } from '../../../../shared-server-node/getVikeConfigError.js'
 import { hasProp } from '../../../../utils/hasProp.js'
 import { isObject } from '../../../../utils/isObject.js'
 import type { VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import '../../assertEnvVite.js'
-const execFileA = promisify(execFile)
 const debug = createDebug('vike:skill')
 const importMetaUrl = import.meta.url
 
@@ -82,12 +80,11 @@ function isEnabled(vikeConfig: VikeConfigInternal): boolean {
 async function addAiSkill(
   userRootDir: string,
 ): Promise<null | { skillFilePath: string; isUpdate: boolean; isCommitted: boolean }> {
-  // Skip if Git isn't installed
-  if (!(await runGitCommand(['--version'], userRootDir))) return null
+  // Skip if Git isn't installed, or if the app isn't inside a Git repository
+  if (await isGitNotUsable(userRootDir)) return null
 
-  // Skip if the app isn't inside a Git repository
   const resGitRootDir = await runGitCommand(['rev-parse', '--show-toplevel'], userRootDir)
-  if (!resGitRootDir) return null
+  if ('err' in resGitRootDir) return null
   const gitRootDir = resGitRootDir.stdout.trim()
   if (!gitRootDir) return null
 
@@ -107,10 +104,12 @@ async function addAiSkill(
 }
 
 async function gitCommit(gitRootDir: string, isUpdate: boolean): Promise<boolean> {
-  // Don't Git-commit if the user chose to .gitignore the skill file
-  if (await runGitCommand(['check-ignore', '-q', '--', skillFilePathRelative], gitRootDir)) return false
+  // Don't Git-commit if the user chose to .gitignore the skill file — `$ git check-ignore` succeeds if the file is ignored
+  const resCheckIgnore = await runGitCommand(['check-ignore', '-q', '--', skillFilePathRelative], gitRootDir)
+  if (!('err' in resCheckIgnore)) return false
 
-  if (!(await runGitCommand(['add', '--', skillFilePathRelative], gitRootDir))) return false
+  const resAdd = await runGitCommand(['add', '--', skillFilePathRelative], gitRootDir)
+  if ('err' in resAdd) return false
 
   const commitMessage = `${isUpdate ? 'Update' : 'Add'} Vike skill (see https://vike.dev/ai#skill)`
   const resCommit = await runGitCommand(
@@ -126,17 +125,5 @@ async function gitCommit(gitRootDir: string, isUpdate: boolean): Promise<boolean
     ],
     gitRootDir,
   )
-  return !!resCommit
-}
-
-async function runGitCommand(args: string[], cwd: string): Promise<null | { stdout: string }> {
-  let stdout: string
-  try {
-    const res = await execFileA('git', args, { cwd })
-    stdout = res.stdout.toString()
-  } catch (err) {
-    debug(`$ git ${args.join(' ')} — failed:`, err)
-    return null
-  }
-  return { stdout }
+  return !('err' in resCommit)
 }

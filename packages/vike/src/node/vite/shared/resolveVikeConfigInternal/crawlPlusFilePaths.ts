@@ -4,7 +4,6 @@ export { getPlusFileValueConfigName }
 
 import { assert, assertUsage, assertWarning } from '../../../../utils/assert.js'
 import { assertIsNotProductionRuntime } from '../../../../utils/assertSetup.js'
-import { isVersionMatch } from '../../../../utils/assertVersion.js'
 import { createDebug } from '../../../../utils/debug.js'
 import { deepEqual } from '../../../../utils/deepEqual.js'
 import { getGlobalObject } from '../../../../utils/getGlobalObject.js'
@@ -13,17 +12,15 @@ import { assertFilePathAbsoluteFilesystem } from '../../../../utils/isFilePathAb
 import { isNotNullish } from '../../../../utils/isNullish.js'
 import { scriptFileExtensionPattern, isScriptFile, scriptFileExtensionList } from '../../../../utils/isScriptFile.js'
 import { assertPosixPath } from '../../../../utils/path.js'
+import { isGitNotUsable, runGitCommand } from '../../../../utils/git.js'
 import path from 'node:path'
 import { glob } from 'tinyglobby'
-import { exec } from 'node:child_process'
-import { promisify } from 'node:util'
 import { isTemporaryBuildFile } from './transpileAndExecuteFile.js'
 import { getEnvVarObject } from '../getEnvVarObject.js'
 import pc from '@brillout/picocolors'
 import picomatch, { type Matcher } from 'picomatch'
 import { ignorePatternsBuiltIn } from './crawlPlusFilePaths/ignorePatternsBuiltIn.js'
 import '../../assertEnvVite.js'
-const execA = promisify(exec)
 const debug = createDebug('vike:crawl')
 
 assertIsNotProductionRuntime()
@@ -76,49 +73,58 @@ async function crawlPlusFilePaths(userRootDir: string): Promise<{ filePathAbsolu
 async function gitLsFiles(userRootDir: string, ignorePatterns: string[], ignoreMatchers: Matcher[]) {
   if (globalObject.gitIsNotUsable) return null
 
-  // Preserve UTF-8 file paths.
-  // https://github.com/vikejs/vike/issues/1658
-  // https://stackoverflow.com/questions/22827239/how-to-make-git-properly-display-utf-8-encoded-pathnames-in-the-console-window/22828826#22828826
-  // https://stackoverflow.com/questions/15884180/how-do-i-override-git-configuration-options-by-command-line-parameters/15884261#15884261
-  const preserveUTF8 = '-c core.quotepath=off'
+  const args = [
+    // Preserve UTF-8 file paths.
+    // https://github.com/vikejs/vike/issues/1658
+    // https://stackoverflow.com/questions/22827239/how-to-make-git-properly-display-utf-8-encoded-pathnames-in-the-console-window/22828826#22828826
+    // https://stackoverflow.com/questions/15884180/how-do-i-override-git-configuration-options-by-command-line-parameters/15884261#15884261
+    '-c',
+    'core.quotepath=off',
 
-  const cmd = [
-    'git',
-    preserveUTF8,
     'ls-files',
 
     // Performance gain seems negligible: https://github.com/vikejs/vike/pull/1688#issuecomment-2166206648
-    ...scriptFileExtensionList.map((ext) => `"**/+*.${ext}" "+*.${ext}"`),
+    ...scriptFileExtensionList.flatMap((ext) => [`**/+*.${ext}`, `+*.${ext}`]),
 
     // Performance gain is non-negligible.
     //  - https://github.com/vikejs/vike/pull/1688#issuecomment-2166206648
     //  - When node_modules/ is untracked the performance gain could be significant?
-    ...ignorePatterns.map((pattern) => `--exclude="${pattern}"`),
+    ...ignorePatterns.map((pattern) => `--exclude=${pattern}`),
 
     // --others --exclude-standard => list untracked files (--others) while using .gitignore (--exclude-standard)
     // --cached => list tracked files
-    '--others --exclude-standard --cached',
-  ].join(' ')
+    '--others',
+    '--exclude-standard',
+    '--cached',
+  ]
 
-  let filesAll: string[]
-  let filesDeleted: string[]
-  try {
-    ;[filesAll, filesDeleted] = await Promise.all([
-      // Main command
-      runCmd1(cmd, userRootDir),
-      // Get tracked but deleted files
-      runCmd1('git ls-files --deleted', userRootDir),
-    ])
-  } catch (err) {
-    if (await isGitNotUsable(userRootDir)) {
+  // maxBuffer: Infinity — https://github.com/vikejs/vike/issues/1982
+  const [resFiles, resFilesDeleted] = await Promise.all([
+    // Main command
+    runGitCommand(args, userRootDir, { maxBuffer: Infinity }),
+    // Get tracked but deleted files
+    runGitCommand(['ls-files', '--deleted'], userRootDir, { maxBuffer: Infinity }),
+  ])
+  const resFailed = [resFiles, resFilesDeleted].find((res) => 'err' in res)
+  if (resFailed) {
+    assert('err' in resFailed)
+    // Minimum Git version for `$ git ls-files`:
+    //  - Works with Git 2.43.1 but also (most certainly) with earlier versions.
+    //    - We didn't bother test which is the earliest version that works.
+    //  - Git 2.32.0 doesn't seem to work: https://github.com/vikejs/vike/discussions/1549
+    //    - Maybe it's because of StackBlitz: looking at the release notes, Git 2.32.0 should be working.
+    if (await isGitNotUsable(userRootDir, '2.43.1')) {
       globalObject.gitIsNotUsable = true
       return null
     }
-    throw err
+    throw resFailed.err
   }
+  assert(!('err' in resFiles) && !('err' in resFilesDeleted))
+  const filesAll = splitLines(resFiles.stdout)
+  const filesDeleted = splitLines(resFilesDeleted.stdout)
   if (debug.isActivated) {
     debug('[git] userRootDir:', userRootDir)
-    debug('[git] cmd:', cmd)
+    debug('[git] args:', args)
     debug('[git] result:', filesAll)
     debug('[git] filesDeleted:', filesDeleted)
   }
@@ -162,56 +168,8 @@ async function tinyglobby(userRootDir: string, ignorePatterns: string[]): Promis
   return files
 }
 
-// Whether Git is installed and whether we can use it
-async function isGitNotUsable(userRootDir: string) {
-  // Check Git version
-  {
-    const res = await runCmd2('git --version', userRootDir)
-    if ('err' in res) return true
-    let { stdout, stderr } = res
-    assert(stderr === '')
-    const prefix = 'git version '
-    assert(stdout.startsWith(prefix))
-    const gitVersion = stdout.slice(prefix.length)
-    //  - Works with Git 2.43.1 but also (most certainly) with earlier versions.
-    //    - We didn't bother test which is the earliest version that works.
-    //  - Git 2.32.0 doesn't seem to work: https://github.com/vikejs/vike/discussions/1549
-    //    - Maybe it's because of StackBlitz: looking at the release notes, Git 2.32.0 should be working.
-    if (!isVersionMatch(gitVersion, ['2.43.1'])) return true
-  }
-  // Is userRootDir inside a Git repository?
-  {
-    const res = await runCmd2('git rev-parse --is-inside-work-tree', userRootDir)
-    if ('err' in res) return true
-    let { stdout, stderr } = res
-    assert(stderr === '')
-    assert(stdout === 'true')
-    return false
-  }
-}
-
-async function runCmd1(cmd: string, cwd: string): Promise<string[]> {
-  const { stdout } = await execA(cmd, {
-    cwd,
-    // https://github.com/vikejs/vike/issues/1982
-    maxBuffer: Infinity,
-  })
-  /* Not always true: https://github.com/vikejs/vike/issues/1440#issuecomment-1892831303
-  assert(res.stderr === '')
-  */
-  return stdout.toString().split('\n').filter(Boolean)
-}
-async function runCmd2(cmd: string, cwd: string): Promise<{ err: unknown } | { stdout: string; stderr: string }> {
-  let res: Awaited<ReturnType<typeof execA>>
-  try {
-    res = await execA(cmd, { cwd })
-  } catch (err) {
-    return { err }
-  }
-  let { stdout, stderr } = res
-  stdout = stdout.toString().trim()
-  stderr = stderr.toString().trim()
-  return { stdout, stderr }
+function splitLines(stdout: string): string[] {
+  return stdout.split('\n').filter(Boolean)
 }
 
 type UserSettings = ReturnType<typeof getUserSettings>

@@ -17,6 +17,7 @@ const flags = [
   'vike:file-change',
   'vike:error',
   'vike:esbuild-resolve',
+  'vike:git',
   'vike:pluginExtractAssets',
   'vike:pluginExtractExportNames',
   'vike:glob',
