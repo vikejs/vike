@@ -26,7 +26,7 @@ const globalObject = getGlobalObject('vite/plugins/pluginDev/autoAddAiSkill.ts',
 const skillPathInsideSkillsDir = 'vike/SKILL.md'
 const skillFileContent = `---
 name: "vike"
-description: "Vike documentation — consider reading it, e.g. when using uncommon Vike APIs or when stuck on a Vike problem"
+description: "Vike documentation index — a compact overview of Vike's docs. Consider consulting it, e.g. when using uncommon Vike APIs or when stuck on a Vike problem."
 ---
 
 See https://vike.dev/llms.txt
