@@ -43,8 +43,9 @@ function pluginDev(): Plugin[] {
           // Apply late — after the dev server is up and running, and after the first page requests — so that it never slows down dev start.
           const run = () => {
             const timeout = setTimeout(() => autoAddAiSkill(config.root), 5 * 1000)
-            // Never keep the process alive because of the timer (e.g. programmatic dev server usage that exits quickly)
-            timeout.unref()
+            // Never keep the process alive because of the timer (e.g. programmatic dev server usage that exits quickly).
+            // Optional call: unref() doesn't exist in every runtime (e.g. Deno's setTimeout() returns a number).
+            timeout.unref?.()
           }
           if (server.httpServer) {
             server.httpServer.once('listening', run)
