@@ -5,7 +5,6 @@ import { type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
 import { optimizeDeps, resolveOptimizeDeps } from './pluginDev/optimizeDeps.js'
 import { determineFsAllowList } from './pluginDev/determineFsAllowList.js'
 import { autoAddAiSkill } from './pluginDev/autoAddAiSkill.js'
-import { getVikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 import { addSsrMiddleware } from '../shared/addSsrMiddleware.js'
 import { isDebugError } from '../../../utils/debug.js'
 import { applyDev } from '../../../utils/isDev.js'
@@ -40,9 +39,15 @@ function pluginDev(): Plugin[] {
         },
       },
       configureServer: {
-        async handler() {
-          const vikeConfig = await getVikeConfigInternal()
-          autoAddAiSkill(config.root, vikeConfig)
+        handler(server) {
+          // Apply late — after the dev server is up and running — so that it never slows down dev start.
+          const run = () => autoAddAiSkill(config.root)
+          if (server.httpServer) {
+            server.httpServer.once('listening', run)
+          } else {
+            // Middleware mode: the HTTP server is owned by the user.
+            setImmediate(run)
+          }
         },
       },
     },

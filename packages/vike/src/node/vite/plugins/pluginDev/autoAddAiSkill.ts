@@ -15,7 +15,8 @@ import { isGitNotUsable, runGitCommand } from '../../../../utils/git.js'
 import { getVikeConfigError } from '../../../../shared-server-node/getVikeConfigError.js'
 import { hasProp } from '../../../../utils/hasProp.js'
 import { isObject } from '../../../../utils/isObject.js'
-import type { VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
+import { getVikeConfigInternal, type VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
+import { logErrorServerDev } from '../../shared/loggerDev.js'
 import '../../assertEnvVite.js'
 const debug = createDebug('vike:skill')
 const importMetaUrl = import.meta.url
@@ -35,33 +36,45 @@ See https://vike.dev/llms.txt
 
 // Automatically add the Vike skill file to the user's Git repository (and Git-commit it) — so that AI agents (e.g. Claude Code) automatically pick it up.
 // https://vike.dev/ai#skill
-function autoAddAiSkill(userRootDir: string, vikeConfig: VikeConfigInternal): void {
-  if (globalObject.alreadyDone) return
-  // Maybe the user disabled the feature in a config file that currently has an error => retry later (Vite restarts upon config changes).
-  if (getVikeConfigError()) return
-  if (!isEnabled(vikeConfig)) return
-  globalObject.alreadyDone = true
+// Called late (after the dev server started) — the feature never slows down dev start.
+function autoAddAiSkill(userRootDir: string): void {
+  // Fire-and-forget: never let this feature break the dev server.
+  autoAddAiSkillAsync(userRootDir).catch((err) => {
+    debug('error', err)
+  })
+}
 
+async function autoAddAiSkillAsync(userRootDir: string): Promise<void> {
+  if (globalObject.alreadyDone) return
   // Skip CI environments: the skill file is meant to be added from the machine of an app developer.
   if (process.env.CI) return
   // Skip if Vike isn't inside node_modules/ (e.g. when Vike is linked, such as when running an example of the Vike monorepo).
   if (!importMetaUrl.includes('node_modules/')) return
 
-  // Fire-and-forget: don't block the dev server startup, and never let this feature break the dev server.
-  addAiSkill(userRootDir)
-    .then((res) => {
-      if (!res) return
-      assertInfo(
-        false,
-        `${res.isUpdate ? 'Updated' : 'Created'}${res.isCommitted ? ' and Git-committed' : ''} ${pc.cyan(
-          skillFilePathRelative,
-        )} (see https://vike.dev/ai#skill)`,
-        { onlyOnce: false },
-      )
-    })
-    .catch((err) => {
-      debug('error', err)
-    })
+  // The dev server is already up and running => the Vike config is already resolved => the await resolves instantly.
+  const vikeConfig = await getVikeConfigInternal()
+  // Maybe the user disabled the feature in a config file that currently has an error => retry later (Vite restarts upon config changes).
+  if (getVikeConfigError()) return
+  let enabled: boolean
+  try {
+    enabled = isEnabled(vikeConfig)
+  } catch (err) {
+    // Invalid +ai config value: show the usage error without crashing the already-running dev server.
+    logErrorServerDev(err, null)
+    return
+  }
+  if (!enabled) return
+  globalObject.alreadyDone = true
+
+  const res = await addAiSkill(userRootDir)
+  if (!res) return
+  assertInfo(
+    false,
+    `${res.isUpdate ? 'Updated' : 'Created'}${res.isCommitted ? ' and Git-committed' : ''} ${pc.cyan(
+      skillFilePathRelative,
+    )} (see https://vike.dev/ai#skill)`,
+    { onlyOnce: false },
+  )
 }
 
 // https://vike.dev/ai#skill
