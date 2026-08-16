@@ -8,7 +8,7 @@ If your AI agent doesn't automatically load it (see the skill below), we recomme
 
 ## Skill
 
-Vike automatically adds the following [skill](https://code.claude.com/docs/en/skills) file to your app's Git repository — making AI agents such as Claude Code automatically aware of the Vike documentation.
+Vike automatically adds the following [skill](https://agentskills.io) file to your app's Git repository — making AI agents (Claude Code, Codex, Cursor, Gemini CLI, ...) automatically aware of the Vike documentation.
 
 ```md
 // .claude/skills/vike/SKILL.md
@@ -21,17 +21,17 @@ description: "Vike documentation — consider reading it, e.g. when using uncomm
 See https://vike.dev/llms.txt
 ```
 
-Upon running the development server, Vike creates the skill file (at the root of your app's Git repository) and automatically Git-commits it. If the skill file exists but is outdated, Vike updates it (and Git-commits the change).
+Upon running the development server, Vike adds the skill file to every existing skills directory of your app's Git repository — discovered following the `**/skills/*/SKILL.md` convention, e.g. `.claude/skills/` (Claude Code) and `.agents/skills/` (Codex, Gemini CLI, Cursor, and many others) — and automatically Git-commits it. If a skill file exists but is outdated, Vike updates it (and Git-commits the change).
 
-> The automatic Git commit only ever includes the skill file — it never includes other changes (e.g. files you staged).
+> The automatic Git commit only ever includes skill files — it never includes other changes (e.g. files you staged).
 
 The feature is skipped if:
-- Your app's Git repository doesn't contain any `.claude/skills/` directory. (So that Vike doesn't add files to projects that don't use skills. Set `ai.skill` to `true` to always add the skill file.)
+- Your app's Git repository doesn't contain any skills directory. (So that Vike doesn't add files to projects that don't use skills. Use the `ai.skill` setting to explicitly list directories.)
 - The setting `ai.skill` is `false` (see below).
 - Git isn't installed, or your app isn't inside a Git repository.
 - You're in a CI environment.
 
-> If you `.gitignore` the skill file (e.g. by adding `.claude/` to your `.gitignore`), then Vike still creates the file but doesn't Git-commit it.
+> If you `.gitignore` a skill file (e.g. by adding `.claude/` to your `.gitignore`), then Vike still creates the file but doesn't Git-commit it.
 
 Use the `ai.skill` setting to control the feature:
 
@@ -42,13 +42,15 @@ import type { Config } from 'vike/types'
 
 export default {
   ai: {
-    // Always add the skill file (even if .claude/skills/ doesn't exist yet)
-    skill: true,
+    // Add the skill file to exactly these directories (creating them if needed)
+    skill: ['.claude/skills', '.agents/skills'],
     // Never add the skill file
     skill: false
   }
 } satisfies Config
 ```
+
+> The `ai.skill` directories are paths relative to the root directory of your app's Git repository.
 
 ## See also
 

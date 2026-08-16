@@ -2,8 +2,7 @@ export { autoAddAiSkill }
 // For testing
 export { addAiSkill }
 export { skillFileContent }
-export { skillFilePathRelative }
-export { skillsDirPathRelative }
+export { skillPathInsideSkillsDir }
 
 import fs from 'node:fs/promises'
 import path from 'node:path'
@@ -14,8 +13,10 @@ import { createDebug } from '../../../../utils/debug.js'
 import { getGlobalObject } from '../../../../utils/getGlobalObject.js'
 import { isGitNotUsable, runGitCommand } from '../../../../utils/git.js'
 import { getVikeConfigError } from '../../../../shared-server-node/getVikeConfigError.js'
-import { hasProp } from '../../../../utils/hasProp.js'
+import { isArrayOfStrings } from '../../../../utils/isArrayOfStrings.js'
+import { isFilePathAbsoluteFilesystem } from '../../../../utils/isFilePathAbsoluteFilesystem.js'
 import { isObject } from '../../../../utils/isObject.js'
+import { unique } from '../../../../utils/unique.js'
 import { getVikeConfigInternal, type VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { logErrorServerDev } from '../../shared/loggerDev.js'
 import '../../assertEnvVite.js'
@@ -26,8 +27,7 @@ const globalObject = getGlobalObject('vite/plugins/pluginDev/autoAddAiSkill.ts',
   alreadyDone: false,
 })
 
-const skillsDirPathRelative = '.claude/skills'
-const skillFilePathRelative = `${skillsDirPathRelative}/vike/SKILL.md`
+const skillPathInsideSkillsDir = 'vike/SKILL.md'
 const skillFileContent = `---
 name: "vike"
 description: "Vike documentation — consider reading it, e.g. when using uncommon Vike APIs or when stuck on a Vike problem"
@@ -36,7 +36,7 @@ description: "Vike documentation — consider reading it, e.g. when using uncomm
 See https://vike.dev/llms.txt
 `
 
-// Automatically add the Vike skill file to the user's Git repository (and Git-commit it) — so that AI agents (e.g. Claude Code) automatically pick it up.
+// Automatically add the Vike skill file to the skills directories (e.g. .claude/skills/ and .agents/skills/) of the user's Git repository (and Git-commit it) — so that AI agents (Claude Code, Codex, Cursor, Gemini CLI, ...) automatically pick it up.
 // https://vike.dev/ai#skill
 // Called late (after the dev server started) — the feature never slows down dev start.
 function autoAddAiSkill(userRootDir: string): void {
@@ -57,7 +57,7 @@ async function autoAddAiSkillAsync(userRootDir: string): Promise<void> {
   const vikeConfig = await getVikeConfigInternal()
   // Maybe the user disabled the feature in a config file that currently has an error => retry later (Vite restarts upon config changes).
   if (getVikeConfigError()) return
-  let configValue: boolean | undefined
+  let configValue: false | string[] | undefined
   try {
     configValue = getConfigValueAiSkill(vikeConfig)
   } catch (err) {
@@ -69,36 +69,58 @@ async function autoAddAiSkillAsync(userRootDir: string): Promise<void> {
   globalObject.alreadyDone = true
 
   const res = await addAiSkill(userRootDir, {
-    // Setting +ai.skill to true => always add the skill file
-    onlyIfSkillsDirectoryExists: configValue !== true,
+    // undefined => add the skill file to every existing skills directory (`**/skills/*/SKILL.md`)
+    skillsDirs: configValue,
   })
   if (!res) return
+  const verb = res.files.every((f) => !f.isUpdate)
+    ? 'Created'
+    : res.files.every((f) => f.isUpdate)
+      ? 'Updated'
+      : 'Created/updated'
   assertInfo(
     false,
-    `${res.isUpdate ? 'Updated' : 'Created'}${res.isCommitted ? ' and Git-committed' : ''} ${pc.cyan(
-      skillFilePathRelative,
-    )} (see https://vike.dev/ai#skill)`,
+    `${verb}${res.isCommitted ? ' and Git-committed' : ''} ${res.files
+      .map((f) => pc.cyan(f.filePathRelative))
+      .join(', ')} (see https://vike.dev/ai#skill)`,
     { onlyOnce: false },
   )
 }
 
 // https://vike.dev/ai#skill
-function getConfigValueAiSkill(vikeConfig: VikeConfigInternal): boolean | undefined {
+function getConfigValueAiSkill(vikeConfig: VikeConfigInternal): false | string[] | undefined {
   const configAi = vikeConfig.config.ai
   if (configAi === undefined) return undefined
   assertUsage(isObject(configAi), `Setting ${pc.cyan('ai')} should be an object`)
   assertKeys(configAi, ['skill'] as const, `Setting ${pc.cyan('ai')}:`)
+  const skill: unknown = configAi.skill
+  if (skill === undefined) return undefined
+  if (skill === false) return false
   assertUsage(
-    hasProp(configAi, 'skill', 'boolean') || hasProp(configAi, 'skill', 'undefined'),
-    `Setting ${pc.cyan('ai.skill')} should be a boolean`,
+    isArrayOfStrings(skill),
+    `Setting ${pc.cyan('ai.skill')} should be ${pc.cyan('false')} or a list of skills directories (e.g. ${pc.cyan(
+      "['.claude/skills', '.agents/skills']",
+    )})`,
   )
-  return configAi.skill
+  return skill.map((skillsDir) => {
+    assertUsage(
+      skillsDir !== '' && !isFilePathAbsoluteFilesystem(skillsDir),
+      `Setting ${pc.cyan('ai.skill')} entries should be paths relative to the root directory of your app's Git repository (e.g. ${pc.cyan(
+        "'.claude/skills'",
+      )})`,
+    )
+    // Normalize: remove trailing slashes
+    return skillsDir.replace(/\/+$/, '')
+  })
 }
 
 async function addAiSkill(
   userRootDir: string,
-  { onlyIfSkillsDirectoryExists }: { onlyIfSkillsDirectoryExists: boolean },
-): Promise<null | { skillFilePath: string; isUpdate: boolean; isCommitted: boolean }> {
+  { skillsDirs }: { skillsDirs: undefined | string[] },
+): Promise<null | {
+  files: { filePathAbsolute: string; filePathRelative: string; isUpdate: boolean }[]
+  isCommitted: boolean
+}> {
   // Skip if Git isn't installed, or if the app isn't inside a Git repository
   if (await isGitNotUsable(userRootDir)) return null
 
@@ -107,39 +129,81 @@ async function addAiSkill(
   const gitRootDir = resGitRootDir.stdout.trim()
   if (!gitRootDir) return null
 
-  // By default, the skill file is only added if the user already uses skills — we don't want to create a .claude/ directory for users who don't use skills.
-  if (onlyIfSkillsDirectoryExists && !(await isDirectory(path.join(gitRootDir, ...skillsDirPathRelative.split('/'))))) {
-    return null
+  // By default, the skill file is only added to the skills directories that already exist — we don't want to add files to the repositories of users who don't use skills.
+  skillsDirs ??= await discoverSkillsDirs(gitRootDir)
+  if (skillsDirs.length === 0) return null
+
+  const files: { filePathAbsolute: string; filePathRelative: string; isUpdate: boolean }[] = []
+  for (const skillsDir of skillsDirs) {
+    const filePathRelative = `${skillsDir}/${skillPathInsideSkillsDir}`
+    const filePathAbsolute = path.join(gitRootDir, ...filePathRelative.split('/'))
+
+    // Skip if the skill file is already up-to-date
+    const contentCurrent = await fs.readFile(filePathAbsolute, 'utf8').catch(() => null)
+    if (contentCurrent === skillFileContent) continue
+    const isUpdate = contentCurrent !== null
+
+    await fs.mkdir(path.dirname(filePathAbsolute), { recursive: true })
+    await fs.writeFile(filePathAbsolute, skillFileContent, 'utf8')
+    debug(`${isUpdate ? 'updated' : 'created'}:`, filePathAbsolute)
+
+    files.push({ filePathAbsolute, filePathRelative, isUpdate })
   }
+  if (files.length === 0) return null
 
-  const skillFilePath = path.join(gitRootDir, ...skillFilePathRelative.split('/'))
-
-  // Skip if the skill file is already up-to-date
-  const contentCurrent = await fs.readFile(skillFilePath, 'utf8').catch(() => null)
-  if (contentCurrent === skillFileContent) return null
-  const isUpdate = contentCurrent !== null
-
-  await fs.mkdir(path.dirname(skillFilePath), { recursive: true })
-  await fs.writeFile(skillFilePath, skillFileContent, 'utf8')
-  debug(`${isUpdate ? 'updated' : 'created'}:`, skillFilePath)
-
-  const isCommitted = await gitCommit(gitRootDir, isUpdate)
-  return { skillFilePath, isUpdate, isCommitted }
+  const isCommitted = await gitCommit(gitRootDir, files)
+  return { files, isCommitted }
 }
 
-async function isDirectory(dirPath: string): Promise<boolean> {
-  const stat = await fs.stat(dirPath).catch(() => null)
-  return !!stat?.isDirectory()
+// Discover the skills directories of the user's Git repository, following the Agent Skills convention `**/skills/*/SKILL.md` (https://agentskills.io) — e.g. .claude/skills/ (Claude Code) and .agents/skills/ (Codex, Gemini CLI, Cursor, ...).
+async function discoverSkillsDirs(gitRootDir: string): Promise<string[]> {
+  const res = await runGitCommand(
+    [
+      // Preserve UTF-8 file paths (see utils/git.ts usage in crawlPlusFilePaths.ts)
+      '-c',
+      'core.quotepath=off',
+      'ls-files',
+      // --others --exclude-standard => also list untracked files (--others) while using .gitignore (--exclude-standard)
+      // --cached => list tracked files
+      '--others',
+      '--exclude-standard',
+      '--cached',
+      '--',
+      '**/skills/*/SKILL.md',
+      'skills/*/SKILL.md',
+    ],
+    gitRootDir,
+  )
+  if ('err' in res) return []
+  const skillsDirs = unique(
+    res.stdout
+      .split('\n')
+      .filter(Boolean)
+      .map((filePath) => path.posix.dirname(path.posix.dirname(filePath)))
+      // The `*` of Git's pathspec matching can span multiple directories — only keep `**/skills/` directories
+      .filter((skillsDir) => path.posix.basename(skillsDir) === 'skills'),
+  ).sort()
+  debug('discovered skills directories:', skillsDirs)
+  return skillsDirs
 }
 
-async function gitCommit(gitRootDir: string, isUpdate: boolean): Promise<boolean> {
-  // Don't Git-commit if the user chose to .gitignore the skill file — `$ git check-ignore` succeeds if the file is ignored
-  const resCheckIgnore = await runGitCommand(['check-ignore', '-q', '--', skillFilePathRelative], gitRootDir)
-  if (!('err' in resCheckIgnore)) return false
+async function gitCommit(
+  gitRootDir: string,
+  files: { filePathRelative: string; isUpdate: boolean }[],
+): Promise<boolean> {
+  // Don't Git-commit the skill files that the user chose to .gitignore — `$ git check-ignore` succeeds if the file is ignored
+  const filesToCommit: typeof files = []
+  for (const file of files) {
+    const resCheckIgnore = await runGitCommand(['check-ignore', '-q', '--', file.filePathRelative], gitRootDir)
+    if ('err' in resCheckIgnore) filesToCommit.push(file)
+  }
+  if (filesToCommit.length === 0) return false
 
-  const resAdd = await runGitCommand(['add', '--', skillFilePathRelative], gitRootDir)
+  const filePaths = filesToCommit.map((f) => f.filePathRelative)
+  const resAdd = await runGitCommand(['add', '--', ...filePaths], gitRootDir)
   if ('err' in resAdd) return false
 
+  const isUpdate = filesToCommit.some((f) => f.isUpdate)
   const commitMessage = `${isUpdate ? 'Update' : 'Add'} Vike skill (see https://vike.dev/ai#skill)`
   const resCommit = await runGitCommand(
     [
@@ -148,9 +212,9 @@ async function gitCommit(gitRootDir: string, isUpdate: boolean): Promise<boolean
       '--no-verify',
       '-m',
       commitMessage,
-      // Only commit the skill file — never commit files staged by the user
+      // Only commit the skill files — never commit files staged by the user
       '--',
-      skillFilePathRelative,
+      ...filePaths,
     ],
     gitRootDir,
   )
