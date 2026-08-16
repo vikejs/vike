@@ -23,7 +23,7 @@ description: "Vike documentation index — a compact overview of Vike's docs. Co
 See https://vike.dev/llms.txt
 ```
 
-> Upon running the development server, Vike adds `vike/SKILL.md` to every existing agent skills directory (`**/skills/*/SKILL.md`).
+> Upon running the development server, Vike adds `vike/SKILL.md` to every existing agent skills directory (`**/skills/*/SKILL.md`) and automatically Git-commits it. If the skill file is outdated, Vike updates it (and Git-commits the change).
 
 Vike skips adding `vike/SKILL.md` if:
 - The setting `+ai.skill` is `false`.
