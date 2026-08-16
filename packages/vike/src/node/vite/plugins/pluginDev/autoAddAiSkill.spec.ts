@@ -4,14 +4,14 @@ import os from 'node:os'
 import path from 'node:path'
 import { execFile } from 'node:child_process'
 import { promisify } from 'node:util'
-import { addAiSkill, skillFileContent, skillFilePathRelative } from './autoAddAiSkill.js'
+import { addAiSkill, skillFileContent, skillFilePathRelative, skillsDirPathRelative } from './autoAddAiSkill.js'
 const execFileA = promisify(execFile)
 
 describe('addAiSkill()', () => {
   it('creates and Git-commits the skill file', async ({ onTestFinished }) => {
     const repoDir = await createGitRepo(onTestFinished)
 
-    const res = await addAiSkill(repoDir)
+    const res = await addAiSkill(repoDir, { onlyIfSkillsDirectoryExists: false })
     expect(res).toBeTruthy()
     expect(res!.isUpdate).toBe(false)
     expect(res!.isCommitted).toBe(true)
@@ -24,8 +24,8 @@ describe('addAiSkill()', () => {
   it('skips when the skill file is up-to-date', async ({ onTestFinished }) => {
     const repoDir = await createGitRepo(onTestFinished)
 
-    expect(await addAiSkill(repoDir)).toBeTruthy()
-    expect(await addAiSkill(repoDir)).toBe(null)
+    expect(await addAiSkill(repoDir, { onlyIfSkillsDirectoryExists: false })).toBeTruthy()
+    expect(await addAiSkill(repoDir, { onlyIfSkillsDirectoryExists: false })).toBe(null)
     expect(await runGit(['rev-list', '--count', 'HEAD'], repoDir)).toBe('1')
   })
 
@@ -39,7 +39,7 @@ describe('addAiSkill()', () => {
     await runGit(['add', '--', skillFilePathRelative], repoDir)
     await runGit(['commit', '-m', 'Add Vike skill (see https://vike.dev/ai#skill)'], repoDir)
 
-    const res = await addAiSkill(repoDir)
+    const res = await addAiSkill(repoDir, { onlyIfSkillsDirectoryExists: false })
     expect(res!.isUpdate).toBe(true)
     expect(res!.isCommitted).toBe(true)
     expect(await fs.readFile(res!.skillFilePath, 'utf8')).toBe(skillFileContent)
@@ -52,11 +52,11 @@ describe('addAiSkill()', () => {
   it('restores local uncommitted modifications (nothing to Git-commit then)', async ({ onTestFinished }) => {
     const repoDir = await createGitRepo(onTestFinished)
 
-    const res1 = await addAiSkill(repoDir)
+    const res1 = await addAiSkill(repoDir, { onlyIfSkillsDirectoryExists: false })
     // The user (or their AI agent) modified the skill file without committing the modification
     await fs.writeFile(res1!.skillFilePath, 'modified content', 'utf8')
 
-    const res2 = await addAiSkill(repoDir)
+    const res2 = await addAiSkill(repoDir, { onlyIfSkillsDirectoryExists: false })
     expect(res2!.isUpdate).toBe(true)
     // The restored content is equal to the already committed content => there isn't anything to commit
     expect(res2!.isCommitted).toBe(false)
@@ -68,7 +68,7 @@ describe('addAiSkill()', () => {
   it("skips when the app isn't inside a Git repository", async ({ onTestFinished }) => {
     const dir = await createTmpDir(onTestFinished)
 
-    expect(await addAiSkill(dir)).toBe(null)
+    expect(await addAiSkill(dir, { onlyIfSkillsDirectoryExists: false })).toBe(null)
     await expect(fs.stat(path.join(dir, '.claude'))).rejects.toThrow()
   })
 
@@ -76,7 +76,7 @@ describe('addAiSkill()', () => {
     const repoDir = await createGitRepo(onTestFinished)
     await fs.writeFile(path.join(repoDir, '.gitignore'), '.claude/\n', 'utf8')
 
-    const res = await addAiSkill(repoDir)
+    const res = await addAiSkill(repoDir, { onlyIfSkillsDirectoryExists: false })
     expect(res).toBeTruthy()
     expect(res!.isCommitted).toBe(false)
     expect(await fs.readFile(res!.skillFilePath, 'utf8')).toBe(skillFileContent)
@@ -88,11 +88,28 @@ describe('addAiSkill()', () => {
     await fs.writeFile(path.join(repoDir, 'user-file.txt'), 'hello', 'utf8')
     await runGit(['add', 'user-file.txt'], repoDir)
 
-    const res = await addAiSkill(repoDir)
+    const res = await addAiSkill(repoDir, { onlyIfSkillsDirectoryExists: false })
     expect(res!.isCommitted).toBe(true)
     expect(await runGit(['log', '-1', '--name-only', '--format='], repoDir)).toBe(skillFilePathRelative)
     // The user's staged file is still staged
     expect(await runGit(['diff', '--cached', '--name-only'], repoDir)).toBe('user-file.txt')
+  })
+
+  it("skips when the skills directory doesn't exist", async ({ onTestFinished }) => {
+    const repoDir = await createGitRepo(onTestFinished)
+
+    expect(await addAiSkill(repoDir, { onlyIfSkillsDirectoryExists: true })).toBe(null)
+    await expect(fs.stat(path.join(repoDir, '.claude'))).rejects.toThrow()
+  })
+
+  it('applies when the skills directory exists', async ({ onTestFinished }) => {
+    const repoDir = await createGitRepo(onTestFinished)
+    await fs.mkdir(path.join(repoDir, ...skillsDirPathRelative.split('/')), { recursive: true })
+
+    const res = await addAiSkill(repoDir, { onlyIfSkillsDirectoryExists: true })
+    expect(res).toBeTruthy()
+    expect(res!.isCommitted).toBe(true)
+    expect(await fs.readFile(res!.skillFilePath, 'utf8')).toBe(skillFileContent)
   })
 })
 

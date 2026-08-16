@@ -26,13 +26,14 @@ Upon running the development server, Vike creates the skill file (at the root of
 > The automatic Git commit only ever includes the skill file — it never includes other changes (e.g. files you staged).
 
 The feature is skipped if:
+- Your app's Git repository doesn't contain any `.claude/skills/` directory. (So that Vike doesn't add files to projects that don't use skills. Set `ai.skill` to `true` to always add the skill file.)
 - The setting `ai.skill` is `false` (see below).
 - Git isn't installed, or your app isn't inside a Git repository.
 - You're in a CI environment.
 
 > If you `.gitignore` the skill file (e.g. by adding `.claude/` to your `.gitignore`), then Vike still creates the file but doesn't Git-commit it.
 
-Use the `ai.skill` setting to disable the feature:
+Use the `ai.skill` setting to control the feature:
 
 ```ts
 // pages/+config.ts
@@ -41,7 +42,9 @@ import type { Config } from 'vike/types'
 
 export default {
   ai: {
-    // Don't automatically add the skill file
+    // Always add the skill file (even if .claude/skills/ doesn't exist yet)
+    skill: true,
+    // Never add the skill file
     skill: false
   }
 } satisfies Config

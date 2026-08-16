@@ -722,7 +722,9 @@ type ConfigBuiltIn = {
 type ConfigAi = {
   /** Whether Vike automatically creates and updates the skill file `.claude/skills/vike/SKILL.md` of your app's Git repository (Git-committing the change) — making AI agents automatically aware of Vike's documentation.
    *
-   * @default true
+   * - `undefined` (default): add the skill file only if the `.claude/skills/` directory already exists.
+   * - `true`: always add the skill file.
+   * - `false`: never add the skill file.
    *
    * https://vike.dev/ai#skill
    */

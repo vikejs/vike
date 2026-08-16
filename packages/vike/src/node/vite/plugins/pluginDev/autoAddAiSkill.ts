@@ -3,6 +3,7 @@ export { autoAddAiSkill }
 export { addAiSkill }
 export { skillFileContent }
 export { skillFilePathRelative }
+export { skillsDirPathRelative }
 
 import fs from 'node:fs/promises'
 import path from 'node:path'
@@ -25,7 +26,8 @@ const globalObject = getGlobalObject('vite/plugins/pluginDev/autoAddAiSkill.ts',
   alreadyDone: false,
 })
 
-const skillFilePathRelative = '.claude/skills/vike/SKILL.md'
+const skillsDirPathRelative = '.claude/skills'
+const skillFilePathRelative = `${skillsDirPathRelative}/vike/SKILL.md`
 const skillFileContent = `---
 name: "vike"
 description: "Vike documentation — consider reading it, e.g. when using uncommon Vike APIs or when stuck on a Vike problem"
@@ -55,18 +57,21 @@ async function autoAddAiSkillAsync(userRootDir: string): Promise<void> {
   const vikeConfig = await getVikeConfigInternal()
   // Maybe the user disabled the feature in a config file that currently has an error => retry later (Vite restarts upon config changes).
   if (getVikeConfigError()) return
-  let enabled: boolean
+  let configValue: boolean | undefined
   try {
-    enabled = isEnabled(vikeConfig)
+    configValue = getConfigValueAiSkill(vikeConfig)
   } catch (err) {
     // Invalid +ai config value: show the usage error without crashing the already-running dev server.
     logErrorServerDev(err, null)
     return
   }
-  if (!enabled) return
+  if (configValue === false) return
   globalObject.alreadyDone = true
 
-  const res = await addAiSkill(userRootDir)
+  const res = await addAiSkill(userRootDir, {
+    // Setting +ai.skill to true => always add the skill file
+    onlyIfSkillsDirectoryExists: configValue !== true,
+  })
   if (!res) return
   assertInfo(
     false,
@@ -78,20 +83,21 @@ async function autoAddAiSkillAsync(userRootDir: string): Promise<void> {
 }
 
 // https://vike.dev/ai#skill
-function isEnabled(vikeConfig: VikeConfigInternal): boolean {
+function getConfigValueAiSkill(vikeConfig: VikeConfigInternal): boolean | undefined {
   const configAi = vikeConfig.config.ai
-  if (configAi === undefined) return true
+  if (configAi === undefined) return undefined
   assertUsage(isObject(configAi), `Setting ${pc.cyan('ai')} should be an object`)
   assertKeys(configAi, ['skill'] as const, `Setting ${pc.cyan('ai')}:`)
   assertUsage(
     hasProp(configAi, 'skill', 'boolean') || hasProp(configAi, 'skill', 'undefined'),
     `Setting ${pc.cyan('ai.skill')} should be a boolean`,
   )
-  return configAi.skill !== false
+  return configAi.skill
 }
 
 async function addAiSkill(
   userRootDir: string,
+  { onlyIfSkillsDirectoryExists }: { onlyIfSkillsDirectoryExists: boolean },
 ): Promise<null | { skillFilePath: string; isUpdate: boolean; isCommitted: boolean }> {
   // Skip if Git isn't installed, or if the app isn't inside a Git repository
   if (await isGitNotUsable(userRootDir)) return null
@@ -100,6 +106,11 @@ async function addAiSkill(
   if ('err' in resGitRootDir) return null
   const gitRootDir = resGitRootDir.stdout.trim()
   if (!gitRootDir) return null
+
+  // By default, the skill file is only added if the user already uses skills — we don't want to create a .claude/ directory for users who don't use skills.
+  if (onlyIfSkillsDirectoryExists && !(await isDirectory(path.join(gitRootDir, ...skillsDirPathRelative.split('/'))))) {
+    return null
+  }
 
   const skillFilePath = path.join(gitRootDir, ...skillFilePathRelative.split('/'))
 
@@ -114,6 +125,11 @@ async function addAiSkill(
 
   const isCommitted = await gitCommit(gitRootDir, isUpdate)
   return { skillFilePath, isUpdate, isCommitted }
+}
+
+async function isDirectory(dirPath: string): Promise<boolean> {
+  const stat = await fs.stat(dirPath).catch(() => null)
+  return !!stat?.isDirectory()
 }
 
 async function gitCommit(gitRootDir: string, isUpdate: boolean): Promise<boolean> {
