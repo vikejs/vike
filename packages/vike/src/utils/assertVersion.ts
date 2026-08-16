@@ -1,6 +1,5 @@
 export { assertVersion }
 export { isVersionMatch }
-export type { Version }
 
 import pc from '@brillout/picocolors'
 import { assert, assertUsage } from './assert.js'

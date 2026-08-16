@@ -6,12 +6,13 @@ export { skillPathInsideSkillsDir }
 
 import fs from 'node:fs/promises'
 import path from 'node:path'
+import { execFile } from 'node:child_process'
+import { promisify } from 'node:util'
 import pc from '@brillout/picocolors'
 import { assertInfo, assertUsage } from '../../../../utils/assert.js'
 import { assertKeys } from '../../../../utils/assertKeys.js'
 import { createDebug } from '../../../../utils/debug.js'
 import { getGlobalObject } from '../../../../utils/getGlobalObject.js'
-import { isGitNotUsable, runGitCommand } from '../../../../utils/git.js'
 import { getVikeConfigError } from '../../../../shared-server-node/getVikeConfigError.js'
 import { isArrayOfStrings } from '../../../../utils/isArrayOfStrings.js'
 import { isFilePathAbsoluteFilesystem } from '../../../../utils/isFilePathAbsoluteFilesystem.js'
@@ -20,6 +21,7 @@ import { unique } from '../../../../utils/unique.js'
 import { getVikeConfigInternal, type VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { logErrorServerDev } from '../../shared/loggerDev.js'
 import '../../assertEnvVite.js'
+const execFileA = promisify(execFile)
 const debug = createDebug('vike:skill')
 const importMetaUrl = import.meta.url
 
@@ -121,9 +123,10 @@ async function addAiSkill(
   files: { filePathAbsolute: string; filePathRelative: string; isUpdate: boolean }[]
   isCommitted: boolean
 }> {
-  // Skip if Git isn't installed, or if the app isn't inside a Git repository
-  if (await isGitNotUsable(userRootDir)) return null
+  // Skip if Git isn't installed
+  if ('err' in (await runGitCommand(['--version'], userRootDir))) return null
 
+  // Skip if the app isn't inside a Git repository
   const resGitRootDir = await runGitCommand(['rev-parse', '--show-toplevel'], userRootDir)
   if ('err' in resGitRootDir) return null
   const gitRootDir = resGitRootDir.stdout.trim()
@@ -159,7 +162,7 @@ async function addAiSkill(
 async function discoverSkillsDirs(gitRootDir: string): Promise<string[]> {
   const res = await runGitCommand(
     [
-      // Preserve UTF-8 file paths (see utils/git.ts usage in crawlPlusFilePaths.ts)
+      // Preserve UTF-8 file paths — https://github.com/vikejs/vike/issues/1658
       '-c',
       'core.quotepath=off',
       'ls-files',
@@ -219,4 +222,17 @@ async function gitCommit(
     gitRootDir,
   )
   return !('err' in resCommit)
+}
+
+// Run a Git command — doesn't throw: it returns `{ err }` upon failure.
+async function runGitCommand(args: string[], cwd: string): Promise<{ err: unknown } | { stdout: string }> {
+  let stdout: string
+  try {
+    const res = await execFileA('git', args, { cwd })
+    stdout = res.stdout.toString()
+  } catch (err) {
+    debug(`$ git ${args.join(' ')} — failed:`, err)
+    return { err }
+  }
+  return { stdout }
 }
