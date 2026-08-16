@@ -10,6 +10,7 @@ import { removeEmptyLines } from '../../../utils/removeEmptyLines.js'
 import { trimWithAnsi, trimWithAnsiTrailOnly } from '../../../utils/trimWithAnsi.js'
 import { assert } from '../../../utils/assert.js'
 import { getGlobalObject } from '../../../utils/getGlobalObject.js'
+import { setTimeoutUnref } from '../../../utils/setTimeoutUnref.js'
 import { getRequestId_withAsyncHook } from '../../../server/runtime/asyncHook.js'
 import { logErrorServerDev, logVite } from './loggerDev.js'
 import type { LogType as LoggerType, ResolvedConfig, LogErrorOptions } from 'vite'
@@ -32,7 +33,7 @@ function interceptViteLogs(config: ResolvedConfig) {
 
 function intercept(loggerType: LoggerType, config: ResolvedConfig) {
   let isBeginning = true
-  setTimeout(() => (isBeginning = false), 10 * 1000)
+  setTimeoutUnref(() => (isBeginning = false), 10 * 1000)
 
   config.logger[loggerType] = (msg, options: LogErrorOptions = {}) => {
     assert(!isDebugError())
@@ -139,7 +140,7 @@ function swallowViteLogConnected(): void {
   globalObject.swallowViteLogConnected_originalConsoleLog = console.log
   // The message `[vite] connected.` doesn't go through Vite's logger thus we must monkey patch console.log()
   console.log = swallowViteLogConnected_logPatch
-  setTimeout(swallowViteLogConnected_clean, 3000)
+  setTimeoutUnref(swallowViteLogConnected_clean, 3000)
 }
 // Remove console.log() monkey patch
 function swallowViteLogConnected_clean(): void {
