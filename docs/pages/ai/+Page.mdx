@@ -25,9 +25,7 @@ description: "Vike documentation — consider reading it, e.g. when using uncomm
 See https://vike.dev/llms.txt
 ```
 
-Upon running the development server, Vike adds the skill file to every existing skills directory (`**/skills/*/SKILL.md`) of your app's Git repository.
-
-— discovered following the  convention, e.g. `.claude/skills/` (Claude Code) and `.agents/skills/` (Codex, Gemini CLI, Cursor, and many others) — and automatically Git-commits it. If a skill file exists but is outdated, Vike updates it (and Git-commits the change).
+Upon running the development server, Vike adds the skill file to every existing skills directory (`**/skills/*/SKILL.md`) of your app's Git repository — e.g. `.claude/skills/` (Claude Code) and `.agents/skills/` (Codex, Gemini CLI, Cursor, and many others) — and automatically Git-commits it. If a skill file exists but is outdated, Vike updates it (and Git-commits the change).
 
 It's skipped if:
 - Your app doesn't contain any skills directory. (Unless you use `+ai.skill` to set the list of directories.)
