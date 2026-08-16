@@ -1,8 +1,4 @@
 export { autoAddAiSkill }
-// For testing
-export { addAiSkill }
-export { skillFileContent }
-export { skillPathInsideSkillsDir }
 
 import fs from 'node:fs/promises'
 import path from 'node:path'
@@ -11,7 +7,6 @@ import { promisify } from 'node:util'
 import pc from '@brillout/picocolors'
 import { assertInfo, assertUsage } from '../../../../utils/assert.js'
 import { assertKeys } from '../../../../utils/assertKeys.js'
-import { createDebug } from '../../../../utils/debug.js'
 import { getGlobalObject } from '../../../../utils/getGlobalObject.js'
 import { getVikeConfigError } from '../../../../shared-server-node/getVikeConfigError.js'
 import { isArrayOfStrings } from '../../../../utils/isArrayOfStrings.js'
@@ -22,7 +17,6 @@ import { getVikeConfigInternal, type VikeConfigInternal } from '../../shared/res
 import { logErrorServerDev } from '../../shared/loggerDev.js'
 import '../../assertEnvVite.js'
 const execFileA = promisify(execFile)
-const debug = createDebug('vike:skill')
 const importMetaUrl = import.meta.url
 
 const globalObject = getGlobalObject('vite/plugins/pluginDev/autoAddAiSkill.ts', {
@@ -43,9 +37,7 @@ See https://vike.dev/llms.txt
 // Called late (after the dev server started) — the feature never slows down dev start.
 function autoAddAiSkill(userRootDir: string): void {
   // Fire-and-forget: never let this feature break the dev server.
-  autoAddAiSkillAsync(userRootDir).catch((err) => {
-    debug('error', err)
-  })
+  autoAddAiSkillAsync(userRootDir).catch(() => {})
 }
 
 async function autoAddAiSkillAsync(userRootDir: string): Promise<void> {
@@ -148,7 +140,6 @@ async function addAiSkill(
 
     await fs.mkdir(path.dirname(filePathAbsolute), { recursive: true })
     await fs.writeFile(filePathAbsolute, skillFileContent, 'utf8')
-    debug(`${isUpdate ? 'updated' : 'created'}:`, filePathAbsolute)
 
     files.push({ filePathAbsolute, filePathRelative, isUpdate })
   }
@@ -186,7 +177,6 @@ async function discoverSkillsDirs(gitRootDir: string): Promise<string[]> {
       // The `*` of Git's pathspec matching can span multiple directories — only keep `**/skills/` directories
       .filter((skillsDir) => path.posix.basename(skillsDir) === 'skills'),
   ).sort()
-  debug('discovered skills directories:', skillsDirs)
   return skillsDirs
 }
 
@@ -231,7 +221,6 @@ async function runGitCommand(args: string[], cwd: string): Promise<{ err: unknow
     const res = await execFileA('git', args, { cwd })
     stdout = res.stdout.toString()
   } catch (err) {
-    debug(`$ git ${args.join(' ')} — failed:`, err)
     return { err }
   }
   return { stdout }
