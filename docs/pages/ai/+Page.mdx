@@ -5,7 +5,7 @@ Vike integration with AI agents.
 
 A Vike documentation index lives at [vike.dev/llms.txt](https://vike.dev/llms.txt) — a compact overview of Vike's docs for AI agents.
 
-> Most AI models are familiar and proficient with Vike. But for advanced Vike features agents can make mistakes.
+> Most AI models are familiar and proficient with Vike. But for advanced Vike features AI can make mistakes.
 >
 > Therefore, if your AI agent doesn't automatically load it (see the skill below), we recommend instructing your agent to read [vike.dev/llms.txt](https://vike.dev/llms.txt) whenever it uses Vike in an uncommon way.
 
@@ -23,15 +23,15 @@ description: "Vike documentation index — a compact overview of Vike's docs. Co
 See https://vike.dev/llms.txt
 ```
 
-> Upon running the development server, Vike adds the skill file to every existing skills directory (`**/skills/*/SKILL.md`).
+> Upon running the development server, Vike adds `vike/SKILL.md` to every existing agent skills directory (`**/skills/*/SKILL.md`).
 
-Vike skips adding `skills/vike/SKILL.md` if:
+Vike skips adding `vike/SKILL.md` if:
 - The setting `+ai.skill` is `false`.
 - Your app doesn't contain any skills directory. (Unless you set `+ai.skill` to a list of directories.)
 - Your app isn't inside a Git repository.
 - You're in a CI environment.
 
-> If you `.gitignore` a skill file (e.g. by adding `.claude/` to your `.gitignore`), then Vike still creates the file but doesn't Git-commit it.
+> If you `.gitignore` a skill file (e.g. by adding `.agents/skills/` to your `.gitignore`), then Vike still creates the file but doesn't Git-commit it.
 
 ```ts
 // pages/+config.ts
