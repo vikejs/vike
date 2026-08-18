@@ -2093,8 +2093,8 @@ importers:
         specifier: 0.4.260
         version: link:../../packages/vike
       vike-solid:
-        specifier: ^0.8.3
-        version: 0.8.3(solid-js@1.9.10)(vike@packages+vike)(vite-plugin-solid@2.11.10(solid-js@1.9.10)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)))
+        specifier: ^0.8.4
+        version: 0.8.4(solid-js@1.9.10)(vike@packages+vike)(vite-plugin-solid@2.11.10(solid-js@1.9.10)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)))
     devDependencies:
       typescript:
         specifier: ^5.9.3
@@ -6204,8 +6204,8 @@ packages:
     resolution: {integrity: sha512-ts6Wi+2j3jQjqi70w5AlN8DFnkSwC+MqmxEzdEALB2qXZYV3X/b1CTfgPLGJNMeAWxdPfU8FO1ms3NUfaHCPYg==}
     engines: {node: '>=10'}
 
-  get-tsconfig@4.14.2:
-    resolution: {integrity: sha512-XpwZALwwl/BaKTAyC6+c5T8y6kCg2jk+XGqOVrKIQmW49pNypYLMRjCUXqa28tQgJlhS2RlzP7sc+Rx7W6qsfw==}
+  get-tsconfig@4.14.3:
+    resolution: {integrity: sha512-++QEw4DIY7WGoukz+/+A/8dGYPT9l9yIadnmSgZ8Rjr3YVSVDipQSO9CdnJo9ePqFqUUqh+wk9uIaoiAwsiPkA==}
 
   glob-parent@5.1.2:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==}
@@ -8068,8 +8068,8 @@ packages:
       vite:
         optional: true
 
-  vike-solid@0.8.3:
-    resolution: {integrity: sha512-0Nh903TLHgjzpL0OrwDUA9sXAGl3PEQ/R3njqjxWF6ABh0ppzvhN8dvKW9j35EuICzdX6cJmagwre2m9IS0ZVw==}
+  vike-solid@0.8.4:
+    resolution: {integrity: sha512-OLr6LbEskOgtBVfZxc8a5/+w9AyfbOJgXHAijFm8eCw97qrCnQRnx1hiOyem0bQN31jwVcLX1ZF/xtY4m2FPng==}
     peerDependencies:
       solid-js: ^1.8.7
       vike: '>=0.4.250'
@@ -12748,7 +12748,7 @@ snapshots:
 
   get-stream@6.0.1: {}
 
-  get-tsconfig@4.14.2:
+  get-tsconfig@4.14.3:
     dependencies:
       resolve-pkg-maps: 1.0.0
     optional: true
@@ -14945,7 +14945,7 @@ snapshots:
   tsx@4.20.6:
     dependencies:
       esbuild: 0.25.12
-      get-tsconfig: 4.14.2
+      get-tsconfig: 4.14.3
     optionalDependencies:
       fsevents: 2.3.3
     optional: true
@@ -15228,7 +15228,7 @@ snapshots:
       - hono
       - srvx
 
-  vike-solid@0.8.3(solid-js@1.9.10)(vike@packages+vike)(vite-plugin-solid@2.11.10(solid-js@1.9.10)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))):
+  vike-solid@0.8.4(solid-js@1.9.10)(vike@packages+vike)(vite-plugin-solid@2.11.10(solid-js@1.9.10)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))):
     dependencies:
       isbot-fast: 1.2.0
       solid-js: 1.9.10
