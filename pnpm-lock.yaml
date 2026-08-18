@@ -831,7 +831,7 @@ importers:
         specifier: ^7.28.5
         version: 7.29.7
       '@babel/types':
-        specifier: 7.29.8
+        specifier: ^7.28.5
         version: 7.29.8
       '@brillout/import':
         specifier: ^0.2.6
