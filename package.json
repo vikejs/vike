@@ -47,10 +47,5 @@
     "playwright-chromium": "1.57.0",
     "vitest": "^4.1.10"
   },
-  "packageManager": "pnpm@9.15.9",
-  "pnpm": {
-    "overrides": {
-      "@babel/types": "7.29.8"
-    }
-  }
+  "packageManager": "pnpm@9.15.9"
 }
