@@ -8,8 +8,7 @@ import { deepEqual } from './deepEqual.js'
 import { getGlobalObject } from './getGlobalObject.js'
 import { hasProp } from './hasProp.js'
 import { isNotNullish } from './isNullish.js'
-import { scriptFileExtensionPattern, isScriptFile, scriptFileExtensionList } from './isScriptFile.js'
-import path from 'node:path'
+import { unique } from './unique.js'
 import { glob } from 'tinyglobby'
 import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
@@ -25,6 +24,8 @@ const globalObject = getGlobalObject('crawlFiles.ts', {
 
 const ignorePatternsBuiltIn = [
   '**/node_modules/**',
+  // Never crawl the .git directory — required when crawling hidden directories (`dot: true`).
+  '**/.git/**',
   // Ejected Vike extensions, see https://github.com/snake-py/eject
   '**/ejected/**',
   // Allow:
@@ -42,18 +43,32 @@ const ignorePatternsBuiltIn = [
   '**/*.test.*',
 ] as const
 
-async function crawlFiles(userRootDir: string) {
+type CrawlOptions = {
+  // Whether wildcards match hidden files and directories (e.g. `.claude/skills/vike/SKILL.md`) — same as the tinyglobby/picomatch option.
+  dot?: boolean
+  // Crawl again with tinyglobby when `$ git ls-files` finds zero matching files — for files that exist but are skipped by Git because of the user's .gitignore list (e.g. dynamically generated files).
+  globFallback?: boolean
+  // Pathspecs narrowing the `$ git ls-files` output — a performance optimization only: the output is always filtered against `pattern` afterwards. (Git pathspecs cannot replicate `pattern`: they don't support `{,}` braces, and their `*` spans directories.)
+  gitPathspecs?: string[]
+}
+
+async function crawlFiles(userRootDir: string, pattern: string, options: CrawlOptions = {}): Promise<string[]> {
+  const { dot = false, globFallback = false } = options
+  // Git pathspecs don't treat the `**/` prefix as optional — also pass the pattern without it, so that root-level files match.
+  const gitPathspecs = options.gitPathspecs ?? unique([pattern, pattern.replace(/^\*\*\//, '')])
+  const patternMatcher = picomatch(pattern, getPicomatchOptions(dot))
+
   const userSettings = getUserSettings()
-  const { ignorePatterns, ignoreMatchers } = getIgnore(userSettings)
+  const { ignorePatterns, ignoreMatchers } = getIgnore(userSettings, dot)
 
   // Crawl
-  const filesGit = userSettings.git !== false && (await gitLsFiles(userRootDir, ignorePatterns, ignoreMatchers))
-  const filesGitNothingFound = !filesGit || filesGit.length === 0
-  const filesGlob = (filesGitNothingFound || debug.isActivated) && (await tinyglobby(userRootDir, ignorePatterns))
-  let files = !filesGitNothingFound
-    ? filesGit
-    : // Fallback to tinyglobby for users that dynamically generate plus files. (Assuming that no plus file is found because of the user's .gitignore list.)
-      filesGlob
+  const filesGit =
+    userSettings.git !== false &&
+    (await gitLsFiles(userRootDir, gitPathspecs, patternMatcher, ignorePatterns, ignoreMatchers))
+  // Use tinyglobby if Git isn't usable — or, upon `globFallback`, when Git found zero files.
+  const useGlob = !filesGit || (filesGit.length === 0 && globFallback)
+  const filesGlob = (useGlob || debug.isActivated) && (await tinyglobby(userRootDir, pattern, ignorePatterns, dot))
+  const files = useGlob ? filesGlob : filesGit
   assert(files)
   if (debug.isActivated && filesGit && filesGlob) {
     assertWarning(
@@ -67,7 +82,13 @@ async function crawlFiles(userRootDir: string) {
 }
 
 // Same as tinyglobby() but using `$ git ls-files`
-async function gitLsFiles(userRootDir: string, ignorePatterns: string[], ignoreMatchers: Matcher[]) {
+async function gitLsFiles(
+  userRootDir: string,
+  gitPathspecs: string[],
+  patternMatcher: Matcher,
+  ignorePatterns: string[],
+  ignoreMatchers: Matcher[],
+) {
   if (globalObject.gitIsNotUsable) return null
 
   // Preserve UTF-8 file paths.
@@ -82,7 +103,7 @@ async function gitLsFiles(userRootDir: string, ignorePatterns: string[], ignoreM
     'ls-files',
 
     // Performance gain seems negligible: https://github.com/vikejs/vike/pull/1688#issuecomment-2166206648
-    ...scriptFileExtensionList.map((ext) => `"**/+*.${ext}" "+*.${ext}"`),
+    ...gitPathspecs.map((pathspec) => `"${pathspec}"`),
 
     // Performance gain is non-negligible.
     //  - https://github.com/vikejs/vike/pull/1688#issuecomment-2166206648
@@ -119,14 +140,11 @@ async function gitLsFiles(userRootDir: string, ignorePatterns: string[], ignoreM
 
   const files = []
   for (const filePath of filesAll) {
-    // + file?
-    if (!path.posix.basename(filePath).startsWith('+')) continue
+    // Matches `pattern`? (The pathspecs passed to `$ git ls-files` are a performance optimization, not a reliable filter — see CrawlOptions.gitPathspecs.)
+    if (!patternMatcher(filePath)) continue
 
     // We have to repeat the same exclusion logic here because the option --exclude of `$ git ls-files` only applies to untracked files. (We use --exclude only to speed up the `$ git ls-files` command.)
     if (ignoreMatchers.some((m) => m(filePath))) continue
-
-    // JavaScript file?
-    if (!isScriptFile(filePath)) continue
 
     // Deleted?
     if (filesDeleted.includes(filePath)) continue
@@ -137,12 +155,16 @@ async function gitLsFiles(userRootDir: string, ignorePatterns: string[], ignoreM
   return files
 }
 // Same as gitLsFiles() but using tinyglobby
-async function tinyglobby(userRootDir: string, ignorePatterns: string[]): Promise<string[]> {
-  const pattern = `**/+*.${scriptFileExtensionPattern}`
+async function tinyglobby(
+  userRootDir: string,
+  pattern: string,
+  ignorePatterns: string[],
+  dot: boolean,
+): Promise<string[]> {
   const options = {
     ignore: ignorePatterns,
     cwd: userRootDir,
-    dot: false,
+    dot,
   }
   const files = await glob(pattern, options)
   // Make build deterministic, in order to get a stable generated hash for dist/client/assets/entries/entry-client-routing.${hash}.js
@@ -234,17 +256,16 @@ function getUserSettings() {
   return userSettings
 }
 
-function getIgnore(userSettings: UserSettings) {
+function getIgnore(userSettings: UserSettings, dot: boolean) {
   const ignorePatternsSetByUser = [userSettings.ignore].flat().filter(isNotNullish)
   const { ignoreBuiltIn } = userSettings
   const ignorePatterns = [...(ignoreBuiltIn === false ? [] : ignorePatternsBuiltIn), ...ignorePatternsSetByUser]
-  const ignoreMatchers = ignorePatterns.map((p) =>
-    picomatch(p, {
-      // We must pass the same settings than tinyglobby
-      // https://github.com/SuperchupuDev/tinyglobby/blob/fcfb08a36c3b4d48d5488c21000c95a956d9797c/src/index.ts#L191-L194
-      dot: false,
-      nocase: false,
-    }),
-  )
+  const ignoreMatchers = ignorePatterns.map((p) => picomatch(p, getPicomatchOptions(dot)))
   return { ignorePatterns, ignoreMatchers }
+}
+
+// We must pass the same settings than tinyglobby
+// https://github.com/SuperchupuDev/tinyglobby/blob/fcfb08a36c3b4d48d5488c21000c95a956d9797c/src/index.ts#L191-L194
+function getPicomatchOptions(dot: boolean) {
+  return { dot, nocase: false }
 }

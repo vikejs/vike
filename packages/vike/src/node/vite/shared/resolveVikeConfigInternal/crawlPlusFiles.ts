@@ -4,6 +4,7 @@ export { getPlusFileValueConfigName }
 
 import { assert, assertUsage } from '../../../../utils/assert.js'
 import { assertFilePathAbsoluteFilesystem } from '../../../../utils/isFilePathAbsoluteFilesystem.js'
+import { scriptFileExtensionPattern, scriptFileExtensionList } from '../../../../utils/isScriptFile.js'
 import { assertPosixPath } from '../../../../utils/path.js'
 import path from 'node:path'
 import { isTemporaryBuildFile } from './transpileAndExecuteFile.js'
@@ -16,7 +17,12 @@ async function crawlPlusFiles(userRootDir: string): Promise<{ filePathAbsoluteUs
   assertPosixPath(userRootDir)
   assertFilePathAbsoluteFilesystem(userRootDir)
 
-  let files = await crawlFiles(userRootDir)
+  let files = await crawlFiles(userRootDir, `**/+*.${scriptFileExtensionPattern}`, {
+    // Git pathspecs don't support `{js,ts,...}` braces — pass the pathspecs expanded per file extension.
+    gitPathspecs: scriptFileExtensionList.flatMap((ext) => [`**/+*.${ext}`, `+*.${ext}`]),
+    // Fallback to tinyglobby for users that dynamically generate plus files. (Assuming that no plus file is found because of the user's .gitignore list.)
+    globFallback: true,
+  })
 
   // Filter build files
   files = files.filter((filePath) => !isTemporaryBuildFile(filePath))
