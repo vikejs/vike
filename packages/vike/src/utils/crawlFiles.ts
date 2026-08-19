@@ -19,7 +19,7 @@ import picomatch, { type Matcher } from 'picomatch'
 assertIsNotProductionRuntime()
 const execA = promisify(exec)
 const debug = createDebug('vike:crawl')
-const globalObject = getGlobalObject('getVikeConfig/crawlPlusFilePaths.ts', {
+const globalObject = getGlobalObject('crawlFiles.ts', {
   gitIsNotUsable: false,
 })
 
