@@ -8,7 +8,7 @@ import { assert } from '../../../../utils/assert.js'
 import { metaBuiltIn } from './metaBuiltIn.js'
 import { type LocationId, getLocationId } from './filesystemRouting.js'
 import { type EsbuildCache } from './transpileAndExecuteFile.js'
-import { crawlPlusFilePaths, getPlusFileValueConfigName } from './crawlPlusFilePaths.js'
+import { crawlPlusFiles, getPlusFileValueConfigName } from './crawlPlusFiles.js'
 import { getConfigFileExport } from './getConfigFileExport.js'
 import { type ConfigFile, loadConfigFile, loadValueFile, PointerImportLoaded } from './loadFileAtConfigTime.js'
 import { resolvePointerImport } from './resolvePointerImport.js'
@@ -66,8 +66,8 @@ async function getPlusFilesByLocationId(
   userRootDir: string,
   esbuildCache: EsbuildCache,
 ): Promise<PlusFilesByLocationId> {
-  const plusFilePaths: FilePathResolved[] = (await crawlPlusFilePaths(userRootDir)).map(
-    ({ filePathAbsoluteUserRootDir }) => getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir }),
+  const plusFilePaths: FilePathResolved[] = (await crawlPlusFiles(userRootDir)).map(({ filePathAbsoluteUserRootDir }) =>
+    getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir }),
   )
 
   const plusFilesByLocationId: PlusFilesByLocationId = {}

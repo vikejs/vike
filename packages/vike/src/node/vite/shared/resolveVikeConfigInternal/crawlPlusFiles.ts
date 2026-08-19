@@ -1,4 +1,4 @@
-export { crawlPlusFilePaths }
+export { crawlPlusFiles }
 export { isPlusFile }
 export { getPlusFileValueConfigName }
 
@@ -12,8 +12,8 @@ import { crawlFiles } from '../../../../utils/crawlFiles.js'
 import { assertIsNotProductionRuntime } from '../../../../utils/assertSetup.js'
 assertIsNotProductionRuntime()
 
-// TODO/after-PR-merge rename crawlPlusFilePaths crawlPlusFiles
-async function crawlPlusFilePaths(userRootDir: string): Promise<{ filePathAbsoluteUserRootDir: string }[]> {
+// TODO/after-PR-merge rename crawlPlusFiles crawlPlusFiles
+async function crawlPlusFiles(userRootDir: string): Promise<{ filePathAbsoluteUserRootDir: string }[]> {
   assertPosixPath(userRootDir)
   assertFilePathAbsoluteFilesystem(userRootDir)
 
