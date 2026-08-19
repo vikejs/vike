@@ -9,6 +9,8 @@ import path from 'node:path'
 import { isTemporaryBuildFile } from './transpileAndExecuteFile.js'
 import '../../assertEnvVite.js'
 import { crawlFiles } from '../../../../utils/crawlFiles.js'
+import { assertIsNotProductionRuntime } from '../../../../utils/assertSetup.js'
+assertIsNotProductionRuntime()
 
 // TODO/after-PR-merge rename crawlPlusFilePaths crawlPlusFiles
 async function crawlPlusFilePaths(userRootDir: string): Promise<{ filePathAbsoluteUserRootDir: string }[]> {

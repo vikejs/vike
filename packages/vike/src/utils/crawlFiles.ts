@@ -16,7 +16,6 @@ import { promisify } from 'node:util'
 import { getEnvVarObject } from './getEnvVarObject.js'
 import pc from '@brillout/picocolors'
 import picomatch, { type Matcher } from 'picomatch'
-import '../../assertEnvVite.js'
 assertIsNotProductionRuntime()
 const execA = promisify(exec)
 const debug = createDebug('vike:crawl')
