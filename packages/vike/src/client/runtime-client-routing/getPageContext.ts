@@ -4,7 +4,7 @@ export { providePageContext }
 // TO-DO/eventually: create new setting `+asyncHook: true` that sets the default value of the `asyncHook` parameter below to `true`
 
 import { getPageContext_sync, providePageContext } from '../../shared-server-client/hooks/execHook.js'
-import { getPageContextClient } from './renderPageClient.js'
+import { getPageContextClient } from './getPageContextClient.js'
 import type { GetPageContextParams } from '../../server/runtime/getPageContext.js'
 import '../assertEnvClient.js'
 

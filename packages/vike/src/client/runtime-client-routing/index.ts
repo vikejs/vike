@@ -6,7 +6,7 @@
 
 export { navigate, reload } from './navigate.js'
 export { prefetch } from './prefetch.js'
-export { getPageContextClient } from './renderPageClient.js'
+export { getPageContextClient } from './getPageContextClient.js'
 export { PROJECT_VERSION as version } from '../../utils/PROJECT_VERSION.js'
 
 // TO-DO/next-major-release: remove this

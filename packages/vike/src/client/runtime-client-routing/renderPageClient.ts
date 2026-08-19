@@ -1,7 +1,6 @@
 export { renderPageClient }
 export { getRenderCount }
 export { disableClientRouting }
-export { getPageContextClient }
 export type { PageContextBegin }
 export type { PageContextInternalClientAfterRender }
 
@@ -54,9 +53,10 @@ import { scrollRestoration_initialRenderIsDone } from './scrollRestoration.js'
 import { getErrorPageId, isErrorPage } from '../../shared-server-client/error-page.js'
 import type { PageContextConfig } from '../../shared-server-client/getPageFiles.js'
 import { setPageContextCurrent } from './getPageContextCurrent.js'
+import { setPageContextClient } from './getPageContextClient.js'
 import { getRouteStringParameterList } from '../../shared-server-client/route/resolveRouteString.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
-import type { PageContextClient, PageContextInternalClient } from '../../types/PageContext.js'
+import type { PageContextInternalClient } from '../../types/PageContext.js'
 import { execHookList, execHook } from '../../shared-server-client/hooks/execHook.js'
 import { type PageContextPublicClient, getPageContextPublicClient } from './getPageContextPublicClient.js'
 import { getHooksFromPageContextNew } from '../../shared-server-client/hooks/getHook.js'
@@ -76,7 +76,6 @@ const globalObject = getGlobalObject<{
   //https://vike.dev/pageContext#previousPageContext
   previousPageContext?: PreviousPageContext
   renderedPageContext?: PageContextInternalClient & PageContext_loadPageConfigsLazyClientSide
-  currentPageContext?: Record<string, unknown>
   hydrationAwaitPromise: Promise<void>
   hydrationAwaitPromiseResolve: () => void
 }>(
@@ -631,7 +630,7 @@ async function getPageContextBegin(
     ...pageContextInitClient,
   })
 
-  globalObject.currentPageContext = pageContext
+  setPageContextClient(pageContext)
 
   // TO-DO/next-major-release: remove
   Object.defineProperty(pageContext, '_previousPageContext', {
@@ -759,17 +758,6 @@ function areKeysEqual(key1: string | string[], key2: string | string[]): boolean
   if (key1 === key2) return true
   if (!Array.isArray(key1) || !Array.isArray(key2)) return false
   return key1.length === key2.length && key1.every((_, i) => key1[i] === key2[i])
-}
-
-/**
- * Get the `pageContext` object on the client-side.
- *
- * https://vike.dev/getPageContextClient
- */
-function getPageContextClient(): PageContextClient | null {
-  const pageContext = globalObject.currentPageContext
-  if (!pageContext) return null
-  return getPageContextPublicClient(pageContext as any) as any
 }
 
 type PageContextExecuteHook = Omit<
