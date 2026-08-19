@@ -61,7 +61,6 @@ type PlusFileValue = PlusFileCommon & {
   }
 type PlusFilesByLocationId = Record<LocationId, PlusFile[]>
 
-// TODO/after-PR-merge rename getPlusFiles getPlusFiles
 async function getPlusFiles(userRootDir: string, esbuildCache: EsbuildCache): Promise<PlusFilesByLocationId> {
   const plusFilePaths: FilePathResolved[] = (await crawlPlusFiles(userRootDir)).map(({ filePathAbsoluteUserRootDir }) =>
     getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir }),
