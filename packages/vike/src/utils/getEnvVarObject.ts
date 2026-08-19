@@ -5,7 +5,6 @@ import pc from '@brillout/picocolors'
 import { assertUsage } from './assert.js'
 import { isObject } from './isObject.js'
 import JSON5 from 'json5'
-import '../node/vite/assertEnvVite.js'
 
 function getEnvVarObject(envVarName: 'VITE_CONFIG' | 'VIKE_CRAWL' | 'VIKE_CONFIG'): null | Record<string, unknown> {
   const valueStr = process.env[envVarName]
