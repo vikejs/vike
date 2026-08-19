@@ -95,7 +95,7 @@ import {
 } from './resolveVikeConfigInternal/getPlusFilesByLocationId.js'
 import { assertRouteString } from '../../../shared-server-client/route/resolveRouteString.js'
 import { getExtensionName } from './resolveVikeConfigInternal/assertExtensions.js'
-import { getEnvVarObject } from './getEnvVarObject.js'
+import { getEnvVarObject } from '../../../utils/getEnvVarObject.js'
 import { getVikeApiOperation } from '../../../shared-server-node/api-context.js'
 import { getCliOptions } from '../../cli/context.js'
 import type { PrerenderContextPublic } from '../../prerender/runPrerender.js'
