@@ -221,7 +221,7 @@ function getUserSettings() {
     hasProp(userSettings, 'ignore', 'string[]') ||
       hasProp(userSettings, 'ignore', 'string') ||
       hasProp(userSettings, 'ignore', 'undefined'),
-    wrongUsage('git', 'string or an array of strings'),
+    wrongUsage('ignore', 'string or an array of strings'),
   )
   assertUsage(
     hasProp(userSettings, 'ignoreBuiltIn', 'boolean') || hasProp(userSettings, 'ignoreBuiltIn', 'undefined'),
