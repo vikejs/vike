@@ -1,6 +1,5 @@
 export const ignorePatternsBuiltIn = [
   '**/node_modules/**',
-  // Only relevant for crawls that include dot directories (see CrawlOptions['dot'])
   '**/.git/**',
   // Ejected Vike extensions, see https://github.com/snake-py/eject
   '**/ejected/**',
