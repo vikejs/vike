@@ -48,9 +48,11 @@ async function crawlFiles(options: CrawlOptions): Promise<string[]> {
 
   // Crawl
   const filesGit = crawl.git && (await gitLsFiles(crawl))
-  const filesGitNothingFound = !filesGit || filesGit.length === 0
-  const filesGlob = (filesGitNothingFound || debug.isActivated) && crawl.globFallback && (await tinyglobby(crawl))
-  const files = !filesGitNothingFound ? filesGit : filesGlob
+  //  - `!filesGit` => Git isn't usable => we have to use tinyglobby
+  //  - `filesGit.length === 0` => see CrawlOptions['globFallback']
+  const useGlob = !filesGit || (filesGit.length === 0 && crawl.globFallback)
+  const filesGlob = (useGlob || debug.isActivated) && (await tinyglobby(crawl))
+  const files = useGlob ? filesGlob : filesGit
   assert(files)
   if (debug.isActivated && filesGit && filesGlob) {
     assertWarning(
