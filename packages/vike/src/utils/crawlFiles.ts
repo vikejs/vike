@@ -77,7 +77,7 @@ async function gitLsFiles(patterns: string[], options: CrawlOptions, userSetting
   if (globalObject.gitIsNotUsable) return null
 
   const { cwd, dot } = options
-  const ignorePatterns = getIgnorePatterns(userSettings)
+  const { ignorePatterns, ignoreMatchers } = getIgnore(userSettings, dot)
 
   // Preserve UTF-8 file paths.
   // https://github.com/vikejs/vike/issues/1658
@@ -142,15 +142,15 @@ async function gitLsFiles(patterns: string[], options: CrawlOptions, userSetting
     // https://github.com/SuperchupuDev/tinyglobby/blob/fcfb08a36c3b4d48d5488c21000c95a956d9797c/src/index.ts#L191-L194
     dot,
     nocase: false,
-    ignore: ignorePatterns,
   })
 
   const files = []
   for (const filePath of filesAll) {
-    // Match? (Including the ignore patterns.)
-    //  - We have to apply the patterns here as well, because the wildcards of the `$ git ls-files` pathspec also match `/`: e.g. the pathspec `+*.js` matches `pages/+some-dir/some-file.js`.
-    //  - We have to apply the ignore patterns here as well, because the option --exclude of `$ git ls-files` only applies to untracked files. (We use --exclude only to speed up the `$ git ls-files` command.)
+    // Match? We have to apply the patterns here as well, because the wildcards of the `$ git ls-files` pathspec also match `/`: e.g. the pathspec `+*.js` matches `pages/+some-dir/some-file.js`.
     if (!isMatch(filePath)) continue
+
+    // We have to repeat the same exclusion logic here because the option --exclude of `$ git ls-files` only applies to untracked files. (We use --exclude only to speed up the `$ git ls-files` command.)
+    if (ignoreMatchers.some((m) => m(filePath))) continue
 
     // Deleted?
     if (filesDeleted.includes(filePath)) continue
@@ -163,7 +163,7 @@ async function gitLsFiles(patterns: string[], options: CrawlOptions, userSetting
 // Same as gitLsFiles() but using tinyglobby
 async function tinyglobby(patterns: string[], options: CrawlOptions, userSettings: UserSettings): Promise<string[]> {
   const globOptions = {
-    ignore: getIgnorePatterns(userSettings),
+    ignore: getIgnore(userSettings, options.dot).ignorePatterns,
     cwd: options.cwd,
     dot: options.dot,
   }
@@ -231,11 +231,6 @@ async function runCmd2(cmd: string, cwd: string): Promise<{ err: unknown } | { s
   return { stdout, stderr }
 }
 
-function getIgnorePatterns(userSettings: UserSettings): string[] {
-  const ignorePatternsSetByUser = [userSettings.ignore].flat().filter(isNotNullish)
-  return [...(userSettings.ignoreBuiltIn === false ? [] : ignorePatternsBuiltIn), ...ignorePatternsSetByUser]
-}
-
 type UserSettings = ReturnType<typeof getUserSettings>
 function getUserSettings() {
   const userSettings = getEnvVarObject('VIKE_CRAWL') ?? {}
@@ -260,4 +255,19 @@ function getUserSettings() {
     assertUsage(settingNames.includes(name), `Unknown setting ${pc.bold(pc.red(name))} in VIKE_CRAWL`)
   })
   return userSettings
+}
+
+function getIgnore(userSettings: UserSettings, dot: boolean) {
+  const ignorePatternsSetByUser = [userSettings.ignore].flat().filter(isNotNullish)
+  const { ignoreBuiltIn } = userSettings
+  const ignorePatterns = [...(ignoreBuiltIn === false ? [] : ignorePatternsBuiltIn), ...ignorePatternsSetByUser]
+  const ignoreMatchers = ignorePatterns.map((p) =>
+    picomatch(p, {
+      // We must pass the same settings than tinyglobby
+      // https://github.com/SuperchupuDev/tinyglobby/blob/fcfb08a36c3b4d48d5488c21000c95a956d9797c/src/index.ts#L191-L194
+      dot,
+      nocase: false,
+    }),
+  )
+  return { ignorePatterns, ignoreMatchers }
 }
