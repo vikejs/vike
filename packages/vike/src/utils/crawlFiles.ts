@@ -91,14 +91,12 @@ async function gitLsFiles(patterns: string[], options: CrawlOptions, userSetting
     'ls-files',
 
     // Performance gain seems negligible: https://github.com/vikejs/vike/pull/1688#issuecomment-2166206648
-    // The wildcards of the pathspec also match `/`, thus a leading `**/` doesn't match the root directory: we therefore add a second pathspec for it. (E.g. the pathspec `**/+*.js` doesn't match `+config.js` while `+*.js` does.)
     ...patterns.flatMap((pattern) => {
       const globstar = '**/'
-      // All our patterns start with `**/`
       assert(pattern.startsWith(globstar))
+      // A leading `**/` doesn't match the root directory: we therefore add a second pattern for it — e.g. `**/+*.js` doesn't match `+config.js` while `+*.js` does.
       const patternRootDir = pattern.slice(globstar.length)
-      // A `**/` in the middle of the pattern isn't supported: the pathspec `pages/**/+*.js` doesn't match `pages/+Page.js`.
-      assert(!patternRootDir.includes(globstar))
+      assert(!patternRootDir.includes(globstar)) // `**/` in the middle of the pattern isn't supported (e.g. `pages/**/+*.js` doesn't match `pages/+Page.js`)
       return [`"${pattern}"`, `"${patternRootDir}"`]
     }),
 
