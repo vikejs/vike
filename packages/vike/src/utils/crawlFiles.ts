@@ -76,7 +76,6 @@ function getCrawl(options: CrawlOptions) {
   ]
   return {
     patterns,
-    gitPathspecs: patterns.flatMap((pattern) => getGitPathspecs(pattern)),
     cwd: options.cwd,
     dot,
     ignorePatterns,
@@ -109,13 +108,24 @@ async function gitLsFiles(crawl: Crawl) {
   // https://stackoverflow.com/questions/15884180/how-do-i-override-git-configuration-options-by-command-line-parameters/15884261#15884261
   const preserveUTF8 = '-c core.quotepath=off'
 
+  // The wildcards of the pathspec also match `/`, thus a leading `**/` doesn't match the root directory: we therefore add a second pathspec for it. (E.g. the pathspec `**/+*.js` doesn't match `+config.js` while `+*.js` does.)
+  const globstar = '**/'
+  const pathspecs = crawl.patterns.flatMap((pattern) => {
+    // All our patterns start with `**/`
+    assert(pattern.startsWith(globstar))
+    const patternRootDir = pattern.slice(globstar.length)
+    // A `**/` in the middle of the pattern isn't supported: the pathspec `pages/**/+*.js` doesn't match `pages/+Page.js`.
+    assert(!patternRootDir.includes(globstar))
+    return [pattern, patternRootDir]
+  })
+
   const cmd = [
     'git',
     preserveUTF8,
     'ls-files',
 
     // Performance gain seems negligible: https://github.com/vikejs/vike/pull/1688#issuecomment-2166206648
-    ...crawl.gitPathspecs.map((pathspec) => `"${pathspec}"`),
+    ...pathspecs.map((pathspec) => `"${pathspec}"`),
 
     // Performance gain is non-negligible.
     //  - https://github.com/vikejs/vike/pull/1688#issuecomment-2166206648
@@ -182,17 +192,6 @@ async function tinyglobby(crawl: Crawl): Promise<string[]> {
     debug('[glob] result:', files)
   }
   return files
-}
-
-// The wildcards of the `$ git ls-files` pathspec also match `/`, thus a leading `**/` doesn't match the root directory: we therefore add a second pathspec for it. (E.g. the pathspec `**/+*.js` doesn't match `+config.js` while `+*.js` does.)
-function getGitPathspecs(pattern: string): string[] {
-  const globstar = '**/'
-  // All our patterns start with `**/`
-  assert(pattern.startsWith(globstar))
-  const patternRootDir = pattern.slice(globstar.length)
-  // A `**/` in the middle of the pattern isn't supported: the pathspec `pages/**/+*.js` doesn't match `pages/+Page.js`.
-  assert(!patternRootDir.includes(globstar))
-  return [pattern, patternRootDir]
 }
 
 // Whether Git is installed and whether we can use it
