@@ -2,12 +2,12 @@ import { expect, describe, it, assert } from 'vitest'
 import path from 'node:path'
 import fs from 'node:fs'
 // process.env.DEBUG = 'vike:crawl'
-const { crawlPlusFiles } = await import('../crawlPlusFiles')
+const { crawlFiles } = await import('../crawlFiles.js')
 import { fileURLToPath } from 'node:url'
 const __dirname_ = path.dirname(fileURLToPath(import.meta.url))
 const userRootDir = path.join(__dirname_, './test-file-structure')
 
-describe('crawlPlusFiles()', () => {
+describe('crawlFiles()', () => {
   it('works', async ({ onTestFinished }) => {
     const { clean } = createFiles([
       'pages/about/+bla.mdx',
@@ -27,9 +27,9 @@ describe('crawlPlusFiles()', () => {
     const filesWithGit = await crawl()
     expect(filesWithGit).toMatchInlineSnapshot(`
       [
-        "/+config.js",
-        "/pages/+config.js",
-        "/pages/about/+bla.mdx",
+        "+config.js",
+        "pages/+config.js",
+        "pages/about/+bla.mdx",
       ]
     `)
     assert(!JSON.stringify(filesWithGit).includes('ignored'))
@@ -38,20 +38,19 @@ describe('crawlPlusFiles()', () => {
     const filesWithGlob = await crawl()
     expect(filesWithGlob).toMatchInlineSnapshot(`
       [
-        "/+config.js",
-        "/pages/+config.js",
-        "/pages/about/+bla.mdx",
-        "/pages/git-ignored/+bla.mdx",
-        "/pages/manually-2/+ignored.js",
+        "+config.js",
+        "pages/+config.js",
+        "pages/about/+bla.mdx",
+        "pages/git-ignored/+bla.mdx",
+        "pages/manually-2/+ignored.js",
       ]
     `)
   })
 })
 
 async function crawl() {
-  const res = await crawlPlusFiles(userRootDir)
-  const files = res.map((f) => f.filePathAbsoluteUserRootDir).sort()
-  return files
+  const files = await crawlFiles(userRootDir)
+  return files.slice().sort()
 }
 
 function createFiles(files: string[]) {
