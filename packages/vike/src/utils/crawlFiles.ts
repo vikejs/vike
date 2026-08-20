@@ -38,7 +38,6 @@ type CrawlOptions = {
    */
   globFallback: boolean
 }
-type Crawl = ReturnType<typeof getCrawl>
 
 /**
  * Crawl the files matching `filePattern`, using `$ git ls-files` and, as a fallback, [tinyglobby](https://github.com/SuperchupuDev/tinyglobby).
@@ -67,6 +66,7 @@ async function crawlFiles(options: CrawlOptions): Promise<string[]> {
   return files
 }
 
+type Crawl = ReturnType<typeof getCrawl>
 function getCrawl(options: CrawlOptions) {
   const userSettings = getUserSettings()
   const { dot } = options
