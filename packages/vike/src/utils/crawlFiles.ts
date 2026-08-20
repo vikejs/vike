@@ -26,7 +26,7 @@ const globalObject = getGlobalObject('crawlFiles.ts', {
 type CrawlOptions = {
   /** The pattern of the files that are crawled.
    *
-   * It's a tinyglobby pattern, it has to start with a globstar, and it skips the file extension (see `fileExtensions`).
+   * It's a tinyglobby pattern, it has to start with a globstar, and it skips the file extension (see `fileExtension`).
    */
   filePattern: string
   /** The directory that is crawled. */
@@ -35,7 +35,7 @@ type CrawlOptions = {
    *
    * (We use a list instead of a brace expansion `{js,ts}`, because the pathspec of `$ git ls-files` doesn't support brace expansion.)
    */
-  fileExtensions?: readonly string[]
+  fileExtension?: readonly string[]
   /** Whether dotfiles and dot directories are crawled (e.g. `.claude/skills/`).
    *
    * Same as tinyglobby's `dot` option.
@@ -86,7 +86,7 @@ async function crawlFiles(options: CrawlOptions): Promise<string[]> {
 function getCrawl(options: CrawlOptions) {
   const userSettings = getUserSettings()
   const dot = options.dot ?? false
-  const patterns = getPatterns(options.filePattern, options.fileExtensions)
+  const patterns = getPatterns(options.filePattern, options.fileExtension)
   const ignorePatternsSetByUser = [userSettings.ignore].flat().filter(isNotNullish)
   const ignorePatterns: string[] = [
     ...(userSettings.ignoreBuiltIn === false ? [] : ignorePatternsBuiltIn),
@@ -110,11 +110,11 @@ function getCrawl(options: CrawlOptions) {
   }
 }
 
-// One pattern per file extension, see CrawlOptions['fileExtensions']
-function getPatterns(filePattern: string, fileExtensions: undefined | readonly string[]): string[] {
-  if (!fileExtensions) return [filePattern]
+// One pattern per file extension, see CrawlOptions['fileExtension']
+function getPatterns(filePattern: string, fileExtension: undefined | readonly string[]): string[] {
+  if (!fileExtension) return [filePattern]
   assert(!path.posix.basename(filePattern).includes('.'), { filePattern })
-  return fileExtensions.map((fileExtension) => `${filePattern}.${fileExtension}`)
+  return fileExtension.map((ext) => `${filePattern}.${ext}`)
 }
 
 // Same as tinyglobby() but using `$ git ls-files`

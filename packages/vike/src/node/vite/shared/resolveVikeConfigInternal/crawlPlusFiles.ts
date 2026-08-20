@@ -20,7 +20,7 @@ async function crawlPlusFiles(userRootDir: string): Promise<{ filePathAbsoluteUs
   let files = await crawlFiles({
     filePattern: '**/+*',
     cwd: userRootDir,
-    fileExtensions: scriptFileExtensionList,
+    fileExtension: scriptFileExtensionList,
     // Every app has `+` files: if Git doesn't find any then it's likely because the user dynamically generates them (and `.gitignore`s them).
     globFallback: true,
   })

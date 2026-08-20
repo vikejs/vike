@@ -9,9 +9,9 @@ const __dirname_ = path.dirname(fileURLToPath(import.meta.url))
 const userRootDir = path.join(__dirname_, './test-file-structure')
 
 // Same as crawlPlusFiles()
-const plusFiles = { filePattern: '**/+*', fileExtensions: scriptFileExtensionList }
+const plusFiles = { filePattern: '**/+*', fileExtension: scriptFileExtensionList }
 // Any other kind of file, e.g. the skills directories of AI agents
-const skillFiles = { filePattern: '**/skills/*/SKILL', fileExtensions: ['md', 'txt'] }
+const skillFiles = { filePattern: '**/skills/*/SKILL', fileExtension: ['md', 'txt'] }
 
 describe('crawlFiles()', () => {
   it('works', async ({ onTestFinished }) => {
@@ -101,7 +101,7 @@ describe('crawlFiles()', () => {
 
 async function crawl(options: {
   filePattern: string
-  fileExtensions: readonly string[]
+  fileExtension: readonly string[]
   dot?: boolean
   globFallback?: boolean
 }) {
