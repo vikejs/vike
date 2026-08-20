@@ -142,7 +142,7 @@ async function gitLsFiles(patterns: string[], options: CrawlOptions, userSetting
 
   const files = []
   for (const filePath of filesAll) {
-    // Match? We have to apply the patterns here as well, because the wildcards of the `$ git ls-files` pathspec also match `/`: e.g. the pathspec `+*.js` matches `pages/+some-dir/some-file.js`.
+    // We have to filter again here, because `$ git ls-files` matches more since wildcards are deep — e.g. `+*.js` matches `pages/+some-dir/some-file.js`
     if (!isMatch(filePath)) continue
 
     // We have to repeat the same exclusion logic here because the option --exclude of `$ git ls-files` only applies to untracked files. (We use --exclude only to speed up the `$ git ls-files` command.)
