@@ -14,7 +14,7 @@ import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
 import { getEnvVarObject } from './getEnvVarObject.js'
 import pc from '@brillout/picocolors'
-import picomatch, { type Matcher } from 'picomatch'
+import picomatch from 'picomatch'
 import { ignorePatternsBuiltIn } from './crawlFiles/ignorePatternsBuiltIn.js'
 assertIsNotProductionRuntime()
 const execA = promisify(exec)
@@ -39,19 +39,11 @@ type CrawlOptions = {
   globFallback: boolean
 }
 
-type Crawl = {
-  patterns: string[]
-  cwd: string
-  dot: boolean
-  ignorePatterns: string[]
-  isMatch: Matcher
-}
-
 /**
  * Crawl the files matching `filePattern`, using `$ git ls-files` and, as a fallback, [tinyglobby](https://github.com/SuperchupuDev/tinyglobby).
  */
 async function crawlFiles(options: CrawlOptions): Promise<string[]> {
-  const { filePattern, fileExtension, cwd, dot, globFallback } = options
+  const { filePattern, fileExtension, globFallback } = options
   const userSettings = getUserSettings()
 
   // One pattern per file extension, see CrawlOptions['fileExtension']
@@ -59,34 +51,14 @@ async function crawlFiles(options: CrawlOptions): Promise<string[]> {
   assert(!path.posix.basename(filePattern).includes('.'))
   const patterns = fileExtension.map((ext) => `${filePattern}.${ext}`)
 
-  const ignorePatternsSetByUser = [userSettings.ignore].flat().filter(isNotNullish)
-  const ignorePatterns: string[] = [
-    ...(userSettings.ignoreBuiltIn === false ? [] : ignorePatternsBuiltIn),
-    ...ignorePatternsSetByUser,
-  ]
-
-  const crawl: Crawl = {
-    patterns,
-    cwd,
-    dot,
-    ignorePatterns,
-    isMatch: picomatch(patterns, {
-      // We must pass the same settings than tinyglobby
-      // https://github.com/SuperchupuDev/tinyglobby/blob/fcfb08a36c3b4d48d5488c21000c95a956d9797c/src/index.ts#L191-L194
-      dot,
-      nocase: false,
-      ignore: ignorePatterns,
-    }),
-  }
-
   // Crawl
-  const filesGit = userSettings.git !== false && (await gitLsFiles(crawl))
+  const filesGit = userSettings.git !== false && (await gitLsFiles(patterns, options, userSettings))
   const useGlob =
     // `!filesGit` => Git isn't usable => we *have* to use tinyglobby
     !filesGit ||
     // `filesGit.length === 0` => fallback to tinyglobby if globFallback
     (filesGit.length === 0 && globFallback)
-  const filesGlob = (useGlob || debug.isActivated) && (await tinyglobby(crawl))
+  const filesGlob = (useGlob || debug.isActivated) && (await tinyglobby(patterns, options, userSettings))
   const files = useGlob ? filesGlob : filesGit
   assert(files)
   if (debug.isActivated && filesGit && filesGlob) {
@@ -101,8 +73,11 @@ async function crawlFiles(options: CrawlOptions): Promise<string[]> {
 }
 
 // Same as tinyglobby() but using `$ git ls-files`
-async function gitLsFiles(crawl: Crawl) {
+async function gitLsFiles(patterns: string[], options: CrawlOptions, userSettings: UserSettings) {
   if (globalObject.gitIsNotUsable) return null
+
+  const { cwd, dot } = options
+  const ignorePatterns = getIgnorePatterns(userSettings)
 
   // Preserve UTF-8 file paths.
   // https://github.com/vikejs/vike/issues/1658
@@ -112,7 +87,7 @@ async function gitLsFiles(crawl: Crawl) {
 
   // The wildcards of the pathspec also match `/`, thus a leading `**/` doesn't match the root directory: we therefore add a second pathspec for it. (E.g. the pathspec `**/+*.js` doesn't match `+config.js` while `+*.js` does.)
   const globstar = '**/'
-  const pathspecs = crawl.patterns.flatMap((pattern) => {
+  const pathspecs = patterns.flatMap((pattern) => {
     // All our patterns start with `**/`
     assert(pattern.startsWith(globstar))
     const patternRootDir = pattern.slice(globstar.length)
@@ -132,7 +107,7 @@ async function gitLsFiles(crawl: Crawl) {
     // Performance gain is non-negligible.
     //  - https://github.com/vikejs/vike/pull/1688#issuecomment-2166206648
     //  - When node_modules/ is untracked the performance gain could be significant?
-    ...crawl.ignorePatterns.map((pattern) => `--exclude="${pattern}"`),
+    ...ignorePatterns.map((pattern) => `--exclude="${pattern}"`),
 
     // --others --exclude-standard => list untracked files (--others) while using .gitignore (--exclude-standard)
     // --cached => list tracked files
@@ -144,30 +119,38 @@ async function gitLsFiles(crawl: Crawl) {
   try {
     ;[filesAll, filesDeleted] = await Promise.all([
       // Main command
-      runCmd1(cmd, crawl.cwd),
+      runCmd1(cmd, cwd),
       // Get tracked but deleted files
-      runCmd1('git ls-files --deleted', crawl.cwd),
+      runCmd1('git ls-files --deleted', cwd),
     ])
   } catch (err) {
-    if (await isGitNotUsable(crawl.cwd)) {
+    if (await isGitNotUsable(cwd)) {
       globalObject.gitIsNotUsable = true
       return null
     }
     throw err
   }
   if (debug.isActivated) {
-    debug('[git] cwd:', crawl.cwd)
+    debug('[git] cwd:', cwd)
     debug('[git] cmd:', cmd)
     debug('[git] result:', filesAll)
     debug('[git] filesDeleted:', filesDeleted)
   }
+
+  const isMatch = picomatch(patterns, {
+    // We must pass the same settings than tinyglobby
+    // https://github.com/SuperchupuDev/tinyglobby/blob/fcfb08a36c3b4d48d5488c21000c95a956d9797c/src/index.ts#L191-L194
+    dot,
+    nocase: false,
+    ignore: ignorePatterns,
+  })
 
   const files = []
   for (const filePath of filesAll) {
     // Match? (Including the ignore patterns.)
     //  - We have to apply the patterns here as well, because the wildcards of the `$ git ls-files` pathspec also match `/`: e.g. the pathspec `+*.js` matches `pages/+some-dir/some-file.js`.
     //  - We have to apply the ignore patterns here as well, because the option --exclude of `$ git ls-files` only applies to untracked files. (We use --exclude only to speed up the `$ git ls-files` command.)
-    if (!crawl.isMatch(filePath)) continue
+    if (!isMatch(filePath)) continue
 
     // Deleted?
     if (filesDeleted.includes(filePath)) continue
@@ -178,19 +161,19 @@ async function gitLsFiles(crawl: Crawl) {
   return files
 }
 // Same as gitLsFiles() but using tinyglobby
-async function tinyglobby(crawl: Crawl): Promise<string[]> {
-  const options = {
-    ignore: crawl.ignorePatterns,
-    cwd: crawl.cwd,
-    dot: crawl.dot,
+async function tinyglobby(patterns: string[], options: CrawlOptions, userSettings: UserSettings): Promise<string[]> {
+  const globOptions = {
+    ignore: getIgnorePatterns(userSettings),
+    cwd: options.cwd,
+    dot: options.dot,
   }
-  const files = await glob(crawl.patterns, options)
+  const files = await glob(patterns, globOptions)
   // Make build deterministic, in order to get a stable generated hash for dist/client/assets/entries/entry-client-routing.${hash}.js
   // https://github.com/vikejs/vike/pull/1750
   files.sort()
   if (debug.isActivated) {
-    debug('[glob] patterns:', crawl.patterns)
-    debug('[glob] options:', options)
+    debug('[glob] patterns:', patterns)
+    debug('[glob] options:', globOptions)
     debug('[glob] result:', files)
   }
   return files
@@ -248,6 +231,12 @@ async function runCmd2(cmd: string, cwd: string): Promise<{ err: unknown } | { s
   return { stdout, stderr }
 }
 
+function getIgnorePatterns(userSettings: UserSettings): string[] {
+  const ignorePatternsSetByUser = [userSettings.ignore].flat().filter(isNotNullish)
+  return [...(userSettings.ignoreBuiltIn === false ? [] : ignorePatternsBuiltIn), ...ignorePatternsSetByUser]
+}
+
+type UserSettings = ReturnType<typeof getUserSettings>
 function getUserSettings() {
   const userSettings = getEnvVarObject('VIKE_CRAWL') ?? {}
   const wrongUsage = (settingName: string, settingType: string) =>
