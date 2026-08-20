@@ -14,7 +14,7 @@ import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
 import { getEnvVarObject } from './getEnvVarObject.js'
 import pc from '@brillout/picocolors'
-import picomatch from 'picomatch'
+import picomatch, { type Matcher } from 'picomatch'
 import { ignorePatternsBuiltIn } from './crawlFiles/ignorePatternsBuiltIn.js'
 assertIsNotProductionRuntime()
 const execA = promisify(exec)
@@ -39,19 +39,53 @@ type CrawlOptions = {
   globFallback: boolean
 }
 
+type Crawl = {
+  patterns: string[]
+  cwd: string
+  dot: boolean
+  ignorePatterns: string[]
+  isMatch: Matcher
+}
+
 /**
  * Crawl the files matching `filePattern`, using `$ git ls-files` and, as a fallback, [tinyglobby](https://github.com/SuperchupuDev/tinyglobby).
  */
 async function crawlFiles(options: CrawlOptions): Promise<string[]> {
-  const crawl = getCrawl(options)
+  const { filePattern, fileExtension, cwd, dot, globFallback } = options
+  const userSettings = getUserSettings()
+
+  // One pattern per file extension, see CrawlOptions['fileExtension']
+  // (The `filePattern` skips the file extension.)
+  assert(!path.posix.basename(filePattern).includes('.'))
+  const patterns = fileExtension.map((ext) => `${filePattern}.${ext}`)
+
+  const ignorePatternsSetByUser = [userSettings.ignore].flat().filter(isNotNullish)
+  const ignorePatterns: string[] = [
+    ...(userSettings.ignoreBuiltIn === false ? [] : ignorePatternsBuiltIn),
+    ...ignorePatternsSetByUser,
+  ]
+
+  const crawl: Crawl = {
+    patterns,
+    cwd,
+    dot,
+    ignorePatterns,
+    isMatch: picomatch(patterns, {
+      // We must pass the same settings than tinyglobby
+      // https://github.com/SuperchupuDev/tinyglobby/blob/fcfb08a36c3b4d48d5488c21000c95a956d9797c/src/index.ts#L191-L194
+      dot,
+      nocase: false,
+      ignore: ignorePatterns,
+    }),
+  }
 
   // Crawl
-  const filesGit = crawl.git && (await gitLsFiles(crawl))
+  const filesGit = userSettings.git !== false && (await gitLsFiles(crawl))
   const useGlob =
     // `!filesGit` => Git isn't usable => we *have* to use tinyglobby
     !filesGit ||
-    // `filesGit.length === 0` => fallback to tinyglobby if crawl.globFallback
-    (filesGit.length === 0 && crawl.globFallback)
+    // `filesGit.length === 0` => fallback to tinyglobby if globFallback
+    (filesGit.length === 0 && globFallback)
   const filesGlob = (useGlob || debug.isActivated) && (await tinyglobby(crawl))
   const files = useGlob ? filesGlob : filesGit
   assert(files)
@@ -64,40 +98,6 @@ async function crawlFiles(options: CrawlOptions): Promise<string[]> {
   }
 
   return files
-}
-
-type Crawl = ReturnType<typeof getCrawl>
-function getCrawl(options: CrawlOptions) {
-  const userSettings = getUserSettings()
-  const { dot } = options
-  const patterns = getPatterns(options.filePattern, options.fileExtension)
-  const ignorePatternsSetByUser = [userSettings.ignore].flat().filter(isNotNullish)
-  const ignorePatterns: string[] = [
-    ...(userSettings.ignoreBuiltIn === false ? [] : ignorePatternsBuiltIn),
-    ...ignorePatternsSetByUser,
-  ]
-  return {
-    patterns,
-    cwd: options.cwd,
-    dot,
-    ignorePatterns,
-    isMatch: picomatch(patterns, {
-      // We must pass the same settings than tinyglobby
-      // https://github.com/SuperchupuDev/tinyglobby/blob/fcfb08a36c3b4d48d5488c21000c95a956d9797c/src/index.ts#L191-L194
-      dot,
-      nocase: false,
-      ignore: ignorePatterns,
-    }),
-    git: userSettings.git !== false,
-    globFallback: options.globFallback,
-  }
-}
-
-// One pattern per file extension, see CrawlOptions['fileExtension']
-function getPatterns(filePattern: string, fileExtension: readonly string[]): string[] {
-  // The `filePattern` skips the file extension
-  assert(!path.posix.basename(filePattern).includes('.'))
-  return fileExtension.map((ext) => `${filePattern}.${ext}`)
 }
 
 // Same as tinyglobby() but using `$ git ls-files`
