@@ -12,7 +12,8 @@ export default defineConfig({
           include: ['packages/**/*.spec.ts', '.github/**/*.spec.ts'],
           exclude: [
             '**/node_modules/**',
-            'packages/vike/src/node/vite/shared/resolveVikeConfigInternal/crawlPlusFilePaths/test-file-structure/**',
+            // Files created by crawlFiles.spec.ts and crawlPlusFiles.spec.ts (e.g. `+ignored.spec.ts`)
+            'packages/vike/src/**/test-file-structure/**',
             '.github/workflows/ci/prepare.spec.ts',
           ],
           name: 'unit',
