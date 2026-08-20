@@ -24,6 +24,11 @@ const globalObject = getGlobalObject('crawlFiles.ts', {
 })
 
 type CrawlOptions = {
+  /** The pattern of the files that are crawled.
+   *
+   * It's a tinyglobby pattern, it has to start with a globstar, and it skips the file extension (see `fileExtensions`).
+   */
+  filePattern: string
   /** The directory that is crawled. */
   cwd: string
   /** The file extensions that are crawled, e.g. `['js', 'ts']` — the `filePattern` skips the file extension then.
@@ -50,12 +55,12 @@ type Crawl = ReturnType<typeof getCrawl>
 
 /** Crawl the files matching `filePattern`, using `$ git ls-files` and, as a fallback, [tinyglobby](https://github.com/SuperchupuDev/tinyglobby).
  *
- * The `filePattern` is a tinyglobby pattern — it's applied to the results of `$ git ls-files` as well, so that both crawling methods return the same files.
+ * The `filePattern` is applied to the results of `$ git ls-files` as well, so that both crawling methods return the same files.
  *
- * The returned file paths are POSIX paths relative to `options.cwd`.
+ * The returned file paths are POSIX paths relative to `cwd`.
  */
-async function crawlFiles(filePattern: string, options: CrawlOptions): Promise<string[]> {
-  const crawl = getCrawl(filePattern, options)
+async function crawlFiles(options: CrawlOptions): Promise<string[]> {
+  const crawl = getCrawl(options)
 
   // Crawl
   const filesGit = crawl.git && (await gitLsFiles(crawl))
@@ -78,10 +83,10 @@ async function crawlFiles(filePattern: string, options: CrawlOptions): Promise<s
   return files
 }
 
-function getCrawl(filePattern: string, options: CrawlOptions) {
+function getCrawl(options: CrawlOptions) {
   const userSettings = getUserSettings()
   const dot = options.dot ?? false
-  const patterns = getPatterns(filePattern, options.fileExtensions)
+  const patterns = getPatterns(options.filePattern, options.fileExtensions)
   const ignorePatternsSetByUser = [userSettings.ignore].flat().filter(isNotNullish)
   const ignorePatterns: string[] = [
     ...(userSettings.ignoreBuiltIn === false ? [] : ignorePatternsBuiltIn),

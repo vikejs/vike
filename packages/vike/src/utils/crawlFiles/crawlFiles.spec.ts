@@ -99,11 +99,13 @@ describe('crawlFiles()', () => {
   })
 })
 
-async function crawl({
-  filePattern,
-  ...options
-}: { filePattern: string; fileExtensions: readonly string[]; dot?: boolean; globFallback?: boolean }) {
-  const files = await crawlFiles(filePattern, { cwd: userRootDir, ...options })
+async function crawl(options: {
+  filePattern: string
+  fileExtensions: readonly string[]
+  dot?: boolean
+  globFallback?: boolean
+}) {
+  const files = await crawlFiles({ cwd: userRootDir, ...options })
   return files.slice().sort()
 }
 
