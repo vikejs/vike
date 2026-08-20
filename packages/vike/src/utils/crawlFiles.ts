@@ -86,8 +86,8 @@ async function gitLsFiles(patterns: string[], options: CrawlOptions, userSetting
   const preserveUTF8 = '-c core.quotepath=off'
 
   // The wildcards of the pathspec also match `/`, thus a leading `**/` doesn't match the root directory: we therefore add a second pathspec for it. (E.g. the pathspec `**/+*.js` doesn't match `+config.js` while `+*.js` does.)
-  const globstar = '**/'
   const pathspecs = patterns.flatMap((pattern) => {
+    const globstar = '**/'
     // All our patterns start with `**/`
     assert(pattern.startsWith(globstar))
     const patternRootDir = pattern.slice(globstar.length)
