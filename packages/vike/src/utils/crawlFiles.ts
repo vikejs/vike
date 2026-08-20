@@ -16,31 +16,13 @@ import { promisify } from 'node:util'
 import { getEnvVarObject } from './getEnvVarObject.js'
 import pc from '@brillout/picocolors'
 import picomatch, { type Matcher } from 'picomatch'
+import { ignorePatternsBuiltIn } from './crawlFiles/ignorePatternsBuiltIn.js'
 assertIsNotProductionRuntime()
 const execA = promisify(exec)
 const debug = createDebug('vike:crawl')
 const globalObject = getGlobalObject('crawlFiles.ts', {
   gitIsNotUsable: false,
 })
-
-const ignorePatternsBuiltIn = [
-  '**/node_modules/**',
-  // Ejected Vike extensions, see https://github.com/snake-py/eject
-  '**/ejected/**',
-  // Allow:
-  // ```bash
-  // +Page.js
-  // +Page.telefunc.js
-  // ```
-  '**/*.telefunc.*',
-  // https://github.com/vikejs/vike/issues/1589#issuecomment-2031925598
-  '**/.history/**',
-  // https://github.com/vikejs/vike/discussions/2222
-  '**/*.generated.*',
-  // https://github.com/vikejs/vike/issues/2347
-  '**/*.spec.*',
-  '**/*.test.*',
-] as const
 
 async function crawlFiles(userRootDir: string) {
   const userSettings = getUserSettings()
