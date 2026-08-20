@@ -85,24 +85,22 @@ async function gitLsFiles(patterns: string[], options: CrawlOptions, userSetting
   // https://stackoverflow.com/questions/15884180/how-do-i-override-git-configuration-options-by-command-line-parameters/15884261#15884261
   const preserveUTF8 = '-c core.quotepath=off'
 
-  // The wildcards of the pathspec also match `/`, thus a leading `**/` doesn't match the root directory: we therefore add a second pathspec for it. (E.g. the pathspec `**/+*.js` doesn't match `+config.js` while `+*.js` does.)
-  const pathspecs = patterns.flatMap((pattern) => {
-    const globstar = '**/'
-    // All our patterns start with `**/`
-    assert(pattern.startsWith(globstar))
-    const patternRootDir = pattern.slice(globstar.length)
-    // A `**/` in the middle of the pattern isn't supported: the pathspec `pages/**/+*.js` doesn't match `pages/+Page.js`.
-    assert(!patternRootDir.includes(globstar))
-    return [pattern, patternRootDir]
-  })
-
   const cmd = [
     'git',
     preserveUTF8,
     'ls-files',
 
     // Performance gain seems negligible: https://github.com/vikejs/vike/pull/1688#issuecomment-2166206648
-    ...pathspecs.map((pathspec) => `"${pathspec}"`),
+    // The wildcards of the pathspec also match `/`, thus a leading `**/` doesn't match the root directory: we therefore add a second pathspec for it. (E.g. the pathspec `**/+*.js` doesn't match `+config.js` while `+*.js` does.)
+    ...patterns.flatMap((pattern) => {
+      const globstar = '**/'
+      // All our patterns start with `**/`
+      assert(pattern.startsWith(globstar))
+      const patternRootDir = pattern.slice(globstar.length)
+      // A `**/` in the middle of the pattern isn't supported: the pathspec `pages/**/+*.js` doesn't match `pages/+Page.js`.
+      assert(!patternRootDir.includes(globstar))
+      return [`"${pattern}"`, `"${patternRootDir}"`]
+    }),
 
     // Performance gain is non-negligible.
     //  - https://github.com/vikejs/vike/pull/1688#issuecomment-2166206648
