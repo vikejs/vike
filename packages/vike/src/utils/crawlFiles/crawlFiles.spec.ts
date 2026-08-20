@@ -105,7 +105,7 @@ async function crawl(options: {
   dot?: boolean
   globFallback?: boolean
 }) {
-  const files = await crawlFiles({ cwd, ...options })
+  const files = await crawlFiles({ cwd, dot: false, globFallback: false, ...options })
   return files.slice().sort()
 }
 

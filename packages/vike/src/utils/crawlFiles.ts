@@ -25,22 +25,18 @@ const globalObject = getGlobalObject('crawlFiles.ts', {
 
 type CrawlOptions = {
   filePattern: string
-  fileExtension?: readonly string[]
+  fileExtension: readonly string[]
   cwd: string
   /**
    * Whether dotfiles and dot directories are crawled (e.g. `.claude/skills/`).
    *
    * Same as tinyglobby's `dot` option.
-   *
-   * @default false
    */
-  dot?: boolean
+  dot: boolean
   /**
    * Whether to fallback to tinyglobby if `$ git ls-files` doesn't find any file.
-   *
-   * @default false
    */
-  globFallback?: boolean
+  globFallback: boolean
 }
 type Crawl = ReturnType<typeof getCrawl>
 
@@ -73,7 +69,7 @@ async function crawlFiles(options: CrawlOptions): Promise<string[]> {
 
 function getCrawl(options: CrawlOptions) {
   const userSettings = getUserSettings()
-  const dot = options.dot ?? false
+  const { dot } = options
   const patterns = getPatterns(options.filePattern, options.fileExtension)
   const ignorePatternsSetByUser = [userSettings.ignore].flat().filter(isNotNullish)
   const ignorePatterns: string[] = [
@@ -94,13 +90,13 @@ function getCrawl(options: CrawlOptions) {
       ignore: ignorePatterns,
     }),
     git: userSettings.git !== false,
-    globFallback: options.globFallback ?? false,
+    globFallback: options.globFallback,
   }
 }
 
 // One pattern per file extension, see CrawlOptions['fileExtension']
-function getPatterns(filePattern: string, fileExtension: undefined | readonly string[]): string[] {
-  if (!fileExtension) return [filePattern]
+function getPatterns(filePattern: string, fileExtension: readonly string[]): string[] {
+  // The `filePattern` skips the file extension
   assert(!path.posix.basename(filePattern).includes('.'), { filePattern })
   return fileExtension.map((ext) => `${filePattern}.${ext}`)
 }
