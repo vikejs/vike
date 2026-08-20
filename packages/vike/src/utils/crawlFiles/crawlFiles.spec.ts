@@ -6,7 +6,7 @@ const { crawlFiles } = await import('../crawlFiles.js')
 import { scriptFileExtensionList } from '../isScriptFile.js'
 import { fileURLToPath } from 'node:url'
 const __dirname_ = path.dirname(fileURLToPath(import.meta.url))
-const userRootDir = path.join(__dirname_, './test-file-structure')
+const cwd = path.join(__dirname_, './test-file-structure')
 
 // Same as crawlPlusFiles()
 const plusFiles = { filePattern: '**/+*', fileExtension: scriptFileExtensionList }
@@ -105,12 +105,12 @@ async function crawl(options: {
   dot?: boolean
   globFallback?: boolean
 }) {
-  const files = await crawlFiles({ cwd: userRootDir, ...options })
+  const files = await crawlFiles({ cwd, ...options })
   return files.slice().sort()
 }
 
 function createFiles(files: string[]) {
-  const filePaths = files.map((file) => path.join(userRootDir, file))
+  const filePaths = files.map((file) => path.join(cwd, file))
 
   // Create empty files
   filePaths.forEach((filePath) => {
@@ -124,7 +124,7 @@ function createFiles(files: string[]) {
         assert(fs.existsSync(filePath))
         fs.unlinkSync(filePath) // Remove filePath
       })
-      removeEmptyDirectories(userRootDir)
+      removeEmptyDirectories(cwd)
     },
   }
 }
