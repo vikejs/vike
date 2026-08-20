@@ -93,7 +93,7 @@ function getCrawl(options: CrawlOptions) {
 // One pattern per file extension, see CrawlOptions['fileExtension']
 function getPatterns(filePattern: string, fileExtension: readonly string[]): string[] {
   // The `filePattern` skips the file extension
-  assert(!path.posix.basename(filePattern).includes('.'), { filePattern })
+  assert(!path.posix.basename(filePattern).includes('.'))
   return fileExtension.map((ext) => `${filePattern}.${ext}`)
 }
 
@@ -186,10 +186,10 @@ async function tinyglobby(crawl: Crawl): Promise<string[]> {
 function getGitPathspecs(pattern: string): string[] {
   const globstar = '**/'
   // All our patterns start with `**/`
-  assert(pattern.startsWith(globstar), { pattern })
+  assert(pattern.startsWith(globstar))
   const patternRootDir = pattern.slice(globstar.length)
   // A `**/` in the middle of the pattern isn't supported: the pathspec `pages/**/+*.js` doesn't match `pages/+Page.js`.
-  assert(!patternRootDir.includes(globstar), { pattern })
+  assert(!patternRootDir.includes(globstar))
   return [pattern, patternRootDir]
 }
 
