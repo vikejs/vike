@@ -60,9 +60,10 @@ describe('crawlFiles()', () => {
       'skills/other-skill/SKILL.txt',
       '.dot-dir/skills/some-skill/SKILL.md',
       'some-dir/.other-dot-dir/skills/some-skill/SKILL.md',
-      // Doesn't match the pattern (but does match the pathspec we pass to `$ git ls-files`, whose wildcards also match `/`)
-      'not-skills/some-skill/SKILL.md',
+      // Matches the pathspec we pass to `$ git ls-files` (whose wildcards also match `/`) but not the pattern
       'skills/some-skill/nested/SKILL.md',
+      // Doesn't match the pattern
+      'not-skills/some-skill/SKILL.md',
       'skills/some-skill/SKILL.json',
     ])
     onTestFinished(() => clean())

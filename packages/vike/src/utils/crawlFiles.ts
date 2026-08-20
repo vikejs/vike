@@ -166,7 +166,7 @@ async function gitLsFiles(crawl: Crawl) {
   const files = []
   for (const filePath of filesAll) {
     // Match? (Including the ignore patterns.)
-    //  - We have to apply the patterns here as well, because the pathspec of `$ git ls-files` matches more, see getGitPathspecs().
+    //  - We have to apply the patterns here as well, because the wildcards of the `$ git ls-files` pathspec also match `/`: e.g. the pathspec `+*.js` matches `pages/+some-dir/some-file.js`.
     //  - We have to apply the ignore patterns here as well, because the option --exclude of `$ git ls-files` only applies to untracked files. (We use --exclude only to speed up the `$ git ls-files` command.)
     if (!crawl.isMatch(filePath)) continue
 
@@ -200,11 +200,12 @@ async function tinyglobby(crawl: Crawl): Promise<string[]> {
 // The wildcards of the `$ git ls-files` pathspec also match `/`, thus a leading `**/` doesn't match the root directory: we therefore add a second pathspec for it. (E.g. the pathspec `**/+*.js` doesn't match `+config.js` while `+*.js` does.)
 function getGitPathspecs(pattern: string): string[] {
   const globstar = '**/'
-  const isPrefixed = pattern.startsWith(globstar)
-  const patternRest = isPrefixed ? pattern.slice(globstar.length) : pattern
+  // All our patterns start with `**/`
+  assert(pattern.startsWith(globstar), { pattern })
+  const patternRootDir = pattern.slice(globstar.length)
   // A `**/` in the middle of the pattern isn't supported: the pathspec `pages/**/+*.js` doesn't match `pages/+Page.js`.
-  assert(!patternRest.includes(globstar), { pattern })
-  return isPrefixed ? [pattern, patternRest] : [pattern]
+  assert(!patternRootDir.includes(globstar), { pattern })
+  return [pattern, patternRootDir]
 }
 
 // Whether Git is installed and whether we can use it
