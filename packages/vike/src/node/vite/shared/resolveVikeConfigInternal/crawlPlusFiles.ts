@@ -13,13 +13,11 @@ import { scriptFileExtensionPattern } from '../../../../utils/isScriptFile.js'
 import { assertIsNotProductionRuntime } from '../../../../utils/assertSetup.js'
 assertIsNotProductionRuntime()
 
-const plusFilesPattern = `**/+*.${scriptFileExtensionPattern}`
-
 async function crawlPlusFiles(userRootDir: string): Promise<{ filePathAbsoluteUserRootDir: string }[]> {
   assertPosixPath(userRootDir)
   assertFilePathAbsoluteFilesystem(userRootDir)
 
-  let files = await crawlFiles(plusFilesPattern, {
+  let files = await crawlFiles(`**/+*.${scriptFileExtensionPattern}`, {
     cwd: userRootDir,
     // Every app has `+` files: if Git doesn't find any then it's likely because the user dynamically generates them (and `.gitignore`s them).
     globFallback: true,
