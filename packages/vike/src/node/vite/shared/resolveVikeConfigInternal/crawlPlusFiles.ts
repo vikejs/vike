@@ -9,7 +9,7 @@ import path from 'node:path'
 import { isTemporaryBuildFile } from './transpileAndExecuteFile.js'
 import '../../assertEnvVite.js'
 import { crawlFiles } from '../../../../utils/crawlFiles.js'
-import { scriptFileExtensionPattern } from '../../../../utils/isScriptFile.js'
+import { scriptFileExtensionList } from '../../../../utils/isScriptFile.js'
 import { assertIsNotProductionRuntime } from '../../../../utils/assertSetup.js'
 assertIsNotProductionRuntime()
 
@@ -17,8 +17,9 @@ async function crawlPlusFiles(userRootDir: string): Promise<{ filePathAbsoluteUs
   assertPosixPath(userRootDir)
   assertFilePathAbsoluteFilesystem(userRootDir)
 
-  let files = await crawlFiles(`**/+*.${scriptFileExtensionPattern}`, {
+  let files = await crawlFiles('**/+*', {
     cwd: userRootDir,
+    fileExtensions: scriptFileExtensionList,
     // Every app has `+` files: if Git doesn't find any then it's likely because the user dynamically generates them (and `.gitignore`s them).
     globFallback: true,
   })

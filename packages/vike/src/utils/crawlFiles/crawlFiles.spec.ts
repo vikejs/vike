@@ -3,15 +3,15 @@ import path from 'node:path'
 import fs from 'node:fs'
 // process.env.DEBUG = 'vike:crawl'
 const { crawlFiles } = await import('../crawlFiles.js')
-import { scriptFileExtensionPattern } from '../isScriptFile.js'
+import { scriptFileExtensionList } from '../isScriptFile.js'
 import { fileURLToPath } from 'node:url'
 const __dirname_ = path.dirname(fileURLToPath(import.meta.url))
 const userRootDir = path.join(__dirname_, './test-file-structure')
 
-// Same pattern as crawlPlusFiles()
-const plusFilesPattern = `**/+*.${scriptFileExtensionPattern}`
-// Any other pattern, e.g. the skills directories of AI agents
-const skillFilesPattern = '**/skills/*/SKILL.{md,txt}'
+// Same as crawlPlusFiles()
+const plusFiles = { filePattern: '**/+*', fileExtensions: scriptFileExtensionList }
+// Any other kind of file, e.g. the skills directories of AI agents
+const skillFiles = { filePattern: '**/skills/*/SKILL', fileExtensions: ['md', 'txt'] }
 
 describe('crawlFiles()', () => {
   it('works', async ({ onTestFinished }) => {
@@ -30,7 +30,7 @@ describe('crawlFiles()', () => {
     onTestFinished(() => clean())
 
     process.env.VIKE_CRAWL = "{ignore:['**/manually/**','**/manually-2/**']}"
-    const filesWithGit = await crawl(plusFilesPattern, { globFallback: true })
+    const filesWithGit = await crawl(plusFiles, { globFallback: true })
     expect(filesWithGit).toMatchInlineSnapshot(`
       [
         "+config.js",
@@ -41,7 +41,7 @@ describe('crawlFiles()', () => {
     assert(!JSON.stringify(filesWithGit).includes('ignored'))
 
     process.env.VIKE_CRAWL = "{git:false,ignore:'**/manually/**'}"
-    const filesWithGlob = await crawl(plusFilesPattern, { globFallback: true })
+    const filesWithGlob = await crawl(plusFiles, { globFallback: true })
     expect(filesWithGlob).toMatchInlineSnapshot(`
       [
         "+config.js",
@@ -60,7 +60,7 @@ describe('crawlFiles()', () => {
       'skills/other-skill/SKILL.txt',
       '.dot-dir/skills/some-skill/SKILL.md',
       'some-dir/.other-dot-dir/skills/some-skill/SKILL.md',
-      // Doesn't match the pattern (but does match the loosened pathspec we pass to `$ git ls-files`)
+      // Doesn't match the pattern (but does match the pathspec we pass to `$ git ls-files`, whose wildcards also match `/`)
       'not-skills/some-skill/SKILL.md',
       'skills/some-skill/nested/SKILL.md',
       'skills/some-skill/SKILL.json',
@@ -68,7 +68,7 @@ describe('crawlFiles()', () => {
     onTestFinished(() => clean())
 
     delete process.env.VIKE_CRAWL
-    const filesWithGit = await crawl(skillFilesPattern, { dot: true })
+    const filesWithGit = await crawl(skillFiles, { dot: true })
     expect(filesWithGit).toMatchInlineSnapshot(`
       [
         ".dot-dir/skills/some-skill/SKILL.md",
@@ -79,7 +79,7 @@ describe('crawlFiles()', () => {
     `)
 
     process.env.VIKE_CRAWL = '{git:false}'
-    const filesWithGlob = await crawl(skillFilesPattern, { dot: true })
+    const filesWithGlob = await crawl(skillFiles, { dot: true })
     expect(filesWithGlob).toEqual(filesWithGit)
   })
 
@@ -88,7 +88,7 @@ describe('crawlFiles()', () => {
     onTestFinished(() => clean())
 
     delete process.env.VIKE_CRAWL
-    const filesWithGit = await crawl(skillFilesPattern)
+    const filesWithGit = await crawl(skillFiles)
     expect(filesWithGit).toMatchInlineSnapshot(`
       [
         "skills/some-skill/SKILL.md",
@@ -96,13 +96,16 @@ describe('crawlFiles()', () => {
     `)
 
     process.env.VIKE_CRAWL = '{git:false}'
-    const filesWithGlob = await crawl(skillFilesPattern)
+    const filesWithGlob = await crawl(skillFiles)
     expect(filesWithGlob).toEqual(filesWithGit)
   })
 })
 
-async function crawl(pattern: string, options: { dot?: boolean; globFallback?: boolean } = {}) {
-  const files = await crawlFiles(pattern, { cwd: userRootDir, ...options })
+async function crawl(
+  { filePattern, fileExtensions }: { filePattern: string; fileExtensions: readonly string[] },
+  options: { dot?: boolean; globFallback?: boolean } = {},
+) {
+  const files = await crawlFiles(filePattern, { cwd: userRootDir, fileExtensions, ...options })
   return files.slice().sort()
 }
 

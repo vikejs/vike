@@ -9,6 +9,7 @@ import { getGlobalObject } from './getGlobalObject.js'
 import { hasProp } from './hasProp.js'
 import { isNotNullish } from './isNullish.js'
 import { glob } from 'tinyglobby'
+import path from 'node:path'
 import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
 import { getEnvVarObject } from './getEnvVarObject.js'
@@ -25,6 +26,11 @@ const globalObject = getGlobalObject('crawlFiles.ts', {
 type CrawlOptions = {
   /** The directory that is crawled. */
   cwd: string
+  /** The file extensions that are crawled, e.g. `['js', 'ts']` — the `filePattern` skips the file extension then.
+   *
+   * (We use a list instead of a brace expansion `{js,ts}`, because the pathspec of `$ git ls-files` doesn't support brace expansion.)
+   */
+  fileExtensions?: readonly string[]
   /** Whether dotfiles and dot directories are crawled (e.g. `.claude/skills/`).
    *
    * Same as tinyglobby's `dot` option.
@@ -42,14 +48,14 @@ type CrawlOptions = {
 }
 type Crawl = ReturnType<typeof getCrawl>
 
-/** Crawl the files matching `pattern`, using `$ git ls-files` and, as a fallback, [tinyglobby](https://github.com/SuperchupuDev/tinyglobby).
+/** Crawl the files matching `filePattern`, using `$ git ls-files` and, as a fallback, [tinyglobby](https://github.com/SuperchupuDev/tinyglobby).
  *
- * The `pattern` is a tinyglobby pattern — it's applied to the results of `$ git ls-files` as well, so that both crawling methods return the same files.
+ * The `filePattern` is a tinyglobby pattern — it's applied to the results of `$ git ls-files` as well, so that both crawling methods return the same files.
  *
  * The returned file paths are POSIX paths relative to `options.cwd`.
  */
-async function crawlFiles(pattern: string, options: CrawlOptions): Promise<string[]> {
-  const crawl = getCrawl(pattern, options)
+async function crawlFiles(filePattern: string, options: CrawlOptions): Promise<string[]> {
+  const crawl = getCrawl(filePattern, options)
 
   // Crawl
   const filesGit = crawl.git && (await gitLsFiles(crawl))
@@ -72,7 +78,7 @@ async function crawlFiles(pattern: string, options: CrawlOptions): Promise<strin
   return files
 }
 
-function getCrawl(pattern: string, options: CrawlOptions) {
+function getCrawl(filePattern: string, options: CrawlOptions) {
   const userSettings = getUserSettings()
   const dot = options.dot ?? false
   const picomatchOptions = {
@@ -81,21 +87,30 @@ function getCrawl(pattern: string, options: CrawlOptions) {
     dot,
     nocase: false,
   }
+  const patterns = getPatterns(filePattern, options.fileExtensions)
   const ignorePatternsSetByUser = [userSettings.ignore].flat().filter(isNotNullish)
   const ignorePatterns: string[] = [
     ...(userSettings.ignoreBuiltIn === false ? [] : ignorePatternsBuiltIn),
     ...ignorePatternsSetByUser,
   ]
   return {
-    pattern,
+    patterns,
+    gitPathspecs: patterns.flatMap((pattern) => getGitPathspecs(pattern)),
     cwd: options.cwd,
     dot,
-    isMatch: picomatch(pattern, picomatchOptions),
+    isMatch: picomatch(patterns, picomatchOptions),
     ignorePatterns,
     ignoreMatchers: ignorePatterns.map((p) => picomatch(p, picomatchOptions)),
     git: userSettings.git !== false,
     globFallback: options.globFallback ?? false,
   }
+}
+
+// One pattern per file extension, see CrawlOptions['fileExtensions']
+function getPatterns(filePattern: string, fileExtensions: undefined | readonly string[]): string[] {
+  if (!fileExtensions) return [filePattern]
+  assert(!path.posix.basename(filePattern).includes('.'), { filePattern })
+  return fileExtensions.map((fileExtension) => `${filePattern}.${fileExtension}`)
 }
 
 // Same as tinyglobby() but using `$ git ls-files`
@@ -114,7 +129,7 @@ async function gitLsFiles(crawl: Crawl) {
     'ls-files',
 
     // Performance gain seems negligible: https://github.com/vikejs/vike/pull/1688#issuecomment-2166206648
-    `"${getGitPathspec(crawl.pattern)}"`,
+    ...crawl.gitPathspecs.map((pathspec) => `"${pathspec}"`),
 
     // Performance gain is non-negligible.
     //  - https://github.com/vikejs/vike/pull/1688#issuecomment-2166206648
@@ -152,7 +167,7 @@ async function gitLsFiles(crawl: Crawl) {
   const files = []
   for (const filePath of filesAll) {
     // Match?
-    // We have to apply the pattern here because the pathspec we pass to `$ git ls-files` is a loosened version of it, see getGitPathspec().
+    // We have to apply the patterns here as well because the pathspec of `$ git ls-files` matches more, see getGitPathspecs().
     if (!crawl.isMatch(filePath)) continue
 
     // We have to repeat the same exclusion logic here because the option --exclude of `$ git ls-files` only applies to untracked files. (We use --exclude only to speed up the `$ git ls-files` command.)
@@ -173,30 +188,26 @@ async function tinyglobby(crawl: Crawl): Promise<string[]> {
     cwd: crawl.cwd,
     dot: crawl.dot,
   }
-  const files = await glob(crawl.pattern, options)
+  const files = await glob(crawl.patterns, options)
   // Make build deterministic, in order to get a stable generated hash for dist/client/assets/entries/entry-client-routing.${hash}.js
   // https://github.com/vikejs/vike/pull/1750
   files.sort()
   if (debug.isActivated) {
-    debug('[glob] pattern:', crawl.pattern)
+    debug('[glob] patterns:', crawl.patterns)
     debug('[glob] options:', options)
     debug('[glob] result:', files)
   }
   return files
 }
 
-// The pathspec of `$ git ls-files` doesn't support the same glob syntax as tinyglobby (which uses picomatch):
-//  - Brace expansion isn't supported, e.g. `+*.{js,ts}`.
-//  - Wildcards also match `/`, thus a leading `**/` doesn't match the root directory, e.g. `**/+*.js` doesn't match `+config.js`.
-// We therefore loosen the pattern so that the pathspec matches a superset of what the pattern matches. (It doesn't need to be exact: the pathspec is merely a performance optimization, since we apply the pattern upon the `$ git ls-files` results anyway.)
-function getGitPathspec(pattern: string): string {
-  return (
-    pattern
-      // Brace expansion, e.g. `+*.{js,ts}` => `+*.*`
-      .replace(/\{[^{}]*\}/g, '*')
-      // Globstar, e.g. `**/+*.js` => `*+*.js` (Git's `*` also matches `/` as well as nothing at all)
-      .replaceAll('**/', '*')
-  )
+// The wildcards of the `$ git ls-files` pathspec also match `/`, thus a leading `**/` doesn't match the root directory: we therefore add a second pathspec for it. (E.g. the pathspec `**/+*.js` doesn't match `+config.js` while `+*.js` does.)
+function getGitPathspecs(pattern: string): string[] {
+  const globstar = '**/'
+  const isPrefixed = pattern.startsWith(globstar)
+  const patternRest = isPrefixed ? pattern.slice(globstar.length) : pattern
+  // A `**/` in the middle of the pattern isn't supported: the pathspec `pages/**/+*.js` doesn't match `pages/+Page.js`.
+  assert(!patternRest.includes(globstar), { pattern })
+  return isPrefixed ? [pattern, patternRest] : [pattern]
 }
 
 // Whether Git is installed and whether we can use it
