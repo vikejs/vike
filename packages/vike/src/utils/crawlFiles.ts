@@ -23,25 +23,15 @@ const globalObject = getGlobalObject('crawlFiles.ts', {
   gitIsNotUsable: false,
 })
 
-// The options of tinyglobby, which we also pass to picomatch so that both apply the same settings
-// (The `ignore` option isn't included: the ignore patterns are matched with picomatch as well, see getIgnore().)
-type GlobOptions = {
-  cwd: string
-  dot: boolean
-  // tinyglobby's `caseSensitiveMatch` defaults to `true`
-  // https://github.com/SuperchupuDev/tinyglobby/blob/fcfb08a36c3b4d48d5488c21000c95a956d9797c/src/index.ts#L191-L194
-  nocase: false
-}
-
 /**
  * Crawl the files matching `filePattern`, using `$ git ls-files` and, as a fallback, [tinyglobby](https://github.com/SuperchupuDev/tinyglobby).
  */
 async function crawlFiles(options: {
-  filePattern: string
+  filePattern: `**/${string}`
   fileExtension: readonly string[]
   cwd: string
   /**
-   * Whether dotfiles and dot directories are crawled (e.g. `.claude/skills/`).
+   * Whether dotfiles and dot directories are crawled.
    *
    * Same as tinyglobby's `dot` option.
    */
@@ -82,6 +72,14 @@ async function crawlFiles(options: {
   return files
 }
 
+// The options of tinyglobby, which we also pass to picomatch so that both apply the same settings
+// https://github.com/SuperchupuDev/tinyglobby/blob/fcfb08a36c3b4d48d5488c21000c95a956d9797c/src/index.ts#L191-L194
+type GlobOptions = {
+  cwd: string
+  dot: boolean
+  nocase: false
+}
+
 // Same as tinyglobby() but using `$ git ls-files`
 async function gitLsFiles(
   patterns: string[],
@@ -108,7 +106,7 @@ async function gitLsFiles(
     ...patterns.flatMap((pattern) => {
       const globstar = '**/'
       assert(pattern.startsWith(globstar))
-      // A leading `**/` doesn't match the root directory: we therefore add a second pattern for it — e.g. `**/+*.js` doesn't match `+config.js` while `+*.js` does.
+      // A leading `**/` doesn't match the root directory: we therefore add a second pattern for it — e.g. `**/+*.js` doesn't match `+config.js` while `+*.js` does
       const patternRootDir = pattern.slice(globstar.length)
       assert(!patternRootDir.includes(globstar)) // `**/` in the middle of the pattern isn't supported (e.g. `pages/**/+*.js` doesn't match `pages/+Page.js`)
       return [`"${pattern}"`, `"${patternRootDir}"`]
@@ -147,7 +145,6 @@ async function gitLsFiles(
     debug('[git] filesDeleted:', filesDeleted)
   }
 
-  // We pass the same options than tinyglobby, so that both crawling methods return the same files
   const isMatch = picomatch(patterns, globOptions)
 
   const files = []
@@ -263,7 +260,6 @@ function getIgnore(userSettings: UserSettings, globOptions: GlobOptions) {
   const ignorePatternsSetByUser = [userSettings.ignore].flat().filter(isNotNullish)
   const { ignoreBuiltIn } = userSettings
   const ignorePatterns = [...(ignoreBuiltIn === false ? [] : ignorePatternsBuiltIn), ...ignorePatternsSetByUser]
-  // We must pass the same settings than tinyglobby
   const ignoreMatchers = ignorePatterns.map((p) => picomatch(p, globOptions))
   return { ignorePatterns, ignoreMatchers }
 }
