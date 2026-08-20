@@ -8,8 +8,8 @@ import { deepEqual } from './deepEqual.js'
 import { getGlobalObject } from './getGlobalObject.js'
 import { hasProp } from './hasProp.js'
 import { isNotNullish } from './isNullish.js'
-import { glob } from 'tinyglobby'
 import path from 'node:path'
+import { glob } from 'tinyglobby'
 import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
 import { getEnvVarObject } from './getEnvVarObject.js'
@@ -81,12 +81,6 @@ async function crawlFiles(filePattern: string, options: CrawlOptions): Promise<s
 function getCrawl(filePattern: string, options: CrawlOptions) {
   const userSettings = getUserSettings()
   const dot = options.dot ?? false
-  const picomatchOptions = {
-    // We must pass the same settings than tinyglobby
-    // https://github.com/SuperchupuDev/tinyglobby/blob/fcfb08a36c3b4d48d5488c21000c95a956d9797c/src/index.ts#L191-L194
-    dot,
-    nocase: false,
-  }
   const patterns = getPatterns(filePattern, options.fileExtensions)
   const ignorePatternsSetByUser = [userSettings.ignore].flat().filter(isNotNullish)
   const ignorePatterns: string[] = [
@@ -98,9 +92,14 @@ function getCrawl(filePattern: string, options: CrawlOptions) {
     gitPathspecs: patterns.flatMap((pattern) => getGitPathspecs(pattern)),
     cwd: options.cwd,
     dot,
-    isMatch: picomatch(patterns, picomatchOptions),
     ignorePatterns,
-    ignoreMatchers: ignorePatterns.map((p) => picomatch(p, picomatchOptions)),
+    isMatch: picomatch(patterns, {
+      // We must pass the same settings than tinyglobby
+      // https://github.com/SuperchupuDev/tinyglobby/blob/fcfb08a36c3b4d48d5488c21000c95a956d9797c/src/index.ts#L191-L194
+      dot,
+      nocase: false,
+      ignore: ignorePatterns,
+    }),
     git: userSettings.git !== false,
     globFallback: options.globFallback ?? false,
   }
@@ -166,12 +165,10 @@ async function gitLsFiles(crawl: Crawl) {
 
   const files = []
   for (const filePath of filesAll) {
-    // Match?
-    // We have to apply the patterns here as well because the pathspec of `$ git ls-files` matches more, see getGitPathspecs().
+    // Match? (Including the ignore patterns.)
+    //  - We have to apply the patterns here as well, because the pathspec of `$ git ls-files` matches more, see getGitPathspecs().
+    //  - We have to apply the ignore patterns here as well, because the option --exclude of `$ git ls-files` only applies to untracked files. (We use --exclude only to speed up the `$ git ls-files` command.)
     if (!crawl.isMatch(filePath)) continue
-
-    // We have to repeat the same exclusion logic here because the option --exclude of `$ git ls-files` only applies to untracked files. (We use --exclude only to speed up the `$ git ls-files` command.)
-    if (crawl.ignoreMatchers.some((m) => m(filePath))) continue
 
     // Deleted?
     if (filesDeleted.includes(filePath)) continue

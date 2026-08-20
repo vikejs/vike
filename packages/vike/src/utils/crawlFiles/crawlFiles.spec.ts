@@ -30,7 +30,7 @@ describe('crawlFiles()', () => {
     onTestFinished(() => clean())
 
     process.env.VIKE_CRAWL = "{ignore:['**/manually/**','**/manually-2/**']}"
-    const filesWithGit = await crawl(plusFiles, { globFallback: true })
+    const filesWithGit = await crawl({ ...plusFiles, globFallback: true })
     expect(filesWithGit).toMatchInlineSnapshot(`
       [
         "+config.js",
@@ -41,7 +41,7 @@ describe('crawlFiles()', () => {
     assert(!JSON.stringify(filesWithGit).includes('ignored'))
 
     process.env.VIKE_CRAWL = "{git:false,ignore:'**/manually/**'}"
-    const filesWithGlob = await crawl(plusFiles, { globFallback: true })
+    const filesWithGlob = await crawl({ ...plusFiles, globFallback: true })
     expect(filesWithGlob).toMatchInlineSnapshot(`
       [
         "+config.js",
@@ -68,7 +68,7 @@ describe('crawlFiles()', () => {
     onTestFinished(() => clean())
 
     delete process.env.VIKE_CRAWL
-    const filesWithGit = await crawl(skillFiles, { dot: true })
+    const filesWithGit = await crawl({ ...skillFiles, dot: true })
     expect(filesWithGit).toMatchInlineSnapshot(`
       [
         ".dot-dir/skills/some-skill/SKILL.md",
@@ -79,33 +79,30 @@ describe('crawlFiles()', () => {
     `)
 
     process.env.VIKE_CRAWL = '{git:false}'
-    const filesWithGlob = await crawl(skillFiles, { dot: true })
+    const filesWithGlob = await crawl({ ...skillFiles, dot: true })
     expect(filesWithGlob).toEqual(filesWithGit)
-  })
 
-  it('skips dotfiles and dot directories by default', async ({ onTestFinished }) => {
-    const { clean } = createFiles(['skills/some-skill/SKILL.md', '.dot-dir/skills/some-skill/SKILL.md'])
-    onTestFinished(() => clean())
-
+    // Dotfiles and dot directories are skipped by default
     delete process.env.VIKE_CRAWL
-    const filesWithGit = await crawl(skillFiles)
-    expect(filesWithGit).toMatchInlineSnapshot(`
+    const filesWithGitNoDot = await crawl(skillFiles)
+    expect(filesWithGitNoDot).toMatchInlineSnapshot(`
       [
+        "skills/other-skill/SKILL.txt",
         "skills/some-skill/SKILL.md",
       ]
     `)
 
     process.env.VIKE_CRAWL = '{git:false}'
-    const filesWithGlob = await crawl(skillFiles)
-    expect(filesWithGlob).toEqual(filesWithGit)
+    const filesWithGlobNoDot = await crawl(skillFiles)
+    expect(filesWithGlobNoDot).toEqual(filesWithGitNoDot)
   })
 })
 
-async function crawl(
-  { filePattern, fileExtensions }: { filePattern: string; fileExtensions: readonly string[] },
-  options: { dot?: boolean; globFallback?: boolean } = {},
-) {
-  const files = await crawlFiles(filePattern, { cwd: userRootDir, fileExtensions, ...options })
+async function crawl({
+  filePattern,
+  ...options
+}: { filePattern: string; fileExtensions: readonly string[]; dot?: boolean; globFallback?: boolean }) {
+  const files = await crawlFiles(filePattern, { cwd: userRootDir, ...options })
   return files.slice().sort()
 }
 
