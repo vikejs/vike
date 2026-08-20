@@ -24,8 +24,8 @@ const globalObject = getGlobalObject('crawlFiles.ts', {
 })
 
 // The options of tinyglobby, which we also pass to picomatch so that both apply the same settings
+// (The `ignore` option isn't included: the ignore patterns are matched with picomatch as well, see getIgnore().)
 type GlobOptions = {
-  ignore: string[]
   cwd: string
   dot: boolean
   // tinyglobby's `caseSensitiveMatch` defaults to `true`
@@ -53,21 +53,22 @@ async function crawlFiles(options: {
 }): Promise<string[]> {
   const { filePattern, fileExtension, cwd, dot, globFallback } = options
   const userSettings = getUserSettings()
-  const { ignorePatterns, ignoreMatchers } = getIgnore(userSettings, dot)
-  const globOptions: GlobOptions = { ignore: ignorePatterns, cwd, dot, nocase: false }
+  const globOptions: GlobOptions = { cwd, dot, nocase: false }
+  const { ignorePatterns, ignoreMatchers } = getIgnore(userSettings, globOptions)
 
   // One pattern per file extension (the `filePattern` skips the file extension)
   assert(!path.posix.basename(filePattern).includes('.'))
   const patterns = fileExtension.map((ext) => `${filePattern}.${ext}`)
 
   // Crawl
-  const filesGit = userSettings.git !== false && (await gitLsFiles(patterns, globOptions, ignoreMatchers))
+  const filesGit =
+    userSettings.git !== false && (await gitLsFiles(patterns, globOptions, ignorePatterns, ignoreMatchers))
   const useGlob =
     // `!filesGit` => Git isn't usable => we *have* to use tinyglobby
     !filesGit ||
     // `filesGit.length === 0` => fallback to tinyglobby if globFallback
     (filesGit.length === 0 && globFallback)
-  const filesGlob = (useGlob || debug.isActivated) && (await tinyglobby(patterns, globOptions))
+  const filesGlob = (useGlob || debug.isActivated) && (await tinyglobby(patterns, globOptions, ignorePatterns))
   const files = useGlob ? filesGlob : filesGit
   assert(files)
   if (debug.isActivated && filesGit && filesGlob) {
@@ -82,10 +83,15 @@ async function crawlFiles(options: {
 }
 
 // Same as tinyglobby() but using `$ git ls-files`
-async function gitLsFiles(patterns: string[], globOptions: GlobOptions, ignoreMatchers: Matcher[]) {
+async function gitLsFiles(
+  patterns: string[],
+  globOptions: GlobOptions,
+  ignorePatterns: string[],
+  ignoreMatchers: Matcher[],
+) {
   if (globalObject.gitIsNotUsable) return null
 
-  const { cwd, ignore: ignorePatterns } = globOptions
+  const { cwd } = globOptions
 
   // Preserve UTF-8 file paths.
   // https://github.com/vikejs/vike/issues/1658
@@ -161,14 +167,15 @@ async function gitLsFiles(patterns: string[], globOptions: GlobOptions, ignoreMa
   return files
 }
 // Same as gitLsFiles() but using tinyglobby
-async function tinyglobby(patterns: string[], globOptions: GlobOptions): Promise<string[]> {
-  const files = await glob(patterns, globOptions)
+async function tinyglobby(patterns: string[], globOptions: GlobOptions, ignorePatterns: string[]): Promise<string[]> {
+  const options = { ...globOptions, ignore: ignorePatterns }
+  const files = await glob(patterns, options)
   // Make build deterministic, in order to get a stable generated hash for dist/client/assets/entries/entry-client-routing.${hash}.js
   // https://github.com/vikejs/vike/pull/1750
   files.sort()
   if (debug.isActivated) {
     debug('[glob] patterns:', patterns)
-    debug('[glob] options:', globOptions)
+    debug('[glob] options:', options)
     debug('[glob] result:', files)
   }
   return files
@@ -252,17 +259,11 @@ function getUserSettings() {
   return userSettings
 }
 
-function getIgnore(userSettings: UserSettings, dot: boolean) {
+function getIgnore(userSettings: UserSettings, globOptions: GlobOptions) {
   const ignorePatternsSetByUser = [userSettings.ignore].flat().filter(isNotNullish)
   const { ignoreBuiltIn } = userSettings
   const ignorePatterns = [...(ignoreBuiltIn === false ? [] : ignorePatternsBuiltIn), ...ignorePatternsSetByUser]
-  const ignoreMatchers = ignorePatterns.map((p) =>
-    picomatch(p, {
-      // We must pass the same settings than tinyglobby
-      // https://github.com/SuperchupuDev/tinyglobby/blob/fcfb08a36c3b4d48d5488c21000c95a956d9797c/src/index.ts#L191-L194
-      dot,
-      nocase: false,
-    }),
-  )
+  // We must pass the same settings than tinyglobby
+  const ignoreMatchers = ignorePatterns.map((p) => picomatch(p, globOptions))
   return { ignorePatterns, ignoreMatchers }
 }
