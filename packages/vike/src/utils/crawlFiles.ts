@@ -14,7 +14,7 @@ import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
 import { getEnvVarObject } from './getEnvVarObject.js'
 import pc from '@brillout/picocolors'
-import picomatch from 'picomatch'
+import picomatch, { type Matcher } from 'picomatch'
 import { ignorePatternsBuiltIn } from './crawlFiles/ignorePatternsBuiltIn.js'
 assertIsNotProductionRuntime()
 const execA = promisify(exec)
@@ -43,8 +43,9 @@ type CrawlOptions = {
  * Crawl the files matching `filePattern`, using `$ git ls-files` and, as a fallback, [tinyglobby](https://github.com/SuperchupuDev/tinyglobby).
  */
 async function crawlFiles(options: CrawlOptions): Promise<string[]> {
-  const { filePattern, fileExtension, globFallback } = options
+  const { filePattern, fileExtension, dot, globFallback } = options
   const userSettings = getUserSettings()
+  const { ignorePatterns, ignoreMatchers } = getIgnore(userSettings, dot)
 
   // One pattern per file extension, see CrawlOptions['fileExtension']
   // (The `filePattern` skips the file extension.)
@@ -52,13 +53,13 @@ async function crawlFiles(options: CrawlOptions): Promise<string[]> {
   const patterns = fileExtension.map((ext) => `${filePattern}.${ext}`)
 
   // Crawl
-  const filesGit = userSettings.git !== false && (await gitLsFiles(patterns, options, userSettings))
+  const filesGit = userSettings.git !== false && (await gitLsFiles(patterns, options, ignorePatterns, ignoreMatchers))
   const useGlob =
     // `!filesGit` => Git isn't usable => we *have* to use tinyglobby
     !filesGit ||
     // `filesGit.length === 0` => fallback to tinyglobby if globFallback
     (filesGit.length === 0 && globFallback)
-  const filesGlob = (useGlob || debug.isActivated) && (await tinyglobby(patterns, options, userSettings))
+  const filesGlob = (useGlob || debug.isActivated) && (await tinyglobby(patterns, options, ignorePatterns))
   const files = useGlob ? filesGlob : filesGit
   assert(files)
   if (debug.isActivated && filesGit && filesGlob) {
@@ -73,11 +74,15 @@ async function crawlFiles(options: CrawlOptions): Promise<string[]> {
 }
 
 // Same as tinyglobby() but using `$ git ls-files`
-async function gitLsFiles(patterns: string[], options: CrawlOptions, userSettings: UserSettings) {
+async function gitLsFiles(
+  patterns: string[],
+  options: CrawlOptions,
+  ignorePatterns: string[],
+  ignoreMatchers: Matcher[],
+) {
   if (globalObject.gitIsNotUsable) return null
 
   const { cwd, dot } = options
-  const { ignorePatterns, ignoreMatchers } = getIgnore(userSettings, dot)
 
   // Preserve UTF-8 file paths.
   // https://github.com/vikejs/vike/issues/1658
@@ -157,9 +162,9 @@ async function gitLsFiles(patterns: string[], options: CrawlOptions, userSetting
   return files
 }
 // Same as gitLsFiles() but using tinyglobby
-async function tinyglobby(patterns: string[], options: CrawlOptions, userSettings: UserSettings): Promise<string[]> {
+async function tinyglobby(patterns: string[], options: CrawlOptions, ignorePatterns: string[]): Promise<string[]> {
   const globOptions = {
-    ignore: getIgnore(userSettings, options.dot).ignorePatterns,
+    ignore: ignorePatterns,
     cwd: options.cwd,
     dot: options.dot,
   }
