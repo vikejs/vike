@@ -24,28 +24,19 @@ const globalObject = getGlobalObject('crawlFiles.ts', {
 })
 
 type CrawlOptions = {
-  /** The pattern of the files that are crawled.
-   *
-   * It's a tinyglobby pattern, it has to start with a globstar, and it skips the file extension (see `fileExtension`).
-   */
   filePattern: string
-  /** The directory that is crawled. */
-  cwd: string
-  /** The file extensions that are crawled, e.g. `['js', 'ts']` — the `filePattern` skips the file extension then.
-   *
-   * (We use a list instead of a brace expansion `{js,ts}`, because the pathspec of `$ git ls-files` doesn't support brace expansion.)
-   */
   fileExtension?: readonly string[]
-  /** Whether dotfiles and dot directories are crawled (e.g. `.claude/skills/`).
+  cwd: string
+  /**
+   * Whether dotfiles and dot directories are crawled (e.g. `.claude/skills/`).
    *
    * Same as tinyglobby's `dot` option.
    *
    * @default false
    */
   dot?: boolean
-  /** Whether to fallback to tinyglobby if `$ git ls-files` doesn't find any file.
-   *
-   * Set it to `true` for files that are expected to exist: if Git doesn't find any of them then it's likely because of the user's `.gitignore` list (e.g. the user dynamically generates the files).
+  /**
+   * Whether to fallback to tinyglobby if `$ git ls-files` doesn't find any file.
    *
    * @default false
    */
@@ -53,11 +44,8 @@ type CrawlOptions = {
 }
 type Crawl = ReturnType<typeof getCrawl>
 
-/** Crawl the files matching `filePattern`, using `$ git ls-files` and, as a fallback, [tinyglobby](https://github.com/SuperchupuDev/tinyglobby).
- *
- * The `filePattern` is applied to the results of `$ git ls-files` as well, so that both crawling methods return the same files.
- *
- * The returned file paths are POSIX paths relative to `cwd`.
+/**
+ * Crawl the files matching `filePattern`, using `$ git ls-files` and, as a fallback, [tinyglobby](https://github.com/SuperchupuDev/tinyglobby).
  */
 async function crawlFiles(options: CrawlOptions): Promise<string[]> {
   const crawl = getCrawl(options)
