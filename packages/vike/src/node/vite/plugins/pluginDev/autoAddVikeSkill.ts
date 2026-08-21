@@ -1,4 +1,4 @@
-export { autoAddAiSkill }
+export { autoAddVikeSkill }
 
 import fs from 'node:fs/promises'
 import path from 'node:path'
@@ -18,7 +18,7 @@ import { getVikeConfigInternal, type VikeConfigInternal } from '../../shared/res
 import '../../assertEnvVite.js'
 const execFileA = promisify(execFile)
 const importMetaUrl = import.meta.url
-const globalObject = getGlobalObject('autoAddAiSkill.ts', {
+const globalObject = getGlobalObject('autoAddVikeSkill.ts', {
   alreadyDone: false,
 })
 
@@ -34,14 +34,14 @@ const commitMessage = (isUpdate: boolean) => `${isUpdate ? 'Update' : 'Add'} Vik
 
 // Automatically add vike/SKILL.md to skills/ directories (e.g. .claude/skills/ and .agents/skills/) of the user's Git repository (and Git-commit it) — so that AI agents (Claude Code, Codex, Cursor, Gemini CLI, ...) automatically pick it up.
 // https://vike.dev/ai#skill
-function autoAddAiSkill(userRootDir: string): void {
-  autoAddAiSkillAsync(userRootDir).catch((err) => {
+function autoAddVikeSkill(userRootDir: string): void {
+  autoAddVikeSkillAsync(userRootDir).catch((err) => {
     // Show the error without breaking the dev server. (Expected situations don't throw — e.g. Git missing is handled gracefully.)
     console.error(err)
   })
 }
 
-async function autoAddAiSkillAsync(userRootDir: string): Promise<void> {
+async function autoAddVikeSkillAsync(userRootDir: string): Promise<void> {
   if (globalObject.alreadyDone) return
   // Skip CI environments: the skill file is meant to be added from the machine of an app developer.
   if (process.env.CI) return

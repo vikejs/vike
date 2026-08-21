@@ -4,7 +4,7 @@ export { logDockerHint }
 import { type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
 import { optimizeDeps, resolveOptimizeDeps } from './pluginDev/optimizeDeps.js'
 import { determineFsAllowList } from './pluginDev/determineFsAllowList.js'
-import { autoAddAiSkill } from './pluginDev/autoAddAiSkill.js'
+import { autoAddVikeSkill } from './pluginDev/autoAddVikeSkill.js'
 import { addSsrMiddleware } from '../shared/addSsrMiddleware.js'
 import { isDebugError } from '../../../utils/debug.js'
 import { setTimeoutUnref } from '../../../utils/setTimeoutUnref.js'
@@ -43,7 +43,7 @@ function pluginDev(): Plugin[] {
         handler(server) {
           // Apply late — after the dev server is up and running, and after the first page requests — so that it never slows down dev start.
           const run = () => {
-            setTimeoutUnref(() => autoAddAiSkill(config.root), 60 * 1000)
+            setTimeoutUnref(() => autoAddVikeSkill(config.root), 60 * 1000)
           }
           if (server.httpServer) {
             server.httpServer.once('listening', run)
