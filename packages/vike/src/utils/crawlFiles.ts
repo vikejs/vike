@@ -25,6 +25,8 @@ const globalObject = getGlobalObject('crawlFiles.ts', {
 
 const globstar = '**/'
 type FilePattern = `${typeof globstar}${'+*' | 'skills/*/SKILL'}`
+// The `filePattern` with the file extension appended, see crawlFiles()
+type Pattern = `${FilePattern}.${string}`
 // The options of tinyglobby, which we also pass to picomatch so that both apply the same settings
 // https://github.com/SuperchupuDev/tinyglobby/blob/fcfb08a36c3b4d48d5488c21000c95a956d9797c/src/index.ts#L191-L194
 type GlobOptions = {
@@ -82,7 +84,7 @@ async function crawlFiles(options: {
 }
 
 // Same as crawlGlob() but using `$ git ls-files`
-async function crawlGit(patterns: FilePattern[], cwd: string, globOptions: GlobOptions) {
+async function crawlGit(patterns: Pattern[], cwd: string, globOptions: GlobOptions) {
   if (globalObject.gitIsNotUsable) return null
 
   // Preserve UTF-8 file paths.
@@ -147,7 +149,7 @@ async function crawlGit(patterns: FilePattern[], cwd: string, globOptions: GlobO
   return files
 }
 // Same as crawlGit() but using tinyglobby
-async function crawlGlob(patterns: FilePattern[], globOptions: GlobOptions): Promise<string[]> {
+async function crawlGlob(patterns: Pattern[], globOptions: GlobOptions): Promise<string[]> {
   const files = await tinyglobby(patterns, globOptions)
   // Make build deterministic, in order to get a stable generated hash for dist/client/assets/entries/entry-client-routing.${hash}.js
   // https://github.com/vikejs/vike/pull/1750
