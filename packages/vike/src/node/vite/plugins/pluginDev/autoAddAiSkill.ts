@@ -7,6 +7,7 @@ import { promisify } from 'node:util'
 import pc from '@brillout/picocolors'
 import { assertInfo, assertUsage } from '../../../../utils/assert.js'
 import { assertKeys } from '../../../../utils/assertKeys.js'
+import { crawlFiles } from '../../../../utils/crawlFiles.js'
 import { getGlobalObject } from '../../../../utils/getGlobalObject.js'
 import { getVikeConfigError } from '../../../../shared-server-node/getVikeConfigError.js'
 import { isArrayOfStrings } from '../../../../utils/isArrayOfStrings.js'
@@ -151,32 +152,16 @@ async function addAiSkill(
 
 // Discover the skills directories of the user's Git repository, following the Agent Skills convention `**/skills/*/SKILL.md` (https://agentskills.io) — e.g. .claude/skills/ (Claude Code) and .agents/skills/ (Codex, Gemini CLI, Cursor, ...).
 async function discoverSkillsDirs(gitRootDir: string): Promise<string[]> {
-  const res = await runGitCommand(
-    [
-      // Preserve UTF-8 file paths — https://github.com/vikejs/vike/issues/1658
-      '-c',
-      'core.quotepath=off',
-      'ls-files',
-      // --others --exclude-standard => also list untracked files (--others) while using .gitignore (--exclude-standard)
-      // --cached => list tracked files
-      '--others',
-      '--exclude-standard',
-      '--cached',
-      '--',
-      '**/skills/*/SKILL.md',
-      'skills/*/SKILL.md',
-    ],
-    gitRootDir,
-  )
-  if ('err' in res) return []
-  const skillsDirs = unique(
-    res.stdout
-      .split('\n')
-      .filter(Boolean)
-      .map((filePath) => path.posix.dirname(path.posix.dirname(filePath)))
-      // The `*` of Git's pathspec matching can span multiple directories — only keep `**/skills/` directories
-      .filter((skillsDir) => path.posix.basename(skillsDir) === 'skills'),
-  ).sort()
+  const files = await crawlFiles({
+    filePattern: '**/skills/*/SKILL',
+    fileExtension: ['md'],
+    cwd: gitRootDir,
+    // Skills directories usually live inside dot directories (e.g. .claude/ and .agents/)
+    dot: true,
+    // Most apps don't contain any skills directory — when Git doesn't know about any skill file, we don't want to crawl the app's entire directory tree upon every dev start.
+    globFallback: false,
+  })
+  const skillsDirs = unique(files.map((filePath) => path.posix.dirname(path.posix.dirname(filePath)))).sort()
   return skillsDirs
 }
 
