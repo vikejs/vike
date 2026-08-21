@@ -100,7 +100,7 @@ describe('crawlFiles()', () => {
 })
 
 async function crawl(options: {
-  filePattern: `**/${string}`
+  filePattern: Parameters<typeof crawlFiles>[0]['filePattern']
   fileExtension: readonly string[]
   dot?: boolean
   globFallback?: boolean
