@@ -34,14 +34,16 @@ const commitMessage = (isUpdate: boolean) => `${isUpdate ? 'Update' : 'Add'} Vik
 
 // Automatically add vike/SKILL.md to skills/ directories (e.g. .claude/skills/ and .agents/skills/) of the user's Git repository (and Git-commit it) — so that AI agents (Claude Code, Codex, Cursor, Gemini CLI, ...) automatically pick it up.
 // https://vike.dev/ai#skill
-function autoAddVikeSkill(userRootDir: string): void {
-  autoAddVikeSkillAsync(userRootDir).catch((err) => {
+async function autoAddVikeSkill(userRootDir: string): Promise<void> {
+  try {
+    await autoAddVikeSkillUnsafe(userRootDir)
+  } catch (err) {
     // Show the error without breaking the dev server. (Expected situations don't throw — e.g. Git missing is handled gracefully.)
     console.error(err)
-  })
+  }
 }
 
-async function autoAddVikeSkillAsync(userRootDir: string): Promise<void> {
+async function autoAddVikeSkillUnsafe(userRootDir: string): Promise<void> {
   if (globalObject.alreadyDone) return
   // Skip CI environments: the skill file is meant to be added from the machine of an app developer.
   if (process.env.CI) return
