@@ -52,7 +52,7 @@ async function autoAddAiSkillAsync(userRootDir: string): Promise<void> {
   const vikeConfig = await getVikeConfigInternal()
   // Maybe the user disabled the feature in a config file that currently has an error => retry later (Vite restarts upon config changes).
   if (getVikeConfigError()) return
-  let configValue: false | string[] | undefined
+  let configValue: boolean | string[]
   try {
     configValue = getConfigValueAiSkill(vikeConfig)
   } catch (err) {
@@ -64,8 +64,8 @@ async function autoAddAiSkillAsync(userRootDir: string): Promise<void> {
   globalObject.alreadyDone = true
 
   const res = await addAiSkill(userRootDir, {
-    // undefined => add the skill file to every existing skills directory (`**/skills/*/SKILL.md`)
-    skillsDirs: configValue,
+    // true (default) => add the skill file to every existing skills directory (`**/skills/*/SKILL.md`)
+    skillsDirs: configValue === true ? undefined : configValue,
   })
   if (!res) return
   const verb = res.files.every((f) => !f.isUpdate)
@@ -83,17 +83,17 @@ async function autoAddAiSkillAsync(userRootDir: string): Promise<void> {
 }
 
 // https://vike.dev/ai#skill
-function getConfigValueAiSkill(vikeConfig: VikeConfigInternal): false | string[] | undefined {
+function getConfigValueAiSkill(vikeConfig: VikeConfigInternal): boolean | string[] {
   const configAi = vikeConfig.config.ai
-  if (configAi === undefined) return undefined
+  if (configAi === undefined) return true
   assertUsage(isObject(configAi), `Setting ${pc.cyan('ai')} should be an object`)
   assertKeys(configAi, ['skill'] as const, `Setting ${pc.cyan('ai')}:`)
   const skill: unknown = configAi.skill
-  if (skill === undefined) return undefined
+  if (skill === undefined || skill === true) return true
   if (skill === false) return false
   assertUsage(
     isArrayOfStrings(skill),
-    `Setting ${pc.cyan('ai.skill')} should be ${pc.cyan('false')} or a list of skills directories (e.g. ${pc.cyan(
+    `Setting ${pc.cyan('ai.skill')} should be a boolean or a list of skills directories (e.g. ${pc.cyan(
       "['.claude/skills', '.agents/skills']",
     )})`,
   )

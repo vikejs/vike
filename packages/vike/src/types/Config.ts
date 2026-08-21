@@ -724,13 +724,15 @@ type ConfigAi = {
   /**
    * Whether Vike automatically adds and updates `vike/SKILL.md` inside skills directories (e.g. `.agents/skills/` and `.claude/skills/`).
    *
-   * - `undefined` (default): add `vike/SKILL.md` to every existing `skills/` directory
+   * - `true`: add `vike/SKILL.md` to every existing `skills/` directory
    * - `false`: never add `vike/SKILL.md`
    * - `string[]`: add `vike/SKILL.md` to exactly these directories
    *
+   * @default true
+   *
    * https://vike.dev/ai#skill
    */
-  skill?: false | string[]
+  skill?: boolean | string[]
 }
 
 type Vercel = {
