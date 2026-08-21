@@ -38,7 +38,10 @@ const commitMessage = (isUpdate: boolean) => `${isUpdate ? 'Update' : 'Add'} Vik
 // Called late (after the dev server started) — the feature never slows down dev start.
 function autoAddAiSkill(userRootDir: string): void {
   // Fire-and-forget: never let this feature break the dev server.
-  autoAddAiSkillAsync(userRootDir).catch(() => {})
+  autoAddAiSkillAsync(userRootDir).catch((err) => {
+    // Show the error without breaking the dev server. (Expected situations don't throw — e.g. Git missing is handled gracefully.)
+    logErrorServerDev(err, null)
+  })
 }
 
 async function autoAddAiSkillAsync(userRootDir: string): Promise<void> {
@@ -52,14 +55,7 @@ async function autoAddAiSkillAsync(userRootDir: string): Promise<void> {
   const vikeConfig = await getVikeConfigInternal()
   // Maybe the user disabled the feature in a config file that currently has an error => retry later (Vite restarts upon config changes).
   if (getVikeConfigError()) return
-  let configValue: boolean | string[]
-  try {
-    configValue = getConfigValueAiSkill(vikeConfig)
-  } catch (err) {
-    // Invalid +ai config value: show the usage error without crashing the already-running dev server.
-    logErrorServerDev(err, null)
-    return
-  }
+  const configValue = getConfigValueAiSkill(vikeConfig)
   if (configValue === false) return
   globalObject.alreadyDone = true
 
