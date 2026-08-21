@@ -58,8 +58,6 @@ async function crawlFiles(options: {
 
   // One pattern per file extension (the `filePattern` skips the file extension)
   assert(!path.posix.basename(filePattern).includes('.'))
-  // A `**/` in the middle of the pattern isn't supported: the pathspec `pages/**/+*.js` doesn't match `pages/+Page.js`
-  assert(!filePattern.slice(globstar.length).includes(globstar))
   const patterns = fileExtension.map((ext) => `${filePattern}.${ext}` as const)
 
   // Crawl
@@ -87,8 +85,6 @@ async function crawlFiles(options: {
 async function crawlGit(patterns: FilePattern[], cwd: string, globOptions: GlobOptions) {
   if (globalObject.gitIsNotUsable) return null
 
-  const { ignore } = globOptions
-
   // Preserve UTF-8 file paths.
   // https://github.com/vikejs/vike/issues/1658
   // https://stackoverflow.com/questions/22827239/how-to-make-git-properly-display-utf-8-encoded-pathnames-in-the-console-window/22828826#22828826
@@ -101,13 +97,17 @@ async function crawlGit(patterns: FilePattern[], cwd: string, globOptions: GlobO
     'ls-files',
 
     // Performance gain seems negligible: https://github.com/vikejs/vike/pull/1688#issuecomment-2166206648
-    // A leading `**/` doesn't match the root directory: we therefore add a second pattern for it — e.g. `**/+*.js` doesn't match `+config.js` while `+*.js` does
-    ...patterns.flatMap((pattern) => [`"${pattern}"`, `"${pattern.slice(globstar.length)}"`]),
+    ...patterns.flatMap((pattern) => {
+      // A leading `**/` doesn't match the root directory: we therefore add a second pattern for it — e.g. `**/+*.js` doesn't match `+config.js` while `+*.js` does
+      const patternRootDir = pattern.slice(globstar.length)
+      assert(!patternRootDir.includes(globstar)) // `**/` in the middle of the pattern isn't supported (e.g. `pages/**/+*.js` doesn't match `pages/+Page.js`)
+      return [`"${pattern}"`, `"${patternRootDir}"`]
+    }),
 
     // Performance gain is non-negligible.
     //  - https://github.com/vikejs/vike/pull/1688#issuecomment-2166206648
     //  - When node_modules/ is untracked the performance gain could be significant?
-    ...ignore.map((pattern) => `--exclude="${pattern}"`),
+    ...globOptions.ignore.map((pattern) => `--exclude="${pattern}"`),
 
     // --others --exclude-standard => list untracked files (--others) while using .gitignore (--exclude-standard)
     // --cached => list tracked files
@@ -142,7 +142,9 @@ async function crawlGit(patterns: FilePattern[], cwd: string, globOptions: GlobO
   //  - the option --exclude of `$ git ls-files` only applies to untracked files. (We use --exclude only to speed up the `$ git ls-files` command.)
   const isMatch = picomatch(patterns, globOptions)
   const isDeleted = new Set(filesDeleted)
-  return filesAll.filter((filePath) => isMatch(filePath) && !isDeleted.has(filePath))
+  const files = filesAll.filter((filePath) => isMatch(filePath) && !isDeleted.has(filePath))
+
+  return files
 }
 // Same as crawlGit() but using tinyglobby
 async function crawlGlob(patterns: FilePattern[], globOptions: GlobOptions): Promise<string[]> {
