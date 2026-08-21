@@ -56,7 +56,7 @@ async function crawlFiles(options: {
   const useGlob =
     // `!filesGit` => Git isn't usable => we *have* to use tinyglobby
     !filesGit ||
-    // `filesGit.length === 0` => fallback to tinyglobby if globFallback
+    // `filesGit.length === 0` => fallback to tinyglobby if globFallback is true
     (filesGit.length === 0 && globFallback)
   const filesGlob = (useGlob || debug.isActivated) && (await tinyglobby(patterns, globOptions, ignorePatterns))
   const files = useGlob ? filesGlob : filesGit
