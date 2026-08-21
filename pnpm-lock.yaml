@@ -843,7 +843,7 @@ importers:
         specifier: ^1.0.31
         version: 1.0.31
       '@brillout/vite-plugin-server-entry':
-        specifier: 0.7.19
+        specifier: ^0.7.19
         version: 0.7.19
       '@universal-deploy/store':
         specifier: ^0.2.2
