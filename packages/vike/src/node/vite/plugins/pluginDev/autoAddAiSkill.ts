@@ -32,11 +32,9 @@ See https://vike.dev/llms.txt
 `
 const commitMessage = (isUpdate: boolean) => `${isUpdate ? 'Update' : 'Add'} Vike skill — see https://vike.dev/ai#skill`
 
-// Automatically add the Vike skill file to the skills directories (e.g. .claude/skills/ and .agents/skills/) of the user's Git repository (and Git-commit it) — so that AI agents (Claude Code, Codex, Cursor, Gemini CLI, ...) automatically pick it up.
+// Automatically add vike/SKILL.md to skills/ directories (e.g. .claude/skills/ and .agents/skills/) of the user's Git repository (and Git-commit it) — so that AI agents (Claude Code, Codex, Cursor, Gemini CLI, ...) automatically pick it up.
 // https://vike.dev/ai#skill
-// Called late (after the dev server started) — the feature never slows down dev start.
 function autoAddAiSkill(userRootDir: string): void {
-  // Fire-and-forget: never let this feature break the dev server.
   autoAddAiSkillAsync(userRootDir).catch((err) => {
     // Show the error without breaking the dev server. (Expected situations don't throw — e.g. Git missing is handled gracefully.)
     console.error(err)
