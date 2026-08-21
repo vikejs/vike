@@ -43,7 +43,7 @@ async function crawlFiles(options: {
 }): Promise<string[]> {
   const { filePattern, fileExtension, cwd, dot, globFallback } = options
   const userSettings = getUserSettings()
-  const globOptions: GlobOptions = { dot, nocase: false, ignore: getIgnorePatterns(userSettings) }
+  const globOptions: GlobOptions = { cwd, dot, nocase: false, ignore: getIgnorePatterns(userSettings) }
 
   // One pattern per file extension (the `filePattern` skips the file extension)
   assert(!path.posix.basename(filePattern).includes('.'))
@@ -58,7 +58,7 @@ async function crawlFiles(options: {
     !filesGit ||
     // `filesGit.length === 0` => fallback to tinyglobby if globFallback is true
     (filesGit.length === 0 && globFallback)
-  const filesGlob = (useGlob || debug.isActivated) && (await tinyglobby(patterns, cwd, globOptions))
+  const filesGlob = (useGlob || debug.isActivated) && (await tinyglobby(patterns, globOptions))
   const files = useGlob ? filesGlob : filesGit
   assert(files)
   if (debug.isActivated && filesGit && filesGlob) {
@@ -77,6 +77,7 @@ type Pattern = `${typeof globstar}${string}`
 // The options of tinyglobby, which we also pass to picomatch so that both apply the same settings
 // https://github.com/SuperchupuDev/tinyglobby/blob/fcfb08a36c3b4d48d5488c21000c95a956d9797c/src/index.ts#L191-L194
 type GlobOptions = {
+  cwd: string
   dot: boolean
   nocase: false
   ignore: string[]
@@ -144,15 +145,14 @@ async function gitLsFiles(patterns: Pattern[], cwd: string, globOptions: GlobOpt
   return filesAll.filter((filePath) => isMatch(filePath) && !isDeleted.has(filePath))
 }
 // Same as gitLsFiles() but using tinyglobby
-async function tinyglobby(patterns: Pattern[], cwd: string, globOptions: GlobOptions): Promise<string[]> {
-  const options = { ...globOptions, cwd }
-  const files = await glob(patterns, options)
+async function tinyglobby(patterns: Pattern[], globOptions: GlobOptions): Promise<string[]> {
+  const files = await glob(patterns, globOptions)
   // Make build deterministic, in order to get a stable generated hash for dist/client/assets/entries/entry-client-routing.${hash}.js
   // https://github.com/vikejs/vike/pull/1750
   files.sort()
   if (debug.isActivated) {
     debug('[glob] patterns:', patterns)
-    debug('[glob] options:', options)
+    debug('[glob] options:', globOptions)
     debug('[glob] result:', files)
   }
   return files
