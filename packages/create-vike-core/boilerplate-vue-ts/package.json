@@ -13,11 +13,11 @@
     "cross-env": "^7.0.3",
     "hono": "^4.8.4",
     "node-fetch": "^3.3.2",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.2",
     "vike": "^0.4.260",
     "vite": "^6.3.2",
     "vue": "^3.5.13",
-    "vue-tsc": "^2.1.10"
+    "vue-tsc": "^3.3.11"
   },
   "type": "module"
 }
