@@ -22,7 +22,7 @@ async function crawlPlusFiles(userRootDir: string): Promise<{ filePathAbsoluteUs
     fileExtension: scriptFileExtensionList,
     cwd: userRootDir,
     dot: false,
-    // Every app has `+` files: if Git doesn't find any then it's likely because the user dynamically generates them (and `.gitignore`s them).
+    // Fallback to tinyglobby for users that dynamically generate plus files (and `.gitignore`s them)
     globFallback: true,
   })
 
