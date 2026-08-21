@@ -4,7 +4,7 @@ export { createViteRPC } // provider (aka RPC server)
 import type { ViteDevServer } from 'vite'
 import { assert } from './assert.js'
 import { genPromise } from './genPromise.js'
-import { getRandomId } from './getRandomId.js'
+import { genRandomId } from './genRandomId.js'
 import { getGlobalObject } from './getGlobalObject.js'
 import { createDebug } from './debug.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
@@ -44,7 +44,7 @@ function createRpcClient() {
         return async (...functionArgs: unknown[]) => {
           const hot = import.meta.hot
           assert(hot)
-          const callId = getRandomId()
+          const callId = genRandomId()
 
           const { promise, resolve } = genPromise<unknown>({ timeout: 10 * 1000 })
           listeners.push({
