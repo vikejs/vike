@@ -6,7 +6,7 @@ import pc from '@brillout/picocolors'
 import { assert } from '../../utils/assert.js'
 import { includes } from '../../utils/includes.js'
 import { PROJECT_VERSION } from '../../utils/PROJECT_VERSION.js'
-import { parseJson5 } from '../vite/shared/getEnvVarObject.js'
+import { parseJson5 } from '../../utils/getEnvVarObject.js'
 import './assertEnvCli.js'
 
 type CliOptions = Record<string, unknown>

@@ -1,7 +1,6 @@
-import '../../../assertEnvVite.js'
-
 export const ignorePatternsBuiltIn = [
   '**/node_modules/**',
+  '**/.git/**',
   // Ejected Vike extensions, see https://github.com/snake-py/eject
   '**/ejected/**',
   // Allow:

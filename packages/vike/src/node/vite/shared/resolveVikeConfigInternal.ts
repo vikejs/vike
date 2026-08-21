@@ -88,14 +88,14 @@ import {
   isJsonValue,
 } from '../../../shared-server-client/page-configs/serialize/serializeConfigValues.js'
 import {
-  getPlusFilesByLocationId,
+  getPlusFiles,
   getPlusFileFromConfigFile,
   type PlusFile,
   type PlusFilesByLocationId,
-} from './resolveVikeConfigInternal/getPlusFilesByLocationId.js'
+} from './resolveVikeConfigInternal/getPlusFiles.js'
 import { assertRouteString } from '../../../shared-server-client/route/resolveRouteString.js'
 import { getExtensionName } from './resolveVikeConfigInternal/assertExtensions.js'
-import { getEnvVarObject } from './getEnvVarObject.js'
+import { getEnvVarObject } from '../../../utils/getEnvVarObject.js'
 import { getVikeApiOperation } from '../../../shared-server-node/api-context.js'
 import { getCliOptions } from '../../cli/context.js'
 import type { PrerenderContextPublic } from '../../prerender/runPrerender.js'
@@ -318,7 +318,7 @@ async function resolveVikeConfigInternal(
   vikeVitePluginOptions: unknown,
   esbuildCache: EsbuildCache,
 ): Promise<VikeConfigInternal> {
-  const plusFilesByLocationId = await getPlusFilesByLocationId(userRootDir, esbuildCache)
+  const plusFilesByLocationId = await getPlusFiles(userRootDir, esbuildCache)
 
   const configDefinitionsResolved = await resolveConfigDefinitions(plusFilesByLocationId, userRootDir, esbuildCache)
 
@@ -436,7 +436,7 @@ async function resolveConfigDefinitions(
   return configDefinitionsResolved
 }
 // Load value files (with `env.config===true`) of *custom* configs.
-// - The value files of *built-in* configs are already loaded at `getPlusFilesByLocationId()`.
+// - The value files of *built-in* configs are already loaded at `getPlusFiles()`.
 async function loadCustomConfigBuildTimeFiles(
   plusFiles: PlusFilesByLocationId | PlusFile[],
   configDefinitions: ConfigDefinitionsInternal,
@@ -1029,7 +1029,7 @@ function sortPlusFilesSameLocationId(plusFile1: PlusFile, plusFile2: PlusFile, c
   }
 
   // Config set by +{configName}.js (highest precedence)
-  // No need to make it deterministic: the overall order is already deterministic, see sortMakeDeterministic() at getPlusFilesByLocationId()
+  // No need to make it deterministic: the overall order is already deterministic, see sortMakeDeterministic() at getPlusFiles()
   return 0
 }
 

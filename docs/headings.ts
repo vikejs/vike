@@ -79,6 +79,7 @@ const headings = [
     level: 2,
     title: 'Extensions',
     url: '/extensions',
+    sectionTitles: ['i18n'],
   },
   /*
   {
