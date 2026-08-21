@@ -51,7 +51,6 @@ async function autoAddAiSkillAsync(userRootDir: string): Promise<void> {
   // Skip if Vike isn't inside node_modules/ (e.g. when Vike is linked, such as when running an example of the Vike monorepo).
   if (!importMetaUrl.includes('node_modules/')) return
 
-  // The dev server is already up and running => the Vike config is already resolved => the await resolves instantly.
   const vikeConfig = await getVikeConfigInternal()
   // Maybe the user disabled the feature in a config file that currently has an error => retry later (Vite restarts upon config changes).
   if (getVikeConfigError()) return
