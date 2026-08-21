@@ -25,7 +25,6 @@ const globalObject = getGlobalObject('crawlFiles.ts', {
 
 const globstar = '**/'
 type FilePattern = `${typeof globstar}${'+*' | 'skills/*/SKILL'}`
-// The `filePattern` with the file extension appended, see crawlFiles()
 type Pattern = `${FilePattern}.${string}`
 // The options of tinyglobby, which we also pass to picomatch so that both apply the same settings
 // https://github.com/SuperchupuDev/tinyglobby/blob/fcfb08a36c3b4d48d5488c21000c95a956d9797c/src/index.ts#L191-L194
