@@ -15,7 +15,6 @@ import { isFilePathAbsoluteFilesystem } from '../../../../utils/isFilePathAbsolu
 import { isObject } from '../../../../utils/isObject.js'
 import { unique } from '../../../../utils/unique.js'
 import { getVikeConfigInternal, type VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
-import { logErrorServerDev } from '../../shared/loggerDev.js'
 import '../../assertEnvVite.js'
 const execFileA = promisify(execFile)
 const importMetaUrl = import.meta.url
@@ -40,7 +39,7 @@ function autoAddAiSkill(userRootDir: string): void {
   // Fire-and-forget: never let this feature break the dev server.
   autoAddAiSkillAsync(userRootDir).catch((err) => {
     // Show the error without breaking the dev server. (Expected situations don't throw — e.g. Git missing is handled gracefully.)
-    logErrorServerDev(err, null)
+    console.error(err)
   })
 }
 
@@ -63,14 +62,9 @@ async function autoAddAiSkillAsync(userRootDir: string): Promise<void> {
     skillsDirs: configValue === true ? undefined : configValue,
   })
   if (!res) return
-  const verb = res.files.every((f) => !f.isUpdate)
-    ? 'Created'
-    : res.files.every((f) => f.isUpdate)
-      ? 'Updated'
-      : 'Created/updated'
   assertInfo(
     false,
-    `${verb}${res.isCommitted ? ' and Git-committed' : ''} ${res.files
+    `${res.isUpdate ? 'Updated' : 'Created'}${res.isCommitted ? ' and Git-committed' : ''} ${res.files
       .map((f) => pc.cyan(f.filePathRelative))
       .join(', ')} (see https://vike.dev/ai#skill)`,
     { onlyOnce: false },
@@ -109,6 +103,7 @@ async function addAiSkill(
   { skillsDirs }: { skillsDirs: undefined | string[] },
 ): Promise<null | {
   files: { filePathAbsolute: string; filePathRelative: string; isUpdate: boolean }[]
+  isUpdate: boolean
   isCommitted: boolean
 }> {
   // Skip if Git isn't installed
@@ -142,7 +137,7 @@ async function addAiSkill(
   if (files.length === 0) return null
 
   const isCommitted = await gitCommit(gitRootDir, files)
-  return { files, isCommitted }
+  return { files, isUpdate: files.some((f) => f.isUpdate), isCommitted }
 }
 
 // Discover the skills directories of the user's Git repository, following the Agent Skills convention `**/skills/*/SKILL.md` (https://agentskills.io) — e.g. .claude/skills/ (Claude Code) and .agents/skills/ (Codex, Gemini CLI, Cursor, ...).
