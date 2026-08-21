@@ -726,7 +726,7 @@ type ConfigAi = {
    *
    * - `undefined` (default): add `vike/SKILL.md` to every existing `skills/` directory
    * - `false`: never add `vike/SKILL.md`
-   * - `string[]`: add `vike/SKILL.md` to exactly these directories, creating them if needed
+   * - `string[]`: add `vike/SKILL.md` to exactly these directories
    *
    * https://vike.dev/ai#skill
    */
