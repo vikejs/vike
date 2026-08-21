@@ -121,6 +121,7 @@ Paths below are relative to https://vike.dev (e.g. `/data-fetching` → https://
 - /common-issues — broken npm packages, `ssr.noExternal`, hydration mismatch, server/client HTML divergence, Node crashes from incompatible packages
 - /meta — `+meta` create custom settings/hooks, control `env` (server/client/config), `cumulative`/`global`/`effect()`, extend `Vike.Config` (TS); mainly for extensions
 - /settings — index of built-in settings: structure, rendering (SSR/streaming/prerender), head/SEO, routing, CSP, headers, custom via `+meta`
+- /ai — AI agent integration: this llms.txt index, skill file `vike/SKILL.md` auto-added to every skills directory (`**/skills/*/SKILL.md` convention, e.g. `.claude/skills/` `.agents/skills/`) and Git-committed upon dev, `+ai.skill` setting (list of directories, or false)
 
 ## Get started
 

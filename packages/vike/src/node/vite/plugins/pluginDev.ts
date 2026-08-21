@@ -4,8 +4,10 @@ export { logDockerHint }
 import { type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
 import { optimizeDeps, resolveOptimizeDeps } from './pluginDev/optimizeDeps.js'
 import { determineFsAllowList } from './pluginDev/determineFsAllowList.js'
+import { autoAddVikeSkill } from './pluginDev/autoAddVikeSkill.js'
 import { addSsrMiddleware } from '../shared/addSsrMiddleware.js'
 import { isDebugError } from '../../../utils/debug.js'
+import { setTimeoutUnref } from '../../../utils/setTimeoutUnref.js'
 import { applyDev } from '../../../utils/isDev.js'
 import { isDocker } from '../../../utils/isDocker.js'
 import { assertWarning } from '../../../utils/assert.js'
@@ -35,6 +37,20 @@ function pluginDev(): Plugin[] {
           await determineFsAllowList(config)
           interceptViteLogs(config)
           logDockerHint(config.server.host)
+        },
+      },
+      configureServer: {
+        handler(server) {
+          // Apply late — after the dev server is up and running, and after the first page requests — so that it never slows down dev start.
+          const run = () => {
+            setTimeoutUnref(() => autoAddVikeSkill(config.root), 60 * 1000)
+          }
+          if (server.httpServer) {
+            server.httpServer.once('listening', run)
+          } else {
+            // Middleware mode: the HTTP server is owned by the user.
+            run()
+          }
         },
       },
     },

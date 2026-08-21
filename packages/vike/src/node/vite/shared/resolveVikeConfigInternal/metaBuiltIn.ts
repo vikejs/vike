@@ -444,6 +444,10 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
   vercel: {
     env: { config: true },
   },
+  ai: {
+    env: { config: true },
+    global: true,
+  },
 } satisfies ConfigDefinitionsBuiltIn
 function getConfigEnv(pageConfig: PageConfigBuildTimeBeforeComputed, configName: string): null | ConfigEnv {
   const source = getConfigValueSourceRelevantAnyEnv(configName, pageConfig)
