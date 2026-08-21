@@ -3,9 +3,15 @@ import path from 'node:path'
 import fs from 'node:fs'
 // process.env.DEBUG = 'vike:crawl'
 const { crawlFiles } = await import('../crawlFiles.js')
+import { scriptFileExtensionList } from '../isScriptFile.js'
 import { fileURLToPath } from 'node:url'
 const __dirname_ = path.dirname(fileURLToPath(import.meta.url))
-const userRootDir = path.join(__dirname_, './test-file-structure')
+const cwd = path.join(__dirname_, './test-file-structure')
+
+// Same as crawlPlusFiles()
+const plusFiles = { filePattern: '**/+*' as const, fileExtension: scriptFileExtensionList }
+// Any other kind of file, e.g. the skills directories of AI agents
+const skillFiles = { filePattern: '**/skills/*/SKILL' as const, fileExtension: ['md', 'txt'] }
 
 describe('crawlFiles()', () => {
   it('works', async ({ onTestFinished }) => {
@@ -24,7 +30,7 @@ describe('crawlFiles()', () => {
     onTestFinished(() => clean())
 
     process.env.VIKE_CRAWL = "{ignore:['**/manually/**','**/manually-2/**']}"
-    const filesWithGit = await crawl()
+    const filesWithGit = await crawl({ ...plusFiles, globFallback: true })
     expect(filesWithGit).toMatchInlineSnapshot(`
       [
         "+config.js",
@@ -35,7 +41,7 @@ describe('crawlFiles()', () => {
     assert(!JSON.stringify(filesWithGit).includes('ignored'))
 
     process.env.VIKE_CRAWL = "{git:false,ignore:'**/manually/**'}"
-    const filesWithGlob = await crawl()
+    const filesWithGlob = await crawl({ ...plusFiles, globFallback: true })
     expect(filesWithGlob).toMatchInlineSnapshot(`
       [
         "+config.js",
@@ -46,15 +52,65 @@ describe('crawlFiles()', () => {
       ]
     `)
   })
+
+  // The pattern is applied to the results of `$ git ls-files` as well, thus both crawling methods return the same files
+  it('crawls any pattern, with Git as well as with tinyglobby', async ({ onTestFinished }) => {
+    const { clean } = createFiles([
+      'skills/some-skill/SKILL.md',
+      'skills/other-skill/SKILL.txt',
+      '.dot-dir/skills/some-skill/SKILL.md',
+      'some-dir/.other-dot-dir/skills/some-skill/SKILL.md',
+      // Matches the pathspec we pass to `$ git ls-files` (whose wildcards also match `/`) but not the pattern
+      'skills/some-skill/nested/SKILL.md',
+      // Doesn't match the pattern
+      'not-skills/some-skill/SKILL.md',
+      'skills/some-skill/SKILL.json',
+    ])
+    onTestFinished(() => clean())
+
+    delete process.env.VIKE_CRAWL
+    const filesWithGit = await crawl({ ...skillFiles, dot: true })
+    expect(filesWithGit).toMatchInlineSnapshot(`
+      [
+        ".dot-dir/skills/some-skill/SKILL.md",
+        "skills/other-skill/SKILL.txt",
+        "skills/some-skill/SKILL.md",
+        "some-dir/.other-dot-dir/skills/some-skill/SKILL.md",
+      ]
+    `)
+
+    process.env.VIKE_CRAWL = '{git:false}'
+    const filesWithGlob = await crawl({ ...skillFiles, dot: true })
+    expect(filesWithGlob).toEqual(filesWithGit)
+
+    // Dotfiles and dot directories are skipped by default
+    delete process.env.VIKE_CRAWL
+    const filesWithGitNoDot = await crawl(skillFiles)
+    expect(filesWithGitNoDot).toMatchInlineSnapshot(`
+      [
+        "skills/other-skill/SKILL.txt",
+        "skills/some-skill/SKILL.md",
+      ]
+    `)
+
+    process.env.VIKE_CRAWL = '{git:false}'
+    const filesWithGlobNoDot = await crawl(skillFiles)
+    expect(filesWithGlobNoDot).toEqual(filesWithGitNoDot)
+  })
 })
 
-async function crawl() {
-  const files = await crawlFiles(userRootDir)
+async function crawl(options: {
+  filePattern: Parameters<typeof crawlFiles>[0]['filePattern']
+  fileExtension: readonly string[]
+  dot?: boolean
+  globFallback?: boolean
+}) {
+  const files = await crawlFiles({ cwd, dot: false, globFallback: false, ...options })
   return files.slice().sort()
 }
 
 function createFiles(files: string[]) {
-  const filePaths = files.map((file) => path.join(userRootDir, file))
+  const filePaths = files.map((file) => path.join(cwd, file))
 
   // Create empty files
   filePaths.forEach((filePath) => {
@@ -68,7 +124,7 @@ function createFiles(files: string[]) {
         assert(fs.existsSync(filePath))
         fs.unlinkSync(filePath) // Remove filePath
       })
-      removeEmptyDirectories(userRootDir)
+      removeEmptyDirectories(cwd)
     },
   }
 }

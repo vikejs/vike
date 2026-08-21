@@ -8,14 +8,13 @@ import { deepEqual } from './deepEqual.js'
 import { getGlobalObject } from './getGlobalObject.js'
 import { hasProp } from './hasProp.js'
 import { isNotNullish } from './isNullish.js'
-import { scriptFileExtensionPattern, isScriptFile, scriptFileExtensionList } from './isScriptFile.js'
 import path from 'node:path'
-import { glob } from 'tinyglobby'
+import { glob as tinyglobby } from 'tinyglobby'
 import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
 import { getEnvVarObject } from './getEnvVarObject.js'
 import pc from '@brillout/picocolors'
-import picomatch, { type Matcher } from 'picomatch'
+import picomatch from 'picomatch'
 import { ignorePatternsBuiltIn } from './crawlFiles/ignorePatternsBuiltIn.js'
 assertIsNotProductionRuntime()
 const execA = promisify(exec)
@@ -24,18 +23,53 @@ const globalObject = getGlobalObject('crawlFiles.ts', {
   gitIsNotUsable: false,
 })
 
-async function crawlFiles(userRootDir: string) {
+const globstar = '**/'
+type FilePattern = `${typeof globstar}${'+*' | 'skills/*/SKILL'}`
+type Pattern = `${FilePattern}.${string}`
+// The options of tinyglobby, which we also pass to picomatch so that both apply the same settings
+// https://github.com/SuperchupuDev/tinyglobby/blob/fcfb08a36c3b4d48d5488c21000c95a956d9797c/src/index.ts#L191-L194
+type GlobOptions = {
+  cwd: string
+  dot: boolean
+  nocase: false
+  ignore: string[]
+}
+
+/**
+ * Crawl the files matching `filePattern`, using `$ git ls-files` and, as a fallback, [tinyglobby](https://github.com/SuperchupuDev/tinyglobby).
+ */
+async function crawlFiles(options: {
+  filePattern: FilePattern
+  fileExtension: readonly string[]
+  cwd: string
+  /**
+   * Whether dotfiles and dot directories are crawled.
+   *
+   * Same as tinyglobby's `dot` option.
+   */
+  dot: boolean
+  /**
+   * Whether to fallback to tinyglobby if `$ git ls-files` doesn't find any file.
+   */
+  globFallback: boolean
+}): Promise<string[]> {
+  const { filePattern, fileExtension, cwd, dot, globFallback } = options
   const userSettings = getUserSettings()
-  const { ignorePatterns, ignoreMatchers } = getIgnore(userSettings)
+  const globOptions: GlobOptions = { cwd, dot, nocase: false, ignore: getIgnorePatterns(userSettings) }
+
+  // One pattern per file extension (the `filePattern` skips the file extension)
+  assert(!path.posix.basename(filePattern).includes('.'))
+  const patterns = fileExtension.map((ext) => `${filePattern}.${ext}` as const)
 
   // Crawl
-  const filesGit = userSettings.git !== false && (await gitLsFiles(userRootDir, ignorePatterns, ignoreMatchers))
-  const filesGitNothingFound = !filesGit || filesGit.length === 0
-  const filesGlob = (filesGitNothingFound || debug.isActivated) && (await tinyglobby(userRootDir, ignorePatterns))
-  let files = !filesGitNothingFound
-    ? filesGit
-    : // Fallback to tinyglobby for users that dynamically generate plus files. (Assuming that no plus file is found because of the user's .gitignore list.)
-      filesGlob
+  const filesGit = userSettings.git !== false && (await crawlGit(patterns, cwd, globOptions))
+  const useGlob =
+    // `!filesGit` => Git isn't usable => we *have* to use tinyglobby
+    !filesGit ||
+    // `filesGit.length === 0` => fallback to tinyglobby if globFallback is true
+    (filesGit.length === 0 && globFallback)
+  const filesGlob = (useGlob || debug.isActivated) && (await crawlGlob(patterns, globOptions))
+  const files = useGlob ? filesGlob : filesGit
   assert(files)
   if (debug.isActivated && filesGit && filesGlob) {
     assertWarning(
@@ -48,8 +82,8 @@ async function crawlFiles(userRootDir: string) {
   return files
 }
 
-// Same as tinyglobby() but using `$ git ls-files`
-async function gitLsFiles(userRootDir: string, ignorePatterns: string[], ignoreMatchers: Matcher[]) {
+// Same as crawlGlob() but using `$ git ls-files`
+async function crawlGit(patterns: Pattern[], cwd: string, globOptions: GlobOptions) {
   if (globalObject.gitIsNotUsable) return null
 
   // Preserve UTF-8 file paths.
@@ -64,12 +98,17 @@ async function gitLsFiles(userRootDir: string, ignorePatterns: string[], ignoreM
     'ls-files',
 
     // Performance gain seems negligible: https://github.com/vikejs/vike/pull/1688#issuecomment-2166206648
-    ...scriptFileExtensionList.map((ext) => `"**/+*.${ext}" "+*.${ext}"`),
+    ...patterns.flatMap((pattern) => {
+      // A leading `**/` doesn't match the root directory: we therefore add a second pattern for it — e.g. `**/+*.js` doesn't match `+config.js` while `+*.js` does
+      const patternRootDir = pattern.slice(globstar.length)
+      assert(!patternRootDir.includes(globstar)) // `**/` in the middle of the pattern isn't supported (e.g. `pages/**/+*.js` doesn't match `pages/+Page.js`)
+      return [`"${pattern}"`, `"${patternRootDir}"`]
+    }),
 
     // Performance gain is non-negligible.
     //  - https://github.com/vikejs/vike/pull/1688#issuecomment-2166206648
     //  - When node_modules/ is untracked the performance gain could be significant?
-    ...ignorePatterns.map((pattern) => `--exclude="${pattern}"`),
+    ...globOptions.ignore.map((pattern) => `--exclude="${pattern}"`),
 
     // --others --exclude-standard => list untracked files (--others) while using .gitignore (--exclude-standard)
     // --cached => list tracked files
@@ -81,68 +120,52 @@ async function gitLsFiles(userRootDir: string, ignorePatterns: string[], ignoreM
   try {
     ;[filesAll, filesDeleted] = await Promise.all([
       // Main command
-      runCmd1(cmd, userRootDir),
+      runCmd1(cmd, cwd),
       // Get tracked but deleted files
-      runCmd1('git ls-files --deleted', userRootDir),
+      runCmd1('git ls-files --deleted', cwd),
     ])
   } catch (err) {
-    if (await isGitNotUsable(userRootDir)) {
+    if (await isGitNotUsable(cwd)) {
       globalObject.gitIsNotUsable = true
       return null
     }
     throw err
   }
   if (debug.isActivated) {
-    debug('[git] userRootDir:', userRootDir)
+    debug('[git] cwd:', cwd)
     debug('[git] cmd:', cmd)
     debug('[git] result:', filesAll)
     debug('[git] filesDeleted:', filesDeleted)
   }
 
-  const files = []
-  for (const filePath of filesAll) {
-    // + file?
-    if (!path.posix.basename(filePath).startsWith('+')) continue
-
-    // We have to repeat the same exclusion logic here because the option --exclude of `$ git ls-files` only applies to untracked files. (We use --exclude only to speed up the `$ git ls-files` command.)
-    if (ignoreMatchers.some((m) => m(filePath))) continue
-
-    // JavaScript file?
-    if (!isScriptFile(filePath)) continue
-
-    // Deleted?
-    if (filesDeleted.includes(filePath)) continue
-
-    files.push(filePath)
-  }
+  // We have to filter again here because:
+  //  - `$ git ls-files` matches more since wildcards are deep — e.g. `+*.js` matches `pages/+some-dir/some-file.js`
+  //  - the option --exclude of `$ git ls-files` only applies to untracked files. (We use --exclude only to speed up the `$ git ls-files` command.)
+  const isMatch = picomatch(patterns, globOptions)
+  const isDeleted = new Set(filesDeleted)
+  const files = filesAll.filter((filePath) => isMatch(filePath) && !isDeleted.has(filePath))
 
   return files
 }
-// Same as gitLsFiles() but using tinyglobby
-async function tinyglobby(userRootDir: string, ignorePatterns: string[]): Promise<string[]> {
-  const pattern = `**/+*.${scriptFileExtensionPattern}`
-  const options = {
-    ignore: ignorePatterns,
-    cwd: userRootDir,
-    dot: false,
-  }
-  const files = await glob(pattern, options)
+// Same as crawlGit() but using tinyglobby
+async function crawlGlob(patterns: Pattern[], globOptions: GlobOptions): Promise<string[]> {
+  const files = await tinyglobby(patterns, globOptions)
   // Make build deterministic, in order to get a stable generated hash for dist/client/assets/entries/entry-client-routing.${hash}.js
   // https://github.com/vikejs/vike/pull/1750
   files.sort()
   if (debug.isActivated) {
-    debug('[glob] pattern:', pattern)
-    debug('[glob] options:', options)
+    debug('[glob] patterns:', patterns)
+    debug('[glob] options:', globOptions)
     debug('[glob] result:', files)
   }
   return files
 }
 
 // Whether Git is installed and whether we can use it
-async function isGitNotUsable(userRootDir: string) {
+async function isGitNotUsable(cwd: string) {
   // Check Git version
   {
-    const res = await runCmd2('git --version', userRootDir)
+    const res = await runCmd2('git --version', cwd)
     if ('err' in res) return true
     let { stdout, stderr } = res
     assert(stderr === '')
@@ -155,9 +178,9 @@ async function isGitNotUsable(userRootDir: string) {
     //    - Maybe it's because of StackBlitz: looking at the release notes, Git 2.32.0 should be working.
     if (!isVersionMatch(gitVersion, ['2.43.1'])) return true
   }
-  // Is userRootDir inside a Git repository?
+  // Is cwd inside a Git repository?
   {
-    const res = await runCmd2('git rev-parse --is-inside-work-tree', userRootDir)
+    const res = await runCmd2('git rev-parse --is-inside-work-tree', cwd)
     if ('err' in res) return true
     let { stdout, stderr } = res
     assert(stderr === '')
@@ -216,17 +239,8 @@ function getUserSettings() {
   return userSettings
 }
 
-function getIgnore(userSettings: UserSettings) {
+function getIgnorePatterns(userSettings: UserSettings): string[] {
   const ignorePatternsSetByUser = [userSettings.ignore].flat().filter(isNotNullish)
   const { ignoreBuiltIn } = userSettings
-  const ignorePatterns = [...(ignoreBuiltIn === false ? [] : ignorePatternsBuiltIn), ...ignorePatternsSetByUser]
-  const ignoreMatchers = ignorePatterns.map((p) =>
-    picomatch(p, {
-      // We must pass the same settings than tinyglobby
-      // https://github.com/SuperchupuDev/tinyglobby/blob/fcfb08a36c3b4d48d5488c21000c95a956d9797c/src/index.ts#L191-L194
-      dot: false,
-      nocase: false,
-    }),
-  )
-  return { ignorePatterns, ignoreMatchers }
+  return [...(ignoreBuiltIn === false ? [] : ignorePatternsBuiltIn), ...ignorePatternsSetByUser]
 }
