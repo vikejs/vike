@@ -712,7 +712,8 @@ type ConfigBuiltIn = {
    */
   vercel?: Vercel
 
-  /** AI settings.
+  /**
+   * Setting for Vike's AI integration.
    *
    * https://vike.dev/ai
    */
@@ -720,11 +721,12 @@ type ConfigBuiltIn = {
 }
 
 type ConfigAi = {
-  /** Whether Vike automatically creates and updates the skill file `vike/SKILL.md` inside the skills directories (e.g. `.claude/skills/` and `.agents/skills/`) of your app's Git repository, Git-committing the change — making AI agents automatically aware of Vike's documentation.
+  /**
+   * Whether Vike automatically adds and updates `vike/SKILL.md` inside skills directories (e.g. `.agents/skills/` and `.claude/skills/`).
    *
-   * - `undefined` (default): add the skill file to every existing skills directory (discovered following the `skills/<name>/SKILL.md` convention).
-   * - `string[]`: add the skill file to exactly these directories, creating them if needed (paths relative to the root directory of your app's Git repository, e.g. `['.claude/skills', '.agents/skills']`).
-   * - `false`: never add the skill file.
+   * - `undefined` (default): add `vike/SKILL.md` to every existing `skills/` directory
+   * - `false`: never add `vike/SKILL.md`
+   * - `string[]`: add `vike/SKILL.md` to exactly these directories, creating them if needed
    *
    * https://vike.dev/ai#skill
    */
