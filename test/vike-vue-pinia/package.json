@@ -16,7 +16,7 @@
   },
   "type": "module",
   "devDependencies": {
-    "typescript": "^7.0.2",
-    "vue-tsc": "^2.0.13"
+    "typescript": "^6.0.2",
+    "vue-tsc": "^3.3.11"
   }
 }

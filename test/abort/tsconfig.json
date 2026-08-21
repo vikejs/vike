@@ -6,7 +6,8 @@
     "moduleResolution": "bundler",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "esModuleInterop": true,
-    "jsx": "react"
+    "jsx": "react",
+    "types": ["vite/client"]
   },
   "include": [
     "**/*",
