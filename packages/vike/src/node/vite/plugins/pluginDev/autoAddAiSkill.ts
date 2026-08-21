@@ -30,7 +30,7 @@ description: "Vike documentation index — a compact overview of Vike's docs. Co
 
 See https://vike.dev/llms.txt
 `
-const commitMessage = (isUpdate: boolean) => `${isUpdate ? 'Update' : 'Add'} Vike skill (see https://vike.dev/ai#skill)`
+const commitMessage = (isUpdate: boolean) => `${isUpdate ? 'Update' : 'Add'} Vike skill — see https://vike.dev/ai#skill`
 
 // Automatically add the Vike skill file to the skills directories (e.g. .claude/skills/ and .agents/skills/) of the user's Git repository (and Git-commit it) — so that AI agents (Claude Code, Codex, Cursor, Gemini CLI, ...) automatically pick it up.
 // https://vike.dev/ai#skill
