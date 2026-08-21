@@ -14,7 +14,7 @@ import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
 import { getEnvVarObject } from './getEnvVarObject.js'
 import pc from '@brillout/picocolors'
-import picomatch, { type Matcher } from 'picomatch'
+import picomatch from 'picomatch'
 import { ignorePatternsBuiltIn } from './crawlFiles/ignorePatternsBuiltIn.js'
 assertIsNotProductionRuntime()
 const execA = promisify(exec)
@@ -27,7 +27,7 @@ const globalObject = getGlobalObject('crawlFiles.ts', {
  * Crawl the files matching `filePattern`, using `$ git ls-files` and, as a fallback, [tinyglobby](https://github.com/SuperchupuDev/tinyglobby).
  */
 async function crawlFiles(options: {
-  filePattern: `**/${string}`
+  filePattern: Pattern
   fileExtension: readonly string[]
   cwd: string
   /**
@@ -43,22 +43,22 @@ async function crawlFiles(options: {
 }): Promise<string[]> {
   const { filePattern, fileExtension, cwd, dot, globFallback } = options
   const userSettings = getUserSettings()
-  const globOptions: GlobOptions = { cwd, dot, nocase: false }
-  const { ignorePatterns, ignoreMatchers } = getIgnore(userSettings, globOptions)
+  const globOptions: GlobOptions = { dot, nocase: false, ignore: getIgnorePatterns(userSettings) }
 
   // One pattern per file extension (the `filePattern` skips the file extension)
   assert(!path.posix.basename(filePattern).includes('.'))
-  const patterns = fileExtension.map((ext) => `${filePattern}.${ext}`)
+  // A `**/` in the middle of the pattern isn't supported: the pathspec `pages/**/+*.js` doesn't match `pages/+Page.js`
+  assert(!filePattern.slice(globstar.length).includes(globstar))
+  const patterns = fileExtension.map((ext) => `${filePattern}.${ext}` as const)
 
   // Crawl
-  const filesGit =
-    userSettings.git !== false && (await gitLsFiles(patterns, globOptions, ignorePatterns, ignoreMatchers))
+  const filesGit = userSettings.git !== false && (await gitLsFiles(patterns, cwd, globOptions))
   const useGlob =
     // `!filesGit` => Git isn't usable => we *have* to use tinyglobby
     !filesGit ||
     // `filesGit.length === 0` => fallback to tinyglobby if globFallback is true
     (filesGit.length === 0 && globFallback)
-  const filesGlob = (useGlob || debug.isActivated) && (await tinyglobby(patterns, globOptions, ignorePatterns))
+  const filesGlob = (useGlob || debug.isActivated) && (await tinyglobby(patterns, cwd, globOptions))
   const files = useGlob ? filesGlob : filesGit
   assert(files)
   if (debug.isActivated && filesGit && filesGlob) {
@@ -72,24 +72,21 @@ async function crawlFiles(options: {
   return files
 }
 
+const globstar = '**/'
+type Pattern = `${typeof globstar}${string}`
 // The options of tinyglobby, which we also pass to picomatch so that both apply the same settings
 // https://github.com/SuperchupuDev/tinyglobby/blob/fcfb08a36c3b4d48d5488c21000c95a956d9797c/src/index.ts#L191-L194
 type GlobOptions = {
-  cwd: string
   dot: boolean
   nocase: false
+  ignore: string[]
 }
 
 // Same as tinyglobby() but using `$ git ls-files`
-async function gitLsFiles(
-  patterns: string[],
-  globOptions: GlobOptions,
-  ignorePatterns: string[],
-  ignoreMatchers: Matcher[],
-) {
+async function gitLsFiles(patterns: Pattern[], cwd: string, globOptions: GlobOptions) {
   if (globalObject.gitIsNotUsable) return null
 
-  const { cwd } = globOptions
+  const { ignore } = globOptions
 
   // Preserve UTF-8 file paths.
   // https://github.com/vikejs/vike/issues/1658
@@ -103,19 +100,13 @@ async function gitLsFiles(
     'ls-files',
 
     // Performance gain seems negligible: https://github.com/vikejs/vike/pull/1688#issuecomment-2166206648
-    ...patterns.flatMap((pattern) => {
-      const globstar = '**/'
-      assert(pattern.startsWith(globstar))
-      // A leading `**/` doesn't match the root directory: we therefore add a second pattern for it — e.g. `**/+*.js` doesn't match `+config.js` while `+*.js` does
-      const patternRootDir = pattern.slice(globstar.length)
-      assert(!patternRootDir.includes(globstar)) // `**/` in the middle of the pattern isn't supported (e.g. `pages/**/+*.js` doesn't match `pages/+Page.js`)
-      return [`"${pattern}"`, `"${patternRootDir}"`]
-    }),
+    // A leading `**/` doesn't match the root directory: we therefore add a second pattern for it — e.g. `**/+*.js` doesn't match `+config.js` while `+*.js` does
+    ...patterns.flatMap((pattern) => [`"${pattern}"`, `"${pattern.slice(globstar.length)}"`]),
 
     // Performance gain is non-negligible.
     //  - https://github.com/vikejs/vike/pull/1688#issuecomment-2166206648
     //  - When node_modules/ is untracked the performance gain could be significant?
-    ...ignorePatterns.map((pattern) => `--exclude="${pattern}"`),
+    ...ignore.map((pattern) => `--exclude="${pattern}"`),
 
     // --others --exclude-standard => list untracked files (--others) while using .gitignore (--exclude-standard)
     // --cached => list tracked files
@@ -145,27 +136,16 @@ async function gitLsFiles(
     debug('[git] filesDeleted:', filesDeleted)
   }
 
+  // We have to filter again here because:
+  //  - `$ git ls-files` matches more since wildcards are deep — e.g. `+*.js` matches `pages/+some-dir/some-file.js`
+  //  - the option --exclude of `$ git ls-files` only applies to untracked files. (We use --exclude only to speed up the `$ git ls-files` command.)
   const isMatch = picomatch(patterns, globOptions)
-
-  const files = []
-  for (const filePath of filesAll) {
-    // We have to filter again here, because `$ git ls-files` matches more since wildcards are deep — e.g. `+*.js` matches `pages/+some-dir/some-file.js`
-    if (!isMatch(filePath)) continue
-
-    // We have to repeat the same exclusion logic here because the option --exclude of `$ git ls-files` only applies to untracked files. (We use --exclude only to speed up the `$ git ls-files` command.)
-    if (ignoreMatchers.some((m) => m(filePath))) continue
-
-    // Deleted?
-    if (filesDeleted.includes(filePath)) continue
-
-    files.push(filePath)
-  }
-
-  return files
+  const isDeleted = new Set(filesDeleted)
+  return filesAll.filter((filePath) => isMatch(filePath) && !isDeleted.has(filePath))
 }
 // Same as gitLsFiles() but using tinyglobby
-async function tinyglobby(patterns: string[], globOptions: GlobOptions, ignorePatterns: string[]): Promise<string[]> {
-  const options = { ...globOptions, ignore: ignorePatterns }
+async function tinyglobby(patterns: Pattern[], cwd: string, globOptions: GlobOptions): Promise<string[]> {
+  const options = { ...globOptions, cwd }
   const files = await glob(patterns, options)
   // Make build deterministic, in order to get a stable generated hash for dist/client/assets/entries/entry-client-routing.${hash}.js
   // https://github.com/vikejs/vike/pull/1750
@@ -256,10 +236,8 @@ function getUserSettings() {
   return userSettings
 }
 
-function getIgnore(userSettings: UserSettings, globOptions: GlobOptions) {
+function getIgnorePatterns(userSettings: UserSettings): string[] {
   const ignorePatternsSetByUser = [userSettings.ignore].flat().filter(isNotNullish)
   const { ignoreBuiltIn } = userSettings
-  const ignorePatterns = [...(ignoreBuiltIn === false ? [] : ignorePatternsBuiltIn), ...ignorePatternsSetByUser]
-  const ignoreMatchers = ignorePatterns.map((p) => picomatch(p, globOptions))
-  return { ignorePatterns, ignoreMatchers }
+  return [...(ignoreBuiltIn === false ? [] : ignorePatternsBuiltIn), ...ignorePatternsSetByUser]
 }
