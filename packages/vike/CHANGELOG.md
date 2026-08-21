@@ -1,3 +1,21 @@
+## [0.4.261](https://github.com/vikejs/vike/compare/v0.4.260...v0.4.261) (2026-08-21)
+
+
+### Bug Fixes
+
+* correct setting name in VIKE_CRAWL error message ([#3475](https://github.com/vikejs/vike/issues/3475)) ([bd6afc4](https://github.com/vikejs/vike/commit/bd6afc477afaf04b274b2197275ae5f103118cc8))
+* don't inject line breaks inside inline <script> (closes [#3457](https://github.com/vikejs/vike/issues/3457)) ([#3458](https://github.com/vikejs/vike/issues/3458)) ([8a30a91](https://github.com/vikejs/vike/commit/8a30a91fd76090632588f6c46da41df43fe180b8))
+* don't keep process alive because of logging timers ([#3466](https://github.com/vikejs/vike/issues/3466)) ([374db3f](https://github.com/vikejs/vike/commit/374db3fdf2fc31aa8f05529ac0140c66bacb5187))
+* unpin @brillout/vite-plugin-server-entry ([0df9dfd](https://github.com/vikejs/vike/commit/0df9dfddcc35bdd8fbc3f9c3d160d830c5ca596c))
+* update to magic-string@1 (closes [#3440](https://github.com/vikejs/vike/issues/3440)) ([#3441](https://github.com/vikejs/vike/issues/3441)) ([7901f53](https://github.com/vikejs/vike/commit/7901f5349d8ad85c8ff02e4283bc4d5888d98c2a))
+
+
+### Features
+
+* automatically add `vike/SKILL.md` file — https://vike.dev/ai#skill ([#3465](https://github.com/vikejs/vike/issues/3465)) ([2e7fb2a](https://github.com/vikejs/vike/commit/2e7fb2a4c66aadd59fb64fba4c43715406f9054e))
+
+
+
 ## [0.4.260](https://github.com/vikejs/vike/compare/v0.4.259...v0.4.260) (2026-06-26)
 
 
