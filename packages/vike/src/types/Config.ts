@@ -4,7 +4,6 @@ export type { ConfigBuiltInResolved }
 export type { ConfigNameBuiltIn }
 export type { ConfigNameBuiltInGlobal }
 export type { ConfigMeta }
-export type { ConfigAi }
 export type { HookName }
 export type { HookNameOld }
 export type { HookNamePage }

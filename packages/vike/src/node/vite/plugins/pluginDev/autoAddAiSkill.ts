@@ -19,8 +19,7 @@ import { logErrorServerDev } from '../../shared/loggerDev.js'
 import '../../assertEnvVite.js'
 const execFileA = promisify(execFile)
 const importMetaUrl = import.meta.url
-
-const globalObject = getGlobalObject('vite/plugins/pluginDev/autoAddAiSkill.ts', {
+const globalObject = getGlobalObject('autoAddAiSkill.ts', {
   alreadyDone: false,
 })
 
@@ -32,6 +31,7 @@ description: "Vike documentation index — a compact overview of Vike's docs. Co
 
 See https://vike.dev/llms.txt
 `
+const commitMessage = (isUpdate: boolean) => `${isUpdate ? 'Update' : 'Add'} Vike skill (see https://vike.dev/ai#skill)`
 
 // Automatically add the Vike skill file to the skills directories (e.g. .claude/skills/ and .agents/skills/) of the user's Git repository (and Git-commit it) — so that AI agents (Claude Code, Codex, Cursor, Gemini CLI, ...) automatically pick it up.
 // https://vike.dev/ai#skill
@@ -182,14 +182,13 @@ async function gitCommit(
   if ('err' in resAdd) return false
 
   const isUpdate = filesToCommit.some((f) => f.isUpdate)
-  const commitMessage = `${isUpdate ? 'Update' : 'Add'} Vike skill (see https://vike.dev/ai#skill)`
   const resCommit = await runGitCommand(
     [
       'commit',
       // Skip Git hooks (e.g. slow or failing pre-commit hooks)
       '--no-verify',
       '-m',
-      commitMessage,
+      commitMessage(isUpdate),
       // Only commit the skill files — never commit files staged by the user
       '--',
       ...filePaths,

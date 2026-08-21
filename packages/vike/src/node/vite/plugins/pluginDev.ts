@@ -43,7 +43,7 @@ function pluginDev(): Plugin[] {
         handler(server) {
           // Apply late — after the dev server is up and running, and after the first page requests — so that it never slows down dev start.
           const run = () => {
-            setTimeoutUnref(() => autoAddAiSkill(config.root), 5 * 1000)
+            setTimeoutUnref(() => autoAddAiSkill(config.root), 60 * 1000)
           }
           if (server.httpServer) {
             server.httpServer.once('listening', run)
