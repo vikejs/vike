@@ -66,7 +66,7 @@ async function autoAddVikeSkillUnsafe(userRootDir: string): Promise<void> {
     false,
     `${res.isUpdate ? 'Updated' : 'Created'}${res.isCommitted ? ' and Git-committed' : ''} ${res.files
       .map((f) => pc.cyan(f.filePathRelative))
-      .join(', ')} (see https://vike.dev/ai#skill)`,
+      .join(', ')} — see https://vike.dev/ai#skill`,
     { onlyOnce: false },
   )
 }
