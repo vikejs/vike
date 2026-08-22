@@ -214,7 +214,7 @@ async function emitServerEntryOnlyIfNeeded(config: ResolvedConfig) {
   }
 }
 
-// Don't let @brillout/vite-plugin-server-entry's autoImporter point at dist/server/ when pre-rendering is going to remove it — a dangling pointer crashes runtimes consulting it (https://github.com/vikejs/vike/pull/3483)
+// Don't let @brillout/vite-plugin-server-entry's autoImporter.js point at dist/server/entry.js when pre-rendering is going to remove dist/server/ — a dangling pointer crashes runtimes consulting it
 async function disableAutoImportIfNeeded(isBuild: boolean): Promise<UserConfig | undefined> {
   if (!isBuild) return
   const vikeConfig = await getVikeConfigInternal()
