@@ -14,8 +14,6 @@ import { isUsingClientRouter } from '../pluginExtractExportNames.js'
 import { assertBuildInfo, type BuildInfo } from '../../../../server/runtime/globalContext.js'
 import { getOutDirs } from '../../shared/getOutDirs.js'
 import { getViteConfigRuntime } from '../../shared/getViteConfigRuntime.js'
-import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
-import { resolvePrerenderConfigGlobal } from '../../../prerender/resolvePrerenderConfig.js'
 import '../../assertEnvVite.js'
 type Bundle = Rollup.OutputBundle
 const ASSETS_MANIFEST = `__VITE_ASSETS_MANIFEST_${
@@ -41,16 +39,8 @@ function pluginProdBuildEntry(): Plugin[] {
       getServerProductionEntry: () => {
         return getServerProductionEntryCode(config)
       },
-      // If pre-rendering is going to remove dist/server/ then don't let the autoImporter point at it: runtimes then fall back gracefully (crawling outDir, or e.g. Telefunc's telefunction registration) instead of importing a file that doesn't exist anymore (https://github.com/vikejs/vike/pull/3483).
-      getServerEntryWillBeRemoved: async () => {
-        const vikeConfig = await getVikeConfigInternal()
-        const prerenderConfigGlobal = await resolvePrerenderConfigGlobal(vikeConfig)
-        // Same condition as the dist/server/ removal in runPrerender()
-        return !prerenderConfigGlobal.keepDistServer
-      },
       libraryName: 'Vike',
-      // TO-DO/after-dep-bump: remove this cast once the @brillout/vite-plugin-server-entry dependency is guaranteed to include the getServerEntryWillBeRemoved() setting (older plugin versions simply ignore it)
-    } as Parameters<typeof serverProductionEntryPlugin>[0]),
+    }),
   ]
 }
 

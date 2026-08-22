@@ -13,6 +13,7 @@ import { assertResolveAlias } from './pluginCommon/assertResolveAlias.js'
 import { getVikeConfigInternal, setVikeConfigContext } from '../shared/resolveVikeConfigInternal.js'
 import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/resolveViteConfigUser.js'
 import { temp_disablePrerenderAutoRun } from '../../prerender/context.js'
+import { resolvePrerenderConfigGlobal } from '../../prerender/resolvePrerenderConfig.js'
 import type { VitePluginServerEntryOptions } from '@brillout/vite-plugin-server-entry/plugin'
 import { version as viteVersionVike } from 'vite'
 import '../assertEnvVite.js'
@@ -98,9 +99,21 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
       },
       config: {
         order: 'post',
-        async handler(configFromUser) {
+        async handler(configFromUser, env) {
           const configFromVike: UserConfig = { server: {}, preview: {} }
           const vikeConfig = await getVikeConfigInternal()
+
+          // Don't let @brillout/vite-plugin-server-entry's autoImporter point at dist/server/ when pre-rendering is going to remove it: the plugin resets the autoImporter (status 'UNSET') instead, so that runtimes fall back gracefully (crawling outDir, or e.g. Telefunc's telefunction registration) instead of importing a file that doesn't exist anymore (https://github.com/vikejs/vike/pull/3483).
+          if (env.command === 'build') {
+            const prerenderConfigGlobal = await resolvePrerenderConfigGlobal(vikeConfig)
+            // Same condition as the dist/server/ removal in runPrerender()
+            if (!prerenderConfigGlobal.keepDistServer) {
+              // TO-DO/after-dep-bump: remove cast once the @brillout/vite-plugin-server-entry dependency includes the serverEntryWillBeRemoved setting (older plugin versions simply ignore it)
+              ;(
+                configFromVike as { vitePluginServerEntry?: { serverEntryWillBeRemoved?: boolean } }
+              ).vitePluginServerEntry = { serverEntryWillBeRemoved: true }
+            }
+          }
 
           // A value the user set through Vike (+config.js, CLI option, or VIKE_CONFIG) overrides vite.config.js:
           // Vike's config has higher precedence than vite.config.js (see precedence list at resolveViteConfigUser.ts).
