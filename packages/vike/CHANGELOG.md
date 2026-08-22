@@ -1,3 +1,13 @@
+## [0.4.262](https://github.com/vikejs/vike/compare/v0.4.261...v0.4.262) (2026-08-22)
+
+
+### Bug Fixes
+
+* @brillout/vite-plugin-server-entry@^0.7.21 ([6c64b8c](https://github.com/vikejs/vike/commit/6c64b8c173ae57b9480ff8bd9869136ccf4f23e2))
+* don't let autoImporter point at dist/server/ when pre-rendering removes it ([#3484](https://github.com/vikejs/vike/issues/3484)) ([d9af604](https://github.com/vikejs/vike/commit/d9af6041d9d06bc6ad1192b7776749ebcb221c73))
+
+
+
 ## [0.4.261](https://github.com/vikejs/vike/compare/v0.4.260...v0.4.261) (2026-08-21)
 
 
