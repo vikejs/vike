@@ -64,6 +64,7 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
             configVikePromise: Promise.resolve({
               prerender: vikeConfig.prerenderContext.isPrerenderingEnabled,
             }),
+            ...(await disableAutoImportIfNeeded(isBuild)),
           }
         },
       },
@@ -99,18 +100,9 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
       },
       config: {
         order: 'post',
-        async handler(configFromUser, env) {
+        async handler(configFromUser) {
           const configFromVike: UserConfig = { server: {}, preview: {} }
           const vikeConfig = await getVikeConfigInternal()
-
-          // Don't let @brillout/vite-plugin-server-entry's autoImporter point at dist/server/ when pre-rendering is going to remove it: runtimes then fall back gracefully (crawling outDir, or e.g. Telefunc's telefunction registration) instead of importing a file that doesn't exist anymore (https://github.com/vikejs/vike/pull/3483). The plugin also resets the pointer a previous build may have written (see brillout/vite-plugin-server-entry#36 — older plugin versions merely leave the autoImporter untouched, which already suffices for fresh installs).
-          if (env.command === 'build') {
-            const prerenderConfigGlobal = await resolvePrerenderConfigGlobal(vikeConfig)
-            // Same condition as the dist/server/ removal in runPrerender()
-            if (!prerenderConfigGlobal.keepDistServer) {
-              configFromVike.vitePluginServerEntry = { disableAutoImport: true }
-            }
-          }
 
           // A value the user set through Vike (+config.js, CLI option, or VIKE_CONFIG) overrides vite.config.js:
           // Vike's config has higher precedence than vite.config.js (see precedence list at resolveViteConfigUser.ts).
@@ -219,5 +211,16 @@ async function emitServerEntryOnlyIfNeeded(config: ResolvedConfig) {
   const vikeConfig = await getVikeConfigInternal()
   if (config.vitePluginServerEntry?.inject && !vikeConfig.prerenderContext.isPrerenderingEnabled) {
     config.vitePluginServerEntry.disableServerEntryEmit = true
+  }
+}
+
+// Don't let @brillout/vite-plugin-server-entry's autoImporter point at dist/server/ when pre-rendering is going to remove it — a dangling pointer crashes runtimes consulting it (https://github.com/vikejs/vike/pull/3483)
+async function disableAutoImportIfNeeded(isBuild: boolean): Promise<UserConfig | undefined> {
+  if (!isBuild) return
+  const vikeConfig = await getVikeConfigInternal()
+  const prerenderConfigGlobal = await resolvePrerenderConfigGlobal(vikeConfig)
+  // Same condition as the dist/server/ removal in runPrerender()
+  if (!prerenderConfigGlobal.keepDistServer) {
+    return { vitePluginServerEntry: { disableAutoImport: true } }
   }
 }
