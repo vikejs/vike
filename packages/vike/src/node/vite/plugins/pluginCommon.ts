@@ -207,9 +207,11 @@ function temp_supportOldInterface(config: ResolvedConfig) {
 }
 
 // Only emit dist/server/entry.mjs if necessary
+// TO-DO/eventually: also do this when using Universal Deploy
 async function emitServerEntryOnlyIfNeeded(config: ResolvedConfig) {
   const vikeConfig = await getVikeConfigInternal()
   if (config.vitePluginServerEntry?.inject && !vikeConfig.prerenderContext.isPrerenderingEnabled) {
+    // Might be set too late: https://github.com/vikejs/vike/pull/3485
     config.vitePluginServerEntry.disableServerEntryEmit = true
   }
 }
