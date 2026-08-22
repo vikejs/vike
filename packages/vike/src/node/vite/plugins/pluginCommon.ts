@@ -13,7 +13,7 @@ import { assertResolveAlias } from './pluginCommon/assertResolveAlias.js'
 import { getVikeConfigInternal, setVikeConfigContext } from '../shared/resolveVikeConfigInternal.js'
 import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/resolveViteConfigUser.js'
 import { temp_disablePrerenderAutoRun } from '../../prerender/context.js'
-import { resolvePrerenderConfigGlobal } from '../../prerender/resolvePrerenderConfig.js'
+import { resolvePrerenderConfigGlobal, isDistServerRemoved } from '../../prerender/resolvePrerenderConfig.js'
 import type { VitePluginServerEntryOptions } from '@brillout/vite-plugin-server-entry/plugin'
 import { version as viteVersionVike } from 'vite'
 import '../assertEnvVite.js'
@@ -219,8 +219,7 @@ async function disableAutoImportIfNeeded(isBuild: boolean): Promise<UserConfig |
   if (!isBuild) return
   const vikeConfig = await getVikeConfigInternal()
   const prerenderConfigGlobal = await resolvePrerenderConfigGlobal(vikeConfig)
-  // Same condition as the dist/server/ removal in runPrerender()
-  if (!prerenderConfigGlobal.keepDistServer) {
+  if (isDistServerRemoved(prerenderConfigGlobal)) {
     return { vitePluginServerEntry: { disableAutoImport: true } }
   }
 }

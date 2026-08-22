@@ -1,5 +1,6 @@
 export { resolvePrerenderConfigGlobal }
 export { resolvePrerenderConfigLocal }
+export { isDistServerRemoved }
 
 import { VikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.js'
 import { assert, assertUsage } from '../../utils/assert.js'
@@ -83,6 +84,11 @@ async function resolvePrerenderConfigLocal(pageConfig: PageConfigBuildTime) {
   )
   const prerenderConfigLocal = { value }
   return prerenderConfigLocal
+}
+
+// Whether pre-rendering removes dist/server/ once it's done (https://vike.dev/prerender#keepDistServer)
+function isDistServerRemoved(prerenderConfigGlobal: { keepDistServer: boolean }): boolean {
+  return !prerenderConfigGlobal.keepDistServer
 }
 
 function isObject2<T extends Record<string, unknown>>(value: T | boolean | undefined): value is T {
