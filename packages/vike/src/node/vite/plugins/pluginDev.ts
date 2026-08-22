@@ -40,17 +40,9 @@ function pluginDev(): Plugin[] {
         },
       },
       configureServer: {
-        handler(server) {
-          // Apply late — after the dev server is up and running, and after the first page requests — so that it never slows down dev start.
-          const run = () => {
-            setTimeoutUnref(() => autoAddVikeSkill(config.root), 60 * 1000)
-          }
-          if (server.httpServer) {
-            server.httpServer.once('listening', run)
-          } else {
-            // Middleware mode: the HTTP server is owned by the user.
-            run()
-          }
+        handler() {
+          // Apply late — after the dev server is up and running — so that it doesn't slow down dev start
+          setTimeoutUnref(() => autoAddVikeSkill(config.root), 15 * 1000)
         },
       },
     },
