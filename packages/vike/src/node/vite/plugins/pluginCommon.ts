@@ -95,7 +95,6 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
           assertRollupInput(config)
           assertResolveAlias(config)
           temp_supportOldInterface(config)
-          await emitServerEntryOnlyIfNeeded(config)
         },
       },
       config: {
@@ -130,7 +129,7 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
             configFromVike.optimizeDeps.force = vikeConfig.config.force
           }
 
-          return configFromVike
+          return { ...configFromVike, ...(await disableServerEntryEmitIfNeeded(configFromUser)) }
         },
       },
     },
@@ -206,11 +205,12 @@ function temp_supportOldInterface(config: ResolvedConfig) {
   assert(false)
 }
 
-// Only emit dist/server/entry.mjs if necessary
-async function emitServerEntryOnlyIfNeeded(config: ResolvedConfig) {
+// Only emit dist/server/entry.mjs if necessary.
+// Set over the config hook: setting it at configResolved (like previously) is too late — Vite runs configResolved hooks concurrently (Promise.all) and @brillout/vite-plugin-server-entry reads the setting in its synchronous configResolved hook before our asynchronous mutation lands.
+async function disableServerEntryEmitIfNeeded(configFromUser: UserConfig): Promise<UserConfig | undefined> {
   const vikeConfig = await getVikeConfigInternal()
-  if (config.vitePluginServerEntry?.inject && !vikeConfig.prerenderContext.isPrerenderingEnabled) {
-    config.vitePluginServerEntry.disableServerEntryEmit = true
+  if (configFromUser.vitePluginServerEntry?.inject && !vikeConfig.prerenderContext.isPrerenderingEnabled) {
+    return { vitePluginServerEntry: { disableServerEntryEmit: true } }
   }
 }
 
