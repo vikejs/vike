@@ -59,7 +59,11 @@ import type { HookTimeout } from '../../shared-server-client/hooks/getHook.js'
 import { execHookSingleWithoutPageContext, isUserHookError } from '../../shared-server-client/hooks/execHook.js'
 import type { ApiOptions } from '../api/types.js'
 import { setWasPrerenderRun } from './context.js'
-import { resolvePrerenderConfigGlobal, resolvePrerenderConfigLocal } from './resolvePrerenderConfig.js'
+import {
+  resolvePrerenderConfigGlobal,
+  resolvePrerenderConfigLocal,
+  isDistServerRemoved,
+} from './resolvePrerenderConfig.js'
 import { getOutDirsAllFromRootNormalized } from '../vite/shared/getOutDirs.js'
 import fs from 'node:fs'
 import { getPublicProxy } from '../../shared-server-client/getPublicProxy.js'
@@ -261,7 +265,7 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
   objectAssign(vikeConfig.prerenderContext, prerenderContextPublic, true)
   setGlobalContext_prerenderContext(prerenderContextPublic)
 
-  if (!prerenderConfigGlobal.keepDistServer) {
+  if (isDistServerRemoved(prerenderConfigGlobal)) {
     fs.rmSync(outDirServer, { recursive: true })
   }
 }
