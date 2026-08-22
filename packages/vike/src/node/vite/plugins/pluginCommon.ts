@@ -64,7 +64,7 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
             configVikePromise: Promise.resolve({
               prerender: vikeConfig.prerenderContext.isPrerenderingEnabled,
             }),
-            ...(await disableAutoImportIfNeeded(isBuild)),
+            ...(await disableAutoImportIfPrerendering(isBuild)),
           }
         },
       },
@@ -214,8 +214,8 @@ async function emitServerEntryOnlyIfNeeded(config: ResolvedConfig) {
   }
 }
 
-// Don't let @brillout/vite-plugin-server-entry's autoImporter.js point at dist/server/entry.js when pre-rendering is going to remove dist/server/ — a dangling pointer crashes runtimes consulting it
-async function disableAutoImportIfNeeded(isBuild: boolean): Promise<UserConfig | undefined> {
+// Don't let @brillout/vite-plugin-server-entry's autoImporter.js import dist/server/entry.js when pre-rendering is going to remove dist/server/ — a dangling import crashes runtimes consulting it
+async function disableAutoImportIfPrerendering(isBuild: boolean): Promise<UserConfig | undefined> {
   if (!isBuild) return
   const vikeConfig = await getVikeConfigInternal()
   const prerenderConfigGlobal = await resolvePrerenderConfigGlobal(vikeConfig)
