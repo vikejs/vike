@@ -103,15 +103,12 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
           const configFromVike: UserConfig = { server: {}, preview: {} }
           const vikeConfig = await getVikeConfigInternal()
 
-          // Don't let @brillout/vite-plugin-server-entry's autoImporter point at dist/server/ when pre-rendering is going to remove it: the plugin resets the autoImporter (status 'UNSET') instead, so that runtimes fall back gracefully (crawling outDir, or e.g. Telefunc's telefunction registration) instead of importing a file that doesn't exist anymore (https://github.com/vikejs/vike/pull/3483).
+          // Don't let @brillout/vite-plugin-server-entry's autoImporter point at dist/server/ when pre-rendering is going to remove it: runtimes then fall back gracefully (crawling outDir, or e.g. Telefunc's telefunction registration) instead of importing a file that doesn't exist anymore (https://github.com/vikejs/vike/pull/3483). The plugin also resets the pointer a previous build may have written (see brillout/vite-plugin-server-entry#36 — older plugin versions merely leave the autoImporter untouched, which already suffices for fresh installs).
           if (env.command === 'build') {
             const prerenderConfigGlobal = await resolvePrerenderConfigGlobal(vikeConfig)
             // Same condition as the dist/server/ removal in runPrerender()
             if (!prerenderConfigGlobal.keepDistServer) {
-              // TO-DO/after-dep-bump: remove cast once the @brillout/vite-plugin-server-entry dependency includes the serverEntryWillBeRemoved setting (older plugin versions simply ignore it)
-              ;(
-                configFromVike as { vitePluginServerEntry?: { serverEntryWillBeRemoved?: boolean } }
-              ).vitePluginServerEntry = { serverEntryWillBeRemoved: true }
+              configFromVike.vitePluginServerEntry = { disableAutoImport: true }
             }
           }
 
