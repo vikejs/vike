@@ -175,11 +175,13 @@ async function gitCommit(
   const isUpdate = filesToCommit.some((f) => f.isUpdate)
   const resCommit = await runGitCommand(
     [
+      '-c',
+      'user.name=Vike',
+      '-c',
+      'user.email=no-reply@vike.dev',
       'commit',
       // Skip Git hooks (e.g. slow or failing pre-commit hooks)
       '--no-verify',
-      '--author',
-      'Vike <no-reply@vike.dev>',
       '-m',
       commitMessage(isUpdate),
       // Only commit the skill files — never commit files staged by the user
