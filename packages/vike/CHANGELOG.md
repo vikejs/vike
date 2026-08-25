@@ -1,3 +1,12 @@
+## [0.4.263](https://github.com/vikejs/vike/compare/v0.4.262...v0.4.263) (2026-08-25)
+
+
+### Bug Fixes
+
+* commit author is Vike for auto-added vike/SKILL.md commit ([#3493](https://github.com/vikejs/vike/issues/3493)) ([#3494](https://github.com/vikejs/vike/issues/3494)) ([dcea623](https://github.com/vikejs/vike/commit/dcea623f8952a8beba4d0b8f47d2595805c48ffa))
+
+
+
 ## [0.4.262](https://github.com/vikejs/vike/compare/v0.4.261...v0.4.262) (2026-08-22)
 
 
