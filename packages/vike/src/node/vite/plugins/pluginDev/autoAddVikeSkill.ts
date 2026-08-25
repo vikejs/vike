@@ -163,7 +163,7 @@ async function gitCommit(
   // Don't Git-commit the skill files that the user chose to .gitignore — `$ git check-ignore` succeeds if the file is ignored
   const filesToCommit: typeof files = []
   for (const file of files) {
-    const resCheckIgnore = await runGitCommand(['check-ignore', '-q', '--', file.filePathRelative], gitRootDir)
+    const resCheckIgnore = await runGitCommand(['check-ignore', '--quiet', '--', file.filePathRelative], gitRootDir)
     if ('err' in resCheckIgnore) filesToCommit.push(file)
   }
   if (filesToCommit.length === 0) return false
@@ -182,7 +182,7 @@ async function gitCommit(
       'commit',
       // Skip Git hooks (e.g. slow or failing pre-commit hooks)
       '--no-verify',
-      '-m',
+      '--message',
       commitMessage(isUpdate),
       // Only commit the skill files — never commit files staged by the user
       '--',
