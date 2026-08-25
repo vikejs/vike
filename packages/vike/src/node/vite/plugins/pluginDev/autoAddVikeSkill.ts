@@ -178,6 +178,8 @@ async function gitCommit(
       'commit',
       // Skip Git hooks (e.g. slow or failing pre-commit hooks)
       '--no-verify',
+      '--author',
+      'Vike <no-reply@vike.dev>',
       '-m',
       commitMessage(isUpdate),
       // Only commit the skill files — never commit files staged by the user
