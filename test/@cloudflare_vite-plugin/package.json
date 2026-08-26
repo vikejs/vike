@@ -11,7 +11,7 @@
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "telefunc": "^0.2.24",
-    "vike": "0.4.263",
+    "vike": "0.4.264",
     "vike-react": "^0.6.26"
   },
   "devDependencies": {

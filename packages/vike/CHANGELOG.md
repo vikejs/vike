@@ -1,3 +1,12 @@
+## [0.4.264](https://github.com/vikejs/vike/compare/v0.4.263...v0.4.264) (2026-08-26)
+
+
+### Bug Fixes
+
+* temporarily disable automatically adding vike/SKILL.md ([#3495](https://github.com/vikejs/vike/issues/3495)) ([ba3a008](https://github.com/vikejs/vike/commit/ba3a0086ec20b65e501ebaf9e51f4f95fab2ea04))
+
+
+
 ## [0.4.263](https://github.com/vikejs/vike/compare/v0.4.262...v0.4.263) (2026-08-25)
 
 
