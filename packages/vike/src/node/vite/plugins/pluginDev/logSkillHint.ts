@@ -43,7 +43,6 @@ const skillFilePathInsidePackage = 'skills/vike/SKILL.md'
 const cacheKey = 'logSkillHint'
 
 // Log a hint if the user didn't install Vike's skill for AI agents (vike/SKILL.md), or if it differs from the official one — https://vike.dev/ai#skill
-// - Vike never modifies the user's repository (https://github.com/vikejs/vike/issues/3493): installing the skill is up to the user (or their AI agent).
 function logSkillHint(server: ViteDevServer, userRootDir: string): void {
   applyLate(server, () => checkSkill(userRootDir))
 }
