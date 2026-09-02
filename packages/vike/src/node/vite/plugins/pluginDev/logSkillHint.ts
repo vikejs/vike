@@ -43,8 +43,8 @@ const skillFilePathInsidePackage = 'skills/vike/SKILL.md'
 const cacheKey = 'logSkillHint'
 
 // Log a hint if the user didn't install Vike's skill for AI agents (vike/SKILL.md), or if it differs from the official one — https://vike.dev/ai#skill
-function logSkillHint(server: ViteDevServer, appRootDir: string): void {
-  applyLate(server, () => checkSkill(appRootDir))
+function logSkillHint(server: ViteDevServer, userRootDir: string): void {
+  applyLate(server, () => checkSkill(userRootDir))
 }
 
 // Apply late — 5 seconds after the first request, or at most 10 seconds after the dev server started — so that it doesn't slow down dev start nor the first page requests.
@@ -73,9 +73,9 @@ function applyLate(server: ViteDevServer, callback: () => void): void {
   })
 }
 
-async function checkSkill(appRootDir: string): Promise<void> {
+async function checkSkill(userRootDir: string): Promise<void> {
   try {
-    await checkSkillUnsafe(appRootDir)
+    await checkSkillUnsafe(userRootDir)
   } catch (err) {
     // The check runs in a timer (see applyLate()): a thrown error would be an unhandled rejection that kills the dev server => log it instead.
     // - Environmental failures (Git missing, unreadable files, ...) are handled gracefully and don't throw.
@@ -84,7 +84,7 @@ async function checkSkill(appRootDir: string): Promise<void> {
   }
 }
 
-async function checkSkillUnsafe(appRootDir: string): Promise<void> {
+async function checkSkillUnsafe(userRootDir: string): Promise<void> {
   if (globalObject.alreadyChecked) return
   // Skip CI environments: the hint is meant for the machine of an app developer.
   if (process.env.CI) return
@@ -96,15 +96,15 @@ async function checkSkillUnsafe(appRootDir: string): Promise<void> {
   globalObject.alreadyChecked = true
 
   // The check is skipped forever once it didn't log anything (until node_modules/ is removed) — see cacheKey
-  if ((await getCacheValue(appRootDir, cacheKey)) === false) return
+  if ((await getCacheValue(userRootDir, cacheKey)) === false) return
 
-  const repoRootDir = await getRepoRootDir(appRootDir)
+  const repoRootDir = await getRepoRootDir(userRootDir)
   const skillsDirs = await findSkillsDirs(repoRootDir)
 
   // Skip apps that don't seem to use AI agents.
-  const isUsingAiAgents = skillsDirs.length > 0 || (await hasAgentFile(appRootDir, repoRootDir))
+  const isUsingAiAgents = skillsDirs.length > 0 || (await hasAgentFile(userRootDir, repoRootDir))
   if (!isUsingAiAgents) {
-    await setCacheValue(appRootDir, cacheKey, false)
+    await setCacheValue(userRootDir, cacheKey, false)
     return
   }
 
@@ -117,10 +117,10 @@ async function checkSkillUnsafe(appRootDir: string): Promise<void> {
   if (skillFiles.length === 0) {
     assertInfo(false, logMissing, { onlyOnce: true })
   } else if (skillFilesOutdated.length > 0) {
-    const skillFilePaths = skillFilesOutdated.map((f) => toPosixPath(path.relative(appRootDir, f.filePathAbsolute)))
+    const skillFilePaths = skillFilesOutdated.map((f) => toPosixPath(path.relative(userRootDir, f.filePathAbsolute)))
     assertInfo(false, logDiffers(skillFilePaths), { onlyOnce: true })
   } else {
-    await setCacheValue(appRootDir, cacheKey, false)
+    await setCacheValue(userRootDir, cacheKey, false)
   }
 }
 
@@ -140,15 +140,15 @@ function getConfigValueAiSkill(vikeConfig: VikeConfigInternal): boolean {
 }
 
 // The root directory of the user's Git repository — skills directories usually live at the repository root (e.g. monorepos).
-async function getRepoRootDir(appRootDir: string): Promise<string> {
+async function getRepoRootDir(userRootDir: string): Promise<string> {
   try {
-    const { stdout } = await execFileA('git', ['rev-parse', '--show-toplevel'], { cwd: appRootDir })
+    const { stdout } = await execFileA('git', ['rev-parse', '--show-toplevel'], { cwd: userRootDir })
     const gitRootDir = stdout.toString().trim()
     if (gitRootDir) return gitRootDir
   } catch {
     // Git isn't installed, or the app isn't inside a Git repository
   }
-  return appRootDir
+  return userRootDir
 }
 
 // Discover the skills directories of the user's repository, following the Agent Skills convention `**/skills/*/SKILL.md` (https://agentskills.io) — e.g. .claude/skills/ (Claude Code) and .agents/skills/ (Codex, Gemini CLI, Cursor, ...).
@@ -167,8 +167,8 @@ async function findSkillsDirs(repoRootDir: string): Promise<string[]> {
 }
 
 // Whether the app seems to use AI agents, even without any skills directory.
-async function hasAgentFile(appRootDir: string, repoRootDir: string): Promise<boolean> {
-  for (const dir of unique([appRootDir, repoRootDir])) {
+async function hasAgentFile(userRootDir: string, repoRootDir: string): Promise<boolean> {
+  for (const dir of unique([userRootDir, repoRootDir])) {
     for (const fileName of ['AGENTS.md', 'CLAUDE.md']) {
       if (await isReadable(path.join(dir, fileName))) return true
     }
