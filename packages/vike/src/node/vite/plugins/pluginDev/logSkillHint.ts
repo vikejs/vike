@@ -9,6 +9,7 @@ import type { ViteDevServer } from 'vite'
 import pc from '@brillout/picocolors'
 import { assert, assertInfo, assertUsage } from '../../../../utils/assert.js'
 import { assertKeys } from '../../../../utils/assertKeys.js'
+import { checkType } from '../../../../utils/checkType.js'
 import { crawlFiles } from '../../../../utils/crawlFiles.js'
 import { getGlobalObject } from '../../../../utils/getGlobalObject.js'
 import { getVikeConfigError } from '../../../../shared-server-node/getVikeConfigError.js'
@@ -29,7 +30,7 @@ const docsUrl = 'https://vike.dev/ai#skill'
 const tellAgent = `by telling your agent "${pc.cyan(`Install skill ${docsUrl}`)}"`
 const suppressHint = `set ${pc.cyan('+ai.skill')} to ${pc.cyan('false')} to suppress this log`
 const logMissing = `Add Vike's skill for AI agents (Claude Code, Codex, Cursor, ...) ${tellAgent}, or ${suppressHint}`
-const logDiffers = (skillFilePaths: string[]) => {
+const logOutdated = (skillFilePaths: string[]) => {
   const isPlural = skillFilePaths.length > 1
   const files = skillFilePaths.map((f) => pc.cyan(f)).join(', ')
   return `Your Vike skill${isPlural ? 's' : ''} ${files} ${isPlural ? "don't" : "doesn't"} match the official ${pc.cyan('vike/SKILL.md')}, update ${isPlural ? 'them' : 'it'} ${tellAgent}, or, if you maintain your own version, ${suppressHint}`
@@ -98,30 +99,58 @@ async function checkSkillUnsafe(userRootDir: string): Promise<void> {
   // The check is skipped forever once it didn't log anything (until node_modules/ is removed) — see cacheKey
   if ((await getCacheValue(userRootDir, cacheKey)) === false) return
 
+  const skillState = await getSkillState(userRootDir)
+  // Exactly one action per state:
+  // - Log a hint => nothing is cached => the check is re-run upon the next dev start
+  // - Nothing to log => cache => the check is never run again (until node_modules/ is removed)
+  if (skillState.state === 'missing') {
+    assertInfo(false, logMissing, { onlyOnce: true })
+  } else if (skillState.state === 'outdated') {
+    assertInfo(false, logOutdated(skillState.skillFilePaths), { onlyOnce: true })
+  } else if (
+    skillState.state === 'installed' ||
+    skillState.state === 'not-using-ai-agents' ||
+    skillState.state === 'vike-not-from-npm'
+  ) {
+    await setCacheValue(userRootDir, cacheKey, false)
+  } else {
+    checkType<never>(skillState)
+    assert(false)
+  }
+}
+
+type SkillState =
+  // The app doesn't seem to use AI agents
+  | { state: 'not-using-ai-agents' }
+  // Vike isn't installed from npm (e.g. when running an example of the Vike monorepo) => there is no official skill file to compare against
+  | { state: 'vike-not-from-npm' }
+  // The skill is installed and matches the official skill file
+  | { state: 'installed' }
+  // The skill isn't installed
+  | { state: 'missing' }
+  // The installed copies that differ from the official skill file (paths relative to the app's root directory)
+  | { state: 'outdated'; skillFilePaths: string[] }
+// Determine the state of the user's skill — without side effects: the caller checkSkillUnsafe() performs exactly one action per state.
+async function getSkillState(userRootDir: string): Promise<SkillState> {
   const repoRootDir = await getRepoRootDir(userRootDir)
   const skillsDirs = await findSkillsDirs(repoRootDir)
 
-  // Skip apps that don't seem to use AI agents.
   const isUsingAiAgents = skillsDirs.length > 0 || (await hasAgentMarker(userRootDir, repoRootDir))
-  if (!isUsingAiAgents) {
-    await setCacheValue(userRootDir, cacheKey, false)
-    return
-  }
+  if (!isUsingAiAgents) return { state: 'not-using-ai-agents' }
 
   const skillContentExpected = await getSkillContentExpected()
-  // Skip if Vike isn't installed from npm (e.g. when running an example of the Vike monorepo).
-  if (skillContentExpected === null) return
+  if (skillContentExpected === null) return { state: 'vike-not-from-npm' }
 
   const skillFiles = await findSkillFiles(repoRootDir, skillsDirs, skillContentExpected)
+  if (skillFiles.length === 0) return { state: 'missing' }
+
   const skillFilesOutdated = skillFiles.filter((f) => f.isOutdated)
-  if (skillFiles.length === 0) {
-    assertInfo(false, logMissing, { onlyOnce: true })
-  } else if (skillFilesOutdated.length > 0) {
+  if (skillFilesOutdated.length > 0) {
     const skillFilePaths = skillFilesOutdated.map((f) => toPosixPath(path.relative(userRootDir, f.filePathAbsolute)))
-    assertInfo(false, logDiffers(skillFilePaths), { onlyOnce: true })
-  } else {
-    await setCacheValue(userRootDir, cacheKey, false)
+    return { state: 'outdated', skillFilePaths }
   }
+
+  return { state: 'installed' }
 }
 
 // https://vike.dev/ai#settings
