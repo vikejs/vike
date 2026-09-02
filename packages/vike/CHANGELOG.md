@@ -1,3 +1,12 @@
+## [0.4.266](https://github.com/vikejs/vike/compare/v0.4.265...v0.4.266) (2026-09-02)
+
+
+### Bug Fixes
+
+* improve vike skill hint ([f6ac8ab](https://github.com/vikejs/vike/commit/f6ac8aba994f5153ee7ceb13c4d18dcaef344a63))
+
+
+
 ## [0.4.265](https://github.com/vikejs/vike/compare/v0.4.264...v0.4.265) (2026-09-02)
 
 
