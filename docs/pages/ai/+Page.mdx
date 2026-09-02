@@ -2,19 +2,19 @@ import { Link, CodeBlockTransformer, Tabs } from '@brillout/docpress'
 
 Vike integrates with AI agents via:
 - Vike's documentation index at [vike.dev/llms.txt](https://vike.dev/llms.txt)
-- A [`vike/SKILL.md`](https://agentskills.io) to make agents (Claude, Codex, Cursor, Gemini, ...) aware of [vike.dev/llms.txt](https://vike.dev/llms.txt)
+- A `vike/SKILL.md` to make agents (Claude, Codex, Cursor, Gemini, ...) aware of [vike.dev/llms.txt](https://vike.dev/llms.txt)
 
 
 ## `llms.txt`
 
 Vike's documentation index lives at [vike.dev/llms.txt](https://vike.dev/llms.txt) — a compact overview of Vike's docs for AI agents.
 
-> Most AI models are familiar and proficient with Vike. But for advanced Vike features AI can make mistakes and, therefore, we recommend installing the <Link href="#skill">skill below</Link>.
+> Most AI models are familiar and proficient with Vike. But for advanced Vike features, AI can make mistakes — we therefore recommend installing the <Link href="#skill">skill below</Link>.
 >
 
 ## Skill
 
-Vike comes with a `SKILL.md` to make agents aware of Vike's documentation.
+Vike's `SKILL.md` makes agents aware of Vike's documentation.
 
 ### Install
 
@@ -59,8 +59,6 @@ npx skills-npm setup
 
 ### Settings
 
-To disable the check:
-
 ```ts
 // pages/+config.ts
 
@@ -68,7 +66,7 @@ import type { Config } from 'vike/types'
 
 export default {
   ai: {
-    // Don't check whether Vike's skill is installed
+    // Don't log a hint when Vike's skill is missing or outdated
     skill: false
   }
 } satisfies Config
@@ -78,7 +76,7 @@ export default {
 ## See also
 
 - [vike.dev/llms.txt](https://vike.dev/llms.txt)
-- [Agent Skills (open standard)](https://agentskills.io)
-- [Claude Code > Skills](https://code.claude.com/docs/en/skills)
 - [skills.sh](https://skills.sh)
 - [skills-npm](https://github.com/antfu/skills-npm)
+- [Agent Skills (open standard)](https://agentskills.io)
+- [Claude Code > Skills](https://code.claude.com/docs/en/skills)
