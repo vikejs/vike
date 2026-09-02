@@ -100,9 +100,6 @@ async function checkSkillUnsafe(userRootDir: string): Promise<void> {
   if ((await getCacheValue(userRootDir, cacheKey)) === false) return
 
   const skillState = await getSkillState(userRootDir)
-  // Exactly one action per state:
-  // - Log a hint => nothing is cached => the check is re-run upon the next dev start
-  // - Nothing to log => cache => the check is never run again (until node_modules/ is removed)
   if (skillState.state === 'missing') {
     assertInfo(false, logMissing, { onlyOnce: true })
   } else if (skillState.state === 'outdated') {
@@ -143,14 +140,13 @@ async function getSkillState(userRootDir: string): Promise<SkillState> {
 
   const skillFiles = await findSkillFiles(repoRootDir, skillsDirs, skillContentExpected)
   if (skillFiles.length === 0) return { state: 'missing' }
-
   const skillFilesOutdated = skillFiles.filter((f) => f.isOutdated)
   if (skillFilesOutdated.length > 0) {
     const skillFilePaths = skillFilesOutdated.map((f) => toPosixPath(path.relative(userRootDir, f.filePathAbsolute)))
     return { state: 'outdated', skillFilePaths }
+  } else {
+    return { state: 'installed' }
   }
-
-  return { state: 'installed' }
 }
 
 // https://vike.dev/ai#settings
