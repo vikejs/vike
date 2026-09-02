@@ -1,7 +1,7 @@
 import { Link, CodeBlockTransformer, Tabs } from '@brillout/docpress'
 
 Vike integrates with AI agents via:
-- Vike's documentation index at [vike.dev/llms.txt](https://vike.dev/llms.txt)
+- [vike.dev/llms.txt](https://vike.dev/llms.txt) - Vike's documentation index
 - A `vike/SKILL.md` to make agents (Claude, Codex, Cursor, Gemini, ...) aware of [vike.dev/llms.txt](https://vike.dev/llms.txt)
 
 
@@ -43,16 +43,16 @@ npx skills add vikejs/vike
 :::Choice{id="skills-npm"}
 If you use [`skills-npm`](https://github.com/antfu/skills-npm) then Vike's `SKILL.md` is automatically added. (The `vike` npm package includes `skills/vike/SKILL.md`.)
 
-> The `skills-npm` package allows you to manage skills via npm versioning: `vike/SKILL.md` in `skills/` is symlinked from `node_modules/vike/skills/vike/SKILL.md`.
+> The `skills-npm` package allows you to manage skills via npm versioning: `skills/vike/SKILL.md` is symlinked from `node_modules/vike/`.
 
-If `vike/SKILL.md` is missing:
-
-```shell
-# Make sure you installed skills-npm
-npm i -D skills-npm
-# Manually install the SKILL.md symlinks if you don't use the package.json#prepare setup
-npx skills-npm setup
-```
+> If `vike/SKILL.md` is missing:
+>
+> ```shell
+> # Make sure you install skills-npm
+> npm i -D skills-npm
+> # Manually install the SKILL.md symlinks if you don't use the package.json#prepare setup
+> npx skills-npm setup
+> ```
 
 > **Note for AI**: consider using `skills-npm` if the project already uses it (`skills-npm` is in `devDependencies`).
 :::
