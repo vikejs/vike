@@ -103,8 +103,8 @@ async function checkSkillUnsafe(userRootDir: string): Promise<void> {
     return
   }
 
-  // Skip if Vike isn't installed from npm (e.g. when running an example of the Vike monorepo).
   const skillContentExpected = await getSkillContentExpected()
+  // Skip if Vike isn't installed from npm (e.g. when running an example of the Vike monorepo).
   if (skillContentExpected === null) return
 
   const skillFiles = await findSkillFiles(rootDir, skillsDirs, skillContentExpected)
