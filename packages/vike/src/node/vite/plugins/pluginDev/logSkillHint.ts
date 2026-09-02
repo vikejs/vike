@@ -102,17 +102,21 @@ async function checkSkillUnsafe(userRootDir: string): Promise<void> {
   const skillState = await getSkillState(userRootDir)
   if (skillState.state === 'missing') {
     assertInfo(false, logMissing, { onlyOnce: true })
-  } else if (skillState.state === 'outdated') {
+    return
+  }
+  if (skillState.state === 'outdated') {
     assertInfo(false, logOutdated(skillState.skillFilePaths), { onlyOnce: true })
-  } else if (
+    return
+  }
+  if (
     skillState.state === 'installed' ||
     skillState.state === 'not-using-ai-agents' ||
     skillState.state === 'vike-not-from-npm'
   ) {
     await setCacheValue(userRootDir, cacheKey, false)
-  } else {
-    checkType<never>(skillState)
+    return
   }
+  checkType<never>(skillState)
   assert(false)
 }
 
