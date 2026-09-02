@@ -6,6 +6,7 @@ import { teamData } from './pages/team/teamData'
 import fs from 'node:fs'
 import { fileURLToPath } from 'node:url'
 
+// TODO/after-PR-merge: move to standalone file
 // Serves the team list as /team.json — same data that powers
 // pages/team/+Page.mdx via pages/team/maintainersList.tsx.
 function teamJsonPlugin(): Plugin {
