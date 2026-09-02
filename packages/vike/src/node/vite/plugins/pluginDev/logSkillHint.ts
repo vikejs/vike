@@ -13,7 +13,6 @@ import { checkType } from '../../../../utils/checkType.js'
 import { crawlFiles } from '../../../../utils/crawlFiles.js'
 import { getGlobalObject } from '../../../../utils/getGlobalObject.js'
 import { getVikeConfigError } from '../../../../shared-server-node/getVikeConfigError.js'
-import { requireResolveOptional } from '../../../../utils/requireResolve.js'
 import { setTimeoutUnref } from '../../../../utils/setTimeoutUnref.js'
 import { isObject } from '../../../../utils/isObject.js'
 import { toPosixPath } from '../../../../utils/path.js'
@@ -135,7 +134,7 @@ type SkillState =
 // Determine the state of the user's skill — without side effects: the caller checkSkillUnsafe() performs exactly one action per state.
 async function getSkillState(userRootDir: string): Promise<SkillState> {
   const repoRootDir = await getRepoRootDir(userRootDir)
-  const skillsDirs = await findSkillsDirs(repoRootDir, userRootDir)
+  const skillsDirs = await findSkillsDirs(repoRootDir)
 
   const isUsingAiAgents = skillsDirs.length > 0 || (await hasAgentMarker(userRootDir, repoRootDir))
   if (!isUsingAiAgents) return { state: 'not-using-ai-agents' }
@@ -182,25 +181,18 @@ async function getRepoRootDir(userRootDir: string): Promise<string> {
 }
 
 // Discover the skills directories of the user's repository, following the Agent Skills convention `**/skills/*/SKILL.md` (https://agentskills.io) — e.g. .claude/skills/ (Claude Code) and .agents/skills/ (Codex, Gemini CLI, Cursor, ...).
-async function findSkillsDirs(repoRootDir: string, userRootDir: string): Promise<string[]> {
+async function findSkillsDirs(repoRootDir: string): Promise<string[]> {
   const files = await crawlFiles({
     filePattern: '**/skills/*/SKILL',
     fileExtension: ['md'],
     cwd: repoRootDir,
     // Skills directories usually live inside dot directories (e.g. .claude/ and .agents/)
     dot: true,
-    // skills-npm installs skills as gitignored symlinks (`**/skills/npm-*`) that `$ git ls-files` cannot see => use tinyglobby (which ignores .gitignore and follows symlinks)
-    forceGlob: isUsingSkillsNpm(userRootDir),
-    // Otherwise `$ git ls-files` only: we don't want to crawl the entire directory tree of the user's repository upon every dev start
-    globFallback: false,
+    // Skills installed by skills-npm are gitignored symlinks (`**/skills/npm-*`) => `$ git ls-files` doesn't see them => fallback to globbing (which follows symlinks)
+    globFallback: true,
   })
   const skillsDirs = unique(files.map((filePath) => path.posix.dirname(path.posix.dirname(filePath)))).sort()
   return skillsDirs
-}
-
-// Whether the user installed skills-npm (https://github.com/antfu/skills-npm)
-function isUsingSkillsNpm(userRootDir: string): boolean {
-  return requireResolveOptional({ importPath: 'skills-npm', importerFilePath: null, userRootDir }) !== null
 }
 
 // Whether the app seems to use AI agents, even without any skills directory: instruction files and config directories of AI agents, at the app's root directory and at the repository's root directory.
