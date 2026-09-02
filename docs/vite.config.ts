@@ -11,7 +11,7 @@ import { skillCodeBlockPlugin } from './vite-plugins/skillCodeBlockPlugin'
 function teamJsonPlugin(): Plugin {
   const body = JSON.stringify(teamData, null, 2) + '\n'
   return {
-    name: 'team-json',
+    name: 'vike-docs:team-json',
     configureServer(server) {
       server.middlewares.use('/team.json', (_req, res) => {
         res.setHeader('Content-Type', 'application/json')

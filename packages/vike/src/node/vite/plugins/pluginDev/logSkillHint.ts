@@ -26,7 +26,6 @@ const globalObject = getGlobalObject('logSkillHint.ts', {
 
 const docsUrl = 'https://vike.dev/ai#skill'
 const tellAgent = `by telling your agent: ${pc.cyan(`"Install skill ${docsUrl}"`)}`
-// https://vike.dev/ai#settings
 const suppressHint = `or set ${pc.cyan('+ai.skill')} to ${pc.cyan('false')} to suppress this log`
 const logMissing = `Add Vike's skill for AI agents (Claude Code, Codex, Cursor, ...) ${tellAgent}, ${suppressHint}`
 const logOutdated = (skillFilePaths: string[]) => {
