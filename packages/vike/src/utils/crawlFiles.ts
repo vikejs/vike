@@ -50,8 +50,8 @@ async function crawlFiles(options: {
   dot: boolean
   /**
    * Which crawlers to use.
-   * - `git` => `$ git ls-files` (fast, but skips gitignored files and doesn't follow symlinks)
-   * - `glob` => tinyglobby (finds gitignored files and follows symlinks)
+   * - `git` => `$ git ls-files` (fast, but skips gitignored files)
+   * - `glob` => tinyglobby (finds gitignored files)
    *
    * If both are enabled, tinyglobby is only used as a fallback when `$ git ls-files` doesn't find any file.
    * If Git isn't usable (Git isn't installed, or `cwd` isn't inside a Git repository), tinyglobby is always used.
