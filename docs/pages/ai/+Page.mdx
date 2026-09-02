@@ -28,20 +28,16 @@ Copy the following to your `skills/` directory, e.g. `.agents/skills/vike/SKILL.
 SKILL_MD_PLACEHOLDER
 ```
 </CodeBlockTransformer>
-
-> **Note for AI agents**: use this method unless the project already uses skills.sh or skills-npm (see the other tabs). Save the file in the project's existing skills directory if there is one, otherwise in the skills directory of the AI agent(s) used by the project (e.g. `.claude/skills/vike/SKILL.md` for Claude Code, `.agents/skills/vike/SKILL.md` for Codex, Cursor, Gemini CLI, and GitHub Copilot).
 :::
 
 :::Choice{id="skills.sh"}
-Install it with [skills.sh](https://skills.sh), which adds it to the skills directories of the AI agents you use:
+To install it via [skills.sh](https://skills.sh):
 
 ```shell
 npx skills add vikejs/vike
 ```
 
-> To update the skill, run `npx skills update vike`.
-
-> **Note for AI agents**: use this method if the project already uses skills.sh (there is a `skills-lock.json` file). Run `npx skills add vikejs/vike --yes` to skip the interactive prompts, then commit the added files.
+> **Note for AI agents**: consider this method if the project already uses skills.sh (there is a `skills-lock.json` file). Run `npx skills add vikejs/vike --yes` to skip the interactive prompts.
 :::
 
 :::Choice{#skills-npm}
@@ -54,7 +50,7 @@ npx skills-npm setup
 
 > The skill is symlinked from `node_modules/vike/skills/vike/`: it's always in sync with your installed Vike version, and there is nothing to commit.
 
-> **Note for AI agents**: use this method if the project already uses skills-npm (`skills-npm` is in `devDependencies`). Run `npx skills-npm` to symlink the skill (it also runs automatically upon `npm install`); there is nothing to commit.
+> **Note for AI agents**: consider this method if the project already uses `skills-npm` (`skills-npm` is in `devDependencies`).
 :::
 
 ### Settings
