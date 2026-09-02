@@ -15,6 +15,8 @@ import {
   iconReact,
   iconVue,
   iconSolid,
+  iconGitHub,
+  iconNpm,
 } from './assets/choices-icons'
 import React from 'react'
 
@@ -77,6 +79,15 @@ const config = {
         { name: 'Solid', icon: iconSolid, iconStyle: { marginBottom: '1px' }, iconStyleDropdown: { width: '12.5px' } },
       ],
       default: 'React',
+    },
+    // https://vike.dev/ai#install
+    skillInstall: {
+      choices: [
+        'Manual',
+        { name: 'skills', icon: iconGitHub },
+        { name: 'skills-npm', icon: iconNpm, iconStyle: { objectFit: 'contain' } },
+      ],
+      default: 'Manual',
     },
   },
 } satisfies Config

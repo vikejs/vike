@@ -1,4 +1,4 @@
-import { Link, CodeBlockTransformer } from '@brillout/docpress'
+import { Link, CodeBlockTransformer, Tabs } from '@brillout/docpress'
 
 Vike integrates with AI agents via:
 - Vike's documentation index at [vike.dev/llms.txt](https://vike.dev/llms.txt)
@@ -16,28 +16,50 @@ Vike's documentation index lives at [vike.dev/llms.txt](https://vike.dev/llms.tx
 
 ## Skill
 
-Vike automatically adds the following `skills/vike/SKILL.md` to make AI agents (Claude Code, Codex, Cursor, Gemini CLI, ...) automatically aware of Vike's documentation.
+Vike's skill `vike/SKILL.md` makes AI agents (Claude Code, Codex, Cursor, Gemini CLI, ...) automatically aware of Vike's documentation.
+
+> Upon running the development server, Vike checks whether your app has the skill: if it's missing or outdated, Vike logs a hint telling you how to <Link href="#install">install</Link> it. Vike never modifies your repository.
+
+### Install
+
+<Tabs choice={'skillInstall'} />
+
+:::Choice{#Manual}
+Add the following `vike/SKILL.md` to your `skills/` directory (e.g. `.agents/skills/vike/SKILL.md` or `.claude/skills/vike/SKILL.md`), and commit it.
 
 <CodeBlockTransformer lineBreak="white-space">
 ```md
----
-name: "vike"
-description: "Vike documentation index — a compact overview of Vike's docs. Consider consulting it, e.g. when using uncommon Vike APIs or when stuck on a Vike problem."
----
-
-See https://vike.dev/llms.txt
+SKILL_MD_PLACEHOLDER
 ```
 </CodeBlockTransformer>
+:::
 
-> Upon running the development server, Vike adds `vike/SKILL.md` to every existing `skills/` directory (`**/skills/*/SKILL.md`, e.g. `.agents/skills/`) and automatically Git-commits it. If `vike/SKILL.md` is outdated, Vike updates it (and Git-commits the change).
+:::Choice{#skills}
+Install it with the [`skills`](https://skills.sh) CLI, which adds it to the skills directories of the AI agents you use:
 
-Vike skips adding `vike/SKILL.md` if:
-- Your app doesn't contain any `skills/` directory (unless you set `+ai.skill` to a list of directories)
-- The setting `+ai.skill` is `false`
-- You're in a CI environment
-- Your app isn't inside a Git repository
-  > If you `.gitignore` your skills directory, Vike still creates `vike/SKILL.md` but doesn't Git-commit it.
+```shell
+npx skills add vikejs/vike
+```
 
+> To update the skill, run `npx skills update vike`.
+:::
+
+:::Choice{#skills-npm}
+Install [`skills-npm`](https://github.com/antfu/skills-npm), which symlinks the skills shipped by your npm dependencies (the `vike` npm package ships `vike/SKILL.md`):
+
+```shell
+npm i -D skills-npm
+npx skills-npm setup
+```
+
+> The skill is symlinked from `node_modules/vike/skills/vike/`: it's always in sync with your installed Vike version, and there is nothing to commit.
+:::
+
+> **Note for AI agents**: if the project already uses `skills` (there is a `skills-lock.json` file) or `skills-npm` (it's in `devDependencies`), use it; otherwise install the skill manually.
+
+### Settings
+
+To disable the check:
 
 ```ts
 // pages/+config.ts
@@ -46,10 +68,8 @@ import type { Config } from 'vike/types'
 
 export default {
   ai: {
-    // Never add (nor update) vike/SKILL.md
-    skill: false,
-    // Add vike/SKILL.md to exactly these directories
-    skill: ['.agents/skills', '.claude/skills']
+    // Don't check whether Vike's skill is installed
+    skill: false
   }
 } satisfies Config
 ```
@@ -60,3 +80,5 @@ export default {
 - [vike.dev/llms.txt](https://vike.dev/llms.txt)
 - [Agent Skills (open standard)](https://agentskills.io)
 - [Claude Code > Skills](https://code.claude.com/docs/en/skills)
+- [skills.sh](https://skills.sh)
+- [skills-npm](https://github.com/antfu/skills-npm)

@@ -4,10 +4,10 @@ export { logDockerHint }
 import { type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
 import { optimizeDeps, resolveOptimizeDeps } from './pluginDev/optimizeDeps.js'
 import { determineFsAllowList } from './pluginDev/determineFsAllowList.js'
-// import { autoAddVikeSkill } from './pluginDev/autoAddVikeSkill.js'
+import { checkVikeSkill } from './pluginDev/vikeSkill.js'
 import { addSsrMiddleware } from '../shared/addSsrMiddleware.js'
 import { isDebugError } from '../../../utils/debug.js'
-// import { setTimeoutUnref } from '../../../utils/setTimeoutUnref.js'
+import { setTimeoutUnref } from '../../../utils/setTimeoutUnref.js'
 import { applyDev } from '../../../utils/isDev.js'
 import { isDocker } from '../../../utils/isDocker.js'
 import { assertWarning } from '../../../utils/assert.js'
@@ -39,16 +39,33 @@ function pluginDev(): Plugin[] {
           logDockerHint(config.server.host)
         },
       },
-      // TODO/soon: re-enable automatically adding vike/SKILL.md (https://vike.dev/ai#skill).
-      // Temporarily disabled — https://github.com/vikejs/vike/pull/3465 got some backlash, let's find a better solution first.
-      /*
       configureServer: {
-        handler() {
-          // Apply late — after the dev server is up and running — so that it doesn't slow down dev start
-          setTimeoutUnref(() => autoAddVikeSkill(config.root), 15 * 1000)
+        handler(server) {
+          // Check whether the user installed Vike's skill for AI agents (https://vike.dev/ai#install) — late, so that it never slows down dev start nor the first page requests: 5 seconds after the first request, or at most 10 seconds after the server started.
+          let isDone = false
+          const runAfter = (milliseconds: number) => {
+            setTimeoutUnref(() => {
+              if (isDone) return
+              isDone = true
+              checkVikeSkill(config.root)
+            }, milliseconds)
+          }
+          if (server.httpServer) {
+            server.httpServer.once('listening', () => runAfter(10 * 1000))
+          } else {
+            // Middleware mode: the HTTP server is owned by the user
+            runAfter(10 * 1000)
+          }
+          let isFirstRequest = true
+          server.middlewares.use((_req, _res, next) => {
+            if (isFirstRequest) {
+              isFirstRequest = false
+              runAfter(5 * 1000)
+            }
+            next()
+          })
         },
       },
-      */
     },
     {
       name: 'vike:pluginDev:post',
