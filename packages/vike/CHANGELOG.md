@@ -1,3 +1,12 @@
+## [0.4.265](https://github.com/vikejs/vike/compare/v0.4.264...v0.4.265) (2026-09-02)
+
+
+### Bug Fixes
+
+* log a hint to install vike/SKILL.md (closes [#3493](https://github.com/vikejs/vike/issues/3493)) ([#3501](https://github.com/vikejs/vike/issues/3501)) ([b445103](https://github.com/vikejs/vike/commit/b445103c753243a3f3b4c7c075dc9536dc096d80))
+
+
+
 ## [0.4.264](https://github.com/vikejs/vike/compare/v0.4.263...v0.4.264) (2026-08-26)
 
 
