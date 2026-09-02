@@ -24,8 +24,8 @@ const globalObject = getGlobalObject('logSkillHint.ts', {
   alreadyChecked: false,
 })
 
-const docsUrl = 'https://vike.dev/ai#install'
-const tellAgent = `by telling your agent: ${pc.cyan(`"Follow ${docsUrl}"`)}`
+const docsUrl = 'https://vike.dev/ai#skill'
+const tellAgent = `by telling your agent: ${pc.cyan(`"Install skill ${docsUrl}"`)}`
 // https://vike.dev/ai#settings
 const suppressHint = `or set ${pc.cyan('+ai.skill')} to ${pc.cyan('false')} to suppress this log`
 const logMissing = `Add Vike's skill for AI agents (Claude Code, Codex, Cursor, ...) ${tellAgent}, ${suppressHint}`
@@ -126,7 +126,7 @@ function getConfigValueAiSkill(vikeConfig: VikeConfigInternal): boolean {
   if (skill === undefined) return true
   assertUsage(
     typeof skill === 'boolean',
-    `Setting ${pc.cyan('ai.skill')} should be a boolean, see ${pc.underline('https://vike.dev/ai#settings')}`,
+    `${pc.cyan('+ai.skill')} should be a boolean, see ${pc.underline('https://vike.dev/ai#skill')}`,
   )
   return skill
 }

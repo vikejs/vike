@@ -725,7 +725,7 @@ type ConfigAi = {
    *
    * @default true
    *
-   * https://vike.dev/ai#settings
+   * https://vike.dev/ai#skill
    */
   skill?: boolean
 }
