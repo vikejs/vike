@@ -78,7 +78,9 @@ async function checkSkill(userRootDir: string): Promise<void> {
   try {
     await checkSkillUnsafe(userRootDir)
   } catch (err) {
-    // Show the error without breaking the dev server. (Expected situations don't throw — e.g. Git missing is handled gracefully.)
+    // The check runs in a timer (see applyLate()): a thrown error would be an unhandled rejection that kills the dev server => log it instead.
+    // - Environmental failures (Git missing, unreadable files, ...) are handled gracefully and don't throw.
+    // - What can throw: usage errors (e.g. an invalid +ai.skill value) and bugs.
     console.error(err)
   }
 }
