@@ -28,8 +28,8 @@ const globalObject = getGlobalObject('logSkillHint.ts', {
 })
 
 const docsUrl = 'https://vike.dev/ai#skill'
-const seeDocs = `— see "${pc.underline(docsUrl)}"`
-const suppressHint = `set ${pc.cyan('+ai.skill')} to ${pc.cyan('false')} to suppress this log`
+const seeDocs = `— see ${pc.underline(docsUrl)}`
+const suppressHint = `set ${pc.cyan('+ai.skill')} to ${pc.cyan('false')} to suppress this log.`
 const logMissing = `Add Vike's skill for AI agents (Claude Code, Codex, Cursor, ...) ${seeDocs}, or ${suppressHint}`
 const logOutdated = (skillFilePaths: string[]) => {
   const isPlural = skillFilePaths.length > 1
@@ -164,7 +164,7 @@ function getConfigValueAiSkill(vikeConfig: VikeConfigInternal): boolean {
   if (skill === undefined) return true
   assertUsage(
     typeof skill === 'boolean',
-    `${pc.cyan('+ai.skill')} should be a boolean, see ${pc.underline('https://vike.dev/ai#skill')}`,
+    `${pc.cyan('+ai.skill')} should be a boolean, see ${pc.underline(docsUrl)}`,
   )
   return skill
 }
