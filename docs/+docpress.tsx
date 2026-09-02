@@ -17,6 +17,7 @@ import {
   iconSolid,
   iconGitHub,
   iconNpm,
+  iconCopy,
 } from './assets/choices-icons'
 import React from 'react'
 
@@ -83,11 +84,11 @@ const config = {
     // https://vike.dev/ai#install
     skillInstall: {
       choices: [
-        'Manual',
-        { name: 'skills.sh', icon: iconGitHub },
+        { name: 'Copy & paste', icon: iconCopy, iconStyleTab: { height: '15px' } },
+        { name: 'skills.sh', icon: iconGitHub, iconStyleTab: { height: '16px' }, iconStyleDropdown: { width: '14px', height: '14px' } },
         { name: 'skills-npm', icon: iconNpm, iconStyle: { objectFit: 'contain' } },
       ],
-      default: 'Manual',
+      default: 'Copy & paste',
     },
   },
 } satisfies Config

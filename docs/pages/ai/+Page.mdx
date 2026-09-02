@@ -24,7 +24,7 @@ Vike's skill `vike/SKILL.md` makes AI agents (Claude Code, Codex, Cursor, Gemini
 
 <Tabs choice={'skillInstall'} />
 
-:::Choice{#Manual}
+:::Choice{id="Copy & paste"}
 Add the following `vike/SKILL.md` to your `skills/` directory (e.g. `.agents/skills/vike/SKILL.md` or `.claude/skills/vike/SKILL.md`), and commit it.
 
 <CodeBlockTransformer lineBreak="white-space">
@@ -55,7 +55,7 @@ npx skills-npm setup
 > The skill is symlinked from `node_modules/vike/skills/vike/`: it's always in sync with your installed Vike version, and there is nothing to commit.
 :::
 
-> **Note for AI agents**: if the project already uses skills.sh (there is a `skills-lock.json` file) or `skills-npm` (it's in `devDependencies`), use it; otherwise install the skill manually.
+> **Note for AI agents**: if the project already uses skills.sh (there is a `skills-lock.json` file) or `skills-npm` (it's in `devDependencies`), use it; otherwise copy & paste the skill.
 
 ### Settings
 
