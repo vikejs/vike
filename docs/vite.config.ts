@@ -3,8 +3,7 @@ import type { UserConfig, Plugin } from 'vite'
 import vike from 'vike/plugin'
 import tailwindcss from '@tailwindcss/vite'
 import { teamData } from './pages/team/teamData'
-import fs from 'node:fs'
-import { fileURLToPath } from 'node:url'
+import { skillCodeBlockPlugin } from './vite-plugins/skillCodeBlockPlugin'
 
 // TODO/after-PR-merge: move to standalone file
 // Serves the team list as /team.json — same data that powers
@@ -21,24 +20,6 @@ function teamJsonPlugin(): Plugin {
     },
     generateBundle() {
       this.emitFile({ type: 'asset', fileName: 'team.json', source: body })
-    },
-  }
-}
-
-// Injects the content of skills/vike/SKILL.md (the single source of truth, see https://vike.dev/ai#install) into
-// the code block of pages/ai/+Page.mdx — before the MDX compiler runs, so that it's syntax highlighted like any other code block.
-function skillCodeBlockPlugin(): Plugin {
-  const skillFilePath = fileURLToPath(new URL('../skills/vike/SKILL.md', import.meta.url))
-  const placeholder = 'SKILL_MD_PLACEHOLDER'
-  return {
-    name: 'docs:skill-code-block',
-    enforce: 'pre',
-    transform(code, id) {
-      if (!id.endsWith('/pages/ai/+Page.mdx')) return
-      this.addWatchFile(skillFilePath)
-      if (!code.includes(placeholder)) throw new Error(`${placeholder} not found in ${id}`)
-      const skill = fs.readFileSync(skillFilePath, 'utf8').trimEnd()
-      return { code: code.replace(placeholder, skill), map: null }
     },
   }
 }
