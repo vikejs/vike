@@ -28,13 +28,13 @@ const globalObject = getGlobalObject('logSkillHint.ts', {
 })
 
 const docsUrl = 'https://vike.dev/ai#skill'
-const tellAgent = `by telling your agent "${pc.cyan(`Install skill ${docsUrl}`)}"`
+const seeDocs = `— see "${pc.underline(docsUrl)}"`
 const suppressHint = `set ${pc.cyan('+ai.skill')} to ${pc.cyan('false')} to suppress this log`
-const logMissing = `Add Vike's skill for AI agents (Claude Code, Codex, Cursor, ...) ${tellAgent}, or ${suppressHint}`
+const logMissing = `Add Vike's skill for AI agents (Claude Code, Codex, Cursor, ...) ${seeDocs}, or ${suppressHint}`
 const logOutdated = (skillFilePaths: string[]) => {
   const isPlural = skillFilePaths.length > 1
   const files = skillFilePaths.map((f) => pc.cyan(f)).join(', ')
-  return `Your Vike skill${isPlural ? 's' : ''} ${files} ${isPlural ? "don't" : "doesn't"} match the official ${pc.cyan('vike/SKILL.md')}, update ${isPlural ? 'them' : 'it'} ${tellAgent}, or, if you maintain your own version, ${suppressHint}`
+  return `Your Vike skill${isPlural ? 's' : ''} ${files} ${isPlural ? "don't" : "doesn't"} match the official ${pc.cyan('vike/SKILL.md')}, update ${isPlural ? 'them' : 'it'} ${seeDocs}, or, if you maintain your own version, ${suppressHint}`
 }
 const skillName = 'vike'
 // The skill file shipped by the vike npm package: node_modules/vike/skills/vike/SKILL.md (see packages/vike/scripts/copySkill.mjs)
