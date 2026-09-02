@@ -14,15 +14,15 @@ import '../assertEnvVite.js'
 // - Values must be JSON-serializable.
 const cacheFileName = 'cache.json'
 
-async function getCacheValue(userRootDir: string, key: string): Promise<unknown> {
-  const cache = await readCache(userRootDir)
+async function getCacheValue(appRootDir: string, key: string): Promise<unknown> {
+  const cache = await readCache(appRootDir)
   return cache[key]
 }
 
-async function setCacheValue(userRootDir: string, key: string, value: unknown): Promise<void> {
-  const filePath = getCacheFilePath(userRootDir)
+async function setCacheValue(appRootDir: string, key: string, value: unknown): Promise<void> {
+  const filePath = getCacheFilePath(appRootDir)
   try {
-    const cache = await readCache(userRootDir)
+    const cache = await readCache(appRootDir)
     cache[key] = value
     await fs.mkdir(path.dirname(filePath), { recursive: true })
     await fs.writeFile(filePath, `${JSON.stringify(cache, null, 2)}\n`, 'utf8')
@@ -31,8 +31,8 @@ async function setCacheValue(userRootDir: string, key: string, value: unknown): 
   }
 }
 
-async function readCache(userRootDir: string): Promise<Record<string, unknown>> {
-  const filePath = getCacheFilePath(userRootDir)
+async function readCache(appRootDir: string): Promise<Record<string, unknown>> {
+  const filePath = getCacheFilePath(appRootDir)
   try {
     const cache: unknown = JSON.parse(await fs.readFile(filePath, 'utf8'))
     if (isObject(cache)) return cache
@@ -42,12 +42,12 @@ async function readCache(userRootDir: string): Promise<Record<string, unknown>> 
   return {}
 }
 
-// Same location logic as Vite's default `cacheDir` (node_modules/.vite/): the node_modules/ directory of the nearest package.json (searching upwards from the user's root directory), falling back to the user's root directory if there isn't any package.json.
-function getCacheFilePath(userRootDir: string): string {
-  userRootDir = toPosixPath(userRootDir)
-  const packageJsonPath = findFile('package.json', userRootDir)
+// Same location logic as Vite's default `cacheDir` (node_modules/.vite/): the node_modules/ directory of the nearest package.json (searching upwards from the app's root directory), falling back to the app's root directory if there isn't any package.json.
+function getCacheFilePath(appRootDir: string): string {
+  appRootDir = toPosixPath(appRootDir)
+  const packageJsonPath = findFile('package.json', appRootDir)
   const cacheDir = packageJsonPath
     ? path.posix.join(path.posix.dirname(packageJsonPath), 'node_modules', '.vike')
-    : path.posix.join(userRootDir, '.vike')
+    : path.posix.join(appRootDir, '.vike')
   return path.posix.join(cacheDir, cacheFileName)
 }
