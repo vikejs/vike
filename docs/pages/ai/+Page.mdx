@@ -14,16 +14,14 @@ Vike's documentation index lives at [vike.dev/llms.txt](https://vike.dev/llms.tx
 
 ## Skill
 
-Vike's skill `vike/SKILL.md` makes AI agents (Claude Code, Codex, Cursor, Gemini CLI, ...) aware of Vike's documentation.
-
-> Vike checks whether your app has the skill: if it's missing or outdated, Vike logs a hint telling you how to <Link href="#install">install</Link> it. Vike never modifies your repository.
+Vike comes with a `SKILL.md` to make agents aware of Vike's documentation.
 
 ### Install
 
 <Tabs choice={'skillInstall'} />
 
 :::Choice{id="Copy & paste"}
-Add the following `vike/SKILL.md` to your `skills/` directory (e.g. `.agents/skills/vike/SKILL.md` or `.claude/skills/vike/SKILL.md`), and commit it.
+Copy the following to your `skills/` directory, e.g. `.agents/skills/vike/SKILL.md`.
 
 <CodeBlockTransformer lineBreak="white-space">
 ```md
