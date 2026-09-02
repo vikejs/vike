@@ -85,7 +85,12 @@ const config = {
     skillInstall: {
       choices: [
         { name: 'Copy & paste', icon: iconCopy, iconStyleTab: { height: '15px' } },
-        { name: 'skills.sh', icon: iconGitHub, iconStyleTab: { height: '16px' }, iconStyleDropdown: { width: '14px', height: '14px' } },
+        {
+          name: 'skills.sh',
+          icon: iconGitHub,
+          iconStyleTab: { height: '16px' },
+          iconStyleDropdown: { width: '14px', height: '14px' },
+        },
         { name: 'skills-npm', icon: iconNpm, iconStyle: { objectFit: 'contain' } },
       ],
       default: 'Copy & paste',
