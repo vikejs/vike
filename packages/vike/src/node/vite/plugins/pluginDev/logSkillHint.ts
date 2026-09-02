@@ -48,7 +48,7 @@ function logSkillHint(server: ViteDevServer, userRootDir: string): void {
   applyLate(server, () => checkSkill(userRootDir))
 }
 
-// Apply late — 5 seconds after the first request, or at most 10 seconds after the dev server started — so that it never slows down dev start nor the first page requests.
+// Apply late — 5 seconds after the first request, or at most 10 seconds after the dev server started — so that it doesn't slow down dev start nor the first page requests.
 function applyLate(server: ViteDevServer, callback: () => void): void {
   let isDone = false
   const runAfter = (milliseconds: number) => {
