@@ -23,7 +23,7 @@ async function crawlPlusFiles(userRootDir: string): Promise<{ filePathAbsoluteUs
     cwd: userRootDir,
     dot: false,
     // Fallback to tinyglobby for users that dynamically generate plus files (and `.gitignore`s them)
-    globFallback: true,
+    crawler: { git: true, glob: true },
   })
 
   // Filter build files

@@ -30,7 +30,7 @@ describe('crawlFiles()', () => {
     onTestFinished(() => clean())
 
     process.env.VIKE_CRAWL = "{ignore:['**/manually/**','**/manually-2/**']}"
-    const filesWithGit = await crawl({ ...plusFiles, globFallback: true })
+    const filesWithGit = await crawl({ ...plusFiles, crawler: { git: true, glob: true } })
     expect(filesWithGit).toMatchInlineSnapshot(`
       [
         "+config.js",
@@ -41,7 +41,7 @@ describe('crawlFiles()', () => {
     assert(!JSON.stringify(filesWithGit).includes('ignored'))
 
     process.env.VIKE_CRAWL = "{git:false,ignore:'**/manually/**'}"
-    const filesWithGlob = await crawl({ ...plusFiles, globFallback: true })
+    const filesWithGlob = await crawl({ ...plusFiles, crawler: { git: true, glob: true } })
     expect(filesWithGlob).toMatchInlineSnapshot(`
       [
         "+config.js",
@@ -103,9 +103,9 @@ async function crawl(options: {
   filePattern: Parameters<typeof crawlFiles>[0]['filePattern']
   fileExtension: readonly string[]
   dot?: boolean
-  globFallback?: boolean
+  crawler?: { git: boolean; glob: boolean }
 }) {
-  const files = await crawlFiles({ cwd, dot: false, globFallback: false, ...options })
+  const files = await crawlFiles({ cwd, dot: false, crawler: { git: true, glob: false }, ...options })
   return files.slice().sort()
 }
 
