@@ -52,8 +52,12 @@ async function crawlFiles(options: {
    * Whether to fallback to tinyglobby if `$ git ls-files` doesn't find any file.
    */
   globFallback: boolean
+  /**
+   * Whether to skip `$ git ls-files` and always use tinyglobby — e.g. to find gitignored files (tinyglobby ignores .gitignore and follows symlinks).
+   */
+  forceGlob?: boolean
 }): Promise<string[]> {
-  const { filePattern, fileExtension, cwd, dot, globFallback } = options
+  const { filePattern, fileExtension, cwd, dot, globFallback, forceGlob } = options
   const userSettings = getUserSettings()
   const globOptions: GlobOptions = { cwd, dot, nocase: false, ignore: getIgnorePatterns(userSettings) }
 
@@ -62,7 +66,7 @@ async function crawlFiles(options: {
   const patterns = fileExtension.map((ext) => `${filePattern}.${ext}` as const)
 
   // Crawl
-  const filesGit = userSettings.git !== false && (await crawlGit(patterns, cwd, globOptions))
+  const filesGit = userSettings.git !== false && !forceGlob && (await crawlGit(patterns, cwd, globOptions))
   const useGlob =
     // `!filesGit` => Git isn't usable => we *have* to use tinyglobby
     !filesGit ||
