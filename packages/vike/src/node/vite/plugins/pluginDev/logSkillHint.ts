@@ -213,8 +213,14 @@ async function getSkillContentExpected(): Promise<string | null> {
   // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vike/dist/node/vite/plugins/pluginDev/logSkillHint.js
   assert(importMetaUrl.includes('/dist/node/vite/plugins/pluginDev/'))
   const filePath = fileURLToPath(new URL(`../../../../../${skillFilePathInsidePackage}`, importMetaUrl))
-  // The file is added upon publishing (`$ pnpm publish` => `prepack` script) => it's missing when Vike is linked (e.g. when running an example of the Vike monorepo)
-  return await fs.readFile(filePath, 'utf8').catch(() => null)
+  let fileContent: string
+  try {
+    fileContent = await fs.readFile(filePath, 'utf8')
+  } catch {
+    // The file is added upon publishing (`$ pnpm publish` => `prepack` script) => it's missing when Vike is linked (e.g. when running an example of the Vike monorepo)
+    return null
+  }
+  return fileContent
 }
 
 // Cache: node_modules/.vike/cache.json
