@@ -38,16 +38,20 @@ const skillName = 'vike'
 const skillFilePathInsidePackage = 'skills/vike/SKILL.md'
 const cacheFilePathRelative = 'node_modules/.vike/cache.json'
 
-// Log a hint if the user didn't install Vike's skill for AI agents (vike/SKILL.md), or if it's outdated — https://vike.dev/ai#install
+// Log a hint if the user didn't install Vike's skill for AI agents (vike/SKILL.md), or if it differs from the official one — https://vike.dev/ai#skill
 // - Vike never modifies the user's repository (https://github.com/vikejs/vike/issues/3493): installing the skill is up to the user (or their AI agent).
-// - Applied late — 5 seconds after the first request, or at most 10 seconds after the dev server started — so that it never slows down dev start nor the first page requests.
 function logSkillHint(server: ViteDevServer, userRootDir: string): void {
+  applyLate(server, () => checkSkill(userRootDir))
+}
+
+// Apply late — 5 seconds after the first request, or at most 10 seconds after the dev server started — so that it never slows down dev start nor the first page requests.
+function applyLate(server: ViteDevServer, callback: () => void): void {
   let isDone = false
   const runAfter = (milliseconds: number) => {
     setTimeoutUnref(() => {
       if (isDone) return
       isDone = true
-      checkSkill(userRootDir)
+      callback()
     }, milliseconds)
   }
   if (server.httpServer) {
