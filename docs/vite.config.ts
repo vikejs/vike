@@ -3,13 +3,15 @@ import type { UserConfig, Plugin } from 'vite'
 import vike from 'vike/plugin'
 import tailwindcss from '@tailwindcss/vite'
 import { teamData } from './pages/team/teamData'
+import { skillCodeBlockPlugin } from './vite-plugins/skillCodeBlockPlugin'
 
+// TODO/after-PR-merge: move to standalone file
 // Serves the team list as /team.json — same data that powers
 // pages/team/+Page.mdx via pages/team/maintainersList.tsx.
 function teamJsonPlugin(): Plugin {
   const body = JSON.stringify(teamData, null, 2) + '\n'
   return {
-    name: 'team-json',
+    name: 'vike-docs:team-json',
     configureServer(server) {
       server.middlewares.use('/team.json', (_req, res) => {
         res.setHeader('Content-Type', 'application/json')
@@ -30,6 +32,7 @@ export default {
     vike(),
     tailwindcss(),
     teamJsonPlugin(),
+    skillCodeBlockPlugin(),
   ],
   // https://github.com/vikejs/vike/blob/08a1ff55c80ddca64ca6d4417fefd45fefeb4ffb/vike/node/plugin/plugins/replaceConstants.ts#L32
   // @ts-expect-error

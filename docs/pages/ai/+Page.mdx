@@ -1,43 +1,62 @@
-import { Link, CodeBlockTransformer } from '@brillout/docpress'
+import { Link, CodeBlockTransformer, Tabs } from '@brillout/docpress'
 
 Vike integrates with AI agents via:
-- Vike's documentation index at [vike.dev/llms.txt](https://vike.dev/llms.txt)
-- A [`vike/SKILL.md`](https://agentskills.io) to make agents (Claude, Codex, Cursor, Gemini, ...) aware of [vike.dev/llms.txt](https://vike.dev/llms.txt)
+- [vike.dev/llms.txt](https://vike.dev/llms.txt) - Vike's documentation index
+- A `vike/SKILL.md` to make agents (Claude, Codex, Cursor, Gemini, ...) aware of [vike.dev/llms.txt](https://vike.dev/llms.txt)
 
 
 ## `llms.txt`
 
 Vike's documentation index lives at [vike.dev/llms.txt](https://vike.dev/llms.txt) — a compact overview of Vike's docs for AI agents.
 
-> Most AI models are familiar and proficient with Vike. But for advanced Vike features AI can make mistakes.
->
-> Therefore, if your AI agent doesn't automatically load it (see <Link href="#skill">Skill</Link> below), we recommend nudging your agent to read [vike.dev/llms.txt](https://vike.dev/llms.txt) whenever it uses Vike in an uncommon way.
-
+> Most AI models are familiar with and proficient in Vike. But for advanced Vike features, AI can make mistakes — we therefore recommend installing the <Link href="#skill">skill below</Link>.
 
 ## Skill
 
-Vike automatically adds the following `skills/vike/SKILL.md` to make AI agents (Claude Code, Codex, Cursor, Gemini CLI, ...) automatically aware of Vike's documentation.
+Vike's `SKILL.md` makes agents aware of Vike's documentation.
+
+### Install
+
+<Tabs choice={'skillInstall'} />
+
+:::Choice{id="Copy & paste"}
+Copy the following to your `skills/` directory, e.g. `.agents/skills/vike/SKILL.md`.
 
 <CodeBlockTransformer lineBreak="white-space">
 ```md
----
-name: "vike"
-description: "Vike documentation index — a compact overview of Vike's docs. Consider consulting it, e.g. when using uncommon Vike APIs or when stuck on a Vike problem."
----
-
-See https://vike.dev/llms.txt
+SKILL_MD_PLACEHOLDER
 ```
 </CodeBlockTransformer>
+:::
 
-> Upon running the development server, Vike adds `vike/SKILL.md` to every existing `skills/` directory (`**/skills/*/SKILL.md`, e.g. `.agents/skills/`) and automatically Git-commits it. If `vike/SKILL.md` is outdated, Vike updates it (and Git-commits the change).
+:::Choice{id="skills.sh"}
+To install it via [skills.sh](https://skills.sh):
 
-Vike skips adding `vike/SKILL.md` if:
-- Your app doesn't contain any `skills/` directory (unless you set `+ai.skill` to a list of directories)
-- The setting `+ai.skill` is `false`
-- You're in a CI environment
-- Your app isn't inside a Git repository
-  > If you `.gitignore` your skills directory, Vike still creates `vike/SKILL.md` but doesn't Git-commit it.
+```shell
+npx skills add vikejs/vike
+```
 
+> **Note for AI**: consider using `skills` if the project already uses it (there is a `skills-lock.json` file). Run `npx skills add vikejs/vike --yes` to skip the interactive prompts.
+:::
+
+:::Choice{id="skills-npm"}
+If you use [`skills-npm`](https://github.com/antfu/skills-npm) then Vike's `SKILL.md` is automatically added. (The `vike` npm package includes `skills/vike/SKILL.md`.)
+
+> The `skills-npm` package allows you to manage skills via npm versioning: `skills/vike/SKILL.md` is symlinked from `node_modules/vike/`.
+
+> If `vike/SKILL.md` is missing:
+>
+> ```shell
+> # Make sure you install skills-npm
+> npm i -D skills-npm
+> # Manually install the SKILL.md symlinks if you don't use the package.json#prepare setup
+> npx skills-npm setup
+> ```
+
+> **Note for AI**: consider using `skills-npm` if the project already uses it (`skills-npm` is in `devDependencies`).
+:::
+
+### Settings
 
 ```ts
 // pages/+config.ts
@@ -46,10 +65,8 @@ import type { Config } from 'vike/types'
 
 export default {
   ai: {
-    // Never add (nor update) vike/SKILL.md
-    skill: false,
-    // Add vike/SKILL.md to exactly these directories
-    skill: ['.agents/skills', '.claude/skills']
+    // Don't log a hint when Vike's SKILL.md is missing or outdated
+    skill: false
   }
 } satisfies Config
 ```
@@ -58,5 +75,7 @@ export default {
 ## See also
 
 - [vike.dev/llms.txt](https://vike.dev/llms.txt)
+- [skills.sh](https://skills.sh)
+- [skills-npm](https://github.com/antfu/skills-npm)
 - [Agent Skills (open standard)](https://agentskills.io)
 - [Claude Code > Skills](https://code.claude.com/docs/en/skills)

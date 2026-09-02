@@ -4,10 +4,9 @@ export { logDockerHint }
 import { type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
 import { optimizeDeps, resolveOptimizeDeps } from './pluginDev/optimizeDeps.js'
 import { determineFsAllowList } from './pluginDev/determineFsAllowList.js'
-// import { autoAddVikeSkill } from './pluginDev/autoAddVikeSkill.js'
+import { logSkillHint } from './pluginDev/logSkillHint.js'
 import { addSsrMiddleware } from '../shared/addSsrMiddleware.js'
 import { isDebugError } from '../../../utils/debug.js'
-// import { setTimeoutUnref } from '../../../utils/setTimeoutUnref.js'
 import { applyDev } from '../../../utils/isDev.js'
 import { isDocker } from '../../../utils/isDocker.js'
 import { assertWarning } from '../../../utils/assert.js'
@@ -39,16 +38,11 @@ function pluginDev(): Plugin[] {
           logDockerHint(config.server.host)
         },
       },
-      // TODO/soon: re-enable automatically adding vike/SKILL.md (https://vike.dev/ai#skill).
-      // Temporarily disabled — https://github.com/vikejs/vike/pull/3465 got some backlash, let's find a better solution first.
-      /*
       configureServer: {
-        handler() {
-          // Apply late — after the dev server is up and running — so that it doesn't slow down dev start
-          setTimeoutUnref(() => autoAddVikeSkill(config.root), 15 * 1000)
+        handler(server) {
+          logSkillHint(server, config.root)
         },
       },
-      */
     },
     {
       name: 'vike:pluginDev:post',

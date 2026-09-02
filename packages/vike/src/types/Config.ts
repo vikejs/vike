@@ -721,17 +721,13 @@ type ConfigBuiltIn = {
 
 type ConfigAi = {
   /**
-   * Whether Vike automatically adds and updates `vike/SKILL.md` inside skills directories (e.g. `.agents/skills/` and `.claude/skills/`).
-   *
-   * - `true`: add `vike/SKILL.md` to every existing `skills/` directory
-   * - `false`: never add `vike/SKILL.md`
-   * - `string[]`: add `vike/SKILL.md` to exactly these directories
+   * Whether Vike checks that your app has Vike's skill for AI agents (`vike/SKILL.md`), logging a hint upon `$ vike dev` if it's missing or outdated.
    *
    * @default true
    *
    * https://vike.dev/ai#skill
    */
-  skill?: boolean | string[]
+  skill?: boolean
 }
 
 type Vercel = {

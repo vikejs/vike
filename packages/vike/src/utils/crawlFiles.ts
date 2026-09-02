@@ -49,11 +49,17 @@ async function crawlFiles(options: {
    */
   dot: boolean
   /**
-   * Whether to fallback to tinyglobby if `$ git ls-files` doesn't find any file.
+   * Which crawlers to use.
+   * - `git` => `$ git ls-files` (fast, but skips gitignored files and doesn't follow symlinks)
+   * - `glob` => tinyglobby (finds gitignored files and follows symlinks)
+   *
+   * If both are enabled, tinyglobby is only used as a fallback when `$ git ls-files` doesn't find any file.
+   * If Git isn't usable (Git isn't installed, or `cwd` isn't inside a Git repository), tinyglobby is always used.
    */
-  globFallback: boolean
+  crawler: { git: boolean; glob: boolean }
 }): Promise<string[]> {
-  const { filePattern, fileExtension, cwd, dot, globFallback } = options
+  const { filePattern, fileExtension, cwd, dot, crawler } = options
+  assert(crawler.git || crawler.glob)
   const userSettings = getUserSettings()
   const globOptions: GlobOptions = { cwd, dot, nocase: false, ignore: getIgnorePatterns(userSettings) }
 
@@ -62,12 +68,12 @@ async function crawlFiles(options: {
   const patterns = fileExtension.map((ext) => `${filePattern}.${ext}` as const)
 
   // Crawl
-  const filesGit = userSettings.git !== false && (await crawlGit(patterns, cwd, globOptions))
+  const filesGit = crawler.git && userSettings.git !== false && (await crawlGit(patterns, cwd, globOptions))
   const useGlob =
-    // `!filesGit` => Git isn't usable => we *have* to use tinyglobby
+    // `!filesGit` => Git isn't used or isn't usable => we *have* to use tinyglobby
     !filesGit ||
-    // `filesGit.length === 0` => fallback to tinyglobby if globFallback is true
-    (filesGit.length === 0 && globFallback)
+    // `filesGit.length === 0` => fallback to tinyglobby if enabled
+    (filesGit.length === 0 && crawler.glob)
   const filesGlob = (useGlob || debug.isActivated) && (await crawlGlob(patterns, globOptions))
   const files = useGlob ? filesGlob : filesGit
   assert(files)

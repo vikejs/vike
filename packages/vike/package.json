@@ -240,6 +240,7 @@
     "./bin.js",
     "./AGENTS.md",
     "./dist/",
+    "./skills/",
     "./abort.js",
     "./api.js",
     "./client.js",
@@ -275,6 +276,7 @@
   "scripts": {
     "dev": "tsc --watch",
     "build": "rimraf dist/ && tsc",
+    "prepack": "node ./scripts/copySkill.mjs",
     "========= Release": "",
     "release": "release-me patch",
     "release:minor": "release-me minor",

@@ -1,2 +1,4 @@
 /dist/
 /node_modules/
+# Generated upon publishing, see scripts/copySkill.mjs
+/skills/
