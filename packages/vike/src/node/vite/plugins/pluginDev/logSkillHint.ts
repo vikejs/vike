@@ -17,6 +17,7 @@ import { isObject } from '../../../../utils/isObject.js'
 import { toPosixPath } from '../../../../utils/path.js'
 import { unique } from '../../../../utils/unique.js'
 import { getVikeConfigInternal, type VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
+import { getCacheValue, setCacheValue } from '../../shared/cache.js'
 import '../../assertEnvVite.js'
 const execFileA = promisify(execFile)
 const importMetaUrl = import.meta.url
@@ -36,7 +37,10 @@ const logDiffers = (skillFilePaths: string[]) => {
 const skillName = 'vike'
 // The skill file shipped by the vike npm package: node_modules/vike/skills/vike/SKILL.md (see packages/vike/scripts/copySkill.mjs)
 const skillFilePathInsidePackage = 'skills/vike/SKILL.md'
-const cacheFilePathRelative = 'node_modules/.vike/cache.json'
+// Cache entry at node_modules/.vike/cache.json, see cache.ts
+// - `false` => the check didn't log anything last time => skip the check (forever, until node_modules/ is removed)
+// - Nothing is written as long as the hint is logged => the check is re-run upon every dev start
+const cacheKey = 'logSkillHint'
 
 // Log a hint if the user didn't install Vike's skill for AI agents (vike/SKILL.md), or if it differs from the official one — https://vike.dev/ai#skill
 // - Vike never modifies the user's repository (https://github.com/vikejs/vike/issues/3493): installing the skill is up to the user (or their AI agent).
@@ -90,8 +94,8 @@ async function checkSkillUnsafe(userRootDir: string): Promise<void> {
   if (!getConfigValueAiSkill(vikeConfig)) return
   globalObject.alreadyChecked = true
 
-  // The check is skipped forever once it didn't log anything (until node_modules/ is removed) — see writeCacheSkip()
-  if (await isCacheSkip(userRootDir)) return
+  // The check is skipped forever once it didn't log anything (until node_modules/ is removed) — see cacheKey
+  if ((await getCacheValue(userRootDir, cacheKey)) === false) return
 
   const rootDir = await getRootDir(userRootDir)
   const skillsDirs = await findSkillsDirs(rootDir)
@@ -99,7 +103,7 @@ async function checkSkillUnsafe(userRootDir: string): Promise<void> {
   // Skip apps that don't seem to use AI agents.
   const isUsingAiAgents = skillsDirs.length > 0 || (await hasAgentFile(userRootDir, rootDir))
   if (!isUsingAiAgents) {
-    await writeCacheSkip(userRootDir)
+    await setCacheValue(userRootDir, cacheKey, false)
     return
   }
 
@@ -115,7 +119,7 @@ async function checkSkillUnsafe(userRootDir: string): Promise<void> {
     const skillFilePaths = skillFilesOutdated.map((f) => toPosixPath(path.relative(userRootDir, f.filePathAbsolute)))
     assertInfo(false, logDiffers(skillFilePaths), { onlyOnce: true })
   } else {
-    await writeCacheSkip(userRootDir)
+    await setCacheValue(userRootDir, cacheKey, false)
   }
 }
 
@@ -225,38 +229,6 @@ async function getSkillContentExpected(): Promise<string | null> {
     return null
   }
   return fileContent
-}
-
-// Cache: node_modules/.vike/cache.json
-// - `{ logSkillHint: false }` => the check didn't log anything last time => skip the check (forever, until node_modules/ is removed)
-// - The check is re-run upon every dev start as long as it logs the hint (nothing is written)
-async function isCacheSkip(userRootDir: string): Promise<boolean> {
-  const cache = await readCache(userRootDir)
-  return cache.logSkillHint === false
-}
-async function writeCacheSkip(userRootDir: string): Promise<void> {
-  const filePath = getCacheFilePath(userRootDir)
-  try {
-    const cache = await readCache(userRootDir)
-    cache.logSkillHint = false
-    await fs.mkdir(path.dirname(filePath), { recursive: true })
-    await fs.writeFile(filePath, `${JSON.stringify(cache, null, 2)}\n`, 'utf8')
-  } catch {
-    // E.g. read-only file system
-  }
-}
-async function readCache(userRootDir: string): Promise<Record<string, unknown>> {
-  const filePath = getCacheFilePath(userRootDir)
-  try {
-    const cache: unknown = JSON.parse(await fs.readFile(filePath, 'utf8'))
-    if (isObject(cache)) return cache
-  } catch {
-    // Missing or invalid cache file
-  }
-  return {}
-}
-function getCacheFilePath(userRootDir: string): string {
-  return path.join(userRootDir, ...cacheFilePathRelative.split('/'))
 }
 
 async function isReadable(filePath: string): Promise<boolean> {
