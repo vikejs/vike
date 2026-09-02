@@ -84,7 +84,7 @@ const config = {
     skillInstall: {
       choices: [
         'Manual',
-        { name: 'skills', icon: iconGitHub },
+        { name: 'skills.sh', icon: iconGitHub },
         { name: 'skills-npm', icon: iconNpm, iconStyle: { objectFit: 'contain' } },
       ],
       default: 'Manual',
