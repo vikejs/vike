@@ -102,7 +102,7 @@ async function checkSkillUnsafe(userRootDir: string): Promise<void> {
   const skillsDirs = await findSkillsDirs(repoRootDir)
 
   // Skip apps that don't seem to use AI agents.
-  const isUsingAiAgents = skillsDirs.length > 0 || (await hasAgentFile(userRootDir, repoRootDir))
+  const isUsingAiAgents = skillsDirs.length > 0 || (await hasAgentMarker(userRootDir, repoRootDir))
   if (!isUsingAiAgents) {
     await setCacheValue(userRootDir, cacheKey, false)
     return
@@ -166,14 +166,35 @@ async function findSkillsDirs(repoRootDir: string): Promise<string[]> {
   return skillsDirs
 }
 
-// Whether the app seems to use AI agents, even without any skills directory.
-async function hasAgentFile(userRootDir: string, repoRootDir: string): Promise<boolean> {
-  for (const dir of unique([userRootDir, repoRootDir])) {
-    for (const fileName of ['AGENTS.md', 'CLAUDE.md']) {
-      if (await isReadable(path.join(dir, fileName))) return true
-    }
-  }
-  return false
+// Whether the app seems to use AI agents, even without any skills directory: instruction files and config directories of AI agents, at the app's root directory and at the repository's root directory.
+const agentMarkers = [
+  // Instruction files
+  'AGENTS.md', // Codex, Cursor, Gemini CLI, GitHub Copilot, Amp, Zed, OpenCode, Jules, Devin, ...
+  'CLAUDE.md', // Claude Code
+  'GEMINI.md', // Gemini CLI
+  '.cursorrules', // Cursor (legacy)
+  '.clinerules', // Cline (file or directory)
+  '.windsurfrules', // Windsurf (legacy)
+  '.github/copilot-instructions.md', // GitHub Copilot
+  '.mcp.json', // Claude Code (project MCP servers)
+  // Config directories
+  '.claude', // Claude Code
+  '.agents', // Codex, Cursor, Gemini CLI, GitHub Copilot, OpenCode, Cline, Amp, Zed, ...
+  '.cursor', // Cursor
+  '.gemini', // Gemini CLI
+  '.windsurf', // Windsurf
+  '.junie', // JetBrains Junie
+  '.kiro', // Kiro
+  '.roo', // Roo Code
+  '.continue', // Continue
+  '.github/instructions', // GitHub Copilot
+]
+async function hasAgentMarker(userRootDir: string, repoRootDir: string): Promise<boolean> {
+  const dirs = unique([userRootDir, repoRootDir])
+  const results = await Promise.all(
+    dirs.flatMap((dir) => agentMarkers.map((marker) => isReadable(path.join(dir, ...marker.split('/'))))),
+  )
+  return results.some(Boolean)
 }
 
 // Find the installed copies of Vike's skill: `vike/SKILL.md` (manual and skills.sh installs) as well as `npm-vike-vike/SKILL.md` (skills-npm installs).
