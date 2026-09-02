@@ -1,16 +1,18 @@
-export { checkVikeSkill }
+export { logSkillHint }
 
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { execFile } from 'node:child_process'
 import { promisify } from 'node:util'
 import { fileURLToPath } from 'node:url'
+import type { ViteDevServer } from 'vite'
 import pc from '@brillout/picocolors'
 import { assert, assertInfo, assertUsage } from '../../../../utils/assert.js'
 import { assertKeys } from '../../../../utils/assertKeys.js'
 import { crawlFiles } from '../../../../utils/crawlFiles.js'
 import { getGlobalObject } from '../../../../utils/getGlobalObject.js'
 import { getVikeConfigError } from '../../../../shared-server-node/getVikeConfigError.js'
+import { setTimeoutUnref } from '../../../../utils/setTimeoutUnref.js'
 import { isObject } from '../../../../utils/isObject.js'
 import { toPosixPath } from '../../../../utils/path.js'
 import { unique } from '../../../../utils/unique.js'
@@ -18,7 +20,7 @@ import { getVikeConfigInternal, type VikeConfigInternal } from '../../shared/res
 import '../../assertEnvVite.js'
 const execFileA = promisify(execFile)
 const importMetaUrl = import.meta.url
-const globalObject = getGlobalObject('vikeSkill.ts', {
+const globalObject = getGlobalObject('logSkillHint.ts', {
   alreadyChecked: false,
 })
 
@@ -28,19 +30,44 @@ const skillName = 'vike'
 const skillFilePathInsidePackage = 'skills/vike/SKILL.md'
 const cacheFilePathRelative = 'node_modules/.vike/cache.json'
 
-// Check whether the user installed Vike's skill for AI agents (vike/SKILL.md) — and log a hint if it's missing or outdated.
-// - Vike never modifies the user's repository: installing the skill is up to the user (or their AI agent) — https://vike.dev/ai#install
-// - https://github.com/vikejs/vike/issues/3493
-async function checkVikeSkill(userRootDir: string): Promise<void> {
+// Log a hint if the user didn't install Vike's skill for AI agents (vike/SKILL.md), or if it's outdated — https://vike.dev/ai#install
+// - Vike never modifies the user's repository (https://github.com/vikejs/vike/issues/3493): installing the skill is up to the user (or their AI agent).
+// - Applied late — 5 seconds after the first request, or at most 10 seconds after the dev server started — so that it never slows down dev start nor the first page requests.
+function logSkillHint(server: ViteDevServer, userRootDir: string): void {
+  let isDone = false
+  const runAfter = (milliseconds: number) => {
+    setTimeoutUnref(() => {
+      if (isDone) return
+      isDone = true
+      checkSkill(userRootDir)
+    }, milliseconds)
+  }
+  if (server.httpServer) {
+    server.httpServer.once('listening', () => runAfter(10 * 1000))
+  } else {
+    // Middleware mode: the HTTP server is owned by the user
+    runAfter(10 * 1000)
+  }
+  let isFirstRequest = true
+  server.middlewares.use((_req, _res, next) => {
+    if (isFirstRequest) {
+      isFirstRequest = false
+      runAfter(5 * 1000)
+    }
+    next()
+  })
+}
+
+async function checkSkill(userRootDir: string): Promise<void> {
   try {
-    await checkVikeSkillUnsafe(userRootDir)
+    await checkSkillUnsafe(userRootDir)
   } catch (err) {
     // Show the error without breaking the dev server. (Expected situations don't throw — e.g. Git missing is handled gracefully.)
     console.error(err)
   }
 }
 
-async function checkVikeSkillUnsafe(userRootDir: string): Promise<void> {
+async function checkSkillUnsafe(userRootDir: string): Promise<void> {
   if (globalObject.alreadyChecked) return
   // Skip CI environments: the hint is meant for the machine of an app developer.
   if (process.env.CI) return
@@ -185,7 +212,7 @@ function normalizeContent(content: string): string {
 }
 
 async function getSkillContentExpected(): Promise<string | null> {
-  // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vike/dist/node/vite/plugins/pluginDev/vikeSkill.js
+  // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vike/dist/node/vite/plugins/pluginDev/logSkillHint.js
   assert(importMetaUrl.includes('/dist/node/vite/plugins/pluginDev/'))
   const filePath = fileURLToPath(new URL(`../../../../../${skillFilePathInsidePackage}`, importMetaUrl))
   // The file is added upon publishing (`$ pnpm publish` => `prepack` script) => it's missing when Vike is linked (e.g. when running an example of the Vike monorepo)

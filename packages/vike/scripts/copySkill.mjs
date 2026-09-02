@@ -1,7 +1,7 @@
 // Copy Vike's skill for AI agents into the npm package: skills/vike/SKILL.md => packages/vike/skills/vike/SKILL.md
 // - Run upon publishing (`prepack` script), see package.json
 // - The repository root file is the single source of truth (it's also what `$ npx skills add vikejs/vike` installs), see https://vike.dev/ai#install
-// - The runtime compares the user's installed skill against the copy, see src/node/vite/plugins/pluginDev/vikeSkill.ts
+// - The runtime compares the user's installed skill against the copy, see src/node/vite/plugins/pluginDev/logSkillHint.ts
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
