@@ -112,8 +112,8 @@ async function checkSkillUnsafe(userRootDir: string): Promise<void> {
     await setCacheValue(userRootDir, cacheKey, false)
   } else {
     checkType<never>(skillState)
-    assert(false)
   }
+  assert(false)
 }
 
 type SkillState =
