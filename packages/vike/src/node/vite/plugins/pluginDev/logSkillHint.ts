@@ -26,11 +26,13 @@ const globalObject = getGlobalObject('logSkillHint.ts', {
 
 const docsUrl = 'https://vike.dev/ai#install'
 const tellAgent = `by telling your agent: ${pc.cyan(`"Follow ${docsUrl}"`)}`
-const logMissing = `Add Vike's skill for AI agents (Claude Code, Codex, Cursor, ...) ${tellAgent}`
+// https://vike.dev/ai#settings
+const suppressHint = `or set ${pc.cyan('+ai.skill')} to ${pc.cyan('false')} to suppress this log`
+const logMissing = `Add Vike's skill for AI agents (Claude Code, Codex, Cursor, ...) ${tellAgent}, ${suppressHint}`
 const logOutdated = (skillFilePaths: string[]) => {
   const isPlural = skillFilePaths.length > 1
   const files = skillFilePaths.map((f) => pc.cyan(f)).join(', ')
-  return `Your Vike skill${isPlural ? 's' : ''} ${files} ${isPlural ? 'are' : 'is'} outdated, update ${isPlural ? 'them' : 'it'} ${tellAgent}`
+  return `Your Vike skill${isPlural ? 's' : ''} ${files} ${isPlural ? 'are' : 'is'} outdated, update ${isPlural ? 'them' : 'it'} ${tellAgent}, ${suppressHint}`
 }
 const skillName = 'vike'
 // The skill file shipped by the vike npm package: node_modules/vike/skills/vike/SKILL.md (see packages/vike/scripts/copySkill.mjs)
