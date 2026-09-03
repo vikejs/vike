@@ -44,7 +44,8 @@ function transformPointerImports(
   const spliceOperations: SpliceOperation[] = []
   // Collect all const declarations to prepend at the top, so that they are
   // available before any code runs (import declarations are hoisted but const
-  // is not, so we must place them at the top to avoid TDZ errors).
+  // is not, so we must place them at the top to avoid TDZ errors). We don't add
+  // a newline because this runs after esbuild generated the source map.
   const constDeclarations: string[] = []
 
   // Performance trick
@@ -130,7 +131,7 @@ function transformPointerImports(
   if (constDeclarations.length === 0 && spliceOperations.length === 0) return null
   const codeWithImportsRemoved = spliceMany(code, spliceOperations)
   if (constDeclarations.length === 0) return codeWithImportsRemoved
-  return constDeclarations.join('') + '\n' + codeWithImportsRemoved
+  return constDeclarations.join('') + codeWithImportsRemoved
 }
 function getImports(code: string): ImportDeclaration[] {
   const result = parseSync(code, {
