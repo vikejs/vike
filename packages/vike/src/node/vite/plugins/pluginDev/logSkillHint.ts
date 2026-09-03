@@ -17,6 +17,7 @@ import { requireResolveOptional } from '../../../../utils/requireResolve.js'
 import { setTimeoutUnref } from '../../../../utils/setTimeoutUnref.js'
 import { isObject } from '../../../../utils/isObject.js'
 import { toPosixPath } from '../../../../utils/path.js'
+import { PROJECT_VERSION } from '../../../../utils/PROJECT_VERSION.js'
 import { unique } from '../../../../utils/unique.js'
 import { getVikeConfigInternal, type VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { getCacheValue, setCacheValue } from '../../shared/cache.js'
@@ -40,7 +41,7 @@ const skillName = 'vike'
 // The skill file shipped by the vike npm package: node_modules/vike/skills/vike/SKILL.md (see packages/vike/scripts/copySkill.mjs)
 const skillFilePathInsidePackage = 'skills/vike/SKILL.md'
 // Cache entry at node_modules/.vike/cache.json, see cache.ts
-// - `false` => the check didn't log anything last time => skip the check (forever, until node_modules/ is removed)
+// - The Vike version (e.g. `"0.4.266"`) => the check didn't log anything last time, with that Vike version => skip the check until Vike is upgraded (the official skill file may change between Vike versions) or node_modules/ is removed
 // - Nothing is written as long as the hint is logged => the check is re-run upon every dev start
 const cacheKey = 'logSkillHint'
 
@@ -97,8 +98,8 @@ async function checkSkillUnsafe(userRootDir: string): Promise<void> {
   if (!getConfigValueAiSkill(vikeConfig)) return
   globalObject.alreadyChecked = true
 
-  // The check is skipped forever once it didn't log anything (until node_modules/ is removed) — see cacheKey
-  if ((await getCacheValue(userRootDir, cacheKey)) === false) return
+  // The check is skipped once it didn't log anything, until Vike is upgraded (or node_modules/ is removed) — see cacheKey
+  if ((await getCacheValue(userRootDir, cacheKey)) === PROJECT_VERSION) return
 
   const skillState = await getSkillState(userRootDir)
   if (skillState.state === 'missing') {
@@ -114,7 +115,7 @@ async function checkSkillUnsafe(userRootDir: string): Promise<void> {
     skillState.state === 'not-using-ai-agents' ||
     skillState.state === 'vike-not-from-npm'
   ) {
-    await setCacheValue(userRootDir, cacheKey, false)
+    await setCacheValue(userRootDir, cacheKey, PROJECT_VERSION)
     return
   }
   checkType<never>(skillState)
@@ -162,10 +163,7 @@ function getConfigValueAiSkill(vikeConfig: VikeConfigInternal): boolean {
   assertKeys(configAi, ['skill'] as const, `Setting ${pc.cyan('ai')}:`)
   const skill: unknown = configAi.skill
   if (skill === undefined) return true
-  assertUsage(
-    typeof skill === 'boolean',
-    `${pc.cyan('+ai.skill')} should be a boolean, see ${pc.underline(docsUrl)}`,
-  )
+  assertUsage(typeof skill === 'boolean', `${pc.cyan('+ai.skill')} should be a boolean, see ${pc.underline(docsUrl)}`)
   return skill
 }
 
