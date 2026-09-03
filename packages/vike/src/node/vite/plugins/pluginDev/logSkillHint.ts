@@ -41,7 +41,7 @@ const skillName = 'vike'
 // The skill file shipped by the vike npm package: node_modules/vike/skills/vike/SKILL.md (see packages/vike/scripts/copySkill.mjs)
 const skillFilePathInsidePackage = 'skills/vike/SKILL.md'
 // Cache entry at node_modules/.vike/cache.json, see cache.ts
-// - The Vike version (e.g. `"0.4.266"`) => the check didn't log anything last time, with that Vike version => skip the check until Vike is upgraded (the official skill file may change between Vike versions) or node_modules/ is removed
+// - `{ skip: true, version }` => the check didn't log anything last time, with that Vike version => skip the check until Vike is upgraded (the official skill file may change between Vike versions) or node_modules/ is removed
 // - Nothing is written as long as the hint is logged => the check is re-run upon every dev start
 const cacheKey = 'logSkillHint'
 
@@ -99,7 +99,8 @@ async function checkSkillUnsafe(userRootDir: string): Promise<void> {
   globalObject.alreadyChecked = true
 
   // The check is skipped once it didn't log anything, until Vike is upgraded (or node_modules/ is removed) — see cacheKey
-  if ((await getCacheValue(userRootDir, cacheKey)) === PROJECT_VERSION) return
+  const cached = await getCacheValue(userRootDir, cacheKey)
+  if (isObject(cached) && cached.skip === true && cached.version === PROJECT_VERSION) return
 
   const skillState = await getSkillState(userRootDir)
   if (skillState.state === 'missing') {
@@ -115,7 +116,7 @@ async function checkSkillUnsafe(userRootDir: string): Promise<void> {
     skillState.state === 'not-using-ai-agents' ||
     skillState.state === 'vike-not-from-npm'
   ) {
-    await setCacheValue(userRootDir, cacheKey, PROJECT_VERSION)
+    await setCacheValue(userRootDir, cacheKey, { skip: true, version: PROJECT_VERSION })
     return
   }
   checkType<never>(skillState)
