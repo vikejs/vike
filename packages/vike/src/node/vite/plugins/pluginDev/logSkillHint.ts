@@ -162,10 +162,7 @@ function getConfigValueAiSkill(vikeConfig: VikeConfigInternal): boolean {
   assertKeys(configAi, ['skill'] as const, `Setting ${pc.cyan('ai')}:`)
   const skill: unknown = configAi.skill
   if (skill === undefined) return true
-  assertUsage(
-    typeof skill === 'boolean',
-    `${pc.cyan('+ai.skill')} should be a boolean, see ${pc.underline(docsUrl)}`,
-  )
+  assertUsage(typeof skill === 'boolean', `${pc.cyan('+ai.skill')} should be a boolean, see ${pc.underline(docsUrl)}`)
   return skill
 }
 
