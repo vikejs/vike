@@ -3,6 +3,7 @@ export { handleAssetsManifest_getBuildConfig }
 export { handleAssetsManifest_isFixEnabled }
 export { handleAssetsManifest_assertUsageCssCodeSplit }
 export { handleAssetsManifest_assertUsageCssTarget }
+export { handleAssetsManifest_assertUsageManifest }
 export { handleAssetsManifest_alignCssTarget }
 
 import fs from 'node:fs/promises'
@@ -10,7 +11,7 @@ import fs_sync from 'node:fs'
 import path from 'node:path'
 import { existsSync } from 'node:fs'
 import type { ViteManifest, ViteManifestEntry } from '../../../../types/ViteManifest.js'
-import { assert, assertWarning } from '../../../../utils/assert.js'
+import { assert, assertUsage, assertWarning } from '../../../../utils/assert.js'
 import { getGlobalObject } from '../../../../utils/getGlobalObject.js'
 import { isEqualStringList } from '../../../../utils/isEqualStringList.js'
 import { isObject } from '../../../../utils/isObject.js'
@@ -277,6 +278,20 @@ function handleAssetsManifest_assertUsageCssCodeSplit(config: ResolvedConfig) {
   )
 }
 
+// https://github.com/vikejs/vike/issues/3505
+function handleAssetsManifest_assertUsageManifest(config: ResolvedConfig) {
+  ;(['client', 'ssr'] as const).forEach((envName) => {
+    const env = config.environments[envName]
+    if (!env) return
+    assertUsage(
+      env.build.manifest !== false,
+      `Setting Vite's configuration ${pc.cyan('build.manifest')} to ${pc.cyan(
+        'false',
+      )} is forbidden: Vike needs Vite's manifest to determine the assets of each page.`,
+    )
+  })
+}
+
 // https://github.com/vikejs/vike/issues/1815
 // https://github.com/vitejs/vite/issues/20505
 type CssTarget = ResolvedConfig['build']['cssTarget']
@@ -372,6 +387,7 @@ async function handleAssetsManifest_getBuildConfig(config: UserConfig) {
     // Required if `ssrEmitAssets: true`, see https://github.com/vitejs/vite/pull/11430#issuecomment-1454800934
     if (config.build?.cssMinify === undefined) build.cssMinify = isVite8OrAbove(config) ? true : 'esbuild'
   }
+  // Cannot be `false`, see handleAssetsManifest_assertUsageManifest()
   if (config.build?.manifest === undefined) build.manifest = true
   /* Already set by vike:build:pluginBuildApp
   if (config.build?.copyPublicDir === undefined) build.copyPublicDir = !isViteServerSide_viteEnvOptional(config)
