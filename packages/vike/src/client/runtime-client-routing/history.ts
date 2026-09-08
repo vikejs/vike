@@ -3,11 +3,12 @@ export { replaceHistoryStateOriginal }
 export { onPopStateBegin }
 export { saveScrollPosition }
 export { initHistory }
+export { isHistoryInert }
 export type { HistoryInfo }
 export type { ScrollPosition }
 
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
-import { assert, assertUsage } from '../../utils/assert.js'
+import { assert, assertUsage, assertWarning } from '../../utils/assert.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import { isObject } from '../../utils/isObject.js'
 import { redirectHard } from '../../utils/redirectHard.js'
@@ -16,7 +17,10 @@ import '../assertEnvClient.js'
 const globalObject = getGlobalObject('history.ts', {
   monkeyPatched: false,
   previous: undefined as any as HistoryInfo,
+  isInert: false,
 })
+// timestamp: 0 => isBackwardNavigation === null (unknown), see initOnPopState.ts
+const stateInert: StateEnhanced = { vike: { timestamp: 0, scrollPosition: null, triggeredBy: 'browser' } }
 initHistory() // we redundantly call initHistory() to ensure it's called early
 globalObject.previous = getHistoryInfo()
 
@@ -47,6 +51,8 @@ function enhance() {
 
 function getState(): StateEnhanced {
   const state = window.history.state as unknown
+  // The browser ignores the History API, see markInertIfNotEnhanced()
+  if (globalObject.isInert && !isEnhanced(state)) return stateInert
   // *Every* state added to the history needs to go through Vike.
   // - Otherwise Vike's `popstate` listener won't work. (Because, for example, if globalObject.previous is outdated => isHashNavigation faulty => client-side navigation is wrongfully skipped.)
   // - Therefore, we have to monkey patch history.pushState() and history.replaceState()
@@ -95,7 +101,7 @@ function pushHistoryState(url: string, overwriteLastHistoryEntry: boolean) {
 function replaceHistoryState(state: StateEnhanced, url?: string) {
   const url_ = url ?? null // Passing `undefined` chokes older Edge versions.
   window.history.replaceState(state, '', url_)
-  assertIsEnhanced(window.history.state as unknown)
+  markInertIfNotEnhanced()
 }
 function replaceHistoryStateOriginal(state: unknown, url?: Parameters<typeof window.history.replaceState>[2]) {
   // Bypass all monkey patches.
@@ -132,12 +138,13 @@ function monkeyPatchHistoryAPI() {
             },
           }
       funcOriginal(state, ...rest)
-      assertIsEnhanced(window.history.state as unknown)
+      markInertIfNotEnhanced()
 
       globalObject.previous = getHistoryInfo()
 
       // Workaround https://github.com/vikejs/vike/issues/2504#issuecomment-3149764736
       queueMicrotask(() => {
+        if (globalObject.isInert) return
         if (isEnhanced(window.history.state)) return
         Object.assign(state, window.history.state as unknown)
         replaceHistoryStateOriginal(
@@ -170,6 +177,30 @@ function isEnhanced(state: unknown): state is StateEnhanced {
 function assertIsEnhanced(state: unknown): asserts state is StateEnhanced {
   if (isEnhanced(state)) return
   assert(false, { state })
+}
+// WebKit gives a cross-origin `<iframe loading="lazy">` no session history entry: history.pushState() and
+// history.replaceState() are silently ignored, `history.state` stays `null`, and location.reload() doesn't help.
+// Client Routing is impossible without the History API, so we fall back to Server Routing (see renderPageClient.ts)
+// instead of crashing hydration. A hard navigation to another URL restores a working History API.
+// https://github.com/vikejs/vike/issues/3509
+function markInertIfNotEnhanced() {
+  if (isEnhanced(window.history.state as unknown)) {
+    globalObject.isInert = false
+    return
+  }
+  globalObject.isInert = true
+  assertWarning(
+    false,
+    [
+      'The browser ignores the History API (this happens in Safari inside a cross-origin iframe with loading="lazy").',
+      'Falling back to Server Routing.',
+      '(Page navigations will use Server Routing instead of Client Routing.)',
+    ].join(' '),
+    { onlyOnce: true },
+  )
+}
+function isHistoryInert(): boolean {
+  return globalObject.isInert
 }
 
 type HistoryInfo = {

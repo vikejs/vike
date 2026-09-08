@@ -37,7 +37,7 @@ import {
   loadPageConfigsLazyClientSide,
   PageContext_loadPageConfigsLazyClientSide,
 } from '../shared/loadPageConfigsLazyClientSide.js'
-import { pushHistoryState, saveScrollPosition } from './history.js'
+import { isHistoryInert, pushHistoryState, saveScrollPosition } from './history.js'
 import {
   addNewPageContextAborted,
   type ErrorAbort,
@@ -139,7 +139,11 @@ async function renderPageClient(renderArgs: RenderArgs) {
     isFirstRender,
   }
 
-  if (globalObject.clientRoutingIsDisabled) {
+  // - Client Routing is disabled upon failing to fetch static assets, see disableClientRouting()
+  // - While the History API is inert only URL changes need Server Routing: history.pushState() has no effect (see
+  //   isHistoryInert()) and the hard navigation restores a working History API. Same-URL re-renders never touch history.
+  const historyIsInert = isHistoryInert() && !isFirstRender && getCurrentUrl() !== urlOriginal
+  if (globalObject.clientRoutingIsDisabled || historyIsInert) {
     redirectHard(urlOriginal)
     return
   }
