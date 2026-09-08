@@ -3,7 +3,6 @@ export { handleAssetsManifest_getBuildConfig }
 export { handleAssetsManifest_isFixEnabled }
 export { handleAssetsManifest_assertUsageCssCodeSplit }
 export { handleAssetsManifest_assertUsageCssTarget }
-export { handleAssetsManifest_overrideManifest }
 export { handleAssetsManifest_alignCssTarget }
 
 import fs from 'node:fs/promises'
@@ -278,23 +277,6 @@ function handleAssetsManifest_assertUsageCssCodeSplit(config: ResolvedConfig) {
   )
 }
 
-// https://github.com/vikejs/vike/issues/3505
-function handleAssetsManifest_overrideManifest(config: ResolvedConfig) {
-  const buildConfigs = [
-    config.build,
-    ...(['client', 'ssr'] as const).map((envName) => config.environments[envName]?.build),
-  ]
-  buildConfigs.forEach((build) => {
-    if (!build || build.manifest !== false) return
-    assertWarning(
-      false,
-      `Setting Vite's configuration ${pc.cyan('build.manifest')} to ${pc.cyan('false')} is ignored — Vike overrides it to ${pc.cyan('true')} because Vike needs Vite's manifest to determine the assets of each page. Note that Vike removes the manifest file after consuming it (${pc.cyan('dist/client/')} doesn't contain the manifest file), see ${pc.underline('https://github.com/vikejs/vike/issues/3505#issuecomment-5563748527')}`,
-      { onlyOnce: true },
-    )
-    build.manifest = true
-  })
-}
-
 // https://github.com/vikejs/vike/issues/1815
 // https://github.com/vitejs/vite/issues/20505
 type CssTarget = ResolvedConfig['build']['cssTarget']
@@ -390,8 +372,13 @@ async function handleAssetsManifest_getBuildConfig(config: UserConfig) {
     // Required if `ssrEmitAssets: true`, see https://github.com/vitejs/vite/pull/11430#issuecomment-1454800934
     if (config.build?.cssMinify === undefined) build.cssMinify = isVite8OrAbove(config) ? true : 'esbuild'
   }
-  // Cannot be `false`, see handleAssetsManifest_overrideManifest()
-  if (config.build?.manifest === undefined) build.manifest = true
+  // Cannot be `false`: Vike needs Vite's manifest, see https://github.com/vikejs/vike/issues/3505
+  assertWarning(
+    config.build?.manifest !== false,
+    `Setting Vite's configuration ${pc.cyan('build.manifest')} to ${pc.cyan('false')} is ignored — Vike overrides it to ${pc.cyan('true')} because Vike needs Vite's manifest to determine the assets of each page. Note that Vike removes the manifest file after consuming it (${pc.cyan('dist/client/')} doesn't contain the manifest file), see ${pc.underline('https://github.com/vikejs/vike/issues/3505#issuecomment-5563748527')}`,
+    { onlyOnce: true },
+  )
+  if (config.build?.manifest === undefined || config.build?.manifest === false) build.manifest = true
   /* Already set by vike:build:pluginBuildApp
   if (config.build?.copyPublicDir === undefined) build.copyPublicDir = !isViteServerSide_viteEnvOptional(config)
   */
