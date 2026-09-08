@@ -24,7 +24,7 @@ import { getConfigValueBuildTime } from '../../../../shared-server-client/page-c
 import { isViteServerSide_viteEnvOptional } from '../../shared/isViteServerSide.js'
 import {
   handleAssetsManifest_assertUsageCssCodeSplit,
-  handleAssetsManifest_assertUsageManifest,
+  handleAssetsManifest_overrideManifest,
   handleAssetsManifest_getBuildConfig,
   handleAssetsManifest_alignCssTarget,
 } from './handleAssetsManifest.js'
@@ -43,7 +43,7 @@ function pluginBuildConfig(): Plugin[] {
           handleAssetsManifest_alignCssTarget(config)
           onSetupBuild()
           assertRollupInput(config)
-          handleAssetsManifest_assertUsageManifest(config)
+          handleAssetsManifest_overrideManifest(config)
           const entries = await getEntries(config)
           assert(Object.keys(entries).length > 0)
           config.build.rollupOptions.input = injectRollupInputs(entries, config)
