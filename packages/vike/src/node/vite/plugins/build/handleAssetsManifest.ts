@@ -374,7 +374,7 @@ async function handleAssetsManifest_getBuildConfig(config: UserConfig) {
   }
   assertWarning(
     config.build?.manifest !== false,
-    `Setting Vite's configuration ${pc.cyan('build.manifest')} to ${pc.cyan('false')} is ignored — Vike overrides it to ${pc.cyan('true')} because Vike needs the manifest. Note that Vike removes the client-side manifest file after consuming it, see ${pc.underline('https://github.com/vikejs/vike/issues/3505#issuecomment-5563748527')}`,
+    `Setting Vite's configuration ${pc.cyan('build.manifest')} to ${pc.cyan('false')} is ignored — Vike overrides it to ${pc.cyan('true')} because Vike needs the manifest. Note that Vike removes the manifest from the client-side bundle, see ${pc.underline('https://github.com/vikejs/vike/issues/3505#issuecomment-5563748527')}`,
     { onlyOnce: true },
   )
   if (config.build?.manifest === undefined || config.build?.manifest === false) build.manifest = true
