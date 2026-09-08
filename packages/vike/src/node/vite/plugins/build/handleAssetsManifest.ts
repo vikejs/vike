@@ -372,10 +372,9 @@ async function handleAssetsManifest_getBuildConfig(config: UserConfig) {
     // Required if `ssrEmitAssets: true`, see https://github.com/vitejs/vite/pull/11430#issuecomment-1454800934
     if (config.build?.cssMinify === undefined) build.cssMinify = isVite8OrAbove(config) ? true : 'esbuild'
   }
-  // Cannot be `false`: Vike needs Vite's manifest, see https://github.com/vikejs/vike/issues/3505
   assertWarning(
     config.build?.manifest !== false,
-    `Setting Vite's configuration ${pc.cyan('build.manifest')} to ${pc.cyan('false')} is ignored — Vike overrides it to ${pc.cyan('true')} because Vike needs Vite's manifest to determine the assets of each page. Note that Vike removes the manifest file after consuming it (${pc.cyan('dist/client/')} doesn't contain the manifest file), see ${pc.underline('https://github.com/vikejs/vike/issues/3505#issuecomment-5563748527')}`,
+    `Setting Vite's configuration ${pc.cyan('build.manifest')} to ${pc.cyan('false')} is ignored — Vike overrides it to ${pc.cyan('true')} because Vike needs the manifest. Note that Vike removes the client-side manifest file after consuming it, see ${pc.underline('https://github.com/vikejs/vike/issues/3505#issuecomment-5563748527')}`,
     { onlyOnce: true },
   )
   if (config.build?.manifest === undefined || config.build?.manifest === false) build.manifest = true
