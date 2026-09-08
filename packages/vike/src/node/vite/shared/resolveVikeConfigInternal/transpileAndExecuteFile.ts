@@ -8,6 +8,7 @@ import {
   build,
   type BuildResult,
   type BuildOptions,
+  type Loader,
   formatMessages,
   type Message,
   version,
@@ -17,6 +18,7 @@ import {
 import fs from 'node:fs'
 import path from 'node:path'
 import crypto from 'node:crypto'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import pc from '@brillout/picocolors'
 import { import_ } from '@brillout/import'
 import { assert, assertWarning } from '../../../../utils/assert.js'
@@ -43,6 +45,8 @@ const debug = createDebug('vike:pointer-imports')
 const debugEsbuildResolve = createDebug('vike:esbuild-resolve')
 const debugConfig = createDebug('vike:config')
 if (debugEsbuildResolve.isActivated) debugEsbuildResolve('esbuild version', version)
+const sourceMapCommentPrefix = '//# source' + 'MappingURL=data:application/json;base64,'
+const inlineSourceMapRE = new RegExp(`${escapeRegExp(sourceMapCommentPrefix)}([A-Za-z0-9+/=]+)\\s*$`)
 
 type FileExports = { fileExports: Record<string, unknown> }
 
@@ -149,10 +153,15 @@ async function transpileWithEsbuild(
 ) {
   const entryFilePath = filePath.filePathAbsoluteFilesystem
   const entryFileDir = path.posix.dirname(entryFilePath)
+  const dirnameVarName = '__vike_injected_original_dirname'
+  const filenameVarName = '__vike_injected_original_filename'
+  const importMetaUrlVarName = '__vike_injected_original_import_meta_url'
+  const importMetaResolveVarName = '__vike_injected_original_import_meta_resolve'
   const options: BuildOptions = {
     platform: 'node',
     entryPoints: [entryFilePath],
     sourcemap: 'inline',
+    sourceRoot: `${entryFileDir}/`,
     write: false,
     target: ['node14.18', 'node16'],
     outfile: path.posix.join(
@@ -164,6 +173,25 @@ async function transpileWithEsbuild(
     logLevel: 'silent',
     format: 'esm',
     absWorkingDir: userRootDir,
+    define: {
+      __dirname: dirnameVarName,
+      __filename: filenameVarName,
+      'import.meta.url': importMetaUrlVarName,
+      'import.meta.dirname': dirnameVarName,
+      'import.meta.filename': filenameVarName,
+      'import.meta.main': 'false',
+      'import.meta.resolve': importMetaResolveVarName,
+    },
+    banner: {
+      js:
+        'import { createRequire as __vike_createRequire } from "node:module";' +
+        'import { pathToFileURL as __vike_pathToFileURL } from "node:url";' +
+        'const __vike_import_meta_resolve = (specifier, importer) => {' +
+        'if (/^(?:\\.{1,2}\\/|\\/|file:)/.test(specifier)) return new URL(specifier, importer).href;' +
+        'const resolved = __vike_createRequire(importer).resolve(specifier);' +
+        'return resolved.startsWith("node:") ? resolved : __vike_pathToFileURL(resolved).href;' +
+        '};',
+    },
     // Disable tree-shaking to avoid dead-code elimination, so that unused imports aren't removed.
     // Esbuild still sometimes removes unused imports because of TypeScript: https://github.com/evanw/esbuild/issues/3034
     treeShaking: false,
@@ -173,7 +201,29 @@ async function transpileWithEsbuild(
   }
 
   const pointerImports: Record<string, boolean> = {}
+  pointerImports['node:module'] = false
+  pointerImports['node:url'] = false
   options.plugins = [
+    {
+      name: 'vike:inject-file-scope-variables',
+      setup(build) {
+        build.onLoad({ filter: /\.[cm]?[jt]sx?$/ }, async (args) => {
+          const id = toPosixPath(args.path)
+          const code = fs.readFileSync(id, 'utf-8')
+          esbuildCache.vikeConfigDependencies.add(id)
+          const injectValues =
+            `const ${dirnameVarName} = ${JSON.stringify(path.posix.dirname(id))};` +
+            `const ${filenameVarName} = ${JSON.stringify(id)};` +
+            `const ${importMetaUrlVarName} = ${JSON.stringify(pathToFileURL(id).href)};` +
+            `const ${importMetaResolveVarName} = (specifier, importer = ${importMetaUrlVarName}) => ` +
+            `__vike_import_meta_resolve(specifier, importer);`
+          return {
+            contents: injectFileScopeVariables(code, injectValues),
+            loader: getEsbuildLoader(id),
+          }
+        })
+      },
+    },
     // Determine whether an import should be:
     //  - A pointer import
     //  - Externalized
@@ -348,12 +398,104 @@ async function transpileWithEsbuild(
     esbuildCache.vikeConfigDependencies.add(filePathAbsoluteFilesystem)
   })
 
-  const code = result.outputFiles![0]!.text
+  const code = normalizeInlineSourceMapSources(result.outputFiles![0]!.text, entryFileDir)
   assert(typeof code === 'string')
   return { code, pointerImports }
 }
 
+function normalizeInlineSourceMapSources(code: string, sourceDir: string): string {
+  const match = code.match(inlineSourceMapRE)
+  if (!match) return code
+
+  const sourceMapBase64 = match[1]!
+  const sourceMap = JSON.parse(Buffer.from(sourceMapBase64, 'base64').toString('utf-8')) as {
+    sourceRoot?: string
+    sources?: string[]
+  }
+  if (!Array.isArray(sourceMap.sources)) return code
+
+  // The generated artifact is imported from node_modules/.vike-temp, so relative
+  // sources need to be made independent from the artifact's runtime location.
+  sourceMap.sources = sourceMap.sources.map((source) =>
+    normalizeSourceMapSource(source, sourceMap.sourceRoot, sourceDir),
+  )
+  delete sourceMap.sourceRoot
+
+  const sourceMapNormalizedBase64 = Buffer.from(JSON.stringify(sourceMap), 'utf-8').toString('base64')
+  return code.replace(inlineSourceMapRE, `${sourceMapCommentPrefix}${sourceMapNormalizedBase64}`)
+}
+
+function normalizeSourceMapSource(source: string, sourceRoot: string | undefined, sourceDir: string): string {
+  if (source.startsWith('file://')) return fileURLToPath(source)
+  if (path.posix.isAbsolute(source)) return source
+  if (sourceRoot) {
+    if (sourceRoot.startsWith('file://')) return fileURLToPath(new URL(source, sourceRoot))
+    return path.posix.join(sourceRoot, source)
+  }
+  return path.posix.join(sourceDir, source)
+}
+
+function escapeRegExp(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+function injectFileScopeVariables(code: string, injectValues: string): string {
+  // Keep the original line numbers stable for source maps. The first line's
+  // columns can be offset by the injected prefix.
+  if (!code.startsWith('#!')) {
+    return injectValues + code
+  }
+  let firstLineEndIndex = code.indexOf('\n')
+  if (firstLineEndIndex < 0) firstLineEndIndex = code.length
+  return code.slice(0, firstLineEndIndex + 1) + injectValues + code.slice(firstLineEndIndex + 1)
+}
+
+function getEsbuildLoader(filePath: string): Loader {
+  const fileExtension = path.posix.extname(filePath)
+  if (fileExtension === '.ts' || fileExtension === '.mts' || fileExtension === '.cts') return 'ts'
+  if (fileExtension === '.tsx') return 'tsx'
+  if (fileExtension === '.jsx') return 'jsx'
+  return 'js'
+}
+
 async function executeTranspiledFile(filePath: FilePathResolved, code: string) {
+  const { filePathAbsoluteFilesystem } = filePath
+
+  const vikeTempDir = findNearestNodeModules(path.posix.dirname(filePathAbsoluteFilesystem))
+  if (!vikeTempDir) {
+    return await executeTranspiledFileNextToSource(filePath, code)
+  }
+
+  const fileHash = crypto
+    .createHash('sha256')
+    .update(`${filePathAbsoluteFilesystem}\0${code}`)
+    .digest('hex')
+    .slice(0, 12)
+  const fileName = `${path.posix.basename(filePathAbsoluteFilesystem)}.build-${fileHash}.mjs`
+
+  const filePathTmp = path.posix.join(vikeTempDir, '.vike-temp', fileName)
+  try {
+    fs.mkdirSync(path.posix.dirname(filePathTmp), { recursive: true })
+    fs.writeFileSync(filePathTmp, code)
+  } catch (err) {
+    if (!isWriteFailure(err)) throw err
+    return await executeTranspiledFileNextToSource(filePath, code)
+  }
+  const clean = () => {
+    try {
+      fs.unlinkSync(filePathTmp)
+    } catch {}
+  }
+  let fileExports: Record<string, unknown> = {}
+  try {
+    fileExports = await executeFile(filePathTmp, filePath)
+  } finally {
+    clean()
+  }
+  return fileExports
+}
+
+async function executeTranspiledFileNextToSource(filePath: FilePathResolved, code: string) {
   const { filePathAbsoluteFilesystem } = filePath
   // Alternative to using a temporary file: https://github.com/vitejs/vite/pull/13269
   //  - But seems to break source maps, so I don't think it's worth it
@@ -376,6 +518,44 @@ async function executeTranspiledFile(filePath: FilePathResolved, code: string) {
     clean()
   }
   return fileExports
+}
+
+function findNearestNodeModules(basedir: string): string | null {
+  assertPosixPath(basedir)
+  while (basedir) {
+    const nodeModulesDir = path.posix.join(basedir, 'node_modules')
+    if (tryStatSync(nodeModulesDir)?.isDirectory()) {
+      return nodeModulesDir
+    }
+
+    const nextBasedir = path.posix.dirname(basedir)
+    if (nextBasedir === basedir) break
+    basedir = nextBasedir
+  }
+
+  return null
+}
+
+function tryStatSync(file: string): fs.Stats | undefined {
+  try {
+    // The "throwIfNoEntry" is a performance optimization for cases where the file does not exist
+    return fs.statSync(file, { throwIfNoEntry: false })
+  } catch {
+    // Ignore errors
+  }
+}
+
+function isWriteFailure(err: unknown): boolean {
+  if (!isObject(err)) return false
+  const code = err.code
+  return (
+    code === 'EACCES' ||
+    code === 'EPERM' ||
+    code === 'EROFS' ||
+    code === 'ENOENT' ||
+    code === 'ENOTDIR' ||
+    code === 'EISDIR'
+  )
 }
 
 async function executeFile(filePathToExecuteAbsoluteFilesystem: string, filePathSourceFile: FilePathResolved) {
