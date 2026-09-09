@@ -3,11 +3,12 @@ export { replaceHistoryStateOriginal }
 export { onPopStateBegin }
 export { saveScrollPosition }
 export { initHistory }
+export { isHistoryInert }
 export type { HistoryInfo }
 export type { ScrollPosition }
 
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
-import { assert, assertUsage } from '../../utils/assert.js'
+import { assertUsage, assertWarning } from '../../utils/assert.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import { isObject } from '../../utils/isObject.js'
 import { redirectHard } from '../../utils/redirectHard.js'
@@ -16,6 +17,7 @@ import '../assertEnvClient.js'
 const globalObject = getGlobalObject('history.ts', {
   monkeyPatched: false,
   previous: undefined as any as HistoryInfo,
+  isInert: false,
 })
 initHistory() // we redundantly call initHistory() to ensure it's called early
 globalObject.previous = getHistoryInfo()
@@ -50,10 +52,11 @@ function getState(): StateEnhanced {
   // *Every* state added to the history needs to go through Vike.
   // - Otherwise Vike's `popstate` listener won't work. (Because, for example, if globalObject.previous is outdated => isHashNavigation faulty => client-side navigation is wrongfully skipped.)
   // - Therefore, we have to monkey patch history.pushState() and history.replaceState()
-  // - Therefore, we need the assert() below to ensure history.state has been enhanced by Vike
-  //   - If users stumble upon this assert() then let's make it a assertUsage()
-  assertIsEnhanced(state)
-  return state
+  // - Therefore, history.state is always enhanced — unless the browser ignores the History API, see markInert()
+  if (isEnhanced(state)) return state
+  markInert()
+  // timestamp: 0 => isBackwardNavigation === null (unknown), see initOnPopState.ts
+  return { vike: { timestamp: 0, scrollPosition: null, triggeredBy: 'browser' } }
 }
 
 function getScrollPosition(): ScrollPosition {
@@ -95,7 +98,6 @@ function pushHistoryState(url: string, overwriteLastHistoryEntry: boolean) {
 function replaceHistoryState(state: StateEnhanced, url?: string) {
   const url_ = url ?? null // Passing `undefined` chokes older Edge versions.
   window.history.replaceState(state, '', url_)
-  assertIsEnhanced(window.history.state as unknown)
 }
 function replaceHistoryStateOriginal(state: unknown, url?: Parameters<typeof window.history.replaceState>[2]) {
   // Bypass all monkey patches.
@@ -132,7 +134,6 @@ function monkeyPatchHistoryAPI() {
             },
           }
       funcOriginal(state, ...rest)
-      assertIsEnhanced(window.history.state as unknown)
 
       globalObject.previous = getHistoryInfo()
 
@@ -167,9 +168,25 @@ function isEnhanced(state: unknown): state is StateEnhanced {
   }
   return false
 }
-function assertIsEnhanced(state: unknown): asserts state is StateEnhanced {
-  if (isEnhanced(state)) return
-  assert(false, { state })
+// In Safari, inside a cross-origin `<iframe loading="lazy">`, history.pushState() and history.replaceState() are silently
+// ignored and `history.state` stays `null` — also after location.reload(). Client Routing cannot work without the
+// History API, so we fall back to Server Routing (see renderPageClient.ts) instead of crashing hydration: the hard
+// navigation loads a new document, which has a working History API.
+// https://github.com/vikejs/vike/issues/3509
+function markInert() {
+  globalObject.isInert = true
+  assertWarning(
+    false,
+    [
+      'The browser ignores the History API (e.g. Safari inside a cross-origin <iframe loading="lazy">).',
+      'Falling back to Server Routing.',
+      '(Page navigations will use Server Routing instead of Client Routing.)',
+    ].join(' '),
+    { onlyOnce: true },
+  )
+}
+function isHistoryInert(): boolean {
+  return globalObject.isInert
 }
 
 type HistoryInfo = {

@@ -37,7 +37,7 @@ import {
   loadPageConfigsLazyClientSide,
   PageContext_loadPageConfigsLazyClientSide,
 } from '../shared/loadPageConfigsLazyClientSide.js'
-import { pushHistoryState, saveScrollPosition } from './history.js'
+import { isHistoryInert, pushHistoryState, saveScrollPosition } from './history.js'
 import {
   addNewPageContextAborted,
   type ErrorAbort,
@@ -139,7 +139,11 @@ async function renderPageClient(renderArgs: RenderArgs) {
     isFirstRender,
   }
 
-  if (globalObject.clientRoutingIsDisabled) {
+  // Fall back to Server Routing when:
+  // - Client Routing is disabled, see disableClientRouting()
+  // - The browser ignores the History API, see isHistoryInert(). Only a URL change needs the History API (see changeUrl()):
+  //   a same-URL re-render stays client-side — a hard navigation to the current URL wouldn't fix the History API anyway.
+  if (globalObject.clientRoutingIsDisabled || (isHistoryInert() && urlOriginal !== getCurrentUrl())) {
     redirectHard(urlOriginal)
     return
   }
