@@ -3,12 +3,11 @@ export { replaceHistoryStateOriginal }
 export { onPopStateBegin }
 export { saveScrollPosition }
 export { initHistory }
-export { isHistoryInert }
 export type { HistoryInfo }
 export type { ScrollPosition }
 
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
-import { assertUsage, assertWarning } from '../../utils/assert.js'
+import { assertUsage } from '../../utils/assert.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import { isObject } from '../../utils/isObject.js'
 import { redirectHard } from '../../utils/redirectHard.js'
@@ -17,7 +16,6 @@ import '../assertEnvClient.js'
 const globalObject = getGlobalObject('history.ts', {
   monkeyPatched: false,
   previous: undefined as any as HistoryInfo,
-  isInert: false,
 })
 initHistory() // we redundantly call initHistory() to ensure it's called early
 globalObject.previous = getHistoryInfo()
@@ -45,14 +43,6 @@ function enhance() {
     },
   }
   replaceHistoryState(stateEnhanced)
-  if (isEnhanced(window.history.state as unknown)) return
-  // Our write didn't stick. Retry while bypassing all monkey patches, to tell apart:
-  // - another tool overwrote the state we just wrote => the retry sticks (and repairs it), see
-  //   https://github.com/vikejs/vike/issues/2504
-  // - the browser ignores the History API => the retry doesn't stick either, see markInert()
-  replaceHistoryStateOriginal(stateEnhanced)
-  if (isEnhanced(window.history.state as unknown)) return
-  markInert()
 }
 
 function getState(): StateEnhanced {
@@ -60,9 +50,10 @@ function getState(): StateEnhanced {
   // *Every* state added to the history needs to go through Vike.
   // - Otherwise Vike's `popstate` listener won't work. (Because, for example, if globalObject.previous is outdated => isHashNavigation faulty => client-side navigation is wrongfully skipped.)
   // - Therefore, we have to monkey patch history.pushState() and history.replaceState()
-  // - Therefore, history.state is usually enhanced. When it isn't — the browser ignores the History API (see
-  //   markInert()), or another tool overwrote it (https://github.com/vikejs/vike/issues/2504) — we treat it as
-  //   unknown instead of crashing: timestamp 0 => isBackwardNavigation === null (see initOnPopState.ts)
+  // - Therefore, history.state is usually enhanced. When it isn't — another tool overwrote it
+  //   (https://github.com/vikejs/vike/issues/2504), or the browser ignores the History API
+  //   (https://github.com/vikejs/vike/issues/3509) — we treat it as unknown instead of crashing:
+  //   timestamp 0 => isBackwardNavigation === null (see initOnPopState.ts)
   if (isEnhanced(state)) return state
   return { vike: { timestamp: 0, scrollPosition: null, triggeredBy: 'browser' } }
 }
@@ -175,27 +166,6 @@ function isEnhanced(state: unknown): state is StateEnhanced {
     return true
   }
   return false
-}
-// WebKit gives a lazily loaded cross-origin iframe no session history entry, so history.pushState() and
-// history.replaceState() are silently ignored and `history.state` stays `null` — location.reload() doesn't help
-// either. Client Routing cannot work without the History API (the URL would never change), so we fall back to Server
-// Routing (see renderPageClient.ts) instead of crashing hydration: navigating to another URL loads a new document,
-// which does get a history entry and thus a working History API.
-// https://github.com/vikejs/vike/issues/3509 https://bugs.webkit.org/show_bug.cgi?id=227474
-function markInert() {
-  globalObject.isInert = true
-  assertWarning(
-    false,
-    [
-      'The browser ignores the History API (e.g. Safari inside a lazily loaded cross-origin iframe).',
-      'Falling back to Server Routing.',
-      '(Page navigations will use Server Routing instead of Client Routing.)',
-    ].join(' '),
-    { onlyOnce: true },
-  )
-}
-function isHistoryInert(): boolean {
-  return globalObject.isInert
 }
 
 type HistoryInfo = {

@@ -37,7 +37,7 @@ import {
   loadPageConfigsLazyClientSide,
   PageContext_loadPageConfigsLazyClientSide,
 } from '../shared/loadPageConfigsLazyClientSide.js'
-import { isHistoryInert, pushHistoryState, saveScrollPosition } from './history.js'
+import { pushHistoryState, saveScrollPosition } from './history.js'
 import {
   addNewPageContextAborted,
   type ErrorAbort,
@@ -139,11 +139,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     isFirstRender,
   }
 
-  // Fall back to Server Routing when:
-  // - Client Routing is disabled, see disableClientRouting()
-  // - The browser ignores the History API, see isHistoryInert(). Only a URL change needs the History API (see changeUrl()):
-  //   a same-URL re-render stays client-side — a hard navigation to the current URL wouldn't fix the History API anyway.
-  if (globalObject.clientRoutingIsDisabled || (isHistoryInert() && urlOriginal !== getCurrentUrl())) {
+  if (globalObject.clientRoutingIsDisabled) {
     redirectHard(urlOriginal)
     return
   }
@@ -513,7 +509,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
       }
     }
 
-    changeUrl(urlOriginal, overwriteLastHistoryEntry)
+    if (!changeUrl(urlOriginal, overwriteLastHistoryEntry)) return
     globalObject.previousPageContext = pageContext
     // There should never be concurrent onRenderClient() calls
     assert(globalObject.onRenderClientPreviousPromise === undefined)
@@ -667,9 +663,26 @@ declare global {
   var _vike: VikeGlobalInternal
 }
 
-function changeUrl(url: string, overwriteLastHistoryEntry: boolean) {
-  if (getCurrentUrl() === url) return
+/** Returns `false` if Client Routing had to be abandoned in favor of Server Routing. */
+function changeUrl(url: string, overwriteLastHistoryEntry: boolean): boolean {
+  if (getCurrentUrl() === url) return true
   pushHistoryState(url, overwriteLastHistoryEntry)
+  if (getCurrentUrl() === url) return true
+  // The browser ignored the History API: the URL didn't change. WebKit does this inside a lazily loaded cross-origin
+  // iframe, which it gives no session history entry. Client Routing is impossible without being able to change the
+  // URL, so we fall back to Server Routing. The hard navigation loads a new document, which does get a history entry
+  // and thus a working History API. (Reloading the current URL wouldn't: it doesn't create an entry either.)
+  // https://github.com/vikejs/vike/issues/3509 https://bugs.webkit.org/show_bug.cgi?id=227474
+  assertWarning(
+    false,
+    [
+      'The browser ignores the History API (e.g. Safari inside a lazily loaded cross-origin iframe).',
+      'Falling back to Server Routing.',
+    ].join(' '),
+    { onlyOnce: true },
+  )
+  redirectHard(url)
+  return false
 }
 
 function disableClientRouting(err: unknown, log: boolean) {
