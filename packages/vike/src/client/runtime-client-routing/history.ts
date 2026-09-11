@@ -7,7 +7,7 @@ export type { HistoryInfo }
 export type { ScrollPosition }
 
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
-import { assertUsage } from '../../utils/assert.js'
+import { assertUsage, assertWarning } from '../../utils/assert.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import { isObject } from '../../utils/isObject.js'
 import { redirectHard } from '../../utils/redirectHard.js'
@@ -93,6 +93,14 @@ function pushHistoryState(url: string, overwriteLastHistoryEntry: boolean) {
   } else {
     replaceHistoryState(getState(), url)
   }
+  if (getCurrentUrl() === url) return
+  // The browser ignored the History API: the URL didn't change. WebKit does this inside a lazily loaded cross-origin
+  // iframe, which it gives no session history entry (https://bugs.webkit.org/show_bug.cgi?id=227474). Client Routing
+  // is impossible without being able to change the URL => fall back to Server Routing. The hard navigation loads a new
+  // document, which does get a history entry and thus a working History API. (Reloading the current URL wouldn't.)
+  // https://github.com/vikejs/vike/issues/3509
+  assertWarning(false, 'The browser ignores the History API => falling back to Server Routing.', { onlyOnce: true })
+  redirectHard(url)
 }
 function replaceHistoryState(state: StateEnhanced, url?: string) {
   const url_ = url ?? null // Passing `undefined` chokes older Edge versions.
