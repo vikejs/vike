@@ -7,7 +7,7 @@ export type { HistoryInfo }
 export type { ScrollPosition }
 
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
-import { assert, assertUsage } from '../../utils/assert.js'
+import { assertUsage, assertWarning } from '../../utils/assert.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import { isObject } from '../../utils/isObject.js'
 import { redirectHard } from '../../utils/redirectHard.js'
@@ -50,10 +50,10 @@ function getState(): StateEnhanced {
   // *Every* state added to the history needs to go through Vike.
   // - Otherwise Vike's `popstate` listener won't work. (Because, for example, if globalObject.previous is outdated => isHashNavigation faulty => client-side navigation is wrongfully skipped.)
   // - Therefore, we have to monkey patch history.pushState() and history.replaceState()
-  // - Therefore, we need the assert() below to ensure history.state has been enhanced by Vike
-  //   - If users stumble upon this assert() then let's make it a assertUsage()
-  assertIsEnhanced(state)
-  return state
+  // - Therefore, history.state is usually enhanced — if it isn't (another tool overwrote it, or the browser ignores
+  //   the History API) then we treat it as unknown: timestamp 0 => isBackwardNavigation === null
+  if (isEnhanced(state)) return state
+  return { vike: { timestamp: 0, scrollPosition: null, triggeredBy: 'browser' } }
 }
 
 function getScrollPosition(): ScrollPosition {
@@ -91,11 +91,16 @@ function pushHistoryState(url: string, overwriteLastHistoryEntry: boolean) {
   } else {
     replaceHistoryState(getState(), url)
   }
+  if (getCurrentUrl() === url) return
+  // The browser ignored the History API (WebKit does this inside a lazily loaded cross-origin iframe, which it gives
+  // no session history entry) => Client Routing is impossible => fall back to Server Routing. The hard navigation
+  // creates a history entry, restoring the History API. https://github.com/vikejs/vike/issues/3509
+  assertWarning(false, 'The browser ignores the History API => falling back to Server Routing.', { onlyOnce: true })
+  redirectHard(url)
 }
 function replaceHistoryState(state: StateEnhanced, url?: string) {
   const url_ = url ?? null // Passing `undefined` chokes older Edge versions.
   window.history.replaceState(state, '', url_)
-  assertIsEnhanced(window.history.state as unknown)
 }
 function replaceHistoryStateOriginal(state: unknown, url?: Parameters<typeof window.history.replaceState>[2]) {
   // Bypass all monkey patches.
@@ -132,7 +137,6 @@ function monkeyPatchHistoryAPI() {
             },
           }
       funcOriginal(state, ...rest)
-      assertIsEnhanced(window.history.state as unknown)
 
       globalObject.previous = getHistoryInfo()
 
@@ -166,10 +170,6 @@ function isEnhanced(state: unknown): state is StateEnhanced {
     return true
   }
   return false
-}
-function assertIsEnhanced(state: unknown): asserts state is StateEnhanced {
-  if (isEnhanced(state)) return
-  assert(false, { state })
 }
 
 type HistoryInfo = {
