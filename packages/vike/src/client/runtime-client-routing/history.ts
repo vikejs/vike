@@ -20,15 +20,6 @@ const globalObject = getGlobalObject('history.ts', {
 initHistory() // we redundantly call initHistory() to ensure it's called early
 globalObject.previous = getHistoryInfo()
 
-type StateEnhanced = {
-  vike: {
-    timestamp: number
-    scrollPosition: null | ScrollPosition
-    triggeredBy: 'user' | 'vike' | 'browser'
-  }
-}
-type ScrollPosition = { x: number; y: number }
-
 function changeUrl(url: string, overwriteLastHistoryEntry: boolean) {
   if (getCurrentUrl() === url) return
   if (!overwriteLastHistoryEntry) {
@@ -95,6 +86,7 @@ function onPopStateBegin() {
   return { previous, current }
 }
 
+type ScrollPosition = { x: number; y: number }
 function saveScrollPosition(scrollPosition?: ScrollPosition) {
   scrollPosition ||= getScrollPosition()
 
@@ -159,6 +151,13 @@ function monkeyPatchHistoryAPI() {
 }
 
 
+type StateEnhanced = {
+  vike: {
+    timestamp: number
+    scrollPosition: null | ScrollPosition
+    triggeredBy: 'user' | 'vike' | 'browser'
+  }
+}
 function getState(): StateEnhanced {
   const state = window.history.state as unknown
   // *Every* state added to the history needs to go through Vike.
