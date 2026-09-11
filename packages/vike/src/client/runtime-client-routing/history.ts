@@ -150,7 +150,6 @@ function monkeyPatchHistoryAPI() {
   })
 }
 
-
 type StateEnhanced = {
   vike: {
     timestamp: number
