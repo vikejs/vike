@@ -1,5 +1,5 @@
 export { changeUrl }
-export { replaceHistoryStateOriginal }
+export { historyApiReplaceStateOriginal }
 export { onPopStateBegin }
 export { saveScrollPosition }
 export { initHistory }
@@ -98,7 +98,7 @@ function replaceHistoryState(state: StateEnhanced, url?: string) {
   window.history.replaceState(state, '', url_)
   assertIsEnhanced(window.history.state as unknown)
 }
-function replaceHistoryStateOriginal(state: unknown, url?: Parameters<typeof window.history.replaceState>[2]) {
+function historyApiReplaceStateOriginal(state: unknown, url?: Parameters<typeof window.history.replaceState>[2]) {
   // Bypass all monkey patches.
   // - Useful, for example, to avoid other tools listening to history.replaceState() calls
   History.prototype.replaceState.bind(window.history)(state, '', url)
@@ -141,7 +141,7 @@ function monkeyPatchHistoryAPI() {
       queueMicrotask(() => {
         if (isEnhanced(window.history.state)) return
         Object.assign(state, window.history.state as unknown)
-        replaceHistoryStateOriginal(
+        historyApiReplaceStateOriginal(
           state,
           /* Don't overwrite the URL changed by other tools https://github.com/vikejs/vike/issues/2894#issuecomment-3662644369
          rest[1],
