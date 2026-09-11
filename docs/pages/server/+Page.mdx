@@ -213,6 +213,8 @@ export default {
 } satisfies Server
 ```
 
+> See <Link href="#precompression" /> to serve `.br`/`.gz` files that are created at build time instead of compressing your static assets for every request.
+
 <blockquote>
   The above settings only apply to production. For development, use [Vite's server settings](https://vite.dev/config/server-options).
 
@@ -370,6 +372,35 @@ export default {
   }
 } satisfies Server
 ```
+
+
+## Precompression
+
+The <Link href="#compression">compression middleware</Link> above compresses responses as they are sent. Your static assets never change between requests, so compressing them again for every request is wasted work: the compressed files can be created once, at build time, and served directly.
+
+Set `precompress` to create `.br` and `.gz` files for your static assets and serve them:
+
+```ts
+// pages/+config.ts
+
+export default {
+  server: true,
+  precompress: true // [!code ++]
+}
+```
+
+The build then writes, for example, `assets/chunks/chunk-C7ohsKGx.js.br` next to `assets/chunks/chunk-C7ohsKGx.js`, and a request with `Accept-Encoding: br` is answered with the file that already exists instead of compressing it again.
+
+Assets that aren't precompressed — small files, or types that don't benefit — are still compressed per request as before.
+
+> This only applies if you host the server yourself. On Cloudflare, Vercel, and Netlify, static assets are served by the platform, and `precompress` has no effect.
+
+> Files in `public/` are copied as-is, so `precompress` doesn't create `.br`/`.gz` files for them. If you ship your own next to them they're still served — keeping them in step with the original file stays up to you.
+
+> Pages pre-rendered by a separate `$ vike prerender` run get no `.br`/`.gz` files, because no build runs to create them. Pre-rendering as part of `$ vike build` is covered.
+
+<Warning>The <Link href="#settings">`prod.static`</Link> setting decides what is served, and it wins. If you set `prod.static: false`, or set it to a directory other than the build output, then the `.br` and `.gz` files are never looked up: your assets are compressed for each request instead, exactly as before. The path has to match exactly — the same folder spelled a different way (letter case, a symlink) counts as a different folder. Nothing warns you — the build still creates the files.</Warning>
+
 
 ## See also
 

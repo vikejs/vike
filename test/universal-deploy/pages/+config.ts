@@ -13,5 +13,8 @@ export default {
   title: 'My Vike App',
   description: 'Demo showcasing Vike',
 
+  // https://vike.dev/server#precompression
+  precompress: true,
+
   extends: vikeReact,
 } satisfies Config
