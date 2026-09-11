@@ -169,7 +169,6 @@ function getState(): StateEnhanced {
   assertIsEnhanced(state)
   return state
 }
-
 function assertIsEnhanced(state: unknown): asserts state is StateEnhanced {
   if (isEnhanced(state)) return
   assert(false, { state })
