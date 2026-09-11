@@ -1,4 +1,4 @@
-export { pushHistoryState }
+export { changeUrl }
 export { replaceHistoryStateOriginal }
 export { onPopStateBegin }
 export { saveScrollPosition }
@@ -75,7 +75,7 @@ function saveScrollPosition(scrollPosition?: ScrollPosition) {
   replaceHistoryState({ ...state, vike: { ...state.vike, scrollPosition } })
 }
 
-function pushHistoryState(url: string, overwriteLastHistoryEntry: boolean) {
+function changeUrl(url: string, overwriteLastHistoryEntry: boolean) {
   if (getCurrentUrl() === url) return
   if (!overwriteLastHistoryEntry) {
     const state: StateEnhanced = {
