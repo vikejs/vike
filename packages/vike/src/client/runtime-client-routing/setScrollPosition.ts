@@ -8,7 +8,7 @@ import { assert } from '../../utils/assert.js'
 import { onPageHide } from '../../utils/onPageVisibilityChange.js'
 import { sleep } from '../../utils/sleep.js'
 import { throttle } from '../../utils/throttle.js'
-import { replaceHistoryStateOriginal, saveScrollPosition, type ScrollPosition } from './history.js'
+import { historyApiReplaceStateOriginal, saveScrollPosition, type ScrollPosition } from './history.js'
 import '../assertEnvClient.js'
 
 type ScrollTarget = undefined | { preserveScroll: boolean; y?: undefined } | ScrollPosition
@@ -28,17 +28,18 @@ function setScrollPosition(scrollTarget: ScrollTarget, url?: string): void {
   scrollToHashOrTop(hash)
 }
 
-// https://github.com/vikejs/vike/issues/2114
-// https://github.com/WICG/scroll-to-text-fragment/issues/261
+// Scroll to the DOM element the URL fragment points to, using window.locale.replace()
+// - https://github.com/vikejs/vike/issues/2114
+// - https://github.com/WICG/scroll-to-text-fragment/issues/261
 function scrollToTextFragment(url: string) {
   const stateOriginal = window.history.state as unknown
-  replaceHistoryStateOriginal(null, url)
+  historyApiReplaceStateOriginal(null, url)
   // We need `history.state===null` before location.replace() so that our 'popstate' handling is correct
   assert((window.history.state as unknown) === null)
   // - Chrome's location.replace() keeps the current state (`history.state===stateOriginal`)
   // - Firefox's location.replace() replaces the current state with `null` (`history.state===null`)
   window.location.replace(url)
-  replaceHistoryStateOriginal(stateOriginal, url)
+  historyApiReplaceStateOriginal(stateOriginal, url)
 }
 function hasTextFragment(url: string) {
   return url.includes('#') && url.includes(':~:text')
