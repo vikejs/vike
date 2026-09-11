@@ -7,7 +7,7 @@ export type { HistoryInfo }
 export type { ScrollPosition }
 
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
-import { assertUsage, assertWarning } from '../../utils/assert.js'
+import { assert, assertUsage, assertWarning } from '../../utils/assert.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import { isObject } from '../../utils/isObject.js'
 import { redirectHard } from '../../utils/redirectHard.js'
@@ -15,6 +15,7 @@ import '../assertEnvClient.js'
 
 const globalObject = getGlobalObject('history.ts', {
   monkeyPatched: false,
+  historyApiBroken: false,
   previous: undefined as any as HistoryInfo,
 })
 initHistory() // we redundantly call initHistory() to ensure it's called early
@@ -47,10 +48,12 @@ function historyApiPushState(state: StateEnhanced, url: string) {
   // Calling the monkey patched history.pushState() (not the original) so that other tools (e.g. user tracking) can listen to Vike's pushState() calls.
   // - https://github.com/vikejs/vike/issues/1582
   window.history.pushState(state, '', url)
+  assertHistoryApi()
 }
 function historyApiReplaceState(state: StateEnhanced, url?: string) {
   const url_ = url ?? null // Passing `undefined` chokes older Edge versions.
   window.history.replaceState(state, '', url_)
+  assertHistoryApi()
 }
 function historyApiReplaceStateOriginal(state: unknown, url?: Parameters<typeof window.history.replaceState>[2]) {
   // Bypass all monkey patches.
@@ -135,6 +138,7 @@ function monkeyPatchHistoryAPI() {
             },
           }
       funcOriginal(state, ...rest)
+      assertHistoryApi()
 
       globalObject.previous = getHistoryInfo()
 
@@ -165,10 +169,19 @@ function getState(): StateEnhanced {
   // *Every* state added to the history needs to go through Vike.
   // - Otherwise Vike's `popstate` listener won't work. (Because, for example, if globalObject.previous is outdated => isHashNavigation faulty => client-side navigation is wrongfully skipped.)
   // - Therefore, we have to monkey patch history.pushState() and history.replaceState()
-  // - Therefore, history.state is usually enhanced — if it isn't (another tool overwrote it, or the browser ignores
-  //   the History API) then we treat it as unknown: timestamp 0 => isBackwardNavigation === null
+  // - Therefore, we need the assert() below to ensure history.state has been enhanced by Vike
+  //   - Unless the History API is broken, see assertHistoryApi() — then an un-enhanced state is expected and we
+  //     treat it as unknown: timestamp 0 => isBackwardNavigation === null
   if (isEnhanced(state)) return state
+  assert(globalObject.historyApiBroken, { state })
   return { vike: { timestamp: 0, scrollPosition: null, triggeredBy: 'browser' } }
+}
+// Called instead of asserting where an un-enhanced history.state isn't a Vike bug: the browser may ignore the
+// History API (https://github.com/vikejs/vike/issues/3509), or another tool may overwrite history.state
+// (https://github.com/vikejs/vike/issues/2504). We remember it so that the assert() in getState() stands down.
+function assertHistoryApi() {
+  if (isEnhanced(window.history.state as unknown)) return
+  globalObject.historyApiBroken = true
 }
 function isEnhanced(state: unknown): state is StateEnhanced {
   if ((state as any)?.vike) {
