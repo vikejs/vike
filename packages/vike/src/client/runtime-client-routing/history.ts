@@ -63,6 +63,53 @@ function historyApiReplaceStateOriginal(state: unknown, url?: Parameters<typeof 
   History.prototype.replaceState.bind(window.history)(state, '', url)
 }
 
+function saveScrollPosition(scrollPosition?: ScrollPosition) {
+  scrollPosition ||= getScrollPosition()
+
+  // Don't overwrite history.state if it was set by a non-Vike history.pushState() call.
+  // https://github.com/vikejs/vike/issues/2801#issuecomment-3490431479
+  if (!isEnhanced(window.history.state)) return
+
+  const state = getState()
+  historyApiReplaceState({ ...state, vike: { ...state.vike, scrollPosition } })
+}
+
+function onPopStateBegin() {
+  const { previous } = globalObject
+
+  const isStateEnhanced = isEnhanced(window.history.state)
+  // Either:
+  // - `window.history.pushState(null, '', '/some-path')` , or
+  // - hash navigation
+  //   - Click on `<a href="#some-hash">`
+  //   - Using the `location` API (only hash navigation)
+  // See comments a the top of the ./initOnPopState.ts file.
+  const isStatePristine = window.history.state === null
+
+  if (!isStateEnhanced && !isStatePristine) {
+    // Going to a history entry not created by Vike — entering another "SPA realm" => hard reload
+    // https://github.com/vikejs/vike/issues/2801#issuecomment-3490431479
+    redirectHard(getCurrentUrl())
+    return { skip: true as const }
+  }
+  if (!isStateEnhanced) enhanceState()
+
+  const current = getHistoryInfo()
+  globalObject.previous = current
+
+  // Let the browser handle hash navigations.
+  // - Upon hash navigation: `isHistoryStatePristine===true` (see comment above).
+  if (isStatePristine) {
+    return { skip: true as const }
+  }
+
+  return { previous, current }
+}
+
+function initHistory() {
+  monkeyPatchHistoryAPI() // the earlier we call it the better (Vike can workaround erroneous library monkey patches if Vike is the last one in the monkey patch chain)
+  enhanceState() // enhance very first window.history.state which is `null`
+}
 // Monkey patch:
 // - history.pushState()
 // - history.replaceState()
@@ -111,53 +158,6 @@ function monkeyPatchHistoryAPI() {
   })
 }
 
-function saveScrollPosition(scrollPosition?: ScrollPosition) {
-  scrollPosition ||= getScrollPosition()
-
-  // Don't overwrite history.state if it was set by a non-Vike history.pushState() call.
-  // https://github.com/vikejs/vike/issues/2801#issuecomment-3490431479
-  if (!isEnhanced(window.history.state)) return
-
-  const state = getState()
-  historyApiReplaceState({ ...state, vike: { ...state.vike, scrollPosition } })
-}
-
-function onPopStateBegin() {
-  const { previous } = globalObject
-
-  const isStateEnhanced = isEnhanced(window.history.state)
-  // Either:
-  // - `window.history.pushState(null, '', '/some-path')` , or
-  // - hash navigation
-  //   - Click on `<a href="#some-hash">`
-  //   - Using the `location` API (only hash navigation)
-  // See comments a the top of the ./initOnPopState.ts file.
-  const isStatePristine = window.history.state === null
-
-  if (!isStateEnhanced && !isStatePristine) {
-    // Going to a history entry not created by Vike — entering another "SPA realm" => hard reload
-    // https://github.com/vikejs/vike/issues/2801#issuecomment-3490431479
-    redirectHard(getCurrentUrl())
-    return { skip: true as const }
-  }
-  if (!isStateEnhanced) enhanceState()
-
-  const current = getHistoryInfo()
-  globalObject.previous = current
-
-  // Let the browser handle hash navigations.
-  // - Upon hash navigation: `isHistoryStatePristine===true` (see comment above).
-  if (isStatePristine) {
-    return { skip: true as const }
-  }
-
-  return { previous, current }
-}
-
-function initHistory() {
-  monkeyPatchHistoryAPI() // the earlier we call it the better (Vike can workaround erroneous library monkey patches if Vike is the last one in the monkey patch chain)
-  enhanceState() // enhance very first window.history.state which is `null`
-}
 
 function getState(): StateEnhanced {
   const state = window.history.state as unknown
