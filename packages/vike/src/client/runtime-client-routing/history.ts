@@ -95,6 +95,7 @@ function historyApiPushState(state: StateEnhanced, url: string) {
   // Calling the monkey patched history.pushState() (not the original) so that other tools (e.g. user tracking) can listen to Vike's pushState() calls.
   // - https://github.com/vikejs/vike/issues/1582
   window.history.pushState(state, '', url)
+  assertIsEnhanced(window.history.state as unknown)
 }
 function historyApiReplaceState(state: StateEnhanced, url?: string) {
   const url_ = url ?? null // Passing `undefined` chokes older Edge versions.
