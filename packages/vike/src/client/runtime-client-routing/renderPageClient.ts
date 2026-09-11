@@ -664,7 +664,6 @@ declare global {
 }
 
 function changeUrl(url: string, overwriteLastHistoryEntry: boolean) {
-  if (getCurrentUrl() === url) return
   pushHistoryState(url, overwriteLastHistoryEntry)
 }
 

@@ -76,6 +76,7 @@ function saveScrollPosition(scrollPosition?: ScrollPosition) {
 }
 
 function pushHistoryState(url: string, overwriteLastHistoryEntry: boolean) {
+  if (getCurrentUrl() === url) return
   if (!overwriteLastHistoryEntry) {
     const state: StateEnhanced = {
       vike: {
