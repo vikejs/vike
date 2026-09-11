@@ -122,27 +122,6 @@ function saveScrollPosition(scrollPosition?: ScrollPosition) {
   historyApiReplaceState({ ...state, vike: { ...state.vike, scrollPosition } })
 }
 
-function isEnhanced(state: unknown): state is StateEnhanced {
-  if ((state as any)?.vike) {
-    /* We don't use the assert() below to save client-side KBs.
-    const vikeData = state.vike
-    assert(isObject(vikeData))
-    assert(hasProp(vikeData, 'timestamp', 'number'))
-    assert(hasProp(vikeData, 'scrollPosition'))
-    if (vikeData.scrollPosition !== null) {
-      assert(hasProp(vikeData, 'scrollPosition', 'object'))
-      assert(hasProp(vikeData.scrollPosition, 'x', 'number') && hasProp(vikeData.scrollPosition, 'y', 'number'))
-    }
-    //*/
-    return true
-  }
-  return false
-}
-function assertIsEnhanced(state: unknown): asserts state is StateEnhanced {
-  if (isEnhanced(state)) return
-  assert(false, { state })
-}
-
 function onPopStateBegin() {
   const { previous } = globalObject
 
@@ -191,6 +170,26 @@ function getState(): StateEnhanced {
   return state
 }
 
+function assertIsEnhanced(state: unknown): asserts state is StateEnhanced {
+  if (isEnhanced(state)) return
+  assert(false, { state })
+}
+function isEnhanced(state: unknown): state is StateEnhanced {
+  if ((state as any)?.vike) {
+    /* We don't use the assert() below to save client-side KBs.
+    const vikeData = state.vike
+    assert(isObject(vikeData))
+    assert(hasProp(vikeData, 'timestamp', 'number'))
+    assert(hasProp(vikeData, 'scrollPosition'))
+    if (vikeData.scrollPosition !== null) {
+      assert(hasProp(vikeData, 'scrollPosition', 'object'))
+      assert(hasProp(vikeData.scrollPosition, 'x', 'number') && hasProp(vikeData.scrollPosition, 'y', 'number'))
+    }
+    //*/
+    return true
+  }
+  return false
+}
 // `window.history.state === null` when:
 // - The very first render
 // - Click on `<a href="#some-hash" />`
