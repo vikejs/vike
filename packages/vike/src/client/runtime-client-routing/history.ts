@@ -29,17 +29,6 @@ type StateEnhanced = {
 }
 type ScrollPosition = { x: number; y: number }
 
-function saveScrollPosition(scrollPosition?: ScrollPosition) {
-  scrollPosition ||= getScrollPosition()
-
-  // Don't overwrite history.state if it was set by a non-Vike history.pushState() call.
-  // https://github.com/vikejs/vike/issues/2801#issuecomment-3490431479
-  if (!isEnhanced(window.history.state)) return
-
-  const state = getState()
-  historyApiReplaceState({ ...state, vike: { ...state.vike, scrollPosition } })
-}
-
 function changeUrl(url: string, overwriteLastHistoryEntry: boolean) {
   if (getCurrentUrl() === url) return
   if (!overwriteLastHistoryEntry) {
@@ -120,6 +109,17 @@ function monkeyPatchHistoryAPI() {
       })
     }
   })
+}
+
+function saveScrollPosition(scrollPosition?: ScrollPosition) {
+  scrollPosition ||= getScrollPosition()
+
+  // Don't overwrite history.state if it was set by a non-Vike history.pushState() call.
+  // https://github.com/vikejs/vike/issues/2801#issuecomment-3490431479
+  if (!isEnhanced(window.history.state)) return
+
+  const state = getState()
+  historyApiReplaceState({ ...state, vike: { ...state.vike, scrollPosition } })
 }
 
 function isEnhanced(state: unknown): state is StateEnhanced {
