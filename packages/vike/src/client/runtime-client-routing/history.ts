@@ -143,16 +143,6 @@ function assertIsEnhanced(state: unknown): asserts state is StateEnhanced {
   assert(false, { state })
 }
 
-type HistoryInfo = {
-  url: `/${string}`
-  state: StateEnhanced
-}
-function getHistoryInfo(): HistoryInfo {
-  return {
-    url: getCurrentUrl(),
-    state: getState(),
-  }
-}
 function onPopStateBegin() {
   const { previous } = globalObject
 
@@ -215,6 +205,17 @@ function enhanceState() {
     },
   }
   historyApiReplaceState(stateEnhanced)
+}
+
+type HistoryInfo = {
+  url: `/${string}`
+  state: StateEnhanced
+}
+function getHistoryInfo(): HistoryInfo {
+  return {
+    url: getCurrentUrl(),
+    state: getState(),
+  }
 }
 
 function getScrollPosition(): ScrollPosition {
