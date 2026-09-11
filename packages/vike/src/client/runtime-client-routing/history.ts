@@ -29,41 +29,6 @@ type StateEnhanced = {
 }
 type ScrollPosition = { x: number; y: number }
 
-// `window.history.state === null` when:
-// - The very first render
-// - Click on `<a href="#some-hash" />`
-// - `location.hash = 'some-hash'`
-function enhanceState() {
-  if (isEnhanced(window.history.state as unknown)) return
-  const stateEnhanced = {
-    vike: {
-      timestamp: getTimestamp(),
-      scrollPosition: getScrollPosition(),
-      triggeredBy: 'browser' as const,
-    },
-  }
-  historyApiReplaceState(stateEnhanced)
-}
-
-function getState(): StateEnhanced {
-  const state = window.history.state as unknown
-  // *Every* state added to the history needs to go through Vike.
-  // - Otherwise Vike's `popstate` listener won't work. (Because, for example, if globalObject.previous is outdated => isHashNavigation faulty => client-side navigation is wrongfully skipped.)
-  // - Therefore, we have to monkey patch history.pushState() and history.replaceState()
-  // - Therefore, we need the assert() below to ensure history.state has been enhanced by Vike
-  //   - If users stumble upon this assert() then let's make it a assertUsage()
-  assertIsEnhanced(state)
-  return state
-}
-
-function getScrollPosition(): ScrollPosition {
-  const scrollPosition = { x: window.scrollX, y: window.scrollY }
-  return scrollPosition
-}
-function getTimestamp() {
-  return new Date().getTime()
-}
-
 function saveScrollPosition(scrollPosition?: ScrollPosition) {
   scrollPosition ||= getScrollPosition()
 
@@ -223,4 +188,39 @@ function onPopStateBegin() {
 function initHistory() {
   monkeyPatchHistoryAPI() // the earlier we call it the better (Vike can workaround erroneous library monkey patches if Vike is the last one in the monkey patch chain)
   enhanceState() // enhance very first window.history.state which is `null`
+}
+
+function getState(): StateEnhanced {
+  const state = window.history.state as unknown
+  // *Every* state added to the history needs to go through Vike.
+  // - Otherwise Vike's `popstate` listener won't work. (Because, for example, if globalObject.previous is outdated => isHashNavigation faulty => client-side navigation is wrongfully skipped.)
+  // - Therefore, we have to monkey patch history.pushState() and history.replaceState()
+  // - Therefore, we need the assert() below to ensure history.state has been enhanced by Vike
+  //   - If users stumble upon this assert() then let's make it a assertUsage()
+  assertIsEnhanced(state)
+  return state
+}
+
+// `window.history.state === null` when:
+// - The very first render
+// - Click on `<a href="#some-hash" />`
+// - `location.hash = 'some-hash'`
+function enhanceState() {
+  if (isEnhanced(window.history.state as unknown)) return
+  const stateEnhanced = {
+    vike: {
+      timestamp: getTimestamp(),
+      scrollPosition: getScrollPosition(),
+      triggeredBy: 'browser' as const,
+    },
+  }
+  historyApiReplaceState(stateEnhanced)
+}
+
+function getScrollPosition(): ScrollPosition {
+  const scrollPosition = { x: window.scrollX, y: window.scrollY }
+  return scrollPosition
+}
+function getTimestamp() {
+  return new Date().getTime()
 }
