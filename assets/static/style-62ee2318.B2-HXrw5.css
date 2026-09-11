@@ -1,0 +1,1 @@
+.collapsible-icon{display:none;position:absolute;right:-16px;top:calc(50% - 5px);margin-left:9px;vertical-align:middle}:has(>.collapsible-icon){position:relative;overflow:visible}.collapsible-expanded,.collapsible-collapsed{.collapsible-icon{transition:transform .3s ease-in-out!important;display:initial}}.collapsible-collapsed .collapsible-icon{transform:rotate(-90deg)}
