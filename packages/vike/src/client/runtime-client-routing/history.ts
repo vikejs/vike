@@ -1,8 +1,8 @@
 export { changeUrl }
-export { historyApiReplaceStateOriginal }
 export { onPopStateBegin }
 export { saveScrollPosition }
 export { initHistory }
+export { historyApiReplaceStateOriginal }
 export type { HistoryInfo }
 export type { ScrollPosition }
 

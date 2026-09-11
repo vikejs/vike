@@ -28,8 +28,9 @@ function setScrollPosition(scrollTarget: ScrollTarget, url?: string): void {
   scrollToHashOrTop(hash)
 }
 
-// https://github.com/vikejs/vike/issues/2114
-// https://github.com/WICG/scroll-to-text-fragment/issues/261
+// Scroll to the DOM element the URL fragment points to, using window.locale.replace()
+// - https://github.com/vikejs/vike/issues/2114
+// - https://github.com/WICG/scroll-to-text-fragment/issues/261
 function scrollToTextFragment(url: string) {
   const stateOriginal = window.history.state as unknown
   historyApiReplaceStateOriginal(null, url)
