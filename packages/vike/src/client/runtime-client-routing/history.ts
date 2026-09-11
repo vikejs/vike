@@ -42,7 +42,7 @@ function enhance() {
       triggeredBy: 'browser' as const,
     },
   }
-  replaceHistoryState(stateEnhanced)
+  historyApiReplaceState(stateEnhanced)
 }
 
 function getState(): StateEnhanced {
@@ -72,7 +72,7 @@ function saveScrollPosition(scrollPosition?: ScrollPosition) {
   if (!isEnhanced(window.history.state)) return
 
   const state = getState()
-  replaceHistoryState({ ...state, vike: { ...state.vike, scrollPosition } })
+  historyApiReplaceState({ ...state, vike: { ...state.vike, scrollPosition } })
 }
 
 function changeUrl(url: string, overwriteLastHistoryEntry: boolean) {
@@ -90,10 +90,10 @@ function changeUrl(url: string, overwriteLastHistoryEntry: boolean) {
     // - https://github.com/vikejs/vike/issues/1582
     window.history.pushState(state, '', url)
   } else {
-    replaceHistoryState(getState(), url)
+    historyApiReplaceState(getState(), url)
   }
 }
-function replaceHistoryState(state: StateEnhanced, url?: string) {
+function historyApiReplaceState(state: StateEnhanced, url?: string) {
   const url_ = url ?? null // Passing `undefined` chokes older Edge versions.
   window.history.replaceState(state, '', url_)
   assertIsEnhanced(window.history.state as unknown)
