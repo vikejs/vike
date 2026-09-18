@@ -1,0 +1,40 @@
+import { Link } from '@brillout/docpress'
+
+import { UiFrameworkExtension, ConfigSpec } from '../../components'
+
+<ConfigSpec
+  env="server"
+  cumulative
+  global
+  providedByExtension={{ kind: 'setting', noCustomGuide: true }}
+>
+```ts ts-only hide-menu
+type Value = Record<string, string>
+type RootAttributes = Value | ((pageContext) => Value)
+```
+</ConfigSpec>
+
+The `rootAttributes` setting adds attributes to the root element, i.e. the element in which the <UiFrameworkExtension /> renders your pages.
+
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
+
+export default {
+  // <div id="root" role="none">
+  rootAttributes: { role: 'none' }
+} satisfies Config
+```
+
+> The root element is `<div id="root">` with `vike-react` and `vike-solid`, and `<div id="app">` with `vike-vue`. Don't override its `id` attribute: it's used for rendering the page on the client-side.
+
+> **Accessibility**: React attaches its event listeners to the root element, which leads accessibility tools (such as the Firefox Accessibility Inspector and some screen readers) to consider the root element as clickable, see [facebook/react#20895](https://github.com/facebook/react/issues/20895). Setting `role="none"` fixes that.
+
+
+## See also
+
+- <Link href="/htmlAttributes" />
+- <Link href="/bodyAttributes" />
+- <Link href="/head-tags" />
+- <Link href="/settings#html-shell" doNotInferSectionTitle />

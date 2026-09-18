@@ -659,6 +659,11 @@ const headings = [
   },
   {
     level: 2,
+    title: '`+rootAttributes`',
+    url: '/rootAttributes',
+  },
+  {
+    level: 2,
     title: '`+ssr`',
     url: '/ssr',
   },
