@@ -87,6 +87,7 @@ Paths below are relative to https://vike.dev (e.g. `/data-fetching` → https://
 - /viewport — `+viewport` viewport meta (`'responsive'`|number|`null`), `null` disables, fixed width for non-responsive/admin
 - /htmlAttributes — `+htmlAttributes` attrs on `<html>` (object or fn), cumulative, e.g. dark-mode class / lang
 - /bodyAttributes — `+bodyAttributes` attrs on `<body>` (object or fn), cumulative, e.g. theme class
+- /rootAttributes — `+rootAttributes` attrs on the root element `<div id="root">` (object or fn), cumulative, e.g. role="none" for accessibility
 
 ## Server, headers & security
 
