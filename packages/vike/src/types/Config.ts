@@ -676,16 +676,15 @@ type ConfigBuiltIn = {
   server?: boolean | ImportStringList
 
   /**
-   * Set to `true` to create `.br` and `.gz` files for your static assets at build time and serve them,
-   * instead of compressing your static assets for every request.
-   *
-   * Only applies if you host the server yourself: on Cloudflare, Vercel, and Netlify the static assets
-   * are served by the platform.
-   *
    * @experimental
-   * @default false
+   *
+   * Set to `true` to create `.br` and `.gz` files for your static assets at build time, and serve them instead of compressing your static assets for each request.
+   *
+   * Only applies if you host the server yourself: on Cloudflare, Vercel and Netlify, static assets are served by the platform.
    *
    * https://vike.dev/server#precompression
+   *
+   * @default false
    */
   precompress?: boolean
 

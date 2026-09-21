@@ -213,7 +213,7 @@ export default {
 } satisfies Server
 ```
 
-> See <Link href="#precompression" /> to serve `.br`/`.gz` files that are created at build time instead of compressing your static assets for every request.
+> See <Link href="#precompression" /> to serve `.br`/`.gz` files created at build time instead of compressing your static assets for each request.
 
 <blockquote>
   The above settings only apply to production. For development, use [Vite's server settings](https://vite.dev/config/server-options).
@@ -376,9 +376,7 @@ export default {
 
 ## Precompression
 
-The <Link href="#compression">compression middleware</Link> above compresses responses as they are sent. Your static assets never change between requests, so compressing them again for every request is wasted work: the compressed files can be created once, at build time, and served directly.
-
-Set `precompress` to create `.br` and `.gz` files for your static assets and serve them:
+The <Link href="#compression">compression middleware</Link> compresses responses as they are sent. Your static assets don't change between requests, so you can compress them once at build time instead:
 
 ```ts
 // pages/+config.ts
@@ -389,17 +387,17 @@ export default {
 }
 ```
 
-The build then writes, for example, `assets/chunks/chunk-C7ohsKGx.js.br` next to `assets/chunks/chunk-C7ohsKGx.js`, and a request with `Accept-Encoding: br` is answered with the file that already exists instead of compressing it again.
+The build then writes `assets/chunks/chunk-C7ohsKGx.js.br` next to `assets/chunks/chunk-C7ohsKGx.js`, and requests with `Accept-Encoding: br` are served the `.br` file directly.
 
-Assets that aren't precompressed — small files, or types that don't benefit — are still compressed per request as before.
+Assets that aren't precompressed, such as small files, are still compressed for each request.
 
-> This only applies if you host the server yourself. On Cloudflare, Vercel, and Netlify, static assets are served by the platform, and `precompress` has no effect.
+> `precompress` only applies if you host the server yourself. On Cloudflare, Vercel and Netlify, static assets are served by the platform.
 
-> Files in `public/` are copied as-is, so `precompress` doesn't create `.br`/`.gz` files for them. If you ship your own next to them they're still served — keeping them in step with the original file stays up to you.
+> Files in `public/` are copied as-is and don't get `.br`/`.gz` files. If you add your own, then they're served, but keeping them up-to-date is up to you.
 
-> Pages pre-rendered by a separate `$ vike prerender` run get no `.br`/`.gz` files, because no build runs to create them. Pre-rendering as part of `$ vike build` is covered.
+> Pages pre-rendered by `$ vike build` are precompressed. Pages pre-rendered by a separate `$ vike prerender` run aren't, because no build runs to create the files.
 
-<Warning>The <Link href="#settings">`prod.static`</Link> setting decides what is served, and it wins. If you set `prod.static: false`, or set it to a directory other than the build output, then the `.br` and `.gz` files are never looked up: your assets are compressed for each request instead, exactly as before. The path has to match exactly — the same folder spelled a different way (letter case, a symlink) counts as a different folder. Nothing warns you — the build still creates the files.</Warning>
+<Warning>Precompressed files are only served if <Link href="#settings">`prod.static`</Link> points to the build output. If you set it to `false` or to another folder, then your assets are compressed for each request instead, without any warning.</Warning>
 
 
 ## See also
