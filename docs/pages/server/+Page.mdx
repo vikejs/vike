@@ -399,7 +399,7 @@ Assets that aren't precompressed, such as small files, are still compressed for 
 >
 > 🚧 Pages pre-rendered by a separate `$ vike prerender` run aren't yet. If you need it, then [reach out](https://github.com/vikejs/vike/discussions).
 
-<Warning>Precompressed files are only served if <Link href="#settings">`prod.static`</Link> points to the build output. If you set it to `false` or to another folder, then your assets are compressed for each request instead, without any warning.</Warning>
+<Warning>If you set <Link href="#settings">`prod.static`</Link> to `false` or to a folder other than the build output, then the precompressed files aren't served: your assets are compressed for each request instead, without any warning.</Warning>
 
 
 ## See also
