@@ -361,7 +361,6 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { server: true },
     global: true,
   },
-  // Read at build time by pluginUniversalDeploy(), thus `env: { config: true }`
   precompress: {
     env: { config: true },
     global: true,
