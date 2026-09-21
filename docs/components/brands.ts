@@ -26,6 +26,7 @@ const brands: Brand[] = [
     desc: 'Database trusted by Fortune 500 companies',
     logo: usedBySurrealDB,
     logoScale: 0.95,
+    logoTop: '0.28em',
     useCasesOrder: -100,
   },
   {
@@ -45,7 +46,7 @@ const brands: Brand[] = [
     name: 'Contra',
     logo: usedByContra,
     logoScale: 0.82,
-    logoTop: '0.18em',
+    logoTop: '0.12em',
     useCasesOrder: 200,
   },
   {
@@ -53,7 +54,8 @@ const brands: Brand[] = [
     name: 'Moonshot AI',
     desc: 'Top-tier AI lab behind Kimi',
     logo: usedByMoonshot,
-    logoScale: 0.75,
+    logoScale: 1.15,
+    logoTop: '0.12em',
     useCasesOrder: -200,
   },
   {
@@ -61,7 +63,7 @@ const brands: Brand[] = [
     desc: 'Google alternative',
     name: 'Ecosia',
     logo: usedByEcosia,
-    logoScale: 0.9,
+    logoScale: 0.85,
     logoTop: '-0.02em',
     useCasesOrder: -50,
   },
@@ -71,6 +73,7 @@ const brands: Brand[] = [
     desc: 'Social network used by 12M+ business owners',
     logo: usedByAlignable,
     logoScale: 0.9,
+    logoTop: '0.22em',
     useCasesOrder: 0,
   },
   {
