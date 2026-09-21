@@ -849,8 +849,8 @@ importers:
         specifier: ^0.2.2
         version: 0.2.2(srvx@0.12.5)
       '@universal-deploy/vite':
-        specifier: ^0.1.11
-        version: 0.1.11(@hattip/core@0.0.49)(@types/express@5.0.6)(srvx@0.12.5)(vite@7.3.1(@types/node@20.17.17)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
+        specifier: ^0.1.12
+        version: 0.1.12(@hattip/core@0.0.49)(@types/express@5.0.6)(srvx@0.12.5)(vite@7.3.1(@types/node@20.17.17)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
       '@universal-middleware/core':
         specifier: ^0.4.18
         version: 0.4.18(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.12.5)
@@ -4946,8 +4946,8 @@ packages:
     peerDependencies:
       vite: '>=7.1'
 
-  '@universal-deploy/node@0.1.10':
-    resolution: {integrity: sha512-lTI43OWy80fZ9dMsy0Ha6lM/wedDnTsNPq/IxAEU45Y1elAKOWEWiumwttbf63yniCjdxXkLUF8lk4oW4DSH6Q==}
+  '@universal-deploy/node@0.1.11':
+    resolution: {integrity: sha512-aMsLVLADNqm5YERAgdqe6X9iV2mZ5X4S3f0CNS7Xq8ts400paz1g/w4yCe+6Z1klC0kcyaJO/ms4BR5Ykz4y5w==}
     peerDependencies:
       vite: '>=7.1'
     peerDependenciesMeta:
@@ -4986,8 +4986,8 @@ packages:
       vite:
         optional: true
 
-  '@universal-deploy/vite@0.1.11':
-    resolution: {integrity: sha512-cM6YVUNsd8UmRp2/RdV7+OBLlhNMaiEkZZQQQbGamtBZMGID613bZE4cFv8OIakGqdIjclXjYMscnBUXZcyz8g==}
+  '@universal-deploy/vite@0.1.12':
+    resolution: {integrity: sha512-y/UxEDKfKtMxwp6WOW8fJyWhW+obOTso5UdHGV21ke322v5yHzKQtop6Y8weV+vycJcIaA+ccbvH2eNWpGF2nw==}
     peerDependencies:
       vite: '>=7.1'
     peerDependenciesMeta:
@@ -10959,7 +10959,7 @@ snapshots:
     transitivePeerDependencies:
       - srvx
 
-  '@universal-deploy/node@0.1.10(vite@7.3.1(@types/node@20.17.17)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))':
+  '@universal-deploy/node@0.1.11(vite@7.3.1(@types/node@20.17.17)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))':
     dependencies:
       '@universal-deploy/store': 0.2.2(srvx@0.12.5)
       magic-string: 0.30.21
@@ -11014,10 +11014,10 @@ snapshots:
       - hono
       - srvx
 
-  '@universal-deploy/vite@0.1.11(@hattip/core@0.0.49)(@types/express@5.0.6)(srvx@0.12.5)(vite@7.3.1(@types/node@20.17.17)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))':
+  '@universal-deploy/vite@0.1.12(@hattip/core@0.0.49)(@types/express@5.0.6)(srvx@0.12.5)(vite@7.3.1(@types/node@20.17.17)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))':
     dependencies:
       '@universal-deploy/netlify': 0.2.3(srvx@0.12.5)(vite@7.3.1(@types/node@20.17.17)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
-      '@universal-deploy/node': 0.1.10(vite@7.3.1(@types/node@20.17.17)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
+      '@universal-deploy/node': 0.1.11(vite@7.3.1(@types/node@20.17.17)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
       '@universal-deploy/store': 0.2.2(srvx@0.12.5)
       '@universal-middleware/express': 0.4.31(@hattip/core@0.0.49)(@types/express@5.0.6)(srvx@0.12.5)
       magic-string: 0.30.21
