@@ -1,12 +1,12 @@
 export { brands }
 
-import usedByBild from './brands/bildde.svg'
-import usedBySpline from './brands/spline.webp'
+import usedByMoonshot from './brands/moonshotai.svg'
+import usedBySurrealDB from './brands/surrealdb.svg'
 import usedByEcosia from './brands/ecosia.svg'
 // spellcheck-ignore
 import usedBySlite from './brands/sliteapp.svg'
 import usedByContra from './brands/contra.svg'
-import usedByName from './brands/namecom.svg'
+import usedByAlignable from './brands/alignable.svg'
 import usedByDia from './brands/dia.svg'
 
 type Brand = {
@@ -21,13 +21,13 @@ type Brand = {
 
 const brands: Brand[] = [
   {
-    website: 'https://name.com',
-    name: 'Name.com',
-    desc: 'Popular domain registrar',
-    logo: usedByName,
-    logoScale: 0.54,
-    logoTop: '0.2em',
-    useCasesOrder: 0,
+    website: 'https://surrealdb.com',
+    name: 'SurrealDB',
+    desc: 'Database trusted by Fortune 500 companies',
+    logo: usedBySurrealDB,
+    logoScale: 0.95,
+    logoTop: '0.28em',
+    useCasesOrder: -100,
   },
   {
     // spellcheck-ignore
@@ -46,15 +46,16 @@ const brands: Brand[] = [
     name: 'Contra',
     logo: usedByContra,
     logoScale: 0.82,
-    logoTop: '0.18em',
+    logoTop: '0.12em',
     useCasesOrder: 200,
   },
   {
-    website: 'https://app.spline.design',
-    desc: 'Advanced 3D design web app',
-    name: 'Spline',
-    logo: usedBySpline,
-    logoScale: 1.4,
+    website: 'https://www.moonshot.ai',
+    name: 'Moonshot AI',
+    desc: 'Top-tier AI lab behind Kimi',
+    logo: usedByMoonshot,
+    logoScale: 1.15,
+    logoTop: '0.12em',
     useCasesOrder: -200,
   },
   {
@@ -62,17 +63,18 @@ const brands: Brand[] = [
     desc: 'Google alternative',
     name: 'Ecosia',
     logo: usedByEcosia,
-    logoScale: 0.9,
+    logoScale: 0.85,
     logoTop: '-0.02em',
     useCasesOrder: -50,
   },
   {
-    website: 'https://bild.de',
-    desc: "Germany's most read newspaper",
-    name: 'Bild.de',
-    logo: usedByBild,
-    logoScale: 1.3,
-    useCasesOrder: -100,
+    website: 'https://www.alignable.com',
+    name: 'Alignable',
+    desc: 'Social network used by 12M+ business owners',
+    logo: usedByAlignable,
+    logoScale: 0.9,
+    logoTop: '0.22em',
+    useCasesOrder: 0,
   },
   {
     website: 'https://dia.es',
