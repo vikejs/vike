@@ -21,12 +21,12 @@ type Brand = {
 
 const brands: Brand[] = [
   {
-    website: 'https://www.moonshot.ai',
-    name: 'Moonshot AI',
-    desc: 'Top-tier AI lab behind Kimi',
-    logo: usedByMoonshot,
-    logoScale: 0.75,
-    useCasesOrder: -200,
+    website: 'https://surrealdb.com',
+    name: 'SurrealDB',
+    desc: 'Database trusted by Fortune 500 companies',
+    logo: usedBySurrealDB,
+    logoScale: 0.95,
+    useCasesOrder: -100,
   },
   {
     // spellcheck-ignore
@@ -49,12 +49,12 @@ const brands: Brand[] = [
     useCasesOrder: 200,
   },
   {
-    website: 'https://surrealdb.com',
-    name: 'SurrealDB',
-    desc: 'Database trusted by Fortune 500 companies',
-    logo: usedBySurrealDB,
-    logoScale: 0.95,
-    useCasesOrder: -100,
+    website: 'https://www.moonshot.ai',
+    name: 'Moonshot AI',
+    desc: 'Top-tier AI lab behind Kimi',
+    logo: usedByMoonshot,
+    logoScale: 0.75,
+    useCasesOrder: -200,
   },
   {
     website: 'https://ecosia.org',
