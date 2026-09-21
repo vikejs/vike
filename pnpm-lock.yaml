@@ -898,8 +898,8 @@ importers:
         version: 0.1.1(vite@7.3.1(@types/node@20.17.17)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
     devDependencies:
       '@brillout/release-me':
-        specifier: ^0.4.16
-        version: 0.4.16(conventional-commits-filter@5.0.0)
+        specifier: ^0.4.18
+        version: 0.4.18(conventional-commits-filter@5.0.0)
       '@types/babel__core':
         specifier: ^7.20.5
         version: 7.20.5
@@ -2577,8 +2577,8 @@ packages:
   '@brillout/picocolors@1.0.31':
     resolution: {integrity: sha512-xFCPBefU/AevF8XkwXSd/jIHA0fWw+mZ/gd5x2WOc5ysG7keHnU8m0gwY2Bvq5lvTyjwT4tiyow6fnMoYdmSqw==}
 
-  '@brillout/release-me@0.4.16':
-    resolution: {integrity: sha512-ZuLZPX2rn8VxpkuhL7xavlJ44MB6FwzdqaOjcPEKXokQ9Q3x3bm8m1k1tLVXx++gWs4hCqBSuZTw4MBFIjJHtQ==}
+  '@brillout/release-me@0.4.18':
+    resolution: {integrity: sha512-X+IQ4pFYYuBiVgUxNTx/wpFQ4b/JLFI2OkDxW6IlA10TeJOGYrDSst1xuEzi7FmHw8kEzd0zU79yF+8bO4dnFA==}
     hasBin: true
 
   '@brillout/replace@0.1.6':
@@ -2673,12 +2673,12 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@conventional-changelog/git-client@2.6.0':
-    resolution: {integrity: sha512-T+uPDciKf0/ioNNDpMGc8FDsehJClZP0yR3Q5MN6wE/Y/1QZ7F+80OgznnTCOlMEG4AV0LvH2UJi3C/nBnaBUg==}
+  '@conventional-changelog/git-client@2.7.0':
+    resolution: {integrity: sha512-j7A8/LBEQ+3rugMzPXoKYzyUPpw/0CBQCyvtTR7Lmu4olG4yRC/Tfkq79Mr3yuPs0SUitlO2HwGP3gitMJnRFw==}
     engines: {node: '>=18'}
     peerDependencies:
       conventional-commits-filter: ^5.0.0
-      conventional-commits-parser: ^6.3.0
+      conventional-commits-parser: ^6.4.0
     peerDependenciesMeta:
       conventional-commits-filter:
         optional: true
@@ -5834,8 +5834,8 @@ packages:
     resolution: {integrity: sha512-tQMagCOC59EVgNZcC5zl7XqO30Wki9i9J3acbUvkaosCT6JX3EeFwJD7Qqp4MCikRnzS18WXV3BLIQ66ytu6+Q==}
     engines: {node: '>=18'}
 
-  conventional-commits-parser@6.3.0:
-    resolution: {integrity: sha512-RfOq/Cqy9xV9bOA8N+ZH6DlrDR+5S3Mi0B5kACEjESpE+AviIpAptx9a9cFpWCCvgRtWT+0BbUw+e1BZfts9jg==}
+  conventional-commits-parser@6.4.0:
+    resolution: {integrity: sha512-tvRg7FIBNlyPzjdG8wWRlPHQJJHI7DylhtRGeU9Lq+JuoPh5BKpPRX83ZdLrvXuOSu5Eo/e7SzOQhU4Hd2Miuw==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -6337,8 +6337,8 @@ packages:
   gsap@3.14.2:
     resolution: {integrity: sha512-P8/mMxVLU7o4+55+1TCnQrPmgjPKnwkzkXOK1asnR9Jg2lna4tEY5qBJjMmAaOBDDZWtlRjBXjLa0w53G/uBLA==}
 
-  handlebars@4.7.8:
-    resolution: {integrity: sha512-vafaFqs8MZkRrSX7sFVUdo3ap/eNiLnb4IakshzvP56X5Nr1iGKAIqdX6tMlm6HcNRIkr6AxO5jFEoJzzpT8aQ==}
+  handlebars@4.7.9:
+    resolution: {integrity: sha512-4E71E0rpOaQuJR2A3xDZ+GM1HyWYv1clR58tC8emQNeQe3RH7MAzSbat+V0wG78LQBo6m6bzSG/L4pBuCsgnUQ==}
     engines: {node: '>=0.4.7'}
     hasBin: true
 
@@ -7728,8 +7728,8 @@ packages:
   spdx-expression-parse@3.0.1:
     resolution: {integrity: sha512-cbqHunsQWnJNE6KhVSMsMeH5H/L9EpymbzqTQ3uLwNCLZ1Q481oWaofqH7nO6V07xlXwY6PhQdQ2IedWx/ZK4Q==}
 
-  spdx-license-ids@3.0.23:
-    resolution: {integrity: sha512-CWLcCCH7VLu13TgOH+r8p1O/Znwhqv/dbb6lqWy67G+pT1kHmeD/+V36AVb/vq8QMIQwVShJ6Ssl5FPh0fuSdw==}
+  spdx-license-ids@3.0.24:
+    resolution: {integrity: sha512-cLS9TtWkIQFyLkJ3/5aFQAOHOSKTlOs/7WDut/XPSdjom1fJhUdkepeJAKXa9Y05+FabHd0sti+Et559vDtkpQ==}
 
   speakingurl@14.0.1:
     resolution: {integrity: sha512-1POYv7uv2gXoyGFpBCmpDVSNV74IfsWlDW216UPjbWufNf+bSU6GdbDsxdcxtfwb4xlI3yxzOTKClUosxARYrQ==}
@@ -9053,7 +9053,7 @@ snapshots:
 
   '@brillout/picocolors@1.0.31': {}
 
-  '@brillout/release-me@0.4.16(conventional-commits-filter@5.0.0)':
+  '@brillout/release-me@0.4.18(conventional-commits-filter@5.0.0)':
     dependencies:
       '@brillout/picocolors': 1.0.31
       commander: 11.1.0
@@ -9186,14 +9186,14 @@ snapshots:
   '@cloudflare/workerd-windows-64@1.20260405.1':
     optional: true
 
-  '@conventional-changelog/git-client@2.6.0(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.3.0)':
+  '@conventional-changelog/git-client@2.7.0(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.4.0)':
     dependencies:
       '@simple-libs/child-process-utils': 1.0.2
       '@simple-libs/stream-utils': 1.2.0
       semver: 7.8.5
     optionalDependencies:
       conventional-commits-filter: 5.0.0
-      conventional-commits-parser: 6.3.0
+      conventional-commits-parser: 6.4.0
 
   '@cspotcode/source-map-support@0.8.1':
     dependencies:
@@ -12315,17 +12315,17 @@ snapshots:
     dependencies:
       '@simple-libs/stream-utils': 1.2.0
       conventional-commits-filter: 5.0.0
-      handlebars: 4.7.8
+      handlebars: 4.7.9
       meow: 13.2.0
       semver: 7.8.5
 
   conventional-changelog@7.0.2(conventional-commits-filter@5.0.0):
     dependencies:
-      '@conventional-changelog/git-client': 2.6.0(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.3.0)
+      '@conventional-changelog/git-client': 2.7.0(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.4.0)
       '@types/normalize-package-data': 2.4.4
       conventional-changelog-preset-loader: 5.0.0
       conventional-changelog-writer: 8.4.0
-      conventional-commits-parser: 6.3.0
+      conventional-commits-parser: 6.4.0
       fd-package-json: 1.2.0
       meow: 13.2.0
       normalize-package-data: 7.0.1
@@ -12334,7 +12334,7 @@ snapshots:
 
   conventional-commits-filter@5.0.0: {}
 
-  conventional-commits-parser@6.3.0:
+  conventional-commits-parser@6.4.0:
     dependencies:
       '@simple-libs/stream-utils': 1.2.0
       meow: 13.2.0
@@ -12914,7 +12914,7 @@ snapshots:
 
   gsap@3.14.2: {}
 
-  handlebars@4.7.8:
+  handlebars@4.7.9:
     dependencies:
       minimist: 1.2.8
       neo-async: 2.6.2
@@ -14804,16 +14804,16 @@ snapshots:
   spdx-correct@3.2.0:
     dependencies:
       spdx-expression-parse: 3.0.1
-      spdx-license-ids: 3.0.23
+      spdx-license-ids: 3.0.24
 
   spdx-exceptions@2.5.0: {}
 
   spdx-expression-parse@3.0.1:
     dependencies:
       spdx-exceptions: 2.5.0
-      spdx-license-ids: 3.0.23
+      spdx-license-ids: 3.0.24
 
-  spdx-license-ids@3.0.23: {}
+  spdx-license-ids@3.0.24: {}
 
   speakingurl@14.0.1: {}
 
