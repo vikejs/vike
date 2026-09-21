@@ -395,7 +395,9 @@ Assets that aren't precompressed, such as small files, are still compressed for 
 
 > Files in `public/` are copied as-is and don't get `.br`/`.gz` files. If you add your own, then they're served, but keeping them up-to-date is up to you.
 
-> Pages pre-rendered by `$ vike build` are precompressed. Pages pre-rendered by a separate `$ vike prerender` run aren't, because no build runs to create the files.
+> Pages pre-rendered by `$ vike build` are precompressed.
+>
+> 🚧 Pages pre-rendered by a separate `$ vike prerender` run aren't yet. If you need it, then [reach out](https://github.com/vikejs/vike/discussions).
 
 <Warning>Precompressed files are only served if <Link href="#settings">`prod.static`</Link> points to the build output. If you set it to `false` or to another folder, then your assets are compressed for each request instead, without any warning.</Warning>
 
