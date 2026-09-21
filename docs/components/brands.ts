@@ -23,7 +23,7 @@ const brands: Brand[] = [
   {
     website: 'https://www.moonshot.ai',
     name: 'Moonshot AI',
-    desc: 'AI lab behind Kimi',
+    desc: 'Top-tier AI lab behind Kimi',
     logo: usedByMoonshot,
     logoScale: 0.75,
     useCasesOrder: -200,
@@ -51,7 +51,7 @@ const brands: Brand[] = [
   {
     website: 'https://surrealdb.com',
     name: 'SurrealDB',
-    desc: 'Multi-model database',
+    desc: 'Database trusted by Fortune 500 companies',
     logo: usedBySurrealDB,
     logoScale: 0.95,
     useCasesOrder: -100,
@@ -68,7 +68,7 @@ const brands: Brand[] = [
   {
     website: 'https://www.alignable.com',
     name: 'Alignable',
-    desc: 'Small business referral network',
+    desc: 'Social network used by 12M+ business owners',
     logo: usedByAlignable,
     logoScale: 0.9,
     useCasesOrder: 0,
