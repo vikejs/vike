@@ -261,11 +261,6 @@ const headings = [
   },
   {
     level: 2,
-    title: 'EdgeOne Pages',
-    url: '/edgeone-pages',
-  },
-  {
-    level: 2,
     title: 'Netlify',
     url: '/netlify',
   },
@@ -278,6 +273,11 @@ const headings = [
     level: 2,
     title: 'AWS',
     url: '/aws',
+  },
+  {
+    level: 2,
+    title: 'EdgeOne Pages',
+    url: '/edgeone-pages',
   },
   {
     level: 2,
