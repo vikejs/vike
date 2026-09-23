@@ -213,8 +213,6 @@ export default {
 } satisfies Server
 ```
 
-> See <Link href="/precompress" /> to serve `.br`/`.gz` files created at build time instead of compressing your static assets for each request.
-
 <blockquote>
   The above settings only apply to production. For development, use [Vite's server settings](https://vite.dev/config/server-options).
 
@@ -372,6 +370,9 @@ export default {
   }
 } satisfies Server
 ```
+
+> See <Link href="/precompress" noBreadcrumb /> to generate `.br`/`.gz` files for your static assets at build time (instead of unnecessarily compressing them on each request).
+
 
 ## See also
 

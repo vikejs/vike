@@ -1,4 +1,4 @@
-import { Link, Warning } from '@brillout/docpress'
+import { Link } from '@brillout/docpress'
 import { ConfigSpec } from '../../components'
 
 <ConfigSpec
@@ -10,7 +10,7 @@ type Value = boolean // Default: `false`
 ```
 </ConfigSpec>
 
-The `precompress` setting creates `.br` and `.gz` files of your static assets at build time, so that they don't have to be compressed for each request.
+The `+precompress` setting creates `.br` and `.gz` files for your static assets at build time, so that they don't have to be compressed on each request.
 
 ```ts
 // pages/+config.ts
@@ -22,34 +22,33 @@ export default {
 } satisfies Config
 ```
 
-The build then writes `assets/chunks/chunk-C7ohsKGx.js.br` and `assets/chunks/chunk-C7ohsKGx.js.gz` next to `assets/chunks/chunk-C7ohsKGx.js`.
+```yaml
+dist/client/assets/chunks/chunk-C7ohsKGx.js
+dist/client/assets/chunks/chunk-C7ohsKGx.js.br # [!code ++]
+dist/client/assets/chunks/chunk-C7ohsKGx.js.gz # [!code ++]
+```
 
-Small files, and files that are already compressed (such as `.png`, `.jpg` and `.woff2`), don't get `.br`/`.gz` files.
+> The `+precompress` setting is usually used when <Link href="/self-host">self-hosting</Link> — with most managed hosting platforms (Cloudflare, Vercel, Netlify, ...), you don't need `+precompress`: static assets are compressed by the platform.
+
+> Small files, and files that are already compressed (such as `.png`, `.jpg` and `.woff2`), don't get `.br`/`.gz` files.
 
 
 ## Serving
 
-If you use Vike's <Link href="/server">built-in server</Link>, then the `.br`/`.gz` files are served automatically.
+If you use <Link href="/server" noBreadcrumb />, the `.br`/`.gz` files are served automatically.
 
-If you use your own server, then make it serve them. For example with [`sirv`](https://github.com/lukeed/sirv):
+If you use your own server, make sure your server serves them. For example with [`sirv`](https://github.com/lukeed/sirv):
 
 ```js
 sirv('dist/client', { brotli: true, gzip: true })
 ```
 
-> On Cloudflare, Vercel and Netlify you don't need `precompress`: static assets are compressed by the platform.
-
-<Warning>If you use Vike's built-in server and set <Link href="/server#settings">`prod.static`</Link> to `false` or to a folder other than the build output, then the `.br`/`.gz` files aren't served: your assets are compressed for each request instead, without any warning.</Warning>
+> Likewise, if you use <Link href="/server" noBreadcrumb /> with <Link href="/server#settings">`prod.static`</Link> set to `false`, then make sure your static server serves the `.br`/`.gz` files.
 
 
 ## `public/`
 
-Files in `public/` are copied as-is and don't get `.br`/`.gz` files. If you add your own, then they're served, but keeping them up-to-date is up to you.
-
-
-## Pre-rendering
-
-Pre-rendered pages are precompressed, including when you pre-render with a separate `$ vike prerender` run.
+Files in `public/` are copied as-is and don't get `.br`/`.gz` files. If you add your own `.br`/`.gz`, they're served, but keeping them up-to-date is up to you.
 
 
 ## See also
