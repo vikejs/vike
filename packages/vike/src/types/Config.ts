@@ -676,9 +676,7 @@ type ConfigBuiltIn = {
   server?: boolean | ImportStringList
 
   /**
-   * @experimental
-   *
-   * Set to `true` to create `.br` and `.gz` files of your static assets at build time, so that they don't have to be compressed for each request.
+   * Set to `true` to create `.br` and `.gz` files for your static assets at build time, so that they don't have to be compressed for each request.
    *
    * https://vike.dev/precompress
    *
