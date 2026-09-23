@@ -259,6 +259,17 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
     console.log(`${pc.green(`✓`)} ${prerenderedCount} HTML documents pre-rendered.`)
   }
 
+  // During `$ vike build` (auto-run), the build's own precompress pass covers these files.
+  const { precompress } = vikeConfig.config
+  if (precompress && trigger !== 'auto-run' && !options.onPagePrerender) {
+    const { precompressFiles } = await import('@universal-deploy/vite')
+    const { written } = await precompressFiles(
+      prerenderContext.output.map((o) => o.filePath),
+      precompress,
+    )
+    if (written > 0) console.log(`${pc.green(`✓`)} precompressed ${written} variants`)
+  }
+
   await warnMissingPages(prerenderContext._prerenderedPageContexts, globalContext, doNotPrerenderList, partial)
 
   const prerenderContextPublic = getPrerenderContextPublic(prerenderContext)
