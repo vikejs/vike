@@ -43,6 +43,7 @@ Paths below are relative to https://vike.dev (e.g. `/data-fetching` → https://
 - /ssr — `+ssr` toggle SSR per page/globally (default `true`), `false` = client-only/SPA, works with prerender + `<ClientOnly>`
 - /stream — `+stream` HTML streaming (`true`/`'web'`/`'node'`/`false`), off for bots, needs `ssr`, Web vs Node streams
 - /prerender — `+prerender` SSG config: `partial`, `redirects`, `noExtraDir`, `parallel`, `disableAutoRun`, `keepDistServer` (global-only, not in page config)
+- /precompress — `+precompress` build-time `.br`/`.gz`
 - /prefetchStaticAssets — `+prefetchStaticAssets`: `'hover'` (default)/`'viewport'`/`false`, per-link override, Client Routing
 - /keepScrollPosition — `+keepScrollPosition` preserve scroll on nav (default `false`), named scroll groups, per-link attribute (tabs/nested layouts)
 

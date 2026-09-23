@@ -1,0 +1,58 @@
+import { Link } from '@brillout/docpress'
+import { ConfigSpec } from '../../components'
+
+<ConfigSpec
+  env="config (build)"
+  global
+>
+```ts ts-only hide-menu
+type Value = boolean // Default: `false`
+```
+</ConfigSpec>
+
+The `+precompress` setting creates `.br` and `.gz` files for your static assets at build time, so that they don't have to be compressed on each request.
+
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
+
+export default {
+  precompress: true
+} satisfies Config
+```
+
+```yaml
+dist/client/assets/chunks/chunk-C7ohsKGx.js
+dist/client/assets/chunks/chunk-C7ohsKGx.js.br # [!code ++]
+dist/client/assets/chunks/chunk-C7ohsKGx.js.gz # [!code ++]
+```
+
+> The `+precompress` setting is usually used when <Link href="/self-host">self-hosting</Link> — with most managed hosting platforms (Cloudflare, Vercel, Netlify, ...), you don't need `+precompress`: static assets are compressed by the platform.
+
+> Small files, and files that are already compressed (such as `.png`, `.jpg` and `.woff2`), don't get `.br`/`.gz` files.
+
+
+## Serving
+
+If you use <Link href="/server" noBreadcrumb />, the `.br`/`.gz` files are served automatically.
+
+If you use your own server, make sure your server serves them. For example with [`sirv`](https://github.com/lukeed/sirv):
+
+```js
+sirv('dist/client', { brotli: true, gzip: true })
+```
+
+> Likewise, if you use <Link href="/server" noBreadcrumb /> with <Link href="/server#settings">`prod.static`</Link> set to `false`, then make sure your static server serves the `.br`/`.gz` files.
+
+
+## `public/`
+
+Files in `public/` are copied as-is and don't get `.br`/`.gz` files. If you add your own `.br`/`.gz`, they're served, but keeping them up-to-date is up to you.
+
+
+## See also
+
+- <Link href="/server" />
+- <Link href="/server#compression" />
+- <Link href="/pre-rendering" />
