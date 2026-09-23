@@ -3,7 +3,7 @@ export { pluginUniversalDeploy }
 import { toRou3 } from 'convert-route'
 import type { Plugin } from 'vite'
 import { addEntry } from '@universal-deploy/store'
-import universalDeploy, { resolveTargets } from '@universal-deploy/vite'
+import universalDeploy, { precompress, resolveTargets } from '@universal-deploy/vite'
 import type { VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 import { pluginServerEntryInject } from './pluginUniversalDeploy/pluginServerEntryInject.js'
 import { getDeployConfig } from './pluginUniversalDeploy/getDeployConfig.js'
@@ -27,6 +27,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
         const target = targets.filter((t) => t !== '@cloudflare/vite-plugin')[0]
         assertUsage(target === undefined, `${target} requires +server — see https://vike.dev/server`)
       }),
+      precompress(vikeConfig.config.precompress),
     ]
   const { serverEntryVike, serverEntryId, serverFilePath } = serverConfig
 
