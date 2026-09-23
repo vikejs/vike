@@ -2130,8 +2130,8 @@ importers:
         specifier: 0.4.266
         version: link:../../packages/vike
       vike-vue:
-        specifier: ^0.9.13
-        version: 0.9.13(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(vike@packages+vike)(vue@3.5.18(typescript@6.0.3))
+        specifier: ^0.9.14
+        version: 0.9.14(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(vike@packages+vike)(vue@3.5.18(typescript@6.0.3))
       vite:
         specifier: ^6.3.5
         version: 6.3.5(@types/node@22.19.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)
@@ -2160,11 +2160,11 @@ importers:
         specifier: 0.4.266
         version: link:../../packages/vike
       vike-vue:
-        specifier: ^0.9.13
-        version: 0.9.13(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(vike@packages+vike)(vue@3.5.18(typescript@6.0.3))
+        specifier: ^0.9.14
+        version: 0.9.14(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(vike@packages+vike)(vue@3.5.18(typescript@6.0.3))
       vike-vue-pinia:
         specifier: ^0.2.6
-        version: 0.2.6(pinia@3.0.3(typescript@6.0.3)(vue@3.5.18(typescript@6.0.3)))(vike-vue@0.9.13(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(vike@packages+vike)(vue@3.5.18(typescript@6.0.3)))(vike@packages+vike)(vue@3.5.18(typescript@6.0.3))
+        version: 0.2.6(pinia@3.0.3(typescript@6.0.3)(vue@3.5.18(typescript@6.0.3)))(vike-vue@0.9.14(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(vike@packages+vike)(vue@3.5.18(typescript@6.0.3)))(vike@packages+vike)(vue@3.5.18(typescript@6.0.3))
       vite:
         specifier: ^6.1.0
         version: 6.3.5(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)
@@ -3455,11 +3455,12 @@ packages:
       '@emnapi/core': ^1.7.1
       '@emnapi/runtime': ^1.7.1
 
-  '@napi-rs/wasm-runtime@1.1.6':
-    resolution: {integrity: sha512-ZLv/JdUfkvOy9eCnnBaGfiO+XimbjebAeO+MRQqD/B+FR1tnRN0tpKSJHRbE8sFfS6aqsXZ67TQjfwfsxULVbg==}
+  '@napi-rs/wasm-runtime@1.2.4':
+    resolution: {integrity: sha512-AJxoUD2/15ESHbvpcyjU274nsAPLuOtPHCk0vKJM5pj//Fg/B1FXNWjPnXTT9PymCYYiHo4zPj0ZomXBKhoy7g==}
+    engines: {node: ^20.19.0 || ^22.13.0 || >=23.5.0}
     peerDependencies:
-      '@emnapi/core': ^1.7.1
-      '@emnapi/runtime': ^1.7.1
+      '@emnapi/core': ^1.7.1 || ^2.0.0-alpha.4
+      '@emnapi/runtime': ^1.7.1 || ^2.0.0-alpha.4
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -4660,8 +4661,8 @@ packages:
   '@tybys/wasm-util@0.10.1':
     resolution: {integrity: sha512-9tTaPJLSiejZKx+Bmog4uSubteqTvFrVrURwkmHixBo0G4seD0zUxp98E1DzUBJxLQ3NPwXrGKDiVjwx/DpPsg==}
 
-  '@tybys/wasm-util@0.10.3':
-    resolution: {integrity: sha512-F3fo1MYrRJYL3zER0OUOmkutjr1Vp23m7OsSgp7nq4SP6OqX6C/56XFIPAl5bt3zaBRjmW7SGz3u/6LwFpYcOg==}
+  '@tybys/wasm-util@0.10.4':
+    resolution: {integrity: sha512-W3c4gRigFS0T/Ma4qIYF3GDAc5AQdHb1yL5znJT1Zv1YaD9Kitx656wBjvr19qbiosmZT8lWDM5BEMynUqX65A==}
 
   '@types/acorn@4.0.6':
     resolution: {integrity: sha512-veQTnWP+1D/xbxVrPC3zHnCZRjSrKfhbMUlEA43iMZLu7EsnTtkJklIuwrCPbOi8YkvDQAiW05VQQFvvz9oieQ==}
@@ -5469,8 +5470,8 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
-  acorn@8.17.0:
-    resolution: {integrity: sha512-xRQbDb9BnwDafYNn6Vwl839DYVjqXYb1XVGtWAZ1kcDc6iwAL4hg3B1dZlRiuENFeO2H53gFG3in621AdERVAg==}
+  acorn@8.18.0:
+    resolution: {integrity: sha512-lGq+9yr1/GuAWaVYIHRjvvySG5/4VfKIvC8EWxStPdcDh/Ka7FG3twP6v4d5BkravUilhIAsG4Qj83t02LWUPQ==}
     engines: {node: '>=0.4.0'}
     hasBin: true
 
@@ -8180,8 +8181,8 @@ packages:
       vike-vue: '>=0.7.0'
       vue: '>=3.0.0'
 
-  vike-vue@0.9.13:
-    resolution: {integrity: sha512-M7G5rBHiuLulXtPCEM25hNLoGWpO2JvsUZOMOP79DyesR8I7kw9hSXH6RBB/VrbdNCmpFQHEmjIkFlBKp+CkNQ==}
+  vike-vue@0.9.14:
+    resolution: {integrity: sha512-EbHR9NaTclORnjh33S/3DhpbYQB3Jnh+hxPaRMNXXHxXXa/HeNOdOOs+xpxK21d4/EdXmEpXqPXND+QkuzkJaQ==}
     peerDependencies:
       vike: '>=0.4.191'
       vue: '>=3.0.0'
@@ -9799,11 +9800,11 @@ snapshots:
       '@tybys/wasm-util': 0.10.1
     optional: true
 
-  '@napi-rs/wasm-runtime@1.1.6(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)':
+  '@napi-rs/wasm-runtime@1.2.4(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)':
     dependencies:
       '@emnapi/core': 1.10.0
       '@emnapi/runtime': 1.10.0
-      '@tybys/wasm-util': 0.10.3
+      '@tybys/wasm-util': 0.10.4
     optional: true
 
   '@nodelib/fs.scandir@2.1.5':
@@ -9892,7 +9893,7 @@ snapshots:
 
   '@oxc-parser/binding-wasm32-wasi@0.104.0(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)':
     dependencies:
-      '@napi-rs/wasm-runtime': 1.1.6(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
+      '@napi-rs/wasm-runtime': 1.2.4(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
     transitivePeerDependencies:
       - '@emnapi/core'
       - '@emnapi/runtime'
@@ -10706,7 +10707,7 @@ snapshots:
       tslib: 2.8.1
     optional: true
 
-  '@tybys/wasm-util@0.10.3':
+  '@tybys/wasm-util@0.10.4':
     dependencies:
       tslib: 2.8.1
     optional: true
@@ -11969,7 +11970,7 @@ snapshots:
 
   acorn@8.16.0: {}
 
-  acorn@8.17.0: {}
+  acorn@8.18.0: {}
 
   agent-base@7.1.4: {}
 
@@ -13883,7 +13884,7 @@ snapshots:
 
   mlly@1.8.2:
     dependencies:
-      acorn: 8.17.0
+      acorn: 8.18.0
       pathe: 2.0.3
       pkg-types: 1.3.1
       ufo: 1.6.4
@@ -15378,14 +15379,14 @@ snapshots:
       vike: link:packages/vike
       vite-plugin-solid: 2.11.10(solid-js@1.9.10)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
 
-  vike-vue-pinia@0.2.6(pinia@3.0.3(typescript@6.0.3)(vue@3.5.18(typescript@6.0.3)))(vike-vue@0.9.13(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(vike@packages+vike)(vue@3.5.18(typescript@6.0.3)))(vike@packages+vike)(vue@3.5.18(typescript@6.0.3)):
+  vike-vue-pinia@0.2.6(pinia@3.0.3(typescript@6.0.3)(vue@3.5.18(typescript@6.0.3)))(vike-vue@0.9.14(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(vike@packages+vike)(vue@3.5.18(typescript@6.0.3)))(vike@packages+vike)(vue@3.5.18(typescript@6.0.3)):
     dependencies:
       pinia: 3.0.3(typescript@6.0.3)(vue@3.5.18(typescript@6.0.3))
       vike: link:packages/vike
-      vike-vue: 0.9.13(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(vike@packages+vike)(vue@3.5.18(typescript@6.0.3))
+      vike-vue: 0.9.14(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(vike@packages+vike)(vue@3.5.18(typescript@6.0.3))
       vue: 3.5.18(typescript@6.0.3)
 
-  vike-vue@0.9.13(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(vike@packages+vike)(vue@3.5.18(typescript@6.0.3)):
+  vike-vue@0.9.14(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(vike@packages+vike)(vue@3.5.18(typescript@6.0.3)):
     dependencies:
       magic-string: 0.30.21
       oxc-parser: 0.104.0(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
