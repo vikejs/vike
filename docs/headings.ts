@@ -680,6 +680,11 @@ const headings = [
   },
   {
     level: 2,
+    title: '`+precompress`',
+    url: '/precompress',
+  },
+  {
+    level: 2,
     title: '`+redirects`',
     url: '/redirects',
   },

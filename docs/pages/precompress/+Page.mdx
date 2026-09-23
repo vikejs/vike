@@ -1,0 +1,61 @@
+import { Link, Warning } from '@brillout/docpress'
+import { ConfigSpec } from '../../components'
+
+<ConfigSpec
+  env="config (build)"
+  global
+>
+```ts ts-only hide-menu
+type Value = boolean // Default: `false`
+```
+</ConfigSpec>
+
+The `precompress` setting creates `.br` and `.gz` files of your static assets at build time, so that they don't have to be compressed for each request.
+
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
+
+export default {
+  precompress: true
+} satisfies Config
+```
+
+The build then writes `assets/chunks/chunk-C7ohsKGx.js.br` and `assets/chunks/chunk-C7ohsKGx.js.gz` next to `assets/chunks/chunk-C7ohsKGx.js`.
+
+Small files, and files that are already compressed (such as `.png`, `.jpg` and `.woff2`), don't get `.br`/`.gz` files.
+
+
+## Serving
+
+If you use Vike's <Link href="/server">built-in server</Link>, then the `.br`/`.gz` files are served automatically.
+
+If you use your own server, then make it serve them. For example with [`sirv`](https://github.com/lukeed/sirv):
+
+```js
+sirv('dist/client', { brotli: true, gzip: true })
+```
+
+> On Cloudflare, Vercel and Netlify you don't need `precompress`: static assets are compressed by the platform.
+
+<Warning>If you use Vike's built-in server and set <Link href="/server#settings">`prod.static`</Link> to `false` or to a folder other than the build output, then the `.br`/`.gz` files aren't served: your assets are compressed for each request instead, without any warning.</Warning>
+
+
+## `public/`
+
+Files in `public/` are copied as-is and don't get `.br`/`.gz` files. If you add your own, then they're served, but keeping them up-to-date is up to you.
+
+
+## Pre-rendering
+
+Pages pre-rendered by `$ vike build` are precompressed.
+
+> 🚧 Pages pre-rendered by a separate `$ vike prerender` run aren't yet. If you need it, then [reach out](https://github.com/vikejs/vike/discussions).
+
+
+## See also
+
+- <Link href="/server" />
+- <Link href="/server#compression" />
+- <Link href="/pre-rendering" />
