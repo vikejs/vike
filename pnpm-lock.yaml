@@ -849,14 +849,14 @@ importers:
         specifier: ^0.2.2
         version: 0.2.2(srvx@0.12.5)
       '@universal-deploy/vite':
-        specifier: ^0.1.12
-        version: 0.1.12(@hattip/core@0.0.49)(@types/express@5.0.6)(srvx@0.12.5)(vite@7.3.1(@types/node@20.17.17)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
+        specifier: ^0.1.13
+        version: 0.1.13(@hattip/core@0.0.49)(@types/express@5.0.6)(srvx@0.12.5)(vite@7.3.1(@types/node@20.17.17)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
       '@universal-middleware/core':
         specifier: ^0.4.18
         version: 0.4.18(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.12.5)
       '@universal-middleware/node':
         specifier: ^0.2.2
-        version: 0.2.2(@hattip/core@0.0.49)(@types/express@5.0.6)(srvx@0.12.5)
+        version: 0.2.2(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.12.5)
       cac:
         specifier: ^6.0.0
         version: 6.7.14
@@ -2183,7 +2183,7 @@ importers:
     dependencies:
       vite-plugin-vercel:
         specifier: ^11.1.1
-        version: 11.1.1(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(rollup@4.43.0)(srvx@0.11.16)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
+        version: 11.1.1(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(rollup@4.43.0)(srvx@0.12.5)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
     devDependencies:
       '@types/node':
         specifier: ^24.1.0
@@ -2196,7 +2196,7 @@ importers:
         version: 19.2.3(@types/react@19.2.15)
       '@vikejs/hono':
         specifier: ^0.2.1
-        version: 0.2.1(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.11.16)(vike@packages+vike)
+        version: 0.2.1(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.12.5)(vike@packages+vike)
       '@vitejs/plugin-react-swc':
         specifier: ^3.11.0
         version: 3.11.0(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
@@ -4936,26 +4936,13 @@ packages:
     resolution: {integrity: sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g==}
     deprecated: Potential CWE-502 - Update to 1.3.1 or higher
 
-  '@universal-deploy/netlify@0.2.2':
-    resolution: {integrity: sha512-10JY+1z0aun66IegHhVdOBTgXioI0+hgA0IVc0zgZvm2C7g2eQWpv48wtqCZZsXyUxajKcIlxiYxIuhuRIdfrQ==}
-    peerDependencies:
-      vite: '>=7.1'
-
   '@universal-deploy/netlify@0.2.3':
     resolution: {integrity: sha512-qsXnCjWK+I9dZAg3MWqttWcsG6TEiM7iXWPC1Qmgs46b7L5mQdAzHAlPrzsXVtLB05orYEMeZfmNeKBQwe0vNA==}
     peerDependencies:
       vite: '>=7.1'
 
-  '@universal-deploy/node@0.1.11':
-    resolution: {integrity: sha512-aMsLVLADNqm5YERAgdqe6X9iV2mZ5X4S3f0CNS7Xq8ts400paz1g/w4yCe+6Z1klC0kcyaJO/ms4BR5Ykz4y5w==}
-    peerDependencies:
-      vite: '>=7.1'
-    peerDependenciesMeta:
-      vite:
-        optional: true
-
-  '@universal-deploy/node@0.1.8':
-    resolution: {integrity: sha512-UhsjkEYqL58weCmNlFKLJPrUsF8JQaDEUcd9Qy5KUriPn9ewUHw+tojKDNtQiONCEJfc4C8MohffL3M5dbZIAA==}
+  '@universal-deploy/node@0.1.12':
+    resolution: {integrity: sha512-2gS64nG5e1pHbnytb/JuWOz4VItAjddWiH+ovIpD7WB+ScWc3qVCW7CPFZnzCLn7MnO63J1KfBhqpUsH5VUSUA==}
     peerDependencies:
       vite: '>=7.1'
     peerDependenciesMeta:
@@ -4978,16 +4965,8 @@ packages:
       srvx:
         optional: true
 
-  '@universal-deploy/vite@0.1.10':
-    resolution: {integrity: sha512-fORNv7+cTgWT1iS2ywUvwaxVkn7QCUHwXwZjfEEv9tL//MoTdwmosq7z2vB4tyN8ERGgWKU7MaQN+YNxfg/68g==}
-    peerDependencies:
-      vite: '>=7.1'
-    peerDependenciesMeta:
-      vite:
-        optional: true
-
-  '@universal-deploy/vite@0.1.12':
-    resolution: {integrity: sha512-y/UxEDKfKtMxwp6WOW8fJyWhW+obOTso5UdHGV21ke322v5yHzKQtop6Y8weV+vycJcIaA+ccbvH2eNWpGF2nw==}
+  '@universal-deploy/vite@0.1.13':
+    resolution: {integrity: sha512-f8h5ixHRkfNDpw6VpZz9JhfXH3jQkkQ5uedZcjKsRMsGOG53kg25HsVAaZ9H+j5nd5IYOzK02tRqXiKiUIgWVA==}
     peerDependencies:
       vite: '>=7.1'
     peerDependenciesMeta:
@@ -7735,11 +7714,6 @@ packages:
   sprintf-js@1.0.3:
     resolution: {integrity: sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==}
 
-  srvx@0.11.16:
-    resolution: {integrity: sha512-bp07zRuycfTY43IjAvvTFnmnJi8ikW0VFiHwOhhYcVW/L4xQ1XY4PAd4Nuum1rsA17C39zL7x+CDhrn5AL32Rw==}
-    engines: {node: '>=20.16.0'}
-    hasBin: true
-
   srvx@0.12.5:
     resolution: {integrity: sha512-IuvtDNQg5EIwv3c6dleyau7u8hCyGQ7D6+V/QM799Aud07z0wCUcurKLTRfyG33C8oUY+UWcVBFkfHMcbtmRLA==}
     engines: {node: '>=20.16.0'}
@@ -9142,19 +9116,6 @@ snapshots:
       - utf-8-validate
       - workerd
 
-  '@cloudflare/vite-plugin@1.31.1(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))(wrangler@4.81.0)':
-    dependencies:
-      '@cloudflare/unenv-preset': 2.16.0(unenv@2.0.0-rc.24)(workerd@1.20260405.1)
-      miniflare: 4.20260405.0
-      unenv: 2.0.0-rc.24
-      vite: 7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)
-      wrangler: 4.81.0
-      ws: 8.18.0
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-      - workerd
-
   '@cloudflare/vite-plugin@1.31.1(vite@8.0.7(@types/node@24.10.2)(esbuild@0.27.3)(jiti@2.6.1)(terser@5.38.1)(tsx@4.20.6))(workerd@1.20260405.1)(wrangler@4.81.0)':
     dependencies:
       '@cloudflare/unenv-preset': 2.16.0(unenv@2.0.0-rc.24)(workerd@1.20260405.1)
@@ -9996,7 +9957,7 @@ snapshots:
 
   '@photonjs/cloudflare@0.1.13(@hattip/core@0.0.49)(@types/express@5.0.6)(srvx@0.12.5)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))(wrangler@4.81.0)':
     dependencies:
-      '@cloudflare/vite-plugin': 1.31.1(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))(wrangler@4.81.0)
+      '@cloudflare/vite-plugin': 1.31.1(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))(workerd@1.20260405.1)(wrangler@4.81.0)
       '@photonjs/core': 0.1.22(@hattip/core@0.0.49)(@types/express@5.0.6)(srvx@0.12.5)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
       '@universal-middleware/cloudflare': 0.4.12(@hattip/core@0.0.49)(@types/express@5.0.6)(srvx@0.12.5)
     transitivePeerDependencies:
@@ -10945,13 +10906,6 @@ snapshots:
 
   '@ungap/structured-clone@1.3.0': {}
 
-  '@universal-deploy/netlify@0.2.2(srvx@0.11.16)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))':
-    dependencies:
-      '@universal-deploy/store': 0.2.2(srvx@0.11.16)
-      vite: 7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)
-    transitivePeerDependencies:
-      - srvx
-
   '@universal-deploy/netlify@0.2.3(srvx@0.12.5)(vite@7.3.1(@types/node@20.17.17)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))':
     dependencies:
       '@universal-deploy/store': 0.2.2(srvx@0.12.5)
@@ -10959,7 +10913,14 @@ snapshots:
     transitivePeerDependencies:
       - srvx
 
-  '@universal-deploy/node@0.1.11(vite@7.3.1(@types/node@20.17.17)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))':
+  '@universal-deploy/netlify@0.2.3(srvx@0.12.5)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))':
+    dependencies:
+      '@universal-deploy/store': 0.2.2(srvx@0.12.5)
+      vite: 7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)
+    transitivePeerDependencies:
+      - srvx
+
+  '@universal-deploy/node@0.1.12(vite@7.3.1(@types/node@20.17.17)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))':
     dependencies:
       '@universal-deploy/store': 0.2.2(srvx@0.12.5)
       magic-string: 0.30.21
@@ -10967,25 +10928,19 @@ snapshots:
     optionalDependencies:
       vite: 7.3.1(@types/node@20.17.17)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)
 
-  '@universal-deploy/node@0.1.8(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))':
+  '@universal-deploy/node@0.1.12(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))':
     dependencies:
-      '@universal-deploy/store': 0.2.2(srvx@0.11.16)
+      '@universal-deploy/store': 0.2.2(srvx@0.12.5)
       magic-string: 0.30.21
-      srvx: 0.11.16
+      srvx: 0.12.5
     optionalDependencies:
       vite: 7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)
 
-  '@universal-deploy/store@0.2.1(srvx@0.11.16)':
+  '@universal-deploy/store@0.2.1(srvx@0.12.5)':
     dependencies:
       rou3: 0.8.1
     optionalDependencies:
-      srvx: 0.11.16
-
-  '@universal-deploy/store@0.2.2(srvx@0.11.16)':
-    dependencies:
-      rou3: 0.8.1
-    optionalDependencies:
-      srvx: 0.11.16
+      srvx: 0.12.5
 
   '@universal-deploy/store@0.2.2(srvx@0.12.5)':
     dependencies:
@@ -10993,12 +10948,12 @@ snapshots:
     optionalDependencies:
       srvx: 0.12.5
 
-  '@universal-deploy/vite@0.1.10(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.11.16)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))':
+  '@universal-deploy/vite@0.1.13(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.12.5)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))':
     dependencies:
-      '@universal-deploy/netlify': 0.2.2(srvx@0.11.16)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
-      '@universal-deploy/node': 0.1.8(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
-      '@universal-deploy/store': 0.2.2(srvx@0.11.16)
-      '@universal-middleware/express': 0.4.27(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.11.16)
+      '@universal-deploy/netlify': 0.2.3(srvx@0.12.5)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
+      '@universal-deploy/node': 0.1.12(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
+      '@universal-deploy/store': 0.2.2(srvx@0.12.5)
+      '@universal-middleware/express': 0.4.31(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.12.5)
       magic-string: 0.30.21
       rou3: 0.8.1
     optionalDependencies:
@@ -11014,12 +10969,12 @@ snapshots:
       - hono
       - srvx
 
-  '@universal-deploy/vite@0.1.12(@hattip/core@0.0.49)(@types/express@5.0.6)(srvx@0.12.5)(vite@7.3.1(@types/node@20.17.17)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))':
+  '@universal-deploy/vite@0.1.13(@hattip/core@0.0.49)(@types/express@5.0.6)(srvx@0.12.5)(vite@7.3.1(@types/node@20.17.17)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))':
     dependencies:
       '@universal-deploy/netlify': 0.2.3(srvx@0.12.5)(vite@7.3.1(@types/node@20.17.17)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
-      '@universal-deploy/node': 0.1.11(vite@7.3.1(@types/node@20.17.17)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
+      '@universal-deploy/node': 0.1.12(vite@7.3.1(@types/node@20.17.17)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
       '@universal-deploy/store': 0.2.2(srvx@0.12.5)
-      '@universal-middleware/express': 0.4.31(@hattip/core@0.0.49)(@types/express@5.0.6)(srvx@0.12.5)
+      '@universal-middleware/express': 0.4.31(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.12.5)
       magic-string: 0.30.21
       rou3: 0.8.1
     optionalDependencies:
@@ -11051,16 +11006,6 @@ snapshots:
 
   '@universal-middleware/compress@0.2.36': {}
 
-  '@universal-middleware/core@0.4.18(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.11.16)':
-    dependencies:
-      regexparam: 3.0.0
-      tough-cookie: 6.0.1
-    optionalDependencies:
-      '@hattip/core': 0.0.49
-      '@types/express': 5.0.6
-      hono: 4.10.4
-      srvx: 0.11.16
-
   '@universal-middleware/core@0.4.18(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.12.5)':
     dependencies:
       regexparam: 3.0.0
@@ -11085,25 +11030,10 @@ snapshots:
       - hono
       - srvx
 
-  '@universal-middleware/express@0.4.27(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.11.16)':
-    dependencies:
-      '@universal-middleware/core': 0.4.18(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.11.16)
-      '@universal-middleware/node': 0.2.2(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.11.16)
-    transitivePeerDependencies:
-      - '@cloudflare/workers-types'
-      - '@hattip/core'
-      - '@types/express'
-      - '@webroute/route'
-      - elysia
-      - fastify
-      - h3
-      - hono
-      - srvx
-
   '@universal-middleware/express@0.4.27(@hattip/core@0.0.49)(@types/express@5.0.6)(srvx@0.12.5)':
     dependencies:
       '@universal-middleware/core': 0.4.18(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.12.5)
-      '@universal-middleware/node': 0.2.2(@hattip/core@0.0.49)(@types/express@5.0.6)(srvx@0.12.5)
+      '@universal-middleware/node': 0.2.2(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.12.5)
     transitivePeerDependencies:
       - '@cloudflare/workers-types'
       - '@hattip/core'
@@ -11118,7 +11048,7 @@ snapshots:
   '@universal-middleware/express@0.4.30(@hattip/core@0.0.49)(@types/express@5.0.6)(srvx@0.12.5)':
     dependencies:
       '@universal-middleware/core': 0.4.18(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.12.5)
-      '@universal-middleware/node': 0.2.2(@hattip/core@0.0.49)(@types/express@5.0.6)(srvx@0.12.5)
+      '@universal-middleware/node': 0.2.2(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.12.5)
     transitivePeerDependencies:
       - '@cloudflare/workers-types'
       - '@hattip/core'
@@ -11130,10 +11060,10 @@ snapshots:
       - hono
       - srvx
 
-  '@universal-middleware/express@0.4.31(@hattip/core@0.0.49)(@types/express@5.0.6)(srvx@0.12.5)':
+  '@universal-middleware/express@0.4.31(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.12.5)':
     dependencies:
       '@universal-middleware/core': 0.4.18(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.12.5)
-      '@universal-middleware/node': 0.2.2(@hattip/core@0.0.49)(@types/express@5.0.6)(srvx@0.12.5)
+      '@universal-middleware/node': 0.2.2(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.12.5)
     transitivePeerDependencies:
       - '@cloudflare/workers-types'
       - '@hattip/core'
@@ -11148,7 +11078,7 @@ snapshots:
   '@universal-middleware/fastify@0.5.26(@hattip/core@0.0.49)(@types/express@5.0.6)(srvx@0.12.5)':
     dependencies:
       '@universal-middleware/core': 0.4.18(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.12.5)
-      '@universal-middleware/node': 0.2.2(@hattip/core@0.0.49)(@types/express@5.0.6)(srvx@0.12.5)
+      '@universal-middleware/node': 0.2.2(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.12.5)
       fastify-raw-body: 5.0.0
     transitivePeerDependencies:
       - '@cloudflare/workers-types'
@@ -11189,20 +11119,6 @@ snapshots:
       - hono
       - srvx
 
-  '@universal-middleware/hono@0.4.21(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.11.16)':
-    dependencies:
-      '@universal-middleware/core': 0.4.18(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.11.16)
-    transitivePeerDependencies:
-      - '@cloudflare/workers-types'
-      - '@hattip/core'
-      - '@types/express'
-      - '@webroute/route'
-      - elysia
-      - fastify
-      - h3
-      - hono
-      - srvx
-
   '@universal-middleware/hono@0.4.21(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.12.5)':
     dependencies:
       '@universal-middleware/core': 0.4.18(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.12.5)
@@ -11217,35 +11133,7 @@ snapshots:
       - hono
       - srvx
 
-  '@universal-middleware/hono@0.4.21(@hattip/core@0.0.49)(@types/express@5.0.6)(srvx@0.12.5)':
-    dependencies:
-      '@universal-middleware/core': 0.4.18(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.12.5)
-    transitivePeerDependencies:
-      - '@cloudflare/workers-types'
-      - '@hattip/core'
-      - '@types/express'
-      - '@webroute/route'
-      - elysia
-      - fastify
-      - h3
-      - hono
-      - srvx
-
-  '@universal-middleware/node@0.2.2(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.11.16)':
-    dependencies:
-      '@universal-middleware/core': 0.4.18(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.11.16)
-    transitivePeerDependencies:
-      - '@cloudflare/workers-types'
-      - '@hattip/core'
-      - '@types/express'
-      - '@webroute/route'
-      - elysia
-      - fastify
-      - h3
-      - hono
-      - srvx
-
-  '@universal-middleware/node@0.2.2(@hattip/core@0.0.49)(@types/express@5.0.6)(srvx@0.12.5)':
+  '@universal-middleware/node@0.2.2(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.12.5)':
     dependencies:
       '@universal-middleware/core': 0.4.18(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.12.5)
     transitivePeerDependencies:
@@ -11282,7 +11170,7 @@ snapshots:
     dependencies:
       '@universal-middleware/core': 0.4.18(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.12.5)
       '@universal-middleware/express': 0.4.27(@hattip/core@0.0.49)(@types/express@5.0.6)(srvx@0.12.5)
-      '@universal-middleware/node': 0.2.2(@hattip/core@0.0.49)(@types/express@5.0.6)(srvx@0.12.5)
+      '@universal-middleware/node': 0.2.2(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.12.5)
     optionalDependencies:
       '@hattip/core': 0.0.49
       '@universal-middleware/h3': 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(srvx@0.12.5)
@@ -11407,21 +11295,6 @@ snapshots:
       - fastify
       - h3
       - hono
-      - srvx
-
-  '@vikejs/hono@0.2.1(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.11.16)(vike@packages+vike)':
-    dependencies:
-      '@universal-middleware/hono': 0.4.21(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.11.16)
-      hono: 4.10.4
-      vike: link:packages/vike
-    transitivePeerDependencies:
-      - '@cloudflare/workers-types'
-      - '@hattip/core'
-      - '@types/express'
-      - '@webroute/route'
-      - elysia
-      - fastify
-      - h3
       - srvx
 
   '@vikejs/hono@0.2.1(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.12.5)(vike@packages+vike)':
@@ -14812,8 +14685,6 @@ snapshots:
 
   sprintf-js@1.0.3: {}
 
-  srvx@0.11.16: {}
-
   srvx@0.12.5: {}
 
   stackback@0.0.2: {}
@@ -15354,7 +15225,7 @@ snapshots:
       '@universal-middleware/fastify': 0.5.26(@hattip/core@0.0.49)(@types/express@5.0.6)(srvx@0.12.5)
       '@universal-middleware/h3': 0.4.17(@hattip/core@0.0.49)(@types/express@5.0.6)(srvx@0.12.5)
       '@universal-middleware/hattip': 0.4.16(@hattip/core@0.0.49)(@types/express@5.0.6)(srvx@0.12.5)
-      '@universal-middleware/hono': 0.4.21(@hattip/core@0.0.49)(@types/express@5.0.6)(srvx@0.12.5)
+      '@universal-middleware/hono': 0.4.21(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.12.5)
       '@universal-middleware/sirv': 0.1.26
       esbuild: 0.25.12
       vike: link:packages/vike
@@ -15431,11 +15302,11 @@ snapshots:
       - supports-color
       - typescript
 
-  vite-plugin-vercel@11.1.1(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(rollup@4.43.0)(srvx@0.11.16)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)):
+  vite-plugin-vercel@11.1.1(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(rollup@4.43.0)(srvx@0.12.5)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)):
     dependencies:
       '@manypkg/find-root': 3.1.0
-      '@universal-deploy/store': 0.2.1(srvx@0.11.16)
-      '@universal-deploy/vite': 0.1.10(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.11.16)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
+      '@universal-deploy/store': 0.2.1(srvx@0.12.5)
+      '@universal-deploy/vite': 0.1.13(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.10.4)(srvx@0.12.5)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
       '@vercel/build-utils': 13.28.0
       '@vercel/nft': 1.10.2(rollup@4.43.0)
       '@vercel/routing-utils': 6.2.0
