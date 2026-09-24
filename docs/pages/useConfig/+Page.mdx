@@ -11,6 +11,7 @@ The `useConfig()` hook enables you to define <Link href="/settings#html-shell" d
 
 See also: <Link href="/head-tags" />.
 
+
 ## Vike hooks
 
 You can use `useConfig()` inside any Vike hook, most notably <Link href="/data">`+data`</Link>.
@@ -94,9 +95,8 @@ export function Page() {
 > })
 > ```
 
-> See also: <Link href="/useData" />.
 
-#### `<Config>` & `<Head>`
+## `<Config>` & `<Head>`
 
 For a more declarative usage, you can use the `<Config>` and `<Head>` components instead of `useConfig()`:
 
@@ -126,8 +126,8 @@ export function Page() {
 }
 ```
 
-> The `<Config>` and `<Head>` components are just `useConfig()` wrappers — they're only for convenience.
-> The following doesn't make any difference:
+> The `<Config>` and `<Head>` components are just wrappers around `useConfig()` — they're only for convenience.
+> For example, the following achieves the same:
 > ```tsx
 > import { Config } from 'vike-react/Config' // or vike-{vue,solid} // [!code --]
 > import { Head } from 'vike-react/Head' // or vike-{vue,solid} // [!code --]
@@ -161,7 +161,7 @@ export function Page() {
 > Unlike other frameworks, Vike doesn't implement a `<Title>` component because the title value must be a string — `<Title><b>Hello</b> World</Title>` wouldn't make sense.
 
 
-#### Example: React Query
+## Example: React Query
 
 The `useConfig()` hook is especially useful when using extensions such as
 [`vike-react-query`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query#readme)
@@ -200,7 +200,7 @@ function Movies() {
 }
 ```
 
-> The `<meta name="description">` tag is only shown to bots. See the explanation in the section below <Link href="#html-streaming" />.
+> The `<meta name="description">` tag is only shown to bots. See the explanation in the <Link href="#html-streaming" /> section below.
 
 Or with `<Config>` and `<Head>`:
 
@@ -234,13 +234,14 @@ function Movies() {
 }
 ```
 
+
 ## HTML Streaming
 
 If you use <Link href="/stream">HTML Streaming</Link> together with <Link href="#ui-components">`useConfig()` inside UI components</Link>, some `<head>` tags may be missing from the streamed HTML.
 
-This happens when a component calls `useConfig()` after the HTML stream has already started and the whole `<head>` block has already been sent to the client — it's too late to inject additional `<head>` tags.
+This happens when a component calls `useConfig()` after the HTML stream has already started and the entire `<head>` block has already been sent to the client — it's too late to inject additional `<head>` tags.
 
-This might seem like an issue, but it actually isn't. See the explanation below.
+This might seem like an issue, but it actually isn't — see the explanation in the <Link href="#bots"/> section below.
 
 #### Bots
 
@@ -249,21 +250,22 @@ If you use <Link href="/vike-react">`vike-react`</Link> then note that it uses [
 You can use [`$ curl`](https://curl.se) to see the HTML response that bots and crawlers receive:
 
 ```bash
-# What bots and crawls get: no HTML Streaming, just "classic SSR"
+# What bots and crawlers get: no HTML Streaming, just "classic SSR"
 $ curl http://localhost:3000/movies
 # What human users get: HTML Streaming
 $ curl http://localhost:3000/movies -N -H "User-Agent: chrome"
 ```
 
-> Consequently, `<head>` tags intended for bots (SEO, PWA settings, ...) are guaranteed to be included in the HTML. They might be missing for human users, but that isn't an issue.
+> Consequently, `<head>` tags intended for bots (SEO, PWA settings, ...) are included in the HTML. They might be missing for human users, but that isn't an issue.
 
 #### `+title`
 
 If `<Config title={'some-title'}>` runs after the `<head>` block has already been sent, the HTML snippet `<script>document.title = 'some-title'</script>` is injected to dynamically update the page title.
 
-Currently, `+title` is the only setting that uses such mechanism.
+Currently, `+title` is the only setting that uses this mechanism.
 
 > Consequently, the `<title>` tag is guaranteed to be included in the HTML for bots (see section above), while human users see an up-to-date page title.
+
 
 ## See also
 
