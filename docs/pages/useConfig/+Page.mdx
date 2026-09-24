@@ -267,6 +267,17 @@ Currently, `+title` is the only setting that uses this mechanism.
 > Consequently, the `<title>` tag is guaranteed to be included in the HTML for bots (see section above), while human users see an up-to-date page title.
 
 
+## Precedence
+
+If you define settings mutliple times, Vike chooses the first value in this order:
+
+1. The value set by `useConfig()` (or <Link href="#config-head" />)
+1. The value set by the page's settings
+1. The value set by the global settings
+
+> See also: <Link href="/config#inheritance" />
+
+
 ## See also
 
 - <Link href="/head-tags" />
