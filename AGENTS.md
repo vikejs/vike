@@ -1,0 +1,2 @@
+- When changing the docs, consider updating docs/public/llms.txt
+- The only thing worse than a failing test is a reduction in test coverage
