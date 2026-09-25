@@ -65,7 +65,7 @@ Paths below are relative to https://vike.dev (e.g. `/data-fetching` → https://
 
 - /useData — `useData()` read `+data()` output in components, type-safe, vs `pageContext.data`
 - /usePageContext — `usePageContext()` read `pageContext` in any component; manual impl via React Context / Vue provide-inject
-- /useConfig — `useConfig()` set `<head>`/title/description/OG from components & hooks, call before `await`, streaming caveats, vs `<Head>`/`<Config>`
+- /useConfig — `useConfig()` set `<head>`/title/description/OG from components & hooks, call before `await`, streaming caveats, vs `<Head>`/`<Config>`, precedence (components > hooks > page > global settings)
 - /useHydrated — `useHydrated()` `false` during SSR+hydration then `true`, gate interactive elements pre-hydration
 - /getGlobalContext — `getGlobalContext()` global info outside rendering; `getGlobalContextAsync`/`getGlobalContextSync` (prod-only) variants
 - /redirect — `throw redirect()` (`vike/abort`) abort + redirect (301/302), in `guard()`/`data()`, auth flows; vs `navigate()`/`throw render()`

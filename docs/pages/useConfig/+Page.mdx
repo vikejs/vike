@@ -269,9 +269,10 @@ Currently, `+title` is the only setting that uses this mechanism.
 
 ## Precedence
 
-If you define settings mutliple times, Vike chooses the first value in this order:
+If you define settings multiple times, Vike chooses the first value in this order:
 
-1. The value set by `useConfig()` (or <Link href="#config-head" />)
+1. The value set by <Link href="#ui-components">`useConfig()` inside UI components</Link> (or <Link href="#config-head" />)
+1. The value set by <Link href="#vike-hooks">`useConfig()` inside Vike hooks</Link>
 1. The value set by the page's settings
 1. The value set by the global settings
 
