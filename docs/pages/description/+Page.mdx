@@ -1,9 +1,9 @@
 import { Link } from '@brillout/docpress'
 
-import { UiFrameworkExtension, OnlyHtmlNote, ConfigSpec } from '../../components'
+import { ConfigSpec } from '../../components'
 
 <ConfigSpec
-  env="server"
+  env="client, server"
   providedByExtension={{ kind: 'setting', noCustomGuide: true }}
 >
 ```ts ts-only hide-menu
@@ -47,9 +47,9 @@ You can set its value using a <Link href="/pageContext">`pageContext`</Link> fun
 // Environment: server, client
 
 import type { Data } from './+data'
-import type { PageContextServer } from 'vike/types'
+import type { PageContext } from 'vike/types'
 
-export function description(pageContext: PageContextServer<Data>) {
+export function description(pageContext: PageContext<Data>) {
   return pageContext.data.product.description
 }
 ```
@@ -57,7 +57,11 @@ export function description(pageContext: PageContextServer<Data>) {
 
 ## Under the hood
 
-<OnlyHtmlNote />
+On the server-side, upon rendering the HTML of the first page, the `description` setting adds the `<meta name="description">` and `<meta property="og:description">` tags to the [`<head>` tag](https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/The_head_metadata_in_HTML).
+
+On the client-side, upon <Link href="/client-routing">client-side page navigation</Link>, the `description` setting dynamically updates these tags by mutating the DOM.
+
+> While crawlers (e.g. search engine bots) read the description from the HTML, some tools read it from the DOM of the page the user is currently viewing — for example browser extensions for bookmarking and social sharing.
 
 
 ## See also
