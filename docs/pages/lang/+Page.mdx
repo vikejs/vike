@@ -2,7 +2,7 @@ import { Link } from '@brillout/docpress'
 import { UiFrameworkExtension, ConfigSpec } from '../../components'
 
 <ConfigSpec
-  env="server"
+  env="client, server"
   default={<code>'en'</code>}
   providedByExtension={{ kind: 'setting', name: '+lang' }}
 >
@@ -28,10 +28,11 @@ You can also dynamically set the value of `lang`. For example, if you want to in
 
 ```ts
 // /pages/+lang.ts
+// Environment: server, client
 
-import type { PageContextServer } from 'vike/types'
+import type { PageContext } from 'vike/types'
 
-export default (pageContext: PageContextServer) => {
+export default (pageContext: PageContext) => {
   return pageContext.locale
 }
 ```
