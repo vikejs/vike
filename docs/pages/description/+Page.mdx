@@ -57,11 +57,9 @@ export function description(pageContext: PageContext<Data>) {
 
 ## Under the hood
 
-On the server-side, upon rendering the HTML of the first page, the `description` setting adds the `<meta name="description">` and `<meta property="og:description">` tags to the [`<head>` tag](https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/The_head_metadata_in_HTML).
+On the server, upon rendering the HTML of the first page, the `description` setting adds the `<meta name="description">` and `<meta property="og:description">` tags to the [`<head>` tag](https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/The_head_metadata_in_HTML).
 
-On the client-side, upon <Link href="/client-routing">client-side page navigation</Link>, the `description` setting dynamically updates these tags by mutating the DOM.
-
-> While crawlers (e.g. search engine bots) read the description from the HTML, some tools read it from the DOM of the page the user is currently viewing — for example browser extensions for bookmarking and social sharing.
+On the client, upon <Link href="/client-routing">client-side page navigation</Link>, the `description` setting dynamically updates these tags by mutating the DOM.
 
 
 ## See also
