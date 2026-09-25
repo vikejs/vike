@@ -1,9 +1,9 @@
 import { Link } from '@brillout/docpress'
 
-import { UiFrameworkExtension, OnlyHtmlNote, ConfigSpec } from '../../components'
+import { ConfigSpec, HtmlAndClientNote } from '../../components'
 
 <ConfigSpec
-  env="server"
+  env="client, server"
   providedByExtension={{ kind: 'setting', noCustomGuide: true }}
 >
 ```ts ts-only hide-menu
@@ -14,7 +14,7 @@ type Description = Value | ((pageContext) => Value)
 
 > See <Link href="/head-tags" /> for a general introduction about `<head>` tags.
 
-The `description` setting sets the [SEO description tags](https://moz.com/learn/seo/meta-description).
+The `+description` setting sets the [SEO description tags](https://moz.com/learn/seo/meta-description).
 
 ```ts
 // pages/+config.ts
@@ -27,10 +27,10 @@ export default {
 ```
 
 > It adds
-> [`<meta name="description">`](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Structuring_content/Webpage_metadata)
+> [`<meta name="description">`](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/meta/name#description)
 > and
 > [`<meta property="og:description">`](https://ogp.me)
-> to `<head>`:
+> to [`<head>`](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Structuring_content/Webpage_metadata):
 >
 >
 > ```html
@@ -47,9 +47,9 @@ You can set its value using a <Link href="/pageContext">`pageContext`</Link> fun
 // Environment: server, client
 
 import type { Data } from './+data'
-import type { PageContextServer } from 'vike/types'
+import type { PageContext } from 'vike/types'
 
-export function description(pageContext: PageContextServer<Data>) {
+export function description(pageContext: PageContext<Data>) {
   return pageContext.data.product.description
 }
 ```
@@ -57,7 +57,7 @@ export function description(pageContext: PageContextServer<Data>) {
 
 ## Under the hood
 
-<OnlyHtmlNote />
+<HtmlAndClientNote name="description">`<meta name="description">` and `<meta property="og:description">` tags</HtmlAndClientNote>
 
 
 ## See also

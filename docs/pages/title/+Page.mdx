@@ -1,6 +1,6 @@
 import { Link } from '@brillout/docpress'
 
-import { ConfigSpec } from '../../components'
+import { ConfigSpec, HtmlAndClientNote } from '../../components'
 
 <ConfigSpec
   env="client, server"
@@ -30,7 +30,7 @@ export default {
 > [`<title>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/title)
 > and
 > [`<meta property="og:title">`](https://ogp.me)
-> to `<head>`:
+> to [`<head>`](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Structuring_content/Webpage_metadata):
 >
 > ```html
 > <head>
@@ -56,9 +56,7 @@ export function title(pageContext: PageContext<Data>) {
 
 ## Under the hood
 
-On the server-side, upon rendering the HTML of the first page, the `title` setting adds the [`<title>` tag](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/title) to the [`<head>` tag](https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/The_head_metadata_in_HTML).
-
-On the client-side, upon <Link href="/client-routing">client-side page navigation</Link>, the `title` setting dynamically updates the page's title by mutating the DOM with [`document.title = 'Some Title'`](https://developer.mozilla.org/en-US/docs/Web/API/Document/title).
+<HtmlAndClientNote name="title">`<title>` and `<meta property="og:title">` tags</HtmlAndClientNote>
 
 
 ## See also

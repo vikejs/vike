@@ -82,8 +82,8 @@ Paths below are relative to https://vike.dev (e.g. `/data-fetching` → https://
 ## `<head>` tags & SEO
 
 - /head-tags — `<head>` overview: `+title`/`+description`/`+image`, `+Head`, `useConfig()`, Open Graph, per-page overrides, dynamic, SPA
-- /title — `+title` → `<title>` + `og:title`, static or `pageContext` fn, updates `document.title` on client nav
-- /description — `+description` → `<meta description>` + `og:description`, server-only, SEO/social
+- /title — `+title` → `<title>` + `og:title`, static or `pageContext` fn, updates `document.title` + `og:title` on client nav
+- /description — `+description` → `<meta description>` + `og:description`, static or `pageContext` fn, updates on client nav, SEO/social
 - /image — `+image` → `og:image` + `twitter:card`, static or `pageContext` fn, server-only
 - /viewport — `+viewport` viewport meta (`'responsive'`|number|`null`), `null` disables, fixed width for non-responsive/admin
 - /htmlAttributes — `+htmlAttributes` attrs on `<html>` (object or fn), cumulative, e.g. dark-mode class / lang
