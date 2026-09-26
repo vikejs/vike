@@ -1,6 +1,9 @@
 export { transformPointerImports }
+export { assertPointerImportHasEffect }
 export { parsePointerImportData }
 export { assertPointerImportPath }
+export { pointerImportAttributeSuffix }
+export { removePointerImportAttributeSuffix }
 export type { PointerImportData }
 
 // Playground: https://github.com/brillout/acorn-playground
@@ -13,12 +16,9 @@ export type { PointerImportData }
 //   - Isn't stage 4 yet: https://github.com/tc39/proposal-import-attributes
 // - Using a import path suffix such as `import { Layout } from './Layout?real` breaks TypeScript, and TypeScript isn't working on supporting query params: https://github.com/microsoft/TypeScript/issues/10988#issuecomment-867135453
 // - Node.js >=21 supports import attributes: https://nodejs.org/api/esm.html#import-attributes
-// - Esbuid supports
-//   - Blocker: https://github.com/evanw/esbuild/issues/3646
-//     - Ugly hack to make it work: https://github.com/brillout/esbuild-playground/tree/experiment/import-attribute
-//   - Discussion with esbuild maintainer: https://github.com/evanw/esbuild/issues/3384
+// - Rolldown doesn't pass import attributes to plugins => we parse import attributes ourselves and mark the import path with pointerImportAttributeSuffix, see transpileWithRolldown()
 // - Using a magic comment `// @vike-real-import` is probably a bad idea:
-//   - Esbuild removes comments: https://github.com/evanw/esbuild/issues/1439#issuecomment-877656182
+//   - Bundlers usually remove comments, e.g. esbuild: https://github.com/evanw/esbuild/issues/1439#issuecomment-877656182
 //   - Using source maps to track these magic comments is brittle (source maps can easily break)
 
 import { parseSync } from '@babel/core'
@@ -31,15 +31,18 @@ import pc from '@brillout/picocolors'
 import { parseImportString, isImportString, serializeImportString } from '../importString.js'
 import '../../assertEnvVite.js'
 
+// Appended to the import path of imports with the import attribute `with { type: 'vike:pointer' }`, see transpileWithRolldown()
+const pointerImportAttributeSuffix = '?vike:pointer'
+function removePointerImportAttributeSuffix(str: string) {
+  return str.split(pointerImportAttributeSuffix).join('')
+}
+
 function transformPointerImports(
   code: string,
-  filePathToShowToUser2: string,
   pointerImports:
     | Record<string, boolean>
     // Used by ./transformPointerImports.spec.ts
     | 'all',
-  // For ./transformPointerImports.spec.ts
-  skipWarnings?: true,
 ): string | null {
   const spliceOperations: SpliceOperation[] = []
   // Collect all const declarations to prepend at the top, so that they are
@@ -69,33 +72,9 @@ function transformPointerImports(
     const { start, end } = node
     const importStatementCode = code.slice(start, end)
 
-    /* Pointer import without importing any value => doesn't make sense and doesn't have any effect.
-    ```js
-    // Useless
-    import './some.css'
-    // Useless
-    import './Layout.jsx'
-    ``` */
-    if (node.specifiers.length === 0) {
-      const isWarning = !styleFileRE.test(importPath)
-      let quote = indent(importStatementCode)
-      if (isWarning) {
-        quote = pc.cyan(quote)
-      } else {
-        quote = pc.bold(pc.red(quote))
-      }
-      const errMsg = [
-        `The following import in ${filePathToShowToUser2} has no effect:`,
-        quote,
-        'See https://vike.dev/config#pointer-imports',
-      ].join('\n')
-      if (!skipWarnings) {
-        if (!isWarning) {
-          assertUsage(false, errMsg)
-        }
-        assertWarning(false, errMsg, { onlyOnce: true })
-      }
-    }
+    // Pointer import without importing any value, e.g. `import './some.css'` => we remove it.
+    // - It doesn't have any effect, see assertPointerImportHasEffect()
+    // - Rolldown transforms unused imports `import { unused } from './some.js'` into `import './some.js'`
 
     let constDeclaration = ''
     node.specifiers.forEach((specifier) => {
@@ -114,7 +93,11 @@ function transformPointerImports(
         }
         return importLocalName
       })()
-      const importString = serializePointerImportData({ importPath, exportName, importStringWasGenerated: true })
+      const importString = serializePointerImportData({
+        importPath: removePointerImportAttributeSuffix(importPath),
+        exportName,
+        importStringWasGenerated: true,
+      })
       constDeclaration += `const ${importLocalName} = '${importString}';`
     })
 
@@ -131,6 +114,32 @@ function transformPointerImports(
   const codeWithImportsRemoved = spliceMany(code, spliceOperations)
   if (constDeclarations.length === 0) return codeWithImportsRemoved
   return constDeclarations.join('') + '\n' + codeWithImportsRemoved
+}
+
+/* Pointer import without importing any value => doesn't make sense and doesn't have any effect.
+```js
+// Useless
+import './some.css'
+// Useless
+import './Layout.jsx'
+``` */
+function assertPointerImportHasEffect(importStatementCode: string, importPath: string, filePathToShowToUser: string) {
+  const isWarning = !styleFileRE.test(importPath)
+  let quote = indent(importStatementCode)
+  if (isWarning) {
+    quote = pc.cyan(quote)
+  } else {
+    quote = pc.bold(pc.red(quote))
+  }
+  const errMsg = [
+    `The following import in ${filePathToShowToUser} has no effect:`,
+    quote,
+    'See https://vike.dev/config#pointer-imports',
+  ].join('\n')
+  if (!isWarning) {
+    assertUsage(false, errMsg)
+  }
+  assertWarning(false, errMsg, { onlyOnce: true })
 }
 function getImports(code: string): ImportDeclaration[] {
   const result = parseSync(code, {
@@ -209,7 +218,7 @@ function parsePointerImportData(importString: string): null | PointerImportData 
 // `importPath` is one of the following:
 // - A relative import path
 // - An npm package import
-// - A filesystem absolute path, see transpileWithEsbuild()
+// - A filesystem absolute path, see transpileWithRolldown()
 function assertPointerImportPath(importPath: string) {
   return isImportPath(importPath) || isFilePathAbsolute(importPath)
 }
