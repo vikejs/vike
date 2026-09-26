@@ -2,6 +2,7 @@ import { expect, describe, it, beforeAll, afterAll, vi } from 'vitest'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
+import { inspect } from 'node:util'
 import { transpileAndExecuteFile, getConfigBuildErrorFormatted, type BuildCache } from './transpileAndExecuteFile.js'
 import { getFilePathResolved } from '../getFilePath.js'
 import { stripAnsi } from '../../../../utils/colorsServer.js'
@@ -313,6 +314,8 @@ async function getBuildErr(filePathAbsoluteUserRootDir: string) {
   const err = await getErr(load(filePathAbsoluteUserRootDir))
   const errMsgFormatted = getConfigBuildErrorFormatted(err)
   expect(errMsgFormatted).toBeTruthy()
+  // Otherwise `$ vike build` prints it in addition to the error message
+  expect(inspect(err)).not.toContain('_formatted')
   return {
     err,
     errMsgFormatted: stripAnsi(errMsgFormatted!),

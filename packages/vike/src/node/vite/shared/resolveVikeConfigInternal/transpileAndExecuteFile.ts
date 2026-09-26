@@ -458,7 +458,8 @@ async function formatBuildErr(err: unknown, filePath: FilePathResolved): Promise
     .join('\n')
   const msgIntro = getErrIntroMsg('transpile', filePath)
   const errMsgFormatted: ErrMsgFormatted = `${msgIntro}\n${msgEsbuild}`
-  err[formatted] = errMsgFormatted
+  // Non-enumerable, otherwise `$ vike build` prints it in addition to the error message
+  Object.defineProperty(err, formatted, { value: errMsgFormatted, enumerable: false, configurable: true })
 }
 
 const execErrIntroMsg = new WeakMap<object, ErrIntroMsgExecute>()
