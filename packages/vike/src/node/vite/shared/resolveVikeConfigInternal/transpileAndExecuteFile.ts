@@ -22,6 +22,7 @@ import crypto from 'node:crypto'
 import pc from '@brillout/picocolors'
 import { import_ } from '@brillout/import'
 import { assert, assertWarning } from '../../../../utils/assert.js'
+import { nodeVersionMin } from '../../../../utils/assertNodeVersion.js'
 import { assertIsNotProductionRuntime } from '../../../../utils/assertSetup.js'
 import { createDebug } from '../../../../utils/debug.js'
 import { genPromise } from '../../../../utils/genPromise.js'
@@ -249,7 +250,7 @@ async function transpileFile(
       entryPoints: [entryFilePath],
       absWorkingDir: userRootDir,
       platform: 'node',
-      target: ['node14.18', 'node16'],
+      target: `node${nodeVersionMin}`,
       plugins,
       logLevel: 'silent',
       bundle: true,
