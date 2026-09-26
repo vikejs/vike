@@ -2,7 +2,11 @@ import { expect, describe, it, beforeAll, afterAll, vi } from 'vitest'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import { transpileAndExecuteFile, getConfigBuildErrorFormatted, type EsbuildCache } from './transpileAndExecuteFile.js'
+import {
+  transpileAndExecuteFile,
+  getConfigBuildErrorFormatted,
+  type VikeTranspileCache,
+} from './transpileAndExecuteFile.js'
 import { getFilePathResolved } from '../getFilePath.js'
 import { stripAnsi } from '../../../../utils/colorsServer.js'
 import { toPosixPath } from '../../../../utils/path.js'
@@ -291,9 +295,9 @@ describe('transpileAndExecuteFile()', () => {
 })
 
 async function load(filePathAbsoluteUserRootDir: string) {
-  const esbuildCache: EsbuildCache = { transpileCache: {}, vikeConfigDependencies: new Set() }
+  const vikeTranspileCache: VikeTranspileCache = { transpileCache: {}, vikeConfigDependencies: new Set() }
   const getDependencies = () =>
-    Array.from(esbuildCache.vikeConfigDependencies)
+    Array.from(vikeTranspileCache.vikeConfigDependencies)
       .map((filePath) => {
         expect(filePath.startsWith(userRootDir)).toBe(true)
         return filePath.slice(userRootDir.length)
@@ -302,7 +306,7 @@ async function load(filePathAbsoluteUserRootDir: string) {
       .sort()
   const filePath = getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir })
   try {
-    const { fileExports } = await transpileAndExecuteFile(filePath, userRootDir, false, esbuildCache)
+    const { fileExports } = await transpileAndExecuteFile(filePath, userRootDir, false, vikeTranspileCache)
     return { fileExports, dependencies: getDependencies() }
   } catch (err) {
     ;(err as { dependencies?: string[] }).dependencies = getDependencies()
