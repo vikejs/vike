@@ -11,6 +11,8 @@ import {
   formatMessages,
   type Message,
   version,
+  type PluginBuild,
+  type OnResolveArgs,
   type ResolveResult,
   type OnResolveResult,
 } from 'esbuild'
@@ -190,27 +192,9 @@ async function transpileFile(
           if (args.kind !== 'import-statement') return
 
           // Avoid infinite loop: https://github.com/evanw/esbuild/issues/3095#issuecomment-1546916366
-          const useEsbuildResolver = 'useEsbuildResolver'
           if (args.pluginData?.[useEsbuildResolver]) return
-          const { path, ...opts } = args
-          opts.pluginData = { [useEsbuildResolver]: true }
 
-          let resolved: ResolveResult | (OnResolveResult & { errors?: undefined }) = await build.resolve(path, opts)
-          if (debugResolve.isActivated) debugResolve('args', args)
-          if (debugResolve.isActivated) debugResolve('resolved', resolved)
-
-          // Temporary workaround for https://github.com/evanw/esbuild/issues/3973
-          // - Still required for esbuild@0.24.0 (November 2024).
-          // - Let's try to remove this workaround again later.
-          if (resolved.errors.length > 0) {
-            const resolvedWithNode = requireResolveOptionalDir({
-              importPath: path,
-              importerDir: toPosixPath(args.resolveDir),
-              userRootDir,
-            })
-            if (debugResolve.isActivated) debugResolve('resolvedWithNode', resolvedWithNode)
-            if (resolvedWithNode) resolved = { path: resolvedWithNode }
-          }
+          const resolved = await resolveImport(build, args, userRootDir)
 
           if (resolved.errors && resolved.errors.length > 0) {
             /* We could do the following to let Node.js throw the error, but we don't because the error shown by esbuild is prettier: the Node.js error refers to the transpiled [build-f7i251e0iwnw]+config.ts.mjs whereas esbuild refers to the source +config.ts file.
@@ -244,7 +228,8 @@ async function transpileFile(
 
           //  Should we remove this? See comment below.
           const isVikeExtensionImport =
-            (path.startsWith('vike-') && path.endsWith('/config')) || importPathResolved.endsWith('+config.js')
+            (importPathOriginal.startsWith('vike-') && importPathOriginal.endsWith('/config')) ||
+            importPathResolved.endsWith('+config.js')
 
           const isPointerImport =
             transformImports === 'all' ||
@@ -356,6 +341,32 @@ async function transpileFile(
   const code = result.outputFiles![0]!.text
   assert(typeof code === 'string')
   return { code, pointerImports }
+}
+
+const useEsbuildResolver = 'useEsbuildResolver'
+// Resolve with esbuild, and fallback to Node.js's resolution
+async function resolveImport(build: PluginBuild, args: OnResolveArgs, userRootDir: string) {
+  const { path, ...opts } = args
+  opts.pluginData = { [useEsbuildResolver]: true }
+
+  let resolved: ResolveResult | (OnResolveResult & { errors?: undefined }) = await build.resolve(path, opts)
+  if (debugResolve.isActivated) debugResolve('args', args)
+  if (debugResolve.isActivated) debugResolve('resolved', resolved)
+
+  // Temporary workaround for https://github.com/evanw/esbuild/issues/3973
+  // - Still required for esbuild@0.24.0 (November 2024).
+  // - Let's try to remove this workaround again later.
+  if (resolved.errors.length > 0) {
+    const resolvedWithNode = requireResolveOptionalDir({
+      importPath: path,
+      importerDir: toPosixPath(args.resolveDir),
+      userRootDir,
+    })
+    if (debugResolve.isActivated) debugResolve('resolvedWithNode', resolvedWithNode)
+    if (resolvedWithNode) resolved = { path: resolvedWithNode }
+  }
+
+  return resolved
 }
 
 async function executeTranspiledFile(filePath: FilePathResolved, code: string) {
