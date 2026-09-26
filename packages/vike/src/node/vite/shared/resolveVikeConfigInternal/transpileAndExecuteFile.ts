@@ -40,9 +40,9 @@ import '../../assertEnvVite.js'
 assertIsNotProductionRuntime()
 installSourceMapSupport()
 const debug = createDebug('vike:pointer-imports')
-const debugEsbuildResolve = createDebug('vike:esbuild-resolve')
+const debugResolve = createDebug('vike:esbuild-resolve')
 const debugConfig = createDebug('vike:config')
-if (debugEsbuildResolve.isActivated) debugEsbuildResolve('esbuild version', version)
+if (debugResolve.isActivated) debugResolve('esbuild version', version)
 
 type FileExports = { fileExports: Record<string, unknown> }
 
@@ -196,8 +196,8 @@ async function transpileFile(
           opts.pluginData = { [useEsbuildResolver]: true }
 
           let resolved: ResolveResult | (OnResolveResult & { errors?: undefined }) = await build.resolve(path, opts)
-          if (debugEsbuildResolve.isActivated) debugEsbuildResolve('args', args)
-          if (debugEsbuildResolve.isActivated) debugEsbuildResolve('resolved', resolved)
+          if (debugResolve.isActivated) debugResolve('args', args)
+          if (debugResolve.isActivated) debugResolve('resolved', resolved)
 
           // Temporary workaround for https://github.com/evanw/esbuild/issues/3973
           // - Still required for esbuild@0.24.0 (November 2024).
@@ -208,7 +208,7 @@ async function transpileFile(
               importerDir: toPosixPath(args.resolveDir),
               userRootDir,
             })
-            if (debugEsbuildResolve.isActivated) debugEsbuildResolve('resolvedWithNode', resolvedWithNode)
+            if (debugResolve.isActivated) debugResolve('resolvedWithNode', resolvedWithNode)
             if (resolvedWithNode) resolved = { path: resolvedWithNode }
           }
 
