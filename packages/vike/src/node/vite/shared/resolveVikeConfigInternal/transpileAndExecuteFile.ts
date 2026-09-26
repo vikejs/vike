@@ -244,7 +244,8 @@ async function transpileWithEsbuild(
       entryPoints: [entryFilePath],
       absWorkingDir: userRootDir,
       platform: 'node',
-      target: ['node14.18', 'node16'],
+      // Vike's minimum supported Node.js version, see assertNodeVersion()
+      target: 'node20.19',
       plugins,
       logLevel: 'silent',
       bundle: true,
