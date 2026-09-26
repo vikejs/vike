@@ -5,17 +5,17 @@ export { isTemporaryBuildFile }
 export type { BuildCache }
 
 import {
-  build,
-  type BuildResult,
+  rolldown,
   type Plugin,
-  formatMessages,
-  type Message,
-  version,
-  type PluginBuild,
-  type OnResolveArgs,
-  type ResolveResult,
-  type OnResolveResult,
-} from 'esbuild'
+  type PluginContext,
+  type PluginContextResolveOptions,
+  type ResolvedId,
+  type RolldownBuild,
+  type RolldownLog,
+  type RolldownOutput,
+  VERSION,
+} from 'rolldown'
+import { parseAst } from 'rolldown/parseAst'
 import fs from 'node:fs'
 import path from 'node:path'
 import crypto from 'node:crypto'
@@ -33,18 +33,24 @@ import { isVitest } from '../../../../utils/isVitest.js'
 import { assertImportIsNpmPackage, isImportNpmPackageOrPathAlias } from '../../../../utils/parseNpmPackage.js'
 import { assertPosixPath, toPosixPath } from '../../../../utils/path.js'
 import { requireResolveOptionalDir } from '../../../../utils/requireResolve.js'
-import { transformPointerImports } from './pointerImports.js'
+import {
+  assertPointerImportHasEffect,
+  pointerImportAttributeSuffix,
+  removePointerImportAttributeSuffix,
+  transformPointerImports,
+} from './pointerImports.js'
 import sourceMapSupport from 'source-map-support'
 import type { FilePathResolved } from '../../../../types/FilePath.js'
 import { getFilePathAbsoluteUserRootDir } from '../getFilePath.js'
+import { getMagicString } from '../getMagicString.js'
 import '../../assertEnvVite.js'
 
 assertIsNotProductionRuntime()
 installSourceMapSupport()
 const debug = createDebug('vike:pointer-imports')
-const debugEsbuildResolve = createDebug('vike:esbuild-resolve')
+const debugRolldownResolve = createDebug('vike:rolldown-resolve')
 const debugConfig = createDebug('vike:config')
-if (debugEsbuildResolve.isActivated) debugEsbuildResolve('esbuild version', version)
+if (debugRolldownResolve.isActivated) debugRolldownResolve('rolldown version', VERSION)
 
 type FileExports = { fileExports: Record<string, unknown> }
 
@@ -96,7 +102,7 @@ async function transpileAndExecuteFile(
   if (isExtensionConfig && !isHeader && fileExtension.endsWith('js')) {
     // This doesn't track dependencies => we should never use this for user land configs
     if (debugConfig.isActivated) {
-      debugConfig(filePathToShowToUserResolved, 'executed directly (no esbuild transpilation)')
+      debugConfig(filePathToShowToUserResolved, 'executed directly (no rolldown transpilation)')
     }
     fileExports = await executeFile(filePathAbsoluteFilesystem, filePath)
   } else {
@@ -125,12 +131,12 @@ async function transpileFile(
   buildCache.vikeConfigDependencies.add(filePathAbsoluteFilesystem)
 
   if (debug.isActivated) debug('transpile', filePathToShowToUserResolved)
-  let { code, pointerImports } = await transpileWithEsbuild(filePath, userRootDir, transformImports, buildCache)
-  if (debug.isActivated) debug(`code, post esbuild (${filePathToShowToUserResolved})`, code)
+  let { code, pointerImports } = await transpileWithRolldown(filePath, userRootDir, transformImports, buildCache)
+  if (debug.isActivated) debug(`code, post rolldown (${filePathToShowToUserResolved})`, code)
 
   let isImportTransformed = false
   if (transformImports) {
-    const codeMod = transformPointerImports(code, filePathToShowToUserResolved, pointerImports)
+    const codeMod = transformPointerImports(code, pointerImports)
     if (codeMod) {
       code = codeMod
       isImportTransformed = true
@@ -143,7 +149,7 @@ async function transpileFile(
   return code
 }
 
-async function transpileWithEsbuild(
+async function transpileWithRolldown(
   filePath: FilePathResolved,
   userRootDir: string,
   transformImports: boolean | 'all',
@@ -153,157 +159,227 @@ async function transpileWithEsbuild(
   const entryFileDir = path.posix.dirname(entryFilePath)
 
   const pointerImports: Record<string, boolean> = {}
+  const importStatements: Record<
+    string, // importer
+    ImportStatement[]
+  > = {}
+  const pointerImportsWithoutEffect: { importer: string; importStatement: ImportStatement }[] = []
+  const unresolvedImports: RolldownLog[] = []
+
   const plugins: Plugin[] = [
     // Determine whether an import should be:
     //  - A pointer import
     //  - Externalized
     {
-      name: 'vike-esbuild',
-      setup(build) {
-        // https://github.com/brillout/esbuild-playground
-        build.onResolve({ filter: /.*/ }, async (args) => {
-          if (args.kind !== 'import-statement') return
+      name: 'vike:pointer-imports',
+      async resolveId(importPath, importer, options) {
+        if (options.isEntry || options.kind !== 'import-statement') return
+        assert(importer)
 
-          // Avoid infinite loop: https://github.com/evanw/esbuild/issues/3095#issuecomment-1546916366
-          if (args.pluginData?.[useEsbuildResolver]) return
+        // Import with the import attribute `with { type: 'vike:pointer' }`, see transform() below
+        const isPointerImportAttribute = importPath.endsWith(pointerImportAttributeSuffix)
+        const importPathOriginal = isPointerImportAttribute
+          ? importPath.slice(0, -pointerImportAttributeSuffix.length)
+          : importPath
 
-          const importPathOriginal = args.path
-          const isPointerImportAttribute = args.with?.['type'] === 'vike:pointer'
+        const resolved = await resolveImport(this, importPathOriginal, importer, userRootDir, options)
 
-          const resolved = await resolveImport(build, args, userRootDir)
+        if (!resolved) {
+          /* We could do the following to let Node.js throw the error, but we don't because the error shown by Rolldown is prettier: the Node.js error refers to the transpiled +config.ts.build-f7i251e0iwnw.mjs whereas Rolldown refers to the source +config.ts file.
+          pointerImports[importPathOriginal] = false
+          return { id: importPathOriginal, external: true }
+          */
+          // Let Rolldown throw the error
+          return null
+        }
 
-          if (resolved.errors && resolved.errors.length > 0) {
-            /* We could do the following to let Node.js throw the error, but we don't because the error shown by esbuild is prettier: the Node.js error refers to the transpiled [build-f7i251e0iwnw]+config.ts.mjs whereas esbuild refers to the source +config.ts file.
-            pointerImports[args.path] = false
-            return { external: true }
-            */
-            // Let esbuild throw the error
-            cleanEsbuildErrors(resolved.errors)
-            return resolved
-          }
+        // Built-in modules e.g. node:fs
+        if (resolved.external) {
+          const importPathBuiltIn = resolved.id
+          const isPointerImport = false
+          pointerImports[importPathBuiltIn] = isPointerImport
+          if (debug.isActivated) debug('resolveId() [built-in module]', { importPathOriginal, importer, resolved })
+          return { id: importPathBuiltIn, external: true }
+        }
 
-          assert(resolved.path)
+        // Rolldown's internal modules, e.g. helpers injected by Oxc's transformer
+        if (isVirtualModule(resolved.id)) return resolved
 
-          // Built-in modules e.g. node:fs
-          if (resolved.path === args.path) {
-            const isPointerImport = false
-            pointerImports[args.path] = isPointerImport
-            if (debug.isActivated) debug('onResolve() [built-in module]', { args, resolved })
-            assert(resolved.external)
-            return resolved
-          }
+        const importPathResolved = toPosixPath(resolved.id)
 
-          const importPathResolved = toPosixPath(resolved.path)
+        const { isExternal, isPointerImport, importPathTranspiled } = classifyImport(
+          importPathOriginal,
+          importPathResolved,
+          isPointerImportAttribute,
+          transformImports,
+          userRootDir,
+        )
+        if (!isExternal) {
+          if (debug.isActivated) debug('resolveId() [non-external]', { importPathOriginal, importer, resolved })
+          return resolved
+        }
 
-          const { isExternal, isPointerImport, importPathTranspiled } = classifyImport(
-            importPathOriginal,
-            importPathResolved,
-            isPointerImportAttribute,
-            transformImports,
-            userRootDir,
+        // Pointer import without importing any value, e.g. `import './some.css'`
+        // - We cannot detect these by looking at Rolldown's output: Rolldown transforms unused imports `import { unused } from './some.js'` into `import './some.js'`
+        if (isPointerImport) {
+          const importStatementsOfImportPath = (importStatements[importer] ?? []).filter(
+            (importStatement) =>
+              importStatement.importPath === importPathOriginal &&
+              importStatement.isPointerImportAttribute === isPointerImportAttribute,
           )
-          if (!isExternal) {
-            if (debug.isActivated) debug('onResolve() [non-external]', { args, resolved, isPointerImport, isExternal })
-            return resolved
+          const importStatement = importStatementsOfImportPath[0]
+          if (importStatement && importStatementsOfImportPath.every((s) => s.isSideEffectImport)) {
+            pointerImportsWithoutEffect.push({ importer, importStatement })
           }
+        }
 
-          if (debug.isActivated)
-            debug('onResolve() [external]', { args, resolved, importPathTranspiled, isPointerImport, isExternal })
-          pointerImports[importPathTranspiled] = isPointerImport
-          return { external: true, path: importPathTranspiled }
-        })
+        let id = importPathTranspiled
+        // Keep the mark, so that the ID is different than the ID of the same file loaded and executed at config-time, see transform() below.
+        // - The mark is removed by transformPointerImports()
+        if (isPointerImportAttribute) id += pointerImportAttributeSuffix
+
+        if (debug.isActivated)
+          debug('resolveId() [external]', { importPathOriginal, importer, resolved, id, isPointerImport, isExternal })
+        pointerImports[id] = isPointerImport
+        return { id, external: true }
+      },
+      async transform(code, id) {
+        // Rolldown's internal modules, e.g. \0rolldown/runtime.js
+        if (isVirtualModule(id)) return
+        // Rolldown doesn't pass import attributes `with { type: 'vike:pointer' }` to resolveId() => we parse the imports ourselves.
+        // - The transform() hook of a module is always called before the resolveId() hook of its imports.
+        const importStatementsOfModule = parseImportStatements(code, id)
+        importStatements[id] = importStatementsOfModule
+        // Rolldown calls resolveId() only once per import path of a module, and a file cannot be both external and bundled => we mark the import path of imports that have the import attribute, so that they're resolved separately. For example:
+        //   ```js
+        //   // Pointer import
+        //   import { Page } from './Page.ts' with { type: 'vike:pointer' }
+        //   // Loaded and executed at config-time
+        //   import { title } from './Page.ts'
+        //   ```
+        const { magicString, getMagicStringResult } = getMagicString(code, id)
+        for (const { isPointerImportAttribute, importPath, importPathSpan } of importStatementsOfModule) {
+          if (!isPointerImportAttribute) continue
+          // We don't mark import paths that cannot be resolved: we let Rolldown throw the resolve error, which then shows the original code
+          if (!(await resolveImport(this, importPath, id, userRootDir))) continue
+          // Mark the import path, right before its closing quote
+          magicString.appendLeft(importPathSpan.end - 1, pointerImportAttributeSuffix)
+        }
+        return {
+          ...getMagicStringResult(),
+          // Disable tree-shaking of user-land code: we want to execute user-land code as-is. (Rolldown's internal modules, such as its runtime helpers, are tree-shaken.)
+          moduleSideEffects: 'no-treeshake',
+        }
       },
     },
     // Track dependencies
     {
       name: 'vike:dependency-tracker',
-      setup(b) {
-        b.onLoad({ filter: /./ }, (args) => {
-          // We collect the dependency `args.path` in case the build fails (upon build error => error is thrown => no metafile)
-          let { path } = args
-          path = toPosixPath(path)
-          buildCache.vikeConfigDependencies.add(path)
-          return undefined
-        })
-        /* To exhaustively collect all dependencies upon build failure, we would also need to use onResolve().
-         *  - Because onLoad() isn't call if the config dependency can't be resolved.
+      load(id) {
+        // We collect the dependencies with the load() hook (instead of using Rolldown's output), so that we also collect them if the build fails
+        if (isVirtualModule(id)) return
+        buildCache.vikeConfigDependencies.add(toPosixPath(id))
+        /* To exhaustively collect all dependencies upon build failure, we would also need to use resolveId().
+         *  - Because load() isn't call if the config dependency can't be resolved.
          *  - For example, the following breaks auto-reload (the config is stuck in its error state and the user needs to touch the importer for the config to reload):
          *    ```bash
          *    mv ./some-config-dependency.js /tmp/ && mv /tmp/some-config-dependency.js .
          *    ```
          *  - But implementing a fix is complex and isn't worth it.
-        b.onResolve(...)
+        resolveId(...)
         */
       },
     },
   ]
 
-  let result: BuildResult
+  let bundle: RolldownBuild | undefined
+  let output: RolldownOutput
   try {
-    result = await build({
-      entryPoints: [entryFilePath],
-      absWorkingDir: userRootDir,
+    bundle = await rolldown({
+      input: entryFilePath,
+      cwd: userRootDir,
       platform: 'node',
-      // Vike's minimum supported Node.js version, see assertNodeVersion()
-      target: 'node20.19',
+      // Resolve path aliases defined in tsconfig.json
+      tsconfig: true,
+      transform: {
+        // Vike's minimum supported Node.js version, see assertNodeVersion()
+        target: 'node20.19',
+      },
+      // Keep the absolute path of pointer imports, so that the import paths of Rolldown's output match `pointerImports`
+      makeAbsoluteExternalsRelative: false,
       plugins,
-      logLevel: 'silent',
-      bundle: true,
-      metafile: true,
-      // Disable tree-shaking to avoid dead-code elimination, so that unused imports aren't removed.
-      // Esbuild still sometimes removes unused imports because of TypeScript: https://github.com/evanw/esbuild/issues/3034
-      treeShaking: false,
-      write: false,
+      onLog(level, log) {
+        if (debugRolldownResolve.isActivated) debugRolldownResolve('log', { level, log })
+        // Rolldown treats unresolved imports that aren't relative (e.g. npm packages and path aliases) as external, but we want the build to fail instead
+        if (log.code === 'UNRESOLVED_IMPORT') unresolvedImports.push(log)
+        // Swallow all other logs
+      },
+    })
+    output = await bundle.generate({
       format: 'esm',
       sourcemap: 'inline',
-      outfile: path.posix.join(
-        // Needed for correct inline source map
-        entryFileDir,
-        // `write: false` => no file is actually emitted
-        'NEVER_EMITTED.js',
-      ),
+      // Needed for correct inline source map (bundle.generate() doesn't emit any file)
+      dir: entryFileDir,
+      // Avoid dead-code elimination (Rolldown's default is `minify: 'dce-only'`)
       minify: false,
+      // Single chunk
+      codeSplitting: false,
     })
+    if (unresolvedImports.length > 0) throw getErrUnresolvedImports(unresolvedImports)
   } catch (err) {
-    await formatBuildErr(err, filePath)
+    formatBuildErr(err, filePath)
     throw err
+  } finally {
+    await bundle?.close()
   }
 
-  // Track dependencies
-  assert(result.metafile)
-  Object.keys(result.metafile.inputs).forEach((filePathRelative) => {
-    filePathRelative = toPosixPath(filePathRelative)
-    assertPosixPath(userRootDir)
-    const filePathAbsoluteFilesystem = path.posix.join(userRootDir, filePathRelative)
-    buildCache.vikeConfigDependencies.add(filePathAbsoluteFilesystem)
+  pointerImportsWithoutEffect.forEach(({ importer, importStatement }) => {
+    const importerFilePath = toPosixPath(importer)
+    const importerFilePathToShowToUser =
+      importerFilePath === entryFilePath
+        ? filePath.filePathToShowToUserResolved
+        : getFilePathAbsoluteUserRootDir({ filePathAbsoluteFilesystem: importerFilePath, userRootDir }) ||
+          importerFilePath
+    assertPointerImportHasEffect(importStatement.code, importStatement.importPath, importerFilePathToShowToUser)
   })
 
-  const code = result.outputFiles![0]!.text
+  const chunk = output.output[0]
+  assert(chunk.type === 'chunk')
+  const { code } = chunk
   assert(typeof code === 'string')
   return { code, pointerImports }
 }
 
-const useEsbuildResolver = 'useEsbuildResolver'
-// Resolve with esbuild, and fallback to Node.js's resolution
-async function resolveImport(build: PluginBuild, args: OnResolveArgs, userRootDir: string) {
-  const { path, ...opts } = args
-  opts.pluginData = { [useEsbuildResolver]: true }
+// Resolve with Rolldown, and fallback to Node.js's resolution
+async function resolveImport(
+  pluginContext: PluginContext,
+  importPath: string,
+  importer: string,
+  userRootDir: string,
+  options: PluginContextResolveOptions = { kind: 'import-statement' },
+) {
+  let resolved: ResolvedId | { id: string; external?: undefined } | null = await pluginContext.resolve(
+    importPath,
+    importer,
+    {
+      ...options,
+      skipSelf: true,
+    },
+  )
+  if (debugRolldownResolve.isActivated) debugRolldownResolve('args', { importPath, importer, options })
+  if (debugRolldownResolve.isActivated) debugRolldownResolve('resolved', resolved)
 
-  let resolved: ResolveResult | (OnResolveResult & { errors?: undefined }) = await build.resolve(path, opts)
-  if (debugEsbuildResolve.isActivated) debugEsbuildResolve('args', args)
-  if (debugEsbuildResolve.isActivated) debugEsbuildResolve('resolved', resolved)
-
-  // Temporary workaround for https://github.com/evanw/esbuild/issues/3973
-  // - Still required for esbuild@0.24.0 (November 2024).
+  // Fallback to Node.js's resolution
+  // - Originally a workaround for an esbuild bug: https://github.com/evanw/esbuild/issues/3973
   // - Let's try to remove this workaround again later.
-  if (resolved.errors.length > 0) {
+  if (!resolved && !isVirtualModule(importer)) {
     const resolvedWithNode = requireResolveOptionalDir({
-      importPath: path,
-      importerDir: toPosixPath(args.resolveDir),
+      importPath,
+      importerDir: path.posix.dirname(toPosixPath(importer)),
       userRootDir,
     })
-    if (debugEsbuildResolve.isActivated) debugEsbuildResolve('resolvedWithNode', resolvedWithNode)
-    if (resolvedWithNode) resolved = { path: resolvedWithNode }
+    if (debugRolldownResolve.isActivated) debugRolldownResolve('resolvedWithNode', resolvedWithNode)
+    if (resolvedWithNode) resolved = { id: resolvedWithNode }
   }
 
   return resolved
@@ -321,7 +397,7 @@ function classifyImport(
 ):
   | { isExternal: false; isPointerImport: false; importPathTranspiled?: undefined }
   | { isExternal: true; isPointerImport: boolean; importPathTranspiled: string } {
-  // Esbuild resolves path aliases.
+  // Rolldown resolves path aliases.
   // - Enabling us to use:
   //   - assertImportIsNpmPackage()
   //   - isImportNpmPackage(str, { cannotBePathAlias: true })
@@ -355,10 +431,10 @@ function classifyImport(
 
   const isExternal =
     isPointerImport ||
-    // Performance: npm package imports can be externalized. (We could as well let esbuild transpile /node_modules/ code but it's useless as /node_modules/ code is already built. It would unnecessarily slow down transpilation.)
+    // Performance: npm package imports can be externalized. (We could as well let Rolldown transpile /node_modules/ code but it's useless as /node_modules/ code is already built. It would unnecessarily slow down transpilation.)
     (isMostLikelyNpmPkgImport && isPlainJavaScriptFile(importPathResolved))
   if (!isExternal) {
-    // User-land config code (i.e. not runtime code) => let esbuild transpile it
+    // User-land config code (i.e. not runtime code) => let Rolldown transpile it
     assert(!isPointerImport)
     return { isExternal, isPointerImport }
   }
@@ -377,10 +453,10 @@ function classifyImport(
     })
     if (filePathAbsoluteUserRootDir && !isMostLikelyNpmPkgImport) {
       // `importPathOriginal` is most likely a path alias.
-      // - We have to use esbuild's path alias resolution, because:
+      // - We have to use Rolldown's path alias resolution, because:
       //   - Vike doesn't resolve path aliases at all.
       //   - Node.js doesn't support `tsconfig.js#compilerOptions.paths`.
-      // - Esbuild path alias resolution seems reliable, e.g. it supports `tsconfig.js#compilerOptions.paths`.
+      // - Rolldown path alias resolution seems reliable, e.g. it supports `tsconfig.js#compilerOptions.paths`.
       importPathTranspiled = importPathResolved
     } else {
       // `importPathOriginal` is most likely an npm package import.
@@ -391,6 +467,79 @@ function classifyImport(
   }
 
   return { isExternal, isPointerImport, importPathTranspiled }
+}
+
+type ImportStatement = {
+  /** The import path, as written by the user, e.g. `'./some.css'` */
+  importPath: string
+  /** Position of the import path string literal (including quotes) */
+  importPathSpan: { start: number; end: number }
+  /** The import statement, as written by the user, e.g. `import './some.css'` */
+  code: string
+  /** Import attribute `with { type: 'vike:pointer' }` */
+  isPointerImportAttribute: boolean
+  /** Import without importing any value, e.g. `import './some.css'` */
+  isSideEffectImport: boolean
+}
+function parseImportStatements(code: string, id: string): ImportStatement[] {
+  // Performance trick
+  if (!code.includes('import') && !code.includes('vike:pointer')) return []
+
+  let program: ReturnType<typeof parseAst>
+  try {
+    program = parseAst(code, { lang: getLang(id), sourceType: 'module' }, id)
+  } catch {
+    // Let Rolldown throw the parse error (Rolldown shows a prettier error)
+    return []
+  }
+
+  const importStatements: ImportStatement[] = []
+  program.body.forEach((node) => {
+    if (node.type === 'ImportDeclaration') {
+      // Removed by TypeScript transpilation
+      if (node.importKind === 'type') return
+      importStatements.push({
+        importPath: node.source.value,
+        importPathSpan: { start: node.source.start, end: node.source.end },
+        code: code.slice(node.start, node.end),
+        isPointerImportAttribute: hasPointerImportAttribute(node.attributes),
+        isSideEffectImport: node.specifiers.length === 0,
+      })
+    }
+    if ((node.type === 'ExportNamedDeclaration' || node.type === 'ExportAllDeclaration') && node.source) {
+      // Removed by TypeScript transpilation
+      if (node.exportKind === 'type') return
+      importStatements.push({
+        importPath: node.source.value,
+        importPathSpan: { start: node.source.start, end: node.source.end },
+        code: code.slice(node.start, node.end),
+        isPointerImportAttribute: hasPointerImportAttribute(node.attributes),
+        isSideEffectImport: false,
+      })
+    }
+  })
+  return importStatements
+}
+type ImportAttribute = Extract<
+  ReturnType<typeof parseAst>['body'][number],
+  { type: 'ImportDeclaration' }
+>['attributes'][number]
+function hasPointerImportAttribute(attributes: ImportAttribute[]) {
+  return attributes.some(({ key, value }) => {
+    const keyName = key.type === 'Identifier' ? key.name : key.value
+    return keyName === 'type' && value.value === 'vike:pointer'
+  })
+}
+function getLang(filePath: string): 'js' | 'jsx' | 'ts' | 'tsx' {
+  const fileExtension = getFileExtension(filePath)
+  if (['ts', 'mts', 'cts'].includes(fileExtension)) return 'ts'
+  if (fileExtension === 'tsx') return 'tsx'
+  if (fileExtension === 'jsx') return 'jsx'
+  return 'js'
+}
+
+function isVirtualModule(id: string) {
+  return id.startsWith('\0')
 }
 
 async function executeTranspiledFile(filePath: FilePathResolved, code: string) {
@@ -447,20 +596,37 @@ function getConfigBuildErrorFormatted(err: unknown) {
   return errMsgFormatted
 }
 type ErrMsgFormatted = `${ErrIntroMsgTranspile}\n${string}`
-async function formatBuildErr(err: unknown, filePath: FilePathResolved): Promise<void> {
-  assert(isObject(err) && err.errors)
-  const msgEsbuild = (
-    await formatMessages(err.errors as any, {
-      kind: 'error',
-      color: true,
-    })
-  )
-    .map((m) => m.trim())
-    .join('\n')
+function formatBuildErr(err: unknown, filePath: FilePathResolved): void {
+  if (!isRolldownBuildError(err)) return
+  // Remove the mark of imports with the import attribute `with { type: 'vike:pointer' }`, see transpileWithRolldown()
+  err.message = removePointerImportAttributeSuffix(err.message)
+  if (err.stack) err.stack = removePointerImportAttributeSuffix(err.stack)
+  const msgRolldown = err.errors.map((e) => removePointerImportAttributeSuffix(e.message).trim()).join('\n')
   const msgIntro = getErrIntroMsg('transpile', filePath)
-  const errMsgFormatted: ErrMsgFormatted = `${msgIntro}\n${msgEsbuild}`
+  const errMsgFormatted: ErrMsgFormatted = `${msgIntro}\n${msgRolldown}`
   // Non-enumerable, otherwise `$ vike build` prints it in addition to the error message
   Object.defineProperty(err, formatted, { value: errMsgFormatted, enumerable: false, configurable: true })
+}
+function isRolldownBuildError(err: unknown): err is Error & { errors: RolldownLog[] } {
+  return (
+    isObject(err) && Array.isArray(err.errors) && err.errors.every((e) => isObject(e) && typeof e.message === 'string')
+  )
+}
+function getErrUnresolvedImports(logs: RolldownLog[]) {
+  const errors = logs.map((log) => ({
+    ...log,
+    // We make the build fail, thus:
+    // - Color it as an error (instead of as a warning)
+    // - Remove `, treating it as an external dependency` from the message `Module not found, treating it as an external dependency`
+    message: log.message
+      .replace('\x1b[33m[UNRESOLVED_IMPORT]', '\x1b[31m[UNRESOLVED_IMPORT]')
+      .replace(', treating it as an external dependency', '.'),
+  }))
+  const msg = `Build failed with ${errors.length} error${errors.length === 1 ? '' : 's'}:\n\n${errors.map((e) => e.message).join('\n')}`
+  const err = new Error(msg)
+  // Getter (like Rolldown's errors), otherwise `$ vike build` prints it in addition to the error message (Node.js's util.inspect() always prints `error.errors` if it's an array)
+  Object.defineProperty(err, 'errors', { get: () => errors, enumerable: true, configurable: true })
+  return err
 }
 
 const execErrIntroMsg = new WeakMap<object, ErrIntroMsgExecute>()
@@ -528,32 +694,6 @@ function getErrIntroMsg<Operation extends 'transpile' | 'execute'>(operation: Op
   const msg =
     `${pc.red(`Failed to ${operation}`)} ${pc.bold(pc.red(filePathToShowToUserResolved))} ${pc.red(`because:`)}` as const
   return msg
-}
-
-function cleanEsbuildErrors(errors: Message[]) {
-  errors.forEach(
-    (e) =>
-      (e.notes = e.notes.filter(
-        (note) =>
-          // Remove note:
-          // ```shell
-          // You can mark the path "#root/renderer/onRenderHtml_typo" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
-          // ```
-          //
-          // From error:
-          // ```shell
-          // ✘ [ERROR] Could not resolve "#root/renderer/onRenderHtml_typo" [plugin vike-esbuild]
-          //
-          //    renderer/+config.h.js:1:29:
-          //      1 │ import { onRenderHtml } from "#root/renderer/onRenderHtml_typo"
-          //        ╵                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-          //
-          //  You can mark the path "#root/renderer/onRenderHtml_typo" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
-          //
-          // ```
-          !note.text.includes('as external to exclude it from the bundle'),
-      )),
-  )
 }
 
 function installSourceMapSupport() {

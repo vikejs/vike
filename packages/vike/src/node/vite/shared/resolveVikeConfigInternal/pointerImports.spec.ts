@@ -2,7 +2,7 @@ import { expect, describe, it } from 'vitest'
 import { transformPointerImports } from './pointerImports.js'
 
 function t(code: string) {
-  return transformPointerImports(code, '/fake-file.js', 'all', true)
+  return transformPointerImports(code, 'all')
 }
 
 describe('transformPointerImports()', () => {

@@ -15,7 +15,7 @@ function assertEnvVite() {
   assertIsNotBrowser()
   assertNodeVersion()
   assertViteVersion(viteVersion)
-  assertIsNotProductionRuntime() // Don't bloat server with heavy dependencies like Vite and esbuild
+  assertIsNotProductionRuntime() // Don't bloat server with heavy dependencies like Vite and Rolldown
 }
 
 function onLoad() {

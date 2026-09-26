@@ -33,7 +33,7 @@ beforeAll(() => {
     'components/Layout.jsx': 'export const Layout = ({ children }) => <div>{children}</div>',
     'components/style.css': 'body { color: red }',
     'components/Page.ts': "export const Page = 'Page'",
-    'components/legacy.cjs': "module.exports = { sep: '/' }",
+    'components/legacy.cjs': "const path = require('node:path')\nmodule.exports = { sep: path.posix.sep }",
   })
 })
 afterAll(() => {
@@ -111,7 +111,7 @@ describe('transpileAndExecuteFile()', () => {
   it('pointer imports without effect', async () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
     try {
-      // Unused pointer imports
+      // Unused pointer imports (Rolldown transforms them into `import '...'`)
       writeFiles({
         'pages/unused/+config.js': [
           "import { Layout } from '../../components/Layout.jsx'",
@@ -129,7 +129,7 @@ describe('transpileAndExecuteFile()', () => {
       expect(warn).toHaveBeenCalledOnce()
       expect(normalize(String(warn.mock.calls[0]![0]))).toMatchInlineSnapshot(`
         "[vike][Warning] The following import in /pages/sideEffectJsx/+config.js has no effect:
-          import "<userRootDir>/components/Layout.jsx";
+          import '../../components/Layout.jsx'
         See https://vike.dev/config#pointer-imports"
       `)
     } finally {
@@ -142,7 +142,7 @@ describe('transpileAndExecuteFile()', () => {
     const err = await getErr(load('/pages/sideEffectCss/+config.ts'))
     expect(normalize(err.message)).toMatchInlineSnapshot(`
       "[vike][Wrong Usage] The following import in /pages/sideEffectCss/+config.ts has no effect:
-        import "<userRootDir>/components/style.css";
+        import '../../components/style.css'
       See https://vike.dev/config#pointer-imports"
     `)
 
@@ -179,6 +179,8 @@ describe('transpileAndExecuteFile()', () => {
         'export const getTitle = () => title',
       ].join('\n'),
       'pages/samePath/+config.ts': [
+        // Non-ASCII characters before the imports (the import paths are modified based on their position)
+        '// Café 🚀',
         "import { Page } from '../../components/pageAndTitle.ts' with { type: 'vike:pointer' }",
         "import { title } from '../../components/pageAndTitle.ts'",
         'export default { Page, title }',
@@ -253,33 +255,37 @@ describe('transpileAndExecuteFile()', () => {
     {
       const { errMsgFormatted } = await getBuildErr('/pages/unresolvedAlias/+config.ts')
       expect(errMsgFormatted).toContain('Failed to transpile /pages/unresolvedAlias/+config.ts because:')
-      expect(errMsgFormatted).toContain('Could not resolve "#root/renderer/onRenderHtml_typo"')
+      expect(errMsgFormatted).toContain("Could not resolve '#root/renderer/onRenderHtml_typo'")
       expect(errMsgFormatted).toContain("import { onRenderHtml } from '#root/renderer/onRenderHtml_typo'")
     }
     {
-      const { errMsgFormatted } = await getBuildErr('/pages/unresolvedNpmPackage/+config.ts')
+      const { errMsgFormatted, err } = await getBuildErr('/pages/unresolvedNpmPackage/+config.ts')
       expect(errMsgFormatted).toContain('Failed to transpile /pages/unresolvedNpmPackage/+config.ts because:')
-      expect(errMsgFormatted).toContain('Could not resolve "not-installed-npm-package"')
+      expect(errMsgFormatted).toContain("Could not resolve 'not-installed-npm-package'")
+      expect(errMsgFormatted).not.toContain('treating it as an external dependency')
+      // The error message is printed only once upon `$ vike build`
+      expect(inspect(err).split('UNRESOLVED_IMPORT').length - 1).toBe(1)
     }
     for (const [page, importPath] of [
       ['unresolvedPointerImport', './Page_typo.ts'],
       ['unresolvedPointerImportNpmPackage', 'not-installed-npm-package'],
     ] as const) {
-      const { errMsgFormatted } = await getBuildErr(`/pages/${page}/+config.ts`)
+      const { errMsgFormatted, err } = await getBuildErr(`/pages/${page}/+config.ts`)
       expect(errMsgFormatted).toContain(`Failed to transpile /pages/${page}/+config.ts because:`)
-      expect(errMsgFormatted).toContain(`Could not resolve "${importPath}"`)
+      expect(errMsgFormatted).toContain(`Could not resolve '${importPath}'`)
       // The code snippet shows the original code
-      expect(errMsgFormatted).toContain(`import { Page } from '${importPath}' with`)
+      expect(errMsgFormatted).toContain(`import { Page } from '${importPath}' with { type: 'vike:pointer' }`)
+      expect([errMsgFormatted, err.message, err.stack].join('\n')).not.toContain('?vike:pointer')
     }
     {
       const { errMsgFormatted } = await getBuildErr('/pages/unresolvedRelative/+config.ts')
       expect(errMsgFormatted).toContain('Failed to transpile /pages/unresolvedRelative/+config.ts because:')
-      expect(errMsgFormatted).toContain('Could not resolve "./onRenderHtml_typo"')
+      expect(errMsgFormatted).toContain("Could not resolve './onRenderHtml_typo'")
     }
     {
       const { errMsgFormatted } = await getBuildErr('/pages/syntaxError/+config.ts')
       expect(errMsgFormatted).toContain('Failed to transpile /pages/syntaxError/+config.ts because:')
-      expect(errMsgFormatted).toContain('pages/syntaxError/+config.ts:3:0')
+      expect(errMsgFormatted).toContain('pages/syntaxError/+config.ts:3:1')
     }
     {
       const { errMsgFormatted, dependencies } = await getBuildErr('/pages/syntaxErrorDependency/+config.ts')
