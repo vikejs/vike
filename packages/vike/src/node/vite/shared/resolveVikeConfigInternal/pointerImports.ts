@@ -209,7 +209,7 @@ function parsePointerImportData(importString: string): null | PointerImportData 
 // `importPath` is one of the following:
 // - A relative import path
 // - An npm package import
-// - A filesystem absolute path, see transpileWithEsbuild()
+// - A filesystem absolute path, see transpileFile()
 function assertPointerImportPath(importPath: string) {
   return isImportPath(importPath) || isFilePathAbsolute(importPath)
 }

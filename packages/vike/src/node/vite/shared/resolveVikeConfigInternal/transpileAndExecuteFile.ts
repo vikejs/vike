@@ -99,7 +99,12 @@ async function transpileAndExecuteFile(
     fileExports = await executeFile(filePathAbsoluteFilesystem, filePath)
   } else {
     const transformImports = isHeader ? 'all' : true
-    const code = await transpileFile(filePath, transformImports, userRootDir, vikeTranspileCache)
+    const code = await transpileFileAndTransformPointerImports(
+      filePath,
+      transformImports,
+      userRootDir,
+      vikeTranspileCache,
+    )
     if (debugConfig.isActivated) {
       debugConfig(filePathToShowToUserResolved, code)
     }
@@ -110,7 +115,7 @@ async function transpileAndExecuteFile(
   return { fileExports }
 }
 
-async function transpileFile(
+async function transpileFileAndTransformPointerImports(
   filePath: FilePathResolved,
   transformImports: boolean | 'all',
   userRootDir: string,
@@ -123,7 +128,7 @@ async function transpileFile(
   vikeTranspileCache.vikeConfigDependencies.add(filePathAbsoluteFilesystem)
 
   if (debug.isActivated) debug('transpile', filePathToShowToUserResolved)
-  let { code, pointerImports } = await transpileWithEsbuild(filePath, userRootDir, transformImports, vikeTranspileCache)
+  let { code, pointerImports } = await transpileFile(filePath, userRootDir, transformImports, vikeTranspileCache)
   if (debug.isActivated) debug(`code, post esbuild (${filePathToShowToUserResolved})`, code)
 
   let isImportTransformed = false
@@ -141,7 +146,7 @@ async function transpileFile(
   return code
 }
 
-async function transpileWithEsbuild(
+async function transpileFile(
   filePath: FilePathResolved,
   userRootDir: string,
   transformImports: boolean | 'all',
