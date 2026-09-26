@@ -11,7 +11,7 @@ import { assertIsNotProductionRuntime } from '../../../../utils/assertSetup.js'
 import { isArrayOfStrings } from '../../../../utils/isArrayOfStrings.js'
 import { isObject } from '../../../../utils/isObject.js'
 import type { FilePathResolved } from '../../../../types/FilePath.js'
-import { type EsbuildCache, transpileAndExecuteFile } from './transpileAndExecuteFile.js'
+import { type BuildCache, transpileAndExecuteFile } from './transpileAndExecuteFile.js'
 import { getConfigDefinitionOptional } from '../resolveVikeConfigInternal.js'
 import type { PlusFileValue } from './getPlusFiles.js'
 import { assertPlusFileExport } from '../../../../shared-server-client/page-configs/assertPlusFileExport.js'
@@ -37,7 +37,7 @@ async function loadPointerImport(
   userRootDir: string,
   configName: string,
   configDefinitions: ConfigDefinitionsInternal,
-  esbuildCache: EsbuildCache,
+  buildCache: BuildCache,
 ): Promise<unknown> {
   // The value of `extends` was already loaded and already used: we don't need the value of `extends` anymore
   if (configName === 'extends') return
@@ -50,7 +50,7 @@ async function loadPointerImport(
     pointerImport.fileExportPath.filePathAbsoluteFilesystem,
     `${configDefinedAt} cannot be defined over an aliased import`,
   )
-  const { fileExports } = await transpileAndExecuteFile(pointerImport.fileExportPath, userRootDir, false, esbuildCache)
+  const { fileExports } = await transpileAndExecuteFile(pointerImport.fileExportPath, userRootDir, false, buildCache)
   const fileExportValue = fileExports[pointerImport.fileExportPath.fileExportName]
 
   pointerImport.fileExportValueLoaded = true
@@ -73,7 +73,7 @@ async function loadValueFile(
   interfaceValueFile: PlusFileValue,
   configDefinitions: ConfigDefinitionsInternal,
   userRootDir: string,
-  esbuildCache: EsbuildCache,
+  buildCache: BuildCache,
 ): Promise<void> {
   const { configName } = interfaceValueFile
   const configDef = getConfigDefinitionOptional(configDefinitions, configName)
@@ -82,7 +82,7 @@ async function loadValueFile(
   interfaceValueFile.isNotLoaded = false
   assert(!interfaceValueFile.isNotLoaded)
   interfaceValueFile.fileExportsByConfigName = {}
-  const { fileExports } = await transpileAndExecuteFile(interfaceValueFile.filePath, userRootDir, false, esbuildCache)
+  const { fileExports } = await transpileAndExecuteFile(interfaceValueFile.filePath, userRootDir, false, buildCache)
   const { filePathToShowToUser } = interfaceValueFile.filePath
   assertPlusFileExport(fileExports, filePathToShowToUser, configName)
   Object.entries(fileExports).forEach(([exportName, configValue]) => {
@@ -97,17 +97,17 @@ async function loadConfigFile(
   userRootDir: string,
   visited: string[],
   isExtensionConfig: boolean,
-  esbuildCache: EsbuildCache,
+  buildCache: BuildCache,
 ): Promise<{ configFile: ConfigFile; extendsConfigs: ConfigFile[] }> {
   const { filePathAbsoluteFilesystem } = configFilePath
   assertNoInfiniteLoop(visited, filePathAbsoluteFilesystem)
-  const { fileExports } = await transpileAndExecuteFile(configFilePath, userRootDir, isExtensionConfig, esbuildCache)
+  const { fileExports } = await transpileAndExecuteFile(configFilePath, userRootDir, isExtensionConfig, buildCache)
   const { extendsConfigs, extendsFilePaths } = await loadExtendsConfigs(
     fileExports,
     configFilePath,
     userRootDir,
     [...visited, filePathAbsoluteFilesystem],
-    esbuildCache,
+    buildCache,
   )
 
   const configFile: ConfigFile = {
@@ -129,7 +129,7 @@ async function loadExtendsConfigs(
   configFilePath: FilePathResolved,
   userRootDir: string,
   visited: string[],
-  esbuildCache: EsbuildCache,
+  buildCache: BuildCache,
 ) {
   const { extendsPointerImportData, extendsConfigs } = getExtendsPointerImportData(configFileExports, configFilePath)
   const extendsConfigFiles: FilePathResolved[] = []
@@ -141,7 +141,7 @@ async function loadExtendsConfigs(
 
   const results = await Promise.all(
     extendsConfigFiles.map(
-      async (configFilePath) => await loadConfigFile(configFilePath, userRootDir, visited, true, esbuildCache),
+      async (configFilePath) => await loadConfigFile(configFilePath, userRootDir, visited, true, buildCache),
     ),
   )
   results.forEach((result) => {

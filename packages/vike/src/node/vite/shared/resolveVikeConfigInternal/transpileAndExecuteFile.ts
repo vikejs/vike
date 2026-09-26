@@ -2,7 +2,7 @@ export { transpileAndExecuteFile }
 export { getConfigBuildErrorFormatted }
 export { getConfigExecutionErrorIntroMsg }
 export { isTemporaryBuildFile }
-export type { EsbuildCache }
+export type { BuildCache }
 
 import {
   build,
@@ -46,7 +46,7 @@ if (debugEsbuildResolve.isActivated) debugEsbuildResolve('esbuild version', vers
 
 type FileExports = { fileExports: Record<string, unknown> }
 
-type EsbuildCache = {
+type BuildCache = {
   transpileCache: Record<
     string, // filePathAbsoluteFilesystem
     Promise<FileExports>
@@ -57,17 +57,17 @@ async function transpileAndExecuteFile(
   filePath: FilePathResolved,
   userRootDir: string,
   isExtensionConfig: boolean,
-  esbuildCache: EsbuildCache,
+  buildCache: BuildCache,
 ): Promise<FileExports> {
   const { filePathAbsoluteFilesystem, filePathToShowToUserResolved } = filePath
   assert(filePathAbsoluteFilesystem)
   const fileExtension = getFileExtension(filePathAbsoluteFilesystem)
 
-  if (esbuildCache.transpileCache[filePathAbsoluteFilesystem]) {
-    return await esbuildCache.transpileCache[filePathAbsoluteFilesystem]
+  if (buildCache.transpileCache[filePathAbsoluteFilesystem]) {
+    return await buildCache.transpileCache[filePathAbsoluteFilesystem]
   }
   const { promise, resolve } = genPromise<FileExports>()
-  esbuildCache.transpileCache[filePathAbsoluteFilesystem] = promise
+  buildCache.transpileCache[filePathAbsoluteFilesystem] = promise
 
   /* We tolerate .tsx so that a file can be both a runtime and config file (`meta.env.config === true && meta.env.server === true`), e.g. https://github.com/brillout/docpress/issues/86
   assertUsage(
@@ -99,7 +99,7 @@ async function transpileAndExecuteFile(
     fileExports = await executeFile(filePathAbsoluteFilesystem, filePath)
   } else {
     const transformImports = isHeader ? 'all' : true
-    const code = await transpileFile(filePath, transformImports, userRootDir, esbuildCache)
+    const code = await transpileFile(filePath, transformImports, userRootDir, buildCache)
     if (debugConfig.isActivated) {
       debugConfig(filePathToShowToUserResolved, code)
     }
@@ -114,16 +114,16 @@ async function transpileFile(
   filePath: FilePathResolved,
   transformImports: boolean | 'all',
   userRootDir: string,
-  esbuildCache: EsbuildCache,
+  buildCache: BuildCache,
 ) {
   const { filePathAbsoluteFilesystem, filePathToShowToUserResolved } = filePath
 
   assert(filePathAbsoluteFilesystem)
   assertPosixPath(filePathAbsoluteFilesystem)
-  esbuildCache.vikeConfigDependencies.add(filePathAbsoluteFilesystem)
+  buildCache.vikeConfigDependencies.add(filePathAbsoluteFilesystem)
 
   if (debug.isActivated) debug('transpile', filePathToShowToUserResolved)
-  let { code, pointerImports } = await transpileWithEsbuild(filePath, userRootDir, transformImports, esbuildCache)
+  let { code, pointerImports } = await transpileWithEsbuild(filePath, userRootDir, transformImports, buildCache)
   if (debug.isActivated) debug(`code, post esbuild (${filePathToShowToUserResolved})`, code)
 
   let isImportTransformed = false
@@ -145,7 +145,7 @@ async function transpileWithEsbuild(
   filePath: FilePathResolved,
   userRootDir: string,
   transformImports: boolean | 'all',
-  esbuildCache: EsbuildCache,
+  buildCache: BuildCache,
 ) {
   const entryFilePath = filePath.filePathAbsoluteFilesystem
   const entryFileDir = path.posix.dirname(entryFilePath)
@@ -315,7 +315,7 @@ async function transpileWithEsbuild(
           // We collect the dependency `args.path` in case the build fails (upon build error => error is thrown => no metafile)
           let { path } = args
           path = toPosixPath(path)
-          esbuildCache.vikeConfigDependencies.add(path)
+          buildCache.vikeConfigDependencies.add(path)
           return undefined
         })
         /* To exhaustively collect all dependencies upon build failure, we would also need to use onResolve().
@@ -345,7 +345,7 @@ async function transpileWithEsbuild(
     filePathRelative = toPosixPath(filePathRelative)
     assertPosixPath(userRootDir)
     const filePathAbsoluteFilesystem = path.posix.join(userRootDir, filePathRelative)
-    esbuildCache.vikeConfigDependencies.add(filePathAbsoluteFilesystem)
+    buildCache.vikeConfigDependencies.add(filePathAbsoluteFilesystem)
   })
 
   const code = result.outputFiles![0]!.text

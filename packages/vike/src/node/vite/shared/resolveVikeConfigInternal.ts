@@ -64,7 +64,7 @@ import {
   sortAfterInheritanceOrder,
   applyFilesystemRoutingRootEffect,
 } from './resolveVikeConfigInternal/filesystemRouting.js'
-import type { EsbuildCache } from './resolveVikeConfigInternal/transpileAndExecuteFile.js'
+import type { BuildCache } from './resolveVikeConfigInternal/transpileAndExecuteFile.js'
 import { getViteDevServer, vikeConfigErrorRecoverMsg } from '../../../server/runtime/globalContext.js'
 import { logConfigInfo, logErrorServerDev } from './loggerDev.js'
 import { swallowViteLogForceOptimization_enable, swallowViteLogForceOptimization_disable } from './loggerVite.js'
@@ -224,7 +224,7 @@ async function resolveVikeConfigInternal_withErrorHandling(
   const { promise, resolve, reject } = genPromise<VikeConfigInternal>()
   globalObject.vikeConfigPromise = promise
 
-  const esbuildCache: EsbuildCache = {
+  const buildCache: BuildCache = {
     transpileCache: {},
     vikeConfigDependencies: new Set(),
   }
@@ -235,7 +235,7 @@ async function resolveVikeConfigInternal_withErrorHandling(
   let ret: VikeConfigInternal | undefined
   let err: unknown
   try {
-    ret = await resolveVikeConfigInternal(userRootDir, vikeVitePluginOptions, esbuildCache)
+    ret = await resolveVikeConfigInternal(userRootDir, vikeVitePluginOptions, buildCache)
   } catch (err_) {
     hasError = true
     err = err_
@@ -287,7 +287,7 @@ async function resolveVikeConfigInternal_withErrorHandling(
       reject(err)
     } else {
       logErrorServerDev(err, null)
-      resolve(await getVikeConfigDummy(esbuildCache))
+      resolve(await getVikeConfigDummy(buildCache))
     }
   }
 }
@@ -316,11 +316,11 @@ function hasViteConfigChanged(vikeConfigOld: VikeConfigInternal | null, vikeConf
 async function resolveVikeConfigInternal(
   userRootDir: string,
   vikeVitePluginOptions: unknown,
-  esbuildCache: EsbuildCache,
+  buildCache: BuildCache,
 ): Promise<VikeConfigInternal> {
-  const plusFilesByLocationId = await getPlusFiles(userRootDir, esbuildCache)
+  const plusFilesByLocationId = await getPlusFiles(userRootDir, buildCache)
 
-  const configDefinitionsResolved = await resolveConfigDefinitions(plusFilesByLocationId, userRootDir, esbuildCache)
+  const configDefinitionsResolved = await resolveConfigDefinitions(plusFilesByLocationId, userRootDir, buildCache)
 
   const { pageConfigGlobal, pageConfigs } = getPageConfigsBuildTime(
     configDefinitionsResolved,
@@ -353,7 +353,7 @@ async function resolveVikeConfigInternal(
     prerenderContext,
     _pageConfigs: pageConfigs,
     _pageConfigGlobal: pageConfigGlobal,
-    _vikeConfigDependencies: esbuildCache.vikeConfigDependencies,
+    _vikeConfigDependencies: buildCache.vikeConfigDependencies,
     _extensions,
   }
   globalObject.vikeConfigSync = vikeConfig
@@ -370,7 +370,7 @@ type ConfigDefinitionsResolved = Awaited<ReturnType<typeof resolveConfigDefiniti
 async function resolveConfigDefinitions(
   plusFilesByLocationId: PlusFilesByLocationId,
   userRootDir: string,
-  esbuildCache: EsbuildCache,
+  buildCache: BuildCache,
 ) {
   const plusFilesByLocationIdOrdered = Object.values(plusFilesByLocationId)
     .flat()
@@ -380,7 +380,7 @@ async function resolveConfigDefinitions(
     plusFilesByLocationIdOrdered,
     (configDef) => !!configDef.global,
   )
-  await loadCustomConfigBuildTimeFiles(plusFilesByLocationId, configDefinitionsGlobal, userRootDir, esbuildCache)
+  await loadCustomConfigBuildTimeFiles(plusFilesByLocationId, configDefinitionsGlobal, userRootDir, buildCache)
 
   const configNamesKnownAll = getConfigNames(Object.values(plusFilesByLocationId).flat())
   const configNamesKnownGlobal = Object.keys(configDefinitionsGlobal)
@@ -408,7 +408,7 @@ async function resolveConfigDefinitions(
         plusFilesRelevant,
         (configDef) => configDef.global !== true,
       )
-      await loadCustomConfigBuildTimeFiles(plusFiles, configDefinitions, userRootDir, esbuildCache)
+      await loadCustomConfigBuildTimeFiles(plusFiles, configDefinitions, userRootDir, buildCache)
       const configNamesKnownLocal = unique([
         ...Object.keys(configDefinitions),
         ...peerDependencyConfigNames,
@@ -441,19 +441,19 @@ async function loadCustomConfigBuildTimeFiles(
   plusFiles: PlusFilesByLocationId | PlusFile[],
   configDefinitions: ConfigDefinitionsInternal,
   userRootDir: string,
-  esbuildCache: EsbuildCache,
+  buildCache: BuildCache,
 ): Promise<void> {
   const plusFileList: PlusFile[] = Object.values(plusFiles).flat(1)
   await Promise.all(
     plusFileList.map(async (plusFile) => {
       if (!plusFile.isConfigFile) {
-        await loadValueFile(plusFile, configDefinitions, userRootDir, esbuildCache)
+        await loadValueFile(plusFile, configDefinitions, userRootDir, buildCache)
       } else {
         await Promise.all(
           Object.entries(plusFile.pointerImportsByConfigName).map(async ([configName, pointerImports]) => {
             await Promise.all(
               pointerImports.map((pointerImport) =>
-                loadPointerImport(pointerImport, userRootDir, configName, configDefinitions, esbuildCache),
+                loadPointerImport(pointerImport, userRootDir, configName, configDefinitions, buildCache),
               ),
             )
           }),
@@ -1791,7 +1791,7 @@ function restartViteDevServer() {
   swallowViteLogForceOptimization_disable()
 }
 
-async function getVikeConfigDummy(esbuildCache: EsbuildCache): Promise<VikeConfigInternal> {
+async function getVikeConfigDummy(buildCache: BuildCache): Promise<VikeConfigInternal> {
   const pageConfigsDummy: VikeConfigInternal['_pageConfigs'] = []
   const pageConfigGlobalDummy: VikeConfigInternal['_pageConfigGlobal'] = {
     configValueSources: {},
@@ -1811,7 +1811,7 @@ async function getVikeConfigDummy(esbuildCache: EsbuildCache): Promise<VikeConfi
     },
     ...globalConfigPublicDummy,
     prerenderContext: prerenderContextDummy,
-    _vikeConfigDependencies: esbuildCache.vikeConfigDependencies,
+    _vikeConfigDependencies: buildCache.vikeConfigDependencies,
     _extensions: [],
   }
   globalObject.vikeConfigSync = vikeConfigDummy

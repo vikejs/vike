@@ -7,7 +7,7 @@ export type { PlusFilesByLocationId }
 import { assert } from '../../../../utils/assert.js'
 import { metaBuiltIn } from './metaBuiltIn.js'
 import { type LocationId, getLocationId } from './filesystemRouting.js'
-import { type EsbuildCache } from './transpileAndExecuteFile.js'
+import { type BuildCache } from './transpileAndExecuteFile.js'
 import { crawlPlusFiles, getPlusFileValueConfigName } from './crawlPlusFiles.js'
 import { getConfigFileExport } from './getConfigFileExport.js'
 import { type ConfigFile, loadConfigFile, loadValueFile, PointerImportLoaded } from './loadFileAtConfigTime.js'
@@ -61,7 +61,7 @@ type PlusFileValue = PlusFileCommon & {
   }
 type PlusFilesByLocationId = Record<LocationId, PlusFile[]>
 
-async function getPlusFiles(userRootDir: string, esbuildCache: EsbuildCache): Promise<PlusFilesByLocationId> {
+async function getPlusFiles(userRootDir: string, buildCache: BuildCache): Promise<PlusFilesByLocationId> {
   const plusFilePaths: FilePathResolved[] = (await crawlPlusFiles(userRootDir)).map(({ filePathAbsoluteUserRootDir }) =>
     getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir }),
   )
@@ -74,7 +74,7 @@ async function getPlusFiles(userRootDir: string, esbuildCache: EsbuildCache): Pr
 
         const { filePathAbsoluteUserRootDir } = filePath
         assert(filePathAbsoluteUserRootDir)
-        const { configFile, extendsConfigs } = await loadConfigFile(filePath, userRootDir, [], false, esbuildCache)
+        const { configFile, extendsConfigs } = await loadConfigFile(filePath, userRootDir, [], false, buildCache)
         assert(filePath.filePathAbsoluteUserRootDir)
         const locationId = getLocationId(filePathAbsoluteUserRootDir)
         const plusFile = getPlusFileFromConfigFile(configFile, false, locationId, userRootDir)
@@ -126,7 +126,7 @@ async function getPlusFiles(userRootDir: string, esbuildCache: EsbuildCache): Pr
         // We don't have access to the custom config definitions defined by the user yet.
         //  - If `configDef` is `undefined` => we load the file +{configName}.js later.
         //  - We already need to load +meta.js here (to get the custom config definitions defined by the user)
-        await loadValueFile(plusFile, metaBuiltIn, userRootDir, esbuildCache)
+        await loadValueFile(plusFile, metaBuiltIn, userRootDir, buildCache)
       }
     }),
   )
