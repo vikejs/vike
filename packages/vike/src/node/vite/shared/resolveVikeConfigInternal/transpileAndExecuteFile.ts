@@ -94,7 +94,7 @@ async function transpileAndExecuteFile(
   if (isExtensionConfig && !isHeader && fileExtension.endsWith('js')) {
     // This doesn't track dependencies => we should never use this for user land configs
     if (debugConfig.isActivated) {
-      debugConfig(filePathToShowToUserResolved, 'executed directly (no esbuild transpilation)')
+      debugConfig(filePathToShowToUserResolved, 'executed directly (no transpilation)')
     }
     fileExports = await executeFile(filePathAbsoluteFilesystem, filePath)
   } else {
@@ -129,7 +129,7 @@ async function transpileFileAndTransformPointerImports(
 
   if (debug.isActivated) debug('transpile', filePathToShowToUserResolved)
   let { code, pointerImports } = await transpileFile(filePath, userRootDir, transformImports, vikeTranspileCache)
-  if (debug.isActivated) debug(`code, post esbuild (${filePathToShowToUserResolved})`, code)
+  if (debug.isActivated) debug(`code, post transpilation (${filePathToShowToUserResolved})`, code)
 
   let isImportTransformed = false
   if (transformImports) {
