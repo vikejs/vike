@@ -43,7 +43,7 @@ import '../../assertEnvVite.js'
 assertIsNotProductionRuntime()
 installSourceMapSupport()
 const debug = createDebug('vike:pointer-imports')
-const debugResolve = createDebug('vike:esbuild-resolve')
+const debugResolve = createDebug('vike:transpile-resolve')
 const debugConfig = createDebug('vike:config')
 if (debugResolve.isActivated) debugResolve('esbuild version', version)
 
