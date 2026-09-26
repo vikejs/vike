@@ -69,32 +69,8 @@ function transformPointerImports(
     const { start, end } = node
     const importStatementCode = code.slice(start, end)
 
-    /* Pointer import without importing any value => doesn't make sense and doesn't have any effect.
-    ```js
-    // Useless
-    import './some.css'
-    // Useless
-    import './Layout.jsx'
-    ``` */
-    if (node.specifiers.length === 0) {
-      const isWarning = !styleFileRE.test(importPath)
-      let quote = indent(importStatementCode)
-      if (isWarning) {
-        quote = pc.cyan(quote)
-      } else {
-        quote = pc.bold(pc.red(quote))
-      }
-      const errMsg = [
-        `The following import in ${filePathToShowToUser2} has no effect:`,
-        quote,
-        'See https://vike.dev/config#pointer-imports',
-      ].join('\n')
-      if (!skipWarnings) {
-        if (!isWarning) {
-          assertUsage(false, errMsg)
-        }
-        assertWarning(false, errMsg, { onlyOnce: true })
-      }
+    if (node.specifiers.length === 0 && !skipWarnings) {
+      assertPointerImportHasEffect(importStatementCode, importPath, filePathToShowToUser2)
     }
 
     let constDeclaration = ''
@@ -131,6 +107,32 @@ function transformPointerImports(
   const codeWithImportsRemoved = spliceMany(code, spliceOperations)
   if (constDeclarations.length === 0) return codeWithImportsRemoved
   return constDeclarations.join('') + '\n' + codeWithImportsRemoved
+}
+
+/* Pointer import without importing any value => doesn't make sense and doesn't have any effect.
+```js
+// Useless
+import './some.css'
+// Useless
+import './Layout.jsx'
+``` */
+function assertPointerImportHasEffect(importStatementCode: string, importPath: string, filePathToShowToUser: string) {
+  const isWarning = !styleFileRE.test(importPath)
+  let quote = indent(importStatementCode)
+  if (isWarning) {
+    quote = pc.cyan(quote)
+  } else {
+    quote = pc.bold(pc.red(quote))
+  }
+  const errMsg = [
+    `The following import in ${filePathToShowToUser} has no effect:`,
+    quote,
+    'See https://vike.dev/config#pointer-imports',
+  ].join('\n')
+  if (!isWarning) {
+    assertUsage(false, errMsg)
+  }
+  assertWarning(false, errMsg, { onlyOnce: true })
 }
 function getImports(code: string): ImportDeclaration[] {
   const result = parseSync(code, {
