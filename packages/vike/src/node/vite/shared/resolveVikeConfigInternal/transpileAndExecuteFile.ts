@@ -7,7 +7,7 @@ export type { BuildCache }
 import {
   build,
   type BuildResult,
-  type BuildOptions,
+  type Plugin,
   formatMessages,
   type Message,
   version,
@@ -151,31 +151,9 @@ async function transpileWithEsbuild(
 ) {
   const entryFilePath = filePath.filePathAbsoluteFilesystem
   const entryFileDir = path.posix.dirname(entryFilePath)
-  const options: BuildOptions = {
-    platform: 'node',
-    entryPoints: [entryFilePath],
-    sourcemap: 'inline',
-    write: false,
-    target: ['node14.18', 'node16'],
-    outfile: path.posix.join(
-      // Needed for correct inline source map
-      entryFileDir,
-      // `write: false` => no file is actually emitted
-      'NEVER_EMITTED.js',
-    ),
-    logLevel: 'silent',
-    format: 'esm',
-    absWorkingDir: userRootDir,
-    // Disable tree-shaking to avoid dead-code elimination, so that unused imports aren't removed.
-    // Esbuild still sometimes removes unused imports because of TypeScript: https://github.com/evanw/esbuild/issues/3034
-    treeShaking: false,
-    minify: false,
-    metafile: true,
-    bundle: true,
-  }
 
   const pointerImports: Record<string, boolean> = {}
-  options.plugins = [
+  const plugins: Plugin[] = [
     // Determine whether an import should be:
     //  - A pointer import
     //  - Externalized
@@ -262,7 +240,29 @@ async function transpileWithEsbuild(
 
   let result: BuildResult
   try {
-    result = await build(options)
+    result = await build({
+      entryPoints: [entryFilePath],
+      absWorkingDir: userRootDir,
+      platform: 'node',
+      target: ['node14.18', 'node16'],
+      plugins,
+      logLevel: 'silent',
+      bundle: true,
+      metafile: true,
+      // Disable tree-shaking to avoid dead-code elimination, so that unused imports aren't removed.
+      // Esbuild still sometimes removes unused imports because of TypeScript: https://github.com/evanw/esbuild/issues/3034
+      treeShaking: false,
+      write: false,
+      format: 'esm',
+      sourcemap: 'inline',
+      outfile: path.posix.join(
+        // Needed for correct inline source map
+        entryFileDir,
+        // `write: false` => no file is actually emitted
+        'NEVER_EMITTED.js',
+      ),
+      minify: false,
+    })
   } catch (err) {
     await formatBuildErr(err, filePath)
     throw err
