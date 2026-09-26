@@ -7,6 +7,7 @@ import { transpileAndExecuteFile, getConfigBuildErrorFormatted, type BuildCache 
 import { getFilePathResolved } from '../getFilePath.js'
 import { stripAnsi } from '../../../../utils/colorsServer.js'
 import { toPosixPath } from '../../../../utils/path.js'
+import * as isScriptFile from '../../../../utils/isScriptFile.js'
 
 const zeroWidthSpace = '​'
 
@@ -293,6 +294,26 @@ describe('transpileAndExecuteFile()', () => {
       expect(errMsgFormatted).toContain('pages/syntaxErrorDependency/a.ts:1:')
       // Dependencies are also tracked upon build failure (so that the config is reloaded once the user fixes the error)
       expect(dependencies).toEqual(['/pages/syntaxErrorDependency/+config.ts', '/pages/syntaxErrorDependency/a.ts'])
+    }
+  })
+
+  it("errors thrown by Vike's Rolldown plugins", async () => {
+    writeFiles({
+      'pages/pluginError/+config.ts': [
+        "import { Layout } from '../../components/Layout.jsx'",
+        'export default { Layout }',
+      ].join('\n'),
+    })
+    // For example a failing assert()
+    const errPlugin = new Error('Some Vike bug')
+    const spy = vi.spyOn(isScriptFile, 'isPlainScriptFile').mockImplementation(() => {
+      throw errPlugin
+    })
+    try {
+      // Thrown as-is (instead of being formatted as a transpile error)
+      expect(await getErr(load('/pages/pluginError/+config.ts'))).toBe(errPlugin)
+    } finally {
+      spy.mockRestore()
     }
   })
 })

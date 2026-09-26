@@ -327,6 +327,9 @@ async function transpileWithRolldown(
     })
     if (unresolvedImports.length > 0) throw getErrUnresolvedImports(unresolvedImports)
   } catch (err) {
+    // Error thrown by one of our plugins, e.g. a failing assert()
+    const errPlugin = getErrPlugin(err)
+    if (errPlugin) throw errPlugin
     formatBuildErr(err, filePath)
     throw err
   } finally {
@@ -611,6 +614,11 @@ function isRolldownBuildError(err: unknown): err is Error & { errors: RolldownLo
   return (
     isObject(err) && Array.isArray(err.errors) && err.errors.every((e) => isObject(e) && typeof e.message === 'string')
   )
+}
+function getErrPlugin(err: unknown) {
+  if (!isRolldownBuildError(err)) return null
+  const errPlugin = err.errors.find((e) => e.code === 'PLUGIN_ERROR' && e.plugin?.startsWith('vike:'))
+  return errPlugin ?? null
 }
 function getErrUnresolvedImports(logs: RolldownLog[]) {
   const errors = logs.map((log) => ({
