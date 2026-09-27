@@ -136,7 +136,7 @@ async function transpileFileAndTransformPointerImports(
 
   let isImportTransformed = false
   if (transformImports) {
-    const codeMod = transformPointerImports(code, filePathToShowToUserResolved, pointerImports)
+    const codeMod = transformPointerImports(code, pointerImports)
     if (codeMod) {
       code = codeMod
       isImportTransformed = true

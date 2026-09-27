@@ -23,23 +23,19 @@ export type { PointerImportData }
 
 import { parseSync } from '@babel/core'
 import type { Program, Identifier, ImportDeclaration } from 'estree'
-import { assert, assertUsage, assertWarning } from '../../../../utils/assert.js'
+import { assert, assertUsage } from '../../../../utils/assert.js'
 import { isFilePathAbsolute } from '../../../../utils/isFilePathAbsoluteFilesystem.js'
 import { isImportPath } from '../../../../utils/isImportPath.js'
-import { styleFileRE } from '../../../../utils/styleFileRE.js'
 import pc from '@brillout/picocolors'
 import { parseImportString, isImportString, serializeImportString } from '../importString.js'
 import '../../assertEnvVite.js'
 
 function transformPointerImports(
   code: string,
-  filePathToShowToUser2: string,
   pointerImports:
     | Record<string, boolean>
     // Used by ./transformPointerImports.spec.ts
     | 'all',
-  // For ./transformPointerImports.spec.ts
-  skipWarnings?: true,
 ): string | null {
   const spliceOperations: SpliceOperation[] = []
   // Collect all const declarations to prepend at the top, so that they are
@@ -69,33 +65,7 @@ function transformPointerImports(
     const { start, end } = node
     const importStatementCode = code.slice(start, end)
 
-    /* Pointer import without importing any value => doesn't make sense and doesn't have any effect.
-    ```js
-    // Useless
-    import './some.css'
-    // Useless
-    import './Layout.jsx'
-    ``` */
-    if (node.specifiers.length === 0) {
-      const isWarning = !styleFileRE.test(importPath)
-      let quote = indent(importStatementCode)
-      if (isWarning) {
-        quote = pc.cyan(quote)
-      } else {
-        quote = pc.bold(pc.red(quote))
-      }
-      const errMsg = [
-        `The following import in ${filePathToShowToUser2} has no effect:`,
-        quote,
-        'See https://vike.dev/config#pointer-imports',
-      ].join('\n')
-      if (!skipWarnings) {
-        if (!isWarning) {
-          assertUsage(false, errMsg)
-        }
-        assertWarning(false, errMsg, { onlyOnce: true })
-      }
-    }
+    // Pointer import without importing any value, e.g. `import './some.css'` => we remove it (it doesn't have any effect).
 
     let constDeclaration = ''
     node.specifiers.forEach((specifier) => {
@@ -249,11 +219,4 @@ function spliceMany(str: string, operations: SpliceOperation[]): string {
   })
   strMod += str.slice(endPrev, str.length)
   return strMod
-}
-
-function indent(str: string) {
-  return str
-    .split('\n')
-    .map((s) => `  ${s}`)
-    .join('\n')
 }
