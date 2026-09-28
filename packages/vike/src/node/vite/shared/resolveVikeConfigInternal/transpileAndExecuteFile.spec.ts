@@ -2,6 +2,7 @@ import { expect, describe, it, beforeAll, afterAll, vi } from 'vitest'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
+import { inspect } from 'node:util'
 import {
   transpileAndExecuteFile,
   getConfigBuildErrorFormatted,
@@ -109,6 +110,24 @@ describe('transpileAndExecuteFile()', () => {
     })
     const { fileExports } = await load('/pages/reexport/+config.ts')
     expect(fileExports.Layout).toBe(`${zeroWidthSpace}import:${userRootDir}/components/Layout.jsx:Layout`)
+  })
+
+  it('absolute import paths', async () => {
+    writeFiles({
+      'pages/absolute/+config.ts': [
+        `import { Layout } from '${userRootDir}/components/Layout.jsx'`,
+        `import { helper } from '${userRootDir}/utils/helper.ts'`,
+        "export default { Layout, title: helper('title') }",
+      ].join('\n'),
+    })
+    const { fileExports, dependencies } = await load('/pages/absolute/+config.ts')
+    expect(fileExports.default).toEqual({
+      // Pointer import
+      Layout: `${zeroWidthSpace}import:${userRootDir}/components/Layout.jsx:Layout`,
+      // Transpiled and executed
+      title: 'helper(title)',
+    })
+    expect(dependencies).toEqual(['/pages/absolute/+config.ts', '/utils/helper.ts'])
   })
 
   it('pointer imports without effect', async () => {
@@ -317,6 +336,8 @@ async function getBuildErr(filePathAbsoluteUserRootDir: string) {
   const err = await getErr(load(filePathAbsoluteUserRootDir))
   const errMsgFormatted = getConfigBuildErrorFormatted(err)
   expect(errMsgFormatted).toBeTruthy()
+  // Otherwise `$ vike build` prints it in addition to the error message
+  expect(inspect(err)).not.toContain('_formatted')
   return {
     err,
     errMsgFormatted: stripAnsi(errMsgFormatted!),
