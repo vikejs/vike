@@ -215,16 +215,20 @@ async function transpileFile(
           return resolved
         }
 
-        const { isPointerImport, importPathTranspiled } = classified
-        let id = importPathTranspiled
+        let { isPointerImport, importPathTranspiled } = classified
         // Keep the mark, so that the ID is different than the ID of the same file loaded and executed at config-time, see transform() below.
         // - The mark is removed by transformPointerImports()
-        if (isPointerImportAttribute) id += pointerImportAttributeSuffix
-
+        if (isPointerImportAttribute) importPathTranspiled += pointerImportAttributeSuffix
         if (debug.isActivated)
-          debug('resolveId() [external]', { importPathOriginal, importer, resolved, id, isPointerImport })
-        pointerImports[id] = isPointerImport
-        return { id, external: true }
+          debug('resolveId() [external]', {
+            importPathOriginal,
+            importer,
+            resolved,
+            importPathTranspiled,
+            isPointerImport,
+          })
+        pointerImports[importPathTranspiled] = isPointerImport
+        return { id: importPathTranspiled, external: true }
       },
       async transform(code, id) {
         // Rolldown's internal modules, e.g. \0rolldown/runtime.js
