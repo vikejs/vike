@@ -309,13 +309,13 @@ describe('transpileAndExecuteFile()', () => {
       ].join('\n'),
     })
     // For example a failing assert()
-    const errPlugin = new Error('Some Vike bug')
+    const errVikePlugin = new Error('Some Vike bug')
     const spy = vi.spyOn(isScriptFile, 'isPlainScriptFile').mockImplementation(() => {
-      throw errPlugin
+      throw errVikePlugin
     })
     try {
       // Thrown as-is (instead of being formatted as a transpile error)
-      expect(await getErr(load('/pages/pluginError/+config.ts'))).toBe(errPlugin)
+      expect(await getErr(load('/pages/pluginError/+config.ts'))).toBe(errVikePlugin)
     } finally {
       spy.mockRestore()
     }
