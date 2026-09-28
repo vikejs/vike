@@ -1,3 +1,21 @@
+## [0.4.267](https://github.com/vikejs/vike/compare/v0.4.266...v0.4.267) (2026-09-28)
+
+
+### Bug Fixes
+
+* absolute import paths in config files ([9b2ecce](https://github.com/vikejs/vike/commit/9b2ecced4ebf92ef5867cd6e590878ddf9a7c7b0))
+* don't print internal `_formatted` property of config transpile errors ([777fd59](https://github.com/vikejs/vike/commit/777fd592b64835746b94da3498bff50296663c77))
+* improve vike skill hint ([#3504](https://github.com/vikejs/vike/issues/3504)) ([77b57d2](https://github.com/vikejs/vike/commit/77b57d2fcb0f43675a77fe3f02ff3988ecca7662))
+* replace esbuild with Rolldown for transpiling config files ([#3528](https://github.com/vikejs/vike/issues/3528)) ([1c4e816](https://github.com/vikejs/vike/commit/1c4e816f93273678c917552b75d31c927f40caa1))
+* warn and override when build.manifest is false (fix [#3505](https://github.com/vikejs/vike/issues/3505)) ([#3506](https://github.com/vikejs/vike/issues/3506)) ([6c77b89](https://github.com/vikejs/vike/commit/6c77b89cda2e78de02d099340d6fbf20bc49c4d1))
+
+
+### Features
+
+* opt-in static-asset precompression (`precompress`) ([#3452](https://github.com/vikejs/vike/issues/3452)) ([f1b186a](https://github.com/vikejs/vike/commit/f1b186aa878809a0639bc11cf5ebe1066c5ae6f3))
+
+
+
 ## [0.4.266](https://github.com/vikejs/vike/compare/v0.4.265...v0.4.266) (2026-09-02)
 
 
