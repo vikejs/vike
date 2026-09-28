@@ -1,5 +1,4 @@
 export { requireResolveOptional }
-export { requireResolveOptionalDir }
 export { requireResolveNpmPackage }
 export { requireResolveDistFile }
 export { getPackageNodeModulesDirectory }
@@ -101,16 +100,6 @@ function requireResolveOptional({
   importerFilePath,
   userRootDir,
 }: { importPath: string; importerFilePath: string | null; userRootDir: string }): string | null {
-  const res = requireResolve_(importPath, importerFilePath, userRootDir)
-  if (res.hasFailed) return null
-  return res.importPathResolvedFilePath
-}
-function requireResolveOptionalDir({
-  importPath,
-  importerDir,
-  userRootDir,
-}: { importPath: string; importerDir: string; userRootDir: string }): string | null {
-  const importerFilePath = getFakeImporterFile(importerDir)
   const res = requireResolve_(importPath, importerFilePath, userRootDir)
   if (res.hasFailed) return null
   return res.importPathResolvedFilePath

@@ -1,6 +1,7 @@
 export { transformPointerImports }
 export { parsePointerImportData }
 export { assertPointerImportPath }
+export { pointerImportAttributeSuffix }
 export type { PointerImportData }
 
 // Playground: https://github.com/brillout/acorn-playground
@@ -13,12 +14,9 @@ export type { PointerImportData }
 //   - Isn't stage 4 yet: https://github.com/tc39/proposal-import-attributes
 // - Using a import path suffix such as `import { Layout } from './Layout?real` breaks TypeScript, and TypeScript isn't working on supporting query params: https://github.com/microsoft/TypeScript/issues/10988#issuecomment-867135453
 // - Node.js >=21 supports import attributes: https://nodejs.org/api/esm.html#import-attributes
-// - Esbuid supports
-//   - Blocker: https://github.com/evanw/esbuild/issues/3646
-//     - Ugly hack to make it work: https://github.com/brillout/esbuild-playground/tree/experiment/import-attribute
-//   - Discussion with esbuild maintainer: https://github.com/evanw/esbuild/issues/3384
+// - Rolldown doesn't pass import attributes to plugins => we parse import attributes ourselves and mark the import path with pointerImportAttributeSuffix, see transpileFile()
 // - Using a magic comment `// @vike-real-import` is probably a bad idea:
-//   - Esbuild removes comments: https://github.com/evanw/esbuild/issues/1439#issuecomment-877656182
+//   - Bundlers usually remove comments, e.g. esbuild: https://github.com/evanw/esbuild/issues/1439#issuecomment-877656182
 //   - Using source maps to track these magic comments is brittle (source maps can easily break)
 
 import { parseSync } from '@babel/core'
@@ -29,6 +27,12 @@ import { isImportPath } from '../../../../utils/isImportPath.js'
 import pc from '@brillout/picocolors'
 import { parseImportString, isImportString, serializeImportString } from '../importString.js'
 import '../../assertEnvVite.js'
+
+// Appended to the import path of imports with the import attribute `with { type: 'vike:pointer' }`, see transpileFile()
+const pointerImportAttributeSuffix = '?vike:pointer'
+function removePointerImportAttributeSuffix(str: string) {
+  return str.split(pointerImportAttributeSuffix).join('')
+}
 
 function transformPointerImports(
   code: string,
@@ -66,6 +70,7 @@ function transformPointerImports(
     const importStatementCode = code.slice(start, end)
 
     // Pointer import without importing any value, e.g. `import './some.css'` => we remove it (it doesn't have any effect).
+    // - Rolldown transforms unused imports `import { unused } from './some.js'` into `import './some.js'`
 
     let constDeclaration = ''
     node.specifiers.forEach((specifier) => {
@@ -84,7 +89,11 @@ function transformPointerImports(
         }
         return importLocalName
       })()
-      const importString = serializePointerImportData({ importPath, exportName, importStringWasGenerated: true })
+      const importString = serializePointerImportData({
+        importPath: removePointerImportAttributeSuffix(importPath),
+        exportName,
+        importStringWasGenerated: true,
+      })
       constDeclaration += `const ${importLocalName} = '${importString}';`
     })
 
