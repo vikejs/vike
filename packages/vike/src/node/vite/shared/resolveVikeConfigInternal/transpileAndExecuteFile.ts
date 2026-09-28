@@ -307,7 +307,6 @@ async function transpileFile(
       // Single chunk
       codeSplitting: false,
     })
-    if (unresolvedImports.length > 0) throw getErrUnresolvedImports(unresolvedImports)
   } catch (err) {
     // Error thrown by one of our plugins, e.g. a failing assert()
     const errPlugin = getErrPlugin(err)
@@ -317,6 +316,7 @@ async function transpileFile(
   } finally {
     await bundle?.close()
   }
+  if (unresolvedImports.length > 0) throw getErrUnresolvedImports(unresolvedImports, filePath)
 
   const chunk = output.output[0]
   assert(output.output.length === 1)
@@ -562,7 +562,7 @@ function getErrPlugin(err: unknown) {
   const errPlugin = err.errors.find((e) => e.code === 'PLUGIN_ERROR' && e.plugin?.startsWith('vike:'))
   return errPlugin ?? null
 }
-function getErrUnresolvedImports(logs: RolldownLog[]) {
+function getErrUnresolvedImports(logs: RolldownLog[], filePath: FilePathResolved) {
   const errors = logs.map((log) => ({
     ...log,
     // We make the build fail, thus:
@@ -576,6 +576,7 @@ function getErrUnresolvedImports(logs: RolldownLog[]) {
   const err = new Error(msg)
   // Getter (like Rolldown's errors), otherwise `$ vike build` prints it in addition to the error message (Node.js's util.inspect() always prints `error.errors` if it's an array)
   Object.defineProperty(err, 'errors', { get: () => errors, enumerable: true, configurable: true })
+  formatBuildErr(err, filePath)
   return err
 }
 
