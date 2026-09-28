@@ -1,7 +1,7 @@
 export { testRun as test }
 
 import { run, page, test, expect, getServerUrl, fetchHtml, expectLog, autoRetry } from '@brillout/test-e2e'
-import { ensureWasClientSideRouted, expectPageContextJsonRequest, testCounter } from '../utils'
+import { ensureWasClientSideRouted, expectPageContextJsonRequest, expectUrl, testCounter } from '../utils'
 
 function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   run(cmd)
@@ -53,6 +53,8 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
       // because neither data() nor onBeforeRender() are server-only
       const done = expectPageContextJsonRequest(false)
       await page.click('a[href="/page-4"]')
+      // Wait for the navigation to finish: Vike changes the URL only after the pageContext JSON request (if any)
+      await expectUrl('/page-4')
       await testCounter(1)
       await ensureWasClientSideRouted('/pages/index')
       done()
@@ -61,6 +63,7 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
       // because both data() and onBeforeRender() are server-only
       const done = expectPageContextJsonRequest(true)
       await page.click('a[href="/page-3"]')
+      await expectUrl('/page-3')
       await testCounter(2)
       await ensureWasClientSideRouted('/pages/index')
       done()
@@ -69,6 +72,7 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
       // because both data() and onBeforeRender() are server-only, even though they are both null
       const done = expectPageContextJsonRequest(true)
       await page.click('a[href="/page-2"]')
+      await expectUrl('/page-2')
       await testCounter(3)
       await ensureWasClientSideRouted('/pages/index')
       done()
@@ -77,6 +81,7 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
       // because both data() and onBeforeRender() are server-only
       const done = expectPageContextJsonRequest(true)
       await page.click('a[href="/"]')
+      await expectUrl('/')
       await testCounter(4)
       await ensureWasClientSideRouted('/pages/index')
       done()
@@ -91,6 +96,7 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     {
       const done = expectPageContextJsonRequest(false)
       await page.click('a[href="/page-4"]')
+      await expectUrl('/page-4')
       await testCounter(5)
       await ensureWasClientSideRouted('/pages/index')
       done()
