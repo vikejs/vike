@@ -190,11 +190,11 @@ async function transpileFile(
           assert(resolved.path)
 
           // Built-in modules e.g. node:fs
-          if (resolved.path === args.path) {
+          // - esbuild externalizes only built-in modules and HTTP URLs (which Node.js can't import anyway): resolveImport() skips Vike's plugin and we don't use esbuild's `external` option.
+          if (resolved.external) {
             const isPointerImport = false
             pointerImports[args.path] = isPointerImport
             if (debug.isActivated) debug('onResolve() [built-in module]', { args, resolved })
-            assert(resolved.external)
             return resolved
           }
 

@@ -112,6 +112,24 @@ describe('transpileAndExecuteFile()', () => {
     expect(fileExports.Layout).toBe(`${zeroWidthSpace}import:${userRootDir}/components/Layout.jsx:Layout`)
   })
 
+  it('absolute import paths', async () => {
+    writeFiles({
+      'pages/absolute/+config.ts': [
+        `import { Layout } from '${userRootDir}/components/Layout.jsx'`,
+        `import { helper } from '${userRootDir}/utils/helper.ts'`,
+        "export default { Layout, title: helper('title') }",
+      ].join('\n'),
+    })
+    const { fileExports, dependencies } = await load('/pages/absolute/+config.ts')
+    expect(fileExports.default).toEqual({
+      // Pointer import
+      Layout: `${zeroWidthSpace}import:${userRootDir}/components/Layout.jsx:Layout`,
+      // Transpiled and executed
+      title: 'helper(title)',
+    })
+    expect(dependencies).toEqual(['/pages/absolute/+config.ts', '/utils/helper.ts'])
+  })
+
   it('pointer imports without effect', async () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
     try {
