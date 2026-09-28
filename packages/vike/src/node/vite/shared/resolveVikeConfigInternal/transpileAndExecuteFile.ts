@@ -190,11 +190,11 @@ async function transpileFile(
         // Built-in modules e.g. node:fs
         // - Rolldown externalizes only built-in modules and HTTP URLs (which Node.js can't import anyway): resolveImport() skips Vike's plugin and we don't use Rolldown's `external` option.
         if (resolved.external) {
-          const importPathResolved = resolved.id
+          const importPathTranspiled = resolved.id
           const isPointerImport = false
-          pointerImports[importPathResolved] = isPointerImport
+          pointerImports[importPathTranspiled] = isPointerImport
           if (debug.isActivated) debug('resolveId() [built-in module]', { importPathOriginal, importer, resolved })
-          return { id: importPathResolved, external: true }
+          return { id: importPathTranspiled, external: true }
         }
 
         // Rolldown's internal modules, e.g. helpers injected by Oxc's transformer
