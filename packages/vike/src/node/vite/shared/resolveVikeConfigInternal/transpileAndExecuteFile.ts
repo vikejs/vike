@@ -194,7 +194,7 @@ async function transpileFile(
           const isPointerImport = false
           pointerImports[importPathTranspiled] = isPointerImport
           if (debug.isActivated) debug('resolveId() [built-in module]', { importPathOriginal, importer, resolved })
-          return { id: importPathTranspiled, external: true }
+          return resolved
         }
 
         // Rolldown's internal modules, e.g. helpers injected by Oxc's transformer
