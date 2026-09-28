@@ -94,10 +94,10 @@ async function transpileAndExecuteFile(
 
   let fileExports: FileExports['fileExports']
   if (isExtensionConfig && !isHeader && fileExtension.endsWith('js')) {
-    // This doesn't track dependencies => we should never use this for user land configs
     if (debugConfig.isActivated) {
       debugConfig(filePathToShowToUserResolved, 'executed directly (no transpilation)')
     }
+    // This doesn't track dependencies => we should never use this for user land configs
     fileExports = await executeFile(filePathAbsoluteFilesystem, filePath)
   } else {
     const transformImports = isHeader ? 'all' : true
