@@ -5,6 +5,7 @@ import { addCspResponseHeader, PageContextCspNonce } from './csp.js'
 import { isCallable } from '../../../utils/isCallable.js'
 import { cacheControlDisable, getCacheControl } from './getCacheControl.js'
 import type { PageContextAfterPageEntryLoaded } from './loadPageConfigsLazyServerSide.js'
+import { getPageContextPublicServer } from './getPageContextPublicServer.js'
 import '../../assertEnvServer.js'
 
 function resolveHeadersResponseFinal(
@@ -46,7 +47,7 @@ async function resolveHeadersResponseConfig(pageContext: PageContextAfterPageEnt
       async (headers: HeadersInit | ((arg0: any) => HeadersInit | PromiseLike<HeadersInit>)) => {
         let headersInit: HeadersInit
         if (isCallable(headers)) {
-          headersInit = await headers(pageContext as any)
+          headersInit = await headers(getPageContextPublicServer(pageContext))
         } else {
           headersInit = headers
         }

@@ -6,11 +6,13 @@ export type { PageContextCspNonce }
 import { import_ } from '@brillout/import'
 import { assert } from '../../../utils/assert.js'
 import type { PageContextConfig } from '../../../shared-server-client/getPageFiles.js'
+import type { PageContextPublicMinimum } from '../../../shared-server-client/getPageContextPublicShared.js'
 import type { PageContextServer } from '../../../types/PageContext.js'
+import { getPageContextPublicServer } from './getPageContextPublicServer.js'
 import '../../assertEnvServer.js'
 
 async function resolvePageContextCspNone(
-  pageContext: PageContextConfig & Partial<PageContextCspNonce>,
+  pageContext: PageContextConfig & PageContextPublicMinimum & Partial<PageContextCspNonce>,
 ): Promise<null | { cspNonce: string | null }> {
   if (pageContext.cspNonce) return null // already set by user e.g. `renderPage({ cspNonce: '123456789' })`
 
@@ -21,7 +23,7 @@ async function resolvePageContextCspNone(
     if (csp.nonce === true) {
       pageContextAddendum.cspNonce = await generateNonce()
     } else {
-      pageContextAddendum.cspNonce = await csp.nonce(pageContext as any)
+      pageContextAddendum.cspNonce = await csp.nonce(getPageContextPublicServer(pageContext) as any)
     }
   }
 
