@@ -4,10 +4,10 @@ export { testCloudflareBindings }
 import { autoRetry, expect, getServerUrl, page, sleep, test } from '@brillout/test-e2e'
 import { testCounter, testRunClassic } from '../../test/utils'
 
-function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
+function testRun(cmd: 'pnpm run dev' | 'pnpm run preview', options?: Parameters<typeof testRunClassic>[1]) {
   const isDev = cmd === 'pnpm run dev'
   testCloudflareBindings()
-  testRunClassic(cmd)
+  testRunClassic(cmd, options)
   testTodolist(isDev)
 }
 
