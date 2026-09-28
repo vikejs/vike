@@ -12,9 +12,7 @@ function testHistoryPushState() {
     const timestamp1 = await getTimestamp()
     await page.click('a[href="/markdown"]')
     await page.click('a[href="/pushState"]')
-    const timestamp2 = await getTimestamp()
-    expect(timestamp2 !== timestamp1).toBe(true)
-    expect(timestamp2 > timestamp1).toBe(true)
+    const timestamp2 = await getTimestampNewerThan(timestamp1)
 
     // Calling history.pushState() doesn't trigger a re-render, thus timestamp doesn't change
     await expectUrl('/pushState')
@@ -42,9 +40,7 @@ function testHistoryPushState() {
     await expectUrl('/markdown')
     await page.goForward()
     await expectUrl('/pushState')
-    await sleep(100)
-    const timestamp6 = await getTimestamp()
-    expect(timestamp6 > timestamp2).toBe(true)
+    const timestamp6 = await getTimestampNewerThan(timestamp2)
     await page.goForward()
     await expectUrl('/pushState?query')
     const timestamp7 = await getTimestamp()
@@ -52,6 +48,16 @@ function testHistoryPushState() {
   })
 
   return
+
+  // The page is re-rendered asynchronously: the old DOM (with the old timestamp) can still be shown
+  async function getTimestampNewerThan(timestampPrevious: number) {
+    let timestamp!: number
+    await autoRetry(async () => {
+      timestamp = await getTimestamp()
+      expect(timestamp > timestampPrevious).toBe(true)
+    })
+    return timestamp
+  }
 
   async function getTimestamp() {
     let timestampStr: string
