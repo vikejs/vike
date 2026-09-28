@@ -201,7 +201,6 @@ async function transpileFile(
         if (isVirtualModule(resolved.id)) return resolved
 
         const importPathResolved = toPosixPath(resolved.id)
-
         const classified = classifyImport(
           importPathOriginal,
           importPathResolved,
