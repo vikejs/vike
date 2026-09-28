@@ -202,25 +202,27 @@ async function transpileFile(
 
         const importPathResolved = toPosixPath(resolved.id)
 
-        const { isExternal, isPointerImport, importPathTranspiled } = classifyImport(
+        const classified = classifyImport(
           importPathOriginal,
           importPathResolved,
           isPointerImportAttribute,
           transformImports,
           userRootDir,
         )
-        if (!isExternal) {
+
+        if (!classified.isExternal) {
           if (debug.isActivated) debug('resolveId() [non-external]', { importPathOriginal, importer, resolved })
           return resolved
         }
 
+        const { isPointerImport, importPathTranspiled } = classified
         let id = importPathTranspiled
         // Keep the mark, so that the ID is different than the ID of the same file loaded and executed at config-time, see transform() below.
         // - The mark is removed by transformPointerImports()
         if (isPointerImportAttribute) id += pointerImportAttributeSuffix
 
         if (debug.isActivated)
-          debug('resolveId() [external]', { importPathOriginal, importer, resolved, id, isPointerImport, isExternal })
+          debug('resolveId() [external]', { importPathOriginal, importer, resolved, id, isPointerImport })
         pointerImports[id] = isPointerImport
         return { id, external: true }
       },
