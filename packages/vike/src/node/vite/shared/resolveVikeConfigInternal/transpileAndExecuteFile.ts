@@ -22,6 +22,7 @@ import crypto from 'node:crypto'
 import pc from '@brillout/picocolors'
 import { import_ } from '@brillout/import'
 import { assert, assertWarning } from '../../../../utils/assert.js'
+import { nodeVersionMin } from '../../../../utils/assertNodeVersion.js'
 import { assertIsNotProductionRuntime } from '../../../../utils/assertSetup.js'
 import { createDebug } from '../../../../utils/debug.js'
 import { genPromise } from '../../../../utils/genPromise.js'
@@ -42,7 +43,7 @@ import '../../assertEnvVite.js'
 assertIsNotProductionRuntime()
 installSourceMapSupport()
 const debug = createDebug('vike:pointer-imports')
-const debugResolve = createDebug('vike:esbuild-resolve')
+const debugResolve = createDebug('vike:transpile-resolve')
 const debugConfig = createDebug('vike:config')
 if (debugResolve.isActivated) debugResolve('esbuild version', version)
 
@@ -135,7 +136,7 @@ async function transpileFileAndTransformPointerImports(
 
   let isImportTransformed = false
   if (transformImports) {
-    const codeMod = transformPointerImports(code, filePathToShowToUserResolved, pointerImports)
+    const codeMod = transformPointerImports(code, pointerImports)
     if (codeMod) {
       code = codeMod
       isImportTransformed = true
@@ -249,7 +250,7 @@ async function transpileFile(
       entryPoints: [entryFilePath],
       absWorkingDir: userRootDir,
       platform: 'node',
-      target: ['node14.18', 'node16'],
+      target: `node${nodeVersionMin}`,
       plugins,
       logLevel: 'silent',
       bundle: true,

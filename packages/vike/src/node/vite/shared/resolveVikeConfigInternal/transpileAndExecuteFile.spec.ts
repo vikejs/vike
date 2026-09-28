@@ -131,65 +131,28 @@ describe('transpileAndExecuteFile()', () => {
   })
 
   it('pointer imports without effect', async () => {
+    // Pointer imports that don't import any value don't have any effect: they're removed
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
     try {
-      // Unused pointer imports
       writeFiles({
         'pages/unused/+config.js': [
           "import { Layout } from '../../components/Layout.jsx'",
           "import style from '../../components/style.css'",
           'export default {}',
         ].join('\n'),
+        'pages/sideEffect/+config.ts': [
+          "import '../../components/Layout.jsx'",
+          "import '../../components/style.css'",
+          "import {} from '../../components/style.css'",
+          'export default {}',
+        ].join('\n'),
       })
-      expect((await load('/pages/unused/+config.js')).fileExports.default).toEqual({})
+      for (const filePath of ['/pages/unused/+config.js', '/pages/sideEffect/+config.ts']) {
+        expect((await load(filePath)).fileExports.default).toEqual({})
+      }
       expect(warn).not.toHaveBeenCalled()
-
-      writeFiles({
-        'pages/sideEffectJsx/+config.js': ["import '../../components/Layout.jsx'", 'export default {}'].join('\n'),
-      })
-      expect((await load('/pages/sideEffectJsx/+config.js')).fileExports.default).toEqual({})
-      expect(warn).toHaveBeenCalledOnce()
-      expect(normalize(String(warn.mock.calls[0]![0]))).toMatchInlineSnapshot(`
-        "[vike][Warning] The following import in /pages/sideEffectJsx/+config.js has no effect:
-          import "<userRootDir>/components/Layout.jsx";
-        See https://vike.dev/config#pointer-imports"
-      `)
     } finally {
       warn.mockRestore()
-    }
-
-    writeFiles({
-      'pages/sideEffectCss/+config.ts': ["import '../../components/style.css'", 'export default {}'].join('\n'),
-    })
-    const err = await getErr(load('/pages/sideEffectCss/+config.ts'))
-    expect(normalize(err.message)).toMatchInlineSnapshot(`
-      "[vike][Wrong Usage] The following import in /pages/sideEffectCss/+config.ts has no effect:
-        import "<userRootDir>/components/style.css";
-      See https://vike.dev/config#pointer-imports"
-    `)
-
-    writeFiles({
-      'pages/sideEffectCssBlockComment/+config.ts': [
-        "import /* some comment */ '../../components/style.css'",
-        'export default {}',
-      ].join('\n'),
-      'pages/sideEffectCssLineComment/+config.ts': [
-        'import // some comment',
-        "  '../../components/style.css'",
-        'export default {}',
-      ].join('\n'),
-      'pages/sideEffectCssEmptyImportClause/+config.js': [
-        "import {} from '../../components/style.css'",
-        'export default {}',
-      ].join('\n'),
-    })
-    for (const filePath of [
-      '/pages/sideEffectCssBlockComment/+config.ts',
-      '/pages/sideEffectCssLineComment/+config.ts',
-      '/pages/sideEffectCssEmptyImportClause/+config.js',
-    ]) {
-      const err = await getErr(load(filePath))
-      expect(stripAnsi(err.message)).toContain(`The following import in ${filePath} has no effect`)
     }
   })
 
@@ -352,10 +315,6 @@ async function getErr(promise: Promise<unknown>): Promise<Error> {
     return err as Error
   }
   throw new Error('Expected promise to reject')
-}
-
-function normalize(str: string) {
-  return stripAnsi(str).replaceAll(userRootDir, '<userRootDir>')
 }
 
 function writeFiles(files: Record<string, string>) {
