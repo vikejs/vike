@@ -4,6 +4,7 @@ export { Contributors }
 import { getMaintainerAvatar, maintainersList } from './maintainersList'
 import React from 'react'
 import './Maintainers.css'
+import '../../components/dark-mode.css'
 
 function Maintainers() {
   return (
@@ -40,7 +41,7 @@ function Maintainer({ maintainer }: { maintainer: (typeof maintainersList)[numbe
         borderRadius: 7,
         borderWidth: 1,
         borderStyle: 'solid',
-        borderColor: '#e0e0e0',
+        borderColor: 'var(--team-card-border, #e0e0e0)',
         overflow: 'hidden',
         width: 500,
         margin: `${marginHeight}px 0`,
@@ -64,7 +65,7 @@ function Maintainer({ maintainer }: { maintainer: (typeof maintainersList)[numbe
       <div>
         <b>{maintainer.firstName}</b> ·{' '}
         <a href={githubUrl}>
-          <i style={{ fontSize: '.9em', color: '#505050' }}>{maintainer.username}</i>
+          <i style={{ fontSize: '.9em', color: 'var(--team-handle, #505050)' }}>{maintainer.username}</i>
         </a>
         <ul style={{ fontSize: '.8em', paddingLeft: 15, marginTop: 5, marginBottom: 0 }}>
           {maintainer.roles.map((role, i) => (

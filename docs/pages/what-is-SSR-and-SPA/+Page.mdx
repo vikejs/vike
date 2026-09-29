@@ -1,4 +1,5 @@
 import { Link } from '@brillout/docpress'
+import '../../components/dark-mode.css'
 
 > If you're already familiar with SSR and SPA and you only want to decide which one to choose, see <Link href="/SSR-vs-SPA" /> instead.
 
@@ -150,9 +151,9 @@ SSR provides faster initial page load, especially on mobile devices where JavaSc
 | Time | SPA | SSR |
 |------|-----|-----|
 | **0s** | User visits page | User visits page |
-| **1s** | HTML loaded (empty content) | HTML loaded (with content)<br/><span style={{color: 'green'}}>✅ *User sees content*</span> |
+| **1s** | HTML loaded (empty content) | HTML loaded (with content)<br/><span style={{color: 'var(--content-green, green)'}}>✅ *User sees content*</span> |
 | **3s** | JavaScript downloaded | JavaScript downloaded |
-| **5s** | JavaScript executed (content is rendered)<br/><span style={{color: 'green'}}>✅ *User sees content*</span> | JavaScript executed (content is hydrated) |
+| **5s** | JavaScript executed (content is rendered)<br/><span style={{color: 'var(--content-green, green)'}}>✅ *User sees content*</span> | JavaScript executed (content is hydrated) |
 
 > See also: <Link href="/SSR-vs-SPA" />
 

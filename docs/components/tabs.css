@@ -3,7 +3,7 @@
 }
 
 .react-tabs__tab-list {
-  border-bottom: 1px solid #eaeaea;
+  border-bottom: 1px solid var(--tabs-line, #eaeaea);
   margin: 0 0 10px;
   padding: 0;
 }
@@ -31,7 +31,7 @@
 }
 
 .react-tabs__tab--selected {
-  border-bottom: 2px solid #aaa;
+  border-bottom: 2px solid var(--tabs-selected, #aaa);
   color: var(--color-text);
 }
 
@@ -50,4 +50,10 @@
 
 .react-tabs__tab-panel--selected {
   display: block;
+}
+
+/* DocPress `darkMode` */
+:root.dark {
+  --tabs-line: var(--dp-color-border);
+  --tabs-selected: var(--dp-color-text);
 }

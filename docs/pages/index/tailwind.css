@@ -3,6 +3,9 @@
 @import 'tailwindcss/theme.css' layer(theme);
 @import 'tailwindcss/utilities.css' layer(utilities);
 
+/* DocPress `darkMode` sets `.dark` on <html> */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* custom */
 @theme {
   --font-sans: 'Inter', sans-serif;
@@ -23,6 +26,7 @@
      DocPress (>=0.16.46) reads `var(--color-bg, #fdfdfd)` for its background, so
      a generic --color-bg here leaked into the docs and washed out a white line. */
   --color-canvas: oklch(0.9702 0 0);
+  --color-connector: #d8d8d8;
   --color-white: #fdfdfd;
 
   /* daisyUI specific */
@@ -161,11 +165,15 @@
   }
 
   #tailwind-portal code {
-    font-size: 1em !important;
+    /* 13px: its size when DocPress used the bare monospace font */
+    font-size: 0.8125em !important;
   }
 
   #tailwind-portal pre > code {
     @apply !text-[0.813rem];
+  }
+  /* The whole block, incl. its header */
+  #tailwind-portal pre {
     background: #eaeaea !important;
   }
 
@@ -194,3 +202,56 @@ thus maybe not picked up by tailwinds parser */
 /* @source inline("bg-base-{100..300..100}");
 @source inline("bg-base-100 bg-base-200 bg-base-300");
 @source inline("text-tiny"); */
+
+/* DocPress `darkMode`: the landing page follows the docs' appearance.
+   Same roles as the light theme above, with the lightness order inverted. */
+:root.dark #tailwind-portal {
+  --color-black: #f3f5f8;
+  --color-content: #d7dce5;
+  --color-grey: #8b95a5;
+  --color-grey-100: #5b6473;
+  --color-grey-100-hex: #5b6473;
+  --color-grey-200: #2b313c;
+  --color-grey-200-hex: #2b313c;
+  --color-grey-300: #1d212b;
+  --color-grey-300-hex: #1d212b;
+  --color-grey-400: #181b23;
+  /* The DocPress top bar's color: no seam */
+  --color-canvas: var(--dp-color-bg);
+  /* Raised surfaces (glass panels, cards) are lighter, as in light mode */
+  --color-white: #161922;
+  --color-connector: #454d5c;
+  --usp-border-color: var(--dp-color-border);
+
+  /* Tailwind's default palette, as used by the landing page */
+  --color-slate-200: #2b313c;
+  --color-slate-300: #3a414e;
+  --color-slate-400: #6b7483;
+  --color-slate-500: #8b95a5;
+  --color-slate-600: #aab3c0;
+  --color-slate-900: #f3f5f8;
+  --color-emerald-50: #0f2a21;
+  --color-blue-50: #151c33;
+}
+@layer base {
+  :root.dark #tailwind-portal {
+    a {
+      color: var(--dp-color-primary);
+    }
+    pre {
+      background: var(--dp-color-code-bg) !important;
+    }
+  }
+}
+/* Black-on-transparent artwork */
+:root.dark #tailwind-portal .dark-invert {
+  filter: invert(1) hue-rotate(180deg);
+}
+:root.dark #tailwind-portal .brand-logo {
+  filter: invert(1) grayscale(1) opacity(0.45);
+}
+@media (hover: hover) and (pointer: fine) {
+  :root.dark #tailwind-portal .colorize-on-hover:hover .brand-logo {
+    filter: invert(1) hue-rotate(180deg) !important;
+  }
+}
