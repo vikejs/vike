@@ -9,52 +9,41 @@ import {
   serializeConfigValues,
 } from '../../../../shared-server-client/page-configs/serialize/serializeConfigValues.js'
 import { VIRTUAL_FILE_ID_constantsGlobalThis } from '../pluginReplaceConstantsGlobalThis.js'
+import type { RuntimeEnvRuntime } from './getConfigValueSourcesRelevant.js'
 import '../../assertEnvVite.js'
 
 async function generateVirtualFileGlobalEntry(
-  isForClientSide: boolean,
-  isDev: boolean,
+  runtimeEnv: RuntimeEnvRuntime & { isDev: boolean },
   id: string,
-  isClientRouting: boolean,
 ): Promise<string> {
   const vikeConfig = await getVikeConfigInternal(true)
   const { _pageConfigs: pageConfigs, _pageConfigGlobal: pageConfigGlobal } = vikeConfig
-  return getCode(pageConfigs, pageConfigGlobal, isForClientSide, isDev, id, isClientRouting)
+  return getCode(pageConfigs, pageConfigGlobal, runtimeEnv, id)
 }
 
 function getCode(
   pageConfigs: PageConfigBuildTime[],
   pageConfigGlobal: PageConfigGlobalBuildTime,
-  isForClientSide: boolean,
-  isDev: boolean,
+  runtimeEnv: RuntimeEnvRuntime & { isDev: boolean },
   id: string,
-  isClientRouting: boolean,
 ): string {
   const lines: string[] = []
   const importStatements: string[] = []
   const filesEnv: FilesEnv = new Map()
+
+  const { environmentName, isDev } = runtimeEnv
+  const isForClientSide = environmentName === 'client'
 
   if (!isForClientSide) {
     importStatements.push(`import '${VIRTUAL_FILE_ID_constantsGlobalThis}';`)
   }
 
   lines.push('export const pageConfigsSerialized = [')
-  lines.push(
-    getCodePageConfigsSerialized(pageConfigs, isForClientSide, isClientRouting, isDev, importStatements, filesEnv),
-  )
+  lines.push(getCodePageConfigsSerialized(pageConfigs, runtimeEnv, importStatements, filesEnv))
   lines.push('];')
 
   lines.push('export const pageConfigGlobalSerialized = {')
-  lines.push(
-    getCodePageConfigGlobalSerialized(
-      pageConfigGlobal,
-      isForClientSide,
-      isClientRouting,
-      isDev,
-      importStatements,
-      filesEnv,
-    ),
-  )
+  lines.push(getCodePageConfigGlobalSerialized(pageConfigGlobal, runtimeEnv, importStatements, filesEnv))
   lines.push('};')
 
   if (!isForClientSide && isDev) {
@@ -68,15 +57,13 @@ function getCode(
     code = `import '${VIRTUAL_FILE_ID_constantsGlobalThis}';\n` + code
   }
 
-  debug(id, isForClientSide ? 'CLIENT-SIDE' : 'SERVER-SIDE', code)
+  debug(id, `${environmentName.toUpperCase()}-SIDE`, code)
   return code
 }
 
 function getCodePageConfigsSerialized(
   pageConfigs: PageConfigBuildTime[],
-  isForClientSide: boolean,
-  isClientRouting: boolean,
-  isDev: boolean,
+  runtimeEnv: RuntimeEnvRuntime,
   importStatements: string[],
   filesEnv: FilesEnv,
 ): string {
@@ -88,21 +75,14 @@ function getCodePageConfigsSerialized(
     lines.push(`    pageId: ${JSON.stringify(pageId)},`)
     lines.push(`    isErrorPage: ${JSON.stringify(isErrorPage)},`)
     lines.push(`    routeFilesystem: ${JSON.stringify(routeFilesystem)},`)
-    const virtualFileId = JSON.stringify(generateVirtualFileId({ type: 'page-entry', pageId, isForClientSide }))
+    const virtualFileId = JSON.stringify(
+      generateVirtualFileId({ type: 'page-entry', pageId, environmentName: runtimeEnv.environmentName }),
+    )
     lines.push(
       `    loadVirtualFilePageEntry: () => ({ moduleId: ${virtualFileId}, moduleExportsPromise: import(${virtualFileId}) }),`,
     )
     lines.push(`    configValuesSerialized: {`)
-    lines.push(
-      ...serializeConfigValues(
-        pageConfig,
-        importStatements,
-        filesEnv,
-        { isForClientSide, isClientRouting, isDev },
-        '    ',
-        true,
-      ),
-    )
+    lines.push(...serializeConfigValues(pageConfig, importStatements, filesEnv, runtimeEnv, '    ', true))
     lines.push(`    },`)
     lines.push(`  },`)
   })
@@ -113,25 +93,14 @@ function getCodePageConfigsSerialized(
 
 function getCodePageConfigGlobalSerialized(
   pageConfigGlobal: PageConfigGlobalBuildTime,
-  isForClientSide: boolean,
-  isClientRouting: boolean,
-  isDev: boolean,
+  runtimeEnv: RuntimeEnvRuntime,
   importStatements: string[],
   filesEnv: FilesEnv,
 ) {
   const lines: string[] = []
 
   lines.push(`  configValuesSerialized: {`)
-  lines.push(
-    ...serializeConfigValues(
-      pageConfigGlobal,
-      importStatements,
-      filesEnv,
-      { isForClientSide, isClientRouting, isDev },
-      '    ',
-      null,
-    ),
-  )
+  lines.push(...serializeConfigValues(pageConfigGlobal, importStatements, filesEnv, runtimeEnv, '    ', null))
   lines.push(`  },`)
 
   const code = lines.join('\n')

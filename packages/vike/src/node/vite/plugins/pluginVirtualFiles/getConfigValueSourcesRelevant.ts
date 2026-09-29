@@ -3,6 +3,7 @@ export { getConfigValueSourceRelevantAnyEnv }
 export { isRuntimeEnvMatch }
 export { isConfigSourceValueNull }
 export type { RuntimeEnv }
+export type { RuntimeEnvRuntime }
 
 import type {
   ConfigEnv,
@@ -14,7 +15,8 @@ import { assert } from '../../../../utils/assert.js'
 import { getFileSuffixes } from '../../../../shared-server-node/getFileSuffixes.js'
 import '../../assertEnvVite.js'
 
-type RuntimeEnv = { isForClientSide: boolean; isClientRouting: boolean; isDev?: boolean } | { isForConfig: true }
+type RuntimeEnv = RuntimeEnvRuntime | { isForConfig: true }
+type RuntimeEnvRuntime = { environmentName: string; isClientRouting?: boolean; isDev?: boolean }
 
 type PageConfigPartial = Pick<
   PageConfigBuildTime | PageConfigGlobalBuildTime,
@@ -78,12 +80,9 @@ function isRuntimeEnvMatch(configEnv: ConfigEnv, runtimeEnv: RuntimeEnv): boolea
   if ('isForConfig' in runtimeEnv) return !!configEnv.config
 
   // Runtime
-  if (!runtimeEnv.isForClientSide) {
-    if (!configEnv.server) return false
-  } else {
-    if (!configEnv.client) return false
-    if (configEnv.client === 'if-client-routing' && !runtimeEnv.isClientRouting) return false
-  }
+  const environmentValue = configEnv[runtimeEnv.environmentName]
+  if (!environmentValue) return false
+  if (environmentValue === 'if-client-routing' && !runtimeEnv.isClientRouting) return false
 
   // Production/development
   if (configEnv.production !== undefined) {

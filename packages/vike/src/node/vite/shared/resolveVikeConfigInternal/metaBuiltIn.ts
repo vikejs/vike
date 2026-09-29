@@ -229,7 +229,7 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
           getConfigValueSourcesRelevant(
             hookName,
             {
-              isForClientSide: false,
+              environmentName: 'server',
               // TO-DO/eventually/remove-server-router: let's eventually remove support for Server Routing
               isClientRouting: true,
             },

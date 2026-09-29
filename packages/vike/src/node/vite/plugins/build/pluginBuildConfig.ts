@@ -11,6 +11,7 @@ import { requireResolveDistFile } from '../../../../utils/requireResolve.js'
 import { unique } from '../../../../utils/unique.js'
 import { objectMap } from '../../../../utils/objectMap.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
+import { getVikeEnvironmentName, isVikeEnvironmentBuiltIn } from '../../shared/environmentName.js'
 import { findPageFiles } from '../../shared/findPageFiles.js'
 import type { ResolvedConfig, Plugin } from 'vite'
 import { generateVirtualFileId } from '../../../../shared-server-node/virtualFileId.js'
@@ -43,9 +44,14 @@ function pluginBuildConfig(): Plugin[] {
           onSetupBuild()
           assertRollupInput(config)
           // Set the inputs of each environment, instead of the root `config.build`: the root `config.build` is used by no environment upon `builder.sharedConfigBuild: true` (e.g. set by @vitejs/plugin-rsc).
+          const { _runtimeEnvironmentNames: runtimeEnvironmentNames } = await getVikeConfigInternal()
           const entriesBySide = new Map<boolean, Record<string, string>>()
           for (const [envName, envConfig] of Object.entries(config.environments)) {
             const isServerSide = isViteServerSide_configEnvironment(envName, envConfig)
+            // - Named environments (e.g. `rsc`) load their pages lazily via `vike/runtime`
+            if (!isVikeEnvironmentBuiltIn(getVikeEnvironmentName(envName, isServerSide, runtimeEnvironmentNames))) {
+              continue
+            }
             let entries = entriesBySide.get(isServerSide)
             if (!entries) {
               entries = await getEntries(config, isServerSide)
@@ -120,7 +126,7 @@ async function getEntries(config: ResolvedConfig, isServerSide: boolean): Promis
 function getPageEntries(pageConfigs: PageConfigBuildTime[]) {
   const pageEntries: Record<string, string> = {}
   pageConfigs.forEach((pageConfig) => {
-    const { entryName, entryTarget } = getEntryFromPageConfig(pageConfig, false)
+    const { entryName, entryTarget } = getEntryFromPageConfig(pageConfig, 'server')
     pageEntries[entryName] = entryTarget
   })
   return pageEntries
@@ -140,7 +146,7 @@ function analyzeClientEntries(pageConfigs: PageConfigBuildTime[], config: Resolv
     }
     {
       // Ensure Rollup generates a bundle per page: https://github.com/vikejs/vike/issues/349#issuecomment-1166247275
-      const { entryName, entryTarget, entryFilePath } = getEntryFromPageConfig(pageConfig, true)
+      const { entryName, entryTarget, entryFilePath } = getEntryFromPageConfig(pageConfig, 'client')
       clientEntries[entryName] = { entryTarget, entryFilePath }
     }
     {
@@ -212,9 +218,9 @@ function getEntryFromClientEntry(clientEntry: string, config: ResolvedConfig, ad
 
   return { entryName, entryTarget, entryFilePath: filePath }
 }
-function getEntryFromPageConfig(pageConfig: PageConfigBuildTime, isForClientSide: boolean) {
+function getEntryFromPageConfig(pageConfig: PageConfigBuildTime, environmentName: string) {
   let { pageId } = pageConfig
-  const entryTarget = generateVirtualFileId({ type: 'page-entry', pageId, isForClientSide })
+  const entryTarget = generateVirtualFileId({ type: 'page-entry', pageId, environmentName })
   let entryName = pageId
   // Avoid:
   // ```

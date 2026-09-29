@@ -90,16 +90,14 @@ type VirtualFileExportsPageEntry = {
  *
  * https://vike.dev/meta
  */
-type ConfigEnv = (
-  | {
-      /** Load value on the client-side */
-      client?: boolean
-    }
-  | {
-      /** @experimental */
-      client?: 'if-client-routing'
-    }
-) & {
+type ConfigEnv = {
+  /** Load value in a named environment, e.g. `rsc`
+   *
+   * https://vike.dev/meta#named-environments
+   */
+  [environmentName: string]: boolean | 'if-client-routing' | undefined
+  /** Load value on the client-side */
+  client?: boolean | /** @experimental */ 'if-client-routing'
   /** Load value on the server-side */
   server?: boolean
   /** Load value for config files */

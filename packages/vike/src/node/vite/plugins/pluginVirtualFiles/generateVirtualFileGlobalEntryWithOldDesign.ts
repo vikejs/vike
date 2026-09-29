@@ -39,7 +39,8 @@ async function generateVirtualFileGlobalEntryWithOldDesign(
 ) {
   const idParsed = parseVirtualFileId(id)
   assert(idParsed && idParsed.type === 'global-entry')
-  const { isForClientSide, isClientRouting } = idParsed
+  const { environmentName, isClientRouting } = idParsed
+  const isForClientSide = environmentName === 'client'
   assert(isForClientSide === !isViteServerSide_extraSafe(config, env, options))
   const code = await getCode(config, isForClientSide, isClientRouting, isDev, id)
   return code
@@ -125,7 +126,7 @@ export const pageFilesExportNamesEager = {};
 export const pageFilesList = [];
 export const neverLoaded = {};
 
-${await generateVirtualFileGlobalEntry(isForClientSide, isDev, id, isClientRouting)}
+${await generateVirtualFileGlobalEntry({ environmentName: isForClientSide ? 'client' : 'server', isClientRouting, isDev }, id)}
 
 `
 

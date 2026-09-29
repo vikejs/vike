@@ -1,4 +1,5 @@
 export { pluginCommon }
+export { assertRuntimeEnvironmentsExist }
 
 import { type InlineConfig, type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
 import { isDevCheck } from '../../../utils/isDev.js'
@@ -11,6 +12,7 @@ import { assertRollupInput } from './build/pluginBuildConfig.js'
 import pc from '@brillout/picocolors'
 import { assertResolveAlias } from './pluginCommon/assertResolveAlias.js'
 import { getVikeConfigInternal, setVikeConfigContext } from '../shared/resolveVikeConfigInternal.js'
+import { isVikeEnvironmentBuiltIn } from '../shared/environmentName.js'
 import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/resolveViteConfigUser.js'
 import { temp_disablePrerenderAutoRun } from '../../prerender/context.js'
 import { resolvePrerenderConfigGlobal, isDistServerRemoved } from '../../prerender/resolvePrerenderConfig.js'
@@ -72,9 +74,11 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
     {
       name: pluginName,
       configResolved: {
-        handler(config) {
+        async handler(config) {
           assertViteRoot(config._rootResolvedEarly!, config)
           assertSingleInstance(config)
+          const vikeConfig = await getVikeConfigInternal()
+          assertRuntimeEnvironmentsExist(vikeConfig._runtimeEnvironmentNames, config.environments)
         },
       },
     },
@@ -173,6 +177,22 @@ function workaroundCI(config: ResolvedConfig) {
     config.server.host ??= true
     config.preview.host ??= true
   }
+}
+
+function assertRuntimeEnvironmentsExist(
+  runtimeEnvironmentNames: string[],
+  environments: ResolvedConfig['environments'],
+) {
+  runtimeEnvironmentNames
+    .filter((name) => !isVikeEnvironmentBuiltIn(name))
+    .forEach((name) => {
+      assertUsage(
+        !!environments[name],
+        `The runtime environment ${pc.cyan(JSON.stringify(name))} is used by ${pc.cyan(
+          'meta.env',
+        )} but it doesn't exist in ${pc.cyan('config.environments')}`,
+      )
+    })
 }
 
 function assertSingleInstance(config: ResolvedConfig) {
