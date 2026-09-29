@@ -6,6 +6,7 @@ export type { VikeConfig }
 export { getVikeConfigInternal }
 export { getVikeConfigInternalOptional }
 export { setVikeConfigContext }
+export { setViteEnvironmentNames }
 export { isVikeConfigContextSet }
 export { reloadVikeConfig }
 export { isV1Design }
@@ -118,6 +119,7 @@ const globalObject = getGlobalObject('vite/shared/resolveVikeConfigInternal.ts',
   vikeConfigSync: null as VikeConfigInternal | null,
   vikeConfigCtx: null as VikeConfigContext | null, // Information provided by Vite's `config` and Vike's CLI. We could, if we want or need to, completely remove the dependency on Vite.
   prerenderContext: null as null | PrerenderContext,
+  viteEnvironmentNames: null as null | string[],
 })
 type VikeConfigContext = { userRootDir: string; isDev: boolean; vikeVitePluginOptions: unknown }
 type PrerenderContext = {
@@ -191,6 +193,39 @@ type VikeConfig = Pick<VikeConfigInternal, 'config' | 'pages' | 'prerenderContex
 function setVikeConfigContext(vikeConfigCtx_: VikeConfigContext) {
   // If the user changes Vite's `config.root` => Vite completely reloads itself => setVikeConfigContext() is called again
   globalObject.vikeConfigCtx = vikeConfigCtx_
+}
+// Vike's config is resolved before Vite's environments are known (Vike's config can modify Vite's config)
+async function setViteEnvironmentNames(viteEnvironmentNames: null | string[]) {
+  globalObject.viteEnvironmentNames = viteEnvironmentNames
+  if (!viteEnvironmentNames || !globalObject.vikeConfigPromise) return
+  const vikeConfig = await globalObject.vikeConfigPromise
+  if (getRuntimeEnvironmentsMissing(vikeConfig._runtimeEnvironmentNames).length === 0) return
+  // Resolve again to report the error like any other config error
+  assert(globalObject.vikeConfigCtx)
+  const { userRootDir, isDev, vikeVitePluginOptions } = globalObject.vikeConfigCtx
+  resolveVikeConfigInternal_withErrorHandling(userRootDir, isDev, vikeVitePluginOptions)
+  await globalObject.vikeConfigPromise
+}
+function getRuntimeEnvironmentsMissing(runtimeEnvironmentNames: string[]): string[] {
+  const { viteEnvironmentNames } = globalObject
+  if (!viteEnvironmentNames) return []
+  return runtimeEnvironmentNames.filter(
+    (name) => !isVikeEnvironmentBuiltIn(name) && !viteEnvironmentNames.includes(name),
+  )
+}
+function assertRuntimeEnvironmentsExist(runtimeEnvironmentNames: string[]) {
+  const [name] = getRuntimeEnvironmentsMissing(runtimeEnvironmentNames)
+  if (name === undefined) return
+  assert(globalObject.viteEnvironmentNames)
+  assertUsage(
+    false,
+    `The environment ${pc.cyan(JSON.stringify(name))} is used by ${pc.cyan('meta.env')} but it doesn't exist in Vite's ${pc.cyan(
+      'config.environments',
+    )} (${joinEnglish(
+      globalObject.viteEnvironmentNames.map((n) => pc.cyan(n)),
+      'and',
+    )})`,
+  )
 }
 function isVikeConfigContextSet() {
   return !!globalObject.vikeConfigCtx
@@ -335,6 +370,7 @@ async function resolveVikeConfigInternal(
     plusFilesByLocationId,
     userRootDir,
   )
+  assertRuntimeEnvironmentsExist(runtimeEnvironmentNames)
   if (!globalObject.isV1Design_) globalObject.isV1Design_ = pageConfigs.length > 0
 
   // Backwards compatibility for vike(options) in vite.config.js
@@ -569,7 +605,11 @@ function getConfigEnvsOfDefinitions(configDefinitionsResolved: ConfigDefinitions
   ].flatMap((configDefinitions) => Object.values(configDefinitions).map(({ env }) => env))
 }
 function getRuntimeEnvironmentNames(configEnvs: ConfigEnv[]): string[] {
-  const names = configEnvs.flatMap((configEnv) => Object.keys(configEnv))
+  const names = configEnvs.flatMap((configEnv) =>
+    Object.entries(configEnv)
+      .filter(([, value]) => value)
+      .map(([name]) => name),
+  )
   return unique(['server', 'client', ...names.filter((name) => !configEnvKeysNonRuntime.includes(name))])
 }
 
@@ -1574,10 +1614,12 @@ function applyEffectMetaEnv(
 
 type PageConfigBuildTimeBeforeComputed = Omit<PageConfigBuildTime, 'configValuesComputed'>
 function getComputed(pageConfig: PageConfigBuildTimeBeforeComputed) {
+  assert(globalObject.vikeConfigCtx)
+  const { isDev } = globalObject.vikeConfigCtx
   const configValuesComputed: ConfigValuesComputed = {}
   objectEntries(pageConfig.configDefinitions).forEach(([configName, configDef]) => {
     if (!configDef._computed) return
-    const value = configDef._computed(pageConfig)
+    const value = configDef._computed(pageConfig, isDev)
     if (value === undefined) return
     configValuesComputed[configName] = {
       value,

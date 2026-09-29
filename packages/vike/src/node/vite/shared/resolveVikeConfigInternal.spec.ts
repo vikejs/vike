@@ -1,4 +1,4 @@
-import { afterAll, describe, expect, it } from 'vitest'
+import { afterAll, beforeEach, describe, expect, it } from 'vitest'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
@@ -8,11 +8,21 @@ import {
   getVikeConfigInternal,
   resolveConfigEnv,
   setVikeConfigContext,
+  setViteEnvironmentNames,
 } from './resolveVikeConfigInternal.js'
 import type { FilePath } from '../../../types/FilePath.js'
 import { toPosixPath } from '../../../utils/path.js'
 
 const errMsgIntro = 'Config meta defined at test sets meta.Page.env to' as const
+
+// Each test resolves its own app
+beforeEach(() => {
+  Object.assign(globalThis._vike.globals['vite/shared/resolveVikeConfigInternal.ts']!, {
+    vikeConfigPromise: null,
+    vikeConfigHasBuildError: null,
+    restartViteBecauseOfError: false,
+  })
+})
 
 describe('getConfigEnvValue()', () => {
   it('accepts an open environment map', () => {
@@ -49,11 +59,18 @@ describe('getRuntimeEnvironmentNames()', () => {
   })
 
   it('collects named environments', () => {
-    expect(getRuntimeEnvironmentNames([{ server: true }, { rsc: true, config: true }, { worker: false }])).toEqual([
+    expect(getRuntimeEnvironmentNames([{ server: true }, { rsc: true, config: true }, { worker: true }])).toEqual([
       'server',
       'client',
       'rsc',
       'worker',
+    ])
+  })
+
+  it('ignores environments set to false or undefined', () => {
+    expect(getRuntimeEnvironmentNames([{ server: true, rsc: false }, { worker: undefined }])).toEqual([
+      'server',
+      'client',
     ])
   })
 
@@ -130,6 +147,70 @@ describe('environment introduced only by meta.effect()', () => {
     const pageConfig = vikeConfig._pageConfigs.find((p) => p.pageId === '/pages/index')!
     expect(pageConfig.configValueSources.Page![0]!.configEnv).toEqual({ server: false, client: false, rsc: true })
     expect(pageConfig.configValueSources.Layout![0]!.configEnv).toEqual({ server: false, client: false, rsc: true })
+  })
+})
+
+describe("meta.env of a Vite environment that doesn't exist", () => {
+  const userRootDir = toPosixPath(fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'vike-named-environments-'))))
+  afterAll(() => {
+    fs.rmSync(userRootDir, { recursive: true, force: true })
+    setViteEnvironmentNames(null)
+  })
+
+  it("doesn't require Vite environments for server and client", async () => {
+    writeFiles(userRootDir, {
+      'package.json': JSON.stringify({ type: 'module' }),
+      'pages/+config.js': "export default { meta: { myCfg: { env: { server: true, client: true } } }, myCfg: 'x' }",
+      'pages/index/+Page.js': 'export default "Page"',
+    })
+    await setViteEnvironmentNames([])
+    setVikeConfigContext({ userRootDir, isDev: false, vikeVitePluginOptions: {} })
+    await expect(getVikeConfigInternal()).resolves.toBeTruthy()
+  })
+
+  it('accepts an existing Vite environment', async () => {
+    writeFiles(userRootDir, {
+      'package.json': JSON.stringify({ type: 'module' }),
+      'pages/+config.js': "export default { meta: { myCfg: { env: { rsc: true } } }, myCfg: 'x' }",
+      'pages/index/+Page.js': 'export default "Page"',
+    })
+    await setViteEnvironmentNames(['client', 'ssr', 'rsc'])
+    setVikeConfigContext({ userRootDir, isDev: false, vikeVitePluginOptions: {} })
+    await expect(getVikeConfigInternal()).resolves.toBeTruthy()
+  })
+
+  it('is a config error', async () => {
+    writeFiles(userRootDir, {
+      'package.json': JSON.stringify({ type: 'module' }),
+      'pages/+config.js': "export default { meta: { myCfg: { env: { sever: true } } }, myCfg: 'x' }",
+      'pages/index/+Page.js': 'export default "Page"',
+    })
+    await setViteEnvironmentNames(['client', 'ssr'])
+    setVikeConfigContext({ userRootDir, isDev: false, vikeVitePluginOptions: {} })
+    await expect(getVikeConfigInternal()).rejects.toThrow('"sever"')
+  })
+})
+
+describe('meta.env.production of a built-in hook', () => {
+  const userRootDir = toPosixPath(fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'vike-named-environments-'))))
+  afterAll(() => {
+    fs.rmSync(userRootDir, { recursive: true, force: true })
+  })
+
+  it.each([
+    [true, false],
+    [false, true],
+  ])('isDev: %s => hasServerOnlyHook: %s', async (isDev, hasServerOnlyHook) => {
+    writeFiles(userRootDir, {
+      'package.json': JSON.stringify({ type: 'module' }),
+      'pages/+config.js': 'export default { meta: { data: { env: { server: true, production: true } } } }',
+      'pages/index/+Page.js': 'export default "Page"',
+      'pages/index/+data.js': 'export default () => {}',
+    })
+    setVikeConfigContext({ userRootDir, isDev, vikeVitePluginOptions: {} })
+    const vikeConfig = await getVikeConfigInternal()
+    const pageConfig = vikeConfig._pageConfigs.find((p) => p.pageId === '/pages/index')!
+    expect(pageConfig.configValuesComputed?.hasServerOnlyHook?.value).toBe(hasServerOnlyHook)
   })
 })
 
