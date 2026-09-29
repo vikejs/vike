@@ -1,4 +1,5 @@
 export { getPageContextPublicShared }
+export { getPageContextPublicProxy }
 export { assertPropertyGetters }
 export type { PageContextPublicMinimum }
 
@@ -13,9 +14,7 @@ import type { PageContextCreated } from './createPageContextShared.js'
 type PageContextPublicMinimum = PageContextCreated
 
 function getPageContextPublicShared<PageContext extends PageContextPublicMinimum>(pageContext: PageContext) {
-  assert(!(pageContext as Record<string, unknown>)._isProxyObject)
-  assert(!(pageContext as Record<string, unknown>).globalContext) // pageContext.globalContext should only be available to users — Vike itself should use pageContext._globalContext instead
-  assert(pageContext._isOriginalObject) // ensure we preserve the original object reference
+  const pageContextPublic = getPageContextPublicProxy(pageContext)
 
   addIs404ToPageProps(pageContext)
 
@@ -41,6 +40,15 @@ function getPageContextPublicShared<PageContext extends PageContextPublicMinimum
   ) {
     sortPageContext(pageContext)
   }
+
+  return pageContextPublic
+}
+
+// Same as getPageContextPublicShared() but without modifying `pageContext`
+function getPageContextPublicProxy<PageContext extends PageContextPublicMinimum>(pageContext: PageContext) {
+  assert(!(pageContext as Record<string, unknown>)._isProxyObject)
+  assert(!(pageContext as Record<string, unknown>).globalContext) // pageContext.globalContext should only be available to users — Vike itself should use pageContext._globalContext instead
+  assert(pageContext._isOriginalObject) // ensure we preserve the original object reference
 
   const globalContextPublic = getGlobalContextPublicShared(pageContext._globalContext)
   const pageContextPublic = getPublicProxy(
