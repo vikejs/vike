@@ -199,8 +199,12 @@ async function setViteEnvironmentNames(viteEnvironmentNames: null | string[]) {
   globalObject.viteEnvironmentNames = viteEnvironmentNames
   if (!viteEnvironmentNames || !globalObject.vikeConfigPromise) return
   const vikeConfig = await globalObject.vikeConfigPromise
-  if (getRuntimeEnvironmentsMissing(vikeConfig._runtimeEnvironmentNames).length === 0) return
-  // Resolve again to report the error like any other config error
+  // Resolve again: to report a missing environment like any other config error, or to recover from one (e.g. the user added the environment to Vite's config)
+  if (
+    !globalObject.vikeConfigHasBuildError &&
+    getRuntimeEnvironmentsMissing(vikeConfig._runtimeEnvironmentNames).length === 0
+  )
+    return
   assert(globalObject.vikeConfigCtx)
   const { userRootDir, isDev, vikeVitePluginOptions } = globalObject.vikeConfigCtx
   resolveVikeConfigInternal_withErrorHandling(userRootDir, isDev, vikeVitePluginOptions)
