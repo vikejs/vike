@@ -26,6 +26,10 @@ describe('Vite CLI options', () => {
     runViteCli('build --emptyOutDir some-root')
     expect(getViteCliArgs()).toEqual({ root: 'some-root', configFile: undefined })
   })
+  it('repeated option', () => {
+    runViteCli('build -c vite.config.a.ts -c vite.config.b.ts')
+    expect(getViteCliArgs()).toEqual({ root: undefined, configFile: 'vite.config.b.ts' })
+  })
   it('optimize', () => {
     runViteCli('optimize --force')
     expect(getViteCliCommand()).toBe('optimize')
