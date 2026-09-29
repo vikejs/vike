@@ -18,6 +18,9 @@ function workerEnvironment() {
         environments: {
           worker: {
             consumer: 'server',
+            // Bundle all dependencies and pre-bundle vike-runtime-dep, like @cloudflare/vite-plugin
+            resolve: { noExternal: true },
+            optimizeDeps: { include: ['vike-runtime-dep'] },
             build: { outDir: 'dist/worker', rollupOptions: { input: { index: workerEntry } } },
           },
         },

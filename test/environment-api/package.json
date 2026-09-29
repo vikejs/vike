@@ -11,7 +11,13 @@
     "react-dom": "^19.2.6",
     "vike": "0.4.267",
     "vike-react": "^0.6.29",
+    "vike-runtime-dep": "file:./vike-runtime-dep",
     "vite": "^6.3.2"
   },
-  "type": "module"
+  "type": "module",
+  "dependenciesMeta": {
+    "vike-runtime-dep": {
+      "injected": true
+    }
+  }
 }

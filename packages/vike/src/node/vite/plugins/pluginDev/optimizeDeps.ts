@@ -125,6 +125,8 @@ async function resolveOptimizeDeps(config: ResolvedConfig) {
   // Set optimizeDeps (server-side)
   for (const envName in config.environments) {
     const env = config.environments[envName]!
+    // `vike/runtime` is resolved per environment (the pre-bundled copy throws)
+    env.optimizeDeps.exclude = add(env.optimizeDeps.exclude, ['vike/runtime'])
     if (env.consumer === 'server' && env.optimizeDeps.noDiscovery === false) {
       env.optimizeDeps.include = add(env.optimizeDeps.include, includeServer)
       env.optimizeDeps.entries = add(env.optimizeDeps.entries, entriesServer)

@@ -11,6 +11,7 @@ function testVikeRuntime() {
     expect(html).toContain(
       escape({
         environmentName: 'worker',
+        environmentNameOfDependency: 'worker',
         viteEnvironmentName: 'worker',
         configNames: ['workerGreeting', 'workerSuffixed'],
         workerGreeting: 'Hello from the worker environment',
