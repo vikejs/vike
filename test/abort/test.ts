@@ -24,6 +24,8 @@ function testRun(
       expect(html).toContain('<h1>Welcome</h1>')
       // The server-side CSS is deduplicated (it relies on Vike's `.[hash].` file naming)
       if (!isDev) expect(html.split('<link rel="stylesheet"').length).toBe(2)
+      // Client file names are Vike's (`.[hash].js`), also with a root `build.rollupOptions.output`
+      if (!isDev) expect(html).not.toContain('.mjs')
     }
     await t('/')
     await t('/render-homepage')

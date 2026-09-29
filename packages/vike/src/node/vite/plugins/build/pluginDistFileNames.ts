@@ -29,10 +29,9 @@ function pluginDistFileNames(): Plugin[] {
       configResolved: {
         handler(config) {
           // Set the output of each environment, instead of the root `config.build` (see pluginBuildConfig.ts)
-          const envs = Object.entries(config.environments)
-          unshareRollupOutputs(envs.map(([, envConfig]) => envConfig.build))
-          envs.forEach(([envName, envConfig]) => {
+          Object.entries(config.environments).forEach(([envName, envConfig]) => {
             const { build } = envConfig
+            copyRollupOutputs(build)
             const isServerSide = isViteServerSide_configEnvironment(envName, envConfig)
             setFileNames(config, build, isServerSide)
             disableCSSBundling(config, build)
@@ -74,19 +73,11 @@ function setFileNames(config: ResolvedConfig, build: ResolvedBuildEnvironmentOpt
   })
 }
 
-// The same output object can be shared between environments (e.g. when set by the user at the root `build.rollupOptions.output`), whereas the file names depend on the environment
-function unshareRollupOutputs(builds: ResolvedBuildEnvironmentOptions[]) {
-  const outputsSeen = new Set<unknown>()
-  const unshare = <T extends object>(output: T): T => {
-    if (outputsSeen.has(output)) output = { ...output }
-    outputsSeen.add(output)
-    return output
-  }
-  builds.forEach((build) => {
-    const { output } = build.rollupOptions
-    if (!output) return
-    build.rollupOptions.output = isArray(output) ? output.map(unshare) : unshare(output)
-  })
+// The user's output objects can be shared between environments and between config resolutions, whereas the file names depend on the environment
+function copyRollupOutputs(build: ResolvedBuildEnvironmentOptions) {
+  const { output } = build.rollupOptions
+  if (!output) return
+  build.rollupOptions.output = isArray(output) ? output.map((o) => ({ ...o })) : { ...output }
 }
 
 function getIdHash(id: string) {
