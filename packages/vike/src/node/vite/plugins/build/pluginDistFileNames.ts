@@ -77,13 +77,15 @@ function setFileNames(config: ResolvedConfig, build: ResolvedBuildEnvironmentOpt
 // The same output object can be shared between environments (e.g. when set by the user at the root `build.rollupOptions.output`), whereas the file names depend on the environment
 function unshareRollupOutputs(builds: ResolvedBuildEnvironmentOptions[]) {
   const outputsSeen = new Set<unknown>()
-  builds.forEach((build) => {
-    let { output } = build.rollupOptions
-    if (!output) return
-    if (outputsSeen.has(output)) {
-      output = build.rollupOptions.output = isArray(output) ? output.map((o) => ({ ...o })) : { ...output }
-    }
+  const unshare = <T extends object>(output: T): T => {
+    if (outputsSeen.has(output)) output = { ...output }
     outputsSeen.add(output)
+    return output
+  }
+  builds.forEach((build) => {
+    const { output } = build.rollupOptions
+    if (!output) return
+    build.rollupOptions.output = isArray(output) ? output.map(unshare) : unshare(output)
   })
 }
 
