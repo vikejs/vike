@@ -4,7 +4,6 @@ export { handleAssetsManifest_isFixEnabled }
 export { handleAssetsManifest_assertUsageCssCodeSplit }
 export { handleAssetsManifest_assertUsageCssTarget }
 export { handleAssetsManifest_alignCssTarget }
-export { getPageId }
 
 import fs from 'node:fs/promises'
 import fs_sync from 'node:fs'
