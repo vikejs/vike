@@ -21,7 +21,7 @@ function workerEnvironment() {
             // Bundle all dependencies and pre-bundle vike-runtime-dep, like @cloudflare/vite-plugin
             resolve: { noExternal: true },
             optimizeDeps: { include: ['vike-runtime-dep'] },
-            build: { outDir: 'dist/worker', rollupOptions: { input: { index: workerEntry } } },
+            build: { outDir: 'dist/worker', rollupOptions: { input: workerEntry } },
           },
         },
         builder: {
@@ -49,7 +49,7 @@ function workerEnvironment() {
         globalThis.__loadWorker = () => server.environments.worker.runner.import(workerEntry)
         return 'export const loadWorker = () => globalThis.__loadWorker()'
       }
-      const workerEntryBuilt = pathToFileURL(path.join(root, 'dist/worker/index.mjs')).href
+      const workerEntryBuilt = pathToFileURL(path.join(root, 'dist/worker/entry.mjs')).href
       return `const url = ${JSON.stringify(workerEntryBuilt)}; export const loadWorker = () => import(/* @vite-ignore */ url)`
     },
   }

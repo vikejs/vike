@@ -32,8 +32,27 @@ import { resolveIncludeAssetsImportedByServer } from '../../../../server/runtime
 import { serverEntryVirtualId } from '@brillout/vite-plugin-server-entry/plugin'
 import '../../assertEnvVite.js'
 
+type RollupInput = ResolvedConfig['build']['rollupOptions']['input']
+
 function pluginBuildConfig(): Plugin[] {
+  let inputsOriginal: Map<string, RollupInput>
   return [
+    {
+      name: 'vike:build:pluginBuildConfig:pre',
+      apply: 'build',
+      configResolved: {
+        order: 'pre',
+        handler(config) {
+          // Before @brillout/vite-plugin-server-entry rewrites them, see removeServerEntry()
+          inputsOriginal = new Map(
+            Object.entries(config.environments).map(([envName, envConfig]) => [
+              envName,
+              envConfig.build.rollupOptions.input,
+            ]),
+          )
+        },
+      },
+    },
     {
       name: 'vike:build:pluginBuildConfig:post2',
       apply: 'build',
@@ -52,7 +71,7 @@ function pluginBuildConfig(): Plugin[] {
             const isServerSide = isViteServerSide_configEnvironment(envName, envConfig)
             // - Named environments (e.g. `rsc`) load their pages lazily via `vike/runtime`
             if (!isVikeEnvironmentBuiltIn(getVikeEnvironmentName(envName, isServerSide, runtimeEnvironmentNames))) {
-              removeServerEntry(envConfig.build.rollupOptions)
+              removeServerEntry(envConfig.build.rollupOptions, inputsOriginal.get(envName))
               continue
             }
             const entries = isServerSide ? entriesServer : entriesClient
@@ -82,13 +101,16 @@ function pluginBuildConfig(): Plugin[] {
 
 // Upon `builder.sharedConfigBuild: false` (Vite's default), @brillout/vite-plugin-server-entry adds Vike's server entry to every server-side environment
 // - Its configResolved() hook is synchronous and Vite calls all configResolved() hooks at once => it already ran, since the configResolved() hook above calls removeServerEntry() after an `await`
-function removeServerEntry(rollupOptions: ResolvedConfig['build']['rollupOptions']) {
+function removeServerEntry(rollupOptions: ResolvedConfig['build']['rollupOptions'], inputOriginal: RollupInput) {
   const input = normalizeRollupInput(rollupOptions.input)
   const inputWithoutServerEntry = Object.fromEntries(
     Object.entries(input).filter(([, id]) => id !== serverEntryVirtualId),
   )
   if (Object.keys(inputWithoutServerEntry).length === Object.keys(input).length) return
-  rollupOptions.input = inputWithoutServerEntry
+  // The library also normalized the input (e.g. a string into an object) => restore the original, unless another plugin changed it
+  const ids = (i: Record<string, string>) => Object.values(i).sort().join('\0')
+  rollupOptions.input =
+    ids(inputWithoutServerEntry) === ids(normalizeRollupInput(inputOriginal)) ? inputOriginal : inputWithoutServerEntry
 }
 
 async function getEntries(config: ResolvedConfig, isServerSide: boolean): Promise<Record<string, string>> {
