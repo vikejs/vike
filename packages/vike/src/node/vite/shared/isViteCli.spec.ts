@@ -25,6 +25,8 @@ describe('Vite CLI options', () => {
   it('boolean option before [root]', () => {
     runViteCli('build --emptyOutDir some-root')
     expect(getViteCliArgs()).toEqual({ root: 'some-root', configFile: undefined })
+    runViteCli('--experimentalBundle some-root')
+    expect(getViteCliArgs()).toEqual({ root: 'some-root', configFile: undefined })
   })
   it('repeated option', () => {
     runViteCli('build -c vite.config.a.ts -c vite.config.b.ts')

@@ -59,6 +59,7 @@ function parseViteCli(): ViteCli {
     .option('--cors', desc)
     .option('--strictPort', desc)
     .option('--force', desc)
+    .option('--experimentalBundle', desc)
     // Options that this copy doesn't declare (e.g. added by newer Vite versions) are still validated by Vite's own CLI, which throws `Unknown option` for options Vite doesn't know
     .allowUnknownOptions()
     .action(onCommand('dev'))
