@@ -164,16 +164,14 @@
     z-index: 99;
   }
 
+  /* The browser's monospace, which the sizes here are tuned to (in text of the default size, it's 13px) */
   #tailwind-portal code {
-    /* 13px: its size when DocPress used the bare monospace font */
-    font-size: 0.8125em !important;
+    font-family: monospace !important;
+    font-size: 1em !important;
   }
 
   #tailwind-portal pre > code {
     @apply !text-[0.813rem];
-  }
-  /* The whole block, incl. its header */
-  #tailwind-portal pre {
     background: #eaeaea !important;
   }
 
@@ -185,11 +183,6 @@
   #tailwind-portal h6 code,
   #tailwind-portal th code {
     font-size: 0.9em !important;
-  }
-
-  #tailwind-portal :where(blockquote) {
-    @apply !bg-transparent;
-    @apply !border-l-0;
   }
 
   #tailwind-portal :where(select) {
@@ -238,7 +231,7 @@ thus maybe not picked up by tailwinds parser */
     a {
       color: var(--dp-color-primary);
     }
-    pre {
+    pre > code {
       background: var(--dp-color-code-bg) !important;
     }
   }
