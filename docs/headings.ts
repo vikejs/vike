@@ -728,6 +728,7 @@ const headings = [
       'Example: `+title` and `+description`',
       'Example: `+Layout`',
       'Example: modify `+data` env',
+      'Named environments',
     ],
   },
   {
@@ -1445,6 +1446,10 @@ function api() {
       {
         title: '`getVikeConfig()`',
         url: '/getVikeConfig',
+      },
+      {
+        title: '`vike/runtime`',
+        url: '/vike-runtime',
       },
       {
         title: '`reactStrictMode`',

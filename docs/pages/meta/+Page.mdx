@@ -13,6 +13,7 @@ type Meta = {
     server?: boolean
     config?: boolean
     production?: boolean
+    [environmentName: string]: boolean | undefined
   }
   cumulative?: boolean
   eager?: boolean
@@ -39,6 +40,8 @@ The `meta` setting enables you to create:
    - Example: `+onInit` or `+onBeforeFetchingData`
  - **Modifying the environment of existing hooks**.
    - <Link href="#example-modify-data-env" doNotInferSectionTitle />
+ - **Config values living in other Vite environments**.
+   - <Link href="#named-environments" doNotInferSectionTitle />
 
 
 ## Example: `+dataEndpointUrl`
@@ -477,6 +480,42 @@ Example:
    - Hook: [/pages/star-wars/@id/+data.tsx](https://github.com/vikejs/vike/blob/43503a4829e4bb0171785bc8fa501c7ca096a150/examples/react-full/pages/star-wars/@id/+data.tsx)
 
 
+## Named environments
+
+The keys of `env` can also be the name of a [Vite environment](https://vite.dev/guide/api-environment), for example an `rsc` environment created by a React Server Components integration:
+
+```ts
+// /pages/+config.ts
+// Environment: config
+
+import type { Config } from 'vike/types'
+
+export default {
+  meta: {
+    Page: {
+      // Load +Page only in the Vite environment `rsc`
+      env: { server: false, client: false, rsc: true }
+    }
+  }
+} satisfies Config
+```
+
+Code running in the `rsc` environment loads these config values with <Link href="/vike-runtime">`loadPageConfig()`</Link>.
+
+- A named environment must exist in Vite's `config.environments`.
+- A named environment only gets the config values that name it: it doesn't get the `server` config values.
+- A Vite environment that no `env` names (e.g. Vite's `ssr` environment, or a Cloudflare Worker environment) is Vike's `server` or `client` environment, depending on whether it's server-side or client-side.
+- The file suffix `.rsc.js` sets the environment, like <Link href="/file-env">`.server.js` and `.client.js`</Link> do: `+Page.rsc.js` is loaded only in `rsc`. A named environment suffix can't be combined with another environment suffix (e.g. `+Page.rsc.server.js` is invalid). The suffix `.shared.js` means `server` and `client` (not named environments).
+- Environment names can also be introduced by `meta.effect()`.
+
+The following names can't be environment names:
+- `config` and `production`, which have another meaning (see <Link href="#api">API</Link>).
+- `ssr`, `shared`, `clear`, and `default`, which are file suffixes (<Link href="/file-env">`.ssr.js` and `.shared.js`</Link>, <Link href="/config#clear-js">`.clear.js`</Link>, <Link href="/config#default-js">`.default.js`</Link>).
+- `eager`, which is used internally by Vike.
+
+The names `server` and `client` are Vike's built-in environments.
+
+
 ## API
 
 ```ts
@@ -497,7 +536,10 @@ export default {
         // [Optional] Load config value at config-time (when Vike loads +config.ts files)
         config: false, // default value
         // [Optional] Load config value only in prod/dev (`true`/`false` => only prod/dev)
-        production: undefined // default value
+        production: undefined, // default value
+        // [Optional] Load config value in the Vite environment `rsc`, see
+        // https://vike.dev/meta#named-environments
+        rsc: false // default value
       },
 
       // [Optional] Whether config values should be merged (instead of overridden)
@@ -612,5 +654,6 @@ declare global {
 
 ## See also
 
+- <Link href="/vike-runtime" />
 - <Link href="/head-tags#custom-settings" />
 - <Link href="/settings" />
