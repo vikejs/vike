@@ -2,12 +2,11 @@ export { PricingTable }
 
 import React from 'react'
 import './PricingTable.css'
-import '../../components/dark-mode.css'
 import { Link } from '@brillout/docpress'
 import { ExtraWidth } from '../../components/ExtraWidth'
 
-const colorNote = 'var(--pricing-note, #64748b)'
-const colorSeparatorLine = 'var(--pricing-border, #e2e8f0)'
+const colorNote = 'var(--dp-color-muted)'
+const colorSeparatorLine = 'var(--dp-color-border)'
 const colorFree = '#10b981'
 
 function PricingTable() {
@@ -171,9 +170,7 @@ function Separator() {
 
 function TierName({ children }: { children: string }) {
   return (
-    <h2
-      style={{ fontSize: 26, fontWeight: 700, marginBottom: 4, color: 'var(--pricing-heading, #0f172a)', marginTop: 0 }}
-    >
+    <h2 style={{ fontSize: 26, fontWeight: 700, marginBottom: 4, color: 'var(--dp-color-heading)', marginTop: 0 }}>
       {children}
     </h2>
   )
@@ -185,7 +182,7 @@ function Column({ children }: { children: React.ReactNode }) {
       style={{
         border: `1px solid ${colorSeparatorLine}`,
         padding: 28,
-        background: 'var(--pricing-card-bg, #fefefe)',
+        background: 'var(--dp-color-surface-elevated)',
         borderRadius: 14,
         boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
       }}

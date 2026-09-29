@@ -260,9 +260,10 @@ function Box({
   return (
     <div
       style={{
-        backgroundColor: 'var(--config-box-bg, #efefef)',
-        border: '1px solid var(--config-box-border, #dee2e6)',
-        borderRadius: 'var(--dp-radius-lg, 8px)',
+        // Recessed, like DocPress's code blocks
+        backgroundColor: 'var(--dp-color-surface)',
+        border: '1px solid var(--dp-color-code-ring)',
+        borderRadius: 'var(--dp-radius-lg)',
         ...style,
       }}
     >
