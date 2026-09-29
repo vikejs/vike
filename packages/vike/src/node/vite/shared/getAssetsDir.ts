@@ -1,11 +1,10 @@
 export { getAssetsDir }
 
-import type { ResolvedConfig } from 'vite'
 import { assertUsage } from '../../../utils/assert.js'
 import '../assertEnvVite.js'
 
-function getAssetsDir(config: ResolvedConfig) {
-  let { assetsDir } = config.build
+function getAssetsDir(build: { assetsDir: string }) {
+  let { assetsDir } = build
   assertUsage(assetsDir, `${assetsDir} cannot be an empty string`)
   assetsDir = assetsDir.split(/\/|\\/).filter(Boolean).join('/')
   return assetsDir
