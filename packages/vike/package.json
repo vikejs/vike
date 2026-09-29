@@ -14,6 +14,14 @@
     "./client": {
       "types": "./dist/client/runtime-server-routing/index.d.ts"
     },
+    "./runtime": {
+      "types": "./dist/runtime/index.d.ts",
+      "worker": "./dist/runtime/index.js",
+      "workerd": "./dist/runtime/index.js",
+      "node": "./dist/runtime/index.js",
+      "browser": "./dist/runtime/index.js",
+      "default": "./dist/runtime/index.js"
+    },
     "./types": {
       "types": "./dist/types/index.d.ts",
       "default": "./dist/types/index.js"
@@ -185,6 +193,9 @@
       "client": [
         "./dist/client/runtime-server-routing/index.d.ts"
       ],
+      "runtime": [
+        "./dist/runtime/index.d.ts"
+      ],
       "client/router": [
         "./dist/client/runtime-client-routing/index.d.ts"
       ],
@@ -255,6 +266,7 @@
     "./RenderErrorPage.js",
     "./routing.js",
     "./server.js",
+    "./runtime.js",
     "./types.js",
     "./universal-middleware.js",
     "./fetch.js"

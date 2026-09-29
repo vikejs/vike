@@ -29,6 +29,9 @@ const virtualFileIdPageEntryPrefix =
 const virtualFileIdGlobalEntryPrefix =
   //
   'virtual:vike:global-entry:'
+const virtualFileIdRuntimePrefix =
+  //
+  'virtual:vike:runtime:' // ${viteEnvironmentName}
 
 type VirtualFileIdEntryParsed =
   | {
@@ -42,10 +45,22 @@ type VirtualFileIdEntryParsed =
       pageId: string
       isExtractAssets: boolean
     }
+  | { type: 'runtime'; viteEnvironmentName: string }
 
 function parseVirtualFileId(id: string): false | VirtualFileIdEntryParsed {
   id = removeVirtualFileIdPrefix(id)
-  if (!id.startsWith(virtualFileIdGlobalEntryPrefix) && !id.startsWith(virtualFileIdPageEntryPrefix)) return false
+  if (
+    !id.startsWith(virtualFileIdGlobalEntryPrefix) &&
+    !id.startsWith(virtualFileIdPageEntryPrefix) &&
+    !id.startsWith(virtualFileIdRuntimePrefix)
+  )
+    return false
+
+  if (id.startsWith(virtualFileIdRuntimePrefix)) {
+    const viteEnvironmentName = id.slice(virtualFileIdRuntimePrefix.length)
+    assertEnvironmentName(viteEnvironmentName)
+    return { type: 'runtime', viteEnvironmentName }
+  }
 
   if (id.startsWith(virtualFileIdGlobalEntryPrefix)) {
     const isClientRouting = id === virtualFileIdGlobalEntryClientCR
@@ -90,8 +105,13 @@ function parseGlobalEntryEnvironmentName(id: string) {
 function generateVirtualFileId(
   args:
     | { type: 'global-entry'; environmentName: string; isClientRouting?: boolean }
-    | { type: 'page-entry'; pageId: string; environmentName: string },
+    | { type: 'page-entry'; pageId: string; environmentName: string }
+    | { type: 'runtime'; viteEnvironmentName: string },
 ): string {
+  if (args.type === 'runtime') {
+    assertEnvironmentName(args.viteEnvironmentName)
+    return `${virtualFileIdRuntimePrefix}${args.viteEnvironmentName}`
+  }
   if (args.type === 'global-entry') {
     const { environmentName, isClientRouting = false } = args
     assertEnvironmentName(environmentName)

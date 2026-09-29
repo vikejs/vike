@@ -8,4 +8,22 @@ const config = {
   Layout: Layout,
   // https://vike.dev/extends
   extends: vikeReact,
+  // https://vike.dev/meta
+  meta: {
+    // - The environment `worker` is introduced only by meta.effect()
+    enableWorker: {
+      env: { config: true },
+      effect: ({ configValue }) =>
+        configValue && { meta: { workerGreeting: { env: { server: false, client: false, worker: true } } } },
+    },
+    workerGreeting: {
+      env: { server: true },
+    },
+    // - Set by +workerSuffixed.worker.js
+    workerSuffixed: {
+      env: { server: true, client: true },
+    },
+  },
+  enableWorker: true,
+  workerGreeting: 'Hello from the worker environment',
 }
