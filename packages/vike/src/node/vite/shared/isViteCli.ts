@@ -1,6 +1,6 @@
 export { isViteCli }
 export { getViteCliArgsMinimal }
-export { getViteBuildCliArgs }
+export { getViteCliArgs }
 export { getViteCliCommand }
 
 // Copied from Vite's CLI
@@ -110,7 +110,7 @@ function getViteCliArgsMinimal(): null | { root: string | undefined; configFile:
   return { root, configFile: options.config as string | undefined }
 }
 
-function getViteBuildCliArgs(): null | ConfigFromCli {
+function getViteCliArgs(): null | ConfigFromCli {
   if (!isViteCli()) return null
   const { command, root, options } = parseViteCli()
   if (command !== 'build') return null
