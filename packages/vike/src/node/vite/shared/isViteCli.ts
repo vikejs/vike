@@ -27,7 +27,7 @@ function parseViteCli(): ViteCli {
     assert(viteCli === undefined)
     assert(root === undefined || typeof root === 'string')
     assert(isObject(options))
-    // Same as filterDuplicateOptions() of Vite's cli.ts: the last value wins, e.g. `-c a.ts -c b.ts`
+    // Same as Vite: duplicated options => the last value wins
     for (const [key, value] of Object.entries(options)) {
       if (Array.isArray(value)) options[key] = value[value.length - 1]
     }
