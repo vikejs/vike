@@ -196,19 +196,22 @@ function setVikeConfigContext(vikeConfigCtx_: VikeConfigContext) {
 }
 // Vike's config is resolved before Vite's environments are known (Vike's config can modify Vite's config)
 async function setViteEnvironmentNames(viteEnvironmentNames: null | string[]) {
+  const viteEnvironmentNamesPrevious = globalObject.viteEnvironmentNames
   globalObject.viteEnvironmentNames = viteEnvironmentNames
   if (!viteEnvironmentNames || !globalObject.vikeConfigPromise) return
   const vikeConfig = await globalObject.vikeConfigPromise
   // Resolve again: to report a missing environment like any other config error, or to recover from one (e.g. the user added the environment to Vite's config)
-  if (
-    !globalObject.vikeConfigHasBuildError &&
-    getRuntimeEnvironmentsMissing(vikeConfig._runtimeEnvironmentNames).length === 0
-  )
-    return
+  const isMissing = getRuntimeEnvironmentsMissing(vikeConfig._runtimeEnvironmentNames).length > 0
+  const isAdded =
+    !!globalObject.vikeConfigHasBuildError && isEnvironmentAdded(viteEnvironmentNamesPrevious, viteEnvironmentNames)
+  if (!isMissing && !isAdded) return
   assert(globalObject.vikeConfigCtx)
   const { userRootDir, isDev, vikeVitePluginOptions } = globalObject.vikeConfigCtx
   resolveVikeConfigInternal_withErrorHandling(userRootDir, isDev, vikeVitePluginOptions)
   await globalObject.vikeConfigPromise
+}
+function isEnvironmentAdded(namesPrevious: null | string[], names: string[]) {
+  return !!namesPrevious && names.some((name) => !namesPrevious.includes(name))
 }
 function getRuntimeEnvironmentsMissing(runtimeEnvironmentNames: string[]): string[] {
   const { viteEnvironmentNames } = globalObject
