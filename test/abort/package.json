@@ -4,6 +4,7 @@
     "dev:server": "pnpm run server:dev",
     "build": "vike build",
     "preview": "vike build && vike preview",
+    "preview:sharedConfigBuild": "cross-env VITE_CONFIG={builder:{sharedConfigBuild:true}} vike build && vike preview",
     "prod": "vike build && pnpm run server:prod",
     "server:dev": "node server/",
     "server:prod": "cross-env NODE_ENV=production node server/"
