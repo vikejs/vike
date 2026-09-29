@@ -35,10 +35,8 @@ function parseViteCli(): ViteCli {
     viteCli = { command, root, options }
   }
 
-  // Copied & adapted from Vite
-  // https://github.com/vitejs/vite/blob/d3e7eeefa91e1992f47694d16fe4dbe708c4d80e/packages/vite/src/node/cli.ts
+  // Copied & adapted from Vite's CLI
   // - We need to declare Vite's options, otherwise cac consumes the next argument as the value of boolean options (e.g. `vite build --emptyOutDir some-root`).
-  // - We use `.allowUnknownOptions()` so that options added by newer Vite versions don't throw `Unknown option`.
   const cli = cac(desc)
   // Common configs
   cli
@@ -61,6 +59,7 @@ function parseViteCli(): ViteCli {
     .option('--cors', desc)
     .option('--strictPort', desc)
     .option('--force', desc)
+    // Options that this copy doesn't declare (e.g. added by newer Vite versions) are still validated by Vite's own CLI, which throws `Unknown option` for options Vite doesn't know
     .allowUnknownOptions()
     .action(onCommand('dev'))
   // build
@@ -113,7 +112,7 @@ function getViteBuildCliArgs(): null | ConfigFromCli {
   if (!isViteCli()) return null
   const { command, root, options } = parseViteCli()
   if (command !== 'build') return null
-  // https://github.com/vitejs/vite/blob/d3e7eeefa91e1992f47694d16fe4dbe708c4d80e/packages/vite/src/node/cli.ts#L331-L346
+  // Like Vite: all options except the global ones go to `build`
   const buildOptions = cleanGlobalCLIOptions(cleanBuilderCLIOptions(options))
   return {
     root,
@@ -127,7 +126,6 @@ function getViteBuildCliArgs(): null | ConfigFromCli {
     ...(options.app ? { builder: {} } : {}),
   }
 
-  // https://github.com/vitejs/vite/blob/d3e7eeefa91e1992f47694d16fe4dbe708c4d80e/packages/vite/src/node/cli.ts#L99
   function cleanGlobalCLIOptions(options: Record<string, unknown>) {
     const ret = { ...options }
     delete ret['--']
@@ -159,7 +157,6 @@ function getViteBuildCliArgs(): null | ConfigFromCli {
 
     return ret
   }
-  // https://github.com/vitejs/vite/blob/d3e7eeefa91e1992f47694d16fe4dbe708c4d80e/packages/vite/src/node/cli.ts#L141
   function cleanBuilderCLIOptions(options: Record<string, unknown>) {
     const ret = { ...options }
     delete ret.app
