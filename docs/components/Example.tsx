@@ -3,6 +3,7 @@ export { ExampleTimestamp }
 export { GithubLink }
 
 import React from 'react'
+import './dark-mode.css'
 import { assert } from '@brillout/docpress'
 
 type Repo = `${string}/${string}`
@@ -23,7 +24,7 @@ function ExampleTimestamp({
   return (
     <span
       style={{
-        background: 'white',
+        background: 'var(--example-chip-bg, white)',
         fontSize: '1.13em',
         fontWeight: 'bold',
         fontFamily: 'monospace',

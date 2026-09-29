@@ -5,7 +5,6 @@ import { headings, headingsDetached, categories } from './headings'
 import logoWithShadow from './assets/logo/vike-shadow.svg'
 import { PROJECT_VERSION } from './utils/PROJECT_VERSION'
 import { discordInvite } from './links'
-import { TopNavigation } from './TopNavigation'
 import {
   iconHono,
   iconExpress,
@@ -19,10 +18,13 @@ import {
   iconNpm,
   iconCopy,
 } from './assets/choices-icons'
-import React from 'react'
 
 const config = {
   name: 'Vike',
+  darkMode: true,
+  tocProgress: true,
+  categoryTabs: true,
+  docsUrl: '/docs',
   version: PROJECT_VERSION,
   url: 'https://vike.dev',
   tagline: '(Replaces Next.js/Nuxt) 🔨 Build mission-critical applications with stability and development freedom.',
@@ -53,7 +55,6 @@ const config = {
 
   pressKit: true,
 
-  topNavigation: <TopNavigation />,
   navMaxWidth: 1140,
   navLogoSize: 50,
   navLogoTextStyle: {
@@ -65,8 +66,20 @@ const config = {
     server: {
       choices: [
         { name: 'Hono', icon: iconHono, iconStyle: { marginBottom: '1.5px' } },
-        { name: 'Express', icon: iconExpress, iconStyle: { objectFit: 'contain' }, iconStyleTab: { height: '11.5px' } },
-        { name: 'Fastify', icon: iconFastify, iconStyleDropdown: { width: '14px' }, iconStyleTab: { width: '18px' } },
+        {
+          name: 'Express',
+          icon: iconExpress,
+          iconMono: true,
+          iconStyle: { objectFit: 'contain' },
+          iconStyleTab: { height: '11.5px' },
+        },
+        {
+          name: 'Fastify',
+          icon: iconFastify,
+          iconMono: true,
+          iconStyleDropdown: { width: '14px' },
+          iconStyleTab: { width: '18px' },
+        },
         { name: 'H3', icon: iconH3, iconStyle: { marginBottom: '1.5px' } },
         { name: 'Elysia', icon: iconElysia, iconStyleTab: { height: '14px' } },
         'Other',
@@ -84,8 +97,8 @@ const config = {
     // https://vike.dev/ai#install
     skillInstall: {
       choices: [
-        { name: 'Copy & paste', icon: iconCopy, iconStyleTab: { height: '17px' } },
-        { name: 'skills.sh', icon: iconGitHub, iconStyleTab: { height: '17px' } },
+        { name: 'Copy & paste', icon: iconCopy, iconMono: true, iconStyleTab: { height: '17px' } },
+        { name: 'skills.sh', icon: iconGitHub, iconMono: true, iconStyleTab: { height: '17px' } },
         { name: 'skills-npm', icon: iconNpm, iconStyle: { objectFit: 'contain' } },
       ],
       default: 'Copy & paste',

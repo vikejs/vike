@@ -260,9 +260,9 @@ function Box({
   return (
     <div
       style={{
-        backgroundColor: '#efefef',
-        border: '1px solid #dee2e6',
-        borderRadius: 8,
+        backgroundColor: 'var(--config-box-bg, #efefef)',
+        border: '1px solid var(--config-box-border, #dee2e6)',
+        borderRadius: 'var(--dp-radius-lg, 8px)',
         ...style,
       }}
     >
