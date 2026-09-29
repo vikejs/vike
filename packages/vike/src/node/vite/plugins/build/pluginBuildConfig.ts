@@ -29,6 +29,7 @@ import {
   handleAssetsManifest_alignCssTarget,
 } from './handleAssetsManifest.js'
 import { resolveIncludeAssetsImportedByServer } from '../../../../server/runtime/renderPageServer/getPageAssets/retrievePageAssetsProd.js'
+import { serverEntryVirtualId } from '@brillout/vite-plugin-server-entry/plugin'
 import '../../assertEnvVite.js'
 
 function pluginBuildConfig(): Plugin[] {
@@ -51,6 +52,7 @@ function pluginBuildConfig(): Plugin[] {
             const isServerSide = isViteServerSide_configEnvironment(envName, envConfig)
             // - Named environments (e.g. `rsc`) load their pages lazily via `vike/runtime`
             if (!isVikeEnvironmentBuiltIn(getVikeEnvironmentName(envName, isServerSide, runtimeEnvironmentNames))) {
+              removeServerEntry(envConfig.build.rollupOptions)
               continue
             }
             const entries = isServerSide ? entriesServer : entriesClient
@@ -76,6 +78,17 @@ function pluginBuildConfig(): Plugin[] {
       },
     },
   ]
+}
+
+// Upon `builder.sharedConfigBuild: false` (Vite's default), @brillout/vite-plugin-server-entry adds Vike's server entry to every server-side environment
+// - Its configResolved() hook is synchronous and Vite calls all configResolved() hooks at once => it already ran, since the configResolved() hook above calls removeServerEntry() after an `await`
+function removeServerEntry(rollupOptions: ResolvedConfig['build']['rollupOptions']) {
+  const input = normalizeRollupInput(rollupOptions.input)
+  const inputWithoutServerEntry = Object.fromEntries(
+    Object.entries(input).filter(([, id]) => id !== serverEntryVirtualId),
+  )
+  if (Object.keys(inputWithoutServerEntry).length === Object.keys(input).length) return
+  rollupOptions.input = inputWithoutServerEntry
 }
 
 async function getEntries(config: ResolvedConfig, isServerSide: boolean): Promise<Record<string, string>> {

@@ -26,10 +26,10 @@ function workerEnvironment() {
         },
         builder: {
           async buildApp(builder) {
+            // - Built first: a named environment doesn't depend on the other builds
+            await builder.build(builder.environments.worker)
             await builder.build(builder.environments.client)
             await builder.build(builder.environments.ssr)
-            // - Built last: like every server-side environment, it contains Vike's server entry which needs the ssr build's assets manifest => /vike-runtime isn't pre-rendered
-            await builder.build(builder.environments.worker)
           },
         },
       }

@@ -1,4 +1,4 @@
 export default {
-  // - The worker environment is built after pre-rendering, see vite.config.js
+  // - Not pre-rendered: the preview test loads the worker's build at request time
   prerender: false,
 }
