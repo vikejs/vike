@@ -16,26 +16,8 @@
       margin: 0 !important;
     }
     span > code {
-      background: var(--config-one-liner-code-bg, #0000000b);
       font-size: 1em;
       padding: 3px 6px !important;
     }
   }
-}
-
-/* DocPress: the config box is recessed, like DocPress's code blocks (light and dark) */
-:root {
-  --config-box-bg: var(--dp-color-surface);
-  --config-box-border: var(--dp-color-code-ring);
-}
-
-/* DocPress `darkMode` */
-:root.dark {
-  --config-one-liner-code-bg: var(--dp-color-code-inline-bg);
-  --hooks-title-color: var(--dp-color-text);
-  --hooks-button-border: var(--dp-color-border-strong);
-  --hooks-button-bg: var(--dp-color-surface-elevated);
-  --hooks-button-color: var(--dp-color-text);
-  --hooks-button-active-bg: var(--dp-color-primary);
-  --hooks-button-active-color: var(--dp-color-bg);
 }

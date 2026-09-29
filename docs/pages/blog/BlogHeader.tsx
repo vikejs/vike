@@ -2,7 +2,6 @@ export { BlogHeader }
 
 import { getMaintainer, getMaintainerAvatar, type Maintainer, type MaintainerUsername } from '../team/maintainersList'
 import React from 'react'
-import '../../components/dark-mode.css'
 import { iconBluesky, iconTwitter, iconLinkedin } from '@brillout/docpress'
 
 type Social = {
@@ -54,7 +53,7 @@ function BlogHeader({
       >
         <div
           style={{
-            color: 'var(--blog-header-muted, #777)',
+            color: 'var(--dp-color-muted)',
             fontWeight: 400,
             fontSize: 15,
             fontStyle: 'italic',
@@ -85,7 +84,7 @@ function Author({ maintainer }: { maintainer: Maintainer }) {
         gap: 10,
         padding: '8px 10px',
         borderRadius: 7,
-        border: '1px solid var(--blog-header-border, #e0e0e0)',
+        border: '1px solid var(--dp-color-border)',
         transition: 'all 0.2s ease',
         textDecoration: 'none',
         color: 'inherit',
@@ -111,10 +110,8 @@ function Author({ maintainer }: { maintainer: Maintainer }) {
         />
       </div>
       <div>
-        <div style={{ fontWeight: 600, fontSize: 14, color: 'var(--blog-header-name, #333)' }}>
-          {maintainer.firstName}
-        </div>
-        <div style={{ fontSize: 12, color: 'var(--blog-header-muted, #666)' }}>{maintainer.username}</div>
+        <div style={{ fontWeight: 600, fontSize: 14, color: 'var(--dp-color-text)' }}>{maintainer.firstName}</div>
+        <div style={{ fontSize: 12, color: 'var(--dp-color-muted)' }}>{maintainer.username}</div>
       </div>
     </a>
   )
