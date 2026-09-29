@@ -1,7 +1,7 @@
 export { deepEqual }
 
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
-// If client-side need it then use a more minimal version to save client-side KBs:
+// If client-side needs it then use a more minimal version to save client-side KBs:
 // https://github.com/vikejs/vike/blob/165d572a5994ccd0e56e43fe2993b1cef117ee7f/packages/vike/src/utils/deepEqual.ts
 assertIsNotBrowser()
 
