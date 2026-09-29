@@ -10,6 +10,21 @@ import { cac } from 'cac'
 import '../assertEnvVite.js'
 
 const desc = 'vike:vite-cli-simulation'
+// Vite's boolean options: we declare them because cac would otherwise consume the next argument as their value, e.g. `vite --strictPort build` or `vite build --emptyOutDir some-root`.
+// https://github.com/vitejs/vite/blob/main/packages/vite/src/node/cli.ts
+const viteBooleanOptions = [
+  '--clearScreen',
+  '--cors',
+  '--strictPort',
+  '--force',
+  '--emptyOutDir',
+  '-w, --watch',
+  '--app',
+  '--experimentalBundle',
+]
+function addViteBooleanOptions(cli: ReturnType<typeof cac>) {
+  viteBooleanOptions.forEach((option) => cli.option(option, desc))
+}
 
 function isViteCli(): boolean {
   return isToolCli('vite')
@@ -33,6 +48,7 @@ function getViteCliCommand(): ViteCommand | null {
   // https://github.com/vitejs/vite/blob/d3e7eeefa91e1992f47694d16fe4dbe708c4d80e/packages/vite/src/node/cli.ts#L186-L188
   // - We only read the command: `.allowUnknownOptions()` so that Vite's options (e.g. `--port`) don't throw `Unknown option`.
   const cli = cac(desc)
+  addViteBooleanOptions(cli)
   // dev
   cli
     .command('[root]', desc)
@@ -173,6 +189,7 @@ function getViteCliArgs(): null | { root: string | undefined; configFile: string
 
   const cli = cac(desc)
   cli.option('-c, --config <file>', desc)
+  addViteBooleanOptions(cli)
 
   let result: { root: string | undefined; configFile: string | undefined } | null = null
   const setResult = (root: unknown, options: unknown) => {
