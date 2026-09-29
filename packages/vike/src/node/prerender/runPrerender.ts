@@ -1197,8 +1197,7 @@ function getPageContextOriginal(pageContext: PageContext): PageContext {
 }
 
 function getPageContextPublicPrerendered(pageContext: PageContextPrerendered): PageContextPrerendered {
-  // Pre-rendered redirects don't have any pageContext object: prerenderRedirects() uses a plain object `{ urlOriginal, pageId: null, is404: false, isRedirect: true }` instead
-  // - We cannot pass it to getPageContextPublicServer() as it only accepts pageContext objects created by Vike (it asserts pageContext._isOriginalObject)
+  // Pre-rendered redirects don't have any real pageContext object, but only a plain object `{ urlOriginal, pageId: null, is404: false, isRedirect: true }` which we cannot pass to getPageContextPublicServer() as it only accepts real pageContext objects (it asserts pageContext._isOriginalObject)
   if (pageContext.isRedirect) return pageContext
   return getPageContextPublicServer(pageContext as PageContext)
 }

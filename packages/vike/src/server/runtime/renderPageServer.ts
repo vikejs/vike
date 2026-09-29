@@ -129,7 +129,6 @@ async function renderPageServer<PageContextUserAdded extends {}, PageContextInit
 }
 
 function getPageContextReturn(pageContextFinish: PageContextAfterRender) {
-  // There isn't any global context if Vike couldn't initialize it (e.g. invalid Vike config) — same for skipped requests, see getPageContextSkipRequest()
   if (!hasProp(pageContextFinish, '_globalContext', 'object')) return pageContextFinish
   return getPageContextPublicServer(pageContextFinish)
 }
