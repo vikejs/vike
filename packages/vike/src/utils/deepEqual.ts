@@ -1,9 +1,10 @@
 export { deepEqual }
 
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
-assertIsNotBrowser() // Keep client-side KBs minimal: this cycle-safe version is server-only, see https://github.com/vikejs/vike/pull/3548
+// If client-side need it then use a more minimal version to save client-side KBs:
+// https://github.com/vikejs/vike/blob/165d572a5994ccd0e56e43fe2993b1cef117ee7f/packages/vike/src/utils/deepEqual.ts
+assertIsNotBrowser()
 
-// https://stackoverflow.com/questions/201183/how-to-determine-equality-for-two-javascript-objects/32922084#32922084
 function deepEqual(x: any, y: any): boolean {
   return deepEqualCyclic(x, y, new Map())
 }
