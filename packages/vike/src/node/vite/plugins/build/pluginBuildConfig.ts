@@ -43,15 +43,11 @@ function pluginBuildConfig(): Plugin[] {
           onSetupBuild()
           assertRollupInput(config)
           // Set the inputs of each environment, instead of the root `config.build`: the root `config.build` is used by no environment upon `builder.sharedConfigBuild: true` (e.g. set by @vitejs/plugin-rsc).
-          const entriesBySide = new Map<boolean, Record<string, string>>()
+          const entriesClient = await getEntries(config, false)
+          const entriesServer = await getEntries(config, true)
           for (const [envName, envConfig] of Object.entries(config.environments)) {
-            const isServerSide = isViteServerSide_configEnvironment(envName, envConfig)
-            let entries = entriesBySide.get(isServerSide)
-            if (!entries) {
-              entries = await getEntries(config, isServerSide)
-              assert(Object.keys(entries).length > 0)
-              entriesBySide.set(isServerSide, entries)
-            }
+            const entries = isViteServerSide_configEnvironment(envName, envConfig) ? entriesServer : entriesClient
+            assert(Object.keys(entries).length > 0)
             envConfig.build.rollupOptions.input = injectRollupInputs(entries, envConfig.build.rollupOptions.input)
           }
           addLogHook()
