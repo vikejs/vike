@@ -156,6 +156,7 @@ function testRunClassic(
       const org = 'Welcome'
       const mod = 'Wilkommen'
       expect(await page.textContent('h1')).toBe(org)
+      await sleepBeforeEditFile()
       editFile(testHmr || `./pages/index/+Page.${isVue ? 'vue' : 'tsx'}`, (s) => s.replace(org, mod))
       await autoRetry(
         async () => {
@@ -163,6 +164,7 @@ function testRunClassic(
         },
         { timeout: 5000 },
       )
+      await sleepBeforeEditFile()
       editFileRevert()
       await autoRetry(
         async () => {
