@@ -7,6 +7,7 @@ describe('getPageId()', () => {
     expect(getPageId('virtual:vike:page-entry:server:/pages/about')).toBe('/pages/about')
     expect(getPageId('../../virtual:vike:page-entry:client:/pages/index')).toBe('/pages/index')
     expect(getPageId('../api/virtual:vike:page-entry:client:/pages/index')).toBe('/pages/index')
+    expect(getPageId('../tools:api/virtual:vike:page-entry:client:/pages/index')).toBe('/pages/index')
   })
   it('other modules', () => {
     expect(getPageId('pages/index/+Page.tsx')).toBe(null)

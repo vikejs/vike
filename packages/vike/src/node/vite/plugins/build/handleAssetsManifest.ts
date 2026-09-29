@@ -223,7 +223,7 @@ function getPageId(key: string) {
   // (This seems to be needed only for vitest tests that use Vite's build() API with an inline config.)
   const prefix = key.split('virtual:vike')[0]!
   // Skip virtual modules of other plugins wrapping a Vike virtual module, e.g. virtual:vite-rsc/client-references/group/facade:virtual:vike:page-entry:client:/pages/index
-  if (prefix.includes(':')) return null
+  if (prefix && !prefix.endsWith('/')) return null
   key = key.substring(prefix.length)
   const result = parseVirtualFileId(key)
   return result && result.type === 'page-entry' ? result.pageId : null
