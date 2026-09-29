@@ -458,7 +458,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     logAbort(err, !import.meta.env.DEV, pageContext)
     const pageContextAbort = errAbort._pageContextAbort
 
-    addNewPageContextAborted(pageContextsAborted, pageContext, pageContextAbort)
+    addNewPageContextAborted(pageContextsAborted, pageContext, pageContextAbort, getPageContextPublicClientMinimal)
 
     // throw render('/some-url')
     if (pageContextAbort._urlRewrite) {
@@ -619,7 +619,9 @@ async function getPageContextBegin(
     isFirstRender: boolean
   },
 ) {
-  const previousPageContext = globalObject.previousPageContext ?? null
+  const previousPageContext = globalObject.previousPageContext
+    ? getPageContextPublicClient(globalObject.previousPageContext)
+    : null
   const pageContext = await createPageContextClient(urlOriginal)
   objectAssign(pageContext, {
     isBackwardNavigation,
@@ -721,7 +723,7 @@ function getRenderCount(): number {
 }
 
 function getKeepScrollPositionSetting(
-  pageContext: PageContextConfig & PageContextRouted & Record<string, unknown>,
+  pageContext: PageContextPublicClient & PageContextRouted,
 ): false | string | string[] {
   const c = pageContext.from.configsStandard.keepScrollPosition
   if (!c) return false
@@ -730,7 +732,7 @@ function getKeepScrollPositionSetting(
   assert(configDefinedAt)
   const routeParameterList = getRouteStringParameterList(configDefinedAt)
   if (isCallable(val))
-    val = val(pageContext, {
+    val = val(getPageContextPublicClient(pageContext), {
       configDefinedAt: c.definedAt,
       /* We don't pass routeParameterList because it's useless: the user knows the parameter list.
       routeParameterList
