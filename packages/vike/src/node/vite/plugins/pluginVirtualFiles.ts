@@ -122,7 +122,11 @@ function pluginVirtualFiles(): Plugin[] {
             }
             if (idParsed.type === 'global-entry') {
               if (!isVikeEnvironmentBuiltIn(idParsed.environmentName)) {
-                return generateVirtualFileGlobalEntry({ environmentName: idParsed.environmentName, isDev }, id)
+                return generateVirtualFileGlobalEntry(
+                  { environmentName: idParsed.environmentName, isDev },
+                  isViteServerSide(config, this.environment),
+                  id,
+                )
               }
               const code = await generateVirtualFileGlobalEntryWithOldDesign(
                 id,
