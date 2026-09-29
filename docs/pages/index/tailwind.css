@@ -22,9 +22,8 @@
   --color-grey-300-hex: #e8e8e8;
   --color-grey-400: oklch(0.9502 0 0);
   /* Not `--color-bg`: Tailwind emits @theme vars to the global :root, and the
-     landing page's CSS is injected globally when prefetched (hover the logo).
-     DocPress (>=0.16.46) reads `var(--color-bg, #fdfdfd)` for its background, so
-     a generic --color-bg here leaked into the docs and washed out a white line. */
+     landing page's CSS is injected globally when prefetched (hover the logo), so
+     a generic name leaks into the docs. */
   --color-canvas: oklch(0.9702 0 0);
   --color-connector: #d8d8d8;
   --color-white: #fdfdfd;
@@ -164,15 +163,23 @@
     z-index: 99;
   }
 
-  /* The browser's monospace, which the sizes here are tuned to (in text of the default size, it's 13px) */
   #tailwind-portal code {
-    font-family: monospace !important;
     font-size: 1em !important;
+  }
+
+  /* Inline code: a chip, like in the docs */
+  #tailwind-portal :not(pre) > code {
+    padding: 0.15em 0.4em;
+    border-radius: var(--dp-radius-sm);
+    background: var(--dp-color-code-inline-bg);
+    line-height: 1.2;
+    letter-spacing: normal;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
   }
 
   #tailwind-portal pre > code {
     @apply !text-[0.813rem];
-    background: #eaeaea !important;
   }
 
   #tailwind-portal h1 code,
@@ -214,7 +221,6 @@ thus maybe not picked up by tailwinds parser */
   /* Raised surfaces (glass panels, cards) are lighter, as in light mode */
   --color-white: #161922;
   --color-connector: #454d5c;
-  --usp-border-color: var(--dp-color-border);
 
   /* Tailwind's default palette, as used by the landing page */
   --color-slate-200: #2b313c;
@@ -231,9 +237,6 @@ thus maybe not picked up by tailwinds parser */
     a {
       color: var(--dp-color-primary);
     }
-    pre > code {
-      background: var(--dp-color-code-bg) !important;
-    }
   }
 }
 /* Black-on-transparent artwork */
@@ -245,6 +248,6 @@ thus maybe not picked up by tailwinds parser */
 }
 @media (hover: hover) and (pointer: fine) {
   :root.dark #tailwind-portal .colorize-on-hover:hover .brand-logo {
-    filter: invert(1) hue-rotate(180deg) !important;
+    filter: invert(1) hue-rotate(180deg);
   }
 }
