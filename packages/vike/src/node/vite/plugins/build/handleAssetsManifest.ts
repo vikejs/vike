@@ -63,7 +63,7 @@ async function fixServerAssets(
 }
 async function copyAssets(filesToMove: string[], filesToRemove: string[], config: ResolvedConfig) {
   const { outDirClient, outDirServer } = getOutDirs(config, undefined)
-  const assetsDir = getAssetsDir(config.build)
+  const assetsDir = getAssetsDir(config.environments.ssr!.build)
   const assetsDirServer = path.posix.join(outDirServer, assetsDir)
   if (!filesToMove.length && !filesToRemove.length && !existsSync(assetsDirServer)) return
   assert(existsSync(assetsDirServer))
