@@ -7,7 +7,7 @@ import { assertIsNotProductionRuntime } from '../../../utils/assertSetup.js'
 import { assert, assertUsage } from '../../../utils/assert.js'
 import { assertIsNotBrowser } from '../../../utils/assertIsNotBrowser.js'
 import { assertPosixPath } from '../../../utils/path.js'
-import { deepEqualServer } from '../../../utils/deepEqualServer.js'
+import { deepEqual } from '../../../utils/deepEqual.js'
 import { getPropAccessNotation } from '../../../utils/getPropAccessNotation.js'
 import { isImportPathRelative } from '../../../utils/isImportPath.js'
 import type {
@@ -429,7 +429,7 @@ function assertFileEnv(importPath: string, configEnv: ConfigEnv, configName: str
   const fileEnvs = filesEnv.get(key)!
   const fileEnvNew = { configEnv, configName }
   fileEnvs.push(fileEnvNew)
-  const fileEnvDiff = fileEnvs.filter((c) => !deepEqualServer(c.configEnv, configEnv))[0]
+  const fileEnvDiff = fileEnvs.filter((c) => !deepEqual(c.configEnv, configEnv))[0]
   if (fileEnvDiff) {
     assertUsage(
       false,

@@ -16,7 +16,7 @@ export { EARLY_SETTINGS }
 export type { VikeConfigInternal }
 export type { PageConfigBuildTimeBeforeComputed }
 
-import { deepEqualServer } from '../../../utils/deepEqualServer.js'
+import { deepEqual } from '../../../utils/deepEqual.js'
 import { assertKeys } from '../../../utils/assertKeys.js'
 import { assertIsNotProductionRuntime } from '../../../utils/assertSetup.js'
 import { getMostSimilar } from '../../../utils/getMostSimilar.js'
@@ -307,7 +307,7 @@ function hasViteConfigChanged(vikeConfigOld: VikeConfigInternal | null, vikeConf
     const valNew = configValuesNew[configName]?.value
     // Works thanks to the import() cache, see executeFile()
     // https://github.com/vikejs/vike/blob/0a4f54ff3eea128cbd886c0ac88972e44a74cf99/packages/vike/src/node/vite/shared/resolveVikeConfigInternal/transpileAndExecuteFile.ts#L386
-    if (!deepEqualServer(valOld, valNew)) return true
+    if (!deepEqual(valOld, valNew)) return true
   }
 
   return false
@@ -1296,7 +1296,7 @@ function collectConfigDefinitions(
 
       objectEntries(meta).forEach(([configName, configDefinitionUserLand]) => {
         if ('isDefinedByPeerDependency' in configDefinitionUserLand) {
-          assert(deepEqualServer(Object.keys(configDefinitionUserLand), ['isDefinedByPeerDependency']))
+          assert(deepEqual(Object.keys(configDefinitionUserLand), ['isDefinedByPeerDependency']))
           if (!configDefinitions[configName]) peerDependencyConfigNames.add(configName)
           return
         }
