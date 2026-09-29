@@ -1,7 +1,7 @@
 export { isViteCli }
-export { getViteCliCommand }
 export { getViteCliArgs }
 export { getViteCliArgsMinimal }
+export { getViteCliCommand }
 
 // Copied from Vite's CLI
 
