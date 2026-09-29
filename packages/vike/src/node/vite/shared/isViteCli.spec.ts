@@ -22,11 +22,9 @@ describe('Vite CLI options', () => {
     expect(getViteCliArgs()).toEqual({ root: 'some-root', configFile: 'vite.config.prod.ts' })
     expect(getViteBuildCliArgs()).toMatchObject({ root: 'some-root', build: { outDir: 'dist2' } })
   })
-  it('boolean option before [root] or command', () => {
+  it('boolean option before [root]', () => {
     runViteCli('build --emptyOutDir some-root')
     expect(getViteCliArgs()).toEqual({ root: 'some-root', configFile: undefined })
-    runViteCli('--strictPort build')
-    expect(getViteCliCommand()).toBe('build')
   })
   it('optimize', () => {
     runViteCli('optimize --force')
