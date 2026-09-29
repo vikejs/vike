@@ -3,6 +3,8 @@ export { getViteCliArgs }
 export { getViteBuildCliArgs }
 export { getViteCliCommand }
 
+// Copied from Vite's CLI
+
 import { assert } from '../../../utils/assert.js'
 import { isObject } from '../../../utils/isObject.js'
 import { isToolCli } from '../../../utils/isToolCli.js'
@@ -35,8 +37,7 @@ function parseViteCli(): ViteCli {
     viteCli = { command, root, options }
   }
 
-  // Copied & adapted from Vite's CLI
-  // - We need to declare Vite's options, otherwise cac consumes the next argument as the value of boolean options (e.g. `vite build --emptyOutDir some-root`).
+  // We need to declare all Vite's options, otherwise cac consumes the next argument as the value of boolean options (e.g. `vite build --emptyOutDir some-root`).
   const cli = cac(desc)
   // Common configs
   cli
@@ -113,6 +114,7 @@ function getViteBuildCliArgs(): null | ConfigFromCli {
   if (!isViteCli()) return null
   const { command, root, options } = parseViteCli()
   if (command !== 'build') return null
+
   // Like Vite: all options except the global ones go to `build`
   const buildOptions = cleanGlobalCLIOptions(cleanBuilderCLIOptions(options))
   return {
