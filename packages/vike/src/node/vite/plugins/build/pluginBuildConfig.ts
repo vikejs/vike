@@ -21,7 +21,7 @@ import { prependEntriesDir } from '../../../../shared-server-node/prependEntries
 import { getFilePathResolved, getFilePathUnresolved } from '../../shared/getFilePath.js'
 import type { FilePath } from '../../../../types/FilePath.js'
 import { getConfigValueBuildTime } from '../../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
-import { isViteServerSide_viteEnvOptional } from '../../shared/isViteServerSide.js'
+import { isViteServerSide_configEnvironment } from '../../shared/isViteServerSide.js'
 import {
   handleAssetsManifest_assertUsageCssCodeSplit,
   handleAssetsManifest_getBuildConfig,
@@ -42,9 +42,18 @@ function pluginBuildConfig(): Plugin[] {
           handleAssetsManifest_alignCssTarget(config)
           onSetupBuild()
           assertRollupInput(config)
-          const entries = await getEntries(config)
-          assert(Object.keys(entries).length > 0)
-          config.build.rollupOptions.input = injectRollupInputs(entries, config)
+          // Set the inputs of each environment, instead of the root `config.build`: the root `config.build` is used by no environment upon `builder.sharedConfigBuild: true` (e.g. set by @vitejs/plugin-rsc).
+          const entriesBySide = new Map<boolean, Record<string, string>>()
+          for (const [envName, envConfig] of Object.entries(config.environments)) {
+            const isServerSide = isViteServerSide_configEnvironment(envName, envConfig)
+            let entries = entriesBySide.get(isServerSide)
+            if (!entries) {
+              entries = await getEntries(config, isServerSide)
+              assert(Object.keys(entries).length > 0)
+              entriesBySide.set(isServerSide, entries)
+            }
+            envConfig.build.rollupOptions.input = injectRollupInputs(entries, envConfig.build.rollupOptions.input)
+          }
           addLogHook()
           handleAssetsManifest_assertUsageCssCodeSplit(config)
         },
@@ -66,16 +75,20 @@ function pluginBuildConfig(): Plugin[] {
   ]
 }
 
-async function getEntries(config: ResolvedConfig): Promise<Record<string, string>> {
+async function getEntries(config: ResolvedConfig, isServerSide: boolean): Promise<Record<string, string>> {
   const vikeConfig = await getVikeConfigInternal()
   const { _pageConfigs: pageConfigs } = vikeConfig
   // TO-DO/next-major-release: remove
-  const pageFileEntries = await getPageFileEntries(config, resolveIncludeAssetsImportedByServer(vikeConfig.config))
+  const pageFileEntries = await getPageFileEntries(
+    config,
+    resolveIncludeAssetsImportedByServer(vikeConfig.config),
+    isServerSide,
+  )
   assertUsage(
     Object.keys(pageFileEntries).length !== 0 || pageConfigs.length !== 0,
     'At least one page should be defined, see https://vike.dev/add',
   )
-  if (isViteServerSide_viteEnvOptional(config)) {
+  if (isServerSide) {
     const pageEntries = getPageEntries(pageConfigs)
     const entries = {
       ...pageFileEntries,
@@ -148,8 +161,12 @@ function analyzeClientEntries(pageConfigs: PageConfigBuildTime[], config: Resolv
 
 // Ensure Rollup creates entries for each page file, see https://github.com/vikejs/vike/issues/350
 // (Otherwise the page files may be missing in the client manifest.json)
-async function getPageFileEntries(config: ResolvedConfig, includeAssetsImportedByServer: boolean) {
-  const isForClientSide = !isViteServerSide_viteEnvOptional(config)
+async function getPageFileEntries(
+  config: ResolvedConfig,
+  includeAssetsImportedByServer: boolean,
+  isServerSide: boolean,
+) {
+  const isForClientSide = !isServerSide
   const fileTypes: FileType[] = isForClientSide ? ['.page', '.page.client'] : ['.page', '.page.server']
   if (isForClientSide && includeAssetsImportedByServer) {
     fileTypes.push('.page.server')
