@@ -118,7 +118,7 @@ function getViteBuildCliArgs(): null | ConfigFromCli {
     .option('--emptyOutDir', desc)
     .option('-w, --watch', desc)
     .option('--app', desc)
-    // Don't throw upon options Vite adds after the options list above was copied (e.g. `--force`)
+    // Don't throw upon options added by newer Vite versions
     .allowUnknownOptions()
     .action((root: unknown, options: unknown) => {
       assert(isObject(options))

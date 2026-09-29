@@ -17,7 +17,7 @@ describe('Vite CLI options', () => {
     expect(getViteCliArgs()).toEqual({ root: undefined, configFile: 'vite.config.dev.ts' })
   })
   it('build', () => {
-    runViteCli('build some-root --outDir dist2 --force --config vite.config.prod.ts')
+    runViteCli('build some-root --outDir dist2 --someFutureViteOption --config vite.config.prod.ts')
     expect(getViteCliCommand()).toBe('build')
     expect(getViteCliArgs()).toEqual({ root: 'some-root', configFile: 'vite.config.prod.ts' })
     expect(getViteBuildCliArgs()).toMatchObject({ root: 'some-root', build: { outDir: 'dist2' } })
@@ -27,6 +27,10 @@ describe('Vite CLI options', () => {
     expect(getViteCliArgs()).toEqual({ root: 'some-root', configFile: undefined })
     runViteCli('--strictPort build')
     expect(getViteCliCommand()).toBe('build')
+  })
+  it('optimize', () => {
+    runViteCli('optimize --force')
+    expect(getViteCliCommand()).toBe('optimize')
   })
   it('preview', () => {
     runViteCli('preview --port 3001 --open')
