@@ -67,7 +67,7 @@ import {
 import { getOutDirsAllFromRootNormalized } from '../vite/shared/getOutDirs.js'
 import fs from 'node:fs'
 import { getPublicProxy } from '../../shared-server-client/getPublicProxy.js'
-import { getPageContextPublicProxy } from '../../shared-server-client/getPageContextPublicShared.js'
+import { getPageContextPublicServer } from '../../server/runtime/renderPageServer/getPageContextPublicServer.js'
 import { isObject } from '../../utils/isObject.js'
 import { getStaticRedirectsForPrerender } from '../../server/runtime/renderPageServer/resolveRedirects.js'
 import { updateType } from '../../utils/updateType.js'
@@ -1179,8 +1179,7 @@ function getPrerenderContextPublic(prerenderContext: PrerenderContext): Prerende
     // Required because of https://vike.dev/i18n#pre-rendering
     // - Users copy pageContext, e.g. `{ ...pageContext, locale }`, and Vike renders the copies => the copies need to be original objects
     changeEnumerable(pageContext, '_isOriginalObject', true)
-    // We don't use getPageContextPublicShared() because it modifies pageContext (e.g. it sets pageContext.pageProps which the copies would then share)
-    return getPageContextPublicProxy(pageContext)
+    return getPageContextPublicServer(pageContext)
   })
   prerenderContext.output.forEach((file) => {
     file.pageContext = getPageContextPublicPrerendered(file.pageContext)
@@ -1198,9 +1197,10 @@ function getPageContextOriginal(pageContext: PageContext): PageContext {
 }
 
 function getPageContextPublicPrerendered(pageContext: PageContextPrerendered): PageContextPrerendered {
-  // There isn't any pageContext object for redirects, see prerenderRedirects()
+  // Pre-rendered redirects don't have any pageContext object: prerenderRedirects() uses a plain object `{ urlOriginal, pageId: null, is404: false, isRedirect: true }` instead
+  // - We cannot pass it to getPageContextPublicServer() as it only accepts pageContext objects created by Vike (it asserts pageContext._isOriginalObject)
   if (pageContext.isRedirect) return pageContext
-  return getPageContextPublicProxy(pageContext as PageContext)
+  return getPageContextPublicServer(pageContext as PageContext)
 }
 
 async function prerenderRedirects(

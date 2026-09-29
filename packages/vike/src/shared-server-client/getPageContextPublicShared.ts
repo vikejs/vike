@@ -1,12 +1,10 @@
 export { getPageContextPublicShared }
-export { getPageContextPublicProxy }
 export { assertPropertyGetters }
 export type { PageContextPublicMinimum }
 
 import { assert, assertWarning } from '../utils/assert.js'
 import { compareString } from '../utils/compareString.js'
 import { isPropertyGetter } from '../utils/isPropertyGetter.js'
-import { addIs404ToPageProps } from './addIs404ToPageProps.js'
 import { getGlobalContextPublicShared } from './getGlobalContextPublicShared.js'
 import { getPublicProxy } from './getPublicProxy.js'
 import type { PageContextCreated } from './createPageContextShared.js'
@@ -14,9 +12,9 @@ import type { PageContextCreated } from './createPageContextShared.js'
 type PageContextPublicMinimum = PageContextCreated
 
 function getPageContextPublicShared<PageContext extends PageContextPublicMinimum>(pageContext: PageContext) {
-  const pageContextPublic = getPageContextPublicProxy(pageContext)
-
-  addIs404ToPageProps(pageContext)
+  assert(!(pageContext as Record<string, unknown>)._isProxyObject)
+  assert(!(pageContext as Record<string, unknown>).globalContext) // pageContext.globalContext should only be available to users — Vike itself should use pageContext._globalContext instead
+  assert(pageContext._isOriginalObject) // ensure we preserve the original object reference
 
   // TO-DO/next-major-release: remove
   if (!('_pageId' in pageContext)) {
@@ -40,15 +38,6 @@ function getPageContextPublicShared<PageContext extends PageContextPublicMinimum
   ) {
     sortPageContext(pageContext)
   }
-
-  return pageContextPublic
-}
-
-// Same as getPageContextPublicShared() but without modifying `pageContext`
-function getPageContextPublicProxy<PageContext extends PageContextPublicMinimum>(pageContext: PageContext) {
-  assert(!(pageContext as Record<string, unknown>)._isProxyObject)
-  assert(!(pageContext as Record<string, unknown>).globalContext) // pageContext.globalContext should only be available to users — Vike itself should use pageContext._globalContext instead
-  assert(pageContext._isOriginalObject) // ensure we preserve the original object reference
 
   const globalContextPublic = getGlobalContextPublicShared(pageContext._globalContext)
   const pageContextPublic = getPublicProxy(
