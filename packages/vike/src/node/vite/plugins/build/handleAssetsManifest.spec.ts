@@ -14,7 +14,10 @@ describe('getPageId()', () => {
     expect(getPageId('virtual:vike:global-entry:client:client-routing')).toBe(null)
     // Created by @vitejs/plugin-rsc
     expect(
-      getPageId('virtual:vite-rsc/client-references/group/facade:virtual:vike:page-entry:server:/pages/index'),
+      getPageId('virtual:vite-rsc/client-references/group/facade:virtual:vike:page-entry:rsc:/src/pages/client'),
+    ).toBe(null)
+    expect(
+      getPageId('virtual:vite-rsc/client-references/group/facade:virtual:vike:page-entry:server:/src/pages/client'),
     ).toBe(null)
   })
 })
