@@ -31,27 +31,38 @@ function getViteCliCommand(): ViteCommand | null {
 
   // Copied & adapted from Vite
   // https://github.com/vitejs/vite/blob/d3e7eeefa91e1992f47694d16fe4dbe708c4d80e/packages/vite/src/node/cli.ts#L186-L188
+  // - We only read the command: `.allowUnknownOptions()` so that Vite's options (e.g. `--port`) don't throw `Unknown option`.
   const cli = cac(desc)
   // dev
   cli
     .command('[root]', desc)
     .alias('serve')
     .alias('dev')
+    .allowUnknownOptions()
     .action(() => {
       setCommand('dev')
     })
   // build
-  cli.command('build [root]', desc).action(() => {
-    setCommand('build')
-  })
+  cli
+    .command('build [root]', desc)
+    .allowUnknownOptions()
+    .action(() => {
+      setCommand('build')
+    })
   // optimize
-  cli.command('optimize [root]', desc).action(() => {
-    setCommand('optimize')
-  })
+  cli
+    .command('optimize [root]', desc)
+    .allowUnknownOptions()
+    .action(() => {
+      setCommand('optimize')
+    })
   // preview
-  cli.command('preview [root]', desc).action(() => {
-    setCommand('preview')
-  })
+  cli
+    .command('preview [root]', desc)
+    .allowUnknownOptions()
+    .action(() => {
+      setCommand('preview')
+    })
 
   cli.parse()
   assert(command)
@@ -91,6 +102,8 @@ function getViteBuildCliArgs(): null | ConfigFromCli {
     .option('--emptyOutDir', desc)
     .option('-w, --watch', desc)
     .option('--app', desc)
+    // Don't throw upon options Vite adds after the options list above was copied (e.g. `--force`)
+    .allowUnknownOptions()
     .action((root: unknown, options: unknown) => {
       assert(isObject(options))
       assert(root === undefined || typeof root === 'string')
@@ -168,10 +181,11 @@ function getViteCliArgs(): null | { root: string | undefined; configFile: string
     assert(options.config === undefined || typeof options.config === 'string')
     result = { root, configFile: options.config }
   }
-  cli.command('[root]', desc).alias('serve').alias('dev').action(setResult)
-  cli.command('build [root]', desc).action(setResult)
-  cli.command('optimize [root]', desc).action(setResult)
-  cli.command('preview [root]', desc).action(setResult)
+  // We only read `[root]` and `-c`: `.allowUnknownOptions()` so that Vite's other options don't throw `Unknown option`.
+  cli.command('[root]', desc).alias('serve').alias('dev').allowUnknownOptions().action(setResult)
+  cli.command('build [root]', desc).allowUnknownOptions().action(setResult)
+  cli.command('optimize [root]', desc).allowUnknownOptions().action(setResult)
+  cli.command('preview [root]', desc).allowUnknownOptions().action(setResult)
 
   cli.parse()
   return result
