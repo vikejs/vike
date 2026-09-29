@@ -1,5 +1,10 @@
+export { deepEqualServer }
+
+import { assertIsNotBrowser } from './assertIsNotBrowser.js'
+assertIsNotBrowser() // Keep client-side KBs minimal: this cycle-safe version is server-only, see https://github.com/vikejs/vike/pull/3548
+
 // https://stackoverflow.com/questions/201183/how-to-determine-equality-for-two-javascript-objects/32922084#32922084
-export function deepEqual(x: any, y: any): boolean {
+function deepEqualServer(x: any, y: any): boolean {
   return deepEqualCyclic(x, y, new Map())
 }
 

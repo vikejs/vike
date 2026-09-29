@@ -5,7 +5,7 @@ import type { ResolvedConfig, UserConfig } from 'vite'
 import { findPageFiles } from '../../shared/findPageFiles.js'
 import { assert } from '../../../../utils/assert.js'
 import { createDebug } from '../../../../utils/debug.js'
-import { deepEqual } from '../../../../utils/deepEqual.js'
+import { deepEqualServer } from '../../../../utils/deepEqualServer.js'
 import { isArray } from '../../../../utils/isArray.js'
 import { isFilePathAbsoluteFilesystem } from '../../../../utils/isFilePathAbsoluteFilesystem.js'
 import { assertImportIsNpmPackage, getNpmPackageName } from '../../../../utils/parseNpmPackage.js'
@@ -307,14 +307,14 @@ function remove(input: string[] | string | undefined) {
 function assertEnvsInSyncWithLegacy(config: ResolvedConfig) {
   const client = config.environments.client?.optimizeDeps
   assert(client)
-  assert(deepEqual(config.optimizeDeps.entries, client.entries))
-  assert(deepEqual(config.optimizeDeps.include, client.include))
-  assert(deepEqual(config.optimizeDeps.exclude, client.exclude))
+  assert(deepEqualServer(config.optimizeDeps.entries, client.entries))
+  assert(deepEqualServer(config.optimizeDeps.include, client.include))
+  assert(deepEqualServer(config.optimizeDeps.exclude, client.exclude))
   const ssr = config.environments.ssr?.optimizeDeps
   assert(ssr)
   /* Vite doesn't seem to support config.ssr.optimizeDeps.entries (vite@7.0.6, July 2025)
-  assert(deepEqual(config.ssr.optimizeDeps.entries, ssr.entries))
+  assert(deepEqualServer(config.ssr.optimizeDeps.entries, ssr.entries))
   */
-  assert(deepEqual(config.ssr.optimizeDeps.include, ssr.include))
-  assert(deepEqual(config.ssr.optimizeDeps.exclude, ssr.exclude))
+  assert(deepEqualServer(config.ssr.optimizeDeps.include, ssr.include))
+  assert(deepEqualServer(config.ssr.optimizeDeps.exclude, ssr.exclude))
 }

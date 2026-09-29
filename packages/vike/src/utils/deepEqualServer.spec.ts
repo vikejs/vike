@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { deepEqual } from './deepEqual.js'
+import { deepEqualServer } from './deepEqualServer.js'
 
-describe('deepEqual()', () => {
+describe('deepEqualServer()', () => {
   it('compares cyclic objects, e.g. Vite plugins', () => {
     const getPlugin = (name: string) => {
       const manager: Record<string, unknown> = {}
@@ -9,8 +9,8 @@ describe('deepEqual()', () => {
       return { name, api: { manager } }
     }
     const plugin = getPlugin('a')
-    expect(deepEqual(plugin, plugin)).toBe(true)
-    expect(deepEqual(plugin, getPlugin('a'))).toBe(true)
-    expect(deepEqual(plugin, getPlugin('b'))).toBe(false)
+    expect(deepEqualServer(plugin, plugin)).toBe(true)
+    expect(deepEqualServer(plugin, getPlugin('a'))).toBe(true)
+    expect(deepEqualServer(plugin, getPlugin('b'))).toBe(false)
   })
 })

@@ -4,7 +4,7 @@ import { assert, assertUsage, assertWarning } from './assert.js'
 import { assertIsNotProductionRuntime } from './assertSetup.js'
 import { isVersionMatch } from './assertVersion.js'
 import { createDebug } from './debug.js'
-import { deepEqual } from './deepEqual.js'
+import { deepEqualServer } from './deepEqualServer.js'
 import { getGlobalObject } from './getGlobalObject.js'
 import { hasProp } from './hasProp.js'
 import { isNotNullish } from './isNullish.js'
@@ -79,7 +79,7 @@ async function crawlFiles(options: {
   assert(files)
   if (debug.isActivated && filesGit && filesGlob) {
     assertWarning(
-      deepEqual(filesGlob.slice().sort(), filesGit.slice().sort()),
+      deepEqualServer(filesGlob.slice().sort(), filesGit.slice().sort()),
       "Git and glob results aren't matching.",
       { onlyOnce: false },
     )
