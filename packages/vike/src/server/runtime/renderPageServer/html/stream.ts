@@ -363,7 +363,7 @@ async function processStream(
     onErrorWhileStreaming: (err: unknown) => void
     enableEagerStreaming?: boolean
     /** The stream was cancelled (e.g. the user closed the tab) or failed */
-    onCancel?: () => void
+    onCancel: () => void
   },
 ): Promise<StreamProviderNormalized> {
   const buffer: unknown[] = []
@@ -415,7 +415,7 @@ async function processStream(
     },
     onError(err) {
       // The HTML won't end: its streamed pageContext values won't be sent
-      onCancel?.()
+      onCancel()
       if (!promiseHasResolved) {
         reject(err)
       } else {
@@ -468,9 +468,7 @@ async function processStream(
     onFlush() {
       flushStream()
     },
-    onCancel() {
-      onCancel?.()
-    },
+    onCancel,
   })
   wrapperCreated = true
 
