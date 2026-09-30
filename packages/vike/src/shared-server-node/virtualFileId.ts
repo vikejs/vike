@@ -49,20 +49,15 @@ type VirtualFileIdEntryParsed =
 
 function parseVirtualFileId(id: string): false | VirtualFileIdEntryParsed {
   id = removeVirtualFileIdPrefix(id)
-  if (
-    !id.startsWith(virtualFileIdGlobalEntryPrefix) &&
-    !id.startsWith(virtualFileIdPageEntryPrefix) &&
-    !id.startsWith(virtualFileIdRuntimePrefix)
-  )
-    return false
-
   if (id.startsWith(virtualFileIdRuntimePrefix)) {
     const viteEnvironmentName = id.slice(virtualFileIdRuntimePrefix.length)
     assertEnvironmentName(viteEnvironmentName)
     return { type: 'runtime', viteEnvironmentName }
   }
+  if (!id.startsWith(virtualFileIdGlobalEntryPrefix) && !id.startsWith(virtualFileIdPageEntryPrefix)) return false
 
-  if (id.startsWith(virtualFileIdGlobalEntryPrefix)) {
+  // Global entry
+  if (id.includes(virtualFileIdGlobalEntryPrefix)) {
     const isClientRouting = id === virtualFileIdGlobalEntryClientCR
     const environmentName = parseGlobalEntryEnvironmentName(id)
     return {
@@ -72,7 +67,8 @@ function parseVirtualFileId(id: string): false | VirtualFileIdEntryParsed {
     }
   }
 
-  if (id.startsWith(virtualFileIdPageEntryPrefix)) {
+  // Page entry
+  if (id.includes(virtualFileIdPageEntryPrefix)) {
     const idOriginal = id
     id = extractAssetsRemoveQuery(id)
     const isExtractAssets = idOriginal !== id
