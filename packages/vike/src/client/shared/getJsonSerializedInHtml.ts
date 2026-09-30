@@ -5,6 +5,7 @@ import { parse } from '@brillout/json-serializer/parse'
 import { assert, assertUsage } from '../../utils/assert.js'
 import { hasProp } from '../../utils/hasProp.js'
 import { htmlElementId_globalContext, htmlElementId_pageContext } from '../../shared-server-client/htmlElementIds.js'
+import { markers } from '../../shared-server-client/streamedValues.js'
 import '../assertEnvClient.js'
 
 // elements should exist because:
@@ -16,7 +17,7 @@ async function getPageContextSerializedInHtml(): Promise<{ pageId: string; route
   const pageContextJson = findJson(htmlElementId_pageContext)
   // Streamed pageContext values https://vike.dev/passToClient#streaming (a user string starting with `!` is serialized as
   // `!!…`: a false positive only loads the decoder)
-  const pageContextSerializedInHtml = /"!Vike(Stream|Promise|AsyncIterable):/.test(pageContextJson)
+  const pageContextSerializedInHtml = Object.values(markers).some((marker) => pageContextJson.includes(`"${marker}`))
     ? (await import('./streamedValues.js')).parsePageContextHtml(pageContextJson)
     : parse(pageContextJson)
   assert(hasProp(pageContextSerializedInHtml, 'pageId', 'string'))

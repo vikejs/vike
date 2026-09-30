@@ -13,13 +13,14 @@ export { readPageContextJsonStreamed }
 import { parse, parseTransform, type Reviver } from '@brillout/json-serializer/parse'
 import { assert } from '../../utils/assert.js'
 import { isObject } from '../../utils/isObject.js'
+import { markers, pageContextJsonLinesEnd } from '../../shared-server-client/streamedValues.js'
 import '../assertEnvClient.js'
 
 type Kind = 'stream' | 'promise' | 'asyncIterable'
 const prefixes: [string, Kind][] = [
-  ['!VikeStream:', 'stream'],
-  ['!VikePromise:', 'promise'],
-  ['!VikeAsyncIterable:', 'asyncIterable'],
+  [markers.readableStream, 'stream'],
+  [markers.promise, 'promise'],
+  [markers.asyncIterable, 'asyncIterable'],
 ]
 
 type Line = Record<string, unknown>
@@ -145,7 +146,6 @@ function parsePageContextHtml(pageContextJson: string): unknown {
 
 // Client-side navigation: the `.pageContext.json` response (see server/runtime/renderPageServer/pageContextJson.ts),
 // after its first line was read.
-const lineLast = ']}'
 function readPageContextJsonStreamed(
   lineFirst: string,
   rest: string,
@@ -153,7 +153,7 @@ function readPageContextJsonStreamed(
   decoder: TextDecoder,
 ): Record<string, unknown> {
   const receiver = createReceiver()
-  const pageContextFromServer = parse(lineFirst + lineLast, { reviver: receiver.reviver })
+  const pageContextFromServer = parse(lineFirst + pageContextJsonLinesEnd, { reviver: receiver.reviver })
   assert(isObject(pageContextFromServer))
   delete pageContextFromServer._streamedValues
   ;(async () => {
@@ -164,7 +164,7 @@ function readPageContextJsonStreamed(
         while ((i = buffer.indexOf('\n')) !== -1) {
           const line = buffer.slice(0, i)
           buffer = buffer.slice(i + 1)
-          if (line !== lineLast) receiver.onLine(line.startsWith(',') ? line.slice(1) : line)
+          if (line !== pageContextJsonLinesEnd) receiver.onLine(line.startsWith(',') ? line.slice(1) : line)
         }
         const { done, value } = await reader.read()
         if (done) break

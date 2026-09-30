@@ -1,13 +1,13 @@
 // The body of `.pageContext.json` requests (client-side navigation) and of pre-rendered `index.pageContext.json` files.
 //
 // - Without streamed pageContext values: the serialized pageContext, as is.
-// - With streamed pageContext values (see streamedValues.ts): still one JSON value, written line by line so that the
+// - With streamed pageContext values (see ../../../shared-server-client/streamedValues.ts): still one JSON value, written line by line so that the
 //   client can read it while it streams:
 //     {"pageId":"/pages/index","data":"!VikePromise:0","_streamedValues":[
 //     {"s":0,"v":{"title":"Hello"}}
 //     ]}
 //   The first line is the serialized pageContext opening the `_streamedValues` array, each following line is an element
-//   of that array (see streamedValues.ts), and the last line closes the array and the object. The client parses the
+//   of that array, and the last line closes the array and the object. The client parses the
 //   first line (closed with `]}`) as soon as it arrives.
 
 export { getPageContextJson }
@@ -15,9 +15,9 @@ export { getPageContextJsonFile }
 
 import { pumpStreamedValues, type StreamedValue } from './streamedValues.js'
 import type { PageContext_logRuntime } from '../loggerRuntime.js'
+import { pageContextJsonLinesBegin, pageContextJsonLinesEnd } from '../../../shared-server-client/streamedValues.js'
 import '../../assertEnvServer.js'
 
-const lineLast = ']}'
 const textEncoder = new TextEncoder()
 
 function getPageContextJson(
@@ -32,14 +32,18 @@ function getPageContextJson(
 // Pre-rendering: the lines were collected while rendering the HTML (see html/streamedValuesHtml.ts)
 function getPageContextJsonFile(pageContextSerialized: string, lines: null | string[]): string {
   if (!lines) return pageContextSerialized
-  return [getLineFirst(pageContextSerialized), ...lines.map((line, i) => (i === 0 ? '' : ',') + line), lineLast]
+  return [
+    getLineFirst(pageContextSerialized),
+    ...lines.map((line, i) => (i === 0 ? '' : ',') + line),
+    pageContextJsonLinesEnd,
+  ]
     .map((line) => line + '\n')
     .join('')
 }
 
 function getLineFirst(pageContextSerialized: string): string {
   // Remove the closing `}`
-  return `${pageContextSerialized.slice(0, -1)},"_streamedValues":[`
+  return pageContextSerialized.slice(0, -1) + pageContextJsonLinesBegin
 }
 
 function getBody(
@@ -63,7 +67,7 @@ function getBody(
       pump.done.then(
         () => {
           if (isCancelled) return
-          enqueue(lineLast)
+          enqueue(pageContextJsonLinesEnd)
           controller.close()
         },
         (err) => controller.error(err),

@@ -7,6 +7,7 @@ export { readPageContextJson }
 export { cancelStreamedValues }
 
 import { parse } from '@brillout/json-serializer/parse'
+import { pageContextJsonLinesBegin } from '../../shared-server-client/streamedValues.js'
 import '../assertEnvClient.js'
 
 async function readPageContextJson(response: Response): Promise<unknown> {
@@ -22,7 +23,7 @@ async function readPageContextJson(response: Response): Promise<unknown> {
     if (lineEnd !== -1) {
       isFirstLine = false
       const lineFirst = chunks.join('') + chunk.slice(0, lineEnd)
-      if (lineFirst.endsWith('"_streamedValues":[')) {
+      if (lineFirst.endsWith(pageContextJsonLinesBegin)) {
         const { readPageContextJsonStreamed } = await import('../shared/streamedValues.js')
         responsesStreaming.push(reader)
         return readPageContextJsonStreamed(lineFirst, chunk.slice(lineEnd + 1), reader, decoder)

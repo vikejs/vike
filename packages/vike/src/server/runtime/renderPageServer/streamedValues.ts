@@ -1,20 +1,4 @@
-// Streamed pageContext values: a ReadableStream, a Promise or an async iterable (e.g. an async generator) anywhere in a
-// passToClient value. https://vike.dev/passToClient#streaming
-//
-// - Serialization: a placeholder `"!VikeStream:<id>"` / `"!VikePromise:<id>"` / `"!VikeAsyncIterable:<id>"` (the
-//   serializer escapes user strings starting with `!`, so a user string can't be mistaken for a placeholder).
-// - Delivery: after the serialized pageContext, in the same response, one JSON line per chunk / result:
-//   - Client-side navigation and pre-rendered `index.pageContext.json`: see pageContextJson.ts
-//   - HTML: see html/streamedValuesHtml.ts
-//
-// Lines:
-//   {"s":<id>,"t":<text>}      A chunk that is a Uint8Array of valid UTF-8
-//   {"s":<id>,"b":<base64url>} A chunk that is any other Uint8Array
-//   {"s":<id>,"v":<value>}     Any other chunk, or the value of a Promise (@brillout/json-serializer)
-//   {"s":<id>,"end":true}      The end of a ReadableStream / async iterable
-//   {"s":<id>,"error":true}    The value failed (the error is logged on the server-side and isn't sent to the client)
-//
-// A chunk or a Promise value can contain further streamed values: they get new ids and their lines follow.
+// Streamed pageContext values, server-side (see shared-server-client/streamedValues.ts)
 
 export { getStreamedValuesSerializer }
 export { pumpStreamedValues }
@@ -24,14 +8,15 @@ import { stringify, type Replacer } from '@brillout/json-serializer/stringify'
 import { assert } from '../../../utils/assert.js'
 import { isPromise } from '../../../utils/isPromise.js'
 import { logRuntimeError, type PageContext_logRuntime } from '../loggerRuntime.js'
+import { markers } from '../../../shared-server-client/streamedValues.js'
 import '../../assertEnvServer.js'
 
 type Kind = 'stream' | 'promise' | 'asyncIterable'
 type StreamedValue = { id: number; kind: Kind; value: unknown }
 const prefixes: Record<Kind, string> = {
-  stream: '!VikeStream:',
-  promise: '!VikePromise:',
-  asyncIterable: '!VikeAsyncIterable:',
+  stream: markers.readableStream,
+  promise: markers.promise,
+  asyncIterable: markers.asyncIterable,
 }
 
 function getKind(value: unknown): Kind | null {
