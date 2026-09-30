@@ -185,6 +185,8 @@ describe('client-side navigation', () => {
         onReturn()
       }
     }
+    const unhandled = vi.fn()
+    process.on('unhandledRejection', unhandled)
     const _obj = { s: new ReadableStream({ pull: () => new Promise(() => {}), cancel: onCancel }), g: infinite() }
     const body = getPageContextJson({ _obj } as any) as ReadableStream
     const pageContextFromServer = (await readPageContextJson(new Response(body))) as any
@@ -193,6 +195,14 @@ describe('client-side navigation', () => {
     await sleep(10)
     expect(onCancel).toHaveBeenCalled()
     expect(onReturn).toHaveBeenCalled()
+    process.off('unhandledRejection', unhandled)
+    expect(unhandled).not.toHaveBeenCalled()
+  })
+
+  it('breaking out of one value leaves the others intact', async () => {
+    const { pageContext } = await navigation({ g: streamOf(['a', 'b', 'c']), late: sleep(20).then(() => 'late') })
+    for await (const _ of pageContext.g) break
+    expect(await pageContext.late).toBe('late')
   })
 })
 
