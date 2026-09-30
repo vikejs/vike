@@ -57,7 +57,7 @@ type PageContextServer<Data = unknown> = PageContextBuiltInServer<Data> & {
 
 type PageContextContent = {
   /**
-   * The content of non-HTML pages — the HTTP response body (SSR) or the file content (pre-rendering).
+   * The content of a non-HTML page — the HTTP response body (SSR) or the file content (pre-rendering).
    *
    * https://vike.dev/pageContext#content
    */
