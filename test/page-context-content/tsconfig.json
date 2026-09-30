@@ -16,5 +16,5 @@
     "**/.*"
   ],
   // Has its own tsconfig.json
-  "exclude": ["node_modules", "dist", "types-custom-content"]
+  "exclude": ["node_modules", "dist"]
 }
