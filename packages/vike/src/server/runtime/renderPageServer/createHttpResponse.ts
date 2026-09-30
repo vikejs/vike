@@ -64,6 +64,7 @@ type PageContextHttpResponsePage = {
   pageContextsAborted: PageContextAborted[]
 }
 
+// TODO/after-merge: rename createHttpResponsePage createHttpResponsePageHtml
 async function createHttpResponsePage(
   htmlRender: HtmlRender,
   renderHook: null | RenderHook,
