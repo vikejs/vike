@@ -185,9 +185,26 @@ describe("meta.env of a Vite environment that doesn't exist", () => {
       'pages/+config.js': "export default { meta: { myCfg: { env: { sever: true } } }, myCfg: 'x' }",
       'pages/index/+Page.js': 'export default "Page"',
     })
-    await setViteEnvironmentNames(['client', 'ssr'])
     setVikeConfigContext({ userRootDir, isDev: false, vikeVitePluginOptions: {} })
-    await expect(getVikeConfigInternal()).rejects.toThrow('"sever"')
+    await getVikeConfigInternal()
+    await expect(setViteEnvironmentNames(['client', 'ssr'])).rejects.toThrow('"sever"')
+  })
+
+  it('recovers once the environment is added to Vite (dev)', async () => {
+    writeFiles(userRootDir, {
+      'package.json': JSON.stringify({ type: 'module' }),
+      'pages/+config.js': "export default { meta: { myCfg: { env: { rsc: true } } }, myCfg: 'x' }",
+      'pages/index/+Page.js': 'export default "Page"',
+    })
+    setVikeConfigContext({ userRootDir, isDev: true, vikeVitePluginOptions: {} })
+    await getVikeConfigInternal()
+    await setViteEnvironmentNames(['client', 'ssr'])
+    expect((await getVikeConfigInternal())._runtimeEnvironmentNames).toEqual([])
+    Object.assign(globalThis._vike.globals['vite/shared/resolveVikeConfigInternal.ts']!, {
+      restartViteBecauseOfError: false,
+    })
+    await setViteEnvironmentNames(['client', 'ssr', 'rsc'])
+    expect((await getVikeConfigInternal())._runtimeEnvironmentNames).toContain('rsc')
   })
 })
 
