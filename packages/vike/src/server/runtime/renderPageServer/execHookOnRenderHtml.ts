@@ -100,10 +100,7 @@ async function execHookOnRenderHtml(
   return { htmlRender, content: null, renderHook: hook }
 }
 
-async function getContent(
-  content: unknown,
-  onErrorWhileStreaming: (err: unknown) => void,
-): Promise<Content> {
+async function getContent(content: unknown, onErrorWhileStreaming: (err: unknown) => void): Promise<Content> {
   if (typeof content === 'string' || content instanceof Uint8Array) return content
   assertUsage(
     isStreamReadableWeb(content),
