@@ -24,7 +24,7 @@ async function startServer() {
     const pageContext = await renderPage(pageContextInit)
 
     const { httpResponse } = pageContext
-    httpResponse.headers.forEach(([name, value]) => res.setHeader(name, value))
+    httpResponse.headers.forEach(([name, value]) => res.appendHeader(name, value))
     res.status(httpResponse.statusCode)
     res.send(httpResponse.body)
   })
