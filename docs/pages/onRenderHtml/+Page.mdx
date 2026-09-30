@@ -85,7 +85,7 @@ If `onRenderHtml()` returns `documentHtml` then `pageContext.content` is ignored
 
 Upon <Link href="/pre-rendering">pre-rendering</Link>, the content is written to the file at the page's URL: `/feed.atom` => `dist/client/feed.atom`.
 
-> With <Link href="/client-routing">Client Routing</Link>, add `rel="external"` to links pointing to non-HTML pages (e.g. `<a href="/feed.atom" rel="external">`), so that the browser fetches them instead of Vike's client-side router. See <Link href="/clientRouting#links-intercepting" />.
+> Add `rel="external"` to links pointing to non-HTML pages (e.g. `<a href="/feed.atom" rel="external">`), so that the browser fetches them instead of Vike's client-side router. See <Link href="/clientRouting#links-intercepting" />.
 
 > If your server uses `pageContext.httpResponse.body` (see <Link href="/renderPage" />), use `pageContext.httpResponse.pipe()` or `pageContext.httpResponse.getReadableWebStream()` for binary and streamed content instead: `httpResponse.body` works only with a string and <Link href="/streaming#pagecontext-httpresponse-getbody">`httpResponse.getBody()`</Link> decodes the content as UTF-8 text.
 
