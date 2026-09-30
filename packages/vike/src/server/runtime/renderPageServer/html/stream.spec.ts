@@ -5,9 +5,10 @@ import {
   stampPipe,
   streamReadableWebToBytes,
   type StreamPipeNode,
+  type StreamPipeWeb,
 } from './stream.js'
 import { expect, describe, it } from 'vitest'
-import { Writable } from 'node:stream'
+import { Readable, Writable } from 'node:stream'
 
 describe('streamReadableWebToBytes', () => {
   it('concatenates the chunks without decoding them', async () => {
@@ -103,6 +104,22 @@ describe('processStream', () => {
     expect(reason).toBe('Some reason')
   })
 
+  it("doesn't cancel react-streaming's Web stream (it throws on every later write)", async () => {
+    let controller!: ReadableStreamDefaultController
+    const readable = new ReadableStream({
+      start(c) {
+        controller = c
+        c.enqueue(new Uint8Array([1]))
+      },
+    })
+    const streamReactStreaming = { readable, pipe: null, injectToStream() {}, hasStreamEnded: () => false }
+    const streamWrapper = (await processStream(streamReactStreaming as never, {
+      onErrorWhileStreaming() {},
+    })) as ReadableStream
+    await streamWrapper.cancel()
+    expect(() => controller.enqueue(new Uint8Array([2]))).not.toThrow()
+  })
+
   it('stops the source if the response is already closed', async () => {
     const closedResponses = [new Writable().destroy(), new Writable().destroy()]
     await new Promise((r) => setTimeout(r)) // Let them emit 'close'
@@ -146,6 +163,35 @@ describe('pipeToStreamWritableNode', () => {
     response.destroy()
     await new Promise((r) => setTimeout(r, 10))
     expect(cancelled).toBe(true)
+  })
+
+  it('stops Node.js Readable, Node.js pipe and Web pipe sources when the response closes early', async () => {
+    const stopped: string[] = []
+    const readable = new Readable({ read() {} })
+    readable.push('a')
+    readable.on('close', () => stopped.push('readable'))
+    const pipeNode: StreamPipeNode = (writable) => {
+      writable.write('a')
+      writable.on('close', () => stopped.push('pipe node'))
+    }
+    stampPipe(pipeNode, 'node-stream')
+    const pipeWeb: StreamPipeWeb = (writable) => {
+      const writer = writable.getWriter()
+      writer.write(new Uint8Array([1]))
+      writer.closed.catch(() => stopped.push('pipe web'))
+    }
+    stampPipe(pipeWeb, 'web-stream')
+    const opts = { onErrorWhileStreaming() {} }
+    const responses = [new Writable({ write: (_c, _e, cb) => cb() }), new Writable({ write: (_c, _e, cb) => cb() })]
+    pipeToStreamWritableNode(await processStream(readable, opts), responses[0]!)
+    ;((await processStream(pipeNode, opts)) as StreamPipeNode)(responses[1]!)
+    const { readable: responseWeb, writable } = new TransformStream()
+    ;((await processStream(pipeWeb, opts)) as StreamPipeWeb)(writable)
+    await new Promise((r) => setTimeout(r, 10))
+    responses.forEach((response) => response.destroy())
+    await responseWeb.cancel()
+    await new Promise((r) => setTimeout(r, 10))
+    expect(stopped.sort()).toEqual(['pipe node', 'pipe web', 'readable'])
   })
 
   it('destroys the response if the stream errors', async () => {

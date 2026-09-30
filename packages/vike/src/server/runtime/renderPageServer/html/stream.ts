@@ -540,7 +540,8 @@ async function createStreamWrapper({
   streamWrapper: StreamProviderNormalized
   streamWrapperOperations: { writeChunk: (chunk: unknown) => void; flushStream: null | (() => void) }
 }> {
-  if (isStreamFromReactStreamingPackage(streamOriginal)) {
+  const isReactStreaming = isStreamFromReactStreamingPackage(streamOriginal)
+  if (isReactStreaming) {
     debug(`onRenderHtml() hook returned ${pc.cyan('react-streaming')} result`)
     const stream = getStreamOfReactStreamingPackage(streamOriginal)
     ;(streamOriginal as StreamProviderAny) = stream
@@ -731,6 +732,8 @@ async function createStreamWrapper({
       async cancel(reason) {
         debug('stream cancelled')
         isCancel = true
+        // react-streaming's Web stream has no cancel() and throws on every later write if cancelled
+        if (isReactStreaming) return
         // Ends handleReadableWeb() which then calls closeStream()
         await readerOriginal.cancel(reason)
       },
