@@ -103,13 +103,34 @@ function cancel(streamedValues: StreamedValue[], reason?: unknown) {
       if (!stream.locked) stream.cancel(reason).catch(() => {})
     }
     if (kind === 'promise') {
-      // Avoid an unhandled rejection
-      ;(value as Promise<unknown>).then(undefined, () => {})
+      // Avoid an unhandled rejection, and cancel the values it resolves to
+      ;(value as Promise<unknown>).then(cancelContained, () => {})
     }
     if (kind === 'asyncIterable') {
-      // Nothing to cancel: we didn't call its [Symbol.asyncIterator]() yet
+      releaseIterator((value as AsyncIterable<unknown>)[Symbol.asyncIterator]())
     }
   })
+}
+// A value that won't be sent (e.g. it was produced after the response was cancelled): the streamed values it contains are
+// cancelled
+function cancelContained(value: unknown) {
+  const contained: StreamedValue[] = []
+  try {
+    stringify(value, {
+      replacer(_key, v) {
+        const kind = getKind(v)
+        if (!kind) return undefined
+        contained.push({ id: -1, kind, value: v })
+        return { replacement: null, resolved: true }
+      },
+    })
+  } catch {}
+  cancel(contained)
+}
+function releaseIterator(iterator: AsyncIterator<unknown>) {
+  try {
+    Promise.resolve(iterator.return?.()).catch(() => {})
+  } catch {}
 }
 
 // Reads the values concurrently and calls `write()` with one line per chunk / result; `write()` enqueues the line
@@ -125,7 +146,7 @@ function pumpStreamedValues(
 ): { done: Promise<void>; cancel: (reason?: unknown) => void } {
   const registry = getRegistry(pageContext)
   const started = new Set<StreamedValue>()
-  const cancelFns = new Set<() => void>()
+  const releases = new Set<() => void>()
   let pending = 0
   let isCancelled = false
   let resolve!: () => void
@@ -138,7 +159,7 @@ function pumpStreamedValues(
   const cancelAll = (reason?: unknown) => {
     if (isCancelled) return
     isCancelled = true
-    cancelFns.forEach((cancelFn) => cancelFn())
+    releases.forEach((release) => release())
     cancel(
       [...registry.byValue.values()].filter((streamedValue) => !started.has(streamedValue)),
       reason,
@@ -193,10 +214,12 @@ function pumpStreamedValues(
 
   const pump = async (streamedValue: StreamedValue) => {
     const { id: s, kind, value } = streamedValue
+    // Stops the value's producer: when the value fails, or when all values are cancelled
+    let release = () => {}
     try {
       if (kind === 'promise') {
         const resolved = await (value as Promise<unknown>)
-        if (isCancelled) return
+        if (isCancelled) return cancelContained(resolved)
         await writeLine({ s, v: true }, resolved)
         return
       }
@@ -204,18 +227,17 @@ function pumpStreamedValues(
       if (kind === 'stream') {
         const reader = (value as ReadableStream).getReader()
         next = () => reader.read() as Promise<IteratorResult<unknown>>
-        cancelFns.add(() => reader.cancel().catch(() => {}))
+        release = () => reader.cancel().catch(() => {})
       } else {
         const iterator = (value as AsyncIterable<unknown>)[Symbol.asyncIterator]()
         next = () => iterator.next()
-        cancelFns.add(() => {
-          Promise.resolve(iterator.return?.()).catch(() => {})
-        })
+        release = () => releaseIterator(iterator)
       }
-      if (isCancelled) return
+      releases.add(release)
+      if (isCancelled) return release()
       while (true) {
         const { done, value: chunk } = await next()
-        if (isCancelled) return
+        if (isCancelled) return cancelContained(chunk)
         if (done) break
         if (chunk instanceof Uint8Array) {
           const text = decodeUtf8(chunk)
@@ -228,6 +250,7 @@ function pumpStreamedValues(
       await writeLine({ s, end: true })
     } catch (err) {
       if (isCancelled) return
+      release()
       if (failFast) throw err
       onError(err)
       await writeLine({ s, error: true })

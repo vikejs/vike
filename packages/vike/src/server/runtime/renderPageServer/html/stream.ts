@@ -262,6 +262,10 @@ function pipeToStreamWritableNode(htmlRender: HtmlRender, writable: StreamWritab
     return true
   }
   if (isStreamReadableNode(htmlRender)) {
+    // pipe() doesn't forward the writable closing (e.g. the user closed the tab)
+    writable.on('close', () => {
+      if (!htmlRender.readableEnded) htmlRender.destroy()
+    })
     htmlRender.pipe(writable)
     return true
   }
@@ -696,6 +700,7 @@ async function createStreamWrapper({
       async cancel(...args) {
         debug('stream cancelled')
         isCancel = true
+        onCancel()
         await readableOriginal.cancel(...args)
         // If readableOriginal has implemented readableOriginal.cancel() then the onEnd() callback and therefore closeStream() may already have been called at this point
         await closeStream()

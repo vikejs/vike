@@ -36,6 +36,7 @@ type PageContextStreamedValuesHtml = PageContextCreatedServer &
   PageContextCspNonce & {
     _requestId: number
     _streamedValuesHtml?: StreamedValuesHtml
+    _streamedValuesHtmlIsCancelled?: true
   }
 
 function sendStreamedValuesInHtml(
@@ -77,6 +78,7 @@ function sendStreamedValuesInHtml(
   // Pre-rendering: the error is thrown by getStreamedValuesLinesPrerendered()
   streamedValuesHtml.done.catch(() => {})
   pageContext._streamedValuesHtml = streamedValuesHtml
+  if (pageContext._streamedValuesHtmlIsCancelled) pump.cancel()
 }
 
 // HTML string
@@ -105,8 +107,9 @@ async function writeStreamedValuesHtmlAtStreamEnd(
   return htmlEnd.slice(i)
 }
 
-// The HTML response was cancelled (e.g. the user closed the tab)
+// The HTML response was cancelled (e.g. the user closed the tab) or failed, possibly before the pageContext was serialized
 function cancelStreamedValuesHtml(pageContext: PageContextStreamedValuesHtml) {
+  pageContext._streamedValuesHtmlIsCancelled = true
   pageContext._streamedValuesHtml?.cancel()
 }
 

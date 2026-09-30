@@ -8,7 +8,10 @@ import {
   sendStreamedValuesInHtml,
   getStreamedValuesHtml,
   getStreamedValuesLinesPrerendered,
+  cancelStreamedValuesHtml,
 } from './html/streamedValuesHtml.js'
+import { processStream, pipeToStreamWritableNode } from './html/stream.js'
+import { Readable, PassThrough } from 'node:stream'
 import { parsePageContextHtml, readPageContextJson } from '../../../client/shared/streamedValues.js'
 import { logRuntimeError } from '../loggerRuntime.js'
 
@@ -394,5 +397,131 @@ describe('streamed pageContext values: serialization', () => {
       onError: () => {},
     }).done
     expect(lines).toEqual(['{"s":0,"v":{"inner":"!VikePromise:1"}}', '{"s":1,"v":1}'])
+  })
+})
+
+describe('streamed pageContext values: cancellation', () => {
+  it('a value that fails is cancelled at its source', async () => {
+    const onCancel = vi.fn()
+    const onReturn = vi.fn()
+    const pageContext = {}
+    const { streamedValues } = serialize(
+      {
+        s: streamOf([() => {}, 'unused'], { onCancel }),
+        g: (async function* () {
+          try {
+            yield () => {}
+            yield 'unused'
+          } finally {
+            onReturn()
+          }
+        })(),
+      },
+      pageContext,
+    )
+    const lines: string[] = []
+    await pumpStreamedValues(pageContext, streamedValues, (line) => void lines.push(line), {
+      failFast: false,
+      onError: () => {},
+    }).done
+    expect(lines).toEqual(['{"s":0,"error":true}', '{"s":1,"error":true}'])
+    expect(onCancel).toHaveBeenCalled()
+    expect(onReturn).toHaveBeenCalled()
+  })
+
+  it("an iterator whose return() throws doesn't prevent cancelling the other values", async () => {
+    const onCancel = vi.fn()
+    const throwing = {
+      [Symbol.asyncIterator]() {
+        return this
+      },
+      next: () => new Promise(() => {}),
+      return() {
+        throw new Error('return() failed')
+      },
+    }
+    const { cancel } = await navigation({ throwing, s: streamOf(Array(100).fill(enc('x')), { onCancel }) })
+    cancel()
+    await sleep(10)
+    expect(onCancel).toHaveBeenCalled()
+  })
+
+  it('a value produced after the cancellation is cancelled', async () => {
+    const promise = deferred<unknown>()
+    const onCancel = vi.fn()
+    const { cancel } = await navigation({ p: promise.promise })
+    cancel()
+    await sleep(10)
+    promise.resolve({ s: streamOf([enc('x')], { onCancel }) })
+    await sleep(10)
+    expect(onCancel).toHaveBeenCalled()
+  })
+
+  it("the chunks of an async iterable the user stopped reading don't break the other values", async () => {
+    const gate = deferred<void>()
+    const promise = deferred<string>()
+    async function* generator() {
+      yield 1
+      await gate.promise
+      yield { nested: Promise.resolve('nested') }
+    }
+    const { pageContext } = await navigation({ g: generator(), p: promise.promise })
+    for await (const _ of pageContext.g) break
+    gate.resolve()
+    await sleep(10)
+    promise.resolve('ok')
+    expect(await pageContext.p).toBe('ok')
+  })
+
+  it('HTML: a cancellation before the pageContext is serialized cancels the values', async () => {
+    const pageContext = { cspNonce: null, isPrerendering: false, _requestId: 1 } as any
+    cancelStreamedValuesHtml(pageContext)
+    const onCancel = vi.fn()
+    const { streamedValues } = serialize({ s: streamOf([enc('x')], { onCancel }) }, pageContext)
+    sendStreamedValuesInHtml(pageContext, streamedValues, null)
+    await sleep(10)
+    expect(onCancel).toHaveBeenCalled()
+  })
+
+  it('HTML: cancelling the HTML stream, also while it ends, cancels the values', async () => {
+    for (const whileEnding of [false, true]) {
+      const onCancel = vi.fn()
+      const ending = deferred<void>()
+      const htmlDone = deferred<void>()
+      const html = new ReadableStream<Uint8Array>({
+        async start(controller) {
+          controller.enqueue(enc('<html><body>'))
+          if (whileEnding) controller.close()
+          else htmlDone.promise.then(() => controller.close())
+        },
+      })
+      const wrapper = (await processStream(html, {
+        onErrorWhileStreaming: () => {},
+        onCancel,
+        injectStringAtEnd: async (writeHtml) => {
+          writeHtml('<script>1</script>')
+          await ending.promise
+          return '</body></html>'
+        },
+      })) as ReadableStream
+      const reader = wrapper.getReader()
+      await reader.read()
+      if (whileEnding) await reader.read()
+      // Rejects: the wrapper cancels the HTML stream it has locked (also on main)
+      await reader.cancel().catch(() => {})
+      await sleep(10)
+      expect(onCancel).toHaveBeenCalled()
+      ending.resolve()
+      htmlDone.resolve()
+    }
+  })
+
+  it('HTML: the response closing destroys a Node.js Readable HTML stream', async () => {
+    const readable = new Readable({ read() {} })
+    const writable = new PassThrough()
+    pipeToStreamWritableNode(readable, writable)
+    writable.destroy()
+    await sleep(10)
+    expect(readable.destroyed).toBe(true)
   })
 })

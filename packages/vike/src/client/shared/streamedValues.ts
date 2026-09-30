@@ -43,19 +43,31 @@ function createReceiver(onChange?: () => void) {
   }
 
   const reviver: Reviver = (_path, value) => {
-    for (const [prefix, kind] of prefixes) {
-      if (!value.startsWith(prefix)) continue
-      const id = value.slice(prefix.length)
-      assert(/^\d+$/.test(id))
-      // The same value referenced twice
-      let entry = entries.get(Number(id))
-      if (!entry) {
-        entry = createEntry(kind)
-        entries.set(Number(id), entry)
-      }
-      return { replacement: entry.value }
+    const placeholder = parsePlaceholder(value)
+    if (!placeholder) return undefined
+    // The same value referenced twice
+    let entry = entries.get(placeholder.id)
+    if (!entry) {
+      entry = createEntry(placeholder.kind)
+      entries.set(placeholder.id, entry)
     }
-    return undefined
+    return { replacement: entry.value }
+  }
+  // The lines of a value nobody reads anymore are ignored, as well as the lines of the values it contains
+  const entryReleased: Entry = {
+    value: undefined,
+    isSettled: true,
+    push(line) {
+      if ('v' in line) parseTransform(line.v, { reviver: reviverReleased })
+    },
+    fail() {},
+    wantsMore: () => false,
+  }
+  const reviverReleased: Reviver = (_path, value) => {
+    const placeholder = parsePlaceholder(value)
+    if (!placeholder) return undefined
+    if (!entries.has(placeholder.id)) entries.set(placeholder.id, entryReleased)
+    return { replacement: undefined }
   }
 
   const createEntry = (kind: Kind): Entry => {
@@ -115,7 +127,7 @@ function createReceiver(onChange?: () => void) {
       value: kind === 'stream' ? stream : toAsyncIterable(stream),
       isSettled: false,
       push(line) {
-        if (entry.isSettled) return
+        if (entry.isSettled) return entryReleased.push(line)
         if (typeof line.t === 'string') controller.enqueue(new TextEncoder().encode(line.t))
         else if (typeof line.b === 'string') controller.enqueue(decodeBase64url(line.b))
         else if ('v' in line) controller.enqueue(parseTransform(line.v, { reviver }))
@@ -160,6 +172,16 @@ function createReceiver(onChange?: () => void) {
     isReleased: () => [...entries.values()].every((entry) => entry.isSettled),
     waitForDemand: () => new Promise<void>((resolve) => onDemand.push(resolve)),
   }
+}
+
+function parsePlaceholder(value: string): null | { id: number; kind: Kind } {
+  for (const [prefix, kind] of prefixes) {
+    if (!value.startsWith(prefix)) continue
+    const id = value.slice(prefix.length)
+    assert(/^\d+$/.test(id))
+    return { id: Number(id), kind }
+  }
+  return null
 }
 
 function getErrorLine(line: Line) {
