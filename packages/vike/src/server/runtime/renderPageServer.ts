@@ -167,8 +167,7 @@ async function renderPageServerEntryOnceBegin(
 
   const pageContextBegin = getPageContextBegin(pageContextInit, globalContext, requestId, asyncStore)
 
-  // `+middleware` (Universal Middlewares) are applied independently of page rendering, see
-  // getUniversalMiddlewares(). They aren't run here on purpose.
+  // +middleware isn't run here but before renderPage(), which a +middleware may call: see getUniversalMiddlewares()
   return renderPageServerEntryOnce(pageContextBegin, globalContext, requestId)
 }
 

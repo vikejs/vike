@@ -52,7 +52,6 @@ function pluginPreview(): Plugin[] {
             addStaticAssetsMiddleware(server.middlewares)
 
             if (!isPrerenderingEnabledForAllPages) {
-              // Apply `+middleware` (Universal Middlewares) before the SSR middleware, so they run for all URLs.
               addUniversalMiddlewares(server.middlewares)
               addSsrMiddleware(server.middlewares, config, true, isPrerenderingEnabled)
             }
