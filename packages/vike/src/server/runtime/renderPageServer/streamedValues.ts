@@ -21,7 +21,7 @@
 
 export { getStreamedValuesSerializer }
 export { pumpStreamedValues }
-export { cancel as cancelStreamedValues }
+export { cancelStreamedValues }
 export type { StreamedValue }
 
 import { stringify, type Replacer } from '@brillout/json-serializer/stringify'
@@ -49,14 +49,14 @@ function getKind(value: unknown): Kind | null {
 type Registry = {
   byValue: Map<unknown, StreamedValue>
   idNext: number
-  /** The values that are sent: referenced by the serialized pageContext or by a line */
-  sent: Set<unknown>
+  /** A value is cancelled once */
+  cancelled: Set<unknown>
 }
 const registries = new WeakMap<object, Registry>()
 function getRegistry(pageContext: object): Registry {
   let registry = registries.get(pageContext)
   if (!registry) {
-    registry = { byValue: new Map(), idNext: 0, sent: new Set() }
+    registry = { byValue: new Map(), idNext: 0, cancelled: new Set() }
     registries.set(pageContext, registry)
   }
   return registry
@@ -78,7 +78,8 @@ function getReplacer(registry: Registry, onValue: (streamedValue: StreamedValue)
 
 // The serialization of pageContext can be attempted several times (a non-serializable passToClient value is replaced with
 // NOT_SERIALIZABLE and the serialization is retried, see serializeContext.ts): only the values referenced by the attempt
-// that succeeded are sent, the others are cancelled.
+// that succeeded are sent. The others are cancelled when the response ends (a value that is sent may contain them), or
+// right away if no value is sent.
 function getStreamedValuesSerializer(pageContext: object) {
   const registry = getRegistry(pageContext)
   const seen = new Set<StreamedValue>()
@@ -93,26 +94,27 @@ function getStreamedValuesSerializer(pageContext: object) {
       used = new Set()
     },
     commit(): StreamedValue[] {
-      used.forEach(({ value }) => registry.sent.add(value))
-      cancel(
-        [...seen].filter((streamedValue) => !used.has(streamedValue)),
-        (value) => registry.sent.has(value),
-      )
+      if (used.size === 0) cancel(registry, [...seen])
       return [...used]
     },
   }
 }
 
+// All the values of pageContext (none of them is sent)
+function cancelStreamedValues(pageContext: object) {
+  const registry = getRegistry(pageContext)
+  cancel(registry, [...registry.byValue.values()])
+}
 // Cancels the values, except the ones that are sent (including the values a Promise resolves to)
 function cancel(
+  registry: Registry,
   streamedValues: StreamedValue[],
   isSent: (value: unknown) => boolean = () => false,
-  cancelled = new Set<unknown>(),
 ) {
   streamedValues.forEach(({ kind, value }) => {
     // E.g. a Promise resolving to an object containing that Promise
-    if (isSent(value) || cancelled.has(value)) return
-    cancelled.add(value)
+    if (isSent(value) || registry.cancelled.has(value)) return
+    registry.cancelled.add(value)
     if (kind === 'stream') {
       const stream = value as ReadableStream
       if (!stream.locked) stream.cancel().catch(() => {})
@@ -120,7 +122,7 @@ function cancel(
     if (kind === 'promise') {
       // Also avoids an unhandled rejection
       Promise.resolve(value).then(
-        (resolved) => cancel(findStreamedValues(resolved), isSent, cancelled),
+        (resolved) => cancel(registry, findStreamedValues(resolved), isSent),
         () => {},
       )
     }
@@ -189,7 +191,7 @@ function pumpStreamedValues(
     if (isEnded) return
     isEnded = true
     releases.forEach((release) => release())
-    cancel([...registry.byValue.values(), ...unsent], isStarted)
+    cancel(registry, [...registry.byValue.values(), ...unsent], isStarted)
     if (err) reject(err.err)
     else resolve()
   }
@@ -197,7 +199,6 @@ function pumpStreamedValues(
   const start = (streamedValue: StreamedValue) => {
     if (started.has(streamedValue) || isEnded) return
     started.add(streamedValue)
-    registry.sent.add(streamedValue.value)
     pending++
     pump(streamedValue).then(
       () => {
@@ -244,7 +245,7 @@ function pumpStreamedValues(
     try {
       if (kind === 'promise') {
         const resolved = await (value as Promise<unknown>)
-        if (isEnded) return cancel(findStreamedValues(resolved), isStarted)
+        if (isEnded) return cancel(registry, findStreamedValues(resolved), isStarted)
         await writeLine({ s, v: resolved })
         return
       }
@@ -261,7 +262,7 @@ function pumpStreamedValues(
       releases.add(release)
       while (true) {
         const { done, value: chunk } = await next()
-        if (isEnded) return cancel(findStreamedValues(chunk), isStarted)
+        if (isEnded) return cancel(registry, findStreamedValues(chunk), isStarted)
         if (done) break
         if (chunk instanceof Uint8Array) {
           const text = decodeUtf8(chunk)

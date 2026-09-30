@@ -6,11 +6,7 @@ export type { InjectFilterEntry }
 import { assert, assertWarning, assertUsage } from '../../../../../utils/assert.js'
 import { freezePartial } from '../../../../../utils/freezePartial.js'
 import { isObject } from '../../../../../utils/isObject.js'
-import {
-  type PageContextSerialization,
-  getGlobalContextClientSerialized,
-  getPageContextClientSerialized,
-} from '../serializeContext.js'
+import { type PageContextSerialization, getGlobalContextClientSerialized } from '../serializeContext.js'
 import { inferAssetTag, inferPreloadTag } from './inferHtmlTags.js'
 import { mergeScriptTags } from './mergeScriptTags.js'
 import type { PageContextInjectAssets } from '../injectAssets.js'
@@ -27,7 +23,7 @@ import {
 } from '../../../../../shared-server-client/htmlElementIds.js'
 import { isFontFallback } from '../../isFontFallback.js'
 import { inferNonceAttr, type PageContextCspNonce } from '../../csp.js'
-import { sendStreamedValuesInHtml, type PageContextStreamedValuesHtml } from '../streamedValuesHtml.js'
+import { serializePageContextHtml, type PageContextStreamedValuesHtml } from '../streamedValuesHtml.js'
 import '../../../../assertEnvServer.js'
 
 const stamp = '__injectFilterEntry'
@@ -260,11 +256,7 @@ function getPageContextJsonScriptTag(
   pageContext: PageContextSerialization & PageContextStreamedValuesHtml,
   streamFromReactStreamingPackage: null | StreamFromReactStreamingPackage,
 ): string {
-  const { pageContextSerialized: pageContextClientSerialized, streamedValues } = getPageContextClientSerialized(
-    pageContext,
-    true,
-  )
-  sendStreamedValuesInHtml(pageContext, streamedValues, streamFromReactStreamingPackage)
+  const pageContextClientSerialized = serializePageContextHtml(pageContext, streamFromReactStreamingPackage)
   const nonceAttr = inferNonceAttr(pageContext)
   const htmlTag = `<script id="${htmlElementId_pageContext}" type="application/json"${nonceAttr}>${pageContextClientSerialized}</script>`
   // Used by contra.com https://github.com/gajus

@@ -94,7 +94,7 @@ See [GitHub > `brillout/json-serializer` > #3 Support user-defined classes](http
 
 ## Streaming
 
-A `passToClient` value can be, or contain, a `Promise`, a `ReadableStream`, or an async iterable (e.g. an async generator). Vike sends `pageContext` to the client-side as soon as your hooks are done, without waiting for these values, and then sends them in the same HTTP response.
+A `passToClient` value can be, or contain, a `Promise`, a `ReadableStream`, or an async iterable (e.g. an async generator). Vike sends `pageContext` to the client-side without waiting for these values (except with an HTML string and upon pre-rendering, see below), and then sends them in the same HTTP response.
 
 ```ts
 // /pages/product/@id/+data.ts

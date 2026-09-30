@@ -5,6 +5,7 @@ import { stringify } from '@brillout/json-serializer/stringify'
 import { getStreamedValuesSerializer, pumpStreamedValues } from './streamedValues.js'
 import { getPageContextJson, getPageContextJsonFile } from './pageContextJson.js'
 import {
+  serializePageContextHtml,
   sendStreamedValuesInHtml,
   getStreamedValuesHtml,
   getStreamedValuesLinesPrerendered,
@@ -366,11 +367,12 @@ describe('streamed pageContext values: pre-rendering', () => {
 })
 
 describe('streamed pageContext values: serialization', () => {
-  it('only the values of the successful serialization attempt are sent, the others are cancelled', async () => {
+  it('only the values of the successful serialization attempt are sent, the others are cancelled at the end', async () => {
     const onCancel = vi.fn()
     const dropped = streamOf([], { onCancel })
     const kept = Promise.resolve(1)
-    const serializer = getStreamedValuesSerializer({})
+    const pageContext = {}
+    const serializer = getStreamedValuesSerializer(pageContext)
     serializer.beginAttempt()
     stringify({ dropped, kept }, { replacer: serializer.replacer })
     serializer.beginAttempt()
@@ -378,7 +380,7 @@ describe('streamed pageContext values: serialization', () => {
     const streamedValues = serializer.commit()
     expect(streamedValues.map((v) => v.value)).toEqual([kept])
     expect(serialized).toBe(`{"kept":"!VikePromise:${streamedValues[0]!.id}"}`)
-    await sleep(0)
+    await pumpStreamedValues(pageContext, streamedValues, () => {}, { failFast: false, onError: () => {} }).done
     expect(onCancel).toHaveBeenCalled()
   })
 
@@ -708,5 +710,67 @@ describe('streamed pageContext values: values that are not sent', () => {
     expect(() => serializer.commit()).not.toThrow()
     await sleep(0)
     expect(onCancel).toHaveBeenCalled()
+  })
+})
+
+describe('streamed pageContext values: cancelled once, only when not sent', () => {
+  const getPageContext = (props: Record<string, unknown>) =>
+    ({
+      pageId: '/pages/index',
+      routeParams: {},
+      is404: null,
+      _passToClient: Object.keys(props),
+      _pageContextInit: {},
+      _globalContext: { _pageConfigs: [{ pageId: '/pages/index', isErrorPage: undefined }] },
+      _isHtmlOnly: false,
+      cspNonce: null,
+      isPrerendering: false,
+      _requestId: 1,
+      ...props,
+    }) as any
+
+  it('a stream in a property the serialization retry discards is still sent by a kept Promise', async () => {
+    const shared = streamOf([enc('kept')])
+    const pageContext = {}
+    const serializer = getStreamedValuesSerializer(pageContext)
+    serializer.beginAttempt()
+    expect(() => stringify({ bad: { shared, fn() {} } }, { replacer: serializer.replacer })).toThrow()
+    serializer.beginAttempt()
+    stringify({ bad: 'NOT_SERIALIZABLE', good: Promise.resolve({ shared }) }, { replacer: serializer.replacer })
+    const streamedValues = serializer.commit()
+    const lines: string[] = []
+    await pumpStreamedValues(pageContext, streamedValues, (line) => void lines.push(line), {
+      failFast: false,
+      onError: () => {},
+    }).done
+    expect(lines).toEqual([`{"s":1,"v":{"shared":"!VikeStream:0"}}`, `{"s":0,"t":"kept"}`, `{"s":0,"end":true}`])
+  })
+
+  it('HTML: a value cancelled before the pageContext is serialized is cancelled once', async () => {
+    let returned = 0
+    const iterable = {
+      [Symbol.asyncIterator]() {
+        return { next: () => new Promise(() => {}), return: async () => (returned++, { done: true, value: undefined }) }
+      },
+    }
+    const pageContext = getPageContext({ iterable })
+    cancelStreamedValuesHtml(pageContext)
+    serializePageContextHtml(pageContext, null)
+    await sleep(10)
+    expect(returned).toBe(1)
+  })
+
+  it('HTML: without streamed values, a cancellation serializes nothing more', () => {
+    let reads = 0
+    const pageContext = getPageContext({})
+    Object.defineProperty(pageContext, 'data', {
+      enumerable: true,
+      get: () => (reads++, { plain: 1 }),
+    })
+    pageContext._passToClient = ['data']
+    serializePageContextHtml(pageContext, null)
+    const readsSerialized = reads
+    cancelStreamedValuesHtml(pageContext)
+    expect(reads).toBe(readsSerialized)
   })
 })
