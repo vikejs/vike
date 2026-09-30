@@ -54,7 +54,9 @@ describe('createHttpResponsePageContent', () => {
     expect(await readNode(await get().getReadableNodeStream())).toEqual(bytes)
     expect(await pipeNode(get())).toEqual(bytes)
     expect(await pipeWeb(get())).toEqual(bytes)
-    expect(await get().getBody()).toBe(new TextDecoder().decode(bytes))
+    await expect(get().getBody()).rejects.toThrow("pageContext.httpResponse.getBody() can't be used")
+    const text = new TextEncoder().encode('Café')
+    expect(await createHttpResponsePageContent(text, renderHook, pageContext).getBody()).toBe('Café')
     expect(() => get().body).toThrow("pageContext.httpResponse.body can't be used")
   })
 

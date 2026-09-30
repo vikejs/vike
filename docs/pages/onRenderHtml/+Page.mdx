@@ -87,8 +87,6 @@ Upon <Link href="/pre-rendering">pre-rendering</Link>, the content is written to
 
 > Add `rel="external"` to links pointing to non-HTML pages (e.g. `<a href="/feed.atom" rel="external">`), so that the browser fetches them instead of Vike's client-side router. See <Link href="/clientRouting#links-intercepting" />.
 
-> If your server uses `pageContext.httpResponse.body` (see <Link href="/renderPage" />), use `pageContext.httpResponse.pipe()` or `pageContext.httpResponse.getReadableWebStream()` for binary and streamed content instead: `httpResponse.body` works only with a string and <Link href="/streaming#pagecontext-httpresponse-getbody">`httpResponse.getBody()`</Link> decodes the content as UTF-8 text.
-
 
 ## See also
 

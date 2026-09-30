@@ -106,7 +106,21 @@ function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender | Uint8Array, 
     },
     // Decodes the body as UTF-8 text
     async getBody(): Promise<string> {
-      if (htmlRender instanceof Uint8Array) return new TextDecoder().decode(htmlRender)
+      if (htmlRender instanceof Uint8Array) {
+        try {
+          return new TextDecoder('utf-8', { fatal: true }).decode(htmlRender)
+        } catch {
+          assertUsage(
+            false,
+            getErrMsg(
+              htmlRender,
+              renderHook,
+              'getBody()',
+              `The Uint8Array isn't UTF-8 text: use ${pc.cyan('pageContext.httpResponse.pipe()')} instead`,
+            ),
+          )
+        }
+      }
       const body = await getHtmlString(htmlRender)
       return body
     },
