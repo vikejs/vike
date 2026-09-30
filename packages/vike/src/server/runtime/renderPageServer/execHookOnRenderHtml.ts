@@ -80,8 +80,7 @@ async function execHookOnRenderHtml(
     }
   }
 
-  // The render hook sets `pageContext.content` instead of returning `documentHtml`.
-  // If it returns a value then `pageContext.content` isn't the content: it can be the user's own property (e.g. set by onBeforeRender() or declared by `Vike.PageContext['content']`).
+  // The render hook sets `pageContext.content` instead of returning `documentHtml`
   if (hookReturn === undefined && pageContext.content !== undefined) {
     const content = await getContent(pageContext.content, onErrorWhileStreaming)
     return { content, htmlRender: null, renderHook: hook }
