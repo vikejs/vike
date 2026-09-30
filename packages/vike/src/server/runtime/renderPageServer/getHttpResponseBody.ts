@@ -167,7 +167,7 @@ function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender, renderHook: n
   function getFixMsg(kind: 'pipe' | 'readable', type: 'web' | 'node') {
     const streamName = getStreamName(kind, type)
     assert(['a ', 'an ', 'the '].some((s) => streamName.startsWith(s)))
-    assert(renderHook)
+    if (!renderHook) return `Use ${pc.cyan('pageContext.httpResponse.pipe()')} instead`
     const { hookFilePath, hookName } = renderHook
     return `Make sure the ${hookName}() hook defined by ${hookFilePath} provides ${streamName} instead`
   }
@@ -181,7 +181,8 @@ function getErrMsg(htmlRender: HtmlRender, renderHook: null | RenderHook, method
     .join('. ')
 }
 function getErrMsgBody(htmlRender: HtmlRender, renderHook: null | RenderHook) {
-  assert(renderHook)
+  // E.g. a pageContext.json response with streamed pageContext values
+  if (!renderHook) return `HTTP response body is ${getHookReturnType(htmlRender)}`
   const { hookFilePath, hookName } = renderHook
   const hookReturnType = getHookReturnType(htmlRender)
   assert(['a ', 'an ', 'the '].some((s) => hookReturnType.startsWith(s)))

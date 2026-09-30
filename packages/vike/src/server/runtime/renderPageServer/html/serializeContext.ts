@@ -5,7 +5,7 @@ export type { PageContextSerialization }
 export type { PassToClient }
 export type { PassToClientPublic }
 
-import { stringify, isJsonSerializerError } from '@brillout/json-serializer/stringify'
+import { stringify, isJsonSerializerError, type Replacer } from '@brillout/json-serializer/stringify'
 import { unique } from '../../../../utils/unique.js'
 import { getPropAccessNotation } from '../../../../utils/getPropAccessNotation.js'
 import { assert, assertUsage, assertWarning } from '../../../../utils/assert.js'
@@ -21,6 +21,7 @@ import type { GlobalContextServerInternal } from '../../globalContext.js'
 import type { PageContextCreatedServer } from '../createPageContextServer.js'
 import type { PageContextBegin } from '../../renderPageServer.js'
 import type { PageContextCspNonce } from '../csp.js'
+import { getStreamedValuesSerializer, type StreamedValue } from '../streamedValues.js'
 import { assertRouteParams } from '../../../../shared-server-client/route/resolveRouteFunction.js'
 import '../../../assertEnvServer.js'
 
@@ -50,7 +51,12 @@ type PageContextSerialization = PageContextCreatedServer & {
   _globalContext: GlobalContextServerInternal
   _isPageContextJsonRequest: null | PageContextBegin['_isPageContextJsonRequest']
 } & PageContextCspNonce
-function getPageContextClientSerialized(pageContext: PageContextSerialization, isHtmlJsonScript: boolean) {
+// Streamed pageContext values (see ../streamedValues.ts) are serialized as placeholders and returned: the caller sends
+// them after the serialized pageContext.
+function getPageContextClientSerialized(
+  pageContext: PageContextSerialization,
+  isHtmlJsonScript: boolean,
+): { pageContextSerialized: string; streamedValues: StreamedValue[] } {
   const passToClientPageContext = getPassToClientPageContext(pageContext)
 
   const res = applyPassToClient(passToClientPageContext, pageContext)
@@ -61,13 +67,16 @@ function getPageContextClientSerialized(pageContext: PageContextSerialization, i
     pageContextClient[pageContextInitIsPassedToClient] = true
   }
 
-  const pageContextClientSerialized = serializeObject(
+  const streamedValuesSerializer = getStreamedValuesSerializer(pageContext)
+  const pageContextSerialized = serializeObject(
     pageContextClient,
     passToClientPageContext,
     'pageContext',
     isHtmlJsonScript,
+    streamedValuesSerializer,
   )
-  return pageContextClientSerialized
+  const streamedValues = streamedValuesSerializer.commit()
+  return { pageContextSerialized, streamedValues }
 }
 
 function getGlobalContextClientSerialized(pageContext: PageContextSerialization, isHtmlJsonScript: boolean) {
@@ -89,10 +98,13 @@ function serializeObject(
   passToClient: PassToClient,
   objName: 'pageContext' | 'globalContext',
   isHtmlJsonScript: boolean,
+  streamedValuesSerializer?: { replacer: Replacer; beginAttempt(): void },
 ) {
+  const replacer = streamedValuesSerializer?.replacer
   let serialized: string
   try {
-    serialized = serializeValue(obj, isHtmlJsonScript)
+    streamedValuesSerializer?.beginAttempt()
+    serialized = serializeValue(obj, isHtmlJsonScript, undefined, replacer)
   } catch (err) {
     const h = (s: string) => pc.cyan(s)
     let hasWarned = false
@@ -103,7 +115,7 @@ function serializeObject(
       const { value } = res
       const varName = `${objName}${getPropKeys(prop).map(getPropAccessNotation).join('')}` as const
       try {
-        serializeValue(value, isHtmlJsonScript, varName)
+        serializeValue(value, isHtmlJsonScript, varName, replacer)
       } catch (err) {
         propsNonSerializable.push(prop)
 
@@ -141,7 +153,8 @@ function serializeObject(
       obj[getPropKeys(prop)[0]!] = NOT_SERIALIZABLE
     })
     try {
-      serialized = serializeValue(obj, isHtmlJsonScript)
+      streamedValuesSerializer?.beginAttempt()
+      serialized = serializeValue(obj, isHtmlJsonScript, undefined, replacer)
     } catch (err) {
       assert(false)
     }
@@ -152,10 +165,12 @@ function serializeValue(
   value: unknown,
   isHtmlJsonScript: boolean,
   varName?: `pageContext${string}` | `globalContext${string}`,
+  replacer?: Replacer,
 ): string {
   return stringify(value, {
     forbidReactElements: true,
     valueName: varName,
+    replacer,
     htmlScriptSafe: {
       // Could be set to `isHtmlJsonScript` but we always use `htmlScriptSafe.escapeScripts` to be extra safe
       escapeScripts: true,

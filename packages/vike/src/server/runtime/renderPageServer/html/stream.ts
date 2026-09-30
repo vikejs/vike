@@ -239,7 +239,8 @@ function pipeToStreamWritableWeb(htmlRender: HtmlRender, writable: StreamWritabl
     return true
   }
   if (isStreamReadableWeb(htmlRender)) {
-    htmlRender.pipeTo(writable)
+    // A failed pipe aborts `writable` (the error is handled by the stream's producer)
+    htmlRender.pipeTo(writable).catch(() => {})
     return true
   }
   if (isStreamPipeWeb(htmlRender)) {
@@ -271,7 +272,15 @@ function pipeToStreamWritableNode(htmlRender: HtmlRender, writable: StreamWritab
     return true
   }
   if (isStreamReadableWeb(htmlRender)) {
-    streamReadableWebToStreamReadableNode(htmlRender).then((s) => s.pipe(writable))
+    streamReadableWebToStreamReadableNode(htmlRender).then((readable) => {
+      // pipe() doesn't forward errors, nor the writable closing (e.g. the user closed the tab): the Web Stream would be
+      // left open (and its producer never cancelled)
+      readable.on('error', (err) => writable.destroy(err))
+      writable.on('close', () => {
+        if (!readable.readableEnded) readable.destroy()
+      })
+      readable.pipe(writable)
+    })
     return true
   }
   if (isStreamPipeWeb(htmlRender)) {
@@ -289,12 +298,16 @@ async function processStream(
     injectStringAtEnd,
     onErrorWhileStreaming,
     enableEagerStreaming,
+    onCancel,
   }: {
     injectStringAtBegin?: () => Promise<string>
     injectStringAfterFirstChunk?: () => string | null
-    injectStringAtEnd?: () => Promise<string>
+    /** `writeHtml()` writes HTML before the returned string (e.g. streamed pageContext values) */
+    injectStringAtEnd?: (writeHtml: (html: string) => void) => Promise<string>
     onErrorWhileStreaming: (err: unknown) => void
     enableEagerStreaming?: boolean
+    /** The consumer cancelled the stream (e.g. the user closed the tab) */
+    onCancel?: () => void
   },
 ): Promise<StreamProviderNormalized> {
   const buffer: unknown[] = []
@@ -362,6 +375,9 @@ async function processStream(
       })
     },
     async onEnd(isCancel) {
+      if (isCancel) onCancel?.()
+      // Cancelled while ending (e.g. while writing streamed pageContext values)
+      if (isCancel && onEndWasCalled) return
       try {
         assert(!onEndWasCalled)
         onEndWasCalled = true
@@ -371,7 +387,10 @@ async function processStream(
           streamOriginalEnded = true
         })
         if (injectStringAtEnd && !isCancel) {
-          const injectedChunk = await injectStringAtEnd()
+          const injectedChunk = await injectStringAtEnd((html) => {
+            writeStream(html)
+            flushStream()
+          })
           writeStream(injectedChunk)
         }
         await promiseReadyToWrite // E.g. if the user calls the pipe wrapper after the original writable has ended
@@ -393,6 +412,9 @@ async function processStream(
     },
     onFlush() {
       flushStream()
+    },
+    onCancel() {
+      onCancel?.()
     },
   })
   wrapperCreated = true
@@ -471,6 +493,7 @@ async function createStreamWrapper({
   onEnd,
   onFlush,
   onReadyToWrite,
+  onCancel,
 }: {
   streamOriginal: StreamProviderAny
   onError: (err: unknown) => void
@@ -478,6 +501,7 @@ async function createStreamWrapper({
   onEnd: (isCancel?: boolean) => Promise<void>
   onFlush: () => void
   onReadyToWrite: () => void
+  onCancel: () => void
 }): Promise<{
   streamWrapper: StreamProviderNormalized
   streamWrapperOperations: { writeChunk: (chunk: unknown) => void; flushStream: null | (() => void) }
@@ -495,6 +519,9 @@ async function createStreamWrapper({
     const pipeProxy: StreamPipeNode = (writable_: StreamWritableNode) => {
       writableOriginal = writable_
       debug('original Node.js Writable received')
+      writableOriginal.on('close', () => {
+        if (!hasEnded) onCancel()
+      })
       onReadyToWrite()
       if (hasEnded) {
         // onReadyToWrite() already wrote everything; we can close the stream right away
@@ -564,6 +591,7 @@ async function createStreamWrapper({
     const pipeProxy: StreamPipeWeb = (writableOriginal: StreamWritableWeb) => {
       writerOriginal = writableOriginal.getWriter()
       debug('original Web Writable received')
+      writerOriginal.closed.catch(() => onCancel())
       ;(async () => {
         // CloudFlare Workers does not implement `ready` property
         //  - https://github.com/vuejs/vue-next/issues/4287
@@ -714,6 +742,9 @@ async function createStreamWrapper({
       readableProxy.push(null)
     }
     const readableProxy: StreamReadableNode = new Readable({ read() {} })
+    readableProxy.on('close', () => {
+      if (!readableProxy.readableEnded) onCancel()
+    })
 
     onReadyToWrite()
 

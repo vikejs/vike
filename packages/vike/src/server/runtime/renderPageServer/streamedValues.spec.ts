@@ -1,0 +1,398 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+vi.mock('../../../client/assertEnvClient.js', () => ({}))
+vi.mock('../loggerRuntime.js', () => ({ logRuntimeError: vi.fn() }))
+import { stringify } from '@brillout/json-serializer/stringify'
+import { getStreamedValuesSerializer, pumpStreamedValues } from './streamedValues.js'
+import { getPageContextJson, getPageContextJsonFile } from './pageContextJson.js'
+import {
+  sendStreamedValuesInHtml,
+  getStreamedValuesHtml,
+  getStreamedValuesLinesPrerendered,
+} from './html/streamedValuesHtml.js'
+import { parsePageContextHtml, readPageContextJson } from '../../../client/shared/streamedValues.js'
+import { logRuntimeError } from '../loggerRuntime.js'
+
+const enc = (s: string) => new TextEncoder().encode(s)
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
+function streamOf(chunks: unknown[], opts: { onPull?: () => void; onCancel?: () => void; errorAt?: number } = {}) {
+  let i = 0
+  return new ReadableStream<unknown>(
+    {
+      pull(c) {
+        opts.onPull?.()
+        if (i === opts.errorAt) c.error(new Error('stream failed'))
+        else if (i < chunks.length) c.enqueue(chunks[i++])
+        else c.close()
+      },
+      cancel: () => opts.onCancel?.(),
+    },
+    { highWaterMark: 0 },
+  )
+}
+function deferred<T = unknown>() {
+  let resolve!: (v: T) => void
+  let reject!: (e: unknown) => void
+  const promise = new Promise<T>((res, rej) => {
+    resolve = res
+    reject = rej
+  })
+  return { promise, resolve, reject }
+}
+async function readAll(value: unknown): Promise<unknown[]> {
+  const chunks: unknown[] = []
+  if (value instanceof ReadableStream) {
+    const reader = value.getReader()
+    while (true) {
+      const { done, value: chunk } = await reader.read()
+      if (done) return chunks
+      chunks.push(chunk)
+    }
+  }
+  for await (const chunk of value as AsyncIterable<unknown>) chunks.push(chunk)
+  return chunks
+}
+
+function serialize(obj: Record<string, unknown>, pageContext: object) {
+  const serializer = getStreamedValuesSerializer(pageContext)
+  serializer.beginAttempt()
+  const serialized = stringify(obj, { replacer: serializer.replacer })
+  return { serialized, streamedValues: serializer.commit() }
+}
+
+// Client-side navigation: the server's `.pageContext.json` body, read by the client
+async function navigation(obj: Record<string, unknown>, { withText = false } = {}) {
+  const pageContext = {}
+  const { serialized, streamedValues } = serialize(obj, pageContext)
+  const onError = vi.fn()
+  let body = getPageContextJson(serialized, streamedValues, pageContext, onError)
+  if (typeof body === 'string') return { body, onError, pageContext: JSON.parse(body) }
+  let text: undefined | Promise<string>
+  // tee() reads the whole body (no backpressure, no cancellation)
+  if (withText) {
+    const [forClient, forText] = body.tee()
+    body = forClient
+    text = new Response(forText).text()
+  }
+  const reader = body.getReader()
+  const decoder = new TextDecoder()
+  let buffer = ''
+  while (true) {
+    const { done, value } = await reader.read()
+    buffer += decoder.decode(value, { stream: !done })
+    const i = buffer.indexOf('\n')
+    if (i !== -1) {
+      const res = readPageContextJson(buffer.slice(0, i), buffer.slice(i + 1), reader, decoder)
+      return { ...res, pageContext: res.pageContextFromServer as any, text, onError }
+    }
+    expect(done).toBe(false)
+  }
+}
+
+// First render: the server's `<script>` tags, run by the "browser", read by the client
+function setBrowser() {
+  const g = globalThis as any
+  g.self = globalThis
+  g.document = { readyState: 'loading', addEventListener: (_: string, fn: () => void) => (g.__onHtmlEnd = fn) }
+  delete g.__vike_streamed
+}
+function runScripts(html: string, nonce: string) {
+  const scripts = [...html.matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/g)]
+  expect(scripts.map((s) => s[0]).join('')).toBe(html)
+  scripts.forEach(([, attrs, content]) => {
+    expect(attrs).toBe(` nonce="${nonce}"`)
+    expect(content).not.toMatch(/<\/script|<!--|<script/i)
+    new Function(content!)()
+  })
+}
+async function firstRender(obj: Record<string, unknown>, { runScriptsFirst = false } = {}) {
+  setBrowser()
+  const pageContextServer = { cspNonce: 'n0nce', isPrerendering: false, _requestId: 1 } as any
+  const { serialized, streamedValues } = serialize(obj, pageContextServer)
+  sendStreamedValuesInHtml(pageContextServer, streamedValues, null)
+  const getHtml = async () => (await getStreamedValuesHtml(pageContextServer))!
+  let pageContext: any
+  if (runScriptsFirst) {
+    runScripts(await getHtml(), 'n0nce')
+    pageContext = parsePageContextHtml(serialized)
+  } else {
+    pageContext = parsePageContextHtml(serialized)
+    // The scripts run after the client runtime loaded
+    getHtml().then((html) => runScripts(html, 'n0nce'))
+  }
+  return { pageContext, htmlEnded: () => (globalThis as any).__onHtmlEnd(), getHtml }
+}
+
+const bytes = Uint8Array.from({ length: 256 }, (_, i) => i)
+function getValues() {
+  async function* generator() {
+    yield 1
+    yield { date: new Date(0), inner: Promise.resolve('from generator') }
+    yield enc('text')
+  }
+  const shared = Promise.resolve('shared')
+  return {
+    normal: { a: 1, s: '!VikeStream:0', u: undefined },
+    stream: streamOf([enc('hello\n'), bytes, enc('€').slice(0, 2), { obj: true }]),
+    promise: Promise.resolve({ bytes, map: new Map([[1, 2]]) }),
+    generator: generator(),
+    nested: Promise.resolve({ stream: streamOf([enc('nested')]), deeper: Promise.resolve(Promise.resolve(42)) }),
+    array: [shared, shared],
+  }
+}
+async function expectValues(pageContext: any) {
+  expect(pageContext.normal).toEqual({ a: 1, s: '!VikeStream:0', u: undefined })
+  expect(pageContext.stream).toBeInstanceOf(ReadableStream)
+  const chunks = await readAll(pageContext.stream)
+  expect(new TextDecoder().decode(chunks[0] as Uint8Array)).toBe('hello\n')
+  expect(chunks[1]).toEqual(bytes)
+  expect(chunks[2]).toEqual(enc('€').slice(0, 2))
+  expect(chunks[3]).toEqual({ obj: true })
+  expect(await pageContext.promise).toEqual({ bytes, map: new Map([[1, 2]]) })
+  const generated = await readAll(pageContext.generator)
+  expect(generated[0]).toBe(1)
+  expect((generated[1] as any).date).toEqual(new Date(0))
+  expect(await (generated[1] as any).inner).toBe('from generator')
+  expect(generated[2]).toEqual(enc('text'))
+  const nested = await pageContext.nested
+  expect(await readAll(nested.stream)).toEqual([enc('nested')])
+  expect(await nested.deeper).toBe(42)
+  // The same value referenced twice is one value
+  expect(pageContext.array[0]).toBe(pageContext.array[1])
+  expect(await pageContext.array[0]).toBe('shared')
+}
+
+beforeEach(() => {
+  vi.mocked(logRuntimeError).mockClear()
+})
+
+describe('streamed pageContext values: client-side navigation', () => {
+  it('round-trips every kind, nested and mixed, with exact bytes', async () => {
+    const { pageContext, text, onError } = await navigation(getValues(), { withText: true })
+    await expectValues(pageContext)
+    expect(onError).not.toHaveBeenCalled()
+    // The body is one valid JSON value
+    const json = JSON.parse(await text!)
+    expect(json.stream).toBe('!VikeStream:0')
+    expect(json._streamedValues.at(-1)).toEqual({ s: expect.any(Number), end: true })
+  })
+
+  it('without streamed values: the body is the serialized pageContext, as is', async () => {
+    const { body } = await navigation({ a: 1, date: new Date(0) })
+    expect(body).toBe(stringify({ a: 1, date: new Date(0) }))
+    expect(getPageContextJsonFile('{"a":1}', null)).toBe('{"a":1}')
+  })
+
+  it('sends the pageContext before the values are produced, and each chunk as produced', async () => {
+    const chunk2 = deferred<void>()
+    let produced = 0
+    async function* slow() {
+      produced++
+      yield 'first'
+      await chunk2.promise
+      produced++
+      yield 'last'
+    }
+    const promise = deferred<string>()
+    const { pageContext } = await navigation({ gen: slow(), promise: promise.promise })
+    const it = pageContext.gen[Symbol.asyncIterator]()
+    expect(await it.next()).toEqual({ done: false, value: 'first' })
+    expect(produced).toBe(1)
+    chunk2.resolve()
+    expect(await it.next()).toEqual({ done: false, value: 'last' })
+    promise.resolve('later')
+    expect(await pageContext.promise).toBe('later')
+  })
+
+  it('a failing value fails alone; the error is logged, not sent', async () => {
+    const values = {
+      rejected: Promise.reject(new Error('secret')),
+      failing: streamOf([enc('a'), enc('b')], { errorAt: 1 }),
+      throwing: (async function* () {
+        yield 'x'
+        throw new Error('generator failed')
+      })(),
+      nonSerializable: Promise.resolve({ fn: () => {} }),
+      ok: Promise.resolve('ok'),
+    }
+    const { pageContext, onError, text } = await navigation(values, { withText: true })
+    await expect(pageContext.rejected).rejects.toThrow('failed on the server-side')
+    const reader = pageContext.failing.getReader()
+    expect(await reader.read()).toEqual({ done: false, value: enc('a') })
+    await expect(reader.read()).rejects.toThrow('failed on the server-side')
+    const it = pageContext.throwing[Symbol.asyncIterator]()
+    expect((await it.next()).value).toBe('x')
+    await expect(it.next()).rejects.toThrow('failed on the server-side')
+    await expect(pageContext.nonSerializable).rejects.toThrow('failed on the server-side')
+    expect(await pageContext.ok).toBe('ok')
+    expect(onError).toHaveBeenCalledTimes(4)
+    expect(await text).not.toContain('secret')
+  })
+
+  it('the client going away cancels all values on the server', async () => {
+    const onCancel = vi.fn()
+    const onReturn = vi.fn()
+    async function* infinite() {
+      try {
+        while (true) yield 'tick'
+      } finally {
+        onReturn()
+      }
+    }
+    const { cancel } = await navigation({ s: streamOf(Array(1000).fill(enc('x')), { onCancel }), g: infinite() })
+    cancel()
+    await sleep(10)
+    expect(onCancel).toHaveBeenCalled()
+    expect(onReturn).toHaveBeenCalled()
+  })
+
+  it('a consumer releasing all values releases the response', async () => {
+    const onCancel = vi.fn()
+    const { pageContext } = await navigation({ s: streamOf(Array(1000).fill(enc('x')), { onCancel }) })
+    const reader = pageContext.s.getReader()
+    await reader.read()
+    await reader.cancel()
+    await sleep(10)
+    expect(onCancel).toHaveBeenCalled()
+  })
+
+  it('backpressure: a slow consumer pauses the producers', async () => {
+    let pulls = 0
+    const big = enc('x'.repeat(10_000))
+    const { pageContext, cancel } = await navigation({
+      s1: streamOf(Array(200).fill(big), { onPull: () => pulls++ }),
+      s2: streamOf(Array(200).fill(big), { onPull: () => pulls++ }),
+    })
+    await sleep(50)
+    // The client buffers 16 chunks per stream, the server 64 KiB: far from the 400 chunks (4 MB)
+    expect(pulls).toBeLessThan(60)
+    await pageContext.s1.getReader().read()
+    cancel()
+  })
+
+  it('a truncated response fails the values that did not end', async () => {
+    const reader = new Response('x\n{"s":0,"v":1}\n').body!.getReader()
+    const { pageContextFromServer } = readPageContextJson(
+      '{"a":"!VikePromise:0","b":"!VikeStream:1","_streamedValues":[',
+      '',
+      reader,
+      new TextDecoder(),
+    )
+    const pageContext = pageContextFromServer as any
+    expect(pageContext._streamedValues).toBe(undefined)
+    await expect(pageContext.a).rejects.toThrow()
+    await expect(readAll(pageContext.b)).rejects.toThrow()
+  })
+
+  it('pageContext._streamedValues is reserved', async () => {
+    await expect(navigation({ _streamedValues: 1, p: Promise.resolve() })).rejects.toThrow('reserved')
+  })
+})
+
+describe('streamed pageContext values: first render (HTML)', () => {
+  it('round-trips every kind, with the CSP nonce, whether the scripts run before or after the client runtime', async () => {
+    await expectValues((await firstRender(getValues())).pageContext)
+    await expectValues((await firstRender(getValues(), { runScriptsFirst: true })).pageContext)
+  })
+
+  it("escapes </script> and <!-- (the script can't be broken out of)", async () => {
+    const xss = '</script><script>alert(1)</script><!--  '
+    const { pageContext, getHtml } = await firstRender({
+      p: Promise.resolve({ xss }),
+      s: streamOf([enc(xss)]),
+      g: (async function* () {
+        yield xss
+      })(),
+    })
+    expect(await pageContext.p).toEqual({ xss })
+    expect(new TextDecoder().decode((await readAll(pageContext.s))[0] as Uint8Array)).toBe(xss)
+    expect(await readAll(pageContext.g)).toEqual([xss])
+    expect(await getHtml()).not.toContain('</script><script>alert')
+  })
+
+  it('a stream failing mid-way: the chunks before the error are read, then the error', async () => {
+    for (const runScriptsFirst of [true, false]) {
+      const { pageContext } = await firstRender({ failing: streamOf([enc('a')], { errorAt: 1 }) }, { runScriptsFirst })
+      const reader = pageContext.failing.getReader()
+      expect(await reader.read()).toEqual({ done: false, value: enc('a') })
+      await expect(reader.read()).rejects.toThrow('failed on the server-side')
+    }
+  })
+
+  it('the HTML ending before the values end fails them', async () => {
+    const { pageContext, htmlEnded } = await firstRender({ p: new Promise(() => {}) })
+    htmlEnded()
+    await expect(pageContext.p).rejects.toThrow('The HTML ended')
+  })
+})
+
+describe('streamed pageContext values: pre-rendering', () => {
+  it('the HTML and index.pageContext.json have the same lines, read once', async () => {
+    let pulls = 0
+    const pageContext = { cspNonce: null, isPrerendering: true, _requestId: 1 } as any
+    const { serialized, streamedValues } = serialize(
+      { s: streamOf([enc('a'), bytes], { onPull: () => pulls++ }), p: Promise.resolve(1) },
+      pageContext,
+    )
+    sendStreamedValuesInHtml(pageContext, streamedValues, null)
+    const html = (await getStreamedValuesHtml(pageContext))!
+    // The pageContext.json is serialized after the HTML: same ids
+    const { serialized: serializedJson, streamedValues: streamedValuesJson } = serialize(
+      { s: streamedValues[0]!.value, p: streamedValues[1]!.value },
+      pageContext,
+    )
+    expect(streamedValuesJson).toEqual(streamedValues)
+    const lines = (await getStreamedValuesLinesPrerendered(pageContext))!
+    const file = getPageContextJsonFile(serializedJson, lines)
+    const json = JSON.parse(file)
+    expect(json._streamedValues).toHaveLength(lines.length)
+    expect(lines.every((line) => html.includes(JSON.stringify(line).slice(1, -1).replaceAll('/', '\\/')))).toBe(true)
+    expect(pulls).toBe(3)
+    expect(serialized).toBe(serializedJson)
+  })
+
+  it('a failing value fails the pre-rendering', async () => {
+    const onCancel = vi.fn()
+    const pageContext = { cspNonce: null, isPrerendering: true, _requestId: 1 } as any
+    const { streamedValues } = serialize(
+      { p: Promise.reject(new Error('boom')), s: streamOf([enc('a')], { onCancel }) },
+      pageContext,
+    )
+    sendStreamedValuesInHtml(pageContext, streamedValues, null)
+    await getStreamedValuesHtml(pageContext)
+    await expect(getStreamedValuesLinesPrerendered(pageContext)).rejects.toThrow('boom')
+  })
+})
+
+describe('streamed pageContext values: serialization', () => {
+  it('only the values of the successful serialization attempt are sent, the others are cancelled', async () => {
+    const onCancel = vi.fn()
+    const dropped = streamOf([], { onCancel })
+    const kept = Promise.resolve(1)
+    const serializer = getStreamedValuesSerializer({})
+    serializer.beginAttempt()
+    stringify({ dropped, kept }, { replacer: serializer.replacer })
+    serializer.beginAttempt()
+    const serialized = stringify({ kept }, { replacer: serializer.replacer })
+    const streamedValues = serializer.commit()
+    expect(streamedValues.map((v) => v.value)).toEqual([kept])
+    expect(serialized).toBe(`{"kept":"!VikePromise:${streamedValues[0]!.id}"}`)
+    await sleep(0)
+    expect(onCancel).toHaveBeenCalled()
+  })
+
+  it('without streamed values, the serialization is unchanged', () => {
+    const obj = { a: [1, '!x', new Date(0)], b: { c: undefined } }
+    expect(serialize(obj, {}).serialized).toBe(stringify(obj))
+  })
+
+  it('writes the line introducing a value before the lines of that value', async () => {
+    const lines: string[] = []
+    const pageContext = {}
+    const { streamedValues } = serialize({ p: Promise.resolve({ inner: Promise.resolve(1) }) }, pageContext)
+    await pumpStreamedValues(pageContext, streamedValues, (line) => void lines.push(line), {
+      failFast: false,
+      onError: () => {},
+    }).done
+    expect(lines).toEqual(['{"s":0,"v":{"inner":"!VikePromise:1"}}', '{"s":1,"v":1}'])
+  })
+})

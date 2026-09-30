@@ -76,6 +76,7 @@ import type { PageContextInit, PageContextInitInternal, PageContextInternalServe
 import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.js'
 import { forkPageContext } from '../../shared-server-client/forkPageContext.js'
 import { getAsyncLocalStorage, type AsyncStore } from './asyncHook.js'
+import { getPageContextJson } from './renderPageServer/pageContextJson.js'
 import '../assertEnvServer.js'
 import {
   enhance,
@@ -666,7 +667,7 @@ async function handleAbort(
 
   // Client-side navigation — [`pageContext.json` request](https://vike.dev/pageContext.json)
   if (pageContextBegin.isClientSideNavigation) {
-    let pageContextSerialized: string
+    let pageContextJson: string | ReadableStream<Uint8Array>
     if (pageContextAbort.abortStatusCode) {
       const errorPageId = getErrorPageId(globalContext._pageFilesAll, globalContext._pageConfigs)
       const abortCall = pageContextAbort._abortCall
@@ -681,11 +682,14 @@ async function handleAbort(
       objectAssign(pageContext, pageContextErrorPageInit, true)
       updateType(pageContext, await loadPageConfigsLazyServerSide(pageContext))
       // We include pageContextInit: we don't only serialize pageContextAbort because the error page may need to access pageContextInit
-      pageContextSerialized = getPageContextClientSerialized(pageContext, false)
+      const { pageContextSerialized, streamedValues } = getPageContextClientSerialized(pageContext, false)
+      pageContextJson = getPageContextJson(pageContextSerialized, streamedValues, pageContext, (err) =>
+        logRuntimeError(err, pageContext),
+      )
     } else {
-      pageContextSerialized = getPageContextClientSerializedAbort(pageContextAbort, false)
+      pageContextJson = getPageContextClientSerializedAbort(pageContextAbort, false)
     }
-    const httpResponse = await createHttpResponsePageJson(pageContextSerialized)
+    const httpResponse = await createHttpResponsePageJson(pageContextJson)
     objectAssign(pageContext, { httpResponse })
     return { pageContextReturn: pageContext }
   }

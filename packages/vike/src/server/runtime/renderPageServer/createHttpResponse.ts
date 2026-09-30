@@ -13,6 +13,7 @@ import type { GetPageAssets } from './getPageAssets.js'
 import { escapeHtml } from '../../../utils/escapeHtml.js'
 import { assert, assertWarning } from '../../../utils/assert.js'
 import type { HtmlRender } from './html/renderHtml.js'
+import type { StreamReadableWeb } from './html/stream.js'
 import { getErrorPageId, isErrorPage } from '../../../shared-server-client/error-page.js'
 import type { RenderHook } from './execHookOnRenderHtml.js'
 import type { RedirectStatusCode, AbortStatusCode, UrlRedirect } from '../../../shared-server-client/route/abort.js'
@@ -140,8 +141,12 @@ function createHttpResponseErrorFallbackJson() {
   return httpResponse
 }
 
-async function createHttpResponsePageJson(pageContextSerialized: string) {
-  const httpResponse = createHttpResponse(200, contentTypeJson, [], pageContextSerialized, [], null)
+async function createHttpResponsePageJson(pageContextJson: string | StreamReadableWeb) {
+  // Streamed pageContext values, see pageContextJson.ts
+  if (typeof pageContextJson !== 'string') {
+    return createHttpResponseCommon(200, [['Content-Type', contentTypeJson]], pageContextJson)
+  }
+  const httpResponse = createHttpResponse(200, contentTypeJson, [], pageContextJson, [], null)
   return httpResponse
 }
 

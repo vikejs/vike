@@ -2,6 +2,8 @@ export { getPageContextFromHooksClient }
 export { getPageContextFromHooksClient_firstRender }
 export { getPageContextFromHooksServer }
 export { getPageContextFromHooksServer_firstRender }
+export { hasStreamedValues }
+export { cancelStreamedValues }
 export { setPageContextInitIsPassedToClient }
 export type { PageContextFromHooksServer }
 
@@ -46,11 +48,13 @@ type PageContextSerialized = {
   _hasPageContextFromServer: true
 }
 // Get `pageContext` values from `<script id="vike_pageContext" type="application/json">`
-function getPageContextFromHooksServer_firstRender(): PageContextSerialized & {
-  routeParams: Record<string, string>
-  _hasPageContextFromServer: true
-} {
-  const pageContextSerialized = getPageContextSerializedInHtml()
+async function getPageContextFromHooksServer_firstRender(): Promise<
+  PageContextSerialized & {
+    routeParams: Record<string, string>
+    _hasPageContextFromServer: true
+  }
+> {
+  const pageContextSerialized = await getPageContextSerializedInHtml()
   processPageContextFromServer(pageContextSerialized)
   objectAssign(pageContextSerialized, {
     _hasPageContextFromServer: true as const,
@@ -107,6 +111,8 @@ async function getPageContextFromHooksServer(
     assert(!('serverSideError' in pageContextFromServer))
 
     objectAssign(pageContextFromHooksServer, pageContextFromServer)
+    const cancel = streamedValuesCancel.get(pageContextFromServer)
+    if (cancel) streamedValuesCancel.set(pageContextFromHooksServer, cancel)
   }
 
   // We cannot return the whole pageContext because this function is used for prefetching `pageContext` (which requires a partial pageContext to be merged with the future pageContext created upon rendering the page in the future).
@@ -283,9 +289,9 @@ async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _u
     )
   }
 
-  const responseText = await response.text()
-  const pageContextFromServer: unknown = parse(responseText)
+  const { pageContextFromServer, cancel } = await readPageContextJson(response)
   assert(isObject(pageContextFromServer))
+  if (cancel) streamedValuesCancel.set(pageContextFromServer, cancel)
 
   if (isAbortPageContext(pageContextFromServer)) {
     throw AbortRender(pageContextFromServer)
@@ -299,6 +305,42 @@ async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _u
   processPageContextFromServer(pageContextFromServer)
 
   return { pageContextFromServer }
+}
+
+// Streamed pageContext values https://vike.dev/passToClient#streaming
+// - The body of `.pageContext.json` has several lines if the pageContext has streamed values, see
+//   server/runtime/renderPageServer/pageContextJson.ts
+async function readPageContextJson(
+  response: Response,
+): Promise<{ pageContextFromServer: unknown; cancel?: () => void }> {
+  const reader = response.body!.getReader()
+  const decoder = new TextDecoder()
+  let text = ''
+  let isFirstLine = true
+  while (true) {
+    const { done, value } = await reader.read()
+    const textLength = text.length
+    text += decoder.decode(value, { stream: !done })
+    const lineEnd = isFirstLine ? text.indexOf('\n', textLength) : -1
+    if (lineEnd !== -1) {
+      isFirstLine = false
+      if (text.slice(0, lineEnd).endsWith('"_streamedValues":[')) {
+        const { readPageContextJson } = await import('../shared/streamedValues.js')
+        return readPageContextJson(text.slice(0, lineEnd), text.slice(lineEnd + 1), reader, decoder)
+      }
+    }
+    if (done) return { pageContextFromServer: parse(text) }
+  }
+}
+// Vike owns the streamed values of a pageContext until it passes the pageContext to onRenderClient(): if it doesn't (e.g.
+// the navigation is superseded by another one), the values are cancelled and the response isn't read further.
+const streamedValuesCancel = new WeakMap<object, () => void>()
+function hasStreamedValues(pageContextFromServer: object): boolean {
+  return streamedValuesCancel.has(pageContextFromServer)
+}
+function cancelStreamedValues(pageContextFromServer: object): void {
+  streamedValuesCancel.get(pageContextFromServer)?.()
+  streamedValuesCancel.delete(pageContextFromServer)
 }
 
 function processPageContextFromServer(pageContext: Record<string, unknown>) {

@@ -11,6 +11,8 @@ import { isSameErrorMessage } from '../../../utils/isSameErrorMessage.js'
 import { objectAssign } from '../../../utils/objectAssign.js'
 import { updateType } from '../../../utils/updateType.js'
 import { getPageContextClientSerialized } from './html/serializeContext.js'
+import { getStreamedValuesLinesPrerendered } from './html/streamedValuesHtml.js'
+import { getPageContextJson, getPageContextJsonFile } from './pageContextJson.js'
 import { type PageContextUrlInternal } from '../../../shared-server-client/getPageContextUrlComputed.js'
 import { createHttpResponsePage, createHttpResponsePageJson, HttpResponse } from './createHttpResponse.js'
 import {
@@ -79,8 +81,12 @@ async function renderPageServerAfterRoute<
     if (isError) {
       objectAssign(pageContext, { [isServerSideError]: true })
     }
-    const pageContextSerialized: string = getPageContextClientSerialized(pageContext, false)
-    const httpResponse = await createHttpResponsePageJson(pageContextSerialized)
+    const { pageContextSerialized, streamedValues } = getPageContextClientSerialized(pageContext, false)
+    const httpResponse = await createHttpResponsePageJson(
+      getPageContextJson(pageContextSerialized, streamedValues, pageContext, (err) =>
+        logRuntimeError(err, pageContext),
+      ),
+    )
     objectAssign(pageContext, { httpResponse })
     return pageContext
   }
@@ -139,10 +145,16 @@ async function prerenderPageEntry(
   )
   const documentHtml = await getHtmlString(htmlRender)
   assert(typeof documentHtml === 'string')
+  // The streamed pageContext values were read while rendering the HTML: the same lines go into `index.pageContext.json`
+  const streamedValuesLines = await getStreamedValuesLinesPrerendered(pageContext)
   if (!pageContext._usesClientRouter) {
     return { documentHtml, pageContextSerialized: null, pageContext }
   } else {
-    const pageContextSerialized = getPageContextClientSerialized(pageContext, false)
-    return { documentHtml, pageContextSerialized, pageContext }
+    const { pageContextSerialized } = getPageContextClientSerialized(pageContext, false)
+    return {
+      documentHtml,
+      pageContextSerialized: getPageContextJsonFile(pageContextSerialized, streamedValuesLines),
+      pageContext,
+    }
   }
 }

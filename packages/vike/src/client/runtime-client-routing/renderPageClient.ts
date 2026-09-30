@@ -22,6 +22,7 @@ import {
   getPageContextFromHooksServer_firstRender,
   type PageContextFromHooksServer,
   setPageContextInitIsPassedToClient,
+  cancelStreamedValues,
 } from './getPageContextFromHooks.js'
 import { createPageContextClient, type PageContextCreatedClient } from './createPageContextClient.js'
 import {
@@ -155,7 +156,14 @@ async function renderPageClient(renderArgs: RenderArgs) {
   await globalObject.onRenderClientPreviousPromise
   if (isRenderOutdated()) return
 
-  return await renderPageNominal()
+  // Streamed pageContext values: Vike owns them until it passes the pageContext to onRenderClient(), otherwise (e.g. the
+  // rendering is superseded by a new navigation) they're cancelled
+  let pageContextsFromServer: { pageContext: object; pageContextFromServer: object }[] = []
+  try {
+    return await renderPageNominal()
+  } finally {
+    pageContextsFromServer.forEach(({ pageContextFromServer }) => cancelStreamedValues(pageContextFromServer))
+  }
 
   async function renderPageNominal() {
     const onError = async (err: unknown) => {
@@ -185,7 +193,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     // Get pageContext serialized in <script id="vike_pageContext" type="application/json">
     if (isFirstRender) {
-      const pageContextSerialized = getPageContextFromHooksServer_firstRender()
+      const pageContextSerialized = await getPageContextFromHooksServer_firstRender()
       // TO-DO/eventually: create helper assertPageContextFromHook()
       assert(!('urlOriginal' in pageContextSerialized))
       objectAssign(pageContext, pageContextSerialized)
@@ -304,6 +312,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
           const result = await getPageContextFromHooksServer(pageContext, false)
           if (result.is404ServerSideRouted) return
           pageContextFromHooksServer = result.pageContextFromHooksServer
+          pageContextsFromServer.push({ pageContext, pageContextFromServer: pageContextFromHooksServer })
           // TO-DO/pageContext-prefetch: remove or change, because this only makes sense for a pre-rendered page
           populatePageContextPrefetchCache(pageContext, result)
         } catch (err) {
@@ -428,6 +437,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
       const result = await getPageContextFromHooksServer(pageContext, true)
       if (result.is404ServerSideRouted) return
       pageContextFromHooksServer = result.pageContextFromHooksServer
+      pageContextsFromServer.push({ pageContext, pageContextFromServer: pageContextFromHooksServer })
     } catch (err: unknown) {
       onError(err)
       return
@@ -511,6 +521,8 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     changeUrl(urlOriginal, overwriteLastHistoryEntry)
     globalObject.previousPageContext = pageContext
+    // onRenderClient() owns the streamed pageContext values from now on
+    pageContextsFromServer = pageContextsFromServer.filter((p) => p.pageContext !== pageContext)
     // There should never be concurrent onRenderClient() calls
     assert(globalObject.onRenderClientPreviousPromise === undefined)
     const onRenderClientPromise = (async () => {
