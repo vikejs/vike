@@ -21,7 +21,7 @@ const { config } = await loadPageConfig(pageContext.pageId)
   - Otherwise `'server'` or `'client'`, depending on whether the Vite environment is server-side or client-side (e.g. Vite's `ssr` environment, or a Cloudflare Worker environment, is `'server'`).
 - `viteEnvironmentName: string` is the name of the [Vite environment](https://vite.dev/guide/api-environment).
 - `loadPageConfig(pageId: string): Promise<{ config }>` loads the config values of the page `pageId` that live in the environment `environmentName`.
-  - A named environment only gets the config values that name it (e.g. `+meta` with `env: { rsc: true }`, or `+Page.rsc.js`) — it doesn't get the `server` config values.
+  - A named environment only gets the config values that name it (e.g. `+meta` with `env: { rsc: true }`, or `+Page.rsc.js`): it doesn't get the `server` config values.
   - If there aren't any config values in the environment, then `config` is `{}`.
   - It throws an error if `pageId` doesn't exist.
 
@@ -79,7 +79,7 @@ The `rsc` environment must exist in Vite's `config.environments` (it's usually c
 
 ## Why the environment isn't an argument
 
-`loadPageConfig()` always loads the config values of the environment it runs in — you can't load the config values of another environment. That's because each Vite environment has its own module graph: the modules of `+Page.rsc.js` are loaded (and bundled) by the `rsc` environment and can't be loaded by the `ssr` environment.
+`loadPageConfig()` always loads the config values of the environment it runs in: you can't load the config values of another environment. That's because each Vite environment has its own module graph: the modules of `+Page.rsc.js` are loaded (and bundled) by the `rsc` environment and can't be loaded by the `ssr` environment.
 
 To use another environment, run code in that environment and communicate with it (e.g. `@vitejs/plugin-rsc`'s `import.meta.viteRsc.loadModule()`).
 

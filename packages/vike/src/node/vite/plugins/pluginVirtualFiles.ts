@@ -44,7 +44,7 @@ const filterFunction = (id: string) => isVirtualFileId(id)
 
 const runtimeImportPath = 'vike/runtime'
 const runtimeImportPathRegex = new RegExp(`^${escapeRegex(runtimeImportPath)}$`)
-// - In development, Vite externalizes the `vike` package in server-side environments: Node.js would then load `vike/runtime` without calling resolveId() — except that Vite never externalizes aliased imports => this identity alias makes Vite resolve `vike/runtime` with the plugin pipeline, where our resolveId() binds it to the importer's environment
+// - In development, Vite externalizes the `vike` package in server-side environments: Node.js would then load `vike/runtime` without calling resolveId(), except that Vite never externalizes aliased imports => this identity alias makes Vite resolve `vike/runtime` with the plugin pipeline, where our resolveId() binds it to the importer's environment
 // - `resolve.alias` is a top-level option => it applies to every environment
 // - A regex, because `find: 'vike/runtime'` would also match `vike/runtime/…`
 // - Code that Vite doesn't transform (e.g. a server-side npm package that isn't in `resolve.noExternal`) can't use `vike/runtime`
