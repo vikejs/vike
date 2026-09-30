@@ -27,7 +27,7 @@ import { assertPosixPath } from '../../utils/path.js'
 import { urlToFile } from '../../utils/urlToFile.js'
 import { prependBase } from '../../utils/parseUrl-extras.js'
 import { parseUrl } from '../../utils/parseUrl.js'
-import { getStaticAssetCollision } from './getStaticAssetCollision.js'
+import { getPublicDirCopied, getStaticAssetCollision } from './getStaticAssetCollision.js'
 import type { ViteManifest } from '../../types/ViteManifest.js'
 import { prerenderPage } from '../../server/runtime/renderPageServer/renderPageServerAfterRoute.js'
 import { createPageContextServer } from '../../server/runtime/renderPageServer/createPageContextServer.js'
@@ -232,8 +232,7 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
     _userRootDir: root,
     _outDirClient: outDirClient,
     _filePaths: new Map(),
-    // Files copied to the client outDir
-    _publicDir: (viteConfig.build.copyPublicDir !== false && viteConfig.publicDir) || null,
+    _publicDir: getPublicDirCopied(viteConfig),
     _clientBuildFiles: getClientBuildFiles(),
     _assetsManifest: globalContext.assetsManifest,
   }

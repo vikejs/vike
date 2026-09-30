@@ -1,4 +1,4 @@
-import { getStaticAssetCollision } from './getStaticAssetCollision.js'
+import { getPublicDirCopied, getStaticAssetCollision } from './getStaticAssetCollision.js'
 import { expect, describe, it } from 'vitest'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -38,5 +38,27 @@ describe('getStaticAssetCollision', () => {
     expect(getStaticAssetCollision('icons', publicDir, clientBuildFiles, assetsManifest)).toBe(null)
     // publicDir disabled
     expect(getStaticAssetCollision('favicon.ico', null, null, assetsManifest)).toBe(null)
+  })
+})
+
+describe('getPublicDirCopied', () => {
+  const get = (copyPublicDir: boolean, copyPublicDirClient: boolean | undefined, publicDir = '/app/public') =>
+    getPublicDirCopied({
+      publicDir,
+      build: { copyPublicDir } as any,
+      environments:
+        copyPublicDirClient === undefined ? {} : ({ client: { build: { copyPublicDir: copyPublicDirClient } } } as any),
+    })
+  it("the client environment's setting takes precedence", () => {
+    // Vike sets it to `true` for the client environment
+    expect(get(false, true)).toBe('/app/public')
+    expect(get(true, false)).toBe(null)
+  })
+  it('top-level setting', () => {
+    expect(get(true, undefined)).toBe('/app/public')
+    expect(get(false, undefined)).toBe(null)
+  })
+  it('publicDir disabled', () => {
+    expect(get(true, true, '')).toBe(null)
   })
 })
