@@ -42,10 +42,10 @@ function pluginProdBuildEntry(): Plugin[] {
       },
     },
     {
-      // Right before @brillout/vite-plugin-server-entry adds (and normalizes) its input, see removeServerEntry()
+      // Before @brillout/vite-plugin-server-entry adds (and normalizes) its input, see removeServerEntry(): among `order: 'post'` hooks, `enforce: 'pre'` plugins run first, and every instance of the library adds its input in an `enforce: 'post'` plugin
       name: 'vike:build:pluginProdBuildEntry:inputs',
       apply: 'build',
-      enforce: 'post',
+      enforce: 'pre',
       configResolved: {
         order: 'post',
         handler(config) {
