@@ -2,6 +2,7 @@ export { build }
 
 import { prepareViteApiCall } from './prepareViteApiCall.js'
 import { createBuilder } from 'vite'
+import { resetEntriesCache } from '../vite/plugins/build/pluginBuildConfig.js'
 import type { ApiOptions } from './types.js'
 import './assertEnvApiDev.js'
 
@@ -11,6 +12,8 @@ import './assertEnvApiDev.js'
  * https://vike.dev/api#build
  */
 async function build(options: ApiOptions = {}): Promise<{}> {
+  // Also if a previous build() call failed before its closeBundle() hook
+  resetEntriesCache()
   const { viteConfigUser } = await prepareViteApiCall(options, 'build')
 
   // Pass it to vike:build:pluginBuildApp
