@@ -81,7 +81,7 @@ The value of `pageContext.content` can be:
 
 The HTTP response body is `pageContext.content` as-is: Vike doesn't inject any `<script>` or `<style>` tags.
 
-Only a value set by the `onRenderHtml()` hook itself is the content. A `pageContext.content` value set before `onRenderHtml()` is called (e.g. by <Link href="/onBeforeRender">`onBeforeRender()`</Link>) is ignored, and if you define your own `pageContext.content` type (see <Link href="/pageContext#typescript" />) then Vike's type is replaced by yours.
+If `onRenderHtml()` returns `documentHtml` then `pageContext.content` is ignored: you can use your own `pageContext.content` property in HTML pages, and if you define its type (see <Link href="/pageContext#typescript" />) then Vike's type is replaced by yours.
 
 The `Content-Type` HTTP response header is deduced from the URL's file extension (e.g. `/feed.atom` => `application/atom+xml;charset=utf-8`). You can override it by using <Link href="/headersResponse" />. For URLs without a known file extension, the default is `application/octet-stream`.
 

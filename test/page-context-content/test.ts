@@ -73,12 +73,18 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     expect(await resp.text()).toBe('{"version":"https://jsonfeed.org/version/1.1"}')
   })
 
-  test('pageContext.content set before the render hook', async () => {
-    // Not the content: the render hook returns HTML
+  test('pageContext.content is ignored if the render hook returns HTML', async () => {
     const resp = await fetchUrl('/custom-content')
     expect(resp.status).toBe(200)
     expectContentType(resp, 'text/html;charset=utf-8')
-    expect(await resp.text()).toContain('<h1>Set by onBeforeRender()</h1>')
+    expect(await resp.text()).toContain('<h1>Set by onBeforeRender() and onRenderHtml()</h1>')
+  })
+
+  test('pageContext.content set before the render hook, then set again to the same value', async () => {
+    const resp = await fetchUrl('/reassign.txt')
+    expect(resp.status).toBe(200)
+    expectContentType(resp, 'text/plain;charset=utf-8')
+    expect(await resp.text()).toBe('Same value')
   })
 
   test('stream error before the first chunk', async () => {
@@ -115,6 +121,7 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
       expect(new TextDecoder().decode(read('feed.atom'))).toBe(feed)
       expect(toHex(read('image.png'))).toBe(toHex(imageBytes))
       expect(new TextDecoder().decode(read('stream.txt'))).toBe(streamText)
+      expect(new TextDecoder().decode(read('reassign.txt'))).toBe('Same value')
       expect(fs.statSync(path.join(distClient, 'feed.atom')).isFile()).toBe(true)
       expect(fs.existsSync(path.join(distClient, 'index.html'))).toBe(true)
       expect(fs.existsSync(path.join(distClient, 'override.json'))).toBe(false)
