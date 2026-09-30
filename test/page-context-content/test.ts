@@ -68,7 +68,12 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   test('public/ file next to content pages', async () => {
     const resp = await fetchUrl('/robots.txt')
     expect(resp.status).toBe(200)
-    expect(await resp.text()).toBe('User-agent: *\n')
+    // Compared to the file itself, since Git may check it out with CRLF line endings (Windows)
+    const robotsTxt = fs.readFileSync(
+      path.join(path.dirname(fileURLToPath(import.meta.url)), 'public/robots.txt'),
+      'utf8',
+    )
+    expect(await resp.text()).toBe(robotsTxt)
   })
 
   test('headersResponse overrides the Content-Type', async () => {
