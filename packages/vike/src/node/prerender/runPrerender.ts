@@ -118,7 +118,6 @@ type PrerenderContext = {
   _requestIdCounter: number
   _userRootDir: string
   _outDirClient: string
-  _filePaths: Map<string, { urlOriginal: string; fileType: FileType }>
 }
 type Output<PageContext = PageContextPrerendered> = (
   | {
@@ -226,7 +225,6 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
     _requestIdCounter: 0,
     _userRootDir: root,
     _outDirClient: outDirClient,
-    _filePaths: new Map(),
   }
 
   const doNotPrerenderList: DoNotPrerenderList = []
@@ -1009,14 +1007,6 @@ async function write(
   assertPosixPath(outDirClient)
   assertPosixPath(filePathRelative)
   const filePath = path.posix.join(outDirClient, filePathRelative)
-  {
-    const other = prerenderContext._filePaths.get(filePath)
-    assertUsage(
-      !other || (fileType !== 'CONTENT' && other.fileType !== 'CONTENT'),
-      `Cannot pre-render ${pc.cyan(urlOriginal)} and ${pc.cyan(other?.urlOriginal ?? '')} because they're both written to ${filePath}`,
-    )
-    prerenderContext._filePaths.set(filePath, { urlOriginal, fileType })
-  }
 
   objectAssign(pageContext, {
     _prerenderResult: {
