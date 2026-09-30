@@ -239,7 +239,7 @@ function pipeToStreamWritableWeb(htmlRender: HtmlRender, writable: StreamWritabl
     return true
   }
   if (isStreamReadableWeb(htmlRender)) {
-    // A failed pipe aborts `writable` (the error is handled by the stream's producer)
+    // pipeTo() propagates a failure of either side to the other side
     htmlRender.pipeTo(writable).catch(() => {})
     return true
   }
