@@ -69,7 +69,7 @@ function testRun(
   testHistoryPushState()
   testOtherFrameworkNavigation()
   testStarWars()
-  testContent({ isDev, isBuildTwice: cmd === 'pnpm run preview:build-twice', rootDir })
+  testContent({ isDev, rootDir })
 }
 
 function testBuildFileNames(isDev: boolean) {
