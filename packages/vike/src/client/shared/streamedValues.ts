@@ -53,22 +53,6 @@ function createReceiver(onChange?: () => void) {
     }
     return { replacement: entry.value }
   }
-  // The lines of a value nobody reads anymore are ignored, as well as the lines of the values it contains
-  const entryReleased: Entry = {
-    value: undefined,
-    isSettled: true,
-    push(line) {
-      if ('v' in line) parseTransform(line.v, { reviver: reviverReleased })
-    },
-    fail() {},
-    wantsMore: () => false,
-  }
-  const reviverReleased: Reviver = (_path, value) => {
-    const placeholder = parsePlaceholder(value)
-    if (!placeholder) return undefined
-    if (!entries.has(placeholder.id)) entries.set(placeholder.id, entryReleased)
-    return { replacement: undefined }
-  }
 
   const createEntry = (kind: Kind): Entry => {
     if (kind === 'promise') {
@@ -127,7 +111,11 @@ function createReceiver(onChange?: () => void) {
       value: kind === 'stream' ? stream : toAsyncIterable(stream),
       isSettled: false,
       push(line) {
-        if (entry.isSettled) return entryReleased.push(line)
+        if (entry.isSettled) {
+          // A chunk nobody reads: the values it contains are still received, as other values may reference them
+          if ('v' in line) parseTransform(line.v, { reviver })
+          return
+        }
         if (typeof line.t === 'string') controller.enqueue(new TextEncoder().encode(line.t))
         else if (typeof line.b === 'string') controller.enqueue(decodeBase64url(line.b))
         else if ('v' in line) controller.enqueue(parseTransform(line.v, { reviver }))
@@ -265,8 +253,10 @@ function readPageContextJson(
           else receiver.onLine(line.startsWith(',') ? line.slice(1) : line)
         }
         buffer = buffer.slice(start)
-        if (isEnded || isCancelled || receiver.isReleased()) break
-        if (isDone) throw new Error('The pageContext.json response ended before the streamed pageContext values ended')
+        if (isCancelled || receiver.isReleased()) break
+        if (isEnded || isDone) {
+          throw new Error('The pageContext.json response ended before the streamed pageContext values ended')
+        }
         if (!receiver.wantsMore()) {
           await receiver.waitForDemand()
           continue

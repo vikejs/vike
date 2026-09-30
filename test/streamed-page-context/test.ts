@@ -67,6 +67,38 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     expect(JSON.stringify(valuesNavigation) === JSON.stringify(valuesFirstRender)).toBe(isPreview)
   })
 
+  test('a navigation superseded before its page is rendered cancels its values on the server', async () => {
+    const getCancelCount = async () =>
+      (await (await fetch(getServerUrl() + '/status/index.pageContext.json')).json()).data.cancelCount
+    const cancelCount = await getCancelCount()
+    await page.goto(getServerUrl() + '/')
+    await autoRetry(async () => expect(await page.textContent('#home')).toBe('home data'))
+    const request = page.waitForRequest((request) => request.url().endsWith('/cancel/index.pageContext.json'))
+    await page.click('a[href="/cancel"]')
+    await request
+    // Supersedes the navigation to /cancel while its +onData.client.ts hook is pending
+    await page.click('a[href="/streamed"]')
+    // Cancelled right away, not after the hook
+    await autoRetry(async () => expect(await getCancelCount()).toBe(cancelCount + 1), { timeout: 2000 })
+    await expectStreamedPage(2)
+    expectLog('Stream failed on purpose', { filter: (log) => log.logSource === 'stderr' })
+  })
+
+  if (!isPreview) {
+    test("without streamed values, the client doesn't load the streamed values decoder", async () => {
+      const requests: string[] = []
+      const listener = (request: { url(): string }) => requests.push(request.url())
+      page.on('request', listener)
+      await page.goto(getServerUrl() + '/')
+      await autoRetry(async () => expect(await page.textContent('#home')).toBe('home data'))
+      expect(await page.textContent('#lookalikes')).toBe(
+        'quote="!VikeStream:0"!VikePromise:0=keystring=!VikeAsyncIterable:0',
+      )
+      page.removeListener('request', listener)
+      expect(requests.some((url) => url.includes('streamedValues'))).toBe(false)
+    })
+  }
+
   if (isPreview) {
     test('pre-rendered index.pageContext.json: valid JSON, with the values of the HTML', async () => {
       const json = await (await fetch(getServerUrl() + '/prerendered/index.pageContext.json')).text()

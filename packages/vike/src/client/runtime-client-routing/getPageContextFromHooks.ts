@@ -4,6 +4,7 @@ export { getPageContextFromHooksServer }
 export { getPageContextFromHooksServer_firstRender }
 export { hasStreamedValues }
 export { cancelStreamedValues }
+export { releaseStreamedValues }
 export { setPageContextInitIsPassedToClient }
 export type { PageContextFromHooksServer }
 
@@ -112,7 +113,10 @@ async function getPageContextFromHooksServer(
 
     objectAssign(pageContextFromHooksServer, pageContextFromServer)
     const cancel = streamedValuesCancel.get(pageContextFromServer)
-    if (cancel) streamedValuesCancel.set(pageContextFromHooksServer, cancel)
+    if (cancel) {
+      streamedValuesCancel.delete(pageContextFromServer)
+      streamedValuesCancel.set(pageContextFromHooksServer, cancel)
+    }
   }
 
   // We cannot return the whole pageContext because this function is used for prefetching `pageContext` (which requires a partial pageContext to be merged with the future pageContext created upon rendering the page in the future).
@@ -299,6 +303,7 @@ async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _u
 
   // Is there a reason for having two different properties? Can't we use only one property? I guess/think the isServerSideError property was an attempt (a bad idea really) for rendering the error page even though an error occurred on the server-side (which is a bad idea because the added complexity is non-negligible while the added value is minuscule since the error page usually doesn't have any (meaningful / server-side) hooks).
   if ('serverSideError' in pageContextFromServer || isServerSideError in pageContextFromServer) {
+    cancelStreamedValues(pageContextFromServer)
     throw getProjectError(`pageContext couldn't be fetched because an error occurred on the server-side`)
   }
 
@@ -334,12 +339,20 @@ async function readPageContextJson(
 }
 // Vike owns the streamed values of a pageContext until it passes the pageContext to onRenderClient(): if it doesn't (e.g.
 // the navigation is superseded by another one), the values are cancelled and the response isn't read further.
-const streamedValuesCancel = new WeakMap<object, () => void>()
+const streamedValuesCancel = new Map<object, () => void>()
 function hasStreamedValues(pageContextFromServer: object): boolean {
   return streamedValuesCancel.has(pageContextFromServer)
 }
-function cancelStreamedValues(pageContextFromServer: object): void {
-  streamedValuesCancel.get(pageContextFromServer)?.()
+/** Without argument: the values of all pageContexts not passed to onRenderClient() */
+function cancelStreamedValues(pageContextFromServer?: object): void {
+  const pageContexts = pageContextFromServer ? [pageContextFromServer] : [...streamedValuesCancel.keys()]
+  pageContexts.forEach((pageContext) => {
+    streamedValuesCancel.get(pageContext)?.()
+    streamedValuesCancel.delete(pageContext)
+  })
+}
+/** The pageContext is passed to onRenderClient() */
+function releaseStreamedValues(pageContextFromServer: object): void {
   streamedValuesCancel.delete(pageContextFromServer)
 }
 

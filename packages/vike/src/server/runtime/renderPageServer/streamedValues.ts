@@ -24,6 +24,7 @@
 
 export { getStreamedValuesSerializer }
 export { pumpStreamedValues }
+export { cancel as cancelStreamedValues }
 export type { StreamedValue }
 
 import { stringify, type Replacer } from '@brillout/json-serializer/stringify'
@@ -104,33 +105,34 @@ function cancel(streamedValues: StreamedValue[], reason?: unknown) {
     }
     if (kind === 'promise') {
       // Avoid an unhandled rejection, and cancel the values it resolves to
-      ;(value as Promise<unknown>).then(cancelContained, () => {})
+      ;(value as Promise<unknown>).then(
+        (resolved) => cancel(findStreamedValues(resolved)),
+        () => {},
+      )
     }
     if (kind === 'asyncIterable') {
-      releaseIterator((value as AsyncIterable<unknown>)[Symbol.asyncIterator]())
+      releaseIterator(() => (value as AsyncIterable<unknown>)[Symbol.asyncIterator]())
     }
   })
 }
-// A value that won't be sent (e.g. it was produced after the response was cancelled): the streamed values it contains are
-// cancelled
-function cancelContained(value: unknown) {
-  const contained: StreamedValue[] = []
+function releaseIterator(getIterator: () => AsyncIterator<unknown>) {
+  try {
+    Promise.resolve(getIterator().return?.()).catch(() => {})
+  } catch {}
+}
+// The streamed values contained in a value that won't be sent (e.g. it isn't serializable)
+function findStreamedValues(value: unknown): StreamedValue[] {
+  const found: StreamedValue[] = []
   try {
     stringify(value, {
       replacer(_key, v) {
         const kind = getKind(v)
-        if (!kind) return undefined
-        contained.push({ id: -1, kind, value: v })
-        return { replacement: null, resolved: true }
+        if (kind) found.push({ id: -1, kind, value: v })
+        return kind || typeof v === 'function' ? { replacement: null, resolved: true } : undefined
       },
     })
   } catch {}
-  cancel(contained)
-}
-function releaseIterator(iterator: AsyncIterator<unknown>) {
-  try {
-    Promise.resolve(iterator.return?.()).catch(() => {})
-  } catch {}
+  return found
 }
 
 // Reads the values concurrently and calls `write()` with one line per chunk / result; `write()` enqueues the line
@@ -138,6 +140,7 @@ function releaseIterator(iterator: AsyncIterator<unknown>) {
 // - `failFast: false` (responses): a value that fails is logged and sent as an error line; the other values keep
 //   streaming.
 // - `failFast: true` (pre-rendering): a value that fails cancels all values and rejects `done`.
+// The values that aren't sent (e.g. contained in a chunk that failed) are cancelled once all values have ended.
 function pumpStreamedValues(
   pageContext: object,
   streamedValues: StreamedValue[],
@@ -147,8 +150,10 @@ function pumpStreamedValues(
   const registry = getRegistry(pageContext)
   const started = new Set<StreamedValue>()
   const releases = new Set<() => void>()
+  // Contained in a chunk that failed
+  const unsent: StreamedValue[] = []
   let pending = 0
-  let isCancelled = false
+  let isEnded = false
   let resolve!: () => void
   let reject!: (err: unknown) => void
   const done = new Promise<void>((resolve_, reject_) => {
@@ -156,32 +161,27 @@ function pumpStreamedValues(
     reject = reject_
   })
 
-  const cancelAll = (reason?: unknown) => {
-    if (isCancelled) return
-    isCancelled = true
+  const end = (err?: { err: unknown }) => {
+    if (isEnded) return
+    isEnded = true
     releases.forEach((release) => release())
-    cancel(
-      [...registry.byValue.values()].filter((streamedValue) => !started.has(streamedValue)),
-      reason,
-    )
-    resolve()
+    const isStarted = ({ value }: StreamedValue) => started.has(registry.byValue.get(value)!)
+    cancel([...registry.byValue.values(), ...unsent].filter((streamedValue) => !isStarted(streamedValue)))
+    if (err) reject(err.err)
+    else resolve()
   }
 
   const start = (streamedValue: StreamedValue) => {
-    if (started.has(streamedValue) || isCancelled) return
+    if (started.has(streamedValue) || isEnded) return
     started.add(streamedValue)
     pending++
     pump(streamedValue).then(
       () => {
-        if (--pending === 0) resolve()
+        if (--pending === 0) end()
       },
-      (err) => {
-        reject(err)
-        cancelAll(err)
-      },
+      (err) => end({ err }),
     )
   }
-
   // A line's value can contain new streamed values: they're started after the line is written
   const writeLine = async (line: { s: number } & Record<string, unknown>, value?: unknown) => {
     const valuesNew: StreamedValue[] = []
@@ -198,7 +198,8 @@ function pumpStreamedValues(
           htmlScriptSafe: { escapeScripts: true, escapeURLs: false },
         })
       } catch (err) {
-        cancel(valuesNew)
+        // Cancelled by end(), unless a line that is sent references them
+        unsent.push(...findStreamedValues(value))
         throw err
       }
       lineStr = `{"s":${line.s},"v":${serialized}}`
@@ -214,12 +215,12 @@ function pumpStreamedValues(
 
   const pump = async (streamedValue: StreamedValue) => {
     const { id: s, kind, value } = streamedValue
-    // Stops the value's producer: when the value fails, or when all values are cancelled
+    // Stops the value's producer: when the value fails, or when all values end
     let release = () => {}
     try {
       if (kind === 'promise') {
         const resolved = await (value as Promise<unknown>)
-        if (isCancelled) return cancelContained(resolved)
+        if (isEnded) return cancel(findStreamedValues(resolved))
         await writeLine({ s, v: true }, resolved)
         return
       }
@@ -231,13 +232,12 @@ function pumpStreamedValues(
       } else {
         const iterator = (value as AsyncIterable<unknown>)[Symbol.asyncIterator]()
         next = () => iterator.next()
-        release = () => releaseIterator(iterator)
+        release = () => releaseIterator(() => iterator)
       }
       releases.add(release)
-      if (isCancelled) return release()
       while (true) {
         const { done, value: chunk } = await next()
-        if (isCancelled) return cancelContained(chunk)
+        if (isEnded) return cancel(findStreamedValues(chunk))
         if (done) break
         if (chunk instanceof Uint8Array) {
           const text = decodeUtf8(chunk)
@@ -245,21 +245,25 @@ function pumpStreamedValues(
         } else {
           await writeLine({ s, v: true }, chunk)
         }
-        if (isCancelled) return
       }
       await writeLine({ s, end: true })
     } catch (err) {
-      if (isCancelled) return
+      if (isEnded) return
       release()
       if (failFast) throw err
       onError(err)
       await writeLine({ s, error: true })
+    } finally {
+      releases.delete(release)
     }
   }
 
-  streamedValues.forEach(start)
-  if (pending === 0) resolve()
-  return { done, cancel: cancelAll }
+  // Asynchronously: `write()` isn't called before pumpStreamedValues() returns
+  Promise.resolve().then(() => {
+    streamedValues.forEach(start)
+    if (pending === 0) end()
+  })
+  return { done, cancel: () => end() }
 }
 
 const utf8Decoder = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true })
