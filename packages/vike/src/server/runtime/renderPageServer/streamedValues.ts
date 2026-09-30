@@ -23,15 +23,18 @@ export { getStreamedValuesSerializer }
 export { pumpStreamedValues }
 export { cancelStreamedValues }
 export type { StreamedValue }
+export type { PageContextLog }
 
 import { stringify, type Replacer } from '@brillout/json-serializer/stringify'
 import { assert } from '../../../utils/assert.js'
 import { isPromise } from '../../../utils/isPromise.js'
+import { logRuntimeError } from '../loggerRuntime.js'
 import '../../assertEnvServer.js'
 
 type Kind = 'stream' | 'promise' | 'asyncIterable'
 type StreamedValue = { id: number; kind: Kind; value: unknown }
 type Producer = Pick<StreamedValue, 'kind' | 'value'>
+type PageContextLog = NonNullable<Parameters<typeof logRuntimeError>[1]>
 const prefixes: Record<Kind, string> = {
   stream: '!VikeStream:',
   promise: '!VikePromise:',
@@ -163,11 +166,11 @@ const pauseEvery = 10 // milliseconds
 // - `failFast: true` (pre-rendering): a value that fails cancels all values and rejects `done`.
 // The values that aren't sent (e.g. contained in a chunk that failed) are cancelled once all values have ended.
 function pumpStreamedValues(
-  pageContext: object,
+  pageContext: PageContextLog,
   streamedValues: StreamedValue[],
   write: (line: string) => void | Promise<void>,
-  { failFast, onError }: { failFast: boolean; onError: (err: unknown) => void },
-): { done: Promise<void>; cancel: (reason?: unknown) => void } {
+  { failFast }: { failFast: boolean },
+): { done: Promise<void>; cancel: () => void } {
   const registry = getRegistry(pageContext)
   const started = new Set<unknown>()
   const releases = new Set<() => void>()
@@ -215,7 +218,7 @@ function pumpStreamedValues(
           forbidReactElements: true,
           valueName: 'a streamed pageContext value',
           replacer: getReplacer(registry, (streamedValue) => {
-            if (!started.has(streamedValue.value)) valuesNew.push(streamedValue)
+            valuesNew.push(streamedValue)
           }),
           htmlScriptSafe: { escapeScripts: true, escapeURLs: false },
         })
@@ -279,7 +282,7 @@ function pumpStreamedValues(
       if (isEnded) return
       release()
       if (failFast) throw err
-      onError(err)
+      logRuntimeError(err, pageContext)
       await writeLine({ s, error: true })
     } finally {
       releases.delete(release)

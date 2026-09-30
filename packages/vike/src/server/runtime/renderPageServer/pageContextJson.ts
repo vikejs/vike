@@ -14,12 +14,10 @@ export { getPageContextJson }
 export { getPageContextJsonFile }
 
 import { assertUsage } from '../../../utils/assert.js'
-import { pumpStreamedValues, type StreamedValue } from './streamedValues.js'
-import { logRuntimeError } from '../loggerRuntime.js'
+import { pumpStreamedValues, type PageContextLog, type StreamedValue } from './streamedValues.js'
 import pc from '@brillout/picocolors'
 import '../../assertEnvServer.js'
 
-type PageContextLog = NonNullable<Parameters<typeof logRuntimeError>[1]>
 const streamedValuesKey = '_streamedValues'
 const lineLast = ']}'
 
@@ -79,10 +77,7 @@ function getBody(
             await new Promise<void>((resolve) => waiting.push(resolve))
           }
         }
-        pump = pumpStreamedValues(pageContext, streamedValues, write, {
-          failFast: false,
-          onError: (err) => logRuntimeError(err, pageContext),
-        })
+        pump = pumpStreamedValues(pageContext, streamedValues, write, { failFast: false })
         pump.done.then(
           () => {
             if (isCancelled) return
@@ -97,10 +92,10 @@ function getBody(
       pull() {
         wake()
       },
-      cancel(reason) {
+      cancel() {
         isCancelled = true
         wake()
-        pump.cancel(reason)
+        pump.cancel()
       },
     },
     new ByteLengthQueuingStrategy({ highWaterMark }),

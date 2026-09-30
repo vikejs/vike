@@ -21,12 +21,11 @@ import { getPageContextClientSerialized, type PageContextSerialization } from '.
 import type { PageContextCreatedServer } from '../createPageContextServer.js'
 import type { StreamFromReactStreamingPackage } from './stream/react-streaming.js'
 import { inferNonceAttr, type PageContextCspNonce } from '../csp.js'
-import { logRuntimeError } from '../../loggerRuntime.js'
 import '../../../assertEnvServer.js'
 
 type StreamedValuesHtml = {
   done: Promise<void>
-  cancel: (reason?: unknown) => void
+  cancel: () => void
   /** The `<script>` tags not sent yet */
   pending: string[]
   /** Set while the HTML stream is ending */
@@ -48,10 +47,7 @@ function serializePageContextHtml(
   streamFromReactStreamingPackage: null | StreamFromReactStreamingPackage,
 ): string {
   const { pageContextSerialized, streamedValues } = getPageContextSerializedHtml(pageContext)
-  // Otherwise the values were cancelled by cancelStreamedValuesHtml()
-  if (!pageContext._streamedValuesHtmlIsCancelled) {
-    sendStreamedValuesInHtml(pageContext, streamedValues, streamFromReactStreamingPackage)
-  }
+  sendStreamedValuesInHtml(pageContext, streamedValues, streamFromReactStreamingPackage)
   return pageContextSerialized
 }
 // Serialized once: by the HTML, or by cancelStreamedValuesHtml() if it comes first
@@ -74,21 +70,14 @@ function sendStreamedValuesInHtml(
     const script = getScript(line, pageContext)
     if (streamedValuesHtml.writeHtml) {
       streamedValuesHtml.writeHtml(script)
-    } else if (
-      streamedValuesHtml.pending.length === 0 &&
-      streamFromReactStreamingPackage &&
-      !streamFromReactStreamingPackage.hasStreamEnded()
-    ) {
+    } else if (streamFromReactStreamingPackage && !streamFromReactStreamingPackage.hasStreamEnded()) {
       streamFromReactStreamingPackage.injectToStream(script, { flush: true })
     } else {
       streamedValuesHtml.pending.push(script)
     }
   }
-  const pump = pumpStreamedValues(pageContext, streamedValues, write, {
-    // A pre-rendered page can't have a failed value
-    failFast: isPrerendering,
-    onError: (err) => logRuntimeError(err, pageContext),
-  })
+  // A pre-rendered page can't have a failed value
+  const pump = pumpStreamedValues(pageContext, streamedValues, write, { failFast: isPrerendering })
   const streamedValuesHtml: StreamedValuesHtml = {
     done: pump.done,
     cancel: pump.cancel,
