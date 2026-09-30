@@ -35,14 +35,11 @@ function getPageContextJson(pageContext: PageContextForJson): string | ReadableS
       let i = 0
       const write = (line: string) => enqueue(getElement(line, i++))
       pump = pumpStreamedValues(pageContext, streamedValues, write, { failFast: false })
-      pump.done.then(
-        () => {
-          if (isCancelled) return
-          enqueue(pageContextJsonLinesEnd)
-          controller.close()
-        },
-        (err) => controller.error(err),
-      )
+      pump.done.then(() => {
+        if (isCancelled) return
+        enqueue(pageContextJsonLinesEnd)
+        controller.close()
+      })
     },
     // E.g. the user navigated away
     cancel() {

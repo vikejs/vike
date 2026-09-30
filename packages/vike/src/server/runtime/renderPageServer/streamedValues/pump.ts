@@ -37,7 +37,7 @@ function pumpStreamedValues(
 
   const start = (streamedValue: StreamedValue) => {
     // The same value referenced twice is sent once (a stream can be read only once)
-    if (started.has(streamedValue.value) || isEnded) return
+    if (started.has(streamedValue.value)) return
     started.add(streamedValue.value)
     pending++
     send(streamedValue).then(
@@ -80,6 +80,5 @@ function pumpStreamedValues(
   }
 
   streamedValues.forEach(start)
-  if (pending === 0) end(resolve)
   return { done, cancel: () => end(resolve) }
 }
