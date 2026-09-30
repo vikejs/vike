@@ -72,7 +72,10 @@ function setFileNames(config: ResolvedConfig, build: ResolvedBuildEnvironmentOpt
   })
 }
 
-// The user's output objects can be shared between environments and between config resolutions, whereas the file names depend on the environment
+// Vike sets entryFileNames/chunkFileNames/assetFileNames on an output object only if the user didn't set them. But the user's output object can be:
+// - The same object for several environments.
+// - Reused across Vite's config resolutions, e.g. an inline config such as VITE_CONFIG.
+// Without a copy, the file names Vike sets for one environment look user-set to the next environment, which then keeps the wrong environment's file names.
 function copyRollupOutputs(build: ResolvedBuildEnvironmentOptions) {
   const { output } = build.rollupOptions
   if (!output) return
