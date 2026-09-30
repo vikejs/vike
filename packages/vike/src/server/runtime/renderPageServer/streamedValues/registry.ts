@@ -30,7 +30,7 @@ const types: StreamedValueType[] = [readableStream, promise, asyncIterable]
 // Per pageContext: the HTML and the `index.pageContext.json` of a pre-rendered page reference the same values with the
 // same ids.
 const idsByPageContext = new WeakMap<object, { byValue: Map<unknown, StreamedValue>; idNext: number }>()
-// `streamedValues` is filled while serializing
+// `streamedValues`: the values not seen before, filled while serializing
 function getReplacer(pageContext: object): { replacer: Replacer; streamedValues: StreamedValue[] } {
   let ids = idsByPageContext.get(pageContext)
   if (!ids) idsByPageContext.set(pageContext, (ids = { byValue: new Map(), idNext: 0 }))
@@ -42,8 +42,9 @@ function getReplacer(pageContext: object): { replacer: Replacer; streamedValues:
     if (!streamedValue) {
       streamedValue = { id: ids.idNext++, type, value }
       ids.byValue.set(value, streamedValue)
+      // The same value referenced twice is sent once (a stream can be read only once)
+      streamedValues.push(streamedValue)
     }
-    streamedValues.push(streamedValue)
     return { replacement: type.marker + streamedValue.id }
   }
   return { replacer, streamedValues }

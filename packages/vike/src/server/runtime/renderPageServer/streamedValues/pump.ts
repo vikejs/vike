@@ -17,7 +17,6 @@ function pumpStreamedValues(
   write: (line: string) => void,
   { failFast }: { failFast: boolean },
 ): { done: Promise<void>; cancel: () => void } {
-  const started = new Set<unknown>()
   // Stop the values being read: when the response ends early, or when the value fails
   const cancels = new Set<() => void>()
   let pending = 0
@@ -32,9 +31,6 @@ function pumpStreamedValues(
   }
 
   const start = (streamedValue: StreamedValue) => {
-    // The same value referenced twice is sent once (a stream can be read only once)
-    if (started.has(streamedValue.value)) return
-    started.add(streamedValue.value)
     pending++
     send(streamedValue).then(
       () => {
