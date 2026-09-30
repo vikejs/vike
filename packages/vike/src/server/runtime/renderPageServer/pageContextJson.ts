@@ -14,7 +14,8 @@ export { getPageContextJson }
 export { getPageContextJsonFile }
 
 import { assertUsage } from '../../../utils/assert.js'
-import { pumpStreamedValues, type PageContextLog, type StreamedValue } from './streamedValues.js'
+import { pumpStreamedValues, type StreamedValue } from './streamedValues.js'
+import type { PageContext_logRuntime } from '../loggerRuntime.js'
 import pc from '@brillout/picocolors'
 import '../../assertEnvServer.js'
 
@@ -24,7 +25,7 @@ const lineLast = ']}'
 function getPageContextJson(
   pageContextSerialized: string,
   streamedValues: StreamedValue[],
-  pageContext: PageContextLog,
+  pageContext: NonNullable<PageContext_logRuntime>,
 ): string | ReadableStream<Uint8Array> {
   if (streamedValues.length === 0) return pageContextSerialized
   return getBody(getLineFirst(pageContextSerialized), streamedValues, pageContext)
@@ -54,7 +55,7 @@ const highWaterMark = 64 * 1024
 function getBody(
   lineFirst: string,
   streamedValues: StreamedValue[],
-  pageContext: PageContextLog,
+  pageContext: NonNullable<PageContext_logRuntime>,
 ): ReadableStream<Uint8Array> {
   const encoder = new TextEncoder()
   let isFirstElement = true
@@ -84,9 +85,7 @@ function getBody(
             controller.enqueue(encoder.encode(lineLast + '\n'))
             controller.close()
           },
-          (err) => {
-            if (!isCancelled) controller.error(err)
-          },
+          (err) => controller.error(err),
         )
       },
       pull() {

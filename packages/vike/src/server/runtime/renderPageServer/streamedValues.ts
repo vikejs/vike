@@ -23,18 +23,16 @@ export { getStreamedValuesSerializer }
 export { pumpStreamedValues }
 export { cancelStreamedValues }
 export type { StreamedValue }
-export type { PageContextLog }
 
 import { stringify, type Replacer } from '@brillout/json-serializer/stringify'
 import { assert } from '../../../utils/assert.js'
 import { isPromise } from '../../../utils/isPromise.js'
-import { logRuntimeError } from '../loggerRuntime.js'
+import { logRuntimeError, type PageContext_logRuntime } from '../loggerRuntime.js'
 import '../../assertEnvServer.js'
 
 type Kind = 'stream' | 'promise' | 'asyncIterable'
 type StreamedValue = { id: number; kind: Kind; value: unknown }
 type Producer = Pick<StreamedValue, 'kind' | 'value'>
-type PageContextLog = NonNullable<Parameters<typeof logRuntimeError>[1]>
 const prefixes: Record<Kind, string> = {
   stream: '!VikeStream:',
   promise: '!VikePromise:',
@@ -166,7 +164,7 @@ const pauseEvery = 10 // milliseconds
 // - `failFast: true` (pre-rendering): a value that fails cancels all values and rejects `done`.
 // The values that aren't sent (e.g. contained in a chunk that failed) are cancelled once all values have ended.
 function pumpStreamedValues(
-  pageContext: PageContextLog,
+  pageContext: NonNullable<PageContext_logRuntime>,
   streamedValues: StreamedValue[],
   write: (line: string) => void | Promise<void>,
   { failFast }: { failFast: boolean },

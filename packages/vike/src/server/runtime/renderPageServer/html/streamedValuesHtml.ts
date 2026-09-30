@@ -28,7 +28,7 @@ type StreamedValuesHtml = {
   cancel: () => void
   /** The `<script>` tags not sent yet */
   pending: string[]
-  /** Set while the HTML stream is ending */
+  /** Set once the HTML stream is ending */
   writeHtml: null | ((html: string) => void)
   /** Pre-rendering: all lines */
   lines: null | string[]
@@ -113,7 +113,6 @@ async function writeStreamedValuesHtmlAtStreamEnd(
   streamedValuesHtml.pending = []
   streamedValuesHtml.writeHtml = writeHtml
   await streamedValuesHtml.done.catch(() => {})
-  streamedValuesHtml.writeHtml = null
   return htmlEnd.slice(i)
 }
 
