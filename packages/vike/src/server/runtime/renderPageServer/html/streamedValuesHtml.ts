@@ -8,7 +8,6 @@
 // - Pre-rendering: the lines are also collected for `index.pageContext.json`, so that the values are read once.
 
 export { serializePageContextHtml }
-export { sendStreamedValuesInHtml }
 export { getStreamedValuesHtml }
 export { writeStreamedValuesHtmlAtStreamEnd }
 export { cancelStreamedValuesHtml }
@@ -17,7 +16,6 @@ export type { PageContextStreamedValuesHtml }
 
 import { assert } from '../../../../utils/assert.js'
 import { pumpStreamedValues } from '../streamedValues/pump.js'
-import type { StreamedValue } from '../streamedValues/registry.js'
 import { getPageContextClientSerialized, type PageContextSerialization } from './serializeContext.js'
 import type { PageContextCreatedServer } from '../createPageContextServer.js'
 import type { StreamFromReactStreamingPackage } from './stream/react-streaming.js'
@@ -46,16 +44,7 @@ function serializePageContextHtml(
   streamFromReactStreamingPackage: null | StreamFromReactStreamingPackage,
 ): string {
   const { pageContextSerialized, streamedValues } = getPageContextClientSerialized(pageContext, true)
-  sendStreamedValuesInHtml(pageContext, streamedValues, streamFromReactStreamingPackage)
-  return pageContextSerialized
-}
-
-function sendStreamedValuesInHtml(
-  pageContext: PageContextStreamedValuesHtml,
-  streamedValues: StreamedValue[],
-  streamFromReactStreamingPackage: null | StreamFromReactStreamingPackage,
-): void {
-  if (streamedValues.length === 0) return
+  if (streamedValues.length === 0) return pageContextSerialized
   // The pageContext is serialized once per HTML
   assert(!pageContext._streamedValuesHtml)
   const { isPrerendering } = pageContext
@@ -80,6 +69,7 @@ function sendStreamedValuesInHtml(
   // Pre-rendering: the error is thrown by getStreamedValuesLinesPrerendered()
   streamedValuesHtml.done.catch(() => {})
   pageContext._streamedValuesHtml = streamedValuesHtml
+  return pageContextSerialized
 }
 
 // HTML string

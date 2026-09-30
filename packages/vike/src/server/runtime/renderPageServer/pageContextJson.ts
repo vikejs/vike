@@ -19,10 +19,10 @@ import type { PageContext_logRuntime } from '../loggerRuntime.js'
 import { pageContextJsonLinesBegin, pageContextJsonLinesEnd } from '../../../shared-server-client/streamedValues.js'
 import '../../assertEnvServer.js'
 
-type PageContextJson = PageContextSerialization & NonNullable<PageContext_logRuntime>
+type PageContextForJson = PageContextSerialization & NonNullable<PageContext_logRuntime>
 const textEncoder = new TextEncoder()
 
-function getPageContextJson(pageContext: PageContextJson): string | ReadableStream<Uint8Array> {
+function getPageContextJson(pageContext: PageContextForJson): string | ReadableStream<Uint8Array> {
   const { pageContextSerialized, streamedValues } = getPageContextClientSerialized(pageContext, false)
   if (streamedValues.length === 0) return pageContextSerialized
   let pump: ReturnType<typeof pumpStreamedValues>

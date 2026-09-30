@@ -50,14 +50,9 @@ function pumpStreamedValues(
 
   // A line's value can contain new streamed values: they're started after the line is written
   const writeLine = (line: Line) => {
-    const valuesNew: StreamedValue[] = []
-    write(
-      serializeLine(
-        line,
-        getReplacer(pageContext, (streamedValue) => valuesNew.push(streamedValue)),
-      ),
-    )
-    valuesNew.forEach(start)
+    const { replacer, streamedValues } = getReplacer(pageContext)
+    write(serializeLine(line, replacer))
+    streamedValues.forEach(start)
   }
 
   const send = async ({ id: s, type, value }: StreamedValue) => {

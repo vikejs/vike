@@ -21,7 +21,7 @@ import type { GlobalContextServerInternal } from '../../globalContext.js'
 import type { PageContextCreatedServer } from '../createPageContextServer.js'
 import type { PageContextBegin } from '../../renderPageServer.js'
 import type { PageContextCspNonce } from '../csp.js'
-import { getStreamedValuesSerializer, type StreamedValue } from '../streamedValues/registry.js'
+import { getReplacer, type StreamedValue } from '../streamedValues/registry.js'
 import { assertRouteParams } from '../../../../shared-server-client/route/resolveRouteFunction.js'
 import '../../../assertEnvServer.js'
 
@@ -67,7 +67,7 @@ function getPageContextClientSerialized(
     pageContextClient[pageContextInitIsPassedToClient] = true
   }
 
-  const { replacer, streamedValues } = getStreamedValuesSerializer(pageContext)
+  const { replacer, streamedValues } = getReplacer(pageContext)
   const pageContextSerialized = serializeObject(
     pageContextClient,
     passToClientPageContext,
@@ -265,7 +265,10 @@ function applyPassToClient(passToClient: PassToClient, obj: Record<string, unkno
 
 // Ensure the following client-side assert() don't fail:
 // https://github.com/vikejs/vike/blob/a33b6e6319a9a0e34ea78e23c5aa156022e3745c/packages/vike/client/shared/getJsonSerializedInHtml.ts#L15-L16
-function assertPageContext(pageContext: { routeParams: unknown; pageId: unknown }) {
+function assertPageContext(pageContext: {
+  routeParams: unknown
+  pageId: unknown
+}) {
   assertUsage(
     hasProp(pageContext, 'pageId', 'string'),
     `${pc.bold('pageContext.pageId')} should be a ${pc.bold('string')}`,

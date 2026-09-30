@@ -5,7 +5,8 @@ import { readableStream } from './readableStream.js'
 import type { StreamedValueType } from './registry.js'
 import '../../assertEnvClient.js'
 
-// A ReadableStream, consumed as an async iterable: `for await (const chunk of pageContext.someAsyncIterable)`
+// A ReadableStream, consumed as an async iterable: `for await (const chunk of pageContext.someAsyncIterable)` (Safari's
+// ReadableStream isn't async-iterable)
 const asyncIterable: StreamedValueType = {
   marker: markers.asyncIterable,
   revive(parseValue) {

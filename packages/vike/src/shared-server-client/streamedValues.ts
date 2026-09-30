@@ -31,7 +31,6 @@ const markers = {
 type LineContent = { t: string } | { b: string } | { v: unknown } | { end: true } | { error: true }
 type Line = { s: number } & LineContent
 
-// `.pageContext.json` with streamed values: its first line ends by opening the `_streamedValues` array, its last line
-// closes the array and the pageContext.
+// See server/runtime/renderPageServer/pageContextJson.ts
 const pageContextJsonLinesBegin = ',"_streamedValues":['
 const pageContextJsonLinesEnd = ']}'

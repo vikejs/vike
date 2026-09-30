@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 vi.mock('../../../client/assertEnvClient.js', () => ({}))
 vi.mock('../loggerRuntime.js', () => ({ logRuntimeError: vi.fn() }))
-// The `.pageContext.json` transport serializes `pageContext._obj`
+// The transports serialize `pageContext._obj`
 vi.mock('./html/serializeContext.js', () => ({
   getPageContextClientSerialized: (pageContext: { _obj: Record<string, unknown> }) => {
     const { serialized, streamedValues } = serialize(pageContext._obj, pageContext)
@@ -9,10 +9,10 @@ vi.mock('./html/serializeContext.js', () => ({
   },
 }))
 import { stringify } from '@brillout/json-serializer/stringify'
-import { getStreamedValuesSerializer } from './streamedValues/registry.js'
+import { getReplacer } from './streamedValues/registry.js'
 import { getPageContextJson, getPageContextJsonFile } from './pageContextJson.js'
 import {
-  sendStreamedValuesInHtml,
+  serializePageContextHtml,
   getStreamedValuesHtml,
   getStreamedValuesLinesPrerendered,
   writeStreamedValuesHtmlAtStreamEnd,
@@ -52,10 +52,12 @@ async function readAll(value: unknown): Promise<unknown[]> {
 }
 
 // A server pageContext, as the HTML delivery reads it
-const getPageContextHtml = ({ isPrerendering = false, cspNonce = null as null | string } = {}) =>
-  ({ cspNonce, isPrerendering, _requestId: 1 }) as any
+const getPageContextHtml = (
+  _obj: Record<string, unknown>,
+  { isPrerendering = false, cspNonce = null as null | string } = {},
+) => ({ _obj, cspNonce, isPrerendering, _requestId: 1 }) as any
 function serialize(obj: Record<string, unknown>, pageContext: object) {
-  const { replacer, streamedValues } = getStreamedValuesSerializer(pageContext)
+  const { replacer, streamedValues } = getReplacer(pageContext)
   return { serialized: stringify(obj, { replacer }), streamedValues }
 }
 
@@ -82,9 +84,8 @@ async function firstRender(obj: Record<string, unknown>, { runScriptsFirst = fal
   const g = globalThis as any
   g.self = globalThis
   delete g.__vike_streamed
-  const pageContextServer = getPageContextHtml({ cspNonce: 'test-nonce' })
-  const { serialized, streamedValues } = serialize(obj, pageContextServer)
-  sendStreamedValuesInHtml(pageContextServer, streamedValues, null)
+  const pageContextServer = getPageContextHtml(obj, { cspNonce: 'test-nonce' })
+  const serialized = serializePageContextHtml(pageContextServer, null)
   const getHtml = async () => (await getStreamedValuesHtml(pageContextServer))!
   if (runScriptsFirst) {
     runScripts(await getHtml(), 'test-nonce')
@@ -212,9 +213,8 @@ describe('first render (HTML)', () => {
   it('HTML stream: the values are written before </body> once the HTML stream ends, then as they are produced', async () => {
     let resolveLater!: (value: string) => void
     const later = new Promise<string>((resolve) => (resolveLater = resolve))
-    const pageContext = getPageContextHtml()
-    const { streamedValues } = serialize({ now: Promise.resolve('now'), later }, pageContext)
-    sendStreamedValuesInHtml(pageContext, streamedValues, null)
+    const pageContext = getPageContextHtml({ now: Promise.resolve('now'), later })
+    serializePageContextHtml(pageContext, null)
     await sleep(0)
     const written: string[] = []
     const htmlEnd = writeStreamedValuesHtmlAtStreamEnd(pageContext, '<p>end</p></body></html>', (html) => {
@@ -231,25 +231,23 @@ describe('first render (HTML)', () => {
 
 describe('pre-rendering', () => {
   it('the HTML and index.pageContext.json have the same lines, read once', async () => {
-    const pageContext = getPageContextHtml({ isPrerendering: true })
     const values = { s: streamOf([enc('a'), bytes]), p: Promise.resolve(1) }
-    const { serialized, streamedValues } = serialize(values, pageContext)
-    sendStreamedValuesInHtml(pageContext, streamedValues, null)
+    const pageContext = getPageContextHtml(values, { isPrerendering: true })
+    const serialized = serializePageContextHtml(pageContext, null)
     const html = (await getStreamedValuesHtml(pageContext))!
     // The pageContext.json is serialized after the HTML: same ids
     const { serialized: serializedJson } = serialize(values, pageContext)
     expect(serializedJson).toBe(serialized)
     const lines = (await getStreamedValuesLinesPrerendered(pageContext))!
     expect(lines).toHaveLength(4)
-    const json = JSON.parse(getPageContextJsonFile(Object.assign(pageContext, { _obj: values }), lines))
+    const json = JSON.parse(getPageContextJsonFile(pageContext, lines))
     expect(json._streamedValues).toHaveLength(lines.length)
     expect(lines.every((line) => html.includes(JSON.stringify(line).slice(1, -1).replaceAll('/', '\\/')))).toBe(true)
   })
 
   it('a failing value fails the pre-rendering', async () => {
-    const pageContext = getPageContextHtml({ isPrerendering: true })
-    const { streamedValues } = serialize({ p: Promise.reject(new Error('boom')) }, pageContext)
-    sendStreamedValuesInHtml(pageContext, streamedValues, null)
+    const pageContext = getPageContextHtml({ p: Promise.reject(new Error('boom')) }, { isPrerendering: true })
+    serializePageContextHtml(pageContext, null)
     await expect(getStreamedValuesLinesPrerendered(pageContext)).rejects.toThrow('boom')
   })
 })
