@@ -18,9 +18,6 @@
 //
 // A chunk or a Promise value can contain further streamed values: they get new ids and their lines follow in the same
 // response. The line introducing an id is always written before the lines of that id.
-//
-// Design reference (no shared code): Telefunc, which supports streams, promises and async generators in telefunction
-// return values.
 
 export { getStreamedValuesSerializer }
 export { pumpStreamedValues }
@@ -210,13 +207,13 @@ function pumpStreamedValues(
     )
   }
   // A line's value can contain new streamed values: they're started after the line is written
-  const writeLine = async (line: { s: number } & Record<string, unknown>, value?: unknown) => {
+  const writeLine = async (line: { s: number } & Record<string, unknown>) => {
     const valuesNew: StreamedValue[] = []
     let lineStr: string
     if ('v' in line) {
       let serialized: string
       try {
-        serialized = stringify(value, {
+        serialized = stringify(line.v, {
           forbidReactElements: true,
           valueName: 'a streamed pageContext value',
           replacer: getReplacer(registry, (streamedValue) => {
@@ -226,7 +223,7 @@ function pumpStreamedValues(
         })
       } catch (err) {
         // Cancelled by end(), unless a line that is sent references them
-        unsent.push(...findStreamedValues(value))
+        unsent.push(...findStreamedValues(line.v))
         throw err
       }
       lineStr = `{"s":${line.s},"v":${serialized}}`
@@ -248,7 +245,7 @@ function pumpStreamedValues(
       if (kind === 'promise') {
         const resolved = await (value as Promise<unknown>)
         if (isEnded) return cancel(findStreamedValues(resolved), isStarted)
-        await writeLine({ s, v: true }, resolved)
+        await writeLine({ s, v: resolved })
         return
       }
       let next: () => Promise<IteratorResult<unknown>>
@@ -270,7 +267,7 @@ function pumpStreamedValues(
           const text = decodeUtf8(chunk)
           await writeLine(text !== null ? { s, t: text } : { s, b: encodeBase64url(chunk) })
         } else {
-          await writeLine({ s, v: true }, chunk)
+          await writeLine({ s, v: chunk })
         }
       }
       await writeLine({ s, end: true })
