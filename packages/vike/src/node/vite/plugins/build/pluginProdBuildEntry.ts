@@ -1,5 +1,6 @@
 export { pluginProdBuildEntry }
 export { set_macro_ASSETS_MANIFEST }
+export { getInputBeforeServerEntry }
 
 import { serverProductionEntryPlugin } from '@brillout/vite-plugin-server-entry/plugin'
 import { virtualFileIdGlobalEntryServer } from '../../../../shared-server-node/virtualFileId.js'
@@ -22,6 +23,11 @@ const ASSETS_MANIFEST = `__VITE_ASSETS_MANIFEST_${
   preventConstantFolding()
 }_`
 
+const inputsBeforeServerEntry = new WeakMap<ResolvedConfig, Map<string, Rollup.InputOption | undefined>>()
+function getInputBeforeServerEntry(config: ResolvedConfig, envName: string) {
+  return inputsBeforeServerEntry.get(config)?.get(envName)
+}
+
 function pluginProdBuildEntry(): Plugin[] {
   let config: ResolvedConfig
   return [
@@ -32,6 +38,21 @@ function pluginProdBuildEntry(): Plugin[] {
       configResolved: {
         async handler(config_) {
           config = config_
+        },
+      },
+    },
+    {
+      // Right before @brillout/vite-plugin-server-entry adds (and normalizes) its input, see removeServerEntry()
+      name: 'vike:build:pluginProdBuildEntry:inputs',
+      apply: 'build',
+      enforce: 'post',
+      configResolved: {
+        order: 'post',
+        handler(config) {
+          inputsBeforeServerEntry.set(
+            config,
+            new Map(Object.entries(config.environments).map(([name, env]) => [name, env.build.rollupOptions.input])),
+          )
         },
       },
     },
