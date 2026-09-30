@@ -127,3 +127,40 @@ describe('processStream', () => {
     expect({ cancelled, closed }).toEqual({ cancelled: true, closed: true })
   })
 })
+
+describe('pipeToStreamWritableNode', () => {
+  it('cancels the stream when the response closes early', async () => {
+    let cancelled = false
+    const stream = new ReadableStream({
+      async pull(controller) {
+        await new Promise((r) => setTimeout(r))
+        controller.enqueue(new Uint8Array([1]))
+      },
+      cancel() {
+        cancelled = true
+      },
+    })
+    const response = new Writable({ write: (_chunk, _encoding, callback) => callback() })
+    pipeToStreamWritableNode(await processStream(stream, { onErrorWhileStreaming() {} }), response)
+    await new Promise((r) => setTimeout(r, 10))
+    response.destroy()
+    await new Promise((r) => setTimeout(r, 10))
+    expect(cancelled).toBe(true)
+  })
+
+  it('destroys the response if the stream errors', async () => {
+    let pulls = 0
+    const stream = new ReadableStream({
+      pull(controller) {
+        if (pulls++ === 0) controller.enqueue(new Uint8Array([1]))
+        else controller.error(new Error('Some error'))
+      },
+    })
+    const response = new Writable({ write: (_chunk, _encoding, callback) => callback() })
+    let err: unknown
+    response.on('error', (e) => (err = e))
+    pipeToStreamWritableNode(await awaitFirstChunk(stream, () => {}), response)
+    await new Promise((r) => setTimeout(r, 10))
+    expect((err as Error).message).toBe('Some error')
+  })
+})
