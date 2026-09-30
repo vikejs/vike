@@ -2609,9 +2609,6 @@ packages:
     peerDependencies:
       typescript: '>=4.0.0'
 
-  '@brillout/vite-plugin-server-entry@0.7.21':
-    resolution: {integrity: sha512-HfCYkB/S3/vivuqZaatsV+H1RZGOSBA/ZOfosWbBHIZJnpoXj4hGNld/Qinr34qW9HQpOf0UA95pCmkJGFAIzw==}
-
   '@brillout/vite-plugin-server-entry@0.7.22':
     resolution: {integrity: sha512-83BZjKoD95Cn4kLMYGUx9By17Y9n1aQYNXzLjh4teZtNP8eDfXrSjHS028nPAW1nkTTkMc+sDtzsL/0JGnY48g==}
 
@@ -8977,11 +8974,6 @@ snapshots:
       source-map-support: 0.5.21
       typescript: 7.0.2
 
-  '@brillout/vite-plugin-server-entry@0.7.21':
-    dependencies:
-      '@brillout/import': 0.2.6
-      '@brillout/picocolors': 1.0.31
-
   '@brillout/vite-plugin-server-entry@0.7.22':
     dependencies:
       '@brillout/import': 0.2.6
@@ -14623,7 +14615,7 @@ snapshots:
       '@brillout/import': 0.2.6
       '@brillout/json-serializer': 0.5.25
       '@brillout/picocolors': 1.0.31
-      '@brillout/vite-plugin-server-entry': 0.7.21
+      '@brillout/vite-plugin-server-entry': 0.7.22
       crossws: 0.4.12(srvx@0.12.5)
       es-module-lexer: 1.7.0
       magic-string: 0.30.21
@@ -14643,7 +14635,7 @@ snapshots:
       '@brillout/import': 0.2.6
       '@brillout/json-serializer': 0.5.25
       '@brillout/picocolors': 1.0.31
-      '@brillout/vite-plugin-server-entry': 0.7.21
+      '@brillout/vite-plugin-server-entry': 0.7.22
       crossws: 0.4.12(srvx@0.12.5)
       es-module-lexer: 1.7.0
       magic-string: 0.30.21
@@ -14663,7 +14655,7 @@ snapshots:
       '@brillout/import': 0.2.6
       '@brillout/json-serializer': 0.5.25
       '@brillout/picocolors': 1.0.31
-      '@brillout/vite-plugin-server-entry': 0.7.21
+      '@brillout/vite-plugin-server-entry': 0.7.22
       crossws: 0.4.12(srvx@0.12.5)
       es-module-lexer: 1.7.0
       magic-string: 0.30.21
