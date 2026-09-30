@@ -306,7 +306,7 @@ async function processStream(
     injectStringAtEnd?: (writeHtml: (html: string) => void) => Promise<string>
     onErrorWhileStreaming: (err: unknown) => void
     enableEagerStreaming?: boolean
-    /** The consumer cancelled the stream (e.g. the user closed the tab) */
+    /** The stream was cancelled (e.g. the user closed the tab) or failed */
     onCancel?: () => void
   },
 ): Promise<StreamProviderNormalized> {
@@ -358,6 +358,8 @@ async function processStream(
       resolveReadyToWrite()
     },
     onError(err) {
+      // The HTML won't end: its streamed pageContext values won't be sent
+      onCancel?.()
       if (!promiseHasResolved) {
         reject(err)
       } else {
