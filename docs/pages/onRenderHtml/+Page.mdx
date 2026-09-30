@@ -79,8 +79,6 @@ The value of `pageContext.content` can be:
  - A `Uint8Array` (binary content, such as images)
  - A `ReadableStream<Uint8Array>` (streamed to the client upon SSR)
 
-The HTTP response body is `pageContext.content` as-is: Vike doesn't inject any `<script>` or `<style>` tags.
-
 If `onRenderHtml()` returns `documentHtml` then `pageContext.content` is ignored: you can use your own `pageContext.content` property in HTML pages, and if you define its type (see <Link href="/pageContext#typescript" />) then Vike's type is replaced by yours.
 
 Upon <Link href="/pre-rendering">pre-rendering</Link>, the content is written to the file at the page's URL: `/feed.atom` => `dist/client/feed.atom`.
