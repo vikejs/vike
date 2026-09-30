@@ -21,7 +21,7 @@ const { config } = await loadPageConfig(pageContext.pageId)
   - Otherwise `'server'` or `'client'`, depending on whether the Vite environment is server-side or client-side (e.g. Vite's `ssr` environment, or a Cloudflare Worker environment, is `'server'`).
 - `viteEnvironmentName: string` is the name of the [Vite environment](https://vite.dev/guide/api-environment).
 - `loadPageConfig(pageId: string): Promise<{ config }>` loads the config values of the page `pageId` that live in the environment `environmentName`.
-  - A named environment only gets the config values that name it (e.g. `+meta` with `env: { rsc: true }`, or `+Page.rsc.js`): it doesn't get the `server` config values.
+  - A named environment only gets the config values that name it (e.g. `+meta` with `env: { rsc: true }`, or `+Page.rsc.js`): it doesn't get the `server` config values. Code running in `rsc` can still read them at `pageContext.config`, if the integration passes it `pageContext`.
   - They aren't available at `pageContext.config`, because `pageContext` is created in the server environment (e.g. `ssr`), which can't load the modules of another environment (see [Why the environment isn't an argument](#why-the-environment-isn-t-an-argument)).
 
 | Vite environment | `environmentName` | `viteEnvironmentName` | `loadPageConfig()` returns |
