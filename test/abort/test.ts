@@ -65,6 +65,41 @@ function testRun(
     await ensureWasClientSideRouted('/pages/about')
   })
 
+  test('Set-Cookie before redirect - server-side', async () => {
+    const resp = await fetch(getServerUrl() + '/redirect-with-cookie', { redirect: 'manual' })
+    expect(resp.status).toBe(302)
+    expect(resp.headers.get('Location')).toBe('/')
+    expect(resp.headers.get('Set-Cookie')).toBe('cookie-set-by-guard=1; Path=/')
+    await page.context().clearCookies()
+    await page.goto(getServerUrl() + '/redirect-with-cookie')
+    await expectUrl('/')
+    await expectCookie('cookie-set-by-guard')
+  })
+
+  test('Set-Cookie before redirect - client-side', async () => {
+    await page.goto(getServerUrl() + '/about')
+    await hydrationDone()
+    await page.context().clearCookies()
+    await page.click('a[href="/redirect-with-cookie"]')
+    await expectUrl('/')
+    await testCounter()
+    await ensureWasClientSideRouted('/pages/about')
+    await expectCookie('cookie-set-by-guard')
+  })
+
+  test('Set-Cookie in data() - client-side', async () => {
+    await page.goto(getServerUrl() + '/about')
+    await hydrationDone()
+    await page.context().clearCookies()
+    await page.click('a[href="/data-with-cookie"]')
+    await autoRetry(async () => {
+      expect(await page.textContent('h1')).toBe('Data with cookie')
+    })
+    await testCounter()
+    await ensureWasClientSideRouted('/pages/about')
+    await expectCookie('cookie-set-by-data')
+  })
+
   {
     const url = getServerUrl() + '/show-error-page'
     const expectErrServer = () => {
@@ -153,4 +188,11 @@ function testRun(
 
 async function hydrationDone() {
   await testCounter()
+}
+
+async function expectCookie(name: string) {
+  await autoRetry(async () => {
+    const cookies = await page.context().cookies()
+    expect(cookies.find((cookie) => cookie.name === name)?.value).toBe('1')
+  })
 }
