@@ -63,6 +63,9 @@ async function readAll(value: unknown): Promise<unknown[]> {
   return chunks
 }
 
+// A server pageContext, as the HTML delivery reads it
+const getPageContextHtml = ({ isPrerendering = false } = {}) =>
+  ({ cspNonce: null, isPrerendering, _requestId: 1 }) as any
 function serialize(obj: Record<string, unknown>, pageContext: object) {
   const serializer = getStreamedValuesSerializer(pageContext)
   serializer.beginAttempt()
@@ -425,7 +428,7 @@ describe('streamed pageContext values: reading the values', () => {
         while (true) yield 'x'
       })()
       if (mode === 'HTML') {
-        const pageContext = { cspNonce: null, isPrerendering: false, _requestId: 1 } as any
+        const pageContext = getPageContextHtml()
         const { streamedValues } = serialize({ g }, pageContext)
         sendStreamedValuesInHtml(pageContext, streamedValues, null)
         await sleep(20)
@@ -596,17 +599,15 @@ describe('streamed pageContext values: client-side navigation', () => {
     await expect(navigation({ _streamedValues: 1, p: Promise.resolve() })).rejects.toThrow('reserved')
   })
 
-  it('the client going away while a value is pending: the value resolving later writes nothing', async () => {
+  it('the client going away while a value is pending: nothing is left unhandled, on either side', async () => {
     const promise = deferred<string>()
-    const pageContext = {}
-    const { serialized, streamedValues } = serialize({ p: promise.promise }, pageContext)
-    const reader = (getPageContextJson(serialized, streamedValues, pageContext as any) as ReadableStream).getReader()
-    await reader.read()
+    const { cancel } = await navigation({ p: promise.promise })
     // Vike's own handler would hide it from Vitest
     const unhandled: unknown[] = []
     const onUnhandled = (err: unknown) => void unhandled.push(err)
     process.on('unhandledRejection', onUnhandled)
-    await reader.cancel()
+    cancel()
+    await sleep(10)
     promise.resolve('late')
     await sleep(10)
     process.off('unhandledRejection', onUnhandled)
@@ -732,7 +733,7 @@ describe('streamed pageContext values: first render (HTML)', () => {
     let ended = false
     const reactStreaming = { injectToStream: vi.fn(), hasStreamEnded: () => ended } as any
     const later = deferred<string>()
-    const pageContext = { cspNonce: null, isPrerendering: false, _requestId: 1 } as any
+    const pageContext = getPageContextHtml()
     const { streamedValues } = serialize({ now: Promise.resolve('now'), later: later.promise }, pageContext)
     sendStreamedValuesInHtml(pageContext, streamedValues, reactStreaming)
     await sleep(0)
@@ -747,7 +748,7 @@ describe('streamed pageContext values: first render (HTML)', () => {
 
   it('HTML stream: the values are written before </body> once the HTML stream ends, then as they are produced', async () => {
     const later = deferred<string>()
-    const pageContext = { cspNonce: null, isPrerendering: false, _requestId: 1 } as any
+    const pageContext = getPageContextHtml()
     const { streamedValues } = serialize({ now: Promise.resolve('now'), later: later.promise }, pageContext)
     sendStreamedValuesInHtml(pageContext, streamedValues, null)
     await sleep(0)
@@ -764,7 +765,7 @@ describe('streamed pageContext values: first render (HTML)', () => {
   })
 
   it('HTML stream without </body>: the values are written at its end', async () => {
-    const pageContext = { cspNonce: null, isPrerendering: false, _requestId: 1 } as any
+    const pageContext = getPageContextHtml()
     const { streamedValues } = serialize({ now: Promise.resolve('now') }, pageContext)
     sendStreamedValuesInHtml(pageContext, streamedValues, null)
     await sleep(0)
@@ -808,7 +809,7 @@ describe('streamed pageContext values: the HTML response ending early cancels th
     })
 
   it('a cancellation before the pageContext is serialized cancels the values', async () => {
-    const pageContext = { cspNonce: null, isPrerendering: false, _requestId: 1 } as any
+    const pageContext = getPageContextHtml()
     cancelStreamedValuesHtml(pageContext)
     const onCancel = vi.fn()
     const { streamedValues } = serialize({ s: streamOf([enc('x')], { onCancel }) }, pageContext)
@@ -819,16 +820,7 @@ describe('streamed pageContext values: the HTML response ending early cancels th
 
   it('cancelled before the pageContext is serialized, and never serialized: the values are cancelled', async () => {
     const onCancel = vi.fn()
-    const pageContext = {
-      pageId: '/pages/index',
-      routeParams: {},
-      is404: null,
-      _passToClient: ['s'],
-      _pageContextInit: {},
-      _globalContext: { _pageConfigs: [{ pageId: '/pages/index', isErrorPage: undefined }] },
-      _isHtmlOnly: false,
-      s: streamOf([enc('x')], { onCancel }),
-    } as any
+    const pageContext = getPageContext({ s: streamOf([enc('x')], { onCancel }) })
     cancelStreamedValuesHtml(pageContext)
     await sleep(0)
     expect(onCancel).toHaveBeenCalled()
@@ -855,7 +847,7 @@ describe('streamed pageContext values: the HTML response ending early cancels th
 
   it('cancelling the HTML while the values stream cancels them', async () => {
     const onCancel = vi.fn()
-    const pageContext = { cspNonce: null, isPrerendering: false, _requestId: 1 } as any
+    const pageContext = getPageContextHtml()
     const endless = new ReadableStream({ pull: () => new Promise(() => {}), cancel: onCancel }, { highWaterMark: 0 })
     const { streamedValues } = serialize({ endless }, pageContext)
     sendStreamedValuesInHtml(pageContext, streamedValues, null)
@@ -1019,7 +1011,7 @@ describe('streamed pageContext values: the HTML response ending early cancels th
 describe('streamed pageContext values: pre-rendering', () => {
   it('the HTML and index.pageContext.json have the same lines, read once', async () => {
     let pulls = 0
-    const pageContext = { cspNonce: null, isPrerendering: true, _requestId: 1 } as any
+    const pageContext = getPageContextHtml({ isPrerendering: true })
     const { serialized, streamedValues } = serialize(
       { s: streamOf([enc('a'), bytes], { onPull: () => pulls++ }), p: Promise.resolve(1) },
       pageContext,
@@ -1033,6 +1025,7 @@ describe('streamed pageContext values: pre-rendering', () => {
     )
     expect(streamedValuesJson).toEqual(streamedValues)
     const lines = (await getStreamedValuesLinesPrerendered(pageContext))!
+    expect(lines).toHaveLength(4)
     const file = getPageContextJsonFile(serializedJson, lines)
     const json = JSON.parse(file)
     expect(json._streamedValues).toHaveLength(lines.length)
@@ -1043,7 +1036,7 @@ describe('streamed pageContext values: pre-rendering', () => {
 
   it('a failing value fails the pre-rendering, and cancels the others', async () => {
     const onCancel = vi.fn()
-    const pageContext = { cspNonce: null, isPrerendering: true, _requestId: 1 } as any
+    const pageContext = getPageContextHtml({ isPrerendering: true })
     const pending = new ReadableStream({ pull: () => new Promise(() => {}), cancel: onCancel }, { highWaterMark: 0 })
     const { streamedValues } = serialize({ p: Promise.reject(new Error('boom')), pending }, pageContext)
     sendStreamedValuesInHtml(pageContext, streamedValues, null)
