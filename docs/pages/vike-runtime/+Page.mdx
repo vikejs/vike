@@ -22,8 +22,6 @@ const { config } = await loadPageConfig(pageContext.pageId)
 - `viteEnvironmentName: string` is the name of the [Vite environment](https://vite.dev/guide/api-environment).
 - `loadPageConfig(pageId: string): Promise<{ config }>` loads the config values of the page `pageId` that live in the environment `environmentName`.
   - A named environment only gets the config values that name it (e.g. `+meta` with `env: { rsc: true }`, or `+Page.rsc.js`): it doesn't get the `server` config values.
-  - If there aren't any config values in the environment, then `config` is `{}`.
-  - It throws an error if `pageId` doesn't exist.
 
 | Vite environment | `environmentName` | `viteEnvironmentName` | `loadPageConfig()` returns |
 | --- | --- | --- | --- |
