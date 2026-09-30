@@ -1638,6 +1638,21 @@ importers:
         specifier: ^6.3.2
         version: 6.3.5(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)
 
+  test/page-context-content:
+    dependencies:
+      '@types/node':
+        specifier: ^24.3.0
+        version: 24.10.2
+      typescript:
+        specifier: ^7.0.2
+        version: 7.0.2
+      vike:
+        specifier: 0.4.267
+        version: link:../../packages/vike
+      vite:
+        specifier: ^6.3.2
+        version: 6.3.5(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)
+
   test/photon-cloudflare:
     dependencies:
       react:

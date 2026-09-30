@@ -1,0 +1,14 @@
+{
+  "scripts": {
+    "dev": "vike dev",
+    "build": "vike build",
+    "preview": "vike build && vike preview"
+  },
+  "dependencies": {
+    "@types/node": "^24.3.0",
+    "typescript": "^7.0.2",
+    "vike": "0.4.267",
+    "vite": "^6.3.2"
+  },
+  "type": "module"
+}
