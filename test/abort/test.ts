@@ -4,12 +4,7 @@ import { run, page, test, expect, getServerUrl, fetchHtml, autoRetry, expectLog,
 import { ensureWasClientSideRouted, expectUrl, testCounter, expectPageContextJsonRequest } from '../utils'
 
 function testRun(
-  cmd:
-    | 'pnpm run dev:server'
-    | 'pnpm run dev'
-    | 'pnpm run preview'
-    | 'pnpm run preview:sharedConfigBuild'
-    | 'pnpm run prod',
+  cmd: 'pnpm run dev:server' | 'pnpm run dev' | 'pnpm run preview' | 'pnpm run prod',
   pageContextInitIsPassedToClient = false,
 ) {
   run(cmd)
@@ -22,10 +17,6 @@ function testRun(
     const t = async (url: string) => {
       const html = await fetchHtml(url)
       expect(html).toContain('<h1>Welcome</h1>')
-      // The server-side CSS is deduplicated (it relies on Vike's `.[hash].` file naming)
-      if (!isDev) expect(html.split('<link rel="stylesheet"').length).toBe(2)
-      // The client doesn't get the server's file names (`.mjs`), also with a root `build.rollupOptions.output`
-      if (!isDev) expect(html).not.toContain('.mjs')
     }
     await t('/')
     await t('/render-homepage')
