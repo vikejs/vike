@@ -23,7 +23,7 @@ import {
   type PageContextFromHooksServer,
   setPageContextInitIsPassedToClient,
 } from './getPageContextFromHooks.js'
-import { cancelStreamedValues, releaseStreamedValues } from './streamedValues.js'
+import { cancelStreamedValues, setStreamedValuesRendered } from './streamedValues.js'
 import { createPageContextClient, type PageContextCreatedClient } from './createPageContextClient.js'
 import {
   addLinkPrefetchHandlers,
@@ -129,9 +129,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
   addLinkPrefetchHandlers_unwatch()
 
   const { isRenderOutdated, setHydrationCanBeAborted, isFirstRender } = getIsRenderOutdated()
-  // Streamed pageContext values: Vike owns them until it passes the pageContext to onRenderClient(). They're cancelled when
-  // the rendering is superseded (i.e. now, for the renderings this rendering supersedes) or ends without passing them to
-  // onRenderClient() (see `pageContextsFromServer` below).
+  // Cancels the streamed pageContext values of the renderings this rendering supersedes (see streamedValues.ts)
   cancelStreamedValues()
 
   const pageContextBeginArgs = {
@@ -526,10 +524,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     changeUrl(urlOriginal, overwriteLastHistoryEntry)
     globalObject.previousPageContext = pageContext
-    // onRenderClient() receives the streamed pageContext values: they're cancelled when another page is rendered
-    releaseStreamedValues(
-      pageContextsFromServer.filter((p) => p.pageContext === pageContext).map((p) => p.pageContextFromServer),
-    )
+    setStreamedValuesRendered(pageContext, pageContextsFromServer)
     // There should never be concurrent onRenderClient() calls
     assert(globalObject.onRenderClientPreviousPromise === undefined)
     const onRenderClientPromise = (async () => {

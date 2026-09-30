@@ -8,7 +8,7 @@ export { readPageContextJson }
 export { hasStreamedValues }
 export { moveStreamedValues }
 export { cancelStreamedValues }
-export { releaseStreamedValues }
+export { setStreamedValuesRendered }
 
 import { parse } from '@brillout/json-serializer/parse'
 import { stampErrorFetchingStaticAssets } from '../shared/loadPageConfigsLazyClientSide.js'
@@ -75,14 +75,17 @@ function cancelStreamedValues(pageContextFromServer?: object): void {
 }
 // The values of the rendered page
 let cancelRendered: (() => void)[] = []
-/** A page is rendered: the values of the previous page are cancelled */
-function releaseStreamedValues(pageContextsFromServer: object[]): void {
+/** `pageContext` is passed to onRenderClient(): the values of the previous page are cancelled */
+function setStreamedValuesRendered(
+  pageContext: object,
+  pageContextsFromServer: { pageContext: object; pageContextFromServer: object }[],
+): void {
   cancelRendered.forEach((cancel) => cancel())
   cancelRendered = []
-  pageContextsFromServer.forEach((pageContextFromServer) => {
-    const cancel = streamedValuesCancel.get(pageContextFromServer)
-    if (!cancel) return
-    streamedValuesCancel.delete(pageContextFromServer)
+  pageContextsFromServer.forEach((p) => {
+    const cancel = streamedValuesCancel.get(p.pageContextFromServer)
+    if (p.pageContext !== pageContext || !cancel) return
+    streamedValuesCancel.delete(p.pageContextFromServer)
     cancelRendered.push(cancel)
   })
 }

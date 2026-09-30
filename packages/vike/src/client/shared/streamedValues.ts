@@ -5,7 +5,8 @@
 // - Client-side navigation: the lines of the `.pageContext.json` response, read only while a value wants more
 //   (backpressure).
 //
-// Loaded only if the pageContext has streamed values (see getJsonSerializedInHtml.ts and getPageContextFromHooks.ts).
+// Loaded only if the pageContext has streamed values (see getJsonSerializedInHtml.ts and
+// ../runtime-client-routing/streamedValues.ts).
 
 export { parsePageContextHtml }
 export { readPageContextJsonStreamed }
@@ -73,7 +74,7 @@ function createReceiver(onChange?: () => void) {
             entry.isSettled = true
             resolve(value)
           } else {
-            entry.fail(getErrorLine(line))
+            entry.fail(getLineError(line))
           }
         },
         fail(err) {
@@ -122,7 +123,7 @@ function createReceiver(onChange?: () => void) {
         else if (line.end === true) {
           entry.isSettled = true
           controller.close()
-        } else entry.fail(getErrorLine(line))
+        } else entry.fail(getLineError(line))
       },
       fail(err) {
         if (entry.isSettled) return
@@ -166,7 +167,7 @@ function parsePlaceholder(value: string): null | { id: number; kind: Kind } {
   return null
 }
 
-function getErrorLine(line: Line) {
+function getLineError(line: Line) {
   if (line.error !== true) return new Error('Malformed line')
   return new Error('A streamed pageContext value failed on the server-side (see the server logs)')
 }
@@ -262,8 +263,6 @@ function readPageContextJsonStreamed(
     } catch (err) {
       // The server aborted the response (e.g. it crashed), or it's malformed
       receiver.fail(err)
-    } finally {
-      release()
     }
   })()
   // Releases the response
