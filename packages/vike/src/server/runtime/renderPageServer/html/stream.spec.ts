@@ -1,5 +1,13 @@
-import { awaitFirstChunk, processStream, streamReadableWebToBytes } from './stream.js'
+import {
+  awaitFirstChunk,
+  pipeToStreamWritableNode,
+  processStream,
+  stampPipe,
+  streamReadableWebToBytes,
+  type StreamPipeNode,
+} from './stream.js'
 import { expect, describe, it } from 'vitest'
+import { Writable } from 'node:stream'
 
 describe('streamReadableWebToBytes', () => {
   it('concatenates the chunks without decoding them', async () => {
@@ -93,5 +101,29 @@ describe('processStream', () => {
     const streamWrapper = (await processStream(stream, { onErrorWhileStreaming() {} })) as ReadableStream
     await streamWrapper.cancel('Some reason')
     expect(reason).toBe('Some reason')
+  })
+
+  it('stops the source if the response is already closed', async () => {
+    const closedResponses = [new Writable().destroy(), new Writable().destroy()]
+    await new Promise((r) => setTimeout(r)) // Let them emit 'close'
+    let cancelled = false
+    const stream = new ReadableStream({
+      start(controller) {
+        controller.enqueue(new Uint8Array([1]))
+      },
+      cancel() {
+        cancelled = true
+      },
+    })
+    pipeToStreamWritableNode(await processStream(stream, { onErrorWhileStreaming() {} }), closedResponses[0]!)
+    let closed = false
+    const pipe: StreamPipeNode = (writable) => {
+      writable.write('a')
+      writable.on('close', () => (closed = true))
+    }
+    stampPipe(pipe, 'node-stream')
+    ;((await processStream(pipe, { onErrorWhileStreaming() {} })) as StreamPipeNode)(closedResponses[1]!)
+    await new Promise((r) => setTimeout(r, 10))
+    expect({ cancelled, closed }).toEqual({ cancelled: true, closed: true })
   })
 })

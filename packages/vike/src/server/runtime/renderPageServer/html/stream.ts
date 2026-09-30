@@ -324,7 +324,9 @@ function pipeToStreamWritableNode(htmlRender: HtmlRender | Uint8Array, writable:
     getStreamReadableNode(htmlRender).then(async (s) => {
       const { pipeline } = await loadStreamNodeModule()
       // Unlike pipe(), pipeline() destroys the readable (and thus cancels the stream) if the writable closes early, and the writable if the stream errors
-      pipeline(s!, writable, () => {})
+      // pipeline() throws if the writable is already destroyed (the client left before the first chunk)
+      if (writable.destroyed) s!.destroy()
+      else pipeline(s!, writable, () => {})
     })
     return true
   }
@@ -550,7 +552,8 @@ async function createStreamWrapper({
       writableOriginal = writable_
       debug('original Node.js Writable received')
       // Let the source know when the response closes early (no-op once it has ended)
-      writableOriginal.on('close', () => writableProxy.destroy())
+      if (writableOriginal.destroyed) writableProxy.destroy()
+      else writableOriginal.on('close', () => writableProxy.destroy())
       onReadyToWrite()
       if (hasEnded) {
         // onReadyToWrite() already wrote everything; we can close the stream right away
