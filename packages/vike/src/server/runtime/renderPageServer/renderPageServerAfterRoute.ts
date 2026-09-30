@@ -13,7 +13,7 @@ import { updateType } from '../../../utils/updateType.js'
 import { getPageContextClientSerialized } from './html/serializeContext.js'
 import { type PageContextUrlInternal } from '../../../shared-server-client/getPageContextUrlComputed.js'
 import {
-  createHttpResponsePage,
+  createHttpResponsePageHtml,
   createHttpResponsePageContent,
   createHttpResponsePageJson,
   HttpResponse,
@@ -94,7 +94,7 @@ async function renderPageServerAfterRoute<
   const httpResponse =
     content !== null
       ? createHttpResponsePageContent(content, renderHook, pageContext)
-      : await createHttpResponsePage(htmlRender, renderHook, pageContext)
+      : await createHttpResponsePageHtml(htmlRender, renderHook, pageContext)
   objectAssign(pageContext, { httpResponse })
   return pageContext
 }

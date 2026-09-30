@@ -1,4 +1,4 @@
-export { createHttpResponsePage }
+export { createHttpResponsePageHtml }
 export { createHttpResponsePageContent }
 export { createHttpResponsePageJson }
 export { createHttpResponseErrorFallback }
@@ -64,8 +64,7 @@ type PageContextHttpResponsePage = {
   pageContextsAborted: PageContextAborted[]
 }
 
-// TODO/after-merge: rename createHttpResponsePage createHttpResponsePageHtml
-async function createHttpResponsePage(
+async function createHttpResponsePageHtml(
   htmlRender: HtmlRender,
   renderHook: null | RenderHook,
   pageContext: PageContextHttpResponsePage,
