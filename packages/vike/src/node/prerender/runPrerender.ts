@@ -67,6 +67,8 @@ import {
 import { getOutDirsAllFromRootNormalized } from '../vite/shared/getOutDirs.js'
 import fs from 'node:fs'
 import { getPublicProxy } from '../../shared-server-client/getPublicProxy.js'
+import { getPageContextPublicServer } from '../../server/runtime/renderPageServer/getPageContextPublicServer.js'
+import { isObject } from '../../utils/isObject.js'
 import { getStaticRedirectsForPrerender } from '../../server/runtime/renderPageServer/resolveRedirects.js'
 import { updateType } from '../../utils/updateType.js'
 const docLink = 'https://vike.dev/i18n#pre-rendering'
@@ -780,6 +782,7 @@ async function callOnPrerenderStartHook(
   let result: unknown = await execHookSingleWithoutPageContext(onPrerenderStartHook, globalContext, () =>
     hookFn(prerenderContextPublic),
   )
+  prerenderContext.pageContexts = prerenderContext.pageContexts.map(getPageContextOriginal)
 
   // Before applying result
   prerenderContext.pageContexts.forEach((pageContext) => {
@@ -823,7 +826,7 @@ async function callOnPrerenderStartHook(
       hasProp(result.prerenderContext, 'pageContexts', 'array'),
     rightUsage,
   )
-  prerenderContext.pageContexts = result.prerenderContext.pageContexts as PageContext[]
+  prerenderContext.pageContexts = (result.prerenderContext.pageContexts as PageContext[]).map(getPageContextOriginal)
 
   prerenderContext.pageContexts.forEach((pageContext: { urlOriginal?: string; url?: string }) => {
     // TO-DO/next-major-release: remove
@@ -995,7 +998,7 @@ async function write(
   })
 
   if (onPagePrerender) {
-    await onPagePrerender(pageContext)
+    await onPagePrerender(getPageContextPublicPrerendered(pageContext))
   } else {
     const { promises } = await import('node:fs')
     const { writeFile, mkdir } = promises
@@ -1172,14 +1175,31 @@ function getPrerenderContextPublic(prerenderContext: PrerenderContext): Prerende
     })
   }
 
-  // Required because of https://vike.dev/i18n#pre-rendering
-  // - Thus, we have to let users access the original pageContext object => we cannot use ES proxies and we cannot use getPageContextPublicShared()
-  prerenderContext.pageContexts.forEach((pageContext) => {
+  prerenderContext.pageContexts = prerenderContext.pageContexts.map((pageContext) => {
+    // Required because of https://vike.dev/i18n#pre-rendering
+    // - Users copy pageContext, e.g. `{ ...pageContext, locale }`, and Vike renders the copies => the copies need to be original objects
     changeEnumerable(pageContext, '_isOriginalObject', true)
+    return getPageContextPublicServer(pageContext)
+  })
+  prerenderContext.output.forEach((file) => {
+    file.pageContext = getPageContextPublicPrerendered(file.pageContext)
   })
 
   const prerenderContextPublic = getPublicProxy(prerenderContext, 'prerenderContext')
   return prerenderContextPublic
+}
+
+// The user may return the public pageContext objects passed to +onPrerenderStart
+function getPageContextOriginal(pageContext: PageContext): PageContext {
+  const obj: unknown = pageContext
+  if (isObject(obj) && obj._isProxyObject) return obj._originalObject as PageContext
+  return pageContext
+}
+
+function getPageContextPublicPrerendered(pageContext: PageContextPrerendered): PageContextPrerendered {
+  // Pre-rendered redirects don't have any real pageContext object, but only a plain object `{ urlOriginal, pageId: null, is404: false, isRedirect: true }` which we cannot pass to getPageContextPublicServer() as it only accepts real pageContext objects (it asserts pageContext._isOriginalObject)
+  if (pageContext.isRedirect) return pageContext
+  return getPageContextPublicServer(pageContext as PageContext)
 }
 
 async function prerenderRedirects(

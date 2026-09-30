@@ -1,5 +1,5 @@
 <template>
-  <div v-if="is404">
+  <div v-if="pageContext.is404">
     <h1>404 Page Not Found</h1>
     <p>This page could not be found.</p>
     <p>{{ errorInfo }}</p>
@@ -11,5 +11,7 @@
 </template>
 
 <script lang="ts" setup>
-defineProps(['is404', 'errorInfo'])
+import { usePageContext } from './usePageContext'
+defineProps(['errorInfo'])
+const pageContext = usePageContext()
 </script>

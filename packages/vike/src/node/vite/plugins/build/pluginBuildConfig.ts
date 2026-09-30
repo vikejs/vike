@@ -46,12 +46,11 @@ function pluginBuildConfig(): Plugin[] {
           handleAssetsManifest_alignCssTarget(config)
           onSetupBuild()
           assertRollupInput(config)
-          // Set the inputs of each environment, instead of the root `config.build`: the root `config.build` is used by no environment upon `builder.sharedConfigBuild: true` (e.g. set by @vitejs/plugin-rsc).
           const { _runtimeEnvironmentNames: runtimeEnvironmentNames } = await getVikeConfigInternal()
           const entriesClient = await getEntries(config, false)
           const entriesServer = await getEntries(config, true)
           for (const [envName, envConfig] of Object.entries(config.environments)) {
-            // - Named environments (e.g. `rsc`) load their pages lazily via `vike/runtime`
+            // Named environments (e.g. `rsc`) load their pages lazily via `vike/runtime`
             if (isEnvironmentNamed(envName, runtimeEnvironmentNames)) {
               removeServerEntry(envConfig.build.rollupOptions, inputsBeforeServerEntry.get(config)?.get(envName))
               continue

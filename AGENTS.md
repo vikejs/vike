@@ -1,2 +1,3 @@
 - When changing the docs, consider updating docs/public/llms.txt
 - The only thing worse than a failing test is a reduction in test coverage
+- When squash-merging a PR, only keep the first line of the commit message and make sure to reference the PR number instead (so we avoid bloating Git history)

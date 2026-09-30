@@ -11,7 +11,6 @@ import { getPropAccessNotation } from '../../../../utils/getPropAccessNotation.j
 import { assert, assertUsage, assertWarning } from '../../../../utils/assert.js'
 import { hasProp } from '../../../../utils/hasProp.js'
 import { isErrorPage } from '../../../../shared-server-client/error-page.js'
-import { addIs404ToPageProps } from '../../../../shared-server-client/addIs404ToPageProps.js'
 import pc from '@brillout/picocolors'
 import { NOT_SERIALIZABLE } from '../../../../shared-server-client/NOT_SERIALIZABLE.js'
 import type { UrlRedirect } from '../../../../shared-server-client/route/abort.js'
@@ -184,7 +183,6 @@ function getPassToClientPageContext(pageContext: {
   let passToClient = [...pageContext._passToClient, ...passToClientBuiltInPageContext]
   if (isErrorPage(pageContext.pageId, pageContext._globalContext._pageConfigs)) {
     assert(hasProp(pageContext, 'is404', 'boolean'))
-    addIs404ToPageProps(pageContext)
     passToClient.push(...pageToClientBuiltInPageContextError)
   }
   passToClient = unique(passToClient)

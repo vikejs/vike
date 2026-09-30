@@ -45,6 +45,7 @@ import {
   type GlobalContextServerInternal,
 } from './globalContext.js'
 import { handlePageContextRequestUrl } from './renderPageServer/handlePageContextRequestUrl.js'
+import { getPageContextPublicServer } from './renderPageServer/getPageContextPublicServer.js'
 import {
   type HttpResponse,
   createHttpResponse404,
@@ -124,7 +125,12 @@ async function renderPageServer<PageContextUserAdded extends {}, PageContextInit
 
   checkType<PageContextAfterRender>(pageContextFinish)
   assertPageContextFinish(pageContextFinish)
-  return pageContextFinish as any
+  return getPageContextReturn(pageContextFinish) as any
+}
+
+function getPageContextReturn(pageContextFinish: PageContextAfterRender) {
+  if (!hasProp(pageContextFinish, '_globalContext', 'object')) return pageContextFinish
+  return getPageContextPublicServer(pageContextFinish)
 }
 
 async function renderPageServerEntryOnceBegin(
@@ -646,7 +652,12 @@ async function handleAbort(
   const pageContextAbort = errAbort._pageContextAbort
   assert(pageContextAbort)
 
-  addNewPageContextAborted(pageContextBegin.pageContextsAborted, pageContextNominalPageBegin, pageContextAbort)
+  addNewPageContextAborted(
+    pageContextBegin.pageContextsAborted,
+    pageContextNominalPageBegin,
+    pageContextAbort,
+    getPageContextPublicServer,
+  )
 
   const pageContext = fork(pageContextBegin)
   const pageContextAddendumAbort = getPageContextAddendumAbort(pageContextBegin.pageContextsAborted)
