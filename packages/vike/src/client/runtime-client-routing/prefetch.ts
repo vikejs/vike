@@ -18,12 +18,8 @@ import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { createPageContextClient, type PageContextCreatedClient } from './createPageContextClient.js'
 import { route, type PageContextAfterRoute } from '../../shared-server-client/route/index.js'
 import { noRouteMatch } from '../../shared-server-client/route/noRouteMatch.js'
-import {
-  type PageContextFromHooksServer,
-  getPageContextFromHooksServer,
-  hasStreamedValues,
-  cancelStreamedValues,
-} from './getPageContextFromHooks.js'
+import { type PageContextFromHooksServer, getPageContextFromHooksServer } from './getPageContextFromHooks.js'
+import { cancelStreamedValues, hasStreamedValues } from './streamedValues.js'
 import type { PageContextConfig, PageFile } from '../../shared-server-client/getPageFiles.js'
 import { getPageContextCurrent } from './getPageContextCurrent.js'
 import {
@@ -104,12 +100,9 @@ async function prefetchPageContextFromHooksServer(
   resultMaxAge: number | null,
 ): Promise<void> {
   const result = await getPageContextFromHooksServer(pageContextLink, false)
-  // Streamed pageContext values can be read only once
-  if (!result.is404ServerSideRouted && hasStreamedValues(result.pageContextFromHooksServer)) {
-    cancelStreamedValues(result.pageContextFromHooksServer)
-    return
-  }
   setPageContextPrefetchCache(pageContextLink, result, resultMaxAge)
+  // Streamed pageContext values can be read only once: a pageContext with streamed values isn't cached
+  if (!result.is404ServerSideRouted) cancelStreamedValues(result.pageContextFromHooksServer)
 }
 function populatePageContextPrefetchCache(
   pageContext: PageContextForPrefetch /*& PageContextConfig*/,

@@ -22,9 +22,8 @@ import {
   getPageContextFromHooksServer_firstRender,
   type PageContextFromHooksServer,
   setPageContextInitIsPassedToClient,
-  cancelStreamedValues,
-  releaseStreamedValues,
 } from './getPageContextFromHooks.js'
+import { cancelStreamedValues, releaseStreamedValues } from './streamedValues.js'
 import { createPageContextClient, type PageContextCreatedClient } from './createPageContextClient.js'
 import {
   addLinkPrefetchHandlers,
@@ -161,7 +160,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
   await globalObject.onRenderClientPreviousPromise
   if (isRenderOutdated()) return
 
-  let pageContextsFromServer: { pageContext: object; pageContextFromServer: object }[] = []
+  const pageContextsFromServer: { pageContext: object; pageContextFromServer: object }[] = []
   try {
     return await renderPageNominal()
   } finally {
@@ -526,10 +525,8 @@ async function renderPageClient(renderArgs: RenderArgs) {
     changeUrl(urlOriginal, overwriteLastHistoryEntry)
     globalObject.previousPageContext = pageContext
     // onRenderClient() owns the streamed pageContext values from now on
-    pageContextsFromServer = pageContextsFromServer.filter((p) => {
-      if (p.pageContext !== pageContext) return true
-      releaseStreamedValues(p.pageContextFromServer)
-      return false
+    pageContextsFromServer.forEach((p) => {
+      if (p.pageContext === pageContext) releaseStreamedValues(p.pageContextFromServer)
     })
     // There should never be concurrent onRenderClient() calls
     assert(globalObject.onRenderClientPreviousPromise === undefined)

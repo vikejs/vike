@@ -13,7 +13,8 @@ import {
 } from './html/streamedValuesHtml.js'
 import { processStream, pipeToStreamWritableNode, stampPipe } from './html/stream.js'
 import { Readable, PassThrough } from 'node:stream'
-import { parsePageContextHtml, readPageContextJson } from '../../../client/shared/streamedValues.js'
+import { parsePageContextHtml } from '../../../client/shared/streamedValues.js'
+import { readPageContextJson, cancelStreamedValues } from '../../../client/runtime-client-routing/streamedValues.js'
 import { logRuntimeError } from '../loggerRuntime.js'
 
 const enc = (s: string) => new TextEncoder().encode(s)
@@ -77,20 +78,16 @@ async function navigation(obj: Record<string, unknown>, { withText = false } = {
     body = forClient
     text = new Response(forText).text()
   }
-  const reader = body.getReader()
-  const decoder = new TextDecoder()
-  let buffer = ''
-  while (true) {
-    const { done, value } = await reader.read()
-    buffer += decoder.decode(value, { stream: !done })
-    const i = buffer.indexOf('\n')
-    if (i !== -1) {
-      const res = readPageContextJson(buffer.slice(0, i), buffer.slice(i + 1), reader, decoder)
-      return { ...res, pageContext: res.pageContextFromServer as any, text, onError }
-    }
-    expect(done).toBe(false)
+  const pageContextFromServer = (await readPageContextJson(new Response(body))) as any
+  return {
+    pageContext: pageContextFromServer,
+    cancel: () => cancelStreamedValues(pageContextFromServer),
+    text,
+    onError,
   }
 }
+// A `.pageContext.json` body, as the browser receives it
+const readBody = async (body: string) => (await readPageContextJson(new Response(body))) as any
 
 // First render: the server's `<script>` tags, run by the "browser", read by the client
 function setBrowser() {
@@ -274,14 +271,9 @@ describe('streamed pageContext values: client-side navigation', () => {
   })
 
   it('a malformed line fails the values that did not end', async () => {
-    const reader = new Response('x\n{"s":0,"v":1}\n').body!.getReader()
-    const { pageContextFromServer } = readPageContextJson(
-      '{"a":"!VikePromise:0","b":"!VikeStream:1","_streamedValues":[',
-      '',
-      reader,
-      new TextDecoder(),
+    const pageContext = await readBody(
+      '{"a":"!VikePromise:0","b":"!VikeStream:1","_streamedValues":[\nx\n{"s":0,"v":1}\n',
     )
-    const pageContext = pageContextFromServer as any
     expect(pageContext._streamedValues).toBe(undefined)
     await expect(pageContext.a).rejects.toThrow()
     await expect(readAll(pageContext.b)).rejects.toThrow()
@@ -402,6 +394,24 @@ describe('streamed pageContext values: serialization', () => {
 })
 
 describe('streamed pageContext values: cancellation', () => {
+  const throwing = () => {
+    throw new Error('Failed')
+  }
+  it.each([
+    ['return()', { [Symbol.asyncIterator]: () => ({ next: () => new Promise(() => {}), return: throwing }) }],
+    ['[Symbol.asyncIterator]()', { [Symbol.asyncIterator]: throwing }],
+    ['then()', { then: throwing }],
+  ])("a value whose %s throws doesn't prevent cancelling the others", async (_, value) => {
+    const onCancel = vi.fn()
+    const serializer = getStreamedValuesSerializer({})
+    serializer.beginAttempt()
+    stringify({ value, s: streamOf([], { onCancel }) }, { replacer: serializer.replacer })
+    serializer.beginAttempt()
+    expect(() => serializer.commit()).not.toThrow()
+    await sleep(0)
+    expect(onCancel).toHaveBeenCalled()
+  })
+
   it('a value that fails is cancelled at its source', async () => {
     const onCancel = vi.fn()
     const onReturn = vi.fn()
@@ -428,23 +438,6 @@ describe('streamed pageContext values: cancellation', () => {
     expect(lines).toEqual(['{"s":0,"error":true}', '{"s":1,"error":true}'])
     expect(onCancel).toHaveBeenCalled()
     expect(onReturn).toHaveBeenCalled()
-  })
-
-  it("an iterator whose return() throws doesn't prevent cancelling the other values", async () => {
-    const onCancel = vi.fn()
-    const throwing = {
-      [Symbol.asyncIterator]() {
-        return this
-      },
-      next: () => new Promise(() => {}),
-      return() {
-        throw new Error('return() failed')
-      },
-    }
-    const { cancel } = await navigation({ throwing, s: streamOf(Array(100).fill(enc('x')), { onCancel }) })
-    cancel()
-    await sleep(10)
-    expect(onCancel).toHaveBeenCalled()
   })
 
   it('a value produced after the cancellation is cancelled', async () => {
@@ -537,22 +530,6 @@ describe('streamed pageContext values: robustness', () => {
     expect(await readAll((await pageContext.later).s)).toEqual([enc('A')])
   })
 
-  it('a value whose [Symbol.asyncIterator]() fails when cancelled does not prevent cancelling the others', async () => {
-    const onCancel = vi.fn()
-    const throwing = {
-      [Symbol.asyncIterator]() {
-        throw new Error('[Symbol.asyncIterator]() failed')
-      },
-    }
-    const serializer = getStreamedValuesSerializer({})
-    serializer.beginAttempt()
-    stringify({ throwing, s: streamOf([], { onCancel }) }, { replacer: serializer.replacer })
-    serializer.beginAttempt()
-    expect(() => serializer.commit()).not.toThrow()
-    await sleep(0)
-    expect(onCancel).toHaveBeenCalled()
-  })
-
   it('HTML: an async iterator failing synchronously fails alone', async () => {
     const throwing = {
       [Symbol.asyncIterator]() {
@@ -620,14 +597,8 @@ describe('streamed pageContext values: robustness', () => {
   })
 
   it('a response ending before its values end fails them', async () => {
-    const reader = new Response(']}\n').body!.getReader()
-    const { pageContextFromServer } = readPageContextJson(
-      '{"p":"!VikePromise:0","_streamedValues":[',
-      '',
-      reader,
-      new TextDecoder(),
-    )
-    await expect((pageContextFromServer as any).p).rejects.toThrow('ended before')
+    const pageContext = await readBody('{"p":"!VikePromise:0","_streamedValues":[\n]}\n')
+    await expect(pageContext.p).rejects.toThrow('ended before')
   })
 })
 
@@ -695,22 +666,6 @@ describe('streamed pageContext values: values that are not sent', () => {
     await sleep(10)
     expect(visits).toBe(1)
   })
-
-  it("a thenable whose then() throws doesn't prevent cancelling the others", async () => {
-    const onCancel = vi.fn()
-    const thenable = {
-      then() {
-        throw new Error('then() failed')
-      },
-    }
-    const serializer = getStreamedValuesSerializer({})
-    serializer.beginAttempt()
-    stringify({ thenable, s: streamOf([], { onCancel }) }, { replacer: serializer.replacer })
-    serializer.beginAttempt()
-    expect(() => serializer.commit()).not.toThrow()
-    await sleep(0)
-    expect(onCancel).toHaveBeenCalled()
-  })
 })
 
 describe('streamed pageContext values: cancelled once, only when not sent', () => {
@@ -777,14 +732,7 @@ describe('streamed pageContext values: cancelled once, only when not sent', () =
 
 describe('streamed pageContext values: edge cases', () => {
   it('a response that stops before its values ended fails the values that did not end', async () => {
-    const reader = new Response('{"s":0,"v":1}\n').body!.getReader()
-    const { pageContextFromServer } = readPageContextJson(
-      '{"a":"!VikePromise:0","b":"!VikeStream:1","_streamedValues":[',
-      '',
-      reader,
-      new TextDecoder(),
-    )
-    const pageContext = pageContextFromServer as any
+    const pageContext = await readBody('{"a":"!VikePromise:0","b":"!VikeStream:1","_streamedValues":[\n{"s":0,"v":1}\n')
     expect(await pageContext.a).toBe(1)
     await expect(readAll(pageContext.b)).rejects.toThrow('ended before')
   })
@@ -949,5 +897,19 @@ describe('streamed pageContext values: the HTML response ending early cancels th
     writable2.destroy()
     await sleep(10)
     expect(onCancel).toHaveBeenCalled()
+  })
+})
+
+describe('client-side navigation: reading the pageContext.json response', () => {
+  it('chunks splitting the first line and a multi-byte character', async () => {
+    const body = enc('{"a":"é","p":"!VikePromise:0","_streamedValues":[\n{"s":0,"v":"ü"}\n]}\n')
+    const chunks = [body.slice(0, 7), body.slice(7, 40), body.slice(40, 58), body.slice(58)]
+    const stream = new ReadableStream({ pull: (c) => (chunks.length ? c.enqueue(chunks.shift()) : c.close()) })
+    const pageContext = (await readPageContextJson(new Response(stream))) as any
+    expect(pageContext.a).toBe('é')
+    expect(await pageContext.p).toBe('ü')
+  })
+  it('without streamed values: the body is parsed as is', async () => {
+    expect(await readBody('{"a":1,"d":"!Date:1970-01-01T00:00:00.000Z"}')).toEqual({ a: 1, d: new Date(0) })
   })
 })

@@ -8,7 +8,7 @@
 // Loaded only if the pageContext has streamed values (see getJsonSerializedInHtml.ts and getPageContextFromHooks.ts).
 
 export { parsePageContextHtml }
-export { readPageContextJson }
+export { readPageContextJsonStreamed }
 
 import { parse, parseTransform, type Reviver } from '@brillout/json-serializer/parse'
 import { assert } from '../../utils/assert.js'
@@ -140,13 +140,7 @@ function createReceiver(onChange?: () => void) {
     onLine(lineStr: string) {
       const line: unknown = JSON.parse(lineStr)
       if (!isObject(line) || typeof line.s !== 'number' || !entries.has(line.s)) throw new Error('Malformed line')
-      const entry = entries.get(line.s)!
-      try {
-        entry.push(line)
-      } catch (err) {
-        // E.g. a value that can't be parsed
-        entry.fail(err)
-      }
+      entries.get(line.s)!.push(line)
       notify()
     },
     /** The response failed, was truncated, or was cancelled: the values that didn't end fail */
@@ -221,7 +215,7 @@ function parsePageContextHtml(pageContextJson: string): unknown {
 // Client-side navigation: the `.pageContext.json` response (see server/runtime/renderPageServer/pageContextJson.ts),
 // after its first line was read.
 const lineLast = ']}'
-function readPageContextJson(
+function readPageContextJsonStreamed(
   lineFirst: string,
   rest: string,
   reader: ReadableStreamDefaultReader<Uint8Array>,
@@ -229,8 +223,6 @@ function readPageContextJson(
 ): { pageContextFromServer: Record<string, unknown>; cancel: () => void } {
   let buffer = rest
   let isDone = false
-  let isEnded = false
-  let isCancelled = false
   // Stop reading as soon as the values don't need the response anymore
   const release = () => {
     if (!isDone) reader.cancel().catch(() => {})
@@ -249,14 +241,11 @@ function readPageContextJson(
         while ((i = buffer.indexOf('\n', start)) !== -1) {
           const line = buffer.slice(start, i)
           start = i + 1
-          if (line === lineLast) isEnded = true
-          else receiver.onLine(line.startsWith(',') ? line.slice(1) : line)
+          if (line !== lineLast) receiver.onLine(line.startsWith(',') ? line.slice(1) : line)
         }
         buffer = buffer.slice(start)
-        if (isCancelled || receiver.isReleased()) break
-        if (isEnded || isDone) {
-          throw new Error('The pageContext.json response ended before the streamed pageContext values ended')
-        }
+        if (receiver.isReleased()) break
+        if (isDone) throw new Error('The pageContext.json response ended before the streamed pageContext values ended')
         if (!receiver.wantsMore()) {
           await receiver.waitForDemand()
           continue
@@ -272,11 +261,8 @@ function readPageContextJson(
       release()
     }
   })()
-  const cancel = () => {
-    isCancelled = true
-    receiver.fail(new Error("The pageContext wasn't used: its streamed values are cancelled"))
-    release()
-  }
+  // Releases the response
+  const cancel = () => receiver.fail(new Error("The pageContext wasn't used: its streamed values are cancelled"))
   return { pageContextFromServer, cancel }
 }
 
