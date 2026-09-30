@@ -26,7 +26,11 @@ import { getEarlyHints, type EarlyHint } from './getEarlyHints.js'
 import { assertNoInfiniteHttpRedirect } from './createHttpResponse/assertNoInfiniteHttpRedirect.js'
 import type { PageContextBegin } from '../renderPageServer.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
-import { getSetCookieAborted, resolveHeadersResponseFinal, resolveHeadersResponseSetCookie } from './headersResponse.js'
+import {
+  getHeadersSetCookieAborted,
+  resolveHeadersResponseFinal,
+  resolveHeadersResponseSetCookie,
+} from './headersResponse.js'
 import { stringify } from '@brillout/json-serializer/stringify'
 import '../../assertEnvServer.js'
 
@@ -129,7 +133,7 @@ function createHttpResponseErrorFallback(pageContext: {
     }
   })()
   // Cookies set before `throw redirect()` or `throw render()` are kept
-  return createHttpResponseError_(reason, getSetCookieAborted(pageContext))
+  return createHttpResponseError_(reason, getHeadersSetCookieAborted(pageContext))
 }
 function createHttpResponseErrorFallback_noGlobalContext() {
   return createHttpResponseError_('no error page (https://vike.dev/error-page) could be rendered', [])
@@ -144,7 +148,7 @@ function createHttpResponseError_(reason: string, headers: ResponseHeaders): Htt
   return httpResponse
 }
 function createHttpResponseErrorFallbackJson(pageContext: { pageContextsAborted: PageContextAborted[] }) {
-  const headers = getSetCookieAborted(pageContext)
+  const headers = getHeadersSetCookieAborted(pageContext)
   const httpResponse = createHttpResponse(500, contentTypeJson, headers, stringify({ serverSideError: true }))
   return httpResponse
 }

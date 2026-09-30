@@ -1,7 +1,7 @@
 export { resolveHeadersResponseEarly }
 export { resolveHeadersResponseFinal }
 export { resolveHeadersResponseSetCookie }
-export { getSetCookieAborted }
+export { getHeadersSetCookieAborted }
 
 import { addCspResponseHeader, PageContextCspNonce } from './csp.js'
 import { isCallable } from '../../../utils/isCallable.js'
@@ -24,7 +24,7 @@ function resolveHeadersResponseFinal(pageContext: PageContextHeadersResponse, st
   // This overrides any previously set Cache-Control value.
   if (statusCode >= 500) headersResponse.set('Cache-Control', cacheControlDisable)
 
-  const headers = getSetCookieAborted(pageContext)
+  const headers = getHeadersSetCookieAborted(pageContext)
   headersResponse.forEach((value, key) => {
     headers.push([key, value])
   })
@@ -34,7 +34,7 @@ function resolveHeadersResponseFinal(pageContext: PageContextHeadersResponse, st
 // Headers of `pageContext.json` and redirect responses: only `Set-Cookie` applies to them, the other headers (e.g. `Cache-Control` and `Content-Security-Policy`) are about the HTML page.
 function resolveHeadersResponseSetCookie(pageContext: PageContextHeadersResponse) {
   const headersResponse = pageContext.headersResponse || new Headers()
-  const headers = getSetCookieAborted(pageContext)
+  const headers = getHeadersSetCookieAborted(pageContext)
   headersResponse.getSetCookie().forEach((value) => {
     headers.push(['set-cookie', value])
   })
@@ -42,7 +42,7 @@ function resolveHeadersResponseSetCookie(pageContext: PageContextHeadersResponse
 }
 
 // Cookies set before `throw redirect()` or `throw render()` are kept. They're sent first, so that a cookie set again later wins.
-function getSetCookieAborted(pageContext: { pageContextsAborted: PageContextAborted[] }) {
+function getHeadersSetCookieAborted(pageContext: { pageContextsAborted: PageContextAborted[] }) {
   return pageContext.pageContextsAborted.flatMap((pageContextAborted) => {
     const { headersResponse } = pageContextAborted as { headersResponse?: Headers }
     return (headersResponse?.getSetCookie() ?? []).map((value): [string, string] => ['set-cookie', value])
