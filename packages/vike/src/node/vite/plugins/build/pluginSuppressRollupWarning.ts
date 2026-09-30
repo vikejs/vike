@@ -14,7 +14,6 @@ function pluginSuppressRollupWarning(): Plugin[] {
       enforce: 'post',
       configResolved: {
         async handler(config) {
-          // Set the onwarn of each environment, instead of the root `config.build` (see pluginBuildConfig.ts)
           Object.values(config.environments).forEach(({ build }) => {
             const onWarnOriginal = build.rollupOptions.onwarn
             build.rollupOptions.onwarn = function (warning, warn) {
