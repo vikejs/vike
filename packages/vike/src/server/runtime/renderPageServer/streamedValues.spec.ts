@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 vi.mock('../../../client/assertEnvClient.js', () => ({}))
 vi.mock('../loggerRuntime.js', () => ({ logRuntimeError: vi.fn() }))
 import { stringify } from '@brillout/json-serializer/stringify'
-import { getStreamedValuesSerializer } from './streamedValues.js'
+import { getStreamedValuesSerializer } from './streamedValues/registry.js'
 import { getPageContextJson, getPageContextJsonFile } from './pageContextJson.js'
 import {
   sendStreamedValuesInHtml,
@@ -48,8 +48,8 @@ async function readAll(value: unknown): Promise<unknown[]> {
 const getPageContextHtml = ({ isPrerendering = false, cspNonce = null as null | string } = {}) =>
   ({ cspNonce, isPrerendering, _requestId: 1 }) as any
 function serialize(obj: Record<string, unknown>, pageContext: object) {
-  const { replacer, getStreamedValues } = getStreamedValuesSerializer(pageContext)
-  return { serialized: stringify(obj, { replacer }), streamedValues: getStreamedValues() }
+  const { replacer, streamedValues } = getStreamedValuesSerializer(pageContext)
+  return { serialized: stringify(obj, { replacer }), streamedValues }
 }
 
 // Client-side navigation: the server's `.pageContext.json` body, read by the client

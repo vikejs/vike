@@ -1,6 +1,6 @@
-// The streamed pageContext values (see ../streamedValues.ts) of the HTML's `<script id="vike_pageContext">`: each line
-// is sent as a `<script>` that pushes it to `self.__vike_streamed` (read by Vike's client runtime, see
-// client/shared/streamedValues.ts).
+// The streamed pageContext values (see shared-server-client/streamedValues.ts) of the HTML's
+// `<script id="vike_pageContext">`: each line is sent as a `<script>` that pushes it to `self.__vike_streamed` (read by
+// Vike's client runtime, see client/shared/streamedValues.ts).
 // - HTML stream of react-streaming: the lines are injected into the stream as they're produced.
 // - HTML stream: the lines produced while the stream is running are sent after it ends, and the lines produced
 //   afterwards are sent as they're produced; the HTML ends once all values have ended.
@@ -16,7 +16,8 @@ export { getStreamedValuesLinesPrerendered }
 export type { PageContextStreamedValuesHtml }
 
 import { assert } from '../../../../utils/assert.js'
-import { pumpStreamedValues, type StreamedValue } from '../streamedValues.js'
+import { pumpStreamedValues } from '../streamedValues/pump.js'
+import type { StreamedValue } from '../streamedValues/registry.js'
 import { getPageContextClientSerialized, type PageContextSerialization } from './serializeContext.js'
 import type { PageContextCreatedServer } from '../createPageContextServer.js'
 import type { StreamFromReactStreamingPackage } from './stream/react-streaming.js'
