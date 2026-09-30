@@ -12,7 +12,7 @@ Paths below are relative to https://vike.dev (e.g. `/data-fetching` → https://
 ## Core concepts
 
 - /config — `+` config files, cross-directory inheritance, cumulative vs overridable settings, `.clear.js` (reset), `.default.js` (fallback), `.server.js`/`.client.js` env markers, group dirs `(name)`, pointer imports
-- /pageContext — per-page/request object: `routeParams`, `urlParsed`/`urlPathname`, `isClientSide`/`isHydration`, `data`, `config`, `user`, custom props, `PageContextServer`/`PageContextClient` types
+- /pageContext — per-page/request object: `routeParams`, `urlParsed`/`urlPathname`, `isClientSide`/`isHydration`, `data`, `config`, `user`, `content` (non-HTML page body), custom props, `PageContextServer`/`PageContextClient` types
 - /globalContext — app-wide singleton per env: `config`, `pages`, `assetsManifest`; init via `onCreateGlobalContext`, read via `getGlobalContext()`, `GlobalContext` type
 - /data-fetching — `+data()` + `useData()`, server-side fetch, direct DB/ORM, `passToClient`, RPC/Telefunc, TanStack Query, GraphQL, SSG data, i18n
 - /data — `+data()` hook, server-side default (`.client.js`/`.shared.js` variants), returns `pageContext.data` (serialized to client), `useData()`, `throw render()`/`redirect()`, manual wiring without `vike-{react,vue,solid}`
@@ -38,7 +38,7 @@ Paths below are relative to https://vike.dev (e.g. `/data-fetching` → https://
 
 ## Render control: SSR · SSG · SPA · streaming
 
-- /pre-rendering — SSG/build-time HTML, `prerender: true`, partial pre-rendering, `onBeforePrerenderStart()` for param routes, static hosting, SSG vs SSR, when not to
+- /pre-rendering — SSG/build-time HTML, `prerender: true`, partial pre-rendering, `onBeforePrerenderStart()` for param routes, non-HTML files via `pageContext.content` (`/feed.atom` → `dist/client/feed.atom`), static hosting, SSG vs SSR, when not to
 - /SSR-vs-SPA — choosing SSR vs SPA, per-page `+ssr`, SEO/crawlers, hydration cost, SPA for private/auth pages
 - /ssr — `+ssr` toggle SSR per page/globally (default `true`), `false` = client-only/SPA, works with prerender + `<ClientOnly>`
 - /stream — `+stream` HTML streaming (`true`/`'web'`/`'node'`/`false`), off for bots, needs `ssr`, Web vs Node streams
@@ -51,6 +51,7 @@ Paths below are relative to https://vike.dev (e.g. `/data-fetching` → https://
 
 - /guard — `+guard()` access control, runs after routing before `data()` (server default, client-configurable), reject via `throw render()`/`redirect()`, role/admin protection
 - /onBeforeRender — `+onBeforeRender()` pre-render hook (server default; client/shared), sets ANY `pageContext` prop (vs `data()` → only `.data`), data orchestration, custom hooks via `meta`
+- /onRenderHtml — `+onRenderHtml()` server render hook (defined by `vike-{react,vue,solid}`), returns `documentHtml`, or sets `pageContext.content` for non-HTML pages (feeds, sitemaps, images): `Content-Type` from the URL's file extension (override via `headersResponse`), pre-rendered at the URL
 - /onCreatePageContext — `+onCreatePageContext()` after routing before render (server/client/both), per-page cumulative, init pageContext / store setup
 - /onCreateGlobalContext — `+onCreateGlobalContext()` once on globalContext init (server/client/both), global cumulative, global data / auth / store init, `passToClient`
 - /onError — `+onError()` server-only cumulative, captures server-side errors, error tracking, gets `error` + nullable `pageContext`
