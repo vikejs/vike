@@ -54,7 +54,6 @@ const optimizeDeps = {
       // We must exclude Vike's client runtime so it can import virtual modules
       'vike/client',
       'vike/client/router',
-      'vike/runtime',
     ],
     include: [
       // Avoid:
