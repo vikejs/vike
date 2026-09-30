@@ -31,6 +31,7 @@ import '../../assertEnvServer.js'
 
 type Kind = 'stream' | 'promise' | 'asyncIterable'
 type StreamedValue = { id: number; kind: Kind; value: unknown }
+type Producer = Pick<StreamedValue, 'kind' | 'value'>
 const prefixes: Record<Kind, string> = {
   stream: '!VikeStream:',
   promise: '!VikePromise:',
@@ -106,18 +107,15 @@ function cancelStreamedValues(pageContext: object) {
   cancel(registry, [...registry.byValue.values()])
 }
 // Cancels the values, except the ones that are sent (including the values a Promise resolves to)
-function cancel(
-  registry: Registry,
-  streamedValues: StreamedValue[],
-  isSent: (value: unknown) => boolean = () => false,
-) {
-  streamedValues.forEach(({ kind, value }) => {
+function cancel(registry: Registry, producers: Producer[], isSent: (value: unknown) => boolean = () => false) {
+  producers.forEach(({ kind, value }) => {
     // E.g. a Promise resolving to an object containing that Promise
     if (isSent(value) || registry.cancelled.has(value)) return
     registry.cancelled.add(value)
     if (kind === 'stream') {
       const stream = value as ReadableStream
-      if (!stream.locked) stream.cancel().catch(() => {})
+      // Rejects if it's locked (i.e. started)
+      stream.cancel().catch(() => {})
     }
     if (kind === 'promise') {
       // Also avoids an unhandled rejection
@@ -137,13 +135,9 @@ function releaseIterator(getIterator: () => AsyncIterator<unknown>) {
   } catch {}
 }
 // The streamed values contained in a value that won't be sent (e.g. it isn't serializable)
-function findStreamedValues(
-  value: unknown,
-  found: StreamedValue[] = [],
-  visited = new Set<unknown>(),
-): StreamedValue[] {
+function findStreamedValues(value: unknown, found: Producer[] = [], visited = new Set<unknown>()): Producer[] {
   const kind = getKind(value)
-  if (kind) found.push({ id: -1, kind, value })
+  if (kind) found.push({ kind, value })
   if (kind || typeof value !== 'object' || value === null || ArrayBuffer.isView(value) || visited.has(value))
     return found
   visited.add(value)
@@ -173,10 +167,10 @@ function pumpStreamedValues(
   { failFast, onError }: { failFast: boolean; onError: (err: unknown) => void },
 ): { done: Promise<void>; cancel: (reason?: unknown) => void } {
   const registry = getRegistry(pageContext)
-  const started = new Set<StreamedValue>()
+  const started = new Set<unknown>()
   const releases = new Set<() => void>()
   // Contained in a chunk that failed
-  const unsent: StreamedValue[] = []
+  const unsent: Producer[] = []
   let pending = 0
   let isEnded = false
   let resolve!: () => void
@@ -186,7 +180,7 @@ function pumpStreamedValues(
     reject = reject_
   })
 
-  const isStarted = (value: unknown) => started.has(registry.byValue.get(value)!)
+  const isStarted = (value: unknown) => started.has(value)
   const end = (err?: { err: unknown }) => {
     if (isEnded) return
     isEnded = true
@@ -197,8 +191,8 @@ function pumpStreamedValues(
   }
 
   const start = (streamedValue: StreamedValue) => {
-    if (started.has(streamedValue) || isEnded) return
-    started.add(streamedValue)
+    if (started.has(streamedValue.value) || isEnded) return
+    started.add(streamedValue.value)
     pending++
     pump(streamedValue).then(
       () => {
@@ -218,7 +212,7 @@ function pumpStreamedValues(
           forbidReactElements: true,
           valueName: 'a streamed pageContext value',
           replacer: getReplacer(registry, (streamedValue) => {
-            if (!started.has(streamedValue)) valuesNew.push(streamedValue)
+            if (!started.has(streamedValue.value)) valuesNew.push(streamedValue)
           }),
           htmlScriptSafe: { escapeScripts: true, escapeURLs: false },
         })
