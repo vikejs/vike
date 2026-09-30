@@ -62,10 +62,10 @@ const universalMiddlewares = enhance(
       return response
     }
     const router = new UniversalRouter(true, false)
-    // Universal Middleware throws `No Response found` if no handler matches
+    // Universal Middleware's pipe() throws `No Response found` if nothing returns a Response
     const fallThrough = new Response(null)
     apply(router, [
-      enhance(() => fallThrough, { name: 'vike:fall-through', method: httpMethods, path: '/**', immutable: true }),
+      enhance(() => fallThrough, { name: 'vike:fall-through', method: httpMethods, path: '/**' }),
       ...middlewares.map((middleware) => collectResponseHandler(middleware, responseHandlers)),
     ])
     const handler = router[universalSymbol] as UniversalHandler
@@ -73,7 +73,7 @@ const universalMiddlewares = enhance(
     if (response !== fallThrough) return applyResponseHandlers(response)
     if (responseHandlers.length > 0) return applyResponseHandlers
   },
-  { name: 'vike:middleware', immutable: true },
+  { name: 'vike:middleware' },
 )
 
 function collectResponseHandler(middleware: EnhancedMiddleware, responseHandlers: ResponseHandler[]) {
