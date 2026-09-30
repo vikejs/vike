@@ -41,6 +41,15 @@ const filterFunction = (id: string) =>
   id === VIRTUAL_FILE_ID_constantsGlobalThis || id === addVirtualFileIdPrefix(VIRTUAL_FILE_ID_constantsGlobalThis)
 // ===
 
+// The forms of the ID that Vite may resolve:
+// - The import `virtual:vike:server:constantsGlobalThis`
+// - The resolved ID `\0virtual:vike:server:constantsGlobalThis` and its URL `/@id/__x00__virtual:vike:server:constantsGlobalThis`: Vite re-resolves them when a plugin adds the module as a watch file, e.g. @vitejs/plugin-rsc's addWatchFile() in the `rsc` environment
+const idForms = [
+  VIRTUAL_FILE_ID_constantsGlobalThis,
+  addVirtualFileIdPrefix(VIRTUAL_FILE_ID_constantsGlobalThis),
+  `/@id/__x00__${VIRTUAL_FILE_ID_constantsGlobalThis}`,
+]
+
 function pluginReplaceConstantsGlobalThis(): Plugin[] {
   let config: ResolvedConfig
   let isDev: boolean
@@ -86,9 +95,8 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
       resolveId: {
         filter: filterRolldown,
         handler(id) {
-          assert(filterFunction(id))
-          assert(id === VIRTUAL_FILE_ID_constantsGlobalThis)
-          return addVirtualFileIdPrefix(id)
+          assert(idForms.includes(id), { id })
+          return addVirtualFileIdPrefix(VIRTUAL_FILE_ID_constantsGlobalThis)
         },
       },
       load: {
