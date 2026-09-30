@@ -13,7 +13,7 @@ import { objectMap } from '../../../../utils/objectMap.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { getVikeEnvironmentName, isVikeEnvironmentBuiltIn } from '../../shared/environmentName.js'
 import { findPageFiles } from '../../shared/findPageFiles.js'
-import type { ResolvedConfig, Plugin } from 'vite'
+import type { ResolvedConfig, Plugin, Rollup } from 'vite'
 import { generateVirtualFileId } from '../../../../shared-server-node/virtualFileId.js'
 import type { PageConfigBuildTime } from '../../../../types/PageConfig.js'
 import type { FileType } from '../../../../shared-server-client/getPageFiles/fileTypes.js'
@@ -30,8 +30,9 @@ import {
 } from './handleAssetsManifest.js'
 import { resolveIncludeAssetsImportedByServer } from '../../../../server/runtime/renderPageServer/getPageAssets/retrievePageAssetsProd.js'
 import { serverEntryVirtualId } from '@brillout/vite-plugin-server-entry/plugin'
-import { getInputBeforeServerEntry } from './pluginProdBuildEntry.js'
 import '../../assertEnvVite.js'
+
+const inputsBeforeServerEntry = new WeakMap<ResolvedConfig, Map<string, Rollup.InputOption | undefined>>()
 
 function pluginBuildConfig(): Plugin[] {
   return [
@@ -53,7 +54,7 @@ function pluginBuildConfig(): Plugin[] {
             const isServerSide = isViteServerSide_configEnvironment(envName, envConfig)
             // - Named environments (e.g. `rsc`) load their pages lazily via `vike/runtime`
             if (!isVikeEnvironmentBuiltIn(getVikeEnvironmentName(envName, isServerSide, runtimeEnvironmentNames))) {
-              removeServerEntry(envConfig.build.rollupOptions, getInputBeforeServerEntry(config, envName))
+              removeServerEntry(envConfig.build.rollupOptions, inputsBeforeServerEntry.get(config)?.get(envName))
               continue
             }
             const entries = isServerSide ? entriesServer : entriesClient
@@ -78,6 +79,21 @@ function pluginBuildConfig(): Plugin[] {
         },
       },
     },
+    {
+      // Before @brillout/vite-plugin-server-entry adds (and normalizes) its input, see removeServerEntry() below: among `order: 'post'` hooks, `enforce: 'pre'` plugins run first, and every instance of the library adds its input in an `enforce: 'post'` plugin
+      name: 'vike:build:pluginBuildConfig:inputs',
+      apply: 'build',
+      enforce: 'pre',
+      configResolved: {
+        order: 'post',
+        handler(config) {
+          inputsBeforeServerEntry.set(
+            config,
+            new Map(Object.entries(config.environments).map(([name, env]) => [name, env.build.rollupOptions.input])),
+          )
+        },
+      },
+    },
   ]
 }
 
@@ -90,7 +106,7 @@ function removeServerEntry(
   const hasServerEntry = (input: typeof inputBefore) =>
     Object.values(normalizeRollupInput(input)).includes(serverEntryVirtualId)
   if (!hasServerEntry(rollupOptions.input)) return
-  // Every instance of the library adds its input after the snapshot (see pluginProdBuildEntry.ts)
+  // Every instance of the library adds its input after the snapshot (see `vike:build:pluginBuildConfig:inputs`)
   assert(!hasServerEntry(inputBefore))
   // The library also normalized the input (e.g. a string into an object) => restore it as it was right before
   rollupOptions.input = inputBefore
