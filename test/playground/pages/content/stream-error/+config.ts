@@ -1,5 +1,6 @@
 import type { Config } from 'vike/types'
 
 export default {
-  prerender: true,
+  route: '/content/stream-error.txt',
+  prerender: false,
 } satisfies Config

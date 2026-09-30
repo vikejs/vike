@@ -11,7 +11,7 @@ function onRenderHtml(pageContext: PageContextServer) {
   pageContext.content = new ReadableStream<Uint8Array>({
     async start(controller) {
       controller.enqueue(chunks[0]!)
-      // Upon SSR, the second chunk is held back until the test requests /stream-release.txt
+      // Upon SSR, the second chunk is held back until the test requests /content/stream-release.txt
       if (!isPrerendering) await waitForRelease()
       controller.enqueue(chunks[1]!)
       controller.close()
