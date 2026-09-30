@@ -21,6 +21,7 @@ beforeEach(() => {
     vikeConfigPromise: null,
     vikeConfigHasBuildError: null,
     restartViteBecauseOfError: false,
+    viteEnvironmentNames: null,
   })
 })
 
@@ -154,7 +155,6 @@ describe("meta.env of a Vite environment that doesn't exist", () => {
   const userRootDir = toPosixPath(fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'vike-named-environments-'))))
   afterAll(() => {
     fs.rmSync(userRootDir, { recursive: true, force: true })
-    setViteEnvironmentNames(null)
   })
 
   it("doesn't require Vite environments for server and client", async () => {
