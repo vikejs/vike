@@ -154,6 +154,8 @@ function findStreamedValues(value: unknown, found: Producer[] = [], visited = ne
   return found
 }
 
+const pauseEvery = 10 // milliseconds
+
 // Reads the values concurrently and calls `write()` with one line per chunk / result; `write()` enqueues the line
 // synchronously and returns a promise that resolves when the consumer is ready for more (backpressure).
 // - `failFast: false` (responses): a value that fails is logged and sent as an error line; the other values keep
@@ -173,6 +175,7 @@ function pumpStreamedValues(
   const unsent: Producer[] = []
   let pending = 0
   let isEnded = false
+  let pausedAt = Date.now()
   let resolve!: () => void
   let reject!: (err: unknown) => void
   const done = new Promise<void>((resolve_, reject_) => {
@@ -230,6 +233,12 @@ function pumpStreamedValues(
     const ready = write(lineStr)
     valuesNew.forEach(start)
     await ready
+    // A producer that never waits (e.g. an async generator yielding in a loop) mustn't block the event loop, even when the
+    // consumer is fast or doesn't apply backpressure (the HTML stream)
+    if (Date.now() - pausedAt >= pauseEvery) {
+      await new Promise((resolve) => setTimeout(resolve))
+      pausedAt = Date.now()
+    }
   }
 
   const pump = async (streamedValue: StreamedValue) => {

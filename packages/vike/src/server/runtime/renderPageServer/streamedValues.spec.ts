@@ -11,7 +11,7 @@ import {
   getStreamedValuesLinesPrerendered,
   cancelStreamedValuesHtml,
 } from './html/streamedValuesHtml.js'
-import { processStream, pipeToStreamWritableNode } from './html/stream.js'
+import { processStream, pipeToStreamWritableNode, stampPipe } from './html/stream.js'
 import { Readable, PassThrough } from 'node:stream'
 import { parsePageContextHtml, readPageContextJson } from '../../../client/shared/streamedValues.js'
 import { logRuntimeError } from '../loggerRuntime.js'
@@ -772,5 +772,182 @@ describe('streamed pageContext values: cancelled once, only when not sent', () =
     const readsSerialized = reads
     cancelStreamedValuesHtml(pageContext)
     expect(reads).toBe(readsSerialized)
+  })
+})
+
+describe('streamed pageContext values: edge cases', () => {
+  it('a response that stops before its values ended fails the values that did not end', async () => {
+    const reader = new Response('{"s":0,"v":1}\n').body!.getReader()
+    const { pageContextFromServer } = readPageContextJson(
+      '{"a":"!VikePromise:0","b":"!VikeStream:1","_streamedValues":[',
+      '',
+      reader,
+      new TextDecoder(),
+    )
+    const pageContext = pageContextFromServer as any
+    expect(await pageContext.a).toBe(1)
+    await expect(readAll(pageContext.b)).rejects.toThrow('ended before')
+  })
+
+  it("client-side navigation: a producer that never waits doesn't block the event loop, even with a fast client", async () => {
+    const { pageContext, cancel } = await navigation({
+      g: (async function* () {
+        while (true) yield 'x'
+      })(),
+    })
+    const reading = readAll(pageContext.g).catch(() => {})
+    await sleep(20)
+    cancel()
+    await reading
+  })
+
+  it('undefined values and chunks', async () => {
+    const { pageContext } = await navigation({
+      p: Promise.resolve(undefined),
+      g: (async function* () {
+        yield undefined
+      })(),
+    })
+    expect(await pageContext.p).toBe(undefined)
+    expect(await readAll(pageContext.g)).toEqual([undefined])
+  })
+
+  it('bytes starting with a byte order mark are kept', async () => {
+    const bytes = Uint8Array.from([0xef, 0xbb, 0xbf, 0x61])
+    const { pageContext } = await navigation({ s: streamOf([bytes]) })
+    expect(await readAll(pageContext.s)).toEqual([bytes])
+  })
+
+  it('a consumer releasing a stream whose producer is slow releases the response right away', async () => {
+    const onCancel = vi.fn()
+    let pulls = 0
+    const slow = new ReadableStream(
+      {
+        pull: (c) => (pulls++ === 0 ? c.enqueue(enc('first')) : new Promise(() => {})),
+        cancel: onCancel,
+      },
+      { highWaterMark: 0 },
+    )
+    const { pageContext } = await navigation({ slow })
+    const reader = pageContext.slow.getReader()
+    await reader.read()
+    await reader.cancel()
+    await sleep(10)
+    expect(onCancel).toHaveBeenCalled()
+  })
+
+  it('the values in a Map contained in a chunk that fails are cancelled', async () => {
+    const onCancel = vi.fn()
+    const pageContext = {}
+    const { streamedValues } = serialize(
+      { p: Promise.resolve({ fn() {}, m: new Map([['k', streamOf([], { onCancel })]]) }) },
+      pageContext,
+    )
+    await pumpStreamedValues(pageContext, streamedValues, () => {}, { failFast: false, onError: () => {} }).done
+    await sleep(0)
+    expect(onCancel).toHaveBeenCalled()
+  })
+
+  it("a producer failing because it's cancelled isn't logged, and its late chunk's values are cancelled", async () => {
+    const onError = vi.fn()
+    const onCancel = vi.fn()
+    const next = deferred<IteratorResult<unknown>>()
+    const iterator = {
+      [Symbol.asyncIterator]: () => iterator,
+      next: () => next.promise,
+      return: async () => ({ done: true as const, value: undefined }),
+    }
+    const pageContext = {}
+    const { streamedValues } = serialize({ iterator }, pageContext)
+    const pump = pumpStreamedValues(pageContext, streamedValues, () => {}, { failFast: false, onError })
+    await sleep(0)
+    pump.cancel()
+    next.resolve({ done: false, value: { s: streamOf([], { onCancel }) } })
+    await sleep(10)
+    expect(onCancel).toHaveBeenCalled()
+
+    const failingNext = deferred<IteratorResult<unknown>>()
+    const failing = { [Symbol.asyncIterator]: () => failing, next: () => failingNext.promise }
+    const pageContext2 = {}
+    const { streamedValues: streamedValues2 } = serialize({ failing }, pageContext2)
+    const pump2 = pumpStreamedValues(pageContext2, streamedValues2, () => {}, { failFast: false, onError })
+    await sleep(0)
+    pump2.cancel()
+    failingNext.reject(new Error('cancelled'))
+    await sleep(10)
+    expect(onError).not.toHaveBeenCalled()
+  })
+})
+
+describe('streamed pageContext values: the HTML response ending early cancels them', () => {
+  const html = () =>
+    new ReadableStream<Uint8Array>({
+      start(controller) {
+        controller.enqueue(enc('<html>'))
+      },
+    })
+  it('the HTML stream fails', async () => {
+    const onCancel = vi.fn()
+    let controller!: ReadableStreamDefaultController<Uint8Array>
+    const failing = new ReadableStream<Uint8Array>({ start: (c) => void (controller = c) })
+    controller.enqueue(enc('<html>'))
+    const wrapper = (await processStream(failing, { onErrorWhileStreaming: () => {}, onCancel })) as ReadableStream
+    wrapper.getReader().read()
+    controller.error(new Error('HTML failed'))
+    await sleep(10)
+    expect(onCancel).toHaveBeenCalled()
+  })
+  it('a Web Stream Pipe: the writable fails', async () => {
+    const onCancel = vi.fn()
+    const pipe = (writable: WritableStream) =>
+      void html()
+        .pipeTo(writable)
+        .catch(() => {})
+    stampPipe(pipe, 'web-stream')
+    const wrapper = (await processStream(pipe, { onErrorWhileStreaming: () => {}, onCancel })) as any
+    const writable = new WritableStream({ write: () => Promise.reject(new Error('client gone')) })
+    wrapper(writable)
+    await sleep(10)
+    expect(onCancel).toHaveBeenCalled()
+  })
+  it('a Node.js Stream Pipe: the writable closes', async () => {
+    const onCancel = vi.fn()
+    const pipe = (writable: any) => void writable.write('<html>')
+    stampPipe(pipe, 'node-stream')
+    const wrapper = (await processStream(pipe, { onErrorWhileStreaming: () => {}, onCancel })) as any
+    const writable = new PassThrough()
+    wrapper(writable)
+    writable.destroy()
+    await sleep(10)
+    expect(onCancel).toHaveBeenCalled()
+  })
+  it('a Node.js Readable: the readable is destroyed', async () => {
+    const onCancel = vi.fn()
+    const readable = new Readable({ read() {} })
+    readable.push('<html>')
+    const wrapper = (await processStream(readable, { onErrorWhileStreaming: () => {}, onCancel })) as Readable
+    wrapper.destroy()
+    await sleep(10)
+    expect(onCancel).toHaveBeenCalled()
+  })
+  it('a Web Stream piped to a Node.js writable: errors and closing are propagated', async () => {
+    let controller!: ReadableStreamDefaultController<Uint8Array>
+    const failing = new ReadableStream<Uint8Array>({ start: (c) => void (controller = c) })
+    const writable = new PassThrough()
+    writable.on('error', () => {})
+    pipeToStreamWritableNode(failing, writable)
+    await sleep(0)
+    controller.error(new Error('HTML failed'))
+    await sleep(10)
+    expect(writable.destroyed).toBe(true)
+
+    const onCancel = vi.fn()
+    const source = new ReadableStream({ cancel: onCancel })
+    const writable2 = new PassThrough()
+    pipeToStreamWritableNode(source, writable2)
+    await sleep(0)
+    writable2.destroy()
+    await sleep(10)
+    expect(onCancel).toHaveBeenCalled()
   })
 })

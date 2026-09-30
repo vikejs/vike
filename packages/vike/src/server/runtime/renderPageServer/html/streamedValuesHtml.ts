@@ -41,9 +41,6 @@ type PageContextStreamedValuesHtml = PageContextCreatedServer &
     _streamedValuesHtmlIsCancelled?: true
     _pageContextSerializedHtml?: ReturnType<typeof getPageContextClientSerialized>
   }
-// No backpressure from the HTML stream: writing pauses now and then, so that a producer that never waits (e.g. an async
-// generator yielding in a loop) doesn't block the event loop
-const pauseEvery = 10 // milliseconds
 
 // The pageContext of `<script id="vike_pageContext">`, followed by its streamed values
 function serializePageContextHtml(
@@ -72,7 +69,6 @@ function sendStreamedValuesInHtml(
   assert(!pageContext._streamedValuesHtml)
   if (streamedValues.length === 0) return
   const { isPrerendering } = pageContext
-  let pausedAt = Date.now()
   const write = (line: string) => {
     streamedValuesHtml.lines?.push(line)
     const script = getScript(line, pageContext)
@@ -87,13 +83,6 @@ function sendStreamedValuesInHtml(
     } else {
       streamedValuesHtml.pending.push(script)
     }
-    if (Date.now() - pausedAt < pauseEvery) return
-    return new Promise<void>((resolve) =>
-      setTimeout(() => {
-        pausedAt = Date.now()
-        resolve()
-      }),
-    )
   }
   const pump = pumpStreamedValues(pageContext, streamedValues, write, {
     // A pre-rendered page can't have a failed value
