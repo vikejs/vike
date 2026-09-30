@@ -336,6 +336,9 @@ function pipeToStreamWritableNode(htmlRender: HtmlRender | Uint8Array, writable:
       const { pipeline } = await loadStreamNodeModule()
       // Unlike pipe(), pipeline() destroys the readable (and thus cancels the stream) if the writable closes early (e.g. the user closed the tab), and the writable if the stream errors
       pipeline(s, writable, () => {})
+      // E.g. compression() holds the writes until flush()
+      const w: StreamWritableNode & { flush?: () => void } = writable
+      s.on('data', () => w.flush?.())
     })
     return true
   }
