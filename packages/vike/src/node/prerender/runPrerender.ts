@@ -1041,15 +1041,12 @@ async function write(
 // With `pageContext.content` the URL is the file path: `/feed.atom` => `dist/client/feed.atom`
 function getContentFileUrl(pageContext: PageContextPrerendered): string {
   const { urlOriginal } = pageContext
-  const { pathnameOriginal, searchOriginal, hashOriginal } = parseUrl(urlOriginal, '/')
+  // The query string and the hash are ignored: a static host serves the file at the pathname
+  const { pathnameOriginal } = parseUrl(urlOriginal, '/')
   const errPrefix = `Cannot pre-render ${pc.cyan(urlOriginal)} with ${pc.code('pageContext.content')}` as const
   const errSuffix =
     "pre-rendering writes the content to the file at the URL's pathname (e.g. /feed.atom => dist/client/feed.atom)"
   assertUsage(!pageContext.is404, `${errPrefix} because it's the 404 page`)
-  assertUsage(
-    !searchOriginal && !hashOriginal,
-    `${errPrefix} because the URL has a query string or a hash: ${errSuffix}`,
-  )
   const segments = pathnameOriginal.split('/').slice(1)
   assertUsage(
     segments.every((s) => s !== '' && s !== '.' && s !== '..'),
