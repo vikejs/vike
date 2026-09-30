@@ -91,11 +91,11 @@ type VirtualFileExportsPageEntry = {
  * https://vike.dev/meta
  */
 type ConfigEnv = {
-  /** Load value in a named environment, e.g. `rsc`
+  /** Load value in another Vike environment, e.g. `rsc`
    *
    * @experimental
    *
-   * https://vike.dev/meta#named-environments
+   * https://vike.dev/meta#additional-environments
    */
   [environmentName: string]: boolean | 'if-client-routing' | undefined
   /** Load value on the client-side */
