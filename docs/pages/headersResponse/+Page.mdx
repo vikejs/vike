@@ -67,6 +67,30 @@ export function onBeforeRenderHtml(pageContext: PageContextServer) {
 
 > `pageContext.headersResponse` is a [standard `Headers` object](https://developer.mozilla.org/en-US/docs/Web/API/Headers).
 
+`Set-Cookie` headers are sent with:
+- HTML responses
+- <Link href="/pageContext.json">`pageContext.json` responses</Link> (client-side navigation)
+- HTTP redirects triggered by <Link href="/redirect">`throw redirect()`</Link>
+
+The other headers (such as `Cache-Control`) are only sent with HTML responses.
+
+A cookie set before `throw redirect()` or `throw render()` is kept, for example:
+
+```ts
+// pages/admin/+guard.ts
+
+import type { PageContextServer } from 'vike/types'
+import { redirect } from 'vike/abort'
+
+export async function guard(pageContext: PageContextServer) {
+  if (!pageContext.user) {
+    // The cookie is sent with the HTTP redirect
+    pageContext.headersResponse.append('Set-Cookie', 'redirectAfterLogin=/admin; Path=/')
+    throw redirect('/login')
+  }
+}
+```
+
 The final HTTP response headers sent to the client are available at `pageContext.httpResponse.headers`.
 
 ```ts
