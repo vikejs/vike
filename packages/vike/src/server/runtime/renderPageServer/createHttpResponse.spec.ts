@@ -18,6 +18,7 @@ function createPageContext(urlOriginal: string, headersResponse = new Headers())
     __getPageAssets: async () => [],
     _globalContext: { _pageConfigs: [] } as any,
     headersResponse,
+    pageContextsAborted: [],
   }
 }
 

@@ -10,12 +10,13 @@ import { isCallable } from '../../../../utils/isCallable.js'
 import { assertPosixPath } from '../../../../utils/path.js'
 import path from 'node:path'
 import crypto from 'node:crypto'
-import type { Plugin, ResolvedConfig, Rollup } from 'vite'
+import type { Plugin, ResolvedBuildEnvironmentOptions, ResolvedConfig, Rollup } from 'vite'
 import type { OutputOptions as RolldownOutputOptions } from 'rolldown'
 import { getAssetsDir } from '../../shared/getAssetsDir.js'
 import { assertModuleId, getFilePathToShowToUserModule } from '../../shared/getFilePath.js'
 import '../../assertEnvVite.js'
 import { isVite8OrAbove } from '../../shared/isVite8OrAbove.js'
+import { isViteServerSide_configEnvironment } from '../../shared/isViteServerSide.js'
 type PreRenderedChunk = Rollup.PreRenderedChunk
 type PreRenderedAsset = Rollup.PreRenderedAsset
 
@@ -27,49 +28,71 @@ function pluginDistFileNames(): Plugin[] {
       enforce: 'post',
       configResolved: {
         handler(config) {
-          const rollupOutputs = getRollupOutputs(config)
-          // We need to support multiple outputs: @vite/plugin-legacy adds an output, see https://github.com/vikejs/vike/issues/477#issuecomment-1406434802
-          rollupOutputs.forEach((rollupOutput) => {
-            if (!('entryFileNames' in rollupOutput)) {
-              rollupOutput.entryFileNames = (chunkInfo) => getEntryFileName(chunkInfo, config, true)
-            }
-            if (!('chunkFileNames' in rollupOutput)) {
-              rollupOutput.chunkFileNames = (chunkInfo) => getChunkFileName(chunkInfo, config)
-            }
-            if (!('assetFileNames' in rollupOutput)) {
-              rollupOutput.assetFileNames = (chunkInfo) => getAssetFileName(chunkInfo, config)
-
-              // Sometimes applied twice => avoid assertUsage() error below
-              // - I don't know why it can be applied twice for the same config. It happened when there was multiple Vike instances installed with one instance being a link to ~/code/vike/packages/vike/
-              ;(rollupOutput.assetFileNames as any).isTheOneSetByVike = true
-              assert((rollupOutput.assetFileNames as any).isTheOneSetByVike)
-            } else {
-              // If a user needs this:
-              //  - assertUsage() that the naming provided by the user ends with `.[hash][extname]`
-              //    - It's needed for getHash() of handleAssetsManifest()
-              //    - Asset URLs should always contain a hash: it's paramount for caching assets.
-              //    - If rollupOutput.assetFileNames is a function then use a wrapper function to apply the assertUsage()
-              assertUsage(
-                (rollupOutput.assetFileNames as any).isTheOneSetByVike,
-                "Setting Vite's configuration build.rollupOptions.output.assetFileNames is currently forbidden. Reach out if you need to use it.",
-              )
-            }
+          Object.entries(config.environments).forEach(([envName, envConfig]) => {
+            const { build } = envConfig
+            copyRollupOutputs(build)
+            const isServerSide = isViteServerSide_configEnvironment(envName, envConfig)
+            setFileNames(config, build, isServerSide)
+            disableCSSBundling(config, build)
           })
-
-          disableCSSBundling(config)
         },
       },
     },
   ]
 }
 
+function setFileNames(config: ResolvedConfig, build: ResolvedBuildEnvironmentOptions, isServerSide: boolean) {
+  const rollupOutputs = getRollupOutputs(build)
+  // We need to support multiple outputs: @vite/plugin-legacy adds an output, see https://github.com/vikejs/vike/issues/477#issuecomment-1406434802
+  rollupOutputs.forEach((rollupOutput) => {
+    if (!('entryFileNames' in rollupOutput)) {
+      rollupOutput.entryFileNames = (chunkInfo) => getEntryFileName(chunkInfo, config, build, isServerSide, true)
+    }
+    if (!('chunkFileNames' in rollupOutput)) {
+      rollupOutput.chunkFileNames = (chunkInfo) => getChunkFileName(chunkInfo, build, isServerSide)
+    }
+    if (!('assetFileNames' in rollupOutput)) {
+      rollupOutput.assetFileNames = (chunkInfo) => getAssetFileName(chunkInfo, config, build)
+
+      // Sometimes applied twice => avoid assertUsage() error below
+      // - I don't know why it can be applied twice for the same config. It happened when there was multiple Vike instances installed with one instance being a link to ~/code/vike/packages/vike/
+      ;(rollupOutput.assetFileNames as any).isTheOneSetByVike = true
+      assert((rollupOutput.assetFileNames as any).isTheOneSetByVike)
+    } else {
+      // If a user needs this:
+      //  - assertUsage() that the naming provided by the user ends with `.[hash][extname]`
+      //    - It's needed for getHash() of handleAssetsManifest()
+      //    - Asset URLs should always contain a hash: it's paramount for caching assets.
+      //    - If rollupOutput.assetFileNames is a function then use a wrapper function to apply the assertUsage()
+      assertUsage(
+        (rollupOutput.assetFileNames as any).isTheOneSetByVike,
+        "Setting Vite's configuration build.rollupOptions.output.assetFileNames is currently forbidden. Reach out if you need to use it.",
+      )
+    }
+  })
+}
+
+// Vike sets entryFileNames/chunkFileNames/assetFileNames on an output object only if the user didn't set them. But the user's output object can be:
+// - The same object for several environments.
+// - Reused across Vite's config resolutions, e.g. an inline config such as VITE_CONFIG.
+// Without a copy, the file names Vike sets for one environment look user-set to the next environment, which then keeps the wrong environment's file names.
+function copyRollupOutputs(build: ResolvedBuildEnvironmentOptions) {
+  const { output } = build.rollupOptions
+  if (!output) return
+  build.rollupOptions.output = isArray(output) ? output.map((o) => ({ ...o })) : { ...output }
+}
+
 function getIdHash(id: string) {
   return crypto.createHash('md5').update(id).digest('hex').slice(0, 8)
 }
 
-function getAssetFileName(assetInfo: PreRenderedAsset, config: ResolvedConfig): string {
+function getAssetFileName(
+  assetInfo: PreRenderedAsset,
+  config: ResolvedConfig,
+  build: ResolvedBuildEnvironmentOptions,
+): string {
   const userRootDir = config.root
-  const assetsDir = getAssetsDir(config)
+  const assetsDir = getAssetsDir(build)
   const dir = assetsDir + '/static'
   let { name } = assetInfo
 
@@ -99,20 +122,30 @@ function getAssetFileName(assetInfo: PreRenderedAsset, config: ResolvedConfig): 
   return `${dir}/${name}.[hash][extname]`
 }
 
-function getChunkFileName(_chunkInfo: PreRenderedChunk, config: ResolvedConfig): string {
-  const isForClientSide = !config.build.ssr
+function getChunkFileName(
+  _chunkInfo: PreRenderedChunk,
+  build: ResolvedBuildEnvironmentOptions,
+  isServerSide: boolean,
+): string {
+  const isForClientSide = !isServerSide
   let name = 'chunks/chunk-[hash].js'
   if (isForClientSide) {
-    const assetsDir = getAssetsDir(config)
+    const assetsDir = getAssetsDir(build)
     name = `${assetsDir}/${name}`
   }
   return name
 }
 
-function getEntryFileName(chunkInfo: PreRenderedChunk, config: ResolvedConfig, isEntry: boolean): string {
+function getEntryFileName(
+  chunkInfo: PreRenderedChunk,
+  config: ResolvedConfig,
+  build: ResolvedBuildEnvironmentOptions,
+  isServerSide: boolean,
+  isEntry: boolean,
+): string {
   const userRootDir = config.root
-  const assetsDir = getAssetsDir(config)
-  const isForClientSide = !config.build.ssr
+  const assetsDir = getAssetsDir(build)
+  const isForClientSide = !isServerSide
 
   let { name } = chunkInfo
   assertPosixPath(name)
@@ -226,9 +259,9 @@ function workaroundGlob(name: string) {
 }
 
 // Workaround for Vite CSS duplication bug: https://github.com/vikejs/vike/issues/1815
-function disableCSSBundling(config: ResolvedConfig) {
+function disableCSSBundling(config: ResolvedConfig, build: ResolvedBuildEnvironmentOptions) {
   if (isVite8OrAbove(config)) {
-    for (const output of getRolldownOutputs(config)) {
+    for (const output of getRolldownOutputs(build)) {
       assert(output)
       const { codeSplitting } = output
 
@@ -257,7 +290,7 @@ function disableCSSBundling(config: ResolvedConfig) {
       wrapManualChunks(output, config, 'rolldownOptions')
     }
   } else {
-    for (const output of getRollupOutputs(config)) {
+    for (const output of getRollupOutputs(build)) {
       assert(output)
       wrapManualChunks(output, config, 'rollupOptions')
     }
@@ -339,26 +372,22 @@ function getCssChunkName(id: string, config: ResolvedConfig): string | undefined
   }
 }
 
-function getRollupOutputs(config: ResolvedConfig): Rollup.OutputOptions[] {
-  // @ts-expect-error is read-only
-  config.build ??= {}
-  config.build.rollupOptions ??= {}
-  config.build.rollupOptions.output ??= {}
-  const { output } = config.build.rollupOptions
+function getRollupOutputs(build: ResolvedBuildEnvironmentOptions): Rollup.OutputOptions[] {
+  build.rollupOptions ??= {}
+  build.rollupOptions.output ??= {}
+  const { output } = build.rollupOptions
   if (!isArray(output)) {
     return [output]
   }
   return output
 }
-function getRolldownOutputs(config: ResolvedConfig): RolldownOutputOptions[] {
-  // @ts-expect-error is read-only
-  config.build ??= {}
+function getRolldownOutputs(build: ResolvedBuildEnvironmentOptions): RolldownOutputOptions[] {
   // @ts-ignore
-  config.build.rolldownOptions ??= {}
+  build.rolldownOptions ??= {}
   // @ts-ignore
-  config.build.rolldownOptions.output ??= {}
+  build.rolldownOptions.output ??= {}
   // @ts-ignore
-  const { output } = config.build.rolldownOptions
+  const { output } = build.rolldownOptions
   if (!isArray(output)) {
     return [output]
   }
