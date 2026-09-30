@@ -19,6 +19,7 @@ import { parsePageContextHtml } from '../../../client/shared/streamedValues.js'
 import {
   readPageContextJson,
   cancelStreamedValues,
+  hasStreamedValues,
   moveStreamedValues,
   setStreamedValuesRendered,
 } from '../../../client/runtime-client-routing/streamedValues.js'
@@ -346,26 +347,33 @@ describe('streamed pageContext values: reading the values', () => {
     }
   })
 
-  it('the values in a Map contained in a chunk that fails are cancelled', async () => {
+  it('the values in a Map or a Set contained in a chunk that fails are cancelled', async () => {
     const onCancel = vi.fn()
     const pageContext = {}
     const { streamedValues } = serialize(
-      { p: Promise.resolve({ fn() {}, m: new Map([['k', streamOf([], { onCancel })]]) }) },
+      {
+        p: Promise.resolve({
+          fn() {},
+          m: new Map([['k', streamOf([], { onCancel })]]),
+          s: new Set([streamOf([], { onCancel })]),
+        }),
+      },
       pageContext,
     )
     await pumpStreamedValues(pageContext, streamedValues, () => {}, { failFast: false }).done
     await sleep(0)
-    expect(onCancel).toHaveBeenCalled()
+    expect(onCancel).toHaveBeenCalledTimes(2)
   })
 
   it("a producer failing because it's cancelled isn't logged, and its late chunk's values are cancelled", async () => {
     const onError = vi.mocked(logRuntimeError)
     const onCancel = vi.fn()
     const next = deferred<IteratorResult<unknown>>()
+    let returned = 0
     const iterator = {
       [Symbol.asyncIterator]: () => iterator,
       next: () => next.promise,
-      return: async () => ({ done: true as const, value: undefined }),
+      return: async () => (returned++, { done: true as const, value: undefined }),
     }
     const pageContext = {}
     const { streamedValues } = serialize({ iterator }, pageContext)
@@ -375,6 +383,7 @@ describe('streamed pageContext values: reading the values', () => {
     next.resolve({ done: false, value: { s: streamOf([], { onCancel }) } })
     await sleep(10)
     expect(onCancel).toHaveBeenCalled()
+    expect(returned).toBe(1)
 
     const failingNext = deferred<IteratorResult<unknown>>()
     const failing = { [Symbol.asyncIterator]: () => failing, next: () => failingNext.promise }
@@ -791,6 +800,27 @@ describe('streamed pageContext values: first render (HTML)', () => {
     expect(htmlEnd).toBe('')
   })
 
+  it('HTML stream: a value produced after the HTML stream ended is flushed (e.g. through compression)', async () => {
+    const later = deferred<void>()
+    const pipe = (writable: any) => void writable.end('<html><body>')
+    stampPipe(pipe, 'node-stream')
+    const wrapper = (await processStream(pipe, {
+      onErrorWhileStreaming: () => {},
+      injectStringAtEnd: async (writeHtml) => {
+        await later.promise
+        writeHtml('<script>later</script>')
+        return '</body></html>'
+      },
+    })) as any
+    const writable = Object.assign(new PassThrough(), { flush: vi.fn() })
+    wrapper(writable)
+    await sleep(0)
+    writable.flush.mockClear()
+    later.resolve()
+    await sleep(0)
+    expect(writable.flush).toHaveBeenCalled()
+  })
+
   it('the decoder loaded after the HTML ended: the values that did not end fail', async () => {
     setBrowser()
     ;(globalThis as any).document.readyState = 'complete'
@@ -1012,6 +1042,13 @@ describe('streamed pageContext values: the HTML response ending early cancels th
     expect(returned).toBe(1)
   })
 
+  it('a serialization retry keeps the values of the serializable props', () => {
+    const iterator = { [Symbol.asyncIterator]: () => iterator, next: () => new Promise(() => {}) }
+    const pageContext = getPageContext({ bad: { fn() {} }, feed: iterator })
+    expect(serializePageContextHtml(pageContext, null)).toContain('"feed":"!VikeAsyncIterable:')
+    cancelStreamedValuesHtml(pageContext)
+  })
+
   it("cancelling an HTML-only page doesn't serialize its pageContext", () => {
     let reads = 0
     const pageContext = getPageContext({})
@@ -1097,6 +1134,7 @@ describe('streamed pageContext values: which values the client cancels', () => {
     // A new rendering begins
     cancelStreamedValues()
     await expect(superseded.p).rejects.toThrow('cancelled')
+    expect(hasStreamedValues(superseded)).toBe(false)
     expect(await isSettled(rendered.p)).toBe(false)
     // Another page is rendered
     setStreamedValuesRendered({}, [])
