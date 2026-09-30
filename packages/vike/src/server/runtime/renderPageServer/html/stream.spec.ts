@@ -122,7 +122,7 @@ describe('processStream', () => {
   })
 })
 
-describe('the response closes', () => {
+describe('the response', () => {
   const response = () => new Writable({ write: (_chunk, _encoding, callback) => callback() })
 
   it('stops the source if the response is already closed', async () => {

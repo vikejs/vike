@@ -321,15 +321,14 @@ function pipeToStreamWritableNode(htmlRender: HtmlRender | Uint8Array, writable:
     return true
   }
   if (isStreamReadableNode(htmlRender) || isStreamReadableWeb(htmlRender)) {
-    // Like pipeline() (which is slower): destroy the readable if the writable closes (or already has), and the writable if the readable errors
-    const pipeReadable = (readable: StreamReadableNode) => {
+    getStreamReadableNode(htmlRender).then((readable) => {
+      assert(readable)
+      // Like pipeline() (which is slower): destroy the readable if the writable closes (or already has), and the writable if the readable errors
       if (writable.destroyed) return readable.destroy()
       writable.on('close', () => readable.destroy())
       readable.on('error', (err) => writable.destroy(err))
       readable.pipe(writable)
-    }
-    if (isStreamReadableNode(htmlRender)) pipeReadable(htmlRender)
-    else streamReadableWebToStreamReadableNode(htmlRender).then(pipeReadable)
+    })
     return true
   }
   if (isStreamPipeWeb(htmlRender)) {
