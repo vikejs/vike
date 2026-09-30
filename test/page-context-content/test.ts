@@ -128,6 +128,8 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
       expect(toHex(read('image.png'))).toBe(toHex(imageBytes))
       expect(new TextDecoder().decode(read('stream.txt'))).toBe(streamText)
       expect(new TextDecoder().decode(read('reassign.txt'))).toBe('Same value')
+      // Not overwritten by pre-rendering
+      expect(new TextDecoder().decode(read('emitted.txt'))).toBe('Emitted by a plugin')
       expect(fs.statSync(path.join(distClient, 'feed.atom')).isFile()).toBe(true)
       expect(fs.existsSync(path.join(distClient, 'index.html'))).toBe(true)
       expect(fs.existsSync(path.join(distClient, 'override.json'))).toBe(false)

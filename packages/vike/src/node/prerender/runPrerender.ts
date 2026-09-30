@@ -62,7 +62,7 @@ import { getVikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.
 import type { HookTimeout } from '../../shared-server-client/hooks/getHook.js'
 import { execHookSingleWithoutPageContext, isUserHookError } from '../../shared-server-client/hooks/execHook.js'
 import type { ApiOptions } from '../api/types.js'
-import { setWasPrerenderRun } from './context.js'
+import { getClientBuildFiles, setWasPrerenderRun } from './context.js'
 import {
   resolvePrerenderConfigGlobal,
   resolvePrerenderConfigLocal,
@@ -122,6 +122,7 @@ type PrerenderContext = {
   _outDirClient: string
   _filePaths: Map<string, { urlOriginal: string; fileType: FileType }>
   _publicDir: string | null
+  _clientBuildFiles: null | Set<string>
   _assetsManifest: ViteManifest
 }
 type Output<PageContext = PageContextPrerendered> = (
@@ -233,6 +234,7 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
     _filePaths: new Map(),
     // Files copied to the client outDir
     _publicDir: (viteConfig.build.copyPublicDir !== false && viteConfig.publicDir) || null,
+    _clientBuildFiles: getClientBuildFiles(),
     _assetsManifest: globalContext.assetsManifest,
   }
 
@@ -1028,6 +1030,7 @@ async function write(
     const asset = getStaticAssetCollision(
       filePathRelative,
       prerenderContext._publicDir,
+      prerenderContext._clientBuildFiles,
       prerenderContext._assetsManifest,
     )
     assertUsage(
