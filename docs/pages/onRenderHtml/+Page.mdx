@@ -48,6 +48,48 @@ async function onRenderHtml(pageContext: PageContextServer){
 Where `pageContext.Page` is the <Link href="/Page">`+Page` value</Link> of the page that is being rendered.
 
 
+## Non-HTML content
+
+Instead of returning `documentHtml`, the `onRenderHtml()` hook can set <Link href="/pageContext#content">`pageContext.content`</Link> to render a page that isn't HTML, such as an RSS/Atom feed, a sitemap, a Markdown file, or an image.
+
+```ts
+// pages/feed/+route.ts
+
+export default '/feed.atom'
+```
+
+```ts
+// pages/feed/+onRenderHtml.ts
+// Environment: server
+
+export { onRenderHtml }
+
+import type { PageContextServer } from 'vike/types'
+
+function onRenderHtml(pageContext: PageContextServer) {
+  pageContext.content = `<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>My blog</title>
+</feed>`
+}
+```
+
+The value of `pageContext.content` can be:
+ - A `string`
+ - A `Uint8Array` (binary content, such as images)
+ - A `ReadableStream<Uint8Array>` (streamed to the client upon SSR)
+
+The HTTP response body is `pageContext.content` as-is: Vike doesn't inject any `<script>` or `<style>` tags.
+
+The `Content-Type` HTTP response header is deduced from the URL's file extension (e.g. `/feed.atom` => `application/atom+xml;charset=utf-8`). You can override it by using <Link href="/headersResponse" />. For URLs without a known file extension, the default is `application/octet-stream`.
+
+Upon <Link href="/pre-rendering">pre-rendering</Link>, the content is written to the file at the page's URL: `/feed.atom` => `dist/client/feed.atom`. The page is rendered only once.
+
+> With <Link href="/client-routing">Client Routing</Link>, add `rel="external"` to links pointing to non-HTML pages (e.g. `<a href="/feed.atom" rel="external">`), so that the browser fetches them instead of Vike's client-side router. See <Link href="/clientRouting#links-intercepting" />.
+
+> If your server uses `pageContext.httpResponse.body` (see <Link href="/renderPage" />), use `pageContext.httpResponse.pipe()` or `pageContext.httpResponse.getReadableWebStream()` for binary and streamed content instead: `httpResponse.body` works only with a string and <Link href="/streaming#pagecontext-httpresponse-getbody">`httpResponse.getBody()`</Link> decodes the content as UTF-8 text.
+
+
 ## See also
 
 - <Link href="/onRenderClient" />
@@ -56,3 +98,5 @@ Where `pageContext.Page` is the <Link href="/Page">`+Page` value</Link> of the p
 - <Link href="/hooks" />
 - <Link href="/Page" />
 - <Link href="/pageContext" />
+- <Link href="/pre-rendering" />
+- <Link href="/headersResponse" />
