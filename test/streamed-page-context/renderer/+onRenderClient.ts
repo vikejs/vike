@@ -3,11 +3,6 @@ export { onRenderClient }
 import type { PageContextClient } from 'vike/types'
 import type { Page } from './types'
 
-declare global {
-  var __renderCount: number
-  var __chunks: { key: string; chunk: unknown; receivedAt: number }[]
-}
-
 // Shows each value of pageContext.data as it arrives: the chunks of streams and async iterables, the value of
 // promises, or the error
 function onRenderClient(pageContext: PageContextClient) {

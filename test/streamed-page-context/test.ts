@@ -2,11 +2,6 @@ export { testRun as test }
 
 import { run, page, test, expect, getServerUrl, autoRetry, expectLog, fetch } from '@brillout/test-e2e'
 
-declare global {
-  var __renderCount: number
-  var __chunks: { key: string; chunk: any; receivedAt: number }[]
-}
-
 const hex = (bytes: Iterable<number>) => Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('')
 const errorMessage = 'error:A streamed pageContext value failed on the server-side (see the server logs)'
 
@@ -136,7 +131,10 @@ async function expectStreamedPage(renderCount: number) {
   expect(await text('nested')).toBe('inner=deepdeeper')
   expect(await text('collections')).toBe('map=key=in a Mapset=in a Set')
   // The first chunk arrives before the last one is produced
-  const chunks = await page.evaluate(() => window.__chunks.filter((c) => c.key === 'generator'))
+  const chunks = (await page.evaluate(() => window.__chunks.filter((c) => c.key === 'generator'))) as {
+    chunk: { label: string; producedAt: number }
+    receivedAt: number
+  }[]
   expect(chunks.map((c) => c.chunk.label).join()).toBe('first,last')
   expect(chunks[0]!.receivedAt < chunks[1]!.chunk.producedAt).toBe(true)
 }
