@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { createLoadPageConfig } from './createRuntime.js'
+import { createLoadPageConfig } from './createLoadPageConfig.js'
 
 describe('createLoadPageConfig()', () => {
   it('loads and resolves a page through the canonical serialized config path', async () => {

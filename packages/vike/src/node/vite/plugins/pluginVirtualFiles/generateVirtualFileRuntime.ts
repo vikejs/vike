@@ -21,12 +21,12 @@ async function generateVirtualFileRuntime(
     environmentName,
     viteEnvironmentName,
     isDev,
-    requireResolveDistFile('dist/runtime/createRuntime.js'),
+    requireResolveDistFile('dist/runtime/createLoadPageConfig.js'),
     getClientRouting(pageConfigs),
   )
 }
 
-// Client-side, a page's config values depend on whether the page uses Client Routing: `true` => every page, `false` => no page, array => these pages
+// Client-side, a page's config values depend on whether the page uses Client Routing
 function getClientRouting(pageConfigs: PageConfigBuildTime[]): boolean | string[] {
   const pageIds = pageConfigs
     .filter((pageConfig) => getConfigValueBuildTime(pageConfig, 'clientRouting', 'boolean')?.value)
@@ -40,7 +40,7 @@ function getCode(
   environmentName: string,
   viteEnvironmentName: string,
   isDev: boolean,
-  createRuntimeFile: string,
+  createLoadPageConfigFile: string,
   clientRouting: boolean | string[],
 ) {
   // Only the client has two global entries (Client Routing and Server Routing)
@@ -51,7 +51,7 @@ function getCode(
     ? `() => ${importGlobalEntry(clientRoutingOfEnvironment)}`
     : `(isClientRouting) => isClientRouting ? ${importGlobalEntry(true)} : ${importGlobalEntry(false)}`
   return [
-    `import { createLoadPageConfig } from ${JSON.stringify(createRuntimeFile)};`,
+    `import { createLoadPageConfig } from ${JSON.stringify(createLoadPageConfigFile)};`,
     `export const environmentName = ${JSON.stringify(environmentName)};`,
     `export const viteEnvironmentName = ${JSON.stringify(viteEnvironmentName)};`,
     `export const loadPageConfig = createLoadPageConfig(${JSON.stringify(clientRoutingOfEnvironment)}, ${loadGlobalEntry}, ${JSON.stringify(isDev)});`,
