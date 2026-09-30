@@ -2,6 +2,7 @@ export { addSsrMiddleware }
 
 import { type PageContextInitInternal, renderPageServer } from '../../../server/runtime/renderPageServer.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
+import type { ServerResponse } from 'node:http'
 import { assertWarning } from '../../../utils/assert.js'
 import pc from '@brillout/picocolors'
 import '../assertEnvVite.js'
@@ -63,14 +64,18 @@ function addSsrMiddleware(
     }
 
     const { httpResponse } = pageContext
-    // A response can have several Set-Cookie headers: res.setHeader() would only keep the last one
-    const setCookie: string[] = []
-    httpResponse.headers.forEach(([name, value]) => {
-      if (name.toLowerCase() === 'set-cookie') setCookie.push(value)
-      else res.setHeader(name, value)
-    })
-    if (setCookie.length > 0) res.setHeader('set-cookie', setCookie)
+    setHeadersWithMultipleCookies(res, httpResponse.headers)
     res.statusCode = httpResponse.statusCode
     httpResponse.pipe(res)
   })
+}
+
+// A response can have several Set-Cookie headers: res.setHeader() would only keep the last one
+function setHeadersWithMultipleCookies(res: ServerResponse, headers: [string, string][]) {
+  const cookies: string[] = []
+  headers.forEach(([name, value]) => {
+    if (name.toLowerCase() === 'set-cookie') cookies.push(value)
+    else res.setHeader(name, value)
+  })
+  if (cookies.length > 0) res.setHeader('set-cookie', cookies)
 }
