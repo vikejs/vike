@@ -1,4 +1,4 @@
-import { awaitFirstChunk, streamReadableWebToBytes } from './stream.js'
+import { awaitFirstChunk, processStream, streamReadableWebToBytes } from './stream.js'
 import { expect, describe, it } from 'vitest'
 
 describe('streamReadableWebToBytes', () => {
@@ -75,6 +75,23 @@ describe('awaitFirstChunk', () => {
       },
     })
     await (await awaitFirstChunk(stream, () => {})).cancel('Some reason')
+    expect(reason).toBe('Some reason')
+  })
+})
+
+describe('processStream', () => {
+  it('cancels the original Web stream', async () => {
+    let reason: unknown
+    const stream = new ReadableStream<Uint8Array>({
+      start(controller) {
+        controller.enqueue(new Uint8Array([1]))
+      },
+      cancel(r) {
+        reason = r
+      },
+    })
+    const streamWrapper = (await processStream(stream, { onErrorWhileStreaming() {} })) as ReadableStream
+    await streamWrapper.cancel('Some reason')
     expect(reason).toBe('Some reason')
   })
 })
