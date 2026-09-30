@@ -67,30 +67,6 @@ export function onBeforeRenderHtml(pageContext: PageContextServer) {
 
 > `pageContext.headersResponse` is a [standard `Headers` object](https://developer.mozilla.org/en-US/docs/Web/API/Headers).
 
-`Set-Cookie` headers are sent with:
-- HTML responses
-- <Link href="/pageContext.json">`pageContext.json` responses</Link> (client-side navigation)
-- HTTP redirects triggered by <Link href="/redirect">`throw redirect()`</Link>
-
-The other headers (such as `Cache-Control`) are only sent with HTML responses.
-
-A cookie set before `throw redirect()` or `throw render()` is kept, for example:
-
-```ts
-// pages/admin/+guard.ts
-
-import type { PageContextServer } from 'vike/types'
-import { redirect } from 'vike/abort'
-
-export async function guard(pageContext: PageContextServer) {
-  if (!pageContext.user) {
-    // The cookie is sent with the HTTP redirect
-    pageContext.headersResponse.append('Set-Cookie', 'redirectAfterLogin=/admin; Path=/')
-    throw redirect('/login')
-  }
-}
-```
-
 The final HTTP response headers sent to the client are available at `pageContext.httpResponse.headers`.
 
 ```ts
@@ -115,15 +91,6 @@ It's a list of string tuples `[string, string][]` — for example:
   ['Content-Type', 'text/html;charset=utf-8'],
   ['Cache-Control', 'no-store, max-age=0']
 ]
-```
-
-It can contain several `Set-Cookie` headers: make sure your server sends all of them. For example, with Node.js, `res.setHeader()` overwrites the previous value, so use `res.appendHeader()` for `Set-Cookie`:
-
-```ts
-headers.forEach(([name, value]) => {
-  if (name.toLowerCase() === 'set-cookie') res.appendHeader(name, value)
-  else res.setHeader(name, value)
-})
 ```
 
 You can convert it to a [standard `Headers` object](https://developer.mozilla.org/en-US/docs/Web/API/Headers) by using `new Headers()`:
