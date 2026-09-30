@@ -104,7 +104,7 @@ function getValues() {
     yield { date: new Date(0), inner: Promise.resolve('from generator') }
     yield enc('text')
   }
-  const shared = Promise.resolve('shared')
+  const shared = streamOf([enc('shared')])
   return {
     normal: { a: 1, s: '!VikeStream:0', u: undefined },
     stream: streamOf([enc('hello\n'), bytes, enc('€').slice(0, 2), { obj: true }]),
@@ -133,7 +133,7 @@ async function expectValues(pageContext: any) {
   expect(await nested.deeper).toBe(42)
   // The same value referenced twice is one value
   expect(pageContext.array[0]).toBe(pageContext.array[1])
-  expect(await pageContext.array[0]).toBe('shared')
+  expect(await readAll(pageContext.array[0])).toEqual([enc('shared')])
 }
 
 beforeEach(() => {
