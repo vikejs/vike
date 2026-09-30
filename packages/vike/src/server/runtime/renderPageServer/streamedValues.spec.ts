@@ -4,6 +4,7 @@ vi.mock('../loggerRuntime.js', () => ({ logRuntimeError: vi.fn() }))
 import { stringify } from '@brillout/json-serializer/stringify'
 import { getStreamedValuesSerializer, pumpStreamedValues } from './streamedValues.js'
 import { getPageContextJson, getPageContextJsonFile } from './pageContextJson.js'
+import { createHttpResponsePageJson } from './createHttpResponse.js'
 import {
   serializePageContextHtml,
   sendStreamedValuesInHtml,
@@ -551,6 +552,7 @@ describe('streamed pageContext values: client-side navigation', () => {
     const { pageContext, cancel } = await navigation({
       s1: streamOf(Array(200).fill(big), { onPull: () => pulls++ }),
       s2: streamOf(Array(200).fill(big), { onPull: () => pulls++ }),
+      p: Promise.resolve(1),
     })
     await sleep(50)
     // The client buffers 16 chunks per stream, the server 64 KiB: far from the 400 chunks (4 MB)
@@ -593,6 +595,18 @@ describe('streamed pageContext values: client-side navigation', () => {
     gate.resolve()
     const [chunk] = await readAll(pageContext.b)
     expect(await (chunk as any).shared).toBe('shared')
+  })
+
+  it('a large chunk that is not UTF-8 is sent byte for byte', async () => {
+    const large = new Uint8Array(1024 * 1024).fill(0xff)
+    const { pageContext } = await navigation({ s: streamOf([large]) })
+    expect(await readAll(pageContext.s)).toEqual([large])
+  })
+
+  it('pageContext.httpResponse.body of a streamed response is a usage error, not a Vike bug', async () => {
+    const httpResponse = await createHttpResponsePageJson(new ReadableStream())
+    expect(() => httpResponse.body).toThrow('HTTP response body is a Readable Web Stream')
+    await expect(httpResponse.getReadableNodeStream()).rejects.toThrow('pageContext.httpResponse.pipe()')
   })
 
   it('pageContext._streamedValues is reserved', async () => {
@@ -992,6 +1006,7 @@ describe('streamed pageContext values: the HTML response ending early cancels th
     }
     const pageContext = getPageContext({ bad: { iterable, fn() {} } })
     serializePageContextHtml(pageContext, null)
+    expect(await getStreamedValuesHtml(pageContext)).toBe(null)
     cancelStreamedValuesHtml(pageContext)
     await sleep(10)
     expect(returned).toBe(1)
@@ -1009,6 +1024,13 @@ describe('streamed pageContext values: the HTML response ending early cancels th
 })
 
 describe('streamed pageContext values: pre-rendering', () => {
+  it('without streamed values: index.pageContext.json is the serialized pageContext, as is', async () => {
+    const pageContext = getPageContextHtml({ isPrerendering: true })
+    const { serialized, streamedValues } = serialize({ a: 1 }, pageContext)
+    sendStreamedValuesInHtml(pageContext, streamedValues, null)
+    expect(getPageContextJsonFile(serialized, await getStreamedValuesLinesPrerendered(pageContext))).toBe(serialized)
+  })
+
   it('the HTML and index.pageContext.json have the same lines, read once', async () => {
     let pulls = 0
     const pageContext = getPageContextHtml({ isPrerendering: true })
