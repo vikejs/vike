@@ -629,3 +629,85 @@ describe('streamed pageContext values: robustness', () => {
     await expect((pageContextFromServer as any).p).rejects.toThrow('ended before')
   })
 })
+
+describe('streamed pageContext values: values that are not sent', () => {
+  it('a serialization retry cancels the values it discards, but not the ones it sends', async () => {
+    const onCancel = vi.fn()
+    const kept = streamOf([enc('kept')])
+    const dropped = streamOf([], { onCancel })
+    const pageContext = {}
+    const serializer = getStreamedValuesSerializer(pageContext)
+    serializer.beginAttempt()
+    expect(() =>
+      stringify(
+        { bad: { p: Promise.resolve({ kept, dropped }), fn() {} }, good: kept },
+        { replacer: serializer.replacer },
+      ),
+    ).toThrow()
+    serializer.beginAttempt()
+    stringify({ bad: 'NOT_SERIALIZABLE', good: kept }, { replacer: serializer.replacer })
+    const streamedValues = serializer.commit()
+    const lines: string[] = []
+    await pumpStreamedValues(pageContext, streamedValues, (line) => void lines.push(line), {
+      failFast: false,
+      onError: () => {},
+    }).done
+    expect(lines).toEqual([`{"s":1,"t":"kept"}`, `{"s":1,"end":true}`])
+    expect(onCancel).toHaveBeenCalled()
+  })
+
+  it('the values contained in a circular value that fails, or arrives after the cancellation, are cancelled', async () => {
+    for (const isCancelled of [false, true]) {
+      const onCancel = vi.fn()
+      // The cycle comes before the stream
+      const circular: Record<string, unknown> = {}
+      circular.self = circular
+      circular.s = streamOf([], { onCancel })
+      const promise = deferred<unknown>()
+      const pageContext = {}
+      const { streamedValues } = serialize({ p: promise.promise }, pageContext)
+      const pump = pumpStreamedValues(pageContext, streamedValues, () => {}, { failFast: false, onError: () => {} })
+      if (isCancelled) pump.cancel()
+      promise.resolve(circular)
+      await pump.done
+      await sleep(0)
+      expect(onCancel).toHaveBeenCalled()
+    }
+  })
+
+  it('cancelling a Promise that resolves to an object containing it terminates', async () => {
+    let visits = 0
+    const circular: Record<string, unknown> = {}
+    const promise = Promise.resolve(circular)
+    Object.defineProperty(circular, 'p', {
+      enumerable: true,
+      get() {
+        visits++
+        return promise
+      },
+    })
+    const serializer = getStreamedValuesSerializer({})
+    serializer.beginAttempt()
+    stringify({ promise }, { replacer: serializer.replacer })
+    serializer.beginAttempt()
+    serializer.commit()
+    await sleep(10)
+    expect(visits).toBe(1)
+  })
+
+  it("a thenable whose then() throws doesn't prevent cancelling the others", async () => {
+    const onCancel = vi.fn()
+    const thenable = {
+      then() {
+        throw new Error('then() failed')
+      },
+    }
+    const serializer = getStreamedValuesSerializer({})
+    serializer.beginAttempt()
+    stringify({ thenable, s: streamOf([], { onCancel }) }, { replacer: serializer.replacer })
+    serializer.beginAttempt()
+    expect(() => serializer.commit()).not.toThrow()
+    await sleep(0)
+    expect(onCancel).toHaveBeenCalled()
+  })
+})

@@ -19,8 +19,14 @@ function data() {
     }),
     // A stream that fails mid-way: only this value fails
     failing: failing(),
-    xss: Promise.resolve('</script><script>window.__xss = true</script><!--'),
+    // Would create an element if it weren't escaped
+    escaping: Promise.resolve('</script><b id="unescaped">unescaped</b><!--'),
     nested: sleep(200).then(() => ({ inner: sleep(200).then(() => ['deep', Promise.resolve('deeper')]) })),
+    // Serialized as JSON strings inside the pageContext JSON
+    collections: {
+      map: new Map([['key', sleep(100).then(() => 'in a Map')]]),
+      set: new Set([Promise.resolve('in a Set')]),
+    },
   }
 }
 

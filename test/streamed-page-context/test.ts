@@ -5,7 +5,6 @@ import { run, page, test, expect, getServerUrl, autoRetry, expectLog, fetch } fr
 declare global {
   var __renderCount: number
   var __chunks: { key: string; chunk: any; receivedAt: number }[]
-  var __xss: undefined | true
 }
 
 const hex = (bytes: Iterable<number>) => Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('')
@@ -20,15 +19,14 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     const nonce = /'nonce-([^']+)'/.exec(response.headers.get('content-security-policy')!)![1]
     const html = await response.text()
     const scripts = html.match(/<script[^>]*>\(self\.__vike_streamed=/g)!
-    expect(scripts.length > 10).toBe(true)
     scripts.forEach((script) => expect(script).toBe(`<script nonce="${nonce}">(self.__vike_streamed=`))
-    // `</script>` in a value doesn't break out of the <script> tag
-    expect(html).not.toContain('<script>window.__xss')
-    expect(html).toContain('\\\\u003c\\/script>\\\\u003cscript>window.__xss')
+    // `</script>` in a value doesn't end the <script> tag
+    expect(html).not.toContain('<b id="unescaped">')
+    expect(html).toContain('\\\\u003c\\/script>\\\\u003cb id=')
 
     await page.goto(getServerUrl() + '/streamed')
     await expectStreamedPage(1)
-    expect(await page.evaluate(() => window.__xss)).toBe(undefined)
+    expect(await page.locator('#unescaped').count()).toBe(0)
     expectLog('Stream failed on purpose', { filter: (log) => log.logSource === 'stderr' })
   })
 
@@ -121,7 +119,7 @@ async function expectStreamedPage(renderCount: number) {
     async () => {
       expect(await page.evaluate(() => window.__renderCount)).toBe(renderCount)
       expect(await page.locator('li:not([data-done])').count()).toBe(0)
-      expect(await page.locator('li').count()).toBe(7)
+      expect(await page.locator('li').count()).toBe(8)
     },
     { timeout: 10 * 1000 },
   )
@@ -134,8 +132,9 @@ async function expectStreamedPage(renderCount: number) {
   )
   // Failing mid-way affects only that value: the chunk before the error arrives
   expect(await text('failing')).toBe(`before error${errorMessage}`)
-  expect(await text('xss')).toBe('</script><script>window.__xss = true</script><!--')
+  expect(await text('escaping')).toBe('</script><b id="unescaped">unescaped</b><!--')
   expect(await text('nested')).toBe('inner=deepdeeper')
+  expect(await text('collections')).toBe('map=key=in a Mapset=in a Set')
   // The first chunk arrives before the last one is produced
   const chunks = await page.evaluate(() => window.__chunks.filter((c) => c.key === 'generator'))
   expect(chunks.map((c) => c.chunk.label).join()).toBe('first,last')

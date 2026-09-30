@@ -14,11 +14,18 @@ import '../assertEnvClient.js'
 
 async function getPageContextSerializedInHtml(): Promise<{ pageId: string; routeParams: Record<string, string> }> {
   const pageContextJson = findJson(htmlElementId_pageContext)
+  let hasStreamedValues = false
+  let pageContextSerializedInHtml = parse(pageContextJson, {
+    reviver(_path, value) {
+      // A user string starting with `!` is serialized as `!!…`
+      if (/^!Vike(Stream|Promise|AsyncIterable):/.test(value)) hasStreamedValues = true
+      return undefined
+    },
+  })
   // Streamed pageContext values https://vike.dev/passToClient#streaming
-  // - A placeholder is a JSON string value; a user string starting with `!Vike` is serialized as `"!!Vike…"`
-  const pageContextSerializedInHtml = /[:,[]"!Vike(Stream|Promise|AsyncIterable):\d+"[,}\]]/.test(pageContextJson)
-    ? (await import('./streamedValues.js')).parsePageContextHtml(pageContextJson)
-    : parse(pageContextJson)
+  if (hasStreamedValues) {
+    pageContextSerializedInHtml = (await import('./streamedValues.js')).parsePageContextHtml(pageContextJson)
+  }
   assert(hasProp(pageContextSerializedInHtml, 'pageId', 'string'))
   assert(hasProp(pageContextSerializedInHtml, 'routeParams', 'string{}'))
   return pageContextSerializedInHtml

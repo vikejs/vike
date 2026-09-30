@@ -49,12 +49,17 @@ function getKind(value: unknown): Kind | null {
 
 // One registry per pageContext: the HTML and the `index.pageContext.json` of a pre-rendered page reference the same
 // values with the same ids.
-type Registry = { byValue: Map<unknown, StreamedValue>; idNext: number }
+type Registry = {
+  byValue: Map<unknown, StreamedValue>
+  idNext: number
+  /** The values that are sent: referenced by the serialized pageContext or by a line */
+  sent: Set<unknown>
+}
 const registries = new WeakMap<object, Registry>()
 function getRegistry(pageContext: object): Registry {
   let registry = registries.get(pageContext)
   if (!registry) {
-    registry = { byValue: new Map(), idNext: 0 }
+    registry = { byValue: new Map(), idNext: 0, sent: new Set() }
     registries.set(pageContext, registry)
   }
   return registry
@@ -91,22 +96,34 @@ function getStreamedValuesSerializer(pageContext: object) {
       used = new Set()
     },
     commit(): StreamedValue[] {
-      cancel([...seen].filter((streamedValue) => !used.has(streamedValue)))
+      used.forEach(({ value }) => registry.sent.add(value))
+      cancel(
+        [...seen].filter((streamedValue) => !used.has(streamedValue)),
+        (value) => registry.sent.has(value),
+      )
       return [...used]
     },
   }
 }
 
-function cancel(streamedValues: StreamedValue[], reason?: unknown) {
+// Cancels the values, except the ones that are sent (including the values a Promise resolves to)
+function cancel(
+  streamedValues: StreamedValue[],
+  isSent: (value: unknown) => boolean = () => false,
+  cancelled = new Set<unknown>(),
+) {
   streamedValues.forEach(({ kind, value }) => {
+    // E.g. a Promise resolving to an object containing that Promise
+    if (isSent(value) || cancelled.has(value)) return
+    cancelled.add(value)
     if (kind === 'stream') {
       const stream = value as ReadableStream
-      if (!stream.locked) stream.cancel(reason).catch(() => {})
+      if (!stream.locked) stream.cancel().catch(() => {})
     }
     if (kind === 'promise') {
-      // Avoid an unhandled rejection, and cancel the values it resolves to
-      ;(value as Promise<unknown>).then(
-        (resolved) => cancel(findStreamedValues(resolved)),
+      // Also avoids an unhandled rejection
+      Promise.resolve(value).then(
+        (resolved) => cancel(findStreamedValues(resolved), isSent, cancelled),
         () => {},
       )
     }
@@ -121,17 +138,26 @@ function releaseIterator(getIterator: () => AsyncIterator<unknown>) {
   } catch {}
 }
 // The streamed values contained in a value that won't be sent (e.g. it isn't serializable)
-function findStreamedValues(value: unknown): StreamedValue[] {
-  const found: StreamedValue[] = []
+function findStreamedValues(
+  value: unknown,
+  found: StreamedValue[] = [],
+  visited = new Set<unknown>(),
+): StreamedValue[] {
+  const kind = getKind(value)
+  if (kind) found.push({ id: -1, kind, value })
+  if (kind || typeof value !== 'object' || value === null || ArrayBuffer.isView(value) || visited.has(value))
+    return found
+  visited.add(value)
+  let children: unknown[] = []
   try {
-    stringify(value, {
-      replacer(_key, v) {
-        const kind = getKind(v)
-        if (kind) found.push({ id: -1, kind, value: v })
-        return kind || typeof v === 'function' ? { replacement: null, resolved: true } : undefined
-      },
-    })
+    children =
+      value instanceof Map
+        ? [...value.keys(), ...value.values()]
+        : value instanceof Set
+          ? [...value]
+          : Object.values(value)
   } catch {}
+  children.forEach((child) => findStreamedValues(child, found, visited))
   return found
 }
 
@@ -161,12 +187,12 @@ function pumpStreamedValues(
     reject = reject_
   })
 
+  const isStarted = (value: unknown) => started.has(registry.byValue.get(value)!)
   const end = (err?: { err: unknown }) => {
     if (isEnded) return
     isEnded = true
     releases.forEach((release) => release())
-    const isStarted = ({ value }: StreamedValue) => started.has(registry.byValue.get(value)!)
-    cancel([...registry.byValue.values(), ...unsent].filter((streamedValue) => !isStarted(streamedValue)))
+    cancel([...registry.byValue.values(), ...unsent], isStarted)
     if (err) reject(err.err)
     else resolve()
   }
@@ -174,6 +200,7 @@ function pumpStreamedValues(
   const start = (streamedValue: StreamedValue) => {
     if (started.has(streamedValue) || isEnded) return
     started.add(streamedValue)
+    registry.sent.add(streamedValue.value)
     pending++
     pump(streamedValue).then(
       () => {
@@ -220,7 +247,7 @@ function pumpStreamedValues(
     try {
       if (kind === 'promise') {
         const resolved = await (value as Promise<unknown>)
-        if (isEnded) return cancel(findStreamedValues(resolved))
+        if (isEnded) return cancel(findStreamedValues(resolved), isStarted)
         await writeLine({ s, v: true }, resolved)
         return
       }
@@ -237,7 +264,7 @@ function pumpStreamedValues(
       releases.add(release)
       while (true) {
         const { done, value: chunk } = await next()
-        if (isEnded) return cancel(findStreamedValues(chunk))
+        if (isEnded) return cancel(findStreamedValues(chunk), isStarted)
         if (done) break
         if (chunk instanceof Uint8Array) {
           const text = decodeUtf8(chunk)

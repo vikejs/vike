@@ -44,7 +44,12 @@ async function show(el: HTMLElement, value: unknown, key: string): Promise<void>
       }
     } else if (value instanceof Uint8Array) {
       append(`bytes:${Array.from(value, (b) => b.toString(16).padStart(2, '0')).join('')}`)
-    } else if (Array.isArray(value)) {
+    } else if (value instanceof Map) {
+      for (const [k, v] of value) {
+        append(`${k}=`)
+        await show(el, v, key)
+      }
+    } else if (value instanceof Set || Array.isArray(value)) {
       for (const item of value) await show(el, item, key)
     } else if (typeof value === 'object' && value) {
       for (const [k, v] of Object.entries(value)) {
