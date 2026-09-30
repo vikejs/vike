@@ -5,14 +5,20 @@ describe('generateVirtualFileRuntime()', () => {
   const createRuntimeFile = '/vike/dist/runtime/createRuntime.js'
 
   it('loads the global entry only upon loadPageConfig()', () => {
-    const code = getCode('rsc', 'rsc', false, createRuntimeFile, false)
-    expect(code).not.toContain('import { pageConfigsSerialized')
-    expect(code).toContain('const loadRuntime = () => import("virtual:vike:global-entry:rsc")')
+    expect(getCode('rsc', 'rsc', false, createRuntimeFile, false)).toBe(
+      [
+        'import { createLoadPageConfig } from "/vike/dist/runtime/createRuntime.js";',
+        'export const environmentName = "rsc";',
+        'export const viteEnvironmentName = "rsc";',
+        'export const loadPageConfig = createLoadPageConfig(false, () => import("virtual:vike:global-entry:rsc"), false);',
+      ].join('\n'),
+    )
   })
 
-  it('caches the runtime only in production', () => {
-    expect(getCode('rsc', 'rsc', false, createRuntimeFile, false)).toContain('runtimePromises.set(')
-    expect(getCode('rsc', 'rsc', true, createRuntimeFile, false)).not.toContain('runtimePromises')
+  it('passes isDev', () => {
+    expect(getCode('rsc', 'rsc', true, createRuntimeFile, false)).toContain(
+      'createLoadPageConfig(false, () => import("virtual:vike:global-entry:rsc"), true);',
+    )
   })
 
   it.each([
@@ -20,30 +26,29 @@ describe('generateVirtualFileRuntime()', () => {
     ['server', 'worker', 'virtual:vike:global-entry:server'],
     ['rsc', 'rsc', 'virtual:vike:global-entry:rsc'],
   ])('Vike environment %s (Vite environment %s) loads %s', (environmentName, viteEnvironmentName, globalEntryId) => {
-    const code = getCode(environmentName, viteEnvironmentName, true, createRuntimeFile, false)
+    const code = getCode(environmentName, viteEnvironmentName, true, createRuntimeFile, true)
     expect(code).toContain(`export const environmentName = ${JSON.stringify(environmentName)};`)
     expect(code).toContain(`export const viteEnvironmentName = ${JSON.stringify(viteEnvironmentName)};`)
-    expect(code).toContain(`import(${JSON.stringify(globalEntryId)})`)
+    expect(code).toContain(`createLoadPageConfig(false, () => import(${JSON.stringify(globalEntryId)}), true);`)
   })
 
   describe('client environment', () => {
     const clientRouting = 'virtual:vike:global-entry:client:client-routing'
     const serverRouting = 'virtual:vike:global-entry:client:server-routing'
     it('Client Routing => only the client-routing global entry', () => {
-      const code = getCode('client', 'client', false, createRuntimeFile, true)
-      expect(code).toContain(clientRouting)
-      expect(code).not.toContain(serverRouting)
+      expect(getCode('client', 'client', false, createRuntimeFile, true)).toContain(
+        `createLoadPageConfig(true, () => import("${clientRouting}"), false);`,
+      )
     })
     it('Server Routing => only the server-routing global entry', () => {
-      const code = getCode('client', 'client', false, createRuntimeFile, false)
-      expect(code).toContain(serverRouting)
-      expect(code).not.toContain(clientRouting)
+      expect(getCode('client', 'client', false, createRuntimeFile, false)).toContain(
+        `createLoadPageConfig(false, () => import("${serverRouting}"), false);`,
+      )
     })
     it('both => the global entry of the page', () => {
-      const code = getCode('client', 'client', false, createRuntimeFile, ['/pages/a'])
-      expect(code).toContain(clientRouting)
-      expect(code).toContain(serverRouting)
-      expect(code).toContain('["/pages/a"]')
+      expect(getCode('client', 'client', false, createRuntimeFile, ['/pages/a'])).toContain(
+        `createLoadPageConfig(["/pages/a"], (isClientRouting) => isClientRouting ? import("${clientRouting}") : import("${serverRouting}"), false);`,
+      )
     })
   })
 })

@@ -43,36 +43,17 @@ function getCode(
   createRuntimeFile: string,
   clientRouting: boolean | string[],
 ) {
-  const getLoadRuntime = (isClientRouting: boolean) => {
-    const globalEntryId = generateVirtualFileId({ type: 'global-entry', environmentName, isClientRouting })
-    return `import(${JSON.stringify(globalEntryId)}).then(({ pageConfigsSerialized, pageConfigGlobalSerialized }) => createRuntime(pageConfigsSerialized, pageConfigGlobalSerialized, ${JSON.stringify(isDev)}))`
-  }
   // Only the client has two global entries (Client Routing and Server Routing)
-  if (environmentName !== 'client') clientRouting = false
-  const loadRuntime = !Array.isArray(clientRouting)
-    ? `() => ${getLoadRuntime(clientRouting)}`
-    : `(isClientRouting) => isClientRouting ? ${getLoadRuntime(true)} : ${getLoadRuntime(false)}`
-  const isClientRouting = !Array.isArray(clientRouting) ? 'false' : `${JSON.stringify(clientRouting)}.includes(pageId)`
-  // - The global entry is loaded only upon loadPageConfig(), so that importing `environmentName` is cheap
-  // - Not cached in development, so that loadPageConfig() reflects added pages and modified configs
+  const clientRoutingOfEnvironment = environmentName === 'client' ? clientRouting : false
+  const importGlobalEntry = (isClientRouting: boolean) =>
+    `import(${JSON.stringify(generateVirtualFileId({ type: 'global-entry', environmentName, isClientRouting }))})`
+  const loadGlobalEntry = !Array.isArray(clientRoutingOfEnvironment)
+    ? `() => ${importGlobalEntry(clientRoutingOfEnvironment)}`
+    : `(isClientRouting) => isClientRouting ? ${importGlobalEntry(true)} : ${importGlobalEntry(false)}`
   return [
-    `import { createRuntime } from ${JSON.stringify(createRuntimeFile)};`,
+    `import { createLoadPageConfig } from ${JSON.stringify(createRuntimeFile)};`,
     `export const environmentName = ${JSON.stringify(environmentName)};`,
     `export const viteEnvironmentName = ${JSON.stringify(viteEnvironmentName)};`,
-    `const loadRuntime = ${loadRuntime};`,
-    ...(isDev
-      ? [
-          `export async function loadPageConfig(pageId) {`,
-          `  return (await loadRuntime(${isClientRouting}))(pageId);`,
-          `}`,
-        ]
-      : [
-          `const runtimePromises = new Map();`,
-          `export async function loadPageConfig(pageId) {`,
-          `  const isClientRouting = ${isClientRouting};`,
-          `  if (!runtimePromises.has(isClientRouting)) runtimePromises.set(isClientRouting, loadRuntime(isClientRouting));`,
-          `  return (await runtimePromises.get(isClientRouting))(pageId);`,
-          `}`,
-        ]),
+    `export const loadPageConfig = createLoadPageConfig(${JSON.stringify(clientRoutingOfEnvironment)}, ${loadGlobalEntry}, ${JSON.stringify(isDev)});`,
   ].join('\n')
 }
