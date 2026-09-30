@@ -88,6 +88,9 @@ describe('awaitFirstChunk', () => {
   })
 })
 
+const opts = { onErrorWhileStreaming() {} }
+const sleep = (ms?: number) => new Promise((r) => setTimeout(r, ms))
+
 describe('processStream', () => {
   it('cancels the original Web stream', async () => {
     let reason: unknown
@@ -99,7 +102,7 @@ describe('processStream', () => {
         reason = r
       },
     })
-    const streamWrapper = (await processStream(stream, { onErrorWhileStreaming() {} })) as ReadableStream
+    const streamWrapper = (await processStream(stream, opts)) as ReadableStream
     await streamWrapper.cancel('Some reason')
     expect(reason).toBe('Some reason')
   })
@@ -113,16 +116,18 @@ describe('processStream', () => {
       },
     })
     const streamReactStreaming = { readable, pipe: null, injectToStream() {}, hasStreamEnded: () => false }
-    const streamWrapper = (await processStream(streamReactStreaming as never, {
-      onErrorWhileStreaming() {},
-    })) as ReadableStream
+    const streamWrapper = (await processStream(streamReactStreaming as never, opts)) as ReadableStream
     await streamWrapper.cancel()
     expect(() => controller.enqueue(new Uint8Array([2]))).not.toThrow()
   })
+})
+
+describe('the response closes', () => {
+  const response = () => new Writable({ write: (_chunk, _encoding, callback) => callback() })
 
   it('stops the source if the response is already closed', async () => {
-    const closedResponses = [new Writable().destroy(), new Writable().destroy()]
-    await new Promise((r) => setTimeout(r)) // Let them emit 'close'
+    const [closedResponse1, closedResponse2] = [response().destroy(), response().destroy()]
+    await sleep() // Let them emit 'close'
     let cancelled = false
     const stream = new ReadableStream({
       start(controller) {
@@ -132,36 +137,34 @@ describe('processStream', () => {
         cancelled = true
       },
     })
-    pipeToStreamWritableNode(await processStream(stream, { onErrorWhileStreaming() {} }), closedResponses[0]!)
+    pipeToStreamWritableNode(await processStream(stream, opts), closedResponse1)
     let closed = false
     const pipe: StreamPipeNode = (writable) => {
       writable.write('a')
       writable.on('close', () => (closed = true))
     }
     stampPipe(pipe, 'node-stream')
-    ;((await processStream(pipe, { onErrorWhileStreaming() {} })) as StreamPipeNode)(closedResponses[1]!)
-    await new Promise((r) => setTimeout(r, 10))
+    ;((await processStream(pipe, opts)) as StreamPipeNode)(closedResponse2)
+    await sleep(10)
     expect({ cancelled, closed }).toEqual({ cancelled: true, closed: true })
   })
-})
 
-describe('pipeToStreamWritableNode', () => {
-  it('cancels the stream when the response closes early', async () => {
+  it('cancels a Web stream when the response closes early', async () => {
     let cancelled = false
     const stream = new ReadableStream({
       async pull(controller) {
-        await new Promise((r) => setTimeout(r))
+        await sleep()
         controller.enqueue(new Uint8Array([1]))
       },
       cancel() {
         cancelled = true
       },
     })
-    const response = new Writable({ write: (_chunk, _encoding, callback) => callback() })
-    pipeToStreamWritableNode(await processStream(stream, { onErrorWhileStreaming() {} }), response)
-    await new Promise((r) => setTimeout(r, 10))
-    response.destroy()
-    await new Promise((r) => setTimeout(r, 10))
+    const res = response()
+    pipeToStreamWritableNode(await processStream(stream, opts), res)
+    await sleep(10)
+    res.destroy()
+    await sleep(10)
     expect(cancelled).toBe(true)
   })
 
@@ -181,20 +184,20 @@ describe('pipeToStreamWritableNode', () => {
       writer.closed.catch(() => stopped.push('pipe web'))
     }
     stampPipe(pipeWeb, 'web-stream')
-    const opts = { onErrorWhileStreaming() {} }
-    const responses = [new Writable({ write: (_c, _e, cb) => cb() }), new Writable({ write: (_c, _e, cb) => cb() })]
-    pipeToStreamWritableNode(await processStream(readable, opts), responses[0]!)
-    ;((await processStream(pipeNode, opts)) as StreamPipeNode)(responses[1]!)
+    const [response1, response2] = [response(), response()]
+    pipeToStreamWritableNode(await processStream(readable, opts), response1)
+    ;((await processStream(pipeNode, opts)) as StreamPipeNode)(response2)
     const { readable: responseWeb, writable } = new TransformStream()
     ;((await processStream(pipeWeb, opts)) as StreamPipeWeb)(writable)
-    await new Promise((r) => setTimeout(r, 10))
-    responses.forEach((response) => response.destroy())
+    await sleep(10)
+    response1.destroy()
+    response2.destroy()
     await responseWeb.cancel()
-    await new Promise((r) => setTimeout(r, 10))
+    await sleep(10)
     expect(stopped.sort()).toEqual(['pipe node', 'pipe web', 'readable'])
   })
 
-  it('destroys the response if the stream errors', async () => {
+  it('is destroyed if the stream errors', async () => {
     let pulls = 0
     const stream = new ReadableStream({
       pull(controller) {
@@ -202,11 +205,12 @@ describe('pipeToStreamWritableNode', () => {
         else controller.error(new Error('Some error'))
       },
     })
-    const response = new Writable({ write: (_chunk, _encoding, callback) => callback() })
+    const res = response()
     let err: unknown
-    response.on('error', (e) => (err = e))
-    pipeToStreamWritableNode(await awaitFirstChunk(stream, () => {}), response)
-    await new Promise((r) => setTimeout(r, 10))
+    res.on('error', (e) => (err = e))
+    // Unlike processStream() which closes on error, awaitFirstChunk() (pageContext.content) errors
+    pipeToStreamWritableNode(await awaitFirstChunk(stream, () => {}), res)
+    await sleep(10)
     expect((err as Error).message).toBe('Some error')
   })
 })
