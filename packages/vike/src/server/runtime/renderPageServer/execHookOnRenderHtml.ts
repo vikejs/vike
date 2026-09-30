@@ -67,6 +67,8 @@ async function execHookOnRenderHtml(
   const hook = getRenderHook(pageContext)
   objectAssign(pageContext, { _renderHook: hook })
 
+  // Only the render hook sets the content: a `pageContext.content` set beforehand (e.g. by onBeforeRender() or by the user's own `Vike.PageContext['content']`) isn't the content
+  const contentBefore = pageContext.content
   const { hookReturn } = await execHookSingleWithReturn(hook, pageContext, getPageContextPublicServer)
 
   const onErrorWhileStreaming = (err: unknown) => {
@@ -80,7 +82,7 @@ async function execHookOnRenderHtml(
     }
   }
 
-  if (pageContext.content !== undefined) {
+  if (pageContext.content !== contentBefore && pageContext.content !== undefined) {
     const content = await getContent(pageContext.content, hookReturn, hook, onErrorWhileStreaming)
     return { content, htmlRender: null, renderHook: hook }
   }

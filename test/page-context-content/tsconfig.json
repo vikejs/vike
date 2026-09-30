@@ -14,5 +14,7 @@
     // Include .test* files
     // https://github.com/microsoft/TypeScript/issues/49555
     "**/.*"
-  ]
+  ],
+  // Has its own tsconfig.json
+  "exclude": ["node_modules", "dist", "types-custom-content"]
 }

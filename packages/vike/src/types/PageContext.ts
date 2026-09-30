@@ -50,9 +50,22 @@ type PageContextServer<Data = unknown> = PageContextBuiltInServer<Data> & {
   >
 } & Vike.PageContext &
   Vike.PageContextServer &
+  PageContextContent &
   (Vike.Server extends { server: string }
     ? { runtime: RuntimeAdapterTarget<Vike.Server['server']> } & PageContextReqResAlias<Vike.Server['server']>
     : {})
+
+// We don't override a custom pageContext.content defined by the user.
+type PageContextContent = 'content' extends keyof (Vike.PageContext & Vike.PageContextServer)
+  ? unknown
+  : {
+      /**
+       * Set by the render hook instead of returning `documentHtml`: the HTTP response body (SSR) or the file content (pre-rendering).
+       *
+       * https://vike.dev/pageContext#content
+       */
+      content?: string | Uint8Array | ReadableStream<Uint8Array>
+    }
 
 // pageContext.req and pageContext.res are aliases of pageContext.runtime.req and pageContext.runtime.res, set by +server.
 // https://vike.dev/pageContext#req
@@ -260,13 +273,6 @@ type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
      * https://vike.dev/pageContext#pageContextsAborted
      */
     pageContextsAborted: Partial<PageContextServer<Data>>[]
-
-    /**
-     * Set by the render hook instead of returning `documentHtml`: the HTTP response body (SSR) or the file content (pre-rendering).
-     *
-     * https://vike.dev/pageContext#content
-     */
-    content?: string | Uint8Array | ReadableStream<Uint8Array>
 
     isHydration?: undefined
     isBackwardNavigation?: undefined
