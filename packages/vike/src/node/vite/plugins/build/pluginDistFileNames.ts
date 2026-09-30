@@ -17,7 +17,7 @@ import { assertModuleId, getFilePathToShowToUserModule } from '../../shared/getF
 import '../../assertEnvVite.js'
 import { isVite8OrAbove } from '../../shared/isVite8OrAbove.js'
 import { isViteServerSide_configEnvironment } from '../../shared/isViteServerSide.js'
-import { getVikeEnvironmentName, isVikeEnvironmentBuiltIn } from '../../shared/environmentName.js'
+import { isEnvironmentNamed } from '../../shared/environmentName.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 type PreRenderedChunk = Rollup.PreRenderedChunk
 type PreRenderedAsset = Rollup.PreRenderedAsset
@@ -33,12 +33,11 @@ function pluginDistFileNames(): Plugin[] {
           const { _runtimeEnvironmentNames: runtimeEnvironmentNames } = await getVikeConfigInternal()
           // Set the output of each environment, instead of the root `config.build` (see pluginBuildConfig.ts)
           Object.entries(config.environments).forEach(([envName, envConfig]) => {
-            const isServerSide = isViteServerSide_configEnvironment(envName, envConfig)
             // Named environments (e.g. `rsc`) keep their own output settings: Vike doesn't own their inputs nor read their output (e.g. @vitejs/plugin-rsc imports its `rsc` entry as `index.js`)
-            if (!isVikeEnvironmentBuiltIn(getVikeEnvironmentName(envName, isServerSide, runtimeEnvironmentNames)))
-              return
+            if (isEnvironmentNamed(envName, runtimeEnvironmentNames)) return
             const { build } = envConfig
             copyRollupOutputs(build)
+            const isServerSide = isViteServerSide_configEnvironment(envName, envConfig)
             setFileNames(config, build, isServerSide)
             disableCSSBundling(config, build)
           })

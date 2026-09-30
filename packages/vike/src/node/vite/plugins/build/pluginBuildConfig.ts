@@ -11,7 +11,7 @@ import { requireResolveDistFile } from '../../../../utils/requireResolve.js'
 import { unique } from '../../../../utils/unique.js'
 import { objectMap } from '../../../../utils/objectMap.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
-import { getVikeEnvironmentName, isVikeEnvironmentBuiltIn } from '../../shared/environmentName.js'
+import { isEnvironmentNamed } from '../../shared/environmentName.js'
 import { findPageFiles } from '../../shared/findPageFiles.js'
 import type { ResolvedConfig, Plugin, Rollup } from 'vite'
 import { generateVirtualFileId } from '../../../../shared-server-node/virtualFileId.js'
@@ -51,13 +51,12 @@ function pluginBuildConfig(): Plugin[] {
           const entriesClient = await getEntries(config, false)
           const entriesServer = await getEntries(config, true)
           for (const [envName, envConfig] of Object.entries(config.environments)) {
-            const isServerSide = isViteServerSide_configEnvironment(envName, envConfig)
             // - Named environments (e.g. `rsc`) load their pages lazily via `vike/runtime`
-            if (!isVikeEnvironmentBuiltIn(getVikeEnvironmentName(envName, isServerSide, runtimeEnvironmentNames))) {
+            if (isEnvironmentNamed(envName, runtimeEnvironmentNames)) {
               removeServerEntry(envConfig.build.rollupOptions, inputsBeforeServerEntry.get(config)?.get(envName))
               continue
             }
-            const entries = isServerSide ? entriesServer : entriesClient
+            const entries = isViteServerSide_configEnvironment(envName, envConfig) ? entriesServer : entriesClient
             assert(Object.keys(entries).length > 0)
             envConfig.build.rollupOptions.input = injectRollupInputs(entries, envConfig.build.rollupOptions.input)
           }
