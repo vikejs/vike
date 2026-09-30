@@ -129,9 +129,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
   addLinkPrefetchHandlers_unwatch()
 
   const { isRenderOutdated, setHydrationCanBeAborted, isFirstRender } = getIsRenderOutdated()
-  // The streamed pageContext values of the previous page and of superseded navigations
-  cancelStreamedValues()
-
   const pageContextBeginArgs = {
     urlOriginal,
     isBackwardNavigation,
@@ -253,6 +250,9 @@ async function renderPageClient(renderArgs: RenderArgs) {
       }
     }
     assert(hasProp(pageContext, 'pageId', 'string')) // Help TS
+
+    // The streamed pageContext values of the previous page and of superseded navigations (after the early returns above: they don't render)
+    cancelStreamedValues()
 
     const res = await loadPageConfigsLazyClientSideAndExecHook(pageContext, isFirstRender, isRenderOutdated)
     /* Already called inside loadPageConfigsLazyClientSideAndExecHook()
