@@ -1,7 +1,6 @@
 export { loadPageConfigsLazyClientSide }
 export type { PageContext_loadPageConfigsLazyClientSide }
 export { isErrorFetchingStaticAssets }
-export { stampErrorFetchingStaticAssets }
 
 import { getPageFilesClientSide, type PageFile } from '../../shared-server-client/getPageFiles.js'
 import { resolvePageContextConfig } from '../../shared-server-client/page-configs/resolveVikeConfigPublic.js'
@@ -51,11 +50,6 @@ async function loadPageConfigsLazyClientSide(
   objectAssign(pageContextAddendum, resolvePageContextConfig(pageFilesClientSide, pageConfigLoaded, pageConfigGlobal))
   objectAssign(pageContextAddendum, { _pageFilesLoaded: pageFilesClientSide })
   return pageContextAddendum
-}
-
-// For other lazy imports, e.g. the decoder of streamed pageContext values
-function stampErrorFetchingStaticAssets(err: unknown) {
-  if (isFetchError(err)) Object.assign(err, { [errStamp]: true })
 }
 
 function isErrorFetchingStaticAssets(err: unknown) {

@@ -1,17 +1,12 @@
 // Streamed pageContext values https://vike.dev/passToClient#streaming, upon client-side navigation:
 // - The `.pageContext.json` response has several lines if the pageContext has streamed values (see
 //   server/runtime/renderPageServer/pageContextJson.ts): the decoder (../shared/streamedValues.ts) is loaded only then.
-// - Vike cancels the streamed values of a pageContext (and stops reading the response) when it doesn't pass the
-//   pageContext to onRenderClient() (e.g. the navigation is superseded by another one), or when another page is rendered.
+// - A new rendering cancels the streamed values fetched before it (the previous page's, or a superseded navigation's).
 
 export { readPageContextJson }
-export { hasStreamedValues }
-export { moveStreamedValues }
 export { cancelStreamedValues }
-export { setStreamedValuesRendered }
 
 import { parse } from '@brillout/json-serializer/parse'
-import { stampErrorFetchingStaticAssets } from '../shared/loadPageConfigsLazyClientSide.js'
 import '../assertEnvClient.js'
 
 async function readPageContextJson(response: Response): Promise<unknown> {
@@ -28,15 +23,9 @@ async function readPageContextJson(response: Response): Promise<unknown> {
       isFirstLine = false
       const lineFirst = chunks.join('') + chunk.slice(0, lineEnd)
       if (lineFirst.endsWith('"_streamedValues":[')) {
-        const readPageContextJsonStreamed = await loadDecoder()
-        const { pageContextFromServer, cancel } = readPageContextJsonStreamed(
-          lineFirst,
-          chunk.slice(lineEnd + 1),
-          reader,
-          decoder,
-        )
-        streamedValuesCancel.set(pageContextFromServer, cancel)
-        return pageContextFromServer
+        const { readPageContextJsonStreamed } = await import('../shared/streamedValues.js')
+        responsesStreaming.push(reader)
+        return readPageContextJsonStreamed(lineFirst, chunk.slice(lineEnd + 1), reader, decoder)
       }
     }
     chunks.push(chunk)
@@ -44,48 +33,8 @@ async function readPageContextJson(response: Response): Promise<unknown> {
   }
 }
 
-async function loadDecoder() {
-  try {
-    return (await import('../shared/streamedValues.js')).readPageContextJsonStreamed
-  } catch (err) {
-    // E.g. a new frontend was deployed: Vike falls back to Server Routing
-    stampErrorFetchingStaticAssets(err)
-    throw err
-  }
-}
-
-const streamedValuesCancel = new Map<object, () => void>()
-function hasStreamedValues(pageContextFromServer: object): boolean {
-  return streamedValuesCancel.has(pageContextFromServer)
-}
-/** The values of `from` are now referenced by `to` */
-function moveStreamedValues(from: object, to: object): void {
-  const cancel = streamedValuesCancel.get(from)
-  if (!cancel) return
-  streamedValuesCancel.delete(from)
-  streamedValuesCancel.set(to, cancel)
-}
-/** Without argument: the values of all pageContexts not passed to onRenderClient() */
-function cancelStreamedValues(pageContextFromServer?: object): void {
-  const pageContexts = pageContextFromServer ? [pageContextFromServer] : [...streamedValuesCancel.keys()]
-  pageContexts.forEach((pageContext) => {
-    streamedValuesCancel.get(pageContext)?.()
-    streamedValuesCancel.delete(pageContext)
-  })
-}
-// The values of the rendered page
-let cancelRendered: (() => void)[] = []
-/** `pageContext` is passed to onRenderClient(): the values of the previous page are cancelled */
-function setStreamedValuesRendered(
-  pageContext: object,
-  pageContextsFromServer: { pageContext: object; pageContextFromServer: object }[],
-): void {
-  cancelRendered.forEach((cancel) => cancel())
-  cancelRendered = []
-  pageContextsFromServer.forEach((p) => {
-    const cancel = streamedValuesCancel.get(p.pageContextFromServer)
-    if (p.pageContext !== pageContext || !cancel) return
-    streamedValuesCancel.delete(p.pageContextFromServer)
-    cancelRendered.push(cancel)
-  })
+let responsesStreaming: ReadableStreamDefaultReader[] = []
+function cancelStreamedValues(): void {
+  responsesStreaming.forEach((reader) => reader.cancel().catch(() => {}))
+  responsesStreaming = []
 }

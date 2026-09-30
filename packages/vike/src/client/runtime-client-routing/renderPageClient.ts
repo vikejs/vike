@@ -23,7 +23,7 @@ import {
   type PageContextFromHooksServer,
   setPageContextInitIsPassedToClient,
 } from './getPageContextFromHooks.js'
-import { cancelStreamedValues, setStreamedValuesRendered } from './streamedValues.js'
+import { cancelStreamedValues } from './streamedValues.js'
 import { createPageContextClient, type PageContextCreatedClient } from './createPageContextClient.js'
 import {
   addLinkPrefetchHandlers,
@@ -129,7 +129,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
   addLinkPrefetchHandlers_unwatch()
 
   const { isRenderOutdated, setHydrationCanBeAborted, isFirstRender } = getIsRenderOutdated()
-  // Cancels the streamed pageContext values of the renderings this rendering supersedes (see streamedValues.ts)
+  // The streamed pageContext values of the previous page and of superseded navigations
   cancelStreamedValues()
 
   const pageContextBeginArgs = {
@@ -158,12 +158,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
   await globalObject.onRenderClientPreviousPromise
   if (isRenderOutdated()) return
 
-  const pageContextsFromServer: { pageContext: object; pageContextFromServer: object }[] = []
-  try {
-    return await renderPageNominal()
-  } finally {
-    pageContextsFromServer.forEach(({ pageContextFromServer }) => cancelStreamedValues(pageContextFromServer))
-  }
+  return await renderPageNominal()
 
   async function renderPageNominal() {
     const onError = async (err: unknown) => {
@@ -312,12 +307,9 @@ async function renderPageClient(renderArgs: RenderArgs) {
           const result = await getPageContextFromHooksServer(pageContext, false)
           if (result.is404ServerSideRouted) return
           pageContextFromHooksServer = result.pageContextFromHooksServer
-          pageContextsFromServer.push({ pageContext, pageContextFromServer: pageContextFromHooksServer })
           // TO-DO/pageContext-prefetch: remove or change, because this only makes sense for a pre-rendered page
           populatePageContextPrefetchCache(pageContext, result)
         } catch (err) {
-          // The decoder of streamed pageContext values couldn't be loaded
-          if (handleErrorFetchingStaticAssets(err, pageContext, isFirstRender)) return
           await onError(err)
           return
         }
@@ -407,7 +399,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
       assert(!('urlOriginal' in pageContextAbort))
       objectAssign(pageContext, pageContextAbort)
       objectAssign(pageContext, { is404: pageContextAbort.abortStatusCode === 404 })
-      pageContextsFromServer.push({ pageContext, pageContextFromServer: pageContextAbort })
     } else {
       objectAssign(pageContext, { is404: false })
     }
@@ -440,7 +431,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
       const result = await getPageContextFromHooksServer(pageContext, true)
       if (result.is404ServerSideRouted) return
       pageContextFromHooksServer = result.pageContextFromHooksServer
-      pageContextsFromServer.push({ pageContext, pageContextFromServer: pageContextFromHooksServer })
     } catch (err: unknown) {
       onError(err)
       return
@@ -524,7 +514,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     changeUrl(urlOriginal, overwriteLastHistoryEntry)
     globalObject.previousPageContext = pageContext
-    setStreamedValuesRendered(pageContext, pageContextsFromServer)
     // There should never be concurrent onRenderClient() calls
     assert(globalObject.onRenderClientPreviousPromise === undefined)
     const onRenderClientPromise = (async () => {

@@ -2,8 +2,7 @@
 // the serialized pageContext become a ReadableStream, a Promise or an async iterable, fed by the lines that follow the
 // pageContext:
 // - First render: the lines pushed to `self.__vike_streamed` by the `<script>` tags of the HTML.
-// - Client-side navigation: the lines of the `.pageContext.json` response, read only while a value wants more
-//   (backpressure).
+// - Client-side navigation: the lines of the `.pageContext.json` response.
 //
 // Loaded only if the pageContext has streamed values (see getJsonSerializedInHtml.ts and
 // ../runtime-client-routing/streamedValues.ts).
@@ -22,26 +21,12 @@ const prefixes: [string, Kind][] = [
   ['!VikePromise:', 'promise'],
   ['!VikeAsyncIterable:', 'asyncIterable'],
 ]
-// The number of chunks a stream buffers before the response isn't read further
-const highWaterMark = 16
 
 type Line = Record<string, unknown>
-type Entry = {
-  value: unknown
-  isSettled: boolean
-  push(line: Line): void
-  fail(err: unknown): void
-  wantsMore(): boolean
-}
+type Entry = { value: unknown; push(line: Line): void; fail(err: unknown): void }
 
-function createReceiver(onChange?: () => void) {
+function createReceiver() {
   const entries = new Map<number, Entry>()
-  let onDemand: (() => void)[] = []
-  const notify = () => {
-    onDemand.forEach((resolve) => resolve())
-    onDemand = []
-    onChange?.()
-  }
 
   const reviver: Reviver = (_path, value) => {
     const placeholder = parsePlaceholder(value)
@@ -65,95 +50,54 @@ function createReceiver(onChange?: () => void) {
       })
       // Avoid an unhandled rejection if the user doesn't use the promise
       promise.catch(() => {})
-      const entry: Entry = {
+      return {
         value: promise,
-        isSettled: false,
-        push(line) {
-          if ('v' in line) {
-            const value = parseTransform(line.v, { reviver })
-            entry.isSettled = true
-            resolve(value)
-          } else {
-            entry.fail(getLineError(line))
-          }
-        },
-        fail(err) {
-          entry.isSettled = true
-          reject(err)
-        },
-        wantsMore: () => !entry.isSettled,
+        push: (line) => ('v' in line ? resolve(parseTransform(line.v, { reviver })) : reject(getLineError())),
+        fail: reject,
       }
-      return entry
     }
     let controller!: ReadableStreamDefaultController<unknown>
-    // The chunks received before the value failed are read before the error
-    let error: null | { err: unknown } = null
-    const errorIfDrained = () => {
-      if (error && controller.desiredSize === highWaterMark) controller.error(error.err)
-    }
-    const stream = new ReadableStream<unknown>(
-      {
-        start(controller_) {
-          controller = controller_
-        },
-        pull() {
-          errorIfDrained()
-          notify()
-        },
-        cancel() {
-          // Released by its consumer
-          entry.isSettled = true
-          notify()
-        },
+    let isClosed = false
+    const stream = new ReadableStream<unknown>({
+      start(controller_) {
+        controller = controller_
       },
-      { highWaterMark },
-    )
-    const entry: Entry = {
+      cancel() {
+        // Released by its consumer: the rest is ignored
+        isClosed = true
+      },
+    })
+    const close = (err?: unknown) => {
+      if (isClosed) return
+      isClosed = true
+      if (err) controller.error(err)
+      else controller.close()
+    }
+    return {
       value: kind === 'stream' ? stream : toAsyncIterable(stream),
-      isSettled: false,
       push(line) {
-        if (entry.isSettled) {
-          // A chunk nobody reads: the values it contains are still received, as other values may reference them
-          if ('v' in line) parseTransform(line.v, { reviver })
-          return
-        }
+        if (isClosed) return
         if (typeof line.t === 'string') controller.enqueue(new TextEncoder().encode(line.t))
         else if (typeof line.b === 'string') controller.enqueue(decodeBase64url(line.b))
         else if ('v' in line) controller.enqueue(parseTransform(line.v, { reviver }))
-        else if (line.end === true) {
-          entry.isSettled = true
-          controller.close()
-        } else entry.fail(getLineError(line))
+        else if (line.end === true) close()
+        else close(getLineError())
       },
-      fail(err) {
-        if (entry.isSettled) return
-        entry.isSettled = true
-        error = { err }
-        errorIfDrained()
-      },
-      wantsMore: () => !entry.isSettled && controller.desiredSize! > 0,
+      fail: close,
     }
-    return entry
   }
 
   return {
     reviver,
     onLine(lineStr: string) {
-      const line: unknown = JSON.parse(lineStr)
-      if (!isObject(line) || typeof line.s !== 'number' || !entries.has(line.s)) throw new Error('Malformed line')
-      entries.get(line.s)!.push(line)
-      notify()
+      const line = JSON.parse(lineStr) as Line
+      // Unknown if contained in a chunk nobody read
+      entries.get(line.s as number)?.push(line)
     },
-    /** The response failed, was truncated, or was cancelled: the values that didn't end fail */
+    /** The response failed, ended or was cancelled: the values that didn't end fail */
     fail(err: unknown) {
       entries.forEach((entry) => entry.fail(err))
-      notify()
     },
-    /** Whether a value wants more lines: a pending Promise, or a stream whose buffer isn't full */
-    wantsMore: () => [...entries.values()].some((entry) => entry.wantsMore()),
-    /** Whether all values ended or were released by their consumer: the rest of the response isn't needed */
-    isReleased: () => [...entries.values()].every((entry) => entry.isSettled),
-    waitForDemand: () => new Promise<void>((resolve) => onDemand.push(resolve)),
   }
 }
 
@@ -167,8 +111,7 @@ function parsePlaceholder(value: string): null | { id: number; kind: Kind } {
   return null
 }
 
-function getLineError(line: Line) {
-  if (line.error !== true) return new Error('Malformed line')
+function getLineError() {
   return new Error('A streamed pageContext value failed on the server-side (see the server logs)')
 }
 
@@ -177,7 +120,7 @@ function toAsyncIterable(stream: ReadableStream<unknown>): AsyncIterableIterator
   const reader = stream.getReader()
   const iterator: AsyncIterableIterator<unknown> = {
     next: () => reader.read() as Promise<IteratorResult<unknown>>,
-    // Called upon `break` in `for await`: the rest isn't read
+    // Called upon `break` in `for await`
     async return(value?: unknown) {
       await reader.cancel()
       return { done: true, value }
@@ -189,27 +132,13 @@ function toAsyncIterable(stream: ReadableStream<unknown>): AsyncIterableIterator
 
 // First render: the `<script>` tags that follow `<script id="vike_pageContext">` push the lines to `self.__vike_streamed`,
 // before and after Vike's client runtime is loaded.
-type StreamedLines = { push(line: string): void }
 function parsePageContextHtml(pageContextJson: string): unknown {
   const receiver = createReceiver()
   const pageContext = parse(pageContextJson, { reviver: receiver.reviver })
-  const onLine = (line: string) => {
-    try {
-      receiver.onLine(line)
-    } catch (err) {
-      receiver.fail(err)
-    }
-  }
-  const g = self as { __vike_streamed?: string[] | StreamedLines }
+  const g = self as { __vike_streamed?: string[] | { push(line: string): void } }
   const linesQueued = Array.isArray(g.__vike_streamed) ? g.__vike_streamed : []
-  g.__vike_streamed = { push: onLine }
-  linesQueued.forEach(onLine)
-  // The HTML ended before all values ended (e.g. the server crashed)
-  const onHtmlEnd = () => {
-    if (!receiver.isReleased()) receiver.fail(new Error('The HTML ended before the streamed pageContext values ended'))
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', onHtmlEnd, { once: true })
-  else onHtmlEnd()
+  g.__vike_streamed = { push: receiver.onLine }
+  linesQueued.forEach(receiver.onLine)
   return pageContext
 }
 
@@ -221,54 +150,32 @@ function readPageContextJsonStreamed(
   rest: string,
   reader: ReadableStreamDefaultReader<Uint8Array>,
   decoder: TextDecoder,
-): { pageContextFromServer: Record<string, unknown>; cancel: () => void } {
-  let isDone = false
-  // Stop reading as soon as the values don't need the response anymore
-  const release = () => {
-    if (!isDone) reader.cancel().catch(() => {})
-  }
-  const receiver = createReceiver(() => {
-    if (receiver.isReleased()) release()
-  })
+): Record<string, unknown> {
+  const receiver = createReceiver()
   const pageContextFromServer = parse(lineFirst + lineLast, { reviver: receiver.reviver })
   assert(isObject(pageContextFromServer))
   delete pageContextFromServer._streamedValues
-  // The line being received, in pieces: joined once complete (searching the whole line upon each chunk would be quadratic)
-  let linePieces: string[] = []
-  const onChunk = (chunk: string) => {
-    let start = 0
-    let i: number
-    while ((i = chunk.indexOf('\n', start)) !== -1) {
-      const line = linePieces.join('') + chunk.slice(start, i)
-      linePieces = []
-      start = i + 1
-      if (line !== lineLast) receiver.onLine(line.startsWith(',') ? line.slice(1) : line)
-    }
-    linePieces.push(chunk.slice(start))
-  }
   ;(async () => {
+    let buffer = rest
     try {
-      onChunk(rest)
       while (true) {
-        if (receiver.isReleased()) break
-        if (isDone) throw new Error('The pageContext.json response ended before the streamed pageContext values ended')
-        if (!receiver.wantsMore()) {
-          await receiver.waitForDemand()
-          continue
+        let i: number
+        while ((i = buffer.indexOf('\n')) !== -1) {
+          const line = buffer.slice(0, i)
+          buffer = buffer.slice(i + 1)
+          if (line !== lineLast) receiver.onLine(line.startsWith(',') ? line.slice(1) : line)
         }
         const { done, value } = await reader.read()
-        isDone = done
-        onChunk(decoder.decode(value, { stream: !done }))
+        if (done) break
+        buffer += decoder.decode(value, { stream: true })
       }
+      receiver.fail(new Error('The pageContext.json response ended before the streamed pageContext values ended'))
     } catch (err) {
-      // The server aborted the response (e.g. it crashed), or it's malformed
+      // E.g. the server aborted the response
       receiver.fail(err)
     }
   })()
-  // Releases the response
-  const cancel = () =>
-    receiver.fail(new Error('The streamed pageContext values are cancelled: their page was left, or not rendered'))
-  return { pageContextFromServer, cancel }
+  return pageContextFromServer
 }
 
 function decodeBase64url(str: string): Uint8Array {

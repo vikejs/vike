@@ -19,7 +19,6 @@ import { createPageContextClient, type PageContextCreatedClient } from './create
 import { route, type PageContextAfterRoute } from '../../shared-server-client/route/index.js'
 import { noRouteMatch } from '../../shared-server-client/route/noRouteMatch.js'
 import { type PageContextFromHooksServer, getPageContextFromHooksServer } from './getPageContextFromHooks.js'
-import { cancelStreamedValues, hasStreamedValues } from './streamedValues.js'
 import type { PageContextConfig, PageFile } from '../../shared-server-client/getPageFiles.js'
 import { getPageContextCurrent } from './getPageContextCurrent.js'
 import {
@@ -101,8 +100,6 @@ async function prefetchPageContextFromHooksServer(
 ): Promise<void> {
   const result = await getPageContextFromHooksServer(pageContextLink, false)
   setPageContextPrefetchCache(pageContextLink, result, resultMaxAge)
-  // Streamed pageContext values can be read only once: a pageContext with streamed values isn't cached
-  if (!result.is404ServerSideRouted) cancelStreamedValues(result.pageContextFromHooksServer)
 }
 function populatePageContextPrefetchCache(
   pageContext: PageContextForPrefetch /*& PageContextConfig*/,
@@ -117,7 +114,6 @@ function setPageContextPrefetchCache(
   result: ResultPageContextFromServer,
   resultMaxAge: number | null,
 ) {
-  if (!result.is404ServerSideRouted && hasStreamedValues(result.pageContextFromHooksServer)) return
   if (resultMaxAge === null) resultMaxAge = getResultMaxAge()
   const key = getCacheKey(pageContext.urlPathname)
   assert(isBrilloutDocpress()) // Ensure this API isn't used by anyone else

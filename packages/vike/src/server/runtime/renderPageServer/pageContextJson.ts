@@ -13,13 +13,10 @@
 export { getPageContextJson }
 export { getPageContextJsonFile }
 
-import { assertUsage } from '../../../utils/assert.js'
 import { pumpStreamedValues, type StreamedValue } from './streamedValues.js'
 import type { PageContext_logRuntime } from '../loggerRuntime.js'
-import pc from '@brillout/picocolors'
 import '../../assertEnvServer.js'
 
-const streamedValuesKey = '_streamedValues'
 const lineLast = ']}'
 
 function getPageContextJson(
@@ -40,63 +37,42 @@ function getPageContextJsonFile(pageContextSerialized: string, lines: null | str
 }
 
 function getLineFirst(pageContextSerialized: string): string {
-  assertUsage(
-    !(streamedValuesKey in JSON.parse(pageContextSerialized)),
-    `${pc.cyan(`pageContext.${streamedValuesKey}`)} is reserved by Vike, remove it from ${pc.cyan('passToClient')}`,
-  )
   // Remove the closing `}`
-  const pageContextOpen = pageContextSerialized.slice(0, -1)
-  return `${pageContextOpen},"${streamedValuesKey}":[`
+  return `${pageContextSerialized.slice(0, -1)},"_streamedValues":[`
 }
 
-// Backpressure: the values are read while the consumer's queue holds less than `highWaterMark` bytes. When the consumer
-// goes away (e.g. the user navigated away), all values are cancelled.
-const highWaterMark = 64 * 1024
 function getBody(
   lineFirst: string,
   streamedValues: StreamedValue[],
   pageContext: NonNullable<PageContext_logRuntime>,
 ): ReadableStream<Uint8Array> {
   const encoder = new TextEncoder()
-  let isFirstElement = true
-  let isCancelled = false
-  let waiting: (() => void)[] = []
-  const wake = () => {
-    waiting.forEach((resolve) => resolve())
-    waiting = []
-  }
   let pump: ReturnType<typeof pumpStreamedValues>
-  return new ReadableStream<Uint8Array>(
-    {
-      start(controller) {
-        // Sent right away: the client runs its hooks while the values are still being produced
-        controller.enqueue(encoder.encode(lineFirst + '\n'))
-        const write = async (line: string) => {
-          controller.enqueue(encoder.encode((isFirstElement ? '' : ',') + line + '\n'))
-          isFirstElement = false
-          while (!isCancelled && controller.desiredSize! <= 0) {
-            await new Promise<void>((resolve) => waiting.push(resolve))
-          }
-        }
-        pump = pumpStreamedValues(pageContext, streamedValues, write, { failFast: false })
-        pump.done.then(
-          () => {
-            if (isCancelled) return
-            controller.enqueue(encoder.encode(lineLast + '\n'))
-            controller.close()
-          },
-          (err) => controller.error(err),
-        )
-      },
-      pull() {
-        wake()
-      },
-      cancel() {
-        isCancelled = true
-        wake()
-        pump.cancel()
-      },
+  let isCancelled = false
+  return new ReadableStream<Uint8Array>({
+    start(controller) {
+      const enqueue = (line: string) => controller.enqueue(encoder.encode(line + '\n'))
+      // Sent right away: the client runs its hooks while the values are still being produced
+      enqueue(lineFirst)
+      let isFirstElement = true
+      const write = (line: string) => {
+        enqueue((isFirstElement ? '' : ',') + line)
+        isFirstElement = false
+      }
+      pump = pumpStreamedValues(pageContext, streamedValues, write, { failFast: false })
+      pump.done.then(
+        () => {
+          if (isCancelled) return
+          enqueue(lineLast)
+          controller.close()
+        },
+        (err) => controller.error(err),
+      )
     },
-    new ByteLengthQueuingStrategy({ highWaterMark }),
-  )
+    // E.g. the user navigated away
+    cancel() {
+      isCancelled = true
+      pump.cancel()
+    },
+  })
 }

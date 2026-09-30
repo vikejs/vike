@@ -67,16 +67,15 @@ function getPageContextClientSerialized(
     pageContextClient[pageContextInitIsPassedToClient] = true
   }
 
-  const streamedValuesSerializer = getStreamedValuesSerializer(pageContext)
+  const { replacer, getStreamedValues } = getStreamedValuesSerializer(pageContext)
   const pageContextSerialized = serializeObject(
     pageContextClient,
     passToClientPageContext,
     'pageContext',
     isHtmlJsonScript,
-    streamedValuesSerializer,
+    replacer,
   )
-  const streamedValues = streamedValuesSerializer.commit()
-  return { pageContextSerialized, streamedValues }
+  return { pageContextSerialized, streamedValues: getStreamedValues() }
 }
 
 function getGlobalContextClientSerialized(pageContext: PageContextSerialization, isHtmlJsonScript: boolean) {
@@ -98,12 +97,10 @@ function serializeObject(
   passToClient: PassToClient,
   objName: 'pageContext' | 'globalContext',
   isHtmlJsonScript: boolean,
-  streamedValuesSerializer?: { replacer: Replacer; beginAttempt(): void },
+  replacer?: Replacer,
 ) {
-  const replacer = streamedValuesSerializer?.replacer
   let serialized: string
   try {
-    streamedValuesSerializer?.beginAttempt()
     serialized = serializeValue(obj, isHtmlJsonScript, undefined, replacer)
   } catch (err) {
     const h = (s: string) => pc.cyan(s)
@@ -153,7 +150,6 @@ function serializeObject(
       obj[getPropKeys(prop)[0]!] = NOT_SERIALIZABLE
     })
     try {
-      streamedValuesSerializer?.beginAttempt()
       serialized = serializeValue(obj, isHtmlJsonScript, undefined, replacer)
     } catch (err) {
       assert(false)

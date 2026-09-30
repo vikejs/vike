@@ -16,7 +16,7 @@ export { getStreamedValuesLinesPrerendered }
 export type { PageContextStreamedValuesHtml }
 
 import { assert } from '../../../../utils/assert.js'
-import { cancelStreamedValues, pumpStreamedValues, type StreamedValue } from '../streamedValues.js'
+import { pumpStreamedValues, type StreamedValue } from '../streamedValues.js'
 import { getPageContextClientSerialized, type PageContextSerialization } from './serializeContext.js'
 import type { PageContextCreatedServer } from '../createPageContextServer.js'
 import type { StreamFromReactStreamingPackage } from './stream/react-streaming.js'
@@ -37,23 +37,16 @@ type PageContextStreamedValuesHtml = PageContextCreatedServer &
   PageContextCspNonce & {
     _requestId: number
     _streamedValuesHtml?: StreamedValuesHtml
-    _streamedValuesHtmlIsCancelled?: true
-    _pageContextSerializedHtml?: ReturnType<typeof getPageContextClientSerialized>
   }
 
-// The pageContext of `<script id="vike_pageContext">`, followed by its streamed values
+// The pageContext of `<script id="vike_pageContext">`; its streamed values start streaming
 function serializePageContextHtml(
   pageContext: PageContextStreamedValuesHtml & PageContextSerialization,
   streamFromReactStreamingPackage: null | StreamFromReactStreamingPackage,
 ): string {
-  const { pageContextSerialized, streamedValues } = getPageContextSerializedHtml(pageContext)
+  const { pageContextSerialized, streamedValues } = getPageContextClientSerialized(pageContext, true)
   sendStreamedValuesInHtml(pageContext, streamedValues, streamFromReactStreamingPackage)
   return pageContextSerialized
-}
-// Serialized once: by the HTML, or by cancelStreamedValuesHtml() if it comes first
-function getPageContextSerializedHtml(pageContext: PageContextStreamedValuesHtml & PageContextSerialization) {
-  pageContext._pageContextSerializedHtml ??= getPageContextClientSerialized(pageContext, true)
-  return pageContext._pageContextSerializedHtml
 }
 
 function sendStreamedValuesInHtml(
@@ -61,9 +54,9 @@ function sendStreamedValuesInHtml(
   streamedValues: StreamedValue[],
   streamFromReactStreamingPackage: null | StreamFromReactStreamingPackage,
 ): void {
+  if (streamedValues.length === 0) return
   // The pageContext is serialized once per HTML
   assert(!pageContext._streamedValuesHtml)
-  if (streamedValues.length === 0) return
   const { isPrerendering } = pageContext
   const write = (line: string) => {
     streamedValuesHtml.lines?.push(line)
@@ -76,11 +69,9 @@ function sendStreamedValuesInHtml(
       streamedValuesHtml.pending.push(script)
     }
   }
-  // A pre-rendered page can't have a failed value
-  const pump = pumpStreamedValues(pageContext, streamedValues, write, { failFast: isPrerendering })
   const streamedValuesHtml: StreamedValuesHtml = {
-    done: pump.done,
-    cancel: pump.cancel,
+    // A pre-rendered page can't have a failed value
+    ...pumpStreamedValues(pageContext, streamedValues, write, { failFast: isPrerendering }),
     pending: [],
     writeHtml: null,
     lines: isPrerendering ? [] : null,
@@ -88,7 +79,6 @@ function sendStreamedValuesInHtml(
   // Pre-rendering: the error is thrown by getStreamedValuesLinesPrerendered()
   streamedValuesHtml.done.catch(() => {})
   pageContext._streamedValuesHtml = streamedValuesHtml
-  if (pageContext._streamedValuesHtmlIsCancelled) pump.cancel()
 }
 
 // HTML string
@@ -117,21 +107,8 @@ async function writeStreamedValuesHtmlAtStreamEnd(
 }
 
 // The HTML response was cancelled (e.g. the user closed the tab) or failed
-function cancelStreamedValuesHtml(
-  pageContext: PageContextStreamedValuesHtml & PageContextSerialization & { _isHtmlOnly: boolean },
-) {
-  if (pageContext._streamedValuesHtmlIsCancelled) return
-  pageContext._streamedValuesHtmlIsCancelled = true
-  if (pageContext._streamedValuesHtml) return pageContext._streamedValuesHtml.cancel()
-  // The values aren't sent yet: they're found by serializing the pageContext
-  if (pageContext._isHtmlOnly) return
-  try {
-    getPageContextSerializedHtml(pageContext)
-  } catch {
-    // Called by stream event handlers, where throwing could crash the server
-    return
-  }
-  cancelStreamedValues(pageContext)
+function cancelStreamedValuesHtml(pageContext: PageContextStreamedValuesHtml) {
+  pageContext._streamedValuesHtml?.cancel()
 }
 
 // Pre-rendering: the lines for `index.pageContext.json` (the values are read once, while rendering the HTML)

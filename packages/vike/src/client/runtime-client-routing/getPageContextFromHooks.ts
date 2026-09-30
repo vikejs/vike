@@ -12,7 +12,7 @@ import { isObject } from '../../utils/isObject.js'
 import { objectAssign } from '../../utils/objectAssign.js'
 import { redirectHard } from '../../utils/redirectHard.js'
 import { getPageContextSerializedInHtml } from '../shared/getJsonSerializedInHtml.js'
-import { cancelStreamedValues, moveStreamedValues, readPageContextJson } from './streamedValues.js'
+import { readPageContextJson } from './streamedValues.js'
 import type { PageContextConfig, PageFile } from '../../shared-server-client/getPageFiles.js'
 import { analyzePageServerSide } from '../../shared-server-client/getPageFiles/analyzePageServerSide.js'
 import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides.js'
@@ -109,7 +109,6 @@ async function getPageContextFromHooksServer(
     assert(!('serverSideError' in pageContextFromServer))
 
     objectAssign(pageContextFromHooksServer, pageContextFromServer)
-    moveStreamedValues(pageContextFromServer, pageContextFromHooksServer)
   }
 
   // We cannot return the whole pageContext because this function is used for prefetching `pageContext` (which requires a partial pageContext to be merged with the future pageContext created upon rendering the page in the future).
@@ -295,7 +294,6 @@ async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _u
 
   // Is there a reason for having two different properties? Can't we use only one property? I guess/think the isServerSideError property was an attempt (a bad idea really) for rendering the error page even though an error occurred on the server-side (which is a bad idea because the added complexity is non-negligible while the added value is minuscule since the error page usually doesn't have any (meaningful / server-side) hooks).
   if ('serverSideError' in pageContextFromServer || isServerSideError in pageContextFromServer) {
-    cancelStreamedValues(pageContextFromServer)
     throw getProjectError(`pageContext couldn't be fetched because an error occurred on the server-side`)
   }
 
