@@ -384,6 +384,23 @@ describe('streamed pageContext values: reading the values', () => {
     expect(onError).not.toHaveBeenCalled()
   })
 
+  it('a stream referenced by two chunks is sent once', async () => {
+    const s = streamOf([enc('x')])
+    const pageContext = {}
+    const { serialized, streamedValues } = serialize(
+      {
+        g: (async function* () {
+          yield { s }
+          yield { s }
+        })(),
+      },
+      pageContext,
+    )
+    const text = await new Response(getPageContextJson(serialized, streamedValues, pageContext as any)).text()
+    expect(text.split('\n').filter((line) => line.includes('"t":"x"'))).toHaveLength(1)
+    expect(vi.mocked(logRuntimeError)).not.toHaveBeenCalled()
+  })
+
   it('undefined values and chunks', async () => {
     const { pageContext } = await navigation({
       p: Promise.resolve(undefined),
@@ -507,16 +524,6 @@ describe('streamed pageContext values: client-side navigation', () => {
     expect(onReturn).toHaveBeenCalled()
   })
 
-  it('a consumer releasing all values releases the response', async () => {
-    const onCancel = vi.fn()
-    const { pageContext } = await navigation({ s: streamOf(Array(1000).fill(enc('x')), { onCancel }) })
-    const reader = pageContext.s.getReader()
-    await reader.read()
-    await reader.cancel()
-    await sleep(10)
-    expect(onCancel).toHaveBeenCalled()
-  })
-
   it('a consumer releasing a stream whose producer is slow releases the response right away', async () => {
     const onCancel = vi.fn()
     let pulls = 0
@@ -607,7 +614,7 @@ describe('streamed pageContext values: client-side navigation', () => {
   })
 })
 
-describe('client-side navigation: reading the pageContext.json response', () => {
+describe('streamed pageContext values: reading the pageContext.json response', () => {
   // A body of 20 MB received in chunks of 16 KiB: reading it is linear
   const inChunks = (body: string) => {
     const bytes = enc(body)
@@ -701,7 +708,7 @@ describe('streamed pageContext values: first render (HTML)', () => {
     }
   })
 
-  it('HTML: an async iterator failing synchronously fails alone', async () => {
+  it('an async iterator failing synchronously fails alone', async () => {
     const throwing = {
       [Symbol.asyncIterator]() {
         return this
@@ -755,6 +762,26 @@ describe('streamed pageContext values: first render (HTML)', () => {
     expect(written).toHaveLength(2)
     expect(written[1]).toContain('later')
   })
+
+  it('HTML stream without </body>: the values are written at its end', async () => {
+    const pageContext = { cspNonce: null, isPrerendering: false, _requestId: 1 } as any
+    const { streamedValues } = serialize({ now: Promise.resolve('now') }, pageContext)
+    sendStreamedValuesInHtml(pageContext, streamedValues, null)
+    await sleep(0)
+    const written: string[] = []
+    const htmlEnd = await writeStreamedValuesHtmlAtStreamEnd(pageContext, '<p>end</p>', (html) => {
+      written.push(html)
+    })
+    expect(written[0]).toMatch(/^<p>end<\/p><script>.*now.*<\/script>$/)
+    expect(htmlEnd).toBe('')
+  })
+
+  it('the decoder loaded after the HTML ended: the values that did not end fail', async () => {
+    setBrowser()
+    ;(globalThis as any).document.readyState = 'complete'
+    const pageContext = parsePageContextHtml('{"p":"!VikePromise:0"}') as any
+    await expect(pageContext.p).rejects.toThrow('The HTML ended')
+  })
 })
 
 describe('streamed pageContext values: the HTML response ending early cancels them', () => {
@@ -780,7 +807,7 @@ describe('streamed pageContext values: the HTML response ending early cancels th
       },
     })
 
-  it('HTML: a cancellation before the pageContext is serialized cancels the values', async () => {
+  it('a cancellation before the pageContext is serialized cancels the values', async () => {
     const pageContext = { cspNonce: null, isPrerendering: false, _requestId: 1 } as any
     cancelStreamedValuesHtml(pageContext)
     const onCancel = vi.fn()
@@ -790,7 +817,7 @@ describe('streamed pageContext values: the HTML response ending early cancels th
     expect(onCancel).toHaveBeenCalled()
   })
 
-  it('HTML: cancelled before the pageContext is serialized, and never serialized: the values are cancelled', async () => {
+  it('cancelled before the pageContext is serialized, and never serialized: the values are cancelled', async () => {
     const onCancel = vi.fn()
     const pageContext = {
       pageId: '/pages/index',
@@ -807,11 +834,15 @@ describe('streamed pageContext values: the HTML response ending early cancels th
     expect(onCancel).toHaveBeenCalled()
   })
 
-  it('HTML: a value cancelled before the pageContext is serialized is cancelled once', async () => {
+  it('a value cancelled before the pageContext is serialized is cancelled once, and not read', async () => {
     let returned = 0
+    let nexts = 0
     const iterable = {
       [Symbol.asyncIterator]() {
-        return { next: () => new Promise(() => {}), return: async () => (returned++, { done: true, value: undefined }) }
+        return {
+          next: () => (nexts++, new Promise(() => {})),
+          return: async () => (returned++, { done: true, value: undefined }),
+        }
       },
     }
     const pageContext = getPageContext({ iterable })
@@ -819,9 +850,22 @@ describe('streamed pageContext values: the HTML response ending early cancels th
     serializePageContextHtml(pageContext, null)
     await sleep(10)
     expect(returned).toBe(1)
+    expect(nexts).toBe(0)
   })
 
-  it('HTML: without streamed values, a cancellation serializes nothing more', () => {
+  it('cancelling the HTML while the values stream cancels them', async () => {
+    const onCancel = vi.fn()
+    const pageContext = { cspNonce: null, isPrerendering: false, _requestId: 1 } as any
+    const endless = new ReadableStream({ pull: () => new Promise(() => {}), cancel: onCancel }, { highWaterMark: 0 })
+    const { streamedValues } = serialize({ endless }, pageContext)
+    sendStreamedValuesInHtml(pageContext, streamedValues, null)
+    await sleep(0)
+    cancelStreamedValuesHtml(pageContext)
+    await sleep(10)
+    expect(onCancel).toHaveBeenCalled()
+  })
+
+  it('without streamed values, a cancellation serializes nothing more', () => {
     let reads = 0
     const pageContext = getPageContext({})
     Object.defineProperty(pageContext, 'data', {
@@ -835,7 +879,7 @@ describe('streamed pageContext values: the HTML response ending early cancels th
     expect(reads).toBe(readsSerialized)
   })
 
-  it('HTML: cancelling the HTML stream, also while it ends, cancels the values', async () => {
+  it('cancelling the HTML stream, also while it ends, cancels the values', async () => {
     for (const whileEnding of [false, true]) {
       const onCancel = vi.fn()
       const ending = deferred<void>()
@@ -859,7 +903,7 @@ describe('streamed pageContext values: the HTML response ending early cancels th
       const reader = wrapper.getReader()
       await reader.read()
       if (whileEnding) await reader.read()
-      // Rejects: the wrapper cancels the HTML stream it has locked (also on main)
+      // Rejects: the wrapper cancels the HTML stream it has locked
       await reader.cancel().catch(() => {})
       await sleep(10)
       expect(onCancel).toHaveBeenCalled()
@@ -916,7 +960,7 @@ describe('streamed pageContext values: the HTML response ending early cancels th
     expect(onCancel).toHaveBeenCalled()
   })
 
-  it('HTML: the response closing destroys a Node.js Readable HTML stream', async () => {
+  it('the response closing destroys a Node.js Readable HTML stream', async () => {
     const readable = new Readable({ read() {} })
     const writable = new PassThrough()
     pipeToStreamWritableNode(readable, writable)
@@ -946,7 +990,7 @@ describe('streamed pageContext values: the HTML response ending early cancels th
     expect(onCancel).toHaveBeenCalled()
   })
 
-  it('HTML: values a serialization retry discards are cancelled once, also when the HTML is then cancelled', async () => {
+  it('values a serialization retry discards are cancelled once, also when the HTML is then cancelled', async () => {
     let returned = 0
     const iterable = {
       [Symbol.asyncIterator]: () => ({
@@ -961,7 +1005,7 @@ describe('streamed pageContext values: the HTML response ending early cancels th
     expect(returned).toBe(1)
   })
 
-  it("HTML: cancelling an HTML-only page doesn't serialize its pageContext", () => {
+  it("cancelling an HTML-only page doesn't serialize its pageContext", () => {
     let reads = 0
     const pageContext = getPageContext({})
     Object.defineProperty(pageContext, 'data', { enumerable: true, get: () => (reads++, {}) })
@@ -1009,7 +1053,7 @@ describe('streamed pageContext values: pre-rendering', () => {
   })
 })
 
-describe('client-side navigation: which values Vike cancels', () => {
+describe('streamed pageContext values: which values the client cancels', () => {
   // A `.pageContext.json` response that doesn't end
   const open = async () =>
     (await readPageContextJson(
@@ -1030,7 +1074,11 @@ describe('client-side navigation: which values Vike cancels', () => {
     const pageContext = {}
     // Like getPageContextFromHooksServer()
     moveStreamedValues(rendered, pageContext)
-    setStreamedValuesRendered(pageContext, [{ pageContext, pageContextFromServer: pageContext }])
+    // `superseded` is fetched by the same rendering, e.g. for a page that failed before the error page was rendered
+    setStreamedValuesRendered(pageContext, [
+      { pageContext, pageContextFromServer: pageContext },
+      { pageContext: {}, pageContextFromServer: superseded },
+    ])
     // A new rendering begins
     cancelStreamedValues()
     await expect(superseded.p).rejects.toThrow('cancelled')
