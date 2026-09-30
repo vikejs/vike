@@ -625,7 +625,7 @@ async function createStreamWrapper({
     const pipeProxy: StreamPipeWeb = (writableOriginal: StreamWritableWeb) => {
       writerOriginal = writableOriginal.getWriter()
       debug('original Web Writable received')
-      // Cancel the source when the response closes early
+      // Let the source know when the response closes early
       writerOriginal.closed.catch((err) => readerProxy?.cancel(err))
       ;(async () => {
         // CloudFlare Workers does not implement `ready` property
@@ -738,8 +738,8 @@ async function createStreamWrapper({
 
     const writeChunk = (chunk: unknown) => {
       if (
+        // react-streaming's Web stream isn't cancelled and may still emit data
         !isCancel &&
-        // If streamOriginal doesn't implement streamOriginal.cancel() then it may still emit data after we close the stream. We therefore need to check whether the steam is closed.
         !isClosed
       ) {
         controllerProxy.enqueue(encodeForWebStream(chunk) as any)

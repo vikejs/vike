@@ -149,27 +149,15 @@ describe('the response', () => {
     expect({ cancelled, closed }).toEqual({ cancelled: true, closed: true })
   })
 
-  it('cancels a Web stream when the response closes early', async () => {
-    let cancelled = false
-    const stream = new ReadableStream({
+  it('stops every kind of source when the response closes early', async () => {
+    const stopped: string[] = []
+    const readableWeb = new ReadableStream({
       async pull(controller) {
         await sleep()
         controller.enqueue(new Uint8Array([1]))
       },
-      cancel() {
-        cancelled = true
-      },
+      cancel: () => void stopped.push('readable web'),
     })
-    const res = response()
-    pipeToStreamWritableNode(await processStream(stream, opts), res)
-    await sleep(10)
-    res.destroy()
-    await sleep(10)
-    expect(cancelled).toBe(true)
-  })
-
-  it('stops Node.js Readable, Node.js pipe and Web pipe sources when the response closes early', async () => {
-    const stopped: string[] = []
     const readable = new Readable({ read() {} })
     readable.push('a')
     readable.on('close', () => stopped.push('readable'))
@@ -184,17 +172,17 @@ describe('the response', () => {
       writer.closed.catch(() => stopped.push('pipe web'))
     }
     stampPipe(pipeWeb, 'web-stream')
-    const [response1, response2] = [response(), response()]
-    pipeToStreamWritableNode(await processStream(readable, opts), response1)
-    ;((await processStream(pipeNode, opts)) as StreamPipeNode)(response2)
+    const responses = [response(), response(), response()] as const
+    pipeToStreamWritableNode(await processStream(readableWeb, opts), responses[0])
+    pipeToStreamWritableNode(await processStream(readable, opts), responses[1])
+    ;((await processStream(pipeNode, opts)) as StreamPipeNode)(responses[2])
     const { readable: responseWeb, writable } = new TransformStream()
     ;((await processStream(pipeWeb, opts)) as StreamPipeWeb)(writable)
     await sleep(10)
-    response1.destroy()
-    response2.destroy()
+    responses.forEach((res) => res.destroy())
     await responseWeb.cancel()
     await sleep(10)
-    expect(stopped.sort()).toEqual(['pipe node', 'pipe web', 'readable'])
+    expect(stopped.sort()).toEqual(['pipe node', 'pipe web', 'readable', 'readable web'])
   })
 
   it('is destroyed if the stream errors', async () => {
