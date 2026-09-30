@@ -1,6 +1,7 @@
 export { resolveHeadersResponseEarly }
 export { resolveHeadersResponseFinal }
 export { resolveHeadersResponseSetCookie }
+export { getSetCookieAborted }
 
 import { addCspResponseHeader, PageContextCspNonce } from './csp.js'
 import { isCallable } from '../../../utils/isCallable.js'
@@ -41,7 +42,7 @@ function resolveHeadersResponseSetCookie(pageContext: PageContextHeadersResponse
 }
 
 // Cookies set before `throw redirect()` or `throw render()` are kept. They're sent first, so that a cookie set again later wins.
-function getSetCookieAborted(pageContext: PageContextHeadersResponse) {
+function getSetCookieAborted(pageContext: { pageContextsAborted: PageContextAborted[] }) {
   return pageContext.pageContextsAborted.flatMap((pageContextAborted) => {
     const { headersResponse } = pageContextAborted as { headersResponse?: Headers }
     return (headersResponse?.getSetCookie() ?? []).map((value): [string, string] => ['set-cookie', value])

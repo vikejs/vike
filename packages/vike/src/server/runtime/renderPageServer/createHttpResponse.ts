@@ -26,7 +26,7 @@ import { getEarlyHints, type EarlyHint } from './getEarlyHints.js'
 import { assertNoInfiniteHttpRedirect } from './createHttpResponse/assertNoInfiniteHttpRedirect.js'
 import type { PageContextBegin } from '../renderPageServer.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
-import { resolveHeadersResponseFinal, resolveHeadersResponseSetCookie } from './headersResponse.js'
+import { getSetCookieAborted, resolveHeadersResponseFinal, resolveHeadersResponseSetCookie } from './headersResponse.js'
 import { stringify } from '@brillout/json-serializer/stringify'
 import '../../assertEnvServer.js'
 
@@ -115,6 +115,7 @@ function createHttpResponseBaseIsMissing(urlOriginal: string, baseServer: string
 }
 function createHttpResponseErrorFallback(pageContext: {
   _globalContext: GlobalContextServerInternal
+  pageContextsAborted: PageContextAborted[]
 }) {
   const reason = (() => {
     const errorPageId = getErrorPageId(
@@ -127,22 +128,24 @@ function createHttpResponseErrorFallback(pageContext: {
       return 'no error page (https://vike.dev/error-page) is defined, make sure to create one' as const
     }
   })()
-  return createHttpResponseError_(reason)
+  // Cookies set before `throw redirect()` or `throw render()` are kept
+  return createHttpResponseError_(reason, getSetCookieAborted(pageContext))
 }
 function createHttpResponseErrorFallback_noGlobalContext() {
-  return createHttpResponseError_('no error page (https://vike.dev/error-page) could be rendered')
+  return createHttpResponseError_('no error page (https://vike.dev/error-page) could be rendered', [])
 }
-function createHttpResponseError_(reason: string): HttpResponse {
+function createHttpResponseError_(reason: string, headers: ResponseHeaders): HttpResponse {
   const httpResponse = createHttpResponse(
     500,
     contentTypeHtml,
-    [],
+    headers,
     getHtmlFallback('<p>An error occurred.</p>', `${htmlFallbackLog} Vike returned this HTML because ${reason}.`),
   )
   return httpResponse
 }
-function createHttpResponseErrorFallbackJson() {
-  const httpResponse = createHttpResponse(500, contentTypeJson, [], stringify({ serverSideError: true }))
+function createHttpResponseErrorFallbackJson(pageContext: { pageContextsAborted: PageContextAborted[] }) {
+  const headers = getSetCookieAborted(pageContext)
+  const httpResponse = createHttpResponse(500, contentTypeJson, headers, stringify({ serverSideError: true }))
   return httpResponse
 }
 
