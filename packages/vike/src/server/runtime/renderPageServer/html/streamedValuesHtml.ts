@@ -91,7 +91,6 @@ async function writeStreamedValuesHtmlAtStreamEnd(
   let i = htmlEnd.lastIndexOf('</body>')
   if (i === -1) i = htmlEnd.length
   writeHtml(htmlEnd.slice(0, i) + streamedValuesHtml.pending.join(''))
-  streamedValuesHtml.pending = []
   streamedValuesHtml.writeHtml = writeHtml
   await streamedValuesHtml.done.catch(() => {})
   return htmlEnd.slice(i)

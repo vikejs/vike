@@ -129,6 +129,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
   addLinkPrefetchHandlers_unwatch()
 
   const { isRenderOutdated, setHydrationCanBeAborted, isFirstRender } = getIsRenderOutdated()
+
   const pageContextBeginArgs = {
     urlOriginal,
     isBackwardNavigation,
