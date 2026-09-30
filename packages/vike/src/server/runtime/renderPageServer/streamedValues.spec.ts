@@ -109,18 +109,18 @@ function runScripts(html: string, nonce: string) {
 }
 async function firstRender(obj: Record<string, unknown>, { runScriptsFirst = false } = {}) {
   setBrowser()
-  const pageContextServer = { cspNonce: 'n0nce', isPrerendering: false, _requestId: 1 } as any
+  const pageContextServer = { cspNonce: 'test-nonce', isPrerendering: false, _requestId: 1 } as any
   const { serialized, streamedValues } = serialize(obj, pageContextServer)
   sendStreamedValuesInHtml(pageContextServer, streamedValues, null)
   const getHtml = async () => (await getStreamedValuesHtml(pageContextServer))!
   let pageContext: any
   if (runScriptsFirst) {
-    runScripts(await getHtml(), 'n0nce')
+    runScripts(await getHtml(), 'test-nonce')
     pageContext = parsePageContextHtml(serialized)
   } else {
     pageContext = parsePageContextHtml(serialized)
     // The scripts run after the client runtime loaded
-    getHtml().then((html) => runScripts(html, 'n0nce'))
+    getHtml().then((html) => runScripts(html, 'test-nonce'))
   }
   return { pageContext, htmlEnded: () => (globalThis as any).__onHtmlEnd(), getHtml }
 }
