@@ -90,16 +90,10 @@ function removeServerEntry(
   const hasServerEntry = (input: typeof inputBefore) =>
     Object.values(normalizeRollupInput(input)).includes(serverEntryVirtualId)
   if (!hasServerEntry(rollupOptions.input)) return
+  // Every instance of the library adds its input after the snapshot (see pluginProdBuildEntry.ts)
+  assert(!hasServerEntry(inputBefore))
   // The library also normalized the input (e.g. a string into an object) => restore it as it was right before
-  if (!hasServerEntry(inputBefore)) {
-    rollupOptions.input = inputBefore
-    return
-  }
-  // Another library instance added it earlier
-  const entries = Object.entries(normalizeRollupInput(rollupOptions.input)).filter(
-    ([, id]) => id !== serverEntryVirtualId,
-  )
-  rollupOptions.input = entries.length === 0 ? undefined : Object.fromEntries(entries)
+  rollupOptions.input = inputBefore
 }
 
 async function getEntries(config: ResolvedConfig, isServerSide: boolean): Promise<Record<string, string>> {
