@@ -1,6 +1,5 @@
 export { renderPageServerAfterRoute }
 export { prerenderPage }
-export { prerenderPageEntry }
 export type { PageContextAfterRender }
 
 import { getErrorPageId } from '../../../shared-server-client/error-page.js'
