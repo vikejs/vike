@@ -1,5 +1,6 @@
 export { execHookOnRenderHtml }
 export type { RenderHook }
+export type { Content }
 
 import {
   type HtmlRender,
@@ -15,7 +16,7 @@ import { assert, assertUsage, assertWarning } from '../../../utils/assert.js'
 import { isObject } from '../../../utils/isObject.js'
 import { objectAssign } from '../../../utils/objectAssign.js'
 import type { PageAsset } from './getPageAssets.js'
-import { isStream } from './html/stream.js'
+import { awaitFirstChunk, isStream, isStreamReadableWeb, type StreamReadableWeb } from './html/stream.js'
 import { assertPageContextProvidedByUser } from '../../../shared-server-client/assertPageContextProvidedByUser.js'
 import type { PreloadFilter } from './html/injectAssets/getHtmlTags.js'
 import { getPageContextPublicServer } from './getPageContextPublicServer.js'
@@ -31,6 +32,7 @@ import type { PageContextInternalServer } from '../../../types/PageContext.js'
 import '../../assertEnvServer.js'
 
 type GetPageAssets = () => Promise<PageAsset[]>
+type Content = string | Uint8Array | StreamReadableWeb
 
 type RenderHook = HookInternal & { hookName: HookName }
 type HookName =
@@ -48,23 +50,24 @@ async function execHookOnRenderHtml(
       _isHtmlOnly: boolean
       _baseServer: string
       _requestId: number
+      content?: unknown
     },
-): Promise<{
-  renderHook: RenderHook
-  htmlRender: HtmlRender
-}> {
+): Promise<
+  | {
+      renderHook: RenderHook
+      htmlRender: HtmlRender
+      content: null
+    }
+  | {
+      renderHook: RenderHook
+      htmlRender: null
+      content: Content
+    }
+> {
   const hook = getRenderHook(pageContext)
   objectAssign(pageContext, { _renderHook: hook })
 
   const { hookReturn } = await execHookSingleWithReturn(hook, pageContext, getPageContextPublicServer)
-
-  const { documentHtml, pageContextProvidedByRenderHook, pageContextPromise, injectFilter } = processHookReturnValue(
-    hookReturn,
-    hook,
-  )
-
-  Object.assign(pageContext, pageContextProvidedByRenderHook)
-  objectAssign(pageContext, { _pageContextPromise: pageContextPromise })
 
   const onErrorWhileStreaming = (err: unknown) => {
     // Should the stream inject the following?
@@ -77,9 +80,42 @@ async function execHookOnRenderHtml(
     }
   }
 
+  if (pageContext.content !== undefined) {
+    const content = await getContent(pageContext.content, hookReturn, hook, onErrorWhileStreaming)
+    return { content, htmlRender: null, renderHook: hook }
+  }
+
+  const { documentHtml, pageContextProvidedByRenderHook, pageContextPromise, injectFilter } = processHookReturnValue(
+    hookReturn,
+    hook,
+  )
+
+  Object.assign(pageContext, pageContextProvidedByRenderHook)
+  objectAssign(pageContext, { _pageContextPromise: pageContextPromise })
+
   const htmlRender = await renderDocumentHtml(documentHtml, pageContext, onErrorWhileStreaming, injectFilter)
   assert(typeof htmlRender === 'string' || isStream(htmlRender))
-  return { htmlRender, renderHook: hook }
+  return { htmlRender, content: null, renderHook: hook }
+}
+
+async function getContent(
+  content: unknown,
+  hookReturnValue: unknown,
+  renderHook: RenderHook,
+  onErrorWhileStreaming: (err: unknown) => void,
+): Promise<Content> {
+  const errPrefix = `The ${renderHook.hookName as string}() hook defined at ${renderHook.hookFilePath} sets ${pc.code('pageContext.content')}`
+  assertUsage(
+    hookReturnValue === undefined,
+    `${errPrefix} and returns a value: it should do either one, see https://vike.dev/pageContext#content`,
+  )
+  if (typeof content === 'string' || content instanceof Uint8Array) return content
+  assertUsage(
+    isStreamReadableWeb(content),
+    `${errPrefix} to a value that isn't a string, a Uint8Array, nor a ReadableStream, see https://vike.dev/pageContext#content`,
+  )
+  // Errors before the first chunk => error page
+  return await awaitFirstChunk(content, onErrorWhileStreaming)
 }
 
 function getRenderHook(

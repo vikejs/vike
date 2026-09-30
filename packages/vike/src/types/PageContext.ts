@@ -261,6 +261,13 @@ type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
      */
     pageContextsAborted: Partial<PageContextServer<Data>>[]
 
+    /**
+     * Set by the render hook instead of returning `documentHtml`: the HTTP response body (SSR) or the file content (pre-rendering).
+     *
+     * https://vike.dev/pageContext#content
+     */
+    content?: string | Uint8Array | ReadableStream<Uint8Array>
+
     isHydration?: undefined
     isBackwardNavigation?: undefined
     isHistoryNavigation?: undefined

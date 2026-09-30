@@ -271,6 +271,8 @@ type OnRenderHtmlAsync = (pageContext: PageContextServer) => Promise<OnRenderHtm
 type OnRenderHtmlSync = (pageContext: PageContextServer) => OnRenderHtmlReturn
 type OnRenderHtmlReturn =
   | DocumentHtml
+  // The hook sets pageContext.content instead, see https://vike.dev/pageContext#content
+  | void
   | {
       injectFilter?: (assets: InjectFilterEntry[]) => void
       documentHtml?: DocumentHtml
