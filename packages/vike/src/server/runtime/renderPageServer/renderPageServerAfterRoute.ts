@@ -83,9 +83,7 @@ async function renderPageServerAfterRoute<
     }
     const { pageContextSerialized, streamedValues } = getPageContextClientSerialized(pageContext, false)
     const httpResponse = await createHttpResponsePageJson(
-      getPageContextJson(pageContextSerialized, streamedValues, pageContext, (err) =>
-        logRuntimeError(err, pageContext),
-      ),
+      getPageContextJson(pageContextSerialized, streamedValues, pageContext),
     )
     objectAssign(pageContext, { httpResponse })
     return pageContext

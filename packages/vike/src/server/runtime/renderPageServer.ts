@@ -683,9 +683,7 @@ async function handleAbort(
       updateType(pageContext, await loadPageConfigsLazyServerSide(pageContext))
       // We include pageContextInit: we don't only serialize pageContextAbort because the error page may need to access pageContextInit
       const { pageContextSerialized, streamedValues } = getPageContextClientSerialized(pageContext, false)
-      pageContextJson = getPageContextJson(pageContextSerialized, streamedValues, pageContext, (err) =>
-        logRuntimeError(err, pageContext),
-      )
+      pageContextJson = getPageContextJson(pageContextSerialized, streamedValues, pageContext)
     } else {
       pageContextJson = getPageContextClientSerializedAbort(pageContextAbort, false)
     }

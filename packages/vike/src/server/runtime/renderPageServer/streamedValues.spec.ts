@@ -67,8 +67,8 @@ function serialize(obj: Record<string, unknown>, pageContext: object) {
 async function navigation(obj: Record<string, unknown>, { withText = false } = {}) {
   const pageContext = {}
   const { serialized, streamedValues } = serialize(obj, pageContext)
-  const onError = vi.fn()
-  let body = getPageContextJson(serialized, streamedValues, pageContext, onError)
+  const onError = vi.mocked(logRuntimeError)
+  let body = getPageContextJson(serialized, streamedValues, pageContext as any)
   if (typeof body === 'string') return { body, onError, pageContext: JSON.parse(body) }
   let text: undefined | Promise<string>
   // tee() reads the whole body (no backpressure, no cancellation)

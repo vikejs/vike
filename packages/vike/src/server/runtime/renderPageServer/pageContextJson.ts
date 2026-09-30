@@ -15,20 +15,21 @@ export { getPageContextJsonFile }
 
 import { assertUsage } from '../../../utils/assert.js'
 import { pumpStreamedValues, type StreamedValue } from './streamedValues.js'
+import { logRuntimeError } from '../loggerRuntime.js'
 import pc from '@brillout/picocolors'
 import '../../assertEnvServer.js'
 
+type PageContextLog = NonNullable<Parameters<typeof logRuntimeError>[1]>
 const streamedValuesKey = '_streamedValues'
 const lineLast = ']}'
 
 function getPageContextJson(
   pageContextSerialized: string,
   streamedValues: StreamedValue[],
-  pageContext: object,
-  onError: (err: unknown) => void,
+  pageContext: PageContextLog,
 ): string | ReadableStream<Uint8Array> {
   if (streamedValues.length === 0) return pageContextSerialized
-  return getBody(getLineFirst(pageContextSerialized), streamedValues, pageContext, onError)
+  return getBody(getLineFirst(pageContextSerialized), streamedValues, pageContext)
 }
 
 // Pre-rendering: the lines were collected while rendering the HTML (see html/streamedValuesHtml.ts)
@@ -46,7 +47,7 @@ function getLineFirst(pageContextSerialized: string): string {
   )
   // Remove the closing `}`
   const pageContextOpen = pageContextSerialized.slice(0, -1)
-  return `${pageContextOpen}${pageContextOpen === '{' ? '' : ','}"${streamedValuesKey}":[`
+  return `${pageContextOpen},"${streamedValuesKey}":[`
 }
 
 // Backpressure: the values are read while the consumer's queue holds less than `highWaterMark` bytes. When the consumer
@@ -55,8 +56,7 @@ const highWaterMark = 64 * 1024
 function getBody(
   lineFirst: string,
   streamedValues: StreamedValue[],
-  pageContext: object,
-  onError: (err: unknown) => void,
+  pageContext: PageContextLog,
 ): ReadableStream<Uint8Array> {
   const encoder = new TextEncoder()
   let isFirstElement = true
@@ -79,7 +79,10 @@ function getBody(
             await new Promise<void>((resolve) => waiting.push(resolve))
           }
         }
-        pump = pumpStreamedValues(pageContext, streamedValues, write, { failFast: false, onError })
+        pump = pumpStreamedValues(pageContext, streamedValues, write, {
+          failFast: false,
+          onError: (err) => logRuntimeError(err, pageContext),
+        })
         pump.done.then(
           () => {
             if (isCancelled) return
