@@ -56,19 +56,21 @@ describe('pageContext.headersResponse', () => {
   it('HTML page: Set-Cookie before throw render()', () => {
     const headers = resolveHeadersResponseFinal(
       {
-        headersResponse: getHeadersResponse('b=2; Path=/'),
+        headersResponse: getHeadersResponse('session=old; Path=/'),
         pageContextsAborted: [
-          // A cookie set by both the aborted page and the rendered page is sent once
-          getPageContextAborted('a=1; Path=/', 'b=2; Path=/'),
+          getPageContextAborted('session=old; Path=/'),
+          getPageContextAborted('session=new; Path=/'),
         ],
       },
       401,
     )
+    // In order: the cookie value set last wins
     expect(headers).toEqual([
-      ['set-cookie', 'a=1; Path=/'],
+      ['set-cookie', 'session=old; Path=/'],
+      ['set-cookie', 'session=new; Path=/'],
       ['cache-control', 'public, max-age=3600'],
       ['content-security-policy', "script-src 'self'"],
-      ['set-cookie', 'b=2; Path=/'],
+      ['set-cookie', 'session=old; Path=/'],
       ['x-powered-by', 'my-vike-app'],
     ])
   })

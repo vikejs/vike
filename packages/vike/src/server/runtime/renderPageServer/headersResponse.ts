@@ -23,7 +23,7 @@ function resolveHeadersResponseFinal(pageContext: PageContextHeadersResponse, st
   // This overrides any previously set Cache-Control value.
   if (statusCode >= 500) headersResponse.set('Cache-Control', cacheControlDisable)
 
-  const headers: [string, string][] = getSetCookieAborted(pageContext, headersResponse)
+  const headers = getSetCookieAborted(pageContext)
   headersResponse.forEach((value, key) => {
     headers.push([key, value])
   })
@@ -33,24 +33,19 @@ function resolveHeadersResponseFinal(pageContext: PageContextHeadersResponse, st
 // Headers of `pageContext.json` and redirect responses: only `Set-Cookie` applies to them, the other headers (e.g. `Cache-Control` and `Content-Security-Policy`) are about the HTML page.
 function resolveHeadersResponseSetCookie(pageContext: PageContextHeadersResponse) {
   const headersResponse = pageContext.headersResponse || new Headers()
-  const headers: [string, string][] = getSetCookieAborted(pageContext, headersResponse)
+  const headers = getSetCookieAborted(pageContext)
   headersResponse.getSetCookie().forEach((value) => {
     headers.push(['set-cookie', value])
   })
   return headers
 }
 
-// Cookies set before `throw redirect()` or `throw render()` are kept.
-function getSetCookieAborted(pageContext: PageContextHeadersResponse, headersResponse: Headers) {
-  const setCookieFinal = headersResponse.getSetCookie()
-  const setCookieAborted: string[] = []
-  pageContext.pageContextsAborted.forEach((pageContextAborted) => {
+// Cookies set before `throw redirect()` or `throw render()` are kept. They're sent first, so that a cookie set again later wins.
+function getSetCookieAborted(pageContext: PageContextHeadersResponse) {
+  return pageContext.pageContextsAborted.flatMap((pageContextAborted) => {
     const { headersResponse } = pageContextAborted as { headersResponse?: Headers }
-    headersResponse?.getSetCookie().forEach((value) => {
-      if (!setCookieFinal.includes(value) && !setCookieAborted.includes(value)) setCookieAborted.push(value)
-    })
+    return (headersResponse?.getSetCookie() ?? []).map((value): [string, string] => ['set-cookie', value])
   })
-  return setCookieAborted.map((value): [string, string] => ['set-cookie', value])
 }
 
 async function resolveHeadersResponseEarly(pageContext: PageContextAfterPageEntryLoaded & PageContextCspNonce) {

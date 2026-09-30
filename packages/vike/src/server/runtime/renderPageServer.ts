@@ -341,7 +341,8 @@ async function renderPageServerEntryRecursive_onError(
       const handled = await handleAbort(
         errErrorPage,
         pageContextBegin,
-        pageContextNominalPageBegin,
+        // The error page is the page that aborted
+        pageContextErrorPageInit,
         requestId,
         pageContextErrorPageInit,
         globalContext,
