@@ -4,7 +4,6 @@ export { universalMiddlewares }
 import { getGlobalContextServerInternal, initGlobalContext_renderPage } from './globalContext.js'
 import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.js'
 import {
-  apply,
   enhance,
   getAdapterRuntime,
   getUniversal,
@@ -12,8 +11,7 @@ import {
   nameSymbol,
   orderSymbol,
   pathSymbol,
-  universalSymbol,
-  UniversalRouter,
+  pipeRoute,
   type Awaitable,
   type EnhancedMiddleware,
   type HttpMethod,
@@ -61,14 +59,12 @@ const universalMiddlewares = enhance(
       for (const responseHandler of responseHandlers) response = (await responseHandler(response)) ?? response
       return response
     }
-    const router = new UniversalRouter(true, false)
     // Universal Middleware's pipe() throws `No Response found` if nothing returns a Response
     const fallThrough = new Response(null)
-    apply(router, [
+    const handler = pipeRoute([
       enhance(() => fallThrough, { name: 'vike:fall-through', method: httpMethods, path: '/**' }),
       ...middlewares.map((middleware) => collectResponseHandler(middleware, responseHandlers)),
-    ])
-    const handler = router[universalSymbol] as UniversalHandler
+    ]) as UniversalHandler
     const response = await handler(request, context ?? {}, runtime ?? getAdapterRuntime('other', { params: undefined }))
     if (response !== fallThrough) return applyResponseHandlers(response)
     if (responseHandlers.length > 0) return applyResponseHandlers
