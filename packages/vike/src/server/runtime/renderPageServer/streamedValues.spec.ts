@@ -609,7 +609,11 @@ describe('streamed pageContext values: client-side navigation', () => {
   it('a large chunk that is not UTF-8 is sent byte for byte', async () => {
     const large = new Uint8Array(1024 * 1024).fill(0xff)
     const { pageContext } = await navigation({ s: streamOf([large]) })
-    expect(await readAll(pageContext.s)).toEqual([large])
+    const chunks = await readAll(pageContext.s)
+    expect(chunks).toHaveLength(1)
+    expect(chunks[0]).toBeInstanceOf(Uint8Array)
+    // Not toEqual(): it compares element by element, which takes seconds for 1 MiB
+    expect(Buffer.from(chunks[0] as Uint8Array).equals(large)).toBe(true)
   })
 
   it('pageContext.httpResponse.body of a streamed response is a usage error, not a Vike bug', async () => {
