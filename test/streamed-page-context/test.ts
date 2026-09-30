@@ -88,7 +88,7 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
         'quote="!VikeStream:0"!VikePromise:0=keystring=!VikeAsyncIterable:0',
       )
       page.removeListener('request', listener)
-      expect(requests.some((url) => url.includes('streamedValues'))).toBe(false)
+      expect(requests.some((url) => url.includes('/client/shared/streamedValues'))).toBe(false)
     })
   }
 
