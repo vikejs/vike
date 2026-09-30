@@ -1,6 +1,6 @@
 export { data }
 
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+import { sleep } from '../../renderer/utils'
 
 // Random values: if the page were rendered twice, the HTML and index.pageContext.json would differ
 function data() {

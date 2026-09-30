@@ -1,6 +1,6 @@
 export { data }
 
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+import { sleep } from '../../renderer/utils'
 
 function data() {
   return {

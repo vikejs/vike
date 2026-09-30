@@ -5,4 +5,6 @@ declare global {
   var __renderCount: number
   /** The chunks of the streams and async iterables, with their arrival time */
   var __chunks: { key: string; chunk: unknown; receivedAt: number }[]
+  /** Server-side, see pages/status */
+  var __cancelCount: undefined | number
 }
