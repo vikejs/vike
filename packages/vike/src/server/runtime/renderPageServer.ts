@@ -61,10 +61,7 @@ import { assertArguments } from './renderPageServer/assertArguments.js'
 import { log404 } from './renderPageServer/log404/index.js'
 import pc from '@brillout/picocolors'
 import type { PageContextServer } from '../../types/index.js'
-import {
-  getPageContextClientSerializedAbort,
-  getPageContextClientSerialized,
-} from './renderPageServer/html/serializeContext.js'
+import { getPageContextClientSerializedAbort } from './renderPageServer/html/serializeContext.js'
 import { getErrorPageId } from '../../shared-server-client/error-page.js'
 import { handleErrorWithoutErrorPage } from './renderPageServer/handleErrorWithoutErrorPage.js'
 import {
@@ -683,8 +680,7 @@ async function handleAbort(
       objectAssign(pageContext, pageContextErrorPageInit, true)
       updateType(pageContext, await loadPageConfigsLazyServerSide(pageContext))
       // We include pageContextInit: we don't only serialize pageContextAbort because the error page may need to access pageContextInit
-      const { pageContextSerialized, streamedValues } = getPageContextClientSerialized(pageContext, false)
-      pageContextJson = getPageContextJson(pageContextSerialized, streamedValues, pageContext)
+      pageContextJson = getPageContextJson(pageContext)
     } else {
       pageContextJson = getPageContextClientSerializedAbort(pageContextAbort, false)
     }

@@ -13,57 +13,27 @@
 export { getPageContextJson }
 export { getPageContextJsonFile }
 
+import { getPageContextClientSerialized, type PageContextSerialization } from './html/serializeContext.js'
 import { pumpStreamedValues } from './streamedValues/pump.js'
-import type { StreamedValue } from './streamedValues/registry.js'
 import type { PageContext_logRuntime } from '../loggerRuntime.js'
 import { pageContextJsonLinesBegin, pageContextJsonLinesEnd } from '../../../shared-server-client/streamedValues.js'
 import '../../assertEnvServer.js'
 
+type PageContextJson = PageContextSerialization & NonNullable<PageContext_logRuntime>
 const textEncoder = new TextEncoder()
 
-function getPageContextJson(
-  pageContextSerialized: string,
-  streamedValues: StreamedValue[],
-  pageContext: NonNullable<PageContext_logRuntime>,
-): string | ReadableStream<Uint8Array> {
+function getPageContextJson(pageContext: PageContextJson): string | ReadableStream<Uint8Array> {
+  const { pageContextSerialized, streamedValues } = getPageContextClientSerialized(pageContext, false)
   if (streamedValues.length === 0) return pageContextSerialized
-  return getBody(getLineFirst(pageContextSerialized), streamedValues, pageContext)
-}
-
-// Pre-rendering: the lines were collected while rendering the HTML (see html/streamedValuesHtml.ts)
-function getPageContextJsonFile(pageContextSerialized: string, lines: null | string[]): string {
-  if (!lines) return pageContextSerialized
-  return [
-    getLineFirst(pageContextSerialized),
-    ...lines.map((line, i) => (i === 0 ? '' : ',') + line),
-    pageContextJsonLinesEnd,
-  ]
-    .map((line) => line + '\n')
-    .join('')
-}
-
-function getLineFirst(pageContextSerialized: string): string {
-  // Remove the closing `}`
-  return pageContextSerialized.slice(0, -1) + pageContextJsonLinesBegin
-}
-
-function getBody(
-  lineFirst: string,
-  streamedValues: StreamedValue[],
-  pageContext: NonNullable<PageContext_logRuntime>,
-): ReadableStream<Uint8Array> {
   let pump: ReturnType<typeof pumpStreamedValues>
   let isCancelled = false
   return new ReadableStream<Uint8Array>({
     start(controller) {
       const enqueue = (line: string) => controller.enqueue(textEncoder.encode(line + '\n'))
       // Sent right away: the client runs its hooks while the values are still being produced
-      enqueue(lineFirst)
-      let isFirstElement = true
-      const write = (line: string) => {
-        enqueue((isFirstElement ? '' : ',') + line)
-        isFirstElement = false
-      }
+      enqueue(getLineFirst(pageContextSerialized))
+      let i = 0
+      const write = (line: string) => enqueue(getElement(line, i++))
       pump = pumpStreamedValues(pageContext, streamedValues, write, { failFast: false })
       pump.done.then(
         () => {
@@ -80,4 +50,23 @@ function getBody(
       pump.cancel()
     },
   })
+}
+
+// Pre-rendering: the lines were collected while rendering the HTML (see html/streamedValuesHtml.ts)
+function getPageContextJsonFile(pageContext: PageContextSerialization, lines: null | string[]): string {
+  const { pageContextSerialized } = getPageContextClientSerialized(pageContext, false)
+  if (!lines) return pageContextSerialized
+  return [getLineFirst(pageContextSerialized), ...lines.map(getElement), pageContextJsonLinesEnd]
+    .map((line) => line + '\n')
+    .join('')
+}
+
+function getLineFirst(pageContextSerialized: string): string {
+  // Remove the closing `}`
+  return pageContextSerialized.slice(0, -1) + pageContextJsonLinesBegin
+}
+
+// The lines of the streamed values are the elements of the `_streamedValues` array
+function getElement(line: string, index: number): string {
+  return (index === 0 ? '' : ',') + line
 }

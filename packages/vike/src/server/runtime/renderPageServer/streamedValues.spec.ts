@@ -1,6 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 vi.mock('../../../client/assertEnvClient.js', () => ({}))
 vi.mock('../loggerRuntime.js', () => ({ logRuntimeError: vi.fn() }))
+// The `.pageContext.json` transport serializes `pageContext._obj`
+vi.mock('./html/serializeContext.js', () => ({
+  getPageContextClientSerialized: (pageContext: { _obj: Record<string, unknown> }) => {
+    const { serialized, streamedValues } = serialize(pageContext._obj, pageContext)
+    return { pageContextSerialized: serialized, streamedValues }
+  },
+}))
 import { stringify } from '@brillout/json-serializer/stringify'
 import { getStreamedValuesSerializer } from './streamedValues/registry.js'
 import { getPageContextJson, getPageContextJsonFile } from './pageContextJson.js'
@@ -54,9 +61,7 @@ function serialize(obj: Record<string, unknown>, pageContext: object) {
 
 // Client-side navigation: the server's `.pageContext.json` body, read by the client
 async function navigation(obj: Record<string, unknown>) {
-  const pageContext = {}
-  const { serialized, streamedValues } = serialize(obj, pageContext)
-  const body = getPageContextJson(serialized, streamedValues, pageContext as any)
+  const body = getPageContextJson({ _obj: obj } as any)
   if (typeof body === 'string') return { body, pageContext: JSON.parse(body) }
   const [forClient, forText] = body.tee()
   const pageContextFromServer = (await readPageContextJson(new Response(forClient))) as any
@@ -148,7 +153,7 @@ describe('client-side navigation', () => {
   it('without streamed values: the body is the serialized pageContext, as is', async () => {
     const { body } = await navigation({ a: 1, date: new Date(0) })
     expect(body).toBe(stringify({ a: 1, date: new Date(0) }))
-    expect(getPageContextJsonFile('{"a":1}', null)).toBe('{"a":1}')
+    expect(getPageContextJsonFile({ _obj: { a: 1 } } as any, null)).toBe('{"a":1}')
   })
 
   it('a failing value fails alone; the error is logged, not sent', async () => {
@@ -179,12 +184,8 @@ describe('client-side navigation', () => {
         onReturn()
       }
     }
-    const pageContext = {}
-    const { serialized, streamedValues } = serialize(
-      { s: new ReadableStream({ pull: () => new Promise(() => {}), cancel: onCancel }), g: infinite() },
-      pageContext,
-    )
-    const body = getPageContextJson(serialized, streamedValues, pageContext as any) as ReadableStream
+    const _obj = { s: new ReadableStream({ pull: () => new Promise(() => {}), cancel: onCancel }), g: infinite() }
+    const body = getPageContextJson({ _obj } as any) as ReadableStream
     const pageContextFromServer = (await readPageContextJson(new Response(body))) as any
     cancelStreamedValues()
     await expect(readAll(pageContextFromServer.g)).rejects.toThrow('ended before')
@@ -240,7 +241,7 @@ describe('pre-rendering', () => {
     expect(serializedJson).toBe(serialized)
     const lines = (await getStreamedValuesLinesPrerendered(pageContext))!
     expect(lines).toHaveLength(4)
-    const json = JSON.parse(getPageContextJsonFile(serializedJson, lines))
+    const json = JSON.parse(getPageContextJsonFile(Object.assign(pageContext, { _obj: values }), lines))
     expect(json._streamedValues).toHaveLength(lines.length)
     expect(lines.every((line) => html.includes(JSON.stringify(line).slice(1, -1).replaceAll('/', '\\/')))).toBe(true)
   })

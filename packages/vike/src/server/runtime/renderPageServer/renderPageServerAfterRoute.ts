@@ -10,7 +10,6 @@ import { hasProp } from '../../../utils/hasProp.js'
 import { isSameErrorMessage } from '../../../utils/isSameErrorMessage.js'
 import { objectAssign } from '../../../utils/objectAssign.js'
 import { updateType } from '../../../utils/updateType.js'
-import { getPageContextClientSerialized } from './html/serializeContext.js'
 import { getStreamedValuesLinesPrerendered } from './html/streamedValuesHtml.js'
 import { getPageContextJson, getPageContextJsonFile } from './pageContextJson.js'
 import { type PageContextUrlInternal } from '../../../shared-server-client/getPageContextUrlComputed.js'
@@ -86,11 +85,7 @@ async function renderPageServerAfterRoute<
     if (isError) {
       objectAssign(pageContext, { [isServerSideError]: true })
     }
-    const { pageContextSerialized, streamedValues } = getPageContextClientSerialized(pageContext, false)
-    const httpResponse = await createHttpResponsePageJson(
-      getPageContextJson(pageContextSerialized, streamedValues, pageContext),
-      pageContext,
-    )
+    const httpResponse = await createHttpResponsePageJson(getPageContextJson(pageContext), pageContext)
     objectAssign(pageContext, { httpResponse })
     return pageContext
   }
@@ -161,12 +156,7 @@ async function prerenderPageEntry(
   if (!pageContext._usesClientRouter) {
     return { documentHtml, content: null, pageContextSerialized: null, pageContext }
   } else {
-    const { pageContextSerialized } = getPageContextClientSerialized(pageContext, false)
-    return {
-      documentHtml,
-      content: null,
-      pageContextSerialized: getPageContextJsonFile(pageContextSerialized, streamedValuesLines),
-      pageContext,
-    }
+    const pageContextSerialized = getPageContextJsonFile(pageContext, streamedValuesLines)
+    return { documentHtml, content: null, pageContextSerialized, pageContext }
   }
 }
