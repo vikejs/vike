@@ -93,6 +93,8 @@ type VirtualFileExportsPageEntry = {
 type ConfigEnv = {
   /** Load value in a named environment, e.g. `rsc`
    *
+   * @experimental
+   *
    * https://vike.dev/meta#named-environments
    */
   [environmentName: string]: boolean | 'if-client-routing' | undefined

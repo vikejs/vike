@@ -1,9 +1,13 @@
-import { Link } from '@brillout/docpress'
+import { Link, Warning } from '@brillout/docpress'
 import { Advanced } from '../../components'
 
 <Advanced>
   `vike/runtime` is an advanced feature, mainly used by <Link href="/extensions">Vike extensions</Link>.
 </Advanced>
+
+<Warning>
+  `vike/runtime` is experimental.
+</Warning>
 
 `vike/runtime` tells code in which environment it runs, and loads the page's <Link href="/config">config values</Link> of that environment.
 

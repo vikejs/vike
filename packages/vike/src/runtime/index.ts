@@ -8,16 +8,22 @@ import type { PageConfigPublic } from '../shared-server-client/page-configs/reso
 
 /** The name of the Vike environment, e.g. `server`, `client` or `rsc`.
  *
+ * @experimental
+ *
  * https://vike.dev/vike-runtime
  */
 const environmentName: string = unavailable()
 /** The name of the Vite environment, e.g. `ssr`, `client` or `rsc`.
+ *
+ * @experimental
  *
  * https://vike.dev/vike-runtime
  */
 const viteEnvironmentName: string = unavailable()
 
 /** Load the config values of a page that live in the current environment.
+ *
+ * @experimental
  *
  * https://vike.dev/vike-runtime
  */

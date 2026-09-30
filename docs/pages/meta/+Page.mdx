@@ -1,5 +1,5 @@
 import { Advanced, UiFrameworkExtension } from '../../components'
-import { Link, RepoLink } from '@brillout/docpress'
+import { Link, RepoLink, Warning } from '@brillout/docpress'
 import { ConfigSpec } from '../../components'
 
 <ConfigSpec
@@ -481,6 +481,10 @@ Example:
 
 
 ## Named environments
+
+<Warning>
+  Named environments are experimental.
+</Warning>
 
 The keys of `env` can also be the name of a [Vite environment](https://vite.dev/guide/api-environment), for example an `rsc` environment created by a React Server Components integration:
 
