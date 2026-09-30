@@ -74,7 +74,7 @@ export async function getPageElement(pageContext) {
 }
 ```
 
-The `rsc` environment must exist in Vite's `config.environments` (it's usually created by the integration, e.g. [`@vitejs/plugin-rsc`](https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-rsc)). Vike doesn't add build inputs to named environments: their pages are loaded lazily by `loadPageConfig()`.
+The `rsc` environment must exist in Vite's `config.environments` (it's usually created by the integration, e.g. [`@vitejs/plugin-rsc`](https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-rsc)). Vike doesn't add build inputs to named environments: their pages are loaded lazily by `loadPageConfig()`. Nor does Vike set their output options (file names, chunks): they keep the integration's own or Vite's defaults.
 
 
 ## Why the environment isn't an argument

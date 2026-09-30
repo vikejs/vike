@@ -49,7 +49,8 @@ function workerEnvironment() {
         globalThis.__loadWorker = () => server.environments.worker.runner.import(workerEntry)
         return 'export const loadWorker = () => globalThis.__loadWorker()'
       }
-      const workerEntryBuilt = pathToFileURL(path.join(root, 'dist/worker/entry.mjs')).href
+      // Vite's default file name: Vike doesn't set the output file names of named environments
+      const workerEntryBuilt = pathToFileURL(path.join(root, 'dist/worker/entry.js')).href
       return `const url = ${JSON.stringify(workerEntryBuilt)}; export const loadWorker = () => import(/* @vite-ignore */ url)`
     },
   }
