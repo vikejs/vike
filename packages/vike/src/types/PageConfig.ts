@@ -95,7 +95,7 @@ type ConfigEnv = {
    *
    * @experimental
    *
-   * https://vike.dev/meta#additional-environments
+   * https://vike.dev/meta#vike-environments
    */
   [environmentName: string]: boolean | 'if-client-routing' | undefined
   /** Load value on the client-side */

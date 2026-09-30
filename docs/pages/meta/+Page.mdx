@@ -41,7 +41,7 @@ The `meta` setting enables you to create:
  - **Modifying the environment of existing hooks**.
    - <Link href="#example-modify-data-env" doNotInferSectionTitle />
  - **Config values living in other Vite environments**.
-   - <Link href="#additional-environments" doNotInferSectionTitle />
+   - <Link href="#vike-environments" doNotInferSectionTitle />
 
 
 ## Example: `+dataEndpointUrl`
@@ -480,10 +480,12 @@ Example:
    - Hook: [/pages/star-wars/@id/+data.tsx](https://github.com/vikejs/vike/blob/43503a4829e4bb0171785bc8fa501c7ca096a150/examples/react-full/pages/star-wars/@id/+data.tsx)
 
 
-## Additional environments
+## Vike environments
+
+Vike's environments are `server`, `client`, and the ones `env` adds.
 
 <Warning>
-  Additional environments are experimental.
+  Vike environments other than `server` and `client` are experimental.
 </Warning>
 
 The keys of `env` can also be the name of a [Vite environment](https://vite.dev/guide/api-environment), for example an `rsc` environment created by a React Server Components integration:
@@ -509,7 +511,7 @@ Code running in the `rsc` environment loads these config values with <Link href=
 - A Vike environment such as `rsc` must exist in Vite's `config.environments`.
 - A Vike environment such as `rsc` only gets the config values that name it: e.g. in `rsc`, `loadPageConfig()` returns `Page` but not `data` (`env: { server: true }`).
 - A Vite environment `worker` is a Vike environment of its own if and only if a `meta` definition sets `env: { worker: true }` (for any config, whether or not a page uses it). Otherwise, like Vite's `ssr` environment, it gets the `server` config values (or the `client` ones if it's client-side).
-- The file suffix `.rsc.js` sets the environment, like <Link href="/file-env">`.server.js` and `.client.js`</Link> do: `+Page.rsc.js` is loaded only in `rsc`. The suffix `.shared.js` means `server` and `client` (not additional environments).
+- The file suffix `.rsc.js` sets the environment, like <Link href="/file-env">`.server.js` and `.client.js`</Link> do: `+Page.rsc.js` is loaded only in `rsc`. The suffix `.shared.js` means `server` and `client` (not other Vike environments).
 - Environment names can also be introduced by `meta.effect()`.
 
 
@@ -535,7 +537,7 @@ export default {
         // [Optional] Load config value only in prod/dev (`true`/`false` => only prod/dev)
         production: undefined, // default value
         // [Optional] Load config value in the Vite environment `rsc`, see
-        // https://vike.dev/meta#additional-environments
+        // https://vike.dev/meta#vike-environments
         rsc: false // default value
       },
 

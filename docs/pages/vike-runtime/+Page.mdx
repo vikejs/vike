@@ -21,7 +21,7 @@ const { config } = await loadPageConfig(pageContext.pageId)
 ```
 
 - `environmentName: string` is the name of the Vike environment:
-  - `'rsc'` (or any other name) if the Vite environment is a <Link href="/meta#additional-environments">Vike environment of its own</Link>.
+  - `'rsc'` (or any other name) if the Vite environment is a <Link href="/meta#vike-environments">Vike environment of its own</Link>.
   - Otherwise `'server'` or `'client'`, depending on whether the Vite environment is server-side or client-side (e.g. Vite's `ssr` environment, or a Cloudflare Worker environment, is `'server'`).
 - `viteEnvironmentName: string` is the name of the [Vite environment](https://vite.dev/guide/api-environment).
 - `loadPageConfig(pageId: string): Promise<{ config }>` loads the config values of the page `pageId` that live in the environment `environmentName`.
@@ -77,7 +77,7 @@ export async function getPageElement(pageContext) {
 }
 ```
 
-The `rsc` environment must exist in Vite's `config.environments` (it's usually created by the integration, e.g. [`@vitejs/plugin-rsc`](https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-rsc)). Vike doesn't add build inputs to additional environments: their pages are loaded lazily by `loadPageConfig()`. Nor does Vike set their output options (file names, chunks): they keep the integration's own or Vite's defaults.
+The `rsc` environment must exist in Vite's `config.environments` (it's usually created by the integration, e.g. [`@vitejs/plugin-rsc`](https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-rsc)). Vike doesn't add build inputs to Vike environments other than `server` and `client`: their pages are loaded lazily by `loadPageConfig()`. Nor does Vike set their output options (file names, chunks): they keep the integration's own or Vite's defaults.
 
 
 ## Why the environment isn't an argument
@@ -91,6 +91,6 @@ To use another environment, run code in that environment and communicate with it
 
 ## See also
 
-- <Link href="/meta#additional-environments" />
+- <Link href="/meta#vike-environments" />
 - <Link href="/config" />
 - [Vite > Environment API](https://vite.dev/guide/api-environment)
