@@ -267,7 +267,8 @@ function readPageContextJsonStreamed(
     }
   })()
   // Releases the response
-  const cancel = () => receiver.fail(new Error("The pageContext wasn't used: its streamed values are cancelled"))
+  const cancel = () =>
+    receiver.fail(new Error('The streamed pageContext values are cancelled: their page was left, or not rendered'))
   return { pageContextFromServer, cancel }
 }
 

@@ -5,6 +5,9 @@ import { run, page, test, expect, getServerUrl, autoRetry, expectLog, fetch } fr
 const hex = (bytes: Iterable<number>) => Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('')
 const errorMessage = 'error:A streamed pageContext value failed on the server-side (see the server logs)'
 
+const getCancelCount = async () =>
+  (await (await fetch(getServerUrl() + '/status/index.pageContext.json')).json()).data.cancelCount
+
 function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   run(cmd)
   const isPreview = cmd === 'pnpm run preview'
@@ -61,8 +64,6 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   })
 
   test('a navigation superseded before its page is rendered cancels its values on the server', async () => {
-    const getCancelCount = async () =>
-      (await (await fetch(getServerUrl() + '/status/index.pageContext.json')).json()).data.cancelCount
     const cancelCount = await getCancelCount()
     await page.goto(getServerUrl() + '/')
     await autoRetry(async () => expect(await page.textContent('#home')).toBe('home data'))
@@ -75,6 +76,17 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     await autoRetry(async () => expect(await getCancelCount()).toBe(cancelCount + 1), { timeout: 2000 })
     await expectStreamedPage(2)
     expectLog('Stream failed on purpose', { filter: (log) => log.logSource === 'stderr' })
+  })
+
+  test('leaving a page cancels its values on the server', async () => {
+    const cancelCount = await getCancelCount()
+    await page.goto(getServerUrl() + '/')
+    await autoRetry(async () => expect(await page.textContent('#home')).toBe('home data'))
+    await page.click('a[href="/feed"]')
+    await autoRetry(async () => expect(await page.textContent('#feed')).toContain('ticktick'))
+    await page.click('a[href="/"]')
+    await autoRetry(async () => expect(await page.textContent('#home')).toBe('home data'))
+    await autoRetry(async () => expect(await getCancelCount()).toBe(cancelCount + 1), { timeout: 2000 })
   })
 
   if (!isPreview) {

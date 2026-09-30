@@ -318,6 +318,8 @@ async function renderPageClient(renderArgs: RenderArgs) {
           // TO-DO/pageContext-prefetch: remove or change, because this only makes sense for a pre-rendered page
           populatePageContextPrefetchCache(pageContext, result)
         } catch (err) {
+          // The decoder of streamed pageContext values couldn't be loaded
+          if (handleErrorFetchingStaticAssets(err, pageContext, isFirstRender)) return
           await onError(err)
           return
         }
@@ -524,10 +526,10 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     changeUrl(urlOriginal, overwriteLastHistoryEntry)
     globalObject.previousPageContext = pageContext
-    // onRenderClient() owns the streamed pageContext values from now on
-    pageContextsFromServer.forEach((p) => {
-      if (p.pageContext === pageContext) releaseStreamedValues(p.pageContextFromServer)
-    })
+    // onRenderClient() receives the streamed pageContext values: they're cancelled when another page is rendered
+    releaseStreamedValues(
+      pageContextsFromServer.filter((p) => p.pageContext === pageContext).map((p) => p.pageContextFromServer),
+    )
     // There should never be concurrent onRenderClient() calls
     assert(globalObject.onRenderClientPreviousPromise === undefined)
     const onRenderClientPromise = (async () => {
