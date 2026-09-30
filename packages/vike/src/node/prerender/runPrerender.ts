@@ -34,7 +34,6 @@ import { cpus } from 'node:os'
 import type { PageFile } from '../../shared-server-client/getPageFiles.js'
 import {
   getGlobalContextServerInternal,
-  getViteConfig,
   type GlobalContextServerInternal,
   initGlobalContext_runPrerender,
   setGlobalContext_isPrerendering,
@@ -214,8 +213,6 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
     build: { outDir: outDirRoot },
   } = globalContext.viteConfigRuntime
   const { outDirServer, outDirClient } = getOutDirsAllFromRootNormalized(outDirRoot, root)
-  const viteConfig = getViteConfig()
-  assert(viteConfig && globalContext.assetsManifest)
   const prerenderContext: PrerenderContext = {
     pageContexts: [],
     output: [],
