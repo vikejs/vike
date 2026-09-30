@@ -353,16 +353,15 @@ describe('streamed pageContext values: pre-rendering', () => {
     expect(serialized).toBe(serializedJson)
   })
 
-  it('a failing value fails the pre-rendering', async () => {
+  it('a failing value fails the pre-rendering, and cancels the others', async () => {
     const onCancel = vi.fn()
     const pageContext = { cspNonce: null, isPrerendering: true, _requestId: 1 } as any
-    const { streamedValues } = serialize(
-      { p: Promise.reject(new Error('boom')), s: streamOf([enc('a')], { onCancel }) },
-      pageContext,
-    )
+    const pending = new ReadableStream({ pull: () => new Promise(() => {}), cancel: onCancel }, { highWaterMark: 0 })
+    const { streamedValues } = serialize({ p: Promise.reject(new Error('boom')), pending }, pageContext)
     sendStreamedValuesInHtml(pageContext, streamedValues, null)
     await getStreamedValuesHtml(pageContext)
     await expect(getStreamedValuesLinesPrerendered(pageContext)).rejects.toThrow('boom')
+    expect(onCancel).toHaveBeenCalled()
   })
 })
 
