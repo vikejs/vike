@@ -16,20 +16,21 @@ import '../assertEnvClient.js'
 async function readPageContextJson(response: Response): Promise<unknown> {
   const reader = response.body!.getReader()
   const decoder = new TextDecoder()
-  let text = ''
+  // Joined once: searching the whole text upon each chunk would be quadratic
+  const chunks: string[] = []
   let isFirstLine = true
   while (true) {
     const { done, value } = await reader.read()
-    const textLength = text.length
-    text += decoder.decode(value, { stream: !done })
-    const lineEnd = isFirstLine ? text.indexOf('\n', textLength) : -1
+    const chunk = decoder.decode(value, { stream: !done })
+    const lineEnd = isFirstLine ? chunk.indexOf('\n') : -1
     if (lineEnd !== -1) {
       isFirstLine = false
-      if (text.slice(0, lineEnd).endsWith('"_streamedValues":[')) {
+      const lineFirst = chunks.join('') + chunk.slice(0, lineEnd)
+      if (lineFirst.endsWith('"_streamedValues":[')) {
         const { readPageContextJsonStreamed } = await import('../shared/streamedValues.js')
         const { pageContextFromServer, cancel } = readPageContextJsonStreamed(
-          text.slice(0, lineEnd),
-          text.slice(lineEnd + 1),
+          lineFirst,
+          chunk.slice(lineEnd + 1),
           reader,
           decoder,
         )
@@ -37,7 +38,8 @@ async function readPageContextJson(response: Response): Promise<unknown> {
         return pageContextFromServer
       }
     }
-    if (done) return parse(text)
+    chunks.push(chunk)
+    if (done) return parse(chunks.join(''))
   }
 }
 

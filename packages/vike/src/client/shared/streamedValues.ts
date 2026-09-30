@@ -221,7 +221,6 @@ function readPageContextJsonStreamed(
   reader: ReadableStreamDefaultReader<Uint8Array>,
   decoder: TextDecoder,
 ): { pageContextFromServer: Record<string, unknown>; cancel: () => void } {
-  let buffer = rest
   let isDone = false
   // Stop reading as soon as the values don't need the response anymore
   const release = () => {
@@ -233,17 +232,23 @@ function readPageContextJsonStreamed(
   const pageContextFromServer = parse(lineFirst + lineLast, { reviver: receiver.reviver })
   assert(isObject(pageContextFromServer))
   delete pageContextFromServer._streamedValues
+  // The line being received, in pieces: joined once complete (searching the whole line upon each chunk would be quadratic)
+  let linePieces: string[] = []
+  const onChunk = (chunk: string) => {
+    let start = 0
+    let i: number
+    while ((i = chunk.indexOf('\n', start)) !== -1) {
+      const line = linePieces.join('') + chunk.slice(start, i)
+      linePieces = []
+      start = i + 1
+      if (line !== lineLast) receiver.onLine(line.startsWith(',') ? line.slice(1) : line)
+    }
+    linePieces.push(chunk.slice(start))
+  }
   ;(async () => {
     try {
+      onChunk(rest)
       while (true) {
-        let start = 0
-        let i: number
-        while ((i = buffer.indexOf('\n', start)) !== -1) {
-          const line = buffer.slice(start, i)
-          start = i + 1
-          if (line !== lineLast) receiver.onLine(line.startsWith(',') ? line.slice(1) : line)
-        }
-        buffer = buffer.slice(start)
         if (receiver.isReleased()) break
         if (isDone) throw new Error('The pageContext.json response ended before the streamed pageContext values ended')
         if (!receiver.wantsMore()) {
@@ -252,7 +257,7 @@ function readPageContextJsonStreamed(
         }
         const { done, value } = await reader.read()
         isDone = done
-        buffer += decoder.decode(value, { stream: !done })
+        onChunk(decoder.decode(value, { stream: !done }))
       }
     } catch (err) {
       // The server aborted the response (e.g. it crashed), or it's malformed

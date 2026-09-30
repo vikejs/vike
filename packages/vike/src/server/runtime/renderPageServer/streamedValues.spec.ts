@@ -901,6 +901,33 @@ describe('streamed pageContext values: the HTML response ending early cancels th
 })
 
 describe('client-side navigation: reading the pageContext.json response', () => {
+  // A body of 20 MB received in chunks of 16 KiB: reading it is linear
+  const inChunks = (body: string) => {
+    const bytes = enc(body)
+    let offset = 0
+    return new Response(
+      new ReadableStream({
+        pull(c) {
+          if (offset >= bytes.length) return c.close()
+          c.enqueue(bytes.slice(offset, (offset += 16 * 1024)))
+        },
+      }),
+    )
+  }
+  const big = 'x'.repeat(20 * 1024 * 1024)
+  it('a large body is read in linear time: without streamed values', async () => {
+    const start = Date.now()
+    expect(((await readPageContextJson(inChunks(`{"big":"${big}"}`))) as any).big.length).toBe(big.length)
+    expect(Date.now() - start).toBeLessThan(3000)
+  })
+  it('a large body is read in linear time: a large streamed value', async () => {
+    const start = Date.now()
+    const pageContext = (await readPageContextJson(
+      inChunks(`{"p":"!VikePromise:0","_streamedValues":[\n{"s":0,"v":"${big}"}\n]}\n`),
+    )) as any
+    expect((await pageContext.p).length).toBe(big.length)
+    expect(Date.now() - start).toBeLessThan(3000)
+  })
   it('chunks splitting the first line and a multi-byte character', async () => {
     const body = enc('{"a":"é","p":"!VikePromise:0","_streamedValues":[\n{"s":0,"v":"ü"}\n]}\n')
     const chunks = [body.slice(0, 7), body.slice(7, 40), body.slice(40, 58), body.slice(58)]
