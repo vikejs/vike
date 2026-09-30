@@ -73,7 +73,11 @@ async function startServer() {
     const pageContext = await renderPage(pageContextInit)
 
     const { body, statusCode, headers } = pageContext.httpResponse
-    headers.forEach(([name, value]) => res.appendHeader(name, value))
+    headers.forEach(([name, value]) => {
+      // There can be several Set-Cookie headers: res.setHeader() would only keep the last one
+      if (name.toLowerCase() === 'set-cookie') res.appendHeader(name, value)
+      else res.setHeader(name, value)
+    })
     res.status(statusCode).send(body)
   })
 

@@ -63,13 +63,13 @@ function addSsrMiddleware(
     }
 
     const { httpResponse } = pageContext
-    // Group by name: calling res.setHeader() once per header would only keep the last of several Set-Cookie headers
-    const headersResponse = new Map<string, string[]>()
+    // A response can have several Set-Cookie headers: res.setHeader() would only keep the last one
+    const setCookie: string[] = []
     httpResponse.headers.forEach(([name, value]) => {
-      const key = name.toLowerCase()
-      headersResponse.set(key, [...(headersResponse.get(key) ?? []), value])
+      if (name.toLowerCase() === 'set-cookie') setCookie.push(value)
+      else res.setHeader(name, value)
     })
-    headersResponse.forEach((values, name) => res.setHeader(name, values.length === 1 ? values[0]! : values))
+    if (setCookie.length > 0) res.setHeader('set-cookie', setCookie)
     res.statusCode = httpResponse.statusCode
     httpResponse.pipe(res)
   })

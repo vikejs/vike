@@ -70,7 +70,7 @@ async function startServer() {
   app.get('*', async (req, res) => {
     const pageContext = await renderPage({ urlOriginal: req.originalUrl })
     const { body, statusCode, headers } = pageContext.httpResponse
-    headers.forEach(([name, value]) => res.appendHeader(name, value))
+    headers.forEach(([name, value]) => res.setHeader(name, value))
     res.status(statusCode).send(body)
   })
 }

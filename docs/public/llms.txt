@@ -95,7 +95,7 @@ Paths below are relative to https://vike.dev (e.g. `/data-fetching` → https://
 - /server — `+server` integrate server framework (Hono/Express/Fastify/H3/Elysia), built-in dev server + HMR, `pageContext.req`/`pageContext.res` (HTTP request/response), `vike/fetch`, prod port/HTTPS, standalone deploy
 - /api-routes — `+server.js` HTTP endpoints, framework integration, RPC (Telefunc), file uploads, HTTP caching, middleware
 - /headers — request headers: `pageContext.headers` (normalized) / `headersOriginal`, cookie parsing, Headers API
-- /headersResponse — `+headersResponse` response headers (static or fn), `pageContext.headersResponse`, `Set-Cookie` (also on `pageContext.json` and `throw redirect()` responses, kept across aborts, send every `Set-Cookie` with `res.appendHeader()`), server-only, beta
+- /headersResponse — `+headersResponse` response headers (static or fn), `pageContext.headersResponse`, `Set-Cookie` (also on `pageContext.json` and `throw redirect()` responses, kept across aborts, send every `Set-Cookie` (`res.appendHeader()`)), server-only, beta
 - /csp — `+csp` Content Security Policy nonce (`nonce: true` or callback), per-request nonce, `script-src`, beta
 - /redirects — `+redirects` permanent 301s, route params `@id`, glob wildcards, external URLs, server-only (not client nav), link aliasing
 - /passToClient — `+passToClient` which `pageContext`/`globalContext` props serialize to client, dot-notation nesting, `@brillout/json-serializer` (class prototypes lost)

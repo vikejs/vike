@@ -117,10 +117,13 @@ It's a list of string tuples `[string, string][]` — for example:
 ]
 ```
 
-It can contain several `Set-Cookie` headers: make sure your server sends all of them. For example, with Node.js use `res.appendHeader()`, as `res.setHeader()` overwrites the previous value.
+It can contain several `Set-Cookie` headers: make sure your server sends all of them. For example, with Node.js, `res.setHeader()` overwrites the previous value, so use `res.appendHeader()` for `Set-Cookie`:
 
 ```ts
-headers.forEach(([name, value]) => res.appendHeader(name, value))
+headers.forEach(([name, value]) => {
+  if (name.toLowerCase() === 'set-cookie') res.appendHeader(name, value)
+  else res.setHeader(name, value)
+})
 ```
 
 You can convert it to a [standard `Headers` object](https://developer.mozilla.org/en-US/docs/Web/API/Headers) by using `new Headers()`:
