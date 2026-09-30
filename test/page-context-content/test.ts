@@ -65,17 +65,6 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     expect(new TextDecoder().decode(concat(chunks))).toBe(streamText)
   })
 
-  test('public/ file next to content pages', async () => {
-    const resp = await fetchUrl('/robots.txt')
-    expect(resp.status).toBe(200)
-    // Compared to the file itself, since Git may check it out with CRLF line endings (Windows)
-    const robotsTxt = fs.readFileSync(
-      path.join(path.dirname(fileURLToPath(import.meta.url)), 'public/robots.txt'),
-      'utf8',
-    )
-    expect(await resp.text()).toBe(robotsTxt)
-  })
-
   test('headersResponse overrides the Content-Type', async () => {
     const resp = await fetchUrl('/override.json')
     expect(resp.status).toBe(200)
@@ -133,8 +122,6 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
       expect(toHex(read('image.png'))).toBe(toHex(imageBytes))
       expect(new TextDecoder().decode(read('stream.txt'))).toBe(streamText)
       expect(new TextDecoder().decode(read('reassign.txt'))).toBe('Same value')
-      // Not overwritten by pre-rendering
-      expect(new TextDecoder().decode(read('emitted.txt'))).toBe('Emitted by a plugin')
       expect(fs.statSync(path.join(distClient, 'feed.atom')).isFile()).toBe(true)
       expect(fs.existsSync(path.join(distClient, 'index.html'))).toBe(true)
       expect(fs.existsSync(path.join(distClient, 'override.json'))).toBe(false)

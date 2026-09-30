@@ -6,14 +6,14 @@ import { resolveOutDir } from '../../shared/getOutDirs.js'
 import { assert, assertWarning } from '../../../../utils/assert.js'
 import { onSetupBuild } from '../../../../utils/assertSetup.js'
 import { getGlobalObject } from '../../../../utils/getGlobalObject.js'
-import { addClientBuildFiles, isPrerenderAutoRunEnabled, wasPrerenderRun } from '../../../prerender/context.js'
+import { isPrerenderAutoRunEnabled, wasPrerenderRun } from '../../../prerender/context.js'
 import type { VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { isViteCli, getViteCliArgs } from '../../shared/isViteCli.js'
 import pc from '@brillout/picocolors'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { isVikeCliOrApi } from '../../../../shared-server-node/api-context.js'
 import { handleAssetsManifest, handleAssetsManifest_assertUsageCssTarget } from './handleAssetsManifest.js'
-import { isViteServerSide, isViteServerSide_onlySsrEnv } from '../../shared/isViteServerSide.js'
+import { isViteServerSide_onlySsrEnv } from '../../shared/isViteServerSide.js'
 import { runPrerenderFromAutoRun } from '../../../prerender/runPrerenderEntry.js'
 import { getManifestFilePathRelative } from '../../shared/getManifestFilePathRelative.js'
 import { logErrorServer } from '../../../../server/runtime/logErrorServer.js'
@@ -103,8 +103,6 @@ function pluginBuildApp(): Plugin[] {
         async handler(options, bundle) {
           try {
             handleAssetsManifest_assertUsageCssTarget(config, this.environment)
-            // Pre-rendering doesn't overwrite them with `pageContext.content` files
-            if (!isViteServerSide(config, this.environment)) addClientBuildFiles(Object.keys(bundle))
             await handleAssetsManifest(config, this.environment, options, bundle)
             await triggerPrerendering(config, this.environment, bundle)
           } catch (err) {
