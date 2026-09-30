@@ -23,6 +23,7 @@ const prefixes: [string, Kind][] = [
 ]
 
 type Line = Record<string, unknown>
+const textEncoder = new TextEncoder()
 type Entry = { value: unknown; push(line: Line): void; fail(err: unknown): void }
 
 function createReceiver() {
@@ -77,7 +78,7 @@ function createReceiver() {
       value: kind === 'stream' ? stream : toAsyncIterable(stream),
       push(line) {
         if (isClosed) return
-        if (typeof line.t === 'string') controller.enqueue(new TextEncoder().encode(line.t))
+        if (typeof line.t === 'string') controller.enqueue(textEncoder.encode(line.t))
         else if (typeof line.b === 'string') controller.enqueue(decodeBase64url(line.b))
         else if ('v' in line) controller.enqueue(parseTransform(line.v, { reviver }))
         else if (line.end === true) close()

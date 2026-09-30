@@ -18,6 +18,7 @@ import type { PageContext_logRuntime } from '../loggerRuntime.js'
 import '../../assertEnvServer.js'
 
 const lineLast = ']}'
+const textEncoder = new TextEncoder()
 
 function getPageContextJson(
   pageContextSerialized: string,
@@ -46,12 +47,11 @@ function getBody(
   streamedValues: StreamedValue[],
   pageContext: NonNullable<PageContext_logRuntime>,
 ): ReadableStream<Uint8Array> {
-  const encoder = new TextEncoder()
   let pump: ReturnType<typeof pumpStreamedValues>
   let isCancelled = false
   return new ReadableStream<Uint8Array>({
     start(controller) {
-      const enqueue = (line: string) => controller.enqueue(encoder.encode(line + '\n'))
+      const enqueue = (line: string) => controller.enqueue(textEncoder.encode(line + '\n'))
       // Sent right away: the client runs its hooks while the values are still being produced
       enqueue(lineFirst)
       let isFirstElement = true
