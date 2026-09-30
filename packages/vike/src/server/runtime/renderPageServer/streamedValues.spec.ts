@@ -190,7 +190,7 @@ describe('client-side navigation', () => {
     const _obj = { s: new ReadableStream({ pull: () => new Promise(() => {}), cancel: onCancel }), g: infinite() }
     const body = getPageContextJson({ _obj } as any) as ReadableStream
     const pageContextFromServer = (await readPageContextJson(new Response(body))) as any
-    cancelStreamedValues()
+    cancelStreamedValues({}, true)
     await expect(readAll(pageContextFromServer.g)).rejects.toThrow('ended before')
     await sleep(10)
     expect(onCancel).toHaveBeenCalled()

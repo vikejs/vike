@@ -18,9 +18,13 @@ function Page() {
     data.failing.catch((err: Error) => set('failing', err.message))
     ;(async () => {
       const chunks: string[] = []
-      for await (const chunk of data.generator) {
-        chunks.push(chunk)
-        set('generator', chunks.join(','))
+      try {
+        for await (const chunk of data.generator) {
+          chunks.push(chunk)
+          set('generator', chunks.join(','))
+        }
+      } catch (err) {
+        set('generator', (err as Error).message)
       }
     })()
     ;(async () => {

@@ -1,6 +1,6 @@
 export { testStreamedValues }
 
-import { autoRetry, expect, expectLog, fetch, getServerUrl, page, test } from '@brillout/test-e2e'
+import { autoRetry, expect, expectLog, fetch, getServerUrl, page, sleep, test } from '@brillout/test-e2e'
 
 function testStreamedValues() {
   test('streamed pageContext values: first render, in escaped <script> tags with the CSP nonce', async () => {
@@ -30,6 +30,26 @@ function testStreamedValues() {
     expect(requests.filter((url) => url.includes('.pageContext.json')).join()).toBe(
       getServerUrl() + '/streamed-values/index.pageContext.json',
     )
+  })
+
+  test('streamed pageContext values: the page keeps its values until the next page is rendered', async () => {
+    await page.goto(getServerUrl() + '/streamed-values')
+    await expectValues()
+    await page.click('a[href="/"]')
+    await autoRetry(async () => expect(await page.textContent('h1')).toBe('Welcome'))
+    await page.click('a[href="/streamed-values"]')
+    await autoRetry(async () => expect(await page.textContent('#generator')).toBe('first'))
+    const slowNextPage = getServerUrl() + '/index.pageContext.json'
+    await page.route(slowNextPage, async (route) => {
+      await sleep(1000)
+      await route.continue()
+    })
+    await page.click('a[href="/"]')
+    await sleep(300)
+    expect(await page.textContent('#generator')).toMatch(/^first/)
+    await autoRetry(async () => expect(await page.textContent('h1')).toBe('Welcome'))
+    await page.unroute(slowNextPage)
+    expectLog('Streamed value failed on purpose', { filter: (log) => log.logSource === 'stderr' })
   })
 }
 

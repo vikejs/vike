@@ -1,7 +1,8 @@
 // Streamed pageContext values https://vike.dev/passToClient#streaming, upon client-side navigation:
 // - The `.pageContext.json` response has several lines if the pageContext has streamed values (see
 //   server/runtime/renderPageServer/pageContextJson.ts): the decoder (../shared/streamedValues.ts) is loaded only then.
-// - A new rendering cancels the streamed values fetched before it (the previous page's, or a superseded navigation's).
+// - Once a page is rendered, the streamed values fetched before it are cancelled (the previous page's, and superseded
+//   navigations'): the previous page keeps its values while it's shown.
 
 export { readPageContextJson }
 export { cancelStreamedValues }
@@ -17,7 +18,7 @@ async function readPageContextJson(response: Response): Promise<unknown> {
   if (!done && text.endsWith(pageContextJsonLinesBegin)) {
     const { parsePageContextJson } = await import('../shared/streamedValues.js')
     responsesStreaming.push(reader)
-    return parsePageContextJson(text, lines)
+    return { ...parsePageContextJson(text, lines), _streamedValuesReader: reader }
   }
   // Without streamed values: one JSON value
   while (!done) {
@@ -49,7 +50,12 @@ async function* readLines(reader: ReadableStreamDefaultReader<Uint8Array>): Asyn
 }
 
 let responsesStreaming: ReadableStreamDefaultReader[] = []
-function cancelStreamedValues(): void {
-  responsesStreaming.forEach((reader) => reader.cancel().catch(() => {}))
-  responsesStreaming = []
+// Cancels the streamed values of `pageContext` (a superseded navigation), or, once `pageContext` is rendered, all the others
+function cancelStreamedValues(pageContext: object, isRendered: boolean): void {
+  const { _streamedValuesReader } = pageContext as { _streamedValuesReader?: ReadableStreamDefaultReader }
+  responsesStreaming = responsesStreaming.filter((reader) => {
+    if ((reader === _streamedValuesReader) === isRendered) return true
+    reader.cancel().catch(() => {})
+    return false
+  })
 }

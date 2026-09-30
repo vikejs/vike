@@ -252,9 +252,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
     }
     assert(hasProp(pageContext, 'pageId', 'string')) // Help TS
 
-    // The streamed pageContext values of the previous page and of superseded navigations (after the early returns above: they don't render)
-    cancelStreamedValues()
-
     const res = await loadPageConfigsLazyClientSideAndExecHook(pageContext, isFirstRender, isRenderOutdated)
     /* Already called inside loadPageConfigsLazyClientSideAndExecHook()
     if (isRenderOutdated()) return
@@ -315,7 +312,10 @@ async function renderPageClient(renderArgs: RenderArgs) {
           return
         }
       }
-      if (isRenderOutdated()) return
+      if (isRenderOutdated()) {
+        cancelStreamedValues(pageContextFromHooksServer, false)
+        return
+      }
       // TO-DO/eventually: create helper assertPageContextFromHook()
       assert(!('urlOriginal' in pageContextFromHooksServer))
       objectAssign(pageContext, pageContextFromHooksServer)
@@ -415,8 +415,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
       assertInfo(false, `Rendering error page ${errorPageId}`, { onlyOnce: false })
     }
 
-    // Unless the error page comes from a `throw render()`: its values are in the same response
-    if (!pageContextAbort) cancelStreamedValues()
     const res = await loadPageConfigsLazyClientSideAndExecHook(pageContext, isFirstRender, isRenderOutdated)
     /* Already called inside loadPageConfigsLazyClientSideAndExecHook()
     if (isRenderOutdated()) return
@@ -554,6 +552,8 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     // We purposely abort *after* onHydrationEnd() is called (see comment above).
     if (isRenderOutdated(true)) return
+
+    cancelStreamedValues(pageContext, true)
 
     // onPageTransitionEnd()
     if (globalObject.isTransitioning) {
