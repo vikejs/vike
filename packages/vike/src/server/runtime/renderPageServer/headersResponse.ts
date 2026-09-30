@@ -1,30 +1,56 @@
 export { resolveHeadersResponseEarly }
 export { resolveHeadersResponseFinal }
+export { resolveHeadersResponseSetCookie }
 
 import { addCspResponseHeader, PageContextCspNonce } from './csp.js'
 import { isCallable } from '../../../utils/isCallable.js'
 import { cacheControlDisable, getCacheControl } from './getCacheControl.js'
 import type { PageContextAfterPageEntryLoaded } from './loadPageConfigsLazyServerSide.js'
 import { getPageContextPublicServer } from './getPageContextPublicServer.js'
+import type { PageContextAborted } from '../../../shared-server-client/route/abort.js'
 import '../../assertEnvServer.js'
 
-function resolveHeadersResponseFinal(
-  pageContext: {
-    headersResponse?: Headers
-  },
-  statusCode: number,
-) {
+type PageContextHeadersResponse = {
+  headersResponse?: Headers
+  pageContextsAborted: PageContextAborted[]
+}
+
+// Headers of HTML page responses
+function resolveHeadersResponseFinal(pageContext: PageContextHeadersResponse, statusCode: number) {
   const headersResponse = pageContext.headersResponse || new Headers()
 
   // 5xx error pages are temporary and shouldn't be cached.
   // This overrides any previously set Cache-Control value.
   if (statusCode >= 500) headersResponse.set('Cache-Control', cacheControlDisable)
 
-  const headers: [string, string][] = []
+  const headers: [string, string][] = getSetCookieAborted(pageContext, headersResponse)
   headersResponse.forEach((value, key) => {
     headers.push([key, value])
   })
   return headers
+}
+
+// Headers of `pageContext.json` and redirect responses: only `Set-Cookie` applies to them, the other headers (e.g. `Cache-Control` and `Content-Security-Policy`) are about the HTML page.
+function resolveHeadersResponseSetCookie(pageContext: PageContextHeadersResponse) {
+  const headersResponse = pageContext.headersResponse || new Headers()
+  const headers: [string, string][] = getSetCookieAborted(pageContext, headersResponse)
+  headersResponse.getSetCookie().forEach((value) => {
+    headers.push(['set-cookie', value])
+  })
+  return headers
+}
+
+// Cookies set before `throw redirect()` or `throw render()` are kept.
+function getSetCookieAborted(pageContext: PageContextHeadersResponse, headersResponse: Headers) {
+  const setCookieFinal = headersResponse.getSetCookie()
+  const setCookieAborted: string[] = []
+  pageContext.pageContextsAborted.forEach((pageContextAborted) => {
+    const { headersResponse } = pageContextAborted as { headersResponse?: Headers }
+    headersResponse?.getSetCookie().forEach((value) => {
+      if (!setCookieFinal.includes(value) && !setCookieAborted.includes(value)) setCookieAborted.push(value)
+    })
+  })
+  return setCookieAborted.map((value): [string, string] => ['set-cookie', value])
 }
 
 async function resolveHeadersResponseEarly(pageContext: PageContextAfterPageEntryLoaded & PageContextCspNonce) {

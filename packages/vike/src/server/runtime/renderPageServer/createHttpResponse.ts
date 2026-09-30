@@ -15,13 +15,18 @@ import { assert, assertWarning } from '../../../utils/assert.js'
 import type { HtmlRender } from './html/renderHtml.js'
 import { getErrorPageId, isErrorPage } from '../../../shared-server-client/error-page.js'
 import type { RenderHook } from './execHookOnRenderHtml.js'
-import type { RedirectStatusCode, AbortStatusCode, UrlRedirect } from '../../../shared-server-client/route/abort.js'
+import type {
+  RedirectStatusCode,
+  AbortStatusCode,
+  UrlRedirect,
+  PageContextAborted,
+} from '../../../shared-server-client/route/abort.js'
 import { getHttpResponseBody, getHttpResponseBodyStreamHandlers, HttpResponseBody } from './getHttpResponseBody.js'
 import { getEarlyHints, type EarlyHint } from './getEarlyHints.js'
 import { assertNoInfiniteHttpRedirect } from './createHttpResponse/assertNoInfiniteHttpRedirect.js'
 import type { PageContextBegin } from '../renderPageServer.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
-import { resolveHeadersResponseFinal } from './headersResponse.js'
+import { resolveHeadersResponseFinal, resolveHeadersResponseSetCookie } from './headersResponse.js'
 import { stringify } from '@brillout/json-serializer/stringify'
 import '../../assertEnvServer.js'
 
@@ -53,6 +58,7 @@ async function createHttpResponsePage(
     _globalContext: GlobalContextServerInternal
     abortStatusCode?: AbortStatusCode
     headersResponse?: Headers
+    pageContextsAborted: PageContextAborted[]
   },
 ): Promise<HttpResponse> {
   let statusCode: StatusCode | undefined = pageContext.abortStatusCode
@@ -140,8 +146,12 @@ function createHttpResponseErrorFallbackJson() {
   return httpResponse
 }
 
-async function createHttpResponsePageJson(pageContextSerialized: string) {
-  const httpResponse = createHttpResponse(200, contentTypeJson, [], pageContextSerialized, [], null)
+async function createHttpResponsePageJson(
+  pageContextSerialized: string,
+  pageContext: { headersResponse?: Headers; pageContextsAborted: PageContextAborted[] },
+) {
+  const headers = resolveHeadersResponseSetCookie(pageContext)
+  const httpResponse = createHttpResponse(200, contentTypeJson, headers, pageContextSerialized, [], null)
   return httpResponse
 }
 
@@ -150,7 +160,7 @@ function createHttpResponseRedirect({ url, statusCode }: UrlRedirect, pageContex
   assert(url)
   assert(statusCode)
   assert(300 <= statusCode && statusCode <= 399)
-  const headers: ResponseHeaders = [['Location', url]]
+  const headers: ResponseHeaders = [['Location', url], ...resolveHeadersResponseSetCookie(pageContextInit)]
   return createHttpResponse(
     statusCode,
     contentTypeHtml,

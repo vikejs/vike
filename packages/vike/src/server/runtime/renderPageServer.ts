@@ -685,7 +685,7 @@ async function handleAbort(
     } else {
       pageContextSerialized = getPageContextClientSerializedAbort(pageContextAbort, false)
     }
-    const httpResponse = await createHttpResponsePageJson(pageContextSerialized)
+    const httpResponse = await createHttpResponsePageJson(pageContextSerialized, pageContext)
     objectAssign(pageContext, { httpResponse })
     return { pageContextReturn: pageContext }
   }
