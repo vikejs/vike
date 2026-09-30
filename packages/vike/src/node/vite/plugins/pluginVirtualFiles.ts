@@ -124,7 +124,8 @@ function pluginVirtualFiles(): Plugin[] {
               if (!isVikeEnvironmentBuiltIn(idParsed.environmentName)) {
                 return generateVirtualFileGlobalEntry(
                   { environmentName: idParsed.environmentName, isDev },
-                  isViteServerSide(config, this.environment),
+                  // A named environment can be client-side
+                  !isViteServerSide(config, this.environment),
                   id,
                 )
               }

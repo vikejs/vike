@@ -7,11 +7,11 @@ const pageConfigGlobal = { configValueSources: {}, configDefinitions: {} } as un
 
 describe('getCode()', () => {
   it("doesn't import server-only code in a client-side named environment", () => {
-    const code = getCode([], pageConfigGlobal, { environmentName: 'widget', isDev: false }, false, 'id')
+    const code = getCode([], pageConfigGlobal, { environmentName: 'widget', isDev: false }, true, 'id')
     expect(code).not.toContain(VIRTUAL_FILE_ID_constantsGlobalThis)
   })
   it('imports it in a server-side named environment', () => {
-    const code = getCode([], pageConfigGlobal, { environmentName: 'worker', isDev: false }, true, 'id')
+    const code = getCode([], pageConfigGlobal, { environmentName: 'worker', isDev: false }, false, 'id')
     expect(code).toContain(VIRTUAL_FILE_ID_constantsGlobalThis)
   })
 })

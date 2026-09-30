@@ -15,19 +15,19 @@ import '../../assertEnvVite.js'
 
 async function generateVirtualFileGlobalEntry(
   runtimeEnv: RuntimeEnvRuntime & { isDev: boolean },
-  isServerSide: boolean,
+  isForClientSide: boolean,
   id: string,
 ): Promise<string> {
   const vikeConfig = await getVikeConfigInternal(true)
   const { _pageConfigs: pageConfigs, _pageConfigGlobal: pageConfigGlobal } = vikeConfig
-  return getCode(pageConfigs, pageConfigGlobal, runtimeEnv, isServerSide, id)
+  return getCode(pageConfigs, pageConfigGlobal, runtimeEnv, isForClientSide, id)
 }
 
 function getCode(
   pageConfigs: PageConfigBuildTime[],
   pageConfigGlobal: PageConfigGlobalBuildTime,
   runtimeEnv: RuntimeEnvRuntime & { isDev: boolean },
-  isServerSide: boolean,
+  isForClientSide: boolean,
   id: string,
 ): string {
   const lines: string[] = []
@@ -35,8 +35,6 @@ function getCode(
   const filesEnv: FilesEnv = new Map()
 
   const { environmentName, isDev } = runtimeEnv
-  // A named environment can be client-side
-  const isForClientSide = !isServerSide
 
   if (!isForClientSide) {
     importStatements.push(`import '${VIRTUAL_FILE_ID_constantsGlobalThis}';`)
