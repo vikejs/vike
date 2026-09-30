@@ -504,7 +504,8 @@ Code running in the `rsc` environment loads these config values with <Link href=
 
 - A named environment must exist in Vite's `config.environments`.
 - A named environment only gets the config values that name it: e.g. in `rsc`, `loadPageConfig()` returns `Page` but not `data` (`env: { server: true }`).
-- A Vite environment that no `env` names (e.g. Vite's `ssr` environment, or a Cloudflare Worker environment) is Vike's `server` or `client` environment, depending on whether it's server-side or client-side.
+- A Vite environment becomes a named environment when an `env` enables it: e.g. `+meta` with `env: { worker: true }` makes a Vite environment `worker` a named environment.
+- Any other Vite environment (e.g. Vite's `ssr` environment, or a `worker` environment that no `env` enables) gets the `server` config values, or the `client` ones if it's client-side.
 - The file suffix `.rsc.js` sets the environment, like <Link href="/file-env">`.server.js` and `.client.js`</Link> do: `+Page.rsc.js` is loaded only in `rsc`. The suffix `.shared.js` means `server` and `client` (not named environments).
 - Environment names can also be introduced by `meta.effect()`.
 
