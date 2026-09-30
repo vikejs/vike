@@ -50,9 +50,19 @@ type PageContextServer<Data = unknown> = PageContextBuiltInServer<Data> & {
   >
 } & Vike.PageContext &
   Vike.PageContextServer &
+  PageContextContent &
   (Vike.Server extends { server: string }
     ? { runtime: RuntimeAdapterTarget<Vike.Server['server']> } & PageContextReqResAlias<Vike.Server['server']>
     : {})
+
+type PageContextContent = {
+  /**
+   * The content of non-HTML pages — the HTTP response body (SSR) or the file content (pre-rendering).
+   *
+   * https://vike.dev/pageContext#content
+   */
+  content?: string | Uint8Array | ReadableStream<Uint8Array>
+}
 
 // pageContext.req and pageContext.res are aliases of pageContext.runtime.req and pageContext.runtime.res, set by +server.
 // https://vike.dev/pageContext#req

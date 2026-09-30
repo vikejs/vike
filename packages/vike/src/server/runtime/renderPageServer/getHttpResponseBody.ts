@@ -47,7 +47,7 @@ type HttpResponseBody = {
   pipeToWebWritable: StreamPipeWeb
 }
 
-function getHttpResponseBody(htmlRender: HtmlRender, renderHook: null | RenderHook) {
+function getHttpResponseBody(htmlRender: HtmlRender | Uint8Array, renderHook: null | RenderHook) {
   if (typeof htmlRender !== 'string') {
     assertUsage(
       false,
@@ -58,7 +58,7 @@ function getHttpResponseBody(htmlRender: HtmlRender, renderHook: null | RenderHo
   return body
 }
 
-function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender, renderHook: null | RenderHook) {
+function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender | Uint8Array, renderHook: null | RenderHook) {
   return {
     pipe(writable: StreamWritableNode | StreamWritableWeb) {
       const getErrMsgMixingStreamTypes = (writableType: 'Web Writable' | 'Node.js Writable') =>
@@ -104,7 +104,23 @@ function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender, renderHook: n
       }
       return nodeStream
     },
+    // Decodes the body as UTF-8 text
     async getBody(): Promise<string> {
+      if (htmlRender instanceof Uint8Array) {
+        try {
+          return new TextDecoder('utf-8', { fatal: true }).decode(htmlRender)
+        } catch {
+          assertUsage(
+            false,
+            getErrMsg(
+              htmlRender,
+              renderHook,
+              'getBody()',
+              `The Uint8Array isn't UTF-8 text: use ${pc.cyan('pageContext.httpResponse.pipe()')} instead`,
+            ),
+          )
+        }
+      }
       const body = await getHtmlString(htmlRender)
       return body
     },
@@ -173,14 +189,19 @@ function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender, renderHook: n
   }
 }
 
-function getErrMsg(htmlRender: HtmlRender, renderHook: null | RenderHook, method: string, msgAddendum?: string) {
+function getErrMsg(
+  htmlRender: HtmlRender | Uint8Array,
+  renderHook: null | RenderHook,
+  method: string,
+  msgAddendum?: string,
+) {
   assert(!msgAddendum || !msgAddendum.endsWith('.'))
   const errMsgBody = getErrMsgBody(htmlRender, renderHook)
   return [`pageContext.httpResponse.${method} can't be used because the ${errMsgBody}`, msgAddendum, streamDocs]
     .filter(Boolean)
     .join('. ')
 }
-function getErrMsgBody(htmlRender: HtmlRender, renderHook: null | RenderHook) {
+function getErrMsgBody(htmlRender: HtmlRender | Uint8Array, renderHook: null | RenderHook) {
   assert(renderHook)
   const { hookFilePath, hookName } = renderHook
   const hookReturnType = getHookReturnType(htmlRender)
@@ -191,9 +212,11 @@ function getErrMsgBody(htmlRender: HtmlRender, renderHook: null | RenderHook) {
   assert(!errMsgBody.endsWith(' '))
   return errMsgBody
 }
-function getHookReturnType(htmlRender: HtmlRender) {
+function getHookReturnType(htmlRender: HtmlRender | Uint8Array) {
   if (typeof htmlRender === 'string') {
     return 'an HTML string'
+  } else if (htmlRender instanceof Uint8Array) {
+    return 'a Uint8Array'
   } else if (isStream(htmlRender)) {
     return inferStreamName(htmlRender)
   } else {

@@ -32,6 +32,7 @@ import { testDefaultAndClearSuffixes } from './pages/config-meta/default-clear/e
 import { expect, fetchHtml, isCI, skip, test } from '@brillout/test-e2e'
 import { testOtherFrameworkNavigation } from './e2e-test'
 import { testGuardClientOnly } from './pages/guard-client-only/e2e-test'
+import { testContent } from './pages/content/e2e-test'
 
 const rootDir = path.dirname(fileURLToPath(import.meta.url))
 
@@ -68,6 +69,7 @@ function testRun(
   testHistoryPushState()
   testOtherFrameworkNavigation()
   testStarWars()
+  testContent({ isDev, rootDir })
 }
 
 function testBuildFileNames(isDev: boolean) {

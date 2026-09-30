@@ -26,6 +26,7 @@ import { preservePropertyGetters } from '../../utils/preservePropertyGetters.js'
 import { assertPosixPath } from '../../utils/path.js'
 import { urlToFile } from '../../utils/urlToFile.js'
 import { prependBase } from '../../utils/parseUrl-extras.js'
+import { parseUrl } from '../../utils/parseUrl.js'
 import { prerenderPage } from '../../server/runtime/renderPageServer/renderPageServerAfterRoute.js'
 import { createPageContextServer } from '../../server/runtime/renderPageServer/createPageContextServer.js'
 import pc from '@brillout/picocolors'
@@ -75,7 +76,9 @@ const docLink = 'https://vike.dev/i18n#pre-rendering'
 
 type HtmlFile = {
   pageContext: PageContextPrerendered
-  htmlString: string
+  htmlString: string | null
+  // https://vike.dev/pageContext#content
+  content: string | Uint8Array | null
   pageContextSerialized: string | null
 }
 
@@ -115,13 +118,22 @@ type PrerenderContext = {
   _userRootDir: string
   _outDirClient: string
 }
-type Output<PageContext = PageContextPrerendered> = {
-  filePath: string
-  fileType: FileType
-  fileContent: string
-  pageContext: PageContext
-}[]
-type FileType = 'HTML' | 'JSON'
+type Output<PageContext = PageContextPrerendered> = (
+  | {
+      filePath: string
+      fileType: 'HTML' | 'JSON'
+      fileContent: string
+      pageContext: PageContext
+    }
+  | {
+      filePath: string
+      // https://vike.dev/pageContext#content
+      fileType: 'CONTENT'
+      fileContent: string | Uint8Array
+      pageContext: PageContext
+    }
+)[]
+type FileType = Output[number]['fileType']
 
 type PageContext = Awaited<ReturnType<typeof createPageContextPrerendering>> & {
   _urlOriginalBeforeHook?: string
@@ -883,11 +895,12 @@ async function prerenderPages(
           assertIsNotAbort(err, pc.cyan(pageContextBeforeRender.urlOriginal))
           throw err
         }
-        const { documentHtml, pageContext } = res
+        const { documentHtml, content, pageContext } = res
         const pageContextSerialized = pageContext.is404 ? null : res.pageContextSerialized
         await onComplete({
           pageContext,
           htmlString: documentHtml,
+          content,
           pageContextSerialized,
         })
       }),
@@ -939,11 +952,17 @@ async function warnMissingPages(
 }
 
 async function writeFiles(
-  { pageContext, htmlString, pageContextSerialized }: HtmlFile,
+  { pageContext, htmlString, content, pageContextSerialized }: HtmlFile,
   prerenderContext: PrerenderContext,
   onPagePrerender: Function | undefined,
   logLevel: 'warn' | 'info',
 ) {
+  if (content !== null) {
+    assert(htmlString === null && pageContextSerialized === null)
+    await write(pageContext, 'CONTENT', content, onPagePrerender, prerenderContext, logLevel)
+    return
+  }
+  assert(htmlString !== null)
   const writeJobs = [write(pageContext, 'HTML', htmlString, onPagePrerender, prerenderContext, logLevel)]
   if (pageContextSerialized !== null) {
     writeJobs.push(write(pageContext, 'JSON', pageContextSerialized, onPagePrerender, prerenderContext, logLevel))
@@ -954,7 +973,7 @@ async function writeFiles(
 async function write(
   pageContext: PageContextPrerendered,
   fileType: FileType,
-  fileContent: string,
+  fileContent: string | Uint8Array,
   onPagePrerender: Function | undefined,
   prerenderContext: PrerenderContext,
   logLevel: 'info' | 'warn',
@@ -966,9 +985,11 @@ async function write(
   if (fileType === 'HTML') {
     const doNotCreateExtraDirectory = prerenderContext._noExtraDir ?? pageContext.is404
     fileUrl = urlToFile(urlOriginal, '.html', doNotCreateExtraDirectory)
-  } else {
-    assert(fileType === 'JSON')
+  } else if (fileType === 'JSON') {
     fileUrl = getPageContextRequestUrl(urlOriginal)
+  } else {
+    assert(fileType === 'CONTENT')
+    fileUrl = getContentFileUrl(pageContext)
   }
 
   assertPosixPath(fileUrl)
@@ -990,12 +1011,12 @@ async function write(
       fileContent,
     },
   })
-  prerenderContext.output.push({
-    filePath,
-    fileType,
-    fileContent,
-    pageContext,
-  })
+  if (fileType === 'CONTENT') {
+    prerenderContext.output.push({ filePath, fileType, fileContent, pageContext })
+  } else {
+    assert(typeof fileContent === 'string')
+    prerenderContext.output.push({ filePath, fileType, fileContent, pageContext })
+  }
 
   if (onPagePrerender) {
     await onPagePrerender(getPageContextPublicPrerendered(pageContext))
@@ -1015,6 +1036,23 @@ async function write(
       console.log(`${pc.dim(outDirClientRelative)}${pc.blue(filePathRelative)}`)
     }
   }
+}
+
+// With `pageContext.content` the URL is the file path: `/feed.atom` => `dist/client/feed.atom`
+function getContentFileUrl(pageContext: PageContextPrerendered): string {
+  const { urlOriginal } = pageContext
+  // The query string and the hash are ignored: a static host serves the file at the pathname
+  const { pathnameOriginal } = parseUrl(urlOriginal, '/')
+  const errPrefix = `Cannot pre-render ${pc.cyan(urlOriginal)} with ${pc.code('pageContext.content')}` as const
+  const errSuffix =
+    "pre-rendering writes the content to the file at the URL's pathname (e.g. /feed.atom => dist/client/feed.atom)"
+  assertUsage(!pageContext.is404, `${errPrefix} because it's the 404 page`)
+  const segments = pathnameOriginal.split('/').slice(1)
+  assertUsage(
+    segments.every((s) => s !== '' && s !== '.' && s !== '..'),
+    `${errPrefix} because the URL's pathname isn't a file path: ${errSuffix}`,
+  )
+  return pathnameOriginal
 }
 
 function normalizeOnPrerenderHookResult(
@@ -1216,6 +1254,7 @@ async function prerenderRedirects(
     await onComplete({
       pageContext: { urlOriginal, pageId: null, is404: false, isRedirect: true },
       htmlString,
+      content: null,
       pageContextSerialized: null,
     })
   }
