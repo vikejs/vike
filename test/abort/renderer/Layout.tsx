@@ -16,6 +16,8 @@ function Layout({ children, pageContext }: { children: React.ReactNode; pageCont
             <Nav href="/redirect" />
             <Nav href="/redirect-with-cookie" />
             <Nav href="/data-with-cookie" />
+            <Nav href="/rewrite-with-cookie" />
+            <Nav href="/render-status-with-cookie" />
             <Nav href="/render-homepage" />
             <Nav href="/show-error-page" />
             <Nav href="/permanent-redirect" />
