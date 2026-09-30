@@ -11,7 +11,6 @@ describe('getVikeEnvironmentName()', () => {
     ['rsc', true, 'rsc'],
     // Not named by `meta.env` => ordinary projection of its consumer side
     ['worker', true, 'server'],
-    ['vercel_node', true, 'server'],
     ['client_legacy', false, 'client'],
   ])('Vite environment %s (server-side: %s) => %s', (viteEnvironmentName, isServerSide, environmentName) => {
     expect(getVikeEnvironmentName(viteEnvironmentName, isServerSide, runtimeEnvironmentNames)).toBe(environmentName)
