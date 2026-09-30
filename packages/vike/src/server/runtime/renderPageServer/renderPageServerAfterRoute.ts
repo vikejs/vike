@@ -1,10 +1,10 @@
 export { renderPageServerAfterRoute }
 export { prerenderPage }
-export { prerenderPageEntry }
 export type { PageContextAfterRender }
 
 import { getErrorPageId } from '../../../shared-server-client/error-page.js'
 import { getHtmlString } from './html/renderHtml.js'
+import { isStreamReadableWeb, streamReadableWebToBytes } from './html/stream.js'
 import { assert, assertUsage } from '../../../utils/assert.js'
 import { hasProp } from '../../../utils/hasProp.js'
 import { isSameErrorMessage } from '../../../utils/isSameErrorMessage.js'
@@ -14,7 +14,12 @@ import { getPageContextClientSerialized } from './html/serializeContext.js'
 import { getStreamedValuesLinesPrerendered } from './html/streamedValuesHtml.js'
 import { getPageContextJson, getPageContextJsonFile } from './pageContextJson.js'
 import { type PageContextUrlInternal } from '../../../shared-server-client/getPageContextUrlComputed.js'
-import { createHttpResponsePage, createHttpResponsePageJson, HttpResponse } from './createHttpResponse.js'
+import {
+  createHttpResponsePageHtml,
+  createHttpResponsePageContent,
+  createHttpResponsePageJson,
+  HttpResponse,
+} from './createHttpResponse.js'
 import {
   loadPageConfigsLazyServerSide,
   type PageContext_loadPageConfigsLazyServerSide,
@@ -84,15 +89,17 @@ async function renderPageServerAfterRoute<
     const { pageContextSerialized, streamedValues } = getPageContextClientSerialized(pageContext, false)
     const httpResponse = await createHttpResponsePageJson(
       getPageContextJson(pageContextSerialized, streamedValues, pageContext),
+      pageContext,
     )
     objectAssign(pageContext, { httpResponse })
     return pageContext
   }
 
-  const renderHookResult = await execHookOnRenderHtml(pageContext)
-
-  const { htmlRender, renderHook } = renderHookResult
-  const httpResponse = await createHttpResponsePage(htmlRender, renderHook, pageContext)
+  const { htmlRender, content, renderHook } = await execHookOnRenderHtml(pageContext)
+  const httpResponse =
+    content !== null
+      ? createHttpResponsePageContent(content, renderHook, pageContext)
+      : await createHttpResponsePageHtml(htmlRender, renderHook, pageContext)
   objectAssign(pageContext, { httpResponse })
   return pageContext
 }
@@ -134,7 +141,12 @@ async function prerenderPageEntry(
 
   await execHookDataAndOnBeforeRender(pageContext)
 
-  const { htmlRender, renderHook } = await execHookOnRenderHtml(pageContext)
+  const { htmlRender, content, renderHook } = await execHookOnRenderHtml(pageContext)
+  if (content !== null) {
+    // Rejects if the stream errors
+    const fileContent = isStreamReadableWeb(content) ? await streamReadableWebToBytes(content) : content
+    return { documentHtml: null, content: fileContent, pageContextSerialized: null, pageContext }
+  }
   assertUsage(
     htmlRender !== null,
     `Cannot pre-render ${pc.cyan(pageContext.urlOriginal)} because the ${renderHook.hookName}() hook defined by ${
@@ -147,11 +159,12 @@ async function prerenderPageEntry(
   // a value that failed makes pre-rendering fail (also without Client Routing)
   const streamedValuesLines = await getStreamedValuesLinesPrerendered(pageContext)
   if (!pageContext._usesClientRouter) {
-    return { documentHtml, pageContextSerialized: null, pageContext }
+    return { documentHtml, content: null, pageContextSerialized: null, pageContext }
   } else {
     const { pageContextSerialized } = getPageContextClientSerialized(pageContext, false)
     return {
       documentHtml,
+      content: null,
       pageContextSerialized: getPageContextJsonFile(pageContextSerialized, streamedValuesLines),
       pageContext,
     }

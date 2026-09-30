@@ -40,7 +40,7 @@ See also: <Link href="/settings" />.
 > Most users don't need to know about these hooks.
 
 - [**`onBeforeRender()`**](/onBeforeRender): <TextEnv>server (configurable)</TextEnv> Called before the page is rendered, lower-level and usually for advanced integrations with data fetching tools.
-- [**`onRenderHtml()`**](/onRenderHtml): <TextEnv>server</TextEnv> Called when a page is rendered to HTML on the server-side.
+- [**`onRenderHtml()`**](/onRenderHtml): <TextEnv>server</TextEnv> Called when a page is rendered to HTML (or to <Link href="/onRenderHtml#non-html-content">non-HTML content</Link>) on the server-side.
 - [**`onRenderClient()`**](/onRenderClient): <TextEnv>client</TextEnv> Called when a page is rendered on the client-side.
 - [**`onBeforeRoute()`**](/onBeforeRoute): <TextEnv>server & client</TextEnv> Called before the URL is routed to a page.
 - [**`onBeforeRenderClient()`**](/onBeforeRenderClient): <TextEnv>client</TextEnv> Called at the beginning of <Link href="/onRenderClient">`onRenderClient()`</Link>.
@@ -54,7 +54,6 @@ See also: <Link href="/settings" />.
 Potentially upcoming hooks:
 - [Feature Request #1979 — New hook `onRenderHtmlEnd()`](https://github.com/vikejs/vike/issues/1979)
 - [Feature Request #1438 — New hook `onLog()`](https://github.com/vikejs/vike/issues/1438)
-- [Feature Request #1525 — New hook `onRenderContent()`: generate non-HTML files with arbitrary content](https://github.com/vikejs/vike/issues/1525)
 
 
 ## Lifecycle

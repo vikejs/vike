@@ -16,6 +16,8 @@ export { isStreamReadableNode }
 export { getStreamName }
 export { inferStreamName }
 export { streamReadableWebToString }
+export { streamReadableWebToBytes }
+export { awaitFirstChunk }
 export { streamPipeNodeToString }
 export { isStreamWritableWeb }
 export { isStreamWritableNode }
@@ -45,7 +47,7 @@ import {
   streamFromReactStreamingPackageToString,
 } from './stream/react-streaming.js'
 import { import_ } from '@brillout/import'
-import type { Readable as Readable_, Writable as Writable_ } from 'node:stream'
+import type { Readable as Readable_, Writable as Writable_, pipeline as pipeline_ } from 'node:stream'
 import pc from '@brillout/picocolors'
 import '../../../assertEnvServer.js'
 
@@ -123,15 +125,66 @@ async function streamReadableWebToString(readableWeb: ReadableStream): Promise<s
   str += getClosingChunk()
   return str
 }
-async function stringToStreamReadableNode(str: string): Promise<StreamReadableNode> {
+async function streamReadableWebToBytes(readableWeb: ReadableStream): Promise<Uint8Array> {
+  const reader = readableWeb.getReader()
+  const chunks: Uint8Array[] = []
+  while (true) {
+    const { done, value } = await reader.read()
+    if (done) break
+    assertUsage(value instanceof Uint8Array, `The stream emitted a chunk that isn't a Uint8Array: ${String(value)}`)
+    chunks.push(value)
+  }
+  const bytes = new Uint8Array(chunks.reduce((len, chunk) => len + chunk.length, 0))
+  let offset = 0
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset)
+    offset += chunk.length
+  }
+  return bytes
+}
+// The Web Readable wrapper of processStream() doesn't support cancel()
+const streamsCancelable = new WeakSet<ReadableStream>()
+// Resolves after the first chunk (rejects if the stream errors before), then reads on demand
+async function awaitFirstChunk(
+  stream: StreamReadableWeb,
+  onErrorWhileStreaming: (err: unknown) => void,
+): Promise<StreamReadableWeb> {
+  const reader = stream.getReader()
+  const firstChunk = await reader.read()
+  const streamStarted = new ReadableStream({
+    start(controller) {
+      if (firstChunk.done) controller.close()
+      else controller.enqueue(firstChunk.value)
+    },
+    async pull(controller) {
+      let chunk: ReadableStreamReadResult<unknown>
+      try {
+        chunk = await reader.read()
+      } catch (err) {
+        onErrorWhileStreaming(err)
+        controller.error(err)
+        return
+      }
+      if (chunk.done) controller.close()
+      else controller.enqueue(chunk.value)
+    },
+    cancel(reason) {
+      return reader.cancel(reason)
+    },
+  })
+  streamsCancelable.add(streamStarted)
+  return streamStarted
+}
+async function stringToStreamReadableNode(str: string | Uint8Array): Promise<StreamReadableNode> {
   const { Readable } = await loadStreamNodeModule()
-  return Readable.from(str)
+  // Readable.from() iterates a Uint8Array byte by byte
+  return Readable.from(typeof str === 'string' ? str : [str])
 }
 async function streamReadableWebToStreamReadableNode(stream: ReadableStream): Promise<StreamReadableNode> {
   const { Readable } = await loadStreamNodeModule()
   return Readable.fromWeb(stream as any)
 }
-function stringToStreamReadableWeb(str: string): StreamReadableWeb {
+function stringToStreamReadableWeb(str: string | Uint8Array): StreamReadableWeb {
   // ReadableStream.from() spec discussion: https://github.com/whatwg/streams/issues/1018
   assertReadableStreamConstructor()
   const readableStream = new ReadableStream({
@@ -142,13 +195,13 @@ function stringToStreamReadableWeb(str: string): StreamReadableWeb {
   })
   return readableStream
 }
-function stringToStreamPipeNode(str: string): StreamPipeNode {
+function stringToStreamPipeNode(str: string | Uint8Array): StreamPipeNode {
   return (writable: StreamWritableNode) => {
     writable.write(str)
     writable.end()
   }
 }
-function stringToStreamPipeWeb(str: string): StreamPipeWeb {
+function stringToStreamPipeWeb(str: string | Uint8Array): StreamPipeWeb {
   return (writable: StreamWritableWeb) => {
     const writer = writable.getWriter()
     writer.write(encodeForWebStream(str))
@@ -205,17 +258,20 @@ function streamPipeWebToString(streamPipeWeb: StreamPipeWeb): Promise<string> {
   return promise
 }
 
-async function getStreamReadableNode(htmlRender: HtmlRender): Promise<null | StreamReadableNode> {
-  if (typeof htmlRender === 'string') {
+async function getStreamReadableNode(htmlRender: HtmlRender | Uint8Array): Promise<null | StreamReadableNode> {
+  if (typeof htmlRender === 'string' || htmlRender instanceof Uint8Array) {
     return stringToStreamReadableNode(htmlRender)
   }
   if (isStreamReadableNode(htmlRender)) {
     return htmlRender
   }
+  if (isStreamReadableWeb(htmlRender) && streamsCancelable.has(htmlRender)) {
+    return streamReadableWebToStreamReadableNode(htmlRender)
+  }
   return null
 }
-function getStreamReadableWeb(htmlRender: HtmlRender): null | StreamReadableWeb {
-  if (typeof htmlRender === 'string') {
+function getStreamReadableWeb(htmlRender: HtmlRender | Uint8Array): null | StreamReadableWeb {
+  if (typeof htmlRender === 'string' || htmlRender instanceof Uint8Array) {
     return stringToStreamReadableWeb(htmlRender)
   }
   if (isStreamReadableWeb(htmlRender)) {
@@ -232,8 +288,8 @@ function getStreamReadableWeb(htmlRender: HtmlRender): null | StreamReadableWeb 
   return null
 }
 
-function pipeToStreamWritableWeb(htmlRender: HtmlRender, writable: StreamWritableWeb): boolean {
-  if (typeof htmlRender === 'string') {
+function pipeToStreamWritableWeb(htmlRender: HtmlRender | Uint8Array, writable: StreamWritableWeb): boolean {
+  if (typeof htmlRender === 'string' || htmlRender instanceof Uint8Array) {
     const streamPipeWeb = stringToStreamPipeWeb(htmlRender)
     streamPipeWeb(writable)
     return true
@@ -255,8 +311,8 @@ function pipeToStreamWritableWeb(htmlRender: HtmlRender, writable: StreamWritabl
   checkType<never>(htmlRender)
   assert(false)
 }
-function pipeToStreamWritableNode(htmlRender: HtmlRender, writable: StreamWritableNode): boolean {
-  if (typeof htmlRender === 'string') {
+function pipeToStreamWritableNode(htmlRender: HtmlRender | Uint8Array, writable: StreamWritableNode): boolean {
+  if (typeof htmlRender === 'string' || htmlRender instanceof Uint8Array) {
     const streamPipeNode = stringToStreamPipeNode(htmlRender)
     streamPipeNode(writable)
     return true
@@ -276,14 +332,10 @@ function pipeToStreamWritableNode(htmlRender: HtmlRender, writable: StreamWritab
     return true
   }
   if (isStreamReadableWeb(htmlRender)) {
-    streamReadableWebToStreamReadableNode(htmlRender).then((readable) => {
-      // pipe() doesn't forward errors, nor the writable closing (e.g. the user closed the tab): the Web Stream would be
-      // left open (and its producer never cancelled)
-      readable.on('error', (err) => writable.destroy(err))
-      writable.on('close', () => {
-        if (!readable.readableEnded) readable.destroy()
-      })
-      readable.pipe(writable)
+    streamReadableWebToStreamReadableNode(htmlRender).then(async (s) => {
+      const { pipeline } = await loadStreamNodeModule()
+      // Unlike pipe(), pipeline() destroys the readable (and thus cancels the stream) if the writable closes early (e.g. the user closed the tab), and the writable if the stream errors
+      pipeline(s, writable, () => {})
     })
     return true
   }
@@ -958,10 +1010,11 @@ function encodeForWebStream(thing: unknown) {
 async function loadStreamNodeModule(): Promise<{
   Readable: typeof Readable_
   Writable: typeof Writable_
+  pipeline: typeof pipeline_
 }> {
   const streamModule = (await import_('stream')).default as Awaited<typeof import('stream')>
-  const { Readable, Writable } = streamModule
-  return { Readable, Writable }
+  const { Readable, Writable, pipeline } = streamModule
+  return { Readable, Writable, pipeline }
 }
 
 function getStreamName(

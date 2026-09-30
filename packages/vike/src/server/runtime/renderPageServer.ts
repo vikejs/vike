@@ -342,7 +342,8 @@ async function renderPageServerEntryRecursive_onError(
       const handled = await handleAbort(
         errErrorPage,
         pageContextBegin,
-        pageContextNominalPageBegin,
+        // The error page is the page that aborted
+        pageContextErrorPageInit,
         requestId,
         pageContextErrorPageInit,
         globalContext,
@@ -687,7 +688,7 @@ async function handleAbort(
     } else {
       pageContextJson = getPageContextClientSerializedAbort(pageContextAbort, false)
     }
-    const httpResponse = await createHttpResponsePageJson(pageContextJson)
+    const httpResponse = await createHttpResponsePageJson(pageContextJson, pageContext)
     objectAssign(pageContext, { httpResponse })
     return { pageContextReturn: pageContext }
   }

@@ -30,19 +30,23 @@ import { testHistoryPushState } from './pages/pushState/e2e-test'
 import { testStarWars } from './pages/star-wars/e2e-test'
 import { testStreamedValues } from './pages/streamed-values/e2e-test'
 import { testDefaultAndClearSuffixes } from './pages/config-meta/default-clear/e2e-test'
-import { isCI, skip } from '@brillout/test-e2e'
+import { expect, fetchHtml, isCI, skip, test } from '@brillout/test-e2e'
 import { testOtherFrameworkNavigation } from './e2e-test'
 import { testGuardClientOnly } from './pages/guard-client-only/e2e-test'
+import { testContent } from './pages/content/e2e-test'
 
 const rootDir = path.dirname(fileURLToPath(import.meta.url))
 
-function testRun(cmd: 'pnpm run dev' | 'pnpm run preview' | 'pnpm run preview:build-twice') {
-  if (cmd === 'pnpm run preview:build-twice' && !isCI()) {
+function testRun(
+  cmd: 'pnpm run dev' | 'pnpm run preview' | 'pnpm run preview:build-twice' | 'pnpm run preview:sharedConfigBuild',
+) {
+  if ((cmd === 'pnpm run preview:build-twice' || cmd === 'pnpm run preview:sharedConfigBuild') && !isCI()) {
     skip('SKIPPED: we only run this test in the CI (to avoid slowing down running test/playground locally)')
     return
   }
   const isDev = cmd === 'pnpm run dev'
   testRunClassic(cmd, { testHmr: './pages/index/Page.tsx' })
+  testBuildFileNames(isDev)
   testSettingsInheritance({ isDev })
   testMarkdown()
   testMarkdownClientFile(isDev)
@@ -67,4 +71,16 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview' | 'pnpm run preview:bu
   testOtherFrameworkNavigation()
   testStarWars()
   testStreamedValues()
+  testContent({ isDev, rootDir })
+}
+
+function testBuildFileNames(isDev: boolean) {
+  if (isDev) return
+  test('build file names', async () => {
+    const html = await fetchHtml('/')
+    // The server-side CSS is deduplicated (it relies on Vike's `.[hash].` file naming)
+    expect(html.split('<link rel="stylesheet"').length).toBe(2)
+    // The client doesn't get the server's file names (`.mjs`), also with a root `build.rollupOptions.output`
+    expect(html).not.toContain('.mjs')
+  })
 }
