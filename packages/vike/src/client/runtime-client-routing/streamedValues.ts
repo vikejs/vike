@@ -7,17 +7,25 @@ export { readPageContextJson }
 export { cancelStreamedValues }
 
 import { parse } from '@brillout/json-serializer/parse'
+import { pageContextJsonLinesBegin } from '../../shared-server-client/streamedValues.js'
 import '../assertEnvClient.js'
 
 async function readPageContextJson(response: Response): Promise<unknown> {
   const reader = response.body!.getReader()
   const lines = readLines(reader)
-  const { done, value: lineFirst } = await lines.next()
-  // Without streamed values: a single line
-  if (done) return parse(lineFirst)
-  const { parsePageContextJson } = await import('../shared/streamedValues.js')
-  responsesStreaming.push(reader)
-  return parsePageContextJson(lineFirst, lines)
+  let { done, value: text } = await lines.next()
+  if (!done && text.endsWith(pageContextJsonLinesBegin)) {
+    const { parsePageContextJson } = await import('../shared/streamedValues.js')
+    responsesStreaming.push(reader)
+    return parsePageContextJson(text, lines)
+  }
+  // Without streamed values: one JSON value
+  while (!done) {
+    const next = await lines.next()
+    text += '\n' + next.value
+    done = next.done
+  }
+  return parse(text)
 }
 
 // Yields the lines, and returns the text after the last line break
