@@ -42,7 +42,6 @@ function pluginBuildConfig(): Plugin[] {
           handleAssetsManifest_alignCssTarget(config)
           onSetupBuild()
           assertRollupInput(config)
-          // Set the inputs of each environment, instead of the root `config.build`: the root `config.build` is used by no environment upon `builder.sharedConfigBuild: true` (e.g. set by @vitejs/plugin-rsc).
           const entriesClient = await getEntries(config, false)
           const entriesServer = await getEntries(config, true)
           for (const [envName, envConfig] of Object.entries(config.environments)) {

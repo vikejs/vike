@@ -28,7 +28,6 @@ function pluginDistFileNames(): Plugin[] {
       enforce: 'post',
       configResolved: {
         handler(config) {
-          // Set the output of each environment, instead of the root `config.build` (see pluginBuildConfig.ts)
           Object.entries(config.environments).forEach(([envName, envConfig]) => {
             const { build } = envConfig
             copyRollupOutputs(build)
