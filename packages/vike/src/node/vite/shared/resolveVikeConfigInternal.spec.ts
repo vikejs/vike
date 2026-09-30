@@ -32,7 +32,7 @@ describe('getConfigEnvValue()', () => {
   })
 
   it.each(['ssr', 'shared', 'clear', 'default', 'eager'])('rejects reserved name %s', (name) => {
-    expect(() => getConfigEnvValue({ [name]: true }, errMsgIntro)).toThrow('is reserved by Vike')
+    expect(() => getConfigEnvValue({ [name]: true }, errMsgIntro)).toThrow("can't be an environment name")
   })
 
   it('accepts names that were reserved only by an earlier design', () => {

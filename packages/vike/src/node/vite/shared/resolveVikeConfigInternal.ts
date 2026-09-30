@@ -1818,7 +1818,10 @@ function getConfigEnvValue(
   assertUsage(isObject(val), `${errMsgIntro} an invalid type ${pc.cyan(typeof val)}`)
 
   Object.entries(val).forEach(([key, value]) => {
-    assertUsage(!configEnvKeysReserved.includes(key), `${errInvalidValue}: ${pc.cyan(key)} is reserved by Vike`)
+    assertUsage(
+      !configEnvKeysReserved.includes(key),
+      `${errInvalidValue}: ${pc.cyan(key)} can't be an environment name, because ${key === 'eager' ? 'Vike uses it internally' : `it's a file suffix (${pc.cyan(`+Page.${key}.js`)})`}`,
+    )
     assertUsage(key !== '' && !key.includes(':'), `${errInvalidValue}: ${pc.cyan(key)} isn't a valid environment name`)
     assertUsage(value === undefined || typeof value === 'boolean', errInvalidValue)
   })

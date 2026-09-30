@@ -513,13 +513,6 @@ Code running in the `rsc` environment loads these config values with <Link href=
 - The file suffix `.rsc.js` sets the environment, like <Link href="/file-env">`.server.js` and `.client.js`</Link> do: `+Page.rsc.js` is loaded only in `rsc`. The suffix `.shared.js` means `server` and `client` (not named environments).
 - Environment names can also be introduced by `meta.effect()`.
 
-The following names can't be environment names:
-- `config` and `production`, which have another meaning (see <Link href="#api">API</Link>).
-- `ssr`, `shared`, `clear`, and `default`, which are file suffixes (<Link href="/file-env">`.ssr.js` and `.shared.js`</Link>, <Link href="/config#clear-js">`.clear.js`</Link>, <Link href="/config#default-js">`.default.js`</Link>).
-- `eager`, which is used internally by Vike.
-
-The names `server` and `client` are Vike's built-in environments.
-
 
 ## API
 
