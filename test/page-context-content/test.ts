@@ -65,6 +65,12 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     expect(new TextDecoder().decode(concat(chunks))).toBe(streamText)
   })
 
+  test('public/ file next to content pages', async () => {
+    const resp = await fetchUrl('/robots.txt')
+    expect(resp.status).toBe(200)
+    expect(await resp.text()).toBe('User-agent: *\n')
+  })
+
   test('headersResponse overrides the Content-Type', async () => {
     const resp = await fetchUrl('/override.json')
     expect(resp.status).toBe(200)

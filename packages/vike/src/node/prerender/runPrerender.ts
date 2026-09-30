@@ -27,6 +27,8 @@ import { assertPosixPath } from '../../utils/path.js'
 import { urlToFile } from '../../utils/urlToFile.js'
 import { prependBase } from '../../utils/parseUrl-extras.js'
 import { parseUrl } from '../../utils/parseUrl.js'
+import { getStaticAssetCollision } from './getStaticAssetCollision.js'
+import type { ViteManifest } from '../../types/ViteManifest.js'
 import { prerenderPage } from '../../server/runtime/renderPageServer/renderPageServerAfterRoute.js'
 import { createPageContextServer } from '../../server/runtime/renderPageServer/createPageContextServer.js'
 import pc from '@brillout/picocolors'
@@ -34,6 +36,7 @@ import { cpus } from 'node:os'
 import type { PageFile } from '../../shared-server-client/getPageFiles.js'
 import {
   getGlobalContextServerInternal,
+  getViteConfig,
   type GlobalContextServerInternal,
   initGlobalContext_runPrerender,
   setGlobalContext_isPrerendering,
@@ -118,6 +121,8 @@ type PrerenderContext = {
   _userRootDir: string
   _outDirClient: string
   _filePaths: Map<string, { urlOriginal: string; fileType: FileType }>
+  _publicDir: string | null
+  _assetsManifest: ViteManifest
 }
 type Output<PageContext = PageContextPrerendered> = (
   | {
@@ -214,6 +219,8 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
     build: { outDir: outDirRoot },
   } = globalContext.viteConfigRuntime
   const { outDirServer, outDirClient } = getOutDirsAllFromRootNormalized(outDirRoot, root)
+  const viteConfig = getViteConfig()
+  assert(viteConfig && globalContext.assetsManifest)
   const prerenderContext: PrerenderContext = {
     pageContexts: [],
     output: [],
@@ -224,6 +231,9 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
     _userRootDir: root,
     _outDirClient: outDirClient,
     _filePaths: new Map(),
+    // Files copied to the client outDir
+    _publicDir: (viteConfig.build.copyPublicDir !== false && viteConfig.publicDir) || null,
+    _assetsManifest: globalContext.assetsManifest,
   }
 
   const doNotPrerenderList: DoNotPrerenderList = []
@@ -1013,6 +1023,17 @@ async function write(
       `Cannot pre-render ${pc.cyan(urlOriginal)} and ${pc.cyan(other?.urlOriginal ?? '')} because they're both written to ${filePath}`,
     )
     prerenderContext._filePaths.set(filePath, { urlOriginal, fileType })
+  }
+  if (fileType === 'CONTENT') {
+    const asset = getStaticAssetCollision(
+      filePathRelative,
+      prerenderContext._publicDir,
+      prerenderContext._assetsManifest,
+    )
+    assertUsage(
+      !asset,
+      `Cannot pre-render ${pc.cyan(urlOriginal)} because its file ${filePath} would overwrite a static asset (${asset})`,
+    )
   }
 
   objectAssign(pageContext, {
