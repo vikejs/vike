@@ -5,8 +5,13 @@ import type { ResolvedConfig, ViteDevServer } from 'vite'
 import type { ServerResponse } from 'node:http'
 import { assertWarning } from '../../../utils/assert.js'
 import pc from '@brillout/picocolors'
+import { createRequestAdapter } from '@universal-middleware/node/request'
+import { sendResponse, setResponseHeaders } from '@universal-middleware/node/response'
+import { universalMiddlewares } from '../../../server/runtime/getUniversalMiddlewares.js'
 import '../assertEnvVite.js'
 type ConnectServer = ViteDevServer['middlewares']
+
+const requestAdapter = createRequestAdapter()
 
 function addSsrMiddleware(
   middlewares: ConnectServer,
@@ -42,7 +47,11 @@ function addSsrMiddleware(
       enumerable: false,
     })
     let pageContext: Awaited<ReturnType<typeof renderPageServer>>
+    let applyResponseHandlers: ((response: Response) => Promise<Response>) | undefined
     try {
+      const result = await universalMiddlewares(requestAdapter(req, res))
+      if (result instanceof Response) return send(result, res)
+      applyResponseHandlers = result
       pageContext = await renderPageServer(pageContextInit)
     } catch (err) {
       // Throwing an error in a connect middleware shuts down the server
@@ -64,10 +73,22 @@ function addSsrMiddleware(
     }
 
     const { httpResponse } = pageContext
+    if (applyResponseHandlers) {
+      const { statusCode: status, headers } = httpResponse
+      return send(
+        await applyResponseHandlers(new Response(httpResponse.getReadableWebStream(), { status, headers })),
+        res,
+      )
+    }
     setHeadersWithMultipleCookies(res, httpResponse.headers)
     res.statusCode = httpResponse.statusCode
     httpResponse.pipe(res)
   })
+}
+
+async function send(response: Response, res: ServerResponse) {
+  setResponseHeaders(response, res)
+  await sendResponse(response, res)
 }
 
 // A response can have several Set-Cookie headers: res.setHeader() would only keep the last one

@@ -7,7 +7,6 @@ import fs from 'node:fs'
 import path from 'node:path'
 import type { ViteDevServer } from 'vite'
 import { addSsrMiddleware } from '../shared/addSsrMiddleware.js'
-import { addUniversalMiddlewares } from '../shared/addUniversalMiddlewares.js'
 import pc from '@brillout/picocolors'
 import { logDockerHint } from './pluginDev.js'
 import { getOutDirs } from '../shared/getOutDirs.js'
@@ -52,7 +51,6 @@ function pluginPreview(): Plugin[] {
             addStaticAssetsMiddleware(server.middlewares)
 
             if (!isPrerenderingEnabledForAllPages) {
-              addUniversalMiddlewares(server.middlewares)
               addSsrMiddleware(server.middlewares, config, true, isPrerenderingEnabled)
             }
 

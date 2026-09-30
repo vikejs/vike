@@ -34,6 +34,14 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     expect(response.status).toBe(303)
     expect(response.headers.get('Location')).toBe('/')
   })
+
+  test('Middlewares run once, also when a middleware calls renderPage()', async () => {
+    for (const url of ['/', '/render-page-middleware']) {
+      const response: Response = await fetch(`${getServerUrl()}${url}`)
+      expect(await response.text()).toContain('Rendered to HTML.')
+      expect(response.headers.get('x-middleware')).toBe('ran')
+    }
+  })
 }
 
 async function testCounter() {
