@@ -381,9 +381,6 @@ async function processStream(
       })
     },
     async onEnd(isCancel) {
-      if (isCancel) onCancel?.()
-      // Cancelled while ending (e.g. while writing streamed pageContext values)
-      if (isCancel && onEndWasCalled) return
       try {
         assert(!onEndWasCalled)
         onEndWasCalled = true

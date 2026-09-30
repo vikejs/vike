@@ -143,7 +143,8 @@ async function prerenderPageEntry(
   )
   const documentHtml = await getHtmlString(htmlRender)
   assert(typeof documentHtml === 'string')
-  // The streamed pageContext values were read while rendering the HTML: the same lines go into `index.pageContext.json`
+  // The streamed pageContext values were read while rendering the HTML: the same lines go into `index.pageContext.json`, and
+  // a value that failed makes pre-rendering fail (also without Client Routing)
   const streamedValuesLines = await getStreamedValuesLinesPrerendered(pageContext)
   if (!pageContext._usesClientRouter) {
     return { documentHtml, pageContextSerialized: null, pageContext }

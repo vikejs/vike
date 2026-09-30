@@ -169,11 +169,7 @@ async function getStreamedValuesLinesPrerendered(pageContext: PageContextStreame
 function getScript(line: string, pageContext: PageContextCspNonce): string {
   // A JavaScript string literal: JSON.stringify() escapes quotes, backslashes and line breaks; `<` is escaped so that the
   // script never contains `</script>` nor `<!--`; `/` is escaped for the same reason as in `<script id="vike_pageContext">`
-  // (https://github.com/vikejs/vike/pull/2603).
-  const literal = JSON.stringify(line)
-    .replaceAll('<', '\\u003c')
-    .replaceAll('/', '\\/')
-    .replaceAll(' ', '\\u2028')
-    .replaceAll(' ', '\\u2029')
+  // (https://github.com/vikejs/vike/pull/2603)
+  const literal = JSON.stringify(line).replaceAll('<', '\\u003c').replaceAll('/', '\\/')
   return `<script${inferNonceAttr(pageContext)}>(self.__vike_streamed=self.__vike_streamed||[]).push(${literal})</script>`
 }
