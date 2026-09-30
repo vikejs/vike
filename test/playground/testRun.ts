@@ -28,6 +28,7 @@ import { testProgrammaticPage } from './pages/programmatically-defined/e2e-test'
 import { testPrerenderSettings } from './pages/prerender.e2e-test'
 import { testHistoryPushState } from './pages/pushState/e2e-test'
 import { testStarWars } from './pages/star-wars/e2e-test'
+import { testStreamedValues } from './pages/streamed-values/e2e-test'
 import { testDefaultAndClearSuffixes } from './pages/config-meta/default-clear/e2e-test'
 import { isCI, skip } from '@brillout/test-e2e'
 import { testOtherFrameworkNavigation } from './e2e-test'
@@ -65,4 +66,5 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview' | 'pnpm run preview:bu
   testHistoryPushState()
   testOtherFrameworkNavigation()
   testStarWars()
+  testStreamedValues()
 }

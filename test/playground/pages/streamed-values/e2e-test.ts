@@ -1,0 +1,54 @@
+export { testStreamedValues }
+
+import { autoRetry, expect, expectLog, fetch, getServerUrl, page, test } from '@brillout/test-e2e'
+
+function testStreamedValues() {
+  test('streamed pageContext values: first render, in escaped <script> tags with the CSP nonce', async () => {
+    const response = await fetch(getServerUrl() + '/streamed-values')
+    const nonce = /'nonce-([^']+)'/.exec(response.headers.get('content-security-policy')!)![1]
+    const html = await response.text()
+    const scripts = html.match(/<script[^>]*>\(self\.__vike_streamed=/g)!
+    expect(scripts.length > 0).toBe(true)
+    scripts.forEach((script) => expect(script).toBe(`<script nonce="${nonce}">(self.__vike_streamed=`))
+    expect(html).not.toContain('<b id="unescaped">')
+
+    await page.goto(getServerUrl() + '/streamed-values')
+    await expectValues()
+  })
+
+  test('streamed pageContext values: client-side navigation, one request', async () => {
+    await page.goto(getServerUrl() + '/streamed-values')
+    await expectValues()
+    await page.click('a[href="/"]')
+    await autoRetry(async () => expect(await page.textContent('h1')).toBe('Welcome'))
+    const requests: string[] = []
+    const onRequest = (request: { url(): string }) => requests.push(request.url())
+    page.on('request', onRequest)
+    await page.goBack()
+    await expectValues({ isNavigation: true })
+    page.removeListener('request', onRequest)
+    expect(requests.filter((url) => url.includes('.pageContext.json')).join()).toBe(
+      getServerUrl() + '/streamed-values/index.pageContext.json',
+    )
+  })
+}
+
+async function expectValues({ isNavigation = false } = {}) {
+  // The first chunk arrives before the last one is produced
+  if (isNavigation) await autoRetry(async () => expect(await page.textContent('#generator')).toBe('first'))
+  await autoRetry(
+    async () => {
+      expect(await page.textContent('#promise')).toBe('</script><b id="unescaped">unescaped</b><!--')
+      expect(await page.textContent('#bytes')).toBe(
+        Array.from({ length: 256 }, (_, i) => i.toString(16).padStart(2, '0')).join(''),
+      )
+      expect(await page.textContent('#failing')).toBe(
+        'A streamed pageContext value failed on the server-side (see the server logs)',
+      )
+      expect(await page.textContent('#generator')).toBe('first,last')
+    },
+    { timeout: 5 * 1000 },
+  )
+  expect(await page.locator('#unescaped').count()).toBe(0)
+  expectLog('Streamed value failed on purpose', { filter: (log) => log.logSource === 'stderr' })
+}
