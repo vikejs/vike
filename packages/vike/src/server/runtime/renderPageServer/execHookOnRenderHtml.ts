@@ -83,7 +83,7 @@ async function execHookOnRenderHtml(
   // The render hook sets `pageContext.content` instead of returning `documentHtml`.
   // If it returns a value then `pageContext.content` isn't the content: it can be the user's own property (e.g. set by onBeforeRender() or declared by `Vike.PageContext['content']`).
   if (hookReturn === undefined && pageContext.content !== undefined) {
-    const content = await getContent(pageContext.content, hook, onErrorWhileStreaming)
+    const content = await getContent(pageContext.content, onErrorWhileStreaming)
     return { content, htmlRender: null, renderHook: hook }
   }
 
@@ -102,13 +102,12 @@ async function execHookOnRenderHtml(
 
 async function getContent(
   content: unknown,
-  renderHook: RenderHook,
   onErrorWhileStreaming: (err: unknown) => void,
 ): Promise<Content> {
   if (typeof content === 'string' || content instanceof Uint8Array) return content
   assertUsage(
     isStreamReadableWeb(content),
-    `The ${renderHook.hookName as string}() hook defined at ${renderHook.hookFilePath} doesn't return ${pc.code('documentHtml')} and ${pc.code('pageContext.content')} is a value that isn't a string, a Uint8Array, nor a ReadableStream, see https://vike.dev/pageContext#content`,
+    `${pc.code('pageContext.content')} is a value that isn't a string, a Uint8Array, nor a ReadableStream, see https://vike.dev/pageContext#content`,
   )
   // Errors before the first chunk => error page
   return await awaitFirstChunk(content, onErrorWhileStreaming)
