@@ -92,6 +92,64 @@ console.log(obj instanceof MyClass) // false
 See [GitHub > `brillout/json-serializer` > #3 Support user-defined classes](https://github.com/brillout/json-serializer/issues/3).
 
 
+## Streaming
+
+A `passToClient` value can be, or contain, a `Promise`, a `ReadableStream`, or an async iterable (e.g. an async generator). Vike sends `pageContext` to the client-side as soon as your hooks are done, without waiting for these values, and then sends them in the same HTTP response as they're produced.
+
+```ts
+// /pages/product/@id/+data.ts
+// Environment: server
+
+import type { PageContextServer } from 'vike/types'
+
+export type Data = Awaited<ReturnType<typeof data>>
+
+export async function data(pageContext: PageContextServer) {
+  const product = await getProduct(pageContext.routeParams.id)
+  return {
+    product,
+    // Not awaited: sent to the client-side once it resolves
+    reviews: getReviews(product.id),
+    // Sent to the client-side chunk by chunk
+    recommendations: getRecommendations(product.id),
+  }
+}
+
+async function* getRecommendations(productId: string) {
+  for await (const product of db.recommendations(productId)) {
+    yield product
+  }
+}
+```
+
+```ts
+// /pages/product/@id/+onHydrationEnd.ts
+// Environment: client
+
+import type { PageContextClient } from 'vike/types'
+import type { Data } from './+data'
+
+export async function onHydrationEnd(pageContext: PageContextClient<Data>) {
+  const { reviews, recommendations } = pageContext.data
+  // A Promise
+  console.log(await reviews)
+  // An async iterable
+  for await (const product of recommendations) {
+    console.log(product)
+  }
+}
+```
+
+- The values can be anywhere in a `passToClient` value, and the value of a `Promise` or the chunks of a `ReadableStream` / async iterable can themselves contain promises, streams and async iterables.
+- A chunk can be any serializable value. A `Uint8Array` chunk is sent byte for byte.
+- If a value fails (e.g. the `Promise` rejects), the error is logged on the server-side, and the value fails on the client-side with a generic error (the server-side error isn't sent to the browser). The other values aren't affected.
+- Upon the first render, the values are sent in `<script>` tags at the end of the HTML (with the <Link href="/csp">CSP nonce</Link>). With <Link href="/streaming">HTML streaming</Link>, they're sent as soon as they're produced; otherwise, Vike sends the HTML once all values are done.
+- Upon client-side navigation, the values are sent within the same <Link href="/pageContext.json">`pageContext.json` request</Link>. If the user navigates away before the page is rendered, the values are cancelled. When the browser disconnects, Vike cancels the streams and async iterables on the server-side.
+- Upon <Link href="/pre-rendering">pre-rendering</Link>, Vike waits for all values and includes them in the HTML and in `index.pageContext.json`. A value that fails makes pre-rendering fail.
+
+> The response of `pageContext.json` requests with streamed values is a stream: use `pageContext.httpResponse.pipe()` or `pageContext.httpResponse.getReadableWebStream()` instead of `pageContext.httpResponse.body`, see <Link href="/renderPage" />.
+
+
 ## Escape `.`
 
 In the (unlikely) event you need to pass properties that include `.` in their name:
