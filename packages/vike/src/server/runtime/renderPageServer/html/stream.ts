@@ -321,7 +321,7 @@ function pipeToStreamWritableNode(htmlRender: HtmlRender | Uint8Array, writable:
     return true
   }
   if (isStreamReadableNode(htmlRender) || isStreamReadableWeb(htmlRender)) {
-    // Like pipeline() (which is slower): destroy the readable, and thus cancel the stream, if the writable closes (or already has), and the writable if the stream errors
+    // Like pipeline() (which is slower): destroy the readable if the writable closes (or already has), and the writable if the readable errors
     const pipeReadable = (readable: StreamReadableNode) => {
       if (writable.destroyed) return readable.destroy()
       writable.on('close', () => readable.destroy())
@@ -732,17 +732,15 @@ async function createStreamWrapper({
       async cancel(reason) {
         debug('stream cancelled')
         isCancel = true
-        // react-streaming's Web stream has no cancel() and throws on every later write if cancelled
-        if (isReactStreaming) return
-        // Ends handleReadableWeb() which then calls closeStream()
-        await readerOriginal.cancel(reason)
+        // Ends handleReadableWeb() which then calls closeStream(). Not react-streaming's Web stream: it ignores cancel() and then throws on every write.
+        if (!isReactStreaming) await readerOriginal.cancel(reason)
       },
     })
 
     const writeChunk = (chunk: unknown) => {
       if (
         !isCancel &&
-        // If readableOriginal doesn't implement readableOriginal.cancel() then it may still emit data after we close the stream. We therefore need to check whether the steam is closed.
+        // If streamOriginal doesn't implement streamOriginal.cancel() then it may still emit data after we close the stream. We therefore need to check whether the steam is closed.
         !isClosed
       ) {
         controllerProxy.enqueue(encodeForWebStream(chunk) as any)
@@ -780,14 +778,9 @@ async function createStreamWrapper({
     const closeProxy = () => {
       readableProxy.push(null)
     }
-    const readableProxy: StreamReadableNode = new Readable({
-      read() {},
-      // Destroy the source when the consumer closes early (no error: that would be reported as a render error)
-      destroy(err, callback) {
-        readableOriginal.destroy()
-        callback(err)
-      },
-    })
+    const readableProxy: StreamReadableNode = new Readable({ read() {} })
+    // Destroy the source when the consumer closes early
+    readableProxy.once('close', () => readableOriginal.destroy())
 
     onReadyToWrite()
 
