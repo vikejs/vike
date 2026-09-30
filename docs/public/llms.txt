@@ -51,7 +51,7 @@ Paths below are relative to https://vike.dev (e.g. `/data-fetching` → https://
 
 - /guard — `+guard()` access control, runs after routing before `data()` (server default, client-configurable), reject via `throw render()`/`redirect()`, role/admin protection
 - /onBeforeRender — `+onBeforeRender()` pre-render hook (server default; client/shared), sets ANY `pageContext` prop (vs `data()` → only `.data`), data orchestration, custom hooks via `meta`
-- /onRenderHtml — `+onRenderHtml()` server render hook (defined by `vike-{react,vue,solid}`), returns `documentHtml`, or sets `pageContext.content` for non-HTML pages (feeds, sitemaps, images): `Content-Type` from the URL's file extension (override via `headersResponse`), pre-rendered at the URL, no injected tags
+- /onRenderHtml — `+onRenderHtml()` server render hook (defined by `vike-{react,vue,solid}`), returns `documentHtml`, or sets `pageContext.content` for non-HTML pages (feeds, sitemaps, images): pre-rendered at the URL, no injected tags
 - /onCreatePageContext — `+onCreatePageContext()` after routing before render (server/client/both), per-page cumulative, init pageContext / store setup
 - /onCreateGlobalContext — `+onCreateGlobalContext()` once on globalContext init (server/client/both), global cumulative, global data / auth / store init, `passToClient`
 - /onError — `+onError()` server-only cumulative, captures server-side errors, error tracking, gets `error` + nullable `pageContext`
