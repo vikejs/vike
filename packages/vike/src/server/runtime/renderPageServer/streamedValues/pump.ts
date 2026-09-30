@@ -8,6 +8,7 @@ import type { Line } from '../../../../shared-server-client/streamedValues.js'
 import { logRuntimeError, type PageContext_logRuntime } from '../../loggerRuntime.js'
 import { getReplacer, type StreamedValue } from './registry.js'
 import { serializeLine } from './lines.js'
+import { genPromise } from '../../../../utils/genPromise.js'
 import '../../../assertEnvServer.js'
 
 function pumpStreamedValues(
@@ -21,12 +22,7 @@ function pumpStreamedValues(
   const cancels = new Set<() => void>()
   let pending = 0
   let isEnded = false
-  let resolve!: () => void
-  let reject!: (err: unknown) => void
-  const done = new Promise<void>((resolve_, reject_) => {
-    resolve = resolve_
-    reject = reject_
-  })
+  const { promise: done, resolve, reject } = genPromise({ timeout: null })
 
   const end = (settle: () => void) => {
     if (isEnded) return
