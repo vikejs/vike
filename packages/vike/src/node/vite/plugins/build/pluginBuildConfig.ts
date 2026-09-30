@@ -1,7 +1,6 @@
 export { pluginBuildConfig }
 export { assertRollupInput }
 export { analyzeClientEntries }
-export { resetEntriesCache }
 
 import { assert, setAssertOnBeforeLog, assertUsage } from '../../../../utils/assert.js'
 import { onSetupBuild } from '../../../../utils/assertSetup.js'
@@ -11,8 +10,7 @@ import { removeFileExtension } from '../../../../utils/removeFileExtension.js'
 import { requireResolveDistFile } from '../../../../utils/requireResolve.js'
 import { unique } from '../../../../utils/unique.js'
 import { objectMap } from '../../../../utils/objectMap.js'
-import { getGlobalObject } from '../../../../utils/getGlobalObject.js'
-import { getVikeConfigInternal, type VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
+import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { findPageFiles } from '../../shared/findPageFiles.js'
 import type { ResolvedConfig, Plugin } from 'vite'
 import { generateVirtualFileId } from '../../../../shared-server-node/virtualFileId.js'
@@ -31,12 +29,6 @@ import {
 } from './handleAssetsManifest.js'
 import { resolveIncludeAssetsImportedByServer } from '../../../../server/runtime/renderPageServer/getPageAssets/retrievePageAssetsProd.js'
 import '../../assertEnvVite.js'
-
-type Entries = Record<string, string>
-const globalObject = getGlobalObject<{
-  // The configResolved() hook below runs once per Vite config resolution (e.g. once per environment), while the entries are the same for the whole build
-  entriesCache?: { vikeConfig: VikeConfigInternal; client?: Promise<Entries>; server?: Promise<Entries> }
-}>('build/pluginBuildConfig.ts', {})
 
 function pluginBuildConfig(): Plugin[] {
   return [
@@ -74,32 +66,12 @@ function pluginBuildConfig(): Plugin[] {
           onSetupBuild()
         },
       },
-      closeBundle: {
-        handler() {
-          // A subsequent build in the same process resolves the entries again
-          resetEntriesCache()
-        },
-      },
     },
   ]
 }
 
-function resetEntriesCache() {
-  globalObject.entriesCache = undefined
-}
-
-async function getEntries(config: ResolvedConfig, isServerSide: boolean): Promise<Entries> {
+async function getEntries(config: ResolvedConfig, isServerSide: boolean): Promise<Record<string, string>> {
   const vikeConfig = await getVikeConfigInternal()
-  if (globalObject.entriesCache?.vikeConfig !== vikeConfig) globalObject.entriesCache = { vikeConfig }
-  const kind = isServerSide ? 'server' : 'client'
-  globalObject.entriesCache[kind] ??= resolveEntries(config, isServerSide, vikeConfig)
-  return await globalObject.entriesCache[kind]
-}
-async function resolveEntries(
-  config: ResolvedConfig,
-  isServerSide: boolean,
-  vikeConfig: VikeConfigInternal,
-): Promise<Entries> {
   const { _pageConfigs: pageConfigs } = vikeConfig
   // TO-DO/next-major-release: remove
   const pageFileEntries = await getPageFileEntries(
