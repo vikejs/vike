@@ -414,6 +414,8 @@ async function renderPageClient(renderArgs: RenderArgs) {
       assertInfo(false, `Rendering error page ${errorPageId}`, { onlyOnce: false })
     }
 
+    // Unless the error page comes from a `throw render()`: its values are in the same response
+    if (!pageContextAbort) cancelStreamedValues()
     const res = await loadPageConfigsLazyClientSideAndExecHook(pageContext, isFirstRender, isRenderOutdated)
     /* Already called inside loadPageConfigsLazyClientSideAndExecHook()
     if (isRenderOutdated()) return
