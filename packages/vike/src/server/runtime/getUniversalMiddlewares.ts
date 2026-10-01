@@ -47,19 +47,10 @@ type ResponseHandler = (response: Response) => Awaitable<Response | undefined>
 
 // Resolved upon each request: the Vike config imports +server, so awaiting the config while +server loads deadlocks
 const universalMiddlewares = enhance(
-  async (
-    request: Request,
-    context?: Universal.Context,
-    runtime?: RuntimeAdapter,
-  ): Promise<Response | ((response: Response) => Promise<Response>) | undefined> => {
+  async (request: Request, context?: Universal.Context, runtime?: RuntimeAdapter) => {
     const middlewares = await getMiddlewares()
     if (middlewares.length === 0) return
-    // Response handlers returned by +middleware apply to the final response, which may come after this middleware
     const responseHandlers: ResponseHandler[] = []
-    const applyResponseHandlers = async (response: Response) => {
-      for (const responseHandler of responseHandlers) response = (await responseHandler(response)) ?? response
-      return response
-    }
     // Universal Middleware's pipe() throws `No Response found` if nothing returns a Response
     const fallThrough = new Response(null)
     const handler = pipeRoute([
@@ -67,6 +58,11 @@ const universalMiddlewares = enhance(
       ...middlewares.map((middleware) => collectResponseHandler(middleware, responseHandlers)),
     ]) as UniversalHandler
     const response = await handler(request, context ?? {}, runtime ?? getAdapterRuntime('other', { params: undefined }))
+    // Response handlers returned by +middleware apply to the final response, which may come after this middleware
+    const applyResponseHandlers = async (response: Response) => {
+      for (const responseHandler of responseHandlers) response = (await responseHandler(response)) ?? response
+      return response
+    }
     if (response !== fallThrough) return applyResponseHandlers(response)
     if (responseHandlers.length > 0) return applyResponseHandlers
   },
