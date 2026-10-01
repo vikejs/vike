@@ -1,6 +1,9 @@
 export { getContentTypeFromUrl }
 
 import { parseUrl } from './parseUrl.js'
+import { assertIsNotBrowser } from './assertIsNotBrowser.js'
+
+assertIsNotBrowser()
 
 const contentTypes = new Map(
   Object.entries({
