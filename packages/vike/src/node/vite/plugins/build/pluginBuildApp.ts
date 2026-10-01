@@ -106,7 +106,6 @@ function pluginBuildApp(): Plugin[] {
           await triggerPrerendering(builder.config)
         },
       },
-      // TO-DO/eventually: remove this writeBundle() hack once Vike requires Vite 7
       writeBundle: {
         /* We can't use this because it breaks Vite's logging. TO-DO/eventually: try again with latest Vite version.
         sequential: true,
@@ -116,6 +115,7 @@ function pluginBuildApp(): Plugin[] {
           try {
             handleAssetsManifest_assertUsageCssTarget(config, this.environment)
             await handleAssetsManifest(config, this.environment, options, bundle)
+            // Pre-render here only where buildApp() plugin hooks don't run: Vite 6 and Vite's build() API
             if (globalObject.isBuildAppHookRun) return
             if (!isViteServerSide_onlySsrEnv(config, this.environment)) return
             // Workaround for @vitejs/plugin-legacy
