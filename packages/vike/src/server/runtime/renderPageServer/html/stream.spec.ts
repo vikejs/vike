@@ -107,18 +107,20 @@ describe('processStream', () => {
     expect(reason).toBe('Some reason')
   })
 
-  it("doesn't cancel react-streaming's Web stream (it throws on every later write)", async () => {
-    let controller!: ReadableStreamDefaultController
+  it("cancels react-streaming's Web stream", async () => {
+    let cancelled = false
     const readable = new ReadableStream({
       start(c) {
-        controller = c
         c.enqueue(new Uint8Array([1]))
+      },
+      cancel() {
+        cancelled = true
       },
     })
     const streamReactStreaming = { readable, pipe: null, injectToStream() {}, hasStreamEnded: () => false }
     const streamWrapper = (await processStream(streamReactStreaming as never, opts)) as ReadableStream
     await streamWrapper.cancel()
-    expect(() => controller.enqueue(new Uint8Array([2]))).not.toThrow()
+    expect(cancelled).toBe(true)
   })
 })
 

@@ -539,8 +539,7 @@ async function createStreamWrapper({
   streamWrapper: StreamProviderNormalized
   streamWrapperOperations: { writeChunk: (chunk: unknown) => void; flushStream: null | (() => void) }
 }> {
-  const isReactStreaming = isStreamFromReactStreamingPackage(streamOriginal)
-  if (isReactStreaming) {
+  if (isStreamFromReactStreamingPackage(streamOriginal)) {
     debug(`onRenderHtml() hook returned ${pc.cyan('react-streaming')} result`)
     const stream = getStreamOfReactStreamingPackage(streamOriginal)
     ;(streamOriginal as StreamProviderAny) = stream
@@ -731,17 +730,13 @@ async function createStreamWrapper({
       async cancel(reason) {
         debug('stream cancelled')
         isCancel = true
-        // Ends handleReadableWeb() which then calls closeStream(). Not react-streaming's Web stream: it ignores cancel() and then throws on every write.
-        if (!isReactStreaming) await readerOriginal.cancel(reason)
+        // Ends handleReadableWeb() which then calls closeStream()
+        await readerOriginal.cancel(reason)
       },
     })
 
     const writeChunk = (chunk: unknown) => {
-      if (
-        // react-streaming's Web stream isn't cancelled and may still emit data
-        !isCancel &&
-        !isClosed
-      ) {
+      if (!isCancel && !isClosed) {
         controllerProxy.enqueue(encodeForWebStream(chunk) as any)
         debugWithChunk('data written (Web Readable)', chunk)
       } else {
