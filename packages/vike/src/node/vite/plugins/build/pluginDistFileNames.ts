@@ -32,7 +32,7 @@ function pluginDistFileNames(): Plugin[] {
             const { build } = envConfig
             copyRollupOutputs(build)
             const isServerSide = isViteServerSide_configEnvironment(envName, envConfig)
-            setFileNames(config, build, isServerSide)
+            setFileNames(config, build, isServerSide, envName)
             disableCSSBundling(config, build)
           })
         },
@@ -41,11 +41,17 @@ function pluginDistFileNames(): Plugin[] {
   ]
 }
 
-function setFileNames(config: ResolvedConfig, build: ResolvedBuildEnvironmentOptions, isServerSide: boolean) {
+function setFileNames(
+  config: ResolvedConfig,
+  build: ResolvedBuildEnvironmentOptions,
+  isServerSide: boolean,
+  envName: string,
+) {
   const rollupOutputs = getRollupOutputs(build)
   // We need to support multiple outputs: @vite/plugin-legacy adds an output, see https://github.com/vikejs/vike/issues/477#issuecomment-1406434802
   rollupOutputs.forEach((rollupOutput) => {
-    if (!('entryFileNames' in rollupOutput)) {
+    // Server environments other than `ssr` keep their own entry file names, e.g. @vitejs/plugin-rsc imports its `rsc` entry as `index.js`
+    if (!('entryFileNames' in rollupOutput) && (!isServerSide || envName === 'ssr')) {
       rollupOutput.entryFileNames = (chunkInfo) => getEntryFileName(chunkInfo, config, build, isServerSide, true)
     }
     if (!('chunkFileNames' in rollupOutput)) {

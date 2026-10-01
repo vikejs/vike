@@ -142,8 +142,6 @@ async function streamReadableWebToBytes(readableWeb: ReadableStream): Promise<Ui
   }
   return bytes
 }
-// The Web Readable wrapper of processStream() doesn't support cancel()
-const streamsCancelable = new WeakSet<ReadableStream>()
 // Resolves after the first chunk (rejects if the stream errors before), then reads on demand
 async function awaitFirstChunk(
   stream: StreamReadableWeb,
@@ -172,7 +170,6 @@ async function awaitFirstChunk(
       return reader.cancel(reason)
     },
   })
-  streamsCancelable.add(streamStarted)
   return streamStarted
 }
 async function stringToStreamReadableNode(str: string | Uint8Array): Promise<StreamReadableNode> {
@@ -265,7 +262,7 @@ async function getStreamReadableNode(htmlRender: HtmlRender | Uint8Array): Promi
   if (isStreamReadableNode(htmlRender)) {
     return htmlRender
   }
-  if (isStreamReadableWeb(htmlRender) && streamsCancelable.has(htmlRender)) {
+  if (isStreamReadableWeb(htmlRender)) {
     return streamReadableWebToStreamReadableNode(htmlRender)
   }
   return null
@@ -317,28 +314,23 @@ function pipeToStreamWritableNode(htmlRender: HtmlRender | Uint8Array, writable:
     streamPipeNode(writable)
     return true
   }
-  if (isStreamReadableNode(htmlRender)) {
-    // pipe() doesn't forward the writable closing (e.g. the user closed the tab)
-    writable.on('close', () => {
-      if (!htmlRender.readableEnded) htmlRender.destroy()
-    })
-    htmlRender.pipe(writable)
-    return true
-  }
   if (isStreamPipeNode(htmlRender)) {
     const streamPipeNode = getStreamPipeNode(htmlRender)
     assert(streamPipeNode)
     streamPipeNode(writable)
     return true
   }
-  if (isStreamReadableWeb(htmlRender)) {
-    streamReadableWebToStreamReadableNode(htmlRender).then(async (s) => {
+  if (isStreamReadableNode(htmlRender) || isStreamReadableWeb(htmlRender)) {
+    getStreamReadableNode(htmlRender).then(async (readable) => {
+      assert(readable)
       const { pipeline } = await loadStreamNodeModule()
-      // Unlike pipe(), pipeline() destroys the readable (and thus cancels the stream) if the writable closes early (e.g. the user closed the tab), and the writable if the stream errors
-      pipeline(s, writable, () => {})
+      // pipeline() throws if the writable is already destroyed (e.g. the client left before the first chunk)
+      if (writable.destroyed) return readable.destroy()
+      // Unlike pipe(), pipeline() destroys the readable if the writable closes early, and the writable if the readable errors or closes before its end
+      pipeline(readable, writable, () => {})
       // E.g. compression() holds the writes until flush()
       const w: StreamWritableNode & { flush?: () => void } = writable
-      s.on('data', () => w.flush?.())
+      readable.on('data', () => w.flush?.())
     })
     return true
   }
@@ -575,9 +567,13 @@ async function createStreamWrapper({
     const pipeProxy: StreamPipeNode = (writable_: StreamWritableNode) => {
       writableOriginal = writable_
       debug('original Node.js Writable received')
-      writableOriginal.on('close', () => {
+      // Let the source know when the response closes early (no-op once it has ended)
+      const onClose = () => {
         if (!hasEnded) onCancel()
-      })
+        writableProxy.destroy()
+      }
+      if (writableOriginal.destroyed) onClose()
+      else writableOriginal.on('close', onClose)
       onReadyToWrite()
       if (hasEnded) {
         // onReadyToWrite() already wrote everything; we can close the stream right away
@@ -647,7 +643,11 @@ async function createStreamWrapper({
     const pipeProxy: StreamPipeWeb = (writableOriginal: StreamWritableWeb) => {
       writerOriginal = writableOriginal.getWriter()
       debug('original Web Writable received')
-      writerOriginal.closed.catch(() => onCancel())
+      // Let the source know when the response closes early
+      writerOriginal.closed.catch((err) => {
+        onCancel()
+        readerProxy?.cancel(err)
+      })
       ;(async () => {
         // CloudFlare Workers does not implement `ready` property
         //  - https://github.com/vuejs/vue-next/issues/4287
@@ -664,7 +664,7 @@ async function createStreamWrapper({
     stampPipe(pipeProxy, 'web-stream')
     const writeChunk = (chunk: unknown) => {
       assert(writerOriginal)
-      writerOriginal.write(encodeForWebStream(chunk))
+      writerOriginal.write(encodeForWebStream(chunk)).catch(() => {})
       debugWithChunk('data written (Web Writable)', chunk)
     }
     // Web Streams have compression built-in
@@ -676,11 +676,12 @@ async function createStreamWrapper({
     const endStream = () => {
       hasEnded = true
       if (writerOriginal) {
-        writerOriginal.close()
+        writerOriginal.close().catch(() => {})
       }
     }
 
     let writableProxy: WritableStream<unknown>
+    let readerProxy: undefined | ReadableStreamDefaultReader
     if (typeof ReadableStream !== 'function') {
       writableProxy = new WritableStream({
         write(chunk) {
@@ -698,7 +699,8 @@ async function createStreamWrapper({
     } else {
       const { readable, writable } = new TransformStream()
       writableProxy = writable
-      handleReadableWeb(readable, {
+      readerProxy = readable.getReader()
+      handleReadableWeb(readerProxy, {
         onData,
         onError(err) {
           onError(err)
@@ -720,7 +722,7 @@ async function createStreamWrapper({
   if (isStreamReadableWeb(streamOriginal)) {
     debug('onRenderHtml() hook returned Web Readable')
 
-    const readableOriginal: StreamReadableWeb = streamOriginal
+    const readerOriginal = streamOriginal.getReader()
 
     let isClosed = false
     let isCancel = false
@@ -736,7 +738,7 @@ async function createStreamWrapper({
       start(controller) {
         controllerProxy = controller
         onReadyToWrite()
-        handleReadableWeb(readableOriginal, {
+        handleReadableWeb(readerOriginal, {
           onData,
           onError(err) {
             onError(err)
@@ -747,22 +749,17 @@ async function createStreamWrapper({
           },
         })
       },
-      async cancel(...args) {
+      async cancel(reason) {
         debug('stream cancelled')
         isCancel = true
         onCancel()
-        await readableOriginal.cancel(...args)
-        // If readableOriginal has implemented readableOriginal.cancel() then the onEnd() callback and therefore closeStream() may already have been called at this point
-        await closeStream()
+        // Ends handleReadableWeb() which then calls closeStream()
+        await readerOriginal.cancel(reason)
       },
     })
 
     const writeChunk = (chunk: unknown) => {
-      if (
-        !isCancel &&
-        // If readableOriginal doesn't implement readableOriginal.cancel() then it may still emit data after we close the stream. We therefore need to check whether the steam is closed.
-        !isClosed
-      ) {
+      if (!isCancel && !isClosed) {
         controllerProxy.enqueue(encodeForWebStream(chunk) as any)
         debugWithChunk('data written (Web Readable)', chunk)
       } else {
@@ -799,8 +796,10 @@ async function createStreamWrapper({
       readableProxy.push(null)
     }
     const readableProxy: StreamReadableNode = new Readable({ read() {} })
-    readableProxy.on('close', () => {
+    // Destroy the source when the consumer closes early
+    readableProxy.once('close', () => {
       if (!readableProxy.readableEnded) onCancel()
+      readableOriginal.destroy()
     })
 
     onReadyToWrite()
@@ -827,14 +826,13 @@ async function createStreamWrapper({
 }
 
 async function handleReadableWeb(
-  readable: ReadableStream,
+  reader: ReadableStreamDefaultReader,
   {
     onData,
     onError,
     onEnd,
   }: { onData: (chunk: unknown) => void; onError: (err: unknown) => void; onEnd: () => Promise<void> },
 ) {
-  const reader = readable.getReader()
   while (true) {
     let result: ReadableStreamReadResult<unknown>
     try {
