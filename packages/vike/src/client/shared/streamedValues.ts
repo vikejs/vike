@@ -5,7 +5,7 @@
 // ../runtime-client-routing/streamedValues.ts).
 
 export { parsePageContextHtml }
-export { readPageContextJson }
+export { readPageContextJsonStreamed }
 export { cancelStreamedValues }
 
 import { parse } from '@brillout/json-serializer/parse'
@@ -28,7 +28,7 @@ function parsePageContextHtml(pageContextJson: string): unknown {
 
 // Client-side navigation: the `.pageContext.json` response (see server/runtime/renderPageServer/pageContextJson.ts),
 // `[pageContext` then one `,line` per line then `]`. The pageContext is returned as soon as its line arrives.
-async function readPageContextJson(response: Response): Promise<Record<string, unknown>> {
+async function readPageContextJsonStreamed(response: Response): Promise<Record<string, unknown>> {
   const reader = response.body!.getReader()
   const lines = readLines(reader)
   const { done, value: lineFirst } = await lines.next()

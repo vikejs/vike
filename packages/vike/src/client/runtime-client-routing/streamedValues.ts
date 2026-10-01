@@ -18,7 +18,7 @@ async function readPageContextJson(response: Response): Promise<unknown> {
   // A pageContext always serializes as `{…}`, so an array (`[` is 91) means streamed values
   if (chunk.value?.[0] !== 91) return parse(await response.text())
   decoder ??= await import('../shared/streamedValues.js')
-  return decoder.readPageContextJson(response)
+  return decoder.readPageContextJsonStreamed(response)
 }
 
 function cancelStreamedValues(pageContext: object, isRendered: boolean): void {
