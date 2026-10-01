@@ -44,7 +44,7 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
       config: {
         order: 'pre',
         async handler(configFromUser, env) {
-          const viteVersion = this?.meta?.viteVersion // `this` is `undefined` on Vite 6 or older
+          const viteVersion = this?.meta.viteVersion // `this` is `undefined` on Vite 6 or older
           assertViteVersion(viteVersion)
           const isDev = isDevCheck(env)
           const isBuild = env.command === 'build'
