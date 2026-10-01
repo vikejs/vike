@@ -19,6 +19,10 @@ const config = {
     workerGreeting: {
       env: { server: true },
     },
+    // - Called by +data.js (server environment), runs in the worker environment
+    getWorkerInfo: {
+      env: { worker: true },
+    },
     // - Set by +workerSuffixed.worker.js
     workerSuffixed: {
       env: { server: true, client: true },

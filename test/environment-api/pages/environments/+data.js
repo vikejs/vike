@@ -1,18 +1,15 @@
 export { data }
 
-import { environmentName, viteEnvironmentName, loadPageConfig } from 'vike/runtime'
-import { loadWorker } from 'virtual:load-worker'
+import viteEnvironmentName from 'virtual:environment-name'
 
 async function data(pageContext) {
-  const { config } = await loadPageConfig(pageContext.pageId)
-  const { getWorkerInfo } = await loadWorker()
+  const worker = await pageContext.config.getWorkerInfo(pageContext, 'Worker:')
   return {
     server: {
-      environmentName,
       viteEnvironmentName,
-      hasPage: typeof config.Page === 'function',
-      hasWorkerConfig: 'workerGreeting' in config || 'workerSuffixed' in config,
+      hasWorkerConfig: 'workerGreeting' in pageContext.config || 'workerSuffixed' in pageContext.config,
+      writtenByWorker: pageContext.writtenByWorker,
     },
-    worker: await getWorkerInfo(pageContext.pageId),
+    worker,
   }
 }

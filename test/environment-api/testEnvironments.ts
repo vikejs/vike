@@ -1,32 +1,20 @@
-export { testVikeRuntime }
+export { testEnvironments }
 
-import { test, expect, fetchHtml, page, getServerUrl, autoRetry } from '@brillout/test-e2e'
+import { test, expect, fetchHtml } from '@brillout/test-e2e'
 
-function testVikeRuntime() {
-  test('vike/runtime in the ssr and worker environments', async () => {
-    const html = await fetchHtml('/vike-runtime')
-    expect(html).toContain(
-      escape({ environmentName: 'server', viteEnvironmentName: 'ssr', hasPage: true, hasWorkerConfig: false }),
-    )
+function testEnvironments() {
+  test('the server environment calls a function of the worker environment', async () => {
+    const html = await fetchHtml('/environments')
+    expect(html).toContain(escape({ viteEnvironmentName: 'ssr', hasWorkerConfig: false, writtenByWorker: true }))
     expect(html).toContain(
       escape({
-        environmentName: 'worker',
-        environmentNameOfDependency: 'worker',
         viteEnvironmentName: 'worker',
-        configNames: ['workerGreeting', 'workerSuffixed'],
-        workerGreeting: 'Hello from the worker environment',
+        configNames: ['getWorkerInfo', 'workerGreeting', 'workerSuffixed'],
+        workerGreeting: 'Worker: Hello from the worker environment',
         workerSuffixed: 'Defined by +workerSuffixed.worker.js',
+        urlPathname: '/environments',
       }),
     )
-  })
-
-  test('vike/runtime in the client environment', async () => {
-    await page.goto(getServerUrl() + '/vike-runtime')
-    await autoRetry(async () => {
-      expect(await page.textContent('#client')).toBe(
-        JSON.stringify({ environmentName: 'client', viteEnvironmentName: 'client', hasPage: true }),
-      )
-    })
   })
 }
 

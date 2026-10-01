@@ -1,4 +1,4 @@
 import { testRunClassic } from '../../test/utils'
-import { testVikeRuntime } from './testVikeRuntime'
+import { testEnvironments } from './testEnvironments'
 testRunClassic('pnpm run dev')
-testVikeRuntime()
+testEnvironments()

@@ -1,16 +1,10 @@
 import react from '@vitejs/plugin-react'
 import vike from 'vike/plugin'
-import path from 'node:path'
-import { pathToFileURL } from 'node:url'
 
 export default { plugins: [react(), vike(), workerEnvironment()] }
 
 // - Adds a Vite environment `worker` with config values of its own, see pages/+config.js
-// - The `ssr` environment loads it via `virtual:load-worker`
 function workerEnvironment() {
-  const workerEntry = './worker/entry.js'
-  let root
-  let server
   return {
     name: 'test:worker-environment',
     config() {
@@ -18,15 +12,14 @@ function workerEnvironment() {
         environments: {
           worker: {
             consumer: 'server',
-            // Bundle all dependencies and pre-bundle vike-runtime-dep, like @cloudflare/vite-plugin
+            // Bundle all dependencies, like @cloudflare/vite-plugin
             resolve: { noExternal: true },
-            optimizeDeps: { include: ['vike-runtime-dep'] },
-            build: { outDir: 'dist/worker', rollupOptions: { input: workerEntry } },
+            build: { outDir: 'dist/worker', rollupOptions: { input: './worker/entry.js' } },
           },
         },
         builder: {
           async buildApp(builder) {
-            // - Built first: a named environment doesn't depend on the other builds
+            // - Built first: pre-rendering (while building ssr) loads it
             await builder.build(builder.environments.worker)
             await builder.build(builder.environments.client)
             await builder.build(builder.environments.ssr)
@@ -34,24 +27,12 @@ function workerEnvironment() {
         },
       }
     },
-    configResolved(config) {
-      root = config.root
-    },
-    configureServer(server_) {
-      server = server_
-    },
+    // The name of the Vite environment that imports it
     resolveId(id) {
-      if (id === 'virtual:load-worker') return '\0virtual:load-worker'
+      if (id === 'virtual:environment-name') return '\0virtual:environment-name'
     },
     load(id) {
-      if (id !== '\0virtual:load-worker') return
-      if (server) {
-        globalThis.__loadWorker = () => server.environments.worker.runner.import(workerEntry)
-        return 'export const loadWorker = () => globalThis.__loadWorker()'
-      }
-      // Vite's default file name: Vike doesn't set the output file names of named environments
-      const workerEntryBuilt = pathToFileURL(path.join(root, 'dist/worker/entry.js')).href
-      return `const url = ${JSON.stringify(workerEntryBuilt)}; export const loadWorker = () => import(/* @vite-ignore */ url)`
+      if (id === '\0virtual:environment-name') return `export default ${JSON.stringify(this.environment.name)}`
     },
   }
 }

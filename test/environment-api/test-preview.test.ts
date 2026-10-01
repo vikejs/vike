@@ -1,5 +1,5 @@
 import { testRunClassic } from '../../test/utils'
-import { testVikeRuntime } from './testVikeRuntime'
+import { testEnvironments } from './testEnvironments'
 import { test, expect } from '@brillout/test-e2e'
 import fs from 'node:fs'
 import path from 'node:path'
@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 testRunClassic('pnpm run preview')
-testVikeRuntime()
+testEnvironments()
 
 test("the worker environment doesn't contain Vike's server entry", () => {
   const manifest = JSON.parse(fs.readFileSync(path.join(__dirname, 'dist/worker/.vite/manifest.json'), 'utf-8'))
