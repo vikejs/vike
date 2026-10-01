@@ -92,6 +92,70 @@ console.log(obj instanceof MyClass) // false
 See [GitHub > `brillout/json-serializer` > #3 Support user-defined classes](https://github.com/brillout/json-serializer/issues/3).
 
 
+## Streaming
+
+A `passToClient` value can be, or contain, a `Promise`, a `ReadableStream`, or an async iterable (e.g. an async generator). Vike sends the `pageContext` object to the client-side without waiting for these asynchronous values, and then sends them in the same HTTP response.
+
+```ts
+// /pages/product/@id/+data.ts
+// Environment: server
+
+import type { PageContextServer } from 'vike/types'
+
+export type Data = Awaited<ReturnType<typeof data>>
+
+export async function data(pageContext: PageContextServer) {
+  const product = await getProduct(pageContext.routeParams.id)
+  return {
+    // Sent immediately
+    product,
+    // Sent later, once it resolves
+    reviews: getReviews(product.id),
+    // Sent as a stream, chunk by chunk
+    recommendations: getRecommendations(product.id),
+  }
+}
+
+async function getReviews(productId: string) {
+  const reviews = await db.reviews(productId)
+  return reviews
+}
+
+async function* getRecommendations(productId: string) {
+  for await (const product of db.recommendations(productId)) {
+    yield product
+  }
+}
+```
+
+```ts
+// /pages/product/@id/+onHydrationEnd.ts
+// Environment: client
+
+import type { PageContextClient } from 'vike/types'
+import type { Data } from './+data'
+
+export async function onHydrationEnd(pageContext: PageContextClient<Data>) {
+  const { product, reviews, recommendations } = pageContext.data
+  // Already available
+  console.log(product)
+  // A Promise
+  console.log(await reviews)
+  // An async iterable
+  for await (const product of recommendations) {
+    console.log(product)
+  }
+}
+```
+
+- The value of a `Promise` and the chunks of a `ReadableStream` / async iterable can be any serializable value, including further promises, streams and async iterables. A `Uint8Array` chunk is sent byte for byte.
+- If a value fails, the error is logged on the server-side, and the value fails on the client-side with a generic error.
+- With an HTML string (instead of an <Link href="/streaming">HTML stream</Link>) and upon <Link href="/pre-rendering">pre-rendering</Link>, the HTML waits for all values.
+- Upon client-side navigation, the values the previous page fetched are cancelled. (The values of the first page, sent with its HTML, keep streaming until they end.)
+
+> The HTTP response must be a stream: use `pageContext.httpResponse.pipe()` or `pageContext.httpResponse.getReadableWebStream()` instead of `pageContext.httpResponse.body`, see <Link href="/renderPage" />.
+
+
 ## Escape `.`
 
 In the (unlikely) event you need to pass properties that include `.` in their name:
