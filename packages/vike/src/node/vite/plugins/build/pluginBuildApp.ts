@@ -13,15 +13,12 @@ import pc from '@brillout/picocolors'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { isVikeCliOrApi } from '../../../../shared-server-node/api-context.js'
 import { handleAssetsManifest, handleAssetsManifest_assertUsageCssTarget } from './handleAssetsManifest.js'
-import { isViteServerSide_onlySsrEnv } from '../../shared/isViteServerSide.js'
 import { runPrerenderFromAutoRun } from '../../../prerender/runPrerenderEntry.js'
-import { getManifestFilePathRelative } from '../../shared/getManifestFilePathRelative.js'
 import { logErrorServer } from '../../../../server/runtime/logErrorServer.js'
 import '../../assertEnvVite.js'
 
 const globalObject = getGlobalObject('build/pluginBuildApp.ts', {
   forceExit: false,
-  isBuildAppHookRun: false,
 })
 
 function pluginBuildApp(): Plugin[] {
@@ -45,12 +42,6 @@ function pluginBuildApp(): Plugin[] {
               },
             },
           }
-        },
-      },
-      buildApp: {
-        order: 'pre',
-        async handler() {
-          globalObject.isBuildAppHookRun = true
         },
       },
     },
@@ -108,15 +99,6 @@ function pluginBuildApp(): Plugin[] {
           try {
             handleAssetsManifest_assertUsageCssTarget(config, this.environment)
             await handleAssetsManifest(config, this.environment, options, bundle)
-            // Pre-render here only where buildApp() plugin hooks don't run: Vite's build() API
-            if (globalObject.isBuildAppHookRun) return
-            if (!isViteServerSide_onlySsrEnv(config, this.environment)) return
-            // Workaround for @vitejs/plugin-legacy
-            //  - The legacy plugin triggers its own Rollup build for the client-side.
-            //  - The legacy plugin doesn't generate a manifest => we can use that to detect the legacy plugin build.
-            //  - Issue & reproduction: https://github.com/vikejs/vike/issues/1154#issuecomment-1965954636
-            if (!bundle[getManifestFilePathRelative(config.build.manifest)]) return
-            await triggerPrerendering(config)
           } catch (err) {
             // We use try-catch also because:
             // - Vite/Rollup swallows errors thrown inside the writeBundle() hook. (It doesn't swallow errors thrown inside the first writeBundle() hook while building the client-side, but it does swallow errors thrown inside the second writeBundle() while building the server-side triggered after Vike calls Vite's `build()` API.)
