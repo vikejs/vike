@@ -664,6 +664,8 @@ type ConfigBuiltIn = {
    *
    * The middlewares defined via `+middleware` are so called "Universal Middleware" — they work with any JavaScript server (Hono, Express, Cloudflare, ...).
    *
+   * They run for every request, including your `+server` routes: limit one to some URLs with `enhance(middleware, { path, method })`.
+   *
    * https://github.com/magne4000/universal-middleware
    */
   middleware?: EnhancedMiddleware | EnhancedMiddleware[]
