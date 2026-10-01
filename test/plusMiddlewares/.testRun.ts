@@ -41,7 +41,10 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
       expect(await response.text()).toContain('Rendered to HTML.')
       expect(response.headers.get('x-middleware')).toBe('express')
     }
-    // Vike's own redirect (trailing slash removal)
+  })
+
+  test("+middleware response handlers apply to Vike's own redirects", async () => {
+    // Trailing slash removal
     const response: Response = await fetch(`${getServerUrl()}/some-page/`, { redirect: 'manual' })
     expect(response.status).toBe(301)
     expect(response.headers.get('x-middleware')).toBe('express')
