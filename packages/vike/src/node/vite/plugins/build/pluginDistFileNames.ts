@@ -52,7 +52,7 @@ function setFileNames(
   rollupOutputs.forEach((rollupOutput) => {
     // Server environments other than `ssr` keep their own entry file names, e.g. @vitejs/plugin-rsc imports its `rsc` entry as `index.js`
     if (!('entryFileNames' in rollupOutput) && (!isServerSide || envName === 'ssr')) {
-      rollupOutput.entryFileNames = (chunkInfo) => getEntryFileName(chunkInfo, config, build, isServerSide, true)
+      rollupOutput.entryFileNames = (chunkInfo) => getEntryFileName(chunkInfo, config, build, isServerSide)
     }
     if (!('chunkFileNames' in rollupOutput)) {
       rollupOutput.chunkFileNames = (chunkInfo) => getChunkFileName(chunkInfo, build, isServerSide)
@@ -147,7 +147,6 @@ function getEntryFileName(
   config: ResolvedConfig,
   build: ResolvedBuildEnvironmentOptions,
   isServerSide: boolean,
-  isEntry: boolean,
 ): string {
   const userRootDir = config.root
   const assetsDir = getAssetsDir(build)
@@ -166,7 +165,7 @@ function getEntryFileName(
   if (isForClientSide) {
     return `${assetsDir}/${name}.[hash].js`
   } else {
-    return `${name}.${isEntry ? 'mjs' : 'js'}`
+    return `${name}.mjs`
   }
 }
 
