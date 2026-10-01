@@ -32,7 +32,7 @@ function pluginDistFileNames(): Plugin[] {
         async handler(config) {
           const { _runtimeEnvironmentNames: runtimeEnvironmentNames } = await getVikeConfigInternal()
           Object.entries(config.environments).forEach(([envName, envConfig]) => {
-            // Named environments (e.g. `rsc`) keep their own output settings: e.g. @vitejs/plugin-rsc imports its `rsc` entry as `index.js`
+            // Vike doesn't own the builds of other Vike environments (e.g. `rsc`): it only emits `vike-entry.mjs` there
             if (isEnvironmentNamed(envName, runtimeEnvironmentNames)) return
             const { build } = envConfig
             copyRollupOutputs(build)

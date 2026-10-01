@@ -90,7 +90,7 @@ async function importGlobalEntry(
   const environment = globalContext._viteDevServer?.environments[environmentName]
   assertUsage(
     isRunnableDevEnvironment(environment),
-    `The Vike environment ${environmentName} should run in the same runtime (process or worker) as Vike's server`,
+    `The Vike environment ${environmentName} should be a server-side environment running in the same runtime (process or worker) as Vike's server`,
   )
   return environment.runner.import(generateVirtualFileId({ type: 'global-entry', environmentName }))
 }
