@@ -1,8 +1,6 @@
 // TO-DO/soon/same-api: use public API internally?
 // TO-DO/soon/flat-pageContext: rename definedAt => definedBy
 export { resolveGlobalConfigPublic }
-export { resolvePageConfigPublic }
-export { getPublicCopy }
 export { resolvePageContextConfig }
 export { resolveGlobalContextConfig }
 export type { PageContextConfig }
@@ -13,7 +11,6 @@ export type { Sources }
 export type { From }
 export type { ExportsAll }
 export type { ConfigEntries }
-export type { ConfigPublic as PageConfigPublic }
 
 import { assertDefaultExports, forbiddenDefaultExports } from '../getPageFiles/assert_exports_old_design.js'
 import type { FileType } from '../getPageFiles/fileTypes.js'

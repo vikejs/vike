@@ -28,7 +28,6 @@ const WHITELIST_PATTERNS = [
   // Shared code (environment-agnostic utilities and types)
   'src/shared-server-client/**',
   'src/shared-server-node/**',
-  'src/runtime/**',
   'src/types/**',
   'src/utils/**',
 

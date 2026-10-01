@@ -1,6 +1,7 @@
 export { pluginBuildConfig }
 export { assertRollupInput }
 export { analyzeClientEntries }
+export { getEnvironmentEntryPlaceholder }
 
 import { assert, setAssertOnBeforeLog, assertUsage } from '../../../../utils/assert.js'
 import { onSetupBuild } from '../../../../utils/assertSetup.js'
@@ -30,6 +31,8 @@ import {
 } from './handleAssetsManifest.js'
 import { resolveIncludeAssetsImportedByServer } from '../../../../server/runtime/renderPageServer/getPageAssets/retrievePageAssetsProd.js'
 import { serverEntryVirtualId } from '@brillout/vite-plugin-server-entry/plugin'
+import { getMagicString } from '../../shared/getMagicString.js'
+import path from 'node:path'
 import '../../assertEnvVite.js'
 
 const inputsBeforeServerEntry = new WeakMap<ResolvedConfig, Map<string, Rollup.InputOption | undefined>>()
@@ -50,7 +53,7 @@ function pluginBuildConfig(): Plugin[] {
           const entriesClient = await getEntries(config, false)
           const entriesServer = await getEntries(config, true)
           for (const [envName, envConfig] of Object.entries(config.environments)) {
-            // Named environments (e.g. `rsc`) load their pages lazily via `vike/runtime`
+            // Named environments (e.g. `rsc`) only get Vike's entry below
             if (isEnvironmentNamed(envName, runtimeEnvironmentNames)) {
               removeServerEntry(envConfig.build.rollupOptions, inputsBeforeServerEntry.get(config)?.get(envName))
               continue
@@ -78,6 +81,43 @@ function pluginBuildConfig(): Plugin[] {
       },
     },
     {
+      // Vike's server environment imports the global entry of every other Vike environment (e.g. `rsc`), see loadPageConfigsOfEnvironments.ts
+      name: 'vike:build:pluginBuildConfig:environmentEntries',
+      apply: 'build',
+      buildStart: {
+        async handler() {
+          const { name, config } = this.environment
+          const { _runtimeEnvironmentNames: runtimeEnvironmentNames } = await getVikeConfigInternal()
+          if (!isEnvironmentNamed(name, runtimeEnvironmentNames)) return
+          assertUsage(
+            config.consumer === 'server',
+            `The Vike environment ${name} should be a server-side Vite environment`,
+          )
+          this.emitFile({
+            type: 'chunk',
+            id: generateVirtualFileId({ type: 'global-entry', environmentName: name }),
+            fileName: environmentEntryFileName,
+          })
+        },
+      },
+      renderChunk: {
+        handler(code, chunk) {
+          if (!code.includes(environmentEntryPlaceholder)) return
+          const { config } = this.environment
+          const getOutDir = (name: string) => path.resolve(config.root, config.environments[name]!.build.outDir)
+          const { magicString, getMagicStringResult } = getMagicString(code, chunk.fileName)
+          for (const match of code.matchAll(environmentEntryPlaceholderRegex)) {
+            const environmentEntry = path.join(getOutDir(match[2]!), environmentEntryFileName)
+            const chunkDir = path.dirname(path.join(getOutDir(this.environment.name), chunk.fileName))
+            let importPath = path.relative(chunkDir, environmentEntry).split(path.sep).join('/')
+            if (!importPath.startsWith('.')) importPath = `./${importPath}`
+            magicString.overwrite(match.index, match.index + match[0].length, `import(${JSON.stringify(importPath)})`)
+          }
+          return getMagicStringResult()
+        },
+      },
+    },
+    {
       // Before @brillout/vite-plugin-server-entry adds (and normalizes) its input, see removeServerEntry() below: among `order: 'post'` hooks, `enforce: 'pre'` plugins run first, and every instance of the library adds its input in an `enforce: 'post'` plugin
       name: 'vike:build:pluginBuildConfig:inputs',
       apply: 'build',
@@ -93,6 +133,14 @@ function pluginBuildConfig(): Plugin[] {
       },
     },
   ]
+}
+
+const environmentEntryFileName = 'vike-entry.mjs'
+const environmentEntryPlaceholder = '__VIKE_ENVIRONMENT_ENTRY__'
+const environmentEntryPlaceholderRegex = new RegExp(`(["'\`])${environmentEntryPlaceholder}:(.+?)\\1`, 'g')
+// Replaced by an import() of the environment's entry, once the importer's location is known
+function getEnvironmentEntryPlaceholder(environmentName: string) {
+  return `${environmentEntryPlaceholder}:${environmentName}`
 }
 
 // Upon `builder.sharedConfigBuild: false` (Vite's default), @brillout/vite-plugin-server-entry adds Vike's server entry to every server-side environment

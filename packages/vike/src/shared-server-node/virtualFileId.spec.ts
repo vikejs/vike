@@ -46,14 +46,4 @@ describe('named virtual file IDs', () => {
       isClientRouting: false,
     })
   })
-
-  it('round-trips runtime IDs', () => {
-    const id = generateVirtualFileId({ type: 'runtime', viteEnvironmentName: 'ssr' })
-    expect(id).toBe('virtual:vike:runtime:ssr')
-    expect(parseVirtualFileId(id)).toStrictEqual({ type: 'runtime', viteEnvironmentName: 'ssr' })
-    expect(parseVirtualFileId('\0virtual:vike:runtime:rsc')).toStrictEqual({
-      type: 'runtime',
-      viteEnvironmentName: 'rsc',
-    })
-  })
 })

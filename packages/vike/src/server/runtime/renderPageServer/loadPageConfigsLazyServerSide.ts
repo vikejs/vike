@@ -25,6 +25,7 @@ import type { PageContextAfterRoute } from '../../../shared-server-client/route/
 import type { PageContextCreatedServer } from './createPageContextServer.js'
 import { resolveHeadersResponseEarly } from './headersResponse.js'
 import { resolvePageContextCspNone } from './csp.js'
+import { addConfigsOfEnvironments } from './loadPageConfigsOfEnvironments.js'
 import '../../assertEnvServer.js'
 
 type PageContext_loadPageConfigsLazyServerSide = PageContextCreatedServer &
@@ -166,6 +167,7 @@ async function loadPageUserFiles(
         pageConfigLoaded,
         pageContext._globalContext._pageConfigGlobal,
       )
+      if (pageConfigLoaded) await addConfigsOfEnvironments(pageContextAddendum, pageContext)
       return { pageContextAddendum }
     })(),
     analyzePageClientSideInit(pageContext._globalContext._pageFilesAll, pageContext.pageId, {

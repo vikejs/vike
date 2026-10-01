@@ -1,5 +1,4 @@
 export { generateVirtualFileGlobalEntry }
-export { getCode }
 
 import type { PageConfigBuildTime, PageConfigGlobalBuildTime } from '../../../../types/PageConfig.js'
 import { generateVirtualFileId } from '../../../../shared-server-node/virtualFileId.js'
@@ -11,6 +10,8 @@ import {
 } from '../../../../shared-server-client/page-configs/serialize/serializeConfigValues.js'
 import { VIRTUAL_FILE_ID_constantsGlobalThis } from '../pluginReplaceConstantsGlobalThis.js'
 import type { RuntimeEnvRuntime } from './getConfigValueSourcesRelevant.js'
+import { isVikeEnvironmentBuiltIn } from '../../shared/environmentName.js'
+import { getEnvironmentEntryPlaceholder } from '../build/pluginBuildConfig.js'
 import '../../assertEnvVite.js'
 
 async function generateVirtualFileGlobalEntry(
@@ -19,8 +20,12 @@ async function generateVirtualFileGlobalEntry(
   id: string,
 ): Promise<string> {
   const vikeConfig = await getVikeConfigInternal(true)
-  const { _pageConfigs: pageConfigs, _pageConfigGlobal: pageConfigGlobal } = vikeConfig
-  return getCode(pageConfigs, pageConfigGlobal, runtimeEnv, isForClientSide, id)
+  const {
+    _pageConfigs: pageConfigs,
+    _pageConfigGlobal: pageConfigGlobal,
+    _runtimeEnvironmentNames: runtimeEnvironmentNames,
+  } = vikeConfig
+  return getCode(pageConfigs, pageConfigGlobal, runtimeEnv, isForClientSide, id, runtimeEnvironmentNames)
 }
 
 function getCode(
@@ -29,6 +34,7 @@ function getCode(
   runtimeEnv: RuntimeEnvRuntime & { isDev: boolean },
   isForClientSide: boolean,
   id: string,
+  runtimeEnvironmentNames: string[],
 ): string {
   const lines: string[] = []
   const importStatements: string[] = []
@@ -48,6 +54,10 @@ function getCode(
   lines.push(getCodePageConfigGlobalSerialized(pageConfigGlobal, runtimeEnv, importStatements, filesEnv))
   lines.push('};')
 
+  if (environmentName === 'server') {
+    lines.push(getCodeEnvironmentEntries(runtimeEnvironmentNames, isDev))
+  }
+
   if (!isForClientSide && isDev) {
     // https://vite.dev/guide/api-environment-frameworks.html
     lines.push('if (import.meta.hot) import.meta.hot.accept();')
@@ -61,6 +71,18 @@ function getCode(
 
   debug(id, `${environmentName.toUpperCase()}-SIDE`, code)
   return code
+}
+
+// The global entries of the other Vike environments (e.g. `rsc`), loaded by loadPageConfigsOfEnvironments.ts
+// - In development, they're loaded with the environment's module runner instead
+function getCodeEnvironmentEntries(runtimeEnvironmentNames: string[], isDev: boolean) {
+  const entries = runtimeEnvironmentNames
+    .filter((name) => !isVikeEnvironmentBuiltIn(name))
+    .map(
+      (name) =>
+        `${JSON.stringify(name)}: ${isDev ? 'null' : `() => ${JSON.stringify(getEnvironmentEntryPlaceholder(name))}`}`,
+    )
+  return `export const environmentEntries = { ${entries.join(', ')} };`
 }
 
 function getCodePageConfigsSerialized(

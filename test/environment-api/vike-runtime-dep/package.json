@@ -1,9 +1,0 @@
-{
-  "name": "vike-runtime-dep",
-  "version": "0.0.0",
-  "type": "module",
-  "exports": "./index.js",
-  "peerDependencies": {
-    "vike": "*"
-  }
-}

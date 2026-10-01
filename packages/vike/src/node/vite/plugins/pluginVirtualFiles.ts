@@ -1,13 +1,11 @@
 export { pluginVirtualFiles }
-export { runtimeAlias }
 export { invalidateVikeVirtualFiles }
 
-import type { Alias, Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleNode, ModuleGraph } from 'vite'
+import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleNode, ModuleGraph } from 'vite'
 import { normalizePath } from 'vite'
 import { generateVirtualFilePageEntry } from './pluginVirtualFiles/generateVirtualFilePageEntry.js'
 import { generateVirtualFileGlobalEntryWithOldDesign } from './pluginVirtualFiles/generateVirtualFileGlobalEntryWithOldDesign.js'
 import { generateVirtualFileGlobalEntry } from './pluginVirtualFiles/generateVirtualFileGlobalEntry.js'
-import { generateVirtualFileRuntime } from './pluginVirtualFiles/generateVirtualFileRuntime.js'
 import { escapeRegex } from '../../../utils/escapeRegex.js'
 import { isScriptFile } from '../../../utils/isScriptFile.js'
 import {
@@ -19,10 +17,9 @@ import {
 } from '../../../utils/virtualFileId.js'
 import { assert } from '../../../utils/assert.js'
 import { assertPosixPath } from '../../../utils/path.js'
-import { generateVirtualFileId, parseVirtualFileId } from '../../../shared-server-node/virtualFileId.js'
+import { parseVirtualFileId } from '../../../shared-server-node/virtualFileId.js'
 import { reloadVikeConfig, isV1Design, getVikeConfigInternalOptional } from '../shared/resolveVikeConfigInternal.js'
 import { isVikeEnvironmentBuiltIn } from '../shared/environmentName.js'
-import { isViteServerSide } from '../shared/isViteServerSide.js'
 import { isRunnableDevEnvironment } from '../../../utils/isRunnableDevEnvironment.js'
 import pc from '@brillout/picocolors'
 import { logConfigInfo } from '../shared/loggerDev.js'
@@ -42,36 +39,9 @@ const filterRolldown = {
 const filterFunction = (id: string) => isVirtualFileId(id)
 // ===
 
-const runtimeImportPath = 'vike/runtime'
-const runtimeImportPathRegex = new RegExp(`^${escapeRegex(runtimeImportPath)}$`)
-// - In development, Vite externalizes the `vike` package in server-side environments: Node.js would then load `vike/runtime` without calling resolveId(), except that Vite never externalizes aliased imports => this identity alias makes Vite resolve `vike/runtime` with the plugin pipeline, where our resolveId() binds it to the importer's environment
-// - `resolve.alias` is a top-level option => it applies to every environment
-// - A regex, because `find: 'vike/runtime'` would also match `vike/runtime/…`
-// - Code that Vite doesn't transform (e.g. a server-side npm package that isn't in `resolve.noExternal`) can't use `vike/runtime`
-const runtimeAlias: Alias = { find: runtimeImportPathRegex, replacement: runtimeImportPath }
-
 function pluginVirtualFiles(): Plugin[] {
   let config: ResolvedConfig
   return [
-    {
-      name: 'vike:pluginVirtualFiles:runtime',
-      enforce: 'pre',
-      config: {
-        handler() {
-          return { resolve: { alias: [runtimeAlias] } }
-        },
-      },
-      resolveId: {
-        filter: { id: { include: runtimeImportPathRegex } },
-        handler(id) {
-          assert(id === runtimeImportPath)
-          // - `vike/runtime` is bound to the Vite environment that imports it
-          return addVirtualFileIdPrefix(
-            generateVirtualFileId({ type: 'runtime', viteEnvironmentName: this.environment.name }),
-          )
-        },
-      },
-    },
     {
       name: 'vike:pluginVirtualFiles',
       configResolved: {
@@ -111,23 +81,13 @@ function pluginVirtualFiles(): Plugin[] {
 
           const idParsed = parseVirtualFileId(id)
           if (idParsed) {
-            if (idParsed.type === 'runtime') {
-              assert(idParsed.viteEnvironmentName === this.environment.name)
-              const isServerSide = isViteServerSide(config, this.environment)
-              return await generateVirtualFileRuntime(idParsed.viteEnvironmentName, isServerSide, isDev)
-            }
             if (idParsed.type === 'page-entry') {
               const code = await generateVirtualFilePageEntry(id, isDev)
               return code
             }
             if (idParsed.type === 'global-entry') {
               if (!isVikeEnvironmentBuiltIn(idParsed.environmentName)) {
-                return generateVirtualFileGlobalEntry(
-                  { environmentName: idParsed.environmentName, isDev },
-                  // A named environment can be client-side
-                  !isViteServerSide(config, this.environment),
-                  id,
-                )
+                return generateVirtualFileGlobalEntry({ environmentName: idParsed.environmentName, isDev }, false, id)
               }
               const code = await generateVirtualFileGlobalEntryWithOldDesign(
                 id,
@@ -261,7 +221,7 @@ function invalidateVikeVirtualFiles(server: ViteDevServer) {
   vikeVirtualFiles.forEach((mod) => {
     server.moduleGraph.invalidateModule(mod)
   })
-  // - `server.moduleGraph` only covers the `client` and `ssr` environments, while `vike/runtime` can load Vike's virtual files in other environments (e.g. `rsc`)
+  // - `server.moduleGraph` only covers the `client` and `ssr` environments, while other Vike environments (e.g. `rsc`) also load Vike's virtual files
   Object.values(server.environments).forEach((environment) => {
     environment.moduleGraph.idToModuleMap.forEach((mod, id) => {
       if (parseVirtualFileId(id)) environment.moduleGraph.invalidateModule(mod)
