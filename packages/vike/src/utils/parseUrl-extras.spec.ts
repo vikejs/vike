@@ -26,6 +26,13 @@ describe('normalizeUrlPathname()', () => {
     // Works as usual
     expect(normalizeUrlPathname('/foo/', false, '/foo')).toBe('/foo')
   })
+  it('file URL with trailingSlash', () => {
+    expect(normalizeUrlPathname('/feed.atom', true, '/')).toBe(null)
+    expect(normalizeUrlPathname('/feed.atom/', true, '/')).toBe('/feed.atom')
+    expect(normalizeUrlPathname('/base/feed.atom', true, '/base/')).toBe(null)
+    // Not a known file extension
+    expect(normalizeUrlPathname('/v1.2', true, '/')).toBe('/v1.2/')
+  })
   function n(urlOriginal: string) {
     return normalizeUrlPathname(urlOriginal, false, '/')
   }
