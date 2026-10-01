@@ -11,6 +11,7 @@ import { assertUrlComponents, createUrlFromComponents, isBaseServer, parseUrl } 
 import { assert } from './assert.js'
 import { slice } from './slice.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
+import { getContentTypeFromUrl } from './getContentTypeFromUrl.js'
 assertIsNotBrowser()
 
 function prependBase(url: string, baseServer: string): string {
@@ -70,6 +71,8 @@ function normalizeUrlPathname(urlOriginal: string, trailingSlash: boolean, baseS
     if (urlPathnameNormalized === '/') {
       return urlPathnameNormalized
     }
+    // A file URL such as /feed.atom doesn't get a trailing slash
+    if (getContentTypeFromUrl(urlPathnameNormalized)) trailingSlash = false
     // If the Base URL has a trailing slash, then Vite (as of vite@5.0.0-beta.19) expects the root URL to also have a trailing slash, see https://github.com/vikejs/vike/issues/1258#issuecomment-1812226260
     if (baseServer.endsWith('/') && baseServer !== '/' && normalize(baseServer) === urlPathnameNormalized) {
       trailingSlash = true

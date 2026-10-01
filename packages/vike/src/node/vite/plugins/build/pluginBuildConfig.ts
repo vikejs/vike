@@ -48,7 +48,6 @@ function pluginBuildConfig(): Plugin[] {
         async handler(config) {
           handleAssetsManifest_alignCssTarget(config)
           onSetupBuild()
-          assertRollupInput(config)
           const { _runtimeEnvironmentNames: runtimeEnvironmentNames } = await getVikeConfigInternal()
           const entriesClient = await getEntries(config, false)
           const entriesServer = await getEntries(config, true)
@@ -60,6 +59,7 @@ function pluginBuildConfig(): Plugin[] {
             }
             const entries = isViteServerSide_configEnvironment(envName, envConfig) ? entriesServer : entriesClient
             assert(Object.keys(entries).length > 0)
+            assertRollupInput(envConfig.build.rollupOptions.input)
             envConfig.build.rollupOptions.input = injectRollupInputs(entries, envConfig.build.rollupOptions.input)
           }
           addLogHook()
@@ -338,8 +338,8 @@ function addLogHook() {
   })
 }
 
-function assertRollupInput(config: ResolvedConfig): void {
-  const userInputs = normalizeRollupInput(config.build.rollupOptions.input)
+function assertRollupInput(input: Rollup.InputOption | undefined): void {
+  const userInputs = normalizeRollupInput(input)
   const htmlInputs = Object.values(userInputs).filter((entry) => entry.endsWith('.html') || entry.endsWith('.htm'))
   const htmlInput = htmlInputs[0]
   assertUsage(

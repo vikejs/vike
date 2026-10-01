@@ -1,7 +1,9 @@
 export { getContentTypeFromUrl }
 
-import { parseUrl } from '../../../utils/parseUrl.js'
-import '../../assertEnvServer.js'
+import { parseUrl } from './parseUrl.js'
+import { assertIsNotBrowser } from './assertIsNotBrowser.js'
+
+assertIsNotBrowser()
 
 const contentTypes = new Map(
   Object.entries({
@@ -32,12 +34,12 @@ const contentTypes = new Map(
   }),
 )
 
-// Default Content-Type of `pageContext.content`, see https://vike.dev/pageContext#content
-function getContentTypeFromUrl(url: string): string {
+// Content-Type of the URL's file extension, or `null` if unknown, see https://vike.dev/pageContext#content
+function getContentTypeFromUrl(url: string): string | null {
   const { pathname } = parseUrl(url, '/')
   // Last non-empty segment, see https://vike.dev/url-normalization
   const fileName = pathname.split('/').filter(Boolean).pop() ?? ''
   const i = fileName.lastIndexOf('.')
   const fileExtension = i > 0 ? fileName.slice(i + 1).toLowerCase() : null
-  return (fileExtension && contentTypes.get(fileExtension)) || 'application/octet-stream'
+  return (fileExtension && contentTypes.get(fileExtension)) || null
 }
