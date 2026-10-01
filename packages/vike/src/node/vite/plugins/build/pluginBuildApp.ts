@@ -1,7 +1,7 @@
 export { pluginBuildApp }
 
 import { runPrerender_forceExit } from '../../../prerender/runPrerenderEntry.js'
-import type { Environment, InlineConfig, Plugin, ResolvedConfig } from 'vite'
+import type { InlineConfig, Plugin, ResolvedConfig } from 'vite'
 import { resolveOutDir } from '../../shared/getOutDirs.js'
 import { assert, assertWarning } from '../../../../utils/assert.js'
 import { onSetupBuild } from '../../../../utils/assertSetup.js'
@@ -21,11 +21,11 @@ import '../../assertEnvVite.js'
 
 const globalObject = getGlobalObject('build/pluginBuildApp.ts', {
   forceExit: false,
+  isBuildAppHookRun: false,
 })
 
 function pluginBuildApp(): Plugin[] {
   let config: ResolvedConfig
-  let alreadyBuilt = false
   return [
     {
       name: 'vike:build:pluginBuildApp:pre',
@@ -38,21 +38,26 @@ function pluginBuildApp(): Plugin[] {
             builder: {
               // Can be overridden by another plugin e.g vike-vercel https://github.com/vikejs/vike/pull/2184#issuecomment-2659425195
               async buildApp(builder) {
-                if (alreadyBuilt) return
-                alreadyBuilt = true
                 assert(builder.environments.client)
                 assert(builder.environments.ssr)
                 await builder.build(builder.environments.client)
                 await builder.build(builder.environments.ssr)
 
+                // Vite 6 (no buildApp() plugin hook)
                 if (isPrerenderForceExit()) {
-                  await builder.buildApp()
                   runPrerender_forceExit()
                   assert(false)
                 }
               },
             },
           }
+        },
+      },
+      // Vite 7+
+      buildApp: {
+        order: 'pre',
+        async handler() {
+          globalObject.isBuildAppHookRun = true
         },
       },
     },
@@ -93,8 +98,15 @@ function pluginBuildApp(): Plugin[] {
           await abortViteBuildSsr()
         },
       },
-      // TO-DO/eventually: stop using this writeBundle() hack and, instead, use the buildApp() implementation above.
-      // - Could it cause issues if a tool uses the writeBundle() hack together with getVikeConfig() ?
+      // Pre-render after all builds, e.g. after @vitejs/plugin-rsc moved its `rsc` build back into dist/server/
+      // - Before the `order: 'post'` buildApp() hooks of non-`enforce: 'pre'` plugins, e.g. vite-plugin-vercel copies dist/client/
+      buildApp: {
+        order: 'post',
+        async handler(builder) {
+          await triggerPrerendering(builder.config)
+        },
+      },
+      // TO-DO/eventually: remove this writeBundle() hack once Vike requires Vite 7
       writeBundle: {
         /* We can't use this because it breaks Vite's logging. TO-DO/eventually: try again with latest Vite version.
         sequential: true,
@@ -104,7 +116,14 @@ function pluginBuildApp(): Plugin[] {
           try {
             handleAssetsManifest_assertUsageCssTarget(config, this.environment)
             await handleAssetsManifest(config, this.environment, options, bundle)
-            await triggerPrerendering(config, this.environment, bundle)
+            if (globalObject.isBuildAppHookRun) return
+            if (!isViteServerSide_onlySsrEnv(config, this.environment)) return
+            // Workaround for @vitejs/plugin-legacy
+            //  - The legacy plugin triggers its own Rollup build for the client-side.
+            //  - The legacy plugin doesn't generate a manifest => we can use that to detect the legacy plugin build.
+            //  - Issue & reproduction: https://github.com/vikejs/vike/issues/1154#issuecomment-1965954636
+            if (!bundle[getManifestFilePathRelative(config.build.manifest)]) return
+            await triggerPrerendering(config)
           } catch (err) {
             // We use try-catch also because:
             // - Vite/Rollup swallows errors thrown inside the writeBundle() hook. (It doesn't swallow errors thrown inside the first writeBundle() hook while building the client-side, but it does swallow errors thrown inside the second writeBundle() while building the server-side triggered after Vike calls Vite's `build()` API.)
@@ -119,6 +138,13 @@ function pluginBuildApp(): Plugin[] {
       name: 'vike:build:pluginBuildApp:autoFullBuild:post',
       apply: 'build',
       enforce: 'post',
+      // After the buildApp() hooks of other plugins, e.g. vite-plugin-vercel
+      buildApp: {
+        order: 'post',
+        async handler() {
+          if (isPrerenderForceExit()) runPrerender_forceExit()
+        },
+      },
       closeBundle: {
         sequential: true,
         order: 'post',
@@ -130,15 +156,9 @@ function pluginBuildApp(): Plugin[] {
   ]
 }
 
-async function triggerPrerendering(config: ResolvedConfig, viteEnv: Environment, bundle: Record<string, unknown>) {
+async function triggerPrerendering(config: ResolvedConfig) {
   const vikeConfig = await getVikeConfigInternal()
-  if (!isViteServerSide_onlySsrEnv(config, viteEnv)) return
   if (isDisabled(vikeConfig)) return
-  // Workaround for @vitejs/plugin-legacy
-  //  - The legacy plugin triggers its own Rollup build for the client-side.
-  //  - The legacy plugin doesn't generate a manifest => we can use that to detect the legacy plugin build.
-  //  - Issue & reproduction: https://github.com/vikejs/vike/issues/1154#issuecomment-1965954636
-  if (!bundle[getManifestFilePathRelative(config.build.manifest)]) return
   if (!(await isPrerenderAutoRunEnabled(vikeConfig))) return
 
   const configInline = getFullBuildInlineConfig(config)
