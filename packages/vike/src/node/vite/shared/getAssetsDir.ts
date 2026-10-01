@@ -5,7 +5,7 @@ import '../assertEnvVite.js'
 
 function getAssetsDir(build: { assetsDir: string }) {
   let { assetsDir } = build
-  assertUsage(assetsDir, `${assetsDir} cannot be an empty string`)
+  assertUsage(assetsDir, "Vite's build.assetsDir cannot be an empty string")
   assetsDir = assetsDir.split(/\/|\\/).filter(Boolean).join('/')
   return assetsDir
 }
