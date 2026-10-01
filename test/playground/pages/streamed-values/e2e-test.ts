@@ -1,6 +1,7 @@
 export { testStreamedValues }
 
 import { autoRetry, expect, expectLog, fetch, getServerUrl, page, sleep, test } from '@brillout/test-e2e'
+import { testCounter } from '../../../utils'
 
 function testStreamedValues() {
   test('streamed pageContext values: first render, in escaped <script> tags with the CSP nonce', async () => {
@@ -50,6 +51,27 @@ function testStreamedValues() {
     await autoRetry(async () => expect(await page.textContent('h1')).toBe('Welcome'))
     await page.unroute(slowNextPage)
     expectLog('Streamed value failed on purpose', { filter: (log) => log.logSource === 'stderr' })
+  })
+
+  test('streamed pageContext values: the decoder is loaded only by pages with streamed values', async () => {
+    let isDecoderLoaded = false
+    const onResponse = async (response: { text(): Promise<string> }) => {
+      const body = await response.text().catch(() => '')
+      if (body.includes('The pageContext.json response ended before the streamed pageContext values ended')) {
+        isDecoderLoaded = true
+      }
+    }
+    page.on('response', onResponse)
+    await page.goto(getServerUrl() + '/')
+    await testCounter()
+    await page.click('a[href="/about"]')
+    await autoRetry(async () => expect(await page.textContent('h1')).toBe('About'))
+    await sleep(500)
+    expect(isDecoderLoaded).toBe(false)
+    await page.click('a[href="/streamed-values"]')
+    await expectValues({ isNavigation: true })
+    await autoRetry(async () => expect(isDecoderLoaded).toBe(true))
+    page.removeListener('response', onResponse)
   })
 }
 
