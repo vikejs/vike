@@ -115,6 +115,11 @@ export async function data(pageContext: PageContextServer) {
   }
 }
 
+async function getReviews(productId: string) {
+  const reviews = await db.reviews(productId)
+  return reviews
+}
+
 async function* getRecommendations(productId: string) {
   for await (const product of db.recommendations(productId)) {
     yield product
@@ -130,7 +135,9 @@ import type { PageContextClient } from 'vike/types'
 import type { Data } from './+data'
 
 export async function onHydrationEnd(pageContext: PageContextClient<Data>) {
-  const { reviews, recommendations } = pageContext.data
+  const { product, reviews, recommendations } = pageContext.data
+  // Already available
+  console.log(product)
   // A Promise
   console.log(await reviews)
   // An async iterable
