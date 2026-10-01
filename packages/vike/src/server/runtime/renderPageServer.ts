@@ -60,10 +60,7 @@ import { assertArguments } from './renderPageServer/assertArguments.js'
 import { log404 } from './renderPageServer/log404/index.js'
 import pc from '@brillout/picocolors'
 import type { PageContextServer } from '../../types/index.js'
-import {
-  getPageContextClientSerializedAbort,
-  getPageContextClientSerialized,
-} from './renderPageServer/html/serializeContext.js'
+import { getPageContextClientSerializedAbort } from './renderPageServer/html/serializeContext.js'
 import { getErrorPageId } from '../../shared-server-client/error-page.js'
 import { handleErrorWithoutErrorPage } from './renderPageServer/handleErrorWithoutErrorPage.js'
 import {
@@ -75,6 +72,7 @@ import type { PageContextInit, PageContextInitInternal, PageContextInternalServe
 import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.js'
 import { forkPageContext } from '../../shared-server-client/forkPageContext.js'
 import { getAsyncLocalStorage, type AsyncStore } from './asyncHook.js'
+import { getPageContextJson } from './renderPageServer/getPageContextJson.js'
 import '../assertEnvServer.js'
 
 const globalObject = getGlobalObject('runtime/renderPageServer.ts', {
@@ -600,7 +598,7 @@ async function handleAbort(
 
   // Client-side navigation — [`pageContext.json` request](https://vike.dev/pageContext.json)
   if (pageContextBegin.isClientSideNavigation) {
-    let pageContextSerialized: string
+    let pageContextJson: string | ReadableStream<Uint8Array>
     if (pageContextAbort.abortStatusCode) {
       const errorPageId = getErrorPageId(globalContext._pageFilesAll, globalContext._pageConfigs)
       const abortCall = pageContextAbort._abortCall
@@ -615,11 +613,11 @@ async function handleAbort(
       objectAssign(pageContext, pageContextErrorPageInit, true)
       updateType(pageContext, await loadPageConfigsLazyServerSide(pageContext))
       // We include pageContextInit: we don't only serialize pageContextAbort because the error page may need to access pageContextInit
-      pageContextSerialized = getPageContextClientSerialized(pageContext, false)
+      pageContextJson = getPageContextJson(pageContext)
     } else {
-      pageContextSerialized = getPageContextClientSerializedAbort(pageContextAbort, false)
+      pageContextJson = getPageContextClientSerializedAbort(pageContextAbort, false)
     }
-    const httpResponse = await createHttpResponsePageJson(pageContextSerialized, pageContext)
+    const httpResponse = await createHttpResponsePageJson(pageContextJson, pageContext)
     objectAssign(pageContext, { httpResponse })
     return { pageContextReturn: pageContext }
   }

@@ -837,8 +837,8 @@ importers:
         specifier: ^0.2.6
         version: 0.2.6
       '@brillout/json-serializer':
-        specifier: ^0.5.25
-        version: 0.5.25
+        specifier: ^0.5.27
+        version: 0.5.27
       '@brillout/picocolors':
         specifier: ^1.0.31
         version: 1.0.31
@@ -2570,6 +2570,9 @@ packages:
 
   '@brillout/json-serializer@0.5.25':
     resolution: {integrity: sha512-/Ahv1XIHAYyROWfyOQZxbxmkvM3ef3aMPPzEC0EfkyZUFb88y/nFFwCFvYUjE20MGoF8/9Z1jIy7ihkpkE+maw==}
+
+  '@brillout/json-serializer@0.5.27':
+    resolution: {integrity: sha512-D+Pc40tS6mme3dtlQzOD+nqP+yAWHQ+KX7gcJJ3DRs02pbqBh/6FBk/OWkLuNyaI0rgedh4KYla/xCSg0jArEw==}
 
   '@brillout/libassert@0.5.8':
     resolution: {integrity: sha512-u/fu+jTRUdNdbLONGq1plCfh+k2/XjSbGVTfnF3rHnSPZd+ABWp0XinR5ifrFkyGOzMbzv8IiQ44lZ4U6ZGrGA==}
@@ -8910,6 +8913,8 @@ snapshots:
 
   '@brillout/json-serializer@0.5.25': {}
 
+  '@brillout/json-serializer@0.5.27': {}
+
   '@brillout/libassert@0.5.8': {}
 
   '@brillout/part-regex@0.1.4': {}
@@ -14991,7 +14996,7 @@ snapshots:
     dependencies:
       '@babel/core': 7.29.7
       '@babel/types': 7.29.8
-      '@brillout/json-serializer': 0.5.25
+      '@brillout/json-serializer': 0.5.27
       react: 19.2.6
       react-dom: 19.2.6(react@19.2.6)
       react-streaming: 0.4.20(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
