@@ -94,7 +94,7 @@ See [GitHub > `brillout/json-serializer` > #3 Support user-defined classes](http
 
 ## Streaming
 
-A `passToClient` value can be, or contain, a `Promise`, a `ReadableStream`, or an async iterable (e.g. an async generator). Vike sends `pageContext` to the client-side without waiting for these values, and then sends them in the same HTTP response.
+A `passToClient` value can be, or contain, a `Promise`, a `ReadableStream`, or an async iterable (e.g. an async generator). Vike sends the `pageContext` object to the client-side without waiting for these asynchronous values, and then sends them in the same HTTP response.
 
 ```ts
 // /pages/product/@id/+data.ts
@@ -107,10 +107,11 @@ export type Data = Awaited<ReturnType<typeof data>>
 export async function data(pageContext: PageContextServer) {
   const product = await getProduct(pageContext.routeParams.id)
   return {
+    // Sent immediately
     product,
-    // Not awaited: sent to the client-side once it resolves
+    // Sent later, once it resolves
     reviews: getReviews(product.id),
-    // Sent to the client-side chunk by chunk
+    // Sent as a stream, chunk by chunk
     recommendations: getRecommendations(product.id),
   }
 }
