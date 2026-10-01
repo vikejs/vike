@@ -62,6 +62,10 @@ For a page with a parameterized route (e.g. `/movie/@id`), you must use the <Lin
 
 <PreRenderDynamicRoutes />
 
+### Non-HTML files
+
+Pages can also generate non-HTML files (e.g. `/feed.atom`, `/sitemap.xml`, or images) by setting <Link href="/pageContext#content">`pageContext.content`</Link>. The file is written at the page's URL: `/feed.atom` => `dist/client/feed.atom`. See <Link href="/onRenderHtml#non-html-content" />.
+
 
 ## Configuration
 

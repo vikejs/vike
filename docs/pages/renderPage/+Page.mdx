@@ -73,7 +73,11 @@ async function startServer() {
     const pageContext = await renderPage(pageContextInit)
 
     const { body, statusCode, headers } = pageContext.httpResponse
-    headers.forEach(([name, value]) => res.setHeader(name, value))
+    headers.forEach(([name, value]) => {
+      // There can be several Set-Cookie headers: res.setHeader() would only keep the last one
+      if (name.toLowerCase() === 'set-cookie') res.appendHeader(name, value)
+      else res.setHeader(name, value)
+    })
     res.status(statusCode).send(body)
   })
 
@@ -89,7 +93,7 @@ automatically injected by Vike.
 
 > You can control where and what Vike injects using <Link href="/injectFilter" />.
 
-For HTML streams use `httpResponse.pipe()` instead of `pageContext.httpResponse.body`, see <Link href="/streaming" />.
+For HTML streams use `httpResponse.pipe()` instead of `pageContext.httpResponse.body`, see <Link href="/streaming" />. Same for binary and streamed <Link href="/onRenderHtml#non-html-content">non-HTML content</Link>.
 
 Optionally, you can use `pageContext.httpResponse.earlyHints` for adding early hints (`103 Early Hint`), see <Link href="/preloading#early-hints" />.
 

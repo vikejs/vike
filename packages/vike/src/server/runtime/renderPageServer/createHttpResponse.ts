@@ -1,4 +1,5 @@
-export { createHttpResponsePage }
+export { createHttpResponsePageHtml }
+export { createHttpResponsePageContent }
 export { createHttpResponsePageJson }
 export { createHttpResponseErrorFallback }
 export { createHttpResponseErrorFallback_noGlobalContext }
@@ -14,14 +15,24 @@ import { escapeHtml } from '../../../utils/escapeHtml.js'
 import { assert, assertWarning } from '../../../utils/assert.js'
 import type { HtmlRender } from './html/renderHtml.js'
 import { getErrorPageId, isErrorPage } from '../../../shared-server-client/error-page.js'
-import type { RenderHook } from './execHookOnRenderHtml.js'
-import type { RedirectStatusCode, AbortStatusCode, UrlRedirect } from '../../../shared-server-client/route/abort.js'
+import type { Content, RenderHook } from './execHookOnRenderHtml.js'
+import { getContentTypeFromUrl } from './getContentTypeFromUrl.js'
+import type {
+  RedirectStatusCode,
+  AbortStatusCode,
+  UrlRedirect,
+  PageContextAborted,
+} from '../../../shared-server-client/route/abort.js'
 import { getHttpResponseBody, getHttpResponseBodyStreamHandlers, HttpResponseBody } from './getHttpResponseBody.js'
 import { getEarlyHints, type EarlyHint } from './getEarlyHints.js'
 import { assertNoInfiniteHttpRedirect } from './createHttpResponse/assertNoInfiniteHttpRedirect.js'
 import type { PageContextBegin } from '../renderPageServer.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
-import { resolveHeadersResponseFinal } from './headersResponse.js'
+import {
+  getHeadersSetCookieAborted,
+  resolveHeadersResponseFinal,
+  resolveHeadersResponseSetCookie,
+} from './headersResponse.js'
 import { stringify } from '@brillout/json-serializer/stringify'
 import '../../assertEnvServer.js'
 
@@ -42,19 +53,42 @@ type StatusCode = 200 | 404 | 500 | RedirectStatusCode | AbortStatusCode
 type ContentType = 'application/json' | 'text/html;charset=utf-8'
 type ResponseHeaders = HttpResponse['headers']
 
-async function createHttpResponsePage(
+type PageContextHttpResponsePage = {
+  pageId: null | string
+  is404: null | boolean
+  errorWhileRendering: null | Error
+  __getPageAssets: GetPageAssets
+  _globalContext: GlobalContextServerInternal
+  abortStatusCode?: AbortStatusCode
+  headersResponse?: Headers
+  pageContextsAborted: PageContextAborted[]
+}
+
+async function createHttpResponsePageHtml(
   htmlRender: HtmlRender,
   renderHook: null | RenderHook,
-  pageContext: {
-    pageId: null | string
-    is404: null | boolean
-    errorWhileRendering: null | Error
-    __getPageAssets: GetPageAssets
-    _globalContext: GlobalContextServerInternal
-    abortStatusCode?: AbortStatusCode
-    headersResponse?: Headers
-  },
+  pageContext: PageContextHttpResponsePage,
 ): Promise<HttpResponse> {
+  const statusCode = getStatusCode(pageContext)
+  const earlyHints = getEarlyHints(await pageContext.__getPageAssets())
+  const headers = resolveHeadersResponseFinal(pageContext, statusCode)
+  return createHttpResponse(statusCode, contentTypeHtml, headers, htmlRender, earlyHints, renderHook)
+}
+
+function createHttpResponsePageContent(
+  content: Content,
+  renderHook: RenderHook,
+  pageContext: PageContextHttpResponsePage & { urlOriginal: string },
+): HttpResponse {
+  const statusCode = getStatusCode(pageContext)
+  const headers = resolveHeadersResponseFinal(pageContext, statusCode)
+  if (!headers.some(([k]) => k.toLowerCase() === 'content-type')) {
+    headers.push(['Content-Type', getContentTypeFromUrl(pageContext.urlOriginal)])
+  }
+  return createHttpResponseCommon(statusCode, headers, content, [], renderHook)
+}
+
+function getStatusCode(pageContext: PageContextHttpResponsePage): StatusCode {
   let statusCode: StatusCode | undefined = pageContext.abortStatusCode
   if (!statusCode) {
     const isError = !pageContext.pageId || isErrorPage(pageContext.pageId, pageContext._globalContext._pageConfigs)
@@ -69,10 +103,7 @@ async function createHttpResponsePage(
       statusCode = pageContext.is404 ? 404 : 500
     }
   }
-
-  const earlyHints = getEarlyHints(await pageContext.__getPageAssets())
-  const headers = resolveHeadersResponseFinal(pageContext, statusCode)
-  return createHttpResponse(statusCode, contentTypeHtml, headers, htmlRender, earlyHints, renderHook)
+  return statusCode
 }
 
 function createHttpResponse404(errMsg404: string): HttpResponse {
@@ -109,6 +140,7 @@ function createHttpResponseBaseIsMissing(urlOriginal: string, baseServer: string
 }
 function createHttpResponseErrorFallback(pageContext: {
   _globalContext: GlobalContextServerInternal
+  pageContextsAborted: PageContextAborted[]
 }) {
   const reason = (() => {
     const errorPageId = getErrorPageId(
@@ -121,27 +153,33 @@ function createHttpResponseErrorFallback(pageContext: {
       return 'no error page (https://vike.dev/error-page) is defined, make sure to create one' as const
     }
   })()
-  return createHttpResponseError_(reason)
+  // Cookies set before `throw redirect()` or `throw render()` are kept
+  return createHttpResponseError_(reason, getHeadersSetCookieAborted(pageContext))
 }
 function createHttpResponseErrorFallback_noGlobalContext() {
-  return createHttpResponseError_('no error page (https://vike.dev/error-page) could be rendered')
+  return createHttpResponseError_('no error page (https://vike.dev/error-page) could be rendered', [])
 }
-function createHttpResponseError_(reason: string): HttpResponse {
+function createHttpResponseError_(reason: string, headers: ResponseHeaders): HttpResponse {
   const httpResponse = createHttpResponse(
     500,
     contentTypeHtml,
-    [],
+    headers,
     getHtmlFallback('<p>An error occurred.</p>', `${htmlFallbackLog} Vike returned this HTML because ${reason}.`),
   )
   return httpResponse
 }
-function createHttpResponseErrorFallbackJson() {
-  const httpResponse = createHttpResponse(500, contentTypeJson, [], stringify({ serverSideError: true }))
+function createHttpResponseErrorFallbackJson(pageContext: { pageContextsAborted: PageContextAborted[] }) {
+  const headers = getHeadersSetCookieAborted(pageContext)
+  const httpResponse = createHttpResponse(500, contentTypeJson, headers, stringify({ serverSideError: true }))
   return httpResponse
 }
 
-async function createHttpResponsePageJson(pageContextSerialized: string) {
-  const httpResponse = createHttpResponse(200, contentTypeJson, [], pageContextSerialized, [], null)
+async function createHttpResponsePageJson(
+  pageContextSerialized: string,
+  pageContext: { headersResponse?: Headers; pageContextsAborted: PageContextAborted[] },
+) {
+  const headers = resolveHeadersResponseSetCookie(pageContext)
+  const httpResponse = createHttpResponse(200, contentTypeJson, headers, pageContextSerialized, [], null)
   return httpResponse
 }
 
@@ -150,7 +188,7 @@ function createHttpResponseRedirect({ url, statusCode }: UrlRedirect, pageContex
   assert(url)
   assert(statusCode)
   assert(300 <= statusCode && statusCode <= 399)
-  const headers: ResponseHeaders = [['Location', url]]
+  const headers: ResponseHeaders = [['Location', url], ...resolveHeadersResponseSetCookie(pageContextInit)]
   return createHttpResponse(
     statusCode,
     contentTypeHtml,
@@ -193,7 +231,7 @@ function createHttpResponse(
 function createHttpResponseCommon(
   statusCode: number,
   headers: ResponseHeaders,
-  htmlRender: HtmlRender,
+  htmlRender: HtmlRender | Uint8Array,
   earlyHints: EarlyHint[] = [],
   renderHook: null | RenderHook = null,
 ): HttpResponse {

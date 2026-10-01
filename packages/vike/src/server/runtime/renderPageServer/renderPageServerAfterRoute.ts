@@ -1,10 +1,10 @@
 export { renderPageServerAfterRoute }
 export { prerenderPage }
-export { prerenderPageEntry }
 export type { PageContextAfterRender }
 
 import { getErrorPageId } from '../../../shared-server-client/error-page.js'
 import { getHtmlString } from './html/renderHtml.js'
+import { isStreamReadableWeb, streamReadableWebToBytes } from './html/stream.js'
 import { assert, assertUsage } from '../../../utils/assert.js'
 import { hasProp } from '../../../utils/hasProp.js'
 import { isSameErrorMessage } from '../../../utils/isSameErrorMessage.js'
@@ -12,7 +12,12 @@ import { objectAssign } from '../../../utils/objectAssign.js'
 import { updateType } from '../../../utils/updateType.js'
 import { getPageContextClientSerialized } from './html/serializeContext.js'
 import { type PageContextUrlInternal } from '../../../shared-server-client/getPageContextUrlComputed.js'
-import { createHttpResponsePage, createHttpResponsePageJson, HttpResponse } from './createHttpResponse.js'
+import {
+  createHttpResponsePageHtml,
+  createHttpResponsePageContent,
+  createHttpResponsePageJson,
+  HttpResponse,
+} from './createHttpResponse.js'
 import {
   loadPageConfigsLazyServerSide,
   type PageContext_loadPageConfigsLazyServerSide,
@@ -80,15 +85,16 @@ async function renderPageServerAfterRoute<
       objectAssign(pageContext, { [isServerSideError]: true })
     }
     const pageContextSerialized: string = getPageContextClientSerialized(pageContext, false)
-    const httpResponse = await createHttpResponsePageJson(pageContextSerialized)
+    const httpResponse = await createHttpResponsePageJson(pageContextSerialized, pageContext)
     objectAssign(pageContext, { httpResponse })
     return pageContext
   }
 
-  const renderHookResult = await execHookOnRenderHtml(pageContext)
-
-  const { htmlRender, renderHook } = renderHookResult
-  const httpResponse = await createHttpResponsePage(htmlRender, renderHook, pageContext)
+  const { htmlRender, content, renderHook } = await execHookOnRenderHtml(pageContext)
+  const httpResponse =
+    content !== null
+      ? createHttpResponsePageContent(content, renderHook, pageContext)
+      : await createHttpResponsePageHtml(htmlRender, renderHook, pageContext)
   objectAssign(pageContext, { httpResponse })
   return pageContext
 }
@@ -130,7 +136,12 @@ async function prerenderPageEntry(
 
   await execHookDataAndOnBeforeRender(pageContext)
 
-  const { htmlRender, renderHook } = await execHookOnRenderHtml(pageContext)
+  const { htmlRender, content, renderHook } = await execHookOnRenderHtml(pageContext)
+  if (content !== null) {
+    // Rejects if the stream errors
+    const fileContent = isStreamReadableWeb(content) ? await streamReadableWebToBytes(content) : content
+    return { documentHtml: null, content: fileContent, pageContextSerialized: null, pageContext }
+  }
   assertUsage(
     htmlRender !== null,
     `Cannot pre-render ${pc.cyan(pageContext.urlOriginal)} because the ${renderHook.hookName}() hook defined by ${
@@ -140,9 +151,9 @@ async function prerenderPageEntry(
   const documentHtml = await getHtmlString(htmlRender)
   assert(typeof documentHtml === 'string')
   if (!pageContext._usesClientRouter) {
-    return { documentHtml, pageContextSerialized: null, pageContext }
+    return { documentHtml, content: null, pageContextSerialized: null, pageContext }
   } else {
     const pageContextSerialized = getPageContextClientSerialized(pageContext, false)
-    return { documentHtml, pageContextSerialized, pageContext }
+    return { documentHtml, content: null, pageContextSerialized, pageContext }
   }
 }
