@@ -378,7 +378,6 @@ function getCssChunkName(id: string, config: ResolvedConfig): string | undefined
 }
 
 function getRollupOutputs(build: ResolvedBuildEnvironmentOptions): Rollup.OutputOptions[] {
-  build.rollupOptions ??= {}
   build.rollupOptions.output ??= {}
   const { output } = build.rollupOptions
   if (!isArray(output)) {
