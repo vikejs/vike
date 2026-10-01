@@ -1448,10 +1448,6 @@ function api() {
         url: '/getVikeConfig',
       },
       {
-        title: '`vike/runtime`',
-        url: '/vike-runtime',
-      },
-      {
         title: '`reactStrictMode`',
         url: '/reactStrictMode',
       },

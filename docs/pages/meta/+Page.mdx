@@ -501,15 +501,36 @@ export default {
     Page: {
       // Load +Page only in the Vite environment `rsc`
       env: { server: false, client: false, rsc: true }
+    },
+    renderRsc: {
+      env: { rsc: true }
     }
   }
 } satisfies Config
 ```
 
-Code running in the `rsc` environment loads these config values with <Link href="/vike-runtime">`loadPageConfig()`</Link>.
+Code running in `rsc` reads the `rsc` config values at `pageContext.config`, while code running in the server environment (e.g. Vite's `ssr` environment) reads the `server` config values. The server environment calls a function that only `rsc` defines, such as `+renderRsc`, through `pageContext.config`: Vike runs it in `rsc`.
 
-- A Vike environment such as `rsc` must exist in Vite's `config.environments`.
-- A Vike environment such as `rsc` only gets the config values that name it: e.g. in `rsc`, `loadPageConfig()` returns `Page` but not `data` (`env: { server: true }`).
+```js
+// Environment: server
+
+const stream = await pageContext.config.renderRsc(pageContext)
+```
+
+```js
+// /pages/+renderRsc.js
+// Environment: rsc
+
+export function renderRsc(pageContext) {
+  // The `rsc` version of +Page
+  const { Page } = pageContext.config
+  // ...
+}
+```
+
+- `pageContext` is the same object in both environments: only `pageContext.config` (and what's derived from it, such as `pageContext.exports`) differs. What one environment sets on `pageContext`, the other reads.
+- A Vike environment such as `rsc` must exist in Vite's `config.environments` and run in the same runtime (process or worker) as the server environment, as `@vitejs/plugin-rsc` does.
+- A Vike environment such as `rsc` only gets the config values that name it: e.g. in `rsc`, `pageContext.config` has `Page` but not `data` (`env: { server: true }`).
 - A Vite environment `worker` is a Vike environment of its own if and only if a `meta` definition sets `env: { worker: true }` (for any config, whether or not a page uses it). Otherwise, like Vite's `ssr` environment, it gets the `server` config values (or the `client` ones if it's client-side).
 - The file suffix `.rsc.js` sets the environment, like <Link href="/file-env">`.server.js` and `.client.js`</Link> do: `+Page.rsc.js` is loaded only in `rsc`. The suffix `.shared.js` means `server` and `client` (not other Vike environments).
 - Environment names can also be introduced by `meta.effect()`.
@@ -653,6 +674,5 @@ declare global {
 
 ## See also
 
-- <Link href="/vike-runtime" />
 - <Link href="/head-tags#custom-settings" />
 - <Link href="/settings" />
