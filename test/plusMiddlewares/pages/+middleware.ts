@@ -23,8 +23,8 @@ const redirectMiddleware = enhance(redirectUniversalMiddleware, {
 
 // Modifies the response of every request
 const responseHeaderMiddleware = enhance(
-  async () => (response: Response) => {
-    response.headers.append('x-middleware', 'ran')
+  async (_request, _context, runtime) => (response: Response) => {
+    response.headers.append('x-middleware', runtime.adapter)
     return response
   },
   { name: 'responseHeaderMiddleware' },

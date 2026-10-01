@@ -5,6 +5,7 @@ import type { ResolvedConfig, ViteDevServer } from 'vite'
 import type { ServerResponse } from 'node:http'
 import { assertWarning } from '../../../utils/assert.js'
 import pc from '@brillout/picocolors'
+import { getAdapterRuntime, type ExpressAdapter } from '@universal-middleware/core'
 import { createRequestAdapter } from '@universal-middleware/node/request'
 import { sendResponse } from '@universal-middleware/node/response'
 import { universalMiddlewares } from '../../../server/runtime/getUniversalMiddlewares.js'
@@ -49,7 +50,10 @@ function addSsrMiddleware(
     let pageContext: Awaited<ReturnType<typeof renderPageServer>>
     let applyResponseHandlers: ((response: Response) => Promise<Response>) | undefined
     try {
-      const result = await universalMiddlewares(requestAdapter(req, res))
+      // What Universal Middleware's Express adapter passes: Vite's server is a Connect server
+      const express = Object.freeze({ req, res }) as unknown as ExpressAdapter['express']
+      const runtime = getAdapterRuntime('express', { params: undefined, ...express, express })
+      const result = await universalMiddlewares(requestAdapter(req, res), {}, runtime)
       if (result instanceof Response) return sendResponse(result, res)
       applyResponseHandlers = result
       pageContext = await renderPageServer(pageContextInit)

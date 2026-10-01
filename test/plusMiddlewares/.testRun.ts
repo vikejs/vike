@@ -39,8 +39,12 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     for (const url of ['/', '/render-page-middleware']) {
       const response: Response = await fetch(`${getServerUrl()}${url}`)
       expect(await response.text()).toContain('Rendered to HTML.')
-      expect(response.headers.get('x-middleware')).toBe('ran')
+      expect(response.headers.get('x-middleware')).toBe('express')
     }
+    // Vike's own redirect (trailing slash removal)
+    const response: Response = await fetch(`${getServerUrl()}/some-page/`, { redirect: 'manual' })
+    expect(response.status).toBe(301)
+    expect(response.headers.get('x-middleware')).toBe('express')
   })
 }
 

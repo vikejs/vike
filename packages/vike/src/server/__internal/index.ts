@@ -15,6 +15,7 @@ import { setNodeEnvProductionIfUndefined } from '../../utils/assertSetup.js'
 import { PageConfigRuntime } from '../../types/PageConfig.js'
 import type { Server } from '../../types/Server.js'
 import { universalMiddlewares } from '../runtime/getUniversalMiddlewares.js'
+import { createMiddleware } from '@universal-middleware/srvx'
 import '../assertEnvServer.js'
 
 /**
@@ -47,6 +48,9 @@ async function route(pageContext: Parameters<typeof routeInternal>[0]) {
   return { pageContextAddendum: pageContextFromRoute }
 }
 
+// +server is a srvx fetch handler: +middleware get what a srvx middleware gets (runtime, context)
+const srvxMiddleware = createMiddleware(() => universalMiddlewares)()
+
 // Applies +middleware before the +server handler
 function withMiddlewares(server: Server): Server {
   const { fetch } = server
@@ -54,11 +58,7 @@ function withMiddlewares(server: Server): Server {
   if (!fetch) return server
   return {
     ...server,
-    async fetch(request, ...args: unknown[]) {
-      const result = await universalMiddlewares(request)
-      if (result instanceof Response) return result
-      const response: Response = await Reflect.apply(fetch, server, [request, ...args])
-      return result ? result(response) : response
-    },
+    fetch: (request, ...args: unknown[]) =>
+      srvxMiddleware(request, () => Reflect.apply(fetch, server, [request, ...args])),
   }
 }

@@ -14,7 +14,7 @@ function testRun(...args: Parameters<typeof testRunClassic>) {
   test('+middleware runs once, also for the routes of +server.ts', async () => {
     for (const url of ['/express', '/']) {
       const response = await fetch(`${getServerUrl()}${url}`)
-      expect(response.headers.get('x-middleware')).toBe('ran')
+      expect(response.headers.get('x-middleware')).toBe('srvx')
     }
   })
 
