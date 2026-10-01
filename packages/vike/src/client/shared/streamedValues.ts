@@ -26,7 +26,7 @@ function parsePageContextHtml(pageContextJson: string): unknown {
   return pageContext
 }
 
-// Client-side navigation: the `.pageContext.json` response (see server/runtime/renderPageServer/pageContextJson.ts),
+// Client-side navigation: the `.pageContext.json` response (see server/runtime/renderPageServer/getPageContextJson.ts),
 // `[pageContext` then one `,line` per line then `]`. The pageContext is returned as soon as its line arrives.
 async function readPageContextJsonStreamed(response: Response): Promise<Record<string, unknown>> {
   const reader = response.body!.getReader()

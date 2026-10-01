@@ -11,7 +11,7 @@ import { isSameErrorMessage } from '../../../utils/isSameErrorMessage.js'
 import { objectAssign } from '../../../utils/objectAssign.js'
 import { updateType } from '../../../utils/updateType.js'
 import { getStreamedValuesLinesPrerendered } from './html/streamedValuesHtml.js'
-import { getPageContextJson, getPageContextJsonFile } from './pageContextJson.js'
+import { getPageContextJson, getPageContextJsonFile } from './getPageContextJson.js'
 import { type PageContextUrlInternal } from '../../../shared-server-client/getPageContextUrlComputed.js'
 import {
   createHttpResponsePageHtml,

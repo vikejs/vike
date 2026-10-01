@@ -6,7 +6,7 @@
 // - Delivery: the serialized pageContext is wrapped in a JSON array (the client loads its decoder only then) followed, in
 //   the same response, by one JSON line per chunk / result:
 //   - HTML: see server/runtime/renderPageServer/html/streamedValuesHtml.ts
-//   - `.pageContext.json`: see server/runtime/renderPageServer/pageContextJson.ts
+//   - `.pageContext.json`: see server/runtime/renderPageServer/getPageContextJson.ts
 //
 // Lines:
 //   {"s":<id>,"t":<text>}      A chunk that is a Uint8Array of valid UTF-8

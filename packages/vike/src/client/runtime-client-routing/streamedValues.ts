@@ -1,6 +1,6 @@
 // Streamed pageContext values https://vike.dev/passToClient#streaming, upon client-side navigation: the decoder
 // (../shared/streamedValues.ts) is loaded only if the `.pageContext.json` response is a JSON array (see
-// server/runtime/renderPageServer/pageContextJson.ts).
+// server/runtime/renderPageServer/getPageContextJson.ts).
 
 export { readPageContextJson }
 export { cancelStreamedValues }

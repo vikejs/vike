@@ -73,7 +73,7 @@ import type { PageContextInit, PageContextInitInternal, PageContextInternalServe
 import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.js'
 import { forkPageContext } from '../../shared-server-client/forkPageContext.js'
 import { getAsyncLocalStorage, type AsyncStore } from './asyncHook.js'
-import { getPageContextJson } from './renderPageServer/pageContextJson.js'
+import { getPageContextJson } from './renderPageServer/getPageContextJson.js'
 import '../assertEnvServer.js'
 import {
   enhance,

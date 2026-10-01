@@ -10,7 +10,7 @@ vi.mock('./html/serializeContext.js', () => ({
 }))
 import { stringify } from '@brillout/json-serializer/stringify'
 import { getReplacer } from './streamedValues/registry.js'
-import { getPageContextJson, getPageContextJsonFile } from './pageContextJson.js'
+import { getPageContextJson, getPageContextJsonFile } from './getPageContextJson.js'
 import {
   serializePageContextHtml,
   getStreamedValuesHtml,
