@@ -1,6 +1,9 @@
 // Used by vike:build:pluginProdBuildEntry
 export { setGlobalContext_prodBuildEntry } from '../runtime/globalContext.js'
 
+// Used by vike:pluginUniversalDeploy
+export { runMiddlewares } from '../runtime/getUniversalMiddlewares.js'
+
 // Used by vite-plugin-vercel
 export { route, getPagesAndRoutes }
 export type { PageRoutes, PageFile, PageConfigRuntime as PageConfig }

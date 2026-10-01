@@ -1,5 +1,6 @@
 export { getUniversalMiddlewares }
 export { universalMiddlewares }
+export { runMiddlewares }
 
 import { getGlobalContextServerInternal, initGlobalContext_renderPage } from './globalContext.js'
 import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.js'
@@ -23,6 +24,7 @@ import '../assertEnvServer.js'
 /**
  * Get the Universal Middlewares that apply your `+middleware` to all HTTP requests.
  *
+ * Only needed without `+server`: Vike applies `+middleware` before the `+server` handler.
  * Apply them before your server's other handlers, and Vike's handler last.
  *
  * @example
@@ -71,6 +73,14 @@ const universalMiddlewares = enhance(
   },
   { name: 'vike:middleware' },
 )
+
+// Applies +middleware before the +server handler `next()`
+async function runMiddlewares(request: Request, next: () => Awaitable<Response>): Promise<Response> {
+  const result = await universalMiddlewares(request)
+  if (result instanceof Response) return result
+  const response = await next()
+  return result ? result(response) : response
+}
 
 function collectResponseHandler(middleware: EnhancedMiddleware, responseHandlers: ResponseHandler[]) {
   if (getUniversalProp(middleware, pathSymbol)) return middleware
