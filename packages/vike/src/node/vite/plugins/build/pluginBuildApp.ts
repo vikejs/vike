@@ -134,13 +134,6 @@ function pluginBuildApp(): Plugin[] {
 async function triggerPrerendering(config: ResolvedConfig) {
   const vikeConfig = await getVikeConfigInternal()
   if (isDisabled(vikeConfig)) return
-  /* TO-DO/eventually: remove this — I guess it isn't needed anymore: Claude removed it at https://github.com/vikejs/vike/pull/3564
-  // Workaround for @vitejs/plugin-legacy
-  //  - The legacy plugin triggers its own Rollup build for the client-side.
-  //  - The legacy plugin doesn't generate a manifest => we can use that to detect the legacy plugin build.
-  //  - Issue & reproduction: https://github.com/vikejs/vike/issues/1154#issuecomment-1965954636
-  if (!bundle[getManifestFilePathRelative(config.build.manifest)]) return
-  */
   if (!(await isPrerenderAutoRunEnabled(vikeConfig))) return
 
   const configInline = getFullBuildInlineConfig(config)
