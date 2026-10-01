@@ -25,7 +25,7 @@ import type { PageContextAfterRoute } from '../../../shared-server-client/route/
 import type { PageContextCreatedServer } from './createPageContextServer.js'
 import { resolveHeadersResponseEarly } from './headersResponse.js'
 import { resolvePageContextCspNone } from './csp.js'
-import { addConfigsOfEnvironments } from './loadPageConfigsOfEnvironments.js'
+import { addConfigsOfEnvironments } from './addConfigsOfEnvironments.js'
 import '../../assertEnvServer.js'
 
 type PageContext_loadPageConfigsLazyServerSide = PageContextCreatedServer &

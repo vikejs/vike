@@ -16,7 +16,6 @@ import '../../assertEnvVite.js'
 
 async function generateVirtualFileGlobalEntry(
   runtimeEnv: RuntimeEnvRuntime & { isDev: boolean },
-  isForClientSide: boolean,
   id: string,
 ): Promise<string> {
   const vikeConfig = await getVikeConfigInternal(true)
@@ -25,14 +24,13 @@ async function generateVirtualFileGlobalEntry(
     _pageConfigGlobal: pageConfigGlobal,
     _runtimeEnvironmentNames: runtimeEnvironmentNames,
   } = vikeConfig
-  return getCode(pageConfigs, pageConfigGlobal, runtimeEnv, isForClientSide, id, runtimeEnvironmentNames)
+  return getCode(pageConfigs, pageConfigGlobal, runtimeEnv, id, runtimeEnvironmentNames)
 }
 
 function getCode(
   pageConfigs: PageConfigBuildTime[],
   pageConfigGlobal: PageConfigGlobalBuildTime,
   runtimeEnv: RuntimeEnvRuntime & { isDev: boolean },
-  isForClientSide: boolean,
   id: string,
   runtimeEnvironmentNames: string[],
 ): string {
@@ -41,6 +39,7 @@ function getCode(
   const filesEnv: FilesEnv = new Map()
 
   const { environmentName, isDev } = runtimeEnv
+  const isForClientSide = environmentName === 'client'
 
   if (!isForClientSide) {
     importStatements.push(`import '${VIRTUAL_FILE_ID_constantsGlobalThis}';`)
@@ -73,7 +72,7 @@ function getCode(
   return code
 }
 
-// The global entries of the other Vike environments (e.g. `rsc`), loaded by loadPageConfigsOfEnvironments.ts
+// The global entries of the other Vike environments (e.g. `rsc`), loaded by addConfigsOfEnvironments.ts
 // - In development, they're loaded with the environment's module runner instead
 function getCodeEnvironmentEntries(runtimeEnvironmentNames: string[], isDev: boolean) {
   const entries = runtimeEnvironmentNames

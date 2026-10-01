@@ -81,7 +81,7 @@ function pluginBuildConfig(): Plugin[] {
       },
     },
     {
-      // Vike's server environment imports the global entry of every other Vike environment (e.g. `rsc`), see loadPageConfigsOfEnvironments.ts
+      // Vike's server environment imports the global entry of every other Vike environment (e.g. `rsc`), see addConfigsOfEnvironments.ts
       name: 'vike:build:pluginBuildConfig:environmentEntries',
       apply: 'build',
       buildStart: {
@@ -104,11 +104,11 @@ function pluginBuildConfig(): Plugin[] {
         handler(code, chunk) {
           if (!code.includes(environmentEntryPlaceholder)) return
           const { config } = this.environment
-          const getOutDir = (name: string) => path.resolve(config.root, config.environments[name]!.build.outDir)
+          const chunkDir = path.dirname(path.resolve(config.root, config.build.outDir, chunk.fileName))
           const { magicString, getMagicStringResult } = getMagicString(code, chunk.fileName)
           for (const match of code.matchAll(environmentEntryPlaceholderRegex)) {
-            const environmentEntry = path.join(getOutDir(match[2]!), environmentEntryFileName)
-            const chunkDir = path.dirname(path.join(getOutDir(this.environment.name), chunk.fileName))
+            const outDir = config.environments[match[2]!]!.build.outDir
+            const environmentEntry = path.resolve(config.root, outDir, environmentEntryFileName)
             let importPath = path.relative(chunkDir, environmentEntry).split(path.sep).join('/')
             if (!importPath.startsWith('.')) importPath = `./${importPath}`
             magicString.overwrite(match.index, match.index + match[0].length, `import(${JSON.stringify(importPath)})`)

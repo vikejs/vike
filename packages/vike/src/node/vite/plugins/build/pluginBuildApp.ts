@@ -11,7 +11,7 @@ import type { VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.
 import { isViteCli, getViteCliArgs } from '../../shared/isViteCli.js'
 import pc from '@brillout/picocolors'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
-import { isEnvironmentNamed } from '../../shared/environmentName.js'
+import { isVikeEnvironmentBuiltIn } from '../../shared/environmentName.js'
 import { isVikeCliOrApi } from '../../../../shared-server-node/api-context.js'
 import { handleAssetsManifest, handleAssetsManifest_assertUsageCssTarget } from './handleAssetsManifest.js'
 import { isViteServerSide_onlySsrEnv } from '../../shared/isViteServerSide.js'
@@ -46,8 +46,7 @@ function pluginBuildApp(): Plugin[] {
                 // Before ssr: pre-rendering loads the other Vike environments (e.g. `rsc`)
                 const { _runtimeEnvironmentNames: runtimeEnvironmentNames } = await getVikeConfigInternal()
                 for (const name of runtimeEnvironmentNames) {
-                  if (isEnvironmentNamed(name, runtimeEnvironmentNames))
-                    await builder.build(builder.environments[name]!)
+                  if (!isVikeEnvironmentBuiltIn(name)) await builder.build(builder.environments[name]!)
                 }
                 await builder.build(builder.environments.client)
                 await builder.build(builder.environments.ssr)

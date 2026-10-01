@@ -14,7 +14,7 @@ import type { GlobalContextServerInternal } from '../globalContext.js'
 import '../../assertEnvServer.js'
 
 type PageConfigs = ReturnType<typeof parsePageConfigsSerialized>
-const globalObject = getGlobalObject('renderPageServer/loadPageConfigsOfEnvironments.ts', {
+const globalObject = getGlobalObject('renderPageServer/addConfigsOfEnvironments.ts', {
   pageConfigsByEnvironment: new Map<string, Promise<PageConfigs>>(),
 })
 
