@@ -17,14 +17,6 @@ function workerEnvironment() {
             build: { outDir: 'dist/worker', rollupOptions: { input: './worker/entry.js' } },
           },
         },
-        builder: {
-          async buildApp(builder) {
-            // - Built first: pre-rendering (while building ssr) loads it
-            await builder.build(builder.environments.worker)
-            await builder.build(builder.environments.client)
-            await builder.build(builder.environments.ssr)
-          },
-        },
       }
     },
     // The name of the Vite environment that imports it
