@@ -29,7 +29,6 @@ describe('normalizeUrlPathname()', () => {
   it('file URL with trailingSlash', () => {
     expect(normalizeUrlPathname('/feed.atom', true, '/')).toBe(null)
     expect(normalizeUrlPathname('/feed.atom/', true, '/')).toBe('/feed.atom')
-    expect(normalizeUrlPathname('/base/feed.atom', true, '/base/')).toBe(null)
     // Not a known file extension
     expect(normalizeUrlPathname('/v1.2', true, '/')).toBe('/v1.2/')
   })

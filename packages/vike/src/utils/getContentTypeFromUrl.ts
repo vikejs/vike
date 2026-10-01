@@ -31,7 +31,7 @@ const contentTypes = new Map(
   }),
 )
 
-// Content-Type of the URL's file extension, or `null` if unknown. It's the default Content-Type of `pageContext.content`, see https://vike.dev/pageContext#content
+// Content-Type of the URL's file extension, or `null` if unknown, see https://vike.dev/pageContext#content
 function getContentTypeFromUrl(url: string): string | null {
   const { pathname } = parseUrl(url, '/')
   // Last non-empty segment, see https://vike.dev/url-normalization
