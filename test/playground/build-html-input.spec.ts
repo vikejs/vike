@@ -1,6 +1,7 @@
 import { describe, test, expect } from 'vitest'
 import { build } from 'vike/api'
-import { stripAnsi } from '../../packages/vike/src/utils/colorsServer'
+
+const stripAnsi = (str: string) => str.replace(/\x1b\[[0-9;]*m/g, '')
 
 describe('build', () => {
   test('HTML input on environments.client with builder.sharedConfigBuild', { timeout: 60 * 1000 }, async () => {
