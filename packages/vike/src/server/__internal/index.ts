@@ -2,7 +2,7 @@
 export { setGlobalContext_prodBuildEntry } from '../runtime/globalContext.js'
 
 // Used by vike:pluginUniversalDeploy
-export { runMiddlewares } from '../runtime/getUniversalMiddlewares.js'
+export { withMiddlewares }
 
 // Used by vite-plugin-vercel
 export { route, getPagesAndRoutes }
@@ -13,6 +13,8 @@ import type { PageFile } from '../../shared-server-client/getPageFiles/getPageFi
 import { getGlobalContextServerInternal, initGlobalContext_getPagesAndRoutes } from '../runtime/globalContext.js'
 import { setNodeEnvProductionIfUndefined } from '../../utils/assertSetup.js'
 import { PageConfigRuntime } from '../../types/PageConfig.js'
+import type { Server } from '../../types/Server.js'
+import { universalMiddlewares } from '../runtime/getUniversalMiddlewares.js'
 import '../assertEnvServer.js'
 
 /**
@@ -43,4 +45,18 @@ async function route(pageContext: Parameters<typeof routeInternal>[0]) {
   const pageContextFromRoute = await routeInternal(pageContext)
   // Old interface
   return { pageContextAddendum: pageContextFromRoute }
+}
+
+// Applies +middleware before the +server handler
+function withMiddlewares(server: Server): Server {
+  const { fetch } = server
+  return {
+    ...server,
+    async fetch(request, ...args: unknown[]) {
+      const result = await universalMiddlewares(request)
+      if (result instanceof Response) return result
+      const response: Response = await Reflect.apply(fetch, server, [request, ...args])
+      return result ? result(response) : response
+    },
+  }
 }
