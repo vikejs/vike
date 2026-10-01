@@ -3,15 +3,13 @@ export { data }
 import viteEnvironmentName from 'virtual:environment-name'
 
 async function data(pageContext) {
-  const worker = await pageContext.config.getWorkerInfo(pageContext, 'Worker:')
+  const worker = await pageContext.environments.worker.config.getWorkerInfo(pageContext, 'Worker:')
   return {
     server: {
       viteEnvironmentName,
-      hasWorkerConfig: 'workerGreeting' in pageContext.config || 'workerSuffixed' in pageContext.config,
+      hasWorkerConfig: ['getWorkerInfo', 'workerGreeting', 'workerSuffixed'].some((name) => name in pageContext.config),
       writtenByWorker: pageContext.writtenByWorker,
       workerGreeting: pageContext.environments.worker.config.workerGreeting,
-      workerInfoEnvironment: (await pageContext.environments.worker.config.getWorkerInfo(pageContext, ''))
-        .viteEnvironmentName,
     },
     worker,
   }

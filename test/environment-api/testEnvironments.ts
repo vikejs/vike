@@ -11,7 +11,6 @@ function testEnvironments() {
         hasWorkerConfig: false,
         writtenByWorker: true,
         workerGreeting: 'Hello from the worker environment',
-        workerInfoEnvironment: 'worker',
       }),
     )
     expect(html).toContain(

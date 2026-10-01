@@ -277,7 +277,7 @@ type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
      * @experimental
      * https://vike.dev/meta#vike-environments
      */
-    environments?: Record<string, { config: Record<string, unknown> }>
+    environments?: Record<string, { config: PageContextConfig['config'] }>
 
     isHydration?: undefined
     isBackwardNavigation?: undefined
