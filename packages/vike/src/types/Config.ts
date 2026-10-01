@@ -664,7 +664,7 @@ type ConfigBuiltIn = {
    *
    * The middlewares defined via `+middleware` are so called "Universal Middleware" — they work with any JavaScript server (Hono, Express, Cloudflare, ...).
    *
-   * They run for every request, including your `+server` routes: limit one to some URLs with `enhance(middleware, { path, method })`.
+   * Vike runs them for every request, including your `+server` routes; custom servers without `+server` apply them with `getUniversalMiddlewares()`. To limit one to some URLs, check `new URL(request.url).pathname` inside it.
    *
    * https://github.com/magne4000/universal-middleware
    */
