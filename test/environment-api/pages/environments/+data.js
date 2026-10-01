@@ -9,6 +9,9 @@ async function data(pageContext) {
       viteEnvironmentName,
       hasWorkerConfig: 'workerGreeting' in pageContext.config || 'workerSuffixed' in pageContext.config,
       writtenByWorker: pageContext.writtenByWorker,
+      workerGreeting: pageContext.environments.worker.config.workerGreeting,
+      workerInfoEnvironment: (await pageContext.environments.worker.config.getWorkerInfo(pageContext, ''))
+        .viteEnvironmentName,
     },
     worker,
   }

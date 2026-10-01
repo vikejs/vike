@@ -5,7 +5,15 @@ import { test, expect, fetchHtml } from '@brillout/test-e2e'
 function testEnvironments() {
   test('the server environment calls a function of the worker environment', async () => {
     const html = await fetchHtml('/environments')
-    expect(html).toContain(escape({ viteEnvironmentName: 'ssr', hasWorkerConfig: false, writtenByWorker: true }))
+    expect(html).toContain(
+      escape({
+        viteEnvironmentName: 'ssr',
+        hasWorkerConfig: false,
+        writtenByWorker: true,
+        workerGreeting: 'Hello from the worker environment',
+        workerInfoEnvironment: 'worker',
+      }),
+    )
     expect(html).toContain(
       escape({
         viteEnvironmentName: 'worker',
