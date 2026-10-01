@@ -47,7 +47,7 @@ import {
   streamFromReactStreamingPackageToString,
 } from './stream/react-streaming.js'
 import { import_ } from '@brillout/import'
-import type { Readable as Readable_, Writable as Writable_ } from 'node:stream'
+import type { Readable as Readable_, Writable as Writable_, pipeline as pipeline_ } from 'node:stream'
 import pc from '@brillout/picocolors'
 import '../../../assertEnvServer.js'
 
@@ -321,14 +321,13 @@ function pipeToStreamWritableNode(htmlRender: HtmlRender | Uint8Array, writable:
     return true
   }
   if (isStreamReadableNode(htmlRender) || isStreamReadableWeb(htmlRender)) {
-    getStreamReadableNode(htmlRender).then((readable) => {
+    getStreamReadableNode(htmlRender).then(async (readable) => {
       assert(readable)
-      // Like pipeline() (which is slower): destroy the readable if the writable closes (or already has), and the writable if the readable errors or closes before its end
+      // pipeline() throws if the writable is already destroyed (e.g. the client left before the first chunk)
       if (writable.destroyed) return readable.destroy()
-      writable.on('close', () => readable.destroy())
-      readable.on('error', (err) => writable.destroy(err))
-      readable.on('close', () => readable.readableEnded || writable.destroy())
-      readable.pipe(writable)
+      const { pipeline } = await loadStreamNodeModule()
+      // Unlike pipe(), pipeline() destroys the readable if the writable closes early, and the writable if the readable errors or closes before its end
+      pipeline(readable, writable, () => {})
     })
     return true
   }
@@ -989,10 +988,11 @@ function encodeForWebStream(thing: unknown) {
 async function loadStreamNodeModule(): Promise<{
   Readable: typeof Readable_
   Writable: typeof Writable_
+  pipeline: typeof pipeline_
 }> {
   const streamModule = (await import_('stream')).default as Awaited<typeof import('stream')>
-  const { Readable, Writable } = streamModule
-  return { Readable, Writable }
+  const { Readable, Writable, pipeline } = streamModule
+  return { Readable, Writable, pipeline }
 }
 
 function getStreamName(
