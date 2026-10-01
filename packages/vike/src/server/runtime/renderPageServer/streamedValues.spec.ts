@@ -64,7 +64,7 @@ function serialize(obj: Record<string, unknown>, pageContext: object) {
 // Client-side navigation: the server's `.pageContext.json` body, read by the client
 async function navigation(obj: Record<string, unknown>) {
   const body = getPageContextJson({ _obj: obj } as any)
-  if (typeof body === 'string') return { body, pageContext: JSON.parse(body) }
+  if (typeof body === 'string') return { body, pageContext: (await readPageContextJson(new Response(body))) as any }
   const [forClient, forText] = body.tee()
   const pageContextFromServer = (await readPageContextJson(new Response(forClient))) as any
   return { pageContext: pageContextFromServer, text: new Response(forText).text() }
@@ -145,15 +145,18 @@ describe('client-side navigation', () => {
     const { pageContext, text } = await navigation(getValues())
     await expectValues(pageContext)
     expect(logRuntimeError).not.toHaveBeenCalled()
-    // The body is one valid JSON value
+    // The body is one valid JSON value: `[pageContext, ...lines]`
     const json = JSON.parse(await text!)
-    expect(json.stream).toBe('!VikeStream:0')
-    expect(json._streamedValues.at(-1)).toEqual({ s: expect.any(Number), end: true })
+    expect(json[0].stream).toBe('!VikeStream:0')
+    expect(json.at(-1)).toEqual({ s: expect.any(Number), end: true })
+    const bodyWithEmptyChunk = streamOf([new Uint8Array(), enc('[{"a":1}\n]\n')])
+    expect(await readPageContextJson(new Response(bodyWithEmptyChunk))).toMatchObject({ a: 1 })
   })
 
   it('without streamed values: the body is the serialized pageContext, as is', async () => {
-    const { body } = await navigation({ a: 1, date: new Date(0) })
+    const { body, pageContext } = await navigation({ a: 1, date: new Date(0) })
     expect(body).toBe(stringify({ a: 1, date: new Date(0) }))
+    expect(pageContext).toEqual({ a: 1, date: new Date(0) })
     expect(getPageContextJsonFile({ _obj: { a: 1 } } as any, null)).toBe('{"a":1}')
   })
 
@@ -247,11 +250,11 @@ describe('pre-rendering', () => {
     const html = (await getStreamedValuesHtml(pageContext))!
     // The pageContext.json is serialized after the HTML: same ids
     const { serialized: serializedJson } = serialize(values, pageContext)
-    expect(serializedJson).toBe(serialized)
+    expect(`[${serializedJson}]`).toBe(serialized)
     const lines = (await getStreamedValuesLinesPrerendered(pageContext))!
     expect(lines).toHaveLength(4)
     const json = JSON.parse(getPageContextJsonFile(pageContext, lines))
-    expect(json._streamedValues).toHaveLength(lines.length)
+    expect(json).toHaveLength(1 + lines.length)
     expect(lines.every((line) => html.includes(JSON.stringify(line).slice(1, -1).replaceAll('/', '\\/')))).toBe(true)
   })
 

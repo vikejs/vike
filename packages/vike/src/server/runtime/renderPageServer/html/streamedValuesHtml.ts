@@ -38,7 +38,7 @@ type PageContextStreamedValuesHtml = PageContextCreatedServer &
     _streamedValuesHtml?: StreamedValuesHtml
   }
 
-// The pageContext of `<script id="vike_pageContext">`; its streamed values start streaming
+// The pageContext of `<script id="vike_pageContext">`, as `[pageContext]` if it has streamed values (which start streaming)
 function serializePageContextHtml(
   pageContext: PageContextStreamedValuesHtml & PageContextSerialization,
   streamFromReactStreamingPackage: null | StreamFromReactStreamingPackage,
@@ -69,7 +69,7 @@ function serializePageContextHtml(
   // Pre-rendering: the error is thrown by getStreamedValuesLinesPrerendered()
   streamedValuesHtml.done.catch(() => {})
   pageContext._streamedValuesHtml = streamedValuesHtml
-  return pageContextSerialized
+  return `[${pageContextSerialized}]`
 }
 
 // HTML string

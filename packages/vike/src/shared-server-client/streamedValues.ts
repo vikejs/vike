@@ -3,7 +3,8 @@
 //
 // - Serialization: a marker followed by the value's id, e.g. `"!VikePromise:0"` (the serializer escapes user strings
 //   starting with `!`, so a user string can't be mistaken for a marker).
-// - Delivery: after the serialized pageContext, in the same response, one JSON line per chunk / result:
+// - Delivery: the serialized pageContext is wrapped in a JSON array (the client loads its decoder only then) followed, in
+//   the same response, by one JSON line per chunk / result:
 //   - HTML: see server/runtime/renderPageServer/html/streamedValuesHtml.ts
 //   - `.pageContext.json`: see server/runtime/renderPageServer/pageContextJson.ts
 //
@@ -17,8 +18,6 @@
 // A chunk or a Promise value can contain further streamed values: they get new ids and their lines follow.
 
 export { markers }
-export { pageContextJsonLinesBegin }
-export { pageContextJsonLinesEnd }
 export type { Line }
 export type { LineContent }
 
@@ -30,7 +29,3 @@ const markers = {
 
 type LineContent = { t: string } | { b: string } | { v: unknown } | { end: true } | { error: true }
 type Line = { s: number } & LineContent
-
-// See server/runtime/renderPageServer/pageContextJson.ts
-const pageContextJsonLinesBegin = ',"_streamedValues":['
-const pageContextJsonLinesEnd = ']}'

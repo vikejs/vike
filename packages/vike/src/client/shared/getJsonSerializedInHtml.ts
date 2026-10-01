@@ -5,7 +5,6 @@ import { parse } from '@brillout/json-serializer/parse'
 import { assert, assertUsage } from '../../utils/assert.js'
 import { hasProp } from '../../utils/hasProp.js'
 import { htmlElementId_globalContext, htmlElementId_pageContext } from '../../shared-server-client/htmlElementIds.js'
-import { markers } from '../../shared-server-client/streamedValues.js'
 import '../assertEnvClient.js'
 
 // elements should exist because:
@@ -15,11 +14,11 @@ import '../assertEnvClient.js'
 
 async function getPageContextSerializedInHtml(): Promise<{ pageId: string; routeParams: Record<string, string> }> {
   const pageContextJson = findJson(htmlElementId_pageContext)
-  // Streamed pageContext values https://vike.dev/passToClient#streaming (a user string starting with `!` is serialized as
-  // `!!…`: a false positive only loads the decoder)
-  const pageContextSerializedInHtml = Object.values(markers).some((marker) => pageContextJson.includes(`"${marker}`))
-    ? (await import('./streamedValues.js')).parsePageContextHtml(pageContextJson)
-    : parse(pageContextJson)
+  // A pageContext always serializes as `{…}`, so an array means streamed values https://vike.dev/passToClient#streaming
+  const pageContextSerializedInHtml =
+    pageContextJson[0] === '['
+      ? (await import('./streamedValues.js')).parsePageContextHtml(pageContextJson)
+      : parse(pageContextJson)
   assert(hasProp(pageContextSerializedInHtml, 'pageId', 'string'))
   assert(hasProp(pageContextSerializedInHtml, 'routeParams', 'string{}'))
   return pageContextSerializedInHtml
