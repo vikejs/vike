@@ -151,7 +151,7 @@ export async function onHydrationEnd(pageContext: PageContextClient<Data>) {
 - The value of a `Promise` and the chunks of a `ReadableStream` / async iterable can be any serializable value, including further promises, streams and async iterables. A `Uint8Array` chunk is sent byte for byte.
 - If a value fails, the error is logged on the server-side, and the value fails on the client-side with a generic error.
 - With an HTML string (instead of an <Link href="/streaming">HTML stream</Link>) and upon <Link href="/pre-rendering">pre-rendering</Link>, the HTML waits for all values.
-- Upon client-side navigation, the values of the previous page are cancelled.
+- Upon client-side navigation, the values the previous page fetched are cancelled. (The values of the first page, sent with its HTML, keep streaming until they end.)
 
 > The HTTP response must be a stream: use `pageContext.httpResponse.pipe()` or `pageContext.httpResponse.getReadableWebStream()` instead of `pageContext.httpResponse.body`, see <Link href="/renderPage" />.
 
