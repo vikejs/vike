@@ -728,7 +728,6 @@ const headings = [
       'Example: `+title` and `+description`',
       'Example: `+Layout`',
       'Example: modify `+data` env',
-      'Vike environments',
     ],
   },
   {
