@@ -61,7 +61,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): Promise<Plug
     const plugin: Plugin[] = [
       ...pluginCommon(vikeVitePluginOptions),
       ...pluginVirtualFiles(),
-      ...pluginDev(),
+      ...pluginDev(vikeConfig),
       ...pluginBuild(),
       ...pluginPreview(),
       ...pluginExtractAssets(),

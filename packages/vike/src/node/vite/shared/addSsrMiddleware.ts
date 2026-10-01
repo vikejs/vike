@@ -1,8 +1,9 @@
 export { addSsrMiddleware }
+export { addPlusMiddleware }
 
 import { type PageContextInitInternal, renderPageServer } from '../../../server/runtime/renderPageServer.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
-import type { ServerResponse } from 'node:http'
+import type { IncomingMessage, ServerResponse } from 'node:http'
 import { assertWarning } from '../../../utils/assert.js'
 import pc from '@brillout/picocolors'
 import { getAdapterRuntime, type ExpressAdapter } from '@universal-middleware/core'
@@ -13,6 +14,25 @@ import '../assertEnvVite.js'
 type ConnectServer = ViteDevServer['middlewares']
 
 const requestAdapter = createRequestAdapter()
+// Response handlers returned by +middleware, applied by addSsrMiddleware()
+const responseHandlers = new WeakMap<IncomingMessage, (response: Response) => Promise<Response>>()
+
+function addPlusMiddleware(middlewares: ConnectServer) {
+  middlewares.use(async (req, res, next) => {
+    try {
+      // What Universal Middleware's Express adapter passes: Vite's server is a Connect server
+      const express = Object.freeze({ req, res }) as unknown as ExpressAdapter['express']
+      const runtime = getAdapterRuntime('express', { params: undefined, ...express, express })
+      const result = await universalMiddlewares(requestAdapter(req, res), {}, runtime)
+      if (result instanceof Response) return sendResponse(result, res)
+      if (result) responseHandlers.set(req, result)
+    } catch (err) {
+      // Not thrown (that shuts down the server), and not next() (that renders the page)
+      return next(err)
+    }
+    next()
+  })
+}
 
 function addSsrMiddleware(
   middlewares: ConnectServer,
@@ -48,14 +68,7 @@ function addSsrMiddleware(
       enumerable: false,
     })
     let pageContext: Awaited<ReturnType<typeof renderPageServer>>
-    let applyResponseHandlers: ((response: Response) => Promise<Response>) | undefined
     try {
-      // What Universal Middleware's Express adapter passes: Vite's server is a Connect server
-      const express = Object.freeze({ req, res }) as unknown as ExpressAdapter['express']
-      const runtime = getAdapterRuntime('express', { params: undefined, ...express, express })
-      const result = await universalMiddlewares(requestAdapter(req, res), {}, runtime)
-      if (result instanceof Response) return sendResponse(result, res)
-      applyResponseHandlers = result
       pageContext = await renderPageServer(pageContextInit)
     } catch (err) {
       // Throwing an error in a connect middleware shuts down the server
@@ -77,6 +90,7 @@ function addSsrMiddleware(
     }
 
     const { httpResponse } = pageContext
+    const applyResponseHandlers = responseHandlers.get(req)
     if (applyResponseHandlers) {
       const { statusCode: status, headers } = httpResponse
       return sendResponse(
