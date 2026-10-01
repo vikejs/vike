@@ -323,10 +323,11 @@ function pipeToStreamWritableNode(htmlRender: HtmlRender | Uint8Array, writable:
   if (isStreamReadableNode(htmlRender) || isStreamReadableWeb(htmlRender)) {
     getStreamReadableNode(htmlRender).then((readable) => {
       assert(readable)
-      // Like pipeline() (which is slower): destroy the readable if the writable closes (or already has), and the writable if the readable errors
+      // Like pipeline() (which is slower): destroy the readable if the writable closes (or already has), and the writable if the readable errors or closes before its end
       if (writable.destroyed) return readable.destroy()
       writable.on('close', () => readable.destroy())
       readable.on('error', (err) => writable.destroy(err))
+      readable.on('close', () => readable.readableEnded || writable.destroy())
       readable.pipe(writable)
     })
     return true

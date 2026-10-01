@@ -185,6 +185,17 @@ describe('the response', () => {
     expect(stopped.sort()).toEqual(['pipe node', 'pipe web', 'readable', 'readable web'])
   })
 
+  it('is destroyed if the stream closes before its end', async () => {
+    const readable = new Readable({ read() {} })
+    readable.push('a')
+    const res = response()
+    pipeToStreamWritableNode(readable, res)
+    await sleep(10)
+    readable.destroy()
+    await sleep(10)
+    expect(res.destroyed).toBe(true)
+  })
+
   it('is destroyed if the stream errors', async () => {
     let pulls = 0
     const stream = new ReadableStream({
