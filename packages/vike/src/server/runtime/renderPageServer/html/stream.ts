@@ -323,9 +323,9 @@ function pipeToStreamWritableNode(htmlRender: HtmlRender | Uint8Array, writable:
   if (isStreamReadableNode(htmlRender) || isStreamReadableWeb(htmlRender)) {
     getStreamReadableNode(htmlRender).then(async (readable) => {
       assert(readable)
+      const { pipeline } = await loadStreamNodeModule()
       // pipeline() throws if the writable is already destroyed (e.g. the client left before the first chunk)
       if (writable.destroyed) return readable.destroy()
-      const { pipeline } = await loadStreamNodeModule()
       // Unlike pipe(), pipeline() destroys the readable if the writable closes early, and the writable if the readable errors or closes before its end
       pipeline(readable, writable, () => {})
     })
