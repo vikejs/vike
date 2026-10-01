@@ -50,6 +50,8 @@ async function route(pageContext: Parameters<typeof routeInternal>[0]) {
 // Applies +middleware before the +server handler
 function withMiddlewares(server: Server): Server {
   const { fetch } = server
+  // Leave a +server without fetch() to Universal Deploy's error
+  if (!fetch) return server
   return {
     ...server,
     async fetch(request, ...args: unknown[]) {
