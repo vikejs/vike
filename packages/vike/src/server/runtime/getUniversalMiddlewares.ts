@@ -5,7 +5,6 @@ import { getGlobalContextServerInternal, initGlobalContext_renderPage } from './
 import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.js'
 import {
   enhance,
-  getAdapterRuntime,
   getUniversal,
   getUniversalProp,
   nameSymbol,
@@ -47,7 +46,7 @@ type ResponseHandler = (response: Response) => Awaitable<Response | undefined>
 
 // Resolved upon each request: the Vike config imports +server, so awaiting the config while +server loads deadlocks
 const universalMiddlewares = enhance(
-  async (request: Request, context?: Universal.Context, runtime?: RuntimeAdapter) => {
+  async (request: Request, context: Universal.Context, runtime: RuntimeAdapter) => {
     const middlewares = await getMiddlewares()
     if (middlewares.length === 0) return
     const responseHandlers: ResponseHandler[] = []
@@ -57,7 +56,7 @@ const universalMiddlewares = enhance(
       enhance(() => fallThrough, { name: 'vike:fall-through', method: httpMethods, path: '/**' }),
       ...middlewares.map((middleware) => collectResponseHandler(middleware, responseHandlers)),
     ]) as UniversalHandler
-    const response = await handler(request, context ?? {}, runtime ?? getAdapterRuntime('other', { params: undefined }))
+    const response = await handler(request, context, runtime)
     // Response handlers returned by +middleware apply to the final response, which may come after this middleware
     const applyResponseHandlers = async (response: Response) => {
       for (const responseHandler of responseHandlers) response = (await responseHandler(response)) ?? response
