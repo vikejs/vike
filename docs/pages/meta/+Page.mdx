@@ -509,7 +509,7 @@ export default {
 } satisfies Config
 ```
 
-Code running in `rsc` reads the `rsc` config values at `pageContext.config`, while code running in the server environment (e.g. Vite's `ssr` environment) reads the `server` config values. The server environment calls a function that only `rsc` defines, such as `+renderRsc`, through `pageContext.config`: Vike runs it in `rsc`.
+Code running in `rsc` reads the `rsc` config values at `pageContext.config`, while code running in the server environment (e.g. Vite's `ssr` environment) reads the `server` config values. The server environment calls a function that only `rsc` defines, such as `+renderRsc`, through `pageContext.config` with `pageContext` as first argument: Vike runs it in `rsc`, with the `rsc` view of `pageContext`. (Other values that only `rsc` defines aren't in the server's `pageContext.config`.)
 
 ```js
 // Environment: server
