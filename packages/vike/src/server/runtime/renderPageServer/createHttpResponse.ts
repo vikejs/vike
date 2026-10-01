@@ -181,7 +181,7 @@ async function createHttpResponsePageJson(
 ) {
   const headers = resolveHeadersResponseSetCookie(pageContext)
   headers.push(['Content-Type', contentTypeJson])
-  // A stream if there are streamed pageContext values, see pageContextJson.ts
+  // A stream if there are streamed pageContext values, see https://vike.dev/passToClient#streaming
   const httpResponse = createHttpResponseCommon(200, headers, pageContextJson)
   return httpResponse
 }
