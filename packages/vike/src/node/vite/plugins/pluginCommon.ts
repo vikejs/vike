@@ -92,7 +92,7 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
           overrideViteDefaultSsrExternal(config)
           //*/
           workaroundCI(config)
-          assertRollupInput(config)
+          assertRollupInput(config.build.rollupOptions.input)
           assertResolveAlias(config)
           temp_supportOldInterface(config)
           await emitServerEntryOnlyIfNeeded(config)
