@@ -88,7 +88,7 @@ describe('awaitFirstChunk', () => {
   })
 })
 
-const opts = { onErrorWhileStreaming() {} }
+const opts = { onErrorWhileStreaming() {}, onCancel() {} }
 const sleep = (ms?: number) => new Promise((r) => setTimeout(r, ms))
 
 describe('processStream', () => {
@@ -126,11 +126,13 @@ describe('processStream', () => {
 
 describe('the response', () => {
   const response = () => new Writable({ write: (_chunk, _encoding, callback) => callback() })
+  const withOnCancel = (onCancels: string[], source: string) => ({ ...opts, onCancel: () => onCancels.push(source) })
 
   it('stops the source if the response is already closed', async () => {
     const [closedResponse1, closedResponse2] = [response().destroy(), response().destroy()]
     await sleep() // Let them emit 'close'
     let cancelled = false
+    const onCancels: string[] = []
     const stream = new ReadableStream({
       start(controller) {
         controller.enqueue(new Uint8Array([1]))
@@ -139,20 +141,22 @@ describe('the response', () => {
         cancelled = true
       },
     })
-    pipeToStreamWritableNode(await processStream(stream, opts), closedResponse1)
+    pipeToStreamWritableNode(await processStream(stream, withOnCancel(onCancels, 'readable web')), closedResponse1)
     let closed = false
     const pipe: StreamPipeNode = (writable) => {
       writable.write('a')
       writable.on('close', () => (closed = true))
     }
     stampPipe(pipe, 'node-stream')
-    ;((await processStream(pipe, opts)) as StreamPipeNode)(closedResponse2)
+    ;((await processStream(pipe, withOnCancel(onCancels, 'pipe node'))) as StreamPipeNode)(closedResponse2)
     await sleep(10)
     expect({ cancelled, closed }).toEqual({ cancelled: true, closed: true })
+    expect(onCancels.sort()).toEqual(['pipe node', 'readable web'])
   })
 
   it('stops every kind of source when the response closes early', async () => {
     const stopped: string[] = []
+    const onCancels: string[] = []
     const readableWeb = new ReadableStream({
       async pull(controller) {
         await sleep()
@@ -175,16 +179,17 @@ describe('the response', () => {
     }
     stampPipe(pipeWeb, 'web-stream')
     const responses = [response(), response(), response()] as const
-    pipeToStreamWritableNode(await processStream(readableWeb, opts), responses[0])
-    pipeToStreamWritableNode(await processStream(readable, opts), responses[1])
-    ;((await processStream(pipeNode, opts)) as StreamPipeNode)(responses[2])
+    pipeToStreamWritableNode(await processStream(readableWeb, withOnCancel(onCancels, 'readable web')), responses[0])
+    pipeToStreamWritableNode(await processStream(readable, withOnCancel(onCancels, 'readable')), responses[1])
+    ;((await processStream(pipeNode, withOnCancel(onCancels, 'pipe node'))) as StreamPipeNode)(responses[2])
     const { readable: responseWeb, writable } = new TransformStream()
-    ;((await processStream(pipeWeb, opts)) as StreamPipeWeb)(writable)
+    ;((await processStream(pipeWeb, withOnCancel(onCancels, 'pipe web'))) as StreamPipeWeb)(writable)
     await sleep(10)
     responses.forEach((res) => res.destroy())
     await responseWeb.cancel()
     await sleep(10)
     expect(stopped.sort()).toEqual(['pipe node', 'pipe web', 'readable', 'readable web'])
+    expect(onCancels.sort()).toEqual(['pipe node', 'pipe web', 'readable', 'readable web'])
   })
 
   it('is destroyed if the stream closes before its end', async () => {

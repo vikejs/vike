@@ -27,6 +27,7 @@ import {
   StreamProviderNormalized,
 } from './stream.js'
 import { isStreamFromReactStreamingPackage } from './stream/react-streaming.js'
+import { cancelStreamedValuesHtml } from './streamedValuesHtml.js'
 import type { StreamFromReactStreamingPackage } from './stream/react-streaming.js'
 import type { PageAsset } from '../getPageAssets.js'
 import type { PreloadFilter } from './injectAssets/getHtmlTags.js'
@@ -110,6 +111,7 @@ async function renderHtmlStream(
   const processStreamOptions: Parameters<typeof processStream>[1] = {
     onErrorWhileStreaming,
     enableEagerStreaming: pageContext.enableEagerStreaming,
+    onCancel: () => cancelStreamedValuesHtml(pageContext),
   }
 
   if (injectString) {
@@ -125,8 +127,8 @@ async function renderHtmlStream(
     processStreamOptions.injectStringAtBegin = async () => {
       return await injectAtStreamBegin(injectString.htmlPartsBegin)
     }
-    processStreamOptions.injectStringAtEnd = async () => {
-      return await injectAtStreamEnd(injectString.htmlPartsEnd)
+    processStreamOptions.injectStringAtEnd = async (writeHtml) => {
+      return await injectAtStreamEnd(injectString.htmlPartsEnd, writeHtml)
     }
     processStreamOptions.injectStringAfterFirstChunk = () => {
       return injectAtStreamAfterFirstChunk()

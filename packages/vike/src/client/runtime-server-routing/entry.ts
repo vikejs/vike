@@ -26,7 +26,7 @@ hydrate()
 async function hydrate() {
   const pageContext = await createPageContextClient()
 
-  objectAssign(pageContext, getPageContextSerializedInHtml())
+  objectAssign(pageContext, await getPageContextSerializedInHtml())
 
   // Sets pageContext.config using non-global configs — overrides the pageContext.config set using global configs at createPageContextClient()
   const pageContextAddendum = await loadPageConfigsLazyClientSide(

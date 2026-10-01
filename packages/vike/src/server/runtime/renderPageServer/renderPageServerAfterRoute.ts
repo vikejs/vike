@@ -10,7 +10,8 @@ import { hasProp } from '../../../utils/hasProp.js'
 import { isSameErrorMessage } from '../../../utils/isSameErrorMessage.js'
 import { objectAssign } from '../../../utils/objectAssign.js'
 import { updateType } from '../../../utils/updateType.js'
-import { getPageContextClientSerialized } from './html/serializeContext.js'
+import { getStreamedValuesLinesPrerendered } from './html/streamedValuesHtml.js'
+import { getPageContextJson, getPageContextJsonFile } from './getPageContextJson.js'
 import { type PageContextUrlInternal } from '../../../shared-server-client/getPageContextUrlComputed.js'
 import {
   createHttpResponsePageHtml,
@@ -84,8 +85,7 @@ async function renderPageServerAfterRoute<
     if (isError) {
       objectAssign(pageContext, { [isServerSideError]: true })
     }
-    const pageContextSerialized: string = getPageContextClientSerialized(pageContext, false)
-    const httpResponse = await createHttpResponsePageJson(pageContextSerialized, pageContext)
+    const httpResponse = await createHttpResponsePageJson(getPageContextJson(pageContext), pageContext)
     objectAssign(pageContext, { httpResponse })
     return pageContext
   }
@@ -150,10 +150,13 @@ async function prerenderPageEntry(
   )
   const documentHtml = await getHtmlString(htmlRender)
   assert(typeof documentHtml === 'string')
+  // The streamed pageContext values were read while rendering the HTML: the same lines go into `index.pageContext.json`, and
+  // a value that failed makes pre-rendering fail (also without Client Routing)
+  const streamedValuesLines = await getStreamedValuesLinesPrerendered(pageContext)
   if (!pageContext._usesClientRouter) {
     return { documentHtml, content: null, pageContextSerialized: null, pageContext }
   } else {
-    const pageContextSerialized = getPageContextClientSerialized(pageContext, false)
+    const pageContextSerialized = getPageContextJsonFile(pageContext, streamedValuesLines)
     return { documentHtml, content: null, pageContextSerialized, pageContext }
   }
 }

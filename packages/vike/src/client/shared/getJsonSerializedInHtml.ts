@@ -12,19 +12,24 @@ import '../assertEnvClient.js'
 // 2. <script id="vike_pageContext" type="application/json"> is neither async nor defer
 // See https://github.com/vikejs/vike/pull/1271
 
-function getPageContextSerializedInHtml(): { pageId: string; routeParams: Record<string, string> } {
-  const pageContextSerializedInHtml = findAndParseJson(htmlElementId_pageContext)
+async function getPageContextSerializedInHtml(): Promise<{ pageId: string; routeParams: Record<string, string> }> {
+  const pageContextJson = findJson(htmlElementId_pageContext)
+  // A pageContext always serializes as `{…}`, so an array means streamed values https://vike.dev/passToClient#streaming
+  const pageContextSerializedInHtml =
+    pageContextJson[0] === '['
+      ? (await import('./streamedValues.js')).parsePageContextHtml(pageContextJson)
+      : parse(pageContextJson)
   assert(hasProp(pageContextSerializedInHtml, 'pageId', 'string'))
   assert(hasProp(pageContextSerializedInHtml, 'routeParams', 'string{}'))
   return pageContextSerializedInHtml
 }
 
 function getGlobalContextSerializedInHtml() {
-  const globalContextSerializedInHtml = findAndParseJson(htmlElementId_globalContext)
+  const globalContextSerializedInHtml = parse(findJson(htmlElementId_globalContext))
   return globalContextSerializedInHtml as object
 }
 
-function findAndParseJson(id: string) {
+function findJson(id: string) {
   const elem = document.getElementById(id)
   assertUsage(
     elem,
@@ -33,6 +38,5 @@ function findAndParseJson(id: string) {
   )
   const jsonStr = elem.textContent
   assert(jsonStr)
-  const json = parse(jsonStr)
-  return json
+  return jsonStr
 }
