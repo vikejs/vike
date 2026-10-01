@@ -1,11 +1,11 @@
-export { pluginWrapServerEntry }
+export { pluginServerEntryWrap }
 
 import type { Plugin } from 'vite'
 import { wrapper } from 'vite-plugin-wrapper'
 import { escapeRegex } from '../../../../utils/escapeRegex.js'
 import '../../assertEnvVite.js'
 
-function pluginWrapServerEntry(serverEntryVike: string): Plugin {
+function pluginServerEntryWrap(serverEntryVike: string): Plugin {
   return wrapper({
     resolveId: {
       filter: {
