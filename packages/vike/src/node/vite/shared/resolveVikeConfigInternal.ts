@@ -364,10 +364,13 @@ async function resolveVikeConfigInternal(
     vikeTranspileCache,
   )
 
-  const { pageConfigGlobal, pageConfigs, additionalEnvironmentNames } = getPageConfigsBuildTime(
+  const { pageConfigGlobal, pageConfigs } = getPageConfigsBuildTime(
     configDefinitionsResolved,
     plusFilesByLocationId,
     userRootDir,
+  )
+  const additionalEnvironmentNames = getAdditionalEnvironmentNames(
+    getConfigEnvs(configDefinitionsResolved, [pageConfigGlobal, ...pageConfigs]),
   )
   assertAdditionalEnvironmentsExist(additionalEnvironmentNames)
   if (!globalObject.isV1Design_) globalObject.isV1Design_ = pageConfigs.length > 0
@@ -552,26 +555,26 @@ function getPageConfigsBuildTime(
   pageConfigs.push(...getProgrammaticPageConfigs(configDefinitionsResolved, plusFilesByLocationId, userRootDir))
   assertPageConfigs(pageConfigs)
 
-  const configEnvsOfSources = [pageConfigGlobal, ...pageConfigs].flatMap(({ configValueSources }) =>
-    Object.values(configValueSources).flatMap((sources) => sources.map(({ configEnv }) => configEnv)),
-  )
-  return {
-    pageConfigs,
-    pageConfigGlobal,
-    additionalEnvironmentNames: getAdditionalEnvironmentNames([
-      ...getConfigEnvsOfDefinitions(configDefinitionsResolved),
-      ...configEnvsOfSources,
-    ]),
-  }
+  return { pageConfigs, pageConfigGlobal }
 }
 
-function getConfigEnvsOfDefinitions(configDefinitionsResolved: ConfigDefinitionsResolved) {
-  return [
+// The `meta.env` of every config definition, and of every config value: meta.effect() can change the `meta.env` of a value without changing its definition
+function getConfigEnvs(
+  configDefinitionsResolved: ConfigDefinitionsResolved,
+  pageConfigs: (PageConfigBuildTime | PageConfigGlobalBuildTime)[],
+): ConfigEnv[] {
+  const configDefinitionsAll = [
     configDefinitionsResolved.configDefinitionsGlobal,
     ...Object.values(configDefinitionsResolved.configDefinitionsLocal).map(
       ({ configDefinitions }) => configDefinitions,
     ),
-  ].flatMap((configDefinitions) => Object.values(configDefinitions).map(({ env }) => env))
+  ]
+  return [
+    ...configDefinitionsAll.flatMap((configDefinitions) => Object.values(configDefinitions).map(({ env }) => env)),
+    ...pageConfigs.flatMap(({ configValueSources }) =>
+      Object.values(configValueSources).flatMap((sources) => sources.map(({ configEnv }) => configEnv)),
+    ),
+  ]
 }
 function getAdditionalEnvironmentNames(configEnvs: ConfigEnv[]): string[] {
   const names = configEnvs.flatMap((configEnv) =>
