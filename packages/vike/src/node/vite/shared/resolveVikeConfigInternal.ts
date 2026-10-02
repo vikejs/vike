@@ -556,7 +556,7 @@ function getPageConfigsBuildTime(
   return { pageConfigs, pageConfigGlobal }
 }
 
-// The `meta.env` of every config definition, and of every config value: meta.effect() can change the `meta.env` of a value without changing its definition
+// Get all the `meta.env` of all configs
 function getMetaEnvAll(
   configDefinitionsResolved: ConfigDefinitionsResolved,
   pageConfigs: (PageConfigBuildTime | PageConfigGlobalBuildTime)[],
