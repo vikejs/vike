@@ -41,8 +41,11 @@ function pluginEnvironmentEntries(): Plugin[] {
     {
       name: 'vike:build:linkEnvironmentEntries',
       apply: 'build',
-      resolveId(id) {
-        if (id.startsWith(environmentEntryPlaceholder)) return { id, external: true }
+      resolveId: {
+        filter: { id: new RegExp(`^${environmentEntryPlaceholder}:`) },
+        handler(id) {
+          return { id, external: true }
+        },
       },
       renderChunk: {
         handler(code, chunk) {
