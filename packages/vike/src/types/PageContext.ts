@@ -272,9 +272,8 @@ type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
     pageContextsAborted: Partial<PageContextServer<Data>>[]
 
     /**
-     * The additional Vike environments: their config values, e.g. `pageContext.environments.rsc.config`, and their view of `pageContext` to call their functions with.
-     *
      * @experimental
+     *
      * https://vike.dev/meta#vike-environments
      */
     environments?: Record<string, { config: PageContextConfig['config']; pageContext: PageContextServer<Data> }>
