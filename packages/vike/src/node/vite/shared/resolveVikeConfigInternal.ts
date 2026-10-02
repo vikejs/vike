@@ -1790,7 +1790,7 @@ function getConfigEnvValue(
   })
   /* To allow users to set an eager config:
    * - Uncomment line below.
-   * - Remove 'eager' from configEnvKeysReserved.
+   * - Move 'eager' from configEnvKeysInternal to the keys that isAdditionalEnvironmentName() excludes.
    * - Add `eager: boolean` to ConfigEnv type.
   assertUsage(hasProp(val, 'eager', 'undefined') || hasProp(val, 'eager', 'boolean'), errInvalidValue)
   */
