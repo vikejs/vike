@@ -34,14 +34,14 @@ async function addConfigsOfEnvironments(
     const pageContextConfigEnv = await loadPageContextConfig(pageContext, environmentName, loadEntry)
     environments[environmentName] = {
       config: pageContextConfigEnv.config,
-      pageContext: getPageContextView(getPageContextPublicServer(pageContext), pageContextConfigEnv),
+      pageContext: getPageContextEnvView(getPageContextPublicServer(pageContext), pageContextConfigEnv),
     }
   }
   objectAssign(pageContextConfig, { environments })
 }
 
 // The same pageContext object, except for the config values (and what's derived from them) which are the environment's
-function getPageContextView(pageContext: object, pageContextConfig: PageContextConfig) {
+function getPageContextEnvView(pageContext: object, pageContextConfig: PageContextConfig) {
   return new Proxy(pageContext, {
     get(target, prop) {
       if (prop === 'Page') return pageContextConfig.exports.Page
