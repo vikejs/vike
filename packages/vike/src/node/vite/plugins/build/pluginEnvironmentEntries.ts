@@ -5,7 +5,7 @@ export { getEnvironmentEntryPlaceholder }
 // - An additional environment is a separate build, so the server imports its entry by a path relative to the importing chunk, which is known only after chunking (the same marker + renderChunk() as @vitejs/plugin-rsc's import.meta.viteRsc.loadModule())
 
 import { assertUsage } from '../../../../utils/assert.js'
-import type { Plugin } from 'vite'
+import type { Environment, Plugin } from 'vite'
 import { generateVirtualFileId } from '../../../../shared-server-node/virtualFileId.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { getMagicString } from '../../shared/getMagicString.js'
@@ -46,18 +46,7 @@ function pluginEnvironmentEntries(): Plugin[] {
       },
       renderChunk: {
         handler(code, chunk) {
-          if (!code.includes(environmentEntryPlaceholder)) return
-          const { config } = this.environment
-          const chunkDir = path.dirname(path.resolve(config.root, config.build.outDir, chunk.fileName))
-          const { magicString, getMagicStringResult } = getMagicString(code, chunk.fileName)
-          for (const match of code.matchAll(environmentEntryPlaceholderRegex)) {
-            const outDir = config.environments[match[2]!]!.build.outDir
-            const environmentEntry = path.resolve(config.root, outDir, environmentEntryFileName)
-            let importPath = path.relative(chunkDir, environmentEntry).split(path.sep).join('/')
-            if (!importPath.startsWith('.')) importPath = `./${importPath}`
-            magicString.overwrite(match.index, match.index + match[0].length, JSON.stringify(importPath))
-          }
-          return getMagicStringResult()
+          return replaceEnvironmentEntryPlaceholders(code, chunk.fileName, this.environment)
         },
       },
     },
@@ -67,4 +56,20 @@ function pluginEnvironmentEntries(): Plugin[] {
 // The import specifier of the environment's entry, replaced by its relative path once the importer's location is known
 function getEnvironmentEntryPlaceholder(environmentName: string) {
   return `${environmentEntryPlaceholder}:${environmentName}`
+}
+
+// Replace each placeholder with the path of the environment's entry, relative to the chunk
+function replaceEnvironmentEntryPlaceholders(code: string, chunkFileName: string, environment: Environment) {
+  if (!code.includes(environmentEntryPlaceholder)) return
+  const { config } = environment
+  const chunkDir = path.dirname(path.resolve(config.root, config.build.outDir, chunkFileName))
+  const { magicString, getMagicStringResult } = getMagicString(code, chunkFileName)
+  for (const match of code.matchAll(environmentEntryPlaceholderRegex)) {
+    const outDir = config.environments[match[2]!]!.build.outDir
+    const environmentEntry = path.resolve(config.root, outDir, environmentEntryFileName)
+    let importPath = path.relative(chunkDir, environmentEntry).split(path.sep).join('/')
+    if (!importPath.startsWith('.')) importPath = `./${importPath}`
+    magicString.overwrite(match.index, match.index + match[0].length, JSON.stringify(importPath))
+  }
+  return getMagicStringResult()
 }
