@@ -59,6 +59,7 @@ async function loadPageContextConfig(
   const isDev = !globalContext._isProduction
   let pageConfigsPromise = globalObject.pageConfigsByEnvironment.get(environmentName)
   if (!pageConfigsPromise) {
+    // TODO/ai make the name consistent: pageConfigsPromise === environmentEntry so why two different names?
     pageConfigsPromise = importGlobalEntry(globalContext, environmentName, environmentEntry).then((globalEntry: any) =>
       parsePageConfigsSerialized(globalEntry.pageConfigsSerialized, globalEntry.pageConfigGlobalSerialized),
     )
