@@ -510,14 +510,7 @@ export default {
 } satisfies Config
 ```
 
-| Code running in | `pageContext.config` | `rsc` config values |
-| --- | --- | --- |
-| The server environment (e.g. Vite's `ssr`) | The `server` values | `pageContext.environments.rsc.config` |
-| `rsc` | The `rsc` values | `pageContext.config` |
-
-When run inside the `rsc` environment, the <Link href="/pageContext#config">`pageContext.config`</Link> object lists the `rsc` config values such as `+Page`, while when running in the server environment the `pageContext.config` object lists the `server` config values.
-
-> The server environment can read the `rsc` config values at `pageContext.environments.rsc.config`.
+The `rsc` config values are available at `pageContext.environments.rsc.config`.
 
 ```ts
 // +onRenderHtml.ts
