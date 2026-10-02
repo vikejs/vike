@@ -80,8 +80,7 @@ function isRuntimeEnvMatch(configEnv: ConfigEnv, runtimeEnv: RuntimeEnv): boolea
   if ('isForConfig' in runtimeEnv) return !!configEnv.config
 
   // Runtime
-  const environmentValue = configEnv[runtimeEnv.environmentName]
-  if (!environmentValue) return false
+  if (!configEnv[runtimeEnv.environmentName]) return false
   if (runtimeEnv.environmentName === 'client' && configEnv.clientRoutingOnly && !runtimeEnv.isClientRouting)
     return false
 
