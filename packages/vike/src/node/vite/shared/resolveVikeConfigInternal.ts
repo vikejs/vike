@@ -1741,9 +1741,10 @@ function determineIsErrorPage(routeFilesystem: string) {
   return routeFilesystem.split('/').includes('_error')
 }
 
-// Keys of `meta.env` that only Vike sets, e.g. `eager` is set by the deprecated `env: '_routing-eager'`
+// Keys of `meta.env` that only Vike sets
 const configEnvKeysInternal = ['clientRoutingOnly', 'eager'] as const
-// Keys of `meta.env` that can't be environment names: file suffixes (`.ssr.js`, `.shared.js`, `.clear.js`, `.default.js`) and the internal keys
+// Keys of `meta.env` that can't be environment names
+// - Including file suffixes such as `.ssr.js`, `.shared.js`, `.clear.js`, `.default.js`
 const configEnvKeysReserved = ['ssr', 'shared', 'clear', 'default', ...configEnvKeysInternal] as const
 function isAdditionalEnvironmentName(configEnvKey: string) {
   return (
