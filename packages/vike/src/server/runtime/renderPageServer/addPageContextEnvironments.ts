@@ -26,6 +26,7 @@ async function addPageContextEnvironments(
   const environmentEntries = pageContext._globalContext._environmentEntries
   const environments: Record<string, { config: PageContextConfig['config']; pageContext: object }> = {}
   for (const [environmentName, environmentEntry] of Object.entries(environmentEntries)) {
+    // TODO/ai: should be Promise.all
     const pageContextConfigEnv = await loadPageContextConfig(pageContext, environmentName, environmentEntry)
     environments[environmentName] = {
       config: pageContextConfigEnv.config,

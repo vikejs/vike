@@ -167,6 +167,7 @@ async function loadPageUserFiles(
         pageConfigLoaded,
         pageContext._globalContext._pageConfigGlobal,
       )
+      // TODO/ai: possible to move to Promise.all above?
       if (pageConfigLoaded) await addPageContextEnvironments(pageContextAddendum, pageContext)
       return { pageContextAddendum }
     })(),
