@@ -26,9 +26,7 @@ async function addPageContextEnvironments(
   pageContextConfig: PageContextConfig,
   pageContext: PageContextPublicMinimum & { pageId: string; _globalContext: GlobalContextServerInternal },
 ) {
-  const { environmentEntries } = pageContext._globalContext._virtualFileExportsGlobalEntry as {
-    environmentEntries: Record<string, null | (() => Promise<unknown>)>
-  }
+  const environmentEntries = pageContext._globalContext._environmentEntries
   const environments: Record<string, { config: PageContextConfig['config']; pageContext: object }> = {}
   for (const [environmentName, loadEntry] of Object.entries(environmentEntries)) {
     const pageContextConfigEnv = await loadPageContextConfig(pageContext, environmentName, loadEntry)
