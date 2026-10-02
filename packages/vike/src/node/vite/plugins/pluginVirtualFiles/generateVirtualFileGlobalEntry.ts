@@ -13,10 +13,7 @@ import type { RuntimeEnvRuntime } from './getConfigValueSourcesRelevant.js'
 import { getEnvironmentEntryPlaceholder } from '../build/pluginEnvironmentEntries.js'
 import '../../assertEnvVite.js'
 
-async function generateVirtualFileGlobalEntry(
-  runtimeEnv: RuntimeEnvRuntime & { isDev: boolean },
-  id: string,
-): Promise<string> {
+async function generateVirtualFileGlobalEntry(runtimeEnv: RuntimeEnvRuntime, id: string): Promise<string> {
   const vikeConfig = await getVikeConfigInternal(true)
   const {
     _pageConfigs: pageConfigs,
@@ -29,7 +26,7 @@ async function generateVirtualFileGlobalEntry(
 function getCode(
   pageConfigs: PageConfigBuildTime[],
   pageConfigGlobal: PageConfigGlobalBuildTime,
-  runtimeEnv: RuntimeEnvRuntime & { isDev: boolean },
+  runtimeEnv: RuntimeEnvRuntime,
   id: string,
   additionalEnvironmentNames: string[],
 ): string {

@@ -16,7 +16,7 @@ import { getFileSuffixes } from '../../../../shared-server-node/getFileSuffixes.
 import '../../assertEnvVite.js'
 
 type RuntimeEnv = RuntimeEnvRuntime | { isForConfig: true }
-type RuntimeEnvRuntime = { environmentName: string; isClientRouting?: boolean; isDev?: boolean }
+type RuntimeEnvRuntime = { environmentName: string; isClientRouting?: boolean; isDev: boolean }
 
 type PageConfigPartial = Pick<
   PageConfigBuildTime | PageConfigGlobalBuildTime,
