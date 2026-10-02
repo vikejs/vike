@@ -1743,7 +1743,11 @@ function resolveConfigEnv(configEnv: ConfigEnv, filePath: FilePath) {
     } else if (suffixes.includes('shared')) {
       configEnvResolved.server = true
       configEnvResolved.client = true
+    } else {
+      return configEnvResolved
     }
+    // The file suffix decides, regardless of Client Routing
+    delete configEnvResolved.clientRoutingOnly
   }
 
   return configEnvResolved
