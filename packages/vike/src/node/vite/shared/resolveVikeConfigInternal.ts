@@ -368,7 +368,7 @@ async function resolveVikeConfigInternal(
     userRootDir,
   )
   const additionalEnvironmentNames = getAdditionalEnvironmentNames(
-    getConfigEnvs(configDefinitionsResolved, [pageConfigGlobal, ...pageConfigs]),
+    getMetaEnvAll(configDefinitionsResolved, [pageConfigGlobal, ...pageConfigs]),
   )
   assertAdditionalEnvironmentsExist(additionalEnvironmentNames)
   if (!globalObject.isV1Design_) globalObject.isV1Design_ = pageConfigs.length > 0
@@ -557,7 +557,7 @@ function getPageConfigsBuildTime(
 }
 
 // The `meta.env` of every config definition, and of every config value: meta.effect() can change the `meta.env` of a value without changing its definition
-function getConfigEnvs(
+function getMetaEnvAll(
   configDefinitionsResolved: ConfigDefinitionsResolved,
   pageConfigs: (PageConfigBuildTime | PageConfigGlobalBuildTime)[],
 ): ConfigEnv[] {
