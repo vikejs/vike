@@ -90,22 +90,20 @@ type VirtualFileExportsPageEntry = {
  *
  * https://vike.dev/meta
  */
-type ConfigEnv = (
-  | {
-      /** Load value on the client-side */
-      client?: boolean
-    }
-  | {
-      /** @experimental */
-      client?: 'if-client-routing'
-    }
-) & {
+type ConfigEnv = {
+  /** Load value on the client-side */
+  client?: boolean
   /** Load value on the server-side */
   server?: boolean
   /** Load value for config files */
   config?: boolean
   /** Load value only in production (`true`), or only in development (`false`), or always (`undefined`). */
   production?: boolean
+  /** Load value on the client-side only if the page uses Client Routing
+   *
+   * @experimental
+   */
+  clientRoutingOnly?: boolean
 }
 
 type ConfigValueSources = Record<
