@@ -22,7 +22,7 @@ async function loadPageContextEnvironments(
   pageContext: PageContextPublicMinimum & { pageId: string; _globalContext: GlobalContextServerInternal },
 ) {
   const environmentEntries = pageContext._globalContext._environmentEntries
-  return Object.fromEntries(
+  const environments = Object.fromEntries(
     await Promise.all(
       Object.entries(environmentEntries).map(async ([environmentName, environmentEntry]) => {
         const pageContextConfigEnv = await loadPageContextConfig(pageContext, environmentName, environmentEntry)
@@ -34,6 +34,11 @@ async function loadPageContextEnvironments(
       }),
     ),
   )
+  return environments
+  /* TODO/ai:
+  const pageContextEnvironments = { environments }
+  return pageContextEnvironments
+  */
 }
 
 // The same pageContext object, except for the config values (and what's derived from them) which are the environment's

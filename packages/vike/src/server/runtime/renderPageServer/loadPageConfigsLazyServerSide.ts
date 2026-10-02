@@ -175,5 +175,8 @@ async function loadPageUserFiles(
     }),
   ])
   if (environments) objectAssign(pageContextAddendum, { environments })
+  /* TODO/ai:
+  if (pageContextEnvironments) objectAssign(pageContextAddendum, pageContextEnvironments)
+  */
   return pageContextAddendum
 }
