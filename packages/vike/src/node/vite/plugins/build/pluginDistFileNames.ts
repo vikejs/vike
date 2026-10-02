@@ -17,7 +17,6 @@ import { assertModuleId, getFilePathToShowToUserModule } from '../../shared/getF
 import '../../assertEnvVite.js'
 import { isVite8OrAbove } from '../../shared/isVite8OrAbove.js'
 import { isViteServerSide_configEnvironment } from '../../shared/isViteServerSide.js'
-import { isEnvironmentNamed } from '../../shared/environmentName.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 type PreRenderedChunk = Rollup.PreRenderedChunk
 type PreRenderedAsset = Rollup.PreRenderedAsset
@@ -33,7 +32,7 @@ function pluginDistFileNames(): Plugin[] {
           const { _runtimeEnvironmentNames: runtimeEnvironmentNames } = await getVikeConfigInternal()
           Object.entries(config.environments).forEach(([envName, envConfig]) => {
             // Vike doesn't own the builds of other Vike environments (e.g. `rsc`): it only emits `vike-entry.mjs` there
-            if (isEnvironmentNamed(envName, runtimeEnvironmentNames)) return
+            if (runtimeEnvironmentNames.includes(envName)) return
             const { build } = envConfig
             copyRollupOutputs(build)
             const isServerSide = isViteServerSide_configEnvironment(envName, envConfig)

@@ -56,29 +56,19 @@ describe('getConfigEnvValue()', () => {
 })
 
 describe('getRuntimeEnvironmentNames()', () => {
-  it('always includes server and client', () => {
-    expect(getRuntimeEnvironmentNames([])).toEqual(['server', 'client'])
-  })
-
-  it('collects named environments', () => {
-    expect(getRuntimeEnvironmentNames([{ server: true }, { rsc: true, config: true }, { worker: true }])).toEqual([
-      'server',
-      'client',
-      'rsc',
-      'worker',
-    ])
+  it('collects the other Vike environments, not server and client', () => {
+    expect(
+      getRuntimeEnvironmentNames([{ server: true, client: true }, { rsc: true, config: true }, { worker: true }]),
+    ).toEqual(['rsc', 'worker'])
   })
 
   it('ignores environments set to false or undefined', () => {
-    expect(getRuntimeEnvironmentNames([{ server: true, rsc: false }, { worker: undefined }])).toEqual([
-      'server',
-      'client',
-    ])
+    expect(getRuntimeEnvironmentNames([{ server: true, rsc: false }, { worker: undefined }])).toEqual([])
   })
 
   it("doesn't mistake config, production and the deprecated eager for environments", () => {
     const configEnvs = [{ config: true, production: false }, getConfigEnvValue('_routing-eager', errMsgIntro)]
-    expect(getRuntimeEnvironmentNames(configEnvs)).toEqual(['server', 'client'])
+    expect(getRuntimeEnvironmentNames(configEnvs)).toEqual([])
   })
 })
 

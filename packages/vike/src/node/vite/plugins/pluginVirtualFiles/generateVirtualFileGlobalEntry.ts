@@ -10,7 +10,6 @@ import {
 } from '../../../../shared-server-client/page-configs/serialize/serializeConfigValues.js'
 import { VIRTUAL_FILE_ID_constantsGlobalThis } from '../pluginReplaceConstantsGlobalThis.js'
 import type { RuntimeEnvRuntime } from './getConfigValueSourcesRelevant.js'
-import { isVikeEnvironmentBuiltIn } from '../../shared/environmentName.js'
 import { getEnvironmentEntryPlaceholder } from '../build/pluginBuildConfig.js'
 import '../../assertEnvVite.js'
 
@@ -75,12 +74,10 @@ function getCode(
 // The global entries of the other Vike environments (e.g. `rsc`), loaded by addConfigsOfEnvironments.ts
 // - In development, they're loaded with the environment's module runner instead
 function getCodeEnvironmentEntries(runtimeEnvironmentNames: string[], isDev: boolean) {
-  const entries = runtimeEnvironmentNames
-    .filter((name) => !isVikeEnvironmentBuiltIn(name))
-    .map(
-      (name) =>
-        `${JSON.stringify(name)}: ${isDev ? 'null' : `() => ${JSON.stringify(getEnvironmentEntryPlaceholder(name))}`}`,
-    )
+  const entries = runtimeEnvironmentNames.map(
+    (name) =>
+      `${JSON.stringify(name)}: ${isDev ? 'null' : `() => ${JSON.stringify(getEnvironmentEntryPlaceholder(name))}`}`,
+  )
   return `export const environmentEntries = { ${entries.join(', ')} };`
 }
 

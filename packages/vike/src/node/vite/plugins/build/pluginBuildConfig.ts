@@ -12,7 +12,6 @@ import { requireResolveDistFile } from '../../../../utils/requireResolve.js'
 import { unique } from '../../../../utils/unique.js'
 import { objectMap } from '../../../../utils/objectMap.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
-import { isEnvironmentNamed } from '../../shared/environmentName.js'
 import { findPageFiles } from '../../shared/findPageFiles.js'
 import type { ResolvedConfig, Plugin, Rollup } from 'vite'
 import { generateVirtualFileId } from '../../../../shared-server-node/virtualFileId.js'
@@ -53,7 +52,7 @@ function pluginBuildConfig(): Plugin[] {
           const entriesServer = await getEntries(config, true)
           for (const [envName, envConfig] of Object.entries(config.environments)) {
             // Named environments (e.g. `rsc`) only get Vike's entry below
-            if (isEnvironmentNamed(envName, runtimeEnvironmentNames)) {
+            if (runtimeEnvironmentNames.includes(envName)) {
               removeServerEntry(envConfig.build.rollupOptions, inputsBeforeServerEntry.get(config)?.get(envName))
               continue
             }
@@ -88,7 +87,7 @@ function pluginBuildConfig(): Plugin[] {
         async handler() {
           const { name, config } = this.environment
           const { _runtimeEnvironmentNames: runtimeEnvironmentNames } = await getVikeConfigInternal()
-          if (!isEnvironmentNamed(name, runtimeEnvironmentNames)) return
+          if (!runtimeEnvironmentNames.includes(name)) return
           assertUsage(
             config.consumer === 'server',
             `The Vike environment ${name} should be a server-side Vite environment`,

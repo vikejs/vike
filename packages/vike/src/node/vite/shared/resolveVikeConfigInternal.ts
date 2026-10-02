@@ -215,9 +215,7 @@ async function setViteEnvironmentNames(viteEnvironmentNames: string[]) {
 function getRuntimeEnvironmentsMissing(runtimeEnvironmentNames: string[]): string[] {
   const { viteEnvironmentNames } = globalObject
   if (!viteEnvironmentNames) return []
-  return runtimeEnvironmentNames.filter(
-    (name) => !isVikeEnvironmentBuiltIn(name) && !viteEnvironmentNames.includes(name),
-  )
+  return runtimeEnvironmentNames.filter((name) => !viteEnvironmentNames.includes(name))
 }
 function assertRuntimeEnvironmentsExist(runtimeEnvironmentNames: string[]) {
   const [name] = getRuntimeEnvironmentsMissing(runtimeEnvironmentNames)
@@ -586,7 +584,7 @@ function getRuntimeEnvironmentNames(configEnvs: ConfigEnv[]): string[] {
       .filter(([, value]) => value)
       .map(([name]) => name),
   )
-  return unique(['server', 'client', ...names.filter((name) => !configEnvKeysNonRuntime.includes(name))])
+  return unique(names.filter((name) => !isVikeEnvironmentBuiltIn(name) && !configEnvKeysNonRuntime.includes(name)))
 }
 
 function resolvePageConfigBuildTime(
