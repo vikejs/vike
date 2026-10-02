@@ -16,9 +16,8 @@ function testEnvironments() {
     expect(html).toContain(
       escape({
         viteEnvironmentName: 'worker',
-        configNames: ['getWorkerInfo', 'workerGreeting', 'workerSuffixed'],
+        configNames: ['getWorkerInfo', 'workerGreeting'],
         workerGreeting: 'Worker: Hello from the worker environment',
-        workerSuffixed: 'Defined by +workerSuffixed.worker.js',
         urlPathname: '/environments',
       }),
     )

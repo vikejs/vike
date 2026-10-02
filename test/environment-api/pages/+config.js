@@ -23,10 +23,6 @@ const config = {
     getWorkerInfo: {
       env: { worker: true },
     },
-    // - Set by +workerSuffixed.worker.js
-    workerSuffixed: {
-      env: { server: true, client: true },
-    },
   },
   enableWorker: true,
   workerGreeting: 'Hello from the worker environment',

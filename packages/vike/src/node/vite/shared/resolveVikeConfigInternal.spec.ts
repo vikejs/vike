@@ -82,39 +82,18 @@ describe('getRuntimeEnvironmentNames()', () => {
 })
 
 describe('resolveConfigEnv()', () => {
-  const names = ['server', 'client', 'rsc', 'worker']
-  const env = { server: true, client: true }
-  const resolve = (fileName: string, runtimeEnvironmentNames = names) =>
-    resolveConfigEnv(env, getFilePath(fileName), runtimeEnvironmentNames)
-
-  it('keeps meta.env without an environment suffix', () => {
-    expect(resolve('+Layout.tsx')).toEqual(env)
-  })
+  const env = { server: true, client: true, rsc: true, production: false }
+  const resolve = (fileName: string) => resolveConfigEnv(env, getFilePath(fileName))
 
   it.each([
-    ['+Layout.rsc.tsx', { server: false, client: false, rsc: true, worker: false }],
-    ['+Layout.server.tsx', { server: true, client: false, rsc: false, worker: false }],
-    ['+Layout.ssr.tsx', { server: true, client: false, rsc: false, worker: false }],
-    ['+Layout.client.tsx', { server: false, client: true, rsc: false, worker: false }],
-    ['+Layout.shared.tsx', { server: true, client: true, rsc: false, worker: false }],
+    ['+Layout.tsx', env],
+    ['+Layout.rsc.tsx', env],
+    ['+Layout.server.tsx', { server: true, client: false, production: false }],
+    ['+Layout.ssr.tsx', { server: true, client: false, production: false }],
+    ['+Layout.client.tsx', { server: false, client: true, production: false }],
+    ['+Layout.shared.tsx', { server: true, client: true, production: false }],
   ])('%s', (fileName, expected) => {
     expect(resolve(fileName)).toEqual(expected)
-  })
-
-  it("doesn't change server/client suffixes if there aren't named environments", () => {
-    expect(resolve('+Layout.server.tsx', ['server', 'client'])).toEqual({ server: true, client: false })
-    expect(resolve('+Layout.client.tsx', ['server', 'client'])).toEqual({ server: false, client: true })
-    expect(resolve('+Layout.shared.tsx', ['server', 'client'])).toEqual({ server: true, client: true })
-  })
-
-  it('ignores the suffix of an unknown environment', () => {
-    expect(resolve('+Layout.edge.tsx')).toEqual(env)
-  })
-
-  it('rejects more than one environment suffix', () => {
-    expect(() => resolve('+Layout.rsc.worker.tsx')).toThrow('more than one environment suffix')
-    expect(() => resolve('+Layout.rsc.server.tsx')).toThrow('more than one environment suffix')
-    expect(resolve('+Layout.rsc.clear.tsx')).toEqual({ server: false, client: false, rsc: true, worker: false })
   })
 })
 
@@ -124,13 +103,12 @@ describe('environment introduced only by meta.effect()', () => {
     fs.rmSync(userRootDir, { recursive: true, force: true })
   })
 
-  it('applies its file suffix', async () => {
+  it('is a Vike environment', async () => {
     writeFiles(userRootDir, {
       'package.json': JSON.stringify({ type: 'module' }),
       'pages/+config.js': [
         'export default {',
         '  meta: {',
-        '    Layout: { env: { server: true, client: true }, cumulative: true },',
         '    rscPages: {',
         '      env: { config: true },',
         '      effect: () => ({ meta: { Page: { env: { server: false, client: false, rsc: true } } } }),',
@@ -139,7 +117,6 @@ describe('environment introduced only by meta.effect()', () => {
         '  rscPages: true,',
         '}',
       ].join('\n'),
-      'pages/+Layout.rsc.js': 'export default "Layout"',
       'pages/index/+Page.js': 'export default "Page"',
     })
     setVikeConfigContext({ userRootDir, isDev: true, vikeVitePluginOptions: {} })
@@ -147,7 +124,6 @@ describe('environment introduced only by meta.effect()', () => {
     expect(vikeConfig._runtimeEnvironmentNames).toContain('rsc')
     const pageConfig = vikeConfig._pageConfigs.find((p) => p.pageId === '/pages/index')!
     expect(pageConfig.configValueSources.Page![0]!.configEnv).toEqual({ server: false, client: false, rsc: true })
-    expect(pageConfig.configValueSources.Layout![0]!.configEnv).toEqual({ server: false, client: false, rsc: true })
   })
 })
 

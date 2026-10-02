@@ -7,7 +7,7 @@ async function data(pageContext) {
   return {
     server: {
       viteEnvironmentName,
-      hasWorkerConfig: ['getWorkerInfo', 'workerGreeting', 'workerSuffixed'].some((name) => name in pageContext.config),
+      hasWorkerConfig: ['getWorkerInfo', 'workerGreeting'].some((name) => name in pageContext.config),
       writtenByWorker: pageContext.writtenByWorker,
       workerGreeting: pageContext.environments.worker.config.workerGreeting,
     },

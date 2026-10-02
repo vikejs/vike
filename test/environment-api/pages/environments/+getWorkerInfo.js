@@ -9,7 +9,6 @@ function getWorkerInfo(pageContext, greetingPrefix) {
     viteEnvironmentName,
     configNames: Object.keys(pageContext.config).sort(),
     workerGreeting: `${greetingPrefix} ${pageContext.config.workerGreeting}`,
-    workerSuffixed: pageContext.config.workerSuffixed,
     urlPathname: pageContext.urlPathname,
   }
 }
