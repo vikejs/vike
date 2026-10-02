@@ -42,8 +42,8 @@ function parseVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry: unkno
 
   const { pageConfigs, pageConfigGlobal } = parseGlobalEntryPageConfigs(virtualFileExportsGlobalEntry)
 
-  // The global entries of the additional environments (e.g. `rsc`); only the server's global entry exports them
-  // - `null` in development: they're imported with the environment's module runner
+  // The global entries of the additional environments (e.g. `rsc`)
+  // - `null` in development: they're imported with environment.runner.import()
   const environmentEntries = hasProp(virtualFileExportsGlobalEntry, 'environmentEntries', 'object')
     ? objectMap(virtualFileExportsGlobalEntry.environmentEntries, (environmentEntry) =>
         environmentEntry === null ? null : parseGlobalEntryPageConfigs(environmentEntry),
