@@ -31,6 +31,7 @@ import { checkType } from '../../../utils/checkType.js'
 import { genPromise } from '../../../utils/genPromise.js'
 import { getGlobalObject } from '../../../utils/getGlobalObject.js'
 import { hasProp } from '../../../utils/hasProp.js'
+import { includes } from '../../../utils/includes.js'
 import { isCallable } from '../../../utils/isCallable.js'
 import { isObject } from '../../../utils/isObject.js'
 import { joinEnglish } from '../../../utils/joinEnglish.js'
@@ -1741,9 +1742,9 @@ function determineIsErrorPage(routeFilesystem: string) {
 }
 
 // Keys of `meta.env` that only Vike sets, e.g. `eager` is set by the deprecated `env: '_routing-eager'`
-const configEnvKeysInternal = ['clientRoutingOnly', 'eager']
+const configEnvKeysInternal = ['clientRoutingOnly', 'eager'] as const
 // Keys of `meta.env` that can't be environment names: file suffixes (`.ssr.js`, `.shared.js`, `.clear.js`, `.default.js`) and the internal keys
-const configEnvKeysReserved = ['ssr', 'shared', 'clear', 'default', ...configEnvKeysInternal]
+const configEnvKeysReserved = ['ssr', 'shared', 'clear', 'default', ...configEnvKeysInternal] as const
 function isAdditionalEnvironmentName(configEnvKey: string) {
   return (
     !isVikeEnvironmentBuiltIn(configEnvKey) &&
@@ -1782,8 +1783,8 @@ function getConfigEnvValue(
 
   Object.entries(val).forEach(([key, value]) => {
     assertUsage(
-      !configEnvKeysReserved.includes(key),
-      `${errInvalidValue}: ${pc.cyan(key)} can't be an environment name, because ${configEnvKeysInternal.includes(key) ? 'Vike uses it internally' : `it's a file suffix (${pc.cyan(`+Page.${key}.js`)})`}`,
+      !includes(configEnvKeysReserved, key),
+      `${errInvalidValue}: ${pc.cyan(key)} can't be an environment name, because ${includes(configEnvKeysInternal, key) ? 'Vike uses it internally' : `it's a file suffix (${pc.cyan(`+Page.${key}.js`)})`}`,
     )
     assertUsage(key !== '' && !key.includes(':'), `${errInvalidValue}: ${pc.cyan(key)} isn't a valid environment name`)
     assertUsage(value === undefined || typeof value === 'boolean', errInvalidValue)
