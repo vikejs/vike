@@ -88,10 +88,10 @@ describe('resolveConfigEnv()', () => {
   it.each([
     ['+Layout.tsx', env],
     ['+Layout.rsc.tsx', env],
-    ['+Layout.server.tsx', { server: true, client: false, production: false }],
-    ['+Layout.ssr.tsx', { server: true, client: false, production: false }],
+    ['+Layout.server.tsx', { server: true, client: false, rsc: true, production: false }],
+    ['+Layout.ssr.tsx', { server: true, client: false, rsc: true, production: false }],
     ['+Layout.client.tsx', { server: false, client: true, production: false }],
-    ['+Layout.shared.tsx', { server: true, client: true, production: false }],
+    ['+Layout.shared.tsx', { server: true, client: true, rsc: true, production: false }],
   ])('%s', (fileName, expected) => {
     expect(resolve(fileName)).toEqual(expected)
   })

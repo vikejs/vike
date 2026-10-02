@@ -1825,15 +1825,13 @@ function resolveConfigEnv(configEnv: ConfigEnv, filePath: FilePath) {
     } else if (suffixes.includes('client')) {
       configEnvResolved.client = true
       configEnvResolved.server = false
-    } else if (suffixes.includes('shared')) {
-      configEnvResolved.server = true
-      configEnvResolved.client = true
-    }
-    // `+Loading.client.js` isn't loaded in other environments (e.g. `rsc`)
-    if (suffixes.some((suffix) => suffix !== 'clear' && suffix !== 'default')) {
+      // Other Vike environments (e.g. `rsc`) are server-side
       Object.keys(configEnvResolved).forEach((key) => {
         if (!isVikeEnvironmentBuiltIn(key) && !configEnvKeysNonRuntime.includes(key)) delete configEnvResolved[key]
       })
+    } else if (suffixes.includes('shared')) {
+      configEnvResolved.server = true
+      configEnvResolved.client = true
     }
   }
 

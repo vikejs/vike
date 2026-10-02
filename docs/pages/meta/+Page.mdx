@@ -534,7 +534,7 @@ export function renderRsc(pageContext) {
 - A Vike environment such as `rsc` must exist in Vite's `config.environments` and run in the same runtime (process or worker) as the server environment, as `@vitejs/plugin-rsc` does.
 - Code running in `rsc` sees only the config values that name `rsc`: there, `pageContext.config.Page` is the `rsc` `+Page`, and `pageContext.config.data` is missing (`env: { server: true }`).
 - A Vite environment `worker` is a Vike environment of its own if and only if a `meta` definition sets `env: { worker: true }` (for any config, whether or not a page uses it). Otherwise, like Vite's `ssr` environment, it gets the `server` config values (or the `client` ones if it's client-side).
-- A file with the suffix <Link href="/file-env">`.server.js`, `.client.js` or `.shared.js`</Link> isn't loaded in other Vike environments: `+Loading.client.js` isn't loaded in `rsc`.
+- Other Vike environments such as `rsc` count as server-side for <Link href="/file-env">file suffixes</Link>: `+Loading.client.js` isn't loaded in `rsc`, while `.server.js` and `.shared.js` files are, if their `meta.env` names `rsc`.
 - Environment names can also be introduced by `meta.effect()`.
 
 
