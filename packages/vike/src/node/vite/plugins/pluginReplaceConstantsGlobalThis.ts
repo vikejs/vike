@@ -87,7 +87,12 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
         filter: filterRolldown,
         handler(id) {
           // Vite also re-resolves the resolved ID and its URL `/@id/__x00__virtual:vike:server:constantsGlobalThis` when a plugin adds the module as a watch file, e.g. @vitejs/plugin-rsc's addWatchFile() in the `rsc` environment
-          assert(filterFunction(id) || id === `/@id/__x00__${VIRTUAL_FILE_ID_constantsGlobalThis}`, { id })
+          assert(
+            filterFunction(id) ||
+              // TODO/ai how about moving it to filterFunction ?
+              id === `/@id/__x00__${VIRTUAL_FILE_ID_constantsGlobalThis}`,
+            { id },
+          )
           return addVirtualFileIdPrefix(VIRTUAL_FILE_ID_constantsGlobalThis)
         },
       },
