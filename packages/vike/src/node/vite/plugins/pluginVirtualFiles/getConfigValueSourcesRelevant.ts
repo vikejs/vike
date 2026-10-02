@@ -82,7 +82,7 @@ function isRuntimeEnvMatch(configEnv: ConfigEnv, runtimeEnv: RuntimeEnv): boolea
     if (!configEnv.server) return false
   } else {
     if (!configEnv.client) return false
-    if (configEnv.client === 'if-client-routing' && !runtimeEnv.isClientRouting) return false
+    if (configEnv.clientRoutingOnly && !runtimeEnv.isClientRouting) return false
   }
 
   // Production/development

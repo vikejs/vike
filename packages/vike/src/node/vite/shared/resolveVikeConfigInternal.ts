@@ -1686,8 +1686,8 @@ function getConfigEnvValue(
       if (val === 'server-only') return { server: true }
       if (val === 'server-and-client') return { server: true, client: true }
       if (val === 'config-only') return { config: true }
-      if (val === '_routing-lazy') return { server: true, client: 'if-client-routing' }
-      if (val === '_routing-eager') return { server: true, client: 'if-client-routing', eager: true }
+      if (val === '_routing-lazy') return { server: true, client: true, clientRoutingOnly: true }
+      if (val === '_routing-eager') return { server: true, client: true, clientRoutingOnly: true, eager: true }
       assertUsage(false, errInvalidValue)
     })()
     assertWarning(
@@ -1743,7 +1743,11 @@ function resolveConfigEnv(configEnv: ConfigEnv, filePath: FilePath) {
     } else if (suffixes.includes('shared')) {
       configEnvResolved.server = true
       configEnvResolved.client = true
+    } else {
+      return configEnvResolved
     }
+    // The file suffix decides, regardless of Client Routing
+    delete configEnvResolved.clientRoutingOnly
   }
 
   return configEnvResolved
