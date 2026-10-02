@@ -13,7 +13,7 @@ export { isV1Design }
 export { getConfVal }
 export { getConfigDefinitionOptional }
 export { getConfigEnvValue }
-export { getRuntimeEnvironmentNames }
+export { getOtherEnvironmentNames }
 export { resolveConfigEnv }
 export { getVikeConfigFromCliOrEnv }
 export { EARLY_SETTINGS }
@@ -133,7 +133,7 @@ type VikeConfigInternal = GlobalConfigPublic & {
   _pageConfigGlobal: PageConfigGlobalBuildTime
   _vikeConfigDependencies: Set<string>
   _extensions: PlusFile[]
-  _runtimeEnvironmentNames: string[]
+  _otherEnvironmentNames: string[]
   prerenderContext: PrerenderContext
 }
 
@@ -200,20 +200,20 @@ async function setViteEnvironmentNames(viteEnvironmentNames: string[]) {
   if (!globalObject.vikeConfigPromise) return
   const vikeConfig = await globalObject.vikeConfigPromise
   // Resolve again: to report a missing environment like any other config error, or to recover from one (e.g. the user added the environment to Vite's config)
-  const isMissing = getRuntimeEnvironmentsMissing(vikeConfig._runtimeEnvironmentNames).length > 0
+  const isMissing = getOtherEnvironmentsMissing(vikeConfig._otherEnvironmentNames).length > 0
   if (!isMissing && !globalObject.vikeConfigHasBuildError) return
   assert(globalObject.vikeConfigCtx)
   const { userRootDir, isDev, vikeVitePluginOptions } = globalObject.vikeConfigCtx
   resolveVikeConfigInternal_withErrorHandling(userRootDir, isDev, vikeVitePluginOptions)
   await globalObject.vikeConfigPromise
 }
-function getRuntimeEnvironmentsMissing(runtimeEnvironmentNames: string[]): string[] {
+function getOtherEnvironmentsMissing(otherEnvironmentNames: string[]): string[] {
   const { viteEnvironmentNames } = globalObject
   if (!viteEnvironmentNames) return []
-  return runtimeEnvironmentNames.filter((name) => !viteEnvironmentNames.includes(name))
+  return otherEnvironmentNames.filter((name) => !viteEnvironmentNames.includes(name))
 }
-function assertRuntimeEnvironmentsExist(runtimeEnvironmentNames: string[]) {
-  const [name] = getRuntimeEnvironmentsMissing(runtimeEnvironmentNames)
+function assertOtherEnvironmentsExist(otherEnvironmentNames: string[]) {
+  const [name] = getOtherEnvironmentsMissing(otherEnvironmentNames)
   if (name === undefined) return
   assert(globalObject.viteEnvironmentNames)
   assertUsage(
@@ -364,12 +364,12 @@ async function resolveVikeConfigInternal(
     vikeTranspileCache,
   )
 
-  const { pageConfigGlobal, pageConfigs, runtimeEnvironmentNames } = getPageConfigsBuildTime(
+  const { pageConfigGlobal, pageConfigs, otherEnvironmentNames } = getPageConfigsBuildTime(
     configDefinitionsResolved,
     plusFilesByLocationId,
     userRootDir,
   )
-  assertRuntimeEnvironmentsExist(runtimeEnvironmentNames)
+  assertOtherEnvironmentsExist(otherEnvironmentNames)
   if (!globalObject.isV1Design_) globalObject.isV1Design_ = pageConfigs.length > 0
 
   // Backwards compatibility for vike(options) in vite.config.js
@@ -398,7 +398,7 @@ async function resolveVikeConfigInternal(
     _pageConfigGlobal: pageConfigGlobal,
     _vikeConfigDependencies: vikeTranspileCache.vikeConfigDependencies,
     _extensions,
-    _runtimeEnvironmentNames: runtimeEnvironmentNames,
+    _otherEnvironmentNames: otherEnvironmentNames,
   }
   globalObject.vikeConfigSync = vikeConfig
 
@@ -558,7 +558,7 @@ function getPageConfigsBuildTime(
   return {
     pageConfigs,
     pageConfigGlobal,
-    runtimeEnvironmentNames: getRuntimeEnvironmentNames([
+    otherEnvironmentNames: getOtherEnvironmentNames([
       ...getConfigEnvsOfDefinitions(configDefinitionsResolved),
       ...configEnvsOfSources,
     ]),
@@ -573,7 +573,7 @@ function getConfigEnvsOfDefinitions(configDefinitionsResolved: ConfigDefinitions
     ),
   ].flatMap((configDefinitions) => Object.values(configDefinitions).map(({ env }) => env))
 }
-function getRuntimeEnvironmentNames(configEnvs: ConfigEnv[]): string[] {
+function getOtherEnvironmentNames(configEnvs: ConfigEnv[]): string[] {
   const names = configEnvs.flatMap((configEnv) =>
     Object.entries(configEnv)
       .filter(([, value]) => value)
@@ -1903,7 +1903,7 @@ async function getVikeConfigDummy(vikeTranspileCache: VikeTranspileCache): Promi
     prerenderContext: prerenderContextDummy,
     _vikeConfigDependencies: vikeTranspileCache.vikeConfigDependencies,
     _extensions: [],
-    _runtimeEnvironmentNames: [],
+    _otherEnvironmentNames: [],
   }
   globalObject.vikeConfigSync = vikeConfigDummy
   globalObject.isV1Design_ = true

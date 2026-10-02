@@ -47,12 +47,12 @@ function pluginBuildConfig(): Plugin[] {
         async handler(config) {
           handleAssetsManifest_alignCssTarget(config)
           onSetupBuild()
-          const { _runtimeEnvironmentNames: runtimeEnvironmentNames } = await getVikeConfigInternal()
+          const { _otherEnvironmentNames: otherEnvironmentNames } = await getVikeConfigInternal()
           const entriesClient = await getEntries(config, false)
           const entriesServer = await getEntries(config, true)
           for (const [envName, envConfig] of Object.entries(config.environments)) {
-            // Named environments (e.g. `rsc`) only get Vike's entry below
-            if (runtimeEnvironmentNames.includes(envName)) {
+            // Other Vike environments (e.g. `rsc`) only get Vike's entry below
+            if (otherEnvironmentNames.includes(envName)) {
               removeServerEntry(envConfig.build.rollupOptions, inputsBeforeServerEntry.get(config)?.get(envName))
               continue
             }
@@ -86,8 +86,8 @@ function pluginBuildConfig(): Plugin[] {
       buildStart: {
         async handler() {
           const { name, config } = this.environment
-          const { _runtimeEnvironmentNames: runtimeEnvironmentNames } = await getVikeConfigInternal()
-          if (!runtimeEnvironmentNames.includes(name)) return
+          const { _otherEnvironmentNames: otherEnvironmentNames } = await getVikeConfigInternal()
+          if (!otherEnvironmentNames.includes(name)) return
           assertUsage(
             config.consumer === 'server',
             `The Vike environment ${name} should be a server-side Vite environment`,

@@ -10,7 +10,7 @@ const config = {
   extends: vikeReact,
   // https://vike.dev/meta
   meta: {
-    // - The environment `worker` is introduced only by meta.effect()
+    // - meta.effect() sets the environment `worker` for workerGreeting
     enableWorker: {
       env: { config: true },
       effect: ({ configValue }) =>

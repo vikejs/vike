@@ -21,9 +21,9 @@ async function generateVirtualFileGlobalEntry(
   const {
     _pageConfigs: pageConfigs,
     _pageConfigGlobal: pageConfigGlobal,
-    _runtimeEnvironmentNames: runtimeEnvironmentNames,
+    _otherEnvironmentNames: otherEnvironmentNames,
   } = vikeConfig
-  return getCode(pageConfigs, pageConfigGlobal, runtimeEnv, id, runtimeEnvironmentNames)
+  return getCode(pageConfigs, pageConfigGlobal, runtimeEnv, id, otherEnvironmentNames)
 }
 
 function getCode(
@@ -31,7 +31,7 @@ function getCode(
   pageConfigGlobal: PageConfigGlobalBuildTime,
   runtimeEnv: RuntimeEnvRuntime & { isDev: boolean },
   id: string,
-  runtimeEnvironmentNames: string[],
+  otherEnvironmentNames: string[],
 ): string {
   const lines: string[] = []
   const importStatements: string[] = []
@@ -53,7 +53,7 @@ function getCode(
   lines.push('};')
 
   if (environmentName === 'server') {
-    lines.push(getCodeEnvironmentEntries(runtimeEnvironmentNames, isDev))
+    lines.push(getCodeEnvironmentEntries(otherEnvironmentNames, isDev))
   }
 
   if (!isForClientSide && isDev) {
@@ -73,8 +73,8 @@ function getCode(
 
 // The global entries of the other Vike environments (e.g. `rsc`), loaded by addConfigsOfEnvironments.ts
 // - In development, they're loaded with the environment's module runner instead
-function getCodeEnvironmentEntries(runtimeEnvironmentNames: string[], isDev: boolean) {
-  const entries = runtimeEnvironmentNames.map(
+function getCodeEnvironmentEntries(otherEnvironmentNames: string[], isDev: boolean) {
+  const entries = otherEnvironmentNames.map(
     (name) =>
       `${JSON.stringify(name)}: ${isDev ? 'null' : `() => ${JSON.stringify(getEnvironmentEntryPlaceholder(name))}`}`,
   )

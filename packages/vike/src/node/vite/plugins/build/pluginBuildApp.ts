@@ -38,8 +38,8 @@ function pluginBuildApp(): Plugin[] {
                 assert(builder.environments.client)
                 assert(builder.environments.ssr)
                 // The other Vike environments (e.g. `rsc`)
-                const { _runtimeEnvironmentNames: runtimeEnvironmentNames } = await getVikeConfigInternal()
-                for (const name of runtimeEnvironmentNames) {
+                const { _otherEnvironmentNames: otherEnvironmentNames } = await getVikeConfigInternal()
+                for (const name of otherEnvironmentNames) {
                   await builder.build(builder.environments[name]!)
                 }
                 await builder.build(builder.environments.client)
