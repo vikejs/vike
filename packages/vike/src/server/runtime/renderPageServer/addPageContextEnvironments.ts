@@ -59,9 +59,9 @@ async function loadPageContextConfig(
   const isDev = !globalContext._isProduction
   let pageConfigsPromise = globalObject.pageConfigsByEnvironment.get(environmentName)
   if (!pageConfigsPromise) {
-    // TODO/ai make the name consistent: pageConfigsPromise === environmentEntry so why two different names?
-    pageConfigsPromise = importGlobalEntry(globalContext, environmentName, environmentEntry).then((globalEntry: any) =>
-      parsePageConfigsSerialized(globalEntry.pageConfigsSerialized, globalEntry.pageConfigGlobalSerialized),
+    pageConfigsPromise = importEnvironmentEntry(globalContext, environmentName, environmentEntry).then(
+      (environmentEntry: any) =>
+        parsePageConfigsSerialized(environmentEntry.pageConfigsSerialized, environmentEntry.pageConfigGlobalSerialized),
     )
     if (!isDev) globalObject.pageConfigsByEnvironment.set(environmentName, pageConfigsPromise)
   }
@@ -71,7 +71,7 @@ async function loadPageContextConfig(
   return resolvePageContextConfig([], await loadAndParseVirtualFilePageEntry(pageConfig, isDev), pageConfigGlobal)
 }
 
-async function importGlobalEntry(
+async function importEnvironmentEntry(
   globalContext: GlobalContextServerInternal,
   environmentName: string,
   environmentEntry: null | Record<string, unknown>,
@@ -89,7 +89,7 @@ async function importGlobalEntry(
       `The Vike environment ${environmentName} should be a server-side environment running in the same runtime (process or worker) as Vike's server`,
     )
     const virtualFileId = generateVirtualFileIdAdditionalEnvironment(environmentName)
-    const pageConfigsPromise = environment.runner.import(virtualFileId)
-    return pageConfigsPromise
+    const environmentEntryPromise = environment.runner.import(virtualFileId)
+    return environmentEntryPromise
   }
 }
