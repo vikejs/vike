@@ -2,7 +2,7 @@ export { testContent }
 
 import fs from 'node:fs'
 import path from 'node:path'
-import { expect, expectLog, fetch, getServerUrl, partRegex, test } from '@brillout/test-e2e'
+import { autoRetry, expect, expectLog, fetch, getServerUrl, partRegex, test } from '@brillout/test-e2e'
 import { bytes as imageBytes } from './image/bytes'
 
 const feed = `<?xml version="1.0" encoding="utf-8"?>
@@ -43,9 +43,15 @@ function testContent({ isDev, rootDir }: { isDev: boolean; rootDir: string }) {
     expect(await resp.text()).toContain('<p>An error occurred.</p>')
     expectLog('Some stream error')
     if (isDev) expectLog('No error page found')
-    expectLog(partRegex`HTTP response ${/.*/} /content/stream-error.txt 500`, {
-      filter: (log) => log.logSource === 'stderr',
-    })
+    // The server may log the response after the client received it
+    await autoRetry(
+      () => {
+        expectLog(partRegex`HTTP response ${/.*/} /content/stream-error.txt 500`, {
+          filter: (log) => log.logSource === 'stderr',
+        })
+      },
+      { timeout: 5000 },
+    )
   })
 
   if (!isDev) {
