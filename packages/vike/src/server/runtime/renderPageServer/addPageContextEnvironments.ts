@@ -1,4 +1,4 @@
-export { addConfigsOfEnvironments }
+export { addPageContextEnvironments }
 
 import type { PageContextConfig } from '../../../shared-server-client/getPageFiles.js'
 import { resolvePageContextConfig } from '../../../shared-server-client/page-configs/resolveVikeConfigPublic.js'
@@ -16,13 +16,13 @@ import { getPageContextPublicServer } from './getPageContextPublicServer.js'
 import '../../assertEnvServer.js'
 
 type PageConfigs = ReturnType<typeof parsePageConfigsSerialized>
-const globalObject = getGlobalObject('renderPageServer/addConfigsOfEnvironments.ts', {
+const globalObject = getGlobalObject('renderPageServer/addPageContextEnvironments.ts', {
   pageConfigsByEnvironment: new Map<string, Promise<PageConfigs>>(),
 })
 
 // Other Vike environments (e.g. `rsc`) run in the same runtime as the server environment => their functions can be called directly
 // - `pageContext.environments[environmentName]` holds the environment's config values and its view of pageContext, which its functions are called with
-async function addConfigsOfEnvironments(
+async function addPageContextEnvironments(
   pageContextConfig: PageContextConfig,
   pageContext: PageContextPublicMinimum & { pageId: string; _globalContext: GlobalContextServerInternal },
 ) {

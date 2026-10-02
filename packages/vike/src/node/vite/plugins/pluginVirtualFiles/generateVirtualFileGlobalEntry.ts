@@ -71,7 +71,7 @@ function getCode(
   return code
 }
 
-// The global entries of the other Vike environments (e.g. `rsc`), loaded by addConfigsOfEnvironments.ts
+// The global entries of the other Vike environments (e.g. `rsc`), loaded by addPageContextEnvironments.ts
 // - In development, they're loaded with the environment's module runner instead
 function getCodeEnvironmentEntries(otherEnvironmentNames: string[], isDev: boolean) {
   const entries = otherEnvironmentNames.map(

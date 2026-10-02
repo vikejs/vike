@@ -74,7 +74,7 @@ function pluginBuildConfig(): Plugin[] {
       },
     },
     {
-      // Vike's server environment imports the global entry of every other Vike environment (e.g. `rsc`), see addConfigsOfEnvironments.ts
+      // Vike's server environment imports the global entry of every other Vike environment (e.g. `rsc`), see addPageContextEnvironments.ts
       name: 'vike:build:pluginBuildConfig:environmentEntries',
       apply: 'build',
       buildStart: {
