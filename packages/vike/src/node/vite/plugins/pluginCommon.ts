@@ -19,7 +19,7 @@ import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/resolv
 import { temp_disablePrerenderAutoRun } from '../../prerender/context.js'
 import { resolvePrerenderConfigGlobal, isDistServerRemoved } from '../../prerender/resolvePrerenderConfig.js'
 import type { VitePluginServerEntryOptions } from '@brillout/vite-plugin-server-entry/plugin'
-import { version as viteVersionVike } from 'vite'
+import { assertViteVersion } from '../../../utils/assertViteVersion.js'
 import '../assertEnvVite.js'
 const pluginName = 'vike:pluginCommon'
 
@@ -48,7 +48,9 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
       config: {
         order: 'pre',
         async handler(configFromUser, env) {
-          const viteVersionUser = this?.meta?.viteVersion as string | undefined // is `undefined` on old Vite versions
+          // `this` is `undefined` on Vite 6 or older
+          const viteVersion = this?.meta.viteVersion as string | undefined
+          assertViteVersion(viteVersion)
           const isDev = isDevCheck(env)
           const isBuild = env.command === 'build'
           const isPreview = env.isPreview!!
@@ -62,7 +64,7 @@ function pluginCommon(vikeVitePluginOptions: unknown): Plugin[] {
           const vikeConfig = await getVikeConfigInternal()
           return {
             _isDev: isDev,
-            _viteVersionResolved: viteVersionUser || viteVersionVike,
+            _viteVersionResolved: viteVersion,
             _rootResolvedEarly: rootResolvedEarly,
             // TO-DO/next-major-release: remove https://github.com/vikejs/vike/issues/2122
             configVikePromise: Promise.resolve({
