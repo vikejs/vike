@@ -96,17 +96,13 @@ function generateVirtualFileId(
     | { type: 'page-entry'; pageId: string; environmentName: string },
 ): string {
   if (args.type === 'global-entry') {
-    const { environmentName, isClientRouting = false } = args
+    const { environmentName, isClientRouting } = args
     assertEnvironmentName(environmentName)
-    if (environmentName === 'server') {
-      assert(!isClientRouting)
-      return virtualFileIdGlobalEntryServer
-    } else if (environmentName === 'client' && isClientRouting) {
-      return virtualFileIdGlobalEntryClientCR
-    } else if (environmentName === 'client') {
-      return virtualFileIdGlobalEntryClientSR
+    if (environmentName === 'client') {
+      return isClientRouting ? virtualFileIdGlobalEntryClientCR : virtualFileIdGlobalEntryClientSR
     }
     assert(!isClientRouting)
+    if (environmentName === 'server') return virtualFileIdGlobalEntryServer
     return `${virtualFileIdGlobalEntryPrefix}${environmentName}`
   }
   if (args.type === 'page-entry') {
