@@ -42,6 +42,7 @@ async function addConfigsOfEnvironments(
 
 // The same pageContext object, except for the config values (and what's derived from them) which are the environment's
 function getPageContextEnvView(pageContext: object, pageContextConfig: PageContextConfig) {
+  // TO-DO/soon/flat-pageContext make this clean using same mechanism as [Flat `pageContext`](https://github.com/vikejs/vike/issues/1268)
   return new Proxy(pageContext, {
     get(target, prop) {
       if (prop === 'Page') return pageContextConfig.exports.Page
