@@ -1,4 +1,6 @@
 export { parseVirtualFileExportsGlobalEntry }
+export { parseGlobalEntryPageConfigs }
+export type { EnvironmentEntry }
 
 // TO-DO/next-major-release: remove old design code, and remove all assertions.
 
@@ -8,6 +10,7 @@ import { hasProp } from '../../utils/hasProp.js'
 import { isArray } from '../../utils/isArray.js'
 import { isCallable } from '../../utils/isCallable.js'
 import { isObject } from '../../utils/isObject.js'
+import { objectMap } from '../../utils/objectMap.js'
 import { assertExportValues } from './assert_exports_old_design.js'
 import { getPageFileObject, type PageFile } from './getPageFileObject.js'
 import { fileTypes, type FileType } from './fileTypes.js'
@@ -23,7 +26,7 @@ function parseVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry: unkno
   pageFilesAll: PageFile[]
   pageConfigs: PageConfigRuntime[]
   pageConfigGlobal: PageConfigGlobalRuntime
-  environmentEntries: EnvironmentEntries
+  environmentEntries: Record<string, null | EnvironmentEntry>
 } {
   assertVirtualFileExports(virtualFileExportsGlobalEntry, (moduleExports: any) => 'pageFilesLazy' in moduleExports)
   assert(hasProp(virtualFileExportsGlobalEntry, 'pageFilesLazy', 'object'))
@@ -37,21 +40,15 @@ function parseVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry: unkno
   )
   assert(hasProp(virtualFileExportsGlobalEntry, 'pageFilesList', 'string[]'))
 
-  assert(hasProp(virtualFileExportsGlobalEntry, 'pageConfigsSerialized'))
-  assert(hasProp(virtualFileExportsGlobalEntry, 'pageConfigGlobalSerialized'))
-  const { pageConfigsSerialized, pageConfigGlobalSerialized } = virtualFileExportsGlobalEntry
-  assertPageConfigsSerialized(pageConfigsSerialized)
-  assertPageConfigGlobalSerialized(pageConfigGlobalSerialized)
-  const { pageConfigs, pageConfigGlobal } = parsePageConfigsSerialized(
-    pageConfigsSerialized,
-    pageConfigGlobalSerialized,
-  )
+  const { pageConfigs, pageConfigGlobal } = parseGlobalEntryPageConfigs(virtualFileExportsGlobalEntry)
 
   // The global entries of the additional environments (e.g. `rsc`); only the server's global entry exports them
+  // - `null` in development: they're imported with the environment's module runner
   const environmentEntries = hasProp(virtualFileExportsGlobalEntry, 'environmentEntries', 'object')
-    ? virtualFileExportsGlobalEntry.environmentEntries
+    ? objectMap(virtualFileExportsGlobalEntry.environmentEntries, (environmentEntry) =>
+        environmentEntry === null ? null : parseGlobalEntryPageConfigs(environmentEntry),
+      )
     : {}
-  assertEnvironmentEntries(environmentEntries)
 
   const pageFilesMap: Record<string, PageFile> = {}
   parseGlobResult(virtualFileExportsGlobalEntry.pageFilesLazy).forEach(({ filePath, pageFile, globValue }) => {
@@ -108,6 +105,16 @@ function parseVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry: unkno
   return { pageFilesAll, pageConfigs, pageConfigGlobal, environmentEntries }
 }
 
+type EnvironmentEntry = ReturnType<typeof parseGlobalEntryPageConfigs>
+function parseGlobalEntryPageConfigs(virtualFileExportsGlobalEntry: unknown) {
+  assert(hasProp(virtualFileExportsGlobalEntry, 'pageConfigsSerialized'))
+  assert(hasProp(virtualFileExportsGlobalEntry, 'pageConfigGlobalSerialized'))
+  const { pageConfigsSerialized, pageConfigGlobalSerialized } = virtualFileExportsGlobalEntry
+  assertPageConfigsSerialized(pageConfigsSerialized)
+  assertPageConfigGlobalSerialized(pageConfigGlobalSerialized)
+  return parsePageConfigsSerialized(pageConfigsSerialized, pageConfigGlobalSerialized)
+}
+
 type GlobResult = { filePath: string; pageFile: PageFile; globValue: unknown }[]
 function parseGlobResult(globObject: Record<string, unknown>): GlobResult {
   const ret: GlobResult = []
@@ -137,13 +144,6 @@ function assertPageConfigsSerialized(
     assert(hasProp(pageConfigSerialized, 'pageId', 'string'))
     assert(hasProp(pageConfigSerialized, 'routeFilesystem'))
     assert(hasProp(pageConfigSerialized, 'configValuesSerialized'))
-  })
-}
-
-type EnvironmentEntries = Record<string, null | Record<string, unknown>>
-function assertEnvironmentEntries(environmentEntries: object): asserts environmentEntries is EnvironmentEntries {
-  Object.values(environmentEntries).forEach((environmentEntry) => {
-    assert(environmentEntry === null || isObject(environmentEntry))
   })
 }
 
