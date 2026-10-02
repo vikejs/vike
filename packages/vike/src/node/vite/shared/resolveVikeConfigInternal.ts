@@ -12,9 +12,6 @@ export { reloadVikeConfig }
 export { isV1Design }
 export { getConfVal }
 export { getConfigDefinitionOptional }
-export { getConfigEnvValue }
-export { getAdditionalEnvironmentNames }
-export { resolveConfigEnv }
 export { getVikeConfigFromCliOrEnv }
 export { EARLY_SETTINGS }
 export type { VikeConfigInternal }

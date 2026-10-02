@@ -1,5 +1,4 @@
 export { pluginVirtualFiles }
-export { invalidateVikeVirtualFiles }
 
 import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleNode, ModuleGraph } from 'vite'
 import { normalizePath } from 'vite'
