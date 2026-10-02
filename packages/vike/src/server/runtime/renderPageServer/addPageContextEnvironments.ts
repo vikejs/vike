@@ -75,11 +75,21 @@ async function importGlobalEntry(
   environmentName: string,
   environmentEntry: null | Record<string, unknown>,
 ) {
-  if (environmentEntry) return environmentEntry
-  const environment = globalContext._viteDevServer?.environments[environmentName]
-  assertUsage(
-    isRunnableDevEnvironment(environment),
-    `The Vike environment ${environmentName} should be a server-side environment running in the same runtime (process or worker) as Vike's server`,
-  )
-  return environment.runner.import(generateVirtualFileId({ type: 'global-entry', environmentName }))
+  if (environmentEntry) {
+    // Prod
+    // TODO/ai: assert() this is prod
+    return environmentEntry
+  } else {
+    // Dev
+    // TODO/ai: assert() this is dev
+    const environment = globalContext._viteDevServer?.environments[environmentName]
+    assertUsage(
+      isRunnableDevEnvironment(environment),
+      `The Vike environment ${environmentName} should be a server-side environment running in the same runtime (process or worker) as Vike's server`,
+    )
+    // TODO/ai new func generateVirtualFileIdAdditionalEnvironment and use it here
+    const virtualFileId = generateVirtualFileId({ type: 'global-entry', environmentName })
+    const pageConfigsPromise = environment.runner.import(virtualFileId)
+    return pageConfigsPromise
+  }
 }

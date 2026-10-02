@@ -32,6 +32,7 @@ function pluginEnvironmentEntries(): Plugin[] {
           )
           this.emitFile({
             type: 'chunk',
+            // TODO/ai new func generateVirtualFileIdAdditionalEnvironment and use it here
             id: generateVirtualFileId({ type: 'global-entry', environmentName: name }),
             fileName: environmentEntryFileName,
           })
