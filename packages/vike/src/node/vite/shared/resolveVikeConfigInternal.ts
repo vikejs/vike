@@ -1758,7 +1758,7 @@ function getConfigEnvValue(
     string // configName
   }.env to`,
 ): ConfigEnv {
-  const errInvalidValue = `${errMsgIntro} an invalid value ${pc.cyan(JSON.stringify(val))}`
+  const errInvalidValue = `${errMsgIntro} an invalid value ${pc.cyan(JSON.stringify(val))}` as const
 
   // Legacy outdated values
   // TO-DO/next-major-release: remove
