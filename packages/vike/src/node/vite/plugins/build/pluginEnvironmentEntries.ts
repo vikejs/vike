@@ -41,6 +41,9 @@ function pluginEnvironmentEntries(): Plugin[] {
     {
       name: 'vike:build:linkEnvironmentEntries',
       apply: 'build',
+      resolveId(id) {
+        if (id.startsWith(environmentEntryPlaceholder)) return { id, external: true }
+      },
       renderChunk: {
         handler(code, chunk) {
           if (!code.includes(environmentEntryPlaceholder)) return
@@ -52,7 +55,7 @@ function pluginEnvironmentEntries(): Plugin[] {
             const environmentEntry = path.resolve(config.root, outDir, environmentEntryFileName)
             let importPath = path.relative(chunkDir, environmentEntry).split(path.sep).join('/')
             if (!importPath.startsWith('.')) importPath = `./${importPath}`
-            magicString.overwrite(match.index, match.index + match[0].length, `import(${JSON.stringify(importPath)})`)
+            magicString.overwrite(match.index, match.index + match[0].length, JSON.stringify(importPath))
           }
           return getMagicStringResult()
         },
@@ -61,7 +64,7 @@ function pluginEnvironmentEntries(): Plugin[] {
   ]
 }
 
-// Replaced by an import() of the environment's entry, once the importer's location is known
+// The import specifier of the environment's entry, replaced by its relative path once the importer's location is known
 function getEnvironmentEntryPlaceholder(environmentName: string) {
   return `${environmentEntryPlaceholder}:${environmentName}`
 }

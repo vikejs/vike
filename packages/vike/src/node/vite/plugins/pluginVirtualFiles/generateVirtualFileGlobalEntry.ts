@@ -53,7 +53,7 @@ function getCode(
   lines.push('};')
 
   if (environmentName === 'server') {
-    lines.push(getCodeEnvironmentEntries(otherEnvironmentNames, isDev))
+    lines.push(getCodeEnvironmentEntries(otherEnvironmentNames, isDev, importStatements))
   }
 
   if (!isForClientSide && isDev) {
@@ -73,11 +73,14 @@ function getCode(
 
 // The global entries of the other Vike environments (e.g. `rsc`), loaded by addPageContextEnvironments.ts
 // - In development, they're loaded with the environment's module runner instead
-function getCodeEnvironmentEntries(otherEnvironmentNames: string[], isDev: boolean) {
-  const entries = otherEnvironmentNames.map(
-    (name) =>
-      `${JSON.stringify(name)}: ${isDev ? 'null' : `() => ${JSON.stringify(getEnvironmentEntryPlaceholder(name))}`}`,
-  )
+function getCodeEnvironmentEntries(otherEnvironmentNames: string[], isDev: boolean, importStatements: string[]) {
+  const entries = otherEnvironmentNames.map((name, i) => {
+    if (isDev) return `${JSON.stringify(name)}: null`
+    importStatements.push(
+      `import * as environmentEntry${i} from ${JSON.stringify(getEnvironmentEntryPlaceholder(name))};`,
+    )
+    return `${JSON.stringify(name)}: environmentEntry${i}`
+  })
   return `export const environmentEntries = { ${entries.join(', ')} };`
 }
 

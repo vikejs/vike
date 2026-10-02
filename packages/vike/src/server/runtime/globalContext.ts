@@ -668,7 +668,7 @@ async function addGlobalContextAsync(globalContext: GlobalContextBase) {
 
   // The global entries of the other Vike environments (e.g. `rsc`), see addPageContextEnvironments.ts
   const { environmentEntries } = globalContext._virtualFileExportsGlobalEntry as {
-    environmentEntries: Record<string, null | (() => Promise<unknown>)>
+    environmentEntries: Record<string, null | Record<string, unknown>>
   }
 
   return {

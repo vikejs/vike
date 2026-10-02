@@ -28,8 +28,8 @@ async function addPageContextEnvironments(
 ) {
   const environmentEntries = pageContext._globalContext._environmentEntries
   const environments: Record<string, { config: PageContextConfig['config']; pageContext: object }> = {}
-  for (const [environmentName, loadEntry] of Object.entries(environmentEntries)) {
-    const pageContextConfigEnv = await loadPageContextConfig(pageContext, environmentName, loadEntry)
+  for (const [environmentName, environmentEntry] of Object.entries(environmentEntries)) {
+    const pageContextConfigEnv = await loadPageContextConfig(pageContext, environmentName, environmentEntry)
     environments[environmentName] = {
       config: pageContextConfigEnv.config,
       pageContext: getPageContextEnvView(getPageContextPublicServer(pageContext), pageContextConfigEnv),
@@ -53,13 +53,13 @@ function getPageContextEnvView(pageContext: object, pageContextConfig: PageConte
 async function loadPageContextConfig(
   pageContext: { pageId: string; _globalContext: GlobalContextServerInternal },
   environmentName: string,
-  loadEntry: null | (() => Promise<unknown>),
+  environmentEntry: null | Record<string, unknown>,
 ) {
   const globalContext = pageContext._globalContext
   const isDev = !globalContext._isProduction
   let pageConfigsPromise = globalObject.pageConfigsByEnvironment.get(environmentName)
   if (!pageConfigsPromise) {
-    pageConfigsPromise = importGlobalEntry(globalContext, environmentName, loadEntry).then((globalEntry: any) =>
+    pageConfigsPromise = importGlobalEntry(globalContext, environmentName, environmentEntry).then((globalEntry: any) =>
       parsePageConfigsSerialized(globalEntry.pageConfigsSerialized, globalEntry.pageConfigGlobalSerialized),
     )
     if (!isDev) globalObject.pageConfigsByEnvironment.set(environmentName, pageConfigsPromise)
@@ -73,9 +73,9 @@ async function loadPageContextConfig(
 async function importGlobalEntry(
   globalContext: GlobalContextServerInternal,
   environmentName: string,
-  loadEntry: null | (() => Promise<unknown>),
+  environmentEntry: null | Record<string, unknown>,
 ) {
-  if (loadEntry) return loadEntry()
+  if (environmentEntry) return environmentEntry
   const environment = globalContext._viteDevServer?.environments[environmentName]
   assertUsage(
     isRunnableDevEnvironment(environment),
