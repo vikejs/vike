@@ -1,7 +1,7 @@
 export { pluginEnvironmentEntries }
 export { getEnvironmentEntryPlaceholder }
 
-// Vike's server environment imports the global entry of every additional environment (e.g. `rsc`), see addPageContextEnvironments.ts
+// Vike's server environment imports the global entry of every additional environment (e.g. `rsc`), see loadPageContextEnvironments.ts
 // - An additional environment is a separate build, so the server imports its entry by a path relative to the importing chunk, which is known only after chunking (the same marker + renderChunk() as @vitejs/plugin-rsc's import.meta.viteRsc.loadModule())
 
 import { assertUsage } from '../../../../utils/assert.js'

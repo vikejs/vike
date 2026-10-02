@@ -1,4 +1,4 @@
-export { addPageContextEnvironments }
+export { loadPageContextEnvironments }
 
 import type { PageContextConfig } from '../../../shared-server-client/getPageFiles.js'
 import { resolvePageContextConfig } from '../../../shared-server-client/page-configs/resolveVikeConfigPublic.js'
@@ -11,7 +11,6 @@ import { loadAndParseVirtualFilePageEntry } from '../../../shared-server-client/
 import { generateVirtualFileIdAdditionalEnvironment } from '../../../shared-server-node/virtualFileId.js'
 import { isRunnableDevEnvironment } from '../../../utils/isRunnableDevEnvironment.js'
 import { assert, assertUsage } from '../../../utils/assert.js'
-import { objectAssign } from '../../../utils/objectAssign.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 import type { PageContextPublicMinimum } from '../../../shared-server-client/getPageContextPublicShared.js'
 import { getPageContextPublicServer } from './getPageContextPublicServer.js'
@@ -19,12 +18,11 @@ import '../../assertEnvServer.js'
 
 // Additional environments (e.g. `rsc`) run in the same runtime as the server environment => their functions can be called directly
 // - `pageContext.environments[environmentName]` holds the environment's config values and its view of pageContext, which its functions are called with
-async function addPageContextEnvironments(
-  pageContextConfig: PageContextConfig,
+async function loadPageContextEnvironments(
   pageContext: PageContextPublicMinimum & { pageId: string; _globalContext: GlobalContextServerInternal },
 ) {
   const environmentEntries = pageContext._globalContext._environmentEntries
-  const environments = Object.fromEntries(
+  return Object.fromEntries(
     await Promise.all(
       Object.entries(environmentEntries).map(async ([environmentName, environmentEntry]) => {
         const pageContextConfigEnv = await loadPageContextConfig(pageContext, environmentName, environmentEntry)
@@ -36,7 +34,6 @@ async function addPageContextEnvironments(
       }),
     ),
   )
-  objectAssign(pageContextConfig, { environments })
 }
 
 // The same pageContext object, except for the config values (and what's derived from them) which are the environment's

@@ -68,7 +68,7 @@ function getCode(
   return code
 }
 
-// The global entries of the additional environments (e.g. `rsc`), loaded by addPageContextEnvironments.ts
+// The global entries of the additional environments (e.g. `rsc`), loaded by loadPageContextEnvironments.ts
 // - In development, they're loaded with the environment's module runner instead
 function getCodeEnvironmentEntries(additionalEnvironmentNames: string[], isDev: boolean, importStatements: string[]) {
   const entries = additionalEnvironmentNames.map((name, i) => {

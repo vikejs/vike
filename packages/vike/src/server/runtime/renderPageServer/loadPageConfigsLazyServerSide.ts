@@ -25,7 +25,7 @@ import type { PageContextAfterRoute } from '../../../shared-server-client/route/
 import type { PageContextCreatedServer } from './createPageContextServer.js'
 import { resolveHeadersResponseEarly } from './headersResponse.js'
 import { resolvePageContextCspNone } from './csp.js'
-import { addPageContextEnvironments } from './addPageContextEnvironments.js'
+import { loadPageContextEnvironments } from './loadPageContextEnvironments.js'
 import '../../assertEnvServer.js'
 
 type PageContext_loadPageConfigsLazyServerSide = PageContextCreatedServer &
@@ -154,7 +154,7 @@ async function loadPageUserFiles(
     _pageConfig: null | PageConfigRuntime
   },
 ) {
-  const [{ pageContextAddendum }] = await Promise.all([
+  const [{ pageContextAddendum }, , environments] = await Promise.all([
     (async () => {
       const pageFilesServerSide = getPageFilesServerSide(pageContext._pageFilesAll, pageContext.pageId)
       const isDev = !pageContext._globalContext._isProduction
@@ -167,13 +167,13 @@ async function loadPageUserFiles(
         pageConfigLoaded,
         pageContext._globalContext._pageConfigGlobal,
       )
-      // TODO/ai: possible to move to Promise.all above?
-      if (pageConfigLoaded) await addPageContextEnvironments(pageContextAddendum, pageContext)
       return { pageContextAddendum }
     })(),
     analyzePageClientSideInit(pageContext._globalContext._pageFilesAll, pageContext.pageId, {
       sharedPageFilesAlreadyLoaded: true,
     }),
+    pageContext._pageConfig && loadPageContextEnvironments(pageContext),
   ])
+  if (environments) objectAssign(pageContextAddendum, { environments })
   return pageContextAddendum
 }
