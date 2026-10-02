@@ -14,7 +14,7 @@ function assertEnvVite() {
   markSetup_vikeVitePlugin()
   assertIsNotBrowser()
   assertNodeVersion()
-  assertViteVersion(viteVersion)
+  assertViteVersion(viteVersion) // Early check — more reliable check using `this.meta.viteVersion` later
   assertIsNotProductionRuntime() // Don't bloat server with heavy dependencies like Vite
 }
 

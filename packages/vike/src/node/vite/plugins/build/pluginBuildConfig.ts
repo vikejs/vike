@@ -12,7 +12,7 @@ import { unique } from '../../../../utils/unique.js'
 import { objectMap } from '../../../../utils/objectMap.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { findPageFiles } from '../../shared/findPageFiles.js'
-import type { ResolvedConfig, Plugin } from 'vite'
+import type { ResolvedConfig, Plugin, Rollup } from 'vite'
 import { generateVirtualFileId } from '../../../../shared-server-node/virtualFileId.js'
 import type { PageConfigBuildTime } from '../../../../types/PageConfig.js'
 import type { FileType } from '../../../../shared-server-client/getPageFiles/fileTypes.js'
@@ -41,12 +41,12 @@ function pluginBuildConfig(): Plugin[] {
         async handler(config) {
           handleAssetsManifest_alignCssTarget(config)
           onSetupBuild()
-          assertRollupInput(config)
           const entriesClient = await getEntries(config, false)
           const entriesServer = await getEntries(config, true)
           for (const [envName, envConfig] of Object.entries(config.environments)) {
             const entries = isViteServerSide_configEnvironment(envName, envConfig) ? entriesServer : entriesClient
             assert(Object.keys(entries).length > 0)
+            assertRollupInput(envConfig.build.rollupOptions.input)
             envConfig.build.rollupOptions.input = injectRollupInputs(entries, envConfig.build.rollupOptions.input)
           }
           addLogHook()
@@ -250,8 +250,8 @@ function addLogHook() {
   })
 }
 
-function assertRollupInput(config: ResolvedConfig): void {
-  const userInputs = normalizeRollupInput(config.build.rollupOptions.input)
+function assertRollupInput(input: Rollup.InputOption | undefined): void {
+  const userInputs = normalizeRollupInput(input)
   const htmlInputs = Object.values(userInputs).filter((entry) => entry.endsWith('.html') || entry.endsWith('.htm'))
   const htmlInput = htmlInputs[0]
   assertUsage(

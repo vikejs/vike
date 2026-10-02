@@ -16,7 +16,7 @@ import type { HtmlRender } from './html/renderHtml.js'
 import type { StreamReadableWeb } from './html/stream.js'
 import { getErrorPageId, isErrorPage } from '../../../shared-server-client/error-page.js'
 import type { Content, RenderHook } from './execHookOnRenderHtml.js'
-import { getContentTypeFromUrl } from './getContentTypeFromUrl.js'
+import { getContentTypeFromUrl } from '../../../utils/getContentTypeFromUrl.js'
 import type {
   RedirectStatusCode,
   AbortStatusCode,
@@ -83,7 +83,7 @@ function createHttpResponsePageContent(
   const statusCode = getStatusCode(pageContext)
   const headers = resolveHeadersResponseFinal(pageContext, statusCode)
   if (!headers.some(([k]) => k.toLowerCase() === 'content-type')) {
-    headers.push(['Content-Type', getContentTypeFromUrl(pageContext.urlOriginal)])
+    headers.push(['Content-Type', getContentTypeFromUrl(pageContext.urlOriginal) ?? 'application/octet-stream'])
   }
   return createHttpResponseCommon(statusCode, headers, content, [], renderHook)
 }
