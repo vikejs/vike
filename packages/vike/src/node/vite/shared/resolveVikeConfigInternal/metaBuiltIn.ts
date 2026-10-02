@@ -68,7 +68,7 @@ type ConfigDefinition =
       /** Whether changes to the configuration should trigger a Vite restart. */
       vite?: boolean
       /** @experimental */
-      _computed?: (pageConfig: PageConfigBuildTimeBeforeComputed) => unknown
+      _computed?: (pageConfig: PageConfigBuildTimeBeforeComputed, isDev: boolean) => unknown
       /** @experimental */
       _valueIsFilePath?: true
       /** @experimental */
@@ -224,15 +224,16 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
   hasServerOnlyHook: {
     env: { client: true },
     eager: true,
-    _computed: (pageConfig): boolean => {
+    _computed: (pageConfig, isDev): boolean => {
       const sources = (['data', 'onBeforeRender', 'onCreatePageContext', 'guard'] as const)
         .map((hookName) =>
           getConfigValueSourcesRelevant(
             hookName,
             {
-              isForClientSide: false,
+              environmentName: 'server',
               // TO-DO/eventually/remove-server-router: let's eventually remove support for Server Routing
               isClientRouting: true,
+              isDev,
             },
             pageConfig,
           ),

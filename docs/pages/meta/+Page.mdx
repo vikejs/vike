@@ -1,5 +1,5 @@
 import { Advanced, UiFrameworkExtension } from '../../components'
-import { Link, RepoLink } from '@brillout/docpress'
+import { Link, RepoLink, Warning } from '@brillout/docpress'
 import { ConfigSpec } from '../../components'
 
 <ConfigSpec
@@ -13,6 +13,7 @@ type Meta = {
     server?: boolean
     config?: boolean
     production?: boolean
+    [environmentName: string]: boolean | undefined
   }
   cumulative?: boolean
   eager?: boolean
@@ -39,6 +40,8 @@ The `meta` setting enables you to create:
    - Example: `+onInit` or `+onBeforeFetchingData`
  - **Modifying the environment of existing hooks**.
    - <Link href="#example-modify-data-env" doNotInferSectionTitle />
+ - **Config values living in other Vite environments**.
+   - <Link href="#vike-environments" doNotInferSectionTitle />
 
 
 ## Example: `+dataEndpointUrl`
@@ -475,6 +478,66 @@ Example:
    - Toggle definition: [/renderer/+config.ts > `meta.dataIsomorph`](https://github.com/vikejs/vike/blob/43503a4829e4bb0171785bc8fa501c7ca096a150/examples/react-full/renderer/%2Bconfig.ts#L15-L33)
    - Toggle usage: [/pages/star-wars/@id/+dataIsomorph.ts](https://github.com/vikejs/vike/blob/43503a4829e4bb0171785bc8fa501c7ca096a150/examples/react-full/pages/star-wars/@id/+dataIsomorph.ts)
    - Hook: [/pages/star-wars/@id/+data.tsx](https://github.com/vikejs/vike/blob/43503a4829e4bb0171785bc8fa501c7ca096a150/examples/react-full/pages/star-wars/@id/+data.tsx)
+
+
+## Vike environments
+
+Beyond `server` and `client`, the `meta[configName].env` object can determine whether the config is loaded for any [Vite environment](https://vite.dev/guide/api-environment).
+
+<Warning>
+  It's an experimental feature.
+</Warning>
+
+For example, [`@vitejs/plugin-rsc`](https://www.npmjs.com/package/@vitejs/plugin-rsc) defines the `rsc` environment (the separate module graph for React Server Components).
+
+```ts
+// /pages/+config.ts
+// Environment: config
+
+import type { Config } from 'vike/types'
+
+export default {
+  meta: {
+    Page: {
+      // Load +Page only in the Vite environment `rsc`
+      env: { rsc: true }
+    },
+    renderRsc: {
+      // Same
+      env: { rsc: true }
+    }
+  }
+} satisfies Config
+```
+
+The `rsc` config values are available at `pageContext.environments.rsc.config`.
+
+```ts
+// +onRenderHtml.ts
+// Environment: server
+
+// The pageContextRsc object is the same as pageContext except for the config values. For
+// example, since +Page only lives in the `rsc` environment:
+// - pageContextRsc.config.Page is defined
+// - pageContext.config.Page is undefined
+const pageContextRsc = pageContext.environments.rsc.pageContext
+const stream = await pageContextRsc.config.renderRsc(pageContextRsc)
+```
+
+```ts
+// +renderRsc.ts
+// Environment: rsc
+
+export function renderRsc(pageContextRsc) {
+  const { Page } = pageContextRsc.config
+  // ...
+}
+```
+
+- Only server-side Vite environments are supported.
+- A Vite environment, such as `rsc`, becomes a Vike environment if there is at least one `meta` object that sets `env: { rsc: true }`. (Otherwise, the Vite environment gets the same config values as the `server` environment.)
+- The environment must exist in Vite's `config.environments` and run in the same runtime (process or worker) as the server environment.
+- With <Link href="/file-env">file suffixes</Link>, a server-side Vike environment never loads `.client.js` files, e.g. `rsc` doesn't load `+Page.client.js`, while `rsc` does load `.server.js` and `.shared.js` files whose config has `env.rsc: true`.
 
 
 ## API

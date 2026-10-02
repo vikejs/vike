@@ -24,7 +24,7 @@ async function generateVirtualFilePageEntry(id: string, isDev: boolean): Promise
     assert(result.isForClientSide === isForClientSide)
   }
   */
-  const { pageId, isForClientSide } = result
+  const { pageId, environmentName } = result
   const vikeConfig = await getVikeConfigInternal(true)
   const { _pageConfigs: pageConfigs } = vikeConfig
   const pageConfig = pageConfigs.find((pageConfig) => pageConfig.pageId === pageId)
@@ -40,18 +40,18 @@ async function generateVirtualFilePageEntry(id: string, isDev: boolean): Promise
 
   const code = getCode(
     pageConfig,
-    isForClientSide,
+    environmentName,
     pageId,
     resolveIncludeAssetsImportedByServer(vikeConfig.config),
     isDev,
   )
-  debug(id, isForClientSide ? 'CLIENT-SIDE' : 'SERVER-SIDE', code)
+  debug(id, `${environmentName.toUpperCase()}-SIDE`, code)
   return code
 }
 
 function getCode(
   pageConfig: PageConfigBuildTime,
-  isForClientSide: boolean,
+  environmentName: string,
   pageId: string,
   includeAssetsImportedByServer: boolean,
   isDev: boolean,
@@ -67,16 +67,18 @@ function getCode(
       pageConfig,
       importStatements,
       filesEnv,
-      { isForClientSide, isClientRouting, isDev },
+      { environmentName, isClientRouting, isDev },
       '',
       false,
     ),
   )
   lines.push('};')
 
-  if (!handleAssetsManifest_isFixEnabled() && includeAssetsImportedByServer && isForClientSide && !isDev) {
+  if (!handleAssetsManifest_isFixEnabled() && includeAssetsImportedByServer && environmentName === 'client' && !isDev) {
     importStatements.push(
-      `import '${extractAssetsAddQuery(generateVirtualFileId({ type: 'page-entry', pageId, isForClientSide: false }))}'`,
+      `import '${extractAssetsAddQuery(
+        generateVirtualFileId({ type: 'page-entry', pageId, environmentName: 'server' }),
+      )}'`,
     )
   }
 

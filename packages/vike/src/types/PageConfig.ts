@@ -104,6 +104,13 @@ type ConfigEnv = {
    * @experimental
    */
   clientRoutingOnly?: boolean
+  /** Load value in an additional Vike environment, e.g. `rsc`
+   *
+   * @experimental
+   *
+   * https://vike.dev/meta#vike-environments
+   */
+  [environmentName: string]: boolean | undefined
 }
 
 type ConfigValueSources = Record<

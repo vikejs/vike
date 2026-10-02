@@ -214,7 +214,7 @@ async function getPageDeps(
       ;[...pageConfigs, pageConfigGlobal].forEach((pageConfig) => {
         Object.entries(pageConfig.configValueSources).forEach(([configName]) => {
           const runtimeEnv = {
-            isForClientSide,
+            environmentName: isForClientSide ? 'client' : 'server',
             isDev: true,
             // TO-DO/eventually/remove-server-router: let's eventually remove support for Server Routing
             isClientRouting: true,

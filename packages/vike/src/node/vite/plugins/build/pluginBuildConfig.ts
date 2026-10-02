@@ -41,9 +41,12 @@ function pluginBuildConfig(): Plugin[] {
         async handler(config) {
           handleAssetsManifest_alignCssTarget(config)
           onSetupBuild()
+          const { _additionalEnvironmentNames: additionalEnvironmentNames } = await getVikeConfigInternal()
           const entriesClient = await getEntries(config, false)
           const entriesServer = await getEntries(config, true)
           for (const [envName, envConfig] of Object.entries(config.environments)) {
+            // Additional environments (e.g. `rsc`) only get Vike's `entry-environment.mjs`, see pluginEnvironmentEntries.ts
+            if (additionalEnvironmentNames.includes(envName)) continue
             const entries = isViteServerSide_configEnvironment(envName, envConfig) ? entriesServer : entriesClient
             assert(Object.keys(entries).length > 0)
             assertRollupInput(envConfig.build.rollupOptions.input)
@@ -115,7 +118,7 @@ async function getEntries(config: ResolvedConfig, isServerSide: boolean): Promis
 function getPageEntries(pageConfigs: PageConfigBuildTime[]) {
   const pageEntries: Record<string, string> = {}
   pageConfigs.forEach((pageConfig) => {
-    const { entryName, entryTarget } = getEntryFromPageConfig(pageConfig, false)
+    const { entryName, entryTarget } = getEntryFromPageConfig(pageConfig, 'server')
     pageEntries[entryName] = entryTarget
   })
   return pageEntries
@@ -135,7 +138,7 @@ function analyzeClientEntries(pageConfigs: PageConfigBuildTime[], config: Resolv
     }
     {
       // Ensure Rollup generates a bundle per page: https://github.com/vikejs/vike/issues/349#issuecomment-1166247275
-      const { entryName, entryTarget, entryFilePath } = getEntryFromPageConfig(pageConfig, true)
+      const { entryName, entryTarget, entryFilePath } = getEntryFromPageConfig(pageConfig, 'client')
       clientEntries[entryName] = { entryTarget, entryFilePath }
     }
     {
@@ -207,9 +210,9 @@ function getEntryFromClientEntry(clientEntry: string, config: ResolvedConfig, ad
 
   return { entryName, entryTarget, entryFilePath: filePath }
 }
-function getEntryFromPageConfig(pageConfig: PageConfigBuildTime, isForClientSide: boolean) {
+function getEntryFromPageConfig(pageConfig: PageConfigBuildTime, environmentName: string) {
   let { pageId } = pageConfig
-  const entryTarget = generateVirtualFileId({ type: 'page-entry', pageId, isForClientSide })
+  const entryTarget = generateVirtualFileId({ type: 'page-entry', pageId, environmentName })
   let entryName = pageId
   // Avoid:
   // ```
