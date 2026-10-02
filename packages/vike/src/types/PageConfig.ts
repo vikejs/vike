@@ -106,6 +106,7 @@ type ConfigEnv = (
   config?: boolean
   /** Load value only in production (`true`), or only in development (`false`), or always (`undefined`). */
   production?: boolean
+  // `'if-client-routing'` is only ever set on `client` (internally by Vike), but TypeScript requires every property to fit this index signature
   /** Load value in another Vike environment, e.g. `rsc`
    *
    * @experimental
