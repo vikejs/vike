@@ -22,7 +22,7 @@ describe('isRuntimeEnvMatch()', () => {
     ).toBe(false)
   })
 
-  it('does not collapse a named-only config into the server branch', () => {
+  it("doesn't match server or client for a config that sets only an additional environment", () => {
     const configEnv = { server: false, client: false, worker: true }
     expect(isRuntimeEnvMatch(configEnv, { environmentName: 'worker', isDev: false })).toBe(true)
     expect(isRuntimeEnvMatch(configEnv, { environmentName: 'server', isDev: false })).toBe(false)

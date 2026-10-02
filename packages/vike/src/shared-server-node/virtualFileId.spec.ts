@@ -5,7 +5,7 @@ import {
   parseVirtualFileId,
 } from './virtualFileId.js'
 
-describe('named virtual file IDs', () => {
+describe('virtual file IDs of environments', () => {
   it('keeps published client/server IDs unchanged', () => {
     expect(generateVirtualFileId({ type: 'page-entry', pageId: '/some-page', environmentName: 'client' })).toBe(
       'virtual:vike:page-entry:client:/some-page',
@@ -24,7 +24,7 @@ describe('named virtual file IDs', () => {
     )
   })
 
-  it('round-trips an exact named page-entry identity', () => {
+  it('round-trips the page entry of an additional environment', () => {
     const id = generateVirtualFileId({ type: 'page-entry', environmentName: 'worker', pageId: '/some-page' })
     expect(id).toBe('virtual:vike:page-entry:worker:/some-page')
     expect(parseVirtualFileId(id)).toStrictEqual({
@@ -35,13 +35,13 @@ describe('named virtual file IDs', () => {
     })
   })
 
-  it('preserves ROOT serialization for named page entries', () => {
+  it('preserves ROOT serialization for the page entries of additional environments', () => {
     const id = generateVirtualFileId({ type: 'page-entry', environmentName: 'worker', pageId: '/' })
     expect(id).toBe('virtual:vike:page-entry:worker:ROOT')
     expect(parseVirtualFileId(id)).toMatchObject({ environmentName: 'worker', pageId: '/' })
   })
 
-  it('round-trips named global IDs', () => {
+  it('round-trips the global entry of an additional environment', () => {
     const globalId = generateVirtualFileId({ type: 'global-entry', environmentName: 'worker' })
     expect(globalId).toBe('virtual:vike:global-entry:worker')
     expect(parseVirtualFileId(globalId)).toStrictEqual({
