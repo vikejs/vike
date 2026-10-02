@@ -1,7 +1,7 @@
-export { isVikeEnvironmentBuiltIn }
+export { isEnvironmentBuiltIn }
 
 import '../assertEnvVite.js'
 
-function isVikeEnvironmentBuiltIn(environmentName: string): boolean {
+function isEnvironmentBuiltIn(environmentName: string): boolean {
   return environmentName === 'server' || environmentName === 'client'
 }

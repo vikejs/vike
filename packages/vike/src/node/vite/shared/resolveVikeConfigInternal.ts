@@ -81,7 +81,7 @@ import { loadPointerImport, loadValueFile } from './resolveVikeConfigInternal/lo
 import { resolvePointerImport } from './resolveVikeConfigInternal/resolvePointerImport.js'
 import { parsePointerImportData } from './resolveVikeConfigInternal/pointerImports.js'
 import { getFilePathResolved } from './getFilePath.js'
-import { isVikeEnvironmentBuiltIn } from './environmentName.js'
+import { isEnvironmentBuiltIn } from './environmentName.js'
 import type { FilePath } from '../../../types/FilePath.js'
 import { getConfigValueBuildTime } from '../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
 import {
@@ -1748,8 +1748,7 @@ const configEnvKeysInternal = ['clientRoutingOnly', 'eager'] as const
 const configEnvKeysReserved = ['ssr', 'shared', 'clear', 'default', ...configEnvKeysInternal] as const
 function isAdditionalEnvironmentName(configEnvKey: string) {
   return (
-    !isVikeEnvironmentBuiltIn(configEnvKey) &&
-    !['config', 'production', ...configEnvKeysInternal].includes(configEnvKey)
+    !isEnvironmentBuiltIn(configEnvKey) && !['config', 'production', ...configEnvKeysInternal].includes(configEnvKey)
   )
 }
 function getConfigEnvValue(

@@ -19,7 +19,7 @@ import { assert } from '../../../utils/assert.js'
 import { assertPosixPath } from '../../../utils/path.js'
 import { parseVirtualFileId } from '../../../shared-server-node/virtualFileId.js'
 import { reloadVikeConfig, isV1Design, getVikeConfigInternalOptional } from '../shared/resolveVikeConfigInternal.js'
-import { isVikeEnvironmentBuiltIn } from '../shared/environmentName.js'
+import { isEnvironmentBuiltIn } from '../shared/environmentName.js'
 import { isRunnableDevEnvironment } from '../../../utils/isRunnableDevEnvironment.js'
 import pc from '@brillout/picocolors'
 import { logConfigInfo } from '../shared/loggerDev.js'
@@ -86,7 +86,7 @@ function pluginVirtualFiles(): Plugin[] {
               return code
             }
             if (idParsed.type === 'global-entry') {
-              if (!isVikeEnvironmentBuiltIn(idParsed.environmentName)) {
+              if (!isEnvironmentBuiltIn(idParsed.environmentName)) {
                 return generateVirtualFileGlobalEntry({ environmentName: idParsed.environmentName, isDev }, id)
               }
               const code = await generateVirtualFileGlobalEntryWithOldDesign(
