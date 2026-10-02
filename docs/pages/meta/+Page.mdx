@@ -517,9 +517,9 @@ Code running in `rsc` reads the `rsc` config values at `pageContext.config`, whi
 
 // Same as pageContext except for the config values, e.g. +Page lives only in the `rsc` env:
 // - pageContextRsc.config.Page is defined
-// - pageContext.config.Page isn't undefined
+// - pageContext.config.Page is undefined
 const pageContextRsc = pageContext.environments.rsc.pageContext
-const stream = await rsc.config.renderRsc(pageContextRsc)
+const stream = await pageContextRsc.config.renderRsc(pageContextRsc)
 ```
 
 ```js
@@ -535,8 +535,7 @@ export function renderRsc(pageContext) {
 
 - A Vike environment such as `rsc` must exist in Vite's `config.environments` and run in the same runtime (process or worker) as the server environment (e.g. `@vitejs/plugin-rsc`).
 - A Vite environment (e.g. `worker`) is a Vike environment of its own if and only if a `meta` definition sets `env: { worker: true }`. Otherwise, like Vite's `ssr` environment, it gets the `server` config values (or the `client` ones if it's client-side).
-// TODO/ai make this sentence easier to understand
-- Additional Vike environments such as `rsc` count as server-side for <Link href="/file-env">file suffixes</Link>: `+Loading.client.js` isn't loaded in `rsc`, while `.server.js` and `.shared.js` files are, if their `meta.env` names `rsc`.
+- For <Link href="/file-env">file suffixes</Link>, an additional Vike environment such as `rsc` is server-side: `rsc` never loads `.client.js` files (e.g. `+Loading.client.js`), while it does load `.server.js` and `.shared.js` files whose config has `rsc: true` in its `meta.env`.
 
 
 ## API
