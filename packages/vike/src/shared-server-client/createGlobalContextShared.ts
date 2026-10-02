@@ -109,7 +109,7 @@ async function createGlobalContextShared<GlobalContextAdded extends {}, GlobalCo
 type GlobalContextBasePublic = Pick<GlobalContextBase, 'config' | 'pages' | 'isGlobalContext'>
 type GlobalContextBase = ReturnType<typeof createGlobalContextBase>
 function createGlobalContextBase(virtualFileExportsGlobalEntry: unknown) {
-  const { pageFilesAll, pageConfigs, pageConfigGlobal } =
+  const { pageFilesAll, pageConfigs, pageConfigGlobal, environmentEntries } =
     parseVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry)
   const allPageIds = getAllPageIds(pageFilesAll, pageConfigs)
 
@@ -127,6 +127,7 @@ function createGlobalContextBase(virtualFileExportsGlobalEntry: unknown) {
     _pageFilesAll: pageFilesAll,
     _pageConfigs: pageConfigs,
     _pageConfigGlobal: pageConfigGlobal,
+    _environmentEntries: environmentEntries,
     _allPageIds: allPageIds,
     ...globalContextAddendum,
   }

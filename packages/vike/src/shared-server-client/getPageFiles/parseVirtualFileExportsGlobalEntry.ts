@@ -23,6 +23,7 @@ function parseVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry: unkno
   pageFilesAll: PageFile[]
   pageConfigs: PageConfigRuntime[]
   pageConfigGlobal: PageConfigGlobalRuntime
+  environmentEntries: EnvironmentEntries
 } {
   assertVirtualFileExports(virtualFileExportsGlobalEntry, (moduleExports: any) => 'pageFilesLazy' in moduleExports)
   assert(hasProp(virtualFileExportsGlobalEntry, 'pageFilesLazy', 'object'))
@@ -45,6 +46,12 @@ function parseVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry: unkno
     pageConfigsSerialized,
     pageConfigGlobalSerialized,
   )
+
+  // The global entries of the additional environments (e.g. `rsc`); only the server's global entry exports them
+  const environmentEntries = hasProp(virtualFileExportsGlobalEntry, 'environmentEntries', 'object')
+    ? virtualFileExportsGlobalEntry.environmentEntries
+    : {}
+  assertEnvironmentEntries(environmentEntries)
 
   const pageFilesMap: Record<string, PageFile> = {}
   parseGlobResult(virtualFileExportsGlobalEntry.pageFilesLazy).forEach(({ filePath, pageFile, globValue }) => {
@@ -98,7 +105,7 @@ function parseVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry: unkno
     assert(!filePath.includes('\\'))
   })
 
-  return { pageFilesAll, pageConfigs, pageConfigGlobal }
+  return { pageFilesAll, pageConfigs, pageConfigGlobal, environmentEntries }
 }
 
 type GlobResult = { filePath: string; pageFile: PageFile; globValue: unknown }[]
@@ -130,6 +137,13 @@ function assertPageConfigsSerialized(
     assert(hasProp(pageConfigSerialized, 'pageId', 'string'))
     assert(hasProp(pageConfigSerialized, 'routeFilesystem'))
     assert(hasProp(pageConfigSerialized, 'configValuesSerialized'))
+  })
+}
+
+type EnvironmentEntries = Record<string, null | Record<string, unknown>>
+function assertEnvironmentEntries(environmentEntries: object): asserts environmentEntries is EnvironmentEntries {
+  Object.values(environmentEntries).forEach((environmentEntry) => {
+    assert(environmentEntry === null || isObject(environmentEntry))
   })
 }
 
