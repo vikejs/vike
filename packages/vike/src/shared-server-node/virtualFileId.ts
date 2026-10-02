@@ -1,5 +1,6 @@
 export { parseVirtualFileId }
 export { generateVirtualFileId }
+export { generateVirtualFileIdAdditionalEnvironment }
 export { virtualFileIdGlobalEntryServer }
 export { virtualFileIdGlobalEntryClientSR }
 export { virtualFileIdGlobalEntryClientCR }
@@ -115,6 +116,12 @@ function generateVirtualFileId(
     return `${virtualFileIdPageEntryPrefix}${environmentName}:${pageIdSerialized}`
   }
   assert(false)
+}
+
+// The global entry of an additional environment (e.g. `rsc`)
+function generateVirtualFileIdAdditionalEnvironment(environmentName: string) {
+  assert(environmentName !== 'server' && environmentName !== 'client')
+  return generateVirtualFileId({ type: 'global-entry', environmentName })
 }
 
 function assertEnvironmentName(environmentName: string) {

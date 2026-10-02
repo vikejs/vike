@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { generateVirtualFileId, parseVirtualFileId } from './virtualFileId.js'
+import {
+  generateVirtualFileId,
+  generateVirtualFileIdAdditionalEnvironment,
+  parseVirtualFileId,
+} from './virtualFileId.js'
 
 describe('named virtual file IDs', () => {
   it('keeps published client/server IDs unchanged', () => {
@@ -45,5 +49,11 @@ describe('named virtual file IDs', () => {
       environmentName: 'worker',
       isClientRouting: false,
     })
+  })
+
+  it('generates the global ID of an additional environment', () => {
+    expect(generateVirtualFileIdAdditionalEnvironment('rsc')).toBe('virtual:vike:global-entry:rsc')
+    expect(() => generateVirtualFileIdAdditionalEnvironment('server')).toThrow()
+    expect(() => generateVirtualFileIdAdditionalEnvironment('client')).toThrow()
   })
 })

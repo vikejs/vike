@@ -6,7 +6,7 @@ export { getEnvironmentEntryPlaceholder }
 
 import { assertUsage } from '../../../../utils/assert.js'
 import type { Environment, Plugin } from 'vite'
-import { generateVirtualFileId } from '../../../../shared-server-node/virtualFileId.js'
+import { generateVirtualFileIdAdditionalEnvironment } from '../../../../shared-server-node/virtualFileId.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { getMagicString } from '../../shared/getMagicString.js'
 import path from 'node:path'
@@ -32,8 +32,7 @@ function pluginEnvironmentEntries(): Plugin[] {
           )
           this.emitFile({
             type: 'chunk',
-            // TODO/ai new func generateVirtualFileIdAdditionalEnvironment and use it here
-            id: generateVirtualFileId({ type: 'global-entry', environmentName: name }),
+            id: generateVirtualFileIdAdditionalEnvironment(name),
             fileName: environmentEntryFileName,
           })
         },

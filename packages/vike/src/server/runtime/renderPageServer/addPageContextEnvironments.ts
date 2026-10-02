@@ -5,7 +5,7 @@ import { resolvePageContextConfig } from '../../../shared-server-client/page-con
 import { parsePageConfigsSerialized } from '../../../shared-server-client/page-configs/serialize/parsePageConfigsSerialized.js'
 import { findPageConfig } from '../../../shared-server-client/page-configs/findPageConfig.js'
 import { loadAndParseVirtualFilePageEntry } from '../../../shared-server-client/page-configs/loadAndParseVirtualFilePageEntry.js'
-import { generateVirtualFileId } from '../../../shared-server-node/virtualFileId.js'
+import { generateVirtualFileIdAdditionalEnvironment } from '../../../shared-server-node/virtualFileId.js'
 import { isRunnableDevEnvironment } from '../../../utils/isRunnableDevEnvironment.js'
 import { assert, assertUsage } from '../../../utils/assert.js'
 import { objectAssign } from '../../../utils/objectAssign.js'
@@ -77,18 +77,17 @@ async function importGlobalEntry(
 ) {
   if (environmentEntry) {
     // Prod
-    // TODO/ai: assert() this is prod
+    assert(globalContext._isProduction)
     return environmentEntry
   } else {
     // Dev
-    // TODO/ai: assert() this is dev
+    assert(!globalContext._isProduction)
     const environment = globalContext._viteDevServer?.environments[environmentName]
     assertUsage(
       isRunnableDevEnvironment(environment),
       `The Vike environment ${environmentName} should be a server-side environment running in the same runtime (process or worker) as Vike's server`,
     )
-    // TODO/ai new func generateVirtualFileIdAdditionalEnvironment and use it here
-    const virtualFileId = generateVirtualFileId({ type: 'global-entry', environmentName })
+    const virtualFileId = generateVirtualFileIdAdditionalEnvironment(environmentName)
     const pageConfigsPromise = environment.runner.import(virtualFileId)
     return pageConfigsPromise
   }
