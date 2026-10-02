@@ -45,7 +45,7 @@ function pluginBuildConfig(): Plugin[] {
           const entriesClient = await getEntries(config, false)
           const entriesServer = await getEntries(config, true)
           for (const [envName, envConfig] of Object.entries(config.environments)) {
-            // Additional environments (e.g. `rsc`) only get Vike's entry below
+            // Additional environments (e.g. `rsc`) only get Vike's `entry-environment.mjs`, see pluginEnvironmentEntries.ts
             if (additionalEnvironmentNames.includes(envName)) continue
             const entries = isViteServerSide_configEnvironment(envName, envConfig) ? entriesServer : entriesClient
             assert(Object.keys(entries).length > 0)
