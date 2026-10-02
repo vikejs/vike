@@ -87,7 +87,7 @@ function parseGlobalEntryEnvironmentName(id: string) {
   if (id === virtualFileIdGlobalEntryServer) return 'server'
   if (id === virtualFileIdGlobalEntryClientSR || id === virtualFileIdGlobalEntryClientCR) return 'client'
   const environmentName = id.slice(virtualFileIdGlobalEntryPrefix.length)
-  assertEnvironmentName(environmentName)
+  assert(isEnvironmentNameValid(environmentName))
   return environmentName
 }
 
@@ -98,7 +98,7 @@ function generateVirtualFileId(
 ): string {
   if (args.type === 'global-entry') {
     const { environmentName, isClientRouting } = args
-    assertEnvironmentName(environmentName)
+    assert(isEnvironmentNameValid(environmentName))
     if (environmentName === 'client') {
       return isClientRouting ? virtualFileIdGlobalEntryClientCR : virtualFileIdGlobalEntryClientSR
     }
@@ -109,7 +109,7 @@ function generateVirtualFileId(
   if (args.type === 'page-entry') {
     const { pageId, environmentName } = args
     const pageIdSerialized = serializePageId(pageId)
-    assertEnvironmentName(environmentName)
+    assert(isEnvironmentNameValid(environmentName))
     return `${virtualFileIdPageEntryPrefix}${environmentName}:${pageIdSerialized}`
   }
   assert(false)
@@ -119,10 +119,6 @@ function generateVirtualFileId(
 function generateVirtualFileIdAdditionalEnvironment(environmentName: string) {
   assert(!isEnvironmentBuiltIn(environmentName))
   return generateVirtualFileId({ type: 'global-entry', environmentName })
-}
-
-function assertEnvironmentName(environmentName: string) {
-  assert(isEnvironmentNameValid(environmentName))
 }
 
 // Workaround:
