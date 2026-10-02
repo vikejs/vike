@@ -121,7 +121,7 @@ function generateVirtualFileIdAdditionalEnvironment(environmentName: string) {
   return generateVirtualFileId({ type: 'global-entry', environmentName })
 }
 
-// TODO/ai: re-use this, I think there are other places with this logic duplicated, consider vite/shared/environments.ts that also defines isEnvironmentBuiltIn
+// TODO/ai: re-use this, I think there are other places with this logic duplicated, consider vite/shared/vike-environments.ts that also defines isEnvironmentBuiltIn
 function assertEnvironmentName(environmentName: string) {
   assert(environmentName && !environmentName.includes(':'))
 }
