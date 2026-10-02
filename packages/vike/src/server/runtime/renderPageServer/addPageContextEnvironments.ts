@@ -24,15 +24,18 @@ async function addPageContextEnvironments(
   pageContext: PageContextPublicMinimum & { pageId: string; _globalContext: GlobalContextServerInternal },
 ) {
   const environmentEntries = pageContext._globalContext._environmentEntries
-  const environments: Record<string, { config: PageContextConfig['config']; pageContext: object }> = {}
-  for (const [environmentName, environmentEntry] of Object.entries(environmentEntries)) {
-    // TODO/ai: should be Promise.all
-    const pageContextConfigEnv = await loadPageContextConfig(pageContext, environmentName, environmentEntry)
-    environments[environmentName] = {
-      config: pageContextConfigEnv.config,
-      pageContext: getPageContextEnvView(getPageContextPublicServer(pageContext), pageContextConfigEnv),
-    }
-  }
+  const environments = Object.fromEntries(
+    await Promise.all(
+      Object.entries(environmentEntries).map(async ([environmentName, environmentEntry]) => {
+        const pageContextConfigEnv = await loadPageContextConfig(pageContext, environmentName, environmentEntry)
+        const environment = {
+          config: pageContextConfigEnv.config,
+          pageContext: getPageContextEnvView(getPageContextPublicServer(pageContext), pageContextConfigEnv),
+        }
+        return [environmentName, environment] as const
+      }),
+    ),
+  )
   objectAssign(pageContextConfig, { environments })
 }
 
