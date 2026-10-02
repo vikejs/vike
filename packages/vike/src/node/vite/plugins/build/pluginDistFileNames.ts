@@ -29,10 +29,10 @@ function pluginDistFileNames(): Plugin[] {
       enforce: 'post',
       configResolved: {
         async handler(config) {
-          const { _otherEnvironmentNames: otherEnvironmentNames } = await getVikeConfigInternal()
+          const { _additionalEnvironmentNames: additionalEnvironmentNames } = await getVikeConfigInternal()
           Object.entries(config.environments).forEach(([envName, envConfig]) => {
-            // Vike doesn't own the builds of other Vike environments (e.g. `rsc`): it only emits `entry-environment.mjs` there
-            if (otherEnvironmentNames.includes(envName)) return
+            // Vike doesn't own the builds of additional environments (e.g. `rsc`): it only emits `entry-environment.mjs` there
+            if (additionalEnvironmentNames.includes(envName)) return
             const { build } = envConfig
             copyRollupOutputs(build)
             const isServerSide = isViteServerSide_configEnvironment(envName, envConfig)

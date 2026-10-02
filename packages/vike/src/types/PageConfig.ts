@@ -104,7 +104,7 @@ type ConfigEnv = {
    * @experimental
    */
   clientRoutingOnly?: boolean
-  /** Load value in another Vike environment, e.g. `rsc`
+  /** Load value in an additional Vike environment, e.g. `rsc`
    *
    * @experimental
    *

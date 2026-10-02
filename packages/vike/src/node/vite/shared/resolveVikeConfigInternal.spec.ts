@@ -4,7 +4,7 @@ import os from 'node:os'
 import path from 'node:path'
 import {
   getConfigEnvValue,
-  getOtherEnvironmentNames,
+  getAdditionalEnvironmentNames,
   getVikeConfigInternal,
   resolveConfigEnv,
   setVikeConfigContext,
@@ -55,20 +55,20 @@ describe('getConfigEnvValue()', () => {
   })
 })
 
-describe('getOtherEnvironmentNames()', () => {
-  it('collects the other Vike environments, not server and client', () => {
+describe('getAdditionalEnvironmentNames()', () => {
+  it('collects the additional environments, not server and client', () => {
     expect(
-      getOtherEnvironmentNames([{ server: true, client: true }, { rsc: true, config: true }, { worker: true }]),
+      getAdditionalEnvironmentNames([{ server: true, client: true }, { rsc: true, config: true }, { worker: true }]),
     ).toEqual(['rsc', 'worker'])
   })
 
   it('ignores environments set to false or undefined', () => {
-    expect(getOtherEnvironmentNames([{ server: true, rsc: false }, { worker: undefined }])).toEqual([])
+    expect(getAdditionalEnvironmentNames([{ server: true, rsc: false }, { worker: undefined }])).toEqual([])
   })
 
   it("doesn't mistake config, production and the deprecated eager for environments", () => {
     const configEnvs = [{ config: true, production: false }, getConfigEnvValue('_routing-eager', errMsgIntro)]
-    expect(getOtherEnvironmentNames(configEnvs)).toEqual([])
+    expect(getAdditionalEnvironmentNames(configEnvs)).toEqual([])
   })
 })
 
@@ -89,7 +89,9 @@ describe('resolveConfigEnv()', () => {
 })
 
 describe('environment introduced only by meta.effect()', () => {
-  const userRootDir = toPosixPath(fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'vike-other-environments-'))))
+  const userRootDir = toPosixPath(
+    fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'vike-additional-environments-'))),
+  )
   afterAll(() => {
     fs.rmSync(userRootDir, { recursive: true, force: true })
   })
@@ -112,14 +114,16 @@ describe('environment introduced only by meta.effect()', () => {
     })
     setVikeConfigContext({ userRootDir, isDev: true, vikeVitePluginOptions: {} })
     const vikeConfig = await getVikeConfigInternal()
-    expect(vikeConfig._otherEnvironmentNames).toContain('rsc')
+    expect(vikeConfig._additionalEnvironmentNames).toContain('rsc')
     const pageConfig = vikeConfig._pageConfigs.find((p) => p.pageId === '/pages/index')!
     expect(pageConfig.configValueSources.Page![0]!.configEnv).toEqual({ server: false, client: false, rsc: true })
   })
 })
 
 describe("meta.env of a Vite environment that doesn't exist", () => {
-  const userRootDir = toPosixPath(fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'vike-other-environments-'))))
+  const userRootDir = toPosixPath(
+    fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'vike-additional-environments-'))),
+  )
   afterAll(() => {
     fs.rmSync(userRootDir, { recursive: true, force: true })
   })
@@ -166,17 +170,19 @@ describe("meta.env of a Vite environment that doesn't exist", () => {
     setVikeConfigContext({ userRootDir, isDev: true, vikeVitePluginOptions: {} })
     await getVikeConfigInternal()
     await setViteEnvironmentNames(['client', 'ssr'])
-    expect((await getVikeConfigInternal())._otherEnvironmentNames).toEqual([])
+    expect((await getVikeConfigInternal())._additionalEnvironmentNames).toEqual([])
     Object.assign(globalThis._vike.globals['vite/shared/resolveVikeConfigInternal.ts']!, {
       restartViteBecauseOfError: false,
     })
     await setViteEnvironmentNames(['client', 'ssr', 'rsc'])
-    expect((await getVikeConfigInternal())._otherEnvironmentNames).toContain('rsc')
+    expect((await getVikeConfigInternal())._additionalEnvironmentNames).toContain('rsc')
   })
 })
 
 describe('meta.env.production of a built-in hook', () => {
-  const userRootDir = toPosixPath(fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'vike-other-environments-'))))
+  const userRootDir = toPosixPath(
+    fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'vike-additional-environments-'))),
+  )
   afterAll(() => {
     fs.rmSync(userRootDir, { recursive: true, force: true })
   })

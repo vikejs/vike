@@ -37,9 +37,9 @@ function pluginBuildApp(): Plugin[] {
               async buildApp(builder) {
                 assert(builder.environments.client)
                 assert(builder.environments.ssr)
-                // The other Vike environments (e.g. `rsc`)
-                const { _otherEnvironmentNames: otherEnvironmentNames } = await getVikeConfigInternal()
-                for (const name of otherEnvironmentNames) {
+                // The additional environments (e.g. `rsc`)
+                const { _additionalEnvironmentNames: additionalEnvironmentNames } = await getVikeConfigInternal()
+                for (const name of additionalEnvironmentNames) {
                   await builder.build(builder.environments[name]!)
                 }
                 await builder.build(builder.environments.client)

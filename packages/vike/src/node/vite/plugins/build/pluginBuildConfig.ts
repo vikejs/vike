@@ -41,12 +41,12 @@ function pluginBuildConfig(): Plugin[] {
         async handler(config) {
           handleAssetsManifest_alignCssTarget(config)
           onSetupBuild()
-          const { _otherEnvironmentNames: otherEnvironmentNames } = await getVikeConfigInternal()
+          const { _additionalEnvironmentNames: additionalEnvironmentNames } = await getVikeConfigInternal()
           const entriesClient = await getEntries(config, false)
           const entriesServer = await getEntries(config, true)
           for (const [envName, envConfig] of Object.entries(config.environments)) {
-            // Other Vike environments (e.g. `rsc`) only get Vike's entry below
-            if (otherEnvironmentNames.includes(envName)) continue
+            // Additional environments (e.g. `rsc`) only get Vike's entry below
+            if (additionalEnvironmentNames.includes(envName)) continue
             const entries = isViteServerSide_configEnvironment(envName, envConfig) ? entriesServer : entriesClient
             assert(Object.keys(entries).length > 0)
             assertRollupInput(envConfig.build.rollupOptions.input)

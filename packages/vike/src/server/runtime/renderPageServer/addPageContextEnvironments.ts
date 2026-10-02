@@ -20,7 +20,7 @@ const globalObject = getGlobalObject('renderPageServer/addPageContextEnvironment
   pageConfigsByEnvironment: new Map<string, Promise<PageConfigs>>(),
 })
 
-// Other Vike environments (e.g. `rsc`) run in the same runtime as the server environment => their functions can be called directly
+// Additional environments (e.g. `rsc`) run in the same runtime as the server environment => their functions can be called directly
 // - `pageContext.environments[environmentName]` holds the environment's config values and its view of pageContext, which its functions are called with
 async function addPageContextEnvironments(
   pageContextConfig: PageContextConfig,

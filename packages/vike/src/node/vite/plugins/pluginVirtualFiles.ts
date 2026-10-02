@@ -221,7 +221,7 @@ function invalidateVikeVirtualFiles(server: ViteDevServer) {
   vikeVirtualFiles.forEach((mod) => {
     server.moduleGraph.invalidateModule(mod)
   })
-  // - `server.moduleGraph` only covers the `client` and `ssr` environments, while other Vike environments (e.g. `rsc`) also load Vike's virtual files
+  // - `server.moduleGraph` only covers the `client` and `ssr` environments, while additional environments (e.g. `rsc`) also load Vike's virtual files
   Object.values(server.environments).forEach((environment) => {
     environment.moduleGraph.idToModuleMap.forEach((mod, id) => {
       if (parseVirtualFileId(id)) environment.moduleGraph.invalidateModule(mod)
