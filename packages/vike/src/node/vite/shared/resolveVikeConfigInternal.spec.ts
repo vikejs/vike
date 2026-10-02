@@ -48,7 +48,8 @@ describe('getConfigEnvValue()', () => {
   it('converts the deprecated string values', () => {
     expect(getConfigEnvValue('_routing-eager', errMsgIntro)).toEqual({
       server: true,
-      client: 'if-client-routing',
+      client: true,
+      clientRoutingOnly: true,
       eager: true,
     })
   })

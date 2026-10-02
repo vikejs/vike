@@ -46,7 +46,7 @@ function analyzePage(
         const { env } = configElement
         assert(env)
         const onlyAssets = env === { server: true }
-        const eagerlyImported = env === { server: true, client: 'if-client-routing', eager: true }
+        const eagerlyImported = env === { server: true, client: true, clientRoutingOnly: true, eager: true }
         if (onlyAssets || eagerlyImported) {
           clientDependencies.push({
             id: configElement.importPath,

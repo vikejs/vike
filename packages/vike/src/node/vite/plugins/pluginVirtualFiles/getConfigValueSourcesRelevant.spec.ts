@@ -13,7 +13,7 @@ describe('isRuntimeEnvMatch()', () => {
     expect(isRuntimeEnvMatch({ server: true }, { environmentName: 'server' })).toBe(true)
     expect(isRuntimeEnvMatch({ server: true }, { environmentName: 'client', isClientRouting: true })).toBe(false)
     expect(isRuntimeEnvMatch({ client: true }, { environmentName: 'client', isClientRouting: false })).toBe(true)
-    expect(isRuntimeEnvMatch({ client: 'if-client-routing' }, { environmentName: 'client' })).toBe(false)
+    expect(isRuntimeEnvMatch({ client: true, clientRoutingOnly: true }, { environmentName: 'client' })).toBe(false)
   })
 
   it('does not collapse a named-only config into the server branch', () => {

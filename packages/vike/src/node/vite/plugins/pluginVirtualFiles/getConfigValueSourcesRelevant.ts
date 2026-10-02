@@ -82,7 +82,8 @@ function isRuntimeEnvMatch(configEnv: ConfigEnv, runtimeEnv: RuntimeEnv): boolea
   // Runtime
   const environmentValue = configEnv[runtimeEnv.environmentName]
   if (!environmentValue) return false
-  if (environmentValue === 'if-client-routing' && !runtimeEnv.isClientRouting) return false
+  if (runtimeEnv.environmentName === 'client' && configEnv.clientRoutingOnly && !runtimeEnv.isClientRouting)
+    return false
 
   // Production/development
   if (configEnv.production !== undefined) {

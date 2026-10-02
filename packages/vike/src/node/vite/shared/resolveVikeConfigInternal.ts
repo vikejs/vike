@@ -1748,9 +1748,9 @@ function determineIsErrorPage(routeFilesystem: string) {
 
 // - Keys of `meta.env` that aren't environment names
 // - `eager` is set by the deprecated `env: '_routing-eager'`
-const configEnvKeysNonRuntime = ['config', 'production', 'eager']
+const configEnvKeysNonRuntime = ['config', 'production', 'clientRoutingOnly', 'eager']
 // - Keys of `meta.env` that can't be environment names, because they have another meaning: file suffixes (`.ssr.js`, `.shared.js`, `.clear.js`, `.default.js`) and `eager`
-const configEnvKeysReserved = ['ssr', 'shared', 'clear', 'default', 'eager']
+const configEnvKeysReserved = ['ssr', 'shared', 'clear', 'default', 'clientRoutingOnly', 'eager']
 function getConfigEnvValue(
   val: unknown,
   errMsgIntro: `Config meta defined at ${string} sets meta.${
@@ -1767,8 +1767,8 @@ function getConfigEnvValue(
       if (val === 'server-only') return { server: true }
       if (val === 'server-and-client') return { server: true, client: true }
       if (val === 'config-only') return { config: true }
-      if (val === '_routing-lazy') return { server: true, client: 'if-client-routing' }
-      if (val === '_routing-eager') return { server: true, client: 'if-client-routing', eager: true }
+      if (val === '_routing-lazy') return { server: true, client: true, clientRoutingOnly: true }
+      if (val === '_routing-eager') return { server: true, client: true, clientRoutingOnly: true, eager: true }
       assertUsage(false, errInvalidValue)
     })()
     assertWarning(
@@ -1784,7 +1784,7 @@ function getConfigEnvValue(
   Object.entries(val).forEach(([key, value]) => {
     assertUsage(
       !configEnvKeysReserved.includes(key),
-      `${errInvalidValue}: ${pc.cyan(key)} can't be an environment name, because ${key === 'eager' ? 'Vike uses it internally' : `it's a file suffix (${pc.cyan(`+Page.${key}.js`)})`}`,
+      `${errInvalidValue}: ${pc.cyan(key)} can't be an environment name, because ${key === 'eager' || key === 'clientRoutingOnly' ? 'Vike uses it internally' : `it's a file suffix (${pc.cyan(`+Page.${key}.js`)})`}`,
     )
     assertUsage(key !== '' && !key.includes(':'), `${errInvalidValue}: ${pc.cyan(key)} isn't a valid environment name`)
     assertUsage(value === undefined || typeof value === 'boolean', errInvalidValue)
@@ -1832,7 +1832,11 @@ function resolveConfigEnv(configEnv: ConfigEnv, filePath: FilePath) {
     } else if (suffixes.includes('shared')) {
       configEnvResolved.server = true
       configEnvResolved.client = true
+    } else {
+      return configEnvResolved
     }
+    // The file suffix decides, regardless of Client Routing
+    delete configEnvResolved.clientRoutingOnly
   }
 
   return configEnvResolved

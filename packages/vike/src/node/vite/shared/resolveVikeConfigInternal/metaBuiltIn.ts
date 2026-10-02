@@ -162,14 +162,15 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
   route: {
     env: {
       server: true,
-      client: 'if-client-routing',
+      client: true,
+      clientRoutingOnly: true,
       // For vite-plugin-vercel
       config: true,
     },
     eager: true,
   },
   guard: {
-    env: { server: true, client: 'if-client-routing' },
+    env: { server: true, client: true, clientRoutingOnly: true },
   },
   data: {
     env: { server: true },
@@ -179,7 +180,7 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
     cumulative: true,
   },
   iKnowThePerformanceRisksOfAsyncRouteFunctions: {
-    env: { server: true, client: 'if-client-routing' },
+    env: { server: true, client: true, clientRoutingOnly: true },
     eager: true,
   },
   filesystemRoutingRoot: {
@@ -371,7 +372,7 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
     global: true,
   },
   onBeforeRoute: {
-    env: { server: true, client: 'if-client-routing' },
+    env: { server: true, client: true, clientRoutingOnly: true },
     eager: true,
     global: true,
   },
