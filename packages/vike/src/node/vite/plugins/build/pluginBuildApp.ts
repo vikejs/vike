@@ -38,7 +38,7 @@ function pluginBuildApp(): Plugin[] {
               async buildApp(builder) {
                 assert(builder.environments.client)
                 assert(builder.environments.ssr)
-                // Before ssr: pre-rendering loads the other Vike environments (e.g. `rsc`)
+                // The other Vike environments (e.g. `rsc`)
                 const { _runtimeEnvironmentNames: runtimeEnvironmentNames } = await getVikeConfigInternal()
                 for (const name of runtimeEnvironmentNames) {
                   if (!isVikeEnvironmentBuiltIn(name)) await builder.build(builder.environments[name]!)
