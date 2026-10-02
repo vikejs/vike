@@ -582,7 +582,7 @@ function getAdditionalEnvironmentNames(configEnvs: ConfigEnv[]): string[] {
       .filter(([, value]) => value)
       .map(([name]) => name),
   )
-  return unique(names.filter((name) => !isVikeEnvironmentBuiltIn(name) && !configEnvKeysNonRuntime.includes(name)))
+  return unique(names.filter(isAdditionalEnvironmentName))
 }
 
 function resolvePageConfigBuildTime(
@@ -1742,11 +1742,16 @@ function determineIsErrorPage(routeFilesystem: string) {
   return routeFilesystem.split('/').includes('_error')
 }
 
-// - Keys of `meta.env` that aren't environment names
-// - `eager` is set by the deprecated `env: '_routing-eager'`
-const configEnvKeysNonRuntime = ['config', 'production', 'clientRoutingOnly', 'eager']
-// - Keys of `meta.env` that can't be environment names, because they have another meaning: file suffixes (`.ssr.js`, `.shared.js`, `.clear.js`, `.default.js`) and `eager`
-const configEnvKeysReserved = ['ssr', 'shared', 'clear', 'default', 'clientRoutingOnly', 'eager']
+// Keys of `meta.env` that only Vike sets, e.g. `eager` is set by the deprecated `env: '_routing-eager'`
+const configEnvKeysInternal = ['clientRoutingOnly', 'eager']
+// Keys of `meta.env` that can't be environment names: file suffixes (`.ssr.js`, `.shared.js`, `.clear.js`, `.default.js`) and the internal keys
+const configEnvKeysReserved = ['ssr', 'shared', 'clear', 'default', ...configEnvKeysInternal]
+function isAdditionalEnvironmentName(configEnvKey: string) {
+  return (
+    !isVikeEnvironmentBuiltIn(configEnvKey) &&
+    !['config', 'production', ...configEnvKeysInternal].includes(configEnvKey)
+  )
+}
 function getConfigEnvValue(
   val: unknown,
   errMsgIntro: `Config meta defined at ${string} sets meta.${
@@ -1780,7 +1785,7 @@ function getConfigEnvValue(
   Object.entries(val).forEach(([key, value]) => {
     assertUsage(
       !configEnvKeysReserved.includes(key),
-      `${errInvalidValue}: ${pc.cyan(key)} can't be an environment name, because ${key === 'eager' || key === 'clientRoutingOnly' ? 'Vike uses it internally' : `it's a file suffix (${pc.cyan(`+Page.${key}.js`)})`}`,
+      `${errInvalidValue}: ${pc.cyan(key)} can't be an environment name, because ${configEnvKeysInternal.includes(key) ? 'Vike uses it internally' : `it's a file suffix (${pc.cyan(`+Page.${key}.js`)})`}`,
     )
     assertUsage(key !== '' && !key.includes(':'), `${errInvalidValue}: ${pc.cyan(key)} isn't a valid environment name`)
     assertUsage(value === undefined || typeof value === 'boolean', errInvalidValue)
@@ -1823,7 +1828,7 @@ function resolveConfigEnv(configEnv: ConfigEnv, filePath: FilePath) {
       configEnvResolved.server = false
       // Additional environments (e.g. `rsc`) are server-side
       Object.keys(configEnvResolved).forEach((key) => {
-        if (!isVikeEnvironmentBuiltIn(key) && !configEnvKeysNonRuntime.includes(key)) delete configEnvResolved[key]
+        if (isAdditionalEnvironmentName(key)) delete configEnvResolved[key]
       })
     } else if (suffixes.includes('shared')) {
       configEnvResolved.server = true
