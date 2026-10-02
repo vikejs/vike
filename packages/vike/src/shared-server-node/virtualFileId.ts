@@ -7,6 +7,7 @@ export { virtualFileIdGlobalEntryClientCR }
 
 import { extractAssetsRemoveQuery } from './extractAssetsQuery.js'
 import { assert } from '../utils/assert.js'
+import { isEnvironmentBuiltIn, isEnvironmentNameValid } from './vike-environments.js'
 import { assertIsNotBrowser } from '../utils/assertIsNotBrowser.js'
 import { removeVirtualFileIdPrefix } from '../utils/virtualFileId.js'
 
@@ -116,14 +117,12 @@ function generateVirtualFileId(
 
 // The global entry of an additional environment (e.g. `rsc`)
 function generateVirtualFileIdAdditionalEnvironment(environmentName: string) {
-  // TODO: ai assert(isEnvironmentBuiltIn(environmentName))
-  assert(environmentName !== 'server' && environmentName !== 'client')
+  assert(!isEnvironmentBuiltIn(environmentName))
   return generateVirtualFileId({ type: 'global-entry', environmentName })
 }
 
-// TODO/ai: re-use this, I think there are other places with this logic duplicated, consider vite/shared/vike-environments.ts that also defines isEnvironmentBuiltIn
 function assertEnvironmentName(environmentName: string) {
-  assert(environmentName && !environmentName.includes(':'))
+  assert(isEnvironmentNameValid(environmentName))
 }
 
 // Workaround:

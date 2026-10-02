@@ -81,7 +81,7 @@ import { loadPointerImport, loadValueFile } from './resolveVikeConfigInternal/lo
 import { resolvePointerImport } from './resolveVikeConfigInternal/resolvePointerImport.js'
 import { parsePointerImportData } from './resolveVikeConfigInternal/pointerImports.js'
 import { getFilePathResolved } from './getFilePath.js'
-import { isEnvironmentBuiltIn } from './environmentName.js'
+import { isEnvironmentBuiltIn, isEnvironmentNameValid } from '../../../shared-server-node/vike-environments.js'
 import type { FilePath } from '../../../types/FilePath.js'
 import { getConfigValueBuildTime } from '../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
 import {
@@ -1786,7 +1786,7 @@ function getConfigEnvValue(
       !includes(configEnvKeysReserved, key),
       `${errInvalidValue}: ${pc.cyan(key)} can't be an environment name, because ${includes(configEnvKeysInternal, key) ? 'Vike uses it internally' : `it's a file suffix (${pc.cyan(`+Page.${key}.js`)})`}`,
     )
-    assertUsage(key !== '' && !key.includes(':'), `${errInvalidValue}: ${pc.cyan(key)} isn't a valid environment name`)
+    assertUsage(isEnvironmentNameValid(key), `${errInvalidValue}: ${pc.cyan(key)} isn't a valid environment name`)
     assertUsage(value === undefined || typeof value === 'boolean', errInvalidValue)
   })
   /* To allow users to set an eager config:
