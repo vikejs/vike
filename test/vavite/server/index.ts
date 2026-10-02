@@ -1,6 +1,8 @@
 /// <reference types="vite/client" />
 
 import express from 'express'
+import { apply } from '@universal-middleware/express'
+import { getUniversalMiddlewares } from 'vike/getUniversalMiddlewares'
 import { renderPage } from 'vike/server'
 import viteDevServer from 'vavite/vite-dev-server'
 
@@ -10,6 +12,8 @@ if (!viteDevServer) {
   // Serve static files in production
   app.use(express.static('dist/client'))
 }
+
+apply(app, getUniversalMiddlewares())
 
 // Vike middleware. It should always be our last middleware (because it's a
 // catch-all middleware superseding any middleware placed after it).

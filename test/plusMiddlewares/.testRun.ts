@@ -34,6 +34,21 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     expect(response.status).toBe(303)
     expect(response.headers.get('Location')).toBe('/')
   })
+
+  test('Middlewares run once, also when a middleware calls renderPage()', async () => {
+    for (const url of ['/', '/render-page-middleware']) {
+      const response: Response = await fetch(`${getServerUrl()}${url}`)
+      expect(await response.text()).toContain('Rendered to HTML.')
+      expect(response.headers.get('x-middleware')).toBe('express')
+    }
+  })
+
+  test("+middleware response handlers apply to Vike's own redirects", async () => {
+    // Trailing slash removal
+    const response: Response = await fetch(`${getServerUrl()}/some-page/`, { redirect: 'manual' })
+    expect(response.status).toBe(301)
+    expect(response.headers.get('x-middleware')).toBe('express')
+  })
 }
 
 async function testCounter() {

@@ -1,12 +1,38 @@
 export { addSsrMiddleware }
+export { addPlusMiddleware }
 
 import { type PageContextInitInternal, renderPageServer } from '../../../server/runtime/renderPageServer.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
-import type { ServerResponse } from 'node:http'
+import type { IncomingMessage, ServerResponse } from 'node:http'
 import { assertWarning } from '../../../utils/assert.js'
 import pc from '@brillout/picocolors'
+import { getAdapterRuntime, type ExpressAdapter } from '@universal-middleware/core'
+import { createRequestAdapter } from '@universal-middleware/node/request'
+import { sendResponse } from '@universal-middleware/node/response'
+import { universalMiddlewares } from '../../../server/runtime/getUniversalMiddlewares.js'
 import '../assertEnvVite.js'
 type ConnectServer = ViteDevServer['middlewares']
+
+const requestAdapter = createRequestAdapter()
+// Response handlers returned by +middleware, applied by addSsrMiddleware()
+const responseHandlers = new WeakMap<IncomingMessage, (response: Response) => Promise<Response>>()
+
+function addPlusMiddleware(middlewares: ConnectServer) {
+  middlewares.use(async (req, res, next) => {
+    try {
+      // What Universal Middleware's Express adapter passes: Vite's server is a Connect server
+      const express = Object.freeze({ req, res }) as unknown as ExpressAdapter['express']
+      const runtime = getAdapterRuntime('express', { params: undefined, ...express, express })
+      const result = await universalMiddlewares(requestAdapter(req, res), {}, runtime)
+      if (result instanceof Response) return sendResponse(result, res)
+      if (result) responseHandlers.set(req, result)
+    } catch (err) {
+      // Not thrown (that shuts down the server), and not next() (that renders the page)
+      return next(err)
+    }
+    next()
+  })
+}
 
 function addSsrMiddleware(
   middlewares: ConnectServer,
@@ -64,6 +90,14 @@ function addSsrMiddleware(
     }
 
     const { httpResponse } = pageContext
+    const applyResponseHandlers = responseHandlers.get(req)
+    if (applyResponseHandlers) {
+      const { statusCode: status, headers } = httpResponse
+      return sendResponse(
+        await applyResponseHandlers(new Response(httpResponse.getReadableWebStream(), { status, headers })),
+        res,
+      )
+    }
     setHeadersWithMultipleCookies(res, httpResponse.headers)
     res.statusCode = httpResponse.statusCode
     httpResponse.pipe(res)

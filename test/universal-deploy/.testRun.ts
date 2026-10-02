@@ -11,6 +11,13 @@ function testRun(...args: Parameters<typeof testRunClassic>) {
     expect(html).toContain('Running express server')
   })
 
+  test('+middleware runs once, also for the routes of +server.ts', async () => {
+    for (const url of ['/express', '/']) {
+      const response = await fetch(`${getServerUrl()}${url}`)
+      expect(response.headers.get('x-middleware')).toBe('srvx')
+    }
+  })
+
   // pageContext.req/pageContext.res are aliases of pageContext.runtime.req/pageContext.runtime.res — set by +onCreatePageContext.server.ts
   test('pageContext.req/pageContext.res alias pageContext.runtime.req/pageContext.runtime.res', async () => {
     const response = await fetch(`${getServerUrl()}/`)

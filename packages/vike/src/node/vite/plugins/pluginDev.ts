@@ -5,7 +5,9 @@ import { type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
 import { optimizeDeps, resolveOptimizeDeps } from './pluginDev/optimizeDeps.js'
 import { determineFsAllowList } from './pluginDev/determineFsAllowList.js'
 import { logSkillHint } from './pluginDev/logSkillHint.js'
-import { addSsrMiddleware } from '../shared/addSsrMiddleware.js'
+import { addPlusMiddleware, addSsrMiddleware } from '../shared/addSsrMiddleware.js'
+import type { VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
+import { getServerConfig } from './pluginUniversalDeploy/getServerConfig.js'
 import { isDebugError } from '../../../utils/debug.js'
 import { applyDev } from '../../../utils/isDev.js'
 import { isDocker } from '../../../utils/isDocker.js'
@@ -15,7 +17,7 @@ import pc from '@brillout/picocolors'
 import { swallowViteLogConnected, swallowViteLogConnected_clean } from '../shared/loggerVite.js'
 import '../assertEnvVite.js'
 
-function pluginDev(): Plugin[] {
+function pluginDev(vikeConfig: VikeConfigInternal): Plugin[] {
   let config: ResolvedConfig
   return [
     {
@@ -41,6 +43,12 @@ function pluginDev(): Plugin[] {
       configureServer: {
         handler(server) {
           logSkillHint(server, config.root)
+          // A custom server or +server applies +middleware itself
+          if (hasCustomServer(config) || getServerConfig(vikeConfig)) return
+          // Not `enforce: 'post'`: +middleware run before the middlewares of `post` plugins (e.g. Telefunc's)
+          return () => {
+            addPlusMiddleware(server.middlewares)
+          }
         },
       },
     },
@@ -53,8 +61,7 @@ function pluginDev(): Plugin[] {
         order: 'post',
         handler(server) {
           swallowViteLogConnected_clean() // If inside a configureServer() `pre` hook => too early
-          const hasHonoViteDevServer = !!config.plugins.find((p) => p.name === '@hono/vite-dev-server')
-          if (config.server.middlewareMode || hasHonoViteDevServer) return
+          if (hasCustomServer(config)) return
           return () => {
             addSsrMiddleware(server.middlewares, config, false, null)
           }
@@ -77,6 +84,10 @@ function pluginDev(): Plugin[] {
       },
     },
   ]
+}
+
+function hasCustomServer(config: ResolvedConfig) {
+  return config.server.middlewareMode || !!config.plugins.find((p) => p.name === '@hono/vite-dev-server')
 }
 
 function logDockerHint(configHost: ResolvedConfig['server']['host']) {

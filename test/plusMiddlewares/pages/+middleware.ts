@@ -1,4 +1,5 @@
 import { enhance, type UniversalMiddleware } from '@universal-middleware/core'
+import { renderPage } from 'vike/server'
 
 const someUniversalMiddleware: UniversalMiddleware = async () => {
   return new Response('OK')
@@ -20,4 +21,25 @@ const redirectMiddleware = enhance(redirectUniversalMiddleware, {
   path: '/redirect-middleware',
 })
 
-export default [middleware, redirectMiddleware]
+// Modifies the response of every request
+const responseHeaderMiddleware = enhance(
+  async (_request, _context, runtime) => (response: Response) => {
+    response.headers.append('x-middleware', runtime.adapter)
+    return response
+  },
+  { name: 'responseHeaderMiddleware' },
+)
+
+// Calls renderPage(), like vike-react-rsc's server actions
+const renderPageMiddleware = enhance(
+  async (request: Request) => {
+    const { httpResponse } = await renderPage({ urlOriginal: '/', headersOriginal: request.headers })
+    return new Response(httpResponse.getReadableWebStream(), {
+      status: httpResponse.statusCode,
+      headers: httpResponse.headers,
+    })
+  },
+  { name: 'renderPageMiddleware', method: 'GET', path: '/render-page-middleware' },
+)
+
+export default [middleware, redirectMiddleware, responseHeaderMiddleware, renderPageMiddleware]
