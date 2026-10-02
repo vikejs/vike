@@ -116,6 +116,7 @@ function generateVirtualFileId(
 
 // The global entry of an additional environment (e.g. `rsc`)
 function generateVirtualFileIdAdditionalEnvironment(environmentName: string) {
+  // TODO: ai assert(isEnvironmentBuiltIn(environmentName))
   assert(environmentName !== 'server' && environmentName !== 'client')
   return generateVirtualFileId({ type: 'global-entry', environmentName })
 }
