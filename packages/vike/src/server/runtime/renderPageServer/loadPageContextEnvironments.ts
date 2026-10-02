@@ -34,11 +34,8 @@ async function loadPageContextEnvironments(
       }),
     ),
   )
-  return environments
-  /* TODO/ai:
   const pageContextEnvironments = { environments }
   return pageContextEnvironments
-  */
 }
 
 // The same pageContext object, except for the config values (and what's derived from them) which are the environment's

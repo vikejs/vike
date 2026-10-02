@@ -154,7 +154,7 @@ async function loadPageUserFiles(
     _pageConfig: null | PageConfigRuntime
   },
 ) {
-  const [{ pageContextAddendum }, environments] = await Promise.all([
+  const [{ pageContextAddendum }, pageContextEnvironments] = await Promise.all([
     (async () => {
       const pageFilesServerSide = getPageFilesServerSide(pageContext._pageFilesAll, pageContext.pageId)
       const isDev = !pageContext._globalContext._isProduction
@@ -174,9 +174,6 @@ async function loadPageUserFiles(
       sharedPageFilesAlreadyLoaded: true,
     }),
   ])
-  if (environments) objectAssign(pageContextAddendum, { environments })
-  /* TODO/ai:
   if (pageContextEnvironments) objectAssign(pageContextAddendum, pageContextEnvironments)
-  */
   return pageContextAddendum
 }
