@@ -511,12 +511,13 @@ export default {
 
 Code running in `rsc` reads the `rsc` config values at `pageContext.config`, while code running in the server environment (e.g. Vite's `ssr` environment) reads the `server` config values. The server environment reads the `rsc` config values at `pageContext.environments.rsc.config`.
 
-> Calling one of its functions, with `pageContext` as first argument, runs the function loaded by `rsc`, with the `rsc` view of `pageContext`.
+> Its functions are the ones loaded by `rsc`. Call them with `pageContext.environments.rsc.pageContext`, the `rsc` view of `pageContext`: the same object, except for the config values (and what's derived from them, such as `pageContext.exports`).
 
 ```js
 // Environment: server
 
-const stream = await pageContext.environments.rsc.config.renderRsc(pageContext)
+const { rsc } = pageContext.environments
+const stream = await rsc.config.renderRsc(rsc.pageContext)
 ```
 
 ```js

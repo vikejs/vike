@@ -272,12 +272,12 @@ type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
     pageContextsAborted: Partial<PageContextServer<Data>>[]
 
     /**
-     * The config values of the other Vike environments, e.g. `pageContext.environments.rsc.config`.
+     * The other Vike environments: their config values, e.g. `pageContext.environments.rsc.config`, and their view of `pageContext` to call their functions with.
      *
      * @experimental
      * https://vike.dev/meta#vike-environments
      */
-    environments?: Record<string, { config: PageContextConfig['config'] }>
+    environments?: Record<string, { config: PageContextConfig['config']; pageContext: PageContextServer<Data> }>
 
     isHydration?: undefined
     isBackwardNavigation?: undefined

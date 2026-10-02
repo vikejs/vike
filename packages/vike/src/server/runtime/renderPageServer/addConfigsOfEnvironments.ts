@@ -8,10 +8,11 @@ import { loadAndParseVirtualFilePageEntry } from '../../../shared-server-client/
 import { generateVirtualFileId } from '../../../shared-server-node/virtualFileId.js'
 import { isRunnableDevEnvironment } from '../../../utils/isRunnableDevEnvironment.js'
 import { assert, assertUsage } from '../../../utils/assert.js'
-import { isObject } from '../../../utils/isObject.js'
 import { objectAssign } from '../../../utils/objectAssign.js'
 import { getGlobalObject } from '../../../utils/getGlobalObject.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
+import type { PageContextPublicMinimum } from '../../../shared-server-client/getPageContextPublicShared.js'
+import { getPageContextPublicServer } from './getPageContextPublicServer.js'
 import '../../assertEnvServer.js'
 
 type PageConfigs = ReturnType<typeof parsePageConfigsSerialized>
@@ -20,38 +21,27 @@ const globalObject = getGlobalObject('renderPageServer/addConfigsOfEnvironments.
 })
 
 // Other Vike environments (e.g. `rsc`) run in the same runtime as the server environment => their functions can be called directly
-// - Their config values are at `pageContext.environments[environmentName].config`: calling a function runs it with that environment's view of pageContext
+// - `pageContext.environments[environmentName]` holds the environment's config values and its view of pageContext, which its functions are called with
 async function addConfigsOfEnvironments(
   pageContextConfig: PageContextConfig,
-  pageContext: { pageId: string; _globalContext: GlobalContextServerInternal },
+  pageContext: PageContextPublicMinimum & { pageId: string; _globalContext: GlobalContextServerInternal },
 ) {
   const { environmentEntries } = pageContext._globalContext._virtualFileExportsGlobalEntry as {
     environmentEntries: Record<string, null | (() => Promise<unknown>)>
   }
-  const environments: Record<string, { config: Record<string, unknown> }> = {}
+  const environments: Record<string, { config: PageContextConfig['config']; pageContext: object }> = {}
   for (const [environmentName, loadEntry] of Object.entries(environmentEntries)) {
     const pageContextConfigEnv = await loadPageContextConfig(pageContext, environmentName, loadEntry)
-    const config: Record<string, unknown> = {}
-    Object.entries(pageContextConfigEnv.config).forEach(([configName, value]) => {
-      if (typeof value !== 'function') {
-        config[configName] = value
-        return
-      }
-      config[configName] = (pageContextArg: unknown, ...args: unknown[]) => {
-        assertUsage(
-          isObject(pageContextArg),
-          `${configName}() of the Vike environment ${environmentName} should be called with pageContext as first argument`,
-        )
-        return value(getPageContextView(pageContextArg, pageContextConfigEnv), ...args)
-      }
-    })
-    environments[environmentName] = { config }
+    environments[environmentName] = {
+      config: pageContextConfigEnv.config,
+      pageContext: getPageContextView(getPageContextPublicServer(pageContext), pageContextConfigEnv),
+    }
   }
   objectAssign(pageContextConfig, { environments })
 }
 
 // The same pageContext object, except for the config values (and what's derived from them) which are the environment's
-function getPageContextView(pageContext: Record<string, unknown>, pageContextConfig: PageContextConfig) {
+function getPageContextView(pageContext: object, pageContextConfig: PageContextConfig) {
   return new Proxy(pageContext, {
     get(target, prop) {
       if (prop === 'Page') return pageContextConfig.exports.Page

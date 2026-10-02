@@ -3,7 +3,8 @@ export { data }
 import viteEnvironmentName from 'virtual:environment-name'
 
 async function data(pageContext) {
-  const worker = await pageContext.environments.worker.config.getWorkerInfo(pageContext, 'Worker:')
+  const { worker: env } = pageContext.environments
+  const worker = await env.config.getWorkerInfo(env.pageContext, 'Worker:')
   return {
     server: {
       viteEnvironmentName,
