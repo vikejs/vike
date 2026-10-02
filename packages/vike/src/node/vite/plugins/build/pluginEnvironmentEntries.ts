@@ -12,7 +12,7 @@ import { getMagicString } from '../../shared/getMagicString.js'
 import path from 'node:path'
 import '../../assertEnvVite.js'
 
-const environmentEntryFileName = 'vike-entry.mjs'
+const environmentEntryFileName = 'entry-environment.mjs'
 const environmentEntryPlaceholder = '__VIKE_ENVIRONMENT_ENTRY__'
 const environmentEntryPlaceholderRegex = new RegExp(`(["'\`])${environmentEntryPlaceholder}:(.+?)\\1`, 'g')
 

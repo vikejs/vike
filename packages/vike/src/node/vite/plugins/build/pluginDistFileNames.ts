@@ -31,7 +31,7 @@ function pluginDistFileNames(): Plugin[] {
         async handler(config) {
           const { _otherEnvironmentNames: otherEnvironmentNames } = await getVikeConfigInternal()
           Object.entries(config.environments).forEach(([envName, envConfig]) => {
-            // Vike doesn't own the builds of other Vike environments (e.g. `rsc`): it only emits `vike-entry.mjs` there
+            // Vike doesn't own the builds of other Vike environments (e.g. `rsc`): it only emits `entry-environment.mjs` there
             if (otherEnvironmentNames.includes(envName)) return
             const { build } = envConfig
             copyRollupOutputs(build)
