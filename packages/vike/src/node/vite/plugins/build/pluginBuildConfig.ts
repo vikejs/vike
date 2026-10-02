@@ -1,7 +1,6 @@
 export { pluginBuildConfig }
 export { assertRollupInput }
 export { analyzeClientEntries }
-export { getEnvironmentEntryPlaceholder }
 
 import { assert, setAssertOnBeforeLog, assertUsage } from '../../../../utils/assert.js'
 import { onSetupBuild } from '../../../../utils/assertSetup.js'
@@ -29,8 +28,6 @@ import {
   handleAssetsManifest_alignCssTarget,
 } from './handleAssetsManifest.js'
 import { resolveIncludeAssetsImportedByServer } from '../../../../server/runtime/renderPageServer/getPageAssets/retrievePageAssetsProd.js'
-import { getMagicString } from '../../shared/getMagicString.js'
-import path from 'node:path'
 import '../../assertEnvVite.js'
 
 function pluginBuildConfig(): Plugin[] {
@@ -73,52 +70,7 @@ function pluginBuildConfig(): Plugin[] {
         },
       },
     },
-    {
-      // Vike's server environment imports the global entry of every other Vike environment (e.g. `rsc`), see addPageContextEnvironments.ts
-      name: 'vike:build:pluginBuildConfig:environmentEntries',
-      apply: 'build',
-      buildStart: {
-        async handler() {
-          const { name, config } = this.environment
-          const { _otherEnvironmentNames: otherEnvironmentNames } = await getVikeConfigInternal()
-          if (!otherEnvironmentNames.includes(name)) return
-          assertUsage(
-            config.consumer === 'server',
-            `The Vike environment ${name} should be a server-side Vite environment`,
-          )
-          this.emitFile({
-            type: 'chunk',
-            id: generateVirtualFileId({ type: 'global-entry', environmentName: name }),
-            fileName: environmentEntryFileName,
-          })
-        },
-      },
-      renderChunk: {
-        handler(code, chunk) {
-          if (!code.includes(environmentEntryPlaceholder)) return
-          const { config } = this.environment
-          const chunkDir = path.dirname(path.resolve(config.root, config.build.outDir, chunk.fileName))
-          const { magicString, getMagicStringResult } = getMagicString(code, chunk.fileName)
-          for (const match of code.matchAll(environmentEntryPlaceholderRegex)) {
-            const outDir = config.environments[match[2]!]!.build.outDir
-            const environmentEntry = path.resolve(config.root, outDir, environmentEntryFileName)
-            let importPath = path.relative(chunkDir, environmentEntry).split(path.sep).join('/')
-            if (!importPath.startsWith('.')) importPath = `./${importPath}`
-            magicString.overwrite(match.index, match.index + match[0].length, `import(${JSON.stringify(importPath)})`)
-          }
-          return getMagicStringResult()
-        },
-      },
-    },
   ]
-}
-
-const environmentEntryFileName = 'vike-entry.mjs'
-const environmentEntryPlaceholder = '__VIKE_ENVIRONMENT_ENTRY__'
-const environmentEntryPlaceholderRegex = new RegExp(`(["'\`])${environmentEntryPlaceholder}:(.+?)\\1`, 'g')
-// Replaced by an import() of the environment's entry, once the importer's location is known
-function getEnvironmentEntryPlaceholder(environmentName: string) {
-  return `${environmentEntryPlaceholder}:${environmentName}`
 }
 
 async function getEntries(config: ResolvedConfig, isServerSide: boolean): Promise<Record<string, string>> {

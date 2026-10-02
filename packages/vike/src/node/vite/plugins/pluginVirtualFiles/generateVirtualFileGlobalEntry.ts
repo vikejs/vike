@@ -10,7 +10,7 @@ import {
 } from '../../../../shared-server-client/page-configs/serialize/serializeConfigValues.js'
 import { VIRTUAL_FILE_ID_constantsGlobalThis } from '../pluginReplaceConstantsGlobalThis.js'
 import type { RuntimeEnvRuntime } from './getConfigValueSourcesRelevant.js'
-import { getEnvironmentEntryPlaceholder } from '../build/pluginBuildConfig.js'
+import { getEnvironmentEntryPlaceholder } from '../build/pluginEnvironmentEntries.js'
 import '../../assertEnvVite.js'
 
 async function generateVirtualFileGlobalEntry(
