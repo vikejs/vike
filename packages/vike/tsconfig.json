@@ -1,6 +1,6 @@
 {
   "include": ["./src"],
-  "exclude": ["**/*.spec.ts"],
+  "exclude": ["**/*.spec.ts", "**/*.bench.ts"],
   "compilerOptions": {
     // Misc
     "skipLibCheck": true,

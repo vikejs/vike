@@ -3,7 +3,8 @@ export { catchInfiniteLoop }
 import { assertUsage, assertWarning } from './assert.js'
 import { humanizeTime } from './humanizeTime.js'
 
-const trackers = {} as Record<string, Tracker>
+const trackers = new Map<string, Tracker>()
+let lastCleanup = 0
 
 type Tracker = {
   count: number
@@ -18,14 +19,21 @@ function catchInfiniteLoop(functionName: `${string}()`) {
   // Init
   const now = new Date().getTime()
 
-  // Clean all outdated trackers
-  Object.keys(trackers).forEach((key) => {
-    const tracker = trackers[key]!
-    const elapsedTime = now - tracker.startTime
-    if (elapsedTime > time) delete trackers[key]
-  })
+  // Clean outdated trackers. Not upon every call: the server creates a tracker per request, so that would cost O(requests within `time`) per request.
+  // Math.abs() so that cleaning resumes right away if the clock went backwards.
+  if (Math.abs(now - lastCleanup) > time) {
+    trackers.forEach((tracker, key) => {
+      if (isOutdated(tracker, now)) trackers.delete(key)
+    })
+    lastCleanup = now
+  }
 
-  const tracker = (trackers[functionName] ??= { count: 0, startTime: now })
+  // The tracker may be outdated but not cleaned yet
+  let tracker = trackers.get(functionName)
+  if (!tracker || isOutdated(tracker, now)) {
+    tracker = { count: 0, startTime: now }
+    trackers.set(functionName, tracker)
+  }
 
   // Count
   tracker.count++
@@ -42,4 +50,8 @@ function catchInfiniteLoop(functionName: `${string}()`) {
     assertWarning(false, msg, { onlyOnce: false, showStackTrace: true })
     tracker.warned = true
   }
+}
+
+function isOutdated(tracker: Tracker, now: number) {
+  return now - tracker.startTime > time
 }
