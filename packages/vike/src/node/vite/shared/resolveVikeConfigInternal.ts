@@ -6,6 +6,7 @@ export type { VikeConfig }
 export { getVikeConfigInternal }
 export { getVikeConfigInternalOptional }
 export { setVikeConfigContext }
+export { setViteEnvironmentNames }
 export { isVikeConfigContextSet }
 export { reloadVikeConfig }
 export { isV1Design }
@@ -17,7 +18,6 @@ export type { VikeConfigInternal }
 export type { PageConfigBuildTimeBeforeComputed }
 
 import { deepEqual } from '../../../utils/deepEqual.js'
-import { assertKeys } from '../../../utils/assertKeys.js'
 import { assertIsNotProductionRuntime } from '../../../utils/assertSetup.js'
 import { getMostSimilar } from '../../../utils/getMostSimilar.js'
 import { objectEntries } from '../../../utils/objectEntries.js'
@@ -28,6 +28,7 @@ import { checkType } from '../../../utils/checkType.js'
 import { genPromise } from '../../../utils/genPromise.js'
 import { getGlobalObject } from '../../../utils/getGlobalObject.js'
 import { hasProp } from '../../../utils/hasProp.js'
+import { includes } from '../../../utils/includes.js'
 import { isCallable } from '../../../utils/isCallable.js'
 import { isObject } from '../../../utils/isObject.js'
 import { joinEnglish } from '../../../utils/joinEnglish.js'
@@ -77,6 +78,7 @@ import { loadPointerImport, loadValueFile } from './resolveVikeConfigInternal/lo
 import { resolvePointerImport } from './resolveVikeConfigInternal/resolvePointerImport.js'
 import { parsePointerImportData } from './resolveVikeConfigInternal/pointerImports.js'
 import { getFilePathResolved } from './getFilePath.js'
+import { isEnvironmentBuiltIn, isEnvironmentNameValid } from '../../../shared-server-node/vike-environments.js'
 import type { FilePath } from '../../../types/FilePath.js'
 import { getConfigValueBuildTime } from '../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
 import {
@@ -115,6 +117,7 @@ const globalObject = getGlobalObject('vite/shared/resolveVikeConfigInternal.ts',
   vikeConfigSync: null as VikeConfigInternal | null,
   vikeConfigCtx: null as VikeConfigContext | null, // Information provided by Vite's `config` and Vike's CLI. We could, if we want or need to, completely remove the dependency on Vite.
   prerenderContext: null as null | PrerenderContext,
+  viteEnvironmentNames: null as null | string[],
 })
 type VikeConfigContext = { userRootDir: string; isDev: boolean; vikeVitePluginOptions: unknown }
 type PrerenderContext = {
@@ -128,14 +131,15 @@ type VikeConfigInternal = GlobalConfigPublic & {
   _pageConfigGlobal: PageConfigGlobalBuildTime
   _vikeConfigDependencies: Set<string>
   _extensions: PlusFile[]
+  _additionalEnvironmentNames: string[]
   prerenderContext: PrerenderContext
 }
 
 function reloadVikeConfig() {
   assert(globalObject.vikeConfigCtx)
-  const { userRootDir, vikeVitePluginOptions } = globalObject.vikeConfigCtx
+  const { userRootDir, isDev, vikeVitePluginOptions } = globalObject.vikeConfigCtx
   assert(vikeVitePluginOptions)
-  resolveVikeConfigInternal_withErrorHandling(userRootDir, true, vikeVitePluginOptions)
+  resolveVikeConfigInternal_withErrorHandling(userRootDir, isDev, vikeVitePluginOptions)
 }
 
 async function getVikeConfigInternal(
@@ -187,6 +191,36 @@ type VikeConfig = Pick<VikeConfigInternal, 'config' | 'pages' | 'prerenderContex
 function setVikeConfigContext(vikeConfigCtx_: VikeConfigContext) {
   // If the user changes Vite's `config.root` => Vite completely reloads itself => setVikeConfigContext() is called again
   globalObject.vikeConfigCtx = vikeConfigCtx_
+}
+// Vike's config is resolved before Vite's environments are known (Vike's config can modify Vite's config)
+async function setViteEnvironmentNames(viteEnvironmentNames: string[]) {
+  globalObject.viteEnvironmentNames = viteEnvironmentNames
+  if (!globalObject.vikeConfigPromise) return
+  const vikeConfig = await globalObject.vikeConfigPromise
+  // Resolve again: to report a missing environment like any other config error, or to recover from one (e.g. the user added the environment to Vite's config)
+  const isMissing = getAdditionalEnvironmentsMissing(vikeConfig._additionalEnvironmentNames).length > 0
+  if (!isMissing && !globalObject.vikeConfigHasBuildError) return
+  reloadVikeConfig()
+  await globalObject.vikeConfigPromise
+}
+function getAdditionalEnvironmentsMissing(additionalEnvironmentNames: string[]): string[] {
+  const { viteEnvironmentNames } = globalObject
+  if (!viteEnvironmentNames) return []
+  return additionalEnvironmentNames.filter((name) => !viteEnvironmentNames.includes(name))
+}
+function assertAdditionalEnvironmentsExist(additionalEnvironmentNames: string[]) {
+  const [name] = getAdditionalEnvironmentsMissing(additionalEnvironmentNames)
+  if (name === undefined) return
+  assert(globalObject.viteEnvironmentNames)
+  assertUsage(
+    false,
+    `The environment ${pc.cyan(JSON.stringify(name))} is used by ${pc.cyan('meta.env')} but it doesn't exist in Vite's ${pc.cyan(
+      'config.environments',
+    )} (${joinEnglish(
+      globalObject.viteEnvironmentNames.map((n) => pc.cyan(n)),
+      'and',
+    )})`,
+  )
 }
 function isVikeConfigContextSet() {
   return !!globalObject.vikeConfigCtx
@@ -331,6 +365,10 @@ async function resolveVikeConfigInternal(
     plusFilesByLocationId,
     userRootDir,
   )
+  const additionalEnvironmentNames = getAdditionalEnvironmentNames(
+    getMetaEnvAll(configDefinitionsResolved, [pageConfigGlobal, ...pageConfigs]),
+  )
+  assertAdditionalEnvironmentsExist(additionalEnvironmentNames)
   if (!globalObject.isV1Design_) globalObject.isV1Design_ = pageConfigs.length > 0
 
   // Backwards compatibility for vike(options) in vite.config.js
@@ -359,6 +397,7 @@ async function resolveVikeConfigInternal(
     _pageConfigGlobal: pageConfigGlobal,
     _vikeConfigDependencies: vikeTranspileCache.vikeConfigDependencies,
     _extensions,
+    _additionalEnvironmentNames: additionalEnvironmentNames,
   }
   globalObject.vikeConfigSync = vikeConfig
 
@@ -513,6 +552,33 @@ function getPageConfigsBuildTime(
   assertPageConfigs(pageConfigs)
 
   return { pageConfigs, pageConfigGlobal }
+}
+
+// Get all the `meta.env` of all configs
+function getMetaEnvAll(
+  configDefinitionsResolved: ConfigDefinitionsResolved,
+  pageConfigs: (PageConfigBuildTime | PageConfigGlobalBuildTime)[],
+): ConfigEnv[] {
+  const configDefinitionsAll = [
+    configDefinitionsResolved.configDefinitionsGlobal,
+    ...Object.values(configDefinitionsResolved.configDefinitionsLocal).map(
+      ({ configDefinitions }) => configDefinitions,
+    ),
+  ]
+  return [
+    ...configDefinitionsAll.flatMap((configDefinitions) => Object.values(configDefinitions).map(({ env }) => env)),
+    ...pageConfigs.flatMap(({ configValueSources }) =>
+      Object.values(configValueSources).flatMap((sources) => sources.map(({ configEnv }) => configEnv)),
+    ),
+  ]
+}
+function getAdditionalEnvironmentNames(configEnvs: ConfigEnv[]): string[] {
+  const names = configEnvs.flatMap((configEnv) =>
+    Object.entries(configEnv)
+      .filter(([, value]) => value)
+      .map(([name]) => name),
+  )
+  return unique(names.filter(isAdditionalEnvironmentName))
 }
 
 function resolvePageConfigBuildTime(
@@ -1510,10 +1576,12 @@ function applyEffectMetaEnv(
 
 type PageConfigBuildTimeBeforeComputed = Omit<PageConfigBuildTime, 'configValuesComputed'>
 function getComputed(pageConfig: PageConfigBuildTimeBeforeComputed) {
+  assert(globalObject.vikeConfigCtx)
+  const { isDev } = globalObject.vikeConfigCtx
   const configValuesComputed: ConfigValuesComputed = {}
   objectEntries(pageConfig.configDefinitions).forEach(([configName, configDef]) => {
     if (!configDef._computed) return
-    const value = configDef._computed(pageConfig)
+    const value = configDef._computed(pageConfig, isDev)
     if (value === undefined) return
     configValuesComputed[configName] = {
       value,
@@ -1670,13 +1738,23 @@ function determineIsErrorPage(routeFilesystem: string) {
   return routeFilesystem.split('/').includes('_error')
 }
 
+// Keys of `meta.env` that only Vike sets
+const configEnvKeysInternal = ['clientRoutingOnly', 'eager'] as const
+// Keys of `meta.env` that can't be environment names
+// - Including file suffixes such as `.ssr.js`, `.shared.js`, `.clear.js`, `.default.js`
+const configEnvKeysReserved = ['ssr', 'shared', 'clear', 'default', ...configEnvKeysInternal] as const
+function isAdditionalEnvironmentName(configEnvKey: string) {
+  return (
+    !isEnvironmentBuiltIn(configEnvKey) && !['config', 'production', ...configEnvKeysInternal].includes(configEnvKey)
+  )
+}
 function getConfigEnvValue(
   val: unknown,
   errMsgIntro: `Config meta defined at ${string} sets meta.${
     string // configName
   }.env to`,
 ): ConfigEnv {
-  const errInvalidValue = `${errMsgIntro} an invalid value ${pc.cyan(JSON.stringify(val))}`
+  const errInvalidValue = `${errMsgIntro} an invalid value ${pc.cyan(JSON.stringify(val))}` as const
 
   // Legacy outdated values
   // TO-DO/next-major-release: remove
@@ -1686,8 +1764,8 @@ function getConfigEnvValue(
       if (val === 'server-only') return { server: true }
       if (val === 'server-and-client') return { server: true, client: true }
       if (val === 'config-only') return { config: true }
-      if (val === '_routing-lazy') return { server: true, client: 'if-client-routing' }
-      if (val === '_routing-eager') return { server: true, client: 'if-client-routing', eager: true }
+      if (val === '_routing-lazy') return { server: true, client: true, clientRoutingOnly: true }
+      if (val === '_routing-eager') return { server: true, client: true, clientRoutingOnly: true, eager: true }
       assertUsage(false, errInvalidValue)
     })()
     assertWarning(
@@ -1700,18 +1778,22 @@ function getConfigEnvValue(
 
   assertUsage(isObject(val), `${errMsgIntro} an invalid type ${pc.cyan(typeof val)}`)
 
-  assertKeys(val, ['config', 'server', 'client'] as const, `${errInvalidValue}:`)
-  assertUsage(hasProp(val, 'config', 'undefined') || hasProp(val, 'config', 'boolean'), errInvalidValue)
-  assertUsage(hasProp(val, 'server', 'undefined') || hasProp(val, 'server', 'boolean'), errInvalidValue)
-  assertUsage(hasProp(val, 'client', 'undefined') || hasProp(val, 'client', 'boolean'), errInvalidValue)
+  Object.entries(val).forEach(([key, value]) => {
+    assertUsage(
+      !includes(configEnvKeysReserved, key),
+      `${errInvalidValue}: ${pc.cyan(key)} can't be an environment name, because ${includes(configEnvKeysInternal, key) ? 'Vike uses it internally' : `it's a file suffix (${pc.cyan(`+Page.${key}.js`)})`}`,
+    )
+    assertUsage(isEnvironmentNameValid(key), `${errInvalidValue}: ${pc.cyan(key)} isn't a valid environment name`)
+    assertUsage(value === undefined || typeof value === 'boolean', errInvalidValue)
+  })
   /* To allow users to set an eager config:
    * - Uncomment line below.
-   * - Add 'eager' to assertKeys() call above.
+   * - Move 'eager' from configEnvKeysInternal to the keys that isAdditionalEnvironmentName() excludes.
    * - Add `eager: boolean` to ConfigEnv type.
   assertUsage(hasProp(val, 'eager', 'undefined') || hasProp(val, 'eager', 'boolean'), errInvalidValue)
   */
 
-  return val
+  return val as ConfigEnv
 }
 
 function getConfigDefinitionOptional(configDefinitions: ConfigDefinitionsInternal, configName: string) {
@@ -1740,10 +1822,18 @@ function resolveConfigEnv(configEnv: ConfigEnv, filePath: FilePath) {
     } else if (suffixes.includes('client')) {
       configEnvResolved.client = true
       configEnvResolved.server = false
+      // Additional environments (e.g. `rsc`) are server-side
+      Object.keys(configEnvResolved).forEach((key) => {
+        if (isAdditionalEnvironmentName(key)) delete configEnvResolved[key]
+      })
     } else if (suffixes.includes('shared')) {
       configEnvResolved.server = true
       configEnvResolved.client = true
+    } else {
+      return configEnvResolved
     }
+    // The file suffix decides, regardless of Client Routing
+    delete configEnvResolved.clientRoutingOnly
   }
 
   return configEnvResolved
@@ -1817,6 +1907,7 @@ async function getVikeConfigDummy(vikeTranspileCache: VikeTranspileCache): Promi
     prerenderContext: prerenderContextDummy,
     _vikeConfigDependencies: vikeTranspileCache.vikeConfigDependencies,
     _extensions: [],
+    _additionalEnvironmentNames: [],
   }
   globalObject.vikeConfigSync = vikeConfigDummy
   globalObject.isV1Design_ = true

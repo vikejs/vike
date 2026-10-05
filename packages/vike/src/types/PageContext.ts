@@ -271,6 +271,13 @@ type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
      */
     pageContextsAborted: Partial<PageContextServer<Data>>[]
 
+    /**
+     * @experimental
+     *
+     * https://vike.dev/meta#vike-environments
+     */
+    environments?: Record<string, { config: PageContextConfig['config']; pageContext: PageContextServer<Data> }>
+
     isHydration?: undefined
     isBackwardNavigation?: undefined
     isHistoryNavigation?: undefined
