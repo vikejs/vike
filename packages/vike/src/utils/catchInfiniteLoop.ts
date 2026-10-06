@@ -1,6 +1,6 @@
 export { catchInfiniteLoop }
 
-import { assertUsage, assertWarning } from './assert.js'
+import { assert, assertUsage, assertWarning } from './assert.js'
 import { humanizeTime } from './humanizeTime.js'
 
 const trackers = new Map<string, Tracker>()
@@ -20,6 +20,10 @@ function catchInfiniteLoop(functionName: `${string}()`) {
   // Init
   const now = new Date().getTime()
 
+  if (globalThis.__VIKE__IS_CLIENT) {
+    // No cleanup on the client-side, in order to minimize client-side JavaScript (to save client-side KBs)
+    assert(trackers.size < 5)
+  } else {
   // Clean outdated trackers. Not upon every call: the server creates a tracker per request, so that would cost O(requests within `time`) per request.
   // Math.abs() so that cleaning resumes right away if the clock went backwards.
   const cleanInterval = 5 * 1000
@@ -28,6 +32,7 @@ function catchInfiniteLoop(functionName: `${string}()`) {
       if (isOutdated(tracker, now)) trackers.delete(key)
     })
     lastCleanup = now
+  }
   }
 
   // Get/reset tracker
