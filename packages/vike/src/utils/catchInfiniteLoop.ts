@@ -27,7 +27,8 @@ function catchInfiniteLoop(functionName: `${string}()`) {
   } else {
     // Clean outdated trackers
     // - On the server-side, there is an infinite amount of outdated trackers (a new tracker is created per HTTP request) => we should clean them
-    // - Not upon every call: the server creates a new tracker per HTTP request, so that would cost O(n^2) — O(number of requests within `time`) per request
+    // - We don't clean upon every call: the server creates a new tracker per HTTP request, so that would cost O(n^2) — O(number of requests within `time`) per request
+    //   - https://github.com/vikejs/vike/pull/3576
     const cleanInterval = 10 * 1000
     lastCleanup ??= now
     if (now - lastCleanup > cleanInterval) {
