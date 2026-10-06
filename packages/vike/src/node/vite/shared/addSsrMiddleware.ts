@@ -25,7 +25,7 @@ function addPlusMiddleware(middlewares: ConnectServer) {
       const runtime = getAdapterRuntime('express', { params: undefined, ...express, express })
       const result = await universalMiddlewares(requestAdapter(req, res), {}, runtime)
       if (result instanceof Response) return sendResponse(result, res)
-      if (result) responseHandlers.set(req, result)
+      if (typeof result === 'function') responseHandlers.set(req, result)
     } catch (err) {
       // Not thrown (that shuts down the server), and not next() (that renders the page)
       return next(err)

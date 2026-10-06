@@ -52,8 +52,15 @@ const universalMiddlewares = enhance(
     const responseHandlers: ResponseHandler[] = []
     // Universal Middleware's pipe() throws `No Response found` if nothing returns a Response
     const fallThrough = new Response(null)
+    let contextAtFallThrough: Universal.Context | undefined
     const handler = pipeRoute([
-      enhance(() => fallThrough, { name: 'vike:fall-through', method: httpMethods, path: '/**' }),
+      enhance(
+        (_request: Request, context: Universal.Context) => {
+          contextAtFallThrough = context
+          return fallThrough
+        },
+        { name: 'vike:fall-through', method: httpMethods, path: '/**' },
+      ),
       ...middlewares.map((middleware) => collectResponseHandler(middleware, responseHandlers)),
     ]) as UniversalHandler
     const response = await handler(request, context, runtime)
@@ -63,7 +70,11 @@ const universalMiddlewares = enhance(
       return response
     }
     if (response !== fallThrough) return applyResponseHandlers(response)
-    if (responseHandlers.length > 0) return applyResponseHandlers
+    // The pipe's context stays local: hand the context built by the +middleware to the handlers after this middleware.
+    // A middleware returns a context or a response handler, not both: with response handlers, mutate the context instead.
+    if (responseHandlers.length === 0) return contextAtFallThrough
+    Object.assign(context, contextAtFallThrough)
+    return applyResponseHandlers
   },
   { name: 'vike:middleware' },
 )
