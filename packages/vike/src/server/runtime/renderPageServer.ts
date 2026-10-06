@@ -1,5 +1,6 @@
 export { renderPageServer }
 export { getRequestTag }
+export { renderPageServerConfigError }
 export type { PageContextInit }
 export type { PageContextInitInternal }
 export type { PageContextBegin }
@@ -115,6 +116,11 @@ async function renderPageServer<PageContextUserAdded extends {}, PageContextInit
   return getPageContextReturn(pageContextFinish) as any
 }
 
+// For the chain of +middleware: it fails the request with the error response renderPage() gives
+async function renderPageServerConfigError(pageContextInit: PageContextInitInternal) {
+  return await getPageContextConfigError(pageContextInit, getRequestId())
+}
+
 function getPageContextReturn(pageContextFinish: PageContextAfterRender) {
   if (!hasProp(pageContextFinish, '_globalContext', 'object')) return pageContextFinish
   return getPageContextPublicServer(pageContextFinish)
@@ -125,6 +131,21 @@ async function renderPageServerEntryOnceBegin(
   requestId: number,
   asyncStore: AsyncStore,
 ): Promise<PageContextAfterRender> {
+  const pageContextConfigError = await getPageContextConfigError(pageContextInit, requestId)
+  if (pageContextConfigError) return pageContextConfigError
+
+  const { globalContext } = await getGlobalContextServerInternal()
+
+  const pageContextBegin = getPageContextBegin(pageContextInit, globalContext, requestId, asyncStore)
+
+  return renderPageServerEntryOnce(pageContextBegin, globalContext, requestId)
+}
+
+// The error response for an invalid Vike config or an erroneous global context, or null if both are fine
+async function getPageContextConfigError(
+  pageContextInit: PageContextInitInternal,
+  requestId: number,
+): Promise<PageContextAfterRender | null> {
   // Invalid config
   {
     const vikeConfigError = getVikeConfigError()
@@ -161,11 +182,7 @@ async function renderPageServerEntryOnceBegin(
       // `globalContext` now contains the entire Vike config and getVikeConfig() isn't called anymore for this request.
     }
   }
-  const { globalContext } = await getGlobalContextServerInternal()
-
-  const pageContextBegin = getPageContextBegin(pageContextInit, globalContext, requestId, asyncStore)
-
-  return renderPageServerEntryOnce(pageContextBegin, globalContext, requestId)
+  return null
 }
 
 async function renderPageServerEntryOnce(

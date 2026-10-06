@@ -1,8 +1,8 @@
 export { getUniversalMiddlewares }
 export { universalMiddlewares }
 
-import { getGlobalContextServerInternal, initGlobalContext_renderPage } from './globalContext.js'
-import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.js'
+import { getGlobalContextServerInternal } from './globalContext.js'
+import { renderPageServerConfigError } from './renderPageServer.js'
 import {
   enhance,
   getUniversal,
@@ -47,6 +47,19 @@ type ResponseHandler = (response: Response) => Awaitable<Response | undefined>
 // Resolved upon each request: the Vike config imports +server, so awaiting the config while +server loads deadlocks
 const universalMiddlewares = enhance(
   async (request: Request, context: Universal.Context, runtime: RuntimeAdapter) => {
+    // Fail closed: skipping the +middleware of an erroneous config would let requests through unguarded
+    const pageContextConfigError = await renderPageServerConfigError({
+      urlOriginal: request.url,
+      headersOriginal: request.headers,
+      _reqWeb: request,
+    })
+    if (pageContextConfigError) {
+      const { httpResponse } = pageContextConfigError
+      return new Response(httpResponse.getReadableWebStream(), {
+        status: httpResponse.statusCode,
+        headers: httpResponse.headers,
+      })
+    }
     const middlewares = await getMiddlewares()
     if (middlewares.length === 0) return
     const responseHandlers: ResponseHandler[] = []
@@ -91,14 +104,7 @@ function collectResponseHandler(middleware: EnhancedMiddleware, responseHandlers
   )
 }
 
-// Empty if the Vike config or global context is erroneous: renderPage() then shows the error.
 async function getMiddlewares(): Promise<EnhancedMiddleware[]> {
-  if (getVikeConfigError()) return []
-  try {
-    await initGlobalContext_renderPage()
-  } catch {
-    return []
-  }
   const { globalContext } = await getGlobalContextServerInternal()
   return (globalContext.config.middleware ?? []).flat()
 }
