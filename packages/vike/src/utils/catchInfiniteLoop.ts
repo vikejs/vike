@@ -28,7 +28,7 @@ function catchInfiniteLoop(functionName: `${string}()`) {
     // Clean outdated trackers
     // - On the server-side, there is an infinite amount of outdated trackers (a new tracker is created per HTTP request) => we should clean them
     // - Not upon every call: the server creates a new tracker per HTTP request, so that would cost O(n^2) — O(number of requests within `time`) per request
-    const cleanInterval = 5 * 1000
+    const cleanInterval = 10 * 1000
     lastCleanup ??= now
     if (now - lastCleanup > cleanInterval) {
       trackers.forEach((tracker, key) => {
