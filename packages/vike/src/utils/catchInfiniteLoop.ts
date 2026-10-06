@@ -6,7 +6,7 @@ import { humanizeTime } from './humanizeTime.js'
 const trackers = new Map<string, Tracker>()
 let lastCleanup = 0
 
-// Given these parameters, warning is shown upon 10 calls a second on average during 5 seconds
+// Given these parameters, a warning is shown upon 10 calls a second on average during 5 seconds
 const maxCalls = 99
 const time = 5 * 1000
 
@@ -20,6 +20,7 @@ function catchInfiniteLoop(functionName: `${string}()`) {
   // Init
   const now = new Date().getTime()
 
+  // Cleanup
   if (globalThis.__VIKE__IS_CLIENT) {
     // No cleanup on the client-side, in order to minimize client-side JavaScript (to save client-side KBs)
     assert(trackers.size < 5)
