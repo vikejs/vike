@@ -43,6 +43,14 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     }
   })
 
+  test('+middleware with a path also guards its .pageContext.json', async () => {
+    for (const url of ['/dash', '/dash/index.pageContext.json']) {
+      expect((await fetch(`${getServerUrl()}${url}`)).status).toBe(401)
+      const response: Response = await fetch(`${getServerUrl()}${url}`, { headers: { 'x-authenticated': '' } })
+      expect(response.status).toBe(200)
+    }
+  })
+
   test("+middleware response handlers apply to Vike's own redirects", async () => {
     // Trailing slash removal
     const response: Response = await fetch(`${getServerUrl()}/some-page/`, { redirect: 'manual' })

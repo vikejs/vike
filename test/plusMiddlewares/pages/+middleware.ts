@@ -42,4 +42,12 @@ const renderPageMiddleware = enhance(
   { name: 'renderPageMiddleware', method: 'GET', path: '/render-page-middleware' },
 )
 
-export default [middleware, redirectMiddleware, responseHeaderMiddleware, renderPageMiddleware]
+// A guard on a page also covers the page's data, which the client fetches on navigation
+const guardMiddleware = enhance(
+  async (request: Request) => {
+    return new Response('guard', { status: request.headers.has('x-authenticated') ? 200 : 401 })
+  },
+  { name: 'guardMiddleware', method: 'GET', path: '/dash' },
+)
+
+export default [middleware, redirectMiddleware, responseHeaderMiddleware, renderPageMiddleware, guardMiddleware]

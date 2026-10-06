@@ -3,6 +3,7 @@ export { universalMiddlewares }
 
 import { getGlobalContextServerInternal } from './globalContext.js'
 import { renderPageServerConfigError } from './renderPageServer.js'
+import { addUrlForms } from './addUrlForms.js'
 import {
   enhance,
   getUniversal,
@@ -60,7 +61,10 @@ const universalMiddlewares = enhance(
         headers: httpResponse.headers,
       })
     }
-    const middlewares = await getMiddlewares()
+    const { globalContext } = await getGlobalContextServerInternal()
+    const middlewares = (globalContext.config.middleware ?? [])
+      .flat()
+      .flatMap((middleware) => addUrlForms(middleware, globalContext.baseServer))
     if (middlewares.length === 0) return
     const responseHandlers: ResponseHandler[] = []
     // Universal Middleware's pipe() throws `No Response found` if nothing returns a Response
@@ -102,9 +106,4 @@ function collectResponseHandler(middleware: EnhancedMiddleware, responseHandlers
     },
     { name: getUniversalProp(middleware, nameSymbol), order: getUniversalProp(middleware, orderSymbol) },
   )
-}
-
-async function getMiddlewares(): Promise<EnhancedMiddleware[]> {
-  const { globalContext } = await getGlobalContextServerInternal()
-  return (globalContext.config.middleware ?? []).flat()
 }
