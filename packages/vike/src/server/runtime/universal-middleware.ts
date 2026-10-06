@@ -32,3 +32,4 @@ const universalVikeHandlerEnhanced = enhance(universalVikeHandler, {
 })
 
 export default universalVikeHandlerEnhanced
+export { getUniversalMiddlewares } from './getUniversalMiddlewares.js'

@@ -27,12 +27,12 @@ import '../assertEnvServer.js'
  *
  * @example
  * ```js
- * import vike, { apply } from '@vikejs/express'
- * import { getUniversalMiddlewares } from 'vike/getUniversalMiddlewares'
+ * import { apply } from '@universal-middleware/express'
+ * import vike, { getUniversalMiddlewares } from 'vike/universal-middleware'
  *
  * apply(app, getUniversalMiddlewares())
  * app.get('/api/hello', (req, res) => res.send('Hello'))
- * vike(app)
+ * apply(app, vike)
  * ```
  *
  * https://github.com/magne4000/universal-middleware

@@ -2,7 +2,7 @@
 
 import express from 'express'
 import { apply, getContext } from '@universal-middleware/express'
-import { getUniversalMiddlewares } from 'vike/getUniversalMiddlewares'
+import { getUniversalMiddlewares } from 'vike/universal-middleware'
 import { renderPage } from 'vike/server'
 import viteDevServer from 'vavite/vite-dev-server'
 
