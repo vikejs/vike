@@ -4,7 +4,7 @@ import { assert, assertUsage, assertWarning } from './assert.js'
 import { humanizeTime } from './humanizeTime.js'
 
 const trackers = new Map<string, Tracker>()
-let lastCleanup = 0
+let lastCleanup: number | undefined
 
 // Given these parameters, a warning is shown upon 10 calls a second on average during 5 seconds
 const maxCalls = 99
@@ -25,10 +25,11 @@ function catchInfiniteLoop(functionName: `${string}()`) {
     // No cleanup on the client-side, in order to minimize client-side JavaScript (to save client-side KBs)
     assert(trackers.size < 5)
   } else {
-    // Clean outdated trackers.
+    // Clean outdated trackers
     // - On the server-side, there is an infinite amount of outdated trackers (a new tracker is created per HTTP request) => we should clean them
     // - Not upon every call: the server creates a new tracker per HTTP request, so that would cost O(n^2) — O(number of requests within `time`) per request
     const cleanInterval = 5 * 1000
+    lastCleanup ??= now
     if (now - lastCleanup > cleanInterval) {
       trackers.forEach((tracker, key) => {
         if (isOutdated(tracker, now)) trackers.delete(key)
