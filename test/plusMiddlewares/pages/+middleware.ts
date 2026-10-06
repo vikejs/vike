@@ -50,4 +50,18 @@ const guardMiddleware = enhance(
   { name: 'guardMiddleware', method: 'GET', path: '/dash' },
 )
 
-export default [middleware, redirectMiddleware, responseHeaderMiddleware, renderPageMiddleware, guardMiddleware]
+// Passes the request on to the next handler
+const passThroughMiddleware = enhance(async () => undefined, {
+  name: 'passThroughMiddleware',
+  method: 'GET',
+  path: '/',
+})
+
+export default [
+  passThroughMiddleware,
+  middleware,
+  redirectMiddleware,
+  responseHeaderMiddleware,
+  renderPageMiddleware,
+  guardMiddleware,
+]

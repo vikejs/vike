@@ -8,6 +8,7 @@ import {
   enhance,
   getUniversal,
   getUniversalProp,
+  methodSymbol,
   nameSymbol,
   orderSymbol,
   pathSymbol,
@@ -70,15 +71,16 @@ const universalMiddlewares = enhance(
     // Universal Middleware's pipe() throws `No Response found` if nothing returns a Response
     const fallThrough = new Response(null)
     let contextAtFallThrough: Universal.Context | undefined
+    const fallThroughRoute = enhance(
+      (_request: Request, context: Universal.Context) => {
+        contextAtFallThrough = context
+        return fallThrough
+      },
+      { name: 'vike:fall-through', method: httpMethods, path: '/**' },
+    )
     const handler = pipeRoute([
-      enhance(
-        (_request: Request, context: Universal.Context) => {
-          contextAtFallThrough = context
-          return fallThrough
-        },
-        { name: 'vike:fall-through', method: httpMethods, path: '/**' },
-      ),
-      ...middlewares.map((middleware) => collectResponseHandler(middleware, responseHandlers)),
+      fallThroughRoute,
+      ...middlewares.map((middleware) => collectResponseHandler(middleware, responseHandlers, fallThroughRoute)),
     ]) as UniversalHandler
     const response = await handler(request, context, runtime)
     // Response handlers returned by +middleware apply to the final response, which may come after this middleware
@@ -96,8 +98,26 @@ const universalMiddlewares = enhance(
   { name: 'vike:middleware' },
 )
 
-function collectResponseHandler(middleware: EnhancedMiddleware, responseHandlers: ResponseHandler[]) {
-  if (getUniversalProp(middleware, pathSymbol)) return middleware
+function collectResponseHandler(
+  middleware: EnhancedMiddleware,
+  responseHandlers: ResponseHandler[],
+  fallThroughRoute: EnhancedMiddleware,
+) {
+  // The router runs only the one route matching the URL: a route that passes the request on continues with the fall-through
+  if (getUniversalProp(middleware, pathSymbol)) {
+    return enhance(
+      async (...args: Parameters<UniversalHandler>) => {
+        const result = await getUniversal(middleware)(...args)
+        return result ?? getUniversal(fallThroughRoute)(...args)
+      },
+      {
+        name: getUniversalProp(middleware, nameSymbol),
+        order: getUniversalProp(middleware, orderSymbol),
+        method: getUniversalProp(middleware, methodSymbol),
+        path: getUniversalProp(middleware, pathSymbol),
+      },
+    )
+  }
   return enhance(
     async (...args: Parameters<UniversalHandler>) => {
       const result = await getUniversal(middleware)(...args)

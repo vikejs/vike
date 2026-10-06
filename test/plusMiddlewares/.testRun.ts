@@ -43,6 +43,12 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     }
   })
 
+  test('+middleware with a path that passes the request on falls through to the page', async () => {
+    for (const url of ['/', '/index.pageContext.json']) {
+      expect((await fetch(`${getServerUrl()}${url}`)).status).toBe(200)
+    }
+  })
+
   test('+middleware with a path also guards its .pageContext.json', async () => {
     for (const url of ['/dash', '/dash/index.pageContext.json']) {
       expect((await fetch(`${getServerUrl()}${url}`)).status).toBe(401)
