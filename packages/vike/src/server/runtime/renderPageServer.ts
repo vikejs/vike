@@ -217,6 +217,7 @@ async function renderPageServerEntryRecursive(
   globalContext: GlobalContextServerInternal,
   requestId: number,
 ): Promise<PageContextAfterRender> {
+  assert(requestId)
   catchInfiniteLoop(`[${getRequestTag(requestId)}] renderPageServerEntryRecursive()`)
 
   const pageContextNominalPageBegin = fork(pageContextBegin)
