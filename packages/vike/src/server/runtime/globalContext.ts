@@ -8,6 +8,7 @@ export { getGlobalContextServerInternal }
 export { getGlobalContextServerInternalOptional }
 export { getViteDevServer }
 export { getViteConfig }
+export { isRunnableDevServer }
 export { initGlobalContext_renderPage }
 export { initGlobalContext_runPrerender }
 export { initGlobalContext_getPagesAndRoutes }

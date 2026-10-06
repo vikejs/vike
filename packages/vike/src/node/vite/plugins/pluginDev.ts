@@ -8,6 +8,7 @@ import { logSkillHint } from './pluginDev/logSkillHint.js'
 import { addPlusMiddleware, addSsrMiddleware } from '../shared/addSsrMiddleware.js'
 import type { VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 import { getServerConfig } from './pluginUniversalDeploy/getServerConfig.js'
+import { isRunnableDevServer } from '../../../server/runtime/globalContext.js'
 import { isDebugError } from '../../../utils/debug.js'
 import { applyDev } from '../../../utils/isDev.js'
 import { isDocker } from '../../../utils/isDocker.js'
@@ -43,8 +44,8 @@ function pluginDev(vikeConfig: VikeConfigInternal): Plugin[] {
       configureServer: {
         handler(server) {
           logSkillHint(server, config.root)
-          // A custom server or +server applies +middleware itself
-          if (hasCustomServer(config) || getServerConfig(vikeConfig)) return
+          // A custom server or +server applies +middleware itself, and so does the server entry running elsewhere (e.g. workerd)
+          if (hasCustomServer(config) || getServerConfig(vikeConfig) || !isRunnableDevServer(server)) return
           // Not `enforce: 'post'`: +middleware run before the middlewares of `post` plugins (e.g. Telefunc's)
           return () => {
             addPlusMiddleware(server.middlewares)
