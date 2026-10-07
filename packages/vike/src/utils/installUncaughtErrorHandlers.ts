@@ -14,30 +14,16 @@ function installUncaughtErrorHandlers() {
   if (typeof process === 'undefined') return
   process?.addListener?.('uncaughtException', (err) => {
     console.error(err)
+    // Writing to stdout/stderr fails if, for example, the terminal was closed — exit like Node.js does by default, otherwise the console.error() above fails again and re-triggers this handler, endlessly.
+    // https://github.com/vikejs/vike/issues/3577
+    if (isWriteError(err)) process.exit(1)
   })
   process?.addListener?.('unhandledRejection', (err) => {
     console.error(err)
   })
-  exitOnBrokenStdio()
 }
 
-// After the terminal is closed, writing to stdout/stderr fails (e.g. `write EIO`) and, since the error is uncaught, Node.js exits. But our handlers above catch it: the process would never exit (keeping its ports occupied) while endlessly logging the error, as logging it fails again.
-// https://github.com/vikejs/vike/issues/3577
-function exitOnBrokenStdio() {
-  let streams: NodeJS.WriteStream[]
-  try {
-    streams = [process.stdout, process.stderr]
-  } catch {
-    // Some non-Node.js runtimes don't implement process.stdout
-    return
-  }
-  streams.forEach((stream) => {
-    stream?.on?.('error', (err) => {
-      // The user handles the error
-      if (stream.listenerCount('error') > 1) return
-      // Same as Node.js's default behavior
-      console.error(err)
-      process.exit(1)
-    })
-  })
+function isWriteError(err: unknown) {
+  const { syscall, code } = (err ?? {}) as NodeJS.ErrnoException
+  return syscall === 'write' && (code === 'EPIPE' || code === 'EIO')
 }
