@@ -257,7 +257,8 @@
     "./server.js",
     "./types.js",
     "./universal-middleware.js",
-    "./fetch.js"
+    "./fetch.js",
+    "./vike-server.d.ts"
   ],
   "devDependencies": {
     "@brillout/release-me": "^0.4.19",
