@@ -680,7 +680,7 @@ type ConfigBuiltIn = {
   /**
    * Your production server entry: the file becomes `dist/server/index.mjs`.
    *
-   * Use it to start your server (or to export what your deployment platform expects).
+   * Use it to start your server in production (or to export what your deployment platform expects).
    *
    * https://vike.dev/serverEntry
    */
