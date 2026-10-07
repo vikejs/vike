@@ -14,13 +14,12 @@ const serverAliasDeprecated = 'vike:server-entry'
 const virtualFileId = '\0' + serverAlias
 
 // === Rolldown filter
-// Anchored: other virtual IDs contain `vike:server`, e.g. `virtual:vike:server:constantsGlobalThis`
-const filterResolveId = {
+const filterRolldownResolveId = {
   id: {
     include: [serverAlias, serverAliasDeprecated, virtualFileId].map((id) => new RegExp(`^${escapeRegex(id)}$`)),
   },
 }
-const filterLoad = {
+const filterRolldownLoad = {
   id: {
     include: [new RegExp(`^${escapeRegex(virtualFileId)}$`)],
   },
@@ -32,7 +31,7 @@ function pluginServerEntryAlias(serverFilePath?: string | null): Plugin {
   return {
     name: 'vike:pluginUniversalDeploy:alias',
     resolveId: {
-      filter: filterResolveId,
+      filter: filterRolldownResolveId,
       handler(id) {
         if (id === serverAliasDeprecated) {
           assertWarning(
@@ -48,9 +47,9 @@ function pluginServerEntryAlias(serverFilePath?: string | null): Plugin {
       },
     },
     load: {
-      filter: filterLoad,
+      filter: filterRolldownLoad,
       handler(id) {
-        if (id !== virtualFileId) return
+        assert(id === virtualFileId)
         assert(serverFilePath)
         // Also re-export non-default exports, to support Durable Objects
         return `import mod from ${JSON.stringify(catchAllEntry)};
