@@ -1,3 +1,5 @@
+export { getUniversalMiddlewares } from './getUniversalMiddlewares.js'
+
 import { enhance, type RuntimeAdapterTarget } from '@universal-middleware/core'
 import { renderPageServer } from './renderPageServer.js'
 import '../assertEnvServer.js'
@@ -32,4 +34,3 @@ const universalVikeHandlerEnhanced = enhance(universalVikeHandler, {
 })
 
 export default universalVikeHandlerEnhanced
-export { getUniversalMiddlewares } from './getUniversalMiddlewares.js'
