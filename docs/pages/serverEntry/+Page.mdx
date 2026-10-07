@@ -20,7 +20,7 @@ serve({
   port: 3000,
   // Serve the static assets (dist/client/)
   middleware: [staticMiddleware({ dir: fileURLToPath(new URL('../client', import.meta.url)) })],
-  // Your +server.js composed by Vike
+  // Your +server.js exports
   fetch: server.fetch
 })
 ```
