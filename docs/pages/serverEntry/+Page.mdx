@@ -42,7 +42,7 @@ It gives you full control over your production server, for example to:
 
 ## `vike:server`
 
-`import server from 'vike:server'` is your <Link href="/server">`+server.js`</Link> composed by Vike: a `{ fetch }` handler. (If you don't define `+server.js`, then it's Vike's built-in server.)
+`import server from 'vike:server'` is your <Link href="/server">`+server.js`</Link> exports, e.g. `{ fetch }`. (If you don't define `+server.js`, then it's Vike's built-in server.)
 
 You can use it to handle requests before they reach `+server.js`:
 

@@ -13,7 +13,7 @@ serve({
   middleware: [staticMiddleware({ dir: fileURLToPath(new URL('../client', import.meta.url)) })],
   fetch(request) {
     if (new URL(request.url).pathname === '/health') return new Response('OK from +serverEntry.ts')
-    // +server.ts composed by Vike
+    // +server.ts exports
     return server.fetch(request)
   },
   // Like @universal-deploy/node (srvx logs to stderr upon graceful shutdown)
