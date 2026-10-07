@@ -51,7 +51,7 @@ function pluginServerEntryAlias(serverFilePath?: string | null): Plugin {
       handler(id) {
         assert(id === virtualFileId)
         assert(serverFilePath)
-        // Also re-export non-default exports, to support Durable Objects
+        // Also re-export non-default exports, e.g. to support Durable Objects
         return `import mod from ${JSON.stringify(catchAllEntry)};
 
 export * from ${JSON.stringify(serverFilePath)};
