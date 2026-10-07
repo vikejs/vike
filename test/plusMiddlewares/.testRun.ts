@@ -34,6 +34,20 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     expect(response.status).toBe(303)
     expect(response.headers.get('Location')).toBe('/')
   })
+
+  test('Every +middleware whose path matches runs, then the page', async () => {
+    // Both adminAuth (/admin/**) and settingsHeader (/admin/settings) match: adminAuth used to be skipped
+    expect((await fetch(`${getServerUrl()}/admin/settings`)).status).toBe(401)
+    const response: Response = await fetch(`${getServerUrl()}/admin/settings`, { headers: { 'x-auth': '1' } })
+    expect(response.status).toBe(200)
+    expect(response.headers.get('x-settings')).toBe('yes')
+    expect(await response.text()).toContain('Admin settings')
+  })
+
+  test('A +middleware with a path and order 0 still answers its path, and the pages still render', async () => {
+    expect(await (await fetch(`${getServerUrl()}/order-zero`)).text()).toBe('order zero')
+    expect(await fetchHtml('/')).toContain('Rendered to HTML.')
+  })
 }
 
 async function testCounter() {

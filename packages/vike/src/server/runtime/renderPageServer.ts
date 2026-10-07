@@ -81,6 +81,10 @@ import {
   universalSymbol,
   UniversalRouter,
   getAdapterRuntime,
+  getUniversalProp,
+  nameSymbol,
+  orderSymbol,
+  pathSymbol,
   type EnhancedMiddleware,
   type UniversalHandler,
 } from '@universal-middleware/core'
@@ -374,6 +378,29 @@ async function renderPageServerEntryRecursive_onError(
 }
 
 const requestAdapter = createRequestAdapter()
+// A +middleware with a `path` runs like `app.use(path, middleware)`: for that path, along with every other +middleware that
+// matches. Given to the router as is, Universal Middleware makes it a route (a `path` and no `order`, or `order: 0`), and the
+// router runs only one route per request, so a second +middleware on the same URL, and Vike's own pages, would be skipped.
+// Matching +middleware run in the order they're listed. Any other +middleware is passed on as is (with a non-zero `order`,
+// Universal Middleware ignores the `path` and warns).
+const scopedToPath = new WeakMap<EnhancedMiddleware, EnhancedMiddleware>()
+function scopeToPath(middleware: EnhancedMiddleware): EnhancedMiddleware {
+  const order = getUniversalProp(middleware, orderSymbol)
+  if (!getUniversalProp(middleware, pathSymbol) || (order !== undefined && order !== 0)) return middleware
+  let scoped = scopedToPath.get(middleware)
+  if (!scoped) {
+    const router = new UniversalRouter(false, false)
+    apply(router, [middleware])
+    const runIfPathMatches = router[universalSymbol] as UniversalHandler
+    scoped = enhance((request, context, runtime) => runIfPathMatches(request, context, runtime), {
+      name: getUniversalProp(middleware, nameSymbol),
+      immutable: true,
+    })
+    scopedToPath.set(middleware, scoped)
+  }
+  return scoped
+}
+
 async function renderPageServerEntryWithMiddlewares(
   pageContext: PageContextBegin,
   renderPageServerEntry: () => Promise<PageContextAfterRender>,
@@ -402,7 +429,7 @@ async function renderPageServerEntryWithMiddlewares(
         immutable: true, // avoids cloning the function we just created
       },
     ),
-    ...middlewares,
+    ...middlewares.map(scopeToPath),
   ])
   const handler = router[universalSymbol] as UniversalHandler
 
