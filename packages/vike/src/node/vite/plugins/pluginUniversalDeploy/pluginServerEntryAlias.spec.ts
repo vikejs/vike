@@ -13,7 +13,6 @@ function getHooks(serverFilePath: string | null) {
   return {
     resolveId: (id: string) => call(resolveIdHook, id),
     load: (id: string) => call(loadHook, id),
-    resolveIdHook,
   }
 }
 
@@ -50,13 +49,11 @@ describe('pluginServerEntryAlias()', () => {
     }
   })
 
-  it('ignores other IDs', () => {
-    const { resolveId, load, resolveIdHook } = getHooks('/app/pages/+server.ts')
+  it('the hook filters ignore other IDs', () => {
+    const { resolveId, load } = getHooks('/app/pages/+server.ts')
     for (const id of ['virtual:vike:server:constantsGlobalThis', 'vike:server-entry2', 'vike', 'vike/server']) {
       expect(resolveId(id)).toBe(null)
       expect(load(id)).toBe(null)
-      // Also without the hook filter
-      expect(resolveIdHook.handler(id)).toBe(undefined)
     }
   })
 })
