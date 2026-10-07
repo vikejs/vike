@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import {
   enhance,
   getUniversalProp,
@@ -34,6 +34,15 @@ describe('addUrlForms()', () => {
       '/app/dash',
       '/app/dash/index.pageContext.json',
     ])
+  })
+  it('warns about a - right after a parameter name, which now ends the name', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    paths('/years/:year-:month')
+    expect(warn).not.toHaveBeenCalled()
+    paths('/users/:user-id')
+    expect(warn).toHaveBeenCalledTimes(1)
+    expect(String(warn.mock.calls[0]![0])).toContain(':userId instead of :user-id')
+    warn.mockRestore()
   })
   it('keeps /** as is', () => {
     expect(paths('/dash/**')).toEqual(['/dash/**'])
