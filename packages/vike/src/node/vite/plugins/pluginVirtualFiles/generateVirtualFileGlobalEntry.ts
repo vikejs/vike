@@ -11,6 +11,7 @@ import {
 import { VIRTUAL_FILE_ID_constantsGlobalThis } from '../pluginReplaceConstantsGlobalThis.js'
 import type { RuntimeEnvRuntime } from './getConfigValueSourcesRelevant.js'
 import { getEnvironmentEntryPlaceholder } from '../build/pluginEnvironmentEntries.js'
+import { isServerCustom } from '../pluginUniversalDeploy/getServerConfig.js'
 import '../../assertEnvVite.js'
 
 async function generateVirtualFileGlobalEntry(runtimeEnv: RuntimeEnvRuntime, id: string): Promise<string> {
@@ -118,6 +119,12 @@ function getCodePageConfigGlobalSerialized(
   filesEnv: FilesEnv,
 ) {
   const lines: string[] = []
+
+  // `server: { custom: true }` => +server.js is the server entry itself: Vike's runtime should never load it (otherwise dist/server/entry.mjs would import and execute the user's server, e.g. upon pre-rendering)
+  if (isServerCustom(pageConfigGlobal)) {
+    const { server: _, ...configValueSources } = pageConfigGlobal.configValueSources
+    pageConfigGlobal = { ...pageConfigGlobal, configValueSources }
+  }
 
   lines.push(`  configValuesSerialized: {`)
   lines.push(...serializeConfigValues(pageConfigGlobal, importStatements, filesEnv, runtimeEnv, '    ', null))

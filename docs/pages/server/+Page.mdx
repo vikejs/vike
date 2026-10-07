@@ -3,7 +3,7 @@ import { DeprecatedServer } from '../../components'
 
 Define `+server.js` to seamlessly integrate a server framework (Hono, Express, ...). Or set `+server: true` to use Vike's built-in lightweight server.
 
-> Using `+server` is the recommended way for a seamless server integration, but you can also use <Link href="/renderPage">`renderPage()`</Link> to manually integrate the server instead.
+> Using `+server` is the recommended way for a seamless server integration, but you can also use <Link href="/renderPage">`renderPage()`</Link> to manually integrate the server instead (optionally inside `+server.js`, see [Custom integration](#custom-integration)).
 
 > `vike-photon` is deprecated — it has been replaced by `+server`:
 > - <Link href="/migration/server" />
@@ -372,6 +372,62 @@ export default {
 ```
 
 > See <Link href="/precompress" noBreadcrumb /> to generate `.br`/`.gz` files for your static assets at build time (instead of unnecessarily compressing them on each request).
+
+
+## Custom integration
+
+For full control, set `server: { custom: true }`: your `+server.js` is then used as-is as your server entry, and you integrate Vike yourself with <Link href="/renderPage">`renderPage()`</Link>.
+
+```ts
+// pages/+config.ts
+
+import type { Config } from 'vike/types'
+
+export default {
+  server: { custom: true } // [!code ++]
+} satisfies Config
+```
+
+```ts
+// +server.ts
+
+import express from 'express'
+import { fileURLToPath } from 'node:url'
+import { renderPage } from 'vike/server'
+
+const app = express()
+
+if (import.meta.env.PROD) {
+  // In development, Vite serves the static assets
+  app.use(express.static(fileURLToPath(new URL('../client', import.meta.url))))
+}
+
+app.get('/{*vikeCatchAll}', async (req, res, next) => {
+  const pageContext = await renderPage({
+    urlOriginal: req.originalUrl,
+    headersOriginal: req.headers
+  })
+  const { httpResponse } = pageContext
+  if (!httpResponse) return next()
+  httpResponse.headers.forEach(([name, value]) => res.setHeader(name, value))
+  res.status(httpResponse.statusCode)
+  httpResponse.pipe(res)
+})
+
+if (import.meta.env.PROD) {
+  // In development, Vite's development server is used instead
+  app.listen(3000)
+}
+
+// In development, Vike forwards requests to the default export: a Node.js
+// request handler (e.g. an Express app) or a `{ fetch }` handler
+export default app
+```
+
+- Upon `$ vike build`, `dist/server/index.mjs` is your `+server.js` as-is: it isn't wrapped and all its exports are preserved (e.g. for using `dist/server/index.mjs` inside the serverless functions of your deployment provider).
+- Upon `$ vike dev`, Vike loads `+server.js` with Vite (TypeScript, <Link href="/path-aliases">path aliases</Link>, <Link href="/env">environment variables</Link>, and <Link href="#hmr">HMR</Link> work as usual) and forwards requests to its default export.
+
+> Universal Deploy is disabled: you integrate your deployment yourself, and the `prod` <Link href="#settings">settings</Link> don't apply. It's the same flexibility as integrating `renderPage()` into a server you run yourself, but without having to use a tool such as `ts-node`.
 
 
 ## See also

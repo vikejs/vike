@@ -11,6 +11,7 @@ import { getConfigValueBuildTime } from '../../shared-server-client/page-configs
 import type { PageConfigBuildTime } from '../../types/PageConfig.js'
 import { getConfigDefinedAt } from '../../shared-server-client/page-configs/getConfigDefinedAt.js'
 import { isCallable } from '../../utils/isCallable.js'
+import { isServerCustom } from '../vite/plugins/pluginUniversalDeploy/getServerConfig.js'
 
 // +prerender is callable but getGlobalContext() cannot be used (see https://github.com/vikejs/vike/issues/3002#issuecomment-3703878380) but it's still useful (see https://github.com/vikejs/vike/issues/3002#issuecomment-3704141813)
 
@@ -86,11 +87,16 @@ async function resolvePrerenderConfigLocal(pageConfig: PageConfigBuildTime) {
 
 // Whether pre-rendering removes dist/server/ once it's done
 // https://vike.dev/prerender#keepDistServer
-function isDistServerRemoved(prerenderConfigGlobal: {
-  isPrerenderingEnabledForAllPages: boolean
-  keepDistServer: boolean
-}): boolean {
+function isDistServerRemoved(
+  prerenderConfigGlobal: {
+    isPrerenderingEnabledForAllPages: boolean
+    keepDistServer: boolean
+  },
+  vikeConfig: Pick<VikeConfigInternal, '_pageConfigGlobal'>,
+): boolean {
   if (!prerenderConfigGlobal.isPrerenderingEnabledForAllPages) return false
+  // `server: { custom: true }` => dist/server/index.mjs is the user's server entry
+  if (isServerCustom(vikeConfig._pageConfigGlobal)) return false
   return !prerenderConfigGlobal.keepDistServer
 }
 

@@ -12,6 +12,7 @@ import { hasVikeServerOrVikePhoton } from './pluginUniversalDeploy/detectDepreca
 import { getServerConfig } from './pluginUniversalDeploy/getServerConfig.js'
 import { pluginServerEntryAlias } from './pluginUniversalDeploy/pluginServerEntryAlias.js'
 import { pluginUnwrapProdOptions } from './pluginUniversalDeploy/pluginUnwrapProdOptions.js'
+import { pluginServerCustom } from './pluginUniversalDeploy/pluginServerCustom.js'
 import { unique } from '../../../utils/unique.js'
 import { assertUsage } from '../../../utils/assert.js'
 import '../assertEnvVite.js'
@@ -29,7 +30,15 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
       }),
       precompress(vikeConfig.config.precompress),
     ]
-  const { serverEntryVike, serverEntryId, serverFilePath } = serverConfig
+  const { serverEntryVike, serverEntryId, serverFilePath, isCustom } = serverConfig
+
+  if (isCustom) {
+    assertUsage(
+      serverFilePath,
+      '`server: { custom: true }` requires +server.js — see https://vike.dev/server#custom-integration',
+    )
+    return [precompress(vikeConfig.config.precompress), ...pluginServerCustom(serverFilePath)]
+  }
 
   return [
     ...universalDeploy({ node: { precompress: vikeConfig.config.precompress } }),

@@ -13,10 +13,13 @@ import { assertWarning } from '../../../utils/assert.js'
 import { interceptViteLogs } from '../shared/loggerVite.js'
 import pc from '@brillout/picocolors'
 import { swallowViteLogConnected, swallowViteLogConnected_clean } from '../shared/loggerVite.js'
+import { getVikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
+import { isServerCustom } from './pluginUniversalDeploy/getServerConfig.js'
 import '../assertEnvVite.js'
 
 function pluginDev(): Plugin[] {
   let config: ResolvedConfig
+  let isCustomServer = false
   return [
     {
       name: 'vike:pluginDev',
@@ -32,6 +35,7 @@ function pluginDev(): Plugin[] {
       configResolved: {
         async handler(config_) {
           config = config_
+          isCustomServer = isServerCustom((await getVikeConfigInternal())._pageConfigGlobal)
           await resolveOptimizeDeps(config)
           await determineFsAllowList(config)
           interceptViteLogs(config)
@@ -54,7 +58,8 @@ function pluginDev(): Plugin[] {
         handler(server) {
           swallowViteLogConnected_clean() // If inside a configureServer() `pre` hook => too early
           const hasHonoViteDevServer = !!config.plugins.find((p) => p.name === '@hono/vite-dev-server')
-          if (config.server.middlewareMode || hasHonoViteDevServer) return
+          // `server: { custom: true }` => the user's +server.js calls renderPage() itself
+          if (config.server.middlewareMode || hasHonoViteDevServer || isCustomServer) return
           return () => {
             addSsrMiddleware(server.middlewares, config, false, null)
           }

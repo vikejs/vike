@@ -673,9 +673,11 @@ type ConfigBuiltIn = {
    *
    * Set to `true` to use Vike's built-in server (no need to define `+server.js`).
    *
+   * Set to `{ custom: true }` to use `+server.js` as-is as your server entry (manual integration via `renderPage()`, without Universal Deploy).
+   *
    * https://vike.dev/server
    */
-  server?: boolean | ImportStringList
+  server?: boolean | { custom: true } | ImportStringList
 
   /**
    * Set to `true` to create `.br` and `.gz` files for your static assets at build time, so that they don't have to be compressed on each request.
@@ -821,7 +823,7 @@ type PrerenderSetting =
       /**
        * Don't remove the `dist/server/` directory.
        *
-       * If you pre-render all your pages then Vike removes the `dist/server/` directory after pre-rendering has finished.
+       * If you pre-render all your pages then Vike removes the `dist/server/` directory after pre-rendering has finished (unless you use `server: { custom: true }`).
        *
        * If `keepDistServer: true` then Vike won't remove the `dist/server/` directory.
        *
