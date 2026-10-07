@@ -53,7 +53,6 @@ const universalMiddlewares = enhance(
     const pageContextConfigError = await renderPageServerConfigError({
       urlOriginal: request.url,
       headersOriginal: request.headers,
-      _reqWeb: request,
     })
     if (pageContextConfigError) {
       const { httpResponse } = pageContextConfigError

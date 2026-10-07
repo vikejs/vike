@@ -1,4 +1,4 @@
-import { test, expect, getServerUrl, editFile, editFileRevert, autoRetry, expectLog } from '@brillout/test-e2e'
+import { test, expect, getServerUrl, editFile, editFileRevert, autoRetry, expectLog, page } from '@brillout/test-e2e'
 import { testRunClassic, sleepBeforeEditFile } from '../utils'
 
 testRunClassic('pnpm run dev')
@@ -14,6 +14,8 @@ test('+middleware context reaches routes after getUniversalMiddlewares()', async
 })
 
 test('an erroneous config fails the request instead of skipping +middleware', async () => {
+  // Leave the page, which would otherwise reload into the broken config while Vite restarts
+  await page.goto('about:blank')
   await sleepBeforeEditFile()
   editFile('./pages/+config.ts', (s) => s + "\nthrow new Error('broken config')\n")
   await autoRetry(
@@ -34,10 +36,8 @@ test('an erroneous config fails the request instead of skipping +middleware', as
     },
     { timeout: 10 * 1000 },
   )
-  // The logs of the broken config, and of the open page reloading into it
+  // The logs of the broken config
   expectLog('Failed to execute /pages/+config.ts')
   expectLog('Error loading Vike config')
   expectLog('Vike config loaded', { filter: (log) => log.logSource === 'stderr' })
-  expectLog('Failed to load resource: the server responded with a status of 500')
-  expectLog('Vike returned this HTML because no error page')
 })
