@@ -1,34 +1,15 @@
-import { enhance, type RuntimeAdapterTarget } from '@universal-middleware/core'
-import { renderPageServer } from './renderPageServer.js'
+import { enhance, getUniversal, pipe, type UniversalHandler } from '@universal-middleware/core'
+import { getUniversalMiddlewares } from './getUniversalMiddlewares.js'
+import universalHandler from './universalHandler.js'
 import '../assertEnvServer.js'
 
-async function universalVikeHandler<T extends string>(
-  request: Request,
-  context: Universal.Context,
-  runtime: RuntimeAdapterTarget<T>,
-) {
-  const pageContextInit = {
-    ...context,
-    ...runtime,
-    runtime,
-    urlOriginal: request.url,
-    headersOriginal: request.headers,
-    _reqWeb: request,
-  }
-  const pageContext = await renderPageServer(pageContextInit)
-  const response = pageContext.httpResponse
-  const readable = response.getReadableWebStream()
-  return new Response(readable, {
-    status: response.statusCode,
-    headers: response.headers,
-  })
-}
+// What the released `@vikejs/*` adapters apply, as their only handler: +middleware, then Vike's pages
+const universalVikeHandler = enhance(
+  pipe(
+    ...getUniversalMiddlewares().map((middleware) => getUniversal(middleware)),
+    getUniversal(universalHandler),
+  ) as UniversalHandler,
+  { name: 'vike', method: ['GET', 'POST', 'PUT', 'PATCH', 'HEAD', 'OPTIONS'], path: '/**', immutable: true },
+)
 
-const universalVikeHandlerEnhanced = enhance(universalVikeHandler, {
-  name: 'vike',
-  method: ['GET', 'POST', 'PUT', 'PATCH', 'HEAD', 'OPTIONS'],
-  path: '/**',
-  immutable: true,
-})
-
-export default universalVikeHandlerEnhanced
+export default universalVikeHandler

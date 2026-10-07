@@ -5,7 +5,7 @@ export { PROJECT_VERSION as version } from '../../utils/PROJECT_VERSION.js'
 export { getGlobalContext, getGlobalContextSync, getGlobalContextAsync } from './globalContext.js'
 export { createDevMiddleware } from './createDevMiddleware.js'
 export { getUniversalMiddlewares } from './getUniversalMiddlewares.js'
-export { default as universalHandler } from './universal-middleware.js'
+export { default as universalHandler } from './universalHandler.js'
 
 // TO-DO/next-major-release: remove
 // Deprecated exports
