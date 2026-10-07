@@ -3,7 +3,7 @@
 
 declare module 'vike:server' {
   /**
-   * Your `+server.js` composed by Vike.
+   * Your `+server.js` exports.
    *
    * https://vike.dev/serverEntry
    */
