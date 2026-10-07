@@ -87,7 +87,7 @@ type PageContextAfterRender = PageContextCreatedServerWithoutGlobalContext & {
 } & Partial<PageContextInternalServer>
 type PageContextBegin = ReturnType<typeof getPageContextBegin>
 
-// `renderPageServer()` calls `renderPageServerNominal()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that Vike never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
+// `renderPageServer()` calls `renderPageServerNominal()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that Vike never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.) The exception is the usage error of assertPlusMiddlewareInstalled(), which is thrown to the caller.
 async function renderPageServer<PageContextUserAdded extends {}, PageContextInitUser extends PageContextInitInternal>(
   pageContextInit: PageContextInitUser,
 ): Promise<
@@ -136,7 +136,8 @@ async function renderPageServerEntryOnceBegin(
   if (pageContextConfigError) return pageContextConfigError
 
   const { globalContext } = await getGlobalContextServerInternal()
-  assertPlusMiddlewareInstalled(globalContext)
+  // Vike's own dev and preview server applies the +middleware itself
+  if (!pageContextInit._nodeDev) assertPlusMiddlewareInstalled(globalContext)
 
   const pageContextBegin = getPageContextBegin(pageContextInit, globalContext, requestId, asyncStore)
 

@@ -17,7 +17,14 @@ describe('assertPlusMiddlewareInstalled()', () => {
     const { assertPlusMiddlewareInstalled } = await load()
     expect(() => assertPlusMiddlewareInstalled(withoutMiddleware)).not.toThrow()
   })
-  it('is fine once they were installed', async () => {
+  it("is fine while Vike's dev server applies them, not after", async () => {
+    const { assertPlusMiddlewareInstalled, whilePlusMiddlewareApplied } = await load()
+    await whilePlusMiddlewareApplied(async () => {
+      expect(() => assertPlusMiddlewareInstalled(withMiddleware)).not.toThrow()
+    })
+    expect(() => assertPlusMiddlewareInstalled(withMiddleware)).toThrow("Your +middleware aren't applied")
+  })
+  it('is fine once the chain of +middleware ran', async () => {
     const { assertPlusMiddlewareInstalled, setPlusMiddlewareInstalled } = await load()
     setPlusMiddlewareInstalled()
     expect(() => assertPlusMiddlewareInstalled(withMiddleware)).not.toThrow()

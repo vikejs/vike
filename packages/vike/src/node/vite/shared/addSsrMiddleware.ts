@@ -9,8 +9,8 @@ import pc from '@brillout/picocolors'
 import { getAdapterRuntime, type ExpressAdapter } from '@universal-middleware/core'
 import { createRequestAdapter } from '@universal-middleware/node/request'
 import { sendResponse } from '@universal-middleware/node/response'
-import { universalMiddlewares } from '../../../server/runtime/getUniversalMiddlewares.js'
-import { setPlusMiddlewareInstalled } from '../../../server/runtime/assertPlusMiddlewareInstalled.js'
+import { runUniversalMiddlewares } from '../../../server/runtime/getUniversalMiddlewares.js'
+import { whilePlusMiddlewareApplied } from '../../../server/runtime/assertPlusMiddlewareInstalled.js'
 import '../assertEnvVite.js'
 type ConnectServer = ViteDevServer['middlewares']
 
@@ -19,14 +19,15 @@ const requestAdapter = createRequestAdapter()
 const responseHandlers = new WeakMap<IncomingMessage, (response: Response) => Promise<Response>>()
 
 function addPlusMiddleware(middlewares: ConnectServer) {
-  // Vike's own dev and preview server is what applies +middleware
-  setPlusMiddlewareInstalled()
   middlewares.use(async (req, res, next) => {
     try {
       // What Universal Middleware's Express adapter passes: Vite's server is a Connect server
       const express = Object.freeze({ req, res }) as unknown as ExpressAdapter['express']
       const runtime = getAdapterRuntime('express', { params: undefined, ...express, express })
-      const result = await universalMiddlewares(requestAdapter(req, res), {}, runtime)
+      const context: Universal.Context = {}
+      const result = await whilePlusMiddlewareApplied(() =>
+        runUniversalMiddlewares(requestAdapter(req, res), context, runtime),
+      )
       if (result instanceof Response) return sendResponse(result, res)
       if (typeof result === 'function') responseHandlers.set(req, result)
     } catch (err) {

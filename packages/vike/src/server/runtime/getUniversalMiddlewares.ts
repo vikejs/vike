@@ -1,5 +1,5 @@
 export { getUniversalMiddlewares }
-export { universalMiddlewares }
+export { runUniversalMiddlewares }
 
 import { getGlobalContextServerInternal } from './globalContext.js'
 import { renderPageServerConfigError } from './renderPageServer.js'
@@ -41,7 +41,6 @@ import '../assertEnvServer.js'
  * https://github.com/magne4000/universal-middleware
  */
 function getUniversalMiddlewares(): EnhancedMiddleware[] {
-  setPlusMiddlewareInstalled()
   return [universalMiddlewares]
 }
 
@@ -49,52 +48,58 @@ const httpMethods: HttpMethod[] = ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'CONN
 type ResponseHandler = (response: Response) => Awaitable<Response | undefined>
 
 // Resolved upon each request: the Vike config imports +server, so awaiting the config while +server loads deadlocks
+async function runUniversalMiddlewares(request: Request, context: Universal.Context, runtime: RuntimeAdapter) {
+  // Fail closed: skipping the +middleware of an erroneous config would let requests through unguarded
+  const pageContextConfigError = await renderPageServerConfigError({
+    urlOriginal: request.url,
+    headersOriginal: request.headers,
+  })
+  if (pageContextConfigError) {
+    const { httpResponse } = pageContextConfigError
+    return new Response(httpResponse.getReadableWebStream(), {
+      status: httpResponse.statusCode,
+      headers: httpResponse.headers,
+    })
+  }
+  const { globalContext } = await getGlobalContextServerInternal()
+  const middlewares = (globalContext.config.middleware ?? [])
+    .flat()
+    .flatMap((middleware) => addUrlForms(middleware, globalContext.baseServer))
+  if (middlewares.length === 0) return
+  const responseHandlers: ResponseHandler[] = []
+  // Universal Middleware's pipe() throws `No Response found` if nothing returns a Response
+  const fallThrough = new Response(null)
+  let contextAtFallThrough: Universal.Context | undefined
+  const fallThroughRoute = enhance(
+    (_request: Request, context: Universal.Context) => {
+      contextAtFallThrough = context
+      return fallThrough
+    },
+    { name: 'vike:fall-through', method: httpMethods, path: '/**' },
+  )
+  const handler = pipeRoute([
+    fallThroughRoute,
+    ...middlewares.map((middleware) => collectResponseHandler(middleware, responseHandlers, fallThroughRoute)),
+  ]) as UniversalHandler
+  const response = await handler(request, context, runtime)
+  // Response handlers returned by +middleware apply to the final response, which may come after this middleware
+  const applyResponseHandlers = async (response: Response) => {
+    for (const responseHandler of responseHandlers) response = (await responseHandler(response)) ?? response
+    return response
+  }
+  if (response !== fallThrough) return applyResponseHandlers(response)
+  // The pipe's context stays local: hand the context built by the +middleware to the handlers after this middleware.
+  // A middleware returns a context or a response handler, not both: with response handlers, mutate the context instead.
+  if (responseHandlers.length === 0) return contextAtFallThrough
+  Object.assign(context, contextAtFallThrough)
+  return applyResponseHandlers
+}
+
+// The chain runs before Vike's pages in the same request
 const universalMiddlewares = enhance(
   async (request: Request, context: Universal.Context, runtime: RuntimeAdapter) => {
-    // Fail closed: skipping the +middleware of an erroneous config would let requests through unguarded
-    const pageContextConfigError = await renderPageServerConfigError({
-      urlOriginal: request.url,
-      headersOriginal: request.headers,
-    })
-    if (pageContextConfigError) {
-      const { httpResponse } = pageContextConfigError
-      return new Response(httpResponse.getReadableWebStream(), {
-        status: httpResponse.statusCode,
-        headers: httpResponse.headers,
-      })
-    }
-    const { globalContext } = await getGlobalContextServerInternal()
-    const middlewares = (globalContext.config.middleware ?? [])
-      .flat()
-      .flatMap((middleware) => addUrlForms(middleware, globalContext.baseServer))
-    if (middlewares.length === 0) return
-    const responseHandlers: ResponseHandler[] = []
-    // Universal Middleware's pipe() throws `No Response found` if nothing returns a Response
-    const fallThrough = new Response(null)
-    let contextAtFallThrough: Universal.Context | undefined
-    const fallThroughRoute = enhance(
-      (_request: Request, context: Universal.Context) => {
-        contextAtFallThrough = context
-        return fallThrough
-      },
-      { name: 'vike:fall-through', method: httpMethods, path: '/**' },
-    )
-    const handler = pipeRoute([
-      fallThroughRoute,
-      ...middlewares.map((middleware) => collectResponseHandler(middleware, responseHandlers, fallThroughRoute)),
-    ]) as UniversalHandler
-    const response = await handler(request, context, runtime)
-    // Response handlers returned by +middleware apply to the final response, which may come after this middleware
-    const applyResponseHandlers = async (response: Response) => {
-      for (const responseHandler of responseHandlers) response = (await responseHandler(response)) ?? response
-      return response
-    }
-    if (response !== fallThrough) return applyResponseHandlers(response)
-    // The pipe's context stays local: hand the context built by the +middleware to the handlers after this middleware.
-    // A middleware returns a context or a response handler, not both: with response handlers, mutate the context instead.
-    if (responseHandlers.length === 0) return contextAtFallThrough
-    Object.assign(context, contextAtFallThrough)
-    return applyResponseHandlers
+    setPlusMiddlewareInstalled()
+    return runUniversalMiddlewares(request, context, runtime)
   },
   { name: 'vike:middleware' },
 )
