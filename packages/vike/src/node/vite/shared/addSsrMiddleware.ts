@@ -10,11 +10,15 @@ import { getAdapterRuntime, type ExpressAdapter } from '@universal-middleware/co
 import { createRequestAdapter } from '@universal-middleware/node/request'
 import { sendResponse } from '@universal-middleware/node/response'
 import { runUniversalMiddlewares } from '../../../server/runtime/getUniversalMiddlewares.js'
-import { whilePlusMiddlewareApplied } from '../../../server/runtime/assertPlusMiddlewareInstalled.js'
+import { setPlusMiddlewareApplyingStore } from '../../../server/runtime/assertPlusMiddlewareInstalled.js'
+import { AsyncLocalStorage } from 'node:async_hooks'
 import '../assertEnvVite.js'
 type ConnectServer = ViteDevServer['middlewares']
 
 const requestAdapter = createRequestAdapter()
+// Set while the chain of one request runs, so that its +middleware can call renderPage() while another request's can't skip the check
+const applying = new AsyncLocalStorage<true>()
+setPlusMiddlewareApplyingStore(applying)
 // Context and response handlers returned by +middleware, applied by addSsrMiddleware()
 const contexts = new WeakMap<IncomingMessage, Universal.Context>()
 const responseHandlers = new WeakMap<IncomingMessage, (response: Response) => Promise<Response>>()
@@ -26,9 +30,7 @@ function addPlusMiddleware(middlewares: ConnectServer) {
       const express = Object.freeze({ req, res }) as unknown as ExpressAdapter['express']
       const runtime = getAdapterRuntime('express', { params: undefined, ...express, express })
       const context: Universal.Context = {}
-      const result = await whilePlusMiddlewareApplied(() =>
-        runUniversalMiddlewares(requestAdapter(req, res), context, runtime),
-      )
+      const result = await applying.run(true, () => runUniversalMiddlewares(requestAdapter(req, res), context, runtime))
       if (result instanceof Response) return sendResponse(result, res)
       if (typeof result === 'function') responseHandlers.set(req, result)
       else Object.assign(context, result)
