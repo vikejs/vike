@@ -3,7 +3,7 @@
   "compatibility_date": "2026-04-08",
   "name": "vike_test_cloudflare_vite-plugin",
   "vars": { "SOME_ENV_VAR": "some-value" },
-  "main": "vike:server-entry",
+  "main": "vike:server",
   "durable_objects": {
     "bindings": [
       {
