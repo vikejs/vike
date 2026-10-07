@@ -1,0 +1,96 @@
+import { Link } from '@brillout/docpress'
+import { ConfigSpec } from '../../components'
+
+<ConfigSpec
+  env="server (production)"
+  global
+/>
+
+Define `+serverEntry.js` to control how your server starts in production: Vike builds it into `dist/server/index.mjs`, the file you run in production.
+
+```ts
+// +serverEntry.ts
+
+import { fileURLToPath } from 'node:url'
+import { serve } from 'srvx'
+import { staticMiddleware } from 'srvx/static'
+import { server } from 'vike'
+
+serve({
+  port: 3000,
+  // Serve the static assets (dist/client/)
+  middleware: [staticMiddleware({ dir: fileURLToPath(new URL('../client', import.meta.url)) })],
+  // Your +server.js composed by Vike
+  fetch: server.fetch
+})
+```
+
+```bash
+# Build: +serverEntry.ts => dist/server/index.mjs
+$ vike build
+# Run +serverEntry.ts
+$ node dist/server/index.mjs
+```
+
+It gives you full control over your production server, for example to:
+- Use another server library, or a runtime API such as `Bun.serve()` and `Deno.serve()`.
+- Run code before your server accepts requests, e.g. connecting to a database.
+- Export what your deployment platform expects, e.g. an AWS Lambda `handler`.
+
+> Without `+serverEntry.js`, `dist/server/index.mjs` is Vike's built-in server, see <Link href="/server" />.
+
+
+## `server`
+
+`import { server } from 'vike'` is your <Link href="/server">`+server.js`</Link> composed by Vike: a `{ fetch }` handler. (If you don't define `+server.js`, then it's Vike's built-in server.)
+
+You can use it to handle requests before they reach `+server.js`:
+
+```ts
+// +serverEntry.ts
+
+import { serve } from 'srvx'
+import { server } from 'vike'
+
+serve({
+  port: 3000,
+  fetch(request) {
+    if (new URL(request.url).pathname === '/health') return new Response('OK')
+    return server.fetch(request)
+  }
+})
+```
+
+
+## Development
+
+`+serverEntry.js` is only used in production. In development, `$ vike dev` uses Vite's development server with your `+server.js` (as usual, with HMR).
+
+> `$ vike preview` runs `dist/server/index.mjs`, i.e. your `+serverEntry.js`.
+
+
+## Static assets
+
+`+serverEntry.js` is responsible for serving the static assets in `dist/client/`. (Vike's built-in server serves them for you, but `+serverEntry.js` replaces it.)
+
+> See <Link href="/precompress" noBreadcrumb /> to generate `.br`/`.gz` files for your static assets at build time.
+
+
+## Pre-rendering
+
+<Link href="/pre-rendering">Pre-rendering</Link> doesn't execute `+serverEntry.js`.
+
+If all your pages are pre-rendered, `dist/server/` is kept (Vike otherwise removes it, see <Link href="/prerender">`+prerender` > `keepDistServer`</Link>).
+
+
+## Deployment
+
+`+serverEntry.js` can't be used together with deployment plugins such as `vite-plugin-vercel` and `@cloudflare/vite-plugin`, as they define their own server entry.
+
+> For Cloudflare, set `wrangler.jsonc > main` to your own file instead, see <Link href="/cloudflare" />.
+
+
+## See also
+
+- <Link href="/server" />
+- <Link href="/renderPage" />

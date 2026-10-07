@@ -86,11 +86,16 @@ async function resolvePrerenderConfigLocal(pageConfig: PageConfigBuildTime) {
 
 // Whether pre-rendering removes dist/server/ once it's done
 // https://vike.dev/prerender#keepDistServer
-function isDistServerRemoved(prerenderConfigGlobal: {
-  isPrerenderingEnabledForAllPages: boolean
-  keepDistServer: boolean
-}): boolean {
+function isDistServerRemoved(
+  prerenderConfigGlobal: {
+    isPrerenderingEnabledForAllPages: boolean
+    keepDistServer: boolean
+  },
+  vikeConfig: Pick<VikeConfigInternal, '_pageConfigGlobal'>,
+): boolean {
   if (!prerenderConfigGlobal.isPrerenderingEnabledForAllPages) return false
+  // +serverEntry.js => dist/server/index.mjs is the user's server entry
+  if (vikeConfig._pageConfigGlobal.configValueSources.serverEntry) return false
   return !prerenderConfigGlobal.keepDistServer
 }
 
