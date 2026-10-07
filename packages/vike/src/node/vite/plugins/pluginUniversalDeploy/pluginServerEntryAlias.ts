@@ -39,8 +39,8 @@ function pluginServerEntryAlias(serverFilePath?: string | null): Plugin {
             `${pc.cyan(serverAliasDeprecated)} is deprecated in favor of ${pc.cyan(serverAlias)}, e.g. replace ${pc.cyan(`"main": "${serverAliasDeprecated}"`)} with ${pc.cyan(`"main": "${serverAlias}"`)} in your wrangler.jsonc`,
             { onlyOnce: true },
           )
-        } else if (id !== serverAlias && id !== virtualFileId) {
-          return
+        } else {
+          assert(id === serverAlias || id === virtualFileId)
         }
         if (!serverFilePath) return catchAllEntry
         return virtualFileId
