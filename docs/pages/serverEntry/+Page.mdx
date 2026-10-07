@@ -37,7 +37,7 @@ It gives you full control over your production server, for example to:
 - Run code before your server accepts requests, e.g. connecting to a database.
 - Export what your deployment platform expects, e.g. an AWS Lambda `handler`.
 
-> Without `+serverEntry.js`, `dist/server/index.mjs` is Vike's built-in server, see <Link href="/server" />.
+> Without `+serverEntry.js`, `dist/server/index.mjs` is Vike's built-in server entry, see <Link href="/server" />.
 
 
 ## `vike:server`
@@ -71,7 +71,7 @@ serve({
 
 ## Static assets
 
-`+serverEntry.js` is responsible for serving the static assets in `dist/client/`. (Vike's built-in server serves them for you, but `+serverEntry.js` replaces it.)
+`+serverEntry.js` is responsible for serving the static assets in `dist/client/`. (Vike's built-in server entry serves them for you, but `+serverEntry.js` replaces it.)
 
 > See <Link href="/precompress" noBreadcrumb /> to generate `.br`/`.gz` files for your static assets at build time.
 
