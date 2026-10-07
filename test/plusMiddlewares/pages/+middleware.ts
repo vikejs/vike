@@ -34,7 +34,6 @@ const settingsHeader = enhance(
   { name: 'settingsHeader', method: 'GET', path: '/admin/settings' },
 )
 
-// `order: 0` makes a +middleware with a `path` a route in Universal Middleware: it still answers its path
 const orderZero = enhance(async () => new Response('order zero'), {
   name: 'orderZero',
   method: 'GET',
