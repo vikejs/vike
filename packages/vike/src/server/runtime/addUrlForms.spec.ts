@@ -1,5 +1,12 @@
 import { describe, it, expect } from 'vitest'
-import { enhance, getUniversalProp, pathSymbol } from '@universal-middleware/core'
+import {
+  enhance,
+  getUniversalProp,
+  methodSymbol,
+  nameSymbol,
+  orderSymbol,
+  pathSymbol,
+} from '@universal-middleware/core'
 import { addUrlForms } from './addUrlForms.js'
 
 const paths = (path: string | undefined, baseServer = '/') => {
@@ -29,9 +36,9 @@ describe('addUrlForms()', () => {
   it('keeps the other properties', () => {
     const middleware = enhance(() => undefined, { name: 'test', method: 'GET', path: '/dash', order: -900 })
     for (const m of addUrlForms(middleware, '/')) {
-      expect(getUniversalProp(m, Symbol.for('unName'))).toBe('test')
-      expect(getUniversalProp(m, Symbol.for('unMethod'))).toBe('GET')
-      expect(getUniversalProp(m, Symbol.for('unOrder'))).toBe(-900)
+      expect(getUniversalProp(m, nameSymbol)).toBe('test')
+      expect(getUniversalProp(m, methodSymbol)).toBe('GET')
+      expect(getUniversalProp(m, orderSymbol)).toBe(-900)
     }
   })
   it('keeps a middleware without a path', () => {
