@@ -1,4 +1,4 @@
-import { enhance, type UniversalMiddleware } from '@universal-middleware/core'
+import { enhance, MiddlewareOrder, type UniversalMiddleware } from '@universal-middleware/core'
 
 const someUniversalMiddleware: UniversalMiddleware = async () => {
   return new Response('OK')
@@ -23,14 +23,14 @@ const redirectMiddleware = enhance(redirectUniversalMiddleware, {
 const adminAuth = enhance(
   async (request: Request) =>
     request.headers.has('x-auth') ? undefined : new Response('Unauthorized', { status: 401 }),
-  { name: 'adminAuth', method: 'GET', path: '/admin/**' },
+  { name: 'adminAuth', method: 'GET', path: '/admin/**', order: MiddlewareOrder.AUTHORIZATION },
 )
 const settingsHeader = enhance(
   async () => (response: Response) => {
     response.headers.set('x-settings', 'yes')
     return response
   },
-  { name: 'settingsHeader', method: 'GET', path: '/admin/settings' },
+  { name: 'settingsHeader', method: 'GET', path: '/admin/settings', order: MiddlewareOrder.HEADER_MANAGEMENT },
 )
 
 const orderZero = enhance(async () => new Response('order zero'), {
