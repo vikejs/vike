@@ -50,6 +50,9 @@ const guardMiddleware = enhance(
   { name: 'guardMiddleware', method: 'GET', path: '/dash' },
 )
 
+// Builds context for the pages
+const contextMiddleware = enhance(async () => ({ fromMw: 'yes' }), { name: 'contextMiddleware' })
+
 // Passes the request on to the next handler
 const passThroughMiddleware = enhance(async () => undefined, {
   name: 'passThroughMiddleware',
@@ -58,6 +61,7 @@ const passThroughMiddleware = enhance(async () => undefined, {
 })
 
 export default [
+  contextMiddleware,
   passThroughMiddleware,
   middleware,
   redirectMiddleware,

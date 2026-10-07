@@ -43,6 +43,10 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     }
   })
 
+  test('The context a +middleware returns reaches pageContext', async () => {
+    expect(await fetchHtml('/')).toContain('data-from-mw="yes"')
+  })
+
   test('+middleware with a path that passes the request on falls through to the page', async () => {
     for (const url of ['/', '/index.pageContext.json']) {
       expect((await fetch(`${getServerUrl()}${url}`)).status).toBe(200)

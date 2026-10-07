@@ -15,7 +15,8 @@ import '../assertEnvVite.js'
 type ConnectServer = ViteDevServer['middlewares']
 
 const requestAdapter = createRequestAdapter()
-// Response handlers returned by +middleware, applied by addSsrMiddleware()
+// Context and response handlers returned by +middleware, applied by addSsrMiddleware()
+const contexts = new WeakMap<IncomingMessage, Universal.Context>()
 const responseHandlers = new WeakMap<IncomingMessage, (response: Response) => Promise<Response>>()
 
 function addPlusMiddleware(middlewares: ConnectServer) {
@@ -30,6 +31,8 @@ function addPlusMiddleware(middlewares: ConnectServer) {
       )
       if (result instanceof Response) return sendResponse(result, res)
       if (typeof result === 'function') responseHandlers.set(req, result)
+      else Object.assign(context, result)
+      contexts.set(req, context)
     } catch (err) {
       // Not thrown (that shuts down the server), and not next() (that renders the page)
       return next(err)
@@ -50,6 +53,7 @@ function addSsrMiddleware(
     if (!url) return next()
     const { headers } = req
     const pageContextInit: PageContextInitInternal = {
+      ...contexts.get(req),
       urlOriginal: url,
       headersOriginal: headers,
       _nodeDev: { req, res },

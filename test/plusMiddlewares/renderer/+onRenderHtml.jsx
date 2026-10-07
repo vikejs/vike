@@ -18,7 +18,7 @@ async function onRenderHtml(pageContext) {
   return escapeInject`<!DOCTYPE html>
     <html>
       <body>
-        <div id="root">${viewHtml}</div>
+        <div id="root" data-from-mw="${pageContext.fromMw ?? ''}">${viewHtml}</div>
       </body>
     </html>`
 }
