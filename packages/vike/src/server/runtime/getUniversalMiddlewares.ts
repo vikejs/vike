@@ -113,7 +113,7 @@ function collectResponseHandler(
       {
         name: getUniversalProp(middleware, nameSymbol),
         order: getUniversalProp(middleware, orderSymbol),
-        method: getUniversalProp(middleware, methodSymbol),
+        method: withHead(getUniversalProp(middleware, methodSymbol)),
         path: getUniversalProp(middleware, pathSymbol),
       },
     )
@@ -126,4 +126,10 @@ function collectResponseHandler(
     },
     { name: getUniversalProp(middleware, nameSymbol), order: getUniversalProp(middleware, orderSymbol) },
   )
+}
+
+// Web servers answer HEAD like GET, so a GET-scoped +middleware also covers HEAD
+function withHead(method: HttpMethod | HttpMethod[] | undefined) {
+  const methods = [method ?? []].flat()
+  return methods.includes('GET') && !methods.includes('HEAD') ? [...methods, 'HEAD' as const] : method
 }
