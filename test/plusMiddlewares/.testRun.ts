@@ -47,7 +47,7 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   })
 
   test('Every +middleware whose path matches runs, then the page', async () => {
-    // Both adminAuth (/admin/**) and settingsHeader (/admin/settings) match: adminAuth used to be skipped
+    // Both adminAuth (/admin/**) and settingsHeader (/admin/settings) match /admin/settings
     expect((await fetch(`${getServerUrl()}/admin/settings`)).status).toBe(401)
     expectLog(partRegex`HTTP response ${/.*/} /admin/settings 401`, { filter: (log) => log.logSource === 'stderr' })
     const response: Response = await fetch(`${getServerUrl()}/admin/settings`, { headers: { 'x-auth': '1' } })

@@ -20,7 +20,6 @@ const redirectMiddleware = enhance(redirectUniversalMiddleware, {
   path: '/redirect-middleware',
 })
 
-// Two +middleware with a `path` that both match /admin/settings: both run, and the page still renders
 const adminAuth = enhance(
   async (request: Request) =>
     request.headers.has('x-auth') ? undefined : new Response('Unauthorized', { status: 401 }),
