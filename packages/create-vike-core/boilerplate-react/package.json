@@ -5,10 +5,10 @@
     "prod": "vike build && node dist/server/index.mjs"
   },
   "dependencies": {
-    "@vikejs/hono": "^0.2.1",
+    "@vikejs/hono": "^0.3.0",
     "@vitejs/plugin-react": "^4.7.0",
     "cross-env": "^7.0.3",
-    "hono": "^4.8.4",
+    "hono": "^4.13.13",
     "node-fetch": "^3.3.2",
     "prop-types": "15.8.1",
     "react": "^19.2.6",
