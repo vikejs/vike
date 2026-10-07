@@ -132,7 +132,6 @@
     "@universal-deploy/vite": "^0.1.14",
     "@universal-middleware/core": "^0.4.18",
     "@universal-middleware/node": "^0.2.3",
-    "@universal-middleware/srvx": "^0.1.3",
     "cac": "^6.0.0",
     "convert-route": "^1.1.1",
     "es-module-lexer": "^1.0.0",

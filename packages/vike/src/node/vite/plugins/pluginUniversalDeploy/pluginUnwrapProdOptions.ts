@@ -1,26 +1,25 @@
-export { pluginServerEntryWrap }
+export { pluginUnwrapProdOptions }
 
 import type { Plugin } from 'vite'
 import { wrapper } from 'vite-plugin-wrapper'
 import { escapeRegex } from '../../../../utils/escapeRegex.js'
 import '../../assertEnvVite.js'
 
-function pluginServerEntryWrap(serverEntryVike: string): Plugin {
+function pluginUnwrapProdOptions(serverFilePath: string): Plugin {
   return wrapper({
     resolveId: {
       filter: {
-        id: new RegExp(`^${escapeRegex(serverEntryVike)}$`),
+        id: new RegExp(escapeRegex(serverFilePath)),
       },
     },
 
-    // Unwrap all prod.* options, and apply +middleware before the server's handler
+    // Unwrap all prod.* options
     load(id) {
       return `
 import mod from ${JSON.stringify(id)};
-import { withMiddlewares } from 'vike/__internal';
 
 export * from ${JSON.stringify(id)};
-export default withMiddlewares({ ...mod, ...mod?.prod });
+export default { ...mod, ...mod?.prod };
 `
     },
   })
