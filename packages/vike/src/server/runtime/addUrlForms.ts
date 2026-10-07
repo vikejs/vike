@@ -13,8 +13,10 @@ import '../assertEnvServer.js'
 
 // A +middleware with a `path` also runs for Vike's own forms of that URL: with the Base URL, and its `.pageContext.json` twin (`/dash` => `/dash/index.pageContext.json`)
 function addUrlForms(middleware: EnhancedMiddleware, baseServer: string): EnhancedMiddleware[] {
-  const path = getUniversalProp(middleware, pathSymbol)
+  let path = getUniversalProp(middleware, pathSymbol)
   if (!path) return [middleware]
+  // The router matches `dash` as `/dash`
+  if (!path.startsWith('/')) path = `/${path}`
   const paths = [path]
   if (!path.endsWith('/**')) paths.push(getPageContextRequestUrl(path))
   const pathsWithBase = paths.map((path) => prependBase(path, baseServer))

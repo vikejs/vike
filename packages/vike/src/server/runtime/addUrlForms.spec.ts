@@ -20,6 +20,12 @@ describe('addUrlForms()', () => {
     expect(paths('/dash/')).toEqual(['/dash/', '/dash/index.pageContext.json'])
     expect(paths('/')).toEqual(['/', '/index.pageContext.json'])
     expect(paths('/users/:id')).toEqual(['/users/:id', '/users/:id/index.pageContext.json'])
+    expect(paths('dash', '/app/')).toEqual([
+      '/dash',
+      '/dash/index.pageContext.json',
+      '/app/dash',
+      '/app/dash/index.pageContext.json',
+    ])
   })
   it('adds the path with the Base URL', () => {
     expect(paths('/dash', '/app/')).toEqual([
