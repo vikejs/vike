@@ -1,6 +1,17 @@
 export { testRun }
 
-import { autoRetry, expect, fetch, fetchHtml, getServerUrl, page, run, test } from '@brillout/test-e2e'
+import {
+  autoRetry,
+  expect,
+  expectLog,
+  fetch,
+  fetchHtml,
+  getServerUrl,
+  page,
+  partRegex,
+  run,
+  test,
+} from '@brillout/test-e2e'
 
 function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   run(cmd, {
@@ -38,6 +49,7 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   test('Every +middleware whose path matches runs, then the page', async () => {
     // Both adminAuth (/admin/**) and settingsHeader (/admin/settings) match: adminAuth used to be skipped
     expect((await fetch(`${getServerUrl()}/admin/settings`)).status).toBe(401)
+    expectLog(partRegex`HTTP response ${/.*/} /admin/settings 401`, { filter: (log) => log.logSource === 'stderr' })
     const response: Response = await fetch(`${getServerUrl()}/admin/settings`, { headers: { 'x-auth': '1' } })
     expect(response.status).toBe(200)
     expect(response.headers.get('x-settings')).toBe('yes')
