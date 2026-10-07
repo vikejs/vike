@@ -33,14 +33,13 @@ function pluginServerEntryAlias(serverFilePath?: string | null): Plugin {
     resolveId: {
       filter: filterRolldownResolveId,
       handler(id) {
+        assert(id === serverAlias || id === serverAliasDeprecated || id === virtualFileId)
         if (id === serverAliasDeprecated) {
           assertWarning(
             false,
             `${pc.cyan(serverAliasDeprecated)} is deprecated in favor of ${pc.cyan(serverAlias)}, e.g. replace ${pc.cyan(`"main": "${serverAliasDeprecated}"`)} with ${pc.cyan(`"main": "${serverAlias}"`)} in your wrangler.jsonc`,
             { onlyOnce: true },
           )
-        } else {
-          assert(id === serverAlias || id === virtualFileId)
         }
         if (!serverFilePath) return catchAllEntry
         return virtualFileId
