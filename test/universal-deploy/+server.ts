@@ -1,5 +1,6 @@
 import type { Server } from 'vike/types'
-import vike, { toFetchHandler } from '@vikejs/express'
+import { apply, toFetchHandler } from '@vikejs/express'
+import { getUniversalMiddlewares, universalHandler } from 'vike'
 import express from 'express'
 
 const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000
@@ -7,9 +8,11 @@ const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000
 async function serve() {
   const app = express()
 
+  apply(app, getUniversalMiddlewares())
+
   app.get('/express', (_req, res) => res.send('Running express server'))
 
-  vike(app)
+  apply(app, [universalHandler])
 
   return toFetchHandler(app)
 }
