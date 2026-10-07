@@ -74,6 +74,7 @@ import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.
 import { forkPageContext } from '../../shared-server-client/forkPageContext.js'
 import { getAsyncLocalStorage, type AsyncStore } from './asyncHook.js'
 import { getPageContextJson } from './renderPageServer/getPageContextJson.js'
+import { assertPlusMiddlewareInstalled } from './assertPlusMiddlewareInstalled.js'
 import '../assertEnvServer.js'
 
 const globalObject = getGlobalObject('runtime/renderPageServer.ts', {
@@ -135,6 +136,7 @@ async function renderPageServerEntryOnceBegin(
   if (pageContextConfigError) return pageContextConfigError
 
   const { globalContext } = await getGlobalContextServerInternal()
+  assertPlusMiddlewareInstalled(globalContext)
 
   const pageContextBegin = getPageContextBegin(pageContextInit, globalContext, requestId, asyncStore)
 

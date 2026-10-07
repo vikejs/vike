@@ -19,13 +19,14 @@ import {
   type RuntimeAdapter,
   type UniversalHandler,
 } from '@universal-middleware/core'
+import { setPlusMiddlewareInstalled } from './assertPlusMiddlewareInstalled.js'
 import '../assertEnvServer.js'
 
 /**
  * Get the Universal Middlewares that apply your `+middleware` to all HTTP requests.
  *
- * Only needed without `+server`: Vike applies `+middleware` before the `+server` handler.
- * Apply them before your server's other handlers, and Vike's handler last.
+ * Your server's `vike(app)` calls it for you. Call it yourself to control where `+middleware` run:
+ * apply them before your server's other handlers, and Vike's handler last.
  *
  * @example
  * ```js
@@ -40,6 +41,7 @@ import '../assertEnvServer.js'
  * https://github.com/magne4000/universal-middleware
  */
 function getUniversalMiddlewares(): EnhancedMiddleware[] {
+  setPlusMiddlewareInstalled()
   return [universalMiddlewares]
 }
 

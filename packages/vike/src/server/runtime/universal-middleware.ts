@@ -1,5 +1,3 @@
-export { getUniversalMiddlewares } from './getUniversalMiddlewares.js'
-
 import { enhance, type RuntimeAdapterTarget } from '@universal-middleware/core'
 import { renderPageServer } from './renderPageServer.js'
 import '../assertEnvServer.js'

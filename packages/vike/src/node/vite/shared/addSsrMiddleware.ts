@@ -10,6 +10,7 @@ import { getAdapterRuntime, type ExpressAdapter } from '@universal-middleware/co
 import { createRequestAdapter } from '@universal-middleware/node/request'
 import { sendResponse } from '@universal-middleware/node/response'
 import { universalMiddlewares } from '../../../server/runtime/getUniversalMiddlewares.js'
+import { setPlusMiddlewareInstalled } from '../../../server/runtime/assertPlusMiddlewareInstalled.js'
 import '../assertEnvVite.js'
 type ConnectServer = ViteDevServer['middlewares']
 
@@ -18,6 +19,8 @@ const requestAdapter = createRequestAdapter()
 const responseHandlers = new WeakMap<IncomingMessage, (response: Response) => Promise<Response>>()
 
 function addPlusMiddleware(middlewares: ConnectServer) {
+  // Vike's own dev and preview server is what applies +middleware
+  setPlusMiddlewareInstalled()
   middlewares.use(async (req, res, next) => {
     try {
       // What Universal Middleware's Express adapter passes: Vite's server is a Connect server
