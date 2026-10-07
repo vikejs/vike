@@ -4,6 +4,7 @@ export { pipeWebStream, pipeNodeStream, pipeStream, stampPipe } from './renderPa
 export { PROJECT_VERSION as version } from '../../utils/PROJECT_VERSION.js'
 export { getGlobalContext, getGlobalContextSync, getGlobalContextAsync } from './globalContext.js'
 export { createDevMiddleware } from './createDevMiddleware.js'
+export { server } from './server.js'
 
 // TO-DO/next-major-release: remove
 // Deprecated exports

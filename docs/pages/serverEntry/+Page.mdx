@@ -14,7 +14,7 @@ Define `+serverEntry.js` to control how your server starts in production: Vike b
 import { fileURLToPath } from 'node:url'
 import { serve } from 'srvx'
 import { staticMiddleware } from 'srvx/static'
-import server from 'vike:server'
+import { server } from 'vike'
 
 serve({
   port: 3000,
@@ -40,9 +40,9 @@ It gives you full control over your production server, for example to:
 > Without `+serverEntry.js`, `dist/server/index.mjs` is Vike's built-in server, see <Link href="/server" />.
 
 
-## `vike:server`
+## `server`
 
-`import server from 'vike:server'` is your <Link href="/server">`+server.js`</Link> composed by Vike: a `{ fetch }` handler. (If you don't define `+server.js`, then it's Vike's built-in server.)
+`import { server } from 'vike'` is your <Link href="/server">`+server.js`</Link> composed by Vike: a `{ fetch }` handler. (If you don't define `+server.js`, then it's Vike's built-in server.)
 
 You can use it to handle requests before they reach `+server.js`:
 
@@ -50,7 +50,7 @@ You can use it to handle requests before they reach `+server.js`:
 // +serverEntry.ts
 
 import { serve } from 'srvx'
-import server from 'vike:server'
+import { server } from 'vike'
 
 serve({
   port: 3000,

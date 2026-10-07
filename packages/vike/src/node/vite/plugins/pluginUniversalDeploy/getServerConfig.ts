@@ -1,10 +1,12 @@
 export { getServerConfig }
 export { isUniversalDeployVitePreview }
+export { isUniversalDeploy }
 
 import type { ResolvedConfig } from 'vite'
 import { catchAllEntry } from '@universal-deploy/store'
 import type { VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import { assert } from '../../../../utils/assert.js'
+import { hasVikeServerOrVikePhoton } from './detectDeprecated.js'
 import '../../assertEnvVite.js'
 
 function getServerConfig(vikeConfig: VikeConfigInternal) {
@@ -55,6 +57,11 @@ function getServerEntryFilePath(vikeConfig: VikeConfigInternal): string | null {
   assert('filePathAbsoluteFilesystem' in source.definedAt)
   // `source.value` is the import path, e.g. `some-npm-package/serverEntry` if the file cannot be resolved
   return source.definedAt.filePathAbsoluteFilesystem ?? source.value
+}
+
+// Whether virtual:ud:catch-all exists
+function isUniversalDeploy(vikeConfig: VikeConfigInternal): boolean {
+  return !hasVikeServerOrVikePhoton(vikeConfig) && !!getServerConfig(vikeConfig)
 }
 
 function isUniversalDeployVitePreview(vikeConfig: VikeConfigInternal, viteConfigResolved: ResolvedConfig) {

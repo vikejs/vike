@@ -6,7 +6,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { serve } from 'srvx'
 import { staticMiddleware } from 'srvx/static'
-import server from 'vike:server'
+import { server } from 'vike'
 
 serve({
   port: process.env.PORT ? parseInt(process.env.PORT, 10) : 3000,
