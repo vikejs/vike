@@ -7,6 +7,7 @@ import {
   pathSymbol,
   type EnhancedMiddleware,
 } from '@universal-middleware/core'
+import { getPageContextRequestUrl } from '../../shared-server-client/getPageContextRequestUrl.js'
 import { prependBase } from '../../utils/parseUrl-extras.js'
 import '../assertEnvServer.js'
 
@@ -15,7 +16,7 @@ function addUrlForms(middleware: EnhancedMiddleware, baseServer: string): Enhanc
   const path = getUniversalProp(middleware, pathSymbol)
   if (!path) return [middleware]
   const paths = [path]
-  if (!path.endsWith('/**')) paths.push(`${path.replace(/\/$/, '')}/index.pageContext.json`)
+  if (!path.endsWith('/**')) paths.push(getPageContextRequestUrl(path))
   const pathsWithBase = paths.map((path) => prependBase(path, baseServer))
   return [...new Set([...paths, ...pathsWithBase])].map((path) => enhance(getUniversal(middleware), { path }))
 }
