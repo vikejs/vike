@@ -322,6 +322,7 @@ const headings = [
     title: '`+server`',
     titleInNav: 'Server',
     url: '/server',
+    sectionTitles: ['Custom integration'],
   },
   {
     level: 2,
