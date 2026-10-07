@@ -1,9 +1,12 @@
 export { getUniversalMiddlewares }
 export { runUniversalMiddlewares }
+export { runPlusMiddlewares }
 
 import { getGlobalContextServerInternal } from './globalContext.js'
 import { renderPageServerConfigError } from './renderPageServer.js'
-import { addUrlForms } from './addUrlForms.js'
+import { normalizeMiddlewarePath } from './normalizeMiddlewarePath.js'
+import { pageContextJsonFileExtension } from '../../shared-server-client/getPageContextRequestUrl.js'
+import { parseUrl } from '../../utils/parseUrl.js'
 import {
   enhance,
   getUniversal,
@@ -62,9 +65,18 @@ async function runUniversalMiddlewares(request: Request, context: Universal.Cont
     })
   }
   const { globalContext } = await getGlobalContextServerInternal()
-  const middlewares = (globalContext.config.middleware ?? [])
-    .flat()
-    .flatMap((middleware) => addUrlForms(middleware, globalContext.baseServer))
+  const middlewares = (globalContext.config.middleware ?? []).flat()
+  return runPlusMiddlewares(middlewares, globalContext.baseServer, request, context, runtime)
+}
+
+async function runPlusMiddlewares(
+  plusMiddlewares: EnhancedMiddleware[],
+  baseServer: string,
+  request: Request,
+  context: Universal.Context,
+  runtime: RuntimeAdapter,
+) {
+  const middlewares = plusMiddlewares.map(normalizeMiddlewarePath)
   if (middlewares.length === 0) return
   const responseHandlers: ResponseHandler[] = []
   // Universal Middleware's pipe() throws `No Response found` if nothing returns a Response
@@ -79,9 +91,9 @@ async function runUniversalMiddlewares(request: Request, context: Universal.Cont
   )
   const handler = pipeRoute([
     fallThroughRoute,
-    ...middlewares.map((middleware) => collectResponseHandler(middleware, responseHandlers, fallThroughRoute)),
+    ...middlewares.map((middleware) => collectResponseHandler(middleware, request, responseHandlers, fallThroughRoute)),
   ]) as UniversalHandler
-  const response = await handler(request, context, runtime)
+  const response = await handler(getRoutingRequest(request, baseServer), context, runtime)
   // Response handlers returned by +middleware apply to the final response, which may come after this middleware
   const applyResponseHandlers = async (response: Response) => {
     for (const responseHandler of responseHandlers) response = (await responseHandler(response)) ?? response
@@ -104,17 +116,30 @@ const universalMiddlewares = enhance(
   { name: 'vike:middleware' },
 )
 
+// A `path` is matched against the page's URL, the way Vike routes pages: without the Base URL, and with a
+// `.pageContext.json` request standing for its page. So `/dash` also covers `/base/dash` and `/dash/index.pageContext.json`,
+// whatever pattern the path uses. The router only reads the URL and method; each +middleware gets the original request.
+// The path stays percent-encoded until the router decodes it once: `/literal%25` must not become `/literal%`.
+function getRoutingRequest(request: Request, baseServer: string): Request {
+  const url = new URL(request.url)
+  const suffix = `/index${pageContextJsonFileExtension}`
+  if (url.pathname.endsWith(suffix)) url.pathname = url.pathname.slice(0, -suffix.length) || '/'
+  const { href } = parseUrl(url.href, baseServer)
+  return new Request(new URL(href, url), { method: request.method, headers: request.headers })
+}
+
 function collectResponseHandler(
   middleware: EnhancedMiddleware,
+  request: Request,
   responseHandlers: ResponseHandler[],
   fallThroughRoute: EnhancedMiddleware,
 ) {
   // The router runs only the one route matching the URL: a route that passes the request on continues with the fall-through
   if (getUniversalProp(middleware, pathSymbol)) {
     return enhance(
-      async (...args: Parameters<UniversalHandler>) => {
-        const result = await getUniversal(middleware)(...args)
-        return result ?? getUniversal(fallThroughRoute)(...args)
+      async (_routingRequest: Request, context: Universal.Context, runtime: RuntimeAdapter) => {
+        const result = await getUniversal(middleware)(request, context, runtime)
+        return result ?? getUniversal(fallThroughRoute)(request, context, runtime)
       },
       {
         name: getUniversalProp(middleware, nameSymbol),
@@ -125,8 +150,8 @@ function collectResponseHandler(
     )
   }
   return enhance(
-    async (...args: Parameters<UniversalHandler>) => {
-      const result = await getUniversal(middleware)(...args)
+    async (_routingRequest: Request, context: Universal.Context, runtime: RuntimeAdapter) => {
+      const result = await getUniversal(middleware)(request, context, runtime)
       if (typeof result !== 'function') return result
       responseHandlers.push(result)
     },
