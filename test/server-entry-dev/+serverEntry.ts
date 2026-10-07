@@ -1,0 +1,35 @@
+// https://vike.dev/serverEntry
+// There isn't any +server.js => `$ vike dev` runs this file as well
+
+import express from 'express'
+import { fileURLToPath } from 'node:url'
+import { createDevMiddleware, renderPage } from 'vike/server'
+import { hello } from './server/hello'
+
+const app = express()
+
+if (import.meta.env.DEV) {
+  // Vite's development middleware (HMR, transpiling, static assets, ...)
+  const { devMiddleware } = await createDevMiddleware()
+  app.use(devMiddleware)
+} else {
+  app.use(express.static(fileURLToPath(new URL('../client', import.meta.url))))
+}
+
+app.get('/hello', (_req, res) => {
+  res.send(hello)
+})
+
+// Vike middleware. It should always be our last middleware (because it's a catch-all
+// middleware superseding any middleware placed after it).
+app.get('/{*vikeCatchAll}', async (req, res, next) => {
+  const pageContext = await renderPage({ urlOriginal: req.originalUrl, headersOriginal: req.headers })
+  const { httpResponse } = pageContext
+  if (!httpResponse) return next()
+  httpResponse.headers.forEach(([name, value]) => res.setHeader(name, value))
+  res.status(httpResponse.statusCode)
+  httpResponse.pipe(res)
+})
+
+const port = process.env.PORT || 3000
+app.listen(port, () => console.log(`Server running at http://localhost:${port}`))

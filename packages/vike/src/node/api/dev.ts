@@ -7,6 +7,12 @@ import { assert } from '../../utils/assert.js'
 import { assertIsNotProductionRuntime } from '../../utils/assertSetup.js'
 import './assertEnvApiDev.js'
 import { startupLog } from './startupLog.js'
+import {
+  getServerEntryDevCli,
+  isServerEntryProcess,
+  runServerEntry,
+  startServerEntryProcess,
+} from './devServerEntry.js'
 assertIsNotProductionRuntime()
 
 /**
@@ -18,13 +24,22 @@ async function dev(
   options: ApiOptions & ApiOptionsStartupLog = {},
 ): Promise<{ viteServer: ViteDevServer; viteConfig: ResolvedConfig; viteVersion: string }> {
   const { viteConfigUser } = await prepareViteApiCall(options, 'dev')
-  const server = await createServer(viteConfigUser)
+  // `$ vike dev` runs +serverEntry.js if there isn't +server.js — https://vike.dev/serverEntry
+  const serverEntryFilePath = await getServerEntryDevCli()
+  if (serverEntryFilePath && !isServerEntryProcess()) return await startServerEntryProcess()
+  const server = await createServer(
+    !serverEntryFilePath
+      ? viteConfigUser
+      : // +serverEntry.js creates the server (it uses Vite's development server as middleware)
+        { ...viteConfigUser, server: { ...viteConfigUser.server, middlewareMode: true } },
+  )
   const viteServer = server
   const viteConfig = server.config
   const viteVersion = viteConfig._viteVersionResolved
   assert(viteVersion)
   if (viteServer.httpServer) await viteServer.listen()
   if (options.startupLog) startupLog(viteConfig, viteServer)
+  if (serverEntryFilePath) await runServerEntry(viteServer, serverEntryFilePath)
   return {
     viteServer,
     viteConfig,

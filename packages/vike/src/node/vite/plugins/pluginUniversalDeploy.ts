@@ -9,7 +9,7 @@ import { pluginServerEntryInject } from './pluginUniversalDeploy/pluginServerEnt
 import { getDeployConfig } from './pluginUniversalDeploy/getDeployConfig.js'
 import { pluginCommon } from './pluginUniversalDeploy/common.js'
 import { hasVikeServerOrVikePhoton } from './pluginUniversalDeploy/detectDeprecated.js'
-import { getServerConfig } from './pluginUniversalDeploy/getServerConfig.js'
+import { getServerConfig, getServerEntryDev } from './pluginUniversalDeploy/getServerConfig.js'
 import { pluginServerEntryAlias } from './pluginUniversalDeploy/pluginServerEntryAlias.js'
 import { pluginUnwrapProdOptions } from './pluginUniversalDeploy/pluginUnwrapProdOptions.js'
 import { unique } from '../../../utils/unique.js'
@@ -37,7 +37,10 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
       : [
           // +serverEntry.js is the production server entry dist/server/index.mjs (instead of @universal-deploy/node's server)
           // https://vike.dev/serverEntry
-          ...universalDeploy({ entry: serverEntryFilePath }),
+          ...universalDeploy({ entry: serverEntryFilePath }).filter(
+            // `$ vike dev` runs +serverEntry.js (which calls renderPage() itself) => Universal Deploy's development middleware would supersede the user's server routes
+            (plugin) => !(getServerEntryDev(vikeConfig) && plugin.name === 'universal-deploy:dev-server'),
+          ),
           precompress(vikeConfig.config.precompress),
           resolveTargets((targets) => {
             const target = targets[0]

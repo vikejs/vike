@@ -1,6 +1,7 @@
 export { getServerConfig }
 export { isUniversalDeployVitePreview }
 export { isUniversalDeploy }
+export { getServerEntryDev }
 
 import type { ResolvedConfig } from 'vite'
 import { catchAllEntry } from '@universal-deploy/store'
@@ -57,6 +58,13 @@ function getServerEntryFilePath(vikeConfig: VikeConfigInternal): string | null {
   assert('filePathAbsoluteFilesystem' in source.definedAt)
   // `source.value` is the import path, e.g. `some-npm-package/serverEntry` if the file cannot be resolved
   return source.definedAt.filePathAbsoluteFilesystem ?? source.value
+}
+
+// Whether `$ vike dev` runs +serverEntry.js: only if there isn't +server.js (otherwise +serverEntry.js is production-only)
+// https://vike.dev/serverEntry
+function getServerEntryDev(vikeConfig: VikeConfigInternal): string | null {
+  if (vikeConfig._pageConfigGlobal.configValueSources.server) return null
+  return getServerEntryFilePath(vikeConfig)
 }
 
 // Whether virtual:ud:catch-all exists
