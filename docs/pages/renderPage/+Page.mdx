@@ -130,13 +130,11 @@ You can also run your server yourself (e.g. `$ node server/index.js`) without `+
 
 | | `+serverEntry.js` | `$ node server/index.js` |
 | --- | --- | --- |
-| Server code | Processed by Vite | Not processed by Vite |
-| Server restart | Automatic, only when needed | Manual (or with a file watcher) |
+| Server code (1) | Processed by Vite | Not processed by Vite |
+| Server restart (2) | Fine-grained (only when needed) | Coarse (unnecessary reloads) |
 
-- Vite processes your server code: <ImportMeta prop="env" /> is available (e.g. `import.meta.env.DEV` and the variables of your `.env` files), and so are path aliases and Vite plugins. (Modern runtimes such as Bun and recent Node.js versions can run TypeScript, but they don't apply your Vite configuration.)
-- `$ vike dev` restarts your server only when a file imported by `+serverEntry.js` changes: modifying a page doesn't restart your server (the page is updated with <Link href="/glossary#hmr">HMR</Link>). A watcher such as `node --watch` or `nodemon` doesn't know about Vite's module graph.
-
-> See also [#562 - Transpile server code](https://github.com/vikejs/vike/issues/562).
+1. Vite processes your server code: <ImportMeta prop="env" /> is available (e.g. `import.meta.env.DEV` and the variables of your `.env` files), and so are path aliases and Vite plugins. (Modern runtimes such as Bun and recent Node.js versions can run TypeScript, but they don't apply your Vite configuration.)
+2. `$ vike dev` restarts your server only when a file imported by `+serverEntry.js` changes: modifying a page doesn't restart your server (the page is updated with <Link href="/glossary#hmr">HMR</Link>). A watcher such as `node --watch` or `nodemon` doesn't know about Vite's module graph.
 
 
 ## Optional
