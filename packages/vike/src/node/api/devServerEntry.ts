@@ -119,7 +119,8 @@ function isImportedBy(modules: Set<EnvironmentModuleNode> | undefined, serverEnt
 async function getServerEntryDevCli(): Promise<string | null> {
   if (!isVikeCli()) return null
   const vikeConfig = await getVikeConfigInternal()
-  return getServerEntryDev(vikeConfig)
+  const serverEntryFilePath = getServerEntryDev(vikeConfig)
+  return serverEntryFilePath
 }
 
 function getServerEntryViteServer(): ViteDevServer | null {
