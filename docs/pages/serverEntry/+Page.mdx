@@ -67,7 +67,7 @@ AWS Lambda calls the `handler()` function exported by `dist/server/index.mjs`. Y
 
 > With AWS Lambda, you usually serve the static assets `dist/client/` with a CDN, such as Amazon CloudFront.
 
-TODO/ai: in the examples below we use +serverEntry.ts with +server.js which means that...
+The examples below use `+serverEntry.js` with <Link href="/server">`+server.js`</Link>, which means that `+serverEntry.js` is only used in production: in development, `$ vike dev` runs your `+server.js` with Vite's development server as usual (see [Development](#development)).
 
 ### Native
 
@@ -121,7 +121,7 @@ If you define <Link href="/server">`+server.js`</Link>, then `+serverEntry.js` i
 If you don't define `+server.js`, then `$ vike dev` runs `+serverEntry.js` also in development. It's a convenient way to manually integrate Vike into your server with <Link href="/renderPage">`renderPage()`</Link>:
 
 ```ts
-// +serverEntry.ts (without +server.ts)
+// +serverEntry.ts (without +server.js)
 
 import express from 'express'
 import { fileURLToPath } from 'node:url'
@@ -160,7 +160,7 @@ Without `+serverEntry.js`, `$ bun dist/server/index.mjs` runs Vike's built-in se
 With `+serverEntry.js` (and without `+server.js`, see [Development](#development)), you can use [`Bun.serve()`](https://bun.com/docs/runtime/http/server) in both development and production, for example to use Bun's [WebSockets](https://bun.com/docs/runtime/http/websockets) also in development:
 
 ```ts
-// +serverEntry.ts
+// +serverEntry.ts (without +server.js)
 
 import { createDevMiddleware, renderPage } from 'vike/server'
 import { fetchNodeHandler } from 'srvx/node'
