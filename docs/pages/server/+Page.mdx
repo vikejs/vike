@@ -409,11 +409,11 @@ For full control over your server production entry (e.g. to define a custom depl
 | --- | --- | --- |
 | Development server | Vite's development server. ([Node.js with Connect](https://github.com/vitejs/ecosystem/issues/16).) | Your server. (E.g. `Bun.serve()`/`Deno.serve()`.) |
 
-For full control over the server entry not only in production but also in development, you can define `+serverEntry.js` without `+server.js`: `+serverEntry.js` is then also run at development (and not only in production). See <Link href="/serverEntry#development" />.
+For full control over the server entry not only in production but also in development, you can define `+serverEntry.js` without `+server.js`: `+serverEntry.js` is then also run in development (and not only in production). See <Link href="/serverEntry#development" />.
 
 ### `vike(app)` => `renderPage()`
 
-Using `renderPage()` instead of `vike(app)` gives you more control as it's more lower-level (albeit less zero-config).
+Using `renderPage()` instead of `vike(app)` gives you more control as it's lower-level (albeit less zero-config).
 
 See: <Link href="/renderPage#renderpage-vs-vike-app" noBreadcrumb doNotInferSectionTitle />.
 
