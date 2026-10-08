@@ -25,12 +25,11 @@ Vite types:
 - [InlineConfig](https://vite.dev/guide/api-javascript.html#inlineconfig) types the `viteConfig` option.
 - [ResolvedConfig](https://vite.dev/guide/api-javascript.html#resolvedconfig) types the `viteConfig` return value.
 - `createDevMiddleware()` wraps [Vite's `createServer()`](https://vite.dev/guide/api-javascript.html#createserver).
-- `devMiddleware` is a [`Connect` middleware](https://www.npmjs.com/package/connect) which is provided by Vite, see also [#2081 - Interoperable createDevMiddleware that also works with Web Standards](https://github.com/vikejs/vike/issues/2081).
 
 
-## Connect
+## Connect to Web `Request`/`Response`
 
-`devMiddleware` is a [Connect](https://github.com/senchalabs/connect) middleware: it uses Node.js's `req`/`res`. To use it with a server based on Web Standards (`Request`/`Response`), such as Hono, `Bun.serve()` or `Deno.serve()`, you need a bridge, for example [srvx](https://srvx.h3.dev)'s `fetchNodeHandler()`:
+`devMiddleware` is a [Connect](https://www.npmjs.com/package/connect) middleware: it uses Node.js's `req`/`res`. To use it with a server based on Web Standards (`Request`/`Response`), such as Hono, `Bun.serve()` or `Deno.serve()`, you need a bridge, for example [srvx](https://srvx.h3.dev)'s `fetchNodeHandler()`:
 
 ```ts
 import { createDevMiddleware } from 'vike/server'
@@ -38,7 +37,6 @@ import { fetchNodeHandler } from 'srvx/node'
 
 const { devMiddleware } = await createDevMiddleware()
 
-// Returns undefined if Vite doesn't handle the request
 async function handleDevRequest(request: Request): Promise<Response | undefined> {
   let handled = true
   const response = await fetchNodeHandler(
@@ -60,3 +58,5 @@ async function handleDevRequest(request: Request): Promise<Response | undefined>
 
 - <Link href="/renderPage" />
 - <Link href="/api" />
+- [vitejs/ecosystem#16 - Move away from Connect (towards standard `Request`/`Response`, `Bun.serve()`, `Deno.serve()`)](https://github.com/vitejs/ecosystem/issues/16)
+- [#2081 - Interoperable createDevMiddleware that also works with Web Standards](https://github.com/vikejs/vike/issues/2081)
