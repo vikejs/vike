@@ -72,6 +72,8 @@ type ConfigDefinition =
       /** @experimental */
       _valueIsFilePath?: true
       /** @experimental */
+      _valueNotLoadedAtRuntime?: true
+      /** @experimental */
       _userEffectDefinedAtFilePath?: DefinedAtFilePath
       isDefinedByPeerDependency?: undefined
     }
@@ -362,6 +364,8 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
   server: {
     env: { server: true },
     global: true,
+    // +server.js is the server itself: the global entry doesn't import it, otherwise a +server.js that awaits the global context would wait for itself
+    _valueNotLoadedAtRuntime: true,
   },
   serverEntry: {
     // The value is merely the file path of the server entry, which becomes dist/server/index.mjs — Vike never loads it as a config value
