@@ -8,36 +8,29 @@ import { ConfigSpec } from '../../components'
 
 Define `+serverEntry.js` to control how your server starts in production: Vike builds it into `dist/server/index.mjs`, the file you run in production.
 
+For example, to deploy to AWS Lambda:
+
 ```ts
 // +serverEntry.ts
 
-import { fileURLToPath } from 'node:url'
-import { serve } from 'srvx'
-import { staticMiddleware } from 'srvx/static'
+import { toLambdaHandler } from 'srvx/aws-lambda'
 import server from 'vike:server'
 
-serve({
-  port: 3000,
-  // Serve the static assets (dist/client/)
-  middleware: [staticMiddleware({ dir: fileURLToPath(new URL('../client', import.meta.url)) })],
-  // Your +server.js exports
-  fetch: server.fetch
-})
+// AWS Lambda calls handler() for each request
+export const handler = toLambdaHandler({ fetch: server.fetch })
 ```
 
 ```bash
 # Build: +serverEntry.ts => dist/server/index.mjs
 $ vike build
-# Run +serverEntry.ts
-$ node dist/server/index.mjs
 ```
 
 It gives you full control over your production server, for example to:
+- Deploy to a platform without built-in support, e.g. AWS Lambda.
 - Use another server framework, or a runtime API such as `Bun.serve()` and `Deno.serve()`.
-- Run code before your server accepts requests, e.g. connecting to a database.
-- Export what your deployment platform expects, e.g. an AWS Lambda `handler`.
+- Use all CPU cores with Node.js's [`cluster`](https://nodejs.org/api/cluster.html) module.
 
-> Without `+serverEntry.js`, `dist/server/index.mjs` is Vike's built-in server entry, see <Link href="/server" />.
+> Without `+serverEntry.js`, <Link href="/blog/universal-deploy">Universal Deploy</Link> generates `dist/server/index.mjs`: a server entry based on [srvx](https://srvx.h3.dev), with first-class support for Node.js, Deno, and Bun (and potentially future runtimes). See <Link href="/server" />.
 
 
 ## `vike:server`
@@ -70,6 +63,27 @@ serve({
 ## Static assets
 
 `+serverEntry.js` is responsible for serving the static assets `dist/client/`. (Because `+serverEntry.js` replaces Vike's built-in server entry that serves static assets.)
+
+For example, with [srvx](https://srvx.h3.dev):
+
+```ts
+// +serverEntry.ts
+
+import { fileURLToPath } from 'node:url'
+import { serve } from 'srvx'
+import { staticMiddleware } from 'srvx/static'
+import server from 'vike:server'
+
+serve({
+  port: 3000,
+  // Serve the static assets (dist/client/)
+  middleware: [staticMiddleware({ dir: fileURLToPath(new URL('../client', import.meta.url)) })],
+  // Your +server.js exports
+  fetch: server.fetch
+})
+```
+
+> With AWS Lambda, you usually serve `dist/client/` with a CDN instead, such as Amazon CloudFront.
 
 > See <Link href="/precompress" noBreadcrumb /> to generate `.br`/`.gz` files for your static assets at build time.
 
