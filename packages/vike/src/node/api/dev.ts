@@ -45,7 +45,10 @@ async function dev(
 
   if (options.startupLog) startupLog(viteConfig, viteServer)
 
-  if (serverEntryFilePath && isServerProcess()) await startServerEntry_child(viteServer, serverEntryFilePath)
+  if (serverEntryFilePath) {
+    assert(isServerProcess())
+    await startServerEntry_child(viteServer, serverEntryFilePath)
+  }
 
   return {
     viteServer,
