@@ -1,6 +1,6 @@
 export { getServerEntryDevCli }
 export { isServerEntryProcess }
-export { startServerEntryProcess }
+export { startServerEntry_parent }
 export { runServerEntry }
 export { getServerEntryViteServer }
 
@@ -39,7 +39,7 @@ function isServerEntryProcess(): boolean {
 }
 
 // Parent process
-function startServerEntryProcess(): Promise<never> {
+function startServerEntry_parent(): Promise<never> {
   let child: ChildProcess
   let signalReceived: NodeJS.Signals | undefined
   const start = () => {

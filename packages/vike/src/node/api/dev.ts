@@ -11,7 +11,7 @@ import {
   getServerEntryDevCli,
   isServerEntryProcess,
   runServerEntry,
-  startServerEntryProcess,
+  startServerEntry_parent,
 } from './devServerEntry.js'
 assertIsNotProductionRuntime()
 
@@ -26,7 +26,7 @@ async function dev(
   const { viteConfigUser } = await prepareViteApiCall(options, 'dev')
   // `$ vike dev` runs +serverEntry.js if there isn't +server.js — https://vike.dev/serverEntry
   const serverEntryFilePath = await getServerEntryDevCli()
-  if (serverEntryFilePath && !isServerEntryProcess()) return await startServerEntryProcess()
+  if (serverEntryFilePath && !isServerEntryProcess()) return await startServerEntry_parent()
   const server = await createServer(
     !serverEntryFilePath
       ? viteConfigUser
