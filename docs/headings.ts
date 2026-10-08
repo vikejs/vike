@@ -325,12 +325,6 @@ const headings = [
   },
   {
     level: 2,
-    title: '`+serverEntry`',
-    titleInNav: 'Server Entry',
-    url: '/serverEntry',
-  },
-  {
-    level: 2,
     title: 'Error Tracking',
     url: '/error-tracking',
   },
@@ -667,6 +661,11 @@ const headings = [
     level: 2,
     title: '`+rootAttributes`',
     url: '/rootAttributes',
+  },
+  {
+    level: 2,
+    title: '`+serverEntry`',
+    url: '/serverEntry',
   },
   {
     level: 2,
