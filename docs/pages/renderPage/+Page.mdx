@@ -110,6 +110,15 @@ The `renderPage()` function doesn't depend on Node.js and you can use `renderPag
  - Any deployment provider (AWS, Cloudflare Workers, Vercel, ...)
 
 
+## Optional
+
+If you <Link href="/pre-rendering">pre-render</Link> all your pages then `renderPage()` isn't needed, because:
+ - Upon development (`$ vike dev`), Vike automatically embeds itself into Vite's development server.
+ - Upon pre-rendering (`$ vike build`/`$ vike prerender`), Vike renders your pages without server.
+
+But, if you use Server-Side Rendering (SSR), then you need a production server and `renderPage()` is required. See <Link href="/pre-rendering"/>.
+
+
 ## `renderPage()` vs `vike(app)`
 
 Instead of `renderPage()`, you can use `vike(app)`:
@@ -136,14 +145,6 @@ Unless you have a reason against it, we generally recommend using <Link href="/s
 1. Vite processes your server code: <ImportMeta prop="env" /> is available (e.g. `import.meta.env.DEV` and the variables of your `.env` files), and so are path aliases and Vite plugins. (Modern runtimes such as Bun and recent Node.js versions can run TypeScript, but they don't apply your Vite configuration.)
 2. `$ vike dev` restarts your server only when a file imported by `+serverEntry.js` changes: modifying a page doesn't restart your server (the page is updated with <Link href="/glossary#hmr">HMR</Link>). A watcher such as `node --watch` or `nodemon` doesn't know about Vite's module graph.
 
-
-## Optional
-
-If you <Link href="/pre-rendering">pre-render</Link> all your pages then `renderPage()` isn't needed, because:
- - Upon development (`$ vike dev`), Vike automatically embeds itself into Vite's development server.
- - Upon pre-rendering (`$ vike build`/`$ vike prerender`), Vike renders your pages without server.
-
-But, if you use Server-Side Rendering (SSR), then you need a production server and `renderPage()` is required. See <Link href="/pre-rendering"/>.
 
 ## See also
 
