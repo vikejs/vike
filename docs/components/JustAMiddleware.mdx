@@ -26,4 +26,6 @@ server.addMiddleware({
 
 You can embed {(() => {const content = <code>renderPage()</code>; return props.noLink ? content : <Link href="/renderPage">{content}</Link> })()} into any server and any deployment environment.
 
+> You can also run your server yourself without `+serverEntry.js` (e.g. `$ node server/index.js`), but we discourage it, see <Link href="/renderPage#without-serverentry-js" doNotInferSectionTitle />.
+
 > Alternatively, instead of using `renderPage()`, you can <Link href="/pre-rendering">pre-render</Link> your pages and remove the need for a production server (and deploy to a <Link href="/static-hosts">static host</Link> instead).
