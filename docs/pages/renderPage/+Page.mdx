@@ -110,6 +110,21 @@ The `renderPage()` function doesn't depend on Node.js and you can use `renderPag
  - Any deployment provider (AWS, Cloudflare Workers, Vercel, ...)
 
 
+## `renderPage()` vs `vike(app)`
+
+Instead of calling `renderPage()` yourself, you can use `vike(app)` (e.g. `import vike from '@vikejs/express'`, see <Link href="/server">`+server`</Link>), which calls `renderPage()` for you.
+
+They're interchangeable, regardless of how you run your server:
+
+| | <Link href="/server">`+server.js`</Link> or <Link href="/serverEntry">`+serverEntry.js`</Link> | <Link href="#without-serverentry-js">`$ node server/index.js`</Link> |
+| --- | --- | --- |
+| `vike(app)` | ✅ | ✅ |
+| `renderPage()` | ✅ | ✅ |
+
+- `vike(app)` is available for Hono, Express, Fastify, H3, and Elysia. It also sets <Link href="/pageContext#req">`pageContext.req`</Link> and <Link href="/pageContext#res">`pageContext.res`</Link>.
+- `renderPage()` works with any server, and gives you full control over `pageContextInit` and the HTTP response.
+
+
 ## Without `+serverEntry.js`
 
 You can also run your server yourself without `+serverEntry.js` (e.g. `$ node server/index.js`), but we discourage it:

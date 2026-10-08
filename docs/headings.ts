@@ -612,7 +612,7 @@ const headings = [
     level: 2,
     title: '`renderPage()`',
     url: '/renderPage',
-    sectionTitles: ['Without `+serverEntry.js`'],
+    sectionTitles: ['`renderPage()` vs `vike(app)`', 'Without `+serverEntry.js`'],
   },
   {
     level: 2,
