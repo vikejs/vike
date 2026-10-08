@@ -2,11 +2,11 @@ import { Link } from '@brillout/docpress'
 import { ConfigSpec } from '../../components'
 
 <ConfigSpec
-  env="server (production)"
+  env="server"
   global
 />
 
-Define `+serverEntry.js` to control how your server starts in production: Vike builds it into `dist/server/index.mjs`, the file you run in production.
+Define `+serverEntry.js` to control how your server starts: Vike builds it into `dist/server/index.mjs`, the file you run in production. If you don't use `+server.js`, then `$ vike dev` also runs it in development, see [Development](#development).
 
 ```ts
 // +serverEntry.ts
@@ -28,10 +28,11 @@ $ vike build
 $ node dist/server/index.mjs
 ```
 
-It gives you full control over your server production entry, for example to:
+It gives you full control over your server entry, for example to:
 - Deploy to a platform without built-in support, e.g. AWS Lambda (see example below)
 - Use another server framework or runtime API such as `Bun.serve()` and `Deno.serve()`
 - Use all CPU cores with Node.js's [`cluster`](https://nodejs.org/api/cluster.html) module
+- Integrate Vike into your own server with <Link href="/renderPage">`renderPage()`</Link>, in both development and production (see [Development](#development))
 
 > Without `+serverEntry.js`, `dist/server/index.mjs` is Vike's built-in server entry: a [srvx](https://srvx.h3.dev) server entry with first-class support for Node.js, Deno, and Bun (and potentially future runtimes). See also: <Link href="/server" />.
 

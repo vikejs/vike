@@ -93,7 +93,7 @@ See also:
 
 > If you use <Link href="/server">`+server.js`</Link>, all your server code is transpiled by Vite. Defining path aliases at `vite.config.js` is enough because Vite already resolves all path aliases and Node.js doesn't see any path alias.
 >
-> If you don't use `+server.js`, your server code isn't processed by [Vite](https://vite.dev) out of the box. Instead, Node.js directly executes your server code and, therefore, you must configure Node.js to resolve your path aliases. See also: [#562 - Transpile server code](https://github.com/vikejs/vike/issues/562).
+> If you use neither `+server.js` nor <Link href="/serverEntry">`+serverEntry.js`</Link>, your server code isn't processed by [Vite](https://vite.dev) out of the box. Instead, Node.js directly executes your server code and, therefore, you must configure Node.js to resolve your path aliases. See also: [#562 - Transpile server code](https://github.com/vikejs/vike/issues/562).
 
 > Alternatively, instead of using Node.js's built-in support over `package.json#imports`, you can use an npm package such as [`module-alias`](https://github.com/ilearnio/module-alias).
 
