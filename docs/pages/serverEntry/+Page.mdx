@@ -34,7 +34,8 @@ It gives you full control over your server entry, for example to:
 - Deploy to a platform without built-in support, e.g. AWS Lambda (see example below)
 - Use another server framework or runtime API such as `Bun.serve()` and `Deno.serve()`
 - Use all CPU cores with Node.js's [`cluster`](https://nodejs.org/api/cluster.html) module
-- Integrate Vike into your own server with <Link href="/renderPage">`renderPage()`</Link>, in both development and production (see <Link href="#development" />)
+
+> For even more control, you can manually integrate Vike into your server with <Link href="/renderPage">`renderPage()`</Link>, see <Link href="#development" />.
 
 > Without `+serverEntry.js`, `dist/server/index.mjs` is Vike's built-in server entry: a [srvx](https://srvx.h3.dev) server entry with first-class support for Node.js, Deno, and Bun (and potentially future runtimes). See also: <Link href="/server" />.
 
