@@ -1,7 +1,7 @@
 export { getServerEntryDevCli }
 export { isServerEntryProcess }
 export { startServerEntry_parent }
-export { runServerEntry }
+export { startServerEntry_child }
 export { getServerEntryViteServer }
 
 // `$ vike dev` runs +serverEntry.js (if there isn't +server.js) — https://vike.dev/serverEntry
@@ -73,7 +73,7 @@ function startServerEntry_parent(): Promise<never> {
 }
 
 // Child process
-async function runServerEntry(viteServer: ViteDevServer, serverEntryFilePath: string): Promise<void> {
+async function startServerEntry_child(viteServer: ViteDevServer, serverEntryFilePath: string): Promise<void> {
   globalObject.viteServer = viteServer
   const ssr = viteServer.environments.ssr
   assertUsage(

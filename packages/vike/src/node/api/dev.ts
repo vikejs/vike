@@ -10,7 +10,7 @@ import { startupLog } from './startupLog.js'
 import {
   getServerEntryDevCli,
   isServerEntryProcess,
-  runServerEntry,
+  startServerEntry_child,
   startServerEntry_parent,
 } from './devServerEntry.js'
 assertIsNotProductionRuntime()
@@ -39,7 +39,7 @@ async function dev(
   assert(viteVersion)
   if (viteServer.httpServer) await viteServer.listen()
   if (options.startupLog) startupLog(viteConfig, viteServer)
-  if (serverEntryFilePath) await runServerEntry(viteServer, serverEntryFilePath)
+  if (serverEntryFilePath) await startServerEntry_child(viteServer, serverEntryFilePath)
   return {
     viteServer,
     viteConfig,
