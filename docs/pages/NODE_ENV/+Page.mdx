@@ -16,7 +16,7 @@ In production, it should be any value other than the ones above.
 
 > It's important to respect this convention: many tools run erroneously otherwise.
 
-> You can run `$ NODE_ENV='production' node server/index.js` to set a correct `NODE_ENV` value for production.
+> You can run `$ NODE_ENV='production' node dist/server/index.mjs` to set a correct `NODE_ENV` value for production.
 >
 > During build (`$ vike build` and `$ vike prerender`), the `process.env.NODE_ENV` value is automatically set to `'production'`.
 

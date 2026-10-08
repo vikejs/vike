@@ -1,5 +1,5 @@
 import { Link } from '@brillout/docpress'
-import { IntegrationHelp, JustAMiddleware, Advanced } from '../../components'
+import { IntegrationHelp, Advanced } from '../../components'
 
 <IntegrationHelp />
 
@@ -233,43 +233,6 @@ Since you control how your pages are rendered, you can use any tool you want wit
 - Etc.
 
 > The Vike extensions `vike-react`/`vike-vue`/`vike-solid` aim to be almost as flexible. If you reach a limitation you believe is caused by `vike-{react,vue,solid}` then <Link href="/extension-vs-custom">reach out before considering going for a manual integration</Link>.
-
-
-## Server (manual integration)
-
-To integrate Vike with a JavaScript server, we generally recommend <Link href="/server">`+server`</Link> which automatically integrates Vike with any JavaScript server (Express.js, Hono, Fastify, ...) and deployment provider (Cloudflare, Vercel, Netlify, self-hosting, ...).
-
-But you can also manually integrate Vike into your server for full control over server and deployment integration.
-
-<JustAMiddleware />
-
-> Your server code won't be transpiled by [Vite](https://vite.dev) out of the box, see [#562 - Transpile server code](https://github.com/vikejs/vike/issues/562) for a list of tools to transpile server code (e.g. to support TypeScript).
-
-> If you want to use HTTPS in development, [pass the HTTPS certificates to Vite's dev server](https://vitejs.dev/config/server-options.html#server-https).
-
-You can use:
-- Any server framework (Express, Fastify, Hono, Nitro, Hattip, Koa, Hapi, ...)
-- Any authentication strategy/tool (email/password, OAuth, Auth.js, Passport.js, Grant, Keycloak, Auth0, ...).
-- Any serverless/edge environment (Cloudflare Workers, Vercel, Firebase, AWS Lambda, Google Cloud Functions, Deno Deploy, ...)
-- Any virtual private server (AWS EC2, Google Cloud, ...)
-- Any static host (Cloudflare Pages, GitHub Pages, Netlify, ...)
-- Any server utility (Docker, Nginx, PM2, ...)
-
-Examples:
-
-- <Link href="/express" />
-- <Link href="/hono" />
-- <Link href="/fastify" />
-- <Link href="/docker" noBreadcrumb />
-- <Link href="/nginx" />
-- <Link href="/tools#server">... more</Link>
-
-See also:
-- <Link href="/server" />
-- <Link href="/renderPage" />
-- <Link href="/tools#server" />
-
-<IntegrationHelp />
 
 
 ## Non-JavaScript backend
