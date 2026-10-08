@@ -27,11 +27,11 @@ async function dev(
   // `$ vike dev` runs +serverEntry.js if there isn't +server.js — https://vike.dev/serverEntry
   const serverEntryFilePath = await getServerEntryDevCli()
   if (serverEntryFilePath && !isServerEntryProcess()) return await startServerEntry_parent()
+  // +serverEntry.js creates the server: it uses Vite's development server as middleware
   const server = await createServer(
-    !serverEntryFilePath
-      ? viteConfigUser
-      : // +serverEntry.js creates the server (it uses Vite's development server as middleware)
-        { ...viteConfigUser, server: { ...viteConfigUser.server, middlewareMode: true } },
+    serverEntryFilePath
+      ? { ...viteConfigUser, server: { ...viteConfigUser.server, middlewareMode: true } }
+      : viteConfigUser,
   )
   const viteServer = server
   const viteConfig = server.config
