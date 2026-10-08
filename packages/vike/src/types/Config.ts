@@ -680,7 +680,7 @@ type ConfigBuiltIn = {
   /**
    * Control how your server starts.
    *
-   * It's build into `dist/server/index.mjs` for production, and it's also run in development if you don't define `+server.js`.
+   * It's built into `dist/server/index.mjs` for production, and it's also run in development if you don't define `+server.js`.
    *
    * https://vike.dev/serverEntry
    */
