@@ -100,6 +100,14 @@ function restart(reason: string): never {
   process.exit(EXIT_CODE_RESTART)
 }
 
+// Only `$ vike dev` runs +serverEntry.js, not the programmatic API `dev()`: the parent process re-runs the command (process.argv) in the child process
+async function getServerEntryFilePath_ifDevCli(): Promise<string | null> {
+  if (!isVikeCli()) return null
+  const vikeConfig = await getVikeConfigInternal()
+  const serverEntryFilePath = getServerEntryFilePath_ifDev(vikeConfig)
+  return serverEntryFilePath
+}
+
 // Whether one of the modules is +serverEntry.js or (transitively) imported by +serverEntry.js
 // - Pages aren't imported by +serverEntry.js: Vike loads them over its own virtual entries => changing a page doesn't restart the server (Vite's HMR handles it)
 function isImportedBy(modules: Set<EnvironmentModuleNode> | undefined, serverEntryFilePath: string): boolean {
@@ -113,14 +121,6 @@ function isImportedBy(modules: Set<EnvironmentModuleNode> | undefined, serverEnt
     stack.push(...mod.importers)
   }
   return false
-}
-
-// Only `$ vike dev` runs +serverEntry.js, not the programmatic API `dev()`: the parent process re-runs the command (process.argv) in the child process
-async function getServerEntryFilePath_ifDevCli(): Promise<string | null> {
-  if (!isVikeCli()) return null
-  const vikeConfig = await getVikeConfigInternal()
-  const serverEntryFilePath = getServerEntryFilePath_ifDev(vikeConfig)
-  return serverEntryFilePath
 }
 
 function getServerEntryViteServer(): ViteDevServer | null {
