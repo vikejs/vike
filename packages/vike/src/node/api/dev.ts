@@ -1,7 +1,7 @@
 export { dev }
 
 import { prepareViteApiCall } from './prepareViteApiCall.js'
-import { createServer, type ResolvedConfig, type ViteDevServer } from 'vite'
+import { createServer, type InlineConfig, type ResolvedConfig, type ViteDevServer } from 'vite'
 import type { ApiOptions, ApiOptionsStartupLog } from './types.js'
 import { assert } from '../../utils/assert.js'
 import { assertIsNotProductionRuntime } from '../../utils/assertSetup.js'
@@ -30,12 +30,7 @@ async function dev(
   if (serverEntryFilePath && !isServerProcess()) return await startServerEntry_parent()
 
   // +serverEntry.js creates the server: it uses Vite's development server as middleware
-  const server = await createServer(
-    serverEntryFilePath
-      ? // TODO/ai: new function addMiddlewareMode
-        { ...viteConfigUser, server: { ...viteConfigUser.server, middlewareMode: true } }
-      : viteConfigUser,
-  )
+  const server = await createServer(serverEntryFilePath ? addMiddlewareMode(viteConfigUser) : viteConfigUser)
   const viteServer = server
   const viteConfig = server.config
   const viteVersion = viteConfig._viteVersionResolved
@@ -48,4 +43,8 @@ async function dev(
     viteConfig,
     viteVersion,
   }
+}
+
+function addMiddlewareMode(viteConfig: InlineConfig): InlineConfig {
+  return { ...viteConfig, server: { ...viteConfig.server, middlewareMode: true } }
 }
