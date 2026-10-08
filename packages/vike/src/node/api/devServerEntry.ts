@@ -64,23 +64,15 @@ function startServerEntry_parent(): Promise<never> {
 // Child process — vite.ssrLoadModule()
 async function startServerEntry_child(viteServer: ViteDevServer, serverEntryFilePath: string): Promise<void> {
   globalObject.viteServer = viteServer
-  const ssr = viteServer.environments.ssr
+  const { ssr } = viteServer.environments
   assertUsage(
-    ssr && isRunnableDevEnvironment(ssr),
+    isRunnableDevEnvironment(ssr),
     `${pc.cyan('$ vike dev')} cannot run +serverEntry.js because Vite's ${pc.cyan('ssr')} environment isn't runnable — see https://vike.dev/serverEntry`,
   )
-  let restartOnAnyChange = false
-  const restart = (reason: string) => {
-    assertInfo(false, `${reason}, restarting server...`, { onlyOnce: false })
-    process.exit(EXIT_CODE_RESTART)
-  }
-  const onFileChange = (filePath: string) => {
-    filePath = normalizePath(filePath)
-    if (!restartOnAnyChange && !isImportedBy(ssr.moduleGraph.getModulesByFile(filePath), serverEntryFilePath)) return
-    restart(`${pc.cyan(path.relative(viteServer.config.root, filePath))} changed`)
-  }
-  viteServer.watcher.on('change', onFileChange)
-  viteServer.watcher.on('unlink', onFileChange)
+  // Restart when +serverEntry.js or a file it imports changes
+  restartOnFileChange(viteServer, (filePath) =>
+    isImportedBy(ssr.moduleGraph.getModulesByFile(filePath), serverEntryFilePath),
+  )
   // The user's server uses the current Vite development server (e.g. `app.use(devMiddleware)`) => we restart the process instead of letting Vite restart itself (e.g. upon vite.config.js changes)
   viteServer.restart = async () => restart('Vite needs to restart')
 
@@ -90,8 +82,22 @@ async function startServerEntry_child(viteServer: ViteDevServer, serverEntryFile
   } catch (err) {
     console.error(err)
     assertInfo(false, 'Waiting for file changes before restarting server...', { onlyOnce: false })
-    restartOnAnyChange = true
+    restartOnFileChange(viteServer, () => true)
   }
+}
+
+function restartOnFileChange(viteServer: ViteDevServer, isRestartNeeded: (filePath: string) => boolean): void {
+  const onFileChange = (filePath: string) => {
+    filePath = normalizePath(filePath)
+    if (isRestartNeeded(filePath)) restart(`${pc.cyan(path.relative(viteServer.config.root, filePath))} changed`)
+  }
+  viteServer.watcher.on('change', onFileChange)
+  viteServer.watcher.on('unlink', onFileChange)
+}
+
+function restart(reason: string): never {
+  assertInfo(false, `${reason}, restarting server...`, { onlyOnce: false })
+  process.exit(EXIT_CODE_RESTART)
 }
 
 // Whether one of the modules is +serverEntry.js or (transitively) imported by +serverEntry.js
