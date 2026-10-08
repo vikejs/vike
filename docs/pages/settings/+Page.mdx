@@ -7,37 +7,37 @@ See also: <Link href="/hooks" />.
 
 ## Basics
 
-- [**`Page`**](/Page): The page's root component.
-- [**`Layout`**](/Layout): The page's layout component.
-- [**`Wrapper`**](/Wrapper): Component(s) that wrap the page's root component.
-- [**`route`**](/routing): The page's route.
-- [**`prerender`**](/prerender): Whether to <Link href="/pre-rendering">pre-render</Link> the page, and pre-rendering settings.
-- [**`ssr`**](/ssr): Enable/disable Server-Side Rendering (SSR).
-- [**`stream`**](/stream): Enable/disable HTML Streaming and specify stream type.
-- [**`server`**](/server): Server integration settings.
-- [**`client`**](/client): Add client code.
-- [**`redirects`**](/redirects): Permanent redirections (HTTP status code `301`).
-- [**`precompress`**](/precompress): Create `.br`/`.gz` files of static assets at build time.
-- [**`keepScrollPosition`**](/keepScrollPosition): Whether the page scrolls to the top upon navigation.
-- [**`prefetchStaticAssets`**](/prefetchStaticAssets): Link prefetching settings.
-- [**`baseAssets`**](/base-url): Base URL of server.
-- [**`baseServer`**](/base-url): Base URL of static assets.
-- [**`headersResponse`**](/headersResponse): Add HTTP headers to the HTTP response.
-- [**`csp`**](/csp): Content Security Policy (CSP).
-- [**`extends`**](/extends): Install <Link href="/extensions" />.
-- [**`react`**](/react-setting): Options passed to React functions such as `createRoot()` or `hydrateRoot()`.
-- [**`vue`**](/vue-setting): Vue integration options, such as wrapping pages with Vue's `<KeepAlive>`.
+- <Link href="/Page">**`Page`**</Link>: The page's root component.
+- <Link href="/Layout">**`Layout`**</Link>: The page's layout component.
+- <Link href="/Wrapper">**`Wrapper`**</Link>: Component(s) that wrap the page's root component.
+- <Link href="/routing">**`route`**</Link>: The page's route.
+- <Link href="/prerender">**`prerender`**</Link>: Whether to <Link href="/pre-rendering">pre-render</Link> the page, and pre-rendering settings.
+- <Link href="/ssr">**`ssr`**</Link>: Enable/disable Server-Side Rendering (SSR).
+- <Link href="/stream">**`stream`**</Link>: Enable/disable HTML Streaming and specify stream type.
+- <Link href="/server">**`server`**</Link>: Server integration settings.
+- <Link href="/client">**`client`**</Link>: Add client code.
+- <Link href="/redirects">**`redirects`**</Link>: Permanent redirections (HTTP status code `301`).
+- <Link href="/precompress">**`precompress`**</Link>: Create `.br`/`.gz` files of static assets at build time.
+- <Link href="/keepScrollPosition">**`keepScrollPosition`**</Link>: Whether the page scrolls to the top upon navigation.
+- <Link href="/prefetchStaticAssets">**`prefetchStaticAssets`**</Link>: Link prefetching settings.
+- <Link href="/base-url">**`baseAssets`**</Link>: Base URL of server.
+- <Link href="/base-url">**`baseServer`**</Link>: Base URL of static assets.
+- <Link href="/headersResponse">**`headersResponse`**</Link>: Add HTTP headers to the HTTP response.
+- <Link href="/csp">**`csp`**</Link>: Content Security Policy (CSP).
+- <Link href="/extends">**`extends`**</Link>: Install <Link href="/extensions" />.
+- <Link href="/react-setting">**`react`**</Link>: Options passed to React functions such as `createRoot()` or `hydrateRoot()`.
+- <Link href="/vue-setting">**`vue`**</Link>: Vue integration options, such as wrapping pages with Vue's `<KeepAlive>`.
 
 
 ## HTML shell
 
 Settings that set `<head>` tags (aka document metadata):
 
-- [**`title`**](/title): Set the page's title.
-- [**`description`**](/description): Set the page's description.
-- [**`image`**](/image): Set the page's preview image upon URL sharing.
-- [**`viewport`**](/viewport): Set the page's viewport size on mobile devices.
-- [**`Head`**](/Head): Add arbitrary `<head>` tags.
+- <Link href="/title">**`title`**</Link>: Set the page's title.
+- <Link href="/description">**`description`**</Link>: Set the page's description.
+- <Link href="/image">**`image`**</Link>: Set the page's preview image upon URL sharing.
+- <Link href="/viewport">**`viewport`**</Link>: Set the page's viewport size on mobile devices.
+- <Link href="/Head">**`Head`**</Link>: Add arbitrary `<head>` tags.
 
 See also: <Link href="/head-tags" />.
 
@@ -45,42 +45,42 @@ See also: <Link href="/head-tags" />.
 
 Other settings that modify the page HTML shell:
 
-- [**`lang`**](/lang): Set the page's language (`<html lang>`).
-- [**`htmlAttributes`**](/htmlAttributes): Add `<html>` attributes (e.g. `<html class="dark">`).
-- [**`bodyAttributes`**](/bodyAttributes): Add `<body>` attributes (e.g. `<body class="dark">`).
-- [**`rootAttributes`**](/rootAttributes): Add root element attributes (e.g. `<div id="root" role="none">`).
-- [**`headHtmlBegin`**](/headHtmlBegin): Insert HTML at the beginning of `<head>`.
-- [**`headHtmlEnd`**](/headHtmlEnd): Insert HTML at the end of `<head>`.
-- [**`bodyHtmlBegin`**](/bodyHtmlBegin): Insert HTML at the beginning of `<body>`.
-- [**`bodyHtmlEnd`**](/bodyHtmlEnd): Insert HTML at the end of `<body>`.
+- <Link href="/lang">**`lang`**</Link>: Set the page's language (`<html lang>`).
+- <Link href="/htmlAttributes">**`htmlAttributes`**</Link>: Add `<html>` attributes (e.g. `<html class="dark">`).
+- <Link href="/bodyAttributes">**`bodyAttributes`**</Link>: Add `<body>` attributes (e.g. `<body class="dark">`).
+- <Link href="/rootAttributes">**`rootAttributes`**</Link>: Add root element attributes (e.g. `<div id="root" role="none">`).
+- <Link href="/headHtmlBegin">**`headHtmlBegin`**</Link>: Insert HTML at the beginning of `<head>`.
+- <Link href="/headHtmlEnd">**`headHtmlEnd`**</Link>: Insert HTML at the end of `<head>`.
+- <Link href="/bodyHtmlBegin">**`bodyHtmlBegin`**</Link>: Insert HTML at the beginning of `<body>`.
+- <Link href="/bodyHtmlEnd">**`bodyHtmlEnd`**</Link>: Insert HTML at the end of `<body>`.
 
 
 ## Vite
 
 Settings that alias [Vite](https://vite.dev) settings (see also <Link href="/cli" />):
 
-- [**`host`**](/host): Make development/preview server available over LAN and public addresses.
-- [**`port`**](/port): Change port of development/preview server.
-- [**`root`**](/root): Set the [project root directory](https://vite.dev/config/shared-options.html#root).
-- [**`mode`**](/mode): Set the [mode](https://vite.dev/guide/env-and-mode.html#modes) to run in.
-- [**`force`**](/force): Disable [Vite](https://vitejs.dev)'s cache.
+- <Link href="/host">**`host`**</Link>: Make development/preview server available over LAN and public addresses.
+- <Link href="/port">**`port`**</Link>: Change port of development/preview server.
+- <Link href="/root">**`root`**</Link>: Set the [project root directory](https://vite.dev/config/shared-options.html#root).
+- <Link href="/mode">**`mode`**</Link>: Set the [mode](https://vite.dev/guide/env-and-mode.html#modes) to run in.
+- <Link href="/force">**`force`**</Link>: Disable [Vite](https://vitejs.dev)'s cache.
 
 
 ## Advanced
 
 > Most users don't need to know about these settings.
 
-- [**`meta`**](/meta): Create new hooks or settings, or modify existing ones.
-- [**`passToClient`**](/passToClient): Determines what `pageContext` values are sent to the client-side.
-- [**`clientRouting`**](/clientRouting): Enable <Link href="/client-routing">Client Routing</Link>.
-- [**`hydrationCanBeAborted`**](/hydrationCanBeAborted): Whether your <Link href="/ui-frameworks">UI framework</Link> allows the <Link href="/hydration">hydration</Link> to be aborted.
-- [**`trailingSlash`**](/url-normalization): Whether URLs should end with a trailing slash.
-- [**`disableUrlNormalization`**](/url-normalization): Disable automatic URL normalization.
-- [**`reactStrictMode`**](/reactStrictMode): Whether to use React's `<StrictMode>`.
-- [**`clientHooks`**](/clientHooks): Whether hooks are loaded on the client-side.
-- [**`filesystemRoutingRoot`**](/filesystemRoutingRoot): URL root for <Link href="/filesystem-routing">Filesystem Routing</Link>.
-- [**`injectScriptsAt`**](/injectScriptsAt): Where scripts are injected in the HTML.
-- [**`ai`**](/ai): Whether Vike checks your <Link href="/ai#skill">`vike/SKILL.md`</Link> is installed and up-to-date.
+- <Link href="/meta">**`meta`**</Link>: Create new hooks or settings, or modify existing ones.
+- <Link href="/passToClient">**`passToClient`**</Link>: Determines what `pageContext` values are sent to the client-side.
+- <Link href="/clientRouting">**`clientRouting`**</Link>: Enable <Link href="/client-routing">Client Routing</Link>.
+- <Link href="/hydrationCanBeAborted">**`hydrationCanBeAborted`**</Link>: Whether your <Link href="/ui-frameworks">UI framework</Link> allows the <Link href="/hydration">hydration</Link> to be aborted.
+- <Link href="/url-normalization">**`trailingSlash`**</Link>: Whether URLs should end with a trailing slash.
+- <Link href="/url-normalization">**`disableUrlNormalization`**</Link>: Disable automatic URL normalization.
+- <Link href="/reactStrictMode">**`reactStrictMode`**</Link>: Whether to use React's `<StrictMode>`.
+- <Link href="/clientHooks">**`clientHooks`**</Link>: Whether hooks are loaded on the client-side.
+- <Link href="/filesystemRoutingRoot">**`filesystemRoutingRoot`**</Link>: URL root for <Link href="/filesystem-routing">Filesystem Routing</Link>.
+- <Link href="/injectScriptsAt">**`injectScriptsAt`**</Link>: Where scripts are injected in the HTML.
+- <Link href="/ai">**`ai`**</Link>: Whether Vike checks your <Link href="/ai#skill">`vike/SKILL.md`</Link> is installed and up-to-date.
 
 
 ## See also

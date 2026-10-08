@@ -10,28 +10,28 @@ See also: <Link href="/settings" />.
 
 ## Basics
 
-- [**`data()`**](/data): <TextEnv>server (configurable)</TextEnv> Called before the page is rendered, for fetching data.
-- [**`guard()`**](/guard): <TextEnv>server (configurable)</TextEnv> Protect pages from unprivileged access.
-- [**`onHydrationEnd()`**](/onHydrationEnd): <TextEnv>client</TextEnv> Called after the page is <Link href="/hydration">hydrated</Link>.
-- [**`onPageTransitionStart()`**](/onPageTransitionStart): <TextEnv>client</TextEnv> Called upon page navigation, before the new page starts rendering.
-- [**`onPageTransitionEnd()`**](/onPageTransitionEnd): <TextEnv>client</TextEnv> Called upon page navigation, after the new page has finished rendering.
-- [**`onCreatePageContext()`**](/onCreatePageContext): <TextEnv>server & client</TextEnv> Called when a <Link href="/pageContext">`pageContext` object</Link> is created.
-- [**`onCreateGlobalContext()`**](/onCreateGlobalContext): <TextEnv>server & client</TextEnv> Called when the <Link href="/globalContext">`globalContext` object</Link> is created.
-- [**`onData()`**](/onData): <TextEnv>server & client</TextEnv> Called as soon as <Link href="/pageContext#data">`pageContext.data`</Link> is available.
+- <Link href="/data">**`data()`**</Link>: <TextEnv>server (configurable)</TextEnv> Called before the page is rendered, for fetching data.
+- <Link href="/guard">**`guard()`**</Link>: <TextEnv>server (configurable)</TextEnv> Protect pages from unprivileged access.
+- <Link href="/onHydrationEnd">**`onHydrationEnd()`**</Link>: <TextEnv>client</TextEnv> Called after the page is <Link href="/hydration">hydrated</Link>.
+- <Link href="/onPageTransitionStart">**`onPageTransitionStart()`**</Link>: <TextEnv>client</TextEnv> Called upon page navigation, before the new page starts rendering.
+- <Link href="/onPageTransitionEnd">**`onPageTransitionEnd()`**</Link>: <TextEnv>client</TextEnv> Called upon page navigation, after the new page has finished rendering.
+- <Link href="/onCreatePageContext">**`onCreatePageContext()`**</Link>: <TextEnv>server & client</TextEnv> Called when a <Link href="/pageContext">`pageContext` object</Link> is created.
+- <Link href="/onCreateGlobalContext">**`onCreateGlobalContext()`**</Link>: <TextEnv>server & client</TextEnv> Called when the <Link href="/globalContext">`globalContext` object</Link> is created.
+- <Link href="/onData">**`onData()`**</Link>: <TextEnv>server & client</TextEnv> Called as soon as <Link href="/pageContext#data">`pageContext.data`</Link> is available.
 
 **Pre-rendering**
 
-- [**`onBeforePrerenderStart()`**](/onBeforePrerenderStart): <TextEnv>server</TextEnv> Called for initializing <Link href="/pre-rendering">pre-rendering</Link>.
-- [**`onPrerenderStart()`**](/onPrerenderStart): <TextEnv>server</TextEnv> Called when <Link href="/pre-rendering">pre-rendering</Link> starts.
+- <Link href="/onBeforePrerenderStart">**`onBeforePrerenderStart()`**</Link>: <TextEnv>server</TextEnv> Called for initializing <Link href="/pre-rendering">pre-rendering</Link>.
+- <Link href="/onPrerenderStart">**`onPrerenderStart()`**</Link>: <TextEnv>server</TextEnv> Called when <Link href="/pre-rendering">pre-rendering</Link> starts.
 
 **Instrumentation**
 
-- [**`onHookCall()`**](/onHookCall): <TextEnv>server & client</TextEnv> Called whenever a hook is invoked. Useful for error tracking and performance monitoring.
-- [**`onError()`**](/onError): <TextEnv>server</TextEnv> Called when an error occurs on the server.
+- <Link href="/onHookCall">**`onHookCall()`**</Link>: <TextEnv>server & client</TextEnv> Called whenever a hook is invoked. Useful for error tracking and performance monitoring.
+- <Link href="/onError">**`onError()`**</Link>: <TextEnv>server</TextEnv> Called when an error occurs on the server.
 
 **`vike-vue`**
 
-- [**`onCreateApp()`**](/onCreateApp): <TextEnv>server & client</TextEnv> <Link href="/vike-vue">`vike-vue`</Link> Called after creating Vue's `app` instance.
+- <Link href="/onCreateApp">**`onCreateApp()`**</Link>: <TextEnv>server & client</TextEnv> <Link href="/vike-vue">`vike-vue`</Link> Called after creating Vue's `app` instance.
 
 
 
@@ -39,14 +39,14 @@ See also: <Link href="/settings" />.
 
 > Most users don't need to know about these hooks.
 
-- [**`onBeforeRender()`**](/onBeforeRender): <TextEnv>server (configurable)</TextEnv> Called before the page is rendered, lower-level and usually for advanced integrations with data fetching tools.
-- [**`onRenderHtml()`**](/onRenderHtml): <TextEnv>server</TextEnv> Called when a page is rendered to HTML (or to <Link href="/onRenderHtml#non-html-content">non-HTML content</Link>) on the server-side.
-- [**`onRenderClient()`**](/onRenderClient): <TextEnv>client</TextEnv> Called when a page is rendered on the client-side.
-- [**`onBeforeRoute()`**](/onBeforeRoute): <TextEnv>server & client</TextEnv> Called before the URL is routed to a page.
-- [**`onBeforeRenderClient()`**](/onBeforeRenderClient): <TextEnv>client</TextEnv> Called at the beginning of <Link href="/onRenderClient">`onRenderClient()`</Link>.
-- [**`onAfterRenderClient()`**](/onAfterRenderClient): <TextEnv>client</TextEnv> Called at the end of <Link href="/onRenderClient">`onRenderClient()`</Link>.
-- [**`onBeforeRenderHtml()`**](/onBeforeRenderHtml): <TextEnv>server</TextEnv> Called at the beginning of <Link href="/onRenderHtml">`onRenderHtml()`</Link>.
-- [**`onAfterRenderHtml()`**](/onAfterRenderHtml): <TextEnv>server</TextEnv> Called at the end of <Link href="/onRenderHtml">`onRenderHtml()`</Link>.
+- <Link href="/onBeforeRender">**`onBeforeRender()`**</Link>: <TextEnv>server (configurable)</TextEnv> Called before the page is rendered, lower-level and usually for advanced integrations with data fetching tools.
+- <Link href="/onRenderHtml">**`onRenderHtml()`**</Link>: <TextEnv>server</TextEnv> Called when a page is rendered to HTML (or to <Link href="/onRenderHtml#non-html-content">non-HTML content</Link>) on the server-side.
+- <Link href="/onRenderClient">**`onRenderClient()`**</Link>: <TextEnv>client</TextEnv> Called when a page is rendered on the client-side.
+- <Link href="/onBeforeRoute">**`onBeforeRoute()`**</Link>: <TextEnv>server & client</TextEnv> Called before the URL is routed to a page.
+- <Link href="/onBeforeRenderClient">**`onBeforeRenderClient()`**</Link>: <TextEnv>client</TextEnv> Called at the beginning of <Link href="/onRenderClient">`onRenderClient()`</Link>.
+- <Link href="/onAfterRenderClient">**`onAfterRenderClient()`**</Link>: <TextEnv>client</TextEnv> Called at the end of <Link href="/onRenderClient">`onRenderClient()`</Link>.
+- <Link href="/onBeforeRenderHtml">**`onBeforeRenderHtml()`**</Link>: <TextEnv>server</TextEnv> Called at the beginning of <Link href="/onRenderHtml">`onRenderHtml()`</Link>.
+- <Link href="/onAfterRenderHtml">**`onAfterRenderHtml()`**</Link>: <TextEnv>server</TextEnv> Called at the end of <Link href="/onRenderHtml">`onRenderHtml()`</Link>.
 
 
 ## Upcoming
