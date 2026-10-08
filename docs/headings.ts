@@ -328,7 +328,6 @@ const headings = [
     title: '`+serverEntry`',
     titleInNav: 'Server Entry',
     url: '/serverEntry',
-    sectionTitles: ['Development'],
   },
   {
     level: 2,
