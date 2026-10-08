@@ -76,7 +76,7 @@ Paths below are relative to https://vike.dev (e.g. `/data-fetching` → https://
 - /prefetch — `prefetch()` prefetch next-page assets; Client Routing; pairs with `+prefetchStaticAssets`
 - /ClientOnly — `<ClientOnly>` render children client-only within SSR, fallback during SSR/hydration, avoids "window is not defined", auto code-split
 - /modifyUrl — `modifyUrl()` edit URL parts (pathname/protocol/hostname/port) keeping query; i18n locale extraction
-- /renderPage — `renderPage()` server-side SSR entry, server-agnostic (Node/Cloudflare/Vercel/Deno/Bun), last middleware, returns `httpResponse` (body/status/headers/stream), `createDevMiddleware()`
+- /renderPage — `renderPage()` server-side SSR entry, server-agnostic (Node/Cloudflare/Vercel/Deno/Bun), last middleware, returns `httpResponse` (body/status/headers/stream), `createDevMiddleware()` (Connect middleware; bridge to Web Standards servers with srvx's `fetchNodeHandler()`)
 - /escapeInject — `escapeInject` template tag for XSS-safe HTML in `onRenderHtml()`, auto-escapes, `dangerouslySkipEscape()` bypass
 - /injectFilter — `injectFilter()` control injection of Vike asset/preload tags (type, position `HTML_BEGIN`/`HTML_END`/`false`), prod-only, beta
 
@@ -94,6 +94,7 @@ Paths below are relative to https://vike.dev (e.g. `/data-fetching` → https://
 ## Server, headers & security
 
 - /server — `+server` integrate server framework (Hono/Express/Fastify/H3/Elysia), built-in dev server + HMR, `pageContext.req`/`pageContext.res` (HTTP request/response), `vike/fetch`, prod port/HTTPS, standalone deploy, WebSockets (`upgrade()`, dev + prod, Node.js)
+- /serverEntry — `+serverEntry` custom production server entry (becomes `dist/server/index.mjs`, e.g. an AWS Lambda `handler` or a `Bun.serve()` server, each native or via srvx), `import server from 'vike:server'` (the `+server.js` exports, e.g. `{ fetch }`), serve static assets yourself, production-only; without it Vike's built-in srvx server entry (Node.js/Deno/Bun, provided by Universal Deploy)
 - /api-routes — `+server.js` HTTP endpoints, framework integration, RPC (Telefunc), file uploads, HTTP caching, middleware
 - /headers — request headers: `pageContext.headers` (normalized) / `headersOriginal`, cookie parsing, Headers API
 - /headersResponse — `+headersResponse` response headers (static or fn), `pageContext.headersResponse`, `Set-Cookie`, server-only, beta
