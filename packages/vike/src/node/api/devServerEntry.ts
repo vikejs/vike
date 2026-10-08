@@ -23,7 +23,7 @@ import './assertEnvApiDev.js'
 
 const ENV_VAR = '__VIKE_IS_SERVER_ENTRY_PROCESS'
 
-// The child process exits with this code to tell the parent process to restart it (same exit code as vike-node)
+// The child process exits with this code to tell the parent process to restart it
 const EXIT_CODE_RESTART = 33
 const globalObject = getGlobalObject<{ viteServer?: ViteDevServer }>('api/devServerEntry.ts', {})
 
