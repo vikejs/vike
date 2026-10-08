@@ -1,5 +1,6 @@
 export { getServerConfig }
 export { isUniversalDeployVitePreview }
+export { getServerEntryFilePath_ifDev }
 
 import type { ResolvedConfig } from 'vite'
 import { catchAllEntry } from '@universal-deploy/store'
@@ -55,6 +56,13 @@ function getServerEntryFilePath(vikeConfig: VikeConfigInternal): string | null {
   assert('filePathAbsoluteFilesystem' in source.definedAt)
   // `source.value` is the import path, e.g. `some-npm-package/serverEntry` if the file cannot be resolved
   return source.definedAt.filePathAbsoluteFilesystem ?? source.value
+}
+
+// The +serverEntry.js that `$ vike dev` runs: only if there isn't +server.js (otherwise +serverEntry.js is production-only)
+// https://vike.dev/serverEntry
+function getServerEntryFilePath_ifDev(vikeConfig: VikeConfigInternal): string | null {
+  if (vikeConfig._pageConfigGlobal.configValueSources.server) return null
+  return getServerEntryFilePath(vikeConfig)
 }
 
 function isUniversalDeployVitePreview(vikeConfig: VikeConfigInternal, viteConfigResolved: ResolvedConfig) {

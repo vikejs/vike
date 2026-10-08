@@ -678,9 +678,9 @@ type ConfigBuiltIn = {
   server?: boolean | ImportStringList
 
   /**
-   * Your production server entry: the file becomes `dist/server/index.mjs`.
+   * Control how your server starts.
    *
-   * Use it to start your server in production (or to export what your deployment platform expects).
+   * It's built into `dist/server/index.mjs` for production, and it's also run in development if you don't define `+server.js`.
    *
    * https://vike.dev/serverEntry
    */

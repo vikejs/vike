@@ -354,7 +354,7 @@ const headings = [
     titleInNav: '... more',
     title: 'Integration (more)',
     url: '/integration',
-    sectionTitles: ['Server (manual integration)', 'Non-JavaScript backend'],
+    sectionTitles: ['Non-JavaScript backend'],
   },
   {
     level: 1,
@@ -612,6 +612,7 @@ const headings = [
     level: 2,
     title: '`renderPage()`',
     url: '/renderPage',
+    sectionTitles: ['`renderPage()` vs `vike(app)`', 'Without `+serverEntry.js`'],
   },
   {
     level: 2,

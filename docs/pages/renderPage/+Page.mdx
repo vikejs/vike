@@ -1,90 +1,122 @@
-import { Link } from '@brillout/docpress'
-import { JustAMiddleware, ConfigSpec } from '../../components'
+import { Link, ImportMeta } from '@brillout/docpress'
+import { ConfigSpec } from '../../components'
 
 <ConfigSpec
   env="server"
   global={null}
 />
 
-The `renderPage()` function enables you to embed Vike into any server, see <Link href="/integration#server-manual-integration" doNotInferSectionTitle noBreadcrumb />.
+The `renderPage()` function enables you to embed Vike into any server.
 
-> We generally recommend using <Link href="/server">`+server`</Link> instead of `renderPage()`.
->
-> If you use <Link href="/server">`+server`</Link> then you don't need to call `renderPage()` yourself (`+server` already calls it).
->
-> We recommend using `renderPage()` instead of `+server` only if you have a clear reason not to use `+server`.
+> We generally recommend using `vike(app)` instead of `renderPage()`, see <Link href="#renderpage-vs-vike-app" />.
 
 > You only need `renderPage()` if you use SSR, see <Link href="#optional">Optional</Link>.
 
-<JustAMiddleware noLink />
+From the perspective of a server, Vike is just a middleware:
+
+```ts
+// +serverEntry.ts
+
+// renderPage() doesn't depend on Node.js and can be used within any JavaScript environment:
+// Node.js, AWS, Cloudflare, Vercel, Deno, Bun, Lagon, ...
+import { renderPage } from 'vike/server'
+
+// Any server: Express.js, Cloudflare Worker, AWS Lambda Function, Fastify, Hono, Nitro, ...
+server.addMiddleware({
+  method: 'GET',
+  route: '*', // catch-all
+  async handler(request: Request) {
+    const pageContextInit = { urlOriginal: request.url }
+    const pageContext = await renderPage(pageContextInit)
+    // `body` is the HTML of the page with a route matching pageContextInit.urlOriginal
+    const { body, statusCode, headers } = pageContext.httpResponse
+    const response = { body, statusCode, headers }
+    return response
+  }
+})
+```
+
+You can embed `renderPage()` into any server and any deployment environment.
+
+> You can also run your server yourself without `+serverEntry.js` (e.g. `$ node server/index.js`), see <Link href="#without-serverentry-js" />.
+
+> Alternatively, instead of using `renderPage()`, you can <Link href="/pre-rendering">pre-render</Link> your pages and remove the need for a production server (and deploy to a <Link href="/static-hosts">static host</Link> instead).
 
 
 ## Usage
 
+Define your server at <Link href="/serverEntry">`+serverEntry.js`</Link> and use `renderPage()` as the last middleware.
+
+> Don't define <Link href="/server">`+server.js`</Link>, see <Link href="/serverEntry#development" />.
+
 ```ts
-// server/index.ts
+// +serverEntry.ts
 
 // In this example we use Express.js but we could use any other server framework
 import express from 'express'
+import { fileURLToPath } from 'node:url'
 import { renderPage, createDevMiddleware } from 'vike/server'
 import type { Request, Response } from 'express'
 
-const isProduction = process.env.NODE_ENV === 'production'
-const root = `${__dirname}/..`
+// Create an Express.js server
+const app = express()
 
-startServer()
+// Dev/prod middleware
+if (import.meta.env.DEV) {
+  // Vite's development middleware (HMR, transpiling, static assets, ...)
+  const { devMiddleware } = await createDevMiddleware()
+  app.use(devMiddleware)
+} else {
+  // In production, we need to serve our static assets ourselves.
+  // (In dev, Vite's middleware serves our static assets.)
+  app.use(express.static(fileURLToPath(new URL('../client', import.meta.url))))
+}
 
-async function startServer() {
-  // Create an Express.js server
-  const app = express()
+// ...
+// Other middlewares (authentication, REST/GraphQL/RPC middleware, ...)
+// ...
 
-  // Dev/prod middleware
-  if (!isProduction) {
-    const { devMiddleware } = await createDevMiddleware({ root })
-    app.use(devMiddleware)
-  } else {
-    // In production, we need to serve our static assets ourselves.
-    // (In dev, Vite's middleware serves our static assets.)
-    app.use(express.static(`${root}/${outDir}/client`))
+// SSR middleware.
+// Note: it should always be the last middleware, because it's a catch-all
+// middleware that supersedes any middleware placed after it.
+app.get('/{*vikeCatchAll}', async (req: Request, res: Response) => {
+  const pageContextInit = {
+    // Required: the URL of the page
+    urlOriginal: req.originalUrl,
+
+    // Optional: the HTTP Headers
+    headersOriginal: req.headers,
+
+    // Optional: information about the logged-in user (when using an
+    // Express.js authentication middleware that defines `req.user`).
+    user: req.user
+
+    // ... we can provide any additional information about the request here ...
   }
 
-  // ...
-  // Other middlewares (authentication, REST/GraphQL/RPC middleware, ...)
-  // ...
+  const pageContext = await renderPage(pageContextInit)
 
-  // SSR middleware.
-  // Note: it should always be the last middleware, because it's a catch-all
-  // middleware that supersedes any middleware placed after it.
-  app.get('*', async (req: Request, res: Response) => {
-    const pageContextInit = {
-      // Required: the URL of the page
-      urlOriginal: req.originalUrl,
-
-      // Optional: the HTTP Headers
-      headersOriginal: req.headers,
-
-      // Optional: information about the logged-in user (when using an
-      // Express.js authentication middleware that defines `req.user`).
-      user: req.user
-
-      // ... we can provide any additional information about the request here ...
-    }
-
-    const pageContext = await renderPage(pageContextInit)
-
-    const { body, statusCode, headers } = pageContext.httpResponse
-    headers.forEach(([name, value]) => {
-      // There can be several Set-Cookie headers: res.setHeader() would only keep the last one
-      if (name.toLowerCase() === 'set-cookie') res.appendHeader(name, value)
-      else res.setHeader(name, value)
-    })
-    res.status(statusCode).send(body)
+  const { body, statusCode, headers } = pageContext.httpResponse
+  headers.forEach(([name, value]) => {
+    // There can be several Set-Cookie headers: res.setHeader() would only keep the last one
+    if (name.toLowerCase() === 'set-cookie') res.appendHeader(name, value)
+    else res.setHeader(name, value)
   })
+  res.status(statusCode).send(body)
+})
 
-  const port = 3000
-  app.listen(port)
-  console.log(`Server running at http://localhost:${port}`)
-}
+const port = 3000
+app.listen(port)
+console.log(`Server running at http://localhost:${port}`)
+```
+
+```bash
+# Development: Vike runs your server with Vite and restarts it whenever you modify it
+$ vike dev
+# Build: +serverEntry.ts => dist/server/index.mjs
+$ vike build
+# Production
+$ node dist/server/index.mjs
 ```
 
 The `pageContext.httpResponse.body` value is the HTML string returned by the
@@ -101,8 +133,6 @@ The `renderPage()` function doesn't depend on Node.js and you can use `renderPag
  - Any server environment (Express.js, Hattip, Deno, Fastify, Vite's development server, Node.js's HTTP server, ...)
  - Any deployment provider (AWS, Cloudflare Workers, Vercel, ...)
 
-> When modifying your server, you may need to manually restart your server for your changes to take effect. See [#562](https://github.com/vikejs/vike/issues/562).
-
 
 ## Optional
 
@@ -112,10 +142,48 @@ If you <Link href="/pre-rendering">pre-render</Link> all your pages then `render
 
 But, if you use Server-Side Rendering (SSR), then you need a production server and `renderPage()` is required. See <Link href="/pre-rendering"/>.
 
+
+## `renderPage()` vs `vike(app)`
+
+The fundamental difference is that:
+- `vike(app)` is more zero-config while `renderPage()` is lower-level
+{/* TODO/soon explain +middleware difference between the two */}
+
+| | `vike(app)` | `renderPage()` |
+| --- | --- | --- |
+| Servers | Hono, Express, Fastify, H3, Elysia | Any |
+| Integration | One line | Your own catch-all route |
+| Custom `pageContext` properties | With <Link href="/onCreatePageContext">`+onCreatePageContext`</Link> | Passed to `renderPage()` |
+| `pageContext.req` and `pageContext.res` | Set for you | Passed to `renderPage()` (if needed) |
+| HTTP response | Sent for you | Sent by you |
+
+> `vike(app)` and `renderPage()` are interchangeable: you can use either one, regardless of whether you use <Link href="/server">`+server.js`</Link>, <Link href="/serverEntry">`+serverEntry.js`</Link>, or run your server directly (e.g. `$ node server/index.js`).
+
+> See also:
+> - <Link href="/server" />
+> - <Link href="/server#extra-control" />
+
+
+## Without `+serverEntry.js`
+
+You can also run your server yourself (e.g. `$ node server/index.js`) instead of `+server.js` and `+serverEntry.js`.
+
+Unless you have a reason not to, we generally recommend using <Link href="/server">`+server.js`</Link> and/or <Link href="/serverEntry">`+serverEntry.js`</Link> as it provides a better development experience:
+
+| | `+server.js`/`+serverEntry.js` | `$ node server/index.js` |
+| --- | --- | --- |
+| Server code (1) | Processed by Vite | Not processed by Vite |
+| Server restart (2) | Fine-grained (only when needed) | Coarse (unnecessary reloads) |
+
+1. Vite processes your server code: <ImportMeta prop="env" /> is available (e.g. `import.meta.env.DEV` and the variables of your `.env` files), and so are path aliases and Vite plugins. (Modern runtimes such as Bun and recent Node.js versions can run TypeScript, but they don't apply your Vite configuration.)
+2. `$ vike dev` restarts your server only when a file imported by `+serverEntry.js` changes: modifying a page doesn't restart your server (the page is updated with <Link href="/glossary#hmr">HMR</Link>). A watcher such as `node --watch` or `nodemon` doesn't know about Vite's module graph.
+
+> See also: <Link href="/server#extra-control" />
+
 ## See also
 
 - <Link href="/server" />
-- <Link href="/integration#server-manual-integration" doNotInferSectionTitle/>
+- <Link href="/serverEntry" />
 - <Link href="/createDevMiddleware" />
 - <Link href="/headers" />
 - <Link href="/injectFilter" />

@@ -19,6 +19,8 @@ const {
 })
 ```
 
+> The `createDevMiddleware()` options aren't available if you use <Link href="/serverEntry">`+serverEntry.js`</Link> in development. (Because Vite's development server is created before `+serverEntry.js` is run.) You can use `vite.config.js` or `+config.js` instead.
+
 See <Link href="/renderPage#usage">usage example</Link> for how to use it.
 
 Vite types:

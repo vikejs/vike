@@ -3,8 +3,6 @@ import { DeprecatedServer } from '../../components'
 
 Define `+server.js` to seamlessly integrate a server framework (Hono, Express, ...). Or set `+server: true` to use Vike's built-in lightweight server.
 
-> Using `+server` is the recommended way for a seamless server integration, but you can also use <Link href="/renderPage">`renderPage()`</Link> to manually integrate the server instead.
-
 > `vike-photon` is deprecated — it has been replaced by `+server`:
 > - <Link href="/migration/server" />
 > - <Link href="/blog/universal-deploy" />
@@ -219,7 +217,7 @@ export default {
   🚧 Server settings are separate because values usually differ between dev and prod. If you have a use case where settings share the same value in dev and prod, then [reach out](https://github.com/vikejs/vike/discussions) and we'll create server settings that apply to both dev an prod.
 </blockquote>
 
-> For full control over your server production entry (e.g. to define a custom deployment integration), define <Link href="/serverEntry">`+serverEntry.js`</Link>.
+> See <Link href="#extra-control" /> for more configuration options.
 
 
 ## `pageContext.req` & `pageContext.res`
@@ -376,13 +374,67 @@ export default {
 > See <Link href="/precompress" noBreadcrumb /> to generate `.br`/`.gz` files for your static assets at build time (instead of unnecessarily compressing them on each request).
 
 
+## Extra control
+
+If needed, Vike enables you to gain complete control over the server.
+
+> Vike is designed so that it never blocks you, allowing you to use:
+> - Any VPS deployment (self-hosting, AWS EC2, Google Cloud, ...)
+> - Any serverless/edge deployment (Cloudflare Workers, Vercel, Firebase, AWS Lambda, Google Cloud Functions, Deno Deploy, ...)
+> - Any static host deployment (Cloudflare Pages, GitHub Pages, Netlify, ...)
+> - Any server framework (Express, Fastify, Hono, Nitro, Hattip, Koa, Hapi, ...)
+> - Any authentication strategy/tool (email/password, OAuth, Auth.js, Passport.js, Grant, Keycloak, Auth0, ...)
+> - Any server utility (Docker, Nginx, PM2, ...)
+
+### `+server: true` => `+server.js`
+
+| | `+server: true` | `+server.js` |
+| --- | --- | --- |
+| Server | Vike's built-in server | Your server framework (Hono, Express, ...) |
+| Middlewares and routes | — | Yours (e.g. authentication, API routes, ...) |
+
+See <Link href="#server-true" />.
+
+### `+serverEntry.js` with `+server.js`
+
+For full control over your server production entry (e.g. to define a custom deployment integration), you can define <Link href="/serverEntry">`+serverEntry.js`</Link>.
+
+| | Vike's built-in entry | `+serverEntry.js` |
+| --- | --- | --- |
+| Production server entry (`dist/server/index.mjs`) | [srvx](https://srvx.h3.dev) (Node.js, Bun, Deno) | Your code, e.g. AWS Lambda's `handler()` or Node.js's `cluster` |
+
+### `+serverEntry.js` without `+server.js`
+
+| | `+serverEntry.js` with `+server.js` | `+serverEntry.js` without `+server.js` |
+| --- | --- | --- |
+| Development server | Vite's development server. ([Node.js with Connect](https://github.com/vitejs/ecosystem/issues/16).) | Your server. (E.g. `Bun.serve()`/`Deno.serve()`.) |
+
+For full control over the server entry not only in production but also in development, you can define `+serverEntry.js` without `+server.js`: `+serverEntry.js` is then also run in development (and not only in production). See <Link href="/serverEntry#development" />.
+
+### `vike(app)` => `renderPage()`
+
+Using `renderPage()` instead of `vike(app)` gives you more control as it's lower-level (albeit less zero-config).
+
+See: <Link href="/renderPage#renderpage-vs-vike-app" noBreadcrumb doNotInferSectionTitle />.
+
+### `+serverEntry.js` => `$ node server/index.js`
+
+Running your server yourself (e.g. `$ node server/index.js`) instead of using `+serverEntry.js` gives you full control over how your server is built and run (albeit with a less integrated development experience).
+
+| | `+server.js`/`+serverEntry.js` | `$ node server/index.js` |
+| --- | --- | --- |
+| Server code | Processed by Vite | Not processed by Vite |
+| Server restart | Fine-grained (only when needed) | Coarse (unnecessary reloads) |
+
+See: <Link href="/renderPage#without-serverentry-js" doNotInferSectionTitle />.
+
+
 ## See also
 
 - <Link href="/cloudflare" />
 - <Link href="/vercel" />
 - <Link href="/serverEntry" />
 - <Link href="/renderPage" />
-- <Link href="/integration#server-manual-integration" doNotInferSectionTitle />
 - <Link href="/integration#non-javascript-backend" doNotInferSectionTitle />
 - <Link href="/migration/server" />
 - <Link href="/blog/universal-deploy" />
