@@ -29,25 +29,15 @@ const globalObject = getGlobalObject<{ viteServer?: ViteDevServer }>('api/devSer
 
 // Parent process — process.fork()
 function startServerEntry_parent(): Promise<never> {
+  const [scriptPath, ...args] = process.argv.slice(1)
+  assert(scriptPath)
   let child: ChildProcess
   let signalReceived: NodeJS.Signals | undefined
-  const start = () => {
-    const [scriptPath, ...args] = process.argv.slice(1)
-    assert(scriptPath)
+  const forkChild = () => {
     child = fork(scriptPath, args, { stdio: 'inherit', env: { ...process.env, [ENV_VAR]: '1' } })
     child.on('exit', (code, signal) => {
-      if (code === EXIT_CODE_RESTART && !signalReceived) {
-        start()
-        return
-      }
-      signal ??= signalReceived ?? null
-      if (signal) {
-        // Exit with the same signal as the child process
-        process.removeAllListeners(signal)
-        process.kill(process.pid, signal)
-      } else {
-        process.exit(code ?? 1)
-      }
+      if (code === EXIT_CODE_RESTART && !signalReceived) forkChild()
+      else exitLikeChild(code, signal ?? signalReceived ?? null)
     })
   }
   const onSignal = (signal: NodeJS.Signals) => {
@@ -56,9 +46,19 @@ function startServerEntry_parent(): Promise<never> {
   }
   process.on('SIGINT', onSignal)
   process.on('SIGTERM', onSignal)
-  start()
+  forkChild()
   // The parent process exits when the child process exits
   return new Promise<never>(() => {})
+}
+
+// Exit with the same exit code or signal as the child process
+function exitLikeChild(code: number | null, signal: NodeJS.Signals | null): void {
+  if (signal) {
+    process.removeAllListeners(signal)
+    process.kill(process.pid, signal)
+  } else {
+    process.exit(code ?? 1)
+  }
 }
 
 // Child process — vite.ssrLoadModule()
