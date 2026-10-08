@@ -27,10 +27,9 @@ app.get('/shared-module-evaluations', (_req, res) => {
 
 // Vike middleware. It should always be our last middleware (because it's a catch-all
 // middleware superseding any middleware placed after it).
-app.get('/{*vikeCatchAll}', async (req, res, next) => {
+app.get('/{*vikeCatchAll}', async (req, res) => {
   const pageContext = await renderPage({ urlOriginal: req.originalUrl, headersOriginal: req.headers })
   const { httpResponse } = pageContext
-  if (!httpResponse) return next()
   httpResponse.headers.forEach(([name, value]) => res.setHeader(name, value))
   res.status(httpResponse.statusCode)
   httpResponse.pipe(res)
