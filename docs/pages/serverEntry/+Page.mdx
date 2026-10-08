@@ -35,18 +35,22 @@ It gives you full control over your server entry, for example to:
 - Use another server framework or runtime API such as `Bun.serve()` and `Deno.serve()`
 - Use all CPU cores with Node.js's [`cluster`](https://nodejs.org/api/cluster.html) module
 
-> For even more control, you can manually integrate Vike into your server with <Link href="/renderPage">`renderPage()`</Link>, see <Link href="#development" />.
+> See also: <Link href="/server" />
 
-> Without `+serverEntry.js`, `dist/server/index.mjs` is Vike's built-in server entry: a [srvx](https://srvx.h3.dev) server entry with first-class support for Node.js, Deno, and Bun (and potentially future runtimes). See also: <Link href="/server" />.
+> For even more control, you can manually integrate Vike into any server/deployment using <Link href="/renderPage">`renderPage()`</Link>, see <Link href="#development" />.
 
-> Vike uses <Link href="/blog/universal-deploy">Universal Deploy</Link> under the hood: it provides Vike's built-in server and integrates with deployment providers (e.g. Cloudflare and Vercel).
+> If you don't define `+serverEntry.js`, Vike uses [srvx](https://srvx.h3.dev) as server entry (it has first-class support for Node.js, Bun, and Deno).
+
+> Vike uses <Link href="/blog/universal-deploy">Universal Deploy</Link> under the hood.
 
 
 ## `vike:server`
 
-`import server from 'vike:server'` is your <Link href="/server">`+server.js`</Link> exports, e.g. `{ fetch }`. (If you don't define `+server.js`, then it's Vike's built-in server.)
+`import server from 'vike:server'` is your <Link href="/server">`+server.js`</Link> exports (e.g. `{ fetch }`).
 
-You can use it to handle requests before they reach `+server.js`:
+> If you don't define `+server.js`, then it's the exports of Vike's built-in server.
+
+You can use it to wrap `+server.js`, for example:
 
 ```ts
 // +serverEntry.ts
@@ -68,9 +72,9 @@ serve({
 
 AWS Lambda calls the `handler()` function exported by `dist/server/index.mjs`. You can implement it natively or with srvx.
 
-> With AWS Lambda, you usually serve the static assets `dist/client/` with a CDN, such as Amazon CloudFront.
-
 The examples below use `+serverEntry.js` with <Link href="/server">`+server.js`</Link>, which means that `+serverEntry.js` is only used in production: in development, `$ vike dev` runs your `+server.js` with Vite's development server as usual (see <Link href="#development" />).
+
+> With AWS Lambda, you usually serve the static assets `dist/client/` with a CDN, such as Amazon CloudFront.
 
 ### Native
 
