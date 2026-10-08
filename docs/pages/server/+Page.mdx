@@ -405,12 +405,11 @@ For full control over your server production entry (e.g. to define a custom depl
 
 ### `+serverEntry.js` without `+server.js`
 
-| | With `+server.js` | Without `+server.js` |
+| | `+serverEntry.js` with `+server.js` | `+serverEntry.js` without `+server.js` |
 | --- | --- | --- |
-| Development server | Vite's development server | Your server (e.g. `Bun.serve()`) |
-| Vite's development middleware | Used for you | Used by you (<Link href="/createDevMiddleware">`createDevMiddleware()`</Link>) |
+| Development server | Vite's development server | Your server |
 
-For full control over your server also in development (e.g. to use Bun's WebSockets in development), you can define `+serverEntry.js` without `+server.js`: `$ vike dev` then runs your `+serverEntry.js`. See <Link href="/serverEntry#development" />.
+For full control over the server entry not only in production but also in development, you can define `+serverEntry.js` without `+server.js`: `+serverEntry.js` is then also run at development (not only in production). See <Link href="/serverEntry#development" />.
 
 ### `vike(app)` => `renderPage()`
 
