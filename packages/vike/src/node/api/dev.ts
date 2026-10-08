@@ -29,8 +29,12 @@ async function dev(
   const serverEntryFilePath = await getServerEntryFilePath_ifDevCli()
   if (serverEntryFilePath && !isServerProcess()) return await startServerEntry_parent()
 
-  // +serverEntry.js creates the server: it uses Vite's development server as middleware
-  const server = await createServer(serverEntryFilePath ? addMiddlewareMode(viteConfigUser) : viteConfigUser)
+  const server = await createServer(
+    serverEntryFilePath
+      ? // +serverEntry.js creates the server: it uses Vite's development server as middleware
+        addMiddlewareMode(viteConfigUser)
+      : viteConfigUser,
+  )
 
   const viteServer = server
   const viteConfig = server.config
