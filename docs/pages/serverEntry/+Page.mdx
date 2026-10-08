@@ -119,41 +119,17 @@ export const handler = toLambdaHandler({ fetch: server.fetch })
 
 ## Development
 
-If you define <Link href="/server">`+server.js`</Link>, then `+serverEntry.js` is only used in production: in development, `$ vike dev` uses Vite's development server with your `+server.js` (as usual, with HMR).
+#### With `+server.js` => production only
 
-If you don't define `+server.js`, then `$ vike dev` runs `+serverEntry.js` also in development. It's the recommended way to manually integrate Vike into your server with <Link href="/renderPage">`renderPage()`</Link>:
+If you define <Link href="/server">`+server.js`</Link>, then `+serverEntry.js` is only run in production: in development, Vite's development server is used while `+server.js` is attached to Vite's development server — in other words, Vite's development server *is* the "server entry".
 
-```ts
-// +serverEntry.ts (without +server.js)
+#### Without `+server.js` => also development
 
-import express from 'express'
-import { fileURLToPath } from 'node:url'
-import { createDevMiddleware, renderPage } from 'vike/server'
+If you don't define `+server.js`, then `+serverEntry.js` is also run in development. See example of using `+serverEntry.js` for both development and production at: <Link href="/renderPage#usage" />.
 
-const app = express()
-
-if (import.meta.env.DEV) {
-  // Vite's development middleware (HMR, transpiling, static assets, ...)
-  const { devMiddleware } = await createDevMiddleware()
-  app.use(devMiddleware)
-} else {
-  // Serve the static assets (dist/client/)
-  app.use(express.static(fileURLToPath(new URL('../client', import.meta.url))))
-}
-
-app.get('/{*vikeCatchAll}', async (req, res) => {
-  const pageContext = await renderPage({ urlOriginal: req.originalUrl, headersOriginal: req.headers })
-  const { httpResponse } = pageContext
-  httpResponse.headers.forEach(([name, value]) => res.setHeader(name, value))
-  res.status(httpResponse.statusCode)
-  httpResponse.pipe(res)
-})
-
-app.listen(3000)
-```
-
-- `$ vike dev` runs `+serverEntry.js` with Vite: TypeScript, path aliases, Vite plugins, and `import.meta.env.DEV` work (no need for `tsx`/`ts-node`).
-- When you modify `+serverEntry.js` (or a file it imports), `$ vike dev` restarts your server. Modifying a page doesn't restart your server: the page is updated with <Link href="/glossary#hmr">HMR</Link> as usual.
+Note that:
+- `+serverEntry.js` is processed by Vite: TypeScript, path aliases, Vite plugins, and `import.meta.env.DEV` work (no need for `tsx`/`ts-node`).
+- When you modify `+serverEntry.js` (or a file it imports), your server is automatically restarted. Modifying a page doesn't restart your server: the page is updated with <Link href="/glossary#hmr">HMR</Link> as usual.
 
 > If you want to use HTTPS in development, use HTTPS in your server and also [pass the HTTPS certificates to Vite](https://vite.dev/config/server-options.html#server-https) (Vite uses them for its HMR WebSocket).
 
