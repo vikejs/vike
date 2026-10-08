@@ -217,7 +217,7 @@ export default {
   🚧 Server settings are separate because values usually differ between dev and prod. If you have a use case where settings share the same value in dev and prod, then [reach out](https://github.com/vikejs/vike/discussions) and we'll create server settings that apply to both dev an prod.
 </blockquote>
 
-> For more control, see <Link href="#extra-control" />.
+> See <Link href="#extra-control" /> for more configuration options.
 
 
 ## `pageContext.req` & `pageContext.res`
@@ -391,7 +391,7 @@ If needed, Vike enables you to gain complete control over the server.
 | | `+server: true` | `+server.js` |
 | --- | --- | --- |
 | Server | Vike's built-in server | Your server framework (Hono, Express, ...) |
-| Middlewares and routes | — | Yours (e.g. authentication, API routes) |
+| Middlewares and routes | — | Yours (e.g. authentication, API routes, ...) |
 
 See <Link href="#server-true" />.
 
@@ -399,7 +399,7 @@ See <Link href="#server-true" />.
 
 For full control over your server production entry (e.g. to define a custom deployment integration), you can define <Link href="/serverEntry">`+serverEntry.js`</Link>.
 
-| | Vike's built-in production server entry | `+serverEntry.js` |
+| | Vike's built-in entry | `+serverEntry.js` |
 | --- | --- | --- |
 | Production server entry (`dist/server/index.mjs`) | [srvx](https://srvx.h3.dev) (Node.js, Bun, Deno) | Your code, e.g. AWS Lambda's `handler()` or Node.js's `cluster` |
 
@@ -409,7 +409,7 @@ For full control over your server production entry (e.g. to define a custom depl
 | --- | --- | --- |
 | Development server | Vite's development server. ([Node.js with Connect](https://github.com/vitejs/ecosystem/issues/16).) | Your server. (E.g. `Bun.serve()`/`Deno.serve()`.) |
 
-For full control over the server entry not only in production but also in development, you can define `+serverEntry.js` without `+server.js`: `+serverEntry.js` is then also run at development (not only in production). See <Link href="/serverEntry#development" />.
+For full control over the server entry not only in production but also in development, you can define `+serverEntry.js` without `+server.js`: `+serverEntry.js` is then also run at development (and not only in production). See <Link href="/serverEntry#development" />.
 
 ### `vike(app)` => `renderPage()`
 
@@ -420,6 +420,11 @@ See: <Link href="/renderPage#renderpage-vs-vike-app" noBreadcrumb doNotInferSect
 ### `+serverEntry.js` => `$ node server/index.js`
 
 Running your server yourself (e.g. `$ node server/index.js`) instead of using `+serverEntry.js` gives you full control over how your server is built and run (albeit with a less integrated development experience).
+
+| | `+server.js`/`+serverEntry.js` | `$ node server/index.js` |
+| --- | --- | --- |
+| Server code | Processed by Vite | Not processed by Vite |
+| Server restart | Fine-grained (only when needed) | Coarse (unnecessary reloads) |
 
 See: <Link href="/renderPage#without-serverentry-js" doNotInferSectionTitle />.
 
