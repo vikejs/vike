@@ -93,6 +93,8 @@ const globalObject = getGlobalObject('runtime/renderPageServer.ts', {
 type PageContextAfterRender = PageContextCreatedServerWithoutGlobalContext & {
   httpResponse: HttpResponse
   _requestId: number
+  // The response is a +middleware's, not Vike's
+  _isMiddlewareResponse?: true
 } & Partial<PageContextInternalServer>
 type PageContextBegin = ReturnType<typeof getPageContextBegin>
 
@@ -381,6 +383,7 @@ async function renderPageServerEntryWithMiddlewares(
 ) {
   const router = new UniversalRouter(true, false)
   let httpResponseVikeCore = undefined as undefined | HttpResponse
+  let responseVikeCore = undefined as undefined | Response
   // Wrap rendering into universal-middleware routing
   apply(router, [
     enhance(
@@ -390,10 +393,11 @@ async function renderPageServerEntryWithMiddlewares(
         pageContext = pageContextHttpResponse as any
         httpResponseVikeCore = httpResponse
         const readable = httpResponse.getReadableWebStream()
-        return new Response(readable, {
+        responseVikeCore = new Response(readable, {
           status: httpResponse.statusCode,
           headers: httpResponse.headers,
         })
+        return responseVikeCore
       },
       {
         name: 'vike',
@@ -418,6 +422,8 @@ async function renderPageServerEntryWithMiddlewares(
 
   const httpResponse = createHttpResponseFromUniversalMiddleware(res, httpResponseVikeCore?.earlyHints)
   objectAssign(pageContext, { httpResponse })
+  // A +middleware answered, or a response function replaced Vike's response
+  if (res !== responseVikeCore) objectAssign(pageContext, { _isMiddlewareResponse: true as const })
   return pageContext
 }
 
@@ -760,7 +766,8 @@ function fork<PageContext extends PageContextBegin>(pageContext: PageContext) {
 
 function assertPageContextFinish(pageContextFinish: PageContextAfterRender) {
   assert(pageContextFinish.httpResponse)
-  if (pageContextFinish.isClientSideNavigation) {
+  // A +middleware's own response to a `.pageContext.json` request (e.g. a 401) is passed through as is
+  if (pageContextFinish.isClientSideNavigation && !pageContextFinish._isMiddlewareResponse) {
     const headers = new Headers(pageContextFinish.httpResponse.headers)
     const contentType = headers.get('Content-Type')
     assert(contentType?.toLowerCase() === 'application/json')

@@ -273,8 +273,8 @@ async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _u
     const contentTypeCorrect = 'application/json'
     const isCorrect = contentType && contentType.includes(contentTypeCorrect)
 
-    // Static hosts + page doesn't exist
-    if (!isCorrect && response.status === 404) {
+    // Static hosts + page doesn't exist, or a +middleware answered with its own response (e.g. a 401 or a login redirect): show it
+    if (!isCorrect && (response.status !== 200 || response.redirected)) {
       redirectHard(pageContext.urlOriginal)
       return { is404ServerSideRouted: true }
     }

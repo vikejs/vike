@@ -17,7 +17,12 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   run(cmd, {
     serverUrl: 'http://localhost:3000',
     tolerateError({ logText }) {
-      return logText.includes("Vite's CLI is deprecated") || logText.includes('Run the built server entry')
+      return (
+        logText.includes("Vite's CLI is deprecated") ||
+        logText.includes('Run the built server entry') ||
+        // The browser logs the 401 of the guarded page
+        logText.includes('the server responded with a status of 401')
+      )
     },
   })
 
@@ -54,6 +59,51 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     expect(response.status).toBe(200)
     expect(response.headers.get('x-settings')).toBe('yes')
     expect(await response.text()).toContain('Admin settings')
+  })
+
+  test("A +middleware's own response to a .pageContext.json request is passed through", async () => {
+    const response: Response = await fetch(`${getServerUrl()}/admin/settings/index.pageContext.json`)
+    expect(response.status).toBe(401)
+    expect(await response.text()).toBe('Unauthorized')
+    expectLog(partRegex`HTTP response ${/.*/} /admin/settings/index.pageContext.json 401`, {
+      filter: (log) => log.logSource === 'stderr',
+    })
+  })
+
+  test("A +middleware's own response to a client-side navigation is shown", async () => {
+    await page.goto(`${getServerUrl()}/`)
+    await testCounter()
+    await page.click('a[href="/admin/data"]')
+    await autoRetry(async () => {
+      expect(await page.textContent('body')).toBe('Unauthorized')
+    })
+    for (const pathname of ['/admin/data/index.pageContext.json', '/admin/data']) {
+      expectLog(partRegex`HTTP response ${/.*/} ${pathname} 401`, { filter: (log) => log.logSource === 'stderr' })
+    }
+  })
+
+  test("A +middleware's redirect of a client-side navigation is followed", async () => {
+    await page.goto(`${getServerUrl()}/`)
+    await testCounter()
+    await page.click('a[href="/guarded"]')
+    await autoRetry(async () => {
+      expect(page.url()).toBe(`${getServerUrl()}/login`)
+      expect(await page.textContent('body')).toContain('Login')
+    })
+  })
+
+  test("A +middleware's response function can decorate or replace the response to a .pageContext.json request", async () => {
+    const url = `${getServerUrl()}/wrapped/index.pageContext.json`
+    const decorated: Response = await fetch(url)
+    expect(decorated.status).toBe(200)
+    expect(decorated.headers.get('x-wrapped')).toBe('yes')
+    expect(await decorated.text()).toContain('WRAPPED-DATA')
+    const replaced: Response = await fetch(url, { headers: { 'x-replace': '1' } })
+    expect(replaced.status).toBe(401)
+    expect(await replaced.text()).toBe('Replaced')
+    expectLog(partRegex`HTTP response ${/.*/} /wrapped/index.pageContext.json 401`, {
+      filter: (log) => log.logSource === 'stderr',
+    })
   })
 
   test('A +middleware with a path and order 0 still answers its path, and the pages still render', async () => {
