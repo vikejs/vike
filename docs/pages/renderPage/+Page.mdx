@@ -8,11 +8,7 @@ import { JustAMiddleware, ConfigSpec } from '../../components'
 
 The `renderPage()` function enables you to embed Vike into any server.
 
-> We generally recommend using <Link href="/server">`+server`</Link> instead of `renderPage()`.
->
-> If you use <Link href="/server">`+server`</Link> then you don't need to call `renderPage()` yourself (it's called for you).
->
-> We recommend using `renderPage()` instead of `+server` only if you have a clear reason not to use `+server`.
+> We generally recommend using `vike(app)` instead of `renderPage()`, see <Link href="#renderpage-vs-vike-app" />.
 
 > You only need `renderPage()` if you use SSR, see <Link href="#optional">Optional</Link>.
 
@@ -121,16 +117,23 @@ But, if you use Server-Side Rendering (SSR), then you need a production server a
 
 ## `renderPage()` vs `vike(app)`
 
-Instead of `renderPage()`, you can use `vike(app)`:
-- `vike(app)` is zero-config, whereas `renderPage()` is lower-level.
+The fundamental difference is that:
+- `vike(app)` is more zero-config while `renderPage()` is more lower-level
+{/* TODO/soon explain +middleware difference between the two */}
 
-See <Link href="/server">`+server`</Link>.
+| | `vike(app)` | `renderPage()` |
+| --- | --- | --- |
+| Servers | Hono, Express, Fastify, H3, Elysia | Any |
+| Integration | One line | Your own catch-all route |
+| Custom `pageContext` properties | With <Link href="/onCreatePageContext">`+onCreatePageContext`</Link> | Passed to `renderPage()` |
+| `pageContext.req` and `pageContext.res` | Set for you | Passed to `renderPage()` (if needed) |
+| HTTP response | Sent for you | Sent by you |
 
-{/* TODO/soon better explain the difference between the two */}
+> `vike(app)` and `renderPage()` are interchangeable: you can use either one, regardless whether you use <Link href="/server">`+server.js`</Link>, <Link href="/serverEntry">`+serverEntry.js`</Link>, or run your server directly (e.g. `$ node server/index.js`).
 
-> `vike(app)` and `renderPage()` are interchangeable: you can use either one, whether you use <Link href="/server">`+server.js`</Link>, <Link href="/serverEntry">`+serverEntry.js`</Link>, or run your server directly (e.g. `$ node server/index.js`).
-
-> See also: <Link href="/server#extra-control" />
+> See also:
+> - <Link href="/server" />
+> - <Link href="/server#extra-control" />
 
 
 ## Without `+serverEntry.js`
