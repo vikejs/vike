@@ -6,7 +6,9 @@ import { ConfigSpec } from '../../components'
   global
 />
 
-Define `+serverEntry.js` to control how your server starts: Vike builds it into `dist/server/index.mjs`, the file you run in production. If you don't use `+server.js`, then `$ vike dev` also runs it in development, see <Link href="#development" />.
+Define `+serverEntry.js` to control how your server starts: Vike builds it into `dist/server/index.mjs`, the file you run in production.
+
+> Without `+server.js`, `$ vike dev` also runs `+serverEntry.js` in development, see <Link href="#development" />.
 
 ```ts
 // +serverEntry.ts
