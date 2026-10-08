@@ -21,7 +21,7 @@ import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import { isRunnableDevEnvironment } from '../../utils/isRunnableDevEnvironment.js'
 import './assertEnvApiDev.js'
 
-const IS_SERVER_PROCESS = '__VIKE_IS_SERVER_ENTRY_PROCESS'
+const IS_SERVER_PROCESS = '__VIKE_IS_SERVER_PROCESS'
 
 // The child process exits with this code to tell the parent process to restart it
 const EXIT_CODE_RESTART = 33
