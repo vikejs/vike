@@ -3,8 +3,6 @@ import { DeprecatedServer } from '../../components'
 
 Define `+server.js` to seamlessly integrate a server framework (Hono, Express, ...). Or set `+server: true` to use Vike's built-in lightweight server.
 
-> You can use <Link href="/serverEntry">`+serverEntry.js`</Link> for more control over the server entry.
-
 > `vike-photon` is deprecated — it has been replaced by `+server`:
 > - <Link href="/migration/server" />
 > - <Link href="/blog/universal-deploy" />
@@ -219,7 +217,7 @@ export default {
   🚧 Server settings are separate because values usually differ between dev and prod. If you have a use case where settings share the same value in dev and prod, then [reach out](https://github.com/vikejs/vike/discussions) and we'll create server settings that apply to both dev an prod.
 </blockquote>
 
-> For full control over your server production entry (e.g. to define a custom deployment integration), define <Link href="/serverEntry">`+serverEntry.js`</Link>.
+> For more control, see <Link href="#extra-control" />.
 
 
 ## `pageContext.req` & `pageContext.res`
@@ -416,7 +414,7 @@ See <Link href="/renderPage#renderpage-vs-vike-app" noBreadcrumb doNotInferSecti
 | `dist/server/index.mjs` | [srvx](https://srvx.h3.dev) server (Node.js, Bun, Deno) | Your code, e.g. AWS Lambda's `handler()`, `Bun.serve()`, or Node.js's `cluster` |
 | Static assets | Served for you | Served by you |
 
-See <Link href="/serverEntry" />.
+For full control over your server production entry (e.g. to define a custom deployment integration), you can define <Link href="/serverEntry">`+serverEntry.js`</Link>.
 
 ### `+serverEntry.js` without `+server.js`
 
