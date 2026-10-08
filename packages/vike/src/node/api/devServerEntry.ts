@@ -21,8 +21,10 @@ import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import { isRunnableDevEnvironment } from '../../utils/isRunnableDevEnvironment.js'
 import './assertEnvApiDev.js'
 
-const ENV_VAR = 'VIKE_INTERNAL_SERVER_ENTRY_PROCESS'
-const EXIT_CODE_RESTART = 75
+const ENV_VAR = '__VIKE_IS_SERVER_ENTRY_PROCESS'
+
+// The child process exits with this code to tell the parent process to restart it (same exit code as vike-node)
+const EXIT_CODE_RESTART = 33
 const globalObject = getGlobalObject<{ viteServer?: ViteDevServer }>('api/devServerEntry.ts', {})
 
 // Only `$ vike dev` runs +serverEntry.js (not the programmatic API `dev()`)
