@@ -12,6 +12,7 @@ import { hasVikeServerOrVikePhoton } from './pluginUniversalDeploy/detectDepreca
 import { getServerConfig, getServerEntryDev } from './pluginUniversalDeploy/getServerConfig.js'
 import { pluginServerEntryAlias } from './pluginUniversalDeploy/pluginServerEntryAlias.js'
 import { pluginUnwrapProdOptions } from './pluginUniversalDeploy/pluginUnwrapProdOptions.js'
+import { getViteCliCommand } from '../shared/isViteCli.js'
 import { unique } from '../../../utils/unique.js'
 import { assertUsage } from '../../../utils/assert.js'
 import '../assertEnvVite.js'
@@ -30,6 +31,11 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
       precompress(vikeConfig.config.precompress),
     ]
   const { serverEntryVike, serverEntryId, serverFilePath, serverEntryFilePath } = serverConfig
+  // Vite's CLI always starts Vite's own server => it can't run +serverEntry.js
+  assertUsage(
+    !(getServerEntryDev(vikeConfig) && getViteCliCommand() === 'dev'),
+    '+serverEntry.js (without +server.js) requires $ vike dev instead of $ vite dev — see https://vike.dev/serverEntry',
+  )
 
   return [
     ...(!serverEntryFilePath
