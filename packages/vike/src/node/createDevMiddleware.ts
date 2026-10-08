@@ -20,16 +20,7 @@ async function createDevMiddleware(
   // `$ vike dev` runs +serverEntry.js => it already created Vite's development server — https://vike.dev/serverEntry
   const viteServer = getServerEntryViteServer()
   if (viteServer) {
-    const optionsIgnored = [
-      options.viteConfig && 'viteConfig',
-      options.vikeConfig && 'vikeConfig',
-      options.root && normalizePath(path.resolve(options.root)) !== viteServer.config.root && 'root',
-    ].filter((o) => typeof o === 'string')
-    assertWarning(
-      optionsIgnored.length === 0,
-      `${pc.cyan(`createDevMiddleware({ ${optionsIgnored.join(', ')} })`)} is ignored: ${pc.cyan('$ vike dev')} created Vite's development server before running +serverEntry.js — set your config in vite.config.js and +config.js instead`,
-      { onlyOnce: true },
-    )
+    warnIgnoredOptions(options, viteServer)
     return { devMiddleware: viteServer.middlewares, viteServer, viteConfig: viteServer.config }
   }
 
@@ -48,4 +39,17 @@ async function createDevMiddleware(
   const server = await createServer(viteConfigUser)
   const devMiddleware = server.middlewares
   return { devMiddleware, viteServer: server, viteConfig: server.config }
+}
+
+function warnIgnoredOptions(options: { root?: string } & ApiOptions, viteServer: ViteDevServer): void {
+  const optionsIgnored = [
+    options.viteConfig && 'viteConfig',
+    options.vikeConfig && 'vikeConfig',
+    options.root && normalizePath(path.resolve(options.root)) !== viteServer.config.root && 'root',
+  ].filter((o) => typeof o === 'string')
+  assertWarning(
+    optionsIgnored.length === 0,
+    `${pc.cyan(`createDevMiddleware({ ${optionsIgnored.join(', ')} })`)} is ignored: ${pc.cyan('$ vike dev')} created Vite's development server before running +serverEntry.js — set your config in vite.config.js and +config.js instead`,
+    { onlyOnce: true },
+  )
 }
