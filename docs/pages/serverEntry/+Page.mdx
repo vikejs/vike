@@ -111,14 +111,41 @@ export const handler = toLambdaHandler({ fetch: server.fetch })
 ```
 
 
-## Example: srvx
+## Example: Bun
 
-> Vike's built-in server entry already uses srvx: this example is only meant as a starting point for customizing it.
+You can call [`Bun.serve()`](https://bun.com/docs/runtime/http/server) yourself or use srvx (which uses `Bun.serve()` when running with Bun).
+
+```bash
+$ vike build
+$ bun dist/server/index.mjs
+```
+
+> You don't need `+serverEntry.js` to use Bun: without it, `$ bun dist/server/index.mjs` runs Vike's built-in server entry.
+
+### Native
 
 ```ts
 // +serverEntry.ts
 
-import { fileURLToPath } from 'node:url'
+import server from 'vike:server'
+
+Bun.serve({
+  port: 3000,
+  async fetch(request) {
+    // Serve the static assets (dist/client/)
+    const file = Bun.file(`${import.meta.dirname}/../client${new URL(request.url).pathname}`)
+    if (await file.exists()) return new Response(file)
+    // Your +server.js exports
+    return server.fetch(request)
+  }
+})
+```
+
+### srvx
+
+```ts
+// +serverEntry.ts
+
 import { serve } from 'srvx'
 import { staticMiddleware } from 'srvx/static'
 import server from 'vike:server'
@@ -126,7 +153,7 @@ import server from 'vike:server'
 serve({
   port: 3000,
   // Serve the static assets (dist/client/)
-  middleware: [staticMiddleware({ dir: fileURLToPath(new URL('../client', import.meta.url)) })],
+  middleware: [staticMiddleware({ dir: `${import.meta.dirname}/../client` })],
   // Your +server.js exports
   fetch: server.fetch
 })
@@ -140,7 +167,9 @@ serve({
 
 ## Static assets
 
-`+serverEntry.js` is responsible for serving the static assets `dist/client/`. (Because `+serverEntry.js` replaces Vike's built-in server entry that serves static assets.) See the srvx example above.
+When using `+serverEntry.js`, it's your responsibility to serve the static assets `dist/client/`.
+
+> If you don't use `+serverEntry.js`, then Vike's built-in server automatically serves the static assets.
 
 > See <Link href="/precompress" noBreadcrumb /> to generate `.br`/`.gz` files for your static assets at build time.
 
