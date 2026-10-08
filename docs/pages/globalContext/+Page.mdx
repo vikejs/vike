@@ -27,7 +27,7 @@ While `globalContext` has some built-in properties, it's mostly used to store <L
 
 > The `globalContext` object also contains many internals (they are prefixed with `_`, e.g. `globalContext._viteDevServer`). You should use them only if strictly needed and, if you do, then let us know so that we can add official support for your use case (otherwise you'll expose yourself to breaking changes upon any version update).
 
-<Prop name="pages" />
+<Prop id="pages" />
 
 Environment: server, client  
 
@@ -37,9 +37,9 @@ Eagerly loaded runtime <Link href="/config">configurations</Link> of all pages.
 
 > Some page configurations aren't available at runtime; they are only available at config-time.
 
-> See also: [`globalContext.config`](#config)
+> See also: <Link href="#config" noWarning>`globalContext.config`</Link>
 
-<Prop name="config" />
+<Prop id="config" />
 
 Environment: server, client  
 
@@ -49,10 +49,10 @@ The app's global runtime <Link href="/config">configuration</Link> (such as <Lin
 
 > See also:
 > - <Link href="/pageContext#config">`pageContext.config`</Link>
-> - [`globalContext.pages`](#pages)
+> - <Link href="#pages" noWarning>`globalContext.pages`</Link>
 > - <Link href="/getVikeConfig" />
 
-<Prop name="prerenderContext" />
+<Prop id="prerenderContext" />
 
 Environment: config (build-time)  
 
@@ -62,7 +62,7 @@ If you use <Link href="/pre-rendering">pre-rendering</Link>, you can access:
 
 See also: <Link href="/getVikeConfig" />
 
-<Prop name="isClientSide" />
+<Prop id="isClientSide" />
 
 Environment: server, client  
 
@@ -70,37 +70,37 @@ Same as <Link href="/pageContext#isClientSide">`pageContext.isClientSide`</Link>
 
 It can also be used to narrow down the `GlobalContext` type to either `GlobalContextClient` or `GlobalContextServer`, see <Link href="#narrowing-down" />.
 
-<Prop name="isGlobalContext" />
+<Prop id="isGlobalContext" />
 
 Environment: server, client  
 
 Like <Link href="/pageContext#isPageContext">`pageContext.isPageContext`</Link>.
 
-<Prop name="assetsManifest" />
+<Prop id="assetsManifest" />
 
 Environment: server  
 
 The <Link href="/preloading#assets-manifest">assets manifest</Link>.
 
-<Prop name="viteConfig" />
+<Prop id="viteConfig" />
 
 Environment: server  
 
 The entire Vite's config, only available at development and during <Link href="/pre-rendering">pre-rendering</Link>.
 
-<Prop name="viteConfigRuntime" />
+<Prop id="viteConfigRuntime" />
 
 Environment: server  
 
 A tiny subset of Vite's config that is also available in production.
 
-<Prop name="baseAssets" />
+<Prop id="baseAssets" />
 
 Environment: server  
 
 The <Link href="/base-url#baseassets">assets Base URL</Link>.
 
-<Prop name="baseServer" />
+<Prop id="baseServer" />
 
 Environment: server  
 

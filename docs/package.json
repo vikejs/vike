@@ -3,11 +3,12 @@
     "dev": "vike dev",
     "build": "vike build",
     "preview": "vike build && vike preview",
+    "lint": "docpress lint",
     "typecheck": "tsc --noEmit --watch"
   },
   "dependencies": {
     "@batijs/elements": "^0.0.96",
-    "@brillout/docpress": "^0.17.7",
+    "@brillout/docpress": "^0.17.8",
     "@classmatejs/react": "^0.2.1",
     "@gsap/react": "^2.1.2",
     "@tailwindcss/vite": "^4.1.18",

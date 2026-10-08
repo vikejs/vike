@@ -71,11 +71,11 @@ export default {
 
 > You can access `pageContext` in any UI component and Vike hook — see <Link href="/pageContext" />.
 
-> If you use <Link href="/server">`+server.js`</Link>, you can access the request object at <Link href="/pageContext#req">`pageContext.req`</Link>.
+> If you use <Link href="/server">`vike(app)`</Link>, you can access the request object at <Link href="/pageContext#req">`pageContext.req`</Link>.
 >
-> If you don't use `+server.js`, you can define a custom property `pageContext.req` at <Link href="/renderPage">`renderPage()`</Link>:
+> If you use <Link href="/renderPage">`renderPage()`</Link>, you can define a custom property `pageContext.req`:
 > ```ts
-> // server/index.ts
+> // +serverEntry.ts
 >
 > import { renderPage } from 'vike/server'
 >
@@ -125,7 +125,7 @@ You can then use <Link href="/pageContext#globalContext">`pageContext.globalCont
 
 ## Login flow
 
-By using <Link href="/guard">+guard</Link> with [`throw redirect()`](/redirect) or [`throw render()`](/render) you can:
+By using <Link href="/guard">+guard</Link> with <Link href="/redirect">`throw redirect()`</Link> or <Link href="/render">`throw render()`</Link> you can:
  - Implement login flows.
  - Protect private pages from unprivileged access.
 

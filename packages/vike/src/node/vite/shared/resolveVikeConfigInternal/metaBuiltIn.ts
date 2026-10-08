@@ -363,6 +363,12 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { server: true },
     global: true,
   },
+  serverEntry: {
+    // The value is merely the file path of the server entry, which becomes dist/server/index.mjs — Vike never loads it as a config value
+    env: { config: true },
+    global: true,
+    _valueIsFilePath: true,
+  },
   precompress: {
     env: { config: true },
     global: true,

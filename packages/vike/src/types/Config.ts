@@ -680,6 +680,15 @@ type ConfigBuiltIn = {
   server?: boolean | ImportStringList
 
   /**
+   * Control how your server starts.
+   *
+   * It's built into `dist/server/index.mjs` for production, and it's also run in development if you don't define `+server.js`.
+   *
+   * https://vike.dev/serverEntry
+   */
+  serverEntry?: string | ImportStringList
+
+  /**
    * Set to `true` to create `.br` and `.gz` files for your static assets at build time, so that they don't have to be compressed on each request.
    *
    * https://vike.dev/precompress
