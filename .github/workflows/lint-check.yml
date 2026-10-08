@@ -10,3 +10,4 @@ jobs:
       - uses: pnpm/action-setup@v4
       - run: pnpm install
       - run: pnpm run lint
+      - run: pnpm run docs:lint
