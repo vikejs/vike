@@ -66,10 +66,12 @@ AWS Lambda calls the `handler()` function exported by `dist/server/index.mjs`. Y
 
 > With AWS Lambda, you usually serve the static assets `dist/client/` with a CDN, such as Amazon CloudFront.
 
+TODO/ai: in the examples below we use +serverEntry.ts with +server.js which means that...
+
 ### Native
 
 ```ts
-// +serverEntry.ts
+// +serverEntry.ts (with +server.js)
 
 import type { APIGatewayProxyHandlerV2 } from 'aws-lambda'
 import server from 'vike:server'
@@ -101,7 +103,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
 ### srvx
 
 ```ts
-// +serverEntry.ts
+// +serverEntry.ts (with +server.js)
 
 import { toLambdaHandler } from 'srvx/aws-lambda'
 import server from 'vike:server'
