@@ -58,7 +58,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
             const target = targets[0]
             assertUsage(
               target === undefined,
-              `+serverEntry cannot be used with ${target} (it uses its own server entry) — see https://vike.dev/serverEntry`,
+              `+serverEntry cannot be used with ${target} (because it uses its own server entry)`,
             )
           }),
           // dist/server/index.mjs loads dist/server/entry.mjs
