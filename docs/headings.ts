@@ -354,7 +354,7 @@ const headings = [
     titleInNav: '... more',
     title: 'Integration (more)',
     url: '/integration',
-    sectionTitles: ['Server (manual integration)', 'Non-JavaScript backend'],
+    sectionTitles: ['Non-JavaScript backend'],
   },
   {
     level: 1,

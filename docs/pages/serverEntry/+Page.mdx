@@ -155,6 +155,8 @@ app.listen(3000)
 - `$ vike dev` runs `+serverEntry.js` with Vite: TypeScript, path aliases, Vite plugins, and `import.meta.env.DEV` work (no need for `tsx`/`ts-node`).
 - When you modify `+serverEntry.js` (or a file it imports), `$ vike dev` restarts your server. Modifying a page doesn't restart your server: the page is updated with <Link href="/glossary#hmr">HMR</Link> as usual.
 
+> If you want to use HTTPS in development, use HTTPS in your server and also [pass the HTTPS certificates to Vite](https://vite.dev/config/server-options.html#server-https) (Vite uses them for its HMR WebSocket).
+
 
 ## Example: Bun
 

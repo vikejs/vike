@@ -112,7 +112,7 @@ Paths below are relative to https://vike.dev (e.g. `/data-fetching` → https://
 - /markdown — MDX (`@mdx-js/rollup`), frontmatter metadata, eager metadata via custom setting + `onCreateGlobalContext`, lazy transpiling
 - /error-tracking — client via `+client.js`, server via `+onError()`, hook monitoring via `+onHookCall()`, Sentry/Bugsnag/Rollbar
 - /i18n — `onBeforeRoute()` locale extraction, URL prefixes (`/en-US/`), `pageContext.locale`, `passToClient`, per-locale SSG via `onPrerenderStart()`, domain/query strategies
-- /integration — vanilla libs via `onHydrationEnd()`, component libraries, service workers via `+client.js`, view transitions, `renderPage()` middleware for any JS server (defined as `+serverEntry.js`), non-JS backends (Java/Python/Ruby/Go)
+- /integration — vanilla libs via `onHydrationEnd()`, component libraries, service workers via `+client.js`, view transitions, non-JS backends (Java/Python/Ruby/Go)
 - /extensions — extension ecosystem: `vike-react`/`vike-vue`/`vike-solid`, server adapters, data-fetching & UI-library integrations
 
 ## Build, CLI & misc guides
