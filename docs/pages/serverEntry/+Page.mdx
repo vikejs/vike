@@ -136,13 +136,6 @@ serve({
 > If all your pages are pre-rendered, `dist/server/` is still kept (Vike otherwise removes it, see <Link href="/prerender">`+prerender` > `keepDistServer`</Link>).
 
 
-## Deployment
-
-`+serverEntry.js` can't be used together with deployment plugins such as `vite-plugin-vercel` and `@cloudflare/vite-plugin`, as they define their own server entry.
-
-> For Cloudflare, set `wrangler.jsonc > main` to your own file instead, see <Link href="/cloudflare" />.
-
-
 ## See also
 
 - <Link href="/server" />
