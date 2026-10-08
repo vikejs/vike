@@ -1,6 +1,6 @@
-export { getServerEntryDevCli }
 export { startServerEntry_parent }
 export { startServerEntry_child }
+export { getServerEntryDevCli }
 export { getServerEntryViteServer }
 export { isServerEntryProcess }
 
@@ -26,13 +26,6 @@ const ENV_VAR = '__VIKE_IS_SERVER_ENTRY_PROCESS'
 // The child process exits with this code to tell the parent process to restart it
 const EXIT_CODE_RESTART = 33
 const globalObject = getGlobalObject<{ viteServer?: ViteDevServer }>('api/devServerEntry.ts', {})
-
-// Only `$ vike dev` runs +serverEntry.js (not the programmatic API `dev()`)
-async function getServerEntryDevCli(): Promise<string | null> {
-  if (!isVikeCli()) return null
-  const vikeConfig = await getVikeConfigInternal()
-  return getServerEntryDev(vikeConfig)
-}
 
 // Parent process — process.fork()
 function startServerEntry_parent(): Promise<never> {
@@ -114,6 +107,13 @@ function isImportedBy(modules: Set<EnvironmentModuleNode> | undefined, serverEnt
     stack.push(...mod.importers)
   }
   return false
+}
+
+// Only `$ vike dev` runs +serverEntry.js (not the programmatic API `dev()`)
+async function getServerEntryDevCli(): Promise<string | null> {
+  if (!isVikeCli()) return null
+  const vikeConfig = await getVikeConfigInternal()
+  return getServerEntryDev(vikeConfig)
 }
 
 function getServerEntryViteServer(): ViteDevServer | null {
