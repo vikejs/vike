@@ -10,7 +10,7 @@ The `renderPage()` function enables you to embed Vike into any server, see <Link
 
 > We generally recommend using <Link href="/server">`+server`</Link> instead of `renderPage()`.
 >
-> If you use <Link href="/server">`+server`</Link> then you don't need to call `renderPage()` yourself (`+server` already calls it).
+> If you use <Link href="/server">`+server`</Link> then you don't need to call `renderPage()` yourself (it's called for you).
 >
 > We recommend using `renderPage()` instead of `+server` only if you have a clear reason not to use `+server`.
 
@@ -115,7 +115,6 @@ The `renderPage()` function doesn't depend on Node.js and you can use `renderPag
 You can also run your server yourself without `+serverEntry.js` (e.g. `$ node server/index.js`), but we discourage it:
 - Your server code isn't processed by Vite: <ImportMeta prop="env" /> isn't available (e.g. `import.meta.env.DEV` and the variables of your `.env` files), nor are path aliases and Vite plugins. (Modern runtimes such as Bun and recent Node.js versions can run TypeScript, but they don't apply your Vite configuration.)
 - You have to restart your server yourself, or use a watcher (e.g. `node --watch` or `nodemon`) that doesn't know about Vite's module graph, whereas `$ vike dev` restarts your server only when a file imported by `+serverEntry.js` changes (modifying a page doesn't restart your server: the page is updated with <Link href="/glossary#hmr">HMR</Link>).
-- You have to call `createDevMiddleware()` only in development, e.g. based on <Link href="/NODE_ENV">`process.env.NODE_ENV`</Link>.
 
 > See also [#562 - Transpile server code](https://github.com/vikejs/vike/issues/562).
 
