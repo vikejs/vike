@@ -37,10 +37,16 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
       : [
           // +serverEntry.js is the production server entry dist/server/index.mjs (instead of @universal-deploy/node's server)
           // https://vike.dev/serverEntry
-          ...universalDeploy({ entry: serverEntryFilePath }).filter(
-            // `$ vike dev` runs +serverEntry.js (which calls renderPage() itself) => Universal Deploy's development middleware would supersede the user's server routes
-            (plugin) => !(getServerEntryDev(vikeConfig) && plugin.name === 'universal-deploy:dev-server'),
-          ),
+          ...universalDeploy({ entry: serverEntryFilePath }).flatMap((plugin) => {
+            // Without +server.js, +serverEntry.js calls renderPage() itself
+            if (getServerEntryDev(vikeConfig)) {
+              // `$ vike dev` runs +serverEntry.js => Universal Deploy's development middleware would supersede the user's server routes
+              if (plugin.name === 'universal-deploy:dev-server') return []
+              // +serverEntry.js doesn't have to import vike:server => remove Universal Deploy's warning `{ entry } doesn't import "virtual:ud:catch-all"`
+              if (plugin.name === 'ud:target:emit') return [{ ...plugin, buildEnd: undefined }]
+            }
+            return [plugin]
+          }),
           precompress(vikeConfig.config.precompress),
           resolveTargets((targets) => {
             const target = targets[0]
