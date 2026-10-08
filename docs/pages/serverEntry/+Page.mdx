@@ -118,7 +118,7 @@ If you define <Link href="/server">`+server.js`</Link>, then `+serverEntry.js` i
 If you don't define `+server.js`, then `$ vike dev` runs `+serverEntry.js` also in development. It's a convenient way to manually integrate Vike into your server with <Link href="/renderPage">`renderPage()`</Link>:
 
 ```ts
-// +serverEntry.ts
+// +serverEntry.ts (without +server.ts)
 
 import express from 'express'
 import { fileURLToPath } from 'node:url'
@@ -152,7 +152,7 @@ app.listen(3000)
 
 ## Example: Bun
 
-Without `+serverEntry.js`, `$ bun dist/server/index.mjs` runs Vike's built-in server entry powered by srvx which automatically uses `Bun.serve()` under the hood. But only in production: in development, `$ vike dev` uses Vite's development server.
+Without `+serverEntry.js`, `$ bun dist/server/index.mjs` runs Vike's built-in server entry powered by srvx which automatically uses `Bun.serve()` under the hood. But only in production: in development, `$ vike dev` uses Vite's development server (and thus the Node.js server APIs instead of `Bun.serve()`).
 
 With `+serverEntry.js` (and without `+server.js`, see [Development](#development)), you can use [`Bun.serve()`](https://bun.com/docs/runtime/http/server) in both development and production, for example to use Bun's [WebSockets](https://bun.com/docs/runtime/http/websockets) also in development:
 
