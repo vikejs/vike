@@ -6,9 +6,9 @@ export { createDevMiddleware_ as createDevMiddleware }
 import type { createDevMiddleware as createDevMiddlewareType } from '../../node/createDevMiddleware.js'
 import '../assertEnvServer.js'
 const createDevMiddleware_: typeof createDevMiddlewareType = async (...args) => {
-  const p = '../../node/createDevMiddleware.js'
+  let p = '../../node/createDevMiddleware.js'
   // Absolute URL, because on Windows Vite's ssrLoadModule() resolves a relative dynamic import to `D:/...` and then fails to load it (e.g. if `vike` is linked and `$ vike dev` runs +serverEntry.js)
-  const url = new URL(p, import.meta.url).href
-  const { createDevMiddleware } = await import(/*webpackIgnore: true*/ /* @vite-ignore */ url)
+  p = new URL(p, import.meta.url).href
+  const { createDevMiddleware } = await import(/*webpackIgnore: true*/ /* @vite-ignore */ p)
   return createDevMiddleware(...args)
 }
