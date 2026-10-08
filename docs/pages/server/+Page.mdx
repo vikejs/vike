@@ -397,12 +397,11 @@ See <Link href="#server-true" />.
 
 ### `+serverEntry.js` with `+server.js`
 
-| | Vike's built-in server entry | `+serverEntry.js` |
-| --- | --- | --- |
-| `dist/server/index.mjs` | [srvx](https://srvx.h3.dev) server (Node.js, Bun, Deno) | Your code, e.g. AWS Lambda's `handler()`, `Bun.serve()`, or Node.js's `cluster` |
-| Static assets | Served for you | Served by you |
-
 For full control over your server production entry (e.g. to define a custom deployment integration), you can define <Link href="/serverEntry">`+serverEntry.js`</Link>.
+
+| | Vike's built-in production server entry | `+serverEntry.js` |
+| --- | --- | --- |
+| `dist/server/index.mjs` | [srvx](https://srvx.h3.dev) (Node.js, Bun, Deno) | Your code, e.g. AWS Lambda's `handler()` or Node.js's `cluster` |
 
 ### `+serverEntry.js` without `+server.js`
 
