@@ -1,5 +1,5 @@
 import { Link, FileAdded, Warning, Tabs } from '@brillout/docpress'
-import { DeprecatedServer, RunServerYourself } from '../../components'
+import { DeprecatedServer } from '../../components'
 
 Define `+server.js` to seamlessly integrate a server framework (Hono, Express, ...). Or set `+server: true` to use Vike's built-in lightweight server.
 
@@ -419,11 +419,9 @@ See: <Link href="/renderPage#renderpage-vs-vike-app" noBreadcrumb doNotInferSect
 
 ### `+serverEntry.js` => `$ node server/index.js`
 
-{/* TODO/ai: dedupe, only render <RunServerYourself> over there (and remove component), write a succinct text instead. */}
+Running your server yourself (e.g. `$ node server/index.js`) instead of using `+serverEntry.js` gives you full control over how your server is built and run (albeit with a less integrated development experience).
 
-<RunServerYourself />
-
-See <Link href="/renderPage#without-serverentry-js" doNotInferSectionTitle />.
+See: <Link href="/renderPage#without-serverentry-js" doNotInferSectionTitle />.
 
 
 ## See also
