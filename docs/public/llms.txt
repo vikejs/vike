@@ -134,7 +134,7 @@ Paths below are relative to https://vike.dev (e.g. `/data-fetching` → https://
 
 ## Deployment
 
-- /self-host — self-host via `+server`, `renderPage()` manual integration, `vike build`, Node/Bun/Deno, custom frameworks (Hono/Express)
+- /self-host — self-host via `+server` (`+serverEntry.js` for more control over the server entry), `vike build`, Node/Bun/Deno, custom frameworks (Hono/Express)
 - /docker — Docker/Podman, HMR config, `server.host`, OOM build errors, WSL, Node memory limits
 - /cloudflare — Cloudflare Workers SSR, `@cloudflare/vite-plugin`, Wrangler, D1/KV/Durable Objects bindings, `workerd`, bundle size limits
 - /vercel — Vercel SSR/SSG, `vite-plugin-vercel`, ISR, edge functions, per-route config
