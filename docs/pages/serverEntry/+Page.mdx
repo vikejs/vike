@@ -156,6 +156,57 @@ app.listen(3000)
 - When you modify `+serverEntry.js` (or a file it imports), `$ vike dev` restarts your server. Modifying a page doesn't restart your server: the page is updated with <Link href="/glossary#hmr">HMR</Link> as usual.
 - <Link href="/createDevMiddleware">`createDevMiddleware()`</Link> returns the Vite development server that `$ vike dev` created.
 
+### Example: `Bun.serve()`
+
+```ts
+// +serverEntry.ts
+
+import { createDevMiddleware, renderPage } from 'vike/server'
+import { fetchNodeHandler } from 'srvx/node'
+
+const devMiddleware = import.meta.env.DEV ? (await createDevMiddleware()).devMiddleware : null
+
+Bun.serve({
+  port: 3000,
+  async fetch(request) {
+    if (devMiddleware) {
+      // Vite's development middleware, through srvx's emulation of Node.js's req/res
+      let handled = true
+      const response = await fetchNodeHandler(
+        (req, res, next) =>
+          devMiddleware(req, res, () => {
+            handled = false
+            next()
+          }),
+        request
+      )
+      if (handled) return response
+    } else {
+      // Serve the static assets (dist/client/)
+      const file = Bun.file(new URL(`../client${new URL(request.url).pathname}`, import.meta.url))
+      if (await file.exists()) return new Response(file)
+    }
+    const { httpResponse } = await renderPage({ urlOriginal: request.url, headersOriginal: request.headers })
+    return new Response(httpResponse.getReadableWebStream(), {
+      status: httpResponse.statusCode,
+      headers: httpResponse.headers
+    })
+  }
+})
+```
+
+```bash
+# Development (with package.json#scripts.dev set to "vike dev")
+$ bun --bun run dev
+# Production
+$ vike build
+$ bun dist/server/index.mjs
+```
+
+> `Deno.serve()` should work the same way.
+
+> Vite's development middleware is a [Connect](https://github.com/senchalabs/connect) middleware (it uses Node.js's `req`/`res`), which is why it needs a bridge such as srvx's `fetchNodeHandler()`. Vite wants to move away from Connect, see [vitejs/ecosystem#16](https://github.com/vitejs/ecosystem/issues/16).
+
 
 ## Static assets
 
