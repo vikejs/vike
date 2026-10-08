@@ -27,7 +27,7 @@ const ENV_VAR = '__VIKE_IS_SERVER_ENTRY_PROCESS'
 const EXIT_CODE_RESTART = 33
 const globalObject = getGlobalObject<{ viteServer?: ViteDevServer }>('api/devServerEntry.ts', {})
 
-// Parent process — process.fork()
+// Parent process — child_process.fork()
 function startServerEntry_parent(): Promise<never> {
   const [scriptPath, ...args] = process.argv.slice(1)
   assert(scriptPath)
@@ -61,7 +61,7 @@ function exitLikeChild(code: number | null, signal: NodeJS.Signals | null): void
   }
 }
 
-// Child process — vite.ssrLoadModule()
+// Child process — viteServer.ssrLoadModule()
 async function startServerEntry_child(viteServer: ViteDevServer, serverEntryFilePath: string): Promise<void> {
   globalObject.viteServer = viteServer
   const { ssr } = viteServer.environments
@@ -115,7 +115,7 @@ function isImportedBy(modules: Set<EnvironmentModuleNode> | undefined, serverEnt
   return false
 }
 
-// Only `$ vike dev` runs +serverEntry.js (not the programmatic API `dev()`)
+// Only `$ vike dev` runs +serverEntry.js, not the programmatic API `dev()`: the parent process re-runs the command (process.argv) in the child process
 async function getServerEntryDevCli(): Promise<string | null> {
   if (!isVikeCli()) return null
   const vikeConfig = await getVikeConfigInternal()

@@ -58,7 +58,7 @@ function getServerEntryFilePath(vikeConfig: VikeConfigInternal): string | null {
   return source.definedAt.filePathAbsoluteFilesystem ?? source.value
 }
 
-// Whether `$ vike dev` runs +serverEntry.js: only if there isn't +server.js (otherwise +serverEntry.js is production-only)
+// The +serverEntry.js that `$ vike dev` runs: only if there isn't +server.js (otherwise +serverEntry.js is production-only)
 // https://vike.dev/serverEntry
 function getServerEntryDev(vikeConfig: VikeConfigInternal): string | null {
   if (vikeConfig._pageConfigGlobal.configValueSources.server) return null
