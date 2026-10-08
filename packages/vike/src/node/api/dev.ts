@@ -31,13 +31,18 @@ async function dev(
 
   // +serverEntry.js creates the server: it uses Vite's development server as middleware
   const server = await createServer(serverEntryFilePath ? addMiddlewareMode(viteConfigUser) : viteConfigUser)
+
   const viteServer = server
   const viteConfig = server.config
   const viteVersion = viteConfig._viteVersionResolved
   assert(viteVersion)
+
   if (viteServer.httpServer) await viteServer.listen()
+
   if (options.startupLog) startupLog(viteConfig, viteServer)
+
   if (serverEntryFilePath && isServerProcess()) await startServerEntry_child(viteServer, serverEntryFilePath)
+
   return {
     viteServer,
     viteConfig,
