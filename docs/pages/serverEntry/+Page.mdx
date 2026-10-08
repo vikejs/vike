@@ -111,55 +111,6 @@ export const handler = toLambdaHandler({ fetch: server.fetch })
 ```
 
 
-## Example: Bun
-
-You can call [`Bun.serve()`](https://bun.com/docs/runtime/http/server) yourself or use srvx (which uses `Bun.serve()` when running with Bun).
-
-```bash
-$ vike build
-$ bun dist/server/index.mjs
-```
-
-> You don't need `+serverEntry.js` to use Bun: without it, `$ bun dist/server/index.mjs` runs Vike's built-in server entry powered by srvx which automatically uses `Bun.serve()` under the hood.
-
-### Native
-
-```ts
-// +serverEntry.ts
-
-import server from 'vike:server'
-
-Bun.serve({
-  port: 3000,
-  async fetch(request) {
-    // Serve the static assets (dist/client/)
-    const file = Bun.file(`${import.meta.dirname}/../client${new URL(request.url).pathname}`)
-    if (await file.exists()) return new Response(file)
-    // Your +server.js exports
-    return server.fetch(request)
-  }
-})
-```
-
-### srvx
-
-```ts
-// +serverEntry.ts
-
-import { serve } from 'srvx'
-import { staticMiddleware } from 'srvx/static'
-import server from 'vike:server'
-
-serve({
-  port: 3000,
-  // Serve the static assets (dist/client/)
-  middleware: [staticMiddleware({ dir: `${import.meta.dirname}/../client` })],
-  // Your +server.js exports
-  fetch: server.fetch
-})
-```
-
-
 ## Development
 
 If you define <Link href="/server">`+server.js`</Link>, then `+serverEntry.js` is only used in production: in development, `$ vike dev` uses Vite's development server with your `+server.js` (as usual, with HMR).
@@ -198,7 +149,12 @@ app.listen(3000)
 - `$ vike dev` runs `+serverEntry.js` with Vite: TypeScript, path aliases, Vite plugins, and `import.meta.env.DEV` work (no need for `tsx`/`ts-node`).
 - When you modify `+serverEntry.js` (or a file it imports), `$ vike dev` restarts your server. Modifying a page doesn't restart your server: the page is updated with <Link href="/glossary#hmr">HMR</Link> as usual.
 
-### Example: `Bun.serve()`
+
+## Example: Bun
+
+Without `+serverEntry.js`, `$ bun dist/server/index.mjs` runs Vike's built-in server entry powered by srvx which automatically uses `Bun.serve()` under the hood. But only in production: in development, `$ vike dev` uses Vite's development server.
+
+With `+serverEntry.js` (and without `+server.js`, see [Development](#development)), you can use [`Bun.serve()`](https://bun.com/docs/runtime/http/server) in both development and production, for example to use Bun's [WebSockets](https://bun.com/docs/runtime/http/websockets) also in development:
 
 ```ts
 // +serverEntry.ts
