@@ -96,7 +96,8 @@ async function runServerEntry(viteServer: ViteDevServer, serverEntryFilePath: st
   viteServer.restart = async () => restart('Vite needs to restart')
 
   try {
-    await ssr.runner.import(serverEntryFilePath)
+    // Same module runner as the one Vike uses to load pages (`ssrLoadModule()`) => a module imported by both +serverEntry.js and a page is instantiated only once (like in production)
+    await viteServer.ssrLoadModule(serverEntryFilePath)
   } catch (err) {
     console.error(err)
     assertInfo(false, 'Waiting for file changes before restarting server...', { onlyOnce: false })

@@ -5,6 +5,7 @@ import express from 'express'
 import { fileURLToPath } from 'node:url'
 import { createDevMiddleware, renderPage } from 'vike/server'
 import { hello } from './server/hello'
+import { getEvaluations } from './server/shared'
 
 const app = express()
 
@@ -18,6 +19,10 @@ if (import.meta.env.DEV) {
 
 app.get('/hello', (_req, res) => {
   res.send(hello)
+})
+
+app.get('/shared-module-evaluations', (_req, res) => {
+  res.send(String(getEvaluations()))
 })
 
 // Vike middleware. It should always be our last middleware (because it's a catch-all
