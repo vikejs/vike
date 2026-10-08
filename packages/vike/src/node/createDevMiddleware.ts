@@ -49,7 +49,7 @@ function warnIgnoredOptions(options: { root?: string } & ApiOptions, viteServer:
   ].filter((o) => typeof o === 'string')
   assertWarning(
     optionsIgnored.length === 0,
-    `${pc.cyan(`createDevMiddleware({ ${optionsIgnored.join(', ')} })`)} is ignored: ${pc.cyan('$ vike dev')} created Vite's development server before running +serverEntry.js — set your config in vite.config.js and +config.js instead`,
+    `${pc.cyan(`createDevMiddleware({ ${optionsIgnored.join(', ')} })`)} is ignored: ${pc.cyan('$ vike dev')} created Vite's development server before running +serverEntry.js — you can use vite.config.js or +config.js instead`,
     { onlyOnce: true },
   )
 }
