@@ -15,6 +15,7 @@ import { pluginUnwrapProdOptions } from './pluginUniversalDeploy/pluginUnwrapPro
 import { getViteCliCommand } from '../shared/isViteCli.js'
 import { unique } from '../../../utils/unique.js'
 import { assertUsage } from '../../../utils/assert.js'
+import pc from '@brillout/picocolors'
 import '../assertEnvVite.js'
 
 function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
@@ -34,7 +35,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
   // Vite's CLI always starts Vite's own server => it can't run +serverEntry.js
   assertUsage(
     !(getServerEntryDev(vikeConfig) && getViteCliCommand() === 'dev'),
-    "+serverEntry.js (without +server.js) requires $ vike dev instead of $ vite dev (because Vite's CLI always starts Vite's own server)",
+    `${pc.cyan('+serverEntry.js')} (without ${pc.cyan('+server.js')}) requires ${pc.cyan('$ vike dev')} instead of ${pc.cyan('$ vite dev')} (because Vite's CLI always starts Vite's own server)`,
   )
 
   return [
