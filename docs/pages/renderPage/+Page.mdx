@@ -114,40 +114,22 @@ The `renderPage()` function doesn't depend on Node.js and you can use `renderPag
 
 Instead of calling `renderPage()` yourself, you can use `vike(app)` — see <Link href="/server">`+server`</Link>.
 
-), which calls `renderPage()` for you and sets <Link href="/pageContext#req">`pageContext.req`</Link> and <Link href="/pageContext#res">`pageContext.res`</Link>. It's available for Hono, Express, Fastify, H3, and Elysia.
-
 > `vike(app)` and `renderPage()` are interchangeable, regardless of how you run your server.
 
-// TODO/ai at link to /server#control
-
-// TODO/ai move the following in a new section /server#control
-
-Vike provides extra control where needed, so that Vike never blocks you:
-
-I don't like the table, instead create a new subsection for each control point, and for each subsection use a table to quickly compare before/after + add links for more details, e.g. link to /renderPage and /renderPage#without-serverentry-js
-
-| Instead of | Use | To control |
-| --- | --- | --- |
-| Vike's built-in server (`+server: true`) | <Link href="/server">`+server.js`</Link> | Your server framework (Hono, Express, ...) and your middlewares |
-| `vike(app)` | `renderPage()` | `pageContextInit` and the HTTP response |
-| Vike's built-in server entry | <Link href="/serverEntry">`+serverEntry.js`</Link> | How your server starts, e.g. AWS Lambda's `handler()`, `Bun.serve()`, or Node.js's `cluster` |
-| `+serverEntry.js` | <Link href="#without-serverentry-js">`$ node server/index.js`</Link> | How your server is run and built |
-
-You can use:
-- Any server framework (Express, Fastify, Hono, Nitro, Hattip, Koa, Hapi, ...)
-- Any authentication strategy/tool (email/password, OAuth, Auth.js, Passport.js, Grant, Keycloak, Auth0, ...)
-- Any serverless/edge environment (Cloudflare Workers, Vercel, Firebase, AWS Lambda, Google Cloud Functions, Deno Deploy, ...)
-- Any virtual private server (AWS EC2, Google Cloud, ...)
-- Any static host (Cloudflare Pages, GitHub Pages, Netlify, ...)
-- Any server utility (Docker, Nginx, PM2, ...)
+> Vike provides extra control where needed, see <Link href="/server#control" />.
 
 
 ## Without `+serverEntry.js`
 
-// TODO/ai "discourage" => make it a positive framing then elaborate below the table use the following bullet points
-You can also run your server yourself (e.g. `$ node server/index.js`) without `+server.js` nor `+serverEntry.js`, but we discourage it:
-- Your server code isn't processed by Vite: <ImportMeta prop="env" /> isn't available (e.g. `import.meta.env.DEV` and the variables of your `.env` files), nor are path aliases and Vite plugins. (Modern runtimes such as Bun and recent Node.js versions can run TypeScript, but they don't apply your Vite configuration.)
-- You have to restart your server yourself, or use a watcher (e.g. `node --watch` or `nodemon`) that doesn't know about Vite's module graph, whereas `$ vike dev` restarts your server only when a file imported by `+serverEntry.js` changes (modifying a page doesn't restart your server: the page is updated with <Link href="/glossary#hmr">HMR</Link>).
+You can also run your server yourself (e.g. `$ node server/index.js`) without `+server.js` nor `+serverEntry.js`. Defining your server as <Link href="/serverEntry">`+serverEntry.js`</Link> instead gives you a better development experience:
+
+| | `+serverEntry.js` | `$ node server/index.js` |
+| --- | --- | --- |
+| Server code | Processed by Vite | Not processed by Vite |
+| Server restart | Automatic, only when needed | Manual (or with a file watcher) |
+
+- Vite processes your server code: <ImportMeta prop="env" /> is available (e.g. `import.meta.env.DEV` and the variables of your `.env` files), and so are path aliases and Vite plugins. (Modern runtimes such as Bun and recent Node.js versions can run TypeScript, but they don't apply your Vite configuration.)
+- `$ vike dev` restarts your server only when a file imported by `+serverEntry.js` changes: modifying a page doesn't restart your server (the page is updated with <Link href="/glossary#hmr">HMR</Link>). A watcher such as `node --watch` or `nodemon` doesn't know about Vite's module graph.
 
 > See also [#562 - Transpile server code](https://github.com/vikejs/vike/issues/562).
 

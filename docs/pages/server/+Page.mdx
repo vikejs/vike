@@ -138,7 +138,7 @@ export default {
 } satisfies Server
 ```
 
-> `vike(app)` calls <Link href="/renderPage">`renderPage()`</Link> for you. You can also call `renderPage()` yourself instead, see <Link href="/renderPage#renderpage-vs-vike-app">`renderPage()` vs `vike(app)`</Link>.
+> `vike(app)` calls <Link href="/renderPage">`renderPage()`</Link> for you. You can also call `renderPage()` yourself instead, see <Link href="#vike-middleware" />.
 
 ### `+server: true`
 
@@ -376,6 +376,56 @@ export default {
 ```
 
 > See <Link href="/precompress" noBreadcrumb /> to generate `.br`/`.gz` files for your static assets at build time (instead of unnecessarily compressing them on each request).
+
+
+## Control
+
+Vike provides extra control where needed, so that Vike never blocks you. You can use:
+- Any server framework (Express, Fastify, Hono, Nitro, Hattip, Koa, Hapi, ...)
+- Any authentication strategy/tool (email/password, OAuth, Auth.js, Passport.js, Grant, Keycloak, Auth0, ...)
+- Any serverless/edge environment (Cloudflare Workers, Vercel, Firebase, AWS Lambda, Google Cloud Functions, Deno Deploy, ...)
+- Any virtual private server (AWS EC2, Google Cloud, ...)
+- Any static host (Cloudflare Pages, GitHub Pages, Netlify, ...)
+- Any server utility (Docker, Nginx, PM2, ...)
+
+### Server framework
+
+| | `+server: true` | `+server.js` |
+| --- | --- | --- |
+| Server | Vike's built-in server | Your server framework (Hono, Express, ...) |
+| Middlewares and routes | — | Yours (e.g. authentication, API routes) |
+
+See <Link href="#get-started" />.
+
+### Vike middleware
+
+| | `vike(app)` | `renderPage()` |
+| --- | --- | --- |
+| Servers | Hono, Express, Fastify, H3, Elysia | Any |
+| Integration | One line | Your own catch-all route |
+| Custom `pageContext` properties | With <Link href="/onCreatePageContext">`+onCreatePageContext`</Link> | Passed to `renderPage()` |
+| `pageContext.req` and `pageContext.res` | Set for you | Passed to `renderPage()` (if needed) |
+| HTTP response | Sent for you | Sent by you |
+
+See <Link href="/renderPage" />.
+
+### Server entry
+
+| | Vike's built-in server entry | `+serverEntry.js` |
+| --- | --- | --- |
+| `dist/server/index.mjs` | [srvx](https://srvx.h3.dev) server (Node.js, Bun, Deno) | Your code, e.g. AWS Lambda's `handler()`, `Bun.serve()`, or Node.js's `cluster` |
+| Static assets | Served for you | Served by you |
+
+See <Link href="/serverEntry" />.
+
+### Server process
+
+| | `+serverEntry.js` | `$ node server/index.js` |
+| --- | --- | --- |
+| Development | `$ vike dev` runs your server with Vite | You run your server |
+| Production | `$ vike build` builds your server | You build your server |
+
+See <Link href="/renderPage#without-serverentry-js" doNotInferSectionTitle />.
 
 
 ## See also
