@@ -682,7 +682,7 @@ const headings = [
     level: 2,
     title: '`+prerender`',
     url: '/prerender',
-    sectionTitles: ['`disableAutoRun`', '`redirects`'],
+    sectionTitles: ['`disableAutoRun`', '`redirects`', '`keepDistServer`'],
   },
   {
     level: 2,
