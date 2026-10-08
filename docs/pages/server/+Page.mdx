@@ -415,15 +415,9 @@ For full control over your server also in development (e.g. to use Bun's WebSock
 
 ### `vike(app)` => `renderPage()`
 
-| | `vike(app)` | `renderPage()` |
-| --- | --- | --- |
-| Servers | Hono, Express, Fastify, H3, Elysia | Any |
-| Integration | One line | Your own catch-all route |
-| Custom `pageContext` properties | With <Link href="/onCreatePageContext">`+onCreatePageContext`</Link> | Passed to `renderPage()` |
-| `pageContext.req` and `pageContext.res` | Set for you | Passed to `renderPage()` (if needed) |
-| HTTP response | Sent for you | Sent by you |
+Using `renderPage()` instead of `vike(app)` gives you more control as it's more lower-level (albeit less zero-config).
 
-See <Link href="/renderPage#renderpage-vs-vike-app" noBreadcrumb doNotInferSectionTitle />.
+See: <Link href="/renderPage#renderpage-vs-vike-app" noBreadcrumb doNotInferSectionTitle />.
 
 ### `+serverEntry.js` => `$ node server/index.js`
 
