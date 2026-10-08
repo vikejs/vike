@@ -1,8 +1,8 @@
 export { getServerEntryDevCli }
-export { isServerEntryProcess }
 export { startServerEntry_parent }
 export { startServerEntry_child }
 export { getServerEntryViteServer }
+export { isServerEntryProcess }
 
 // `$ vike dev` runs +serverEntry.js (if there isn't +server.js) — https://vike.dev/serverEntry
 // - The parent process (`$ vike dev`) runs +serverEntry.js in a child process, and restarts the child process whenever a file imported by +serverEntry.js changes.
@@ -32,10 +32,6 @@ async function getServerEntryDevCli(): Promise<string | null> {
   if (!isVikeCli()) return null
   const vikeConfig = await getVikeConfigInternal()
   return getServerEntryDev(vikeConfig)
-}
-
-function isServerEntryProcess(): boolean {
-  return process.env[ENV_VAR] === '1'
 }
 
 // Parent process — process.fork()
@@ -120,7 +116,10 @@ function isImportedBy(modules: Set<EnvironmentModuleNode> | undefined, serverEnt
   return false
 }
 
-// Used by createDevMiddleware()
 function getServerEntryViteServer(): ViteDevServer | null {
   return globalObject.viteServer ?? null
+}
+
+function isServerEntryProcess(): boolean {
+  return process.env[ENV_VAR] === '1'
 }
