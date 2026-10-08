@@ -67,7 +67,7 @@ async function startServerEntry_child(viteServer: ViteDevServer, serverEntryFile
   const { ssr } = viteServer.environments
   assertUsage(
     isRunnableDevEnvironment(ssr),
-    `${pc.cyan('$ vike dev')} cannot run +serverEntry.js because Vite's ${pc.cyan('ssr')} environment isn't runnable — see https://vike.dev/serverEntry`,
+    `${pc.cyan('$ vike dev')} cannot run +serverEntry.js because Vite's ${pc.cyan('ssr')} environment isn't runnable`,
   )
   // Restart when +serverEntry.js or a file it imports changes
   restartOnFileChange(viteServer, (filePath) =>
