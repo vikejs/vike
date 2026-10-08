@@ -13,11 +13,31 @@ For example, to deploy to AWS Lambda:
 ```ts
 // +serverEntry.ts
 
-import { toLambdaHandler } from 'srvx/aws-lambda'
+import type { APIGatewayProxyHandlerV2 } from 'aws-lambda'
 import server from 'vike:server'
 
-// AWS Lambda calls handler() for each request
-export const handler = toLambdaHandler({ fetch: server.fetch })
+// AWS Lambda calls handler() for each request (Lambda function URL or API Gateway HTTP API)
+export const handler: APIGatewayProxyHandlerV2 = async (event) => {
+  // AWS Lambda event => Request
+  const url = new URL(`https://${event.requestContext.domainName}${event.rawPath}`)
+  url.search = event.rawQueryString
+  const headers = new Headers(event.headers as Record<string, string>)
+  if (event.cookies) headers.set('cookie', event.cookies.join('; '))
+  const body = event.body ? Buffer.from(event.body, event.isBase64Encoded ? 'base64' : 'utf8') : undefined
+  const request = new Request(url, { method: event.requestContext.http.method, headers, body })
+
+  // Your +server.js exports
+  const response = await server.fetch(request)
+
+  // Response => AWS Lambda result
+  return {
+    statusCode: response.status,
+    headers: Object.fromEntries([...response.headers].filter(([name]) => name !== 'set-cookie')),
+    cookies: response.headers.getSetCookie(),
+    body: Buffer.from(await response.arrayBuffer()).toString('base64'),
+    isBase64Encoded: true
+  }
+}
 ```
 
 ```bash
@@ -30,7 +50,9 @@ It gives you full control over your production server, for example to:
 - Use another server framework, or a runtime API such as `Bun.serve()` and `Deno.serve()`.
 - Use all CPU cores with Node.js's [`cluster`](https://nodejs.org/api/cluster.html) module.
 
-> Without `+serverEntry.js`, <Link href="/blog/universal-deploy">Universal Deploy</Link> generates `dist/server/index.mjs`: a server entry based on [srvx](https://srvx.h3.dev), with first-class support for Node.js, Deno, and Bun (and potentially future runtimes). See <Link href="/server" />.
+> Without `+serverEntry.js`, `dist/server/index.mjs` is Vike's built-in server entry: a [srvx](https://srvx.h3.dev) server with first-class support for Node.js, Deno, and Bun (and potentially future runtimes). See <Link href="/server" />.
+
+> Vike uses <Link href="/blog/universal-deploy">Universal Deploy</Link> under the hood: it provides Vike's built-in server entry and integrates Vike with deployment providers (e.g. Cloudflare and Vercel).
 
 
 ## `vike:server`
