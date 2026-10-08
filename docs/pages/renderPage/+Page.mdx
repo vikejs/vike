@@ -1,5 +1,5 @@
 import { Link, ImportMeta } from '@brillout/docpress'
-import { JustAMiddleware, ConfigSpec } from '../../components'
+import { ConfigSpec } from '../../components'
 
 <ConfigSpec
   env="server"
@@ -12,8 +12,35 @@ The `renderPage()` function enables you to embed Vike into any server.
 
 > You only need `renderPage()` if you use SSR, see <Link href="#optional">Optional</Link>.
 
-{/* TODO/ai: inline the component, it's only used here */}
-<JustAMiddleware noLink />
+From the perspective of a server, Vike is just a middleware:
+
+```ts
+// +serverEntry.ts
+
+// renderPage() doesn't depend on Node.js and can be used within any JavaScript environment:
+// Node.js, AWS, Cloudflare, Vercel, Deno, Bun, Lagon, ...
+import { renderPage } from 'vike/server'
+
+// Any server: Express.js, Cloudflare Worker, AWS Lambda Function, Fastify, Hono, Nitro, ...
+server.addMiddleware({
+  method: 'GET',
+  route: '*', // catch-all
+  async handler(request: Request) {
+    const pageContextInit = { urlOriginal: request.url }
+    const pageContext = await renderPage(pageContextInit)
+    // `body` is the HTML of the page with a route matching pageContextInit.urlOriginal
+    const { body, statusCode, headers } = pageContext.httpResponse
+    const response = { body, statusCode, headers }
+    return response
+  }
+})
+```
+
+You can embed `renderPage()` into any server and any deployment environment.
+
+> You can also run your server yourself without `+serverEntry.js` (e.g. `$ node server/index.js`), see <Link href="#without-serverentry-js" />.
+
+> Alternatively, instead of using `renderPage()`, you can <Link href="/pre-rendering">pre-render</Link> your pages and remove the need for a production server (and deploy to a <Link href="/static-hosts">static host</Link> instead).
 
 
 ## Usage
