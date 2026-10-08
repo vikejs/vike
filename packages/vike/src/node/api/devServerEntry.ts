@@ -1,6 +1,6 @@
 export { startServerEntry_parent }
 export { startServerEntry_child }
-export { getServerEntryFilePath }
+export { getServerEntryFilePathDevCli }
 export { getServerEntryViteServer }
 export { isServerProcess }
 
@@ -116,7 +116,7 @@ function isImportedBy(modules: Set<EnvironmentModuleNode> | undefined, serverEnt
 }
 
 // Only `$ vike dev` runs +serverEntry.js, not the programmatic API `dev()`: the parent process re-runs the command (process.argv) in the child process
-async function getServerEntryFilePath(): Promise<string | null> {
+async function getServerEntryFilePathDevCli(): Promise<string | null> {
   if (!isVikeCli()) return null
   const vikeConfig = await getVikeConfigInternal()
   const serverEntryFilePath = getServerEntryFilePathDev(vikeConfig)

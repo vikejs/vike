@@ -10,7 +10,7 @@ import { startupLog } from './startupLog.js'
 import {
   startServerEntry_parent,
   startServerEntry_child,
-  getServerEntryFilePath,
+  getServerEntryFilePathDevCli,
   isServerProcess,
 } from './devServerEntry.js'
 assertIsNotProductionRuntime()
@@ -26,7 +26,7 @@ async function dev(
   const { viteConfigUser } = await prepareViteApiCall(options, 'dev')
 
   // `$ vike dev` runs +serverEntry.js if there isn't +server.js — https://vike.dev/serverEntry
-  const serverEntryFilePath = await getServerEntryFilePath()
+  const serverEntryFilePath = await getServerEntryFilePathDevCli()
   if (serverEntryFilePath && !isServerProcess()) return await startServerEntry_parent()
 
   // +serverEntry.js creates the server: it uses Vite's development server as middleware
