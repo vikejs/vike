@@ -24,13 +24,16 @@ async function dev(
   options: ApiOptions & ApiOptionsStartupLog = {},
 ): Promise<{ viteServer: ViteDevServer; viteConfig: ResolvedConfig; viteVersion: string }> {
   const { viteConfigUser } = await prepareViteApiCall(options, 'dev')
+
   // `$ vike dev` runs +serverEntry.js if there isn't +server.js — https://vike.dev/serverEntry
   const serverEntryFilePath = await getServerEntryDevCli()
   if (serverEntryFilePath && !isServerProcess()) return await startServerEntry_parent()
+
   // +serverEntry.js creates the server: it uses Vite's development server as middleware
   const server = await createServer(
     serverEntryFilePath
-      ? { ...viteConfigUser, server: { ...viteConfigUser.server, middlewareMode: true } }
+      ? // TODO/ai: new function addMiddlewareMode
+        { ...viteConfigUser, server: { ...viteConfigUser.server, middlewareMode: true } }
       : viteConfigUser,
   )
   const viteServer = server
