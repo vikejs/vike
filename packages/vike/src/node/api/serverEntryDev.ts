@@ -20,12 +20,11 @@ import { assert, assertInfo, assertUsage } from '../../utils/assert.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import { isRunnableDevEnvironment } from '../../utils/isRunnableDevEnvironment.js'
 import './assertEnvApiDev.js'
+const globalObject = getGlobalObject<{ viteServer?: ViteDevServer }>('api/serverEntryDev.ts', {})
 
 const IS_SERVER_PROCESS = '__VIKE_IS_SERVER_PROCESS'
-
 // The child process exits with this code to tell the parent process to restart it
 const EXIT_CODE_RESTART = 33
-const globalObject = getGlobalObject<{ viteServer?: ViteDevServer }>('api/serverEntryDev.ts', {})
 
 // Parent process — child_process.fork()
 function startServerEntry_parent(): Promise<never> {
