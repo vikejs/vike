@@ -38,7 +38,7 @@ function isServerEntryProcess(): boolean {
   return process.env[ENV_VAR] === '1'
 }
 
-// Parent process
+// Parent process — process.fork()
 function startServerEntry_parent(): Promise<never> {
   let child: ChildProcess
   let signalReceived: NodeJS.Signals | undefined
@@ -72,7 +72,7 @@ function startServerEntry_parent(): Promise<never> {
   return new Promise<never>(() => {})
 }
 
-// Child process
+// Child process — vite.ssrLoadModule()
 async function startServerEntry_child(viteServer: ViteDevServer, serverEntryFilePath: string): Promise<void> {
   globalObject.viteServer = viteServer
   const ssr = viteServer.environments.ssr
