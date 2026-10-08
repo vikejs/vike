@@ -16,7 +16,7 @@ The `renderPage()` function enables you to embed Vike into any server, see <Link
 
 > You only need `renderPage()` if you use SSR, see [Optional](#optional).
 
-> You can define your server in <Link href="/serverEntry">`+serverEntry.js`</Link>: `$ vike dev` then runs it with Vite (and restarts it upon modification), see <Link href="/serverEntry#development" />.
+> If you don't use `+server`, you can define your server as <Link href="/serverEntry">`+serverEntry.js`</Link> instead of running it yourself (e.g. with `$ node server/index.js`): `$ vike dev` then runs your server with Vite (TypeScript, path aliases, `import.meta.env`, ...) and restarts it whenever you modify it. See <Link href="/serverEntry#development" />.
 
 <JustAMiddleware noLink />
 
