@@ -7,7 +7,7 @@ declare module 'vike:server' {
    *
    * https://vike.dev/serverEntry
    */
-  const server: {
+  const server: Record<string, unknown> & {
     fetch: (request: Request, ...args: any[]) => Promise<Response>
   }
   export default server
