@@ -113,15 +113,13 @@ The `renderPage()` function doesn't depend on Node.js and you can use `renderPag
 ## `renderPage()` vs `vike(app)`
 
 Instead of `renderPage()`, you can use `vike(app)`:
-- `vike(app)` is zero-config whereas `renderPage()` is lower-level
+- `vike(app)` is zero-config, whereas `renderPage()` is lower-level.
 
 See <Link href="/server">`+server`</Link>.
 
 {/* TODO/soon better explain the difference between the two */}
 
-// TODO/ai is that accurate? Can renderPage() be used inside +server.js? Polish language?
-// TODO/ai polish language?
-> `vike(app)` and `renderPage()` are interchangeable, and you can use either or, regardless of whether you use +server.js, +severEntry.js, or direclty run your server (e.g. `$ node server/index.js`)
+> `vike(app)` and `renderPage()` are interchangeable: you can use either one, whether you use <Link href="/server">`+server.js`</Link>, <Link href="/serverEntry">`+serverEntry.js`</Link>, or run your server directly (e.g. `$ node server/index.js`).
 
 
 ## Without `+serverEntry.js`
