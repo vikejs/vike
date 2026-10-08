@@ -124,9 +124,11 @@ See <Link href="/server">`+server`</Link>.
 
 ## Without `+serverEntry.js`
 
-You can also run your server yourself (e.g. `$ node server/index.js`) without `+server.js` nor `+serverEntry.js`. Defining your server as <Link href="/serverEntry">`+serverEntry.js`</Link> instead gives you a better development experience:
+You can also run your server yourself (e.g. `$ node server/index.js`) instead of `+server.js` and `+serverEntry.js`.
 
-| | `+serverEntry.js` | `$ node server/index.js` |
+Unless you have a reason against it, we generally recommend using <Link href="/server">`+server.js`</Link> and/or <Link href="/serverEntry">`+serverEntry.js`</Link>, as it provides a better development experience:
+
+| | `+server.js`/`+serverEntry.js` | `$ node server/index.js` |
 | --- | --- | --- |
 | Server code (1) | Processed by Vite | Not processed by Vite |
 | Server restart (2) | Fine-grained (only when needed) | Coarse (unnecessary reloads) |
