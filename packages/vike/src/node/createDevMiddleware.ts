@@ -5,7 +5,7 @@ import { createServer, normalizePath } from 'vite'
 import { prepareViteApiCall } from './api/prepareViteApiCall.js'
 import type { ResolvedConfig, Connect, ViteDevServer } from 'vite'
 import type { ApiOptions } from './api/types.js'
-import { getServerEntryViteServer } from './api/devServerEntry.js'
+import { getServerEntryViteServer } from './api/serverEntryDev.js'
 import { assertWarning } from '../utils/assert.js'
 import pc from '@brillout/picocolors'
 

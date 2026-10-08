@@ -12,7 +12,7 @@ import {
   startServerEntry_child,
   getServerEntryFilePath_ifDevCli,
   isServerProcess,
-} from './devServerEntry.js'
+} from './serverEntryDev.js'
 assertIsNotProductionRuntime()
 
 /**
