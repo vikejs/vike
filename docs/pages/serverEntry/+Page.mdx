@@ -6,7 +6,7 @@ import { ConfigSpec } from '../../components'
   global
 />
 
-Define `+serverEntry.js` to control how your server starts: Vike builds it into `dist/server/index.mjs`, the file you run in production. If you don't use `+server.js`, then `$ vike dev` also runs it in development, see [Development](#development).
+Define `+serverEntry.js` to control how your server starts: Vike builds it into `dist/server/index.mjs`, the file you run in production. If you don't use `+server.js`, then `$ vike dev` also runs it in development, see <Link href="#development" />.
 
 ```ts
 // +serverEntry.ts
@@ -32,7 +32,7 @@ It gives you full control over your server entry, for example to:
 - Deploy to a platform without built-in support, e.g. AWS Lambda (see example below)
 - Use another server framework or runtime API such as `Bun.serve()` and `Deno.serve()`
 - Use all CPU cores with Node.js's [`cluster`](https://nodejs.org/api/cluster.html) module
-- Integrate Vike into your own server with <Link href="/renderPage">`renderPage()`</Link>, in both development and production (see [Development](#development))
+- Integrate Vike into your own server with <Link href="/renderPage">`renderPage()`</Link>, in both development and production (see <Link href="#development" />)
 
 > Without `+serverEntry.js`, `dist/server/index.mjs` is Vike's built-in server entry: a [srvx](https://srvx.h3.dev) server entry with first-class support for Node.js, Deno, and Bun (and potentially future runtimes). See also: <Link href="/server" />.
 
@@ -67,7 +67,7 @@ AWS Lambda calls the `handler()` function exported by `dist/server/index.mjs`. Y
 
 > With AWS Lambda, you usually serve the static assets `dist/client/` with a CDN, such as Amazon CloudFront.
 
-The examples below use `+serverEntry.js` with <Link href="/server">`+server.js`</Link>, which means that `+serverEntry.js` is only used in production: in development, `$ vike dev` runs your `+server.js` with Vite's development server as usual (see [Development](#development)).
+The examples below use `+serverEntry.js` with <Link href="/server">`+server.js`</Link>, which means that `+serverEntry.js` is only used in production: in development, `$ vike dev` runs your `+server.js` with Vite's development server as usual (see <Link href="#development" />).
 
 ### Native
 
@@ -157,7 +157,7 @@ app.listen(3000)
 
 Without `+serverEntry.js`, `$ bun dist/server/index.mjs` runs Vike's built-in server entry powered by srvx which automatically uses `Bun.serve()` under the hood. But only in production: in development, `$ vike dev` uses Vite's development server (and thus the Node.js server APIs instead of `Bun.serve()`).
 
-With `+serverEntry.js` (and without `+server.js`, see [Development](#development)), you can use [`Bun.serve()`](https://bun.com/docs/runtime/http/server) in both development and production, for example to use Bun's [WebSockets](https://bun.com/docs/runtime/http/websockets) also in development:
+With `+serverEntry.js` (and without `+server.js`, see <Link href="#development" />), you can use [`Bun.serve()`](https://bun.com/docs/runtime/http/server) in both development and production, for example to use Bun's [WebSockets](https://bun.com/docs/runtime/http/websockets) also in development:
 
 ```ts
 // +serverEntry.ts (without +server.js)
