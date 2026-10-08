@@ -6,8 +6,6 @@ import { testRun } from './.testRun'
 
 testRun('pnpm run preview', {
   serverIsReadyMessage: 'Listening on:',
-  // TO-DO/soon: remove once https://github.com/universal-deploy/universal-deploy/pull/47 is released
-  tolerateError: ({ logText }) => logText.includes('is missing "virtual:ud:catch-all" import'),
 })
 
 const dist = path.join(path.dirname(fileURLToPath(import.meta.url)), 'dist')
