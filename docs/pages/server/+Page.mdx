@@ -138,8 +138,6 @@ export default {
 } satisfies Server
 ```
 
-> `vike(app)` calls <Link href="/renderPage">`renderPage()`</Link> for you. You can also call `renderPage()` yourself instead, see <Link href="#vike-middleware" />.
-
 ### `+server: true`
 
 Alternatively, instead of creating `+server.js`, you can use Vike's built-in lightweight server:
@@ -390,7 +388,7 @@ If needed, Vike enables you to gain complete control over the server.
 > - Any authentication strategy/tool (email/password, OAuth, Auth.js, Passport.js, Grant, Keycloak, Auth0, ...)
 > - Any server utility (Docker, Nginx, PM2, ...)
 
-### Server framework
+### `+server: true` => `+server.js`
 
 | | `+server: true` | `+server.js` |
 | --- | --- | --- |
@@ -399,7 +397,7 @@ If needed, Vike enables you to gain complete control over the server.
 
 See <Link href="#get-started" />.
 
-### Vike middleware
+### `vike(app)` => `renderPage()`
 
 | | `vike(app)` | `renderPage()` |
 | --- | --- | --- |
@@ -411,7 +409,7 @@ See <Link href="#get-started" />.
 
 See <Link href="/renderPage" />.
 
-### Server entry
+### `+serverEntry.js` with `+server.js`
 
 | | Vike's built-in server entry | `+serverEntry.js` |
 | --- | --- | --- |
@@ -420,7 +418,11 @@ See <Link href="/renderPage" />.
 
 See <Link href="/serverEntry" />.
 
-### Server process
+### `+serverEntry.js` without `+server.js`
+
+// TODO/ai
+
+### `+serverEntry.js` => `$ node server/index.js`
 
 | | `+serverEntry.js` | `$ node server/index.js` |
 | --- | --- | --- |
