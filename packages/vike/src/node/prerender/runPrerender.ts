@@ -295,7 +295,7 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
   objectAssign(vikeConfig.prerenderContext, prerenderContextPublic, true)
   setGlobalContext_prerenderContext(prerenderContextPublic)
 
-  if (isDistServerRemoved(prerenderConfigGlobal)) {
+  if (isDistServerRemoved(prerenderConfigGlobal, vikeConfig)) {
     fs.rmSync(outDirServer, { recursive: true })
   }
 }

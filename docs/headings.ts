@@ -664,6 +664,11 @@ const headings = [
   },
   {
     level: 2,
+    title: '`+serverEntry`',
+    url: '/serverEntry',
+  },
+  {
+    level: 2,
     title: '`+ssr`',
     url: '/ssr',
   },
@@ -676,7 +681,7 @@ const headings = [
     level: 2,
     title: '`+prerender`',
     url: '/prerender',
-    sectionTitles: ['`disableAutoRun`', '`redirects`'],
+    sectionTitles: ['`disableAutoRun`', '`redirects`', '`keepDistServer`'],
   },
   {
     level: 2,

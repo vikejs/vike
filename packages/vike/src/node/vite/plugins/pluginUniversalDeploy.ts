@@ -29,10 +29,26 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
       }),
       precompress(vikeConfig.config.precompress),
     ]
-  const { serverEntryVike, serverEntryId, serverFilePath } = serverConfig
+  const { serverEntryVike, serverEntryId, serverFilePath, serverEntryFilePath } = serverConfig
 
   return [
-    ...universalDeploy({ node: { precompress: vikeConfig.config.precompress } }),
+    ...(!serverEntryFilePath
+      ? universalDeploy({ node: { precompress: vikeConfig.config.precompress } })
+      : [
+          // +serverEntry.js is the production server entry dist/server/index.mjs (instead of @universal-deploy/node's server)
+          // https://vike.dev/serverEntry
+          ...universalDeploy({ entry: serverEntryFilePath }),
+          precompress(vikeConfig.config.precompress),
+          resolveTargets((targets) => {
+            const target = targets[0]
+            assertUsage(
+              target === undefined,
+              `+serverEntry cannot be used with ${target} (because it uses its own server entry)`,
+            )
+          }),
+          // dist/server/index.mjs loads dist/server/entry.mjs
+          pluginServerEntryInject(serverEntryFilePath),
+        ]),
     {
       name: 'vike:pluginUniversalDeploy:entries',
       config() {

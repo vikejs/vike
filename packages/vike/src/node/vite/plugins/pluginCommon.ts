@@ -228,7 +228,7 @@ async function disableAutoImportIfPrerendering(isBuild: boolean): Promise<UserCo
   if (!isBuild) return
   const vikeConfig = await getVikeConfigInternal()
   const prerenderConfigGlobal = await resolvePrerenderConfigGlobal(vikeConfig)
-  if (isDistServerRemoved(prerenderConfigGlobal)) {
+  if (isDistServerRemoved(prerenderConfigGlobal, vikeConfig)) {
     return { vitePluginServerEntry: { disableAutoImport: true } }
   }
 }
