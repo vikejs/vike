@@ -7,6 +7,7 @@ import type { ResolvedConfig, Connect, ViteDevServer } from 'vite'
 import type { ApiOptions } from './api/types.js'
 import { getServerEntryViteServer } from './api/serverEntryDev.js'
 import { assertWarning } from '../utils/assert.js'
+import { joinEnglish } from '../utils/joinEnglish.js'
 import pc from '@brillout/picocolors'
 
 /*
@@ -47,9 +48,11 @@ function warnIgnoredOptions(options: { root?: string } & ApiOptions, viteServer:
     options.vikeConfig && 'vikeConfig',
     options.root && normalizePath(path.resolve(options.root)) !== viteServer.config.root && 'root',
   ].filter((o) => typeof o === 'string')
+  if (optionsIgnored.length === 0) return
+  const isPlural = optionsIgnored.length > 1
   assertWarning(
-    optionsIgnored.length === 0,
-    `${pc.cyan(`createDevMiddleware({ ${optionsIgnored.join(', ')} })`)} is ignored: ${pc.cyan('$ vike dev')} created Vite's development server before running +serverEntry.js — you can use vite.config.js or +config.js instead`,
+    false,
+    `The ${pc.cyan('createDevMiddleware()')} option${isPlural ? 's' : ''} ${joinEnglish(optionsIgnored, 'and', { color: pc.cyan })} ${isPlural ? 'are' : 'is'} ignored: ${pc.cyan('$ vike dev')} created Vite's development server before running +serverEntry.js — you can use vite.config.js or +config.js instead`,
     { onlyOnce: true },
   )
 }
