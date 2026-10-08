@@ -1,5 +1,5 @@
 import { Link, FileAdded, Warning, Tabs } from '@brillout/docpress'
-import { DeprecatedServer } from '../../components'
+import { DeprecatedServer, RunServerYourself } from '../../components'
 
 Define `+server.js` to seamlessly integrate a server framework (Hono, Express, ...). Or set `+server: true` to use Vike's built-in lightweight server.
 
@@ -395,7 +395,23 @@ If needed, Vike enables you to gain complete control over the server.
 
 See <Link href="#server-true" />.
 
-// TODO/ai make this section second last
+### `+serverEntry.js` with `+server.js`
+
+| | Vike's built-in server entry | `+serverEntry.js` |
+| --- | --- | --- |
+| `dist/server/index.mjs` | [srvx](https://srvx.h3.dev) server (Node.js, Bun, Deno) | Your code, e.g. AWS Lambda's `handler()`, `Bun.serve()`, or Node.js's `cluster` |
+| Static assets | Served for you | Served by you |
+
+For full control over your server production entry (e.g. to define a custom deployment integration), you can define <Link href="/serverEntry">`+serverEntry.js`</Link>.
+
+### `+serverEntry.js` without `+server.js`
+
+| | With `+server.js` | Without `+server.js` |
+| --- | --- | --- |
+| Development server | Vite's development server | Your server (e.g. `Bun.serve()`) |
+| Vite's development middleware | Used for you | Used by you (<Link href="/createDevMiddleware">`createDevMiddleware()`</Link>) |
+
+For full control over your server also in development (e.g. to use Bun's WebSockets in development), you can define `+serverEntry.js` without `+server.js`: `$ vike dev` then runs your `+serverEntry.js`. See <Link href="/serverEntry#development" />.
 
 ### `vike(app)` => `renderPage()`
 
@@ -409,27 +425,9 @@ See <Link href="#server-true" />.
 
 See <Link href="/renderPage#renderpage-vs-vike-app" noBreadcrumb doNotInferSectionTitle />.
 
-### `+serverEntry.js` with `+server.js`
-
-| | Vike's built-in server entry | `+serverEntry.js` |
-| --- | --- | --- |
-| `dist/server/index.mjs` | [srvx](https://srvx.h3.dev) server (Node.js, Bun, Deno) | Your code, e.g. AWS Lambda's `handler()`, `Bun.serve()`, or Node.js's `cluster` |
-| Static assets | Served for you | Served by you |
-
-For full control over your server production entry (e.g. to define a custom deployment integration), you can define <Link href="/serverEntry">`+serverEntry.js`</Link>.
-
-### `+serverEntry.js` without `+server.js`
-
-// TODO/ai
-
 ### `+serverEntry.js` => `$ node server/index.js`
 
-// TODO/ai useless table... re-use table from /renderPage
-
-| | `+serverEntry.js` | `$ node server/index.js` |
-| --- | --- | --- |
-| Development | `$ vike dev` runs your server with Vite | You run your server |
-| Production | `$ vike build` builds your server | You build your server |
+<RunServerYourself />
 
 See <Link href="/renderPage#without-serverentry-js" doNotInferSectionTitle />.
 
