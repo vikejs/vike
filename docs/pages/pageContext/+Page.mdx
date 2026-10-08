@@ -64,19 +64,19 @@ Built-in properties.
 
 > The `pageContext` object also contains many internals (they are prefixed with `_`, e.g. `pageContext._requestId`). You should use them only if strictly needed and, if you do, then let us know so that we can add official support for your use case (otherwise you'll expose yourself to breaking changes upon any version update).
 
-<Prop name="Page" />
+<Prop id="Page" />
 
 The `export { Page }` or `export default` of the <Link href="/Page">`+Page.js` file</Link>.
 
-<Prop name="data" />
+<Prop id="data" />
 
 The value returned by the <Link href="/data">`data()` hook</Link>, see also <Link href="/useData" />.
 
-<Prop name="routeParams" />
+<Prop id="routeParams" />
 
 The route parameters. (E.g. `pageContext.routeParams.movieId` for a page with a Route String `/movie/@movieId`.)
 
-<Prop name="urlOriginal" />
+<Prop id="urlOriginal" />
 
 The current URL.
 
@@ -94,13 +94,13 @@ On the server-side, `pageContext.urlOriginal` is the value you passed at the ser
 
 On the client-side:
  - When using <Link href="/client-routing">Client Routing</Link>, the value of `pageContext.urlOriginal` is the browser's current URL (`window.location.href`).
- - When using <Link href="/server-routing">Server Routing</Link>, the value of `pageContext.urlOriginal` is `undefined` (unless you use [`passToClient`](/passToClient)).
+ - When using <Link href="/server-routing">Server Routing</Link>, the value of `pageContext.urlOriginal` is `undefined` (unless you use <Link href="/passToClient">`passToClient`</Link>).
 
-<Prop name="urlPathname" />
+<Prop id="urlPathname" />
 
 Alias for `pageContext.urlParsed.pathname`.
 
-<Prop name="urlParsed" />
+<Prop id="urlParsed" />
 
 URL information:
    ```js
@@ -144,23 +144,23 @@ URL information:
    }
    ```
 
-<Prop name="headers" />
+<Prop id="headers" />
 
 The headers of the HTTP Request. As a string object (`Record<string, string>`) normalized by Vike, see <Link href="/headers"/>.
 
-<Prop name="headersOriginal" />
+<Prop id="headersOriginal" />
 
 The headers of the HTTP Request. The original object provided by the server, see <Link href="/headers"/>.
 
-<Prop name="headersResponse" />
+<Prop id="headersResponse" />
 
 The headers of the HTTP Response, see <Link href="/headersResponse"/>.
 
-<Prop name="content" />
+<Prop id="content" />
 
 The content of a non-HTML page (e.g. `/feed.atom`): a `string`, a `Uint8Array`, or a `ReadableStream<Uint8Array>`. It's the HTTP response body upon SSR and the file content upon pre-rendering. See <Link href="/onRenderHtml#non-html-content" />.
 
-<Prop name="req" />
+<Prop id="req" />
 
 The HTTP request object.
 
@@ -186,7 +186,7 @@ declare global {
 
 <AliasNote prop="req" />
 
-<Prop name="res" />
+<Prop id="res" />
 
 The HTTP response object.
 
@@ -212,7 +212,7 @@ declare global {
 
 <AliasNote prop="res" />
 
-<Prop name="runtime" />
+<Prop id="runtime" />
 
 The full [`RuntimeAdapter`](https://universal-middleware.dev/reference/runtime-adapter) object set by <Link href="/server">`+server`</Link> (which uses [`universal-middleware`](https://universal-middleware.dev/) under the hood).
 
@@ -239,7 +239,7 @@ declare global {
 > - <Link href="#req" noWarning>`pageContext.req`</Link>
 > - <Link href="#res" noWarning>`pageContext.res`</Link>
 
-<Prop name="config" />
+<Prop id="config" />
 
 The page's runtime <Link href="/config">configuration</Link> (both <Link href="/settings">settings</Link> and <Link href="/hooks">hooks</Link>).
 
@@ -250,7 +250,7 @@ The page's runtime <Link href="/config">configuration</Link> (both <Link href="/
 > - <Link href="/globalContext#pages">`globalContext.pages`</Link>
 > - <Link href="/getVikeConfig" />
 
-<Prop name="isHydration" />
+<Prop id="isHydration" />
 
 Whether the page is the first page rendered.
 
@@ -262,7 +262,7 @@ If the page doesn't throw an error then it's equivalent to <code>{'pageContext.i
 
 See also: <Link href="/useHydrated" />.
 
-<Prop name="isClientSide" />
+<Prop id="isClientSide" />
 
 Whether the environment is the client-side:
 - In the browser, the value is `true`.
@@ -291,11 +291,11 @@ if (pageContext.isClientSide) {
 ```
 </TreeShaking>
 
-<Prop name="isPrerendering" />
+<Prop id="isPrerendering" />
 
 Whether the page is being <Link href="/pre-rendering">pre-rendered</Link>. The value is always `false` in development.
 
-<Prop name="isBackwardNavigation" />
+<Prop id="isBackwardNavigation" />
 
 Whether the user is navigating backward in history.
 
@@ -303,7 +303,7 @@ The value is `true` when the user clicks on his browser's backward navigation bu
 
 The `isBackwardNavigation` property is only defined when using <Link href="/client-routing" noBreadcrumb={true} />.
 
-<Prop name="isHistoryNavigation" />
+<Prop id="isHistoryNavigation" />
 
 Whether the user is navigating back or forward in history.
 
@@ -311,49 +311,49 @@ The value is `true` when the user clicks on his browser's backward/forward butto
 
 The `isHistoryNavigation` property is only defined when using <Link href="/client-routing" noBreadcrumb={true} />.
 
-<Prop name="previousPageContext" />
+<Prop id="previousPageContext" />
 
 Upon client-side page navigation, you can use `pageContext.previousPageContext` to access the `pageContext` of the previous page. See <Link href="#lifecycle" />.
 
-<Prop name="is404" />
+<Prop id="is404" />
 
 If an error occurs, whether the error is a `404 Page Not Found` or a `500 Internal Error`, see <Link href="/error-page" />.
 
-<Prop name="isClientSideNavigation" />
+<Prop id="isClientSideNavigation" />
 
 Whether the page was navigated by the client-side router.
 
    In other words, when using <Link href="/client-routing" noBreadcrumb={true} />, the value is `false` for the first page the user visits, and `true` for any subsequent navigation. (When using <Link href="/server-routing" noBreadcrumb={true} />, the value is always `false`.)
 
-<Prop name="abortReason" />
+<Prop id="abortReason" />
 
 Set by <Link href="/render"><code>throw render()</code></Link> and used by the <Link href="/error-page">error page</Link>.
 
-<Prop name="abortStatusCode" />
+<Prop id="abortStatusCode" />
 
 Set by <Link href="/render"><code>throw render()</code></Link> and used by the <Link href="/error-page">error page</Link>.
 
-<Prop name="errorWhileRendering" />
+<Prop id="errorWhileRendering" />
 
 The first error (if there is any) that occurred while rendering the page, see <Link href="/error-tracking" />.
 
-<Prop name="isBaseMissing" />
+<Prop id="isBaseMissing" />
 
 Whether the Base URL is missing in the URL of the HTTP request made to the SSR server, see <Link href="/base-url#setup" />.
 
-<Prop name="globalContext" />
+<Prop id="globalContext" />
 
 The <Link href="/globalContext">`globalContext` object</Link>.
 
-<Prop name="isPageContext" />
+<Prop id="isPageContext" />
 
 Always `true`, useful for distinguishing `pageContext` from other objects and narrowing down TypeScript unions, see <Link href="#narrowing-down" />.
 
-<Prop name="cspNonce" />
+<Prop id="cspNonce" />
 
 The CSP nonce, see <Link href="/csp" />.
 
-<Prop name="pageContextsAborted" />
+<Prop id="pageContextsAborted" />
 
 List of previous `pageContext` aborted by <Link href="/redirect">`throw redirect()`</Link> or <Link href="/render">`throw render()`</Link> that led to the final rendered page.
 

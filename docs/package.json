@@ -3,6 +3,7 @@
     "dev": "vike dev",
     "build": "vike build",
     "preview": "vike build && vike preview",
+    "lint": "docpress lint",
     "typecheck": "tsc --noEmit --watch"
   },
   "dependencies": {
