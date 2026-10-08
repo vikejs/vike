@@ -8,7 +8,7 @@ import { assertIsNotProductionRuntime } from '../../utils/assertSetup.js'
 import './assertEnvApiDev.js'
 import { startupLog } from './startupLog.js'
 import {
-  getServerEntryDevCli,
+  getServerEntryFilePath,
   isServerProcess,
   startServerEntry_child,
   startServerEntry_parent,
@@ -26,7 +26,7 @@ async function dev(
   const { viteConfigUser } = await prepareViteApiCall(options, 'dev')
 
   // `$ vike dev` runs +serverEntry.js if there isn't +server.js — https://vike.dev/serverEntry
-  const serverEntryFilePath = await getServerEntryDevCli()
+  const serverEntryFilePath = await getServerEntryFilePath()
   if (serverEntryFilePath && !isServerProcess()) return await startServerEntry_parent()
 
   // +serverEntry.js creates the server: it uses Vite's development server as middleware
