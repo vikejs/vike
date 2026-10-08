@@ -8,10 +8,10 @@ import { assertIsNotProductionRuntime } from '../../utils/assertSetup.js'
 import './assertEnvApiDev.js'
 import { startupLog } from './startupLog.js'
 import {
+  startServerEntry_parent,
+  startServerEntry_child,
   getServerEntryFilePath,
   isServerProcess,
-  startServerEntry_child,
-  startServerEntry_parent,
 } from './devServerEntry.js'
 assertIsNotProductionRuntime()
 
