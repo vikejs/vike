@@ -120,7 +120,7 @@ export const handler = toLambdaHandler({ fetch: server.fetch })
 
 If you define <Link href="/server">`+server.js`</Link>, then `+serverEntry.js` is only used in production: in development, `$ vike dev` uses Vite's development server with your `+server.js` (as usual, with HMR).
 
-If you don't define `+server.js`, then `$ vike dev` runs `+serverEntry.js` also in development. It's a convenient way to manually integrate Vike into your server with <Link href="/renderPage">`renderPage()`</Link>:
+If you don't define `+server.js`, then `$ vike dev` runs `+serverEntry.js` also in development. It's the recommended way to manually integrate Vike into your server with <Link href="/renderPage">`renderPage()`</Link>:
 
 ```ts
 // +serverEntry.ts (without +server.js)

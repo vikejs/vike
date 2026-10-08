@@ -5,13 +5,31 @@ Create server middleware for development with <Link href="/glossary#hmr">HMR</Li
 > You don't need `createDevMiddleware()` if you use <Link href="/server">`+server.js`</Link>. (You also don't need it if you fully <Link href="/pre-rendering">pre-render</Link> your app and therefore don't need a server.)
 
 ```ts
+// +serverEntry.ts
+
 import { createDevMiddleware } from 'vike/server'
 
-const {
-  devMiddleware, // The development middleware
-  viteConfig, // Resolved Vite configuration
-  viteServer // Vite's development server
-} = await createDevMiddleware({
+if (import.meta.env.DEV) {
+  const {
+    devMiddleware, // The development middleware
+    viteConfig, // Resolved Vite configuration
+    viteServer // Vite's development server
+  } = await createDevMiddleware()
+  // ...
+}
+```
+
+See <Link href="/renderPage#usage">usage example</Link> for how to use it.
+
+> [ResolvedConfig](https://vite.dev/guide/api-javascript.html#resolvedconfig) types the `viteConfig` return value.
+
+
+## Options
+
+If you run your server without <Link href="/serverEntry">`+serverEntry.js`</Link> (which we discourage, see <Link href="/renderPage#usage" />), then `createDevMiddleware()` creates Vite's development server and accepts options:
+
+```ts
+const { devMiddleware } = await createDevMiddleware({
   root: './path/to/app', // (optional, but recommended)
   viteConfig: {
     // Some Vite configuration (optional)
@@ -19,11 +37,7 @@ const {
 })
 ```
 
-See <Link href="/renderPage#usage">usage example</Link> for how to use it.
-
-Vite types:
 - [InlineConfig](https://vite.dev/guide/api-javascript.html#inlineconfig) types the `viteConfig` option.
-- [ResolvedConfig](https://vite.dev/guide/api-javascript.html#resolvedconfig) types the `viteConfig` return value.
 - `createDevMiddleware()` wraps [Vite's `createServer()`](https://vite.dev/guide/api-javascript.html#createserver).
 
 

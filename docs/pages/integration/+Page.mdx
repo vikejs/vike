@@ -239,11 +239,11 @@ Since you control how your pages are rendered, you can use any tool you want wit
 
 To integrate Vike with a JavaScript server, we generally recommend <Link href="/server">`+server`</Link> which automatically integrates Vike with any JavaScript server (Express.js, Hono, Fastify, ...) and deployment provider (Cloudflare, Vercel, Netlify, self-hosting, ...).
 
-But you can also manually integrate Vike into your server for full control over server and deployment integration.
+But you can also manually integrate Vike into your server for full control over server and deployment integration: define your server as <Link href="/serverEntry">`+serverEntry.js`</Link> and use <Link href="/renderPage">`renderPage()`</Link>. Then `$ vike dev` runs your server with [Vite](https://vite.dev) (TypeScript, path aliases, Vite plugins, ...) and automatically restarts it whenever you modify it, see <Link href="/serverEntry#development" />.
 
 <JustAMiddleware />
 
-> If you define your server as <Link href="/serverEntry">`+serverEntry.js`</Link>, then `$ vike dev` runs it with [Vite](https://vite.dev) (TypeScript, path aliases, Vite plugins, ...) and automatically restarts it whenever you modify it, see <Link href="/serverEntry#development" />. Otherwise, your server code won't be transpiled by Vite out of the box, see [#562 - Transpile server code](https://github.com/vikejs/vike/issues/562) for a list of tools to transpile server code (e.g. to support TypeScript).
+> You can also run your server yourself without `+serverEntry.js` (e.g. `$ node server/index.js`), but we discourage it, see <Link href="/renderPage#usage" />.
 
 > If you want to use HTTPS in development, [pass the HTTPS certificates to Vite's dev server](https://vitejs.dev/config/server-options.html#server-https).
 
