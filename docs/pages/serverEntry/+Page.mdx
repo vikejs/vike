@@ -62,6 +62,12 @@ serve({
 
 ## Example: AWS Lambda
 
+AWS Lambda calls the `handler()` function exported by `dist/server/index.mjs`. You can implement it natively or with srvx.
+
+> With AWS Lambda, you usually serve the static assets `dist/client/` with a CDN, such as Amazon CloudFront.
+
+### Native
+
 ```ts
 // +serverEntry.ts
 
@@ -92,7 +98,17 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
 }
 ```
 
-> With AWS Lambda, you usually serve the static assets `dist/client/` with a CDN, such as Amazon CloudFront.
+### srvx
+
+```ts
+// +serverEntry.ts
+
+import { toLambdaHandler } from 'srvx/aws-lambda'
+import server from 'vike:server'
+
+// AWS Lambda calls handler() for each request
+export const handler = toLambdaHandler({ fetch: server.fetch })
+```
 
 
 ## Example: srvx
