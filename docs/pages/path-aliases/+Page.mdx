@@ -74,7 +74,7 @@ See also:
 Defining path aliases at `package.json#imports` is usually not needed: if you use <Link href="/server">`+server.js`</Link> or <Link href="/serverEntry">`+serverEntry.js`</Link>, then Vite processes your server code and resolves your path aliases (Node.js doesn't see any path alias).
 
 It's only needed if:
-- Node.js runs your server code directly: you use neither `+server.js` nor `+serverEntry.js` (which we discourage, see <Link href="/renderPage#without-serverentry-js" doNotInferSectionTitle />).
+- Node.js runs your server code directly: you use neither `+server.js` nor `+serverEntry.js` (see <Link href="/renderPage#without-serverentry-js" doNotInferSectionTitle />).
 - You use path aliases in config files and you don't define them in `tsconfig.json`, see <Link href="#config-files" />.
 
 In that case, also define your path aliases at:
