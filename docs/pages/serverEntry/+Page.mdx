@@ -72,7 +72,7 @@ serve({
 
 AWS Lambda calls the `handler()` function exported by `dist/server/index.mjs`. You can implement it natively or with srvx.
 
-The examples below use `+serverEntry.js` with <Link href="/server">`+server.js`</Link>, which means that `+serverEntry.js` is only used in production: in development, `$ vike dev` runs your `+server.js` with Vite's development server as usual (see <Link href="#development" />).
+The examples below use `+serverEntry.js` with <Link href="/server">`+server.js`</Link>, which means that `+serverEntry.js` is only used in production — see <Link href="#development" />.
 
 > With AWS Lambda, you usually serve the static assets `dist/client/` with a CDN, such as Amazon CloudFront.
 
@@ -140,9 +140,9 @@ Note that:
 
 ## Example: Bun
 
-Without `+serverEntry.js`, `$ bun dist/server/index.mjs` runs Vike's built-in server entry powered by srvx which automatically uses `Bun.serve()` under the hood. But only in production: in development, `$ vike dev` uses Vite's development server (and thus the Node.js server APIs instead of `Bun.serve()`).
+Without `+serverEntry.js`, `$ bun dist/server/index.mjs` runs Vike's built-in server entry powered by srvx which automatically uses `Bun.serve()` under the hood. But only in production: in development, `$ vike dev` uses Vite's development server ([which uses the Node.js server APIs](https://github.com/vitejs/ecosystem/issues/16) instead of `Bun.serve()`).
 
-With `+serverEntry.js` (and without `+server.js`, see <Link href="#development" />), you can use [`Bun.serve()`](https://bun.com/docs/runtime/http/server) in both development and production, for example to use Bun's [WebSockets](https://bun.com/docs/runtime/http/websockets) also in development:
+With `+serverEntry.js` (and without `+server.js`, see <Link href="#development" />), you can use [`Bun.serve()`](https://bun.com/docs/runtime/http/server) in both development and production. For example to use Bun's [WebSockets](https://bun.com/docs/runtime/http/websockets) also in development:
 
 ```ts
 // +serverEntry.ts (without +server.js)
