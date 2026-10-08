@@ -112,11 +112,19 @@ The `renderPage()` function doesn't depend on Node.js and you can use `renderPag
 
 ## `renderPage()` vs `vike(app)`
 
-Instead of calling `renderPage()` yourself, you can use `vike(app)` (e.g. `import vike from '@vikejs/express'`, see <Link href="/server">`+server`</Link>), which calls `renderPage()` for you and sets <Link href="/pageContext#req">`pageContext.req`</Link> and <Link href="/pageContext#res">`pageContext.res`</Link>. It's available for Hono, Express, Fastify, H3, and Elysia.
+Instead of calling `renderPage()` yourself, you can use `vike(app)` — see <Link href="/server">`+server`</Link>.
 
-`vike(app)` and `renderPage()` are interchangeable, regardless of how you run your server.
+), which calls `renderPage()` for you and sets <Link href="/pageContext#req">`pageContext.req`</Link> and <Link href="/pageContext#res">`pageContext.res`</Link>. It's available for Hono, Express, Fastify, H3, and Elysia.
+
+> `vike(app)` and `renderPage()` are interchangeable, regardless of how you run your server.
+
+// TODO/ai at link to /server#control
+
+// TODO/ai move the following in a new section /server#control
 
 Vike provides extra control where needed, so that Vike never blocks you:
+
+I don't like the table, instead create a new subsection for each control point, and for each subsection use a table to quickly compare before/after + add links for more details, e.g. link to /renderPage and /renderPage#without-serverentry-js
 
 | Instead of | Use | To control |
 | --- | --- | --- |
@@ -136,7 +144,8 @@ You can use:
 
 ## Without `+serverEntry.js`
 
-You can also run your server yourself without `+serverEntry.js` (e.g. `$ node server/index.js`), but we discourage it:
+// TODO/ai "discourage" => make it a positive framing then elaborate below the table use the following bullet points
+You can also run your server yourself (e.g. `$ node server/index.js`) without `+server.js` nor `+serverEntry.js`, but we discourage it:
 - Your server code isn't processed by Vite: <ImportMeta prop="env" /> isn't available (e.g. `import.meta.env.DEV` and the variables of your `.env` files), nor are path aliases and Vite plugins. (Modern runtimes such as Bun and recent Node.js versions can run TypeScript, but they don't apply your Vite configuration.)
 - You have to restart your server yourself, or use a watcher (e.g. `node --watch` or `nodemon`) that doesn't know about Vite's module graph, whereas `$ vike dev` restarts your server only when a file imported by `+serverEntry.js` changes (modifying a page doesn't restart your server: the page is updated with <Link href="/glossary#hmr">HMR</Link>).
 
