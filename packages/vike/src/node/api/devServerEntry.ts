@@ -2,7 +2,7 @@ export { startServerEntry_parent }
 export { startServerEntry_child }
 export { getServerEntryDevCli }
 export { getServerEntryViteServer }
-export { isServerEntryProcess }
+export { isServerProcess }
 
 // `$ vike dev` runs +serverEntry.js (if there isn't +server.js) — https://vike.dev/serverEntry
 // - The parent process (`$ vike dev`) runs +serverEntry.js in a child process, and restarts the child process whenever a file imported by +serverEntry.js changes.
@@ -126,6 +126,6 @@ function getServerEntryViteServer(): ViteDevServer | null {
   return globalObject.viteServer ?? null
 }
 
-function isServerEntryProcess(): boolean {
+function isServerProcess(): boolean {
   return process.env[IS_SERVER_PROCESS] === '1'
 }
