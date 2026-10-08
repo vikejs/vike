@@ -34,7 +34,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
   // Vite's CLI always starts Vite's own server => it can't run +serverEntry.js
   assertUsage(
     !(getServerEntryDev(vikeConfig) && getViteCliCommand() === 'dev'),
-    '+serverEntry.js (without +server.js) requires $ vike dev instead of $ vite dev — see https://vike.dev/serverEntry',
+    "+serverEntry.js (without +server.js) requires $ vike dev instead of $ vite dev (because Vite's CLI always starts Vite's own server)",
   )
 
   return [
