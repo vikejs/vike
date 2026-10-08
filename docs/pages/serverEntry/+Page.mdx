@@ -14,7 +14,7 @@ Define `+serverEntry.js` to control how your server starts in production: Vike b
 // Your +server.js exports, e.g. `{ fetch }`
 import server from 'vike:server'
 
-// startServer() can be anything, e.g. a deployment or server tool
+// startServer() can be anything, typically a deployment or server tool
 startServer({
   port: 3000,
   onRequest: (request) => server.fetch(request)
@@ -29,11 +29,11 @@ $ node dist/server/index.mjs
 ```
 
 It gives you full control over your server production entry, for example to:
-- Deploy to a platform without built-in support, e.g. AWS Lambda (see example below).
-- Use another server framework, or a runtime API such as `Bun.serve()` and `Deno.serve()`.
-- Use all CPU cores with Node.js's [`cluster`](https://nodejs.org/api/cluster.html) module.
+- Deploy to a platform without built-in support, e.g. AWS Lambda (see example below)
+- Use another server framework or runtime API such as `Bun.serve()` and `Deno.serve()`
+- Use all CPU cores with Node.js's [`cluster`](https://nodejs.org/api/cluster.html) module
 
-> Without `+serverEntry.js`, `dist/server/index.mjs` is Vike's built-in server entry: a [srvx](https://srvx.h3.dev) server with first-class support for Node.js, Deno, and Bun (and potentially future runtimes). See also: <Link href="/server" />.
+> Without `+serverEntry.js`, `dist/server/index.mjs` is Vike's built-in server entry: a [srvx](https://srvx.h3.dev) server entry with first-class support for Node.js, Deno, and Bun (and potentially future runtimes). See also: <Link href="/server" />.
 
 > Vike uses <Link href="/blog/universal-deploy">Universal Deploy</Link> under the hood: it provides Vike's built-in server and integrates with deployment providers (e.g. Cloudflare and Vercel).
 
@@ -120,7 +120,7 @@ $ vike build
 $ bun dist/server/index.mjs
 ```
 
-> You don't need `+serverEntry.js` to use Bun: without it, `$ bun dist/server/index.mjs` runs Vike's built-in server entry.
+> You don't need `+serverEntry.js` to use Bun: without it, `$ bun dist/server/index.mjs` runs Vike's built-in server entry powered by srvx which automatically uses `Bun.serve()` under the hood.
 
 ### Native
 
