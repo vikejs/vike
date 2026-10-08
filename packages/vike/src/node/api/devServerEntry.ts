@@ -14,7 +14,7 @@ import path from 'node:path'
 import { normalizePath, type EnvironmentModuleNode, type ViteDevServer } from 'vite'
 import pc from '@brillout/picocolors'
 import { getVikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.js'
-import { getServerEntryDev } from '../vite/plugins/pluginUniversalDeploy/getServerConfig.js'
+import { getServerEntryFilePathDev } from '../vite/plugins/pluginUniversalDeploy/getServerConfig.js'
 import { isVikeCli } from '../cli/context.js'
 import { assert, assertInfo, assertUsage } from '../../utils/assert.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
@@ -119,7 +119,7 @@ function isImportedBy(modules: Set<EnvironmentModuleNode> | undefined, serverEnt
 async function getServerEntryFilePath(): Promise<string | null> {
   if (!isVikeCli()) return null
   const vikeConfig = await getVikeConfigInternal()
-  const serverEntryFilePath = getServerEntryDev(vikeConfig)
+  const serverEntryFilePath = getServerEntryFilePathDev(vikeConfig)
   return serverEntryFilePath
 }
 
