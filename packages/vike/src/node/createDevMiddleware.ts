@@ -1,6 +1,7 @@
 export { createDevMiddleware }
 
-import { createServer } from 'vite'
+import path from 'node:path'
+import { createServer, normalizePath } from 'vite'
 import { prepareViteApiCall } from './api/prepareViteApiCall.js'
 import type { ResolvedConfig, Connect, ViteDevServer } from 'vite'
 import type { ApiOptions } from './api/types.js'
@@ -19,9 +20,14 @@ async function createDevMiddleware(
   // `$ vike dev` runs +serverEntry.js => it already created Vite's development server — https://vike.dev/serverEntry
   const viteServer = getServerEntryViteServer()
   if (viteServer) {
+    const optionsIgnored = [
+      options.viteConfig && 'viteConfig',
+      options.vikeConfig && 'vikeConfig',
+      options.root && normalizePath(path.resolve(options.root)) !== viteServer.config.root && 'root',
+    ].filter((o) => typeof o === 'string')
     assertWarning(
-      !options.viteConfig,
-      `${pc.cyan('createDevMiddleware({ viteConfig })')} is ignored when ${pc.cyan('$ vike dev')} runs +serverEntry.js — set your Vite config in vite.config.js instead`,
+      optionsIgnored.length === 0,
+      `${pc.cyan(`createDevMiddleware({ ${optionsIgnored.join(', ')} })`)} is ignored: ${pc.cyan('$ vike dev')} created Vite's development server before running +serverEntry.js — set your config in vite.config.js and +config.js instead`,
       { onlyOnce: true },
     )
     return { devMiddleware: viteServer.middlewares, viteServer, viteConfig: viteServer.config }

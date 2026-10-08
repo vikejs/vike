@@ -1,4 +1,4 @@
-import { Link, Warning } from '@brillout/docpress'
+import { Link } from '@brillout/docpress'
 
 Create server middleware for development with <Link href="/glossary#hmr">HMR</Link> and <Link href="/lazy-transpiling">lazy transpiling</Link>.
 
@@ -20,10 +20,6 @@ const {
 ```
 
 See <Link href="/renderPage#usage">usage example</Link> for how to use it.
-
-<Warning>
-  If `$ vike dev` runs your <Link href="/serverEntry">`+serverEntry.js`</Link>, then `createDevMiddleware()` returns the Vite development server that `$ vike dev` created and its options are ignored: the server already exists before your `+serverEntry.js` runs.
-</Warning>
 
 Vite types:
 - [InlineConfig](https://vite.dev/guide/api-javascript.html#inlineconfig) types the `viteConfig` option.
