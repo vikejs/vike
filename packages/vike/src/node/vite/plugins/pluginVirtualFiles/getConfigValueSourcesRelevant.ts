@@ -15,7 +15,7 @@ import { assert } from '../../../../utils/assert.js'
 import { getFileSuffixes } from '../../../../shared-server-node/getFileSuffixes.js'
 import '../../assertEnvVite.js'
 
-type RuntimeEnv = (RuntimeEnvRuntime & { isForConfig?: undefined }) | { isForConfig: true }
+type RuntimeEnv = (RuntimeEnvRuntime & { isConfigEnvironment?: undefined }) | { isConfigEnvironment: true }
 type RuntimeEnvRuntime = { environmentName: string; isClientRouting?: boolean; isDev: boolean }
 
 type PageConfigPartial = Pick<
@@ -77,7 +77,7 @@ function getConfigValueSourceRelevantAnyEnv(
 }
 
 function isRuntimeEnvMatch(configEnv: ConfigEnv, runtimeEnv: RuntimeEnv): boolean {
-  if (runtimeEnv.isForConfig) return !!configEnv.config
+  if (runtimeEnv.isConfigEnvironment) return !!configEnv.config
 
   // Runtime
   if (!configEnv[runtimeEnv.environmentName]) return false

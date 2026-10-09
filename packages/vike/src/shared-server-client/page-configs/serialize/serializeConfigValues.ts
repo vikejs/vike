@@ -315,7 +315,7 @@ function getConfigValuesBase(
     const configDef = pageConfig.configDefinitions[configName]
     assert(configDef)
     if (isEager !== null && isEager !== !!configDef.eager) return 'SKIP'
-    if (configDef._valueNotLoadedAtRuntime && !runtimeEnv.isForConfig) return 'SKIP'
+    if (configDef._valueNotLoadedAtRuntime && !runtimeEnv.isConfigEnvironment) return 'SKIP'
     if (!configDef.cumulative) {
       const sourcesRelevant = getConfigValueSourcesRelevant(configName, runtimeEnv, pageConfig)
       const source = sourcesRelevant[0]
