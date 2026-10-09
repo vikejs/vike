@@ -79,6 +79,7 @@ import { getVikeApiOperation } from '../../shared-server-node/api-context.js'
 import type { PrerenderContext } from '../../types/index.js'
 import { hasAlreadyLogged } from './logErrorServer.js'
 import { notifyPlusMiddlewareChange } from './plusMiddlewareChange.js'
+import { addMiddlewares } from './plusMiddlewares.js'
 import '../assertEnvServer.js'
 const debug = createDebug('vike:globalContext')
 const globalObject = getGlobalObject<
@@ -602,6 +603,13 @@ function addGlobalContext(globalContext: GlobalContextBase) {
   return addGlobalContextCommon(globalContext, pageRoutes, onBeforeRouteHook)
 }
 function addGlobalContextCommon(
+  globalContext: GlobalContextBase,
+  pageRoutes: PageRoutes,
+  onBeforeRouteHook: null | HookInternal,
+) {
+  return addMiddlewares(getGlobalContextAddendum(globalContext, pageRoutes, onBeforeRouteHook), globalContext.config)
+}
+function getGlobalContextAddendum(
   globalContext: GlobalContextBase,
   pageRoutes: PageRoutes,
   onBeforeRouteHook: null | HookInternal,

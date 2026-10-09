@@ -20,7 +20,7 @@ vi.mock('./renderPageServer.js', () => ({
   }),
 }))
 const { default: universalVikeHandler } = await import('./universal-middleware.js')
-const { pageMethods } = await import('./universalHandler.js')
+const { pageMethods } = await import('./pagesHandler.js')
 
 const runtime = {} as RuntimeAdapter
 const call = async (url: string) =>

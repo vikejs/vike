@@ -3,7 +3,7 @@
 
 import express from 'express'
 import { fileURLToPath } from 'node:url'
-import { createDevMiddleware, getUniversalMiddlewares, renderPage } from 'vike/server'
+import { createDevMiddleware, getGlobalContext, renderPage } from 'vike/server'
 import { hello } from './server/hello'
 import { getEvaluations } from './server/shared'
 
@@ -18,7 +18,9 @@ if (import.meta.env.DEV) {
 }
 
 // Applying the list by hand: `$ vike dev` restarts this file when the +middleware change
-const middlewares = await getUniversalMiddlewares()
+const globalContext = await getGlobalContext()
+if (globalContext.isClientSide) throw new Error('Server only')
+const middlewares = globalContext.middlewares.filter((m) => !m.isHandler)
 app.get('/middlewares', (_req, res) => {
   res.send(String(middlewares.length))
 })

@@ -2,14 +2,14 @@ export { onPlusMiddlewareChange }
 export { setPlusMiddlewareFetched }
 export { notifyPlusMiddlewareChange }
 
-// In development, a server that applies `await getUniversalMiddlewares()` itself holds the list it got: it has to be re-run when the
+// In development, a server that applies `globalContext.middlewares` itself holds the list it got: it has to be re-run when the
 // +middleware change. (`vike(app)` looks them up upon each request.)
 
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import '../assertEnvServer.js'
 
 const globalObject = getGlobalObject('runtime/plusMiddlewareChange.ts', {
-  // The +middleware of the list getUniversalMiddlewares() last returned. `null` if the config was erroneous, `undefined` if it wasn't called since the last change.
+  // The +middleware of the list `globalContext.middlewares` last returned. `null` if the config was erroneous, `undefined` if it wasn't read since the last change.
   fetched: undefined as unknown[] | null | undefined,
   listeners: new Set<() => void>(),
 })

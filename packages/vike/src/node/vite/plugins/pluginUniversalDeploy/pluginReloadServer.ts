@@ -7,7 +7,7 @@ import { assertInfo } from '../../../../utils/assert.js'
 import { isRunnableDevEnvironment } from '../../../../utils/isRunnableDevEnvironment.js'
 import '../../assertEnvVite.js'
 
-// A +server.js that applies `await getUniversalMiddlewares()` holds the list it got: in development, it's re-evaluated when the +middleware change, upon the next request.
+// A +server.js that applies `globalContext.middlewares` holds the list it got: in development, it's re-evaluated when the +middleware change, upon the next request.
 // (A +server.js that uses vike(app) looks the +middleware up upon each request.)
 function pluginReloadServer(serverFilePath: string): Plugin {
   return {

@@ -1,7 +1,7 @@
 import type { Server } from 'vike/types'
 import { toFetchHandler } from '@vikejs/express'
 import { apply } from '@universal-middleware/express'
-import { getUniversalMiddlewares, universalHandler } from 'vike'
+import { getGlobalContext } from 'vike/server'
 import express from 'express'
 
 const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000
@@ -9,12 +9,22 @@ const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000
 async function serve() {
   const app = express()
 
-  apply(app, await getUniversalMiddlewares())
+  const globalContext = await getGlobalContext()
+  if (globalContext.isClientSide) throw new Error('Server only')
+  const { middlewares } = globalContext
+
+  apply(
+    app,
+    middlewares.filter((m) => !m.isHandler),
+  )
 
   app.get('/express', (_req, res) => res.send('Running express server'))
   app.get('/overridden', (_req, res) => res.send('from route'))
 
-  apply(app, [universalHandler])
+  apply(
+    app,
+    middlewares.filter((m) => m.isHandler),
+  )
 
   return toFetchHandler(app)
 }

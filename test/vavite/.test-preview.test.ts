@@ -10,7 +10,7 @@ test('+middleware', async () => {
   expect(response.headers.get('x-middleware')).toBe('ran')
 })
 
-test('+middleware context reaches routes after getUniversalMiddlewares()', async () => {
+test('+middleware context reaches routes after globalContext.middlewares', async () => {
   const response = await fetch(getServerUrl() + '/api/context')
   expect((await response.json()).testMiddlewareContext).toBe('from +middleware')
 })

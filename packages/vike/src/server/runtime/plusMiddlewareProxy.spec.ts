@@ -3,12 +3,10 @@ import { enhance, getUniversal, getUniversalProp, methodSymbol, type RuntimeAdap
 
 let plusMiddlewares: unknown[] = []
 vi.mock('./globalContext.js', () => ({
-  initGlobalContext_renderPage: async () => {},
   getGlobalContextServerInternal: async () => ({
     globalContext: { config: { middleware: plusMiddlewares }, baseServer: '/' },
   }),
 }))
-vi.mock('../../shared-server-node/getVikeConfigError.js', () => ({ getVikeConfigError: () => null }))
 // The page renders its url and the context it got
 vi.mock('./renderPageServer.js', () => ({
   renderPageServerConfigError: async () => null,
@@ -21,27 +19,24 @@ vi.mock('./renderPageServer.js', () => ({
     },
   }),
 }))
-const { getUniversalMiddlewares, httpMethods } = await import('./getUniversalMiddlewares.js')
-const { default: universalHandler } = await import('./universalHandler.js')
+const { addMiddlewares, httpMethods, plusMiddlewareProxy } = await import('./plusMiddlewares.js')
+// What the adapters' vike(app) applies after the routes of the app
+const withPages = plusMiddlewareProxy.find((middleware) => middleware.isHandler)!
 
 const runtime = {} as RuntimeAdapter
 const render = async (url: string, context: Universal.Context = {}, method = 'GET') =>
-  (await getUniversal(universalHandler)(
-    new Request(`http://localhost${url}`, { method }),
-    context,
-    runtime,
-  )) as Response
+  (await getUniversal(withPages)(new Request(`http://localhost${url}`, { method }), context, runtime)) as Response
 
-describe('universalHandler', () => {
-  // Must be the first: nothing has applied getUniversalMiddlewares() yet
-  it('throws if there are +middleware and getUniversalMiddlewares() was not applied', async () => {
+describe('plusMiddlewareProxy, with the pages', () => {
+  // Must be the first: nothing has applied the +middleware yet
+  it('throws if there are +middleware and globalContext.middlewares was not read', async () => {
     plusMiddlewares = [enhance(() => new Response('handler'), { name: 'handler', method: 'GET', path: '/a' })]
     await expect(render('/a')).rejects.toThrow("Your +middleware aren't applied")
   })
 
   it('runs a +middleware that is a handler before the page, and falls through to the page', async () => {
-    // Fetching the list applies the +middleware
-    await getUniversalMiddlewares()
+    // Reading the list applies the +middleware
+    addMiddlewares({}, { middleware: [] }).middlewares
     plusMiddlewares = [
       enhance(() => new Response('from handler'), { name: 'path', method: 'GET', path: '/a' }),
       enhance(() => new Response('from order zero'), { name: 'zero', method: 'GET', path: '/b', order: 0 }),
@@ -81,7 +76,7 @@ describe('universalHandler', () => {
   })
 
   it('declares every HTTP method, for servers to install it on', () => {
-    const methods = getUniversalProp(universalHandler, methodSymbol)
+    const methods = getUniversalProp(withPages, methodSymbol)
     expect(methods).toEqual(httpMethods)
     expect(methods).toContain('DELETE')
   })

@@ -56,7 +56,7 @@ function testRun(...args: Parameters<typeof testRunClassic>) {
     await sleep(100)
   })
 
-  // +server.ts applies `await getUniversalMiddlewares()` itself, which `$ vike dev` re-evaluates when the +middleware change
+  // +server.ts applies `globalContext.middlewares` itself, which `$ vike dev` re-evaluates when the +middleware change
   if (args[0] === 'pnpm run dev') {
     test('A +middleware file added or removed in dev applies to +server.ts without a restart', async () => {
       // A global config file: another +middleware sits in /pages/

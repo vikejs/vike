@@ -73,7 +73,7 @@ async function startServerEntry_child(viteServer: ViteDevServer, serverEntryFile
   restartOnFileChange(viteServer, (filePath) =>
     isImportedBy(ssr.moduleGraph.getModulesByFile(filePath), serverEntryFilePath),
   )
-  // +serverEntry.js applies `await getUniversalMiddlewares()` itself: it holds the list it got
+  // +serverEntry.js applies `globalContext.middlewares` itself: it holds the list it got
   onPlusMiddlewareChange(() => restart(`${pc.cyan('+middleware')} changed`))
   // The user's server uses the current Vite development server (e.g. `app.use(devMiddleware)`) => we restart the process instead of letting Vite restart itself (e.g. upon vite.config.js changes)
   viteServer.restart = async () => restart('Vite needs to restart')

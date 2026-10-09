@@ -9,7 +9,7 @@ import pc from '@brillout/picocolors'
 import { getAdapterRuntime, type ExpressAdapter } from '@universal-middleware/core'
 import { createRequestAdapter } from '@universal-middleware/node/request'
 import { sendResponse } from '@universal-middleware/node/response'
-import { runUniversalMiddlewares } from '../../../server/runtime/getUniversalMiddlewares.js'
+import { runUniversalMiddlewares } from '../../../server/runtime/plusMiddlewares.js'
 import { setPlusMiddlewareInstalled } from '../../../server/runtime/assertPlusMiddlewareInstalled.js'
 import '../assertEnvVite.js'
 type ConnectServer = ViteDevServer['middlewares']
