@@ -67,13 +67,13 @@ type ConfigDefinition =
       global?: boolean | ((value: unknown, moreInfo: { isGlobalLocation: boolean }) => boolean)
       /** Whether changes to the configuration should trigger a Vite restart. */
       vite?: boolean
-      /** @experimental */
+      /** @internal */
       _computed?: (pageConfig: PageConfigBuildTimeBeforeComputed, isDev: boolean) => unknown
-      /** @experimental */
+      /** @internal */
       _valueIsFilePath?: true
-      /** @experimental */
+      /** @internal */
       _valueNotLoadedAtRuntime?: true
-      /** @experimental */
+      /** @internal */
       _userEffectDefinedAtFilePath?: DefinedAtFilePath
       isDefinedByPeerDependency?: undefined
     }
@@ -364,7 +364,8 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
   server: {
     env: { server: true },
     global: true,
-    // +server.js is the server itself: the global entry doesn't import it, otherwise a +server.js that awaits the global context would wait for itself
+    // virtual:vike:global-entry:server shouldn't import +server.js
+    // - Otherwise a +server.js calling `await getGlobalContext()` would wait for itself and hang indefinitely
     _valueNotLoadedAtRuntime: true,
   },
   serverEntry: {
