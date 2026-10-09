@@ -74,6 +74,9 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     const responseAuth: Response = await fetch(url, { headers: { 'x-auth': '1' } })
     expect(responseAuth.status).toBe(200)
     expect(await responseAuth.text()).toContain('DASH-SECRET')
+    // `%2564ash` is the literal text `%64ash`, not `dash`: like that page, its .pageContext.json is a 404
+    const responseEncoded: Response = await fetch(`${getServerUrl()}/%2564ash/index.pageContext.json`)
+    expect(await responseEncoded.text()).toContain('"is404":true')
   })
 
   test("A +middleware's own response to a .pageContext.json request is passed through", async () => {
