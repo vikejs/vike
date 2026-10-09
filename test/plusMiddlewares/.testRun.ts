@@ -6,7 +6,12 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   run(cmd, {
     serverUrl: 'http://localhost:3000',
     tolerateError({ logText }) {
-      return logText.includes("Vite's CLI is deprecated") || logText.includes('Run the built server entry')
+      return (
+        logText.includes("Vite's CLI is deprecated") ||
+        logText.includes('Run the built server entry') ||
+        // The browser logs the 401 of the guarded page
+        logText.includes('the server responded with a status of 401')
+      )
     },
   })
 
@@ -85,6 +90,31 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     expect(response.status).toBe(200)
     expect(response.headers.get('x-settings')).toBe('yes')
     expect(await response.text()).toContain('Admin settings')
+  })
+
+  test("A +middleware's own response to a .pageContext.json request is passed through", async () => {
+    const response: Response = await fetch(`${getServerUrl()}/admin/settings/index.pageContext.json`)
+    expect(response.status).toBe(401)
+    expect(await response.text()).toBe('Unauthorized')
+  })
+
+  test("A +middleware's own response to a client-side navigation is shown", async () => {
+    await page.goto(`${getServerUrl()}/`)
+    await testCounter()
+    await page.click('a[href="/admin/data"]')
+    await autoRetry(async () => {
+      expect(await page.textContent('body')).toBe('Unauthorized')
+    })
+  })
+
+  test("A +middleware's redirect of a client-side navigation is followed", async () => {
+    await page.goto(`${getServerUrl()}/`)
+    await testCounter()
+    await page.click('a[href="/guarded"]')
+    await autoRetry(async () => {
+      expect(page.url()).toBe(`${getServerUrl()}/login`)
+      expect(await page.textContent('body')).toContain('Login')
+    })
   })
 
   test('A +middleware with a path and order 0 still answers its path, and the pages still render', async () => {

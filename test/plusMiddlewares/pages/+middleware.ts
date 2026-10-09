@@ -65,6 +65,12 @@ const adminAuth = enhance(
     request.headers.has('x-auth') ? undefined : new Response('Unauthorized', { status: 401 }),
   { name: 'adminAuth', method: 'GET', path: '/admin/**', order: MiddlewareOrder.AUTHORIZATION },
 )
+const guardedRedirect = enhance(async () => new Response(null, { status: 302, headers: { Location: '/login' } }), {
+  name: 'guardedRedirect',
+  method: 'GET',
+  path: '/guarded',
+  order: MiddlewareOrder.AUTHORIZATION,
+})
 const settingsHeader = enhance(
   async () => (response: Response) => {
     response.headers.set('x-settings', 'yes')
@@ -89,6 +95,7 @@ export default [
   renderPageMiddleware,
   guardMiddleware,
   adminAuth,
+  guardedRedirect,
   settingsHeader,
   orderZero,
 ]
