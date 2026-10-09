@@ -2,7 +2,7 @@ export { startServerEntry_parent }
 export { startServerEntry_child }
 export { getServerEntryFilePath_ifDevCli }
 export { getServerEntryViteServer }
-export { isServerProcess }
+export { isServerChildProcess }
 
 // `$ vike dev` runs +serverEntry.js (if there isn't +server.js) — https://vike.dev/serverEntry
 // - The parent process (`$ vike dev`) runs +serverEntry.js in a child process, and restarts the child process whenever a file imported by +serverEntry.js changes
@@ -23,7 +23,7 @@ import { isRunnableDevEnvironment } from '../../utils/isRunnableDevEnvironment.j
 import './assertEnvApiDev.js'
 const globalObject = getGlobalObject<{ viteServer?: ViteDevServer }>('api/serverEntryDev.ts', {})
 
-const IS_SERVER_PROCESS = '__VIKE_IS_SERVER_PROCESS'
+const IS_SERVER_CHILD_PROCESS = '__VIKE_IS_SERVER_CHILD_PROCESS'
 // The child process exits with this code to tell the parent process to restart it
 const EXIT_CODE_RESTART = 33
 
@@ -34,7 +34,7 @@ function startServerEntry_parent(): Promise<never> {
   let child: ChildProcess
   let signalReceived: NodeJS.Signals | undefined
   const forkChild = () => {
-    child = fork(scriptPath, args, { stdio: 'inherit', env: { ...process.env, [IS_SERVER_PROCESS]: '1' } })
+    child = fork(scriptPath, args, { stdio: 'inherit', env: { ...process.env, [IS_SERVER_CHILD_PROCESS]: '1' } })
     child.on('exit', (code, signal) => {
       if (code === EXIT_CODE_RESTART && !signalReceived) forkChild()
       else exitLikeChild(code, signal ?? signalReceived ?? null)
@@ -129,6 +129,6 @@ function getServerEntryViteServer(): ViteDevServer | null {
   return globalObject.viteServer ?? null
 }
 
-function isServerProcess(): boolean {
-  return process.env[IS_SERVER_PROCESS] === '1'
+function isServerChildProcess(): boolean {
+  return process.env[IS_SERVER_CHILD_PROCESS] === '1'
 }

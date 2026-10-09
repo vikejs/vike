@@ -42,14 +42,6 @@ const renderPageMiddleware = enhance(
   { name: 'renderPageMiddleware', method: 'GET', path: '/render-page-middleware' },
 )
 
-// A guard on a page also covers the page's data, which the client fetches on navigation
-const guardMiddleware = enhance(
-  async (request: Request) => {
-    return new Response('guard', { status: request.headers.has('x-authenticated') ? 200 : 401 })
-  },
-  { name: 'guardMiddleware', method: 'GET', path: '/dash' },
-)
-
 // Builds context for the pages
 const contextMiddleware = enhance(async () => ({ fromMw: 'yes' }), { name: 'contextMiddleware' })
 
@@ -64,6 +56,11 @@ const adminAuth = enhance(
   async (request: Request) =>
     request.headers.has('x-auth') ? undefined : new Response('Unauthorized', { status: 401 }),
   { name: 'adminAuth', method: 'GET', path: '/admin/**', order: MiddlewareOrder.AUTHORIZATION },
+)
+const dashAuth = enhance(
+  async (request: Request) =>
+    request.headers.has('x-auth') ? undefined : new Response('Unauthorized', { status: 401 }),
+  { name: 'dashAuth', method: 'GET', path: '/dash', order: MiddlewareOrder.AUTHORIZATION },
 )
 const guardedRedirect = enhance(async () => new Response(null, { status: 302, headers: { Location: '/login' } }), {
   name: 'guardedRedirect',
@@ -82,6 +79,17 @@ const settingsHeader = enhance(
     return response
   },
   { name: 'settingsHeader', method: 'GET', path: '/admin/settings', order: MiddlewareOrder.HEADER_MANAGEMENT },
+)
+
+// Adds a header to the response of a /wrapped page, or replaces it, `.pageContext.json` included
+const wrapResponse = enhance(
+  async (request: Request) => (response: Response) => {
+    if (!new URL(request.url).pathname.startsWith('/wrapped')) return response
+    if (request.headers.has('x-replace')) return new Response('Replaced', { status: 401 })
+    response.headers.set('x-wrapped', 'yes')
+    return response
+  },
+  { name: 'wrapResponse', order: MiddlewareOrder.HEADER_MANAGEMENT },
 )
 
 const orderZero = enhance(async () => new Response('order zero'), {
@@ -109,11 +117,12 @@ export default [
   redirectMiddleware,
   responseHeaderMiddleware,
   renderPageMiddleware,
-  guardMiddleware,
   adminAuth,
+  dashAuth,
   guardedRedirect,
   portalLogin,
   settingsHeader,
+  wrapResponse,
   orderZero,
   throwingResponseHandler,
 ]

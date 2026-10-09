@@ -14,5 +14,6 @@ const postPlugin: Plugin = {
 }
 
 export default {
+  base: process.env.BASE,
   plugins: [react(), vike(), postPlugin],
 } satisfies UserConfig

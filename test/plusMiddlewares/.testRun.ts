@@ -1,6 +1,6 @@
 export { testRun }
 
-import { autoRetry, expect, expectLog, fetch, fetchHtml, getServerUrl, page, run, test } from '@brillout/test-e2e'
+import { autoRetry, expect, expectLog, fetch, fetchHtml, getServerUrl, page, partRegex, run, test } from '@brillout/test-e2e'
 
 function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   run(cmd, {
@@ -9,7 +9,8 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
       return (
         logText.includes("Vite's CLI is deprecated") ||
         logText.includes('Run the built server entry') ||
-        // The browser logs the 401 of the guarded page
+        // The browser logs the 404 of the guarded page's .pageContext.json, then the 401 of the page
+        logText.includes('the server responded with a status of 404') ||
         logText.includes('the server responded with a status of 401') ||
         // The +middleware whose response handler throws
         logText.includes('response handler failed')
@@ -60,14 +61,6 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     }
   })
 
-  test('+middleware with a path also guards its .pageContext.json', async () => {
-    for (const url of ['/dash', '/dash/index.pageContext.json']) {
-      expect((await fetch(`${getServerUrl()}${url}`)).status).toBe(401)
-      const response: Response = await fetch(`${getServerUrl()}${url}`, { headers: { 'x-authenticated': '' } })
-      expect(response.status).toBe(200)
-    }
-  })
-
   test('+middleware with a GET path also guards HEAD', async () => {
     expect((await fetch(`${getServerUrl()}/dash`, { method: 'HEAD' })).status).toBe(401)
   })
@@ -88,19 +81,37 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     expect(await response.text()).toContain('Admin settings')
   })
 
-  test("A +middleware's own response to a .pageContext.json request is passed through", async () => {
+  test("A +middleware with a path also guards the page's .pageContext.json (client-side navigation)", async () => {
+    expect((await fetch(`${getServerUrl()}/dash`)).status).toBe(401)
+    expectLog(partRegex`HTTP response ${/.*/} /dash 401`, { filter: (log) => log.logSource === 'stderr' })
+    const url = `${getServerUrl()}/dash/index.pageContext.json`
+    const response: Response = await fetch(url)
+    expect(response.status).toBe(404)
+    expect(await response.text()).toBe('Unauthorized')
+    const responseAuth: Response = await fetch(url, { headers: { 'x-auth': '1' } })
+    expect(responseAuth.status).toBe(200)
+    expect(await responseAuth.text()).toContain('DASH-SECRET')
+    // `%2564ash` is the literal text `%64ash`, not `dash`: like that page, its .pageContext.json is a 404
+    const responseEncoded: Response = await fetch(`${getServerUrl()}/%2564ash/index.pageContext.json`)
+    expect(await responseEncoded.text()).toContain('"is404":true')
+  })
+
+  test("A +middleware's own response to a .pageContext.json request is answered as a 404", async () => {
     const response: Response = await fetch(`${getServerUrl()}/admin/settings/index.pageContext.json`)
-    expect(response.status).toBe(401)
+    expect(response.status).toBe(404)
     expect(await response.text()).toBe('Unauthorized')
   })
 
   test("A +middleware's own response to a client-side navigation is shown", async () => {
-    await page.goto(`${getServerUrl()}/`)
-    await testCounter()
-    await page.click('a[href="/admin/data"]')
-    await autoRetry(async () => {
-      expect(await page.textContent('body')).toBe('Unauthorized')
-    })
+    for (const pathname of ['/admin/data', '/dash']) {
+      await page.goto(`${getServerUrl()}/`)
+      await testCounter()
+      await page.click(`a[href="${pathname}"]`)
+      await autoRetry(async () => {
+        expect(await page.textContent('body')).toBe('Unauthorized')
+      })
+      expectLog(partRegex`HTTP response ${/.*/} ${pathname} 401`, { filter: (log) => log.logSource === 'stderr' })
+    }
   })
 
   test("A +middleware's redirect of a client-side navigation is followed", async () => {
@@ -120,6 +131,17 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     await autoRetry(async () => {
       expect(await page.textContent('body')).toBe('Log in to continue')
     })
+  })
+
+  test("A +middleware's response function can decorate or replace the response to a .pageContext.json request", async () => {
+    const url = `${getServerUrl()}/wrapped/index.pageContext.json`
+    const decorated: Response = await fetch(url)
+    expect(decorated.status).toBe(200)
+    expect(decorated.headers.get('x-wrapped')).toBe('yes')
+    expect(await decorated.text()).toContain('WRAPPED-DATA')
+    const replaced: Response = await fetch(url, { headers: { 'x-replace': '1' } })
+    expect(replaced.status).toBe(404)
+    expect(await replaced.text()).toBe('Replaced')
   })
 
   test('A +middleware response handler that throws fails that request only', async () => {
