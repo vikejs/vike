@@ -77,9 +77,31 @@ function addSsrMiddleware(
       },
       enumerable: false,
     })
-    let pageContext: Awaited<ReturnType<typeof renderPageServer>>
     try {
-      pageContext = await renderPageServer(pageContextInit)
+      const pageContext = await renderPageServer(pageContextInit)
+
+      if (pageContext.httpResponse.statusCode === 404 && isPreview && isPrerenderingEnabled) {
+        // Serve /dist/client/404.html instead
+        return next()
+      }
+
+      const configHeaders = (isPreview && config?.preview?.headers) || config?.server?.headers
+      if (configHeaders) {
+        for (const [name, value] of Object.entries(configHeaders)) if (value) res.setHeader(name, value)
+      }
+
+      const { httpResponse } = pageContext
+      const applyResponseHandlers = responseHandlers.get(req)
+      if (applyResponseHandlers) {
+        const { statusCode: status, headers } = httpResponse
+        return sendResponse(
+          await applyResponseHandlers(new Response(httpResponse.getReadableWebStream(), { status, headers })),
+          res,
+        )
+      }
+      setHeadersWithMultipleCookies(res, httpResponse.headers)
+      res.statusCode = httpResponse.statusCode
+      httpResponse.pipe(res)
     } catch (err) {
       // Throwing an error in a connect middleware shuts down the server
       console.error(err)
@@ -88,29 +110,6 @@ function addSsrMiddleware(
       // - We purposely don't use next(err) to align behavior: we use our own/copied implementation of buildErrorMessage() regardless of whether the user uses Vite's dev middleware or Vite's standalone dev server
       return next()
     }
-
-    if (pageContext.httpResponse.statusCode === 404 && isPreview && isPrerenderingEnabled) {
-      // Serve /dist/client/404.html instead
-      return next()
-    }
-
-    const configHeaders = (isPreview && config?.preview?.headers) || config?.server?.headers
-    if (configHeaders) {
-      for (const [name, value] of Object.entries(configHeaders)) if (value) res.setHeader(name, value)
-    }
-
-    const { httpResponse } = pageContext
-    const applyResponseHandlers = responseHandlers.get(req)
-    if (applyResponseHandlers) {
-      const { statusCode: status, headers } = httpResponse
-      return sendResponse(
-        await applyResponseHandlers(new Response(httpResponse.getReadableWebStream(), { status, headers })),
-        res,
-      )
-    }
-    setHeadersWithMultipleCookies(res, httpResponse.headers)
-    res.statusCode = httpResponse.statusCode
-    httpResponse.pipe(res)
   })
 }
 

@@ -10,7 +10,9 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
         logText.includes("Vite's CLI is deprecated") ||
         logText.includes('Run the built server entry') ||
         // The browser logs the 401 of the guarded page
-        logText.includes('the server responded with a status of 401')
+        logText.includes('the server responded with a status of 401') ||
+        // The +middleware whose response handler throws
+        logText.includes('response handler failed')
       )
     },
   })
@@ -115,6 +117,14 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
       expect(page.url()).toBe(`${getServerUrl()}/login`)
       expect(await page.textContent('body')).toContain('Login')
     })
+  })
+
+  test('A +middleware response handler that throws fails that request only', async () => {
+    const response: Response = await fetch(`${getServerUrl()}/?throwing-response-handler`, {
+      signal: AbortSignal.timeout(10 * 1000),
+    })
+    expect(response.status).not.toBe(200)
+    expect((await fetch(`${getServerUrl()}/`)).status).toBe(200)
   })
 
   test('A +middleware with a path and order 0 still answers its path, and the pages still render', async () => {

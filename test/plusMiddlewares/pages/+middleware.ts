@@ -86,6 +86,17 @@ const orderZero = enhance(async () => new Response('order zero'), {
   order: 0,
 })
 
+// Its response handler throws
+const throwingResponseHandler = enhance(
+  async (request: Request) =>
+    new URL(request.url).searchParams.has('throwing-response-handler')
+      ? () => {
+          throw new Error('response handler failed')
+        }
+      : undefined,
+  { name: 'throwingResponseHandler' },
+)
+
 export default [
   contextMiddleware,
   passThroughMiddleware,
@@ -98,4 +109,5 @@ export default [
   guardedRedirect,
   settingsHeader,
   orderZero,
+  throwingResponseHandler,
 ]
