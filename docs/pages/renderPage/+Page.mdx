@@ -166,7 +166,7 @@ The fundamental difference is that:
 
 ## `+middleware`
 
-`renderPage()` doesn't run your `+middleware` (and throws if you have some and didn't apply them). `vike(app)` does. To integrate Vike by hand and keep your `+middleware`, use `globalContext.middlewares`: every `+middleware` as a Universal Middleware, and Vike's catch-all that renders your pages as the last element, instead of calling `renderPage()`. Each element has an `isHandler` property: apply the ones that aren't handlers before your routes, and the ones that are after them.
+`renderPage()` doesn't run your `+middleware` (and throws if you have some and neither called `vike(app)` nor read `globalContext.middlewares`). `vike(app)` does. To integrate Vike by hand and keep your `+middleware`, use `globalContext.middlewares`: every `+middleware` as a Universal Middleware, and Vike's catch-all that renders your pages as the last element, instead of calling `renderPage()`. Each element has an `isHandler` property: apply the ones that aren't handlers before your routes, and the ones that are after them.
 
 ```ts
 import { apply } from '@universal-middleware/express'
