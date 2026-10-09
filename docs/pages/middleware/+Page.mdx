@@ -37,7 +37,43 @@ export default enhance(
 
 <Link href="/renderPage">`renderPage()`</Link> doesn't run your `+middleware`. Apply `globalContext.middlewares` instead. Its last element renders your pages, so it replaces your own `renderPage()` route.
 
-<Tabs choice={'server'} hide={['Fastify', 'H3', 'Elysia', 'Other']} />
+<Tabs choice={'server'} />
+
+:::Choice{#Fastify}
+Apply the list in one call: a second call throws. Your handlers then run before your routes.
+:::
+
+:::Choice{#Elysia}
+Apply the list in one call: with two calls, the pages are never reached. Your handlers then run before your routes.
+:::
+
+:::Choice{#Other}
+Use the `apply()` of [your server's Universal Middleware adapter](https://universal-middleware.dev/reference/supported-adapters). The example uses srvx, whose `apply()` returns a fetch handler.
+:::
+
+```shell choice=Hono
+npm i hono @universal-middleware/hono
+```
+
+```shell choice=Express
+npm i express @universal-middleware/express
+```
+
+```shell choice=Fastify
+npm i fastify @universal-middleware/fastify
+```
+
+```shell choice=H3
+npm i h3 @universal-middleware/h3
+```
+
+```shell choice=Elysia
+npm i elysia @universal-middleware/elysia
+```
+
+```shell choice=Other
+npm i srvx @universal-middleware/srvx
+```
 
 ```ts choice=Hono
 // server/index.ts
@@ -55,12 +91,12 @@ const globalContext = await getGlobalContext()
 assert(!globalContext.isClientSide)
 const { middlewares } = globalContext
 
-// Before your routes
+// Before your routes: the +middleware that aren't handlers
 apply(app, middlewares.filter((m) => !m.isHandler))
 
 app.get('/api/hello', (c) => c.text('Hello'))
 
-// After your routes: the handlers, and the pages (the last element)
+// After your routes: the handlers and the pages
 apply(app, middlewares.filter((m) => m.isHandler))
 ```
 
@@ -80,23 +116,106 @@ const globalContext = await getGlobalContext()
 assert(!globalContext.isClientSide)
 const { middlewares } = globalContext
 
-// Before your routes
+// Before your routes: the +middleware that aren't handlers
 apply(app, middlewares.filter((m) => !m.isHandler))
 
 app.get('/api/hello', (req, res) => res.send('Hello'))
 
-// After your routes: the handlers, and the pages (the last element)
+// After your routes: the handlers and the pages
 apply(app, middlewares.filter((m) => m.isHandler))
 ```
 
-> See [Universal Middleware](https://github.com/magne4000/universal-middleware) for the `apply()` of the other servers (Fastify, H3, ...).
+```ts choice=Fastify
+// server/index.ts
+// Environment: server
+
+import fastify from 'fastify'
+import { apply } from '@universal-middleware/fastify'
+import assert from 'node:assert'
+import { getGlobalContext } from 'vike/server'
+
+const app = fastify()
+
+const globalContext = await getGlobalContext()
+// Narrows globalContext down to the server-side one
+assert(!globalContext.isClientSide)
+const { middlewares } = globalContext
+
+await apply(app, middlewares)
+
+app.get('/api/hello', () => 'Hello')
+```
+
+```ts choice=H3
+// server/index.ts
+// Environment: server
+
+import { createApp, eventHandler } from 'h3'
+import { apply } from '@universal-middleware/h3'
+import assert from 'node:assert'
+import { getGlobalContext } from 'vike/server'
+
+const app = createApp()
+
+const globalContext = await getGlobalContext()
+// Narrows globalContext down to the server-side one
+assert(!globalContext.isClientSide)
+const { middlewares } = globalContext
+
+// Before your routes: the +middleware that aren't handlers
+apply(app, middlewares.filter((m) => !m.isHandler))
+
+app.use('/api/hello', eventHandler(() => 'Hello'))
+
+// After your routes: the handlers and the pages
+apply(app, middlewares.filter((m) => m.isHandler))
+```
+
+```ts choice=Elysia
+// server/index.ts
+// Environment: server
+
+import { Elysia } from 'elysia'
+import { apply } from '@universal-middleware/elysia'
+import assert from 'node:assert'
+import { getGlobalContext } from 'vike/server'
+
+const app = new Elysia()
+
+const globalContext = await getGlobalContext()
+// Narrows globalContext down to the server-side one
+assert(!globalContext.isClientSide)
+const { middlewares } = globalContext
+
+apply(app, middlewares)
+
+// Return a Response: a plain value fails with a 500 when a +middleware modifies the response
+app.get('/api/hello', () => new Response('Hello'))
+```
+
+```ts choice=Other
+// server/index.ts
+// Environment: server
+
+import { serve } from 'srvx'
+import { apply } from '@universal-middleware/srvx'
+import assert from 'node:assert'
+import { getGlobalContext } from 'vike/server'
+
+const globalContext = await getGlobalContext()
+// Narrows globalContext down to the server-side one
+assert(!globalContext.isClientSide)
+const { middlewares } = globalContext
+
+serve({ fetch: apply(middlewares) })
+```
 
 
 ## `path` and `order`
 
 A `+middleware` with a `path` and no `order`, or with `order: 0`, is a handler.
 
-- Handlers run after your routes, right before your pages: a route of your server can answer instead of a handler.
+- Handlers run after your routes, right before your pages: a route of your server can answer instead of a handler (except with `apply()` on Fastify and Elysia, as above).
 - For a URL, only the handler with the most specific `path` runs. If it returns nothing, the request goes on to your pages.
 - The other `+middleware` run before your routes, sorted by `order`. To run a `+middleware` for the URLs matching its `path` (e.g. a guard on `/admin/**`), give it a negative `order` such as `MiddlewareOrder.AUTHORIZATION`.
 
