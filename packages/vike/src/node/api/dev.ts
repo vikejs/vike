@@ -11,7 +11,7 @@ import {
   startServerEntry_parent,
   startServerEntry_child,
   getServerEntryFilePath_ifDevCli,
-  isServerProcess,
+  isServerChildProcess,
 } from './serverEntryDev.js'
 assertIsNotProductionRuntime()
 
@@ -27,12 +27,13 @@ async function dev(
 
   // `$ vike dev` runs +serverEntry.js if there isn't +server.js — https://vike.dev/serverEntry
   const serverEntryFilePath = await getServerEntryFilePath_ifDevCli()
-  if (serverEntryFilePath && !isServerProcess()) return await startServerEntry_parent()
+  const serverEntryIsChildProcess = isServerChildProcess()
+  if (serverEntryFilePath && !serverEntryIsChildProcess) return await startServerEntry_parent()
 
   const server = await createServer(
     serverEntryFilePath
       ? // +serverEntry.js creates the server: it uses Vite's development server as middleware
-        addMiddlewareMode(viteConfigUser)
+        setMiddlewareMode(viteConfigUser)
       : viteConfigUser,
   )
 
@@ -45,10 +46,7 @@ async function dev(
 
   if (options.startupLog) startupLog(viteConfig, viteServer)
 
-  if (serverEntryFilePath) {
-    assert(isServerProcess())
-    await startServerEntry_child(viteServer, serverEntryFilePath)
-  }
+  if (serverEntryFilePath && serverEntryIsChildProcess) await startServerEntry_child(viteServer, serverEntryFilePath)
 
   return {
     viteServer,
@@ -57,6 +55,6 @@ async function dev(
   }
 }
 
-function addMiddlewareMode(viteConfig: InlineConfig): InlineConfig {
+function setMiddlewareMode(viteConfig: InlineConfig): InlineConfig {
   return { ...viteConfig, server: { ...viteConfig.server, middlewareMode: true } }
 }
