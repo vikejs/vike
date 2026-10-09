@@ -103,7 +103,8 @@ async function applyResponseHandlers(responseHandlers: ResponseHandler[], respon
 }
 
 // Resolved upon each request: vike(app) is synchronous, it can't await the config while +server loads (a +server that awaits it at its top level,
-// such as `await getGlobalContext()` does, is fine), and a +middleware added in development takes effect without a restart
+// such as `await getGlobalContext()` does, can, but only with a valid config: while it is erroneous at startup, that call keeps waiting),
+// and a +middleware added in development takes effect without a restart
 function runPhase(
   request: Request,
   context: Universal.Context,
