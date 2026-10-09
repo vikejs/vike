@@ -27,7 +27,8 @@ async function dev(
 
   // `$ vike dev` runs +serverEntry.js if there isn't +server.js — https://vike.dev/serverEntry
   const serverEntryFilePath = await getServerEntryFilePath_ifDevCli()
-  if (serverEntryFilePath && !isServerProcess()) return await startServerEntry_parent()
+  const serverEntryIsChildProcess = isServerProcess()
+  if (serverEntryFilePath && !serverEntryIsChildProcess) return await startServerEntry_parent()
 
   const server = await createServer(
     serverEntryFilePath
@@ -46,7 +47,7 @@ async function dev(
   if (options.startupLog) startupLog(viteConfig, viteServer)
 
   if (serverEntryFilePath) {
-    assert(isServerProcess())
+    assert(serverEntryIsChildProcess)
     await startServerEntry_child(viteServer, serverEntryFilePath)
   }
 
