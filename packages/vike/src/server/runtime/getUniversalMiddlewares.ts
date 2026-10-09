@@ -4,8 +4,14 @@ export { runHandlerMiddlewares }
 export { runPlusMiddlewares }
 export { httpMethods }
 export { isHandler }
+export { plusMiddlewareProxy }
 
-import { getGlobalContextServerInternal, type GlobalContextServerInternal } from './globalContext.js'
+import {
+  getGlobalContextServerInternal,
+  initGlobalContext_renderPage,
+  type GlobalContextServerInternal,
+} from './globalContext.js'
+import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.js'
 import { renderPageServerConfigError } from './renderPageServer.js'
 import { warnAndNormalizeMiddlewarePath } from './warnAndNormalizeMiddlewarePath.js'
 import { pageContextJsonFileExtension } from '../../shared-server-client/getPageContextRequestUrl.js'
@@ -30,28 +36,43 @@ import { assertPlusMiddlewareInstalled, setPlusMiddlewareInstalled } from './ass
 import '../assertEnvServer.js'
 
 /**
- * Get the Universal Middlewares that apply your `+middleware` that run before your server's routes.
+ * Get the list of your `+middleware` as Universal Middleware, to apply before your server's routes.
  *
- * Your server's `vike(app)` calls it for you. Call it yourself to control where `+middleware` run:
- * apply them before your server's other handlers, and `universalHandler` last.
+ * Your server's `vike(app)` applies them for you. Call it yourself to control where `+middleware` run, or to filter and re-order them: apply
+ * the list before your server's other handlers, and `universalHandler` last.
  *
- * The `+middleware` that are handlers (`order: 0`, or a `path` and no `order`) aren't in it: `universalHandler` runs
+ * The `+middleware` that are handlers (`order: 0`, or a `path` and no `order`) aren't in the list: `universalHandler` runs
  * them, next to Vike's pages, so that a route of your server can override one.
+ *
+ * Your server runs the list, and stops at the first `+middleware` that answers: one that must see every response (a logger)
+ * needs an `order` before it. The list is read once: restart the server to pick up a `+middleware` you added, removed or
+ * edited in development. `vike(app)` doesn't need that.
  *
  * @example
  * ```js
  * import { apply } from '@universal-middleware/express'
  * import { getUniversalMiddlewares, universalHandler } from 'vike'
  *
- * apply(app, getUniversalMiddlewares())
+ * apply(app, await getUniversalMiddlewares())
+ * // To leave one out: (await getUniversalMiddlewares()).filter((m) => getUniversalProp(m, nameSymbol) !== 'logger')
  * app.get('/api/hello', (req, res) => res.send('Hello'))
  * apply(app, [universalHandler])
  * ```
  *
  * https://github.com/magne4000/universal-middleware
  */
-function getUniversalMiddlewares(): EnhancedMiddleware[] {
-  return [nonHandlerMiddlewares]
+async function getUniversalMiddlewares(): Promise<EnhancedMiddleware[]> {
+  // Fail closed: skipping the +middleware of an erroneous config would let requests through unguarded
+  await initGlobalContext_renderPage()
+  const vikeConfigError = getVikeConfigError()
+  if (vikeConfigError) throw vikeConfigError.err
+  const { globalContext } = await getGlobalContextServerInternal()
+  // The list is applied, and its +middleware that are handlers need nothing else
+  setPlusMiddlewareInstalled()
+  return (globalContext.config.middleware ?? [])
+    .flat()
+    .filter((middleware) => !isHandler(middleware))
+    .map(toUniversalMiddleware)
 }
 
 // Servers install a handler only for the methods it declares, and a +middleware that is a handler can be on any method
@@ -84,12 +105,23 @@ async function applyResponseHandlers(responseHandlers: ResponseHandler[], respon
 }
 
 // Resolved upon each request: the Vike config imports +server, so awaiting the config while +server loads deadlocks
-async function runPhase(
+function runPhase(
   request: Request,
   context: Universal.Context,
   runtime: RuntimeAdapter,
   handlers: boolean,
   check?: (globalContext: GlobalContextServerInternal) => void,
+) {
+  return runWithGlobalContext(request, check, (globalContext) => {
+    const middlewares = (globalContext.config.middleware ?? []).flat().filter((m) => isHandler(m) === handlers)
+    return runPlusMiddlewares(middlewares, globalContext.baseServer, request, context, runtime)
+  })
+}
+
+async function runWithGlobalContext(
+  request: Request,
+  check: ((globalContext: GlobalContextServerInternal) => void) | undefined,
+  run: (globalContext: GlobalContextServerInternal) => ReturnType<typeof runPlusMiddlewares>,
 ) {
   // Fail closed: skipping the +middleware of an erroneous config would let requests through unguarded
   const pageContextConfigError = await renderPageServerConfigError({
@@ -105,8 +137,7 @@ async function runPhase(
   }
   const { globalContext } = await getGlobalContextServerInternal()
   check?.(globalContext)
-  const middlewares = (globalContext.config.middleware ?? []).flat().filter((m) => isHandler(m) === handlers)
-  return runPlusMiddlewares(middlewares, globalContext.baseServer, request, context, runtime)
+  return run(globalContext)
 }
 
 async function runPlusMiddlewares(
@@ -143,8 +174,23 @@ async function runPlusMiddlewares(
   return (response: Response) => applyResponseHandlers(responseHandlers, response)
 }
 
-// The chain of the +middleware that aren't handlers runs before the routes of the server
-const nonHandlerMiddlewares = enhance(
+// One +middleware of the list. It matches its own path (without the `path` and `method` of the server's router, which
+// would see the raw URL) and runs on the same code as the proxy below.
+function toUniversalMiddleware(middleware: EnhancedMiddleware): EnhancedMiddleware {
+  const name = getUniversalProp(middleware, nameSymbol)
+  const order = getUniversalProp(middleware, orderSymbol)
+  return enhance(
+    (request: Request, context: Universal.Context, runtime: RuntimeAdapter) =>
+      runWithGlobalContext(request, undefined, ({ baseServer }) =>
+        runPlusMiddlewares([middleware], baseServer, request, context, runtime),
+      ),
+    { ...(name !== undefined && { name }), ...(order !== undefined && { order }) },
+  )
+}
+
+// The +middleware that aren't handlers, looked up upon each request: what the adapters' vike(app) applies, so that a +middleware
+// added, removed or edited in development takes effect without a restart. It runs them as one chain.
+const plusMiddlewareProxy = enhance(
   async (request: Request, context: Universal.Context, runtime: RuntimeAdapter) => {
     setPlusMiddlewareInstalled()
     return runPhase(request, context, runtime, false)

@@ -670,9 +670,9 @@ type ConfigBuiltIn = {
    *
    * For one URL, Universal Middleware runs only the most specific handler. So a `+middleware` with a broad `path`, such as a guard on `/admin/**`, doesn't run on `/admin/settings` if another `+middleware` has a more specific `path` and no `order`. To scope a guard to its `path` and always run it, give it a negative `order` (such as `MiddlewareOrder.AUTHORIZATION`).
    *
-   * For more control, apply `getUniversalMiddlewares()` (the `+middleware` that run before your routes) first, and `universalHandler` (the handlers, and the pages) last, both from `'vike/server'`. A handler `+middleware` for a method Vike's pages don't serve (such as `DELETE`) runs where `universalHandler` is installed with all its methods, as the adapters of https://github.com/vikejs/vike-server-adapters/pull/10 do; the released adapters install the pages' six methods only.
+   * For more control, apply `await getUniversalMiddlewares()` (the list of the `+middleware` that run before your routes) first, and `universalHandler` (the handlers, and the pages) last, both from `'vike/server'`. A handler `+middleware` for a method Vike's pages don't serve (such as `DELETE`) runs where `universalHandler` is installed with all its methods, as the adapters of https://github.com/vikejs/vike-server-adapters/pull/10 do; the released adapters install the pages' six methods only.
    *
-   * `renderPage()` runs no `+middleware`: it and `universalHandler` throw if there are some and `vike(app)` or `getUniversalMiddlewares()` wasn't applied.
+   * `renderPage()` runs no `+middleware`: it and `universalHandler` throw if there are some and `vike(app)` or `getUniversalMiddlewares()` wasn't applied. Applying the list yourself, restart the server in development to pick up a changed `+middleware`: `vike(app)` doesn't need that.
    *
    * A `path` is matched against the page's URL, so it also covers the page's `.pageContext.json` request, with the Base URL. When its `method` is `GET`, it also covers `HEAD`.
    *

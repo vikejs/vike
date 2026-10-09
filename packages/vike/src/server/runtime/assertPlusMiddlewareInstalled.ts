@@ -12,7 +12,7 @@ const globalObject = getGlobalObject('runtime/assertPlusMiddlewareInstalled.ts',
   installed: false,
 })
 
-// Called when the chain of +middleware is applied: on its first request, or when Vike's own dev and preview server registers it
+// Called when the +middleware are applied: when the list is fetched, on the first request of the proxy, or when Vike's own dev and preview server registers them
 function setPlusMiddlewareInstalled() {
   globalObject.installed = true
 }
@@ -22,6 +22,6 @@ function assertPlusMiddlewareInstalled(globalContext: GlobalContextServerInterna
   if (globalObject.installed) return
   assertUsage(
     (globalContext.config.middleware ?? []).flat().length === 0,
-    `Your ${pc.cyan('+middleware')} aren't applied: call ${pc.cyan('vike(app)')} before your routes, or apply ${pc.cyan('getUniversalMiddlewares()')} before Vike's handler (renderPage() runs no +middleware, and universalHandler only the handlers)`,
+    `Your ${pc.cyan('+middleware')} aren't applied: call ${pc.cyan('vike(app)')} before your routes, or apply ${pc.cyan('await getUniversalMiddlewares()')} before Vike's handler (renderPage() runs no +middleware, and universalHandler only the handlers)`,
   )
 }

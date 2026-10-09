@@ -13,7 +13,7 @@ if (!viteDevServer) {
   app.use(express.static('dist/client'))
 }
 
-apply(app, getUniversalMiddlewares())
+apply(app, await getUniversalMiddlewares())
 
 app.get('/api/context', (req, res) => res.json(getContext(req)))
 

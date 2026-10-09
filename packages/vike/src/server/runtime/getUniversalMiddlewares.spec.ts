@@ -1,18 +1,32 @@
 import { describe, it, expect, vi } from 'vitest'
-import { enhance, getUniversal, getUniversalProp, type RuntimeAdapter } from '@universal-middleware/core'
+import {
+  enhance,
+  getUniversal,
+  getUniversalProp,
+  methodSymbol,
+  nameSymbol,
+  orderSymbol,
+  pathSymbol,
+  type EnhancedMiddleware,
+  type RuntimeAdapter,
+} from '@universal-middleware/core'
 
 let plusMiddlewares: unknown[] = []
+let vikeConfigError: { err: Error } | null = null
 vi.mock('./globalContext.js', () => ({
+  initGlobalContext_renderPage: async () => {},
   getGlobalContextServerInternal: async () => ({
     globalContext: { config: { middleware: plusMiddlewares }, baseServer: '/' },
   }),
 }))
+vi.mock('../../shared-server-node/getVikeConfigError.js', () => ({
+  getVikeConfigError: () => vikeConfigError,
+}))
 vi.mock('./renderPageServer.js', () => ({
   renderPageServerConfigError: async () => null,
 }))
-const { getUniversalMiddlewares, isHandler, runPlusMiddlewares, runUniversalMiddlewares } = await import(
-  './getUniversalMiddlewares.js'
-)
+const { getUniversalMiddlewares, isHandler, plusMiddlewareProxy, runPlusMiddlewares, runUniversalMiddlewares } =
+  await import('./getUniversalMiddlewares.js')
 
 // A +middleware on `path` that denies the request, and tells which URL it was given
 const run = async (path: string, url: string, baseServer: string) => {
@@ -121,8 +135,8 @@ describe('runPlusMiddlewares()', () => {
 
 describe('getUniversalMiddlewares()', () => {
   const runtime = {} as RuntimeAdapter
-  const [nonHandler, ...others] = getUniversalMiddlewares()
-  const call = (url: string) => getUniversal(nonHandler)(new Request(`http://localhost${url}`), {}, runtime)
+  const call = (middleware: unknown, url: string, method = 'GET') =>
+    getUniversal(middleware as EnhancedMiddleware)(new Request(`http://localhost${url}`, { method }), {}, runtime)
   const text = async (result: unknown) => (result instanceof Response ? result.text() : 'passed on')
 
   // Each answers with its name
@@ -132,12 +146,63 @@ describe('getUniversalMiddlewares()', () => {
   const orderZero = answer('orderZero', { method: 'GET', path: '/c', order: 0 })
   const scoped = answer('scoped', { method: 'GET', path: '/b', order: -10 })
 
-  it('returns one middleware, which is not a handler', () => {
-    expect(others).toEqual([])
-    expect(isHandler(nonHandler)).toBe(false)
+  it('returns the list of the +middleware that are not handlers, flattened and in order', async () => {
+    plusMiddlewares = [[plain], [orderZero, onPath], scoped]
+    const middlewares = await getUniversalMiddlewares()
+    expect(Array.isArray(middlewares)).toBe(true)
+    expect(middlewares.map((middleware) => getUniversalProp(middleware, nameSymbol))).toEqual(['plain', 'scoped'])
+    // A +middleware limited to a path with a negative order isn't a handler
+    expect(middlewares.map((middleware) => getUniversalProp(middleware, orderSymbol))).toEqual([undefined, -10])
+    for (const middleware of middlewares) expect(isHandler(middleware)).toBe(false)
+    plusMiddlewares = []
+    expect(await getUniversalMiddlewares()).toEqual([])
   })
 
-  it("runs the +middleware that aren't handlers, upon each request", async () => {
+  it('returns elements that each run their own +middleware, limited to its path, whatever the server does', async () => {
+    plusMiddlewares = [plain, scoped]
+    const [first, second] = await getUniversalMiddlewares()
+    // The path and method are matched inside the element, on the page's URL: the server's router must not see them
+    expect(getUniversalProp(second!, pathSymbol)).toBeUndefined()
+    expect(getUniversalProp(second!, methodSymbol)).toBeUndefined()
+    expect(await text(await call(first, '/anything'))).toBe('plain')
+    expect(await text(await call(second, '/b'))).toBe('scoped')
+    expect(await text(await call(second, '/b/index.pageContext.json'))).toBe('scoped')
+    expect(await text(await call(second, '/b', 'HEAD'))).toBe('scoped')
+    expect(await text(await call(second, '/other'))).toBe('passed on')
+  })
+
+  it("doesn't pick up a +middleware added after the list was returned", async () => {
+    plusMiddlewares = [plain]
+    const middlewares = await getUniversalMiddlewares()
+    plusMiddlewares = [plain, scoped]
+    expect(middlewares).toHaveLength(1)
+  })
+
+  it('rejects when the Vike config is erroneous', async () => {
+    vikeConfigError = { err: new Error('broken config') }
+    try {
+      await expect(getUniversalMiddlewares()).rejects.toThrow('broken config')
+    } finally {
+      vikeConfigError = null
+    }
+  })
+})
+
+describe('plusMiddlewareProxy', () => {
+  const runtime = {} as RuntimeAdapter
+  const call = (url: string) => getUniversal(plusMiddlewareProxy)(new Request(`http://localhost${url}`), {}, runtime)
+  const text = async (result: unknown) => (result instanceof Response ? result.text() : 'passed on')
+  const answer = (name: string, options: object) => enhance(() => new Response(name), { name, ...options })
+  const plain = answer('plain', {})
+  const onPath = answer('onPath', { method: 'GET', path: '/a' })
+  const orderZero = answer('orderZero', { method: 'GET', path: '/c', order: 0 })
+  const scoped = answer('scoped', { method: 'GET', path: '/b', order: -10 })
+
+  it('is not a handler', () => {
+    expect(isHandler(plusMiddlewareProxy)).toBe(false)
+  })
+
+  it("runs the +middleware that aren't handlers, looked up upon each request", async () => {
     plusMiddlewares = [[plain], [orderZero, onPath]]
     expect(await text(await call('/'))).toBe('plain')
     plusMiddlewares = [onPath, orderZero, scoped]

@@ -3,10 +3,12 @@ import { enhance, getUniversal, getUniversalProp, methodSymbol, type RuntimeAdap
 
 let plusMiddlewares: unknown[] = []
 vi.mock('./globalContext.js', () => ({
+  initGlobalContext_renderPage: async () => {},
   getGlobalContextServerInternal: async () => ({
     globalContext: { config: { middleware: plusMiddlewares }, baseServer: '/' },
   }),
 }))
+vi.mock('../../shared-server-node/getVikeConfigError.js', () => ({ getVikeConfigError: () => null }))
 // The page renders its url and the context it got
 vi.mock('./renderPageServer.js', () => ({
   renderPageServerConfigError: async () => null,
@@ -38,7 +40,8 @@ describe('universalHandler', () => {
   })
 
   it('runs a +middleware that is a handler before the page, and falls through to the page', async () => {
-    await getUniversal(getUniversalMiddlewares()[0]!)(new Request('http://localhost/'), {}, runtime)
+    // Fetching the list applies the +middleware
+    await getUniversalMiddlewares()
     plusMiddlewares = [
       enhance(() => new Response('from handler'), { name: 'path', method: 'GET', path: '/a' }),
       enhance(() => new Response('from order zero'), { name: 'zero', method: 'GET', path: '/b', order: 0 }),

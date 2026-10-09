@@ -9,7 +9,7 @@ const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000
 async function serve() {
   const app = express()
 
-  apply(app, getUniversalMiddlewares())
+  apply(app, await getUniversalMiddlewares())
 
   app.get('/express', (_req, res) => res.send('Running express server'))
   app.get('/overridden', (_req, res) => res.send('from route'))
