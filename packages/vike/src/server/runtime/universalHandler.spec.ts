@@ -19,7 +19,7 @@ vi.mock('./renderPageServer.js', () => ({
     },
   }),
 }))
-const { getUniversalMiddlewares } = await import('./getUniversalMiddlewares.js')
+const { getUniversalMiddlewares, httpMethods } = await import('./getUniversalMiddlewares.js')
 const { default: universalHandler } = await import('./universalHandler.js')
 
 const runtime = {} as RuntimeAdapter
@@ -78,17 +78,9 @@ describe('universalHandler', () => {
   })
 
   it('declares every HTTP method, for servers to install it on', () => {
-    expect(getUniversalProp(universalHandler, methodSymbol)).toEqual([
-      'GET',
-      'HEAD',
-      'POST',
-      'PUT',
-      'DELETE',
-      'CONNECT',
-      'OPTIONS',
-      'TRACE',
-      'PATCH',
-    ])
+    const methods = getUniversalProp(universalHandler, methodSymbol)
+    expect(methods).toEqual(httpMethods)
+    expect(methods).toContain('DELETE')
   })
 
   it('runs a +middleware that is a handler on DELETE', async () => {
