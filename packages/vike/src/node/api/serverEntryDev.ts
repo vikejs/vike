@@ -22,7 +22,7 @@ import { isRunnableDevEnvironment } from '../../utils/isRunnableDevEnvironment.j
 import './assertEnvApiDev.js'
 const globalObject = getGlobalObject<{ viteServer?: ViteDevServer }>('api/serverEntryDev.ts', {})
 
-const IS_SERVER_PROCESS = '__VIKE_IS_SERVER_PROCESS'
+const IS_SERVER_CHILD_PROCESS = '__VIKE_IS_SERVER_CHILD_PROCESS'
 // The child process exits with this code to tell the parent process to restart it
 const EXIT_CODE_RESTART = 33
 
@@ -33,7 +33,7 @@ function startServerEntry_parent(): Promise<never> {
   let child: ChildProcess
   let signalReceived: NodeJS.Signals | undefined
   const forkChild = () => {
-    child = fork(scriptPath, args, { stdio: 'inherit', env: { ...process.env, [IS_SERVER_PROCESS]: '1' } })
+    child = fork(scriptPath, args, { stdio: 'inherit', env: { ...process.env, [IS_SERVER_CHILD_PROCESS]: '1' } })
     child.on('exit', (code, signal) => {
       if (code === EXIT_CODE_RESTART && !signalReceived) forkChild()
       else exitLikeChild(code, signal ?? signalReceived ?? null)
@@ -127,5 +127,5 @@ function getServerEntryViteServer(): ViteDevServer | null {
 }
 
 function isServerChildProcess(): boolean {
-  return process.env[IS_SERVER_PROCESS] === '1'
+  return process.env[IS_SERVER_CHILD_PROCESS] === '1'
 }
