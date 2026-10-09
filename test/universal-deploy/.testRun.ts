@@ -18,6 +18,11 @@ function testRun(...args: Parameters<typeof testRunClassic>) {
     }
   })
 
+  test('A +middleware that is a handler answers after the routes of +server.ts, which can override it', async () => {
+    expect(await (await fetch(`${getServerUrl()}/handler`)).text()).toBe('from +middleware')
+    expect(await (await fetch(`${getServerUrl()}/overridden`)).text()).toBe('from route')
+  })
+
   // pageContext.req/pageContext.res are aliases of pageContext.runtime.req/pageContext.runtime.res — set by +onCreatePageContext.server.ts
   test('pageContext.req/pageContext.res alias pageContext.runtime.req/pageContext.runtime.res', async () => {
     const response = await fetch(`${getServerUrl()}/`)

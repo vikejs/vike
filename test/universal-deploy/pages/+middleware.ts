@@ -10,4 +10,16 @@ const responseHeaderMiddleware = enhance(
   { name: 'responseHeaderMiddleware' },
 )
 
-export default [middlewareTelefunc, responseHeaderMiddleware]
+// Handlers (a path and no order): they run after the routes of +server.ts, which can override them
+const handlerMiddleware = enhance(async () => new Response('from +middleware'), {
+  name: 'handlerMiddleware',
+  method: 'GET',
+  path: '/handler',
+})
+const overriddenMiddleware = enhance(async () => new Response('from +middleware'), {
+  name: 'overriddenMiddleware',
+  method: 'GET',
+  path: '/overridden',
+})
+
+export default [middlewareTelefunc, responseHeaderMiddleware, handlerMiddleware, overriddenMiddleware]

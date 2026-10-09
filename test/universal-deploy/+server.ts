@@ -11,6 +11,7 @@ async function serve() {
   apply(app, getUniversalMiddlewares())
 
   app.get('/express', (_req, res) => res.send('Running express server'))
+  app.get('/overridden', (_req, res) => res.send('from route'))
 
   apply(app, [universalHandler])
 

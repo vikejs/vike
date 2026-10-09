@@ -24,11 +24,11 @@ function setPlusMiddlewareApplyingStore(store: { getStore(): unknown }) {
   globalObject.applyingStore = store
 }
 
-// renderPage() and universalHandler run no +middleware: not applying them would silently skip, for example, an auth check. The usage error is thrown to their caller
+// renderPage() runs no +middleware, and universalHandler only the handlers: not applying the others would silently skip, for example, an auth check. The usage error is thrown to their caller
 function assertPlusMiddlewareInstalled(globalContext: GlobalContextServerInternal) {
   if (globalObject.installed || globalObject.applyingStore?.getStore()) return
   assertUsage(
     (globalContext.config.middleware ?? []).flat().length === 0,
-    `Your ${pc.cyan('+middleware')} aren't applied: call ${pc.cyan('vike(app)')} before your routes, or apply ${pc.cyan('getUniversalMiddlewares()')} before Vike's handler (renderPage() and universalHandler run no +middleware)`,
+    `Your ${pc.cyan('+middleware')} aren't applied: call ${pc.cyan('vike(app)')} before your routes, or apply ${pc.cyan('getUniversalMiddlewares()')} before Vike's handler (renderPage() runs no +middleware, and universalHandler only the handlers)`,
   )
 }

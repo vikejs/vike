@@ -664,7 +664,7 @@ type ConfigBuiltIn = {
    *
    * The middlewares defined via `+middleware` are so called "Universal Middleware" — they work with any JavaScript server (Hono, Express, Cloudflare, ...).
    *
-   * They run for every request, before your server's own routes: `vike(app)`, called before your routes, installs them (in `+server` or a custom server). For more control, apply `getUniversalMiddlewares()` first and `universalHandler` last, both from `'vike'`. `renderPage()` and `universalHandler` run no `+middleware`, and throw if there are some and none of these was applied. To limit one to some URLs, give it a `path` with `enhance()`: it then also runs for the page's `.pageContext.json` request, with the Base URL, and for `HEAD` when its `method` is `GET`.
+   * They run for every request: `vike(app)`, called before your routes, installs them (in `+server` or a custom server). The ones that are handlers (`order: 0`, or a `path` without `order`) run next to the pages, after your routes, so that a route can override them; the others run before your routes. For more control, apply `getUniversalMiddlewares()`, which gives the `+middleware` that run before your routes, first, and `universalHandler`, which runs the handler `+middleware` and the pages, last, both from `'vike'`. `renderPage()` runs no `+middleware`: it and `universalHandler` throw if there are some and `vike(app)` or `getUniversalMiddlewares()` wasn't applied. To limit one to some URLs, give it a `path` with `enhance()`: it then also runs for the page's `.pageContext.json` request, with the Base URL, and for `HEAD` when its `method` is `GET`.
    *
    * https://github.com/magne4000/universal-middleware
    */

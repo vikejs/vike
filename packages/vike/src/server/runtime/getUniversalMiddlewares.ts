@@ -1,8 +1,9 @@
 export { getUniversalMiddlewares }
 export { runUniversalMiddlewares }
+export { runHandlerMiddlewares }
 export { runPlusMiddlewares }
 
-import { getGlobalContextServerInternal } from './globalContext.js'
+import { getGlobalContextServerInternal, type GlobalContextServerInternal } from './globalContext.js'
 import { renderPageServerConfigError } from './renderPageServer.js'
 import { normalizeMiddlewarePath } from './normalizeMiddlewarePath.js'
 import { pageContextJsonFileExtension } from '../../shared-server-client/getPageContextRequestUrl.js'
@@ -22,14 +23,17 @@ import {
   type RuntimeAdapter,
   type UniversalHandler,
 } from '@universal-middleware/core'
-import { setPlusMiddlewareInstalled } from './assertPlusMiddlewareInstalled.js'
+import { assertPlusMiddlewareInstalled, setPlusMiddlewareInstalled } from './assertPlusMiddlewareInstalled.js'
 import '../assertEnvServer.js'
 
 /**
- * Get the Universal Middlewares that apply your `+middleware` to all HTTP requests.
+ * Get the Universal Middlewares that apply your `+middleware` that run before your server's routes.
  *
  * Your server's `vike(app)` calls it for you. Call it yourself to control where `+middleware` run:
- * apply them before your server's other handlers, and Vike's handler last.
+ * apply them before your server's other handlers, and `universalHandler` last.
+ *
+ * The `+middleware` that are handlers (`order: 0`, or a `path` and no `order`) aren't in it: `universalHandler` runs
+ * them, next to Vike's pages, so that a route of your server can override one.
  *
  * @example
  * ```js
@@ -44,14 +48,45 @@ import '../assertEnvServer.js'
  * https://github.com/magne4000/universal-middleware
  */
 function getUniversalMiddlewares(): EnhancedMiddleware[] {
-  return [universalMiddlewares]
+  return [nonHandlerMiddlewares]
 }
 
 const httpMethods: HttpMethod[] = ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'CONNECT', 'OPTIONS', 'TRACE', 'PATCH']
 type ResponseHandler = (response: Response) => Awaitable<Response | undefined>
 
-// Resolved upon each request: the Vike config imports +server, so awaiting the config while +server loads deadlocks
+// What Vike's own dev and preview server runs before its pages: the +middleware that aren't handlers, then the ones that are
 async function runUniversalMiddlewares(request: Request, context: Universal.Context, runtime: RuntimeAdapter) {
+  const result = await runPhase(request, context, runtime, false)
+  if (result instanceof Response) return result
+  const applyResponseHandlers = typeof result === 'function' ? result : undefined
+  if (!applyResponseHandlers) Object.assign(context, result)
+  const response = await runHandlerMiddlewares(request, context, runtime)
+  if (response) return applyResponseHandlers ? applyResponseHandlers(response) : response
+  return applyResponseHandlers
+}
+
+// What universalHandler runs before the pages: the +middleware that are handlers. A Response is the answer; otherwise the
+// context they build is added to `context`, for the pages.
+async function runHandlerMiddlewares(request: Request, context: Universal.Context, runtime: RuntimeAdapter) {
+  // Applying only universalHandler would silently skip the +middleware that aren't handlers
+  const result = await runPhase(request, context, runtime, true, assertPlusMiddlewareInstalled)
+  if (result instanceof Response) return result
+  if (typeof result !== 'function') Object.assign(context, result)
+}
+
+async function applyResponseHandlers(responseHandlers: ResponseHandler[], response: Response) {
+  for (const responseHandler of responseHandlers) response = (await responseHandler(response)) ?? response
+  return response
+}
+
+// Resolved upon each request: the Vike config imports +server, so awaiting the config while +server loads deadlocks
+async function runPhase(
+  request: Request,
+  context: Universal.Context,
+  runtime: RuntimeAdapter,
+  handlers: boolean,
+  check?: (globalContext: GlobalContextServerInternal) => void,
+) {
   // Fail closed: skipping the +middleware of an erroneous config would let requests through unguarded
   const pageContextConfigError = await renderPageServerConfigError({
     urlOriginal: request.url,
@@ -65,7 +100,8 @@ async function runUniversalMiddlewares(request: Request, context: Universal.Cont
     })
   }
   const { globalContext } = await getGlobalContextServerInternal()
-  const middlewares = (globalContext.config.middleware ?? []).flat()
+  check?.(globalContext)
+  const middlewares = (globalContext.config.middleware ?? []).flat().filter((m) => isHandler(m) === handlers)
   return runPlusMiddlewares(middlewares, globalContext.baseServer, request, context, runtime)
 }
 
@@ -95,26 +131,28 @@ async function runPlusMiddlewares(
   ]) as UniversalHandler
   const response = await handler(getRoutingRequest(request, baseServer), context, runtime)
   // Response handlers returned by +middleware apply to the final response, which may come after this middleware
-  const applyResponseHandlers = async (response: Response) => {
-    for (const responseHandler of responseHandlers) response = (await responseHandler(response)) ?? response
-    return response
-  }
-  if (response !== fallThrough) return applyResponseHandlers(response)
+  if (response !== fallThrough) return applyResponseHandlers(responseHandlers, response)
   // The pipe's context stays local: hand the context built by the +middleware to the handlers after this middleware.
   // A middleware returns a context or a response handler, not both: with response handlers, mutate the context instead.
   if (responseHandlers.length === 0) return contextAtFallThrough
   Object.assign(context, contextAtFallThrough)
-  return applyResponseHandlers
+  return (response: Response) => applyResponseHandlers(responseHandlers, response)
 }
 
-// The chain runs before Vike's pages in the same request
-const universalMiddlewares = enhance(
+// The chain of the +middleware that aren't handlers runs before the routes of the server
+const nonHandlerMiddlewares = enhance(
   async (request: Request, context: Universal.Context, runtime: RuntimeAdapter) => {
     setPlusMiddlewareInstalled()
-    return runUniversalMiddlewares(request, context, runtime)
+    return runPhase(request, context, runtime, false)
   },
   { name: 'vike:middleware' },
 )
+
+// Universal Middleware core's isHandler(), which it doesn't export
+function isHandler(middleware: EnhancedMiddleware) {
+  const order = getUniversalProp(middleware, orderSymbol)
+  return typeof order === 'number' ? order === 0 : Boolean(getUniversalProp(middleware, pathSymbol))
+}
 
 // A `path` is matched against the page's URL, the way Vike routes pages: without the Base URL, and with a
 // `.pageContext.json` request standing for its page. So `/dash` also covers `/base/dash` and `/dash/index.pageContext.json`,
@@ -134,29 +172,25 @@ function collectResponseHandler(
   responseHandlers: ResponseHandler[],
   fallThroughRoute: EnhancedMiddleware,
 ) {
-  // The router runs only the one route matching the URL: a route that passes the request on continues with the fall-through
-  if (getUniversalProp(middleware, pathSymbol)) {
-    return enhance(
-      async (_routingRequest: Request, context: Universal.Context, runtime: RuntimeAdapter) => {
-        const result = await getUniversal(middleware)(request, context, runtime)
-        return result ?? getUniversal(fallThroughRoute)(request, context, runtime)
-      },
-      {
-        name: getUniversalProp(middleware, nameSymbol),
-        order: getUniversalProp(middleware, orderSymbol),
-        method: withHead(getUniversalProp(middleware, methodSymbol)),
-        path: getUniversalProp(middleware, pathSymbol),
-      },
-    )
+  const options = {
+    name: getUniversalProp(middleware, nameSymbol),
+    order: getUniversalProp(middleware, orderSymbol),
+    method: withHead(getUniversalProp(middleware, methodSymbol)),
+    path: getUniversalProp(middleware, pathSymbol),
   }
-  return enhance(
-    async (_routingRequest: Request, context: Universal.Context, runtime: RuntimeAdapter) => {
+  // The router runs only the one handler matching the URL: a handler that passes the request on continues with the fall-through
+  if (isHandler(middleware)) {
+    return enhance(async (_routingRequest: Request, context: Universal.Context, runtime: RuntimeAdapter) => {
       const result = await getUniversal(middleware)(request, context, runtime)
-      if (typeof result !== 'function') return result
-      responseHandlers.push(result)
-    },
-    { name: getUniversalProp(middleware, nameSymbol), order: getUniversalProp(middleware, orderSymbol) },
-  )
+      return result ?? getUniversal(fallThroughRoute)(request, context, runtime)
+    }, options)
+  }
+  // Every other +middleware runs, limited to its path if it has one
+  return enhance(async (_routingRequest: Request, context: Universal.Context, runtime: RuntimeAdapter) => {
+    const result = await getUniversal(middleware)(request, context, runtime)
+    if (typeof result !== 'function') return result
+    responseHandlers.push(result)
+  }, options)
 }
 
 // Web servers answer HEAD like GET, so a GET-scoped +middleware also covers HEAD
