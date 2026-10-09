@@ -96,17 +96,16 @@ async function runHandlerMiddlewares(request: Request, context: Universal.Contex
   if (typeof result !== 'function') Object.assign(context, result)
 }
 
-// The response handlers, then a `.pageContext.json` answer that isn't JSON (e.g. a 401 or a redirect) becomes a 404: the client router
-// reloads the page upon it, so that the page's HTML request shows that answer
 async function getFinalResponse(request: Request, responseHandlers: ResponseHandler[], response: Response) {
   for (const responseHandler of responseHandlers) response = (await responseHandler(response)) ?? response
+  // The client router reloads the page upon a `.pageContext.json` answer that is a 404 without JSON, so that a +middleware's own answer (e.g. a 401 or a redirect) is shown by the page's HTML request
   if (
-    !handlePageContextRequestUrl(request.url).isPageContextJsonRequest ||
-    response.headers.get('content-type')?.includes('application/json')
+    handlePageContextRequestUrl(request.url).isPageContextJsonRequest &&
+    !response.headers.get('content-type')?.includes('application/json')
   ) {
-    return response
+    response = new Response(response.body, { status: 404, headers: response.headers })
   }
-  return new Response(response.body, { status: 404, headers: response.headers })
+  return response
 }
 
 // Resolved upon each request: vike(app) is synchronous, it can't await the config while +server loads (a +server that awaits it at its top level,
