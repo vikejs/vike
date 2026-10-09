@@ -2,7 +2,6 @@ export { addMiddlewares }
 export { runUniversalMiddlewares }
 export { runPlusMiddlewares }
 export { httpMethods }
-export { isHandler }
 export { plusMiddlewareProxy }
 export type { PlusMiddleware }
 
@@ -16,6 +15,7 @@ import {
   enhance,
   getUniversal,
   getUniversalProp,
+  isHandler,
   methodSymbol,
   nameSymbol,
   orderSymbol,
@@ -246,12 +246,6 @@ const withPages = Object.assign(
   { isHandler: true },
 )
 const plusMiddlewareProxy = [beforeRoutes, withPages] as const
-
-// Universal Middleware core's isHandler(), which it doesn't export
-function isHandler(middleware: EnhancedMiddleware) {
-  const order = getUniversalProp(middleware, orderSymbol)
-  return typeof order === 'number' ? order === 0 : Boolean(getUniversalProp(middleware, pathSymbol))
-}
 
 // A `path` is matched against the page's URL, the way Vike routes pages: without the Base URL, and with a
 // `.pageContext.json` request standing for its page. So `/dash` also covers `/base/dash` and `/dash/index.pageContext.json`,

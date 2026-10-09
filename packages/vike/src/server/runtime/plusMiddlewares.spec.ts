@@ -3,6 +3,7 @@ import {
   enhance,
   getUniversal,
   getUniversalProp,
+  isHandler,
   methodSymbol,
   nameSymbol,
   orderSymbol,
@@ -37,7 +38,7 @@ vi.mock('./renderPageServer.js', () => ({
       },
     },
 }))
-const { addMiddlewares, isHandler, plusMiddlewareProxy, runPlusMiddlewares, runUniversalMiddlewares } = await import(
+const { addMiddlewares, plusMiddlewareProxy, runPlusMiddlewares, runUniversalMiddlewares } = await import(
   './plusMiddlewares.js'
 )
 const { onPlusMiddlewareChange, notifyPlusMiddlewareChange } = await import('./plusMiddlewareChange.js')

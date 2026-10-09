@@ -6,7 +6,7 @@
     "start": "cross-env NODE_ENV=production node dist/server/index.mjs"
   },
   "dependencies": {
-    "@universal-middleware/core": "^0.6.0",
+    "@universal-middleware/core": "^0.6.1",
     "@universal-middleware/express": "^0.5.1",
     "cross-env": "^10.1.0",
     "express": "^5.2.1",
