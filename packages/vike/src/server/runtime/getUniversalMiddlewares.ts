@@ -10,6 +10,7 @@ import { normalizeMiddlewarePath } from './normalizeMiddlewarePath.js'
 import { pageContextJsonFileExtension } from '../../shared-server-client/getPageContextRequestUrl.js'
 import { parseUrl } from '../../utils/parseUrl.js'
 import {
+  contextSymbol,
   enhance,
   getUniversal,
   getUniversalProp,
@@ -179,6 +180,7 @@ function collectResponseHandler(
     order: getUniversalProp(middleware, orderSymbol),
     method: withHead(getUniversalProp(middleware, methodSymbol)),
     path: getUniversalProp(middleware, pathSymbol),
+    context: getUniversalProp(middleware, contextSymbol),
   }
   // The router runs only the one handler matching the URL: a handler that passes the request on continues with the fall-through
   if (isHandler(middleware)) {

@@ -90,6 +90,20 @@ describe('runPlusMiddlewares()', () => {
     const response = await (result as (response: Response) => Promise<Response>)(new Response('page'))
     expect(response.headers.get('x-seen')).toBe('/admin/**, /admin/settings')
   })
+  it("keeps the `context` a +middleware was enhanced with, the context it's given", async () => {
+    const middleware = enhance(
+      (_request: Request, context: Universal.Context) => new Response((context as { seeded?: string }).seeded),
+      { name: 'seeded', method: 'GET', path: '/a', context: { seeded: 'yes' } },
+    )
+    const result = await runPlusMiddlewares(
+      [middleware],
+      '/',
+      new Request('http://localhost/a'),
+      {},
+      {} as RuntimeAdapter,
+    )
+    expect(await (result as Response).text()).toBe('yes')
+  })
   it('runs a +middleware without a path for every URL', async () => {
     const middleware = enhance((request: Request) => new Response(request.url, { status: 401 }), { name: 'all' })
     for (const url of ['/', '/dash', '/dash/index.pageContext.json']) {
