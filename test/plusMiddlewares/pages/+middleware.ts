@@ -36,6 +36,11 @@ const guardedRedirect = enhance(async () => new Response(null, { status: 302, he
   path: '/guarded',
   order: MiddlewareOrder.AUTHORIZATION,
 })
+// Answers the page and its .pageContext.json with a login page, with status 200
+const portalLogin = enhance(
+  async () => new Response('<p>Log in to continue</p>', { headers: { 'content-type': 'text/html' } }),
+  { name: 'portalLogin', method: 'GET', path: '/portal', order: MiddlewareOrder.AUTHENTICATION },
+)
 const settingsHeader = enhance(
   async () => (response: Response) => {
     response.headers.set('x-settings', 'yes')
@@ -68,6 +73,7 @@ export default [
   adminAuth,
   dashAuth,
   guardedRedirect,
+  portalLogin,
   settingsHeader,
   wrapResponse,
   orderZero,

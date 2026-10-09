@@ -107,6 +107,15 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     })
   })
 
+  test("A +middleware's login page, answered with status 200 to a client-side navigation, is shown", async () => {
+    await page.goto(`${getServerUrl()}/`)
+    await testCounter()
+    await page.click('a[href="/portal"]')
+    await autoRetry(async () => {
+      expect(await page.textContent('body')).toBe('Log in to continue')
+    })
+  })
+
   test("A +middleware's response function can decorate or replace the response to a .pageContext.json request", async () => {
     const url = `${getServerUrl()}/wrapped/index.pageContext.json`
     const decorated: Response = await fetch(url)
