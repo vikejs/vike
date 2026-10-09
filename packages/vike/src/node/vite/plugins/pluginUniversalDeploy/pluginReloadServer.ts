@@ -10,11 +10,12 @@ import '../../assertEnvVite.js'
 // A +server.js that applies `globalContext.middlewares` holds the list it got: in development, it's re-evaluated when the +middleware change, upon the next request.
 // (A +server.js that uses vike(app) looks the +middleware up upon each request.)
 function pluginReloadServer(serverFilePath: string): Plugin {
+  let removeListener: (() => void) | undefined
   return {
     name: 'vike:pluginUniversalDeploy:reloadServer',
     apply: 'serve',
     configureServer(server) {
-      const removeListener = onPlusMiddlewareChange(() => {
+      removeListener = onPlusMiddlewareChange(() => {
         const reloaded = Object.values(server.environments).filter(
           (environment) =>
             isRunnableDevEnvironment(environment) && invalidateModuleAndImporters(environment, serverFilePath),
@@ -24,7 +25,10 @@ function pluginReloadServer(serverFilePath: string): Plugin {
             onlyOnce: false,
           })
       })
-      server.watcher.on('close', removeListener)
+    },
+    // Runs when the Vite server closes (such as upon a restart because of a change of the Vite config)
+    closeBundle() {
+      removeListener?.()
     },
   }
 }
