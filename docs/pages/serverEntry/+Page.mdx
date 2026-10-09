@@ -27,83 +27,6 @@ Use case examples:
 > - In production, Vike's built-in server entry uses [srvx](https://srvx.h3.dev) (which has first-class support for Node.js, Bun, and Deno).
 
 
-## `vike:server`
-
-`import server from 'vike:server'` is your <Link href="/server">`+server.js`</Link> exports (e.g. `{ fetch }`).
-
-> If you don't define `+server.js`, then it's the exports of Vike's built-in server.
-
-It's typically used for wrapping `+server.js`, for example:
-
-```ts
-// +serverEntry.ts
-
-import { serve } from 'srvx'
-import server from 'vike:server'
-
-serve({
-  port: 3000,
-  fetch(request) {
-    if (new URL(request.url).pathname === '/health') return new Response('OK')
-    return server.fetch(request)
-  }
-})
-```
-
-
-## Example: AWS Lambda
-
-AWS Lambda calls the `handler()` function exported by `dist/server/index.mjs`. You can implement it natively or with srvx.
-
-The examples below use `+serverEntry.js` with <Link href="/server">`+server.js`</Link>, which means that `+serverEntry.js` is only used in production — see <Link href="#with-out-server-js" />.
-
-> With AWS Lambda, you usually serve the static assets `dist/client/` with a CDN, such as Amazon CloudFront.
-
-### Native
-
-```ts
-// +serverEntry.ts (with +server.js)
-
-import type { APIGatewayProxyHandlerV2 } from 'aws-lambda'
-import server from 'vike:server'
-
-// AWS Lambda calls handler() for each request (Lambda function URL or API Gateway HTTP API)
-export const handler: APIGatewayProxyHandlerV2 = async (event) => {
-  // AWS Lambda event => Request
-  const url = new URL(`https://${event.requestContext.domainName}${event.rawPath}`)
-  url.search = event.rawQueryString
-  const headers = new Headers(event.headers as Record<string, string>)
-  if (event.cookies) headers.set('cookie', event.cookies.join('; '))
-  const body = event.body ? Buffer.from(event.body, event.isBase64Encoded ? 'base64' : 'utf8') : undefined
-  const request = new Request(url, { method: event.requestContext.http.method, headers, body })
-
-  // Your +server.js exports
-  const response = await server.fetch(request)
-
-  // Response => AWS Lambda result
-  return {
-    statusCode: response.status,
-    headers: Object.fromEntries([...response.headers].filter(([name]) => name !== 'set-cookie')),
-    cookies: response.headers.getSetCookie(),
-    body: Buffer.from(await response.arrayBuffer()).toString('base64'),
-    isBase64Encoded: true
-  }
-}
-```
-
-### srvx
-
-```ts
-// +serverEntry.ts (with +server.js)
-
-import { toLambdaHandler } from 'srvx/aws-lambda'
-import server from 'vike:server'
-
-// AWS Lambda calls handler() for each request
-export const handler = toLambdaHandler({ fetch: server.fetch })
-```
-
-
 ## With(out) `+server.js`
 
 - <Link href="#with-server-js" />
@@ -175,6 +98,59 @@ $ node dist/server/index.mjs
 ```
 
 
+## Example: AWS Lambda
+
+AWS Lambda calls the `handler()` function exported by `dist/server/index.mjs`. You can implement it natively or with srvx.
+
+The examples below use `+serverEntry.js` with <Link href="/server">`+server.js`</Link>, which means that `+serverEntry.js` is only used in production — see <Link href="#with-out-server-js" />.
+
+> With AWS Lambda, you usually serve the static assets `dist/client/` with a CDN, such as Amazon CloudFront.
+
+### Native
+
+```ts
+// +serverEntry.ts (with +server.js)
+
+import type { APIGatewayProxyHandlerV2 } from 'aws-lambda'
+import server from 'vike:server'
+
+// AWS Lambda calls handler() for each request (Lambda function URL or API Gateway HTTP API)
+export const handler: APIGatewayProxyHandlerV2 = async (event) => {
+  // AWS Lambda event => Request
+  const url = new URL(`https://${event.requestContext.domainName}${event.rawPath}`)
+  url.search = event.rawQueryString
+  const headers = new Headers(event.headers as Record<string, string>)
+  if (event.cookies) headers.set('cookie', event.cookies.join('; '))
+  const body = event.body ? Buffer.from(event.body, event.isBase64Encoded ? 'base64' : 'utf8') : undefined
+  const request = new Request(url, { method: event.requestContext.http.method, headers, body })
+
+  // Your +server.js exports
+  const response = await server.fetch(request)
+
+  // Response => AWS Lambda result
+  return {
+    statusCode: response.status,
+    headers: Object.fromEntries([...response.headers].filter(([name]) => name !== 'set-cookie')),
+    cookies: response.headers.getSetCookie(),
+    body: Buffer.from(await response.arrayBuffer()).toString('base64'),
+    isBase64Encoded: true
+  }
+}
+```
+
+### srvx
+
+```ts
+// +serverEntry.ts (with +server.js)
+
+import { toLambdaHandler } from 'srvx/aws-lambda'
+import server from 'vike:server'
+
+// AWS Lambda calls handler() for each request
+export const handler = toLambdaHandler({ fetch: server.fetch })
+```
+
+
 ## Example: Bun
 
 Without `+serverEntry.js`, `$ bun dist/server/index.mjs` runs Vike's built-in server entry powered by srvx which automatically uses `Bun.serve()` under the hood. But only in production: in development, `$ vike dev` uses Vite's development server ([which uses the Node.js server APIs](https://github.com/vitejs/ecosystem/issues/16) instead of `Bun.serve()`).
@@ -229,6 +205,30 @@ $ bun dist/server/index.mjs
 > `Deno.serve()` should work the same way.
 
 > Vite's development middleware is a [Connect](https://github.com/senchalabs/connect) middleware (it uses Node.js's `req`/`res`), which is why it needs a bridge such as srvx's `fetchNodeHandler()`. Vite wants to move away from Connect, see [vitejs/ecosystem#16](https://github.com/vitejs/ecosystem/issues/16).
+
+
+## `vike:server`
+
+`import server from 'vike:server'` is your <Link href="/server">`+server.js`</Link> exports (e.g. `{ fetch }`).
+
+> If you don't define `+server.js`, then it's the exports of Vike's built-in server.
+
+It's typically used for wrapping `+server.js`, for example:
+
+```ts
+// +serverEntry.ts
+
+import { serve } from 'srvx'
+import server from 'vike:server'
+
+serve({
+  port: 3000,
+  fetch(request) {
+    if (new URL(request.url).pathname === '/health') return new Response('OK')
+    return server.fetch(request)
+  }
+})
+```
 
 
 ## Static assets
