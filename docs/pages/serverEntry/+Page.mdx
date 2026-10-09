@@ -6,17 +6,49 @@ import { ConfigSpec } from '../../components'
   global
 />
 
-Define `+serverEntry.js` to control how your server starts: Vike builds it into `dist/server/index.mjs`, the file you run in production.
+`+serverEntry.js` enables you to control how the server starts. You can define it either:
+- With `+server.js` => `+serverEntry.js` wraps your `+server.js` in production.
+- Without `+server.js` => `+serverEntry.js` defines the entire server (for both development and production), while giving you more control than `+server.js`.
 
-> Without `+server.js`, `$ vike dev` also runs `+serverEntry.js` in development, see <Link href="#development" />.
+See explanation at: <Link href="#with-out-server-js" />.
+
+Use case examples:
+- Deploy to a platform without built-in support, <Link href="#example-aws-lambda">e.g. AWS Lambda</Link>
+- Use a server framework without built-in support (e.g. [Koa](https://github.com/koajs/koa) or [hapi](https://github.com/hapijs/hapi))
+- Use non-Node.js server APIs, such as `Bun.serve()` or `Deno.serve()`
+- Use all CPU cores with Node.js's [`cluster`](https://nodejs.org/api/cluster.html) module
+
+> See also:
+> - <Link href="/server" />
+> - <Link href="/server#extra-control" />
+
+> If you don't define `+serverEntry.js`:
+> - In development, Vite's built-in development server acts as the entry.
+> - In production, Vike's built-in server entry uses [srvx](https://srvx.h3.dev) (which has first-class support for Node.js, Bun, and Deno).
+
+
+## With(out) `+server.js`
+
+- <Link href="#with-server-js" />
+- <Link href="#without-server-js" />
+
+### With `+server.js`
+
+If you define both `+serverEntry.js` and `+server.js`, then `+serverEntry.js` wraps `+server.js` and is only used for production.
+
+> In development, Vite's development server acts as the entry: `+server.js` is attached to Vite's development server. Consequently, `+serverEntry.js` doesn't run in development.
+
+> The typical use case is to customize a deployment integration, see <Link href="#example-aws-lambda" />.
 
 ```ts
 // +serverEntry.ts
 
-// Your +server.js exports, e.g. `{ fetch }`
+// Wrapping +server.ts — only in production
+
+// Your +server.js exports
 import server from 'vike:server'
 
-// startServer() can be anything, typically a deployment or server tool
+// startServer() can be anything, typically a deployment tool
 startServer({
   port: 3000,
   onRequest: (request) => server.fetch(request)
@@ -30,41 +62,39 @@ $ vike build
 $ node dist/server/index.mjs
 ```
 
-It gives you full control over your server entry, for example to:
-- Deploy to a platform without built-in support, e.g. AWS Lambda (see example below)
-- Use another server framework or runtime API such as `Bun.serve()` and `Deno.serve()`
-- Use all CPU cores with Node.js's [`cluster`](https://nodejs.org/api/cluster.html) module
+### Without `+server.js`
 
-> See also: <Link href="/server" />
-
-> For even more control, you can manually integrate Vike into any server/deployment using <Link href="/renderPage">`renderPage()`</Link>, see <Link href="#development" />.
-
-> If you don't define `+serverEntry.js`, Vike uses [srvx](https://srvx.h3.dev) as server entry (it has first-class support for Node.js, Bun, and Deno).
-
-> Vike uses <Link href="/blog/universal-deploy">Universal Deploy</Link> under the hood.
-
-
-## `vike:server`
-
-`import server from 'vike:server'` is your <Link href="/server">`+server.js`</Link> exports (e.g. `{ fetch }`).
-
-> If you don't define `+server.js`, then it's the exports of Vike's built-in server.
-
-You can use it to wrap `+server.js`, for example:
+If you don't define `+server.js`, then `+serverEntry.js` defines the entire server (for both development and production).
 
 ```ts
 // +serverEntry.ts
 
-import { serve } from 'srvx'
-import server from 'vike:server'
+// Defines the entire server — both development and production
 
-serve({
-  port: 3000,
-  fetch(request) {
-    if (new URL(request.url).pathname === '/health') return new Response('OK')
-    return server.fetch(request)
-  }
-})
+// You can use Vike's low-level server integration primitives for full control
+import { createDevMiddleware, renderPage } from 'vike/server'
+
+const app = express()
+
+// ...
+
+// Unlike +server.js, note how +serverEntry.js determines how the server starts:
+express.listen(3000)
+```
+
+See full example at: <Link href="/renderPage#usage" />.
+
+> `+serverEntry.js` is responsible for starting the server, whereas with `+server.js` the server is started by Vite in development and by srvx in production.
+
+> In development, when you modify `+serverEntry.js` (or a file it imports), Vike automatically restarts your server process.
+
+> If you want to use HTTPS in development, use HTTPS in your server and also [pass the HTTPS certificates to Vite](https://vite.dev/config/server-options.html#server-https) (Vite uses them for its HMR WebSocket).
+
+```bash
+# Build: +serverEntry.ts => dist/server/index.mjs
+$ vike build
+# Run +serverEntry.ts
+$ node dist/server/index.mjs
 ```
 
 
@@ -72,7 +102,7 @@ serve({
 
 AWS Lambda calls the `handler()` function exported by `dist/server/index.mjs`. You can implement it natively or with srvx.
 
-The examples below use `+serverEntry.js` with <Link href="/server">`+server.js`</Link>, which means that `+serverEntry.js` is only used in production — see <Link href="#development" />.
+The examples below use `+serverEntry.js` with <Link href="/server">`+server.js`</Link>, which means that `+serverEntry.js` is only used in production — see <Link href="#with-out-server-js" />.
 
 > With AWS Lambda, you usually serve the static assets `dist/client/` with a CDN, such as Amazon CloudFront.
 
@@ -121,28 +151,11 @@ export const handler = toLambdaHandler({ fetch: server.fetch })
 ```
 
 
-## Development
-
-#### With `+server.js` => production only
-
-If you define <Link href="/server">`+server.js`</Link>, then `+serverEntry.js` is only run in production: in development, Vite's development server is used while `+server.js` is attached to Vite's development server — in other words, Vite's development server *is* the "server entry".
-
-#### Without `+server.js` => also development
-
-If you don't define `+server.js`, then `+serverEntry.js` is also run in development. See an example of using `+serverEntry.js` for both development and production at: <Link href="/renderPage#usage" />.
-
-Note that:
-- `+serverEntry.js` is processed by Vite: TypeScript, path aliases, Vite plugins, and `import.meta.env.DEV` work (no need for `tsx`/`ts-node`).
-- When you modify `+serverEntry.js` (or a file it imports), your server is automatically restarted. Modifying a page doesn't restart your server: the page is updated with <Link href="/glossary#hmr">HMR</Link> as usual.
-
-> If you want to use HTTPS in development, use HTTPS in your server and also [pass the HTTPS certificates to Vite](https://vite.dev/config/server-options.html#server-https) (Vite uses them for its HMR WebSocket).
-
-
 ## Example: Bun
 
 Without `+serverEntry.js`, `$ bun dist/server/index.mjs` runs Vike's built-in server entry powered by srvx which automatically uses `Bun.serve()` under the hood. But only in production: in development, `$ vike dev` uses Vite's development server ([which uses the Node.js server APIs](https://github.com/vitejs/ecosystem/issues/16) instead of `Bun.serve()`).
 
-With `+serverEntry.js` (and without `+server.js`, see <Link href="#development" />), you can use [`Bun.serve()`](https://bun.com/docs/runtime/http/server) in both development and production. For example to use Bun's [WebSockets](https://bun.com/docs/runtime/http/websockets) also in development:
+With `+serverEntry.js` (and without `+server.js`, see <Link href="#with-out-server-js" />), you can use [`Bun.serve()`](https://bun.com/docs/runtime/http/server) in both development and production. For example to use Bun's [WebSockets](https://bun.com/docs/runtime/http/websockets) also in development:
 
 ```ts
 // +serverEntry.ts (without +server.js)
@@ -192,6 +205,30 @@ $ bun dist/server/index.mjs
 > `Deno.serve()` should work the same way.
 
 > Vite's development middleware is a [Connect](https://github.com/senchalabs/connect) middleware (it uses Node.js's `req`/`res`), which is why it needs a bridge such as srvx's `fetchNodeHandler()`. Vite wants to move away from Connect, see [vitejs/ecosystem#16](https://github.com/vitejs/ecosystem/issues/16).
+
+
+## `vike:server`
+
+`import server from 'vike:server'` is your <Link href="/server">`+server.js`</Link> exports (e.g. `{ fetch }`).
+
+> If you don't define `+server.js`, then it's the exports of Vike's built-in server.
+
+It's typically used for wrapping `+server.js`, for example:
+
+```ts
+// +serverEntry.ts
+
+import { serve } from 'srvx'
+import server from 'vike:server'
+
+serve({
+  port: 3000,
+  fetch(request) {
+    if (new URL(request.url).pathname === '/health') return new Response('OK')
+    return server.fetch(request)
+  }
+})
+```
 
 
 ## Static assets
