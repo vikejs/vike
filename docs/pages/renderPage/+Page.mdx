@@ -189,7 +189,7 @@ const middlewares = await getUniversalMiddlewares()
 apply(app, middlewares.filter((middleware) => getUniversalProp(middleware, nameSymbol) !== 'logger'))
 ```
 
-Applied one by one, the list is run by your server, which stops at the first `+middleware` that answers. A `+middleware` that must see every response, such as a logger or one that sets a header, needs an `order` before the one that answers (such as an authentication guard that responds with `401`).
+Applied one by one, the list is run by your server, and whether it stops at the first `+middleware` that answers depends on the server (Express and Hono do, srvx doesn't). A `+middleware` that must see every response, such as a logger or one that sets a header, needs an `order` before the one that answers (such as an authentication guard that responds with `401`), whichever server you use.
 
 The list is read once, when you call `getUniversalMiddlewares()`. In development, `$ vike dev` re-evaluates your `+server.js` (or restarts your `+serverEntry.js`) when a `+middleware` is added, removed or edited, or a file it imports changes; a server you run yourself needs a restart. `vike(app)` looks them up on every request and needs neither.
 

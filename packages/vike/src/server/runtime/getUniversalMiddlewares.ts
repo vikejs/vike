@@ -45,9 +45,10 @@ import '../assertEnvServer.js'
  * The `+middleware` that are handlers (`order: 0`, or a `path` and no `order`) aren't in the list: `universalHandler` runs
  * them, next to Vike's pages, so that a route of your server can override one.
  *
- * Your server runs the list, and stops at the first `+middleware` that answers: one that must see every response (a logger)
- * needs an `order` before it. The list is read once: in development, `$ vike dev` re-evaluates your `+server.js` (or restarts your
- * `+serverEntry.js`) when a `+middleware` changes, a server you run yourself needs a restart. `vike(app)` needs neither.
+ * Your server runs the list: whether it stops at the first `+middleware` that answers depends on the server (Express and Hono
+ * do, srvx doesn't). One that must see every response (a logger) needs an `order` before it, whichever server you use. The list
+ * is read once: in development, `$ vike dev` re-evaluates your `+server.js` (or restarts your `+serverEntry.js`) when a
+ * `+middleware` changes, a server you run yourself needs a restart. `vike(app)` needs neither.
  *
  * @example
  * ```js
@@ -111,7 +112,8 @@ async function applyResponseHandlers(responseHandlers: ResponseHandler[], respon
   return response
 }
 
-// Resolved upon each request: the Vike config imports +server, so awaiting the config while +server loads deadlocks
+// Resolved upon each request: vike(app) is synchronous, it can't await the config while +server loads (a +server that awaits it at its top level,
+// such as getUniversalMiddlewares() does, is fine), and a +middleware added in development takes effect without a restart
 function runPhase(
   request: Request,
   context: Universal.Context,
