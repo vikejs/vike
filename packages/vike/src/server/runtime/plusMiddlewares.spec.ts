@@ -142,6 +142,17 @@ describe('runPlusMiddlewares()', () => {
       expect(response instanceof Response && response.status).toBe(401)
     }
   })
+  it('starts a path with /, and warns about a - right after a parameter name', async () => {
+    expect(await run('dash', '/dash', '/')).toEqual([401, 'http://localhost/dash'])
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    try {
+      await run('/users/:user-id', '/users/5', '/')
+      expect(warn).toHaveBeenCalledTimes(1)
+      expect(String(warn.mock.calls[0]![0])).toContain(':userId instead of :user-id')
+    } finally {
+      warn.mockRestore()
+    }
+  })
   it("doesn't run a +middleware for another path", async () => {
     expect(await run('/dash', '/about', '/')).toEqual(['passed on'])
     expect(await run('/dash', '/about/index.pageContext.json', '/')).toEqual(['passed on'])
@@ -199,6 +210,21 @@ describe('globalContext.middlewares', () => {
     expect(await text(await call(scopedElement, '/b/index.pageContext.json'))).toBe('scoped')
     expect(await text(await call(scopedElement, '/b', 'HEAD'))).toBe('scoped')
     expect(await text(await call(scopedElement, '/other'))).toBe('passed on')
+  })
+
+  it("gives an element the order and name of its +middleware, and leaves them out if it has none, so that Universal Middleware's defaults apply", () => {
+    const unnamed = enhance(() => undefined, {})
+    plusMiddlewares = [plain, unnamed, scoped]
+    const [scopedElement, plainElement, unnamedElement] = getMiddlewares()
+    expect(getUniversalProp(scopedElement!, orderSymbol, 0)).toBe(-10)
+    expect(getUniversalProp(scopedElement!, nameSymbol)).toBe('scoped')
+    // `order: undefined` as a key would hide the default (0) that apply() sorts by
+    expect(getUniversalProp(plainElement!, orderSymbol, 0)).toBe(0)
+    expect(getUniversalProp(unnamedElement!, orderSymbol, 0)).toBe(0)
+    expect(getUniversalProp(unnamedElement!, nameSymbol, 'default')).toBe('default')
+    // The same for a handler, which has no order either
+    plusMiddlewares = [unnamed, onPath]
+    expect(getUniversalProp(getMiddlewares()[0]!, orderSymbol, 0)).toBe(0)
   })
 
   it('returns handler elements that run on the page URL, only if they are the most specific, and otherwise pass on', async () => {
