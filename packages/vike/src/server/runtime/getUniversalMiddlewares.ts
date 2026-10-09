@@ -2,6 +2,7 @@ export { getUniversalMiddlewares }
 export { runUniversalMiddlewares }
 export { runHandlerMiddlewares }
 export { runPlusMiddlewares }
+export { httpMethods }
 
 import { getGlobalContextServerInternal, type GlobalContextServerInternal } from './globalContext.js'
 import { renderPageServerConfigError } from './renderPageServer.js'
@@ -51,6 +52,7 @@ function getUniversalMiddlewares(): EnhancedMiddleware[] {
   return [nonHandlerMiddlewares]
 }
 
+// Servers install a handler only for the methods it declares, and a +middleware that is a handler can be on any method
 const httpMethods: HttpMethod[] = ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'CONNECT', 'OPTIONS', 'TRACE', 'PATCH']
 type ResponseHandler = (response: Response) => Awaitable<Response | undefined>
 

@@ -1,12 +1,12 @@
+export { pageMethods }
+
 import { enhance, type HttpMethod, type RuntimeAdapterTarget } from '@universal-middleware/core'
 import { renderPageServer } from './renderPageServer.js'
-import { runHandlerMiddlewares } from './getUniversalMiddlewares.js'
+import { httpMethods, runHandlerMiddlewares } from './getUniversalMiddlewares.js'
 import '../assertEnvServer.js'
 
-// Servers install a handler only for the methods it declares, and a +middleware that is a handler can be on any method,
-// so universalHandler declares them all. The pages answer the same methods as before.
-const httpMethods: HttpMethod[] = ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'CONNECT', 'OPTIONS', 'TRACE', 'PATCH']
-const pageMethods = ['GET', 'HEAD', 'POST', 'PUT', 'OPTIONS', 'PATCH']
+// The pages answer these methods; universalHandler declares them all (httpMethods) so that a +middleware handler can be on any
+const pageMethods: HttpMethod[] = ['GET', 'HEAD', 'POST', 'PUT', 'OPTIONS', 'PATCH']
 
 async function universalVikeHandler<T extends string>(
   request: Request,
@@ -17,7 +17,7 @@ async function universalVikeHandler<T extends string>(
   const handlerResponse = await runHandlerMiddlewares(request, context, runtime)
   if (handlerResponse) return handlerResponse
   // What a server answers for a method it has no route for
-  if (!pageMethods.includes(request.method)) return new Response('Not Found', { status: 404 })
+  if (!pageMethods.includes(request.method as HttpMethod)) return new Response('Not Found', { status: 404 })
   const pageContextInit = {
     ...context,
     ...runtime,
