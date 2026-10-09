@@ -160,10 +160,15 @@ With `+serverEntry.js` (and without `+server.js`, see <Link href="#with-out-serv
 ```ts
 // +serverEntry.ts (without +server.js)
 
-import { createDevMiddleware, renderPage } from 'vike/server'
+import assert from 'node:assert'
+import { getGlobalContext } from 'vike'
+import { renderPage } from 'vike/server'
 import { fetchNodeHandler } from 'srvx/node'
 
-const devMiddleware = import.meta.env.DEV ? (await createDevMiddleware()).devMiddleware : null
+const globalContext = await getGlobalContext()
+assert(!globalContext.isClientSide)
+// Vite's development middleware (null in production)
+const { devMiddleware } = globalContext
 
 Bun.serve({
   port: 3000,

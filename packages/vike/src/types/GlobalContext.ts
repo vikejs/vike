@@ -21,6 +21,7 @@ type GlobalContextServer = Pick<
   | 'baseServer'
   | 'baseAssets'
   | 'isClientSide'
+  | 'devMiddleware'
 > & {
   /** https://vike.dev/warning/internals */
   dangerouslyUseInternals: GlobalContextServerInternal
