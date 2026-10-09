@@ -1,6 +1,6 @@
 export { testRun }
 
-import { autoRetry, expect, fetch, fetchHtml, getServerUrl, page, run, test } from '@brillout/test-e2e'
+import { autoRetry, expect, expectLog, fetch, fetchHtml, getServerUrl, page, run, test } from '@brillout/test-e2e'
 
 function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   run(cmd, {
@@ -125,6 +125,22 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     })
     expect(response.status).not.toBe(200)
     expect((await fetch(`${getServerUrl()}/`)).status).toBe(200)
+  })
+
+  test('The request numbers in the logs are consecutive', async () => {
+    const ids: number[] = []
+    for (const [index, query] of ['a', 'b', 'c'].entries()) {
+      await fetch(`${getServerUrl()}/?request-number-${query}`)
+      await autoRetry(() => {
+        expectLog(new RegExp(`\\[request-\\d+\\] HTTP request .*\\?request-number-${query}`), {
+          filter: ({ logText }) => {
+            ids[index] = Number(/\[request-(\d+)\]/.exec(logText)![1])
+            return true
+          },
+        })
+      })
+    }
+    expect(ids.map((id) => id - ids[0]!)).to.deep.equal([0, 1, 2])
   })
 
   test('A +middleware with a path and order 0 still answers its path, and the pages still render', async () => {
