@@ -113,6 +113,15 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     })
   })
 
+  test("A +middleware's login page, answered with status 200 to a client-side navigation, is shown", async () => {
+    await page.goto(`${getServerUrl()}/`)
+    await testCounter()
+    await page.click('a[href="/portal"]')
+    await autoRetry(async () => {
+      expect(await page.textContent('body')).toBe('Log in to continue')
+    })
+  })
+
   test('A +middleware response handler that throws fails that request only', async () => {
     const response: Response = await fetch(`${getServerUrl()}/?throwing-response-handler`, {
       signal: AbortSignal.timeout(10 * 1000),
