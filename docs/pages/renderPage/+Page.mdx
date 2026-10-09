@@ -147,7 +147,7 @@ But, if you use Server-Side Rendering (SSR), then you need a production server a
 
 The fundamental difference is that:
 - `vike(app)` is more zero-config while `renderPage()` is lower-level
-{/* TODO/soon explain +middleware difference between the two */}
+- `vike(app)` applies your `+middleware`, `renderPage()` doesn't, see <Link href="#middleware" />
 
 | | `vike(app)` | `renderPage()` |
 | --- | --- | --- |
@@ -162,6 +162,29 @@ The fundamental difference is that:
 > See also:
 > - <Link href="/server" />
 > - <Link href="/server#extra-control" />
+
+
+## `+middleware`
+
+`renderPage()` doesn't run your `+middleware` (and throws if you have some and didn't apply them). `vike(app)` does. To integrate Vike by hand and keep your `+middleware`, use two functions from `'vike/server'`:
+
+- `getUniversalMiddlewares()` returns the `+middleware` that run before your routes (a Universal Middleware list). Apply it before your routes.
+- `universalHandler` is a Universal Middleware handler that runs the `+middleware` that answer requests, and then renders your pages. Apply it after your routes, as the catch-all, instead of calling `renderPage()`.
+
+```ts
+import { getUniversalMiddlewares, universalHandler } from 'vike/server'
+
+// Any server that accepts Universal Middleware (see https://universal-middleware.dev)
+getUniversalMiddlewares().forEach((middleware) => server.use(middleware))
+// ... your routes ...
+server.use(universalHandler)
+```
+
+Which one runs a `+middleware` depends on its `order` and `path`:
+- A `+middleware` with a `path` and no `order`, or with `order: 0`, answers requests and runs inside `universalHandler`. For a URL, only the most specific `path` runs.
+- Every other `+middleware` runs first, before your routes. To run a path-scoped one for every matching URL (such as an authentication guard), give it a negative `order`, such as `MiddlewareOrder.AUTHORIZATION`.
+
+> See the JSDoc of `+middleware` for the details.
 
 
 ## Without `+serverEntry.js`
