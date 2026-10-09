@@ -44,12 +44,6 @@ describe('plusMiddlewareChange', () => {
     expect(listener).toHaveBeenCalledTimes(2)
   })
 
-  it('notifies once the config is fixed, if the list was fetched while it was erroneous', () => {
-    module.setPlusMiddlewareFetched(null)
-    module.notifyPlusMiddlewareChange([])
-    expect(listener).toHaveBeenCalledTimes(1)
-  })
-
   it('stops notifying a listener that was removed', () => {
     const other = vi.fn()
     const remove = module.onPlusMiddlewareChange(other)

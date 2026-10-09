@@ -9,12 +9,12 @@ import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import '../assertEnvServer.js'
 
 const globalObject = getGlobalObject('runtime/plusMiddlewareChange.ts', {
-  // The +middleware of the list `globalContext.middlewares` last returned. `null` if the config was erroneous, `undefined` if it wasn't read since the last change.
-  fetched: undefined as unknown[] | null | undefined,
+  // The +middleware of the list `globalContext.middlewares` last returned, `undefined` if it wasn't read since the last change.
+  fetched: undefined as unknown[] | undefined,
   listeners: new Set<() => void>(),
 })
 
-function setPlusMiddlewareFetched(plusMiddlewares: unknown[] | null) {
+function setPlusMiddlewareFetched(plusMiddlewares: unknown[]) {
   globalObject.fetched = plusMiddlewares
 }
 
@@ -28,12 +28,7 @@ function onPlusMiddlewareChange(listener: () => void): () => void {
 function notifyPlusMiddlewareChange(plusMiddlewares: unknown[]) {
   const { fetched } = globalObject
   if (fetched === undefined) return
-  if (
-    fetched !== null &&
-    fetched.length === plusMiddlewares.length &&
-    fetched.every((m, i) => m === plusMiddlewares[i])
-  )
-    return
+  if (fetched.length === plusMiddlewares.length && fetched.every((m, i) => m === plusMiddlewares[i])) return
   // The server gets the new list when it's re-run, which sets it again
   globalObject.fetched = undefined
   globalObject.listeners.forEach((listener) => listener())
