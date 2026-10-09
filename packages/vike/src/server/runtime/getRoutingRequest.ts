@@ -14,9 +14,9 @@ import {
   type EnhancedMiddleware,
   type RuntimeAdapter,
 } from '@universal-middleware/core'
-import { pageContextJsonFileExtension } from '../../shared-server-client/getPageContextRequestUrl.js'
 import { assertWarning } from '../../utils/assert.js'
 import { parseUrl } from '../../utils/parseUrl.js'
+import { handlePageContextRequestUrl } from './renderPageServer/handlePageContextRequestUrl.js'
 import '../assertEnvServer.js'
 
 // A `path` is matched against the page's URL, the way Vike routes pages: without the Base URL, and with a
@@ -24,10 +24,8 @@ import '../assertEnvServer.js'
 // whatever pattern the path uses. The router only reads the URL and method; each +middleware gets the original request.
 // The path stays percent-encoded until the router decodes it once: `/literal%25` must not become `/literal%`.
 function getRoutingRequest(request: Request, baseServer: string): Request {
-  const url = new URL(request.url)
-  const suffix = `/index${pageContextJsonFileExtension}`
-  if (url.pathname.endsWith(suffix)) url.pathname = url.pathname.slice(0, -suffix.length) || '/'
-  const { href } = parseUrl(url.href, baseServer)
+  const { urlWithoutPageContextRequestSuffix } = handlePageContextRequestUrl(request.url)
+  const { href } = parseUrl(urlWithoutPageContextRequestSuffix, baseServer)
   return new Request(href, { method: request.method, headers: request.headers })
 }
 
