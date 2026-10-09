@@ -172,12 +172,12 @@ The fundamental difference is that:
 - `universalHandler` is a Universal Middleware handler that runs the `+middleware` that answer requests, and then renders your pages. Apply it after your routes, as the catch-all, instead of calling `renderPage()`.
 
 ```ts
+import { apply } from '@universal-middleware/express'
 import { getUniversalMiddlewares, universalHandler } from 'vike/server'
 
-// Any server that accepts Universal Middleware (see https://universal-middleware.dev)
-getUniversalMiddlewares().forEach((middleware) => server.use(middleware))
-// ... your routes ...
-server.use(universalHandler)
+apply(app, getUniversalMiddlewares())
+// ... the app's routes
+apply(app, [universalHandler])
 ```
 
 Which one runs a `+middleware` depends on its `order` and `path`:
