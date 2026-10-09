@@ -374,6 +374,42 @@ export default {
 > See <Link href="/precompress" noBreadcrumb /> to generate `.br`/`.gz` files for your static assets at build time (instead of unnecessarily compressing them on each request).
 
 
+## WebSockets
+
+Define `upgrade()` to handle HTTP upgrade requests, such as WebSocket connections:
+
+```ts
+// +server.ts
+
+import { Hono } from 'hono'
+import vike from '@vikejs/hono'
+import { WebSocketServer } from 'ws'
+import type { Server } from 'vike/types'
+
+const app = new Hono()
+vike(app)
+
+const wss = new WebSocketServer({ noServer: true })
+wss.on('connection', (ws) => {
+  ws.on('message', (data) => ws.send(`echo: ${data}`))
+})
+
+export default {
+  fetch: app.fetch,
+  upgrade(req, socket, head) { // [!code highlight]
+    if (req.url !== '/ws') return // [!code highlight]
+    wss.handleUpgrade(req, socket, head, (ws) => wss.emit('connection', ws, req)) // [!code highlight]
+  } // [!code highlight]
+} satisfies Server
+```
+
+- `upgrade()` receives the same arguments as Node.js's [`'upgrade'` event](https://nodejs.org/api/http.html#event-upgrade), so you can use any WebSocket library, such as [`ws`](https://github.com/websockets/ws).
+- It's used in development (Vite's HMR WebSocket isn't affected) and in production.
+- In development, when you modify `+server.js`, new connections use the new `upgrade()`.
+
+> In production, `upgrade()` requires Node.js's HTTP server: it isn't supported with Bun, Deno, and serverless deployments (Cloudflare, Vercel, ...).
+
+
 ## Extra control
 
 If needed, Vike enables you to gain complete control over the server.
