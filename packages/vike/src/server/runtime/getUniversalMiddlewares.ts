@@ -3,6 +3,7 @@ export { runUniversalMiddlewares }
 export { runHandlerMiddlewares }
 export { runPlusMiddlewares }
 export { httpMethods }
+export { isHandler }
 
 import { getGlobalContextServerInternal, type GlobalContextServerInternal } from './globalContext.js'
 import { renderPageServerConfigError } from './renderPageServer.js'

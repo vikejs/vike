@@ -1,12 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import {
-  enhance,
-  getUniversal,
-  getUniversalProp,
-  orderSymbol,
-  pathSymbol,
-  type RuntimeAdapter,
-} from '@universal-middleware/core'
+import { enhance, getUniversal, getUniversalProp, type RuntimeAdapter } from '@universal-middleware/core'
 
 let plusMiddlewares: unknown[] = []
 vi.mock('./globalContext.js', () => ({
@@ -17,7 +10,7 @@ vi.mock('./globalContext.js', () => ({
 vi.mock('./renderPageServer.js', () => ({
   renderPageServerConfigError: async () => null,
 }))
-const { getUniversalMiddlewares, runPlusMiddlewares, runUniversalMiddlewares } = await import(
+const { getUniversalMiddlewares, isHandler, runPlusMiddlewares, runUniversalMiddlewares } = await import(
   './getUniversalMiddlewares.js'
 )
 
@@ -125,12 +118,6 @@ describe('runPlusMiddlewares()', () => {
     expect(await run('/dash', '/%2564ash/index.pageContext.json', '/app/')).toEqual(['passed on'])
   })
 })
-
-// Universal Middleware core's isHandler(), which it doesn't export
-const isHandler = (middleware: Parameters<typeof getUniversalProp>[0]) => {
-  const order = getUniversalProp(middleware, orderSymbol)
-  return typeof order === 'number' ? order === 0 : Boolean(getUniversalProp(middleware, pathSymbol))
-}
 
 describe('getUniversalMiddlewares()', () => {
   const runtime = {} as RuntimeAdapter
