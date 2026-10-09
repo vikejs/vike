@@ -38,7 +38,9 @@ type GlobalContextServer = Pick<
    * import { apply } from '@universal-middleware/express'
    * import { getGlobalContext } from 'vike/server'
    *
-   * const { middlewares } = await getGlobalContext()
+   * const globalContext = await getGlobalContext()
+   * if (globalContext.isClientSide) throw new Error('Server only')
+   * const { middlewares } = globalContext
    * apply(app, middlewares.filter((m) => !m.isHandler))
    * app.get('/api/hello', (req, res) => res.send('Hello'))
    * apply(app, middlewares.filter((m) => m.isHandler))
