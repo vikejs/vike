@@ -33,7 +33,7 @@ async function dev(
   const server = await createServer(
     serverEntryFilePath
       ? // +serverEntry.js creates the server: it uses Vite's development server as middleware
-        addMiddlewareMode(viteConfigUser)
+        setMiddlewareMode(viteConfigUser)
       : viteConfigUser,
   )
 
@@ -55,6 +55,6 @@ async function dev(
   }
 }
 
-function addMiddlewareMode(viteConfig: InlineConfig): InlineConfig {
+function setMiddlewareMode(viteConfig: InlineConfig): InlineConfig {
   return { ...viteConfig, server: { ...viteConfig.server, middlewareMode: true } }
 }
