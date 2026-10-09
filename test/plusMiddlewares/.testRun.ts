@@ -1,8 +1,6 @@
 export { testRun }
 
 import { autoRetry, expect, expectLog, fetch, fetchHtml, getServerUrl, page, run, test } from '@brillout/test-e2e'
-import fs from 'node:fs'
-import { fileURLToPath } from 'node:url'
 
 function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   run(cmd, {
@@ -152,30 +150,6 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     expect(await (await fetch(`${getServerUrl()}/order-zero`)).text()).toBe('order zero')
     expect(await fetchHtml('/')).toContain('Rendered to HTML.')
   })
-
-  // Vike's dev server looks the +middleware up upon each request, as vike(app) does
-  if (cmd === 'pnpm run dev') {
-    test('A +middleware file added or removed in dev applies without a restart', async () => {
-      // A global config file, such as /renderer/+middleware.ts: another +middleware sits in /pages/
-      const file = fileURLToPath(new URL('./renderer/+middleware.ts', import.meta.url))
-      const header = async () => (await fetch(`${getServerUrl()}/`)).headers.get('x-dev-added')
-      expect(await header()).toBe(null)
-      try {
-        fs.writeFileSync(
-          file,
-          `import { enhance } from '@universal-middleware/core'
-export default enhance(() => (response: Response) => (response.headers.set('x-dev-added', 'yes'), response), {
-  name: 'devAdded',
-})
-`,
-        )
-        await autoRetry(async () => expect(await header()).toBe('yes'), { timeout: 10 * 1000 })
-      } finally {
-        fs.rmSync(file, { force: true })
-      }
-      await autoRetry(async () => expect(await header()).toBe(null), { timeout: 10 * 1000 })
-    })
-  }
 }
 
 async function testCounter() {

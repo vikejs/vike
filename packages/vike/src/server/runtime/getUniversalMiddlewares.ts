@@ -33,6 +33,7 @@ import {
   type UniversalHandler,
 } from '@universal-middleware/core'
 import { assertPlusMiddlewareInstalled, setPlusMiddlewareInstalled } from './assertPlusMiddlewareInstalled.js'
+import { setPlusMiddlewareFetched } from './plusMiddlewareChange.js'
 import '../assertEnvServer.js'
 
 /**
@@ -45,8 +46,8 @@ import '../assertEnvServer.js'
  * them, next to Vike's pages, so that a route of your server can override one.
  *
  * Your server runs the list, and stops at the first `+middleware` that answers: one that must see every response (a logger)
- * needs an `order` before it. The list is read once: restart the server to pick up a `+middleware` you added, removed or
- * edited in development. `vike(app)` doesn't need that.
+ * needs an `order` before it. The list is read once: in development, `$ vike dev` re-evaluates your `+server.js` (or restarts your
+ * `+serverEntry.js`) when a `+middleware` changes, a server you run yourself needs a restart. `vike(app)` needs neither.
  *
  * @example
  * ```js
@@ -65,16 +66,20 @@ async function getUniversalMiddlewares(): Promise<EnhancedMiddleware[]> {
   // Fail closed: skipping the +middleware of an erroneous config would let requests through unguarded. Waiting for the global
   // context of an erroneous config never ends, so +server wouldn't load: the proxy answers every request with the error response (like
   // renderPage()), and runs the +middleware as soon as the config is fixed.
-  if (getVikeConfigError()) return [plusMiddlewareProxy]
+  if (getVikeConfigError()) return getProxy()
   await initGlobalContext_renderPage()
-  if (getVikeConfigError()) return [plusMiddlewareProxy]
+  if (getVikeConfigError()) return getProxy()
   const { globalContext } = await getGlobalContextServerInternal()
+  const plusMiddlewares = (globalContext.config.middleware ?? []).flat()
+  setPlusMiddlewareFetched(plusMiddlewares)
   // The list is applied, and its +middleware that are handlers need nothing else
   setPlusMiddlewareInstalled()
-  return (globalContext.config.middleware ?? [])
-    .flat()
-    .filter((middleware) => !isHandler(middleware))
-    .map(toUniversalMiddleware)
+  return plusMiddlewares.filter((middleware) => !isHandler(middleware)).map(toUniversalMiddleware)
+}
+
+function getProxy() {
+  setPlusMiddlewareFetched(null)
+  return [plusMiddlewareProxy]
 }
 
 // Servers install a handler only for the methods it declares, and a +middleware that is a handler can be on any method

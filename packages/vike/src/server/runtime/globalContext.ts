@@ -78,6 +78,7 @@ import type { ViteRPC } from '../../node/vite/plugins/non-runnable-dev/pluginVit
 import { getVikeApiOperation } from '../../shared-server-node/api-context.js'
 import type { PrerenderContext } from '../../types/index.js'
 import { hasAlreadyLogged } from './logErrorServer.js'
+import { notifyPlusMiddlewareChange } from './plusMiddlewareChange.js'
 import '../assertEnvServer.js'
 const debug = createDebug('vike:globalContext')
 const globalObject = getGlobalObject<
@@ -506,6 +507,7 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
     }
     globalObject.vikeConfigHasRuntimeError = false
     setVikeConfigError({ errorRuntime: false })
+    notifyPlusMiddlewareChange((globalObjectTyped.globalContext?.config.middleware ?? []).flat())
     globalObject.waitForUserFilesUpdateResolve!.forEach((resolve) => resolve())
     globalObject.waitForUserFilesUpdateResolve = []
     resolve()

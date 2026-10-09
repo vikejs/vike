@@ -1,6 +1,8 @@
 export { testRun }
 
 import { test, expect, fetchHtml, autoRetry, editFile, editFileRevert } from '@brillout/test-e2e'
+import fs from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { testRunClassic, sleepBeforeEditFile } from '../utils'
 
 function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
@@ -39,6 +41,28 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
       await sleepBeforeEditFile()
       editFileRevert()
       await expectHello(org)
+    })
+
+    test('+serverEntry.ts that gets the list of +middleware is restarted when a +middleware is added or removed', async () => {
+      // A global config file, such as /renderer/+middleware.ts
+      const dir = fileURLToPath(new URL('./renderer', import.meta.url))
+      const expectNumber = (n: number) =>
+        autoRetry(
+          async () => {
+            expect(await fetchHtml('/middlewares')).toBe(String(n))
+          },
+          { timeout: 10 * 1000 },
+        )
+      await expectNumber(0)
+      await sleepBeforeEditFile()
+      try {
+        fs.mkdirSync(dir, { recursive: true })
+        fs.writeFileSync(`${dir}/+middleware.ts`, 'export default () => {}\n')
+        await expectNumber(1)
+      } finally {
+        fs.rmSync(dir, { recursive: true, force: true })
+      }
+      await expectNumber(0)
     })
   }
 }

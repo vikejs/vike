@@ -191,7 +191,7 @@ apply(app, middlewares.filter((middleware) => getUniversalProp(middleware, nameS
 
 Applied one by one, the list is run by your server, which stops at the first `+middleware` that answers. A `+middleware` that must see every response, such as a logger or one that sets a header, needs an `order` before the one that answers (such as an authentication guard that responds with `401`).
 
-The list is read once, when you call `getUniversalMiddlewares()`: when you add, remove or edit a `+middleware` in development, restart your server. `vike(app)` looks them up on every request and needs no restart.
+The list is read once, when you call `getUniversalMiddlewares()`. In development, `$ vike dev` re-evaluates your `+server.js` (or restarts your `+serverEntry.js`) when a `+middleware` is added, removed or edited, or a file it imports changes; a server you run yourself needs a restart. `vike(app)` looks them up on every request and needs neither.
 
 Which one runs a `+middleware` depends on its `order` and `path`:
 - A `+middleware` with a `path` and no `order`, or with `order: 0`, answers requests and runs inside `universalHandler`. For a URL, only the most specific `path` runs.

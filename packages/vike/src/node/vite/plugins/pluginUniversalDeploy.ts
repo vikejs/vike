@@ -10,6 +10,7 @@ import { getDeployConfig } from './pluginUniversalDeploy/getDeployConfig.js'
 import { pluginCommon } from './pluginUniversalDeploy/common.js'
 import { hasVikeServerOrVikePhoton } from './pluginUniversalDeploy/detectDeprecated.js'
 import { getServerConfig, getServerEntryFilePath_ifDev } from './pluginUniversalDeploy/getServerConfig.js'
+import { pluginReloadServer } from './pluginUniversalDeploy/pluginReloadServer.js'
 import { pluginServerEntryAlias } from './pluginUniversalDeploy/pluginServerEntryAlias.js'
 import { pluginUnwrapProdOptions } from './pluginUniversalDeploy/pluginUnwrapProdOptions.js'
 import { getViteCliCommand } from '../shared/isViteCli.js'
@@ -90,6 +91,7 @@ function pluginUniversalDeploy(vikeConfig: VikeConfigInternal): Plugin[] {
     },
     pluginServerEntryInject(serverFilePath ?? serverEntryId),
     pluginServerEntryAlias(serverFilePath),
+    !serverFilePath ? null : pluginReloadServer(serverFilePath),
     !serverFilePath ? null : pluginUnwrapProdOptions(serverFilePath),
   ].filter((p) => p !== null)
 }

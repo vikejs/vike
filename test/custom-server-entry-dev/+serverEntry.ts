@@ -3,7 +3,7 @@
 
 import express from 'express'
 import { fileURLToPath } from 'node:url'
-import { createDevMiddleware, renderPage } from 'vike/server'
+import { createDevMiddleware, getUniversalMiddlewares, renderPage } from 'vike/server'
 import { hello } from './server/hello'
 import { getEvaluations } from './server/shared'
 
@@ -16,6 +16,12 @@ if (import.meta.env.DEV) {
 } else {
   app.use(express.static(fileURLToPath(new URL('../client', import.meta.url))))
 }
+
+// Applying the list by hand: `$ vike dev` restarts this file when the +middleware change
+const middlewares = await getUniversalMiddlewares()
+app.get('/middlewares', (_req, res) => {
+  res.send(String(middlewares.length))
+})
 
 app.get('/hello', (_req, res) => {
   res.send(hello)
