@@ -4,7 +4,7 @@ export type { GlobalContextServer }
 export type { GlobalContextClient }
 export type { GlobalContextClientWithServerRouting }
 
-import type { EnhancedMiddleware } from '@universal-middleware/core'
+import type { PlusMiddleware } from '../server/runtime/plusMiddlewares.js'
 import type { GlobalContextServerInternal } from '../server/runtime/globalContext.js'
 import type { GlobalContextClientInternalWithServerRouting } from '../client/runtime-server-routing/getGlobalContextClientInternal.js'
 import type { GlobalContextBasePublic } from '../shared-server-client/createGlobalContextShared.js'
@@ -46,7 +46,7 @@ type GlobalContextServer = Pick<
    *
    * https://vike.dev/renderPage
    */
-  middlewares: (EnhancedMiddleware & { isHandler: boolean })[]
+  middlewares: PlusMiddleware[]
   /** https://vike.dev/warning/internals */
   dangerouslyUseInternals: GlobalContextServerInternal
 } & Vike.GlobalContext &

@@ -1,6 +1,5 @@
 export { addMiddlewares }
 export { runUniversalMiddlewares }
-export { runHandlerMiddlewares }
 export { runPlusMiddlewares }
 export { httpMethods }
 export { isHandler }
