@@ -7,12 +7,15 @@ import {
   orderSymbol,
   pathSymbol,
 } from '@universal-middleware/core'
-import { normalizeMiddlewarePath } from './normalizeMiddlewarePath.js'
+import { warnAndNormalizeMiddlewarePath } from './warnAndNormalizeMiddlewarePath.js'
 
 const path = (path: string) =>
-  getUniversalProp(normalizeMiddlewarePath(enhance(() => undefined, { name: 'test', method: 'GET', path })), pathSymbol)
+  getUniversalProp(
+    warnAndNormalizeMiddlewarePath(enhance(() => undefined, { name: 'test', method: 'GET', path })),
+    pathSymbol,
+  )
 
-describe('normalizeMiddlewarePath()', () => {
+describe('warnAndNormalizeMiddlewarePath()', () => {
   it('starts a path with /', () => {
     expect(path('dash')).toBe('/dash')
     expect(path('/dash')).toBe('/dash')
@@ -20,10 +23,10 @@ describe('normalizeMiddlewarePath()', () => {
   })
   it('keeps a middleware without a path', () => {
     const middleware = enhance(() => undefined, { name: 'test' })
-    expect(normalizeMiddlewarePath(middleware)).toBe(middleware)
+    expect(warnAndNormalizeMiddlewarePath(middleware)).toBe(middleware)
   })
   it('keeps the other properties when it adds the /', () => {
-    const middleware = normalizeMiddlewarePath(
+    const middleware = warnAndNormalizeMiddlewarePath(
       enhance(() => undefined, { name: 'test', method: 'GET', path: 'dash', order: -900 }),
     )
     expect(getUniversalProp(middleware, pathSymbol)).toBe('/dash')

@@ -1,4 +1,4 @@
-export { normalizeMiddlewarePath }
+export { warnAndNormalizeMiddlewarePath }
 
 import {
   enhance,
@@ -10,7 +10,7 @@ import {
 import { assertWarning } from '../../utils/assert.js'
 import '../assertEnvServer.js'
 
-function normalizeMiddlewarePath(middleware: EnhancedMiddleware): EnhancedMiddleware {
+function warnAndNormalizeMiddlewarePath(middleware: EnhancedMiddleware): EnhancedMiddleware {
   let path = getUniversalProp(middleware, pathSymbol)
   if (!path) return middleware
   // Since Universal Middleware 0.5 a `-` ends a parameter name, so `/users/:user-id` means `:user` followed by `-id` and no

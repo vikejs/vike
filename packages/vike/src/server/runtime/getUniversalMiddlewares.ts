@@ -7,7 +7,7 @@ export { isHandler }
 
 import { getGlobalContextServerInternal, type GlobalContextServerInternal } from './globalContext.js'
 import { renderPageServerConfigError } from './renderPageServer.js'
-import { normalizeMiddlewarePath } from './normalizeMiddlewarePath.js'
+import { warnAndNormalizeMiddlewarePath } from './warnAndNormalizeMiddlewarePath.js'
 import { pageContextJsonFileExtension } from '../../shared-server-client/getPageContextRequestUrl.js'
 import { parseUrl } from '../../utils/parseUrl.js'
 import {
@@ -116,7 +116,7 @@ async function runPlusMiddlewares(
   context: Universal.Context,
   runtime: RuntimeAdapter,
 ) {
-  const middlewares = plusMiddlewares.map(normalizeMiddlewarePath)
+  const middlewares = plusMiddlewares.map(warnAndNormalizeMiddlewarePath)
   if (middlewares.length === 0) return
   const responseHandlers: ResponseHandler[] = []
   // Universal Middleware's pipe() throws `No Response found` if nothing returns a Response
