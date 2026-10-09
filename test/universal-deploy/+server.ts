@@ -3,6 +3,7 @@ import { toFetchHandler } from '@vikejs/express'
 import { apply } from '@universal-middleware/express'
 import { getGlobalContext } from 'vike/server'
 import express from 'express'
+import assert from 'node:assert'
 
 const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000
 
@@ -10,7 +11,7 @@ async function serve() {
   const app = express()
 
   const globalContext = await getGlobalContext()
-  if (globalContext.isClientSide) throw new Error('Server only')
+  assert(!globalContext.isClientSide)
   const { middlewares } = globalContext
 
   apply(

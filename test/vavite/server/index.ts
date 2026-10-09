@@ -1,5 +1,6 @@
 /// <reference types="vite/client" />
 
+import assert from 'node:assert'
 import express from 'express'
 import { apply, getContext } from '@universal-middleware/express'
 import { getGlobalContext, renderPage } from 'vike/server'
@@ -13,7 +14,7 @@ if (!viteDevServer) {
 }
 
 const globalContext = await getGlobalContext()
-if (globalContext.isClientSide) throw new Error('Server only')
+assert(!globalContext.isClientSide)
 apply(
   app,
   globalContext.middlewares.filter((m) => !m.isHandler),
