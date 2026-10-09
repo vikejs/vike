@@ -148,13 +148,13 @@ async function renderPageServerEntryOnceBegin(
 // The request id is taken only when there is an error response: the chain of +middleware calls this on every request
 async function getPageContextConfigError(
   pageContextInit: PageContextInitInternal,
-  getRequestId: () => number,
+  takeRequestId: () => number,
 ): Promise<PageContextAfterRender | null> {
   // Invalid config
   {
     const vikeConfigError = getVikeConfigError()
     if (vikeConfigError) {
-      return getPageContextInvalidVikeConfig(vikeConfigError.err, pageContextInit, getRequestId())
+      return getPageContextInvalidVikeConfig(vikeConfigError.err, pageContextInit, takeRequestId())
     }
   }
 
@@ -169,7 +169,7 @@ async function getPageContextConfigError(
     //   ```
     // - initGlobalContext_renderPage() depends on +onCreateGlobalContext hooks
     assert(!isAbortError(err))
-    const requestId = getRequestId()
+    const requestId = takeRequestId()
     const pageContext = createPageContextServerWithoutGlobalContext(pageContextInit, requestId)
     logRuntimeError(err, pageContext)
     const pageContextHttpErrorFallback = getPageContextHttpErrorFallback_noGlobalContext(
@@ -182,7 +182,7 @@ async function getPageContextConfigError(
   {
     const vikeConfigError = getVikeConfigError()
     if (vikeConfigError) {
-      return getPageContextInvalidVikeConfig(vikeConfigError.err, pageContextInit, getRequestId())
+      return getPageContextInvalidVikeConfig(vikeConfigError.err, pageContextInit, takeRequestId())
     } else {
       // `globalContext` now contains the entire Vike config and getVikeConfig() isn't called anymore for this request.
     }
