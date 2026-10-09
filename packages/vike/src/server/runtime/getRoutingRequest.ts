@@ -1,19 +1,7 @@
 export { getRoutingRequest }
-export { withOriginalRequest }
 export { assertMiddlewarePath }
 
-import {
-  contextSymbol,
-  enhance,
-  getUniversal,
-  getUniversalProp,
-  methodSymbol,
-  nameSymbol,
-  orderSymbol,
-  pathSymbol,
-  type EnhancedMiddleware,
-  type RuntimeAdapter,
-} from '@universal-middleware/core'
+import { getUniversalProp, nameSymbol, pathSymbol, type EnhancedMiddleware } from '@universal-middleware/core'
 import { assertWarning } from '../../utils/assert.js'
 import { parseUrl } from '../../utils/parseUrl.js'
 import { handlePageContextRequestUrl } from './renderPageServer/handlePageContextRequestUrl.js'
@@ -27,21 +15,6 @@ function getRoutingRequest(request: Request, baseServer: string): Request {
   const { urlWithoutPageContextRequestSuffix } = handlePageContextRequestUrl(request.url)
   const { href } = parseUrl(urlWithoutPageContextRequestSuffix, baseServer)
   return new Request(href, { method: request.method, headers: request.headers })
-}
-
-// The router passes the routing request to what it runs: this passes the original request instead
-function withOriginalRequest(middleware: EnhancedMiddleware, request: Request): EnhancedMiddleware {
-  return enhance(
-    (_routingRequest: Request, context: Universal.Context, runtime: RuntimeAdapter) =>
-      getUniversal(middleware)(request, context, runtime),
-    {
-      name: getUniversalProp(middleware, nameSymbol),
-      order: getUniversalProp(middleware, orderSymbol),
-      method: getUniversalProp(middleware, methodSymbol),
-      path: getUniversalProp(middleware, pathSymbol),
-      context: getUniversalProp(middleware, contextSymbol),
-    },
-  )
 }
 
 // A path is relative to the Base URL: a path that starts with it is probably meant to be the page's full URL
