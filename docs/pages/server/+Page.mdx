@@ -1,7 +1,7 @@
 import { Link, FileAdded, Warning, Tabs } from '@brillout/docpress'
 import { DeprecatedServer } from '../../components'
 
-Define `+server.js` to seamlessly integrate a server framework (Hono, Express, ...). Or set `+server: true` to use Vike's built-in lightweight server.
+Define `+server.js` to seamlessly integrate a server framework (Hono, Express, ...), or set `+server: true` to use Vike's built-in lightweight server.
 
 > `vike-photon` is deprecated — it has been replaced by `+server`:
 > - <Link href="/migration/server" />
@@ -409,7 +409,7 @@ For full control over your server production entry (e.g. to define a custom depl
 | --- | --- | --- |
 | Development server | Vite's development server. ([Node.js with Connect](https://github.com/vitejs/ecosystem/issues/16).) | Your server. (E.g. `Bun.serve()`/`Deno.serve()`.) |
 
-For full control over the server entry not only in production but also in development, you can define `+serverEntry.js` without `+server.js`: `+serverEntry.js` is then also run in development (and not only in production). See <Link href="/serverEntry#development" />.
+For full control over the server entry not only in production but also in development, you can define `+serverEntry.js` without `+server.js`: `+serverEntry.js` is then also run in development (and not only in production). See <Link href="/serverEntry#with-out-server-js" />.
 
 ### `vike(app)` => `renderPage()`
 
