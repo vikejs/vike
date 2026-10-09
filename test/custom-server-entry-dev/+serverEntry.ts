@@ -1,8 +1,10 @@
 // https://vike.dev/serverEntry
 // There isn't any +server.js => `$ vike dev` runs this file as well
 
+import assert from 'node:assert'
 import express from 'express'
 import { fileURLToPath } from 'node:url'
+import { getGlobalContext } from 'vike'
 import { createDevMiddleware, renderPage } from 'vike/server'
 import { hello } from './server/hello'
 import { getEvaluations } from './server/shared'
@@ -19,6 +21,13 @@ if (import.meta.env.DEV) {
 
 app.get('/hello', (_req, res) => {
   res.send(hello)
+})
+
+app.get('/dev-middleware', async (_req, res) => {
+  const globalContext = await getGlobalContext()
+  assert(!globalContext.isClientSide)
+  const { devMiddleware } = globalContext
+  res.send(devMiddleware ? String(devMiddleware === (await createDevMiddleware()).devMiddleware) : 'null')
 })
 
 app.get('/shared-module-evaluations', (_req, res) => {

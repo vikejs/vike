@@ -1595,40 +1595,6 @@ importers:
         specifier: ^7.2.7
         version: 7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)
 
-  test/custom-server-entry-fetch:
-    dependencies:
-      react:
-        specifier: ^19.2.6
-        version: 19.2.6
-      react-dom:
-        specifier: ^19.2.6
-        version: 19.2.6(react@19.2.6)
-      srvx:
-        specifier: ^0.12.8
-        version: 0.12.8
-      vike:
-        specifier: 0.4.267
-        version: link:../../packages/vike
-      vike-react:
-        specifier: ^0.6.29
-        version: 0.6.29(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vike@packages+vike)
-    devDependencies:
-      '@types/react':
-        specifier: ^19.2.15
-        version: 19.2.15
-      '@types/react-dom':
-        specifier: ^19.2.3
-        version: 19.2.3(@types/react@19.2.15)
-      '@vitejs/plugin-react':
-        specifier: ^5.1.2
-        version: 5.1.3(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
-      typescript:
-        specifier: ^7.0.2
-        version: 7.0.2
-      vite:
-        specifier: ^7.2.7
-        version: 7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)
-
   test/disableAutoImporter:
     dependencies:
       '@vitejs/plugin-react':
