@@ -61,6 +61,21 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     expect(await response.text()).toContain('Admin settings')
   })
 
+  test("A +middleware with a path also guards the page's .pageContext.json (client-side navigation)", async () => {
+    expect((await fetch(`${getServerUrl()}/dash`)).status).toBe(401)
+    expectLog(partRegex`HTTP response ${/.*/} /dash 401`, { filter: (log) => log.logSource === 'stderr' })
+    const url = `${getServerUrl()}/dash/index.pageContext.json`
+    const response: Response = await fetch(url)
+    expect(response.status).toBe(401)
+    expect(await response.text()).toBe('Unauthorized')
+    expectLog(partRegex`HTTP response ${/.*/} /dash/index.pageContext.json 401`, {
+      filter: (log) => log.logSource === 'stderr',
+    })
+    const responseAuth: Response = await fetch(url, { headers: { 'x-auth': '1' } })
+    expect(responseAuth.status).toBe(200)
+    expect(await responseAuth.text()).toContain('DASH-SECRET')
+  })
+
   test("A +middleware's own response to a .pageContext.json request is passed through", async () => {
     const response: Response = await fetch(`${getServerUrl()}/admin/settings/index.pageContext.json`)
     expect(response.status).toBe(401)

@@ -44,6 +44,7 @@ import {
   initGlobalContext_renderPage,
   type GlobalContextServerInternal,
 } from './globalContext.js'
+import { assertMiddlewarePath, getRoutingRequest, withOriginalRequest } from './getRoutingRequest.js'
 import { handlePageContextRequestUrl } from './renderPageServer/handlePageContextRequestUrl.js'
 import { getPageContextPublicServer } from './renderPageServer/getPageContextPublicServer.js'
 import {
@@ -381,6 +382,14 @@ async function renderPageServerEntryWithMiddlewares(
   renderPageServerEntry: () => Promise<PageContextAfterRender>,
   middlewares: EnhancedMiddleware[],
 ) {
+  const request =
+    pageContext._reqWeb ??
+    (pageContext._nodeDev
+      ? requestAdapter(pageContext._nodeDev.req, pageContext._nodeDev.res)
+      : new Request(new URL(pageContext.urlOriginal, 'http://localhost').toString(), {
+          headers: pageContext.headers ?? {},
+        }))
+
   const router = new UniversalRouter(true, false)
   let httpResponseVikeCore = undefined as undefined | HttpResponse
   let responseVikeCore = undefined as undefined | Response
@@ -406,19 +415,18 @@ async function renderPageServerEntryWithMiddlewares(
         immutable: true, // avoids cloning the function we just created
       },
     ),
-    ...middlewares,
+    ...middlewares.map((middleware) => {
+      assertMiddlewarePath(middleware, pageContext._baseServer)
+      return withOriginalRequest(middleware, request)
+    }),
   ])
   const handler = router[universalSymbol] as UniversalHandler
 
-  const request =
-    pageContext._reqWeb ??
-    (pageContext._nodeDev
-      ? requestAdapter(pageContext._nodeDev.req, pageContext._nodeDev.res)
-      : new Request(new URL(pageContext.urlOriginal, 'http://localhost').toString(), {
-          headers: pageContext.headers ?? {},
-        }))
-
-  const res = await handler(request, {}, getAdapterRuntime('other', { params: undefined }))
+  const res = await handler(
+    getRoutingRequest(request, pageContext._baseServer),
+    {},
+    getAdapterRuntime('other', { params: undefined }),
+  )
 
   const httpResponse = createHttpResponseFromUniversalMiddleware(res, httpResponseVikeCore?.earlyHints)
   objectAssign(pageContext, { httpResponse })
