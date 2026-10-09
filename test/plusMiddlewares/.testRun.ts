@@ -17,12 +17,7 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   run(cmd, {
     serverUrl: 'http://localhost:3000',
     tolerateError({ logText }) {
-      return (
-        logText.includes("Vite's CLI is deprecated") ||
-        logText.includes('Run the built server entry') ||
-        // The browser logs the 401 of the guarded page
-        logText.includes('the server responded with a status of 401')
-      )
+      return logText.includes("Vite's CLI is deprecated") || logText.includes('Run the built server entry')
     },
   })
 
@@ -85,37 +80,6 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     expect(await response.text()).toBe('Unauthorized')
     expectLog(partRegex`HTTP response ${/.*/} /admin/settings/index.pageContext.json 401`, {
       filter: (log) => log.logSource === 'stderr',
-    })
-  })
-
-  test("A +middleware's own response to a client-side navigation is shown", async () => {
-    await page.goto(`${getServerUrl()}/`)
-    await testCounter()
-    await page.click('a[href="/admin/data"]')
-    await autoRetry(async () => {
-      expect(await page.textContent('body')).toBe('Unauthorized')
-    })
-    for (const pathname of ['/admin/data/index.pageContext.json', '/admin/data']) {
-      expectLog(partRegex`HTTP response ${/.*/} ${pathname} 401`, { filter: (log) => log.logSource === 'stderr' })
-    }
-  })
-
-  test("A +middleware's redirect of a client-side navigation is followed", async () => {
-    await page.goto(`${getServerUrl()}/`)
-    await testCounter()
-    await page.click('a[href="/guarded"]')
-    await autoRetry(async () => {
-      expect(page.url()).toBe(`${getServerUrl()}/login`)
-      expect(await page.textContent('body')).toContain('Login')
-    })
-  })
-
-  test("A +middleware's login page, answered with status 200 to a client-side navigation, is shown", async () => {
-    await page.goto(`${getServerUrl()}/`)
-    await testCounter()
-    await page.click('a[href="/portal"]')
-    await autoRetry(async () => {
-      expect(await page.textContent('body')).toBe('Log in to continue')
     })
   })
 

@@ -268,10 +268,21 @@ async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _u
   */
   const response = await fetch(pageContextUrl)
 
-  // The server answered with something else than JSON (a static host without the page, or a +middleware's own response such as a 401 or a login page): reload the page to show it
-  if (!response.headers.get('content-type')?.includes('application/json')) {
-    redirectHard(pageContext.urlOriginal)
-    return { is404ServerSideRouted: true }
+  {
+    const contentType = response.headers.get('content-type')
+    const contentTypeCorrect = 'application/json'
+    const isCorrect = contentType && contentType.includes(contentTypeCorrect)
+
+    // Static hosts + page doesn't exist
+    if (!isCorrect && response.status === 404) {
+      redirectHard(pageContext.urlOriginal)
+      return { is404ServerSideRouted: true }
+    }
+
+    assertUsage(
+      isCorrect,
+      `Wrong Content-Type for ${pageContextUrl}: it should be ${contentTypeCorrect} but it's ${contentType} instead. Make sure to properly use pageContext.httpResponse.headers, see https://vike.dev/renderPage`,
+    )
   }
 
   const pageContextFromServer = await readPageContextJson(response)
