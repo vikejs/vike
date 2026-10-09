@@ -1,5 +1,6 @@
 import type { Server } from 'vike/types'
-import { apply, toFetchHandler } from '@vikejs/express'
+import { toFetchHandler } from '@vikejs/express'
+import { apply } from '@universal-middleware/express'
 import { getUniversalMiddlewares, universalHandler } from 'vike'
 import express from 'express'
 

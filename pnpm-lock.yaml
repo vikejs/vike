@@ -1927,6 +1927,9 @@ importers:
       '@universal-middleware/core':
         specifier: ^0.6.0
         version: 0.6.0(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
+      '@universal-middleware/express':
+        specifier: ^0.5.1
+        version: 0.5.1(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
       '@vikejs/express':
         specifier: ^0.3.0
         version: 0.3.0(@hattip/core@0.0.49)(@types/express@5.0.6)(express@5.2.1)(hono@4.13.13)(srvx@0.12.8)(vike@packages+vike)
@@ -11251,7 +11254,7 @@ snapshots:
 
   '@vikejs/express@0.3.0(@hattip/core@0.0.49)(@types/express@5.0.6)(express@5.2.1)(hono@4.13.13)(srvx@0.12.8)(vike@packages+vike)':
     dependencies:
-      '@universal-middleware/express': 0.5.0(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
+      '@universal-middleware/express': 0.5.1(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
       express: 5.2.1
       vike: link:packages/vike
     transitivePeerDependencies:
