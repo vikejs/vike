@@ -29,7 +29,8 @@ type GlobalContextServer = Pick<
    * Every `+middleware` as a Universal Middleware, then Vike's catch-all that renders your pages as the last element. Server only.
    *
    * Each element has an `isHandler` property. Apply the ones that aren't handlers before your server's routes, and the ones that are
-   * after (the handlers answer after your routes, so that a route can override one). `vike(app)` does it for you.
+   * after (the handlers answer after your routes, so that a route can override one). On Fastify and Elysia, apply the whole list in one
+   * call instead: there the handlers answer before your routes. `vike(app)` does it for you.
    *
    * The elements run their `+middleware` with the `path` matched against the page's URL (Base URL, `.pageContext.json`), so they survive filtering and re-ordering.
    *
