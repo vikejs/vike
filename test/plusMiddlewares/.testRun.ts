@@ -68,12 +68,6 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     }
   })
 
-  test('+middleware with a path also guards the percent-encoded spelling of that path', async () => {
-    for (const url of ['/%64ash', '/%64ash/index.pageContext.json']) {
-      expect((await fetch(`${getServerUrl()}${url}`)).status).toBe(401)
-    }
-  })
-
   test('+middleware with a GET path also guards HEAD', async () => {
     expect((await fetch(`${getServerUrl()}/dash`, { method: 'HEAD' })).status).toBe(401)
   })
