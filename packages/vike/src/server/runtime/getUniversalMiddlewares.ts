@@ -193,6 +193,7 @@ function toUniversalMiddleware(middleware: EnhancedMiddleware): EnhancedMiddlewa
       runWithGlobalContext(request, undefined, ({ baseServer }) =>
         runPlusMiddlewares([middleware], baseServer, request, context, runtime),
       ),
+    // Not `{ name, order }`: enhance() keeps an `order: undefined` key, and getUniversalProp(m, orderSymbol, 0) then returns undefined instead of 0
     { ...(name !== undefined && { name }), ...(order !== undefined && { order }) },
   )
 }
