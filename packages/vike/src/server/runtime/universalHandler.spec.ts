@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { enhance, getUniversal, type RuntimeAdapter } from '@universal-middleware/core'
+import { enhance, getUniversal, getUniversalProp, methodSymbol, type RuntimeAdapter } from '@universal-middleware/core'
 
 let plusMiddlewares: unknown[] = []
 vi.mock('./globalContext.js', () => ({
@@ -23,8 +23,12 @@ const { getUniversalMiddlewares } = await import('./getUniversalMiddlewares.js')
 const { default: universalHandler } = await import('./universalHandler.js')
 
 const runtime = {} as RuntimeAdapter
-const render = async (url: string, context: Universal.Context = {}) =>
-  (await getUniversal(universalHandler)(new Request(`http://localhost${url}`), context, runtime)) as Response
+const render = async (url: string, context: Universal.Context = {}, method = 'GET') =>
+  (await getUniversal(universalHandler)(
+    new Request(`http://localhost${url}`, { method }),
+    context,
+    runtime,
+  )) as Response
 
 describe('universalHandler', () => {
   // Must be the first: nothing has applied getUniversalMiddlewares() yet
@@ -71,5 +75,30 @@ describe('universalHandler', () => {
   it('adds the context of a handler for the page', async () => {
     plusMiddlewares = [enhance(() => ({ fromOther: 'handler' }), { name: 'handler', method: 'GET', path: '/a' })]
     expect(await (await render('/a')).text()).toBe('page /a handler')
+  })
+
+  it('declares every HTTP method, for servers to install it on', () => {
+    expect(getUniversalProp(universalHandler, methodSymbol)).toEqual([
+      'GET',
+      'HEAD',
+      'POST',
+      'PUT',
+      'DELETE',
+      'CONNECT',
+      'OPTIONS',
+      'TRACE',
+      'PATCH',
+    ])
+  })
+
+  it('runs a +middleware that is a handler on DELETE', async () => {
+    plusMiddlewares = [enhance(() => new Response('deleted'), { name: 'delete', method: 'DELETE', path: '/a' })]
+    expect(await (await render('/a', {}, 'DELETE')).text()).toBe('deleted')
+  })
+
+  it("answers 404, like a server without a route, to a method the pages don't serve and no handler answers", async () => {
+    plusMiddlewares = [enhance(() => new Response('deleted'), { name: 'delete', method: 'DELETE', path: '/a' })]
+    expect((await render('/b', {}, 'DELETE')).status).toBe(404)
+    expect((await render('/b', {}, 'POST')).status).toBe(200)
   })
 })
