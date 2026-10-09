@@ -189,8 +189,7 @@ const { middlewares } = globalContext
 
 apply(app, middlewares)
 
-// Return a Response: a plain value fails with a 500 when a +middleware modifies the response
-app.get('/api/hello', () => new Response('Hello'))
+app.get('/api/hello', () => 'Hello')
 ```
 
 ```ts choice=Other
