@@ -1,6 +1,6 @@
 export { testRun }
 
-import { expect, expectLog, fetch, getServerUrl, partRegex, run, test } from '@brillout/test-e2e'
+import { expect, fetch, getServerUrl, run, test } from '@brillout/test-e2e'
 
 function testRun(cmd: 'pnpm run dev:base' | 'pnpm run preview:base') {
   run(cmd, {
@@ -23,6 +23,5 @@ function testRun(cmd: 'pnpm run dev:base' | 'pnpm run preview:base') {
       expect(responseAuth.status).toBe(200)
       expect(await responseAuth.text()).toContain(content)
     }
-    expectLog(partRegex`HTTP response ${/.*/} /base/dash 401`, { filter: (log) => log.logSource === 'stderr' })
   })
 }

@@ -86,7 +86,8 @@ describe('runPlusMiddlewares()', () => {
           const pageContextUrl = `${pageUrl.replace(/\/$/, '')}/index.pageContext.json`
           for (const requestUrl of [pageUrl, pageContextUrl]) {
             const [status, receivedUrl] = await run(path, requestUrl, baseServer)
-            expect([path, requestUrl, status]).toEqual([path, requestUrl, 401])
+            // The client router reloads the page upon a .pageContext.json answer that is a 404 without JSON
+            expect([path, requestUrl, status]).toEqual([path, requestUrl, requestUrl === pageUrl ? 401 : 404])
             // The +middleware gets the original request
             expect(receivedUrl).toBe(`http://localhost${requestUrl}`)
           }
@@ -132,7 +133,11 @@ describe('runPlusMiddlewares()', () => {
   })
   it('runs a +middleware without a path for every URL', async () => {
     const middleware = enhance((request: Request) => new Response(request.url, { status: 401 }), { name: 'all' })
-    for (const url of ['/', '/dash', '/dash/index.pageContext.json']) {
+    for (const [url, status] of [
+      ['/', 401],
+      ['/dash', 401],
+      ['/dash/index.pageContext.json', 404],
+    ] as const) {
       const response = await runPlusMiddlewares(
         [middleware],
         '/',
@@ -140,7 +145,7 @@ describe('runPlusMiddlewares()', () => {
         {},
         {} as RuntimeAdapter,
       )
-      expect(response instanceof Response && response.status).toBe(401)
+      expect(response instanceof Response && response.status).toBe(status)
     }
   })
   it('starts a path with /, and warns about a - right after a parameter name', async () => {

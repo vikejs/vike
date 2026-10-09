@@ -8,8 +8,8 @@ export type { PlusMiddleware }
 import { getGlobalContextServerInternal, type GlobalContextServerInternal } from './globalContext.js'
 import { renderPageServerConfigError } from './renderPageServer.js'
 import { warnAndNormalizeMiddlewarePath } from './warnAndNormalizeMiddlewarePath.js'
-import { pageContextJsonFileExtension } from '../../shared-server-client/getPageContextRequestUrl.js'
-import { parseUrl } from '../../utils/parseUrl.js'
+import { assertMiddlewarePath, getRoutingRequest } from './getRoutingRequest.js'
+import { handlePageContextRequestUrl } from './renderPageServer/handlePageContextRequestUrl.js'
 import {
   contextSymbol,
   enhance,
@@ -96,9 +96,17 @@ async function runHandlerMiddlewares(request: Request, context: Universal.Contex
   if (typeof result !== 'function') Object.assign(context, result)
 }
 
-async function applyResponseHandlers(responseHandlers: ResponseHandler[], response: Response) {
+// The response handlers, then a `.pageContext.json` answer that isn't JSON (e.g. a 401 or a redirect) becomes a 404: the client router
+// reloads the page upon it, so that the page's HTML request shows that answer
+async function getFinalResponse(request: Request, responseHandlers: ResponseHandler[], response: Response) {
   for (const responseHandler of responseHandlers) response = (await responseHandler(response)) ?? response
-  return response
+  if (
+    !handlePageContextRequestUrl(request.url).isPageContextJsonRequest ||
+    response.headers.get('content-type')?.includes('application/json')
+  ) {
+    return response
+  }
+  return new Response(response.body, { status: 404, headers: response.headers })
 }
 
 // Resolved upon each request: vike(app) is synchronous, it can't await the config while +server loads (a +server that awaits it at its top level,
@@ -148,7 +156,11 @@ async function runPlusMiddlewares(
   // Only this one of `plusMiddlewares` runs, but the router still picks the most specific handler among all
   only?: EnhancedMiddleware,
 ) {
-  const middlewares = plusMiddlewares.map(warnAndNormalizeMiddlewarePath)
+  const middlewares = plusMiddlewares.map((plusMiddleware) => {
+    const middleware = warnAndNormalizeMiddlewarePath(plusMiddleware)
+    assertMiddlewarePath(middleware, baseServer)
+    return middleware
+  })
   if (middlewares.length === 0) return
   const responseHandlers: ResponseHandler[] = []
   // Universal Middleware's pipe() throws `No Response found` if nothing returns a Response
@@ -175,12 +187,12 @@ async function runPlusMiddlewares(
   ]) as UniversalHandler
   const response = await handler(getRoutingRequest(request, baseServer), context, runtime)
   // Response handlers returned by +middleware apply to the final response, which may come after this middleware
-  if (response !== fallThrough) return applyResponseHandlers(responseHandlers, response)
+  if (response !== fallThrough) return getFinalResponse(request, responseHandlers, response)
   // The pipe's context stays local: hand the context built by the +middleware to the handlers after this middleware.
   // A middleware returns a context or a response handler, not both: with response handlers, mutate the context instead.
   if (responseHandlers.length === 0) return contextAtFallThrough
   Object.assign(context, contextAtFallThrough)
-  return (response: Response) => applyResponseHandlers(responseHandlers, response)
+  return (response: Response) => getFinalResponse(request, responseHandlers, response)
 }
 
 // One +middleware of the list. It matches its own path (without the `path` and `method` of the server's router, which
@@ -246,18 +258,6 @@ const withPages = Object.assign(
   { isHandler: true },
 )
 const plusMiddlewareProxy = [beforeRoutes, withPages] as const
-
-// A `path` is matched against the page's URL, the way Vike routes pages: without the Base URL, and with a
-// `.pageContext.json` request standing for its page. So `/dash` also covers `/base/dash` and `/dash/index.pageContext.json`,
-// whatever pattern the path uses. The router only reads the URL and method; each +middleware gets the original request.
-// The path stays percent-encoded until the router decodes it once: `/literal%25` must not become `/literal%`.
-function getRoutingRequest(request: Request, baseServer: string): Request {
-  const url = new URL(request.url)
-  const suffix = `/index${pageContextJsonFileExtension}`
-  if (url.pathname.endsWith(suffix)) url.pathname = url.pathname.slice(0, -suffix.length) || '/'
-  const { href } = parseUrl(url.href, baseServer)
-  return new Request(new URL(href, url), { method: request.method, headers: request.headers })
-}
 
 function collectResponseHandler(
   middleware: EnhancedMiddleware,

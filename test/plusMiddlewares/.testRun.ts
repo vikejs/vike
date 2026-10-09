@@ -1,6 +1,6 @@
 export { testRun }
 
-import { autoRetry, expect, expectLog, fetch, fetchHtml, getServerUrl, page, partRegex, run, test } from '@brillout/test-e2e'
+import { autoRetry, expect, expectLog, fetch, fetchHtml, getServerUrl, page, run, test } from '@brillout/test-e2e'
 
 function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   run(cmd, {
@@ -83,7 +83,6 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
 
   test("A +middleware with a path also guards the page's .pageContext.json (client-side navigation)", async () => {
     expect((await fetch(`${getServerUrl()}/dash`)).status).toBe(401)
-    expectLog(partRegex`HTTP response ${/.*/} /dash 401`, { filter: (log) => log.logSource === 'stderr' })
     const url = `${getServerUrl()}/dash/index.pageContext.json`
     const response: Response = await fetch(url)
     expect(response.status).toBe(404)
@@ -110,7 +109,6 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
       await autoRetry(async () => {
         expect(await page.textContent('body')).toBe('Unauthorized')
       })
-      expectLog(partRegex`HTTP response ${/.*/} ${pathname} 401`, { filter: (log) => log.logSource === 'stderr' })
     }
   })
 
