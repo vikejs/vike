@@ -164,6 +164,7 @@ import assert from 'node:assert'
 import { getGlobalContext } from 'vike'
 import { renderPage } from 'vike/server'
 import { fetchNodeHandler } from 'srvx/node'
+import type { IncomingMessage, ServerResponse } from 'node:http'
 
 const globalContext = await getGlobalContext()
 assert(!globalContext.isClientSide)
@@ -177,10 +178,10 @@ Bun.serve({
       // Vite's development middleware, through srvx's emulation of Node.js's req/res
       let handled = true
       const response = await fetchNodeHandler(
-        (req, res, next) =>
+        (req: IncomingMessage, res: ServerResponse, next?: () => void) =>
           devMiddleware(req, res, () => {
             handled = false
-            next()
+            next?.()
           }),
         request
       )

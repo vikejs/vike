@@ -36,16 +36,17 @@ Vite types:
 ```ts
 import { createDevMiddleware } from 'vike/server'
 import { fetchNodeHandler } from 'srvx/node'
+import type { IncomingMessage, ServerResponse } from 'node:http'
 
 const { devMiddleware } = await createDevMiddleware()
 
 async function handleDevRequest(request: Request): Promise<Response | undefined> {
   let handled = true
   const response = await fetchNodeHandler(
-    (req, res, next) =>
+    (req: IncomingMessage, res: ServerResponse, next?: () => void) =>
       devMiddleware(req, res, () => {
         handled = false
-        next()
+        next?.()
       }),
     request
   )
