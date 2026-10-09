@@ -1,0 +1,115 @@
+import { Link, Tabs } from '@brillout/docpress'
+import { ConfigSpec } from '../../components'
+
+<ConfigSpec
+  env="server"
+  global
+  cumulative
+/>
+
+Define `+middleware` to add server middlewares, for all URLs or only for the URLs matching a `path`. Write them with [Universal Middleware](https://github.com/magne4000/universal-middleware) to use them with any server (Hono, Express, ...).
+
+```ts
+// pages/+middleware.ts
+
+import { enhance, MiddlewareOrder } from '@universal-middleware/core'
+
+// This middleware protects all URLs /admin/**
+export default enhance(
+  async (request: Request) => {
+    if (!request.headers.has('authorization')) {
+      return new Response('Unauthorized', { status: 401 })
+    }
+  },
+  { name: 'adminAuth', path: '/admin/**', order: MiddlewareOrder.AUTHORIZATION }
+)
+```
+
+> You can also export an array of middlewares.
+
+
+## With `vike(app)`
+
+<Link href="/renderPage#renderpage-vs-vike-app">`vike(app)`</Link> runs your `+middleware`.
+
+
+## Without `vike(app)`
+
+<Link href="/renderPage">`renderPage()`</Link> doesn't run your `+middleware`. Apply `globalContext.middlewares` instead. Its last element renders your pages, so it replaces your own `renderPage()` route.
+
+<Tabs choice={'server'} hide={['Fastify', 'H3', 'Elysia', 'Other']} />
+
+```ts choice=Hono
+// server/index.ts
+// Environment: server
+
+import { Hono } from 'hono'
+import { apply } from '@universal-middleware/hono'
+import assert from 'node:assert'
+import { getGlobalContext } from 'vike/server'
+
+const app = new Hono()
+
+const globalContext = await getGlobalContext()
+// Narrows globalContext down to the server-side one
+assert(!globalContext.isClientSide)
+const { middlewares } = globalContext
+
+// Before your routes
+apply(app, middlewares.filter((m) => !m.isHandler))
+
+app.get('/api/hello', (c) => c.text('Hello'))
+
+// After your routes: the handlers, and the pages (the last element)
+apply(app, middlewares.filter((m) => m.isHandler))
+```
+
+```ts choice=Express
+// server/index.ts
+// Environment: server
+
+import express from 'express'
+import { apply } from '@universal-middleware/express'
+import assert from 'node:assert'
+import { getGlobalContext } from 'vike/server'
+
+const app = express()
+
+const globalContext = await getGlobalContext()
+// Narrows globalContext down to the server-side one
+assert(!globalContext.isClientSide)
+const { middlewares } = globalContext
+
+// Before your routes
+apply(app, middlewares.filter((m) => !m.isHandler))
+
+app.get('/api/hello', (req, res) => res.send('Hello'))
+
+// After your routes: the handlers, and the pages (the last element)
+apply(app, middlewares.filter((m) => m.isHandler))
+```
+
+> See [Universal Middleware](https://github.com/magne4000/universal-middleware) for the `apply()` of the other servers (Fastify, H3, ...).
+
+
+## `path` and `order`
+
+A `+middleware` with a `path` and no `order`, or with `order: 0`, is a handler.
+
+- Handlers run after your routes, right before your pages: a route of your server can answer instead of a handler.
+- For a URL, only the handler with the most specific `path` runs. If it returns nothing, the request goes on to your pages.
+- The other `+middleware` run before your routes, sorted by `order`. To run a `+middleware` for the URLs matching its `path` (e.g. a guard on `/admin/**`), give it a negative `order` such as `MiddlewareOrder.AUTHORIZATION`.
+
+A `path` is matched against the page's URL, without the Base URL. It also covers the page's `.pageContext.json` request.
+
+
+## Development
+
+When a `+middleware` changes, `$ vike dev` re-runs the `+server.js` (or restarts the `+serverEntry.js`) that applies `globalContext.middlewares`. A server you run yourself needs a restart.
+
+
+## See also
+
+- <Link href="/renderPage#renderpage-vs-vike-app" />
+- <Link href="/globalContext" />
+- <Link href="/server" />

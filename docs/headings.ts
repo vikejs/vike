@@ -325,6 +325,12 @@ const headings = [
   },
   {
     level: 2,
+    title: '`+middleware`',
+    titleInNav: 'Middleware',
+    url: '/middleware',
+  },
+  {
+    level: 2,
     title: 'Error Tracking',
     url: '/error-tracking',
   },

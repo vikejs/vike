@@ -47,7 +47,7 @@ type GlobalContextServer = Pick<
    * apply(app, middlewares.filter((m) => m.isHandler))
    * ```
    *
-   * https://vike.dev/renderPage
+   * https://vike.dev/middleware
    */
   middlewares: PlusMiddleware[]
   /** https://vike.dev/warning/internals */

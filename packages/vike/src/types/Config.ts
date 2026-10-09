@@ -664,7 +664,7 @@ type ConfigBuiltIn = {
    *
    * The middlewares defined via `+middleware` are so called "Universal Middleware" — they work with any JavaScript server (Hono, Express, Cloudflare, ...).
    *
-   * They run for every request. `vike(app)`, called before your routes, installs them (in `+server` or a custom server).
+   * They run for every request, or for the URLs matching their `path`. `vike(app)`, called before your routes, installs them (in `+server` or a custom server).
    *
    * The ones that are handlers (`order: 0`, or a `path` without `order`) run next to the pages, after your routes, so that a route can override them. The others run before your routes.
    *
@@ -674,9 +674,9 @@ type ConfigBuiltIn = {
    *
    * `renderPage()` runs no `+middleware`: it throws if there are some and `vike(app)` wasn't called or `globalContext.middlewares` wasn't read. Applying the list yourself, `$ vike dev` re-evaluates your `+server.js` (or restarts your `+serverEntry.js`) when a `+middleware` changes; a server you run yourself needs a restart. `vike(app)` needs neither.
    *
-   * A `path` is matched against the page's URL, so it also covers the page's `.pageContext.json` request, with the Base URL. When its `method` is `GET`, it also covers `HEAD`.
+   * A `path` is matched against the page's URL, without the Base URL, so it also covers the page's `.pageContext.json` request. When its `method` is `GET`, it also covers `HEAD`.
    *
-   * https://github.com/magne4000/universal-middleware
+   * https://vike.dev/middleware
    */
   middleware?: EnhancedMiddleware | EnhancedMiddleware[]
 
