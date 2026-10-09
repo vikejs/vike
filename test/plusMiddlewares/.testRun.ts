@@ -17,7 +17,13 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   run(cmd, {
     serverUrl: 'http://localhost:3000',
     tolerateError({ logText }) {
-      return logText.includes("Vite's CLI is deprecated") || logText.includes('Run the built server entry')
+      return (
+        logText.includes("Vite's CLI is deprecated") ||
+        logText.includes('Run the built server entry') ||
+        // The browser logs the 404 of the guarded page's .pageContext.json, then the 401 of the page
+        logText.includes('the server responded with a status of 404') ||
+        logText.includes('the server responded with a status of 401')
+      )
     },
   })
 
@@ -61,11 +67,8 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     expectLog(partRegex`HTTP response ${/.*/} /dash 401`, { filter: (log) => log.logSource === 'stderr' })
     const url = `${getServerUrl()}/dash/index.pageContext.json`
     const response: Response = await fetch(url)
-    expect(response.status).toBe(401)
+    expect(response.status).toBe(404)
     expect(await response.text()).toBe('Unauthorized')
-    expectLog(partRegex`HTTP response ${/.*/} /dash/index.pageContext.json 401`, {
-      filter: (log) => log.logSource === 'stderr',
-    })
     const responseAuth: Response = await fetch(url, { headers: { 'x-auth': '1' } })
     expect(responseAuth.status).toBe(200)
     expect(await responseAuth.text()).toContain('DASH-SECRET')
@@ -74,12 +77,40 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     expect(await responseEncoded.text()).toContain('"is404":true')
   })
 
-  test("A +middleware's own response to a .pageContext.json request is passed through", async () => {
+  test("A +middleware's own response to a .pageContext.json request is answered as a 404", async () => {
     const response: Response = await fetch(`${getServerUrl()}/admin/settings/index.pageContext.json`)
-    expect(response.status).toBe(401)
+    expect(response.status).toBe(404)
     expect(await response.text()).toBe('Unauthorized')
-    expectLog(partRegex`HTTP response ${/.*/} /admin/settings/index.pageContext.json 401`, {
-      filter: (log) => log.logSource === 'stderr',
+  })
+
+  test("A +middleware's own response to a client-side navigation is shown", async () => {
+    for (const pathname of ['/admin/data', '/dash']) {
+      await page.goto(`${getServerUrl()}/`)
+      await testCounter()
+      await page.click(`a[href="${pathname}"]`)
+      await autoRetry(async () => {
+        expect(await page.textContent('body')).toBe('Unauthorized')
+      })
+      expectLog(partRegex`HTTP response ${/.*/} ${pathname} 401`, { filter: (log) => log.logSource === 'stderr' })
+    }
+  })
+
+  test("A +middleware's redirect of a client-side navigation is followed", async () => {
+    await page.goto(`${getServerUrl()}/`)
+    await testCounter()
+    await page.click('a[href="/guarded"]')
+    await autoRetry(async () => {
+      expect(page.url()).toBe(`${getServerUrl()}/login`)
+      expect(await page.textContent('body')).toContain('Login')
+    })
+  })
+
+  test("A +middleware's login page, answered with status 200 to a client-side navigation, is shown", async () => {
+    await page.goto(`${getServerUrl()}/`)
+    await testCounter()
+    await page.click('a[href="/portal"]')
+    await autoRetry(async () => {
+      expect(await page.textContent('body')).toBe('Log in to continue')
     })
   })
 
@@ -90,11 +121,8 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     expect(decorated.headers.get('x-wrapped')).toBe('yes')
     expect(await decorated.text()).toContain('WRAPPED-DATA')
     const replaced: Response = await fetch(url, { headers: { 'x-replace': '1' } })
-    expect(replaced.status).toBe(401)
+    expect(replaced.status).toBe(404)
     expect(await replaced.text()).toBe('Replaced')
-    expectLog(partRegex`HTTP response ${/.*/} /wrapped/index.pageContext.json 401`, {
-      filter: (log) => log.logSource === 'stderr',
-    })
   })
 
   test('A +middleware with a path and order 0 still answers its path, and the pages still render', async () => {

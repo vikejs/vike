@@ -422,11 +422,19 @@ async function renderPageServerEntryWithMiddlewares(
   ])
   const handler = router[universalSymbol] as UniversalHandler
 
-  const res = await handler(
+  let res = await handler(
     getRoutingRequest(request, pageContext._baseServer),
     {},
     getAdapterRuntime('other', { params: undefined }),
   )
+  // The client router reloads the page upon a `.pageContext.json` answer that is a 404 without JSON, so that a +middleware's own answer (e.g. a 401 or a redirect) is shown by the page's HTML request
+  if (
+    res !== responseVikeCore &&
+    pageContext.isClientSideNavigation &&
+    !res.headers.get('content-type')?.includes('application/json')
+  ) {
+    res = new Response(res.body, { status: 404, headers: res.headers })
+  }
 
   const httpResponse = createHttpResponseFromUniversalMiddleware(res, httpResponseVikeCore?.earlyHints)
   objectAssign(pageContext, { httpResponse })
@@ -774,7 +782,7 @@ function fork<PageContext extends PageContextBegin>(pageContext: PageContext) {
 
 function assertPageContextFinish(pageContextFinish: PageContextAfterRender) {
   assert(pageContextFinish.httpResponse)
-  // A +middleware's own response to a `.pageContext.json` request (e.g. a 401) is passed through as is
+  // A +middleware's own response to a `.pageContext.json` request isn't Vike's JSON
   if (pageContextFinish.isClientSideNavigation && !pageContextFinish._isMiddlewareResponse) {
     const headers = new Headers(pageContextFinish.httpResponse.headers)
     const contentType = headers.get('Content-Type')
