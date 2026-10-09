@@ -62,10 +62,12 @@ import '../assertEnvServer.js'
  * https://github.com/magne4000/universal-middleware
  */
 async function getUniversalMiddlewares(): Promise<EnhancedMiddleware[]> {
-  // Fail closed: skipping the +middleware of an erroneous config would let requests through unguarded
+  // Fail closed: skipping the +middleware of an erroneous config would let requests through unguarded. Waiting for the global
+  // context of an erroneous config never ends, so +server wouldn't load: the proxy answers every request with the error response (like
+  // renderPage()), and runs the +middleware as soon as the config is fixed.
+  if (getVikeConfigError()) return [plusMiddlewareProxy]
   await initGlobalContext_renderPage()
-  const vikeConfigError = getVikeConfigError()
-  if (vikeConfigError) throw vikeConfigError.err
+  if (getVikeConfigError()) return [plusMiddlewareProxy]
   const { globalContext } = await getGlobalContextServerInternal()
   // The list is applied, and its +middleware that are handlers need nothing else
   setPlusMiddlewareInstalled()

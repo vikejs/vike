@@ -14,7 +14,10 @@ import {
 let plusMiddlewares: unknown[] = []
 let vikeConfigError: { err: Error } | null = null
 vi.mock('./globalContext.js', () => ({
-  initGlobalContext_renderPage: async () => {},
+  // Like the real one: the global context of an erroneous config is never ready
+  initGlobalContext_renderPage: async () => {
+    if (vikeConfigError) await new Promise(() => {})
+  },
   getGlobalContextServerInternal: async () => ({
     globalContext: { config: { middleware: plusMiddlewares }, baseServer: '/' },
   }),
@@ -23,7 +26,14 @@ vi.mock('../../shared-server-node/getVikeConfigError.js', () => ({
   getVikeConfigError: () => vikeConfigError,
 }))
 vi.mock('./renderPageServer.js', () => ({
-  renderPageServerConfigError: async () => null,
+  renderPageServerConfigError: async () =>
+    vikeConfigError && {
+      httpResponse: {
+        statusCode: 500,
+        headers: [],
+        getReadableWebStream: () => new Response(vikeConfigError!.err.message).body,
+      },
+    },
 }))
 const { getUniversalMiddlewares, isHandler, plusMiddlewareProxy, runPlusMiddlewares, runUniversalMiddlewares } =
   await import('./getUniversalMiddlewares.js')
@@ -178,13 +188,43 @@ describe('getUniversalMiddlewares()', () => {
     expect(middlewares).toHaveLength(1)
   })
 
-  it('rejects when the Vike config is erroneous', async () => {
-    vikeConfigError = { err: new Error('broken config') }
-    try {
-      await expect(getUniversalMiddlewares()).rejects.toThrow('broken config')
-    } finally {
-      vikeConfigError = null
+  describe('with an erroneous Vike config', () => {
+    const brokenConfig = async () => {
+      vikeConfigError = { err: new Error('broken config') }
+      try {
+        // The global context is never ready: it doesn't wait for it
+        const middlewares = await Promise.race([
+          getUniversalMiddlewares(),
+          new Promise<'hangs'>((resolve) => setTimeout(() => resolve('hangs'), 500)),
+        ])
+        expect(middlewares).not.toBe('hangs')
+        return middlewares as EnhancedMiddleware[]
+      } catch (err) {
+        vikeConfigError = null
+        throw err
+      }
     }
+
+    it('returns elements that answer every request with the error response of the config', async () => {
+      plusMiddlewares = [plain]
+      const middlewares = await brokenConfig()
+      try {
+        for (const url of ['/', '/b', '/anything/index.pageContext.json']) {
+          const response = (await call(middlewares[0], url)) as Response
+          expect([url, response.status, await response.text()]).toEqual([url, 500, 'broken config'])
+        }
+      } finally {
+        vikeConfigError = null
+      }
+    })
+
+    it('runs the +middleware once the config is fixed, without fetching the list again', async () => {
+      plusMiddlewares = [scoped]
+      const middlewares = await brokenConfig()
+      vikeConfigError = null
+      expect(await text(await call(middlewares[0], '/b'))).toBe('scoped')
+      expect(await text(await call(middlewares[0], '/other'))).toBe('passed on')
+    })
   })
 })
 
