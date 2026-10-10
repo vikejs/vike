@@ -10,6 +10,7 @@ import {
   type UniversalHandler,
 } from '@universal-middleware/core'
 import { getMiddlewares, type Middleware } from './middlewares.js'
+import { applyMiddlewares } from './middlewaresProxy.js'
 
 // Answers its path with a 401 and the request's URL
 const authAt = (path: string) =>
@@ -189,5 +190,22 @@ describe('getMiddlewares()', () => {
       context: { foo: 'bar' },
     })
     expect(await serve(getMiddlewares([handler], '/'), '/metadata')).toBe('200 bar')
+  })
+})
+
+describe('applyMiddlewares()', () => {
+  it('cancels the body a response function replaces', async () => {
+    let cancelled = false
+    const body = new ReadableStream({
+      cancel() {
+        cancelled = true
+      },
+    })
+    const stream = enhance(() => new Response(body), { name: 'stream' })
+    const replace = enhance(() => () => new Response('Replaced'), { name: 'replace' })
+    const middlewares = getMiddlewares([replace, stream], '/')
+    const response = await applyMiddlewares(middlewares, new Request('http://localhost/'), {}, {} as RuntimeAdapter)
+    expect(await (response as Response).text()).toBe('Replaced')
+    await vi.waitFor(() => expect(cancelled).toBe(true))
   })
 })
