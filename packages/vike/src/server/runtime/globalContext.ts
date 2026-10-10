@@ -620,7 +620,9 @@ function addGlobalContextCommon(
       assetsManifest: null,
       _viteDevServer: viteDevServer,
       // Same as createDevMiddleware() — https://vike.dev/globalContext#devMiddleware
-      devMiddleware: viteDevServer ? viteDevServer.middlewares : null,
+      // Only in middleware mode, i.e. when the user's server runs Vite's middlewares (+serverEntry.js, createDevMiddleware())
+      // - Otherwise Vite's development server runs them itself (e.g. +server.js), and running them again inside it would hang every request
+      devMiddleware: viteDevServer?.config.server.middlewareMode ? viteDevServer.middlewares : null,
       viteConfig,
     }
   } else {

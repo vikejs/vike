@@ -10,6 +10,10 @@ await getGlobalContextAsync(process.env.NODE_ENV === 'production')
 
 const app = new Hono()
 app.get('/hello', (c) => c.text('Hello from +server.ts'))
+app.get('/dev-middleware', async (c) => {
+  const globalContext = await getGlobalContextAsync(process.env.NODE_ENV === 'production')
+  return c.text(!globalContext.isClientSide && globalContext.devMiddleware ? 'set' : 'null')
+})
 vike(app)
 
 export default {
