@@ -1,6 +1,6 @@
 export { testRun }
 
-import { page, test, expect, getServerUrl, autoRetry, fetch, fetchHtml, sleep } from '@brillout/test-e2e'
+import { page, test, expect, getServerUrl, autoRetry, fetch, fetchHtml, sleep, expectLog } from '@brillout/test-e2e'
 import { testRunClassic } from '../../test/utils'
 
 function testRun(...args: Parameters<typeof testRunClassic>) {
@@ -41,6 +41,21 @@ function testRun(...args: Parameters<typeof testRunClassic>) {
     // avoid race condition of server closing too quickly
     await sleep(100)
   })
+
+  if (args[0] === 'pnpm run dev') {
+    // Last test: it hangs the development server, so only the warning is checked
+    test('globalContext.devMiddleware in +server.ts shows a warning', async () => {
+      globalThis.fetch(`${getServerUrl()}/dev-middleware`, { signal: AbortSignal.timeout(1000) }).catch(() => {})
+      await autoRetry(
+        async () => {
+          expectLog('globalContext.devMiddleware hangs the development server', {
+            filter: (log) => log.logSource === 'stderr',
+          })
+        },
+        { timeout: 10 * 1000 },
+      )
+    })
+  }
 }
 
 async function getNumberOfItems() {
