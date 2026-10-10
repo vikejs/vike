@@ -2,9 +2,11 @@ import { Link } from '@brillout/docpress'
 
 Create Vite's development middleware (for <Link href="/glossary#hmr">HMR</Link> and <Link href="/lazy-transpiling">lazy transpiling</Link>).
 
-> You usually don't need to call `createDevMiddleware()` yourself, because it's automatically called if you:
-> - Use <Link href="/server">`+server.js`</Link> or <Link href="/serverEntry">`+serverEntry.js`</Link> — the development middleware is automatically created and installed (before even `+server.js`/`+serverEntry.js` starts running). You can access it via <Link href="/globalContext#devMiddleware">`globalContext.devMiddleware`</Link>.
-> - Fully <Link href="/pre-rendering">pre-render</Link> your app — you can use Vike's built-in server that will automatically create and install Vite's development middleware.
+> You usually don't need to call `createDevMiddleware()` yourself, because the development middleware is automatically created and installed if you:
+> - Use <Link href="/server">`+server.js`</Link> or <Link href="/serverEntry">`+serverEntry.js`</Link> — the development middleware is automatically created and installed before even `+server.js`/`+serverEntry.js` starts running. You can access it via <Link href="/globalContext#devMiddleware">`globalContext.devMiddleware`</Link>.
+> - Fully <Link href="/pre-rendering">pre-render</Link> your app — you can use Vike's built-in server that automatically creates and installs Vite's development middleware.
+>
+> You usually only need to call `createDevMiddleware()` if you run the server yourself (e.g. `$ node server/index.js` instead of `+server.js`/`+serverEntry.js`), see: <Link href="/renderPage#without-serverentry-js" doNotInferSectionTitle />.
 
 ```ts
 import { createDevMiddleware } from 'vike/server'
