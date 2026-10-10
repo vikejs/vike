@@ -1,6 +1,7 @@
 import {
   enhance,
   getAdapterRuntime,
+  getUniversal,
   pipeRoute,
   type RuntimeAdapterTarget,
   type UniversalHandler,
@@ -23,7 +24,8 @@ const routers = new WeakMap<Middleware[], UniversalHandler>()
 function getRouter(middlewares: Middleware[]): UniversalHandler {
   let handler = routers.get(middlewares)
   if (!handler) {
-    handler = pipeRoute(middlewares) as UniversalHandler
+    // Only Vike's pages are listed (no +middleware, or an invalid config): they answer every request, without a router
+    handler = (middlewares.length === 1 ? getUniversal(middlewares[0]!) : pipeRoute(middlewares)) as UniversalHandler
     routers.set(middlewares, handler)
   }
   return handler

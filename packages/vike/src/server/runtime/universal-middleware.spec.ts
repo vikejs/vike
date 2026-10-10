@@ -13,4 +13,9 @@ describe('universalVikeHandler()', () => {
     const response = await universalVikeHandler(new Request('http://localhost/about'))
     expect(await response.text()).toBe('page')
   })
+
+  it("lets Vike's pages answer a method they don't list (e.g. PROPFIND) when there's no +middleware", async () => {
+    const response = await universalVikeHandler(new Request('http://localhost/about', { method: 'PROPFIND' }))
+    expect(await response.text()).toBe('page')
+  })
 })
