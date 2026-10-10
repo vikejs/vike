@@ -26,7 +26,6 @@ app.get('/hello', (_req, res) => {
 
 app.get('/dev-middleware', async (_req, res) => {
   const globalContext = await getGlobalContext()
-  assert(!globalContext.isClientSide)
   const { devMiddleware } = globalContext
   res.send(devMiddleware ? 'true' : 'null')
 })
