@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import {
   enhance,
   getUniversalProp,
@@ -91,6 +91,43 @@ describe('getMiddlewares()', () => {
     const middlewares = getMiddlewares([auth], '/')
     expect(await serve(middlewares, '/dash', 'POST')).toBe('200 page')
     expect(await serve(middlewares, '/dash', 'HEAD')).toBe('401 http://localhost/dash')
+  })
+
+  it('warns about a path that starts with the Base URL', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const guard = (path: string, name = 'guard') => enhance(() => undefined, { name, method: 'GET', path })
+    getMiddlewares([guard('/app/dash')], '/app/')
+    expect(warn).toHaveBeenCalledTimes(1)
+    const message = String(warn.mock.calls[0]![0])
+    expect(message).toContain('+middleware guard has the path /app/dash')
+    expect(message).toContain('relative to the Base URL, use /dash instead')
+    // Once per +middleware and path
+    getMiddlewares([guard('/app/dash')], '/app/')
+    // No warning: a path relative to the Base URL, no Base URL, no path
+    getMiddlewares([guard('/dash'), guard('/other/dash'), guard('/application'), logger], '/app/')
+    getMiddlewares([guard('/app/other')], '/')
+    expect(warn).toHaveBeenCalledTimes(1)
+    // A handler's path too, whether or not the Base URL ends with a slash
+    for (const baseServer of ['/base', '/base/']) {
+      for (const [path, relativePath] of [
+        ['/base/dash', '/dash'],
+        ['/base/**', '/**'],
+        ['/base', '/'],
+        ['/base/', '/'],
+      ] as const) {
+        warn.mockClear()
+        getMiddlewares(
+          [enhance(() => new Response(), { name: `handler-${baseServer}`, method: 'GET', path })],
+          baseServer,
+        )
+        expect(warn).toHaveBeenCalledTimes(1)
+        expect(String(warn.mock.calls[0]![0])).toContain(`use ${relativePath} instead`)
+      }
+      warn.mockClear()
+      getMiddlewares([guard('/basement', `guard-${baseServer}`)], baseServer)
+      expect(warn).not.toHaveBeenCalled()
+    }
+    warn.mockRestore()
   })
 
   it("prepends the Base URL to a handler's path", () => {

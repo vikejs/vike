@@ -23,7 +23,7 @@ import { handlePageContextRequestUrl } from './renderPageServer/handlePageContex
 import { renderPageServer } from './renderPageServer.js'
 import { getGlobalContextServerInternal, initGlobalContext_renderPage } from './globalContext.js'
 import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.js'
-import { assert } from '../../utils/assert.js'
+import { assert, assertWarning } from '../../utils/assert.js'
 import '../assertEnvServer.js'
 
 type Middleware = EnhancedMiddleware & {
@@ -65,6 +65,7 @@ async function getAppMiddlewares(): Promise<Middleware[]> {
 // A +middleware as an element of `globalContext.middlewares`. A `path` is matched against the page's URL, the way Vike routes pages: without the Base URL, and with a `.pageContext.json` request standing for its page.
 function toMiddleware(plusMiddleware: EnhancedMiddleware, baseServer: string): Middleware {
   const path = getUniversalProp(plusMiddleware, pathSymbol)
+  if (path) assertPath(plusMiddleware, path, baseServer)
   if (isHandler(plusMiddleware)) {
     // A handler is a route of the server, which matches it: its path gets the Base URL. (`enhance()` clones it, so that marking it `isHandler` leaves the extension's export untouched.)
     const handler = enhance(
@@ -99,6 +100,18 @@ function toMiddleware(plusMiddleware: EnhancedMiddleware, baseServer: string): M
     { name: getUniversalProp(plusMiddleware, nameSymbol), ...(order !== undefined && { order }) },
   )
   return Object.assign(middleware, { isHandler: false })
+}
+
+// Warns about a path that starts with the Base URL: a `path` is relative to it
+function assertPath(plusMiddleware: EnhancedMiddleware, path: string, baseServer: string): void {
+  const base = baseServer.replace(/\/$/, '')
+  if (!base || (path !== base && !path.startsWith(`${base}/`))) return
+  const name = getUniversalProp(plusMiddleware, nameSymbol)
+  assertWarning(
+    false,
+    `The +middleware ${name ? `${name} ` : ''}has the path ${path}, which starts with the Base URL ${baseServer}. A +middleware path is relative to the Base URL, use ${path.slice(base.length) || '/'} instead.`,
+    { onlyOnce: `middleware-path:${name}:${path}` },
+  )
 }
 
 // The client router reloads the page upon a `.pageContext.json` answer that is a 404 without JSON, so that the page's own request shows the +middleware's answer (e.g. a 401, a redirect or a login page)
