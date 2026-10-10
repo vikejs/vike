@@ -13,9 +13,9 @@ const app = express()
 
 if (import.meta.env.DEV) {
   // Vite's development middleware (HMR, transpiling, static assets, ...)
-  const globalContext = await getGlobalContext()
-  assert(!globalContext.isClientSide && globalContext.devMiddleware)
-  app.use(globalContext.devMiddleware)
+  const { devMiddleware } = await getGlobalContext()
+  assert(devMiddleware)
+  app.use(devMiddleware)
 } else {
   app.use(express.static(fileURLToPath(new URL('../client', import.meta.url))))
 }
