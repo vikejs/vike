@@ -673,6 +673,7 @@ const headings = [
     level: 2,
     title: '`+serverEntry`',
     url: '/serverEntry',
+    sectionTitles: ['With(out) `+server.js`'],
   },
   {
     level: 2,
