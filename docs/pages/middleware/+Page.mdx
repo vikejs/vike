@@ -41,7 +41,9 @@ A `path` is relative to the <Link href="/base-url">Base URL</Link>. For a `+midd
 
 ## Manual integration
 
-Vike's built-in server runs all `+middleware`. If you use your own server (e.g. with <Link href="/server">`+server`</Link>), apply <Link href="/globalContext#middlewares">`globalContext.middlewares`</Link> around your routes:
+Vike's built-in server runs all `+middleware`. If you use your own server (e.g. with <Link href="/server">`+server`</Link>), apply <Link href="/globalContext#middlewares">`globalContext.middlewares`</Link> around your routes.
+
+`vike(app)` runs every `+middleware` after your routes, together with Vike's pages. To run them before your routes, use the following code instead of `vike(app)`:
 
 ```ts
 // +server.ts
@@ -69,7 +71,7 @@ export default {
 }
 ```
 
-> `globalContext.middlewares` ends with Vike's pages, so you don't need `renderPage()`.
+> `globalContext.middlewares` ends with Vike's pages, so you don't need `vike(app)` nor `renderPage()`.
 
 > With another server, use the `apply()` function of its [Universal Middleware adapter](https://universal-middleware.dev/).
 
