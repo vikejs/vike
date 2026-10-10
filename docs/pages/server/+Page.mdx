@@ -98,6 +98,7 @@ import type { Server } from 'vike/types'
 
 const app = fastify()
 await vike(app) // Attaches Vike
+await app.ready()
 
 export default {
   fetch: toFetchHandler(app.routing)
