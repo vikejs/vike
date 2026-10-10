@@ -110,9 +110,13 @@ The <Link href="/base-url#baseserver">server Base URL</Link>.
 
 Environment: server  
 
-Vite's development middleware (`null` in production), for a server that runs Vite's middlewares itself: your own server (it's the same one <Link href="/createDevMiddleware">`createDevMiddleware()`</Link> returns), or <Link href="/serverEntry#with-out-server-js">`+serverEntry.js` without `+server.js`</Link>. With `+server.js`, Vite already runs its middlewares before your server: adding `devMiddleware` there hangs the development server, and Vike shows a warning.
+Vite's development middleware.
 
-> See the <Link href="/serverEntry#example-bun">Bun example</Link>.
+> See also:
+> - <Link href="/serverEntry" />
+> - <Link href="/serverEntry#with-out-server-js" doNotInferSectionTitle />
+> - <Link href="/serverEntry#example-bun" doNotInferSectionTitle />
+> - <Link href="/createDevMiddleware" />
 
 
 ## Custom
