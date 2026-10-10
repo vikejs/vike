@@ -60,7 +60,7 @@ const settingsHeader = enhance(
   { name: 'settingsHeader', method: 'GET', path: '/admin/settings', order: MiddlewareOrder.HEADER_MANAGEMENT },
 )
 
-// Replaces the response to the /wrapped page, `.pageContext.json` included
+// With an x-replace header, replaces the response to the /wrapped page, .pageContext.json included
 const replaceResponse = enhance(
   async (request: Request) => (response: Response) =>
     request.headers.has('x-replace') ? new Response('Replaced', { status: 401 }) : response,

@@ -58,9 +58,59 @@ describe('getMiddlewares()', () => {
       expect(await serve(middlewares, url)).toBe(`404 http://localhost${url}`)
       expect(await serve(middlewares, `${base}/about`)).toBe('200 page')
       expect(await serve(middlewares, `${base}/about/index.pageContext.json`)).toBe('200 page')
+      // Decoded once only
+      expect(await serve(middlewares, `${base}/%2564ash`)).toBe('200 page')
+      expect(await serve(middlewares, `${base}/%2564ash/index.pageContext.json`)).toBe('200 page')
     }
     // Outside the Base URL
     expect(await serve(getMiddlewares([auth], '/app/'), '/dash')).toBe('200 page')
+  })
+
+  it('matches each path syntax, for the page and its .pageContext.json', async () => {
+    const cases: [string, string[]][] = [
+      ['/', ['/']],
+      ['/dash', ['/dash', '/%64ash']],
+      ['/dash/**', ['/dash/a', '/dash/a/b']],
+      ['/literal%25', ['/literal%25']],
+      ['/users/:id?', ['/users', '/users/5']],
+      ['/users{/:id}?', ['/users', '/users/5']],
+      ['/users{/:id/}?', ['/users', '/users/5']],
+      ['{users/:id}?', ['/users/5']],
+      ['{en}?/users', ['/users', '/en/users']],
+      ['/{en/}?users', ['/users', '/en/users']],
+      ['/{en/}?', ['/', '/en/']],
+      ['/{en/}?{admin/}?', ['/', '/en/', '/admin/', '/en/admin/']],
+      ['/files/:path+', ['/files/a/b']],
+      ['/files/*', ['/files/a/b']],
+      ['/users/:id(\\d+)', ['/users/5']],
+      ['/dash/', ['/dash/']],
+    ]
+    const failures: string[] = []
+    for (const [path, urls] of cases) {
+      const guard = enhance((request: Request) => new Response(request.url, { status: 401 }), {
+        name: 'guard',
+        method: 'GET',
+        path,
+        order: MiddlewareOrder.AUTHORIZATION,
+      })
+      for (const [baseServer, base] of [
+        ['/', ''],
+        ['/app/', '/app'],
+      ] as const) {
+        const middlewares = getMiddlewares([guard], baseServer)
+        for (const url of urls) {
+          const pageUrl = `${base}${url}`
+          for (const requestUrl of [pageUrl, `${pageUrl.replace(/\/$/, '')}/index.pageContext.json`]) {
+            // A 404, so that the client router reloads the page
+            const status = requestUrl.endsWith('.pageContext.json') ? 404 : 401
+            const received = await serve(middlewares, requestUrl)
+            if (received !== `${status} http://localhost${requestUrl}`)
+              failures.push(`${path} ${requestUrl} -> ${received}`)
+          }
+        }
+      }
+    }
+    expect(failures).toEqual([])
   })
 
   it("answers a .pageContext.json request with a 404 without the +middleware's JSON content-type", async () => {
@@ -133,5 +183,15 @@ describe('getMiddlewares()', () => {
   it("prepends the Base URL to a handler's path", () => {
     const [handler] = getMiddlewares([telefunc], '/app/')
     expect(getUniversalProp(handler!, pathSymbol)).toBe('/app/_telefunc')
+  })
+
+  it("keeps a handler's context", async () => {
+    const handler = enhance((_request: Request, context: Universal.Context) => new Response(String(context.foo)), {
+      name: 'metadata',
+      method: 'GET',
+      path: '/metadata',
+      context: { foo: 'bar' },
+    })
+    expect(await serve(getMiddlewares([handler], '/'), '/metadata')).toBe('200 bar')
   })
 })
