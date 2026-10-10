@@ -414,4 +414,34 @@ describe('runUniversalMiddlewares()', () => {
     plusMiddlewares = [answer('plain', {}), orderZero]
     expect(await text(await run('/c'))).toBe('plain')
   })
+
+  it('keeps the context and the response handlers of overlapping requests apart', async () => {
+    const id = (request: Request) => request.headers.get('x-id')!
+    // The first request waits, so the second one goes through the same +middleware meanwhile
+    const wait = (request: Request) => new Promise((resolve) => setTimeout(resolve, id(request) === '1' ? 20 : 0))
+    plusMiddlewares = [
+      enhance(async (request: Request) => (await wait(request), { id: id(request) }), { name: 'context' }),
+      enhance(
+        async (request: Request) => (
+          await wait(request), (response: Response) => (response.headers.set('x-id', id(request)), response)
+        ),
+        { name: 'header' },
+      ),
+      enhance((_request: Request, context: Universal.Context) => new Response((context as { id?: string }).id), {
+        name: 'handler',
+        method: 'GET',
+        path: '/',
+        order: 0,
+      }),
+    ]
+    const results = await Promise.all(
+      ['1', '2'].map((i) =>
+        runUniversalMiddlewares(new Request('http://localhost/', { headers: { 'x-id': i } }), {}, runtime),
+      ),
+    )
+    for (const [i, result] of results.entries()) {
+      expect((result as Response).headers.get('x-id')).toBe(`${i + 1}`)
+      expect(await text(result)).toBe(`${i + 1}`)
+    }
+  })
 })
