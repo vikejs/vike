@@ -1,12 +1,19 @@
-import { enhance, pipeRoute, type RuntimeAdapterTarget, type UniversalHandler } from '@universal-middleware/core'
+import {
+  enhance,
+  getAdapterRuntime,
+  pipeRoute,
+  type RuntimeAdapterTarget,
+  type UniversalHandler,
+} from '@universal-middleware/core'
 import { getAppMiddlewares, type Middleware } from './middlewares.js'
 import '../assertEnvServer.js'
 
 // Vike's own server: `vike/fetch`, `vike(app)`, and `$ vike dev` and `$ vike preview` when the app has +middleware. It applies `globalContext.middlewares` in one router.
 async function universalVikeHandler(
   request: Request,
-  context: Universal.Context,
-  runtime: RuntimeAdapterTarget<unknown>,
+  // Missing upon `vike.fetch(request)`
+  context: Universal.Context = {},
+  runtime: RuntimeAdapterTarget<unknown> = getAdapterRuntime('other', { params: undefined }),
 ) {
   return getRouter(await getAppMiddlewares())(request, context, runtime)
 }
