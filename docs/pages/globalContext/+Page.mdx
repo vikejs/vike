@@ -110,7 +110,7 @@ The <Link href="/base-url#baseserver">server Base URL</Link>.
 
 Environment: server  
 
-Vite's development middleware, the same one <Link href="/createDevMiddleware">`createDevMiddleware()`</Link> returns, if your server adds it: with <Link href="/serverEntry">`+serverEntry.js`</Link> under `$ vike dev`, or with your own server. It's `null` in production and when Vite's development server runs it itself (`$ vike dev` without `+serverEntry.js`), because adding it again would hang every request.
+Vite's development middleware, the same one <Link href="/createDevMiddleware">`createDevMiddleware()`</Link> returns, if your server runs it: your own server, or <Link href="/serverEntry#with-out-server-js">`+serverEntry.js` without `+server.js`</Link>. Otherwise `null`, e.g. in production or with `+server.js`.
 
 > See the <Link href="/serverEntry#example-bun">Bun example</Link>.
 
