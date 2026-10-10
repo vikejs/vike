@@ -82,7 +82,7 @@ type ResponseHandler = (response: Response) => Awaitable<Response | undefined>
 
 // What Vike's own dev and preview server runs before its pages: the +middleware that aren't handlers, then the ones that are
 async function runUniversalMiddlewares(request: Request, context: Universal.Context, runtime: RuntimeAdapter) {
-  const result = await runPhase(request, context, runtime, false)
+  const result = await runPhase(request, context, runtime, 'others')
   if (result instanceof Response) return result
   const applyResponseHandlers = typeof result === 'function' ? result : undefined
   if (!applyResponseHandlers) Object.assign(context, result)
@@ -95,7 +95,7 @@ async function runUniversalMiddlewares(request: Request, context: Universal.Cont
 // context they build is added to `context`, for the pages.
 async function runHandlerMiddlewares(request: Request, context: Universal.Context, runtime: RuntimeAdapter) {
   // Applying only the handlers would silently skip the +middleware that aren't handlers
-  const result = await runPhase(request, context, runtime, true, assertPlusMiddlewareInstalled)
+  const result = await runPhase(request, context, runtime, 'handlers', assertPlusMiddlewareInstalled)
   if (result instanceof Response) return result
   if (typeof result !== 'function') Object.assign(context, result)
 }
@@ -119,19 +119,20 @@ function runPhase(
   request: Request,
   context: Universal.Context,
   runtime: RuntimeAdapter,
-  handlers: boolean,
+  phase: Phase,
   check?: (globalContext: GlobalContextServerInternal) => void,
 ) {
   // In production the config doesn't change once loaded: a phase without +middleware has nothing to run or check
   const globalContextLoaded = getGlobalContextServerInternalOptional()
-  if (globalContextLoaded?._isProduction && getPhase(globalContextLoaded, handlers).length === 0) return
+  if (globalContextLoaded?._isProduction && getPhase(globalContextLoaded, phase).length === 0) return
   return runWithGlobalContext(request, check, (globalContext) =>
-    runPlusMiddlewares(getPhase(globalContext, handlers), globalContext.baseServer, request, context, runtime),
+    runPlusMiddlewares(getPhase(globalContext, phase), globalContext.baseServer, request, context, runtime),
   )
 }
 
-function getPhase(globalContext: GlobalContextServerInternal, handlers: boolean) {
-  return getPhases(globalContext.config.middleware ?? noMiddleware)[handlers ? 'handlers' : 'others']
+type Phase = 'others' | 'handlers'
+function getPhase(globalContext: GlobalContextServerInternal, phase: Phase) {
+  return getPhases(globalContext.config.middleware ?? noMiddleware)[phase]
 }
 
 // The same lists for the same config, so that their routers are reused. The config is new after a change in development.
@@ -272,7 +273,7 @@ const beforeRoutes = Object.assign(
   enhance(
     async (request: Request, context: Universal.Context, runtime: RuntimeAdapter) => {
       setPlusMiddlewareInstalled()
-      return runPhase(request, context, runtime, false)
+      return runPhase(request, context, runtime, 'others')
     },
     { name: 'vike:middleware' },
   ),
