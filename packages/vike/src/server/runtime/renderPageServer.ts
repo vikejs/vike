@@ -44,6 +44,7 @@ import {
   initGlobalContext_renderPage,
   type GlobalContextServerInternal,
 } from './globalContext.js'
+import { assertMiddlewarePath, getRoutingRequest, withOriginalRequest } from './getRoutingRequest.js'
 import { handlePageContextRequestUrl } from './renderPageServer/handlePageContextRequestUrl.js'
 import { getPageContextPublicServer } from './renderPageServer/getPageContextPublicServer.js'
 import {
@@ -93,6 +94,8 @@ const globalObject = getGlobalObject('runtime/renderPageServer.ts', {
 type PageContextAfterRender = PageContextCreatedServerWithoutGlobalContext & {
   httpResponse: HttpResponse
   _requestId: number
+  // The response is a +middleware's, not Vike's
+  _isMiddlewareResponse?: true
 } & Partial<PageContextInternalServer>
 type PageContextBegin = ReturnType<typeof getPageContextBegin>
 
@@ -379,8 +382,17 @@ async function renderPageServerEntryWithMiddlewares(
   renderPageServerEntry: () => Promise<PageContextAfterRender>,
   middlewares: EnhancedMiddleware[],
 ) {
+  const request =
+    pageContext._reqWeb ??
+    (pageContext._nodeDev
+      ? requestAdapter(pageContext._nodeDev.req, pageContext._nodeDev.res)
+      : new Request(new URL(pageContext.urlOriginal, 'http://localhost').toString(), {
+          headers: pageContext.headers ?? {},
+        }))
+
   const router = new UniversalRouter(true, false)
   let httpResponseVikeCore = undefined as undefined | HttpResponse
+  let responseVikeCore = undefined as undefined | Response
   // Wrap rendering into universal-middleware routing
   apply(router, [
     enhance(
@@ -390,10 +402,11 @@ async function renderPageServerEntryWithMiddlewares(
         pageContext = pageContextHttpResponse as any
         httpResponseVikeCore = httpResponse
         const readable = httpResponse.getReadableWebStream()
-        return new Response(readable, {
+        responseVikeCore = new Response(readable, {
           status: httpResponse.statusCode,
           headers: httpResponse.headers,
         })
+        return responseVikeCore
       },
       {
         name: 'vike',
@@ -402,22 +415,34 @@ async function renderPageServerEntryWithMiddlewares(
         immutable: true, // avoids cloning the function we just created
       },
     ),
-    ...middlewares,
+    ...middlewares.map((middleware) => {
+      assertMiddlewarePath(middleware, pageContext._baseServer)
+      return withOriginalRequest(middleware, request)
+    }),
   ])
   const handler = router[universalSymbol] as UniversalHandler
 
-  const request =
-    pageContext._reqWeb ??
-    (pageContext._nodeDev
-      ? requestAdapter(pageContext._nodeDev.req, pageContext._nodeDev.res)
-      : new Request(new URL(pageContext.urlOriginal, 'http://localhost').toString(), {
-          headers: pageContext.headers ?? {},
-        }))
-
-  const res = await handler(request, {}, getAdapterRuntime('other', { params: undefined }))
+  let res = await handler(
+    getRoutingRequest(request, pageContext._baseServer),
+    {},
+    getAdapterRuntime('other', { params: undefined }),
+  )
+  // The client router reloads the page upon a `.pageContext.json` answer that is a 404 without JSON, so that a +middleware's own answer (e.g. a 401 or a redirect) is shown by the page's HTML request
+  if (
+    res !== responseVikeCore &&
+    pageContext.isClientSideNavigation &&
+    // A +middleware answered (with any content type), or a response function replaced Vike's JSON with a non-JSON answer
+    (!responseVikeCore || !res.headers.get('content-type')?.includes('application/json'))
+  ) {
+    const headers = new Headers(res.headers)
+    headers.delete('content-type')
+    res = new Response(res.body, { status: 404, headers })
+  }
 
   const httpResponse = createHttpResponseFromUniversalMiddleware(res, httpResponseVikeCore?.earlyHints)
   objectAssign(pageContext, { httpResponse })
+  // A +middleware answered, or a response function replaced Vike's response
+  if (res !== responseVikeCore) objectAssign(pageContext, { _isMiddlewareResponse: true as const })
   return pageContext
 }
 
@@ -760,7 +785,8 @@ function fork<PageContext extends PageContextBegin>(pageContext: PageContext) {
 
 function assertPageContextFinish(pageContextFinish: PageContextAfterRender) {
   assert(pageContextFinish.httpResponse)
-  if (pageContextFinish.isClientSideNavigation) {
+  // A +middleware's own response to a `.pageContext.json` request isn't Vike's JSON
+  if (pageContextFinish.isClientSideNavigation && !pageContextFinish._isMiddlewareResponse) {
     const headers = new Headers(pageContextFinish.httpResponse.headers)
     const contentType = headers.get('Content-Type')
     assert(contentType?.toLowerCase() === 'application/json')
