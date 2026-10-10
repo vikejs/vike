@@ -2,7 +2,7 @@
 export { setGlobalContext_prodBuildEntry } from '../runtime/globalContext.js'
 
 // Used by the vike(app) of the @vikejs/* server adapters
-export { middlewaresBeforeRoutes, middlewaresAfterRoutes } from '../runtime/middlewaresSingleRouteProxy.js'
+export { middlewaresBeforeRoutes, middlewaresAfterRoutes } from '../runtime/middlewaresProxy.js'
 
 // Used by vite-plugin-vercel
 export { route, getPagesAndRoutes }
