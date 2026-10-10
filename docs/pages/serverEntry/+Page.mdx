@@ -71,8 +71,8 @@ If you don't define `+server.js`, then `+serverEntry.js` defines the entire serv
 
 // Defines the entire server — both development and production
 
-// You can use Vike's low-level server integration primitives for full control
-import { createDevMiddleware, renderPage } from 'vike/server'
+// You can also use Vike's low-level server integration primitives for full control
+import { renderPage } from 'vike/server'
 
 const app = express()
 
@@ -84,7 +84,7 @@ express.listen(3000)
 
 See full example at: <Link href="/renderPage#usage" />.
 
-> `+serverEntry.js` is responsible for starting the server, whereas with `+server.js` the server is started by Vite in development and by srvx in production.
+> `+serverEntry.js` is responsible for starting the server, whereas with `+server.js` the server is started by Vite in development and by [srvx](https://srvx.h3.dev) in production.
 
 > In development, when you modify `+serverEntry.js` (or a file it imports), Vike automatically restarts your server process.
 
@@ -153,7 +153,7 @@ export const handler = toLambdaHandler({ fetch: server.fetch })
 
 ## Example: Bun
 
-Without `+serverEntry.js`, `$ bun dist/server/index.mjs` runs Vike's built-in server entry powered by srvx which automatically uses `Bun.serve()` under the hood. But only in production: in development, `$ vike dev` uses Vite's development server ([which uses the Node.js server APIs](https://github.com/vitejs/ecosystem/issues/16) instead of `Bun.serve()`).
+Without `+serverEntry.js`, `$ bun dist/server/index.mjs` runs Vike's built-in server entry powered by [srvx](https://srvx.h3.dev) which automatically uses `Bun.serve()` under the hood. But only in production: in development, `$ vike dev` uses Vite's development server ([which uses the Node.js server APIs](https://github.com/vitejs/ecosystem/issues/16) instead of `Bun.serve()`).
 
 With `+serverEntry.js` (and without `+server.js`, see <Link href="#with-out-server-js" />), you can use [`Bun.serve()`](https://bun.com/docs/runtime/http/server) in both development and production. For example to use Bun's [WebSockets](https://bun.com/docs/runtime/http/websockets) also in development:
 
