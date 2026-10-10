@@ -36,7 +36,7 @@ Use case examples:
 
 If you define both `+serverEntry.js` and `+server.js`, then `+serverEntry.js` wraps `+server.js` and is only used for production.
 
-> In development, Vite's development server acts as the entry: `+server.js` is attached to Vite's development server. Consequently, `+serverEntry.js` doesn't run in development.
+> In development, Vite's development server acts as the entry: your `+server.js` is attached to Vite's development server. Consequently, `+serverEntry.js` isn't used in development. In other words: `+serverEntry.js` never runs in development.
 
 > The typical use case is to customize a deployment integration, see <Link href="#example-aws-lambda" />.
 
