@@ -32,7 +32,9 @@ describe('createDevMiddleware()', () => {
     serverEntryViteServer.current = {}
     await createDevMiddleware()
     expect(warn).toHaveBeenCalledTimes(1)
-    expect(String(warn.mock.calls[0]![0])).toContain("createDevMiddleware() isn't needed in +serverEntry.js")
+    expect(String(warn.mock.calls[0]![0])).toContain(
+      "createDevMiddleware() in +serverEntry.js creates a second Vite development server, so HMR won't work",
+    )
     expect(createServer).toHaveBeenCalledTimes(1)
     await createDevMiddleware()
     expect(warn).toHaveBeenCalledTimes(1)
