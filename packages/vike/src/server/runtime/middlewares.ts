@@ -76,7 +76,7 @@ function toMiddleware(plusMiddleware: EnhancedMiddleware, baseServer: string): M
     return Object.assign(handler, { isHandler: true })
   }
   const order = getUniversalProp(plusMiddleware, orderSymbol)
-  const isMatch = path && getMatcher(path, getUniversalProp(plusMiddleware, methodSymbol), order)
+  const isMatch = path && getMatcher(path, getUniversalProp(plusMiddleware, methodSymbol))
   const middleware = enhance(
     async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) => {
       const { isPageContextJsonRequest, urlWithoutPageContextRequestSuffix } = handlePageContextRequestUrl(request.url)
@@ -123,11 +123,7 @@ function toReload(response: Response): Response {
 }
 
 // The `path` and `method` check that Universal Middleware's `apply()` wraps a middleware with
-function getMatcher(
-  path: string,
-  method: HttpMethod | HttpMethod[] | undefined,
-  order: number | undefined,
-): (request: Request) => boolean {
+function getMatcher(path: string, method: HttpMethod | HttpMethod[] | undefined): (request: Request) => boolean {
   let scoped: UniversalMiddleware | undefined
   const router: UniversalRouterInterface = {
     use(middleware) {
@@ -142,7 +138,8 @@ function getMatcher(
     },
   }
   const matched = {}
-  apply(router, [enhance(() => matched, { path, method, order })])
+  // A non-zero order: `apply()` scopes it to its path, rather than routing it as a handler
+  apply(router, [enhance(() => matched, { path, method, order: 1 })])
   assert(scoped)
   return (request) => {
     const result = scoped!(request, {}, {} as RuntimeAdapterTarget<unknown>)
