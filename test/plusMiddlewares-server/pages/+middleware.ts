@@ -1,9 +1,17 @@
 import { enhance, MiddlewareOrder } from '@universal-middleware/core'
 
-// A middleware: it runs before the app's own routes
+// Middlewares: they run before the app's own routes. `auth`, listed first, runs after `user` (by `order`) and reads the context it adds.
 const auth = enhance(
-  (request: Request) => (request.headers.has('x-user') ? undefined : new Response('Unauthorized', { status: 401 })),
-  { name: 'auth', path: '/api/**', order: MiddlewareOrder.AUTHENTICATION },
+  (_request: Request, context: Universal.Context) =>
+    context.user ? undefined : new Response('Unauthorized', { status: 401 }),
+  { name: 'auth', path: '/api/**', order: MiddlewareOrder.AUTHORIZATION },
+)
+const user = enhance(
+  (request: Request) => (request.headers.has('x-user') ? { user: request.headers.get('x-user') } : undefined),
+  {
+    name: 'user',
+    order: MiddlewareOrder.AUTHENTICATION,
+  },
 )
 
 // Counts how often +middleware run for a request
@@ -23,4 +31,4 @@ const overridden = enhance(() => new Response('Answered by +middleware'), {
   method: 'GET',
 })
 
-export default [auth, counter, hello, overridden]
+export default [auth, user, counter, hello, overridden]

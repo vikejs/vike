@@ -20,10 +20,20 @@ const redirectMiddleware = enhance(redirectUniversalMiddleware, {
   path: '/redirect-middleware',
 })
 
+// Listed before `authUser`, ordered after it: it reads the context `authUser` adds
 const adminAuth = enhance(
-  async (request: Request) =>
-    request.headers.has('x-auth') ? undefined : new Response('Unauthorized', { status: 401 }),
+  async (_request: Request, context: Universal.Context) =>
+    context.isAuth ? undefined : new Response('Unauthorized', { status: 401 }),
   { name: 'adminAuth', method: 'GET', path: '/admin/**', order: MiddlewareOrder.AUTHORIZATION },
+)
+const authUser = enhance(async (request: Request) => (request.headers.has('x-auth') ? { isAuth: true } : undefined), {
+  name: 'authUser',
+  order: MiddlewareOrder.AUTHENTICATION,
+})
+// Ordered after `adminAuth`: the first Response answers
+const lateAnswer = enhance(
+  async (request: Request) => (request.headers.has('x-late') ? new Response('Too late') : undefined),
+  { name: 'lateAnswer', method: 'GET', path: '/admin/**', order: MiddlewareOrder.RESPONSE_TRANSFORM },
 )
 // An auth +middleware that answers with JSON
 const jsonAuth = enhance(
@@ -46,4 +56,4 @@ const orderZero = enhance(async () => new Response('order zero'), {
   order: 0,
 })
 
-export default [middleware, redirectMiddleware, adminAuth, jsonAuth, settingsHeader, orderZero]
+export default [middleware, redirectMiddleware, adminAuth, authUser, lateAnswer, jsonAuth, settingsHeader, orderZero]

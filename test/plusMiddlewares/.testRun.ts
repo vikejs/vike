@@ -56,12 +56,21 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   })
 
   test('Every +middleware whose path matches runs, then the page', async () => {
-    // Both adminAuth (/admin/**) and settingsHeader (/admin/settings) match
+    // Both adminAuth (/admin/**) and settingsHeader (/admin/settings) match. adminAuth, listed before authUser, runs after it (by
+    // `order`) and sees the context it adds.
     expect((await fetch(`${getServerUrl()}/admin/settings`)).status).toBe(401)
     const response: Response = await fetch(`${getServerUrl()}/admin/settings`, { headers: { 'x-auth': '1' } })
     expect(response.status).toBe(200)
     expect(response.headers.get('x-settings')).toBe('yes')
     expect(await response.text()).toContain('Admin settings')
+  })
+
+  test('The first +middleware Response answers, with the response functions applied', async () => {
+    // adminAuth answers before lateAnswer, and settingsHeader still adds its header
+    const response: Response = await fetch(`${getServerUrl()}/admin/settings`, { headers: { 'x-late': '1' } })
+    expect(response.status).toBe(401)
+    expect(await response.text()).toBe('Unauthorized')
+    expect(response.headers.get('x-settings')).toBe('yes')
   })
 
   test("A +middleware's path also covers the page's .pageContext.json request", async () => {
