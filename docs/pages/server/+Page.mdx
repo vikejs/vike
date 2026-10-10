@@ -1,6 +1,8 @@
 import { Link, FileAdded, Warning, Tabs } from '@brillout/docpress'
 import { DeprecatedServer } from '../../components'
 
+export const ColumnTitle = ({ children }) => <span style={{ fontWeight: 'normal', opacity: 0.7 }}>{children}</span>
+
 Define `+server.js` to seamlessly integrate a server framework (Hono, Express, ...), or set `+server: true` to use Vike's built-in lightweight server.
 
 > `vike-photon` is deprecated — it has been replaced by `+server`:
@@ -388,7 +390,7 @@ If needed, Vike enables you to gain complete control over the server.
 
 ### `+server: true` => `+server.js`
 
-| | <span style={{fontWeight: 'normal', opacity: 0.7}}>Before (less control)</span><br/>`+server: true` | <span style={{fontWeight: 'normal', opacity: 0.7}}>After (more control)</span><br/>`+server.js` |
+| | <ColumnTitle>Before (less control)</ColumnTitle><br/>`+server: true` | <ColumnTitle>After (more control)</ColumnTitle><br/>`+server.js` |
 | --- | --- | --- |
 | Server | Vike's built-in server | Your server framework (Hono, Express, ...) |
 | Middlewares and routes | — | Yours (e.g. authentication, API routes, ...) |
@@ -399,13 +401,13 @@ See <Link href="#server-true" />.
 
 For full control over your server production entry (e.g. to define a custom deployment integration), you can define <Link href="/serverEntry">`+serverEntry.js`</Link>.
 
-| | <span style={{fontWeight: 'normal', opacity: 0.7}}>Before (less control)</span><br/>Vike's built-in entry | <span style={{fontWeight: 'normal', opacity: 0.7}}>After (more control)</span><br/>`+serverEntry.js` |
+| | <ColumnTitle>Before (less control)</ColumnTitle><br/>Vike's built-in entry | <ColumnTitle>After (more control)</ColumnTitle><br/>`+serverEntry.js` |
 | --- | --- | --- |
 | Production server entry (`dist/server/index.mjs`) | [srvx](https://srvx.h3.dev) (Node.js, Bun, Deno) | Your code, e.g. AWS Lambda's `handler()` or Node.js's `cluster` |
 
 ### `+serverEntry.js` without `+server.js`
 
-| | <span style={{fontWeight: 'normal', opacity: 0.7}}>Before (less control)</span><br/>`+serverEntry.js` with `+server.js` | <span style={{fontWeight: 'normal', opacity: 0.7}}>After (more control)</span><br/>`+serverEntry.js` without `+server.js` |
+| | <ColumnTitle>Before (less control)</ColumnTitle><br/>`+serverEntry.js` with `+server.js` | <ColumnTitle>After (more control)</ColumnTitle><br/>`+serverEntry.js` without `+server.js` |
 | --- | --- | --- |
 | Development server | Vite's development server. ([Node.js with Connect](https://github.com/vitejs/ecosystem/issues/16).) | Your server. (E.g. `Bun.serve()`/`Deno.serve()`.) |
 
@@ -421,7 +423,7 @@ See: <Link href="/renderPage#renderpage-vs-vike-app" noBreadcrumb doNotInferSect
 
 Running your server yourself (e.g. `$ node server/index.js`) instead of using `+serverEntry.js` gives you full control over how your server is built and run (albeit with a less integrated development experience).
 
-| | <span style={{fontWeight: 'normal', opacity: 0.7}}>Before (less control)</span><br/>`+server.js`/`+serverEntry.js` | <span style={{fontWeight: 'normal', opacity: 0.7}}>After (more control)</span><br/>`$ node server/index.js` |
+| | <ColumnTitle>Before (less control)</ColumnTitle><br/>`+server.js`/`+serverEntry.js` | <ColumnTitle>After (more control)</ColumnTitle><br/>`$ node server/index.js` |
 | --- | --- | --- |
 | Server code | Processed by Vite | Not processed by Vite |
 | Server restart | Fine-grained (only when needed) | Coarse (unnecessary reloads) |
