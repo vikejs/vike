@@ -7,7 +7,6 @@ export { isServerChildProcess }
 // `$ vike dev` runs +serverEntry.js (if there isn't +server.js) — https://vike.dev/serverEntry
 // - The parent process (`$ vike dev`) runs +serverEntry.js in a child process, and restarts the child process whenever a file imported by +serverEntry.js changes
 // - The child process creates Vite's development server (in middleware mode) and runs +serverEntry.js using Vite's module runner
-//   - globalContext.devMiddleware is its middleware (createDevMiddleware() warns there)
 
 import { fork, type ChildProcess } from 'node:child_process'
 import path from 'node:path'
