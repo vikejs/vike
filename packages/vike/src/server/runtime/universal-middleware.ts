@@ -5,7 +5,11 @@ import '../assertEnvServer.js'
 // Vike's own server imports universalVikeHandler.js directly: only the released @vikejs/* adapters, vike-photon and vike-server import this entry
 assertWarning(
   false,
-  'vike/universal-middleware is deprecated: update @vikejs/express, @vikejs/hono, @vikejs/fastify, @vikejs/h3, @vikejs/elysia, @vikejs/hattip or @vikejs/srvx to 0.4.0 or above, and move from vike-photon or vike-server to +server or one of these adapters, see https://vike.dev/server',
+  [
+    "You're using a deprecated Vike extension:",
+    '- If you use one of the following, update to its latest version: @vikejs/hono, @vikejs/express, @vikejs/fastify, @vikejs/h3, @vikejs/elysia, @vikejs/hattip or @vikejs/srvx',
+    '- If you use vike-photon or vike-server, migrate to +server.js — see https://vike.dev/migration/server',
+  ].join('\n'),
   { onlyOnce: true },
 )
 
