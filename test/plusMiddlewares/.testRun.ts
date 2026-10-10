@@ -52,9 +52,14 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
 
   test("A +middleware's path also covers the page's .pageContext.json request", async () => {
     // A 404, so that the client router reloads the page
-    const response: Response = await fetch(`${getServerUrl()}/admin/settings/index.pageContext.json`)
+    const url = `${getServerUrl()}/admin/settings/index.pageContext.json`
+    const response: Response = await fetch(url)
     expect(response.status).toBe(404)
     expect(await response.text()).toBe('Unauthorized')
+    // settingsHeader's exact path, /admin/settings, also covers its .pageContext.json
+    const responseAuth: Response = await fetch(url, { headers: { 'x-auth': '1' } })
+    expect(responseAuth.status).toBe(200)
+    expect(responseAuth.headers.get('x-settings')).toBe('yes')
   })
 
   test("A +middleware's answer to a client-side navigation is shown", async () => {
