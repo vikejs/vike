@@ -37,6 +37,10 @@ function testRun(cmd: Cmd, options?: { serverIsReadyMessage: string }) {
     expect(await responseUser.text()).toContain('Rendered by Vike for alice')
   })
 
+  test("Vike's pages don't answer DELETE", async () => {
+    expect((await fetch(`${getServerUrl()}/`, { method: 'DELETE' })).status).toBe(404)
+  })
+
   test('`vike.fetch(request)` answers a request passed alone', async () => {
     expect(await (await fetch(`${getServerUrl()}/vike-fetch`)).text()).toContain('Rendered by Vike')
   })

@@ -45,7 +45,9 @@ const middlewaresBeforeRoutes = enhance(
 // What `vike(app)` runs after the app's routes, looked up upon each request: the +middleware that are handlers, then Vike's pages
 const middlewaresAfterRoutes = enhance(
   async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) =>
-    getRouter(await getAppMiddlewares())(request, context, runtime),
+    // A method that no handler and no page answers (e.g. DELETE): what a server answers without a route for it
+    (await getRouter(await getAppMiddlewares())(request, context, runtime)) ??
+    new Response('Not Found', { status: 404 }),
   {
     name: 'vike',
     method: ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'CONNECT', 'OPTIONS', 'TRACE', 'PATCH'],
@@ -58,9 +60,7 @@ const routers = new WeakMap<Middleware[], UniversalHandler>()
 function getRouter(list: Middleware[]): UniversalHandler {
   let router = routers.get(list)
   if (!router) {
-    const handlers = list.filter((middleware) => middleware.isHandler)
-    // Only Vike's pages (no +middleware that is a handler, or an invalid config): they answer every request, without a router
-    router = (handlers.length === 1 ? getUniversal(handlers[0]!) : pipeRoute(handlers)) as UniversalHandler
+    router = pipeRoute(list.filter((middleware) => middleware.isHandler)) as UniversalHandler
     routers.set(list, router)
   }
   return router

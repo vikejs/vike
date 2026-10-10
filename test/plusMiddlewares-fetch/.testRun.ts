@@ -11,9 +11,7 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview', options?: { serverIsR
     expect(response.headers.get('x-middleware')).toBe('header')
   })
 
-  test("Vike's pages answer a method they don't list (PROPFIND) when no +middleware is a handler", async () => {
-    const response: Response = await fetch(`${getServerUrl()}/`, { method: 'PROPFIND' })
-    expect(response.status).toBe(200)
-    expect(await response.text()).toContain('Rendered by Vike')
+  test("Vike's pages don't answer DELETE when no +middleware is a handler", async () => {
+    expect((await fetch(`${getServerUrl()}/`, { method: 'DELETE' })).status).toBe(404)
   })
 }

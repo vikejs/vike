@@ -102,6 +102,10 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     }
   })
 
+  test("Vike's pages don't answer DELETE", async () => {
+    expect((await fetch(`${getServerUrl()}/`, { method: 'DELETE' })).status).toBe(404)
+  })
+
   test('A +middleware with a path and order 0 still answers its path, and the pages still render', async () => {
     expect(await (await fetch(`${getServerUrl()}/order-zero`)).text()).toBe('order zero')
     expect(await fetchHtml('/')).toContain('Rendered to HTML.')

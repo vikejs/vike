@@ -34,7 +34,7 @@ type Middleware = EnhancedMiddleware & {
 const renderPageHandler: Middleware = Object.assign(
   enhance(renderPageUniversal, {
     name: 'vike',
-    method: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
+    method: ['GET', 'POST', 'PUT', 'PATCH', 'HEAD', 'OPTIONS'],
     path: '/**',
     immutable: true,
   }),
