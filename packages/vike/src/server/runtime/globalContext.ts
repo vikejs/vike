@@ -21,7 +21,6 @@ export { clearGlobalContext }
 export { assertBuildInfo }
 export { updateUserFiles }
 export { vikeConfigErrorRecoverMsg }
-export { defineDevMiddleware }
 export type { BuildInfo }
 export type { GlobalContextServerInternal }
 
@@ -624,7 +623,7 @@ function addGlobalContextCommon(
       devMiddleware: viteDevServer?.middlewares ?? null,
       viteConfig,
     }
-    if (viteDevServer) defineDevMiddleware(globalContextDev, viteDevServer)
+    addDevMiddlewareWarning(globalContextDev, viteDevServer)
     return globalContextDev
   } else {
     assert(globalObject.prodBuildEntry)
@@ -656,19 +655,22 @@ function addGlobalContextCommon(
     }
   }
 }
-// Not enumerable, so that spreading or serializing globalContext doesn't read it
-function defineDevMiddleware(globalContext: { devMiddleware: unknown }, viteDevServer: ViteDevServer): void {
+function addDevMiddlewareWarning(globalContext: { devMiddleware: unknown }, viteDevServer?: ViteDevServer): void {
+  if (!viteDevServer) return
   Object.defineProperty(globalContext, 'devMiddleware', {
     get() {
-      // Not in middleware mode, Vite's development server already runs Vite's middlewares (e.g. +server.js)
-      assertWarning(
-        viteDevServer.config.server.middlewareMode,
-        `${pc.cyan('globalContext.devMiddleware')} hangs the development server: Vite's development server already runs Vite's middlewares before your server (e.g. with +server.js), so don't add them again, see https://vike.dev/globalContext#devMiddleware`,
-        { onlyOnce: true },
-      )
-      return viteDevServer.middlewares
+      const { middlewareMode } = viteDevServer.config.server
+      if (middlewareMode) {
+        return viteDevServer.middlewares
+      } else {
+        assertWarning(
+          false,
+          `You don't need ${pc.cyan('globalContext.devMiddleware')} because Vite's development server already installed Vite's middlewares (Vite's ${pc.cyan('config.server.middlewareMode')} is ${pc.cyan(JSON.stringify(middlewareMode))}) — installing them twice might hang the development server`,
+          { onlyOnce: true },
+        )
+      }
     },
-    enumerable: false,
+    enumerable: false, // so that spreading or serializing globalContext doesn't get the warning
     configurable: true,
   })
 }
