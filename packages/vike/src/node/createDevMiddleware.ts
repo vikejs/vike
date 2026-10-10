@@ -16,12 +16,18 @@ import pc from '@brillout/picocolors'
 async function createDevMiddleware(
   options: { root?: string } & ApiOptions = {},
 ): Promise<{ devMiddleware: Connect.Server; viteServer: ViteDevServer; viteConfig: ResolvedConfig }> {
-  // E.g. `$ vike dev` already created it (+serverEntry.js, +server.js), or createDevMiddleware() was already called
-  assertWarning(
-    !getViteDevServer(),
-    `Use ${pc.cyan('globalContext.devMiddleware')} instead of running ${pc.cyan('createDevMiddleware()')} as it creates a second Vite development server: Vite's development server was already created`,
-    { onlyOnce: true },
-  )
+  {
+    const viteServer = getViteDevServer()
+    if (viteServer) {
+      assertWarning(
+        false,
+        // E.g. `$ vike dev` already created it (+serverEntry.js, +server.js), or createDevMiddleware() was already called
+        `Vite development server and its middleware already created : use ${pc.cyan('globalContext.devMiddleware')} to access it instead of calling ${pc.cyan('createDevMiddleware()')}`,
+        { onlyOnce: true },
+      )
+      return { devMiddleware: viteServer.middlewares, viteServer, viteConfig: viteServer.config }
+    }
+  }
 
   const optionsMod = {
     ...options,
