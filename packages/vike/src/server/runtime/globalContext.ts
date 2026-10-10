@@ -50,7 +50,7 @@ import { isObject } from '../../utils/isObject.js'
 import { objectAssign } from '../../utils/objectAssign.js'
 import { isCloudflareWorkers } from '../../utils/isCloudflareWorkers.js'
 import type { ViteManifest } from '../../types/ViteManifest.js'
-import type { ResolvedConfig, ViteDevServer } from 'vite'
+import type { Connect, ResolvedConfig, ViteDevServer } from 'vite'
 import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/runtime'
 import { virtualFileIdGlobalEntryServer } from '../../shared-server-node/virtualFileId.js'
 import pc from '@brillout/picocolors'
@@ -619,10 +619,8 @@ function addGlobalContextCommon(
       _isPrerendering: false as const,
       assetsManifest: null,
       _viteDevServer: viteDevServer,
-      // Same as createDevMiddleware() — https://vike.dev/globalContext#devMiddleware
-      // Only in middleware mode, i.e. when the user's server runs Vite's middlewares (+serverEntry.js, createDevMiddleware())
-      // - Otherwise Vite's development server runs them itself (e.g. +server.js), and running them again inside it would hang every request
-      devMiddleware: viteDevServer?.config.server.middlewareMode ? viteDevServer.middlewares : null,
+      // https://vike.dev/globalContext#devMiddleware
+      devMiddleware: viteDevServer ? getDevMiddleware(viteDevServer) : null,
       viteConfig,
     }
   } else {
@@ -653,6 +651,19 @@ function addGlobalContextCommon(
         viteConfig: null,
       }
     }
+  }
+}
+function getDevMiddleware(viteDevServer: ViteDevServer): Connect.NextHandleFunction {
+  const { middlewares } = viteDevServer
+  // Middleware mode: the user's server runs Vite's middlewares (+serverEntry.js, createDevMiddleware())
+  if (viteDevServer.config.server.middlewareMode) return middlewares
+  return (req, res, next) => {
+    assertWarning(
+      false,
+      `${pc.cyan('globalContext.devMiddleware')} hangs the development server: Vite's development server already runs Vite's middlewares before your server (e.g. with +server.js), so don't add them again, see https://vike.dev/globalContext#devMiddleware`,
+      { onlyOnce: true },
+    )
+    middlewares(req, res, next)
   }
 }
 async function addGlobalContextAsync(globalContext: GlobalContextBase) {
