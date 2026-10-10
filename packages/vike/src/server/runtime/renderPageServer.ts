@@ -431,9 +431,12 @@ async function renderPageServerEntryWithMiddlewares(
   if (
     res !== responseVikeCore &&
     pageContext.isClientSideNavigation &&
-    !res.headers.get('content-type')?.includes('application/json')
+    // A +middleware answered (with any content type), or a response function replaced Vike's JSON with a non-JSON answer
+    (!responseVikeCore || !res.headers.get('content-type')?.includes('application/json'))
   ) {
-    res = new Response(res.body, { status: 404, headers: res.headers })
+    const headers = new Headers(res.headers)
+    headers.delete('content-type')
+    res = new Response(res.body, { status: 404, headers })
   }
 
   const httpResponse = createHttpResponseFromUniversalMiddleware(res, httpResponseVikeCore?.earlyHints)

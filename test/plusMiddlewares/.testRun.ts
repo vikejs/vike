@@ -68,7 +68,7 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     const url = `${getServerUrl()}/dash/index.pageContext.json`
     const response: Response = await fetch(url)
     expect(response.status).toBe(404)
-    expect(await response.text()).toBe('Unauthorized')
+    expect(await response.text()).toBe('{"error":"unauthorized"}')
     const responseAuth: Response = await fetch(url, { headers: { 'x-auth': '1' } })
     expect(responseAuth.status).toBe(200)
     expect(await responseAuth.text()).toContain('DASH-SECRET')
@@ -84,12 +84,15 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   })
 
   test("A +middleware's own response to a client-side navigation is shown", async () => {
-    for (const pathname of ['/admin/data', '/dash']) {
+    for (const [pathname, body] of [
+      ['/admin/data', 'Unauthorized'],
+      ['/dash', '{"error":"unauthorized"}'],
+    ]) {
       await page.goto(`${getServerUrl()}/`)
       await testCounter()
       await page.click(`a[href="${pathname}"]`)
       await autoRetry(async () => {
-        expect(await page.textContent('body')).toBe('Unauthorized')
+        expect(await page.textContent('body')).toBe(body)
       })
       expectLog(partRegex`HTTP response ${/.*/} ${pathname} 401`, { filter: (log) => log.logSource === 'stderr' })
     }

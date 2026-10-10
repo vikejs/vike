@@ -18,7 +18,7 @@ function testRun(cmd: 'pnpm run dev:base' | 'pnpm run preview:base') {
     ] as const) {
       const response: Response = await fetch(`${origin}${pathname}`)
       expect(response.status).toBe(status)
-      expect(await response.text()).toBe('Unauthorized')
+      expect(await response.text()).toBe('{"error":"unauthorized"}')
       const responseAuth: Response = await fetch(`${origin}${pathname}`, { headers: { 'x-auth': '1' } })
       expect(responseAuth.status).toBe(200)
       expect(await responseAuth.text()).toContain(content)

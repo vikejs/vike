@@ -25,9 +25,10 @@ const adminAuth = enhance(
     request.headers.has('x-auth') ? undefined : new Response('Unauthorized', { status: 401 }),
   { name: 'adminAuth', method: 'GET', path: '/admin/**', order: MiddlewareOrder.AUTHORIZATION },
 )
+// Answers with JSON, the content type of Vike's own .pageContext.json answers
 const dashAuth = enhance(
   async (request: Request) =>
-    request.headers.has('x-auth') ? undefined : new Response('Unauthorized', { status: 401 }),
+    request.headers.has('x-auth') ? undefined : Response.json({ error: 'unauthorized' }, { status: 401 }),
   { name: 'dashAuth', method: 'GET', path: '/dash', order: MiddlewareOrder.AUTHORIZATION },
 )
 const guardedRedirect = enhance(async () => new Response(null, { status: 302, headers: { Location: '/login' } }), {
