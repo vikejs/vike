@@ -1,7 +1,9 @@
 /// <reference types="vite/client" />
 
+import assert from 'node:assert'
 import express from 'express'
-import { renderPage } from 'vike/server'
+import { apply, getContext } from '@universal-middleware/express'
+import { getGlobalContext, renderPage } from 'vike/server'
 import viteDevServer from 'vavite/vite-dev-server'
 
 const app = express()
@@ -10,6 +12,15 @@ if (!viteDevServer) {
   // Serve static files in production
   app.use(express.static('dist/client'))
 }
+
+const globalContext = await getGlobalContext()
+assert(!globalContext.isClientSide)
+apply(
+  app,
+  globalContext.middlewares.filter((m) => !m.isHandler),
+)
+
+app.get('/api/context', (req, res) => res.json(getContext(req)))
 
 // Vike middleware. It should always be our last middleware (because it's a
 // catch-all middleware superseding any middleware placed after it).

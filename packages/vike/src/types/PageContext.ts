@@ -216,7 +216,6 @@ type PageContextInitInternal = PageContextInit & {
     req: IncomingMessage
     res: ServerResponse
   }
-  _reqWeb?: Request
 }
 
 type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &

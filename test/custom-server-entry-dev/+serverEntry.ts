@@ -2,8 +2,9 @@
 // There isn't any +server.js => `$ vike dev` runs this file as well
 
 import express from 'express'
+import assert from 'node:assert'
 import { fileURLToPath } from 'node:url'
-import { createDevMiddleware, renderPage } from 'vike/server'
+import { createDevMiddleware, getGlobalContext, renderPage } from 'vike/server'
 import { hello } from './server/hello'
 import { getEvaluations } from './server/shared'
 
@@ -16,6 +17,14 @@ if (import.meta.env.DEV) {
 } else {
   app.use(express.static(fileURLToPath(new URL('../client', import.meta.url))))
 }
+
+// Applying the list by hand: `$ vike dev` restarts this file when the +middleware change
+const globalContext = await getGlobalContext()
+assert(!globalContext.isClientSide)
+const middlewares = globalContext.middlewares.filter((m) => !m.isHandler)
+app.get('/middlewares', (_req, res) => {
+  res.send(String(middlewares.length))
+})
 
 app.get('/hello', (_req, res) => {
   res.send(hello)

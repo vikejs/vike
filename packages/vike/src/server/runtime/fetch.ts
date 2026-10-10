@@ -1,6 +1,10 @@
+import { getAdapterRuntime, getUniversal } from '@universal-middleware/core'
+import universalVikeHandler from './universal-middleware.js'
 import '../assertEnvServer.js'
-import vikeHandler from './universal-middleware.js'
+
+// Vike is the whole server: +middleware, then Vike's pages
+const handler = getUniversal(universalVikeHandler)
 
 export default {
-  fetch: vikeHandler,
+  fetch: (request: Request) => handler(request, {}, getAdapterRuntime('other', { params: undefined })),
 }

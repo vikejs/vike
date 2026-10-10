@@ -664,7 +664,19 @@ type ConfigBuiltIn = {
    *
    * The middlewares defined via `+middleware` are so called "Universal Middleware" — they work with any JavaScript server (Hono, Express, Cloudflare, ...).
    *
-   * https://github.com/magne4000/universal-middleware
+   * They run for every request, or for the URLs matching their `path`. `vike(app)`, called before your routes, installs them (in `+server` or a custom server).
+   *
+   * The ones that are handlers (`order: 0`, or a `path` without `order`) run next to the pages, after your routes, so that a route can override them. The others run before your routes.
+   *
+   * For one URL, Universal Middleware runs only the most specific handler. So a `+middleware` with a broad `path`, such as a guard on `/admin/**`, doesn't run on `/admin/settings` if another `+middleware` has a more specific `path` and no `order`. To scope a guard to its `path` and always run it, give it a negative `order` (such as `MiddlewareOrder.AUTHORIZATION`).
+   *
+   * For more control, apply `globalContext.middlewares` (from `await getGlobalContext()`, `'vike/server'`) yourself: the elements that aren't handlers (`!m.isHandler`) before your routes, and the handlers (`m.isHandler`, with Vike's pages as the last one) after them. Filter or re-order the list as you like.
+   *
+   * `renderPage()` runs no `+middleware`: it throws if there are some and `vike(app)` wasn't called or `globalContext.middlewares` wasn't read. Applying the list yourself, `$ vike dev` re-evaluates your `+server.js` (or restarts your `+serverEntry.js`) when a `+middleware` changes; a server you run yourself needs a restart. `vike(app)` needs neither.
+   *
+   * A `path` is matched against the page's URL, without the Base URL, so it also covers the page's `.pageContext.json` request. When its `method` is `GET`, it also covers `HEAD`.
+   *
+   * https://vike.dev/middleware
    */
   middleware?: EnhancedMiddleware | EnhancedMiddleware[]
 

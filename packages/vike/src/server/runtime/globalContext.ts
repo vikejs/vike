@@ -8,6 +8,7 @@ export { getGlobalContextServerInternal }
 export { getGlobalContextServerInternalOptional }
 export { getViteDevServer }
 export { getViteConfig }
+export { isRunnableDevServer }
 export { initGlobalContext_renderPage }
 export { initGlobalContext_runPrerender }
 export { initGlobalContext_getPagesAndRoutes }
@@ -77,6 +78,8 @@ import type { ViteRPC } from '../../node/vite/plugins/non-runnable-dev/pluginVit
 import { getVikeApiOperation } from '../../shared-server-node/api-context.js'
 import type { PrerenderContext } from '../../types/index.js'
 import { hasAlreadyLogged } from './logErrorServer.js'
+import { notifyPlusMiddlewareChange } from './plusMiddlewareChange.js'
+import { addMiddlewares } from './plusMiddlewares.js'
 import '../assertEnvServer.js'
 const debug = createDebug('vike:globalContext')
 const globalObject = getGlobalObject<
@@ -505,6 +508,7 @@ async function updateUserFiles(): Promise<{ success: boolean }> {
     }
     globalObject.vikeConfigHasRuntimeError = false
     setVikeConfigError({ errorRuntime: false })
+    notifyPlusMiddlewareChange((globalObjectTyped.globalContext?.config.middleware ?? []).flat())
     globalObject.waitForUserFilesUpdateResolve!.forEach((resolve) => resolve())
     globalObject.waitForUserFilesUpdateResolve = []
     resolve()
@@ -599,6 +603,13 @@ function addGlobalContext(globalContext: GlobalContextBase) {
   return addGlobalContextCommon(globalContext, pageRoutes, onBeforeRouteHook)
 }
 function addGlobalContextCommon(
+  globalContext: GlobalContextBase,
+  pageRoutes: PageRoutes,
+  onBeforeRouteHook: null | HookInternal,
+) {
+  return addMiddlewares(getGlobalContextAddendum(globalContext, pageRoutes, onBeforeRouteHook), globalContext.config)
+}
+function getGlobalContextAddendum(
   globalContext: GlobalContextBase,
   pageRoutes: PageRoutes,
   onBeforeRouteHook: null | HookInternal,

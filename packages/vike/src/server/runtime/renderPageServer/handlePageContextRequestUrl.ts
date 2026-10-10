@@ -4,7 +4,7 @@ import {
   pageContextJsonFileExtension,
   doNotCreateExtraDirectory,
 } from '../../../shared-server-client/getPageContextRequestUrl.js'
-import { modifyUrl } from '../../../shared-server-client/modifyUrl.js'
+import { modifyUrlSameOrigin } from '../../../shared-server-client/modifyUrlSameOrigin.js'
 import { slice } from '../../../utils/slice.js'
 import { baseServer } from '../../../utils/urlToFile.js'
 import { assert } from '../../../utils/assert.js'
@@ -55,7 +55,7 @@ function processUrl(urlParsed: UrlParsed, url: string) {
   let pathnameModified = slice(pathnameOriginal, 0, -1 * pageContextJsonFileExtensionUrl.length)
   if (pathnameModified === '') pathnameModified = '/'
   const searchVikeArgs = search?._vike
-  const urlWithoutPageContextRequestSuffix = modifyUrl(url, {
+  const urlWithoutPageContextRequestSuffix = modifyUrlSameOrigin(url, {
     pathname: pathnameModified,
     search: {
       _vike: searchVikeArgs ? null : undefined,
