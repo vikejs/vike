@@ -56,6 +56,9 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     const response: Response = await fetch(url)
     expect(response.status).toBe(404)
     expect(await response.text()).toBe('Unauthorized')
+    // Vike decodes a .pageContext.json URL once more than the page's URL: /%2561dmin is /admin
+    const responseEncoded: Response = await fetch(`${getServerUrl()}/%2561dmin/settings/index.pageContext.json`)
+    expect(await responseEncoded.text()).toBe('Unauthorized')
     // settingsHeader's exact path, /admin/settings, also covers its .pageContext.json
     const responseAuth: Response = await fetch(url, { headers: { 'x-auth': '1' } })
     expect(responseAuth.status).toBe(200)
