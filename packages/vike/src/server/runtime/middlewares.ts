@@ -62,35 +62,41 @@ async function getAppMiddlewares(): Promise<Middleware[]> {
 // A +middleware as an element of `globalContext.middlewares`. A `path` is matched against the page's URL, the way Vike routes pages: without the Base URL, and with a `.pageContext.json` request standing for its page.
 function toMiddleware(plusMiddleware: EnhancedMiddleware, baseServer: string): Middleware {
   const path = getUniversalProp(plusMiddleware, pathSymbol)
-  // `enhance()` clones the +middleware, so that marking it `isHandler` leaves the extension's export untouched
   if (isHandler(plusMiddleware)) {
-    // A handler is a route of the server, which matches it: its path gets the Base URL
+    // A handler is a route of the server, which matches it: its path gets the Base URL. (`enhance()` clones it, so that marking it `isHandler` leaves the extension's export untouched.)
     const handler = enhance(
       plusMiddleware as UniversalMiddleware,
       path ? { path: baseServer.replace(/\/$/, '') + path } : {},
     )
     return Object.assign(handler, { isHandler: true })
   }
-  if (!path) return Object.assign(enhance(plusMiddleware as UniversalMiddleware, {}), { isHandler: false })
   const order = getUniversalProp(plusMiddleware, orderSymbol)
-  const isMatch = getMatcher(path, getUniversalProp(plusMiddleware, methodSymbol), order)
+  const isMatch = path && getMatcher(path, getUniversalProp(plusMiddleware, methodSymbol), order)
   const middleware = enhance(
-    (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) => {
-      const pageRequest = getPageRequest(request, baseServer)
-      if (!pageRequest || !isMatch(pageRequest)) return
-      return getUniversal(plusMiddleware as UniversalMiddleware)(request, context, runtime)
+    async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) => {
+      const { isPageContextJsonRequest, urlWithoutPageContextRequestSuffix } = handlePageContextRequestUrl(request.url)
+      if (isMatch) {
+        const { href, isBaseMissing } = parseUrl(urlWithoutPageContextRequestSuffix, baseServer)
+        if (isBaseMissing || !isMatch(new Request(href, { method: request.method }))) return
+      }
+      const answer = await getUniversal(plusMiddleware as UniversalMiddleware)(request, context, runtime)
+      if (!isPageContextJsonRequest) return answer
+      if (answer instanceof Response) return toPageContextJsonAnswer(answer)
+      if (typeof answer !== 'function') return answer
+      return async (response: Response) => {
+        const replaced = await answer(response)
+        return replaced && toPageContextJsonAnswer(replaced)
+      }
     },
-    { name: getUniversalProp(plusMiddleware, nameSymbol), order },
+    { name: getUniversalProp(plusMiddleware, nameSymbol), ...(order !== undefined && { order }) },
   )
   return Object.assign(middleware, { isHandler: false })
 }
 
-// The page's URL, as a request the matcher can read. `null` if the URL is outside the Base URL.
-function getPageRequest(request: Request, baseServer: string): Request | null {
-  const { urlWithoutPageContextRequestSuffix } = handlePageContextRequestUrl(request.url)
-  const { href, isBaseMissing } = parseUrl(urlWithoutPageContextRequestSuffix, baseServer)
-  if (isBaseMissing) return null
-  return new Request(href, { method: request.method })
+// The client router reloads the page upon a `.pageContext.json` answer that is a 404 without JSON, so that the page's own request shows the +middleware's answer (e.g. a 401, a redirect or a login page)
+function toPageContextJsonAnswer(response: Response): Response {
+  if (response.headers.get('content-type')?.includes('application/json')) return response
+  return new Response(response.body, { status: 404, headers: response.headers })
 }
 
 // The `path` and `method` check that Universal Middleware's `apply()` wraps a middleware with

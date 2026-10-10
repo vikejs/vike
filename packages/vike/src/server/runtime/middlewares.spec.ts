@@ -52,10 +52,13 @@ describe('getMiddlewares()', () => {
       ['/app/', '/app'],
     ] as const) {
       const middlewares = getMiddlewares([auth], baseServer)
-      for (const url of ['/dash', '/%64ash', '/dash/index.pageContext.json']) {
+      for (const url of ['/dash', '/%64ash']) {
         // The +middleware gets the original request
         expect(await serve(middlewares, `${base}${url}`)).toBe(`401 http://localhost${base}${url}`)
       }
+      // A 404, so that the client router reloads the page
+      const url = `${base}/dash/index.pageContext.json`
+      expect(await serve(middlewares, url)).toBe(`404 http://localhost${url}`)
       expect(await serve(middlewares, `${base}/about`)).toBe('200 page')
       expect(await serve(middlewares, `${base}/about/index.pageContext.json`)).toBe('200 page')
     }

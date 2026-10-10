@@ -6,7 +6,13 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   run(cmd, {
     serverUrl: 'http://localhost:3000',
     tolerateError({ logText }) {
-      return logText.includes("Vite's CLI is deprecated") || logText.includes('Run the built server entry')
+      return (
+        logText.includes("Vite's CLI is deprecated") ||
+        logText.includes('Run the built server entry') ||
+        // The browser logs the 404 of /admin/settings/index.pageContext.json, then the 401 of /admin/settings
+        logText.includes('the server responded with a status of 404') ||
+        logText.includes('the server responded with a status of 401')
+      )
     },
   })
 
@@ -45,7 +51,19 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   })
 
   test("A +middleware's path also covers the page's .pageContext.json request", async () => {
-    expect((await fetch(`${getServerUrl()}/admin/settings/index.pageContext.json`)).status).toBe(401)
+    // A 404, so that the client router reloads the page
+    const response: Response = await fetch(`${getServerUrl()}/admin/settings/index.pageContext.json`)
+    expect(response.status).toBe(404)
+    expect(await response.text()).toBe('Unauthorized')
+  })
+
+  test("A +middleware's answer to a client-side navigation is shown", async () => {
+    await page.goto(`${getServerUrl()}/`)
+    await testCounter()
+    await page.click('a[href="/admin/settings"]')
+    await autoRetry(async () => {
+      expect(await page.textContent('body')).toBe('Unauthorized')
+    })
   })
 
   test('A +middleware with a path and order 0 still answers its path, and the pages still render', async () => {

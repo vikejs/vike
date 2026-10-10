@@ -14,6 +14,9 @@ function Layout({ children }) {
           <a className="navitem" href="/about">
             About
           </a>
+          <a className="navitem" href="/admin/settings">
+            Admin settings
+          </a>
         </Sidebar>
         <Content>{children}</Content>
       </Frame>
