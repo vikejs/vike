@@ -5,7 +5,7 @@ Create Vite's development middleware (for <Link href="/glossary#hmr">HMR</Link> 
 > You usually don't need to call `createDevMiddleware()` yourself, because the development middleware is automatically created if you:
 > - Use <Link href="/server">`+server.js`</Link>: it's created and installed automatically.
 > - Use <Link href="/serverEntry">`+serverEntry.js`</Link>: it's created automatically — you install and access it with <Link href="/globalContext#devMiddleware">`globalContext.devMiddleware`</Link>.
-> - Fully pre-render your app: Vike's built-in development server automatically creates and installs it.
+> - Fully <Link href="/pre-rendering">pre-render</Link> your app: Vike's built-in development server automatically creates and installs it.
 >
 > You usually only need to call `createDevMiddleware()` if you run the server yourself (e.g. `$ node server/index.js` instead of `+server.js`/`+serverEntry.js`), see: <Link href="/renderPage#without-serverentry-js" doNotInferSectionTitle />.
 
