@@ -1,5 +1,5 @@
 import express from 'express'
-import { createDevMiddleware, getGlobalContextAsync, renderPage } from 'vike/server'
+import { createDevMiddleware, renderPage } from 'vike/server'
 import { root } from './root.js'
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -8,18 +8,12 @@ startServer()
 async function startServer() {
   const app = express()
 
-  let devMiddleware = null
   if (isProduction) {
     app.use(express.static(`${root}/dist/client`))
   } else {
-    devMiddleware = (await createDevMiddleware({ root })).devMiddleware
+    const { devMiddleware } = await createDevMiddleware({ root })
     app.use(devMiddleware)
   }
-
-  app.get('/dev-middleware', async (_req, res) => {
-    const globalContext = await getGlobalContextAsync(isProduction)
-    res.send(globalContext.devMiddleware ? String(globalContext.devMiddleware === devMiddleware) : 'null')
-  })
 
   app.get('/{*vikeCatchAll}', async (req, res) => {
     const pageContextInit = {
