@@ -72,7 +72,8 @@ If you don't define `+server.js`, then `+serverEntry.js` defines the entire serv
 // Defines the entire server — both development and production
 
 // You can use Vike's low-level server integration primitives for full control
-import { createDevMiddleware, renderPage } from 'vike/server'
+import { getGlobalContext } from 'vike' // globalContext.devMiddleware
+import { renderPage } from 'vike/server'
 
 const app = express()
 

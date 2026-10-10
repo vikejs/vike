@@ -2,7 +2,7 @@ import { Link } from '@brillout/docpress'
 
 Create server middleware for development with <Link href="/glossary#hmr">HMR</Link> and <Link href="/lazy-transpiling">lazy transpiling</Link>.
 
-> You don't need `createDevMiddleware()` if you use <Link href="/server">`+server.js`</Link>. (You also don't need it if you fully <Link href="/pre-rendering">pre-render</Link> your app and therefore don't need a server.)
+> You don't need `createDevMiddleware()` if you use <Link href="/server">`+server.js`</Link>, and with <Link href="/serverEntry">`+serverEntry.js`</Link> you use <Link href="/globalContext#devMiddleware">`globalContext.devMiddleware`</Link> instead. (You also don't need it if you fully <Link href="/pre-rendering">pre-render</Link> your app and therefore don't need a server.)
 
 ```ts
 import { createDevMiddleware } from 'vike/server'
@@ -18,8 +18,6 @@ const {
   }
 })
 ```
-
-> The `createDevMiddleware()` options aren't available if you use <Link href="/serverEntry">`+serverEntry.js`</Link> in development. (Because Vite's development server is created before `+serverEntry.js` is run.) You can use `vite.config.js` or `+config.js` instead.
 
 See <Link href="/renderPage#usage">usage example</Link> for how to use it.
 
