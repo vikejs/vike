@@ -4,7 +4,7 @@ import { createServer } from 'vite'
 import { prepareViteApiCall } from './api/prepareViteApiCall.js'
 import type { ResolvedConfig, Connect, ViteDevServer } from 'vite'
 import type { ApiOptions } from './api/types.js'
-import { getServerEntryViteServer } from './api/serverEntryDev.js'
+import { getViteDevServer } from '../server/runtime/globalContext.js'
 import { assertWarning } from '../utils/assert.js'
 import pc from '@brillout/picocolors'
 
@@ -16,9 +16,9 @@ import pc from '@brillout/picocolors'
 async function createDevMiddleware(
   options: { root?: string } & ApiOptions = {},
 ): Promise<{ devMiddleware: Connect.Server; viteServer: ViteDevServer; viteConfig: ResolvedConfig }> {
-  // `$ vike dev` runs +serverEntry.js => it already created Vite's development server — https://vike.dev/serverEntry
+  // E.g. `$ vike dev` already created it (+serverEntry.js, +server.js), or createDevMiddleware() was already called
   assertWarning(
-    !getServerEntryViteServer(),
+    !getViteDevServer(),
     `Use ${pc.cyan('globalContext.devMiddleware')} instead of running ${pc.cyan('createDevMiddleware()')} as it creates a second Vite development server: Vite's development server was already created`,
     { onlyOnce: true },
   )
