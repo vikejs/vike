@@ -4,6 +4,7 @@ import {
   enhance,
   getUniversalProp,
   MiddlewareOrder,
+  orderSymbol,
   pathSymbol,
   UniversalRouter,
   universalSymbol,
@@ -35,12 +36,12 @@ async function serve(middlewares: Middleware[], url: string, method = 'GET') {
 describe('getMiddlewares()', () => {
   it("marks the handlers, Vike's pages last", () => {
     const middlewares = getMiddlewares([auth, logger, telefunc, orderZero], '/')
-    expect(middlewares.map((m) => [m.name, m.isHandler])).toEqual([
-      ['auth', false],
-      ['logger', false],
-      ['telefunc', true],
-      ['orderZero', true],
-      ['vike', true],
+    expect(middlewares.map((m) => [m.name, m.isHandler, getUniversalProp(m, orderSymbol)])).toEqual([
+      ['auth', false, MiddlewareOrder.AUTHORIZATION],
+      ['logger', false, undefined],
+      ['telefunc', true, undefined],
+      ['orderZero', true, 0],
+      ['vike', true, undefined],
     ])
     // The +middleware themselves are left untouched
     for (const plusMiddleware of [auth, logger, telefunc, orderZero]) expect('isHandler' in plusMiddleware).toBe(false)
@@ -64,6 +65,11 @@ describe('getMiddlewares()', () => {
     }
     // Outside the Base URL
     expect(await serve(getMiddlewares([auth], '/app/'), '/dash')).toBe('200 page')
+  })
+
+  it('keeps the order: a +middleware without one is ordered as 0', async () => {
+    const answers = enhance(() => new Response('answers'), { name: 'answers' })
+    expect(await serve(getMiddlewares([answers, auth], '/'), '/dash')).toBe('401 http://localhost/dash')
   })
 
   it('matches the method, HEAD as GET', async () => {
