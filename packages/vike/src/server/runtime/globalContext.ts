@@ -661,15 +661,12 @@ function addDevMiddlewareWarning(globalContext: { devMiddleware: unknown }, vite
   Object.defineProperty(globalContext, 'devMiddleware', {
     get() {
       const middlewareMode = getMiddlewareMode()
-      if (middlewareMode) {
-        return viteDevServer.middlewares
-      } else {
-        assertWarning(
-          false,
-          `You don't need ${pc.cyan('globalContext.devMiddleware')} because Vite's development server already installed Vite's middlewares (Vite's ${pc.cyan('config.server.middlewareMode')} is ${pc.cyan(JSON.stringify(middlewareMode))}) — installing them twice might hang the development server`,
-          { onlyOnce: true },
-        )
-      }
+      assertWarning(
+        middlewareMode,
+        `You don't need ${pc.cyan('globalContext.devMiddleware')} because Vite's development server already installed Vite's middlewares (Vite's ${pc.cyan('config.server.middlewareMode')} is ${pc.cyan(JSON.stringify(middlewareMode))}) — installing them twice might hang the development server`,
+        { onlyOnce: true },
+      )
+      return viteDevServer.middlewares
     },
     enumerable: getMiddlewareMode()
       ? true
