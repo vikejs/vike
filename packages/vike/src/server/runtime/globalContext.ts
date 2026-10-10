@@ -13,7 +13,6 @@ export { initGlobalContext_runPrerender }
 export { initGlobalContext_getPagesAndRoutes }
 export { setGlobalContext_viteDevServer }
 export { setGlobalContext_viteConfig }
-export { setGlobalContext_isServerEntryDev }
 export { setGlobalContext_isPrerendering }
 export { setGlobalContext_prerenderContext }
 export { setGlobalContext_isProductionAccordingToVite }
@@ -84,7 +83,6 @@ const globalObject = getGlobalObject<
   {
     globalContext?: Record<string, unknown>
     viteDevServer?: ViteDevServer
-    isServerEntryDev?: true
     viteConfig?: ResolvedConfig
     viteConfigRuntime?: ViteConfigRuntime
     isPrerendering?: true
@@ -219,10 +217,6 @@ async function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
   const { success } = await updateUserFiles()
   if (!success) return
   assertGlobalContextIsDefined()
-}
-function setGlobalContext_isServerEntryDev(): void {
-  assertIsNotInitializedYet()
-  globalObject.isServerEntryDev = true
 }
 function setGlobalContext_viteConfig(viteConfig: ResolvedConfig, viteConfigRuntime: ViteConfigRuntime): void {
   if (globalObject.viteConfig) return
@@ -626,7 +620,7 @@ function addGlobalContextCommon(
       assetsManifest: null,
       _viteDevServer: viteDevServer,
       // Same as createDevMiddleware() — https://vike.dev/globalContext#devMiddleware
-      devMiddleware: globalObject.isServerEntryDev && viteDevServer ? viteDevServer.middlewares : null,
+      devMiddleware: viteDevServer ? viteDevServer.middlewares : null,
       viteConfig,
     }
   } else {

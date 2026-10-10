@@ -13,6 +13,13 @@ function testRun(
   const isMakingPageContextJsonRequest = cmd === 'pnpm run dev:server' || cmd === 'pnpm run prod'
   const isDev = cmd === 'pnpm run dev' || cmd === 'pnpm run dev:server'
 
+  if (cmd === 'pnpm run dev:server' || cmd === 'pnpm run prod') {
+    test('globalContext.devMiddleware', async () => {
+      // See /dev-middleware in server/index.js
+      expect(await fetchHtml('/dev-middleware')).toBe(isDev ? 'true' : 'null')
+    })
+  }
+
   test('HTML', async () => {
     const t = async (url: string) => {
       const html = await fetchHtml(url)

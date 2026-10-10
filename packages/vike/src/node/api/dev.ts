@@ -13,7 +13,6 @@ import {
   getServerEntryFilePath_ifDevCli,
   isServerChildProcess,
 } from './serverEntryDev.js'
-import { setGlobalContext_isServerEntryDev } from '../../server/runtime/globalContext.js'
 assertIsNotProductionRuntime()
 
 /**
@@ -30,9 +29,6 @@ async function dev(
   const serverEntryFilePath = await getServerEntryFilePath_ifDevCli()
   const serverEntryIsChildProcess = isServerChildProcess()
   if (serverEntryFilePath && !serverEntryIsChildProcess) return await startServerEntry_parent()
-  // globalContext.devMiddleware is only for +serverEntry.js
-  // - Otherwise Vite's development server already runs its middlewares before Vike
-  if (serverEntryFilePath) setGlobalContext_isServerEntryDev()
 
   const server = await createServer(
     serverEntryFilePath
