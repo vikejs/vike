@@ -15,7 +15,7 @@ function testRun(...args: Parameters<typeof testRunClassic>) {
     expect(await fetchHtml('/dev-middleware')).toBe(isDev ? 'set' : 'null')
     // Reading it in +server.ts warns
     if (isDev) {
-      expectLog('globalContext.devMiddleware hangs the development server', {
+      expectLog("You don't need globalContext.devMiddleware", {
         filter: (log) => log.logSource === 'stderr',
       })
     }
