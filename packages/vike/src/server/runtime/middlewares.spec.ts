@@ -23,12 +23,12 @@ const telefunc = enhance(() => new Response('telefunc'), { name: 'telefunc', met
 const orderZero = enhance(() => new Response('order zero'), { name: 'orderZero', path: '/order-zero', order: 0 })
 
 // Applies the list as a server does, with a stand-in for Vike's pages
-async function serve(middlewares: Middleware[], url: string) {
+async function serve(middlewares: Middleware[], url: string, method = 'GET') {
   const router = new UniversalRouter(true, false)
-  const pages = enhance(() => new Response('page'), { method: 'GET', path: '/**' })
+  const pages = enhance(() => new Response('page'), { method: ['GET', 'HEAD', 'POST'], path: '/**' })
   apply(router, [...middlewares.filter((m) => m.name !== 'vike'), pages])
   const handler = router[universalSymbol] as UniversalHandler
-  const response = await handler(new Request(`http://localhost${url}`), {}, {} as RuntimeAdapter)
+  const response = await handler(new Request(`http://localhost${url}`, { method }), {}, {} as RuntimeAdapter)
   return `${response.status} ${await response.text()}`
 }
 
@@ -64,6 +64,12 @@ describe('getMiddlewares()', () => {
     }
     // Outside the Base URL
     expect(await serve(getMiddlewares([auth], '/app/'), '/dash')).toBe('200 page')
+  })
+
+  it('matches the method, HEAD as GET', async () => {
+    const middlewares = getMiddlewares([auth], '/')
+    expect(await serve(middlewares, '/dash', 'POST')).toBe('200 page')
+    expect(await serve(middlewares, '/dash', 'HEAD')).toBe('401 http://localhost/dash')
   })
 
   it("prepends the Base URL to a handler's path", () => {
