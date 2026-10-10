@@ -203,7 +203,7 @@ but you've requested "2025-07-18". Falling back to "2025-07-12"...
   // TO-DO/soon: remove once these test apps use the @vikejs/* adapters' next version, and +server instead of vike-photon or vike-server
   function isUniversalMiddlewareDeprecation() {
     return (
-      logText.includes('vike/universal-middleware is deprecated') &&
+      logText.includes("You're using a deprecated Vike extension") &&
       /\/(universal-deploy|custom-server-entry|vite-plugin-vercel|photon-cloudflare|photon-vercel|vike-server|boilerplate-[a-z-]+)\//.test(
         testInfo?.testFile?.replaceAll('\\', '/') ?? '',
       )

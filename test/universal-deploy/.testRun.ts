@@ -7,7 +7,7 @@ function testRun(...args: Parameters<typeof testRunClassic>) {
   testRunClassic(...args)
 
   test('@vikejs/express 0.3.0 imports the deprecated vike/universal-middleware', () => {
-    expectLog(/vike\/universal-middleware is deprecated: .* to 0\.4\.0 or above/, { allLogs: true })
+    expectLog(/You're using a deprecated Vike extension/, { allLogs: true })
   })
 
   test('Running on Express', async () => {
