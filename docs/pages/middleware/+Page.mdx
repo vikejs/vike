@@ -31,7 +31,7 @@ export default [auth, health]
 ```
 
 A `+middleware` is a [Universal Middleware](https://universal-middleware.dev/): it works with any server (Hono, Express, ...). Where it runs depends on its `path` and `order`:
-- With a `path` and without `order` (or with `order: 0`), it's a handler: it runs after your server's own routes, next to Vike's pages.
+- With a `path` and without `order` (or with `order: 0`), it's a handler (which needs a `method`): it runs after your server's own routes, next to Vike's pages.
 - Otherwise it runs before your server's own routes (only for the URLs that match its `path`, if it has one).
 
 A `path` is relative to the <Link href="/base-url">Base URL</Link>. For a `+middleware` that runs before your routes, a <Link href="/pageContext-json">`.pageContext.json` request</Link> also counts as a request to its page: `path: '/admin/**'` also covers `/admin/settings/index.pageContext.json`. The `+middleware` receives the original request.
