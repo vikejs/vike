@@ -9,7 +9,7 @@ import {
 import { getAppMiddlewares, type Middleware } from './middlewares.js'
 import '../assertEnvServer.js'
 
-// Vike as the whole server (`vike/fetch`, and `$ vike dev` and `$ vike preview` without +server.js): it applies `globalContext.middlewares` like any other server
+// Vike's own server: `vike/fetch`, `vike(app)`, and `$ vike dev` and `$ vike preview` when the app has +middleware. It applies `globalContext.middlewares` in one router.
 async function universalVikeHandler(
   request: Request,
   context: Universal.Context,
