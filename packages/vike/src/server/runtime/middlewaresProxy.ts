@@ -1,5 +1,5 @@
-export { middlewaresBeforeRoutes }
-export { middlewaresAfterRoutes }
+export { middlewaresProxy_middlewares }
+export { middlewaresProxy_handlers }
 
 import {
   enhance,
@@ -16,7 +16,7 @@ import '../assertEnvServer.js'
 
 // What `vike(app)` runs before the app's routes, looked up upon each request: the +middleware that aren't handlers, as Universal Middleware's
 // router runs them (its pipe() can't pass the request on): the first Response answers, response functions apply to the final response.
-const middlewaresBeforeRoutes = enhance(
+const middlewaresProxy_middlewares = enhance(
   async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) => {
     const middlewares = await getAppMiddlewares()
     // An invalid config: Vike's pages show the error, instead of the app's routes running without the +middleware
@@ -43,7 +43,7 @@ const middlewaresBeforeRoutes = enhance(
 )
 
 // What `vike(app)` runs after the app's routes, looked up upon each request: the +middleware that are handlers, then Vike's pages
-const middlewaresAfterRoutes = enhance(
+const middlewaresProxy_handlers = enhance(
   async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) =>
     // A method that no handler and no page answers (e.g. DELETE): what a server answers without a route for it
     (await getRouter(await getAppMiddlewares())(request, context, runtime)) ??
