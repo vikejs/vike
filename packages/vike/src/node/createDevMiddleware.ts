@@ -19,7 +19,7 @@ async function createDevMiddleware(
   // `$ vike dev` runs +serverEntry.js => it already created Vite's development server — https://vike.dev/serverEntry
   assertWarning(
     !getServerEntryViteServer(),
-    `${pc.cyan('createDevMiddleware()')} in +serverEntry.js creates a second Vite development server, so HMR won't work: ${pc.cyan('$ vike dev')} already created one, use ${pc.cyan('globalContext.devMiddleware')} instead`,
+    `Use ${pc.cyan('globalContext.devMiddleware')} instead of running ${pc.cyan('createDevMiddleware()')} as it creates a second Vite development server: Vite's development server was already created`,
     { onlyOnce: true },
   )
 
