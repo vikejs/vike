@@ -21,6 +21,7 @@ export { clearGlobalContext }
 export { assertBuildInfo }
 export { updateUserFiles }
 export { vikeConfigErrorRecoverMsg }
+export { getDevMiddleware }
 export type { BuildInfo }
 export type { GlobalContextServerInternal }
 
