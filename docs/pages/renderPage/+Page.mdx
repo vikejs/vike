@@ -183,7 +183,10 @@ Unless you have a reason, we generally recommend using <Link href="/server">`+se
 2. Vike restarts your server process only when a file imported by `+serverEntry.js` changes: modifying a page doesn't restart your server (the page is updated with <Link href="/glossary#hmr">HMR</Link>).
    > If you run the server yourself, you'll need a watcher (e.g. `node --watch` or `nodemon`) which doesn't know about Vite's module graph.
 
+TODO/ai show succinct example that uses createDevMiddleware()
+
 > See also:
+> - <Link href="/createDevMiddleware" />
 > - <Link href="/server" />
 > - <Link href="/server#extra-control" />
 
@@ -192,7 +195,6 @@ Unless you have a reason, we generally recommend using <Link href="/server">`+se
 
 - <Link href="/server" />
 - <Link href="/serverEntry" />
-- <Link href="/createDevMiddleware" />
 - <Link href="/headers" />
 - <Link href="/injectFilter" />
 - <Link href="/preloading#early-hints" />
