@@ -1,0 +1,22 @@
+{
+  "scripts": {
+    "dev": "vike dev",
+    "build": "vike build",
+    "preview": "vike build && vike preview",
+    "dev:halves": "cross-env MIDDLEWARES=halves vike dev",
+    "preview:halves": "vike build && cross-env MIDDLEWARES=halves vike preview"
+  },
+  "dependencies": {
+    "@universal-middleware/core": "^0.6.1",
+    "@universal-middleware/hono": "^0.5.2",
+    "hono": "^4.13.13",
+    "vike": "0.4.267"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "cross-env": "^10.0.0",
+    "typescript": "^7.0.2",
+    "vite": "^7.3.1"
+  },
+  "type": "module"
+}

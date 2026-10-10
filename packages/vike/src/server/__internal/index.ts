@@ -1,6 +1,9 @@
 // Used by vike:build:pluginProdBuildEntry
 export { setGlobalContext_prodBuildEntry } from '../runtime/globalContext.js'
 
+// Used by the vike(app) of the @vikejs/* server adapters
+export { middlewaresProxy_middlewares, middlewaresProxy_handlers } from '../runtime/middlewaresProxy.js'
+
 // Used by vite-plugin-vercel
 export { route, getPagesAndRoutes }
 export type { PageRoutes, PageFile, PageConfigRuntime as PageConfig }

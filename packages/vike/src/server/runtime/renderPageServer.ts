@@ -1,7 +1,6 @@
 export { renderPageServer }
 export { getRequestTag }
 export type { PageContextInit }
-export type { PageContextInitInternal }
 export type { PageContextBegin }
 export type { RequestTag }
 
@@ -54,7 +53,6 @@ import {
   createHttpResponseErrorFallback,
   createHttpResponseErrorFallback_noGlobalContext,
   createHttpResponseBaseIsMissing,
-  createHttpResponseFromUniversalMiddleware,
 } from './renderPageServer/createHttpResponse.js'
 import { logRuntimeError, logRuntimeInfo } from './loggerRuntime.js'
 import { assertArguments } from './renderPageServer/assertArguments.js'
@@ -69,22 +67,12 @@ import {
   type PageContext_loadPageConfigsLazyServerSide,
 } from './renderPageServer/loadPageConfigsLazyServerSide.js'
 import { resolveRedirects } from './renderPageServer/resolveRedirects.js'
-import type { PageContextInit, PageContextInitInternal, PageContextInternalServer } from '../../types/PageContext.js'
+import type { PageContextInit, PageContextInternalServer } from '../../types/PageContext.js'
 import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.js'
 import { forkPageContext } from '../../shared-server-client/forkPageContext.js'
 import { getAsyncLocalStorage, type AsyncStore } from './asyncHook.js'
 import { getPageContextJson } from './renderPageServer/getPageContextJson.js'
 import '../assertEnvServer.js'
-import {
-  enhance,
-  apply,
-  universalSymbol,
-  UniversalRouter,
-  getAdapterRuntime,
-  type EnhancedMiddleware,
-  type UniversalHandler,
-} from '@universal-middleware/core'
-import { createRequestAdapter } from '@universal-middleware/node/request'
 
 const globalObject = getGlobalObject('runtime/renderPageServer.ts', {
   httpRequestsCount: 0,
@@ -97,7 +85,7 @@ type PageContextAfterRender = PageContextCreatedServerWithoutGlobalContext & {
 type PageContextBegin = ReturnType<typeof getPageContextBegin>
 
 // `renderPageServer()` calls `renderPageServerNominal()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that Vike never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
-async function renderPageServer<PageContextUserAdded extends {}, PageContextInitUser extends PageContextInitInternal>(
+async function renderPageServer<PageContextUserAdded extends {}, PageContextInitUser extends PageContextInit>(
   pageContextInit: PageContextInitUser,
 ): Promise<
   // Partial because rendering may fail at any user hook.
@@ -132,7 +120,7 @@ function getPageContextReturn(pageContextFinish: PageContextAfterRender) {
 }
 
 async function renderPageServerEntryOnceBegin(
-  pageContextInit: PageContextInitInternal,
+  pageContextInit: PageContextInit,
   requestId: number,
   asyncStore: AsyncStore,
 ): Promise<PageContextAfterRender> {
@@ -176,13 +164,7 @@ async function renderPageServerEntryOnceBegin(
 
   const pageContextBegin = getPageContextBegin(pageContextInit, globalContext, requestId, asyncStore)
 
-  const middlewares: EnhancedMiddleware[] = (globalContext.config.middleware ?? []).flat()
-  const renderPageServerEntry = () => renderPageServerEntryOnce(pageContextBegin, globalContext, requestId)
-  if (middlewares.length === 0) {
-    return renderPageServerEntry()
-  } else {
-    return renderPageServerEntryWithMiddlewares(pageContextBegin, renderPageServerEntry, middlewares)
-  }
+  return renderPageServerEntryOnce(pageContextBegin, globalContext, requestId)
 }
 
 async function renderPageServerEntryOnce(
@@ -373,54 +355,6 @@ async function renderPageServerEntryRecursive_onError(
   return pageContextErrorPage
 }
 
-const requestAdapter = createRequestAdapter()
-async function renderPageServerEntryWithMiddlewares(
-  pageContext: PageContextBegin,
-  renderPageServerEntry: () => Promise<PageContextAfterRender>,
-  middlewares: EnhancedMiddleware[],
-) {
-  const router = new UniversalRouter(true, false)
-  let httpResponseVikeCore = undefined as undefined | HttpResponse
-  // Wrap rendering into universal-middleware routing
-  apply(router, [
-    enhance(
-      async function adaptRenderPageServerEntryOnceInternal(): Promise<Response> {
-        const pageContextHttpResponse = await renderPageServerEntry()
-        const { httpResponse } = pageContextHttpResponse
-        pageContext = pageContextHttpResponse as any
-        httpResponseVikeCore = httpResponse
-        const readable = httpResponse.getReadableWebStream()
-        return new Response(readable, {
-          status: httpResponse.statusCode,
-          headers: httpResponse.headers,
-        })
-      },
-      {
-        name: 'vike',
-        method: ['GET', 'POST', 'PUT', 'PATCH', 'HEAD', 'OPTIONS'],
-        path: '/**', // rou3 format
-        immutable: true, // avoids cloning the function we just created
-      },
-    ),
-    ...middlewares,
-  ])
-  const handler = router[universalSymbol] as UniversalHandler
-
-  const request =
-    pageContext._reqWeb ??
-    (pageContext._nodeDev
-      ? requestAdapter(pageContext._nodeDev.req, pageContext._nodeDev.res)
-      : new Request(new URL(pageContext.urlOriginal, 'http://localhost').toString(), {
-          headers: pageContext.headers ?? {},
-        }))
-
-  const res = await handler(request, {}, getAdapterRuntime('other', { params: undefined }))
-
-  const httpResponse = createHttpResponseFromUniversalMiddleware(res, httpResponseVikeCore?.earlyHints)
-  objectAssign(pageContext, { httpResponse })
-  return pageContext
-}
-
 function logHttpRequest(urlOriginal: string, pageContextInit: PageContextInit, requestId: number) {
   const pageContext = createPageContextServerWithoutGlobalContext(pageContextInit, requestId)
   logRuntimeInfo?.(getRequestInfoMessage(urlOriginal), pageContext, 'info')
@@ -510,7 +444,7 @@ function getPageContextHttpErrorFallback_noGlobalContext(
 }
 
 function getPageContextBegin(
-  pageContextInit: PageContextInitInternal,
+  pageContextInit: PageContextInit,
   globalContext: GlobalContextServerInternal,
   requestId: number,
   asyncStore: AsyncStore,

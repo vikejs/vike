@@ -13,7 +13,7 @@ Paths below are relative to https://vike.dev (e.g. `/data-fetching` → https://
 
 - /config — `+` config files, cross-directory inheritance, cumulative vs overridable settings, `.clear.js` (reset), `.default.js` (fallback), `.server.js`/`.client.js` env markers, group dirs `(name)`, pointer imports
 - /pageContext — per-page/request object: `routeParams`, `urlParsed`/`urlPathname`, `isClientSide`/`isHydration`, `data`, `config`, `user`, `content` (non-HTML page body), custom props, `PageContextServer`/`PageContextClient` types
-- /globalContext — app-wide singleton per env: `config`, `pages`, `assetsManifest`, `devMiddleware`; init via `onCreateGlobalContext`, read via `getGlobalContext()`, `GlobalContext` type
+- /globalContext — app-wide singleton per env: `config`, `pages`, `assetsManifest`, `devMiddleware`, `middlewares`; init via `onCreateGlobalContext`, read via `getGlobalContext()`, `GlobalContext` type
 - /data-fetching — `+data()` + `useData()`, server-side fetch, direct DB/ORM, `passToClient`, RPC/Telefunc, TanStack Query, GraphQL, SSG data, i18n
 - /data — `+data()` hook, server-side default (`.client.js`/`.shared.js` variants), returns `pageContext.data` (serialized to client), `useData()`, `throw render()`/`redirect()`, manual wiring without `vike-{react,vue,solid}`
 - /file-env — `.server.js`/`.client.js`/`.shared.js`/`.ssr.js` suffixes, isolate server secrets, browser-only code, control hook env (`meta.env`)
@@ -99,6 +99,7 @@ Paths below are relative to https://vike.dev (e.g. `/data-fetching` → https://
 - /api-routes — `+server.js` HTTP endpoints, framework integration, RPC (Telefunc), file uploads, HTTP caching, middleware
 - /headers — request headers: `pageContext.headers` (normalized) / `headersOriginal`, cookie parsing, Headers API
 - /headersResponse — `+headersResponse` response headers (static or fn), `pageContext.headersResponse`, `Set-Cookie`, server-only, beta
+- /middleware — `+middleware` server middlewares (Universal Middleware, experimental), before your server's routes or after them as handlers (`path` without `order`), `path` matched without Base URL and with `.pageContext.json`, `globalContext.middlewares` for your own server, not run by `renderPage()`
 - /csp — `+csp` Content Security Policy nonce (`nonce: true` or callback), per-request nonce, `script-src`, beta
 - /redirects — `+redirects` permanent 301s, route params `@id`, glob wildcards, external URLs, server-only (not client nav), link aliasing
 - /passToClient — `+passToClient` which `pageContext`/`globalContext` props serialize to client, dot-notation nesting, `@brillout/json-serializer` (class prototypes lost), streaming `Promise`/`ReadableStream`/async iterable values

@@ -722,6 +722,11 @@ const headings = [
   },
   {
     level: 2,
+    title: '`+middleware`',
+    url: '/middleware',
+  },
+  {
+    level: 2,
     title: '`+csp`',
     url: '/csp',
   },

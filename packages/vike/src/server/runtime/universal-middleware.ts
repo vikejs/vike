@@ -1,34 +1,16 @@
-import { enhance, type RuntimeAdapterTarget } from '@universal-middleware/core'
-import { renderPageServer } from './renderPageServer.js'
+import universalVikeHandler from './universalVikeHandler.js'
+import { assertWarning } from '../../utils/assert.js'
 import '../assertEnvServer.js'
 
-async function universalVikeHandler<T extends string>(
-  request: Request,
-  context: Universal.Context,
-  runtime: RuntimeAdapterTarget<T>,
-) {
-  const pageContextInit = {
-    ...context,
-    ...runtime,
-    runtime,
-    urlOriginal: request.url,
-    headersOriginal: request.headers,
-    _reqWeb: request,
-  }
-  const pageContext = await renderPageServer(pageContextInit)
-  const response = pageContext.httpResponse
-  const readable = response.getReadableWebStream()
-  return new Response(readable, {
-    status: response.statusCode,
-    headers: response.headers,
-  })
-}
+// Vike's own server imports universalVikeHandler.js directly: only the released @vikejs/* adapters, vike-photon and vike-server import this entry
+assertWarning(
+  false,
+  [
+    "You're using a deprecated Vike extension:",
+    '- If you use one of the following, update to its latest version: @vikejs/hono, @vikejs/express, @vikejs/fastify, @vikejs/h3, @vikejs/elysia, @vikejs/hattip or @vikejs/srvx',
+    '- If you use vike-photon or vike-server, migrate to +server.js — see https://vike.dev/migration/server',
+  ].join('\n'),
+  { onlyOnce: true },
+)
 
-const universalVikeHandlerEnhanced = enhance(universalVikeHandler, {
-  name: 'vike',
-  method: ['GET', 'POST', 'PUT', 'PATCH', 'HEAD', 'OPTIONS'],
-  path: '/**',
-  immutable: true,
-})
-
-export default universalVikeHandlerEnhanced
+export default universalVikeHandler

@@ -1,0 +1,17 @@
+{
+  "scripts": {
+    "dev": "vike dev",
+    "build": "vike build",
+    "preview": "vike build && vike preview"
+  },
+  "dependencies": {
+    "@universal-middleware/core": "^0.6.1",
+    "vike": "0.4.267"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "typescript": "^7.0.2",
+    "vite": "^7.3.1"
+  },
+  "type": "module"
+}

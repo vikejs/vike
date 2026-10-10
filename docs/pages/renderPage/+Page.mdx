@@ -150,7 +150,6 @@ But, if you use Server-Side Rendering (SSR), then you need a production server a
 
 The fundamental difference is that:
 - `vike(app)` is more zero-config while `renderPage()` is lower-level
-{/* TODO/soon explain +middleware difference between the two */}
 
 | | `vike(app)` | `renderPage()` |
 | --- | --- | --- |
@@ -159,6 +158,7 @@ The fundamental difference is that:
 | Custom `pageContext` properties | With <Link href="/onCreatePageContext">`+onCreatePageContext`</Link> | Passed to `renderPage()` |
 | `pageContext.req` and `pageContext.res` | Set for you | Passed to `renderPage()` (if needed) |
 | HTTP response | Sent for you | Sent by you |
+| <Link href="/middleware">`+middleware`</Link> | Run for you, around your routes | Not run: apply <Link href="/middleware#manual-integration">`globalContext.middlewares`</Link> |
 
 > `vike(app)` and `renderPage()` are interchangeable: you can use either one, regardless of whether you use <Link href="/server">`+server.js`</Link>, <Link href="/serverEntry">`+serverEntry.js`</Link>, or run your server directly (e.g. `$ node server/index.js`).
 

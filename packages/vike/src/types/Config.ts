@@ -660,11 +660,11 @@ type ConfigBuiltIn = {
   /**
    * @experimental
    *
-   * Add server middlewares.
+   * Add server middlewares, which run around your server's own routes.
    *
    * The middlewares defined via `+middleware` are so called "Universal Middleware" — they work with any JavaScript server (Hono, Express, Cloudflare, ...).
    *
-   * https://github.com/magne4000/universal-middleware
+   * https://vike.dev/middleware
    */
   middleware?: EnhancedMiddleware | EnhancedMiddleware[]
 
