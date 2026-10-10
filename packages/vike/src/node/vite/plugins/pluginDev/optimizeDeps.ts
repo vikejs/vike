@@ -76,6 +76,8 @@ const optimizeDeps = {
         */
         '@brillout/vite-plugin-server-entry',
         'vike',
+        // Vike needs its own copy, not an app's older one that the optimizer would pre-bundle for every importer
+        '@universal-middleware/core',
       ],
     },
   },
