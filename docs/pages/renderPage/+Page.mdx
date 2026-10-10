@@ -66,9 +66,9 @@ const app = express()
 // Dev/prod middleware
 if (import.meta.env.DEV) {
   // Vite's development middleware (HMR, transpiling, static assets, ...)
-  const globalContext = await getGlobalContext()
-  assert(!globalContext.isClientSide && globalContext.devMiddleware) // TypeScript narrowing
-  app.use(globalContext.devMiddleware)
+  const { devMiddleware } = await getGlobalContext()
+  assert(devMiddleware)
+  app.use(devMiddleware)
 } else {
   // In production, we need to serve our static assets ourselves.
   // (In dev, Vite's middleware serves our static assets.)
