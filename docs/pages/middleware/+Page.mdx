@@ -1,0 +1,83 @@
+import { Link, Warning } from '@brillout/docpress'
+import { ConfigSpec } from '../../components'
+
+<ConfigSpec
+  env="server"
+  cumulative
+  global
+/>
+
+You can add server middlewares by using `+middleware`, typically for Vike extensions that handle requests (e.g. authentication).
+
+<Warning>`+middleware` is experimental: expect breaking changes in any minor version update.</Warning>
+
+```ts
+// pages/+middleware.ts
+// Environment: server
+
+import { enhance, MiddlewareOrder } from '@universal-middleware/core'
+
+// Runs before your server's own routes
+const auth = enhance(
+  (request: Request) =>
+    request.headers.has('authorization') ? undefined : new Response('Unauthorized', { status: 401 }),
+  { name: 'auth', path: '/admin/**', order: MiddlewareOrder.AUTHORIZATION },
+)
+
+// Runs after your server's own routes, which can override it
+const health = enhance(() => new Response('OK'), { name: 'health', path: '/health', method: 'GET' })
+
+export default [auth, health]
+```
+
+A `+middleware` is a [Universal Middleware](https://universal-middleware.dev/): it works with any server (Hono, Express, ...). Where it runs depends on its `path` and `order`:
+- With a `path` and without `order` (or with `order: 0`), it's a handler: it runs after your server's own routes, next to Vike's pages.
+- Otherwise it runs before your server's own routes (only for the URLs that match its `path`, if it has one).
+
+A `path` is relative to the <Link href="/base-url">Base URL</Link>. For a `+middleware` that runs before your routes, a <Link href="/pageContext-json">`.pageContext.json` request</Link> also counts as a request to its page: `path: '/admin/**'` also covers `/admin/settings/index.pageContext.json`. The `+middleware` receives the original request.
+
+> <Link href="/renderPage">`renderPage()`</Link> doesn't run `+middleware`.
+
+
+## Manual integration
+
+Vike's built-in server runs all `+middleware`. If you use your own server (e.g. with <Link href="/server">`+server`</Link>), apply <Link href="/globalContext#middlewares">`globalContext.middlewares`</Link> around your routes:
+
+```ts
+// +server.ts
+// Environment: server
+
+import { Hono } from 'hono'
+import { apply } from '@universal-middleware/hono'
+import { getGlobalContext } from 'vike'
+import assert from 'node:assert'
+
+const globalContext = await getGlobalContext()
+assert(!globalContext.isClientSide)
+const { middlewares } = globalContext
+
+const app = new Hono()
+// The +middleware that aren't handlers
+apply(app, middlewares.filter((m) => !m.isHandler))
+// Your routes
+app.get('/api/me', getMe)
+// The +middleware that are handlers, then Vike's pages
+apply(app, middlewares.filter((m) => m.isHandler))
+
+export default {
+  fetch: app.fetch,
+}
+```
+
+> `globalContext.middlewares` ends with Vike's pages, so you don't need `renderPage()`.
+
+> With another server, use the `apply()` function of its [Universal Middleware adapter](https://universal-middleware.dev/).
+
+> The list is read when your server starts: restart your server after changing a `+middleware`.
+
+
+## See also
+
+- <Link href="/globalContext#middlewares">`globalContext.middlewares`</Link>
+- <Link href="/server" />
+- <Link href="/base-url" />

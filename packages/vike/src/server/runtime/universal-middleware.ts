@@ -1,27 +1,34 @@
-import { enhance, type RuntimeAdapterTarget } from '@universal-middleware/core'
-import { renderPageServer } from './renderPageServer.js'
+import {
+  apply,
+  enhance,
+  UniversalRouter,
+  universalSymbol,
+  type RuntimeAdapterTarget,
+  type UniversalHandler,
+} from '@universal-middleware/core'
+import { getAppMiddlewares, type Middleware } from './middlewares.js'
 import '../assertEnvServer.js'
 
-async function universalVikeHandler<T extends string>(
+// Vike as the whole server (`vike/fetch`, and `$ vike dev` and `$ vike preview` without +server.js): it applies `globalContext.middlewares` like any other server
+async function universalVikeHandler(
   request: Request,
   context: Universal.Context,
-  runtime: RuntimeAdapterTarget<T>,
+  runtime: RuntimeAdapterTarget<unknown>,
 ) {
-  const pageContextInit = {
-    ...context,
-    ...runtime,
-    runtime,
-    urlOriginal: request.url,
-    headersOriginal: request.headers,
-    _reqWeb: request,
+  return getRouter(await getAppMiddlewares())(request, context, runtime)
+}
+
+// The list changes only when the config does
+const routers = new WeakMap<Middleware[], UniversalHandler>()
+function getRouter(middlewares: Middleware[]): UniversalHandler {
+  let handler = routers.get(middlewares)
+  if (!handler) {
+    const router = new UniversalRouter(true, false)
+    apply(router, middlewares)
+    handler = router[universalSymbol] as UniversalHandler
+    routers.set(middlewares, handler)
   }
-  const pageContext = await renderPageServer(pageContextInit)
-  const response = pageContext.httpResponse
-  const readable = response.getReadableWebStream()
-  return new Response(readable, {
-    status: response.statusCode,
-    headers: response.headers,
-  })
+  return handler
 }
 
 const universalVikeHandlerEnhanced = enhance(universalVikeHandler, {

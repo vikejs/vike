@@ -20,6 +20,7 @@ type GlobalContextServer = Pick<
   | 'pages'
   | 'baseServer'
   | 'baseAssets'
+  | 'middlewares'
   | 'isClientSide'
 > & {
   /** https://vike.dev/warning/internals */

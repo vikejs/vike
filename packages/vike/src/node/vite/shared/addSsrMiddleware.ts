@@ -1,12 +1,19 @@
 export { addSsrMiddleware }
 
-import { type PageContextInitInternal, renderPageServer } from '../../../server/runtime/renderPageServer.js'
+import { type PageContextInit, renderPageServer } from '../../../server/runtime/renderPageServer.js'
+import universalVikeHandler from '../../../server/runtime/universal-middleware.js'
+import { getAppMiddlewares } from '../../../server/runtime/middlewares.js'
+import { createHttpResponseFromUniversalMiddleware } from '../../../server/runtime/renderPageServer/createHttpResponse.js'
+import { getAdapterRuntime } from '@universal-middleware/core'
+import { createRequestAdapter } from '@universal-middleware/node/request'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
 import type { ServerResponse } from 'node:http'
 import { assertWarning } from '../../../utils/assert.js'
 import pc from '@brillout/picocolors'
 import '../assertEnvVite.js'
 type ConnectServer = ViteDevServer['middlewares']
+
+const requestAdapter = createRequestAdapter()
 
 function addSsrMiddleware(
   middlewares: ConnectServer,
@@ -19,10 +26,9 @@ function addSsrMiddleware(
     const url = req.originalUrl || req.url
     if (!url) return next()
     const { headers } = req
-    const pageContextInit: PageContextInitInternal = {
+    const pageContextInit: PageContextInit = {
       urlOriginal: url,
       headersOriginal: headers,
-      _nodeDev: { req, res },
     }
     Object.defineProperty(pageContextInit, 'userAgent', {
       get() {
@@ -41,9 +47,17 @@ function addSsrMiddleware(
       },
       enumerable: false,
     })
-    let pageContext: Awaited<ReturnType<typeof renderPageServer>>
+    let httpResponse: Awaited<ReturnType<typeof renderPageServer>>['httpResponse']
     try {
-      pageContext = await renderPageServer(pageContextInit)
+      // The app has +middleware: they run around Vike's pages, as on any server
+      if ((await getAppMiddlewares()).length > 1) {
+        const request = requestAdapter(req, res)
+        const response = await universalVikeHandler(request, {}, getAdapterRuntime('other', { params: undefined }))
+        httpResponse = createHttpResponseFromUniversalMiddleware(response)
+      } else {
+        // Vike's pages answer directly: a `Response` only takes a status code from 200 to 599 (e.g. not `throw render(666)`)
+        httpResponse = (await renderPageServer(pageContextInit)).httpResponse
+      }
     } catch (err) {
       // Throwing an error in a connect middleware shuts down the server
       console.error(err)
@@ -53,7 +67,7 @@ function addSsrMiddleware(
       return next()
     }
 
-    if (pageContext.httpResponse.statusCode === 404 && isPreview && isPrerenderingEnabled) {
+    if (httpResponse.statusCode === 404 && isPreview && isPrerenderingEnabled) {
       // Serve /dist/client/404.html instead
       return next()
     }
@@ -63,7 +77,6 @@ function addSsrMiddleware(
       for (const [name, value] of Object.entries(configHeaders)) if (value) res.setHeader(name, value)
     }
 
-    const { httpResponse } = pageContext
     setHeadersWithMultipleCookies(res, httpResponse.headers)
     res.statusCode = httpResponse.statusCode
     httpResponse.pipe(res)
