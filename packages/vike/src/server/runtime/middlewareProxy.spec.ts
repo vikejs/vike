@@ -38,6 +38,11 @@ const auth = mark(
   }),
   false,
 )
+// Ordered after `auth`
+const later = mark(
+  enhance(() => new Response('later'), { name: 'later', order: MiddlewareOrder.RESPONSE_TRANSFORM }),
+  false,
+)
 const hello = mark(
   enhance(() => new Response('hello'), { name: 'hello', method: 'GET', path: '/hello' }),
   true,
@@ -59,8 +64,8 @@ describe('middlewaresBeforeRoutes', () => {
     expect(context).toEqual({ user: 'alice' })
   })
 
-  it("answers with a +middleware's Response, its response functions applied", async () => {
-    app.middlewares = [header, auth, pages]
+  it("answers with the first +middleware's Response, its response functions applied", async () => {
+    app.middlewares = [later, header, auth, pages]
     const response = (await run(middlewaresBeforeRoutes, '/')) as Response
     expect([await response.text(), response.headers.get('x-header')]).toEqual(['401', '1'])
   })
