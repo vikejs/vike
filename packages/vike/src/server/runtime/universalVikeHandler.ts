@@ -1,5 +1,5 @@
 import { enhance, getAdapterRuntime, getUniversal, type RuntimeAdapterTarget } from '@universal-middleware/core'
-import { middlewaresAfterRoutes, middlewaresBeforeRoutes } from './middlewareProxy.js'
+import { middlewaresAfterRoutes, middlewaresBeforeRoutes } from './middlewaresSingleRouteProxy.js'
 import { getAppMiddlewares } from './middlewares.js'
 import '../assertEnvServer.js'
 
