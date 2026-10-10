@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { beforeAll, describe, it, expect, vi } from 'vitest'
 import {
   enhance,
   getUniversal,
@@ -43,6 +43,7 @@ const { addMiddlewares, plusMiddlewareProxy, runPlusMiddlewares, runUniversalMid
   './plusMiddlewares.js'
 )
 const { onPlusMiddlewareChange, notifyPlusMiddlewareChange } = await import('./plusMiddlewareChange.js')
+const { setPlusMiddlewareInstalled } = await import('./assertPlusMiddlewareInstalled.js')
 const { pageMethods } = await import('./pagesHandler.js')
 
 // What `(await getGlobalContext()).middlewares` returns for the current `plusMiddlewares`
@@ -372,6 +373,8 @@ describe('plusMiddlewareProxy', () => {
 })
 
 describe('runUniversalMiddlewares()', () => {
+  // What Vike's dev and preview server does when it registers them
+  beforeAll(setPlusMiddlewareInstalled)
   const runtime = {} as RuntimeAdapter
   const text = async (result: unknown) => (result instanceof Response ? result.text() : 'passed on')
   const answer = (name: string, options: object) => enhance(() => new Response(name), { name, ...options })
@@ -421,12 +424,9 @@ describe('runUniversalMiddlewares()', () => {
     const wait = (request: Request) => new Promise((resolve) => setTimeout(resolve, id(request) === '1' ? 20 : 0))
     plusMiddlewares = [
       enhance(async (request: Request) => (await wait(request), { id: id(request) }), { name: 'context' }),
-      enhance(
-        async (request: Request) => (
-          await wait(request), (response: Response) => (response.headers.set('x-id', id(request)), response)
-        ),
-        { name: 'header' },
-      ),
+      enhance((request: Request) => (response: Response) => (response.headers.set('x-id', id(request)), response), {
+        name: 'header',
+      }),
       enhance((_request: Request, context: Universal.Context) => new Response((context as { id?: string }).id), {
         name: 'handler',
         method: 'GET',
