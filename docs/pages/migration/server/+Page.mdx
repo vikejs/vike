@@ -214,6 +214,7 @@ Rename your server entry to <Link href="/server">`+server.js`</Link> (we recomme
     const app = fastify()
     await apply(app) // [!code --]
     await vike(app) // [!code ++]
+    await app.ready() // [!code ++]
 
     export default serve(app) // [!code --]
     export default { // [!code ++]
