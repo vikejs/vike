@@ -119,9 +119,22 @@ function runPhase(
   check?: (globalContext: GlobalContextServerInternal) => void,
 ) {
   return runWithGlobalContext(request, check, (globalContext) => {
-    const middlewares = (globalContext.config.middleware ?? []).flat().filter((m) => isHandler(m) === handlers)
+    const middlewares = getPhases(globalContext.config.middleware ?? noMiddleware)[handlers ? 'handlers' : 'others']
     return runPlusMiddlewares(middlewares, globalContext.baseServer, request, context, runtime)
   })
+}
+
+// The same lists for the same config, so that their routers are reused. The config is new after a change in development.
+const noMiddleware: EnhancedMiddleware[] = []
+const phases = new WeakMap<object, { handlers: EnhancedMiddleware[]; others: EnhancedMiddleware[] }>()
+function getPhases(middleware: (EnhancedMiddleware | EnhancedMiddleware[])[]) {
+  let lists = phases.get(middleware)
+  if (!lists) {
+    const all = middleware.flat()
+    lists = { handlers: all.filter(isHandler), others: all.filter((m) => !isHandler(m)) }
+    phases.set(middleware, lists)
+  }
+  return lists
 }
 
 async function runWithGlobalContext(
@@ -155,36 +168,13 @@ async function runPlusMiddlewares(
   // Only this one of `plusMiddlewares` runs, but the router still picks the most specific handler among all
   only?: EnhancedMiddleware,
 ) {
-  const middlewares = plusMiddlewares.map((plusMiddleware) => {
-    const middleware = warnAndNormalizeMiddlewarePath(plusMiddleware)
-    assertMiddlewarePath(middleware, baseServer)
-    return middleware
-  })
-  if (middlewares.length === 0) return
-  const responseHandlers: ResponseHandler[] = []
-  // Universal Middleware's pipe() throws `No Response found` if nothing returns a Response
-  const fallThrough = new Response(null)
-  let contextAtFallThrough: Universal.Context | undefined
-  const fallThroughRoute = enhance(
-    (_request: Request, context: Universal.Context) => {
-      contextAtFallThrough = context
-      return fallThrough
-    },
-    { name: 'vike:fall-through', method: httpMethods, path: '/**' },
-  )
-  const handler = pipeRoute([
-    fallThroughRoute,
-    ...middlewares.map((middleware, i) =>
-      collectResponseHandler(
-        middleware,
-        request,
-        responseHandlers,
-        fallThroughRoute,
-        plusMiddlewares[i] === only || only === undefined,
-      ),
-    ),
-  ]) as UniversalHandler
-  const response = await handler(getRoutingRequest(request, baseServer), context, runtime)
+  if (plusMiddlewares.length === 0) return
+  const handler = getRouter(plusMiddlewares, baseServer)
+  const routingRequest = getRoutingRequest(request, baseServer)
+  const run: Run = { request, responseHandlers: [], only }
+  runs.set(routingRequest, run)
+  const response = await handler(routingRequest, context, runtime)
+  const { responseHandlers, contextAtFallThrough } = run
   // Response handlers returned by +middleware apply to the final response, which may come after this middleware
   if (response !== fallThrough) return getFinalResponse(request, responseHandlers, response)
   // The pipe's context stays local: hand the context built by the +middleware to the handlers after this middleware.
@@ -194,16 +184,53 @@ async function runPlusMiddlewares(
   return (response: Response) => getFinalResponse(request, responseHandlers, response)
 }
 
+// What a router's routes need from the request they run for, by its routing request: the router is shared by every request
+type Run = {
+  request: Request
+  responseHandlers: ResponseHandler[]
+  only: EnhancedMiddleware | undefined
+  contextAtFallThrough?: Universal.Context
+}
+const runs = new WeakMap<Request, Run>()
+
+// Universal Middleware's pipe() throws `No Response found` if nothing returns a Response
+const fallThrough = new Response(null)
+const fallThroughRoute = enhance(
+  (routingRequest: Request, context: Universal.Context) => {
+    runs.get(routingRequest)!.contextAtFallThrough = context
+    return fallThrough
+  },
+  { name: 'vike:fall-through', method: httpMethods, path: '/**' },
+)
+
+const routers = new WeakMap<EnhancedMiddleware[], UniversalHandler>()
+function getRouter(plusMiddlewares: EnhancedMiddleware[], baseServer: string) {
+  let router = routers.get(plusMiddlewares)
+  if (!router) {
+    router = pipeRoute([
+      fallThroughRoute,
+      ...plusMiddlewares.map((plusMiddleware) => {
+        const middleware = warnAndNormalizeMiddlewarePath(plusMiddleware)
+        assertMiddlewarePath(middleware, baseServer)
+        return collectResponseHandler(middleware, plusMiddleware)
+      }),
+    ]) as UniversalHandler
+    routers.set(plusMiddlewares, router)
+  }
+  return router
+}
+
 // One +middleware of the list. It matches its own path (without the `path` and `method` of the server's router, which
 // would see the raw URL) and runs on the same code as the proxy below.
 function toUniversalMiddleware(middleware: EnhancedMiddleware): PlusMiddleware {
   const name = getUniversalProp(middleware, nameSymbol)
   const order = getUniversalProp(middleware, orderSymbol)
+  const list = [middleware]
   return Object.assign(
     enhance(
       (request: Request, context: Universal.Context, runtime: RuntimeAdapter) =>
         runWithGlobalContext(request, undefined, ({ baseServer }) =>
-          runPlusMiddlewares([middleware], baseServer, request, context, runtime),
+          runPlusMiddlewares(list, baseServer, request, context, runtime),
         ),
       // Not `{ name, order }`: enhance() keeps an `order: undefined` key, and getUniversalProp(m, orderSymbol, 0) then returns undefined instead of 0
       { ...(name !== undefined && { name }), ...(order !== undefined && { order }) },
@@ -258,13 +285,7 @@ const withPages = Object.assign(
 )
 const plusMiddlewareProxy = [beforeRoutes, withPages] as const
 
-function collectResponseHandler(
-  middleware: EnhancedMiddleware,
-  request: Request,
-  responseHandlers: ResponseHandler[],
-  fallThroughRoute: EnhancedMiddleware,
-  runs: boolean,
-) {
+function collectResponseHandler(middleware: EnhancedMiddleware, plusMiddleware: EnhancedMiddleware) {
   const options = {
     name: getUniversalProp(middleware, nameSymbol),
     order: getUniversalProp(middleware, orderSymbol),
@@ -274,13 +295,18 @@ function collectResponseHandler(
   }
   // The router runs only the one handler matching the URL: a handler that passes the request on continues with the fall-through
   if (isHandler(middleware)) {
-    return enhance(async (_routingRequest: Request, context: Universal.Context, runtime: RuntimeAdapter) => {
-      const result = runs ? await getUniversal(middleware)(request, context, runtime) : undefined
-      return result ?? getUniversal(fallThroughRoute)(request, context, runtime)
+    return enhance(async (routingRequest: Request, context: Universal.Context, runtime: RuntimeAdapter) => {
+      const { request, only } = runs.get(routingRequest)!
+      const result =
+        only === undefined || only === plusMiddleware
+          ? await getUniversal(middleware)(request, context, runtime)
+          : undefined
+      return result ?? getUniversal(fallThroughRoute)(routingRequest, context)
     }, options)
   }
   // Every other +middleware runs, limited to its path if it has one
-  return enhance(async (_routingRequest: Request, context: Universal.Context, runtime: RuntimeAdapter) => {
+  return enhance(async (routingRequest: Request, context: Universal.Context, runtime: RuntimeAdapter) => {
+    const { request, responseHandlers } = runs.get(routingRequest)!
     const result = await getUniversal(middleware)(request, context, runtime)
     if (typeof result !== 'function') return result
     responseHandlers.push(result)
