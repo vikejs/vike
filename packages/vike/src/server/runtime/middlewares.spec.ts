@@ -1,13 +1,11 @@
 import { describe, it, expect } from 'vitest'
 import {
-  apply,
   enhance,
   getUniversalProp,
   MiddlewareOrder,
   orderSymbol,
   pathSymbol,
-  UniversalRouter,
-  universalSymbol,
+  pipeRoute,
   type RuntimeAdapter,
   type UniversalHandler,
 } from '@universal-middleware/core'
@@ -25,10 +23,8 @@ const orderZero = enhance(() => new Response('order zero'), { name: 'orderZero',
 
 // Applies the list as a server does, with a stand-in for Vike's pages
 async function serve(middlewares: Middleware[], url: string, method = 'GET') {
-  const router = new UniversalRouter(true, false)
   const pages = enhance(() => new Response('page'), { method: ['GET', 'HEAD', 'POST'], path: '/**' })
-  apply(router, [...middlewares.filter((m) => m.name !== 'vike'), pages])
-  const handler = router[universalSymbol] as UniversalHandler
+  const handler = pipeRoute([...middlewares.filter((m) => m.name !== 'vike'), pages]) as UniversalHandler
   const response = await handler(new Request(`http://localhost${url}`, { method }), {}, {} as RuntimeAdapter)
   return `${response.status} ${await response.text()}`
 }

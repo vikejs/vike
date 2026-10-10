@@ -1,11 +1,4 @@
-import {
-  apply,
-  enhance,
-  UniversalRouter,
-  universalSymbol,
-  type RuntimeAdapterTarget,
-  type UniversalHandler,
-} from '@universal-middleware/core'
+import { enhance, pipeRoute, type RuntimeAdapterTarget, type UniversalHandler } from '@universal-middleware/core'
 import { getAppMiddlewares, type Middleware } from './middlewares.js'
 import '../assertEnvServer.js'
 
@@ -23,9 +16,7 @@ const routers = new WeakMap<Middleware[], UniversalHandler>()
 function getRouter(middlewares: Middleware[]): UniversalHandler {
   let handler = routers.get(middlewares)
   if (!handler) {
-    const router = new UniversalRouter(true, false)
-    apply(router, middlewares)
-    handler = router[universalSymbol] as UniversalHandler
+    handler = pipeRoute(middlewares) as UniversalHandler
     routers.set(middlewares, handler)
   }
   return handler
