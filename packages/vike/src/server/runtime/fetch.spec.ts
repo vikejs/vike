@@ -6,6 +6,12 @@ vi.mock('./globalContext.js', () => ({
   getGlobalContextServerInternal: async () => ({
     globalContext: { config: { middleware: plusMiddlewares }, baseServer: '/' },
   }),
+  // A production server: the global context is loaded
+  getGlobalContextServerInternalOptional: () => ({
+    _isProduction: true,
+    config: { middleware: plusMiddlewares },
+    baseServer: '/',
+  }),
 }))
 vi.mock('./renderPageServer.js', () => ({
   renderPageServerConfigError: async () => null,

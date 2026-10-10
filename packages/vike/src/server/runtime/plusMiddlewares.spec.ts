@@ -19,6 +19,7 @@ vi.mock('./globalContext.js', () => ({
   getGlobalContextServerInternal: async () => ({
     globalContext: { config: { middleware: plusMiddlewares }, baseServer: '/' },
   }),
+  getGlobalContextServerInternalOptional: () => null,
 }))
 // The page renders its url
 vi.mock('./renderPageServer.js', () => ({

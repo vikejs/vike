@@ -5,7 +5,11 @@ export { httpMethods }
 export { plusMiddlewareProxy }
 export type { PlusMiddleware }
 
-import { getGlobalContextServerInternal, type GlobalContextServerInternal } from './globalContext.js'
+import {
+  getGlobalContextServerInternal,
+  getGlobalContextServerInternalOptional,
+  type GlobalContextServerInternal,
+} from './globalContext.js'
 import { renderPageServerConfigError } from './renderPageServer.js'
 import { warnAndNormalizeMiddlewarePath } from './warnAndNormalizeMiddlewarePath.js'
 import { assertMiddlewarePath, getRoutingRequest } from './getRoutingRequest.js'
@@ -118,10 +122,16 @@ function runPhase(
   handlers: boolean,
   check?: (globalContext: GlobalContextServerInternal) => void,
 ) {
-  return runWithGlobalContext(request, check, (globalContext) => {
-    const middlewares = getPhases(globalContext.config.middleware ?? noMiddleware)[handlers ? 'handlers' : 'others']
-    return runPlusMiddlewares(middlewares, globalContext.baseServer, request, context, runtime)
-  })
+  // In production the config doesn't change once loaded: a phase without +middleware has nothing to run or check
+  const globalContextLoaded = getGlobalContextServerInternalOptional()
+  if (globalContextLoaded?._isProduction && getPhase(globalContextLoaded, handlers).length === 0) return
+  return runWithGlobalContext(request, check, (globalContext) =>
+    runPlusMiddlewares(getPhase(globalContext, handlers), globalContext.baseServer, request, context, runtime),
+  )
+}
+
+function getPhase(globalContext: GlobalContextServerInternal, handlers: boolean) {
+  return getPhases(globalContext.config.middleware ?? noMiddleware)[handlers ? 'handlers' : 'others']
 }
 
 // The same lists for the same config, so that their routers are reused. The config is new after a change in development.

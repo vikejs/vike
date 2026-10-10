@@ -6,6 +6,7 @@ vi.mock('./globalContext.js', () => ({
   getGlobalContextServerInternal: async () => ({
     globalContext: { config: { middleware: plusMiddlewares }, baseServer: '/' },
   }),
+  getGlobalContextServerInternalOptional: () => null,
 }))
 // The page renders its url and the context it got
 vi.mock('./renderPageServer.js', () => ({
