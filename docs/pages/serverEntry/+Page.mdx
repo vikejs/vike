@@ -168,13 +168,13 @@ import type { IncomingMessage, ServerResponse } from 'node:http'
 
 const globalContext = await getGlobalContext()
 assert(!globalContext.isClientSide)
-// Vite's development middleware (null in production)
-const { devMiddleware } = globalContext
 
 Bun.serve({
   port: 3000,
   async fetch(request) {
-    if (devMiddleware) {
+    if (import.meta.env.DEV) {
+      const { devMiddleware } = globalContext
+      assert(devMiddleware) // TypeScript narrowing
       // Vite's development middleware, through srvx's emulation of Node.js's req/res
       let handled = true
       const response = await fetchNodeHandler(
