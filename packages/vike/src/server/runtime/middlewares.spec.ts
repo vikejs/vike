@@ -11,15 +11,23 @@ import {
 } from '@universal-middleware/core'
 import { getMiddlewares, type Middleware } from './middlewares.js'
 
-const auth = enhance((request: Request) => new Response(request.url, { status: 401 }), {
-  name: 'auth',
-  method: 'GET',
-  path: '/dash',
-  order: MiddlewareOrder.AUTHORIZATION,
-})
+// Answers its path with a 401 and the request's URL
+const authAt = (path: string) =>
+  enhance((request: Request) => new Response(request.url, { status: 401 }), {
+    name: 'auth',
+    method: 'GET',
+    path,
+    order: MiddlewareOrder.AUTHORIZATION,
+  })
+const auth = authAt('/dash')
 const logger = enhance(() => undefined, { name: 'logger' })
 const telefunc = enhance(() => new Response('telefunc'), { name: 'telefunc', method: 'POST', path: '/_telefunc' })
 const orderZero = enhance(() => new Response('order zero'), { name: 'orderZero', path: '/order-zero', order: 0 })
+// A Base URL, and the prefix it gives a URL
+const bases = [
+  ['/', ''],
+  ['/app/', '/app'],
+] as const
 
 // Applies the list as a server does, with a stand-in for Vike's pages
 async function serve(middlewares: Middleware[], url: string, method = 'GET') {
@@ -44,10 +52,7 @@ describe('getMiddlewares()', () => {
   })
 
   it("matches a path against the page's URL: without the Base URL, and for its .pageContext.json", async () => {
-    for (const [baseServer, base] of [
-      ['/', ''],
-      ['/app/', '/app'],
-    ] as const) {
+    for (const [baseServer, base] of bases) {
       const middlewares = getMiddlewares([auth], baseServer)
       for (const url of ['/dash', '/%64ash']) {
         // The +middleware gets the original request
@@ -87,17 +92,8 @@ describe('getMiddlewares()', () => {
     ]
     const failures: string[] = []
     for (const [path, urls] of cases) {
-      const guard = enhance((request: Request) => new Response(request.url, { status: 401 }), {
-        name: 'guard',
-        method: 'GET',
-        path,
-        order: MiddlewareOrder.AUTHORIZATION,
-      })
-      for (const [baseServer, base] of [
-        ['/', ''],
-        ['/app/', '/app'],
-      ] as const) {
-        const middlewares = getMiddlewares([guard], baseServer)
+      for (const [baseServer, base] of bases) {
+        const middlewares = getMiddlewares([authAt(path)], baseServer)
         for (const url of urls) {
           const pageUrl = `${base}${url}`
           for (const requestUrl of [pageUrl, `${pageUrl.replace(/\/$/, '')}/index.pageContext.json`]) {
