@@ -1,5 +1,6 @@
 export { getMiddlewares }
 export { getAppMiddlewares }
+export { renderPageUniversal }
 export type { Middleware }
 
 import {

@@ -10,7 +10,7 @@ import {
   type RuntimeAdapterTarget,
   type UniversalHandler,
 } from '@universal-middleware/core'
-import { getAppMiddlewares, type Middleware } from './middlewares.js'
+import { getAppMiddlewares, renderPageUniversal, type Middleware } from './middlewares.js'
 import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.js'
 import '../assertEnvServer.js'
 
@@ -21,7 +21,7 @@ const middlewaresProxy_middlewares = enhance(
   async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) => {
     const middlewares = await getAppMiddlewares()
     // An invalid config: Vike's pages show the error, instead of the app's routes running without the +middleware
-    if (getVikeConfigError()) return getUniversal(middlewares.at(-1)!)(request, context, runtime)
+    if (getVikeConfigError()) return renderPageUniversal(request, context, runtime)
     const responseFunctions: ((response: Response) => Response | undefined | Promise<Response | undefined>)[] = []
     const applyResponseFunctions = async (response: Response) => {
       for (const responseFunction of responseFunctions) response = (await responseFunction(response)) ?? response

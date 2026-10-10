@@ -1,6 +1,6 @@
 import { enhance, getAdapterRuntime, getUniversal, type RuntimeAdapterTarget } from '@universal-middleware/core'
 import { middlewaresProxy_handlers, middlewaresProxy_middlewares } from './middlewaresProxy.js'
-import { getAppMiddlewares } from './middlewares.js'
+import { getAppMiddlewares, renderPageUniversal } from './middlewares.js'
 import '../assertEnvServer.js'
 
 // Vike's own server: `vike/fetch`, `vike(app)`, and `$ vike dev` and `$ vike preview` when the app has +middleware. It runs the two halves of
@@ -13,7 +13,7 @@ async function universalVikeHandler(
 ) {
   const middlewares = await getAppMiddlewares()
   // Only Vike's pages are listed (no +middleware, or an invalid config): they answer, without the two halves
-  if (middlewares.length === 1) return (await getUniversal(middlewares[0]!)(request, context, runtime)) as Response
+  if (middlewares.length === 1) return renderPageUniversal(request, context, runtime)
   // A copy: the +middleware's context is merged into it, and a Cloudflare worker's `env` (its context) is shared by all requests
   context = { ...context }
   const answer = await getUniversal(middlewaresProxy_middlewares)(request, context, runtime)
