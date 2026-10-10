@@ -14,29 +14,28 @@ import { getAppMiddlewares, type Middleware } from './middlewares.js'
 import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.js'
 import '../assertEnvServer.js'
 
-// What `vike(app)` runs before the app's routes, looked up upon each request: the +middleware that aren't handlers, as Universal Middleware's
-// router runs them (its pipe() can't pass the request on): the first Response answers, response functions apply to the final response.
+// What `vike(app)` runs before the app's routes, looked up upon each request: the +middleware that aren't handlers, as a server's `apply()` runs
+// them (Universal Middleware's pipe() can't pass the request on): the first Response answers and the ones after it don't run, and the response
+// functions of the ones that ran apply to the final response.
 const middlewaresProxy_middlewares = enhance(
   async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) => {
     const middlewares = await getAppMiddlewares()
     // An invalid config: Vike's pages show the error, instead of the app's routes running without the +middleware
     if (getVikeConfigError()) return getUniversal(middlewares.at(-1)!)(request, context, runtime)
-    let response: Response | undefined
     const responseFunctions: ((response: Response) => Response | undefined | Promise<Response | undefined>)[] = []
+    const applyResponseFunctions = async (response: Response) => {
+      for (const responseFunction of responseFunctions) response = (await responseFunction(response)) ?? response
+      return response
+    }
     const others = middlewares
       .filter((middleware) => !middleware.isHandler)
       .sort((a, b) => getUniversalProp(a, orderSymbol, 0) - getUniversalProp(b, orderSymbol, 0))
     for (const middleware of others) {
       const result = await getUniversal(middleware)(request, context, runtime)
-      if (result instanceof Response) response ??= result
-      else if (typeof result === 'function') responseFunctions.push(result)
+      if (result instanceof Response) return applyResponseFunctions(result)
+      if (typeof result === 'function') responseFunctions.push(result)
       else if (result) Object.assign(context, result)
     }
-    const applyResponseFunctions = async (response: Response) => {
-      for (const responseFunction of responseFunctions) response = (await responseFunction(response)) ?? response
-      return response
-    }
-    if (response) return applyResponseFunctions(response)
     if (responseFunctions.length > 0) return applyResponseFunctions
   },
   { name: 'vike:middleware' },

@@ -30,7 +30,15 @@ const authUser = enhance(async (request: Request) => (request.headers.has('x-aut
   name: 'authUser',
   order: MiddlewareOrder.AUTHENTICATION,
 })
-// Ordered after `adminAuth`: the first Response answers
+// Ordered before `adminAuth`: its response function also applies to adminAuth's answer
+const adminHeader = enhance(
+  async () => (response: Response) => {
+    response.headers.set('x-admin', 'yes')
+    return response
+  },
+  { name: 'adminHeader', method: 'GET', path: '/admin/**', order: MiddlewareOrder.RATE_LIMITING },
+)
+// Ordered after `adminAuth`: it doesn't run once adminAuth answers
 const lateAnswer = enhance(
   async (request: Request) => (request.headers.has('x-late') ? new Response('Too late') : undefined),
   { name: 'lateAnswer', method: 'GET', path: '/admin/**', order: MiddlewareOrder.RESPONSE_TRANSFORM },
@@ -79,6 +87,7 @@ export default [
   redirectMiddleware,
   adminAuth,
   authUser,
+  adminHeader,
   lateAnswer,
   jsonAuth,
   guardedRedirect,

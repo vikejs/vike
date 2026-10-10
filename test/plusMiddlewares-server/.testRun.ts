@@ -19,7 +19,10 @@ function testRun(cmd: Cmd, options?: { serverIsReadyMessage: string }) {
   run(cmd, { serverUrl: 'http://localhost:3000', ...options })
 
   test("A +middleware runs before the app's own routes, in its order and with the context of the ones before it", async () => {
-    expect((await fetch(`${getServerUrl()}/api/me`)).status).toBe(401)
+    // `counter`, ordered after `auth`, doesn't run once `auth` answers
+    const unauthorized: Response = await fetch(`${getServerUrl()}/api/me`)
+    expect(unauthorized.status).toBe(401)
+    expect(unauthorized.headers.get('x-middleware')).toBe(null)
     const response: Response = await fetch(`${getServerUrl()}/api/me`, { headers: { 'x-user': 'alice' } })
     expect(await response.text()).toBe('Me')
   })
