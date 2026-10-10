@@ -3,8 +3,7 @@ import { middlewaresProxy_handlers, middlewaresProxy_middlewares } from './middl
 import { getAppMiddlewares, renderPageUniversal } from './middlewares.js'
 import '../assertEnvServer.js'
 
-// Vike's own server: `vike/fetch`, `vike(app)`, and `$ vike dev` and `$ vike preview` when the app has +middleware. It runs the two halves of
-// `vike(app)` in a row.
+// Vike's own server (`vike/fetch`, and `$ vike dev` and `$ vike preview` with +middleware): the two halves that `vike(app)` applies, in a row
 async function universalVikeHandler(
   request: Request,
   // Missing upon `vike.fetch(request)`
