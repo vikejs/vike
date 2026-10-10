@@ -657,9 +657,10 @@ function addGlobalContextCommon(
 }
 function addDevMiddlewareWarning(globalContext: { devMiddleware: unknown }, viteDevServer?: ViteDevServer): void {
   if (!viteDevServer) return
+  const getMiddlewareMode = () => viteDevServer.config.server.middlewareMode
   Object.defineProperty(globalContext, 'devMiddleware', {
     get() {
-      const { middlewareMode } = viteDevServer.config.server
+      const middlewareMode = getMiddlewareMode()
       if (middlewareMode) {
         return viteDevServer.middlewares
       } else {
@@ -670,7 +671,10 @@ function addDevMiddlewareWarning(globalContext: { devMiddleware: unknown }, vite
         )
       }
     },
-    enumerable: false, // so that spreading or serializing globalContext doesn't get the warning
+    enumerable: getMiddlewareMode()
+      ? true
+      : // so that spreading or serializing globalContext doesn't get the warning
+        false,
     configurable: true,
   })
 }
