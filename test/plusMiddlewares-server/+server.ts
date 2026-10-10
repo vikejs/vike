@@ -19,13 +19,13 @@ apply(app, halves ? [middlewaresProxy_middlewares] : middlewares.filter((m) => !
 // The app's own routes
 app.get('/api/me', (c) => c.text('Me'))
 app.get('/overridden', (c) => c.text('Overridden by +server.ts'))
+// The request for the page /
+const toIndex = (request: Request) => new Request(new URL('/', request.url), { headers: request.headers })
 // `vike.fetch(request)` with the request alone, as /server documents
-app.get('/vike-fetch', (c) => vike.fetch(new Request(new URL('/', c.req.url), { headers: c.req.raw.headers })))
+app.get('/vike-fetch', (c) => vike.fetch(toIndex(c.req.raw)))
 // A context shared by all requests, like a Cloudflare worker's `env`
 const sharedContext = {}
-app.get('/shared-context', (c) =>
-  vike.fetch(new Request(new URL('/', c.req.url), { headers: c.req.raw.headers }), sharedContext),
-)
+app.get('/shared-context', (c) => vike.fetch(toIndex(c.req.raw), sharedContext))
 apply(app, halves ? [middlewaresProxy_handlers] : middlewares.filter((m) => m.isHandler))
 
 export default {
