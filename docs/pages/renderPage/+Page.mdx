@@ -183,7 +183,30 @@ Unless you have a reason, we generally recommend using <Link href="/server">`+se
 2. Vike restarts your server process only when a file imported by `+serverEntry.js` changes: modifying a page doesn't restart your server (the page is updated with <Link href="/glossary#hmr">HMR</Link>).
    > If you run the server yourself, you'll need a watcher (e.g. `node --watch` or `nodemon`) which doesn't know about Vite's module graph.
 
-TODO/ai show succinct example that uses createDevMiddleware()
+```js
+// server/index.js
+
+import express from 'express'
+import { fileURLToPath } from 'node:url'
+import { createDevMiddleware } from 'vike/server'
+
+const app = express()
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(fileURLToPath(new URL('../dist/client', import.meta.url))))
+} else {
+  // Vite's development middleware (HMR, transpiling, static assets, ...)
+  const root = fileURLToPath(new URL('..', import.meta.url))
+  const { devMiddleware } = await createDevMiddleware({ root })
+  app.use(devMiddleware)
+}
+
+// ...
+// Other middlewares and the SSR middleware, as in the example above
+// ...
+
+app.listen(3000)
+```
 
 > See also:
 > - <Link href="/createDevMiddleware" />
