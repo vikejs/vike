@@ -109,6 +109,15 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     }
   })
 
+  test("A +middleware's response function can replace the response to a .pageContext.json request", async () => {
+    const url = `${getServerUrl()}/wrapped/index.pageContext.json`
+    expect(await (await fetch(url)).text()).toContain('WRAPPED-DATA')
+    // A 404, so that the client router reloads the page
+    const replaced: Response = await fetch(url, { headers: { 'x-replace': '1' } })
+    expect(replaced.status).toBe(404)
+    expect(await replaced.text()).toBe('Replaced')
+  })
+
   test("A +middleware's answer to a client-side navigation is shown", async () => {
     for (const [pathname, answer] of [
       ['/admin/settings', 'Unauthorized'],

@@ -60,6 +60,13 @@ const settingsHeader = enhance(
   { name: 'settingsHeader', method: 'GET', path: '/admin/settings', order: MiddlewareOrder.HEADER_MANAGEMENT },
 )
 
+// Replaces the response to the /wrapped page, `.pageContext.json` included
+const replaceResponse = enhance(
+  async (request: Request) => (response: Response) =>
+    request.headers.has('x-replace') ? new Response('Replaced', { status: 401 }) : response,
+  { name: 'replaceResponse', method: 'GET', path: '/wrapped', order: MiddlewareOrder.HEADER_MANAGEMENT },
+)
+
 const orderZero = enhance(async () => new Response('order zero'), {
   name: 'orderZero',
   method: 'GET',
@@ -77,5 +84,6 @@ export default [
   guardedRedirect,
   portalLogin,
   settingsHeader,
+  replaceResponse,
   orderZero,
 ]
