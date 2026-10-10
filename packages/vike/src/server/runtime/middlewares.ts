@@ -23,6 +23,7 @@ import { handlePageContextRequestUrl } from './renderPageServer/handlePageContex
 import { renderPageServer } from './renderPageServer.js'
 import { getGlobalContextServerInternal, initGlobalContext_renderPage } from './globalContext.js'
 import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.js'
+import { assert } from '../../utils/assert.js'
 import '../assertEnvServer.js'
 
 type Middleware = EnhancedMiddleware & {
@@ -128,7 +129,13 @@ function getMatcher(
   }
   const matched = {}
   apply(router, [enhance(() => matched, { path, method, order })])
-  return (request) => scoped!(request, {}, {} as RuntimeAdapterTarget<unknown>) === matched
+  assert(scoped)
+  return (request) => {
+    const result = scoped!(request, {}, {} as RuntimeAdapterTarget<unknown>)
+    // The check is synchronous: any other result (e.g. a Promise) would silently skip every +middleware with a path
+    assert(result === matched || result === undefined)
+    return result === matched
+  }
 }
 
 async function renderPageUniversal(
