@@ -67,6 +67,13 @@ describe('getMiddlewares()', () => {
     expect(await serve(getMiddlewares([auth], '/app/'), '/dash')).toBe('200 page')
   })
 
+  it('answers a .pageContext.json request with a 404 when a response function replaces the page', async () => {
+    const replace = enhance(() => () => new Response('Replaced', { status: 401 }), { name: 'replace' })
+    const middlewares = getMiddlewares([replace], '/')
+    expect(await serve(middlewares, '/about/index.pageContext.json')).toBe('404 Replaced')
+    expect(await serve(middlewares, '/about')).toBe('401 Replaced')
+  })
+
   it('keeps the order: a +middleware without one is ordered as 0', async () => {
     const answers = enhance(() => new Response('answers'), { name: 'answers' })
     expect(await serve(getMiddlewares([answers, auth], '/'), '/dash')).toBe('401 http://localhost/dash')
