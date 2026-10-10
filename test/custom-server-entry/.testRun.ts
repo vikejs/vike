@@ -1,6 +1,6 @@
 export { testRun }
 
-import { test, expect, fetchHtml } from '@brillout/test-e2e'
+import { test, expect, fetchHtml, expectLog } from '@brillout/test-e2e'
 import { testRunClassic } from '../utils'
 
 function testRun(...args: Parameters<typeof testRunClassic>) {
@@ -11,6 +11,13 @@ function testRun(...args: Parameters<typeof testRunClassic>) {
   })
 
   test('globalContext.devMiddleware', async () => {
-    expect(await fetchHtml('/dev-middleware')).toBe(args[0] === 'pnpm run dev' ? 'set' : 'null')
+    const isDev = args[0] === 'pnpm run dev'
+    expect(await fetchHtml('/dev-middleware')).toBe(isDev ? 'set' : 'null')
+    // Reading it in +server.ts warns
+    if (isDev) {
+      expectLog('globalContext.devMiddleware hangs the development server', {
+        filter: (log) => log.logSource === 'stderr',
+      })
+    }
   })
 }
