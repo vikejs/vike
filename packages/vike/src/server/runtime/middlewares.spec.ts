@@ -43,7 +43,7 @@ describe('getMiddlewares()', () => {
       ['vike', true],
     ])
     // The +middleware themselves are left untouched
-    expect('isHandler' in auth).toBe(false)
+    for (const plusMiddleware of [auth, logger, telefunc, orderZero]) expect('isHandler' in plusMiddleware).toBe(false)
   })
 
   it("matches a path against the page's URL: without the Base URL, and for its .pageContext.json", async () => {
