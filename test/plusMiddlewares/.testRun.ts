@@ -1,6 +1,20 @@
 export { testRun }
 
-import { autoRetry, expect, fetch, fetchHtml, getServerUrl, page, run, test } from '@brillout/test-e2e'
+import {
+  autoRetry,
+  editFile,
+  editFileRevert,
+  expect,
+  expectLog,
+  fetch,
+  fetchHtml,
+  getServerUrl,
+  page,
+  partRegex,
+  run,
+  test,
+} from '@brillout/test-e2e'
+import { sleepBeforeEditFile } from '../utils'
 
 function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   run(cmd, {
@@ -83,6 +97,33 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     expect(await (await fetch(`${getServerUrl()}/order-zero`)).text()).toBe('order zero')
     expect(await fetchHtml('/')).toContain('Rendered to HTML.')
   })
+
+  if (cmd === 'pnpm run dev') {
+    test('A +middleware that fails to load shows the error page', async () => {
+      await sleepBeforeEditFile()
+      editFile('./pages/+middleware.ts', (s) => `throw new Error('boom at load')\n${s}`)
+      await autoRetry(
+        async () => {
+          // Fails instead of waiting if the server doesn't answer
+          const response: Response = await fetch(`${getServerUrl()}/`, { signal: AbortSignal.timeout(5000) })
+          expect(response.status).toBe(500)
+        },
+        { timeout: 10 * 1000 },
+      )
+      await sleepBeforeEditFile()
+      editFileRevert()
+      await autoRetry(
+        async () => {
+          expect(await fetchHtml('/')).toContain('Rendered to HTML.')
+        },
+        { timeout: 10 * 1000 },
+      )
+      expectLog('boom at load', { filter: (log) => log.logSource === 'stderr' })
+      expectLog('Error loading Vike config', { filter: (log) => log.logSource === 'stderr' })
+      expectLog(partRegex`HTTP response ${/.*/} / 500`, { filter: (log) => log.logSource === 'stderr' })
+      expectLog('Vike config loaded', { filter: (log) => log.logSource === 'stderr' })
+    })
+  }
 }
 
 async function testCounter() {
