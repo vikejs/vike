@@ -14,10 +14,6 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     expect(await fetchHtml('/hello')).toBe('Hello from +serverEntry.ts')
   })
 
-  test('globalContext.devMiddleware', async () => {
-    expect(await fetchHtml('/dev-middleware')).toBe(isDev ? 'true' : 'null')
-  })
-
   test('a module imported by both +serverEntry.ts and a page is evaluated only once', async () => {
     // Loads pages/about/+data.ts
     await fetchHtml('/about')

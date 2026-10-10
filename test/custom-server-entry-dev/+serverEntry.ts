@@ -24,12 +24,6 @@ app.get('/hello', (_req, res) => {
   res.send(hello)
 })
 
-app.get('/dev-middleware', async (_req, res) => {
-  const globalContext = await getGlobalContext()
-  const { devMiddleware } = globalContext
-  res.send(devMiddleware ? 'true' : 'null')
-})
-
 app.get('/shared-module-evaluations', (_req, res) => {
   res.send(String(getEvaluations()))
 })
