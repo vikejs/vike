@@ -672,7 +672,7 @@ function addDevMiddlewareWarning(globalContext: { devMiddleware: unknown }, vite
     },
     enumerable: getMiddlewareMode()
       ? true
-      : // so that spreading or serializing globalContext doesn't get the warning
+      : // So that spreading or serializing globalContext doesn't get the warning
         false,
     configurable: true,
   })
