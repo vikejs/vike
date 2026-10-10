@@ -1,6 +1,6 @@
 export { testRun }
 
-import { expect, fetch, fetchHtml, getServerUrl, run, test } from '@brillout/test-e2e'
+import { expect, fetch, getServerUrl, run, test } from '@brillout/test-e2e'
 
 function testRun(cmd: 'pnpm run dev' | 'pnpm run preview', options?: { serverIsReadyMessage: string }) {
   run(cmd, { serverUrl: 'http://localhost:3000', ...options })
