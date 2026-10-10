@@ -79,13 +79,34 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     const response: Response = await fetch(url)
     expect(response.status).toBe(404)
     expect(await response.text()).toBe('Unauthorized')
-    // Vike decodes a .pageContext.json URL once more than the page's URL: /%2561dmin is /admin
-    const responseEncoded: Response = await fetch(`${getServerUrl()}/%2561dmin/settings/index.pageContext.json`)
-    expect(await responseEncoded.text()).toBe('Unauthorized')
     // settingsHeader's exact path, /admin/settings, also covers its .pageContext.json
     const responseAuth: Response = await fetch(url, { headers: { 'x-auth': '1' } })
     expect(responseAuth.status).toBe(200)
     expect(responseAuth.headers.get('x-settings')).toBe('yes')
+  })
+
+  test('A .pageContext.json request gets the same page as its HTML request, and the same +middleware', async () => {
+    // `%61` is `a`; `%2561` is the literal text `%61`, which no page matches
+    for (const [prefix, isAdmin] of [
+      ['/admin', true],
+      ['/%61dmin', true],
+      ['/%2561dmin', false],
+    ] as const) {
+      const html: Response = await fetch(`${getServerUrl()}${prefix}/settings`)
+      const json: Response = await fetch(`${getServerUrl()}${prefix}/settings/index.pageContext.json`)
+      const [htmlText, jsonText] = [await html.text(), await json.text()]
+      // No leak either way
+      expect(htmlText).not.toContain('ADMIN-SETTINGS')
+      expect(jsonText).not.toContain('ADMIN-SETTINGS')
+      if (isAdmin) {
+        expect(html.status).toBe(401)
+        expect(json.status).toBe(404)
+        expect(jsonText).toBe('Unauthorized')
+      } else {
+        expect(html.status).toBe(404)
+        expect(jsonText).toContain('"is404":true')
+      }
+    }
   })
 
   test("A +middleware's answer to a client-side navigation is shown", async () => {
