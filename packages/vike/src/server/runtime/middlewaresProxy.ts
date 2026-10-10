@@ -27,10 +27,10 @@ const middlewaresProxy_middlewares = enhance(
       for (const responseFunction of responseFunctions) response = (await responseFunction(response)) ?? response
       return response
     }
-    const others = middlewares
+    const nonHandlers = middlewares
       .filter((middleware) => !middleware.isHandler)
       .sort((a, b) => getUniversalProp(a, orderSymbol, 0) - getUniversalProp(b, orderSymbol, 0))
-    for (const middleware of others) {
+    for (const middleware of nonHandlers) {
       const result = await getUniversal(middleware)(request, context, runtime)
       if (result instanceof Response) return applyResponseFunctions(result)
       if (typeof result === 'function') responseFunctions.push(result)
