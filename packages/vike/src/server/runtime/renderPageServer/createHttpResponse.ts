@@ -202,14 +202,9 @@ function createHttpResponseRedirect({ url, statusCode }: UrlRedirect, pageContex
   )
 }
 
-function createHttpResponseFromUniversalMiddleware(response: Response, earlyHints?: EarlyHint[]) {
+function createHttpResponseFromUniversalMiddleware(response: Response) {
   const body = response.body ?? getHtmlFallback('<p style="display: none">No HTTP response body.</p>')
-  const httpResponse = createHttpResponseCommon(
-    response.status,
-    Array.from(response.headers.entries()),
-    body,
-    earlyHints,
-  )
+  const httpResponse = createHttpResponseCommon(response.status, Array.from(response.headers.entries()), body)
   return httpResponse
 }
 
