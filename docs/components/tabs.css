@@ -3,7 +3,7 @@
 }
 
 .react-tabs__tab-list {
-  border-bottom: 1px solid #eaeaea;
+  border-bottom: 1px solid var(--dp-color-border);
   margin: 0 0 10px;
   padding: 0;
 }
@@ -31,7 +31,7 @@
 }
 
 .react-tabs__tab--selected {
-  border-bottom: 2px solid #aaa;
+  border-bottom: 2px solid var(--dp-color-border-strong);
   color: var(--color-text);
 }
 

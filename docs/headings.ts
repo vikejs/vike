@@ -48,6 +48,7 @@ const headings = [
   {
     level: 1,
     title: 'Overview',
+    description: 'What Vike is, why it exists, and how it is funded and extended.',
     titleIcon: iconCompass,
     color: '#e1a524',
   },
@@ -96,6 +97,7 @@ const headings = [
   {
     level: 1,
     title: 'Get Started',
+    description: 'Create a new Vike app, or add Vike to an existing Vite app.',
     titleIcon: iconSeedling,
     color: '#74d717',
   },
@@ -128,6 +130,7 @@ const headings = [
   {
     level: 1,
     title: 'Guides',
+    description: 'Data fetching, pre-rendering, routing, i18n, and more.',
     titleIcon: iconScroll,
     color: '#ffd511',
   },
@@ -232,6 +235,7 @@ const headings = [
   {
     level: 1,
     title: 'Deploy',
+    description: 'Self-host, or deploy to Cloudflare, Netlify, Vercel, AWS, or a static host.',
     titleIcon: iconGlobe,
     color: '#2d81f1',
   },
@@ -308,6 +312,7 @@ const headings = [
   {
     level: 1,
     title: 'Integration',
+    description: 'Authentication, servers, error tracking, CSS-in-JS, state management, and more.',
     titleIcon: iconPlug,
     color: '#616161',
   },
@@ -359,6 +364,7 @@ const headings = [
   {
     level: 1,
     title: 'API',
+    description: 'Config files, settings, hooks, components, and utilities.',
     titleIcon: iconGear,
     color: '#80c1db',
     menuModalFullWidth: true,
@@ -746,6 +752,7 @@ const headings = [
   {
     level: 1,
     title: 'Blog',
+    description: 'Announcements and monthly releases.',
     titleIcon: iconMegaphone,
     color: '#ff4343',
     menuModalFullWidth: true,
@@ -794,6 +801,14 @@ const headings = [
 ] as const satisfies HeadingDefinition[]
 
 const headingsDetached = [
+  {
+    title: 'Docs',
+    url: '/docs',
+    pageDesign: {
+      hideTitle: true,
+      contentMaxWidth: 1120,
+    },
+  },
   ...api(),
   ...guides(),
   ...extensions(),

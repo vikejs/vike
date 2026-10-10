@@ -21,8 +21,10 @@ const IntroSection = () => {
         >
           <div className="relative z-10 flex flex-col items-center text-center w-full">
             <span className="sm:flex-row mb-4 lg:mb-8 mt-6 lg:mt-16 xl:mt-20 daisy-join rounded shadow">
-              <span className="daisy-join-item py-1 px-2 bg-base-200 font-medium text-xs tracking-wide">REPLACES</span>
-              <span className="daisy-join-item  py-1 px-2 bg-grey text-base-300 font-medium text-xs">
+              <span className="daisy-join-item py-1 px-2 bg-base-200 font-medium text-xs tracking-wide dark:bg-(--dp-color-surface-elevated) dark:text-(--dp-color-muted)">
+                REPLACES
+              </span>
+              <span className="daisy-join-item  py-1 px-2 bg-grey text-base-300 font-medium text-xs dark:bg-(--dp-color-border-strong) dark:text-(--dp-color-text)">
                 Next.js / Nuxt / ...
               </span>
             </span>
@@ -104,7 +106,7 @@ const BrandsContent = () => {
           className="colorize-on-hover text-center py-2 text-xs lg:text-base"
         >
           <img
-            className="decolorize-4"
+            className="decolorize-4 brand-logo"
             src={e.logo}
             style={{
               display: 'block',
