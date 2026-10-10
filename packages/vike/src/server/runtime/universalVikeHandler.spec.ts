@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import universalVikeHandler from './universal-middleware.js'
+import universalVikeHandler from './universalVikeHandler.js'
 
 const app = vi.hoisted(() => ({ withUserMiddleware: false }))
 // A stand-in for Vike's pages, so that no app is needed, and a +middleware that adds a user

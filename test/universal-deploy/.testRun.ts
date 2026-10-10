@@ -1,10 +1,14 @@
 export { testRun }
 
-import { page, test, expect, getServerUrl, autoRetry, fetch, fetchHtml, sleep } from '@brillout/test-e2e'
+import { page, test, expect, expectLog, getServerUrl, autoRetry, fetch, fetchHtml, sleep } from '@brillout/test-e2e'
 import { testRunClassic } from '../../test/utils'
 
 function testRun(...args: Parameters<typeof testRunClassic>) {
   testRunClassic(...args)
+
+  test('@vikejs/express 0.3.0 imports the deprecated vike/universal-middleware', () => {
+    expectLog(/vike\/universal-middleware is deprecated: .* to 0\.4\.0 or above/, { allLogs: true })
+  })
 
   test('Running on Express', async () => {
     const html = await fetchHtml('/express')

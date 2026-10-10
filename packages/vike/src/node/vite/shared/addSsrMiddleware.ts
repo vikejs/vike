@@ -1,7 +1,7 @@
 export { addSsrMiddleware }
 
 import { type PageContextInit, renderPageServer } from '../../../server/runtime/renderPageServer.js'
-import universalVikeHandler from '../../../server/runtime/universal-middleware.js'
+import universalVikeHandler from '../../../server/runtime/universalVikeHandler.js'
 import { getAppMiddlewares } from '../../../server/runtime/middlewares.js'
 import { createHttpResponseFromUniversalMiddleware } from '../../../server/runtime/renderPageServer/createHttpResponse.js'
 import { getAdapterRuntime } from '@universal-middleware/core'
