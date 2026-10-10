@@ -63,12 +63,17 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   })
 
   test("A +middleware's answer to a client-side navigation is shown", async () => {
-    await page.goto(`${getServerUrl()}/`)
-    await testCounter()
-    await page.click('a[href="/admin/settings"]')
-    await autoRetry(async () => {
-      expect(await page.textContent('body')).toBe('Unauthorized')
-    })
+    for (const [pathname, answer] of [
+      ['/admin/settings', 'Unauthorized'],
+      ['/json-admin', '{"error":"unauthorized"}'],
+    ]) {
+      await page.goto(`${getServerUrl()}/`)
+      await testCounter()
+      await page.click(`a[href="${pathname}"]`)
+      await autoRetry(async () => {
+        expect(await page.textContent('body')).toBe(answer)
+      })
+    }
   })
 
   test('A +middleware with a path and order 0 still answers its path, and the pages still render', async () => {

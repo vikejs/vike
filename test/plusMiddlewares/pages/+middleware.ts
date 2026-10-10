@@ -25,6 +25,12 @@ const adminAuth = enhance(
     request.headers.has('x-auth') ? undefined : new Response('Unauthorized', { status: 401 }),
   { name: 'adminAuth', method: 'GET', path: '/admin/**', order: MiddlewareOrder.AUTHORIZATION },
 )
+// An auth +middleware that answers with JSON
+const jsonAuth = enhance(
+  async (request: Request) =>
+    request.headers.has('x-auth') ? undefined : Response.json({ error: 'unauthorized' }, { status: 401 }),
+  { name: 'jsonAuth', method: 'GET', path: '/json-admin', order: MiddlewareOrder.AUTHORIZATION },
+)
 const settingsHeader = enhance(
   async () => (response: Response) => {
     response.headers.set('x-settings', 'yes')
@@ -40,4 +46,4 @@ const orderZero = enhance(async () => new Response('order zero'), {
   order: 0,
 })
 
-export default [middleware, redirectMiddleware, adminAuth, settingsHeader, orderZero]
+export default [middleware, redirectMiddleware, adminAuth, jsonAuth, settingsHeader, orderZero]

@@ -63,6 +63,18 @@ describe('getMiddlewares()', () => {
     expect(await serve(getMiddlewares([auth], '/app/'), '/dash')).toBe('200 page')
   })
 
+  it("answers a .pageContext.json request with a 404 without the +middleware's JSON content-type", async () => {
+    const jsonAuth = enhance(() => Response.json({ error: 'unauthorized' }, { status: 401 }), { name: 'jsonAuth' })
+    const [middleware] = getMiddlewares([jsonAuth], '/')
+    const request = new Request('http://localhost/dash/index.pageContext.json')
+    const response = (await (middleware as UniversalHandler)(request, {}, {} as RuntimeAdapter)) as Response
+    expect([response.status, response.headers.get('content-type'), await response.text()]).toEqual([
+      404,
+      null,
+      '{"error":"unauthorized"}',
+    ])
+  })
+
   it('answers a .pageContext.json request with a 404 when a response function replaces the page', async () => {
     const replace = enhance(() => () => new Response('Replaced', { status: 401 }), { name: 'replace' })
     const middlewares = getMiddlewares([replace], '/')
