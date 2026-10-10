@@ -160,22 +160,27 @@ With `+serverEntry.js` (and without `+server.js`, see <Link href="#with-out-serv
 ```ts
 // +serverEntry.ts (without +server.js)
 
-import { createDevMiddleware, renderPage } from 'vike/server'
+import { getGlobalContext } from 'vike'
+import { renderPage } from 'vike/server'
 import { fetchNodeHandler } from 'srvx/node'
+import assert from 'node:assert'
+import type { IncomingMessage, ServerResponse } from 'node:http'
 
-const devMiddleware = import.meta.env.DEV ? (await createDevMiddleware()).devMiddleware : null
+const globalContext = await getGlobalContext()
 
 Bun.serve({
   port: 3000,
   async fetch(request) {
-    if (devMiddleware) {
+    if (import.meta.env.DEV) {
+      const { devMiddleware } = globalContext
+      assert(devMiddleware)
       // Vite's development middleware, through srvx's emulation of Node.js's req/res
       let handled = true
       const response = await fetchNodeHandler(
-        (req, res, next) =>
+        (req: IncomingMessage, res: ServerResponse, next?: () => void) =>
           devMiddleware(req, res, () => {
             handled = false
-            next()
+            next?.()
           }),
         request
       )
@@ -194,6 +199,8 @@ Bun.serve({
 })
 ```
 
+> Vite's development middleware is a [Connect](https://github.com/senchalabs/connect) middleware (it uses Node.js's `req`/`res`), which is why it needs a bridge such as srvx's `fetchNodeHandler()`. Vite wants to move away from Connect, see [vitejs/ecosystem#16](https://github.com/vitejs/ecosystem/issues/16).
+
 ```bash
 # Development (with package.json#scripts.dev set to "vike dev")
 $ bun --bun run dev
@@ -203,8 +210,6 @@ $ bun dist/server/index.mjs
 ```
 
 > `Deno.serve()` should work the same way.
-
-> Vite's development middleware is a [Connect](https://github.com/senchalabs/connect) middleware (it uses Node.js's `req`/`res`), which is why it needs a bridge such as srvx's `fetchNodeHandler()`. Vite wants to move away from Connect, see [vitejs/ecosystem#16](https://github.com/vitejs/ecosystem/issues/16).
 
 
 ## `vike:server`

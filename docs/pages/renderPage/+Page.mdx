@@ -54,8 +54,10 @@ Define your server at <Link href="/serverEntry">`+serverEntry.js`</Link> and use
 
 // In this example we use Express.js but we could use any other server framework
 import express from 'express'
+import assert from 'node:assert'
 import { fileURLToPath } from 'node:url'
-import { renderPage, createDevMiddleware } from 'vike/server'
+import { getGlobalContext } from 'vike'
+import { renderPage } from 'vike/server'
 import type { Request, Response } from 'express'
 
 // Create an Express.js server
@@ -64,7 +66,8 @@ const app = express()
 // Dev/prod middleware
 if (import.meta.env.DEV) {
   // Vite's development middleware (HMR, transpiling, static assets, ...)
-  const { devMiddleware } = await createDevMiddleware()
+  const { devMiddleware } = await getGlobalContext()
+  assert(devMiddleware)
   app.use(devMiddleware)
 } else {
   // In production, we need to serve our static assets ourselves.
@@ -180,7 +183,33 @@ Unless you have a reason, we generally recommend using <Link href="/server">`+se
 2. Vike restarts your server process only when a file imported by `+serverEntry.js` changes: modifying a page doesn't restart your server (the page is updated with <Link href="/glossary#hmr">HMR</Link>).
    > If you run the server yourself, you'll need a watcher (e.g. `node --watch` or `nodemon`) which doesn't know about Vite's module graph.
 
+```js
+// server/index.js
+
+import express from 'express'
+import { fileURLToPath } from 'node:url'
+import { createDevMiddleware } from 'vike/server'
+
+const app = express()
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(fileURLToPath(new URL('../dist/client', import.meta.url))))
+} else {
+  // Vite's development middleware (HMR, transpiling, static assets, ...)
+  const root = fileURLToPath(new URL('..', import.meta.url))
+  const { devMiddleware } = await createDevMiddleware({ root })
+  app.use(devMiddleware)
+}
+
+// ...
+// Other middlewares and the SSR middleware, as in the example above
+// ...
+
+app.listen(3000)
+```
+
 > See also:
+> - <Link href="/createDevMiddleware" />
 > - <Link href="/server" />
 > - <Link href="/server#extra-control" />
 
@@ -189,7 +218,6 @@ Unless you have a reason, we generally recommend using <Link href="/server">`+se
 
 - <Link href="/server" />
 - <Link href="/serverEntry" />
-- <Link href="/createDevMiddleware" />
 - <Link href="/headers" />
 - <Link href="/injectFilter" />
 - <Link href="/preloading#early-hints" />

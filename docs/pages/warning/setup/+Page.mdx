@@ -12,8 +12,7 @@ In production:
   > createDevMiddleware()                             // ❌ You shouldn't call it
   > ```
 
-In development, if you define a server without <Link href="/server">`+server.js`</Link> (i.e. you use <Link href="/serverEntry#with-out-server-js">`+serverEntry.js`</Link> instead), you must use <Link href="/createDevMiddleware">`createDevMiddleware()`</Link> in order to add the development middleware to your server. (If you use `+server.js`, the development middleware is added automatically — you don't need to use `createDevMiddleware()`.)
-
+  > If you use <Link href="/server">`+server.js`</Link> or <Link href="/serverEntry">`+serverEntry.js`</Link>, the development middleware is automatically created — you don't need to use <Link href="/createDevMiddleware">`createDevMiddleware()`</Link> at all. (You only need `createDevMiddleware()` if you <Link href="/renderPage#without-serverentry-js">run the server yourself</Link>.)
 
 ## See also
 

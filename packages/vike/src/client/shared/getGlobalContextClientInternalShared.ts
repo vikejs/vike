@@ -63,6 +63,8 @@ async function getGlobalContextClientInternalShared() {
          * https://vike.dev/globalContext#isClientSide
          */
         isClientSide: true as const,
+        // https://vike.dev/globalContext#devMiddleware
+        devMiddleware: null,
       }
       objectAssign(globalContextAddendum, getGlobalContextSerializedInHtml())
       return globalContextAddendum
