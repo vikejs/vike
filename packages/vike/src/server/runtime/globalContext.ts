@@ -21,7 +21,7 @@ export { clearGlobalContext }
 export { assertBuildInfo }
 export { updateUserFiles }
 export { vikeConfigErrorRecoverMsg }
-export { getDevMiddleware }
+export { defineDevMiddleware }
 export type { BuildInfo }
 export type { GlobalContextServerInternal }
 
@@ -51,7 +51,7 @@ import { isObject } from '../../utils/isObject.js'
 import { objectAssign } from '../../utils/objectAssign.js'
 import { isCloudflareWorkers } from '../../utils/isCloudflareWorkers.js'
 import type { ViteManifest } from '../../types/ViteManifest.js'
-import type { Connect, ResolvedConfig, ViteDevServer } from 'vite'
+import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/runtime'
 import { virtualFileIdGlobalEntryServer } from '../../shared-server-node/virtualFileId.js'
 import pc from '@brillout/picocolors'
@@ -614,16 +614,18 @@ function addGlobalContextCommon(
   if (!isProduction) {
     assert(globalContext) // main common requirement
     assert(!isPrerendering)
-    return {
+    const globalContextDev = {
       ...globalContextBase,
       _isProduction: false as const,
       _isPrerendering: false as const,
       assetsManifest: null,
       _viteDevServer: viteDevServer,
       // https://vike.dev/globalContext#devMiddleware
-      devMiddleware: viteDevServer ? getDevMiddleware(viteDevServer) : null,
+      devMiddleware: viteDevServer?.middlewares ?? null,
       viteConfig,
     }
+    if (viteDevServer) defineDevMiddleware(globalContextDev, viteDevServer)
+    return globalContextDev
   } else {
     assert(globalObject.prodBuildEntry)
     assert(globalContext) // main common requiement
@@ -654,18 +656,21 @@ function addGlobalContextCommon(
     }
   }
 }
-function getDevMiddleware(viteDevServer: ViteDevServer): Connect.NextHandleFunction {
-  const { middlewares } = viteDevServer
-  // Middleware mode: the user's server runs Vite's middlewares (+serverEntry.js, createDevMiddleware())
-  if (viteDevServer.config.server.middlewareMode) return middlewares
-  return (req, res, next) => {
-    assertWarning(
-      false,
-      `${pc.cyan('globalContext.devMiddleware')} hangs the development server: Vite's development server already runs Vite's middlewares before your server (e.g. with +server.js), so don't add them again, see https://vike.dev/globalContext#devMiddleware`,
-      { onlyOnce: true },
-    )
-    middlewares(req, res, next)
-  }
+// Not enumerable, so that spreading or serializing globalContext doesn't read it
+function defineDevMiddleware(globalContext: { devMiddleware: unknown }, viteDevServer: ViteDevServer): void {
+  Object.defineProperty(globalContext, 'devMiddleware', {
+    get() {
+      // Not in middleware mode, Vite's development server already runs Vite's middlewares (e.g. +server.js)
+      assertWarning(
+        viteDevServer.config.server.middlewareMode,
+        `${pc.cyan('globalContext.devMiddleware')} hangs the development server: Vite's development server already runs Vite's middlewares before your server (e.g. with +server.js), so don't add them again, see https://vike.dev/globalContext#devMiddleware`,
+        { onlyOnce: true },
+      )
+      return viteDevServer.middlewares
+    },
+    enumerable: false,
+    configurable: true,
+  })
 }
 async function addGlobalContextAsync(globalContext: GlobalContextBase) {
   debug('addGlobalContextAsync()')
