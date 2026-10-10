@@ -22,7 +22,7 @@ async function createDevMiddleware(
       assertWarning(
         false,
         // E.g. `$ vike dev` already created it (+serverEntry.js, +server.js), or createDevMiddleware() was already called
-        `The development middleware already created: use ${pc.cyan('globalContext.devMiddleware')} to access it instead of calling ${pc.cyan('createDevMiddleware()')}`,
+        `Development middleware already created: use ${pc.cyan('globalContext.devMiddleware')} to access it instead of calling ${pc.cyan('createDevMiddleware()')}`,
         { onlyOnce: true },
       )
       return { devMiddleware: viteServer.middlewares, viteServer, viteConfig: viteServer.config }
