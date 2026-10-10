@@ -5,7 +5,7 @@ import assert from 'node:assert'
 import express from 'express'
 import { fileURLToPath } from 'node:url'
 import { getGlobalContext } from 'vike'
-import { createDevMiddleware, renderPage } from 'vike/server'
+import { renderPage } from 'vike/server'
 import { hello } from './server/hello'
 import { getEvaluations } from './server/shared'
 
@@ -13,8 +13,9 @@ const app = express()
 
 if (import.meta.env.DEV) {
   // Vite's development middleware (HMR, transpiling, static assets, ...)
-  const { devMiddleware } = await createDevMiddleware()
-  app.use(devMiddleware)
+  const globalContext = await getGlobalContext()
+  assert(!globalContext.isClientSide && globalContext.devMiddleware)
+  app.use(globalContext.devMiddleware)
 } else {
   app.use(express.static(fileURLToPath(new URL('../client', import.meta.url))))
 }
@@ -27,7 +28,7 @@ app.get('/dev-middleware', async (_req, res) => {
   const globalContext = await getGlobalContext()
   assert(!globalContext.isClientSide)
   const { devMiddleware } = globalContext
-  res.send(devMiddleware ? String(devMiddleware === (await createDevMiddleware()).devMiddleware) : 'null')
+  res.send(devMiddleware ? 'true' : 'null')
 })
 
 app.get('/shared-module-evaluations', (_req, res) => {
