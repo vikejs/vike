@@ -614,14 +614,18 @@ function addGlobalContextCommon(
   if (!isProduction) {
     assert(globalContext) // main common requirement
     assert(!isPrerendering)
-    return {
+    const globalContextDev = {
       ...globalContextBase,
       _isProduction: false as const,
       _isPrerendering: false as const,
       assetsManifest: null,
       _viteDevServer: viteDevServer,
+      // https://vike.dev/globalContext#devMiddleware
+      devMiddleware: viteDevServer?.middlewares ?? null,
       viteConfig,
     }
+    addDevMiddlewareWarning(globalContextDev, viteDevServer)
+    return globalContextDev
   } else {
     assert(globalObject.prodBuildEntry)
     assert(globalContext) // main common requiement
@@ -633,6 +637,7 @@ function addGlobalContextCommon(
       _isProduction: true as const,
       assetsManifest,
       _viteDevServer: null,
+      devMiddleware: null,
       _usesClientRouter: buildInfo.usesClientRouter,
     }
     if (isPrerendering) {
@@ -650,6 +655,28 @@ function addGlobalContextCommon(
       }
     }
   }
+}
+function addDevMiddlewareWarning(globalContext: { devMiddleware: unknown }, viteDevServer?: ViteDevServer): void {
+  if (!viteDevServer) return
+  const getMiddlewareMode = () => viteDevServer.config.server.middlewareMode
+  Object.defineProperty(globalContext, 'devMiddleware', {
+    get() {
+      const middlewareMode = getMiddlewareMode()
+      if (!middlewareMode) {
+        assertWarning(
+          false,
+          `You don't need ${pc.cyan('globalContext.devMiddleware')} because the development middleware is already installed (Vite's ${pc.cyan('config.server.middlewareMode')} is ${pc.cyan(JSON.stringify(middlewareMode))}) — installing the development middleware twice might hang the server`,
+          { onlyOnce: true },
+        )
+      }
+      return viteDevServer.middlewares
+    },
+    enumerable: getMiddlewareMode()
+      ? true
+      : // So that spreading or serializing globalContext doesn't get the warning
+        false,
+    configurable: true,
+  })
 }
 async function addGlobalContextAsync(globalContext: GlobalContextBase) {
   debug('addGlobalContextAsync()')

@@ -54,8 +54,10 @@ Define your server at <Link href="/serverEntry">`+serverEntry.js`</Link> and use
 
 // In this example we use Express.js but we could use any other server framework
 import express from 'express'
+import assert from 'node:assert'
 import { fileURLToPath } from 'node:url'
-import { renderPage, createDevMiddleware } from 'vike/server'
+import { getGlobalContext } from 'vike'
+import { renderPage } from 'vike/server'
 import type { Request, Response } from 'express'
 
 // Create an Express.js server
@@ -64,7 +66,8 @@ const app = express()
 // Dev/prod middleware
 if (import.meta.env.DEV) {
   // Vite's development middleware (HMR, transpiling, static assets, ...)
-  const { devMiddleware } = await createDevMiddleware()
+  const { devMiddleware } = await getGlobalContext()
+  assert(devMiddleware)
   app.use(devMiddleware)
 } else {
   // In production, we need to serve our static assets ourselves.
@@ -166,25 +169,55 @@ The fundamental difference is that:
 
 ## Without `+serverEntry.js`
 
-You can also run your server yourself (e.g. `$ node server/index.js`) instead of `+server.js` and `+serverEntry.js`.
+You can also run your server yourself (e.g. `$ node server/index.js`) instead of defining `+server.js`/`+serverEntry.js`.
 
-Unless you have a reason not to, we generally recommend using <Link href="/server">`+server.js`</Link> and/or <Link href="/serverEntry">`+serverEntry.js`</Link> as it provides a better development experience:
+Unless you have a reason, we generally recommend using <Link href="/server">`+server.js`</Link>/<Link href="/serverEntry">`+serverEntry.js`</Link> as it provides a better development experience:
 
 | | `+server.js`/`+serverEntry.js` | `$ node server/index.js` |
 | --- | --- | --- |
 | Server code (1) | Processed by Vite | Not processed by Vite |
-| Server restart (2) | Fine-grained (only when needed) | Coarse (unnecessary reloads) |
+| Server restart (2) | Fine-grained | Coarse (unnecessary reloads) |
 
-1. Vite processes your server code: <ImportMeta prop="env" /> is available (e.g. `import.meta.env.DEV` and the variables of your `.env` files), and so are path aliases and Vite plugins. (Modern runtimes such as Bun and recent Node.js versions can run TypeScript, but they don't apply your Vite configuration.)
-2. `$ vike dev` restarts your server only when a file imported by `+serverEntry.js` changes: modifying a page doesn't restart your server (the page is updated with <Link href="/glossary#hmr">HMR</Link>). A watcher such as `node --watch` or `nodemon` doesn't know about Vite's module graph.
+1. Vite processes your server code: <ImportMeta prop="env" /> is available (e.g. `import.meta.env.DEV` and the variables of your `.env` files), and so are path aliases and Vite plugins.
+   > While modern runtimes such as Bun and recent Node.js versions can run TypeScript, they don't apply your Vite configuration.
+2. Vike restarts your server process only when a file imported by `+serverEntry.js` changes: modifying a page doesn't restart your server (the page is updated with <Link href="/glossary#hmr">HMR</Link>).
+   > If you run the server yourself, you'll need a watcher (e.g. `node --watch` or `nodemon`) which doesn't know about Vite's module graph.
 
-> See also: <Link href="/server#extra-control" />
+```js
+// server/index.js
+
+import express from 'express'
+import { fileURLToPath } from 'node:url'
+import { createDevMiddleware } from 'vike/server'
+
+const app = express()
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(fileURLToPath(new URL('../dist/client', import.meta.url))))
+} else {
+  // Vite's development middleware (HMR, transpiling, static assets, ...)
+  const root = fileURLToPath(new URL('..', import.meta.url))
+  const { devMiddleware } = await createDevMiddleware({ root })
+  app.use(devMiddleware)
+}
+
+// ...
+// Other middlewares and the SSR middleware, as in the example above
+// ...
+
+app.listen(3000)
+```
+
+> See also:
+> - <Link href="/createDevMiddleware" />
+> - <Link href="/server" />
+> - <Link href="/server#extra-control" />
+
 
 ## See also
 
 - <Link href="/server" />
 - <Link href="/serverEntry" />
-- <Link href="/createDevMiddleware" />
 - <Link href="/headers" />
 - <Link href="/injectFilter" />
 - <Link href="/preloading#early-hints" />

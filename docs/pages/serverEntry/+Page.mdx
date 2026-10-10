@@ -8,7 +8,7 @@ import { ConfigSpec } from '../../components'
 
 `+serverEntry.js` enables you to control how the server starts. You can define it either:
 - With `+server.js` => `+serverEntry.js` wraps your `+server.js` in production.
-- Without `+server.js` => `+serverEntry.js` defines the entire server (for both development and production), while giving you more control than `+server.js`.
+- Without `+server.js` => `+serverEntry.js` defines the entire server (for both development and production) — it gives you more control than `+server.js`.
 
 See explanation at: <Link href="#with-out-server-js" />.
 
@@ -36,7 +36,7 @@ Use case examples:
 
 If you define both `+serverEntry.js` and `+server.js`, then `+serverEntry.js` wraps `+server.js` and is only used for production.
 
-> In development, Vite's development server acts as the entry: `+server.js` is attached to Vite's development server. Consequently, `+serverEntry.js` doesn't run in development.
+> In development, Vite's development server acts as the entry: your `+server.js` is attached to Vite's development server. Consequently, `+serverEntry.js` isn't used in development. In other words: `+serverEntry.js` never runs in development.
 
 > The typical use case is to customize a deployment integration, see <Link href="#example-aws-lambda" />.
 
@@ -71,8 +71,8 @@ If you don't define `+server.js`, then `+serverEntry.js` defines the entire serv
 
 // Defines the entire server — both development and production
 
-// You can use Vike's low-level server integration primitives for full control
-import { createDevMiddleware, renderPage } from 'vike/server'
+// You can also use Vike's low-level server integration primitives for full control
+import { renderPage } from 'vike/server'
 
 const app = express()
 
@@ -84,7 +84,7 @@ express.listen(3000)
 
 See full example at: <Link href="/renderPage#usage" />.
 
-> `+serverEntry.js` is responsible for starting the server, whereas with `+server.js` the server is started by Vite in development and by srvx in production.
+> `+serverEntry.js` is responsible for starting the server, whereas with `+server.js` the server is started by Vite in development and by [srvx](https://srvx.h3.dev) in production.
 
 > In development, when you modify `+serverEntry.js` (or a file it imports), Vike automatically restarts your server process.
 
@@ -153,29 +153,34 @@ export const handler = toLambdaHandler({ fetch: server.fetch })
 
 ## Example: Bun
 
-Without `+serverEntry.js`, `$ bun dist/server/index.mjs` runs Vike's built-in server entry powered by srvx which automatically uses `Bun.serve()` under the hood. But only in production: in development, `$ vike dev` uses Vite's development server ([which uses the Node.js server APIs](https://github.com/vitejs/ecosystem/issues/16) instead of `Bun.serve()`).
+Without `+serverEntry.js`, `$ bun dist/server/index.mjs` runs Vike's built-in server entry powered by [srvx](https://srvx.h3.dev) which automatically uses `Bun.serve()` under the hood. But only in production: in development, `$ vike dev` uses Vite's development server ([which uses the Node.js server APIs](https://github.com/vitejs/ecosystem/issues/16) instead of `Bun.serve()`).
 
 With `+serverEntry.js` (and without `+server.js`, see <Link href="#with-out-server-js" />), you can use [`Bun.serve()`](https://bun.com/docs/runtime/http/server) in both development and production. For example to use Bun's [WebSockets](https://bun.com/docs/runtime/http/websockets) also in development:
 
 ```ts
 // +serverEntry.ts (without +server.js)
 
-import { createDevMiddleware, renderPage } from 'vike/server'
+import { getGlobalContext } from 'vike'
+import { renderPage } from 'vike/server'
 import { fetchNodeHandler } from 'srvx/node'
+import assert from 'node:assert'
+import type { IncomingMessage, ServerResponse } from 'node:http'
 
-const devMiddleware = import.meta.env.DEV ? (await createDevMiddleware()).devMiddleware : null
+const globalContext = await getGlobalContext()
 
 Bun.serve({
   port: 3000,
   async fetch(request) {
-    if (devMiddleware) {
+    if (import.meta.env.DEV) {
+      const { devMiddleware } = globalContext
+      assert(devMiddleware)
       // Vite's development middleware, through srvx's emulation of Node.js's req/res
       let handled = true
       const response = await fetchNodeHandler(
-        (req, res, next) =>
+        (req: IncomingMessage, res: ServerResponse, next?: () => void) =>
           devMiddleware(req, res, () => {
             handled = false
-            next()
+            next?.()
           }),
         request
       )
@@ -194,6 +199,8 @@ Bun.serve({
 })
 ```
 
+> Vite's development middleware is a [Connect](https://github.com/senchalabs/connect) middleware (it uses Node.js's `req`/`res`), which is why it needs a bridge such as srvx's `fetchNodeHandler()`. Vite wants to move away from Connect, see [vitejs/ecosystem#16](https://github.com/vitejs/ecosystem/issues/16).
+
 ```bash
 # Development (with package.json#scripts.dev set to "vike dev")
 $ bun --bun run dev
@@ -203,8 +210,6 @@ $ bun dist/server/index.mjs
 ```
 
 > `Deno.serve()` should work the same way.
-
-> Vite's development middleware is a [Connect](https://github.com/senchalabs/connect) middleware (it uses Node.js's `req`/`res`), which is why it needs a bridge such as srvx's `fetchNodeHandler()`. Vite wants to move away from Connect, see [vitejs/ecosystem#16](https://github.com/vitejs/ecosystem/issues/16).
 
 
 ## `vike:server`

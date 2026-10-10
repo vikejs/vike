@@ -1,13 +1,11 @@
 export { createDevMiddleware }
 
-import path from 'node:path'
-import { createServer, normalizePath } from 'vite'
+import { createServer } from 'vite'
 import { prepareViteApiCall } from './api/prepareViteApiCall.js'
 import type { ResolvedConfig, Connect, ViteDevServer } from 'vite'
 import type { ApiOptions } from './api/types.js'
-import { getServerEntryViteServer } from './api/serverEntryDev.js'
+import { getViteDevServer } from '../server/runtime/globalContext.js'
 import { assertWarning } from '../utils/assert.js'
-import { joinEnglish } from '../utils/joinEnglish.js'
 import pc from '@brillout/picocolors'
 
 /*
@@ -18,11 +16,17 @@ import pc from '@brillout/picocolors'
 async function createDevMiddleware(
   options: { root?: string } & ApiOptions = {},
 ): Promise<{ devMiddleware: Connect.Server; viteServer: ViteDevServer; viteConfig: ResolvedConfig }> {
-  // `$ vike dev` runs +serverEntry.js => it already created Vite's development server — https://vike.dev/serverEntry
-  const viteServer = getServerEntryViteServer()
-  if (viteServer) {
-    warnIgnoredOptions(options, viteServer)
-    return { devMiddleware: viteServer.middlewares, viteServer, viteConfig: viteServer.config }
+  {
+    const viteServer = getViteDevServer()
+    if (viteServer) {
+      assertWarning(
+        false,
+        // E.g. `$ vike dev` already created it (+serverEntry.js, +server.js), or createDevMiddleware() was already called
+        `Development middleware already created: use ${pc.cyan('globalContext.devMiddleware')} to access it instead of calling ${pc.cyan('createDevMiddleware()')}`,
+        { onlyOnce: true },
+      )
+      return { devMiddleware: viteServer.middlewares, viteServer, viteConfig: viteServer.config }
+    }
   }
 
   const optionsMod = {
@@ -40,19 +44,4 @@ async function createDevMiddleware(
   const server = await createServer(viteConfigUser)
   const devMiddleware = server.middlewares
   return { devMiddleware, viteServer: server, viteConfig: server.config }
-}
-
-function warnIgnoredOptions(options: { root?: string } & ApiOptions, viteServer: ViteDevServer): void {
-  const optionsIgnored = [
-    options.viteConfig && 'viteConfig',
-    options.vikeConfig && 'vikeConfig',
-    options.root && normalizePath(path.resolve(options.root)) !== viteServer.config.root && 'root',
-  ].filter((o) => typeof o === 'string')
-  if (optionsIgnored.length === 0) return
-  const isPlural = optionsIgnored.length > 1
-  assertWarning(
-    false,
-    `The ${pc.cyan('createDevMiddleware()')} option${isPlural ? 's' : ''} ${joinEnglish(optionsIgnored, 'and', { color: pc.cyan })} ${isPlural ? 'are' : 'is'} ignored: ${pc.cyan('$ vike dev')} created Vite's development server before running +serverEntry.js — you can use vite.config.js or +config.js instead`,
-    { onlyOnce: true },
-  )
 }

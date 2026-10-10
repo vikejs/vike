@@ -1,13 +1,11 @@
 export { startServerEntry_parent }
 export { startServerEntry_child }
 export { getServerEntryFilePath_ifDevCli }
-export { getServerEntryViteServer }
 export { isServerChildProcess }
 
 // `$ vike dev` runs +serverEntry.js (if there isn't +server.js) — https://vike.dev/serverEntry
 // - The parent process (`$ vike dev`) runs +serverEntry.js in a child process, and restarts the child process whenever a file imported by +serverEntry.js changes
 // - The child process creates Vite's development server (in middleware mode) and runs +serverEntry.js using Vite's module runner
-//   - createDevMiddleware() returns that Vite development server
 
 import { fork, type ChildProcess } from 'node:child_process'
 import path from 'node:path'
@@ -17,10 +15,8 @@ import { getVikeConfigInternal } from '../vite/shared/resolveVikeConfigInternal.
 import { getServerEntryFilePath_ifDev } from '../vite/plugins/pluginUniversalDeploy/getServerConfig.js'
 import { isVikeCli } from '../cli/context.js'
 import { assert, assertInfo, assertUsage } from '../../utils/assert.js'
-import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import { isRunnableDevEnvironment } from '../../utils/isRunnableDevEnvironment.js'
 import './assertEnvApiDev.js'
-const globalObject = getGlobalObject<{ viteServer?: ViteDevServer }>('api/serverEntryDev.ts', {})
 
 const IS_SERVER_CHILD_PROCESS = '__VIKE_IS_SERVER_CHILD_PROCESS'
 // The child process exits with this code to tell the parent process to restart it
@@ -62,7 +58,6 @@ function exitLikeChild(code: number | null, signal: NodeJS.Signals | null): void
 
 // Child process — viteServer.ssrLoadModule()
 async function startServerEntry_child(viteServer: ViteDevServer, serverEntryFilePath: string): Promise<void> {
-  globalObject.viteServer = viteServer
   const { ssr } = viteServer.environments
   assertUsage(
     isRunnableDevEnvironment(ssr),
@@ -120,10 +115,6 @@ function isImportedBy(modules: Set<EnvironmentModuleNode> | undefined, serverEnt
     stack.push(...mod.importers)
   }
   return false
-}
-
-function getServerEntryViteServer(): ViteDevServer | null {
-  return globalObject.viteServer ?? null
 }
 
 function isServerChildProcess(): boolean {
