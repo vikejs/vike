@@ -797,8 +797,6 @@ async function loadPageConfigsLazyClientSideAndExecHook<
     hasErr = true
     if (handleErrorFetchingStaticAssets(err, pageContext, isFirstRender)) {
       return { skip: true }
-    } else {
-      // Syntax error in user file
     }
   }
   if (isRenderOutdated()) return { skip: true }
@@ -821,15 +819,15 @@ function handleErrorFetchingStaticAssets(
   pageContext: { urlOriginal: string },
   isFirstRender: boolean,
 ): boolean {
-  if (!isErrorFetchingStaticAssets(err)) return false
   if (import.meta.env.DEV) return false
+  if (!isErrorFetchingStaticAssets(err)) return false // Syntax error in user file
   // Possible reasons:
   // - Flaky connection
   // - New frontend was deployed
   disableClientRouting(err, false)
   if (isFirstRender) {
     // We don't reload a page that was itself loaded by a reload, in order to avoid an infinite reload loop
-    if (isPageReload()) throw err
+    if (isPageReload()) return false
     // We use `location.reload()` instead of redirectHard(): navigating with `location.href = url` creates a `type: 'navigate'` entry, which would lead to an infinite reload loop — see isPageReload()
     window.location.reload()
   } else {
