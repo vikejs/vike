@@ -288,7 +288,7 @@ function getStreamReadableWeb(htmlRender: HtmlRender | Uint8Array): StreamReadab
     return readable
   }
   if (isStreamReadableNode(htmlRender) || isStreamPipeNode(htmlRender)) {
-    // Node.js's `stream` module is there: the stream comes from it
+    // A Node.js stream implies that Node.js's `stream` module is available
     const { readable, writable } = new TransformStream()
     loadStreamNodeModule().then(({ Readable, PassThrough }) => {
       const passThrough = new PassThrough()
