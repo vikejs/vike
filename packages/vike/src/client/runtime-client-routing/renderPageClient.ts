@@ -844,7 +844,12 @@ function handleErrorFetchingStaticAssets(
 
   return true
 }
-// Also returns `true` if it cannot be determined (e.g. older browsers), so that we never risk an infinite reload loop.
+// Whether the current page was loaded by a page reload.
+// - The trick: the browser records how the current document was loaded (Navigation Timing API), and a document loaded by `location.reload()` has `type: 'reload'`. So the browser remembers for us that the page was already reloaded: we don't need to store a flag in `sessionStorage` (which may be unavailable, and which we'd need to clean up after a successful hydration).
+// - That's why handleErrorFetchingStaticAssets() uses `location.reload()` instead of redirectHard(): navigating with `location.href = url` creates a `type: 'navigate'` entry instead, which would lead to an infinite reload loop.
+// - The entry describes the initial page load (client-side navigations don't create new entries), which is what we want since we only use it upon hydration.
+// - Downside: a reload triggered by the user also has `type: 'reload'`, so we don't reload if the hydration fails after the user reloaded the page.
+// - Returns `true` if it cannot be determined (e.g. older browsers), so that we never risk an infinite reload loop.
 function isPageReload(): boolean {
   const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined
   return !navigation || navigation.type === 'reload'
