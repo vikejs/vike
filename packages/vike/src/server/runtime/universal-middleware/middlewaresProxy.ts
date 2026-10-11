@@ -64,7 +64,7 @@ async function applyMiddlewares(
   request: Request,
   context: Universal.Context,
   runtime: RuntimeAdapterTarget<unknown>,
-  middlewaresUserLand: UniversalMiddleware[] = [],
+  middlewaresUserLand: UniversalMiddleware[],
 ) {
   const responseFunctions: ((response: Response) => Response | undefined | Promise<Response | undefined>)[] = []
   const applyResponseFunctions = async (response: Response) => {

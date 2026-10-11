@@ -205,7 +205,7 @@ describe('applyMiddlewares()', () => {
     const stream = enhance(() => new Response(body), { name: 'stream' })
     const replace = enhance(() => () => new Response('Replaced'), { name: 'replace' })
     const middlewares = getMiddlewares_globalContext([replace, stream], '/')
-    const response = await applyMiddlewares(middlewares, new Request('http://localhost/'), {}, {} as RuntimeAdapter)
+    const response = await applyMiddlewares(middlewares, new Request('http://localhost/'), {}, {} as RuntimeAdapter, [])
     expect(await (response as Response).text()).toBe('Replaced')
     await vi.waitFor(() => expect(cancelled).toBe(true))
   })
