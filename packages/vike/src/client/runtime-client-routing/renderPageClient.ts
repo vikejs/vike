@@ -833,7 +833,11 @@ function handleErrorFetchingStaticAssets(
   disableClientRouting(err, false)
   if (isFirstRender) {
     // We don't reload a page that was itself loaded by a reload, in order to avoid an infinite reload loop
-    if (isPageReload()) return false
+    if (isPageReload()) {
+      // We leave the server-side rendered page as it is: it isn't interactive but, contrary to the error page, it shows the content the user requested
+      logErrorClient(err)
+      return true
+    }
     // We use `location.reload()` instead of redirectHard(): navigating with `location.href = url` creates a `type: 'navigate'` entry, which would lead to an infinite reload loop — see isPageReload()
     const reload = () => window.location.reload()
     if (navigator.onLine) reload()

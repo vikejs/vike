@@ -77,12 +77,13 @@ function testHydrationRetry(isDev: boolean) {
     const pageEntry = await blockPageEntry(() => true)
     try {
       await page.goto(getServerUrl() + '/')
-      // The reloaded page doesn't reload again: it handles the error like any other error, i.e. it logs it and renders the error page — which the playground doesn't define
+      // The reloaded page doesn't reload again: it logs the error and leaves the server-side rendered page as it is
       await autoRetry(() => {
-        expectLog('No error page defined.', { filter: (log) => log.logSource === 'Browser Error' })
+        expectLog('Failed to fetch dynamically imported module', { filter: (log) => log.logSource === 'Browser Error' })
       })
-      expectLog('Failed to fetch dynamically imported module', { filter: (log) => log.logSource === 'Browser Error' })
+      await sleep(1000)
       expect(pageEntry.getPageLoads()).toBe(2)
+      expect(await page.textContent('h1')).toBe('Welcome')
     } finally {
       await pageEntry.unblock()
     }
