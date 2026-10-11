@@ -34,7 +34,7 @@ type Middleware = EnhancedMiddleware & {
 }
 
 // Vike's pages, after everything else
-const renderPageHandler: Middleware = Object.assign(
+const renderPageServer_universalMiddleware: Middleware = Object.assign(
   enhance(renderPageServerUniversal, {
     name: 'vike',
     method: ['GET', 'POST', 'PUT', 'PATCH', 'HEAD', 'OPTIONS'],
@@ -46,11 +46,14 @@ const renderPageHandler: Middleware = Object.assign(
 
 // `globalContext.middlewares`: every `+middleware`, then Vike's built-in middleware
 function getMiddlewares_globalContext(plusMiddlewares: EnhancedMiddleware[], baseServer: string): Middleware[] {
-  return [...plusMiddlewares.map((plusMiddleware) => toMiddleware(plusMiddleware, baseServer)), renderPageHandler]
+  return [
+    ...plusMiddlewares.map((plusMiddleware) => toMiddleware(plusMiddleware, baseServer)),
+    renderPageServer_universalMiddleware,
+  ]
 }
 
 // `globalContext.middlewares`. Upon an invalid config, only Vike's pages, which show the error.
-const renderPageOnly = [renderPageHandler]
+const renderPageOnly = [renderPageServer_universalMiddleware]
 async function getMiddlewares_internal(): Promise<Middleware[]> {
   // Before the await too, which doesn't resolve while the config is invalid
   if (getVikeConfigError()) return renderPageOnly
