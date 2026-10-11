@@ -17,14 +17,9 @@ import {
   type UniversalHandler,
   type UniversalMiddleware,
 } from '@universal-middleware/core'
-import {
-  getMiddlewares_withErrorHandling,
-  getMatcher,
-  renderPageServer_universal,
-  type Middleware,
-} from './universal-middleware/core.js'
-import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.js'
-import '../assertEnvServer.js'
+import { getMiddlewares_withErrorHandling, getMatcher, renderPageServer_universal, type Middleware } from './core.js'
+import { getVikeConfigError } from '../../../shared-server-node/getVikeConfigError.js'
+import '../../assertEnvServer.js'
 
 // What `vike(app, middlewares)` applies before the app's routes: the +middleware and the app's middlewares in one loop
 // (looked up upon each request), then the app's handlers, which the server routes as usual. The adapter passes the

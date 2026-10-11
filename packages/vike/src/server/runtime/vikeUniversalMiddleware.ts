@@ -1,7 +1,7 @@
 export { vikeUniversalMiddleware }
 
 import { enhance, getAdapterRuntime, type RuntimeAdapterTarget } from '@universal-middleware/core'
-import { middlewaresProxy_handlers, middlewaresProxy_middlewares } from './middlewaresProxy.js'
+import { middlewaresProxy_handlers, middlewaresProxy_middlewares } from './universal-middleware/middlewaresProxy.js'
 import { getMiddlewares_withErrorHandling, renderPageServer_universal } from './universal-middleware/core.js'
 import '../assertEnvServer.js'
 
