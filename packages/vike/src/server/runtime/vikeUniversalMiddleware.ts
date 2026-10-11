@@ -1,4 +1,4 @@
-export { universalVikeHandler }
+export { vikeUniversalMiddleware }
 
 import { enhance, getAdapterRuntime, type RuntimeAdapterTarget } from '@universal-middleware/core'
 import { middlewaresProxy_handlers, middlewaresProxy_middlewares } from './middlewaresProxy.js'
@@ -26,7 +26,7 @@ async function handler(
   return typeof answer === 'function' ? ((await answer(response)) ?? response) : response
 }
 
-const universalVikeHandler = enhance(handler, {
+const vikeUniversalMiddleware = enhance(handler, {
   name: 'vike',
   method: ['GET', 'POST', 'PUT', 'PATCH', 'HEAD', 'OPTIONS'],
   path: '/**',
