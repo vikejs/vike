@@ -828,10 +828,15 @@ function handleErrorFetchingStaticAssets(
 
   if (isFirstRender) {
     disableClientRouting(err, false)
-    // This may happen upon a flaky connection, or if the frontend was newly deployed during hydration => we reload the page.
-    // We don't reload a page that was itself loaded by a reload, in order to avoid an infinite reload loop.
-    // https://github.com/vikejs/vike/issues/3596
-    if (import.meta.env.PROD && !isPageReload()) {
+    // Possible reasons:
+    // - Flaky connection
+    // - Frontend was newly deployed during hydration
+    if (
+      import.meta.env.PROD &&
+      // We don't reload a page that was itself loaded by a reload, in order to avoid an infinite reload loop.
+      !isPageReload()
+    ) {
+      // We use `location.reload()` instead of redirectHard(): navigating with `location.href = url` creates a `type: 'navigate'` entry instead (see `isPageReload()`), which would lead to an infinite reload loop.
       window.location.reload()
       return true
     }
@@ -845,14 +850,15 @@ function handleErrorFetchingStaticAssets(
   return true
 }
 // Whether the current page was loaded by a page reload.
-// - The trick: the browser records how the current document was loaded (Navigation Timing API), and a document loaded by `location.reload()` has `type: 'reload'`. So the browser remembers for us that the page was already reloaded: we don't need to store a flag in `sessionStorage` (which may be unavailable, and which we'd need to clean up after a successful hydration).
-// - That's why handleErrorFetchingStaticAssets() uses `location.reload()` instead of redirectHard(): navigating with `location.href = url` creates a `type: 'navigate'` entry instead, which would lead to an infinite reload loop.
-// - The entry describes the initial page load (client-side navigations don't create new entries), which is what we want since we only use it upon hydration.
-// - Downside: a reload triggered by the user also has `type: 'reload'`, so we don't reload if the hydration fails after the user reloaded the page.
-// - Returns `true` if it cannot be determined (e.g. older browsers), so that we never risk an infinite reload loop.
 function isPageReload(): boolean {
+  // The browser records how the current document was loaded (Navigation Timing API)
   const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined
-  return !navigation || navigation.type === 'reload'
+  return (
+    // Cannot be determined (e.g. older browsers)
+    !navigation ||
+    // A document loaded by `location.reload()` has `type: 'reload'`.
+    navigation.type === 'reload'
+  )
 }
 
 // [HMR] If error page is shown => re-render whole page
