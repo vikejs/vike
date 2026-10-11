@@ -146,3 +146,4 @@ Paths below are relative to https://vike.dev (e.g. `/data-fetching` → https://
 - /github-pages — GitHub Pages static, requires pre-rendering, `.nojekyll`, base-URL subdir, GitHub Actions
 - /cloudflare-pages — Cloudflare Pages (deprecated → Workers), Pages Functions for SSR, migration
 - /static-hosts — static hosting overview, SSG, one HTML per URL, `dist/client/`, base URL, `vike preview`
+- /deploy-sync — new frontend deployed while users browse: Client Routing falls back to Server Routing upon failing to fetch a static asset, page reloaded once if a static asset fails to load upon hydration (new deployment, flaky connection)

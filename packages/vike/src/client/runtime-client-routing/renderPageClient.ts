@@ -828,8 +828,13 @@ function handleErrorFetchingStaticAssets(
 
   if (isFirstRender) {
     disableClientRouting(err, false)
-    // This may happen if the frontend was newly deployed during hydration.
-    // Ideally: re-try a couple of times by reloading the page (not entirely trivial to implement since `localStorage` is needed.)
+    // This may happen upon a flaky connection, or if the frontend was newly deployed during hydration => we reload the page.
+    // We don't reload a page that was itself loaded by a reload, in order to avoid an infinite reload loop.
+    // https://github.com/vikejs/vike/issues/3596
+    if (import.meta.env.PROD && !isPageReload()) {
+      window.location.reload()
+      return true
+    }
     throw err
   } else {
     disableClientRouting(err, true)
@@ -838,6 +843,11 @@ function handleErrorFetchingStaticAssets(
   redirectHard(pageContext.urlOriginal)
 
   return true
+}
+// Also returns `true` if it cannot be determined (e.g. older browsers), so that we never risk an infinite reload loop.
+function isPageReload(): boolean {
+  const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined
+  return !navigation || navigation.type === 'reload'
 }
 
 // [HMR] If error page is shown => re-render whole page
