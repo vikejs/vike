@@ -796,7 +796,6 @@ async function loadPageConfigsLazyClientSideAndExecHook<
     err = err_
     hasErr = true
   }
-  // Check before handleErrorFetchingStaticAssets(), so that an outdated rendering doesn't reload/redirect the page (the user may have navigated in the meantime)
   if (isRenderOutdated()) return { skip: true }
   if (hasErr) {
     if (handleErrorFetchingStaticAssets(err, pageContext, isFirstRender)) return { skip: true }
@@ -831,7 +830,6 @@ function handleErrorFetchingStaticAssets(
     if (isPageReload()) return false
     // We use `location.reload()` instead of redirectHard(): navigating with `location.href = url` creates a `type: 'navigate'` entry, which would lead to an infinite reload loop — see isPageReload()
     const reload = () => window.location.reload()
-    // Reloading while offline would replace the server-side rendered page with the browser's offline error page
     if (navigator.onLine) reload()
     else window.addEventListener('online', reload, { once: true })
   } else {
