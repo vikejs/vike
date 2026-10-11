@@ -7,7 +7,7 @@ export { createHttpResponseErrorFallbackJson }
 export { createHttpResponseRedirect }
 export { createHttpResponse404 }
 export { createHttpResponseBaseIsMissing }
-export { createHttpResponseFromUniversalMiddleware }
+export { createHttpResponseViteSsrMiddleware }
 export type { HttpResponse }
 
 import type { GetPageAssets } from './getPageAssets.js'
@@ -202,7 +202,7 @@ function createHttpResponseRedirect({ url, statusCode }: UrlRedirect, pageContex
   )
 }
 
-function createHttpResponseFromUniversalMiddleware(response: Response) {
+function createHttpResponseViteSsrMiddleware(response: Response) {
   const body = response.body ?? getHtmlFallback('<p style="display: none">No HTTP response body.</p>')
   const httpResponse = createHttpResponseCommon(response.status, Array.from(response.headers.entries()), body)
   return httpResponse

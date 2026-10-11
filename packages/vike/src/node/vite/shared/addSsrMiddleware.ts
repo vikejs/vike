@@ -4,7 +4,7 @@ import { type PageContextInit, renderPageServer } from '../../../server/runtime/
 import { universalVikeHandler } from '../../../server/runtime/universalVikeHandler.js'
 import { getMiddlewares_internal } from '../../../server/runtime/middlewares.js'
 import {
-  createHttpResponseFromUniversalMiddleware,
+  createHttpResponseViteSsrMiddleware,
   type HttpResponse,
 } from '../../../server/runtime/renderPageServer/createHttpResponse.js'
 import { createRequestAdapter } from '@universal-middleware/node/request'
@@ -53,7 +53,7 @@ function addSsrMiddleware(
     try {
       // The app has +middleware: they run around Vike's pages, as on any server
       if ((await getMiddlewares_internal()).length > 1) {
-        httpResponse = createHttpResponseFromUniversalMiddleware(await universalVikeHandler(requestAdapter(req, res)))
+        httpResponse = createHttpResponseViteSsrMiddleware(await universalVikeHandler(requestAdapter(req, res)))
       } else {
         // Vike's pages answer directly: a `Response` only takes a status code from 200 to 599 (e.g. not `throw render(666)`)
         httpResponse = (await renderPageServer(pageContextInit)).httpResponse
