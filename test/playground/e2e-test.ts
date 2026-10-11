@@ -94,32 +94,6 @@ function testHydrationRetry(isDev: boolean) {
     expectLog('Failed to load resource: net::ERR_FAILED', { filter: (log) => log.logSource === 'Browser Error' })
   })
 
-  test("hydration retry: the page isn't reloaded if the user entered data", async () => {
-    // Only the first page load fails to fetch the page's entry, after the user entered data
-    const pageEntry = await blockPageEntry(
-      (pageLoads) => pageLoads === 1,
-      async () => {
-        await page.waitForLoadState('domcontentloaded')
-        // Form fields work without hydration
-        await page.evaluate(() => document.body.insertAdjacentHTML('beforeend', '<input id="user-input">'))
-        await page.fill('#user-input', 'Some text')
-      },
-    )
-    try {
-      await page.goto(getServerUrl() + '/')
-      // A reload would discard what the user entered: the page logs the error and leaves the server-side rendered page as it is
-      await autoRetry(() => {
-        expectLog('Failed to fetch dynamically imported module', { filter: (log) => log.logSource === 'Browser Error' })
-      })
-      await sleep(1000)
-      expect(pageEntry.getPageLoads()).toBe(1)
-      expect(await page.inputValue('#user-input')).toBe('Some text')
-    } finally {
-      await pageEntry.unblock()
-    }
-    expectLog('Failed to load resource: net::ERR_FAILED', { filter: (log) => log.logSource === 'Browser Error' })
-  })
-
   test('hydration retry: the page is reloaded only once (no infinite reload loop)', async () => {
     // All page loads fail to fetch the page's entry
     const pageEntry = await blockPageEntry(() => true)

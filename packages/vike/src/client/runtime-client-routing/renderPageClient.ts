@@ -840,25 +840,20 @@ function handleErrorFetchingStaticAssets(
       logErrorClient(err)
       return true
     }
-    reloadOnceServerIsReachable(err)
+    reloadOnceServerIsReachable()
   } else {
     redirectHard(pageContext.urlOriginal)
   }
   return true
 }
 // Reloading while the server is unreachable would replace the server-side rendered page with the browser's network error page
-function reloadOnceServerIsReachable(err: unknown) {
+function reloadOnceServerIsReachable() {
   let delay = 1000
   let timeout: ReturnType<typeof setTimeout> | undefined
   const tryReload = async () => {
     clearTimeout(timeout)
     window.removeEventListener('online', tryReload)
     if (await isServerReachable()) {
-      if (hasUserInput()) {
-        // A reload would discard what the user entered: we leave the server-side rendered page as it is
-        logErrorClient(err)
-        return
-      }
       // We use `location.reload()` instead of redirectHard(): navigating with `location.href = url` creates a `type: 'navigate'` entry, which would lead to an infinite reload loop — see isPageReload()
       window.location.reload()
       return
@@ -881,19 +876,6 @@ async function isServerReachable(): Promise<boolean> {
   }
   // We don't use status codes to tell apart a new frontend deployment from a flaky connection: a missing static asset isn't always a `404` (e.g. S3 replies `403` and static hosts with SPA fallback reply `200` with HTML), and both are fixed by a reload. But, upon a server error, a reload would show it instead of the server-side rendered page.
   return response.status < 500
-}
-// Whether the user entered data in a form field (form fields work without hydration)
-function hasUserInput(): boolean {
-  return Array.from(document.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input, textarea')).some(
-    (field) => {
-      if (field instanceof HTMLInputElement && (field.type === 'checkbox' || field.type === 'radio')) {
-        return field.checked !== field.defaultChecked
-      }
-      // The value of these input types isn't empty by default
-      if (field.type === 'range' || field.type === 'color') return false
-      return field.value !== field.defaultValue
-    },
-  )
 }
 // Whether the current page was loaded by a page reload
 function isPageReload(): boolean {
