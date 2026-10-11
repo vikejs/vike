@@ -690,7 +690,9 @@ function disableClientRouting(err: unknown, log: boolean) {
     false,
     [
       'Failed to fetch static asset.',
-      import.meta.env.PROD ? '(Because new frontend deployment, or flaky connection.)' : null,
+      import.meta.env.PROD
+        ? 'This usually happens after a new frontend deployment or because of a flaky connection.'
+        : null,
       'Falling back to Server Routing.',
     ]
       .filter(Boolean)
