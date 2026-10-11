@@ -8,16 +8,13 @@ import {
   getUniversal,
   getUniversalProp,
   isHandler,
-  methodSymbol,
-  nameSymbol,
   orderSymbol,
-  pathSymbol,
   pipeRoute,
   type RuntimeAdapterTarget,
   type UniversalHandler,
   type UniversalMiddleware,
 } from '@universal-middleware/core'
-import { getMiddlewares_withErrorHandling, getMatcher, renderPageServer_universal, type Middleware } from './core.js'
+import { getMiddlewares_withErrorHandling, renderPageServer_universal, scopeToPath, type Middleware } from './core.js'
 import { getVikeConfigError } from '../../../shared-server-node/getVikeConfigError.js'
 import '../../assertEnvServer.js'
 
@@ -41,18 +38,6 @@ function middlewaresProxy_middlewares(
     { name: 'vike:middleware' },
   )
   return [loop, ...middlewaresUserLand.filter(isHandler)]
-}
-
-// A user-land universal middleware with a `path` runs only on it, as apply() would scope it
-function scopeToPath(middleware: UniversalMiddleware): UniversalMiddleware {
-  const path = getUniversalProp(middleware, pathSymbol)
-  if (!path) return middleware
-  const isMatch = getMatcher(path, getUniversalProp(middleware, methodSymbol))
-  return enhance(
-    (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) =>
-      isMatch(request) ? getUniversal(middleware)(request, context, runtime) : undefined,
-    { name: getUniversalProp(middleware, nameSymbol), order: getUniversalProp(middleware, orderSymbol) },
-  )
 }
 
 // The +middleware that aren't handlers (Universal Middleware's pipe() can't pass the request on) and the user-land

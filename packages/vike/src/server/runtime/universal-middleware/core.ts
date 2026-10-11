@@ -1,7 +1,7 @@
 export { getMiddlewares_globalContext }
 export { getMiddlewares_withErrorHandling }
 export { renderPageServer_universal }
-export { getMatcher }
+export { scopeToPath }
 export { assertPlusMiddlewareApplied }
 export type { Middleware }
 
@@ -147,12 +147,13 @@ async function assertPlusMiddlewareApplied(): Promise<void> {
   )
 }
 
-// The `path` and `method` check that Universal Middleware's `apply()` wraps a middleware with
-function getMatcher(path: string, method: HttpMethod | HttpMethod[] | undefined): (request: Request) => boolean {
+// Universal Middleware's `apply()` scopes a middleware that isn't a handler to its `path` and `method`: a router that only
+// records it gives that scoped middleware back
+function scopeToPath(middleware: UniversalMiddleware): UniversalMiddleware {
   let scoped: UniversalMiddleware | undefined
   const router: UniversalRouterInterface = {
-    use(middleware) {
-      scoped = getUniversal(middleware as UniversalMiddleware)
+    use(m) {
+      scoped = getUniversal(m as UniversalMiddleware)
       return this
     },
     route() {
@@ -162,12 +163,18 @@ function getMatcher(path: string, method: HttpMethod | HttpMethod[] | undefined)
       return this
     },
   }
+  apply(router, [middleware])
+  assert(scoped)
+  return scoped
+}
+
+// The `path` and `method` check that `scopeToPath()` wraps a middleware with
+function getMatcher(path: string, method: HttpMethod | HttpMethod[] | undefined): (request: Request) => boolean {
   const matched = {}
   // A non-zero order: `apply()` scopes it to its path, rather than routing it as a handler
-  apply(router, [enhance(() => matched, { path, method, order: 1 })])
-  assert(scoped)
+  const scoped = scopeToPath(enhance(() => matched, { path, method, order: 1 }))
   return (request) => {
-    const result = scoped!(request, {}, {} as RuntimeAdapterTarget<unknown>)
+    const result = scoped(request, {}, {} as RuntimeAdapterTarget<unknown>)
     // The check is synchronous: any other result (e.g. a Promise) would silently skip every middleware with a path
     assert(result === matched || result === undefined)
     return result === matched
