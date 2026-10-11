@@ -700,9 +700,11 @@ async function addGlobalContextAsync(globalContext: GlobalContextBase) {
     baseServer,
     baseAssets,
     /**
-     * Every `+middleware`, then Vike's pages: apply the ones with `isHandler: false` before your server's own routes, and the others after.
+     * The list of all Universal Middlewares:
+     * - Every +middleware of all Vike extensions
+     * - Vike's built-in +middleware
      *
-     * https://vike.dev/middleware#manual-integration
+     * https://vike.dev/renderPage
      */
     middlewares: getMiddlewares((globalContext.config.middleware ?? []).flat(), baseServer),
   }
