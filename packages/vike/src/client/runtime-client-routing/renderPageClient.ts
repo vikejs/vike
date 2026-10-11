@@ -826,19 +826,16 @@ function handleErrorFetchingStaticAssets(
   // Possible reasons:
   // - Flaky connection
   // - New frontend was deployed
-
   disableClientRouting(err, false)
-
   if (isFirstRender) {
     // We don't reload a page that was itself loaded by a reload, in order to avoid an infinite reload loop
     if (isPageReload()) throw err
     // We use `location.reload()` instead of redirectHard(): navigating with `location.href = url` creates a `type: 'navigate'` entry, which would lead to an infinite reload loop — see isPageReload()
     window.location.reload()
-    return true
   } else {
     redirectHard(pageContext.urlOriginal)
-    return true
   }
+  return true
 }
 // Whether the current page was loaded by a page reload
 function isPageReload(): boolean {
