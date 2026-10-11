@@ -1,4 +1,4 @@
-import { vikeUniversalMiddleware } from '../vikeUniversalMiddleware.js'
+import { vikeUniversalMiddleware } from './vikeUniversalMiddleware.js'
 import { assertWarning } from '../../../utils/assert.js'
 import '../../assertEnvServer.js'
 
