@@ -1,4 +1,4 @@
-export { getMiddlewares }
+export { getMiddlewaresGlobalContext }
 export { getPlusMiddlewares }
 export { renderPageServerUniversal }
 export { getMatcher }
@@ -45,7 +45,7 @@ const renderPageHandler: Middleware = Object.assign(
 )
 
 // `globalContext.middlewares`: every `+middleware`, then Vike's built-in middleware
-function getMiddlewares(plusMiddlewares: EnhancedMiddleware[], baseServer: string): Middleware[] {
+function getMiddlewaresGlobalContext(plusMiddlewares: EnhancedMiddleware[], baseServer: string): Middleware[] {
   return [...plusMiddlewares.map((plusMiddleware) => toMiddleware(plusMiddleware, baseServer)), renderPageHandler]
 }
 
