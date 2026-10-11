@@ -77,7 +77,7 @@ import type { ViteRPC } from '../../node/vite/plugins/non-runnable-dev/pluginVit
 import { getVikeApiOperation } from '../../shared-server-node/api-context.js'
 import type { PrerenderContext } from '../../types/index.js'
 import { hasAlreadyLogged } from './logErrorServer.js'
-import { getMiddlewaresGlobalContext } from './middlewares.js'
+import { getMiddlewares_globalContext } from './middlewares.js'
 import '../assertEnvServer.js'
 const debug = createDebug('vike:globalContext')
 const globalObject = getGlobalObject<
@@ -706,7 +706,7 @@ async function addGlobalContextAsync(globalContext: GlobalContextBase) {
      *
      * https://vike.dev/renderPage
      */
-    middlewares: getMiddlewaresGlobalContext((globalContext.config.middleware ?? []).flat(), baseServer),
+    middlewares: getMiddlewares_globalContext((globalContext.config.middleware ?? []).flat(), baseServer),
   }
 }
 
