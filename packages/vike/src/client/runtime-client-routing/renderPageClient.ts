@@ -407,6 +407,13 @@ async function renderPageClient(renderArgs: RenderArgs) {
     const isClientRoutable = await isClientSideRoutable(pageContext.pageId, pageContext)
     if (isRenderOutdated()) return
     if (!isClientRoutable) {
+      if (isFirstRender) {
+        // Upon hydration, the server already rendered urlOriginal: redirecting to it would render the same page again, leading to an infinite reload loop if the error persists. We leave the server-side rendered page as it is instead.
+        // The page isn't hydrated: we fall back to Server Routing (otherwise the next page navigation would wait for the hydration to end, forever)
+        globalObject.clientRoutingIsDisabled = true
+        return
+      }
+      // The client-side can't render the error page (e.g. an HTML-only error page): we let the server render it
       redirectHard(urlOriginal)
       return
     }
