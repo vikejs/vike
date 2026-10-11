@@ -174,8 +174,9 @@ Bun.serve({
     if (import.meta.env.DEV) {
       const { devMiddleware } = globalContext
       assert(devMiddleware)
-      // Vite's development middleware, through srvx's emulation of Node.js's req/res
       let handled = true
+      // devMiddleware is Vite's development middleware, which is a Connect middleware.
+      // We use fetchNodeHandler() to convert it to the web-standard Request/Response API.
       const response = await fetchNodeHandler(
         (req: IncomingMessage, res: ServerResponse, next?: () => void) =>
           devMiddleware(req, res, () => {
