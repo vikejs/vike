@@ -5,7 +5,7 @@ import { Hono } from 'hono'
 import { enhance, MiddlewareOrder } from '@universal-middleware/core'
 import { apply } from '@universal-middleware/hono'
 import { getGlobalContext } from 'vike'
-import { middlewaresProxy_handlers, middlewaresProxy_middlewares } from 'vike/__internal'
+import { middlewaresProxy_handlers, middlewaresProxy_nonHandlers } from 'vike/__internal'
 import { renderPage } from 'vike/server'
 import vike from 'vike/fetch'
 import type { Server } from 'vike/types'
@@ -38,13 +38,20 @@ const middlewaresUserLand = [
     name: 'late',
     order: MiddlewareOrder.RESPONSE_TRANSFORM,
   }),
+  // A handler: it runs after the app's own routes, which can override it
+  enhance(() => new Response('Hello from a user-land handler'), {
+    name: 'userLandHandler',
+    path: '/user-land/**',
+    method: 'GET',
+  }),
 ]
 
 const app = new Hono()
-apply(app, halves ? middlewaresProxy_middlewares(middlewaresUserLand) : middlewares.filter((m) => !m.isHandler))
+apply(app, halves ? [middlewaresProxy_nonHandlers(middlewaresUserLand)] : middlewares.filter((m) => !m.isHandler))
 // The app's own routes
 app.get('/api/me', (c) => c.text('Me'))
 app.get('/overridden', (c) => c.text('Overridden by +server.ts'))
+app.get('/user-land/overridden', (c) => c.text('Overridden by +server.ts'))
 // The request for the page /
 const toIndex = (request: Request) => new Request(new URL('/', request.url), { headers: request.headers })
 // `vike.fetch(request)` with the request alone, as /server documents
@@ -57,7 +64,7 @@ app.get('/render-page', async (c) => {
   const { httpResponse } = await renderPage({ urlOriginal: new URL('/', c.req.url).href })
   return new Response(httpResponse.body, { status: httpResponse.statusCode, headers: httpResponse.headers })
 })
-apply(app, halves ? [middlewaresProxy_handlers] : middlewares.filter((m) => m.isHandler))
+apply(app, halves ? [middlewaresProxy_handlers(middlewaresUserLand)] : middlewares.filter((m) => m.isHandler))
 
 export default {
   fetch: app.fetch,

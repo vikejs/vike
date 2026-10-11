@@ -1,4 +1,4 @@
-export { middlewaresProxy_middlewares }
+export { middlewaresProxy_nonHandlers }
 export { middlewaresProxy_handlers }
 export { applyNonHandlers }
 
@@ -18,19 +18,18 @@ import { getMiddlewares_withErrorHandling, scopeToPath, type Middleware } from '
 import '../../assertEnvServer.js'
 
 // What `vike(app, middlewares)` applies before the app's routes: the +middleware and the user-land universal
-// middlewares in one loop (looked up upon each request), then the user-land handlers, which the server routes as usual.
-// The adapter passes the result to apply() as is, so it doesn't need to tell the handlers apart itself.
+// middlewares that aren't handlers, in one loop (looked up upon each request).
 // `object[]`: the user-land universal middlewares can come from another copy of @universal-middleware/core, whose types
 // (keyed by a `unique symbol`) never match this copy's.
-function middlewaresProxy_middlewares(middlewaresUserLand_: object[]): [UniversalMiddleware, ...UniversalMiddleware[]] {
-  const middlewaresUserLand = middlewaresUserLand_ as UniversalMiddleware[]
-  const nonHandlersUserLand = middlewaresUserLand.filter((middleware) => !isHandler(middleware)).map(scopeToPath)
-  const loop = enhance(
+function middlewaresProxy_nonHandlers(middlewaresUserLand: object[]): UniversalMiddleware {
+  const nonHandlersUserLand = (middlewaresUserLand as UniversalMiddleware[])
+    .filter((middleware) => !isHandler(middleware))
+    .map(scopeToPath)
+  return enhance(
     async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) =>
       applyNonHandlers(await getMiddlewares_withErrorHandling(), request, context, runtime, nonHandlersUserLand),
     { name: 'vike:middleware' },
   )
-  return [loop, ...middlewaresUserLand.filter(isHandler)]
 }
 
 // The +middleware that aren't handlers (Universal Middleware's pipe() can't pass the request on) and the user-land
@@ -73,26 +72,31 @@ async function applyNonHandlers(
   if (responseFunctions.length > 0) return applyResponseFunctions
 }
 
-// What `vike(app)` runs after the app's routes, looked up upon each request: the +middleware that are handlers, then Vike's pages
-const middlewaresProxy_handlers = enhance(
-  async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) =>
-    // A method that no handler and no page answers (e.g. DELETE): what a server answers without a route for it
-    (await getRouter(await getMiddlewares_withErrorHandling())(request, context, runtime)) ??
-    new Response('Not Found', { status: 404 }),
-  {
-    name: 'vike',
-    method: ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'CONNECT', 'OPTIONS', 'TRACE', 'PATCH'],
-    path: '/**',
-  },
-)
-
-// The list changes only when the config does
-const routers = new WeakMap<Middleware[], UniversalHandler>()
-function getRouter(list: Middleware[]): UniversalHandler {
-  let router = routers.get(list)
-  if (!router) {
-    router = pipeRoute(list.filter((middleware) => middleware.isHandler)) as UniversalHandler
-    routers.set(list, router)
-  }
-  return router
+// What `vike(app, middlewares)` runs after the app's routes, looked up upon each request: the user-land universal
+// middlewares that are handlers (the first one registered on a path answers), the +middleware that are handlers, then
+// Vike's pages
+function middlewaresProxy_handlers(middlewaresUserLand: object[]): UniversalHandler {
+  const handlersUserLand = (middlewaresUserLand as UniversalMiddleware[]).filter(isHandler)
+  // The list changes only when the config does
+  const routers = new WeakMap<Middleware[], UniversalHandler>()
+  return enhance(
+    async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) => {
+      const list = await getMiddlewares_withErrorHandling()
+      let router = routers.get(list)
+      if (!router) {
+        router = pipeRoute([
+          ...handlersUserLand,
+          ...list.filter((middleware) => middleware.isHandler),
+        ]) as UniversalHandler
+        routers.set(list, router)
+      }
+      // A method that no handler and no page answers (e.g. DELETE): what a server answers without a route for it
+      return (await router(request, context, runtime)) ?? new Response('Not Found', { status: 404 })
+    },
+    {
+      name: 'vike',
+      method: ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'CONNECT', 'OPTIONS', 'TRACE', 'PATCH'],
+      path: '/**',
+    },
+  )
 }

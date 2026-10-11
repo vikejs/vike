@@ -84,6 +84,11 @@ function testRun(cmd: Cmd, options?: { serverIsReadyMessage: string }) {
       expect(response.headers.get('x-api')).toBe('yes')
     })
 
+    test("A user-land handler runs after the app's own routes", async () => {
+      expect(await (await fetch(`${getServerUrl()}/user-land/hello`)).text()).toBe('Hello from a user-land handler')
+      expect(await (await fetch(`${getServerUrl()}/user-land/overridden`)).text()).toBe('Overridden by +server.ts')
+    })
+
     test('A user-land universal middleware runs by its order between the +middleware, and only on its path', async () => {
       const response: Response = await fetch(`${getServerUrl()}/`, { headers: { 'x-user': 'alice' } })
       expect(await response.text()).toContain('Rendered by Vike for alice')
