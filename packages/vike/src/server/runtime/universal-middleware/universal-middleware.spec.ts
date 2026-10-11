@@ -11,7 +11,7 @@ import {
   type UniversalMiddleware,
 } from '@universal-middleware/core'
 import { getMiddlewares_globalContext, type Middleware } from './core.js'
-import { applyMiddlewares } from './middlewaresProxy.js'
+import { applyNonHandlers } from './middlewaresProxy.js'
 
 // Answers its path with a 401 and the request's URL
 const authAt = (path: string) =>
@@ -194,7 +194,7 @@ describe('getMiddlewares_globalContext()', () => {
   })
 })
 
-describe('applyMiddlewares()', () => {
+describe('applyNonHandlers()', () => {
   it('cancels the body a response function replaces', async () => {
     let cancelled = false
     const body = new ReadableStream({
@@ -205,7 +205,7 @@ describe('applyMiddlewares()', () => {
     const stream = enhance(() => new Response(body), { name: 'stream' })
     const replace = enhance(() => () => new Response('Replaced'), { name: 'replace' })
     const middlewares = getMiddlewares_globalContext([replace, stream], '/')
-    const response = await applyMiddlewares(middlewares, new Request('http://localhost/'), {}, {} as RuntimeAdapter, [])
+    const response = await applyNonHandlers(middlewares, new Request('http://localhost/'), {}, {} as RuntimeAdapter, [])
     expect(await (response as Response).text()).toBe('Replaced')
     await vi.waitFor(() => expect(cancelled).toBe(true))
   })
@@ -224,7 +224,7 @@ describe('applyMiddlewares()', () => {
     url: string,
     middlewaresUserLand: UniversalMiddleware[],
   ) =>
-    applyMiddlewares(
+    applyNonHandlers(
       getMiddlewares_globalContext(plusMiddlewares, '/'),
       new Request(`http://localhost${url}`),
       {},

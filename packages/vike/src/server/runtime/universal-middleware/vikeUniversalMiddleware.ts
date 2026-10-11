@@ -1,7 +1,7 @@
 export { vikeUniversalMiddleware }
 
 import { enhance, getAdapterRuntime, type RuntimeAdapterTarget } from '@universal-middleware/core'
-import { applyMiddlewares, middlewaresProxy_handlers } from './middlewaresProxy.js'
+import { applyNonHandlers, middlewaresProxy_handlers } from './middlewaresProxy.js'
 import { getMiddlewares_withErrorHandling, renderPageServer_universal } from './core.js'
 import '../../assertEnvServer.js'
 
@@ -18,7 +18,7 @@ async function handler(
   // A copy: the +middleware's context is merged into it, and a Cloudflare worker's `env` (its context) is shared by all requests
   context = { ...context }
   // Vike's own server has no user-land universal middlewares
-  const answer = await applyMiddlewares(middlewares, request, context, runtime, [])
+  const answer = await applyNonHandlers(middlewares, request, context, runtime, [])
   if (answer instanceof Response) return answer
   const response = await middlewaresProxy_handlers(request, context, runtime)
   return typeof answer === 'function' ? ((await answer(response)) ?? response) : response

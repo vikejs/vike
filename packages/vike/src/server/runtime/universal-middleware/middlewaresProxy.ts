@@ -1,6 +1,6 @@
 export { middlewaresProxy_middlewares }
 export { middlewaresProxy_handlers }
-export { applyMiddlewares }
+export { applyNonHandlers }
 
 import {
   cancelReplacedBody,
@@ -27,7 +27,7 @@ function middlewaresProxy_middlewares(middlewaresUserLand_: object[]): [Universa
   const nonHandlersUserLand = middlewaresUserLand.filter((middleware) => !isHandler(middleware)).map(scopeToPath)
   const loop = enhance(
     async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) =>
-      applyMiddlewares(await getMiddlewares_withErrorHandling(), request, context, runtime, nonHandlersUserLand),
+      applyNonHandlers(await getMiddlewares_withErrorHandling(), request, context, runtime, nonHandlersUserLand),
     { name: 'vike:middleware' },
   )
   return [loop, ...middlewaresUserLand.filter(isHandler)]
@@ -37,7 +37,7 @@ function middlewaresProxy_middlewares(middlewaresUserLand_: object[]): [Universa
 // universal middlewares, by order, the +middleware first at equal order. The first Response answers: the +middleware
 // after it don't run, and the user-land universal middlewares after it run for their response functions, a Response
 // they return being ignored. The response functions apply to the final response, in their order.
-async function applyMiddlewares(
+async function applyNonHandlers(
   plusMiddlewares: Middleware[],
   request: Request,
   context: Universal.Context,
