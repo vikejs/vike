@@ -8,6 +8,7 @@ import {
   pipeRoute,
   type RuntimeAdapter,
   type UniversalHandler,
+  type UniversalMiddleware,
 } from '@universal-middleware/core'
 import { getMiddlewares, type Middleware } from './middlewares.js'
 import { applyMiddlewares } from './middlewaresProxy.js'
@@ -206,6 +207,77 @@ describe('applyMiddlewares()', () => {
     const middlewares = getMiddlewares([replace, stream], '/')
     const response = await applyMiddlewares(middlewares, new Request('http://localhost/'), {}, {} as RuntimeAdapter)
     expect(await (response as Response).text()).toBe('Replaced')
+    await vi.waitFor(() => expect(cancelled).toBe(true))
+  })
+
+  // The app's middlewares, passed to `vike(app, [...])`
+  const header = (name: string, order?: number) =>
+    enhance(
+      () => (response: Response) => {
+        response.headers.set(name, 'yes')
+        return response
+      },
+      { name, ...(order !== undefined && { order }) },
+    )
+  const run = (
+    plusMiddlewares: Parameters<typeof getMiddlewares>[0],
+    url: string,
+    appMiddlewares: UniversalMiddleware[],
+  ) =>
+    applyMiddlewares(
+      getMiddlewares(plusMiddlewares, '/'),
+      new Request(`http://localhost${url}`),
+      {},
+      {} as RuntimeAdapter,
+      appMiddlewares,
+    )
+
+  it("applies an app middleware's response function to a +middleware's answer, and to the page", async () => {
+    const answer = (await run([auth], '/dash', [header('x-app')])) as Response
+    expect([answer.status, answer.headers.get('x-app')]).toEqual([401, 'yes'])
+    const applyResponseFunctions = (await run([auth], '/about', [header('x-app')])) as (
+      r: Response,
+    ) => Promise<Response>
+    expect((await applyResponseFunctions(new Response('page'))).headers.get('x-app')).toBe('yes')
+  })
+
+  it('runs the +middleware and the app middlewares by order, the +middleware first at equal order', async () => {
+    const ran: string[] = []
+    const record = (name: string, order?: number) =>
+      enhance(
+        () => {
+          ran.push(name)
+        },
+        { name, ...(order !== undefined && { order }) },
+      )
+    await run([record('plus -900', -900), record('plus'), record('plus -800', -800)], '/', [
+      record('app'),
+      record('app -850', -850),
+      record('app -1000', -1000),
+    ])
+    expect(ran).toEqual(['app -1000', 'plus -900', 'app -850', 'plus -800', 'plus', 'app'])
+  })
+
+  it('after the answer, runs the app middlewares only, and ignores a Response one of them returns', async () => {
+    let lateRan = false
+    let cancelled = false
+    const latePlus = enhance(
+      () => {
+        lateRan = true
+      },
+      { name: 'latePlus', order: 100 },
+    )
+    const late = enhance(() => new Response(new ReadableStream({ cancel: () => void (cancelled = true) })), {
+      name: 'late',
+      order: 100,
+    })
+    const response = (await run([auth, latePlus], '/dash', [late, header('x-app', 300)])) as Response
+    expect([response.status, await response.text(), response.headers.get('x-app')]).toEqual([
+      401,
+      'http://localhost/dash',
+      'yes',
+    ])
+    expect(lateRan).toBe(false)
     await vi.waitFor(() => expect(cancelled).toBe(true))
   })
 })

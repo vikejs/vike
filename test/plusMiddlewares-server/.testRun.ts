@@ -54,6 +54,27 @@ function testRun(cmd: Cmd, options?: { serverIsReadyMessage: string }) {
     expect(await (await fetch(url)).text()).not.toContain('for alice')
   })
 
+  if (cmd === 'pnpm run dev:halves' || cmd === 'pnpm run preview:halves') {
+    test("The app's middlewares apply to a +middleware's answer, and a Response after it is ignored", async () => {
+      // `auth` answers, and `late`, ordered after it, returns a Response too
+      const response: Response = await fetch(`${getServerUrl()}/api/me`, { headers: { 'x-late': '1' } })
+      expect(response.status).toBe(401)
+      expect(await response.text()).toBe('Unauthorized')
+      expect(response.headers.get('x-app')).toBe('yes')
+      // apiHeader's path, /api/**, matches
+      expect(response.headers.get('x-api')).toBe('yes')
+    })
+
+    test('An app middleware runs by its order between the +middleware, and only on its path', async () => {
+      const response: Response = await fetch(`${getServerUrl()}/`, { headers: { 'x-user': 'alice' } })
+      expect(await response.text()).toContain('Rendered by Vike for alice')
+      expect(response.headers.get('x-app')).toBe('yes')
+      // Ordered after the `user` +middleware: it sees the user
+      expect(response.headers.get('x-user-seen')).toBe('alice')
+      expect(response.headers.get('x-api')).toBe(null)
+    })
+  }
+
   if (cmd === 'pnpm run dev:halves') {
     test("Upon an invalid config, Vike's error page answers instead of the app's routes", async () => {
       const me = () =>

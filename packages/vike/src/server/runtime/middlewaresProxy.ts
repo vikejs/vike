@@ -7,33 +7,61 @@ import {
   enhance,
   getUniversal,
   getUniversalProp,
+  isHandler,
+  methodSymbol,
+  nameSymbol,
   orderSymbol,
+  pathSymbol,
   pipeRoute,
   type RuntimeAdapterTarget,
   type UniversalHandler,
+  type UniversalMiddleware,
 } from '@universal-middleware/core'
-import { getAppMiddlewares, renderPageUniversal, type Middleware } from './middlewares.js'
+import { getAppMiddlewares, getMatcher, renderPageUniversal, type Middleware } from './middlewares.js'
 import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.js'
 import '../assertEnvServer.js'
 
-// What `vike(app)` runs before the app's routes, looked up upon each request
-const middlewaresProxy_middlewares = enhance(
-  async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) => {
-    const middlewares = await getAppMiddlewares()
-    // An invalid config: Vike's pages show the error, instead of the app's routes running without the +middleware
-    if (getVikeConfigError()) return renderPageUniversal(request, context, runtime)
-    return applyMiddlewares(middlewares, request, context, runtime)
-  },
-  { name: 'vike:middleware' },
-)
+// What `vike(app, middlewares)` applies before the app's routes: the +middleware and the app's middlewares in one loop
+// (looked up upon each request), then the app's handlers, which the server routes as usual. The adapter passes the
+// result to apply() as is, so it doesn't need to tell the handlers apart itself.
+function middlewaresProxy_middlewares(
+  middlewares: UniversalMiddleware[] = [],
+): [UniversalMiddleware, ...UniversalMiddleware[]] {
+  const appMiddlewares = middlewares.filter((middleware) => !isHandler(middleware)).map(scopeToPath)
+  const loop = enhance(
+    async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) => {
+      const plusMiddlewares = await getAppMiddlewares()
+      // An invalid config: Vike's pages show the error, instead of the app's routes running without the +middleware
+      if (getVikeConfigError()) return renderPageUniversal(request, context, runtime)
+      return applyMiddlewares(plusMiddlewares, request, context, runtime, appMiddlewares)
+    },
+    { name: 'vike:middleware' },
+  )
+  return [loop, ...middlewares.filter(isHandler)]
+}
 
-// The +middleware that aren't handlers (Universal Middleware's pipe() can't pass the request on): the first Response answers and the ones after
-// it don't run, and the response functions of the ones that ran apply to the final response, in their order.
+// An app middleware with a `path` runs only on it, as apply() would scope it
+function scopeToPath(middleware: UniversalMiddleware): UniversalMiddleware {
+  const path = getUniversalProp(middleware, pathSymbol)
+  if (!path) return middleware
+  const isMatch = getMatcher(path, getUniversalProp(middleware, methodSymbol))
+  return enhance(
+    (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) =>
+      isMatch(request) ? getUniversal(middleware)(request, context, runtime) : undefined,
+    { name: getUniversalProp(middleware, nameSymbol), order: getUniversalProp(middleware, orderSymbol) },
+  )
+}
+
+// The +middleware that aren't handlers (Universal Middleware's pipe() can't pass the request on) and the app's
+// middlewares, by order, the +middleware first at equal order. The first Response answers: the +middleware after it
+// don't run, and the app's middlewares after it run for their response functions, a Response they return being
+// ignored. The response functions apply to the final response, in their order.
 async function applyMiddlewares(
   middlewares: Middleware[],
   request: Request,
   context: Universal.Context,
   runtime: RuntimeAdapterTarget<unknown>,
+  appMiddlewares: UniversalMiddleware[] = [],
 ) {
   const responseFunctions: ((response: Response) => Response | undefined | Promise<Response | undefined>)[] = []
   const applyResponseFunctions = async (response: Response) => {
@@ -46,15 +74,21 @@ async function applyMiddlewares(
     }
     return response
   }
-  const nonHandlers = middlewares
-    .filter((middleware) => !middleware.isHandler)
-    .sort((a, b) => getUniversalProp(a, orderSymbol, 0) - getUniversalProp(b, orderSymbol, 0))
+  const nonHandlers = [...middlewares.filter((middleware) => !middleware.isHandler), ...appMiddlewares].sort(
+    (a, b) => getUniversalProp(a, orderSymbol, 0) - getUniversalProp(b, orderSymbol, 0),
+  )
+  const isAppMiddleware = new Set<unknown>(appMiddlewares)
+  let answer: Response | undefined
   for (const middleware of nonHandlers) {
+    if (answer && !isAppMiddleware.has(middleware)) continue
     const result = await getUniversal(middleware)(request, context, runtime)
-    if (result instanceof Response) return applyResponseFunctions(result)
-    if (typeof result === 'function') responseFunctions.push(result)
+    if (result instanceof Response) {
+      if (answer) cancelReplacedBody(result, answer)
+      else answer = result
+    } else if (typeof result === 'function') responseFunctions.push(result)
     else if (result) Object.assign(context, result)
   }
+  if (answer) return applyResponseFunctions(answer)
   if (responseFunctions.length > 0) return applyResponseFunctions
 }
 

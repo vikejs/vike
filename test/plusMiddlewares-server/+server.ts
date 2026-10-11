@@ -1,7 +1,8 @@
 // A server that applies the +middleware itself: https://vike.dev/middleware#manual-integration
-// With MIDDLEWARES=halves, it applies the two halves that `vike(app)` applies instead.
+// With MIDDLEWARES=halves, it applies the two halves that `vike(app, appMiddlewares)` applies instead.
 
 import { Hono } from 'hono'
+import { enhance, MiddlewareOrder } from '@universal-middleware/core'
 import { apply } from '@universal-middleware/hono'
 import { getGlobalContext } from 'vike'
 import { middlewaresProxy_handlers, middlewaresProxy_middlewares } from 'vike/__internal'
@@ -14,8 +15,32 @@ assert(!globalContext.isClientSide)
 const { middlewares } = globalContext
 const halves = process.env.MIDDLEWARES === 'halves'
 
+// Sets a header on the response
+const setHeader = (name: string, value: string) => (response: Response) => {
+  response.headers.set(name, value)
+  return response
+}
+// The app's middlewares, as in `vike(app, appMiddlewares)`: `userSeen` runs between the `user` and `auth` +middleware, and
+// `late`'s Response comes after `auth`'s
+const appMiddlewares = [
+  enhance(() => setHeader('x-app', 'yes'), { name: 'appHeader' }),
+  enhance(() => setHeader('x-api', 'yes'), {
+    name: 'apiHeader',
+    path: '/api/**',
+    order: MiddlewareOrder.HEADER_MANAGEMENT,
+  }),
+  enhance((_request: Request, context: Universal.Context) => setHeader('x-user-seen', String(context.user)), {
+    name: 'userSeen',
+    order: MiddlewareOrder.AUTHENTICATION + 50,
+  }),
+  enhance((request: Request) => (request.headers.has('x-late') ? new Response('Late') : undefined), {
+    name: 'late',
+    order: MiddlewareOrder.RESPONSE_TRANSFORM,
+  }),
+]
+
 const app = new Hono()
-apply(app, halves ? [middlewaresProxy_middlewares] : middlewares.filter((m) => !m.isHandler))
+apply(app, halves ? middlewaresProxy_middlewares(appMiddlewares) : middlewares.filter((m) => !m.isHandler))
 // The app's own routes
 app.get('/api/me', (c) => c.text('Me'))
 app.get('/overridden', (c) => c.text('Overridden by +server.ts'))
