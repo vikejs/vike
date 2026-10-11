@@ -55,6 +55,10 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     expect(response.headers.get('Location')).toBe('/')
   })
 
+  test('A page rendered to a Node.js stream', async () => {
+    expect(await fetchHtml('/node-stream')).toContain('Rendered by a Node.js stream.')
+  })
+
   test('+redirects answer with the redirect target as is', async () => {
     const response: Response = await fetch(`${getServerUrl()}/old-portal`, { redirect: 'manual' })
     expect(response.status).toBe(301)

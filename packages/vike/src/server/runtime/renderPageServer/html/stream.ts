@@ -47,7 +47,12 @@ import {
   streamFromReactStreamingPackageToString,
 } from './stream/react-streaming.js'
 import { import_ } from '@brillout/import'
-import type { Readable as Readable_, Writable as Writable_, pipeline as pipeline_ } from 'node:stream'
+import type {
+  Readable as Readable_,
+  Writable as Writable_,
+  PassThrough as PassThrough_,
+  pipeline as pipeline_,
+} from 'node:stream'
 import pc from '@brillout/picocolors'
 import '../../../assertEnvServer.js'
 
@@ -267,7 +272,7 @@ async function getStreamReadableNode(htmlRender: HtmlRender | Uint8Array): Promi
   }
   return null
 }
-function getStreamReadableWeb(htmlRender: HtmlRender | Uint8Array): null | StreamReadableWeb {
+function getStreamReadableWeb(htmlRender: HtmlRender | Uint8Array): StreamReadableWeb {
   if (typeof htmlRender === 'string' || htmlRender instanceof Uint8Array) {
     return stringToStreamReadableWeb(htmlRender)
   }
@@ -282,7 +287,20 @@ function getStreamReadableWeb(htmlRender: HtmlRender | Uint8Array): null | Strea
     streamPipeWeb(writable)
     return readable
   }
-  return null
+  if (isStreamReadableNode(htmlRender) || isStreamPipeNode(htmlRender)) {
+    // Node.js's `stream` module is there: the stream comes from it
+    const { readable, writable } = new TransformStream()
+    loadStreamNodeModule().then(({ Readable, PassThrough }) => {
+      const passThrough = new PassThrough()
+      pipeToStreamWritableNode(htmlRender, passThrough)
+      Readable.toWeb(passThrough)
+        .pipeTo(writable as any)
+        .catch(() => {})
+    })
+    return readable
+  }
+  checkType<never>(htmlRender)
+  assert(false)
 }
 
 function pipeToStreamWritableWeb(htmlRender: HtmlRender | Uint8Array, writable: StreamWritableWeb): boolean {
@@ -1009,11 +1027,12 @@ function encodeForWebStream(thing: unknown) {
 async function loadStreamNodeModule(): Promise<{
   Readable: typeof Readable_
   Writable: typeof Writable_
+  PassThrough: typeof PassThrough_
   pipeline: typeof pipeline_
 }> {
   const streamModule = (await import_('stream')).default as Awaited<typeof import('stream')>
-  const { Readable, Writable, pipeline } = streamModule
-  return { Readable, Writable, pipeline }
+  const { Readable, Writable, PassThrough, pipeline } = streamModule
+  return { Readable, Writable, PassThrough, pipeline }
 }
 
 function getStreamName(
