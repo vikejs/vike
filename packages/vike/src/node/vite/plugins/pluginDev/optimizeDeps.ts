@@ -76,7 +76,7 @@ const optimizeDeps = {
         */
         '@brillout/vite-plugin-server-entry',
         'vike',
-        // Vite pre-bundles one copy per package name for every importer, so without this Vike gets the app's older copy whatever version Vike depends on
+        // Needed so that Vike doesn't get the user's @universal-middleware/core version (that might differ from Vike's @universal-middleware/core version). (Vite pre-bundles one copy per package name for every importer.)
         '@universal-middleware/core',
       ],
     },
