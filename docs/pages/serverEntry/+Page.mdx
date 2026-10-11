@@ -153,9 +153,9 @@ export const handler = toLambdaHandler({ fetch: server.fetch })
 
 ## Example: Bun
 
-Without `+serverEntry.js`, `$ bun dist/server/index.mjs` runs Vike's built-in server entry powered by [srvx](https://srvx.h3.dev) which automatically uses `Bun.serve()` under the hood. But only in production: in development, `$ vike dev` uses Vite's development server ([which uses the Node.js server APIs](https://github.com/vitejs/ecosystem/issues/16) instead of `Bun.serve()`).
+In production, without `+serverEntry.js`, `$ bun dist/server/index.mjs` runs Vike's built-in server entry powered by [srvx](https://srvx.h3.dev), which automatically uses `Bun.serve()` under the hood. In development, `$ vike dev` uses Vite's development server [which uses the Node.js server APIs](https://github.com/vitejs/ecosystem/issues/16) and not `Bun.serve()`.
 
-With `+serverEntry.js` (and without `+server.js`, see <Link href="#with-out-server-js" />), you can use [`Bun.serve()`](https://bun.com/docs/runtime/http/server) in both development and production. For example to use Bun's [WebSockets](https://bun.com/docs/runtime/http/websockets) also in development:
+With `+serverEntry.js` (and without `+server.js`, see <Link href="#with-out-server-js" />), you can use [`Bun.serve()`](https://bun.com/docs/runtime/http/server) in both production and development. This allows you to, for example, use Bun's [WebSockets](https://bun.com/docs/runtime/http/websockets):
 
 ```ts
 // +serverEntry.ts (without +server.js)
@@ -174,8 +174,9 @@ Bun.serve({
     if (import.meta.env.DEV) {
       const { devMiddleware } = globalContext
       assert(devMiddleware)
-      // Vite's development middleware, through srvx's emulation of Node.js's req/res
       let handled = true
+      // devMiddleware is Vite's development middleware, which is a Connect middleware.
+      // We use fetchNodeHandler() to convert it to the web-standard Request/Response API.
       const response = await fetchNodeHandler(
         (req: IncomingMessage, res: ServerResponse, next?: () => void) =>
           devMiddleware(req, res, () => {
@@ -209,7 +210,7 @@ $ vike build
 $ bun dist/server/index.mjs
 ```
 
-> `Deno.serve()` should work the same way.
+> `Deno.serve()` works the same way.
 
 
 ## `vike:server`
