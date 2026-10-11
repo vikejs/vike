@@ -1,6 +1,6 @@
 import '../assertEnvServer.js'
-import vikeHandler from './universalVikeHandler.js'
+import { universalVikeHandler } from './universalVikeHandler.js'
 
 export default {
-  fetch: vikeHandler,
+  fetch: universalVikeHandler,
 }

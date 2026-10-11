@@ -1,3 +1,5 @@
+export { universalVikeHandler }
+
 import { enhance, getAdapterRuntime, type RuntimeAdapterTarget } from '@universal-middleware/core'
 import { middlewaresProxy_handlers, middlewaresProxy_middlewares } from './middlewaresProxy.js'
 import { getMiddlewares_internal, renderPageServer_universal } from './middlewares.js'
@@ -30,5 +32,3 @@ const universalVikeHandler = enhance(handler, {
   path: '/**',
   immutable: true,
 })
-
-export default universalVikeHandler

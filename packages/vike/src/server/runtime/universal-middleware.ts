@@ -1,4 +1,4 @@
-import universalVikeHandler from './universalVikeHandler.js'
+import { universalVikeHandler } from './universalVikeHandler.js'
 import { assertWarning } from '../../utils/assert.js'
 import '../assertEnvServer.js'
 
