@@ -1,5 +1,6 @@
 // A server that applies the +middleware itself: https://vike.dev/middleware#manual-integration
 // With MIDDLEWARES=halves, it applies the two halves that `vike(app, appMiddlewares)` applies instead.
+// With MIDDLEWARES=none, it applies no +middleware and calls renderPage() itself.
 
 import { Hono } from 'hono'
 import { enhance, MiddlewareOrder } from '@universal-middleware/core'
@@ -7,13 +8,15 @@ import { apply } from '@universal-middleware/hono'
 import { getGlobalContext } from 'vike'
 import { middlewaresProxy_handlers, middlewaresProxy_middlewares } from 'vike/__internal'
 import vike from 'vike/fetch'
+import { renderPage } from 'vike/server'
 import type { Server } from 'vike/types'
 import assert from 'node:assert'
 
 const globalContext = await getGlobalContext()
 assert(!globalContext.isClientSide)
 const { middlewares } = globalContext
-const halves = process.env.MIDDLEWARES === 'halves'
+const mode = process.env.MIDDLEWARES
+const halves = mode === 'halves'
 
 // Sets a header on the response
 const setHeader = (name: string, value: string) => (response: Response) => {
@@ -40,7 +43,9 @@ const appMiddlewares = [
 ]
 
 const app = new Hono()
-apply(app, halves ? middlewaresProxy_middlewares(appMiddlewares) : middlewares.filter((m) => !m.isHandler))
+if (mode !== 'none') {
+  apply(app, halves ? middlewaresProxy_middlewares(appMiddlewares) : middlewares.filter((m) => !m.isHandler))
+}
 // The app's own routes
 app.get('/api/me', (c) => c.text('Me'))
 app.get('/overridden', (c) => c.text('Overridden by +server.ts'))
@@ -51,7 +56,11 @@ app.get('/vike-fetch', (c) => vike.fetch(toIndex(c.req.raw)))
 // A context shared by all requests, like a Cloudflare worker's `env`
 const sharedContext = {}
 app.get('/shared-context', (c) => vike.fetch(toIndex(c.req.raw), sharedContext))
-apply(app, halves ? [middlewaresProxy_handlers] : middlewares.filter((m) => m.isHandler))
+app.get('/render-page', async (c) => {
+  const { httpResponse } = await renderPage({ urlOriginal: '/', headersOriginal: c.req.raw.headers })
+  return c.html(httpResponse.body)
+})
+if (mode !== 'none') apply(app, halves ? [middlewaresProxy_handlers] : middlewares.filter((m) => m.isHandler))
 
 export default {
   fetch: app.fetch,

@@ -4,7 +4,8 @@
     "build": "vike build",
     "preview": "vike build && vike preview",
     "dev:halves": "cross-env MIDDLEWARES=halves vike dev",
-    "preview:halves": "vike build && cross-env MIDDLEWARES=halves vike preview"
+    "preview:halves": "vike build && cross-env MIDDLEWARES=halves vike preview",
+    "dev:none": "cross-env MIDDLEWARES=none vike dev"
   },
   "dependencies": {
     "@universal-middleware/core": "^0.6.1",

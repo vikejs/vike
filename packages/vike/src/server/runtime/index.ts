@@ -1,4 +1,4 @@
-export { renderPageServer as renderPage } from './renderPageServer.js'
+export { renderPage } from './renderPage.js'
 export { escapeInject, dangerouslySkipEscape } from './renderPageServer/html/renderHtml.js'
 export { pipeWebStream, pipeNodeStream, pipeStream, stampPipe } from './renderPageServer/html/stream.js'
 export { PROJECT_VERSION as version } from '../../utils/PROJECT_VERSION.js'
