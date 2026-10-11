@@ -14,7 +14,6 @@ import { assertWarning } from '../../../utils/assert.js'
 import pc from '@brillout/picocolors'
 import '../assertEnvVite.js'
 type ConnectServer = ViteDevServer['middlewares']
-
 const requestAdapter = createRequestAdapter()
 
 function addSsrMiddleware(
