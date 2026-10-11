@@ -1,5 +1,5 @@
 export { getMiddlewares_globalContext }
-export { getPlusMiddlewares }
+export { getMiddlewares_internal }
 export { renderPageServerUniversal }
 export { getMatcher }
 export type { Middleware }
@@ -51,7 +51,7 @@ function getMiddlewares_globalContext(plusMiddlewares: EnhancedMiddleware[], bas
 
 // `globalContext.middlewares`. Upon an invalid config, only Vike's pages, which show the error.
 const renderPageOnly = [renderPageHandler]
-async function getPlusMiddlewares(): Promise<Middleware[]> {
+async function getMiddlewares_internal(): Promise<Middleware[]> {
   // Before the await too, which doesn't resolve while the config is invalid
   if (getVikeConfigError()) return renderPageOnly
   try {
