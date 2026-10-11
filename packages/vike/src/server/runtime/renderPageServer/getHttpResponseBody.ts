@@ -91,11 +91,7 @@ function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender | Uint8Array, 
       )
     },
     getReadableWebStream() {
-      const webStream = getStreamReadableWeb(htmlRender)
-      if (webStream === null) {
-        assertUsage(false, getErrMsg(htmlRender, renderHook, 'getReadableWebStream()', getFixMsg('readable', 'web')))
-      }
-      return webStream
+      return getStreamReadableWeb(htmlRender)
     },
     async getReadableNodeStream() {
       const nodeStream = await getStreamReadableNode(htmlRender)
@@ -146,11 +142,7 @@ function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender | Uint8Array, 
           streamDocs,
         { onlyOnce: true, showStackTrace: true },
       )
-      const webStream = getStreamReadableWeb(htmlRender)
-      if (webStream === null) {
-        assertUsage(false, getErrMsg(htmlRender, renderHook, 'getWebStream()', getFixMsg('readable', 'web')))
-      }
-      return webStream
+      return getStreamReadableWeb(htmlRender)
     },
     // TO-DO/next-major-release: remove
     pipeToWebWritable(writable: StreamWritableWeb) {
