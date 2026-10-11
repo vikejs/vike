@@ -684,9 +684,8 @@ function disableClientRouting(err: unknown, log: boolean) {
     false,
     [
       'Failed to fetch static asset.',
-      import.meta.env.PROD ? 'This usually happens when a new frontend is deployed.' : null,
+      import.meta.env.PROD ? '(Because new frontend deployment, or flaky connection.)' : null,
       'Falling back to Server Routing.',
-      '(The next page navigation will use Server Routing instead of Client Routing.)',
     ]
       .filter(Boolean)
       .join(' '),
@@ -822,41 +821,33 @@ function handleErrorFetchingStaticAssets(
   pageContext: { urlOriginal: string },
   isFirstRender: boolean,
 ): boolean {
-  if (!isErrorFetchingStaticAssets(err)) {
-    return false
-  }
+  if (!isErrorFetchingStaticAssets(err)) return false
+  if (import.meta.env.DEV) return false
+  // Possible reasons:
+  // - Flaky connection
+  // - New frontend was deployed
+
+  disableClientRouting(err, false)
 
   if (isFirstRender) {
-    disableClientRouting(err, false)
-    // Possible reasons:
-    // - Flaky connection
-    // - Frontend was newly deployed during hydration
-    if (
-      import.meta.env.PROD &&
-      // We don't reload a page that was itself loaded by a reload, in order to avoid an infinite reload loop.
-      !isPageReload()
-    ) {
-      // We use `location.reload()` instead of redirectHard(): navigating with `location.href = url` creates a `type: 'navigate'` entry instead (see `isPageReload()`), which would lead to an infinite reload loop.
-      window.location.reload()
-      return true
-    }
-    throw err
+    // We don't reload a page that was itself loaded by a reload, in order to avoid an infinite reload loop
+    if (isPageReload()) throw err
+    // We use `location.reload()` instead of redirectHard(): navigating with `location.href = url` creates a `type: 'navigate'` entry, which would lead to an infinite reload loop — see isPageReload()
+    window.location.reload()
+    return true
   } else {
-    disableClientRouting(err, true)
+    redirectHard(pageContext.urlOriginal)
+    return true
   }
-
-  redirectHard(pageContext.urlOriginal)
-
-  return true
 }
-// Whether the current page was loaded by a page reload.
+// Whether the current page was loaded by a page reload
 function isPageReload(): boolean {
   // The browser records how the current document was loaded (Navigation Timing API)
   const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined
   return (
     // Cannot be determined (e.g. older browsers)
     !navigation ||
-    // A document loaded by `location.reload()` has `type: 'reload'`.
+    // A document loaded by `location.reload()` has `type: 'reload'`
     navigation.type === 'reload'
   )
 }
