@@ -17,7 +17,7 @@ import {
   type UniversalHandler,
   type UniversalMiddleware,
 } from '@universal-middleware/core'
-import { getMiddlewares_internal, getMatcher, renderPageServerUniversal, type Middleware } from './middlewares.js'
+import { getMiddlewares_internal, getMatcher, renderPageServer_universal, type Middleware } from './middlewares.js'
 import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.js'
 import '../assertEnvServer.js'
 
@@ -33,7 +33,7 @@ function middlewaresProxy_middlewares(middlewares_: object[] = []): [UniversalMi
     async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) => {
       const plusMiddlewares = await getMiddlewares_internal()
       // An invalid config: Vike's pages show the error, instead of the app's routes running without the +middleware
-      if (getVikeConfigError()) return renderPageServerUniversal(request, context, runtime)
+      if (getVikeConfigError()) return renderPageServer_universal(request, context, runtime)
       return applyMiddlewares(plusMiddlewares, request, context, runtime, appMiddlewares)
     },
     { name: 'vike:middleware' },
