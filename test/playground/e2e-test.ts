@@ -72,6 +72,28 @@ function testHydrationRetry(isDev: boolean) {
     expectLog('Failed to load resource', { filter: (log) => log.logSource === 'Browser Error' })
   })
 
+  test('hydration retry: the page is reloaded only once the server is reachable', async () => {
+    // Only the first page load fails to fetch the page's entry
+    const pageEntry = await blockPageEntry((pageLoads) => pageLoads === 1)
+    // The server isn't reachable even though the connection is up (`navigator.onLine` is `true`)
+    const serverProbe = await blockServerProbe()
+    try {
+      await page.goto(getServerUrl() + '/')
+      // Vike retries reaching the server without reloading the page: the server-side rendered page remains
+      await autoRetry(() => expect(serverProbe.getAttempts()).toBe(2))
+      expect(pageEntry.getPageLoads()).toBe(1)
+      expect(await page.textContent('h1')).toBe('Welcome')
+      // Once the server is reachable, Vike reloads the page
+      await serverProbe.unblock()
+      await autoRetry(() => expect(pageEntry.getPageLoads()).toBe(2), { timeout: 10 * 1000 })
+      await testCounter()
+    } finally {
+      await serverProbe.unblock()
+      await pageEntry.unblock()
+    }
+    expectLog('Failed to load resource: net::ERR_FAILED', { filter: (log) => log.logSource === 'Browser Error' })
+  })
+
   test('hydration retry: the page is reloaded only once (no infinite reload loop)', async () => {
     // All page loads fail to fetch the page's entry
     const pageEntry = await blockPageEntry(() => true)
@@ -109,6 +131,26 @@ async function blockPageEntry(isBlocked: (pageLoads: number) => boolean, onBlock
     // Call it in a `finally` block: the route is set on the browser context, which is shared with the next tests
     unblock: async () => {
       page.removeListener('request', onRequest)
+      await context.unroute(url)
+    },
+  }
+}
+// Make the request Vike uses to check whether the server is reachable (a HEAD request to the page's URL) fail
+async function blockServerProbe() {
+  const url = getServerUrl() + '/'
+  let attempts = 0
+  let isBlocked = true
+  const context = page.context()
+  await context.route(url, (route) => {
+    if (route.request().method() !== 'HEAD') return route.continue()
+    attempts++
+    return isBlocked ? route.abort() : route.continue()
+  })
+  return {
+    getAttempts: () => attempts,
+    // Call it in a `finally` block: the route is set on the browser context, which is shared with the next tests
+    unblock: async () => {
+      isBlocked = false
       await context.unroute(url)
     },
   }

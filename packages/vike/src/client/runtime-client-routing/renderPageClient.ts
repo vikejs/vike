@@ -838,14 +838,42 @@ function handleErrorFetchingStaticAssets(
       logErrorClient(err)
       return true
     }
-    // We use `location.reload()` instead of redirectHard(): navigating with `location.href = url` creates a `type: 'navigate'` entry, which would lead to an infinite reload loop — see isPageReload()
-    const reload = () => window.location.reload()
-    if (navigator.onLine) reload()
-    else window.addEventListener('online', reload, { once: true })
+    reloadOnceServerIsReachable()
   } else {
     redirectHard(pageContext.urlOriginal)
   }
   return true
+}
+// Reloading while the server is unreachable would replace the server-side rendered page with the browser's network error page
+function reloadOnceServerIsReachable() {
+  let delay = 1000
+  let timeout: ReturnType<typeof setTimeout> | undefined
+  const tryReload = async () => {
+    clearTimeout(timeout)
+    window.removeEventListener('online', tryReload)
+    if (await isServerReachable()) {
+      // We use `location.reload()` instead of redirectHard(): navigating with `location.href = url` creates a `type: 'navigate'` entry, which would lead to an infinite reload loop — see isPageReload()
+      window.location.reload()
+      return
+    }
+    // We don't rely on `navigator.onLine` alone: it's `true` whenever the device is connected to a network, regardless of whether the server is reachable
+    window.addEventListener('online', tryReload)
+    timeout = setTimeout(tryReload, delay)
+    delay = Math.min(delay * 2, 60 * 1000)
+  }
+  tryReload()
+}
+async function isServerReachable(): Promise<boolean> {
+  let response: Response
+  try {
+    // `redirect: 'manual'` so that a redirect to another origin (e.g. to a login page) isn't mistaken for a network error
+    response = await fetch(window.location.href, { method: 'HEAD', cache: 'no-store', redirect: 'manual' })
+  } catch {
+    // Network error
+    return false
+  }
+  // We don't use status codes to tell apart a new frontend deployment from a flaky connection: a missing static asset isn't always a `404` (e.g. S3 replies `403` and static hosts with SPA fallback reply `200` with HTML), and both are fixed by a reload. But, upon a server error, a reload would show it instead of the server-side rendered page.
+  return response.status < 500
 }
 // Whether the current page was loaded by a page reload
 function isPageReload(): boolean {
