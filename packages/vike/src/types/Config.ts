@@ -660,7 +660,7 @@ type ConfigBuiltIn = {
   /**
    * @experimental
    *
-   * Add server middlewares, which run around your server's own routes.
+   * Add server middlewares.
    *
    * The middlewares defined via `+middleware` are so called "Universal Middleware" — they work with any JavaScript server (Hono, Express, Cloudflare, ...).
    *
