@@ -35,10 +35,13 @@ function testHydrationRetry(isDev: boolean) {
   test('hydration retry: the page is reloaded upon failing to fetch static assets', async () => {
     // Only the first page load fails to fetch the page's entry
     const pageEntry = await blockPageEntry((pageLoads) => pageLoads === 1)
-    await page.goto(getServerUrl() + '/')
-    await testCounter()
-    expect(pageEntry.getPageLoads()).toBe(2)
-    await pageEntry.unblock()
+    try {
+      await page.goto(getServerUrl() + '/')
+      await testCounter()
+      expect(pageEntry.getPageLoads()).toBe(2)
+    } finally {
+      await pageEntry.unblock()
+    }
     expectLog('Failed to load resource: net::ERR_FAILED', { filter: (log) => log.logSource === 'Browser Error' })
   })
 
@@ -53,29 +56,36 @@ function testHydrationRetry(isDev: boolean) {
         await context.setOffline(true)
       },
     )
-    await page.goto(getServerUrl() + '/')
-    // The page isn't reloaded while offline: the server-side rendered page remains
-    await sleep(1000)
-    expect(pageEntry.getPageLoads()).toBe(1)
-    expect(await page.textContent('h1')).toBe('Welcome')
-    await context.setOffline(false)
-    await testCounter()
-    expect(pageEntry.getPageLoads()).toBe(2)
-    await pageEntry.unblock()
+    try {
+      await page.goto(getServerUrl() + '/')
+      // The page isn't reloaded while offline: the server-side rendered page remains
+      await sleep(1000)
+      expect(pageEntry.getPageLoads()).toBe(1)
+      expect(await page.textContent('h1')).toBe('Welcome')
+      await context.setOffline(false)
+      await testCounter()
+      expect(pageEntry.getPageLoads()).toBe(2)
+    } finally {
+      await context.setOffline(false)
+      await pageEntry.unblock()
+    }
     expectLog('Failed to load resource', { filter: (log) => log.logSource === 'Browser Error' })
   })
 
   test('hydration retry: the page is reloaded only once (no infinite reload loop)', async () => {
     // All page loads fail to fetch the page's entry
     const pageEntry = await blockPageEntry(() => true)
-    await page.goto(getServerUrl() + '/')
-    // The reloaded page doesn't reload again: it handles the error like any other error, i.e. it logs it and renders the error page — which the playground doesn't define
-    await autoRetry(() => {
-      expectLog('No error page defined.', { filter: (log) => log.logSource === 'Browser Error' })
-    })
-    expectLog('Failed to fetch dynamically imported module', { filter: (log) => log.logSource === 'Browser Error' })
-    expect(pageEntry.getPageLoads()).toBe(2)
-    await pageEntry.unblock()
+    try {
+      await page.goto(getServerUrl() + '/')
+      // The reloaded page doesn't reload again: it handles the error like any other error, i.e. it logs it and renders the error page — which the playground doesn't define
+      await autoRetry(() => {
+        expectLog('No error page defined.', { filter: (log) => log.logSource === 'Browser Error' })
+      })
+      expectLog('Failed to fetch dynamically imported module', { filter: (log) => log.logSource === 'Browser Error' })
+      expect(pageEntry.getPageLoads()).toBe(2)
+    } finally {
+      await pageEntry.unblock()
+    }
     expectLog('Failed to load resource: net::ERR_FAILED', { filter: (log) => log.logSource === 'Browser Error' })
   })
 }
@@ -95,6 +105,7 @@ async function blockPageEntry(isBlocked: (pageLoads: number) => boolean, onBlock
   })
   return {
     getPageLoads: () => pageLoads,
+    // Call it in a `finally` block: the route is set on the browser context, which is shared with the next tests
     unblock: async () => {
       page.removeListener('request', onRequest)
       await context.unroute(url)
