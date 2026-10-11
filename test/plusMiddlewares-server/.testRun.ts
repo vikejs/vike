@@ -13,23 +13,10 @@ import {
 } from '@brillout/test-e2e'
 import { sleepBeforeEditFile } from '../utils'
 
-type Cmd = 'pnpm run dev' | 'pnpm run preview' | 'pnpm run dev:halves' | 'pnpm run preview:halves' | 'pnpm run dev:none'
+type Cmd = 'pnpm run dev' | 'pnpm run preview' | 'pnpm run dev:halves' | 'pnpm run preview:halves'
 
 function testRun(cmd: Cmd, options?: { serverIsReadyMessage: string }) {
   run(cmd, { serverUrl: 'http://localhost:3000', ...options })
-
-  if (cmd === 'pnpm run dev:none') {
-    test("renderPage() throws when the app doesn't apply the +middleware", async () => {
-      expect((await fetch(`${getServerUrl()}/render-page`)).status).toBe(500)
-      expectLog("doesn't run your", { filter: (log) => log.logSource === 'stderr' })
-    })
-    return
-  }
-
-  test('renderPage() renders once the +middleware are applied, also when a +middleware calls it', async () => {
-    expect(await (await fetch(`${getServerUrl()}/rendered-by-middleware`)).text()).toContain('Rendered by Vike')
-    expect(await (await fetch(`${getServerUrl()}/render-page`)).text()).toContain('Rendered by Vike')
-  })
 
   test("A +middleware runs before the app's own routes, in its order and with the context of the ones before it", async () => {
     // `counter`, ordered after `auth`, doesn't run once `auth` answers

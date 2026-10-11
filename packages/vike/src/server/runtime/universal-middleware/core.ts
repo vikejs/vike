@@ -2,7 +2,6 @@ export { getMiddlewares_globalContext }
 export { getMiddlewares_withErrorHandling }
 export { renderPageServer_universal }
 export { scopeToPath }
-export { assertPlusMiddlewareApplied }
 export type { Middleware }
 
 import {
@@ -26,20 +25,13 @@ import { handlePageContextRequestUrl } from '../renderPageServer/handlePageConte
 import { renderPageServer } from '../renderPageServer.js'
 import { getGlobalContextServerInternal, initGlobalContext_renderPage } from '../globalContext.js'
 import { getVikeConfigError } from '../../../shared-server-node/getVikeConfigError.js'
-import { assert, assertUsage, assertWarning } from '../../../utils/assert.js'
-import pc from '@brillout/picocolors'
-import { getGlobalObject } from '../../../utils/getGlobalObject.js'
+import { assert, assertWarning } from '../../../utils/assert.js'
 import '../../assertEnvServer.js'
 
 type Middleware = EnhancedMiddleware & {
   /** `true` for the middlewares that run after the server's own routes: the `+middleware` with a `path` and no `order` (or `order: 0`), and Vike's pages. */
   isHandler: boolean
 }
-
-const globalObject = getGlobalObject('universal-middleware/core.ts', {
-  // A +middleware that isn't a handler ran
-  isApplied: false,
-})
 
 // Vike's pages, after everything else
 const renderPageServer_universalMiddleware: Middleware = Object.assign(
@@ -91,7 +83,6 @@ function toMiddleware(plusMiddleware: EnhancedMiddleware, baseServer: string): M
   const isMatch = path && getMatcher(path, getUniversalProp(plusMiddleware, methodSymbol))
   const middleware = enhance(
     async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) => {
-      globalObject.isApplied = true
       const { isPageContextJsonRequest, urlWithoutPageContextRequestSuffix } = handlePageContextRequestUrl(request.url)
       if (isMatch) {
         const { href, isBaseMissing } = parseUrl(urlWithoutPageContextRequestSuffix, baseServer)
@@ -133,18 +124,6 @@ function toReload(response: Response): Response {
   const headers = new Headers(response.headers)
   headers.delete('content-type')
   return new Response(response.body, { status: 404, headers })
-}
-
-// The app's renderPage() doesn't run the +middleware: an app that doesn't apply them would silently skip them (e.g. an auth check).
-// Process-wide, not per request: once a +middleware ran, a renderPage() call from a route they don't wrap passes too.
-async function assertPlusMiddlewareApplied(): Promise<void> {
-  if (globalObject.isApplied) return
-  const middlewares = await getMiddlewares_withErrorHandling()
-  assertUsage(
-    // The handlers are routes the app doesn't have
-    middlewares.every((middleware) => middleware.isHandler),
-    `${pc.cyan('renderPage()')} doesn't run your ${pc.cyan('+middleware')}: use ${pc.cyan('vike(app)')} instead, see https://vike.dev/middleware`,
-  )
 }
 
 // Universal Middleware's `apply()` scopes a middleware that isn't a handler to its `path` and `method`: a router that only

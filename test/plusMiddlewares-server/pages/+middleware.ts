@@ -1,5 +1,4 @@
 import { enhance, MiddlewareOrder } from '@universal-middleware/core'
-import { renderPage } from 'vike/server'
 
 // Middlewares: they run before the app's own routes. `auth`, listed first, runs after `user` (by `order`) and reads the context it adds.
 const auth = enhance(
@@ -24,15 +23,6 @@ const counter = enhance(
   { name: 'counter', order: MiddlewareOrder.CUSTOM_PRE_PROCESSING },
 )
 
-// Renders a page itself, as vike-react-rsc's +middleware does
-const rendered = enhance(
-  async (request: Request) => {
-    const { httpResponse } = await renderPage({ urlOriginal: '/', headersOriginal: request.headers })
-    return new Response(httpResponse.body, { headers: httpResponse.headers })
-  },
-  { name: 'rendered', path: '/rendered-by-middleware', order: MiddlewareOrder.CUSTOM_PRE_PROCESSING },
-)
-
 // Handlers: they run after the app's own routes, which can override them
 const hello = enhance(() => new Response('Hello from +middleware'), { name: 'hello', path: '/hello', method: 'GET' })
 const overridden = enhance(() => new Response('Answered by +middleware'), {
@@ -41,4 +31,4 @@ const overridden = enhance(() => new Response('Answered by +middleware'), {
   method: 'GET',
 })
 
-export default [auth, user, counter, rendered, hello, overridden]
+export default [auth, user, counter, hello, overridden]
