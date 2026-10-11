@@ -23,9 +23,7 @@ import '../../assertEnvServer.js'
 // The adapter passes the result to apply() as is, so it doesn't need to tell the handlers apart itself.
 // `object[]`: the user-land universal middlewares can come from another copy of @universal-middleware/core, whose types
 // (keyed by a `unique symbol`) never match this copy's.
-function middlewaresProxy_middlewares(
-  middlewaresUserLand_: object[] = [],
-): [UniversalMiddleware, ...UniversalMiddleware[]] {
+function middlewaresProxy_middlewares(middlewaresUserLand_: object[]): [UniversalMiddleware, ...UniversalMiddleware[]] {
   const middlewaresUserLand = middlewaresUserLand_ as UniversalMiddleware[]
   const nonHandlersUserLand = middlewaresUserLand.filter((middleware) => !isHandler(middleware)).map(scopeToPath)
   const loop = enhance(
