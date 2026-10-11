@@ -14,8 +14,7 @@ import {
   type UniversalHandler,
   type UniversalMiddleware,
 } from '@universal-middleware/core'
-import { getMiddlewares_withErrorHandling, renderPageServer_universal, scopeToPath, type Middleware } from './core.js'
-import { getVikeConfigError } from '../../../shared-server-node/getVikeConfigError.js'
+import { getMiddlewares_withErrorHandling, scopeToPath, type Middleware } from './core.js'
 import '../../assertEnvServer.js'
 
 // What `vike(app, middlewares)` applies before the app's routes: the +middleware and the user-land universal
@@ -27,12 +26,8 @@ function middlewaresProxy_middlewares(middlewaresUserLand_: object[]): [Universa
   const middlewaresUserLand = middlewaresUserLand_ as UniversalMiddleware[]
   const nonHandlersUserLand = middlewaresUserLand.filter((middleware) => !isHandler(middleware)).map(scopeToPath)
   const loop = enhance(
-    async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) => {
-      const plusMiddlewares = await getMiddlewares_withErrorHandling()
-      // An invalid config: Vike's pages show the error, instead of the app's routes running without the +middleware
-      if (getVikeConfigError()) return renderPageServer_universal(request, context, runtime)
-      return applyMiddlewares(plusMiddlewares, request, context, runtime, nonHandlersUserLand)
-    },
+    async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) =>
+      applyMiddlewares(await getMiddlewares_withErrorHandling(), request, context, runtime, nonHandlersUserLand),
     { name: 'vike:middleware' },
   )
   return [loop, ...middlewaresUserLand.filter(isHandler)]
