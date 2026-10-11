@@ -795,12 +795,13 @@ async function loadPageConfigsLazyClientSideAndExecHook<
   } catch (err_) {
     err = err_
     hasErr = true
-    if (handleErrorFetchingStaticAssets(err, pageContext, isFirstRender)) {
-      return { skip: true }
-    }
   }
+  // Check before handleErrorFetchingStaticAssets(), so that an outdated rendering doesn't reload/redirect the page (the user may have navigated in the meantime)
   if (isRenderOutdated()) return { skip: true }
-  if (hasErr) return { err }
+  if (hasErr) {
+    if (handleErrorFetchingStaticAssets(err, pageContext, isFirstRender)) return { skip: true }
+    return { err }
+  }
   objectAssign(pageContext, pageContextAddendum!)
 
   try {
