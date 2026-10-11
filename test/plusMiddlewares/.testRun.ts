@@ -46,6 +46,10 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     expect(response.headers.get('Location')).toBe('/')
   })
 
+  test('A page rendered to a Node.js stream', async () => {
+    expect(await fetchHtml('/node-stream')).toContain('Rendered by a Node.js stream.')
+  })
+
   test('Every +middleware whose path matches runs, then the page', async () => {
     // Both adminAuth (/admin/**) and settingsHeader (/admin/settings) match
     expect((await fetch(`${getServerUrl()}/admin/settings`)).status).toBe(401)
