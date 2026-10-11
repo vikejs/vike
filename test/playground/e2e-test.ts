@@ -32,9 +32,9 @@ function testHydrationRetry(isDev: boolean) {
   // Vike reloads the page only in production
   if (isDev) return
 
-  test('hydration retry: the page is reloaded upon failing to fetch static assets', async () => {
-    // Only the first page load fails to fetch the page's entry
-    const pageEntry = await blockPageEntry((pageLoads) => pageLoads === 1)
+  test('hydration retry: the page is reloaded if a new frontend was deployed', async () => {
+    // Only the first page load references a page entry that doesn't exist anymore
+    const pageEntry = await blockPageEntry((pageLoads) => pageLoads === 1 && 'deleted')
     try {
       await page.goto(getServerUrl() + '/')
       await testCounter()
@@ -42,64 +42,15 @@ function testHydrationRetry(isDev: boolean) {
     } finally {
       await pageEntry.unblock()
     }
-    expectLog('Failed to load resource: net::ERR_FAILED', { filter: (log) => log.logSource === 'Browser Error' })
-  })
-
-  test('hydration retry: when offline, the page is reloaded after the connection is back', async () => {
-    const context = page.context()
-    // The first page load fails to fetch the page's entry because the connection is lost
-    const pageEntry = await blockPageEntry(
-      (pageLoads) => pageLoads === 1,
-      async () => {
-        // Lose the connection only after Vike's client runtime is loaded
-        await page.waitForLoadState('domcontentloaded')
-        await context.setOffline(true)
-      },
-    )
-    try {
-      await page.goto(getServerUrl() + '/')
-      // The page isn't reloaded while offline: the server-side rendered page remains
-      await sleep(1000)
-      expect(pageEntry.getPageLoads()).toBe(1)
-      expect(await page.textContent('h1')).toBe('Welcome')
-      await context.setOffline(false)
-      await testCounter()
-      expect(pageEntry.getPageLoads()).toBe(2)
-    } finally {
-      await context.setOffline(false)
-      await pageEntry.unblock()
-    }
-    expectLog('Failed to load resource', { filter: (log) => log.logSource === 'Browser Error' })
-  })
-
-  test('hydration retry: the page is reloaded only once the server is reachable', async () => {
-    // Only the first page load fails to fetch the page's entry
-    const pageEntry = await blockPageEntry((pageLoads) => pageLoads === 1)
-    // The server isn't reachable even though the connection is up (`navigator.onLine` is `true`)
-    const serverProbe = await blockServerProbe()
-    try {
-      await page.goto(getServerUrl() + '/')
-      // Vike retries reaching the server without reloading the page: the server-side rendered page remains
-      await autoRetry(() => expect(serverProbe.getAttempts()).toBe(2))
-      expect(pageEntry.getPageLoads()).toBe(1)
-      expect(await page.textContent('h1')).toBe('Welcome')
-      // Once the server is reachable, Vike reloads the page
-      await serverProbe.unblock()
-      await autoRetry(() => expect(pageEntry.getPageLoads()).toBe(2), { timeout: 10 * 1000 })
-      await testCounter()
-    } finally {
-      await serverProbe.unblock()
-      await pageEntry.unblock()
-    }
-    expectLog('Failed to load resource: net::ERR_FAILED', { filter: (log) => log.logSource === 'Browser Error' })
+    expectLog('the server responded with a status of 404', { filter: (log) => log.logSource === 'Browser Error' })
   })
 
   test('hydration retry: the page is reloaded only once (no infinite reload loop)', async () => {
-    // All page loads fail to fetch the page's entry
-    const pageEntry = await blockPageEntry(() => true)
+    // All page loads reference a page entry that doesn't exist anymore (e.g. the HTML is cached)
+    const pageEntry = await blockPageEntry(() => 'deleted')
     try {
       await page.goto(getServerUrl() + '/')
-      // The reloaded page doesn't reload again: it logs the error and leaves the server-side rendered page as it is
+      // The reloaded page doesn't reload again: it throws the error and the server-side rendered page remains
       await autoRetry(() => {
         expectLog('Failed to fetch dynamically imported module', { filter: (log) => log.logSource === 'Browser Error' })
       })
@@ -109,10 +60,62 @@ function testHydrationRetry(isDev: boolean) {
     } finally {
       await pageEntry.unblock()
     }
+    expectLog('the server responded with a status of 404', { filter: (log) => log.logSource === 'Browser Error' })
+  })
+
+  test("hydration retry: the page isn't reloaded upon a flaky connection", async () => {
+    // The first page load fails to fetch the page's entry, but the entry exists
+    const pageEntry = await blockPageEntry((pageLoads) => pageLoads === 1 && 'network-error')
+    try {
+      await page.goto(getServerUrl() + '/')
+      // It throws the error and the server-side rendered page remains
+      await autoRetry(() => {
+        expectLog('Failed to fetch dynamically imported module', { filter: (log) => log.logSource === 'Browser Error' })
+      })
+      await sleep(1000)
+      expect(pageEntry.getPageLoads()).toBe(1)
+      expect(await page.textContent('h1')).toBe('Welcome')
+    } finally {
+      await pageEntry.unblock()
+    }
     expectLog('Failed to load resource: net::ERR_FAILED', { filter: (log) => log.logSource === 'Browser Error' })
   })
+
+  test("hydration retry: the page isn't reloaded when offline", async () => {
+    const context = page.context()
+    // The first page load fails to fetch the page's entry because the connection is lost
+    const pageEntry = await blockPageEntry(
+      (pageLoads) => pageLoads === 1 && 'network-error',
+      async () => {
+        // Lose the connection only after Vike's client runtime is loaded
+        await page.waitForLoadState('domcontentloaded')
+        await context.setOffline(true)
+      },
+    )
+    try {
+      await page.goto(getServerUrl() + '/')
+      // It throws the error and the server-side rendered page remains, also after the connection is back
+      await autoRetry(() => {
+        expectLog('Failed to fetch dynamically imported module', { filter: (log) => log.logSource === 'Browser Error' })
+      })
+      await context.setOffline(false)
+      await sleep(1000)
+      expect(pageEntry.getPageLoads()).toBe(1)
+      expect(await page.textContent('h1')).toBe('Welcome')
+    } finally {
+      await context.setOffline(false)
+      await pageEntry.unblock()
+    }
+    expectLog('Failed to load resource', { filter: (log) => log.logSource === 'Browser Error' })
+  })
 }
-async function blockPageEntry(isBlocked: (pageLoads: number) => boolean, onBlock?: () => Promise<void>) {
+// Make fetching the page's entry fail:
+// - 'deleted': the entry doesn't exist anymore (e.g. a new frontend was deployed)
+// - 'network-error': the entry exists but fetching it fails (e.g. flaky connection)
+async function blockPageEntry(
+  getFailure: (pageLoads: number) => 'deleted' | 'network-error' | false,
+  onNetworkError?: () => Promise<void>,
+) {
   const url = '**/entries/pages_index.*.js'
   let pageLoads = 0
   const onRequest = (request: { resourceType(): string }) => {
@@ -122,35 +125,20 @@ async function blockPageEntry(isBlocked: (pageLoads: number) => boolean, onBlock
   // We use page.context() because page.unroute() doesn't work with the `page` proxy of @brillout/test-e2e
   const context = page.context()
   await context.route(url, async (route) => {
-    if (!isBlocked(pageLoads)) return route.continue()
-    await onBlock?.()
-    return route.abort()
+    const failure = getFailure(pageLoads)
+    if (failure === 'deleted') return route.fulfill({ status: 404 })
+    // Vike checks whether the entry exists with a HEAD request
+    if (failure === 'network-error' && route.request().method() !== 'HEAD') {
+      await onNetworkError?.()
+      return route.abort()
+    }
+    return route.continue()
   })
   return {
     getPageLoads: () => pageLoads,
     // Call it in a `finally` block: the route is set on the browser context, which is shared with the next tests
     unblock: async () => {
       page.removeListener('request', onRequest)
-      await context.unroute(url)
-    },
-  }
-}
-// Make the request Vike uses to check whether the server is reachable (a HEAD request to the page's URL) fail
-async function blockServerProbe() {
-  const url = getServerUrl() + '/'
-  let attempts = 0
-  let isBlocked = true
-  const context = page.context()
-  await context.route(url, (route) => {
-    if (route.request().method() !== 'HEAD') return route.continue()
-    attempts++
-    return isBlocked ? route.abort() : route.continue()
-  })
-  return {
-    getAttempts: () => attempts,
-    // Call it in a `finally` block: the route is set on the browser context, which is shared with the next tests
-    unblock: async () => {
-      isBlocked = false
       await context.unroute(url)
     },
   }

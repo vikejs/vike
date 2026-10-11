@@ -800,7 +800,7 @@ async function loadPageConfigsLazyClientSideAndExecHook<
   }
   if (isRenderOutdated()) return { skip: true }
   if (hasErr) {
-    if (handleErrorFetchingStaticAssets(err, pageContext, isFirstRender)) return { skip: true }
+    if (await handleErrorFetchingStaticAssets(err, pageContext, isFirstRender)) return { skip: true }
     return { err }
   }
   objectAssign(pageContext, pageContextAddendum!)
@@ -816,60 +816,42 @@ async function loadPageConfigsLazyClientSideAndExecHook<
 
   return { pageContext }
 }
-function handleErrorFetchingStaticAssets(
+async function handleErrorFetchingStaticAssets(
   err: unknown,
   pageContext: { urlOriginal: string },
   isFirstRender: boolean,
-): boolean {
+): Promise<boolean> {
   if (import.meta.env.DEV) return false
   if (!isErrorFetchingStaticAssets(err)) return false // Syntax error in user file
   // Possible reasons:
   // - Flaky connection
   // - New frontend was deployed
   disableClientRouting(err, false)
-  if (isFirstRender) {
-    // We don't reload a page that was itself loaded by a reload, in order to avoid an infinite reload loop
-    if (isPageReload()) {
-      // We leave the server-side rendered page as it is: it isn't interactive but, contrary to the error page, it shows the content the user requested
-      logErrorClient(err)
-      return true
-    }
-    reloadOnceServerIsReachable()
-  } else {
+  if (!isFirstRender) {
     redirectHard(pageContext.urlOriginal)
+    return true
   }
-  return true
-}
-// Reloading while the server is unreachable would replace the server-side rendered page with the browser's network error page
-function reloadOnceServerIsReachable() {
-  let delay = 1000
-  let timeout: ReturnType<typeof setTimeout> | undefined
-  const tryReload = async () => {
-    clearTimeout(timeout)
-    window.removeEventListener('online', tryReload)
-    if (await isServerReachable()) {
-      // We use `location.reload()` instead of redirectHard(): navigating with `location.href = url` creates a `type: 'navigate'` entry, which would lead to an infinite reload loop — see isPageReload()
-      window.location.reload()
-      return
-    }
-    // We don't rely on `navigator.onLine` alone: it's `true` whenever the device is connected to a network, regardless of whether the server is reachable
-    window.addEventListener('online', tryReload)
-    timeout = setTimeout(tryReload, delay)
-    delay = Math.min(delay * 2, 60 * 1000)
+  // Upon hydration, we reload the page only if a new frontend was deployed. Upon a flaky connection, we let it fail: handling flaky connections is the browser's job (the user reloads the page). The server-side rendered page remains and, since Client Routing is disabled, the next page navigation is a full page load.
+  // We don't reload a page that was itself loaded by a reload, in order to avoid an infinite reload loop.
+  if (!isPageReload() && (await isNewDeployment())) {
+    // We use `location.reload()` instead of redirectHard(): navigating with `location.href = url` creates a `type: 'navigate'` entry, which would lead to an infinite reload loop — see isPageReload()
+    window.location.reload()
+    return true
   }
-  tryReload()
+  throw err
 }
-async function isServerReachable(): Promise<boolean> {
-  let response: Response
+// Whether a new frontend was deployed, i.e. some static assets of the current page don't exist anymore. (The error thrown by `import()` doesn't tell: it's the same upon a network error.)
+async function isNewDeployment(): Promise<boolean> {
+  const urls = Array.from(document.querySelectorAll<HTMLLinkElement>('link[rel="modulepreload"]'), (link) => link.href)
+  let responses: Response[]
   try {
-    // `redirect: 'manual'` so that a redirect to another origin (e.g. to a login page) isn't mistaken for a network error
-    response = await fetch(window.location.href, { method: 'HEAD', cache: 'no-store', redirect: 'manual' })
+    responses = await Promise.all(urls.map((url) => fetch(url, { method: 'HEAD', cache: 'no-store' })))
   } catch {
-    // Network error
+    // Network error: flaky connection
     return false
   }
-  // We don't use status codes to tell apart a new frontend deployment from a flaky connection: a missing static asset isn't always a `404` (e.g. S3 replies `403` and static hosts with SPA fallback reply `200` with HTML), and both are fixed by a reload. But, upon a server error, a reload would show it instead of the server-side rendered page.
-  return response.status < 500
+  // A missing static asset isn't always a `404`: e.g. S3 replies `403`, and static hosts with SPA fallback reply `200` with HTML
+  return responses.some((response) => !response.ok || !response.headers.get('content-type')?.includes('javascript'))
 }
 // Whether the current page was loaded by a page reload
 function isPageReload(): boolean {
