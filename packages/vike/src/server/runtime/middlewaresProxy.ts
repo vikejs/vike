@@ -17,7 +17,12 @@ import {
   type UniversalHandler,
   type UniversalMiddleware,
 } from '@universal-middleware/core'
-import { getMiddlewares_internal, getMatcher, renderPageServer_universal, type Middleware } from './middlewares.js'
+import {
+  getMiddlewares_withErrorHandling,
+  getMatcher,
+  renderPageServer_universal,
+  type Middleware,
+} from './middlewares.js'
 import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.js'
 import '../assertEnvServer.js'
 
@@ -31,7 +36,7 @@ function middlewaresProxy_middlewares(middlewares_: object[] = []): [UniversalMi
   const appMiddlewares = middlewares.filter((middleware) => !isHandler(middleware)).map(scopeToPath)
   const loop = enhance(
     async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) => {
-      const plusMiddlewares = await getMiddlewares_internal()
+      const plusMiddlewares = await getMiddlewares_withErrorHandling()
       // An invalid config: Vike's pages show the error, instead of the app's routes running without the +middleware
       if (getVikeConfigError()) return renderPageServer_universal(request, context, runtime)
       return applyMiddlewares(plusMiddlewares, request, context, runtime, appMiddlewares)
@@ -97,7 +102,7 @@ async function applyMiddlewares(
 const middlewaresProxy_handlers = enhance(
   async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) =>
     // A method that no handler and no page answers (e.g. DELETE): what a server answers without a route for it
-    (await getRouter(await getMiddlewares_internal())(request, context, runtime)) ??
+    (await getRouter(await getMiddlewares_withErrorHandling())(request, context, runtime)) ??
     new Response('Not Found', { status: 404 }),
   {
     name: 'vike',
