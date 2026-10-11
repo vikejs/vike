@@ -20,13 +20,13 @@ import {
   type UniversalMiddleware,
   type UniversalRouterInterface,
 } from '@universal-middleware/core'
-import { parseUrl } from '../../utils/parseUrl.js'
-import { handlePageContextRequestUrl } from './renderPageServer/handlePageContextRequestUrl.js'
-import { renderPageServer } from './renderPageServer.js'
-import { getGlobalContextServerInternal, initGlobalContext_renderPage } from './globalContext.js'
-import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.js'
-import { assert, assertWarning } from '../../utils/assert.js'
-import '../assertEnvServer.js'
+import { parseUrl } from '../../../utils/parseUrl.js'
+import { handlePageContextRequestUrl } from '../renderPageServer/handlePageContextRequestUrl.js'
+import { renderPageServer } from '../renderPageServer.js'
+import { getGlobalContextServerInternal, initGlobalContext_renderPage } from '../globalContext.js'
+import { getVikeConfigError } from '../../../shared-server-node/getVikeConfigError.js'
+import { assert, assertWarning } from '../../../utils/assert.js'
+import '../../assertEnvServer.js'
 
 type Middleware = EnhancedMiddleware & {
   /** `true` for the middlewares that run after the server's own routes: the `+middleware` with a `path` and no `order` (or `order: 0`), and Vike's pages. */

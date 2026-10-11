@@ -22,7 +22,7 @@ import {
   getMatcher,
   renderPageServer_universal,
   type Middleware,
-} from './middlewares.js'
+} from './universal-middleware/core.js'
 import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.js'
 import '../assertEnvServer.js'
 

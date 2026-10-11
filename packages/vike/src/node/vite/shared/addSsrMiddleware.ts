@@ -2,7 +2,7 @@ export { addSsrMiddleware }
 
 import { type PageContextInit, renderPageServer } from '../../../server/runtime/renderPageServer.js'
 import { vikeUniversalMiddleware } from '../../../server/runtime/vikeUniversalMiddleware.js'
-import { getMiddlewares_withErrorHandling } from '../../../server/runtime/middlewares.js'
+import { getMiddlewares_withErrorHandling } from '../../../server/runtime/universal-middleware/core.js'
 import {
   createHttpResponseViteSsrMiddleware,
   type HttpResponse,
