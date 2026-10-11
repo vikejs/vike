@@ -10,8 +10,8 @@ import {
   type UniversalHandler,
   type UniversalMiddleware,
 } from '@universal-middleware/core'
-import { getMiddlewares_globalContext, type Middleware } from './universal-middleware/core.js'
-import { applyMiddlewares } from './universal-middleware/middlewaresProxy.js'
+import { getMiddlewares_globalContext, type Middleware } from './core.js'
+import { applyMiddlewares } from './middlewaresProxy.js'
 
 // Answers its path with a 401 and the request's URL
 const authAt = (path: string) =>
