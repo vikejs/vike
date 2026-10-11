@@ -5,7 +5,7 @@ import { applyMiddlewares, middlewaresProxy_handlers } from './middlewaresProxy.
 import { getMiddlewares_withErrorHandling, renderPageServer_universal } from './core.js'
 import '../../assertEnvServer.js'
 
-// Vike's own server (`vike/fetch`, and `$ vike dev` and `$ vike preview` with +middleware): the two halves that `vike(app)` applies, in a row
+// Vike's own server (`vike/fetch`, `$ vike dev` and `$ vike preview`): the two halves that `vike(app)` applies, in a row
 async function handler(
   request: Request,
   // Missing upon `vike.fetch(request)`

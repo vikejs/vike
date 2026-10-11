@@ -1,8 +1,6 @@
 export { addSsrMiddleware }
 
-import { type PageContextInit, renderPageServer } from '../../../server/runtime/renderPageServer.js'
 import { vikeUniversalMiddleware } from '../../../server/runtime/universal-middleware/vikeUniversalMiddleware.js'
-import { getMiddlewares_withErrorHandling } from '../../../server/runtime/universal-middleware/core.js'
 import {
   createHttpResponseViteSsrMiddleware,
   type HttpResponse,
@@ -10,8 +8,6 @@ import {
 import { createRequestAdapter } from '@universal-middleware/node/request'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
 import type { ServerResponse } from 'node:http'
-import { assertWarning } from '../../../utils/assert.js'
-import pc from '@brillout/picocolors'
 import '../assertEnvVite.js'
 type ConnectServer = ViteDevServer['middlewares']
 const requestAdapter = createRequestAdapter()
@@ -26,37 +22,9 @@ function addSsrMiddleware(
     if (res.headersSent) return next()
     const url = req.originalUrl || req.url
     if (!url) return next()
-    const { headers } = req
-    const pageContextInit: PageContextInit = {
-      urlOriginal: url,
-      headersOriginal: headers,
-    }
-    Object.defineProperty(pageContextInit, 'userAgent', {
-      get() {
-        // TO-DO/next-major-release: assertUsage() instead of assertWarning()
-        assertWarning(
-          false,
-          `${pc.cyan('pageContext.userAgent')} is deprecated: use ${pc.cyan(
-            "pageContext.headers['user-agent']",
-          )} instead.`,
-          {
-            showStackTrace: true,
-            onlyOnce: true,
-          },
-        )
-        return headers['user-agent']
-      },
-      enumerable: false,
-    })
     let httpResponse: HttpResponse
     try {
-      // The app has +middleware: they run around Vike's pages, as on any server
-      if ((await getMiddlewares_withErrorHandling()).length > 1) {
-        httpResponse = createHttpResponseViteSsrMiddleware(await vikeUniversalMiddleware(requestAdapter(req, res)))
-      } else {
-        // Vike's pages answer directly: a `Response` only takes a status code from 200 to 599 (e.g. not `throw render(666)`)
-        httpResponse = (await renderPageServer(pageContextInit)).httpResponse
-      }
+      httpResponse = createHttpResponseViteSsrMiddleware(await vikeUniversalMiddleware(requestAdapter(req, res)))
     } catch (err) {
       // Throwing an error in a connect middleware shuts down the server
       console.error(err)
