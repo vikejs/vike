@@ -829,7 +829,10 @@ function handleErrorFetchingStaticAssets(
     // We don't reload a page that was itself loaded by a reload, in order to avoid an infinite reload loop
     if (isPageReload()) return false
     // We use `location.reload()` instead of redirectHard(): navigating with `location.href = url` creates a `type: 'navigate'` entry, which would lead to an infinite reload loop — see isPageReload()
-    window.location.reload()
+    const reload = () => window.location.reload()
+    // Reloading while offline would replace the server-side rendered page with the browser's offline error page
+    if (navigator.onLine) reload()
+    else window.addEventListener('online', reload, { once: true })
   } else {
     redirectHard(pageContext.urlOriginal)
   }
