@@ -10,6 +10,12 @@ function testRun(cmd: 'pnpm run dev:base' | 'pnpm run preview:base') {
     },
   })
 
+  test('+redirects answer with the redirect target under the Base URL', async () => {
+    const response: Response = await fetch(`${new URL(getServerUrl()).origin}/app/old-portal`, { redirect: 'manual' })
+    expect(response.status).toBe(301)
+    expect(response.headers.get('Location')).toBe('/app/portal')
+  })
+
   test('A +middleware with an exact path runs under the Base URL, for the page and its .pageContext.json', async () => {
     const origin = new URL(getServerUrl()).origin
     for (const [pathname, content, status] of [

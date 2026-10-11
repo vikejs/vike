@@ -24,7 +24,10 @@ function addSsrMiddleware(
     if (!url) return next()
     let httpResponse: HttpResponse
     try {
-      httpResponse = createHttpResponseViteSsrMiddleware(await vikeUniversalMiddleware(requestAdapter(req, res)))
+      // `pageContext.urlOriginal` is the URL's path, as renderPage() gets it on a Node.js server
+      httpResponse = createHttpResponseViteSsrMiddleware(
+        await vikeUniversalMiddleware(requestAdapter(req, res), { urlOriginal: url }),
+      )
     } catch (err) {
       // Throwing an error in a connect middleware shuts down the server
       console.error(err)

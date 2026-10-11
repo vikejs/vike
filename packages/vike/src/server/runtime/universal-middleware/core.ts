@@ -166,10 +166,11 @@ async function renderPageServer_universal(
   runtime: RuntimeAdapterTarget<unknown>,
 ) {
   const pageContext = await renderPageServer({
+    // Unless the context has it, e.g. `$ vike dev` passes the URL's path
+    urlOriginal: request.url,
     ...context,
     ...runtime,
     runtime,
-    urlOriginal: request.url,
     headersOriginal: request.headers,
   })
   const response = pageContext.httpResponse

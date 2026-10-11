@@ -55,6 +55,12 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     expect(response.headers.get('Location')).toBe('/')
   })
 
+  test('+redirects answer with the redirect target as is', async () => {
+    const response: Response = await fetch(`${getServerUrl()}/old-portal`, { redirect: 'manual' })
+    expect(response.status).toBe(301)
+    expect(response.headers.get('Location')).toBe('/portal')
+  })
+
   test('Every +middleware whose path matches runs, then the page', async () => {
     // Both adminAuth (/admin/**) and settingsHeader (/admin/settings) match. adminAuth, listed before authUser, runs after it (by
     // `order`) and sees the context it adds.
