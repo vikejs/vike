@@ -54,6 +54,25 @@ function testRun(cmd: Cmd, options?: { serverIsReadyMessage: string }) {
     expect(await (await fetch(url)).text()).not.toContain('for alice')
   })
 
+  test("The app's own renderPage() call gets a 500, as the +middleware may not have run", async () => {
+    expect((await fetch(`${getServerUrl()}/render-page`)).status).toBe(500)
+    expectLog("Your server doesn't apply your +middleware, see https://vike.dev/warning/setup-middlewares", {
+      filter: (log) => log.logSource === 'stderr',
+    })
+  })
+
+  test('A +middleware that passes its runtime to renderPage() renders the page', async () => {
+    const response: Response = await fetch(`${getServerUrl()}/`, { headers: { 'x-render': '1' } })
+    expect(response.status).toBe(200)
+    expect(await response.text()).toContain('Rendered by Vike')
+  })
+
+  test('A +middleware handler that passes its runtime to renderPage() renders the page', async () => {
+    const response: Response = await fetch(`${getServerUrl()}/rendering-handler`)
+    expect(response.status).toBe(200)
+    expect(await response.text()).toContain('Rendered by Vike')
+  })
+
   if (cmd === 'pnpm run dev:halves' || cmd === 'pnpm run preview:halves') {
     test("The user-land universal middlewares apply to a +middleware's answer, and a Response after it is ignored", async () => {
       // `auth` answers, and `late`, ordered after it, returns a Response too

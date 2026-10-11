@@ -1,0 +1,59 @@
+import { Link } from '@brillout/docpress'
+
+```
+[vike][Wrong Usage] Your server doesn't apply your +middleware, see https://vike.dev/warning/setup-middlewares
+```
+
+This error means that your app has a <Link href="/middleware">`+middleware`</Link> but your server renders pages by calling <Link href="/renderPage">`renderPage()`</Link> itself. Vike can't tell whether your `+middleware` ran (e.g. an authentication `+middleware`), so it answers with a `500` instead of rendering the page.
+
+Use one of the following instead of `renderPage()`:
+- <Link href="/server">`vike(app)`</Link> (`@vikejs/*` 0.4 or later), which runs all `+middleware` around your routes.
+- Vike's built-in server: <Link href="/server#server-true">`+server: true`</Link>.
+- Apply <Link href="/middleware#manual-integration">`globalContext.middlewares`</Link> yourself: the list ends with Vike's pages.
+
+If your server applies `globalContext.middlewares` and also has its own catch-all route calling `renderPage()`, delete that route: the list already renders your pages.
+
+
+## `+middleware` rendering a page
+
+A `+middleware` that renders a page itself (e.g. a server action) passes its `runtime` to `renderPage()`:
+
+```ts
+// pages/+middleware.ts
+// Environment: server
+
+import { enhance, type RuntimeAdapterTarget } from '@universal-middleware/core'
+import { renderPage } from 'vike/server'
+
+const action = enhance(
+  async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) => {
+    if (request.method !== 'POST') return
+    const { httpResponse } = await renderPage({ ...runtime, urlOriginal: request.url })
+    return new Response(httpResponse.getReadableWebStream(), {
+      status: httpResponse.statusCode,
+      headers: httpResponse.headers,
+    })
+  },
+  { name: 'action' },
+)
+
+export default [action]
+```
+
+> You can also pass it as `renderPage({ urlOriginal, runtime })`.
+
+
+## What Vike can't detect
+
+Vike doesn't detect:
+- A server that applies only some of your `+middleware` (e.g. only the handlers).
+- A route of your server that answers before your `+middleware` run, without rendering a page (e.g. an `/auth/*` route defined before applying `globalContext.middlewares`).
+
+We recommend testing your setup: for example, send a request without credentials to a URL that your authentication `+middleware` protects, and check that it's rejected.
+
+
+## See also
+
+- <Link href="/middleware" />
+- <Link href="/server" />
+- <Link href="/renderPage" />

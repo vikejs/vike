@@ -6,6 +6,7 @@ import { enhance, MiddlewareOrder } from '@universal-middleware/core'
 import { apply } from '@universal-middleware/hono'
 import { getGlobalContext } from 'vike'
 import { middlewaresProxy_handlers, middlewaresProxy_middlewares } from 'vike/__internal'
+import { renderPage } from 'vike/server'
 import vike from 'vike/fetch'
 import type { Server } from 'vike/types'
 import assert from 'node:assert'
@@ -51,6 +52,11 @@ app.get('/vike-fetch', (c) => vike.fetch(toIndex(c.req.raw)))
 // A context shared by all requests, like a Cloudflare worker's `env`
 const sharedContext = {}
 app.get('/shared-context', (c) => vike.fetch(toIndex(c.req.raw), sharedContext))
+// The app's own renderPage() call: Vike can't tell whether the +middleware ran, so it answers with a 500
+app.get('/render-page', async (c) => {
+  const { httpResponse } = await renderPage({ urlOriginal: new URL('/', c.req.url).href })
+  return new Response(httpResponse.body, { status: httpResponse.statusCode, headers: httpResponse.headers })
+})
 apply(app, halves ? [middlewaresProxy_handlers] : middlewares.filter((m) => m.isHandler))
 
 export default {
