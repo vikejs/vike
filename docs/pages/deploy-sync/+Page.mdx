@@ -27,9 +27,3 @@ Everything is handled automatically and there is nothing for you to do.
 > Note that, since the client-side is fully reloaded, all client state is lost if not persisted (to `window.localStorage`, for instance).
 >
 > So far, this strategy has shown to work out for all users, but if it doesn't work out for you then open a new GitHub issue.
-
-> **What if a static asset fails to load upon hydration?**
->
-> In production, if a static asset fails to load while the page is hydrating (for example because a new frontend was deployed while the page was loading, or because of a flaky connection), then Vike reloads the page.
->
-> Vike reloads the page only once: in order to avoid an infinite reload loop, a page loaded by a page reload isn't reloaded again.
