@@ -17,20 +17,21 @@ import {
   type UniversalHandler,
   type UniversalMiddleware,
 } from '@universal-middleware/core'
-import { getAppMiddlewares, getMatcher, renderPageUniversal, type Middleware } from './middlewares.js'
+import { getPlusMiddlewares, getMatcher, renderPageUniversal, type Middleware } from './middlewares.js'
 import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.js'
 import '../assertEnvServer.js'
 
 // What `vike(app, middlewares)` applies before the app's routes: the +middleware and the app's middlewares in one loop
 // (looked up upon each request), then the app's handlers, which the server routes as usual. The adapter passes the
 // result to apply() as is, so it doesn't need to tell the handlers apart itself.
-function middlewaresProxy_middlewares(
-  middlewares: UniversalMiddleware[] = [],
-): [UniversalMiddleware, ...UniversalMiddleware[]] {
+// `object[]`: the adapter's middlewares can come from another copy of @universal-middleware/core, whose types (keyed
+// by a `unique symbol`) never match this copy's.
+function middlewaresProxy_middlewares(middlewares_: object[] = []): [UniversalMiddleware, ...UniversalMiddleware[]] {
+  const middlewares = middlewares_ as UniversalMiddleware[]
   const appMiddlewares = middlewares.filter((middleware) => !isHandler(middleware)).map(scopeToPath)
   const loop = enhance(
     async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) => {
-      const plusMiddlewares = await getAppMiddlewares()
+      const plusMiddlewares = await getPlusMiddlewares()
       // An invalid config: Vike's pages show the error, instead of the app's routes running without the +middleware
       if (getVikeConfigError()) return renderPageUniversal(request, context, runtime)
       return applyMiddlewares(plusMiddlewares, request, context, runtime, appMiddlewares)
@@ -57,7 +58,7 @@ function scopeToPath(middleware: UniversalMiddleware): UniversalMiddleware {
 // don't run, and the app's middlewares after it run for their response functions, a Response they return being
 // ignored. The response functions apply to the final response, in their order.
 async function applyMiddlewares(
-  middlewares: Middleware[],
+  plusMiddlewares: Middleware[],
   request: Request,
   context: Universal.Context,
   runtime: RuntimeAdapterTarget<unknown>,
@@ -74,7 +75,7 @@ async function applyMiddlewares(
     }
     return response
   }
-  const nonHandlers = [...middlewares.filter((middleware) => !middleware.isHandler), ...appMiddlewares].sort(
+  const nonHandlers = [...plusMiddlewares.filter((middleware) => !middleware.isHandler), ...appMiddlewares].sort(
     (a, b) => getUniversalProp(a, orderSymbol, 0) - getUniversalProp(b, orderSymbol, 0),
   )
   const isAppMiddleware = new Set<unknown>(appMiddlewares)
@@ -96,7 +97,7 @@ async function applyMiddlewares(
 const middlewaresProxy_handlers = enhance(
   async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) =>
     // A method that no handler and no page answers (e.g. DELETE): what a server answers without a route for it
-    (await getRouter(await getAppMiddlewares())(request, context, runtime)) ??
+    (await getRouter(await getPlusMiddlewares())(request, context, runtime)) ??
     new Response('Not Found', { status: 404 }),
   {
     name: 'vike',

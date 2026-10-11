@@ -1,5 +1,5 @@
 export { getMiddlewares }
-export { getAppMiddlewares }
+export { getPlusMiddlewares }
 export { renderPageUniversal }
 export { getMatcher }
 export type { Middleware }
@@ -49,9 +49,9 @@ function getMiddlewares(plusMiddlewares: EnhancedMiddleware[], baseServer: strin
   return [...plusMiddlewares.map((plusMiddleware) => toMiddleware(plusMiddleware, baseServer)), renderPageHandler]
 }
 
-// The app's `globalContext.middlewares`. Upon an invalid config, only Vike's pages, which show the error.
+// `globalContext.middlewares`. Upon an invalid config, only Vike's pages, which show the error.
 const renderPageOnly = [renderPageHandler]
-async function getAppMiddlewares(): Promise<Middleware[]> {
+async function getPlusMiddlewares(): Promise<Middleware[]> {
   // Before the await too, which doesn't resolve while the config is invalid
   if (getVikeConfigError()) return renderPageOnly
   try {
@@ -144,7 +144,7 @@ function getMatcher(path: string, method: HttpMethod | HttpMethod[] | undefined)
   assert(scoped)
   return (request) => {
     const result = scoped!(request, {}, {} as RuntimeAdapterTarget<unknown>)
-    // The check is synchronous: any other result (e.g. a Promise) would silently skip every +middleware with a path
+    // The check is synchronous: any other result (e.g. a Promise) would silently skip every middleware with a path
     assert(result === matched || result === undefined)
     return result === matched
   }
