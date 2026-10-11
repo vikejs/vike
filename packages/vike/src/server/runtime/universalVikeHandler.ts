@@ -7,7 +7,7 @@ import '../assertEnvServer.js'
 const [middlewaresProxy] = middlewaresProxy_middlewares()
 
 // Vike's own server (`vike/fetch`, and `$ vike dev` and `$ vike preview` with +middleware): the two halves that `vike(app)` applies, in a row
-async function universalVikeHandler(
+async function handler(
   request: Request,
   // Missing upon `vike.fetch(request)`
   context: Universal.Context = {},
@@ -24,11 +24,11 @@ async function universalVikeHandler(
   return typeof answer === 'function' ? ((await answer(response)) ?? response) : response
 }
 
-const universalVikeHandlerEnhanced = enhance(universalVikeHandler, {
+const universalVikeHandler = enhance(handler, {
   name: 'vike',
   method: ['GET', 'POST', 'PUT', 'PATCH', 'HEAD', 'OPTIONS'],
   path: '/**',
   immutable: true,
 })
 
-export default universalVikeHandlerEnhanced
+export default universalVikeHandler
