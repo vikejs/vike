@@ -10,7 +10,7 @@ import {
   type UniversalHandler,
   type UniversalMiddleware,
 } from '@universal-middleware/core'
-import { getMiddlewares_globalContext, type Middleware } from './middlewares.js'
+import { getMiddlewares_globalContext, type Middleware } from './universal-middleware/core.js'
 import { applyMiddlewares } from './middlewaresProxy.js'
 
 // Answers its path with a 401 and the request's URL
