@@ -44,7 +44,7 @@ const renderPageHandler: Middleware = Object.assign(
   { isHandler: true },
 )
 
-// `globalContext.middlewares`: every `+middleware`, then Vike's pages
+// `globalContext.middlewares`: every `+middleware`, then Vike's built-in middleware
 function getMiddlewares(plusMiddlewares: EnhancedMiddleware[], baseServer: string): Middleware[] {
   return [...plusMiddlewares.map((plusMiddleware) => toMiddleware(plusMiddleware, baseServer)), renderPageHandler]
 }
