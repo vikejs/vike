@@ -17,9 +17,9 @@ import {
   type UniversalHandler,
   type UniversalMiddleware,
 } from '@universal-middleware/core'
-import { getPlusMiddlewares, getMatcher, renderPageUniversal, type Middleware } from './middlewares.js'
-import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.js'
-import '../assertEnvServer.js'
+import { getMiddlewares_withErrorHandling, getMatcher, renderPageServer_universal, type Middleware } from './core.js'
+import { getVikeConfigError } from '../../../shared-server-node/getVikeConfigError.js'
+import '../../assertEnvServer.js'
 
 // What `vike(app, middlewares)` applies before the app's routes: the +middleware and the app's middlewares in one loop
 // (looked up upon each request), then the app's handlers, which the server routes as usual. The adapter passes the
@@ -31,9 +31,9 @@ function middlewaresProxy_middlewares(middlewares_: object[] = []): [UniversalMi
   const appMiddlewares = middlewares.filter((middleware) => !isHandler(middleware)).map(scopeToPath)
   const loop = enhance(
     async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) => {
-      const plusMiddlewares = await getPlusMiddlewares()
+      const plusMiddlewares = await getMiddlewares_withErrorHandling()
       // An invalid config: Vike's pages show the error, instead of the app's routes running without the +middleware
-      if (getVikeConfigError()) return renderPageUniversal(request, context, runtime)
+      if (getVikeConfigError()) return renderPageServer_universal(request, context, runtime)
       return applyMiddlewares(plusMiddlewares, request, context, runtime, appMiddlewares)
     },
     { name: 'vike:middleware' },
@@ -97,7 +97,7 @@ async function applyMiddlewares(
 const middlewaresProxy_handlers = enhance(
   async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) =>
     // A method that no handler and no page answers (e.g. DELETE): what a server answers without a route for it
-    (await getRouter(await getPlusMiddlewares())(request, context, runtime)) ??
+    (await getRouter(await getMiddlewares_withErrorHandling())(request, context, runtime)) ??
     new Response('Not Found', { status: 404 }),
   {
     name: 'vike',

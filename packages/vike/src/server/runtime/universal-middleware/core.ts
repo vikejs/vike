@@ -1,6 +1,6 @@
-export { getMiddlewares }
-export { getPlusMiddlewares }
-export { renderPageUniversal }
+export { getMiddlewares_globalContext }
+export { getMiddlewares_withErrorHandling }
+export { renderPageServer_universal }
 export { getMatcher }
 export { assertPlusMiddlewareApplied }
 export type { Middleware }
@@ -21,29 +21,29 @@ import {
   type UniversalMiddleware,
   type UniversalRouterInterface,
 } from '@universal-middleware/core'
-import { parseUrl } from '../../utils/parseUrl.js'
-import { handlePageContextRequestUrl } from './renderPageServer/handlePageContextRequestUrl.js'
-import { renderPageServer } from './renderPageServer.js'
-import { getGlobalContextServerInternal, initGlobalContext_renderPage } from './globalContext.js'
-import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.js'
-import { assert, assertUsage, assertWarning } from '../../utils/assert.js'
+import { parseUrl } from '../../../utils/parseUrl.js'
+import { handlePageContextRequestUrl } from '../renderPageServer/handlePageContextRequestUrl.js'
+import { renderPageServer } from '../renderPageServer.js'
+import { getGlobalContextServerInternal, initGlobalContext_renderPage } from '../globalContext.js'
+import { getVikeConfigError } from '../../../shared-server-node/getVikeConfigError.js'
+import { assert, assertUsage, assertWarning } from '../../../utils/assert.js'
 import pc from '@brillout/picocolors'
-import { getGlobalObject } from '../../utils/getGlobalObject.js'
-import '../assertEnvServer.js'
+import { getGlobalObject } from '../../../utils/getGlobalObject.js'
+import '../../assertEnvServer.js'
 
 type Middleware = EnhancedMiddleware & {
   /** `true` for the middlewares that run after the server's own routes: the `+middleware` with a `path` and no `order` (or `order: 0`), and Vike's pages. */
   isHandler: boolean
 }
 
-const globalObject = getGlobalObject('runtime/middlewares.ts', {
+const globalObject = getGlobalObject('universal-middleware/core.ts', {
   // A +middleware that isn't a handler ran
   isApplied: false,
 })
 
 // Vike's pages, after everything else
-const renderPageHandler: Middleware = Object.assign(
-  enhance(renderPageUniversal, {
+const renderPageServer_universalMiddleware: Middleware = Object.assign(
+  enhance(renderPageServer_universal, {
     name: 'vike',
     method: ['GET', 'POST', 'PUT', 'PATCH', 'HEAD', 'OPTIONS'],
     path: '/**',
@@ -52,22 +52,25 @@ const renderPageHandler: Middleware = Object.assign(
   { isHandler: true },
 )
 
-// `globalContext.middlewares`: every `+middleware`, then Vike's pages
-function getMiddlewares(plusMiddlewares: EnhancedMiddleware[], baseServer: string): Middleware[] {
-  return [...plusMiddlewares.map((plusMiddleware) => toMiddleware(plusMiddleware, baseServer)), renderPageHandler]
+// `globalContext.middlewares`: every `+middleware`, then Vike's built-in middleware
+function getMiddlewares_globalContext(plusMiddlewares: EnhancedMiddleware[], baseServer: string): Middleware[] {
+  return [
+    ...plusMiddlewares.map((plusMiddleware) => toMiddleware(plusMiddleware, baseServer)),
+    renderPageServer_universalMiddleware,
+  ]
 }
 
-// `globalContext.middlewares`. Upon an invalid config, only Vike's pages, which show the error.
-const renderPageOnly = [renderPageHandler]
-async function getPlusMiddlewares(): Promise<Middleware[]> {
+// `globalContext.middlewares` or, upon an invalid config, only Vike's renderPage() which shows the error.
+async function getMiddlewares_withErrorHandling(): Promise<Middleware[]> {
+  const middlewaresVikeOnly = [renderPageServer_universalMiddleware]
   // Before the await too, which doesn't resolve while the config is invalid
-  if (getVikeConfigError()) return renderPageOnly
+  if (getVikeConfigError()) return middlewaresVikeOnly
   try {
     await initGlobalContext_renderPage()
   } catch {
-    return renderPageOnly
+    return middlewaresVikeOnly
   }
-  if (getVikeConfigError()) return renderPageOnly
+  if (getVikeConfigError()) return middlewaresVikeOnly
   const { globalContext } = await getGlobalContextServerInternal()
   return globalContext.middlewares
 }
@@ -136,7 +139,7 @@ function toReload(response: Response): Response {
 // Process-wide, not per request: once a +middleware ran, a renderPage() call from a route they don't wrap passes too.
 async function assertPlusMiddlewareApplied(): Promise<void> {
   if (globalObject.isApplied) return
-  const middlewares = await getPlusMiddlewares()
+  const middlewares = await getMiddlewares_withErrorHandling()
   assertUsage(
     // The handlers are routes the app doesn't have
     middlewares.every((middleware) => middleware.isHandler),
@@ -171,7 +174,7 @@ function getMatcher(path: string, method: HttpMethod | HttpMethod[] | undefined)
   }
 }
 
-async function renderPageUniversal(
+async function renderPageServer_universal(
   request: Request,
   context: Universal.Context,
   runtime: RuntimeAdapterTarget<unknown>,

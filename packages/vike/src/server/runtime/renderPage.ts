@@ -1,7 +1,7 @@
 export { renderPage }
 
 import { renderPageServer, type PageContextInit } from './renderPageServer.js'
-import { assertPlusMiddlewareApplied } from './middlewares.js'
+import { assertPlusMiddlewareApplied } from './universal-middleware/core.js'
 import '../assertEnvServer.js'
 
 // The app's renderPage(): Vike's own server and `vike(app)` call renderPageServer() instead

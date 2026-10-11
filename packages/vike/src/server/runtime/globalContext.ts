@@ -77,7 +77,7 @@ import type { ViteRPC } from '../../node/vite/plugins/non-runnable-dev/pluginVit
 import { getVikeApiOperation } from '../../shared-server-node/api-context.js'
 import type { PrerenderContext } from '../../types/index.js'
 import { hasAlreadyLogged } from './logErrorServer.js'
-import { getMiddlewares } from './middlewares.js'
+import { getMiddlewares_globalContext } from './universal-middleware/core.js'
 import '../assertEnvServer.js'
 const debug = createDebug('vike:globalContext')
 const globalObject = getGlobalObject<
@@ -700,11 +700,13 @@ async function addGlobalContextAsync(globalContext: GlobalContextBase) {
     baseServer,
     baseAssets,
     /**
-     * Every `+middleware`, then Vike's pages: apply the ones with `isHandler: false` before your server's own routes, and the others after.
+     * The list of all Universal Middlewares:
+     * - Every +middleware of all Vike extensions
+     * - Vike's built-in +middleware
      *
-     * https://vike.dev/middleware#manual-integration
+     * https://vike.dev/renderPage
      */
-    middlewares: getMiddlewares((globalContext.config.middleware ?? []).flat(), baseServer),
+    middlewares: getMiddlewares_globalContext((globalContext.config.middleware ?? []).flat(), baseServer),
   }
 }
 
