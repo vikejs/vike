@@ -68,7 +68,7 @@ function testRun(cmd: Cmd, options?: { serverIsReadyMessage: string }) {
   })
 
   if (cmd === 'pnpm run dev:halves' || cmd === 'pnpm run preview:halves') {
-    test("The app's middlewares apply to a +middleware's answer, and a Response after it is ignored", async () => {
+    test("The user-land universal middlewares apply to a +middleware's answer, and a Response after it is ignored", async () => {
       // `auth` answers, and `late`, ordered after it, returns a Response too
       const response: Response = await fetch(`${getServerUrl()}/api/me`, { headers: { 'x-late': '1' } })
       expect(response.status).toBe(401)
@@ -78,7 +78,7 @@ function testRun(cmd: Cmd, options?: { serverIsReadyMessage: string }) {
       expect(response.headers.get('x-api')).toBe('yes')
     })
 
-    test('An app middleware runs by its order between the +middleware, and only on its path', async () => {
+    test('A user-land universal middleware runs by its order between the +middleware, and only on its path', async () => {
       const response: Response = await fetch(`${getServerUrl()}/`, { headers: { 'x-user': 'alice' } })
       expect(await response.text()).toContain('Rendered by Vike for alice')
       expect(response.headers.get('x-app')).toBe('yes')

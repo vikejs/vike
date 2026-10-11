@@ -1,5 +1,5 @@
 // A server that applies the +middleware itself: https://vike.dev/middleware#manual-integration
-// With MIDDLEWARES=halves, it applies the two halves that `vike(app, appMiddlewares)` applies instead.
+// With MIDDLEWARES=halves, it applies the two halves that `vike(app, middlewaresUserLand)` applies instead.
 // With MIDDLEWARES=none, it applies no +middleware and calls renderPage() itself.
 
 import { Hono } from 'hono'
@@ -23,9 +23,9 @@ const setHeader = (name: string, value: string) => (response: Response) => {
   response.headers.set(name, value)
   return response
 }
-// The app's middlewares, as in `vike(app, appMiddlewares)`: `userSeen` runs between the `user` and `auth` +middleware, and
-// `late`'s Response comes after `auth`'s
-const appMiddlewares = [
+// The user-land universal middlewares, as in `vike(app, middlewaresUserLand)`: `userSeen` runs between the `user` and
+// `auth` +middleware, and `late`'s Response comes after `auth`'s
+const middlewaresUserLand = [
   enhance(() => setHeader('x-app', 'yes'), { name: 'appHeader' }),
   enhance(() => setHeader('x-api', 'yes'), {
     name: 'apiHeader',
@@ -44,7 +44,7 @@ const appMiddlewares = [
 
 const app = new Hono()
 if (mode !== 'none') {
-  apply(app, halves ? middlewaresProxy_middlewares(appMiddlewares) : middlewares.filter((m) => !m.isHandler))
+  apply(app, halves ? middlewaresProxy_middlewares(middlewaresUserLand) : middlewares.filter((m) => !m.isHandler))
 }
 // The app's own routes
 app.get('/api/me', (c) => c.text('Me'))

@@ -210,7 +210,7 @@ describe('applyMiddlewares()', () => {
     await vi.waitFor(() => expect(cancelled).toBe(true))
   })
 
-  // The app's middlewares, passed to `vike(app, [...])`
+  // The user-land universal middlewares, passed to `vike(app, [...])`
   const header = (name: string, order?: number) =>
     enhance(
       () => (response: Response) => {
@@ -222,17 +222,17 @@ describe('applyMiddlewares()', () => {
   const run = (
     plusMiddlewares: Parameters<typeof getMiddlewares_globalContext>[0],
     url: string,
-    appMiddlewares: UniversalMiddleware[],
+    middlewaresUserLand: UniversalMiddleware[],
   ) =>
     applyMiddlewares(
       getMiddlewares_globalContext(plusMiddlewares, '/'),
       new Request(`http://localhost${url}`),
       {},
       {} as RuntimeAdapter,
-      appMiddlewares,
+      middlewaresUserLand,
     )
 
-  it("applies an app middleware's response function to a +middleware's answer, and to the page", async () => {
+  it("applies a user-land universal middleware's response function to a +middleware's answer, and to the page", async () => {
     const answer = (await run([auth], '/dash', [header('x-app')])) as Response
     expect([answer.status, answer.headers.get('x-app')]).toEqual([401, 'yes'])
     const applyResponseFunctions = (await run([auth], '/about', [header('x-app')])) as (
@@ -241,7 +241,7 @@ describe('applyMiddlewares()', () => {
     expect((await applyResponseFunctions(new Response('page'))).headers.get('x-app')).toBe('yes')
   })
 
-  it('runs the +middleware and the app middlewares by order, the +middleware first at equal order', async () => {
+  it('runs the +middleware and the user-land universal middlewares by order, the +middleware first at equal order', async () => {
     const ran: string[] = []
     const record = (name: string, order?: number) =>
       enhance(
@@ -258,7 +258,7 @@ describe('applyMiddlewares()', () => {
     expect(ran).toEqual(['app -1000', 'plus -900', 'app -850', 'plus -800', 'plus', 'app'])
   })
 
-  it('after the answer, runs the app middlewares only, and ignores a Response one of them returns', async () => {
+  it('after the answer, runs the user-land universal middlewares only, and ignores a Response one of them returns', async () => {
     let lateRan = false
     let cancelled = false
     const latePlus = enhance(

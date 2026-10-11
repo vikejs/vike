@@ -5,7 +5,7 @@ import { middlewaresProxy_handlers, middlewaresProxy_middlewares } from './middl
 import { getMiddlewares_withErrorHandling, renderPageServer_universal } from './core.js'
 import '../../assertEnvServer.js'
 
-// Vike's own server has no app middlewares
+// Vike's own server has no user-land universal middlewares
 const [middlewaresProxy] = middlewaresProxy_middlewares()
 
 // Vike's own server (`vike/fetch`, and `$ vike dev` and `$ vike preview` with +middleware): the two halves that `vike(app)` applies, in a row
