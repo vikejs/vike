@@ -1,13 +1,9 @@
 export { addSsrMiddleware }
 
 import { vikeUniversalMiddleware } from '../../../server/runtime/universal-middleware/vikeUniversalMiddleware.js'
-import {
-  createHttpResponseViteSsrMiddleware,
-  type HttpResponse,
-} from '../../../server/runtime/renderPageServer/createHttpResponse.js'
 import { createRequestAdapter } from '@universal-middleware/node/request'
+import { sendResponse } from '@universal-middleware/node/response'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
-import type { ServerResponse } from 'node:http'
 import '../assertEnvVite.js'
 type ConnectServer = ViteDevServer['middlewares']
 const requestAdapter = createRequestAdapter()
@@ -22,12 +18,10 @@ function addSsrMiddleware(
     if (res.headersSent) return next()
     const url = req.originalUrl || req.url
     if (!url) return next()
-    let httpResponse: HttpResponse
+    let response: Response
     try {
       // `pageContext.urlOriginal` is the URL's path, as renderPage() gets it on a Node.js server
-      httpResponse = createHttpResponseViteSsrMiddleware(
-        await vikeUniversalMiddleware(requestAdapter(req, res), { urlOriginal: url }),
-      )
+      response = await vikeUniversalMiddleware(requestAdapter(req, res), { urlOriginal: url })
     } catch (err) {
       // Throwing an error in a connect middleware shuts down the server
       console.error(err)
@@ -37,7 +31,7 @@ function addSsrMiddleware(
       return next()
     }
 
-    if (httpResponse.statusCode === 404 && isPreview && isPrerenderingEnabled) {
+    if (response.status === 404 && isPreview && isPrerenderingEnabled) {
       // Serve /dist/client/404.html instead
       return next()
     }
@@ -47,18 +41,6 @@ function addSsrMiddleware(
       for (const [name, value] of Object.entries(configHeaders)) if (value) res.setHeader(name, value)
     }
 
-    setHeadersWithMultipleCookies(res, httpResponse.headers)
-    res.statusCode = httpResponse.statusCode
-    httpResponse.pipe(res)
+    await sendResponse(response, res)
   })
-}
-
-// A response can have several Set-Cookie headers: res.setHeader() would only keep the last one
-function setHeadersWithMultipleCookies(res: ServerResponse, headers: [string, string][]) {
-  const cookies: string[] = []
-  headers.forEach(([name, value]) => {
-    if (name.toLowerCase() === 'set-cookie') cookies.push(value)
-    else res.setHeader(name, value)
-  })
-  if (cookies.length > 0) res.setHeader('set-cookie', cookies)
 }

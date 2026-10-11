@@ -7,7 +7,6 @@ export { createHttpResponseErrorFallbackJson }
 export { createHttpResponseRedirect }
 export { createHttpResponse404 }
 export { createHttpResponseBaseIsMissing }
-export { createHttpResponseViteSsrMiddleware }
 export type { HttpResponse }
 
 import type { GetPageAssets } from './getPageAssets.js'
@@ -200,12 +199,6 @@ function createHttpResponseRedirect({ url, statusCode }: UrlRedirect, pageContex
     // For users: showing a blank page is probably better than a flickering text.
     getHtmlFallback(`<p style="display: none">Redirecting to ${escapeHtml(url)}</p>`),
   )
-}
-
-function createHttpResponseViteSsrMiddleware(response: Response) {
-  const body = response.body ?? getHtmlFallback('<p style="display: none">No HTTP response body.</p>')
-  const httpResponse = createHttpResponseCommon(response.status, Array.from(response.headers.entries()), body)
-  return httpResponse
 }
 
 function getHtmlFallback(bodyHtml: string, logText: string = htmlFallbackLog): string {
