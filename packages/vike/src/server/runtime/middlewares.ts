@@ -1,6 +1,6 @@
 export { getMiddlewares }
 export { getPlusMiddlewares }
-export { renderPageUniversal }
+export { renderPageServerUniversal }
 export { getMatcher }
 export type { Middleware }
 
@@ -35,7 +35,7 @@ type Middleware = EnhancedMiddleware & {
 
 // Vike's pages, after everything else
 const renderPageHandler: Middleware = Object.assign(
-  enhance(renderPageUniversal, {
+  enhance(renderPageServerUniversal, {
     name: 'vike',
     method: ['GET', 'POST', 'PUT', 'PATCH', 'HEAD', 'OPTIONS'],
     path: '/**',
@@ -150,7 +150,7 @@ function getMatcher(path: string, method: HttpMethod | HttpMethod[] | undefined)
   }
 }
 
-async function renderPageUniversal(
+async function renderPageServerUniversal(
   request: Request,
   context: Universal.Context,
   runtime: RuntimeAdapterTarget<unknown>,
