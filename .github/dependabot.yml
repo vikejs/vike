@@ -6,6 +6,9 @@ updates:
       interval: "daily"
       time: "03:30"
       timezone: "Europe/Berlin"
+    exclude-paths:
+      # Its @universal-middleware/core ^0.4.18 is the test for the dev optimizer excluding that package
+      - "test/@cloudflare_vite-plugin_ud"
     allow:
       # Dependencies maintained by the Vike team
       - dependency-name: "@batijs/*"
