@@ -6,6 +6,7 @@ import {
   orderSymbol,
   pathSymbol,
   pipeRoute,
+  type EnhancedMiddleware,
   type RuntimeAdapter,
   type UniversalHandler,
   type UniversalMiddleware,
@@ -30,6 +31,9 @@ const bases = [
   ['/', ''],
   ['/app/', '/app'],
 ] as const
+// The globalContext of an app with these +middleware
+const globalContextWith = (plusMiddlewares: EnhancedMiddleware[]) =>
+  ({ config: { middleware: plusMiddlewares } }) as Parameters<typeof getMiddlewares_globalContext>[0]
 
 // Applies the list as a server does, with a stand-in for Vike's pages
 async function serve(middlewares: Middleware[], url: string, method = 'GET') {
@@ -41,7 +45,7 @@ async function serve(middlewares: Middleware[], url: string, method = 'GET') {
 
 describe('getMiddlewares_globalContext()', () => {
   it("marks the handlers, Vike's pages last", () => {
-    const middlewares = getMiddlewares_globalContext([auth, logger, telefunc, orderZero], '/')
+    const middlewares = getMiddlewares_globalContext(globalContextWith([auth, logger, telefunc, orderZero]), '/')
     expect(middlewares.map((m) => [m.name, m.isHandler, getUniversalProp(m, orderSymbol)])).toEqual([
       ['auth', false, MiddlewareOrder.AUTHORIZATION],
       ['logger', false, undefined],
@@ -55,7 +59,7 @@ describe('getMiddlewares_globalContext()', () => {
 
   it("matches a path against the page's URL: without the Base URL, and for its .pageContext.json", async () => {
     for (const [baseServer, base] of bases) {
-      const middlewares = getMiddlewares_globalContext([auth], baseServer)
+      const middlewares = getMiddlewares_globalContext(globalContextWith([auth]), baseServer)
       for (const url of ['/dash', '/%64ash']) {
         // The +middleware gets the original request
         expect(await serve(middlewares, `${base}${url}`)).toBe(`401 http://localhost${base}${url}`)
@@ -70,7 +74,7 @@ describe('getMiddlewares_globalContext()', () => {
       expect(await serve(middlewares, `${base}/%2564ash/index.pageContext.json`)).toBe('200 page')
     }
     // Outside the Base URL
-    expect(await serve(getMiddlewares_globalContext([auth], '/app/'), '/dash')).toBe('200 page')
+    expect(await serve(getMiddlewares_globalContext(globalContextWith([auth]), '/app/'), '/dash')).toBe('200 page')
   })
 
   it('matches each path syntax, for the page and its .pageContext.json', async () => {
@@ -95,7 +99,7 @@ describe('getMiddlewares_globalContext()', () => {
     const failures: string[] = []
     for (const [path, urls] of cases) {
       for (const [baseServer, base] of bases) {
-        const middlewares = getMiddlewares_globalContext([authAt(path)], baseServer)
+        const middlewares = getMiddlewares_globalContext(globalContextWith([authAt(path)]), baseServer)
         for (const url of urls) {
           const pageUrl = `${base}${url}`
           for (const requestUrl of [pageUrl, `${pageUrl.replace(/\/$/, '')}/index.pageContext.json`]) {
@@ -113,7 +117,7 @@ describe('getMiddlewares_globalContext()', () => {
 
   it("answers a .pageContext.json request with a 404 without the +middleware's JSON content-type", async () => {
     const jsonAuth = enhance(() => Response.json({ error: 'unauthorized' }, { status: 401 }), { name: 'jsonAuth' })
-    const [middleware] = getMiddlewares_globalContext([jsonAuth], '/')
+    const [middleware] = getMiddlewares_globalContext(globalContextWith([jsonAuth]), '/')
     const request = new Request('http://localhost/dash/index.pageContext.json')
     const response = (await (middleware as UniversalHandler)(request, {}, {} as RuntimeAdapter)) as Response
     expect([response.status, response.headers.get('content-type'), await response.text()]).toEqual([
@@ -125,24 +129,24 @@ describe('getMiddlewares_globalContext()', () => {
 
   it('answers a .pageContext.json request with a 404 when a response function replaces the page', async () => {
     const replace = enhance(() => () => new Response('Replaced', { status: 401 }), { name: 'replace' })
-    const middlewares = getMiddlewares_globalContext([replace], '/')
+    const middlewares = getMiddlewares_globalContext(globalContextWith([replace]), '/')
     expect(await serve(middlewares, '/about/index.pageContext.json')).toBe('404 Replaced')
     expect(await serve(middlewares, '/about')).toBe('401 Replaced')
   })
 
   it('keeps the order: a +middleware without one is ordered as 0', async () => {
     const answers = enhance(() => new Response('answers'), { name: 'answers' })
-    expect(await serve(getMiddlewares_globalContext([answers, auth], '/'), '/dash')).toBe('401 http://localhost/dash')
+    expect(await serve(getMiddlewares_globalContext(globalContextWith([answers, auth]), '/'), '/dash')).toBe('401 http://localhost/dash')
   })
 
   it('runs a +middleware with a positive order before the pages, and not once a Response exists', async () => {
     const late = enhance(() => new Response('late'), { name: 'late', order: MiddlewareOrder.RESPONSE_TRANSFORM })
-    expect(await serve(getMiddlewares_globalContext([late], '/'), '/about')).toBe('200 late')
-    expect(await serve(getMiddlewares_globalContext([auth, late], '/'), '/dash')).toBe('401 http://localhost/dash')
+    expect(await serve(getMiddlewares_globalContext(globalContextWith([late]), '/'), '/about')).toBe('200 late')
+    expect(await serve(getMiddlewares_globalContext(globalContextWith([auth, late]), '/'), '/dash')).toBe('401 http://localhost/dash')
   })
 
   it('matches the method, HEAD as GET', async () => {
-    const middlewares = getMiddlewares_globalContext([auth], '/')
+    const middlewares = getMiddlewares_globalContext(globalContextWith([auth]), '/')
     expect(await serve(middlewares, '/dash', 'POST')).toBe('200 page')
     expect(await serve(middlewares, '/dash', 'HEAD')).toBe('401 http://localhost/dash')
   })
@@ -150,16 +154,16 @@ describe('getMiddlewares_globalContext()', () => {
   it('warns about a path that starts with the Base URL', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
     const guard = (path: string, name = 'guard') => enhance(() => undefined, { name, method: 'GET', path })
-    getMiddlewares_globalContext([guard('/app/dash')], '/app/')
+    getMiddlewares_globalContext(globalContextWith([guard('/app/dash')]), '/app/')
     expect(warn).toHaveBeenCalledTimes(1)
     const message = String(warn.mock.calls[0]![0])
     expect(message).toContain('+middleware guard has the path /app/dash')
     expect(message).toContain('relative to the Base URL, use /dash instead')
     // Once per +middleware and path
-    getMiddlewares_globalContext([guard('/app/dash')], '/app/')
+    getMiddlewares_globalContext(globalContextWith([guard('/app/dash')]), '/app/')
     // No warning: a path relative to the Base URL, no Base URL, no path
-    getMiddlewares_globalContext([guard('/dash'), guard('/other/dash'), guard('/application'), logger], '/app/')
-    getMiddlewares_globalContext([guard('/app/other')], '/')
+    getMiddlewares_globalContext(globalContextWith([guard('/dash'), guard('/other/dash'), guard('/application'), logger]), '/app/')
+    getMiddlewares_globalContext(globalContextWith([guard('/app/other')]), '/')
     expect(warn).toHaveBeenCalledTimes(1)
     // A handler's path too, whether or not the Base URL ends with a slash
     for (const baseServer of ['/base', '/base/']) {
@@ -171,21 +175,21 @@ describe('getMiddlewares_globalContext()', () => {
       ] as const) {
         warn.mockClear()
         getMiddlewares_globalContext(
-          [enhance(() => new Response(), { name: `handler-${baseServer}`, method: 'GET', path })],
+          globalContextWith([enhance(() => new Response(), { name: `handler-${baseServer}`, method: 'GET', path })]),
           baseServer,
         )
         expect(warn).toHaveBeenCalledTimes(1)
         expect(String(warn.mock.calls[0]![0])).toContain(`use ${relativePath} instead`)
       }
       warn.mockClear()
-      getMiddlewares_globalContext([guard('/basement', `guard-${baseServer}`)], baseServer)
+      getMiddlewares_globalContext(globalContextWith([guard('/basement', `guard-${baseServer}`)]), baseServer)
       expect(warn).not.toHaveBeenCalled()
     }
     warn.mockRestore()
   })
 
   it("prepends the Base URL to a handler's path", () => {
-    const [handler] = getMiddlewares_globalContext([telefunc], '/app/')
+    const [handler] = getMiddlewares_globalContext(globalContextWith([telefunc]), '/app/')
     expect(getUniversalProp(handler!, pathSymbol)).toBe('/app/_telefunc')
   })
 
@@ -196,7 +200,7 @@ describe('getMiddlewares_globalContext()', () => {
       path: '/metadata',
       context: { foo: 'bar' },
     })
-    expect(await serve(getMiddlewares_globalContext([handler], '/'), '/metadata')).toBe('200 bar')
+    expect(await serve(getMiddlewares_globalContext(globalContextWith([handler]), '/'), '/metadata')).toBe('200 bar')
   })
 })
 
@@ -211,11 +215,11 @@ describe('pipeNonHandlers()', () => {
       { name, ...(order !== undefined && { order }) },
     )
   const run = (
-    plusMiddlewares: Parameters<typeof getMiddlewares_globalContext>[0],
+    plusMiddlewares: EnhancedMiddleware[],
     url: string,
     middlewaresUserLand: UniversalMiddleware[],
   ) =>
-    pipeNonHandlers(getMiddlewares_globalContext(plusMiddlewares, '/'), middlewaresUserLand)(
+    pipeNonHandlers(getMiddlewares_globalContext(globalContextWith(plusMiddlewares), '/'), middlewaresUserLand)(
       new Request(`http://localhost${url}`),
       {},
       {} as RuntimeAdapter,
@@ -261,7 +265,7 @@ describe('pipeNonHandlers()', () => {
       { name: 'app' },
     )
     const context: Universal.Context = { urlOriginal: '/' }
-    await pipeNonHandlers(getMiddlewares_globalContext([user], '/'), [app])(
+    await pipeNonHandlers(getMiddlewares_globalContext(globalContextWith([user]), '/'), [app])(
       new Request('http://localhost/'),
       context,
       {} as RuntimeAdapter,
