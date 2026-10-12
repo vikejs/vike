@@ -172,8 +172,11 @@ async function renderPageServer_universal(
       // Unless the context has it, e.g. `$ vike dev` passes the URL's path
       urlOriginal: request.url,
       ...context,
-      ...runtime,
-      runtime,
+      // Not the runtime that Vike's own server creates: it isn't a server's
+      ...(runtime.adapter !== 'other' && {
+        runtime,
+        ...('req' in runtime && { req: runtime.req, res: runtime.res }),
+      }),
       headersOriginal: request.headers,
     },
     false,
