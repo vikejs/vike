@@ -147,20 +147,6 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     expect(await replaced.text()).toBe('Replaced')
   })
 
-  test("A +middleware's answer to a client-side navigation is shown", async () => {
-    for (const [pathname, answer] of [
-      ['/admin/settings', 'Unauthorized'],
-      ['/json-admin', '{"error":"unauthorized"}'],
-    ]) {
-      await page.goto(`${getServerUrl()}/`)
-      await testCounter()
-      await page.click(`a[href="${pathname}"]`)
-      await autoRetry(async () => {
-        expect(await page.textContent('body')).toBe(answer)
-      })
-    }
-  })
-
   test("A +middleware's redirect of a client-side navigation is followed", async () => {
     await page.goto(`${getServerUrl()}/`)
     await testCounter()
@@ -171,13 +157,20 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     })
   })
 
-  test("A +middleware's login page, answered with status 200 to a client-side navigation, is shown", async () => {
-    await page.goto(`${getServerUrl()}/`)
-    await testCounter()
-    await page.click('a[href="/portal"]')
-    await autoRetry(async () => {
-      expect(await page.textContent('body')).toBe('Log in to continue')
-    })
+  test("A +middleware's answer to a client-side navigation is shown", async () => {
+    for (const [pathname, answer] of [
+      ['/admin/settings', 'Unauthorized'],
+      ['/json-admin', '{"error":"unauthorized"}'],
+      // A login page, answered with status 200
+      ['/portal', 'Log in to continue'],
+    ]) {
+      await page.goto(`${getServerUrl()}/`)
+      await testCounter()
+      await page.click(`a[href="${pathname}"]`)
+      await autoRetry(async () => {
+        expect(await page.textContent('body')).toBe(answer)
+      })
+    }
   })
 
   test("Vike's pages don't answer DELETE", async () => {
