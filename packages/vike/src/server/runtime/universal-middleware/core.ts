@@ -25,6 +25,7 @@ import { renderPageServer } from '../renderPageServer.js'
 import { getGlobalContextServerInternal, initGlobalContext_renderPage } from '../globalContext.js'
 import { getVikeConfigError } from '../../../shared-server-node/getVikeConfigError.js'
 import { assertWarning } from '../../../utils/assert.js'
+import pc from '@brillout/picocolors'
 import type { ConfigResolved } from '../../../types/Config/ConfigResolved.js'
 import '../../assertEnvServer.js'
 
@@ -150,18 +151,36 @@ async function renderPageServer_universal(
   context: Universal.Context,
   runtime: RuntimeAdapterTarget<unknown>,
 ) {
-  const pageContext = await renderPageServer(
-    {
-      // Unless the context has it, e.g. `$ vike dev` passes the URL's path
-      urlOriginal: request.url,
-      ...context,
-      // Only a server's runtime: not the 'other' one Vike's own server creates, nor a Cloudflare worker's ExecutionContext
-      ...(runtime.adapter && runtime.adapter !== 'other' && { runtime }),
-      ...('req' in runtime && { req: runtime.req, res: runtime.res }),
-      headersOriginal: request.headers,
-    },
-    false,
-  )
+  const pageContextInit = {
+    // Unless the context has it, e.g. `$ vike dev` passes the URL's path
+    urlOriginal: request.url,
+    ...context,
+    // Only a server's runtime: not the 'other' one Vike's own server creates, nor a Cloudflare worker's ExecutionContext
+    ...(runtime.adapter && runtime.adapter !== 'other' && { runtime }),
+    ...('req' in runtime && { req: runtime.req, res: runtime.res }),
+    headersOriginal: request.headers,
+  }
+  // `$ vike dev` and `$ vike preview`
+  if (runtime.adapter === 'other' && 'req' in runtime) {
+    Object.defineProperty(pageContextInit, 'userAgent', {
+      get() {
+        // TO-DO/next-major-release: assertUsage() instead of assertWarning()
+        assertWarning(
+          false,
+          `${pc.cyan('pageContext.userAgent')} is deprecated: use ${pc.cyan(
+            "pageContext.headers['user-agent']",
+          )} instead.`,
+          {
+            showStackTrace: true,
+            onlyOnce: true,
+          },
+        )
+        return request.headers.get('user-agent') ?? undefined
+      },
+      enumerable: false,
+    })
+  }
+  const pageContext = await renderPageServer(pageContextInit, false)
   const response = pageContext.httpResponse
   return new Response(response.getReadableWebStream(), {
     status: response.statusCode,

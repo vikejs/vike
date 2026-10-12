@@ -71,6 +71,14 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     expect(html).toContain('req: IncomingMessage, res: ServerResponse')
   })
 
+  test("Vike's own server keeps the deprecated `pageContext.userAgent`", async () => {
+    const response: Response = await fetch(`${getServerUrl()}/user-agent`, { headers: { 'user-agent': 'some-agent' } })
+    expect(await response.text()).toContain('userAgent: some-agent')
+    expectLog("pageContext.userAgent is deprecated: use pageContext.headers['user-agent'] instead.", {
+      filter: (log) => log.logSource === 'stderr',
+    })
+  })
+
   test('The page gets the context of every +middleware', async () => {
     const response: Response = await fetch(`${getServerUrl()}/runtime`, {
       headers: { 'x-auth': '1', 'x-locale': 'de' },
