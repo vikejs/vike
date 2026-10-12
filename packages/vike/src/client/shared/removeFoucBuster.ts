@@ -47,20 +47,23 @@ function clean() {
     const href = linkVike.getAttribute('href')
     assert(href && href.endsWith(suffix))
     let filePathAbsoluteUserRootDir = href.slice(0, -suffix.length)
-    const prefix = '/@fs/'
-    if (filePathAbsoluteUserRootDir.startsWith(prefix))
-      filePathAbsoluteUserRootDir = filePathAbsoluteUserRootDir.slice(prefix.length)
-    // CSS virtual module
+
+    const prefixFs = '/@fs/'
+    if (filePathAbsoluteUserRootDir.startsWith(prefixFs))
+      filePathAbsoluteUserRootDir = filePathAbsoluteUserRootDir.slice(prefixFs.length)
+
+    // CSS virtual module:
     // ```js
     // import 'virtual:some.css'
     // ```
-    // Vite transforms the virtual ID to:
+    // ID becomes:
     // ```
-    // <link rel="stylesheet" type="text/css" href="/@id/__x00__virtual:some.css?direct">
+    // <link href="/@id/__x00__virtual:some.css?direct" rel="stylesheet" type="text/css">
     // ```
     const prefixId = '/@id/'
     if (filePathAbsoluteUserRootDir.startsWith(prefixId))
       filePathAbsoluteUserRootDir = filePathAbsoluteUserRootDir.slice(prefixId.length).replace('__x00__', '\0')
+
     if (
       injectedByVite.some((filePathAbsoluteFilesystem) =>
         filePathAbsoluteFilesystem.endsWith(filePathAbsoluteUserRootDir),
