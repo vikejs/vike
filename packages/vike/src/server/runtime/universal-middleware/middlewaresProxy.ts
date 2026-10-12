@@ -30,7 +30,7 @@ function middlewaresProxy_nonHandlers(middlewaresUserLand: object[]): UniversalM
     (middleware) => !isHandler(middleware),
   )
   return enhance(
-    proxy((plusMiddlewares) => pipeNonHandlers(plusMiddlewares, nonHandlersUserLand)),
+    proxy((middlewares) => pipeNonHandlers(middlewares, nonHandlersUserLand)),
     { name: 'vike:middleware' },
   )
 }
@@ -39,9 +39,9 @@ function middlewaresProxy_nonHandlers(middlewaresUserLand: object[]): UniversalM
 // equal order, each on its path. The first Response answers: the +middleware after it don't run, and the user-land
 // universal middlewares after it run for their response functions, a Response they return being ignored. The response
 // functions apply to the final response, in their order.
-function pipeNonHandlers(plusMiddlewares: Middleware[], middlewaresUserLand: UniversalMiddleware[]) {
+function pipeNonHandlers(middlewares: Middleware[], middlewaresUserLand: UniversalMiddleware[]) {
   const nonHandlers = [
-    ...plusMiddlewares.filter((middleware) => !middleware.isHandler),
+    ...middlewares.filter((middleware) => !middleware.isHandler),
     ...middlewaresUserLand.map((middleware) => enhance(middleware, { runs: 'always' })),
   ]
   return pipeRoute(nonHandlers.map(mergeContext)) as UniversalMiddleware
@@ -72,8 +72,8 @@ function mergeContext(middleware: EnhancedMiddleware): UniversalMiddleware {
 // Vike's pages
 function middlewaresProxy_handlers(middlewaresUserLand: object[]): UniversalHandler {
   const handlersUserLand = (middlewaresUserLand as UniversalMiddleware[]).filter(isHandler)
-  const router = proxy((plusMiddlewares) =>
-    pipeRoute([...handlersUserLand, ...plusMiddlewares.filter((middleware) => middleware.isHandler)]),
+  const router = proxy((middlewares) =>
+    pipeRoute([...handlersUserLand, ...middlewares.filter((middleware) => middleware.isHandler)]),
   )
   return enhance(
     async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) =>
@@ -89,12 +89,12 @@ function middlewaresProxy_handlers(middlewaresUserLand: object[]): UniversalHand
 
 // Runs what `build()` makes of the list `getMiddlewares_withErrorHandling()` returns upon each request. The list changes
 // only when the config does, so `build()` runs once per list.
-function proxy(build: (plusMiddlewares: Middleware[]) => UniversalMiddleware): UniversalMiddleware {
+function proxy(build: (middlewares: Middleware[]) => UniversalMiddleware): UniversalMiddleware {
   const built = new WeakMap<Middleware[], UniversalMiddleware>()
   return async (request, context, runtime) => {
-    const plusMiddlewares = await getMiddlewares_withErrorHandling()
-    let middleware = built.get(plusMiddlewares)
-    if (!middleware) built.set(plusMiddlewares, (middleware = build(plusMiddlewares)))
-    return middleware(request, context, runtime)
+    const middlewares = await getMiddlewares_withErrorHandling()
+    let pipe = built.get(middlewares)
+    if (!pipe) built.set(middlewares, (pipe = build(middlewares)))
+    return pipe(request, context, runtime)
   }
 }
