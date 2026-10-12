@@ -85,12 +85,8 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   })
 
   test("A +middleware's path also covers the page's .pageContext.json request", async () => {
-    // A 404, so that the client router reloads the page
-    const url = `${getServerUrl()}/admin/settings/index.pageContext.json`
-    const response: Response = await fetch(url)
-    expect(response.status).toBe(404)
-    expect(await response.text()).toBe('Unauthorized')
     // settingsHeader's exact path, /admin/settings, also covers its .pageContext.json
+    const url = `${getServerUrl()}/admin/settings/index.pageContext.json`
     const responseAuth: Response = await fetch(url, { headers: { 'x-auth': '1' } })
     expect(responseAuth.status).toBe(200)
     expect(responseAuth.headers.get('x-settings')).toBe('yes')
@@ -111,6 +107,7 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
       expect(jsonText).not.toContain('ADMIN-SETTINGS')
       if (isAdmin) {
         expect(html.status).toBe(401)
+        // A 404, so that the client router reloads the page
         expect(json.status).toBe(404)
         expect(jsonText).toBe('Unauthorized')
       } else {
