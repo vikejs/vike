@@ -1412,8 +1412,8 @@ importers:
   test/@cloudflare_vite-plugin_ud:
     dependencies:
       '@universal-middleware/core':
-        specifier: ^0.4.18
-        version: 0.4.18(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
+        specifier: ^0.6.0
+        version: 0.6.0(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
       react:
         specifier: ^19.2.6
         version: 19.2.6
@@ -1925,8 +1925,8 @@ importers:
   test/universal-deploy:
     dependencies:
       '@universal-middleware/core':
-        specifier: ^0.5.0
-        version: 0.5.0(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
+        specifier: ^0.6.0
+        version: 0.6.0(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
       '@vikejs/express':
         specifier: ^0.3.0
         version: 0.3.0(@hattip/core@0.0.49)(@types/express@5.0.6)(express@5.2.1)(hono@4.13.13)(srvx@0.12.8)(vike@packages+vike)
@@ -7904,11 +7904,11 @@ packages:
     resolution: {integrity: sha512-wXR/dYpcqKmfWpEdZjiKJOwCNFndD0DMnrW/cYjVGttEkBfVgcLFHoNrlj47mjOVic9yyNu65alsgF4NQyTa2g==}
     engines: {node: '>=12.0.0'}
 
-  tldts-core@7.4.2:
-    resolution: {integrity: sha512-nwEyF4vl4RSJjwSjBUmOSxc3BFPoIFdlRthJ6e+5v9P3bHNsoD06UjuqMUspqp7vsEZ1beaHi1km+optiE17yA==}
+  tldts-core@7.4.18:
+    resolution: {integrity: sha512-KI2PKvCmvQI/xD6ypPqkU0i7oxNXR/O58RLRaHR4svsgVUQ2JE/XC8BtMbG6PSehD27I8sZJRcC1ASnCy6lp3g==}
 
-  tldts@7.4.2:
-    resolution: {integrity: sha512-kCwffuaH8ntKtygnWe1b4BJKWiCUH30n5KfoTr6IchcXOwR7chAOFJxFrH3vjANafUYrIA4a7SDL+nn7SiR4Sw==}
+  tldts@7.4.18:
+    resolution: {integrity: sha512-somxA8xKAUzlAxl0TX/jMSYIbRNFIVGnI96pVGJPeMc5BsHmfVXn6mOJT6U++ELnl04eGfzpfcEuZe8WiASkXg==}
     hasBin: true
 
   to-regex-range@5.0.1:
@@ -7922,10 +7922,6 @@ packages:
   totalist@3.0.1:
     resolution: {integrity: sha512-sf4i37nQ2LBx4m3wB74y+ubopq6W/dIzXg0FDGjsYnZHVa1Da8FH853wlL2gtUhg+xJXjfk3kUZS3BRoQeoQBQ==}
     engines: {node: '>=6'}
-
-  tough-cookie@6.0.1:
-    resolution: {integrity: sha512-LktZQb3IeoUWB9lqR5EWTHgW/VTITCXg4D21M+lvybRVdylLrRMnqaIONLVb5mav8vM19m44HIcGq4qASeu2Qw==}
-    engines: {node: '>=16'}
 
   tough-cookie@6.0.2:
     resolution: {integrity: sha512-exgYmnmL/sJpR3upZfXG5PoatXQii55xAiXGXzY+sROLZ/Y+SLcp9PgJNI9Vz37HpQ74WvDcLT8eqm+kV3FzrA==}
@@ -10932,7 +10928,7 @@ snapshots:
   '@universal-middleware/core@0.4.18(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)':
     dependencies:
       regexparam: 3.0.0
-      tough-cookie: 6.0.1
+      tough-cookie: 6.0.2
     optionalDependencies:
       '@hattip/core': 0.0.49
       '@types/express': 5.0.6
@@ -14840,11 +14836,11 @@ snapshots:
       fdir: 6.5.0(picomatch@4.0.7)
       picomatch: 4.0.7
 
-  tldts-core@7.4.2: {}
+  tldts-core@7.4.18: {}
 
-  tldts@7.4.2:
+  tldts@7.4.18:
     dependencies:
-      tldts-core: 7.4.2
+      tldts-core: 7.4.18
 
   to-regex-range@5.0.1:
     dependencies:
@@ -14854,13 +14850,9 @@ snapshots:
 
   totalist@3.0.1: {}
 
-  tough-cookie@6.0.1:
-    dependencies:
-      tldts: 7.4.2
-
   tough-cookie@6.0.2:
     dependencies:
-      tldts: 7.4.2
+      tldts: 7.4.18
 
   tr46@0.0.3: {}
 
