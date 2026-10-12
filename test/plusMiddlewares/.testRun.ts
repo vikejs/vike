@@ -71,6 +71,13 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     expect(html).toContain('req: IncomingMessage, res: ServerResponse')
   })
 
+  test('The page gets the context of every +middleware', async () => {
+    const response: Response = await fetch(`${getServerUrl()}/runtime`, {
+      headers: { 'x-auth': '1', 'x-locale': 'de' },
+    })
+    expect(await response.text()).toContain('isAuth: true, locale: de')
+  })
+
   test('Every +middleware whose path matches runs, then the page', async () => {
     // Both adminAuth (/admin/**) and settingsHeader (/admin/settings) match. adminAuth, listed before authUser, runs after it (by
     // `order`) and sees the context it adds.

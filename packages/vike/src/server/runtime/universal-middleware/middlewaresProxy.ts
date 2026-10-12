@@ -1,76 +1,80 @@
 export { middlewaresProxy_nonHandlers }
 export { middlewaresProxy_handlers }
-export { applyNonHandlers }
+export { pipeNonHandlers }
 
 import {
-  cancelReplacedBody,
   enhance,
   getUniversal,
   getUniversalProp,
   isHandler,
+  methodSymbol,
+  nameSymbol,
   orderSymbol,
+  pathSymbol,
   pipeRoute,
+  runsSymbol,
+  type EnhancedMiddleware,
   type RuntimeAdapterTarget,
   type UniversalHandler,
   type UniversalMiddleware,
 } from '@universal-middleware/core'
-import { getMiddlewares_withErrorHandling, scopeToPath, type Middleware } from './core.js'
+import { getMiddlewares_withErrorHandling, type Middleware } from './core.js'
 import '../../assertEnvServer.js'
 
 // What `vike(app, middlewares)` applies before the app's routes: the +middleware and the user-land universal
-// middlewares that aren't handlers, in one loop (looked up upon each request).
+// middlewares that aren't handlers, as one middleware (looked up upon each request).
 // `object[]`: the user-land universal middlewares can come from another copy of @universal-middleware/core, whose types
 // (keyed by a `unique symbol`) never match this copy's.
 function middlewaresProxy_nonHandlers(middlewaresUserLand: object[]): UniversalMiddleware {
-  const nonHandlersUserLand = (middlewaresUserLand as UniversalMiddleware[])
-    .filter((middleware) => !isHandler(middleware))
-    // They run after a +middleware answered too, a Response they return then being ignored
-    .map((middleware) => enhance(scopeToPath(middleware), { runs: 'always' }))
+  const nonHandlersUserLand = (middlewaresUserLand as UniversalMiddleware[]).filter(
+    (middleware) => !isHandler(middleware),
+  )
+  // The list changes only when the config does
+  const pipes = new WeakMap<Middleware[], UniversalMiddleware>()
   return enhance(
-    async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) =>
-      applyNonHandlers(await getMiddlewares_withErrorHandling(), nonHandlersUserLand, request, context, runtime),
+    async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) => {
+      const list = await getMiddlewares_withErrorHandling()
+      let piped = pipes.get(list)
+      if (!piped) {
+        piped = pipeNonHandlers(list, nonHandlersUserLand)
+        pipes.set(list, piped)
+      }
+      return piped(request, context, runtime)
+    },
     { name: 'vike:middleware' },
   )
 }
 
-// The +middleware that aren't handlers (Universal Middleware's pipe() can't pass the request on) and the user-land
-// universal middlewares, by order, the +middleware first at equal order. The first Response answers: the +middleware
-// after it don't run, and the user-land universal middlewares after it run for their response functions, a Response
-// they return being ignored. The response functions apply to the final response, in their order.
-async function applyNonHandlers(
-  plusMiddlewares: Middleware[],
-  middlewaresUserLand: UniversalMiddleware[],
-  request: Request,
-  context: Universal.Context,
-  runtime: RuntimeAdapterTarget<unknown>,
-) {
-  const responseFunctions: ((response: Response) => Response | undefined | Promise<Response | undefined>)[] = []
-  const applyResponseFunctions = async (response: Response) => {
-    for (const responseFunction of responseFunctions) {
-      const replacement = await responseFunction(response)
-      if (replacement) {
-        cancelReplacedBody(response, replacement)
-        response = replacement
-      }
-    }
-    return response
-  }
-  const nonHandlers = [...plusMiddlewares.filter((middleware) => !middleware.isHandler), ...middlewaresUserLand].sort(
-    (a, b) => getUniversalProp(a, orderSymbol, 0) - getUniversalProp(b, orderSymbol, 0),
+// The +middleware that aren't handlers and the user-land universal middlewares, by order, the +middleware first at
+// equal order, each on its path. The first Response answers: the +middleware after it don't run, and the user-land
+// universal middlewares after it run for their response functions, a Response they return being ignored. The response
+// functions apply to the final response, in their order.
+function pipeNonHandlers(plusMiddlewares: Middleware[], middlewaresUserLand: UniversalMiddleware[]) {
+  const nonHandlers = [
+    ...plusMiddlewares.filter((middleware) => !middleware.isHandler),
+    ...middlewaresUserLand.map((middleware) => enhance(middleware, { runs: 'always' })),
+  ]
+  return pipeRoute(nonHandlers.map(mergeContext)) as UniversalMiddleware
+}
+
+// Universal Middleware replaces the context with the one a middleware returns: Vike merges it, as a +middleware returns
+// only what it adds
+function mergeContext(middleware: EnhancedMiddleware): UniversalMiddleware {
+  const order = getUniversalProp(middleware, orderSymbol)
+  return enhance(
+    async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) => {
+      const result = await getUniversal(middleware as UniversalMiddleware)(request, context, runtime)
+      if (!result || result instanceof Response || typeof result === 'function') return result
+      Object.assign(context, result)
+    },
+    {
+      name: getUniversalProp(middleware, nameSymbol),
+      path: getUniversalProp(middleware, pathSymbol),
+      method: getUniversalProp(middleware, methodSymbol),
+      runs: getUniversalProp(middleware, runsSymbol),
+      ...(order !== undefined && { order }),
+    },
   )
-  const isMiddlewareUserLand = new Set<unknown>(middlewaresUserLand)
-  let answer: Response | undefined
-  for (const middleware of nonHandlers) {
-    if (answer && !isMiddlewareUserLand.has(middleware)) continue
-    const result = await getUniversal(middleware)(request, context, runtime)
-    if (result instanceof Response) {
-      if (answer) cancelReplacedBody(result, answer)
-      else answer = result
-    } else if (typeof result === 'function') responseFunctions.push(result)
-    else if (result) Object.assign(context, result)
-  }
-  if (answer) return applyResponseFunctions(answer)
-  if (responseFunctions.length > 0) return applyResponseFunctions
 }
 
 // What `vike(app, middlewares)` runs after the app's routes, looked up upon each request: the user-land universal

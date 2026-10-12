@@ -10,14 +10,17 @@ function onRenderHtml(
     params?: unknown
     req?: object
     res?: object
+    isAuth?: boolean
+    locale?: string
   },
 ) {
-  const { runtime, adapter, params, req, res } = pageContext
+  const { runtime, adapter, params, req, res, isAuth, locale } = pageContext
   return escapeInject`<!DOCTYPE html>
     <html>
       <body>
         <pre>${JSON.stringify({ runtime, adapter, params })}</pre>
         <p>req: ${String(req?.constructor.name)}, res: ${String(res?.constructor.name)}</p>
+        <p>isAuth: ${String(isAuth)}, locale: ${String(locale)}</p>
       </body>
     </html>`
 }

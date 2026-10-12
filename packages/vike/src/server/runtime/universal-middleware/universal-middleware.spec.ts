@@ -11,7 +11,7 @@ import {
   type UniversalMiddleware,
 } from '@universal-middleware/core'
 import { getMiddlewares_globalContext, type Middleware } from './core.js'
-import { applyNonHandlers } from './middlewaresProxy.js'
+import { pipeNonHandlers } from './middlewaresProxy.js'
 
 // Answers its path with a 401 and the request's URL
 const authAt = (path: string) =>
@@ -200,7 +200,7 @@ describe('getMiddlewares_globalContext()', () => {
   })
 })
 
-describe('applyNonHandlers()', () => {
+describe('pipeNonHandlers()', () => {
   it('cancels the body a response function replaces', async () => {
     let cancelled = false
     const body = new ReadableStream({
@@ -211,7 +211,7 @@ describe('applyNonHandlers()', () => {
     const stream = enhance(() => new Response(body), { name: 'stream' })
     const replace = enhance(() => () => new Response('Replaced'), { name: 'replace' })
     const middlewares = getMiddlewares_globalContext([replace, stream], '/')
-    const response = await applyNonHandlers(middlewares, [], new Request('http://localhost/'), {}, {} as RuntimeAdapter)
+    const response = await pipeNonHandlers(middlewares, [])(new Request('http://localhost/'), {}, {} as RuntimeAdapter)
     expect(await (response as Response).text()).toBe('Replaced')
     await vi.waitFor(() => expect(cancelled).toBe(true))
   })
@@ -230,9 +230,7 @@ describe('applyNonHandlers()', () => {
     url: string,
     middlewaresUserLand: UniversalMiddleware[],
   ) =>
-    applyNonHandlers(
-      getMiddlewares_globalContext(plusMiddlewares, '/'),
-      middlewaresUserLand,
+    pipeNonHandlers(getMiddlewares_globalContext(plusMiddlewares, '/'), middlewaresUserLand)(
       new Request(`http://localhost${url}`),
       {},
       {} as RuntimeAdapter,
@@ -245,6 +243,34 @@ describe('applyNonHandlers()', () => {
       r: Response,
     ) => Promise<Response>
     expect((await applyResponseFunctions(new Response('page'))).headers.get('x-app')).toBe('yes')
+  })
+
+  it('runs a user-land universal middleware on its path only', async () => {
+    const apiHeader = enhance(header('x-api'), { path: '/api/**', order: MiddlewareOrder.HEADER_MANAGEMENT })
+    const applyResponseFunctions = (await run([], '/api/me', [apiHeader])) as (r: Response) => Promise<Response>
+    expect((await applyResponseFunctions(new Response('me'))).headers.get('x-api')).toBe('yes')
+    expect(await run([], '/about', [apiHeader])).toBe(undefined)
+  })
+
+  it('merges a context a middleware returns into the context, for the middlewares after it and the caller', async () => {
+    const user = enhance(() => ({ user: 'alice' }), { name: 'user', order: MiddlewareOrder.AUTHENTICATION })
+    let seen: unknown
+    const app = enhance(
+      (_request: Request, context: Universal.Context) => {
+        seen = { ...context }
+      },
+      { name: 'app' },
+    )
+    const context: Universal.Context = { urlOriginal: '/' }
+    await pipeNonHandlers(getMiddlewares_globalContext([user], '/'), [app])(
+      new Request('http://localhost/'),
+      context,
+      {} as RuntimeAdapter,
+    )
+    expect([seen, context]).toEqual([
+      { urlOriginal: '/', user: 'alice' },
+      { urlOriginal: '/', user: 'alice' },
+    ])
   })
 
   it('runs the +middleware and the user-land universal middlewares by order, the +middleware first at equal order', async () => {

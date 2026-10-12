@@ -1,7 +1,6 @@
 export { getMiddlewares_globalContext }
 export { getMiddlewares_config }
 export { getMiddlewares_withErrorHandling }
-export { scopeToPath }
 export { vikePagesRoute }
 export type { Middleware }
 
@@ -144,19 +143,6 @@ function toPageContextJsonAnswer(answer: Awaited<ReturnType<UniversalMiddleware>
       replaced && (replaced.headers.get('content-type')?.includes('application/json') ? replaced : toReload(replaced))
     )
   }
-}
-
-// A middleware that isn't a handler, scoped to its `path` and `method` the way Universal Middleware's `apply()` scopes it
-function scopeToPath(middleware: UniversalMiddleware): UniversalMiddleware {
-  const path = getUniversalProp(middleware, pathSymbol)
-  if (!path) return middleware
-  const isMatch = createMatcher(path, getUniversalProp(middleware, methodSymbol))
-  const order = getUniversalProp(middleware, orderSymbol)
-  return enhance(
-    (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) =>
-      isMatch(request) ? getUniversal(middleware)(request, context, runtime) : undefined,
-    { ...(order !== undefined && { order }) },
-  )
 }
 
 async function renderPageServer_universal(

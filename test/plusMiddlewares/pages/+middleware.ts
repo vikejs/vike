@@ -30,6 +30,12 @@ const authUser = enhance(async (request: Request) => (request.headers.has('x-aut
   name: 'authUser',
   order: MiddlewareOrder.AUTHENTICATION,
 })
+// Adds to the context too: the page gets what both `authUser` and `locale` add
+const locale = enhance(
+  async (request: Request) =>
+    request.headers.has('x-locale') ? { locale: request.headers.get('x-locale') } : undefined,
+  { name: 'locale' },
+)
 // Ordered before `adminAuth`: its response function also applies to adminAuth's answer
 const adminHeader = enhance(
   async () => (response: Response) => {
@@ -87,6 +93,7 @@ export default [
   redirectMiddleware,
   adminAuth,
   authUser,
+  locale,
   adminHeader,
   lateAnswer,
   jsonAuth,
