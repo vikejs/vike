@@ -29,18 +29,8 @@ function middlewaresProxy_nonHandlers(middlewaresUserLand: object[]): UniversalM
   const nonHandlersUserLand = (middlewaresUserLand as UniversalMiddleware[]).filter(
     (middleware) => !isHandler(middleware),
   )
-  // The list changes only when the config does
-  const pipes = new WeakMap<Middleware[], UniversalMiddleware>()
   return enhance(
-    async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) => {
-      const list = await getMiddlewares_withErrorHandling()
-      let piped = pipes.get(list)
-      if (!piped) {
-        piped = pipeNonHandlers(list, nonHandlersUserLand)
-        pipes.set(list, piped)
-      }
-      return piped(request, context, runtime)
-    },
+    proxy((plusMiddlewares) => pipeNonHandlers(plusMiddlewares, nonHandlersUserLand)),
     { name: 'vike:middleware' },
   )
 }
@@ -82,26 +72,29 @@ function mergeContext(middleware: EnhancedMiddleware): UniversalMiddleware {
 // Vike's pages
 function middlewaresProxy_handlers(middlewaresUserLand: object[]): UniversalHandler {
   const handlersUserLand = (middlewaresUserLand as UniversalMiddleware[]).filter(isHandler)
-  // The list changes only when the config does
-  const routers = new WeakMap<Middleware[], UniversalHandler>()
+  const router = proxy((plusMiddlewares) =>
+    pipeRoute([...handlersUserLand, ...plusMiddlewares.filter((middleware) => middleware.isHandler)]),
+  )
   return enhance(
-    async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) => {
-      const list = await getMiddlewares_withErrorHandling()
-      let router = routers.get(list)
-      if (!router) {
-        router = pipeRoute([
-          ...handlersUserLand,
-          ...list.filter((middleware) => middleware.isHandler),
-        ]) as UniversalHandler
-        routers.set(list, router)
-      }
+    async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) =>
       // A method that no handler and no page answers (e.g. DELETE): what a server answers without a route for it
-      return (await router(request, context, runtime)) ?? new Response('Not Found', { status: 404 })
-    },
+      (await router(request, context, runtime)) ?? new Response('Not Found', { status: 404 }),
     {
       name: 'vike',
       method: ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'CONNECT', 'OPTIONS', 'TRACE', 'PATCH'],
       path: '/**',
     },
-  )
+  ) as UniversalHandler
+}
+
+// Runs what `build()` makes of `globalContext.middlewares`, looked up upon each request. The list changes only when the
+// config does, so `build()` runs once per list.
+function proxy(build: (plusMiddlewares: Middleware[]) => UniversalMiddleware): UniversalMiddleware {
+  const built = new WeakMap<Middleware[], UniversalMiddleware>()
+  return async (request, context, runtime) => {
+    const plusMiddlewares = await getMiddlewares_withErrorHandling()
+    let middleware = built.get(plusMiddlewares)
+    if (!middleware) built.set(plusMiddlewares, (middleware = build(plusMiddlewares)))
+    return middleware(request, context, runtime)
+  }
 }
