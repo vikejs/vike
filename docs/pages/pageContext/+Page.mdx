@@ -4,7 +4,7 @@ import { PropPageContext as Prop, ConfigSpec, TreeShaking } from '../../componen
 export const ServerOnlyNote = ({ prop, kind }) => (
   <blockquote>
     <p>
-      It's only available if you use <Link href="/server"><code>vike(app)</code></Link> with a server that exposes the HTTP {kind} object (e.g. Express, Fastify, or Hono — but not Cloudflare Workers). Otherwise, you can <Link href="#custom">define a custom <code>pageContext.{prop}</code> property</Link> yourself.
+      It's set by <Link href="/server"><code>vike(app)</code></Link> with a server that exposes the HTTP {kind} object (e.g. Express, Fastify, or Hono — but not Cloudflare Workers), and by <code>$ vike dev</code> and <code>$ vike preview</code>. Otherwise, you can <Link href="#custom">define a custom <code>pageContext.{prop}</code> property</Link> yourself.
     </p>
   </blockquote>
 )
@@ -12,7 +12,7 @@ export const ServerOnlyNote = ({ prop, kind }) => (
 export const AliasNote = ({ prop }) => (
   <blockquote>
     <p>
-      <code>pageContext.{prop}</code> is an alias of <Link href="#runtime" noWarning><code>pageContext.runtime.{prop}</code></Link>.
+      With <code>vike(app)</code>, <code>pageContext.{prop}</code> is an alias of <Link href="#runtime" noWarning><code>pageContext.runtime.{prop}</code></Link>.
     </p>
   </blockquote>
 )
