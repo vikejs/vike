@@ -50,14 +50,7 @@ function clean() {
     const prefix = '/@fs/'
     if (filePathAbsoluteUserRootDir.startsWith(prefix))
       filePathAbsoluteUserRootDir = filePathAbsoluteUserRootDir.slice(prefix.length)
-    // Virtual module, whose ID a Vite plugin resolves to \0virtual:some.css:
-    // ```js
-    // import 'virtual:some.css'
-    // ```
-    // Vite serves it at /@id/ with \0 written as __x00__:
-    // ```
-    // <link rel="stylesheet" type="text/css" href="/@id/__x00__virtual:some.css?direct">
-    // ```
+    // CSS virtual module
     const prefixId = '/@id/'
     if (filePathAbsoluteUserRootDir.startsWith(prefixId))
       filePathAbsoluteUserRootDir = filePathAbsoluteUserRootDir.slice(prefixId.length).replace('__x00__', '\0')
