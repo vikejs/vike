@@ -87,8 +87,8 @@ function middlewaresProxy_handlers(middlewaresUserLand: object[]): UniversalHand
   ) as UniversalHandler
 }
 
-// Runs what `build()` makes of `globalContext.middlewares`, looked up upon each request. The list changes only when the
-// config does, so `build()` runs once per list.
+// Runs what `build()` makes of the list `getMiddlewares_withErrorHandling()` returns upon each request. The list changes
+// only when the config does, so `build()` runs once per list.
 function proxy(build: (plusMiddlewares: Middleware[]) => UniversalMiddleware): UniversalMiddleware {
   const built = new WeakMap<Middleware[], UniversalMiddleware>()
   return async (request, context, runtime) => {
