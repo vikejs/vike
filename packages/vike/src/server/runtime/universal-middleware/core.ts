@@ -5,7 +5,6 @@ export type { Middleware }
 
 import {
   apply,
-  contextSymbol,
   enhance,
   getUniversal,
   getUniversalProp,
@@ -75,30 +74,16 @@ async function getMiddlewares_withErrorHandling(): Promise<Middleware[]> {
 function toMiddleware(plusMiddleware: EnhancedMiddleware, baseServer: string): Middleware {
   const path = getUniversalProp(plusMiddleware, pathSymbol)
   if (path) assertPath(plusMiddleware, path, baseServer)
-  const name = getUniversalProp(plusMiddleware, nameSymbol)
-  const method = getUniversalProp(plusMiddleware, methodSymbol)
-  const order = getUniversalProp(plusMiddleware, orderSymbol)
-  // The +middleware gets a marked copy of the runtime: its own renderPage() call renders if it passes the runtime on
-  const plusMiddlewareMarked = (
-    request: Request,
-    context: Universal.Context,
-    runtime: RuntimeAdapterTarget<unknown>,
-  ) => {
-    const runtimeMarked = { ...runtime, _isFromMiddlewares: true }
-    return getUniversal(plusMiddleware as UniversalMiddleware)(request, context, runtimeMarked)
-  }
   if (isHandler(plusMiddleware)) {
-    // A handler is a route of the server, which matches it: its path gets the Base URL
-    const handler = enhance(plusMiddlewareMarked, {
-      name,
-      method,
-      path: path && baseServer.replace(/\/$/, '') + path,
-      context: getUniversalProp(plusMiddleware, contextSymbol),
-      ...(order !== undefined && { order }),
-    })
+    // A handler is a route of the server, which matches it: its path gets the Base URL. (`enhance()` clones it, so that marking it `isHandler` leaves the extension's export untouched.)
+    const handler = enhance(
+      plusMiddleware as UniversalMiddleware,
+      path ? { path: baseServer.replace(/\/$/, '') + path } : {},
+    )
     return Object.assign(handler, { isHandler: true })
   }
-  const isMatch = path && getMatcher(path, method)
+  const order = getUniversalProp(plusMiddleware, orderSymbol)
+  const isMatch = path && getMatcher(path, getUniversalProp(plusMiddleware, methodSymbol))
   const middleware = enhance(
     async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) => {
       const { isPageContextJsonRequest, urlWithoutPageContextRequestSuffix } = handlePageContextRequestUrl(request.url)
@@ -106,7 +91,7 @@ function toMiddleware(plusMiddleware: EnhancedMiddleware, baseServer: string): M
         const { href, isBaseMissing } = parseUrl(urlWithoutPageContextRequestSuffix, baseServer)
         if (isBaseMissing || !isMatch(new Request(href, { method: request.method }))) return
       }
-      const answer = await plusMiddlewareMarked(request, context, runtime)
+      const answer = await getUniversal(plusMiddleware as UniversalMiddleware)(request, context, runtime)
       if (!isPageContextJsonRequest) return answer
       // The +middleware answered instead of the page
       if (answer instanceof Response) return toReload(answer)
@@ -120,7 +105,7 @@ function toMiddleware(plusMiddleware: EnhancedMiddleware, baseServer: string): M
         )
       }
     },
-    { name, ...(order !== undefined && { order }) },
+    { name: getUniversalProp(plusMiddleware, nameSymbol), ...(order !== undefined && { order }) },
   )
   return Object.assign(middleware, { isHandler: false })
 }
@@ -183,15 +168,17 @@ async function renderPageServer_universal(
   context: Universal.Context,
   runtime: RuntimeAdapterTarget<unknown>,
 ) {
-  const pageContext = await renderPageServer({
-    // Unless the context has it, e.g. `$ vike dev` passes the URL's path
-    urlOriginal: request.url,
-    ...context,
-    ...runtime,
-    runtime,
-    headersOriginal: request.headers,
-    _isFromMiddlewares: true,
-  })
+  const pageContext = await renderPageServer(
+    {
+      // Unless the context has it, e.g. `$ vike dev` passes the URL's path
+      urlOriginal: request.url,
+      ...context,
+      ...runtime,
+      runtime,
+      headersOriginal: request.headers,
+    },
+    false,
+  )
   const response = pageContext.httpResponse
   return new Response(response.getReadableWebStream(), {
     status: response.statusCode,

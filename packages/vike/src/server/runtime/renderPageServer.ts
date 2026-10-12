@@ -1,4 +1,5 @@
 export { renderPageServer }
+export { renderPageServer_userLand }
 export { getRequestTag }
 export type { PageContextInit }
 export type { PageContextBegin }
@@ -84,15 +85,23 @@ type PageContextAfterRender = PageContextCreatedServerWithoutGlobalContext & {
 } & Partial<PageContextInternalServer>
 type PageContextBegin = ReturnType<typeof getPageContextBegin>
 
+// The user's renderPage(): Vike can't tell whether the +middleware ran
+function renderPageServer_userLand<PageContextUserAdded extends {}, PageContextInitUser extends PageContextInit>(
+  pageContextInit: PageContextInitUser,
+) {
+  assertArguments(...arguments)
+  return renderPageServer<PageContextUserAdded, PageContextInitUser>(pageContextInit, true)
+}
+
 // `renderPageServer()` calls `renderPageServerNominal()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that Vike never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
 async function renderPageServer<PageContextUserAdded extends {}, PageContextInitUser extends PageContextInit>(
   pageContextInit: PageContextInitUser,
+  isCalledDirectlyByUser: boolean,
 ): Promise<
   // Partial because rendering may fail at any user hook.
   // - `.pageContext.json` requests may fail while still returning the HTTP response `JSON.stringify({ serverSideError: true })`.
   PageContextInitUser & { httpResponse: HttpResponse } & Partial<PageContextServer & PageContextUserAdded>
 > {
-  assertArguments(...arguments)
   assert(hasProp(pageContextInit, 'urlOriginal', 'string')) // assertUsage() already implemented at assertArguments()
   assertIsUrl(pageContextInit.urlOriginal)
   onSetupRuntime()
@@ -104,7 +113,8 @@ async function renderPageServer<PageContextUserAdded extends {}, PageContextInit
 
   const asyncLocalStorage = await getAsyncLocalStorage()
   const asyncStore: AsyncStore = !asyncLocalStorage ? null : { requestId }
-  const render = async () => await renderPageServerEntryOnceBegin(pageContextInit, requestId, asyncStore)
+  const render = async () =>
+    await renderPageServerEntryOnceBegin(pageContextInit, isCalledDirectlyByUser, requestId, asyncStore)
   const pageContextFinish = !asyncLocalStorage ? await render() : await asyncLocalStorage.run(asyncStore, render)
 
   logHttpResponse(urlOriginalPretty, pageContextFinish)
@@ -121,6 +131,7 @@ function getPageContextReturn(pageContextFinish: PageContextAfterRender) {
 
 async function renderPageServerEntryOnceBegin(
   pageContextInit: PageContextInit,
+  isCalledDirectlyByUser: boolean,
   requestId: number,
   asyncStore: AsyncStore,
 ): Promise<PageContextAfterRender> {
@@ -165,7 +176,7 @@ async function renderPageServerEntryOnceBegin(
   const pageContextBegin = getPageContextBegin(pageContextInit, globalContext, requestId, asyncStore)
 
   try {
-    assertMiddlewaresApplied(pageContextInit, globalContext)
+    assertMiddlewaresApplied(isCalledDirectlyByUser, globalContext)
   } catch (err) {
     logRuntimeError(err, pageContextBegin)
     return getPageContextHttpErrorFallback(err, pageContextBegin)
@@ -174,16 +185,11 @@ async function renderPageServerEntryOnceBegin(
   return renderPageServerEntryOnce(pageContextBegin, globalContext, requestId)
 }
 
-// Only `globalContext.middlewares` renders pages after the +middleware ran: its last entry, and a +middleware passing its runtime to renderPage()
-function assertMiddlewaresApplied(pageContextInit: PageContextInit, globalContext: GlobalContextServerInternal) {
+// Only `globalContext.middlewares` renders pages after the +middleware ran
+function assertMiddlewaresApplied(isCalledDirectlyByUser: boolean, globalContext: GlobalContextServerInternal) {
   const hasPlusMiddleware = globalContext.middlewares.length > 1
-  if (!hasPlusMiddleware) return
-  const { _isFromMiddlewares, runtime } = pageContextInit as {
-    _isFromMiddlewares?: true
-    runtime?: { _isFromMiddlewares?: true }
-  }
   assertUsage(
-    _isFromMiddlewares || runtime?._isFromMiddlewares,
+    !hasPlusMiddleware || !isCalledDirectlyByUser,
     `Your server doesn't apply your +middleware, see ${pc.underline('https://vike.dev/warning/setup-middlewares')}`,
   )
 }
