@@ -160,7 +160,7 @@ The fundamental difference is that:
 | HTTP response | Sent for you | Sent by you |
 | <Link href="/middleware">`+middleware`</Link> | Run for you, around your routes | Not run: apply <Link href="/middleware#manual-integration">`globalContext.middlewares`</Link> instead |
 
-> `vike(app)` and `renderPage()` are interchangeable: you can use either one, regardless of whether you use <Link href="/server">`+server.js`</Link>, <Link href="/serverEntry">`+serverEntry.js`</Link>, or run your server directly (e.g. `$ node server/index.js`). If your app has a `+middleware`, your server can't render pages with its own `renderPage()` call: use `vike(app)` or apply `globalContext.middlewares`, see <Link href="/warning/setup-middlewares" />.
+> `vike(app)` and `renderPage()` are interchangeable: you can use either one, regardless of whether you use <Link href="/server">`+server.js`</Link>, <Link href="/serverEntry">`+serverEntry.js`</Link>, or run your server directly (e.g. `$ node server/index.js`). If your app has a `+middleware`, your server can't render pages with its own `renderPage()` call, see <Link href="/warning/setup-middlewares" />.
 
 > See also:
 > - <Link href="/server" />
