@@ -151,7 +151,7 @@ async function renderPageServer_universal(
   runtime: RuntimeAdapterTarget<unknown>,
 ) {
   const pageContextInit = {
-    urlOriginal: request.url, // let context override it, e.g. `$ vike dev` passes the URL's path
+    urlOriginal: request.url, // let `context` override it, e.g. `$ vike dev` passes the URL's path
     runtime,
     req: 'req' in runtime ? runtime.req : null,
     res: 'res' in runtime ? runtime.res : null,
