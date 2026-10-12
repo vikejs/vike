@@ -172,11 +172,12 @@ async function renderPageServer_universal(
       // Unless the context has it, e.g. `$ vike dev` passes the URL's path
       urlOriginal: request.url,
       ...context,
-      // Not the runtime that Vike's own server creates: it isn't a server's
-      ...(runtime.adapter !== 'other' && {
-        runtime,
-        ...('req' in runtime && { req: runtime.req, res: runtime.res }),
-      }),
+      // Only a server's runtime: not the 'other' one Vike's own server creates, nor a Cloudflare worker's ExecutionContext
+      ...(runtime.adapter &&
+        runtime.adapter !== 'other' && {
+          runtime,
+          ...('req' in runtime && { req: runtime.req, res: runtime.res }),
+        }),
       headersOriginal: request.headers,
     },
     false,
