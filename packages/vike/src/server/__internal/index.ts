@@ -3,9 +3,9 @@ export { setGlobalContext_prodBuildEntry } from '../runtime/globalContext.js'
 
 // Used by the vike(app) of the @vikejs/* server adapters
 export {
-  middlewaresProxy_nonHandlers,
-  middlewaresProxy_handlers,
-} from '../runtime/universal-middleware/middlewaresProxy.js'
+  middlewaresPipe_nonHandlers,
+  middlewaresPipe_handlers,
+} from '../runtime/universal-middleware/middlewaresPipe.js'
 
 // Used by vite-plugin-vercel
 export { route, getPagesAndRoutes }

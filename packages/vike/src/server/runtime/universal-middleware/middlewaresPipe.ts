@@ -1,5 +1,5 @@
-export { middlewaresProxy_nonHandlers }
-export { middlewaresProxy_handlers }
+export { middlewaresPipe_nonHandlers }
+export { middlewaresPipe_handlers }
 export { pipeNonHandlers }
 
 import {
@@ -25,7 +25,7 @@ import '../../assertEnvServer.js'
 // middlewares that aren't handlers, as one middleware (looked up upon each request).
 // `object[]`: the user-land universal middlewares can come from another copy of @universal-middleware/core, whose types
 // (keyed by a `unique symbol`) never match this copy's.
-function middlewaresProxy_nonHandlers(middlewaresUserLand: object[]): UniversalMiddleware {
+function middlewaresPipe_nonHandlers(middlewaresUserLand: object[]): UniversalMiddleware {
   const nonHandlersUserLand = (middlewaresUserLand as UniversalMiddleware[]).filter(
     (middleware) => !isHandler(middleware),
   )
@@ -70,7 +70,7 @@ function mergeContext(middleware: EnhancedMiddleware): UniversalMiddleware {
 // What `vike(app, middlewares)` runs after the app's routes, looked up upon each request: the user-land universal
 // middlewares that are handlers (the first one registered on a path answers), the +middleware that are handlers, then
 // Vike's pages
-function middlewaresProxy_handlers(middlewaresUserLand: object[]): UniversalHandler {
+function middlewaresPipe_handlers(middlewaresUserLand: object[]): UniversalHandler {
   const handlersUserLand = (middlewaresUserLand as UniversalMiddleware[]).filter(isHandler)
   const router = proxy((middlewares) =>
     pipeRoute([...handlersUserLand, ...middlewares.filter((middleware) => middleware.isHandler)]),

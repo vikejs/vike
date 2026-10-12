@@ -1,13 +1,13 @@
 export { vikeUniversalMiddleware }
 
 import { enhance, getAdapterRuntime, type RuntimeAdapterTarget } from '@universal-middleware/core'
-import { middlewaresProxy_handlers, middlewaresProxy_nonHandlers } from './middlewaresProxy.js'
+import { middlewaresPipe_handlers, middlewaresPipe_nonHandlers } from './middlewaresPipe.js'
 import { vikePagesRoute } from './core.js'
 import '../../assertEnvServer.js'
 
 // Vike's own server has no user-land universal middlewares
-const nonHandlers = middlewaresProxy_nonHandlers([])
-const handlersAndPages = middlewaresProxy_handlers([])
+const nonHandlers = middlewaresPipe_nonHandlers([])
+const handlersAndPages = middlewaresPipe_handlers([])
 
 // Vike's own server (`vike/fetch`, `$ vike dev` and `$ vike preview`): the two halves that `vike(app)` applies, in a row
 async function handler(
