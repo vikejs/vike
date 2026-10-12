@@ -7,7 +7,7 @@
     "preview:base": "cross-env BASE=/app/ vike build && cross-env BASE=/app/ vike preview"
   },
   "dependencies": {
-    "@universal-middleware/core": "^0.6.1",
+    "@universal-middleware/core": "^0.6.2",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "vike": "0.4.267"
