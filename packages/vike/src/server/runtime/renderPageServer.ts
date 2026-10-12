@@ -115,7 +115,7 @@ async function renderPageServer<PageContextUserAdded extends {}, PageContextInit
   const asyncLocalStorage = await getAsyncLocalStorage()
   const asyncStore: AsyncStore = !asyncLocalStorage ? null : { requestId }
   const render = async () =>
-    await renderPageServerEntryOnceBegin(pageContextInit, isCalledDirectlyByUser, requestId, asyncStore)
+    await renderPageServerEntryOnce(pageContextInit, isCalledDirectlyByUser, requestId, asyncStore)
   const pageContextFinish = !asyncLocalStorage ? await render() : await asyncLocalStorage.run(asyncStore, render)
 
   logHttpResponse(urlOriginalPretty, pageContextFinish)
@@ -130,7 +130,7 @@ function getPageContextReturn(pageContextFinish: PageContextAfterRender) {
   return getPageContextPublicServer(pageContextFinish)
 }
 
-async function renderPageServerEntryOnceBegin(
+async function renderPageServerEntryOnce(
   pageContextInit: PageContextInit,
   isCalledDirectlyByUser: boolean,
   requestId: number,
