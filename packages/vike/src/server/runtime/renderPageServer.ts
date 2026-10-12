@@ -178,9 +178,8 @@ async function renderPageServerEntryOnceBegin(
 
   // Only `globalContext.middlewares` renders pages after the +middleware ran:
   try {
-    const hasPlusMiddleware = getMiddlewares_config(globalContext.config).length > 0
     assertUsage(
-      !hasPlusMiddleware || !isCalledDirectlyByUser,
+      !isCalledDirectlyByUser || getMiddlewares_config(globalContext.config).length === 0,
       `renderPage() doesn't run your +middleware, see ${pc.underline('https://vike.dev/warning/setup-middlewares')}`,
     )
   } catch (err) {
