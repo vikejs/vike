@@ -1,7 +1,6 @@
 export { getMiddlewares_globalContext }
 export { getMiddlewares_withErrorHandling }
 export { getRuntime_vikeServer }
-export { renderPageServer_universal }
 export { scopeToPath }
 export type { Middleware }
 
