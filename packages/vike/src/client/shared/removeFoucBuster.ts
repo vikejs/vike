@@ -50,6 +50,10 @@ function clean() {
     const prefix = '/@fs/'
     if (filePathAbsoluteUserRootDir.startsWith(prefix))
       filePathAbsoluteUserRootDir = filePathAbsoluteUserRootDir.slice(prefix.length)
+    // Virtual module (see retrievePageAssetsDev.ts): /@id/__x00__virtual:some.css => \0virtual:some.css
+    const prefixId = '/@id/'
+    if (filePathAbsoluteUserRootDir.startsWith(prefixId))
+      filePathAbsoluteUserRootDir = filePathAbsoluteUserRootDir.slice(prefixId.length).replace('__x00__', '\0')
     if (
       injectedByVite.some((filePathAbsoluteFilesystem) =>
         filePathAbsoluteFilesystem.endsWith(filePathAbsoluteUserRootDir),

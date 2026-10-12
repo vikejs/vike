@@ -19,7 +19,7 @@ export default {
     //*/
     target: 'esnext',
   },
-  plugins: [react(), testPlugin() as any, vike()],
+  plugins: [react(), testPlugin() as any, virtualCss(), vike()],
   // Simulate the real-world config users get (in this monorepo Vike is linked thus ssr.noExternal which isn't what users get)
   ssr: { external: ['vike'] },
   clearScreen: false,
@@ -45,6 +45,20 @@ async function testPlugin(): Promise<PluginOption> {
   }
 }
 type Vike = ReturnType<typeof getVikeConfig>
+
+// TEST: virtual CSS module (imported by pages/about-page/Page.jsx)
+function virtualCss(): PluginOption {
+  return {
+    name: 'virtualCss',
+    resolveId(id) {
+      if (id === 'virtual:test.css') return '\0virtual:test.css'
+    },
+    load(id) {
+      // The <link> injected by Vike loads it as \0virtual:test.css?direct
+      if (id.split('?')[0] === '\0virtual:test.css') return '#virtual-css-test { color: rgb(0, 128, 0); }'
+    },
+  }
+}
 
 // TEST: getVikeConfig()
 function testVikeConfig(vike: Vike) {

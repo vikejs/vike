@@ -14,6 +14,7 @@ import {
   testOnCreateGlobalContext,
   testRedirectMailto,
   testHeadersResponse,
+  testFoucBuster,
 } from './pages/e2e-test'
 
 import { testSettingsInheritance } from './pages/about-page/e2e-test'
@@ -56,6 +57,7 @@ function testRun(
   testHooksCalled()
   testGuardClientOnly()
   testHeadersResponse()
+  testFoucBuster(isDev)
   testHMRPlusValueFile(isDev)
   testSettingOnlyAvailableInCorrectEnv()
   testSettingInheritedByDescendants()
