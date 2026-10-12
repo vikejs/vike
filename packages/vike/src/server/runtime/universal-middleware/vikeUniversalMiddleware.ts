@@ -27,5 +27,4 @@ const vikeUniversalMiddleware = enhance(handler, {
   name: 'vike',
   method: ['GET', 'POST', 'PUT', 'PATCH', 'HEAD', 'OPTIONS'],
   path: '/**',
-  immutable: true,
 })

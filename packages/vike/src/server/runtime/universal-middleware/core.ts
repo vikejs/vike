@@ -38,7 +38,6 @@ const renderPageServer_universalMiddleware: Middleware = Object.assign(
     name: 'vike',
     method: ['GET', 'POST', 'PUT', 'PATCH', 'HEAD', 'OPTIONS'],
     path: '/**',
-    immutable: true,
   }),
   { isHandler: true },
 )
