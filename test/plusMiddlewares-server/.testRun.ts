@@ -59,7 +59,7 @@ function testRun(cmd: Cmd, options?: { serverIsReadyMessage: string }) {
 
   test("The app's own renderPage() call gets a 500, as the +middleware may not have run", async () => {
     expect((await fetch(`${getServerUrl()}/render-page`)).status).toBe(500)
-    expectLog("Your server doesn't apply your +middleware, see https://vike.dev/warning/setup-middlewares", {
+    expectLog("renderPage() doesn't run your +middleware, see https://vike.dev/warning/setup-middlewares", {
       filter: (log) => log.logSource === 'stderr',
     })
   })
@@ -67,7 +67,7 @@ function testRun(cmd: Cmd, options?: { serverIsReadyMessage: string }) {
   test("A +middleware's own renderPage() call gets a 500", async () => {
     const response: Response = await fetch(`${getServerUrl()}/`, { headers: { 'x-render': '1' } })
     expect(response.status).toBe(500)
-    expectLog("Your server doesn't apply your +middleware, see https://vike.dev/warning/setup-middlewares", {
+    expectLog("renderPage() doesn't run your +middleware, see https://vike.dev/warning/setup-middlewares", {
       filter: (log) => log.logSource === 'stderr',
     })
   })

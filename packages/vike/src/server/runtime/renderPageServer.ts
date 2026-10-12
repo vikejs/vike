@@ -190,7 +190,7 @@ function assertMiddlewaresApplied(isCalledDirectlyByUser: boolean, globalContext
   const hasPlusMiddleware = globalContext.middlewares.length > 1
   assertUsage(
     !hasPlusMiddleware || !isCalledDirectlyByUser,
-    `Your server doesn't apply your +middleware, see ${pc.underline('https://vike.dev/warning/setup-middlewares')}`,
+    `renderPage() doesn't run your +middleware, see ${pc.underline('https://vike.dev/warning/setup-middlewares')}`,
   )
 }
 

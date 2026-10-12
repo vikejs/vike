@@ -1,7 +1,7 @@
 import { Link } from '@brillout/docpress'
 
 ```
-[vike][Wrong Usage] Your server doesn't apply your +middleware, see https://vike.dev/warning/setup-middlewares
+[vike][Wrong Usage] renderPage() doesn't run your +middleware, see https://vike.dev/warning/setup-middlewares
 ```
 
 This error means that your app has a <Link href="/middleware">`+middleware`</Link> but your server renders pages by calling <Link href="/renderPage">`renderPage()`</Link> itself. Vike can't tell whether your `+middleware` ran (e.g. an authentication `+middleware`), so it answers with a `500` instead of rendering the page.
