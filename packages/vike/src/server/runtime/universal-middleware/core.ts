@@ -6,7 +6,7 @@ export { vikePagesRoute }
 export type { Middleware }
 
 import {
-  apply,
+  createMatcher,
   enhance,
   getUniversal,
   getUniversalProp,
@@ -16,18 +16,16 @@ import {
   pathSymbol,
   nameSymbol,
   type EnhancedMiddleware,
-  type HttpMethod,
   type RuntimeAdapterTarget,
   type UniversalMiddleware,
   type UniversalOptionsArg,
-  type UniversalRouterInterface,
 } from '@universal-middleware/core'
 import { parseUrl } from '../../../utils/parseUrl.js'
 import { handlePageContextRequestUrl } from '../renderPageServer/handlePageContextRequestUrl.js'
 import { renderPageServer } from '../renderPageServer.js'
 import { getGlobalContextServerInternal, initGlobalContext_renderPage } from '../globalContext.js'
 import { getVikeConfigError } from '../../../shared-server-node/getVikeConfigError.js'
-import { assert, assertWarning } from '../../../utils/assert.js'
+import { assertWarning } from '../../../utils/assert.js'
 import type { ConfigResolved } from '../../../types/Config/ConfigResolved.js'
 import '../../assertEnvServer.js'
 
@@ -143,39 +141,17 @@ function toPageContextJsonAnswer(answer: Awaited<ReturnType<UniversalMiddleware>
   }
 }
 
-// Universal Middleware's `apply()` scopes a middleware that isn't a handler to its `path` and `method`: a router that only
-// records it gives that scoped middleware back
+// A middleware that isn't a handler, scoped to its `path` and `method` the way Universal Middleware's `apply()` scopes it
 function scopeToPath(middleware: UniversalMiddleware): UniversalMiddleware {
-  let scoped: UniversalMiddleware | undefined
-  const router: UniversalRouterInterface = {
-    use(m) {
-      scoped = getUniversal(m as UniversalMiddleware)
-      return this
-    },
-    route() {
-      return this
-    },
-    applyCatchAll() {
-      return this
-    },
-  }
-  apply(router, [middleware])
-  assert(scoped)
-  return scoped
-}
-
-// The `path` and `method` check that `scopeToPath()` wraps a middleware with
-// TODO: use createMatcher() from @universal-middleware/core once magne4000/universal-middleware#438 is released
-function createMatcher(path: string, method?: HttpMethod | HttpMethod[]): (request: Request) => boolean {
-  const matched = {}
-  // A non-zero order: `apply()` scopes it to its path, rather than routing it as a handler
-  const scoped = scopeToPath(enhance(() => matched, { path, method, order: 1 }))
-  return (request) => {
-    const result = scoped(request, {}, {} as RuntimeAdapterTarget<unknown>)
-    // The check is synchronous: any other result (e.g. a Promise) would silently skip every middleware with a path
-    assert(result === matched || result === undefined)
-    return result === matched
-  }
+  const path = getUniversalProp(middleware, pathSymbol)
+  if (!path) return middleware
+  const isMatch = createMatcher(path, getUniversalProp(middleware, methodSymbol))
+  const order = getUniversalProp(middleware, orderSymbol)
+  return enhance(
+    (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) =>
+      isMatch(request) ? getUniversal(middleware)(request, context, runtime) : undefined,
+    { ...(order !== undefined && { order }) },
+  )
 }
 
 async function renderPageServer_universal(

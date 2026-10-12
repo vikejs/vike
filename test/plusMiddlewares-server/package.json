@@ -7,8 +7,8 @@
     "preview:halves": "vike build && cross-env MIDDLEWARES=halves vike preview"
   },
   "dependencies": {
-    "@universal-middleware/core": "^0.6.2",
-    "@universal-middleware/hono": "^0.5.2",
+    "@universal-middleware/core": "^0.7.0",
+    "@universal-middleware/hono": "^0.6.0",
     "hono": "^4.13.13",
     "vike": "0.4.267"
   },
