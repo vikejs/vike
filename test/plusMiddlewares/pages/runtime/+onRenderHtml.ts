@@ -18,7 +18,7 @@ function onRenderHtml(
   return escapeInject`<!DOCTYPE html>
     <html>
       <body>
-        <pre>${JSON.stringify({ runtime, adapter, params })}</pre>
+        <pre>${JSON.stringify({ runtime: (runtime as { adapter?: string } | undefined)?.adapter, adapter, params })}</pre>
         <p>req: ${String(req?.constructor.name)}, res: ${String(res?.constructor.name)}</p>
         <p>isAuth: ${String(isAuth)}, locale: ${String(locale)}</p>
       </body>

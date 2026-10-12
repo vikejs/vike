@@ -10,7 +10,7 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     sleepBeforeAboutPage: 300,
   })
 
-  test("The worker's ExecutionContext isn't a server's runtime: the page gets no runtime, req or res", async () => {
-    expect(await fetchHtml('/runtime')).toContain('runtime: false, req: false, res: false')
+  test("The page gets the worker's ExecutionContext as its runtime, and req and res as null", async () => {
+    expect(await fetchHtml('/runtime')).toContain('runtime: true, req: null, res: null')
   })
 }

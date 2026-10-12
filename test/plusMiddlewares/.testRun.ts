@@ -65,9 +65,9 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     expect(response.headers.get('Location')).toBe('/portal')
   })
 
-  test("Vike's own server gives the page no runtime, but Node.js's req and res", async () => {
+  test("Vike's own server gives the page its 'other' runtime, and Node.js's req and res", async () => {
     const html = await fetchHtml('/runtime')
-    expect(html).toContain('<pre>{}</pre>')
+    expect(html).toContain('<pre>{&quot;runtime&quot;:&quot;other&quot;}</pre>')
     expect(html).toContain('req: IncomingMessage, res: ServerResponse')
   })
 
