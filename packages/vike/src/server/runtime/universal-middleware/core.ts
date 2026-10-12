@@ -42,22 +42,22 @@ const vikePagesRoute = {
 } satisfies UniversalOptionsArg
 
 // Vike's pages, after everything else
-const renderPageServer_universalMiddleware: Middleware = Object.assign(
-  enhance(renderPageServer_universal, vikePagesRoute),
-  { isHandler: true },
-)
+const renderPageServer_universalMiddleware = enhance(renderPageServer_universal, vikePagesRoute)
 
 // Upon an invalid config: Vike's pages answer every request with the error, so that the app's routes don't run without the +middleware
-const middlewaresConfigError: Middleware[] = [
-  Object.assign(enhance(renderPageServer_universal, { name: 'vike' }), { isHandler: false }),
-]
+const middlewaresConfigError = [enhance(renderPageServer_universal, { name: 'vike' })].map(withIsHandler)
 
 // `globalContext.middlewares`: every `+middleware`, then Vike's built-in middleware
 function getMiddlewares_globalContext(plusMiddlewares: EnhancedMiddleware[], baseServer: string): Middleware[] {
   return [
     ...plusMiddlewares.map((plusMiddleware) => toMiddleware(plusMiddleware, baseServer)),
     renderPageServer_universalMiddleware,
-  ]
+  ].map(withIsHandler)
+}
+
+// Marks a middleware the way Universal Middleware's own `apply()` classifies it
+function withIsHandler(middleware: EnhancedMiddleware): Middleware {
+  return Object.assign(middleware, { isHandler: isHandler(middleware) })
 }
 
 // Every `+middleware` of the config
@@ -80,20 +80,16 @@ async function getMiddlewares_withErrorHandling(): Promise<Middleware[]> {
 }
 
 // A +middleware as an element of `globalContext.middlewares`. A `path` is matched against the page's URL, the way Vike routes pages: without the Base URL, and with a `.pageContext.json` request standing for its page.
-function toMiddleware(plusMiddleware: EnhancedMiddleware, baseServer: string): Middleware {
+function toMiddleware(plusMiddleware: EnhancedMiddleware, baseServer: string): EnhancedMiddleware {
   const path = getUniversalProp(plusMiddleware, pathSymbol)
   if (path) assertPath(plusMiddleware, path, baseServer)
   if (isHandler(plusMiddleware)) {
     // A handler is a route of the server, which matches it: its path gets the Base URL. (`enhance()` clones it, so that marking it `isHandler` leaves the extension's export untouched.)
-    const handler = enhance(
-      plusMiddleware as UniversalMiddleware,
-      path ? { path: baseServer.replace(/\/$/, '') + path } : {},
-    )
-    return Object.assign(handler, { isHandler: true })
+    return enhance(plusMiddleware as UniversalMiddleware, path ? { path: baseServer.replace(/\/$/, '') + path } : {})
   }
   const order = getUniversalProp(plusMiddleware, orderSymbol)
   const isMatch = path && createMatcher(path, getUniversalProp(plusMiddleware, methodSymbol))
-  const middleware = enhance(
+  return enhance(
     async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) => {
       const { isPageContextJsonRequest, urlWithoutPageContextRequestSuffix } = handlePageContextRequestUrl(request.url)
       if (isMatch) {
@@ -110,7 +106,6 @@ function toMiddleware(plusMiddleware: EnhancedMiddleware, baseServer: string): M
       ...(order !== undefined && { order }),
     },
   )
-  return Object.assign(middleware, { isHandler: false })
 }
 
 // Warns about a path that starts with the Base URL: a `path` is relative to it
