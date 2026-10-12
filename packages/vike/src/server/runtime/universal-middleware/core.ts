@@ -151,13 +151,12 @@ async function renderPageServer_universal(
   runtime: RuntimeAdapterTarget<unknown>,
 ) {
   const pageContextInit = {
-    // Unless the context has it, e.g. `$ vike dev` passes the URL's path
-    urlOriginal: request.url,
-    ...context,
-    // Only a server's runtime: not the 'other' one Vike's own server creates, nor a Cloudflare worker's ExecutionContext
-    ...(runtime.adapter && runtime.adapter !== 'other' && { runtime }),
-    ...('req' in runtime && { req: runtime.req, res: runtime.res }),
+    urlOriginal: request.url, // let context override it, e.g. `$ vike dev` passes the URL's path
+    runtime,
+    req: 'req' in runtime ? runtime.req : null,
+    res: 'res' in runtime ? runtime.res : null,
     headersOriginal: request.headers,
+    ...context,
   }
   addUserAgent_deprecated(pageContextInit, request, runtime)
   const pageContext = await renderPageServer(pageContextInit, false)
