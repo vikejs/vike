@@ -174,12 +174,12 @@ async function renderPageServerEntryOnceBegin(
   }
   const { globalContext } = await getGlobalContextServerInternal()
 
-  const pageContextBegin = getPageContextBegin(pageContextInit, globalContext, requestId, asyncStore)
-
   assertUsage(
     !isCalledDirectlyByUser || !hasPlusMiddlewares(globalContext),
     `renderPage() doesn't run your +middleware, see ${pc.underline('https://vike.dev/warning/setup-middlewares')}`,
   )
+
+  const pageContextBegin = getPageContextBegin(pageContextInit, globalContext, requestId, asyncStore)
 
   // Check Base URL
   {
