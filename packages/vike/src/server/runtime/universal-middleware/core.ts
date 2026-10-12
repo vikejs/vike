@@ -155,6 +155,16 @@ async function renderPageServer_universal(
     ...('req' in runtime && { req: runtime.req, res: runtime.res }),
     headersOriginal: request.headers,
   }
+  addUserAgent_deprecated(pageContextInit, request, runtime)
+  const pageContext = await renderPageServer(pageContextInit, false)
+  const response = pageContext.httpResponse
+  return new Response(response.getReadableWebStream(), {
+    status: response.statusCode,
+    headers: response.headers,
+  })
+}
+
+function addUserAgent_deprecated(pageContextInit: object, request: Request, runtime: RuntimeAdapterTarget<unknown>) {
   // `$ vike dev` and `$ vike preview`
   if (runtime.adapter === 'other' && 'req' in runtime) {
     Object.defineProperty(pageContextInit, 'userAgent', {
@@ -175,10 +185,4 @@ async function renderPageServer_universal(
       enumerable: false,
     })
   }
-  const pageContext = await renderPageServer(pageContextInit, false)
-  const response = pageContext.httpResponse
-  return new Response(response.getReadableWebStream(), {
-    status: response.statusCode,
-    headers: response.headers,
-  })
 }
