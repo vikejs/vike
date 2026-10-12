@@ -66,7 +66,7 @@ function getMiddlewares_config(globalContext: { config: ConfigResolved }): Enhan
 }
 // Does a +middleware exist?
 function hasPlusMiddlewares(globalContext: { config: ConfigResolved }) {
-  return getMiddlewares_config(globalContext).length === 0
+  return getMiddlewares_config(globalContext).length > 0
 }
 
 // `globalContext.middlewares`, or `middlewaresConfigError` upon an invalid config
