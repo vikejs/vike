@@ -64,16 +64,12 @@ function testRun(cmd: Cmd, options?: { serverIsReadyMessage: string }) {
     })
   })
 
-  test('A +middleware that passes its runtime to renderPage() renders the page', async () => {
+  test("A +middleware's own renderPage() call gets a 500", async () => {
     const response: Response = await fetch(`${getServerUrl()}/`, { headers: { 'x-render': '1' } })
-    expect(response.status).toBe(200)
-    expect(await response.text()).toContain('Rendered by Vike')
-  })
-
-  test('A +middleware handler that passes its runtime to renderPage() renders the page', async () => {
-    const response: Response = await fetch(`${getServerUrl()}/rendering-handler`)
-    expect(response.status).toBe(200)
-    expect(await response.text()).toContain('Rendered by Vike')
+    expect(response.status).toBe(500)
+    expectLog("Your server doesn't apply your +middleware, see https://vike.dev/warning/setup-middlewares", {
+      filter: (log) => log.logSource === 'stderr',
+    })
   })
 
   if (cmd === 'pnpm run dev:halves' || cmd === 'pnpm run preview:halves') {

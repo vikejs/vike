@@ -1,4 +1,4 @@
-import { enhance, MiddlewareOrder, type RuntimeAdapterTarget } from '@universal-middleware/core'
+import { enhance, MiddlewareOrder } from '@universal-middleware/core'
 import { renderPage } from 'vike/server'
 
 // Middlewares: they run before the app's own routes. `auth`, listed first, runs after `user` (by `order`) and reads the context it adds.
@@ -32,22 +32,14 @@ const overridden = enhance(() => new Response('Answered by +middleware'), {
   method: 'GET',
 })
 
-// A +middleware that renders the page itself (e.g. a server action), passing on its runtime
+// A +middleware that renders the page itself (e.g. a server action)
 const rendering = enhance(
-  async (request: Request, _context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) => {
+  async (request: Request) => {
     if (!request.headers.has('x-render')) return
-    const { httpResponse } = await renderPage({ ...runtime, urlOriginal: request.url })
+    const { httpResponse } = await renderPage({ urlOriginal: request.url })
     return new Response(httpResponse.body, { status: httpResponse.statusCode, headers: httpResponse.headers })
   },
   { name: 'rendering' },
 )
-// A handler that renders the page /, passing on its runtime
-const renderingHandler = enhance(
-  async (request: Request, _context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) => {
-    const { httpResponse } = await renderPage({ urlOriginal: new URL('/', request.url).href, runtime })
-    return new Response(httpResponse.body, { status: httpResponse.statusCode, headers: httpResponse.headers })
-  },
-  { name: 'renderingHandler', path: '/rendering-handler', method: 'GET' },
-)
 
-export default [auth, user, counter, hello, overridden, rendering, renderingHandler]
+export default [auth, user, counter, hello, overridden, rendering]
