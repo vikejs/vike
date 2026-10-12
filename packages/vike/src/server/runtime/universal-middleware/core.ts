@@ -61,8 +61,8 @@ function withIsHandler(middleware: EnhancedMiddleware): Middleware {
 }
 
 // Every `+middleware` of the config
-function getMiddlewares_config(config: ConfigResolved): EnhancedMiddleware[] {
-  return (config.middleware ?? []).flat()
+function getMiddlewares_config(globalContext: { config: ConfigResolved }): EnhancedMiddleware[] {
+  return (globalContext.config.middleware ?? []).flat()
 }
 
 // `globalContext.middlewares`, or `middlewaresConfigError` upon an invalid config

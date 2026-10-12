@@ -704,7 +704,7 @@ async function addGlobalContextAsync(globalContext: GlobalContextBase) {
      *
      * https://vike.dev/globalContext#middlewares
      */
-    middlewares: getMiddlewares_globalContext(getMiddlewares_config(globalContext.config), baseServer),
+    middlewares: getMiddlewares_globalContext(getMiddlewares_config(globalContext), baseServer),
   }
 }
 
