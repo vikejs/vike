@@ -59,10 +59,10 @@ function middlewaresPipe_nonHandlers(middlewaresUserLand: object[]): UniversalMi
 // equal order, each on its path. The first Response answers: the +middleware after it don't run, and the user-land
 // universal middlewares after it run for their response functions, a Response they return being ignored. The response
 // functions apply to the final response, in their order.
-function pipeNonHandlers(middlewares: Middleware[], middlewaresUserLand: UniversalMiddleware[]) {
+function pipeNonHandlers(middlewares: Middleware[], nonHandlersUserLand: UniversalMiddleware[]) {
   const nonHandlers = [
     ...middlewares.filter((middleware) => !middleware.isHandler),
-    ...middlewaresUserLand.map((middleware) => enhance(middleware, { runs: 'always' })),
+    ...nonHandlersUserLand.map((middleware) => enhance(middleware, { runs: 'always' })),
   ]
   return pipeRoute(nonHandlers.map(mergeContext)) as UniversalMiddleware
 }
