@@ -30,7 +30,7 @@ function middlewaresPipe_nonHandlers(middlewaresUserLand: object[]): UniversalMi
     (middleware) => !isHandler(middleware),
   )
   return enhance(
-    proxy((middlewares) => pipeNonHandlers(middlewares, nonHandlersUserLand)),
+    pipe((middlewares) => pipeNonHandlers(middlewares, nonHandlersUserLand)),
     { name: 'vike:middleware' },
   )
 }
@@ -72,7 +72,7 @@ function mergeContext(middleware: EnhancedMiddleware): UniversalMiddleware {
 // Vike's pages
 function middlewaresPipe_handlers(middlewaresUserLand: object[]): UniversalHandler {
   const handlersUserLand = (middlewaresUserLand as UniversalMiddleware[]).filter(isHandler)
-  const router = proxy((middlewares) =>
+  const router = pipe((middlewares) =>
     pipeRoute([...handlersUserLand, ...middlewares.filter((middleware) => middleware.isHandler)]),
   )
   return enhance(
@@ -89,12 +89,12 @@ function middlewaresPipe_handlers(middlewaresUserLand: object[]): UniversalHandl
 
 // Runs what `build()` makes of the list `getMiddlewares_withErrorHandling()` returns upon each request. The list changes
 // only when the config does, so `build()` runs once per list.
-function proxy(build: (middlewares: Middleware[]) => UniversalMiddleware): UniversalMiddleware {
-  const built = new WeakMap<Middleware[], UniversalMiddleware>()
+function pipe(build: (middlewares: Middleware[]) => UniversalMiddleware): UniversalMiddleware {
+  const cache = new WeakMap<Middleware[], UniversalMiddleware>()
   return async (request, context, runtime) => {
     const middlewares = await getMiddlewares_withErrorHandling()
-    let pipe = built.get(middlewares)
-    if (!pipe) built.set(middlewares, (pipe = build(middlewares)))
-    return pipe(request, context, runtime)
+    let ret = cache.get(middlewares)
+    if (!ret) cache.set(middlewares, (ret = build(middlewares)))
+    return ret(request, context, runtime)
   }
 }
