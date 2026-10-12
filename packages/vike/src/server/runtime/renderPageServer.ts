@@ -86,7 +86,7 @@ type PageContextAfterRender = PageContextCreatedServerWithoutGlobalContext & {
 } & Partial<PageContextInternalServer>
 type PageContextBegin = ReturnType<typeof getPageContextBegin>
 
-// The user's renderPage(): Vike can't tell whether the +middleware ran
+// The user's renderPage()
 function renderPageServer_userLand<PageContextUserAdded extends {}, PageContextInitUser extends PageContextInit>(
   pageContextInit: PageContextInitUser,
 ) {
