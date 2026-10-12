@@ -47,7 +47,7 @@ const renderPageServer_universalMiddleware = enhance(renderPageServer_universal,
 // Upon an invalid config: Vike's pages answer every request with the error, so that the app's routes don't run without the +middleware
 const middlewaresConfigError = [enhance(renderPageServer_universal, { name: 'vike' })].map(withIsHandler)
 
-// `globalContext.middlewares`: every `+middleware`, then Vike's built-in middleware
+// `globalContext.middlewares`: every `+middleware`, then Vike's pages
 function getMiddlewares_globalContext(plusMiddlewares: EnhancedMiddleware[], baseServer: string): Middleware[] {
   return [
     ...plusMiddlewares.map((plusMiddleware) => toMiddleware(plusMiddleware, baseServer)),
