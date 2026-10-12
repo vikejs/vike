@@ -1,6 +1,5 @@
 export { getMiddlewares_globalContext }
 export { getMiddlewares_withErrorHandling }
-export { getRuntime_vikeServer }
 export { scopeToPath }
 export type { Middleware }
 
@@ -8,7 +7,6 @@ import {
   apply,
   contextSymbol,
   enhance,
-  getAdapterRuntime,
   getUniversal,
   getUniversalProp,
   isHandler,
@@ -28,12 +26,7 @@ import { renderPageServer } from '../renderPageServer.js'
 import { getGlobalContextServerInternal, initGlobalContext_renderPage } from '../globalContext.js'
 import { getVikeConfigError } from '../../../shared-server-node/getVikeConfigError.js'
 import { assert, assertWarning } from '../../../utils/assert.js'
-import { getGlobalObject } from '../../../utils/getGlobalObject.js'
 import '../../assertEnvServer.js'
-
-const globalObject = getGlobalObject('universal-middleware/core.ts', {
-  runtimesVikeServer: new WeakSet<RuntimeAdapterTarget<unknown>>(),
-})
 
 type Middleware = EnhancedMiddleware & {
   /** `true` for the middlewares that run after the server's own routes: the `+middleware` with a `path` and no `order` (or `order: 0`), and Vike's pages. */
@@ -185,13 +178,6 @@ function getMatcher(path: string, method: HttpMethod | HttpMethod[] | undefined)
   }
 }
 
-// The runtime that Vike's own server creates for the +middleware, one per request: the router writes its match into `runtime.params`
-function getRuntime_vikeServer(): RuntimeAdapterTarget<unknown> {
-  const runtime = getAdapterRuntime('other', { params: undefined })
-  globalObject.runtimesVikeServer.add(runtime)
-  return runtime
-}
-
 async function renderPageServer_universal(
   request: Request,
   context: Universal.Context,
@@ -201,8 +187,8 @@ async function renderPageServer_universal(
     // Unless the context has it, e.g. `$ vike dev` passes the URL's path
     urlOriginal: request.url,
     ...context,
-    // Not the runtime that Vike's own server creates: it isn't a server's, and its `params` is the router's match of `/**`
-    ...(!globalObject.runtimesVikeServer.has(runtime) && { ...runtime, runtime }),
+    ...runtime,
+    runtime,
     headersOriginal: request.headers,
     _isFromMiddlewares: true,
   })

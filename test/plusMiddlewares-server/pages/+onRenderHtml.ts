@@ -5,7 +5,7 @@ export function onRenderHtml(pageContext: PageContextServer) {
   const Page = pageContext.Page as () => string
   // The user a +middleware adds to the context
   const { user } = pageContext as { user?: string }
-  // The server's runtime: `vike.fetch(request)` passes none
+  // The server's runtime, or the one `vike.fetch(request)` creates
   const { runtime } = pageContext as { runtime?: { adapter: string } }
   return escapeInject`<!DOCTYPE html>
     <html>

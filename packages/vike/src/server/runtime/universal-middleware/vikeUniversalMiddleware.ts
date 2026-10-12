@@ -1,8 +1,13 @@
 export { vikeUniversalMiddleware }
 
-import { enhance, type RuntimeAdapterTarget, type UniversalMiddleware } from '@universal-middleware/core'
+import {
+  enhance,
+  getAdapterRuntime,
+  type RuntimeAdapterTarget,
+  type UniversalMiddleware,
+} from '@universal-middleware/core'
 import { applyNonHandlers, middlewaresProxy_handlers } from './middlewaresProxy.js'
-import { getMiddlewares_withErrorHandling, getRuntime_vikeServer } from './core.js'
+import { getMiddlewares_withErrorHandling } from './core.js'
 import '../../assertEnvServer.js'
 
 // Vike's own server has no user-land universal middlewares
@@ -14,7 +19,7 @@ async function handler(
   request: Request,
   // Missing upon `vike.fetch(request)`
   context: Universal.Context = {},
-  runtime: RuntimeAdapterTarget<unknown> = getRuntime_vikeServer(),
+  runtime: RuntimeAdapterTarget<unknown> = getAdapterRuntime('other', { params: undefined }),
 ) {
   // A copy: the +middleware's context is merged into it, and a Cloudflare worker's `env` (its context) is shared by all requests
   context = { ...context }
