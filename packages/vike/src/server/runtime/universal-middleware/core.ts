@@ -45,7 +45,7 @@ const vikePagesRoute = {
 const renderPageServer_universalMiddleware = enhance(renderPageServer_universal, vikePagesRoute)
 
 // Upon an invalid config: Vike's pages answer every request with the error, so that the app's routes don't run without the +middleware
-const middlewaresConfigError = [enhance(renderPageServer_universal, { name: 'vike' })].map(withIsHandler)
+const middlewares_uponConfigError = [enhance(renderPageServer_universal, { name: 'vike' })].map(withIsHandler)
 
 // `globalContext.middlewares`: every `+middleware`, then Vike's pages
 function getMiddlewares_globalContext(plusMiddlewares: EnhancedMiddleware[], baseServer: string): Middleware[] {
@@ -68,13 +68,13 @@ function getMiddlewares_config(globalContext: { config: ConfigResolved }): Enhan
 // `globalContext.middlewares`, or `middlewaresConfigError` upon an invalid config
 async function getMiddlewares_withErrorHandling(): Promise<Middleware[]> {
   // Before the await too, which doesn't resolve while the config is invalid
-  if (getVikeConfigError()) return middlewaresConfigError
+  if (getVikeConfigError()) return middlewares_uponConfigError
   try {
     await initGlobalContext_renderPage()
   } catch {
-    return middlewaresConfigError
+    return middlewares_uponConfigError
   }
-  if (getVikeConfigError()) return middlewaresConfigError
+  if (getVikeConfigError()) return middlewares_uponConfigError
   const { globalContext } = await getGlobalContextServerInternal()
   return globalContext.middlewares
 }
