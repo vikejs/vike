@@ -1,4 +1,5 @@
 export { getMiddlewares_globalContext }
+export { getMiddlewares_config }
 export { getMiddlewares_withErrorHandling }
 export { scopeToPath }
 export { vikePagesRoute }
@@ -27,6 +28,7 @@ import { renderPageServer } from '../renderPageServer.js'
 import { getGlobalContextServerInternal, initGlobalContext_renderPage } from '../globalContext.js'
 import { getVikeConfigError } from '../../../shared-server-node/getVikeConfigError.js'
 import { assert, assertWarning } from '../../../utils/assert.js'
+import type { ConfigResolved } from '../../../types/Config/ConfigResolved.js'
 import '../../assertEnvServer.js'
 
 type Middleware = EnhancedMiddleware & {
@@ -58,6 +60,11 @@ function getMiddlewares_globalContext(plusMiddlewares: EnhancedMiddleware[], bas
     ...plusMiddlewares.map((plusMiddleware) => toMiddleware(plusMiddleware, baseServer)),
     renderPageServer_universalMiddleware,
   ]
+}
+
+// Every `+middleware` of the config
+function getMiddlewares_config(config: ConfigResolved): EnhancedMiddleware[] {
+  return (config.middleware ?? []).flat()
 }
 
 // `globalContext.middlewares`, or `middlewaresConfigError` upon an invalid config
