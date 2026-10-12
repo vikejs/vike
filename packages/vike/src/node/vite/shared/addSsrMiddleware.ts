@@ -1,6 +1,7 @@
 export { addSsrMiddleware }
 
 import { vikeUniversalMiddleware } from '../../../server/runtime/universal-middleware/vikeUniversalMiddleware.js'
+import { getAdapterRuntime } from '@universal-middleware/core'
 import { createRequestAdapter } from '@universal-middleware/node/request'
 import { sendResponse } from '@universal-middleware/node/response'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
@@ -21,7 +22,8 @@ function addSsrMiddleware(
     let response: Response
     try {
       // `pageContext.urlOriginal` is the URL's path, as renderPage() gets it on a Node.js server
-      response = await vikeUniversalMiddleware(requestAdapter(req, res), { urlOriginal: url })
+      const runtime = Object.assign(getAdapterRuntime('other', { params: undefined }), { req, res })
+      response = await vikeUniversalMiddleware(requestAdapter(req, res), { urlOriginal: url }, runtime)
     } catch (err) {
       // Throwing an error in a connect middleware shuts down the server
       console.error(err)

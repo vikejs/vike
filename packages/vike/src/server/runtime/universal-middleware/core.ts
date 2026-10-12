@@ -173,11 +173,8 @@ async function renderPageServer_universal(
       urlOriginal: request.url,
       ...context,
       // Only a server's runtime: not the 'other' one Vike's own server creates, nor a Cloudflare worker's ExecutionContext
-      ...(runtime.adapter &&
-        runtime.adapter !== 'other' && {
-          runtime,
-          ...('req' in runtime && { req: runtime.req, res: runtime.res }),
-        }),
+      ...(runtime.adapter && runtime.adapter !== 'other' && { runtime }),
+      ...('req' in runtime && { req: runtime.req, res: runtime.res }),
       headersOriginal: request.headers,
     },
     false,
