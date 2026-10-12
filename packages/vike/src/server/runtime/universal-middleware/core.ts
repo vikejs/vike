@@ -93,18 +93,7 @@ function toMiddleware(plusMiddleware: EnhancedMiddleware, baseServer: string): M
       const { isPageContextJsonRequest, urlWithoutPageContextRequestSuffix } = handlePageContextRequestUrl(request.url)
       if (isMatch && !isMatch(urlWithoutPageContextRequestSuffix, request.method)) return
       const answer = await getUniversal(plusMiddleware as UniversalMiddleware)(request, context, runtime)
-      if (!isPageContextJsonRequest) return answer
-      // The +middleware answered instead of the page
-      if (answer instanceof Response) return toReload(answer)
-      if (typeof answer !== 'function') return answer
-      return async (response: Response) => {
-        const replaced = await answer(response)
-        // Vike's JSON, possibly re-encoded, stays
-        return (
-          replaced &&
-          (replaced.headers.get('content-type')?.includes('application/json') ? replaced : toReload(replaced))
-        )
-      }
+      return isPageContextJsonRequest ? toPageContextJsonAnswer(answer) : answer
     },
     { name: getUniversalProp(plusMiddleware, nameSymbol), ...(order !== undefined && { order }) },
   )
@@ -123,11 +112,25 @@ function assertPath(plusMiddleware: EnhancedMiddleware, path: string, baseServer
   )
 }
 
-// The client router reloads the page upon a `.pageContext.json` answer that is a 404 without JSON, so that the page's own request shows the +middleware's answer (e.g. a 401, a redirect or a login page)
-function toReload(response: Response): Response {
-  const headers = new Headers(response.headers)
-  headers.delete('content-type')
-  return new Response(response.body, { status: 404, headers })
+// A +middleware's answer to a `.pageContext.json` request. Its own Response, or a response function's replacement of
+// Vike's JSON, becomes a 404 without JSON: the client router then reloads the page, so that the page's own request shows
+// the +middleware's answer (e.g. a 401, a redirect or a login page).
+function toPageContextJsonAnswer(answer: Awaited<ReturnType<UniversalMiddleware>>) {
+  const toReload = (response: Response) => {
+    const headers = new Headers(response.headers)
+    headers.delete('content-type')
+    return new Response(response.body, { status: 404, headers })
+  }
+  // The +middleware answered instead of the page
+  if (answer instanceof Response) return toReload(answer)
+  if (typeof answer !== 'function') return answer
+  return async (response: Response) => {
+    const replaced = await answer(response)
+    // Vike's JSON, possibly re-encoded, stays
+    return (
+      replaced && (replaced.headers.get('content-type')?.includes('application/json') ? replaced : toReload(replaced))
+    )
+  }
 }
 
 // Universal Middleware's `apply()` scopes a middleware that isn't a handler to its `path` and `method`: a router that only
