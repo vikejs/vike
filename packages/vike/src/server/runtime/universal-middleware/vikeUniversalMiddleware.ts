@@ -1,13 +1,8 @@
 export { vikeUniversalMiddleware }
 
-import {
-  enhance,
-  getAdapterRuntime,
-  type RuntimeAdapterTarget,
-  type UniversalMiddleware,
-} from '@universal-middleware/core'
+import { enhance, type RuntimeAdapterTarget, type UniversalMiddleware } from '@universal-middleware/core'
 import { applyNonHandlers, middlewaresProxy_handlers } from './middlewaresProxy.js'
-import { getMiddlewares_withErrorHandling, renderPageServer_universal } from './core.js'
+import { getMiddlewares_withErrorHandling, getRuntime_vikeServer, renderPageServer_universal } from './core.js'
 import '../../assertEnvServer.js'
 
 // Vike's own server has no user-land universal middlewares
@@ -19,7 +14,7 @@ async function handler(
   request: Request,
   // Missing upon `vike.fetch(request)`
   context: Universal.Context = {},
-  runtime: RuntimeAdapterTarget<unknown> = getAdapterRuntime('other', { params: undefined }),
+  runtime: RuntimeAdapterTarget<unknown> = getRuntime_vikeServer(),
 ) {
   const middlewares = await getMiddlewares_withErrorHandling()
   // Only Vike's pages are listed (no +middleware, or an invalid config): they answer, without the two halves

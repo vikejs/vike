@@ -65,6 +65,11 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     expect(response.headers.get('Location')).toBe('/portal')
   })
 
+  test("Vike's own server sets neither pageContext.runtime nor pageContext.params", async () => {
+    // Its router's match of the page's URL isn't a route parameter
+    expect(await fetchHtml('/runtime')).toContain('<pre>{}</pre>')
+  })
+
   test('Every +middleware whose path matches runs, then the page', async () => {
     // Both adminAuth (/admin/**) and settingsHeader (/admin/settings) match. adminAuth, listed before authUser, runs after it (by
     // `order`) and sees the context it adds.

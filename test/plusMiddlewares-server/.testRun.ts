@@ -44,8 +44,11 @@ function testRun(cmd: Cmd, options?: { serverIsReadyMessage: string }) {
     expect((await fetch(`${getServerUrl()}/`, { method: 'DELETE' })).status).toBe(404)
   })
 
-  test('`vike.fetch(request)` answers a request passed alone', async () => {
-    expect(await (await fetch(`${getServerUrl()}/vike-fetch`)).text()).toContain('Rendered by Vike')
+  test('`vike.fetch(request)` answers a request passed alone, and the page gets no runtime', async () => {
+    const text = await (await fetch(`${getServerUrl()}/vike-fetch`)).text()
+    expect(text).toContain('Rendered by Vike')
+    expect(text).not.toContain('runtime')
+    expect(await (await fetch(`${getServerUrl()}/`)).text()).toContain('Rendered by Vike with the hono runtime')
   })
 
   test("`vike.fetch()` doesn't add a +middleware's context to a context shared by all requests", async () => {
