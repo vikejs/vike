@@ -700,7 +700,7 @@ async function addGlobalContextAsync(globalContext: GlobalContextBase) {
     baseServer,
     baseAssets,
     /**
-     * Every `+middleware`, then Vike's pages.
+     * Every `+middleware` from Vike extensions, as well as Vike's built-in handler that renders pages.
      *
      * https://vike.dev/globalContext#middlewares
      */

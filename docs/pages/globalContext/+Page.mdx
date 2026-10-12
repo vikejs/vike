@@ -122,9 +122,11 @@ Vite's development middleware.
 
 Environment: server  
 
-All <Link href="/middleware">`+middleware`</Link>, followed by Vike's pages. Each has `isHandler`, which tells whether it runs after your server's own routes.
+Every <Link href="/middleware">`+middleware`</Link> from Vike extensions, as well as Vike's built-in handler that renders pages.
 
 > See also: <Link href="/middleware#manual-integration" />
+
+> It also includes your own user-defined +middleware — but note that this is a rare use case: you typically define server middlewares directly on your server instead of using `+middleware`.
 
 
 ## Custom
