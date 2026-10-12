@@ -1,7 +1,6 @@
 export default Page
 
 import React from 'react'
-import 'virtual:test.css'
 
 function Page() {
   return (

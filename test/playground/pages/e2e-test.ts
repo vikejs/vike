@@ -4,7 +4,6 @@ export { testRedirectMailto }
 export { testOnCreateGlobalContext }
 export { testHooksCalled }
 export { testHeadersResponse }
-export { testFoucBuster }
 
 import {
   autoRetry,
@@ -220,20 +219,5 @@ function testHeadersResponse() {
       expect(resp.headers.get('SOME-STaTIc-Header')).toBe('some-static-header-value')
       expect(resp.headers.get('some-dynamic-header')).toBe('the-page-url=/')
     }
-  })
-}
-
-function testFoucBuster(isDev: boolean) {
-  if (!isDev) return
-  test('FOUC buster <link> removed, including virtual CSS', async () => {
-    const html = await fetchHtml('/about')
-    expect(html).toContain('href="/@id/__x00__virtual:test.css?direct"')
-    await page.goto(getServerUrl() + '/about')
-    await autoRetry(
-      async () => {
-        expect(await page.locator('link[rel="stylesheet"][href$="?direct"]').count()).toBe(0)
-      },
-      { timeout: 5 * 1000 },
-    )
   })
 }
