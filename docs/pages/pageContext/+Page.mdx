@@ -214,7 +214,7 @@ declare global {
 
 <Prop id="runtime" />
 
-The full [`RuntimeAdapter`](https://universal-middleware.dev/reference/runtime-adapter) object set by <Link href="/server">`vike(app)`</Link>, `vike/fetch`, `$ vike dev` and `$ vike preview` (which use [`universal-middleware`](https://universal-middleware.dev/) under the hood).
+The full [`RuntimeAdapter`](https://universal-middleware.dev/reference/runtime-adapter) object set by <Link href="/server">`vike(app)`</Link> (which uses [`universal-middleware`](https://universal-middleware.dev/) under the hood).
 
 ```ts
 // Environment: server
@@ -233,7 +233,7 @@ declare global {
 }
 ```
 
-> It isn't set automatically if you use <Link href="/renderPage">`renderPage()`</Link>.
+> It's only available if you use <Link href="/server">`vike(app)`</Link>.
 
 > See also:
 > - <Link href="#req" noWarning>`pageContext.req`</Link>
