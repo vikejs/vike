@@ -94,11 +94,14 @@ function toMiddleware(plusMiddleware: EnhancedMiddleware, baseServer: string): M
     return Object.assign(handler, { isHandler: true })
   }
   const order = getUniversalProp(plusMiddleware, orderSymbol)
-  const isMatch = path && getMatcher(path, getUniversalProp(plusMiddleware, methodSymbol), baseServer)
+  const isMatch = path && createMatcher(path, getUniversalProp(plusMiddleware, methodSymbol))
   const middleware = enhance(
     async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) => {
       const { isPageContextJsonRequest, urlWithoutPageContextRequestSuffix } = handlePageContextRequestUrl(request.url)
-      if (isMatch && !isMatch(urlWithoutPageContextRequestSuffix, request.method)) return
+      if (isMatch) {
+        const { href, isBaseMissing } = parseUrl(urlWithoutPageContextRequestSuffix, baseServer)
+        if (isBaseMissing || !isMatch(new Request(href, { method: request.method }))) return
+      }
       const answer = await getUniversal(plusMiddleware as UniversalMiddleware)(request, context, runtime)
       return isPageContextJsonRequest ? toPageContextJsonAnswer(answer) : answer
     },
@@ -161,19 +164,14 @@ function scopeToPath(middleware: UniversalMiddleware): UniversalMiddleware {
   return scoped
 }
 
-// The `path` and `method` check that `scopeToPath()` wraps a middleware with, applied to a page's URL without the Base URL
-function getMatcher(
-  path: string,
-  method: HttpMethod | HttpMethod[] | undefined,
-  baseServer: string,
-): (url: string, requestMethod: string) => boolean {
+// The `path` and `method` check that `scopeToPath()` wraps a middleware with
+// TODO: use createMatcher() from @universal-middleware/core once magne4000/universal-middleware#438 is released
+function createMatcher(path: string, method?: HttpMethod | HttpMethod[]): (request: Request) => boolean {
   const matched = {}
   // A non-zero order: `apply()` scopes it to its path, rather than routing it as a handler
   const scoped = scopeToPath(enhance(() => matched, { path, method, order: 1 }))
-  return (url, requestMethod) => {
-    const { href, isBaseMissing } = parseUrl(url, baseServer)
-    if (isBaseMissing) return false
-    const result = scoped(new Request(href, { method: requestMethod }), {}, {} as RuntimeAdapterTarget<unknown>)
+  return (request) => {
+    const result = scoped(request, {}, {} as RuntimeAdapterTarget<unknown>)
     // The check is synchronous: any other result (e.g. a Promise) would silently skip every middleware with a path
     assert(result === matched || result === undefined)
     return result === matched
