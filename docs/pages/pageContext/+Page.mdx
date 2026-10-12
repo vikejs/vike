@@ -4,7 +4,7 @@ import { PropPageContext as Prop, ConfigSpec, TreeShaking } from '../../componen
 export const ServerOnlyNote = ({ prop, kind }) => (
   <blockquote>
     <p>
-      It's only available if you use <Link href="/server"><code>+server</code></Link> with a server that exposes the HTTP {kind} object (e.g. Express, Fastify, or Hono — but not Cloudflare Workers). If you don't use <code>+server</code>, you can <Link href="#custom">define a custom <code>pageContext.{prop}</code> property</Link> yourself.
+      It's only available if you use <Link href="/server"><code>vike(app)</code></Link> or <code>vike/fetch</code> with a server that exposes the HTTP {kind} object (e.g. Express, Fastify, or Hono — but not Cloudflare Workers). If you use <Link href="/renderPage"><code>renderPage()</code></Link>, you can <Link href="#custom">define a custom <code>pageContext.{prop}</code> property</Link> yourself.
     </p>
   </blockquote>
 )
@@ -214,7 +214,7 @@ declare global {
 
 <Prop id="runtime" />
 
-The full [`RuntimeAdapter`](https://universal-middleware.dev/reference/runtime-adapter) object set by <Link href="/server">`+server`</Link> (which uses [`universal-middleware`](https://universal-middleware.dev/) under the hood).
+The full [`RuntimeAdapter`](https://universal-middleware.dev/reference/runtime-adapter) object set by <Link href="/server">`vike(app)`</Link> and `vike/fetch` (which use [`universal-middleware`](https://universal-middleware.dev/) under the hood).
 
 ```ts
 // Environment: server
@@ -233,7 +233,7 @@ declare global {
 }
 ```
 
-> It's only available if you use <Link href="/server">`+server`</Link>.
+> It isn't set automatically if you use <Link href="/renderPage">`renderPage()`</Link>.
 
 > See also:
 > - <Link href="#req" noWarning>`pageContext.req`</Link>
