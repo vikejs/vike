@@ -48,7 +48,8 @@ const renderPageServer_universalMiddleware = enhance(renderPageServer_universal,
 const middlewares_uponConfigError = [enhance(renderPageServer_universal, { name: 'vike' })].map(withIsHandler)
 
 // `globalContext.middlewares`: every `+middleware`, then Vike's pages
-function getMiddlewares_globalContext(plusMiddlewares: EnhancedMiddleware[], baseServer: string): Middleware[] {
+function getMiddlewares_globalContext(globalContext: { config: ConfigResolved }, baseServer: string): Middleware[] {
+  const plusMiddlewares: EnhancedMiddleware[] = getMiddlewares_config(globalContext)
   return [
     ...plusMiddlewares.map((plusMiddleware) => toMiddleware(plusMiddleware, baseServer)),
     renderPageServer_universalMiddleware,
