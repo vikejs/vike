@@ -201,21 +201,6 @@ describe('getMiddlewares_globalContext()', () => {
 })
 
 describe('pipeNonHandlers()', () => {
-  it('cancels the body a response function replaces', async () => {
-    let cancelled = false
-    const body = new ReadableStream({
-      cancel() {
-        cancelled = true
-      },
-    })
-    const stream = enhance(() => new Response(body), { name: 'stream' })
-    const replace = enhance(() => () => new Response('Replaced'), { name: 'replace' })
-    const middlewares = getMiddlewares_globalContext([replace, stream], '/')
-    const response = await pipeNonHandlers(middlewares, [])(new Request('http://localhost/'), {}, {} as RuntimeAdapter)
-    expect(await (response as Response).text()).toBe('Replaced')
-    await vi.waitFor(() => expect(cancelled).toBe(true))
-  })
-
   // The user-land universal middlewares, passed to `vike(app, [...])`
   const header = (name: string, order?: number) =>
     enhance(
@@ -235,6 +220,20 @@ describe('pipeNonHandlers()', () => {
       {},
       {} as RuntimeAdapter,
     )
+
+  it('cancels the body a response function replaces', async () => {
+    let cancelled = false
+    const body = new ReadableStream({
+      cancel() {
+        cancelled = true
+      },
+    })
+    const stream = enhance(() => new Response(body), { name: 'stream' })
+    const replace = enhance(() => () => new Response('Replaced'), { name: 'replace' })
+    const response = await run([replace, stream], '/', [])
+    expect(await (response as Response).text()).toBe('Replaced')
+    await vi.waitFor(() => expect(cancelled).toBe(true))
+  })
 
   it("applies a user-land universal middleware's response function to a +middleware's answer, and to the page", async () => {
     const answer = (await run([auth], '/dash', [header('x-app')])) as Response
