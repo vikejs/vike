@@ -89,7 +89,10 @@ function wrapWithVikeRouting(plusMiddleware: EnhancedMiddleware, baseServer: str
   if (path) assertPath(plusMiddleware, path, baseServer)
   if (isHandler(plusMiddleware)) {
     // A handler is a route of the server, which matches it: its path gets the Base URL. (`enhance()` clones it, so that marking it `isHandler` leaves the extension's export untouched.)
-    return enhance(plusMiddleware as UniversalMiddleware, path ? { path: baseServer.replace(/\/$/, '') + path } : {})
+    return enhance(
+      plusMiddleware as UniversalMiddleware,
+      path ? { path: baseServer.replace(/\/$/, '') + (path.startsWith('/') ? '' : '/') + path } : {},
+    )
   }
   const order = getUniversalProp(plusMiddleware, orderSymbol)
   const isMatch = path && createMatcher(path, getUniversalProp(plusMiddleware, methodSymbol))

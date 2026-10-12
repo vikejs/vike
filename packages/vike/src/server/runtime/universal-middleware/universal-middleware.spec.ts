@@ -198,6 +198,9 @@ describe('getMiddlewares_globalContext()', () => {
   it("prepends the Base URL to a handler's path", () => {
     const [handler] = getMiddlewares_globalContext(globalContextWith([telefunc]), '/app/')
     expect(getUniversalProp(handler!, pathSymbol)).toBe('/app/_telefunc')
+    const health = enhance(() => new Response('OK'), { name: 'health', method: 'GET', path: 'health' })
+    const [handlerWithoutSlash] = getMiddlewares_globalContext(globalContextWith([health]), '/app/')
+    expect(getUniversalProp(handlerWithoutSlash!, pathSymbol)).toBe('/app/health')
   })
 
   it("keeps a handler's context", async () => {
