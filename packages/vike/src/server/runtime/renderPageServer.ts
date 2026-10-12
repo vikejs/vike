@@ -176,16 +176,10 @@ async function renderPageServerEntryOnceBegin(
 
   const pageContextBegin = getPageContextBegin(pageContextInit, globalContext, requestId, asyncStore)
 
-  // Only `globalContext.middlewares` renders pages after the +middleware ran:
-  try {
-    assertUsage(
-      !isCalledDirectlyByUser || !hasPlusMiddlewares(globalContext),
-      `renderPage() doesn't run your +middleware, see ${pc.underline('https://vike.dev/warning/setup-middlewares')}`,
-    )
-  } catch (err) {
-    logRuntimeError(err, pageContextBegin)
-    return getPageContextHttpErrorFallback(err, pageContextBegin)
-  }
+  assertUsage(
+    !isCalledDirectlyByUser || !hasPlusMiddlewares(globalContext),
+    `renderPage() doesn't run your +middleware, see ${pc.underline('https://vike.dev/warning/setup-middlewares')}`,
+  )
 
   return renderPageServerEntryOnce(pageContextBegin, globalContext, requestId)
 }
