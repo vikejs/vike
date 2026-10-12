@@ -1,6 +1,7 @@
 export { getMiddlewares_globalContext }
 export { getMiddlewares_withErrorHandling }
 export { scopeToPath }
+export { vikePagesRoute }
 export type { Middleware }
 
 import {
@@ -17,6 +18,7 @@ import {
   type HttpMethod,
   type RuntimeAdapterTarget,
   type UniversalMiddleware,
+  type UniversalOptionsArg,
   type UniversalRouterInterface,
 } from '@universal-middleware/core'
 import { parseUrl } from '../../../utils/parseUrl.js'
@@ -32,13 +34,16 @@ type Middleware = EnhancedMiddleware & {
   isHandler: boolean
 }
 
+// The requests Vike's pages answer
+const vikePagesRoute = {
+  name: 'vike',
+  method: ['GET', 'POST', 'PUT', 'PATCH', 'HEAD', 'OPTIONS'],
+  path: '/**',
+} satisfies UniversalOptionsArg
+
 // Vike's pages, after everything else
 const renderPageServer_universalMiddleware: Middleware = Object.assign(
-  enhance(renderPageServer_universal, {
-    name: 'vike',
-    method: ['GET', 'POST', 'PUT', 'PATCH', 'HEAD', 'OPTIONS'],
-    path: '/**',
-  }),
+  enhance(renderPageServer_universal, vikePagesRoute),
   { isHandler: true },
 )
 

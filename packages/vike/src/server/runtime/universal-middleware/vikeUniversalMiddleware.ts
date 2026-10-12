@@ -2,6 +2,7 @@ export { vikeUniversalMiddleware }
 
 import { enhance, getAdapterRuntime, type RuntimeAdapterTarget } from '@universal-middleware/core'
 import { middlewaresProxy_handlers, middlewaresProxy_nonHandlers } from './middlewaresProxy.js'
+import { vikePagesRoute } from './core.js'
 import '../../assertEnvServer.js'
 
 // Vike's own server has no user-land universal middlewares
@@ -23,8 +24,4 @@ async function handler(
   return typeof answer === 'function' ? ((await answer(response)) ?? response) : response
 }
 
-const vikeUniversalMiddleware = enhance(handler, {
-  name: 'vike',
-  method: ['GET', 'POST', 'PUT', 'PATCH', 'HEAD', 'OPTIONS'],
-  path: '/**',
-})
+const vikeUniversalMiddleware = enhance(handler, vikePagesRoute)
