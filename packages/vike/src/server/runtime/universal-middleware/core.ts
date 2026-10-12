@@ -1,6 +1,6 @@
 export { getMiddlewares_globalContext }
-export { getMiddlewares_config }
 export { getMiddlewares_withErrorHandling }
+export { hasPlusMiddlewares }
 export { vikePagesRoute }
 export type { Middleware }
 
@@ -63,6 +63,9 @@ function withIsHandler(middleware: EnhancedMiddleware): Middleware {
 // Every `+middleware` of the config
 function getMiddlewares_config(globalContext: { config: ConfigResolved }): EnhancedMiddleware[] {
   return (globalContext.config.middleware ?? []).flat()
+}
+function hasPlusMiddlewares(globalContext: { config: ConfigResolved }) {
+  return getMiddlewares_config(globalContext).length === 0
 }
 
 // `globalContext.middlewares`, or `middlewaresConfigError` upon an invalid config

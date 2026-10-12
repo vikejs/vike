@@ -73,7 +73,7 @@ import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.
 import { forkPageContext } from '../../shared-server-client/forkPageContext.js'
 import { getAsyncLocalStorage, type AsyncStore } from './asyncHook.js'
 import { getPageContextJson } from './renderPageServer/getPageContextJson.js'
-import { getMiddlewares_config } from './universal-middleware/core.js'
+import { hasPlusMiddlewares } from './universal-middleware/core.js'
 import '../assertEnvServer.js'
 
 const globalObject = getGlobalObject('runtime/renderPageServer.ts', {
@@ -179,7 +179,7 @@ async function renderPageServerEntryOnceBegin(
   // Only `globalContext.middlewares` renders pages after the +middleware ran:
   try {
     assertUsage(
-      !isCalledDirectlyByUser || getMiddlewares_config(globalContext).length === 0,
+      !isCalledDirectlyByUser || hasPlusMiddlewares(globalContext),
       `renderPage() doesn't run your +middleware, see ${pc.underline('https://vike.dev/warning/setup-middlewares')}`,
     )
   } catch (err) {
