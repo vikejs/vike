@@ -60,10 +60,11 @@ function withIsHandler(middleware: EnhancedMiddleware): Middleware {
   return Object.assign(middleware, { isHandler: isHandler(middleware) })
 }
 
-// Every `+middleware` of the config
+// List of +middleware
 function getMiddlewares_config(globalContext: { config: ConfigResolved }): EnhancedMiddleware[] {
   return (globalContext.config.middleware ?? []).flat()
 }
+// Does a +middleware exist?
 function hasPlusMiddlewares(globalContext: { config: ConfigResolved }) {
   return getMiddlewares_config(globalContext).length === 0
 }
