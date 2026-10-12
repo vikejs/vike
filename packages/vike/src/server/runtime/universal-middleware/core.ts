@@ -103,7 +103,12 @@ function toMiddleware(plusMiddleware: EnhancedMiddleware, baseServer: string): M
       const answer = await getUniversal(plusMiddleware as UniversalMiddleware)(request, context, runtime)
       return isPageContextJsonRequest ? toPageContextJsonAnswer(answer) : answer
     },
-    { name: getUniversalProp(plusMiddleware, nameSymbol), ...(order !== undefined && { order }) },
+    // Whatever its order, it doesn't run once a Response exists
+    {
+      name: getUniversalProp(plusMiddleware, nameSymbol),
+      runs: 'until-response',
+      ...(order !== undefined && { order }),
+    },
   )
   return Object.assign(middleware, { isHandler: false })
 }

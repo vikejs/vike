@@ -24,7 +24,8 @@ import '../../assertEnvServer.js'
 function middlewaresProxy_nonHandlers(middlewaresUserLand: object[]): UniversalMiddleware {
   const nonHandlersUserLand = (middlewaresUserLand as UniversalMiddleware[])
     .filter((middleware) => !isHandler(middleware))
-    .map(scopeToPath)
+    // They run after a +middleware answered too, a Response they return then being ignored
+    .map((middleware) => enhance(scopeToPath(middleware), { runs: 'always' }))
   return enhance(
     async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) =>
       applyNonHandlers(await getMiddlewares_withErrorHandling(), nonHandlersUserLand, request, context, runtime),

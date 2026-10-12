@@ -135,6 +135,12 @@ describe('getMiddlewares_globalContext()', () => {
     expect(await serve(getMiddlewares_globalContext([answers, auth], '/'), '/dash')).toBe('401 http://localhost/dash')
   })
 
+  it('runs a +middleware with a positive order before the pages, and not once a Response exists', async () => {
+    const late = enhance(() => new Response('late'), { name: 'late', order: MiddlewareOrder.RESPONSE_TRANSFORM })
+    expect(await serve(getMiddlewares_globalContext([late], '/'), '/about')).toBe('200 late')
+    expect(await serve(getMiddlewares_globalContext([auth, late], '/'), '/dash')).toBe('401 http://localhost/dash')
+  })
+
   it('matches the method, HEAD as GET', async () => {
     const middlewares = getMiddlewares_globalContext([auth], '/')
     expect(await serve(middlewares, '/dash', 'POST')).toBe('200 page')
