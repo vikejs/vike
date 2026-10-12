@@ -181,14 +181,6 @@ async function renderPageServerEntryOnceBegin(
     `renderPage() doesn't run your +middleware, see ${pc.underline('https://vike.dev/warning/setup-middlewares')}`,
   )
 
-  return renderPageServerEntryOnce(pageContextBegin, globalContext, requestId)
-}
-
-async function renderPageServerEntryOnce(
-  pageContextBegin: PageContextBegin,
-  globalContext: GlobalContextServerInternal,
-  requestId: number,
-) {
   // Check Base URL
   {
     const pageContextHttpResponse = await checkBaseUrl(pageContextBegin, globalContext)
