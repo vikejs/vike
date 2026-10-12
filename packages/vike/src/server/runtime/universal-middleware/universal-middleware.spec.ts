@@ -136,13 +136,17 @@ describe('getMiddlewares_globalContext()', () => {
 
   it('keeps the order: a +middleware without one is ordered as 0', async () => {
     const answers = enhance(() => new Response('answers'), { name: 'answers' })
-    expect(await serve(getMiddlewares_globalContext(globalContextWith([answers, auth]), '/'), '/dash')).toBe('401 http://localhost/dash')
+    expect(await serve(getMiddlewares_globalContext(globalContextWith([answers, auth]), '/'), '/dash')).toBe(
+      '401 http://localhost/dash',
+    )
   })
 
   it('runs a +middleware with a positive order before the pages, and not once a Response exists', async () => {
     const late = enhance(() => new Response('late'), { name: 'late', order: MiddlewareOrder.RESPONSE_TRANSFORM })
     expect(await serve(getMiddlewares_globalContext(globalContextWith([late]), '/'), '/about')).toBe('200 late')
-    expect(await serve(getMiddlewares_globalContext(globalContextWith([auth, late]), '/'), '/dash')).toBe('401 http://localhost/dash')
+    expect(await serve(getMiddlewares_globalContext(globalContextWith([auth, late]), '/'), '/dash')).toBe(
+      '401 http://localhost/dash',
+    )
   })
 
   it('matches the method, HEAD as GET', async () => {
@@ -162,7 +166,10 @@ describe('getMiddlewares_globalContext()', () => {
     // Once per +middleware and path
     getMiddlewares_globalContext(globalContextWith([guard('/app/dash')]), '/app/')
     // No warning: a path relative to the Base URL, no Base URL, no path
-    getMiddlewares_globalContext(globalContextWith([guard('/dash'), guard('/other/dash'), guard('/application'), logger]), '/app/')
+    getMiddlewares_globalContext(
+      globalContextWith([guard('/dash'), guard('/other/dash'), guard('/application'), logger]),
+      '/app/',
+    )
     getMiddlewares_globalContext(globalContextWith([guard('/app/other')]), '/')
     expect(warn).toHaveBeenCalledTimes(1)
     // A handler's path too, whether or not the Base URL ends with a slash
@@ -214,11 +221,7 @@ describe('pipeNonHandlers()', () => {
       },
       { name, ...(order !== undefined && { order }) },
     )
-  const run = (
-    plusMiddlewares: EnhancedMiddleware[],
-    url: string,
-    middlewaresUserLand: UniversalMiddleware[],
-  ) =>
+  const run = (plusMiddlewares: EnhancedMiddleware[], url: string, middlewaresUserLand: UniversalMiddleware[]) =>
     pipeNonHandlers(getMiddlewares_globalContext(globalContextWith(plusMiddlewares), '/'), middlewaresUserLand)(
       new Request(`http://localhost${url}`),
       {},
