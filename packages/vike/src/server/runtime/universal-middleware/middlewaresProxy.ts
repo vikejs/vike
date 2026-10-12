@@ -27,7 +27,7 @@ function middlewaresProxy_nonHandlers(middlewaresUserLand: object[]): UniversalM
     .map(scopeToPath)
   return enhance(
     async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) =>
-      applyNonHandlers(await getMiddlewares_withErrorHandling(), request, context, runtime, nonHandlersUserLand),
+      applyNonHandlers(await getMiddlewares_withErrorHandling(), nonHandlersUserLand, request, context, runtime),
     { name: 'vike:middleware' },
   )
 }
@@ -38,10 +38,10 @@ function middlewaresProxy_nonHandlers(middlewaresUserLand: object[]): UniversalM
 // they return being ignored. The response functions apply to the final response, in their order.
 async function applyNonHandlers(
   plusMiddlewares: Middleware[],
+  middlewaresUserLand: UniversalMiddleware[],
   request: Request,
   context: Universal.Context,
   runtime: RuntimeAdapterTarget<unknown>,
-  middlewaresUserLand: UniversalMiddleware[],
 ) {
   const responseFunctions: ((response: Response) => Response | undefined | Promise<Response | undefined>)[] = []
   const applyResponseFunctions = async (response: Response) => {

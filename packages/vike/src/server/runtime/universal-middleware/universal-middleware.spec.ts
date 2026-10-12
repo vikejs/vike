@@ -205,7 +205,7 @@ describe('applyNonHandlers()', () => {
     const stream = enhance(() => new Response(body), { name: 'stream' })
     const replace = enhance(() => () => new Response('Replaced'), { name: 'replace' })
     const middlewares = getMiddlewares_globalContext([replace, stream], '/')
-    const response = await applyNonHandlers(middlewares, new Request('http://localhost/'), {}, {} as RuntimeAdapter, [])
+    const response = await applyNonHandlers(middlewares, [], new Request('http://localhost/'), {}, {} as RuntimeAdapter)
     expect(await (response as Response).text()).toBe('Replaced')
     await vi.waitFor(() => expect(cancelled).toBe(true))
   })
@@ -226,10 +226,10 @@ describe('applyNonHandlers()', () => {
   ) =>
     applyNonHandlers(
       getMiddlewares_globalContext(plusMiddlewares, '/'),
+      middlewaresUserLand,
       new Request(`http://localhost${url}`),
       {},
       {} as RuntimeAdapter,
-      middlewaresUserLand,
     )
 
   it("applies a user-land universal middleware's response function to a +middleware's answer, and to the page", async () => {
