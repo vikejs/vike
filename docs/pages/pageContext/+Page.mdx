@@ -4,7 +4,7 @@ import { PropPageContext as Prop, ConfigSpec, TreeShaking } from '../../componen
 export const ServerOnlyNote = ({ prop, kind }) => (
   <blockquote>
     <p>
-      It's only available if you use <Link href="/server"><code>vike(app)</code></Link> or <code>vike/fetch</code> with a server that exposes the HTTP {kind} object (e.g. Express, Fastify, or Hono — but not Cloudflare Workers). If you use <Link href="/renderPage"><code>renderPage()</code></Link>, you can <Link href="#custom">define a custom <code>pageContext.{prop}</code> property</Link> yourself.
+      It's only available if you use <Link href="/server"><code>vike(app)</code></Link> with a server that exposes the HTTP {kind} object (e.g. Express, Fastify, or Hono — but not Cloudflare Workers). If you use <Link href="/renderPage"><code>renderPage()</code></Link>, you can <Link href="#custom">define a custom <code>pageContext.{prop}</code> property</Link> yourself.
     </p>
   </blockquote>
 )
