@@ -16,31 +16,7 @@ If your server applies `globalContext.middlewares` and also has its own catch-al
 
 ## `+middleware` rendering a page
 
-A `+middleware` that renders a page itself (e.g. a server action) passes its `runtime` to `renderPage()`:
-
-```ts
-// pages/+middleware.ts
-// Environment: server
-
-import { enhance, type RuntimeAdapterTarget } from '@universal-middleware/core'
-import { renderPage } from 'vike/server'
-
-const action = enhance(
-  async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) => {
-    if (request.method !== 'POST') return
-    const { httpResponse } = await renderPage({ ...runtime, urlOriginal: request.url })
-    return new Response(httpResponse.getReadableWebStream(), {
-      status: httpResponse.statusCode,
-      headers: httpResponse.headers,
-    })
-  },
-  { name: 'action' },
-)
-
-export default [action]
-```
-
-> You can also pass it as `renderPage({ urlOriginal, runtime })`.
+A `+middleware` can't render a page with `renderPage()` either. Return what the page needs as context instead: Vike's pages render after every `+middleware`, with the context added to `pageContext`. To change Vike's response, return a response function.
 
 
 ## What Vike can't detect
