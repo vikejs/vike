@@ -21,6 +21,26 @@ import {
 import { getMiddlewares_withErrorHandling, type Middleware } from './core.js'
 import '../../assertEnvServer.js'
 
+// What `vike(app, middlewares)` runs after the app's routes, looked up upon each request: the user-land universal
+// middlewares that are handlers (the first one registered on a path answers), the +middleware that are handlers, then
+// Vike's pages
+function middlewaresPipe_handlers(middlewaresUserLand: object[]): UniversalHandler {
+  const handlersUserLand = (middlewaresUserLand as UniversalMiddleware[]).filter(isHandler)
+  const router = pipe((middlewares) =>
+    pipeRoute([...handlersUserLand, ...middlewares.filter((middleware) => middleware.isHandler)]),
+  )
+  return enhance(
+    async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) =>
+      // A method that no handler and no page answers (e.g. DELETE): what a server answers without a route for it
+      (await router(request, context, runtime)) ?? new Response('Not Found', { status: 404 }),
+    {
+      name: 'vike',
+      method: ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'CONNECT', 'OPTIONS', 'TRACE', 'PATCH'],
+      path: '/**',
+    },
+  ) as UniversalHandler
+}
+
 // What `vike(app, middlewares)` applies before the app's routes: the +middleware and the user-land universal
 // middlewares that aren't handlers, as one middleware (looked up upon each request).
 // `object[]`: the user-land universal middlewares can come from another copy of @universal-middleware/core, whose types
@@ -65,26 +85,6 @@ function mergeContext(middleware: EnhancedMiddleware): UniversalMiddleware {
       ...(order !== undefined && { order }),
     },
   )
-}
-
-// What `vike(app, middlewares)` runs after the app's routes, looked up upon each request: the user-land universal
-// middlewares that are handlers (the first one registered on a path answers), the +middleware that are handlers, then
-// Vike's pages
-function middlewaresPipe_handlers(middlewaresUserLand: object[]): UniversalHandler {
-  const handlersUserLand = (middlewaresUserLand as UniversalMiddleware[]).filter(isHandler)
-  const router = pipe((middlewares) =>
-    pipeRoute([...handlersUserLand, ...middlewares.filter((middleware) => middleware.isHandler)]),
-  )
-  return enhance(
-    async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) =>
-      // A method that no handler and no page answers (e.g. DELETE): what a server answers without a route for it
-      (await router(request, context, runtime)) ?? new Response('Not Found', { status: 404 }),
-    {
-      name: 'vike',
-      method: ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'CONNECT', 'OPTIONS', 'TRACE', 'PATCH'],
-      path: '/**',
-    },
-  ) as UniversalHandler
 }
 
 // Runs what `build()` makes of the list `getMiddlewares_withErrorHandling()` returns upon each request. The list changes
