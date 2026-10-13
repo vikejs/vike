@@ -71,18 +71,20 @@ If you don't define `+server.js`, then `+serverEntry.js` defines the entire serv
 
 // Defines the entire server — both development and production
 
-// You can also use Vike's low-level server integration primitives for full control
-import { renderPage } from 'vike/server'
+import express from 'express'
+import vike from '@vikejs/express'
 
 const app = express()
 
 // ...
 
+vike(app)
+
 // Unlike +server.js, note how +serverEntry.js determines how the server starts:
-express.listen(3000)
+app.listen(3000)
 ```
 
-See full example at: <Link href="/renderPage#usage" />.
+> Your server also needs Vite's development middleware <Link href="/globalContext#devMiddleware">`globalContext.devMiddleware`</Link> in development, and to serve the static assets `dist/client/` in production, see <Link href="#example-bun" />.
 
 > `+serverEntry.js` is responsible for starting the server, whereas with `+server.js` the server is started by Vite in development and by [srvx](https://srvx.h3.dev) in production.
 
@@ -161,7 +163,7 @@ With `+serverEntry.js` (and without `+server.js`, see <Link href="#with-out-serv
 // +serverEntry.ts (without +server.js)
 
 import { getGlobalContext } from 'vike'
-import { renderPage } from 'vike/server'
+import vike from 'vike/fetch'
 import { fetchNodeHandler } from 'srvx/node'
 import assert from 'node:assert'
 import type { IncomingMessage, ServerResponse } from 'node:http'
@@ -191,11 +193,7 @@ Bun.serve({
       const file = Bun.file(`${import.meta.dirname}/../client${new URL(request.url).pathname}`)
       if (await file.exists()) return new Response(file)
     }
-    const { httpResponse } = await renderPage({ urlOriginal: request.url, headersOriginal: request.headers })
-    return new Response(httpResponse.getReadableWebStream(), {
-      status: httpResponse.statusCode,
-      headers: httpResponse.headers
-    })
+    return vike.fetch(request)
   }
 })
 ```

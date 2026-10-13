@@ -35,7 +35,7 @@ const onAfterRenderClient = {
   providedBy: ['vike-react', 'vike-vue', 'vike-solid'] as const,
 }
 
-const renderPage = { name: 'renderPage()', href: '/renderPage' }
+const vikeApp = { name: 'vike(app)', href: '/vike(app)' }
 const onBeforeRenderHtml = {
   name: 'onBeforeRenderHtml()',
   href: '/onBeforeRenderHtml',
@@ -56,7 +56,7 @@ const firstRenderHooks: HookInfo[] = [
   // Server-side hooks
   ...(
     [
-      renderPage,
+      vikeApp,
       onBeforeRoute,
       routing,
       onCreatePageContext,
@@ -107,7 +107,7 @@ const clientNavigationHooks: HookInfo[] = [
   // Server-side hooks (for data fetching)
   ...(
     [
-      { ...renderPage, hooksEnv: ['server'] },
+      { ...vikeApp, hooksEnv: ['server'] },
       { ...onBeforeRoute, hooksEnv: ['server'] },
       { ...routing, hooksEnv: ['server'] },
       { ...onCreatePageContext, hooksEnv: ['server'] },
