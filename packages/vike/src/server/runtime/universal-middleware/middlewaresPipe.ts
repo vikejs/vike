@@ -71,8 +71,8 @@ function mergeContext(middleware: EnhancedMiddleware): UniversalMiddleware {
   }, getOptions(middleware))
 }
 
-// Runs what `build()` makes of the list `getMiddlewares_withErrorHandling()` returns upon each request. The list changes
-// only when the config does, so `build()` runs once per list.
+// Runs what `getPipe()` makes of the list `getMiddlewares_withErrorHandling()` returns upon each request. The list changes
+// only when the config does, so `getPipe()` runs once per list.
 function pipe(getPipe: (middlewares: Middleware[]) => UniversalMiddleware): UniversalMiddleware {
   const cache = new WeakMap<Middleware[], UniversalMiddleware>()
   return async (request, context, runtime) => {
