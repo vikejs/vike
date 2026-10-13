@@ -6,4 +6,10 @@ import { ConfigSpec } from '../../components'
   global={null}
 />
 
-See <Link href="/server" /> for how to use `vike(app)`.
+The `vike(app)` function installs Vike's handlers and middlewares to your server.
+
+> See <Link href="/server" /> for how to use `vike(app)`.
+
+It includes both:
+- Vike's handler that renders your pages (basically <Link href="/renderPage">`renderPage()`</Link>)
+- Every <Link href="/middleware">`+middleware`</Link> from <Link href="/extensions">Vike extensions</Link>
