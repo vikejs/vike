@@ -1,5 +1,5 @@
-export { middlewaresPipe_nonHandlers }
-export { middlewaresPipe_handlers }
+export { getMiddlewaresPipe_nonHandlers }
+export { getMiddlewaresPipe_handlers }
 export { pipeNonHandlers }
 
 import {
@@ -16,7 +16,7 @@ import '../../assertEnvServer.js'
 /**
  * What `vike(app, middlewares)` runs after the app's routes: the middlewares that are handlers, as one universal handler (looked up upon each request).
  */
-function middlewaresPipe_handlers(
+function getMiddlewaresPipe_handlers(
   // `object[]`: the user-land universal middlewares can come from another copy of @universal-middleware/core, whose types (keyed by a `unique symbol`) never match this copy's
   middlewaresUserLand: object[],
 ): UniversalHandler {
@@ -39,7 +39,7 @@ function middlewaresPipe_handlers(
 /**
  * What `vike(app, middlewares)` applies before the app's routes: the middlewares that aren't handlers, as one middleware (looked up upon each request).
  */
-function middlewaresPipe_nonHandlers(
+function getMiddlewaresPipe_nonHandlers(
   // `object[]`: the user-land universal middlewares can come from another copy of @universal-middleware/core, whose types (keyed by a `unique symbol`) never match this copy's
   middlewaresUserLand: object[],
 ): UniversalMiddleware {

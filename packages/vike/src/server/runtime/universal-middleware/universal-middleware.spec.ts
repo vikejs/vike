@@ -12,7 +12,7 @@ import {
   type UniversalMiddleware,
 } from '@universal-middleware/core'
 import { getMiddlewares_globalContext, type Middleware } from './core.js'
-import { pipeNonHandlers } from './middlewaresPipe.js'
+import { pipeNonHandlers } from './getMiddlewaresPipe.js'
 
 // Answers its path with a 401 and the request's URL
 const authAt = (path: string) =>

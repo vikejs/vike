@@ -5,7 +5,7 @@ import { Hono } from 'hono'
 import { enhance, MiddlewareOrder } from '@universal-middleware/core'
 import { apply } from '@universal-middleware/hono'
 import { getGlobalContext } from 'vike'
-import { middlewaresPipe_handlers, middlewaresPipe_nonHandlers } from 'vike/__internal'
+import { getMiddlewaresPipe_handlers, getMiddlewaresPipe_nonHandlers } from 'vike/__internal'
 import { renderPage } from 'vike/server'
 import vike from 'vike/fetch'
 import type { Server } from 'vike/types'
@@ -47,7 +47,7 @@ const middlewaresUserLand = [
 ]
 
 const app = new Hono()
-apply(app, halves ? [middlewaresPipe_nonHandlers(middlewaresUserLand)] : middlewares.filter((m) => !m.isHandler))
+apply(app, halves ? [getMiddlewaresPipe_nonHandlers(middlewaresUserLand)] : middlewares.filter((m) => !m.isHandler))
 // The app's own routes
 app.get('/api/me', (c) => c.text('Me'))
 app.get('/overridden', (c) => c.text('Overridden by +server.ts'))
@@ -64,7 +64,7 @@ app.get('/render-page', async (c) => {
   const { httpResponse } = await renderPage({ urlOriginal: new URL('/', c.req.url).href })
   return new Response(httpResponse.body, { status: httpResponse.statusCode, headers: httpResponse.headers })
 })
-apply(app, halves ? [middlewaresPipe_handlers(middlewaresUserLand)] : middlewares.filter((m) => m.isHandler))
+apply(app, halves ? [getMiddlewaresPipe_handlers(middlewaresUserLand)] : middlewares.filter((m) => m.isHandler))
 
 export default {
   fetch: app.fetch,
