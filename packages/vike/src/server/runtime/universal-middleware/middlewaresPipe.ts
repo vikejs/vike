@@ -4,15 +4,13 @@ export { pipeNonHandlers }
 
 import {
   enhance,
-  getUniversal,
   isHandler,
   pipeRoute,
-  type EnhancedMiddleware,
   type RuntimeAdapterTarget,
   type UniversalHandler,
   type UniversalMiddleware,
 } from '@universal-middleware/core'
-import { getMiddlewares_withErrorHandling, getOptions, type Middleware } from './core.js'
+import { getMiddlewares_withErrorHandling, mergeContext, type Middleware } from './core.js'
 import '../../assertEnvServer.js'
 
 // What `vike(app, middlewares)` runs after the app's routes, looked up upon each request: the user-land universal
@@ -59,16 +57,6 @@ function pipeNonHandlers(middlewares: Middleware[], nonHandlersUserLand: Univers
     ...nonHandlersUserLand.map((middleware) => mergeContext(enhance(middleware, { runs: 'always' }))),
   ]
   return pipeRoute(nonHandlers) as UniversalMiddleware
-}
-
-// Universal Middleware replaces the context with the one a middleware returns: Vike merges the one a user-land universal
-// middleware returns, as it does a +middleware's (`wrapWithVikeRouting()`)
-function mergeContext(middleware: EnhancedMiddleware): UniversalMiddleware {
-  return enhance(async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) => {
-    const result = await getUniversal(middleware as UniversalMiddleware)(request, context, runtime)
-    if (!result || result instanceof Response || typeof result === 'function') return result
-    return { ...context, ...result }
-  }, getOptions(middleware))
 }
 
 // Runs what `getPipe()` makes of the list `getMiddlewares_withErrorHandling()` returns upon each request. The list changes

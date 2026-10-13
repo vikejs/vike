@@ -2,7 +2,7 @@ export { getMiddlewares_globalContext }
 export { getMiddlewares_withErrorHandling }
 export { hasPlusMiddlewares }
 export { vikePagesRoute }
-export { getOptions }
+export { mergeContext }
 export type { Middleware }
 
 import {
@@ -98,6 +98,7 @@ function wrapWithVikeRouting(plusMiddleware: EnhancedMiddleware, baseServer: str
     )
   }
   const isMatch = path && createMatcher(path, method)
+  const plusMiddlewareMerged = mergeContext(plusMiddleware)
   return enhance(
     async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) => {
       const { isPageContextJsonRequest, urlWithoutPageContextRequestSuffix } = handlePageContextRequestUrl(request.url)
@@ -105,9 +106,7 @@ function wrapWithVikeRouting(plusMiddleware: EnhancedMiddleware, baseServer: str
         const { href, isBaseMissing } = parseUrl(urlWithoutPageContextRequestSuffix, baseServer)
         if (isBaseMissing || !isMatch(new Request(href, { method: request.method }))) return
       }
-      const answer = await getUniversal(plusMiddleware as UniversalMiddleware)(request, context, runtime)
-      // A +middleware returns only what it adds: merged into a copy, as an adapter may reuse the context object across requests
-      if (answer && !(answer instanceof Response) && typeof answer !== 'function') return { ...context, ...answer }
+      const answer = await getUniversal(plusMiddlewareMerged)(request, context, runtime)
       return isPageContextJsonRequest ? toPageContextJsonAnswer(answer) : answer
     },
     {
@@ -116,6 +115,16 @@ function wrapWithVikeRouting(plusMiddleware: EnhancedMiddleware, baseServer: str
       runs: 'until-response',
     },
   )
+}
+
+// Universal Middleware replaces the context with the one a middleware returns: Vike merges it into a new object, as a
+// +middleware or a user-land universal middleware returns only what it adds, and an adapter may reuse the context
+function mergeContext(middleware: EnhancedMiddleware): UniversalMiddleware {
+  return enhance(async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) => {
+    const result = await getUniversal(middleware as UniversalMiddleware)(request, context, runtime)
+    if (!result || result instanceof Response || typeof result === 'function') return result
+    return { ...context, ...result }
+  }, getOptions(middleware))
 }
 
 // The options `enhance()` gave a middleware, also when an adapter wraps it, without the unset ones: Universal Middleware sorts an `order` set to `undefined` as `NaN`
