@@ -116,7 +116,8 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     // A 404, so that the client router reloads the page
     const replaced: Response = await fetch(url, { headers: { 'x-replace': '1' } })
     expect(replaced.status).toBe(404)
-    expect(await replaced.text()).toBe('Replaced')
+    expect(replaced.headers.get('content-type')).toBe(null)
+    expect(await replaced.text()).toBe('{"error":"replaced"}')
   })
 
   test("A +middleware's redirect of a client-side navigation is followed", async () => {

@@ -146,10 +146,10 @@ function toPageContextJsonAnswer(answer: Awaited<ReturnType<UniversalMiddleware>
   if (typeof answer !== 'function') return answer
   return async (response: Response) => {
     const replaced = await answer(response)
-    // Vike's JSON, possibly re-encoded, stays
-    return (
-      replaced && (replaced.headers.get('content-type')?.includes('application/json') ? replaced : toReload(replaced))
-    )
+    // Vike's JSON, possibly re-encoded, keeps its status and its JSON Content-Type
+    const isVikeJson =
+      replaced?.status === response.status && replaced.headers.get('content-type')?.includes('application/json')
+    return replaced && (isVikeJson ? replaced : toReload(replaced))
   }
 }
 // Warns about a path that starts with the Base URL
