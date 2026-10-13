@@ -67,7 +67,11 @@ import vike from '@vikejs/hono'
 import type { Server } from 'vike/types'
 
 const app = new Hono()
-vike(app) // Attaches Vike
+vike(app) // Make sure to run vike(app) before your routes
+
+// ...
+// Your routes
+// ...
 
 export default {
   fetch: app.fetch
@@ -82,7 +86,11 @@ import vike, { toFetchHandler } from '@vikejs/express'
 import type { Server } from 'vike/types'
 
 const app = express()
-vike(app) // Attaches Vike
+vike(app) // Make sure to run vike(app) before your routes
+
+// ...
+// Your routes
+// ...
 
 export default {
   fetch: toFetchHandler(app)
@@ -97,7 +105,12 @@ import vike, { toFetchHandler } from '@vikejs/fastify'
 import type { Server } from 'vike/types'
 
 const app = fastify()
-await vike(app) // Attaches Vike
+vike(app) // Make sure to run vike(app) before your routes
+
+// ...
+// Your routes
+// ...
+
 await app.ready()
 
 export default {
@@ -113,7 +126,11 @@ import vike from '@vikejs/h3'
 import type { Server } from 'vike/types'
 
 const app = createApp()
-vike(app) // Attaches Vike
+vike(app) // Make sure to run vike(app) before your routes
+
+// ...
+// Your routes
+// ...
 
 export default {
   fetch: toWebHandler(app)
@@ -128,7 +145,11 @@ import vike from '@vikejs/elysia'
 import type { Server } from 'vike/types'
 
 const app = new Elysia()
-vike(app) // Attaches Vike
+vike(app) // Make sure to run vike(app) before your routes
+
+// ...
+// Your routes
+// ...
 
 export default {
   fetch: app.fetch
@@ -148,6 +169,12 @@ export default {
 } satisfies Server
 ```
 
+> <Link href="/vike(app)">`vike(app)`</Link> installs:
+> - Vike's handler that renders your pages
+> - Every <Link href="/middleware">`+middleware`</Link> from <Link href="/extensions">Vike extensions</Link>
+
+> The <Link href="/middleware">`+middleware`</Link> of your Vike extensions must run before your routes, so that your routes can read what `+middleware` added to the context.
+
 ### `+server: true`
 
 For simple apps, instead of creating `+server.js`, you can use Vike's built-in lightweight server:
@@ -159,83 +186,6 @@ export default {
   server: true // Use Vike's built-in server // [!code ++]
 }
 ```
-
-
-## Your routes
-
-Define your routes after `vike(app)`:
-
-```ts choice=Hono
-// +server.ts
-
-import { Hono } from 'hono'
-import vike, { getContext } from '@vikejs/hono'
-
-const app = new Hono()
-vike(app)
-
-app.get('/api/me', (c) => c.json(getContext(c).user))
-```
-
-```ts choice=Express
-// +server.ts
-
-import express from 'express'
-import vike, { getContext } from '@vikejs/express'
-
-const app = express()
-vike(app)
-
-app.get('/api/me', (req, res) => res.json(getContext(req).user))
-```
-
-```ts choice=Fastify
-// +server.ts
-
-import fastify from 'fastify'
-import vike, { getContext } from '@vikejs/fastify'
-
-const app = fastify()
-await vike(app)
-
-app.get('/api/me', (request) => getContext(request).user)
-```
-
-```ts choice=H3
-// +server.ts
-
-import { createApp, createRouter, eventHandler } from 'h3'
-import vike, { getContext } from '@vikejs/h3'
-
-const app = createApp()
-vike(app)
-
-const router = createRouter()
-router.get('/api/me', eventHandler((event) => getContext(event).user))
-app.use(router)
-```
-
-```ts choice=Elysia
-// +server.ts
-
-import { Elysia } from 'elysia'
-import vike from '@vikejs/elysia'
-
-const app = new Elysia()
-vike(app)
-
-app.get('/api/me', ({ getContext }) => getContext().user)
-```
-
-The <Link href="/middleware">`+middleware`</Link> of your Vike extensions (e.g. authentication) run before your routes, and your routes can read what they added to the context with `getContext()`. Your routes take precedence over Vike's pages, so a catch-all route (e.g. a custom 404 handler) hides them: use an <Link href="/error-page">error page</Link> instead.
-
-With Hono, Express, H3 and Elysia, `vike(app)` throws if you define a route before it, because the `+middleware` wouldn't run for that route. Middlewares and wildcard routes are fine before it, and run before all `+middleware` (e.g. `app.use(cors())`, a session, or `app.get('/static/*', serveStatic())`). To answer a route before the `+middleware` run, see <Link href="/middleware#manual-integration" />.
-
-> Server specifics:
-> - Fastify: a route defined before `vike(app)` still gets the `+middleware`.
-> - Express and H3: Vike adds its pages upon the first request, so define all your routes before your server starts serving requests.
-> - H3: `vike(app)` also throws if a router, a nested app or a lazy handler is mounted before it. It doesn't detect a handler mounted on a path (e.g. `app.use('/health', eventHandler(() => 'ok'))`), so define it after `vike(app)`.
-> - Hono: Vike renders its pages with `app.notFound()`, so don't call `app.notFound()` yourself, and call `vike(app)` on the parent app instead of on an app mounted with `app.route()`. A route that calls `c.notFound()` gets Hono's own 404 response, not your error page.
 
 
 ## Deployment
@@ -459,8 +409,6 @@ export default {
   }
 } satisfies Server
 ```
-
-> The middlewares you pass to `vike(app)` run together with your <Link href="/middleware">`+middleware`</Link>, so `compress()` also compresses the responses of your `+middleware`.
 
 > See <Link href="/precompress" noBreadcrumb /> to generate `.br`/`.gz` files for your static assets at build time (instead of unnecessarily compressing them on each request).
 
