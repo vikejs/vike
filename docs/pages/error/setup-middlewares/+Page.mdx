@@ -11,7 +11,7 @@ This error means that your app has a <Link href="/middleware">`+middleware`</Lin
 Use one of the following instead of `renderPage()`:
 - <Link href="/vike(app)">`vike(app)`</Link> (`@vikejs/*` 0.4 or later), which runs all `+middleware` around your routes.
 - Vike's built-in server: <Link href="/server#server-true">`+server: true`</Link>.
-- Apply <Link href="/middleware#manual-integration">`globalContext.middlewares`</Link> yourself: the list ends with Vike's pages.
+- Apply <Link href="/vike(app)#manual-integration">`globalContext.middlewares`</Link> yourself: the list ends with Vike's pages.
 
 If your server applies `globalContext.middlewares` and also has its own catch-all route calling `renderPage()`, delete that route: the list already renders your pages.
 
