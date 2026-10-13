@@ -2,7 +2,7 @@ import { vikeUniversalMiddleware } from './vikeUniversalMiddleware.js'
 import { assertWarning } from '../../../utils/assert.js'
 import '../../assertEnvServer.js'
 
-// Vike's own server imports vikeUniversalMiddleware.js directly: only the released @vikejs/* adapters, vike-photon and vike-server import this entry
+// TO-DO/next-major-release: remove this export
 assertWarning(
   false,
   [
