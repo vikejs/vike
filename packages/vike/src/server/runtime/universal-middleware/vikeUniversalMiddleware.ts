@@ -7,14 +7,12 @@ import '../../assertEnvServer.js'
 
 const vikeUniversalMiddleware = enhance(handler, vikePagesRoute)
 
-// Vike's own server has no user-land universal middlewares
 const pipeNonHandlers = middlewaresPipe_nonHandlers([])
 const pipeHandlers = middlewaresPipe_handlers([])
 
-// Vike's own server (`vike/fetch`, `$ vike dev` and `$ vike preview`): the two halves that `vike(app)` applies, in a row
+// Vike's built-in server: the two halves that `vike(app)` applies, in a row
 async function handler(
   request: Request,
-  // Missing upon `vike.fetch(request)`
   context: Universal.Context = {},
   runtime: RuntimeAdapterTarget<unknown> = getAdapterRuntime('other', { params: undefined }),
 ) {
