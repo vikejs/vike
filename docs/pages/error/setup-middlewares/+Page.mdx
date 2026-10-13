@@ -6,16 +6,16 @@ import { Link, CodeBlockTransformer } from '@brillout/docpress'
 ```
 </CodeBlockTransformer>
 
-This error means that your app has a <Link href="/middleware">`+middleware`</Link> (e.g. added by a Vike extension) but your server renders pages by calling <Link href="/renderPage">`renderPage()`</Link> itself. Vike can't tell whether your `+middleware` ran, so it answers with a `500` instead of rendering the page.
+This error means you're using a Vike extension that installs a server middleware via <Link href="/middleware">`+middleware`</Link> while you're using <Link href="/renderPage">`renderPage()`</Link> which <Link href="/renderPage#renderpage-vs-vike-app">doesn't support `+middleware`</Link>.
 
-Use one of the following instead of `renderPage()`:
-- <Link href="/vike(app)">`vike(app)`</Link> (`@vikejs/*` 0.4 or later), which runs all `+middleware` around your routes.
-- Vike's built-in server: <Link href="/server#server-true">`+server: true`</Link>.
-- Apply <Link href="/vike(app)#manual-integration">`globalContext.middlewares`</Link> yourself: the list ends with Vike's pages.
+Use `vike(app)` instead of `renderPage()`, see
+- <Link href="/server" />
 
 
 ## See also
 
-- <Link href="/middleware" />
 - <Link href="/server" />
 - <Link href="/renderPage" />
+- <Link href="/renderPage#renderpage-vs-vike-app" />
+- <Link href="/vike(app)" />
+- <Link href="/middleware" />
