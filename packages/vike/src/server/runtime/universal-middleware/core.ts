@@ -88,8 +88,8 @@ async function getMiddlewares_withErrorHandling(): Promise<Middleware[]> {
 
 // A +middleware as an element of `globalContext.middlewares`. A `path` is matched against the page's URL, the way Vike routes pages: without the Base URL, and with a `.pageContext.json` request standing for its page.
 function wrapWithVikeRouting(plusMiddleware: EnhancedMiddleware, baseServer: string): EnhancedMiddleware {
-  const { name, path, method, order } = getOptions(plusMiddleware)
-  if (path) assertPath(name, path, baseServer)
+  const { path, method, ...options } = getOptions(plusMiddleware)
+  if (path) assertPath(options.name, path, baseServer)
   if (isHandler(plusMiddleware)) {
     // A handler is a route of the server, which matches it: its path gets the Base URL. (`enhance()` clones it, so that marking it `isHandler` leaves the extension's export untouched.)
     return enhance(
@@ -109,10 +109,9 @@ function wrapWithVikeRouting(plusMiddleware: EnhancedMiddleware, baseServer: str
       return isPageContextJsonRequest ? toPageContextJsonAnswer(answer) : answer
     },
     {
-      name,
+      ...options,
       // Whatever its order, it doesn't run once a Response exists
       runs: 'until-response',
-      ...(order !== undefined && { order }),
     },
   )
 }
