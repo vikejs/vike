@@ -193,6 +193,7 @@ async function renderPageServer_universal(
 }
 
 function addUserAgent_deprecated(pageContextInit: object, request: Request, runtime: RuntimeAdapterTarget<unknown>) {
+  // Backwards compatibility for `$ vike dev` and `$ vike preview`
   if (runtime.adapter === 'other' && 'req' in runtime) {
     Object.defineProperty(pageContextInit, 'userAgent', {
       get() {
