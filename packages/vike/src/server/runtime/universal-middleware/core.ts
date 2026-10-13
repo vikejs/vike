@@ -185,10 +185,10 @@ async function renderPageServer_universal(
   }
   addUserAgent_deprecated(pageContextInit, request, runtime)
   const pageContext = await renderPageServer(pageContextInit, false)
-  const response = pageContext.httpResponse
-  return new Response(response.getReadableWebStream(), {
-    status: response.statusCode,
-    headers: response.headers,
+  const { httpResponse } = pageContext
+  return new Response(httpResponse.getReadableWebStream(), {
+    status: httpResponse.statusCode,
+    headers: httpResponse.headers,
   })
 }
 
