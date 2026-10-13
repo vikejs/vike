@@ -1126,7 +1126,7 @@ function warningsAndErrors() {
         url: '/warning/setup',
       },
       {
-        title: "❌ Server doesn't apply `+middleware`",
+        title: "❌ `renderPage()` doesn't run `+middleware`",
         url: '/error/setup-middlewares',
       },
       {

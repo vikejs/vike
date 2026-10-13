@@ -176,7 +176,7 @@ async function renderPageServerEntryOnce(
 
   assertUsage(
     !isCalledDirectlyByUser || !hasPlusMiddlewares(globalContext),
-    `renderPage() doesn't run your +middleware, see ${pc.underline('https://vike.dev/error/setup-middlewares')}`,
+    `renderPage() doesn't run +middleware — see ${pc.underline('https://vike.dev/error/setup-middlewares')}`,
   )
 
   const pageContextBegin = getPageContextBegin(pageContextInit, globalContext, requestId, asyncStore)
