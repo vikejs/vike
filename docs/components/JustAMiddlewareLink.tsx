@@ -7,7 +7,10 @@ function JustAMiddlewareLink() {
   return (
     <>
       From the perspective of the server, Vike is{' '}
-      <Link href="/server#get-started">just a server middleware `vike(app)`</Link>.
+      <Link href="/server#get-started">
+        just a server middleware <code>vike(app)</code>
+      </Link>
+      .
     </>
   )
 }
