@@ -279,7 +279,7 @@ describe('pipeNonHandlers()', () => {
         context,
         {} as RuntimeAdapter,
       )
-      // The context it's given stays untouched: an adapter may reuse it across requests
+      // Vike's merges leave the context it's given untouched: an adapter may reuse it across requests
       expect([seen, returned, context]).toEqual([
         { urlOriginal: '/', user: 'alice', team: 'blue' },
         { urlOriginal: '/', user: 'alice', team: 'blue' },

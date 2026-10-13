@@ -16,7 +16,7 @@ async function handler(
   context: Universal.Context = {},
   runtime: RuntimeAdapterTarget<unknown> = getAdapterRuntime('other', { params: undefined }),
 ) {
-  // A copy: the +middleware's context is merged into it, and a Cloudflare worker's `env` (its context) is shared by all requests
+  // A copy: Universal Middleware's `pipe()` writes a returned context into it when a response function follows, and a Cloudflare worker's `env` (its context) is shared by all requests
   context = { ...context }
   const answer = await nonHandlers(request, context, runtime)
   if (answer instanceof Response) return answer
