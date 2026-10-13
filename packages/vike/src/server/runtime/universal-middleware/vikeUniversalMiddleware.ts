@@ -6,8 +6,8 @@ import { vikePagesRoute } from './core.js'
 import '../../assertEnvServer.js'
 
 // Vike's own server has no user-land universal middlewares
-const nonHandlers = middlewaresPipe_nonHandlers([])
-const handlersAndPages = middlewaresPipe_handlers([])
+const pipeNonHandlers = middlewaresPipe_nonHandlers([])
+const pipeHandlers = middlewaresPipe_handlers([])
 
 // Vike's own server (`vike/fetch`, `$ vike dev` and `$ vike preview`): the two halves that `vike(app)` applies, in a row
 async function handler(
@@ -18,11 +18,11 @@ async function handler(
 ) {
   // A copy: Universal Middleware's `pipe()` writes a returned context into it when a response function follows, and a Cloudflare worker's `env` (its context) is shared by all requests
   context = { ...context }
-  const answer = await nonHandlers(request, context, runtime)
+  const answer = await pipeNonHandlers(request, context, runtime)
   if (answer instanceof Response) return answer
   // The context the +middleware returned
   if (answer && typeof answer === 'object') context = answer
-  const response = await handlersAndPages(request, context, runtime)
+  const response = await pipeHandlers(request, context, runtime)
   return typeof answer === 'function' ? ((await answer(response)) ?? response) : response
 }
 

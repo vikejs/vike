@@ -42,7 +42,7 @@ const vikePagesRoute = {
   name: 'vike',
   method: ['GET', 'POST', 'PUT', 'PATCH', 'HEAD', 'OPTIONS'],
   path: '/**',
-} satisfies UniversalOptionsArg
+} as const satisfies UniversalOptionsArg
 
 // Vike's pages, after everything else
 const renderPageServer_universalMiddleware = enhance(renderPageServer_universal, vikePagesRoute)
