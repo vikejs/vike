@@ -72,7 +72,7 @@ function hasPlusMiddlewares(globalContext: { config: ConfigResolved }) {
   return getMiddlewares_config(globalContext).length > 0
 }
 
-// `globalContext.middlewares`, or `middlewaresConfigError` upon an invalid config
+// `globalContext.middlewares`, or `middlewares_uponConfigError` upon an invalid config
 async function getMiddlewares_withErrorHandling(): Promise<Middleware[]> {
   // Before the await too, which doesn't resolve while the config is invalid
   if (getVikeConfigError()) return middlewares_uponConfigError

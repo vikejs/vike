@@ -305,14 +305,14 @@ export default {
 
 The <Link href="/middleware">`+middleware`</Link> of your Vike extensions (e.g. authentication) run before your routes, and your routes can read what they added to the context with `getContext()`. Your routes take precedence over Vike's pages, so a catch-all route (e.g. a custom 404 handler) hides them: use an <Link href="/error-page">error page</Link> instead.
 
-With Hono, Express, H3 and Elysia, `vike(app)` throws if you define a route before it, because the `+middleware` wouldn't run for that route. Middlewares and wildcard routes are fine before it, and run before all `+middleware` (e.g. `app.use(cors())`, a session, or `app.get('/static/*', serveStatic())`). With Fastify, a route defined before `vike(app)` is fine: the `+middleware` still run before it. With Hattip, Vike can't detect it: a route defined before `vike(router)` skips the `+middleware`. To answer a route before the `+middleware` run, see <Link href="/middleware#manual-integration" />.
+With Hono, Express, H3 and Elysia, `vike(app)` throws if you define a route before it, because the `+middleware` wouldn't run for that route. Middlewares and wildcard routes are fine before it, and run before all `+middleware` (e.g. `app.use(cors())`, a session, or `app.get('/static/*', serveStatic())`). To answer a route before the `+middleware` run, see <Link href="/middleware#manual-integration" />.
 
 > Server specifics:
+> - Fastify: a route defined before `vike(app)` still gets the `+middleware`.
 > - Express and H3: Vike adds its pages upon the first request, so define all your routes before your server starts serving requests.
 > - H3: `vike(app)` also throws if a router, a nested app or a lazy handler is mounted before it. It doesn't detect a handler mounted on a path (e.g. `app.use('/health', eventHandler(() => 'ok'))`), so define it after `vike(app)`.
 > - Hono: Vike renders its pages with `app.notFound()`, so don't call `app.notFound()` yourself, and call `vike(app)` on the parent app instead of on an app mounted with `app.route()`. A route that calls `c.notFound()` gets Hono's own 404 response, not your error page.
-> - Hattip: Vike adds its pages when you call `router.buildHandler()`, so define all your routes before calling it.
-> - srvx: each route is a [Universal Middleware](https://universal-middleware.dev/) handler with a `name`, a `method` and a `path`, and it receives the context as its second argument.
+> - Hattip: Vike adds its pages when you call `router.buildHandler()`, so define all your routes before calling it. A route defined before `vike(router)` skips the `+middleware`, and Vike can't detect it.
 
 
 ## Deployment
