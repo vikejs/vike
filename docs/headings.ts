@@ -1127,7 +1127,7 @@ function warningsAndErrors() {
       },
       {
         title: "❌ Server doesn't apply `+middleware`",
-        url: '/warning/setup-middlewares',
+        url: '/error/setup-middlewares',
       },
       {
         title: '❌ Runtime code defined in config file',
