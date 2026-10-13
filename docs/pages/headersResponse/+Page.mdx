@@ -67,7 +67,7 @@ export function onBeforeRenderHtml(pageContext: PageContextServer) {
 
 > `pageContext.headersResponse` is a [standard `Headers` object](https://developer.mozilla.org/en-US/docs/Web/API/Headers).
 
-The final HTTP response headers sent to the client are available at `pageContext.httpResponse.headers`.
+<Link href="/server">`vike(app)`</Link> sends the final HTTP response headers for you. If you use <Link href="/renderPage">`renderPage()`</Link>, they're available at `pageContext.httpResponse.headers`:
 
 ```ts
 import { renderPage } from 'vike/server'
@@ -81,8 +81,6 @@ app.get('*', async (req: Request) => {
   // ...
 })
 ```
-
-> See: <Link href="/renderPage" />
 
 It's a list of string tuples `[string, string][]` — for example:
 

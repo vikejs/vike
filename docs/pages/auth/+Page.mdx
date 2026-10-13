@@ -73,31 +73,7 @@ export default {
 
 > If you use <Link href="/server">`vike(app)`</Link>, you can access the request object at <Link href="/pageContext#req">`pageContext.req`</Link>.
 >
-> If you use <Link href="/renderPage">`renderPage()`</Link>, you can define a custom property `pageContext.req`:
-> ```ts
-> // +serverEntry.ts
->
-> import { renderPage } from 'vike/server'
->
-> // Vike server middleware
-> app.get('*', async (req: Request, res: Response) => {
->   const pageContextInit = {
->     urlOriginal: req.url,
->     // Make the request object available at pageContext.req
->     req
->   }
->   const pageContext = await renderPage(pageContextInit)
->   // ...
-> })
->
-> declare global {
->   namespace Vike {
->     interface PageContextServer {
->       req: Request
->     }
->   }
-> }
-> ```
+> If you use <Link href="/renderPage">`renderPage()`</Link>, you can pass `req` to `renderPage()`, see <Link href="/pageContext#renderpage" />.
 
 
 ## SSG

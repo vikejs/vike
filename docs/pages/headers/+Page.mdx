@@ -45,7 +45,7 @@ const acceptLanguage = pageContext.headers['accept-language'].split(',').map((v)
 
 For getting the list of [cookie values](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies), you can use a cookie parser (e.g. [`cookie-parser`](https://npmjs.com/package/cookie-parser)).
 
-The `pageContext.headersOriginal` value is defined at the <Link href="/renderPage">`renderPage()`</Link> integration:
+With <Link href="/server">`vike(app)`</Link>, `pageContext.headersOriginal` is the request's [standard `Headers` object](https://developer.mozilla.org/en-US/docs/Web/API/Headers). If you use <Link href="/renderPage">`renderPage()`</Link>, you define it:
 
 ```ts
 import { renderPage } from 'vike/server'
