@@ -2,6 +2,7 @@ export { importRolldown }
 
 import { getGlobalObject } from '../../../../utils/getGlobalObject.js'
 import { createDebug } from '../../../../utils/debug.js'
+import '../../assertEnvVite.js'
 
 type Rolldown = typeof import('rolldown')
 
