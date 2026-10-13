@@ -75,10 +75,9 @@ import express from 'express'
 import vike from '@vikejs/express'
 
 const app = express()
+vike(app) // Make sure to run vike(app) before your routes
 
 // ...
-
-vike(app)
 
 // Unlike +server.js, note how +serverEntry.js determines how the server starts:
 app.listen(3000)
