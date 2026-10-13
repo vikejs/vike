@@ -4,15 +4,13 @@ export { getConfigExecutionErrorIntroMsg }
 export { isTemporaryBuildFile }
 export type { VikeTranspileCache }
 
-import {
-  rolldown,
-  type Plugin,
-  type PluginContext,
-  type PluginContextResolveOptions,
-  type RolldownBuild,
-  type RolldownLog,
-  type RolldownOutput,
-  VERSION,
+import type {
+  Plugin,
+  PluginContext,
+  PluginContextResolveOptions,
+  RolldownBuild,
+  RolldownLog,
+  RolldownOutput,
 } from 'rolldown'
 import { parseAst } from 'rolldown/parseAst'
 import fs from 'node:fs'
@@ -37,6 +35,7 @@ import sourceMapSupport from 'source-map-support'
 import type { FilePathResolved } from '../../../../types/FilePath.js'
 import { getFilePathAbsoluteUserRootDir } from '../getFilePath.js'
 import { getMagicString } from '../getMagicString.js'
+import { importRolldown } from './importRolldown.js'
 import '../../assertEnvVite.js'
 
 assertIsNotProductionRuntime()
@@ -44,7 +43,6 @@ installSourceMapSupport()
 const debug = createDebug('vike:pointer-imports')
 const debugResolve = createDebug('vike:transpile-resolve')
 const debugConfig = createDebug('vike:config')
-if (debugResolve.isActivated) debugResolve('rolldown version', VERSION)
 
 type FileExports = { fileExports: Record<string, unknown> }
 
@@ -275,6 +273,7 @@ async function transpileFile(
     },
   ]
 
+  const { rolldown } = await importRolldown()
   let bundle: RolldownBuild | undefined
   let output: RolldownOutput
   try {
