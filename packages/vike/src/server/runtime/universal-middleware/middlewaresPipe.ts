@@ -13,10 +13,13 @@ import {
 import { getMiddlewares_withErrorHandling, mergeContext, type Middleware } from './core.js'
 import '../../assertEnvServer.js'
 
-// What `vike(app, middlewares)` runs after the app's routes, looked up upon each request: the user-land universal
-// middlewares that are handlers (the first one registered on a path answers), the +middleware that are handlers, then
-// Vike's pages
-function middlewaresPipe_handlers(middlewaresUserLand: object[]): UniversalHandler {
+/**
+ * What `vike(app, middlewares)` runs after the app's routes, looked up upon each request: the user-land universal middlewares that are handlers (the first one registered on a path answers), the +middleware that are handlers, then Vike's handler that renders pages.
+ */
+function middlewaresPipe_handlers(
+  // `object[]`: the user-land universal middlewares can come from another copy of @universal-middleware/core, whose types (keyed by a `unique symbol`) never match this copy's
+  middlewaresUserLand: object[],
+): UniversalHandler {
   const handlersUserLand = (middlewaresUserLand as UniversalMiddleware[]).filter(isHandler)
   const router = pipe((middlewares) =>
     pipeRoute([...handlersUserLand, ...middlewares.filter((middleware) => middleware.isHandler)]),
@@ -33,11 +36,13 @@ function middlewaresPipe_handlers(middlewaresUserLand: object[]): UniversalHandl
   ) as UniversalHandler
 }
 
-// What `vike(app, middlewares)` applies before the app's routes: the +middleware and the user-land universal
-// middlewares that aren't handlers, as one middleware (looked up upon each request).
-// `object[]`: the user-land universal middlewares can come from another copy of @universal-middleware/core, whose types
-// (keyed by a `unique symbol`) never match this copy's.
-function middlewaresPipe_nonHandlers(middlewaresUserLand: object[]): UniversalMiddleware {
+/**
+ * What `vike(app, middlewares)` applies before the app's routes: the +middleware and the user-land universal middlewares that aren't handlers, as one middleware (looked up upon each request).
+ */
+function middlewaresPipe_nonHandlers(
+  // `object[]`: the user-land universal middlewares can come from another copy of @universal-middleware/core, whose types (keyed by a `unique symbol`) never match this copy's
+  middlewaresUserLand: object[],
+): UniversalMiddleware {
   const nonHandlersUserLand = (middlewaresUserLand as UniversalMiddleware[]).filter(
     (middleware) => !isHandler(middleware),
   )
@@ -47,10 +52,6 @@ function middlewaresPipe_nonHandlers(middlewaresUserLand: object[]): UniversalMi
   )
 }
 
-// The +middleware that aren't handlers and the user-land universal middlewares, by order, the +middleware first at
-// equal order, each on its path. The first Response answers: the +middleware after it don't run, and the user-land
-// universal middlewares after it run for their response functions, a Response they return being ignored. The response
-// functions apply to the final response, in their order.
 function pipeNonHandlers(middlewares: Middleware[], nonHandlersUserLand: UniversalMiddleware[]) {
   const nonHandlers = [
     ...middlewares.filter((middleware) => !middleware.isHandler),
@@ -59,9 +60,8 @@ function pipeNonHandlers(middlewares: Middleware[], nonHandlersUserLand: Univers
   return pipeRoute(nonHandlers) as UniversalMiddleware
 }
 
-// Runs what `getPipe()` makes of the list `getMiddlewares_withErrorHandling()` returns upon each request. The list changes
-// only when the config does, so `getPipe()` runs once per list.
 function pipe(getPipe: (middlewares: Middleware[]) => UniversalMiddleware): UniversalMiddleware {
+  // The list changes only when the config does, so `getPipe()` runs once per list
   const cache = new WeakMap<Middleware[], UniversalMiddleware>()
   return async (request, context, runtime) => {
     const middlewares = await getMiddlewares_withErrorHandling()
