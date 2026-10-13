@@ -140,8 +140,6 @@ The `renderPage()` function doesn't depend on Node.js and you can use `renderPag
 There are two fundamental differences:
 - <Link href="/vike(app)">`vike(app)`</Link> supports and automatically installs <Link href="/middleware">`+middleware`</Link>, while `renderPage()` doesn't support `+middleware`.
    > This means that, if you use a Vike extension that uses `+middleware`, then use `vike(app)` instead of `renderPage()`.
-   >
-   > It's possible to use `renderPage()` while manually installing <Link href="/globalContext#middlewares">`globalContext.middlewares`</Link> yourself, but it's cumbersome. (Both `renderPage()` and `globalContext.middlewares` require a catch-all which leads to conflicts.)
 - `vike(app)` is zero-config while `renderPage()` is lower-level.
 
 | | `vike(app)` | `renderPage()` |
@@ -155,7 +153,7 @@ There are two fundamental differences:
 
 > `vike(app)` and `renderPage()` are interchangeable: you can use either one, regardless of whether you use <Link href="/server">`+server.js`</Link>, <Link href="/serverEntry">`+serverEntry.js`</Link>, or <Link href="#without-serverentry-js">run your server directly</Link> (e.g. `$ node server/index.js`).
 >
-> That said, if you use a Vike extension that uses `+middleware`, you cannot (easily) use `renderPage()` — you must use <Link href="/vike(app)">`vike(app)`</Link> (or <Link href="/globalContext#middlewares">`globalContext.middlewares`</Link> if your server doesn't have a `vike(app)` adapter).
+> That said, if you use a Vike extension that uses `+middleware`, you cannot use `renderPage()` — you must use <Link href="/vike(app)">`vike(app)`</Link> (or <Link href="/vike(app)#manual-integration">`globalContext.middlewares`</Link> if your server doesn't have a `vike(app)` adapter).
 
 > See also:
 > - <Link href="/server" />
