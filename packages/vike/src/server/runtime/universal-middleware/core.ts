@@ -34,7 +34,7 @@ import '../../assertEnvServer.js'
 
 type Middleware = EnhancedMiddleware & { isHandler: boolean }
 
-// The requests Vike's pages answer
+// Route of Vike's handler that renders pages
 const vikePagesRoute = {
   name: 'vike',
   method: ['GET', 'POST', 'PUT', 'PATCH', 'HEAD', 'OPTIONS'],
@@ -44,10 +44,10 @@ const vikePagesRoute = {
 // Vike's pages
 const renderPageServer_universalMiddleware = enhance(renderPageServer_universal, vikePagesRoute)
 
-// Upon an invalid config: Vike's pages answer every request with the error
+// Upon an invalid config: answer every request with the error
 const middlewares_uponConfigError = [enhance(renderPageServer_universal, { name: 'vike' })].map(withIsHandler)
 
-// `globalContext.middlewares`: every `+middleware`, then Vike's pages
+// `globalContext.middlewares` — every `+middleware` and Vike's handler that renders pages
 function getMiddlewares_globalContext(globalContext: { config: ConfigResolved }, baseServer: string): Middleware[] {
   return [
     ...getMiddlewares_config(globalContext).map((plusMiddleware) =>
