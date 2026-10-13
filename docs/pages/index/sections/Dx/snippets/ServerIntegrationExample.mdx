@@ -1,14 +1,16 @@
 ```js
-// /+server.js
+import { renderPage } from 'vike/server'
 
-import { Hono } from 'hono'
-import vike from '@vikejs/hono'
-
-// Any server: Hono, Express.js, Fastify, ...
-const app = new Hono()
-vike(app)
-
-export default {
-  fetch: app.fetch
-}
+// Any server: Hono, Express.js, Cloudflare Worker, ...
+server.addMiddleware({
+  method: 'GET',
+  route: '*', // catch-all
+  async handler(request) {
+    const pageContextInit = { urlOriginal: request.url }
+    const pageContext = await renderPage(pageContextInit)
+    const { body, statusCode } = pageContext.httpResponse
+    const response = { body, statusCode }
+    return response
+  }
+})
 ```
