@@ -34,7 +34,6 @@ import '../../assertEnvServer.js'
 
 type Middleware = EnhancedMiddleware & { isHandler: boolean }
 
-// Route of Vike's handler that renders pages
 const routeCatchAll = {
   name: 'vike',
   method: ['GET', 'POST', 'PUT', 'PATCH', 'HEAD', 'OPTIONS'],
