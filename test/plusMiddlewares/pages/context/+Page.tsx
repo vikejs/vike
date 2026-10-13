@@ -1,5 +1,5 @@
 export default Page
 
 function Page() {
-  return <p>User agent</p>
+  return <p>Context</p>
 }

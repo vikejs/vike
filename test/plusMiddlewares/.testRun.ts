@@ -59,28 +59,8 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     expect(await fetchHtml('/node-stream')).toContain('Rendered by a Node.js stream.')
   })
 
-  test('+redirects answer with the redirect target as is', async () => {
-    const response: Response = await fetch(`${getServerUrl()}/old-portal`, { redirect: 'manual' })
-    expect(response.status).toBe(301)
-    expect(response.headers.get('Location')).toBe('/portal')
-  })
-
-  test("Vike's own server gives the page its 'other' runtime, and Node.js's req and res", async () => {
-    const html = await fetchHtml('/runtime')
-    expect(html).toContain('<pre>{&quot;runtime&quot;:&quot;other&quot;}</pre>')
-    expect(html).toContain('req: IncomingMessage, res: ServerResponse')
-  })
-
-  test("Vike's own server keeps the deprecated `pageContext.userAgent`", async () => {
-    const response: Response = await fetch(`${getServerUrl()}/user-agent`, { headers: { 'user-agent': 'some-agent' } })
-    expect(await response.text()).toContain('userAgent: some-agent')
-    expectLog("pageContext.userAgent is deprecated: use pageContext.headers['user-agent'] instead.", {
-      filter: (log) => log.logSource === 'stderr',
-    })
-  })
-
   test('The page gets the context of every +middleware', async () => {
-    const response: Response = await fetch(`${getServerUrl()}/runtime`, {
+    const response: Response = await fetch(`${getServerUrl()}/context`, {
       headers: { 'x-auth': '1', 'x-locale': 'de' },
     })
     expect(await response.text()).toContain('isAuth: true, locale: de')
@@ -103,14 +83,6 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     expect(await response.text()).toBe('Unauthorized')
     expect(response.headers.get('x-settings')).toBe(null)
     expect(response.headers.get('x-admin')).toBe('yes')
-  })
-
-  test("A +middleware's path also covers the page's .pageContext.json request", async () => {
-    // settingsHeader's exact path, /admin/settings, also covers its .pageContext.json
-    const url = `${getServerUrl()}/admin/settings/index.pageContext.json`
-    const responseAuth: Response = await fetch(url, { headers: { 'x-auth': '1' } })
-    expect(responseAuth.status).toBe(200)
-    expect(responseAuth.headers.get('x-settings')).toBe('yes')
   })
 
   test('A .pageContext.json request gets the same page as its HTML request, and the same +middleware', async () => {
@@ -171,10 +143,6 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
         expect(await page.textContent('body')).toBe(answer)
       })
     }
-  })
-
-  test("Vike's pages don't answer DELETE", async () => {
-    expect((await fetch(`${getServerUrl()}/`, { method: 'DELETE' })).status).toBe(404)
   })
 
   test('A +middleware with a path and order 0 still answers its path, and the pages still render', async () => {

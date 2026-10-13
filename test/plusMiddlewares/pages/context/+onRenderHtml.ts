@@ -3,11 +3,12 @@ export { onRenderHtml }
 import { escapeInject } from 'vike/server'
 import type { PageContextServer } from 'vike/types'
 
-function onRenderHtml(pageContext: PageContextServer & { userAgent?: string }) {
+function onRenderHtml(pageContext: PageContextServer & { isAuth?: boolean; locale?: string }) {
+  const { isAuth, locale } = pageContext
   return escapeInject`<!DOCTYPE html>
     <html>
       <body>
-        <p>userAgent: ${String(pageContext.userAgent)}</p>
+        <p>isAuth: ${String(isAuth)}, locale: ${String(locale)}</p>
       </body>
     </html>`
 }
