@@ -1214,10 +1214,6 @@ function misc() {
         category: 'Glossary',
       },
       {
-        title: 'Vike',
-        url: '/vike',
-      },
-      {
         title: 'Press Kit',
         url: '/press',
       },
