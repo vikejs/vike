@@ -20,9 +20,11 @@ For example, Vike's low-level hooks <Link href="/onRenderHtml">`onRenderHtml()`<
 
 > For a quick start, we recommend using <Link href="/extensions">Vike extensions</Link> instead of directly using low-level hooks. For example, if you use `vike-react` or `vike-vue` then you get a quick start like Next.js or Nuxt. Later, if the need arises, you can <Link href="/eject">eject</Link> `vike-react`/`vike-vue` for a completely custom React/Vue integration.
 
-Another example is <Link href="/server">`+server.js`</Link> which enables you to use:
+Another example is Vike's <Link href="/renderPage"><code>renderPage()</code></Link> function which enables you to embed Vike into:
 - Any server (Express.js, Hono, Fastify, ...)
 - Any deployment (AWS, Cloudflare, Vercel, ...)
+
+> For a quick start, you can use <Link href="/server">`+server.js`</Link> instead of manually integrating `renderPage()`.
 
 > Instead of using a server, you can also <Link href="/pre-rendering">pre-render your pages</Link> and deploy to any static host.
 
