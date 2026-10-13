@@ -75,7 +75,9 @@ export default {
 
 > With another server, use the `apply()` function of its [Universal Middleware adapter](https://universal-middleware.dev/).
 
-> The list is read when your server starts: restart your server after changing a `+middleware`.
+> With Fastify and Elysia, apply the whole list in one call, `apply(app, middlewares)`, and define your routes after it. The `+middleware` that are handlers then run before your routes, so your routes can't override them.
+
+> The list is read when your server starts: restart your server after changing a `+middleware` (`vike(app)` doesn't need a restart).
 
 
 ## See also
