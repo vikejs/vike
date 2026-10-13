@@ -5,20 +5,14 @@ export { pipeNonHandlers }
 import {
   enhance,
   getUniversal,
-  getUniversalProp,
   isHandler,
-  methodSymbol,
-  nameSymbol,
-  orderSymbol,
-  pathSymbol,
   pipeRoute,
-  runsSymbol,
   type EnhancedMiddleware,
   type RuntimeAdapterTarget,
   type UniversalHandler,
   type UniversalMiddleware,
 } from '@universal-middleware/core'
-import { getMiddlewares_withErrorHandling, type Middleware } from './core.js'
+import { getMiddlewares_withErrorHandling, getOptions, type Middleware } from './core.js'
 import '../../assertEnvServer.js'
 
 // What `vike(app, middlewares)` runs after the app's routes, looked up upon each request: the user-land universal
@@ -70,21 +64,11 @@ function pipeNonHandlers(middlewares: Middleware[], nonHandlersUserLand: Univers
 // Universal Middleware replaces the context with the one a middleware returns: Vike merges it, as a +middleware returns
 // only what it adds
 function mergeContext(middleware: EnhancedMiddleware): UniversalMiddleware {
-  const order = getUniversalProp(middleware, orderSymbol)
-  return enhance(
-    async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) => {
-      const result = await getUniversal(middleware as UniversalMiddleware)(request, context, runtime)
-      if (!result || result instanceof Response || typeof result === 'function') return result
-      Object.assign(context, result)
-    },
-    {
-      name: getUniversalProp(middleware, nameSymbol),
-      path: getUniversalProp(middleware, pathSymbol),
-      method: getUniversalProp(middleware, methodSymbol),
-      runs: getUniversalProp(middleware, runsSymbol),
-      ...(order !== undefined && { order }),
-    },
-  )
+  return enhance(async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) => {
+    const result = await getUniversal(middleware as UniversalMiddleware)(request, context, runtime)
+    if (!result || result instanceof Response || typeof result === 'function') return result
+    Object.assign(context, result)
+  }, getOptions(middleware))
 }
 
 // Runs what `build()` makes of the list `getMiddlewares_withErrorHandling()` returns upon each request. The list changes

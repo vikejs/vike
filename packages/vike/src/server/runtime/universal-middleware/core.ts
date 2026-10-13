@@ -2,6 +2,7 @@ export { getMiddlewares_globalContext }
 export { getMiddlewares_withErrorHandling }
 export { hasPlusMiddlewares }
 export { vikePagesRoute }
+export { getOptions }
 export type { Middleware }
 
 import {
@@ -14,6 +15,7 @@ import {
   orderSymbol,
   pathSymbol,
   nameSymbol,
+  runsSymbol,
   type EnhancedMiddleware,
   type RuntimeAdapterTarget,
   type UniversalMiddleware,
@@ -85,8 +87,8 @@ async function getMiddlewares_withErrorHandling(): Promise<Middleware[]> {
 
 // A +middleware as an element of `globalContext.middlewares`. A `path` is matched against the page's URL, the way Vike routes pages: without the Base URL, and with a `.pageContext.json` request standing for its page.
 function wrapWithVikeRouting(plusMiddleware: EnhancedMiddleware, baseServer: string): EnhancedMiddleware {
-  const path = getUniversalProp(plusMiddleware, pathSymbol)
-  if (path) assertPath(plusMiddleware, path, baseServer)
+  const { name, path, method, order } = getOptions(plusMiddleware)
+  if (path) assertPath(name, path, baseServer)
   if (isHandler(plusMiddleware)) {
     // A handler is a route of the server, which matches it: its path gets the Base URL. (`enhance()` clones it, so that marking it `isHandler` leaves the extension's export untouched.)
     return enhance(
@@ -94,8 +96,7 @@ function wrapWithVikeRouting(plusMiddleware: EnhancedMiddleware, baseServer: str
       path ? { path: baseServer.replace(/\/$/, '') + (path.startsWith('/') ? '' : '/') + path } : {},
     )
   }
-  const order = getUniversalProp(plusMiddleware, orderSymbol)
-  const isMatch = path && createMatcher(path, getUniversalProp(plusMiddleware, methodSymbol))
+  const isMatch = path && createMatcher(path, method)
   return enhance(
     async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) => {
       const { isPageContextJsonRequest, urlWithoutPageContextRequestSuffix } = handlePageContextRequestUrl(request.url)
@@ -107,7 +108,7 @@ function wrapWithVikeRouting(plusMiddleware: EnhancedMiddleware, baseServer: str
       return isPageContextJsonRequest ? toPageContextJsonAnswer(answer) : answer
     },
     {
-      name: getUniversalProp(plusMiddleware, nameSymbol),
+      name,
       // Whatever its order, it doesn't run once a Response exists
       runs: 'until-response',
       ...(order !== undefined && { order }),
@@ -115,11 +116,22 @@ function wrapWithVikeRouting(plusMiddleware: EnhancedMiddleware, baseServer: str
   )
 }
 
+// The options `enhance()` gave a middleware, also when an adapter wraps it, without the unset ones: Universal Middleware sorts an `order` set to `undefined` as `NaN`
+function getOptions(middleware: EnhancedMiddleware): UniversalOptionsArg {
+  const options: UniversalOptionsArg = {
+    name: getUniversalProp(middleware, nameSymbol),
+    path: getUniversalProp(middleware, pathSymbol),
+    method: getUniversalProp(middleware, methodSymbol),
+    order: getUniversalProp(middleware, orderSymbol),
+    runs: getUniversalProp(middleware, runsSymbol),
+  }
+  return Object.fromEntries(Object.entries(options).filter(([, value]) => value !== undefined))
+}
+
 // Warns about a path that starts with the Base URL: a `path` is relative to it
-function assertPath(plusMiddleware: EnhancedMiddleware, path: string, baseServer: string): void {
+function assertPath(name: string | undefined, path: string, baseServer: string): void {
   const base = baseServer.replace(/\/$/, '')
   if (!base || (path !== base && !path.startsWith(`${base}/`))) return
-  const name = getUniversalProp(plusMiddleware, nameSymbol)
   assertWarning(
     false,
     `The +middleware ${name ? `${name} ` : ''}has the path ${path}, which starts with the Base URL ${baseServer}. A +middleware path is relative to the Base URL, use ${path.slice(base.length) || '/'} instead.`,
