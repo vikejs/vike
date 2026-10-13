@@ -53,7 +53,9 @@ const middlewares_uponConfigError = [enhance(renderPageServer_universal, { name:
 // `globalContext.middlewares`: every `+middleware`, then Vike's pages
 function getMiddlewares_globalContext(globalContext: { config: ConfigResolved }, baseServer: string): Middleware[] {
   return [
-    ...getMiddlewares_config(globalContext).map((plusMiddleware) => wrapWithVikeRouting(plusMiddleware, baseServer)),
+    ...getMiddlewares_config(globalContext).map((plusMiddleware) =>
+      wrapWithVikeNormalizedRoute(plusMiddleware, baseServer),
+    ),
     renderPageServer_universalMiddleware,
   ].map(withIsHandler)
 }
@@ -87,7 +89,7 @@ async function getMiddlewares_withErrorHandling(): Promise<Middleware[]> {
 }
 
 // A +middleware as an element of `globalContext.middlewares`. A `path` is matched against the page's URL, the way Vike routes pages: without the Base URL, and with a `.pageContext.json` request standing for its page.
-function wrapWithVikeRouting(plusMiddleware: EnhancedMiddleware, baseServer: string): EnhancedMiddleware {
+function wrapWithVikeNormalizedRoute(plusMiddleware: EnhancedMiddleware, baseServer: string): EnhancedMiddleware {
   const { path, method, ...options } = getOptions(plusMiddleware)
   if (path) assertPath(options.name, path, baseServer)
   if (isHandler(plusMiddleware)) {
