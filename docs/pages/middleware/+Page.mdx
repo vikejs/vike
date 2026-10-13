@@ -7,83 +7,51 @@ import { ConfigSpec } from '../../components'
   global
 />
 
-You can add server middlewares by using `+middleware`, typically for Vike extensions that handle requests (e.g. authentication).
+Vike extensions can add server middlewares by using `+middleware`.
 
-<Warning>`+middleware` is experimental: expect breaking changes in any minor version update.</Warning>
+<Warning>`+middleware` is in beta: expect breaking changes in any minor version update.</Warning>
 
 ```ts
-// pages/+middleware.ts
+// +middleware.ts
 // Environment: server
 
 import { enhance, MiddlewareOrder } from '@universal-middleware/core'
 
-// Runs before your server's own routes
 const auth = enhance(
-  (request: Request) =>
-    request.headers.has('authorization') ? undefined : new Response('Unauthorized', { status: 401 }),
-  { name: 'auth', path: '/admin/**', order: MiddlewareOrder.AUTHORIZATION },
+  (request: Request) => {
+    if (request.headers.has('authorization')) return
+    return new Response('Unauthorized', { status: 401 })
+  },
+  // It's a middleware (i.e. not a handler) => it runs *before* the user's routes
+  { name: 'auth', path: '/admin/**', order: MiddlewareOrder.AUTHORIZATION }
 )
 
-// Runs after your server's own routes, which can override it
-const health = enhance(() => new Response('OK'), { name: 'health', path: '/health', method: 'GET' })
+const health = enhance(
+  () => new Response('OK'),
+  // It's a handler => it runs *after* the user's routes
+  { name: 'health', path: '/health', method: 'GET' }
+)
 
 export default [auth, health]
 ```
 
-A `+middleware` is a [Universal Middleware](https://universal-middleware.dev/): it works with any server (Hono, Express, ...). Where it runs depends on its `path` and `order`:
-- With `order: 0`, or with a `path` and without `order`, it's a handler (which needs a `path` and a `method`): it runs after your server's own routes, next to Vike's pages.
-- Otherwise it runs before your server's own routes (only for the URLs that match its `path`, if it has one).
+> A `+middleware` is a [Universal Middleware](https://universal-middleware.dev): it works with any server (Hono, Express, ...).
+
+> `vike(app)` installs the list of `+middleware` before and after the user's routes using the "sandwich approach" — see <Link href="/vike(app)" />.
+
+
+## Order
+
+When it runs depends on its `path` and `order`:
+- With `order: 0`, or with a `path` and without `order`, it's a handler and runs after the user's routes.
+- Otherwise, it runs before the user's routes (only for the URLs that match its `path`, if it has one).
 
 Whatever its `order`, a `+middleware` doesn't run once a middleware has answered with a `Response`.
-
-A `path` is relative to the <Link href="/base-url">Base URL</Link>. For a `+middleware` that runs before your routes, a <Link href="/pageContext.json">`.pageContext.json` request</Link> also counts as a request to its page: `path: '/admin/**'` also covers `/admin/settings/index.pageContext.json`. The `+middleware` receives the original request.
-
-> <Link href="/renderPage">`renderPage()`</Link> doesn't run `+middleware`, so your server can't render pages with its own `renderPage()` call, see <Link href="/error/setup-middlewares" />.
-
-
-## Manual integration
-
-Vike's built-in server and `vike(app)` (`@vikejs/*` 0.4 or later) run all `+middleware` around your routes. If you use your own server (e.g. with <Link href="/server">`+server`</Link>) without `vike(app)`, apply <Link href="/globalContext#middlewares">`globalContext.middlewares`</Link> around your routes:
-
-```ts
-// +server.ts
-// Environment: server
-
-import { Hono } from 'hono'
-import { apply } from '@universal-middleware/hono'
-import { getGlobalContext } from 'vike'
-import assert from 'node:assert'
-
-const globalContext = await getGlobalContext()
-assert(!globalContext.isClientSide)
-const { middlewares } = globalContext
-
-const app = new Hono()
-// The +middleware that aren't handlers
-apply(app, middlewares.filter((m) => !m.isHandler))
-// Your routes
-app.get('/api/me', getMe)
-// The +middleware that are handlers, then Vike's pages
-apply(app, middlewares.filter((m) => m.isHandler))
-
-export default {
-  fetch: app.fetch,
-}
-```
-
-> `globalContext.middlewares` ends with Vike's pages, so you don't need `vike(app)` or `renderPage()`.
-
-> With another server, use the `apply()` function of its [Universal Middleware adapter](https://universal-middleware.dev/).
-
-> With Fastify and Elysia, apply the whole list in one call, `apply(app, middlewares)`, and define your routes after it: they still take precedence over the `+middleware` that are handlers and over Vike's pages.
-
-> With srvx, which has no app, put your routes between the two parts of the list: `apply([...middlewares.filter((m) => !m.isHandler), getMe, ...middlewares.filter((m) => m.isHandler)])`. A route placed after the `+middleware` that are handlers can't override them.
-
-> The list is read when your server starts: restart your server after changing a `+middleware` (`vike(app)` doesn't need a restart).
 
 
 ## See also
 
-- <Link href="/globalContext#middlewares">`globalContext.middlewares`</Link>
+- <Link href="/globalContext#middlewares">API > `globalContext.middlewares`</Link>
+- <Link href="/vike(app)" />
 - <Link href="/server" />
-- <Link href="/base-url" />
+- [Universal Middleware](https://universal-middleware.dev)
