@@ -14,7 +14,7 @@ import { getMiddlewares_withErrorHandling, mergeContext, type Middleware } from 
 import '../../assertEnvServer.js'
 
 /**
- * What `vike(app, middlewares)` runs after the app's routes, looked up upon each request: the user-land universal middlewares that are handlers (the first one registered on a path answers), the +middleware that are handlers, then Vike's handler that renders pages.
+ * What `vike(app, middlewares)` runs after the app's routes: the middlewares that are handlers, as one universal handler (looked up upon each request).
  */
 function middlewaresPipe_handlers(
   // `object[]`: the user-land universal middlewares can come from another copy of @universal-middleware/core, whose types (keyed by a `unique symbol`) never match this copy's
@@ -37,7 +37,7 @@ function middlewaresPipe_handlers(
 }
 
 /**
- * What `vike(app, middlewares)` applies before the app's routes: the +middleware and the user-land universal middlewares that aren't handlers, as one middleware (looked up upon each request).
+ * What `vike(app, middlewares)` applies before the app's routes: the middlewares that aren't handlers, as one middleware (looked up upon each request).
  */
 function middlewaresPipe_nonHandlers(
   // `object[]`: the user-land universal middlewares can come from another copy of @universal-middleware/core, whose types (keyed by a `unique symbol`) never match this copy's
