@@ -6,7 +6,7 @@ import { Link } from '@brillout/docpress'
 function JustAMiddlewareLink() {
   return (
     <>
-      From the perspective of the server, Vike is <Link href="/renderPage">just a server middleware</Link>.
+      From the perspective of the server, Vike is <Link href="/server#get-started">just a server middleware `vike(app)`</Link>.
     </>
   )
 }
