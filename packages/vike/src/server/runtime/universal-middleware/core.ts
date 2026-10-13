@@ -41,25 +41,20 @@ const vikePagesRoute = {
   path: '/**',
 } as const satisfies UniversalOptionsArg
 
-// Vike's pages, after everything else
+// Vike's pages
 const renderPageServer_universalMiddleware = enhance(renderPageServer_universal, vikePagesRoute)
 
-// Upon an invalid config: Vike's pages answer every request with the error, so that the app's routes don't run without the +middleware
+// Upon an invalid config: Vike's pages answer every request with the error
 const middlewares_uponConfigError = [enhance(renderPageServer_universal, { name: 'vike' })].map(withIsHandler)
 
 // `globalContext.middlewares`: every `+middleware`, then Vike's pages
 function getMiddlewares_globalContext(globalContext: { config: ConfigResolved }, baseServer: string): Middleware[] {
   return [
     ...getMiddlewares_config(globalContext).map((plusMiddleware) =>
-      wrapWithVikeNormalizedRoute(plusMiddleware, baseServer),
+      wrapWithVikeNormalizedURL(plusMiddleware, baseServer),
     ),
     renderPageServer_universalMiddleware,
   ].map(withIsHandler)
-}
-
-// Marks a middleware the way Universal Middleware's own `apply()` classifies it
-function withIsHandler(middleware: EnhancedMiddleware): Middleware {
-  return Object.assign(middleware, { isHandler: isHandler(middleware) })
 }
 
 // List of +middleware
@@ -73,7 +68,6 @@ function hasPlusMiddlewares(globalContext: { config: ConfigResolved }) {
 
 // `globalContext.middlewares`, or `middlewares_uponConfigError` upon an invalid config
 async function getMiddlewares_withErrorHandling(): Promise<Middleware[]> {
-  // Before the await too, which doesn't resolve while the config is invalid
   if (getVikeConfigError()) return middlewares_uponConfigError
   try {
     await initGlobalContext_renderPage()
@@ -85,8 +79,10 @@ async function getMiddlewares_withErrorHandling(): Promise<Middleware[]> {
   return globalContext.middlewares
 }
 
-// A +middleware as an element of `globalContext.middlewares`. A `path` is matched against the page's URL, the way Vike routes pages: without the Base URL, and with a `.pageContext.json` request standing for its page.
-function wrapWithVikeNormalizedRoute(plusMiddleware: EnhancedMiddleware, baseServer: string): EnhancedMiddleware {
+// Handle:
+// - Base URL
+// - JSON URL `.pageContext.json`
+function wrapWithVikeNormalizedURL(plusMiddleware: EnhancedMiddleware, baseServer: string): EnhancedMiddleware {
   const { path, method, ...options } = getOptions(plusMiddleware)
   if (path) assertPath(options.name, path, baseServer)
   if (isHandler(plusMiddleware)) {
@@ -138,7 +134,7 @@ function getOptions(middleware: EnhancedMiddleware): UniversalOptionsArg {
   return Object.fromEntries(Object.entries(options).filter(([, value]) => value !== undefined))
 }
 
-// Warns about a path that starts with the Base URL: a `path` is relative to it
+// Warns about a path that starts with the Base URL
 function assertPath(name: string | undefined, path: string, baseServer: string): void {
   const base = baseServer.replace(/\/$/, '')
   if (!base || (path !== base && !path.startsWith(`${base}/`))) return
@@ -190,6 +186,10 @@ async function renderPageServer_universal(
     status: httpResponse.statusCode,
     headers: httpResponse.headers,
   })
+}
+
+function withIsHandler(middleware: EnhancedMiddleware): Middleware {
+  return Object.assign(middleware, { isHandler: isHandler(middleware) })
 }
 
 function addUserAgent_deprecated(pageContextInit: object, request: Request, runtime: RuntimeAdapterTarget<unknown>) {
