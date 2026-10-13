@@ -15,6 +15,9 @@ const user = enhance(
   },
 )
 
+// Adds to the context too, between `user` and `auth`
+const locale = enhance(() => ({ locale: 'en' }), { name: 'locale', order: MiddlewareOrder.AUTHENTICATION + 10 })
+
 // Counts how often +middleware run for a request
 const counter = enhance(
   () => (response: Response) => {
@@ -42,4 +45,4 @@ const rendering = enhance(
   { name: 'rendering' },
 )
 
-export default [auth, user, counter, hello, overridden, rendering]
+export default [auth, user, locale, counter, hello, overridden, rendering]

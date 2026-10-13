@@ -27,6 +27,13 @@ function testRun(cmd: Cmd, options?: { serverIsReadyMessage: string }) {
     expect(await response.text()).toBe('Me')
   })
 
+  test("A +middleware's context adds to the context of the ones before it", async () => {
+    // `locale`, ordered between `user` and `auth`, keeps the user
+    const response: Response = await fetch(`${getServerUrl()}/`, { headers: { 'x-user': 'alice' } })
+    expect(await response.text()).toContain('Rendered by Vike for alice with the hono runtime in en')
+    expect((await fetch(`${getServerUrl()}/api/me`, { headers: { 'x-user': 'alice' } })).status).toBe(200)
+  })
+
   test("A +middleware handler runs after the app's own routes", async () => {
     expect(await (await fetch(`${getServerUrl()}/hello`)).text()).toBe('Hello from +middleware')
     expect(await (await fetch(`${getServerUrl()}/overridden`)).text()).toBe('Overridden by +server.ts')

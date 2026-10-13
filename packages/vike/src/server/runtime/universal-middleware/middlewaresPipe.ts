@@ -56,13 +56,13 @@ function middlewaresPipe_nonHandlers(middlewaresUserLand: object[]): UniversalMi
 function pipeNonHandlers(middlewares: Middleware[], nonHandlersUserLand: UniversalMiddleware[]) {
   const nonHandlers = [
     ...middlewares.filter((middleware) => !middleware.isHandler),
-    ...nonHandlersUserLand.map((middleware) => enhance(middleware, { runs: 'always' })),
+    ...nonHandlersUserLand.map((middleware) => mergeContext(enhance(middleware, { runs: 'always' }))),
   ]
-  return pipeRoute(nonHandlers.map(mergeContext)) as UniversalMiddleware
+  return pipeRoute(nonHandlers) as UniversalMiddleware
 }
 
-// Universal Middleware replaces the context with the one a middleware returns: Vike merges it, as a +middleware returns
-// only what it adds
+// Universal Middleware replaces the context with the one a middleware returns: Vike merges the one a user-land universal
+// middleware returns, as it does a +middleware's (`wrapWithVikeRouting()`)
 function mergeContext(middleware: EnhancedMiddleware): UniversalMiddleware {
   return enhance(async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) => {
     const result = await getUniversal(middleware as UniversalMiddleware)(request, context, runtime)
