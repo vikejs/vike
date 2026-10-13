@@ -79,6 +79,28 @@ async function getMiddlewares_withErrorHandling(): Promise<Middleware[]> {
   return globalContext.middlewares
 }
 
+async function renderPageServer_universal(
+  request: Request,
+  context: Universal.Context,
+  runtime: RuntimeAdapterTarget<unknown>,
+) {
+  const pageContextInit = {
+    urlOriginal: request.url, // Let `context` override it, e.g. `$ vike dev` passes the URL's path
+    runtime,
+    req: 'req' in runtime ? runtime.req : null,
+    res: 'res' in runtime ? runtime.res : null,
+    headersOriginal: request.headers,
+    ...context,
+  }
+  addUserAgent_deprecated(pageContextInit, request, runtime)
+  const pageContext = await renderPageServer(pageContextInit, false)
+  const { httpResponse } = pageContext
+  return new Response(httpResponse.getReadableWebStream(), {
+    status: httpResponse.statusCode,
+    headers: httpResponse.headers,
+  })
+}
+
 // Handle:
 // - Base URL
 // - JSON URL `.pageContext.json`
@@ -162,28 +184,6 @@ function getOptions(middleware: EnhancedMiddleware): UniversalOptionsArg {
     runs: getUniversalProp(middleware, runsSymbol),
   }
   return Object.fromEntries(Object.entries(options).filter(([, value]) => value !== undefined))
-}
-
-async function renderPageServer_universal(
-  request: Request,
-  context: Universal.Context,
-  runtime: RuntimeAdapterTarget<unknown>,
-) {
-  const pageContextInit = {
-    urlOriginal: request.url, // Let `context` override it, e.g. `$ vike dev` passes the URL's path
-    runtime,
-    req: 'req' in runtime ? runtime.req : null,
-    res: 'res' in runtime ? runtime.res : null,
-    headersOriginal: request.headers,
-    ...context,
-  }
-  addUserAgent_deprecated(pageContextInit, request, runtime)
-  const pageContext = await renderPageServer(pageContextInit, false)
-  const { httpResponse } = pageContext
-  return new Response(httpResponse.getReadableWebStream(), {
-    status: httpResponse.statusCode,
-    headers: httpResponse.headers,
-  })
 }
 
 function withIsHandler(middleware: EnhancedMiddleware): Middleware {
