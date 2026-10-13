@@ -371,6 +371,7 @@ const headings = [
     level: 2,
     title: '`pageContext`',
     url: '/pageContext',
+    sectionTitles: ['`renderPage()`'],
   },
   {
     level: 2,
