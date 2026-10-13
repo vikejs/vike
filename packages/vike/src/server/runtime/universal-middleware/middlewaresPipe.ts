@@ -52,12 +52,12 @@ function middlewaresPipe_nonHandlers(
   )
 }
 
-function pipeNonHandlers(middlewares: Middleware[], nonHandlersUserLand: UniversalMiddleware[]) {
+function pipeNonHandlers(middlewares: Middleware[], nonHandlersUserLand: UniversalMiddleware[]): UniversalMiddleware {
   const nonHandlers = [
     ...middlewares.filter((middleware) => !middleware.isHandler),
     ...nonHandlersUserLand.map((middleware) => mergeContext(enhance(middleware, { runs: 'always' }))),
   ]
-  return pipeRoute(nonHandlers) as UniversalMiddleware
+  return pipeRoute(nonHandlers)
 }
 
 function pipe(getPipe: (middlewares: Middleware[]) => UniversalMiddleware): UniversalMiddleware {
