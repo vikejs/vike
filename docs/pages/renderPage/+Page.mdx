@@ -9,7 +9,7 @@ import { ConfigSpec } from '../../components'
 The `renderPage()` function renders your pages (e.g. <Link href="/Page" noBreadcrumb />) on the server-side.
 
 <Warning>
-We recommend using <Link href="/vike(app)">`vike(app)`</Link> instead of `renderPage()`. Because `renderPage()` doesn't support Vike extensions that use <Link href="/middleware">`+middleware`</Link>. See also: <Link href="#renderpage-vs-vike-app" />.
+We recommend using <Link href="/vike(app)">`vike(app)`</Link> instead of `renderPage()`. Because `renderPage()` doesn't support middlewares added by Vike extensions (<Link href="/middleware">`+middleware`</Link>). See also: <Link href="#renderpage-vs-vike-app" />.
 </Warning>
 
 From the perspective of a server, Vike is just a middleware:

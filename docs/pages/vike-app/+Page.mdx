@@ -10,6 +10,8 @@ The `vike(app)` function installs Vike's handlers and middlewares to your server
 
 > See <Link href="/server" /> for how to use `vike(app)`.
 
-It includes both:
+It installs both:
 - Vike's handler that renders your pages (basically <Link href="/renderPage">`renderPage()`</Link>)
 - Every <Link href="/middleware">`+middleware`</Link> from <Link href="/extensions">Vike extensions</Link>
+
+> Technically, it installs the <Link href="/globalContext#middlewares">`globalContext.middlewares`</Link> list using the "sandwich approach": middlewares (i.e. non-handlers) are applied before user-defined routes while handlers are applied after — so that your routes can read the context added by the middlewares of Vike extensions.
