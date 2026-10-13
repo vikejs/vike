@@ -5,12 +5,11 @@ import { middlewaresPipe_handlers, middlewaresPipe_nonHandlers } from './middlew
 import { routeCatchAll } from './core.js'
 import '../../assertEnvServer.js'
 
+// For Vike's built-in server: the two pipes that `vike(app)` applies, without any user-land middlewares (there aren't any)
 const vikeUniversalMiddleware = enhance(handler, routeCatchAll)
-
 const pipeNonHandlers = middlewaresPipe_nonHandlers([])
 const pipeHandlers = middlewaresPipe_handlers([])
 
-// Vike's built-in server: the two halves that `vike(app)` applies, in a row
 async function handler(
   request: Request,
   context: Universal.Context = {},
