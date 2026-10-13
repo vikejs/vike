@@ -610,9 +610,8 @@ const headings = [
   },
   {
     level: 2,
-    title: '`renderPage()`',
-    url: '/renderPage',
-    sectionTitles: ['`renderPage()` vs `vike(app)`', 'Without `+serverEntry.js`'],
+    title: '`vike(app)`',
+    url: '/vike(app)',
   },
   {
     level: 2,
@@ -1497,6 +1496,11 @@ function api() {
       {
         title: '`require`',
         url: '/require',
+      },
+      {
+        title: '`renderPage()`',
+        url: '/renderPage',
+        sectionTitles: ['`renderPage()` vs `vike(app)`', 'Without `+serverEntry.js`'],
       },
       {
         title: '`filesystemRoutingRoot`',
