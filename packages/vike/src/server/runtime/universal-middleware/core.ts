@@ -111,6 +111,36 @@ function wrapWithVikeNormalizedURL(plusMiddleware: EnhancedMiddleware, baseServe
     },
   )
 }
+// A +middleware's answer to a `.pageContext.json` request. Its own Response, or a response function's replacement of
+// Vike's JSON, becomes a 404 without JSON: the client router then reloads the page, so that the page's own request shows
+// the +middleware's answer (e.g. a 401, a redirect or a login page).
+function toPageContextJsonAnswer(answer: Awaited<ReturnType<UniversalMiddleware>>) {
+  const toReload = (response: Response) => {
+    const headers = new Headers(response.headers)
+    headers.delete('content-type')
+    return new Response(response.body, { status: 404, headers })
+  }
+  // The +middleware answered instead of the page
+  if (answer instanceof Response) return toReload(answer)
+  if (typeof answer !== 'function') return answer
+  return async (response: Response) => {
+    const replaced = await answer(response)
+    // Vike's JSON, possibly re-encoded, stays
+    return (
+      replaced && (replaced.headers.get('content-type')?.includes('application/json') ? replaced : toReload(replaced))
+    )
+  }
+}
+// Warns about a path that starts with the Base URL
+function assertPath(name: string | undefined, path: string, baseServer: string): void {
+  const base = baseServer.replace(/\/$/, '')
+  if (!base || (path !== base && !path.startsWith(`${base}/`))) return
+  assertWarning(
+    false,
+    `The +middleware ${name ? `${name} ` : ''}has the path ${path}, which starts with the Base URL ${baseServer}. A +middleware path is relative to the Base URL, use ${path.slice(base.length) || '/'} instead.`,
+    { onlyOnce: `middleware-path:${name}:${path}` },
+  )
+}
 
 // Universal Middleware replaces the context with the one a middleware returns: Vike merges it into a new object, as a
 // +middleware or a user-land universal middleware returns only what it adds, and an adapter may reuse the context
@@ -132,38 +162,6 @@ function getOptions(middleware: EnhancedMiddleware): UniversalOptionsArg {
     runs: getUniversalProp(middleware, runsSymbol),
   }
   return Object.fromEntries(Object.entries(options).filter(([, value]) => value !== undefined))
-}
-
-// Warns about a path that starts with the Base URL
-function assertPath(name: string | undefined, path: string, baseServer: string): void {
-  const base = baseServer.replace(/\/$/, '')
-  if (!base || (path !== base && !path.startsWith(`${base}/`))) return
-  assertWarning(
-    false,
-    `The +middleware ${name ? `${name} ` : ''}has the path ${path}, which starts with the Base URL ${baseServer}. A +middleware path is relative to the Base URL, use ${path.slice(base.length) || '/'} instead.`,
-    { onlyOnce: `middleware-path:${name}:${path}` },
-  )
-}
-
-// A +middleware's answer to a `.pageContext.json` request. Its own Response, or a response function's replacement of
-// Vike's JSON, becomes a 404 without JSON: the client router then reloads the page, so that the page's own request shows
-// the +middleware's answer (e.g. a 401, a redirect or a login page).
-function toPageContextJsonAnswer(answer: Awaited<ReturnType<UniversalMiddleware>>) {
-  const toReload = (response: Response) => {
-    const headers = new Headers(response.headers)
-    headers.delete('content-type')
-    return new Response(response.body, { status: 404, headers })
-  }
-  // The +middleware answered instead of the page
-  if (answer instanceof Response) return toReload(answer)
-  if (typeof answer !== 'function') return answer
-  return async (response: Response) => {
-    const replaced = await answer(response)
-    // Vike's JSON, possibly re-encoded, stays
-    return (
-      replaced && (replaced.headers.get('content-type')?.includes('application/json') ? replaced : toReload(replaced))
-    )
-  }
 }
 
 async function renderPageServer_universal(
