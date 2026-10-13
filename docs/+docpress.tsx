@@ -69,6 +69,8 @@ const config = {
         { name: 'Fastify', icon: iconFastify, iconStyleDropdown: { width: '14px' }, iconStyleTab: { width: '18px' } },
         { name: 'H3', icon: iconH3, iconStyle: { marginBottom: '1.5px' } },
         { name: 'Elysia', icon: iconElysia, iconStyleTab: { height: '14px' } },
+        'Hattip',
+        'srvx',
         'Other',
       ],
       default: 'Hono',

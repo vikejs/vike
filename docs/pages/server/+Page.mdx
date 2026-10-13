@@ -59,6 +59,14 @@ npm i h3 @vikejs/h3
 npm i elysia @vikejs/elysia
 ```
 
+```shell choice=Hattip
+npm i @hattip/router @vikejs/hattip
+```
+
+```shell choice=srvx
+npm i srvx @vikejs/srvx
+```
+
 ```ts file-added choice=Hono
 // +server.ts
 
@@ -132,6 +140,43 @@ vike(app) // Attaches Vike
 
 export default {
   fetch: app.fetch
+} satisfies Server
+```
+
+```ts file-added choice=Hattip
+// +server.ts
+
+import { createRouter } from '@hattip/router'
+import vike from '@vikejs/hattip'
+import type { Server } from 'vike/types'
+
+const router = createRouter()
+vike(router) // Attaches Vike
+
+const handler = router.buildHandler()
+
+export default {
+  // Hattip handlers take a context object instead of a Request
+  fetch: (request) =>
+    handler({
+      request,
+      ip: '',
+      platform: {},
+      env: (variable) => process.env[variable],
+      passThrough() {},
+      waitUntil() {}
+    })
+} satisfies Server
+```
+
+```ts file-added choice=srvx
+// +server.ts
+
+import vike from '@vikejs/srvx'
+import type { Server } from 'vike/types'
+
+export default {
+  fetch: vike() // Attaches Vike
 } satisfies Server
 ```
 
@@ -227,17 +272,48 @@ vike(app)
 app.get('/api/me', ({ getContext }) => getContext().user)
 ```
 
+```ts choice=Hattip
+// +server.ts
+
+import { createRouter } from '@hattip/router'
+import vike, { getContext } from '@vikejs/hattip'
+
+const router = createRouter()
+vike(router)
+
+router.get('/api/me', (context) => Response.json(getContext(context).user))
+```
+
+```ts choice=srvx
+// +server.ts
+
+import vike from '@vikejs/srvx'
+import { enhance } from '@universal-middleware/core'
+import type { Server } from 'vike/types'
+
+// srvx doesn't have an app: your routes are Universal Middleware handlers passed to vike()
+const getMe = enhance((request, context) => Response.json(context.user), {
+  name: 'getMe',
+  method: 'GET',
+  path: '/api/me'
+})
+
+export default {
+  fetch: vike([getMe])
+} satisfies Server
+```
+
 The <Link href="/middleware">`+middleware`</Link> of your Vike extensions (e.g. authentication) run before your routes, and your routes can read what they added to the context with `getContext()`. Your routes take precedence over Vike's pages.
 
-`vike(app)` throws if you define a route before it, because the `+middleware` wouldn't run for that route. Middlewares and wildcard routes are fine (e.g. `app.use(cors())` or `app.get('/static/*', serveStatic())`). To answer a route before the `+middleware` run, see <Link href="/middleware#manual-integration" />.
+With Hono, Express, H3 and Elysia, `vike(app)` throws if you define a route before it, because the `+middleware` wouldn't run for that route. Middlewares and wildcard routes are fine (e.g. `app.use(cors())` or `app.get('/static/*', serveStatic())`). With Hattip, Vike can't detect it: a route defined before `vike(router)` skips the `+middleware`. To answer a route before the `+middleware` run, see <Link href="/middleware#manual-integration" />.
 
 > Server specifics:
 > - Express and H3: Vike adds its pages upon the first request, so define all your routes before your server starts serving requests. A catch-all route (e.g. a custom 404 handler) hides Vike's pages: use an <Link href="/error-page">error page</Link> instead.
 > - H3: `vike(app)` also throws if a router, a nested app or a lazy handler is mounted before it. It doesn't detect a handler mounted on a path (e.g. `app.use('/health', eventHandler(() => 'ok'))`), so define it after `vike(app)`.
 > - Hono: Vike renders its pages with `app.notFound()`, so don't call `app.notFound()` yourself, and call `vike(app)` on the parent app instead of on an app mounted with `app.route()`. A route that calls `c.notFound()` gets Hono's own 404 response, not your error page.
 > - Fastify: the `+middleware` run after Fastify parses the request body, so a body Fastify can't parse (e.g. `application/octet-stream` without a content type parser) gets a `415` response before they run.
-> - HatTip: `vike(router)` doesn't detect a route defined before it, which then skips the `+middleware`.
-> - srvx: there isn't any app, so pass your routes to `vike()` as [Universal Middleware](https://universal-middleware.dev/) handlers with a `method` and a `path` (e.g. `serve({ fetch: vike([getMe]) })`).
+> - Hattip: Vike adds its pages when you call `router.buildHandler()`, so define all your routes before calling it.
+> - srvx: each route is a [Universal Middleware](https://universal-middleware.dev/) handler with a `name`, a `method` and a `path`, and it receives the context as its second argument.
 
 
 ## Deployment
@@ -443,6 +519,30 @@ import compress from '@universal-middleware/compress' // [!code ++]
 const app = new Elysia()
 vike(app) // [!code --]
 vike(app, [compress()]) // [!code ++]
+```
+
+```ts choice=Hattip
+// +server.ts
+
+import { createRouter } from '@hattip/router'
+import vike from '@vikejs/hattip'
+import compress from '@universal-middleware/compress' // [!code ++]
+
+const router = createRouter()
+vike(router) // [!code --]
+vike(router, [compress()]) // [!code ++]
+```
+
+```ts choice=srvx
+// +server.ts
+
+import vike from '@vikejs/srvx'
+import compress from '@universal-middleware/compress' // [!code ++]
+
+export default {
+  fetch: vike() // [!code --]
+  fetch: vike([compress()]) // [!code ++]
+} satisfies Server
 ```
 
 ```ts choice=Other

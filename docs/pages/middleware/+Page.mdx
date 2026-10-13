@@ -77,6 +77,8 @@ export default {
 
 > With Fastify and Elysia, apply the whole list in one call, `apply(app, middlewares)`, and define your routes after it. The `+middleware` that are handlers then run before your routes, so your routes can't override them.
 
+> With srvx, which has no app, put your routes between the two parts of the list: `apply([...middlewares.filter((m) => !m.isHandler), getMe, ...middlewares.filter((m) => m.isHandler)])`. A route placed after the `+middleware` that are handlers can't override them.
+
 > The list is read when your server starts: restart your server after changing a `+middleware` (`vike(app)` doesn't need a restart).
 
 
