@@ -5,6 +5,8 @@ import { middlewaresPipe_handlers, middlewaresPipe_nonHandlers } from './middlew
 import { vikePagesRoute } from './core.js'
 import '../../assertEnvServer.js'
 
+const vikeUniversalMiddleware = enhance(handler, vikePagesRoute)
+
 // Vike's own server has no user-land universal middlewares
 const pipeNonHandlers = middlewaresPipe_nonHandlers([])
 const pipeHandlers = middlewaresPipe_handlers([])
@@ -25,5 +27,3 @@ async function handler(
   const response = await pipeHandlers(request, context, runtime)
   return typeof answer === 'function' ? ((await answer(response)) ?? response) : response
 }
-
-const vikeUniversalMiddleware = enhance(handler, vikePagesRoute)
