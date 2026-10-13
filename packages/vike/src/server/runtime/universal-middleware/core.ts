@@ -1,7 +1,7 @@
 export { getMiddlewares_globalContext }
 export { getMiddlewares_withErrorHandling }
 export { hasPlusMiddlewares }
-export { routeVikePages }
+export { routeCatchAll }
 export { mergeContext }
 export type { Middleware }
 
@@ -35,14 +35,14 @@ import '../../assertEnvServer.js'
 type Middleware = EnhancedMiddleware & { isHandler: boolean }
 
 // Route of Vike's handler that renders pages
-const routeVikePages = {
+const routeCatchAll = {
   name: 'vike',
   method: ['GET', 'POST', 'PUT', 'PATCH', 'HEAD', 'OPTIONS'],
   path: '/**',
 } as const satisfies UniversalOptionsArg
 
 // Vike's pages
-const renderPageServer_universalMiddleware = enhance(renderPageServer_universal, routeVikePages)
+const renderPageServer_universalMiddleware = enhance(renderPageServer_universal, routeCatchAll)
 
 // Upon an invalid config: answer every request with the error
 const middlewares_uponConfigError = [enhance(renderPageServer_universal, { name: 'vike' })].map(withIsHandler)
