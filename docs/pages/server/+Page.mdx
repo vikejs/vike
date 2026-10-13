@@ -539,8 +539,8 @@ import vike from '@vikejs/srvx'
 import compress from '@universal-middleware/compress' // [!code ++]
 
 export default {
-  fetch: vike() // [!code --]
-  fetch: vike([compress()]) // [!code ++]
+  fetch: vike(), // [!code --]
+  fetch: vike([compress()]), // [!code ++]
 } satisfies Server
 ```
 
