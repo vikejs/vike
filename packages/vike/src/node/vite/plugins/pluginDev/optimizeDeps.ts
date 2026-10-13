@@ -235,7 +235,7 @@ async function getPageDeps(
 
   // V0.4 design
   {
-    const pageFiles = await findPageFiles(config, ['.page', '.page.client'], true)
+    const pageFiles = await findPageFiles(config, ['.page', '.page.client'])
     const userRootDir = config.root
     pageFiles.forEach((filePathAbsoluteUserRootDir) => {
       const entry = getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir })
