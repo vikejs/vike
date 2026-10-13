@@ -22,6 +22,7 @@ import {
   type UniversalOptionsArg,
 } from '@universal-middleware/core'
 import { parseUrl } from '../../../utils/parseUrl.js'
+import { prependBase } from '../../../utils/parseUrl-extras.js'
 import { handlePageContextRequestUrl } from '../renderPageServer/handlePageContextRequestUrl.js'
 import { renderPageServer } from '../renderPageServer.js'
 import { getGlobalContextServerInternal, initGlobalContext_renderPage } from '../globalContext.js'
@@ -93,7 +94,7 @@ function wrapWithVikeRouting(plusMiddleware: EnhancedMiddleware, baseServer: str
     // A handler is a route of the server, which matches it: its path gets the Base URL. (`enhance()` clones it, so that marking it `isHandler` leaves the extension's export untouched.)
     return enhance(
       plusMiddleware as UniversalMiddleware,
-      path ? { path: baseServer.replace(/\/$/, '') + (path.startsWith('/') ? '' : '/') + path } : {},
+      path ? { path: prependBase(path.startsWith('/') ? path : `/${path}`, baseServer) } : {},
     )
   }
   const isMatch = path && createMatcher(path, method)
