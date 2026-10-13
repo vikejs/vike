@@ -75,7 +75,7 @@ export default {
 
 > With another server, use the `apply()` function of its [Universal Middleware adapter](https://universal-middleware.dev/).
 
-> With Fastify and Elysia, apply the whole list in one call, `apply(app, middlewares)`, and define your routes after it. The `+middleware` that are handlers then run before your routes, so your routes can't override them.
+> With Fastify and Elysia, apply the whole list in one call, `apply(app, middlewares)`, and define your routes after it: they still take precedence over the `+middleware` that are handlers and over Vike's pages.
 
 > With srvx, which has no app, put your routes between the two parts of the list: `apply([...middlewares.filter((m) => !m.isHandler), getMe, ...middlewares.filter((m) => m.isHandler)])`. A route placed after the `+middleware` that are handlers can't override them.
 
