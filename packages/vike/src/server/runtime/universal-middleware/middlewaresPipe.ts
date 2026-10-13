@@ -26,7 +26,7 @@ function middlewaresPipe_handlers(middlewaresUserLand: object[]): UniversalHandl
       // A method that no handler and no page answers (e.g. DELETE): what a server answers without a route for it
       (await router(request, context, runtime)) ?? new Response('Not Found', { status: 404 }),
     {
-      name: 'vike',
+      name: 'vike:handlers',
       method: ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'CONNECT', 'OPTIONS', 'TRACE', 'PATCH'],
       path: '/**',
     },
@@ -43,7 +43,7 @@ function middlewaresPipe_nonHandlers(middlewaresUserLand: object[]): UniversalMi
   )
   return enhance(
     pipe((middlewares) => pipeNonHandlers(middlewares, nonHandlersUserLand)),
-    { name: 'vike:middleware' },
+    { name: 'vike:nonHandlers' },
   )
 }
 
