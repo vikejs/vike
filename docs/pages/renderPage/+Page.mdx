@@ -155,7 +155,7 @@ There are two fundamental differences:
 
 > `vike(app)` and `renderPage()` are interchangeable: you can use either one, regardless of whether you use <Link href="/server">`+server.js`</Link>, <Link href="/serverEntry">`+serverEntry.js`</Link>, or <Link href="#without-serverentry-js">run your server directly</Link> (e.g. `$ node server/index.js`).
 >
-> That said, if you use a Vike extension that uses `+middleware`, you cannot (easily) use `renderPage()` — you must use <Link href="/vike(app)">`vike(app)`</Link> (or <Link href="/globalContext#middlewares">`globalContext.middlewares`</Link> if your server doesn't have a `vike(app)` adapter).
+> That said, if you use a Vike extension that uses `+middleware`, you cannot (easily) use `renderPage()` — you must use <Link href="/server#get-started">use `vike(app)`</Link> (or <Link href="/vike(app)#manual-integration">use `globalContext.middlewares`</Link> if your server doesn't have a `vike(app)` adapter).
 
 > See also:
 > - <Link href="/server" />
