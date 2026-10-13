@@ -4,20 +4,19 @@ export { getConfigExecutionErrorIntroMsg }
 export { isTemporaryBuildFile }
 export type { VikeTranspileCache }
 
-import {
-  rolldown,
-  type Plugin,
-  type PluginContext,
-  type PluginContextResolveOptions,
-  type RolldownBuild,
-  type RolldownLog,
-  type RolldownOutput,
-  VERSION,
+import type {
+  Plugin,
+  PluginContext,
+  PluginContextResolveOptions,
+  RolldownBuild,
+  RolldownLog,
+  RolldownOutput,
 } from 'rolldown'
 import { parseAst } from 'rolldown/parseAst'
 import fs from 'node:fs'
 import path from 'node:path'
 import crypto from 'node:crypto'
+import { createRequire } from 'node:module'
 import pc from '@brillout/picocolors'
 import { import_ } from '@brillout/import'
 import { assert, assertWarning } from '../../../../utils/assert.js'
@@ -38,9 +37,12 @@ import type { FilePathResolved } from '../../../../types/FilePath.js'
 import { getFilePathAbsoluteUserRootDir } from '../getFilePath.js'
 import { getMagicString } from '../getMagicString.js'
 import '../../assertEnvVite.js'
+const importMetaUrl = import.meta.url
+const require_ = createRequire(importMetaUrl)
 
 assertIsNotProductionRuntime()
 installSourceMapSupport()
+const { rolldown, VERSION } = importRolldown()
 const debug = createDebug('vike:pointer-imports')
 const debugResolve = createDebug('vike:transpile-resolve')
 const debugConfig = createDebug('vike:config')
@@ -658,4 +660,21 @@ function installSourceMapSupport() {
   // How about other test runners?
   // Should we call installSourceMapSupport() lazily in transpileAndExecuteFile() instead?
   sourceMapSupport.install()
+}
+
+// Import Rolldown without the signal handlers it installs.
+// - Upon import, Rolldown calls onExit() of [signal-exit](https://github.com/tapjs/signal-exit) which installs handlers for SIGINT, SIGTERM, SIGHUP, ... — see https://github.com/rolldown/rolldown/blob/main/packages/rolldown/src/setup.ts
+// - These handlers re-raise the signal with `process.kill(process.pid, signal)` which makes Node.js wait for the attached debugger (if any) to disconnect, instead of exiting right away. For example, the dev server keeps running after its terminal is closed: https://github.com/vikejs/vike/issues/3577#issuecomment-6129563922
+// - signal-exit doesn't install any handler if process.reallyExit() is missing.
+// - With Vite 8 the handlers are installed regardless, since Vite 8 also imports Rolldown.
+function importRolldown(): typeof import('rolldown') {
+  const processInternal = process as NodeJS.Process & { reallyExit?: unknown }
+  const { reallyExit } = processInternal
+  processInternal.reallyExit = undefined
+  try {
+    // Synchronous: no other code runs while process.reallyExit() is missing
+    return require_('rolldown')
+  } finally {
+    processInternal.reallyExit = reallyExit
+  }
 }
