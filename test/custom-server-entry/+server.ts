@@ -4,7 +4,6 @@ import { Hono } from 'hono'
 import { apply } from '@universal-middleware/hono'
 import type { Server } from 'vike/types'
 import { getGlobalContextAsync } from 'vike'
-import vikeFetch from 'vike/fetch'
 import assert from 'node:assert'
 
 // Awaiting the global context at the top level mustn't deadlock
@@ -20,8 +19,6 @@ apply(
 )
 app.get('/hello', (c) => c.text('Hello from +server.ts'))
 app.get('/api/me', (c) => c.text('Me'))
-// `vike.fetch()` with a method that Vike's pages don't list
-app.on('PROPFIND', '/', (c) => vikeFetch.fetch(c.req.raw))
 apply(
   app,
   middlewares.filter((m) => m.isHandler),

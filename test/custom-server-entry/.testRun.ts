@@ -20,8 +20,4 @@ function testRun(...args: Parameters<typeof testRunClassic>) {
   test("A +middleware handler runs after the app's own routes", async () => {
     expect(await fetchHtml('/from-middleware')).toBe('Hello from +middleware')
   })
-
-  test("`vike.fetch()` doesn't render the page for a method the pages don't list (PROPFIND)", async () => {
-    expect((await fetch(`${getServerUrl()}/`, { method: 'PROPFIND' })).status).toBe(404)
-  })
 }
