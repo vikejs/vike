@@ -1,4 +1,5 @@
 import { expect, it } from 'vitest'
+import { createRequire } from 'node:module'
 
 type ProcessInternal = NodeJS.Process & { reallyExit?: unknown }
 
@@ -14,4 +15,6 @@ it("importing Rolldown doesn't install signal handlers", async () => {
 
   expect(getSignalListenerCounts()).toEqual(signalListenerCountsBefore)
   expect((process as ProcessInternal).reallyExit).toBe(reallyExit)
+  // Otherwise importRolldown() falls back to import(), which installs the signal handlers
+  expect(() => createRequire(import.meta.url)('rolldown')).not.toThrow()
 })

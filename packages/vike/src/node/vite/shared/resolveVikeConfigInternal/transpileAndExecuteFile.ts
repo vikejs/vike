@@ -42,12 +42,12 @@ const require_ = createRequire(importMetaUrl)
 
 assertIsNotProductionRuntime()
 installSourceMapSupport()
-const { rolldown, VERSION } = importRolldown()
 const debug = createDebug('vike:pointer-imports')
 const debugResolve = createDebug('vike:transpile-resolve')
 const debugConfig = createDebug('vike:config')
-if (debugResolve.isActivated) debugResolve('rolldown version', VERSION)
+const rolldownModule = importRolldown()
 
+type Rolldown = typeof import('rolldown')
 type FileExports = { fileExports: Record<string, unknown> }
 
 type VikeTranspileCache = {
@@ -277,6 +277,7 @@ async function transpileFile(
     },
   ]
 
+  const { rolldown } = await rolldownModule
   let bundle: RolldownBuild | undefined
   let output: RolldownOutput
   try {
@@ -667,14 +668,21 @@ function installSourceMapSupport() {
 // - These handlers re-raise the signal with `process.kill(process.pid, signal)` which makes Node.js wait for the attached debugger (if any) to disconnect, instead of exiting right away. For example, the dev server keeps running after its terminal is closed: https://github.com/vikejs/vike/issues/3577#issuecomment-6129563922
 // - signal-exit doesn't install any handler if process.reallyExit() is missing.
 // - With Vite 8 the handlers are installed regardless, since Vite 8 also imports Rolldown.
-function importRolldown(): typeof import('rolldown') {
+function importRolldown(): Rolldown | Promise<Rolldown> {
   const processInternal = process as NodeJS.Process & { reallyExit?: unknown }
   const { reallyExit } = processInternal
   processInternal.reallyExit = undefined
+  let rolldownExports: Rolldown
   try {
     // Synchronous: no other code runs while process.reallyExit() is missing
-    return require_('rolldown')
+    rolldownExports = require_('rolldown')
+  } catch (err) {
+    // require() can't load an ES module that uses top-level await: if Rolldown ever does, fall back to import() (which installs the signal handlers) instead of crashing
+    if (!isObject(err) || err.code !== 'ERR_REQUIRE_ASYNC_MODULE') throw err
+    return import('rolldown')
   } finally {
     processInternal.reallyExit = reallyExit
   }
+  if (debugResolve.isActivated) debugResolve('rolldown version', rolldownExports.VERSION)
+  return rolldownExports
 }
