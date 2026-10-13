@@ -9,7 +9,7 @@ import { Link, CodeBlockTransformer } from '@brillout/docpress'
 This error means that your app has a <Link href="/middleware">`+middleware`</Link> but your server renders pages by calling <Link href="/renderPage">`renderPage()`</Link> itself. Vike can't tell whether your `+middleware` ran (e.g. an authentication `+middleware`), so it answers with a `500` instead of rendering the page.
 
 Use one of the following instead of `renderPage()`:
-- <Link href="/server">`vike(app)`</Link> (`@vikejs/*` 0.4 or later), which runs all `+middleware` around your routes.
+- <Link href="/vike(app)">`vike(app)`</Link> (`@vikejs/*` 0.4 or later), which runs all `+middleware` around your routes.
 - Vike's built-in server: <Link href="/server#server-true">`+server: true`</Link>.
 - Apply <Link href="/middleware#manual-integration">`globalContext.middlewares`</Link> yourself: the list ends with Vike's pages.
 
