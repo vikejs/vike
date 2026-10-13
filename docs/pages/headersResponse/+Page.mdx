@@ -67,7 +67,12 @@ export function onBeforeRenderHtml(pageContext: PageContextServer) {
 
 > `pageContext.headersResponse` is a [standard `Headers` object](https://developer.mozilla.org/en-US/docs/Web/API/Headers).
 
-<Link href="/server">`vike(app)`</Link> sends the final HTTP response headers for you. If you use <Link href="/renderPage">`renderPage()`</Link>, they're available at `pageContext.httpResponse.headers`:
+
+## `pageContext.httpResponse.headers`
+
+If you use <Link href="/server">`vike(app)`</Link>, the final response headers are automatically sent.
+
+But if you use <Link href="/renderPage">`renderPage()`</Link>, then access the final response headers at `pageContext.httpResponse.headers` and send them yourself:
 
 ```ts
 import { renderPage } from 'vike/server'
@@ -76,11 +81,13 @@ import { renderPage } from 'vike/server'
 app.get('*', async (req: Request) => {
   // ...
   const pageContext = await renderPage(pageContextInit)
-  // HTTP response headers sent to the client
+  // HTTP response headers to be sent to the client
   const headers = pageContext.httpResponse.headers
   // ...
 })
 ```
+
+> See: <Link href="/renderPage" />
 
 It's a list of string tuples `[string, string][]` — for example:
 
@@ -96,6 +103,7 @@ You can convert it to a [standard `Headers` object](https://developer.mozilla.or
 ```ts
 const headers = new Headers(pageContext.httpResponse.headers)
 ```
+
 
 ## See also
 
