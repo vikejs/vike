@@ -67,7 +67,7 @@ function mergeContext(middleware: EnhancedMiddleware): UniversalMiddleware {
   return enhance(async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) => {
     const result = await getUniversal(middleware as UniversalMiddleware)(request, context, runtime)
     if (!result || result instanceof Response || typeof result === 'function') return result
-    Object.assign(context, result)
+    return { ...context, ...result }
   }, getOptions(middleware))
 }
 

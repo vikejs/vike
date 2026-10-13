@@ -261,7 +261,7 @@ describe('pipeNonHandlers()', () => {
     expect(await run([], '/about', [apiHeader])).toBe(undefined)
   })
 
-  it('merges a context a middleware returns into the context, for the middlewares after it and the caller', async () => {
+  it('merges a context a middleware returns into a new context, for the middlewares after it and the caller', async () => {
     const user = enhance(() => ({ user: 'alice' }), { name: 'user', order: MiddlewareOrder.AUTHENTICATION })
     let seen: unknown
     const app = enhance(
@@ -270,16 +270,22 @@ describe('pipeNonHandlers()', () => {
       },
       { name: 'app' },
     )
-    const context: Universal.Context = { urlOriginal: '/' }
-    await pipeNonHandlers(getMiddlewares_globalContext(globalContextWith([user]), '/'), [app])(
-      new Request('http://localhost/'),
-      context,
-      {} as RuntimeAdapter,
-    )
-    expect([seen, context]).toEqual([
-      { urlOriginal: '/', user: 'alice' },
-      { urlOriginal: '/', user: 'alice' },
-    ])
+    // A user-land universal middleware after the +middleware, then before it
+    for (const order of [10, -10]) {
+      const team = enhance(() => ({ team: 'blue' }), { name: 'team', order: MiddlewareOrder.AUTHENTICATION + order })
+      const context: Universal.Context = { urlOriginal: '/' }
+      const returned = await pipeNonHandlers(getMiddlewares_globalContext(globalContextWith([user]), '/'), [team, app])(
+        new Request('http://localhost/'),
+        context,
+        {} as RuntimeAdapter,
+      )
+      // The context it's given stays untouched: an adapter may reuse it across requests
+      expect([seen, returned, context]).toEqual([
+        { urlOriginal: '/', user: 'alice', team: 'blue' },
+        { urlOriginal: '/', user: 'alice', team: 'blue' },
+        { urlOriginal: '/' },
+      ])
+    }
   })
 
   it('runs the +middleware and the user-land universal middlewares by order, the +middleware first at equal order', async () => {

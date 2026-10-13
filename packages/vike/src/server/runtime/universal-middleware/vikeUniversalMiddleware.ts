@@ -20,6 +20,8 @@ async function handler(
   context = { ...context }
   const answer = await nonHandlers(request, context, runtime)
   if (answer instanceof Response) return answer
+  // The context the +middleware returned
+  if (answer && typeof answer === 'object') context = answer
   const response = await handlersAndPages(request, context, runtime)
   return typeof answer === 'function' ? ((await answer(response)) ?? response) : response
 }

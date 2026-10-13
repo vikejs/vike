@@ -106,9 +106,8 @@ function wrapWithVikeRouting(plusMiddleware: EnhancedMiddleware, baseServer: str
         if (isBaseMissing || !isMatch(new Request(href, { method: request.method }))) return
       }
       const answer = await getUniversal(plusMiddleware as UniversalMiddleware)(request, context, runtime)
-      // Universal Middleware replaces the context with the one a middleware returns: Vike merges it, as a +middleware returns only what it adds
-      if (answer && !(answer instanceof Response) && typeof answer !== 'function')
-        return void Object.assign(context, answer)
+      // A +middleware returns only what it adds: merged into a copy, as an adapter may reuse the context object across requests
+      if (answer && !(answer instanceof Response) && typeof answer !== 'function') return { ...context, ...answer }
       return isPageContextJsonRequest ? toPageContextJsonAnswer(answer) : answer
     },
     {
