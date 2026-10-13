@@ -2,10 +2,10 @@ export { vikeUniversalMiddleware }
 
 import { enhance, getAdapterRuntime, type RuntimeAdapterTarget } from '@universal-middleware/core'
 import { middlewaresPipe_handlers, middlewaresPipe_nonHandlers } from './middlewaresPipe.js'
-import { vikePagesRoute } from './core.js'
+import { routeVikePages } from './core.js'
 import '../../assertEnvServer.js'
 
-const vikeUniversalMiddleware = enhance(handler, vikePagesRoute)
+const vikeUniversalMiddleware = enhance(handler, routeVikePages)
 
 const pipeNonHandlers = middlewaresPipe_nonHandlers([])
 const pipeHandlers = middlewaresPipe_handlers([])
