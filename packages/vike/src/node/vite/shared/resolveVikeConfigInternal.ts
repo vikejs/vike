@@ -1869,7 +1869,8 @@ async function resolvePrerenderContext(vikeConfig: Parameters<typeof resolvePrer
 
 function restartViteDevServer() {
   const viteDevServer = getViteDevServer()
-  assert(viteDevServer)
+  // setViteEnvironmentNames() can reload Vike's config while Vite resolves its config, before the dev server exists
+  if (!viteDevServer) return
   swallowViteLogForceOptimization_enable()
   // We don't `await` because it never resolves it if we await it here => it hangs Vike's config resolving.
   // - I don't know why but I suspect there is a dead lock of a mutual dependency between Vite's restart() and Vike's config resolving.
