@@ -13,13 +13,16 @@ function pluginUnwrapProdOptions(serverFilePath: string): Plugin {
       },
     },
 
-    // Unwrap all prod.* options
+    // Unwrap all prod.* options, and use Vike's built-in server if +server.js doesn't define `fetch`
     load(id) {
       return `
-import mod from ${JSON.stringify(id)};
+import * as mod from ${JSON.stringify(id)};
+import vikeFetch from 'vike/__internal/fetch';
 
 export * from ${JSON.stringify(id)};
-export default { ...mod, ...mod?.prod };
+// Destructured because mod.default makes Rolldown warn when +server.js has no default export
+const { default: server } = mod;
+export default { ...vikeFetch, ...server, ...server?.prod };
 `
     },
   })
