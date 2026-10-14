@@ -828,17 +828,19 @@ async function handleErrorFetchingStaticAssets(
   // Vike aborts the rendering: the browser (re-)loads the page instead
   const abortRendering = true
 
-  // In development, it's usually a transform error, which a reload doesn't fix
   if (import.meta.env.DEV) return showErrorPage
   if (!isErrorFetchingStaticAssets(err)) return showErrorPage // Syntax error in user file
-  // Possible reasons:
-  // - Flaky connection
+
+  // Possible reasons that led to here:
   // - New frontend was deployed
+  // - Flaky network
+
   if (!isFirstRender) {
     disableClientRouting(err, false)
     redirectHard(pageContext.urlOriginal)
     return abortRendering
   }
+
   // Upon hydration, we reload the page if a new frontend was likely deployed. Upon a flaky connection, we let it fail: handling flaky connections is the browser's job (the user reloads the page). The server-side rendered page remains (without hydration) and, since Client Routing is disabled, the next page navigation is a full page load.
   // We don't reload a page that was itself loaded by a reload, in order to avoid an infinite reload loop.
   if (isPageReload()) {
@@ -858,7 +860,7 @@ async function handleErrorFetchingStaticAssets(
     }
     disableClientRouting(err, false, true)
   }
-  // We let it fail
+  // Show the rendered HTML (with broken hydration) to the user, while letting the error be thrown and logged in the browser's developer console. Reloading is counter productive since it'd likely get another network error — resulting in either: the browser's 404 error page, or the failed asset fetching issue repeats.
   throw err
 }
 // Whether fetching static assets fails because of the network. (The error thrown by `import()` doesn't tell: it's the same whether a new frontend was deployed, i.e. the static assets don't exist anymore, or the connection is flaky.)
