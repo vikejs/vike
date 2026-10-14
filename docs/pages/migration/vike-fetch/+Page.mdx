@@ -28,7 +28,7 @@ npm i hono @vikejs/hono
 ```ts
 // +server.ts
 
-import vike from 'vike/fetch' // [!code --]
+// @docpress-uncomment import vike from 'vike/fetch' // [!code --]
 import { Hono } from 'hono' // [!code ++]
 import vike from '@vikejs/hono' // [!code ++]
 import type { Server } from 'vike/types'
@@ -39,7 +39,7 @@ vike(app) // [!code ++]
 export default {
   fetch(request) { // [!code --]
     return vike.fetch(request) // [!code --]
-  } // [!code --]
+  }, // [!code --]
   fetch: app.fetch // [!code ++]
 } satisfies Server
 ```
