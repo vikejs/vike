@@ -62,7 +62,7 @@ type PageContextContent = {
   content?: string | Uint8Array | ReadableStream<Uint8Array>
 }
 
-// pageContext.req and pageContext.res are set by vike(app) (aliases of pageContext.runtime.req and pageContext.runtime.res), $ vike dev and $ vike preview.
+// pageContext.req and pageContext.res (aliases of pageContext.runtime.req and pageContext.runtime.res) are set by vike(app), `$ vike dev`, and `$ vike preview`.
 // https://vike.dev/pageContext#req
 // We only add the aliases:
 //  - if the runtime adapter exposes req/res (e.g. Node.js servers such as Express/Fastify/Hono do, but Cloudflare Workers don't), and
