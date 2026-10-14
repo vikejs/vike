@@ -1,0 +1,71 @@
+import { Link } from '@brillout/docpress'
+import { ConfigSpec } from '../../components'
+
+<ConfigSpec
+  env="server"
+  global={null}
+/>
+
+The `vike(app)` function installs Vike's server middlewares to your server.
+
+> See <Link href="/server" /> for how to use `vike(app)`.
+
+It installs:
+- Vike's handler that renders your pages (basically <Link href="/renderPage">`renderPage()`</Link>)
+- Every <Link href="/middleware">`+middleware`</Link> from <Link href="/extensions">Vike extensions</Link>
+
+> Technically, what it does is install the <Link href="/globalContext#middlewares">`globalContext.middlewares`</Link> list using the [sandwich approach](https://github.com/vikejs/vike-server-adapters#sandwich-approach): middlewares (i.e. non-handlers) are applied before user-defined routes while handlers are applied after — so that your routes can read the context set by the middlewares of Vike extensions.
+>
+> See also: <Link href="/middleware#order" />
+
+
+## Manual integration
+
+If your favorite server framework doesn't have a `vike(app)` adapter yet, you can manually apply <Link href="/globalContext#middlewares">`globalContext.middlewares`</Link> around your routes like this:
+
+```ts
+// +server.ts
+// Environment: server
+
+import { YourFavoriteServer } from 'your-favorite-server'
+import { apply } from '@universal-middleware/your-favorite-server'
+import { getGlobalContext } from 'vike'
+import assert from 'node:assert'
+
+const globalContext = await getGlobalContext()
+assert(!globalContext.isClientSide)
+const { middlewares } = globalContext
+const app = new YourFavoriteServer()
+
+// Apply globalContext.middlewares around your routes (the sandwich approach):
+
+// The +middleware that aren't handlers first
+apply(app, middlewares.filter((m) => !m.isHandler))
+
+// Your routes
+app.get('/api/me', getMe)
+
+// The +middleware that are handlers last (it includes Vike's handler that renders your pages)
+apply(app, middlewares.filter((m) => m.isHandler))
+
+export default {
+  fetch: app.fetch,
+}
+```
+
+> If [Universal Middleware adapter](https://universal-middleware.dev/) doesn't have a `@universal-middleware/your-favorite-server` adapter yet, you can consider asking your agent to create one (agents are proficient at this).
+
+> In development, because `globalContext.middlewares` is read when your server starts, you must restart your server after a `+middleware` changes (i.e. you install/remove/update a Vike extension).
+>
+> Note that `vike(app)` doesn't need a restart because, in development, it re-reads `globalContext.middlewares` for every request.
+
+> In principle, it's possible to use <Link href="/renderPage">`renderPage()`</Link> together with manually installing `globalContext.middlewares`, similar to the approach shown above. But it's cumbersome, and we don't recommend it. (You'd need to remove Vike's handler from `globalContext.middlewares`, while both `renderPage()` and `globalContext.middlewares` require a catch-all route which leads to conflicts.)
+
+
+## See also
+
+- <Link href="/server" />
+- <Link href="/renderPage" />
+- <Link href="/middleware" />
+- <Link href="/globalContext#middlewares">API > `globalContext.middlewares`</Link>
+- [GitHub > `vikejs/vike-server-adapters`](https://github.com/vikejs/vike-server-adapters)

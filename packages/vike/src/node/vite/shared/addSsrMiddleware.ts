@@ -1,12 +1,13 @@
 export { addSsrMiddleware }
 
-import { type PageContextInitInternal, renderPageServer } from '../../../server/runtime/renderPageServer.js'
+import { vikeUniversalMiddleware } from '../../../server/runtime/universal-middleware/vikeUniversalMiddleware.js'
+import { getAdapterRuntime } from '@universal-middleware/core'
+import { createRequestAdapter } from '@universal-middleware/node/request'
+import { sendResponse } from '@universal-middleware/node/response'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
-import type { ServerResponse } from 'node:http'
-import { assertWarning } from '../../../utils/assert.js'
-import pc from '@brillout/picocolors'
 import '../assertEnvVite.js'
 type ConnectServer = ViteDevServer['middlewares']
+const requestAdapter = createRequestAdapter()
 
 function addSsrMiddleware(
   middlewares: ConnectServer,
@@ -18,32 +19,11 @@ function addSsrMiddleware(
     if (res.headersSent) return next()
     const url = req.originalUrl || req.url
     if (!url) return next()
-    const { headers } = req
-    const pageContextInit: PageContextInitInternal = {
-      urlOriginal: url,
-      headersOriginal: headers,
-      _nodeDev: { req, res },
-    }
-    Object.defineProperty(pageContextInit, 'userAgent', {
-      get() {
-        // TO-DO/next-major-release: assertUsage() instead of assertWarning()
-        assertWarning(
-          false,
-          `${pc.cyan('pageContext.userAgent')} is deprecated: use ${pc.cyan(
-            "pageContext.headers['user-agent']",
-          )} instead.`,
-          {
-            showStackTrace: true,
-            onlyOnce: true,
-          },
-        )
-        return headers['user-agent']
-      },
-      enumerable: false,
-    })
-    let pageContext: Awaited<ReturnType<typeof renderPageServer>>
+    let response: Response
     try {
-      pageContext = await renderPageServer(pageContextInit)
+      const runtime = Object.assign(getAdapterRuntime('other', { params: undefined }), { req, res })
+      const context = { urlOriginal: url }
+      response = await vikeUniversalMiddleware(requestAdapter(req, res), context, runtime)
     } catch (err) {
       // Throwing an error in a connect middleware shuts down the server
       console.error(err)
@@ -53,7 +33,7 @@ function addSsrMiddleware(
       return next()
     }
 
-    if (pageContext.httpResponse.statusCode === 404 && isPreview && isPrerenderingEnabled) {
+    if (response.status === 404 && isPreview && isPrerenderingEnabled) {
       // Serve /dist/client/404.html instead
       return next()
     }
@@ -63,19 +43,6 @@ function addSsrMiddleware(
       for (const [name, value] of Object.entries(configHeaders)) if (value) res.setHeader(name, value)
     }
 
-    const { httpResponse } = pageContext
-    setHeadersWithMultipleCookies(res, httpResponse.headers)
-    res.statusCode = httpResponse.statusCode
-    httpResponse.pipe(res)
+    await sendResponse(response, res)
   })
-}
-
-// A response can have several Set-Cookie headers: res.setHeader() would only keep the last one
-function setHeadersWithMultipleCookies(res: ServerResponse, headers: [string, string][]) {
-  const cookies: string[] = []
-  headers.forEach(([name, value]) => {
-    if (name.toLowerCase() === 'set-cookie') cookies.push(value)
-    else res.setHeader(name, value)
-  })
-  if (cookies.length > 0) res.setHeader('set-cookie', cookies)
 }
