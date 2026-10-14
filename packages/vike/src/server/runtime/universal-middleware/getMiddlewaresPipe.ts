@@ -17,7 +17,7 @@ import '../../assertEnvServer.js'
  * What `vike(app, middlewares)` runs after the app's routes: the middlewares (looked up upon each request) that are handlers, as one universal handler (the pipe).
  */
 function getMiddlewaresPipe_handlers(
-  // `object[]`: the user-land universal middlewares can come from another copy of @universal-middleware/core, whose types (keyed by a `unique symbol`) never match this copy's
+  // `object[]`: the user-land universal middlewares can come from another copy of @universal-middleware/core, whose types don't match this copy's
   middlewaresUserLand: object[],
 ): UniversalHandler {
   const handlersUserLand = (middlewaresUserLand as UniversalMiddleware[]).filter(isHandler)
@@ -25,9 +25,13 @@ function getMiddlewaresPipe_handlers(
     pipeRoute([...handlersUserLand, ...middlewares.filter((middleware) => middleware.isHandler)]),
   )
   return enhance(
-    async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) =>
-      // A method that no handler and no page answers (e.g. DELETE): what a server answers without a route for it
-      (await router(request, context, runtime)) ?? new Response('Not Found', { status: 404 }),
+    async (request: Request, context: Universal.Context, runtime: RuntimeAdapterTarget<unknown>) => {
+      return (
+        (await router(request, context, runtime)) ??
+        // Fallback when no handler answers
+        new Response('Not Found', { status: 404 })
+      )
+    },
     {
       name: 'vike:handlers',
       method: ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'CONNECT', 'OPTIONS', 'TRACE', 'PATCH'],
@@ -40,7 +44,7 @@ function getMiddlewaresPipe_handlers(
  * What `vike(app, middlewares)` applies before the app's routes: the middlewares (looked up upon each request) that aren't handlers, as one universal middleware (the pipe).
  */
 function getMiddlewaresPipe_nonHandlers(
-  // `object[]`: the user-land universal middlewares can come from another copy of @universal-middleware/core, whose types (keyed by a `unique symbol`) never match this copy's
+  // `object[]`: the user-land universal middlewares can come from another copy of @universal-middleware/core, whose types don't match this copy's
   middlewaresUserLand: object[],
 ): UniversalMiddleware {
   const nonHandlersUserLand = (middlewaresUserLand as UniversalMiddleware[]).filter(
