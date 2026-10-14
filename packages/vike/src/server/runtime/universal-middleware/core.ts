@@ -159,7 +159,7 @@ function assertPath(name: string | undefined, path: string, baseServer: string):
   if (!base || (path !== base && !path.startsWith(`${base}/`))) return
   assertWarning(
     false,
-    `The +middleware ${name ? `${name} ` : ''}has the path ${path}, which starts with the Base URL ${baseServer}. A +middleware path is relative to the Base URL, use ${path.slice(base.length) || '/'} instead.`,
+    `The +middleware ${name ? `${pc.bold(name)} ` : ''}has the path ${pc.cyan(path)}, which starts with the Base URL ${pc.cyan(baseServer)}. A +middleware path is relative to the Base URL, use ${pc.cyan(path.slice(base.length) || '/')} instead.`,
     { onlyOnce: `middleware-path:${name}:${path}` },
   )
 }
