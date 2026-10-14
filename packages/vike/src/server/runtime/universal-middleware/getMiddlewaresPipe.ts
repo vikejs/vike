@@ -65,7 +65,7 @@ function pipeNonHandlers(middlewares: Middleware[], nonHandlersUserLand: Univers
 }
 
 function pipe(getPipe: (middlewares: Middleware[]) => UniversalMiddleware): UniversalMiddleware {
-  // The list changes only when the config does, so `getPipe()` runs once per list
+  // Caching: the list changes only when the config does, so getPipe() runs once per list
   const cache = new WeakMap<Middleware[], UniversalMiddleware>()
   return async (request, context, runtime) => {
     const middlewares = await getMiddlewares_withErrorHandling()
