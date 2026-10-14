@@ -846,8 +846,12 @@ async function handleErrorFetchingStaticAssets(
   } else {
     // We disable Client Routing right away: while we check the connection, link clicks would otherwise wait for the hydration, which never ends
     globalObject.clientRoutingIsDisabled = true
-    if (!(await isNetworkError())) {
+    if (
+      // The page shows nothing (e.g. SPA): reloading is better than a blank page, even upon a network error
+      isBlankPage() ||
       // Most likely a new frontend was deployed (or the connection is back): either way, reloading fixes the page
+      !(await isNetworkError())
+    ) {
       // We use `location.reload()` instead of redirectHard(): navigating with `location.href = url` creates a `type: 'navigate'` entry, which would lead to an infinite reload loop — see isPageReload()
       window.location.reload()
       return abortRendering
@@ -870,6 +874,11 @@ async function isNetworkError(): Promise<boolean> {
   } catch {
     return true
   }
+}
+// Whether the server-side rendered page shows nothing, e.g. SPA (`ssr: false`). Vike doesn't know whether the page was server-side rendered (that's the job of the UI framework, e.g. vike-react), so we check whether the page shows any text.
+function isBlankPage(): boolean {
+  // `innerText` ignores <script>, <noscript>, and hidden elements
+  return !document.body.innerText.trim()
 }
 // Whether the current page was loaded by a page reload
 function isPageReload(): boolean {

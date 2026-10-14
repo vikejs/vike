@@ -82,14 +82,13 @@ function testHydrationRetry(isDev: boolean) {
   test("hydration retry: the page isn't reloaded when offline", async () => {
     const context = page.context()
     // The first page load fails to fetch the page's entry because the connection is lost
-    const pageEntry = await blockPageEntry(
-      (pageLoads) => pageLoads === 1 && 'network-error',
-      async () => {
+    const pageEntry = await blockPageEntry((pageLoads) => pageLoads === 1 && 'network-error', {
+      onNetworkError: async () => {
         // Lose the connection only after Vike's client runtime is loaded
         await page.waitForLoadState('domcontentloaded')
         await context.setOffline(true)
       },
-    )
+    })
     try {
       await page.goto(getServerUrl() + '/')
       // It throws the error and the server-side rendered page remains, also after the connection is back
@@ -107,15 +106,30 @@ function testHydrationRetry(isDev: boolean) {
     }
     expectLog('Failed to load resource', { filter: (log) => log.logSource === 'Browser Error' })
   })
+
+  test('hydration retry: an SPA is reloaded even if the connection is down', async () => {
+    // The first page load fails to fetch the page's entry, and so would Vike's check whether the server responds
+    const pageEntry = await blockPageEntry((pageLoads) => pageLoads === 1 && 'connection-down', { pageName: 'spa' })
+    try {
+      await page.goto(getServerUrl() + '/spa')
+      // The page is blank: reloading it is better
+      await testCounter()
+      expect(pageEntry.getPageLoads()).toBe(2)
+    } finally {
+      await pageEntry.unblock()
+    }
+    expectLog('Failed to load resource: net::ERR_FAILED', { filter: (log) => log.logSource === 'Browser Error' })
+  })
 }
 // Make fetching the page's entry fail:
 // - 'deleted': the entry doesn't exist anymore (e.g. a new frontend was deployed)
 // - 'network-error': the entry exists but fetching it fails (e.g. flaky connection), while the server still responds to Vike's check — unless `onNetworkError()` takes the connection down
+// - 'connection-down': fetching the entry fails, and so does Vike's check
 async function blockPageEntry(
-  getFailure: (pageLoads: number) => 'deleted' | 'network-error' | false,
-  onNetworkError?: () => Promise<void>,
+  getFailure: (pageLoads: number) => 'deleted' | 'network-error' | 'connection-down' | false,
+  { pageName = 'index', onNetworkError }: { pageName?: string; onNetworkError?: () => Promise<void> } = {},
 ) {
-  const url = '**/entries/pages_index.*.js'
+  const url = `**/entries/pages_${pageName}.*.js`
   let pageLoads = 0
   const onRequest = (request: { resourceType(): string }) => {
     if (request.resourceType() === 'document') pageLoads++
@@ -126,6 +140,7 @@ async function blockPageEntry(
   await context.route(url, async (route) => {
     const failure = getFailure(pageLoads)
     if (failure === 'deleted') return route.fulfill({ status: 404 })
+    if (failure === 'connection-down') return route.abort()
     // Vike checks whether the server responds with a HEAD request
     if (failure === 'network-error' && route.request().method() !== 'HEAD') {
       await onNetworkError?.()
