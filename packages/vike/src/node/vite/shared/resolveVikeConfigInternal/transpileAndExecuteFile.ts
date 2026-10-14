@@ -592,7 +592,7 @@ function getConfigExecutionErrorIntroMsg(err: unknown) {
   return errIntroMsg ?? null
 }
 
-// Processes running on the same root (e.g. parallel test runs) shouldn't overwrite or remove each other's temporary file
+// Parallel processes shouldn't overwrite each other's temporary file
 const processId = crypto.randomUUID()
 function getTemporaryBuildFilePath(filePathAbsoluteFilesystem: string, code: string): string {
   assertPosixPath(filePathAbsoluteFilesystem)
