@@ -168,28 +168,11 @@ export class MyDurableObject extends DurableObject { // [!code ++]
 } // [!code ++]
 ```
 
-> If you use Vike's built-in server (<Link href="/server#server-true">`+server: true`</Link>), then define the following `+server.js` instead:
->
-> ```shell
-> npm i hono @vikejs/hono
-> ```
+> If you use Vike's built-in server (<Link href="/server#server-true">`+server: true`</Link>), then create a `+server.js` that only exports your Durable Objects: a `+server.js` without `fetch` uses Vike's built-in server.
 >
 > ```ts
 > // +server.ts
 >
-> // 1. Use vike(app), for example with Hono
-> import { Hono } from 'hono'
-> import vike from '@vikejs/hono'
-> import type { Server } from 'vike/types'
->
-> const app = new Hono()
-> vike(app)
->
-> export default {
->   fetch: app.fetch
-> } satisfies Server
->
-> // 2. Export Durable Object
 > export class MyDurableObject extends DurableObject {
 >   // ...
 > }
