@@ -6,7 +6,7 @@ function testRun(cmd: 'pnpm run dev:base' | 'pnpm run preview:base') {
   run(cmd, {
     serverUrl: 'http://localhost:3000/app/',
     tolerateError({ logText }) {
-      return logText.includes("Vite's CLI is deprecated") || logText.includes('Run the built server entry')
+      return logText.includes('Run the built server entry')
     },
   })
 
