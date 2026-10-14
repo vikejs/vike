@@ -53,7 +53,7 @@ function getMiddlewares_globalContext(globalContext: { config: ConfigResolved },
   ].map(withIsHandler)
 }
 
-// Retruns globalContext.middlewares, or middlewares_errorHandling upon an invalid config
+// Returns globalContext.middlewares, or middlewares_errorHandling upon an invalid config
 async function getMiddlewares_withErrorHandling(): Promise<Middleware[]> {
   if (getVikeConfigError()) return middlewares_errorHandling
   try {
