@@ -121,11 +121,11 @@ export default {
 ```ts file-added choice=H3
 // +server.ts
 
-import { createApp, toWebHandler } from 'h3'
+import { H3 } from 'h3'
 import vike from '@vikejs/h3'
 import type { Server } from 'vike/types'
 
-const app = createApp()
+const app = new H3()
 vike(app) // Make sure to run vike(app) before your routes
 
 // ...
@@ -133,7 +133,7 @@ vike(app) // Make sure to run vike(app) before your routes
 // ...
 
 export default {
-  fetch: toWebHandler(app)
+  fetch: app.fetch
 } satisfies Server
 ```
 
@@ -372,11 +372,11 @@ await vike(app, [compress()]) // [!code ++]
 ```ts choice=H3
 // +server.ts
 
-import { createApp, toWebHandler } from 'h3'
+import { H3 } from 'h3'
 import vike from '@vikejs/h3'
 import compress from '@universal-middleware/compress' // [!code ++]
 
-const app = createApp()
+const app = new H3()
 vike(app) // [!code --]
 vike(app, [compress()]) // [!code ++]
 ```
