@@ -823,32 +823,38 @@ async function handleErrorFetchingStaticAssets(
   pageContext: { urlOriginal: string },
   isFirstRender: boolean,
 ): Promise<boolean> {
+  // The error is handled like any other error: Vike logs it and renders the error page
+  const showErrorPage = false
+  // Vike aborts the rendering: the browser loads the page instead
+  const abortRendering = true
+
   // In development, it's usually a transform error, which a reload doesn't fix
-  if (import.meta.env.DEV) return false // Handled like any other error: Vike logs it and renders the error page
-  if (!isErrorFetchingStaticAssets(err)) return false // Syntax error in user file: handled like any other error
+  if (import.meta.env.DEV) return showErrorPage
+  if (!isErrorFetchingStaticAssets(err)) return showErrorPage // Syntax error in user file
   // Possible reasons:
   // - Flaky connection
   // - New frontend was deployed
   if (!isFirstRender) {
     disableClientRouting(err, false)
     redirectHard(pageContext.urlOriginal)
-    return true // Vike skips rendering: the browser loads the page instead
+    return abortRendering
   }
-  // Upon hydration, we reload the page if a new frontend was likely deployed. Upon a flaky connection, we let it fail: handling flaky connections is the browser's job (the user reloads the page). The server-side rendered page remains and, since Client Routing is disabled, the next page navigation is a full page load.
+  // Upon hydration, we reload the page if a new frontend was likely deployed. Upon a flaky connection, we let it fail: handling flaky connections is the browser's job (the user reloads the page). The server-side rendered page remains (without hydration) and, since Client Routing is disabled, the next page navigation is a full page load.
   // We don't reload a page that was itself loaded by a reload, in order to avoid an infinite reload loop.
   if (isPageReload()) {
     disableClientRouting(err, false)
-    throw err // We let it fail: the server-side rendered page remains (without hydration)
+  } else {
+    // We disable Client Routing right away: while we check the connection, link clicks would otherwise wait for the hydration, which never ends
+    globalObject.clientRoutingIsDisabled = true
+    if (await isLikelyNewDeployment()) {
+      // We use `location.reload()` instead of redirectHard(): navigating with `location.href = url` creates a `type: 'navigate'` entry, which would lead to an infinite reload loop — see isPageReload()
+      window.location.reload()
+      return abortRendering
+    }
+    disableClientRouting(err, false, true)
   }
-  // We disable Client Routing right away: while we check the connection, link clicks would otherwise wait for the hydration, which never ends
-  globalObject.clientRoutingIsDisabled = true
-  if (await isLikelyNewDeployment()) {
-    // We use `location.reload()` instead of redirectHard(): navigating with `location.href = url` creates a `type: 'navigate'` entry, which would lead to an infinite reload loop — see isPageReload()
-    window.location.reload()
-    return true // Vike skips rendering: the browser reloads the page instead
-  }
-  disableClientRouting(err, false, true)
-  throw err // We let it fail: the server-side rendered page remains (without hydration)
+  // We let it fail
+  throw err
 }
 // The error thrown by `import()` is the same whether a new frontend was deployed (the static assets don't exist anymore) or the connection is flaky. We check whether the server responds: if it does, then a new frontend was likely deployed — or the connection is back, and reloading fixes the page as well.
 async function isLikelyNewDeployment(): Promise<boolean> {
