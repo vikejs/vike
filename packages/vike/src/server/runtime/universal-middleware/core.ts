@@ -55,18 +55,18 @@ function getMiddlewares_globalContext(globalContext: { config: ConfigResolved },
 
 // Retruns globalContext.middlewares, or middlewares_fallbackUponConfigError upon an invalid config
 async function getMiddlewares_withErrorHandling(): Promise<Middleware[]> {
-  if (getVikeConfigError()) return middlewares_fallbackUponConfigError
+  if (getVikeConfigError()) return middlewares_errorHandling
   try {
     await initGlobalContext_renderPage()
   } catch {
-    return middlewares_fallbackUponConfigError
+    return middlewares_errorHandling
   }
-  if (getVikeConfigError()) return middlewares_fallbackUponConfigError
+  if (getVikeConfigError()) return middlewares_errorHandling
   const { globalContext } = await getGlobalContextServerInternal()
   return globalContext.middlewares
 }
 // Upon an invalid config: answer every request with the error
-const middlewares_fallbackUponConfigError = [enhance(renderPageServer_universal, { name: 'vike:error-fallback' })].map(
+const middlewares_errorHandling = [enhance(renderPageServer_universal, { name: 'vike:error-handling' })].map(
   withIsHandler,
 )
 
