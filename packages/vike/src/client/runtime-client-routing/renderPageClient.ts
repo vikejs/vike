@@ -846,7 +846,8 @@ async function handleErrorFetchingStaticAssets(
   } else {
     // We disable Client Routing right away: while we check the connection, link clicks would otherwise wait for the hydration, which never ends
     globalObject.clientRoutingIsDisabled = true
-    if (await isLikelyNewDeployment()) {
+    if (!(await isNetworkError())) {
+      // Most likely a new frontend was deployed (or the connection is back): either way, reloading fixes the page
       // We use `location.reload()` instead of redirectHard(): navigating with `location.href = url` creates a `type: 'navigate'` entry, which would lead to an infinite reload loop — see isPageReload()
       window.location.reload()
       return abortRendering
@@ -856,19 +857,18 @@ async function handleErrorFetchingStaticAssets(
   // We let it fail
   throw err
 }
-// The error thrown by `import()` is the same whether a new frontend was deployed (the static assets don't exist anymore) or the connection is flaky. We check whether the server responds: if it does, then a new frontend was likely deployed — or the connection is back, and reloading fixes the page as well.
-async function isLikelyNewDeployment(): Promise<boolean> {
+// Whether fetching static assets fails because of the network. (The error thrown by `import()` doesn't tell: it's the same whether a new frontend was deployed, i.e. the static assets don't exist anymore, or the connection is flaky.)
+async function isNetworkError(): Promise<boolean> {
   // The first modulepreload link is the page's entry, see retrievePageAssetsProd()
   const url = document.querySelector<HTMLLinkElement>('link[rel="modulepreload"]')?.href
-  // There isn't any modulepreload link if the user removed them with injectFilter(): we can't check, so we don't reload
-  if (!url) return false
+  // There isn't any modulepreload link if the user removed them with injectFilter(): we can't check, so we assume a network error (i.e. we don't reload)
+  if (!url) return true
   try {
     await fetch(url, { method: 'HEAD', cache: 'no-store' })
     // The server responds
-    return true
-  } catch {
-    // Network error
     return false
+  } catch {
+    return true
   }
 }
 // Whether the current page was loaded by a page reload
