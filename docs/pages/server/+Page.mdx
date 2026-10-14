@@ -36,7 +36,7 @@ Define `+server.js` to integrate a server:
 :::
 
 :::Choice{#Other}
-If Vike doesn't have an adapter for your server, you can use `vike/fetch`:
+If Vike doesn't have an adapter for your server, see <Link href="/vike(app)#manual-integration" />.
 :::
 
 ```shell choice=Hono
@@ -153,19 +153,6 @@ vike(app) // Make sure to run vike(app) before your routes
 
 export default {
   fetch: app.fetch
-} satisfies Server
-```
-
-```ts file-added choice=Other
-// +server.ts
-
-import vike from 'vike/fetch'
-
-export default {
-  fetch(request) {
-    console.log('Incoming request:', request.url)
-    return vike.fetch(request)
-  }
 } satisfies Server
 ```
 
@@ -391,23 +378,6 @@ import compress from '@universal-middleware/compress' // [!code ++]
 const app = new Elysia()
 vike(app) // [!code --]
 vike(app, [compress()]) // [!code ++]
-```
-
-```ts choice=Other
-// +server.ts
-
-import vike from 'vike/fetch'
-import compressMiddleware from '@universal-middleware/compress' // [!code ++]
-
-const compress = compressMiddleware({/* options */}) // [!code ++]
-
-export default {
-  async fetch(request) {
-    console.log('Incoming request:', request.url)
-    const res = await vike.fetch(request)
-    return compress(res) // [!code ++]
-  }
-} satisfies Server
 ```
 
 > See <Link href="/precompress" noBreadcrumb /> to generate `.br`/`.gz` files for your static assets at build time (instead of unnecessarily compressing them on each request).

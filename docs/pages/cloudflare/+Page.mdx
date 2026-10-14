@@ -173,9 +173,17 @@ export class MyDurableObject extends DurableObject { // [!code ++]
 > ```ts
 > // +server.ts
 >
-> // 1. Use Vike's built-in server
-> import vike from 'vike/fetch'
-> export default vike
+> // 1. Use vike(app), for example with Hono
+> import { Hono } from 'hono'
+> import vike from '@vikejs/hono'
+> import type { Server } from 'vike/types'
+>
+> const app = new Hono()
+> vike(app)
+>
+> export default {
+>   fetch: app.fetch
+> } satisfies Server
 >
 > // 2. Export Durable Object
 > export class MyDurableObject extends DurableObject {
