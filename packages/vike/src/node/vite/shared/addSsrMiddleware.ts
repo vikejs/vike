@@ -22,8 +22,8 @@ function addSsrMiddleware(
     let response: Response
     try {
       const runtime = Object.assign(getAdapterRuntime('other', { params: undefined }), { req, res })
-      // `pageContext.urlOriginal` is the URL's path, as renderPage() gets it on a Node.js server
-      response = await vikeUniversalMiddleware(requestAdapter(req, res), { urlOriginal: url }, runtime)
+      const context = { urlOriginal: url }
+      response = await vikeUniversalMiddleware(requestAdapter(req, res), context, runtime)
     } catch (err) {
       // Throwing an error in a connect middleware shuts down the server
       console.error(err)
