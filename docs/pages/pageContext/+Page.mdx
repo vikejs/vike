@@ -4,7 +4,7 @@ import { PropPageContext as Prop, ConfigSpec, TreeShaking } from '../../componen
 export const ServerOnlyNote = ({ prop, kind }) => (
   <blockquote>
     <p>
-      It's set by <Link href="/server"><code>vike(app)</code></Link> with a server that exposes the HTTP {kind} object (e.g. Express, Fastify, or Hono — but not Cloudflare Workers), and by <code>$ vike dev</code> and <code>$ vike preview</code>. Otherwise, you can <Link href="#custom">define a custom <code>pageContext.{prop}</code> property</Link> yourself.
+      It's only set if you use <Link href="/server#get-started"><code>vike(app)</code></Link> (or Vike's built-in server) with a server that exposes the HTTP {kind} object (e.g. Hono or Express — but not Cloudflare Workers). Otherwise, you can <Link href="#custom">define it as a custom <code>pageContext.{prop}</code> property</Link> yourself.
     </p>
   </blockquote>
 )
@@ -176,7 +176,7 @@ declare global {
   namespace Vike {
     interface Server {
       // 👉 Pick your server (for correct pageContext.req type)
-      server: 'hono' // | 'express' | 'fastify' | 'hattip' | 'srvx' | 'elysia' | 'h3'
+      server: 'hono' // | 'express' | 'fastify' | 'h3' | 'elysia'
     }
   }
 }
@@ -202,7 +202,7 @@ declare global {
   namespace Vike {
     interface Server {
       // 👉 Pick your server (for correct pageContext.res type)
-      server: 'hono' // | 'express' | 'fastify' | 'hattip' | 'srvx' | 'elysia' | 'h3'
+      server: 'hono' // | 'express' | 'fastify' | 'h3' | 'elysia'
     }
   }
 }
@@ -216,7 +216,7 @@ declare global {
 
 <Prop id="runtime" />
 
-The full [`RuntimeAdapter`](https://universal-middleware.dev/reference/runtime-adapter) object set by <Link href="/server">`vike(app)`</Link> (which uses [`universal-middleware`](https://universal-middleware.dev/) under the hood).
+The [`RuntimeAdapter`](https://universal-middleware.dev/reference/runtime-adapter) object.
 
 ```ts
 // Environment: server
@@ -229,13 +229,13 @@ declare global {
   namespace Vike {
     interface Server {
       // 👉 Pick your server (for correct pageContext.runtime type)
-      server: 'hono' // | 'express' | 'fastify' | 'hattip' | 'srvx' | 'elysia' | 'h3'
+      server: 'hono' // | 'express' | 'fastify' | 'h3' | 'elysia'
     }
   }
 }
 ```
 
-> It's set by <Link href="/server">`vike(app)`</Link>, and by `$ vike dev` and `$ vike preview`.
+> It's only set if you use <Link href="/server#get-started">`vike(app)`</Link> (or Vike's built-in server) — `vike(app)` uses [`universal-middleware`](https://universal-middleware.dev) under the hood.
 
 > See also:
 > - <Link href="#req" noWarning>`pageContext.req`</Link>
