@@ -566,7 +566,8 @@ async function getPermanentRedirect(pageContextBegin: PageContextBegin, globalCo
       }
     }
     if (normalize(urlTarget) === normalize(urlWithoutBase)) return null
-    if (!originChanged) urlTarget = prependBase(urlTarget, globalContext.baseServer)
+    if (!originChanged)
+      urlTarget = modifyUrlPathname(urlTarget, (urlPathname) => prependBase(urlPathname, globalContext.baseServer))
     assert(urlTarget !== pageContext.urlOriginal)
   }
   logRuntimeInfo?.(
