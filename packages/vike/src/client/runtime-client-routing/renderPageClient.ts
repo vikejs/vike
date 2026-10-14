@@ -825,7 +825,7 @@ async function handleErrorFetchingStaticAssets(
 ): Promise<boolean> {
   // The error is handled like any other error: Vike logs it and renders the error page
   const showErrorPage = false
-  // Vike aborts the rendering: the browser loads the page instead
+  // Vike aborts the rendering: the browser (re-)loads the page instead
   const abortRendering = true
 
   // In development, it's usually a transform error, which a reload doesn't fix
