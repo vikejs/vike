@@ -1,8 +1,11 @@
+export default vikeUniversalMiddleware
+
+// TO-DO/next-major-release: remove this export (the entire file)
+
 import { vikeUniversalMiddleware } from './vikeUniversalMiddleware.js'
 import { assertWarning } from '../../../utils/assert.js'
 import '../../assertEnvServer.js'
 
-// TO-DO/next-major-release: remove this export
 assertWarning(
   false,
   [
@@ -12,5 +15,3 @@ assertWarning(
   ].join('\n'),
   { onlyOnce: true },
 )
-
-export default vikeUniversalMiddleware
