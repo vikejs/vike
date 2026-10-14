@@ -722,13 +722,13 @@ const headings = [
   },
   {
     level: 2,
-    title: '`+middleware`',
-    url: '/middleware',
+    title: '`+csp`',
+    url: '/csp',
   },
   {
     level: 2,
-    title: '`+csp`',
-    url: '/csp',
+    title: '`+middleware`',
+    url: '/middleware',
   },
   {
     level: 2,
