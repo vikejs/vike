@@ -72,7 +72,7 @@ export function onBeforeRenderHtml(pageContext: PageContextServer) {
 
 If you use <Link href="/vike(app)">`vike(app)`</Link>, the final response headers are automatically sent.
 
-But if you use <Link href="/renderPage">`renderPage()`</Link>, then access the final response headers at `pageContext.httpResponse.headers` and send them yourself:
+If you use <Link href="/renderPage">`renderPage()`</Link>, you must send the final response headers (`pageContext.httpResponse.headers`) yourself:
 
 ```ts
 import { renderPage } from 'vike/server'
@@ -81,9 +81,9 @@ import { renderPage } from 'vike/server'
 app.get('*', async (req: Request) => {
   // ...
   const pageContext = await renderPage(pageContextInit)
-  // HTTP response headers to be sent to the client
+  // The final HTTP response headers
   const headers = pageContext.httpResponse.headers
-  // ...
+  // Send them to the client ...
 })
 ```
 
