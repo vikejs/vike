@@ -840,18 +840,20 @@ async function handleErrorFetchingStaticAssets(
   }
   throw err
 }
-// Whether a new frontend was deployed, i.e. some static assets of the current page don't exist anymore. (The error thrown by `import()` doesn't tell: it's the same upon a network error.)
+// Whether a new frontend was deployed, i.e. the page's entry doesn't exist anymore. (The error thrown by `import()` doesn't tell: it's the same upon a network error.)
 async function isNewDeployment(): Promise<boolean> {
-  const urls = Array.from(document.querySelectorAll<HTMLLinkElement>('link[rel="modulepreload"]'), (link) => link.href)
-  let responses: Response[]
+  // The first modulepreload link is the page's entry, see retrievePageAssetsProd(). Checking it is enough: the hash in its file name changes whenever any of the page's JavaScript changes, because the hash of a file includes the hashes of the files it imports.
+  const url = document.querySelector<HTMLLinkElement>('link[rel="modulepreload"]')?.href
+  if (!url) return false
+  let response: Response
   try {
-    responses = await Promise.all(urls.map((url) => fetch(url, { method: 'HEAD', cache: 'no-store' })))
+    response = await fetch(url, { method: 'HEAD', cache: 'no-store' })
   } catch {
     // Network error: flaky connection
     return false
   }
   // A missing static asset isn't always a `404`: e.g. S3 replies `403`, and static hosts with SPA fallback reply `200` with HTML
-  return responses.some((response) => !response.ok || !response.headers.get('content-type')?.includes('javascript'))
+  return !response.ok || !response.headers.get('content-type')?.includes('javascript')
 }
 // Whether the current page was loaded by a page reload
 function isPageReload(): boolean {
