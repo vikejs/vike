@@ -77,10 +77,10 @@ async function renderPageServer_universal(
 ) {
   const pageContextInit = {
     urlOriginal: request.url, // Let `context` override it, e.g. `$ vike dev` passes the URL's path
-    runtime,
+    headersOriginal: request.headers,
     req: 'req' in runtime ? runtime.req : null,
     res: 'res' in runtime ? runtime.res : null,
-    headersOriginal: request.headers,
+    runtime,
     ...context,
   }
   addUserAgent_deprecated(pageContextInit, request, runtime)
@@ -97,7 +97,7 @@ function getMiddlewares_config(globalContext: { config: ConfigResolved }): Enhan
   return (globalContext.config.middleware ?? []).flat()
 }
 // Does a +middleware exist?
-function hasPlusMiddlewares(globalContext: { config: ConfigResolved }) {
+function hasPlusMiddlewares(globalContext: { config: ConfigResolved }): boolean {
   return getMiddlewares_config(globalContext).length > 0
 }
 
