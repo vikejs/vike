@@ -21,7 +21,6 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     serverUrl: 'http://localhost:3000',
     tolerateError({ logText }) {
       return (
-        logText.includes("Vite's CLI is deprecated") ||
         logText.includes('Run the built server entry') ||
         // The browser logs the 404 of /admin/settings/index.pageContext.json, then the 401 of /admin/settings
         logText.includes('the server responded with a status of 404') ||
