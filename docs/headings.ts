@@ -1701,6 +1701,10 @@ function migrations() {
         title: 'Migration to `+server`',
         url: '/migration/server',
       },
+      {
+        title: 'Migrate `vike/fetch`',
+        url: '/migration/vike-fetch',
+      },
     ] as const
   ).map((h) => ({ ...h, category: 'Migration' as const })) satisfies HeadingDetachedDefinition[]
 }

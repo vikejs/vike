@@ -1,0 +1,49 @@
+import { Link } from '@brillout/docpress'
+
+`vike/fetch` is deprecated: the routes your server answers itself (before calling `vike.fetch()`) skip the <Link href="/middleware">`+middleware`</Link> of Vike extensions.
+
+If your `+server.js` only exports `vike/fetch`, then remove it and use Vike's built-in server instead:
+
+```ts
+// +server.ts
+
+import vike from 'vike/fetch' // [!code --]
+export default vike // [!code --]
+```
+
+```ts
+// pages/+config.ts
+
+export default {
+  server: true // [!code ++]
+}
+```
+
+Otherwise, use <Link href="/server#get-started">`vike(app)`</Link> with your server, for example with Hono:
+
+```shell
+npm i hono @vikejs/hono
+```
+
+```ts
+// +server.ts
+
+import vike from 'vike/fetch' // [!code --]
+import { Hono } from 'hono' // [!code ++]
+import vike from '@vikejs/hono' // [!code ++]
+import type { Server } from 'vike/types'
+
+const app = new Hono() // [!code ++]
+vike(app) // [!code ++]
+
+export default {
+  fetch(request) { // [!code --]
+    return vike.fetch(request) // [!code --]
+  } // [!code --]
+  fetch: app.fetch // [!code ++]
+} satisfies Server
+```
+
+> See <Link href="/server#get-started" /> for other servers (e.g. Express or Fastify), and <Link href="/vike(app)#manual-integration" /> if Vike doesn't have an adapter for your server.
+
+> If you use `vike/fetch` to export Cloudflare Durable Objects, see <Link href="/cloudflare#durable-objects" />.
