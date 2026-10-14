@@ -2,7 +2,7 @@ export { testRun }
 
 import { expect, fetch, getServerUrl, run, test } from '@brillout/test-e2e'
 
-function testRun(cmd: 'pnpm run dev:base' | 'pnpm run preview:base') {
+function testRun(cmd: 'pnpm run dev:base' | 'pnpm run dev:base:server' | 'pnpm run preview:base') {
   run(cmd, {
     serverUrl: 'http://localhost:3000/app/',
     tolerateError({ logText }) {
@@ -11,9 +11,11 @@ function testRun(cmd: 'pnpm run dev:base' | 'pnpm run preview:base') {
   })
 
   test('+redirects answer with the redirect target under the Base URL', async () => {
-    const response: Response = await fetch(`${new URL(getServerUrl()).origin}/app/old-portal`, { redirect: 'manual' })
+    const origin = new URL(getServerUrl()).origin
+    const response: Response = await fetch(`${origin}/app/old-portal`, { redirect: 'manual' })
     expect(response.status).toBe(301)
-    expect(response.headers.get('Location')).toBe('/app/portal')
+    // Vike's built-in server passes a full URL, and the redirect then keeps its origin
+    expect(new URL(response.headers.get('Location')!, origin).href).toBe(`${origin}/app/portal`)
   })
 
   test('A +middleware with an exact path runs under the Base URL, for the page and its .pageContext.json', async () => {

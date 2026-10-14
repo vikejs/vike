@@ -4,6 +4,7 @@
     "build": "vike build",
     "preview": "vike build && vike preview",
     "dev:base": "cross-env BASE=/app/ vike dev",
+    "dev:base:server": "cross-env BASE=/app/ SERVER=true vike dev",
     "preview:base": "cross-env BASE=/app/ vike build && cross-env BASE=/app/ vike preview"
   },
   "dependencies": {
