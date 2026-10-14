@@ -12,7 +12,7 @@ const globalContext = await getGlobalContextAsync(process.env.NODE_ENV === 'prod
 assert(!globalContext.isClientSide)
 const { middlewares } = globalContext
 
-// https://vike.dev/middleware#manual-integration
+// https://vike.dev/vike(app)#manual-integration
 const app = new Hono()
 apply(
   app,
