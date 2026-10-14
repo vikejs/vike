@@ -144,7 +144,7 @@ Paths below are relative to https://vike.dev (e.g. `/data-fetching` → https://
 - /netlify — Netlify SSR/static, `@netlify/vite-plugin`, partial pre-rendering, Netlify Functions
 - /aws — AWS Lambda serverless, SST / Flightcontrol / Serverless Framework / SAM
 - /edgeone-pages — EdgeOne Pages (Tencent), `@edgeone/vite`, SSR/streaming/static, `serverWrapper`
-- /managed-hosts — managed hosting overview, `+server` universal deploy, `renderPage()` fallback, auto provider detection
+- /managed-hosts — managed hosting overview, `+server` universal deploy, `vike(app)`/`renderPage()` fallback, auto provider detection
 - /github-pages — GitHub Pages static, requires pre-rendering, `.nojekyll`, base-URL subdir, GitHub Actions
 - /cloudflare-pages — Cloudflare Pages (deprecated → Workers), Pages Functions for SSR, migration
 - /static-hosts — static hosting overview, SSG, one HTML per URL, `dist/client/`, base URL, `vike preview`

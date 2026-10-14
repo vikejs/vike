@@ -592,12 +592,19 @@ function getConfigExecutionErrorIntroMsg(err: unknown) {
   return errIntroMsg ?? null
 }
 
+const processId = crypto.randomUUID()
 function getTemporaryBuildFilePath(filePathAbsoluteFilesystem: string, code: string): string {
   assertPosixPath(filePathAbsoluteFilesystem)
   const fileDir = path.posix.dirname(filePathAbsoluteFilesystem)
   const filename = path.posix.basename(filePathAbsoluteFilesystem)
-  // Using content hash in file path, so that the cache of dynamic `import()` behaves as we want.
-  const fileHash = crypto.createHash('md5').update(code).digest('hex').slice(0, 12)
+  const fileHash = crypto
+    .createHash('md5')
+    // Using content hash in file path, so that the cache of dynamic `import()` behaves as we want.
+    .update(code)
+    // Parallel processes shouldn't overwrite each other's temporary file
+    .update(processId)
+    .digest('hex')
+    .slice(0, 12)
   // Syntax with semicolon `build:${/*...*/}` doesn't work on Windows: https://github.com/vikejs/vike/issues/800#issuecomment-1517329455
   const filePathTmp = path.posix.join(fileDir, `${filename}.build-${fileHash}.mjs`)
   assert(isTemporaryBuildFile(filePathTmp))
