@@ -54,6 +54,9 @@ function testHydrationRetry(isDev: boolean) {
       await autoRetry(() => {
         expectLog('Failed to fetch dynamically imported module', { filter: (log) => log.logSource === 'Browser Error' })
       })
+      expectLog('This usually happens after a new frontend deployment or because of a flaky connection.', {
+        filter: (log) => log.logSource === 'Browser Log',
+      })
       await sleep(1000)
       expect(pageEntry.getPageLoads()).toBe(2)
       expect(await page.textContent('h1')).toBe('Welcome')
@@ -93,6 +96,7 @@ function testHydrationRetry(isDev: boolean) {
       await autoRetry(() => {
         expectLog('Failed to fetch dynamically imported module', { filter: (log) => log.logSource === 'Browser Error' })
       })
+      expectLog('The connection seems to be down.', { filter: (log) => log.logSource === 'Browser Log' })
       await context.setOffline(false)
       await sleep(1000)
       expect(pageEntry.getPageLoads()).toBe(1)

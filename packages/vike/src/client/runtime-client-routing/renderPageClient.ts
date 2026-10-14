@@ -671,7 +671,7 @@ declare global {
   var _vike: VikeGlobalInternal
 }
 
-function disableClientRouting(err: unknown, log: boolean) {
+function disableClientRouting(err: unknown, log: boolean, isNetworkError?: true) {
   globalObject.clientRoutingIsDisabled = true
 
   assert(isErrorFetchingStaticAssets(err))
@@ -684,9 +684,11 @@ function disableClientRouting(err: unknown, log: boolean) {
     false,
     [
       'Failed to fetch static asset.',
-      import.meta.env.PROD
-        ? 'This usually happens after a new frontend deployment or because of a flaky connection.'
-        : null,
+      isNetworkError
+        ? 'The connection seems to be down.'
+        : import.meta.env.PROD
+          ? 'This usually happens after a new frontend deployment or because of a flaky connection.'
+          : null,
       'Falling back to Server Routing.',
     ]
       .filter(Boolean)
@@ -826,18 +828,25 @@ async function handleErrorFetchingStaticAssets(
   // Possible reasons:
   // - Flaky connection
   // - New frontend was deployed
-  disableClientRouting(err, false)
   if (!isFirstRender) {
+    disableClientRouting(err, false)
     redirectHard(pageContext.urlOriginal)
     return true
   }
   // Upon hydration, we reload the page unless the connection is down. Upon a flaky connection, we let it fail: handling flaky connections is the browser's job (the user reloads the page). The server-side rendered page remains and, since Client Routing is disabled, the next page navigation is a full page load.
   // We don't reload a page that was itself loaded by a reload, in order to avoid an infinite reload loop.
-  if (!isPageReload() && (await isServerReachable())) {
+  if (isPageReload()) {
+    disableClientRouting(err, false)
+    throw err
+  }
+  // We disable Client Routing right away: while we check the connection, link clicks would otherwise wait for the hydration, which never ends
+  globalObject.clientRoutingIsDisabled = true
+  if (await isServerReachable()) {
     // We use `location.reload()` instead of redirectHard(): navigating with `location.href = url` creates a `type: 'navigate'` entry, which would lead to an infinite reload loop — see isPageReload()
     window.location.reload()
     return true
   }
+  disableClientRouting(err, false, true)
   throw err
 }
 // The error thrown by `import()` is the same whether a new frontend was deployed (the static assets don't exist anymore) or the connection is flaky. If the server responds, then a new frontend was deployed or the connection is back: either way, reloading fixes the page.
