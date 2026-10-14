@@ -22,7 +22,7 @@ import vikeFetch from 'vike/__internal/fetch';
 export * from ${JSON.stringify(id)};
 // Destructured because mod.default makes Rolldown warn when +server.js has no default export
 const { default: server } = mod;
-export default { ...vikeFetch, ...server, ...server?.prod };
+export default { ...server, ...server?.prod, fetch: server?.fetch ?? vikeFetch.fetch };
 `
     },
   })
