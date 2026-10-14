@@ -192,12 +192,22 @@ but you've requested "2025-07-18". Falling back to "2025-07-12"...
     isCloudflarePrewarmWarning() ||
     isTwitterEmbedsError() ||
     isGithubImageError() ||
-    isSlowCrawlWarning() ||
     isNodeExperimentalEsmLoader() ||
     isNodeExperimentalLoader() ||
     isNotV1Design() ||
-    isVitePluginVercelWarning()
+    isVitePluginVercelWarning() ||
+    isUniversalMiddlewareDeprecation()
   )
+
+  // TODO/soon: remove once these test apps use the @vikejs/* adapters' next version, and +server instead of vike-photon or vike-server
+  function isUniversalMiddlewareDeprecation() {
+    return (
+      logText.includes("You're using a deprecated Vike extension") &&
+      /\/(universal-deploy|vite-plugin-vercel|photon-cloudflare|photon-vercel|vike-server|boilerplate-[a-z-]+)\//.test(
+        testInfo?.testFile?.replaceAll('\\', '/') ?? '',
+      )
+    )
+  }
 
   function isViteCjsWarning() {
     return logSource === 'stderr' && logText.includes("The CJS build of Vite's Node API is deprecated")
@@ -302,9 +312,6 @@ but you've requested "2025-07-18". Falling back to "2025-07-12"...
       logText.includes('.png') &&
       logText.includes('the server responded with a status of 429')
     )
-  }
-  function isSlowCrawlWarning() {
-    return logSource === 'stderr' && logText.includes('Crawling your + files took an unexpected long time')
   }
 
   function isNodeExperimentalEsmLoader() {

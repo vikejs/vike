@@ -20,7 +20,9 @@ type GlobalContextServer = Pick<
   | 'pages'
   | 'baseServer'
   | 'baseAssets'
+  | 'middlewares'
   | 'isClientSide'
+  | 'devMiddleware'
 > & {
   /** https://vike.dev/warning/internals */
   dangerouslyUseInternals: GlobalContextServerInternal
@@ -30,14 +32,14 @@ type GlobalContextServer = Pick<
 type GlobalContextClient = GlobalContextBasePublic & {
   /** https://vike.dev/warning/internals */
   dangerouslyUseInternals: GlobalContextClientInternal
-} & Pick<GlobalContextClientInternal, 'isClientSide'> &
+} & Pick<GlobalContextClientInternal, 'isClientSide' | 'devMiddleware'> &
   Vike.GlobalContext &
   Vike.GlobalContextClient & {
     // Nothing extra for now
   }
 
 type GlobalContextClientWithServerRouting = GlobalContextBasePublic &
-  Pick<GlobalContextClientInternalWithServerRouting, 'isClientSide'> &
+  Pick<GlobalContextClientInternalWithServerRouting, 'isClientSide' | 'devMiddleware'> &
   Vike.GlobalContext &
   Vike.GlobalContextClient & {
     // Nothing extra for now

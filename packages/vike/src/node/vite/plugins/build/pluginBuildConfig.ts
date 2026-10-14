@@ -169,7 +169,7 @@ async function getPageFileEntries(
   if (isForClientSide && includeAssetsImportedByServer) {
     fileTypes.push('.page.server')
   }
-  let pageFiles = await findPageFiles(config, fileTypes, false)
+  let pageFiles = await findPageFiles(config, fileTypes)
   const pageFileEntries: Record<string, string> = {}
   pageFiles = unique(pageFiles)
   pageFiles.forEach((pageFile) => {

@@ -1,9 +1,20 @@
 import { Link, FileAdded, Warning, Tabs } from '@brillout/docpress'
 import { DeprecatedServer } from '../../components'
 
-Define `+server.js` to seamlessly integrate a server framework (Hono, Express, ...). Or set `+server: true` to use Vike's built-in lightweight server.
+export const ColumnHeader = ({ title, children }) => (
+  <span style={{ display: 'block', textAlign: 'center' }}>
+    <span style={{ fontWeight: 'normal', fontStyle: 'italic', opacity: 0.7 }}>{title}</span>
+    <br />
+    {children}
+  </span>
+)
 
-> `vike-photon` is deprecated — it has been replaced by `+server`:
+export const ColumnHeaderBefore = ({ children }) => <ColumnHeader title="Before (less control)">{children}</ColumnHeader>
+export const ColumnHeaderAfter = ({ children }) => <ColumnHeader title="After (more control)">{children}</ColumnHeader>
+
+Define `+server.js` to seamlessly integrate a server framework (Hono, Express, ...), or set `+server: true` to use Vike's built-in lightweight server.
+
+> `vike-photon` is deprecated — it's replaced by `+server`:
 > - <Link href="/migration/server" />
 > - <Link href="/blog/universal-deploy" />
 
@@ -25,7 +36,7 @@ Define `+server.js` to integrate a server:
 :::
 
 :::Choice{#Other}
-If Vike doesn't have an adapter for you server, or if you aren't using any server framework, you can use `vike/fetch`:
+If Vike doesn't have an adapter for your server, you can use `vike/fetch`:
 :::
 
 ```shell choice=Hono
@@ -56,7 +67,11 @@ import vike from '@vikejs/hono'
 import type { Server } from 'vike/types'
 
 const app = new Hono()
-vike(app) // Attaches Vike
+vike(app) // Make sure to run vike(app) before your routes
+
+// ...
+// Your routes
+// ...
 
 export default {
   fetch: app.fetch
@@ -71,7 +86,11 @@ import vike, { toFetchHandler } from '@vikejs/express'
 import type { Server } from 'vike/types'
 
 const app = express()
-vike(app) // Attaches Vike
+vike(app) // Make sure to run vike(app) before your routes
+
+// ...
+// Your routes
+// ...
 
 export default {
   fetch: toFetchHandler(app)
@@ -86,7 +105,13 @@ import vike, { toFetchHandler } from '@vikejs/fastify'
 import type { Server } from 'vike/types'
 
 const app = fastify()
-await vike(app) // Attaches Vike
+vike(app) // Make sure to run vike(app) before your routes
+
+// ...
+// Your routes
+// ...
+
+await app.ready()
 
 export default {
   fetch: toFetchHandler(app.routing)
@@ -96,15 +121,19 @@ export default {
 ```ts file-added choice=H3
 // +server.ts
 
-import { createApp, toWebHandler } from 'h3'
+import { H3 } from 'h3'
 import vike from '@vikejs/h3'
 import type { Server } from 'vike/types'
 
-const app = createApp()
-vike(app) // Attaches Vike
+const app = new H3()
+vike(app) // Make sure to run vike(app) before your routes
+
+// ...
+// Your routes
+// ...
 
 export default {
-  fetch: toWebHandler(app)
+  fetch: app.fetch
 } satisfies Server
 ```
 
@@ -116,7 +145,11 @@ import vike from '@vikejs/elysia'
 import type { Server } from 'vike/types'
 
 const app = new Elysia()
-vike(app) // Attaches Vike
+vike(app) // Make sure to run vike(app) before your routes
+
+// ...
+// Your routes
+// ...
 
 export default {
   fetch: app.fetch
@@ -136,9 +169,15 @@ export default {
 } satisfies Server
 ```
 
+> <Link href="/vike(app)">`vike(app)`</Link> installs:
+> - Vike's handler that renders your pages
+> - Every <Link href="/middleware">`+middleware`</Link> from <Link href="/extensions">Vike extensions</Link>
+
+> Make sure to run `vike(app)` before your routes, because the <Link href="/middleware">`+middleware`</Link> from Vike extensions should run before your routes, so that your routes can read the context set by Vike extensions (e.g. authentication).
+
 ### `+server: true`
 
-Alternatively, instead of creating `+server.js`, you can use Vike's built-in lightweight server:
+For simple apps, instead of creating `+server.js`, you can use Vike's built-in lightweight server:
 
 ```ts
 // pages/+config.ts
@@ -240,7 +279,7 @@ declare global {
   namespace Vike {
     interface Server {
       // 👉 Pick your server (for correct pageContext.req/pageContext.res type)
-      server: 'hono' // | 'express' | 'fastify' | 'hattip' | 'srvx' | 'elysia' | 'h3'
+      server: 'hono' // | 'express' | 'fastify' | 'h3' | 'elysia'
     }
   }
 }
@@ -326,18 +365,18 @@ import vike, { toFetchHandler } from '@vikejs/fastify'
 import compress from '@universal-middleware/compress' // [!code ++]
 
 const app = fastify()
-await vike(app) // [!code --]
-await vike(app, [compress()]) // [!code ++]
+vike(app) // [!code --]
+vike(app, [compress()]) // [!code ++]
 ```
 
 ```ts choice=H3
 // +server.ts
 
-import { createApp, toWebHandler } from 'h3'
+import { H3 } from 'h3'
 import vike from '@vikejs/h3'
 import compress from '@universal-middleware/compress' // [!code ++]
 
-const app = createApp()
+const app = new H3()
 vike(app) // [!code --]
 vike(app, [compress()]) // [!code ++]
 ```
@@ -424,28 +463,36 @@ If needed, Vike enables you to gain complete control over the server.
 
 ### `+server: true` => `+server.js`
 
-| | `+server: true` | `+server.js` |
+| | <ColumnHeaderBefore>`+server: true`</ColumnHeaderBefore> | <ColumnHeaderAfter>`+server.js`</ColumnHeaderAfter> |
 | --- | --- | --- |
 | Server | Vike's built-in server | Your server framework (Hono, Express, ...) |
-| Middlewares and routes | — | Yours (e.g. authentication, API routes, ...) |
+| Middlewares and routes | Vike extensions | Also yours (e.g. authentication, API routes, ...) |
 
 See <Link href="#server-true" />.
 
-### `+serverEntry.js` with `+server.js`
+### `+server.js` => `+server.js` and `+serverEntry.js`
 
-For full control over your server production entry (e.g. to define a custom deployment integration), you can define <Link href="/serverEntry">`+serverEntry.js`</Link>.
+For full control over your server production entry (e.g. to define a custom deployment integration), you can define <Link href="/serverEntry">`+serverEntry.js`</Link> in addition to your `+server.js`.
 
-| | Vike's built-in entry | `+serverEntry.js` |
+| | <ColumnHeaderBefore>`+server.js`</ColumnHeaderBefore> | <ColumnHeaderAfter>`+server.js` and `+serverEntry.js`</ColumnHeaderAfter> |
 | --- | --- | --- |
-| Production server entry (`dist/server/index.mjs`) | [srvx](https://srvx.h3.dev) (Node.js, Bun, Deno) | Your code, e.g. AWS Lambda's `handler()` or Node.js's `cluster` |
+| Production server entry<br/>(`dist/server/index.mjs`) | Vike's built-in production entry ([srvx](https://srvx.h3.dev)) | Your code (`+serverEntry.js`), e.g. AWS Lambda's `handler()` or Node.js's `cluster`. |
 
-### `+serverEntry.js` without `+server.js`
+> See also:
+> - <Link href="/serverEntry" />
+> - <Link href="/serverEntry#with-out-server-js" doNotInferSectionTitle />
 
-| | `+serverEntry.js` with `+server.js` | `+serverEntry.js` without `+server.js` |
+### `+server.js` => `+serverEntry.js`
+
+For full control over the server entry not only in production but also in development, you can define `+serverEntry.js` without `+server.js`. In that case, `+serverEntry.js` then represents the entire server (including the server entry) and also runs in development (not only in production).
+
+| | <ColumnHeaderBefore>`+server.js`</ColumnHeaderBefore> | <ColumnHeaderAfter>`+serverEntry.js`</ColumnHeaderAfter> |
 | --- | --- | --- |
 | Development server | Vite's development server. ([Node.js with Connect](https://github.com/vitejs/ecosystem/issues/16).) | Your server. (E.g. `Bun.serve()`/`Deno.serve()`.) |
 
-For full control over the server entry not only in production but also in development, you can define `+serverEntry.js` without `+server.js`: `+serverEntry.js` is then also run in development (and not only in production). See <Link href="/serverEntry#development" />.
+> See also:
+> - <Link href="/serverEntry" />
+> - <Link href="/serverEntry#with-out-server-js" doNotInferSectionTitle />
 
 ### `vike(app)` => `renderPage()`
 
@@ -455,12 +502,12 @@ See: <Link href="/renderPage#renderpage-vs-vike-app" noBreadcrumb doNotInferSect
 
 ### `+serverEntry.js` => `$ node server/index.js`
 
-Running your server yourself (e.g. `$ node server/index.js`) instead of using `+serverEntry.js` gives you full control over how your server is built and run (albeit with a less integrated development experience).
+Running your server yourself (e.g. `$ node server/index.js`) instead of using `+server.js`/`+serverEntry.js` gives you full control over how your server is built and run (albeit with a less integrated development experience).
 
-| | `+server.js`/`+serverEntry.js` | `$ node server/index.js` |
+| | <ColumnHeaderBefore>`+server.js`/`+serverEntry.js`</ColumnHeaderBefore> | <ColumnHeaderAfter>`$ node server/index.js`</ColumnHeaderAfter> |
 | --- | --- | --- |
 | Server code | Processed by Vite | Not processed by Vite |
-| Server restart | Fine-grained (only when needed) | Coarse (unnecessary reloads) |
+| Server restart | Fine-grained | Coarse (unnecessary reloads) |
 
 See: <Link href="/renderPage#without-serverentry-js" doNotInferSectionTitle />.
 

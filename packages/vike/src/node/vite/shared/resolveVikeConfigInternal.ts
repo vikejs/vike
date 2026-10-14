@@ -825,7 +825,7 @@ function assertOnBeforeRenderEnv(pageConfig: PageConfigBuildTime) {
 function getConfigValues(pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime, isGlobalConfig?: true) {
   const tolerateMissingValue = !isGlobalConfig
   const configValues: ConfigValues = {}
-  getConfigValuesBase(pageConfig, { isForConfig: true }, null).forEach((entry) => {
+  getConfigValuesBase(pageConfig, { isConfigEnvironment: true }, null).forEach((entry) => {
     if (entry.configValueBase.type === 'computed') {
       assert('value' in entry) // Help TS
       const { configValueBase, value, configName } = entry
@@ -1869,7 +1869,8 @@ async function resolvePrerenderContext(vikeConfig: Parameters<typeof resolvePrer
 
 function restartViteDevServer() {
   const viteDevServer = getViteDevServer()
-  assert(viteDevServer)
+  // setViteEnvironmentNames() can reload Vike's config while Vite resolves its config, before the dev server exists
+  if (!viteDevServer) return
   swallowViteLogForceOptimization_enable()
   // We don't `await` because it never resolves it if we await it here => it hangs Vike's config resolving.
   // - I don't know why but I suspect there is a dead lock of a mutual dependency between Vite's restart() and Vike's config resolving.

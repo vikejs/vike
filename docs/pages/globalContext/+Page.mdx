@@ -106,6 +106,28 @@ Environment: server
 
 The <Link href="/base-url#baseserver">server Base URL</Link>.
 
+<Prop id="devMiddleware" />
+
+Environment: server  
+
+Vite's development middleware.
+
+> See also:
+> - <Link href="/serverEntry" />
+> - <Link href="/serverEntry#with-out-server-js" doNotInferSectionTitle />
+> - <Link href="/serverEntry#example-bun" doNotInferSectionTitle />
+> - <Link href="/createDevMiddleware" />
+
+<Prop id="middlewares" />
+
+Environment: server  
+
+Every <Link href="/middleware">`+middleware`</Link> from Vike extensions, as well as Vike's built-in handler that renders pages.
+
+> See also: <Link href="/vike(app)#manual-integration" />
+
+> It also includes `+middleware` you define yourself (i.e. that don't come from Vike extensions). This is a rare use case: you typically define server middlewares directly on your server instead of using `+middleware`.
+
 
 ## Custom
 

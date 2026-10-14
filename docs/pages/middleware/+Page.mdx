@@ -1,0 +1,57 @@
+import { Link, Warning } from '@brillout/docpress'
+import { ConfigSpec } from '../../components'
+
+<ConfigSpec
+  env="server"
+  cumulative
+  global
+/>
+
+Vike extensions can use `+middleware` to define server middlewares, which <Link href="/vike(app)">`vike(app)`</Link> then automatically adds to your server.
+
+<Warning>`+middleware` is in beta: expect breaking changes in any minor version update.</Warning>
+
+```ts
+// +middleware.ts
+// Environment: server
+
+import { enhance, MiddlewareOrder } from '@universal-middleware/core'
+
+const auth = enhance(
+  (request: Request) => {
+    if (request.headers.has('authorization')) return
+    return new Response('Unauthorized', { status: 401 })
+  },
+  // It's a middleware (i.e. not a handler) => it runs *before* the user's routes
+  { name: 'auth', path: '/admin/**', order: MiddlewareOrder.AUTHORIZATION }
+)
+
+const health = enhance(
+  () => new Response('OK'),
+  // It's a handler => it runs *after* the user's routes
+  { name: 'health', path: '/health', method: 'GET' }
+)
+
+export default [auth, health]
+```
+
+> A `+middleware` is a [Universal Middleware](https://universal-middleware.dev): it works with any server (Hono, Express, ...).
+
+> `vike(app)` installs the list of `+middleware` before and after the user's routes using the "sandwich approach" — see <Link href="/vike(app)" />.
+
+
+## Order
+
+When it runs depends on its `path` and `order`:
+- With `order: 0`, or with a `path` and without `order`, it's a handler and runs after the user's routes.
+- Otherwise, it runs before the user's routes (only for the URLs that match its `path`, if it has one).
+
+Whatever its `order`, a `+middleware` doesn't run once a middleware has answered with a `Response`.
+
+
+## See also
+
+- <Link href="/globalContext#middlewares">API > `globalContext.middlewares`</Link>
+- <Link href="/vike(app)" />
+- <Link href="/server" />
+- [Universal Middleware](https://universal-middleware.dev)

@@ -404,13 +404,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
       objectAssign(pageContext, { is404: false })
     }
 
-    const isClientRoutable = await isClientSideRoutable(pageContext.pageId, pageContext)
-    if (isRenderOutdated()) return
-    if (!isClientRoutable) {
-      redirectHard(urlOriginal)
-      return
-    }
-
     if (import.meta.env.DEV || globalThis.__VIKE__IS_DEBUG) {
       assertInfo(false, `Rendering error page ${errorPageId}`, { onlyOnce: false })
     }

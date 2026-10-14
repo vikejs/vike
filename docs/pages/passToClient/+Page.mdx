@@ -153,7 +153,7 @@ export async function onHydrationEnd(pageContext: PageContextClient<Data>) {
 - With an HTML string (instead of an <Link href="/streaming">HTML stream</Link>) and upon <Link href="/pre-rendering">pre-rendering</Link>, the HTML waits for all values.
 - Upon client-side navigation, the values the previous page fetched are cancelled. (The values of the first page, sent with its HTML, keep streaming until they end.)
 
-> The HTTP response must be a stream: use `pageContext.httpResponse.pipe()` or `pageContext.httpResponse.getReadableWebStream()` instead of `pageContext.httpResponse.body`, see <Link href="/renderPage" />.
+> If you use <Link href="/renderPage">`renderPage()`</Link>, make sure the HTTP response is a stream: use `pageContext.httpResponse.pipe()` or `pageContext.httpResponse.getReadableWebStream()` instead of `pageContext.httpResponse.body`.
 
 
 ## Escape `.`

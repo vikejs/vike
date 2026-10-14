@@ -1,4 +1,4 @@
-import { Link, ImportMeta } from '@brillout/docpress'
+import { Link, ImportMeta, Warning } from '@brillout/docpress'
 import { ConfigSpec } from '../../components'
 
 <ConfigSpec
@@ -6,11 +6,11 @@ import { ConfigSpec } from '../../components'
   global={null}
 />
 
-The `renderPage()` function enables you to embed Vike into any server.
+The `renderPage()` function renders your pages (e.g. <Link href="/Page" noBreadcrumb />) on the server-side.
 
-> We generally recommend using `vike(app)` instead of `renderPage()`, see <Link href="#renderpage-vs-vike-app" />.
-
-> You only need `renderPage()` if you use SSR, see <Link href="#optional">Optional</Link>.
+<Warning>
+We recommend using <Link href="/vike(app)">`vike(app)`</Link> instead of `renderPage()`. Because `renderPage()` doesn't support middlewares added by Vike extensions (<Link href="/middleware">`+middleware`</Link>). See also: <Link href="#renderpage-vs-vike-app" />.
+</Warning>
 
 From the perspective of a server, Vike is just a middleware:
 
@@ -36,9 +36,7 @@ server.addMiddleware({
 })
 ```
 
-You can embed `renderPage()` into any server and any deployment environment.
-
-> You can also run your server yourself without `+serverEntry.js` (e.g. `$ node server/index.js`), see <Link href="#without-serverentry-js" />.
+> You can also run your server yourself (e.g. `$ node server/index.js`) instead of using `+serverEntry.js`, see <Link href="#without-serverentry-js" />.
 
 > Alternatively, instead of using `renderPage()`, you can <Link href="/pre-rendering">pre-render</Link> your pages and remove the need for a production server (and deploy to a <Link href="/static-hosts">static host</Link> instead).
 
@@ -47,15 +45,17 @@ You can embed `renderPage()` into any server and any deployment environment.
 
 Define your server at <Link href="/serverEntry">`+serverEntry.js`</Link> and use `renderPage()` as the last middleware.
 
-> Don't define <Link href="/server">`+server.js`</Link>, see <Link href="/serverEntry#development" />.
+> Don't define <Link href="/server">`+server.js`</Link>, see <Link href="/serverEntry#with-out-server-js" />.
 
 ```ts
 // +serverEntry.ts
 
 // In this example we use Express.js but we could use any other server framework
 import express from 'express'
+import assert from 'node:assert'
 import { fileURLToPath } from 'node:url'
-import { renderPage, createDevMiddleware } from 'vike/server'
+import { getGlobalContext } from 'vike'
+import { renderPage } from 'vike/server'
 import type { Request, Response } from 'express'
 
 // Create an Express.js server
@@ -64,7 +64,8 @@ const app = express()
 // Dev/prod middleware
 if (import.meta.env.DEV) {
   // Vite's development middleware (HMR, transpiling, static assets, ...)
-  const { devMiddleware } = await createDevMiddleware()
+  const { devMiddleware } = await getGlobalContext()
+  assert(devMiddleware)
   app.use(devMiddleware)
 } else {
   // In production, we need to serve our static assets ourselves.
@@ -134,30 +135,27 @@ The `renderPage()` function doesn't depend on Node.js and you can use `renderPag
  - Any deployment provider (AWS, Cloudflare Workers, Vercel, ...)
 
 
-## Optional
-
-If you <Link href="/pre-rendering">pre-render</Link> all your pages then `renderPage()` isn't needed, because:
- - Upon development (`$ vike dev`), Vike automatically embeds itself into Vite's development server.
- - Upon pre-rendering (`$ vike build`/`$ vike prerender`), Vike renders your pages without server.
-
-But, if you use Server-Side Rendering (SSR), then you need a production server and `renderPage()` is required. See <Link href="/pre-rendering"/>.
-
-
 ## `renderPage()` vs `vike(app)`
 
-The fundamental difference is that:
-- `vike(app)` is more zero-config while `renderPage()` is lower-level
-{/* TODO/soon explain +middleware difference between the two */}
+There are two fundamental differences:
+- <Link href="/vike(app)">`vike(app)`</Link> supports and automatically installs <Link href="/middleware">`+middleware`</Link>, while `renderPage()` doesn't support `+middleware`.
+   > This means that, if you use a Vike extension that uses `+middleware`, then use `vike(app)` instead of `renderPage()`.
+   >
+   > In principle, it's possible to use `renderPage()` together with `+middleware`, but <Link href="/vike(app)#manual-integration">we don't recommend it</Link>.
+- `vike(app)` is zero-config while `renderPage()` is lower-level.
 
 | | `vike(app)` | `renderPage()` |
 | --- | --- | --- |
+| `+middleware` | ✅ | ❌ |
 | Servers | Hono, Express, Fastify, H3, Elysia | Any |
 | Integration | One line | Your own catch-all route |
 | Custom `pageContext` properties | With <Link href="/onCreatePageContext">`+onCreatePageContext`</Link> | Passed to `renderPage()` |
 | `pageContext.req` and `pageContext.res` | Set for you | Passed to `renderPage()` (if needed) |
 | HTTP response | Sent for you | Sent by you |
 
-> `vike(app)` and `renderPage()` are interchangeable: you can use either one, regardless of whether you use <Link href="/server">`+server.js`</Link>, <Link href="/serverEntry">`+serverEntry.js`</Link>, or run your server directly (e.g. `$ node server/index.js`).
+> `vike(app)` and `renderPage()` are interchangeable: you can use either one, regardless of whether you use <Link href="/server">`+server.js`</Link>, <Link href="/serverEntry">`+serverEntry.js`</Link>, or <Link href="#without-serverentry-js">run your server directly</Link> (e.g. `$ node server/index.js`).
+>
+> That said, if you use a Vike extension that uses `+middleware`, you cannot (easily) use `renderPage()` — you must <Link href="/server#get-started">use `vike(app)`</Link> (or <Link href="/vike(app)#manual-integration">use `globalContext.middlewares`</Link> if your server doesn't have a `vike(app)` adapter).
 
 > See also:
 > - <Link href="/server" />
@@ -166,25 +164,56 @@ The fundamental difference is that:
 
 ## Without `+serverEntry.js`
 
-You can also run your server yourself (e.g. `$ node server/index.js`) instead of `+server.js` and `+serverEntry.js`.
+You can also run your server yourself (e.g. `$ node server/index.js`) instead of defining `+server.js`/`+serverEntry.js`.
 
-Unless you have a reason not to, we generally recommend using <Link href="/server">`+server.js`</Link> and/or <Link href="/serverEntry">`+serverEntry.js`</Link> as it provides a better development experience:
+Unless you have a reason, we generally recommend using <Link href="/server">`+server.js`</Link>/<Link href="/serverEntry">`+serverEntry.js`</Link> as it provides a better development experience:
 
 | | `+server.js`/`+serverEntry.js` | `$ node server/index.js` |
 | --- | --- | --- |
 | Server code (1) | Processed by Vite | Not processed by Vite |
-| Server restart (2) | Fine-grained (only when needed) | Coarse (unnecessary reloads) |
+| Server restart (2) | Fine-grained | Coarse (unnecessary reloads) |
 
-1. Vite processes your server code: <ImportMeta prop="env" /> is available (e.g. `import.meta.env.DEV` and the variables of your `.env` files), and so are path aliases and Vite plugins. (Modern runtimes such as Bun and recent Node.js versions can run TypeScript, but they don't apply your Vite configuration.)
-2. `$ vike dev` restarts your server only when a file imported by `+serverEntry.js` changes: modifying a page doesn't restart your server (the page is updated with <Link href="/glossary#hmr">HMR</Link>). A watcher such as `node --watch` or `nodemon` doesn't know about Vite's module graph.
+1. Vite processes your server code: <ImportMeta prop="env" /> is available (e.g. `import.meta.env.DEV` and the variables of your `.env` files), and so are path aliases and Vite plugins.
+   > While modern runtimes such as Bun and recent Node.js versions can run TypeScript, they don't apply your Vite configuration.
+2. Vike restarts your server process only when a file imported by `+serverEntry.js` changes: modifying a page doesn't restart your server (the page is updated with <Link href="/glossary#hmr">HMR</Link>).
+   > If you run the server yourself, you'll need a watcher (e.g. `node --watch` or `nodemon`) which doesn't know about Vite's module graph.
 
-> See also: <Link href="/server#extra-control" />
+```js
+// server/index.js
+
+import express from 'express'
+import { fileURLToPath } from 'node:url'
+import { createDevMiddleware } from 'vike/server'
+
+const app = express()
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(fileURLToPath(new URL('../dist/client', import.meta.url))))
+} else {
+  // Vite's development middleware (HMR, transpiling, static assets, ...)
+  const root = fileURLToPath(new URL('..', import.meta.url))
+  const { devMiddleware } = await createDevMiddleware({ root })
+  app.use(devMiddleware)
+}
+
+// ...
+// Other middlewares and the SSR middleware, as in the example above
+// ...
+
+app.listen(3000)
+```
+
+> See also:
+> - <Link href="/createDevMiddleware" />
+> - <Link href="/server" />
+> - <Link href="/server#extra-control" />
+
 
 ## See also
 
+- <Link href="/vike(app)" />
 - <Link href="/server" />
 - <Link href="/serverEntry" />
-- <Link href="/createDevMiddleware" />
 - <Link href="/headers" />
 - <Link href="/injectFilter" />
 - <Link href="/preloading#early-hints" />

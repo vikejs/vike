@@ -213,7 +213,8 @@ Rename your server entry to <Link href="/server">`+server.js`</Link> (we recomme
 
     const app = fastify()
     await apply(app) // [!code --]
-    await vike(app) // [!code ++]
+    vike(app) // [!code ++]
+    await app.ready() // [!code ++]
 
     export default serve(app) // [!code --]
     export default { // [!code ++]
@@ -226,18 +227,19 @@ Rename your server entry to <Link href="/server">`+server.js`</Link> (we recomme
     // +server.ts
 
     import type { Server } from 'vike/types' // [!code ++]
-    // @docpress-uncomment import { createApp } from 'h3' // [!code --]
-    import { createApp, toWebHandler } from 'h3' // [!code ++]
+    import { createApp } from 'h3' // [!code --]
+    import { H3 } from 'h3' // [!code ++]
     import { apply, serve } from '@photonjs/h3' // [!code --]
     import vike from '@vikejs/h3' // [!code ++]
 
-    const app = createApp()
+    // @docpress-uncomment const app = createApp() // [!code --]
+    const app = new H3() // [!code ++]
     apply(app) // [!code --]
     vike(app) // [!code ++]
 
     export default serve(app) // [!code --]
     export default { // [!code ++]
-      fetch: toWebHandler(app) // [!code ++]
+      fetch: app.fetch // [!code ++]
     } satisfies Server // [!code ++]
     ```
   </TabPanel>
@@ -380,7 +382,7 @@ declare global {
     interface Photon {  // [!code --]
     interface Server { // [!code ++]
       // Pick your server (for correct pageContext.runtime type)
-      server: 'hono' // 'express' | 'fastify' | 'hattip' | 'srvx' | 'elysia' | 'h3'
+      server: 'hono' // 'express' | 'fastify' | 'h3' | 'elysia'
     }
   }
 }

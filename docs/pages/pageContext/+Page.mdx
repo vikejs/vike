@@ -4,7 +4,7 @@ import { PropPageContext as Prop, ConfigSpec, TreeShaking } from '../../componen
 export const ServerOnlyNote = ({ prop, kind }) => (
   <blockquote>
     <p>
-      It's only available if you use <Link href="/server"><code>+server</code></Link> with a server that exposes the HTTP {kind} object (e.g. Express, Fastify, or Hono — but not Cloudflare Workers). If you don't use <code>+server</code>, you can <Link href="#custom">define a custom <code>pageContext.{prop}</code> property</Link> yourself.
+      It's only set if you use <Link href="/server#get-started"><code>vike(app)</code></Link> (or Vike's built-in server) with a server that exposes the HTTP {kind} object (e.g. Hono or Express — but not Cloudflare Workers). Otherwise, you can <Link href="#custom">define it as a custom <code>pageContext.{prop}</code> property</Link> yourself.
     </p>
   </blockquote>
 )
@@ -12,7 +12,7 @@ export const ServerOnlyNote = ({ prop, kind }) => (
 export const AliasNote = ({ prop }) => (
   <blockquote>
     <p>
-      <code>pageContext.{prop}</code> is an alias of <Link href="#runtime" noWarning><code>pageContext.runtime.{prop}</code></Link>.
+      With <code>vike(app)</code>, <code>pageContext.{prop}</code> is an alias of <Link href="#runtime" noWarning><code>pageContext.runtime.{prop}</code></Link>.
     </p>
   </blockquote>
 )
@@ -80,17 +80,19 @@ The route parameters. (E.g. `pageContext.routeParams.movieId` for a page with a 
 
 The current URL.
 
-On the server-side, `pageContext.urlOriginal` is the value you passed at the server middleware:
- ```ts
- // Server middleware
- app.get('*', async (req: Request) => {
-   const pageContextInit = {}
-   // `pageContext.urlOriginal` is defined here
-   pageContextInit.urlOriginal = req.url
-   const pageContext = await renderPage(pageContextInit)
-   /* ... */
- })
- ```
+On the server-side, `pageContext.urlOriginal` is the URL of the HTTP request.
+
+> If you use <Link href="/renderPage">`renderPage()`</Link>, it's the value you passed to it:
+>  ```ts
+>  // Server middleware
+>  app.get('*', async (req: Request) => {
+>    const pageContextInit = {}
+>    // `pageContext.urlOriginal` is defined here
+>    pageContextInit.urlOriginal = req.url
+>    const pageContext = await renderPage(pageContextInit)
+>    /* ... */
+>  })
+>  ```
 
 On the client-side:
  - When using <Link href="/client-routing">Client Routing</Link>, the value of `pageContext.urlOriginal` is the browser's current URL (`window.location.href`).
@@ -174,7 +176,7 @@ declare global {
   namespace Vike {
     interface Server {
       // 👉 Pick your server (for correct pageContext.req type)
-      server: 'hono' // | 'express' | 'fastify' | 'hattip' | 'srvx' | 'elysia' | 'h3'
+      server: 'hono' // | 'express' | 'fastify' | 'h3' | 'elysia'
     }
   }
 }
@@ -200,7 +202,7 @@ declare global {
   namespace Vike {
     interface Server {
       // 👉 Pick your server (for correct pageContext.res type)
-      server: 'hono' // | 'express' | 'fastify' | 'hattip' | 'srvx' | 'elysia' | 'h3'
+      server: 'hono' // | 'express' | 'fastify' | 'h3' | 'elysia'
     }
   }
 }
@@ -214,7 +216,7 @@ declare global {
 
 <Prop id="runtime" />
 
-The full [`RuntimeAdapter`](https://universal-middleware.dev/reference/runtime-adapter) object set by <Link href="/server">`+server`</Link> (which uses [`universal-middleware`](https://universal-middleware.dev/) under the hood).
+The [`RuntimeAdapter`](https://universal-middleware.dev/reference/runtime-adapter) object.
 
 ```ts
 // Environment: server
@@ -227,13 +229,13 @@ declare global {
   namespace Vike {
     interface Server {
       // 👉 Pick your server (for correct pageContext.runtime type)
-      server: 'hono' // | 'express' | 'fastify' | 'hattip' | 'srvx' | 'elysia' | 'h3'
+      server: 'hono' // | 'express' | 'fastify' | 'h3' | 'elysia'
     }
   }
 }
 ```
 
-> It's only available if you use <Link href="/server">`+server`</Link>.
+> It's only set if you use <Link href="/server#get-started">`vike(app)`</Link> (or Vike's built-in server) — `vike(app)` uses [`universal-middleware`](https://universal-middleware.dev) under the hood.
 
 > See also:
 > - <Link href="#req" noWarning>`pageContext.req`</Link>
