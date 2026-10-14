@@ -53,15 +53,6 @@ function getMiddlewares_globalContext(globalContext: { config: ConfigResolved },
   ].map(withIsHandler)
 }
 
-// List of +middleware
-function getMiddlewares_config(globalContext: { config: ConfigResolved }): EnhancedMiddleware[] {
-  return (globalContext.config.middleware ?? []).flat()
-}
-// Does a +middleware exist?
-function hasPlusMiddlewares(globalContext: { config: ConfigResolved }) {
-  return getMiddlewares_config(globalContext).length > 0
-}
-
 // `globalContext.middlewares`, or `middlewares_uponConfigError` upon an invalid config
 async function getMiddlewares_withErrorHandling(): Promise<Middleware[]> {
   if (getVikeConfigError()) return middlewares_fallbackUponConfigError
@@ -99,6 +90,15 @@ async function renderPageServer_universal(
     status: httpResponse.statusCode,
     headers: httpResponse.headers,
   })
+}
+
+// List of +middleware
+function getMiddlewares_config(globalContext: { config: ConfigResolved }): EnhancedMiddleware[] {
+  return (globalContext.config.middleware ?? []).flat()
+}
+// Does a +middleware exist?
+function hasPlusMiddlewares(globalContext: { config: ConfigResolved }) {
+  return getMiddlewares_config(globalContext).length > 0
 }
 
 // Handle:
