@@ -32,7 +32,7 @@ function getServerConfig(vikeConfig: VikeConfigInternal) {
     serverEntryVike = serverFilePath
   } else {
     serverEntryId = catchAllEntry
-    serverEntryVike = 'vike/fetch'
+    serverEntryVike = 'vike/__internal/fetch'
   }
 
   return {
@@ -40,7 +40,7 @@ function getServerConfig(vikeConfig: VikeConfigInternal) {
     // It points to a fully resolved server entry or the virtual universal-deploy catchAll entry.
     serverEntryId,
     // This entry will be pushed to universal-deploy via `addEntry`.
-    // It either points to the default fetchable endpoint (vike/fetch), or one defined by the user through +server.
+    // It either points to the default fetchable endpoint (vike/__internal/fetch), or one defined by the user through +server.
     serverEntryVike,
     serverFilePath,
     // +serverEntry.js => it's the production server entry dist/server/index.mjs (instead of @universal-deploy/node's)

@@ -95,17 +95,25 @@
       "default": "./dist/server/runtime/universal-middleware/deprecated-export.js"
     },
     "./fetch": {
+      "types": "./dist/server/runtime/fetch-deprecated.d.ts",
+      "worker": "./dist/server/runtime/fetch-deprecated.js",
+      "workerd": "./dist/server/runtime/fetch-deprecated.js",
+      "node": "./dist/server/runtime/fetch-deprecated.js",
+      "browser": "./dist/client/node.js",
+      "default": "./dist/server/runtime/fetch-deprecated.js"
+    },
+    "./__internal": {
+      "types": "./dist/server/__internal/index.d.ts",
+      "node": "./dist/server/__internal/index.js",
+      "default": "./dist/server/__internal/index.js"
+    },
+    "./__internal/fetch": {
       "types": "./dist/server/runtime/fetch.d.ts",
       "worker": "./dist/server/runtime/fetch.js",
       "workerd": "./dist/server/runtime/fetch.js",
       "node": "./dist/server/runtime/fetch.js",
       "browser": "./dist/client/node.js",
       "default": "./dist/server/runtime/fetch.js"
-    },
-    "./__internal": {
-      "types": "./dist/server/__internal/index.d.ts",
-      "node": "./dist/server/__internal/index.js",
-      "default": "./dist/server/__internal/index.js"
     },
     "./__internal/setup": {
       "types": "./dist/server/runtime/page-files/setup.d.ts",
@@ -219,10 +227,13 @@
         "./dist/server/runtime/universal-middleware/deprecated-export.d.ts"
       ],
       "fetch": [
-        "./dist/server/runtime/fetch.d.ts"
+        "./dist/server/runtime/fetch-deprecated.d.ts"
       ],
       "__internal": [
         "./dist/server/__internal/index.d.ts"
+      ],
+      "__internal/fetch": [
+        "./dist/server/runtime/fetch.d.ts"
       ],
       "__internal/setup": [
         "./dist/server/runtime/page-files/setup.d.ts"
