@@ -63,18 +63,13 @@ function testHydrationRetry(isDev: boolean) {
     expectLog('the server responded with a status of 404', { filter: (log) => log.logSource === 'Browser Error' })
   })
 
-  test("hydration retry: the page isn't reloaded upon a flaky connection", async () => {
-    // The first page load fails to fetch the page's entry, but the entry exists
+  test('hydration retry: the page is reloaded if the connection is back', async () => {
+    // The first page load fails to fetch the page's entry, but the connection is back when Vike checks whether the server responds
     const pageEntry = await blockPageEntry((pageLoads) => pageLoads === 1 && 'network-error')
     try {
       await page.goto(getServerUrl() + '/')
-      // It throws the error and the server-side rendered page remains
-      await autoRetry(() => {
-        expectLog('Failed to fetch dynamically imported module', { filter: (log) => log.logSource === 'Browser Error' })
-      })
-      await sleep(1000)
-      expect(pageEntry.getPageLoads()).toBe(1)
-      expect(await page.textContent('h1')).toBe('Welcome')
+      await testCounter()
+      expect(pageEntry.getPageLoads()).toBe(2)
     } finally {
       await pageEntry.unblock()
     }
@@ -111,7 +106,7 @@ function testHydrationRetry(isDev: boolean) {
 }
 // Make fetching the page's entry fail:
 // - 'deleted': the entry doesn't exist anymore (e.g. a new frontend was deployed)
-// - 'network-error': the entry exists but fetching it fails (e.g. flaky connection)
+// - 'network-error': the entry exists but fetching it fails (e.g. flaky connection), while the server still responds to Vike's check — unless `onNetworkError()` takes the connection down
 async function blockPageEntry(
   getFailure: (pageLoads: number) => 'deleted' | 'network-error' | false,
   onNetworkError?: () => Promise<void>,
@@ -127,7 +122,7 @@ async function blockPageEntry(
   await context.route(url, async (route) => {
     const failure = getFailure(pageLoads)
     if (failure === 'deleted') return route.fulfill({ status: 404 })
-    // Vike checks whether the entry exists with a HEAD request
+    // Vike checks whether the server responds with a HEAD request
     if (failure === 'network-error' && route.request().method() !== 'HEAD') {
       await onNetworkError?.()
       return route.abort()

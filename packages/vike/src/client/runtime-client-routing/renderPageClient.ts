@@ -831,29 +831,27 @@ async function handleErrorFetchingStaticAssets(
     redirectHard(pageContext.urlOriginal)
     return true
   }
-  // Upon hydration, we reload the page only if a new frontend was deployed. Upon a flaky connection, we let it fail: handling flaky connections is the browser's job (the user reloads the page). The server-side rendered page remains and, since Client Routing is disabled, the next page navigation is a full page load.
+  // Upon hydration, we reload the page unless the connection is down. Upon a flaky connection, we let it fail: handling flaky connections is the browser's job (the user reloads the page). The server-side rendered page remains and, since Client Routing is disabled, the next page navigation is a full page load.
   // We don't reload a page that was itself loaded by a reload, in order to avoid an infinite reload loop.
-  if (!isPageReload() && (await isNewDeployment())) {
+  if (!isPageReload() && (await isServerReachable())) {
     // We use `location.reload()` instead of redirectHard(): navigating with `location.href = url` creates a `type: 'navigate'` entry, which would lead to an infinite reload loop — see isPageReload()
     window.location.reload()
     return true
   }
   throw err
 }
-// Whether a new frontend was deployed, i.e. the page's entry doesn't exist anymore. (The error thrown by `import()` doesn't tell: it's the same upon a network error.)
-async function isNewDeployment(): Promise<boolean> {
-  // The first modulepreload link is the page's entry, see retrievePageAssetsProd(). Checking it is enough: the hash in its file name changes whenever any of the page's JavaScript changes, because the hash of a file includes the hashes of the files it imports.
+// The error thrown by `import()` is the same whether a new frontend was deployed (the static assets don't exist anymore) or the connection is flaky. If the server responds, then a new frontend was deployed or the connection is back: either way, reloading fixes the page.
+async function isServerReachable(): Promise<boolean> {
+  // The first modulepreload link is the page's entry, see retrievePageAssetsProd()
   const url = document.querySelector<HTMLLinkElement>('link[rel="modulepreload"]')?.href
   if (!url) return false
-  let response: Response
   try {
-    response = await fetch(url, { method: 'HEAD', cache: 'no-store' })
+    await fetch(url, { method: 'HEAD', cache: 'no-store' })
+    return true
   } catch {
-    // Network error: flaky connection
+    // Network error
     return false
   }
-  // A missing static asset isn't always a `404`: e.g. S3 replies `403`, and static hosts with SPA fallback reply `200` with HTML
-  return !response.ok || !response.headers.get('content-type')?.includes('javascript')
 }
 // Whether the current page was loaded by a page reload
 function isPageReload(): boolean {
