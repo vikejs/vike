@@ -35,18 +35,17 @@ import assert from 'node:assert'
 const globalContext = await getGlobalContext()
 assert(!globalContext.isClientSide)
 const { middlewares } = globalContext
-
 const app = new YourFavoriteServer()
 
-// The sandwich approach:
+// Apply globalContext.middlewares around your routes (the sandwich approach):
 
-// The +middleware that aren't handlers
+// The +middleware that aren't handlers first
 apply(app, middlewares.filter((m) => !m.isHandler))
 
 // Your routes
 app.get('/api/me', getMe)
 
-// The +middleware that are handlers (including Vike's handler that renders your pages)
+// The +middleware that are handlers last (it includes Vike's handler that renders your pages)
 apply(app, middlewares.filter((m) => m.isHandler))
 
 export default {
@@ -59,6 +58,8 @@ export default {
 > In development, because `globalContext.middlewares` is read when your server starts, you must restart your server after a `+middleware` changes (i.e. you install/remove/update a Vike extension).
 >
 > Note that `vike(app)` doesn't need a restart because it re-reads `globalContext.middlewares` at request time.
+
+> In principle, it's possible to use <Link href="/renderPage">`renderPage()`</Link> together with manually installing `globalContext.middlewares`, similar to the approach shown above. But it's cumbersome, and we don't recommend it. (You'd need to remove Vike's handler from `globalContext.middlewares`, but then both `renderPage()` and `globalContext.middlewares` require a catch-all route which leads to conflicts.)
 
 
 ## See also
