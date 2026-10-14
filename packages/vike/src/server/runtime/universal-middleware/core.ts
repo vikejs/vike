@@ -43,7 +43,7 @@ const routeCatchAll = {
 // Vike's pages
 const renderPageServer_universalMiddleware = enhance(renderPageServer_universal, routeCatchAll)
 
-// `globalContext.middlewares` — every `+middleware` and Vike's handler that renders pages
+// globalContext.middlewares — every +middleware and Vike's handler that renders pages
 function getMiddlewares_globalContext(globalContext: { config: ConfigResolved }, baseServer: string): Middleware[] {
   return [
     ...getMiddlewares_config(globalContext).map((plusMiddleware) =>
@@ -65,7 +65,7 @@ async function getMiddlewares_withErrorHandling(): Promise<Middleware[]> {
   const { globalContext } = await getGlobalContextServerInternal()
   return globalContext.middlewares
 }
-// Upon an invalid config: answer every request with the error
+// Upon an invalid config: let renderPageServer() answer every request with the error (`+middleware` isn't defined upon config error)
 const middlewares_errorHandling = [enhance(renderPageServer_universal, { name: 'vike:error-handling' })].map(
   withIsHandler,
 )
