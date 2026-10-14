@@ -14,7 +14,7 @@ export const ColumnHeaderAfter = ({ children }) => <ColumnHeader title="After (m
 
 Define `+server.js` to seamlessly integrate a server framework (Hono, Express, ...), or set `+server: true` to use Vike's built-in lightweight server.
 
-> `vike-photon` is deprecated — it has been replaced by `+server`:
+> `vike-photon` is deprecated — it's replaced by `+server`:
 > - <Link href="/migration/server" />
 > - <Link href="/blog/universal-deploy" />
 
@@ -36,7 +36,7 @@ Define `+server.js` to integrate a server:
 :::
 
 :::Choice{#Other}
-If Vike doesn't have an adapter for you server, or if you aren't using any server framework, you can use `vike/fetch`:
+If Vike doesn't have an adapter for your server, you can use `vike/fetch`:
 :::
 
 ```shell choice=Hono
@@ -67,7 +67,11 @@ import vike from '@vikejs/hono'
 import type { Server } from 'vike/types'
 
 const app = new Hono()
-vike(app) // Attaches Vike
+vike(app) // Make sure to run vike(app) before your routes
+
+// ...
+// Your routes
+// ...
 
 export default {
   fetch: app.fetch
@@ -82,7 +86,11 @@ import vike, { toFetchHandler } from '@vikejs/express'
 import type { Server } from 'vike/types'
 
 const app = express()
-vike(app) // Attaches Vike
+vike(app) // Make sure to run vike(app) before your routes
+
+// ...
+// Your routes
+// ...
 
 export default {
   fetch: toFetchHandler(app)
@@ -97,7 +105,12 @@ import vike, { toFetchHandler } from '@vikejs/fastify'
 import type { Server } from 'vike/types'
 
 const app = fastify()
-await vike(app) // Attaches Vike
+vike(app) // Make sure to run vike(app) before your routes
+
+// ...
+// Your routes
+// ...
+
 await app.ready()
 
 export default {
@@ -108,15 +121,19 @@ export default {
 ```ts file-added choice=H3
 // +server.ts
 
-import { createApp, toWebHandler } from 'h3'
+import { H3 } from 'h3'
 import vike from '@vikejs/h3'
 import type { Server } from 'vike/types'
 
-const app = createApp()
-vike(app) // Attaches Vike
+const app = new H3()
+vike(app) // Make sure to run vike(app) before your routes
+
+// ...
+// Your routes
+// ...
 
 export default {
-  fetch: toWebHandler(app)
+  fetch: app.fetch
 } satisfies Server
 ```
 
@@ -128,7 +145,11 @@ import vike from '@vikejs/elysia'
 import type { Server } from 'vike/types'
 
 const app = new Elysia()
-vike(app) // Attaches Vike
+vike(app) // Make sure to run vike(app) before your routes
+
+// ...
+// Your routes
+// ...
 
 export default {
   fetch: app.fetch
@@ -147,6 +168,12 @@ export default {
   }
 } satisfies Server
 ```
+
+> <Link href="/vike(app)">`vike(app)`</Link> installs:
+> - Vike's handler that renders your pages
+> - Every <Link href="/middleware">`+middleware`</Link> from <Link href="/extensions">Vike extensions</Link>
+
+> Make sure to run `vike(app)` before your routes, because the <Link href="/middleware">`+middleware`</Link> from Vike extensions should run before your routes, so that your routes can read the context set by Vike extensions (e.g. authentication).
 
 ### `+server: true`
 
@@ -338,18 +365,18 @@ import vike, { toFetchHandler } from '@vikejs/fastify'
 import compress from '@universal-middleware/compress' // [!code ++]
 
 const app = fastify()
-await vike(app) // [!code --]
-await vike(app, [compress()]) // [!code ++]
+vike(app) // [!code --]
+vike(app, [compress()]) // [!code ++]
 ```
 
 ```ts choice=H3
 // +server.ts
 
-import { createApp, toWebHandler } from 'h3'
+import { H3 } from 'h3'
 import vike from '@vikejs/h3'
 import compress from '@universal-middleware/compress' // [!code ++]
 
-const app = createApp()
+const app = new H3()
 vike(app) // [!code --]
 vike(app, [compress()]) // [!code ++]
 ```

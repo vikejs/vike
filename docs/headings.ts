@@ -371,6 +371,7 @@ const headings = [
     level: 2,
     title: '`pageContext`',
     url: '/pageContext',
+    sectionTitles: ['`renderPage()`'],
   },
   {
     level: 2,
@@ -610,9 +611,8 @@ const headings = [
   },
   {
     level: 2,
-    title: '`renderPage()`',
-    url: '/renderPage',
-    sectionTitles: ['`renderPage()` vs `vike(app)`', 'Without `+serverEntry.js`'],
+    title: '`vike(app)`',
+    url: '/vike(app)',
   },
   {
     level: 2,
@@ -724,6 +724,11 @@ const headings = [
     level: 2,
     title: '`+csp`',
     url: '/csp',
+  },
+  {
+    level: 2,
+    title: '`+middleware`',
+    url: '/middleware',
   },
   {
     level: 2,
@@ -1121,6 +1126,10 @@ function warningsAndErrors() {
         url: '/warning/setup',
       },
       {
+        title: "❌ `renderPage()` doesn't run `+middleware`",
+        url: '/error/setup-middlewares',
+      },
+      {
         title: '❌ Runtime code defined in config file',
         url: '/error/runtime-in-config',
       },
@@ -1212,10 +1221,6 @@ function misc() {
         title: 'Lazy Transpiling',
         url: '/lazy-transpiling',
         category: 'Glossary',
-      },
-      {
-        title: 'Vike',
-        url: '/vike',
       },
       {
         title: 'Press Kit',
@@ -1488,6 +1493,11 @@ function api() {
       {
         title: '`require`',
         url: '/require',
+      },
+      {
+        title: '`renderPage()`',
+        url: '/renderPage',
+        sectionTitles: ['`renderPage()` vs `vike(app)`', 'Without `+serverEntry.js`'],
       },
       {
         title: '`filesystemRoutingRoot`',

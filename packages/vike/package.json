@@ -87,12 +87,12 @@
       "default": "./dist/shared-server-client/modifyUrl.js"
     },
     "./universal-middleware": {
-      "types": "./dist/server/runtime/universal-middleware.d.ts",
-      "worker": "./dist/server/runtime/universal-middleware.js",
-      "workerd": "./dist/server/runtime/universal-middleware.js",
-      "node": "./dist/server/runtime/universal-middleware.js",
+      "types": "./dist/server/runtime/universal-middleware/deprecated-export.d.ts",
+      "worker": "./dist/server/runtime/universal-middleware/deprecated-export.js",
+      "workerd": "./dist/server/runtime/universal-middleware/deprecated-export.js",
+      "node": "./dist/server/runtime/universal-middleware/deprecated-export.js",
       "browser": "./dist/client/node.js",
-      "default": "./dist/server/runtime/universal-middleware.js"
+      "default": "./dist/server/runtime/universal-middleware/deprecated-export.js"
     },
     "./fetch": {
       "types": "./dist/server/runtime/fetch.d.ts",
@@ -130,8 +130,8 @@
     "@brillout/vite-plugin-server-entry": "^0.7.23",
     "@universal-deploy/store": "^0.3.0",
     "@universal-deploy/vite": "^0.2.2",
-    "@universal-middleware/core": "^0.6.0",
-    "@universal-middleware/node": "^0.2.6",
+    "@universal-middleware/core": "^0.7.0",
+    "@universal-middleware/node": "^0.2.9",
     "cac": "^6.0.0",
     "convert-route": "^2.0.0",
     "es-module-lexer": "^1.0.0",
@@ -216,7 +216,7 @@
         "./dist/shared-server-client/modifyUrl.d.ts"
       ],
       "universal-middleware": [
-        "./dist/server/runtime/universal-middleware.d.ts"
+        "./dist/server/runtime/universal-middleware/deprecated-export.d.ts"
       ],
       "fetch": [
         "./dist/server/runtime/fetch.d.ts"

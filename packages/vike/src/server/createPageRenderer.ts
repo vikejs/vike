@@ -3,7 +3,7 @@ export { createPageRenderer }
 // TO-DO/next-major-release: remove this file
 
 //import { SsrEnv, setSsrEnv } from './ssrEnv.js'
-import { renderPageServer } from './runtime/renderPageServer.js'
+import { renderPageServer_userLand } from './runtime/renderPageServer.js'
 import { assertWarning } from '../utils/assert.js'
 //import { importBuildWasLoaded } from './importBuild.js'
 import './assertEnvServer.js'
@@ -17,9 +17,9 @@ type Options = {
   baseAssets?: string | null
 }
 /** @deprecated */
-function createPageRenderer(options: Options): typeof renderPageServer {
+function createPageRenderer(options: Options): typeof renderPageServer_userLand {
   showWarnings(options)
-  return renderPageServer
+  return renderPageServer_userLand
 }
 
 function showWarnings(options: Options) {

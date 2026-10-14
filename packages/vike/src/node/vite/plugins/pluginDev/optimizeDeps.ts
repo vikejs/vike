@@ -76,6 +76,8 @@ const optimizeDeps = {
         */
         '@brillout/vite-plugin-server-entry',
         'vike',
+        // Needed so that Vike doesn't get the user's @universal-middleware/core version (that might differ from Vike's @universal-middleware/core version). (Vite pre-bundles one copy per package name for every importer: https://github.com/vitejs/vite/issues/9948)
+        '@universal-middleware/core',
       ],
     },
   },
@@ -235,7 +237,7 @@ async function getPageDeps(
 
   // V0.4 design
   {
-    const pageFiles = await findPageFiles(config, ['.page', '.page.client'], true)
+    const pageFiles = await findPageFiles(config, ['.page', '.page.client'])
     const userRootDir = config.root
     pageFiles.forEach((filePathAbsoluteUserRootDir) => {
       const entry = getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir })

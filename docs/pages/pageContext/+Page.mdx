@@ -80,17 +80,19 @@ The route parameters. (E.g. `pageContext.routeParams.movieId` for a page with a 
 
 The current URL.
 
-On the server-side, `pageContext.urlOriginal` is the value you passed at the server middleware:
- ```ts
- // Server middleware
- app.get('*', async (req: Request) => {
-   const pageContextInit = {}
-   // `pageContext.urlOriginal` is defined here
-   pageContextInit.urlOriginal = req.url
-   const pageContext = await renderPage(pageContextInit)
-   /* ... */
- })
- ```
+On the server-side, `pageContext.urlOriginal` is the URL of the HTTP request.
+
+> If you use <Link href="/renderPage">`renderPage()`</Link>, it's the value you passed to it:
+>  ```ts
+>  // Server middleware
+>  app.get('*', async (req: Request) => {
+>    const pageContextInit = {}
+>    // `pageContext.urlOriginal` is defined here
+>    pageContextInit.urlOriginal = req.url
+>    const pageContext = await renderPage(pageContextInit)
+>    /* ... */
+>  })
+>  ```
 
 On the client-side:
  - When using <Link href="/client-routing">Client Routing</Link>, the value of `pageContext.urlOriginal` is the browser's current URL (`window.location.href`).

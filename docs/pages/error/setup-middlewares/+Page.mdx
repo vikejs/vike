@@ -1,0 +1,20 @@
+import { Link, CodeBlockTransformer } from '@brillout/docpress'
+
+<CodeBlockTransformer lineBreak="white-space">
+```
+[vike][Wrong Usage] renderPage() doesn't run +middleware
+```
+</CodeBlockTransformer>
+
+This error means you're using a Vike extension that installs a server middleware via <Link href="/middleware">`+middleware`</Link> while you're using <Link href="/renderPage">`renderPage()`</Link> which <Link href="/renderPage#renderpage-vs-vike-app">doesn't support `+middleware`</Link>.
+
+Use `vike(app)` instead of `renderPage()`, see <Link href="/server" />.
+
+
+## See also
+
+- <Link href="/server" />
+- <Link href="/renderPage" />
+- <Link href="/renderPage#renderpage-vs-vike-app" />
+- <Link href="/vike(app)" />
+- <Link href="/middleware" />

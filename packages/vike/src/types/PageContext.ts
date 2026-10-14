@@ -1,5 +1,4 @@
 // Public usage
-import type { IncomingMessage, ServerResponse } from 'node:http'
 
 export type { PageContext }
 export type { PageContextServer }
@@ -14,7 +13,6 @@ export type { PageContextInternalServer }
 export type { PageContextInternalClient }
 export type { PageContextInternalClient_ServerRouting }
 export type { PageContextInternalClient_ClientRouting }
-export type { PageContextInitInternal }
 export type { PageContextInit }
 
 // TO-DO/next-major-release: remove these three exports
@@ -64,7 +62,7 @@ type PageContextContent = {
   content?: string | Uint8Array | ReadableStream<Uint8Array>
 }
 
-// pageContext.req and pageContext.res are set by vike(app) (aliases of pageContext.runtime.req and pageContext.runtime.res), $ vike dev and $ vike preview.
+// pageContext.req and pageContext.res (aliases of pageContext.runtime.req and pageContext.runtime.res) are set by vike(app), `$ vike dev`, and `$ vike preview`.
 // https://vike.dev/pageContext#req
 // We only add the aliases:
 //  - if the runtime adapter exposes req/res (e.g. Node.js servers such as Express/Fastify/Hono do, but Cloudflare Workers don't), and
@@ -209,14 +207,6 @@ type PageContextInit = {
   headersOriginal?: unknown // We set it to the type `unknown` instead of the type `HeadersInit` because `HeadersInit` isn't accurate: for example, `http.IncomingHttpHeaders` is a valid input for `new Headers()` but doesn't match the `HeadersInit` init.
   /** @deprecated Set `pageContextInit.urlOriginal` instead  */ // TO-DO/next-major-release: remove
   url?: string
-}
-
-type PageContextInitInternal = PageContextInit & {
-  _nodeDev?: {
-    req: IncomingMessage
-    res: ServerResponse
-  }
-  _reqWeb?: Request
 }
 
 type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &

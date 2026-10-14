@@ -67,7 +67,12 @@ export function onBeforeRenderHtml(pageContext: PageContextServer) {
 
 > `pageContext.headersResponse` is a [standard `Headers` object](https://developer.mozilla.org/en-US/docs/Web/API/Headers).
 
-The final HTTP response headers sent to the client are available at `pageContext.httpResponse.headers`.
+
+## `pageContext.httpResponse.headers`
+
+If you use <Link href="/vike(app)">`vike(app)`</Link>, the final response headers are automatically sent.
+
+If you use <Link href="/renderPage">`renderPage()`</Link>, you must send the final response headers (`pageContext.httpResponse.headers`) yourself:
 
 ```ts
 import { renderPage } from 'vike/server'
@@ -76,9 +81,9 @@ import { renderPage } from 'vike/server'
 app.get('*', async (req: Request) => {
   // ...
   const pageContext = await renderPage(pageContextInit)
-  // HTTP response headers sent to the client
+  // The final HTTP response headers
   const headers = pageContext.httpResponse.headers
-  // ...
+  // Send them to the client ...
 })
 ```
 
@@ -98,6 +103,7 @@ You can convert it to a [standard `Headers` object](https://developer.mozilla.or
 ```ts
 const headers = new Headers(pageContext.httpResponse.headers)
 ```
+
 
 ## See also
 

@@ -53,6 +53,12 @@ async function onRenderHtml(pageContext: PageContextServer) {
 }
 ```
 
+If you use <Link href="/vike(app)">`vike(app)`</Link>, the stream is automatically sent.
+
+### With `renderPage()`
+
+If you use <Link href="/renderPage">`renderPage()`</Link>, you send the stream yourself.
+
 Node.js(-like) environments (Node.js/Bun/Deno server, Vercel, AWS EC2, AWS Lambda, ...):
 
 ```ts
