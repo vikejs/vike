@@ -6,15 +6,15 @@ import { ConfigSpec } from '../../components'
   global={null}
 />
 
-The `vike(app)` function installs Vike's handlers and middlewares to your server.
+The `vike(app)` function installs Vike's server middlewares to your server.
 
 > See <Link href="/server" /> for how to use `vike(app)`.
 
-It installs both:
+It installs:
 - Vike's handler that renders your pages (basically <Link href="/renderPage">`renderPage()`</Link>)
 - Every <Link href="/middleware">`+middleware`</Link> from <Link href="/extensions">Vike extensions</Link>
 
-> Technically, what it does is install the <Link href="/globalContext#middlewares">`globalContext.middlewares`</Link> list using the [sandwich approach](https://github.com/vikejs/vike-server-adapters#sandwich-approach): middlewares (i.e. non-handlers) are applied before user-defined routes while handlers are applied after — so that your routes can read the context added by the middlewares of Vike extensions.
+> Technically, what it does is install the <Link href="/globalContext#middlewares">`globalContext.middlewares`</Link> list using the [sandwich approach](https://github.com/vikejs/vike-server-adapters#sandwich-approach): middlewares (i.e. non-handlers) are applied before user-defined routes while handlers are applied after — so that your routes can read the context set by the middlewares of Vike extensions.
 >
 > See also: <Link href="/middleware#order" />
 
@@ -57,9 +57,9 @@ export default {
 
 > In development, because `globalContext.middlewares` is read when your server starts, you must restart your server after a `+middleware` changes (i.e. you install/remove/update a Vike extension).
 >
-> Note that `vike(app)` doesn't need a restart because it re-reads `globalContext.middlewares` at request time.
+> Note that `vike(app)` doesn't need a restart because, in development, it re-reads `globalContext.middlewares` for every request.
 
-> In principle, it's possible to use <Link href="/renderPage">`renderPage()`</Link> together with manually installing `globalContext.middlewares`, similar to the approach shown above. But it's cumbersome, and we don't recommend it. (You'd need to remove Vike's handler from `globalContext.middlewares`, but then both `renderPage()` and `globalContext.middlewares` require a catch-all route which leads to conflicts.)
+> In principle, it's possible to use <Link href="/renderPage">`renderPage()`</Link> together with manually installing `globalContext.middlewares`, similar to the approach shown above. But it's cumbersome, and we don't recommend it. (You'd need to remove Vike's handler from `globalContext.middlewares`, while both `renderPage()` and `globalContext.middlewares` require a catch-all route which leads to conflicts.)
 
 
 ## See also
