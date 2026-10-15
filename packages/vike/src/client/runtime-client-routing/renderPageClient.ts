@@ -680,21 +680,10 @@ function disableClientRouting(err: unknown, log: boolean, isNetworkError?: true)
     console.log(err)
   }
 
-  assertInfo(
-    false,
-    [
-      'Failed to fetch static asset.',
-      isNetworkError
-        ? 'The connection seems to be down.'
-        : import.meta.env.PROD
-          ? 'This usually happens after a new frontend deployment or because of a flaky connection.'
-          : null,
-      'Falling back to Server Routing.',
-    ]
-      .filter(Boolean)
-      .join(' '),
-    { onlyOnce: true },
-  )
+  const reason = isNetworkError
+    ? 'The connection seems to be down.'
+    : 'This usually happens after a new frontend deployment or because of a flaky connection.'
+  assertInfo(false, `Failed to fetch static asset. ${reason} Falling back to Server Routing.`, { onlyOnce: true })
 }
 
 function getIsRenderOutdated() {
