@@ -90,7 +90,7 @@ app.listen(3000)
 
 > `+serverEntry.js` is responsible for starting the server, whereas with `+server.js` the server is started by Vite in development and by [srvx](https://srvx.h3.dev) in production.
 
-<ServerJsRecommendation>In development, when you modify `+serverEntry.js` (or a file it imports), Vike automatically restarts your server process.<br/><br/></ServerJsRecommendation>
+<ServerJsRecommendation>In development, when you modify `+serverEntry.js` (or a file it imports), Vike automatically restarts your server process.<br/><br/>I</ServerJsRecommendation>
 
 > If you want to use HTTPS in development, use HTTPS in your server and also [pass the HTTPS certificates to Vite](https://vite.dev/config/server-options.html#server-https) (Vite uses them for its HMR WebSocket).
 
@@ -219,7 +219,7 @@ $ bun dist/server/index.mjs
 
 ## Example: WebSockets
 
-With `+serverEntry.js` (<Link href="#with-out-server-js">and without `+server.js`</Link>), you can use WebSockets like with any Node.js server, in both development and production. For example with [`ws`](https://github.com/websockets/ws):
+Using `+serverEntry.js` (<Link href="#with-out-server-js">without `+server.js`</Link>), you can use WebSockets like with any Node.js server, in both development and production. For example with [`ws`](https://github.com/websockets/ws):
 
 ```ts
 // +serverEntry.ts (without +server.js)
@@ -257,12 +257,12 @@ ws.onmessage = (event) => console.log(event.data) // echo: hello
 ```
 
 Compared to <Link href="/server#websockets">WebSockets with `+server.js`</Link>:
-- You don't need a Vite plugin: `$ vike dev` runs your `+serverEntry.js`, so the same code runs in development and production.
+- You don't need a Vite plugin: `+serverEntry.js` defines the entire server (for both development and production), so the same WebSockets integration runs in both development and production.
 - You can use any library that works with Node.js's HTTP server, for example [Socket.IO](https://socket.io) (including its HTTP long-polling fallback).
 
-<ServerJsRecommendation />
+<ServerJsRecommendation>That said, i</ServerJsRecommendation>
 
-With Bun, you can use the [WebSockets built into `Bun.serve()`](https://bun.com/docs/runtime/http/websockets), in development as well. For example, with the <Link href="#example-bun">Bun example above</Link>:
+With Bun, you can use the [WebSockets built into `Bun.serve()`](https://bun.com/docs/runtime/http/websockets), in both development and production. For example, modifying the <Link href="#example-bun">Bun example above</Link>:
 
 ```ts
 // +serverEntry.ts (without +server.js)

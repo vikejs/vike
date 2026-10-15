@@ -387,9 +387,9 @@ vike(app, [compress()]) // [!code ++]
 
 ## WebSockets
 
-You can use WebSockets, for example with [crossws](https://crossws.h3.dev):
+You can use WebSockets, for example with [`crossws`](https://github.com/h3js/crossws):
 - In production, with crossws's srvx plugin (Vike's built-in production server uses [srvx](https://srvx.h3.dev)).
-- In development, with a Vite plugin (Vite's development server doesn't use `prod` settings).
+- In development, with a Vite plugin
 
 ```ts
 // server/websocket.ts
@@ -442,7 +442,6 @@ function websocketDev(): Plugin {
     name: 'websocket-dev',
     configureServer(server) {
       const ws = crossws({
-        // Loaded by the same module runner as +server.js: modifying server/websocket.ts applies to new connections
         resolve: async () => {
           const { runner } = server.environments.ssr as RunnableDevEnvironment
           return (await runner.import('/server/websocket.ts')).websocket
@@ -458,9 +457,7 @@ function websocketDev(): Plugin {
 }
 ```
 
-> You can also define <Link href="/serverEntry">`+serverEntry.js`</Link> without `+server.js`: it doesn't need a Vite plugin, and you can use any WebSocket library (e.g. Socket.IO), see <Link href="/serverEntry#example-websockets" doNotInferSectionTitle />.
-
-<ServerJsRecommendation />
+<ServerJsRecommendation>You can also integrate WebSockets using <Link href="/serverEntry">`+serverEntry.js`</Link> instead of `+server.js`: you then don't need a Vite plugin, and you can use any WebSocket library (e.g. Socket.IO), see <Link href="/serverEntry#example-websockets" doNotInferSectionTitle />.<br/><br/>I</ServerJsRecommendation>
 
 
 ## Extra control
@@ -503,7 +500,7 @@ For full control over the server entry not only in production but also in develo
 | | <ColumnHeaderBefore>`+server.js`</ColumnHeaderBefore> | <ColumnHeaderAfter>`+serverEntry.js`</ColumnHeaderAfter> |
 | --- | --- | --- |
 | Development server | Vite's development server. ([Node.js with Connect](https://github.com/vitejs/ecosystem/issues/16).) | Your server. (E.g. `Bun.serve()`/`Deno.serve()`.) |
-| Modifying server code<br/>(development) | Applied without restarting the server (<Link href="#hmr" />) | Restarts the server |
+| Modifying server code<br/>(development) | Applied without restarting your server (see <Link href="#hmr" />) | Restarts your server |
 
 > See also:
 > - <Link href="/serverEntry" />
