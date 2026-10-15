@@ -21,6 +21,40 @@ It installs:
 > It uses [Universal Middleware](https://universal-middleware.dev) under the hood.
 
 
+## API
+
+```ts
+// Environment: server
+
+import vike from '@vikejs/hono' // Or @vikejs/express, @vikejs/fastify, @vikejs/h3, @vikejs/elysia
+
+vike(
+  // [Required] Your server app, e.g. new Hono()
+  app,
+  // [Optional] List of Universal Middlewares, e.g. [compress()]
+  middlewares
+)
+```
+
+### `app`
+
+Your server app: `new Hono()`, `express()`, `fastify()`, `new H3()`, or `new Elysia()`.
+
+Call `vike(app)` once, before defining your routes — so that the <Link href="/middleware">`+middleware`</Link> of Vike extensions (e.g. authentication) run before your routes.
+
+> `vike(app)` throws an error if you call it twice on the same app, or (with Hono, Express, and Elysia) if a route is already defined.
+
+### `middlewares`
+
+List of [Universal Middlewares](https://universal-middleware.dev) to install together with `+middleware` — for example [`compress()`](https://universal-middleware.dev/middlewares/compress), see <Link href="/server#compression" />.
+
+They're installed the same way as `+middleware`:
+- Middlewares (i.e. non-handlers) run before your routes, while handlers run after your routes — see <Link href="/middleware#order" />.
+- Middlewares are sorted by `order` together with `+middleware` — with the same `order`, they run after `+middleware` (and can therefore read the context set by `+middleware`).
+
+Unlike `+middleware`, middlewares (i.e. non-handlers) passed to `vike(app, middlewares)` also run if a previous middleware already answered with a `Response` — for example, `compress()` also compresses a `Response` returned by a `+middleware`.
+
+
 ## Manual integration
 
 If your favorite server framework doesn't have a `vike(app)` adapter yet, you can manually apply <Link href="/globalContext#middlewares">`globalContext.middlewares`</Link> around your routes like this:
