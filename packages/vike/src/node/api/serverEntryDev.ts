@@ -69,6 +69,7 @@ async function startServerEntry_child(viteServer: ViteDevServer, serverEntryFile
   )
   // The user's server uses the current Vite development server (e.g. `app.use(devMiddleware)`) => we restart the process instead of letting Vite restart itself (e.g. upon vite.config.js changes)
   viteServer.restart = async () => restart('Vite needs to restart')
+  closeOnSignal(viteServer)
 
   try {
     // Same module runner as the one Vike uses to load pages (`ssrLoadModule()`) => a module imported by both +serverEntry.js and a page is instantiated only once (like in production)
@@ -87,6 +88,17 @@ function restartOnFileChange(viteServer: ViteDevServer, isRestartNeeded: (filePa
   }
   viteServer.watcher.on('change', onFileChange)
   viteServer.watcher.on('unlink', onFileChange)
+}
+
+// The user's server may handle SIGINT/SIGTERM without exiting the process (e.g. graceful shutdown: close the server and let the process exit once it's idle) => close Vite's development server, otherwise it keeps the process alive
+function closeOnSignal(viteServer: ViteDevServer): void {
+  for (const signal of ['SIGINT', 'SIGTERM'] as const) {
+    process.once(signal, () => {
+      void viteServer.close()
+      // Listening to a signal disables Node.js's default behavior of terminating the process => if the user's server doesn't listen to it, then we terminate the process ourselves
+      if (process.listenerCount(signal) === 0) process.kill(process.pid, signal)
+    })
+  }
 }
 
 function restart(reason: string): never {
