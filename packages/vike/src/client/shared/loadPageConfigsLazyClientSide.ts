@@ -71,10 +71,6 @@ function isFetchError(err: unknown): err is Error {
     'error loading dynamically imported module',
     // safari
     'Importing a module script failed',
-    // ??
-    'error resolving module specifier',
-    // ??
-    'failed to resolve module',
   ]
   return FAILED_TO_FETCH_MESSAGES.some((s) => err.message.toLowerCase().includes(s.toLowerCase()))
 }

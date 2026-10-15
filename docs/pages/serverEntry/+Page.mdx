@@ -165,12 +165,16 @@ With `+serverEntry.js` (and without `+server.js`, see <Link href="#with-out-serv
 // +serverEntry.ts (without +server.js)
 
 import { getGlobalContext } from 'vike'
-import vike from 'vike/fetch'
+import { Hono } from 'hono'
+import vike from '@vikejs/hono'
 import { fetchNodeHandler } from 'srvx/node'
 import assert from 'node:assert'
 import type { IncomingMessage, ServerResponse } from 'node:http'
 
 const globalContext = await getGlobalContext()
+
+const app = new Hono()
+vike(app)
 
 Bun.serve({
   port: 3000,
@@ -195,7 +199,7 @@ Bun.serve({
       const file = Bun.file(`${import.meta.dirname}/../client${new URL(request.url).pathname}`)
       if (await file.exists()) return new Response(file)
     }
-    return vike.fetch(request)
+    return app.fetch(request)
   }
 })
 ```

@@ -39,4 +39,7 @@ app.get('/{*vikeCatchAll}', async (req, res) => {
 })
 
 const port = process.env.PORT || 3000
-app.listen(port, () => console.log(`Server running at http://localhost:${port}`))
+const server = app.listen(port, () => console.log(`Server running at http://localhost:${port}`))
+
+// Graceful shutdown: the process exits once the server is closed — https://expressjs.com/en/advanced/healthcheck-graceful-shutdown.html
+process.on('SIGTERM', () => server.close())
