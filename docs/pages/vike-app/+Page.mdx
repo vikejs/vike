@@ -27,6 +27,9 @@ It installs:
 // Environment: server
 
 import vike from '@vikejs/hono' // Or @vikejs/express, @vikejs/fastify, @vikejs/h3, @vikejs/elysia
+// The @vikejs/* packages also re-export the full @universal-middleware/* API of the corresponding
+// framework, e.g. @vikejs/hono re-exports @universal-middleware/hono:
+import { apply, getContext } from '@vikejs/hono'
 
 vike(
   // [Required] Your server app, e.g. new Hono()
