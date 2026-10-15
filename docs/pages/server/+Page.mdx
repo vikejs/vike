@@ -413,6 +413,42 @@ export default {
 > See <Link href="/precompress" noBreadcrumb /> to generate `.br`/`.gz` files for your static assets at build time (instead of unnecessarily compressing them on each request).
 
 
+## WebSockets
+
+To use WebSockets in both development and production, define <Link href="/serverEntry">`+serverEntry.js`</Link> without `+server.js`, see <Link href="/serverEntry#example-websockets" />.
+
+With `+server.js`, you can use WebSockets only in production, for example with [crossws](https://crossws.h3.dev):
+
+```ts
+// +server.ts
+
+import { plugin as ws } from 'crossws/server'
+import type { Server } from 'vike/types'
+
+// ...
+
+export default {
+  fetch: app.fetch,
+  prod: {
+    // srvx plugins
+    plugins: [
+      ws({
+        upgrade(request) {
+          // Only accept WebSocket connections to /ws
+          if (new URL(request.url).pathname !== '/ws') throw new Response('Not Found', { status: 404 })
+        },
+        message(peer, message) {
+          peer.send(`echo: ${message.text()}`)
+        }
+      })
+    ]
+  }
+} satisfies Server
+```
+
+> Vike's built-in production server uses [srvx](https://srvx.h3.dev), which applies the srvx plugins of `prod.plugins`. In development, Vite's development server doesn't use `prod` settings: WebSocket connections to your server fail.
+
+
 ## Extra control
 
 If needed, Vike enables you to gain complete control over the server.

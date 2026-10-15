@@ -16,6 +16,7 @@ Use case examples:
 - Deploy to a platform without built-in support, <Link href="#example-aws-lambda">e.g. AWS Lambda</Link>
 - Use a server framework without built-in support (e.g. [Koa](https://github.com/koajs/koa) or [hapi](https://github.com/hapijs/hapi))
 - Use non-Node.js server APIs, such as `Bun.serve()` or `Deno.serve()`
+- Use <Link href="#example-websockets">WebSockets</Link> in both development and production
 - Use all CPU cores with Node.js's [`cluster`](https://nodejs.org/api/cluster.html) module
 
 > See also:
@@ -210,6 +211,73 @@ $ bun dist/server/index.mjs
 ```
 
 > `Deno.serve()` works the same way.
+
+
+## Example: WebSockets
+
+With `+serverEntry.js` (and without `+server.js`, see <Link href="#with-out-server-js" />), you can use WebSockets in both development and production. For example with [crossws](https://crossws.h3.dev), which supports Node.js, Bun, and Deno:
+
+```ts
+// +serverEntry.ts (without +server.js)
+
+import { serve } from 'crossws/server'
+import { getGlobalContext } from 'vike'
+import vike from 'vike/fetch'
+import { fetchNodeHandler } from 'srvx/node'
+import { staticMiddleware } from 'srvx/static'
+import assert from 'node:assert'
+import type { IncomingMessage, ServerResponse } from 'node:http'
+
+const globalContext = await getGlobalContext()
+
+// crossws's serve() is srvx's serve() with WebSocket support
+serve({
+  port: 3000,
+  websocket: {
+    upgrade(request) {
+      // Only accept WebSocket connections to /ws
+      if (new URL(request.url).pathname !== '/ws') throw new Response('Not Found', { status: 404 })
+    },
+    message(peer, message) {
+      peer.send(`echo: ${message.text()}`)
+    }
+  },
+  // Serve the static assets (dist/client/)
+  middleware: import.meta.env.DEV ? [] : [staticMiddleware({ dir: `${import.meta.dirname}/../client` })],
+  async fetch(request) {
+    if (import.meta.env.DEV) {
+      // Vite's development middleware, see the Bun example above
+      const { devMiddleware } = globalContext
+      assert(devMiddleware)
+      let handled = true
+      const response = await fetchNodeHandler(
+        (req: IncomingMessage, res: ServerResponse, next?: () => void) =>
+          devMiddleware(req, res, () => {
+            handled = false
+            next?.()
+          }),
+        request
+      )
+      if (handled) return response
+    }
+    return vike.fetch(request)
+  }
+})
+```
+
+```ts
+// Client-side
+
+const ws = new WebSocket(`${location.protocol === 'https:' ? 'wss:' : 'ws:'}//${location.host}/ws`)
+ws.onopen = () => ws.send('hello')
+ws.onmessage = (event) => console.log(event.data) // echo: hello
+```
+
+> In development, Vite's HMR uses its own WebSocket server (port `24678` by default), so it doesn't interfere with your WebSockets.
+
+> With Bun, import `serve()` from `crossws/server/bun` instead. (In development, Vite resolves `crossws/server` to crossws's Node.js implementation.)
+
+> With `+server.js`, you can use WebSockets only in production, see <Link href="/server#websockets" />.
 
 
 ## `vike:server`
