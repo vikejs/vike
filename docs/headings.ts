@@ -322,7 +322,7 @@ const headings = [
     title: '`+server`',
     titleInNav: 'Server',
     url: '/server',
-    sectionTitles: ['`+server: true`'],
+    sectionTitles: ['`+server: true`', '`+server.js` => `+serverEntry.js`', 'HMR'],
   },
   {
     level: 2,
