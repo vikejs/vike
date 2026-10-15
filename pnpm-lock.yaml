@@ -1613,7 +1613,7 @@ importers:
         specifier: ^19.2.6
         version: 19.2.6(react@19.2.6)
       vike:
-        specifier: 0.4.267
+        specifier: 0.4.268
         version: link:../../packages/vike
       vike-react:
         specifier: ^0.6.29
@@ -1965,7 +1965,7 @@ importers:
         specifier: ^0.12.8
         version: 0.12.8
       vike:
-        specifier: 0.4.267
+        specifier: 0.4.268
         version: link:../../packages/vike
       vike-react:
         specifier: ^0.6.29
