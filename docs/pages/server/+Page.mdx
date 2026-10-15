@@ -459,6 +459,8 @@ function websocketDev(): Plugin {
 ```
 
 > You can also define <Link href="/serverEntry">`+serverEntry.js`</Link> without `+server.js`: it doesn't need a Vite plugin, and you can use any WebSocket library (e.g. Socket.IO), see <Link href="/serverEntry#example-websockets" />.
+>
+> That said, we generally recommend `+server.js` because of its better development experience: modifying your server code (e.g. `server/websocket.ts`) doesn't restart your server, see <Link href="#hmr" />.
 
 
 ## Extra control
@@ -501,6 +503,7 @@ For full control over the server entry not only in production but also in develo
 | | <ColumnHeaderBefore>`+server.js`</ColumnHeaderBefore> | <ColumnHeaderAfter>`+serverEntry.js`</ColumnHeaderAfter> |
 | --- | --- | --- |
 | Development server | Vite's development server. ([Node.js with Connect](https://github.com/vitejs/ecosystem/issues/16).) | Your server. (E.g. `Bun.serve()`/`Deno.serve()`.) |
+| Modifying server code<br/>(development) | Applied without restarting the server (<Link href="#hmr" />) | Restarts the server |
 
 > See also:
 > - <Link href="/serverEntry" />
