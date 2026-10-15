@@ -109,6 +109,31 @@ function testHydrationRetry(isDev: boolean) {
     expectLog('Failed to load resource', { filter: (log) => log.logSource === 'Browser Error' })
   })
 
+  test("hydration retry: the page isn't reloaded if the connection check times out", async () => {
+    // The first page load fails to fetch the page's entry, and Vike's connection check never gets a response
+    const pageEntry = await blockPageEntry((pageLoads) => pageLoads === 1 && 'network-error', {
+      connectionCheckHangs: true,
+    })
+    try {
+      await page.goto(getServerUrl() + '/')
+      // Vike gives up the connection check after 5 seconds: it throws the error and the server-side rendered page remains
+      await autoRetry(
+        () => {
+          expectLog('Failed to fetch dynamically imported module', {
+            filter: (log) => log.logSource === 'Browser Error',
+          })
+        },
+        { timeout: 10 * 1000 },
+      )
+      expect(pageEntry.getConnectionChecks()).toBe(1)
+      expect(pageEntry.getPageLoads()).toBe(1)
+      expect(await page.textContent('h1')).toBe('Welcome')
+    } finally {
+      await pageEntry.unblock()
+    }
+    expectLog('Failed to load resource: net::ERR_FAILED', { filter: (log) => log.logSource === 'Browser Error' })
+  })
+
   test('hydration retry: an SPA is reloaded without checking the connection', async () => {
     // The first page load fails to fetch the page's entry
     const pageEntry = await blockPageEntry((pageLoads) => pageLoads === 1 && 'network-error', { pageName: 'spa' })
@@ -126,10 +151,14 @@ function testHydrationRetry(isDev: boolean) {
 }
 // Make fetching the page's entry fail:
 // - 'deleted': the entry doesn't exist anymore (e.g. a new frontend was deployed)
-// - 'network-error': the entry exists but fetching it fails (e.g. flaky connection), while the server still responds to Vike's connection check — unless `onNetworkError()` takes the connection down
+// - 'network-error': the entry exists but fetching it fails (e.g. flaky connection), while the server still responds to Vike's connection check — unless `onNetworkError()` takes the connection down, or `connectionCheckHangs` is set
 async function blockPageEntry(
   getFailure: (pageLoads: number) => 'deleted' | 'network-error' | false,
-  { pageName = 'index', onNetworkError }: { pageName?: string; onNetworkError?: () => Promise<void> } = {},
+  {
+    pageName = 'index',
+    onNetworkError,
+    connectionCheckHangs = false,
+  }: { pageName?: string; onNetworkError?: () => Promise<void>; connectionCheckHangs?: boolean } = {},
 ) {
   const url = `**/entries/pages_${pageName}.*.js`
   let pageLoads = 0
@@ -151,6 +180,12 @@ async function blockPageEntry(
     }
     return route.continue()
   })
+  if (connectionCheckHangs) {
+    await context.route('**', (route) => {
+      // Never respond to Vike's connection check
+      if (route.request().method() !== 'HEAD') return route.fallback()
+    })
+  }
   return {
     getPageLoads: () => pageLoads,
     getConnectionChecks: () => connectionChecks,
@@ -158,6 +193,7 @@ async function blockPageEntry(
     unblock: async () => {
       page.removeListener('request', onRequest)
       await context.unroute(url)
+      if (connectionCheckHangs) await context.unroute('**')
     },
   }
 }

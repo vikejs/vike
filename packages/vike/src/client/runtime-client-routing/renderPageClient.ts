@@ -878,7 +878,7 @@ async function handleErrorFetchingStaticAssets(
       // Most likely a new deployment (or the connection is back): either way, reloading fixes the page
       return hardReload()
     } else {
-      // - Reloading is counter productive since it would likely get another connection error, resulting in either: the browser's offline page, or repeating this asset loading failure.
+      // - Reloading is counterproductive since it would likely get another connection error, resulting in either: the browser's offline page, or repeating this asset loading failure.
       // - Handling flaky connections is the browser's job (e.g. the user reloads the page)
       // - Showing the rendered HTML is usually more useful to the user (even when unhydrated thus broken) than showing Vike's error page
       return showCurrentBrokenPage()
@@ -888,7 +888,12 @@ async function handleErrorFetchingStaticAssets(
 // Whether fetching static assets fails because of the connection. (The error thrown by `import()` doesn't tell: it's the same whether a new frontend was deployed, i.e. the static assets don't exist anymore, or the connection is down.)
 async function isConnectionDown(): Promise<boolean> {
   try {
-    await fetch(window.location.href, { method: 'HEAD', cache: 'no-store' })
+    await fetch(window.location.href, {
+      method: 'HEAD',
+      cache: 'no-store',
+      // On a flaky connection, the request may hang and succeed much later: we don't want to reload the page long after it was shown (e.g. while the user is filling a form)
+      signal: AbortSignal.timeout(5000),
+    })
     // The server responds
     return false
   } catch {
