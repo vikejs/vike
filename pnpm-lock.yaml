@@ -1600,18 +1600,24 @@ importers:
 
   test/custom-server-entry-websocket:
     dependencies:
-      '@vikejs/express':
+      '@hono/node-server':
+        specifier: ^2.1.0
+        version: 2.1.5(hono@4.13.13)
+      '@vikejs/hono':
         specifier: ^0.3.0
-        version: 0.3.0(@hattip/core@0.0.49)(@types/express@5.0.6)(express@5.2.1)(hono@4.13.13)(srvx@0.12.8)(vike@packages+vike)
-      express:
-        specifier: ^5.2.1
-        version: 5.2.1
+        version: 0.3.0(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)(vike@packages+vike)
+      hono:
+        specifier: ^4.13.13
+        version: 4.13.13
       react:
         specifier: ^19.2.6
         version: 19.2.6
       react-dom:
         specifier: ^19.2.6
         version: 19.2.6(react@19.2.6)
+      sirv:
+        specifier: ^3.0.2
+        version: 3.0.2
       vike:
         specifier: 0.4.267
         version: link:../../packages/vike
@@ -1622,9 +1628,6 @@ importers:
         specifier: ^8.22.0
         version: 8.22.0
     devDependencies:
-      '@types/express':
-        specifier: ^5.0.6
-        version: 5.0.6
       '@types/react':
         specifier: ^19.2.15
         version: 19.2.15
@@ -3234,6 +3237,12 @@ packages:
 
   '@hattip/core@0.0.49':
     resolution: {integrity: sha512-3/ZJtC17cv8m6Sph8+nw4exUp9yhEf2Shi7HK6AHSUSBtaaQXZ9rJBVxTfZj3PGNOR/P49UBXOym/52WYKFTJQ==}
+
+  '@hono/node-server@2.1.5':
+    resolution: {integrity: sha512-MgP/I06GdvsilDspMk/qmRzpk8LOUStP6jFAbSRi40W09DhoyUn+Mj7eyKICPqeYKybOjVFLVIAQzvu1bfIa7Q==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      hono: ^4 || ^5.0.0-0
 
   '@img/colour@1.0.0':
     resolution: {integrity: sha512-A5P/LfWGFSl6nsckYtjw9da+19jB8hkJ6ACTGcDfEJ0aE+l2n2El7dsVM7UVHZQ9s2lmYMWlrS21YLy2IR1LUw==}
@@ -9476,6 +9485,10 @@ snapshots:
 
   '@hattip/core@0.0.49':
     optional: true
+
+  '@hono/node-server@2.1.5(hono@4.13.13)':
+    dependencies:
+      hono: 4.13.13
 
   '@img/colour@1.0.0': {}
 
