@@ -52,7 +52,10 @@
 * clean catchInfiniteLoop() trackers periodically ([#3576](https://github.com/vikejs/vike/issues/3576)) ([5676e14](https://github.com/vikejs/vike/commit/5676e14b4084e996c782c9a89e9d6b534d563064))
 
 
-### BREAKING CHANGES
+### MINOR BREAKING CHANGES
+
+> [!NOTE]
+> We recommend ignoring `MINOR BREAKING CHANGES` unless this version breaks your app, see [Vike Versioning](https://vike.dev/versioning).
 
 * The `path` of [universal middlewares](https://universal-middleware.dev/helpers/enhance) set via `+middleware` now follows the [rou3 1.x syntax](https://github.com/h3js/rou3/releases/tag/v0.12.0), aligned with URLPattern: `*` matches the rest of the path including `/` (use `:name` to match a single segment).
 * Update Vite 7.1 or above
