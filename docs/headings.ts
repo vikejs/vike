@@ -322,7 +322,7 @@ const headings = [
     title: '`+server`',
     titleInNav: 'Server',
     url: '/server',
-    sectionTitles: ['`+server: true`'],
+    sectionTitles: ['`+server: true`', '`+server.js` => `+serverEntry.js`', 'HMR'],
   },
   {
     level: 2,
@@ -668,7 +668,7 @@ const headings = [
     level: 2,
     title: '`+serverEntry`',
     url: '/serverEntry',
-    sectionTitles: ['With(out) `+server.js`', 'Example: Bun'],
+    sectionTitles: ['With(out) `+server.js`', 'Example: Bun', 'Example: WebSockets'],
   },
   {
     level: 2,

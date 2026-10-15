@@ -1,5 +1,5 @@
 import { Link, FileAdded, Warning, Tabs } from '@brillout/docpress'
-import { DeprecatedServer } from '../../components'
+import { DeprecatedServer, ServerJsRecommendation } from '../../components'
 
 export const ColumnHeader = ({ title, children }) => (
   <span style={{ display: 'block', textAlign: 'center' }}>
@@ -385,6 +385,81 @@ vike(app, [compress()]) // [!code ++]
 > See <Link href="/precompress" noBreadcrumb /> to generate `.br`/`.gz` files for your static assets at build time (instead of unnecessarily compressing them on each request).
 
 
+## WebSockets
+
+You can use WebSockets, for example with [`crossws`](https://github.com/h3js/crossws):
+- In production, with crossws's srvx plugin (Vike's built-in production server uses [srvx](https://srvx.h3.dev)).
+- In development, with a Vite plugin
+
+```ts
+// server/websocket.ts
+
+import { defineHooks } from 'crossws'
+
+export const websocket = defineHooks({
+  upgrade(request) {
+    // Only accept WebSocket connections to /ws
+    if (new URL(request.url).pathname !== '/ws') throw new Response('Not Found', { status: 404 })
+  },
+  message(peer, message) {
+    peer.send(`echo: ${message.text()}`)
+  }
+})
+```
+
+```ts
+// +server.ts
+
+import { plugin as ws } from 'crossws/server'
+import { websocket } from './server/websocket'
+import type { Server } from 'vike/types'
+
+// ...
+
+export default {
+  fetch: app.fetch,
+  prod: {
+    // Production
+    plugins: [ws(websocket)]
+  }
+} satisfies Server
+```
+
+```ts
+// vite.config.ts
+
+import vike from 'vike/plugin'
+import crossws from 'crossws/adapters/node'
+import type { Plugin, RunnableDevEnvironment } from 'vite'
+
+export default {
+  plugins: [vike(), websocketDev()]
+}
+
+// Development
+function websocketDev(): Plugin {
+  return {
+    name: 'websocket-dev',
+    configureServer(server) {
+      const ws = crossws({
+        resolve: async () => {
+          const { runner } = server.environments.ssr as RunnableDevEnvironment
+          return (await runner.import('/server/websocket.ts')).websocket
+        }
+      })
+      server.httpServer?.on('upgrade', (req, socket, head) => {
+        // Vite's HMR WebSocket
+        if (req.headers['sec-websocket-protocol'] === 'vite-hmr') return
+        ws.handleUpgrade(req, socket, head)
+      })
+    }
+  }
+}
+```
+
+<ServerJsRecommendation>You can also integrate WebSockets using <Link href="/serverEntry">`+serverEntry.js`</Link> instead of `+server.js`: you then don't need a Vite plugin, and you can use any WebSocket library (e.g. Socket.IO), see <Link href="/serverEntry#example-websockets" doNotInferSectionTitle />.<br/><br/>I</ServerJsRecommendation>
+
+
 ## Extra control
 
 If needed, Vike enables you to gain complete control over the server.
@@ -425,6 +500,7 @@ For full control over the server entry not only in production but also in develo
 | | <ColumnHeaderBefore>`+server.js`</ColumnHeaderBefore> | <ColumnHeaderAfter>`+serverEntry.js`</ColumnHeaderAfter> |
 | --- | --- | --- |
 | Development server | Vite's development server. ([Node.js with Connect](https://github.com/vitejs/ecosystem/issues/16).) | Your server. (E.g. `Bun.serve()`/`Deno.serve()`.) |
+| Modifying server code<br/>(development) | Applied without restarting your server (see <Link href="#hmr" />) | Restarts your server |
 
 > See also:
 > - <Link href="/serverEntry" />

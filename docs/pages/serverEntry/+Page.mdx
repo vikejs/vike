@@ -1,5 +1,5 @@
 import { Link } from '@brillout/docpress'
-import { ConfigSpec } from '../../components'
+import { ConfigSpec, ServerJsRecommendation } from '../../components'
 
 <ConfigSpec
   env="server"
@@ -13,9 +13,10 @@ import { ConfigSpec } from '../../components'
 See explanation at: <Link href="#with-out-server-js" />.
 
 Use case examples:
-- Deploy to a platform without built-in support, <Link href="#example-aws-lambda">e.g. AWS Lambda</Link>
+- Deploy to a platform without built-in support, e.g. <Link href="#example-aws-lambda" />
 - Use a server framework without built-in support (e.g. [Koa](https://github.com/koajs/koa) or [hapi](https://github.com/hapijs/hapi))
-- Use non-Node.js server APIs, such as `Bun.serve()` or `Deno.serve()`
+- Use non-Node.js server APIs, such as `Bun.serve()` or `Deno.serve()`, see <Link href="#example-bun" />
+- Use WebSockets with any library (e.g. Socket.IO), see <Link href="#example-websockets" />
 - Use all CPU cores with Node.js's [`cluster`](https://nodejs.org/api/cluster.html) module
 
 > See also:
@@ -89,7 +90,7 @@ app.listen(3000)
 
 > `+serverEntry.js` is responsible for starting the server, whereas with `+server.js` the server is started by Vite in development and by [srvx](https://srvx.h3.dev) in production.
 
-> In development, when you modify `+serverEntry.js` (or a file it imports), Vike automatically restarts your server process.
+<ServerJsRecommendation>In development, when you modify `+serverEntry.js` (or a file it imports), Vike automatically restarts your server process.<br/><br/>I</ServerJsRecommendation>
 
 > If you want to use HTTPS in development, use HTTPS in your server and also [pass the HTTPS certificates to Vite](https://vite.dev/config/server-options.html#server-https) (Vite uses them for its HMR WebSocket).
 
@@ -214,6 +215,74 @@ $ bun dist/server/index.mjs
 ```
 
 > `Deno.serve()` works the same way.
+
+
+## Example: WebSockets
+
+Using `+serverEntry.js` (<Link href="#with-out-server-js">without `+server.js`</Link>), you can use WebSockets like with any Node.js server, in both development and production. For example with [`ws`](https://github.com/websockets/ws):
+
+```ts
+// +serverEntry.ts (without +server.js)
+
+import express from 'express'
+import vike from '@vikejs/express'
+import { WebSocketServer } from 'ws'
+import { getGlobalContext } from 'vike'
+
+const app = express()
+
+// Vite's development middleware, or the static assets (dist/client/) in production
+const { devMiddleware } = await getGlobalContext()
+app.use(devMiddleware ?? express.static(`${import.meta.dirname}/../client`))
+
+vike(app)
+
+const server = app.listen(3000)
+
+// WebSockets — the same code in development and production
+const wss = new WebSocketServer({ server, path: '/ws' })
+wss.on('connection', (ws) => {
+  ws.on('message', (message) => ws.send(`echo: ${message}`))
+})
+```
+
+> In development, Vite's HMR uses its own WebSocket server (port `24678` by default), so it doesn't interfere with your WebSockets.
+
+```ts
+// Client-side
+
+const ws = new WebSocket(`${location.protocol === 'https:' ? 'wss:' : 'ws:'}//${location.host}/ws`)
+ws.onopen = () => ws.send('hello')
+ws.onmessage = (event) => console.log(event.data) // echo: hello
+```
+
+Compared to <Link href="/server#websockets">WebSockets with `+server.js`</Link>:
+- You don't need a Vite plugin: `+serverEntry.js` defines the entire server (for both development and production), so the same WebSockets integration runs in both development and production.
+- You can use any library that works with Node.js's HTTP server, for example [Socket.IO](https://socket.io) (including its HTTP long-polling fallback).
+
+<ServerJsRecommendation>That said, i</ServerJsRecommendation>
+
+With Bun, you can use the [WebSockets built into `Bun.serve()`](https://bun.com/docs/runtime/http/websockets), in both development and production. For example, modifying the <Link href="#example-bun">Bun example above</Link>:
+
+```ts
+// +serverEntry.ts (without +server.js)
+
+// ...
+
+Bun.serve({
+  port: 3000,
+  // @docpress-uncomment async fetch(request) { // [!code --]
+  async fetch(request, server) { // [!code ++]
+    if (new URL(request.url).pathname === '/ws' && server.upgrade(request)) return // [!code ++]
+    // ...
+  },
+  websocket: { // [!code ++]
+    message(ws, message) { // [!code ++]
+      ws.send(`echo: ${message}`) // [!code ++]
+    } // [!code ++]
+  } // [!code ++]
+})
+```
 
 
 ## `vike:server`
