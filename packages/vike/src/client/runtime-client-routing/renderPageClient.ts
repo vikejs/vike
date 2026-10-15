@@ -887,12 +887,8 @@ async function handleErrorFetchingStaticAssets(
 }
 // Whether fetching static assets fails because of the connection. (The error thrown by `import()` doesn't tell: it's the same whether a new frontend was deployed, i.e. the static assets don't exist anymore, or the connection is down.)
 async function isConnectionDown(): Promise<boolean> {
-  // The first modulepreload link is the page's entry, see retrievePageAssetsProd()
-  const url = document.querySelector<HTMLLinkElement>('link[rel="modulepreload"]')?.href
-  // There isn't any modulepreload link if the user removed them with injectFilter(): we can't check, so we assume a connection error (i.e. we don't reload)
-  if (!url) return true
   try {
-    await fetch(url, { method: 'HEAD', cache: 'no-store' })
+    await fetch(window.location.href, { method: 'HEAD', cache: 'no-store' })
     // The server responds
     return false
   } catch {
