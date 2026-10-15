@@ -854,7 +854,7 @@ async function handleErrorFetchingStaticAssets(
   // We hard load the next page:
   // - New deployment => fully reloading the website is exactly what we want
   // - Connection problem => next page isn't shown => only useful action is to try again with a hard reload
-  //   - It's usually better to show the browser's 404 page than to leave the user stuck on the old page. (This way, the user knows there's a connection problem instead of wondering whether the website is broken.)
+  //   - It's usually better to show the browser's offline page than to leave the user stuck on the old page. (This way, the user knows there's a connection problem instead of wondering whether the website is broken.)
   if (!isFirstRender) {
     return hardReload(pageContext.urlOriginal)
   }
@@ -878,7 +878,7 @@ async function handleErrorFetchingStaticAssets(
       // Most likely a new deployment (or the connection is back): either way, reloading fixes the page
       return hardReload()
     } else {
-      // - Reloading is counter productive since it would likely get another connection error, resulting in either: the browser's 404 error page, or repeating this asset loading failure.
+      // - Reloading is counter productive since it would likely get another connection error, resulting in either: the browser's offline page, or repeating this asset loading failure.
       // - Handling flaky connections is the browser's job (e.g. the user reloads the page)
       // - Showing the rendered HTML is usually more useful to the user (even when unhydrated thus broken) than showing Vike's error page
       return showCurrentBrokenPage()
