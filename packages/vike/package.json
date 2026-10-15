@@ -109,10 +109,7 @@
     },
     "./__internal/fetch": {
       "types": "./dist/server/__internal/fetch.d.ts",
-      "worker": "./dist/server/__internal/fetch.js",
-      "workerd": "./dist/server/__internal/fetch.js",
       "node": "./dist/server/__internal/fetch.js",
-      "browser": "./dist/client/node.js",
       "default": "./dist/server/__internal/fetch.js"
     },
     "./__internal/setup": {
