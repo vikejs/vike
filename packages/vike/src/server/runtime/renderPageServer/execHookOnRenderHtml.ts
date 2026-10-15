@@ -154,11 +154,6 @@ function processHookReturnValue(
   let pageContextProvidedByRenderHook: null | Record<string, unknown> = null
   let injectFilter: PreloadFilter = null
 
-  if (isDocumentHtml(hookReturnValue)) {
-    documentHtml = hookReturnValue
-    return { documentHtml, pageContextProvidedByRenderHook, pageContextPromise, injectFilter }
-  }
-
   const errPrefix = `The ${renderHook.hookName as string}() hook defined at ${renderHook.hookFilePath}` as const
   const errSuffix = `a string generated with ${pc.cyan(
     'escapeInject`<html>...</html>`',
@@ -175,6 +170,12 @@ function processHookReturnValue(
     )
     hookReturnValue = dangerouslySkipEscape(hookReturnValue)
   }
+
+  if (isDocumentHtml(hookReturnValue)) {
+    documentHtml = hookReturnValue
+    return { documentHtml, pageContextProvidedByRenderHook, pageContextPromise, injectFilter }
+  }
+
   const wrongReturnValue = `should return the value ${pc.cyan('documentHtml')} or an object ${pc.cyan(
     '{ documentHtml }',
   )} where ${pc.cyan('documentHtml')} is ${errSuffix}` as const
