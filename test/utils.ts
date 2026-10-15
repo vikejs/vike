@@ -5,7 +5,10 @@ export { expectUrl }
 export { expectPageContextJsonRequest }
 export { waitForNavigation }
 export { sleepBeforeEditFile }
+export { testWebSocket }
+export { getUpgradeStatusCode }
 
+import http from 'node:http'
 import {
   page,
   test,
@@ -203,4 +206,40 @@ function testRunClassic(
  */
 async function sleepBeforeEditFile() {
   await sleep(1000)
+}
+
+// Clicks the page's button that sends `hello` over a WebSocket, and checks the response shown in `#message`
+async function testWebSocket(expected: string) {
+  await autoRetry(
+    async () => {
+      // Retry until the page is hydrated
+      await page.click('button')
+      expect(await page.textContent('#message')).toBe(expected)
+    },
+    { timeout: 10 * 1000 },
+  )
+}
+
+// Status code of the response to a WebSocket connection request
+function getUpgradeStatusCode(pathname: string): Promise<number> {
+  return new Promise((resolve, reject) => {
+    const req = http.request(`${getServerUrl()}${pathname}`, {
+      headers: {
+        Connection: 'Upgrade',
+        Upgrade: 'websocket',
+        'Sec-WebSocket-Version': '13',
+        'Sec-WebSocket-Key': 'dGhlIHNhbXBsZSBub25jZQ==',
+      },
+    })
+    req.on('upgrade', (res, socket) => {
+      socket.destroy()
+      resolve(res.statusCode!)
+    })
+    req.on('response', (res) => {
+      res.resume()
+      resolve(res.statusCode!)
+    })
+    req.on('error', reject)
+    req.end()
+  })
 }

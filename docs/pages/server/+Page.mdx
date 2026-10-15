@@ -415,14 +415,31 @@ export default {
 
 ## WebSockets
 
-To use WebSockets in both development and production, define <Link href="/serverEntry">`+serverEntry.js`</Link> without `+server.js`, see <Link href="/serverEntry#example-websockets" />.
+You can use WebSockets, for example with [crossws](https://crossws.h3.dev):
+- In production, with crossws's srvx plugin (Vike's built-in production server uses [srvx](https://srvx.h3.dev)).
+- In development, with a Vite plugin (Vite's development server doesn't use `prod` settings).
 
-With `+server.js`, you can use WebSockets only in production, for example with [crossws](https://crossws.h3.dev):
+```ts
+// server/websocket.ts
+
+import { defineHooks } from 'crossws'
+
+export const websocket = defineHooks({
+  upgrade(request) {
+    // Only accept WebSocket connections to /ws
+    if (new URL(request.url).pathname !== '/ws') throw new Response('Not Found', { status: 404 })
+  },
+  message(peer, message) {
+    peer.send(`echo: ${message.text()}`)
+  }
+})
+```
 
 ```ts
 // +server.ts
 
 import { plugin as ws } from 'crossws/server'
+import { websocket } from './server/websocket'
 import type { Server } from 'vike/types'
 
 // ...
@@ -430,23 +447,46 @@ import type { Server } from 'vike/types'
 export default {
   fetch: app.fetch,
   prod: {
-    // srvx plugins
-    plugins: [
-      ws({
-        upgrade(request) {
-          // Only accept WebSocket connections to /ws
-          if (new URL(request.url).pathname !== '/ws') throw new Response('Not Found', { status: 404 })
-        },
-        message(peer, message) {
-          peer.send(`echo: ${message.text()}`)
-        }
-      })
-    ]
+    // Production
+    plugins: [ws(websocket)]
   }
 } satisfies Server
 ```
 
-> Vike's built-in production server uses [srvx](https://srvx.h3.dev), which applies the srvx plugins of `prod.plugins`. In development, Vite's development server doesn't use `prod` settings: WebSocket connections to your server fail.
+```ts
+// vite.config.ts
+
+import vike from 'vike/plugin'
+import crossws from 'crossws/adapters/node'
+import type { Plugin, RunnableDevEnvironment } from 'vite'
+
+export default {
+  plugins: [vike(), websocketDev()]
+}
+
+// Development
+function websocketDev(): Plugin {
+  return {
+    name: 'websocket-dev',
+    configureServer(server) {
+      const ws = crossws({
+        // Loaded by the same module runner as +server.js: modifying server/websocket.ts applies to new connections
+        resolve: async () => {
+          const { runner } = server.environments.ssr as RunnableDevEnvironment
+          return (await runner.import('/server/websocket.ts')).websocket
+        }
+      })
+      server.httpServer?.on('upgrade', (req, socket, head) => {
+        // Vite's HMR WebSocket
+        if (req.headers['sec-websocket-protocol'] === 'vite-hmr') return
+        ws.handleUpgrade(req, socket, head)
+      })
+    }
+  }
+}
+```
+
+> You can also define <Link href="/serverEntry">`+serverEntry.js`</Link> without `+server.js`, which doesn't need a Vite plugin, see <Link href="/serverEntry#example-websockets" />.
 
 
 ## Extra control
