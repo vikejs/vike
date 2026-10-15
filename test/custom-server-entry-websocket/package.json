@@ -5,17 +5,16 @@
     "preview": "vike build && node dist/server/index.mjs"
   },
   "dependencies": {
-    "@hono/node-server": "^2.1.0",
-    "@vikejs/hono": "^0.3.0",
-    "hono": "^4.13.13",
+    "@vikejs/express": "^0.3.0",
+    "express": "^5.2.1",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
-    "sirv": "^3.0.2",
     "vike": "0.4.267",
     "vike-react": "^0.6.29",
     "ws": "^8.22.0"
   },
   "devDependencies": {
+    "@types/express": "^5.0.6",
     "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
     "@types/ws": "^8.18.2",
