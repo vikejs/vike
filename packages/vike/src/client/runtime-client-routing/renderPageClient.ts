@@ -810,8 +810,8 @@ async function handleErrorFetchingStaticAssets(
   pageContext: { urlOriginal: string },
   isFirstRender: boolean,
 ): Promise<boolean> {
-  if (import.meta.env.DEV) throw err
-  if (!isErrorFetchingStaticAssets(err)) throw err // Syntax error in user file
+  if (import.meta.env.DEV) return false
+  if (!isErrorFetchingStaticAssets(err)) return false // Syntax error in user file
 
   // *******************************************
   // ******* The three possible actions ********
