@@ -892,7 +892,7 @@ async function isConnectionDown(): Promise<boolean> {
       method: 'HEAD',
       cache: 'no-store',
       // On a flaky connection, the request may hang and succeed much later: we don't want to reload the page long after it was shown (e.g. while the user is filling a form)
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(4000),
     })
     // The server responds
     return false
