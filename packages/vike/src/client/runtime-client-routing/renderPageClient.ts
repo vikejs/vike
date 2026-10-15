@@ -820,7 +820,7 @@ async function handleErrorFetchingStaticAssets(
   if (import.meta.env.DEV) return showErrorPage
   if (!isErrorFetchingStaticAssets(err)) return showErrorPage // Syntax error in user file
 
-  // Possible causes that led to this point:
+  // Possible reasons that led to here:
   // - New deployment
   // - Flaky network
 
