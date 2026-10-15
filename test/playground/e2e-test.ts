@@ -54,7 +54,7 @@ function testHydrationRetry(isDev: boolean) {
       await autoRetry(() => {
         expectLog('Failed to fetch dynamically imported module', { filter: (log) => log.logSource === 'Browser Error' })
       })
-      expectLog('This usually happens after a new frontend deployment or because of a flaky connection.', {
+      expectLog('Failed to fetch static asset (due to a connection issue, or a new deployment)', {
         filter: (log) => log.logSource === 'Browser Log',
       })
       await sleep(1000)
@@ -95,7 +95,9 @@ function testHydrationRetry(isDev: boolean) {
       await autoRetry(() => {
         expectLog('Failed to fetch dynamically imported module', { filter: (log) => log.logSource === 'Browser Error' })
       })
-      expectLog('The connection seems to be down.', { filter: (log) => log.logSource === 'Browser Log' })
+      expectLog('Failed to fetch static asset (due to a connection issue, or a new deployment)', {
+        filter: (log) => log.logSource === 'Browser Log',
+      })
       await context.setOffline(false)
       await sleep(1000)
       expect(pageEntry.getPageLoads()).toBe(1)
@@ -107,14 +109,15 @@ function testHydrationRetry(isDev: boolean) {
     expectLog('Failed to load resource', { filter: (log) => log.logSource === 'Browser Error' })
   })
 
-  test('hydration retry: an SPA is reloaded even if the connection is down', async () => {
-    // The first page load fails to fetch the page's entry, and so would Vike's check whether the server responds
-    const pageEntry = await blockPageEntry((pageLoads) => pageLoads === 1 && 'connection-down', { pageName: 'spa' })
+  test('hydration retry: an SPA is reloaded without checking the connection', async () => {
+    // The first page load fails to fetch the page's entry
+    const pageEntry = await blockPageEntry((pageLoads) => pageLoads === 1 && 'network-error', { pageName: 'spa' })
     try {
       await page.goto(getServerUrl() + '/spa')
-      // The page is blank: reloading it is better
+      // The page is blank: reloading it is better, even if the connection is down
       await testCounter()
       expect(pageEntry.getPageLoads()).toBe(2)
+      expect(pageEntry.getConnectionChecks()).toBe(0)
     } finally {
       await pageEntry.unblock()
     }
@@ -123,16 +126,18 @@ function testHydrationRetry(isDev: boolean) {
 }
 // Make fetching the page's entry fail:
 // - 'deleted': the entry doesn't exist anymore (e.g. a new frontend was deployed)
-// - 'network-error': the entry exists but fetching it fails (e.g. flaky connection), while the server still responds to Vike's check — unless `onNetworkError()` takes the connection down
-// - 'connection-down': fetching the entry fails, and so does Vike's check
+// - 'network-error': the entry exists but fetching it fails (e.g. flaky connection), while the server still responds to Vike's connection check — unless `onNetworkError()` takes the connection down
 async function blockPageEntry(
-  getFailure: (pageLoads: number) => 'deleted' | 'network-error' | 'connection-down' | false,
+  getFailure: (pageLoads: number) => 'deleted' | 'network-error' | false,
   { pageName = 'index', onNetworkError }: { pageName?: string; onNetworkError?: () => Promise<void> } = {},
 ) {
   const url = `**/entries/pages_${pageName}.*.js`
   let pageLoads = 0
-  const onRequest = (request: { resourceType(): string }) => {
+  let connectionChecks = 0
+  const onRequest = (request: { resourceType(): string; method(): string }) => {
     if (request.resourceType() === 'document') pageLoads++
+    // Vike checks the connection with a HEAD request
+    if (request.method() === 'HEAD') connectionChecks++
   }
   page.on('request', onRequest)
   // We use page.context() because page.unroute() doesn't work with the `page` proxy of @brillout/test-e2e
@@ -140,9 +145,7 @@ async function blockPageEntry(
   await context.route(url, async (route) => {
     const failure = getFailure(pageLoads)
     if (failure === 'deleted') return route.fulfill({ status: 404 })
-    if (failure === 'connection-down') return route.abort()
-    // Vike checks whether the server responds with a HEAD request
-    if (failure === 'network-error' && route.request().method() !== 'HEAD') {
+    if (failure === 'network-error') {
       await onNetworkError?.()
       return route.abort()
     }
@@ -150,6 +153,7 @@ async function blockPageEntry(
   })
   return {
     getPageLoads: () => pageLoads,
+    getConnectionChecks: () => connectionChecks,
     // Call it in a `finally` block: the route is set on the browser context, which is shared with the next tests
     unblock: async () => {
       page.removeListener('request', onRequest)
