@@ -832,9 +832,12 @@ async function handleErrorFetchingStaticAssets(
   if (!isErrorFetchingStaticAssets(err)) return showErrorPage // Syntax error in user file
 
   // Possible reasons that led to here:
-  // - New frontend was deployed
+  // - New deployment
   // - Flaky network
 
+  // Client-side navigation:
+  // - New deployment => hard reload entire page
+  // - Flaky network => next page isn't shown => only actionable is to try again
   if (!isFirstRender) {
     disableClientRouting(err, false)
     redirectHard(pageContext.urlOriginal)
