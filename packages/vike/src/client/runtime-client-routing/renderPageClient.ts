@@ -671,19 +671,17 @@ declare global {
   var _vike: VikeGlobalInternal
 }
 
-function disableClientRouting(err: unknown, log: boolean, isNetworkError?: true) {
+function disableClientRouting(err: unknown, logError: boolean) {
   globalObject.clientRoutingIsDisabled = true
 
   assert(isErrorFetchingStaticAssets(err))
-  if (log) {
-    // We purposely don't use console.error() to avoid flooding error trackers such as Sentry
-    console.log(err)
-  }
+  if (logError) console.log(err) // We purposely don't use console.error() to avoid flooding error trackers such as Sentry
 
-  const reason = isNetworkError
-    ? 'The connection seems to be down.'
-    : 'This usually happens after a new frontend deployment or because of a flaky connection.'
-  assertInfo(false, `Failed to fetch static asset. ${reason} Falling back to Server Routing.`, { onlyOnce: true })
+  assertInfo(
+    false,
+    'Failed to fetch static asset (due to a connection issue, or a new deployment) — falling back to server routing',
+    { onlyOnce: true },
+  )
 }
 
 function getIsRenderOutdated() {
@@ -812,54 +810,86 @@ async function handleErrorFetchingStaticAssets(
   pageContext: { urlOriginal: string },
   isFirstRender: boolean,
 ): Promise<boolean> {
-  // The error is handled like any other error: Vike logs it and renders the error page
-  const showErrorPage = false
-  // Vike aborts the rendering: the browser (re-)loads the page instead
-  const abortRendering = true
+  // *******************************************
+  // ******* The three possible actions ********
+  // *******************************************
 
-  if (import.meta.env.DEV) return showErrorPage
-  if (!isErrorFetchingStaticAssets(err)) return showErrorPage // Syntax error in user file
-
-  // Possible reasons that led to here:
-  // - New deployment
-  // - Flaky network
-
-  // Client-side navigation:
-  // - New deployment => hard reload entire page
-  // - Flaky network => next page isn't shown => only actionable is to try again
-  if (!isFirstRender) {
+  /** Show Vike's error page */
+  const showErrorPage = () => {
     disableClientRouting(err, false)
-    redirectHard(pageContext.urlOriginal)
-    return abortRendering
+    // Vike handles the error like any other error: Vike logs it with `console.error()` and renders Vike's error page
+    return false
   }
-
-  // Upon hydration, we reload the page if a new frontend was likely deployed. Upon a flaky connection, we let it fail: handling flaky connections is the browser's job (the user reloads the page). The server-side rendered page remains (without hydration) and, since Client Routing is disabled, the next page navigation is a full page load.
-  // We don't reload a page that was itself loaded by a reload, in order to avoid an infinite reload loop.
-  if (isPageReload()) {
+  /** Show the rendered HTML (with broken hydration) */
+  const showCurrentBrokenPage = () => {
     disableClientRouting(err, false)
-  } else {
-    // We disable Client Routing right away: while we check the connection, link clicks would otherwise wait for the hydration, which never ends
-    globalObject.clientRoutingIsDisabled = true
-    if (
-      // The page shows nothing (e.g. SPA): reloading is better than a blank page, even upon a network error
-      isBlankPage() ||
-      // Most likely a new frontend was deployed (or the connection is back): either way, reloading fixes the page
-      !(await isNetworkError())
-    ) {
+    // Abort rendering (and don't show error page), not gracefully: the error throws (i.e. the error is handled by the browser and shown in the browser's developer console)
+    throw err
+  }
+  /** Do a full (re-)load of the page */
+  const hardReload = (url?: string) => {
+    disableClientRouting(err, true)
+    if (url) {
+      redirectHard(pageContext.urlOriginal)
+    } else {
       // We use `location.reload()` instead of redirectHard(): navigating with `location.href = url` creates a `type: 'navigate'` entry, which would lead to an infinite reload loop — see isPageReload()
       window.location.reload()
-      return abortRendering
     }
-    disableClientRouting(err, false, true)
+    // Abort rendering (and don't show error page), gracefully (i.e. without throwing nor logging any error)
+    return true
   }
-  // Show the rendered HTML (with broken hydration) to the user, while letting the error be thrown and logged in the browser's developer console. Reloading is counter productive since it'd likely get another network error — resulting in either: the browser's 404 error page, or the failed asset fetching issue repeats.
-  throw err
+
+  // **************************
+  // ******* The logic ********
+  // **************************
+
+  if (import.meta.env.DEV) return showErrorPage()
+  if (!isErrorFetchingStaticAssets(err)) return showErrorPage() // Syntax error in user file
+
+  // Possible causes that lead to this point:
+  // - New deployment
+  // - Connection problem
+
+  // === Client-side navigation ===
+  // We hard load the next page:
+  // - New deployment => fully reloading the website is exactly what we want
+  // - Connection problem => next page isn't shown => only useful action is to try again with a hard reload
+  //   - It's usually better to show the browser's 404 page than to leave the user stuck on the old page. (This way, the user knows there's a connection problem instead of wondering whether the website is broken.)
+  if (!isFirstRender) {
+    return hardReload(pageContext.urlOriginal)
+  }
+
+  // === First render ===
+
+  // Avoid infinite reload loop: we don't reload a page that was itself loaded by a reload
+  if (isPageReload()) {
+    if (isBlankPage()) {
+      return showErrorPage()
+    } else {
+      return showCurrentBrokenPage()
+    }
+  }
+
+  if (isBlankPage()) {
+    return hardReload()
+  } else {
+    globalObject.clientRoutingIsDisabled = true // Eagerly disable before connection check
+    if (!(await isConnectionDown())) {
+      // Most likely a new deployment (or the connection is back): either way, reloading fixes the page
+      return hardReload()
+    } else {
+      // - Reloading is counter productive since it would likely get another connection error, resulting in either: the browser's 404 error page, or repeating this asset loading failure.
+      // - Handling flaky connections is the browser's job (e.g. the user reloads the page)
+      // - Showing the rendered HTML is usually more useful to the user (even when unhydrated thus broken) than showing Vike's error page
+      return showCurrentBrokenPage()
+    }
+  }
 }
-// Whether fetching static assets fails because of the network. (The error thrown by `import()` doesn't tell: it's the same whether a new frontend was deployed, i.e. the static assets don't exist anymore, or the connection is flaky.)
-async function isNetworkError(): Promise<boolean> {
+// Whether fetching static assets fails because of the connection. (The error thrown by `import()` doesn't tell: it's the same whether a new frontend was deployed, i.e. the static assets don't exist anymore, or the connection is down.)
+async function isConnectionDown(): Promise<boolean> {
   // The first modulepreload link is the page's entry, see retrievePageAssetsProd()
   const url = document.querySelector<HTMLLinkElement>('link[rel="modulepreload"]')?.href
-  // There isn't any modulepreload link if the user removed them with injectFilter(): we can't check, so we assume a network error (i.e. we don't reload)
+  // There isn't any modulepreload link if the user removed them with injectFilter(): we can't check, so we assume a connection error (i.e. we don't reload)
   if (!url) return true
   try {
     await fetch(url, { method: 'HEAD', cache: 'no-store' })
@@ -869,9 +899,8 @@ async function isNetworkError(): Promise<boolean> {
     return true
   }
 }
-// Whether the server-side rendered page shows nothing, e.g. SPA (`ssr: false`). Vike doesn't know whether the page was server-side rendered (that's the job of the UI framework, e.g. vike-react), so we check whether the page shows any text.
+// The page shows nothing (e.g. SPA)
 function isBlankPage(): boolean {
-  // `innerText` ignores <script>, <noscript>, and hidden elements
   return !document.body.innerText.trim()
 }
 // Whether the current page was loaded by a page reload
