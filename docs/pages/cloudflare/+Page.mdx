@@ -168,7 +168,7 @@ export class MyDurableObject extends DurableObject { // [!code ++]
 } // [!code ++]
 ```
 
-> If you use Vike's built-in server (<Link href="/server#server-true">`+server: true`</Link>), then create a `+server.js` that only exports your Durable Objects: a `+server.js` without `fetch` uses Vike's built-in server.
+> If you use Vike's built-in server (<Link href="/server#server-true">`+server: true`</Link>), then create a `+server.js` that only exports your Durable Objects: a `+server.js` that doesn't export `fetch` uses Vike's built-in server.
 
 ## TypeScript
 
