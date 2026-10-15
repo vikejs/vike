@@ -679,7 +679,7 @@ function disableClientRouting(err: unknown, logError: boolean) {
 
   assertInfo(
     false,
-    'Failed to fetch static asset (due to a connection issue, or a new deployment) — falling back to server routing',
+    'Failed to fetch static asset (due to a connection issue, or a new deployment) — falling back to Server Routing',
     { onlyOnce: true },
   )
 }
