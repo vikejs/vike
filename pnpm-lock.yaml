@@ -1600,9 +1600,15 @@ importers:
 
   test/custom-server-entry-websocket:
     dependencies:
+      '@vikejs/hono':
+        specifier: ^0.3.0
+        version: 0.3.0(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)(vike@packages+vike)
       crossws:
         specifier: ^0.4.12
         version: 0.4.12(srvx@0.12.8)
+      hono:
+        specifier: ^4.13.13
+        version: 4.13.13
       react:
         specifier: ^19.2.6
         version: 19.2.6

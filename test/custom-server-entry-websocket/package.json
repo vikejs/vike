@@ -5,7 +5,9 @@
     "preview": "vike build && node dist/server/index.mjs"
   },
   "dependencies": {
+    "@vikejs/hono": "^0.3.0",
     "crossws": "^0.4.12",
+    "hono": "^4.13.13",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "srvx": "^0.12.8",

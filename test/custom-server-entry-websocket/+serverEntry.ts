@@ -3,13 +3,17 @@
 
 import { serve } from 'crossws/server'
 import { getGlobalContext } from 'vike'
-import vike from 'vike/fetch'
+import { Hono } from 'hono'
+import vike from '@vikejs/hono'
 import { fetchNodeHandler } from 'srvx/node'
 import { staticMiddleware } from 'srvx/static'
 import assert from 'node:assert'
 import type { IncomingMessage, ServerResponse } from 'node:http'
 
 const globalContext = await getGlobalContext()
+
+const app = new Hono()
+vike(app)
 
 // crossws's serve() is srvx's serve() with WebSocket support
 serve({
@@ -41,7 +45,7 @@ serve({
       )
       if (handled) return response
     }
-    return vike.fetch(request)
+    return app.fetch(request)
   },
   // Not in the docs example: like @universal-deploy/node (srvx logs to stderr upon graceful shutdown)
   gracefulShutdown: false,

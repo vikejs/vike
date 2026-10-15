@@ -203,7 +203,7 @@ but you've requested "2025-07-18". Falling back to "2025-07-12"...
   function isUniversalMiddlewareDeprecation() {
     return (
       logText.includes("You're using a deprecated Vike extension") &&
-      /\/(universal-deploy|vite-plugin-vercel|photon-cloudflare|photon-vercel|vike-server|boilerplate-[a-z-]+)\//.test(
+      /\/(universal-deploy|vite-plugin-vercel|photon-cloudflare|photon-vercel|vike-server|boilerplate-[a-z-]+|custom-server-entry-websocket)\//.test(
         testInfo?.testFile?.replaceAll('\\', '/') ?? '',
       )
     )
