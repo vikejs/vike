@@ -816,7 +816,6 @@ async function handleErrorFetchingStaticAssets(
 
   /** Show Vike's error page */
   const showErrorPage = () => {
-    disableClientRouting(err, false)
     // Vike handles the error like any other error: Vike logs it with `console.error()` and renders Vike's error page
     return false
   }
@@ -864,6 +863,7 @@ async function handleErrorFetchingStaticAssets(
   // Avoid infinite reload loop: we don't reload a page that was itself loaded by a reload
   if (isPageReload()) {
     if (isBlankPage()) {
+      disableClientRouting(err, false)
       return showErrorPage()
     } else {
       return showCurrentBrokenPage()

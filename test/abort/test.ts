@@ -149,6 +149,15 @@ function testRun(
     await page.click('a[href="/star-wars-api/films/1.json"]')
     await page.waitForURL('https://brillout.github.io/star-wars/api/films/1.json')
   })
+
+  test('render error page - the page fails to load upon hydration', async () => {
+    await page.goto(getServerUrl() + '/load-error')
+    await autoRetry(async () => {
+      expect(await page.textContent('p')).toBe('Something went wrong.')
+    })
+    await testCounter()
+    expectLog('The page failed to load (on purpose)', { filter: (log) => log.logSource === 'Browser Error' })
+  })
 }
 
 async function hydrationDone() {
