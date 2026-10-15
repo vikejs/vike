@@ -1,8 +1,8 @@
 import { Link } from '@brillout/docpress'
 
-`vike/fetch` is deprecated: the routes your server answers itself (before calling `vike.fetch()`) skip the <Link href="/middleware">`+middleware`</Link> of Vike extensions.
+The `vike/fetch` import is deprecated and will be removed in the next major release.
 
-If your `+server.js` exports `vike/fetch` as is, then remove these two lines: a `+server.js` without `fetch` uses Vike's built-in server.
+If your `+server.js` exports `vike/fetch` as is, then simply remove it:
 
 ```ts
 // +server.ts
@@ -13,7 +13,9 @@ export default vike // [!code --]
 // Other exports (e.g. Cloudflare Durable Objects) stay as they are
 ```
 
-> If your `+server.js` is then empty, remove it and set <Link href="/server#server-true">`+server: true`</Link> instead:
+> A `+server.js` without any default export uses Vike's built-in server, see <Link href="/server" />.
+
+> If your `+server.js` is then empty, you can remove it and set <Link href="/server#server-true">`+server: true`</Link> instead:
 >
 > ```ts
 > // pages/+config.ts

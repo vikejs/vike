@@ -322,6 +322,7 @@ const headings = [
     title: '`+server`',
     titleInNav: 'Server',
     url: '/server',
+    sectionTitles: ['`+server: true`'],
   },
   {
     level: 2,
