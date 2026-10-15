@@ -5,7 +5,7 @@
     "preview": "vike build && vike preview"
   },
   "dependencies": {
-    "vike": "0.4.267",
+    "vike": "0.4.268",
     "vite": "^7.3.1"
   },
   "type": "module"

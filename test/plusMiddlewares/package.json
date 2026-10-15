@@ -10,7 +10,7 @@
     "@universal-middleware/core": "^0.7.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
-    "vike": "0.4.267"
+    "vike": "0.4.268"
   },
   "devDependencies": {
     "@types/react": "^19.2.15",
