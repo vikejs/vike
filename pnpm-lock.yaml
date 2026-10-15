@@ -2275,8 +2275,8 @@ importers:
         specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.15)
       '@vikejs/hono':
-        specifier: ^0.3.0
-        version: 0.3.0(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)(vike@packages+vike)
+        specifier: ^0.4.0
+        version: 0.4.0(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)(vike@packages+vike)
       '@vitejs/plugin-react-swc':
         specifier: ^3.11.0
         version: 3.11.0(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
@@ -5165,6 +5165,12 @@ packages:
     peerDependencies:
       hono: ^4.13.13
       vike: ^0.4.255
+
+  '@vikejs/hono@0.4.0':
+    resolution: {integrity: sha512-sDgKEoMamfSqaOyml2DI4tUo4jw/AdZ4HJfF63A+PJSCp6D26w8wVgF5CwMvp/eS6B/ZDudg0K8Vpt4rCOq/ng==}
+    peerDependencies:
+      hono: ^4.13.13
+      vike: ^0.4.268
 
   '@vikejs/license-components@0.0.23':
     resolution: {integrity: sha512-8y5iX2NKEMcujbsAJUrzbvyZ799PzTI2GzJAPUZFzxzDjzNwEzvPezA6tTkOt3D+PF+/H/+Ua0CyhaaFfV79EA==}
@@ -11291,6 +11297,21 @@ snapshots:
   '@vikejs/hono@0.3.0(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)(vike@packages+vike)':
     dependencies:
       '@universal-middleware/hono': 0.5.0(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
+      hono: 4.13.13
+      vike: link:packages/vike
+    transitivePeerDependencies:
+      - '@cloudflare/workers-types'
+      - '@hattip/core'
+      - '@types/express'
+      - '@webroute/route'
+      - elysia
+      - fastify
+      - h3
+      - srvx
+
+  '@vikejs/hono@0.4.0(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)(vike@packages+vike)':
+    dependencies:
+      '@universal-middleware/hono': 0.6.0(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
       hono: 4.13.13
       vike: link:packages/vike
     transitivePeerDependencies:
