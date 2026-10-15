@@ -1,5 +1,5 @@
 import { Link, FileAdded, Warning, Tabs } from '@brillout/docpress'
-import { DeprecatedServer } from '../../components'
+import { DeprecatedServer, ServerJsRecommendation } from '../../components'
 
 export const ColumnHeader = ({ title, children }) => (
   <span style={{ display: 'block', textAlign: 'center' }}>
@@ -459,6 +459,8 @@ function websocketDev(): Plugin {
 ```
 
 > You can also define <Link href="/serverEntry">`+serverEntry.js`</Link> without `+server.js`: it doesn't need a Vite plugin, and you can use any WebSocket library (e.g. Socket.IO), see <Link href="/serverEntry#example-websockets" doNotInferSectionTitle />.
+
+<ServerJsRecommendation />
 
 
 ## Extra control
