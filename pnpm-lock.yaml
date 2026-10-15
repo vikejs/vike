@@ -1934,8 +1934,8 @@ importers:
         specifier: ^0.7.0
         version: 0.7.0(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
       '@vikejs/express':
-        specifier: ^0.3.0
-        version: 0.3.0(@hattip/core@0.0.49)(@types/express@5.0.6)(express@5.2.1)(hono@4.13.13)(srvx@0.12.8)(vike@packages+vike)
+        specifier: ^0.4.0
+        version: 0.4.0(@hattip/core@0.0.49)(@types/express@5.0.6)(express@5.2.1)(hono@4.13.13)(srvx@0.12.8)(vike@packages+vike)
       '@vitejs/plugin-react':
         specifier: ^4.7.0
         version: 4.7.0(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
@@ -5022,6 +5022,10 @@ packages:
   '@universal-middleware/express@0.5.0':
     resolution: {integrity: sha512-67AuZOVYjnYdemY7b14LaM/rQ9nD2T2AeNr8jQORD3uxQspiZMxSvAa0O3Jt5ZSivpSasmfNFouE8d0GndthGQ==}
 
+  '@universal-middleware/express@0.6.0':
+    resolution: {integrity: sha512-EGdGa1K4kE8v5AmFGrE9+ZB5WA5ZVWk1QCCCWdhMY13ceGIuAQgkGgCyN27pyETwNKmXWyKsPz0Hnztkcmo+pw==}
+    engines: {node: '>=22'}
+
   '@universal-middleware/fastify@0.5.26':
     resolution: {integrity: sha512-DUImESs9taUeMOSvJcSB/gvK0M90wQXXwRNP5Rhjto5GTXiHair2yRjxhhjVqXAms63G/du5xrzoOIO1JBB3NQ==}
 
@@ -5150,11 +5154,11 @@ packages:
   '@vercel/routing-utils@6.6.0':
     resolution: {integrity: sha512-Z74zwk1ixcIsMN7Sp788SsZuOEqmJZ4N36WHusr6Vtck5eFAcjyD4oBpjDYRhkxovsh8t13s0L+uVbJYxUPa5w==}
 
-  '@vikejs/express@0.3.0':
-    resolution: {integrity: sha512-1vd8MjCu11ZBgS70acRKiu/GAzAxJRwGp6qFu2iYsKwgAdiGhu2fmHHv86EdFaep3F+ih++5KkKZFC1UpFD3Gg==}
+  '@vikejs/express@0.4.0':
+    resolution: {integrity: sha512-9Rru6o10EemuJhBc1llvkYlaBva96vhx5SWiGH+TPHfMm7GDUfQdebmSo3N0yXj5plEM3k+lsET9o9sbtqWpKA==}
     peerDependencies:
       express: ^4.0.0 || ^5.0.0
-      vike: ^0.4.255
+      vike: ^0.4.268
 
   '@vikejs/hono@0.3.0':
     resolution: {integrity: sha512-eqNDRrg7NPWP20nCKSUG4jRQHxsXKELJwD03L4idtFGxlgCil6o3zc5b8ETp39JK3pYkmQiDlyEgqu0iLXqZQw==}
@@ -10994,6 +10998,21 @@ snapshots:
       - hono
       - srvx
 
+  '@universal-middleware/express@0.6.0(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)':
+    dependencies:
+      '@universal-middleware/core': 0.7.0(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
+      '@universal-middleware/node': 0.2.9(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
+    transitivePeerDependencies:
+      - '@cloudflare/workers-types'
+      - '@hattip/core'
+      - '@types/express'
+      - '@webroute/route'
+      - elysia
+      - fastify
+      - h3
+      - hono
+      - srvx
+
   '@universal-middleware/fastify@0.5.26(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)':
     dependencies:
       '@universal-middleware/core': 0.4.18(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
@@ -11253,9 +11272,9 @@ snapshots:
     optionalDependencies:
       ajv: 6.15.0
 
-  '@vikejs/express@0.3.0(@hattip/core@0.0.49)(@types/express@5.0.6)(express@5.2.1)(hono@4.13.13)(srvx@0.12.8)(vike@packages+vike)':
+  '@vikejs/express@0.4.0(@hattip/core@0.0.49)(@types/express@5.0.6)(express@5.2.1)(hono@4.13.13)(srvx@0.12.8)(vike@packages+vike)':
     dependencies:
-      '@universal-middleware/express': 0.5.0(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
+      '@universal-middleware/express': 0.6.0(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
       express: 5.2.1
       vike: link:packages/vike
     transitivePeerDependencies:
