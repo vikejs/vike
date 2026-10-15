@@ -23,7 +23,7 @@ function pluginWrapServerFile(serverFilePath: string): Plugin {
         // - Bloat (when `vikeFetch` isn't used) is negligible
         "import vikeFetch from 'vike/__internal/fetch';",
         `import * as mod from ${JSON.stringify(id)};`,
-        // Destructured because mod.default makes Rolldown warn when +server.js has no default export'
+        // Destructured because mod.default makes Rolldown warn when +server.js has no default export
         'const { default: server } = mod;',
         'export default { ...server, ...server?.prod, fetch: server?.fetch ?? vikeFetch.fetch };',
       ].join('\n')
