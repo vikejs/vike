@@ -12,7 +12,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
       - run: pnpm install
-      - run: pnpm run spellcheck:check
+      # Retry once, as downloading typos is flaky.
+      - run: pnpm run spellcheck:check || pnpm run spellcheck:check
         env:
-          # typos is downloaded via the GitHub API: unauthenticated requests are rate-limited per IP, and IPs are shared between GitHub-hosted runners => random failures.
+          # Downloading typos uses the GitHub API, which is rate-limited without a token.
           GITHUB_TOKEN: ${{ github.token }}
