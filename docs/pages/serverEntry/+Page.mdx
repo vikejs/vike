@@ -90,7 +90,7 @@ app.listen(3000)
 
 > `+serverEntry.js` is responsible for starting the server, whereas with `+server.js` the server is started by Vite in development and by [srvx](https://srvx.h3.dev) in production.
 
-<ServerJsRecommendation>In development, when you modify `+serverEntry.js` (or a file it imports), Vike automatically restarts your server process.</ServerJsRecommendation>
+<ServerJsRecommendation>In development, when you modify `+serverEntry.js` (or a file it imports), Vike automatically restarts your server process.<br/><br/></ServerJsRecommendation>
 
 > If you want to use HTTPS in development, use HTTPS in your server and also [pass the HTTPS certificates to Vite](https://vite.dev/config/server-options.html#server-https) (Vite uses them for its HMR WebSocket).
 
@@ -246,6 +246,8 @@ wss.on('connection', (ws) => {
 })
 ```
 
+> In development, Vite's HMR uses its own WebSocket server (port `24678` by default), so it doesn't interfere with your WebSockets.
+
 ```ts
 // Client-side
 
@@ -259,8 +261,6 @@ Compared to <Link href="/server#websockets">WebSockets with `+server.js`</Link>:
 - You can use any library that works with Node.js's HTTP server, for example [Socket.IO](https://socket.io) (including its HTTP long-polling fallback).
 
 <ServerJsRecommendation />
-
-> In development, Vite's HMR uses its own WebSocket server (port `24678` by default), so it doesn't interfere with your WebSockets.
 
 With Bun, you can use the [WebSockets built into `Bun.serve()`](https://bun.com/docs/runtime/http/websockets), in development as well. For example, with the <Link href="#example-bun">Bun example above</Link>:
 
