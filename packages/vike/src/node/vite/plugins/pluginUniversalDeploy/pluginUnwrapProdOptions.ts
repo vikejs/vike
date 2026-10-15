@@ -9,7 +9,7 @@ function pluginUnwrapProdOptions(serverFilePath: string): Plugin {
   return wrapper({
     resolveId: {
       filter: {
-        id: new RegExp(escapeRegex(serverFilePath)),
+        id: new RegExp(`${escapeRegex(serverFilePath)}$`),
       },
     },
 
