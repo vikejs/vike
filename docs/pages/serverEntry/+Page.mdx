@@ -13,10 +13,10 @@ import { ConfigSpec } from '../../components'
 See explanation at: <Link href="#with-out-server-js" />.
 
 Use case examples:
-- Deploy to a platform without built-in support, <Link href="#example-aws-lambda">e.g. AWS Lambda</Link>
+- Deploy to a platform without built-in support, e.g. <Link href="#example-aws-lambda" />
 - Use a server framework without built-in support (e.g. [Koa](https://github.com/koajs/koa) or [hapi](https://github.com/hapijs/hapi))
-- Use non-Node.js server APIs, such as `Bun.serve()` or `Deno.serve()`
-- Use <Link href="#example-websockets">WebSockets</Link> in both development and production
+- Use non-Node.js server APIs, such as `Bun.serve()` or `Deno.serve()`, see <Link href="#example-bun" />
+- Use WebSockets, see <Link href="#example-websockets" />
 - Use all CPU cores with Node.js's [`cluster`](https://nodejs.org/api/cluster.html) module
 
 > See also:
@@ -215,7 +215,7 @@ $ bun dist/server/index.mjs
 
 ## Example: WebSockets
 
-With `+serverEntry.js` (and without `+server.js`, see <Link href="#with-out-server-js" />), you can use WebSockets in both development and production. For example with [crossws](https://crossws.h3.dev), which supports Node.js, Bun, and Deno:
+With `+serverEntry.js` (<Link href="#with-out-server-js">and without `+server.js`</Link>), you can use WebSockets in both development and production. For example with [crossws](https://crossws.h3.dev), which supports Node.js, Bun, and Deno:
 
 ```ts
 // +serverEntry.ts (without +server.js)
