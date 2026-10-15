@@ -1,5 +1,8 @@
 name: Spellcheck
 on: [ push, pull_request ]
+# The token is exposed to third-party code (the script downloading typos) => keep it read-only.
+permissions:
+  contents: read
 jobs:
   main:
     # Prevent workflow being run twice for same-repo PRs.
@@ -9,4 +12,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
       - run: pnpm install
-      - run: pnpm run spellcheck:check
+      # Retry once, as downloading typos is flaky.
+      - run: pnpm run spellcheck:check || pnpm run spellcheck:check
+        env:
+          # Downloading typos uses the GitHub API, which is rate-limited without a token.
+          GITHUB_TOKEN: ${{ github.token }}
