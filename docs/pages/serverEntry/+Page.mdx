@@ -92,7 +92,7 @@ app.listen(3000)
 
 > In development, when you modify `+serverEntry.js` (or a file it imports), Vike automatically restarts your server process.
 >
-> That's why we generally recommend `+server.js`: it has a better development experience, because modifying your server code doesn't restart your server, see <Link href="/server#hmr" />.
+> If you have the choice, we recommend `+server.js`: it has a better development experience, because modifying your server code doesn't restart your server, see <Link href="/server#hmr" />.
 
 > If you want to use HTTPS in development, use HTTPS in your server and also [pass the HTTPS certificates to Vite](https://vite.dev/config/server-options.html#server-https) (Vite uses them for its HMR WebSocket).
 
@@ -265,7 +265,7 @@ Compared to <Link href="/server#websockets">WebSockets with `+server.js`</Link>:
 - You don't need a Vite plugin: `$ vike dev` runs your `+serverEntry.js`, so the same code runs in development and production.
 - You can use any library that works with Node.js's HTTP server, for example [Socket.IO](https://socket.io) (including its HTTP long-polling fallback).
 
-> That said, we generally recommend `+server.js` because of its better development experience: modifying your server code doesn't restart your server (see <Link href="/server#hmr" />). With `+serverEntry.js`, Vike restarts your server process instead, which closes all WebSocket connections.
+> If you have the choice, we recommend `+server.js`, see <Link href="#without-server-js" />.
 
 > In development, Vite's HMR uses its own WebSocket server (port `24678` by default), so it doesn't interfere with your WebSockets.
 
