@@ -273,7 +273,6 @@ With Bun, you can use the [WebSockets built into `Bun.serve()`](https://bun.com/
 
 Bun.serve({
   port: 3000,
-  async fetch(request) { // [!code --]
   async fetch(request, server) { // [!code ++]
     if (new URL(request.url).pathname === '/ws' && server.upgrade(request)) return // [!code ++]
     // ...
