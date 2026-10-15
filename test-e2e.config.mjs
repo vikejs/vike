@@ -199,13 +199,11 @@ but you've requested "2025-07-18". Falling back to "2025-07-12"...
     isUniversalMiddlewareDeprecation()
   )
 
-  // TODO/soon: remove once these test apps use the @vikejs/* adapters' next version, and +server instead of vike-photon or vike-server
+  // TODO/soon: remove once these test apps use +server instead of vike-photon or vike-server
   function isUniversalMiddlewareDeprecation() {
     return (
       logText.includes("You're using a deprecated Vike extension") &&
-      /\/(photon-cloudflare|photon-vercel|vike-server|boilerplate-[a-z-]+)\//.test(
-        testInfo?.testFile?.replaceAll('\\', '/') ?? '',
-      )
+      /\/(photon-cloudflare|photon-vercel|vike-server)\//.test(testInfo?.testFile?.replaceAll('\\', '/') ?? '')
     )
   }
 
