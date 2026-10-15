@@ -1,13 +1,9 @@
 export { testRun }
 
-import { test, expect, expectLog, fetch, fetchHtml, getServerUrl } from '@brillout/test-e2e'
+import { test, expect, fetch, fetchHtml, getServerUrl } from '@brillout/test-e2e'
 import { testRunClassic } from '../utils'
 
 function testRun(...args: Parameters<typeof testRunClassic>) {
-  test('`vike/fetch` deprecation warning', async () => {
-    await fetchHtml('/')
-    expectLog("import vike from 'vike/fetch' is deprecated, see https://vike.dev/migration/vike-fetch")
-  })
   testRunClassic(...args)
 
   test('+server.ts route', async () => {

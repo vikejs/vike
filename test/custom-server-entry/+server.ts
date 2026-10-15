@@ -4,7 +4,7 @@ import { Hono } from 'hono'
 import { apply } from '@universal-middleware/hono'
 import type { Server } from 'vike/types'
 import { getGlobalContextAsync } from 'vike'
-import vikeFetch from 'vike/fetch'
+import vikeFetch from 'vike/__internal/fetch'
 import assert from 'node:assert'
 
 // Awaiting the global context at the top level mustn't deadlock
