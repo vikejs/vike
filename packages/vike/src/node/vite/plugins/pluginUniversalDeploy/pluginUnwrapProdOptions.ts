@@ -12,15 +12,15 @@ function pluginUnwrapProdOptions(serverFilePath: string): Plugin {
         id: new RegExp(escapeRegex(serverFilePath)),
       },
     },
-
-    // Unwrap all prod.* options, and use Vike's built-in server if +server.js doesn't define `fetch`
     load(id) {
       return [
         // === Side exports
         `export * from ${JSON.stringify(id)};`,
         '',
         // === Default export
-        // `vikeFetch` acts as fallback if the user's +server.js doesn't export `fetch`, example: https://vike.dev/cloudflare#durable-objects
+        // `vikeFetch` acts as fallback if the user's +server.js doesn't export `fetch`
+        // - Example: https://vike.dev/cloudflare#durable-objects
+        // - Bloat (when `vikeFetch` isn't used) is negligible
         "import vikeFetch from 'vike/__internal/fetch';",
         `import * as mod from ${JSON.stringify(id)};`,
         // Destructured because mod.default makes Rolldown warn when +server.js has no default export'
