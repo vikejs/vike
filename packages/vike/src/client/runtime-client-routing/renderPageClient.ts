@@ -833,7 +833,7 @@ async function handleErrorFetchingStaticAssets(
   const hardReload = (url?: string) => {
     disableClientRouting(err, true)
     if (url) {
-      redirectHard(pageContext.urlOriginal)
+      redirectHard(url)
     } else {
       // We use `location.reload()` instead of redirectHard(): navigating with `location.href = url` creates a `type: 'navigate'` entry, which would lead to an infinite reload loop — see isPageReload()
       window.location.reload()
