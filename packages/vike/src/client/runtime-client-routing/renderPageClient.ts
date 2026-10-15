@@ -810,12 +810,16 @@ async function handleErrorFetchingStaticAssets(
   pageContext: { urlOriginal: string },
   isFirstRender: boolean,
 ): Promise<boolean> {
+  if (import.meta.env.DEV) throw err
+  if (!isErrorFetchingStaticAssets(err)) throw err // Syntax error in user file
+
   // *******************************************
   // ******* The three possible actions ********
   // *******************************************
 
   /** Show Vike's error page */
   const showErrorPage = () => {
+    disableClientRouting(err, false)
     // Vike handles the error like any other error: Vike logs it with `console.error()` and renders Vike's error page
     return false
   }
@@ -842,9 +846,6 @@ async function handleErrorFetchingStaticAssets(
   // ******* The logic ********
   // **************************
 
-  if (import.meta.env.DEV) return showErrorPage()
-  if (!isErrorFetchingStaticAssets(err)) return showErrorPage() // Syntax error in user file
-
   // Possible causes that lead to this point:
   // - New deployment
   // - Connection problem
@@ -863,7 +864,6 @@ async function handleErrorFetchingStaticAssets(
   // Avoid infinite reload loop: we don't reload a page that was itself loaded by a reload
   if (isPageReload()) {
     if (isBlankPage()) {
-      disableClientRouting(err, false)
       return showErrorPage()
     } else {
       return showCurrentBrokenPage()
