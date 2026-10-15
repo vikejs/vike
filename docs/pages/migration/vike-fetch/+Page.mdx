@@ -1,0 +1,53 @@
+import { Link } from '@brillout/docpress'
+
+The `vike/fetch` import is deprecated and will be removed in the next major release.
+
+If your `+server.js` exports `vike/fetch` as is, then simply remove it:
+
+```ts
+// +server.ts
+
+import vike from 'vike/fetch' // [!code --]
+export default vike // [!code --]
+
+// Other exports (e.g. Cloudflare Durable Objects) stay as they are
+```
+
+> A `+server.js` without any default export uses Vike's built-in server, see <Link href="/server" />.
+
+> If your `+server.js` is then empty, you can remove it and set <Link href="/server#server-true">`+server: true`</Link> instead:
+>
+> ```ts
+> // pages/+config.ts
+>
+> export default {
+>   server: true // [!code ++]
+> }
+> ```
+
+Otherwise, use <Link href="/server#get-started">`vike(app)`</Link> with your server, for example with Hono:
+
+```shell
+npm i hono @vikejs/hono
+```
+
+```ts
+// +server.ts
+
+// @docpress-uncomment import vike from 'vike/fetch' // [!code --]
+import { Hono } from 'hono' // [!code ++]
+import vike from '@vikejs/hono' // [!code ++]
+import type { Server } from 'vike/types'
+
+const app = new Hono() // [!code ++]
+vike(app) // [!code ++]
+
+export default {
+  fetch(request) { // [!code --]
+    return vike.fetch(request) // [!code --]
+  }, // [!code --]
+  fetch: app.fetch // [!code ++]
+} satisfies Server
+```
+
+> See <Link href="/server#get-started" /> for other servers (e.g. Express or Fastify), and <Link href="/vike(app)#manual-integration" /> if Vike doesn't have an adapter for your server.
