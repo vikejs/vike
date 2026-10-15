@@ -9,7 +9,6 @@ function pluginUnwrapProdOptions(serverFilePath: string): Plugin {
   return wrapper({
     resolveId: {
       filter: {
-        // Anchored, so that the wrapper isn't itself wrapped again (e.g. Universal Deploy's catch-all imports `+server.js?wrapper_N`)
         id: new RegExp(`${escapeRegex(serverFilePath)}$`),
       },
     },
