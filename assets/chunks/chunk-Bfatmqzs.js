@@ -1,0 +1,1 @@
+import{j as t}from"./chunk-C_TXd1ty.js";const a=n("pageContext"),p=n("globalContext");function n(e){return function({id:o}){return t.jsx("h3",{id:o,children:t.jsxs("code",{children:[e,".",o]})})}}export{p as P,a};
