@@ -666,7 +666,7 @@ type ConfigBuiltIn = {
    *
    * https://vike.dev/middleware
    */
-  middleware?: EnhancedMiddleware | EnhancedMiddleware[]
+  middleware?: EnhancedMiddleware | EnhancedMiddleware[] | ImportStringList
 
   /**
    * Set to `false` to disable Vike's automatic server integration mechanism (e.g. for integrating a JavaScript server manually via `renderPage()`).
