@@ -14,7 +14,7 @@ It installs:
 - Vike's handler that renders your pages (basically <Link href="/renderPage">`renderPage()`</Link>)
 - Every <Link href="/middleware">`+middleware`</Link> from <Link href="/extensions">Vike extensions</Link>
 
-> Technically, what it does is install the <Link href="/globalContext#middlewares">`globalContext.middlewares`</Link> list using the [sandwich approach](https://github.com/vikejs/vike-server-adapters#sandwich-approach): middlewares (i.e. non-handlers) are applied before user-defined routes while handlers are applied after — so that your routes can read the context set by the middlewares of Vike extensions.
+> Technically, what it does is install the <Link href="/globalContext#middlewares">`globalContext.middlewares`</Link> list using the [sandwich approach](https://github.com/vikejs/vike-app#sandwich-approach): middlewares (i.e. non-handlers) are applied before user-defined routes while handlers are applied after — so that your routes can read the context set by the middlewares of Vike extensions.
 >
 > See also: <Link href="/middleware#order" />
 
@@ -70,4 +70,4 @@ export default {
 - <Link href="/renderPage" />
 - <Link href="/middleware" />
 - <Link href="/globalContext#middlewares">API > `globalContext.middlewares`</Link>
-- [GitHub > `vikejs/vike-server-adapters`](https://github.com/vikejs/vike-server-adapters)
+- [GitHub > `vikejs/vike-app`](https://github.com/vikejs/vike-app)
