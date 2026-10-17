@@ -11,3 +11,14 @@ ul {
 #feature-wall code {
   padding: 2px 4px !important;
 }
+
+.dx-inline-highlight {
+  background-color: var(--highlight-color);
+  color: var(--color-text);
+  border-radius: 4px;
+  padding: 0 4px;
+}
+:root.dark .dx-inline-highlight {
+  background-color: color-mix(in srgb, var(--highlight-color) 24%, transparent);
+  color: var(--dp-color-text);
+}

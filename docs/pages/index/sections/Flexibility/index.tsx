@@ -54,13 +54,13 @@ const FlexibilitySection = () => {
               src={libraryRollImg}
               data-speed="0.96"
               alt="Library roll with various tools and frameworks"
-              className="w-full h-auto hidden sm:block rounded-lg"
+              className="w-full h-auto hidden sm:block rounded-lg dark-invert"
             />
             <img
               loading="lazy"
               src={libraryRollImgMobile}
               alt="Library roll with various tools and frameworks - mobile version"
-              className="w-full h-auto sm:hidden rounded-lg"
+              className="w-full h-auto sm:hidden rounded-lg dark-invert"
             />
           </div>
           <GlassContainer>
