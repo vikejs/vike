@@ -508,7 +508,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     }
 
     changeUrl(urlOriginal, overwriteLastHistoryEntry)
-    // Only cut links behind the page last rendered: it may still be on screen and read its previousPageContext
+    // Cut the link behind the page last rendered, which may still be on screen and read its previousPageContext
     // - Otherwise all past pageContexts are kept in memory
     const pageContextBeforeRendered = globalObject.renderedPageContext?.previousPageContext
     if (pageContextBeforeRendered) pageContextBeforeRendered.previousPageContext = null
