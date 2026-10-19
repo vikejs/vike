@@ -105,6 +105,10 @@ function testRun(
       await testCounter()
       done()
       expect(await page.textContent('p')).toBe('Testing throw render error page.')
+      expect(await page.textContent('h1')).toBe('499')
+      // guard() is called on the client-side => the error page fetches its pageContext from the server-side
+      if (!isMakingPageContextJsonRequest)
+        expect(await page.textContent('#data')).toBe('{"abortReason":"Testing throw render error page."}')
       await expectUrl('/show-error-page')
       await ensureWasClientSideRouted('/pages/about')
       if (
@@ -126,6 +130,8 @@ function testRun(
     await autoRetry(async () => {
       expect(await page.textContent('p')).toBe('Page not found.')
     })
+    // guard() is called on the client-side => the error page fetches its pageContext from the server-side
+    if (!isMakingPageContextJsonRequest) expect(await page.textContent('#data')).toBe('{"abortStatusCode":404}')
     done()
     await expectUrl('/render-404')
     await ensureWasClientSideRouted('/pages/about')
