@@ -54,6 +54,9 @@ const optimizeDeps = {
       // We must exclude Vike's client runtime so it can import virtual modules
       'vike/client',
       'vike/client/router',
+      // Shares the streamed values decoder of `vike/client/router`
+      // - Otherwise a client-side navigation doesn't cancel the streamed values read by `readPageContextJson()`
+      'vike/__internal/client',
     ],
     include: [
       // Avoid:
