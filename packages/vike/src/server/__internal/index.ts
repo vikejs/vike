@@ -54,6 +54,5 @@ async function route(pageContext: Parameters<typeof routeInternal>[0]) {
 }
 
 function getPageContextJson(pageContext: PageContextServer) {
-  // `pageContext` is the public proxy of the internal one
   return getPageContextJsonInternal(pageContext as unknown as Parameters<typeof getPageContextJsonInternal>[0])
 }
