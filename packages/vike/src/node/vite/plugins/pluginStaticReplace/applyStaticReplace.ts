@@ -86,8 +86,8 @@ type RemoveTarget =
  * }
  */
 type StaticReplace = {
-  /** Environment filter: 'client' = client only, 'server' = everything except client */
-  env: 'server' | 'client'
+  /** Environment filter: 'client', 'server', or an additional Vike environment (e.g. 'rsc') which 'server' doesn't include */
+  env: string
   /** Rolldown filter — MUST be narrowing as much as possible, otherwise you'll get significant performance degradation */
   filter: string
   /** Type of transformation - currently only 'call' is supported, but can be extended in the future */
@@ -124,12 +124,7 @@ type State = {
 // Main transformer
 // ============================================================================
 
-async function applyStaticReplace(
-  code: string,
-  staticReplaceList: StaticReplace[],
-  id: string,
-  env: 'server' | 'client',
-) {
+async function applyStaticReplace(code: string, staticReplaceList: StaticReplace[], id: string, env: string) {
   assert(staticReplaceList.length > 0)
   const SKIPPED = undefined
   const NO_CHANGE = null
