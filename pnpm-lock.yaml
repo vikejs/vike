@@ -852,8 +852,8 @@ importers:
         specifier: ^0.2.2
         version: 0.2.2(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)(vite@7.3.1(@types/node@20.17.17)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))
       '@universal-middleware/core':
-        specifier: ^0.7.0
-        version: 0.7.0(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
+        specifier: ^0.7.1
+        version: 0.7.1(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
       '@universal-middleware/node':
         specifier: ^0.2.9
         version: 0.2.9(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
@@ -1412,8 +1412,8 @@ importers:
   test/@cloudflare_vite-plugin_ud:
     dependencies:
       '@universal-middleware/core':
-        specifier: ^0.7.0
-        version: 0.7.0(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
+        specifier: ^0.7.1
+        version: 0.7.1(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
       react:
         specifier: ^19.2.6
         version: 19.2.6
@@ -1521,8 +1521,8 @@ importers:
   test/custom-server-entry:
     dependencies:
       '@universal-middleware/core':
-        specifier: ^0.7.0
-        version: 0.7.0(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
+        specifier: ^0.7.1
+        version: 0.7.1(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
       '@universal-middleware/hono':
         specifier: ^0.6.0
         version: 0.6.0(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
@@ -1852,8 +1852,8 @@ importers:
   test/plusMiddlewares:
     dependencies:
       '@universal-middleware/core':
-        specifier: ^0.7.0
-        version: 0.7.0(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
+        specifier: ^0.7.1
+        version: 0.7.1(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
       react:
         specifier: ^19.2.6
         version: 19.2.6
@@ -1931,8 +1931,8 @@ importers:
   test/universal-deploy:
     dependencies:
       '@universal-middleware/core':
-        specifier: ^0.7.0
-        version: 0.7.0(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
+        specifier: ^0.7.1
+        version: 0.7.1(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
       '@vikejs/express':
         specifier: ^0.4.1
         version: 0.4.1(@hattip/core@0.0.49)(@types/express@5.0.6)(express@5.2.1)(hono@4.13.13)(srvx@0.12.8)(vike@packages+vike)
@@ -5103,8 +5103,8 @@ packages:
       srvx:
         optional: true
 
-  '@universal-middleware/core@0.7.0':
-    resolution: {integrity: sha512-4vnYFAxjAzh6aVd46OQ4FtO//O05HU8XSEm4tRDYQV44SMxTJHB0t6RXxamTETIIvzfHejO8VDyNkd+tHJ0W5g==}
+  '@universal-middleware/core@0.7.1':
+    resolution: {integrity: sha512-SVxKEjycCfibZnVnr9voo9AMTeAOVBt0V/T2QaiDQVzBVFlgfwMBtz74jrr8CABmc1hVOUCwzTFkpa+OqbC95A==}
     engines: {node: '>=22'}
     peerDependencies:
       '@cloudflare/workers-types': ^4 || ^5
@@ -5113,7 +5113,7 @@ packages:
       '@webroute/route': ^0.8
       elysia: ^1
       fastify: ^5
-      h3: ^1
+      h3: ^1 || ^2
       hono: ^4
       srvx: '>=0.8'
     peerDependenciesMeta:
@@ -11102,7 +11102,7 @@ snapshots:
       hono: 4.13.13
       srvx: 0.12.8
 
-  '@universal-middleware/core@0.7.0(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)':
+  '@universal-middleware/core@0.7.1(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)':
     dependencies:
       regexparam: 3.0.0
       tough-cookie: 6.0.2
@@ -11188,7 +11188,7 @@ snapshots:
 
   '@universal-middleware/express@0.6.0(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)':
     dependencies:
-      '@universal-middleware/core': 0.7.0(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
+      '@universal-middleware/core': 0.7.1(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
       '@universal-middleware/node': 0.2.9(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
     transitivePeerDependencies:
       - '@cloudflare/workers-types'
@@ -11261,7 +11261,7 @@ snapshots:
 
   '@universal-middleware/hono@0.6.0(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)':
     dependencies:
-      '@universal-middleware/core': 0.7.0(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
+      '@universal-middleware/core': 0.7.1(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
       hono: 4.13.13
     transitivePeerDependencies:
       - '@cloudflare/workers-types'
@@ -11275,7 +11275,7 @@ snapshots:
 
   '@universal-middleware/node@0.2.9(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)':
     dependencies:
-      '@universal-middleware/core': 0.7.0(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
+      '@universal-middleware/core': 0.7.1(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
     transitivePeerDependencies:
       - '@cloudflare/workers-types'
       - '@hattip/core'
