@@ -53,10 +53,7 @@ async function route(pageContext: Parameters<typeof routeInternal>[0]) {
   return { pageContextAddendum: pageContextFromRoute }
 }
 
-/**
- * The pageContext values passed to the client, serialized as for a client-side navigation (the `.pageContext.json` response body).
- */
 function getPageContextJson(pageContext: PageContextServer) {
-  // The public pageContext is a proxy of the internal one
+  // `pageContext` is the public pageContext which is a proxy of the internal one
   return getPageContextJsonInternal(pageContext as unknown as Parameters<typeof getPageContextJsonInternal>[0])
 }
