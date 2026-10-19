@@ -54,7 +54,7 @@ const optimizeDeps = {
       // We must exclude Vike's client runtime so it can import virtual modules
       'vike/client',
       'vike/client/router',
-      // Also Vike's client runtime: pre-bundling it would load a second copy of Vike's client code
+      // Also all entries of Vike's client runtime, otherwise pre-bundling an entry would load a second copy of Vike's client code (also problematic as it duplicates module-level variables that don't use `getGlobalObject()`)
       'vike/__internal/client',
     ],
     include: [
