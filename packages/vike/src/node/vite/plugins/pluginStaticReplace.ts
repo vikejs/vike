@@ -92,6 +92,7 @@ function getStaticReplaceList(vikeConfig: VikeConfigInternal): StaticReplace[] {
   for (const configValue of staticReplaceConfigs.values) {
     const entries = configValue.value as StaticReplace[]
     assert(Array.isArray(entries))
+
     entries.forEach(({ env }) => {
       assertUsage(
         env === undefined || envs.includes(env),
@@ -101,6 +102,7 @@ function getStaticReplaceList(vikeConfig: VikeConfigInternal): StaticReplace[] {
         )}`,
       )
     })
+
     staticReplaceList.push(...entries)
   }
 
