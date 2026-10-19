@@ -27,8 +27,8 @@ importers:
         specifier: 1.57.0
         version: 1.57.0
       vitest:
-        specifier: ^5.0.4
-        version: 5.0.4(@edge-runtime/vm@3.2.0)(@types/node@24.10.2)(vite@8.0.7(@types/node@24.10.2)(esbuild@0.27.3)(jiti@2.6.1)(terser@5.38.1)(tsx@4.20.6))
+        specifier: ^5.0.5
+        version: 5.0.5(@edge-runtime/vm@3.2.0)(@types/node@24.10.2)(vite@8.0.7(@types/node@24.10.2)(esbuild@0.27.3)(jiti@2.6.1)(terser@5.38.1)(tsx@4.20.6))
 
   .github/workflows/ci:
     devDependencies:
@@ -5307,8 +5307,8 @@ packages:
       vite: ^5.0.0 || ^6.0.0 || ^7.0.0
       vue: ^3.2.25
 
-  '@vitest/mocker@5.0.4':
-    resolution: {integrity: sha512-tqAlrYWce4iUxhr3ncNohejtCTOcHeE8XWrSNZY3OhPoDn01yeGv+gnaBy64ATp7o6pb03eIbBAjzmibpc9vIQ==}
+  '@vitest/mocker@5.0.5':
+    resolution: {integrity: sha512-xLL3lkDegJZw+MGoGaCCsFayDZthGgpAtr3Vziyfc4p7xH89K7KRPcRBBh/kEYm0Aqkt5DtTmkYpBtRV/FrHZg==}
     peerDependencies:
       msw: ^2.4.9 || ^3.0.0
       vite: ^6.0.0 || ^7.0.0 || ^8.0.0
@@ -5318,8 +5318,8 @@ packages:
       vite:
         optional: true
 
-  '@vitest/spy@5.0.4':
-    resolution: {integrity: sha512-MZKk/gSkm2q+ICobMxCpH1mA+cCAWm8WV7UhxlqGjq/sJ3AGc1BqFOs5CRVXxH78wQtme9q/NAAgBquj4AcyMw==}
+  '@vitest/spy@5.0.5':
+    resolution: {integrity: sha512-lwJRExuH417257Q5wv9QYugN9IMJkoxcrKrYxGPQkBzl7wlNpTUxD/5yNX4ESKVUIShKPgkGchYPFMWOOk0wzw==}
 
   '@volar/language-core@2.2.5':
     resolution: {integrity: sha512-2htyAuxRrAgETmFeUhT4XLELk3LiEcqoW/B8YUXMF6BrGWLMwIR09MFaZYvrA2UhbdAeSyeQ726HaWSWkexUcQ==}
@@ -8439,20 +8439,20 @@ packages:
       vite:
         optional: true
 
-  vitest@5.0.4:
-    resolution: {integrity: sha512-z0WxZRV2Sg48wF0FSgMq3TFG8JS38/Qr96vZVZdX6+Em9raQTvnXQvdTFJe2m3rfyJnEHeHQ/snceIdi8D1pVg==}
+  vitest@5.0.5:
+    resolution: {integrity: sha512-cPODOMF8YnkiiYtDdHo6n4wWmBrOBBbOIYH2d33M4l3CdNn72h+qMmO6uXffUN6A5AZFXNND/d+krS9mgkXRfg==}
     engines: {node: ^22.12.0 || ^24.0.0 || >=26.0.0}
     hasBin: true
     peerDependencies:
       '@edge-runtime/vm': '*'
       '@opentelemetry/api': ^1.9.0
       '@types/node': ^22.0.0 || >=24.0.0
-      '@vitest/browser-playwright': 5.0.4
-      '@vitest/browser-preview': 5.0.4
+      '@vitest/browser-playwright': 5.0.5
+      '@vitest/browser-preview': 5.0.5
       '@vitest/browser-webdriverio': ^5.0.0-beta.5 || >=5.0.0
-      '@vitest/coverage-istanbul': 5.0.4
-      '@vitest/coverage-v8': 5.0.4
-      '@vitest/ui': 5.0.4
+      '@vitest/coverage-istanbul': 5.0.5
+      '@vitest/coverage-v8': 5.0.5
+      '@vitest/ui': 5.0.5
       happy-dom: '*'
       jsdom: '*'
       vite: ^6.4.0 || ^7.0.0 || ^8.0.0
@@ -11546,16 +11546,16 @@ snapshots:
       vite: 7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)
       vue: 3.5.18(typescript@7.0.2)
 
-  '@vitest/mocker@5.0.4(vite@8.0.7(@types/node@24.10.2)(esbuild@0.27.3)(jiti@2.6.1)(terser@5.38.1)(tsx@4.20.6))':
+  '@vitest/mocker@5.0.5(vite@8.0.7(@types/node@24.10.2)(esbuild@0.27.3)(jiti@2.6.1)(terser@5.38.1)(tsx@4.20.6))':
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
-      '@vitest/spy': 5.0.4
+      '@vitest/spy': 5.0.5
       estree-walker: 3.0.3
       magic-string: 1.4.3
     optionalDependencies:
       vite: 8.0.7(@types/node@24.10.2)(esbuild@0.27.3)(jiti@2.6.1)(terser@5.38.1)(tsx@4.20.6)
 
-  '@vitest/spy@5.0.4': {}
+  '@vitest/spy@5.0.5': {}
 
   '@volar/language-core@2.2.5':
     dependencies:
@@ -15544,10 +15544,10 @@ snapshots:
     optionalDependencies:
       vite: 7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6)
 
-  vitest@5.0.4(@edge-runtime/vm@3.2.0)(@types/node@24.10.2)(vite@8.0.7(@types/node@24.10.2)(esbuild@0.27.3)(jiti@2.6.1)(terser@5.38.1)(tsx@4.20.6)):
+  vitest@5.0.5(@edge-runtime/vm@3.2.0)(@types/node@24.10.2)(vite@8.0.7(@types/node@24.10.2)(esbuild@0.27.3)(jiti@2.6.1)(terser@5.38.1)(tsx@4.20.6)):
     dependencies:
       '@types/chai': 5.2.3
-      '@vitest/mocker': 5.0.4(vite@8.0.7(@types/node@24.10.2)(esbuild@0.27.3)(jiti@2.6.1)(terser@5.38.1)(tsx@4.20.6))
+      '@vitest/mocker': 5.0.5(vite@8.0.7(@types/node@24.10.2)(esbuild@0.27.3)(jiti@2.6.1)(terser@5.38.1)(tsx@4.20.6))
       chai: 6.3.0
       es-module-lexer: 2.3.2
       expect-type: 1.4.0
