@@ -51,7 +51,7 @@ function pluginStaticReplace(vikeConfig: VikeConfigInternal): Plugin[] {
           assert(filterFunction(id, code))
           debug('id', id)
           const { name } = this.environment
-          // As in `meta[configName].env`: an additional Vike environment (e.g. `rsc`) isn't `server`
+          // An additional Vike environment (e.g. `rsc`) isn't `server`
           const env = vikeConfig._additionalEnvironmentNames.includes(name)
             ? name
             : isViteServerSide_extraSafe(config, this.environment, options)
