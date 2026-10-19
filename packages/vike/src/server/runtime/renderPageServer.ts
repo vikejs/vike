@@ -199,6 +199,12 @@ async function renderPageServerEntryOnce(
     if (pageContextHttpResponse) return pageContextHttpResponse
   }
 
+  // The error page, after an error on the client-side
+  {
+    const pageContextErrorPage = await renderErrorPageOfClientSideError(pageContextBegin, globalContext)
+    if (pageContextErrorPage) return pageContextErrorPage
+  }
+
   // First renderPageServerEntryRecursive() call
   return await renderPageServerEntryRecursive(pageContextBegin, globalContext, requestId)
 }
@@ -362,6 +368,32 @@ async function renderPageServerEntryRecursive_onError(
     return pageContextHttpErrorFallback
   }
   return pageContextErrorPage
+}
+
+async function renderErrorPageOfClientSideError(
+  pageContextBegin: PageContextBegin,
+  globalContext: GlobalContextServerInternal,
+) {
+  const errorPage = pageContextBegin._isPageContextJsonRequest && pageContextBegin._isPageContextJsonRequest.errorPage
+  if (!errorPage) return null
+  const errorPageId = getErrorPageId(globalContext._pageFilesAll, globalContext._pageConfigs)
+  if (!errorPageId) return null
+
+  const pageContextErrorPage = fork(pageContextBegin)
+  objectAssign(pageContextErrorPage, {
+    pageId: errorPageId,
+    routeParams: {} as Record<string, string>,
+    is404: errorPage.abortStatusCode === 404,
+    // The error occurred on the client-side
+    errorWhileRendering: null,
+  })
+  objectAssign(pageContextErrorPage, errorPage)
+  try {
+    return await renderPageServerAfterRoute(pageContextErrorPage)
+  } catch (err) {
+    logRuntimeError(err, pageContextErrorPage)
+    return getPageContextHttpErrorFallback(err, pageContextBegin)
+  }
 }
 
 function logHttpRequest(urlOriginal: string, pageContextInit: PageContextInit, requestId: number) {
