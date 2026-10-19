@@ -507,6 +507,8 @@ async function renderPageClient(renderArgs: RenderArgs) {
     }
 
     changeUrl(urlOriginal, overwriteLastHistoryEntry)
+    // Only keep the previous pageContext, not all past pageContexts
+    if (globalObject.previousPageContext) globalObject.previousPageContext.previousPageContext = null
     globalObject.previousPageContext = pageContext
     // There should never be concurrent onRenderClient() calls
     assert(globalObject.onRenderClientPreviousPromise === undefined)
@@ -641,7 +643,7 @@ async function getPageContextBegin(
         showStackTrace: true,
         onlyOnce: true,
       })
-      return previousPageContext
+      return pageContext.previousPageContext
     },
     enumerable: false,
   })
