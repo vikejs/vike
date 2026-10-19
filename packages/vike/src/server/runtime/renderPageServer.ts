@@ -30,7 +30,6 @@ import {
   getUrlPretty,
 } from '../../utils/parseUrl-extras.js'
 import { isUrl, parseUrl, isUri } from '../../utils/parseUrl.js'
-import { updateType } from '../../utils/updateType.js'
 import {
   ErrorAbort,
   getPageContextAddendumAbort,
@@ -63,16 +62,11 @@ import type { PageContextServer } from '../../types/index.js'
 import { getPageContextClientSerializedAbort } from './renderPageServer/html/serializeContext.js'
 import { getErrorPageId } from '../../shared-server-client/error-page.js'
 import { handleErrorWithoutErrorPage } from './renderPageServer/handleErrorWithoutErrorPage.js'
-import {
-  loadPageConfigsLazyServerSide,
-  type PageContext_loadPageConfigsLazyServerSide,
-} from './renderPageServer/loadPageConfigsLazyServerSide.js'
 import { resolveRedirects } from './renderPageServer/resolveRedirects.js'
 import type { PageContextInit, PageContextInternalServer } from '../../types/PageContext.js'
 import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.js'
 import { forkPageContext } from '../../shared-server-client/forkPageContext.js'
 import { getAsyncLocalStorage, type AsyncStore } from './asyncHook.js'
-import { getPageContextJson } from './renderPageServer/getPageContextJson.js'
 import { hasPlusMiddlewares } from './universal-middleware/core.js'
 import '../assertEnvServer.js'
 
@@ -294,21 +288,13 @@ async function renderPageServerEntryRecursive_onError(
 
   // Handle `throw redirect()` and `throw render()` while rendering nominal page
   if (isAbortError(err)) {
-    const handled = await handleAbort(
-      err,
-      pageContextBegin,
-      pageContextNominalPageBegin,
-      requestId,
-      pageContextErrorPageInit,
-      globalContext,
-    )
+    const handled = await handleAbort(err, pageContextBegin, pageContextNominalPageBegin, requestId, globalContext)
     if (handled.pageContextReturn) {
       // - throw redirect()
       // - throw render(url)
-      // - throw render(abortStatusCode) if pageContext.json request
       return handled.pageContextReturn
     } else {
-      // - throw render(abortStatusCode) if not pageContext.json request
+      // - throw render(abortStatusCode)
       objectAssign(pageContextErrorPageInit, handled.pageContextAbort)
     }
   }
@@ -334,7 +320,6 @@ async function renderPageServerEntryRecursive_onError(
         // The error page is the page that aborted
         pageContextErrorPageInit,
         requestId,
-        pageContextErrorPageInit,
         globalContext,
       )
       if (handled.pageContextReturn) {
@@ -589,7 +574,6 @@ async function handleAbort(
   // handleAbortError() creates a new pageContext object and we don't merge pageContextNominalPageBegin to it: we only use some pageContextNominalPageBegin information.
   pageContextNominalPageBegin: PageContextBegin,
   requestId: number,
-  pageContextErrorPageInit: Omit<PageContext_loadPageConfigsLazyServerSide, 'pageId'>,
   globalContext: GlobalContextServerInternal,
 ) {
   logAbort(errAbort, globalContext._isProduction, pageContextNominalPageBegin)
@@ -609,28 +593,8 @@ async function handleAbort(
   assert(pageContextAddendumAbort === pageContextAbort)
 
   // Client-side navigation — [`pageContext.json` request](https://vike.dev/pageContext.json)
-  if (pageContextBegin.isClientSideNavigation) {
-    let pageContextJson: string | ReadableStream<Uint8Array>
-    if (pageContextAbort.abortStatusCode) {
-      const errorPageId = getErrorPageId(globalContext._pageFilesAll, globalContext._pageConfigs)
-      const abortCall = pageContextAbort._abortCall
-      assert(abortCall)
-      assertUsage(
-        errorPageId,
-        `You called ${pc.cyan(
-          abortCall,
-        )} but you didn't define an error page, make sure to define one https://vike.dev/error-page`,
-      )
-      objectAssign(pageContext, { pageId: errorPageId })
-      objectAssign(pageContext, pageContextErrorPageInit, true)
-      // Overrides `is404: false` of pageContextErrorPageInit, e.g. `throw render(404)` => `is404: true`
-      objectAssign(pageContext, pageContextAbort)
-      updateType(pageContext, await loadPageConfigsLazyServerSide(pageContext))
-      // We include pageContextInit: we don't only serialize pageContextAbort because the error page may need to access pageContextInit
-      pageContextJson = getPageContextJson(pageContext)
-    } else {
-      pageContextJson = getPageContextClientSerializedAbort(pageContextAbort, false)
-    }
+  if (pageContextBegin.isClientSideNavigation && !pageContextAbort.abortStatusCode) {
+    const pageContextJson = getPageContextClientSerializedAbort(pageContextAbort, false)
     const httpResponse = await createHttpResponsePageJson(pageContextJson, pageContext)
     objectAssign(pageContext, { httpResponse })
     return { pageContextReturn: pageContext }
@@ -650,8 +614,19 @@ async function handleAbort(
     return { pageContextReturn: pageContext }
   }
 
-  // Render error page — `throw render(abortStatusCode)` if not pageContext.json request
+  // Render error page — `throw render(abortStatusCode)`
   assert(pageContextAbort.abortStatusCode)
+  if (pageContextBegin.isClientSideNavigation) {
+    const errorPageId = getErrorPageId(globalContext._pageFilesAll, globalContext._pageConfigs)
+    const abortCall = pageContextAbort._abortCall
+    assert(abortCall)
+    assertUsage(
+      errorPageId,
+      `You called ${pc.cyan(
+        abortCall,
+      )} but you didn't define an error page, make sure to define one https://vike.dev/error-page`,
+    )
+  }
   return { pageContextAbort }
 }
 
