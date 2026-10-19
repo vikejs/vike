@@ -1,4 +1,5 @@
 export { testNestedLayout }
+export { nav }
 
 import { test, page, getServerUrl, expect, autoRetry } from '@brillout/test-e2e'
 import { testCounter } from '../../../utils'

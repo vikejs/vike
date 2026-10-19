@@ -15,7 +15,7 @@ async function onBeforeRenderClient(pageContext: PageContextClient) {
   assert(pageContext.globalContext.isClientSide)
 
   // TEST: only the last three pageContexts are kept in memory
-  assert(!pageContext.previousPageContext?.previousPageContext?.previousPageContext)
+  window.pageContextLastRendered = pageContext
 
   // TEST: the page on screen keeps its previousPageContext while the next page renders
   if (
@@ -33,4 +33,8 @@ async function onBeforeRenderClient(pageContext: PageContextClient) {
   assert((await getGlobalContext()).isClientSide)
   assert((await getGlobalContextAsync(import.meta.env.PROD)).isClientSide)
   assert(getGlobalContextSync().isClientSide)
+}
+
+declare global {
+  var pageContextLastRendered: PageContextClient | undefined
 }

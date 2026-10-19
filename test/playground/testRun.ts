@@ -3,7 +3,7 @@ export { testRun }
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { testRunClassic } from '../../test/utils'
+import { testCounter, testRunClassic } from '../../test/utils'
 
 process.env.PUBLIC_ENV__TEST = 'true'
 
@@ -23,14 +23,14 @@ import { testSettingOnlyAvailableInCorrectEnv } from './pages/config-meta/env/e2
 import { testDynamicImportFileEnv } from './pages/dynamic-import-file-env/e2e-test'
 import { testMarkdown, testMarkdownClientFile, testMarkdownSideExports } from './pages/markdown/e2e-test'
 import { testNavigateEarly } from './pages/navigate-early/e2e-test'
-import { testNestedLayout } from './pages/nested-layout/e2e-test'
+import { nav, testNestedLayout } from './pages/nested-layout/e2e-test'
 import { testProgrammaticPage } from './pages/programmatically-defined/e2e-test'
 import { testPrerenderSettings } from './pages/prerender.e2e-test'
 import { testHistoryPushState } from './pages/pushState/e2e-test'
 import { testStarWars } from './pages/star-wars/e2e-test'
 import { testStreamedValues } from './pages/streamed-values/e2e-test'
 import { testDefaultAndClearSuffixes } from './pages/config-meta/default-clear/e2e-test'
-import { expect, fetchHtml, isCI, skip, test } from '@brillout/test-e2e'
+import { expect, fetchHtml, getServerUrl, isCI, page, skip, test } from '@brillout/test-e2e'
 import { testOtherFrameworkNavigation } from './e2e-test'
 import { testGuardClientOnly } from './pages/guard-client-only/e2e-test'
 import { testContent } from './pages/content/e2e-test'
@@ -65,6 +65,7 @@ function testRun(
   testNavigateEarly()
   testDynamicImportFileEnv({ isDev })
   testNestedLayout()
+  testPreviousPageContext()
   testProgrammaticPage()
   testDefaultAndClearSuffixes()
   testHistoryPushState()
@@ -82,5 +83,26 @@ function testBuildFileNames(isDev: boolean) {
     expect(html.split('<link rel="stylesheet"').length).toBe(2)
     // The client doesn't get the server's file names (`.mjs`), also with a root `build.rollupOptions.output`
     expect(html).not.toContain('.mjs')
+  })
+}
+
+function testPreviousPageContext() {
+  test('only the last three pageContexts are kept in memory', async () => {
+    await page.goto(getServerUrl() + '/nested-layout/42')
+    await testCounter()
+    await nav('/nested-layout/42/reviews')
+    await nav('/nested-layout/42/pricing')
+    await nav('/nested-layout/42')
+    await nav('/nested-layout/42/reviews')
+    const previousPageContextsLength = await page.evaluate(() => {
+      let length = 0
+      let pageContext = window.pageContextLastRendered?.previousPageContext
+      while (pageContext) {
+        length++
+        pageContext = pageContext.previousPageContext
+      }
+      return length
+    })
+    expect(previousPageContextsLength).toBe(2)
   })
 }
