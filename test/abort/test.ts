@@ -117,6 +117,20 @@ function testRun(
     })
   }
 
+  test('render(404) - client-side routing', async () => {
+    await page.goto(getServerUrl() + '/about')
+    await expectUrl('/about')
+    await hydrationDone()
+    const done = expectPageContextJsonRequest(pageContextInitIsPassedToClient)
+    await page.click('a[href="/render-404"]')
+    await autoRetry(async () => {
+      expect(await page.textContent('p')).toBe('Page not found.')
+    })
+    done()
+    await expectUrl('/render-404')
+    await ensureWasClientSideRouted('/pages/about')
+  })
+
   test('permanent redirect', async () => {
     const url = getServerUrl() + '/permanent-redirect'
     // server-side

@@ -20,6 +20,7 @@ export type PageContextCustom = {
   }
   title?: string
   abortReason?: string
+  errorDescription?: string
 }
 
 type PageContextServer = PageContextBuiltInServer<Page> & PageContextCustom
