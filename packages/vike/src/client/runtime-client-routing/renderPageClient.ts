@@ -76,6 +76,7 @@ const globalObject = getGlobalObject<{
   isTransitioning?: true
   //https://vike.dev/pageContext#previousPageContext
   previousPageContext?: PreviousPageContext
+  pageContextBeforePrevious?: PreviousPageContext
   renderedPageContext?: PageContextInternalClient & PageContext_loadPageConfigsLazyClientSide
   currentPageContext?: Record<string, unknown>
   hydrationAwaitPromise: Promise<void>
@@ -507,8 +508,10 @@ async function renderPageClient(renderArgs: RenderArgs) {
     }
 
     changeUrl(urlOriginal, overwriteLastHistoryEntry)
-    // Only keep the previous pageContext, not all past pageContexts
-    if (globalObject.previousPageContext) globalObject.previousPageContext.previousPageContext = null
+    // Only keep the current pageContext, the previous one, and the one before it
+    // - Otherwise all past pageContexts are kept in memory
+    if (globalObject.pageContextBeforePrevious) globalObject.pageContextBeforePrevious.previousPageContext = null
+    globalObject.pageContextBeforePrevious = globalObject.previousPageContext
     globalObject.previousPageContext = pageContext
     // There should never be concurrent onRenderClient() calls
     assert(globalObject.onRenderClientPreviousPromise === undefined)
