@@ -623,6 +623,8 @@ async function handleAbort(
       )
       objectAssign(pageContext, { pageId: errorPageId })
       objectAssign(pageContext, pageContextErrorPageInit, true)
+      // Overrides `is404: false` of pageContextErrorPageInit, e.g. `throw render(404)` => `is404: true`
+      objectAssign(pageContext, pageContextAbort)
       updateType(pageContext, await loadPageConfigsLazyServerSide(pageContext))
       // We include pageContextInit: we don't only serialize pageContextAbort because the error page may need to access pageContextInit
       pageContextJson = getPageContextJson(pageContext)

@@ -16,6 +16,7 @@ function Layout({ children, pageContext }: { children: React.ReactNode; pageCont
             <Nav href="/redirect" />
             <Nav href="/render-homepage" />
             <Nav href="/show-error-page" />
+            <Nav href="/render-404" />
             <Nav href="/permanent-redirect" />
             <Nav href="/redirect-external" />
             <Nav href="/star-wars-api/films/1.json" />
