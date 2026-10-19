@@ -1,7 +1,9 @@
 export { pluginStaticReplace }
 
 import type { Plugin, ResolvedConfig } from 'vite'
+import pc from '@brillout/picocolors'
 import { createDebug } from '../../../utils/debug.js'
+import { joinEnglish } from '../../../utils/joinEnglish.js'
 import { assert, assertUsage } from '../../../utils/assert.js'
 import { isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 import { VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
@@ -85,10 +87,20 @@ function getStaticReplaceList(vikeConfig: VikeConfigInternal): StaticReplace[] {
   const staticReplaceConfigs = vikeConfig._from.configsCumulative.staticReplace
   if (!staticReplaceConfigs) return []
 
+  const envs = ['server', 'client', ...vikeConfig._additionalEnvironmentNames]
   const staticReplaceList: StaticReplace[] = []
   for (const configValue of staticReplaceConfigs.values) {
     const entries = configValue.value as StaticReplace[]
     assert(Array.isArray(entries))
+    entries.forEach(({ env }) => {
+      assertUsage(
+        env === undefined || envs.includes(env),
+        `${configValue.definedAt} sets ${pc.cyan('env')} to ${pc.cyan(JSON.stringify(env))} but it should be ${joinEnglish(
+          envs.map((e) => pc.cyan(JSON.stringify(e))),
+          'or',
+        )}`,
+      )
+    })
     staticReplaceList.push(...entries)
   }
 
