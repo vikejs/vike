@@ -3,6 +3,7 @@ export { getPageContextFromHooksClient_firstRender }
 export { getPageContextFromHooksServer }
 export { getPageContextFromHooksServer_firstRender }
 export { setPageContextInitIsPassedToClient }
+export { processPageContextFromServer }
 export type { PageContextFromHooksServer }
 
 import { assert, assertUsage, getProjectError } from '../../utils/assert.js'
