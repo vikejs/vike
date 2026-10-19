@@ -13,8 +13,8 @@ async function onBeforeRenderClient(pageContext: PageContextClient) {
   assert(pageContext.isClientSide)
   assert(pageContext.globalContext.isClientSide)
 
-  // TEST: only the previous pageContext is kept in memory
-  assert(!pageContext.previousPageContext?.previousPageContext)
+  // TEST: only the last three pageContexts are kept in memory
+  assert(!pageContext.previousPageContext?.previousPageContext?.previousPageContext)
 
   // TEST: getGlobalContext()
   assert((await getGlobalContext()).isClientSide)
