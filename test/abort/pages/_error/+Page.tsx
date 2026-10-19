@@ -29,6 +29,7 @@ function Page() {
       <div>
         <h1>{abortStatusCode}</h1>
         <p style={{ fontSize: '1.3em' }}>{abortReason}</p>
+        <p id="data">{JSON.stringify(pageContext.data)}</p>
         <Counter />
       </div>
     </Center>

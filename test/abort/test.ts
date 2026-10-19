@@ -107,6 +107,11 @@ function testRun(
       expect(await page.textContent('p')).toBe('Testing throw render error page.')
       await expectUrl('/show-error-page')
       await ensureWasClientSideRouted('/pages/about')
+      // guard() is called on the server-side => the error page's data() is called on the server-side
+      if (isMakingPageContextJsonRequest)
+        expect(await page.textContent('#data')).toBe(
+          '{"abortStatusCode":499,"abortReason":"Testing throw render error page."}',
+        )
       if (
         // guard() is called on the client-side => warning is shown on the server-side (not on the client-side)
         !isMakingPageContextJsonRequest &&
