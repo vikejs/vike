@@ -27,11 +27,11 @@ const config = {
   enableWorker: true,
   workerGreeting: 'Hello from the worker environment',
   // The `server` entry doesn't apply to the worker environment
-  staticReplace: ['server', 'worker'].map((env) => ({
+  staticReplace: ['server', 'worker'].map((env, arg) => ({
     env,
-    filter: 'getStaticReplaceEnv',
+    filter: 'getStaticReplaceEnvs',
     type: 'call',
-    match: { function: 'getStaticReplaceEnv' },
-    replace: { with: env },
+    match: { function: 'getStaticReplaceEnvs' },
+    replace: { arg, with: env },
   })),
 }

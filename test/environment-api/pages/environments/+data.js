@@ -1,7 +1,7 @@
 export { data }
 
 import viteEnvironmentName from 'virtual:environment-name'
-import { getStaticReplaceEnv } from './getStaticReplaceEnv'
+import { getStaticReplaceEnvs } from './getStaticReplaceEnvs'
 
 async function data(pageContext) {
   const { worker: workerEnvironment } = pageContext.environments
@@ -12,7 +12,7 @@ async function data(pageContext) {
       hasWorkerConfig: ['getWorkerInfo', 'workerGreeting'].some((name) => name in pageContext.config),
       writtenByWorker: pageContext.writtenByWorker,
       workerGreeting: workerEnvironment.config.workerGreeting,
-      staticReplaceEnv: getStaticReplaceEnv(),
+      staticReplaceEnvs: getStaticReplaceEnvs(null, null),
     },
     worker,
   }

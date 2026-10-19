@@ -1,7 +1,7 @@
 export { getWorkerInfo }
 
 import viteEnvironmentName from 'virtual:environment-name'
-import { getStaticReplaceEnv } from './getStaticReplaceEnv'
+import { getStaticReplaceEnvs } from './getStaticReplaceEnvs'
 
 function getWorkerInfo(pageContext, greetingPrefix) {
   // Shared with the server environment
@@ -11,6 +11,6 @@ function getWorkerInfo(pageContext, greetingPrefix) {
     configNames: Object.keys(pageContext.config).sort(),
     workerGreeting: `${greetingPrefix} ${pageContext.config.workerGreeting}`,
     urlPathname: pageContext.urlPathname,
-    staticReplaceEnv: getStaticReplaceEnv(),
+    staticReplaceEnvs: getStaticReplaceEnvs(null, null),
   }
 }

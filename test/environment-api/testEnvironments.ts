@@ -11,7 +11,7 @@ function testEnvironments() {
         hasWorkerConfig: false,
         writtenByWorker: true,
         workerGreeting: 'Hello from the worker environment',
-        staticReplaceEnv: 'server',
+        staticReplaceEnvs: ['server'],
       }),
     )
     expect(html).toContain(
@@ -20,7 +20,7 @@ function testEnvironments() {
         configNames: ['getWorkerInfo', 'workerGreeting'],
         workerGreeting: 'Worker: Hello from the worker environment',
         urlPathname: '/environments',
-        staticReplaceEnv: 'worker',
+        staticReplaceEnvs: ['worker'],
       }),
     )
   })
