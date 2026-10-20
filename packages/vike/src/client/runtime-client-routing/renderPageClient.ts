@@ -153,7 +153,8 @@ async function renderPageClient(renderArgs: RenderArgs) {
     if (isRenderOutdated()) return
   }
 
-  // The previous onRenderClient() can use `pageContext.clientAbortSignal` to finish early.
+  // The previous onRenderClient() can use pageContext.clientAbortSignal to abort rendering
+  // https://vike.dev/pageContext#abortSignal
   globalObject.onRenderClientPreviousAbortController?.abort()
 
   // Ensure no concurrent onRenderClient() calls.
