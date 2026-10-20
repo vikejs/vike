@@ -63,6 +63,34 @@ If you create `/pages/star-wars/+onRenderClient.js` then you define how `/pages/
 By defining multiple `onRenderClient()` hooks, you can define different renderings for different pages. See <Link href='/multiple-renderer' />.
 
 
+## Abort signal
+
+Vike waits for `onRenderClient()` to finish before rendering the next page.
+
+If your `onRenderClient()` waits (e.g. until your UI framework shows the page), then use `pageContext.abortSignal` to finish as soon as the user navigates to another page:
+
+```ts
+// +onRenderClient.ts
+// Environment: client
+
+export { onRenderClient }
+
+import type { PageContextClient } from 'vike/types'
+import { renderToDom, onPageShown } from 'some-ui-framework'
+
+async function onRenderClient(pageContext: PageContextClient) {
+  const { Page } = pageContext
+  renderToDom(Page)
+
+  // Finish once the page is shown, or once the user navigates to another page:
+  await new Promise((resolve) => {
+    onPageShown(resolve)
+    pageContext.abortSignal!.addEventListener('abort', resolve)
+  })
+}
+```
+
+
 ## See also
 
 - <Link href="/onBeforeRenderClient" />

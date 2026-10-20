@@ -317,6 +317,10 @@ The `isHistoryNavigation` property is only defined when using <Link href="/clien
 
 Upon client-side page navigation, you can use `pageContext.previousPageContext` to access the `pageContext` of the previous page. See <Link href="#lifecycle" />.
 
+<Prop id="abortSignal" />
+
+An [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal) that is aborted when the user navigates to another page while <Link href="/onRenderClient">`onRenderClient()`</Link> is still rendering the page, see <Link href="/onRenderClient#abort-signal" />.
+
 <Prop id="is404" />
 
 If an error occurs, whether the error is a `404 Page Not Found` or a `500 Internal Error`, see <Link href="/error-page" />.

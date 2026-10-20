@@ -72,6 +72,7 @@ const globalObject = getGlobalObject<{
   clientRoutingIsDisabled?: true
   renderCounter: number
   onRenderClientPreviousPromise?: Promise<unknown>
+  onRenderClientPreviousAbortController?: AbortController
   isFirstRenderDone?: true
   isTransitioning?: true
   //https://vike.dev/pageContext#previousPageContext
@@ -153,6 +154,8 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
   // Ensure no concurrent onRenderClient() calls.
   // - We could `await globalObject.onRenderClientPreviousPromise` later just before execHookOnRenderClient() but we prefer doing it early to ensure `getPageContext() === usePageContext()` (and maybe it prevents other potential inconsistencies?).
+  // - The previous onRenderClient() can use `pageContext.abortSignal` to finish early.
+  globalObject.onRenderClientPreviousAbortController?.abort()
   await globalObject.onRenderClientPreviousPromise
   if (isRenderOutdated()) return
 
@@ -510,6 +513,8 @@ async function renderPageClient(renderArgs: RenderArgs) {
     globalObject.previousPageContext = pageContext
     // There should never be concurrent onRenderClient() calls
     assert(globalObject.onRenderClientPreviousPromise === undefined)
+    const abortController = new AbortController()
+    objectAssign(pageContext, { abortSignal: abortController.signal })
     const onRenderClientPromise = (async () => {
       let onRenderClientError: unknown
       try {
@@ -519,10 +524,12 @@ async function renderPageClient(renderArgs: RenderArgs) {
         onRenderClientError = err
       }
       globalObject.onRenderClientPreviousPromise = undefined
+      globalObject.onRenderClientPreviousAbortController = undefined
       globalObject.isFirstRenderDone = true
       return onRenderClientError
     })()
     globalObject.onRenderClientPreviousPromise = onRenderClientPromise
+    globalObject.onRenderClientPreviousAbortController = abortController
     const onRenderClientError = await onRenderClientPromise
     if (onRenderClientError) {
       await onError(onRenderClientError)
