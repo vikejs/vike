@@ -1,11 +1,14 @@
 export default Page
 
-import React from 'react'
+import React, { useState } from 'react'
 import { useData } from 'vike-react/useData'
+import { getPageContext } from 'vike/getPageContext'
 
 function Page() {
   const data = useData()
   const { timestamp } = data
+  const [timestampClient, setTimestampClient] = useState()
+  const [isLinkAdded, setIsLinkAdded] = useState(false)
   return (
     <>
       <h1>pushState</h1>
@@ -24,6 +27,18 @@ function Page() {
       <p>
         Timestamp fetched from server: <span id="timestamp">{timestamp}</span>
       </p>
+      <button onClick={() => setTimestampClient(getPageContext({ asyncHook: true }).data.timestamp)}>
+        Read getPageContext()
+      </button>
+      <p>
+        Timestamp of <code>getPageContext()</code>: <span id="timestamp-client">{timestampClient}</span>
+      </p>
+      <button onClick={() => setIsLinkAdded(true)}>Add link</button>
+      {isLinkAdded && (
+        <a id="link-added" href="/about">
+          Added link
+        </a>
+      )}
     </>
   )
 }

@@ -25,10 +25,33 @@ function testHistoryPushState() {
     expect(timestamp3).toBe(timestamp2)
 
     // Navigating back doesn't trigger a re-render, thus timestamp doesn't change
+    await page.evaluate(() => ((window as any).pageTransitionHooks = []))
     await page.goBack()
     await expectUrl('/pushState')
     const timestamp4 = await getTimestamp()
     expect(timestamp4).toBe(timestamp2)
+    // The page transition started by navigating back ends
+    await autoRetry(async () => {
+      expect(await page.evaluate(() => (window as any).pageTransitionHooks.join())).toBe('start,end')
+    })
+    // getPageContext() returns the pageContext of the page that is shown
+    await page.click('button:has-text("Read getPageContext()")')
+    await autoRetry(async () => {
+      expect(await page.textContent('#timestamp-client')).toBe(String(timestamp2))
+    })
+    // Links added afterwards are prefetched
+    // - Wait for Vike's pending link scans, so that only watching the DOM can find the link
+    await sleep(1000)
+    const requests: string[] = []
+    const onRequest = (request: { url(): string }) => requests.push(request.url())
+    page.on('request', onRequest)
+    await page.click('button:has-text("Add link")')
+    await autoRetry(async () => {
+      await page.mouse.move(0, 0)
+      await page.hover('#link-added')
+      expect(requests.some((url) => url.includes('about-page'))).toBe(true)
+    })
+    page.removeListener('request', onRequest)
     await page.goForward()
     await expectUrl('/pushState?query')
     const timestamp5 = await getTimestamp()
