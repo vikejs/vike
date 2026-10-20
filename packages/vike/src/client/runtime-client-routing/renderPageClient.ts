@@ -51,6 +51,7 @@ import {
   type PageContextAborted,
 } from '../../shared-server-client/route/abort.js'
 import { route } from '../../shared-server-client/route/index.js'
+import { forkPageContext } from '../../shared-server-client/forkPageContext.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { isScrollPosition, setScrollPosition, type ScrollTarget } from './setScrollPosition.js'
 import { scrollRestoration_initialRenderIsDone } from './scrollRestoration.js'
@@ -760,22 +761,27 @@ function getPageContextClient(): PageContextClient | null {
   return getPageContextPublicClient(pageContext as any) as any
 }
 
-/** A new `pageContext` of the page `pageContext` renders, with the values the server sent on top: the object `pageContext` stays as it is */
-function createPageContextFromServer<PageContext extends PageContextClient>(
-  pageContext: PageContext,
+/**
+ * Creates a new `pageContext` for the page that `pageContext` renders, with the values of `pageContextFromServer` on top.
+ * - `pageContext` and `pageContextFromServer` aren't modified
+ * - Unless a navigation has started, getPageContextClient() and the next navigation's `pageContext.previousPageContext` return the new `pageContext`
+ */
+function createPageContextFromServer(
+  pageContext: PageContextClient,
   pageContextFromServer: Record<string, unknown>,
-): PageContext {
+): PageContextClient {
   const pageContextFromServerCopy = { ...pageContextFromServer }
   processPageContextFromServer(pageContextFromServerCopy)
-  const pageContextNew = {}
-  objectAssign(pageContextNew, (pageContext as PageContext & { _originalObject: object })._originalObject, true)
+  const pageContextNew = forkPageContext(
+    (pageContext as PageContextClient & { _originalObject: Record<string, unknown> })._originalObject,
+  )
   objectAssign(pageContextNew, pageContextFromServerCopy)
-  // Unless a navigation has started: it sets currentPageContext right away and previousPageContext once it renders
+  // A navigation sets currentPageContext when it starts and previousPageContext when it renders
   if (globalObject.currentPageContext === globalObject.previousPageContext) {
     globalObject.currentPageContext = pageContextNew
     globalObject.previousPageContext = pageContextNew as PreviousPageContext
   }
-  return getPageContextPublicClient(pageContextNew as Parameters<typeof getPageContextPublicClient>[0]) as PageContext
+  return getPageContextPublicClient(pageContextNew as any) as any
 }
 
 type PageContextExecuteHook = Omit<
