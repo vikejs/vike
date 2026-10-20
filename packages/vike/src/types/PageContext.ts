@@ -327,7 +327,7 @@ type PageContextBuiltInClientWithClientRouting<Data> = Partial<PageContextBuiltI
      */
     previousPageContext: PageContextClient<Data> | null
     /**
-     * Abort signal when the user navigates to another page while +onRenderClient is still rendering the current page.
+     * Abort signal when the user navigates to another page.
      *
      * https://vike.dev/pageContext#clientAbortSignal
      */
