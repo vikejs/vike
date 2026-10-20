@@ -153,7 +153,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     if (isRenderOutdated()) return
   }
 
-  // The previous onRenderClient() can use `pageContext.abortSignal` to finish early.
+  // The previous onRenderClient() can use `pageContext.clientAbortSignal` to finish early.
   globalObject.onRenderClientPreviousAbortController?.abort()
 
   // Ensure no concurrent onRenderClient() calls.
@@ -521,7 +521,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     // There should never be concurrent onRenderClient() calls
     assert(globalObject.onRenderClientPreviousPromise === undefined)
     const abortController = new AbortController()
-    objectAssign(pageContext, { abortSignal: abortController.signal })
+    objectAssign(pageContext, { clientAbortSignal: abortController.signal })
     const onRenderClientPromise = (async () => {
       let onRenderClientError: unknown
       try {
