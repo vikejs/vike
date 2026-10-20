@@ -14,6 +14,7 @@ export type { LogType }
 export type { AddAssertTagsDev }
 
 import { isAbortError } from '../../../shared-server-client/route/abort.js'
+import { isAbortSignalError } from '../../../shared-server-client/isAbortSignalError.js'
 import { getViteConfig } from '../../../server/runtime/globalContext.js'
 import {
   assertPageContext_logRuntime,
@@ -78,6 +79,8 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
   if (isAbortError(err) && !isDebugError()) {
     return
   }
+  // Skip errors caused by the client disconnecting (`pageContext.abortSignal`)
+  if (isAbortSignalError(err, pageContext?.abortSignal)) return
 
   const tagSource = getTagSource(pageContext?._requestId)
   const logErr = (err: unknown) => {
