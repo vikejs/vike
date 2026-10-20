@@ -2,6 +2,7 @@ export { renderPageClient }
 export { getRenderCount }
 export { disableClientRouting }
 export { getPageContextClient }
+export { createPageContextFromServer }
 export type { PageContextBegin }
 export type { PageContextInternalClientAfterRender }
 
@@ -22,6 +23,7 @@ import {
   getPageContextFromHooksServer_firstRender,
   type PageContextFromHooksServer,
   setPageContextInitIsPassedToClient,
+  processPageContextFromServer,
 } from './getPageContextFromHooks.js'
 import { cancelStreamedValues } from './streamedValues.js'
 import { createPageContextClient, type PageContextCreatedClient } from './createPageContextClient.js'
@@ -756,6 +758,24 @@ function getPageContextClient(): PageContextClient | null {
   const pageContext = globalObject.currentPageContext
   if (!pageContext) return null
   return getPageContextPublicClient(pageContext as any) as any
+}
+
+/** A new `pageContext` of the page `pageContext` renders, with the values the server sent on top: the object `pageContext` stays as it is */
+function createPageContextFromServer<PageContext extends PageContextClient>(
+  pageContext: PageContext,
+  pageContextFromServer: Record<string, unknown>,
+): PageContext {
+  const pageContextFromServerCopy = { ...pageContextFromServer }
+  processPageContextFromServer(pageContextFromServerCopy)
+  const pageContextNew = {}
+  objectAssign(pageContextNew, (pageContext as PageContext & { _originalObject: object })._originalObject, true)
+  objectAssign(pageContextNew, pageContextFromServerCopy)
+  // Unless a navigation has started: it sets currentPageContext right away and previousPageContext once it renders
+  if (globalObject.currentPageContext === globalObject.previousPageContext) {
+    globalObject.currentPageContext = pageContextNew
+    globalObject.previousPageContext = pageContextNew as PreviousPageContext
+  }
+  return getPageContextPublicClient(pageContextNew as Parameters<typeof getPageContextPublicClient>[0]) as PageContext
 }
 
 type PageContextExecuteHook = Omit<
