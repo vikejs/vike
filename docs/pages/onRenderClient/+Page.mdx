@@ -85,7 +85,7 @@ async function onRenderClient(pageContext: PageContextClient) {
   // Finish once the page is shown, or once the user navigates to another page:
   await new Promise((resolve) => {
     onPageShown(resolve)
-    pageContext.abortSignal!.addEventListener('abort', resolve)
+    pageContext.abortSignal.addEventListener('abort', resolve)
   })
 }
 ```
