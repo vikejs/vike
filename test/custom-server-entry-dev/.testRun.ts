@@ -1,6 +1,6 @@
 export { testRun }
 
-import { test, expect, fetchHtml, autoRetry, editFile, editFileRevert } from '@brillout/test-e2e'
+import { test, expect, fetchHtml, autoRetry, editFile, editFileRevert, page } from '@brillout/test-e2e'
 import { testRunClassic, sleepBeforeEditFile } from '../utils'
 
 function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
@@ -22,6 +22,9 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
 
   if (isDev) {
     test('+serverEntry.ts is re-run upon modification of a file it imports', async () => {
+      // Upon server restart, Vite's client reloads the page => we leave the page
+      // - Otherwise the test can end while the server is still rendering the reloaded page
+      await page.goto('about:blank')
       const org = 'Hello from +serverEntry.ts'
       const mod = 'Hello from modified +serverEntry.ts'
       // autoRetry() because the server restarts
