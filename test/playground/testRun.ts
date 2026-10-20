@@ -30,7 +30,7 @@ import { testHistoryPushState } from './pages/pushState/e2e-test'
 import { testStarWars } from './pages/star-wars/e2e-test'
 import { testStreamedValues } from './pages/streamed-values/e2e-test'
 import { testDefaultAndClearSuffixes } from './pages/config-meta/default-clear/e2e-test'
-import { expect, expectLog, fetchHtml, getServerUrl, isCI, page, skip, test } from '@brillout/test-e2e'
+import { expect, fetchHtml, getServerUrl, isCI, page, skip, test } from '@brillout/test-e2e'
 import { testOtherFrameworkNavigation } from './e2e-test'
 import { testGuardClientOnly } from './pages/guard-client-only/e2e-test'
 import { testContent } from './pages/content/e2e-test'
@@ -96,17 +96,13 @@ function testPreviousPageContext() {
     await nav('/nested-layout/42/reviews')
     const previousPageContextsLength = await page.evaluate(() => {
       let length = 0
-      // Walk the deprecated `_previousPageContext`: it returns `previousPageContext`, so both are checked
-      let pageContext = (window.pageContextLastRendered as any)?._previousPageContext
+      let pageContext = window.pageContextLastRendered?.previousPageContext
       while (pageContext) {
         length++
-        pageContext = pageContext._previousPageContext
+        pageContext = pageContext.previousPageContext
       }
       return length
     })
     expect(previousPageContextsLength).toBe(2)
-    expectLog('pageContext._previousPageContext has been renamed pageContext.previousPageContext', {
-      filter: (log) => log.logSource === 'Browser Warning',
-    })
   })
 }
