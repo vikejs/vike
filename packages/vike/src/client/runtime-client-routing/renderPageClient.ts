@@ -763,8 +763,10 @@ function getPageContextClient(): PageContextClient | null {
 
 /**
  * Creates a new `pageContext` for the page that `pageContext` renders, with the values of `pageContextFromServer` on top.
+ * - `pageContext` is the `pageContext` of the page rendered last
  * - `pageContext` and `pageContextFromServer` aren't modified
- * - Unless a navigation has started, getPageContextClient() and the next navigation's `pageContext.previousPageContext` return the new `pageContext`
+ * - The new `pageContext` is the `pageContext.previousPageContext` of the next navigation, including a navigation that has already started
+ * - Unless a navigation has started, `getPageContextClient()` returns the new `pageContext`
  */
 function createPageContextFromServer(
   pageContext: PageContextClient,
@@ -776,11 +778,13 @@ function createPageContextFromServer(
     (pageContext as PageContextClient & { _originalObject: Record<string, unknown> })._originalObject,
   )
   objectAssign(pageContextNew, pageContextFromServerCopy)
-  // A navigation sets currentPageContext when it starts and previousPageContext when it renders
+  // A navigation sets currentPageContext and reads previousPageContext when it starts, and sets previousPageContext when it renders
   if (globalObject.currentPageContext === globalObject.previousPageContext) {
     globalObject.currentPageContext = pageContextNew
-    globalObject.previousPageContext = pageContextNew as PreviousPageContext
+  } else {
+    globalObject.currentPageContext!.previousPageContext = getPageContextPublicClient(pageContextNew as any)
   }
+  globalObject.previousPageContext = pageContextNew as PreviousPageContext
   return getPageContextPublicClient(pageContextNew as any) as any
 }
 
