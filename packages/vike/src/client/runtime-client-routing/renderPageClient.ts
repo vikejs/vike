@@ -72,7 +72,10 @@ const globalObject = getGlobalObject<{
   clientRoutingIsDisabled?: true
   renderCounter: number
   onRenderClientPreviousPromise?: Promise<unknown>
-  abortController?: AbortController
+  // The navigation that is loading or rendering its page
+  abortControllerNavigation?: AbortController
+  // The page that is shown
+  abortControllerPage?: AbortController
   isFirstRenderDone?: true
   isTransitioning?: true
   //https://vike.dev/pageContext#previousPageContext
@@ -157,9 +160,10 @@ async function renderPageClient(renderArgs: RenderArgs) {
   }
 
   // Abort the previous navigation: its hooks can use pageContext.abortSignal to stop, e.g. data fetching or onRenderClient() rendering
+  // - The page that is shown keeps its pageContext.abortSignal until another page is rendered (e.g. going back to a history.pushState() entry of the same page doesn't render)
   // https://vike.dev/pageContext#abortSignal
-  globalObject.abortController?.abort()
-  globalObject.abortController = abortController
+  globalObject.abortControllerNavigation?.abort()
+  globalObject.abortControllerNavigation = abortController
 
   // Ensure no concurrent onRenderClient() calls.
   // - We could `await globalObject.onRenderClientPreviousPromise` later just before execHookOnRenderClient() but we prefer doing it early to ensure `getPageContext() === usePageContext()` (and maybe it prevents other potential inconsistencies?).
@@ -526,6 +530,9 @@ async function renderPageClient(renderArgs: RenderArgs) {
       if (previousPageContextBefore) previousPageContextBefore.previousPageContext = null
     }
     globalObject.previousPageContext = pageContext
+    // The previous page is replaced
+    if (globalObject.abortControllerPage !== abortController) globalObject.abortControllerPage?.abort()
+    globalObject.abortControllerPage = abortController
     // There should never be concurrent onRenderClient() calls
     assert(globalObject.onRenderClientPreviousPromise === undefined)
     const onRenderClientPromise = (async () => {
@@ -537,6 +544,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
         onRenderClientError = err
       }
       globalObject.onRenderClientPreviousPromise = undefined
+      if (globalObject.abortControllerNavigation === abortController) globalObject.abortControllerNavigation = undefined
       globalObject.isFirstRenderDone = true
       return onRenderClientError
     })()
