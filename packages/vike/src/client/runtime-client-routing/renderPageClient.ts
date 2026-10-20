@@ -650,7 +650,7 @@ async function getPageContextBegin(
         showStackTrace: true,
         onlyOnce: true,
       })
-      return pageContext.previousPageContext
+      return this.previousPageContext
     },
     enumerable: false,
   })

@@ -24,7 +24,7 @@ function getPageContextPublicShared<PageContext extends PageContextPublicMinimum
           showStackTrace: true,
           onlyOnce: true,
         })
-        return (pageContext as any).pageId
+        return this.pageId
       },
       enumerable: false,
     })
