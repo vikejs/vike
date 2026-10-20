@@ -76,7 +76,8 @@ const globalObject = getGlobalObject<{
   isTransitioning?: true
   //https://vike.dev/pageContext#previousPageContext
   previousPageContext?: PreviousPageContext
-  renderedPageContext?: PageContextInternalClient & PageContext_loadPageConfigsLazyClientSide
+  renderedPageContext?: PageContextInternalClient &
+    PageContext_loadPageConfigsLazyClientSide & { previousPageContext: PreviousPageContext | null }
   currentPageContext?: Record<string, unknown>
   hydrationAwaitPromise: Promise<void>
   hydrationAwaitPromiseResolve: () => void
@@ -507,6 +508,11 @@ async function renderPageClient(renderArgs: RenderArgs) {
     }
 
     changeUrl(urlOriginal, overwriteLastHistoryEntry)
+    {
+      const previousPageContextBefore = globalObject.renderedPageContext?.previousPageContext
+      // Remove previousPageContext of past pages (otherwise all the past pageContext are kept in memory)
+      if (previousPageContextBefore) previousPageContextBefore.previousPageContext = null
+    }
     globalObject.previousPageContext = pageContext
     // There should never be concurrent onRenderClient() calls
     assert(globalObject.onRenderClientPreviousPromise === undefined)
@@ -641,7 +647,7 @@ async function getPageContextBegin(
         showStackTrace: true,
         onlyOnce: true,
       })
-      return previousPageContext
+      return pageContext.previousPageContext
     },
     enumerable: false,
   })
