@@ -48,6 +48,7 @@ import {
   type PageContextAbort,
   type PageContextAborted,
 } from '../../shared-server-client/route/abort.js'
+import { isAbortSignalError } from '../../shared-server-client/isAbortSignalError.js'
 import { route } from '../../shared-server-client/route/index.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { isScrollPosition, setScrollPosition, type ScrollTarget } from './setScrollPosition.js'
@@ -357,11 +358,8 @@ async function renderPageClient(renderArgs: RenderArgs) {
     const { err } = args
     assert(err)
 
-    // The error may be caused by the newer navigation aborting pageContext.abortSignal
-    if (isRenderOutdated()) return
-
     // Logging
-    if (!isAbortError(err)) {
+    if (!isAbortError(err) && !isAbortSignalError(err, abortController.signal)) {
       // We don't swallow 404 errors:
       //  - On the server-side, Vike swallows / doesn't show any 404 error log because it's expected that a user may go to some random non-existent URL. (We don't want to flood the app's error tracking with 404 logs.)
       //  - On the client-side, if the user navigates to a 404 then it means that the UI has a broken link. (It isn't expected that users can go to some random URL using the client-side router, as it would require, for example, the user to manually change the URL of a link by manually manipulating the DOM which highly unlikely.)
@@ -369,7 +367,11 @@ async function renderPageClient(renderArgs: RenderArgs) {
     } else {
       // We swallow throw redirect()/render() called by client-side hooks onBeforeRender()/data()/guard()
       // We handle the abort error down below.
+      // We swallow errors caused by the user navigating away, e.g. a hook's `fetch(url, { signal: pageContext.abortSignal })`
     }
+
+    // A newer navigation has started
+    if (isRenderOutdated()) return
 
     // pageContext
     const pageContext = await getPageContextBegin(true, pageContextBeginArgs)
