@@ -69,7 +69,7 @@ By defining multiple `onRenderClient()` hooks, you can define different renderin
 
 Upon client-side navigation, Vike waits for the previous `onRenderClient()` call to finish before rendering the next page.
 
-To prevent the previous `onRenderClient()` call from delaying the next page, you can use `pageContext.clientAbortSignal` to abort it:
+To prevent the previous `onRenderClient()` call from delaying the next page, you can use `pageContext.abortSignal` to abort it:
 
 ```ts
 // +onRenderClient.ts
@@ -88,7 +88,7 @@ async function onRenderClient(pageContext: PageContextClient) {
     // Resolve onRenderClient() once the page is rendered:
     rendering.onPageRendered(resolve)
     // Or once the user navigates to another page:
-    pageContext.clientAbortSignal.addEventListener('abort', resolve)
+    pageContext.abortSignal.addEventListener('abort', resolve)
   })
 }
 ```

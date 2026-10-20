@@ -272,7 +272,7 @@ type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
     isBackwardNavigation?: undefined
     isHistoryNavigation?: undefined
     previousPageContext?: undefined
-    clientAbortSignal?: undefined
+    abortSignal?: undefined
   }
 
 type PageContextBuiltInClientWithClientRouting<Data> = Partial<PageContextBuiltInCommon<Data>> &
@@ -329,9 +329,9 @@ type PageContextBuiltInClientWithClientRouting<Data> = Partial<PageContextBuiltI
     /**
      * Abort signal when the user navigates to another page.
      *
-     * https://vike.dev/pageContext#clientAbortSignal
+     * https://vike.dev/pageContext#abortSignal
      */
-    clientAbortSignal: AbortSignal
+    abortSignal: AbortSignal
     /**
      * List of previous `pageContext` aborted by `throw redirect()` or `throw render()` that led to the final rendered page.
      *
