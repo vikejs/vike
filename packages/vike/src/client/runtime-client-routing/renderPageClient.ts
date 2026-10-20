@@ -48,7 +48,6 @@ import {
   type PageContextAbort,
   type PageContextAborted,
 } from '../../shared-server-client/route/abort.js'
-import { isAbortSignalError } from '../../shared-server-client/isAbortSignalError.js'
 import { route } from '../../shared-server-client/route/index.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { isScrollPosition, setScrollPosition, type ScrollTarget } from './setScrollPosition.js'
@@ -359,15 +358,14 @@ async function renderPageClient(renderArgs: RenderArgs) {
     assert(err)
 
     // Logging
-    if (!isAbortError(err) && !isAbortSignalError(err, abortController.signal)) {
+    if (!isAbortError(err)) {
       // We don't swallow 404 errors:
       //  - On the server-side, Vike swallows / doesn't show any 404 error log because it's expected that a user may go to some random non-existent URL. (We don't want to flood the app's error tracking with 404 logs.)
       //  - On the client-side, if the user navigates to a 404 then it means that the UI has a broken link. (It isn't expected that users can go to some random URL using the client-side router, as it would require, for example, the user to manually change the URL of a link by manually manipulating the DOM which highly unlikely.)
-      logErrorClient(err)
+      logErrorClient(err, abortController.signal)
     } else {
       // We swallow throw redirect()/render() called by client-side hooks onBeforeRender()/data()/guard()
       // We handle the abort error down below.
-      // We swallow errors caused by the user navigating away, e.g. a hook's `fetch(url, { signal: pageContext.abortSignal })`
     }
 
     // A newer navigation has started
@@ -403,7 +401,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
          - An infinite reloading page is a even worse UX than a blank page.
       redirectHard(urlOriginal)
       */
-      logErrorClient(err)
+      logErrorClient(err, abortController.signal)
     }
 
     const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._globalContext._pageConfigs)
@@ -521,7 +519,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
       if (!isErrorPage) {
         await handleError({ err })
       } else {
-        logErrorClient(err)
+        logErrorClient(err, abortController.signal)
       }
     }
 

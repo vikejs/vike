@@ -1,9 +1,12 @@
 export { logErrorClient }
 
 import { isObject } from '../../utils/isObject.js'
+import { isAbortSignalError } from '../../shared-server-client/isAbortSignalError.js'
 import '../assertEnvClient.js'
 
-function logErrorClient(err: unknown) {
+function logErrorClient(err: unknown, abortSignal: AbortSignal) {
+  // Caused by the user navigating away, e.g. a hook's `fetch(url, { signal: pageContext.abortSignal })`
+  if (isAbortSignalError(err, abortSignal)) return
   if (
     isObject(err) &&
     // Set by vike-react
