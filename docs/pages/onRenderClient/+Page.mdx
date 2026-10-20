@@ -76,15 +76,15 @@ To prevent the previous `onRenderClient()` call from delaying the next page, you
 export { onRenderClient }
 
 import type { PageContextClient } from 'vike/types'
-import { renderToDom, onPageShown } from 'some-ui-framework'
+import { renderToDom, onPageRendered } from 'some-ui-framework'
 
 async function onRenderClient(pageContext: PageContextClient) {
   const { Page } = pageContext
   renderToDom(Page)
 
-  // Finish once the page is shown, or once the user navigates to another page:
+  // Finish once the page is rendered, or once the user navigates to another page:
   await new Promise((resolve) => {
-    onPageShown(resolve)
+    onPageRendered(resolve)
     pageContext.abortSignal.addEventListener('abort', resolve)
   })
 }
