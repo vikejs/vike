@@ -63,11 +63,11 @@ If you create `/pages/star-wars/+onRenderClient.js` then you define how `/pages/
 By defining multiple `onRenderClient()` hooks, you can define different renderings for different pages. See <Link href='/multiple-renderer' />.
 
 
-## Abort signal
+## Abort
 
-Vike waits for `onRenderClient()` to finish before rendering the next page.
+Upon client-side navigation, Vike waits for the previous `onRenderClient()` call to finish before rendering the next page.
 
-If your `onRenderClient()` waits (e.g. until your UI framework shows the page), then use `pageContext.abortSignal` to finish as soon as the user navigates to another page:
+To prevent the previous `onRenderClient()` call from delaying the next page, you can use `pageContext.abortSignal` to abort it:
 
 ```ts
 // +onRenderClient.ts
