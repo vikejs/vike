@@ -319,7 +319,13 @@ Upon client-side page navigation, you can use `pageContext.previousPageContext` 
 
 <Prop id="abortSignal" />
 
-An [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal) when the user navigates to another page while <Link href="/onRenderClient">`+onRenderClient`</Link> is still rendering the current page, see <Link href="/onRenderClient#abort-signal" />.
+An [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal) that your hooks can use to stop work that isn't needed anymore (e.g. `fetch(url, { signal: pageContext.abortSignal })` in <Link href="/data">`+data`</Link>). It aborts:
+- On the server-side, when the HTTP request is aborted (e.g. the user closes the browser tab).
+- On the client-side, when the user navigates to another page.
+
+> If you use <Link href="/renderPage">`renderPage()`</Link>, pass the request's signal as `pageContextInit.abortSignal` (otherwise it never aborts). Upon pre-rendering, it never aborts.
+
+> See also: <Link href="/onRenderClient#abort" />
 
 <Prop id="is404" />
 
