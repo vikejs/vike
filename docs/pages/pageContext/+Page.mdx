@@ -325,6 +325,8 @@ An [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal)
 
 > If you use <Link href="/renderPage">`renderPage()`</Link>, pass the request's signal as `pageContextInit.abortSignal` (otherwise it never aborts). Upon pre-rendering, it never aborts.
 
+> On Cloudflare Workers, `request.signal` aborts when the client cancels the request only if you set the [`enable_request_signal`](https://developers.cloudflare.com/changelog/2025-05-22-handle-request-cancellation/) compatibility flag.
+
 > See also: <Link href="/onRenderClient#abort" />
 
 <Prop id="is404" />
