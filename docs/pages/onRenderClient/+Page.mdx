@@ -38,7 +38,7 @@ Where:
 
 You can use <Link href="/passToClient">`passToClient`</Link> to determine what subset of `pageContext` is sent to the browser.
 
-> You should resolve `onRenderClient()` only after the page is rendered and visible to the user, because Vike then triggers actions such as setting the scroll position and calling the <Link href="/onPageTransitionEnd">`+onPageTransitionEnd`</Link> hook (typically used for page transition animations).
+> You should resolve `onRenderClient()` only after the page is rendered and visible to the user, because Vike then triggers actions such as setting the scroll position and calling the <Link href="/onPageTransitionEnd">`+onPageTransitionEnd` hook</Link> (typically used for page transition animations).
 
 > See <Link href="/render-modes" /> and <Link href="/clientRouting">Client Routing</Link> for illustrations of conditional DOM
 > hydration, for supporting both SPA and SSR.
