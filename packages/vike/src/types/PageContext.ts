@@ -205,6 +205,12 @@ type PageContextInit = {
    * https://vike.dev/pageContext#headersOriginal
    */
   headersOriginal?: unknown // We set it to the type `unknown` instead of the type `HeadersInit` because `HeadersInit` isn't accurate: for example, `http.IncomingHttpHeaders` is a valid input for `new Headers()` but doesn't match the `HeadersInit` init.
+  /**
+   * Abort signal when the HTTP request is aborted (e.g. the user closes the browser tab).
+   *
+   * https://vike.dev/pageContext#abortSignal
+   */
+  abortSignal?: AbortSignal
   /** @deprecated Set `pageContextInit.urlOriginal` instead  */ // TO-DO/next-major-release: remove
   url?: string
 }
@@ -272,7 +278,12 @@ type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
     isBackwardNavigation?: undefined
     isHistoryNavigation?: undefined
     previousPageContext?: undefined
-    abortSignal?: undefined
+    /**
+     * Abort signal when the HTTP request is aborted (e.g. the user closes the browser tab).
+     *
+     * https://vike.dev/pageContext#abortSignal
+     */
+    abortSignal: AbortSignal
   }
 
 type PageContextBuiltInClientWithClientRouting<Data> = Partial<PageContextBuiltInCommon<Data>> &

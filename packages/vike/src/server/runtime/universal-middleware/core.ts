@@ -78,6 +78,7 @@ async function renderPageServer_universal(
   const pageContextInit = {
     urlOriginal: request.url, // Let `context` override it, e.g. `$ vike dev` passes the URL's path
     headersOriginal: request.headers,
+    abortSignal: request.signal,
     req: 'req' in runtime ? runtime.req : null,
     res: 'res' in runtime ? runtime.res : null,
     runtime,
