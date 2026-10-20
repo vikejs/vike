@@ -246,6 +246,20 @@ async function renderPageClient(renderArgs: RenderArgs) {
           pageContextFromRoute.pageId === previousPageContext.pageId
         if (doNotRenderIfSamePage && isSamePage) {
           // Skip's Vike's rendering; let the user handle the navigation
+          // The page stays: undo what starting the navigation did
+          globalObject.currentPageContext = globalObject.previousPageContext
+          addLinkPrefetchHandlers_watch()
+          addLinkPrefetchHandlers()
+          if (globalObject.isTransitioning) {
+            globalObject.isTransitioning = undefined
+            assert(previousPageContext)
+            const hooks = getHooksFromPageContextNew('onPageTransitionEnd', previousPageContext)
+            try {
+              await execHookList(hooks, pageContext, getPageContextPublicClientMinimal)
+            } catch (err) {
+              await onError(err)
+            }
+          }
           return
         }
       }
