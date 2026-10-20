@@ -508,10 +508,11 @@ async function renderPageClient(renderArgs: RenderArgs) {
     }
 
     changeUrl(urlOriginal, overwriteLastHistoryEntry)
-    // Remove the previousPageContext of past pages, except for the page last rendered (it may still be on screen and read its previousPageContext)
-    // - Otherwise all past pageContexts are kept in memory
-    const pageContextBeforeRendered = globalObject.renderedPageContext?.previousPageContext
-    if (pageContextBeforeRendered) pageContextBeforeRendered.previousPageContext = null
+    {
+      const previousPageContextBefore = globalObject.renderedPageContext?.previousPageContext
+      // Remove previousPageContext of past pages (otherwise all the past pageContext are kept in memory)
+      if (previousPageContextBefore) previousPageContextBefore.previousPageContext = null
+    }
     globalObject.previousPageContext = pageContext
     // There should never be concurrent onRenderClient() calls
     assert(globalObject.onRenderClientPreviousPromise === undefined)
