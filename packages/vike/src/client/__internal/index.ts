@@ -13,9 +13,10 @@ function createPageContextFromServer<PageContext extends PageContextClient>(
   pageContext: PageContext,
   pageContextFromServer: Record<string, unknown>,
 ): PageContext {
-  processPageContextFromServer(pageContextFromServer)
+  const pageContextFromServerCopy = { ...pageContextFromServer }
+  processPageContextFromServer(pageContextFromServerCopy)
   const pageContextNew = {}
   objectAssign(pageContextNew, (pageContext as PageContext & { _originalObject: object })._originalObject, true)
-  objectAssign(pageContextNew, pageContextFromServer)
+  objectAssign(pageContextNew, pageContextFromServerCopy)
   return getPageContextPublicClient(pageContextNew as Parameters<typeof getPageContextPublicClient>[0]) as PageContext
 }
