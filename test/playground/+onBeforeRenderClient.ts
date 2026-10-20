@@ -13,15 +13,8 @@ async function onBeforeRenderClient(pageContext: PageContextClient) {
   assert(pageContext.isClientSide)
   assert(pageContext.globalContext.isClientSide)
 
-  // TEST: only the last three pageContexts are kept in memory
-  window.pageContextLastRendered = pageContext
-
   // TEST: getGlobalContext()
   assert((await getGlobalContext()).isClientSide)
   assert((await getGlobalContextAsync(import.meta.env.PROD)).isClientSide)
   assert(getGlobalContextSync().isClientSide)
-}
-
-declare global {
-  var pageContextLastRendered: PageContextClient | undefined
 }

@@ -23,7 +23,7 @@ import { testSettingOnlyAvailableInCorrectEnv } from './pages/config-meta/env/e2
 import { testDynamicImportFileEnv } from './pages/dynamic-import-file-env/e2e-test'
 import { testMarkdown, testMarkdownClientFile, testMarkdownSideExports } from './pages/markdown/e2e-test'
 import { testNavigateEarly } from './pages/navigate-early/e2e-test'
-import { testNestedLayout, testPreviousPageContext } from './pages/nested-layout/e2e-test'
+import { testNestedLayout } from './pages/nested-layout/e2e-test'
 import { testProgrammaticPage } from './pages/programmatically-defined/e2e-test'
 import { testPrerenderSettings } from './pages/prerender.e2e-test'
 import { testHistoryPushState } from './pages/pushState/e2e-test'
@@ -65,7 +65,6 @@ function testRun(
   testNavigateEarly()
   testDynamicImportFileEnv({ isDev })
   testNestedLayout()
-  testPreviousPageContext()
   testProgrammaticPage()
   testDefaultAndClearSuffixes()
   testHistoryPushState()

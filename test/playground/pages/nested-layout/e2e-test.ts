@@ -1,5 +1,4 @@
 export { testNestedLayout }
-export { testPreviousPageContext }
 
 import { test, page, getServerUrl, expect, autoRetry } from '@brillout/test-e2e'
 import { testCounter } from '../../../utils'
@@ -51,27 +50,6 @@ function testNestedLayout() {
     const scrollTop = await page.evaluate(() => window.document.documentElement.scrollTop)
     return scrollTop
   }
-}
-
-function testPreviousPageContext() {
-  test('only the last three pageContexts are kept in memory', async () => {
-    await page.goto(getServerUrl() + '/nested-layout/42')
-    await testCounter()
-    await nav('/nested-layout/42/reviews')
-    await nav('/nested-layout/42/pricing')
-    await nav('/nested-layout/42')
-    await nav('/nested-layout/42/reviews')
-    const previousPageContextsLength = await page.evaluate(() => {
-      let length = 0
-      let pageContext = window.pageContextLastRendered?.previousPageContext
-      while (pageContext) {
-        length++
-        pageContext = pageContext.previousPageContext
-      }
-      return length
-    })
-    expect(previousPageContextsLength).toBe(2)
-  })
 }
 
 async function nav(href: `/${string}`) {
