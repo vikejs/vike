@@ -152,10 +152,11 @@ async function renderPageClient(renderArgs: RenderArgs) {
     if (isRenderOutdated()) return
   }
 
+  // The previous onRenderClient() can use `pageContext.abortSignal` to finish early.
+  globalObject.onRenderClientPreviousAbortController?.abort()
+
   // Ensure no concurrent onRenderClient() calls.
   // - We could `await globalObject.onRenderClientPreviousPromise` later just before execHookOnRenderClient() but we prefer doing it early to ensure `getPageContext() === usePageContext()` (and maybe it prevents other potential inconsistencies?).
-  // - The previous onRenderClient() can use `pageContext.abortSignal` to finish early.
-  globalObject.onRenderClientPreviousAbortController?.abort()
   await globalObject.onRenderClientPreviousPromise
   if (isRenderOutdated()) return
 
