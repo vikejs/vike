@@ -72,7 +72,7 @@ const globalObject = getGlobalObject<{
   clientRoutingIsDisabled?: true
   renderCounter: number
   onRenderClientPreviousPromise?: Promise<unknown>
-  onRenderClientPreviousAbortController?: AbortController
+  abortController?: AbortController
   isFirstRenderDone?: true
   isTransitioning?: true
   //https://vike.dev/pageContext#previousPageContext
@@ -132,6 +132,8 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
   const { isRenderOutdated, setHydrationCanBeAborted, isFirstRender } = getIsRenderOutdated()
 
+  const abortController = new AbortController()
+
   const pageContextBeginArgs = {
     urlOriginal,
     isBackwardNavigation,
@@ -140,6 +142,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     isClientSideNavigation,
     pageContextInitClient,
     isFirstRender,
+    abortSignal: abortController.signal,
   }
 
   if (globalObject.clientRoutingIsDisabled) {
@@ -153,9 +156,10 @@ async function renderPageClient(renderArgs: RenderArgs) {
     if (isRenderOutdated()) return
   }
 
-  // The previous onRenderClient() can use pageContext.abortSignal to abort rendering
+  // Abort the previous navigation: its hooks can use pageContext.abortSignal to stop, e.g. data fetching or onRenderClient() rendering
   // https://vike.dev/pageContext#abortSignal
-  globalObject.onRenderClientPreviousAbortController?.abort()
+  globalObject.abortController?.abort()
+  globalObject.abortController = abortController
 
   // Ensure no concurrent onRenderClient() calls.
   // - We could `await globalObject.onRenderClientPreviousPromise` later just before execHookOnRenderClient() but we prefer doing it early to ensure `getPageContext() === usePageContext()` (and maybe it prevents other potential inconsistencies?).
@@ -349,6 +353,9 @@ async function renderPageClient(renderArgs: RenderArgs) {
     const { err } = args
     assert(err)
 
+    // The error may be caused by the newer navigation aborting pageContext.abortSignal
+    if (isRenderOutdated()) return
+
     // Logging
     if (!isAbortError(err)) {
       // We don't swallow 404 errors:
@@ -521,8 +528,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
     globalObject.previousPageContext = pageContext
     // There should never be concurrent onRenderClient() calls
     assert(globalObject.onRenderClientPreviousPromise === undefined)
-    const abortController = new AbortController()
-    objectAssign(pageContext, { abortSignal: abortController.signal })
     const onRenderClientPromise = (async () => {
       let onRenderClientError: unknown
       try {
@@ -532,12 +537,10 @@ async function renderPageClient(renderArgs: RenderArgs) {
         onRenderClientError = err
       }
       globalObject.onRenderClientPreviousPromise = undefined
-      globalObject.onRenderClientPreviousAbortController = undefined
       globalObject.isFirstRenderDone = true
       return onRenderClientError
     })()
     globalObject.onRenderClientPreviousPromise = onRenderClientPromise
-    globalObject.onRenderClientPreviousAbortController = abortController
     const onRenderClientError = await onRenderClientPromise
     if (onRenderClientError) {
       await onError(onRenderClientError)
@@ -623,6 +626,7 @@ async function getPageContextBegin(
     isClientSideNavigation,
     pageContextInitClient,
     isFirstRender,
+    abortSignal,
   }: {
     urlOriginal: string
     isBackwardNavigation: boolean | null
@@ -631,6 +635,7 @@ async function getPageContextBegin(
     isClientSideNavigation: boolean
     pageContextInitClient: Record<string, unknown> | undefined
     isFirstRender: boolean
+    abortSignal: AbortSignal
   },
 ) {
   const previousPageContext = globalObject.previousPageContext
@@ -644,6 +649,7 @@ async function getPageContextBegin(
     isHydration: isFirstRender && !isForErrorPage,
     previousPageContext,
     pageContextsAborted,
+    abortSignal,
     ...pageContextInitClient,
   })
 
