@@ -421,9 +421,9 @@ async function renderPageClient(renderArgs: RenderArgs) {
     updateType(pageContext, res.pageContext)
     setPageContextCurrent(pageContext)
 
-    let pageContextFromHooksServer: PageContextFromHooksServer = { _hasPageContextFromServer: false }
     // Upon a server-side `throw render(abortStatusCode)`, pageContextAbort is the error page's pageContext sent by the server
     const isErrorPageFromServer = !!pageContextAbort && 'pageId' in pageContextAbort
+    let pageContextFromHooksServer: PageContextFromHooksServer = { _hasPageContextFromServer: isErrorPageFromServer }
     if (!isErrorPageFromServer) {
       try {
         const result = await getPageContextFromHooksServer(pageContext, true)
