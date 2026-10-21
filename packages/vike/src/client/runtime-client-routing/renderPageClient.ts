@@ -768,6 +768,7 @@ function getPageContextClient(): PageContextClient | null {
 }
 
 // TODO/soon: check whether this is the right API
+// https://github.com/vikejs/vike/pull/3640
 /**
  * Creates a new `pageContext` for the page that `pageContext` renders, with the values of `pageContextFromServer` on top.
  * - `pageContext` is the `pageContext` of the page rendered last
