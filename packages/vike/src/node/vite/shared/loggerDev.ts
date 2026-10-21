@@ -80,6 +80,7 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
     return
   }
   // Skip errors caused by the client disconnecting (`pageContext.abortSignal`)
+  // - Before getBetterError() below modifies the error's message
   if (isAbortSignalError(err, pageContext?.abortSignal)) return
 
   const tagSource = getTagSource(pageContext?._requestId)
