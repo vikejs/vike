@@ -54,6 +54,8 @@ const optimizeDeps = {
       // We must exclude Vike's client runtime so it can import virtual modules
       'vike/client',
       'vike/client/router',
+      // Also all entries of Vike's client runtime, otherwise pre-bundling an entry would load a second copy of Vike's client code (also problematic as it duplicates module-level variables that don't use `getGlobalObject()`)
+      'vike/__internal/client',
     ],
     include: [
       // Avoid:
@@ -76,6 +78,8 @@ const optimizeDeps = {
         */
         '@brillout/vite-plugin-server-entry',
         'vike',
+        // Needed so that Vike doesn't get the user's @universal-middleware/core version (that might differ from Vike's @universal-middleware/core version). (Vite pre-bundles one copy per package name for every importer: https://github.com/vitejs/vite/issues/9948)
+        '@universal-middleware/core',
       ],
     },
   },
@@ -214,7 +218,7 @@ async function getPageDeps(
       ;[...pageConfigs, pageConfigGlobal].forEach((pageConfig) => {
         Object.entries(pageConfig.configValueSources).forEach(([configName]) => {
           const runtimeEnv = {
-            isForClientSide,
+            environmentName: isForClientSide ? 'client' : 'server',
             isDev: true,
             // TO-DO/eventually/remove-server-router: let's eventually remove support for Server Routing
             isClientRouting: true,
@@ -235,7 +239,7 @@ async function getPageDeps(
 
   // V0.4 design
   {
-    const pageFiles = await findPageFiles(config, ['.page', '.page.client'], true)
+    const pageFiles = await findPageFiles(config, ['.page', '.page.client'])
     const userRootDir = config.root
     pageFiles.forEach((filePathAbsoluteUserRootDir) => {
       const entry = getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir })

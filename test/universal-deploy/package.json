@@ -6,8 +6,8 @@
     "server:prod": "node dist/server/index.mjs"
   },
   "dependencies": {
-    "@universal-middleware/core": "^0.4.18",
-    "@vikejs/express": "^0.2.4",
+    "@universal-middleware/core": "^0.7.1",
+    "@vikejs/express": "^0.4.1",
     "@vitejs/plugin-react": "^4.7.0",
     "express": "^5.2.1",
     "react": "^19.2.6",
@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "typescript": "^7.0.2",
-    "vike": "0.4.267",
+    "vike": "0.4.268",
     "vite": "^7.3.0",
     "@types/express": "^5.0.6",
     "@types/react": "^19.2.15",

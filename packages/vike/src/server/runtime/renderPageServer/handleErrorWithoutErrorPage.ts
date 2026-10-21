@@ -7,6 +7,7 @@ import { createHttpResponseErrorFallback, createHttpResponseErrorFallbackJson } 
 import pc from '@brillout/picocolors'
 import type { GetPageAssets } from './getPageAssets.js'
 import type { PageContextCreatedServer } from './createPageContextServer.js'
+import type { PageContextAborted } from '../../../shared-server-client/route/abort.js'
 import '../../assertEnvServer.js'
 
 // When the user hasn't defined _error.page.js
@@ -17,6 +18,7 @@ function handleErrorWithoutErrorPage<
     pageId: null
     _globalContext: GlobalContextServerInternal
     urlOriginal: string
+    pageContextsAborted: PageContextAborted[]
   },
 >(pageContext: PageContext) {
   assert(pageContext.pageId === null)
@@ -34,7 +36,7 @@ function handleErrorWithoutErrorPage<
   } else {
     const __getPageAssets: GetPageAssets = async () => []
     objectAssign(pageContext, { __getPageAssets })
-    const httpResponse = createHttpResponseErrorFallbackJson()
+    const httpResponse = createHttpResponseErrorFallbackJson(pageContext)
     objectAssign(pageContext, { httpResponse })
     return pageContext
   }

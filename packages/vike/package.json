@@ -1,6 +1,6 @@
 {
   "name": "vike",
-  "version": "0.4.267",
+  "version": "0.4.268",
   "repository": "https://github.com/vikejs/vike",
   "exports": {
     "./server": {
@@ -87,25 +87,34 @@
       "default": "./dist/shared-server-client/modifyUrl.js"
     },
     "./universal-middleware": {
-      "types": "./dist/server/runtime/universal-middleware.d.ts",
-      "worker": "./dist/server/runtime/universal-middleware.js",
-      "workerd": "./dist/server/runtime/universal-middleware.js",
-      "node": "./dist/server/runtime/universal-middleware.js",
+      "types": "./dist/server/runtime/universal-middleware/deprecated-export.d.ts",
+      "worker": "./dist/server/runtime/universal-middleware/deprecated-export.js",
+      "workerd": "./dist/server/runtime/universal-middleware/deprecated-export.js",
+      "node": "./dist/server/runtime/universal-middleware/deprecated-export.js",
       "browser": "./dist/client/node.js",
-      "default": "./dist/server/runtime/universal-middleware.js"
+      "default": "./dist/server/runtime/universal-middleware/deprecated-export.js"
     },
     "./fetch": {
-      "types": "./dist/server/runtime/fetch.d.ts",
-      "worker": "./dist/server/runtime/fetch.js",
-      "workerd": "./dist/server/runtime/fetch.js",
-      "node": "./dist/server/runtime/fetch.js",
+      "types": "./dist/server/__internal/fetch-deprecated.d.ts",
+      "worker": "./dist/server/__internal/fetch-deprecated.js",
+      "workerd": "./dist/server/__internal/fetch-deprecated.js",
+      "node": "./dist/server/__internal/fetch-deprecated.js",
       "browser": "./dist/client/node.js",
-      "default": "./dist/server/runtime/fetch.js"
+      "default": "./dist/server/__internal/fetch-deprecated.js"
     },
     "./__internal": {
       "types": "./dist/server/__internal/index.d.ts",
       "node": "./dist/server/__internal/index.js",
       "default": "./dist/server/__internal/index.js"
+    },
+    "./__internal/client": {
+      "types": "./dist/client/__internal/index.d.ts",
+      "default": "./dist/client/__internal/index.js"
+    },
+    "./__internal/fetch": {
+      "types": "./dist/server/__internal/fetch.d.ts",
+      "node": "./dist/server/__internal/fetch.js",
+      "default": "./dist/server/__internal/fetch.js"
     },
     "./__internal/setup": {
       "types": "./dist/server/runtime/page-files/setup.d.ts",
@@ -125,30 +134,30 @@
     "@babel/core": "^7.28.5",
     "@babel/types": "^7.28.5",
     "@brillout/import": "^0.2.6",
-    "@brillout/json-serializer": "^0.5.25",
+    "@brillout/json-serializer": "^0.5.27",
     "@brillout/picocolors": "^1.0.31",
-    "@brillout/vite-plugin-server-entry": "^0.7.21",
-    "@universal-deploy/store": "^0.2.2",
-    "@universal-deploy/vite": "^0.1.13",
-    "@universal-middleware/core": "^0.4.18",
-    "@universal-middleware/node": "^0.2.2",
+    "@brillout/vite-plugin-server-entry": "^0.7.23",
+    "@universal-deploy/store": "^0.3.0",
+    "@universal-deploy/vite": "^0.2.2",
+    "@universal-middleware/core": "^0.7.1",
+    "@universal-middleware/node": "^0.2.9",
     "cac": "^6.0.0",
-    "convert-route": "^1.1.1",
+    "convert-route": "^2.0.0",
     "es-module-lexer": "^1.0.0",
     "json5": "^2.0.0",
-    "magic-string": "^1.4.2",
+    "magic-string": "^1.4.3",
     "picomatch": "^4.0.7",
     "rolldown": ">=1.0.0",
     "semver": "^7.8.5",
     "sirv": "^3.0.2",
     "source-map-support": "^0.5.0",
     "tinyglobby": "^0.2.17",
-    "vite": ">=6.3.0",
+    "vite": ">=7.1.0",
     "vite-plugin-wrapper": "^0.1.1"
   },
   "peerDependencies": {
     "react-streaming": ">=0.3.42",
-    "vite": ">=6.3.0"
+    "vite": ">=7.1.0"
   },
   "peerDependenciesMeta": {
     "react-streaming": {
@@ -216,13 +225,19 @@
         "./dist/shared-server-client/modifyUrl.d.ts"
       ],
       "universal-middleware": [
-        "./dist/server/runtime/universal-middleware.d.ts"
+        "./dist/server/runtime/universal-middleware/deprecated-export.d.ts"
       ],
       "fetch": [
-        "./dist/server/runtime/fetch.d.ts"
+        "./dist/server/__internal/fetch-deprecated.d.ts"
       ],
       "__internal": [
         "./dist/server/__internal/index.d.ts"
+      ],
+      "__internal/client": [
+        "./dist/client/__internal/index.d.ts"
+      ],
+      "__internal/fetch": [
+        "./dist/server/__internal/fetch.d.ts"
       ],
       "__internal/setup": [
         "./dist/server/runtime/page-files/setup.d.ts"
@@ -257,17 +272,18 @@
     "./server.js",
     "./types.js",
     "./universal-middleware.js",
-    "./fetch.js"
+    "./fetch.js",
+    "./vike-server.d.ts"
   ],
   "devDependencies": {
-    "@brillout/release-me": "^0.4.18",
+    "@brillout/release-me": "^0.4.19",
     "@types/babel__core": "^7.20.5",
     "@types/estree": "^1.0.5",
     "@types/node": "^20.10.5",
     "@types/picomatch": "^4.0.3",
     "@types/semver": "^7.7.1",
     "@types/source-map-support": "^0.5.10",
-    "react-streaming": "^0.4.20",
+    "react-streaming": "^0.4.21",
     "rimraf": "^6.1.3",
     "typescript": "^7.0.2",
     "vite": "^7.2.6"

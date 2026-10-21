@@ -7,11 +7,11 @@ const PropPageContext = createPropComponent('pageContext')
 const PropGlobalContext = createPropComponent('globalContext')
 
 function createPropComponent(obj: 'pageContext' | 'globalContext') {
-  return function Prop({ name }: { name: string }) {
+  return function Prop({ id }: { id: string }) {
     return (
-      <h3 id={name}>
+      <h3 id={id}>
         <code>
-          {obj}.{name}
+          {obj}.{id}
         </code>
       </h3>
     )

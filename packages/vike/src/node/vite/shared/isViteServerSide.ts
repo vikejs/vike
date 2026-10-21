@@ -7,8 +7,7 @@ export { isViteServerSide_configEnvironment }
 export type { ViteEnv }
 
 import type { Environment, EnvironmentOptions, ResolvedConfig, UserConfig, Plugin } from 'vite'
-import { viteVersionMin } from '../../../utils/assertViteVersion.js'
-import { assert, assertUsage } from '../../../utils/assert.js'
+import { assert } from '../../../utils/assert.js'
 import '../assertEnvVite.js'
 
 type ViteEnv = { name?: string; config: EnvironmentOptions | Environment['config'] }
@@ -74,14 +73,7 @@ function isViteServerSide_extraSafe(
     optionsSsr: options?.ssr ?? null,
   }
   assert(options, debug)
-  /* TO-DO/eventually: use internal assert() instead of assertUsage() once we can use this.meta.viteVersion — see utils/assertViteVersion.ts
   assert(typeof options.ssr === 'boolean', debug)
-  /*/
-  assertUsage(
-    typeof options.ssr === 'boolean',
-    `You're using an old Vite version — update Vite to ${viteVersionMin} or above.`,
-  )
-  //*/
   assert(options.ssr === isServerSide, debug)
   return isServerSide
 }

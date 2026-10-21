@@ -304,13 +304,15 @@ function getPageContextAddendumAbort(pageContextsAborted: PageContextAborted[]) 
   // Sets pageContext._urlRewrite from pageContextAbort._urlRewrite
   return pageContextAbort
 }
-function addNewPageContextAborted(
+function addNewPageContextAborted<PageContext extends PageContextMin>(
   pageContextsAborted: PageContextAborted[],
-  pageContext: PageContextMin,
+  pageContext: PageContext,
   pageContextAbort: PageContextAbort,
+  // `pageContextsAborted` is exposed to users: https://vike.dev/pageContext#pageContextsAborted
+  getPageContextPublic: (pageContext: PageContext & PageContextAborted) => PageContextAborted,
 ) {
   objectAssign(pageContext, { _pageContextAbort: pageContextAbort })
-  pageContextsAborted.push(pageContext)
+  pageContextsAborted.push(getPageContextPublic(pageContext))
   assertNoInfiniteAbortLoop(pageContextsAborted)
 }
 // There doesn't seem to be a way to count the number of HTTP redirects (Vike doesn't have access to the HTTP request headers/cookies)

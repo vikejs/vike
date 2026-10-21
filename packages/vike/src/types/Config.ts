@@ -271,6 +271,8 @@ type OnRenderHtmlAsync = (pageContext: PageContextServer) => Promise<OnRenderHtm
 type OnRenderHtmlSync = (pageContext: PageContextServer) => OnRenderHtmlReturn
 type OnRenderHtmlReturn =
   | DocumentHtml
+  // The hook sets pageContext.content instead, see https://vike.dev/pageContext#content
+  | void
   | {
       injectFilter?: (assets: InjectFilterEntry[]) => void
       documentHtml?: DocumentHtml
@@ -662,9 +664,9 @@ type ConfigBuiltIn = {
    *
    * The middlewares defined via `+middleware` are so called "Universal Middleware" — they work with any JavaScript server (Hono, Express, Cloudflare, ...).
    *
-   * https://github.com/magne4000/universal-middleware
+   * https://vike.dev/middleware
    */
-  middleware?: EnhancedMiddleware | EnhancedMiddleware[]
+  middleware?: EnhancedMiddleware | EnhancedMiddleware[] | ImportStringList
 
   /**
    * Set to `false` to disable Vike's automatic server integration mechanism (e.g. for integrating a JavaScript server manually via `renderPage()`).
@@ -674,6 +676,15 @@ type ConfigBuiltIn = {
    * https://vike.dev/server
    */
   server?: boolean | ImportStringList
+
+  /**
+   * Control how your server starts.
+   *
+   * It's built into `dist/server/index.mjs` for production, and it's also run in development if you don't define `+server.js`.
+   *
+   * https://vike.dev/serverEntry
+   */
+  serverEntry?: string | ImportStringList
 
   /**
    * Set to `true` to create `.br` and `.gz` files for your static assets at build time, so that they don't have to be compressed on each request.

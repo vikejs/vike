@@ -24,7 +24,7 @@ import { toPosixPath } from '../../utils/path.js'
 import pc from '@brillout/picocolors'
 import { getEnvVarObject } from '../../utils/getEnvVarObject.js'
 import { getVikeApiOperation, isVikeCliOrApi } from '../../shared-server-node/api-context.js'
-import { getViteCliCommand, getViteCliArgs } from '../vite/shared/isViteCli.js'
+import { getViteCliCommand, getViteCliArgsMinimal } from '../vite/shared/isViteCli.js'
 import type { Config } from '../../types/index.js'
 import './assertEnvApiDevAndProd.js'
 const globalObject = getGlobalObject<{ root?: string; isResolvingViteConfigUser?: boolean }>(
@@ -102,7 +102,7 @@ async function resolve(viteContext: ViteContext) {
   // Vite CLI args (when invoked via Vite's CLI rather than Vike's API).
   // - Without this, Vike loads vite.config.js blind to `vite [root]` / `-c <file>` and ends up with the wrong root when those Vite CLI args are used.
   {
-    const viteConfigFromViteCli = getViteCliArgs()
+    const viteConfigFromViteCli = getViteCliArgsMinimal()
     addConfig(viteConfigFromViteCli)
     if (debug.isActivated) debug('viteConfigFromViteCli', viteConfigFromViteCli)
   }

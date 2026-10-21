@@ -20,9 +20,9 @@ function Page() {
     }
   }
 
-  let { is404, abortReason, abortStatusCode } = pageContext
+  let { is404, abortReason, abortStatusCode, errorDescription } = pageContext
   if (!abortReason) {
-    abortReason = is404 ? 'Page not found.' : 'Something went wrong.'
+    abortReason = errorDescription ?? (is404 ? 'Page not found.' : 'Something went wrong.')
   }
   return (
     <Center>

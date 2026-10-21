@@ -20,6 +20,13 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run prod') {
     },
   })
 
+  if (isDev) {
+    test('Running on Hono', async () => {
+      const html = await fetchHtml('/hello')
+      expect(html).toBe('Hello')
+    })
+  }
+
   test('Index page', async () => {
     const html = await fetchHtml('/')
     expect(html).toContain('<h1>Welcome</h1>')

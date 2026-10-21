@@ -120,11 +120,11 @@ function execHookSingleSync<PageContext extends PageContextExecHook>(
   globalContext: GlobalContextPublicMinimum,
   pageContext: PageContext | null,
   getPageContextPublic: (pageContext: PageContext) => PageContext,
-  hookFnCaller?: () => unknown,
+  hookFnCaller?: (pageContextPublic: PageContext | null) => unknown,
 ) {
   const pageContextPublic = pageContext && getPageContextPublic(pageContext)
-  hookFnCaller ??= () => hook.hookFn(pageContextPublic!)
-  const hookReturn = execHookBase(hookFnCaller, hook, globalContext, pageContextPublic)
+  const call = hookFnCaller ? () => hookFnCaller(pageContextPublic) : () => hook.hookFn(pageContextPublic!)
+  const hookReturn = execHookBase(call, hook, globalContext, pageContextPublic)
   return { hookReturn }
 }
 

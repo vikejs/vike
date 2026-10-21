@@ -1,3 +1,4 @@
+/// <reference path="../../vike-server.d.ts" preserve="true" />
 export type {
   PageContext,
   PageContextServer,

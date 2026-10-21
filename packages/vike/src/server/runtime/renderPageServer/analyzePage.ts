@@ -28,14 +28,14 @@ function analyzePage(
     if (isClientRuntimeLoaded) clientEntries.push(getVikeClientEntry(isClientRouting))
     const clientDependencies: ClientDependency[] = []
     clientDependencies.push({
-      id: generateVirtualFileId({ type: 'page-entry', pageId: pageConfig.pageId, isForClientSide: true }),
+      id: generateVirtualFileId({ type: 'page-entry', pageId: pageConfig.pageId, environmentName: 'client' }),
       onlyAssets: isClientRuntimeLoaded ? false : true,
       eagerlyImported: false,
     })
     // In production we inject the import of the server virtual module with ?extractAssets inside the client virtual module
     if (!globalContext._isProduction) {
       clientDependencies.push({
-        id: generateVirtualFileId({ type: 'page-entry', pageId: pageConfig.pageId, isForClientSide: false }),
+        id: generateVirtualFileId({ type: 'page-entry', pageId: pageConfig.pageId, environmentName: 'server' }),
         onlyAssets: true,
         eagerlyImported: false,
       })
@@ -46,7 +46,7 @@ function analyzePage(
         const { env } = configElement
         assert(env)
         const onlyAssets = env === { server: true }
-        const eagerlyImported = env === { server: true, client: 'if-client-routing', eager: true }
+        const eagerlyImported = env === { server: true, client: true, clientRoutingOnly: true, eager: true }
         if (onlyAssets || eagerlyImported) {
           clientDependencies.push({
             id: configElement.importPath,

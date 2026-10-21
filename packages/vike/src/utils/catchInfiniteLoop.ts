@@ -1,9 +1,14 @@
 export { catchInfiniteLoop }
 
-import { assertUsage, assertWarning } from './assert.js'
+import { assert, assertUsage, assertWarning } from './assert.js'
 import { humanizeTime } from './humanizeTime.js'
 
-const trackers = {} as Record<string, Tracker>
+const trackers = new Map<string, Tracker>()
+let lastCleanup: number | undefined
+
+// Given these parameters, a warning is shown upon 10 calls a second on average during 5 seconds
+const maxCalls = 99
+const time = 5 * 1000
 
 type Tracker = {
   count: number
@@ -11,21 +16,35 @@ type Tracker = {
   warned?: true
 }
 
-const maxCalls = 99
-const time = 5 * 1000
-
 function catchInfiniteLoop(functionName: `${string}()`) {
   // Init
   const now = new Date().getTime()
 
-  // Clean all outdated trackers
-  Object.keys(trackers).forEach((key) => {
-    const tracker = trackers[key]!
-    const elapsedTime = now - tracker.startTime
-    if (elapsedTime > time) delete trackers[key]
-  })
+  // Cleanup
+  if (globalThis.__VIKE__IS_CLIENT) {
+    // No cleanup on the client-side, in order to minimize client-side JavaScript (to save client-side KBs)
+    assert(trackers.size < 5)
+  } else {
+    // Clean outdated trackers
+    // - On the server-side, there is an infinite amount of outdated trackers (a new tracker is created per HTTP request) => we should clean them
+    // - We don't clean upon every call: the server creates a new tracker per HTTP request, so that would cost O(n^2) — O(number of requests within `time`) per request
+    //   - https://github.com/vikejs/vike/pull/3576
+    const cleanInterval = 10 * 1000
+    lastCleanup ??= now
+    if (now - lastCleanup > cleanInterval) {
+      trackers.forEach((tracker, key) => {
+        if (isOutdated(tracker, now)) trackers.delete(key)
+      })
+      lastCleanup = now
+    }
+  }
 
-  const tracker = (trackers[functionName] ??= { count: 0, startTime: now })
+  // Get/reset tracker
+  let tracker = trackers.get(functionName)
+  if (!tracker || isOutdated(tracker, now)) {
+    tracker = { count: 0, startTime: now }
+    trackers.set(functionName, tracker)
+  }
 
   // Count
   tracker.count++
@@ -38,8 +57,11 @@ function catchInfiniteLoop(functionName: `${string}()`) {
 
   // Warning, at 50% threshold
   if (!tracker.warned && tracker.count > maxCalls * 0.5) {
-    // Warning is shown upon 10 calls a second, on average during 5 seconds, given the default parameters
     assertWarning(false, msg, { onlyOnce: false, showStackTrace: true })
     tracker.warned = true
   }
+}
+
+function isOutdated(tracker: Tracker, now: number) {
+  return now - tracker.startTime > time
 }

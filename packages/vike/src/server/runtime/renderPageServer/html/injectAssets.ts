@@ -18,6 +18,11 @@ import type { HtmlPart } from './renderHtml.js'
 import { getHtmlTags, type PreloadFilter, type HtmlTag } from './injectAssets/getHtmlTags.js'
 import type { StreamFromReactStreamingPackage } from './stream/react-streaming.js'
 import type { PageContextSerialization } from './serializeContext.js'
+import {
+  getStreamedValuesHtml,
+  writeStreamedValuesHtmlAtStreamEnd,
+  type PageContextStreamedValuesHtml,
+} from './streamedValuesHtml.js'
 import { getViteDevScript } from './injectAssets/getViteDevScript.js'
 import type { GlobalContextServerInternal } from '../../globalContext.js'
 import '../../../assertEnvServer.js'
@@ -35,7 +40,8 @@ type PageContextInjectAssets = {
   _baseServer: string
   is404: null | boolean
   _globalContext: GlobalContextServerInternal
-} & PageContextSerialization
+} & PageContextSerialization &
+  PageContextStreamedValuesHtml
 
 async function injectHtmlTagsToString(
   htmlParts: HtmlPart[],
@@ -49,6 +55,10 @@ async function injectHtmlTagsToString(
   htmlString = injectToHtmlBegin(htmlString, htmlTags)
   htmlString = injectToHtmlEnd(htmlString, htmlTags)
   assert(htmlTags.filter((snippet) => snippet.position === 'HTML_STREAM').length === 0)
+  const streamedValuesHtml = await getStreamedValuesHtml(pageContext)
+  if (streamedValuesHtml !== null) {
+    htmlString = injectToHtmlEnd(htmlString, [{ htmlTag: streamedValuesHtml, position: 'HTML_END' }])
+  }
   return htmlString
 }
 
@@ -97,12 +107,13 @@ function injectHtmlTagsToStream(
     return htmlFragment
   }
 
-  async function injectAtStreamEnd(htmlPartsEnd: HtmlPart[]): Promise<string> {
+  async function injectAtStreamEnd(htmlPartsEnd: HtmlPart[], writeHtml: (html: string) => void): Promise<string> {
     assert(htmlTags)
     await resolvePageContextPromise(pageContext)
     const pageAssets = await pageContext.__getPageAssets()
     let htmlEnd = htmlPartsToString(htmlPartsEnd, pageAssets)
     htmlEnd = injectToHtmlEnd(htmlEnd, htmlTags)
+    htmlEnd = await writeStreamedValuesHtmlAtStreamEnd(pageContext, htmlEnd, writeHtml)
     return htmlEnd
   }
 }

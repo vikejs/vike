@@ -16,6 +16,8 @@ export { isStreamReadableNode }
 export { getStreamName }
 export { inferStreamName }
 export { streamReadableWebToString }
+export { streamReadableWebToBytes }
+export { awaitFirstChunk }
 export { streamPipeNodeToString }
 export { isStreamWritableWeb }
 export { isStreamWritableNode }
@@ -45,7 +47,12 @@ import {
   streamFromReactStreamingPackageToString,
 } from './stream/react-streaming.js'
 import { import_ } from '@brillout/import'
-import type { Readable as Readable_, Writable as Writable_ } from 'node:stream'
+import type {
+  Readable as Readable_,
+  Writable as Writable_,
+  PassThrough as PassThrough_,
+  pipeline as pipeline_,
+} from 'node:stream'
 import pc from '@brillout/picocolors'
 import '../../../assertEnvServer.js'
 
@@ -123,15 +130,63 @@ async function streamReadableWebToString(readableWeb: ReadableStream): Promise<s
   str += getClosingChunk()
   return str
 }
-async function stringToStreamReadableNode(str: string): Promise<StreamReadableNode> {
+async function streamReadableWebToBytes(readableWeb: ReadableStream): Promise<Uint8Array> {
+  const reader = readableWeb.getReader()
+  const chunks: Uint8Array[] = []
+  while (true) {
+    const { done, value } = await reader.read()
+    if (done) break
+    assertUsage(value instanceof Uint8Array, `The stream emitted a chunk that isn't a Uint8Array: ${String(value)}`)
+    chunks.push(value)
+  }
+  const bytes = new Uint8Array(chunks.reduce((len, chunk) => len + chunk.length, 0))
+  let offset = 0
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset)
+    offset += chunk.length
+  }
+  return bytes
+}
+// Resolves after the first chunk (rejects if the stream errors before), then reads on demand
+async function awaitFirstChunk(
+  stream: StreamReadableWeb,
+  onErrorWhileStreaming: (err: unknown) => void,
+): Promise<StreamReadableWeb> {
+  const reader = stream.getReader()
+  const firstChunk = await reader.read()
+  const streamStarted = new ReadableStream({
+    start(controller) {
+      if (firstChunk.done) controller.close()
+      else controller.enqueue(firstChunk.value)
+    },
+    async pull(controller) {
+      let chunk: ReadableStreamReadResult<unknown>
+      try {
+        chunk = await reader.read()
+      } catch (err) {
+        onErrorWhileStreaming(err)
+        controller.error(err)
+        return
+      }
+      if (chunk.done) controller.close()
+      else controller.enqueue(chunk.value)
+    },
+    cancel(reason) {
+      return reader.cancel(reason)
+    },
+  })
+  return streamStarted
+}
+async function stringToStreamReadableNode(str: string | Uint8Array): Promise<StreamReadableNode> {
   const { Readable } = await loadStreamNodeModule()
-  return Readable.from(str)
+  // Readable.from() iterates a Uint8Array byte by byte
+  return Readable.from(typeof str === 'string' ? str : [str])
 }
 async function streamReadableWebToStreamReadableNode(stream: ReadableStream): Promise<StreamReadableNode> {
   const { Readable } = await loadStreamNodeModule()
   return Readable.fromWeb(stream as any)
 }
-function stringToStreamReadableWeb(str: string): StreamReadableWeb {
+function stringToStreamReadableWeb(str: string | Uint8Array): StreamReadableWeb {
   // ReadableStream.from() spec discussion: https://github.com/whatwg/streams/issues/1018
   assertReadableStreamConstructor()
   const readableStream = new ReadableStream({
@@ -142,13 +197,13 @@ function stringToStreamReadableWeb(str: string): StreamReadableWeb {
   })
   return readableStream
 }
-function stringToStreamPipeNode(str: string): StreamPipeNode {
+function stringToStreamPipeNode(str: string | Uint8Array): StreamPipeNode {
   return (writable: StreamWritableNode) => {
     writable.write(str)
     writable.end()
   }
 }
-function stringToStreamPipeWeb(str: string): StreamPipeWeb {
+function stringToStreamPipeWeb(str: string | Uint8Array): StreamPipeWeb {
   return (writable: StreamWritableWeb) => {
     const writer = writable.getWriter()
     writer.write(encodeForWebStream(str))
@@ -205,17 +260,20 @@ function streamPipeWebToString(streamPipeWeb: StreamPipeWeb): Promise<string> {
   return promise
 }
 
-async function getStreamReadableNode(htmlRender: HtmlRender): Promise<null | StreamReadableNode> {
-  if (typeof htmlRender === 'string') {
+async function getStreamReadableNode(htmlRender: HtmlRender | Uint8Array): Promise<null | StreamReadableNode> {
+  if (typeof htmlRender === 'string' || htmlRender instanceof Uint8Array) {
     return stringToStreamReadableNode(htmlRender)
   }
   if (isStreamReadableNode(htmlRender)) {
     return htmlRender
   }
+  if (isStreamReadableWeb(htmlRender)) {
+    return streamReadableWebToStreamReadableNode(htmlRender)
+  }
   return null
 }
-function getStreamReadableWeb(htmlRender: HtmlRender): null | StreamReadableWeb {
-  if (typeof htmlRender === 'string') {
+function getStreamReadableWeb(htmlRender: HtmlRender | Uint8Array): StreamReadableWeb {
+  if (typeof htmlRender === 'string' || htmlRender instanceof Uint8Array) {
     return stringToStreamReadableWeb(htmlRender)
   }
   if (isStreamReadableWeb(htmlRender)) {
@@ -229,17 +287,31 @@ function getStreamReadableWeb(htmlRender: HtmlRender): null | StreamReadableWeb 
     streamPipeWeb(writable)
     return readable
   }
-  return null
+  if (isStreamReadableNode(htmlRender) || isStreamPipeNode(htmlRender)) {
+    // A Node.js stream implies that Node.js's `stream` module is available
+    const { readable, writable } = new TransformStream()
+    loadStreamNodeModule().then(({ Readable, PassThrough }) => {
+      const passThrough = new PassThrough()
+      pipeToStreamWritableNode(htmlRender, passThrough)
+      Readable.toWeb(passThrough)
+        .pipeTo(writable as any)
+        .catch(() => {})
+    })
+    return readable
+  }
+  checkType<never>(htmlRender)
+  assert(false)
 }
 
-function pipeToStreamWritableWeb(htmlRender: HtmlRender, writable: StreamWritableWeb): boolean {
-  if (typeof htmlRender === 'string') {
+function pipeToStreamWritableWeb(htmlRender: HtmlRender | Uint8Array, writable: StreamWritableWeb): boolean {
+  if (typeof htmlRender === 'string' || htmlRender instanceof Uint8Array) {
     const streamPipeWeb = stringToStreamPipeWeb(htmlRender)
     streamPipeWeb(writable)
     return true
   }
   if (isStreamReadableWeb(htmlRender)) {
-    htmlRender.pipeTo(writable)
+    // pipeTo() propagates a failure of either side to the other side
+    htmlRender.pipeTo(writable).catch(() => {})
     return true
   }
   if (isStreamPipeWeb(htmlRender)) {
@@ -254,14 +326,10 @@ function pipeToStreamWritableWeb(htmlRender: HtmlRender, writable: StreamWritabl
   checkType<never>(htmlRender)
   assert(false)
 }
-function pipeToStreamWritableNode(htmlRender: HtmlRender, writable: StreamWritableNode): boolean {
-  if (typeof htmlRender === 'string') {
+function pipeToStreamWritableNode(htmlRender: HtmlRender | Uint8Array, writable: StreamWritableNode): boolean {
+  if (typeof htmlRender === 'string' || htmlRender instanceof Uint8Array) {
     const streamPipeNode = stringToStreamPipeNode(htmlRender)
     streamPipeNode(writable)
-    return true
-  }
-  if (isStreamReadableNode(htmlRender)) {
-    htmlRender.pipe(writable)
     return true
   }
   if (isStreamPipeNode(htmlRender)) {
@@ -270,8 +338,18 @@ function pipeToStreamWritableNode(htmlRender: HtmlRender, writable: StreamWritab
     streamPipeNode(writable)
     return true
   }
-  if (isStreamReadableWeb(htmlRender)) {
-    streamReadableWebToStreamReadableNode(htmlRender).then((s) => s.pipe(writable))
+  if (isStreamReadableNode(htmlRender) || isStreamReadableWeb(htmlRender)) {
+    getStreamReadableNode(htmlRender).then(async (readable) => {
+      assert(readable)
+      const { pipeline } = await loadStreamNodeModule()
+      // pipeline() throws if the writable is already destroyed (e.g. the client left before the first chunk)
+      if (writable.destroyed) return readable.destroy()
+      // Unlike pipe(), pipeline() destroys the readable if the writable closes early, and the writable if the readable errors or closes before its end
+      pipeline(readable, writable, () => {})
+      // E.g. compression() holds the writes until flush()
+      const w: StreamWritableNode & { flush?: () => void } = writable
+      readable.on('data', () => w.flush?.())
+    })
     return true
   }
   if (isStreamPipeWeb(htmlRender)) {
@@ -289,12 +367,16 @@ async function processStream(
     injectStringAtEnd,
     onErrorWhileStreaming,
     enableEagerStreaming,
+    onCancel,
   }: {
     injectStringAtBegin?: () => Promise<string>
     injectStringAfterFirstChunk?: () => string | null
-    injectStringAtEnd?: () => Promise<string>
+    /** `writeHtml()` writes HTML before the returned string (e.g. streamed pageContext values) */
+    injectStringAtEnd?: (writeHtml: (html: string) => void) => Promise<string>
     onErrorWhileStreaming: (err: unknown) => void
     enableEagerStreaming?: boolean
+    /** The stream was cancelled (e.g. the user closed the tab) or failed */
+    onCancel: () => void
   },
 ): Promise<StreamProviderNormalized> {
   const buffer: unknown[] = []
@@ -345,6 +427,8 @@ async function processStream(
       resolveReadyToWrite()
     },
     onError(err) {
+      // The HTML won't end: its streamed pageContext values won't be sent
+      onCancel()
       if (!promiseHasResolved) {
         reject(err)
       } else {
@@ -371,7 +455,10 @@ async function processStream(
           streamOriginalEnded = true
         })
         if (injectStringAtEnd && !isCancel) {
-          const injectedChunk = await injectStringAtEnd()
+          const injectedChunk = await injectStringAtEnd((html) => {
+            writeStream(html)
+            flushStream()
+          })
           writeStream(injectedChunk)
         }
         await promiseReadyToWrite // E.g. if the user calls the pipe wrapper after the original writable has ended
@@ -394,6 +481,7 @@ async function processStream(
     onFlush() {
       flushStream()
     },
+    onCancel,
   })
   wrapperCreated = true
 
@@ -471,6 +559,7 @@ async function createStreamWrapper({
   onEnd,
   onFlush,
   onReadyToWrite,
+  onCancel,
 }: {
   streamOriginal: StreamProviderAny
   onError: (err: unknown) => void
@@ -478,6 +567,7 @@ async function createStreamWrapper({
   onEnd: (isCancel?: boolean) => Promise<void>
   onFlush: () => void
   onReadyToWrite: () => void
+  onCancel: () => void
 }): Promise<{
   streamWrapper: StreamProviderNormalized
   streamWrapperOperations: { writeChunk: (chunk: unknown) => void; flushStream: null | (() => void) }
@@ -495,6 +585,13 @@ async function createStreamWrapper({
     const pipeProxy: StreamPipeNode = (writable_: StreamWritableNode) => {
       writableOriginal = writable_
       debug('original Node.js Writable received')
+      // Let the source know when the response closes early (no-op once it has ended)
+      const onClose = () => {
+        if (!hasEnded) onCancel()
+        writableProxy.destroy()
+      }
+      if (writableOriginal.destroyed) onClose()
+      else writableOriginal.on('close', onClose)
       onReadyToWrite()
       if (hasEnded) {
         // onReadyToWrite() already wrote everything; we can close the stream right away
@@ -564,6 +661,11 @@ async function createStreamWrapper({
     const pipeProxy: StreamPipeWeb = (writableOriginal: StreamWritableWeb) => {
       writerOriginal = writableOriginal.getWriter()
       debug('original Web Writable received')
+      // Let the source know when the response closes early
+      writerOriginal.closed.catch((err) => {
+        onCancel()
+        readerProxy?.cancel(err)
+      })
       ;(async () => {
         // CloudFlare Workers does not implement `ready` property
         //  - https://github.com/vuejs/vue-next/issues/4287
@@ -580,7 +682,7 @@ async function createStreamWrapper({
     stampPipe(pipeProxy, 'web-stream')
     const writeChunk = (chunk: unknown) => {
       assert(writerOriginal)
-      writerOriginal.write(encodeForWebStream(chunk))
+      writerOriginal.write(encodeForWebStream(chunk)).catch(() => {})
       debugWithChunk('data written (Web Writable)', chunk)
     }
     // Web Streams have compression built-in
@@ -592,11 +694,12 @@ async function createStreamWrapper({
     const endStream = () => {
       hasEnded = true
       if (writerOriginal) {
-        writerOriginal.close()
+        writerOriginal.close().catch(() => {})
       }
     }
 
     let writableProxy: WritableStream<unknown>
+    let readerProxy: undefined | ReadableStreamDefaultReader
     if (typeof ReadableStream !== 'function') {
       writableProxy = new WritableStream({
         write(chunk) {
@@ -614,7 +717,8 @@ async function createStreamWrapper({
     } else {
       const { readable, writable } = new TransformStream()
       writableProxy = writable
-      handleReadableWeb(readable, {
+      readerProxy = readable.getReader()
+      handleReadableWeb(readerProxy, {
         onData,
         onError(err) {
           onError(err)
@@ -636,7 +740,7 @@ async function createStreamWrapper({
   if (isStreamReadableWeb(streamOriginal)) {
     debug('onRenderHtml() hook returned Web Readable')
 
-    const readableOriginal: StreamReadableWeb = streamOriginal
+    const readerOriginal = streamOriginal.getReader()
 
     let isClosed = false
     let isCancel = false
@@ -652,7 +756,7 @@ async function createStreamWrapper({
       start(controller) {
         controllerProxy = controller
         onReadyToWrite()
-        handleReadableWeb(readableOriginal, {
+        handleReadableWeb(readerOriginal, {
           onData,
           onError(err) {
             onError(err)
@@ -663,21 +767,17 @@ async function createStreamWrapper({
           },
         })
       },
-      async cancel(...args) {
+      async cancel(reason) {
         debug('stream cancelled')
         isCancel = true
-        await readableOriginal.cancel(...args)
-        // If readableOriginal has implemented readableOriginal.cancel() then the onEnd() callback and therefore closeStream() may already have been called at this point
-        await closeStream()
+        onCancel()
+        // Ends handleReadableWeb() which then calls closeStream()
+        await readerOriginal.cancel(reason)
       },
     })
 
     const writeChunk = (chunk: unknown) => {
-      if (
-        !isCancel &&
-        // If readableOriginal doesn't implement readableOriginal.cancel() then it may still emit data after we close the stream. We therefore need to check whether the steam is closed.
-        !isClosed
-      ) {
+      if (!isCancel && !isClosed) {
         controllerProxy.enqueue(encodeForWebStream(chunk) as any)
         debugWithChunk('data written (Web Readable)', chunk)
       } else {
@@ -714,6 +814,11 @@ async function createStreamWrapper({
       readableProxy.push(null)
     }
     const readableProxy: StreamReadableNode = new Readable({ read() {} })
+    // Destroy the source when the consumer closes early
+    readableProxy.once('close', () => {
+      if (!readableProxy.readableEnded) onCancel()
+      readableOriginal.destroy()
+    })
 
     onReadyToWrite()
 
@@ -739,14 +844,13 @@ async function createStreamWrapper({
 }
 
 async function handleReadableWeb(
-  readable: ReadableStream,
+  reader: ReadableStreamDefaultReader,
   {
     onData,
     onError,
     onEnd,
   }: { onData: (chunk: unknown) => void; onError: (err: unknown) => void; onEnd: () => Promise<void> },
 ) {
-  const reader = readable.getReader()
   while (true) {
     let result: ReadableStreamReadResult<unknown>
     try {
@@ -923,10 +1027,12 @@ function encodeForWebStream(thing: unknown) {
 async function loadStreamNodeModule(): Promise<{
   Readable: typeof Readable_
   Writable: typeof Writable_
+  PassThrough: typeof PassThrough_
+  pipeline: typeof pipeline_
 }> {
   const streamModule = (await import_('stream')).default as Awaited<typeof import('stream')>
-  const { Readable, Writable } = streamModule
-  return { Readable, Writable }
+  const { Readable, Writable, PassThrough, pipeline } = streamModule
+  return { Readable, Writable, PassThrough, pipeline }
 }
 
 function getStreamName(

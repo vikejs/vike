@@ -3,6 +3,7 @@ export { getPageContextFromHooksClient_firstRender }
 export { getPageContextFromHooksServer }
 export { getPageContextFromHooksServer_firstRender }
 export { setPageContextInitIsPassedToClient }
+export { processPageContextFromServer }
 export type { PageContextFromHooksServer }
 
 import { assert, assertUsage, getProjectError } from '../../utils/assert.js'
@@ -11,8 +12,8 @@ import { hasProp } from '../../utils/hasProp.js'
 import { isObject } from '../../utils/isObject.js'
 import { objectAssign } from '../../utils/objectAssign.js'
 import { redirectHard } from '../../utils/redirectHard.js'
-import { parse } from '@brillout/json-serializer/parse'
 import { getPageContextSerializedInHtml } from '../shared/getJsonSerializedInHtml.js'
+import { readPageContextJson } from './streamedValues.js'
 import type { PageContextConfig, PageFile } from '../../shared-server-client/getPageFiles.js'
 import { analyzePageServerSide } from '../../shared-server-client/getPageFiles/analyzePageServerSide.js'
 import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides.js'
@@ -46,11 +47,13 @@ type PageContextSerialized = {
   _hasPageContextFromServer: true
 }
 // Get `pageContext` values from `<script id="vike_pageContext" type="application/json">`
-function getPageContextFromHooksServer_firstRender(): PageContextSerialized & {
-  routeParams: Record<string, string>
-  _hasPageContextFromServer: true
-} {
-  const pageContextSerialized = getPageContextSerializedInHtml()
+async function getPageContextFromHooksServer_firstRender(): Promise<
+  PageContextSerialized & {
+    routeParams: Record<string, string>
+    _hasPageContextFromServer: true
+  }
+> {
+  const pageContextSerialized = await getPageContextSerializedInHtml()
   processPageContextFromServer(pageContextSerialized)
   objectAssign(pageContextSerialized, {
     _hasPageContextFromServer: true as const,
@@ -283,8 +286,7 @@ async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _u
     )
   }
 
-  const responseText = await response.text()
-  const pageContextFromServer: unknown = parse(responseText)
+  const pageContextFromServer = await readPageContextJson(response)
   assert(isObject(pageContextFromServer))
 
   if (isAbortPageContext(pageContextFromServer)) {

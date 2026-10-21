@@ -3,6 +3,7 @@ export type Component = any
 export type PageContext = {
   Page: Component
   pageProps: Record<string, unknown>
+  is404?: boolean
   exports: {
     documentProps?: {
       title: string

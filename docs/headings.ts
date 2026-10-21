@@ -82,13 +82,13 @@ const headings = [
     url: '/extensions',
     sectionTitles: ['i18n'],
   },
-  /*
+  //*
   {
     level: 2,
     title: 'Next.js Comparison',
-    url: '/nextjs'
+    url: '/nextjs',
   },
-  */
+  //*/
   {
     level: 2,
     title: 'Team',
@@ -327,6 +327,7 @@ const headings = [
     title: '`+server`',
     titleInNav: 'Server',
     url: '/server',
+    sectionTitles: ['`+server: true`', '`+server.js` => `+serverEntry.js`', 'HMR'],
   },
   {
     level: 2,
@@ -359,7 +360,7 @@ const headings = [
     titleInNav: '... more',
     title: 'Integration (more)',
     url: '/integration',
-    sectionTitles: ['Server (manual integration)', 'Non-JavaScript backend'],
+    sectionTitles: ['Non-JavaScript backend'],
   },
   {
     level: 1,
@@ -377,6 +378,7 @@ const headings = [
     level: 2,
     title: '`pageContext`',
     url: '/pageContext',
+    sectionTitles: ['`renderPage()`'],
   },
   {
     level: 2,
@@ -616,8 +618,8 @@ const headings = [
   },
   {
     level: 2,
-    title: '`renderPage()`',
-    url: '/renderPage',
+    title: '`vike(app)`',
+    url: '/vike(app)',
   },
   {
     level: 2,
@@ -670,6 +672,12 @@ const headings = [
   },
   {
     level: 2,
+    title: '`+serverEntry`',
+    url: '/serverEntry',
+    sectionTitles: ['With(out) `+server.js`', 'Example: Bun', 'Example: WebSockets'],
+  },
+  {
+    level: 2,
     title: '`+ssr`',
     url: '/ssr',
   },
@@ -682,7 +690,7 @@ const headings = [
     level: 2,
     title: '`+prerender`',
     url: '/prerender',
-    sectionTitles: ['`disableAutoRun`', '`redirects`'],
+    sectionTitles: ['`disableAutoRun`', '`redirects`', '`keepDistServer`'],
   },
   {
     level: 2,
@@ -723,6 +731,11 @@ const headings = [
     level: 2,
     title: '`+csp`',
     url: '/csp',
+  },
+  {
+    level: 2,
+    title: '`+middleware`',
+    url: '/middleware',
   },
   {
     level: 2,
@@ -1129,6 +1142,10 @@ function warningsAndErrors() {
         url: '/warning/setup',
       },
       {
+        title: "❌ `renderPage()` doesn't run `+middleware`",
+        url: '/error/setup-middlewares',
+      },
+      {
         title: '❌ Runtime code defined in config file',
         url: '/error/runtime-in-config',
       },
@@ -1222,10 +1239,6 @@ function misc() {
         category: 'Glossary',
       },
       {
-        title: 'Vike',
-        url: '/vike',
-      },
-      {
         title: 'Press Kit',
         url: '/press',
       },
@@ -1233,10 +1246,12 @@ function misc() {
         title: 'Versioning',
         url: '/versioning',
       },
+      /*
       {
         title: 'Next.js Comparison',
         url: '/nextjs',
       },
+      //*/
     ] as const
   ).map((h) => ({ category: 'Miscellaneous' as const, ...h })) satisfies HeadingDetachedDefinition[]
 }
@@ -1498,6 +1513,11 @@ function api() {
         url: '/require',
       },
       {
+        title: '`renderPage()`',
+        url: '/renderPage',
+        sectionTitles: ['`renderPage()` vs `vike(app)`', 'Without `+serverEntry.js`'],
+      },
+      {
         title: '`filesystemRoutingRoot`',
         url: '/filesystemRoutingRoot',
       },
@@ -1698,6 +1718,10 @@ function migrations() {
       {
         title: 'Migration to `+server`',
         url: '/migration/server',
+      },
+      {
+        title: 'Migrate `vike/fetch`',
+        url: '/migration/vike-fetch',
       },
     ] as const
   ).map((h) => ({ ...h, category: 'Migration' as const })) satisfies HeadingDetachedDefinition[]

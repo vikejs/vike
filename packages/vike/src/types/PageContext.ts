@@ -1,5 +1,4 @@
 // Public usage
-import type { IncomingMessage, ServerResponse } from 'node:http'
 
 export type { PageContext }
 export type { PageContextServer }
@@ -14,7 +13,6 @@ export type { PageContextInternalServer }
 export type { PageContextInternalClient }
 export type { PageContextInternalClient_ServerRouting }
 export type { PageContextInternalClient_ClientRouting }
-export type { PageContextInitInternal }
 export type { PageContextInit }
 
 // TO-DO/next-major-release: remove these three exports
@@ -50,11 +48,21 @@ type PageContextServer<Data = unknown> = PageContextBuiltInServer<Data> & {
   >
 } & Vike.PageContext &
   Vike.PageContextServer &
+  PageContextContent &
   (Vike.Server extends { server: string }
     ? { runtime: RuntimeAdapterTarget<Vike.Server['server']> } & PageContextReqResAlias<Vike.Server['server']>
     : {})
 
-// pageContext.req and pageContext.res are aliases of pageContext.runtime.req and pageContext.runtime.res, set by +server.
+type PageContextContent = {
+  /**
+   * The content of a non-HTML page — the HTTP response body (SSR) or the file content (pre-rendering).
+   *
+   * https://vike.dev/pageContext#content
+   */
+  content?: string | Uint8Array | ReadableStream<Uint8Array>
+}
+
+// pageContext.req and pageContext.res (aliases of pageContext.runtime.req and pageContext.runtime.res) are set by vike(app), `$ vike dev`, and `$ vike preview`.
 // https://vike.dev/pageContext#req
 // We only add the aliases:
 //  - if the runtime adapter exposes req/res (e.g. Node.js servers such as Express/Fastify/Hono do, but Cloudflare Workers don't), and
@@ -201,14 +209,6 @@ type PageContextInit = {
   url?: string
 }
 
-type PageContextInitInternal = PageContextInit & {
-  _nodeDev?: {
-    req: IncomingMessage
-    res: ServerResponse
-  }
-  _reqWeb?: Request
-}
-
 type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
   PageContextInit &
   PageContextUrlServer & {
@@ -260,6 +260,13 @@ type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
      * https://vike.dev/pageContext#pageContextsAborted
      */
     pageContextsAborted: Partial<PageContextServer<Data>>[]
+
+    /**
+     * @experimental
+     *
+     * https://vike.dev/meta#vike-environments
+     */
+    environments?: Record<string, { config: PageContextConfig['config']; pageContext: PageContextServer<Data> }>
 
     isHydration?: undefined
     isBackwardNavigation?: undefined

@@ -48,7 +48,7 @@ declare global {
     }
     interface Server {
       // Pick your server (for correct pageContext.req type)
-      server: 'hono' // | 'express' | 'fastify' | 'hattip' | 'srvx' | 'elysia' | 'h3'
+      server: 'hono' // | 'express' | 'fastify' | 'h3' | 'elysia'
     }
   }
 }
@@ -71,33 +71,9 @@ export default {
 
 > You can access `pageContext` in any UI component and Vike hook — see <Link href="/pageContext" />.
 
-> If you use <Link href="/server">`+server.js`</Link>, you can access the request object at <Link href="/pageContext#req">`pageContext.req`</Link>.
+> If you use <Link href="/vike(app)">`vike(app)`</Link>, you can access the request object at <Link href="/pageContext#req">`pageContext.req`</Link>.
 >
-> If you don't use `+server.js`, you can define a custom property `pageContext.req` at <Link href="/renderPage">`renderPage()`</Link>:
-> ```ts
-> // server/index.ts
->
-> import { renderPage } from 'vike/server'
->
-> // Vike server middleware
-> app.get('*', async (req: Request, res: Response) => {
->   const pageContextInit = {
->     urlOriginal: req.url,
->     // Make the request object available at pageContext.req
->     req
->   }
->   const pageContext = await renderPage(pageContextInit)
->   // ...
-> })
->
-> declare global {
->   namespace Vike {
->     interface PageContextServer {
->       req: Request
->     }
->   }
-> }
-> ```
+> If you use <Link href="/renderPage">`renderPage()`</Link>, you can pass `req` to `renderPage()`, see <Link href="/pageContext#renderpage" doNotInferSectionTitle />.
 
 
 ## SSG
@@ -125,7 +101,7 @@ You can then use <Link href="/pageContext#globalContext">`pageContext.globalCont
 
 ## Login flow
 
-By using <Link href="/guard">+guard</Link> with [`throw redirect()`](/redirect) or [`throw render()`](/render) you can:
+By using <Link href="/guard">+guard</Link> with <Link href="/redirect">`throw redirect()`</Link> or <Link href="/render">`throw render()`</Link> you can:
  - Implement login flows.
  - Protect private pages from unprivileged access.
 

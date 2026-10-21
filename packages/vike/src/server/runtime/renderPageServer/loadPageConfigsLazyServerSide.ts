@@ -25,6 +25,7 @@ import type { PageContextAfterRoute } from '../../../shared-server-client/route/
 import type { PageContextCreatedServer } from './createPageContextServer.js'
 import { resolveHeadersResponseEarly } from './headersResponse.js'
 import { resolvePageContextCspNone } from './csp.js'
+import { loadPageContextEnvironments } from './loadPageContextEnvironments.js'
 import '../../assertEnvServer.js'
 
 type PageContext_loadPageConfigsLazyServerSide = PageContextCreatedServer &
@@ -153,7 +154,7 @@ async function loadPageUserFiles(
     _pageConfig: null | PageConfigRuntime
   },
 ) {
-  const [{ pageContextAddendum }] = await Promise.all([
+  const [{ pageContextAddendum }, pageContextEnvironments] = await Promise.all([
     (async () => {
       const pageFilesServerSide = getPageFilesServerSide(pageContext._pageFilesAll, pageContext.pageId)
       const isDev = !pageContext._globalContext._isProduction
@@ -168,9 +169,11 @@ async function loadPageUserFiles(
       )
       return { pageContextAddendum }
     })(),
+    pageContext._pageConfig && loadPageContextEnvironments(pageContext),
     analyzePageClientSideInit(pageContext._globalContext._pageFilesAll, pageContext.pageId, {
       sharedPageFilesAlreadyLoaded: true,
     }),
   ])
+  if (pageContextEnvironments) objectAssign(pageContextAddendum, pageContextEnvironments)
   return pageContextAddendum
 }

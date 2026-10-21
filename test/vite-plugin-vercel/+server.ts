@@ -4,11 +4,11 @@ import { Hono } from 'hono'
 function serve() {
   const app = new Hono()
 
+  vike(app)
+
   app.get('/hello', () => {
     return new Response('Hello')
   })
-
-  vike(app)
 
   return app.fetch
 }

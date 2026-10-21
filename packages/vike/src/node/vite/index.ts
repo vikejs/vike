@@ -36,6 +36,7 @@ import { pluginSuppressRollupWarning } from './plugins/build/pluginSuppressRollu
 import { pluginDistFileNames } from './plugins/build/pluginDistFileNames.js'
 import { pluginProdBuildEntry } from './plugins/build/pluginProdBuildEntry.js'
 import { pluginBuildConfig } from './plugins/build/pluginBuildConfig.js'
+import { pluginEnvironmentEntries } from './plugins/build/pluginEnvironmentEntries.js'
 import { pluginModuleBanner } from './plugins/build/pluginModuleBanner.js'
 import { pluginReplaceConstantsNonRunnableDev } from './plugins/non-runnable-dev/pluginReplaceConstantsNonRunnableDev.js'
 import { isVikeCliOrApi } from '../../shared-server-node/api-context.js'
@@ -90,6 +91,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): Promise<Plug
 function pluginBuild(): Plugin[] {
   return [
     ...pluginBuildConfig(),
+    ...pluginEnvironmentEntries(),
     ...pluginBuildApp(),
     ...pluginProdBuildEntry(),
     ...pluginDistPackageJsonFile(),

@@ -67,11 +67,13 @@ type ConfigDefinition =
       global?: boolean | ((value: unknown, moreInfo: { isGlobalLocation: boolean }) => boolean)
       /** Whether changes to the configuration should trigger a Vite restart. */
       vite?: boolean
-      /** @experimental */
-      _computed?: (pageConfig: PageConfigBuildTimeBeforeComputed) => unknown
-      /** @experimental */
+      /** @internal */
+      _computed?: (pageConfig: PageConfigBuildTimeBeforeComputed, isDev: boolean) => unknown
+      /** @internal */
       _valueIsFilePath?: true
-      /** @experimental */
+      /** @internal */
+      _valueNotLoadedAtRuntime?: true
+      /** @internal */
       _userEffectDefinedAtFilePath?: DefinedAtFilePath
       isDefinedByPeerDependency?: undefined
     }
@@ -162,14 +164,15 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
   route: {
     env: {
       server: true,
-      client: 'if-client-routing',
+      client: true,
+      clientRoutingOnly: true,
       // For vite-plugin-vercel
       config: true,
     },
     eager: true,
   },
   guard: {
-    env: { server: true, client: 'if-client-routing' },
+    env: { server: true, client: true, clientRoutingOnly: true },
   },
   data: {
     env: { server: true },
@@ -179,7 +182,7 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
     cumulative: true,
   },
   iKnowThePerformanceRisksOfAsyncRouteFunctions: {
-    env: { server: true, client: 'if-client-routing' },
+    env: { server: true, client: true, clientRoutingOnly: true },
     eager: true,
   },
   filesystemRoutingRoot: {
@@ -223,15 +226,16 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
   hasServerOnlyHook: {
     env: { client: true },
     eager: true,
-    _computed: (pageConfig): boolean => {
+    _computed: (pageConfig, isDev): boolean => {
       const sources = (['data', 'onBeforeRender', 'onCreatePageContext', 'guard'] as const)
         .map((hookName) =>
           getConfigValueSourcesRelevant(
             hookName,
             {
-              isForClientSide: false,
+              environmentName: 'server',
               // TO-DO/eventually/remove-server-router: let's eventually remove support for Server Routing
               isClientRouting: true,
+              isDev,
             },
             pageConfig,
           ),
@@ -360,6 +364,15 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
   server: {
     env: { server: true },
     global: true,
+    // virtual:vike:global-entry:server shouldn't import +server.js
+    // - Otherwise a +server.js calling `await getGlobalContext()` would wait for itself and hang indefinitely
+    _valueNotLoadedAtRuntime: true,
+  },
+  serverEntry: {
+    // The value is merely the file path of the server entry, which becomes dist/server/index.mjs — Vike never loads it as a config value
+    env: { config: true },
+    global: true,
+    _valueIsFilePath: true,
   },
   precompress: {
     env: { config: true },
@@ -370,7 +383,7 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
     global: true,
   },
   onBeforeRoute: {
-    env: { server: true, client: 'if-client-routing' },
+    env: { server: true, client: true, clientRoutingOnly: true },
     eager: true,
     global: true,
   },

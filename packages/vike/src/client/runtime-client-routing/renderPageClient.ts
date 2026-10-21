@@ -2,6 +2,7 @@ export { renderPageClient }
 export { getRenderCount }
 export { disableClientRouting }
 export { getPageContextClient }
+export { createPageContextFromServer_experimentalRSC }
 export type { PageContextBegin }
 export type { PageContextInternalClientAfterRender }
 
@@ -22,7 +23,9 @@ import {
   getPageContextFromHooksServer_firstRender,
   type PageContextFromHooksServer,
   setPageContextInitIsPassedToClient,
+  processPageContextFromServer,
 } from './getPageContextFromHooks.js'
+import { cancelStreamedValues } from './streamedValues.js'
 import { createPageContextClient, type PageContextCreatedClient } from './createPageContextClient.js'
 import {
   addLinkPrefetchHandlers,
@@ -48,6 +51,7 @@ import {
   type PageContextAborted,
 } from '../../shared-server-client/route/abort.js'
 import { route } from '../../shared-server-client/route/index.js'
+import { forkPageContext } from '../../shared-server-client/forkPageContext.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { isScrollPosition, setScrollPosition, type ScrollTarget } from './setScrollPosition.js'
 import { scrollRestoration_initialRenderIsDone } from './scrollRestoration.js'
@@ -75,7 +79,8 @@ const globalObject = getGlobalObject<{
   isTransitioning?: true
   //https://vike.dev/pageContext#previousPageContext
   previousPageContext?: PreviousPageContext
-  renderedPageContext?: PageContextInternalClient & PageContext_loadPageConfigsLazyClientSide
+  renderedPageContext?: PageContextInternalClient &
+    PageContext_loadPageConfigsLazyClientSide & { previousPageContext: PreviousPageContext | null }
   currentPageContext?: Record<string, unknown>
   hydrationAwaitPromise: Promise<void>
   hydrationAwaitPromiseResolve: () => void
@@ -185,7 +190,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     // Get pageContext serialized in <script id="vike_pageContext" type="application/json">
     if (isFirstRender) {
-      const pageContextSerialized = getPageContextFromHooksServer_firstRender()
+      const pageContextSerialized = await getPageContextFromHooksServer_firstRender()
       // TO-DO/eventually: create helper assertPageContextFromHook()
       assert(!('urlOriginal' in pageContextSerialized))
       objectAssign(pageContext, pageContextSerialized)
@@ -311,7 +316,10 @@ async function renderPageClient(renderArgs: RenderArgs) {
           return
         }
       }
-      if (isRenderOutdated()) return
+      if (isRenderOutdated()) {
+        cancelStreamedValues(pageContextFromHooksServer, false)
+        return
+      }
       // TO-DO/eventually: create helper assertPageContextFromHook()
       assert(!('urlOriginal' in pageContextFromHooksServer))
       objectAssign(pageContext, pageContextFromHooksServer)
@@ -400,13 +408,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
       objectAssign(pageContext, { is404: false })
     }
 
-    const isClientRoutable = await isClientSideRoutable(pageContext.pageId, pageContext)
-    if (isRenderOutdated()) return
-    if (!isClientRoutable) {
-      redirectHard(urlOriginal)
-      return
-    }
-
     if (import.meta.env.DEV || globalThis.__VIKE__IS_DEBUG) {
       assertInfo(false, `Rendering error page ${errorPageId}`, { onlyOnce: false })
     }
@@ -458,7 +459,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     logAbort(err, !import.meta.env.DEV, pageContext)
     const pageContextAbort = errAbort._pageContextAbort
 
-    addNewPageContextAborted(pageContextsAborted, pageContext, pageContextAbort)
+    addNewPageContextAborted(pageContextsAborted, pageContext, pageContextAbort, getPageContextPublicClientMinimal)
 
     // throw render('/some-url')
     if (pageContextAbort._urlRewrite) {
@@ -510,6 +511,11 @@ async function renderPageClient(renderArgs: RenderArgs) {
     }
 
     changeUrl(urlOriginal, overwriteLastHistoryEntry)
+    {
+      const previousPageContextBefore = globalObject.renderedPageContext?.previousPageContext
+      // Remove previousPageContext of past pages (otherwise all the past pageContext are kept in memory)
+      if (previousPageContextBefore) previousPageContextBefore.previousPageContext = null
+    }
     globalObject.previousPageContext = pageContext
     // There should never be concurrent onRenderClient() calls
     assert(globalObject.onRenderClientPreviousPromise === undefined)
@@ -548,6 +554,8 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     // We purposely abort *after* onHydrationEnd() is called (see comment above).
     if (isRenderOutdated(true)) return
+
+    cancelStreamedValues(pageContext, true)
 
     // onPageTransitionEnd()
     if (globalObject.isTransitioning) {
@@ -619,7 +627,9 @@ async function getPageContextBegin(
     isFirstRender: boolean
   },
 ) {
-  const previousPageContext = globalObject.previousPageContext ?? null
+  const previousPageContext = globalObject.previousPageContext
+    ? getPageContextPublicClient(globalObject.previousPageContext)
+    : null
   const pageContext = await createPageContextClient(urlOriginal)
   objectAssign(pageContext, {
     isBackwardNavigation,
@@ -640,7 +650,7 @@ async function getPageContextBegin(
         showStackTrace: true,
         onlyOnce: true,
       })
-      return previousPageContext
+      return this.previousPageContext
     },
     enumerable: false,
   })
@@ -663,25 +673,15 @@ declare global {
   var _vike: VikeGlobalInternal
 }
 
-function disableClientRouting(err: unknown, log: boolean) {
+function disableClientRouting(err: unknown, logError: boolean) {
   globalObject.clientRoutingIsDisabled = true
 
   assert(isErrorFetchingStaticAssets(err))
-  if (log) {
-    // We purposely don't use console.error() to avoid flooding error trackers such as Sentry
-    console.log(err)
-  }
+  if (logError) console.log(err) // We purposely don't use console.error() to avoid flooding error trackers such as Sentry
 
   assertInfo(
     false,
-    [
-      'Failed to fetch static asset.',
-      import.meta.env.PROD ? 'This usually happens when a new frontend is deployed.' : null,
-      'Falling back to Server Routing.',
-      '(The next page navigation will use Server Routing instead of Client Routing.)',
-    ]
-      .filter(Boolean)
-      .join(' '),
+    'Failed to fetch static asset (due to a connection issue, or a new deployment) — falling back to Server Routing',
     { onlyOnce: true },
   )
 }
@@ -721,7 +721,7 @@ function getRenderCount(): number {
 }
 
 function getKeepScrollPositionSetting(
-  pageContext: PageContextConfig & PageContextRouted & Record<string, unknown>,
+  pageContext: PageContextPublicClient & PageContextRouted,
 ): false | string | string[] {
   const c = pageContext.from.configsStandard.keepScrollPosition
   if (!c) return false
@@ -730,7 +730,7 @@ function getKeepScrollPositionSetting(
   assert(configDefinedAt)
   const routeParameterList = getRouteStringParameterList(configDefinedAt)
   if (isCallable(val))
-    val = val(pageContext, {
+    val = val(getPageContextPublicClient(pageContext), {
       configDefinedAt: c.definedAt,
       /* We don't pass routeParameterList because it's useless: the user knows the parameter list.
       routeParameterList
@@ -767,6 +767,34 @@ function getPageContextClient(): PageContextClient | null {
   return getPageContextPublicClient(pageContext as any) as any
 }
 
+// TODO/soon: check whether this is the right API
+/**
+ * Creates a new `pageContext` for the page that `pageContext` renders, with the values of `pageContextFromServer` on top.
+ * - `pageContext` is the `pageContext` of the page rendered last
+ * - `pageContext` and `pageContextFromServer` aren't modified
+ * - The new `pageContext` is the `pageContext.previousPageContext` of the next navigation, including a navigation that has already started
+ * - Unless a navigation has started, `getPageContextClient()` returns the new `pageContext`
+ */
+function createPageContextFromServer_experimentalRSC(
+  pageContext: PageContextClient,
+  pageContextFromServer: Record<string, unknown>,
+): PageContextClient {
+  const pageContextFromServerCopy = { ...pageContextFromServer }
+  processPageContextFromServer(pageContextFromServerCopy)
+  const pageContextNew = forkPageContext(
+    (pageContext as PageContextClient & { _originalObject: Record<string, unknown> })._originalObject,
+  )
+  objectAssign(pageContextNew, pageContextFromServerCopy)
+  // A navigation sets currentPageContext and reads previousPageContext when it starts, and sets previousPageContext when it renders
+  if (globalObject.currentPageContext === globalObject.previousPageContext) {
+    globalObject.currentPageContext = pageContextNew
+  } else {
+    globalObject.currentPageContext!.previousPageContext = getPageContextPublicClient(pageContextNew as any)
+  }
+  globalObject.previousPageContext = pageContextNew as PreviousPageContext
+  return getPageContextPublicClient(pageContextNew as any) as any
+}
+
 type PageContextExecuteHook = Omit<
   PageContextPublicClient,
   keyof Awaited<ReturnType<typeof loadPageConfigsLazyClientSide>>
@@ -788,14 +816,12 @@ async function loadPageConfigsLazyClientSideAndExecHook<
   } catch (err_) {
     err = err_
     hasErr = true
-    if (handleErrorFetchingStaticAssets(err, pageContext, isFirstRender)) {
-      return { skip: true }
-    } else {
-      // Syntax error in user file
-    }
   }
   if (isRenderOutdated()) return { skip: true }
-  if (hasErr) return { err }
+  if (hasErr) {
+    if (await handleErrorFetchingStaticAssets(err, pageContext, isFirstRender)) return { skip: true }
+    return { err }
+  }
   objectAssign(pageContext, pageContextAddendum!)
 
   try {
@@ -809,27 +835,115 @@ async function loadPageConfigsLazyClientSideAndExecHook<
 
   return { pageContext }
 }
-function handleErrorFetchingStaticAssets(
+async function handleErrorFetchingStaticAssets(
   err: unknown,
   pageContext: { urlOriginal: string },
   isFirstRender: boolean,
-): boolean {
-  if (!isErrorFetchingStaticAssets(err)) {
+): Promise<boolean> {
+  if (import.meta.env.DEV) return false
+  if (!isErrorFetchingStaticAssets(err)) return false // Syntax error in user file
+
+  // *******************************************
+  // ******* The three possible actions ********
+  // *******************************************
+
+  /** Show Vike's error page */
+  const showErrorPage = () => {
+    disableClientRouting(err, false)
+    // Vike handles the error like any other error: Vike logs it with `console.error()` and renders Vike's error page
     return false
   }
-
-  if (isFirstRender) {
+  /** Show the rendered HTML (with broken hydration) */
+  const showCurrentBrokenPage = () => {
     disableClientRouting(err, false)
-    // This may happen if the frontend was newly deployed during hydration.
-    // Ideally: re-try a couple of times by reloading the page (not entirely trivial to implement since `localStorage` is needed.)
+    // Abort rendering (and don't show error page), not gracefully: the error throws (i.e. the error is handled by the browser and shown in the browser's developer console)
     throw err
-  } else {
+  }
+  /** Do a full (re-)load of the page */
+  const hardReload = (url?: string) => {
     disableClientRouting(err, true)
+    if (url) {
+      redirectHard(url)
+    } else {
+      // We use `location.reload()` instead of redirectHard(): navigating with `location.href = url` creates a `type: 'navigate'` entry, which would lead to an infinite reload loop — see isPageReload()
+      window.location.reload()
+    }
+    // Abort rendering (and don't show error page), gracefully (i.e. without throwing nor logging any error)
+    return true
   }
 
-  redirectHard(pageContext.urlOriginal)
+  // **************************
+  // ******* The logic ********
+  // **************************
 
-  return true
+  // Possible causes that lead to this point:
+  // - New deployment
+  // - Connection problem
+
+  // === Client-side navigation ===
+  // We hard load the next page:
+  // - New deployment => fully reloading the website is exactly what we want
+  // - Connection problem => next page isn't shown => only useful action is to try again with a hard reload
+  //   - It's usually better to show the browser's offline page than to leave the user stuck on the old page. (This way, the user knows there's a connection problem instead of wondering whether the website is broken.)
+  if (!isFirstRender) {
+    return hardReload(pageContext.urlOriginal)
+  }
+
+  // === First render ===
+
+  // Avoid infinite reload loop: we don't reload a page that was itself loaded by a reload
+  if (isPageReload()) {
+    if (isBlankPage()) {
+      return showErrorPage()
+    } else {
+      return showCurrentBrokenPage()
+    }
+  }
+
+  if (isBlankPage()) {
+    return hardReload()
+  } else {
+    globalObject.clientRoutingIsDisabled = true // Eagerly disable before connection check
+    if (!(await isConnectionDown())) {
+      // Most likely a new deployment (or the connection is back): either way, reloading fixes the page
+      return hardReload()
+    } else {
+      // - Reloading is counterproductive since it would likely get another connection error, resulting in either: the browser's offline page, or repeating this asset loading failure.
+      // - Handling flaky connections is the browser's job (e.g. the user reloads the page)
+      // - Showing the rendered HTML is usually more useful to the user (even when unhydrated thus broken) than showing Vike's error page
+      return showCurrentBrokenPage()
+    }
+  }
+}
+// Whether fetching static assets fails because of the connection. (The error thrown by `import()` doesn't tell: it's the same whether a new frontend was deployed, i.e. the static assets don't exist anymore, or the connection is down.)
+async function isConnectionDown(): Promise<boolean> {
+  try {
+    await fetch(window.location.href, {
+      method: 'HEAD',
+      cache: 'no-store',
+      // On a flaky connection, the request may hang and succeed much later: we don't want to reload the page long after it was shown (e.g. while the user is filling a form)
+      signal: AbortSignal.timeout(4000),
+    })
+    // The server responds
+    return false
+  } catch {
+    return true
+  }
+}
+// The page shows nothing (e.g. SPA)
+function isBlankPage(): boolean {
+  return !document.body.innerText.trim()
+}
+// Whether the current page was loaded by a page reload
+function isPageReload(): boolean {
+  // The browser records how the current document was loaded (Navigation Timing API)
+  const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined
+  return (
+    // Cannot be determined (e.g. older browsers)
+    !navigation ||
+    // A document loaded by `location.reload()` has `type: 'reload'`
+    navigation.type === 'reload'
+  )
 }
 
 // [HMR] If error page is shown => re-render whole page

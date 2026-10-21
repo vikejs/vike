@@ -32,7 +32,7 @@ function route(pageContext: PageContext) {
 If you merely want to guard your page, then you can use a <Link href="/route-string">Route String</Link> with a <Link href="/guard"><code>guard()</code></Link> hook instead of a Route Function.
 
 You can use any routing tool you want, such as:
- - Vike's <Link href="/route-string">Route String</Link> resolver [`resolveRoute()`](#resolveroute)
+ - Vike's <Link href="/route-string">Route String</Link> resolver <Link href="#resolveroute">`resolveRoute()`</Link>
  - [partRegex](https://github.com/brillout/part-regex)
  - [path-to-regexp](https://www.npmjs.com/package/path-to-regexp) (the router used by Express.js)
  - etc.
@@ -154,7 +154,7 @@ page. You can achieve that by using <Link href="/render"><code>throw render()</c
 with an async <Link href="/guard"><code>guard()</code></Link>, async <Link href="/data"><code>data()</code></Link>, or
 async <Link href="/onBeforeRender"><code>onBeforeRender()</code></Link> hook.
 
-> An asynchronous Route Function would slow down your entire app: as explained in [Lightweight & fast](#lightweight-fast), every time the user navigates to a new page *all* your Route Functions are called. This means that a single slow Route Function slows down *all* your pages.
+> An asynchronous Route Function would slow down your entire app: as explained in <Link href="#lightweight-fast">Lightweight & fast</Link>, every time the user navigates to a new page *all* your Route Functions are called. This means that a single slow Route Function slows down *all* your pages.
 
 
 ## Redirection
@@ -180,7 +180,7 @@ export default () => {
 
 In principle, Vike could support providing `pageContext` values but it deliberately doesn't support it in order to foster lightweight Route Functions.
 
-> As explained in [Lightweight & fast](#lightweight-fast), you should keep Route Functions simple and you shouldn't
+> As explained in <Link href="#lightweight-fast">Lightweight & fast</Link>, you should keep Route Functions simple and you shouldn't
 implement complex logic in `+route.js` files.
 
 That said, you can work around it by misusing `pageContext.routeParams` to provide data.

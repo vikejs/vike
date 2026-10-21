@@ -38,7 +38,10 @@ const filterRolldown = {
   },
 }
 const filterFunction = (id: string) =>
-  id === VIRTUAL_FILE_ID_constantsGlobalThis || id === addVirtualFileIdPrefix(VIRTUAL_FILE_ID_constantsGlobalThis)
+  id === VIRTUAL_FILE_ID_constantsGlobalThis ||
+  // Vite re-resolves the resolved ID and its URL when a plugin adds the module as a watch file (@vitejs/plugin-rsc)
+  id === addVirtualFileIdPrefix(VIRTUAL_FILE_ID_constantsGlobalThis) ||
+  id === `/@id/__x00__${VIRTUAL_FILE_ID_constantsGlobalThis}`
 // ===
 
 function pluginReplaceConstantsGlobalThis(): Plugin[] {
@@ -86,9 +89,8 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
       resolveId: {
         filter: filterRolldown,
         handler(id) {
-          assert(filterFunction(id))
-          assert(id === VIRTUAL_FILE_ID_constantsGlobalThis)
-          return addVirtualFileIdPrefix(id)
+          assert(filterFunction(id), { id })
+          return addVirtualFileIdPrefix(VIRTUAL_FILE_ID_constantsGlobalThis)
         },
       },
       load: {

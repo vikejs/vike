@@ -113,7 +113,12 @@ declare global {
 }
 
 function testRunClassic(
-  cmd: 'pnpm run dev' | 'pnpm run preview' | 'pnpm run prod' | 'pnpm run preview:build-twice',
+  cmd:
+    | 'pnpm run dev'
+    | 'pnpm run preview'
+    | 'pnpm run prod'
+    | 'pnpm run preview:build-twice'
+    | 'pnpm run preview:sharedConfigBuild',
   {
     skipAboutPage,
     sleepBeforeAboutPage,

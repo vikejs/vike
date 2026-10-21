@@ -1,4 +1,6 @@
 export { parseVirtualFileExportsGlobalEntry }
+export { parseGlobalEntryPageConfigs }
+export type { EnvironmentEntry }
 
 // TO-DO/next-major-release: remove old design code, and remove all assertions.
 
@@ -8,6 +10,7 @@ import { hasProp } from '../../utils/hasProp.js'
 import { isArray } from '../../utils/isArray.js'
 import { isCallable } from '../../utils/isCallable.js'
 import { isObject } from '../../utils/isObject.js'
+import { objectMap } from '../../utils/objectMap.js'
 import { assertExportValues } from './assert_exports_old_design.js'
 import { getPageFileObject, type PageFile } from './getPageFileObject.js'
 import { fileTypes, type FileType } from './fileTypes.js'
@@ -23,6 +26,7 @@ function parseVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry: unkno
   pageFilesAll: PageFile[]
   pageConfigs: PageConfigRuntime[]
   pageConfigGlobal: PageConfigGlobalRuntime
+  environmentEntries: Record<string, null | EnvironmentEntry>
 } {
   assertVirtualFileExports(virtualFileExportsGlobalEntry, (moduleExports: any) => 'pageFilesLazy' in moduleExports)
   assert(hasProp(virtualFileExportsGlobalEntry, 'pageFilesLazy', 'object'))
@@ -36,15 +40,15 @@ function parseVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry: unkno
   )
   assert(hasProp(virtualFileExportsGlobalEntry, 'pageFilesList', 'string[]'))
 
-  assert(hasProp(virtualFileExportsGlobalEntry, 'pageConfigsSerialized'))
-  assert(hasProp(virtualFileExportsGlobalEntry, 'pageConfigGlobalSerialized'))
-  const { pageConfigsSerialized, pageConfigGlobalSerialized } = virtualFileExportsGlobalEntry
-  assertPageConfigsSerialized(pageConfigsSerialized)
-  assertPageConfigGlobalSerialized(pageConfigGlobalSerialized)
-  const { pageConfigs, pageConfigGlobal } = parsePageConfigsSerialized(
-    pageConfigsSerialized,
-    pageConfigGlobalSerialized,
-  )
+  const { pageConfigs, pageConfigGlobal } = parseGlobalEntryPageConfigs(virtualFileExportsGlobalEntry)
+
+  // The global entries of the additional environments (e.g. `rsc`)
+  // - `null` in development: they're imported with environment.runner.import()
+  const environmentEntries = hasProp(virtualFileExportsGlobalEntry, 'environmentEntries', 'object')
+    ? objectMap(virtualFileExportsGlobalEntry.environmentEntries, (environmentEntry) =>
+        environmentEntry === null ? null : parseGlobalEntryPageConfigs(environmentEntry),
+      )
+    : {}
 
   const pageFilesMap: Record<string, PageFile> = {}
   parseGlobResult(virtualFileExportsGlobalEntry.pageFilesLazy).forEach(({ filePath, pageFile, globValue }) => {
@@ -98,7 +102,17 @@ function parseVirtualFileExportsGlobalEntry(virtualFileExportsGlobalEntry: unkno
     assert(!filePath.includes('\\'))
   })
 
-  return { pageFilesAll, pageConfigs, pageConfigGlobal }
+  return { pageFilesAll, pageConfigs, pageConfigGlobal, environmentEntries }
+}
+
+type EnvironmentEntry = ReturnType<typeof parseGlobalEntryPageConfigs>
+function parseGlobalEntryPageConfigs(virtualFileExportsGlobalEntry: unknown) {
+  assert(hasProp(virtualFileExportsGlobalEntry, 'pageConfigsSerialized'))
+  assert(hasProp(virtualFileExportsGlobalEntry, 'pageConfigGlobalSerialized'))
+  const { pageConfigsSerialized, pageConfigGlobalSerialized } = virtualFileExportsGlobalEntry
+  assertPageConfigsSerialized(pageConfigsSerialized)
+  assertPageConfigGlobalSerialized(pageConfigGlobalSerialized)
+  return parsePageConfigsSerialized(pageConfigsSerialized, pageConfigGlobalSerialized)
 }
 
 type GlobResult = { filePath: string; pageFile: PageFile; globValue: unknown }[]

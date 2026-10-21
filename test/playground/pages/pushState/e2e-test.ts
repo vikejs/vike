@@ -8,10 +8,10 @@ function testHistoryPushState() {
     // Timestamp component works as expected
     await page.goto(getServerUrl() + '/')
     await testCounter()
-    await page.click('a[href="/pushState"]')
+    await navigate('/pushState')
     const timestamp1 = await getTimestamp()
-    await page.click('a[href="/markdown"]')
-    await page.click('a[href="/pushState"]')
+    await navigate('/markdown')
+    await navigate('/pushState')
     const timestamp2 = await getTimestampNewerThan(timestamp1)
 
     // Calling history.pushState() doesn't trigger a re-render, thus timestamp doesn't change
@@ -48,6 +48,12 @@ function testHistoryPushState() {
   })
 
   return
+
+  // Await navigation end: clicking a link while the previous navigation is still ongoing aborts it, and the aborted navigation doesn't add a history entry
+  async function navigate(url: string) {
+    await page.click(`a[href="${url}"]`)
+    await page.waitForFunction((url) => (window as any)._vike.fullyRenderedUrl === url, url)
+  }
 
   // The page is re-rendered asynchronously: the old DOM (with the old timestamp) can still be shown
   async function getTimestampNewerThan(timestampPrevious: number) {

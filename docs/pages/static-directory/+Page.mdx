@@ -1,3 +1,5 @@
+import { Link } from '@brillout/docpress'
+
 ## `public/`
 
 Vite has built-in support for serving static assets living in the `public/` directory.
@@ -23,7 +25,7 @@ Note how Vite:
 
 ## Server static middleware
 
-If we use a Node.js production server (i.e. we don't [pre-render](/pre-rendering) our app),
+If we use a Node.js production server (i.e. we don't <Link href="/pre-rendering">pre-render</Link> our app),
 we can alternatively use a server static middleware such as [`express.static()`](https://expressjs.com/en/starter/static-files.html).
 
 We may want to do this if we have a lot of heavy static assets,

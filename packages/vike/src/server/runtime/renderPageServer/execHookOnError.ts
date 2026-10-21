@@ -33,8 +33,8 @@ function execHookOnError(
   const hooks = getHooksFromPageConfigGlobalCumulative<unknown>(globalContext._pageConfigGlobal, 'onError')
   for (const hook of hooks) {
     try {
-      execHookSingleSync(hook, globalContext, pageContext, getPageContextPublicServer, () =>
-        hook.hookFn(err, pageContext),
+      execHookSingleSync(hook, globalContext, pageContext, getPageContextPublicServer, (pageContextPublic) =>
+        hook.hookFn(err, pageContextPublic),
       )
     } catch (hookErr) {
       console.error(hookErr)

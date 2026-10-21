@@ -70,18 +70,18 @@ function testRun(
     const expectErrServer = () => {
       // Maybe we should also show a log in production?
       if (cmd === 'pnpm run prod') return
-      expectLog(partRegex`HTTP response ${/.*/} /show-error-page 666`, { filter: (log) => log.logSource === 'stderr' })
+      expectLog(partRegex`HTTP response ${/.*/} /show-error-page 499`, { filter: (log) => log.logSource === 'stderr' })
     }
     const expectErrClient = () =>
-      expectLog('Failed to load resource: the server responded with a status of 666 (unknown)', {
+      expectLog('Failed to load resource: the server responded with a status of 499 (unknown)', {
         filter: (log) =>
           log.logSource === 'Browser Error' && partRegex`http://${/[^\/]+/}:3000/show-error-page`.test(log.logInfo),
       })
     test('render error page - HTML', async () => {
       const response = await fetch(url)
-      expect(response.status).toBe(666)
+      expect(response.status).toBe(499)
       expectErrServer()
-      expectLog('Unexpected status code 666', { filter: (log) => log.logSource === 'stderr' })
+      expectLog('Unexpected status code 499', { filter: (log) => log.logSource === 'stderr' })
       const html = await response.text()
       expect(html).toContain('Testing throw render error page.')
       expect(html).toContain('<p style="font-size:1.3em">Testing throw render error page.</p>')
@@ -113,9 +113,23 @@ function testRun(
         // The warning isn't shown on the client-side in production
         isDev
       )
-        expectLog('Unexpected status code 666', { filter: (log) => log.logSource === 'Browser Warning' })
+        expectLog('Unexpected status code 499', { filter: (log) => log.logSource === 'Browser Warning' })
     })
   }
+
+  test('render(404) - client-side routing', async () => {
+    await page.goto(getServerUrl() + '/about')
+    await expectUrl('/about')
+    await hydrationDone()
+    const done = expectPageContextJsonRequest(pageContextInitIsPassedToClient)
+    await page.click('a[href="/render-404"]')
+    await autoRetry(async () => {
+      expect(await page.textContent('p')).toBe('Page not found.')
+    })
+    done()
+    await expectUrl('/render-404')
+    await ensureWasClientSideRouted('/pages/about')
+  })
 
   test('permanent redirect', async () => {
     const url = getServerUrl() + '/permanent-redirect'

@@ -35,8 +35,12 @@ async function testPlugin(): Promise<PluginOption> {
       vike = getVikeConfig(config as any)
       testVikeConfig(vike)
     },
-    closeBundle() {
-      testPrerenderSettings(vike)
+    // After Vike's pre-rendering
+    buildApp: {
+      order: 'post',
+      async handler() {
+        testPrerenderSettings(vike)
+      },
     },
   }
 }

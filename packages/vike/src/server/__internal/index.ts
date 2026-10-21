@@ -1,6 +1,15 @@
 // Used by vike:build:pluginProdBuildEntry
 export { setGlobalContext_prodBuildEntry } from '../runtime/globalContext.js'
 
+// Used by the vike(app) of the @vikejs/* server adapters
+export {
+  getMiddlewaresPipe_nonHandlers,
+  getMiddlewaresPipe_handlers,
+} from '../runtime/universal-middleware/getMiddlewaresPipe.js'
+
+// Used by vike-react-rsc
+export { getPageContextJson }
+
 // Used by vite-plugin-vercel
 export { route, getPagesAndRoutes }
 export type { PageRoutes, PageFile, PageConfigRuntime as PageConfig }
@@ -10,6 +19,8 @@ import type { PageFile } from '../../shared-server-client/getPageFiles/getPageFi
 import { getGlobalContextServerInternal, initGlobalContext_getPagesAndRoutes } from '../runtime/globalContext.js'
 import { setNodeEnvProductionIfUndefined } from '../../utils/assertSetup.js'
 import { PageConfigRuntime } from '../../types/PageConfig.js'
+import type { PageContextServer } from '../../types/PageContext.js'
+import { getPageContextJson as getPageContextJsonInternal } from '../runtime/renderPageServer/getPageContextJson.js'
 import '../assertEnvServer.js'
 
 /**
@@ -40,4 +51,8 @@ async function route(pageContext: Parameters<typeof routeInternal>[0]) {
   const pageContextFromRoute = await routeInternal(pageContext)
   // Old interface
   return { pageContextAddendum: pageContextFromRoute }
+}
+
+function getPageContextJson(pageContext: PageContextServer) {
+  return getPageContextJsonInternal(pageContext as unknown as Parameters<typeof getPageContextJsonInternal>[0])
 }
