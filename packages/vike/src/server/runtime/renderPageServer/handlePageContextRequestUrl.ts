@@ -83,7 +83,6 @@ function parseSearchVikeArgs(searchVikeArgs: undefined | string) {
     if (isObject(parsed.errorPage)) {
       const { abortStatusCode, abortReason } = parsed.errorPage
       args.errorPage = { abortReason }
-      // Omitted instead of `undefined` so that the client keeps its own abortStatusCode
       if (typeof abortStatusCode === 'number' && abortStatusCodes.includes(abortStatusCode)) {
         args.errorPage.abortStatusCode = abortStatusCode
       }

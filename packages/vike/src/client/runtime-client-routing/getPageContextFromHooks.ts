@@ -332,6 +332,9 @@ async function fetchPageContextErrorPageFromServer(pageContext: {
   assert(isObject(pageContextFromServer))
   if (pageContextFromServer.pageId !== pageContext.pageId) return null
   processPageContextFromServer(pageContextFromServer)
+  // The server only echoes them back, after a JSON round-trip (e.g. a `Date` becomes a string)
+  delete pageContextFromServer.abortStatusCode
+  delete pageContextFromServer.abortReason
   return pageContextFromServer
 }
 
