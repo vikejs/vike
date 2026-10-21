@@ -811,6 +811,7 @@ const headingsDetached = [
   {
     title: 'Docs',
     url: '/docs',
+    category: 'Miscellaneous',
     pageDesign: {
       hideTitle: true,
       contentMaxWidth: 1120,
