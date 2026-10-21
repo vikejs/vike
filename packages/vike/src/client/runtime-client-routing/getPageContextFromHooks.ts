@@ -325,7 +325,8 @@ async function fetchPageContextErrorPageFromServer(pageContext: {
   // The error page renders without the server's pageContext upon:
   // - A connection issue
   // - A static host (it doesn't render the error page)
-  // - An error while rendering the error page on the server-side
+  // - A server-side error other than one thrown by the error page's data() or onBeforeRender()
+  // When the error page's data() throws on the server-side, the server still sends its pageContext (without `data`), which the client uses
   const response = await fetch(pageContextUrl).catch(() => null)
   if (!response?.headers.get('content-type')?.includes('application/json')) return null
   const pageContextFromServer = await readPageContextJson(response)
