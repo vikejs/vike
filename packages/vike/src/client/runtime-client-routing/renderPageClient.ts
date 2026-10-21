@@ -160,7 +160,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
   }
 
   // Abort the previous navigation: its hooks can use pageContext.abortSignal to stop, e.g. data fetching or onRenderClient() rendering
-  // - The page that is shown keeps its pageContext.abortSignal until another page is rendered: its pageContext.json, fetched with that signal, keeps streaming its passToClient values while the next page loads and renders
+  // - The page that is shown isn't aborted here
   // https://vike.dev/pageContext#abortSignal
   globalObject.abortControllerNavigation?.abort()
   globalObject.abortControllerNavigation = abortController
@@ -569,6 +569,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     if (isRenderOutdated(true)) return
 
     // The page is rendered: it replaces the previous page
+    // - The previous page's pageContext.abortSignal aborts only now: its `.pageContext.json`, fetched with that signal, keeps streaming its passToClient values while this page loads and renders
     // - Unless this navigation renders its error page after its onPageTransitionEnd() threw: it must not abort its own signal
     if (globalObject.abortControllerNavigation === abortController) globalObject.abortControllerNavigation = undefined
     if (globalObject.abortControllerPage !== abortController) globalObject.abortControllerPage?.abort()
