@@ -7,4 +7,7 @@ async function onCreatePageContext(pageContext: PageContextServer) {
   if (pageContext.urlParsed.pathname === '/about') {
     pageContext.headersResponse.delete('sOMe-staTic-Header')
   }
+  if (pageContext.urlParsed.pathname === '/skip-guard-and-data') {
+    pageContext.skipGuardAndData_experimentalRSC = true
+  }
 }
