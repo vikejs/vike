@@ -271,7 +271,7 @@ type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
     /**
      * Whether to skip the `guard()`, `data()`, `onData()` and `onBeforeRender()` hooks — set it in `+onCreatePageContext`.
      */
-    skipGuardAndData_experimentalRSC?: boolean
+    _skipGuardAndData_experimentalRSC?: boolean
 
     isHydration?: undefined
     isBackwardNavigation?: undefined
