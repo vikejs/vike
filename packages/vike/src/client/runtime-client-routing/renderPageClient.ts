@@ -767,6 +767,7 @@ function getPageContextClient(): PageContextClient | null {
   return getPageContextPublicClient(pageContext as any) as any
 }
 
+// TODO/soon: check whehther this is the right API
 /**
  * Creates a new `pageContext` for the page that `pageContext` renders, with the values of `pageContextFromServer` on top.
  * - `pageContext` is the `pageContext` of the page rendered last
