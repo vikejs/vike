@@ -160,7 +160,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
   }
 
   // Abort the previous navigation: its hooks can use pageContext.abortSignal to stop, e.g. data fetching or onRenderClient() rendering
-  // - The page that is shown keeps its pageContext.abortSignal until another page is rendered: its pageContext.json, fetched with that signal, keeps streaming its passToClient values while the next page loads
+  // - The page that is shown keeps its pageContext.abortSignal until another page is rendered: its pageContext.json, fetched with that signal, keeps streaming its passToClient values while the next page loads and renders
   // https://vike.dev/pageContext#abortSignal
   globalObject.abortControllerNavigation?.abort()
   globalObject.abortControllerNavigation = abortController
@@ -530,10 +530,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
       if (previousPageContextBefore) previousPageContextBefore.previousPageContext = null
     }
     globalObject.previousPageContext = pageContext
-    // The previous page is replaced
-    // - Unless this navigation renders its error page after its onRenderClient(), onHydrationEnd() or onPageTransitionEnd() threw: it must not abort its own signal
-    if (globalObject.abortControllerPage !== abortController) globalObject.abortControllerPage?.abort()
-    globalObject.abortControllerPage = abortController
     // There should never be concurrent onRenderClient() calls
     assert(globalObject.onRenderClientPreviousPromise === undefined)
     const onRenderClientPromise = (async () => {
@@ -545,7 +541,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
         onRenderClientError = err
       }
       globalObject.onRenderClientPreviousPromise = undefined
-      if (globalObject.abortControllerNavigation === abortController) globalObject.abortControllerNavigation = undefined
       globalObject.isFirstRenderDone = true
       return onRenderClientError
     })()
@@ -573,6 +568,11 @@ async function renderPageClient(renderArgs: RenderArgs) {
     // We purposely abort *after* onHydrationEnd() is called (see comment above).
     if (isRenderOutdated(true)) return
 
+    // The page is rendered: it replaces the previous page
+    // - Unless this navigation renders its error page after its onPageTransitionEnd() threw: it must not abort its own signal
+    if (globalObject.abortControllerNavigation === abortController) globalObject.abortControllerNavigation = undefined
+    if (globalObject.abortControllerPage !== abortController) globalObject.abortControllerPage?.abort()
+    globalObject.abortControllerPage = abortController
     cancelStreamedValues(pageContext, true)
 
     // onPageTransitionEnd()

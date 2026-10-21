@@ -17,4 +17,10 @@ async function onBeforeRenderClient(pageContext: PageContextClient) {
   assert((await getGlobalContext()).isClientSide)
   assert((await getGlobalContextAsync(import.meta.env.PROD)).isClientSide)
   assert(getGlobalContextSync().isClientSide)
+
+  // TEST: slow onRenderClient()
+  if (window._slowRender) await new Promise((resolve) => setTimeout(resolve, 1000))
+}
+declare global {
+  var _slowRender: undefined | true
 }
