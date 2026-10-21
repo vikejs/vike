@@ -323,8 +323,6 @@ An [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal)
 - On the server-side, when the HTTP request is aborted (e.g. the user closes the browser tab).
 - On the client-side, when the user navigates to another page.
 
-On the client-side, the `abortSignal` property is only defined when using <Link href="/client-routing" noBreadcrumb={true} />.
-
 > If you use <Link href="/renderPage">`renderPage()`</Link>, pass the request's signal as `pageContextInit.abortSignal` (otherwise it never aborts).
 
 > On Cloudflare Workers, `request.signal` aborts when the client cancels the request only if you set the [`enable_request_signal`](https://developers.cloudflare.com/changelog/2025-05-22-handle-request-cancellation/) compatibility flag.
