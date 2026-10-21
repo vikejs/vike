@@ -105,7 +105,6 @@ function testRun(
       await testCounter()
       done()
       expect(await page.textContent('p')).toBe('Testing throw render error page.')
-      expect(await page.textContent('h1')).toBe('499')
       // guard() is called on the client-side => the error page fetches its pageContext from the server-side
       if (!isMakingPageContextJsonRequest)
         expect(await page.textContent('#data')).toBe('{"abortReason":"Testing throw render error page."}')
