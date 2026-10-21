@@ -365,6 +365,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     }
 
     // A newer navigation has started
+    // - Otherwise getPageContextBegin() can replace the newer navigation's getPageContextClient() value
     if (isRenderOutdated()) return
 
     // pageContext
