@@ -2,7 +2,7 @@ export { renderPageClient }
 export { getRenderCount }
 export { disableClientRouting }
 export { getPageContextClient }
-export { createPageContextFromServer_experimental }
+export { createPageContextFromServer_experimentalRSC }
 export type { PageContextBegin }
 export type { PageContextInternalClientAfterRender }
 
@@ -775,7 +775,7 @@ function getPageContextClient(): PageContextClient | null {
  * - The new `pageContext` is the `pageContext.previousPageContext` of the next navigation, including a navigation that has already started
  * - Unless a navigation has started, `getPageContextClient()` returns the new `pageContext`
  */
-function createPageContextFromServer_experimental(
+function createPageContextFromServer_experimentalRSC(
   pageContext: PageContextClient,
   pageContextFromServer: Record<string, unknown>,
 ): PageContextClient {
