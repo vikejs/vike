@@ -32,6 +32,12 @@ describe('modifyUrl', () => {
       modifyUrl('/products?country=germany', { search: { sort: 'asc', filter: 'car', country: null } }),
     ).toMatchInlineSnapshot(`"/products?sort=asc&filter=car"`)
   })
+  it('repeated keys', () => {
+    expect(modifyUrl('/products?tag=a&tag=b', { search: { sort: 'asc' } })).toMatchInlineSnapshot(
+      `"/products?tag=a&tag=b&sort=asc"`,
+    )
+    expect(modifyUrl('/products?tag=a&tag=b', { search: { tag: 'c' } })).toMatchInlineSnapshot(`"/products?tag=c"`)
+  })
   it('error handling', () => {
     expect(() => modifyUrl('/products', { pathname: 'cars' })).toThrowError("it should start with '/'")
   })
