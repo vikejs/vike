@@ -42,6 +42,7 @@ async function renderPageServerAfterRoute<
   PageContext extends {
     pageId: string
     _pageContextAlreadyProvidedByOnPrerenderHook?: true
+    skipGuardAndData_experimentalRSC?: boolean
     is404: null | boolean
     routeParams: Record<string, string>
     errorWhileRendering: null | Error
@@ -65,11 +66,10 @@ async function renderPageServerAfterRoute<
 
   updateType(pageContext, await loadPageConfigsLazyServerSide(pageContext))
 
-  if (!isError) {
+  if (pageContext.skipGuardAndData_experimentalRSC) {
+    // Set by +onCreatePageContext, e.g. for a server action whose response doesn't show the page
+  } else if (!isError) {
     await execHookGuard(pageContext, (pageContext) => getPageContextPublicServer(pageContext))
-  }
-
-  if (!isError) {
     await execHookDataAndOnBeforeRender(pageContext)
   } else {
     try {
