@@ -300,7 +300,13 @@ async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _u
 
   // Is there a reason for having two different properties? Can't we use only one property? I guess/think the isServerSideError property was an attempt (a bad idea really) for rendering the error page even though an error occurred on the server-side (which is a bad idea because the added complexity is non-negligible while the added value is minuscule since the error page usually doesn't have any (meaningful / server-side) hooks).
   if ('serverSideError' in pageContextFromServer || isServerSideError in pageContextFromServer) {
-    throw getProjectError(`pageContext couldn't be fetched because an error occurred on the server-side`)
+    const err = getProjectError(`pageContext couldn't be fetched because an error occurred on the server-side`)
+    if (isServerSideError in pageContextFromServer) {
+      // The server rendered the error page: the client renders it with this pageContext
+      processPageContextFromServer(pageContextFromServer)
+      objectAssign(err, { _pageContextErrorPage: pageContextFromServer })
+    }
+    throw err
   }
 
   processPageContextFromServer(pageContextFromServer)
