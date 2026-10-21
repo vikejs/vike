@@ -96,7 +96,7 @@ This means `<SomeComponent>` can use browser-only APIs.
 
 export { SomeComponent }
 
-// ✅ Doesn't throw error "window is not defined" — this file is loaded only on the client
+// ✅ Doesn't throw error "window is not defined" — this file is never loaded on the server
 console.log('Browser viewport width: ', window.innerWidth)
 
 function SomeComponent() {
