@@ -68,6 +68,7 @@ async function renderPageServerAfterRoute<
 
   if (pageContext._skipGuardAndData_experimentalRSC) {
     // TODO/soon check whether pageContext._skipGuardAndData_experimentalRSC is the right API
+    // https://github.com/vikejs/vike/pull/3646
     // Set by vike-react-rsc e.g. for a server action whose response doesn't show the page
   } else if (!isError) {
     await execHookGuard(pageContext, (pageContext) => getPageContextPublicServer(pageContext))
