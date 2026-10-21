@@ -159,11 +159,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     if (isRenderOutdated()) return
   }
 
-  // Abort the previous navigation: its hooks can use pageContext.abortSignal to stop, e.g. data fetching or onRenderClient() rendering
-  // - The page that is shown isn't aborted here
-  // https://vike.dev/pageContext#abortSignal
-  globalObject.abortControllerNavigation?.abort()
-  globalObject.abortControllerNavigation = abortController
+  abortPreviousNavigation(abortController)
 
   // Ensure no concurrent onRenderClient() calls.
   // - We could `await globalObject.onRenderClientPreviousPromise` later just before execHookOnRenderClient() but we prefer doing it early to ensure `getPageContext() === usePageContext()` (and maybe it prevents other potential inconsistencies?).
@@ -568,12 +564,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     // We purposely abort *after* onHydrationEnd() is called (see comment above).
     if (isRenderOutdated(true)) return
 
-    // The page is rendered: it replaces the previous page
-    // - The previous page's pageContext.abortSignal aborts only now: its `.pageContext.json`, fetched with that signal, keeps streaming its passToClient values while this page loads and renders
-    // - Unless this navigation renders its error page after its onPageTransitionEnd() threw: it must not abort its own signal
-    if (globalObject.abortControllerNavigation === abortController) globalObject.abortControllerNavigation = undefined
-    if (globalObject.abortControllerPage !== abortController) globalObject.abortControllerPage?.abort()
-    globalObject.abortControllerPage = abortController
+    abortPreviousPage(abortController)
     cancelStreamedValues(pageContext, true)
 
     // onPageTransitionEnd()
@@ -740,6 +731,22 @@ function getIsRenderOutdated() {
 }
 function getRenderCount(): number {
   return globalObject.renderCounter
+}
+
+// Abort the previous navigation: its hooks can use pageContext.abortSignal to stop, e.g. data fetching or onRenderClient() rendering
+// - The page that is shown isn't aborted here
+// https://vike.dev/pageContext#abortSignal
+function abortPreviousNavigation(abortController: AbortController) {
+  globalObject.abortControllerNavigation?.abort()
+  globalObject.abortControllerNavigation = abortController
+}
+// The page is rendered: it replaces the previous page
+// - The previous page's pageContext.abortSignal aborts only now: its `.pageContext.json`, fetched with that signal, keeps streaming its passToClient values while this page loads and renders
+// - Unless this navigation renders its error page after its onPageTransitionEnd() threw: it must not abort its own signal
+function abortPreviousPage(abortController: AbortController) {
+  if (globalObject.abortControllerNavigation === abortController) globalObject.abortControllerNavigation = undefined
+  if (globalObject.abortControllerPage !== abortController) globalObject.abortControllerPage?.abort()
+  globalObject.abortControllerPage = abortController
 }
 
 function getKeepScrollPositionSetting(
