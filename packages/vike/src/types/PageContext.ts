@@ -278,11 +278,6 @@ type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
     isBackwardNavigation?: undefined
     isHistoryNavigation?: undefined
     previousPageContext?: undefined
-    /**
-     * Abort signal when the HTTP request is aborted (e.g. the user closes the browser tab).
-     *
-     * https://vike.dev/pageContext#abortSignal
-     */
     abortSignal: AbortSignal
   }
 
