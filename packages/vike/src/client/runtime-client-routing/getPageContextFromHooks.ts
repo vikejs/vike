@@ -17,7 +17,6 @@ import type { PageContextConfig, PageFile } from '../../shared-server-client/get
 import { analyzePageServerSide } from '../../shared-server-client/getPageFiles/analyzePageServerSide.js'
 import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides.js'
 import { getPageContextRequestUrl } from '../../shared-server-client/getPageContextRequestUrl.js'
-import { modifyUrlSameOrigin } from '../../shared-server-client/modifyUrlSameOrigin.js'
 import { getPageConfig } from '../../shared-server-client/page-configs/helpers.js'
 import { getConfigValueRuntime } from '../../shared-server-client/page-configs/getConfigValueRuntime.js'
 import { assertOnBeforeRenderHookReturn } from '../../shared-server-client/assertOnBeforeRenderHookReturn.js'
@@ -318,10 +317,11 @@ async function fetchPageContextErrorPageFromServer(pageContext: {
   abortReason?: unknown
 }) {
   const { abortStatusCode, abortReason } = pageContext
-  let pageContextUrl = getPageContextRequestUrl(pageContext._urlRewrite ?? pageContext.urlOriginal)
-  pageContextUrl = modifyUrlSameOrigin(pageContextUrl, {
-    search: { _vike: JSON.stringify({ errorPage: { abortStatusCode, abortReason } }) },
-  })
+  const pageContextUrl = new URL(
+    getPageContextRequestUrl(pageContext._urlRewrite ?? pageContext.urlOriginal),
+    location.href,
+  )
+  pageContextUrl.searchParams.set('_vike', JSON.stringify({ errorPage: { abortStatusCode, abortReason } }))
   // The error page renders without the server's pageContext upon:
   // - A connection issue
   // - A static host (it doesn't render the error page)
