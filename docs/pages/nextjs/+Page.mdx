@@ -70,32 +70,32 @@ HTTP server | No*, bring your own | Baked-in, custom server partially supported 
 
 [From @Axxxx0n](https://github.com/vikejs/vike/issues/158#issuecomment-934224512), with subpoints by @redbar0n:
 
-1. Vike has blazing fast development speed powered by Vite (on-demand transpiling, native ESM).
+1. **Vike has blazing fast development speed powered by Vite (on-demand transpiling, native ESM).**
   - Next.js historically relied on Webpack (and more recently Turbopack, which is improving rapidly but still matures across various edge cases). For cold starts and HMR responsiveness in large codebases, Vite’s architecture maintains a distinct, measurable DX advantage.
 
-2. Next.js has to have many examples and a whole plethora of libraries are existing just to integrate some library with Next.js because it's not trivial (for example [next-i18next](https://github.com/isaachinman/next-i18next)). With Vike, you just read the documentation of the library you want to integrate and you're good to go.
+2. **Next.js has to have many examples and a whole plethora of libraries are existing just to integrate some library with Next.js because it's not trivial** (for example [next-i18next](https://github.com/isaachinman/next-i18next)). With Vike, you just read the documentation of the library you want to integrate and you're good to go.
   - Framework-native vs. Proprietary abstractions: While Vike offers <Link href="/extensions" /> (e.g., _vike-react-zustand_ or _vike-i18n-routing_) for zero-config convenience, these extensions merely package public lifecycle hooks (into plug-and-play) that you could otherwise easily copy-paste or write yourself. Next.js, by contrast, relies on closed internal routing and compiler abstractions, making third-party wrapper libraries (like _next-i18next_) an architectural necessity to bypass framework restrictions rather than as an optional shortcut.
 
-3. When new React features arrive you can start to use it right away and don't have to wait for the Next.js team to integrate it. (Streaming API, server components, suspense on server, progressive rendering, etc.)
+3. **When new React features arrive you can start to use it right away and don't have to wait for the Next.js team to integrate it.** (Streaming API, server components, suspense on server, progressive rendering, etc.)
   - Next.js acts as its own meta-framework and bundler layer, meaning new React core features (like advanced Suspense APIs, streaming, or React Server Components) must be explicitly integrated, tested, and exposed by the Next.js core team, with their monolithic release cycles and opinionated abstractions.
   - With a Vite-based setup like Vike, you can directly depend on React, and experiment with it's new features right away, or wait for a plug-and-play <Link href="/extensions" />).
 
-4. Next.js can't read files in `/public` directory after it was built, i.e. user uploaded images.
+4. **Next.js can't read files in `/public` directory after it was built, i.e. user uploaded images.**
   - Next.js’s build-time asset optimization (next/image) and caching layers assume static assets are managed at build time.
   - Vike inherits standard Vite/Node filesystem behaviors, making raw disk reads/writes in self-hosted environments behave more predictably.
 
-5. Next.js blocks client-side rendering with `getServerSideProps()` (Pages Router).
+5. **Next.js blocks client-side rendering with `getServerSideProps()` (Pages Router).**
   - But the critique applies even more strongly to Next.js modern App Router, where server components, async data fetching boundaries, and Suspense trees dictate execution flow. Next.js forces a rigid server-first waterfall or layout-blocking pattern during navigation unless meticulously architected.
   - Vike uses data hooks (like `data()`) that offer fine-grained control over when and where data is fetched, allowing for much more flexible client/server handoffs.
 
-6. You cannot bypass data fetching on client-side navigation ([Next.js - 	&#35;23921](https://github.com/vercel/next.js/discussions/23921) and [&#35;32243](https://github.com/vercel/next.js/discussions/32243)) while with Vike you're flexible and can choose what you want.
+6. **Next.js cannot easily bypass data fetching on client-side navigation ([Next.js - 	&#35;23921](https://github.com/vercel/next.js/discussions/23921) and [&#35;32243](https://github.com/vercel/next.js/discussions/32243)) while with Vike you're flexible and can choose what you want.**
   - Vike treats routing and page context (`pageContext`) with lower-level primitives, giving you explicit control over navigation lifecycles and whether a transition requires a data hook execution.
 
-7. Next.js is really pushing the Vercel platform and is starting to show in recent feature updates. Features that align with this are getting priority while important fixes are delayed.
+7. **Next.js is really pushing the Vercel platform and is starting to show in recent feature updates. Features that align with this are getting priority while important fixes are delayed.**
   - Next.js, as an open-source project backed heavily by a commercial hosting provider (Vercel), naturally prioritizes features that shine on Vercel’s infrastructure (e.g., ISR, specific edge runtimes, analytics, and Vercel-optimized caching). Critical issues affecting self-hosters or non-Vercel deployments (like AWS/Open-Next complexities) often take longer to resolve, fueling friction for enterprise users wary of vendor lock-in and egress pricing.
   - Vike was built to be without such conflicts of interest.
 
-8. Next.js is leaning on serverless and complicates usage when you don't want it.
+8. **Next.js is leaning on serverless and complicates usage when you don't want it.**
   - Next.js is architecturally optimized for serverless and edge environments (split functions per route, automatic bundling for cloud functions). If you want to run a simple, long-running, traditional stateful Node.js monolith or tightly control a custom microservice infrastructure, Next.js's build output and runtime assumptions make it feel increasingly heavyweight and over-engineered.
   - Vike, by contrast, compiles down to standard server middleware that you can drop into any vanilla Express, Fastify, or custom Node process effortlessly (for the case where you want to deploy to a long running server process). This gives Vike the best of both worlds, since it also 
 has first-class serverless support (e.g. it supports running on Cloudflare Workers via. the official [cloudflare/vite-plugin](https://developers.cloudflare.com/workers/vite-plugin/), which also enables local development.)
