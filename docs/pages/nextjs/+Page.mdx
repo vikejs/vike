@@ -78,7 +78,7 @@ HTTP server | No*, bring your own | Baked-in, custom server partially supported 
 
 3. **When new React features arrive you can start to use it right away and don't have to wait for the Next.js team to integrate it.** (Streaming API, server components, suspense on server, progressive rendering, etc.)
   - Next.js acts as its own meta-framework and bundler layer, meaning new React core features (like advanced Suspense APIs, streaming, or React Server Components) must be explicitly integrated, tested, and exposed by the Next.js core team, with their monolithic release cycles and opinionated abstractions.
-  - With a Vite-based setup like Vike, you can directly depend on React, and experiment with it's new features right away, or wait for a plug-and-play <Link href="/extensions" />).
+  - With Vike, you can directly depend on React, and experiment with it's new features right away, or wait for a plug-and-play <Link href="/extensions" />).
 
 4. **Next.js can't read files in `/public` directory after it was built, i.e. user uploaded images.**
   - Next.js’s build-time asset optimization (next/image) and caching layers assume static assets are managed at build time.
