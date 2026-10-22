@@ -250,3 +250,35 @@ You can build your own framework with only hundreds of lines of code.
 We foster the proliferation of React frameworks, highly-tailored to specific use cases.
 
 Read more at [Vike.land](https://land.vike.dev).
+
+
+## AI & Code Generation: 
+
+### Training Volume vs. Architectural Determinism
+
+**Concern:** _"Isn't Next.js better supported by AI tools because models have more Next.js training data?"_
+
+**The Short Answer:** Next.js indeed has a larger volume of training data, but Vike's minimal, explicit architecture makes AI code generation significantly more reliable in practice.
+
+### Detailed Comparison:
+
+* **The Next.js AI Dilemma (High Volume, High Hallucination Rate):**
+
+While LLMs know Next.js syntax well due to sheer dataset size, the rapid shift from the Pages Router to the App Router (RSC, `'use client'` boundaries, implicit caching, and server actions) created massive amounts of outdated or conflicting code in LLM training sets. As a result, AI coding agents (such as Cursor, Copilot, or Claude) can struggle with:
+
+  - Incorrectly splitting Server Components vs. Client Components.
+  - Importing server-only modules inside `'use client'` boundaries.
+  - Misunderstanding Next.js-specific caching and revalidation rules.
+
+**Context Window & Rule File Overhead:** To stop AI agents from generating broken Next.js App Router code, developers routinely have to maintain massive, multi-page `.cursorrules` or system prompt files explaining complex framework restrictions (e.g., caching opt-outs, boundary passing rules, and router behaviors). This consumes valuable context window tokens and increases latency, while still leaving room for agent errors when edge cases arise.
+
+* **The Vike Advantage (Low Abstraction Surface = Deterministic AI Output):**
+
+Vike relies on standard Vite primitives and explicit, minimal lifecycle hooks (`+Page`, `+data`, `+onRenderHtml`). Because there are no hidden compiler passes or implicit server/client transformations:
+
+  - **AI code generation is deterministic:** LLMs write standard React/Vue code and vanilla Node/Hono middleware without inventing framework-specific workarounds.
+  - **Easier Context Window Integration:** You can feed Vike’s concise documentation into an AI prompt or `.cursorrules` file, giving the LLM 100% complete mastery over your entire framework setup without exceeding context limits.
+  - **No Legacy Drift:** Because Vike’s core architecture remains steady and built on standard web APIs, AI agents don't confuse legacy routing patterns with modern ones.
+  - **Use new React features immediately:** Because Vike is built directly on Vite and standard React lifecycles without a middleman compiler, AI models can write idiomatic, cutting-edge React code directly from official React docs and have it work immediately.
+
+AI / LLM loves explicitness, and Vike is all about making everything clear and explicit.
