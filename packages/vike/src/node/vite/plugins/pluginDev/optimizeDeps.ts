@@ -56,6 +56,11 @@ const optimizeDeps = {
       'vike/client/router',
       // Also all entries of Vike's client runtime, otherwise pre-bundling an entry would load a second copy of Vike's client code (also problematic as it duplicates module-level variables that don't use `getGlobalObject()`)
       'vike/__internal/client',
+      'vike/abort',
+      'vike/getPageContext',
+      'vike/modifyUrl',
+      'vike/RenderErrorPage',
+      'vike/routing',
     ],
     include: [
       // Avoid:
