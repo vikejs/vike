@@ -49,10 +49,12 @@ const LATE_DISCOVERED = [
 const ALWAYS_REMOVE = ['@brillout/require-shim', 'vike > @brillout/require-shim']
 
 const optimizeDeps = {
+  // Client-side
   optimizeDeps: {
     exclude: [
       // We must exclude Vike's client runtime so it can import virtual modules
-      // - All its entries, `vike` itself included, otherwise pre-bundling an entry would load a second copy of Vike's client code (also problematic as it duplicates module-level variables that don't use `getGlobalObject()`)
+      // - The 'vike' entry excludes all import paths ('vike/client', 'vike/client/router', 'vike/__internal/client', ...) which is what we want: pre-bundling any import path would load a second copy of Vike's client code (also problematic as it duplicates module-level variables that don't use `getGlobalObject()`)
+      // - https://github.com/vikejs/vike/pull/3651
       'vike',
     ],
     include: [
@@ -66,6 +68,7 @@ const optimizeDeps = {
       'vike > @brillout/picocolors',
     ],
   },
+  // Server-side
   ssr: {
     optimizeDeps: {
       exclude: [
