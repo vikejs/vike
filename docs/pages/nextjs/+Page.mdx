@@ -98,7 +98,7 @@ HTTP server | No*, bring your own | Baked-in, custom server partially supported 
 8. **Next.js is leaning on serverless and complicates usage when you don't want it.**
   - Next.js is architecturally optimized for serverless and edge environments (split functions per route, automatic bundling for cloud functions). If you want to run a simple, long-running, traditional stateful Node.js monolith or tightly control a custom microservice infrastructure, Next.js's build output and runtime assumptions make it feel increasingly heavyweight and over-engineered.
   - Vike, by contrast, compiles down to standard server middleware that you can drop into any vanilla Express, Fastify, or custom Node process effortlessly (for the case where you want to deploy to a long running server process). This gives Vike the best of both worlds, since it also 
-has first-class serverless support (e.g. it supports running on Cloudflare Workers via. the official [cloudflare/vite-plugin](https://developers.cloudflare.com/workers/vite-plugin/), which also enables local development.)
+has first-class serverless support (e.g. it supports running on Cloudflare Workers via. the official [@cloudflare/vite-plugin](https://developers.cloudflare.com/workers/vite-plugin/), which enables local development in the same [`workerd` environment](https://github.com/cloudflare/workerd) as in production.)
 
 
 ## Deployment / hosting
