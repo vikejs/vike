@@ -86,7 +86,7 @@ HTTP server | No*, bring your own | Baked-in, custom server partially supported 
 
 5. **Next.js blocks client-side rendering with `getServerSideProps()` (Pages Router).**
   - But the critique applies even more strongly to Next.js modern App Router, where server components, async data fetching boundaries, and Suspense trees dictate execution flow. Next.js forces a rigid server-first waterfall or layout-blocking pattern during navigation unless meticulously architected.
-  - Vike uses data hooks (like `data()`) that offer fine-grained control over when and where data is fetched, allowing for much more flexible client/server handoffs.
+  - Vike uses data hooks (like <Link href="/data">`+data`</Link>) that offer fine-grained control over when and where data is fetched, allowing for much more flexible client/server handoffs.
 
 6. **Next.js cannot easily bypass data fetching on client-side navigation ([Next.js - 	&#35;23921](https://github.com/vercel/next.js/discussions/23921) and [&#35;32243](https://github.com/vercel/next.js/discussions/32243)) while with Vike you're flexible and can choose what you want.**
   - Vike treats routing and page context (`pageContext`) with lower-level primitives, giving you explicit control over navigation lifecycles and whether a transition requires a data hook execution.
