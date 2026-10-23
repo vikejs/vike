@@ -11,7 +11,8 @@ import usedByDia from './brands/dia.svg'
 
 type Brand = {
   website: `https://${string}`
-  logo: string
+  // Brands without logo are only shown at /use-cases (not on the landing page)
+  logo?: string
   desc: string
   name: string
   logoTop?: string
@@ -83,6 +84,12 @@ const brands: Brand[] = [
     logo: usedByDia,
     logoScale: 1.3,
     useCasesOrder: 100,
+  },
+  {
+    website: 'https://www.autobild.de',
+    desc: "Germany's leading car magazine, by Axel Springer",
+    name: 'Auto Bild',
+    useCasesOrder: -40,
   },
   /*
   {
