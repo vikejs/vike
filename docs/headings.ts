@@ -607,6 +607,11 @@ const headings = [
     url: '/prefetch',
   },
   {
+    level: 2,
+    title: '`throw Abort()`',
+    url: '/abort-navigation',
+  },
+  {
     level: 4,
     title: 'Utils (server-side)',
   },

@@ -35,6 +35,8 @@ export async function onPageTransitionEnd(pageContext: PageContextClient) {
 }
 ```
 
+> If the navigation is aborted by <Link href="/abort-navigation">`throw Abort()`</Link> after `onPageTransitionStart()` was called, then Vike calls `onPageTransitionEnd()` (the current page stays rendered).
+
 
 ## Without `vike-{react,vue,solid}`
 

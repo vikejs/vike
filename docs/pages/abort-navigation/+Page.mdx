@@ -1,0 +1,53 @@
+import { Link } from '@brillout/docpress'
+import { ConfigSpec } from '../../components'
+
+<ConfigSpec
+  env="client"
+  global={null}
+/>
+
+`throw Abort()` aborts a client-side navigation: the current page stays rendered and the URL doesn't change.
+
+For example, to ask the user for confirmation before leaving a page with unsaved changes:
+
+```ts
+// /pages/+onBeforeRoute.client.ts
+// Environment: client
+
+import { Abort } from 'vike/abort'
+import { hasUnsavedChanges } from '../utils/unsavedChanges'
+
+export function onBeforeRoute() {
+  if (hasUnsavedChanges() && !window.confirm('Leave this page? Your changes will be lost.')) {
+    throw Abort()
+  }
+}
+```
+
+> The browser shows its own "unsaved changes" dialog (the [`beforeunload` event](https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event)) only when the user leaves your website, reloads, or closes the tab. It isn't shown upon client-side navigation, that's why you need `throw Abort()` for links and for the back- and forward buttons.
+
+You can use `throw Abort()` in any client-side hook that runs before the next page renders, for example <Link href="/onBeforeRoute">`+onBeforeRoute.client.js`</Link> or <Link href="/guard#environment">`+guard.client.js`</Link>.
+
+> `onBeforeRoute()` should be synchronous. If you ask for confirmation asynchronously (e.g. with your own modal instead of `window.confirm()`), then use an asynchronous hook such as `+guard.client.js` instead.
+
+When the navigation is aborted:
+- The current page stays rendered and the URL doesn't change. Upon back- or forward navigation, Vike restores the URL.
+- If <Link href="/onPageTransitionStart">`onPageTransitionStart()`</Link> was already called, then Vike calls <Link href="/onPageTransitionEnd">`onPageTransitionEnd()`</Link>.
+- The promise returned by <Link href="/navigate">`navigate()`</Link> resolves.
+
+
+## Limitations
+
+- `throw Abort()` only works upon client-side navigation:
+  - It throws an error on the server-side.
+  - It throws an error upon hydration (there isn't any navigation to abort), and in hooks that run after the next page started rendering such as <Link href="/onRenderClient">`onRenderClient()`</Link>.
+- Upon back- or forward navigation, Vike reverts the URL by one history entry. If the user jumps over several history entries at once (e.g. by long-pressing the back button), then the URL isn't fully restored.
+
+
+## See also
+
+- <Link href="/onBeforeRoute" />
+- <Link href="/guard" />
+- <Link href="/onPageTransitionStart" />
+- <Link href="/navigate" />
+- <Link href="/abort" />
