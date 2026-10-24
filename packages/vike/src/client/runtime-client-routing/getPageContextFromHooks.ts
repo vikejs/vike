@@ -78,7 +78,7 @@ async function getPageContextFromHooksClient_firstRender(
 
 type PageContextFromHooksServer = { _hasPageContextFromServer: boolean }
 async function getPageContextFromHooksServer(
-  pageContext: { pageId: string } & PageContextCreatedClient,
+  pageContext: { pageId: string; abortStatusCode?: number; abortReason?: unknown } & PageContextCreatedClient,
   isErrorPage: boolean,
 ): Promise<
   | { is404ServerSideRouted: true }
@@ -94,11 +94,17 @@ async function getPageContextFromHooksServer(
   // If pageContextInit has some client data or if one of the hooks guard(), data() or onBeforeRender() is server-side
   // only, then we need to fetch pageContext from the server.
   // We do it before executing any client-side hook, because it contains pageContextInit which may be needed for guard() / data() / onBeforeRender(), for example pageContextInit.user is crucial for guard()
-  if (
-    // For the error page, we cannot fetch pageContext from the server because the pageContext JSON request is based on the URL
-    !isErrorPage &&
+  if (isErrorPage) {
+    if (await hasPageContextServer(pageContext)) {
+      const pageContextFromServer = await fetchPageContextErrorPageFromServer(pageContext)
+      if (pageContextFromServer) {
+        pageContextFromHooksServer._hasPageContextFromServer = true
+        objectAssign(pageContextFromHooksServer, pageContextFromServer)
+      }
+    }
+  } else if (
     // true if pageContextInit has some client data or at least one of the data() and onBeforeRender() hooks is server-side only:
-    (await hasPageContextServer(pageContext))
+    await hasPageContextServer(pageContext)
   ) {
     const res = await fetchPageContextFromServer(pageContext)
     if ('is404ServerSideRouted' in res) return { is404ServerSideRouted: true as const }
@@ -295,12 +301,49 @@ async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _u
 
   // Is there a reason for having two different properties? Can't we use only one property? I guess/think the isServerSideError property was an attempt (a bad idea really) for rendering the error page even though an error occurred on the server-side (which is a bad idea because the added complexity is non-negligible while the added value is minuscule since the error page usually doesn't have any (meaningful / server-side) hooks).
   if ('serverSideError' in pageContextFromServer || isServerSideError in pageContextFromServer) {
-    throw getProjectError(`pageContext couldn't be fetched because an error occurred on the server-side`)
+    const err = getProjectError(`pageContext couldn't be fetched because an error occurred on the server-side`)
+    if (isServerSideError in pageContextFromServer) {
+      // The server rendered the error page: the client renders it with this pageContext
+      processPageContextFromServer(pageContextFromServer)
+      objectAssign(err, { _pageContextErrorPage: pageContextFromServer })
+    }
+    throw err
   }
 
   processPageContextFromServer(pageContextFromServer)
 
   return { pageContextFromServer }
+}
+
+// The error page's pageContext, after an error on the client-side
+async function fetchPageContextErrorPageFromServer(pageContext: {
+  urlOriginal: string
+  _urlRewrite?: string
+  pageId: string
+  abortStatusCode?: number
+  abortReason?: unknown
+}) {
+  const { abortStatusCode, abortReason } = pageContext
+  const pageContextUrl = new URL(
+    getPageContextRequestUrl(pageContext._urlRewrite ?? pageContext.urlOriginal),
+    location.href,
+  )
+  pageContextUrl.searchParams.set('_vike', JSON.stringify({ errorPage: { abortStatusCode, abortReason } }))
+  // The error page renders without the server's pageContext upon:
+  // - A connection issue
+  // - A static host (it doesn't render the error page)
+  // - A server-side error other than one thrown by the error page's data() or onBeforeRender()
+  // When the error page's data() throws on the server-side, the server still sends its pageContext (without `data`), which the client uses
+  const response = await fetch(pageContextUrl).catch(() => null)
+  if (!response?.headers.get('content-type')?.includes('application/json')) return null
+  const pageContextFromServer = await readPageContextJson(response)
+  assert(isObject(pageContextFromServer))
+  if (pageContextFromServer.pageId !== pageContext.pageId) return null
+  processPageContextFromServer(pageContextFromServer)
+  // The server only echoes them back, after a JSON round-trip (e.g. a `Date` becomes a string)
+  delete pageContextFromServer.abortStatusCode
+  delete pageContextFromServer.abortReason
+  return pageContextFromServer
 }
 
 function processPageContextFromServer(pageContext: Record<string, unknown>) {

@@ -424,16 +424,30 @@ async function renderPageClient(renderArgs: RenderArgs) {
     updateType(pageContext, res.pageContext)
     setPageContextCurrent(pageContext)
 
-    let pageContextFromHooksServer: PageContextFromHooksServer
-    try {
-      const result = await getPageContextFromHooksServer(pageContext, true)
-      if (result.is404ServerSideRouted) return
-      pageContextFromHooksServer = result.pageContextFromHooksServer
-    } catch (err: unknown) {
-      onError(err)
+    // Upon a server-side error, the server already sent the error page's pageContext:
+    // - Upon `throw render(abortStatusCode)` it's pageContextAbort
+    // - Upon any other error it's `err._pageContextErrorPage`
+    const pageContextErrorPageFromServer = hasProp(args.err, '_pageContextErrorPage', 'object')
+      ? args.err._pageContextErrorPage
+      : null
+    const isErrorPageFromServer =
+      (!!pageContextAbort && 'pageId' in pageContextAbort) || !!pageContextErrorPageFromServer
+    let pageContextFromHooksServer: PageContextFromHooksServer = { _hasPageContextFromServer: isErrorPageFromServer }
+    objectAssign(pageContextFromHooksServer, pageContextErrorPageFromServer)
+    if (!isErrorPageFromServer) {
+      try {
+        const result = await getPageContextFromHooksServer(pageContext, true)
+        if (result.is404ServerSideRouted) return
+        pageContextFromHooksServer = result.pageContextFromHooksServer
+      } catch (err: unknown) {
+        onError(err)
+        return
+      }
+    }
+    if (isRenderOutdated()) {
+      cancelStreamedValues(pageContextFromHooksServer, false)
       return
     }
-    if (isRenderOutdated()) return
     // TO-DO/eventually: create helper assertPageContextFromHook()
     assert(!('urlOriginal' in pageContextFromHooksServer))
     objectAssign(pageContext, pageContextFromHooksServer)

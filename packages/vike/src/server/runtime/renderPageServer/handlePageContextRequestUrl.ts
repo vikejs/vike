@@ -11,6 +11,7 @@ import { assert } from '../../../utils/assert.js'
 import { hasProp } from '../../../utils/hasProp.js'
 import { isObject } from '../../../utils/isObject.js'
 import { parseUrl } from '../../../utils/parseUrl.js'
+import { abortStatusCodes } from '../../../shared-server-client/route/abort.js'
 import '../../assertEnvServer.js'
 const pageContextJsonFileExtensionUrl = `/index${pageContextJsonFileExtension}`
 
@@ -26,13 +27,12 @@ function handlePageContextRequestUrl(url: string) {
     }
   } else {
     const { urlWithoutPageContextRequestSuffix, searchVikeArgs } = processUrl(urlParsed, url)
-    // @ts-ignore
-    const previousUrl = parseSearchVikeArgs(searchVikeArgs)
+    const { errorPage } = parseSearchVikeArgs(searchVikeArgs)
     return {
       /* TO-DO/soon/once: pass & use previousUrl
-      isPageContextJsonRequest: { previousUrl },
+      isPageContextJsonRequest: { previousUrl, errorPage },
       /*/
-      isPageContextJsonRequest: true,
+      isPageContextJsonRequest: { errorPage },
       //*/
       urlWithoutPageContextRequestSuffix,
     }
@@ -70,6 +70,7 @@ function processUrl(urlParsed: UrlParsed, url: string) {
 function parseSearchVikeArgs(searchVikeArgs: undefined | string) {
   const args = {
     previousUrl: null as null | string,
+    errorPage: null as null | { abortStatusCode?: number; abortReason?: unknown },
   }
   if (searchVikeArgs) {
     const parsed = JSON.parse(searchVikeArgs)
@@ -77,6 +78,14 @@ function parseSearchVikeArgs(searchVikeArgs: undefined | string) {
     if ('previousUrl' in parsed) {
       assert(hasProp(parsed, 'previousUrl', 'string'))
       args.previousUrl = parsed.previousUrl
+    }
+    // The client renders the error page after an error on the client-side
+    if (isObject(parsed.errorPage)) {
+      const { abortStatusCode, abortReason } = parsed.errorPage
+      args.errorPage = { abortReason }
+      if (typeof abortStatusCode === 'number' && abortStatusCodes.includes(abortStatusCode)) {
+        args.errorPage.abortStatusCode = abortStatusCode
+      }
     }
   }
   return args
