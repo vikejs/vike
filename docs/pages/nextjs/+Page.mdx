@@ -265,7 +265,7 @@ We foster the proliferation of React frameworks, highly-tailored to specific use
 Read more at [Vike.land](https://land.vike.dev).
 
 
-## AI & Code Generation: 
+## AI & Code Generation
 
 ### Training Volume vs. Architectural Determinism
 
@@ -275,7 +275,7 @@ Read more at [Vike.land](https://land.vike.dev).
 
 ### Detailed Comparison:
 
-* **The Next.js AI Dilemma (High Volume, High Hallucination Rate):**
+#### Next.js' AI dilemma (High Volume, High Hallucination Rate):
 
 While LLMs know Next.js syntax well due to sheer dataset size, the rapid shift from the Pages Router to the App Router (RSC, `'use client'` boundaries, implicit caching, and server actions) created massive amounts of outdated or conflicting code in LLM training sets. As a result, AI coding agents (such as Cursor, Copilot, or Claude) can struggle with:
 
@@ -283,9 +283,10 @@ While LLMs know Next.js syntax well due to sheer dataset size, the rapid shift f
   - Importing server-only modules inside `'use client'` boundaries.
   - Misunderstanding Next.js-specific caching and revalidation rules.
 
-**Context Window & Rule File Overhead:** To stop AI agents from generating broken Next.js App Router code, developers routinely have to maintain massive, multi-page `.cursorrules` or system prompt files explaining complex framework restrictions (e.g., caching opt-outs, boundary passing rules, and router behaviors). This consumes valuable context window tokens and increases latency, while still leaving room for agent errors when edge cases arise.
+Context Window & Rule File Overhead:
+To stop AI agents from generating broken Next.js App Router code, developers routinely have to maintain massive, multi-page `.cursorrules` or system prompt files explaining complex framework restrictions (e.g., caching opt-outs, boundary passing rules, and router behaviors). This consumes valuable context window tokens and increases latency, while still leaving room for agent errors when edge cases arise.
 
-* **The Vike Advantage (Low Abstraction Surface = Deterministic AI Output):**
+#### Vike's Advantage (Low Abstraction Surface = Deterministic AI Output):
 
 Vike relies on standard Vite primitives and explicit, minimal lifecycle hooks (`+Page`, `+data`, `+onRenderHtml`). Because there are no hidden compiler passes or implicit server/client transformations:
 
