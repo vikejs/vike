@@ -8,6 +8,7 @@ export { handleAssetsManifest_alignCssTarget }
 import fs from 'node:fs/promises'
 import fs_sync from 'node:fs'
 import path from 'node:path'
+import crypto from 'node:crypto'
 import { existsSync } from 'node:fs'
 import type { ViteManifest, ViteManifestEntry } from '../../../../types/ViteManifest.js'
 import { assert, assertWarning } from '../../../../utils/assert.js'
@@ -21,7 +22,7 @@ import type { Environment, ResolvedConfig, Rollup, UserConfig } from 'vite'
 import { getAssetsDir } from '../../shared/getAssetsDir.js'
 import { isVite8OrAbove } from '../../shared/isVite8OrAbove.js'
 import pc from '@brillout/picocolors'
-import { isV1Design } from '../../shared/resolveVikeConfigInternal.js'
+import { getVikeConfigInternal, isV1Design } from '../../shared/resolveVikeConfigInternal.js'
 import { getOutDirs } from '../../shared/getOutDirs.js'
 import {
   isViteServerSide_onlySsrEnv,
@@ -30,11 +31,14 @@ import {
 } from '../../shared/isViteServerSide.js'
 import { set_macro_ASSETS_MANIFEST } from './pluginProdBuildEntry.js'
 import { getManifestFilePathRelative } from '../../shared/getManifestFilePathRelative.js'
+import { inferMediaType } from '../../../../server/runtime/renderPageServer/inferMediaType.js'
+import type { AssetsIntegrity } from '../../../../server/runtime/globalContext.js'
 import '../../assertEnvVite.js'
 type Bundle = Rollup.OutputBundle
 
 const globalObject = getGlobalObject('handleAssetsManifest.ts', {
   assetsJsonFilePath: undefined as string | undefined,
+  assetsIntegrity: undefined as undefined | null | AssetsIntegrity,
   targetsAll: [] as TargetConfig[],
   configsAll: [] as ResolvedConfig[],
 })
@@ -398,6 +402,7 @@ async function handleAssetsManifest(
     const outDirs = getOutDirs(config, viteEnv)
     globalObject.assetsJsonFilePath = path.posix.join(outDirs.outDirRoot, 'assets.json')
     await writeAssetsManifestFile(globalObject.assetsJsonFilePath, config)
+    globalObject.assetsIntegrity = await getAssetsIntegrity(globalObject.assetsJsonFilePath, config)
   }
   if (isViteServerSide(config, viteEnv)) {
     const outDir = options.dir
@@ -406,7 +411,12 @@ async function handleAssetsManifest(
     // - Always replace it in dist/server/
     // - Also in some other server builds such as dist/vercel/ from vike-vercel
     // - Don't replace it in dist/rsc/ from vike-react-rsc since ASSETS_MANIFEST doesn't exist there
-    const noop = await set_macro_ASSETS_MANIFEST(globalObject.assetsJsonFilePath, bundle, outDir)
+    const noop = await set_macro_ASSETS_MANIFEST(
+      globalObject.assetsJsonFilePath,
+      globalObject.assetsIntegrity,
+      bundle,
+      outDir,
+    )
     if (isSsrEnv) assert(!noop) // dist/server should always contain ASSETS_MANIFEST
   }
 }
@@ -422,6 +432,28 @@ async function writeAssetsManifestFile(assetsJsonFilePath: string, config: Resol
   }
   await fs.rm(clientManifestFilePath)
   await fs.rm(serverManifestFilePath)
+}
+
+// https://vike.dev/sri
+async function getAssetsIntegrity(assetsJsonFilePath: string, config: ResolvedConfig): Promise<null | AssetsIntegrity> {
+  const vikeConfig = await getVikeConfigInternal()
+  if (!vikeConfig.config.sri) return null
+  const manifest: ViteManifest = JSON.parse(await fs.readFile(assetsJsonFilePath, 'utf-8'))
+  const { outDirClient } = getOutDirs(config, undefined)
+  const files = unique(Object.values(manifest).flatMap((entry) => [entry.file, ...(entry.css ?? [])]))
+  const assetsIntegrity: AssetsIntegrity = {}
+  for (const file of files) {
+    // Only JavaScript and CSS: e.g. a font preload tag with an `integrity` attribute would make the browser download the font twice (the font request made by CSS doesn't have an `integrity` attribute)
+    const { assetType } = inferMediaType(file) || {}
+    if (assetType !== 'script' && assetType !== 'style') continue
+    const filePath = path.posix.join(outDirClient, file)
+    // Skip server files, e.g. `entries/pages_index.mjs` of server entries added by addServerAssets()
+    if (!existsSync(filePath)) continue
+    // Hash the final file written to disk (e.g. after fixServerAssets() moved CSS files from dist/server/ to dist/client/)
+    const fileContent = await fs.readFile(filePath)
+    assetsIntegrity[`/${file}`] = `sha384-${crypto.createHash('sha384').update(fileContent).digest('base64')}`
+  }
+  return assetsIntegrity
 }
 
 function getManifestFilePath(config: ResolvedConfig, client: boolean) {

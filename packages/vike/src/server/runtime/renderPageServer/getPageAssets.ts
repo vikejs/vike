@@ -21,6 +21,8 @@ type PageAsset = {
   assetType: null | NonNullable<MediaType>['assetType']
   mediaType: null | NonNullable<MediaType>['mediaType']
   isEntry: boolean
+  // https://vike.dev/sri
+  integrity: null | string
 }
 type GetPageAssets = () => Promise<PageAsset[]>
 
@@ -67,6 +69,7 @@ async function getPageAssets(
       assetType,
       mediaType,
       isEntry,
+      integrity: globalContext._assetsIntegrity?.[src] ?? null,
     })
   })
 

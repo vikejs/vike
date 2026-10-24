@@ -1,6 +1,7 @@
 import { testRun } from './.testRun'
-import { test, expect, fetch, getServerUrl } from '@brillout/test-e2e'
+import { test, expect, fetch, fetchHtml, getServerUrl } from '@brillout/test-e2e'
 import fs from 'node:fs'
+import crypto from 'node:crypto'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -33,6 +34,22 @@ test('precompress', async () => {
   const referenced = entries.flatMap((e) => [e.file, ...(e.css ?? []), ...(e.assets ?? [])]).filter(Boolean)
   expect(referenced.some((f) => f!.endsWith('.js'))).toBe(true)
   expect(referenced.filter((f) => f!.endsWith('.br') || f!.endsWith('.gz')).join(' ')).toBe('')
+})
+
+// https://vike.dev/sri
+test('sri', async () => {
+  const html = await fetchHtml('/')
+  const tags = html.match(/<(script|link)\b[^>]*>/g)!.filter((tag) => /\.(js|css)"/.test(tag))
+  expect(tags.length > 0).toBe(true)
+  for (const tag of tags) {
+    const src = tag.match(/(?:src|href)="([^"]+)"/)![1]!
+    const response = await fetch(`${getServerUrl()}${src}`)
+    const hash = crypto
+      .createHash('sha384')
+      .update(Buffer.from(await response.arrayBuffer()))
+      .digest('base64')
+    expect(tag).toContain(` integrity="sha384-${hash}"`)
+  }
 })
 
 function crawl(dir: string): string[] {

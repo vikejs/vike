@@ -43,6 +43,8 @@ type InjectFilterEntry = {
    *  - All CSS files have `isEntry: true`
    */
   isEntry: boolean
+  /** The `integrity` attribute value, see https://vike.dev/sri */
+  integrity: null | string
   inject: PreloadFilterInject
 }
 
@@ -298,7 +300,8 @@ function checkForWrongUsage(injectFilterEntries: InjectFilterEntry[]) {
     assert(entry.assetType === null || typeof entry.assetType === 'string')
     assert(entry.mediaType === null || typeof entry.mediaType === 'string')
     assert(typeof entry.isEntry === 'boolean')
-    assert(Object.keys(entry).length === 6)
+    assert(entry.integrity === null || typeof entry.integrity === 'string')
+    assert(Object.keys(entry).length === 7)
   })
 }
 function checkForWarnings(injectFilterEntries: InjectFilterEntry[]) {

@@ -728,6 +728,11 @@ const headings = [
   },
   {
     level: 2,
+    title: '`+sri`',
+    url: '/sri',
+  },
+  {
+    level: 2,
     title: '`+middleware`',
     url: '/middleware',
   },

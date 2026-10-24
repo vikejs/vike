@@ -11,7 +11,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
 import { isUsingClientRouter } from '../pluginExtractExportNames.js'
-import { assertBuildInfo, type BuildInfo } from '../../../../server/runtime/globalContext.js'
+import { assertBuildInfo, type AssetsIntegrity, type BuildInfo } from '../../../../server/runtime/globalContext.js'
 import { getOutDirs } from '../../shared/getOutDirs.js'
 import { getViteConfigRuntime } from '../../shared/getViteConfigRuntime.js'
 import '../../assertEnvVite.js'
@@ -21,6 +21,7 @@ const ASSETS_MANIFEST = `__VITE_ASSETS_MANIFEST_${
   // https://github.com/vikejs/vike/issues/3113
   preventConstantFolding()
 }_`
+const ASSETS_INTEGRITY = `__VITE_ASSETS_INTEGRITY_${preventConstantFolding()}_`
 
 function pluginProdBuildEntry(): Plugin[] {
   let config: ResolvedConfig
@@ -60,10 +61,12 @@ function getServerProductionEntryCode(config: ResolvedConfig): string {
     // Because of a Rollup bug, we have to assign ASSETS_MANIFEST to a variable before passing it to setGlobalContext_prodBuildEntry()
     // - This workaround doesn't work: https://github.com/vikejs/vike/commit/d5f3a4f7aae5a8bc44192e6cbb2bcb9007be188d
     `    const assetsManifest = ${ASSETS_MANIFEST};`,
+    `    const assetsIntegrity = ${ASSETS_INTEGRITY};`,
     `    const buildInfo = ${JSON.stringify(buildInfo, null, 2)};`,
     '    setGlobalContext_prodBuildEntry({',
     `      virtualFileExportsGlobalEntry,`,
     `      assetsManifest,`,
+    `      assetsIntegrity,`,
     `      buildInfo,`,
     '    });',
     `  }`,
@@ -71,8 +74,13 @@ function getServerProductionEntryCode(config: ResolvedConfig): string {
   ].join('\n')
   return importerCode
 }
-// Set the value of the ASSETS_MANIFEST constant inside dist/server/entry.js (or dist/server/index.js)
-async function set_macro_ASSETS_MANIFEST(assetsJsonFilePath: string | undefined, bundle: Bundle, outDir: string) {
+// Set the value of the ASSETS_MANIFEST (and ASSETS_INTEGRITY) constant inside dist/server/entry.js (or dist/server/index.js)
+async function set_macro_ASSETS_MANIFEST(
+  assetsJsonFilePath: string | undefined,
+  assetsIntegrity: undefined | null | AssetsIntegrity,
+  bundle: Bundle,
+  outDir: string,
+) {
   assert(outDir)
   const chunkPath = find_ASSETS_MANIFEST(bundle)
   // Some server builds don't contain ASSETS_MANIFEST such as dist/rsc/ from vike-react-rsc
@@ -81,12 +89,15 @@ async function set_macro_ASSETS_MANIFEST(assetsJsonFilePath: string | undefined,
     return noop
   }
   assert(assetsJsonFilePath)
+  assert(assetsIntegrity !== undefined)
   const chunkFilePath = path.join(outDir, chunkPath)
   const [assetsJsonString, chunkFileContent] = await Promise.all([
     await fs.readFile(assetsJsonFilePath, 'utf8'),
     await fs.readFile(chunkFilePath, 'utf8'),
   ])
-  const serverEntryFileContentPatched = chunkFileContent.replace(ASSETS_MANIFEST, assetsJsonString)
+  const serverEntryFileContentPatched = chunkFileContent
+    .replace(ASSETS_MANIFEST, assetsJsonString)
+    .replace(ASSETS_INTEGRITY, JSON.stringify(assetsIntegrity))
   assert(serverEntryFileContentPatched !== chunkFileContent)
   await fs.writeFile(chunkFilePath, serverEntryFileContentPatched)
   const noop = false

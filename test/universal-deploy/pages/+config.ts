@@ -16,5 +16,8 @@ export default {
   // https://vike.dev/precompress
   precompress: true,
 
+  // https://vike.dev/sri
+  sri: true,
+
   extends: vikeReact,
 } satisfies Config

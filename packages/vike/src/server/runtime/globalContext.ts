@@ -22,6 +22,7 @@ export { assertBuildInfo }
 export { updateUserFiles }
 export { vikeConfigErrorRecoverMsg }
 export type { BuildInfo }
+export type { AssetsIntegrity }
 export type { GlobalContextServerInternal }
 
 // The core logic revolves around:
@@ -97,6 +98,7 @@ const globalObject = getGlobalObject<
     buildInfo?: BuildInfo
     // Move to buildInfo.assetsManifest ?
     assetsManifest?: ViteManifest
+    assetsIntegrity?: null | AssetsIntegrity
     isInitialized?: true
     isAfterFirstRenderPageCall?: true
     isProductionAccordingToUser?: boolean
@@ -348,6 +350,7 @@ async function loadProdBuildEntry(
   const { prodBuildEntry } = globalObject
   assertProdBuildEntry(prodBuildEntry)
   globalObject.assetsManifest = prodBuildEntry.assetsManifest
+  globalObject.assetsIntegrity = prodBuildEntry.assetsIntegrity
   globalObject.buildInfo = prodBuildEntry.buildInfo
   // Don't call +onCreateGlobalContext() during module initialization in Cloudflare Workers, to avoid the error "Disallowed operation called within global scope", see https://github.com/vikejs/vike/pull/3106#issuecomment-4209583465
   const skipGlobalContextInit = isCloudflareWorkers() && isModuleInit
@@ -373,8 +376,11 @@ async function setGlobalContext_prodBuildEntry(prodBuildEntry: unknown) {
 type ProdBuildEntry = {
   virtualFileExportsGlobalEntry: Record<string, unknown>
   assetsManifest: ViteManifest
+  assetsIntegrity: null | AssetsIntegrity
   buildInfo: BuildInfo
 }
+// The Subresource Integrity (SRI) hash of each JavaScript/CSS file, e.g. `{ '/assets/entries/pages_index.BLo6D2X2.js': 'sha384-...' }` — https://vike.dev/sri
+type AssetsIntegrity = Record<string, string>
 type BuildInfo = {
   versionAtBuildTime: string
   usesClientRouter: boolean // TO-DO/next-major-release: remove
@@ -387,10 +393,12 @@ function assertProdBuildEntry(prodBuildEntry: unknown): asserts prodBuildEntry i
   assert(hasProp(prodBuildEntry, 'assetsManifest', 'object'))
   const { assetsManifest } = prodBuildEntry
   assertViteManifest(assetsManifest)
+  assert(hasProp(prodBuildEntry, 'assetsIntegrity', 'string{}') || hasProp(prodBuildEntry, 'assetsIntegrity', 'null'))
+  const { assetsIntegrity } = prodBuildEntry
   assert(hasProp(prodBuildEntry, 'buildInfo', 'object'))
   const { buildInfo } = prodBuildEntry
   assertBuildInfo(buildInfo)
-  checkType<ProdBuildEntry>({ virtualFileExportsGlobalEntry, assetsManifest, buildInfo })
+  checkType<ProdBuildEntry>({ virtualFileExportsGlobalEntry, assetsManifest, assetsIntegrity, buildInfo })
 }
 function assertBuildInfo(buildInfo: unknown): asserts buildInfo is BuildInfo {
   assert(isObject(buildInfo))
@@ -619,6 +627,7 @@ function addGlobalContextCommon(
       _isProduction: false as const,
       _isPrerendering: false as const,
       assetsManifest: null,
+      _assetsIntegrity: null,
       _viteDevServer: viteDevServer,
       // https://vike.dev/globalContext#devMiddleware
       devMiddleware: viteDevServer?.middlewares ?? null,
@@ -629,13 +638,15 @@ function addGlobalContextCommon(
   } else {
     assert(globalObject.prodBuildEntry)
     assert(globalContext) // main common requiement
-    const { buildInfo, assetsManifest } = globalObject
+    const { buildInfo, assetsManifest, assetsIntegrity } = globalObject
     assert(buildInfo)
     assert(assetsManifest)
+    assert(assetsIntegrity !== undefined)
     const globalContextBase2 = {
       ...globalContextBase,
       _isProduction: true as const,
       assetsManifest,
+      _assetsIntegrity: assetsIntegrity,
       _viteDevServer: null,
       devMiddleware: null,
       _usesClientRouter: buildInfo.usesClientRouter,
