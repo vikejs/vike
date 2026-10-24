@@ -163,8 +163,85 @@ function testRun(
     await page.click('a[href="/star-wars-api/films/1.json"]')
     await page.waitForURL('https://brillout.github.io/star-wars/api/films/1.json')
   })
+
+  test('throw Abort() - guard()', async () => {
+    await page.goto(getServerUrl() + '/about')
+    await hydrationDone()
+    await waitForPageTransitionEnd(() => page.click('a[href="/abort-navigation"]'))
+    await expectUrl('/about')
+    expect(await page.textContent('h1')).toBe('About')
+    // Same page instance: it wasn't reloaded
+    await testCounter(1)
+    // Client-side navigation still works
+    await page.click('a[href="/"]')
+    await autoRetry(async () => {
+      expect(await page.textContent('h1')).toBe('Welcome')
+    })
+    await ensureWasClientSideRouted('/pages/about')
+  })
+
+  test('throw Abort() - onBeforeRoute() with unsaved changes', async () => {
+    await page.goto(getServerUrl() + '/about')
+    await hydrationDone()
+    await page.click('a[href="/unsaved-changes"]')
+    await autoRetry(async () => {
+      expect(await page.textContent('h1')).toBe('Unsaved changes')
+    })
+    await testCounter()
+    await page.check('input[type="checkbox"]')
+
+    // The user cancels => link navigation is aborted
+    page.once('dialog', (dialog) => dialog.dismiss())
+    await waitForPageTransitionEnd(() => page.click('a[href="/"]'))
+    await expectUrl('/unsaved-changes')
+
+    // The user cancels => back navigation is aborted and the URL is restored
+    page.once('dialog', (dialog) => dialog.dismiss())
+    await waitForPageTransitionEnd(async () => {
+      await page.goBack()
+    })
+    await expectUrl('/unsaved-changes')
+    expect(await page.textContent('h1')).toBe('Unsaved changes')
+    await testCounter(1)
+
+    // The user confirms => back navigation proceeds
+    page.once('dialog', (dialog) => dialog.accept())
+    await page.goBack()
+    await expectUrl('/about')
+    await autoRetry(async () => {
+      expect(await page.textContent('h1')).toBe('About')
+    })
+    await ensureWasClientSideRouted('/pages/about')
+  })
+
+  test('throw Abort() - hydration', async () => {
+    await page.goto(getServerUrl() + '/abort-navigation')
+    await autoRetry(async () => {
+      expectLog('`throw Abort()` aborts client-side navigation: it cannot be used upon hydration', {
+        filter: (log) => log.logSource === 'Browser Error',
+      })
+    })
+  })
 }
 
 async function hydrationDone() {
   await testCounter()
+}
+
+// Waits until onPageTransitionEnd() removed the CSS class that onPageTransitionStart() added
+async function waitForPageTransitionEnd(navigate: () => Promise<void>) {
+  await page.evaluate(() => {
+    window._pageTransitionEnded = false
+    const observer = new MutationObserver(() => {
+      if (document.body.classList.contains('page-transition')) return
+      observer.disconnect()
+      window._pageTransitionEnded = true
+    })
+    observer.observe(document.body, { attributeFilter: ['class'] })
+  })
+  await navigate()
+  await page.waitForFunction(() => window._pageTransitionEnded)
+}
+declare global {
+  var _pageTransitionEnded: boolean | undefined
 }

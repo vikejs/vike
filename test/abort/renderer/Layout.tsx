@@ -20,6 +20,8 @@ function Layout({ children, pageContext }: { children: React.ReactNode; pageCont
             <Nav href="/permanent-redirect" />
             <Nav href="/redirect-external" />
             <Nav href="/star-wars-api/films/1.json" />
+            <Nav href="/abort-navigation" />
+            <Nav href="/unsaved-changes" />
           </Sidebar>
           <Content>{children}</Content>
         </Frame>
