@@ -98,6 +98,8 @@ function createPageContextBase(pageContextInit: PageContextInit | null, isPreren
     isClientSide: false as const,
     isPrerendering,
     _requestId: requestId,
+    // Never aborts, unless pageContextInit.abortSignal overrides it
+    abortSignal: new AbortController().signal,
   })
   objectAssign(pageContext, pageContextInit)
   return pageContext

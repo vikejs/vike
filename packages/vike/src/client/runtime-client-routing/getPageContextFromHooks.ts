@@ -262,12 +262,16 @@ function getHookEnv(
   return hookEnv
 }
 
-async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _urlRewrite?: string }) {
+async function fetchPageContextFromServer(pageContext: {
+  urlOriginal: string
+  _urlRewrite?: string
+  abortSignal: AbortSignal
+}) {
   let pageContextUrl = getPageContextRequestUrl(pageContext._urlRewrite ?? pageContext.urlOriginal)
   /* TO-DO/soon/once: pass & use previousUrl
   pageContextUrl = modifyUrlSameOrigin(pageContextUrl, { search: { _vike: JSON.stringify({ previousUrl: pageContext.previousPageContext.urlOriginal }) } })
   */
-  const response = await fetch(pageContextUrl)
+  const response = await fetch(pageContextUrl, { signal: pageContext.abortSignal })
 
   {
     const contentType = response.headers.get('content-type')

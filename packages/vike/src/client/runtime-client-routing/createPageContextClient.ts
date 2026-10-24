@@ -32,6 +32,9 @@ function createPageContextBase(urlOriginal: string) {
     isPrerendering: false as const,
     urlOriginal,
     _urlHandler: null,
+    // Never aborts, unless the navigation sets its own
+    // - A prefetch keeps it: its result is cached for any later navigation
+    abortSignal: new AbortController().signal,
   })
 
   const baseServer = getBaseServer()

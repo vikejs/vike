@@ -317,6 +317,18 @@ The `isHistoryNavigation` property is only defined when using <Link href="/clien
 
 Upon client-side page navigation, you can use `pageContext.previousPageContext` to access the `pageContext` of the previous page. See <Link href="#lifecycle" />.
 
+<Prop id="abortSignal" />
+
+An [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal) that your hooks can use to stop work that isn't needed anymore (e.g. `fetch(url, { signal: pageContext.abortSignal })` in <Link href="/data">`+data`</Link>). It aborts:
+- On the server-side, when the HTTP request is aborted (e.g. the user closes the browser tab).
+- On the client-side, when the user navigates to another page.
+
+> See also: <Link href="/onRenderClient#abort" />
+
+> On Cloudflare Workers, `request.signal` aborts when the client cancels the request only if you set the [`enable_request_signal`](https://developers.cloudflare.com/changelog/2025-05-22-handle-request-cancellation/) compatibility flag.
+
+> If you use <Link href="/renderPage">`renderPage()`</Link>, pass the request's signal as `pageContextInit.abortSignal` (otherwise `pageContext.abortSignal` never aborts).
+
 <Prop id="is404" />
 
 If an error occurs, whether the error is a `404 Page Not Found` or a `500 Internal Error`, see <Link href="/error-page" />.

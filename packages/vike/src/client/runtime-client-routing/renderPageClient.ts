@@ -75,6 +75,10 @@ const globalObject = getGlobalObject<{
   clientRoutingIsDisabled?: true
   renderCounter: number
   onRenderClientPreviousPromise?: Promise<unknown>
+  // For the navigation that is loading or rendering its page
+  abortControllerNavigation?: AbortController
+  // For the currently shown page
+  abortControllerPage?: AbortController
   isFirstRenderDone?: true
   isTransitioning?: true
   //https://vike.dev/pageContext#previousPageContext
@@ -134,6 +138,8 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
   const { isRenderOutdated, setHydrationCanBeAborted, isFirstRender } = getIsRenderOutdated()
 
+  const abortController = new AbortController()
+
   const pageContextBeginArgs = {
     urlOriginal,
     isBackwardNavigation,
@@ -142,6 +148,8 @@ async function renderPageClient(renderArgs: RenderArgs) {
     isClientSideNavigation,
     pageContextInitClient,
     isFirstRender,
+    // https://vike.dev/pageContext#abortSignal
+    abortSignal: abortController.signal,
   }
 
   if (globalObject.clientRoutingIsDisabled) {
@@ -154,6 +162,8 @@ async function renderPageClient(renderArgs: RenderArgs) {
     await globalObject.hydrationAwaitPromise
     if (isRenderOutdated()) return
   }
+
+  abortPreviousNavigation(abortController)
 
   // Ensure no concurrent onRenderClient() calls.
   // - We could `await globalObject.onRenderClientPreviousPromise` later just before execHookOnRenderClient() but we prefer doing it early to ensure `getPageContext() === usePageContext()` (and maybe it prevents other potential inconsistencies?).
@@ -352,11 +362,15 @@ async function renderPageClient(renderArgs: RenderArgs) {
       // We don't swallow 404 errors:
       //  - On the server-side, Vike swallows / doesn't show any 404 error log because it's expected that a user may go to some random non-existent URL. (We don't want to flood the app's error tracking with 404 logs.)
       //  - On the client-side, if the user navigates to a 404 then it means that the UI has a broken link. (It isn't expected that users can go to some random URL using the client-side router, as it would require, for example, the user to manually change the URL of a link by manually manipulating the DOM which highly unlikely.)
-      logErrorClient(err)
+      logErrorClient(err, abortController.signal)
     } else {
       // We swallow throw redirect()/render() called by client-side hooks onBeforeRender()/data()/guard()
       // We handle the abort error down below.
     }
+
+    // A newer navigation has started
+    // - Otherwise getPageContextBegin() can replace the newer navigation's getPageContextClient() value
+    if (isRenderOutdated()) return
 
     // pageContext
     const pageContext = await getPageContextBegin(true, pageContextBeginArgs)
@@ -388,7 +402,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
          - An infinite reloading page is a even worse UX than a blank page.
       redirectHard(urlOriginal)
       */
-      logErrorClient(err)
+      logErrorClient(err, abortController.signal)
     }
 
     const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._globalContext._pageConfigs)
@@ -506,7 +520,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
       if (!isErrorPage) {
         await handleError({ err })
       } else {
-        logErrorClient(err)
+        logErrorClient(err, abortController.signal)
       }
     }
 
@@ -555,6 +569,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     // We purposely abort *after* onHydrationEnd() is called (see comment above).
     if (isRenderOutdated(true)) return
 
+    abortPreviousPage(abortController)
     cancelStreamedValues(pageContext, true)
 
     // onPageTransitionEnd()
@@ -617,6 +632,7 @@ async function getPageContextBegin(
     isClientSideNavigation,
     pageContextInitClient,
     isFirstRender,
+    abortSignal,
   }: {
     urlOriginal: string
     isBackwardNavigation: boolean | null
@@ -625,6 +641,7 @@ async function getPageContextBegin(
     isClientSideNavigation: boolean
     pageContextInitClient: Record<string, unknown> | undefined
     isFirstRender: boolean
+    abortSignal: AbortSignal
   },
 ) {
   const previousPageContext = globalObject.previousPageContext
@@ -638,6 +655,7 @@ async function getPageContextBegin(
     isHydration: isFirstRender && !isForErrorPage,
     previousPageContext,
     pageContextsAborted,
+    abortSignal,
     ...pageContextInitClient,
   })
 
@@ -718,6 +736,21 @@ function getIsRenderOutdated() {
 }
 function getRenderCount(): number {
   return globalObject.renderCounter
+}
+
+// Abort the previous navigation: its hooks can use pageContext.abortSignal to stop, e.g. data fetching or onRenderClient() rendering
+// - The page that is shown isn't aborted here
+function abortPreviousNavigation(abortController: AbortController) {
+  globalObject.abortControllerNavigation?.abort()
+  globalObject.abortControllerNavigation = abortController
+}
+// The page is rendered: it replaces the previous page
+// - The previous page's pageContext.abortSignal aborts only now: its `.pageContext.json`, fetched with that signal, keeps streaming its passToClient values while this page loads and renders
+// - Unless this navigation renders its error page after its onPageTransitionEnd() threw: it must not abort its own signal
+function abortPreviousPage(abortController: AbortController) {
+  if (globalObject.abortControllerNavigation === abortController) globalObject.abortControllerNavigation = undefined
+  if (globalObject.abortControllerPage !== abortController) globalObject.abortControllerPage?.abort()
+  globalObject.abortControllerPage = abortController
 }
 
 function getKeepScrollPositionSetting(
