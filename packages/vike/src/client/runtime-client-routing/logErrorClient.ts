@@ -5,8 +5,10 @@ import { isAbortSignalError } from '../../shared-server-client/isAbortSignalErro
 import '../assertEnvClient.js'
 
 function logErrorClient(err: unknown, abortSignal: AbortSignal) {
-  // Caused by the user navigating away, e.g. a hook's `fetch(url, { signal: pageContext.abortSignal })`
-  if (isAbortSignalError(err, abortSignal)) return
+  if (isAbortSignalError(err, abortSignal)) {
+    // When the rendering is aborted (the user navigating away during rendering) => an error can be thrown, e.g. by `fetch(url, { signal: pageContext.abortSignal })`
+    return
+  }
   if (
     isObject(err) &&
     // Set by vike-react
