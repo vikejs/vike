@@ -172,7 +172,7 @@ function HooksLifecycle() {
 
     return (
       <LifecycleBox>
-        <h4 style={{ marginTop: 0, marginBottom: '1rem', color: '#2c3e50' }}>{title}</h4>
+        <h4 style={{ marginTop: 0, marginBottom: '1rem', color: 'var(--dp-color-text)' }}>{title}</h4>
         <ol>
           {hooks.map((hook, index) => (
             <HookCall key={`${hook.name}-${hook.env}-${index}`} hook={hook} />
@@ -192,10 +192,11 @@ function HooksLifecycle() {
               onClick={() => setSelectedFramework(null)}
               style={{
                 padding: '0.25rem 0.75rem',
-                border: '1px solid #ccc',
+                border: '1px solid var(--dp-color-border-strong)',
                 borderRadius: '4px',
-                backgroundColor: selectedFramework === null ? '#007bff' : 'white',
-                color: selectedFramework === null ? 'white' : 'black',
+                backgroundColor:
+                  selectedFramework === null ? 'var(--dp-color-primary)' : 'var(--dp-color-surface-elevated)',
+                color: selectedFramework === null ? 'var(--dp-color-bg)' : 'var(--dp-color-text)',
                 cursor: 'pointer',
               }}
             >
@@ -207,10 +208,11 @@ function HooksLifecycle() {
                 onClick={() => setSelectedFramework(framework)}
                 style={{
                   padding: '0.25rem 0.75rem',
-                  border: '1px solid #ccc',
+                  border: '1px solid var(--dp-color-border-strong)',
                   borderRadius: '4px',
-                  backgroundColor: selectedFramework === framework ? '#007bff' : 'white',
-                  color: selectedFramework === framework ? 'white' : 'black',
+                  backgroundColor:
+                    selectedFramework === framework ? 'var(--dp-color-primary)' : 'var(--dp-color-surface-elevated)',
+                  color: selectedFramework === framework ? 'var(--dp-color-bg)' : 'var(--dp-color-text)',
                   cursor: 'pointer',
                 }}
               >
@@ -235,10 +237,10 @@ function HooksLifecycle() {
                 onClick={() => setDataEnv(key)}
                 style={{
                   padding: '0.25rem 0.75rem',
-                  border: '1px solid #ccc',
+                  border: '1px solid var(--dp-color-border-strong)',
                   borderRadius: '4px',
-                  backgroundColor: hooksEnv === key ? '#007bff' : 'white',
-                  color: hooksEnv === key ? 'white' : 'black',
+                  backgroundColor: hooksEnv === key ? 'var(--dp-color-primary)' : 'var(--dp-color-surface-elevated)',
+                  color: hooksEnv === key ? 'var(--dp-color-bg)' : 'var(--dp-color-text)',
                   cursor: 'pointer',
                 }}
               >
@@ -258,7 +260,7 @@ function HooksLifecycle() {
       >
         <div>
           <LifecycleBox>
-            <h4 style={{ marginTop: 0, marginBottom: '1rem', color: '#2c3e50' }}>Server start</h4>
+            <h4 style={{ marginTop: 0, marginBottom: '1rem', color: 'var(--dp-color-text)' }}>Server start</h4>
             <ol>
               <HookCall hook={{ ...onCreateGlobalContext, env: 'server' }} />
             </ol>
