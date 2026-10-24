@@ -8,4 +8,4 @@
 //   } from 'vike'
 // Use package.json#exports to make the imports isomorphic.
 // The client-side has no utility when using Server Routing.
-export { redirect, render, Abort } from './route/abort.js'
+export { redirect, render, abort } from './route/abort.js'

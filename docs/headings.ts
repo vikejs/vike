@@ -608,7 +608,7 @@ const headings = [
   },
   {
     level: 2,
-    title: '`throw Abort()`',
+    title: '`throw abort()`',
     url: '/abort-navigation',
   },
   {

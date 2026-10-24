@@ -133,7 +133,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
   addLinkPrefetchHandlers_unwatch()
 
   const { isRenderOutdated, setHydrationCanBeAborted, isFirstRender } = getIsRenderOutdated()
-  // Whether it's too late for `throw Abort()`
+  // Whether it's too late for `throw abort()`
   let isRenderingPageView = false
 
   const pageContextBeginArgs = {
@@ -463,11 +463,11 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     addNewPageContextAborted(pageContextsAborted, pageContext, pageContextAbort, getPageContextPublicClientMinimal)
 
-    // throw Abort()
+    // throw abort()
     if (pageContextAbort._navAbort) {
       assertUsage(
         globalObject.isFirstRenderDone && !isRenderingPageView,
-        '`throw Abort()` aborts client-side navigation: it cannot be used upon hydration nor after the new page started rendering, see https://vike.dev/abort-navigation',
+        '`throw abort()` aborts client-side navigation: it cannot be used upon hydration nor after the new page started rendering, see https://vike.dev/abort-navigation',
       )
       await abortNavigation(pageContext)
       return { skip: true }

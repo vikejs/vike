@@ -1,7 +1,7 @@
 export default guard
 
-import { Abort } from 'vike/abort'
+import { abort } from 'vike/abort'
 
 function guard() {
-  throw Abort()
+  throw abort()
 }

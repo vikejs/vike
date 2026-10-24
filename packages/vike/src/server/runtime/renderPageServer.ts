@@ -595,7 +595,7 @@ async function handleAbort(
   logAbort(errAbort, globalContext._isProduction, pageContextNominalPageBegin)
   const pageContextAbort = errAbort._pageContextAbort
   assert(pageContextAbort)
-  // `throw Abort()` is client-side only: Abort() throws a usage error on the server-side
+  // `throw abort()` is client-side only: abort() throws a usage error on the server-side
   assert(!pageContextAbort._navAbort)
 
   addNewPageContextAborted(

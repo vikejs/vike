@@ -164,7 +164,7 @@ function testRun(
     await page.waitForURL('https://brillout.github.io/star-wars/api/films/1.json')
   })
 
-  test('throw Abort() - guard()', async () => {
+  test('throw abort() - guard()', async () => {
     await page.goto(getServerUrl() + '/about')
     await hydrationDone()
     await waitForPageTransitionEnd(() => page.click('a[href="/abort-navigation"]'))
@@ -180,7 +180,7 @@ function testRun(
     await ensureWasClientSideRouted('/pages/about')
   })
 
-  test('throw Abort() - onBeforeRoute() with unsaved changes', async () => {
+  test('throw abort() - onBeforeRoute() with unsaved changes', async () => {
     await page.goto(getServerUrl() + '/about')
     await hydrationDone()
     await page.click('a[href="/unsaved-changes"]')
@@ -214,10 +214,10 @@ function testRun(
     await ensureWasClientSideRouted('/pages/about')
   })
 
-  test('throw Abort() - hydration', async () => {
+  test('throw abort() - hydration', async () => {
     await page.goto(getServerUrl() + '/abort-navigation')
     await autoRetry(async () => {
-      expectLog('`throw Abort()` aborts client-side navigation: it cannot be used upon hydration', {
+      expectLog('`throw abort()` aborts client-side navigation: it cannot be used upon hydration', {
         filter: (log) => log.logSource === 'Browser Error',
       })
     })

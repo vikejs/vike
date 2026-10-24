@@ -56,7 +56,7 @@ function historyApiReplaceStateOriginal(state: unknown, url?: Parameters<typeof 
   History.prototype.replaceState.bind(window.history)(state, '', url)
 }
 
-// Revert the URL change of an aborted back-/forward navigation (`throw Abort()`)
+// Revert the URL change of an aborted back-/forward navigation (`throw abort()`)
 // - Assumes the user moved one history entry: Vike's history state doesn't record the entry's index, thus a jump over several entries (e.g. picking an entry from the back button's long-press menu) is reverted by only one entry.
 function undoHistoryNavigation(isBackwardNavigation: boolean) {
   globalObject.isUndoingHistoryNavigation = true
