@@ -1,5 +1,6 @@
 export { changeUrl }
 export { onPopStateBegin }
+export { undoHistoryNavigation }
 export { saveScrollPosition }
 export { initHistory }
 export { historyApiReplaceStateOriginal }
@@ -16,6 +17,7 @@ import '../assertEnvClient.js'
 const globalObject = getGlobalObject('history.ts', {
   monkeyPatched: false,
   previous: undefined as any as HistoryInfo,
+  isUndoingHistoryNavigation: false,
 })
 initHistory() // we redundantly call initHistory() to ensure it's called early
 globalObject.previous = getHistoryInfo()
@@ -54,6 +56,13 @@ function historyApiReplaceStateOriginal(state: unknown, url?: Parameters<typeof 
   History.prototype.replaceState.bind(window.history)(state, '', url)
 }
 
+// Revert the URL change of an aborted back-/forward navigation (`throw Abort()`)
+// - Assumes the user moved one history entry: Vike's history state doesn't record the entry's index, thus a jump over several entries (e.g. picking an entry from the back button's long-press menu) is reverted by only one entry.
+function undoHistoryNavigation(isBackwardNavigation: boolean) {
+  globalObject.isUndoingHistoryNavigation = true
+  window.history.go(isBackwardNavigation ? 1 : -1)
+}
+
 function onPopStateBegin() {
   const { previous } = globalObject
 
@@ -76,6 +85,12 @@ function onPopStateBegin() {
 
   const current = getHistoryInfo()
   globalObject.previous = current
+
+  // The popstate event triggered by undoHistoryNavigation(): the page is already rendered
+  if (globalObject.isUndoingHistoryNavigation) {
+    globalObject.isUndoingHistoryNavigation = false
+    return { skip: true as const }
+  }
 
   // Let the browser handle hash navigations.
   // - Upon hash navigation: `isHistoryStatePristine===true` (see comment above).
