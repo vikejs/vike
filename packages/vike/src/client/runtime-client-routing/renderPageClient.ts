@@ -467,9 +467,26 @@ async function renderPageClient(renderArgs: RenderArgs) {
     if (pageContextAbort._navAbort) {
       assertUsage(
         globalObject.isFirstRenderDone && !isRenderingPageView,
-        '`throw abort()` aborts client-side navigation: it cannot be used upon hydration nor after the new page started rendering, see https://vike.dev/abort-navigation',
+        '`throw abort()` cannot be used upon hydration nor after the next page started rendering, see https://vike.dev/abort-navigation',
       )
-      await abortNavigation(pageContext)
+      // The current page stays: revert what the navigation changed so far
+      assert(globalObject.previousPageContext)
+      globalObject.currentPageContext = globalObject.previousPageContext
+      setPageContextCurrent(globalObject.previousPageContext)
+      addLinkPrefetchHandlers_watch()
+      addLinkPrefetchHandlers()
+      // Upon back/forward navigation, the browser already changed the URL
+      if (isHistoryNavigation && isBackwardNavigation !== null) undoHistoryNavigation(isBackwardNavigation)
+      if (globalObject.isTransitioning) {
+        globalObject.isTransitioning = undefined
+        assert(previousPageContext)
+        const hooks = getHooksFromPageContextNew('onPageTransitionEnd', previousPageContext)
+        try {
+          await execHookList(hooks, pageContext, getPageContextPublicClientMinimal)
+        } catch (err) {
+          logErrorClient(err)
+        }
+      }
       return { skip: true }
     }
 
@@ -504,30 +521,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     // throw render(statusCode)
     return { pageContextAbort }
-  }
-
-  // The previous page stays rendered
-  async function abortNavigation(pageContext: PageContextBegin) {
-    // Undo what the aborted navigation changed so far
-    globalObject.currentPageContext = globalObject.previousPageContext
-    if (globalObject.previousPageContext) setPageContextCurrent(globalObject.previousPageContext)
-    addLinkPrefetchHandlers_watch()
-    addLinkPrefetchHandlers()
-
-    // The browser already changed the URL upon back-/forward navigation
-    if (isHistoryNavigation && isBackwardNavigation !== null) undoHistoryNavigation(isBackwardNavigation)
-
-    // End the page transition started by onPageTransitionStart()
-    if (globalObject.isTransitioning) {
-      globalObject.isTransitioning = undefined
-      assert(previousPageContext)
-      const hooks = getHooksFromPageContextNew('onPageTransitionEnd', previousPageContext)
-      try {
-        await execHookList(hooks, pageContext, getPageContextPublicClientMinimal)
-      } catch (err) {
-        logErrorClient(err)
-      }
-    }
   }
 
   async function renderPageView(

@@ -77,7 +77,7 @@ function redirect(url: string, statusCode?: 301 | 302): AbortRedirect {
 }
 
 /**
- * Abort the client-side navigation: the current page stays rendered and the URL doesn't change.
+ * Abort the client-side navigation: the user stays on the current page.
  *
  * https://vike.dev/abort-navigation
  */
@@ -85,10 +85,7 @@ function abort(): Error {
   const abortCaller = 'throw abort()' as const
   // Tree-shaking to save client-side KBs
   if (!globalThis.__VIKE__IS_CLIENT) {
-    assertUsage(
-      isBrowser(),
-      `${pc.cyan(abortCaller)} can only be used on the client-side: it aborts client-side navigation. Use it in a client-side hook such as ${pc.cyan('+onBeforeRoute.client.js')} or ${pc.cyan('+guard.client.js')}, see https://vike.dev/abort-navigation`,
-    )
+    assertUsage(isBrowser(), `${pc.cyan(abortCaller)} can only be used on the client-side`)
   }
   const pageContextAbort = {}
   objectAssign(pageContextAbort, {

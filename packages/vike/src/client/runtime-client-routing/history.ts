@@ -56,8 +56,8 @@ function historyApiReplaceStateOriginal(state: unknown, url?: Parameters<typeof 
   History.prototype.replaceState.bind(window.history)(state, '', url)
 }
 
-// Revert the URL change of an aborted back-/forward navigation (`throw abort()`)
-// - Assumes the user moved one history entry: Vike's history state doesn't record the entry's index, thus a jump over several entries (e.g. picking an entry from the back button's long-press menu) is reverted by only one entry.
+// Revert the URL change of a back/forward navigation aborted by `throw abort()`
+// - We assume the user moved by one history entry (Vike doesn't record the position of history entries)
 function undoHistoryNavigation(isBackwardNavigation: boolean) {
   globalObject.isUndoingHistoryNavigation = true
   window.history.go(isBackwardNavigation ? 1 : -1)
@@ -86,7 +86,7 @@ function onPopStateBegin() {
   const current = getHistoryInfo()
   globalObject.previous = current
 
-  // The popstate event triggered by undoHistoryNavigation(): the page is already rendered
+  // The popstate event triggered by undoHistoryNavigation()
   if (globalObject.isUndoingHistoryNavigation) {
     globalObject.isUndoingHistoryNavigation = false
     return { skip: true as const }
