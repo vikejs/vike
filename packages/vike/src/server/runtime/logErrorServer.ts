@@ -26,8 +26,10 @@ function logErrorServer(
   pageContext: null | PageContextCreatedServer | PageContextCreatedServerWithoutGlobalContext,
 ) {
   if (isAbortError(err) && !isDebugError()) return
-  // Skip errors caused by the client disconnecting (`pageContext.abortSignal`)
-  if (isAbortSignalError(err, pageContext?.abortSignal)) return
+  if (isAbortSignalError(err, pageContext?.abortSignal)) {
+    // Upon `abortSignal.abort()` (i.e. the rendering is aborted, because the client disconnected) => an error can be thrown, e.g. by `fetch(url, { signal })`
+    return
+  }
 
   // I don't think there is a use case for printing the same error object twice? Reloading page throwing error => the same error is printed a second time but it's a different error object.
   if (hasAlreadyLogged(err)) return

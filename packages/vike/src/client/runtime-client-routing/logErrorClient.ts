@@ -6,7 +6,7 @@ import '../assertEnvClient.js'
 
 function logErrorClient(err: unknown, abortSignal: AbortSignal) {
   if (isAbortSignalError(err, abortSignal)) {
-    // When the rendering is aborted (the user navigating away during rendering) => an error can be thrown, e.g. by `fetch(url, { signal: pageContext.abortSignal })`
+    // Upon `abortSignal.abort()` (i.e. the rendering is aborted, because the user navigated away) => an error can be thrown, e.g. by `fetch(url, { signal })`
     return
   }
   if (
