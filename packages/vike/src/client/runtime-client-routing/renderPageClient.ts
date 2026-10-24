@@ -72,9 +72,9 @@ const globalObject = getGlobalObject<{
   clientRoutingIsDisabled?: true
   renderCounter: number
   onRenderClientPreviousPromise?: Promise<unknown>
-  // The navigation that is loading or rendering its page
+  // For the navigation that is loading or rendering its page
   abortControllerNavigation?: AbortController
-  // The page that is shown
+  // For the currently shown page
   abortControllerPage?: AbortController
   isFirstRenderDone?: true
   isTransitioning?: true
@@ -145,6 +145,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     isClientSideNavigation,
     pageContextInitClient,
     isFirstRender,
+    // https://vike.dev/pageContext#abortSignal
     abortSignal: abortController.signal,
   }
 
@@ -736,7 +737,6 @@ function getRenderCount(): number {
 
 // Abort the previous navigation: its hooks can use pageContext.abortSignal to stop, e.g. data fetching or onRenderClient() rendering
 // - The page that is shown isn't aborted here
-// https://vike.dev/pageContext#abortSignal
 function abortPreviousNavigation(abortController: AbortController) {
   globalObject.abortControllerNavigation?.abort()
   globalObject.abortControllerNavigation = abortController
