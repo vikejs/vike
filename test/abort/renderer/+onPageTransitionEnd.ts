@@ -1,5 +1,5 @@
 export default onPageTransitionEnd
 
 function onPageTransitionEnd() {
-  document.body.classList.remove('page-transition')
+  document.body.dataset.pageTransition = 'end'
 }
