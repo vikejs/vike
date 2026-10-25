@@ -165,30 +165,49 @@ function testRun(
   })
 
   test('throw abort() - link', async () => {
-    await page.goto(getServerUrl() + '/')
+    await page.goto(getServerUrl() + '/abort-navigation')
     await hydrationDone()
-    await page.click('a[href="/abort-navigation"]')
-    await autoRetry(async () => {
-      expect(await page.evaluate(() => document.body.dataset.pageTransition)).toBe('end')
-    })
-    await expectUrl('/')
+    let dialog = answerConfirm(false)
+    await page.click('a[href="/"]')
+    await dialog
+    await expectUrl('/abort-navigation')
     // Neither re-rendered nor reloaded
     await testCounter(1)
+    // The next navigation calls onPageTransitionStart() again
+    dialog = answerConfirm(true)
+    await page.click('a[href="/"]')
+    await dialog
+    await autoRetry(async () => {
+      expect(await page.textContent('h1')).toBe('Welcome')
+    })
+    await ensureWasClientSideRouted('/pages/abort-navigation')
   })
 
   test('throw abort() - back navigation', async () => {
-    await page.goto(getServerUrl() + '/abort-navigation')
+    await page.goto(getServerUrl() + '/')
     await hydrationDone()
-    await page.click('a[href="/"]')
+    await page.click('a[href="/abort-navigation"]')
     await testCounter()
+    const dialog = answerConfirm(false)
     await page.goBack()
+    await dialog
     // Vike reverts the URL
-    await expectUrl('/')
+    await expectUrl('/abort-navigation')
     await testCounter(1)
-    await ensureWasClientSideRouted('/pages/abort-navigation')
+    await ensureWasClientSideRouted('/pages/index')
   })
 }
 
 async function hydrationDone() {
   await testCounter()
+}
+
+// Click on Cancel (or OK) of the next window.confirm() dialog
+function answerConfirm(accept: boolean) {
+  return new Promise<void>((resolve) => {
+    page.once('dialog', async (dialog) => {
+      await (accept ? dialog.accept() : dialog.dismiss())
+      resolve()
+    })
+  })
 }

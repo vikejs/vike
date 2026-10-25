@@ -7,7 +7,7 @@ function Page() {
   return (
     <>
       <h1>Abort navigation</h1>
-      <p>Client-side navigation to this page is aborted by `throw abort()` in the guard() hook.</p>
+      <p>Leaving this page asks for confirmation, see `+onPageTransitionStart.ts`.</p>
       <Counter />
     </>
   )
