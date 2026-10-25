@@ -379,7 +379,7 @@ type ProdBuildEntry = {
   assetsIntegrity: null | AssetsIntegrity
   buildInfo: BuildInfo
 }
-// The Subresource Integrity (SRI) hash of each JavaScript/CSS file, e.g. `{ '/assets/entries/pages_index.BLo6D2X2.js': 'sha384-...' }` — https://vike.dev/sri
+// The Subresource Integrity (SRI) hash of each JavaScript/CSS file, e.g. `{ '/assets/entries/pages_index.BLo6D2X2.js': 'sha384-...' }` — https://vike.dev/csp#sri
 type AssetsIntegrity = Record<string, string>
 type BuildInfo = {
   versionAtBuildTime: string

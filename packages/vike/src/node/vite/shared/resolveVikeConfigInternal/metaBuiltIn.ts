@@ -343,10 +343,6 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
   csp: {
     env: { server: true },
   },
-  sri: {
-    env: { config: true },
-    global: true,
-  },
   injectScriptsAt: {
     env: { server: true },
   },

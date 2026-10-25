@@ -627,20 +627,19 @@ type ConfigBuiltIn = {
    * https://vike.dev/csp
    */
   csp?: {
-    nonce:
+    nonce?:
       | boolean
       //
       | ((pageContext: PageContextServer) => string | Promise<string>)
+    /**
+     * Set to `true` to add `integrity` attributes (Subresource Integrity) to the `<script>` and `<link>` tags injected by Vike.
+     *
+     * https://vike.dev/csp#sri
+     *
+     * @default false
+     */
+    sri?: boolean
   }
-
-  /**
-   * Set to `true` to add `integrity` attributes (Subresource Integrity) to the `<script>` and `<link>` tags injected by Vike.
-   *
-   * https://vike.dev/sri
-   *
-   * @default false
-   */
-  sri?: boolean
 
   /** Where scripts are injected in the HTML.
    *

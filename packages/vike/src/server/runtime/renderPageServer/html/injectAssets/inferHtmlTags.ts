@@ -62,7 +62,7 @@ function isCrossOrigin({ src, assetType, integrity }: PageAsset): boolean {
   return assetType === 'font' || !!integrity || src.startsWith('http://') || src.startsWith('https://')
 }
 
-// https://vike.dev/sri
+// https://vike.dev/csp#sri
 function inferIntegrityAttr({ integrity }: PageAsset): string {
   // `crossorigin` is needed for assets loaded from another origin (e.g. https://vike.dev/base-url#baseassets), otherwise the browser blocks them, see https://developer.mozilla.org/en-US/docs/Web/Security/Defenses/Subresource_Integrity#subresource_integrity_and_cors
   return !integrity ? '' : ` integrity="${integrity}" crossorigin`

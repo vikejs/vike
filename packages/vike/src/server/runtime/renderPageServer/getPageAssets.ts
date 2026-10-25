@@ -12,6 +12,7 @@ import { getViteRPC } from '../../../utils/getViteRPC.js'
 import { assert } from '../../../utils/assert.js'
 import { prependBase } from '../../../utils/parseUrl-extras.js'
 import type { ClientDependency } from '../../../shared-server-client/getPageFiles/analyzePageClientSide/ClientDependency.js'
+import type { PageContextConfig } from '../../../shared-server-client/getPageFiles.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 import type { ViteRPC } from '../../../node/vite/plugins/non-runnable-dev/pluginViteRPC.js'
 import '../../assertEnvServer.js'
@@ -21,13 +22,13 @@ type PageAsset = {
   assetType: null | NonNullable<MediaType>['assetType']
   mediaType: null | NonNullable<MediaType>['mediaType']
   isEntry: boolean
-  // https://vike.dev/sri
+  // https://vike.dev/csp#sri
   integrity: null | string
 }
 type GetPageAssets = () => Promise<PageAsset[]>
 
 async function getPageAssets(
-  pageContext: {
+  pageContext: PageContextConfig & {
     _baseServer: string
     _baseAssets: string | null
     _globalContext: GlobalContextServerInternal
@@ -69,7 +70,7 @@ async function getPageAssets(
       assetType,
       mediaType,
       isEntry,
-      integrity: globalContext._assetsIntegrity?.[src] ?? null,
+      integrity: (pageContext.config.csp?.sri && globalContext._assetsIntegrity?.[src]) || null,
     })
   })
 

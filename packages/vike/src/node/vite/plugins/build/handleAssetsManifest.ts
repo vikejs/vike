@@ -434,10 +434,11 @@ async function writeAssetsManifestFile(assetsJsonFilePath: string, config: Resol
   await fs.rm(serverManifestFilePath)
 }
 
-// https://vike.dev/sri
+// https://vike.dev/csp#sri
 async function getAssetsIntegrity(assetsJsonFilePath: string, config: ResolvedConfig): Promise<null | AssetsIntegrity> {
   const vikeConfig = await getVikeConfigInternal()
-  if (!vikeConfig.config.sri) return null
+  // +csp is a runtime setting: we can't read +csp.sri at build time, so we compute the hashes whenever +csp is defined
+  if (!vikeConfig._pageConfigs.some((pageConfig) => pageConfig.configValueSources.csp)) return null
   const manifest: ViteManifest = JSON.parse(await fs.readFile(assetsJsonFilePath, 'utf-8'))
   const { outDirClient } = getOutDirs(config, undefined)
   const files = unique(Object.values(manifest).flatMap((entry) => [entry.file, ...(entry.css ?? [])]))

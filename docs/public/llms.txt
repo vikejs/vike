@@ -101,8 +101,7 @@ Paths below are relative to https://vike.dev (e.g. `/data-fetching` → https://
 - /headers — request headers: `pageContext.headers` (normalized) / `headersOriginal`, cookie parsing, Headers API
 - /headersResponse — `+headersResponse` response headers (static or fn), `pageContext.headersResponse`, `Set-Cookie`, server-only, beta
 - /middleware — `+middleware` server middlewares for Vike extensions (Universal Middleware, beta), before the user's routes or after them as handlers, installed by `vike(app)`, not run by `renderPage()` (/error/setup-middlewares)
-- /csp — `+csp` Content Security Policy nonce (`nonce: true` or callback), per-request nonce, `script-src`, beta
-- /sri — `+sri` Subresource Integrity: build-time SHA-384 `integrity` + `crossorigin` on injected `<script>`/`<link>` (stylesheet, modulepreload), production only, not for `import()` upon client-side navigation
+- /csp — `+csp` Content Security Policy nonce (`nonce: true` or callback), per-request nonce, `script-src`; `sri: true` Subresource Integrity: build-time SHA-384 `integrity` + `crossorigin` on injected `<script>`/`<link>` (stylesheet, modulepreload), production only, not for `import()` upon client-side navigation; beta
 - /redirects — `+redirects` permanent 301s, route params `@id`, glob wildcards, external URLs, server-only (not client nav), link aliasing
 - /passToClient — `+passToClient` which `pageContext`/`globalContext` props serialize to client, dot-notation nesting, `@brillout/json-serializer` (class prototypes lost), streaming `Promise`/`ReadableStream`/async iterable values
 - /hooksTimeout — `+hooksTimeout` slow-hook warn/error thresholds (default 4s/30s), per-hook, `false` disables (discouraged in prod)

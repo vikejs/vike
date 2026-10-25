@@ -83,7 +83,7 @@ type InjectFilterEntry = {
   mediaType: string // MIME type
   isEntry: boolean // yes  ⇒ <script> or <link rel="stylesheet" type="text/css">
                    // false ⇒ preload tag, e.g. <link rel="preload" as="font">
-  integrity: string | null // See https://vike.dev/sri
+  integrity: string | null // See https://vike.dev/csp#sri
 }
 ```
 

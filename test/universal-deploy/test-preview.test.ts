@@ -36,7 +36,7 @@ test('precompress', async () => {
   expect(referenced.filter((f) => f!.endsWith('.br') || f!.endsWith('.gz')).join(' ')).toBe('')
 })
 
-// https://vike.dev/sri
+// https://vike.dev/csp#sri
 test('sri', async () => {
   const html = await fetchHtml('/')
   const tags = html.match(/<(script|link)\b[^>]*>/g)!.filter((tag) => /\.(js|css)"/.test(tag))
