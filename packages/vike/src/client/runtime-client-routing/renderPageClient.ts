@@ -741,8 +741,9 @@ function abortPreviousNavigation(abortController: AbortController) {
   globalObject.abortControllerNavigation?.abort()
   globalObject.abortControllerNavigation = abortController
 }
-// The page is rendered: it replaces the previous page
-// - The previous page's pageContext.abortSignal aborts only now: its `.pageContext.json`, fetched with that signal, keeps streaming its passToClient values while this page loads and renders
+// The new page is rendered => abort the previous page
+// - Not earlier in abortPreviousNavigation(): the previous page is shown until now, and it can still be receiving streamed values (https://vike.dev/passToClient#streaming)
+// - Its streamed values arrive over its `.pageContext.json` request, which is fetched with its pageContext.abortSignal
 // - Unless this navigation renders its error page after its onPageTransitionEnd() threw: it must not abort its own signal
 function abortPreviousPage(abortController: AbortController) {
   if (globalObject.abortControllerNavigation === abortController) globalObject.abortControllerNavigation = undefined
