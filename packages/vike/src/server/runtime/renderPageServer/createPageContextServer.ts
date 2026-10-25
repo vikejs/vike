@@ -98,7 +98,8 @@ function createPageContextBase(pageContextInit: PageContextInit | null, isPreren
     isClientSide: false as const,
     isPrerendering,
     _requestId: requestId,
-    // Never aborts, unless pageContextInit.abortSignal overrides it
+    // Ensures `pageContext.abortSignal` is always defined, e.g. upon pre-rendering or when the user calls renderPage() without `pageContextInit.abortSignal`
+    // - It never aborts: the signal that aborts when the HTTP request is aborted is `pageContextInit.abortSignal`, which overrides it below
     abortSignal: new AbortController().signal,
   })
   objectAssign(pageContext, pageContextInit)
