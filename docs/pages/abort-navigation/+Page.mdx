@@ -11,12 +11,12 @@ import { ConfigSpec } from '../../components'
 For example, to ask for confirmation before leaving a page with unsaved changes:
 
 ```ts
-// /pages/+onBeforeRoute.client.ts
+// /pages/editor/+onPageTransitionStart.ts
 // Environment: client
 
 import { abort } from 'vike/abort'
 
-export function onBeforeRoute() {
+export function onPageTransitionStart() {
   if (hasUnsavedChanges() && !window.confirm('Leave this page? Your changes will be lost.')) {
     throw abort()
   }
@@ -25,13 +25,12 @@ export function onBeforeRoute() {
 
 > The browser's [`beforeunload` dialog](https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event) isn't shown upon client-side navigation.
 
-You can use `throw abort()` in any client-side hook that runs before the next page is rendered, such as <Link href="/onBeforeRoute">`onBeforeRoute()`</Link> or <Link href="/guard">`guard()`</Link>. (Since `onBeforeRoute()` is synchronous, use `+guard.client.js` for showing your own confirmation modal.)
+You can use `throw abort()` only in <Link href="/onPageTransitionStart">`onPageTransitionStart()`</Link>: it's the first hook Vike calls upon client-side navigation, and it's the hook of the current page (not of the next page).
 
 Upon back/forward navigation, Vike reverts the URL. (If the user jumps over several history entries at once, then Vike only reverts one entry.)
 
 
 ## See also
 
-- <Link href="/onBeforeRoute" />
-- <Link href="/guard" />
+- <Link href="/onPageTransitionStart" />
 - <Link href="/abort" />
