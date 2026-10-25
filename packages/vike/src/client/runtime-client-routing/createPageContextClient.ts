@@ -32,8 +32,9 @@ function createPageContextBase(urlOriginal: string) {
     isPrerendering: false as const,
     urlOriginal,
     _urlHandler: null,
-    // Never aborts, unless the navigation sets its own
-    // - A prefetch keeps it: its result is cached for any later navigation
+    // Ensures `pageContext.abortSignal` is always defined, e.g. for route() hooks called upon prefetching
+    // - A navigation replaces it with its own signal
+    // - Prefetching is never aborted: its result is cached and later used by a navigation
     abortSignal: new AbortController().signal,
   })
 
