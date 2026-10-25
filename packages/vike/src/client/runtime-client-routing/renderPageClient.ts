@@ -365,8 +365,9 @@ async function renderPageClient(renderArgs: RenderArgs) {
       // We handle the abort error down below.
     }
 
-    // A newer navigation has started
-    // - Otherwise getPageContextBegin() can replace the newer navigation's getPageContextClient() value
+    // Stop if the user navigated away, e.g. the newer navigation aborted this page's `.pageContext.json` request (via pageContext.abortSignal)
+    // - Checked before getPageContextBegin(), not only after it: getPageContextBegin() sets the pageContext returned by getPageContextClient()
+    // - Otherwise getPageContextClient() returns this outdated pageContext instead of the newer page's
     if (isRenderOutdated()) return
 
     // pageContext
