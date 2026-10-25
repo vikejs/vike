@@ -78,6 +78,8 @@ async function renderPageServer_universal(
   const pageContextInit = {
     urlOriginal: request.url, // Let `context` override it, e.g. `$ vike dev` passes the URL's path
     headersOriginal: request.headers,
+    // `pageContext.abortSignal` aborts when the HTTP request is aborted (e.g. the user closes the browser tab)
+    // https://vike.dev/pageContext#abortSignal
     abortSignal: request.signal,
     req: 'req' in runtime ? runtime.req : null,
     res: 'res' in runtime ? runtime.res : null,
