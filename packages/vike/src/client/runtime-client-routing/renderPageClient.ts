@@ -133,8 +133,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
   addLinkPrefetchHandlers_unwatch()
 
   const { isRenderOutdated, setHydrationCanBeAborted, isFirstRender } = getIsRenderOutdated()
-  // Whether it's too late for `throw abort()`
-  let isRenderingPageView = false
 
   const pageContextBeginArgs = {
     urlOriginal,
@@ -183,6 +181,18 @@ async function renderPageClient(renderArgs: RenderArgs) {
         try {
           await execHookList(hooks, pageContext, getPageContextPublicClientMinimal)
         } catch (err) {
+          // throw abort()
+          if (isAbortError(err) && err._pageContextAbort._navAbort) {
+            if (isRenderOutdated()) return
+            // The user stays on the current page: revert what renderPageClient() did so far
+            globalObject.isTransitioning = undefined
+            globalObject.currentPageContext = globalObject.previousPageContext
+            addLinkPrefetchHandlers_watch()
+            addLinkPrefetchHandlers()
+            // Upon back/forward navigation, the browser already changed the URL
+            if (isHistoryNavigation && isBackwardNavigation !== null) undoHistoryNavigation(isBackwardNavigation)
+            return
+          }
           await onError(err)
           return
         }
@@ -463,32 +473,10 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     addNewPageContextAborted(pageContextsAborted, pageContext, pageContextAbort, getPageContextPublicClientMinimal)
 
-    // throw abort()
-    if (pageContextAbort._navAbort) {
-      assertUsage(
-        globalObject.isFirstRenderDone && !isRenderingPageView,
-        '`throw abort()` cannot be used upon hydration nor after the next page started rendering, see https://vike.dev/abort-navigation',
-      )
-      // The current page stays: revert what the navigation changed so far
-      assert(globalObject.previousPageContext)
-      globalObject.currentPageContext = globalObject.previousPageContext
-      setPageContextCurrent(globalObject.previousPageContext)
-      addLinkPrefetchHandlers_watch()
-      addLinkPrefetchHandlers()
-      // Upon back/forward navigation, the browser already changed the URL
-      if (isHistoryNavigation && isBackwardNavigation !== null) undoHistoryNavigation(isBackwardNavigation)
-      if (globalObject.isTransitioning) {
-        globalObject.isTransitioning = undefined
-        assert(previousPageContext)
-        const hooks = getHooksFromPageContextNew('onPageTransitionEnd', previousPageContext)
-        try {
-          await execHookList(hooks, pageContext, getPageContextPublicClientMinimal)
-        } catch (err) {
-          logErrorClient(err)
-        }
-      }
-      return { skip: true }
-    }
+    assertUsage(
+      !pageContextAbort._navAbort,
+      '`throw abort()` can only be used in onPageTransitionStart(), see https://vike.dev/abort-navigation',
+    )
 
     // throw render('/some-url')
     if (pageContextAbort._urlRewrite) {
@@ -539,7 +527,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
       }
     }
 
-    isRenderingPageView = true
     changeUrl(urlOriginal, overwriteLastHistoryEntry)
     {
       const previousPageContextBefore = globalObject.renderedPageContext?.previousPageContext
