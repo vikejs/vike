@@ -224,9 +224,9 @@ function execHookBase<HookReturn>(
       originalError = err
       throw err
     }
-    // Also record an async hook's error: this handler runs before +onHookCall's `await hook.call()` rethrows it
-    // - Otherwise the `err !== originalError` check below prints the hook's error a second time
-    // - Only a Promise: calling then() on another then-able (e.g. a query builder) runs it once more
+    // An async hook that rejects: record its error too, so that the `err !== originalError` check below doesn't print it a second time
+    // - This catch() is attached before +onHookCall's `await hook.call()`, so it records the error before that rethrows it
+    // - Only for a Promise: some then-ables (e.g. a query builder) start their work whenever then() is called, so attaching a handler would run that work a second time
     if (originalReturn instanceof Promise) {
       originalReturn.catch((err) => {
         originalError = err
