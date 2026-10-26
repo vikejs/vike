@@ -33,9 +33,16 @@ function execHookOnError(
   const hooks = getHooksFromPageConfigGlobalCumulative<unknown>(globalContext._pageConfigGlobal, 'onError')
   for (const hook of hooks) {
     try {
-      execHookSingleSync(hook, globalContext, pageContext, getPageContextPublicServer, (pageContextPublic) =>
-        hook.hookFn(err, pageContextPublic),
+      const { hookReturn } = execHookSingleSync(
+        hook,
+        globalContext,
+        pageContext,
+        getPageContextPublicServer,
+        (pageContextPublic) => hook.hookFn(err, pageContextPublic),
       )
+      // An async onError() hook that rejects: Vike doesn't await onError(), so it logs the error here
+      // - Otherwise any +onHookCall hides it, since execHookSingleSync() records the rejection as the hook's own error
+      if (hookReturn instanceof Promise) hookReturn.catch((hookErr) => console.error(hookErr))
     } catch (hookErr) {
       console.error(hookErr)
     }
