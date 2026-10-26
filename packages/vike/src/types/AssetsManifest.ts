@@ -1,9 +1,7 @@
-export type { ViteManifest }
-export type { ViteManifestEntry }
+export type { AssetsManifest }
+export type { AssetsManifestEntry }
 
-// TODO/after-merge: refactor
-
-type ViteManifestEntry = {
+type AssetsManifestEntry = {
   src?: string
   file: string
   css?: string[]
@@ -16,4 +14,4 @@ type ViteManifestEntry = {
   // Added by Vike: https://vike.dev/csp#sri
   integrity?: string
 }
-type ViteManifest = Record<string, ViteManifestEntry>
+type AssetsManifest = Record<string, AssetsManifestEntry>
