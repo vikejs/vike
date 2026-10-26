@@ -64,7 +64,7 @@ export function onBeforeRoute(pageContext: PageContextClient) {
 
 > This technique is useful because the browser's [`beforeunload` event](https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event) isn't fired upon <Link href="/client-routing">client-side navigation</Link>.
 
-> You can use `throw abort()` only with `+onBeforeRoute` and only upon client-side navigation.
+> You can use `throw abort()` only with `+onBeforeRoute`, only on the client-side, and only upon client-side navigation (not hydration).
 
 
 ## See also
