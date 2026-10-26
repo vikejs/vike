@@ -305,6 +305,8 @@ function isExpired(found: PrefetchedPageContext) {
 // TO-DO/next-major-release: make it sync
 async function getPageContextLink(urlOfLink: string) {
   const pageContextLink = await createPageContextClient(urlOfLink)
+  // https://vike.dev/pageContext#isPrefetch
+  objectAssign(pageContextLink, { isPrefetch: true as const })
 
   // This `pageContext.abortSignal` is fake: it never aborts
   // - It's a fallback and its only purpose is to make sure pageContext.abortSignal is always defined, so that the user can simply always listen to `pageContext.abortSignal` => significant DX improvement for the user

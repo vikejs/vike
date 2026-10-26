@@ -6,7 +6,7 @@ export { createPageContextFromServer_experimentalRSC }
 export type { PageContextBegin }
 export type { PageContextInternalClientAfterRender }
 
-import { assert, assertInfo, assertWarning } from '../../utils/assert.js'
+import { assert, assertInfo, assertUsage, assertWarning } from '../../utils/assert.js'
 import { catchInfiniteLoop } from '../../utils/catchInfiniteLoop.js'
 import { genPromise } from '../../utils/genPromise.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
@@ -39,7 +39,7 @@ import {
   loadPageConfigsLazyClientSide,
   PageContext_loadPageConfigsLazyClientSide,
 } from '../shared/loadPageConfigsLazyClientSide.js'
-import { changeUrl, saveScrollPosition } from './history.js'
+import { changeUrl, saveScrollPosition, undoHistoryNavigation } from './history.js'
 import {
   addNewPageContextAborted,
   type ErrorAbort,
@@ -131,8 +131,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
   let { scrollTarget } = renderArgs
   const { previousPageContext } = globalObject
 
-  addLinkPrefetchHandlers_unwatch()
-
   const { isRenderOutdated, setHydrationCanBeAborted, isFirstRender } = getIsRenderOutdated()
 
   const abortController = new AbortController()
@@ -198,6 +196,13 @@ async function renderPageClient(renderArgs: RenderArgs) {
       try {
         pageContextFromRoute = await route(pageContext)
       } catch (err) {
+        // throw abort()
+        if (isAbortError(err) && err._pageContextAbort._navAbort && !isFirstRender) {
+          if (isRenderOutdated()) return
+          // Undo the URL change — upon back/forward navigation, the browser changes the URL
+          if (isHistoryNavigation) undoHistoryNavigation(isBackwardNavigation)
+          return
+        }
         await onError(err)
         return
       }
@@ -249,6 +254,8 @@ async function renderPageClient(renderArgs: RenderArgs) {
       }
     }
     assert(hasProp(pageContext, 'pageId', 'string')) // Help TS
+    globalObject.currentPageContext = pageContext
+    addLinkPrefetchHandlers_unwatch()
 
     // onPageTransitionStart()
     if (globalObject.isFirstRenderDone) {
@@ -412,6 +419,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
       pageId: errorPageId,
       routeParams: {},
     })
+    globalObject.currentPageContext = pageContext
 
     // throw render(statusCode)
     if (pageContextAbort) {
@@ -475,6 +483,16 @@ async function renderPageClient(renderArgs: RenderArgs) {
     const pageContextAbort = errAbort._pageContextAbort
 
     addNewPageContextAborted(pageContextsAborted, pageContext, pageContextAbort, getPageContextPublicClientMinimal)
+
+    if (
+      // save client-side KBs
+      globalThis.__VIKE__IS_DEV
+    ) {
+      assertUsage(
+        !pageContextAbort._navAbort,
+        '`throw abort()` can only be used in onBeforeRoute() upon client-side navigation (not upon hydration) — see https://vike.dev/onBeforeRoute#throw-abort',
+      )
+    }
 
     // throw render('/some-url')
     if (pageContextAbort._urlRewrite) {
@@ -811,7 +829,7 @@ function createPageContextFromServer_experimentalRSC(
     (pageContext as PageContextClient & { _originalObject: Record<string, unknown> })._originalObject,
   )
   objectAssign(pageContextNew, pageContextFromServerCopy)
-  // A navigation sets currentPageContext and reads previousPageContext when it starts, and sets previousPageContext when it renders
+  // A navigation reads previousPageContext when it starts, sets currentPageContext after routing, and sets previousPageContext when it renders
   if (globalObject.currentPageContext === globalObject.previousPageContext) {
     globalObject.currentPageContext = pageContextNew
   } else {

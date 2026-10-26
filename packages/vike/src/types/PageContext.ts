@@ -282,6 +282,7 @@ type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
     isHydration?: undefined
     isBackwardNavigation?: undefined
     isHistoryNavigation?: undefined
+    isPrefetch?: undefined
     previousPageContext?: undefined
     abortSignal: AbortSignal
   }
@@ -331,6 +332,12 @@ type PageContextBuiltInClientWithClientRouting<Data> = Partial<PageContextBuiltI
      * https://vike.dev/pageContext#isHistoryNavigation
      */
     isHistoryNavigation: boolean
+    /**
+     * Whether the URL is routed for prefetching a link (instead of navigating to it).
+     *
+     * https://vike.dev/pageContext#isPrefetch
+     */
+    isPrefetch?: true
     /**
      * Upon client-side page navigation, you can use `pageContext.previousPageContext` to access the `pageContext` of the previous page.
      *
