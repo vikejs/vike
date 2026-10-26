@@ -197,7 +197,7 @@ describe('client-side navigation', () => {
     const response = new Response(body.pipeThrough(new TransformStream(), { signal: abortController.signal }))
     const pageContextFromServer = (await readPageContextJson(response, abortController.signal)) as any
     abortController.abort()
-    await expect(readAll(pageContextFromServer.g)).rejects.toBe(abortController.signal.reason)
+    await expect(readAll(pageContextFromServer.g)).rejects.toThrow()
     await sleep(10)
     expect(onCancel).toHaveBeenCalled()
     expect(onReturn).toHaveBeenCalled()

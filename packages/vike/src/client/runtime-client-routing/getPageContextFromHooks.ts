@@ -271,7 +271,8 @@ async function fetchPageContextFromServer(pageContext: {
   /* TO-DO/soon/once: pass & use previousUrl
   pageContextUrl = modifyUrlSameOrigin(pageContextUrl, { search: { _vike: JSON.stringify({ previousUrl: pageContext.previousPageContext.urlOriginal }) } })
   */
-  // Navigating away aborts the request, including the streamed values that are still pending https://vike.dev/passToClient#streaming
+  // Navigating away aborts the request, including the streamed values that are still pending
+  // - https://vike.dev/passToClient#streaming
   const response = await fetch(pageContextUrl, { signal: pageContext.abortSignal })
 
   {
