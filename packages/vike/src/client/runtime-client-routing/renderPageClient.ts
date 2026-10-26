@@ -160,7 +160,10 @@ async function renderPageClient(renderArgs: RenderArgs) {
     if (isRenderOutdated()) return
   }
 
-  abortPreviousNavigation(abortController)
+  // Abort the previous navigation and the shown page at once, before waiting for the shown page's onRenderClient() below
+  // - Except for a navigation with doNotRenderIfSamePage: it renders nothing when the URL points to the shown page, which then stays on screen and keeps using its pageContext.abortSignal
+  // - Such a navigation aborts the shown page below, once it knows that it renders a page
+  if (!doNotRenderIfSamePage) abortPreviousNavigation(abortController)
 
   // Ensure no concurrent onRenderClient() calls.
   // - We could `await globalObject.onRenderClientPreviousPromise` later just before execHookOnRenderClient() but we prefer doing it early to ensure `getPageContext() === usePageContext()` (and maybe it prevents other potential inconsistencies?).
@@ -260,6 +263,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
           // Skip's Vike's rendering; let the user handle the navigation
           return
         }
+        if (doNotRenderIfSamePage) abortPreviousNavigation(abortController)
       }
     }
     assert(hasProp(pageContext, 'pageId', 'string')) // Help TS
@@ -366,6 +370,8 @@ async function renderPageClient(renderArgs: RenderArgs) {
     // pageContext
     const pageContext = await getPageContextBegin(true, pageContextBeginArgs)
     if (isRenderOutdated()) return
+    // The error page replaces the shown page, and the error may have been thrown before the same-page check above
+    if (doNotRenderIfSamePage) abortPreviousNavigation(abortController)
     // Set after isRenderOutdated(): getPageContextClient() returns it, and the user may have navigated to another page
     globalObject.currentPageContext = pageContext
     objectAssign(pageContext, {
@@ -728,6 +734,8 @@ function getRenderCount(): number {
 
 // Abort the previous navigation, and the page that is shown: their hooks can use pageContext.abortSignal to stop, e.g. data fetching or onRenderClient() rendering
 function abortPreviousNavigation(abortControllerNew: AbortController) {
+  // A navigation with doNotRenderIfSamePage may call it twice: after the same-page check, then upon an error
+  if (globalObject.abortController === abortControllerNew) return
   // Old abortController
   globalObject.abortController?.abort()
   // New abortController
