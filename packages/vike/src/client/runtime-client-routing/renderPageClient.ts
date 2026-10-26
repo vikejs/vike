@@ -734,7 +734,8 @@ function getRenderCount(): number {
   return globalObject.renderCounter
 }
 
-// Abort the previous navigation, and the page that is shown: their hooks can use pageContext.abortSignal to stop, e.g. data fetching or onRenderClient() rendering
+// Abort the previous navigation: their hooks can use pageContext.abortSignal to stop, e.g. +data or +onRenderClient
+// - It also aborts streamed values of the current shown page
 function abortPreviousNavigation(abortControllerNew: AbortController) {
   // A navigation with doNotRenderIfSamePage may call it twice: after the same-page check, then upon an error
   if (globalObject.abortController === abortControllerNew) return
