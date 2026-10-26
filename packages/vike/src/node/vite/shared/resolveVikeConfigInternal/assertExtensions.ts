@@ -51,13 +51,31 @@ function assertExtensionsRequire(plusFiles: PlusFile[]): void {
   const plusFilesRelevantList = plusFiles
 
   // Collect extensions
-  const extensions: Record<string, string> = {}
+  const extensions: Record<string, { version: string; providedBy?: string }> = {}
   plusFilesRelevantList.forEach((plusFile) => {
     const name = getExtensionName(plusFile)
     if (name) {
       const version = getExtensionVersion(name, plusFile)
-      extensions[name] = version
+      extensions[name] = { version }
     }
+  })
+
+  // Collect extensions provided by other extensions (e.g. vike-react-rsc provides vike-react)
+  plusFilesRelevantList.forEach((plusFile) => {
+    const provide = resolveProvideSetting(plusFile)
+    if (!provide) return
+    const name = getExtensionName(plusFile)
+    const filePathToShowToUser = getFilePathToShowToUser(plusFile)
+    assertUsage(
+      name,
+      `Setting ${pc.bold('name')} is required for being able to use setting ${pc.bold(
+        'provide',
+      )} in ${filePathToShowToUser}.`,
+    )
+    Object.entries(provide).forEach(([provName, version]) => {
+      // The installed extension wins
+      extensions[provName] ??= { version, providedBy: name }
+    })
   })
 
   // Enforce `require`
@@ -82,17 +100,21 @@ function assertExtensionsRequire(plusFiles: PlusFile[]): void {
         assertUsage(isVersionRange(PROJECT_VERSION, req.version), errMsg)
         return
       }
-      const extensionVersion = extensions[reqName]
-      if (!extensionVersion) {
+      const extension = extensions[reqName]
+      if (!extension) {
         if (req.optional) {
           return
         } else {
           assertUsage(false, `${errBase}.`)
         }
       }
+      const { version, providedBy } = extension
+      const errVersion = providedBy
+        ? `${pc.bold(providedBy)} provides ${pc.bold(version)}`
+        : `${pc.bold(version)} is installed`
       assertUsage(
-        isVersionRange(extensionVersion, req.version),
-        `${errBase} version ${pc.bold(req.version)}, but ${pc.bold(extensionVersion)} is installed.`,
+        isVersionRange(version, req.version),
+        `${errBase} version ${pc.bold(req.version)}, but ${errVersion}.`,
       )
     })
   })
@@ -123,6 +145,19 @@ function resolveRequireSetting(plusFile: PlusFile): null | RequireSetting {
     assertUsage(false, `Invalid +require[${JSON.stringify(reqName)}] value ${pc.cyan(JSON.stringify(req))}`)
   })
   return requireSetting
+}
+
+function resolveProvideSetting(plusFile: PlusFile): null | Record<string, string> {
+  const confVal = getConfVal(plusFile, 'provide')
+  if (!confVal) return null
+  assert(confVal.valueIsLoaded)
+  const provideValue = confVal.value
+  const filePathToShowToUser = getFilePathToShowToUser(plusFile)
+  assertUsage(
+    isObject(provideValue) && Object.values(provideValue).every((version) => typeof version === 'string'),
+    `The setting ${pc.bold('+provide')} defined at ${filePathToShowToUser} should be an object of version strings`,
+  )
+  return provideValue as Record<string, string>
 }
 
 function getExtensionName(plusFile: PlusFile): null | string {

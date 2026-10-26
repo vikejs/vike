@@ -651,6 +651,12 @@ type ConfigBuiltIn = {
    */
   require?: Record<string, string | { version: string; optional?: boolean }>
 
+  /** Used by Vike extensions to implement the API of other Vike extensions.
+   *
+   * https://vike.dev/require#provide
+   */
+  provide?: Record<string, string>
+
   /** Whether the page scrolls to the top upon navigation.
    *
    * https://vike.dev/keepScrollPosition
