@@ -157,8 +157,11 @@ function getExtensionVersion(name: string, plusFile: PlusFile): ExtensionVersion
       )}${pc.bold('name')})`,
       { onlyOnce: true },
     )
-    // Only the setting `require` needs the version, so a package.json without `version` is fine (e.g. the user's app with an ejected Vike extension)
-    const version = typeof packageJson.version === 'string' ? packageJson.version : null
+    const version =
+      packageJson.version ??
+      // Only the setting `require` needs the version, so a package.json without `version` is fine (e.g. the user's app with an ejected Vike extension)
+      null
+    assert(typeof version === 'string' || version === null)
     extensionsVersion[name] = { version, packageJsonPath }
   }
   return extensionsVersion[name]!
