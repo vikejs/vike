@@ -43,7 +43,10 @@ type InjectFilterEntry = {
    *  - All CSS files have `isEntry: true`
    */
   isEntry: boolean
-  /** The `integrity` attribute value, see https://vike.dev/csp#sri */
+  /** The value for the `integrity` attribute of the HTML element.
+   *
+   * https://vike.dev/csp#sri
+   */
   integrity: null | string
   inject: PreloadFilterInject
 }
