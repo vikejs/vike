@@ -46,7 +46,9 @@ async function getPageAssets(
       : await retrievePageAssetsDev(globalContext._viteDevServer, clientDependencies, clientEntries)
     : retrievePageAssetsProd(globalContext.assetsManifest, clientDependencies, clientEntries, globalContext.config)
   // https://vike.dev/csp#sri
-  const assetsIntegrity = pageContext.config.csp?.sri ? globalContext._assetsIntegrity : null
+  const integrities = pageContext.config.csp?.sri
+    ? new Map(Object.values(globalContext.assetsManifest ?? {}).map((entry) => [`/${entry.file}`, entry.integrity]))
+    : null
 
   let pageAssets: PageAsset[] = []
   unique([...clientEntriesSrc, ...assetUrls]).forEach((src: string) => {
@@ -72,7 +74,7 @@ async function getPageAssets(
       assetType,
       mediaType,
       isEntry,
-      integrity: assetsIntegrity?.[src] ?? null,
+      integrity: integrities?.get(src) ?? null,
     })
   })
 

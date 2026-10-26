@@ -11,5 +11,7 @@ type ViteManifestEntry = {
   isDynamicEntry?: boolean
   imports?: string[]
   dynamicImports?: string[]
+  // Added by Vike: https://vike.dev/csp#sri
+  integrity?: string
 }
 type ViteManifest = Record<string, ViteManifestEntry>
