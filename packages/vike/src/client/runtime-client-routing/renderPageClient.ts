@@ -477,7 +477,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     ) {
       assertUsage(
         !pageContextAbort._navAbort,
-        '`throw abort()` can only be used in onBeforeRoute() — see https://vike.dev/onBeforeRoute#throw-abort',
+        '`throw abort()` can only be used in onBeforeRoute() upon client-side navigation (not upon hydration) — see https://vike.dev/onBeforeRoute#throw-abort',
       )
     }
 
