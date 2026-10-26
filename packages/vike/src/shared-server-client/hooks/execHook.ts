@@ -224,6 +224,14 @@ function execHookBase<HookReturn>(
       originalError = err
       throw err
     }
+    // Also record an async hook's error: this handler runs before +onHookCall's `await hook.call()` rethrows it
+    // - Otherwise the `err !== originalError` check below prints the hook's error a second time
+    // - Only a Promise: calling then() on another then-able (e.g. a query builder) runs it once more
+    if (originalReturn instanceof Promise) {
+      originalReturn.catch((err) => {
+        originalError = err
+      })
+    }
     return originalReturn
   }
   for (const onHookCall of configValue.value as Function[]) {
