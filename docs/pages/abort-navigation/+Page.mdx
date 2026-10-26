@@ -27,7 +27,7 @@ export function onPageTransitionStart() {
 
 You can use `throw abort()` only in <Link href="/onPageTransitionStart">`onPageTransitionStart()`</Link>: it's the first hook Vike calls upon client-side navigation, and it's the hook of the current page (not of the next page).
 
-Upon back/forward navigation, Vike reverts the URL. (If the user jumps over several history entries at once, then Vike only reverts one entry.)
+Upon back/forward navigation, Vike reverts the URL. (In browsers that don't support the [Navigation API](https://developer.mozilla.org/en-US/docs/Web/API/Navigation_API), if the user jumps over several history entries at once, then Vike only reverts one entry.)
 
 
 ## See also
