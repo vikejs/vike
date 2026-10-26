@@ -14,7 +14,7 @@ import { ConfigSpec } from '../../components'
 ```
 </ConfigSpec>
 
-The `+csp` setting allows you to add and configure the CSP nonce, see [Content Security Policy (CSP)](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP), and to add <Link href="#sri">SRI</Link> hashes.
+The `+csp` setting allows you to add and configure the CSP nonce (see [Content Security Policy (CSP)](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP)) and to add <Link href="#sri">SRI</Link> hashes.
 
 ```ts
 // pages/+config.ts
@@ -143,7 +143,7 @@ export default {
 Vike computes the hashes at build time, so it works with any deployment (including edge platforms such as Cloudflare) and with <Link href="/pre-rendering">pre-rendering</Link>. In development, no hash is added.
 
 Limitations:
-- Upon <Link href="/client-routing">client-side navigation</Link>, the JavaScript and CSS of the next page are loaded with `import()`, which doesn't support SRI: only the assets of the first page are verified.
+- Upon <Link href="/client-routing">client-side navigation</Link>, the JavaScript and CSS of the next page are loaded by `import()` without SRI hashes: only the assets of the first page are verified.
 - Your static assets must not be modified after the build (e.g. disable your CDN's minification and script injection features). Compression is fine.
 - If your static assets are served from another domain (<Link href="/base-url#baseassets">`+baseAssets`</Link>), then it must respond with the `Access-Control-Allow-Origin` header.
 
