@@ -3,6 +3,7 @@ export { pathIsRelative }
 export { pathIsAbsolute }
 export { toPosixPath }
 export { assertPosixPath }
+export { isFilePathInsideDir }
 
 // Utilities for handling file paths.
 // - Shims `import * from "node:path"` for server runtime.
@@ -48,6 +49,13 @@ function assertPosixPath(path: string): void {
   assert(path !== '', errMsg('(empty string)'))
   assert(path)
   assert(!path.includes('\\'), errMsg(path))
+}
+
+function isFilePathInsideDir(filePath: string, dirPath: string): boolean {
+  if (!filePath.startsWith(dirPath)) return false
+  // Inside only at a directory boundary: `/x/app-exts/file.js` isn't inside `/x/app`
+  // - `dirPath` ends with `/` only when it's the filesystem root, e.g. an app at `/`
+  return filePath.length === dirPath.length || dirPath.endsWith('/') || filePath[dirPath.length] === '/'
 }
 
 // See also `import { isImportPathRelative } from './isImportPath.js'`

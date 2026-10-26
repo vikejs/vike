@@ -18,7 +18,7 @@ import { rollupSourceMapRemove } from '../../../utils/rollupSourceMap.js'
 import { styleFileRE } from '../../../utils/styleFileRE.js'
 import { addVirtualFileIdPrefix, isVirtualFileId, removeVirtualFileIdPrefix } from '../../../utils/virtualFileId.js'
 import { assert, assertUsage } from '../../../utils/assert.js'
-import { assertPosixPath } from '../../../utils/path.js'
+import { assertPosixPath, isFilePathInsideDir } from '../../../utils/path.js'
 import { extractAssetsAddQuery } from '../../../shared-server-node/extractAssetsQuery.js'
 import { isAsset } from '../shared/isAsset.js'
 import { getImportStatements, type ImportStatement } from '../shared/parseEsModule.js'
@@ -148,7 +148,7 @@ function pluginExtractAssets(): Plugin[] {
           }
           // When a library is symlinked, it lives outside `root`.
           assertPosixPath(config.root)
-          if (!file.startsWith(config.root)) {
+          if (!isFilePathInsideDir(file, config.root)) {
             return emptyModule(file, importer)
           }
 
