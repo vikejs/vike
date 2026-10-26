@@ -13,11 +13,9 @@ It is usually used for <Link href="/i18n">internationalization</Link>:
 ```ts
 // Environment: server & client
 
-export { onBeforeRoute }
-
 import type { PageContext } from 'vike/types'
 
-function onBeforeRoute(pageContext: PageContext) {
+export function onBeforeRoute(pageContext: PageContext) {
   const { urlWithoutLocale, locale } = extractLocale(pageContext.urlPathname)
   return {
     pageContext: {
@@ -51,19 +49,22 @@ import type { PageContextClient } from 'vike/types'
 import { abort } from 'vike/abort'
 
 export function onBeforeRoute(pageContext: PageContextClient) {
-  // onBeforeRoute() is also called when Vike prefetches a link
+  // +onBeforeRoute is also called when Vike prefetches links
   if (pageContext.isPrefetch) return
-  if (hasUnsavedChanges() && !window.confirm('Leave this page? Your changes will be lost.')) {
+  if (
+    // E.g. a global prop set by your UI components
+    globalThis.disableNav &&
+    // Warn user
+    !window.confirm('Leave this page? Your changes will be lost.')
+  ) {
     throw abort()
   }
 }
 ```
 
-> The browser's [`beforeunload` dialog](https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event) isn't shown upon client-side navigation.
+> You can use `throw abort()` only with `+onBeforeRoute` and only on the client.
 
-You can use `throw abort()` only in `onBeforeRoute()`, upon client-side navigation. The check must be synchronous (e.g. `window.confirm()`), as <Link href="/route-function#async">asynchronous routing is deprecated</Link>.
-
-Upon back/forward navigation, Vike reverts the URL. (In browsers that don't support the [Navigation API](https://developer.mozilla.org/en-US/docs/Web/API/Navigation_API), if the user jumps over several history entries at once, then Vike only reverts one entry.)
+> This technique is useful because the browser's [`beforeunload` event](https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event) isn't fired upon <Link href="/client-routing">client-side navigation</Link>.
 
 
 ## See also
