@@ -177,7 +177,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     const pageContext = await getPageContextBegin(false, pageContextBeginArgs)
     if (isRenderOutdated()) return
-    globalObject.currentPageContext = pageContext
 
     // Get pageContext serialized in <script id="vike_pageContext" type="application/json">
     if (isFirstRender) {
@@ -381,8 +380,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
     if (isRenderOutdated()) return
     // The error page replaces the shown page, and the error may have been thrown before the earlier doNotRenderIfSamePage check
     if (doNotRenderIfSamePage) abortPreviousNavigation(abortController)
-    // Set after isRenderOutdated(): getPageContextClient() returns it, and the user may have navigated to another page
-    globalObject.currentPageContext = pageContext
     objectAssign(pageContext, {
       errorWhileRendering: err,
     })
