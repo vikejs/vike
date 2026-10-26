@@ -91,7 +91,7 @@ function onPopStateBegin() {
   globalObject.previous = current
   globalObject.popStateDelta = current.index === null || previous.index === null ? null : current.index - previous.index
 
-  // The popstate event triggered by undoHistoryNavigation()
+  // Skip the popstate event triggered by undoHistoryNavigation()
   if (globalObject.isUndoingHistoryNavigation) {
     globalObject.isUndoingHistoryNavigation = false
     return { skip: true as const }
