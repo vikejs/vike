@@ -53,12 +53,16 @@ export function onBeforeRoute(pageContext: PageContextClient) {
   if (pageContext.isPrefetch) return
   if (
     // E.g. a global value set by your UI components
-    globalThis.disableNav &&
+    globalThis.hasUnsavedChanges &&
     // Warn user
     !window.confirm('Leave this page? Your changes will be lost.')
   ) {
     throw abort()
   }
+}
+
+declare global {
+  var hasUnsavedChanges: boolean | undefined
 }
 ```
 
