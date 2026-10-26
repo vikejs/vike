@@ -52,6 +52,7 @@ type PrefetchedPageContext = {
 }
 type PageContextForPrefetch = PageContextCreatedClient & {
   pageId: string
+  abortSignal: AbortSignal
 }
 
 function getPageContextPrefetched(
@@ -304,6 +305,9 @@ function isExpired(found: PrefetchedPageContext) {
 // TO-DO/next-major-release: make it sync
 async function getPageContextLink(urlOfLink: string) {
   const pageContextLink = await createPageContextClient(urlOfLink)
+  // route() hooks called while prefetching can read pageContext.abortSignal
+  // - It never aborts: the prefetched result is cached and later reused by a navigation
+  objectAssign(pageContextLink, { abortSignal: new AbortController().signal })
 
   let pageContextFromRoute: PageContextAfterRoute
   try {

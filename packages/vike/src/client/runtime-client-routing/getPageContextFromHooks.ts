@@ -77,7 +77,7 @@ async function getPageContextFromHooksClient_firstRender(
 
 type PageContextFromHooksServer = { _hasPageContextFromServer: boolean }
 async function getPageContextFromHooksServer(
-  pageContext: { pageId: string } & PageContextCreatedClient,
+  pageContext: { pageId: string; abortSignal: AbortSignal } & PageContextCreatedClient,
   isErrorPage: boolean,
 ): Promise<
   | { is404ServerSideRouted: true }
