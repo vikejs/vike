@@ -26,11 +26,11 @@ export function onBeforeRoute(pageContext: PageContext) {
 }
 ```
 
+> Vike also calls `+onBeforeRoute` when it <Link href="/prefetchStaticAssets">prefetches</Link> a link, see also <Link href="/pageContext#isPrefetch">`pageContext.isPrefetch`</Link>.
+
 You can also use it to:
 - <Link href="#abort-navigation">Abort a client-side navigation</Link>
 - [Implement a custom router](https://github.com/vikejs/vike/issues/140)
-
-> Vike also calls `+onBeforeRoute` when it <Link href="/prefetchStaticAssets">prefetches</Link> a link, see also <Link href="/pageContext#isPrefetch">`pageContext.isPrefetch`</Link>.
 
 <Warning>For more use cases, create a GitHub ticket: `+onBeforeRoute` is purposely limited but the limitations can be lifted in order to unlock new capabilities.</Warning>
 
@@ -52,7 +52,7 @@ export function onBeforeRoute(pageContext: PageContextClient) {
   // +onBeforeRoute is also called when Vike prefetches links
   if (pageContext.isPrefetch) return
   if (
-    // E.g. a global prop set by your UI components
+    // E.g. a global value set by your UI components
     globalThis.disableNav &&
     // Warn user
     !window.confirm('Leave this page? Your changes will be lost.')
@@ -62,9 +62,9 @@ export function onBeforeRoute(pageContext: PageContextClient) {
 }
 ```
 
-> You can use `throw abort()` only with `+onBeforeRoute` and only on the client.
-
 > This technique is useful because the browser's [`beforeunload` event](https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event) isn't fired upon <Link href="/client-routing">client-side navigation</Link>.
+
+> You can use `throw abort()` only with `+onBeforeRoute` and only on the client.
 
 
 ## See also
