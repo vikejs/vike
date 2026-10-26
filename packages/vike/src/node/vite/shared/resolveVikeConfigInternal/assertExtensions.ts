@@ -55,8 +55,7 @@ function assertExtensionsRequire(plusFiles: PlusFile[]): void {
   plusFilesRelevantList.forEach((plusFile) => {
     const name = getExtensionName(plusFile)
     if (name) {
-      const version = getExtensionVersion(name, plusFile)
-      extensions[name] = version
+      extensions[name] = getExtensionVersion(name, plusFile)
     }
   })
 
