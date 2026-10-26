@@ -2,20 +2,29 @@ export default Page
 
 import React, { useEffect, useState } from 'react'
 import { useData } from 'vike-react/useData'
+import { usePageContext } from 'vike-react/usePageContext'
 import type { Data } from './+data'
 
 const consumed = new WeakSet<object>()
 
 function Page() {
   const data = useData<Data>()
+  const pageContext = usePageContext()
   const [values, setValues] = useState<Record<string, string>>({})
   useEffect(() => {
     // A value can be read only once (React's Strict Mode runs effects twice)
     if (consumed.has(data)) return
     consumed.add(data)
     const set = (key: string, value: string) => setValues((values) => ({ ...values, [key]: value }))
-    data.promise.then((value) => set('promise', value))
-    data.failing.catch((err: Error) => set('failing', err.message))
+    const setError = (key: string, err: Error) => {
+      // The values still pending reject when the user navigates away: no need to show that error
+      if (!pageContext.abortSignal.aborted) set(key, err.message)
+    }
+    data.promise.then(
+      (value) => set('promise', value),
+      (err: Error) => setError('promise', err),
+    )
+    data.failing.catch((err: Error) => setError('failing', err))
     ;(async () => {
       const chunks: string[] = []
       try {
@@ -24,7 +33,7 @@ function Page() {
           set('generator', chunks.join(','))
         }
       } catch (err) {
-        set('generator', (err as Error).message)
+        setError('generator', err as Error)
       }
     })()
     ;(async () => {

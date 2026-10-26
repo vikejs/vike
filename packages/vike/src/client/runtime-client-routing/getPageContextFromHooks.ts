@@ -271,37 +271,27 @@ async function fetchPageContextFromServer(pageContext: {
   /* TO-DO/soon/once: pass & use previousUrl
   pageContextUrl = modifyUrlSameOrigin(pageContextUrl, { search: { _vike: JSON.stringify({ previousUrl: pageContext.previousPageContext.urlOriginal }) } })
   */
-  // pageContext.abortSignal stops the request until the pageContext arrives, but not the streamed values that follow it
-  // - Otherwise the user navigating away aborts the streamed values of the page that is still shown
-  const fetchAbortController = new AbortController()
-  const abortFetch = () => fetchAbortController.abort(pageContext.abortSignal.reason)
-  if (pageContext.abortSignal.aborted) abortFetch()
-  pageContext.abortSignal.addEventListener('abort', abortFetch)
-  let pageContextFromServer: unknown
-  try {
-    const response = await fetch(pageContextUrl, { signal: fetchAbortController.signal })
+  // Navigating away aborts the request, including the streamed values that are still pending https://vike.dev/passToClient#streaming
+  const response = await fetch(pageContextUrl, { signal: pageContext.abortSignal })
 
-    {
-      const contentType = response.headers.get('content-type')
-      const contentTypeCorrect = 'application/json'
-      const isCorrect = contentType && contentType.includes(contentTypeCorrect)
+  {
+    const contentType = response.headers.get('content-type')
+    const contentTypeCorrect = 'application/json'
+    const isCorrect = contentType && contentType.includes(contentTypeCorrect)
 
-      // Static hosts + page doesn't exist
-      if (!isCorrect && response.status === 404) {
-        redirectHard(pageContext.urlOriginal)
-        return { is404ServerSideRouted: true }
-      }
-
-      assertUsage(
-        isCorrect,
-        `Wrong Content-Type for ${pageContextUrl}: it should be ${contentTypeCorrect} but it's ${contentType} instead. Make sure to properly use pageContext.httpResponse.headers, see https://vike.dev/renderPage`,
-      )
+    // Static hosts + page doesn't exist
+    if (!isCorrect && response.status === 404) {
+      redirectHard(pageContext.urlOriginal)
+      return { is404ServerSideRouted: true }
     }
 
-    pageContextFromServer = await readPageContextJson(response)
-  } finally {
-    pageContext.abortSignal.removeEventListener('abort', abortFetch)
+    assertUsage(
+      isCorrect,
+      `Wrong Content-Type for ${pageContextUrl}: it should be ${contentTypeCorrect} but it's ${contentType} instead. Make sure to properly use pageContext.httpResponse.headers, see https://vike.dev/renderPage`,
+    )
   }
+
+  const pageContextFromServer = await readPageContextJson(response, pageContext.abortSignal)
   assert(isObject(pageContextFromServer))
 
   if (isAbortPageContext(pageContextFromServer)) {

@@ -33,13 +33,16 @@ function testStreamedValues() {
     )
   })
 
-  test('streamed pageContext values: the page keeps its values until the next page is rendered', async () => {
+  test('streamed pageContext values: navigating away aborts the values still pending', async () => {
     await page.goto(getServerUrl() + '/streamed-values')
     await expectValues()
     await page.click('a[href="/"]')
     await autoRetry(async () => expect(await page.textContent('h1')).toBe('Welcome'))
     await page.click('a[href="/streamed-values"]')
     await autoRetry(async () => expect(await page.textContent('#generator')).toBe('first'))
+    const requestsFailed: string[] = []
+    const onRequestFailed = (request: { url(): string }) => requestsFailed.push(request.url())
+    page.on('requestfailed', onRequestFailed)
     const slowNextPage = getServerUrl() + '/index.pageContext.json'
     await page.route(slowNextPage, async (route) => {
       await sleep(1000)
@@ -47,8 +50,11 @@ function testStreamedValues() {
     })
     await page.click('a[href="/"]')
     await sleep(300)
-    expect(await page.textContent('#generator')).toMatch(/^first/)
+    // The next page isn't rendered yet
+    expect(await page.textContent('h1')).toBe('Streamed values')
+    expect(requestsFailed.join()).toBe(getServerUrl() + '/streamed-values/index.pageContext.json')
     await autoRetry(async () => expect(await page.textContent('h1')).toBe('Welcome'))
+    page.removeListener('requestfailed', onRequestFailed)
     await page.unroute(slowNextPage)
     expectLog('Streamed value failed on purpose', { filter: (log) => log.logSource === 'stderr' })
   })
