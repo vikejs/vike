@@ -17,8 +17,8 @@ function Page() {
     consumed.add(data)
     const set = (key: string, value: string) => setValues((values) => ({ ...values, [key]: value }))
     const setError = (key: string, err: Error) => {
-      // The values still pending reject when the user navigates away: no need to show that error
-      if (!pageContext.abortSignal.aborted) set(key, err.message)
+      // The values still pending reject with pageContext.abortSignal.reason when the user navigates away
+      set(key, err === pageContext.abortSignal.reason ? 'aborted' : err.message)
     }
     data.promise.then(
       (value) => set('promise', value),
