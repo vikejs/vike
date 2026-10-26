@@ -60,7 +60,7 @@ function assertExtensionsRequire(plusFiles: PlusFile[]): void {
     }
   })
 
-  // Collect +require.provide (e.g. vike-react-rsc provides vike-react)
+  // Collect +provide (e.g. vike-react-rsc provides vike-react)
   // https://vike.dev/require#provide
   plusFilesRelevantList.forEach((plusFile) => {
     const provide = resolveProvideSetting(plusFile)
