@@ -35,6 +35,7 @@ function testStreamedValues() {
 
   test('streamed pageContext values: navigating away aborts the values still pending', async () => {
     // The first page: its values arrive with its HTML
+    // - `commit`: once the page has loaded, its last value has arrived and nothing is pending anymore
     await page.goto(getServerUrl() + '/streamed-values', { waitUntil: 'commit' })
     await autoRetry(async () => expect(await page.textContent('#generator')).toBe('first'))
     const slowNextPage = getServerUrl() + '/index.pageContext.json'
