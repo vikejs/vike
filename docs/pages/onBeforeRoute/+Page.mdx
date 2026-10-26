@@ -6,7 +6,7 @@ import { ConfigSpec } from '../../components'
   global
 />
 
-The `onBeforeRoute()` hook provides full control over routing.
+The `+onBeforeRoute` hook provides full control over routing.
 
 It is usually used for <Link href="/i18n">internationalization</Link>:
 
@@ -28,16 +28,18 @@ function onBeforeRoute(pageContext: PageContext) {
 }
 ```
 
-You can also use it to [implement a custom router](https://github.com/vikejs/vike/issues/140), or to <Link href="#abort-navigation">abort a client-side navigation</Link>.
+You can also use it to:
+- <Link href="#abort-navigation">Abort a client-side navigation</Link>
+- [Implement a custom router](https://github.com/vikejs/vike/issues/140)
 
-> Vike also calls `onBeforeRoute()` when it <Link href="/prefetchStaticAssets">prefetches</Link> a link, see <Link href="/pageContext#isPrefetch">`pageContext.isPrefetch`</Link>.
+> Vike also calls `+onBeforeRoute` when it <Link href="/prefetchStaticAssets">prefetches</Link> a link, see also <Link href="/pageContext#isPrefetch">`pageContext.isPrefetch`</Link>.
 
-<Warning>For use cases other than i18n, open a GitHub ticket or reach out on Discord: `onBeforeRoute()` is purposely limited but the limitations can be lifted in order to unlock new capabilities.</Warning>
+<Warning>For more use cases, create a GitHub ticket: `+onBeforeRoute` is purposely limited but the limitations can be lifted in order to unlock new capabilities.</Warning>
 
 
 ## Abort navigation
 
-`throw abort()` aborts a client-side navigation: the user stays on the current page.
+You can `throw abort()` to abort a client-side navigation: the user stays on the current page.
 
 For example, to ask for confirmation before leaving a page with unsaved changes:
 
