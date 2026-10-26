@@ -98,7 +98,7 @@ const globalObject = getGlobalObject<
     buildInfo?: BuildInfo
     // Move to buildInfo.assetsManifest ?
     assetsManifest?: ViteManifest
-    assetsIntegrity?: null | AssetsIntegrity
+    assetsIntegrity?: AssetsIntegrity
     isInitialized?: true
     isAfterFirstRenderPageCall?: true
     isProductionAccordingToUser?: boolean
@@ -376,10 +376,10 @@ async function setGlobalContext_prodBuildEntry(prodBuildEntry: unknown) {
 type ProdBuildEntry = {
   virtualFileExportsGlobalEntry: Record<string, unknown>
   assetsManifest: ViteManifest
-  assetsIntegrity: null | AssetsIntegrity
+  assetsIntegrity: AssetsIntegrity
   buildInfo: BuildInfo
 }
-// The Subresource Integrity (SRI) hash of each JavaScript/CSS file, e.g. `{ '/assets/entries/pages_index.BLo6D2X2.js': 'sha384-...' }` — https://vike.dev/csp#sri
+// The Subresource Integrity (SRI) hash of each JavaScript/CSS file (empty if +csp isn't defined), e.g. `{ '/assets/entries/pages_index.BLo6D2X2.js': 'sha384-...' }` — https://vike.dev/csp#sri
 type AssetsIntegrity = Record<string, string>
 type BuildInfo = {
   versionAtBuildTime: string
@@ -393,7 +393,7 @@ function assertProdBuildEntry(prodBuildEntry: unknown): asserts prodBuildEntry i
   assert(hasProp(prodBuildEntry, 'assetsManifest', 'object'))
   const { assetsManifest } = prodBuildEntry
   assertViteManifest(assetsManifest)
-  assert(hasProp(prodBuildEntry, 'assetsIntegrity', 'string{}') || hasProp(prodBuildEntry, 'assetsIntegrity', 'null'))
+  assert(hasProp(prodBuildEntry, 'assetsIntegrity', 'string{}'))
   const { assetsIntegrity } = prodBuildEntry
   assert(hasProp(prodBuildEntry, 'buildInfo', 'object'))
   const { buildInfo } = prodBuildEntry
@@ -641,7 +641,7 @@ function addGlobalContextCommon(
     const { buildInfo, assetsManifest, assetsIntegrity } = globalObject
     assert(buildInfo)
     assert(assetsManifest)
-    assert(assetsIntegrity !== undefined)
+    assert(assetsIntegrity)
     const globalContextBase2 = {
       ...globalContextBase,
       _isProduction: true as const,

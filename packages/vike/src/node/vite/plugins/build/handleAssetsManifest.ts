@@ -38,7 +38,7 @@ type Bundle = Rollup.OutputBundle
 
 const globalObject = getGlobalObject('handleAssetsManifest.ts', {
   assetsJsonFilePath: undefined as string | undefined,
-  assetsIntegrity: undefined as undefined | null | AssetsIntegrity,
+  assetsIntegrity: undefined as AssetsIntegrity | undefined,
   targetsAll: [] as TargetConfig[],
   configsAll: [] as ResolvedConfig[],
 })
@@ -435,10 +435,10 @@ async function writeAssetsManifestFile(assetsJsonFilePath: string, config: Resol
 }
 
 // https://vike.dev/csp#sri
-async function getAssetsIntegrity(assetsJsonFilePath: string, config: ResolvedConfig): Promise<null | AssetsIntegrity> {
+async function getAssetsIntegrity(assetsJsonFilePath: string, config: ResolvedConfig): Promise<AssetsIntegrity> {
   const vikeConfig = await getVikeConfigInternal()
   // +csp is a runtime setting: we can't read +csp.sri at build time, so we compute the hashes whenever +csp is defined
-  if (!vikeConfig._pageConfigs.some((pageConfig) => pageConfig.configValueSources.csp)) return null
+  if (!vikeConfig._pageConfigs.some((pageConfig) => pageConfig.configValueSources.csp)) return {}
   const manifest: ViteManifest = JSON.parse(await fs.readFile(assetsJsonFilePath, 'utf-8'))
   const { outDirClient } = getOutDirs(config, undefined)
   const files = unique(Object.values(manifest).flatMap((entry) => [entry.file, ...(entry.css ?? [])]))

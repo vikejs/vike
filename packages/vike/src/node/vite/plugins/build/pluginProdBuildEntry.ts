@@ -77,7 +77,7 @@ function getServerProductionEntryCode(config: ResolvedConfig): string {
 // Set the value of the ASSETS_MANIFEST (and ASSETS_INTEGRITY) constant inside dist/server/entry.js (or dist/server/index.js)
 async function set_macro_ASSETS_MANIFEST(
   assetsJsonFilePath: string | undefined,
-  assetsIntegrity: undefined | null | AssetsIntegrity,
+  assetsIntegrity: AssetsIntegrity | undefined,
   bundle: Bundle,
   outDir: string,
 ) {
@@ -89,7 +89,7 @@ async function set_macro_ASSETS_MANIFEST(
     return noop
   }
   assert(assetsJsonFilePath)
-  assert(assetsIntegrity !== undefined)
+  assert(assetsIntegrity)
   const chunkFilePath = path.join(outDir, chunkPath)
   const [assetsJsonString, chunkFileContent] = await Promise.all([
     await fs.readFile(assetsJsonFilePath, 'utf8'),
