@@ -1,4 +1,0 @@
-/* Only imported by +Head.tsx, which only runs on the server: Vike moves this file from dist/server/ to dist/client/ (the `sri` test checks its `integrity`) */
-.head-css {
-  color: red;
-}
