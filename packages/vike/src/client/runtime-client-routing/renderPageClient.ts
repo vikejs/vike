@@ -243,6 +243,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     }
     assert(hasProp(pageContext, 'pageId', 'string')) // Help TS
     globalObject.currentPageContext = pageContext
+    addLinkPrefetchHandlers_unwatch()
 
     // onPageTransitionStart()
     if (globalObject.isFirstRenderDone) {
@@ -528,8 +529,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
         logErrorClient(err)
       }
     }
-
-    addLinkPrefetchHandlers_unwatch()
 
     changeUrl(urlOriginal, overwriteLastHistoryEntry)
     {
