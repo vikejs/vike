@@ -389,8 +389,6 @@ function classifyImport(
     isImportNpmPackageOrPathAlias(importPathOriginal) &&
     (importPathResolved.includes('/node_modules/') ||
       // Linked npm package
-      // - Without a trailing `/`, a folder whose name starts with the app's folder name (e.g. ../app-shared/ next to app/) counts as inside userRootDir, so a path alias into it is bundled
-      //   - Otherwise it hits the false positive above: loading the +config file fails with `Cannot find package '<alias>/…'`
       !importPathResolved.startsWith(userRootDir))
 
   const isExternal =
