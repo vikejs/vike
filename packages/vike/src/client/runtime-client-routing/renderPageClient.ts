@@ -188,10 +188,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
         // throw abort()
         if (isAbortError(err) && err._pageContextAbort._navAbort && !isFirstRender) {
           if (isRenderOutdated()) return
-          // Undo:
-          // 1. Undo `globalObject.currentPageContext` set by getPageContextBegin() — the user stays on the current page
-          globalObject.currentPageContext = globalObject.previousPageContext
-          // 2. Undo the URL change — upon back/forward navigation, the browser changes the URL
+          // Undo the URL change — upon back/forward navigation, the browser changes the URL
           if (isHistoryNavigation) undoHistoryNavigation(isBackwardNavigation)
           return
         }
@@ -245,6 +242,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
       }
     }
     assert(hasProp(pageContext, 'pageId', 'string')) // Help TS
+    globalObject.currentPageContext = pageContext
 
     // onPageTransitionStart()
     if (globalObject.isFirstRenderDone) {
@@ -407,6 +405,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
       pageId: errorPageId,
       routeParams: {},
     })
+    globalObject.currentPageContext = pageContext
 
     // throw render(statusCode)
     if (pageContextAbort) {
@@ -663,8 +662,6 @@ async function getPageContextBegin(
     ...pageContextInitClient,
   })
 
-  globalObject.currentPageContext = pageContext
-
   // TO-DO/next-major-release: remove
   Object.defineProperty(pageContext, '_previousPageContext', {
     get() {
@@ -808,7 +805,7 @@ function createPageContextFromServer_experimentalRSC(
     (pageContext as PageContextClient & { _originalObject: Record<string, unknown> })._originalObject,
   )
   objectAssign(pageContextNew, pageContextFromServerCopy)
-  // A navigation sets currentPageContext and reads previousPageContext when it starts, and sets previousPageContext when it renders
+  // A navigation reads previousPageContext when it starts, sets currentPageContext after routing, and sets previousPageContext when it renders
   if (globalObject.currentPageContext === globalObject.previousPageContext) {
     globalObject.currentPageContext = pageContextNew
   } else {
