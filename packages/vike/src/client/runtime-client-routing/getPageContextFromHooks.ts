@@ -47,13 +47,13 @@ type PageContextSerialized = {
   _hasPageContextFromServer: true
 }
 // Get `pageContext` values from `<script id="vike_pageContext" type="application/json">`
-async function getPageContextFromHooksServer_firstRender(): Promise<
+async function getPageContextFromHooksServer_firstRender(abortSignal: AbortSignal): Promise<
   PageContextSerialized & {
     routeParams: Record<string, string>
     _hasPageContextFromServer: true
   }
 > {
-  const pageContextSerialized = await getPageContextSerializedInHtml()
+  const pageContextSerialized = await getPageContextSerializedInHtml(abortSignal)
   processPageContextFromServer(pageContextSerialized)
   objectAssign(pageContextSerialized, {
     _hasPageContextFromServer: true as const,

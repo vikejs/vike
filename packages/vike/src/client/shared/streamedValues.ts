@@ -15,13 +15,16 @@ import '../assertEnvClient.js'
 
 // First render: the `<script>` tags that follow `<script id="vike_pageContext">` push the lines to `self.__vike_streamed`,
 // before and after Vike's client runtime is loaded.
-function parsePageContextHtml(pageContextJson: string): unknown {
+function parsePageContextHtml(pageContextJson: string, abortSignal?: AbortSignal): unknown {
   const receiver = createReceiver()
   const [pageContext] = parse(pageContextJson, { reviver: receiver.reviver }) as [unknown]
   const g = self as { __vike_streamed?: string[] | { push(line: string): void } }
   const linesQueued = Array.isArray(g.__vike_streamed) ? g.__vike_streamed : []
   g.__vike_streamed = { push: receiver.onLine }
   linesQueued.forEach(receiver.onLine)
+  // The user navigated away => the values still pending reject with `pageContext.abortSignal.reason`
+  // - The lines that the HTML still sends afterwards have no effect on them
+  abortSignal?.addEventListener('abort', () => receiver.fail(abortSignal.reason))
   return pageContext
 }
 

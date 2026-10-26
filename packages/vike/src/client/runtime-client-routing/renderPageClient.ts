@@ -201,7 +201,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     // Get pageContext serialized in <script id="vike_pageContext" type="application/json">
     if (isFirstRender) {
-      const pageContextSerialized = await getPageContextFromHooksServer_firstRender()
+      const pageContextSerialized = await getPageContextFromHooksServer_firstRender(pageContext.abortSignal)
       // TO-DO/eventually: create helper assertPageContextFromHook()
       assert(!('urlOriginal' in pageContextSerialized))
       objectAssign(pageContext, pageContextSerialized)

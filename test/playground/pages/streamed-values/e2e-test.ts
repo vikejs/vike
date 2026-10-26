@@ -34,20 +34,27 @@ function testStreamedValues() {
   })
 
   test('streamed pageContext values: navigating away aborts the values still pending', async () => {
-    await page.goto(getServerUrl() + '/streamed-values')
-    await expectValues()
-    await page.click('a[href="/"]')
-    await autoRetry(async () => expect(await page.textContent('h1')).toBe('Welcome'))
-    await page.click('a[href="/streamed-values"]')
+    // The first page: its values arrive with its HTML
+    await page.goto(getServerUrl() + '/streamed-values', { waitUntil: 'commit' })
     await autoRetry(async () => expect(await page.textContent('#generator')).toBe('first'))
-    const requestsFailed: string[] = []
-    const onRequestFailed = (request: { url(): string }) => requestsFailed.push(request.url())
-    page.on('requestfailed', onRequestFailed)
     const slowNextPage = getServerUrl() + '/index.pageContext.json'
     await page.route(slowNextPage, async (route) => {
       await sleep(1000)
       await route.continue()
     })
+    await page.click('a[href="/"]')
+    await sleep(300)
+    // The next page isn't rendered yet
+    expect(await page.textContent('h1')).toBe('Streamed values')
+    expect(await page.textContent('#generator')).toBe('aborted')
+    await autoRetry(async () => expect(await page.textContent('h1')).toBe('Welcome'))
+
+    // A page rendered upon client-side navigation: its values arrive with its .pageContext.json response
+    await page.click('a[href="/streamed-values"]')
+    await autoRetry(async () => expect(await page.textContent('#generator')).toBe('first'))
+    const requestsFailed: string[] = []
+    const onRequestFailed = (request: { url(): string }) => requestsFailed.push(request.url())
+    page.on('requestfailed', onRequestFailed)
     await page.click('a[href="/"]')
     await sleep(300)
     // The next page isn't rendered yet
