@@ -315,7 +315,9 @@ The `isHistoryNavigation` property is only defined when using <Link href="/clien
 
 <Prop id="isPrefetch" />
 
-Whether the URL is routed for <Link href="/prefetchStaticAssets">prefetching</Link> a link, instead of navigating to it. Upon prefetching, Vike calls <Link href="/onBeforeRoute">`onBeforeRoute()`</Link> and <Link href="/route-function">Route Functions</Link> with `pageContext.isPrefetch === true`.
+Whether the URL is routed for <Link href="/prefetchStaticAssets">prefetching</Link> a link, instead of navigating to it.
+
+> Upon prefetching, Vike calls <Link href="/onBeforeRoute">`+onBeforeRoute`</Link> and <Link href="/route-function">Route Functions</Link> (with `pageContext.isPrefetch === true`).
 
 See also: <Link href="/onBeforeRoute#abort-navigation" />.
 
