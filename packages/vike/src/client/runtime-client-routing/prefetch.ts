@@ -305,8 +305,10 @@ function isExpired(found: PrefetchedPageContext) {
 // TO-DO/next-major-release: make it sync
 async function getPageContextLink(urlOfLink: string) {
   const pageContextLink = await createPageContextClient(urlOfLink)
-  // route() hooks called while prefetching can read pageContext.abortSignal
-  // - It never aborts: the prefetched result is cached and later reused by a navigation
+
+  // This `pageContext.abortSignal` is fake: it never aborts
+    // - It's a fallback and it's only purpose is to make sure pageContext.abortSignal is always defined, so that the user can simply always listen to `pageContext.abortSignal` => signifcant DX improvement for the user
+  //   - So that, for example, toggling +prefetchStaticAssets doesn't break user code
   objectAssign(pageContextLink, { abortSignal: new AbortController().signal })
 
   let pageContextFromRoute: PageContextAfterRoute
