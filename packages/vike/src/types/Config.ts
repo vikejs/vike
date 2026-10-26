@@ -627,6 +627,13 @@ type ConfigBuiltIn = {
    * https://vike.dev/csp
    */
   csp?: {
+    /**
+     * Set to `true` to add `nonce` attributes (Content Security Policy) to the `<script>` and `<link>` tags injected by Vike.
+     *
+     * https://vike.dev/csp
+     *
+     * @default false
+     */
     nonce?:
       | boolean
       //

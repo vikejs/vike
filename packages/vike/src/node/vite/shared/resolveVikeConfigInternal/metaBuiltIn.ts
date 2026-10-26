@@ -340,8 +340,8 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
     vite: true,
     */
   },
+  // https://vike.dev/csp
   csp: {
-    // `config: true` so that the build can read +csp.sri (https://vike.dev/csp#sri)
     env: { server: true, config: true },
   },
   injectScriptsAt: {

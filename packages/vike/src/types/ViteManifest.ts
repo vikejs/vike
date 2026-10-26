@@ -1,6 +1,8 @@
 export type { ViteManifest }
 export type { ViteManifestEntry }
 
+// TODO/after-merge: refactor
+
 type ViteManifestEntry = {
   src?: string
   file: string
