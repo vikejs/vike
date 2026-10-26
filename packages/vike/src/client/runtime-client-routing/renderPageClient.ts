@@ -130,8 +130,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
   let { scrollTarget } = renderArgs
   const { previousPageContext } = globalObject
 
-  addLinkPrefetchHandlers_unwatch()
-
   const { isRenderOutdated, setHydrationCanBeAborted, isFirstRender } = getIsRenderOutdated()
 
   const pageContextBeginArgs = {
@@ -184,11 +182,9 @@ async function renderPageClient(renderArgs: RenderArgs) {
           // throw abort()
           if (isAbortError(err) && err._pageContextAbort._navAbort) {
             if (isRenderOutdated()) return
-            // The user stays on the current page: revert what renderPageClient() did so far
+            // The user stays on the current page
             globalObject.isTransitioning = undefined
             globalObject.currentPageContext = globalObject.previousPageContext
-            addLinkPrefetchHandlers_watch()
-            addLinkPrefetchHandlers()
             // Upon back/forward navigation, the browser already changed the URL
             if (isHistoryNavigation && isBackwardNavigation !== null) undoHistoryNavigation(isBackwardNavigation)
             return
@@ -526,6 +522,8 @@ async function renderPageClient(renderArgs: RenderArgs) {
         logErrorClient(err)
       }
     }
+
+    addLinkPrefetchHandlers_unwatch()
 
     changeUrl(urlOriginal, overwriteLastHistoryEntry)
     {
