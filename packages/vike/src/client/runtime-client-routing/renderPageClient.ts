@@ -372,7 +372,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     // pageContext
     const pageContext = await getPageContextBegin(true, pageContextBeginArgs)
     if (isRenderOutdated()) return
-    // The error page replaces the shown page, and the error may have been thrown before the same-page check above
+    // The error page replaces the shown page, and the error may have been thrown before the earlier doNotRenderIfSamePage check
     if (doNotRenderIfSamePage) abortPreviousNavigation(abortController)
     // Set after isRenderOutdated(): getPageContextClient() returns it, and the user may have navigated to another page
     globalObject.currentPageContext = pageContext
