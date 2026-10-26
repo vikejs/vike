@@ -340,8 +340,9 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
     vite: true,
     */
   },
+  // https://vike.dev/csp
   csp: {
-    env: { server: true },
+    env: { server: true, config: true },
   },
   injectScriptsAt: {
     env: { server: true },

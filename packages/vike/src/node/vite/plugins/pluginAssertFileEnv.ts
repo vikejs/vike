@@ -13,6 +13,7 @@ import { isFilePathAbsolute } from '../../../utils/isFilePathAbsoluteFilesystem.
 import { rollupSourceMapRemove } from '../../../utils/rollupSourceMap.js'
 import { assert, assertUsage, assertWarning } from '../../../utils/assert.js'
 import { joinEnglish } from '../../../utils/joinEnglish.js'
+import { isFilePathInsideDir } from '../../../utils/path.js'
 import { extractAssetsRE } from './pluginExtractAssets.js'
 import { extractExportNamesRE } from './pluginExtractExportNames.js'
 import pc from '@brillout/picocolors'
@@ -213,7 +214,7 @@ function skip(id: string, userRootDir: string): boolean {
   if (extractAssetsRE.test(id) || extractExportNamesRE.test(id)) return true
   if (getModulePath(id).endsWith('.css')) return true
   // Skip linked dependencies
-  if (!id.startsWith(userRootDir)) return true
+  if (!isFilePathInsideDir(id, userRootDir)) return true
   return false
 }
 

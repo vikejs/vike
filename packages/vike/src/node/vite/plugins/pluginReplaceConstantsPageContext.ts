@@ -2,7 +2,7 @@ export { pluginReplaceConstantsPageContext }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { assert } from '../../../utils/assert.js'
-import { assertPosixPath } from '../../../utils/path.js'
+import { assertPosixPath, isFilePathInsideDir } from '../../../utils/path.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 import { getMagicString } from '../shared/getMagicString.js'
@@ -55,7 +55,7 @@ function pluginReplaceConstantsPageContext(): Plugin[] {
           id = normalizeId(id)
           assertPosixPath(id)
           assertPosixPath(config.root)
-          if (!id.startsWith(config.root)) return // skip linked dependencies
+          if (!isFilePathInsideDir(id, config.root)) return // skip linked dependencies
           assert(filterFunction(id, code))
           const isBuild = config.command === 'build'
           assert(isBuild)

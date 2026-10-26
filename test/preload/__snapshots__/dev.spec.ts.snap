@@ -5,6 +5,7 @@ exports[`preload tags > Preload Default 1`] = `
   {
     "assetType": "script",
     "earlyHintLink": "</@fs/$ROOT/packages/vike/dist/client/runtime-server-routing/entry.js>; rel=modulepreload; as=script",
+    "integrity": null,
     "isEntry": true,
     "mediaType": "text/javascript",
     "src": "/@fs/$ROOT/packages/vike/dist/client/runtime-server-routing/entry.js",
@@ -12,6 +13,7 @@ exports[`preload tags > Preload Default 1`] = `
   {
     "assetType": "style",
     "earlyHintLink": "</renderer/Layout.css?direct>; rel=preload; as=style",
+    "integrity": null,
     "isEntry": true,
     "mediaType": "text/css",
     "src": "/renderer/Layout.css?direct",
@@ -46,6 +48,7 @@ exports[`preload tags > Preload Disabled 1`] = `
   {
     "assetType": "script",
     "earlyHintLink": "</@fs/$ROOT/packages/vike/dist/client/runtime-server-routing/entry.js>; rel=modulepreload; as=script",
+    "integrity": null,
     "isEntry": true,
     "mediaType": "text/javascript",
     "src": "/@fs/$ROOT/packages/vike/dist/client/runtime-server-routing/entry.js",
@@ -53,6 +56,7 @@ exports[`preload tags > Preload Disabled 1`] = `
   {
     "assetType": "style",
     "earlyHintLink": "</renderer/Layout.css?direct>; rel=preload; as=style",
+    "integrity": null,
     "isEntry": true,
     "mediaType": "text/css",
     "src": "/renderer/Layout.css?direct",
@@ -87,6 +91,7 @@ exports[`preload tags > Preload Eager 1`] = `
   {
     "assetType": "script",
     "earlyHintLink": "</@fs/$ROOT/packages/vike/dist/client/runtime-server-routing/entry.js>; rel=modulepreload; as=script",
+    "integrity": null,
     "isEntry": true,
     "mediaType": "text/javascript",
     "src": "/@fs/$ROOT/packages/vike/dist/client/runtime-server-routing/entry.js",
@@ -94,6 +99,7 @@ exports[`preload tags > Preload Eager 1`] = `
   {
     "assetType": "style",
     "earlyHintLink": "</renderer/Layout.css?direct>; rel=preload; as=style",
+    "integrity": null,
     "isEntry": true,
     "mediaType": "text/css",
     "src": "/renderer/Layout.css?direct",
@@ -128,6 +134,7 @@ exports[`preload tags > Preload Images 1`] = `
   {
     "assetType": "script",
     "earlyHintLink": "</@fs/$ROOT/packages/vike/dist/client/runtime-server-routing/entry.js>; rel=modulepreload; as=script",
+    "integrity": null,
     "isEntry": true,
     "mediaType": "text/javascript",
     "src": "/@fs/$ROOT/packages/vike/dist/client/runtime-server-routing/entry.js",
@@ -135,6 +142,7 @@ exports[`preload tags > Preload Images 1`] = `
   {
     "assetType": "style",
     "earlyHintLink": "</renderer/Layout.css?direct>; rel=preload; as=style",
+    "integrity": null,
     "isEntry": true,
     "mediaType": "text/css",
     "src": "/renderer/Layout.css?direct",

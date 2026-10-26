@@ -11,7 +11,7 @@ import { assertFilePathAbsoluteFilesystem } from '../../../utils/isFilePathAbsol
 import { assertImportIsNpmPackage } from '../../../utils/parseNpmPackage.js'
 import { toPosixPath } from '../../../utils/path.js'
 import { assert } from '../../../utils/assert.js'
-import { assertPosixPath } from '../../../utils/path.js'
+import { assertPosixPath, isFilePathInsideDir } from '../../../utils/path.js'
 import type { FilePathResolved, FilePathUnresolved } from '../../../types/FilePath.js'
 import type { ResolvedConfig } from 'vite'
 import '../assertEnvVite.js'
@@ -130,7 +130,7 @@ function getFilePathRelative({
 
   const filePathRelativeUserRootDir = path.posix.relative(userRootDir, filePathAbsoluteFilesystem)
 
-  if (!filePathAbsoluteFilesystem.startsWith(userRootDir)) {
+  if (!isFilePathInsideDir(filePathAbsoluteFilesystem, userRootDir)) {
     assert(filePathRelativeUserRootDir.startsWith('../'))
     return {
       filePathAbsoluteUserRootDir: null,
@@ -186,7 +186,7 @@ function getFilePathToShowToUserUnknown(
 
   filePathUnknown = cleanFilePathUnknown(filePathUnknown)
 
-  if (!filePathUnknown.startsWith(userRootDir)) {
+  if (!isFilePathInsideDir(filePathUnknown, userRootDir)) {
     return filePathUnknown
   } else {
     return getFilePathAbsoluteUserRootDir2(filePathUnknown, userRootDir)

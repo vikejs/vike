@@ -1,6 +1,6 @@
 export { getManifestEntry }
 
-import type { ViteManifest, ViteManifestEntry } from '../../../../types/ViteManifest.js'
+import type { AssetsManifest, AssetsManifestEntry } from '../../../../types/AssetsManifest.js'
 import { slice } from '../../../../utils/slice.js'
 import { assertImportIsNpmPackage } from '../../../../utils/parseNpmPackage.js'
 import { assert } from '../../../../utils/assert.js'
@@ -10,8 +10,8 @@ import '../../../assertEnvServer.js'
 
 function getManifestEntry(
   id: string,
-  assetsManifest: ViteManifest,
-): { manifestKey: string; manifestEntry: ViteManifestEntry } {
+  assetsManifest: AssetsManifest,
+): { manifestKey: string; manifestEntry: AssetsManifestEntry } {
   const debugInfo = getDebugInfo(id, assetsManifest)
 
   // Vike client entry
@@ -93,7 +93,7 @@ function getManifestEntry(
   */
 }
 
-function findEntryWithKeyEnd(manifestKeyEnd: string, assetsManifest: ViteManifest, id: string) {
+function findEntryWithKeyEnd(manifestKeyEnd: string, assetsManifest: AssetsManifest, id: string) {
   const debugInfo = getDebugInfo(id, assetsManifest, manifestKeyEnd)
   assert(manifestKeyEnd.startsWith('/'), debugInfo)
   const manifestKeys: string[] = []
@@ -112,7 +112,7 @@ function findEntryWithKeyEnd(manifestKeyEnd: string, assetsManifest: ViteManifes
   return { manifestEntry, manifestKey }
 }
 
-function getEntryWithKeyEnd(manifestKeyEnd: string, assetsManifest: ViteManifest, id: string) {
+function getEntryWithKeyEnd(manifestKeyEnd: string, assetsManifest: AssetsManifest, id: string) {
   const debugInfo = getDebugInfo(id, assetsManifest, manifestKeyEnd)
   const manifestKeys: string[] = []
   for (const manifestKey in assetsManifest) {
@@ -129,7 +129,7 @@ function getEntryWithKeyEnd(manifestKeyEnd: string, assetsManifest: ViteManifest
   return { manifestEntry, manifestKey }
 }
 
-function getDebugInfo(id: string, assetsManifest: ViteManifest, manifestKeyEnd?: string) {
+function getDebugInfo(id: string, assetsManifest: AssetsManifest, manifestKeyEnd?: string) {
   const manifestKeys = Object.keys(assetsManifest)
   if (manifestKeyEnd === undefined) {
     return { manifestKeys, id }

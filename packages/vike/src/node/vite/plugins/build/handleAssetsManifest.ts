@@ -8,8 +8,9 @@ export { handleAssetsManifest_alignCssTarget }
 import fs from 'node:fs/promises'
 import fs_sync from 'node:fs'
 import path from 'node:path'
+import crypto from 'node:crypto'
 import { existsSync } from 'node:fs'
-import type { ViteManifest, ViteManifestEntry } from '../../../../types/ViteManifest.js'
+import type { AssetsManifest } from '../../../../types/AssetsManifest.js'
 import { assert, assertWarning } from '../../../../utils/assert.js'
 import { getGlobalObject } from '../../../../utils/getGlobalObject.js'
 import { isEqualStringList } from '../../../../utils/isEqualStringList.js'
@@ -17,11 +18,11 @@ import { isObject } from '../../../../utils/isObject.js'
 import { pLimit } from '../../../../utils/pLimit.js'
 import { unique } from '../../../../utils/unique.js'
 import { parseVirtualFileId } from '../../../../shared-server-node/virtualFileId.js'
-import type { Environment, ResolvedConfig, Rollup, UserConfig } from 'vite'
+import type { Environment, Manifest, ManifestChunk, ResolvedConfig, Rollup, UserConfig } from 'vite'
 import { getAssetsDir } from '../../shared/getAssetsDir.js'
 import { isVite8OrAbove } from '../../shared/isVite8OrAbove.js'
 import pc from '@brillout/picocolors'
-import { isV1Design } from '../../shared/resolveVikeConfigInternal.js'
+import { getVikeConfigInternal, isV1Design } from '../../shared/resolveVikeConfigInternal.js'
 import { getOutDirs } from '../../shared/getOutDirs.js'
 import {
   isViteServerSide_onlySsrEnv,
@@ -30,6 +31,9 @@ import {
 } from '../../shared/isViteServerSide.js'
 import { set_macro_ASSETS_MANIFEST } from './pluginProdBuildEntry.js'
 import { getManifestFilePathRelative } from '../../shared/getManifestFilePathRelative.js'
+import { inferMediaType } from '../../../../server/runtime/renderPageServer/inferMediaType.js'
+import { getConfigValueBuildTime } from '../../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
+import type { Config } from '../../../../types/Config.js'
 import '../../assertEnvVite.js'
 type Bundle = Rollup.OutputBundle
 
@@ -49,7 +53,7 @@ function handleAssetsManifest_isFixEnabled(): boolean {
 /** https://github.com/vikejs/vike/issues/1339 */
 async function fixServerAssets(
   config: ResolvedConfig,
-): Promise<{ clientManifestMod: ViteManifest; serverManifestMod: ViteManifest }> {
+): Promise<{ clientManifestMod: Manifest; serverManifestMod: Manifest }> {
   const clientManifest = await readManifestFile(config, true)
   const serverManifest = await readManifestFile(config, false)
 
@@ -90,7 +94,7 @@ async function copyAssets(filesToMove: string[], filesToRemove: string[], config
 
 type Resource = { src: string; hash: string }
 // Add serverManifest resources to clientManifest
-function addServerAssets(clientManifest: ViteManifest, serverManifest: ViteManifest) {
+function addServerAssets(clientManifest: Manifest, serverManifest: Manifest) {
   const entriesClient = new Map<
     string, // pageId
     {
@@ -207,6 +211,11 @@ function addServerAssets(clientManifest: ViteManifest, serverManifest: ViteManif
     }
   }
 
+  // Also add the manifest entries of the files moved to the client, e.g. `_onRenderHtml.2j6TxKIB.css`, so that addIntegrity() can hash them
+  for (const [key, entry] of Object.entries(serverManifest)) {
+    if (filesToMove.includes(entry.file)) clientManifest[key] ??= entry
+  }
+
   const clientManifestMod = clientManifest
   const serverManifestMod = serverManifest
   filesToMove = unique(filesToMove)
@@ -228,7 +237,7 @@ function getPageId(key: string) {
   return result && result.type === 'page-entry' ? result.pageId : null
 }
 
-function collectResources(entryRoot: ViteManifestEntry, manifest: ViteManifest) {
+function collectResources(entryRoot: ManifestChunk, manifest: Manifest) {
   const css: Resource[] = []
   const assets: Resource[] = []
 
@@ -357,9 +366,9 @@ async function readManifestFile(config: ResolvedConfig, client: boolean) {
   const manifest: unknown = JSON.parse(manifestFileContent)
   assert(manifest)
   assert(isObject(manifest))
-  return manifest as ViteManifest
+  return manifest as Manifest
 }
-async function writeManifestFile(manifest: ViteManifest, manifestFilePath: string) {
+async function writeManifestFile(manifest: AssetsManifest, manifestFilePath: string) {
   assert(isObject(manifest))
   const manifestFileContent = JSON.stringify(manifest, null, 2)
   await fs.writeFile(manifestFilePath, manifestFileContent, 'utf-8')
@@ -418,10 +427,32 @@ async function writeAssetsManifestFile(assetsJsonFilePath: string, config: Resol
     await fs.copyFile(clientManifestFilePath, assetsJsonFilePath)
   } else {
     const { clientManifestMod } = await fixServerAssets(config)
+    await addIntegrity(clientManifestMod, config)
     await writeManifestFile(clientManifestMod, assetsJsonFilePath)
   }
   await fs.rm(clientManifestFilePath)
   await fs.rm(serverManifestFilePath)
+}
+
+// https://vike.dev/csp#sri
+async function addIntegrity(manifest: AssetsManifest, config: ResolvedConfig) {
+  const vikeConfig = await getVikeConfigInternal()
+  const isSri = vikeConfig._pageConfigs.some(
+    (pageConfig) => (getConfigValueBuildTime(pageConfig, 'csp')?.value as Config['csp'])?.sri,
+  )
+  if (!isSri) return
+  const { outDirClient } = getOutDirs(config, undefined)
+  for (const entry of Object.values(manifest)) {
+    // Only JavaScript and CSS: e.g. a font preload tag with an `integrity` attribute would make the browser download the font twice (the font request made by CSS doesn't have an `integrity` attribute)
+    const { assetType } = inferMediaType(entry.file) || {}
+    if (assetType !== 'script' && assetType !== 'style') continue
+    const filePath = path.posix.join(outDirClient, entry.file)
+    // Skip server files, e.g. `entries/pages_index.mjs` of server entries added by addServerAssets()
+    if (!existsSync(filePath)) continue
+    // Hash the final file written to disk (e.g. after fixServerAssets() moved CSS files from dist/server/ to dist/client/)
+    const fileContent = await fs.readFile(filePath)
+    entry.integrity = `sha384-${crypto.createHash('sha384').update(fileContent).digest('base64')}`
+  }
 }
 
 function getManifestFilePath(config: ResolvedConfig, client: boolean) {
