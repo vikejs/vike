@@ -41,7 +41,7 @@ function execHookOnError(
         (pageContextPublic) => hook.hookFn(err, pageContextPublic),
       )
       // An async onError() hook that rejects: Vike doesn't await onError(), so it logs the error here
-      // - Otherwise a +onHookCall that catches errors hides it
+      // - Otherwise any +onHookCall hides it, since execHook() records the rejection as the hook's own error
       if (hookReturn instanceof Promise) hookReturn.catch((hookErr) => console.error(hookErr))
     } catch (hookErr) {
       console.error(hookErr)
