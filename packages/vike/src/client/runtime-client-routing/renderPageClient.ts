@@ -188,9 +188,10 @@ async function renderPageClient(renderArgs: RenderArgs) {
         // throw abort()
         if (isAbortError(err) && err._pageContextAbort._navAbort && !isFirstRender) {
           if (isRenderOutdated()) return
-          // The user stays on the current page
+          // Undo:
+          // 1. Undo `globalObject.currentPageContext` set by getPageContextBegin() — the user stays on the current page
           globalObject.currentPageContext = globalObject.previousPageContext
-          // Upon back/forward navigation, the browser already changed the URL
+          // 2. Undo the URL change — upon back/forward navigation, the browser changes the URL
           if (isHistoryNavigation) undoHistoryNavigation(isBackwardNavigation)
           return
         }
