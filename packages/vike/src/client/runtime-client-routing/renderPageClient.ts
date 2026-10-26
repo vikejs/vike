@@ -2,6 +2,7 @@ export { renderPageClient }
 export { getRenderCount }
 export { disableClientRouting }
 export { getPageContextClient }
+export { createPageContextFromServer_experimentalRSC }
 export type { PageContextBegin }
 export type { PageContextInternalClientAfterRender }
 
@@ -22,6 +23,7 @@ import {
   getPageContextFromHooksServer_firstRender,
   type PageContextFromHooksServer,
   setPageContextInitIsPassedToClient,
+  processPageContextFromServer,
 } from './getPageContextFromHooks.js'
 import { cancelStreamedValues } from './streamedValues.js'
 import { createPageContextClient, type PageContextCreatedClient } from './createPageContextClient.js'
@@ -49,6 +51,7 @@ import {
   type PageContextAborted,
 } from '../../shared-server-client/route/abort.js'
 import { route } from '../../shared-server-client/route/index.js'
+import { forkPageContext } from '../../shared-server-client/forkPageContext.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { isScrollPosition, setScrollPosition, type ScrollTarget } from './setScrollPosition.js'
 import { scrollRestoration_initialRenderIsDone } from './scrollRestoration.js'
@@ -658,7 +661,7 @@ async function getPageContextBegin(
         showStackTrace: true,
         onlyOnce: true,
       })
-      return pageContext.previousPageContext
+      return this.previousPageContext
     },
     enumerable: false,
   })
@@ -779,6 +782,35 @@ function getPageContextClient(): PageContextClient | null {
   const pageContext = globalObject.currentPageContext
   if (!pageContext) return null
   return getPageContextPublicClient(pageContext as any) as any
+}
+
+// TODO/soon: check whether this is the right API
+// https://github.com/vikejs/vike/pull/3640
+/**
+ * Creates a new `pageContext` for the page that `pageContext` renders, with the values of `pageContextFromServer` on top.
+ * - `pageContext` is the `pageContext` of the page rendered last
+ * - `pageContext` and `pageContextFromServer` aren't modified
+ * - The new `pageContext` is the `pageContext.previousPageContext` of the next navigation, including a navigation that has already started
+ * - Unless a navigation has started, `getPageContextClient()` returns the new `pageContext`
+ */
+function createPageContextFromServer_experimentalRSC(
+  pageContext: PageContextClient,
+  pageContextFromServer: Record<string, unknown>,
+): PageContextClient {
+  const pageContextFromServerCopy = { ...pageContextFromServer }
+  processPageContextFromServer(pageContextFromServerCopy)
+  const pageContextNew = forkPageContext(
+    (pageContext as PageContextClient & { _originalObject: Record<string, unknown> })._originalObject,
+  )
+  objectAssign(pageContextNew, pageContextFromServerCopy)
+  // A navigation sets currentPageContext and reads previousPageContext when it starts, and sets previousPageContext when it renders
+  if (globalObject.currentPageContext === globalObject.previousPageContext) {
+    globalObject.currentPageContext = pageContextNew
+  } else {
+    globalObject.currentPageContext!.previousPageContext = getPageContextPublicClient(pageContextNew as any)
+  }
+  globalObject.previousPageContext = pageContextNew as PreviousPageContext
+  return getPageContextPublicClient(pageContextNew as any) as any
 }
 
 type PageContextExecuteHook = Omit<

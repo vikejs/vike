@@ -42,6 +42,7 @@ async function renderPageServerAfterRoute<
   PageContext extends {
     pageId: string
     _pageContextAlreadyProvidedByOnPrerenderHook?: true
+    _skipGuardAndData_experimentalRSC?: boolean
     is404: null | boolean
     routeParams: Record<string, string>
     errorWhileRendering: null | Error
@@ -65,11 +66,12 @@ async function renderPageServerAfterRoute<
 
   updateType(pageContext, await loadPageConfigsLazyServerSide(pageContext))
 
-  if (!isError) {
+  if (pageContext._skipGuardAndData_experimentalRSC) {
+    // TODO/soon check whether pageContext._skipGuardAndData_experimentalRSC is the right API
+    // https://github.com/vikejs/vike/pull/3646
+    // Set by vike-react-rsc e.g. for a server action whose response doesn't show the page
+  } else if (!isError) {
     await execHookGuard(pageContext, (pageContext) => getPageContextPublicServer(pageContext))
-  }
-
-  if (!isError) {
     await execHookDataAndOnBeforeRender(pageContext)
   } else {
     try {

@@ -274,6 +274,11 @@ type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
      */
     environments?: Record<string, { config: PageContextConfig['config']; pageContext: PageContextServer<Data> }>
 
+    /**
+     * Whether to skip the `guard()`, `data()`, `onData()` and `onBeforeRender()` hooks
+     */
+    _skipGuardAndData_experimentalRSC?: boolean
+
     isHydration?: undefined
     isBackwardNavigation?: undefined
     isHistoryNavigation?: undefined

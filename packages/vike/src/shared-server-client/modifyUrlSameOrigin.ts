@@ -5,8 +5,6 @@ export { ModifyUrlSameOriginOptions }
 // https://github.com/vikejs/vike/blob/c5a2de5e85262771f97851767c00ac35da69c64b/packages/vike/client/runtime-client-routing/navigate.ts#L4
 
 import { createUrlFromComponents, assertUsageUrlPathAbsolute, parseUrl } from '../utils/parseUrl.js'
-import { isNotNullish_keyVal } from '../utils/isNullish.js'
-import { objectFilter } from '../utils/objectFilter.js'
 
 type ModifyUrlSameOriginOptions = {
   hash?: string | null
@@ -49,15 +47,11 @@ function resolveSearch(urlParsed: ReturnType<typeof parseUrl>, modifySearch: Sea
     searchParams = modifySearch
   } else {
     // Merge
-    const searchMap = objectFilter(
-      { ...urlParsed.search, ...objectFilter(modifySearch, isNotUndefined) },
-      isNotNullish_keyVal<string>,
-    )
-    searchParams = new URLSearchParams(searchMap)
+    searchParams = new URLSearchParams(urlParsed.searchOriginal ?? '')
+    Object.entries(modifySearch).forEach(([key, val]) => {
+      if (val === null) searchParams.delete(key)
+      else if (val !== undefined) searchParams.set(key, val)
+    })
   }
   return '?' + searchParams.toString()
-}
-
-function isNotUndefined<T>(arg: [string, T | undefined]): arg is [string, T] {
-  return arg[1] !== undefined
 }
