@@ -211,7 +211,7 @@ function addServerAssets(clientManifest: ViteManifest, serverManifest: ViteManif
     }
   }
 
-  // Also add the manifest entries of the files moved to the client, e.g. `_onRenderHtml.2j6TxKIB.css`
+  // Also add the manifest entries of the files moved to the client, e.g. `_onRenderHtml.2j6TxKIB.css`, so that addIntegrity() can hash them
   for (const [key, entry] of Object.entries(serverManifest)) {
     if (filesToMove.includes(entry.file)) clientManifest[key] ??= entry
   }
