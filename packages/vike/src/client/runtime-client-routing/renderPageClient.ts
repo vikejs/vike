@@ -162,7 +162,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
   // Abort the previous navigation and the shown page at once, before waiting for the shown page's onRenderClient() below
   // - Except for a navigation with doNotRenderIfSamePage: it renders nothing when the URL points to the shown page, which then stays on screen and keeps using its pageContext.abortSignal
-  // - Such a navigation aborts the shown page below, once it knows that it renders a page
+  //   - Such a navigation aborts the shown page below, once it knows that it renders another page
   if (!doNotRenderIfSamePage) abortPreviousNavigation(abortController)
 
   // Ensure no concurrent onRenderClient() calls.
