@@ -307,7 +307,7 @@ async function getPageContextLink(urlOfLink: string) {
   const pageContextLink = await createPageContextClient(urlOfLink)
 
   // This `pageContext.abortSignal` is fake: it never aborts
-  // - It's a fallback and it's only purpose is to make sure pageContext.abortSignal is always defined, so that the user can simply always listen to `pageContext.abortSignal` => significant DX improvement for the user
+  // - It's a fallback and its only purpose is to make sure pageContext.abortSignal is always defined, so that the user can simply always listen to `pageContext.abortSignal` => significant DX improvement for the user
   //   - So that, for example, toggling +prefetchStaticAssets doesn't break user code
   objectAssign(pageContextLink, { abortSignal: new AbortController().signal })
 
