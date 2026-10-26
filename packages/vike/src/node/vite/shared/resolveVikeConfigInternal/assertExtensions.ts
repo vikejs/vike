@@ -64,11 +64,10 @@ function assertExtensionsRequire(plusFiles: PlusFile[]): void {
   plusFilesRelevantList.forEach((plusFile) => {
     const provide = resolveProvideSetting(plusFile)
     if (!provide) return
-    const name = getExtensionName(plusFile)
-    const filePathToShowToUser = getFilePathToShowToUser(plusFile)
+    const providedBy = getExtensionName(plusFile) ?? getFilePathToShowToUser(plusFile)
     Object.entries(provide).forEach(([provName, version]) => {
       // The installed extension wins
-      extensions[provName] ??= { version, providedBy: name ?? filePathToShowToUser }
+      extensions[provName] ??= { version, providedBy }
     })
   })
 
