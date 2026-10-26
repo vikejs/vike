@@ -43,19 +43,11 @@ function inferAssetTag(pageAsset: PageAsset, pageContext: PageContextCspNonce): 
   assert(false, { pageAsset })
 }
 
-// Without SRI, we don't add `crossorigin`: Node.js used to reject it in Early Hints, see https://github.com/vikejs/vike/issues/618#issuecomment-1415752222
+// We ignore crossorigin, it seems like Early Hints doesn't have a "crossorigin" property: https://github.com/vikejs/vike/issues/618#issuecomment-1415752222
 function inferEarlyHintLink(pageAsset: PageAsset): string {
-  const { src, assetType, integrity } = pageAsset
+  const { src, assetType } = pageAsset
   const rel = getRel(pageAsset)
-  return [
-    `<${src}>`,
-    `rel=${rel}`,
-    !assetType ? null : `as=${assetType}`,
-    // Same as the HTML tag, otherwise the browser doesn't use the early hint and downloads the asset again, see https://html.spec.whatwg.org/multipage/links.html#consume-a-preloaded-resource
-    !integrity ? null : `crossorigin; integrity="${integrity}"`,
-  ]
-    .filter(Boolean)
-    .join('; ')
+  return [`<${src}>`, `rel=${rel}`, !assetType ? null : `as=${assetType}`].filter(Boolean).join('; ')
 }
 
 function getRel({ assetType }: PageAsset): string {
