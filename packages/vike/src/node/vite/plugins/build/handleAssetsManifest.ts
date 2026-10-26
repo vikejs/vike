@@ -10,7 +10,7 @@ import fs_sync from 'node:fs'
 import path from 'node:path'
 import crypto from 'node:crypto'
 import { existsSync } from 'node:fs'
-import type { ViteManifest, ViteManifestEntry } from '../../../../types/ViteManifest.js'
+import type { AssetsManifest } from '../../../../types/AssetsManifest.js'
 import { assert, assertWarning } from '../../../../utils/assert.js'
 import { getGlobalObject } from '../../../../utils/getGlobalObject.js'
 import { isEqualStringList } from '../../../../utils/isEqualStringList.js'
@@ -18,7 +18,7 @@ import { isObject } from '../../../../utils/isObject.js'
 import { pLimit } from '../../../../utils/pLimit.js'
 import { unique } from '../../../../utils/unique.js'
 import { parseVirtualFileId } from '../../../../shared-server-node/virtualFileId.js'
-import type { Environment, ResolvedConfig, Rollup, UserConfig } from 'vite'
+import type { Environment, Manifest, ManifestChunk, ResolvedConfig, Rollup, UserConfig } from 'vite'
 import { getAssetsDir } from '../../shared/getAssetsDir.js'
 import { isVite8OrAbove } from '../../shared/isVite8OrAbove.js'
 import pc from '@brillout/picocolors'
@@ -53,7 +53,7 @@ function handleAssetsManifest_isFixEnabled(): boolean {
 /** https://github.com/vikejs/vike/issues/1339 */
 async function fixServerAssets(
   config: ResolvedConfig,
-): Promise<{ clientManifestMod: ViteManifest; serverManifestMod: ViteManifest }> {
+): Promise<{ clientManifestMod: Manifest; serverManifestMod: Manifest }> {
   const clientManifest = await readManifestFile(config, true)
   const serverManifest = await readManifestFile(config, false)
 
@@ -94,7 +94,7 @@ async function copyAssets(filesToMove: string[], filesToRemove: string[], config
 
 type Resource = { src: string; hash: string }
 // Add serverManifest resources to clientManifest
-function addServerAssets(clientManifest: ViteManifest, serverManifest: ViteManifest) {
+function addServerAssets(clientManifest: Manifest, serverManifest: Manifest) {
   const entriesClient = new Map<
     string, // pageId
     {
@@ -237,7 +237,7 @@ function getPageId(key: string) {
   return result && result.type === 'page-entry' ? result.pageId : null
 }
 
-function collectResources(entryRoot: ViteManifestEntry, manifest: ViteManifest) {
+function collectResources(entryRoot: ManifestChunk, manifest: Manifest) {
   const css: Resource[] = []
   const assets: Resource[] = []
 
@@ -366,9 +366,9 @@ async function readManifestFile(config: ResolvedConfig, client: boolean) {
   const manifest: unknown = JSON.parse(manifestFileContent)
   assert(manifest)
   assert(isObject(manifest))
-  return manifest as ViteManifest
+  return manifest as Manifest
 }
-async function writeManifestFile(manifest: ViteManifest, manifestFilePath: string) {
+async function writeManifestFile(manifest: AssetsManifest, manifestFilePath: string) {
   assert(isObject(manifest))
   const manifestFileContent = JSON.stringify(manifest, null, 2)
   await fs.writeFile(manifestFilePath, manifestFileContent, 'utf-8')
@@ -435,7 +435,7 @@ async function writeAssetsManifestFile(assetsJsonFilePath: string, config: Resol
 }
 
 // https://vike.dev/csp#sri
-async function addIntegrity(manifest: ViteManifest, config: ResolvedConfig) {
+async function addIntegrity(manifest: AssetsManifest, config: ResolvedConfig) {
   const vikeConfig = await getVikeConfigInternal()
   const isSri = vikeConfig._pageConfigs.some(
     (pageConfig) => (getConfigValueBuildTime(pageConfig, 'csp')?.value as Config['csp'])?.sri,
