@@ -90,14 +90,9 @@ function assertExtensionsRequire(plusFiles: PlusFile[]): void {
         }
       }
       const { version, packageJsonPath } = extensionVersion
-      assertUsage(
-        version,
-        `${errBase} version ${pc.bold(req.version)}, but ${packageJsonPath}${pc.dim('#')}${pc.bold('version')} is missing.`,
-      )
-      assertUsage(
-        isVersionRange(version, req.version),
-        `${errBase} version ${pc.bold(req.version)}, but ${pc.bold(version)} is installed.`,
-      )
+      const errIntro = `${errBase} version ${pc.bold(req.version)}, but `
+      assertUsage(version, `${errIntro}${packageJsonPath}${pc.dim('#')}${pc.bold('version')} is missing.`)
+      assertUsage(isVersionRange(version, req.version), `${errIntro}${pc.bold(version)} is installed.`)
     })
   })
 }
