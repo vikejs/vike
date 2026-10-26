@@ -57,7 +57,7 @@ Paths below are relative to https://vike.dev (e.g. `/data-fetching` → https://
 - /onError — `+onError()` server-only cumulative, captures server-side errors, error tracking, gets `error` + nullable `pageContext`
 - /onHookCall — `+onHookCall()` wraps every hook call (server/client), APM/instrumentation (Sentry, OpenTelemetry), `hook.call()` before any `await`, profiling
 - /onHydrationEnd — `+onHydrationEnd()` client-only, once after initial hydration (not later nav), needs Client Routing, 3rd-party/DOM init
-- /onPageTransitionStart — `+onPageTransitionStart()` client-only, start of client nav, transition animations, `isBackwardNavigation`, pairs with `onPageTransitionEnd()`
+- /onPageTransitionStart — `+onPageTransitionStart()` client-only, client nav after routing before the next page loads (no `Page`/`data` yet), transition animations, `isBackwardNavigation`, pairs with `onPageTransitionEnd()`
 - /onBeforePrerenderStart — `+onBeforePrerenderStart()` build-time only, returns URL list for parameterized routes (`/movie/@id`), bulk SSG data prefetch
 - /onPrerenderStart — `+onPrerenderStart()` build-time global, receives/returns all `prerenderContext.pageContexts`, add/remove/modify pages, multi-locale SSG
 - /hooks — hooks index: all hooks, environments, execution order, server-only vs client-only vs shared
