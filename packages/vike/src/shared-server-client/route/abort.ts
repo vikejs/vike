@@ -83,9 +83,12 @@ function redirect(url: string, statusCode?: 301 | 302): AbortRedirect {
  */
 function abort(): Error {
   const abortCaller = 'throw abort()' as const
-  // Tree-shaking to save client-side KBs
-  if (!globalThis.__VIKE__IS_CLIENT) {
-    assertUsage(isBrowser(), `${pc.cyan(abortCaller)} can only be used on the client-side`)
+  if (
+    // Tree-shaking to save client-side KBs
+    !globalThis.__VIKE__IS_CLIENT
+  ) {
+    assert(!isBrowser())
+    assertUsage(false, `${pc.cyan(abortCaller)} can only be used on the client-side`)
   }
   const pageContextAbort = {}
   objectAssign(pageContextAbort, {
