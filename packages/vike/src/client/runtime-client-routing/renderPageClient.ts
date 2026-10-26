@@ -72,10 +72,7 @@ const globalObject = getGlobalObject<{
   clientRoutingIsDisabled?: true
   renderCounter: number
   onRenderClientPreviousPromise?: Promise<unknown>
-  // For the navigation that is loading or rendering its page
-  abortControllerNavigation?: AbortController
-  // For the currently shown page
-  abortControllerPage?: AbortController
+  abortController?: AbortController
   isFirstRenderDone?: true
   isTransitioning?: true
   //https://vike.dev/pageContext#previousPageContext
@@ -565,7 +562,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
     // We purposely abort *after* onHydrationEnd() is called (see comment above).
     if (isRenderOutdated(true)) return
 
-    abortPreviousPage(abortController)
     cancelStreamedValues(pageContext, true)
 
     // onPageTransitionEnd()
@@ -732,22 +728,10 @@ function getRenderCount(): number {
   return globalObject.renderCounter
 }
 
-// Abort the previous navigation: its hooks can use pageContext.abortSignal to stop, e.g. data fetching or onRenderClient() rendering
-// - The page that is shown isn't aborted here
+// Abort the previous navigation, and the page that is shown: their hooks can use pageContext.abortSignal to stop, e.g. data fetching or onRenderClient() rendering
 function abortPreviousNavigation(abortControllerNew: AbortController) {
-  // Old abortController
-  globalObject.abortControllerNavigation?.abort()
-  // New abortController
-  globalObject.abortControllerNavigation = abortControllerNew
-}
-// The new page is rendered => abort the previous page
-// - Not earlier in abortPreviousNavigation(): the previous page is shown until now, and it can still be receiving streamed values (https://vike.dev/passToClient#streaming)
-// - Its streamed values arrive over its `.pageContext.json` request, which is fetched with its pageContext.abortSignal
-// - Unless this navigation renders its error page after its onPageTransitionEnd() threw: it must not abort its own signal
-function abortPreviousPage(abortControllerNew: AbortController) {
-  if (globalObject.abortControllerNavigation === abortControllerNew) globalObject.abortControllerNavigation = undefined
-  if (globalObject.abortControllerPage !== abortControllerNew) globalObject.abortControllerPage?.abort()
-  globalObject.abortControllerPage = abortControllerNew
+  globalObject.abortController?.abort()
+  globalObject.abortController = abortControllerNew
 }
 
 function getKeepScrollPositionSetting(
