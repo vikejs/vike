@@ -651,7 +651,7 @@ type ConfigBuiltIn = {
    */
   require?: Record<string, string | { version: string; optional?: boolean }>
 
-  /** Used by Vike extensions to implement the API of other Vike extensions.
+  /** Used by Vike extensions to declare that they implement the API of other Vike extensions.
    *
    * https://vike.dev/require#provide
    */
