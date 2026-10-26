@@ -38,6 +38,11 @@ function testHistoryPushState() {
     await page.goBack()
     await page.goBack()
     await expectUrl('/markdown')
+    // Only the navigations to /markdown called onPageTransitionStart() — https://github.com/vikejs/vike/issues/2927
+    await page.waitForFunction(() => (window as any)._vike.fullyRenderedUrl === '/markdown')
+    expect(await page.evaluate(() => (window as any).transitions.join(', '))).toBe(
+      'start /markdown, end /markdown, start /markdown, end /markdown',
+    )
     await page.goForward()
     await expectUrl('/pushState')
     const timestamp6 = await getTimestampNewerThan(timestamp2)

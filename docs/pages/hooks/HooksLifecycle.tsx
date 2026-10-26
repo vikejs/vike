@@ -93,9 +93,9 @@ const clientNavigationHooks: HookInfo[] = [
   // Client-side hooks (first part)
   ...(
     [
-      onPageTransitionStart,
       onBeforeRoute,
       routing,
+      onPageTransitionStart,
       onCreatePageContext,
       { ...guard, hooksEnv: ['client', 'shared'] },
       { ...data, hooksEnv: ['client', 'shared'] },

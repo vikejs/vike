@@ -352,6 +352,9 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
   require: {
     env: { config: true },
   },
+  provide: {
+    env: { config: true },
+  },
   keepScrollPosition: {
     env: { client: true },
   },
