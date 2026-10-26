@@ -304,6 +304,8 @@ function isExpired(found: PrefetchedPageContext) {
 // TO-DO/next-major-release: make it sync
 async function getPageContextLink(urlOfLink: string) {
   const pageContextLink = await createPageContextClient(urlOfLink)
+  // https://vike.dev/pageContext#isPrefetch
+  objectAssign(pageContextLink, { isPrefetch: true as const })
 
   let pageContextFromRoute: PageContextAfterRoute
   try {
