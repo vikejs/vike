@@ -181,24 +181,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
     if (isRenderOutdated()) return
     globalObject.currentPageContext = pageContext
 
-    // onPageTransitionStart()
-    if (globalObject.isFirstRenderDone) {
-      assert(previousPageContext)
-      // We use the hook of the previous page in order to be able to call onPageTransitionStart() before fetching the files of the next page.
-      // https://github.com/vikejs/vike/issues/1560
-      if (!globalObject.isTransitioning) {
-        globalObject.isTransitioning = true
-        const hooks = getHooksFromPageContextNew('onPageTransitionStart', previousPageContext)
-        try {
-          await execHookList(hooks, pageContext, getPageContextPublicClientMinimal)
-        } catch (err) {
-          await onError(err)
-          return
-        }
-        if (isRenderOutdated()) return
-      }
-    }
-
     // Get pageContext serialized in <script id="vike_pageContext" type="application/json">
     if (isFirstRender) {
       const pageContextSerialized = await getPageContextFromHooksServer_firstRender(pageContext.abortSignal)
@@ -267,6 +249,26 @@ async function renderPageClient(renderArgs: RenderArgs) {
       }
     }
     assert(hasProp(pageContext, 'pageId', 'string')) // Help TS
+
+    // onPageTransitionStart()
+    if (globalObject.isFirstRenderDone) {
+      assert(previousPageContext)
+      // We use the hook of the previous page in order to be able to call onPageTransitionStart() before fetching the files of the next page.
+      // https://github.com/vikejs/vike/issues/1560
+      // We call it after routing so that it isn't called when Vike doesn't render the next page (e.g. `doNotRenderIfSamePage`).
+      // https://github.com/vikejs/vike/issues/2927
+      if (!globalObject.isTransitioning) {
+        globalObject.isTransitioning = true
+        const hooks = getHooksFromPageContextNew('onPageTransitionStart', previousPageContext)
+        try {
+          await execHookList(hooks, pageContext, getPageContextPublicClientMinimal)
+        } catch (err) {
+          await onError(err)
+          return
+        }
+        if (isRenderOutdated()) return
+      }
+    }
 
     const res = await loadPageConfigsLazyClientSideAndExecHook(pageContext, isFirstRender, isRenderOutdated)
     /* Already called inside loadPageConfigsLazyClientSideAndExecHook()
