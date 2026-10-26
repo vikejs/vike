@@ -20,6 +20,24 @@ We recommend to use both the `peerDependencies` property of `package.json` as we
 
 > The `peerDependencies` list isn't a reliable way to enforce dependencies: it [usually](https://pnpm.io/npmrc#strict-peer-dependencies) only shows a warning that many users ignore.
 
+## `provide`
+
+A Vike extension that implements the API of another Vike extension declares it with the `provide` setting:
+
+```js
+// /node_modules/vike-react-rsc/dist/+config.js
+
+export default {
+  name: 'vike-react-rsc',
+  provide: {
+    // vike-react-rsc implements the API of vike-react 0.6.31
+    'vike-react': '0.6.31'
+  }
+}
+```
+
+The `require: { 'vike-react': '>=0.6.4' }` of other extensions (e.g. `vike-react-query`) is then met by `vike-react-rsc`, as if `vike-react` 0.6.31 were installed.
+
 ## See also
 
 - <Link href="/extensions" />
