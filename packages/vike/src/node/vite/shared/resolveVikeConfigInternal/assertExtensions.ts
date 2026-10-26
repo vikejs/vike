@@ -66,15 +66,9 @@ function assertExtensionsRequire(plusFiles: PlusFile[]): void {
     if (!provide) return
     const name = getExtensionName(plusFile)
     const filePathToShowToUser = getFilePathToShowToUser(plusFile)
-    assertUsage(
-      name,
-      `Setting ${pc.bold('name')} is required for being able to use setting ${pc.bold(
-        'provide',
-      )} in ${filePathToShowToUser}.`,
-    )
     Object.entries(provide).forEach(([provName, version]) => {
       // The installed extension wins
-      extensions[provName] ??= { version, providedBy: name }
+      extensions[provName] ??= { version, providedBy: name ?? filePathToShowToUser }
     })
   })
 
