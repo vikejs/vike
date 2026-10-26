@@ -272,7 +272,7 @@ async function fetchPageContextFromServer(pageContext: {
   pageContextUrl = modifyUrlSameOrigin(pageContextUrl, { search: { _vike: JSON.stringify({ previousUrl: pageContext.previousPageContext.urlOriginal }) } })
   */
   // pageContext.abortSignal stops the request until the pageContext arrives, but not the streamed values that follow it
-  // - They're the page's, until the next page is rendered (see cancelStreamedValues())
+  // - Otherwise the user navigating away aborts the streamed values of the page that is still shown
   const fetchAbortController = new AbortController()
   const abortFetch = () => fetchAbortController.abort(pageContext.abortSignal.reason)
   if (pageContext.abortSignal.aborted) abortFetch()
