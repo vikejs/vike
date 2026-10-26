@@ -167,13 +167,24 @@ function testRun(
   test('throw abort() - link', async () => {
     await page.goto(getServerUrl() + '/abort-navigation')
     await hydrationDone()
+    // Prefetching links (upon hover and when they're in the viewport) calls onBeforeRoute() with `pageContext.isPrefetch === true`
+    let prefetchDialogs = 0
+    const onPrefetchDialog = async (dialog: { dismiss(): Promise<void> }) => {
+      prefetchDialogs++
+      await dialog.dismiss()
+    }
+    page.on('dialog', onPrefetchDialog)
+    await page.hover('a[href="/"]')
+    await page.waitForTimeout(1000)
+    page.off('dialog', onPrefetchDialog)
+    expect(prefetchDialogs).toBe(0)
     let dialog = answerConfirm(false)
     await page.click('a[href="/"]')
     await dialog
     await expectUrl('/abort-navigation')
     // Neither re-rendered nor reloaded
     await testCounter(1)
-    // The next navigation calls onPageTransitionStart() again
+    // The next navigation calls onBeforeRoute() again
     dialog = answerConfirm(true)
     await page.click('a[href="/"]')
     await dialog
