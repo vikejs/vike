@@ -51,12 +51,24 @@ function assertExtensionsRequire(plusFiles: PlusFile[]): void {
   const plusFilesRelevantList = plusFiles
 
   // Collect extensions
-  const extensions: Record<string, ExtensionVersion> = {}
+  const extensions: Record<string, { version: string | null; packageJsonPath?: string; providedBy?: string }> = {}
   plusFilesRelevantList.forEach((plusFile) => {
     const name = getExtensionName(plusFile)
     if (name) {
       extensions[name] = getExtensionVersion(name, plusFile)
     }
+  })
+
+  // Collect "provided extensions" as defined by +provide (e.g. vike-react-rsc provides vike-react)
+  // https://vike.dev/require#provide
+  plusFilesRelevantList.forEach((plusFile) => {
+    const provide = resolveProvideSetting(plusFile)
+    if (!provide) return
+    const providedBy = getExtensionName(plusFile) ?? getFilePathToShowToUser(plusFile)
+    Object.entries(provide).forEach(([provName, version]) => {
+      // The installed extension wins
+      extensions[provName] ??= { version, providedBy }
+    })
   })
 
   // Enforce `require`
@@ -81,18 +93,21 @@ function assertExtensionsRequire(plusFiles: PlusFile[]): void {
         assertUsage(isVersionRange(PROJECT_VERSION, req.version), errMsg)
         return
       }
-      const extensionVersion = extensions[reqName]
-      if (!extensionVersion) {
+      const extension = extensions[reqName]
+      if (!extension) {
         if (req.optional) {
           return
         } else {
           assertUsage(false, `${errBase}.`)
         }
       }
-      const { version, packageJsonPath } = extensionVersion
+      const { version, packageJsonPath, providedBy } = extension
       const errIntro = `${errBase} version ${pc.bold(req.version)}, but `
       assertUsage(version, `${errIntro}${packageJsonPath}${pc.dim('#')}${pc.bold('version')} is missing.`)
-      assertUsage(isVersionRange(version, req.version), `${errIntro}${pc.bold(version)} is installed.`)
+      const errVersion = providedBy
+        ? `${pc.bold(providedBy)} provides ${pc.bold(version)}`
+        : `${pc.bold(version)} is installed`
+      assertUsage(isVersionRange(version, req.version), `${errIntro}${errVersion}.`)
     })
   })
 }
@@ -122,6 +137,19 @@ function resolveRequireSetting(plusFile: PlusFile): null | RequireSetting {
     assertUsage(false, `Invalid +require[${JSON.stringify(reqName)}] value ${pc.cyan(JSON.stringify(req))}`)
   })
   return requireSetting
+}
+
+function resolveProvideSetting(plusFile: PlusFile): null | Record<string, string> {
+  const confVal = getConfVal(plusFile, 'provide')
+  if (!confVal) return null
+  assert(confVal.valueIsLoaded)
+  const provideValue = confVal.value
+  const filePathToShowToUser = getFilePathToShowToUser(plusFile)
+  assertUsage(
+    isObject(provideValue) && Object.values(provideValue).every((version) => typeof version === 'string'),
+    `The setting ${pc.bold('+provide')} defined at ${filePathToShowToUser} should be an object of version strings`,
+  )
+  return provideValue as Record<string, string>
 }
 
 function getExtensionName(plusFile: PlusFile): null | string {
