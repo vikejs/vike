@@ -123,7 +123,7 @@ export async function onCreatePageContext(pageContext: PageContextServer) {
 
 ## SRI
 
-If `+csp.sri` is `true`, Vike adds [Subresource Integrity (SRI)](https://developer.mozilla.org/en-US/docs/Web/Security/Defenses/Subresource_Integrity) hashes to the `<script>` and `<link>` tags it injects, so that the browser refuses to load JavaScript and CSS files that were modified after the build.
+If `+csp.sri` is `true`, Vike adds the `integrity` attribute to the `<script>` and `<link>` tags it injects, so that the browser refuses to load JavaScript and CSS files that were modified after the build — see [Subresource Integrity (SRI)](https://developer.mozilla.org/en-US/docs/Web/Security/Defenses/Subresource_Integrity).
 
 ```ts
 // pages/+config.ts
@@ -140,12 +140,11 @@ export default {
 <script src="/assets/entries/entry-client-routing.DsHEs2PK.js" type="module" async integrity="sha384-OusdYjPk…" crossorigin></script>
 ```
 
-Vike computes the hashes at build time, so it works with any deployment (including edge platforms such as Cloudflare) and with <Link href="/pre-rendering">pre-rendering</Link>. In development, no hash is added.
-
-Limitations:
-- Upon <Link href="/client-routing">client-side navigation</Link>, the JavaScript and CSS of the next page are loaded by `import()` without SRI hashes: only the assets of the first page are verified.
-- Your static assets must not be modified after the build (e.g. disable your CDN's minification and script injection features). Compression is fine.
-- If your static assets are served from another domain (<Link href="/base-url#baseassets">`+baseAssets`</Link>), then it must respond with the `Access-Control-Allow-Origin` header.
+> Note that:
+> - Vike computes the hashes at build time, so it works with any deployment (including edge platforms such as Cloudflare) and with <Link href="/pre-rendering">pre-rendering</Link>.
+> - Upon <Link href="/client-routing">client-side navigation</Link>, the JavaScript and CSS of the next page are loaded by `import()` without SRI hashes: only the assets of the first page are verified.
+> - Your static assets must not be modified after the build (e.g. disable your CDN's minification and script injection features). Compression is fine.
+> - If your static assets are served from another domain (<Link href="/base-url#baseassets">`+baseAssets`</Link>), then it must respond with the `Access-Control-Allow-Origin` header.
 
 
 ## PCI
