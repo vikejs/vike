@@ -79,7 +79,7 @@ function redirect(url: string, statusCode?: 301 | 302): AbortRedirect {
 /**
  * Abort the client-side navigation: the user stays on the current page.
  *
- * https://vike.dev/onBeforeRoute#abort-navigation
+ * https://vike.dev/onBeforeRoute#throw-abort
  */
 function abort(): Error {
   const abortCaller = 'throw abort()' as const

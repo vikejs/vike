@@ -29,13 +29,13 @@ export function onBeforeRoute(pageContext: PageContext) {
 > Vike also calls `+onBeforeRoute` when it <Link href="/prefetchStaticAssets">prefetches</Link> a link, see also <Link href="/pageContext#isPrefetch">`pageContext.isPrefetch`</Link>.
 
 You can also use it to:
-- <Link href="#abort-navigation">Abort a client-side navigation</Link>
+- <Link href="#throw-abort">Abort a client-side navigation</Link>
 - [Implement a custom router](https://github.com/vikejs/vike/issues/140)
 
 <Warning>For more use cases, create a GitHub ticket: `+onBeforeRoute` is purposely limited but the limitations can be lifted in order to unlock new capabilities.</Warning>
 
 
-## Abort navigation
+## `throw abort()`
 
 You can `throw abort()` to abort a client-side navigation: the user stays on the current page.
 
