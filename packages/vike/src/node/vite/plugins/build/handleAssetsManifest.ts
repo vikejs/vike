@@ -32,6 +32,8 @@ import {
 import { set_macro_ASSETS_MANIFEST } from './pluginProdBuildEntry.js'
 import { getManifestFilePathRelative } from '../../shared/getManifestFilePathRelative.js'
 import { inferMediaType } from '../../../../server/runtime/renderPageServer/inferMediaType.js'
+import { getConfigValueBuildTime } from '../../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
+import type { Config } from '../../../../types/Config.js'
 import '../../assertEnvVite.js'
 type Bundle = Rollup.OutputBundle
 
@@ -435,8 +437,10 @@ async function writeAssetsManifestFile(assetsJsonFilePath: string, config: Resol
 // https://vike.dev/csp#sri
 async function addIntegrity(manifest: ViteManifest, config: ResolvedConfig) {
   const vikeConfig = await getVikeConfigInternal()
-  // +csp is a runtime setting: we can't read +csp.sri at build time, so we compute the hashes whenever +csp is defined
-  if (!vikeConfig._pageConfigs.some((pageConfig) => pageConfig.configValueSources.csp)) return
+  const isSri = vikeConfig._pageConfigs.some(
+    (pageConfig) => (getConfigValueBuildTime(pageConfig, 'csp')?.value as Config['csp'])?.sri,
+  )
+  if (!isSri) return
   const { outDirClient } = getOutDirs(config, undefined)
   for (const entry of Object.values(manifest)) {
     // Only JavaScript and CSS: e.g. a font preload tag with an `integrity` attribute would make the browser download the font twice (the font request made by CSS doesn't have an `integrity` attribute)
