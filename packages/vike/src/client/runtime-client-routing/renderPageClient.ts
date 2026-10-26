@@ -470,10 +470,13 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     addNewPageContextAborted(pageContextsAborted, pageContext, pageContextAbort, getPageContextPublicClientMinimal)
 
-    assertUsage(
-      !pageContextAbort._navAbort,
-      '`throw abort()` can only be used in onBeforeRoute() upon client-side navigation, see https://vike.dev/abort-navigation',
-    )
+    // Tree-shaking to save client-side KBs
+    if (globalThis.__VIKE__IS_DEV) {
+      assertUsage(
+        !pageContextAbort._navAbort,
+        '`throw abort()` can only be used in onBeforeRoute() upon client-side navigation, see https://vike.dev/abort-navigation',
+      )
+    }
 
     // throw render('/some-url')
     if (pageContextAbort._urlRewrite) {
