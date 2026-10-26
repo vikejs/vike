@@ -9,6 +9,7 @@ import { deepEqual } from '../../../../utils/deepEqual.js'
 import { isArray } from '../../../../utils/isArray.js'
 import { isFilePathAbsoluteFilesystem } from '../../../../utils/isFilePathAbsoluteFilesystem.js'
 import { assertImportIsNpmPackage, getNpmPackageName } from '../../../../utils/parseNpmPackage.js'
+import { isFilePathInsideDir } from '../../../../utils/path.js'
 import { requireResolveOptional } from '../../../../utils/requireResolve.js'
 import { isVirtualFileId } from '../../../../utils/virtualFileId.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
@@ -105,7 +106,7 @@ async function resolveOptimizeDeps(config: ResolvedConfig) {
   LATE_DISCOVERED.forEach((dep) => {
     const userRootDir = config.root
     const resolved = requireResolveOptional({ importPath: dep, userRootDir, importerFilePath: null })
-    const resolvedInsideRepo = resolved && resolved.startsWith(userRootDir)
+    const resolvedInsideRepo = resolved && isFilePathInsideDir(resolved, userRootDir)
     if (resolvedInsideRepo) {
       // We add `dep` only if `resolvedInsideRepo === true` otherwise Vite logs a warning like the following.
       // - ```console
