@@ -186,10 +186,15 @@ function testRun(
   test('throw abort() - back navigation', async () => {
     await page.goto(getServerUrl() + '/')
     await hydrationDone()
+    await page.click('a[href="/about"]')
+    await autoRetry(async () => {
+      expect(await page.textContent('h1')).toBe('About')
+    })
     await page.click('a[href="/abort-navigation"]')
     await testCounter()
     const dialog = answerConfirm(false)
-    await page.goBack()
+    // Jump back over two history entries
+    await page.evaluate(() => window.history.go(-2))
     await dialog
     // Vike reverts the URL
     await expectUrl('/abort-navigation')
