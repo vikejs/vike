@@ -313,6 +313,12 @@ The value is `true` when the user clicks on his browser's backward/forward butto
 
 The `isHistoryNavigation` property is only defined when using <Link href="/client-routing" noBreadcrumb={true} />.
 
+<Prop id="isPrefetch" />
+
+Whether the URL is routed for <Link href="/prefetchStaticAssets">prefetching</Link> a link, instead of navigating to it. Upon prefetching, Vike calls <Link href="/onBeforeRoute">`onBeforeRoute()`</Link> and <Link href="/route-function">Route Functions</Link> with `pageContext.isPrefetch === true`.
+
+See also: <Link href="/abort-navigation" />.
+
 <Prop id="previousPageContext" />
 
 Upon client-side page navigation, you can use `pageContext.previousPageContext` to access the `pageContext` of the previous page. See <Link href="#lifecycle" />.
