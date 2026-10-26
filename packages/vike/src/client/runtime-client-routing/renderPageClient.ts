@@ -186,7 +186,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
             globalObject.isTransitioning = undefined
             globalObject.currentPageContext = globalObject.previousPageContext
             // Upon back/forward navigation, the browser already changed the URL
-            if (isHistoryNavigation && isBackwardNavigation !== null) undoHistoryNavigation(isBackwardNavigation)
+            if (isHistoryNavigation) undoHistoryNavigation(isBackwardNavigation)
             return
           }
           await onError(err)

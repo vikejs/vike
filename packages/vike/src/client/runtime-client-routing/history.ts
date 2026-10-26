@@ -17,6 +17,8 @@ import '../assertEnvClient.js'
 const globalObject = getGlobalObject('history.ts', {
   monkeyPatched: false,
   previous: undefined as any as HistoryInfo,
+  // By how many history entries the last back/forward navigation moved (`null` if the browser doesn't support the Navigation API)
+  popStateDelta: null as null | number,
   isUndoingHistoryNavigation: false,
 })
 initHistory() // we redundantly call initHistory() to ensure it's called early
@@ -57,10 +59,12 @@ function historyApiReplaceStateOriginal(state: unknown, url?: Parameters<typeof 
 }
 
 // Revert the URL change of a back/forward navigation aborted by `throw abort()`
-// - We assume the user moved by one history entry (Vike doesn't record the position of history entries)
-function undoHistoryNavigation(isBackwardNavigation: boolean) {
+function undoHistoryNavigation(isBackwardNavigation: boolean | null) {
+  // Without the Navigation API, we assume the user moved by one history entry
+  const delta = globalObject.popStateDelta ?? (isBackwardNavigation === null ? 0 : isBackwardNavigation ? -1 : 1)
+  if (delta === 0) return
   globalObject.isUndoingHistoryNavigation = true
-  window.history.go(isBackwardNavigation ? 1 : -1)
+  window.history.go(-delta)
 }
 
 function onPopStateBegin() {
@@ -85,6 +89,7 @@ function onPopStateBegin() {
 
   const current = getHistoryInfo()
   globalObject.previous = current
+  globalObject.popStateDelta = current.index === null || previous.index === null ? null : current.index - previous.index
 
   // The popstate event triggered by undoHistoryNavigation()
   if (globalObject.isUndoingHistoryNavigation) {
@@ -221,11 +226,14 @@ function enhanceState() {
 type HistoryInfo = {
   url: `/${string}`
   state: StateEnhanced
+  // Position in the session history (`null` if the browser doesn't support the Navigation API)
+  index: null | number
 }
 function getHistoryInfo(): HistoryInfo {
   return {
     url: getCurrentUrl(),
     state: getState(),
+    index: window.navigation?.currentEntry?.index ?? null,
   }
 }
 
