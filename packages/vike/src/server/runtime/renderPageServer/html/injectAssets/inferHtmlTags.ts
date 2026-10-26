@@ -12,7 +12,7 @@ import '../../../../assertEnvServer.js'
 const scriptCommonAttrs = 'type="module" async'
 
 function inferPreloadTag(pageAsset: PageAsset): string {
-  const { src, assetType, mediaType } = pageAsset
+  const { src, assetType, mediaType, integrity } = pageAsset
   const rel = getRel(pageAsset)
   const attributes = [
     `rel="${rel}"`,
@@ -21,6 +21,7 @@ function inferPreloadTag(pageAsset: PageAsset): string {
     !mediaType ? null : `type="${mediaType}"`,
     // `crossorigin` is needed for fonts, see https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types/preload#cors-enabled_fetches
     !isCrossOrigin(pageAsset) ? null : 'crossorigin',
+    !integrity ? null : `integrity="${integrity}"`,
   ]
     .filter(Boolean)
     .join(' ')
@@ -29,14 +30,15 @@ function inferPreloadTag(pageAsset: PageAsset): string {
 
 function inferAssetTag(pageAsset: PageAsset, pageContext: PageContextCspNonce): string {
   const { src, assetType, mediaType } = pageAsset
+  const integrityAttr = inferIntegrityAttr(pageAsset)
   if (assetType === 'script') {
     assert(mediaType === 'text/javascript')
     const nonceAttr = inferNonceAttr(pageContext)
-    return `<script src="${src}" ${scriptCommonAttrs}${nonceAttr}></script>`
+    return `<script src="${src}" ${scriptCommonAttrs}${nonceAttr}${integrityAttr}></script>`
   }
   if (assetType === 'style') {
     // WARNING: if changing following line, then also update https://github.com/vikejs/vike/blob/fae90a15d88e5e87ca9fcbb54cf2dc8773d2f229/vike/client/shared/removeFoucBuster.ts#L29
-    return `<link rel="stylesheet" type="text/css" href="${src}">`
+    return `<link rel="stylesheet" type="text/css" href="${src}"${integrityAttr}>`
   }
   assert(false, { pageAsset })
 }
@@ -56,6 +58,12 @@ function getRel({ assetType }: PageAsset): string {
   return 'preload'
 }
 
-function isCrossOrigin({ src, assetType }: PageAsset): boolean {
-  return assetType === 'font' || src.startsWith('http://') || src.startsWith('https://')
+function isCrossOrigin({ src, assetType, integrity }: PageAsset): boolean {
+  return assetType === 'font' || !!integrity || src.startsWith('http://') || src.startsWith('https://')
+}
+
+// https://vike.dev/csp#sri
+function inferIntegrityAttr({ integrity }: PageAsset): string {
+  // `crossorigin` is needed for assets loaded from another origin (e.g. https://vike.dev/base-url#baseassets), otherwise the browser blocks them, see https://developer.mozilla.org/en-US/docs/Web/Security/Defenses/Subresource_Integrity#subresource_integrity_and_cors
+  return !integrity ? '' : ` integrity="${integrity}" crossorigin`
 }
