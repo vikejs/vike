@@ -185,6 +185,15 @@ async function renderPageClient(renderArgs: RenderArgs) {
       try {
         pageContextFromRoute = await route(pageContext)
       } catch (err) {
+        // throw abort()
+        if (isAbortError(err) && err._pageContextAbort._navAbort && !isFirstRender) {
+          if (isRenderOutdated()) return
+          // The user stays on the current page
+          globalObject.currentPageContext = globalObject.previousPageContext
+          // Upon back/forward navigation, the browser already changed the URL
+          if (isHistoryNavigation) undoHistoryNavigation(isBackwardNavigation)
+          return
+        }
         await onError(err)
         return
       }
@@ -249,16 +258,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
         try {
           await execHookList(hooks, pageContext, getPageContextPublicClientMinimal)
         } catch (err) {
-          // throw abort()
-          if (isAbortError(err) && err._pageContextAbort._navAbort) {
-            if (isRenderOutdated()) return
-            // The user stays on the current page
-            globalObject.isTransitioning = undefined
-            globalObject.currentPageContext = globalObject.previousPageContext
-            // Upon back/forward navigation, the browser already changed the URL
-            if (isHistoryNavigation) undoHistoryNavigation(isBackwardNavigation)
-            return
-          }
           await onError(err)
           return
         }
@@ -473,7 +472,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     assertUsage(
       !pageContextAbort._navAbort,
-      '`throw abort()` can only be used in onPageTransitionStart(), see https://vike.dev/abort-navigation',
+      '`throw abort()` can only be used in onBeforeRoute() upon client-side navigation, see https://vike.dev/abort-navigation',
     )
 
     // throw render('/some-url')
