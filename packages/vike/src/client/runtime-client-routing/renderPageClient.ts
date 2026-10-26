@@ -75,6 +75,7 @@ const globalObject = getGlobalObject<{
   clientRoutingIsDisabled?: true
   renderCounter: number
   onRenderClientPreviousPromise?: Promise<unknown>
+  // For the navigation that is loading or rendering its page, or the currently shown page
   abortController?: AbortController
   isFirstRenderDone?: true
   isTransitioning?: true
@@ -733,7 +734,9 @@ function getRenderCount(): number {
 
 // Abort the previous navigation, and the page that is shown: their hooks can use pageContext.abortSignal to stop, e.g. data fetching or onRenderClient() rendering
 function abortPreviousNavigation(abortControllerNew: AbortController) {
+  // Old abortController
   globalObject.abortController?.abort()
+  // New abortController
   globalObject.abortController = abortControllerNew
 }
 
