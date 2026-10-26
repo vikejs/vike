@@ -2,7 +2,7 @@ import { Link } from '@brillout/docpress'
 
 You can use <Link href="/render">`throw render()`</Link> or <Link href="/redirect">`throw redirect()`</Link> in order to abort rendering the current page and render something else instead.
 
-> To abort a client-side navigation altogether (the user stays on the current page), use <Link href="/abort-navigation">`throw abort()`</Link> instead.
+> To abort a client-side navigation altogether (the user stays on the current page), use <Link href="/onBeforeRoute#abort-navigation">`throw abort()`</Link> instead.
 
 
 ## `throw redirect()` VS `throw render()` VS `navigate()`
@@ -50,5 +50,5 @@ If `throw redirect()` doesn't work:
 
  - <Link href="/redirect" />
  - <Link href="/render" />
- - <Link href="/abort-navigation" />
+ - <Link href="/onBeforeRoute#abort-navigation" />
  - <Link href="/navigate" />
