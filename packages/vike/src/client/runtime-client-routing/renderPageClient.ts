@@ -176,6 +176,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     const pageContext = await getPageContextBegin(false, pageContextBeginArgs)
     if (isRenderOutdated()) return
+    globalObject.currentPageContext = pageContext
 
     // onPageTransitionStart()
     if (globalObject.isFirstRenderDone) {
@@ -365,14 +366,11 @@ async function renderPageClient(renderArgs: RenderArgs) {
       // We handle the abort error down below.
     }
 
-    // Stop if the user navigated away, e.g. the newer navigation aborted this page's `.pageContext.json` request (via pageContext.abortSignal)
-    // - Checked before getPageContextBegin(), not only after it: getPageContextBegin() sets the pageContext returned by getPageContextClient()
-    // - Otherwise getPageContextClient() returns this outdated pageContext instead of the newer page's
-    if (isRenderOutdated()) return
-
     // pageContext
     const pageContext = await getPageContextBegin(true, pageContextBeginArgs)
     if (isRenderOutdated()) return
+    // Set after isRenderOutdated(): getPageContextClient() returns it, and the user may have navigated to another page
+    globalObject.currentPageContext = pageContext
     objectAssign(pageContext, {
       errorWhileRendering: err,
     })
@@ -656,8 +654,6 @@ async function getPageContextBegin(
     abortSignal,
     ...pageContextInitClient,
   })
-
-  globalObject.currentPageContext = pageContext
 
   // TO-DO/next-major-release: remove
   Object.defineProperty(pageContext, '_previousPageContext', {
