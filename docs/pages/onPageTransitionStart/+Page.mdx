@@ -15,7 +15,7 @@ The `onPageTransitionStart()` hook, together with <Link href="/onPageTransitionE
 
 import type { PageContextClient } from 'vike/types'
 
-export async function onPageTransitionStart(pageContext: Partial<PageContextClient>) {
+export async function onPageTransitionStart(pageContext: PageContextClient) {
   console.log('Page transition start')
   console.log('Is backwards navigation?', pageContext.isBackwardNavigation)
   document.body.classList.add('page-transition')
@@ -34,6 +34,8 @@ export async function onPageTransitionEnd(pageContext: PageContextClient) {
   document.body.classList.remove('page-transition')
 }
 ```
+
+The `onPageTransitionStart()` hook is called right after <Link href="/routing">routing</Link>, before Vike loads the next page's code and data, so that your animation starts as early as possible. Consequently, `pageContext` doesn't contain the next page's `Page`, `data`, and configuration yet. See <Link href="/hooks#lifecycle" />.
 
 
 ## Without `vike-{react,vue,solid}`
