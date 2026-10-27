@@ -3,12 +3,12 @@ export { handleTelefunc }
 import { serve } from 'telefunc'
 
 async function handleTelefunc(request: Request) {
-  const { pathname, search } = new URL(request.url)
+  const { pathname } = new URL(request.url)
   if (!pathname.startsWith('/_telefunc')) return null
   const { method } = request
   const body = await request.text()
   const httpResponse = await serve({
-    url: pathname + search,
+    url: request.url,
     method,
     body,
     headers: Object.fromEntries(request.headers),
