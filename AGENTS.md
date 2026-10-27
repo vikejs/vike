@@ -1,6 +1,7 @@
-## Merge
+## Workflow
 
 - When squash-merging a PR, the commit message should be a one-liner (typically the PR title) and reference the PR number
+- Never force push
 
 ## Docs
 
