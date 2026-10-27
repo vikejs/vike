@@ -7,7 +7,12 @@ async function handleTelefunc(request: Request) {
   if (!pathname.startsWith('/_telefunc')) return null
   const { method } = request
   const body = await request.text()
-  const httpResponse = await serve({ url: pathname + search, method, body, headers: Object.fromEntries(request.headers) })
+  const httpResponse = await serve({
+    url: pathname + search,
+    method,
+    body,
+    headers: Object.fromEntries(request.headers),
+  })
   return new Response(httpResponse.body, {
     headers: httpResponse.headers,
     status: httpResponse.statusCode,
