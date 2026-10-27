@@ -40,15 +40,25 @@ We designed it with meticulous care to <Link href="#is-vike-still-free-software"
 
 #### The idea
 
-As a small team, you use Vike like any other open-source tool — 100% free and without any license key.
+Vike uses a heuristic to determine whether you're most likely a small or large team:
+- **Small team:** You use Vike like any other open-source tool — 100% free and without any license key.
+- **Large team:** You are required to have a license key (see <Link href="#enforcement" />).
+  - **Small company:** You get a license key <Link href="/free">for free</Link>.
+  - **Large company:** You get a license key by purchasing one.
 
-As a larger team, you will see a pesky toaster `Get your license key at ...` in development. You can remove it by purchasing a license key and adding it to your `+config.js` (or by setting the `VIKE_KEY` environment variable).
+In other words, <Link href="#pricing">only larger teams in larger companies pay</Link> — Vike stays free for everyone else.
+
+#### Enforcement
+
+If Vike detects you're a larger team (see <Link href="#the-idea"/>), you will see a pesky toaster `Get your license key at ...` in development, and you won't be able to build for production.
+
+Also, the `vike` npm package will adopt a proprietary license requiring companies to get a license key if they encounter the pesky toaster. (Vike's repository remains open source.)
 
 #### 100% Open Source
 
-The npm package `vike` will adopt a proprietary license requiring companies to get a license key when they see the pesky toaster. Vike's Git repository stays 100% MIT-licensed.
+Vike's Git repository stays 100% MIT-licensed.
 
-In theory, since Vike is 100% open source, you could fork it, remove the pesky toaster, and publish your own npm package. But maintaining a fork requires non-negligible effort &mdash; you might as well <Link href="/free">apply for a free license key</Link> instead.
+In theory, since Vike is 100% open source, you could fork it, remove the pesky toaster, and publish your own npm package. However, we'll hide some of the enforcement code, making this non-trivial — you might as well <Link href="/free">apply for a free license key</Link> instead.
 
 #### 100% offline
 
