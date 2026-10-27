@@ -271,7 +271,7 @@ function collectResources(entryRoot: ManifestChunk, manifest: Manifest) {
 // </head>
 // ```
 function getHash(src: string) {
-  // src is guaranteed to end with `.[hash][extname]`, see pluginDistFileNames.ts
+  // - `src` is guaranteed to end with `.[hash][extname]` — see pluginDistFileNames.ts
   // - [extname] is empty for a file without extension, e.g. `LICENSE.C1uziuNB`
   const parts = path.posix.basename(src).split('.')
   const hash = parts.length === 2 ? parts[1] : parts.at(-2)
