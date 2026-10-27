@@ -3,6 +3,9 @@
 //
 // Loaded only if the pageContext has streamed values (see getJsonSerializedInHtml.ts and
 // ../runtime-client-routing/streamedValues.ts).
+//
+// HANG_DESIGN: the user navigated away => the values still pending never resolve nor reject.
+// - Performance & UI: it saves the UI work and doesn't re-render, and preventing the UI from updating is probably a UX improvement.
 
 export { parsePageContextHtml }
 export { readPageContextJsonStreamed }
@@ -22,7 +25,7 @@ function parsePageContextHtml(pageContextJson: string, abortSignal?: AbortSignal
   const linesQueued = Array.isArray(g.__vike_streamed) ? g.__vike_streamed : []
   g.__vike_streamed = {
     push(line: string) {
-      // The user navigated away => the lines that the HTML still sends are ignored: the values still pending never resolve nor reject
+      // See HANG_DESIGN
       if (!abortSignal?.aborted) receiver.onLine(line)
     },
   }
@@ -50,7 +53,7 @@ async function readPageContextJsonStreamed(
       }
       receiver.fail(new Error('The pageContext.json response ended before the streamed pageContext values ended'))
     } catch (err) {
-      // Performance & UI: the user navigated away => the values still pending never resolve nor reject (improves performance as it saves the UI work and doesn't re-render..., and preventing the UI from updating is probably a UX improvement)
+      // See HANG_DESIGN
       if (abortSignal?.aborted) return
       // E.g. the server aborted the response
       receiver.fail(err)
