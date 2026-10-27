@@ -8,6 +8,7 @@ import {
   getConfigBuildErrorFormatted,
   type VikeTranspileCache,
 } from './transpileAndExecuteFile.js'
+import { resolvePointerImport } from './resolvePointerImport.js'
 import { getFilePathResolved } from '../getFilePath.js'
 import { stripAnsi } from '../../../../utils/colorsServer.js'
 import { toPosixPath } from '../../../../utils/path.js'
@@ -318,6 +319,18 @@ describe('transpileAndExecuteFile()', () => {
       expect(await getErr(load('/pages/pluginError/+config.ts'))).toBe(errVikePlugin)
     } finally {
       spy.mockRestore()
+    }
+  })
+})
+
+describe('resolvePointerImport()', () => {
+  it('path aliases in import strings', () => {
+    const importerFilePath = getFilePathResolved({ filePathAbsoluteUserRootDir: '/pages/+config.js', userRootDir })
+    // Defined by tsconfig.json (Node.js can't resolve it) and by package.json (Node.js resolves it)
+    for (const importPath of ['#root/components/Page', '#utils/fromPackageJsonImports']) {
+      expect(() => resolvePointerImport(`import:${importPath}:default`, importerFilePath, userRootDir, 'Page')).toThrow(
+        '[Wrong Usage]',
+      )
     }
   })
 })
