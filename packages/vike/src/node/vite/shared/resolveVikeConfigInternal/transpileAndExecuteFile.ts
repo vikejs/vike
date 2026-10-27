@@ -413,7 +413,10 @@ function classifyImport(
       filePathAbsoluteFilesystem: importPathResolved,
       userRootDir,
     })
-    if (filePathAbsoluteUserRootDir && !isMostLikelyNpmPkgImport) {
+    if (
+      !isImportNpmPackageOrPathAlias(importPathOriginal) ||
+      (filePathAbsoluteUserRootDir && !isMostLikelyNpmPkgImport)
+    ) {
       // `importPathOriginal` is most likely a path alias.
       // - We have to use Rolldown's path alias resolution, because:
       //   - Vike doesn't resolve path aliases at all.
