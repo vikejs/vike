@@ -131,9 +131,9 @@ async function renderPageClient(renderArgs: RenderArgs) {
   let { scrollTarget } = renderArgs
   const { previousPageContext } = globalObject
 
-  const { isRenderOutdated, setHydrationCanBeAborted, isFirstRender } = getIsRenderOutdated()
-
   const abortController = new AbortController()
+  const { isRenderOutdated, setHydrationCanBeAborted, setOnRenderClientCalled, isFirstRender } =
+    getIsRenderOutdated(abortController)
 
   const pageContextBeginArgs = {
     urlOriginal,
@@ -319,13 +319,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
       // Render page view
       return await renderPageView(pageContext)
     } else {
-      // Nothing renders this navigation anymore => stop downloading its streamed values
-      const abortIfOutdated = () => {
-        if (!isRenderOutdated()) return false
-        abortController.abort()
-        return true
-      }
-
       // Fetch pageContext from server-side hooks
       let pageContextFromHooksServer: PageContextFromHooksServer
       const pageContextPrefetched = getPageContextPrefetched(pageContext)
@@ -343,7 +336,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
           return
         }
       }
-      if (abortIfOutdated()) return
+      if (isRenderOutdated()) return
       // TO-DO/eventually: create helper assertPageContextFromHook()
       assert(!('urlOriginal' in pageContextFromHooksServer))
       objectAssign(pageContext, pageContextFromHooksServer)
@@ -356,7 +349,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
         await onError(err)
         return
       }
-      if (abortIfOutdated()) return
+      if (isRenderOutdated()) return
       updateType(pageContext, pageContextFromHooksClient)
 
       return await renderPageView(pageContext)
@@ -558,6 +551,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     globalObject.previousPageContext = pageContext
     // There should never be concurrent onRenderClient() calls
     assert(globalObject.onRenderClientPreviousPromise === undefined)
+    setOnRenderClientCalled()
     const onRenderClientPromise = (async () => {
       let onRenderClientError: unknown
       try {
@@ -724,7 +718,7 @@ function disableClientRouting(err: unknown, logError: boolean) {
   )
 }
 
-function getIsRenderOutdated() {
+function getIsRenderOutdated(abortController: AbortController) {
   const renderNumber = ++globalObject.renderCounter
   assert(renderNumber >= 1)
 
@@ -732,6 +726,11 @@ function getIsRenderOutdated() {
   const setHydrationCanBeAborted = () => {
     hydrationCanBeAborted = true
     globalObject.hydrationAwaitPromiseResolve()
+  }
+
+  let onRenderClientCalled = false
+  const setOnRenderClientCalled = () => {
+    onRenderClientCalled = true
   }
 
   /** Whether the rendering should be aborted because a new rendering has started. We should call this after each `await`. */
@@ -745,12 +744,17 @@ function getIsRenderOutdated() {
     }
 
     // If there is a newer rendering, we should abort all previous renderings
-    return renderNumber !== globalObject.renderCounter
+    const isOutdated = renderNumber !== globalObject.renderCounter
+    // Nothing renders this navigation anymore => abort its pageContext.abortSignal (e.g. stop downloading its streamed values)
+    // - Not once its onRenderClient() was called: its page is shown, and it stays shown if the newer navigation doesn't render (e.g. `throw abort()`)
+    if (isOutdated && !onRenderClientCalled) abortController.abort()
+    return isOutdated
   }
 
   return {
     isRenderOutdated,
     setHydrationCanBeAborted,
+    setOnRenderClientCalled,
     isFirstRender: renderNumber === 1,
   }
 }
