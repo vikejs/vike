@@ -158,16 +158,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
     if (isRenderOutdated()) return
   }
 
-  // Abort the previous navigation and the shown page at once, before waiting for the shown page's onRenderClient() below
-  // - Except for a navigation with doNotRenderIfSamePage: it renders nothing when the URL points to the shown page, which then stays on screen and keeps using its pageContext.abortSignal
-  //   - Such a navigation aborts the shown page below, once it knows that it renders another page
-  if (!doNotRenderIfSamePage) abortPreviousNavigation(abortController)
-
-  // Ensure no concurrent onRenderClient() calls.
-  // - We could `await globalObject.onRenderClientPreviousPromise` later just before execHookOnRenderClient() but we prefer doing it early to ensure `getPageContext() === usePageContext()` (and maybe it prevents other potential inconsistencies?).
-  await globalObject.onRenderClientPreviousPromise
-  if (isRenderOutdated()) return
-
   return await renderPageNominal()
 
   async function renderPageNominal() {
@@ -249,9 +239,19 @@ async function renderPageClient(renderArgs: RenderArgs) {
           // Skip's Vike's rendering; let the user handle the navigation
           return
         }
-        if (doNotRenderIfSamePage) abortPreviousNavigation(abortController)
       }
     }
+
+    // Abort the previous navigation and the shown page, before waiting for the shown page's onRenderClient() below
+    // - We abort after routing: a navigation cancelled by `throw abort()`, or a doNotRenderIfSamePage navigation to the shown page, returns above and leaves the shown page untouched
+    abortPreviousNavigation(abortController)
+
+    // Ensure no concurrent onRenderClient() calls.
+    // - We could `await globalObject.onRenderClientPreviousPromise` later just before execHookOnRenderClient() but we prefer doing it early to ensure `getPageContext() === usePageContext()` (and maybe it prevents other potential inconsistencies?).
+    //   - But we wait after routing, so that the abort above comes after +onBeforeRoute. Thus, during +onBeforeRoute, `getPageContext()` may not match `usePageContext()` yet.
+    await globalObject.onRenderClientPreviousPromise
+    if (isRenderOutdated()) return
+
     assert(hasProp(pageContext, 'pageId', 'string')) // Help TS
     globalObject.currentPageContext = pageContext
     addLinkPrefetchHandlers_unwatch()
@@ -378,8 +378,10 @@ async function renderPageClient(renderArgs: RenderArgs) {
     // pageContext
     const pageContext = await getPageContextBegin(true, pageContextBeginArgs)
     if (isRenderOutdated()) return
-    // The error page replaces the shown page, and the error may have been thrown before the earlier doNotRenderIfSamePage check
-    if (doNotRenderIfSamePage) abortPreviousNavigation(abortController)
+    // The error page replaces the shown page, and the error may have been thrown by routing, before the shown page was aborted and its onRenderClient() awaited
+    abortPreviousNavigation(abortController)
+    await globalObject.onRenderClientPreviousPromise
+    if (isRenderOutdated()) return
     objectAssign(pageContext, {
       errorWhileRendering: err,
     })
@@ -752,7 +754,7 @@ function getRenderCount(): number {
 // Abort the previous navigation: their hooks can use pageContext.abortSignal to stop, e.g. +data or +onRenderClient
 // - It also aborts streamed values of the current shown page
 function abortPreviousNavigation(abortControllerNew: AbortController) {
-  // A navigation with doNotRenderIfSamePage may call it twice: after the same-page check, then upon an error
+  // A navigation may call it twice: after routing, then upon an error
   if (globalObject.abortController === abortControllerNew) return
   // Old abortController
   globalObject.abortController?.abort()
