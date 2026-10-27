@@ -127,7 +127,7 @@ function getAssetFileName(
     return `${dir}/${name}.[hash][extname]`
   }
 
-  name = name.slice(0, name.length - path.posix.extname(name).length)
+  name = path.posix.parse(name).name
   name = clean(name, userRootDir)
   return `${dir}/${name}.[hash][extname]`
 }
