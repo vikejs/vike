@@ -80,7 +80,10 @@ function resolvePointerImportData(
 
     filePath = getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir })
   } else {
-    assert(isImportNpmPackageOrPathAlias(importPath))
+    assertUsage(
+      isImportNpmPackageOrPathAlias(importPath),
+      `The import ${pc.code(pointerImportData.importString)} defined by ${importerFilePath.filePathToShowToUser} is neither a relative import path nor an npm package import: import strings don't support path aliases, use a relative import path instead or an import with ${pc.code("{ type: 'vike:pointer' }")}, see https://vike.dev/path-aliases#config-files`,
+    )
     const importPathAbsolute = importPath
     if (filePathAbsoluteFilesystem) {
       filePath = getFilePathResolved({
