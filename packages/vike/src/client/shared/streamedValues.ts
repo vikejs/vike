@@ -20,11 +20,13 @@ function parsePageContextHtml(pageContextJson: string, abortSignal?: AbortSignal
   const [pageContext] = parse(pageContextJson, { reviver: receiver.reviver }) as [unknown]
   const g = self as { __vike_streamed?: string[] | { push(line: string): void } }
   const linesQueued = Array.isArray(g.__vike_streamed) ? g.__vike_streamed : []
-  g.__vike_streamed = { push: receiver.onLine }
+  g.__vike_streamed = {
+    push(line: string) {
+      // The user navigated away => the lines that the HTML still sends are ignored: the values still pending never resolve nor reject
+      if (!abortSignal?.aborted) receiver.onLine(line)
+    },
+  }
   linesQueued.forEach(receiver.onLine)
-  // The user navigated away => the values still pending reject with `pageContext.abortSignal.reason`
-  // - The lines that the HTML still sends afterwards have no effect on them
-  abortSignal?.addEventListener('abort', () => receiver.fail(abortSignal.reason))
   return pageContext
 }
 
@@ -48,11 +50,10 @@ async function readPageContextJsonStreamed(
       }
       receiver.fail(new Error('The pageContext.json response ended before the streamed pageContext values ended'))
     } catch (err) {
-      // The user navigated away => the values still pending reject with `pageContext.abortSignal.reason`
-      // - Otherwise they reject with the error of reading the aborted response, which differs between browsers (e.g. Chromium throws a new AbortError)
-      if (abortSignal?.aborted) receiver.fail(abortSignal.reason)
+      // The user navigated away => the values still pending never resolve nor reject
+      if (abortSignal?.aborted) return
       // E.g. the server aborted the response
-      else receiver.fail(err)
+      receiver.fail(err)
     }
   })()
   return pageContextFromServer
