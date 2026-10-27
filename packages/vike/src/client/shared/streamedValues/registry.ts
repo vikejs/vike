@@ -44,14 +44,14 @@ function createReceiver(abortSignal?: AbortSignal) {
   return {
     reviver,
     onLine(lineStr: string) {
-      if (abortSignal?.aborted) return // See HANG_DESIGN
+      if (abortSignal?.aborted) return // See HANG_DESIGN above
       const line = JSON.parse(lineStr) as Line
       // Unknown if contained in a chunk nobody read
       streamedValues.get(line.s)?.push(line)
     },
     /** The response failed or ended: the values that didn't end fail */
     fail(err: unknown) {
-      if (abortSignal?.aborted) return // See HANG_DESIGN
+      if (abortSignal?.aborted) return // See HANG_DESIGN above
       streamedValues.forEach((streamedValue) => streamedValue.fail(err))
     },
   }
