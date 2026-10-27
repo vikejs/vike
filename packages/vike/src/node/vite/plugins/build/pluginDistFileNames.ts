@@ -127,7 +127,10 @@ function getAssetFileName(
     return `${dir}/${name}.[hash][extname]`
   }
 
-  name = name.split('.').slice(0, -1).join('.')
+  name = path.posix.parse(name).name
+  // Remove leading `.` from filename, e.g. `.htaccess`
+  //  - Otherwise some static servers don't serve it, e.g. sirv (`$ vike preview`)
+  name = name.replace(/^\./, '')
   name = clean(name, userRootDir)
   return `${dir}/${name}.[hash][extname]`
 }
