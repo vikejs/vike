@@ -18,8 +18,12 @@ type StreamedValueType = {
   revive: (parseValue: (value: unknown) => unknown) => StreamedValue
 }
 type StreamedValue = { value: unknown; push: (line: Line) => void; fail: (err: unknown) => void }
-
 const types = [readableStream, promise, asyncIterable]
+
+// HANG_DESIGN: when the user navigates away, the values still pending neither resolve nor reject. The goals:
+// - Performance: the page the user left doesn't re-render.
+// - UX: its UI stays as it is, which is probably the better UX.
+// - DX: navigating away never rejects a streamed value into the app's own code (an error boundary, a `.then()`).
 
 function createReceiver(abortSignal?: AbortSignal) {
   const streamedValues = new Map<number, StreamedValue>()
@@ -37,21 +41,17 @@ function createReceiver(abortSignal?: AbortSignal) {
     }
     return { replacement: streamedValue.value }
   }
-  // HANG_DESIGN: when the user navigates away, the values still pending neither resolve nor reject. The goals:
-  // - Performance: the page the user left doesn't re-render.
-  // - UX: its UI stays as it is, which is probably the better UX.
-  // - DX: navigating away never rejects a streamed value into the app's own code (an error boundary, a `.then()`).
   return {
     reviver,
     onLine(lineStr: string) {
-      if (abortSignal?.aborted) return
+      if (abortSignal?.aborted) return // See HANG_DESIGN
       const line = JSON.parse(lineStr) as Line
       // Unknown if contained in a chunk nobody read
       streamedValues.get(line.s)?.push(line)
     },
     /** The response failed or ended: the values that didn't end fail */
     fail(err: unknown) {
-      if (abortSignal?.aborted) return
+      if (abortSignal?.aborted) return // See HANG_DESIGN
       streamedValues.forEach((streamedValue) => streamedValue.fail(err))
     },
   }
