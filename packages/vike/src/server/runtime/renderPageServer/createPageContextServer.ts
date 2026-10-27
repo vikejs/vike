@@ -98,7 +98,7 @@ function createPageContextBase(pageContextInit: PageContextInit | null, isPreren
     isClientSide: false as const,
     isPrerendering,
     _requestId: requestId,
-    // This `pageContext.abortSignal` is a fake: it never aborts
+    // This `pageContext.abortSignal` is fake: it never aborts
     // - It's a fallback and its only purpose is to make sure pageContext.abortSignal is always defined, so that the user can simply always listen to `pageContext.abortSignal` => significant DX improvement for the user
     //   - So that, for example, toggling +prerender doesn't break user code
     abortSignal: new AbortController().signal,
