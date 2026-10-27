@@ -320,7 +320,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
       return await renderPageView(pageContext)
     } else {
       // Nothing renders this navigation anymore => stop downloading its streamed values
-      const isDropped = () => {
+      const abortIfOutdated = () => {
         if (!isRenderOutdated()) return false
         abortController.abort()
         return true
@@ -343,7 +343,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
           return
         }
       }
-      if (isDropped()) return
+      if (abortIfOutdated()) return
       // TO-DO/eventually: create helper assertPageContextFromHook()
       assert(!('urlOriginal' in pageContextFromHooksServer))
       objectAssign(pageContext, pageContextFromHooksServer)
@@ -356,7 +356,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
         await onError(err)
         return
       }
-      if (isDropped()) return
+      if (abortIfOutdated()) return
       updateType(pageContext, pageContextFromHooksClient)
 
       return await renderPageView(pageContext)
