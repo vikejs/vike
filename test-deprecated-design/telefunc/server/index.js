@@ -31,7 +31,7 @@ async function startServer() {
   app.use(express.text()) // Parse & make HTTP request body available at `req.body`
   app.all('/_telefunc', async (req, res) => {
     const context = {}
-    const httpResponse = await serve({ url: req.originalUrl, method: req.method, body: req.body, context })
+    const httpResponse = await serve({ url: req.originalUrl, method: req.method, body: req.body, headers: req.headers, context })
     const { body, statusCode, headers } = httpResponse
     headers.forEach(([name, value]) => res.setHeader(name, value))
     res.status(statusCode).send(body)
