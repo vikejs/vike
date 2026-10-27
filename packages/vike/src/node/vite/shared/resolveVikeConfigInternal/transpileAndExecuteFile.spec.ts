@@ -83,6 +83,26 @@ describe('transpileAndExecuteFile()', () => {
     expect(dependencies).toEqual(['/pages/basics/+config.ts', '/utils/fromPackageJsonImports.js', '/utils/helper.ts'])
   })
 
+  it('pointer import through a path alias resolving outside of userRootDir', async () => {
+    const outsideDir = toPosixPath(fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'vike-outside-'))))
+    try {
+      fs.writeFileSync(`${outsideDir}/Outside.jsx`, 'export const Outside = 1')
+      writeFiles({
+        'tsconfig.json': JSON.stringify({
+          compilerOptions: { paths: { '#root/*': ['./*'], '#outside/*': [`${outsideDir}/*`] } },
+        }),
+        'pages/outside/+config.ts': [
+          "import { Outside } from '#outside/Outside.jsx'",
+          'export default { Outside }',
+        ].join('\n'),
+      })
+      const { fileExports } = await load('/pages/outside/+config.ts')
+      expect(fileExports.default).toEqual({ Outside: `${zeroWidthSpace}import:${outsideDir}/Outside.jsx:Outside` })
+    } finally {
+      fs.rmSync(outsideDir, { recursive: true, force: true })
+    }
+  })
+
   it('pointer imports of header files', async () => {
     writeFiles({
       'pages/header/+config.h.js': [
