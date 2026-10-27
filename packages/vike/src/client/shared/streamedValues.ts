@@ -4,8 +4,8 @@
 // Loaded only if the pageContext has streamed values (see getJsonSerializedInHtml.ts and
 // ../runtime-client-routing/streamedValues.ts).
 //
-// HANG_DESIGN: the user navigated away => the values still pending never resolve nor reject.
-// - Performance & UI: it saves the UI work and doesn't re-render, and preventing the UI from updating is probably a UX improvement.
+// HANG_DESIGN: when the user navigates away, the values still pending neither resolve nor reject.
+// - The page the user left doesn't re-render, which saves work, and its UI stays as it is, which is probably the better UX.
 
 export { parsePageContextHtml }
 export { readPageContextJsonStreamed }
