@@ -33,21 +33,21 @@ function testStreamedValues() {
     )
   })
 
-  test('streamed pageContext values: navigating away aborts the values still pending', async () => {
+  test('streamed pageContext values: navigating away leaves the values still pending hanging', async () => {
     // The first page: its values arrive with its HTML
     // - `commit`: once the page has loaded, its last value has arrived and nothing is pending anymore
     await page.goto(getServerUrl() + '/streamed-values', { waitUntil: 'commit' })
     await autoRetry(async () => expect(await page.textContent('#generator')).toBe('first'))
     const slowNextPage = getServerUrl() + '/index.pageContext.json'
     await page.route(slowNextPage, async (route) => {
-      await sleep(1000)
+      await sleep(2000)
       await route.continue()
     })
     await page.click('a[href="/"]')
-    await sleep(300)
-    // The next page isn't rendered yet
+    // The generator's last chunk arrives 1 s after its first one, and the next page isn't rendered yet
+    await sleep(1500)
     expect(await page.textContent('h1')).toBe('Streamed values')
-    expect(await page.textContent('#generator')).toBe('aborted')
+    expect(await page.textContent('#generator')).toBe('first')
     await autoRetry(async () => expect(await page.textContent('h1')).toBe('Welcome'))
 
     // A page rendered upon client-side navigation: its values arrive with its .pageContext.json response
@@ -57,11 +57,10 @@ function testStreamedValues() {
     const onRequestFailed = (request: { url(): string }) => requestsFailed.push(request.url())
     page.on('requestfailed', onRequestFailed)
     await page.click('a[href="/"]')
-    await sleep(300)
-    // The next page isn't rendered yet
+    await sleep(1500)
     expect(await page.textContent('h1')).toBe('Streamed values')
     expect(requestsFailed.join()).toBe(getServerUrl() + '/streamed-values/index.pageContext.json')
-    expect(await page.textContent('#generator')).toBe('aborted')
+    expect(await page.textContent('#generator')).toBe('first')
     await autoRetry(async () => expect(await page.textContent('h1')).toBe('Welcome'))
     page.removeListener('requestfailed', onRequestFailed)
     await page.unroute(slowNextPage)

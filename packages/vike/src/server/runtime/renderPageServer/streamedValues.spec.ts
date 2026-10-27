@@ -197,8 +197,10 @@ describe('client-side navigation', () => {
     const response = new Response(body.pipeThrough(new TransformStream(), { signal: abortController.signal }))
     const pageContextFromServer = (await readPageContextJson(response, abortController.signal)) as any
     abortController.abort()
-    await expect(readAll(pageContextFromServer.g)).rejects.toThrow()
+    const settled = vi.fn()
+    readAll(pageContextFromServer.g).then(settled, settled)
     await sleep(10)
+    expect(settled).not.toHaveBeenCalled()
     expect(onCancel).toHaveBeenCalled()
     expect(onReturn).toHaveBeenCalled()
     process.off('unhandledRejection', unhandled)
