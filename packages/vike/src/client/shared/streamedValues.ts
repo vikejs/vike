@@ -50,7 +50,7 @@ async function readPageContextJsonStreamed(
       }
       receiver.fail(new Error('The pageContext.json response ended before the streamed pageContext values ended'))
     } catch (err) {
-      // The user navigated away => the values still pending never resolve nor reject
+      // Performance & UI: the user navigated away => the values still pending never resolve nor reject (improves performance as it saves the UI work and doesn't re-render..., and preventing the UI from updating is probably a UX improvement)
       if (abortSignal?.aborted) return
       // E.g. the server aborted the response
       receiver.fail(err)
