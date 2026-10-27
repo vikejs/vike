@@ -3,9 +3,6 @@
 //
 // Loaded only if the pageContext has streamed values (see getJsonSerializedInHtml.ts and
 // ../runtime-client-routing/streamedValues.ts).
-//
-// HANG_DESIGN: when the user navigates away, the values still pending neither resolve nor reject.
-// - The page the user left doesn't re-render, which saves work, and its UI stays as it is, which is probably the better UX.
 
 export { parsePageContextHtml }
 export { readPageContextJsonStreamed }
@@ -19,16 +16,11 @@ import '../assertEnvClient.js'
 // First render: the `<script>` tags that follow `<script id="vike_pageContext">` push the lines to `self.__vike_streamed`,
 // before and after Vike's client runtime is loaded.
 function parsePageContextHtml(pageContextJson: string, abortSignal?: AbortSignal): unknown {
-  const receiver = createReceiver()
+  const receiver = createReceiver(abortSignal)
   const [pageContext] = parse(pageContextJson, { reviver: receiver.reviver }) as [unknown]
   const g = self as { __vike_streamed?: string[] | { push(line: string): void } }
   const linesQueued = Array.isArray(g.__vike_streamed) ? g.__vike_streamed : []
-  g.__vike_streamed = {
-    push(line: string) {
-      // See HANG_DESIGN
-      if (!abortSignal?.aborted) receiver.onLine(line)
-    },
-  }
+  g.__vike_streamed = { push: receiver.onLine }
   linesQueued.forEach(receiver.onLine)
   return pageContext
 }
@@ -43,7 +35,7 @@ async function readPageContextJsonStreamed(
   const lines = readLines(reader)
   const { done, value: lineFirst } = await lines.next()
   assert(!done && lineFirst[0] === '[')
-  const receiver = createReceiver()
+  const receiver = createReceiver(abortSignal)
   const pageContextFromServer = parse(lineFirst.slice(1), { reviver: receiver.reviver })
   assert(isObject(pageContextFromServer))
   ;(async () => {
@@ -53,8 +45,6 @@ async function readPageContextJsonStreamed(
       }
       receiver.fail(new Error('The pageContext.json response ended before the streamed pageContext values ended'))
     } catch (err) {
-      // See HANG_DESIGN
-      if (abortSignal?.aborted) return
       // E.g. the server aborted the response
       receiver.fail(err)
     }

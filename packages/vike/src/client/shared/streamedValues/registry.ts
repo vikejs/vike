@@ -21,7 +21,7 @@ type StreamedValue = { value: unknown; push: (line: Line) => void; fail: (err: u
 
 const types = [readableStream, promise, asyncIterable]
 
-function createReceiver() {
+function createReceiver(abortSignal?: AbortSignal) {
   const streamedValues = new Map<number, StreamedValue>()
   const parseValue = (value: unknown) => parseTransform(value, { reviver })
   const reviver: Reviver = (_path, value) => {
@@ -37,15 +37,21 @@ function createReceiver() {
     }
     return { replacement: streamedValue.value }
   }
+  // HANG_DESIGN: when the user navigates away, the values still pending neither resolve nor reject. The goals:
+  // - Performance: the page the user left doesn't re-render.
+  // - UX: its UI stays as it is, which is probably the better UX.
+  // - DX: navigating away never rejects a streamed value into the app's own code (an error boundary, a `.then()`).
   return {
     reviver,
     onLine(lineStr: string) {
+      if (abortSignal?.aborted) return
       const line = JSON.parse(lineStr) as Line
       // Unknown if contained in a chunk nobody read
       streamedValues.get(line.s)?.push(line)
     },
-    /** The response failed, ended or was cancelled: the values that didn't end fail */
+    /** The response failed or ended: the values that didn't end fail */
     fail(err: unknown) {
+      if (abortSignal?.aborted) return
       streamedValues.forEach((streamedValue) => streamedValue.fail(err))
     },
   }
