@@ -336,7 +336,11 @@ async function renderPageClient(renderArgs: RenderArgs) {
           return
         }
       }
-      if (isRenderOutdated()) return
+      if (isRenderOutdated()) {
+        // Nothing renders this navigation anymore => stop downloading its streamed values
+        abortController.abort()
+        return
+      }
       // TO-DO/eventually: create helper assertPageContextFromHook()
       assert(!('urlOriginal' in pageContextFromHooksServer))
       objectAssign(pageContext, pageContextFromHooksServer)
