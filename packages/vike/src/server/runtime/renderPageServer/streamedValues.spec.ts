@@ -207,6 +207,14 @@ describe('client-side navigation', () => {
     expect(unhandled).not.toHaveBeenCalled()
   })
 
+  it('a response that ends early fails the values still pending', async () => {
+    const reader = (getPageContextJson({ _obj: { p: new Promise(() => {}) } } as any) as ReadableStream).getReader()
+    const { value: lineFirst } = await reader.read()
+    reader.cancel()
+    const pageContextFromServer = (await readPageContextJson(new Response(streamOf([lineFirst])))) as any
+    await expect(pageContextFromServer.p).rejects.toThrow('ended before')
+  })
+
   it('breaking out of one value leaves the others intact', async () => {
     const { pageContext } = await navigation({ g: streamOf(['a', 'b', 'c']), late: sleep(20).then(() => 'late') })
     for await (const _ of pageContext.g) break
