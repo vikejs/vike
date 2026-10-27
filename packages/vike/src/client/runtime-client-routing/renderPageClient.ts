@@ -746,7 +746,7 @@ function getIsRenderOutdated(abortController: AbortController) {
     // If there is a newer rendering, we should abort all previous renderings
     const isOutdated = renderNumber !== globalObject.renderCounter
     // Nothing renders this navigation anymore => abort its pageContext.abortSignal (e.g. stop downloading its streamed values)
-    // - Not once its onRenderClient() was called: its page is shown, and it stays shown if the newer navigation doesn't render (e.g. `throw abort()`)
+    // - Not once its onRenderClient() was called: its page may already be shown, and it remains the current page if the newer navigation doesn't render (e.g. `throw abort()`)
     if (isOutdated && !onRenderClientCalled) abortController.abort()
     return isOutdated
   }
