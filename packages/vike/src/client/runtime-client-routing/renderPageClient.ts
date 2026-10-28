@@ -165,7 +165,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
       await handleError({ err })
     }
 
-    // NOT-REALLY-ASYNC: it's only async in development (it retrieves globalContext which is only async in dev)
+    // NOT-REALLY-ASYNC: it's only async in development (it retrieves globalContext which is async only in dev)
     const pageContext = await getPageContextBegin(false, pageContextBeginArgs)
     if (isRenderOutdated()) return
 
