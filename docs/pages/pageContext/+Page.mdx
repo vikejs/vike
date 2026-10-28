@@ -327,7 +327,7 @@ Upon client-side page navigation, you can use `pageContext.previousPageContext` 
 
 <Prop id="abortSignal" />
 
-An [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal) when the user leaves the page, i.e. Vike calls `pageContext.abortSignal.abort()` when:
+An [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal) when the user leaves the page, i.e. Vike fires `pageContext.abortSignal` when:
 - On the server-side, the HTTP request is aborted (e.g. the user closes the browser tab, or navigates to another page).
 - On the client-side, the user navigates to another page.
 

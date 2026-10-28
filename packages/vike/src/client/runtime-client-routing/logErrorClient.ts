@@ -6,9 +6,9 @@ import '../assertEnvClient.js'
 
 function logErrorClient(err: unknown, abortSignal: AbortSignal) {
   if (isAbortSignalError(err, abortSignal)) {
-    // Skip errors caused by `pageContext.abortSignal.abort()`
+    // Skip errors caused by firing `pageContext.abortSignal`
     // - E.g. the user navigates to another page
-    // - Upon `pageContext.abortSignal.abort()` => an error can be thrown, e.g. by `fetch(url, { signal })`
+    // - When `pageContext.abortSignal` is fired => an error can be thrown, e.g. by `fetch(url, { signal })`
     // - https://vike.dev/pageContext#abortSignal
     return
   }
