@@ -8,7 +8,7 @@ function logErrorClient(err: unknown, abortSignal: AbortSignal) {
   if (isAbortSignalError(err, abortSignal)) {
     // Skip errors caused by `pageContext.abortSignal.abort()`
     // - E.g. the user navigates to another page
-    // - Upon `pageContext.abortSignal.abort() => an error can be thrown, e.g. by `fetch(url, { signal })`
+    // - Upon `pageContext.abortSignal.abort()` => an error can be thrown, e.g. by `fetch(url, { signal })`
     // - https://vike.dev/pageContext#abortSignal
     return
   }

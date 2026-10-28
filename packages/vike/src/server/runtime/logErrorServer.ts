@@ -97,7 +97,7 @@ function isAbortOrSignalError(err: unknown, abortSignal: AbortSignal | undefined
 
   // Errors caused by `pageContext.abortSignal.abort()`
   // - E.g. the user closes the browser tab
-  // - Upon `pageContext.abortSignal.abort() => an error can be thrown, e.g. by `fetch(url, { signal })`
+  // - Upon `pageContext.abortSignal.abort()` => an error can be thrown, e.g. by `fetch(url, { signal })`
   // - https://vike.dev/pageContext#abortSignal
   if (isAbortSignalError(err, abortSignal)) return true
 
