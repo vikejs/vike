@@ -10,5 +10,19 @@ function shallowClone<Obj>(obj: Obj): Obj {
   if (!isObject(obj)) return obj
   const clone = Object.create(Object.getPrototypeOf(obj))
   Object.defineProperties(clone, Object.getOwnPropertyDescriptors(obj))
+  // The clone can't call the getters that need the original's internals (e.g. a DOMException's `message`) => it gets their values instead
+  const keysSeen = new Set<PropertyKey>()
+  for (let source: object | null = obj; source && source !== Object.prototype; source = Object.getPrototypeOf(source)) {
+    for (const key of Reflect.ownKeys(source)) {
+      if (keysSeen.has(key)) continue
+      keysSeen.add(key)
+      if (!Object.getOwnPropertyDescriptor(source, key)!.get) continue
+      try {
+        Object.defineProperty(clone, key, { value: Reflect.get(obj, key), writable: true, configurable: true })
+      } catch {
+        // The getter throws, or the property can't be redefined => the clone keeps it as is
+      }
+    }
+  }
   return clone
 }
