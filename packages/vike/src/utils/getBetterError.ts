@@ -38,9 +38,8 @@ function getBetterError(
   }
 
   // Modifications: err.hideStack and err.stack
-  const { message: modsMessage, stack: modsStack, ...mods } = modifications
+  const { message: modsMessage, ...mods } = modifications
   Object.assign(errBetter, mods)
-  if (modsStack !== undefined) set(errBetter, 'stack', modsStack)
 
   // Modifications: err.message
   if (typeof modsMessage === 'string') {
