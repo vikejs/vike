@@ -89,7 +89,7 @@ function ContactUs() {
 
 > For server-only code, you can access environment variables using [`process.env`](https://nodejs.org/en/learn/command-line/how-to-read-environment-variables-from-nodejs), but we generally recommend `import.meta.env.SOME_ENV` instead because <Link href="#static-replacement">it's statically replaced for minimal bundle sizes</Link>.
 > ```ts
-> // ✅ Works, eveywhere and statically replaced (minimizing bundle sizes)
+> // ✅ Works, everywhere and statically replaced (minimizing bundle sizes)
 > import.meta.env.SOME_ENV
 > // ⚠️ Works, but only on server-side and no static replacement
 > process.env.SOME_ENV
