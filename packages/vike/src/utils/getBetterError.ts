@@ -29,29 +29,30 @@ function getBetterError(
     // https://github.com/vitejs/vite/blob/dafd726032daa98d0e614f97aebe9d4dbffe2ea7/packages/vite/src/node/ssr/ssrStacktrace.ts#L95
     errBetter = err as any
   }
-  errBetter.message ??= ''
+  if (errBetter.message == null) setErrorProp(errBetter, 'message', '')
   if (!errBetter.stack) {
     warnMalformed(errOriginal)
-    errBetter.stack = new Error(errBetter.message).stack!
+    setErrorProp(errBetter, 'stack', new Error(errBetter.message).stack!)
   }
 
   // Modifications: err.hideStack and err.stack
-  const { message: modsMessage, ...mods } = modifications
+  const { message: modsMessage, stack: modsStack, ...mods } = modifications
   Object.assign(errBetter, mods)
+  if (modsStack !== undefined) setErrorProp(errBetter, 'stack', modsStack)
 
   // Modifications: err.message
   if (typeof modsMessage === 'string') {
     // Modify err.message
     const messagePrev = errBetter.message
     const messageNext = modsMessage
-    errBetter.message = messageNext
+    setErrorProp(errBetter, 'message', messageNext)
     // Update err.stack
     const messagePrevIdx = errBetter.stack.indexOf(messagePrev)
     if (messagePrevIdx >= 0) {
       // Completely replace the beginning of err.stack — removing prefix such as "SyntaxError: "
       // - Following isn't always true: `err.stack.startsWith(err.message)` — because err.stack can start with "SyntaxError: " whereas err.message doesn't
       const stack = errBetter.stack.slice(messagePrevIdx + messagePrev.length)
-      errBetter.stack = messageNext + stack
+      setErrorProp(errBetter, 'stack', messageNext + stack)
     } else {
       warnMalformed(errOriginal)
     }
@@ -59,13 +60,13 @@ function getBetterError(
     if (modsMessage?.append) {
       const messagePrev = errBetter.message
       const messageNext = errBetter.message + modsMessage.append
-      errBetter.message = messageNext
-      errBetter.stack = errBetter.stack.replace(messagePrev, messageNext)
+      setErrorProp(errBetter, 'message', messageNext)
+      setErrorProp(errBetter, 'stack', errBetter.stack.replace(messagePrev, messageNext))
     }
     if (modsMessage?.prepend) {
       const { prepend } = modsMessage
-      errBetter.message = prepend + errBetter.message
-      errBetter.stack = prepend + errBetter.stack
+      setErrorProp(errBetter, 'message', prepend + errBetter.message)
+      setErrorProp(errBetter, 'stack', prepend + errBetter.stack)
     }
   }
 
@@ -73,6 +74,15 @@ function getBetterError(
   objectAssign(errBetter, { getOriginalError: () => (errOriginal as any)?.getOriginalError?.() ?? errOriginal })
 
   return errBetter
+}
+
+// The property can be read-only, e.g. the `message` getter of a DOMException
+function setErrorProp(err: { message: string; stack: string }, prop: 'message' | 'stack', value: string) {
+  try {
+    err[prop] = value
+  } catch {
+    Object.defineProperty(err, prop, { value, writable: true, configurable: true, enumerable: false })
+  }
 }
 
 // TO-DO/eventually: think about whether logging this warning is a good idea

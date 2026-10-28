@@ -354,6 +354,15 @@ describe('getBetterError', () => {
       expect(result.message).toBe('[ERROR] Original\nHint: check config')
       expect(result.hideStack).toBe(true)
     })
+
+    it('handles a read-only message (e.g. the AbortError of an aborted signal)', () => {
+      const error = new DOMException('This operation was aborted', 'AbortError')
+      const result = getBetterError(error, { message: { prepend: '[ERROR] ' } })
+
+      expect(result).toBe(error)
+      expect(result.message).toBe('[ERROR] This operation was aborted')
+      expect(result.stack.startsWith('[ERROR] ')).toBe(true)
+    })
   })
 
   describe('real-world use cases', () => {
