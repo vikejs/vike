@@ -29,7 +29,7 @@ function getBetterError(
     // https://github.com/vitejs/vite/blob/dafd726032daa98d0e614f97aebe9d4dbffe2ea7/packages/vite/src/node/ssr/ssrStacktrace.ts#L95
     errBetter = err as any
   }
-  if (errBetter.message == null) setErrorProp(errBetter, 'message', '')
+  if (!errBetter.message) setErrorProp(errBetter, 'message', '')
   if (!errBetter.stack) {
     warnMalformed(errOriginal)
     setErrorProp(errBetter, 'stack', new Error(errBetter.message).stack!)
