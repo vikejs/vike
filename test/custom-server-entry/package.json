@@ -6,7 +6,7 @@
   },
   "dependencies": {
     "@universal-middleware/core": "^0.7.2",
-    "@universal-middleware/hono": "^0.6.0",
+    "@universal-middleware/hono": "^0.6.1",
     "hono": "^4.13.13",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
