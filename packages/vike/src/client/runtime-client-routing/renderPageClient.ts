@@ -244,7 +244,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     assert(hasProp(pageContext, 'pageId', 'string')) // Help TS
 
     // We commit the navigation after routing, because a navigation can be reverted by:
-    // - `throw abort()` during routing, see https://vike.dev/onBeforeRoute#throw-abort
+    // - `throw abort()` during routing — https://vike.dev/onBeforeRoute#throw-abort
     // - `doNotRenderIfSamePage` navigation to the shown page (it leaves the shown page untouched)
     await commitNavigation(abortController)
     if (isRenderOutdated()) return
@@ -768,19 +768,19 @@ async function commitNavigation(abortController: AbortController) {
   // Call `pageContext.abortSignal.abort()` for the previous page
   abortPreviousNavigation(abortController)
 
-  // Ensure no concurrent +onRenderClient calls.
+  // Ensure no concurrent +onRenderClient calls
   // - We could `await globalObject.onRenderClientPreviousPromise` later just before execHookOnRenderClient() but we prefer doing it early so that `getPageContext()` returns the pageContext of the next page and not the pageContext of the currently shown page (i.e. `getPageContext() === usePageContext()`)
   //   - Awaiting early might also prevent other potential issues (I don't know)
   await globalObject.onRenderClientPreviousPromise
 }
 
-// Call `pageContext.abortSignal.abort()` for the previous page:
+// Call `pageContext.abortSignal.abort()` for the previous page
 // - User hooks, e.g. +data, can use pageContext.abortSignal to stop — https://vike.dev/pageContext#abortSignal
 //   - Also extensions, e.g. vike-react's +onRenderClient — https://vike.dev/onRenderClient#abort
-// - It aborts streamed pageContext values — https://vike.dev/passToClient#streaming
-// - It aborts the fetch() call that retrieves pageContext from the server
+// - Also aborts streamed pageContext values — https://vike.dev/passToClient#streaming
+// - Also aborts the fetch() call that retrieves pageContext from the server
 function abortPreviousNavigation(abortControllerNew: AbortController) {
-  // A navigation may call abortPreviousNavigation() twice: after routing, then upon an error
+  // A navigation may call abortPreviousNavigation() twice
   if (globalObject.abortController === abortControllerNew) return
   // Old abortController
   globalObject.abortController?.abort()
