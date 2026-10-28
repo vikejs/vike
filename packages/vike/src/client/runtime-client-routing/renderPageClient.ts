@@ -750,7 +750,7 @@ function getIsRenderOutdated(abortController: AbortController) {
     // Nothing renders this navigation anymore => abort its pageContext.abortSignal (e.g. stop downloading its streamed values)
     // - Only until its onRenderClient() was called:
     //   - Before onRenderClient(), this navigation returns either way, and if it's still routing then abortPreviousNavigation() can't abort it (globalObject.abortController is set after routing)
-    //   - After onRenderClient(), its page may already be shown and stays shown if the newer navigation is cancelled, so abortPreviousNavigation() aborts it once the newer navigation has routed
+    //   - After onRenderClient(), its page may already be shown and stays shown if the newer navigation is cancelled (`throw abort()`), so we let `abortPreviousNavigation()` of the next navigation call `abortController.abort()` instead of doing it here
     if (isOutdated && !onRenderClientCalled) abortController.abort()
     return isOutdated
   }
