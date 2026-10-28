@@ -13,8 +13,6 @@ export { logErrorServerDev }
 export type { LogType }
 export type { AddAssertTagsDev }
 
-import { isAbortError } from '../../../shared-server-client/route/abort.js'
-import { isAbortSignalError } from '../../../shared-server-client/isAbortSignalError.js'
 import { getViteConfig } from '../../../server/runtime/globalContext.js'
 import {
   assertPageContext_logRuntime,
@@ -36,7 +34,7 @@ import {
 import pc from '@brillout/picocolors'
 import { isUserHookError } from '../../../shared-server-client/hooks/execHook.js'
 import { getViteDevServer } from '../../../server/runtime/globalContext.js'
-import { logErrorServer } from '../../../server/runtime/logErrorServer.js'
+import { isAbortOrSignalError, logErrorServer } from '../../../server/runtime/logErrorServer.js'
 import { getBetterError } from '../../../utils/getBetterError.js'
 import { getRequestId_withAsyncHook } from '../../../server/runtime/asyncHook.js'
 import { getRequestTag, type RequestTag } from '../../../server/runtime/renderPageServer.js'
@@ -75,13 +73,7 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
 
   applyViteSourceMap(err)
 
-  // Skip `throw render()` / `throw redirect()`
-  if (isAbortError(err) && !isDebugError()) return
-  // Skip errors caused by `pageContext.abortSignal.abort()`
-  // - E.g. the user closes the browser tab
-  // - Upon `pageContext.abortSignal.abort() => an error can be thrown, e.g. by `fetch(url, { signal })`
-  // - https://vike.dev/pageContext#abortSignal
-  if (isAbortSignalError(err, pageContext?.abortSignal)) return
+  if (isAbortOrSignalError(err, pageContext?.abortSignal)) return
 
   const tagSource = getTagSource(pageContext?._requestId)
   const logErr = (err: unknown) => {
