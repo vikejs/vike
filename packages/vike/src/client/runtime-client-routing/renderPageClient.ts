@@ -248,7 +248,8 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     // Ensure no concurrent onRenderClient() calls.
     // - We could `await globalObject.onRenderClientPreviousPromise` later just before execHookOnRenderClient() but we prefer doing it early to ensure `getPageContext() === usePageContext()` (and maybe it prevents other potential inconsistencies?).
-    //   - But we wait after routing, so that the abort above comes after +onBeforeRoute. Thus, during +onBeforeRoute, `getPageContext()` may not match `usePageContext()` yet.
+    //   - But we do it after routing, because the navigation can be aborted during routing: `throw abort()` — onBeforeRoute#throw-abort
+    //      - Thus, during +onBeforeRoute, `getPageContext()` returns the pageContext of the currently shown page instead of the pageContext of the next page being rendered (i.e. it won't match the component's `usePageContext()`).
     await globalObject.onRenderClientPreviousPromise
     if (abortIfOutdated()) return
 
