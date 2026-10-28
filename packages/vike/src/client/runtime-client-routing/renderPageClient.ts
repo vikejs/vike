@@ -774,8 +774,11 @@ async function commitNavigation(abortController: AbortController) {
   await globalObject.onRenderClientPreviousPromise
 }
 
-// Abort the previous navigation: the previous navigation's hooks can use pageContext.abortSignal to stop, e.g. +data or +onRenderClient
-// - When the previous navigation is the shown page, the abort also stops the shown page's streamed values
+// Call `pageContext.abortSignal.abort()` for the previous page:
+// - Users can use pageContext.abortSignal to stop, e.g. +data, see https://vike.dev/pageContext#abortSignal
+//   - Also extensions, e.g. vike-react's +onRenderClient
+// - It aborts streamed pageContext values — https://vike.dev/passToClient#streaming
+// - It aborts the fetch() call that retrieves pageContext from the server
 function abortPreviousNavigation(abortControllerNew: AbortController) {
   // A navigation may call abortPreviousNavigation() twice: after routing, then upon an error
   if (globalObject.abortController === abortControllerNew) return
