@@ -251,7 +251,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     //   - `doNotRenderIfSamePage` navigation to the shown page (it leaves the shown page untouched)
     // - The navigation is committed early
     //   - Good for UI performance: we should call abortPreviousNavigation() ASAP
-    //   - In production, it's commited synchronously after the user click, see NOT-REALLY-ASYNC comments
+    //   - In production, it's committed synchronously after the user click, see NOT-REALLY-ASYNC comments
     await commitNavigation(abortController)
     if (isRenderOutdated()) return
 
