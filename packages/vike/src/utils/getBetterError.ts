@@ -17,6 +17,13 @@ function getBetterError(
   modifications: { message?: string | { prepend?: string; append?: string }; stack?: string; hideStack?: true },
 ) {
   const errOriginal = shallowClone(err)
+  if (isObject(err)) {
+    // The clone can't use the getters that need the original's internals, e.g. a DOMException's `message`
+    for (const prop of ['name', 'message', 'stack'] as const) {
+      if (Object.getOwnPropertyDescriptor(err, prop)?.hasOwnProperty('value')) continue
+      Object.defineProperty(errOriginal, prop, { value: err[prop], writable: true, configurable: true })
+    }
+  }
 
   let errBetter: { message: string; stack: string; hideStack?: true }
 
