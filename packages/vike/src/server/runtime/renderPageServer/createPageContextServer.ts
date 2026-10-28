@@ -94,17 +94,17 @@ function createPageContextServerWithoutGlobalContext(pageContextInit: PageContex
 
 function createPageContextBase(pageContextInit: PageContextInit | null, isPrerendering: boolean, requestId: number) {
   const pageContext = createPageContextObject()
+  objectAssign(pageContext, pageContextInit)
   objectAssign(pageContext, {
     isClientSide: false as const,
     isPrerendering,
     _requestId: requestId,
-  })
-  objectAssign(pageContext, pageContextInit)
-  objectAssign(pageContext, {
-    // This `pageContext.abortSignal` is fake: it never aborts
-    // - It acts as a fallback and its only purpose is to make sure pageContext.abortSignal is always defined, so that the user can simply always listen to `pageContext.abortSignal` => significant DX improvement
-    //   - So that, for example, toggling +prerender doesn't break user code. (Otherwise `pageContext.abortSignal` would become `undefined` upon `+prerender === true`.)
-    abortSignal: pageContextInit?.abortSignal ?? new AbortController().signal,
+    abortSignal:
+      pageContextInit?.abortSignal ??
+      // This `pageContext.abortSignal` is fake: it never aborts
+      // - It acts as a fallback and its only purpose is to make sure pageContext.abortSignal is always defined, so that the user can simply always listen to `pageContext.abortSignal` => significant DX improvement
+      //   - So that, for example, toggling +prerender doesn't break user code. (Otherwise `pageContext.abortSignal` would become `undefined` upon `+prerender === true`.)
+      new AbortController().signal,
   })
   return pageContext
 }
