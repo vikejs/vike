@@ -374,12 +374,13 @@ async function renderPageClient(renderArgs: RenderArgs) {
     // pageContext
     const pageContext = await getPageContextBegin(true, pageContextBeginArgs)
     if (isRenderOutdated()) return
-    // We also call commitNavigation() here, because the error may have been thrown during routing before the commitNavigation() above was called
-    await commitNavigation(abortController)
-    if (isRenderOutdated()) return
     objectAssign(pageContext, {
       errorWhileRendering: err,
     })
+
+    // We also call commitNavigation() here, because the error may have been thrown during routing before the commitNavigation() above was called
+    await commitNavigation(abortController)
+    if (isRenderOutdated()) return
 
     // throw redirect()/render()
     let pageContextAbort: undefined | PageContextAbort
