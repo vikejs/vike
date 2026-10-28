@@ -378,7 +378,8 @@ async function renderPageClient(renderArgs: RenderArgs) {
     // pageContext
     const pageContext = await getPageContextBegin(true, pageContextBeginArgs)
     if (abortIfOutdated()) return
-    // The error page replaces the shown page, and the error may have been thrown by routing, before the shown page was aborted and its onRenderClient() awaited
+    // The error page replaces the shown page: abort the previous navigation and wait for the shown page's onRenderClient()
+    // - The error may have been thrown during routing, before renderPageNominal() did both
     abortPreviousNavigation(abortController)
     await globalObject.onRenderClientPreviousPromise
     if (abortIfOutdated()) return
@@ -746,7 +747,9 @@ function getAbortIfOutdated(abortController: AbortController) {
     // If there is a newer rendering, we should abort all previous renderings
     const isOutdated = renderNumber !== globalObject.renderCounter
     // Nothing renders this navigation anymore => abort its pageContext.abortSignal (e.g. stop downloading its streamed values)
-    // - Not once its onRenderClient() was called: its page may already be shown, and it remains the current page if the newer navigation doesn't render (e.g. `throw abort()`)
+    // - Only until its onRenderClient() was called: `isOutdated` is true as soon as the newer navigation starts, before its routing, which may still be cancelled by `throw abort()`
+    //   - Before onRenderClient(), this navigation returns either way, and if it's still routing then abortPreviousNavigation() can't abort it (globalObject.abortController is set after routing)
+    //   - After onRenderClient(), its page may already be shown and stays shown if the newer navigation is cancelled, so abortPreviousNavigation() aborts it once the newer navigation has routed
     if (isOutdated && !onRenderClientCalled) abortController.abort()
     return isOutdated
   }
@@ -762,10 +765,10 @@ function getRenderCount(): number {
   return globalObject.renderCounter
 }
 
-// Abort the previous navigation: their hooks can use pageContext.abortSignal to stop, e.g. +data or +onRenderClient
-// - It also aborts streamed values of the current shown page
+// Abort the previous navigation: the previous navigation's hooks can use pageContext.abortSignal to stop, e.g. +data or +onRenderClient
+// - When the previous navigation is the shown page, the abort also stops the shown page's streamed values
 function abortPreviousNavigation(abortControllerNew: AbortController) {
-  // A navigation may call it twice: after routing, then upon an error
+  // A navigation may call abortPreviousNavigation() twice: after routing, then upon an error
   if (globalObject.abortController === abortControllerNew) return
   // Old abortController
   globalObject.abortController?.abort()
