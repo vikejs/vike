@@ -357,7 +357,7 @@ async function data(pageContext: PageContextServer) {
 
 > On Cloudflare Workers, `request.signal` aborts when the client cancels the request only if you set the [`enable_request_signal`](https://developers.cloudflare.com/changelog/2025-05-22-handle-request-cancellation/) compatibility flag.
 
-> If you use <Link href="/renderPage">`renderPage()`</Link>, pass the request's signal as `pageContextInit.abortSignal` (otherwise `pageContext.abortSignal` never aborts).
+> On the server-side, if you use <Link href="/renderPage">`renderPage()`</Link>, make sure to pass the request's abort signal as `pageContextInit.abortSignal` (otherwise Vike sets `pageContext.abortSignal` to a fallback that never aborts).
 
 <Prop id="is404" />
 
