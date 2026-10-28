@@ -206,7 +206,7 @@ type PageContextInit = {
    */
   headersOriginal?: unknown // We set it to the type `unknown` instead of the type `HeadersInit` because `HeadersInit` isn't accurate: for example, `http.IncomingHttpHeaders` is a valid input for `new Headers()` but doesn't match the `HeadersInit` init.
   /**
-   * Abort signal when the HTTP request is aborted (e.g. the user closes the browser tab, or the user navigates to another page).
+   * Abort signal when the HTTP request is aborted (e.g. the user closes the browser tab, or navigates to another page).
    *
    * https://vike.dev/pageContext#abortSignal
    */

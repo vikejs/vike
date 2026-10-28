@@ -327,25 +327,22 @@ Upon client-side page navigation, you can use `pageContext.previousPageContext` 
 
 <Prop id="abortSignal" />
 
-An [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal) that aborts when the user leaves the page:
-- On the server-side, when the HTTP request is aborted (e.g. the user closes the browser tab, or navigates to another page while the server is still loading the page's data).
-- On the client-side, when the user navigates to another page.
+An [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal) when the user leaves the page, i.e. Vike calls `pageContext.abortSignal.abort()` when:
+- On the server-side, the HTTP request is aborted (e.g. the user closes the browser tab, or navigates to another page).
+- On the client-side, the user navigates to another page.
 
-Your hooks can pass `pageContext.abortSignal` to `fetch()` to cancel the requests of a page the user left, e.g. the API request of a <Link href="/data">`+data`</Link> hook:
+For example, your <Link href="/data">`+data`</Link> hook can pass `pageContext.abortSignal` to `fetch()` to cancel requests:
 
 ```ts
 // pages/product/@id/+data.ts
 // Environment: server
 
-export { data }
-export type Data = Awaited<ReturnType<typeof data>>
-
 import type { PageContextServer } from 'vike/types'
 
-async function data(pageContext: PageContextServer) {
+export async function data(pageContext: PageContextServer) {
   const { id } = pageContext.routeParams
-  // Cancel the API request if the user navigates away (or closes the tab) before the product is loaded
   const response = await fetch(`https://api.example.com/products/${id}`, {
+    // Cancel the API request if the user navigates away
     signal: pageContext.abortSignal
   })
   const product = await response.json()
@@ -355,9 +352,9 @@ async function data(pageContext: PageContextServer) {
 
 > See also: <Link href="/onRenderClient#abort" />
 
-> On Cloudflare Workers, `request.signal` aborts when the client cancels the request only if you set the [`enable_request_signal`](https://developers.cloudflare.com/changelog/2025-05-22-handle-request-cancellation/) compatibility flag.
+> On Cloudflare Workers, make sure to use the [`enable_request_signal` compatibility flag](https://developers.cloudflare.com/changelog/post/2025-05-22-handle-request-cancellation/#:~:text=enable_request_signal%20compatibility%20flag).
 
-> On the server-side, if you use <Link href="/renderPage">`renderPage()`</Link>, make sure to pass the request's abort signal as `pageContextInit.abortSignal` (otherwise Vike sets `pageContext.abortSignal` to a fallback that never aborts).
+> If you use <Link href="/renderPage">`renderPage()`</Link>, make sure to pass the request's abort signal as `pageContextInit.abortSignal` (otherwise Vike sets `pageContext.abortSignal` to a fallback that never aborts).
 
 <Prop id="is404" />
 
