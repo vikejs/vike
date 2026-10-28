@@ -76,10 +76,11 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
   applyViteSourceMap(err)
 
   // Skip `throw render()` / `throw redirect()`
-  if (isAbortError(err) && !isDebugError()) {
-    return
-  }
-  // Skip errors caused by `pageContext.abortSignal.abort()` (e.g. the user closes the browser tab)
+  if (isAbortError(err) && !isDebugError()) return
+  // Skip errors caused by `pageContext.abortSignal.abort()`
+  // - E.g. the user closes the browser tab
+  // - Upon `pageContext.abortSignal.abort() => an error can be thrown, e.g. by `fetch(url, { signal })`
+  // - https://vike.dev/pageContext#abortSignal
   if (isAbortSignalError(err, pageContext?.abortSignal)) return
 
   const tagSource = getTagSource(pageContext?._requestId)
