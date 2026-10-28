@@ -22,8 +22,8 @@ const types = [readableStream, promise, asyncIterable]
 
 // HANG_DESIGN: when the user navigates to another page, the streamed values still pending neither resolve nor reject — they hang. Rationale:
 // - DX: navigating away doesn't reject a streamed value in the app's own code (an error boundary, a `.then()`)
-// - Performance: the previous page doesn't re-render (upon new streamed values that are now irreleavant)
-// - UX: the UI of the previous page stays as it is, which is probably the better UX (instead of the UI changing upon new streamed values that are now irreleavant)
+// - Performance: the previous page doesn't re-render (upon new streamed values that are now irrelevant)
+// - UX: the UI of the previous page stays as it is, which is probably the better UX (instead of the UI changing upon new streamed values that are now irrelevant)
 
 function createReceiver(abortSignal?: AbortSignal) {
   const streamedValues = new Map<number, StreamedValue>()
