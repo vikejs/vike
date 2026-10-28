@@ -39,7 +39,9 @@ function getBetterError(
 
   // Modifications: err.hideStack and err.stack
   const { message: modsMessage, ...mods } = modifications
-  Object.assign(errBetter, mods)
+  for (const prop of Object.keys(mods) as (keyof typeof mods)[]) {
+    set(errBetter, prop, mods[prop])
+  }
 
   // Modifications: err.message
   if (typeof modsMessage === 'string') {
@@ -78,7 +80,7 @@ function getBetterError(
 }
 
 // The property can be read-only, e.g. the `message` getter of a DOMException
-function set(err: { message: string; stack: string }, prop: 'message' | 'stack', value: string) {
+function set<Err extends object, Prop extends keyof Err>(err: Err, prop: Prop, value: Err[Prop]) {
   try {
     err[prop] = value
   } catch {
