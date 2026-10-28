@@ -110,6 +110,7 @@ type RenderArgs = {
   urlOriginal?: string
   overwriteLastHistoryEntry?: boolean
   pageContextsAborted?: PageContextAborted[]
+  // TODO/after-merge: rename to `doNotRerenderSamePage` ?
   doNotRenderIfSamePage?: boolean
   isClientSideNavigation?: boolean
   pageContextInitClient?: Record<string, unknown>
@@ -241,7 +242,9 @@ async function renderPageClient(renderArgs: RenderArgs) {
       }
     }
 
-    // We commit the navigation after routing: a navigation cancelled by `throw abort()` (see https://vike.dev/onBeforeRoute#throw-abort), or a doNotRenderIfSamePage navigation to the shown page, returns above and leaves the shown page untouched
+    // We commit the navigation after routing, because a navigation can be reverted by:
+    // - `throw abort()` during routing, see https://vike.dev/onBeforeRoute#throw-abort
+    // - `doNotRenderIfSamePage` navigation to the shown page (it leaves the shown page untouched)
     await commitNavigation(abortController)
     if (isRenderOutdated()) return
 
@@ -371,8 +374,8 @@ async function renderPageClient(renderArgs: RenderArgs) {
     // pageContext
     const pageContext = await getPageContextBegin(true, pageContextBeginArgs)
     if (isRenderOutdated()) return
-    // The error page replaces the shown page: abort the previous navigation and wait for the shown page's onRenderClient()
-    // - The error may have been thrown during routing, before renderPageNominal() did both
+    // The error page replaces the shown page
+    // - We also call commitNavigation() here, because the error may have been thrown during routing before the commitNavigation() above was called
     await commitNavigation(abortController)
     if (isRenderOutdated()) return
     objectAssign(pageContext, {
@@ -758,13 +761,16 @@ function getRenderCount(): number {
   return globalObject.renderCounter
 }
 
+// Once the navigation is committed the navigation cannot be reverted:
+// - The user cannot `throw abort()` anymore — see https://vike.dev/onBeforeRoute#throw-abort
+// - However, it can be superseded by a new navigation, i.e. the navigation can still be aborted via `if (isRenderOutdated()) return`
 async function commitNavigation(abortController: AbortController) {
-  // Abort the previous navigation and the shown page, before waiting for the shown page's onRenderClient() below
+  // Call `pageContext.abortSignal.abort()` for the previous page
   abortPreviousNavigation(abortController)
 
-  // Ensure no concurrent onRenderClient() calls.
+  // Ensure no concurrent +onRenderClient calls.
   // - We could `await globalObject.onRenderClientPreviousPromise` later just before execHookOnRenderClient() but we prefer doing it early so that `getPageContext()` returns the pageContext of the next page and not the pageContext of the currently shown page (i.e. `getPageContext() === usePageContext()`)
-  //    - Awaiting early might also prevent other potential issues?
+  //   - Awaiting early might also prevent other potential issues (I don't know)
   await globalObject.onRenderClientPreviousPromise
 }
 
