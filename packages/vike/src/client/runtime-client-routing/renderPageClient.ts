@@ -249,7 +249,9 @@ async function renderPageClient(renderArgs: RenderArgs) {
     // - We commit the navigation after routing, because a navigation can be reverted by:
     //   - `throw abort()` during routing — https://vike.dev/onBeforeRoute#throw-abort
     //   - `doNotRenderIfSamePage` navigation to the shown page (it leaves the shown page untouched)
-    // - In production the navigation is committed early (important for UI performance) — synchronously after the user click, see NOT-REALLY-ASYNC comments
+    // - The navigation is committed early
+    //   - Good for UI performance: we should call abortPreviousNavigation() ASAP
+    //   - In production, it's commited synchronously after the user click, see NOT-REALLY-ASYNC comments
     await commitNavigation(abortController)
     if (isRenderOutdated()) return
 
@@ -382,7 +384,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
       errorWhileRendering: err,
     })
 
-    // We also call commitNavigation() here, because the error may have been thrown during routing before the commitNavigation() above was called
+    // We also call commitNavigation() here, because the error may have been thrown during routing before the other commitNavigation() above was called
     await commitNavigation(abortController)
     if (isRenderOutdated()) return
 
@@ -748,8 +750,8 @@ function getIsRenderOutdated(abortController: AbortController) {
     const isOutdated = renderNumber !== globalObject.renderCounter
     // Nothing renders this navigation anymore => we call `pageContext.abortSignal.abort()`
     // - Only until +onRenderClient was called:
-    //   - Before +onRenderClient, this navigation is aborted (via `return`) and didn't render => always call `pageContext.abortSignal.abort()`
-    //   - After +onRenderClient, its page may already be shown and stays shown if the newer navigation is cancelled (`throw abort()`), so we let `abortPreviousNavigation()` of the next navigation call `pageContext.abortSignal.abort()` instead of doing it here
+    //   - Before +onRenderClient, this navigation is aborted (via `if (isRenderOutdated()) return`) and didn't render the new page (the old page is still fully rendered) => always call `pageContext.abortSignal.abort()`
+    //   - After +onRenderClient, the new page may already be shown (the old page is fully replaced) and should stay shown in case the newer navigation (that superseds this navigation) is cancelled (e.g. `throw abort()`) => we let the abortPreviousNavigation() call of the newer navigation handle the `pageContext.abortSignal.abort()` call instead of doing it here
     if (isOutdated && !onRenderClientCalled) abortController.abort() // i.e. pageContext.abortSignal.abort()
     return isOutdated
   }
@@ -767,7 +769,7 @@ function getRenderCount(): number {
 
 // Once the navigation is committed the navigation cannot be reverted:
 // - The user cannot `throw abort()` anymore — see https://vike.dev/onBeforeRoute#throw-abort
-// - However, it can be superseded by a new navigation, i.e. the navigation can still be aborted via `if (isRenderOutdated()) return`
+// - However, it can be superseded by a new navigation (i.e. `if (isRenderOutdated()) return`)
 async function commitNavigation(abortController: AbortController) {
   // Call `pageContext.abortSignal.abort()` for the previous page
   abortPreviousNavigation(abortController)
@@ -777,7 +779,6 @@ async function commitNavigation(abortController: AbortController) {
   //   - Awaiting early might also prevent other potential issues (I don't know)
   await globalObject.onRenderClientPreviousPromise
 }
-
 // Call `pageContext.abortSignal.abort()` for the previous page
 // - User hooks, e.g. +data, can use pageContext.abortSignal to stop — https://vike.dev/pageContext#abortSignal
 //   - Also extensions, e.g. vike-react's +onRenderClient — https://vike.dev/onRenderClient#abort
