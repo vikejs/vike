@@ -775,8 +775,8 @@ async function commitNavigation(abortController: AbortController) {
 }
 
 // Call `pageContext.abortSignal.abort()` for the previous page:
-// - Users can use pageContext.abortSignal to stop, e.g. +data, see https://vike.dev/pageContext#abortSignal
-//   - Also extensions, e.g. vike-react's +onRenderClient
+// - User hooks, e.g. +data, can use pageContext.abortSignal to stop — https://vike.dev/pageContext#abortSignal
+//   - Also extensions, e.g. vike-react's +onRenderClient — https://vike.dev/onRenderClient#abort
 // - It aborts streamed pageContext values — https://vike.dev/passToClient#streaming
 // - It aborts the fetch() call that retrieves pageContext from the server
 function abortPreviousNavigation(abortControllerNew: AbortController) {
