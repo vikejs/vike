@@ -736,6 +736,7 @@ function getIsRenderOutdated(abortController: AbortController) {
   }
 
   /** Whether the rendering should be aborted because a new rendering has started. We should call this after each `await`. */
+  // TODO/after-merge: rename to abortIfOutdated()
   const isRenderOutdated = (isRenderCleanup?: true) => {
     // Never abort first render if `hydrationCanBeAborted` isn't `true`
     {
