@@ -10,6 +10,7 @@ import { isObject } from './isObject.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
 import { objectAssign } from './objectAssign.js'
 import { shallowClone } from './shallowClone.js'
+import { objectKeys } from './objectKeys.js'
 assertIsNotBrowser()
 
 function getBetterError(
@@ -39,9 +40,7 @@ function getBetterError(
 
   // Modifications: err.hideStack and err.stack
   const { message: modsMessage, ...mods } = modifications
-  for (const prop of Object.keys(mods) as (keyof typeof mods)[]) {
-    set(errBetter, prop, mods[prop])
-  }
+  for (const prop of objectKeys(mods)) set(errBetter, prop, mods[prop])
 
   // Modifications: err.message
   if (typeof modsMessage === 'string') {
