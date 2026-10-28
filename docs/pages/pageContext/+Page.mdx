@@ -331,7 +331,7 @@ An [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal)
 - On the server-side, the HTTP request is aborted (e.g. the user closes the browser tab, or navigates to another page).
 - On the client-side, the user navigates to another page.
 
-For example, your <Link href="/data">`+data`</Link> hook can pass `pageContext.abortSignal` to `fetch()` to cancel requests:
+For example, your <Link href="/data">`+data`</Link> hook can pass `pageContext.abortSignal` to `fetch()`:
 
 ```ts
 // pages/product/@id/+data.ts
@@ -354,7 +354,7 @@ export async function data(pageContext: PageContextServer) {
 
 > On Cloudflare Workers, make sure to use the [`enable_request_signal` compatibility flag](https://developers.cloudflare.com/changelog/post/2025-05-22-handle-request-cancellation/#:~:text=enable_request_signal%20compatibility%20flag).
 
-> If you use <Link href="/renderPage">`renderPage()`</Link>, make sure to pass the request's abort signal as `pageContextInit.abortSignal` (otherwise Vike sets `pageContext.abortSignal` to a fallback that never aborts).
+> If you use <Link href="/renderPage">`renderPage()`</Link>, make sure to pass the request's abort signal (i.e. `renderPage({ abortSignal })`) — otherwise Vike sets `pageContext.abortSignal` to a fallback that never aborts.
 
 <Prop id="is404" />
 
