@@ -374,8 +374,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     // pageContext
     const pageContext = await getPageContextBegin(true, pageContextBeginArgs)
     if (isRenderOutdated()) return
-    // The error page replaces the shown page
-    // - We also call commitNavigation() here, because the error may have been thrown during routing before the commitNavigation() above was called
+    // We also call commitNavigation() here, because the error may have been thrown during routing before the commitNavigation() above was called
     await commitNavigation(abortController)
     if (isRenderOutdated()) return
     objectAssign(pageContext, {
