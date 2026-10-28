@@ -110,7 +110,7 @@ type RenderArgs = {
   urlOriginal?: string
   overwriteLastHistoryEntry?: boolean
   pageContextsAborted?: PageContextAborted[]
-  // TODO/after-merge: rename to `doNotRerenderSamePage` ?
+  // TODO/after-merge: rename to `doNotRerenderIfSamePage` ?
   doNotRenderIfSamePage?: boolean
   isClientSideNavigation?: boolean
   pageContextInitClient?: Record<string, unknown>
