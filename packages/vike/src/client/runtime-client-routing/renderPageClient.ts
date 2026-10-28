@@ -241,15 +241,8 @@ async function renderPageClient(renderArgs: RenderArgs) {
       }
     }
 
-    // Abort the previous navigation and the shown page, before waiting for the shown page's onRenderClient() below
-    // - We abort after routing: a navigation cancelled by `throw abort()`, or a doNotRenderIfSamePage navigation to the shown page, returns above and leaves the shown page untouched
-    abortPreviousNavigation(abortController)
-
-    // Ensure no concurrent onRenderClient() calls.
-    // - We could `await globalObject.onRenderClientPreviousPromise` later just before execHookOnRenderClient() but we prefer doing it early so that `getPageContext()` returns the pageContext of the next page and not the pageContext of the currently shown page (i.e. `getPageContext() === usePageContext()`)
-    //    - Awaiting early might also prevent other potential issues?
-    //   - But we do it after routing, because the navigation can be aborted during routing via `throw abort()` — see https://vike.dev/onBeforeRoute#throw-abort
-    await globalObject.onRenderClientPreviousPromise
+    // We commit the navigation after routing: a navigation cancelled by `throw abort()` (see https://vike.dev/onBeforeRoute#throw-abort), or a doNotRenderIfSamePage navigation to the shown page, returns above and leaves the shown page untouched
+    await commitNavigation(abortController)
     if (isRenderOutdated()) return
 
     assert(hasProp(pageContext, 'pageId', 'string')) // Help TS
@@ -380,8 +373,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     if (isRenderOutdated()) return
     // The error page replaces the shown page: abort the previous navigation and wait for the shown page's onRenderClient()
     // - The error may have been thrown during routing, before renderPageNominal() did both
-    abortPreviousNavigation(abortController)
-    await globalObject.onRenderClientPreviousPromise
+    await commitNavigation(abortController)
     if (isRenderOutdated()) return
     objectAssign(pageContext, {
       errorWhileRendering: err,
@@ -764,6 +756,16 @@ function getIsRenderOutdated(abortController: AbortController) {
 }
 function getRenderCount(): number {
   return globalObject.renderCounter
+}
+
+async function commitNavigation(abortController: AbortController) {
+  // Abort the previous navigation and the shown page, before waiting for the shown page's onRenderClient() below
+  abortPreviousNavigation(abortController)
+
+  // Ensure no concurrent onRenderClient() calls.
+  // - We could `await globalObject.onRenderClientPreviousPromise` later just before execHookOnRenderClient() but we prefer doing it early so that `getPageContext()` returns the pageContext of the next page and not the pageContext of the currently shown page (i.e. `getPageContext() === usePageContext()`)
+  //    - Awaiting early might also prevent other potential issues?
+  await globalObject.onRenderClientPreviousPromise
 }
 
 // Abort the previous navigation: the previous navigation's hooks can use pageContext.abortSignal to stop, e.g. +data or +onRenderClient
