@@ -89,7 +89,7 @@ function setAlreadyLogged(err: unknown): void {
   globalObject.wasAlreadyLogged.add(err)
 }
 
-function isAbortOrSignalError(err: unknown, abortSignal: AbortSignal | undefined) {
+function isAbortOrSignalError(err: unknown, abortSignal: AbortSignal | undefined): boolean {
   if (isDebugError()) return false
 
   // `throw render()` / `throw redirect()`
