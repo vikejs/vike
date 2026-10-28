@@ -241,6 +241,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
         }
       }
     }
+    assert(hasProp(pageContext, 'pageId', 'string')) // Help TS
 
     // We commit the navigation after routing, because a navigation can be reverted by:
     // - `throw abort()` during routing, see https://vike.dev/onBeforeRoute#throw-abort
@@ -248,7 +249,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
     await commitNavigation(abortController)
     if (isRenderOutdated()) return
 
-    assert(hasProp(pageContext, 'pageId', 'string')) // Help TS
     globalObject.currentPageContext = pageContext
     addLinkPrefetchHandlers_unwatch()
 
