@@ -165,6 +165,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
       await handleError({ err })
     }
 
+    // NOT-REALLY-ASYNC: it's only async in development (it retrieves globalContext which is async only in dev)
     const pageContext = await getPageContextBegin(false, pageContextBeginArgs)
     if (isRenderOutdated()) return
 
@@ -183,6 +184,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     {
       let pageContextFromRoute: Awaited<ReturnType<typeof route>>
       try {
+        // NOT-REALLY-ASYNC: it will become sync in the next major release
         pageContextFromRoute = await route(pageContext)
       } catch (err) {
         // throw abort()
@@ -224,6 +226,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
           return
         }
 
+        // NOT-REALLY-ASYNC: it will become sync after we remove the 0.4 design
         const isClientRoutable = await isClientSideRoutable(pageContextFromRoute.pageId, pageContext)
         if (isRenderOutdated()) return
         if (!isClientRoutable) {
@@ -243,9 +246,10 @@ async function renderPageClient(renderArgs: RenderArgs) {
     }
     assert(hasProp(pageContext, 'pageId', 'string')) // Help TS
 
-    // We commit the navigation after routing, because a navigation can be reverted by:
-    // - `throw abort()` during routing — https://vike.dev/onBeforeRoute#throw-abort
-    // - `doNotRenderIfSamePage` navigation to the shown page (it leaves the shown page untouched)
+    // - We commit the navigation after routing, because a navigation can be reverted by:
+    //   - `throw abort()` during routing — https://vike.dev/onBeforeRoute#throw-abort
+    //   - `doNotRenderIfSamePage` navigation to the shown page (it leaves the shown page untouched)
+    // - In producution the navigation is committed early (important for UI performance) — synchronously after the user click, see NOT-REALLY-ASYNC comments
     await commitNavigation(abortController)
     if (isRenderOutdated()) return
 
