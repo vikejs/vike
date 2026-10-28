@@ -74,7 +74,7 @@ const globalObject = getGlobalObject<{
   clientRoutingIsDisabled?: true
   renderCounter: number
   onRenderClientPreviousPromise?: Promise<unknown>
-  // For the navigation that is loading or rendering its page, or the currently shown page
+  // For the latest navigation that got past routing (or failed), set by abortPreviousNavigation()
   abortController?: AbortController
   isFirstRenderDone?: true
   isTransitioning?: true
