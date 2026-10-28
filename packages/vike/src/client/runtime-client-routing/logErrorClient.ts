@@ -6,7 +6,8 @@ import '../assertEnvClient.js'
 
 function logErrorClient(err: unknown, abortSignal: AbortSignal) {
   if (isAbortSignalError(err, abortSignal)) {
-    // Upon `abortSignal.abort()` (i.e. the rendering is aborted, because the user navigated away) => an error can be thrown, e.g. by `fetch(url, { signal })`
+    // Upon `pageContext.abortSignal.abort()` (e.g. the rendering is aborted because the user navigated away) => an error can be thrown, e.g. by `fetch(url, { signal })`
+    // https://vike.dev/pageContext#abortSignal
     return
   }
   if (
