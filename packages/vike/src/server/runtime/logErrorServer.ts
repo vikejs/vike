@@ -90,8 +90,9 @@ function setAlreadyLogged(err: unknown): void {
 }
 
 function isAbortOrSignalError(err: unknown, abortSignal: AbortSignal | undefined) {
+  if (isDebugError()) return false
   // `throw render()` / `throw redirect()`
-  if (isAbortError(err) && !isDebugError()) return true
+  if (isAbortError(err)) return true
   // Errors caused by `pageContext.abortSignal.abort()`
   // - E.g. the user closes the browser tab
   // - Upon `pageContext.abortSignal.abort() => an error can be thrown, e.g. by `fetch(url, { signal })`
