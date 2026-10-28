@@ -35,7 +35,6 @@ import pc from '@brillout/picocolors'
 import { isUserHookError } from '../../../shared-server-client/hooks/execHook.js'
 import { getViteDevServer } from '../../../server/runtime/globalContext.js'
 import { isAbortOrSignalError, logErrorServer } from '../../../server/runtime/logErrorServer.js'
-import { isAbortSignalError } from '../../../shared-server-client/isAbortSignalError.js'
 import { getBetterError } from '../../../utils/getBetterError.js'
 import { getRequestId_withAsyncHook } from '../../../server/runtime/asyncHook.js'
 import { getRequestTag, type RequestTag } from '../../../server/runtime/renderPageServer.js'
@@ -75,11 +74,6 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
   applyViteSourceMap(err)
 
   if (isAbortOrSignalError(err, pageContext?.abortSignal)) return
-  // In debug mode: print it as is, since getBetterError() would throw on the read-only `message` of the DOMException an aborted signal throws
-  if (isAbortSignalError(err, pageContext?.abortSignal)) {
-    logErrorServer(err, pageContext)
-    return
-  }
 
   const tagSource = getTagSource(pageContext?._requestId)
   const logErr = (err: unknown) => {
