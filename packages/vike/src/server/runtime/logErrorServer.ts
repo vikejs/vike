@@ -1,5 +1,6 @@
 export { logErrorServer }
 export { hasAlreadyLogged }
+export { isAbortOrSignalError }
 
 import pc from '@brillout/picocolors'
 import { assertWarning } from '../../utils/assert.js'
@@ -10,6 +11,7 @@ import { isObject } from '../../utils/isObject.js'
 import { execHookOnError } from './renderPageServer/execHookOnError.js'
 import { addErrorHint } from './renderPageServer/addErrorHint.js'
 import { isAbortError } from '../../shared-server-client/route/abort.js'
+import { isAbortSignalError } from '../../shared-server-client/isAbortSignalError.js'
 import type {
   PageContextCreatedServer,
   PageContextCreatedServerWithoutGlobalContext,
@@ -24,7 +26,7 @@ function logErrorServer(
   err: unknown,
   pageContext: null | PageContextCreatedServer | PageContextCreatedServerWithoutGlobalContext,
 ) {
-  if (isAbortError(err) && !isDebugError()) return
+  if (isAbortOrSignalError(err, pageContext?.abortSignal)) return
 
   // I don't think there is a use case for printing the same error object twice? Reloading page throwing error => the same error is printed a second time but it's a different error object.
   if (hasAlreadyLogged(err)) return
@@ -85,4 +87,19 @@ function hasAlreadyLogged(err: unknown): boolean {
 function setAlreadyLogged(err: unknown): void {
   if (!isObject(err)) return
   globalObject.wasAlreadyLogged.add(err)
+}
+
+function isAbortOrSignalError(err: unknown, abortSignal: AbortSignal | undefined): boolean {
+  if (isDebugError()) return false
+
+  // `throw render()` / `throw redirect()`
+  if (isAbortError(err)) return true
+
+  // Errors caused by firing `pageContext.abortSignal`
+  // - E.g. the user closes the browser tab
+  // - When `pageContext.abortSignal` is fired => an error can be thrown, e.g. by `fetch(url, { signal })`
+  // - https://vike.dev/pageContext#abortSignal
+  if (isAbortSignalError(err, abortSignal)) return true
+
+  return false
 }

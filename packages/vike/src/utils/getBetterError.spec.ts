@@ -301,6 +301,25 @@ describe('getBetterError', () => {
 
       expect(withReplace.getOriginalError().message).toBe('Original')
     })
+
+    it('returns a printable clone of a DOMException', () => {
+      const error = new DOMException('This operation was aborted', 'AbortError')
+      const originalError = getBetterError(error, { message: { prepend: '[ERROR] ' } }).getOriginalError()
+
+      expect(String(originalError)).toBe('AbortError: This operation was aborted')
+      expect(originalError.stack).toContain('This operation was aborted')
+      expect(originalError.stack).not.toContain('[ERROR]')
+    })
+
+    it('handles an own non-configurable name (e.g. a Rollup error)', () => {
+      const error = new Error('Expression expected')
+      // Like Rollup's parse errors
+      Object.defineProperty(error, 'name', { value: 'RollupError', writable: true })
+      const result = getBetterError(error, { message: { prepend: '[ERROR] ' } })
+
+      expect(result.message).toBe('[ERROR] Expression expected')
+      expect(result.getOriginalError().name).toBe('RollupError')
+    })
   })
 
   describe('error mutation behavior', () => {
@@ -353,6 +372,15 @@ describe('getBetterError', () => {
       // Both prepend and append are applied
       expect(result.message).toBe('[ERROR] Original\nHint: check config')
       expect(result.hideStack).toBe(true)
+    })
+
+    it('handles a read-only message (e.g. the AbortError of an aborted signal)', () => {
+      const error = new DOMException('This operation was aborted', 'AbortError')
+      const result = getBetterError(error, { message: { prepend: '[ERROR] ' } })
+
+      expect(result).toBe(error)
+      expect(result.message).toBe('[ERROR] This operation was aborted')
+      expect(result.stack.startsWith('[ERROR] ')).toBe(true)
     })
   })
 

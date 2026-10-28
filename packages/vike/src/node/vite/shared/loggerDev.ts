@@ -13,7 +13,6 @@ export { logErrorServerDev }
 export type { LogType }
 export type { AddAssertTagsDev }
 
-import { isAbortError } from '../../../shared-server-client/route/abort.js'
 import { getViteConfig } from '../../../server/runtime/globalContext.js'
 import {
   assertPageContext_logRuntime,
@@ -35,7 +34,7 @@ import {
 import pc from '@brillout/picocolors'
 import { isUserHookError } from '../../../shared-server-client/hooks/execHook.js'
 import { getViteDevServer } from '../../../server/runtime/globalContext.js'
-import { logErrorServer } from '../../../server/runtime/logErrorServer.js'
+import { isAbortOrSignalError, logErrorServer } from '../../../server/runtime/logErrorServer.js'
 import { getBetterError } from '../../../utils/getBetterError.js'
 import { getRequestId_withAsyncHook } from '../../../server/runtime/asyncHook.js'
 import { getRequestTag, type RequestTag } from '../../../server/runtime/renderPageServer.js'
@@ -74,10 +73,7 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
 
   applyViteSourceMap(err)
 
-  // Skip `throw render()` / `throw redirect()`
-  if (isAbortError(err) && !isDebugError()) {
-    return
-  }
+  if (isAbortOrSignalError(err, pageContext?.abortSignal)) return
 
   const tagSource = getTagSource(pageContext?._requestId)
   const logErr = (err: unknown) => {

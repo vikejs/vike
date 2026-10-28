@@ -52,6 +52,7 @@ type PrefetchedPageContext = {
 }
 type PageContextForPrefetch = PageContextCreatedClient & {
   pageId: string
+  abortSignal: AbortSignal
 }
 
 function getPageContextPrefetched(
@@ -306,6 +307,11 @@ async function getPageContextLink(urlOfLink: string) {
   const pageContextLink = await createPageContextClient(urlOfLink)
   // https://vike.dev/pageContext#isPrefetch
   objectAssign(pageContextLink, { isPrefetch: true as const })
+
+  // This `pageContext.abortSignal` is fake: it never aborts
+  // - It acts as a fallback and its only purpose is to make sure pageContext.abortSignal is always defined, so that the user can simply always listen to `pageContext.abortSignal` => significant DX improvement
+  //   - So that, for example, toggling +prefetchStaticAssets doesn't break user code. (Otherwise `pageContext.abortSignal` would become `undefined` upon `+prefetchStaticAssets === true`.)
+  objectAssign(pageContextLink, { abortSignal: new AbortController().signal })
 
   let pageContextFromRoute: PageContextAfterRoute
   try {

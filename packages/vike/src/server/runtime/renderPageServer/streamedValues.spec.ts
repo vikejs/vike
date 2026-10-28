@@ -18,7 +18,7 @@ import {
   writeStreamedValuesHtmlAtStreamEnd,
 } from './html/streamedValuesHtml.js'
 import { parsePageContextHtml } from '../../../client/shared/streamedValues.js'
-import { readPageContextJson, cancelStreamedValues } from '../../../client/runtime-client-routing/streamedValues.js'
+import { readPageContextJson } from '../../../client/runtime-client-routing/streamedValues.js'
 import { logRuntimeError } from '../loggerRuntime.js'
 
 const enc = (s: string) => new TextEncoder().encode(s)
@@ -175,7 +175,7 @@ describe('client-side navigation', () => {
     expect(await text).not.toContain('secret')
   })
 
-  it('a new rendering cancels the values on the server', async () => {
+  it('navigating away cancels the values on the server', async () => {
     const onCancel = vi.fn()
     const onReturn = vi.fn()
     async function* infinite() {
@@ -192,14 +192,27 @@ describe('client-side navigation', () => {
     process.on('unhandledRejection', unhandled)
     const _obj = { s: new ReadableStream({ pull: () => new Promise(() => {}), cancel: onCancel }), g: infinite() }
     const body = getPageContextJson({ _obj } as any) as ReadableStream
-    const pageContextFromServer = (await readPageContextJson(new Response(body))) as any
-    cancelStreamedValues({}, true)
-    await expect(readAll(pageContextFromServer.g)).rejects.toThrow('ended before')
+    // Like `fetch(url, { signal })`: aborting the signal cancels the response on the server and errors its body
+    const abortController = new AbortController()
+    const response = new Response(body.pipeThrough(new TransformStream(), { signal: abortController.signal }))
+    const pageContextFromServer = (await readPageContextJson(response, abortController.signal)) as any
+    abortController.abort()
+    const settled = vi.fn()
+    readAll(pageContextFromServer.g).then(settled, settled)
     await sleep(10)
+    expect(settled).not.toHaveBeenCalled()
     expect(onCancel).toHaveBeenCalled()
     expect(onReturn).toHaveBeenCalled()
     process.off('unhandledRejection', unhandled)
     expect(unhandled).not.toHaveBeenCalled()
+  })
+
+  it('a response that ends early fails the values still pending', async () => {
+    const reader = (getPageContextJson({ _obj: { p: new Promise(() => {}) } } as any) as ReadableStream).getReader()
+    const { value: lineFirst } = await reader.read()
+    reader.cancel()
+    const pageContextFromServer = (await readPageContextJson(new Response(streamOf([lineFirst])))) as any
+    await expect(pageContextFromServer.p).rejects.toThrow('ended before')
   })
 
   it('breaking out of one value leaves the others intact', async () => {

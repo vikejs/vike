@@ -205,6 +205,12 @@ type PageContextInit = {
    * https://vike.dev/pageContext#headersOriginal
    */
   headersOriginal?: unknown // We set it to the type `unknown` instead of the type `HeadersInit` because `HeadersInit` isn't accurate: for example, `http.IncomingHttpHeaders` is a valid input for `new Headers()` but doesn't match the `HeadersInit` init.
+  /**
+   * Abort signal when the HTTP request is aborted (e.g. the user closes the browser tab, or navigates to another page).
+   *
+   * https://vike.dev/pageContext#abortSignal
+   */
+  abortSignal?: AbortSignal
   /** @deprecated Set `pageContextInit.urlOriginal` instead  */ // TO-DO/next-major-release: remove
   url?: string
 }
@@ -278,6 +284,7 @@ type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
     isHistoryNavigation?: undefined
     isPrefetch?: undefined
     previousPageContext?: undefined
+    abortSignal: AbortSignal
   }
 
 type PageContextBuiltInClientWithClientRouting<Data> = Partial<PageContextBuiltInCommon<Data>> &
@@ -337,6 +344,12 @@ type PageContextBuiltInClientWithClientRouting<Data> = Partial<PageContextBuiltI
      * https://vike.dev/pageContext#previousPageContext
      */
     previousPageContext: PageContextClient<Data> | null
+    /**
+     * Abort signal when the user navigates to another page.
+     *
+     * https://vike.dev/pageContext#abortSignal
+     */
+    abortSignal: AbortSignal
     /**
      * List of previous `pageContext` aborted by `throw redirect()` or `throw render()` that led to the final rendered page.
      *
