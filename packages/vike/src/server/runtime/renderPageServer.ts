@@ -52,6 +52,7 @@ import {
   createHttpResponseRedirect,
   createHttpResponsePageJson,
   createHttpResponseErrorFallback,
+  createHttpResponseErrorFallbackJson,
   createHttpResponseErrorFallback_noGlobalContext,
   createHttpResponseBaseIsMissing,
 } from './renderPageServer/createHttpResponse.js'
@@ -431,7 +432,9 @@ function prettyUrl(url: string) {
 
 function getPageContextHttpErrorFallback(err: unknown, pageContextBegin: PageContextBegin) {
   const pageContextHttpErrorFallback = fork(pageContextBegin)
-  const httpResponse = createHttpResponseErrorFallback(pageContextBegin)
+  const httpResponse = !pageContextBegin.isClientSideNavigation
+    ? createHttpResponseErrorFallback(pageContextBegin)
+    : createHttpResponseErrorFallbackJson(pageContextBegin)
   objectAssign(pageContextHttpErrorFallback, {
     httpResponse,
     errorWhileRendering: err,
