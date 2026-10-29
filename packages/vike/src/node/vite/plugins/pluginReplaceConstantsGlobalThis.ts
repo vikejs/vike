@@ -8,6 +8,8 @@ import { isDebug } from '../../../utils/debug.js'
 import { escapeRegex } from '../../../utils/escapeRegex.js'
 import { addVirtualFileIdPrefix } from '../../../utils/virtualFileId.js'
 import { assert } from '../../../utils/assert.js'
+import { getVikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
+import { getConfigValueBuildTime } from '../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
 import {
   isViteServerSide_applyToEnvironment,
   isViteServerSide_configEnvironment,
@@ -21,6 +23,8 @@ declare global {
   /** Like `import.meta.env.SSR` but works for `node_modules/` packages with `ssr.external` */
   var __VIKE__IS_CLIENT: boolean
   var __VIKE__IS_DEBUG: boolean
+  /** Whether the error page has a server-only hook — always `true` in development, where the error page's hooks can change without Vite restarting */
+  var __VIKE__ERROR_PAGE_HAS_SERVER_ONLY_HOOK: boolean
   /** Whether the code is processed by Vite, e.g. `true` when server code is `ssr.noExternal` */
   var __VIKE__NO_EXTERNAL: true | undefined
 }
@@ -66,12 +70,15 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
       },
       configEnvironment: {
         order: 'pre',
-        handler(name, config) {
+        async handler(name, config) {
           const isClientSide = !isViteServerSide_configEnvironment(name, config)
           return {
             consumer: isClientSide ? 'client' : 'server',
             define: {
               'globalThis.__VIKE__IS_CLIENT': JSON.stringify(isClientSide),
+              'globalThis.__VIKE__ERROR_PAGE_HAS_SERVER_ONLY_HOOK': JSON.stringify(
+                isDev || (await errorPageHasServerOnlyHook()),
+              ),
             },
           }
         },
@@ -109,4 +116,10 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
       },
     },
   ]
+}
+
+async function errorPageHasServerOnlyHook() {
+  const vikeConfig = await getVikeConfigInternal()
+  const errorPage = vikeConfig._pageConfigs.find((pageConfig) => pageConfig.isErrorPage)
+  return !!errorPage && getConfigValueBuildTime(errorPage, 'hasServerOnlyHook', 'boolean')?.value === true
 }

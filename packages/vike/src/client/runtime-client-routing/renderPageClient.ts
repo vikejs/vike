@@ -24,6 +24,7 @@ import {
   type PageContextFromHooksServer,
   setPageContextInitIsPassedToClient,
   processPageContextFromServer,
+  hasServerOnlyHook,
 } from './getPageContextFromHooks.js'
 import { createPageContextClient, type PageContextCreatedClient } from './createPageContextClient.js'
 import {
@@ -451,9 +452,12 @@ async function renderPageClient(renderArgs: RenderArgs) {
     // Upon a server-side error, the server already sent the error page's pageContext:
     // - Upon `throw render(abortStatusCode)` it's pageContextAbort
     // - Upon any other error it's `err._pageContextErrorPage`
-    const pageContextErrorPageFromServer = hasProp(args.err, '_pageContextErrorPage', 'object')
-      ? args.err._pageContextErrorPage
-      : null
+    const pageContextErrorPageFromServer =
+      globalThis.__VIKE__ERROR_PAGE_HAS_SERVER_ONLY_HOOK &&
+      hasServerOnlyHook(pageContext) &&
+      hasProp(args.err, '_pageContextErrorPage', 'object')
+        ? args.err._pageContextErrorPage
+        : null
     const isErrorPageFromServer =
       (!!pageContextAbort && 'pageId' in pageContextAbort) || !!pageContextErrorPageFromServer
     let pageContextFromHooksServer: PageContextFromHooksServer = { _hasPageContextFromServer: isErrorPageFromServer }

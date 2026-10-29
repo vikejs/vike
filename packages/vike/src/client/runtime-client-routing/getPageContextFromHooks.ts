@@ -3,6 +3,7 @@ export { getPageContextFromHooksClient_firstRender }
 export { getPageContextFromHooksServer }
 export { getPageContextFromHooksServer_firstRender }
 export { setPageContextInitIsPassedToClient }
+export { hasServerOnlyHook }
 export { processPageContextFromServer }
 export type { PageContextFromHooksServer }
 
@@ -100,7 +101,8 @@ async function getPageContextFromHooksServer(
   // only, then we need to fetch pageContext from the server.
   // We do it before executing any client-side hook, because it contains pageContextInit which may be needed for guard() / data() / onBeforeRender(), for example pageContextInit.user is crucial for guard()
   if (isErrorPage) {
-    if (await hasPageContextServer(pageContext)) {
+    // Only if the error page has a server-only hook. The constant saves client-side KBs; it's always `true` in development, where hasServerOnlyHook() decides.
+    if (globalThis.__VIKE__ERROR_PAGE_HAS_SERVER_ONLY_HOOK && hasServerOnlyHook(pageContext)) {
       const pageContextFromServer = await fetchPageContextErrorPageFromServer(pageContext)
       if (pageContextFromServer) {
         pageContextFromHooksServer._hasPageContextFromServer = true
@@ -313,7 +315,7 @@ async function fetchPageContextFromServer(pageContext: {
   // Is there a reason for having two different properties? Can't we use only one property? I guess/think the isServerSideError property was an attempt (a bad idea really) for rendering the error page even though an error occurred on the server-side (which is a bad idea because the added complexity is non-negligible while the added value is minuscule since the error page usually doesn't have any (meaningful / server-side) hooks).
   if ('serverSideError' in pageContextFromServer || isServerSideError in pageContextFromServer) {
     const err = getProjectError(`pageContext couldn't be fetched because an error occurred on the server-side`)
-    if (isServerSideError in pageContextFromServer) {
+    if (globalThis.__VIKE__ERROR_PAGE_HAS_SERVER_ONLY_HOOK && isServerSideError in pageContextFromServer) {
       // The server rendered the error page: the client renders it with this pageContext
       processPageContextFromServer(pageContextFromServer)
       objectAssign(err, { _pageContextErrorPage: pageContextFromServer })
