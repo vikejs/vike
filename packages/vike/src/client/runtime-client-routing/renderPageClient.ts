@@ -21,10 +21,10 @@ import {
   getPageContextFromHooksServer,
   getPageContextFromHooksClient_firstRender,
   getPageContextFromHooksServer_firstRender,
+  getPageContextFromHooksServer_errorPage,
   type PageContextFromHooksServer,
   setPageContextInitIsPassedToClient,
   processPageContextFromServer,
-  hasServerOnlyHook,
 } from './getPageContextFromHooks.js'
 import { createPageContextClient, type PageContextCreatedClient } from './createPageContextClient.js'
 import {
@@ -329,7 +329,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
         pageContextFromHooksServer = pageContextPrefetched
       } else {
         try {
-          const result = await getPageContextFromHooksServer(pageContext, false)
+          const result = await getPageContextFromHooksServer(pageContext)
           if (result.is404ServerSideRouted) return
           pageContextFromHooksServer = result.pageContextFromHooksServer
           // TO-DO/pageContext-prefetch: remove or change, because this only makes sense for a pre-rendered page
@@ -449,29 +449,16 @@ async function renderPageClient(renderArgs: RenderArgs) {
     updateType(pageContext, res.pageContext)
     setPageContextCurrent(pageContext)
 
-    // Upon a server-side error, the server already sent the error page's pageContext, if the error page has a server-only hook:
-    // - Upon `throw render(abortStatusCode)` it's pageContextAbort
-    // - Upon any other error it's `err._pageContextErrorPage`
-    const errorPageHasServerOnlyHook =
-      globalThis.__VIKE__ERROR_PAGE_HAS_SERVER_ONLY_HOOK && hasServerOnlyHook(pageContext)
-    const pageContextErrorPageFromServer =
-      errorPageHasServerOnlyHook && hasProp(args.err, '_pageContextErrorPage', 'object')
-        ? args.err._pageContextErrorPage
-        : null
-    const isErrorPageFromServer =
-      errorPageHasServerOnlyHook &&
-      ((!!pageContextAbort && 'pageId' in pageContextAbort) || !!pageContextErrorPageFromServer)
-    let pageContextFromHooksServer: PageContextFromHooksServer = { _hasPageContextFromServer: isErrorPageFromServer }
-    objectAssign(pageContextFromHooksServer, pageContextErrorPageFromServer)
-    if (!isErrorPageFromServer) {
-      try {
-        const result = await getPageContextFromHooksServer(pageContext, true)
-        if (result.is404ServerSideRouted) return
-        pageContextFromHooksServer = result.pageContextFromHooksServer
-      } catch (err: unknown) {
-        onError(err)
-        return
-      }
+    let pageContextFromHooksServer: PageContextFromHooksServer
+    try {
+      pageContextFromHooksServer = await getPageContextFromHooksServer_errorPage(
+        pageContext,
+        args.err,
+        pageContextAbort,
+      )
+    } catch (err: unknown) {
+      onError(err)
+      return
     }
     if (isRenderOutdated()) return
     // TO-DO/eventually: create helper assertPageContextFromHook()

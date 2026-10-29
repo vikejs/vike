@@ -3,7 +3,7 @@ export { getPageContextFromHooksClient_firstRender }
 export { getPageContextFromHooksServer }
 export { getPageContextFromHooksServer_firstRender }
 export { setPageContextInitIsPassedToClient }
-export { hasServerOnlyHook }
+export { getPageContextFromHooksServer_errorPage }
 export { processPageContextFromServer }
 export type { PageContextFromHooksServer }
 
@@ -23,7 +23,7 @@ import { getPageConfig } from '../../shared-server-client/page-configs/helpers.j
 import { getConfigValueRuntime } from '../../shared-server-client/page-configs/getConfigValueRuntime.js'
 import { assertOnBeforeRenderHookReturn } from '../../shared-server-client/assertOnBeforeRenderHookReturn.js'
 import { execHookGuard } from '../../shared-server-client/route/execHookGuard.js'
-import { AbortRender, isAbortPageContext } from '../../shared-server-client/route/abort.js'
+import { AbortRender, isAbortPageContext, type PageContextAbort } from '../../shared-server-client/route/abort.js'
 import { pageContextInitIsPassedToClient } from '../../shared-server-client/misc/pageContextInitIsPassedToClient.js'
 import { isServerSideError } from '../../shared-server-client/misc/isServerSideError.js'
 import { execHook } from '../../shared-server-client/hooks/execHook.js'
@@ -79,13 +79,7 @@ async function getPageContextFromHooksClient_firstRender(
 
 type PageContextFromHooksServer = { _hasPageContextFromServer: boolean }
 async function getPageContextFromHooksServer(
-  pageContext: {
-    pageId: string
-    abortSignal: AbortSignal
-    abortStatusCode?: number
-    abortReason?: unknown
-  } & PageContextCreatedClient,
-  isErrorPage: boolean,
+  pageContext: { pageId: string; abortSignal: AbortSignal } & PageContextCreatedClient,
 ): Promise<
   | { is404ServerSideRouted: true }
   | {
@@ -100,16 +94,7 @@ async function getPageContextFromHooksServer(
   // If pageContextInit has some client data or if one of the hooks guard(), data() or onBeforeRender() is server-side
   // only, then we need to fetch pageContext from the server.
   // We do it before executing any client-side hook, because it contains pageContextInit which may be needed for guard() / data() / onBeforeRender(), for example pageContextInit.user is crucial for guard()
-  if (isErrorPage) {
-    // Only if the error page has a server-only hook. The constant saves client-side KBs; it's always `true` in development, where hasServerOnlyHook() decides.
-    if (globalThis.__VIKE__ERROR_PAGE_HAS_SERVER_ONLY_HOOK && hasServerOnlyHook(pageContext)) {
-      const pageContextFromServer = await fetchPageContextErrorPageFromServer(pageContext)
-      if (pageContextFromServer) {
-        pageContextFromHooksServer._hasPageContextFromServer = true
-        objectAssign(pageContextFromHooksServer, pageContextFromServer)
-      }
-    }
-  } else if (
+  if (
     // true if pageContextInit has some client data or at least one of the data() and onBeforeRender() hooks is server-side only:
     await hasPageContextServer(pageContext)
   ) {
@@ -326,6 +311,41 @@ async function fetchPageContextFromServer(pageContext: {
   processPageContextFromServer(pageContextFromServer)
 
   return { pageContextFromServer }
+}
+
+async function getPageContextFromHooksServer_errorPage(
+  pageContext: {
+    pageId: string
+    abortSignal: AbortSignal
+    abortStatusCode?: number
+    abortReason?: unknown
+  } & PageContextCreatedClient,
+  err: unknown,
+  pageContextAbort: undefined | PageContextAbort,
+): Promise<PageContextFromHooksServer> {
+  const pageContextFromHooksServer = { _hasPageContextFromServer: false }
+  // Only if the error page has a server-only hook
+  // - The constant saves client-side KBs
+  // - It's always `true` in development, where hasServerOnlyHook() decides
+  if (!globalThis.__VIKE__ERROR_PAGE_HAS_SERVER_ONLY_HOOK || !hasServerOnlyHook(pageContext)) {
+    return pageContextFromHooksServer
+  }
+
+  // Upon `throw render(abortStatusCode)` on the server-side, the server sent the error page's pageContext as pageContextAbort (with `pageId`), which is already in pageContext
+  if (pageContextAbort && 'pageId' in pageContextAbort) {
+    pageContextFromHooksServer._hasPageContextFromServer = true
+    return pageContextFromHooksServer
+  }
+
+  // Upon any other server-side error, the server sent it with the error, otherwise the client fetches it
+  const pageContextFromServer = hasProp(err, '_pageContextErrorPage', 'object')
+    ? err._pageContextErrorPage
+    : await fetchPageContextErrorPageFromServer(pageContext)
+  if (pageContextFromServer) {
+    pageContextFromHooksServer._hasPageContextFromServer = true
+    objectAssign(pageContextFromHooksServer, pageContextFromServer)
+  }
+  return pageContextFromHooksServer
 }
 
 // The error page's pageContext, after an error on the client-side
