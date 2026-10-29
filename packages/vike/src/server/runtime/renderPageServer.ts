@@ -314,10 +314,10 @@ async function renderPageServerEntryRecursive_onError(
     if (handled.pageContextReturn) {
       // - throw redirect()
       // - throw render(url)
-      // - throw render(abortStatusCode) if pageContext.json request
+      // - throw render(abortStatusCode) if pageContext.json request and the error page doesn't have a server-only hook
       return handled.pageContextReturn
     } else {
-      // - throw render(abortStatusCode) if not pageContext.json request
+      // - throw render(abortStatusCode) if not pageContext.json request, or if the error page has a server-only hook
       objectAssign(pageContextErrorPageInit, handled.pageContextAbort)
     }
   }
@@ -659,15 +659,16 @@ async function handleAbort(
           abortCall,
         )} but you didn't define an error page, make sure to define one https://vike.dev/error-page`,
       )
+      const errorPageConfig = findPageConfig(globalContext._pageConfigs, errorPageId)
+      // The error page's hooks run on the server-side only if one of them is server-only, otherwise they run on the client-side
+      if (errorPageConfig && getConfigValueRuntime(errorPageConfig, 'hasServerOnlyHook', 'boolean')?.value) {
+        // Render error page
+        return { pageContextAbort }
+      }
       objectAssign(pageContext, { pageId: errorPageId })
       objectAssign(pageContext, pageContextErrorPageInit, true)
       // Overrides `is404: false` of pageContextErrorPageInit, e.g. `throw render(404)` => `is404: true`
       objectAssign(pageContext, pageContextAbort)
-      const errorPageConfig = findPageConfig(globalContext._pageConfigs, errorPageId)
-      // The error page's hooks run on the server-side only if one of them is server-only, otherwise they run on the client-side
-      if (errorPageConfig && getConfigValueRuntime(errorPageConfig, 'hasServerOnlyHook', 'boolean')?.value) {
-        return { pageContextReturn: await renderPageServerAfterRoute(pageContext) }
-      }
       updateType(pageContext, await loadPageConfigsLazyServerSide(pageContext))
       // We include pageContextInit: we don't only serialize pageContextAbort because the error page may need to access pageContextInit
       pageContextJson = getPageContextJson(pageContext)
