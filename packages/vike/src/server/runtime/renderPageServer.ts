@@ -344,14 +344,7 @@ async function renderPageServerEntryRecursive_onError(
         return handled.pageContextReturn
       } else {
         // - throw render(abortStatusCode)
-        const pageContextAbort = errErrorPage._pageContextAbort
-        assertWarning(
-          false,
-          `Failed to render error page because ${pc.cyan(pageContextAbort._abortCall)} was called: make sure ${pc.cyan(
-            pageContextAbort._abortCaller,
-          )} doesn't occur while the error page is being rendered.`,
-          { onlyOnce: false },
-        )
+        warnErrorPageAborted(errErrorPage)
         const pageContextHttpErrorFallback = getPageContextHttpErrorFallback(err, pageContextBegin)
         return pageContextHttpErrorFallback
       }
@@ -363,6 +356,16 @@ async function renderPageServerEntryRecursive_onError(
     return pageContextHttpErrorFallback
   }
   return pageContextErrorPage
+}
+function warnErrorPageAborted(errErrorPage: ErrorAbort) {
+  const pageContextAbort = errErrorPage._pageContextAbort
+  assertWarning(
+    false,
+    `Failed to render error page because ${pc.cyan(pageContextAbort._abortCall)} was called: make sure ${pc.cyan(
+      pageContextAbort._abortCaller,
+    )} doesn't occur while the error page is being rendered.`,
+    { onlyOnce: false },
+  )
 }
 
 function logHttpRequest(urlOriginal: string, pageContextInit: PageContextInit, requestId: number) {
@@ -632,7 +635,27 @@ async function handleAbort(
       try {
         updateType(pageContext, await loadPageConfigsLazyServerSide(pageContext))
       } catch (errErrorPage) {
-        logRuntimeError(errErrorPage, pageContext)
+        // Handle `throw redirect()` and `throw render()` while loading error page
+        if (isAbortError(errErrorPage)) {
+          if (!errErrorPage._pageContextAbort.abortStatusCode) {
+            // - throw redirect()
+            // - throw render(url)
+            return handleAbort(
+              errErrorPage,
+              pageContextBegin,
+              // The error page is the page that aborted
+              pageContext,
+              requestId,
+              pageContextErrorPageInit,
+              globalContext,
+            )
+          } else {
+            // - throw render(abortStatusCode)
+            warnErrorPageAborted(errErrorPage)
+          }
+        } else {
+          logRuntimeError(errErrorPage, pageContext)
+        }
         return { pageContextReturn: getPageContextHttpErrorFallback(errAbort, pageContextBegin) }
       }
       // We include pageContextInit: we don't only serialize pageContextAbort because the error page may need to access pageContextInit
