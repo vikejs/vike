@@ -81,13 +81,13 @@ const headings = [
     url: '/extensions',
     sectionTitles: ['i18n'],
   },
-  /*
+  //*
   {
     level: 2,
     title: 'Next.js Comparison',
-    url: '/nextjs'
+    url: '/nextjs',
   },
-  */
+  //*/
   {
     level: 2,
     title: 'Team',
@@ -1231,10 +1231,12 @@ function misc() {
         title: 'Versioning',
         url: '/versioning',
       },
+      /*
       {
         title: 'Next.js Comparison',
         url: '/nextjs',
       },
+      //*/
     ] as const
   ).map((h) => ({ category: 'Miscellaneous' as const, ...h })) satisfies HeadingDetachedDefinition[]
 }

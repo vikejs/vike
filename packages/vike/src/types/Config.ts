@@ -627,10 +627,25 @@ type ConfigBuiltIn = {
    * https://vike.dev/csp
    */
   csp?: {
-    nonce:
+    /**
+     * Set to `true` to add `nonce` attributes (Content Security Policy) to the `<script>` tags injected by Vike.
+     *
+     * https://vike.dev/csp
+     *
+     * @default false
+     */
+    nonce?:
       | boolean
       //
       | ((pageContext: PageContextServer) => string | Promise<string>)
+    /**
+     * Set to `true` to add `integrity` attributes (Subresource Integrity) to the `<script>` and `<link>` tags injected by Vike.
+     *
+     * https://vike.dev/csp#sri
+     *
+     * @default false
+     */
+    sri?: boolean
   }
 
   /** Where scripts are injected in the HTML.
@@ -650,6 +665,12 @@ type ConfigBuiltIn = {
    * https://vike.dev/require
    */
   require?: Record<string, string | { version: string; optional?: boolean }>
+
+  /** Used by Vike extensions to declare that they implement the API of other Vike extensions.
+   *
+   * https://vike.dev/require#provide
+   */
+  provide?: Record<string, string>
 
   /** Whether the page scrolls to the top upon navigation.
    *

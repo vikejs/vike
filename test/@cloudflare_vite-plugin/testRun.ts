@@ -26,6 +26,8 @@ function testTodolist(isDev: boolean) {
   test('To-Do list', async () => {
     await page.goto(getServerUrl() + '/todo')
     if (isDev) await sleep(1000) // Seems to be required, otherwise the test is flaky. I don't know why.
+    // Await hydration, otherwise the Reset click below is lost
+    await page.waitForFunction(() => !!(window as any)._vike?.fullyRenderedUrl)
     // Wait for onReset() to complete, otherwise it races with onNewTodo() below.
     // - The autoRetry() below isn't enough: if the to-do list is already in its initial state (e.g. fresh .wrangler/ state in CI), then it passes before onReset() completes.
     const onResetDone = page.waitForResponse((response) => new URL(response.url()).pathname === '/_telefunc')

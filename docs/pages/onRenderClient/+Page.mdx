@@ -65,6 +65,35 @@ If you create `/pages/star-wars/+onRenderClient.js` then you define how `/pages/
 By defining multiple `onRenderClient()` hooks, you can define different renderings for different pages. See <Link href='/multiple-renderer' />.
 
 
+## Abort
+
+Upon client-side navigation, Vike waits for the previous `onRenderClient()` call to finish before rendering the next page.
+
+To prevent the previous `onRenderClient()` call from delaying the next page, you can use `pageContext.abortSignal` to abort it:
+
+```ts
+// +onRenderClient.ts
+// Environment: client
+
+import type { PageContextClient } from 'vike/types'
+import { renderToDom } from 'some-ui-framework'
+
+export async function onRenderClient(pageContext: PageContextClient) {
+  const { Page } = pageContext
+  const rendering = renderToDom(Page)
+
+  await new Promise((resolve) => {
+    // Resolve onRenderClient() once the page is rendered:
+    rendering.onPageRendered(resolve)
+    // Also resolve (i.e. unblock) if the user navigates to another page:
+    pageContext.abortSignal.addEventListener('abort', resolve)
+  })
+}
+```
+
+> Your other hooks (e.g. <Link href="/data">`+data`</Link>) can also use `pageContext.abortSignal`, see <Link href="/pageContext#abortSignal">API > `pageContext.abortSignal`</Link>.
+
+
 ## See also
 
 - <Link href="/onBeforeRenderClient" />

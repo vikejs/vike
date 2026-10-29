@@ -10,6 +10,7 @@ import { isObject } from './isObject.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
 import { objectAssign } from './objectAssign.js'
 import { shallowClone } from './shallowClone.js'
+import { objectKeys } from './objectKeys.js'
 assertIsNotBrowser()
 
 function getBetterError(
@@ -29,29 +30,31 @@ function getBetterError(
     // https://github.com/vitejs/vite/blob/dafd726032daa98d0e614f97aebe9d4dbffe2ea7/packages/vite/src/node/ssr/ssrStacktrace.ts#L95
     errBetter = err as any
   }
-  errBetter.message ??= ''
+  if (!errBetter.message) {
+    set(errBetter, 'message', '')
+  }
   if (!errBetter.stack) {
     warnMalformed(errOriginal)
-    errBetter.stack = new Error(errBetter.message).stack!
+    set(errBetter, 'stack', new Error(errBetter.message).stack!)
   }
 
   // Modifications: err.hideStack and err.stack
   const { message: modsMessage, ...mods } = modifications
-  Object.assign(errBetter, mods)
+  for (const prop of objectKeys(mods)) set(errBetter, prop, mods[prop])
 
   // Modifications: err.message
   if (typeof modsMessage === 'string') {
     // Modify err.message
     const messagePrev = errBetter.message
     const messageNext = modsMessage
-    errBetter.message = messageNext
+    set(errBetter, 'message', messageNext)
     // Update err.stack
     const messagePrevIdx = errBetter.stack.indexOf(messagePrev)
     if (messagePrevIdx >= 0) {
       // Completely replace the beginning of err.stack — removing prefix such as "SyntaxError: "
       // - Following isn't always true: `err.stack.startsWith(err.message)` — because err.stack can start with "SyntaxError: " whereas err.message doesn't
       const stack = errBetter.stack.slice(messagePrevIdx + messagePrev.length)
-      errBetter.stack = messageNext + stack
+      set(errBetter, 'stack', messageNext + stack)
     } else {
       warnMalformed(errOriginal)
     }
@@ -59,13 +62,13 @@ function getBetterError(
     if (modsMessage?.append) {
       const messagePrev = errBetter.message
       const messageNext = errBetter.message + modsMessage.append
-      errBetter.message = messageNext
-      errBetter.stack = errBetter.stack.replace(messagePrev, messageNext)
+      set(errBetter, 'message', messageNext)
+      set(errBetter, 'stack', errBetter.stack.replace(messagePrev, messageNext))
     }
     if (modsMessage?.prepend) {
       const { prepend } = modsMessage
-      errBetter.message = prepend + errBetter.message
-      errBetter.stack = prepend + errBetter.stack
+      set(errBetter, 'message', prepend + errBetter.message)
+      set(errBetter, 'stack', prepend + errBetter.stack)
     }
   }
 
@@ -73,6 +76,15 @@ function getBetterError(
   objectAssign(errBetter, { getOriginalError: () => (errOriginal as any)?.getOriginalError?.() ?? errOriginal })
 
   return errBetter
+}
+
+// The property can be read-only, e.g. the `message` getter of a DOMException
+function set<Err extends object, Prop extends keyof Err>(err: Err, prop: Prop, value: Err[Prop]) {
+  try {
+    err[prop] = value
+  } catch {
+    Object.defineProperty(err, prop, { value, writable: true, configurable: true, enumerable: false })
+  }
 }
 
 // TO-DO/eventually: think about whether logging this warning is a good idea

@@ -18,10 +18,14 @@ type StreamedValueType = {
   revive: (parseValue: (value: unknown) => unknown) => StreamedValue
 }
 type StreamedValue = { value: unknown; push: (line: Line) => void; fail: (err: unknown) => void }
-
 const types = [readableStream, promise, asyncIterable]
 
-function createReceiver() {
+// HANG_DESIGN: when the user navigates to another page, the streamed values still pending neither resolve nor reject — they hang. Rationale:
+// - DX: navigating away shouldn't reject a streamed value in the app's own code (an error boundary, a `.then()`)
+// - Performance: the previous page doesn't re-render (upon new streamed values that are now irrelevant)
+// - UX: the UI of the previous page stays as it is, which is probably the better UX (instead of updating the UI upon new streamed values that are now irrelevant)
+
+function createReceiver(abortSignal?: AbortSignal) {
   const streamedValues = new Map<number, StreamedValue>()
   const parseValue = (value: unknown) => parseTransform(value, { reviver })
   const reviver: Reviver = (_path, value) => {
@@ -40,12 +44,14 @@ function createReceiver() {
   return {
     reviver,
     onLine(lineStr: string) {
+      if (abortSignal?.aborted) return // See HANG_DESIGN above
       const line = JSON.parse(lineStr) as Line
       // Unknown if contained in a chunk nobody read
       streamedValues.get(line.s)?.push(line)
     },
-    /** The response failed, ended or was cancelled: the values that didn't end fail */
+    /** The response failed or ended: the values that didn't end fail */
     fail(err: unknown) {
+      if (abortSignal?.aborted) return // See HANG_DESIGN above
       streamedValues.forEach((streamedValue) => streamedValue.fail(err))
     },
   }

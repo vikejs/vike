@@ -2,6 +2,7 @@ export { pluginModuleBanner }
 
 import type { ResolvedConfig, Plugin } from 'vite'
 import { assert } from '../../../../utils/assert.js'
+import { isFilePathInsideDir } from '../../../../utils/path.js'
 import { removeVirtualFileIdPrefix } from '../../../../utils/virtualFileId.js'
 import { getMagicString } from '../../shared/getMagicString.js'
 import { isVite8OrAbove } from '../../shared/isVite8OrAbove.js'
@@ -45,7 +46,7 @@ function pluginModuleBanner(): Plugin[] {
           assert(minify === false, { minify })
           if (id.startsWith('\0')) id = id
           id = removeVirtualFileIdPrefix(id)
-          if (id.startsWith(config.root)) id = id.slice(config.root.length + 1)
+          if (isFilePathInsideDir(id, config.root)) id = id.slice(config.root.length + 1)
           id = id.replaceAll('*/', '*\\/') // https://github.com/vikejs/vike/issues/2377
           const { magicString, getMagicStringResult } = getMagicString(code, id)
           magicString.prepend(`/*! ${id} [vike:pluginModuleBanner] */\n`)

@@ -5,6 +5,7 @@ exports[`preload tags > Preload Default 1`] = `
   {
     "assetType": "style",
     "earlyHintLink": "</assets/static/renderer_Layout-031b266d.$HASH.css>; rel=preload; as=style",
+    "integrity": null,
     "isEntry": true,
     "mediaType": "text/css",
     "src": "/assets/static/renderer_Layout-031b266d.$HASH.css",
@@ -12,6 +13,7 @@ exports[`preload tags > Preload Default 1`] = `
   {
     "assetType": "font",
     "earlyHintLink": "</assets/static/Sono-Light.$HASH.woff2>; rel=preload; as=font",
+    "integrity": null,
     "isEntry": false,
     "mediaType": "font/woff2",
     "src": "/assets/static/Sono-Light.$HASH.woff2",
@@ -19,6 +21,7 @@ exports[`preload tags > Preload Default 1`] = `
   {
     "assetType": "image",
     "earlyHintLink": "</assets/static/logo.$HASH.svg>; rel=preload; as=image",
+    "integrity": null,
     "isEntry": false,
     "mediaType": "image/svg+xml",
     "src": "/assets/static/logo.$HASH.svg",
@@ -26,6 +29,7 @@ exports[`preload tags > Preload Default 1`] = `
   {
     "assetType": "script",
     "earlyHintLink": "</assets/entries/entry-server-routing.$HASH.js>; rel=modulepreload; as=script",
+    "integrity": null,
     "isEntry": true,
     "mediaType": "text/javascript",
     "src": "/assets/entries/entry-server-routing.$HASH.js",
@@ -33,6 +37,7 @@ exports[`preload tags > Preload Default 1`] = `
   {
     "assetType": "script",
     "earlyHintLink": "</assets/entries/pages_index.$HASH.js>; rel=modulepreload; as=script",
+    "integrity": null,
     "isEntry": false,
     "mediaType": "text/javascript",
     "src": "/assets/entries/pages_index.$HASH.js",
@@ -62,6 +67,7 @@ exports[`preload tags > Preload Disabled 1`] = `
   {
     "assetType": "style",
     "earlyHintLink": "</assets/static/renderer_Layout-031b266d.$HASH.css>; rel=preload; as=style",
+    "integrity": null,
     "isEntry": true,
     "mediaType": "text/css",
     "src": "/assets/static/renderer_Layout-031b266d.$HASH.css",
@@ -69,6 +75,7 @@ exports[`preload tags > Preload Disabled 1`] = `
   {
     "assetType": "font",
     "earlyHintLink": "</assets/static/Sono-Light.$HASH.woff2>; rel=preload; as=font",
+    "integrity": null,
     "isEntry": false,
     "mediaType": "font/woff2",
     "src": "/assets/static/Sono-Light.$HASH.woff2",
@@ -76,6 +83,7 @@ exports[`preload tags > Preload Disabled 1`] = `
   {
     "assetType": "image",
     "earlyHintLink": "</assets/static/logo.$HASH.svg>; rel=preload; as=image",
+    "integrity": null,
     "isEntry": false,
     "mediaType": "image/svg+xml",
     "src": "/assets/static/logo.$HASH.svg",
@@ -83,6 +91,7 @@ exports[`preload tags > Preload Disabled 1`] = `
   {
     "assetType": "script",
     "earlyHintLink": "</assets/entries/entry-server-routing.$HASH.js>; rel=modulepreload; as=script",
+    "integrity": null,
     "isEntry": true,
     "mediaType": "text/javascript",
     "src": "/assets/entries/entry-server-routing.$HASH.js",
@@ -90,6 +99,7 @@ exports[`preload tags > Preload Disabled 1`] = `
   {
     "assetType": "script",
     "earlyHintLink": "</assets/entries/pages_preload-disabled.$HASH.js>; rel=modulepreload; as=script",
+    "integrity": null,
     "isEntry": false,
     "mediaType": "text/javascript",
     "src": "/assets/entries/pages_preload-disabled.$HASH.js",
@@ -117,6 +127,7 @@ exports[`preload tags > Preload Eager 1`] = `
   {
     "assetType": "style",
     "earlyHintLink": "</assets/static/renderer_Layout-031b266d.$HASH.css>; rel=preload; as=style",
+    "integrity": null,
     "isEntry": true,
     "mediaType": "text/css",
     "src": "/assets/static/renderer_Layout-031b266d.$HASH.css",
@@ -124,6 +135,7 @@ exports[`preload tags > Preload Eager 1`] = `
   {
     "assetType": "font",
     "earlyHintLink": "</assets/static/Sono-Light.$HASH.woff2>; rel=preload; as=font",
+    "integrity": null,
     "isEntry": false,
     "mediaType": "font/woff2",
     "src": "/assets/static/Sono-Light.$HASH.woff2",
@@ -131,6 +143,7 @@ exports[`preload tags > Preload Eager 1`] = `
   {
     "assetType": "image",
     "earlyHintLink": "</assets/static/logo.$HASH.svg>; rel=preload; as=image",
+    "integrity": null,
     "isEntry": false,
     "mediaType": "image/svg+xml",
     "src": "/assets/static/logo.$HASH.svg",
@@ -138,6 +151,7 @@ exports[`preload tags > Preload Eager 1`] = `
   {
     "assetType": "script",
     "earlyHintLink": "</assets/entries/entry-server-routing.$HASH.js>; rel=modulepreload; as=script",
+    "integrity": null,
     "isEntry": true,
     "mediaType": "text/javascript",
     "src": "/assets/entries/entry-server-routing.$HASH.js",
@@ -145,6 +159,7 @@ exports[`preload tags > Preload Eager 1`] = `
   {
     "assetType": "script",
     "earlyHintLink": "</assets/entries/pages_preload-eager.$HASH.js>; rel=modulepreload; as=script",
+    "integrity": null,
     "isEntry": false,
     "mediaType": "text/javascript",
     "src": "/assets/entries/pages_preload-eager.$HASH.js",
@@ -176,6 +191,7 @@ exports[`preload tags > Preload Images 1`] = `
   {
     "assetType": "style",
     "earlyHintLink": "</assets/static/renderer_Layout-031b266d.$HASH.css>; rel=preload; as=style",
+    "integrity": null,
     "isEntry": true,
     "mediaType": "text/css",
     "src": "/assets/static/renderer_Layout-031b266d.$HASH.css",
@@ -183,6 +199,7 @@ exports[`preload tags > Preload Images 1`] = `
   {
     "assetType": "font",
     "earlyHintLink": "</assets/static/Sono-Light.$HASH.woff2>; rel=preload; as=font",
+    "integrity": null,
     "isEntry": false,
     "mediaType": "font/woff2",
     "src": "/assets/static/Sono-Light.$HASH.woff2",
@@ -190,6 +207,7 @@ exports[`preload tags > Preload Images 1`] = `
   {
     "assetType": "image",
     "earlyHintLink": "</assets/static/logo.$HASH.svg>; rel=preload; as=image",
+    "integrity": null,
     "isEntry": false,
     "mediaType": "image/svg+xml",
     "src": "/assets/static/logo.$HASH.svg",
@@ -197,6 +215,7 @@ exports[`preload tags > Preload Images 1`] = `
   {
     "assetType": "script",
     "earlyHintLink": "</assets/entries/entry-server-routing.$HASH.js>; rel=modulepreload; as=script",
+    "integrity": null,
     "isEntry": true,
     "mediaType": "text/javascript",
     "src": "/assets/entries/entry-server-routing.$HASH.js",
@@ -204,6 +223,7 @@ exports[`preload tags > Preload Images 1`] = `
   {
     "assetType": "script",
     "earlyHintLink": "</assets/entries/pages_preload-images.$HASH.js>; rel=modulepreload; as=script",
+    "integrity": null,
     "isEntry": false,
     "mediaType": "text/javascript",
     "src": "/assets/entries/pages_preload-images.$HASH.js",

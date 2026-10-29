@@ -1,9 +1,17 @@
 export { logErrorClient }
 
 import { isObject } from '../../utils/isObject.js'
+import { isAbortSignalError } from '../../shared-server-client/isAbortSignalError.js'
 import '../assertEnvClient.js'
 
-function logErrorClient(err: unknown) {
+function logErrorClient(err: unknown, abortSignal: AbortSignal) {
+  if (isAbortSignalError(err, abortSignal)) {
+    // Skip errors caused by firing `pageContext.abortSignal`
+    // - E.g. the user navigates to another page
+    // - When `pageContext.abortSignal` is fired => an error can be thrown, e.g. by `fetch(url, { signal })`
+    // - https://vike.dev/pageContext#abortSignal
+    return
+  }
   if (
     isObject(err) &&
     // Set by vike-react

@@ -9,6 +9,7 @@ import { deepEqual } from '../../../../utils/deepEqual.js'
 import { isArray } from '../../../../utils/isArray.js'
 import { isFilePathAbsoluteFilesystem } from '../../../../utils/isFilePathAbsoluteFilesystem.js'
 import { assertImportIsNpmPackage, getNpmPackageName } from '../../../../utils/parseNpmPackage.js'
+import { isFilePathInsideDir } from '../../../../utils/path.js'
 import { requireResolveOptional } from '../../../../utils/requireResolve.js'
 import { isVirtualFileId } from '../../../../utils/virtualFileId.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
@@ -49,13 +50,13 @@ const LATE_DISCOVERED = [
 const ALWAYS_REMOVE = ['@brillout/require-shim', 'vike > @brillout/require-shim']
 
 const optimizeDeps = {
+  // Client-side
   optimizeDeps: {
     exclude: [
       // We must exclude Vike's client runtime so it can import virtual modules
-      'vike/client',
-      'vike/client/router',
-      // Also all entries of Vike's client runtime, otherwise pre-bundling an entry would load a second copy of Vike's client code (also problematic as it duplicates module-level variables that don't use `getGlobalObject()`)
-      'vike/__internal/client',
+      // - The 'vike' entry excludes all import paths ('vike/client', 'vike/client/router', 'vike/__internal/client', ...) which is what we want: pre-bundling any import path would load a second copy of Vike's client code (also problematic as it duplicates module-level variables that don't use `getGlobalObject()`)
+      // - https://github.com/vikejs/vike/pull/3651
+      'vike',
     ],
     include: [
       // Avoid:
@@ -68,6 +69,7 @@ const optimizeDeps = {
       'vike > @brillout/picocolors',
     ],
   },
+  // Server-side
   ssr: {
     optimizeDeps: {
       exclude: [
@@ -104,7 +106,7 @@ async function resolveOptimizeDeps(config: ResolvedConfig) {
   LATE_DISCOVERED.forEach((dep) => {
     const userRootDir = config.root
     const resolved = requireResolveOptional({ importPath: dep, userRootDir, importerFilePath: null })
-    const resolvedInsideRepo = resolved && resolved.startsWith(userRootDir)
+    const resolvedInsideRepo = resolved && isFilePathInsideDir(resolved, userRootDir)
     if (resolvedInsideRepo) {
       // We add `dep` only if `resolvedInsideRepo === true` otherwise Vite logs a warning like the following.
       // - ```console

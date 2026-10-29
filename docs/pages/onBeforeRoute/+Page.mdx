@@ -6,18 +6,16 @@ import { ConfigSpec } from '../../components'
   global
 />
 
-The `onBeforeRoute()` hook provides full control over routing.
+The `+onBeforeRoute` hook provides full control over routing.
 
 It is usually used for <Link href="/i18n">internationalization</Link>:
 
 ```ts
 // Environment: server & client
 
-export { onBeforeRoute }
-
 import type { PageContext } from 'vike/types'
 
-function onBeforeRoute(pageContext: PageContext) {
+export function onBeforeRoute(pageContext: PageContext) {
   const { urlWithoutLocale, locale } = extractLocale(pageContext.urlPathname)
   return {
     pageContext: {
@@ -28,9 +26,45 @@ function onBeforeRoute(pageContext: PageContext) {
 }
 ```
 
-You can also use it to [implement a custom router](https://github.com/vikejs/vike/issues/140).
+> Vike also calls `+onBeforeRoute` when it <Link href="/prefetchStaticAssets">prefetches</Link> a link, see also <Link href="/pageContext#isPrefetch">`pageContext.isPrefetch`</Link>.
 
-<Warning>For use cases other than i18n, open a GitHub ticket or reach out on Discord: `onBeforeRoute()` is purposely limited but the limitations can be lifted in order to unlock new capabilities.</Warning>
+You can also use it to:
+- <Link href="#throw-abort">Abort a client-side navigation</Link>
+- [Implement a custom router](https://github.com/vikejs/vike/issues/140)
+
+<Warning>For more use cases, create a GitHub ticket: `+onBeforeRoute` is purposely limited but the limitations can be lifted in order to unlock new capabilities.</Warning>
+
+
+## `throw abort()`
+
+You can `throw abort()` to abort a client-side navigation: the user stays on the current page.
+
+For example, to ask for confirmation before leaving a page with unsaved changes:
+
+```ts
+// /pages/+onBeforeRoute.client.ts
+// Environment: client
+
+import type { PageContextClient } from 'vike/types'
+import { abort } from 'vike/abort'
+
+export function onBeforeRoute(pageContext: PageContextClient) {
+  // +onBeforeRoute is also called when Vike prefetches links
+  if (pageContext.isPrefetch) return
+  if (
+    // E.g. a global value set by your UI components
+    globalThis.hasUnsavedChanges &&
+    // Warn user
+    !window.confirm('Leave this page? Your changes will be lost.')
+  ) {
+    throw abort()
+  }
+}
+```
+
+> This technique is useful because the browser's [`beforeunload` event](https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event) isn't fired upon <Link href="/client-routing">client-side navigation</Link>.
+
+> You can use `throw abort()` only with `+onBeforeRoute`, only on the client-side, and only upon client-side navigation (not hydration).
 
 
 ## See also

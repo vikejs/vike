@@ -92,15 +92,16 @@ const BrandSubsection = () => {
 }
 
 const BrandsContent = () => {
+  const brandsWithLogo = brands.filter((e) => e.logo)
   return (
     <>
-      {brands.map((e, i) => (
+      {brandsWithLogo.map((e, i) => (
         <a
           href={e.website}
           target="_blank"
           key={i}
           aria-label={e.desc}
-          data-label-position={i === brands.length - 1 ? 'top-left' : null}
+          data-label-position={i === brandsWithLogo.length - 1 ? 'top-left' : null}
           className="colorize-on-hover text-center py-2 text-xs lg:text-base"
         >
           <img

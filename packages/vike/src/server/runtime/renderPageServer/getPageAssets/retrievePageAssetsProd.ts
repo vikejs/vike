@@ -3,7 +3,7 @@ export { resolveIncludeAssetsImportedByServer }
 
 import { isImportNpmPackage } from '../../../../utils/parseNpmPackage.js'
 import { assert } from '../../../../utils/assert.js'
-import type { ViteManifest } from '../../../../types/ViteManifest.js'
+import type { AssetsManifest } from '../../../../types/AssetsManifest.js'
 import { getManifestEntry } from './getManifestEntry.js'
 import { extractAssetsAddQuery } from '../../../../shared-server-node/extractAssetsQuery.js'
 import type { ClientDependency } from '../../../../shared-server-client/getPageFiles/analyzePageClientSide/ClientDependency.js'
@@ -11,7 +11,7 @@ import type { ConfigResolved } from '../../../../types/index.js'
 import '../../../assertEnvServer.js'
 
 function retrievePageAssetsProd(
-  assetsManifest: ViteManifest,
+  assetsManifest: AssetsManifest,
   clientDependencies: ClientDependency[],
   clientEntries: string[],
   config: ConfigResolved,
@@ -20,7 +20,7 @@ function retrievePageAssetsProd(
   const assetUrls = getAssetsUrl(clientDependencies, assetsManifest, config)
   return { clientEntriesSrc, assetUrls }
 }
-function getClientEntrySrcProd(clientEntry: string, assetsManifest: ViteManifest): string {
+function getClientEntrySrcProd(clientEntry: string, assetsManifest: AssetsManifest): string {
   const { manifestEntry } = getManifestEntry(clientEntry, assetsManifest)
   assert(manifestEntry.isEntry || manifestEntry.isDynamicEntry || clientEntry.endsWith('.css'), { clientEntry })
   let { file } = manifestEntry
@@ -30,7 +30,7 @@ function getClientEntrySrcProd(clientEntry: string, assetsManifest: ViteManifest
 
 function getAssetsUrl(
   clientDependencies: ClientDependency[],
-  assetsManifest: ViteManifest,
+  assetsManifest: AssetsManifest,
   config: ConfigResolved,
 ): string[] {
   const includeAssetsImportedByServer = resolveIncludeAssetsImportedByServer(config)
@@ -68,7 +68,7 @@ function collectAssets(
   manifestKey: string,
   assetUrls: Set<string>,
   visistedAssets: Set<string>,
-  assetsManifest: ViteManifest,
+  assetsManifest: AssetsManifest,
   onlyCollectStaticAssets: boolean,
 ): void {
   if (visistedAssets.has(manifestKey)) return
@@ -98,7 +98,7 @@ function collectAssets(
 }
 
 // Support `config.build.cssCodeSplit: false`, see https://github.com/vikejs/vike/issues/644
-function collectSingleStyle(assetUrls: Set<string>, assetsManifest: ViteManifest) {
+function collectSingleStyle(assetUrls: Set<string>, assetsManifest: AssetsManifest) {
   const style = assetsManifest['style.css']
   if (style && Object.values(assetsManifest).filter((asset) => asset.file.endsWith('.css')).length === 1) {
     assetUrls.add(`/${style.file}`)

@@ -33,22 +33,44 @@ function testStreamedValues() {
     )
   })
 
-  test('streamed pageContext values: the page keeps its values until the next page is rendered', async () => {
-    await page.goto(getServerUrl() + '/streamed-values')
-    await expectValues()
-    await page.click('a[href="/"]')
-    await autoRetry(async () => expect(await page.textContent('h1')).toBe('Welcome'))
-    await page.click('a[href="/streamed-values"]')
+  test('streamed pageContext values: navigating away leaves the values still pending hanging', async () => {
+    // The first page: its values arrive with its HTML
+    // - `?holdLast`: its generator's last chunk is produced only upon `?releaseLast`
+    // - `commit`: the page loads only once its last value has arrived
+    await page.goto(getServerUrl() + '/streamed-values?holdLast', { waitUntil: 'commit' })
     await autoRetry(async () => expect(await page.textContent('#generator')).toBe('first'))
+    // The next page is rendered only once the test lets its request through
     const slowNextPage = getServerUrl() + '/index.pageContext.json'
+    let continueNextPage = () => {}
     await page.route(slowNextPage, async (route) => {
-      await sleep(1000)
+      await new Promise<void>((resolve) => (continueNextPage = resolve))
       await route.continue()
     })
+    const nextPageRequest = page.waitForRequest(slowNextPage)
     await page.click('a[href="/"]')
-    await sleep(300)
-    expect(await page.textContent('#generator')).toMatch(/^first/)
+    // The generator's last chunk arrives once the user navigated away: the next page is requested only after the shown page is aborted
+    await nextPageRequest
+    await fetch(getServerUrl() + '/streamed-values?releaseLast')
+    await sleep(500)
+    expect(await page.textContent('h1')).toBe('Streamed values')
+    expect(await page.textContent('#generator')).toBe('first')
+    continueNextPage()
     await autoRetry(async () => expect(await page.textContent('h1')).toBe('Welcome'))
+
+    // A page rendered upon client-side navigation: its values arrive with its .pageContext.json response
+    await page.click('a[href="/streamed-values"]')
+    await autoRetry(async () => expect(await page.textContent('#generator')).toBe('first'))
+    const requestsFailed: string[] = []
+    const onRequestFailed = (request: { url(): string }) => requestsFailed.push(request.url())
+    page.on('requestfailed', onRequestFailed)
+    await page.click('a[href="/"]')
+    await sleep(1500)
+    expect(await page.textContent('h1')).toBe('Streamed values')
+    expect(requestsFailed.join()).toBe(getServerUrl() + '/streamed-values/index.pageContext.json')
+    expect(await page.textContent('#generator')).toBe('first')
+    continueNextPage()
+    await autoRetry(async () => expect(await page.textContent('h1')).toBe('Welcome'))
+    page.removeListener('requestfailed', onRequestFailed)
     await page.unroute(slowNextPage)
     expectLog('Streamed value failed on purpose', { filter: (log) => log.logSource === 'stderr' })
   })

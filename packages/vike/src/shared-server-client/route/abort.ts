@@ -1,3 +1,4 @@
+export { abort }
 export { redirect }
 export { render }
 export { RenderErrorPage }
@@ -73,6 +74,29 @@ function redirect(url: string, statusCode?: 301 | 302): AbortRedirect {
       url,
       statusCode,
     },
+  })
+  return AbortRender(pageContextAbort)
+}
+
+/**
+ * Abort the client-side navigation: the user stays on the current page.
+ *
+ * https://vike.dev/onBeforeRoute#throw-abort
+ */
+function abort(): Error {
+  const abortCaller = 'throw abort()' as const
+  if (
+    // Tree-shaking to save client-side KBs
+    !globalThis.__VIKE__IS_CLIENT
+  ) {
+    assert(!isBrowser())
+    assertUsage(false, `${pc.cyan(abortCaller)} can only be used on the client-side`)
+  }
+  const pageContextAbort = {}
+  objectAssign(pageContextAbort, {
+    _abortCaller: abortCaller,
+    _abortCall: `abort()` as const,
+    _navAbort: true as const,
   })
   return AbortRender(pageContextAbort)
 }
@@ -159,8 +183,8 @@ function render_(
   }
 }
 
-type AbortCall = `redirect(${string})` | `render(${string})` | `RenderErrorPage()`
-type AbortCaller = `throw redirect()` | `throw render()` | `throw RenderErrorPage()`
+type AbortCall = `redirect(${string})` | `render(${string})` | `RenderErrorPage()` | `abort()`
+type AbortCaller = `throw redirect()` | `throw render()` | `throw RenderErrorPage()` | `throw abort()`
 type PageContextAbort = {
   _abortCall: AbortCall
   _abortCaller: AbortCaller
@@ -182,11 +206,17 @@ type PageContextAbort = {
       abortReason: undefined | unknown
       abortStatusCode: AbortStatusCode
     } & Omit<AbortUndefined, 'abortStatusCode'>)
+  | ({
+      _abortCall: `abort()`
+      _abortCaller: 'throw abort()'
+      _navAbort: true
+    } & Omit<AbortUndefined, '_navAbort'>)
 )
 type AbortUndefined = {
   _urlRedirect?: undefined
   _urlRewrite?: undefined
   abortStatusCode?: undefined
+  _navAbort?: undefined
 }
 
 function AbortRender(pageContextAbort: PageContextAbort): Error {
