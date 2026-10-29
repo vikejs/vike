@@ -323,29 +323,22 @@ async function getPageContextFromHooksServer_errorPage(
   err: unknown,
   pageContextAbort: undefined | PageContextAbort,
 ): Promise<PageContextFromHooksServer> {
-  const pageContextFromHooksServer = { _hasPageContextFromServer: false }
   // Only if the error page has a server-only hook
   // - The constant saves client-side KBs
   // - It's always `true` in development, where hasServerOnlyHook() decides
   if (!globalThis.__VIKE__ERROR_PAGE_HAS_SERVER_ONLY_HOOK || !hasServerOnlyHook(pageContext)) {
-    return pageContextFromHooksServer
+    return { _hasPageContextFromServer: false }
   }
 
   // Upon `throw render(abortStatusCode)` on the server-side, the server sent the error page's pageContext as pageContextAbort (with `pageId`), which is already in pageContext
-  if (pageContextAbort && 'pageId' in pageContextAbort) {
-    pageContextFromHooksServer._hasPageContextFromServer = true
-    return pageContextFromHooksServer
-  }
+  if (pageContextAbort && 'pageId' in pageContextAbort) return { _hasPageContextFromServer: true }
 
   // Upon any other server-side error, the server sent it with the error, otherwise the client fetches it
   const pageContextFromServer = hasProp(err, '_pageContextErrorPage', 'object')
     ? err._pageContextErrorPage
     : await fetchPageContextErrorPageFromServer(pageContext)
-  if (pageContextFromServer) {
-    pageContextFromHooksServer._hasPageContextFromServer = true
-    objectAssign(pageContextFromHooksServer, pageContextFromServer)
-  }
-  return pageContextFromHooksServer
+  if (!pageContextFromServer) return { _hasPageContextFromServer: false }
+  return { _hasPageContextFromServer: true, ...pageContextFromServer }
 }
 
 // The error page's pageContext, after an error on the client-side
