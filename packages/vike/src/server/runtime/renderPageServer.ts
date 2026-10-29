@@ -30,6 +30,7 @@ import {
   getUrlPretty,
 } from '../../utils/parseUrl-extras.js'
 import { isUrl, parseUrl, isUri } from '../../utils/parseUrl.js'
+import { updateType } from '../../utils/updateType.js'
 import {
   ErrorAbort,
   getPageContextAddendumAbort,
@@ -61,13 +62,19 @@ import pc from '@brillout/picocolors'
 import type { PageContextServer } from '../../types/index.js'
 import { getPageContextClientSerializedAbort } from './renderPageServer/html/serializeContext.js'
 import { getErrorPageId } from '../../shared-server-client/error-page.js'
+import { findPageConfig } from '../../shared-server-client/page-configs/findPageConfig.js'
+import { getConfigValueRuntime } from '../../shared-server-client/page-configs/getConfigValueRuntime.js'
 import { handleErrorWithoutErrorPage } from './renderPageServer/handleErrorWithoutErrorPage.js'
-import type { PageContext_loadPageConfigsLazyServerSide } from './renderPageServer/loadPageConfigsLazyServerSide.js'
+import {
+  loadPageConfigsLazyServerSide,
+  type PageContext_loadPageConfigsLazyServerSide,
+} from './renderPageServer/loadPageConfigsLazyServerSide.js'
 import { resolveRedirects } from './renderPageServer/resolveRedirects.js'
 import type { PageContextInit, PageContextInternalServer } from '../../types/PageContext.js'
 import { getVikeConfigError } from '../../shared-server-node/getVikeConfigError.js'
 import { forkPageContext } from '../../shared-server-client/forkPageContext.js'
 import { getAsyncLocalStorage, type AsyncStore } from './asyncHook.js'
+import { getPageContextJson } from './renderPageServer/getPageContextJson.js'
 import { hasPlusMiddlewares } from './universal-middleware/core.js'
 import '../assertEnvServer.js'
 
@@ -638,6 +645,7 @@ async function handleAbort(
 
   // Client-side navigation — [`pageContext.json` request](https://vike.dev/pageContext.json)
   if (pageContextBegin.isClientSideNavigation) {
+    let pageContextJson: string | ReadableStream<Uint8Array>
     if (pageContextAbort.abortStatusCode) {
       const errorPageId = getErrorPageId(globalContext._pageFilesAll, globalContext._pageConfigs)
       const abortCall = pageContextAbort._abortCall
@@ -652,10 +660,17 @@ async function handleAbort(
       objectAssign(pageContext, pageContextErrorPageInit, true)
       // Overrides `is404: false` of pageContextErrorPageInit, e.g. `throw render(404)` => `is404: true`
       objectAssign(pageContext, pageContextAbort)
+      const errorPageConfig = findPageConfig(globalContext._pageConfigs, errorPageId)
+      // The error page's hooks run on the server-side only if one of them is server-only, otherwise they run on the client-side
+      if (errorPageConfig && getConfigValueRuntime(errorPageConfig, 'hasServerOnlyHook', 'boolean')?.value) {
+        return { pageContextReturn: await renderPageServerAfterRoute(pageContext) }
+      }
+      updateType(pageContext, await loadPageConfigsLazyServerSide(pageContext))
       // We include pageContextInit: we don't only serialize pageContextAbort because the error page may need to access pageContextInit
-      return { pageContextReturn: await renderPageServerAfterRoute(pageContext) }
+      pageContextJson = getPageContextJson(pageContext)
+    } else {
+      pageContextJson = getPageContextClientSerializedAbort(pageContextAbort, false)
     }
-    const pageContextJson = getPageContextClientSerializedAbort(pageContextAbort, false)
     const httpResponse = await createHttpResponsePageJson(pageContextJson, pageContext)
     objectAssign(pageContext, { httpResponse })
     return { pageContextReturn: pageContext }
