@@ -275,9 +275,11 @@ type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
     environments?: Record<string, { config: PageContextConfig['config']; pageContext: PageContextServer<Data> }>
 
     /**
-     * Whether to skip the `guard()`, `data()`, `onData()` and `onBeforeRender()` hooks
+     * Whether to skip the `guard()`, `data()`, `onData()` and `onBeforeRender()` hooks.
+     *
+     * A function is awaited after every `onCreatePageContext()` hook has resolved.
      */
-    _skipGuardAndData_experimentalRSC?: boolean
+    _skipGuardAndData_experimentalRSC?: boolean | (() => Promise<boolean>)
 
     isHydration?: undefined
     isBackwardNavigation?: undefined
