@@ -364,7 +364,11 @@ async function fetchPageContextErrorPageFromServer(pageContext: {
   if (!response.headers.get('content-type')?.includes('application/json')) return null
   const pageContextFromServer = await readPageContextJson(response, pageContext.abortSignal)
   assert(isObject(pageContextFromServer))
-  if (pageContextFromServer.pageId !== pageContext.pageId) return null
+  if (pageContextFromServer.pageId !== pageContext.pageId) {
+    // `throw redirect()` or `throw render(url)` by the error page's server-side hooks
+    if (isAbortPageContext(pageContextFromServer)) throw AbortRender(pageContextFromServer)
+    return null
+  }
   processPageContextFromServer(pageContextFromServer)
   // The server only echoes them back, after a JSON round-trip (e.g. a `Date` becomes a string)
   delete pageContextFromServer.abortStatusCode
