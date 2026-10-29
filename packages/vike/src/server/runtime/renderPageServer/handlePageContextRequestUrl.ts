@@ -11,7 +11,6 @@ import { assert } from '../../../utils/assert.js'
 import { hasProp } from '../../../utils/hasProp.js'
 import { isObject } from '../../../utils/isObject.js'
 import { parseUrl } from '../../../utils/parseUrl.js'
-import { abortStatusCodes } from '../../../shared-server-client/route/abort.js'
 import '../../assertEnvServer.js'
 const pageContextJsonFileExtensionUrl = `/index${pageContextJsonFileExtension}`
 
@@ -83,9 +82,7 @@ function parseSearchVikeArgs(searchVikeArgs: undefined | string) {
     if (isObject(parsed.errorPage)) {
       const { abortStatusCode, abortReason } = parsed.errorPage
       args.errorPage = { abortReason }
-      if (typeof abortStatusCode === 'number' && abortStatusCodes.includes(abortStatusCode)) {
-        args.errorPage.abortStatusCode = abortStatusCode
-      }
+      if (typeof abortStatusCode === 'number') args.errorPage.abortStatusCode = abortStatusCode
     }
   }
   return args

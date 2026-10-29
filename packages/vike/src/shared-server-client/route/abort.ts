@@ -8,7 +8,6 @@ export { logAbort }
 export { getPageContextAddendumAbort }
 export { addNewPageContextAborted }
 export { AbortRender }
-export { abortStatusCodes }
 export type { RedirectStatusCode }
 export type { AbortStatusCode }
 export type { ErrorAbort }
@@ -31,7 +30,6 @@ import pc from '@brillout/picocolors'
 // For improved IntelliSense, we define the list of status codes directly on the argument types of redirect() and render()
 type RedirectStatusCode = number & Parameters<typeof redirect>[1]
 type AbortStatusCode = number & Parameters<InferTwoOverloads<typeof render>[0]>[0]
-const abortStatusCodes = [401, 403, 404, 410, 429, 500, 503]
 
 type UrlRedirect = {
   url: string
@@ -172,7 +170,7 @@ function render_(
       globalThis.__VIKE__IS_DEV ||
       globalThis.__VIKE__IS_DEBUG
     ) {
-      assertStatusCode(urlOrStatusCode, abortStatusCodes, 'render')
+      assertStatusCode(urlOrStatusCode, [401, 403, 404, 410, 429, 500, 503], 'render')
     }
     const abortStatusCode = urlOrStatusCode
     objectAssign(pageContextAbort, {
