@@ -49,7 +49,7 @@ import { hasProp } from '../../utils/hasProp.js'
 import { isObject } from '../../utils/isObject.js'
 import { objectAssign } from '../../utils/objectAssign.js'
 import { isCloudflareWorkers } from '../../utils/isCloudflareWorkers.js'
-import type { ViteManifest } from '../../types/ViteManifest.js'
+import type { AssetsManifest } from '../../types/AssetsManifest.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/runtime'
 import { virtualFileIdGlobalEntryServer } from '../../shared-server-node/virtualFileId.js'
@@ -96,7 +96,7 @@ const globalObject = getGlobalObject<
     vikeConfigHasRuntimeError?: boolean
     buildInfo?: BuildInfo
     // Move to buildInfo.assetsManifest ?
-    assetsManifest?: ViteManifest
+    assetsManifest?: AssetsManifest
     isInitialized?: true
     isAfterFirstRenderPageCall?: true
     isProductionAccordingToUser?: boolean
@@ -301,7 +301,7 @@ async function initGlobalContext(): Promise<void> {
   globalObject.isInitialized = true
 }
 
-function assertViteManifest(manifest: unknown): asserts manifest is ViteManifest {
+function assertAssetsManifest(manifest: unknown): asserts manifest is AssetsManifest {
   assert(isPlainObject(manifest))
   /* We should include these assertions but we don't as a workaround for PWA manifests: https://github.com/vikejs/vike/issues/769
      Instead, we should rename the vite manifest e.g. with https://vitejs.dev/config/build-options.html#build-manifest
@@ -372,7 +372,7 @@ async function setGlobalContext_prodBuildEntry(prodBuildEntry: unknown) {
 
 type ProdBuildEntry = {
   virtualFileExportsGlobalEntry: Record<string, unknown>
-  assetsManifest: ViteManifest
+  assetsManifest: AssetsManifest
   buildInfo: BuildInfo
 }
 type BuildInfo = {
@@ -386,7 +386,7 @@ function assertProdBuildEntry(prodBuildEntry: unknown): asserts prodBuildEntry i
   const { virtualFileExportsGlobalEntry } = prodBuildEntry
   assert(hasProp(prodBuildEntry, 'assetsManifest', 'object'))
   const { assetsManifest } = prodBuildEntry
-  assertViteManifest(assetsManifest)
+  assertAssetsManifest(assetsManifest)
   assert(hasProp(prodBuildEntry, 'buildInfo', 'object'))
   const { buildInfo } = prodBuildEntry
   assertBuildInfo(buildInfo)

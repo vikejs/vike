@@ -6,7 +6,6 @@
 
 export { parsePageContextHtml }
 export { readPageContextJsonStreamed }
-export { cancelStreamedValues }
 
 import { parse } from '@brillout/json-serializer/parse'
 import { assert } from '../../utils/assert.js'
@@ -16,8 +15,8 @@ import '../assertEnvClient.js'
 
 // First render: the `<script>` tags that follow `<script id="vike_pageContext">` push the lines to `self.__vike_streamed`,
 // before and after Vike's client runtime is loaded.
-function parsePageContextHtml(pageContextJson: string): unknown {
-  const receiver = createReceiver()
+function parsePageContextHtml(pageContextJson: string, abortSignal?: AbortSignal): unknown {
+  const receiver = createReceiver(abortSignal)
   const [pageContext] = parse(pageContextJson, { reviver: receiver.reviver }) as [unknown]
   const g = self as { __vike_streamed?: string[] | { push(line: string): void } }
   const linesQueued = Array.isArray(g.__vike_streamed) ? g.__vike_streamed : []
@@ -28,15 +27,17 @@ function parsePageContextHtml(pageContextJson: string): unknown {
 
 // Client-side navigation: the `.pageContext.json` response (see server/runtime/renderPageServer/getPageContextJson.ts),
 // `[pageContext` then one `,line` per line then `]`. The pageContext is returned as soon as its line arrives.
-async function readPageContextJsonStreamed(response: Response): Promise<Record<string, unknown>> {
+async function readPageContextJsonStreamed(
+  response: Response,
+  abortSignal?: AbortSignal,
+): Promise<Record<string, unknown>> {
   const reader = response.body!.getReader()
   const lines = readLines(reader)
   const { done, value: lineFirst } = await lines.next()
   assert(!done && lineFirst[0] === '[')
-  const receiver = createReceiver()
+  const receiver = createReceiver(abortSignal)
   const pageContextFromServer = parse(lineFirst.slice(1), { reviver: receiver.reviver })
   assert(isObject(pageContextFromServer))
-  responsesStreaming.push(reader)
   ;(async () => {
     try {
       for await (const line of lines) {
@@ -48,7 +49,7 @@ async function readPageContextJsonStreamed(response: Response): Promise<Record<s
       receiver.fail(err)
     }
   })()
-  return { ...pageContextFromServer, _streamedValuesReader: reader }
+  return pageContextFromServer
 }
 
 async function* readLines(reader: ReadableStreamDefaultReader<Uint8Array>): AsyncGenerator<string> {
@@ -68,17 +69,4 @@ async function* readLines(reader: ReadableStreamDefaultReader<Uint8Array>): Asyn
     }
     parts.push(chunk.slice(lineStart))
   }
-}
-
-// Once a page is rendered, the streamed values fetched before it are cancelled (the previous page's, and superseded
-// navigations'): the previous page keeps its values while it's shown.
-let responsesStreaming: ReadableStreamDefaultReader[] = []
-// Cancels the streamed values of `pageContext` (a superseded navigation), or, once `pageContext` is rendered, all the others
-function cancelStreamedValues(pageContext: object, isRendered: boolean): void {
-  const { _streamedValuesReader } = pageContext as { _streamedValuesReader?: ReadableStreamDefaultReader }
-  responsesStreaming = responsesStreaming.filter((reader) => {
-    if ((reader === _streamedValuesReader) === isRendered) return true
-    reader.cancel().catch(() => {})
-    return false
-  })
 }

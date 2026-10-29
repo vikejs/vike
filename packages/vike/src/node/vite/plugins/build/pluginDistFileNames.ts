@@ -7,7 +7,7 @@ export { pluginDistFileNames }
 import { assert, assertUsage } from '../../../../utils/assert.js'
 import { isArray } from '../../../../utils/isArray.js'
 import { isCallable } from '../../../../utils/isCallable.js'
-import { assertPosixPath } from '../../../../utils/path.js'
+import { assertPosixPath, isFilePathInsideDir } from '../../../../utils/path.js'
 import path from 'node:path'
 import crypto from 'node:crypto'
 import type { Plugin, ResolvedBuildEnvironmentOptions, ResolvedConfig, Rollup } from 'vite'
@@ -127,7 +127,10 @@ function getAssetFileName(
     return `${dir}/${name}.[hash][extname]`
   }
 
-  name = name.split('.').slice(0, -1).join('.')
+  name = path.posix.parse(name).name
+  // Remove leading `.` from filename, e.g. `.htaccess`
+  //  - Otherwise some static servers don't serve it, e.g. sirv (`$ vike preview`)
+  name = name.replace(/^\./, '')
   name = clean(name, userRootDir)
   return `${dir}/${name}.[hash][extname]`
 }
@@ -192,7 +195,7 @@ function removePathSeparators(name: string) {
   return name
 }
 function removeUserRootDir(name: string, userRootDir: string) {
-  if (name.startsWith(userRootDir)) {
+  if (isFilePathInsideDir(name, userRootDir)) {
     name = name.slice(userRootDir.length)
     if (name.startsWith('/')) name = name.slice(1)
   }
@@ -341,7 +344,7 @@ function getCssChunkName(id: string, config: ResolvedConfig): string | undefined
   if (!id.endsWith('.css')) return undefined
 
   const userRootDir = config.root
-  if (id.startsWith(userRootDir)) {
+  if (isFilePathInsideDir(id, userRootDir)) {
     assertPosixPath(id)
     assertModuleId(id)
 

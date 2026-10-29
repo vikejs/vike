@@ -51,13 +51,24 @@ function assertExtensionsRequire(plusFiles: PlusFile[]): void {
   const plusFilesRelevantList = plusFiles
 
   // Collect extensions
-  const extensions: Record<string, string> = {}
+  const extensions: Record<string, { version: string | null; packageJsonPath?: string; providedBy?: string }> = {}
   plusFilesRelevantList.forEach((plusFile) => {
     const name = getExtensionName(plusFile)
     if (name) {
-      const version = getExtensionVersion(name, plusFile)
-      extensions[name] = version
+      extensions[name] = getExtensionVersion(name, plusFile)
     }
+  })
+
+  // Collect "provided extensions" as defined by +provide (e.g. vike-react-rsc provides vike-react)
+  // https://vike.dev/require#provide
+  plusFilesRelevantList.forEach((plusFile) => {
+    const provide = resolveProvideSetting(plusFile)
+    if (!provide) return
+    const providedBy = getExtensionName(plusFile) ?? getFilePathToShowToUser(plusFile)
+    Object.entries(provide).forEach(([provName, version]) => {
+      // The installed extension wins
+      extensions[provName] ??= { version, providedBy }
+    })
   })
 
   // Enforce `require`
@@ -82,18 +93,21 @@ function assertExtensionsRequire(plusFiles: PlusFile[]): void {
         assertUsage(isVersionRange(PROJECT_VERSION, req.version), errMsg)
         return
       }
-      const extensionVersion = extensions[reqName]
-      if (!extensionVersion) {
+      const extension = extensions[reqName]
+      if (!extension) {
         if (req.optional) {
           return
         } else {
           assertUsage(false, `${errBase}.`)
         }
       }
-      assertUsage(
-        isVersionRange(extensionVersion, req.version),
-        `${errBase} version ${pc.bold(req.version)}, but ${pc.bold(extensionVersion)} is installed.`,
-      )
+      const { version, packageJsonPath, providedBy } = extension
+      const errIntro = `${errBase} version ${pc.bold(req.version)}, but `
+      assertUsage(version, `${errIntro}${packageJsonPath}${pc.dim('#')}${pc.bold('version')} is missing.`)
+      const errVersion = providedBy
+        ? `${pc.bold(providedBy)} provides ${pc.bold(version)}`
+        : `${pc.bold(version)} is installed`
+      assertUsage(isVersionRange(version, req.version), `${errIntro}${errVersion}.`)
     })
   })
 }
@@ -125,6 +139,19 @@ function resolveRequireSetting(plusFile: PlusFile): null | RequireSetting {
   return requireSetting
 }
 
+function resolveProvideSetting(plusFile: PlusFile): null | Record<string, string> {
+  const confVal = getConfVal(plusFile, 'provide')
+  if (!confVal) return null
+  assert(confVal.valueIsLoaded)
+  const provideValue = confVal.value
+  const filePathToShowToUser = getFilePathToShowToUser(plusFile)
+  assertUsage(
+    isObject(provideValue) && Object.values(provideValue).every((version) => typeof version === 'string'),
+    `The setting ${pc.bold('+provide')} defined at ${filePathToShowToUser} should be an object of version strings`,
+  )
+  return provideValue as Record<string, string>
+}
+
 function getExtensionName(plusFile: PlusFile): null | string {
   const confVal = getConfVal(plusFile, 'name')
   if (!confVal) return null
@@ -138,9 +165,10 @@ function getExtensionName(plusFile: PlusFile): null | string {
   return name
 }
 
+type ExtensionVersion = { version: string | null; packageJsonPath: string }
 // We use a forever cache: users need to restart the dev server anyways when touching node_modules/**/* (I presume Vite doesn't pick up node_modules/**/* changes).
-const extensionsVersion: Record<string, string> = {}
-function getExtensionVersion(name: string, plusFile: PlusFile): string {
+const extensionsVersion: Record<string, ExtensionVersion> = {}
+function getExtensionVersion(name: string, plusFile: PlusFile): ExtensionVersion {
   if (!extensionsVersion[name]) {
     const extensionConfigFilePath = plusFile.filePath.filePathAbsoluteFilesystem
     const found = findPackageJson(path.posix.dirname(extensionConfigFilePath))
@@ -157,9 +185,12 @@ function getExtensionVersion(name: string, plusFile: PlusFile): string {
       )}${pc.bold('name')})`,
       { onlyOnce: true },
     )
-    const { version } = packageJson
-    assert(typeof version === 'string')
-    extensionsVersion[name] = version
+    const version =
+      packageJson.version ??
+      // Only the setting `require` needs the version, so a package.json without `version` is fine (e.g. the user's app with an ejected Vike extension)
+      null
+    assert(typeof version === 'string' || version === null)
+    extensionsVersion[name] = { version, packageJsonPath }
   }
   return extensionsVersion[name]!
 }

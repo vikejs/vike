@@ -7,7 +7,7 @@ import { isNotNullish } from '../../../utils/isNullish.js'
 import { assert, assertUsage, assertWarning } from '../../../utils/assert.js'
 import { isArray } from '../../../utils/isArray.js'
 import { makeLast } from '../../../utils/sorter.js'
-import { assertPosixPath } from '../../../utils/path.js'
+import { assertPosixPath, isFilePathInsideDir } from '../../../utils/path.js'
 import { getFilePathToShowToUserModule } from '../shared/getFilePath.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
@@ -123,7 +123,7 @@ function pluginReplaceConstantsEnvVars(): Plugin[] {
           // - We purposely don't support replacing `import.meta.env` with an object to incentivize users to write tree-shaking friendly code.
           // - `define: { 'import.meta.env': JSON.stringify(null) }` doesn't work because it also replaces `import.meta.env` inside `import.meta.env.SONE_ENV`
           const bareImportMetaEnvRegex = /\bimport\.meta\.env(?!\.)/g
-          const isUserLand = !id.includes('node_modules') && id.startsWith(config.root) // skip node_modules/ as well as linked dependencies
+          const isUserLand = !id.includes('node_modules') && isFilePathInsideDir(id, config.root) // skip node_modules/ as well as linked dependencies
           if (isUserLand && bareImportMetaEnvRegex.test(code)) {
             assertWarning(
               false,

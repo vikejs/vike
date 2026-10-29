@@ -313,9 +313,48 @@ The value is `true` when the user clicks on his browser's backward/forward butto
 
 The `isHistoryNavigation` property is only defined when using <Link href="/client-routing" noBreadcrumb={true} />.
 
+<Prop id="isPrefetch" />
+
+Whether the URL is routed for <Link href="/prefetchStaticAssets">prefetching</Link> a link, instead of navigating to it.
+
+> Upon prefetching, Vike calls <Link href="/onBeforeRoute">`+onBeforeRoute`</Link> and <Link href="/route-function">Route Functions</Link> (with `pageContext.isPrefetch === true`).
+
+See also: <Link href="/onBeforeRoute#throw-abort" />.
+
 <Prop id="previousPageContext" />
 
 Upon client-side page navigation, you can use `pageContext.previousPageContext` to access the `pageContext` of the previous page. See <Link href="#lifecycle" />.
+
+<Prop id="abortSignal" />
+
+An [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal) when the user leaves the page, i.e. Vike fires `pageContext.abortSignal` when:
+- On the server-side, the HTTP request is aborted (e.g. the user closes the browser tab, or navigates to another page).
+- On the client-side, the user navigates to another page.
+
+For example, your <Link href="/data">`+data`</Link> hook can pass `pageContext.abortSignal` to `fetch()`:
+
+```ts
+// pages/product/@id/+data.ts
+// Environment: server
+
+import type { PageContextServer } from 'vike/types'
+
+export async function data(pageContext: PageContextServer) {
+  const { id } = pageContext.routeParams
+  const response = await fetch(`https://api.example.com/products/${id}`, {
+    // Cancel the API request if the user navigates away
+    signal: pageContext.abortSignal
+  })
+  const product = await response.json()
+  return { product }
+}
+```
+
+> See also: <Link href="/onRenderClient#abort" />
+
+> On Cloudflare Workers, make sure to use the [`enable_request_signal` compatibility flag](https://developers.cloudflare.com/changelog/post/2025-05-22-handle-request-cancellation/#:~:text=enable_request_signal%20compatibility%20flag).
+
+> If you use <Link href="/renderPage">`renderPage()`</Link>, make sure to pass the request's abort signal (i.e. `renderPage({ abortSignal })`) — otherwise Vike sets `pageContext.abortSignal` to a fallback that never aborts.
 
 <Prop id="is404" />
 

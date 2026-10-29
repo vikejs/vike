@@ -163,8 +163,67 @@ function testRun(
     await page.click('a[href="/star-wars-api/films/1.json"]')
     await page.waitForURL('https://brillout.github.io/star-wars/api/films/1.json')
   })
+
+  test('throw abort() - link', async () => {
+    await page.goto(getServerUrl() + '/abort-navigation')
+    await hydrationDone()
+    // Prefetching links (upon hover and when they're in the viewport) calls onBeforeRoute() with `pageContext.isPrefetch === true`
+    let prefetchDialogs = 0
+    const onPrefetchDialog = async (dialog: { dismiss(): Promise<void> }) => {
+      prefetchDialogs++
+      await dialog.dismiss()
+    }
+    page.on('dialog', onPrefetchDialog)
+    await page.hover('a[href="/"]')
+    await page.waitForTimeout(1000)
+    page.off('dialog', onPrefetchDialog)
+    expect(prefetchDialogs).toBe(0)
+    let dialog = answerConfirm(false)
+    await page.click('a[href="/"]')
+    await dialog
+    await expectUrl('/abort-navigation')
+    // Neither re-rendered nor reloaded
+    await testCounter(1)
+    // The next navigation calls onBeforeRoute() again
+    dialog = answerConfirm(true)
+    await page.click('a[href="/"]')
+    await dialog
+    await autoRetry(async () => {
+      expect(await page.textContent('h1')).toBe('Welcome')
+    })
+    await ensureWasClientSideRouted('/pages/abort-navigation')
+  })
+
+  test('throw abort() - back navigation', async () => {
+    await page.goto(getServerUrl() + '/')
+    await hydrationDone()
+    await page.click('a[href="/about"]')
+    await autoRetry(async () => {
+      expect(await page.textContent('h1')).toBe('About')
+    })
+    await page.click('a[href="/abort-navigation"]')
+    await testCounter()
+    const dialog = answerConfirm(false)
+    // Jump back over two history entries
+    await page.evaluate(() => window.history.go(-2))
+    await dialog
+    // Vike reverts the URL
+    await expectUrl('/abort-navigation')
+    await testCounter(1)
+    await ensureWasClientSideRouted('/pages/index')
+  })
 }
 
 async function hydrationDone() {
   await testCounter()
+}
+
+// Click on Cancel (or OK) of the next window.confirm() dialog
+function answerConfirm(accept: boolean) {
+  return new Promise<void>((resolve) => {
+    page.once('dialog', async (dialog) => {
+      await (accept ? dialog.accept() : dialog.dismiss())
+      resolve()
+    })
+  })
 }

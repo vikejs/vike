@@ -47,13 +47,13 @@ type PageContextSerialized = {
   _hasPageContextFromServer: true
 }
 // Get `pageContext` values from `<script id="vike_pageContext" type="application/json">`
-async function getPageContextFromHooksServer_firstRender(): Promise<
+async function getPageContextFromHooksServer_firstRender(abortSignal: AbortSignal): Promise<
   PageContextSerialized & {
     routeParams: Record<string, string>
     _hasPageContextFromServer: true
   }
 > {
-  const pageContextSerialized = await getPageContextSerializedInHtml()
+  const pageContextSerialized = await getPageContextSerializedInHtml(abortSignal)
   processPageContextFromServer(pageContextSerialized)
   objectAssign(pageContextSerialized, {
     _hasPageContextFromServer: true as const,
@@ -78,7 +78,7 @@ async function getPageContextFromHooksClient_firstRender(
 
 type PageContextFromHooksServer = { _hasPageContextFromServer: boolean }
 async function getPageContextFromHooksServer(
-  pageContext: { pageId: string } & PageContextCreatedClient,
+  pageContext: { pageId: string; abortSignal: AbortSignal } & PageContextCreatedClient,
   isErrorPage: boolean,
 ): Promise<
   | { is404ServerSideRouted: true }
@@ -262,12 +262,18 @@ function getHookEnv(
   return hookEnv
 }
 
-async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _urlRewrite?: string }) {
+async function fetchPageContextFromServer(pageContext: {
+  urlOriginal: string
+  _urlRewrite?: string
+  abortSignal: AbortSignal
+}) {
   let pageContextUrl = getPageContextRequestUrl(pageContext._urlRewrite ?? pageContext.urlOriginal)
   /* TO-DO/soon/once: pass & use previousUrl
   pageContextUrl = modifyUrlSameOrigin(pageContextUrl, { search: { _vike: JSON.stringify({ previousUrl: pageContext.previousPageContext.urlOriginal }) } })
   */
-  const response = await fetch(pageContextUrl)
+  // Navigating away aborts the request, including the streamed values that are still pending
+  // - https://vike.dev/passToClient#streaming
+  const response = await fetch(pageContextUrl, { signal: pageContext.abortSignal })
 
   {
     const contentType = response.headers.get('content-type')
@@ -286,7 +292,7 @@ async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _u
     )
   }
 
-  const pageContextFromServer = await readPageContextJson(response)
+  const pageContextFromServer = await readPageContextJson(response, pageContext.abortSignal)
   assert(isObject(pageContextFromServer))
 
   if (isAbortPageContext(pageContextFromServer)) {

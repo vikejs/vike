@@ -12,6 +12,7 @@ import { getViteRPC } from '../../../utils/getViteRPC.js'
 import { assert } from '../../../utils/assert.js'
 import { prependBase } from '../../../utils/parseUrl-extras.js'
 import type { ClientDependency } from '../../../shared-server-client/getPageFiles/analyzePageClientSide/ClientDependency.js'
+import type { PageContextConfig } from '../../../shared-server-client/getPageFiles.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 import type { ViteRPC } from '../../../node/vite/plugins/non-runnable-dev/pluginViteRPC.js'
 import '../../assertEnvServer.js'
@@ -21,11 +22,13 @@ type PageAsset = {
   assetType: null | NonNullable<MediaType>['assetType']
   mediaType: null | NonNullable<MediaType>['mediaType']
   isEntry: boolean
+  // https://vike.dev/csp#sri
+  integrity: null | string
 }
 type GetPageAssets = () => Promise<PageAsset[]>
 
 async function getPageAssets(
-  pageContext: {
+  pageContext: PageContextConfig & {
     _baseServer: string
     _baseAssets: string | null
     _globalContext: GlobalContextServerInternal
@@ -42,6 +45,10 @@ async function getPageAssets(
       ? await getViteRPC<ViteRPC>().retrievePageAssetsDevRPC(clientDependencies, clientEntries)
       : await retrievePageAssetsDev(globalContext._viteDevServer, clientDependencies, clientEntries)
     : retrievePageAssetsProd(globalContext.assetsManifest, clientDependencies, clientEntries, globalContext.config)
+  // https://vike.dev/csp#sri
+  const integrities = pageContext.config.csp?.sri
+    ? new Map(Object.values(globalContext.assetsManifest ?? {}).map((entry) => [`/${entry.file}`, entry.integrity]))
+    : null
 
   let pageAssets: PageAsset[] = []
   unique([...clientEntriesSrc, ...assetUrls]).forEach((src: string) => {
@@ -67,6 +74,7 @@ async function getPageAssets(
       assetType,
       mediaType,
       isEntry,
+      integrity: integrities?.get(src) ?? null,
     })
   })
 
