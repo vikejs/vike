@@ -357,12 +357,11 @@ async function fetchPageContextErrorPageFromServer(pageContext: {
   )
   pageContextUrl.searchParams.set('_vike', JSON.stringify({ errorPage: { abortStatusCode, abortReason } }))
   // The error page renders without the server's pageContext upon:
-  // - A connection issue
   // - A static host (it doesn't render the error page)
   // - A server-side error other than one thrown by the error page's data() or onBeforeRender()
   // When the error page's data() throws on the server-side, the server still sends its pageContext (without `data`), which the client uses
-  const response = await fetch(pageContextUrl, { signal: pageContext.abortSignal }).catch(() => null)
-  if (!response?.headers.get('content-type')?.includes('application/json')) return null
+  const response = await fetch(pageContextUrl, { signal: pageContext.abortSignal })
+  if (!response.headers.get('content-type')?.includes('application/json')) return null
   const pageContextFromServer = await readPageContextJson(response, pageContext.abortSignal)
   assert(isObject(pageContextFromServer))
   if (pageContextFromServer.pageId !== pageContext.pageId) return null
