@@ -57,16 +57,14 @@ async function renderPageServerAfterRoute<
   //  - ID of the error page `_error.page.js`.
   assert(hasProp(pageContext, 'pageId', 'string'))
 
+  const errorPageId = getErrorPageId(pageContext._globalContext._pageFilesAll, pageContext._globalContext._pageConfigs)
   const isError: boolean =
     pageContext.is404 ||
     !!pageContext.errorWhileRendering ||
     // The client renders the error page after an error on the client-side
-    !!(pageContext._isPageContextJsonRequest && pageContext._isPageContextJsonRequest.errorPage)
-  assert(
-    isError ===
-      (pageContext.pageId ===
-        getErrorPageId(pageContext._globalContext._pageFilesAll, pageContext._globalContext._pageConfigs)),
-  )
+    // - Ignored without an error page: only a hand-made request has it then
+    (!!errorPageId && !!(pageContext._isPageContextJsonRequest && pageContext._isPageContextJsonRequest.errorPage))
+  assert(isError === (pageContext.pageId === errorPageId))
 
   updateType(pageContext, await loadPageConfigsLazyServerSide(pageContext))
 
