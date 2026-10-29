@@ -459,6 +459,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     } catch (err: unknown) {
       // `throw redirect()` or `throw render(url)` by the error page's server-side hooks
       if (globalThis.__VIKE__ERROR_PAGE_HAS_SERVER_ONLY_HOOK && isAbortError(err)) {
+        if (isRenderOutdated()) return
         await handleAbort(err, pageContext)
         return
       }
