@@ -604,6 +604,12 @@ async function handleAbort(
     getPageContextPublicServer,
   )
 
+  // Render error page — `throw render(abortStatusCode)` if not pageContext.json request
+  // - Before fork(): the error page renders pageContextErrorPageInit, which getPageContext({ asyncHook: true }) must return
+  if (pageContextAbort.abortStatusCode && !pageContextBegin.isClientSideNavigation) {
+    return { pageContextAbort }
+  }
+
   const pageContext = fork(pageContextBegin)
   const pageContextAddendumAbort = getPageContextAddendumAbort(pageContextBegin.pageContextsAborted)
   objectAssign(pageContext, pageContextAddendumAbort)
@@ -645,15 +651,10 @@ async function handleAbort(
   }
 
   // URL Redirection — `throw redirect()`
-  if (pageContextAbort._urlRedirect) {
-    const httpResponse = createHttpResponseRedirect(pageContextAbort._urlRedirect, pageContextBegin)
-    objectAssign(pageContext, { httpResponse })
-    return { pageContextReturn: pageContext }
-  }
-
-  // Render error page — `throw render(abortStatusCode)` if not pageContext.json request
-  assert(pageContextAbort.abortStatusCode)
-  return { pageContextAbort }
+  assert(pageContextAbort._urlRedirect)
+  const httpResponse = createHttpResponseRedirect(pageContextAbort._urlRedirect, pageContextBegin)
+  objectAssign(pageContext, { httpResponse })
+  return { pageContextReturn: pageContext }
 }
 
 async function checkBaseUrl(pageContextBegin: PageContextBegin, globalContext: GlobalContextServerInternal) {
