@@ -657,7 +657,6 @@ async function handleAbort(
   }
 
   // Render error page — `throw render(abortStatusCode)` if not pageContext.json request
-  // - No fork(): the error page renders pageContextErrorPageInit, which getPageContext({ asyncHook: true }) must return
   assert(pageContextAbort.abortStatusCode)
   return { pageContextAbort }
 }
