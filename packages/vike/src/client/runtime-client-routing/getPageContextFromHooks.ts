@@ -322,7 +322,8 @@ async function getPageContextFromHooksServer_errorPage(
   // - Otherwise the client fetches it again, which runs the error page's server-side hooks twice
   if (pageContextAbort) {
     assert(pageContextAbort.abortStatusCode) // `throw render(abortStatusCode)`
-    if ('pageId' in pageContextAbort) return { _hasPageContextFromServer: true }
+    assert('pageId' in pageContextAbort)
+    return { _hasPageContextFromServer: true }
   }
 
   // Upon any other server-side error, the server sent it with the error, otherwise the client fetches it
