@@ -466,6 +466,7 @@ function prettyUrl(url: string) {
 
 function getPageContextHttpErrorFallback(err: unknown, pageContextBegin: PageContextBegin) {
   const pageContextHttpErrorFallback = fork(pageContextBegin)
+  // TODO/after-merge: should `pageContextBegin.isClientSideNavigation` be replaced with `pageContextBegin._isPageContextJsonRequest`? Other places where it should be replaced?
   const httpResponse = !pageContextBegin.isClientSideNavigation
     ? createHttpResponseErrorFallback(pageContextBegin)
     : createHttpResponseErrorFallbackJson(pageContextBegin)
