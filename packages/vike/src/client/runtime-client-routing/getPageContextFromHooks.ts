@@ -265,9 +265,6 @@ async function fetchPageContextFromServer(pageContext: {
   _urlRewrite?: string
   abortSignal: AbortSignal
 }) {
-  /* TO-DO/soon/once: pass & use previousUrl
-  const pageContextFromServer = await fetchPageContextJson(pageContext, { previousUrl: pageContext.previousPageContext.urlOriginal })
-  */
   const pageContextFromServer = await fetchPageContextJson(pageContext)
   if (!pageContextFromServer) {
     redirectHard(pageContext.urlOriginal)
@@ -355,6 +352,9 @@ async function fetchPageContextJson(
   searchVikeArgs?: Record<string, unknown>,
 ) {
   let pageContextUrl: string | URL = getPageContextRequestUrl(pageContext._urlRewrite ?? pageContext.urlOriginal)
+  /* TO-DO/soon/once: pass & use previousUrl
+  pageContextUrl = modifyUrlSameOrigin(pageContextUrl, { search: { _vike: JSON.stringify({ previousUrl: pageContext.previousPageContext.urlOriginal }) } })
+  */
   if (searchVikeArgs) {
     pageContextUrl = new URL(pageContextUrl, location.href)
     pageContextUrl.searchParams.set('_vike', JSON.stringify(searchVikeArgs))
