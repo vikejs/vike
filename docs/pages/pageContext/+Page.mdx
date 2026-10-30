@@ -260,7 +260,7 @@ In other words, the value is `false` if the page was reached via <Link href="/cl
 
 > See also: <Link href="/useHydrated" />.
 
-> It's equivalent to <code>{'pageContext.isHydration\u00A0===\u00A0!pageContext.isClientSideNavigation'}</code>, except when an error occurs in the browser while rendering the first page. The browser then renders the error page with both `pageContext.isHydration` and `pageContext.isClientSideNavigation` set to `false`.
+> It's equivalent to <code>{'pageContext.isHydration\u00A0===\u00A0!pageContext.isClientSideNavigation'}</code>, except when the browser's first render <Link href="/redirect">redirects</Link>, <Link href="/render">rewrites</Link> or fails (e.g. a client-side `+guard` throws `redirect()` or an error). The page shown instead, or the error page, then has both `pageContext.isHydration` and `pageContext.isClientSideNavigation` set to `false`.
 
 > When using <Link href="/server-routing" noBreadcrumb={true} />, the value is always `true`.
 
