@@ -228,7 +228,7 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
     eager: true,
     _computed: (pageConfig, isDev): boolean => {
       const sources = (['data', 'onBeforeRender', 'onCreatePageContext', 'guard'] as const)
-        // The error page never calls a server-side guard()
+        // renderPageServerAfterRoute() skips guard() when it renders the error page
         .filter((hookName) => !(hookName === 'guard' && pageConfig.isErrorPage))
         .map((hookName) =>
           getConfigValueSourcesRelevant(
