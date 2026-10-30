@@ -20,7 +20,7 @@ When setting `asyncHook: true`, Vike uses an [async hook](https://nodejs.org/api
 <Warning>
   **`getPageContext({ asyncHook: true })` is experimental**.
 
-  We discourage using `getGlobalContext({ asyncHook: true })`, because some deployment platforms don't support [async hooks](https://nodejs.org/api/async_hooks.html) (e.g. [Cloudflare without `nodejs_compat`](https://developers.cloudflare.com/workers/runtime-apis/nodejs/asynclocalstorage/)).
+  We discourage using `getPageContext({ asyncHook: true })`, because some deployment platforms don't support [async hooks](https://nodejs.org/api/async_hooks.html) (e.g. [Cloudflare without `nodejs_compat`](https://developers.cloudflare.com/workers/runtime-apis/nodejs/asynclocalstorage/)).
 
   Instead, try <Link href="/usePageContext">`usePageContext()`</Link>, or the arguments of Vike hooks (e.g. <Link href="/data">`data(pageContext)`</Link>).
 
