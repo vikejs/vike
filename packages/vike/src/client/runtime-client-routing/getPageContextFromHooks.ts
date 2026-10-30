@@ -318,12 +318,12 @@ async function getPageContextFromHooksServer_errorPage(
     ? // The server sent the error page's pageContext with the error
       err._pageContextErrorPage
     : // Otherwise the client fetches it
-      await fetchPageContextErrorPageFromServer(pageContext)
+      await fetchPageContextFromServerErrorPage(pageContext)
   if (!pageContextFromServer) return { _hasPageContextFromServer: false }
   return { _hasPageContextFromServer: true, ...pageContextFromServer }
 }
 // The error page's pageContext, after an error on the client-side
-async function fetchPageContextErrorPageFromServer(pageContext: {
+async function fetchPageContextFromServerErrorPage(pageContext: {
   urlOriginal: string
   _urlRewrite?: string
   pageId: string
