@@ -332,16 +332,18 @@ async function fetchPageContextFromServerErrorPage(pageContext: {
   abortReason?: unknown
 }) {
   const { abortStatusCode, abortReason } = pageContext
+  const pageContextFromServer = await fetchPageContextJson(pageContext, { errorPage: { abortStatusCode, abortReason } })
   // The error page renders without the server's pageContext upon:
   // - A static host without a .pageContext.json file for this URL
-  // - A static host serving the page's pre-rendered .pageContext.json (it ignores the `_vike` search param): its `pageId` isn't the error page's
-  // - A server-side error other than one thrown by the error page's data() or onBeforeRender(): Vike answers `{ serverSideError: true }`, which has no `pageId`
-  // When the error page's data() throws on the server-side, the server still sends its pageContext (without `data`), which the client uses
-  const pageContextFromServer = await fetchPageContextJson(pageContext, { errorPage: { abortStatusCode, abortReason } })
-  if (!pageContextFromServer || pageContextFromServer.pageId !== pageContext.pageId) return null
+  if (!pageContextFromServer) return null
+  // - A server-side error other than one thrown by the error page's data() or onBeforeRender()
+  //   (when the error page's data() throws, the server still sends its pageContext, without `data`)
+  if ('serverSideError' in pageContextFromServer) return null
+  // - A static host serving the page's pre-rendered .pageContext.json (it ignores the `_vike` search param)
+  if (pageContextFromServer.pageId !== pageContext.pageId) return null
   processPageContextFromServer(pageContextFromServer)
-  // The server only echoes them back, after a JSON round-trip (e.g. a `Date` becomes a string)
-  delete pageContextFromServer.abortStatusCode
+  // The server's abortReason is the copy that the `_vike` search param carried as JSON (e.g. a `Date` arrives as a
+  // string), so the browser keeps its own
   delete pageContextFromServer.abortReason
   return pageContextFromServer
 }
@@ -364,7 +366,8 @@ async function fetchPageContextJson(
   const contentType = response.headers.get('content-type')
   const contentTypeCorrect = 'application/json'
   const isCorrect = contentType && contentType.includes(contentTypeCorrect)
-  // Static hosts + page doesn't exist
+  // A static host answers 404 when it has no .pageContext.json for this URL, e.g. the page was removed by a newer
+  // deployment: fetchPageContextFromServer() then reloads the page, and the error page renders without it
   if (!isCorrect && response.status === 404) return null
   assertUsage(
     isCorrect,
