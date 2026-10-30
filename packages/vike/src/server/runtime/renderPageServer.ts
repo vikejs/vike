@@ -202,9 +202,9 @@ async function renderPageServerEntryOnce(
     if (pageContextHttpResponse) return pageContextHttpResponse
   }
 
-  // The error page, after an error on the client-side
+  // The error page's `.pageContext.json` request when the error page is rendered on the client-side
   {
-    const pageContextErrorPage = await renderErrorPageOfClientSideError(pageContextBegin, globalContext)
+    const pageContextErrorPage = await getPageContextJsonOfErrorPage(pageContextBegin, globalContext)
     if (pageContextErrorPage) return pageContextErrorPage
   }
 
@@ -373,7 +373,7 @@ async function renderPageServerEntryRecursive_onError(
   return pageContextErrorPage
 }
 
-async function renderErrorPageOfClientSideError(
+async function getPageContextJsonOfErrorPage(
   pageContextBegin: PageContextBegin,
   globalContext: GlobalContextServerInternal,
 ) {
