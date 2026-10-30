@@ -322,7 +322,7 @@ async function getPageContextFromHooksServer_errorPage(
   if (!pageContextFromServer) return { _hasPageContextFromServer: false }
   return { _hasPageContextFromServer: true, ...pageContextFromServer }
 }
-// The error page's pageContext, after an error on the client-side
+// The error page's pageContext
 async function fetchPageContextFromServerErrorPage(pageContext: {
   urlOriginal: string
   _urlRewrite?: string
