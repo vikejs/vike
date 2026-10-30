@@ -18,12 +18,18 @@ function anywhere() {
 When setting `asyncHook: true`, Vike uses an [async hook](https://nodejs.org/api/async_hooks.html) to access the `pageContext` object on the server. This guarantees `pageContext` access anywhere, as long as `getPageContext()` is called from a stack trace originating from the SSR HTTP request.
 
 <Warning>
-  **Use `getPageContext({ asyncHook: true })` only as last resort**, because some deployment platforms don't support [async hooks](https://nodejs.org/api/async_hooks.html) (e.g. [Cloudflare without `nodejs_compat`](https://developers.cloudflare.com/workers/runtime-apis/nodejs/asynclocalstorage/)).
+  **`getPageContext({ asyncHook: true })` is experimental**.
 
-  First try using <Link href="/usePageContext">`usePageContext()`</Link> or the arguments of <Link href="/hooks">Vike hooks</Link> before using `getPageContext({ asyncHook: true })`.
+  We discourage using `getGlobalContext({ asyncHook: true })` because some deployment platforms don't support [async hooks](https://nodejs.org/api/async_hooks.html) (e.g. [Cloudflare without `nodejs_compat`](https://developers.cloudflare.com/workers/runtime-apis/nodejs/asynclocalstorage/)).
+
+  Try using <Link href="/usePageContext">`usePageContext()`</Link> or the arguments of <Link href="/hooks">Vike hooks</Link> instead of `getPageContext({ asyncHook: true })`.
+
+  If you do need `getPageContext({ asyncHook: true })` then reach out and explain your use case — we'll consider making it part of Vike's official API.
 </Warning>
 
-> Using `getPageContext()` without `asyncHook: true` has limited value. Its only use case is enabling extensions to create so-called <Link href="#use-case-universal-hook">universal hooks</Link> — if you aren't building a Vike extension, then `getPageContext()` without `asyncHook: true` is most likely useless for you.
+> **`getPageContext()` without `asyncHook: true` doesn't have any value for users.**
+>
+> Its used by extensions to create so-called <Link href="#use-case-universal-hook">universal hooks</Link> — if you aren't building a Vike extension, then `getPageContext()` without `asyncHook: true` is most likely useless for you.
 
 
 ## Use case: instrumentation
