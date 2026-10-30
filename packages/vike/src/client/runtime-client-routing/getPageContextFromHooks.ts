@@ -272,22 +272,9 @@ async function fetchPageContextFromServer(pageContext: {
   // Navigating away aborts the request, including the streamed values that are still pending
   // - https://vike.dev/passToClient#streaming
   const response = await fetch(pageContextUrl, { signal: pageContext.abortSignal })
-
-  {
-    const contentType = response.headers.get('content-type')
-    const contentTypeCorrect = 'application/json'
-    const isCorrect = contentType && contentType.includes(contentTypeCorrect)
-
-    // Static hosts + page doesn't exist
-    if (!isCorrect && response.status === 404) {
-      redirectHard(pageContext.urlOriginal)
-      return { is404ServerSideRouted: true }
-    }
-
-    assertUsage(
-      isCorrect,
-      `Wrong Content-Type for ${pageContextUrl}: it should be ${contentTypeCorrect} but it's ${contentType} instead. Make sure to properly use pageContext.httpResponse.headers, see https://vike.dev/renderPage`,
-    )
+  if (isPageContextJsonMissing(response, pageContextUrl)) {
+    redirectHard(pageContext.urlOriginal)
+    return { is404ServerSideRouted: true }
   }
 
   const pageContextFromServer = await readPageContextJson(response, pageContext.abortSignal)
@@ -301,7 +288,8 @@ async function fetchPageContextFromServer(pageContext: {
   if ('serverSideError' in pageContextFromServer || isServerSideError in pageContextFromServer) {
     const err = getProjectError(`pageContext couldn't be fetched because an error occurred on the server-side`)
     if (globalThis.__VIKE__ERROR_PAGE_HAS_SERVER_ONLY_HOOK && isServerSideError in pageContextFromServer) {
-      // The server rendered the error page: the client renders it with this pageContext
+      // A server-side hook of the page being navigated to threw an error, and the server already sent the error page's pageContext instead: keep it, so that the client renders the error page with it
+      // - Otherwise the client fetches it again, which runs the error page's server-side hooks twice
       processPageContextFromServer(pageContextFromServer)
       objectAssign(err, { _pageContextErrorPage: pageContextFromServer })
     }
@@ -330,7 +318,8 @@ async function getPageContextFromHooksServer_errorPage(
     return { _hasPageContextFromServer: false }
   }
 
-  // Upon `throw render(abortStatusCode)` on the server-side, the server sent the error page's pageContext as pageContextAbort (with `pageId`), which is already in pageContext
+  // A server-side hook of the page being navigated to (e.g. +guard) called `throw render(abortStatusCode)`: the page's .pageContext.json response already holds the error page's pageContext (thus `pageId`)
+  // - Otherwise the client fetches it again, which runs the error page's server-side hooks twice
   if (pageContextAbort && 'pageId' in pageContextAbort) return { _hasPageContextFromServer: true }
 
   // Upon any other server-side error, the server sent it with the error, otherwise the client fetches it
@@ -357,11 +346,12 @@ async function fetchPageContextErrorPageFromServer(pageContext: {
   )
   pageContextUrl.searchParams.set('_vike', JSON.stringify({ errorPage: { abortStatusCode, abortReason } }))
   // The error page renders without the server's pageContext upon:
-  // - A static host (it doesn't render the error page)
-  // - A server-side error other than one thrown by the error page's data() or onBeforeRender()
+  // - A static host without a .pageContext.json file for this URL
+  // - A static host serving the page's pre-rendered .pageContext.json (it ignores the `_vike` search param): its `pageId` isn't the error page's
+  // - A server-side error other than one thrown by the error page's data() or onBeforeRender(): Vike answers `{ serverSideError: true }`, which has no `pageId`
   // When the error page's data() throws on the server-side, the server still sends its pageContext (without `data`), which the client uses
   const response = await fetch(pageContextUrl, { signal: pageContext.abortSignal })
-  if (!response.headers.get('content-type')?.includes('application/json')) return null
+  if (isPageContextJsonMissing(response, pageContextUrl)) return null
   const pageContextFromServer = await readPageContextJson(response, pageContext.abortSignal)
   assert(isObject(pageContextFromServer))
   if (pageContextFromServer.pageId !== pageContext.pageId) return null
@@ -370,6 +360,19 @@ async function fetchPageContextErrorPageFromServer(pageContext: {
   delete pageContextFromServer.abortStatusCode
   delete pageContextFromServer.abortReason
   return pageContextFromServer
+}
+
+// Static hosts + page doesn't exist
+function isPageContextJsonMissing(response: Response, pageContextUrl: string | URL): boolean {
+  const contentType = response.headers.get('content-type')
+  const contentTypeCorrect = 'application/json'
+  const isCorrect = contentType && contentType.includes(contentTypeCorrect)
+  if (!isCorrect && response.status === 404) return true
+  assertUsage(
+    isCorrect,
+    `Wrong Content-Type for ${pageContextUrl}: it should be ${contentTypeCorrect} but it's ${contentType} instead. Make sure to properly use pageContext.httpResponse.headers, see https://vike.dev/renderPage`,
+  )
+  return false
 }
 
 function processPageContextFromServer(pageContext: Record<string, unknown>) {
