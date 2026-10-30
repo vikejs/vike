@@ -204,7 +204,7 @@ async function renderPageServerEntryOnce(
 
   // The error page, after an error on the client-side
   {
-    const pageContextErrorPage = await renderErrorPageOfClientSideError(pageContextBegin, globalContext, requestId)
+    const pageContextErrorPage = await renderErrorPageOfClientSideError(pageContextBegin, globalContext)
     if (pageContextErrorPage) return pageContextErrorPage
   }
 
@@ -352,7 +352,14 @@ async function renderPageServerEntryRecursive_onError(
         return handled.pageContextReturn
       } else {
         // - throw render(abortStatusCode)
-        warnErrorPageAbort(errErrorPage)
+        const pageContextAbort = errErrorPage._pageContextAbort
+        assertWarning(
+          false,
+          `Failed to render error page because ${pc.cyan(pageContextAbort._abortCall)} was called: make sure ${pc.cyan(
+            pageContextAbort._abortCaller,
+          )} doesn't occur while the error page is being rendered.`,
+          { onlyOnce: false },
+        )
         const pageContextHttpErrorFallback = getPageContextHttpErrorFallback(err, pageContextBegin)
         return pageContextHttpErrorFallback
       }
@@ -369,7 +376,6 @@ async function renderPageServerEntryRecursive_onError(
 async function renderErrorPageOfClientSideError(
   pageContextBegin: PageContextBegin,
   globalContext: GlobalContextServerInternal,
-  requestId: number,
 ) {
   const errorPage = pageContextBegin._isPageContextJsonRequest && pageContextBegin._isPageContextJsonRequest.errorPage
   if (!errorPage) return null
@@ -388,37 +394,9 @@ async function renderErrorPageOfClientSideError(
   try {
     return await renderPageServerAfterRoute(pageContextErrorPage)
   } catch (err) {
-    // Handle `throw redirect()` and `throw render()` while rendering error page
-    if (isAbortError(err)) {
-      const handled = await handleAbort(
-        err,
-        pageContextBegin,
-        pageContextErrorPage,
-        requestId,
-        pageContextErrorPage,
-        globalContext,
-      )
-      // - throw redirect()
-      // - throw render(url)
-      if (handled.pageContextReturn) return handled.pageContextReturn
-      // - throw render(abortStatusCode)
-      warnErrorPageAbort(err)
-    } else {
-      logRuntimeError(err, pageContextErrorPage)
-    }
+    logRuntimeError(err, pageContextErrorPage)
     return getPageContextHttpErrorFallback(err, pageContextBegin)
   }
-}
-
-function warnErrorPageAbort(errAbort: ErrorAbort) {
-  const pageContextAbort = errAbort._pageContextAbort
-  assertWarning(
-    false,
-    `Failed to render error page because ${pc.cyan(pageContextAbort._abortCall)} was called: make sure ${pc.cyan(
-      pageContextAbort._abortCaller,
-    )} doesn't occur while the error page is being rendered.`,
-    { onlyOnce: false },
-  )
 }
 
 function logHttpRequest(urlOriginal: string, pageContextInit: PageContextInit, requestId: number) {
@@ -648,7 +626,7 @@ async function handleAbort(
   // handleAbortError() creates a new pageContext object and we don't merge pageContextNominalPageBegin to it: we only use some pageContextNominalPageBegin information.
   pageContextNominalPageBegin: PageContextBegin,
   requestId: number,
-  pageContextErrorPageInit: Omit<PageContext_loadPageConfigsLazyServerSide, 'pageId'>,
+  pageContextErrorPageInit: Omit<PageContext_loadPageConfigsLazyServerSide, 'pageId'> & { errorWhileRendering: Error },
   globalContext: GlobalContextServerInternal,
 ) {
   logAbort(errAbort, globalContext._isProduction, pageContextNominalPageBegin)
