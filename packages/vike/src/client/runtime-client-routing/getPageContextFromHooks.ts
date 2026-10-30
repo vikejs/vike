@@ -311,10 +311,10 @@ async function getPageContextFromHooksServer_errorPage(
   err: unknown,
   pageContextAbort: undefined | PageContextAbort,
 ): Promise<PageContextFromHooksServer> {
-  // Only if the error page has a server-only hook
-  // - The constant saves client-side KBs
-  // - It's always `true` in development, where hasServerOnlyHook() decides
-  if (!globalThis.__VIKE__ERROR_PAGE_HAS_SERVER_ONLY_HOOK || !hasServerOnlyHook(pageContext)) {
+  if (
+    !globalThis.__VIKE__ERROR_PAGE_HAS_SERVER_ONLY_HOOK || // Save client-side KBs
+    !hasServerOnlyHook(pageContext)
+  ) {
     return { _hasPageContextFromServer: false }
   }
 
@@ -325,8 +325,9 @@ async function getPageContextFromHooksServer_errorPage(
     if ('pageId' in pageContextAbort) {
       // Don't let the client fetch it again, which would run the error page's server-side hooks twice
       return { _hasPageContextFromServer: true }
+    } else {
+      // A client-side hook: the client fetches the error page's pageContext below
     }
-    // A client-side hook: the client fetches the error page's pageContext below
   }
 
   const pageContextFromServer = hasProp(err, '_pageContextErrorPage', 'object')
