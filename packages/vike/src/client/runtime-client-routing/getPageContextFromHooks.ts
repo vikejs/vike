@@ -318,11 +318,11 @@ async function getPageContextFromHooksServer_errorPage(
     return { _hasPageContextFromServer: false }
   }
 
-  // A server-side hook of the page being navigated to (e.g. +guard) called `throw render(abortStatusCode)`: the page's .pageContext.json response already holds the error page's pageContext (thus `pageId`)
-  // - Otherwise the client fetches it again, which runs the error page's server-side hooks twice
+  // A server-side hook (e.g. +guard) of the page being navigated to called `throw render(abortStatusCode)`
   if (pageContextAbort) {
     assert(pageContextAbort.abortStatusCode) // `throw render(abortStatusCode)`
-    assert('pageId' in pageContextAbort)
+    assert('pageId' in pageContextAbort) // The page's .pageContext.json response already holds the error page's pageContext
+    // Don't let the client fetch it again, which would run the error page's server-side hooks twice
     return { _hasPageContextFromServer: true }
   }
 
