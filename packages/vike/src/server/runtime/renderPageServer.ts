@@ -265,6 +265,11 @@ async function renderPageServerEntryRecursive(
   try {
     pageContextNominalPageSuccess = await renderPageServerAfterRoute(pageContextNominalPageBegin)
   } catch (err) {
+    // The 404 page is the error page
+    if (pageContextNominalPageBegin.is404 && isAbortError(err)) {
+      logWrongUsageAbortedErrorPage(err, pageContextNominalPageBegin)
+      return getPageContextHttpErrorFallback(err, pageContextBegin)
+    }
     return await onError(err)
   }
   assert(pageContextNominalPageBegin === (pageContextNominalPageSuccess as any))
