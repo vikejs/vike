@@ -327,29 +327,9 @@ async function renderPageServerEntryRecursive_onError(
   try {
     pageContextErrorPage = await renderPageServerAfterRoute(pageContextErrorPageInit)
   } catch (errErrorPage) {
-    // Handle `throw redirect()` and `throw render()` while rendering error page
     if (isAbortError(errErrorPage)) {
-      const handled = await handleAbort(
-        errErrorPage,
-        pageContextBegin,
-        // The error page is the page that aborted
-        pageContextErrorPageInit,
-        requestId,
-        pageContextErrorPageInit,
-        globalContext,
-      )
-      if (handled.pageContextReturn) {
-        // - throw redirect()
-        // - throw render(url)
-        return handled.pageContextReturn
-      } else {
-        // - throw render(abortStatusCode)
-        warnErrorPageAborted(errErrorPage)
-        const pageContextHttpErrorFallback = getPageContextHttpErrorFallback(err, pageContextBegin)
-        return pageContextHttpErrorFallback
-      }
-    }
-    if (!isSameErrorMessage(errErrorPage, err)) {
+      warnErrorPageAborted(errErrorPage, pageContextErrorPageInit)
+    } else if (!isSameErrorMessage(errErrorPage, err)) {
       logRuntimeError(errErrorPage, pageContextErrorPageInit)
     }
     const pageContextHttpErrorFallback = getPageContextHttpErrorFallback(err, pageContextBegin)
@@ -357,7 +337,9 @@ async function renderPageServerEntryRecursive_onError(
   }
   return pageContextErrorPage
 }
-function warnErrorPageAborted(errErrorPage: ErrorAbort) {
+// `throw redirect()` and `throw render()` aren't supported while rendering the error page
+function warnErrorPageAborted(errErrorPage: ErrorAbort, pageContext: PageContextBegin) {
+  logAbort(errErrorPage, pageContext._globalContext._isProduction, pageContext)
   const pageContextAbort = errErrorPage._pageContextAbort
   assertWarning(
     false,
@@ -640,12 +622,7 @@ async function handleAbort(
         updateType(pageContext, await loadPageConfigsLazyServerSide(pageContext))
       } catch (errErrorPage) {
         if (isAbortError(errErrorPage)) {
-          // - throw redirect()
-          // - throw render(url)
-          if (!errErrorPage._pageContextAbort.abortStatusCode) throw errErrorPage
-          // - throw render(abortStatusCode)
-          logAbort(errErrorPage, globalContext._isProduction, pageContext)
-          warnErrorPageAborted(errErrorPage)
+          warnErrorPageAborted(errErrorPage, pageContext)
         } else {
           logRuntimeError(errErrorPage, pageContext)
         }
