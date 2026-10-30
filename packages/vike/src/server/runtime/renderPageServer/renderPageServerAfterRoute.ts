@@ -51,7 +51,10 @@ async function renderPageServerAfterRoute<
     PageContextBegin &
     PageContextUrlInternal &
     PageContext_loadPageConfigsLazyServerSide,
->(pageContext: PageContext, isClientSideError = false): Promise<PageContext & PageContextAfterRender> {
+>(
+  pageContext: PageContext,
+  { isClientSideError = false }: { isClientSideError?: boolean } = {},
+): Promise<PageContext & PageContextAfterRender> {
   // pageContext.pageId can either be the:
   //  - ID of the page matching the routing, or the
   //  - ID of the error page `_error.page.js`.
