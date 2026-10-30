@@ -20,7 +20,7 @@ function getPageContext<PageContext = PageContextClient | PageContextServer>({
 }: { asyncHook?: boolean } = {}): null | PageContext {
   assertWarning(
     !asyncHook,
-    `${pc.cyan('getPageContext({ asyncHook: true })')} is discouraged, see warning at https://vike.dev/getPageContext`,
+    `${pc.cyan('getPageContext({ asyncHook: true })')} is discouraged, see https://vike.dev/getPageContext`,
     { onlyOnce: true },
   )
 
