@@ -20,16 +20,16 @@ When setting `asyncHook: true`, Vike uses an [async hook](https://nodejs.org/api
 <Warning>
   **`getPageContext({ asyncHook: true })` is experimental**.
 
-  We discourage using `getGlobalContext({ asyncHook: true })` because some deployment platforms don't support [async hooks](https://nodejs.org/api/async_hooks.html) (e.g. [Cloudflare without `nodejs_compat`](https://developers.cloudflare.com/workers/runtime-apis/nodejs/asynclocalstorage/)).
+  We discourage using `getGlobalContext({ asyncHook: true })`, because some deployment platforms don't support [async hooks](https://nodejs.org/api/async_hooks.html) (e.g. [Cloudflare without `nodejs_compat`](https://developers.cloudflare.com/workers/runtime-apis/nodejs/asynclocalstorage/)).
 
-  Try using <Link href="/usePageContext">`usePageContext()`</Link> or the arguments of <Link href="/hooks">Vike hooks</Link> instead of `getPageContext({ asyncHook: true })`.
+  Instead, try <Link href="/usePageContext">`usePageContext()`</Link>, or the arguments of Vike hooks (e.g. <Link href="/data">`data(pageContext)`</Link>).
 
   If you do need `getPageContext({ asyncHook: true })` then reach out and explain your use case — we'll consider making it part of Vike's official API.
 </Warning>
 
-> **`getPageContext()` without `asyncHook: true` doesn't have any value for users.**
+> **`getPageContext()` without `asyncHook: true` is mostly useless.**
 >
-> Its used by extensions to create so-called <Link href="#use-case-universal-hook">universal hooks</Link> — if you aren't building a Vike extension, then `getPageContext()` without `asyncHook: true` is most likely useless for you.
+> It's used by extensions to create so-called <Link href="#use-case-universal-hook">universal hooks</Link> — if you aren't building a Vike extension, `getPageContext()` without `asyncHook: true` is most likely useless for you.
 
 
 ## Use case: instrumentation
