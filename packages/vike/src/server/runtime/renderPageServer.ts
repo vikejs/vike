@@ -604,19 +604,17 @@ async function handleAbort(
     getPageContextPublicServer,
   )
 
-  // Render error page — `throw render(abortStatusCode)` if not pageContext.json request
-  // - Before fork(): the error page renders pageContextErrorPageInit, which getPageContext({ asyncHook: true }) must return
-  if (pageContextAbort.abortStatusCode && !pageContextBegin.isClientSideNavigation) {
-    return { pageContextAbort }
+  const forkPageContextBegin = () => {
+    const pageContext = fork(pageContextBegin)
+    const pageContextAddendumAbort = getPageContextAddendumAbort(pageContextBegin.pageContextsAborted)
+    objectAssign(pageContext, pageContextAddendumAbort)
+    assert(pageContextAddendumAbort === pageContextAbort)
+    return pageContext
   }
-
-  const pageContext = fork(pageContextBegin)
-  const pageContextAddendumAbort = getPageContextAddendumAbort(pageContextBegin.pageContextsAborted)
-  objectAssign(pageContext, pageContextAddendumAbort)
-  assert(pageContextAddendumAbort === pageContextAbort)
 
   // Client-side navigation — [`pageContext.json` request](https://vike.dev/pageContext.json)
   if (pageContextBegin.isClientSideNavigation) {
+    const pageContext = forkPageContextBegin()
     let pageContextJson: string | ReadableStream<Uint8Array>
     if (pageContextAbort.abortStatusCode) {
       const errorPageId = getErrorPageId(globalContext._pageFilesAll, globalContext._pageConfigs)
@@ -651,10 +649,17 @@ async function handleAbort(
   }
 
   // URL Redirection — `throw redirect()`
-  assert(pageContextAbort._urlRedirect)
-  const httpResponse = createHttpResponseRedirect(pageContextAbort._urlRedirect, pageContextBegin)
-  objectAssign(pageContext, { httpResponse })
-  return { pageContextReturn: pageContext }
+  if (pageContextAbort._urlRedirect) {
+    const pageContext = forkPageContextBegin()
+    const httpResponse = createHttpResponseRedirect(pageContextAbort._urlRedirect, pageContextBegin)
+    objectAssign(pageContext, { httpResponse })
+    return { pageContextReturn: pageContext }
+  }
+
+  // Render error page — `throw render(abortStatusCode)` if not pageContext.json request
+  // - No fork(): the error page renders pageContextErrorPageInit, which getPageContext({ asyncHook: true }) must return
+  assert(pageContextAbort.abortStatusCode)
+  return { pageContextAbort }
 }
 
 async function checkBaseUrl(pageContextBegin: PageContextBegin, globalContext: GlobalContextServerInternal) {
