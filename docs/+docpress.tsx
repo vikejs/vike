@@ -23,7 +23,6 @@ const config = {
   name: 'Vike',
   darkMode: true,
   tocProgress: true,
-  categoryTabs: true,
   docsUrl: '/docs',
   version: PROJECT_VERSION,
   url: 'https://vike.dev',
