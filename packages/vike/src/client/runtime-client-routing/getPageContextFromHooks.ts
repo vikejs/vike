@@ -326,10 +326,11 @@ async function getPageContextFromHooksServer_errorPage(
     return { _hasPageContextFromServer: true }
   }
 
-  // Upon any other server-side error, the server sent it with the error, otherwise the client fetches it
   const pageContextFromServer = hasProp(err, '_pageContextErrorPage', 'object')
-    ? err._pageContextErrorPage
-    : await fetchPageContextErrorPageFromServer(pageContext)
+    ? // The server sent the error page's pageContext with the error
+      err._pageContextErrorPage
+    : // Otherwise the client fetches it
+      await fetchPageContextErrorPageFromServer(pageContext)
   if (!pageContextFromServer) return { _hasPageContextFromServer: false }
   return { _hasPageContextFromServer: true, ...pageContextFromServer }
 }
