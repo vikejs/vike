@@ -607,13 +607,17 @@ async function handleAbort(
     getPageContextPublicServer,
   )
 
-  const pageContext = fork(pageContextBegin)
-  const pageContextAddendumAbort = getPageContextAddendumAbort(pageContextBegin.pageContextsAborted)
-  objectAssign(pageContext, pageContextAddendumAbort)
-  assert(pageContextAddendumAbort === pageContextAbort)
+  const forkPageContextBegin = () => {
+    const pageContext = fork(pageContextBegin)
+    const pageContextAddendumAbort = getPageContextAddendumAbort(pageContextBegin.pageContextsAborted)
+    objectAssign(pageContext, pageContextAddendumAbort)
+    assert(pageContextAddendumAbort === pageContextAbort)
+    return pageContext
+  }
 
   // Client-side navigation — [`pageContext.json` request](https://vike.dev/pageContext.json)
   if (pageContextBegin.isClientSideNavigation) {
+    const pageContext = forkPageContextBegin()
     let pageContextJson: string | ReadableStream<Uint8Array>
     if (pageContextAbort.abortStatusCode) {
       const errorPageId = getErrorPageId(globalContext._pageFilesAll, globalContext._pageConfigs)
@@ -649,6 +653,7 @@ async function handleAbort(
 
   // URL Redirection — `throw redirect()`
   if (pageContextAbort._urlRedirect) {
+    const pageContext = forkPageContextBegin()
     const httpResponse = createHttpResponseRedirect(pageContextAbort._urlRedirect, pageContextBegin)
     objectAssign(pageContext, { httpResponse })
     return { pageContextReturn: pageContext }
