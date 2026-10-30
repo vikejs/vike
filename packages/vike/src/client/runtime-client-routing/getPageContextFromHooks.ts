@@ -265,20 +265,14 @@ async function fetchPageContextFromServer(pageContext: {
   _urlRewrite?: string
   abortSignal: AbortSignal
 }) {
-  let pageContextUrl = getPageContextRequestUrl(pageContext._urlRewrite ?? pageContext.urlOriginal)
   /* TO-DO/soon/once: pass & use previousUrl
-  pageContextUrl = modifyUrlSameOrigin(pageContextUrl, { search: { _vike: JSON.stringify({ previousUrl: pageContext.previousPageContext.urlOriginal }) } })
+  const pageContextFromServer = await fetchPageContextJson(pageContext, { previousUrl: pageContext.previousPageContext.urlOriginal })
   */
-  // Navigating away aborts the request, including the streamed values that are still pending
-  // - https://vike.dev/passToClient#streaming
-  const response = await fetch(pageContextUrl, { signal: pageContext.abortSignal })
-  if (isPageContextJsonMissing(response, pageContextUrl)) {
+  const pageContextFromServer = await fetchPageContextJson(pageContext)
+  if (!pageContextFromServer) {
     redirectHard(pageContext.urlOriginal)
     return { is404ServerSideRouted: true }
   }
-
-  const pageContextFromServer = await readPageContextJson(response, pageContext.abortSignal)
-  assert(isObject(pageContextFromServer))
 
   if (isAbortPageContext(pageContextFromServer)) {
     const err = AbortRender(pageContextFromServer)
@@ -342,21 +336,13 @@ async function fetchPageContextErrorPageFromServer(pageContext: {
   abortReason?: unknown
 }) {
   const { abortStatusCode, abortReason } = pageContext
-  const pageContextUrl = new URL(
-    getPageContextRequestUrl(pageContext._urlRewrite ?? pageContext.urlOriginal),
-    location.href,
-  )
-  pageContextUrl.searchParams.set('_vike', JSON.stringify({ errorPage: { abortStatusCode, abortReason } }))
   // The error page renders without the server's pageContext upon:
   // - A static host without a .pageContext.json file for this URL
   // - A static host serving the page's pre-rendered .pageContext.json (it ignores the `_vike` search param): its `pageId` isn't the error page's
   // - A server-side error other than one thrown by the error page's data() or onBeforeRender(): Vike answers `{ serverSideError: true }`, which has no `pageId`
   // When the error page's data() throws on the server-side, the server still sends its pageContext (without `data`), which the client uses
-  const response = await fetch(pageContextUrl, { signal: pageContext.abortSignal })
-  if (isPageContextJsonMissing(response, pageContextUrl)) return null
-  const pageContextFromServer = await readPageContextJson(response, pageContext.abortSignal)
-  assert(isObject(pageContextFromServer))
-  if (pageContextFromServer.pageId !== pageContext.pageId) return null
+  const pageContextFromServer = await fetchPageContextJson(pageContext, { errorPage: { abortStatusCode, abortReason } })
+  if (!pageContextFromServer || pageContextFromServer.pageId !== pageContext.pageId) return null
   processPageContextFromServer(pageContextFromServer)
   // The server only echoes them back, after a JSON round-trip (e.g. a `Date` becomes a string)
   delete pageContextFromServer.abortStatusCode
@@ -364,17 +350,30 @@ async function fetchPageContextErrorPageFromServer(pageContext: {
   return pageContextFromServer
 }
 
-// Static hosts + page doesn't exist
-function isPageContextJsonMissing(response: Response, pageContextUrl: string | URL): boolean {
+async function fetchPageContextJson(
+  pageContext: { urlOriginal: string; _urlRewrite?: string; abortSignal: AbortSignal },
+  searchVikeArgs?: Record<string, unknown>,
+) {
+  let pageContextUrl: string | URL = getPageContextRequestUrl(pageContext._urlRewrite ?? pageContext.urlOriginal)
+  if (searchVikeArgs) {
+    pageContextUrl = new URL(pageContextUrl, location.href)
+    pageContextUrl.searchParams.set('_vike', JSON.stringify(searchVikeArgs))
+  }
+  // Navigating away aborts the request, including the streamed values that are still pending
+  // - https://vike.dev/passToClient#streaming
+  const response = await fetch(pageContextUrl, { signal: pageContext.abortSignal })
   const contentType = response.headers.get('content-type')
   const contentTypeCorrect = 'application/json'
   const isCorrect = contentType && contentType.includes(contentTypeCorrect)
-  if (!isCorrect && response.status === 404) return true
+  // Static hosts + page doesn't exist
+  if (!isCorrect && response.status === 404) return null
   assertUsage(
     isCorrect,
     `Wrong Content-Type for ${pageContextUrl}: it should be ${contentTypeCorrect} but it's ${contentType} instead. Make sure to properly use pageContext.httpResponse.headers, see https://vike.dev/renderPage`,
   )
-  return false
+  const pageContextFromServer = await readPageContextJson(response, pageContext.abortSignal)
+  assert(isObject(pageContextFromServer))
+  return pageContextFromServer
 }
 
 function processPageContextFromServer(pageContext: Record<string, unknown>) {
