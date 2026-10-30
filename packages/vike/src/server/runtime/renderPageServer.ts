@@ -340,7 +340,11 @@ async function renderPageServerEntryRecursive_onError(
 
 // `throw redirect()` and `throw render()` aren't supported for the error page
 function logWrongUsageAbortedErrorPage(errErrorPage: ErrorAbort, pageContext: PageContextBegin) {
-  logAbort(errErrorPage, pageContext._globalContext._isProduction, pageContext)
+  logAbort(
+    errErrorPage,
+    false, // Also log in production
+    pageContext,
+  )
   const pageContextAbort = errErrorPage._pageContextAbort
   try {
     assertUsage(
