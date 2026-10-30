@@ -328,7 +328,7 @@ async function renderPageServerEntryRecursive_onError(
     pageContextErrorPage = await renderPageServerAfterRoute(pageContextErrorPageInit)
   } catch (errErrorPage) {
     if (isAbortError(errErrorPage)) {
-      wrongUsageAbortedErrorPage(errErrorPage, pageContextErrorPageInit)
+      logWrongUsageAbortedErrorPage(errErrorPage, pageContextErrorPageInit)
     } else if (!isSameErrorMessage(errErrorPage, err)) {
       logRuntimeError(errErrorPage, pageContextErrorPageInit)
     }
@@ -339,7 +339,7 @@ async function renderPageServerEntryRecursive_onError(
 }
 
 // `throw redirect()` and `throw render()` aren't supported for the error page
-function wrongUsageAbortedErrorPage(errErrorPage: ErrorAbort, pageContext: PageContextBegin) {
+function logWrongUsageAbortedErrorPage(errErrorPage: ErrorAbort, pageContext: PageContextBegin) {
   logAbort(errErrorPage, pageContext._globalContext._isProduction, pageContext)
   const pageContextAbort = errErrorPage._pageContextAbort
   try {
@@ -624,7 +624,7 @@ async function handleAbort(
         updateType(pageContext, await loadPageConfigsLazyServerSide(pageContext))
       } catch (errErrorPage) {
         if (isAbortError(errErrorPage)) {
-          wrongUsageAbortedErrorPage(errErrorPage, pageContext)
+          logWrongUsageAbortedErrorPage(errErrorPage, pageContext)
         } else {
           logRuntimeError(errErrorPage, pageContext)
         }
