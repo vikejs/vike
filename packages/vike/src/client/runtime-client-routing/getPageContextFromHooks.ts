@@ -320,7 +320,10 @@ async function getPageContextFromHooksServer_errorPage(
 
   // A server-side hook of the page being navigated to (e.g. +guard) called `throw render(abortStatusCode)`: the page's .pageContext.json response already holds the error page's pageContext (thus `pageId`)
   // - Otherwise the client fetches it again, which runs the error page's server-side hooks twice
-  if (pageContextAbort && 'pageId' in pageContextAbort) return { _hasPageContextFromServer: true }
+  if (pageContextAbort) {
+    assert(pageContextAbort.abortStatusCode) // `throw render(abortStatusCode)`
+    if ('pageId' in pageContextAbort) return { _hasPageContextFromServer: true }
+  }
 
   // Upon any other server-side error, the server sent it with the error, otherwise the client fetches it
   const pageContextFromServer = hasProp(err, '_pageContextErrorPage', 'object')
