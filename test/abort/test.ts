@@ -101,9 +101,17 @@ function testRun(
       await expectUrl('/about')
       await hydrationDone()
       const done = expectPageContextJsonRequest(pageContextInitIsPassedToClient)
+      const pageContextJsonRequests: string[] = []
+      const onRequest = (request: { url(): string }) => {
+        if (new URL(request.url()).pathname.endsWith('.pageContext.json')) pageContextJsonRequests.push(request.url())
+      }
+      page.on('request', onRequest)
       await page.click('a[href="/show-error-page"]')
       await testCounter()
+      page.off('request', onRequest)
       done()
+      // The error page's server-side hooks run once: guard() runs on the server-side if pageContextInitIsPassedToClient, otherwise on the client-side
+      expect(pageContextJsonRequests.length).toBe(1)
       expect(await page.textContent('p')).toBe('Testing throw render error page.')
       expect(await page.textContent('#data')).toBe(
         '{"abortStatusCode":499,"abortReason":"Testing throw render error page."}',
