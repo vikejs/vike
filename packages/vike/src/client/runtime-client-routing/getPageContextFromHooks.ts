@@ -334,12 +334,14 @@ async function fetchPageContextFromServerErrorPage(pageContext: {
   const { abortStatusCode, abortReason } = pageContext
   const pageContextFromServer = await fetchPageContextJson(pageContext, { errorPage: { abortStatusCode, abortReason } })
   // The error page renders without the server's pageContext upon:
-  // - A static host without a .pageContext.json file for this URL
+  // - No .pageContext.json for this URL, e.g. a `keepDistServer` or `+serverEntry` build deployed as static files, or a
+  //   tab running the bundle of an older deployment that had a server
   if (!pageContextFromServer) return null
   // - A server-side error other than one thrown by the error page's data() or onBeforeRender()
   //   (when the error page's data() throws, the server still sends its pageContext, without `data`)
   if ('serverSideError' in pageContextFromServer) return null
-  // - A static host serving the page's pre-rendered .pageContext.json (it ignores the `_vike` search param)
+  // - The page's pre-rendered .pageContext.json, e.g. from a server that serves dist/client/ before Vike (that static
+  //   middleware ignores the `_vike` search param)
   if (pageContextFromServer.pageId !== pageContext.pageId) return null
   processPageContextFromServer(pageContextFromServer)
   // The server's abortReason is the copy that the `_vike` search param carried as JSON (e.g. a `Date` arrives as a
@@ -366,8 +368,9 @@ async function fetchPageContextJson(
   const contentType = response.headers.get('content-type')
   const contentTypeCorrect = 'application/json'
   const isCorrect = contentType && contentType.includes(contentTypeCorrect)
-  // A static host answers 404 when it has no .pageContext.json for this URL, e.g. the page was removed by a newer
-  // deployment: fetchPageContextFromServer() then reloads the page, and the error page renders without it
+  // A static host answers 404 when it has no .pageContext.json for this URL, e.g. a newer deployment removed the page,
+  // or a `keepDistServer` build is deployed as static files: fetchPageContextFromServer() then reloads the page, and
+  // the error page renders without the server's pageContext
   if (!isCorrect && response.status === 404) return null
   assertUsage(
     isCorrect,
