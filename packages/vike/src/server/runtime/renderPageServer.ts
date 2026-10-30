@@ -636,7 +636,21 @@ async function handleAbort(
       objectAssign(pageContext, pageContextErrorPageInit, true)
       // Overrides `is404: false` of pageContextErrorPageInit, e.g. `throw render(404)` => `is404: true`
       objectAssign(pageContext, pageContextAbort)
-      updateType(pageContext, await loadPageConfigsLazyServerSide(pageContext))
+      try {
+        updateType(pageContext, await loadPageConfigsLazyServerSide(pageContext))
+      } catch (errErrorPage) {
+        if (isAbortError(errErrorPage)) {
+          // - throw redirect()
+          // - throw render(url)
+          if (!errErrorPage._pageContextAbort.abortStatusCode) throw errErrorPage
+          // - throw render(abortStatusCode)
+          logAbort(errErrorPage, globalContext._isProduction, pageContext)
+          warnErrorPageAborted(errErrorPage)
+        } else {
+          logRuntimeError(errErrorPage, pageContext)
+        }
+        return { pageContextReturn: getPageContextHttpErrorFallback(errAbort, pageContextBegin) }
+      }
       // We include pageContextInit: we don't only serialize pageContextAbort because the error page may need to access pageContextInit
       pageContextJson = getPageContextJson(pageContext)
     } else {
