@@ -7,7 +7,6 @@ import { normalizeUrlArgument } from './normalizeUrlArgument.js'
 import { renderPageClient } from './renderPageClient.js'
 import type { ScrollTarget } from './setScrollPosition.js'
 import { assertClientRouting } from '../../utils/assertRoutingType.js'
-import { initClientRouter } from './initClientRouter.js'
 import '../assertEnvClient.js'
 
 assertClientRouting()
@@ -33,6 +32,9 @@ async function navigate(url: string, options?: Options): Promise<void> {
   normalizeUrlArgument(url, 'navigate')
 
   // Ensure initClientRouter() is called before navigate() — otherwise race condition when +client.js calls navigate() before initClientRouter() is called in runtime-client-routing/entry.ts
+  // - Dynamic import: initClientRouter.js imports the user's global client config (e.g. `+onCreateGlobalContext.client.js`) which may import `vike/client/router`
+  //   - Otherwise Rollup warns about a circular dependency between chunks
+  const { initClientRouter } = await import('./initClientRouter.js')
   initClientRouter()
 
   const { keepScrollPosition, overwriteLastHistoryEntry, pageContext } = options ?? {}
