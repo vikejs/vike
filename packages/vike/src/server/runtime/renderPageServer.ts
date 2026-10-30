@@ -345,7 +345,7 @@ function wrongUsageAbortedErrorPage(errErrorPage: ErrorAbort, pageContext: PageC
   try {
     assertUsage(
       false,
-      `Failed to render error page: make sure ${pc.cyan(pageContextAbort._abortCaller)} doesn't occur for the error`,
+      `Failed to render error page: make sure ${pc.cyan(pageContextAbort._abortCaller)} doesn't occur for the error page`,
     )
   } catch (errUsage) {
     logRuntimeError(errUsage, pageContext)
