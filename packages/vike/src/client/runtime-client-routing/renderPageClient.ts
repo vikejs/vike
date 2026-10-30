@@ -457,11 +457,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     let pageContextFromHooksServer: PageContextFromHooksServer
     try {
-      pageContextFromHooksServer = await getPageContextFromHooksServer_errorPage(
-        pageContext,
-        args.err,
-        pageContextAbort,
-      )
+      pageContextFromHooksServer = await getPageContextFromHooksServer_errorPage(pageContext, args.err)
     } catch (err: unknown) {
       onError(err)
       return

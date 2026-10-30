@@ -23,7 +23,7 @@ import { getPageConfig } from '../../shared-server-client/page-configs/helpers.j
 import { getConfigValueRuntime } from '../../shared-server-client/page-configs/getConfigValueRuntime.js'
 import { assertOnBeforeRenderHookReturn } from '../../shared-server-client/assertOnBeforeRenderHookReturn.js'
 import { execHookGuard } from '../../shared-server-client/route/execHookGuard.js'
-import { AbortRender, isAbortPageContext, type PageContextAbort } from '../../shared-server-client/route/abort.js'
+import { AbortRender, isAbortPageContext } from '../../shared-server-client/route/abort.js'
 import { pageContextInitIsPassedToClient } from '../../shared-server-client/misc/pageContextInitIsPassedToClient.js'
 import { isServerSideError } from '../../shared-server-client/misc/isServerSideError.js'
 import { execHook } from '../../shared-server-client/hooks/execHook.js'
@@ -281,24 +281,30 @@ async function fetchPageContextFromServer(pageContext: {
   assert(isObject(pageContextFromServer))
 
   if (isAbortPageContext(pageContextFromServer)) {
-    throw AbortRender(pageContextFromServer)
+    const err = AbortRender(pageContextFromServer)
+    attachPageContextErrorPage(err, pageContextFromServer)
+    throw err
   }
 
   // Is there a reason for having two different properties? Can't we use only one property? I guess/think the isServerSideError property was an attempt (a bad idea really) for rendering the error page even though an error occurred on the server-side (which is a bad idea because the added complexity is non-negligible while the added value is minuscule since the error page usually doesn't have any (meaningful / server-side) hooks).
   if ('serverSideError' in pageContextFromServer || isServerSideError in pageContextFromServer) {
     const err = getProjectError(`pageContext couldn't be fetched because an error occurred on the server-side`)
-    if (globalThis.__VIKE__ERROR_PAGE_HAS_SERVER_ONLY_HOOK && isServerSideError in pageContextFromServer) {
-      // A server-side hook of the page being navigated to threw an error, and the server already sent the error page's pageContext instead: keep it, so that the client renders the error page with it
-      // - Otherwise the client fetches it again, which runs the error page's server-side hooks twice
-      processPageContextFromServer(pageContextFromServer)
-      objectAssign(err, { _pageContextErrorPage: pageContextFromServer })
-    }
+    attachPageContextErrorPage(err, pageContextFromServer)
     throw err
   }
 
   processPageContextFromServer(pageContextFromServer)
 
   return { pageContextFromServer }
+}
+
+function attachPageContextErrorPage(err: Error, pageContextFromServer: Record<string, unknown>) {
+  if (globalThis.__VIKE__ERROR_PAGE_HAS_SERVER_ONLY_HOOK && isServerSideError in pageContextFromServer) {
+    // A server-side hook of the page being navigated to threw an error or called `throw render(abortStatusCode)`, and the server already sent the error page's pageContext instead: keep it, so that the client renders the error page with it
+    // - Otherwise the client fetches it again, which runs the error page's server-side hooks twice
+    processPageContextFromServer(pageContextFromServer)
+    objectAssign(err, { _pageContextErrorPage: pageContextFromServer })
+  }
 }
 
 async function getPageContextFromHooksServer_errorPage(
@@ -309,25 +315,12 @@ async function getPageContextFromHooksServer_errorPage(
     abortReason?: unknown
   } & PageContextCreatedClient,
   err: unknown,
-  pageContextAbort: undefined | PageContextAbort,
 ): Promise<PageContextFromHooksServer> {
   if (
     !globalThis.__VIKE__ERROR_PAGE_HAS_SERVER_ONLY_HOOK || // Save client-side KBs
     !hasServerOnlyHook(pageContext)
   ) {
     return { _hasPageContextFromServer: false }
-  }
-
-  // A hook (e.g. +guard) of the page being navigated to called `throw render(abortStatusCode)`
-  if (pageContextAbort) {
-    assert(pageContextAbort.abortStatusCode) // `throw render(abortStatusCode)`
-    // A server-side hook: the page's .pageContext.json response already holds the error page's pageContext
-    if ('pageId' in pageContextAbort) {
-      // Don't let the client fetch it again, which would run the error page's server-side hooks twice
-      return { _hasPageContextFromServer: true }
-    } else {
-      // A client-side hook: the client fetches the error page's pageContext below
-    }
   }
 
   const pageContextFromServer = hasProp(err, '_pageContextErrorPage', 'object')
