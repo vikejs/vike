@@ -2,8 +2,8 @@ export { getPageContextFromHooksClient }
 export { getPageContextFromHooksClient_firstRender }
 export { getPageContextFromHooksServer }
 export { getPageContextFromHooksServer_firstRender }
-export { setPageContextInitIsPassedToClient }
 export { getPageContextFromHooksServer_errorPage }
+export { setPageContextInitIsPassedToClient }
 export { processPageContextFromServer }
 export type { PageContextFromHooksServer }
 
@@ -322,7 +322,6 @@ async function getPageContextFromHooksServer_errorPage(
   if (!pageContextFromServer) return { _hasPageContextFromServer: false }
   return { _hasPageContextFromServer: true, ...pageContextFromServer }
 }
-
 // The error page's pageContext, after an error on the client-side
 async function fetchPageContextErrorPageFromServer(pageContext: {
   urlOriginal: string
