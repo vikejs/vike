@@ -341,7 +341,6 @@ async function renderPageServerEntryRecursive_onError(
 function logErrorPageAborted(errErrorPage: ErrorAbort, pageContext: PageContextBegin) {
   logAbort(errErrorPage, pageContext._globalContext._isProduction, pageContext)
   const pageContextAbort = errErrorPage._pageContextAbort
-  // Logged instead of thrown, so that the response is still Vike's fallback error page
   try {
     assertUsage(
       false,
