@@ -131,6 +131,33 @@ function testRun(
     await ensureWasClientSideRouted('/pages/about')
   })
 
+  test('render(401) while loading the error page - client-side routing', async () => {
+    await page.goto(getServerUrl() + '/about')
+    await hydrationDone()
+    const response = page.waitForResponse((resp) => resp.url().endsWith('/render-401/index.pageContext.json'))
+    await page.click('a[href="/render-401"]')
+    expect((await response).headers()['content-type']).toContain('application/json')
+    await autoRetry(async () => {
+      expect(await page.textContent('p')).toBe('Something went wrong.')
+    })
+    await expectUrl('/render-401')
+    await ensureWasClientSideRouted('/pages/about')
+    expectLog('Failed to render error page because render(401) was called', {
+      filter: (log) => log.logSource === 'stderr',
+    })
+    if (cmd !== 'pnpm run prod') {
+      expectLog(partRegex`HTTP response ${/.*/} /render-401/index.pageContext.json 500`, {
+        filter: (log) => log.logSource === 'stderr',
+      })
+    }
+    expectLog('Failed to load resource: the server responded with a status of 500', {
+      filter: (log) => log.logSource === 'Browser Error',
+    })
+    expectLog("pageContext couldn't be fetched because an error occurred on the server-side", {
+      filter: (log) => log.logSource === 'Browser Error',
+    })
+  })
+
   test('permanent redirect', async () => {
     const url = getServerUrl() + '/permanent-redirect'
     // server-side
