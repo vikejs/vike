@@ -6,6 +6,8 @@ import { getPageContext_withAsyncHook } from './asyncHook.js'
 import { getPageContext_sync, providePageContext } from '../../shared-server-client/hooks/execHook.js'
 import type { PageContextClient, PageContextServer } from '../../types/PageContext.js'
 import '../assertEnvServer.js'
+import { assertWarning } from '../../utils/assert.js'
+import pc from '@brillout/picocolors'
 
 type GetPageContextParams = Parameters<typeof getPageContext>[0]
 /**
@@ -16,6 +18,12 @@ type GetPageContextParams = Parameters<typeof getPageContext>[0]
 function getPageContext<PageContext = PageContextClient | PageContextServer>({
   asyncHook,
 }: { asyncHook?: boolean } = {}): null | PageContext {
+  assertWarning(
+    !asyncHook,
+    `${pc.cyan('getPageContext({ asyncHook: true })')} is discouraged, see https://vike.dev/getPageContext`,
+    { onlyOnce: true },
+  )
+
   {
     const pageContext = getPageContext_sync()
     if (pageContext) return pageContext as any

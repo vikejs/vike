@@ -663,22 +663,21 @@ async function handleAbort(
     getPageContextPublicServer,
   )
 
-  // Render error page — `throw render(abortStatusCode)` if not pageContext.json request, or if the error page has a server-only hook
-  // - Before fork(): the error page renders pageContextErrorPageInit, which getPageContext({ asyncHook: true }) must return
-  if (
-    pageContextAbort.abortStatusCode &&
-    (!pageContextBegin.isClientSideNavigation || errorPageHasServerOnlyHook(globalContext))
-  ) {
-    return { pageContextAbort }
+  const forkPageContextBegin = () => {
+    const pageContext = fork(pageContextBegin)
+    const pageContextAddendumAbort = getPageContextAddendumAbort(pageContextBegin.pageContextsAborted)
+    objectAssign(pageContext, pageContextAddendumAbort)
+    assert(pageContextAddendumAbort === pageContextAbort)
+    return pageContext
   }
-
-  const pageContext = fork(pageContextBegin)
-  const pageContextAddendumAbort = getPageContextAddendumAbort(pageContextBegin.pageContextsAborted)
-  objectAssign(pageContext, pageContextAddendumAbort)
-  assert(pageContextAddendumAbort === pageContextAbort)
 
   // Client-side navigation — [`pageContext.json` request](https://vike.dev/pageContext.json)
   if (pageContextBegin.isClientSideNavigation) {
+    // Render error page — `throw render(abortStatusCode)` if the error page has a server-only hook
+    if (pageContextAbort.abortStatusCode && errorPageHasServerOnlyHook(globalContext)) {
+      return { pageContextAbort }
+    }
+    const pageContext = forkPageContextBegin()
     let pageContextJson: string | ReadableStream<Uint8Array>
     if (pageContextAbort.abortStatusCode) {
       const errorPageId = getErrorPageId(globalContext._pageFilesAll, globalContext._pageConfigs)
@@ -713,10 +712,16 @@ async function handleAbort(
   }
 
   // URL Redirection — `throw redirect()`
-  assert(pageContextAbort._urlRedirect)
-  const httpResponse = createHttpResponseRedirect(pageContextAbort._urlRedirect, pageContextBegin)
-  objectAssign(pageContext, { httpResponse })
-  return { pageContextReturn: pageContext }
+  if (pageContextAbort._urlRedirect) {
+    const pageContext = forkPageContextBegin()
+    const httpResponse = createHttpResponseRedirect(pageContextAbort._urlRedirect, pageContextBegin)
+    objectAssign(pageContext, { httpResponse })
+    return { pageContextReturn: pageContext }
+  }
+
+  // Render error page — `throw render(abortStatusCode)` if not pageContext.json request
+  assert(pageContextAbort.abortStatusCode)
+  return { pageContextAbort }
 }
 
 // The error page's hooks run on the server-side only if one of them is server-only, otherwise they run on the client-side
