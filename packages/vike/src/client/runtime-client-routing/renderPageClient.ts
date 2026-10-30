@@ -399,7 +399,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
       } else {
         // throw render(statusCode)
         pageContextAbort = res.pageContextAbort
-        assert(pageContextAbort._urlRewrite)
+        assert(pageContextAbort.abortStatusCode)
       }
     }
 
