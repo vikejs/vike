@@ -344,14 +344,7 @@ async function renderPageServerEntryRecursive_onError(
         return handled.pageContextReturn
       } else {
         // - throw render(abortStatusCode)
-        const pageContextAbort = errErrorPage._pageContextAbort
-        assertWarning(
-          false,
-          `Failed to render error page because ${pc.cyan(pageContextAbort._abortCall)} was called: make sure ${pc.cyan(
-            pageContextAbort._abortCaller,
-          )} doesn't occur while the error page is being rendered.`,
-          { onlyOnce: false },
-        )
+        warnErrorPageAborted(errErrorPage)
         const pageContextHttpErrorFallback = getPageContextHttpErrorFallback(err, pageContextBegin)
         return pageContextHttpErrorFallback
       }
@@ -363,6 +356,16 @@ async function renderPageServerEntryRecursive_onError(
     return pageContextHttpErrorFallback
   }
   return pageContextErrorPage
+}
+function warnErrorPageAborted(errErrorPage: ErrorAbort) {
+  const pageContextAbort = errErrorPage._pageContextAbort
+  assertWarning(
+    false,
+    `Failed to render error page because ${pc.cyan(pageContextAbort._abortCall)} was called: make sure ${pc.cyan(
+      pageContextAbort._abortCaller,
+    )} doesn't occur while the error page is being rendered.`,
+    { onlyOnce: false },
+  )
 }
 
 function logHttpRequest(urlOriginal: string, pageContextInit: PageContextInit, requestId: number) {
