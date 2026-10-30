@@ -61,8 +61,7 @@ async function renderPageServerAfterRoute<
   const isError: boolean =
     pageContext.is404 ||
     !!pageContext.errorWhileRendering ||
-    // The client renders the error page after an error on the client-side
-    // - Ignored without an error page: only a hand-made request has it then
+    // The error page's `.pageContext.json` request when the error page is rendered on the client-side
     (!!errorPageId && !!(pageContext._isPageContextJsonRequest && pageContext._isPageContextJsonRequest.errorPage))
   assert(isError === (pageContext.pageId === errorPageId))
 
