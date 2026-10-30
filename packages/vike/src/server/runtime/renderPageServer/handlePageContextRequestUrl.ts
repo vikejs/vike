@@ -82,8 +82,8 @@ function parseSearchVikeArgs(searchVikeArgs: undefined | string) {
     if ('errorPage' in parsed) {
       assert(isObject(parsed.errorPage))
       const { abortStatusCode, abortReason } = parsed.errorPage
-      args.errorPage = { abortReason }
-      if (typeof abortStatusCode === 'number') args.errorPage.abortStatusCode = abortStatusCode
+      assert(abortStatusCode === undefined || typeof abortStatusCode === 'number')
+      args.errorPage = { abortReason, abortStatusCode }
     }
   }
   return args
