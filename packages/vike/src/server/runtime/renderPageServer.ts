@@ -12,7 +12,7 @@ import {
   type PageContextCreatedServerWithoutGlobalContext,
 } from './renderPageServer/createPageContextServer.js'
 import { route } from '../../shared-server-client/route/index.js'
-import { assert, assertWarning, assertUsage } from '../../utils/assert.js'
+import { assert, assertUsage } from '../../utils/assert.js'
 import { onSetupRuntime } from '../../utils/assertSetup.js'
 import { catchInfiniteLoop } from '../../utils/catchInfiniteLoop.js'
 import { checkType } from '../../utils/checkType.js'
@@ -328,7 +328,7 @@ async function renderPageServerEntryRecursive_onError(
     pageContextErrorPage = await renderPageServerAfterRoute(pageContextErrorPageInit)
   } catch (errErrorPage) {
     if (isAbortError(errErrorPage)) {
-      warnErrorPageAborted(errErrorPage, pageContextErrorPageInit)
+      logErrorPageAborted(errErrorPage, pageContextErrorPageInit)
     } else if (!isSameErrorMessage(errErrorPage, err)) {
       logRuntimeError(errErrorPage, pageContextErrorPageInit)
     }
@@ -338,16 +338,20 @@ async function renderPageServerEntryRecursive_onError(
   return pageContextErrorPage
 }
 // `throw redirect()` and `throw render()` aren't supported while rendering the error page
-function warnErrorPageAborted(errErrorPage: ErrorAbort, pageContext: PageContextBegin) {
+function logErrorPageAborted(errErrorPage: ErrorAbort, pageContext: PageContextBegin) {
   logAbort(errErrorPage, pageContext._globalContext._isProduction, pageContext)
   const pageContextAbort = errErrorPage._pageContextAbort
-  assertWarning(
-    false,
-    `Failed to render error page because ${pc.cyan(pageContextAbort._abortCall)} was called: make sure ${pc.cyan(
-      pageContextAbort._abortCaller,
-    )} doesn't occur while the error page is being rendered.`,
-    { onlyOnce: false },
-  )
+  // Logged instead of thrown, so that the response is still Vike's fallback error page
+  try {
+    assertUsage(
+      false,
+      `Failed to render error page because ${pc.cyan(pageContextAbort._abortCall)} was called: make sure ${pc.cyan(
+        pageContextAbort._abortCaller,
+      )} doesn't occur while the error page is being rendered.`,
+    )
+  } catch (errUsage) {
+    logRuntimeError(errUsage, pageContext)
+  }
 }
 
 function logHttpRequest(urlOriginal: string, pageContextInit: PageContextInit, requestId: number) {
@@ -622,7 +626,7 @@ async function handleAbort(
         updateType(pageContext, await loadPageConfigsLazyServerSide(pageContext))
       } catch (errErrorPage) {
         if (isAbortError(errErrorPage)) {
-          warnErrorPageAborted(errErrorPage, pageContext)
+          logErrorPageAborted(errErrorPage, pageContext)
         } else {
           logRuntimeError(errErrorPage, pageContext)
         }
