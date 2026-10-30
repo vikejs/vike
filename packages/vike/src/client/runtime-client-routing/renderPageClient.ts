@@ -393,8 +393,14 @@ async function renderPageClient(renderArgs: RenderArgs) {
     let pageContextAbort: undefined | PageContextAbort
     if (isAbortError(err)) {
       const res = await handleAbort(err, pageContext)
-      if (res.skip) return
-      pageContextAbort = res.pageContextAbort
+      if (res.skip) {
+        // throw redirect('/some-url') / throw render('/some-url')
+        return
+      } else {
+        // throw render(statusCode)
+        pageContextAbort = res.pageContextAbort
+        assert(pageContextAbort._urlRewrite)
+      }
     }
 
     // Render error page
