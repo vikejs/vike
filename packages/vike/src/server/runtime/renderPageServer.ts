@@ -346,12 +346,12 @@ function logWrongUsageAbortedErrorPage(errErrorPage: ErrorAbort, pageContext: Pa
     pageContext,
   )
   const pageContextAbort = errErrorPage._pageContextAbort
+  const abortCall = pageContextAbort._abortCall
+  const abortCaller = pageContextAbort._abortCaller
   try {
     assertUsage(
       false,
-      `Failed to render error page because ${pc.cyan(pageContextAbort._abortCall)} was called: make sure ${pc.cyan(
-        pageContextAbort._abortCaller,
-      )} doesn't occur while the error page is being rendered.`,
+      `Failed to render error page because ${pc.cyan(abortCall)} was called: make sure ${pc.cyan(abortCaller)} doesn't occur while the error page is being rendered.`,
     )
   } catch (errUsage) {
     logRuntimeError(errUsage, pageContext)
