@@ -83,6 +83,7 @@ function parseSearchVikeArgs(searchVikeArgs: undefined | string) {
       assert(isObject(parsed.errorPage))
       const { abortStatusCode, abortReason } = parsed.errorPage
       assert(abortStatusCode === undefined || typeof abortStatusCode === 'number')
+      // Usually required by the error page's components (e.g. if the error page's +Page is a React Server Component)
       args.errorPage = { abortReason, abortStatusCode }
     }
   }
