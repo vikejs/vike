@@ -267,6 +267,7 @@ async function fetchPageContextFromServer(pageContext: {
 }) {
   const pageContextFromServer = await fetchPageContextJson(pageContext)
   if (!pageContextFromServer) {
+    // The static host doesn't have this page: reload so that the user sees the host's 404 page
     redirectHard(pageContext.urlOriginal)
     return { is404ServerSideRouted: true }
   }
@@ -368,9 +369,7 @@ async function fetchPageContextJson(
   const contentType = response.headers.get('content-type')
   const contentTypeCorrect = 'application/json'
   const isCorrect = contentType && contentType.includes(contentTypeCorrect)
-  // A static host answers 404 when it has no .pageContext.json for this URL, e.g. a newer deployment removed the page,
-  // or a `keepDistServer` build is deployed as static files: fetchPageContextFromServer() then reloads the page, and
-  // the error page renders without the server's pageContext
+  // A static host answers 404 when it has no .pageContext.json for this URL, e.g. a newer deployment removed the page
   if (!isCorrect && response.status === 404) return null
   assertUsage(
     isCorrect,
