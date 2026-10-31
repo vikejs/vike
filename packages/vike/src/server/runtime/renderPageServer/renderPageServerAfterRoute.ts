@@ -80,7 +80,10 @@ async function renderPageServerAfterRoute<
       await execHookDataAndOnBeforeRender(pageContext)
     } catch (err) {
       if (isAbortError(err)) {
-        // https://github.com/vikejs/vike/pull/3692 — AI implemented this, I don't understand it
+        // The page threw e.g. `render(401)` and a hook that also runs for the error page (e.g. a `+data` for every page) throws the same `render(401)` again: we ignore it, since the error page already shows that 401
+        // - Otherwise the user gets a 500 instead of the 401 page
+        // - Any other `throw redirect()` or `throw render()` isn't supported for the error page: it leads to a usage error and the fallback
+        // - https://github.com/vikejs/vike/pull/3692
         if (!isSameAbortCall(err, pageContext.errorWhileRendering)) throw err
       } else if (!isSameErrorMessage(err, pageContext.errorWhileRendering)) {
         logRuntimeError(err, pageContext)
