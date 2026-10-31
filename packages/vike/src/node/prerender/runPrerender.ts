@@ -170,8 +170,7 @@ async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTr
   try {
     return await runPrerender_(options, trigger)
   } catch (err) {
-    // Aborts thrown by hooks that don't belong to a single URL, e.g. +onBeforePrerenderStart
-    assertIsNotAbort(err, null)
+    assertIsNotAbort(err)
     throw err
   }
 }
@@ -630,7 +629,7 @@ async function createPageContextPrerendering(
 
     updateType(pageContext, await loadPageConfigsLazyServerSide(pageContext))
   } catch (err) {
-    assertIsNotAbort(err, pc.cyan(urlOriginal))
+    setErrorUrl(err, urlOriginal)
     throw err
   }
 
@@ -906,7 +905,7 @@ async function prerenderPages(
         try {
           res = await prerenderPage(pageContextBeforeRender)
         } catch (err) {
-          assertIsNotAbort(err, pc.cyan(pageContextBeforeRender.urlOriginal))
+          setErrorUrl(err, pageContextBeforeRender.urlOriginal)
           throw err
         }
         const { documentHtml, content, pageContext } = res
@@ -1190,14 +1189,20 @@ function normalizeUrl(url: string) {
   return '/' + url.split('/').filter(Boolean).join('/')
 }
 
-function assertIsNotAbort(err: unknown, urlOriginal: null | string) {
+const errorUrls = new WeakMap<object, string>()
+function setErrorUrl(err: unknown, urlOriginal: string) {
+  // Keep the first URL if a hook throws the same error object for several URLs
+  if (isObject(err) && !errorUrls.has(err)) errorUrls.set(err, urlOriginal)
+}
+function assertIsNotAbort(err: unknown) {
   if (!isAbortError(err)) return
   const pageContextAbort = err._pageContextAbort
 
   // Missing for sync hooks, e.g. +onBeforeRoute
   const hookLoc = isUserHookError(err)
   const thrownBy = !hookLoc ? '' : ` by ${pc.cyan(`${hookLoc.hookName}()`)} hook defined at ${hookLoc.hookFilePath}`
-  const whilePrerendering = !urlOriginal ? '' : ` while pre-rendering ${urlOriginal}`
+  const urlOriginal = errorUrls.get(err)
+  const whilePrerendering = !urlOriginal ? '' : ` while pre-rendering ${pc.cyan(urlOriginal)}`
 
   const abortCaller = pageContextAbort._abortCaller
   assert(abortCaller)
