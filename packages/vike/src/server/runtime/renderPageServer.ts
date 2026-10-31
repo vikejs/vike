@@ -385,7 +385,7 @@ async function getPageContextJsonOfErrorPage(
   })
   objectAssign(pageContextErrorPage, errorPage)
   try {
-    return await renderPageServerAfterRoute(pageContextErrorPage, { isClientSideError: true })
+    return await renderPageServerAfterRoute(pageContextErrorPage, true)
   } catch (err) {
     if (isAbortError(err)) {
       logWrongUsageAbortedErrorPage(err, pageContextErrorPage)
