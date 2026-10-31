@@ -265,11 +265,6 @@ async function renderPageServerEntryRecursive(
   try {
     pageContextNominalPageSuccess = await renderPageServerAfterRoute(pageContextNominalPageBegin)
   } catch (err) {
-    // The 404 page is the error page
-    if (pageContextNominalPageBegin.is404 && isAbortError(err)) {
-      logWrongUsageAbortedErrorPage(err, pageContextNominalPageBegin)
-      return getPageContextHttpErrorFallback(err, pageContextBegin)
-    }
     return await onError(err)
   }
   assert(pageContextNominalPageBegin === (pageContextNominalPageSuccess as any))
@@ -312,6 +307,7 @@ async function renderPageServerEntryRecursive_onError(
       // - throw redirect()
       // - throw render(url)
       // - throw render(abortStatusCode) if pageContext.json request
+      // - throw redirect() or throw render() while rendering the error page (e.g. the 404 page)
       return handled.pageContextReturn
     } else {
       // - throw render(abortStatusCode) if not pageContext.json request
@@ -588,11 +584,17 @@ async function handleAbort(
   errAbort: ErrorAbort,
   pageContextBegin: PageContextBegin,
   // handleAbortError() creates a new pageContext object and we don't merge pageContextNominalPageBegin to it: we only use some pageContextNominalPageBegin information.
-  pageContextNominalPageBegin: PageContextBegin,
+  pageContextNominalPageBegin: PageContextBegin & { pageId?: string | null },
   requestId: number,
   pageContextErrorPageInit: Omit<PageContext_loadPageConfigsLazyServerSide, 'pageId'>,
   globalContext: GlobalContextServerInternal,
 ) {
+  // The page that aborted is the error page, e.g. the 404 page
+  if (pageContextNominalPageBegin.pageId === getErrorPageId(globalContext._pageFilesAll, globalContext._pageConfigs)) {
+    logWrongUsageAbortedErrorPage(errAbort, pageContextNominalPageBegin)
+    return { pageContextReturn: getPageContextHttpErrorFallback(errAbort, pageContextBegin) }
+  }
+
   logAbort(errAbort, globalContext._isProduction, pageContextNominalPageBegin)
   const pageContextAbort = errAbort._pageContextAbort
   assert(pageContextAbort)
