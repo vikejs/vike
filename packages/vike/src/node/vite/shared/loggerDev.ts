@@ -36,6 +36,7 @@ import { isUserHookError } from '../../../shared-server-client/hooks/execHook.js
 import { getViteDevServer } from '../../../server/runtime/globalContext.js'
 import { isAbortOrSignalError, logErrorServer } from '../../../server/runtime/logErrorServer.js'
 import { getBetterError } from '../../../utils/getBetterError.js'
+import { shallowClone } from '../../../utils/shallowClone.js'
 import { getRequestId_withAsyncHook } from '../../../server/runtime/asyncHook.js'
 import { getRequestTag, type RequestTag } from '../../../server/runtime/renderPageServer.js'
 import '../assertEnvVite.js'
@@ -75,9 +76,12 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
 
   if (isAbortOrSignalError(err, pageContext?.abortSignal)) return
 
+  // Vike edits the error Vite passes to `logger.error()` in place: Vite shows that same object in its browser overlay after logging it
+  // - Otherwise the overlay shows Vite's message instead of Vike's
+  const errLogged = errorComesFromVite ? err : shallowClone(err)
   const tagSource = getTagSource(pageContext?._requestId)
-  const logErr = (err: unknown) => {
-    logErrorServer(err, pageContext)
+  const logErr = (errBetter: unknown) => {
+    logErrorServer(err, pageContext, errBetter)
   }
 
   if (isErrorWithCodeSnippet(err)) {
@@ -88,7 +92,7 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
     assert(stripAnsi(errMsgFormatted).startsWith('Failed to transpile'))
     const message =
       `${getTags(errMsgFormatted, '[vite]', tagSource, 'error')}${errMsgFormatted}\n${errorDebugNote}` as const
-    const errBetter = getBetterError(err, { message, hideStack: true })
+    const errBetter = getBetterError(errLogged, { message, hideStack: true })
     logErr(errBetter)
     return
   }
@@ -98,7 +102,7 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
     if (errMsgFormatted) {
       assert(stripAnsi(errMsgFormatted).startsWith('Failed to transpile'))
       const message = `${getTagsError(errMsgFormatted, tagSource)}${errMsgFormatted}\n${errorDebugNote}` as const
-      const errBetter = getBetterError(err, { message, hideStack: true })
+      const errBetter = getBetterError(errLogged, { message, hideStack: true })
       logErr(errBetter)
       return
     }
@@ -109,7 +113,7 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
     if (errIntro) {
       assert(stripAnsi(errIntro).startsWith('Failed to execute'))
       const prepend = `${getTagsError(errIntro, tagSource)}${errIntro}\n` as const
-      const errBetter = getBetterError(err, { message: { prepend } })
+      const errBetter = getBetterError(errLogged, { message: { prepend } })
       logErr(errBetter)
       return
     }
@@ -123,7 +127,7 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
         `Following error was thrown by the ${hookName as string}() hook defined at ${hookFilePath}`,
       )
       const prepend = `${getTagsError(errIntro, tagSource)}${errIntro}\n` as const
-      const errBetter = getBetterError(err, { message: { prepend } })
+      const errBetter = getBetterError(errLogged, { message: { prepend } })
       logErr(errBetter)
       return
     }
@@ -132,12 +136,12 @@ function logErrorServerDev(err: unknown, pageContext: PageContext_logRuntime, er
   if (tagSource) {
     const errIntro = colorError(`[Error] ${errorComesFromVite ? 'Transpilation error' : 'An error was thrown'}:`)
     const prepend = `${getTagsError(errIntro, tagSource)}${errIntro}\n` as const
-    const errBetter = getBetterError(err, { message: { prepend } })
+    const errBetter = getBetterError(errLogged, { message: { prepend } })
     logErr(errBetter)
     return
   }
 
-  logErr(err)
+  logErr(errLogged)
 }
 
 function logDev(msg: string, logType: LogType, tagSource: TagSource | null, tagTool: TagTool, doNotAddTags?: boolean) {

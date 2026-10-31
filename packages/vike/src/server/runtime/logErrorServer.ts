@@ -8,6 +8,7 @@ import { hasRed } from '../../utils/colorsServer.js'
 import { isDebugError } from '../../utils/debug.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import { isObject } from '../../utils/isObject.js'
+import { shallowClone } from '../../utils/shallowClone.js'
 import { execHookOnError } from './renderPageServer/execHookOnError.js'
 import { addErrorHint } from './renderPageServer/addErrorHint.js'
 import { isAbortError } from '../../shared-server-client/route/abort.js'
@@ -25,17 +26,19 @@ const globalObject = getGlobalObject('server/runtime/logErrorServer.ts', {
 function logErrorServer(
   err: unknown,
   pageContext: null | PageContextCreatedServer | PageContextCreatedServerWithoutGlobalContext,
+  // The error Vike edits and prints, so that `err` stays as the user threw it (e.g. for +onError)
+  errLogged: unknown = shallowClone(err),
 ) {
   if (isAbortOrSignalError(err, pageContext?.abortSignal)) return
 
   // I don't think there is a use case for printing the same error object twice? Reloading page throwing error => the same error is printed a second time but it's a different error object.
   if (hasAlreadyLogged(err)) return
 
-  warnIfErrorIsNotObject(err)
+  warnIfErrorIsNotObject(errLogged)
 
-  const errBetter = addErrorHint(err)
+  const errBetter = addErrorHint(errLogged)
 
-  execHookOnError(errBetter, pageContext)
+  execHookOnError(err, pageContext)
 
   const errPrinted = getStackOrMessage(isDebugError() ? getOriginalError(errBetter) : errBetter)
   console.error(hasRed(errPrinted) ? errPrinted : pc.red(errPrinted))
