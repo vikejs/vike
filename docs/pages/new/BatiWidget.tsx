@@ -30,7 +30,10 @@ function BatiWidget() {
 
 // DocPress `darkMode` sets the `dark` class on <html>
 function useIsDark() {
-  const [isDark, setIsDark] = useState(false)
+  // Read on the first render: the widget renders on the first frame when the scaffolder is already loaded
+  const [isDark, setIsDark] = useState(
+    () => typeof document !== 'undefined' && document.documentElement.classList.contains('dark'),
+  )
   useEffect(() => {
     const root = document.documentElement
     const update = () => setIsDark(root.classList.contains('dark'))
