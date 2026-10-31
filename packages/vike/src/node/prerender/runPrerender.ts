@@ -1189,16 +1189,10 @@ function normalizeUrl(url: string) {
   return '/' + url.split('/').filter(Boolean).join('/')
 }
 
-const errorUrls = new WeakMap<object, string>()
-function setErrorUrl(err: unknown, urlOriginal: string) {
-  // Keep the first URL if a hook throws the same error object for several URLs
-  if (isObject(err) && !errorUrls.has(err)) errorUrls.set(err, urlOriginal)
-}
 function assertIsNotAbort(err: unknown) {
   if (!isAbortError(err)) return
   const pageContextAbort = err._pageContextAbort
 
-  // Missing for sync hooks, e.g. +onBeforeRoute
   const hookLoc = isUserHookError(err)
   const thrownBy = !hookLoc ? '' : ` by ${pc.cyan(`${hookLoc.hookName}()`)} hook defined at ${hookLoc.hookFilePath}`
   const urlOriginal = errorUrls.get(err)
@@ -1216,6 +1210,10 @@ function assertIsNotAbort(err: unknown) {
       abortCaller,
     )} isn't supported for pre-rendered pages`,
   )
+}
+const errorUrls = new WeakMap<object, string>()
+function setErrorUrl(err: unknown, urlOriginal: string) {
+  if (isObject(err) && !errorUrls.has(err)) errorUrls.set(err, urlOriginal)
 }
 
 function getPrerenderContextPublic(prerenderContext: PrerenderContext): PrerenderContext {
