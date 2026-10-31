@@ -1,5 +1,6 @@
 export { renderPageServerAfterRoute }
 export { prerenderPage }
+export { logWrongUsageAbortedErrorPage }
 export type { PageContextAfterRender }
 
 import { getErrorPageId } from '../../../shared-server-client/error-page.js'
@@ -34,6 +35,7 @@ import { isServerSideError } from '../../../shared-server-client/misc/isServerSi
 import type { PageContextCreatedServer } from './createPageContextServer.js'
 import type { PageContextBegin } from '../renderPageServer.js'
 import { getAsyncLocalStorage, type AsyncStore } from '../asyncHook.js'
+import { type ErrorAbort, logAbort } from '../../../shared-server-client/route/abort.js'
 import '../../assertEnvServer.js'
 
 type PageContextAfterRender = { httpResponse: HttpResponse; errorWhileRendering: null | Error }
@@ -161,5 +163,25 @@ async function prerenderPageEntry(
   } else {
     const pageContextSerialized = getPageContextJsonFile(pageContext, streamedValuesLines)
     return { documentHtml, content: null, pageContextSerialized, pageContext }
+  }
+}
+
+// `throw redirect()` and `throw render()` aren't supported for the error page
+function logWrongUsageAbortedErrorPage(errErrorPage: ErrorAbort, pageContext: PageContextBegin) {
+  logAbort(
+    errErrorPage,
+    false, // Also log in production
+    pageContext,
+  )
+  const pageContextAbort = errErrorPage._pageContextAbort
+  const abortCall = pageContextAbort._abortCall
+  const abortCaller = pageContextAbort._abortCaller
+  try {
+    assertUsage(
+      false,
+      `Failed to render error page because ${pc.cyan(abortCall)} was called: make sure ${pc.cyan(abortCaller)} isn't called for the error page`,
+    )
+  } catch (errUsage) {
+    logRuntimeError(errUsage, pageContext)
   }
 }
