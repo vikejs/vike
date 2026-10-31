@@ -335,8 +335,7 @@ async function fetchPageContextFromServerErrorPage(pageContext: {
   const { abortStatusCode, abortReason } = pageContext
   const pageContextFromServer = await fetchPageContextJson(pageContext, { errorPage: { abortStatusCode, abortReason } })
   // The error page renders without the server's pageContext upon:
-  // - No .pageContext.json for this URL, e.g. a `keepDistServer` or `+serverEntry` build deployed as static files, or a
-  //   tab running the bundle of an older deployment that had a server
+  // - No .pageContext.json for this URL, e.g. a tab running the bundle of an older deployment that had a server
   if (!pageContextFromServer) return null
   // - A server-side error other than one thrown by the error page's data() or onBeforeRender()
   //   (when the error page's data() throws, the server still sends its pageContext, without `data`)
