@@ -284,8 +284,6 @@ async function fetchPageContextFromServer(pageContext: {
     throw err
   }
 
-  processPageContextFromServer(pageContextFromServer)
-
   return { pageContextFromServer }
 }
 
@@ -293,7 +291,6 @@ function attachPageContextErrorPage(err: Error, pageContextFromServer: Record<st
   if (globalThis.__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER && isServerSideError in pageContextFromServer) {
     // A server-side hook of the page being navigated to threw an error or called `throw render(abortStatusCode)`, and the server already sent the error page's pageContext instead: keep it, so that the client renders the error page with it
     // - Otherwise the client fetches it again (and the error page's server-side hooks run twice)
-    processPageContextFromServer(pageContextFromServer)
     objectAssign(err, { _pageContextErrorPage: pageContextFromServer })
   }
 }
@@ -339,7 +336,6 @@ async function fetchPageContextFromServerErrorPage(pageContext: {
   //   (when the error page's data() throws, the server still sends its pageContext, without `data`)
   if ('serverSideError' in pageContextFromServer) return null
   assert(pageContextFromServer.pageId === pageContext.pageId) // `errorPageId`
-  processPageContextFromServer(pageContextFromServer)
   // The server's abortReason is the copy that the `_vike` search param carried as JSON (e.g. a `Date` arrives as a
   // string) — we keep the client-side lossless version
   delete pageContextFromServer.abortReason
@@ -376,6 +372,12 @@ async function fetchPageContextJson(
   )
   const pageContextFromServer = await readPageContextJson(response, pageContext.abortSignal)
   assert(isObject(pageContextFromServer))
+  if (
+    // The response of `throw redirect()`, `throw render(url)` and `{ serverSideError: true }` isn't a page's pageContext
+    'pageId' in pageContextFromServer
+  ) {
+    processPageContextFromServer(pageContextFromServer)
+  }
   return pageContextFromServer
 }
 
