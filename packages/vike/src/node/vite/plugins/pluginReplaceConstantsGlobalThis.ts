@@ -123,6 +123,5 @@ async function isFetchPageContextOfErrorPageFromServer() {
   const vikeConfig = await getVikeConfigInternal()
   const errorPage = vikeConfig._pageConfigs.find((pageConfig) => pageConfig.isErrorPage)
   if (!errorPage || getConfigValueBuildTime(errorPage, 'hasServerOnlyHook', 'boolean')?.value !== true) return false
-  // A fully pre-rendered app can be deployed to a static host, which doesn't answer the request for the error page's pageContext
   return !(await resolvePrerenderConfigGlobal(vikeConfig)).isPrerenderingEnabledForAllPages
 }
