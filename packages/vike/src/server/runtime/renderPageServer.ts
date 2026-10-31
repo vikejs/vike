@@ -660,7 +660,7 @@ async function handleAbort(
       errorPageHasServerOnlyHook(globalContext)
     ) {
       // Render the error page's `pageContext`: run the error page's server-side hooks to determine the error page's server-side `pageContext` and return it
-      // - A server-side hook can be vike-react-rsc's +onCreatePageContext.server.js (which renders Server Components e.g. +Layout.jsx)
+      // - For example vike-react-rsc's +onCreatePageContext.server.js (which renders Server Components e.g. +Layout.jsx)
       // - Normally, the error page's pageContext is retreived by the client doing a `fetch()` request, but this is different: a `throw render(abortStatusCode)` occured in the hook of a normal page (i.e. a non-error page) => we proactively render the error page's pageContext instead of doing a round-trip
       return { pageContextAbort }
     }
