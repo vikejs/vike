@@ -202,7 +202,7 @@ async function renderPageServerEntryOnce(
     if (pageContextHttpResponse) return pageContextHttpResponse
   }
 
-  // The error page's `.pageContext.json` request when the error page is rendered on the client-side
+  // The error page's `.pageContext.json` request
   {
     const pageContextErrorPage = await getPageContextJsonOfErrorPage(pageContextBegin, globalContext)
     if (pageContextErrorPage) return pageContextErrorPage
