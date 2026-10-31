@@ -358,7 +358,11 @@ async function fetchPageContextJson(
   */
   if (searchVikeArgs) {
     pageContextUrl = new URL(pageContextUrl, location.href)
-    pageContextUrl.searchParams.set('_vike', JSON.stringify(searchVikeArgs))
+    pageContextUrl.searchParams.set(
+      '_vike',
+      // We don't use `import { stringify } from @brillout/json-serializer` to save client-side KBs
+      JSON.stringify(searchVikeArgs),
+    )
   }
   // Navigating away aborts the request, including the streamed values that are still pending
   // - https://vike.dev/passToClient#streaming
