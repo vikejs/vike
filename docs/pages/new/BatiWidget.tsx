@@ -1,9 +1,13 @@
 export { BatiWidget }
 
 import React, { useEffect, useState } from 'react'
+import './BatiWidget.css'
 
 function BatiWidget() {
-  const [isLoading, setIsLoading] = useState(true)
+  // No placeholder if a previous visit already loaded the scaffolder
+  const [isLoading, setIsLoading] = useState(
+    () => typeof customElements === 'undefined' || !customElements.get('bati-widget'),
+  )
   const isDark = useIsDark()
   useEffect(() => {
     ;(async () => {
@@ -12,18 +16,15 @@ function BatiWidget() {
       setIsLoading(false)
     })()
   }, [])
-  if (isLoading) {
-    return (
-      <div style={{ textAlign: 'center', fontSize: '2em', margin: 100, paddingBottom: 50 }}>Loading scaffolder...</div>
-    )
-  }
   return (
-    <>
-      <div className="container" style={{ display: 'flex', justifyContent: 'center' }}>
-        {/* @ts-expect-error */}
+    <div className="container bati-widget-container" style={{ display: 'flex', justifyContent: 'center' }}>
+      {isLoading ? (
+        <div style={{ textAlign: 'center', fontSize: '2em', marginTop: 100 }}>Loading scaffolder...</div>
+      ) : (
+        // @ts-expect-error
         <bati-widget theme={isDark ? 'dark' : 'light'}></bati-widget>
-      </div>
-    </>
+      )}
+    </div>
   )
 }
 

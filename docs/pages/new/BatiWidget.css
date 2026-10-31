@@ -1,0 +1,14 @@
+/* The <bati-widget>'s measured heights, reserved while it loads so that nothing below it moves */
+.bati-widget-container {
+  min-height: 1909px;
+}
+@media (min-width: 520px) {
+  .bati-widget-container {
+    min-height: 1669px;
+  }
+}
+@media (min-width: 64rem) {
+  .bati-widget-container {
+    min-height: 1139px;
+  }
+}
