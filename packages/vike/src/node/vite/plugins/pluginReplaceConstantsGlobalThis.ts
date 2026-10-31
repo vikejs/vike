@@ -11,7 +11,7 @@ import { assert } from '../../../utils/assert.js'
 import { getVikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 import { getConfigValueBuildTime } from '../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
 import { resolvePrerenderConfigGlobal, isDistServerRemoved } from '../../prerender/resolvePrerenderConfig.js'
-import { isPrerenderAutoRunEnabled } from '../../prerender/context.js'
+import { isPrerenderRunByBuild } from './build/pluginBuildApp.js'
 import {
   isViteServerSide_applyToEnvironment,
   isViteServerSide_configEnvironment,
@@ -125,6 +125,6 @@ async function isErrorPageContextFromServer() {
   const errorPage = vikeConfig._pageConfigs.find((pageConfig) => pageConfig.isErrorPage)
   if (!errorPage || getConfigValueBuildTime(errorPage, 'hasServerOnlyHook', 'boolean')?.value !== true) return false
   // No server answers the request for the error page's pageContext once the build's own pre-rendering removes dist/server/
-  if (!(await isPrerenderAutoRunEnabled(vikeConfig))) return true
+  if (!(await isPrerenderRunByBuild(vikeConfig))) return true
   return !isDistServerRemoved(await resolvePrerenderConfigGlobal(vikeConfig), vikeConfig)
 }

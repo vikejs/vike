@@ -1,4 +1,5 @@
 export { pluginBuildApp }
+export { isPrerenderRunByBuild }
 
 import { runPrerender_forceExit } from '../../../prerender/runPrerenderEntry.js'
 import type { InlineConfig, Plugin, ResolvedConfig } from 'vite'
@@ -138,8 +139,7 @@ function pluginBuildApp(): Plugin[] {
 
 async function triggerPrerendering(config: ResolvedConfig) {
   const vikeConfig = await getVikeConfigInternal()
-  if (isDisabled(vikeConfig)) return
-  if (!(await isPrerenderAutoRunEnabled(vikeConfig))) return
+  if (!(await isPrerenderRunByBuild(vikeConfig))) return
 
   const configInline = getFullBuildInlineConfig(config)
   const res = await runPrerenderFromAutoRun(configInline)
@@ -161,6 +161,10 @@ async function abortViteBuildSsr() {
     )
     process.exit(0)
   }
+}
+
+async function isPrerenderRunByBuild(vikeConfig: VikeConfigInternal): Promise<boolean> {
+  return !isDisabled(vikeConfig) && (await isPrerenderAutoRunEnabled(vikeConfig))
 }
 
 function isDisabled(vikeConfig: VikeConfigInternal): boolean {
