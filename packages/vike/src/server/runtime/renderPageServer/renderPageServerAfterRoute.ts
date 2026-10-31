@@ -35,7 +35,7 @@ import { isServerSideError } from '../../../shared-server-client/misc/isServerSi
 import type { PageContextCreatedServer } from './createPageContextServer.js'
 import type { PageContextBegin } from '../renderPageServer.js'
 import { getAsyncLocalStorage, type AsyncStore } from '../asyncHook.js'
-import { type ErrorAbort, logAbort } from '../../../shared-server-client/route/abort.js'
+import { type ErrorAbort, isAbortError, logAbort } from '../../../shared-server-client/route/abort.js'
 import '../../assertEnvServer.js'
 
 type PageContextAfterRender = { httpResponse: HttpResponse; errorWhileRendering: null | Error }
@@ -81,7 +81,11 @@ async function renderPageServerAfterRoute<
       await execHookDataAndOnBeforeRender(pageContext)
     } catch (err) {
       if (!isSameErrorMessage(err, pageContext.errorWhileRendering)) {
-        logRuntimeError(err, pageContext)
+        if (isAbortError(err)) {
+          logWrongUsageAbortedErrorPage(err, pageContext)
+        } else {
+          logRuntimeError(err, pageContext)
+        }
       }
     }
   }
