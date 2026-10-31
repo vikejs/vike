@@ -94,10 +94,8 @@ async function getPageContextFromHooksServer(
   // If pageContextInit has some client data or if one of the hooks guard(), data() or onBeforeRender() is server-side
   // only, then we need to fetch pageContext from the server.
   // We do it before executing any client-side hook, because it contains pageContextInit which may be needed for guard() / data() / onBeforeRender(), for example pageContextInit.user is crucial for guard()
-  if (
-    // true if pageContextInit has some client data or at least one of the data() and onBeforeRender() hooks is server-side only:
-    await hasPageContextServer(pageContext)
-  ) {
+  // true if pageContextInit has some client data or at least one of the data() and onBeforeRender() hooks is server-side only:
+  if (await hasPageContextServer(pageContext)) {
     const res = await fetchPageContextFromServer(pageContext)
     if ('is404ServerSideRouted' in res) return { is404ServerSideRouted: true as const }
     const { pageContextFromServer } = res
