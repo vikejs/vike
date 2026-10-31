@@ -80,12 +80,12 @@ async function renderPageServerAfterRoute<
     try {
       await execHookDataAndOnBeforeRender(pageContext)
     } catch (err) {
-      if (!isSameErrorMessage(err, pageContext.errorWhileRendering)) {
-        if (isAbortError(err)) {
+      if (isAbortError(err)) {
+        if (!isSameAbortCall(err, pageContext.errorWhileRendering)) {
           logWrongUsageAbortedErrorPage(err, pageContext)
-        } else {
-          logRuntimeError(err, pageContext)
         }
+      } else if (!isSameErrorMessage(err, pageContext.errorWhileRendering)) {
+        logRuntimeError(err, pageContext)
       }
     }
   }
@@ -106,6 +106,9 @@ async function renderPageServerAfterRoute<
       : await createHttpResponsePageHtml(htmlRender, renderHook, pageContext)
   objectAssign(pageContext, { httpResponse })
   return pageContext
+}
+function isSameAbortCall(errAbort: ErrorAbort, err: unknown): boolean {
+  return isAbortError(err) && err._pageContextAbort._abortCall === errAbort._pageContextAbort._abortCall
 }
 
 async function prerenderPage(pageContext: Parameters<typeof prerenderPageEntry>[0]) {
