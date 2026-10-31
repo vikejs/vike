@@ -110,7 +110,9 @@ function testRun(
       await testCounter()
       page.off('request', onRequest)
       done()
-      // The error page's server-side hooks run once: guard() runs on the server-side if pageContextInitIsPassedToClient, otherwise on the client-side
+      // One `.pageContext.json` request:
+      // - If pageContextInitIsPassedToClient, the page's request: guard() runs on the server-side, and its response carries the error page's pageContext
+      // - Otherwise, the error page's request: guard() runs on the client-side
       expect(pageContextJsonRequests.length).toBe(1)
       expect(await page.textContent('p')).toBe('Testing throw render error page.')
       expect(await page.textContent('#data')).toBe(
