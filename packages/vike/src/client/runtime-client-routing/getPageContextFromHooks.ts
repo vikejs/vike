@@ -267,7 +267,6 @@ async function fetchPageContextFromServer(pageContext: {
 }) {
   const pageContextFromServer = await fetchPageContextJson(pageContext)
   if (!pageContextFromServer) {
-    // The static host doesn't have this page: reload so that the user sees the host's 404 page
     redirectHard(pageContext.urlOriginal)
     return { is404ServerSideRouted: true }
   }
