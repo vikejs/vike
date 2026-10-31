@@ -51,13 +51,20 @@ async function renderPageServerAfterRoute<
     PageContextBegin &
     PageContextUrlInternal &
     PageContext_loadPageConfigsLazyServerSide,
->(pageContext: PageContext): Promise<PageContext & PageContextAfterRender> {
+>(
+  pageContext: PageContext,
+  { isClientSideError = false }: { isClientSideError?: boolean } = {},
+): Promise<PageContext & PageContextAfterRender> {
   // pageContext.pageId can either be the:
   //  - ID of the page matching the routing, or the
   //  - ID of the error page `_error.page.js`.
   assert(hasProp(pageContext, 'pageId', 'string'))
 
-  const isError: boolean = pageContext.is404 || !!pageContext.errorWhileRendering
+  const isError: boolean =
+    pageContext.is404 ||
+    !!pageContext.errorWhileRendering ||
+    // The error page's `.pageContext.json` request when the error page is rendered on the client-side
+    isClientSideError
   assert(
     isError ===
       (pageContext.pageId ===
