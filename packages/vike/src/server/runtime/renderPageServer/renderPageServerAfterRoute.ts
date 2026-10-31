@@ -81,9 +81,7 @@ async function renderPageServerAfterRoute<
       await execHookDataAndOnBeforeRender(pageContext)
     } catch (err) {
       if (isAbortError(err)) {
-        if (!isSameAbortCall(err, pageContext.errorWhileRendering)) {
-          logWrongUsageAbortedErrorPage(err, pageContext)
-        }
+        if (!isSameAbortCall(err, pageContext.errorWhileRendering)) throw err
       } else if (!isSameErrorMessage(err, pageContext.errorWhileRendering)) {
         logRuntimeError(err, pageContext)
       }
