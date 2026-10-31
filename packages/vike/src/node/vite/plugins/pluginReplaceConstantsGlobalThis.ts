@@ -78,7 +78,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
             define: {
               'globalThis.__VIKE__IS_CLIENT': JSON.stringify(isClientSide),
               'globalThis.__VIKE__ERROR_PAGE_HAS_SERVER_ONLY_HOOK': JSON.stringify(
-                isDev || (await errorPageHasServerOnlyHook()),
+                isDev || (await isErrorPageContextFromServer()),
               ),
             },
           }
@@ -119,7 +119,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
   ]
 }
 
-async function errorPageHasServerOnlyHook() {
+async function isErrorPageContextFromServer() {
   const vikeConfig = await getVikeConfigInternal()
   const errorPage = vikeConfig._pageConfigs.find((pageConfig) => pageConfig.isErrorPage)
   if (!errorPage || getConfigValueBuildTime(errorPage, 'hasServerOnlyHook', 'boolean')?.value !== true) return false
