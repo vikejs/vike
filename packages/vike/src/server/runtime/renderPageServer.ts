@@ -655,7 +655,7 @@ async function handleAbort(
 
   // Client-side navigation — [`pageContext.json` request](https://vike.dev/pageContext.json)
   if (pageContextBegin.isClientSideNavigation) {
-    // The caller renders the error page on the server-side — `throw render(abortStatusCode)` if the error page has a server-only hook
+    // The caller renders the error page on the server-side
     // - This `pageContext.json` response then holds the error page's pageContext, so the client doesn't fetch it again (its server-only hooks would run twice)
     // - Without a server-only hook, the error page's hooks run on the client-side
     if (pageContextAbort.abortStatusCode && errorPageHasServerOnlyHook(globalContext)) {
