@@ -80,6 +80,7 @@ async function renderPageServerAfterRoute<
       await execHookDataAndOnBeforeRender(pageContext)
     } catch (err) {
       if (isAbortError(err)) {
+        // https://github.com/vikejs/vike/pull/3692 — AI implemented this, I don't understand it
         if (!isSameAbortCall(err, pageContext.errorWhileRendering)) throw err
       } else if (!isSameErrorMessage(err, pageContext.errorWhileRendering)) {
         logRuntimeError(err, pageContext)
