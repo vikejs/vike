@@ -78,7 +78,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
             define: {
               'globalThis.__VIKE__IS_CLIENT': JSON.stringify(isClientSide),
               'globalThis.__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER': JSON.stringify(
-                isDev || (await isErrorPageContextFromServer()),
+                isDev || (await isFetchPageContextOfErrorPageFromServer()),
               ),
             },
           }
@@ -119,7 +119,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
   ]
 }
 
-async function isErrorPageContextFromServer() {
+async function isFetchPageContextOfErrorPageFromServer() {
   const vikeConfig = await getVikeConfigInternal()
   const errorPage = vikeConfig._pageConfigs.find((pageConfig) => pageConfig.isErrorPage)
   if (!errorPage || getConfigValueBuildTime(errorPage, 'hasServerOnlyHook', 'boolean')?.value !== true) return false
