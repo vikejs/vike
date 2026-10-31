@@ -11,6 +11,7 @@ import { assert } from '../../../utils/assert.js'
 import { getVikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 import { getConfigValueBuildTime } from '../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
 import { resolvePrerenderConfigGlobal, isDistServerRemoved } from '../../prerender/resolvePrerenderConfig.js'
+import { isPrerenderAutoRunEnabled } from '../../prerender/context.js'
 import {
   isViteServerSide_applyToEnvironment,
   isViteServerSide_configEnvironment,
@@ -24,7 +25,7 @@ declare global {
   /** Like `import.meta.env.SSR` but works for `node_modules/` packages with `ssr.external` */
   var __VIKE__IS_CLIENT: boolean
   var __VIKE__IS_DEBUG: boolean
-  /** Whether the client gets the error page's pageContext from the server: the error page has a server-only hook and pre-rendering doesn't remove dist/server/ — always `true` in development, where the error page's hooks can change without Vite restarting */
+  /** Whether the client gets the error page's pageContext from the server: the error page has a server-only hook and the build's own pre-rendering doesn't remove dist/server/ — always `true` in development, where the error page's hooks can change without Vite restarting */
   var __VIKE__ERROR_PAGE_HAS_SERVER_ONLY_HOOK: boolean
   /** Whether the code is processed by Vite, e.g. `true` when server code is `ssr.noExternal` */
   var __VIKE__NO_EXTERNAL: true | undefined
@@ -123,6 +124,7 @@ async function isErrorPageContextFromServer() {
   const vikeConfig = await getVikeConfigInternal()
   const errorPage = vikeConfig._pageConfigs.find((pageConfig) => pageConfig.isErrorPage)
   if (!errorPage || getConfigValueBuildTime(errorPage, 'hasServerOnlyHook', 'boolean')?.value !== true) return false
-  // No server answers the request for the error page's pageContext once pre-rendering removes dist/server/
+  // No server answers the request for the error page's pageContext once the build's own pre-rendering removes dist/server/
+  if (!(await isPrerenderAutoRunEnabled(vikeConfig))) return true
   return !isDistServerRemoved(await resolvePrerenderConfigGlobal(vikeConfig), vikeConfig)
 }
