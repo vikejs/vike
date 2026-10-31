@@ -720,7 +720,8 @@ function errorPageHasServerOnlyHook(globalContext: GlobalContextServerInternal) 
   const errorPageId = getErrorPageId(globalContext._pageFilesAll, globalContext._pageConfigs)
   if (!errorPageId) return false
   const errorPageConfig = findPageConfig(globalContext._pageConfigs, errorPageId)
-  return !!errorPageConfig && getConfigValueRuntime(errorPageConfig, 'hasServerOnlyHook', 'boolean')?.value === true
+  assert(errorPageConfig)
+  return getConfigValueRuntime(errorPageConfig, 'hasServerOnlyHook', 'boolean')?.value === true
 }
 
 async function checkBaseUrl(pageContextBegin: PageContextBegin, globalContext: GlobalContextServerInternal) {
