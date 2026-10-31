@@ -78,7 +78,7 @@ function parseSearchVikeArgs(searchVikeArgs: undefined | string) {
       assert(hasProp(parsed, 'previousUrl', 'string'))
       args.previousUrl = parsed.previousUrl
     }
-    // The client renders the error page after an error on the client-side
+    // Get the pageContext of the error page
     if ('errorPage' in parsed) {
       assert(isObject(parsed.errorPage))
       const { abortStatusCode, abortReason } = parsed.errorPage
