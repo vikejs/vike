@@ -115,4 +115,5 @@ async function expectValues({ isNavigation = false } = {}) {
   )
   expect(await page.locator('#unescaped').count()).toBe(0)
   expectLog('Streamed value failed on purpose', { filter: (log) => log.logSource === 'stderr' })
+  expectLog('+onError received: "Streamed value failed on purpose"', { filter: (log) => log.logSource === 'stdout' })
 }
