@@ -167,6 +167,14 @@ type PrerenderOptions = ApiOptions & {
 
 type PrerenderTrigger = '$ vike prerender' | 'prerender()' | 'auto-run'
 async function runPrerender(options: PrerenderOptions = {}, trigger: PrerenderTrigger) {
+  try {
+    return await runPrerender_(options, trigger)
+  } catch (err) {
+    assertIsNotAbort(err)
+    throw err
+  }
+}
+async function runPrerender_(options: PrerenderOptions, trigger: PrerenderTrigger) {
   setWasPrerenderRun(trigger)
   checkOutdatedOptions(options)
   onSetupPrerender()
@@ -604,21 +612,26 @@ async function createPageContextPrerendering(
     is404,
   })
 
-  if (!is404) {
-    const pageContextFromRoute = await route(pageContext)
-    assert(hasProp(pageContextFromRoute, 'pageId', 'null') || hasProp(pageContextFromRoute, 'pageId', 'string')) // Help TS
-    assertRouteMatch(pageContextFromRoute, pageContext)
-    assert(pageContextFromRoute.pageId)
-    objectAssign(pageContext, pageContextFromRoute)
-  } else {
-    assert(pageId)
-    objectAssign(pageContext, {
-      pageId,
-      routeParams: {},
-    })
-  }
+  try {
+    if (!is404) {
+      const pageContextFromRoute = await route(pageContext)
+      assert(hasProp(pageContextFromRoute, 'pageId', 'null') || hasProp(pageContextFromRoute, 'pageId', 'string')) // Help TS
+      assertRouteMatch(pageContextFromRoute, pageContext)
+      assert(pageContextFromRoute.pageId)
+      objectAssign(pageContext, pageContextFromRoute)
+    } else {
+      assert(pageId)
+      objectAssign(pageContext, {
+        pageId,
+        routeParams: {},
+      })
+    }
 
-  updateType(pageContext, await loadPageConfigsLazyServerSide(pageContext))
+    updateType(pageContext, await loadPageConfigsLazyServerSide(pageContext))
+  } catch (err) {
+    setErrorUrl(err, urlOriginal)
+    throw err
+  }
 
   let usesClientRouter: boolean
   {
@@ -892,7 +905,7 @@ async function prerenderPages(
         try {
           res = await prerenderPage(pageContextBeforeRender)
         } catch (err) {
-          assertIsNotAbort(err, pc.cyan(pageContextBeforeRender.urlOriginal))
+          setErrorUrl(err, pageContextBeforeRender.urlOriginal)
           throw err
         }
         const { documentHtml, content, pageContext } = res
@@ -1176,13 +1189,14 @@ function normalizeUrl(url: string) {
   return '/' + url.split('/').filter(Boolean).join('/')
 }
 
-function assertIsNotAbort(err: unknown, urlOriginal: string) {
+function assertIsNotAbort(err: unknown) {
   if (!isAbortError(err)) return
   const pageContextAbort = err._pageContextAbort
 
   const hookLoc = isUserHookError(err)
-  assert(hookLoc)
-  const thrownBy = ` by ${pc.cyan(`${hookLoc.hookName}()`)} hook defined at ${hookLoc.hookFilePath}`
+  const thrownBy = !hookLoc ? '' : ` by ${pc.cyan(`${hookLoc.hookName}()`)} hook defined at ${hookLoc.hookFilePath}`
+  const urlOriginal = errorUrls.get(err)
+  const whilePrerendering = !urlOriginal ? '' : ` while pre-rendering ${pc.cyan(urlOriginal)}`
 
   const abortCaller = pageContextAbort._abortCaller
   assert(abortCaller)
@@ -1192,10 +1206,14 @@ function assertIsNotAbort(err: unknown, urlOriginal: string) {
 
   assertUsage(
     false,
-    `${pc.cyan(abortCall)} thrown${thrownBy} while pre-rendering ${urlOriginal} but ${pc.cyan(
+    `${pc.cyan(abortCall)} thrown${thrownBy}${whilePrerendering} but ${pc.cyan(
       abortCaller,
     )} isn't supported for pre-rendered pages`,
   )
+}
+const errorUrls = new WeakMap<object, string>()
+function setErrorUrl(err: unknown, urlOriginal: string) {
+  if (isObject(err) && !errorUrls.has(err)) errorUrls.set(err, urlOriginal)
 }
 
 function getPrerenderContextPublic(prerenderContext: PrerenderContext): PrerenderContext {
