@@ -25,7 +25,7 @@ declare global {
   var __VIKE__IS_CLIENT: boolean
   var __VIKE__IS_DEBUG: boolean
   /** Whether the client gets the error page's pageContext from the server: the error page has a server-only hook and not every page is pre-rendered — always `true` in development, where the error page's hooks can change without Vite restarting */
-  var __VIKE__IS_ERROR_PAGE_CONTEXT_FROM_SERVER: boolean
+  var __VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER: boolean
   /** Whether the code is processed by Vite, e.g. `true` when server code is `ssr.noExternal` */
   var __VIKE__NO_EXTERNAL: true | undefined
 }
@@ -77,7 +77,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
             consumer: isClientSide ? 'client' : 'server',
             define: {
               'globalThis.__VIKE__IS_CLIENT': JSON.stringify(isClientSide),
-              'globalThis.__VIKE__IS_ERROR_PAGE_CONTEXT_FROM_SERVER': JSON.stringify(
+              'globalThis.__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER': JSON.stringify(
                 isDev || (await isErrorPageContextFromServer()),
               ),
             },
