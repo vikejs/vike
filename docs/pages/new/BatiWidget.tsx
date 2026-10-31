@@ -17,7 +17,10 @@ function BatiWidget() {
     })()
   }, [])
   return (
-    <div className="container bati-widget-container" style={{ display: 'flex', justifyContent: 'center' }}>
+    <div
+      className={isLoading ? 'container bati-widget-loading' : 'container'}
+      style={{ display: 'flex', justifyContent: 'center' }}
+    >
       {isLoading ? (
         <div style={{ textAlign: 'center', fontSize: '2em', marginTop: 100 }}>Loading scaffolder...</div>
       ) : (
