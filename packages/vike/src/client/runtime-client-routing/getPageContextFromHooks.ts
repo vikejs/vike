@@ -338,9 +338,7 @@ async function fetchPageContextFromServerErrorPage(pageContext: {
   // - A server-side error other than one thrown by the error page's data() or onBeforeRender()
   //   (when the error page's data() throws, the server still sends its pageContext, without `data`)
   if ('serverSideError' in pageContextFromServer) return null
-  // - The page's pre-rendered .pageContext.json, e.g. from a server that serves dist/client/ before Vike (that static
-  //   middleware ignores the `_vike` search param)
-  if (pageContextFromServer.pageId !== pageContext.pageId) return null
+  assert(pageContextFromServer.pageId === pageContext.pageId) // `errorPageId`
   processPageContextFromServer(pageContextFromServer)
   // The server's abortReason is the copy that the `_vike` search param carried as JSON (e.g. a `Date` arrives as a
   // string) — we keep the client-side lossless version
