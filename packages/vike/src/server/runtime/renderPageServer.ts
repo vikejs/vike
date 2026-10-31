@@ -625,7 +625,7 @@ async function handleAbort(
   // handleAbortError() creates a new pageContext object and we don't merge pageContextNominalPageBegin to it: we only use some pageContextNominalPageBegin information.
   pageContextNominalPageBegin: PageContextBegin & { pageId?: string | null },
   requestId: number,
-  pageContextErrorPageInit: Omit<PageContext_loadPageConfigsLazyServerSide, 'pageId'> & { errorWhileRendering: Error },
+  pageContextErrorPageInit: Omit<PageContext_loadPageConfigsLazyServerSide, 'pageId'>,
   globalContext: GlobalContextServerInternal,
 ) {
   if (pageContextNominalPageBegin.pageId === getErrorPageId(globalContext._pageFilesAll, globalContext._pageConfigs)) {
