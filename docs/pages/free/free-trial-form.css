@@ -58,3 +58,21 @@
   opacity: 0.6;
   cursor: default;
 }
+
+/* DocPress `darkMode` */
+:root.dark {
+  .free-trial-input {
+    background: var(--dp-color-surface);
+    border-color: var(--dp-color-border-strong);
+  }
+  .free-trial-input:focus {
+    border-color: var(--dp-color-primary);
+  }
+  .free-trial-button {
+    background: var(--dp-color-surface-elevated);
+    color: var(--dp-color-text);
+  }
+  .free-trial-button:hover {
+    background: var(--dp-color-border-strong);
+  }
+}

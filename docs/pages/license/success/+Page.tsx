@@ -3,10 +3,8 @@ export { Page }
 import { Link } from '@brillout/docpress'
 import React from 'react'
 
-const colorBorder = '#e2e8f0'
-// Muted text, based on the landing-page hero tagline grey (`text-grey` → `--color-grey`), darkened slightly (0.5553 → 0.54) to meet WCAG AA contrast at this page's smaller text sizes
-const colorMuted = 'oklch(0.54 0 0)'
-// docpress's site-wide text color (the muted/border colors below have no docs-wide var)
+const colorBorder = 'var(--dp-color-border)'
+const colorMuted = 'var(--dp-color-muted)'
 const colorHeading = 'var(--color-text)'
 
 function Page() {
@@ -26,7 +24,7 @@ function Page() {
         style={{
           marginTop: 28,
           padding: '20px 28px',
-          background: '#fefefe',
+          background: 'var(--dp-color-surface-elevated)',
           border: `1px solid ${colorBorder}`,
           borderRadius: 14,
           boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
