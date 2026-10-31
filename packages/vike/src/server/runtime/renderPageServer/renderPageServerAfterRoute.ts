@@ -34,6 +34,7 @@ import { isServerSideError } from '../../../shared-server-client/misc/isServerSi
 import type { PageContextCreatedServer } from './createPageContextServer.js'
 import type { PageContextBegin } from '../renderPageServer.js'
 import { getAsyncLocalStorage, type AsyncStore } from '../asyncHook.js'
+import { type ErrorAbort, isAbortError } from '../../../shared-server-client/route/abort.js'
 import '../../assertEnvServer.js'
 
 type PageContextAfterRender = { httpResponse: HttpResponse; errorWhileRendering: null | Error }
@@ -78,7 +79,9 @@ async function renderPageServerAfterRoute<
     try {
       await execHookDataAndOnBeforeRender(pageContext)
     } catch (err) {
-      if (!isSameErrorMessage(err, pageContext.errorWhileRendering)) {
+      if (isAbortError(err)) {
+        if (!isSameAbortCall(err, pageContext.errorWhileRendering)) throw err
+      } else if (!isSameErrorMessage(err, pageContext.errorWhileRendering)) {
         logRuntimeError(err, pageContext)
       }
     }
@@ -100,6 +103,9 @@ async function renderPageServerAfterRoute<
       : await createHttpResponsePageHtml(htmlRender, renderHook, pageContext)
   objectAssign(pageContext, { httpResponse })
   return pageContext
+}
+function isSameAbortCall(errAbort: ErrorAbort, err: unknown): boolean {
+  return isAbortError(err) && err._pageContextAbort._abortCall === errAbort._pageContextAbort._abortCall
 }
 
 async function prerenderPage(pageContext: Parameters<typeof prerenderPageEntry>[0]) {
