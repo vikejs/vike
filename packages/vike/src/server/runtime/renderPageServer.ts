@@ -589,7 +589,6 @@ async function handleAbort(
   pageContextErrorPageInit: Omit<PageContext_loadPageConfigsLazyServerSide, 'pageId'>,
   globalContext: GlobalContextServerInternal,
 ) {
-  // The page that aborted is the error page, e.g. the 404 page
   if (pageContextNominalPageBegin.pageId === getErrorPageId(globalContext._pageFilesAll, globalContext._pageConfigs)) {
     logWrongUsageAbortedErrorPage(errAbort, pageContextNominalPageBegin)
     return { pageContextReturn: getPageContextHttpErrorFallback(errAbort, pageContextBegin) }
