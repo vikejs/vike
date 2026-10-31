@@ -344,7 +344,7 @@ async function fetchPageContextFromServerErrorPage(pageContext: {
   if (pageContextFromServer.pageId !== pageContext.pageId) return null
   processPageContextFromServer(pageContextFromServer)
   // The server's abortReason is the copy that the `_vike` search param carried as JSON (e.g. a `Date` arrives as a
-  // string), so the browser keeps its own
+  // string) — we keep the client-side lossless version
   delete pageContextFromServer.abortReason
   return pageContextFromServer
 }
