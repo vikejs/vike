@@ -291,7 +291,7 @@ async function fetchPageContextFromServer(pageContext: {
 }
 
 function attachPageContextErrorPage(err: Error, pageContextFromServer: Record<string, unknown>) {
-  if (globalThis.__VIKE__ERROR_PAGE_HAS_SERVER_ONLY_HOOK && isServerSideError in pageContextFromServer) {
+  if (globalThis.__VIKE__IS_ERROR_PAGE_CONTEXT_FROM_SERVER && isServerSideError in pageContextFromServer) {
     // A server-side hook of the page being navigated to threw an error or called `throw render(abortStatusCode)`, and the server already sent the error page's pageContext instead: keep it, so that the client renders the error page with it
     // - Otherwise the client fetches it again, which runs the error page's server-side hooks twice
     processPageContextFromServer(pageContextFromServer)
@@ -309,7 +309,7 @@ async function getPageContextFromHooksServer_errorPage(
   err: unknown,
 ): Promise<PageContextFromHooksServer> {
   if (
-    !globalThis.__VIKE__ERROR_PAGE_HAS_SERVER_ONLY_HOOK || // Save client-side KBs
+    !globalThis.__VIKE__IS_ERROR_PAGE_CONTEXT_FROM_SERVER || // Save client-side KBs
     !hasServerOnlyHook(pageContext)
   ) {
     return { _hasPageContextFromServer: false }
