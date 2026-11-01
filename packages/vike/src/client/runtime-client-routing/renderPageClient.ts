@@ -156,7 +156,8 @@ async function renderPageClient(renderArgs: RenderArgs) {
     await globalObject.hydrationAwaitPromise
     if (isRenderOutdated()) return
   }
-  // Read after the wait: the first render sets it only once it renders the page, and a navigation that waited for hydration needs that page
+  // The page this navigation leaves: its onPageTransitionStart() and onPageTransitionEnd() hooks are called, and its keepScrollPosition setting is compared
+  // - Read after `await globalObject.hydrationAwaitPromise`: the first render sets it only once it renders
   const { previousPageContext } = globalObject
 
   try {
