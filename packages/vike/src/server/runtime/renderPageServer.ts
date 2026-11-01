@@ -722,6 +722,8 @@ async function handleAbort(
 }
 
 function errorPageHasServerOnlyHook(globalContext: GlobalContextServerInternal) {
+  // The V0.4 design doesn't have the `hasServerOnlyHook` config — TO-DO/next-major-release: remove this line
+  if (globalContext._pageConfigs.length === 0) return false
   const errorPageId = getErrorPageId(globalContext._pageFilesAll, globalContext._pageConfigs)
   if (!errorPageId) return false
   const errorPageConfig = findPageConfig(globalContext._pageConfigs, errorPageId)
