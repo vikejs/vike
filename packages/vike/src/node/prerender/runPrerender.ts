@@ -610,6 +610,7 @@ async function createPageContextPrerendering(
     _providedByHook: providedByHook,
     _urlOriginalModifiedByHook: null as ProvidedByHookTransformer,
     is404,
+    isErrorPage: is404,
   })
 
   try {

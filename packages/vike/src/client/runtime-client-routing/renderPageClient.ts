@@ -130,7 +130,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
     pageContextsAborted = [],
   } = renderArgs
   let { scrollTarget } = renderArgs
-  const { previousPageContext } = globalObject
 
   const abortController = new AbortController()
   const { isRenderOutdated, setHydrationCanBeAborted, setOnRenderClientCalled, isFirstRender } =
@@ -158,6 +157,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     await globalObject.hydrationAwaitPromise
     if (isRenderOutdated()) return
   }
+  const { previousPageContext } = globalObject
 
   return await renderPageNominal()
 
@@ -366,6 +366,9 @@ async function renderPageClient(renderArgs: RenderArgs) {
   async function handleError(args: { err: unknown }) {
     const { err } = args
     assert(err)
+
+    // The first render failed, thus it doesn't hydrate the page anymore: a navigation can now supersede it
+    if (isFirstRender) setHydrationCanBeAborted()
 
     // Logging
     if (!isAbortError(err)) {
@@ -578,7 +581,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
       if (!isErrorPage) return
     }
     /* We don't abort in order to ensure that onHydrationEnd() is called: we abort only after onHydrationEnd() is called.
-    if (isRenderOutdated(true)) return
+    if (isRenderOutdated()) return
     */
 
     // onHydrationEnd()
@@ -589,11 +592,11 @@ async function renderPageClient(renderArgs: RenderArgs) {
         await onError(err)
         if (!isErrorPage) return
       }
-      if (isRenderOutdated(true)) return
+      if (isRenderOutdated()) return
     }
 
     // We purposely abort *after* onHydrationEnd() is called (see comment above).
-    if (isRenderOutdated(true)) return
+    if (isRenderOutdated()) return
 
     // onPageTransitionEnd()
     if (globalObject.isTransitioning) {
@@ -606,7 +609,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
         await onError(err)
         if (!isErrorPage) return
       }
-      if (isRenderOutdated(true)) return
+      if (isRenderOutdated()) return
     }
 
     if (!scrollTarget && previousPageContext) {
@@ -676,6 +679,7 @@ async function getPageContextBegin(
     isHistoryNavigation,
     isClientSideNavigation,
     isHydration: isFirstRender && !isForErrorPage,
+    isErrorPage: isForErrorPage,
     previousPageContext,
     pageContextsAborted,
     abortSignal,
@@ -742,11 +746,11 @@ function getIsRenderOutdated(abortController: AbortController) {
 
   /** Whether the rendering should be aborted because a new rendering has started. We should call this after each `await`. */
   // TODO/after-merge: rename to abortIfOutdated()
-  const isRenderOutdated = (isRenderCleanup?: true) => {
+  const isRenderOutdated = () => {
     // Never abort first render if `hydrationCanBeAborted` isn't `true`
     {
       const isFirstRender = renderNumber === 1
-      if (isFirstRender && !hydrationCanBeAborted && !isRenderCleanup) {
+      if (isFirstRender && !hydrationCanBeAborted) {
         return false
       }
     }

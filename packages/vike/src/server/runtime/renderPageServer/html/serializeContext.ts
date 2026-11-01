@@ -39,7 +39,7 @@ const passToClientBuiltInPageContext = [
   'routeParams',
   'data', // for data() hook
 ]
-const pageToClientBuiltInPageContextError = ['pageProps', 'is404', isServerSideError]
+const pageToClientBuiltInPageContextError = ['pageProps', 'is404', 'isErrorPage', isServerSideError]
 
 type PageContextSerialization = PageContextCreatedServer & {
   pageId: string
