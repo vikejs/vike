@@ -34,7 +34,7 @@ import { isServerSideError } from '../../../shared-server-client/misc/isServerSi
 import type { PageContextCreatedServer } from './createPageContextServer.js'
 import type { PageContextBegin } from '../renderPageServer.js'
 import { getAsyncLocalStorage, type AsyncStore } from '../asyncHook.js'
-import { type ErrorAbort, isAbortError } from '../../../shared-server-client/route/abort.js'
+import { isAbortError } from '../../../shared-server-client/route/abort.js'
 import '../../assertEnvServer.js'
 
 type PageContextAfterRender = { httpResponse: HttpResponse; errorWhileRendering: null | Error }
@@ -81,11 +81,8 @@ async function renderPageServerAfterRoute<
       await execHookDataAndOnBeforeRender(pageContext)
     } catch (err) {
       if (isAbortError(err)) {
-        // The page threw e.g. `render(401)` and a hook that also runs for the error page (e.g. a `+data` for every page) throws the same `render(401)` again: we ignore it, since the error page already shows that 401
-        // - Otherwise the user gets a 500 instead of the 401 page
-        // - Any other `throw redirect()` or `throw render()` isn't supported for the error page: it leads to a usage error and the fallback
-        // - https://github.com/vikejs/vike/pull/3692
-        if (!isSameAbortCall(err, pageContext.errorWhileRendering)) throw err
+        // `throw redirect()` and `throw render()` aren't supported for the error page: it's a usage error
+        throw err
       } else if (!isSameErrorMessage(err, pageContext.errorWhileRendering)) {
         logRuntimeError(err, pageContext)
       }
@@ -108,9 +105,6 @@ async function renderPageServerAfterRoute<
       : await createHttpResponsePageHtml(htmlRender, renderHook, pageContext)
   objectAssign(pageContext, { httpResponse })
   return pageContext
-}
-function isSameAbortCall(errAbort: ErrorAbort, err: unknown): boolean {
-  return isAbortError(err) && err._pageContextAbort._abortCall === errAbort._pageContextAbort._abortCall
 }
 
 async function prerenderPage(pageContext: Parameters<typeof prerenderPageEntry>[0]) {
