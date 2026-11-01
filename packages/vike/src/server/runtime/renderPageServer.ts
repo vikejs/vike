@@ -314,12 +314,12 @@ async function renderPageServerEntryRecursive_onError(
     if (handled.pageContextReturn) {
       // - throw redirect()
       // - throw render(url)
-      // - throw render(abortStatusCode) if pageContext.json request and the error page doesn't have a server-only hook
+      // - throw render(abortStatusCode) if pageContext.json request (except of the error page's pageContext.json request, i.e. the error page has a server-only hook)
       // - throw redirect() or throw render() while rendering the error page (e.g. the 404 page)
       return handled.pageContextReturn
     } else {
       // - throw render(abortStatusCode) if not pageContext.json request
-      // - throw render(abortStatusCode) if pageContext.json request and the error page has a server-only hook
+      // - throw render(abortStatusCode) if pageContext.json request for error page (i.e. the error page has a server-only hook)
       objectAssign(pageContextErrorPageInit, handled.pageContextAbort)
     }
   }
