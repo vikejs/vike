@@ -130,6 +130,21 @@ async function renderPageClient(renderArgs: RenderArgs) {
   } = renderArgs
   let { scrollTarget } = renderArgs
 
+  if (globalObject.clientRoutingIsDisabled) {
+    redirectHard(urlOriginal)
+    return
+  }
+
+  // Await hydration (unless +hydrationCanBeAborted)
+  // - Before getIsRenderOutdated(): a waiting navigation would otherwise make the hydration outdated, and the hydration would stop before releasing it
+  if (
+    // Not the first render (getIsRenderOutdated() below increments renderCounter)
+    globalObject.renderCounter > 0
+  ) {
+    await globalObject.hydrationAwaitPromise
+  }
+  const { previousPageContext } = globalObject
+
   const abortController = new AbortController()
   const { isRenderOutdated, setHydrationCanBeAborted, setOnRenderClientCalled, isFirstRender } =
     getIsRenderOutdated(abortController)
@@ -146,26 +161,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     abortSignal: abortController.signal,
   }
 
-  if (globalObject.clientRoutingIsDisabled) {
-    redirectHard(urlOriginal)
-    return
-  }
-
-  // Await hydration (unless +hydrationCanBeAborted)
-  if (!isFirstRender) {
-    await globalObject.hydrationAwaitPromise
-    if (isRenderOutdated()) return
-  }
-  // The page this navigation leaves: its pageId is compared (doNotRenderIfSamePage), its onPageTransitionStart() and onPageTransitionEnd() hooks are called, and its keepScrollPosition setting is compared
-  // - Read after `await globalObject.hydrationAwaitPromise`: the first render sets globalObject.previousPageContext only once it renders its page
-  const { previousPageContext } = globalObject
-
-  try {
-    return await renderPageNominal()
-  } finally {
-    // Release the navigations that started during hydration, however the first render ends (outdated, failed, ...)
-    globalObject.hydrationAwaitPromiseResolve()
-  }
+  return await renderPageNominal()
 
   async function renderPageNominal() {
     const onError = async (err: unknown) => {
@@ -373,6 +369,9 @@ async function renderPageClient(renderArgs: RenderArgs) {
     const { err } = args
     assert(err)
 
+    // The first render failed, thus it doesn't hydrate the page anymore: a navigation can now supersede it
+    if (isFirstRender) setHydrationCanBeAborted()
+
     // Logging
     if (!isAbortError(err)) {
       // We don't swallow 404 errors:
@@ -504,8 +503,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     // throw render('/some-url')
     if (pageContextAbort._urlRewrite) {
-      // The re-render awaits hydrationAwaitPromise, while this render awaits the re-render
-      globalObject.hydrationAwaitPromiseResolve()
       await renderPageClient({
         ...renderArgs,
         scrollTarget: undefined,
@@ -522,8 +519,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
         redirectHard(urlRedirect)
         return { skip: true }
       } else {
-        // The re-render awaits hydrationAwaitPromise, while this render awaits the re-render
-        globalObject.hydrationAwaitPromiseResolve()
         await renderPageClient({
           ...renderArgs,
           scrollTarget: undefined,
@@ -644,6 +639,8 @@ async function renderPageClient(renderArgs: RenderArgs) {
     globalObject.renderedPageContext = pageContext
 
     stampFinished(urlOriginal)
+
+    globalObject.hydrationAwaitPromiseResolve()
 
     return pageContext
   }
