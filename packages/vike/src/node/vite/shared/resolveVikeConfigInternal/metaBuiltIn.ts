@@ -228,7 +228,7 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
     eager: true,
     _computed: (pageConfig, isDev): boolean => {
       const sources = (['data', 'onBeforeRender', 'onCreatePageContext', 'guard'] as const)
-        // renderPageServerAfterRoute() skips guard() when it renders the error page
+        // Vike never runs the error page's server-only guard()
         .filter((hookName) => !(hookName === 'guard' && pageConfig.isErrorPage))
         .map((hookName) =>
           getConfigValueSourcesRelevant(
