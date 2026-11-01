@@ -351,7 +351,7 @@ function logWrongUsageAbortedErrorPage(errErrorPage: ErrorAbort, pageContext: Pa
   const abortCall = pageContextAbort._abortCall
   const abortCaller = pageContextAbort._abortCaller
   const errMsg =
-    `Failed to render error page because ${pc.cyan(`throw ${abortCall}`)} was called: make sure ${pc.cyan(abortCaller)} isn't called for the error page, e.g. with ${pc.cyan('if (pageContext.isErrorPage) return')}` as const
+    `Failed to render error page because ${pc.cyan(`throw ${abortCall}`)} was called: make sure ${pc.cyan(abortCaller)} isn't called for the error page, e.g. using ${pc.cyan('pageContext.isErrorPage')}` as const
   try {
     assertUsage(false, errMsg)
   } catch (errUsage) {
