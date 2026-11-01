@@ -570,6 +570,8 @@ async function renderPageClient(renderArgs: RenderArgs) {
     const onRenderClientError = await onRenderClientPromise
     if (onRenderClientError) {
       await onError(onRenderClientError)
+      // The hydration is over (failed): don't leave navigations that started meanwhile waiting forever.
+      if (isFirstRender) globalObject.hydrationAwaitPromiseResolve()
       if (!isErrorPage) return
     }
     /* We don't abort in order to ensure that onHydrationEnd() is called: we abort only after onHydrationEnd() is called.
@@ -583,6 +585,10 @@ async function renderPageClient(renderArgs: RenderArgs) {
       } catch (err) {
         await onError(err)
         if (!isErrorPage) return
+      } finally {
+        // Resolve even if the render is outdated (a navigation started during hydration and is awaiting
+        // hydrationAwaitPromise), otherwise that navigation and all following ones hang forever.
+        globalObject.hydrationAwaitPromiseResolve()
       }
       if (isRenderOutdated(true)) return
     }
