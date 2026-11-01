@@ -374,7 +374,11 @@ async function getPageContextJsonOfErrorPage(
   const errorPage = pageContextBegin._isPageContextJsonRequest && pageContextBegin._isPageContextJsonRequest.errorPage
   if (!errorPage) return null
   const errorPageId = getErrorPageId(globalContext._pageFilesAll, globalContext._pageConfigs)
-  if (!errorPageId) return null
+  if (
+    // E.g. a tab running the bundle of an older deployment that had an error page
+    !errorPageId
+  )
+    return null
 
   const pageContextErrorPage = fork(pageContextBegin)
   objectAssign(pageContextErrorPage, {
