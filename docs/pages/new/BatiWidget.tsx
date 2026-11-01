@@ -1,9 +1,14 @@
 export { BatiWidget }
 
 import React, { useEffect, useState } from 'react'
+import './BatiWidget.css'
 
 function BatiWidget() {
-  const [isLoading, setIsLoading] = useState(true)
+  // No placeholder if a previous visit already loaded the scaffolder
+  const [isLoading, setIsLoading] = useState(
+    () => typeof customElements === 'undefined' || !customElements.get('bati-widget'),
+  )
+  const isDark = useIsDark()
   useEffect(() => {
     ;(async () => {
       // Move this import to +client.js once we make non-global +client.js work
@@ -11,17 +16,34 @@ function BatiWidget() {
       setIsLoading(false)
     })()
   }, [])
-  if (isLoading) {
-    return (
-      <div style={{ textAlign: 'center', fontSize: '2em', margin: 100, paddingBottom: 50 }}>Loading scaffolder...</div>
-    )
-  }
   return (
-    <>
-      <div className="container" style={{ display: 'flex', justifyContent: 'center' }}>
-        {/* @ts-expect-error */}
-        <bati-widget theme="light"></bati-widget>
-      </div>
-    </>
+    <div
+      className={isLoading ? 'container bati-widget-loading' : 'container'}
+      style={{ display: 'flex', justifyContent: 'center' }}
+    >
+      {isLoading ? (
+        <div style={{ textAlign: 'center', fontSize: '2em', marginTop: 100 }}>Loading scaffolder...</div>
+      ) : (
+        // @ts-expect-error
+        <bati-widget theme={isDark ? 'dark' : 'light'}></bati-widget>
+      )}
+    </div>
   )
+}
+
+// DocPress `darkMode` sets the `dark` class on <html>
+function useIsDark() {
+  // Read on the first render: the widget renders on the first frame when the scaffolder is already loaded
+  const [isDark, setIsDark] = useState(
+    () => typeof document !== 'undefined' && document.documentElement.classList.contains('dark'),
+  )
+  useEffect(() => {
+    const root = document.documentElement
+    const update = () => setIsDark(root.classList.contains('dark'))
+    update()
+    const observer = new MutationObserver(update)
+    observer.observe(root, { attributes: true, attributeFilter: ['class'] })
+    return () => observer.disconnect()
+  }, [])
+  return isDark
 }
