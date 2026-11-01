@@ -10,7 +10,6 @@ import { addVirtualFileIdPrefix } from '../../../utils/virtualFileId.js'
 import { assert } from '../../../utils/assert.js'
 import { getVikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 import { getConfigValueBuildTime } from '../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
-import { resolvePrerenderConfigGlobal } from '../../prerender/resolvePrerenderConfig.js'
 import {
   isViteServerSide_applyToEnvironment,
   isViteServerSide_configEnvironment,
@@ -123,5 +122,5 @@ async function isFetchPageContextOfErrorPageFromServer() {
   const vikeConfig = await getVikeConfigInternal()
   const errorPage = vikeConfig._pageConfigs.find((pageConfig) => pageConfig.isErrorPage)
   if (!errorPage || getConfigValueBuildTime(errorPage, 'hasServerOnlyHook', 'boolean')?.value !== true) return false
-  return !(await resolvePrerenderConfigGlobal(vikeConfig)).isPrerenderingEnabledForAllPages
+  return !vikeConfig.prerenderContext.isPrerenderingEnabledForAllPages
 }
