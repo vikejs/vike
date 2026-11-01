@@ -7,7 +7,7 @@ export { setPageContextInitIsPassedToClient }
 export { processPageContextFromServer }
 export type { PageContextFromHooksServer }
 
-import { assert, assertUsage, assertWarning, getProjectError } from '../../utils/assert.js'
+import { assert, assertUsage, getProjectError } from '../../utils/assert.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import { hasProp } from '../../utils/hasProp.js'
 import { isObject } from '../../utils/isObject.js'
@@ -335,15 +335,7 @@ async function fetchPageContextFromServerErrorPage(pageContext: {
   // - A server-side error other than one thrown by the error page's data() or onBeforeRender()
   //   (when the error page's data() throws, the server still sends its pageContext, without `data`)
   if ('serverSideError' in pageContextFromServer) return null
-  // - The page's own pre-rendered .pageContext.json, from a static file server that ignores the `_vike` search param
-  if (pageContextFromServer.pageId !== pageContext.pageId) {
-    assertWarning(
-      false,
-      `The error page is rendered without its server-side pageContext: the request for it received the pre-rendered .pageContext.json of ${pageContextFromServer.pageId} instead. That's usually because a static file server (e.g. express.static()) serves dist/client/ before Vike's middleware. Make sure .pageContext.json requests with a _vike search parameter reach Vike's middleware.`,
-      { onlyOnce: true },
-    )
-    return null
-  }
+  assert(pageContextFromServer.pageId === pageContext.pageId) // `errorPageId`
   // The server's abortReason is the copy that the `_vike` search param carried as JSON (e.g. a `Date` arrives as a
   // string) — we keep the client-side lossless version
   delete pageContextFromServer.abortReason
