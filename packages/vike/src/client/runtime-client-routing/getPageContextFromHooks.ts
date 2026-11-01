@@ -295,6 +295,7 @@ function attachPageContextErrorPage(err: Error, pageContextFromServer: Record<st
   }
 }
 
+// The error page's pageContext
 async function getPageContextFromHooksServer_errorPage(
   pageContext: {
     pageId: string
@@ -310,37 +311,25 @@ async function getPageContextFromHooksServer_errorPage(
   ) {
     return { _hasPageContextFromServer: false }
   }
-  const pageContextFromServer = hasProp(err, '_pageContextErrorPage', 'object')
-    ? // The server sent the error page's pageContext with the error
-      err._pageContextErrorPage
-    : // Otherwise the client fetches it
-      await fetchPageContextFromServerErrorPage(pageContext)
-  if (!pageContextFromServer) return { _hasPageContextFromServer: false }
-  return { _hasPageContextFromServer: true, ...pageContextFromServer }
-}
-// The error page's pageContext
-async function fetchPageContextFromServerErrorPage(pageContext: {
-  urlOriginal: string
-  _urlRewrite?: string
-  pageId: string
-  abortSignal: AbortSignal
-  abortStatusCode?: number
-  abortReason?: unknown
-}) {
+  // The server sent the error page's pageContext with the error
+  if (hasProp(err, '_pageContextErrorPage', 'object')) {
+    return { _hasPageContextFromServer: true, ...err._pageContextErrorPage }
+  }
+  // Otherwise the client fetches it
   const { abortStatusCode, abortReason } = pageContext
   const pageContextFromServer = await fetchPageContextJson(pageContext, { errorPage: { abortStatusCode, abortReason } })
   // The error page renders without the server's pageContext upon:
   // - No .pageContext.json for this URL, e.g. a tab running the bundle of an older deployment that had a server
-  if (!pageContextFromServer) return null
+  if (!pageContextFromServer) return { _hasPageContextFromServer: false }
   // - A server-side error, e.g. a `throw render()` or `throw redirect()` in the error page's data() or onBeforeRender()
   //   (when the error page's data() throws another error, the server still sends its pageContext, without `data`)
-  if ('serverSideError' in pageContextFromServer) return null
+  if ('serverSideError' in pageContextFromServer) return { _hasPageContextFromServer: false }
   // This assert() might fail: https://github.com/vikejs/vike/pull/3636#issuecomment-6563275899
   assert(pageContextFromServer.pageId === pageContext.pageId) // `errorPageId`
   // The server's abortReason is the copy that the `_vike` search param carried as JSON (e.g. a `Date` arrives as a
   // string) — we keep the client-side lossless version
   delete pageContextFromServer.abortReason
-  return pageContextFromServer
+  return { _hasPageContextFromServer: true, ...pageContextFromServer }
 }
 
 async function fetchPageContextJson(
