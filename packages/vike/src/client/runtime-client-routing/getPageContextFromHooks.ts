@@ -339,7 +339,7 @@ async function fetchPageContextFromServerErrorPage(pageContext: {
   if (pageContextFromServer.pageId !== pageContext.pageId) {
     assertWarning(
       false,
-      `The error page is rendered without its server-side pageContext: the request for it received the pre-rendered .pageContext.json of ${pageContextFromServer.pageId} instead. That's usually because a static file server (e.g. express.static()) serves dist/client/ before Vike's middleware. Make sure .pageContext.json requests with a _vike search parameter reach Vike's middleware.`,
+      `The error page is rendered without its server-side pageContext: the request for it received the pre-rendered .pageContext.json of ${pageContextFromServer.pageId} instead. That's usually because a static file server (e.g. express.static()) serves dist/client/ before Vike's middleware. If that static file server is yours, make sure .pageContext.json requests with a _vike search parameter reach Vike's middleware.`,
       { onlyOnce: true },
     )
     return null
