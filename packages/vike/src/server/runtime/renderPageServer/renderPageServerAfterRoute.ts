@@ -45,6 +45,7 @@ async function renderPageServerAfterRoute<
     _pageContextAlreadyProvidedByOnPrerenderHook?: true
     _skipGuardAndData_experimentalRSC?: boolean | (() => Promise<boolean>)
     is404: null | boolean
+    isErrorPage: boolean
     routeParams: Record<string, string>
     errorWhileRendering: null | Error
     _requestId: number
@@ -135,6 +136,7 @@ async function prerenderPageEntry(
       _usesClientRouter: boolean
       _pageContextAlreadyProvidedByOnPrerenderHook?: true
       is404: boolean
+      isErrorPage: boolean
     },
 ) {
   objectAssign(pageContext, {

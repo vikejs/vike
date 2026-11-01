@@ -135,6 +135,14 @@ type PageContextBuiltInCommon<Data> = PageContextConfig & {
   is404: boolean | null
 
   /**
+   * Whether the error page is being rendered.
+   *
+   * https://vike.dev/error-page
+   * https://vike.dev/pageContext#isErrorPage
+   */
+  isErrorPage: boolean
+
+  /**
    * Whether the page was navigated by the client-side router.
    *
    * https://vike.dev/pageContext#isClientSideNavigation

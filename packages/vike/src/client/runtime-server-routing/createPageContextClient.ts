@@ -30,6 +30,7 @@ function createPageContextBase() {
     isHydration: true as const,
     isBackwardNavigation: null,
     isHistoryNavigation: null,
+    isErrorPage: false,
     _hasPageContextFromServer: true as const,
   })
   return pageContextCreated
