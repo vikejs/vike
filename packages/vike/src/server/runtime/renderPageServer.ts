@@ -241,9 +241,9 @@ async function renderPageServerEntryRecursive(
   objectAssign(pageContextNominalPageBegin, pageContextFromRoute)
   if (pageContextNominalPageBegin.pageId !== null) {
     assert(pageContextNominalPageBegin.pageId)
-    objectAssign(pageContextNominalPageBegin, { is404: null })
+    objectAssign(pageContextNominalPageBegin, { is404: null, isErrorPage: false })
   } else {
-    objectAssign(pageContextNominalPageBegin, { is404: true })
+    objectAssign(pageContextNominalPageBegin, { is404: true, isErrorPage: true })
     log404(pageContextNominalPageBegin)
     const errorPageId = getErrorPageId(
       pageContextNominalPageBegin._globalContext._pageFilesAll,
@@ -289,6 +289,7 @@ async function renderPageServerEntryRecursive_onError(
   const pageContextErrorPageInit = fork(pageContextBegin)
   objectAssign(pageContextErrorPageInit, {
     is404: false,
+    isErrorPage: true,
     errorWhileRendering: err as Error,
     routeParams: {} as Record<string, string>,
   })
@@ -350,7 +351,7 @@ function logWrongUsageAbortedErrorPage(errErrorPage: ErrorAbort, pageContext: Pa
   const abortCall = pageContextAbort._abortCall
   const abortCaller = pageContextAbort._abortCaller
   const errMsg =
-    `Failed to render error page because ${pc.cyan(`throw ${abortCall}`)} was called: make sure ${pc.cyan(abortCaller)} isn't called for the error page` as const
+    `Failed to render error page because ${pc.cyan(`throw ${abortCall}`)} was called: make sure ${pc.cyan(abortCaller)} isn't called for the error page, e.g. using ${pc.cyan('pageContext.isErrorPage')}` as const
   try {
     assertUsage(false, errMsg)
   } catch (errUsage) {

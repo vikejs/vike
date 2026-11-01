@@ -8,6 +8,7 @@ import { Counter } from '../index/Counter'
 function Page() {
   const pageContext = usePageContext()
   assert(Array.isArray(pageContext.pageContextsAborted))
+  assert(pageContext.isErrorPage === true)
 
   // throw render()
   if (pageContext.abortReason) {

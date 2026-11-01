@@ -671,6 +671,7 @@ async function getPageContextBegin(
     isHistoryNavigation,
     isClientSideNavigation,
     isHydration: isFirstRender && !isForErrorPage,
+    isErrorPage: isForErrorPage,
     previousPageContext,
     pageContextsAborted,
     abortSignal,

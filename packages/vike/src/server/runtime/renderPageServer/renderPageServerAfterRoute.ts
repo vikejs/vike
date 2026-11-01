@@ -34,7 +34,7 @@ import { isServerSideError } from '../../../shared-server-client/misc/isServerSi
 import type { PageContextCreatedServer } from './createPageContextServer.js'
 import type { PageContextBegin } from '../renderPageServer.js'
 import { getAsyncLocalStorage, type AsyncStore } from '../asyncHook.js'
-import { type ErrorAbort, isAbortError } from '../../../shared-server-client/route/abort.js'
+import { isAbortError } from '../../../shared-server-client/route/abort.js'
 import '../../assertEnvServer.js'
 
 type PageContextAfterRender = { httpResponse: HttpResponse; errorWhileRendering: null | Error }
@@ -45,6 +45,7 @@ async function renderPageServerAfterRoute<
     _pageContextAlreadyProvidedByOnPrerenderHook?: true
     _skipGuardAndData_experimentalRSC?: boolean | (() => Promise<boolean>)
     is404: null | boolean
+    isErrorPage: boolean
     routeParams: Record<string, string>
     errorWhileRendering: null | Error
     _requestId: number
@@ -80,8 +81,8 @@ async function renderPageServerAfterRoute<
       await execHookDataAndOnBeforeRender(pageContext)
     } catch (err) {
       if (isAbortError(err)) {
-        // https://github.com/vikejs/vike/pull/3692 — AI implemented this, I don't understand it
-        if (!isSameAbortCall(err, pageContext.errorWhileRendering)) throw err
+        // `throw redirect()` and `throw render()` aren't supported for the error page: the caller logs a usage error, see logWrongUsageAbortedErrorPage()
+        throw err
       } else if (!isSameErrorMessage(err, pageContext.errorWhileRendering)) {
         logRuntimeError(err, pageContext)
       }
@@ -104,9 +105,6 @@ async function renderPageServerAfterRoute<
       : await createHttpResponsePageHtml(htmlRender, renderHook, pageContext)
   objectAssign(pageContext, { httpResponse })
   return pageContext
-}
-function isSameAbortCall(errAbort: ErrorAbort, err: unknown): boolean {
-  return isAbortError(err) && err._pageContextAbort._abortCall === errAbort._pageContextAbort._abortCall
 }
 
 async function prerenderPage(pageContext: Parameters<typeof prerenderPageEntry>[0]) {
@@ -132,6 +130,7 @@ async function prerenderPageEntry(
       _usesClientRouter: boolean
       _pageContextAlreadyProvidedByOnPrerenderHook?: true
       is404: boolean
+      isErrorPage: boolean
     },
 ) {
   objectAssign(pageContext, {
