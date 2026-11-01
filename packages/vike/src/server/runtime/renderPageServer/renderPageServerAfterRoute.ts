@@ -81,7 +81,7 @@ async function renderPageServerAfterRoute<
       await execHookDataAndOnBeforeRender(pageContext)
     } catch (err) {
       if (isAbortError(err)) {
-        // `throw redirect()` and `throw render()` aren't supported for the error page: it's a usage error
+        // `throw redirect()` and `throw render()` aren't supported for the error page: the caller logs a usage error, see logWrongUsageAbortedErrorPage()
         throw err
       } else if (!isSameErrorMessage(err, pageContext.errorWhileRendering)) {
         logRuntimeError(err, pageContext)
