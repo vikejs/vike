@@ -156,8 +156,8 @@ async function renderPageClient(renderArgs: RenderArgs) {
     await globalObject.hydrationAwaitPromise
     if (isRenderOutdated()) return
   }
-  // The page this navigation leaves: its onPageTransitionStart() and onPageTransitionEnd() hooks are called, and its keepScrollPosition setting is compared
-  // - Read after `await globalObject.hydrationAwaitPromise`: the first render sets it only once it renders
+  // The page this navigation leaves: its pageId is compared (doNotRenderIfSamePage), its onPageTransitionStart() and onPageTransitionEnd() hooks are called, and its keepScrollPosition setting is compared
+  // - Read after `await globalObject.hydrationAwaitPromise`: the first render sets globalObject.previousPageContext only once it renders its page
   const { previousPageContext } = globalObject
 
   try {
