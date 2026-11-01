@@ -137,8 +137,8 @@ type PageContextBuiltInCommon<Data> = PageContextConfig & {
   /**
    * Whether the error page is being rendered.
    *
-   * https://vike.dev/error-page
    * https://vike.dev/pageContext#isErrorPage
+   * https://vike.dev/error-page
    */
   isErrorPage: boolean
 
