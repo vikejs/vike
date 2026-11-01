@@ -381,6 +381,7 @@ async function getPageContextJsonOfErrorPage(
     pageId: errorPageId,
     routeParams: {} as Record<string, string>,
     is404: errorPage.abortStatusCode === 404,
+    isErrorPage: true,
     // The error occurred on the client-side
     errorWhileRendering: null,
   })
