@@ -227,22 +227,6 @@ describe('prepare()', () => {
                   "job": "Examples React",
                 },
               },
-              "testFilePath": "examples/react-slow-hydration/.test-dev.test.ts",
-            },
-            {
-              "localConfig": {
-                "ci": {
-                  "job": "Examples React",
-                },
-              },
-              "testFilePath": "examples/react-slow-hydration/.test-preview.test.ts",
-            },
-            {
-              "localConfig": {
-                "ci": {
-                  "job": "Examples React",
-                },
-              },
               "testFilePath": "examples/react-streaming/.test-dev.test.ts",
             },
             {
