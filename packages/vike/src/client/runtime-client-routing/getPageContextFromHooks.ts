@@ -332,8 +332,8 @@ async function fetchPageContextFromServerErrorPage(pageContext: {
   // The error page renders without the server's pageContext upon:
   // - No .pageContext.json for this URL, e.g. a tab running the bundle of an older deployment that had a server
   if (!pageContextFromServer) return null
-  // - A server-side error other than one thrown by the error page's data() or onBeforeRender()
-  //   (when the error page's data() throws, the server still sends its pageContext, without `data`)
+  // - A server-side error, e.g. a `throw render()` or `throw redirect()` in the error page's data() or onBeforeRender()
+  //   (when the error page's data() throws another error, the server still sends its pageContext, without `data`)
   if ('serverSideError' in pageContextFromServer) return null
   // - The page's own pre-rendered .pageContext.json, from a static file server that ignores the `_vike` search param
   if (pageContextFromServer.pageId !== pageContext.pageId) {
