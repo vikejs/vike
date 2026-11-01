@@ -9,11 +9,7 @@ import { slice } from './slice.js'
 // - While pre-rendering there is no base URL
 const baseServer = '/'
 
-function urlToFile(
-  url: string,
-  fileExtension: '.pageContext.json' | '.error.pageContext.json' | '.html',
-  doNotCreateExtraDirectory: boolean,
-) {
+function urlToFile(url: string, fileExtension: '.pageContext.json' | '.html', doNotCreateExtraDirectory: boolean) {
   const { pathnameOriginal, searchOriginal, hashOriginal } = parseUrl(url, baseServer)
   if (url.startsWith('/')) {
     assert(url === `${pathnameOriginal}${searchOriginal || ''}${hashOriginal || ''}`, { url })

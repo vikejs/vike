@@ -2,7 +2,6 @@ export { handlePageContextRequestUrl }
 
 import {
   pageContextJsonFileExtension,
-  pageContextJsonFileExtension_errorPage,
   doNotCreateExtraDirectory,
 } from '../../../shared-server-client/getPageContextRequestUrl.js'
 import { modifyUrlSameOrigin } from '../../../shared-server-client/modifyUrlSameOrigin.js'
@@ -13,28 +12,20 @@ import { hasProp } from '../../../utils/hasProp.js'
 import { isObject } from '../../../utils/isObject.js'
 import { parseUrl } from '../../../utils/parseUrl.js'
 import '../../assertEnvServer.js'
-const pageContextJsonFileExtensionUrls = [
-  `/index${pageContextJsonFileExtension}`,
-  `/index${pageContextJsonFileExtension_errorPage}`,
-]
+const pageContextJsonFileExtensionUrl = `/index${pageContextJsonFileExtension}`
 
 type UrlParsed = ReturnType<typeof parseUrl>
 
 // See also shared/getPageContextRequestUrl.ts
 function handlePageContextRequestUrl(url: string) {
   const urlParsed = parseUrl(url, baseServer)
-  const pageContextJsonFileExtensionUrl = getMatch(urlParsed)
-  if (!pageContextJsonFileExtensionUrl) {
+  if (!isMatch(urlParsed)) {
     return {
       isPageContextJsonRequest: false as const,
       urlWithoutPageContextRequestSuffix: url,
     }
   } else {
-    const { urlWithoutPageContextRequestSuffix, searchVikeArgs } = processUrl(
-      urlParsed,
-      url,
-      pageContextJsonFileExtensionUrl,
-    )
+    const { urlWithoutPageContextRequestSuffix, searchVikeArgs } = processUrl(urlParsed, url)
     const { errorPage } = parseSearchVikeArgs(searchVikeArgs)
     return {
       /* TO-DO/soon/once: pass & use previousUrl
@@ -47,14 +38,15 @@ function handlePageContextRequestUrl(url: string) {
   }
 }
 
-function getMatch(urlParsed: UrlParsed) {
+function isMatch(urlParsed: UrlParsed) {
   const { pathnameOriginal, pathname } = urlParsed
-  const match = pageContextJsonFileExtensionUrls.find((suffix) => pathname.endsWith(suffix))
-  assert(match === pageContextJsonFileExtensionUrls.find((suffix) => pathnameOriginal.endsWith(suffix)))
-  return match
+  assert(
+    pathname.endsWith(pageContextJsonFileExtensionUrl) === pathnameOriginal.endsWith(pageContextJsonFileExtensionUrl),
+  )
+  return pathname.endsWith(pageContextJsonFileExtensionUrl)
 }
 
-function processUrl(urlParsed: UrlParsed, url: string, pageContextJsonFileExtensionUrl: string) {
+function processUrl(urlParsed: UrlParsed, url: string) {
   // We cannot use `urlParsed.pathname` because it would break the `urlParsed.pathnameOriginal` value of subsequent `parseUrl()` calls.
   const { pathnameOriginal, search } = urlParsed
   assert(doNotCreateExtraDirectory === false)
