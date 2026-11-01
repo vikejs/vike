@@ -63,7 +63,6 @@ import pc from '@brillout/picocolors'
 import type { PageContextServer } from '../../types/index.js'
 import { getPageContextClientSerializedAbort } from './renderPageServer/html/serializeContext.js'
 import { getErrorPageId } from '../../shared-server-client/error-page.js'
-import { findPageConfig } from '../../shared-server-client/page-configs/findPageConfig.js'
 import { getConfigValueRuntime } from '../../shared-server-client/page-configs/getConfigValueRuntime.js'
 import { handleErrorWithoutErrorPage } from './renderPageServer/handleErrorWithoutErrorPage.js'
 import {
@@ -722,12 +721,8 @@ async function handleAbort(
 }
 
 function errorPageHasServerOnlyHook(globalContext: GlobalContextServerInternal) {
-  // The V0.4 design doesn't have the `hasServerOnlyHook` config — TO-DO/next-major-release: remove this line
-  if (globalContext._pageConfigs.length === 0) return false
-  const errorPageId = getErrorPageId(globalContext._pageFilesAll, globalContext._pageConfigs)
-  if (!errorPageId) return false
-  const errorPageConfig = findPageConfig(globalContext._pageConfigs, errorPageId)
-  assert(errorPageConfig)
+  const errorPageConfig = globalContext._pageConfigs.find((pageConfig) => pageConfig.isErrorPage)
+  if (!errorPageConfig) return false
   return getConfigValueRuntime(errorPageConfig, 'hasServerOnlyHook', 'boolean')?.value === true
 }
 
