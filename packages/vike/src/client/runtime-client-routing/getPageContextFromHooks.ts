@@ -354,7 +354,10 @@ async function fetchPageContextJson(
   pageContext: { urlOriginal: string; _urlRewrite?: string; abortSignal: AbortSignal },
   searchVikeArgs?: Record<string, unknown>,
 ) {
-  let pageContextUrl: string | URL = getPageContextRequestUrl(pageContext._urlRewrite ?? pageContext.urlOriginal)
+  let pageContextUrl: string | URL = getPageContextRequestUrl(
+    pageContext._urlRewrite ?? pageContext.urlOriginal,
+    !!searchVikeArgs?.errorPage,
+  )
   /* TO-DO/soon/once: pass & use previousUrl
   pageContextUrl = modifyUrlSameOrigin(pageContextUrl, { search: { _vike: JSON.stringify({ previousUrl: pageContext.previousPageContext.urlOriginal }) } })
   */
