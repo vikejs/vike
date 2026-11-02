@@ -309,7 +309,7 @@ async function getPageContextFromHooksServer_errorPage(
   if (
     // Save client-side KBs
     !globalThis.__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER ||
-    // The flag can be stale in dev: it stays true until Vite restarts after the error page's last server-only hook is removed
+    // The __VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER flag can be stale in dev
     !hasServerOnlyHook(pageContext)
   ) {
     return { _hasPageContextFromServer: false }
