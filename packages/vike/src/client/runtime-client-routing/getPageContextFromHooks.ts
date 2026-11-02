@@ -314,13 +314,15 @@ async function fetchPageContextFromServer(
       JSON.stringify({ errorPage }),
     )
   }
+
   // Navigating away aborts the request, including the streamed values that are still pending
   // - https://vike.dev/passToClient#streaming
   const response = await fetch(pageContextUrl, { signal: pageContext.abortSignal })
+
+  // Correct `content-type`?
   const contentType = response.headers.get('content-type')
   const contentTypeCorrect = 'application/json'
-  const isCorrect = contentType && contentType.includes(contentTypeCorrect)
-  if (!isCorrect) {
+  if (!contentType || !contentType.includes(contentTypeCorrect)) {
     // Static host + new deployment: when .pageContext.json doesn't exist because a newer deployment removed the page => static hosts answers 404
     // - The error page's .pageContext.json is also missing when, e.g., a tab runs the bundle of an older deployment that had a server, or the server's build has no error page
     if (response.status === 404) {
@@ -342,6 +344,7 @@ async function fetchPageContextFromServer(
       `Wrong Content-Type for ${pageContextUrl}: it should be ${contentTypeCorrect} but it's ${contentType} instead. Make sure to properly use pageContext.httpResponse.headers, see https://vike.dev/renderPage`,
     )
   }
+
   const pageContextFromServer = await readPageContextJson(response, pageContext.abortSignal)
   assert(isObject(pageContextFromServer))
   if (
