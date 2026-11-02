@@ -2,14 +2,16 @@ export { execHookDataAndOnBeforeRender }
 
 import { assertOnBeforeRenderHookReturn } from '../../../shared-server-client/assertOnBeforeRenderHookReturn.js'
 import { execHookServer, type PageContextExecHookServer } from './execHookServer.js'
-import { catchStreamedPromises } from './streamedValues/promise.js'
+import type { PageContext_logRuntime } from '../loggerRuntime.js'
+import { catchStreamedPromises } from './streamedValues/pump.js'
 import '../../assertEnvServer.js'
 
 async function execHookDataAndOnBeforeRender(
   pageContext: {
     pageId: string
     _pageContextAlreadyProvidedByOnPrerenderHook?: true
-  } & PageContextExecHookServer,
+  } & PageContextExecHookServer &
+    NonNullable<PageContext_logRuntime>,
 ): Promise<void> {
   if (pageContext._pageContextAlreadyProvidedByOnPrerenderHook) {
     return
@@ -22,7 +24,7 @@ async function execHookDataAndOnBeforeRender(
     const pageContextFromHook = {
       data: dataHook.hookReturn,
     }
-    catchStreamedPromises(pageContextFromHook.data)
+    catchStreamedPromises(pageContextFromHook.data, pageContext)
     Object.assign(pageContext, pageContextFromHook)
 
     // Execute +onData
