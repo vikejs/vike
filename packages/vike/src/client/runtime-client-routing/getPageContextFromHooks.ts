@@ -309,9 +309,9 @@ async function getPageContextFromHooksServer_errorPage(
     // Save client-side KBs
     !globalThis.__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER
   ) {
-    assert(hasServerOnlyHook(pageContext))
     return { _hasPageContextFromServer: false }
   }
+  assert(hasServerOnlyHook(pageContext))
   // The server sent the error page's pageContext with the error
   if (hasProp(err, '_pageContextErrorPage', 'object')) {
     return { _hasPageContextFromServer: true, ...err._pageContextErrorPage }
