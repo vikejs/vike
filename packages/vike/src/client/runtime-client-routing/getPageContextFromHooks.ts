@@ -100,9 +100,7 @@ async function getPageContextFromHooksServer(
   ) {
     const res = await fetchPageContextFromServer(pageContext)
     if (res.is404ServerSideRouted) return res
-    const { pageContextFromServer } = res
-    pageContextFromHooksServer._hasPageContextFromServer = true // TODO/ai: move this line inside fetchPageContextFromServer() ?
-    objectAssign(pageContextFromHooksServer, pageContextFromServer)
+    objectAssign(pageContextFromHooksServer, res.pageContextFromServer)
   }
 
   // We cannot return the whole pageContext because this function is used for prefetching `pageContext` (which requires a partial pageContext to be merged with the future pageContext created upon rendering the page in the future).
@@ -291,7 +289,7 @@ async function getPageContextFromHooksServer_errorPage(
   // string) — we keep the client-side lossless version
   delete pageContextFromServer.abortReason
 
-  return { _hasPageContextFromServer: true, ...pageContextFromServer }
+  return pageContextFromServer
 }
 
 async function fetchPageContextFromServer(
@@ -375,6 +373,7 @@ async function fetchPageContextFromServer(
     throw err
   }
 
+  objectAssign(pageContextFromServer, { _hasPageContextFromServer: true as const })
   return { pageContextFromServer }
 }
 
