@@ -52,14 +52,14 @@ async function handleHistoryNavigation(previous: HistoryInfo, current: HistoryIn
 
   const isUserPushStateNavigation =
     current.state.vike.triggeredBy === 'user' || previous.state.vike.triggeredBy === 'user'
-  const doNotRenderIfSamePage = isUserPushStateNavigation
+  const doNotReRenderIfSamePage = isUserPushStateNavigation
 
   const isBackwardNavigation =
     !current.state.vike.timestamp || !previous.state.vike.timestamp
       ? null
       : current.state.vike.timestamp < previous.state.vike.timestamp
 
-  await renderPageClient({ scrollTarget, isBackwardNavigation, doNotRenderIfSamePage, isHistoryNavigation: true })
+  await renderPageClient({ scrollTarget, isBackwardNavigation, doNotReRenderIfSamePage, isHistoryNavigation: true })
 }
 
 function removeHash(url: `/${string}`) {

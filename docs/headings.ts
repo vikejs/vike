@@ -1192,12 +1192,12 @@ function misc() {
         url: '/use-cases',
         category: 'Overview',
       },
-      // TODO/osp: move to API
+      // TO-DO/soon/osp: move to API
       {
         title: '`+license`',
         url: '/license',
       },
-      // TODO/osp: move to Overview, or new section Pricing?
+      // TO-DO/soon/osp: move to Overview, or new section Pricing?
       {
         level: 2,
         title: 'Free access',
