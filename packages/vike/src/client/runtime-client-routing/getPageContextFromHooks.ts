@@ -335,7 +335,7 @@ async function getPageContextFromHooksServer_errorPage(
     )
   }
   // Upon a server-side error, e.g. a `throw render()` or `throw redirect()` in the error page's data() or onBeforeRender()
-  // - When the error page's data() throws another error, the server still sends its pageContext, without `data`
+  // - Not when the error page's data() throws another error: the server then still sends its pageContext, without `data`
   if ('serverSideError' in pageContextFromServer) {
     throw getProjectError(
       `The error page's pageContext couldn't be fetched because an error occurred on the server-side`,
