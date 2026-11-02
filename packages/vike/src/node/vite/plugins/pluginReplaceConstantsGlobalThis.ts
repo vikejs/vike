@@ -1,5 +1,6 @@
 export { pluginReplaceConstantsGlobalThis }
 export { VIRTUAL_FILE_ID_constantsGlobalThis }
+export { isFetchPageContextOfErrorPageFromServer }
 // Trick for loading the `declare global` below
 export type _LoadDeclareGlobal__VIKE__IS = never
 
@@ -8,7 +9,7 @@ import { isDebug } from '../../../utils/debug.js'
 import { escapeRegex } from '../../../utils/escapeRegex.js'
 import { addVirtualFileIdPrefix } from '../../../utils/virtualFileId.js'
 import { assert } from '../../../utils/assert.js'
-import { getVikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
+import { getVikeConfigInternal, type VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 import { getConfigValueBuildTime } from '../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
 import {
   isViteServerSide_applyToEnvironment,
@@ -76,9 +77,14 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
             consumer: isClientSide ? 'client' : 'server',
             define: {
               'globalThis.__VIKE__IS_CLIENT': JSON.stringify(isClientSide),
-              'globalThis.__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER': JSON.stringify(
-                await isFetchPageContextOfErrorPageFromServer(),
-              ),
+              // In dev, the client's global entry sets it instead, so that adding or removing a + file updates it
+              ...(isDev
+                ? {}
+                : {
+                    'globalThis.__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER': JSON.stringify(
+                      isFetchPageContextOfErrorPageFromServer(await getVikeConfigInternal()),
+                    ),
+                  }),
             },
           }
         },
@@ -118,8 +124,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
   ]
 }
 
-async function isFetchPageContextOfErrorPageFromServer() {
-  const vikeConfig = await getVikeConfigInternal()
+function isFetchPageContextOfErrorPageFromServer(vikeConfig: VikeConfigInternal) {
   const errorPage = vikeConfig._pageConfigs.find((pageConfig) => pageConfig.isErrorPage)
   if (!errorPage || getConfigValueBuildTime(errorPage, 'hasServerOnlyHook', 'boolean')?.value !== true) return false
   return !vikeConfig.prerenderContext.isPrerenderingEnabledForAllPages
