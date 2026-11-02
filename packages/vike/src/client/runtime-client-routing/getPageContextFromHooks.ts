@@ -333,6 +333,9 @@ async function fetchPageContextFromServer(
       )
     }
     redirectHard(pageContext.urlOriginal)
+    /* TODO/ai cleaner (more human readable)?
+    return { is404ServerSideRouted: true as const }
+    */
     return null
   }
   assertUsage(
