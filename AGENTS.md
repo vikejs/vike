@@ -2,6 +2,7 @@
 
 - When squash-merging a PR, the commit message should be a one-liner (typically the PR title) and reference the PR number
 - Never force push
+- You can assume the reviewer reads the code (e.g. you don't need to repeat/explain what the code does)
 
 ## Docs
 
