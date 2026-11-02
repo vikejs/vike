@@ -277,7 +277,7 @@ async function getPageContextFromHooksServer_errorPage(
     return { _hasPageContextFromServer: false }
   }
   assert(hasServerOnlyHook(pageContext))
-  // The server sent the error page's pageContext with the error
+  // The server already sent the error page's pageContext when a server-side error occurs upon a normal page (a page that isn't a the error page)
   if (hasProp(err, '_pageContextErrorPage', 'object')) {
     return { _hasPageContextFromServer: true, ...err._pageContextErrorPage }
   }
