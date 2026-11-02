@@ -404,6 +404,14 @@ describe('getBetterError', () => {
       expect(result.stack.split('\n    at ')[0]).toBe("[vike] Intro\nSyntaxError: Named export 'foo' not found\nHint")
     })
 
+    it('adds hint after a prepend when the message is also found inside the name', () => {
+      const error = new Error('Error')
+      const withPrepend = getBetterError(error, { message: { prepend: '[vike] Intro\n' } })
+      const result = getBetterError(withPrepend, { message: { append: '\nHint' } })
+
+      expect(result.stack.split('\n    at ')[0]).toBe('[vike] Intro\nError: Error\nHint')
+    })
+
     it('formats transpilation error (like loggerDev)', () => {
       const error = new SyntaxError('Unexpected token')
       const result = getBetterError(error, {

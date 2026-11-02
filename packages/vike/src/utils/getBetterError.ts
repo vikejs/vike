@@ -19,7 +19,7 @@ function getBetterError(
 ) {
   const errOriginal = shallowClone(err)
 
-  let errBetter: { message: string; stack: string; hideStack?: true }
+  let errBetter: { name?: string; message: string; stack: string; hideStack?: true }
 
   // Normalize
   if (!isObject(err)) {
@@ -64,7 +64,7 @@ function getBetterError(
       const messagePrev = errBetter.message
       set(errBetter, 'message', messagePrev + append)
       // Update err.stack
-      const messageEnd = getMessageEnd(errBetter.stack, messagePrev)
+      const messageEnd = getMessageEnd(errBetter.stack, messagePrev, errBetter.name)
       if (messageEnd !== null) {
         const { stack } = errBetter
         set(errBetter, 'stack', stack.slice(0, messageEnd) + append + stack.slice(messageEnd))
@@ -84,13 +84,24 @@ function getBetterError(
 }
 
 // After a `prepend`, err.stack is `${prepend}SyntaxError: ${message}` whereas err.message is `${prepend}${message}`
-function getMessageEnd(stack: string, message: string): number | null {
-  for (let prependLength = 0; ; prependLength++) {
+function getMessageEnd(stack: string, message: string, name: string | undefined): number | null {
+  let sharedLength = 0
+  while (sharedLength < message.length && message[sharedLength] === stack[sharedLength]) sharedLength++
+  // Check the name first: the message can also be found inside it, e.g. `new SyntaxError('a')`
+  if (name) {
+    for (let prependLength = 0; prependLength <= sharedLength; prependLength++) {
+      const messageRest = message.slice(prependLength)
+      // V8 omits ": " if the message is empty
+      const messageStack = messageRest ? `${name}: ${messageRest}` : name
+      if (stack.startsWith(messageStack, prependLength)) return prependLength + messageStack.length
+    }
+  }
+  for (let prependLength = 0; prependLength <= sharedLength; prependLength++) {
     const messageRest = message.slice(prependLength)
     const messageRestIdx = stack.indexOf(messageRest, prependLength)
     if (messageRestIdx >= 0) return messageRestIdx + messageRest.length
-    if (message[prependLength] !== stack[prependLength]) return null
   }
+  return null
 }
 
 // The property can be read-only, e.g. the `message` getter of a DOMException
