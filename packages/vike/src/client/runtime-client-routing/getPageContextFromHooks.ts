@@ -361,6 +361,7 @@ async function fetchPageContextFromServer(
   }
 
   // Is there a reason for having two different properties? Can't we use only one property? I guess/think the isServerSideError property was an attempt (a bad idea really) for rendering the error page even though an error occurred on the server-side (which is a bad idea because the added complexity is non-negligible while the added value is minuscule since the error page usually doesn't have any (meaningful / server-side) hooks).
+  // - TODO/ai/after-merge: can we have one prop instead of two?
   if (
     'serverSideError' in pageContextFromServer ||
     (isServerSideError in pageContextFromServer &&
