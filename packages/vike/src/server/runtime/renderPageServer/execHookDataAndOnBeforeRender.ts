@@ -3,7 +3,7 @@ export { execHookDataAndOnBeforeRender }
 import { assertOnBeforeRenderHookReturn } from '../../../shared-server-client/assertOnBeforeRenderHookReturn.js'
 import { execHookServer, type PageContextExecHookServer } from './execHookServer.js'
 import type { PageContext_logRuntime } from '../loggerRuntime.js'
-import { catchStreamedPromises } from './streamedValues/pump.js'
+import { catchStreamedPromises } from './streamedValues/catchStreamedPromises.js'
 import '../../assertEnvServer.js'
 
 async function execHookDataAndOnBeforeRender(

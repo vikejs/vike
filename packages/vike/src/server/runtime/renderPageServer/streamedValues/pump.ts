@@ -3,14 +3,12 @@
 // - `failFast: true` (pre-rendering): a value that fails rejects `done`.
 
 export { pumpStreamedValues }
-export { catchStreamedPromises }
 
 import type { Line } from '../../../../shared-server-client/streamedValues.js'
 import { logRuntimeError, type PageContext_logRuntime } from '../../loggerRuntime.js'
 import { getReplacer, type StreamedValue } from './registry.js'
 import { serializeLine } from './lines.js'
 import { genPromise } from '../../../../utils/genPromise.js'
-import { isPlainObject } from '../../../../utils/isPlainObject.js'
 import '../../../assertEnvServer.js'
 
 function pumpStreamedValues(
@@ -75,18 +73,4 @@ function pumpStreamedValues(
 
   streamedValues.forEach(start)
   return { done, cancel: () => end(resolve) }
-}
-
-// A promise is read only after pageContext is serialized (e.g. after the HTML is rendered), or never (e.g. upon
-// `throw redirect()`): its error is logged as soon as it rejects.
-// - Otherwise a promise that rejects before is an unhandled rejection
-// - Only native promises: a thenable (e.g. a query builder) runs only once it's read
-function catchStreamedPromises(value: unknown, pageContext: NonNullable<PageContext_logRuntime>): void {
-  if (value instanceof Promise) {
-    value.catch((err) => logRuntimeError(err, pageContext))
-  } else if (Array.isArray(value)) {
-    value.forEach((v) => catchStreamedPromises(v, pageContext))
-  } else if (isPlainObject(value)) {
-    Object.values(value).forEach((v) => catchStreamedPromises(v, pageContext))
-  }
 }
