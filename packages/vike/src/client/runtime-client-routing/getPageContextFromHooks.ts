@@ -272,18 +272,22 @@ async function getPageContextFromHooksServer_errorPage(
     return { _hasPageContextFromServer: false }
   }
   assert(hasServerOnlyHook(pageContext))
+
   // The server already sent the error page's pageContext when a server-side error occurs upon a normal page (a page that isn't a the error page)
-  if (hasProp(err, '_pageContextErrorPage', 'object')) {
-    return { _hasPageContextFromServer: true, ...err._pageContextErrorPage }
-  }
+  if (hasProp(err, '_pageContextErrorPage', 'object')) return { _hasPageContextFromServer: true, ...err._pageContextErrorPage }
+
   const { abortStatusCode, abortReason } = pageContext
   const pageContextFromServer = await fetchPageContextFromServer(pageContext, { abortStatusCode, abortReason })
+
   if (!pageContextFromServer) return { is404ServerSideRouted: true }
+
   // This assert() might fail: https://github.com/vikejs/vike/pull/3636#issuecomment-6563275899
   assert(pageContextFromServer.pageId === pageContext.pageId) // `errorPageId`
+
   // The server's abortReason is the copy that the `_vike` search param carried as JSON (e.g. a `Date` arrives as a
   // string) — we keep the client-side lossless version
   delete pageContextFromServer.abortReason
+
   return { _hasPageContextFromServer: true, ...pageContextFromServer }
 }
 
