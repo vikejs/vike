@@ -319,7 +319,7 @@ async function fetchPageContextFromServer(
   // - https://vike.dev/passToClient#streaming
   const response = await fetch(pageContextUrl, { signal: pageContext.abortSignal })
 
-  // Correct `content-type`?
+  // Assert Content-Type
   const contentType = response.headers.get('content-type')
   const contentTypeCorrect = 'application/json'
   if (!contentType || !contentType.includes(contentTypeCorrect)) {
@@ -353,7 +353,7 @@ async function fetchPageContextFromServer(
 
   // Handle server-side `throw redirect()` / `throw render()`
   if (
-    !errorPage && // The error page's pageContext might have `abortStatusCode` but it isn't an abort
+    !errorPage && // The error page's pageContext can have `abortStatusCode` but it isn't an abort
     isAbortPageContext(pageContextFromServer)
   ) {
     const err = AbortRender(pageContextFromServer)
