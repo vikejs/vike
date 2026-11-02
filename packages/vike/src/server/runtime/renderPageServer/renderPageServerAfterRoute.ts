@@ -59,7 +59,7 @@ async function renderPageServerAfterRoute<
   //  - ID of the error page `_error.page.js`.
   assert(hasProp(pageContext, 'pageId', 'string'))
 
-  const isError: boolean = pageContext.is404 || !!pageContext.errorWhileRendering
+  const isError: boolean = pageContext.isErrorPage
   assert(
     isError ===
       (pageContext.pageId ===
@@ -82,6 +82,10 @@ async function renderPageServerAfterRoute<
     } catch (err) {
       if (isAbortError(err)) {
         // `throw redirect()` and `throw render()` aren't supported for the error page: the caller logs a usage error, see logWrongUsageAbortedErrorPage()
+        throw err
+      } else if (pageContext._isPageContextJsonRequest && pageContext._isPageContextJsonRequest.errorPage) {
+        // The error page's .pageContext.json request: the caller logs the error and answers `{ serverSideError: true }`, so that the client throws
+        // - Otherwise the client renders the error page without +data
         throw err
       } else if (!isSameErrorMessage(err, pageContext.errorWhileRendering)) {
         logRuntimeError(err, pageContext)

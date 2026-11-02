@@ -1,5 +1,6 @@
 export { pluginReplaceConstantsGlobalThis }
 export { VIRTUAL_FILE_ID_constantsGlobalThis }
+export { getConstantsFromVikeConfig }
 // Trick for loading the `declare global` below
 export type _LoadDeclareGlobal__VIKE__IS = never
 
@@ -8,6 +9,8 @@ import { isDebug } from '../../../utils/debug.js'
 import { escapeRegex } from '../../../utils/escapeRegex.js'
 import { addVirtualFileIdPrefix } from '../../../utils/virtualFileId.js'
 import { assert } from '../../../utils/assert.js'
+import { getVikeConfigInternal, type VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
+import { getConfigValueBuildTime } from '../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
 import {
   isViteServerSide_applyToEnvironment,
   isViteServerSide_configEnvironment,
@@ -21,6 +24,8 @@ declare global {
   /** Like `import.meta.env.SSR` but works for `node_modules/` packages with `ssr.external` */
   var __VIKE__IS_CLIENT: boolean
   var __VIKE__IS_DEBUG: boolean
+  /** Whether the client gets the error page's pageContext from the server: the error page has a server-only hook and not every page is pre-rendered */
+  var __VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER: boolean
   /** Whether the code was processed by Vite */
   var __VIKE__NO_EXTERNAL: true | undefined
 }
@@ -66,12 +71,14 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
       },
       configEnvironment: {
         order: 'pre',
-        handler(name, config) {
+        async handler(name, config) {
           const isClientSide = !isViteServerSide_configEnvironment(name, config)
           return {
             consumer: isClientSide ? 'client' : 'server',
             define: {
               'globalThis.__VIKE__IS_CLIENT': JSON.stringify(isClientSide),
+              // In dev, the client's global entry sets them instead, so that adding or removing a + file updates them
+              ...(isDev ? {} : getConstantsFromVikeConfig(await getVikeConfigInternal())),
             },
           }
         },
@@ -80,6 +87,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
         config = config_
       },
     },
+    // TODO/after-merge: fully remove vike:pluginReplaceConstantsGlobalThis:virtual-file in favor of generateVirtualFileGlobalEntry.ts
     {
       name: 'vike:pluginReplaceConstantsGlobalThis:virtual-file',
       // We only need the virtual file for the server-side (for node_modules/ packages with ssr.external) — the `define` values above always apply to the client-side.
@@ -109,4 +117,19 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
       },
     },
   ]
+}
+
+// The `globalThis.__VIKE__*` constants that depend on the Vike config
+function getConstantsFromVikeConfig(vikeConfig: VikeConfigInternal): Record<string, string> {
+  return {
+    'globalThis.__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER': JSON.stringify(
+      isFetchPageContextOfErrorPageFromServer(vikeConfig),
+    ),
+  }
+}
+
+function isFetchPageContextOfErrorPageFromServer(vikeConfig: VikeConfigInternal) {
+  const errorPage = vikeConfig._pageConfigs.find((pageConfig) => pageConfig.isErrorPage)
+  if (!errorPage || getConfigValueBuildTime(errorPage, 'hasServerOnlyHook', 'boolean')?.value !== true) return false
+  return !vikeConfig.prerenderContext.isPrerenderingEnabledForAllPages
 }
