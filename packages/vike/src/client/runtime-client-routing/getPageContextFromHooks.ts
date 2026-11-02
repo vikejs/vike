@@ -328,9 +328,7 @@ async function fetchPageContextFromServer(
       // Reloading upon the first render would lead to an infinite reload loop: the reloaded page fails again and requests the error page's .pageContext.json again
       !pageContext.isClientSideNavigation
     ) {
-      throw getProjectError(
-        `The error page's pageContext couldn't be fetched because its .pageContext.json is missing (e.g. a host without Vike answered 404)`,
-      )
+      throw getProjectError("pageContext couldn't be fetched")
     }
     redirectHard(pageContext.urlOriginal)
     /* TODO/ai cleaner (more human readable)?
