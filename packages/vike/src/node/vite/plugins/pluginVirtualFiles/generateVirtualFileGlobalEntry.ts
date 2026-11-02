@@ -56,6 +56,8 @@ function getCode(
   }
 
   if (isForClientSide && isDev) {
+    // Injected directly instead of via a virtual module, because Vike regenerates the global entry when a + file is added or removed
+    // - The virtual module `virtual:vike:server:constantsGlobalThis` is server-only and isn't regenerated
     Object.entries(constantsGlobalThis).forEach(([key, value]) => {
       lines.push(`${key} = ${value};`)
     })
