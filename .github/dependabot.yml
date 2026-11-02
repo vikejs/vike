@@ -36,7 +36,7 @@ updates:
     groups:
       react-streaming:
         patterns: ["react-streaming", "vike-react"]
-    # Skip Dependabot's 3-day release delay
+    # Skip Dependabot's 3-day release delay for packages we maintain
     cooldown:
       # Same list as "Dependencies maintained by the Vike team" above
       exclude:
