@@ -102,10 +102,6 @@ async function getPageContextFromHooksServer(
     if (!pageContextFromServer) return { is404ServerSideRouted: true as const }
     pageContextFromHooksServer._hasPageContextFromServer = true
 
-    // Already handled
-    assert(!(isServerSideError in pageContextFromServer))
-    assert(!('serverSideError' in pageContextFromServer))
-
     objectAssign(pageContextFromHooksServer, pageContextFromServer)
   }
 
