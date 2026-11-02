@@ -8,10 +8,7 @@ import {
   FilesEnv,
   serializeConfigValues,
 } from '../../../../shared-server-client/page-configs/serialize/serializeConfigValues.js'
-import {
-  VIRTUAL_FILE_ID_constantsGlobalThis,
-  isFetchPageContextOfErrorPageFromServer,
-} from '../pluginReplaceConstantsGlobalThis.js'
+import { VIRTUAL_FILE_ID_constantsGlobalThis, getConstantsFromVikeConfig } from '../pluginReplaceConstantsGlobalThis.js'
 import type { RuntimeEnvRuntime } from './getConfigValueSourcesRelevant.js'
 import { getEnvironmentEntryPlaceholder } from '../build/pluginEnvironmentEntries.js'
 import '../../assertEnvVite.js'
@@ -25,9 +22,11 @@ async function generateVirtualFileGlobalEntry(runtimeEnv: RuntimeEnvRuntime, id:
   } = vikeConfig
   let code = getCode(pageConfigs, pageConfigGlobal, runtimeEnv, id, additionalEnvironmentNames)
   if (runtimeEnv.environmentName === 'client' && runtimeEnv.isDev) {
-    // Computed from the same Vike config as the `hasServerOnlyHook` values above
-    const isFetch = isFetchPageContextOfErrorPageFromServer(vikeConfig)
-    code += `\nglobalThis.__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER = ${JSON.stringify(isFetch)};`
+    // Computed from the same Vike config as the code above
+    const constants = getConstantsFromVikeConfig(vikeConfig)
+    Object.entries(constants).forEach(([key, value]) => {
+      code += `\n${key} = ${value};`
+    })
   }
   return code
 }

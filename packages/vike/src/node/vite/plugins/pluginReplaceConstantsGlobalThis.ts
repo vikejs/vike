@@ -1,6 +1,6 @@
 export { pluginReplaceConstantsGlobalThis }
 export { VIRTUAL_FILE_ID_constantsGlobalThis }
-export { isFetchPageContextOfErrorPageFromServer }
+export { getConstantsFromVikeConfig }
 // Trick for loading the `declare global` below
 export type _LoadDeclareGlobal__VIKE__IS = never
 
@@ -77,14 +77,8 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
             consumer: isClientSide ? 'client' : 'server',
             define: {
               'globalThis.__VIKE__IS_CLIENT': JSON.stringify(isClientSide),
-              // In dev, the client's global entry sets it instead, so that adding or removing a + file updates it
-              ...(isDev
-                ? {}
-                : {
-                    'globalThis.__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER': JSON.stringify(
-                      isFetchPageContextOfErrorPageFromServer(await getVikeConfigInternal()),
-                    ),
-                  }),
+              // In dev, the client's global entry sets them instead, so that adding or removing a + file updates them
+              ...(isDev ? {} : getConstantsFromVikeConfig(await getVikeConfigInternal())),
             },
           }
         },
@@ -93,6 +87,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
         config = config_
       },
     },
+    // TODO/after-merge: fully remove vike:pluginReplaceConstantsGlobalThis:virtual-file in favor of generateVirtualFileGlobalEntry.ts
     {
       name: 'vike:pluginReplaceConstantsGlobalThis:virtual-file',
       // We only need the virtual file for the server-side (for node_modules/ packages with ssr.external) — the `define` values above always apply to the client-side.
@@ -122,6 +117,15 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
       },
     },
   ]
+}
+
+// The `globalThis.__VIKE__*` constants that depend on the Vike config
+function getConstantsFromVikeConfig(vikeConfig: VikeConfigInternal): Record<string, string> {
+  return {
+    'globalThis.__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER': JSON.stringify(
+      isFetchPageContextOfErrorPageFromServer(vikeConfig),
+    ),
+  }
 }
 
 function isFetchPageContextOfErrorPageFromServer(vikeConfig: VikeConfigInternal) {
