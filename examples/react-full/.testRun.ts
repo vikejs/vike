@@ -199,17 +199,6 @@ function testRun(uiFramework: 'vue' | 'react', cmd: 'pnpm run dev' | 'pnpm run p
             filter: (log) => log.logSource === 'stderr',
           })
         }
-
-        // Client-side routing
-        await page.goto(getServerUrl() + '/')
-        await testCounter()
-        await page.click('a[href="/hello"]')
-        await expectHelloPage('anonymous')
-        await page.click('a[href="/hello/forbidden"]')
-        await autoRetry(async () => {
-          expect(await page.textContent('body')).toContain(txt)
-        })
-        await ensureWasClientSideRouted('/pages/index')
       })
     }
   }

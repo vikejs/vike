@@ -19,9 +19,6 @@ function Page() {
         <li>
           <a href="/hello/jon">/hello/jon</a>
         </li>
-        <li>
-          <a href="/hello/forbidden">/hello/forbidden</a>
-        </li>
       </ul>
       <p>
         Parameterized routes can be defined by exporting a route string in <code>+route.ts</code>.
