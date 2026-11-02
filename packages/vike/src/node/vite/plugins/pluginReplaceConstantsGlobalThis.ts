@@ -1,21 +1,14 @@
 export { pluginReplaceConstantsGlobalThis }
-export { VIRTUAL_FILE_ID_constantsGlobalThis }
 export { getConstantsFromVikeConfig }
 // Trick for loading the `declare global` below
 export type _LoadDeclareGlobal__VIKE__IS = never
 
-import type { Plugin, ResolvedConfig } from 'vite'
+import type { Plugin } from 'vite'
 import { isDebug } from '../../../utils/debug.js'
-import { escapeRegex } from '../../../utils/escapeRegex.js'
-import { addVirtualFileIdPrefix } from '../../../utils/virtualFileId.js'
 import { assert } from '../../../utils/assert.js'
 import { getVikeConfigInternal, type VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 import { getConfigValueBuildTime } from '../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
-import {
-  isViteServerSide_applyToEnvironment,
-  isViteServerSide_configEnvironment,
-  isViteServerSide_extraSafe,
-} from '../shared/isViteServerSide.js'
+import { isViteServerSide_configEnvironment } from '../shared/isViteServerSide.js'
 import '../assertEnvVite.js'
 
 declare global {
@@ -30,27 +23,11 @@ declare global {
   var __VIKE__NO_EXTERNAL: true | undefined
 }
 
-const VIRTUAL_FILE_ID_constantsGlobalThis = 'virtual:vike:server:constantsGlobalThis'
-
 const isDebugVal = isDebug()
 globalThis.__VIKE__IS_CLIENT = false
 globalThis.__VIKE__IS_DEBUG = isDebugVal
 
-// === Rolldown filter
-const filterRolldown = {
-  id: {
-    include: new RegExp(escapeRegex(VIRTUAL_FILE_ID_constantsGlobalThis)),
-  },
-}
-const filterFunction = (id: string) =>
-  id === VIRTUAL_FILE_ID_constantsGlobalThis ||
-  // Vite re-resolves the resolved ID and its URL when a plugin adds the module as a watch file (@vitejs/plugin-rsc)
-  id === addVirtualFileIdPrefix(VIRTUAL_FILE_ID_constantsGlobalThis) ||
-  id === `/@id/__x00__${VIRTUAL_FILE_ID_constantsGlobalThis}`
-// ===
-
 function pluginReplaceConstantsGlobalThis(): Plugin[] {
-  let config: ResolvedConfig
   let isDev: boolean
   return [
     {
@@ -81,38 +58,6 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
               ...(isDev ? {} : getConstantsFromVikeConfig(await getVikeConfigInternal())),
             },
           }
-        },
-      },
-      configResolved(config_) {
-        config = config_
-      },
-    },
-    // TODO/after-merge: fully remove vike:pluginReplaceConstantsGlobalThis:virtual-file in favor of generateVirtualFileGlobalEntry.ts
-    {
-      name: 'vike:pluginReplaceConstantsGlobalThis:virtual-file',
-      // We only need the virtual file for the server-side (for node_modules/ packages with ssr.external) — the `define` values above always apply to the client-side.
-      applyToEnvironment(env) {
-        return isViteServerSide_applyToEnvironment(env)
-      },
-      resolveId: {
-        filter: filterRolldown,
-        handler(id) {
-          assert(filterFunction(id), { id })
-          return addVirtualFileIdPrefix(VIRTUAL_FILE_ID_constantsGlobalThis)
-        },
-      },
-      load: {
-        filter: filterRolldown,
-        handler(id, options) {
-          assert(filterFunction(id))
-          assert(isViteServerSide_extraSafe(config, this.environment, options))
-          assert(typeof isDev === 'boolean')
-          const code = [
-            `globalThis.__VIKE__IS_DEV = ${JSON.stringify(isDev)};`,
-            `globalThis.__VIKE__IS_CLIENT = false;`,
-            `globalThis.__VIKE__IS_DEBUG = ${JSON.stringify(isDebugVal)};`,
-          ].join('\n')
-          return code
         },
       },
     },

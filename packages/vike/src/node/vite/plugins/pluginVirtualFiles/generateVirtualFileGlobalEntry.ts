@@ -8,7 +8,8 @@ import {
   FilesEnv,
   serializeConfigValues,
 } from '../../../../shared-server-client/page-configs/serialize/serializeConfigValues.js'
-import { VIRTUAL_FILE_ID_constantsGlobalThis, getConstantsFromVikeConfig } from '../pluginReplaceConstantsGlobalThis.js'
+import { getConstantsFromVikeConfig } from '../pluginReplaceConstantsGlobalThis.js'
+import { isDebug } from '../../../../utils/debug.js'
 import type { RuntimeEnvRuntime } from './getConfigValueSourcesRelevant.js'
 import { getEnvironmentEntryPlaceholder } from '../build/pluginEnvironmentEntries.js'
 import '../../assertEnvVite.js'
@@ -40,7 +41,7 @@ function getCode(
   const isForClientSide = environmentName === 'client'
 
   if (!isForClientSide) {
-    importStatements.push(`import '${VIRTUAL_FILE_ID_constantsGlobalThis}';`)
+    lines.push(...getConstantsGlobalThisServerSide(isDev))
   }
 
   lines.push('export const pageConfigsSerialized = [')
@@ -57,7 +58,6 @@ function getCode(
 
   if (isForClientSide && isDev) {
     // Injected directly instead of via a virtual module, because Vike regenerates the global entry when a + file is added or removed
-    // - The virtual module `virtual:vike:server:constantsGlobalThis` is server-only and isn't regenerated
     Object.entries(constantsGlobalThis).forEach(([key, value]) => {
       lines.push(`${key} = ${value};`)
     })
@@ -68,14 +68,19 @@ function getCode(
     lines.push('if (import.meta.hot) import.meta.hot.accept();')
   }
 
-  let code = [...importStatements, ...lines].join('\n')
-
-  if (!isForClientSide) {
-    code = `import '${VIRTUAL_FILE_ID_constantsGlobalThis}';\n` + code
-  }
+  const code = [...importStatements, ...lines].join('\n')
 
   debug(id, `${environmentName.toUpperCase()}-SIDE`, code)
   return code
+}
+
+// The `define` values don't apply to node_modules/ packages with ssr.external
+function getConstantsGlobalThisServerSide(isDev: boolean) {
+  return [
+    `globalThis.__VIKE__IS_DEV = ${JSON.stringify(isDev)};`,
+    `globalThis.__VIKE__IS_CLIENT = false;`,
+    `globalThis.__VIKE__IS_DEBUG = ${JSON.stringify(isDebug())};`,
+  ]
 }
 
 // The global entries of the additional environments (e.g. `rsc`), loaded by loadPageContextEnvironments.ts
