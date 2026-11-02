@@ -12,8 +12,8 @@
     "express": "^5.2.1",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
-    "telefunc": "^0.3.0",
-    "vike-react": "^0.6.31"
+    "telefunc": "^0.3.1",
+    "vike-react": "^0.6.32"
   },
   "devDependencies": {
     "typescript": "^7.0.2",
