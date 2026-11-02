@@ -2,6 +2,7 @@ export { execHookDataAndOnBeforeRender }
 
 import { assertOnBeforeRenderHookReturn } from '../../../shared-server-client/assertOnBeforeRenderHookReturn.js'
 import { execHookServer, type PageContextExecHookServer } from './execHookServer.js'
+import { catchStreamedPromises } from './streamedValues/promise.js'
 import '../../assertEnvServer.js'
 
 async function execHookDataAndOnBeforeRender(
@@ -21,6 +22,7 @@ async function execHookDataAndOnBeforeRender(
     const pageContextFromHook = {
       data: dataHook.hookReturn,
     }
+    catchStreamedPromises(pageContextFromHook.data)
     Object.assign(pageContext, pageContextFromHook)
 
     // Execute +onData
