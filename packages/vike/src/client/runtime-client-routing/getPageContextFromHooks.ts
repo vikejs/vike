@@ -313,6 +313,7 @@ async function fetchPageContextFromServer(
       JSON.stringify({ errorPage }),
     )
   }
+  const errMsg = `${pageContextUrl} couldn't be fetched`
 
   // Navigating away aborts the request, including the streamed values that are still pending
   // - https://vike.dev/passToClient#streaming
@@ -330,7 +331,7 @@ async function fetchPageContextFromServer(
         // Reloading upon the first render would lead to an infinite reload loop: the reloaded page fails again and requests the error page's .pageContext.json again
         !pageContext.isClientSideNavigation
       ) {
-        throw getProjectError(`${pageContextUrl} couldn't be fetched`)
+        throw getProjectError(errMsg)
       }
       redirectHard(pageContext.urlOriginal)
       return { is404ServerSideRouted: true as const }
@@ -368,7 +369,7 @@ async function fetchPageContextFromServer(
       // The error page's pageContext always has isServerSideError
       !errorPage)
   ) {
-    const err = getProjectError(`${pageContextUrl} couldn't be fetched because an error occurred on the server-side`)
+    const err = getProjectError(`${errMsg} because an error occurred on the server-side`)
     attachPageContextErrorPage(err, pageContextFromServer)
     throw err
   }
