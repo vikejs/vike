@@ -380,7 +380,6 @@ async function getPageContextJsonOfErrorPage(
     !errorPageId
   ) {
     // A 404 that isn't JSON, which the client handles like a missing .pageContext.json
-    // - Not fork(pageContextBegin): its `isClientSideNavigation: true` requires a JSON response
     return getPageContextHttpResponse404(pageContextInit, pageContextBegin._requestId, 'No error page found')
   }
 
