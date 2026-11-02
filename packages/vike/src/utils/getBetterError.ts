@@ -60,10 +60,15 @@ function getBetterError(
     }
   } else {
     if (modsMessage?.append) {
+      const { append } = modsMessage
       const messagePrev = errBetter.message
-      const messageNext = errBetter.message + modsMessage.append
-      set(errBetter, 'message', messageNext)
-      set(errBetter, 'stack', errBetter.stack.replace(messagePrev, messageNext))
+      set(errBetter, 'message', messagePrev + append)
+      // Update err.stack
+      const messageEnd = getMessageEnd(errBetter.stack, messagePrev)
+      if (messageEnd !== null) {
+        const { stack } = errBetter
+        set(errBetter, 'stack', stack.slice(0, messageEnd) + append + stack.slice(messageEnd))
+      }
     }
     if (modsMessage?.prepend) {
       const { prepend } = modsMessage
@@ -76,6 +81,16 @@ function getBetterError(
   objectAssign(errBetter, { getOriginalError: () => (errOriginal as any)?.getOriginalError?.() ?? errOriginal })
 
   return errBetter
+}
+
+// After a `prepend`, err.stack is `${prepend}SyntaxError: ${message}` whereas err.message is `${prepend}${message}`
+function getMessageEnd(stack: string, message: string): number | null {
+  for (let prependLength = 0; ; prependLength++) {
+    const messageRest = message.slice(prependLength)
+    const messageRestIdx = stack.indexOf(messageRest, prependLength)
+    if (messageRestIdx >= 0) return messageRestIdx + messageRest.length
+    if (message[prependLength] !== stack[prependLength]) return null
+  }
 }
 
 // The property can be read-only, e.g. the `message` getter of a DOMException
