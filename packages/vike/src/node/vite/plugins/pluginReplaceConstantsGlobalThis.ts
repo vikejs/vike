@@ -25,7 +25,7 @@ declare global {
   var __VIKE__IS_DEBUG: boolean
   /** Whether the client gets the error page's pageContext from the server: the error page has a server-only hook and not every page is pre-rendered */
   var __VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER: boolean
-  /** Whether the code is processed by Vite, e.g. `true` when server code is `ssr.noExternal` */
+  /** Whether the code was processed by Vite */
   var __VIKE__NO_EXTERNAL: true | undefined
 }
 

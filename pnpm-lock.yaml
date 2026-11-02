@@ -843,8 +843,8 @@ importers:
         specifier: ^1.0.31
         version: 1.0.31
       '@brillout/vite-plugin-server-entry':
-        specifier: ^0.7.23
-        version: 0.7.23
+        specifier: ^0.7.24
+        version: 0.7.24
       '@universal-deploy/store':
         specifier: ^0.3.0
         version: 0.3.0(srvx@0.12.8)
@@ -2689,6 +2689,9 @@ packages:
 
   '@brillout/vite-plugin-server-entry@0.7.23':
     resolution: {integrity: sha512-tHI6zRUM+1yQxiC4CTwpPhYhU9Cdo4LkPy0JRxDiFBZSVSauzWTzZv/r7/+dKVk4/ihQmCtI1/XoegKVLMR7CQ==}
+
+  '@brillout/vite-plugin-server-entry@0.7.24':
+    resolution: {integrity: sha512-n2kylnpZ8xPUS4OwWes1B5lk6XxeUKYg/ZC2rGMkUT/1WHrRuVKSWzxhOT3+wYWPxofttt65yn/p8wmRLi8N+Q==}
 
   '@bytecodealliance/preview2-shim@0.17.6':
     resolution: {integrity: sha512-n3cM88gTen5980UOBAD6xDcNNL3ocTK8keab21bpx1ONdA+ARj7uD1qoFxOWCyKlkpSi195FH+GeAut7Oc6zZw==}
@@ -9204,6 +9207,11 @@ snapshots:
       '@brillout/import': 0.2.6
       '@brillout/picocolors': 1.0.31
 
+  '@brillout/vite-plugin-server-entry@0.7.24':
+    dependencies:
+      '@brillout/import': 0.2.6
+      '@brillout/picocolors': 1.0.31
+
   '@bytecodealliance/preview2-shim@0.17.6': {}
 
   '@classmatejs/react@0.2.1(react@19.2.6)':
@@ -10039,7 +10047,7 @@ snapshots:
 
   '@photonjs/core@0.1.22(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)(vite@7.3.1(@types/node@24.10.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.38.1)(tsx@4.20.6))':
     dependencies:
-      '@brillout/vite-plugin-server-entry': 0.7.23
+      '@brillout/vite-plugin-server-entry': 0.7.24
       '@universal-middleware/cloudflare': 0.4.12(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
       '@universal-middleware/compress': 0.2.36
       '@universal-middleware/core': 0.4.18(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
