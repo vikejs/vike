@@ -10,6 +10,7 @@ vi.mock('./html/serializeContext.js', () => ({
 }))
 import { stringify } from '@brillout/json-serializer/stringify'
 import { getReplacer } from './streamedValues/registry.js'
+import { catchStreamedPromises } from './streamedValues/pump.js'
 import { getPageContextJson, getPageContextJsonFile } from './getPageContextJson.js'
 import {
   serializePageContextHtml,
@@ -173,6 +174,20 @@ describe('client-side navigation', () => {
     expect(await pageContext.ok).toBe('ok')
     expect(logRuntimeError).toHaveBeenCalledTimes(3)
     expect(await text).not.toContain('secret')
+  })
+
+  it('a +data promise that rejects before pageContext is serialized is logged, not an unhandled rejection', async () => {
+    const unhandled = vi.fn()
+    process.on('unhandledRejection', unhandled)
+    const data = { failing: Promise.reject(new Error('secret')) }
+    catchStreamedPromises(data, { _requestId: 1 } as any)
+    // Node reports an unhandled rejection once the microtasks ran
+    await sleep(0)
+    process.off('unhandledRejection', unhandled)
+    expect(unhandled).not.toHaveBeenCalled()
+    expect(logRuntimeError).toHaveBeenCalledTimes(1)
+    const { pageContext } = await navigation(data)
+    await expect(pageContext.failing).rejects.toThrow('failed on the server-side')
   })
 
   it('navigating away cancels the values on the server', async () => {
