@@ -36,17 +36,5 @@ updates:
       react-streaming:
         patterns: ["react-streaming", "vike-react"]
     cooldown:
-      # Same list as "Dependencies maintained by the Vike team" above: they skip Dependabot's default 3-day cooldown.
-      # - Otherwise Dependabot holds back a react-streaming release for 3 days, while vike-react's own react-streaming dependency resolves to it
-      exclude:
-        - "@batijs/*"
-        - "@brillout/*"
-        - "@photonjs/*"
-        - "@universal-middleware/*"
-        - "@universal-deploy/*"
-        - "@vikejs/*"
-        - "react-streaming"
-        - "telefunc"
-        - "vike-*"
-        - "vite-plugin-vercel"
-        - "vite-plugin-wrapper"
+      # No 3-day cooldown: otherwise Dependabot holds back a new react-streaming release, while vike-react's own react-streaming dependency resolves to it
+      exclude: ["*"]
