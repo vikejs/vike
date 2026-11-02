@@ -30,7 +30,6 @@ import { logRuntimeError } from '../loggerRuntime.js'
 import { getPageContextPublicServer } from './getPageContextPublicServer.js'
 import { execHookGuard } from '../../../shared-server-client/route/execHookGuard.js'
 import pc from '@brillout/picocolors'
-import { isServerSideError } from '../../../shared-server-client/misc/isServerSideError.js'
 import type { PageContextCreatedServer } from './createPageContextServer.js'
 import type { PageContextBegin } from '../renderPageServer.js'
 import { getAsyncLocalStorage, type AsyncStore } from '../asyncHook.js'
@@ -94,9 +93,6 @@ async function renderPageServerAfterRoute<
   }
 
   if (pageContext.isClientSideNavigation) {
-    if (isError) {
-      objectAssign(pageContext, { [isServerSideError]: true })
-    }
     const httpResponse = await createHttpResponsePageJson(getPageContextJson(pageContext), pageContext)
     objectAssign(pageContext, { httpResponse })
     return pageContext
