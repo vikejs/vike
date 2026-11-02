@@ -361,7 +361,7 @@ async function fetchPageContextFromServer(
 
   // Is there a reason for having two different properties? Can't we use only one property? I guess/think the isServerSideError property was an attempt (a bad idea really) for rendering the error page even though an error occurred on the server-side (which is a bad idea because the added complexity is non-negligible while the added value is minuscule since the error page usually doesn't have any (meaningful / server-side) hooks).
   if (
-    // For the error page's request: upon a `throw render()` or `throw redirect()` in its data() or onBeforeRender()
+    // For the error page's request: upon a server-side error, e.g. a `throw render()` or `throw redirect()` in its data() or onBeforeRender()
     // - Not when its data() throws another error: the server then still sends its pageContext, without `data`
     'serverSideError' in pageContextFromServer ||
     // The error page's pageContext always has isServerSideError
