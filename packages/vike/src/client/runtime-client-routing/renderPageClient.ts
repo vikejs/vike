@@ -21,6 +21,7 @@ import {
   getPageContextFromHooksServer,
   getPageContextFromHooksClient_firstRender,
   getPageContextFromHooksServer_firstRender,
+  getPageContextFromHooksServer_errorPage,
   type PageContextFromHooksServer,
   setPageContextInitIsPassedToClient,
   processPageContextFromServer,
@@ -328,7 +329,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
         pageContextFromHooksServer = pageContextPrefetched
       } else {
         try {
-          const result = await getPageContextFromHooksServer(pageContext, false)
+          const result = await getPageContextFromHooksServer(pageContext)
           if (result.is404ServerSideRouted) return
           pageContextFromHooksServer = result.pageContextFromHooksServer
           // TO-DO/pageContext-prefetch: remove or change, because this only makes sense for a pre-rendered page
@@ -395,8 +396,14 @@ async function renderPageClient(renderArgs: RenderArgs) {
     let pageContextAbort: undefined | PageContextAbort
     if (isAbortError(err)) {
       const res = await handleAbort(err, pageContext)
-      if (res.skip) return
-      pageContextAbort = res.pageContextAbort
+      if (res.skip) {
+        // throw redirect('/some-url') / throw render('/some-url')
+        return
+      } else {
+        // throw render(statusCode)
+        pageContextAbort = res.pageContextAbort
+        assert(pageContextAbort.abortStatusCode)
+      }
     }
 
     // Render error page
@@ -453,9 +460,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     let pageContextFromHooksServer: PageContextFromHooksServer
     try {
-      const result = await getPageContextFromHooksServer(pageContext, true)
-      if (result.is404ServerSideRouted) return
-      pageContextFromHooksServer = result.pageContextFromHooksServer
+      pageContextFromHooksServer = await getPageContextFromHooksServer_errorPage(pageContext, args.err)
     } catch (err: unknown) {
       onError(err)
       return

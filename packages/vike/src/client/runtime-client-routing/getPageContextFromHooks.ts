@@ -2,6 +2,7 @@ export { getPageContextFromHooksClient }
 export { getPageContextFromHooksClient_firstRender }
 export { getPageContextFromHooksServer }
 export { getPageContextFromHooksServer_firstRender }
+export { getPageContextFromHooksServer_errorPage }
 export { setPageContextInitIsPassedToClient }
 export { processPageContextFromServer }
 export type { PageContextFromHooksServer }
@@ -79,7 +80,6 @@ async function getPageContextFromHooksClient_firstRender(
 type PageContextFromHooksServer = { _hasPageContextFromServer: boolean }
 async function getPageContextFromHooksServer(
   pageContext: { pageId: string; abortSignal: AbortSignal } & PageContextCreatedClient,
-  isErrorPage: boolean,
 ): Promise<
   | { is404ServerSideRouted: true }
   | {
@@ -95,10 +95,8 @@ async function getPageContextFromHooksServer(
   // only, then we need to fetch pageContext from the server.
   // We do it before executing any client-side hook, because it contains pageContextInit which may be needed for guard() / data() / onBeforeRender(), for example pageContextInit.user is crucial for guard()
   if (
-    // For the error page, we cannot fetch pageContext from the server because the pageContext JSON request is based on the URL
-    !isErrorPage &&
     // true if pageContextInit has some client data or at least one of the data() and onBeforeRender() hooks is server-side only:
-    (await hasPageContextServer(pageContext))
+    await hasPageContextServer(pageContext)
   ) {
     const res = await fetchPageContextFromServer(pageContext)
     if ('is404ServerSideRouted' in res) return { is404ServerSideRouted: true as const }
@@ -267,46 +265,110 @@ async function fetchPageContextFromServer(pageContext: {
   _urlRewrite?: string
   abortSignal: AbortSignal
 }) {
-  let pageContextUrl = getPageContextRequestUrl(pageContext._urlRewrite ?? pageContext.urlOriginal)
-  /* TO-DO/soon/once: pass & use previousUrl
-  pageContextUrl = modifyUrlSameOrigin(pageContextUrl, { search: { _vike: JSON.stringify({ previousUrl: pageContext.previousPageContext.urlOriginal }) } })
-  */
-  // Navigating away aborts the request, including the streamed values that are still pending
-  // - https://vike.dev/passToClient#streaming
-  const response = await fetch(pageContextUrl, { signal: pageContext.abortSignal })
-
-  {
-    const contentType = response.headers.get('content-type')
-    const contentTypeCorrect = 'application/json'
-    const isCorrect = contentType && contentType.includes(contentTypeCorrect)
-
-    // Static hosts + page doesn't exist
-    if (!isCorrect && response.status === 404) {
-      redirectHard(pageContext.urlOriginal)
-      return { is404ServerSideRouted: true }
-    }
-
-    assertUsage(
-      isCorrect,
-      `Wrong Content-Type for ${pageContextUrl}: it should be ${contentTypeCorrect} but it's ${contentType} instead. Make sure to properly use pageContext.httpResponse.headers, see https://vike.dev/renderPage`,
-    )
+  const pageContextFromServer = await fetchPageContextJson(pageContext)
+  if (!pageContextFromServer) {
+    redirectHard(pageContext.urlOriginal)
+    return { is404ServerSideRouted: true }
   }
 
-  const pageContextFromServer = await readPageContextJson(response, pageContext.abortSignal)
-  assert(isObject(pageContextFromServer))
-
   if (isAbortPageContext(pageContextFromServer)) {
-    throw AbortRender(pageContextFromServer)
+    const err = AbortRender(pageContextFromServer)
+    attachPageContextErrorPage(err, pageContextFromServer)
+    throw err
   }
 
   // Is there a reason for having two different properties? Can't we use only one property? I guess/think the isServerSideError property was an attempt (a bad idea really) for rendering the error page even though an error occurred on the server-side (which is a bad idea because the added complexity is non-negligible while the added value is minuscule since the error page usually doesn't have any (meaningful / server-side) hooks).
   if ('serverSideError' in pageContextFromServer || isServerSideError in pageContextFromServer) {
-    throw getProjectError(`pageContext couldn't be fetched because an error occurred on the server-side`)
+    const err = getProjectError(`pageContext couldn't be fetched because an error occurred on the server-side`)
+    attachPageContextErrorPage(err, pageContextFromServer)
+    throw err
   }
 
-  processPageContextFromServer(pageContextFromServer)
-
   return { pageContextFromServer }
+}
+
+function attachPageContextErrorPage(err: Error, pageContextFromServer: Record<string, unknown>) {
+  if (globalThis.__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER && isServerSideError in pageContextFromServer) {
+    // A server-side hook of the page being navigated to threw an error or called `throw render(abortStatusCode)`, and the server already sent the error page's pageContext instead: keep it, so that the client renders the error page with it
+    // - Otherwise the client fetches it again (and the error page's server-side hooks run twice)
+    objectAssign(err, { _pageContextErrorPage: pageContextFromServer })
+  }
+}
+
+// The error page's pageContext
+async function getPageContextFromHooksServer_errorPage(
+  pageContext: {
+    pageId: string
+    abortSignal: AbortSignal
+    abortStatusCode?: number
+    abortReason?: unknown
+  } & PageContextCreatedClient,
+  err: unknown,
+): Promise<PageContextFromHooksServer> {
+  if (
+    !globalThis.__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER || // Save client-side KBs
+    !hasServerOnlyHook(pageContext)
+  ) {
+    return { _hasPageContextFromServer: false }
+  }
+  // The server sent the error page's pageContext with the error
+  if (hasProp(err, '_pageContextErrorPage', 'object')) {
+    return { _hasPageContextFromServer: true, ...err._pageContextErrorPage }
+  }
+  // Otherwise the client fetches it
+  const { abortStatusCode, abortReason } = pageContext
+  const pageContextFromServer = await fetchPageContextJson(pageContext, { errorPage: { abortStatusCode, abortReason } })
+  // The error page renders without the server's pageContext upon:
+  // - No .pageContext.json for this URL, e.g. a tab running the bundle of an older deployment that had a server
+  if (!pageContextFromServer) return { _hasPageContextFromServer: false }
+  // - A server-side error, e.g. a `throw render()` or `throw redirect()` in the error page's data() or onBeforeRender()
+  //   (when the error page's data() throws another error, the server still sends its pageContext, without `data`)
+  if ('serverSideError' in pageContextFromServer) return { _hasPageContextFromServer: false }
+  // This assert() might fail: https://github.com/vikejs/vike/pull/3636#issuecomment-6563275899
+  assert(pageContextFromServer.pageId === pageContext.pageId) // `errorPageId`
+  // The server's abortReason is the copy that the `_vike` search param carried as JSON (e.g. a `Date` arrives as a
+  // string) — we keep the client-side lossless version
+  delete pageContextFromServer.abortReason
+  return { _hasPageContextFromServer: true, ...pageContextFromServer }
+}
+
+async function fetchPageContextJson(
+  pageContext: { urlOriginal: string; _urlRewrite?: string; abortSignal: AbortSignal },
+  searchVikeArgs?: Record<string, unknown>,
+) {
+  let pageContextUrl: string | URL = getPageContextRequestUrl(pageContext._urlRewrite ?? pageContext.urlOriginal)
+  /* TO-DO/soon/once: pass & use previousUrl
+  pageContextUrl = modifyUrlSameOrigin(pageContextUrl, { search: { _vike: JSON.stringify({ previousUrl: pageContext.previousPageContext.urlOriginal }) } })
+  */
+  if (searchVikeArgs) {
+    pageContextUrl = new URL(pageContextUrl, location.href)
+    pageContextUrl.searchParams.set(
+      '_vike',
+      // We don't use `import { stringify } from @brillout/json-serializer` to save client-side KBs
+      JSON.stringify(searchVikeArgs),
+    )
+  }
+  // Navigating away aborts the request, including the streamed values that are still pending
+  // - https://vike.dev/passToClient#streaming
+  const response = await fetch(pageContextUrl, { signal: pageContext.abortSignal })
+  const contentType = response.headers.get('content-type')
+  const contentTypeCorrect = 'application/json'
+  const isCorrect = contentType && contentType.includes(contentTypeCorrect)
+  // A static host answers 404 when it has no .pageContext.json for this URL, e.g. a newer deployment removed the page
+  if (!isCorrect && response.status === 404) return null
+  assertUsage(
+    isCorrect,
+    `Wrong Content-Type for ${pageContextUrl}: it should be ${contentTypeCorrect} but it's ${contentType} instead. Make sure to properly use pageContext.httpResponse.headers, see https://vike.dev/renderPage`,
+  )
+  const pageContextFromServer = await readPageContextJson(response, pageContext.abortSignal)
+  assert(isObject(pageContextFromServer))
+  if (
+    // The response of `throw redirect()`, `throw render(url)` and `{ serverSideError: true }` isn't a page's pageContext
+    'pageId' in pageContextFromServer
+  ) {
+    processPageContextFromServer(pageContextFromServer)
+  }
+  return pageContextFromServer
 }
 
 function processPageContextFromServer(pageContext: Record<string, unknown>) {

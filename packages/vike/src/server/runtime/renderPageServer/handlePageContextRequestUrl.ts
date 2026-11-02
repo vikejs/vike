@@ -26,13 +26,12 @@ function handlePageContextRequestUrl(url: string) {
     }
   } else {
     const { urlWithoutPageContextRequestSuffix, searchVikeArgs } = processUrl(urlParsed, url)
-    // @ts-ignore
-    const previousUrl = parseSearchVikeArgs(searchVikeArgs)
+    const { errorPage } = parseSearchVikeArgs(searchVikeArgs)
     return {
       /* TO-DO/soon/once: pass & use previousUrl
-      isPageContextJsonRequest: { previousUrl },
+      isPageContextJsonRequest: { previousUrl, errorPage },
       /*/
-      isPageContextJsonRequest: true,
+      isPageContextJsonRequest: { errorPage },
       //*/
       urlWithoutPageContextRequestSuffix,
     }
@@ -70,6 +69,7 @@ function processUrl(urlParsed: UrlParsed, url: string) {
 function parseSearchVikeArgs(searchVikeArgs: undefined | string) {
   const args = {
     previousUrl: null as null | string,
+    errorPage: null as null | { abortStatusCode?: number; abortReason?: unknown },
   }
   if (searchVikeArgs) {
     const parsed = JSON.parse(searchVikeArgs)
@@ -77,6 +77,14 @@ function parseSearchVikeArgs(searchVikeArgs: undefined | string) {
     if ('previousUrl' in parsed) {
       assert(hasProp(parsed, 'previousUrl', 'string'))
       args.previousUrl = parsed.previousUrl
+    }
+    // Get the pageContext of the error page
+    if ('errorPage' in parsed) {
+      assert(isObject(parsed.errorPage))
+      const { abortStatusCode, abortReason } = parsed.errorPage
+      assert(abortStatusCode === undefined || typeof abortStatusCode === 'number')
+      // Usually required by the error page's components (e.g. if the error page's +Page is a React Server Component)
+      args.errorPage = { abortReason, abortStatusCode }
     }
   }
   return args

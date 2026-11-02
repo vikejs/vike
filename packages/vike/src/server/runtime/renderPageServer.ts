@@ -63,6 +63,7 @@ import pc from '@brillout/picocolors'
 import type { PageContextServer } from '../../types/index.js'
 import { getPageContextClientSerializedAbort } from './renderPageServer/html/serializeContext.js'
 import { getErrorPageId } from '../../shared-server-client/error-page.js'
+import { getConfigValueRuntime } from '../../shared-server-client/page-configs/getConfigValueRuntime.js'
 import { handleErrorWithoutErrorPage } from './renderPageServer/handleErrorWithoutErrorPage.js'
 import {
   loadPageConfigsLazyServerSide,
@@ -200,6 +201,12 @@ async function renderPageServerEntryOnce(
     if (pageContextHttpResponse) return pageContextHttpResponse
   }
 
+  // The error page's `.pageContext.json` request
+  {
+    const pageContextErrorPage = await getPageContextJsonOfErrorPage(pageContextBegin, globalContext)
+    if (pageContextErrorPage) return pageContextErrorPage
+  }
+
   // First renderPageServerEntryRecursive() call
   return await renderPageServerEntryRecursive(pageContextBegin, globalContext, requestId)
 }
@@ -307,11 +314,12 @@ async function renderPageServerEntryRecursive_onError(
     if (handled.pageContextReturn) {
       // - throw redirect()
       // - throw render(url)
-      // - throw render(abortStatusCode) if pageContext.json request
+      // - throw render(abortStatusCode) if pageContext.json request (except of the error page's pageContext.json request, i.e. the error page has a server-only hook)
       // - throw redirect() or throw render() while rendering the error page (e.g. the 404 page)
       return handled.pageContextReturn
     } else {
       // - throw render(abortStatusCode) if not pageContext.json request
+      // - throw render(abortStatusCode) if pageContext.json request for error page (i.e. the error page has a server-only hook)
       objectAssign(pageContextErrorPageInit, handled.pageContextAbort)
     }
   }
@@ -356,6 +364,41 @@ function logWrongUsageAbortedErrorPage(errErrorPage: ErrorAbort, pageContext: Pa
     assertUsage(false, errMsg)
   } catch (errUsage) {
     logRuntimeError(errUsage, pageContext)
+  }
+}
+
+async function getPageContextJsonOfErrorPage(
+  pageContextBegin: PageContextBegin,
+  globalContext: GlobalContextServerInternal,
+) {
+  const errorPage = pageContextBegin._isPageContextJsonRequest && pageContextBegin._isPageContextJsonRequest.errorPage
+  if (!errorPage) return null
+  const errorPageId = getErrorPageId(globalContext._pageFilesAll, globalContext._pageConfigs)
+  if (
+    // E.g. a tab running the bundle of an older deployment that had an error page
+    !errorPageId
+  )
+    return null
+
+  const pageContextErrorPage = fork(pageContextBegin)
+  objectAssign(pageContextErrorPage, {
+    pageId: errorPageId,
+    routeParams: {} as Record<string, string>,
+    is404: errorPage.abortStatusCode === 404,
+    isErrorPage: true,
+    // The error occurred on the client-side
+    errorWhileRendering: null,
+  })
+  objectAssign(pageContextErrorPage, errorPage)
+  try {
+    return await renderPageServerAfterRoute(pageContextErrorPage)
+  } catch (err) {
+    if (isAbortError(err)) {
+      logWrongUsageAbortedErrorPage(err, pageContextErrorPage)
+    } else {
+      logRuntimeError(err, pageContextErrorPage)
+    }
+    return getPageContextHttpErrorFallback(err, pageContextBegin)
   }
 }
 
@@ -426,6 +469,7 @@ function prettyUrl(url: string) {
 
 function getPageContextHttpErrorFallback(err: unknown, pageContextBegin: PageContextBegin) {
   const pageContextHttpErrorFallback = fork(pageContextBegin)
+  // TODO/after-merge: should `pageContextBegin.isClientSideNavigation` be replaced with `pageContextBegin._isPageContextJsonRequest`? Other places where it should be replaced?
   const httpResponse = !pageContextBegin.isClientSideNavigation
     ? createHttpResponseErrorFallback(pageContextBegin)
     : createHttpResponseErrorFallbackJson(pageContextBegin)
@@ -616,6 +660,16 @@ async function handleAbort(
 
   // Client-side navigation — [`pageContext.json` request](https://vike.dev/pageContext.json)
   if (pageContextBegin.isClientSideNavigation) {
+    if (
+      pageContextAbort.abortStatusCode && // `throw render(abortStatusCode)`
+      errorPageHasServerOnlyHook(globalContext)
+    ) {
+      // Render the error page's `pageContext`: run the error page's server-side hooks to determine the error page's server-side `pageContext` and return it
+      // - For example vike-react-rsc's +onCreatePageContext.server.js (which renders Server Components e.g. +Layout.jsx)
+      // - Normally, the error page's pageContext is retrieved by the client doing a `fetch()` request, but this is different: a `throw render(abortStatusCode)` occurred in the hook of a normal page (i.e. a non-error page) => we proactively render the error page's pageContext instead of doing a round-trip
+      return { pageContextAbort }
+    }
+
     const pageContext = forkPageContextBegin()
     let pageContextJson: string | ReadableStream<Uint8Array>
     if (pageContextAbort.abortStatusCode) {
@@ -670,6 +724,12 @@ async function handleAbort(
   // Render error page — `throw render(abortStatusCode)` if not pageContext.json request
   assert(pageContextAbort.abortStatusCode)
   return { pageContextAbort }
+}
+
+function errorPageHasServerOnlyHook(globalContext: GlobalContextServerInternal) {
+  const errorPageConfig = globalContext._pageConfigs.find((pageConfig) => pageConfig.isErrorPage)
+  if (!errorPageConfig) return false
+  return getConfigValueRuntime(errorPageConfig, 'hasServerOnlyHook', 'boolean')?.value === true
 }
 
 async function checkBaseUrl(pageContextBegin: PageContextBegin, globalContext: GlobalContextServerInternal) {

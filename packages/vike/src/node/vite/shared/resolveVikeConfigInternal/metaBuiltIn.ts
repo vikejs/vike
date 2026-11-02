@@ -224,10 +224,12 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { config: true },
   },
   hasServerOnlyHook: {
-    env: { client: true },
+    env: { server: true, client: true },
     eager: true,
     _computed: (pageConfig, isDev): boolean => {
       const sources = (['data', 'onBeforeRender', 'onCreatePageContext', 'guard'] as const)
+        // Vike never runs the error page's server-only guard()
+        .filter((hookName) => !(hookName === 'guard' && pageConfig.isErrorPage))
         .map((hookName) =>
           getConfigValueSourcesRelevant(
             hookName,

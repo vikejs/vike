@@ -99,7 +99,7 @@ async function prefetchPageContextFromHooksServer(
   pageContextLink: PageContextForPrefetch,
   resultMaxAge: number | null,
 ): Promise<void> {
-  const result = await getPageContextFromHooksServer(pageContextLink, false)
+  const result = await getPageContextFromHooksServer(pageContextLink)
   setPageContextPrefetchCache(pageContextLink, result, resultMaxAge)
 }
 function populatePageContextPrefetchCache(
