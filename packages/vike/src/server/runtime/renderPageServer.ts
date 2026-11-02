@@ -379,7 +379,7 @@ async function getPageContextJsonOfErrorPage(
     // E.g. a tab running the bundle of an older deployment that had an error page, or a newer bundle reaching a server that isn't updated yet during a rolling deploy
     !errorPageId
   ) {
-    // A 404 that isn't JSON, which the client handles like a missing .pageContext.json
+    // A 404 that isn't JSON => the client handles it like a missing .pageContext.json
     return getPageContextHttpResponse404(pageContextInit, pageContextBegin._requestId, 'No error page found')
   }
 
