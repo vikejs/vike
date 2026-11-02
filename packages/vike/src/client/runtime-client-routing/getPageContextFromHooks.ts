@@ -354,6 +354,7 @@ async function fetchPageContextFromServer(
     processPageContextFromServer(pageContextFromServer)
   }
 
+  // Handle server-side `throw redirect()` / `throw render()`
   if (
     !errorPage && // The error page's pageContext might have `abortStatusCode` but it isn't an abort
     isAbortPageContext(pageContextFromServer)
