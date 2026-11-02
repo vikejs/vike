@@ -70,7 +70,7 @@ async function renderPageServerAfterRoute<
 
   const skipGuardAndData = pageContext._skipGuardAndData_experimentalRSC
   if (typeof skipGuardAndData === 'function' ? await skipGuardAndData() : skipGuardAndData) {
-    // TODO/soon check whether pageContext._skipGuardAndData_experimentalRSC is the right API
+    // TODO/soon/rsc check whether pageContext._skipGuardAndData_experimentalRSC is the right API
     // https://github.com/vikejs/vike/pull/3646
     // Set by vike-react-rsc e.g. for a server action whose response doesn't show the page
   } else if (!isError) {

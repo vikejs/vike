@@ -849,7 +849,7 @@ function getPageContextClient(): PageContextClient | null {
   return getPageContextPublicClient(pageContext as any) as any
 }
 
-// TODO/soon: check whether createPageContextFromServer_experimentalRSC() this is the right API
+// TODO/soon/rsc check whether createPageContextFromServer_experimentalRSC() this is the right API
 // https://github.com/vikejs/vike/pull/3640
 /**
  * Creates a new `pageContext` for the page that `pageContext` renders, with the values of `pageContextFromServer` on top.
