@@ -322,9 +322,13 @@ async function getPageContextFromHooksServer_errorPage(
   // The error page renders without the server's pageContext upon:
   // - No .pageContext.json for this URL, e.g. a tab running the bundle of an older deployment that had a server
   if (!pageContextFromServer) return { _hasPageContextFromServer: false }
-  // - A server-side error, e.g. a `throw render()` or `throw redirect()` in the error page's data() or onBeforeRender()
-  //   (when the error page's data() throws another error, the server still sends its pageContext, without `data`)
-  if ('serverSideError' in pageContextFromServer) return { _hasPageContextFromServer: false }
+  // Upon a server-side error, e.g. a `throw render()` or `throw redirect()` in the error page's data() or onBeforeRender()
+  // - When the error page's data() throws another error, the server still sends its pageContext, without `data`
+  if ('serverSideError' in pageContextFromServer) {
+    throw getProjectError(
+      `The error page's pageContext couldn't be fetched because an error occurred on the server-side`,
+    )
+  }
   // This assert() might fail: https://github.com/vikejs/vike/pull/3636#issuecomment-6563275899
   assert(pageContextFromServer.pageId === pageContext.pageId) // `errorPageId`
   // The server's abortReason is the copy that the `_vike` search param carried as JSON (e.g. a `Date` arrives as a
