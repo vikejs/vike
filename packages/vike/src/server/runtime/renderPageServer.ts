@@ -381,10 +381,7 @@ async function getPageContextJsonOfErrorPage(
   ) {
     // A 404 that isn't JSON, which the client handles like a missing .pageContext.json
     // - Not fork(pageContextBegin): its `isClientSideNavigation: true` requires a JSON response
-    const pageContext404 = createPageContextServerWithoutGlobalContext(pageContextInit, pageContextBegin._requestId)
-    objectAssign(pageContext404, { httpResponse: createHttpResponse404('No error page found') })
-    checkType<PageContextAfterRender>(pageContext404)
-    return pageContext404
+    return getPageContextHttpResponse404(pageContextInit, pageContextBegin._requestId, 'No error page found')
   }
 
   const pageContextErrorPage = fork(pageContextBegin)
@@ -767,9 +764,12 @@ function getPageContextSkipRequest(pageContextInit: PageContextInit, requestId: 
     errMsg404 = 'Not supported'
   }
   if (!errMsg404) return
+  return getPageContextHttpResponse404(pageContextInit, requestId, errMsg404)
+}
+
+function getPageContextHttpResponse404(pageContextInit: PageContextInit, requestId: number, errMsg404: string) {
   const pageContext = createPageContextServerWithoutGlobalContext(pageContextInit, requestId)
-  const httpResponse = createHttpResponse404(errMsg404)
-  objectAssign(pageContext, { httpResponse })
+  objectAssign(pageContext, { httpResponse: createHttpResponse404(errMsg404) })
   checkType<PageContextAfterRender>(pageContext)
   return pageContext
 }
