@@ -203,7 +203,7 @@ async function renderPageServerEntryOnce(
 
   // The error page's `.pageContext.json` request
   {
-    const pageContextErrorPage = await getPageContextJsonOfErrorPage(pageContextBegin, globalContext)
+    const pageContextErrorPage = await getPageContextJsonOfErrorPage(pageContextInit, pageContextBegin, globalContext)
     if (pageContextErrorPage) return pageContextErrorPage
   }
 
@@ -368,13 +368,24 @@ function logWrongUsageAbortedErrorPage(errErrorPage: ErrorAbort, pageContext: Pa
 }
 
 async function getPageContextJsonOfErrorPage(
+  pageContextInit: PageContextInit,
   pageContextBegin: PageContextBegin,
   globalContext: GlobalContextServerInternal,
 ) {
   const errorPage = pageContextBegin._isPageContextJsonRequest && pageContextBegin._isPageContextJsonRequest.errorPage
   if (!errorPage) return null
   const errorPageId = getErrorPageId(globalContext._pageFilesAll, globalContext._pageConfigs)
-  if (!errorPageId) return null
+  if (
+    // E.g. a tab running the bundle of an older deployment that had an error page, or a newer bundle reaching a server that isn't updated yet during a rolling deploy
+    !errorPageId
+  ) {
+    // A 404 that isn't JSON, which the client handles like a missing .pageContext.json
+    // - Not fork(pageContextBegin): its `isClientSideNavigation: true` requires a JSON response
+    const pageContext404 = createPageContextServerWithoutGlobalContext(pageContextInit, pageContextBegin._requestId)
+    objectAssign(pageContext404, { httpResponse: createHttpResponse404('No error page found') })
+    checkType<PageContextAfterRender>(pageContext404)
+    return pageContext404
+  }
 
   const pageContextErrorPage = fork(pageContextBegin)
   objectAssign(pageContextErrorPage, {

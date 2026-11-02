@@ -320,7 +320,7 @@ async function getPageContextFromHooksServer_errorPage(
   // Otherwise the client fetches it
   const { abortStatusCode, abortReason } = pageContext
   const pageContextFromServer = await fetchPageContextJson(pageContext, { errorPage: { abortStatusCode, abortReason } })
-  // No .pageContext.json for this URL, e.g. a tab running the bundle of an older deployment that had a server
+  // No .pageContext.json for this URL, e.g. a tab running the bundle of an older deployment that had a server, or a server whose build has no error page
   if (!pageContextFromServer) {
     if (
       // Reloading upon the first render would lead to an infinite reload loop: the reloaded page fails again and requests the error page's .pageContext.json again
