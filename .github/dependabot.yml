@@ -36,9 +36,9 @@ updates:
       # - vike-react depends on react-streaming: bumping them in separate PRs loads two react-streaming versions
       react-streaming:
         patterns: ["react-streaming", "vike-react"]
+    # Skip Dependabot's 3-day release delay
     cooldown:
-      # Same list as "Dependencies maintained by the Vike team" above: they skip Dependabot's default 3-day cooldown.
-      # - Otherwise Dependabot holds back a react-streaming release for 3 days, while vike-react's own react-streaming dependency resolves to it
+      # Same list as "Dependencies maintained by the Vike team" above
       exclude:
         - "@batijs/*"
         - "@brillout/*"
