@@ -100,7 +100,7 @@ async function getPageContextFromHooksServer(
   ) {
     const pageContextFromServer = await fetchPageContextFromServer(pageContext)
     if (!pageContextFromServer) return { is404ServerSideRouted: true as const }
-    pageContextFromHooksServer._hasPageContextFromServer = true
+    pageContextFromHooksServer._hasPageContextFromServer = true // TODO/ai: move this line inside fetchPageContextFromServer() ?
     objectAssign(pageContextFromHooksServer, pageContextFromServer)
   }
 
