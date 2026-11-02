@@ -20,15 +20,8 @@ async function generateVirtualFileGlobalEntry(runtimeEnv: RuntimeEnvRuntime, id:
     _pageConfigGlobal: pageConfigGlobal,
     _additionalEnvironmentNames: additionalEnvironmentNames,
   } = vikeConfig
-  let code = getCode(pageConfigs, pageConfigGlobal, runtimeEnv, id, additionalEnvironmentNames)
-  if (runtimeEnv.environmentName === 'client' && runtimeEnv.isDev) {
-    // Computed from the same Vike config as the code above
-    const constants = getConstantsFromVikeConfig(vikeConfig)
-    Object.entries(constants).forEach(([key, value]) => {
-      code += `\n${key} = ${value};`
-    })
-  }
-  return code
+  const constantsGlobalThis = getConstantsFromVikeConfig(vikeConfig)
+  return getCode(pageConfigs, pageConfigGlobal, runtimeEnv, id, additionalEnvironmentNames, constantsGlobalThis)
 }
 
 function getCode(
@@ -37,6 +30,7 @@ function getCode(
   runtimeEnv: RuntimeEnvRuntime,
   id: string,
   additionalEnvironmentNames: string[],
+  constantsGlobalThis: Record<string, string>,
 ): string {
   const lines: string[] = []
   const importStatements: string[] = []
@@ -59,6 +53,12 @@ function getCode(
 
   if (environmentName === 'server') {
     lines.push(getCodeEnvironmentEntries(additionalEnvironmentNames, isDev, importStatements))
+  }
+
+  if (isForClientSide && isDev) {
+    Object.entries(constantsGlobalThis).forEach(([key, value]) => {
+      lines.push(`${key} = ${value};`)
+    })
   }
 
   if (!isForClientSide && isDev) {
