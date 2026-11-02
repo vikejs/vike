@@ -98,8 +98,9 @@ async function getPageContextFromHooksServer(
     // true if pageContextInit has some client data or at least one of the data() and onBeforeRender() hooks is server-side only:
     await hasPageContextServer(pageContext)
   ) {
-    const pageContextFromServer = await fetchPageContextFromServer(pageContext)
-    if (!pageContextFromServer) return { is404ServerSideRouted: true as const }
+    const res = await fetchPageContextFromServer(pageContext)
+    if (res.is404ServerSideRouted) return res
+    const { pageContextFromServer } = res
     pageContextFromHooksServer._hasPageContextFromServer = true // TODO/ai: move this line inside fetchPageContextFromServer() ?
     objectAssign(pageContextFromHooksServer, pageContextFromServer)
   }
@@ -278,9 +279,10 @@ async function getPageContextFromHooksServer_errorPage(
   }
 
   const { abortStatusCode, abortReason } = pageContext
-  const pageContextFromServer = await fetchPageContextFromServer(pageContext, { abortStatusCode, abortReason })
+  const res = await fetchPageContextFromServer(pageContext, { abortStatusCode, abortReason })
 
-  if (!pageContextFromServer) return { is404ServerSideRouted: true }
+  if (res.is404ServerSideRouted) return res
+  const { pageContextFromServer } = res
 
   // This assert() might fail: https://github.com/vikejs/vike/pull/3636#issuecomment-6563275899
   assert(pageContextFromServer.pageId === pageContext.pageId) // `errorPageId`
@@ -333,10 +335,7 @@ async function fetchPageContextFromServer(
         throw getProjectError("pageContext couldn't be fetched")
       }
       redirectHard(pageContext.urlOriginal)
-      /* TODO/ai cleaner (more human readable)?
-    return { is404ServerSideRouted: true as const }
-    */
-      return null
+      return { is404ServerSideRouted: true as const }
     }
     assertUsage(
       false,
@@ -376,7 +375,7 @@ async function fetchPageContextFromServer(
     throw err
   }
 
-  return pageContextFromServer
+  return { pageContextFromServer }
 }
 
 function attachPageContextErrorPage(err: Error, pageContextFromServer: Record<string, unknown>) {
