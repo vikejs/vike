@@ -305,7 +305,7 @@ async function getPageContextFromHooksServer_errorPage(
     abortReason?: unknown
   } & PageContextCreatedClient,
   err: unknown,
-): Promise<PageContextFromHooksServer | { is404ServerSideRouted: true }> {
+): Promise<(PageContextFromHooksServer & { is404ServerSideRouted?: undefined }) | { is404ServerSideRouted: true }> {
   if (
     // Save client-side KBs
     !globalThis.__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER ||

@@ -461,7 +461,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     let pageContextFromHooksServer: PageContextFromHooksServer
     try {
       const result = await getPageContextFromHooksServer_errorPage(pageContext, args.err)
-      if ('is404ServerSideRouted' in result) return
+      if (result.is404ServerSideRouted) return
       pageContextFromHooksServer = result
     } catch (err: unknown) {
       onError(err)
