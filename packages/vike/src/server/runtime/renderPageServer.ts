@@ -769,7 +769,8 @@ function getPageContextSkipRequest(pageContextInit: PageContextInit, requestId: 
 
 function getPageContextHttpResponse404(pageContextInit: PageContextInit, requestId: number, errMsg404: string) {
   const pageContext = createPageContextServerWithoutGlobalContext(pageContextInit, requestId)
-  objectAssign(pageContext, { httpResponse: createHttpResponse404(errMsg404) })
+  const httpResponse = createHttpResponse404(errMsg404)
+  objectAssign(pageContext, { httpResponse })
   checkType<PageContextAfterRender>(pageContext)
   return pageContext
 }
