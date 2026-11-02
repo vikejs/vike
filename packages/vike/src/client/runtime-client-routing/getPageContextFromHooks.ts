@@ -355,8 +355,7 @@ async function fetchPageContextFromServer(
   }
 
   if (
-    // The error page's pageContext has `abortStatusCode` upon a client-side `throw render(abortStatusCode)`: it isn't an abort
-    !errorPage &&
+    !errorPage && // The error page's pageContext might have `abortStatusCode` but it isn't an abort
     isAbortPageContext(pageContextFromServer)
   ) {
     const err = AbortRender(pageContextFromServer)
