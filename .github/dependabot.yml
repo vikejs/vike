@@ -31,9 +31,9 @@ updates:
       - dependency-name: "sirv"
       - dependency-name: "source-map-support"
       - dependency-name: "tinyglobby"
+    # Make dependabot bump vike-react react-streaming in a single PR
+    # - Because vike-react depends on react-streaming: bumping them in separate PRs leads to the warning that two different react-streaming versions are loaded
     groups:
-      # Dependabot bumps all dependencies matching `patterns` together, in a single PR.
-      # - vike-react depends on react-streaming: bumping them in separate PRs loads two react-streaming versions
       react-streaming:
         patterns: ["react-streaming", "vike-react"]
     # Skip Dependabot's 3-day release delay
