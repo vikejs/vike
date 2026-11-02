@@ -15,7 +15,10 @@ function catchStreamedPromises(value: unknown, pageContext: NonNullable<PageCont
     walked.add(value)
     if (value instanceof Promise) value.then(walk, (err) => logRuntimeError(err, pageContext))
     else if (Array.isArray(value) || value instanceof Map || value instanceof Set) value.forEach(walk)
-    else if ([Object.prototype, null].includes(Object.getPrototypeOf(value))) {
+    else if (
+      // Not every byte of a typed array or Buffer
+      !ArrayBuffer.isView(value)
+    ) {
       // Without calling getters: a getter can throw
       Object.values(Object.getOwnPropertyDescriptors(value)).forEach((descriptor) => walk(descriptor.value))
     }
