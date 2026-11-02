@@ -369,7 +369,7 @@ async function fetchPageContextFromServer(
     // The error page's pageContext always has isServerSideError
     (!errorPage && isServerSideError in pageContextFromServer)
   ) {
-    const err = getProjectError(`pageContext couldn't be fetched because an error occurred on the server-side`)
+    const err = getProjectError("pageContext couldn't be fetched because an error occurred on the server-side")
     attachPageContextErrorPage(err, pageContextFromServer)
     throw err
   }
