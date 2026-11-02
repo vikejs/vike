@@ -300,11 +300,12 @@ async function getPageContextFromHooksServer_errorPage(
   pageContext: {
     pageId: string
     abortSignal: AbortSignal
+    isClientSideNavigation: boolean
     abortStatusCode?: number
     abortReason?: unknown
   } & PageContextCreatedClient,
   err: unknown,
-): Promise<PageContextFromHooksServer> {
+): Promise<PageContextFromHooksServer | { is404ServerSideRouted: true }> {
   if (
     // Save client-side KBs
     !globalThis.__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER
@@ -319,9 +320,19 @@ async function getPageContextFromHooksServer_errorPage(
   // Otherwise the client fetches it
   const { abortStatusCode, abortReason } = pageContext
   const pageContextFromServer = await fetchPageContextJson(pageContext, { errorPage: { abortStatusCode, abortReason } })
-  // The error page renders without the server's pageContext upon:
-  // - No .pageContext.json for this URL, e.g. a tab running the bundle of an older deployment that had a server
-  if (!pageContextFromServer) return { _hasPageContextFromServer: false }
+  // No .pageContext.json for this URL, e.g. a tab running the bundle of an older deployment that had a server
+  if (!pageContextFromServer) {
+    if (
+      // Reloading upon the first render would lead to an infinite reload loop: the reloaded page fails again and requests the error page's .pageContext.json again
+      pageContext.isClientSideNavigation
+    ) {
+      redirectHard(pageContext.urlOriginal)
+      return { is404ServerSideRouted: true }
+    }
+    throw getProjectError(
+      `The error page's pageContext couldn't be fetched because its .pageContext.json is missing (e.g. a host without Vike answered 404)`,
+    )
+  }
   // Upon a server-side error, e.g. a `throw render()` or `throw redirect()` in the error page's data() or onBeforeRender()
   // - When the error page's data() throws another error, the server still sends its pageContext, without `data`
   if ('serverSideError' in pageContextFromServer) {
