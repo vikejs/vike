@@ -355,7 +355,7 @@ async function fetchPageContextJson(
   const contentType = response.headers.get('content-type')
   const contentTypeCorrect = 'application/json'
   const isCorrect = contentType && contentType.includes(contentTypeCorrect)
-  // A static host answers 404 when it has no .pageContext.json for this URL, e.g. a newer deployment removed the page
+  // Static host + new deployment: when .pageContext.json doesn't exist because a newer deployment removed the page => static hosts answers 404
   if (!isCorrect && response.status === 404) return null
   assertUsage(
     isCorrect,
