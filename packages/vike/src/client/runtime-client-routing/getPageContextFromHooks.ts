@@ -272,8 +272,8 @@ async function getPageContextFromHooksServer_errorPage(
   assert(hasServerOnlyHook(pageContext))
 
   // The server already sent the error page's pageContext when a server-side error occurs upon a normal page (a page that isn't the error page)
-  if (hasProp(err, '_pageContextErrorPage', 'object')) {
-    return { _hasPageContextFromServer: true, ...err._pageContextErrorPage }
+  if (hasProp(err, _pageContextErrorPage, 'object')) {
+    return { _hasPageContextFromServer: true, ...err[_pageContextErrorPage] }
   }
 
   const { abortStatusCode, abortReason } = pageContext
@@ -377,12 +377,12 @@ async function fetchPageContextFromServer(
   objectAssign(pageContextFromServer, { _hasPageContextFromServer: true as const })
   return { pageContextFromServer }
 }
-
+const _pageContextErrorPage = '_pageContextErrorPage'
 function attachPageContextErrorPage(err: Error, pageContextFromServer: Record<string, unknown>) {
   if (isServerSideError in pageContextFromServer) {
     // A server-side hook of the page being navigated to threw an error or called `throw render(abortStatusCode)`, and the server already sent the error page's pageContext instead: keep it, so that the client renders the error page with it
     // - Otherwise the client fetches it again (and the error page's server-side hooks run twice)
-    objectAssign(err, { _pageContextErrorPage: pageContextFromServer })
+    objectAssign(err, { [_pageContextErrorPage]: pageContextFromServer })
   }
 }
 
