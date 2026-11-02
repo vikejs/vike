@@ -32,7 +32,8 @@ updates:
       - dependency-name: "source-map-support"
       - dependency-name: "tinyglobby"
     groups:
-      # vike-react depends on react-streaming: bumping them in separate PRs loads two react-streaming versions
+      # Dependabot bumps all dependencies matching `patterns` together, in a single PR.
+      # - vike-react depends on react-streaming: bumping them in separate PRs loads two react-streaming versions
       react-streaming:
         patterns: ["react-streaming", "vike-react"]
     cooldown:
