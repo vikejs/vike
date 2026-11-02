@@ -93,7 +93,7 @@ async function renderPageServerAfterRoute<
     }
   }
 
-  if (pageContext.isClientSideNavigation) {
+  if (pageContext._isPageContextJsonRequest) {
     if (isError) {
       objectAssign(pageContext, { [isServerSideError]: true })
     }
@@ -138,7 +138,6 @@ async function prerenderPageEntry(
     },
 ) {
   objectAssign(pageContext, {
-    _isPageContextJsonRequest: null,
     pageContextsAborted: [],
   })
 

@@ -7,12 +7,15 @@ import type { PageContextConfig } from '../../../shared-server-client/getPageFil
 import type { HookName } from '../../../types/Config.js'
 import { getHooksFromPageContextNew } from '../../../shared-server-client/hooks/getHook.js'
 import { getFileSuffixes } from '../../../shared-server-node/getFileSuffixes.js'
+import type { PageContextCreatedServer } from './createPageContextServer.js'
 import '../../assertEnvServer.js'
 
-type PageContextExecHookServer = PageContextConfig & PageContextExecHook & { isClientSideNavigation: boolean }
+type PageContextExecHookServer = PageContextConfig &
+  PageContextExecHook &
+  Pick<PageContextCreatedServer, '_isPageContextJsonRequest'>
 async function execHookServer(hookName: HookName, pageContext: PageContextExecHookServer) {
   const allHooks = getHooksFromPageContextNew(hookName, pageContext)
-  const hooks = !pageContext.isClientSideNavigation
+  const hooks = !pageContext._isPageContextJsonRequest
     ? allHooks
     : // Don't execute `.ssr.js` hooks upon client-side navigation
       allHooks.filter((hook) => !getFileSuffixes(hook.hookFilePath).includes('ssr'))
