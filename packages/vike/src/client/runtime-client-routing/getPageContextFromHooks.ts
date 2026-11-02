@@ -276,7 +276,6 @@ async function getPageContextFromHooksServer_errorPage(
   if (hasProp(err, '_pageContextErrorPage', 'object')) {
     return { _hasPageContextFromServer: true, ...err._pageContextErrorPage }
   }
-  // Otherwise the client fetches it
   const { abortStatusCode, abortReason } = pageContext
   const pageContextFromServer = await fetchPageContextFromServer(pageContext, { abortStatusCode, abortReason })
   if (!pageContextFromServer) return { is404ServerSideRouted: true }
