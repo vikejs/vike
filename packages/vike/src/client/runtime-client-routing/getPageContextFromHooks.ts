@@ -320,26 +320,28 @@ async function fetchPageContextFromServer(
   const contentType = response.headers.get('content-type')
   const contentTypeCorrect = 'application/json'
   const isCorrect = contentType && contentType.includes(contentTypeCorrect)
-  // Static host + new deployment: when .pageContext.json doesn't exist because a newer deployment removed the page => static hosts answers 404
-  // - The error page's .pageContext.json is also missing when, e.g., a tab runs the bundle of an older deployment that had a server, or the server's build has no error page
-  if (!isCorrect && response.status === 404) {
-    if (
-      errorPage &&
-      // Reloading upon the first render would lead to an infinite reload loop: the reloaded page fails again and requests the error page's .pageContext.json again
-      !pageContext.isClientSideNavigation
-    ) {
-      throw getProjectError("pageContext couldn't be fetched")
-    }
-    redirectHard(pageContext.urlOriginal)
-    /* TODO/ai cleaner (more human readable)?
+  if (!isCorrect) {
+    // Static host + new deployment: when .pageContext.json doesn't exist because a newer deployment removed the page => static hosts answers 404
+    // - The error page's .pageContext.json is also missing when, e.g., a tab runs the bundle of an older deployment that had a server, or the server's build has no error page
+    if (response.status === 404) {
+      if (
+        errorPage &&
+        // Reloading upon the first render would lead to an infinite reload loop: the reloaded page fails again and requests the error page's .pageContext.json again
+        !pageContext.isClientSideNavigation
+      ) {
+        throw getProjectError("pageContext couldn't be fetched")
+      }
+      redirectHard(pageContext.urlOriginal)
+      /* TODO/ai cleaner (more human readable)?
     return { is404ServerSideRouted: true as const }
     */
-    return null
+      return null
+    }
+    assertUsage(
+      false,
+      `Wrong Content-Type for ${pageContextUrl}: it should be ${contentTypeCorrect} but it's ${contentType} instead. Make sure to properly use pageContext.httpResponse.headers, see https://vike.dev/renderPage`,
+    )
   }
-  assertUsage(
-    isCorrect,
-    `Wrong Content-Type for ${pageContextUrl}: it should be ${contentTypeCorrect} but it's ${contentType} instead. Make sure to properly use pageContext.httpResponse.headers, see https://vike.dev/renderPage`,
-  )
   const pageContextFromServer = await readPageContextJson(response, pageContext.abortSignal)
   assert(isObject(pageContextFromServer))
   if (
