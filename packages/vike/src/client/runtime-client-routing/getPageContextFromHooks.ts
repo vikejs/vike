@@ -308,11 +308,12 @@ async function getPageContextFromHooksServer_errorPage(
 ): Promise<PageContextFromHooksServer | { is404ServerSideRouted: true }> {
   if (
     // Save client-side KBs
-    !globalThis.__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER
+    !globalThis.__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER ||
+    // The flag can be stale in dev: it stays true until Vite restarts after the error page's last server-only hook is removed
+    !hasServerOnlyHook(pageContext)
   ) {
     return { _hasPageContextFromServer: false }
   }
-  assert(hasServerOnlyHook(pageContext))
   // The server sent the error page's pageContext with the error
   if (hasProp(err, '_pageContextErrorPage', 'object')) {
     return { _hasPageContextFromServer: true, ...err._pageContextErrorPage }
