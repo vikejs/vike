@@ -112,7 +112,7 @@ type RenderArgs = {
   overwriteLastHistoryEntry?: boolean
   pageContextsAborted?: PageContextAborted[]
   // TODO/after-merge: rename to `doNotRerenderIfSamePage` ?
-  doNotRenderIfSamePage?: boolean
+  doNotReRenderIfSamePage?: boolean
   isClientSideNavigation?: boolean
   pageContextInitClient?: Record<string, unknown>
 }
@@ -124,7 +124,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     overwriteLastHistoryEntry = false,
     isBackwardNavigation = false,
     isHistoryNavigation = false,
-    doNotRenderIfSamePage,
+    doNotReRenderIfSamePage,
     isClientSideNavigation = true,
     pageContextInitClient,
     pageContextsAborted = [],
@@ -239,7 +239,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
           pageContextFromRoute.pageId &&
           previousPageContext?.pageId &&
           pageContextFromRoute.pageId === previousPageContext.pageId
-        if (doNotRenderIfSamePage && isSamePage) {
+        if (doNotReRenderIfSamePage && isSamePage) {
           // Skip's Vike's rendering; let the user handle the navigation
           return
         }
@@ -249,7 +249,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     // - We commit the navigation after routing, because a navigation can be reverted by:
     //   - `throw abort()` during routing — https://vike.dev/onBeforeRoute#throw-abort
-    //   - `doNotRenderIfSamePage` navigation to the shown page (it leaves the shown page untouched)
+    //   - `doNotReRenderIfSamePage` navigation to the shown page (it leaves the shown page untouched)
     // - The navigation is committed early
     //   - Good for UI performance: we should call abortPreviousNavigation() ASAP
     //   - In production, it's committed synchronously after the user click, see NOT-REALLY-ASYNC comments
@@ -264,7 +264,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
       assert(previousPageContext)
       // We use the hook of the previous page in order to be able to call onPageTransitionStart() before fetching the files of the next page.
       // https://github.com/vikejs/vike/issues/1560
-      // We call it after routing so that it isn't called when Vike doesn't render the next page (e.g. `doNotRenderIfSamePage`).
+      // We call it after routing so that it isn't called when Vike doesn't render the next page (e.g. `doNotReRenderIfSamePage`).
       // https://github.com/vikejs/vike/issues/2927
       if (!globalObject.isTransitioning) {
         globalObject.isTransitioning = true
