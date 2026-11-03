@@ -10,6 +10,7 @@ import { getVikeConfigInternal, type VikeConfigInternal } from '../shared/resolv
 import { getConfigValueBuildTime } from '../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
 import { isViteServerSide_configEnvironment } from '../shared/isViteServerSide.js'
 import '../assertEnvVite.js'
+import { objectAssign } from '../../../utils/objectAssign.js'
 
 declare global {
   /** Like `import.meta.env.DEV` but works for `node_modules/` packages with `ssr.external` */
@@ -65,14 +66,18 @@ function getCodeConstantsGlobalThis(isDev: boolean, isClientSide: boolean, vikeC
 }
 
 function getConstants(isDev: boolean, isClientSide: boolean, vikeConfig?: VikeConfigInternal): Constants {
-  return {
+  const constants: Constants = {
     __VIKE__IS_DEV: isDev,
     __VIKE__IS_CLIENT: isClientSide,
     __VIKE__IS_DEBUG: isDebugVal,
-    ...(vikeConfig && {
-      __VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER: isFetchPageContextOfErrorPageFromServer(vikeConfig),
-    }),
   }
+  if (isClientSide) {
+    assert(vikeConfig)
+    objectAssign(constants, {
+      __VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER: isFetchPageContextOfErrorPageFromServer(vikeConfig),
+    })
+  }
+  return constants
 }
 
 function isFetchPageContextOfErrorPageFromServer(vikeConfig: VikeConfigInternal) {
