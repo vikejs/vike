@@ -8,8 +8,10 @@ import {
   FilesEnv,
   serializeConfigValues,
 } from '../../../../shared-server-client/page-configs/serialize/serializeConfigValues.js'
-import { getConstantsFromVikeConfig } from '../pluginReplaceConstantsGlobalThis.js'
-import { isDebug } from '../../../../utils/debug.js'
+import {
+  getCodeConstantsGlobalThisServerSide,
+  getConstantsFromVikeConfig,
+} from '../pluginReplaceConstantsGlobalThis.js'
 import type { RuntimeEnvRuntime } from './getConfigValueSourcesRelevant.js'
 import { getEnvironmentEntryPlaceholder } from '../build/pluginEnvironmentEntries.js'
 import '../../assertEnvVite.js'
@@ -72,15 +74,6 @@ function getCode(
 
   debug(id, `${environmentName.toUpperCase()}-SIDE`, code)
   return code
-}
-
-// The `define` values don't apply to node_modules/ packages with ssr.external
-function getCodeConstantsGlobalThisServerSide(isDev: boolean) {
-  return [
-    `globalThis.__VIKE__IS_DEV = ${JSON.stringify(isDev)};`,
-    `globalThis.__VIKE__IS_CLIENT = false;`,
-    `globalThis.__VIKE__IS_DEBUG = ${JSON.stringify(isDebug())};`,
-  ]
 }
 
 // The global entries of the additional environments (e.g. `rsc`), loaded by loadPageContextEnvironments.ts

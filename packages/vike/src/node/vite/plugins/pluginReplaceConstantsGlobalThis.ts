@@ -1,5 +1,6 @@
 export { pluginReplaceConstantsGlobalThis }
 export { getConstantsFromVikeConfig }
+export { getCodeConstantsGlobalThisServerSide }
 // Trick for loading the `declare global` below
 export type _LoadDeclareGlobal__VIKE__IS = never
 
@@ -77,4 +78,13 @@ function isFetchPageContextOfErrorPageFromServer(vikeConfig: VikeConfigInternal)
   const errorPage = vikeConfig._pageConfigs.find((pageConfig) => pageConfig.isErrorPage)
   if (!errorPage || getConfigValueBuildTime(errorPage, 'hasServerOnlyHook', 'boolean')?.value !== true) return false
   return !vikeConfig.prerenderContext.isPrerenderingEnabledForAllPages
+}
+
+// The `define` values don't apply to node_modules/ packages with ssr.external
+function getCodeConstantsGlobalThisServerSide(isDev: boolean) {
+  return [
+    `globalThis.__VIKE__IS_DEV = ${JSON.stringify(isDev)};`,
+    `globalThis.__VIKE__IS_CLIENT = false;`,
+    `globalThis.__VIKE__IS_DEBUG = ${JSON.stringify(isDebugVal)};`,
+  ]
 }
