@@ -36,7 +36,6 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
         handler(config) {
           assert(typeof config._isDev === 'boolean')
           isDev = config._isDev
-          // The `define` values don't apply to the Vite process
           Object.assign(globalThis, getConstants(isDev, false))
         },
       },
