@@ -298,19 +298,18 @@ async function fetchPageContextFromServer(
     abortSignal: AbortSignal
     isClientSideNavigation?: boolean
   },
-  errorPage?: { abortStatusCode?: number; abortReason?: unknown },
+  errorPageInfo?: { abortStatusCode?: number; abortReason?: unknown },
 ) {
   let pageContextUrl: string | URL = getPageContextRequestUrl(pageContext._urlRewrite ?? pageContext.urlOriginal)
   /* TO-DO/soon/once: pass & use previousUrl
   pageContextUrl = modifyUrlSameOrigin(pageContextUrl, { search: { _vike: JSON.stringify({ previousUrl: pageContext.previousPageContext.urlOriginal }) } })
   */
-  if (errorPage) {
+  if (errorPageInfo) {
     pageContextUrl = new URL(pageContextUrl, location.href)
     pageContextUrl.searchParams.set(
       '_vike',
-      // TODO/after-merge: rename errorPage to errorPageInfo
       // We don't use `import { stringify } from @brillout/json-serializer` to save client-side KBs
-      JSON.stringify({ errorPage }),
+      JSON.stringify({ errorPageInfo }),
     )
   }
   const errMsg = `${pageContextUrl} couldn't be fetched`
@@ -327,7 +326,7 @@ async function fetchPageContextFromServer(
     // - The error page's .pageContext.json is also missing when, e.g., a tab runs the bundle of an older deployment that had a server, or the server's build has no error page
     if (response.status === 404) {
       if (
-        errorPage &&
+        errorPageInfo &&
         // Reloading upon the first render would lead to an infinite reload loop: the reloaded page fails again and requests the error page's .pageContext.json again
         !pageContext.isClientSideNavigation
       ) {
@@ -353,7 +352,7 @@ async function fetchPageContextFromServer(
 
   // Handle server-side `throw redirect()` / `throw render()`
   if (
-    !errorPage && // The error page's pageContext can have `abortStatusCode` but it isn't an abort
+    !errorPageInfo && // The error page's pageContext can have `abortStatusCode` but it isn't an abort
     isAbortPageContext(pageContextFromServer)
   ) {
     const err = AbortRender(pageContextFromServer)
@@ -364,7 +363,7 @@ async function fetchPageContextFromServer(
   if (
     'serverSideError' in pageContextFromServer ||
     // The server couldn't render the page being navigated to and sent the error page's pageContext instead => we throw an error => the error handling of renderPageClient() renders the error page (while automatically picking up the error page's pageContext from `err._pageContextErrorPage`)
-    (pageContextFromServer.isErrorPage && !errorPage)
+    (pageContextFromServer.isErrorPage && !errorPageInfo)
   ) {
     const err = getProjectError(`${errMsg} because an error occurred on the server-side`)
     attachPageContextErrorPage(err, pageContextFromServer)
