@@ -96,18 +96,17 @@ function getCodeConstantsGlobalThis(isDev: boolean, isClientSide: boolean, vikeC
   return getCode(getConstants(isClientSide, isDev, vikeConfig))
 }
 
+// Utils
 function isFetchPageContextOfErrorPageFromServer(vikeConfig: VikeConfigInternal) {
   const errorPage = vikeConfig._pageConfigs.find((pageConfig) => pageConfig.isErrorPage)
   if (!errorPage || getConfigValueBuildTime(errorPage, 'hasServerOnlyHook', 'boolean')?.value !== true) return false
   return !vikeConfig.prerenderContext.isPrerenderingEnabledForAllPages
 }
-
 function getDefine(constants: Constants): Record<string, string> {
   return Object.fromEntries(
     Object.entries(constants).map(([name, value]) => [`globalThis.${name}`, JSON.stringify(value)]),
   )
 }
-
 function getCode(constants: Constants): string[] {
   return Object.entries(getDefine(constants)).map(([key, value]) => `${key} = ${value};`)
 }
