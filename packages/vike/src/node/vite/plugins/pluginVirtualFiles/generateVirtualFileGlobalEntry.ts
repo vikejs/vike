@@ -41,7 +41,7 @@ function getCode(
   const isForClientSide = environmentName === 'client'
 
   if (!isForClientSide) {
-    lines.push(...getConstantsGlobalThisServerSide(isDev))
+    lines.push(...getCodeConstantsGlobalThisServerSide(isDev))
   }
 
   lines.push('export const pageConfigsSerialized = [')
@@ -75,7 +75,7 @@ function getCode(
 }
 
 // The `define` values don't apply to node_modules/ packages with ssr.external
-function getConstantsGlobalThisServerSide(isDev: boolean) {
+function getCodeConstantsGlobalThisServerSide(isDev: boolean) {
   return [
     `globalThis.__VIKE__IS_DEV = ${JSON.stringify(isDev)};`,
     `globalThis.__VIKE__IS_CLIENT = false;`,
