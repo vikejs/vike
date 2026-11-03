@@ -82,7 +82,10 @@ async function renderPageServerAfterRoute<
       if (isAbortError(err)) {
         // `throw redirect()` and `throw render()` aren't supported for the error page: the caller logs a usage error, see logWrongUsageAbortedErrorPage()
         throw err
-      } else if (pageContext._isPageContextJsonRequest && pageContext._isPageContextJsonRequest.errorPage) {
+      } else if (
+        typeof pageContext._isPageContextJsonRequest === 'object' &&
+        pageContext._isPageContextJsonRequest?.errorPage
+      ) {
         // The error page's .pageContext.json request: the caller logs the error and answers `{ serverSideError: true }`, so that the client throws
         // - Otherwise the client renders the error page without +data
         throw err
