@@ -281,8 +281,13 @@ async function getPageContextFromHooksServer_errorPage(
   if (res.is404ServerSideRouted) return res
   const { pageContextFromServer } = res
 
-  // This assert() might fail: https://github.com/vikejs/vike/pull/3636#issuecomment-6563275899
-  assert(pageContextFromServer.pageId === pageContext.pageId) // `errorPageId`
+  if (
+    // A static file server ignores the `_vike` search param and answers with the pre-rendered page's own .pageContext.json
+    // - The error page is then rendered without its server-side pageContext
+    pageContextFromServer.pageId !== pageContext.pageId // `errorPageId`
+  ) {
+    return { _hasPageContextFromServer: false }
+  }
 
   // The server's abortReason is the copy that the `_vike` search param carried as JSON (e.g. a `Date` arrives as a
   // string) — we keep the client-side lossless version
