@@ -28,7 +28,7 @@ async function execHookDataAndOnBeforeRender(
     Object.assign(pageContext, pageContextFromHook)
 
     // Execute +onData
-    if (!pageContext.isClientSideNavigation) {
+    if (!pageContext._isPageContextJsonRequest) {
       await execHookServer('onData', pageContext)
     }
   }

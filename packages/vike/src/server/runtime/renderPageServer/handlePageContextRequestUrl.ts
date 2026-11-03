@@ -31,7 +31,7 @@ function handlePageContextRequestUrl(url: string) {
       /* TO-DO/soon/once: pass & use previousUrl
       isPageContextJsonRequest: { previousUrl, errorPage },
       /*/
-      isPageContextJsonRequest: { errorPage },
+      isPageContextJsonRequest: errorPage === null ? (true as const) : { errorPage },
       //*/
       urlWithoutPageContextRequestSuffix,
     }

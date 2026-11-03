@@ -372,7 +372,9 @@ async function getPageContextJsonOfErrorPage(
   pageContextBegin: PageContextBegin,
   globalContext: GlobalContextServerInternal,
 ) {
-  const errorPage = pageContextBegin._isPageContextJsonRequest && pageContextBegin._isPageContextJsonRequest.errorPage
+  const errorPage =
+    typeof pageContextBegin._isPageContextJsonRequest === 'object' &&
+    pageContextBegin._isPageContextJsonRequest?.errorPage
   if (!errorPage) return null
 
   const errorPageId = getErrorPageId(globalContext._pageFilesAll, globalContext._pageConfigs)
@@ -473,8 +475,7 @@ function prettyUrl(url: string) {
 
 function getPageContextHttpErrorFallback(err: unknown, pageContextBegin: PageContextBegin) {
   const pageContextHttpErrorFallback = fork(pageContextBegin)
-  // TODO/after-merge: should `pageContextBegin.isClientSideNavigation` be replaced with `pageContextBegin._isPageContextJsonRequest`? Other places where it should be replaced?
-  const httpResponse = !pageContextBegin.isClientSideNavigation
+  const httpResponse = !pageContextBegin._isPageContextJsonRequest
     ? createHttpResponseErrorFallback(pageContextBegin)
     : createHttpResponseErrorFallbackJson(pageContextBegin)
   objectAssign(pageContextHttpErrorFallback, {
@@ -503,19 +504,16 @@ function getPageContextBegin(
   requestId: number,
   asyncStore: AsyncStore,
 ) {
-  const { isClientSideNavigation, _urlHandler, _isPageContextJsonRequest } = handlePageContextUrl(
-    pageContextInit.urlOriginal,
-  )
+  const { _urlHandler, _isPageContextJsonRequest } = handlePageContextUrl(pageContextInit.urlOriginal)
   const pageContextBegin = createPageContextServer(pageContextInit, globalContext, {
     isPrerendering: false,
     urlHandler: _urlHandler,
-    isClientSideNavigation,
+    isPageContextJsonRequest: _isPageContextJsonRequest,
     requestId,
   })
   objectAssign(pageContextBegin, {
     _requestId: requestId,
     _asyncStore: asyncStore,
-    _isPageContextJsonRequest,
     // This array is shared between all pageContext objects, i.e. the following is true for any `i` and `j` index:
     // ```js
     // const pageContextsAborted_i = pageContextsAborted[i].pageContextsAborted
@@ -530,7 +528,6 @@ function getPageContextBegin(
 function handlePageContextUrl(urlOriginal: string) {
   const { isPageContextJsonRequest } = handlePageContextRequestUrl(urlOriginal)
   return {
-    isClientSideNavigation: !!isPageContextJsonRequest,
     _isPageContextJsonRequest: isPageContextJsonRequest,
     _urlHandler: (url: string) => handlePageContextRequestUrl(url).urlWithoutPageContextRequestSuffix,
   }
@@ -663,7 +660,7 @@ async function handleAbort(
   }
 
   // Client-side navigation — [`pageContext.json` request](https://vike.dev/pageContext.json)
-  if (pageContextBegin.isClientSideNavigation) {
+  if (pageContextBegin._isPageContextJsonRequest) {
     if (
       pageContextAbort.abortStatusCode && // `throw render(abortStatusCode)`
       errorPageHasServerOnlyHook(globalContext)
@@ -789,9 +786,13 @@ function fork<PageContext extends PageContextBegin>(pageContext: PageContext) {
   return pageContextNew
 }
 
-function assertPageContextFinish(pageContextFinish: PageContextAfterRender) {
+function assertPageContextFinish(
+  pageContextFinish: PageContextAfterRender & {
+    _isPageContextJsonRequest?: PageContextBegin['_isPageContextJsonRequest']
+  },
+) {
   assert(pageContextFinish.httpResponse)
-  if (pageContextFinish.isClientSideNavigation) {
+  if (pageContextFinish._isPageContextJsonRequest) {
     const headers = new Headers(pageContextFinish.httpResponse.headers)
     const contentType = headers.get('Content-Type')
     assert(contentType?.toLowerCase() === 'application/json')
