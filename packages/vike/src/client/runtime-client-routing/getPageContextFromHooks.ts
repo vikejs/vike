@@ -308,7 +308,7 @@ async function fetchPageContextFromServer(
     pageContextUrl = new URL(pageContextUrl, location.href)
     pageContextUrl.searchParams.set(
       '_vike',
-      // TODO/after-merge: rename errorPage to errorPageData
+      // TODO/after-merge: rename errorPage to errorPageInfo
       // We don't use `import { stringify } from @brillout/json-serializer` to save client-side KBs
       JSON.stringify({ errorPage }),
     )
