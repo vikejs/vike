@@ -1,6 +1,6 @@
 export { pluginReplaceConstantsGlobalThis }
-export { getConstantsFromVikeConfig }
 export { getCodeConstantsGlobalThisServerSide }
+export { getCodeConstantsGlobalThisClientSideDev }
 // Trick for loading the `declare global` below
 export type _LoadDeclareGlobal__VIKE__IS = never
 
@@ -87,4 +87,8 @@ function getCodeConstantsGlobalThisServerSide(isDev: boolean) {
     `globalThis.__VIKE__IS_CLIENT = false;`,
     `globalThis.__VIKE__IS_DEBUG = ${JSON.stringify(isDebugVal)};`,
   ]
+}
+
+function getCodeConstantsGlobalThisClientSideDev(vikeConfig: VikeConfigInternal) {
+  return Object.entries(getConstantsFromVikeConfig(vikeConfig)).map(([key, value]) => `${key} = ${value};`)
 }

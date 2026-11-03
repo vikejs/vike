@@ -3,14 +3,14 @@ export { generateVirtualFileGlobalEntry }
 import type { PageConfigBuildTime, PageConfigGlobalBuildTime } from '../../../../types/PageConfig.js'
 import { generateVirtualFileId } from '../../../../shared-server-node/virtualFileId.js'
 import { debug } from './debug.js'
-import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
+import { getVikeConfigInternal, type VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import {
   FilesEnv,
   serializeConfigValues,
 } from '../../../../shared-server-client/page-configs/serialize/serializeConfigValues.js'
 import {
+  getCodeConstantsGlobalThisClientSideDev,
   getCodeConstantsGlobalThisServerSide,
-  getConstantsFromVikeConfig,
 } from '../pluginReplaceConstantsGlobalThis.js'
 import type { RuntimeEnvRuntime } from './getConfigValueSourcesRelevant.js'
 import { getEnvironmentEntryPlaceholder } from '../build/pluginEnvironmentEntries.js'
@@ -18,23 +18,15 @@ import '../../assertEnvVite.js'
 
 async function generateVirtualFileGlobalEntry(runtimeEnv: RuntimeEnvRuntime, id: string): Promise<string> {
   const vikeConfig = await getVikeConfigInternal(true)
+  return getCode(vikeConfig, runtimeEnv, id)
+}
+
+function getCode(vikeConfig: VikeConfigInternal, runtimeEnv: RuntimeEnvRuntime, id: string): string {
   const {
     _pageConfigs: pageConfigs,
     _pageConfigGlobal: pageConfigGlobal,
     _additionalEnvironmentNames: additionalEnvironmentNames,
   } = vikeConfig
-  const constantsGlobalThis = getConstantsFromVikeConfig(vikeConfig)
-  return getCode(pageConfigs, pageConfigGlobal, runtimeEnv, id, additionalEnvironmentNames, constantsGlobalThis)
-}
-
-function getCode(
-  pageConfigs: PageConfigBuildTime[],
-  pageConfigGlobal: PageConfigGlobalBuildTime,
-  runtimeEnv: RuntimeEnvRuntime,
-  id: string,
-  additionalEnvironmentNames: string[],
-  constantsGlobalThis: Record<string, string>,
-): string {
   const lines: string[] = []
   const importStatements: string[] = []
   const filesEnv: FilesEnv = new Map()
@@ -60,9 +52,7 @@ function getCode(
 
   if (isForClientSide && isDev) {
     // Injected directly instead of via a virtual module, because Vike regenerates the global entry when a + file is added or removed
-    Object.entries(constantsGlobalThis).forEach(([key, value]) => {
-      lines.push(`${key} = ${value};`)
-    })
+    lines.push(...getCodeConstantsGlobalThisClientSideDev(vikeConfig))
   }
 
   if (!isForClientSide && isDev) {
