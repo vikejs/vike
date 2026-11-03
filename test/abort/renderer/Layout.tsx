@@ -21,6 +21,7 @@ function Layout({ children, pageContext }: { children: React.ReactNode; pageCont
             <Nav href="/redirect-external" />
             <Nav href="/star-wars-api/films/1.json" />
             <Nav href="/abort-navigation" />
+            <Nav href="/prerendered-guard-throws" />
           </Sidebar>
           <Content>{children}</Content>
         </Frame>
