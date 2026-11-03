@@ -20,6 +20,7 @@ async function generateVirtualFileGlobalEntry(runtimeEnv: RuntimeEnvRuntime, id:
     _pageConfigGlobal: pageConfigGlobal,
     _additionalEnvironmentNames: additionalEnvironmentNames,
   } = vikeConfig
+
   const lines: string[] = []
   const importStatements: string[] = []
   const filesEnv: FilesEnv = new Map()
