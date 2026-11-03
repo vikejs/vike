@@ -32,6 +32,7 @@ function getConstants(isClientSide: boolean, isDev: boolean | null, vikeConfig: 
   if (isDev !== null) {
     constants.__VIKE__IS_DEV = isDev
   }
+  // In dev, `define` has no `vikeConfig`: the value comes only from getCodeConstantsGlobalThis() for HMR support
   if (isClientSide && vikeConfig) {
     constants.__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER = isFetchPageContextOfErrorPageFromServer(vikeConfig)
   }
@@ -59,6 +60,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
       // Support:
       // - Production with tree-shaking
       // - __VIKE__NO_EXTERNAL
+      // - Dev: code that reads the constants while it loads, before virtual:vike:global-entry assigns them (e.g. vike-react-zustand imported by +client, @brillout/picocolors on Cloudflare)
       configEnvironment: {
         order: 'pre',
         async handler(name, config) {
