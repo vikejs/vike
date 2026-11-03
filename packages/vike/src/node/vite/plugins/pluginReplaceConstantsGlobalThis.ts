@@ -37,23 +37,19 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
         handler(config) {
           assert(typeof config._isDev === 'boolean')
           isDev = config._isDev
-          Object.assign(globalThis, getConstantsServerSide(isDev))
-          return {
-            define: getDefine({ ...getConstantsShared(isDev), __VIKE__NO_EXTERNAL: true }),
-          }
+          // The `define` values don't apply to the Vite process
+          Object.assign(globalThis, getConstants(isDev, false))
         },
       },
       configEnvironment: {
         order: 'pre',
         async handler(name, config) {
           const isClientSide = !isViteServerSide_configEnvironment(name, config)
+          // In dev, the client's global entry sets the constants that depend on the Vike config instead, so that adding or removing a + file updates them
+          const vikeConfig = isDev ? undefined : await getVikeConfigInternal()
           return {
             consumer: isClientSide ? 'client' : 'server',
-            define: getDefine({
-              ...getConstantsEnvironment(isClientSide),
-              // In dev, the client's global entry sets them instead, so that adding or removing a + file updates them
-              ...(isDev ? {} : getConstantsFromVikeConfig(await getVikeConfigInternal())),
-            }),
+            define: getDefine({ ...getConstants(isDev, isClientSide, vikeConfig), __VIKE__NO_EXTERNAL: true }),
           }
         },
       },
@@ -63,33 +59,25 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
 
 function getCodeConstantsGlobalThis(vikeConfig: VikeConfigInternal, runtimeEnv: RuntimeEnvRuntime): string[] {
   const { environmentName, isDev } = runtimeEnv
-  if (environmentName !== 'client') return getCode(getConstantsServerSide(isDev))
-  if (isDev) return getCode(getConstantsFromVikeConfig(vikeConfig))
+  // The `define` values don't apply to node_modules/ packages with ssr.external
+  if (environmentName !== 'client') return getCode(getConstants(isDev, false))
+  if (isDev) {
+    // The constants missing from the client's `define` values in dev
+    const constantsDefined = getConstants(isDev, true)
+    const constants = Object.entries(getConstants(isDev, true, vikeConfig))
+    return getCode(Object.fromEntries(constants.filter(([name]) => !(name in constantsDefined))))
+  }
   return []
 }
 
-// The `define` values don't apply to the Vite process nor to node_modules/ packages with ssr.external
-function getConstantsServerSide(isDev: boolean): Constants {
-  return { ...getConstantsShared(isDev), ...getConstantsEnvironment(false) }
-}
-
-function getConstantsShared(isDev: boolean): Constants {
+function getConstants(isDev: boolean, isClientSide: boolean, vikeConfig?: VikeConfigInternal): Constants {
   return {
     __VIKE__IS_DEV: isDev,
     __VIKE__IS_DEBUG: isDebugVal,
-  }
-}
-
-function getConstantsEnvironment(isClientSide: boolean): Constants {
-  return {
     __VIKE__IS_CLIENT: isClientSide,
-  }
-}
-
-// The `globalThis.__VIKE__*` constants that depend on the Vike config
-function getConstantsFromVikeConfig(vikeConfig: VikeConfigInternal): Constants {
-  return {
-    __VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER: isFetchPageContextOfErrorPageFromServer(vikeConfig),
+    ...(vikeConfig && {
+      __VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER: isFetchPageContextOfErrorPageFromServer(vikeConfig),
+    }),
   }
 }
 
