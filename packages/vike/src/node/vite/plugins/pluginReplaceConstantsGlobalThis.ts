@@ -10,7 +10,6 @@ import { getVikeConfigInternal, type VikeConfigInternal } from '../shared/resolv
 import { getConfigValueBuildTime } from '../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
 import { isViteServerSide_configEnvironment } from '../shared/isViteServerSide.js'
 import '../assertEnvVite.js'
-import { objectAssign } from '../../../utils/objectAssign.js'
 
 declare global {
   var __VIKE__IS_DEBUG: boolean
@@ -33,8 +32,7 @@ function getConstants(isClientSide: boolean, isDev: boolean | null, vikeConfig: 
   if (isDev !== null) {
     constants.__VIKE__IS_DEV = isDev
   }
-  if (isClientSide) {
-    assert(vikeConfig)
+  if (isClientSide && vikeConfig) {
     constants.__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER = isFetchPageContextOfErrorPageFromServer(vikeConfig)
   }
   return constants
@@ -65,18 +63,11 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
         order: 'pre',
         async handler(name, config) {
           const isClientSide = !isViteServerSide_configEnvironment(name, config)
-          const constants: Constants = {
-            __VIKE__NO_EXTERNAL: true,
-          }
-          if (!isDev) {
-            const vikeConfig = await getVikeConfigInternal()
-            objectAssign(constants, getConstants(isClientSide, isDev, vikeConfig))
-          } else {
-            // Let getCodeConstantsGlobalThis() inject values in Vike's virtual:vike:global-entry module for HMR support
-          }
+          // In dev, let getCodeConstantsGlobalThis() inject the Vike config's value in Vike's virtual:vike:global-entry module for HMR support
+          const vikeConfig = isDev ? null : await getVikeConfigInternal()
           return {
             consumer: isClientSide ? 'client' : 'server',
-            define: getDefine(constants),
+            define: getDefine({ ...getConstants(isClientSide, isDev, vikeConfig), __VIKE__NO_EXTERNAL: true }),
           }
         },
       },
