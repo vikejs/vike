@@ -84,7 +84,7 @@ async function renderPageServerAfterRoute<
         throw err
       } else if (
         typeof pageContext._isPageContextJsonRequest === 'object' &&
-        pageContext._isPageContextJsonRequest?.errorPage
+        pageContext._isPageContextJsonRequest?.errorPageInfo
       ) {
         // The error page's .pageContext.json request: the caller logs the error and answers `{ serverSideError: true }`, so that the client throws
         // - Otherwise the client renders the error page without +data
