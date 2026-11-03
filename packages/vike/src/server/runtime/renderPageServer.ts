@@ -372,7 +372,9 @@ async function getPageContextJsonOfErrorPage(
   pageContextBegin: PageContextBegin,
   globalContext: GlobalContextServerInternal,
 ) {
-  const errorPage = pageContextBegin._isPageContextJsonRequest && pageContextBegin._isPageContextJsonRequest.errorPage
+  const errorPage =
+    typeof pageContextBegin._isPageContextJsonRequest === 'object' &&
+    pageContextBegin._isPageContextJsonRequest?.errorPage
   if (!errorPage) return null
 
   const errorPageId = getErrorPageId(globalContext._pageFilesAll, globalContext._pageConfigs)
