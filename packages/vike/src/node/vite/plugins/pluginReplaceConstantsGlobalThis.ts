@@ -44,7 +44,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
         async handler(name, config) {
           const isClientSide = !isViteServerSide_configEnvironment(name, config)
           // In dev, the global entry sets the constants that depend on the Vike config instead, so that adding or removing a + file updates them
-          const vikeConfig = isDev ? undefined : await getVikeConfigInternal()
+          const vikeConfig = await getVikeConfigInternal()
           return {
             consumer: isClientSide ? 'client' : 'server',
             define: getDefine({ ...getConstants(isDev, isClientSide, vikeConfig), __VIKE__NO_EXTERNAL: true }),
