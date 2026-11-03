@@ -372,10 +372,10 @@ async function getPageContextJsonOfErrorPage(
   pageContextBegin: PageContextBegin,
   globalContext: GlobalContextServerInternal,
 ) {
-  const errorPage =
+  const errorPageInfo =
     typeof pageContextBegin._isPageContextJsonRequest === 'object' &&
-    pageContextBegin._isPageContextJsonRequest?.errorPage
-  if (!errorPage) return null
+    pageContextBegin._isPageContextJsonRequest?.errorPageInfo
+  if (!errorPageInfo) return null
 
   const errorPageId = getErrorPageId(globalContext._pageFilesAll, globalContext._pageConfigs)
   if (
@@ -390,12 +390,12 @@ async function getPageContextJsonOfErrorPage(
   objectAssign(pageContextErrorPage, {
     pageId: errorPageId,
     routeParams: {} as Record<string, string>,
-    is404: errorPage.abortStatusCode === 404,
+    is404: errorPageInfo.abortStatusCode === 404,
     isErrorPage: true,
     // The error occurred on the client-side
     errorWhileRendering: null,
   })
-  objectAssign(pageContextErrorPage, errorPage)
+  objectAssign(pageContextErrorPage, errorPageInfo)
   try {
     return await renderPageServerAfterRoute(pageContextErrorPage)
   } catch (err) {

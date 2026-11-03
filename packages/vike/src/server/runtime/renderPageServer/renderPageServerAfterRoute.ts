@@ -30,7 +30,6 @@ import { logRuntimeError } from '../loggerRuntime.js'
 import { getPageContextPublicServer } from './getPageContextPublicServer.js'
 import { execHookGuard } from '../../../shared-server-client/route/execHookGuard.js'
 import pc from '@brillout/picocolors'
-import { isServerSideError } from '../../../shared-server-client/misc/isServerSideError.js'
 import type { PageContextCreatedServer } from './createPageContextServer.js'
 import type { PageContextBegin } from '../renderPageServer.js'
 import { getAsyncLocalStorage, type AsyncStore } from '../asyncHook.js'
@@ -85,7 +84,7 @@ async function renderPageServerAfterRoute<
         throw err
       } else if (
         typeof pageContext._isPageContextJsonRequest === 'object' &&
-        pageContext._isPageContextJsonRequest?.errorPage
+        pageContext._isPageContextJsonRequest?.errorPageInfo
       ) {
         // The error page's .pageContext.json request: the caller logs the error and answers `{ serverSideError: true }`, so that the client throws
         // - Otherwise the client renders the error page without +data
@@ -97,9 +96,6 @@ async function renderPageServerAfterRoute<
   }
 
   if (pageContext._isPageContextJsonRequest) {
-    if (isError) {
-      objectAssign(pageContext, { [isServerSideError]: true })
-    }
     const httpResponse = await createHttpResponsePageJson(getPageContextJson(pageContext), pageContext)
     objectAssign(pageContext, { httpResponse })
     return pageContext
