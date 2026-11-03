@@ -32,7 +32,6 @@ function getConstants(isClientSide: boolean, isDev: boolean | null, vikeConfig: 
   if (isDev !== null) {
     constants.__VIKE__IS_DEV = isDev
   }
-  // In dev, `define` has no `vikeConfig`: the value comes only from getCodeConstantsGlobalThis() for HMR support
   if (isClientSide) {
     assert(vikeConfig)
     constants.__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER = isFetchPageContextOfErrorPageFromServer(vikeConfig)
