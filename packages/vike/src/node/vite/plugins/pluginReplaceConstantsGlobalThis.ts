@@ -25,11 +25,13 @@ declare global {
 }
 
 type Constants = Record<`__VIKE__${string}`, boolean>
-function getConstants(isClientSide: boolean, isDev: boolean, vikeConfig: VikeConfigInternal | null): Constants {
+function getConstants(isClientSide: boolean, isDev: boolean | null, vikeConfig: VikeConfigInternal | null): Constants {
   const constants: Constants = {
-    __VIKE__IS_DEV: isDev,
     __VIKE__IS_CLIENT: isClientSide,
     __VIKE__IS_DEBUG: isDebug(),
+  }
+  if (isDev !== null) {
+    constants.__VIKE__IS_DEV = isDev
   }
   if (isClientSide) {
     assert(vikeConfig)
@@ -37,6 +39,10 @@ function getConstants(isClientSide: boolean, isDev: boolean, vikeConfig: VikeCon
   }
   return constants
 }
+
+// Support:
+// - The Vite process, early on
+Object.assign(globalThis, getConstants(false, null, null))
 
 function pluginReplaceConstantsGlobalThis(): Plugin[] {
   let isDev: boolean
