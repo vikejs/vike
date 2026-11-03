@@ -25,7 +25,7 @@ declare global {
 }
 
 type Constants = Record<`__VIKE__${string}`, boolean>
-function getConstants(isDev: boolean, isClientSide: boolean, vikeConfig?: VikeConfigInternal): Constants {
+function getConstants(isDev: boolean, isClientSide: boolean, vikeConfig: VikeConfigInternal | null): Constants {
   const constants: Constants = {
     __VIKE__IS_DEV: isDev,
     __VIKE__IS_CLIENT: isClientSide,
@@ -51,7 +51,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
         handler(config) {
           assert(typeof config._isDev === 'boolean')
           isDev = config._isDev
-          Object.assign(globalThis, getConstants(isDev, false))
+          Object.assign(globalThis, getConstants(isDev, false, null))
         },
       },
       // Support:
