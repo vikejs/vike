@@ -29,7 +29,7 @@ function handleErrorWithoutErrorPage<
     warnMissingErrorPage(isV1, pageContext._globalContext._isProduction)
   }
 
-  if (!pageContext.isClientSideNavigation) {
+  if (!pageContext._isPageContextJsonRequest) {
     const httpResponse = createHttpResponseErrorFallback(pageContext)
     objectAssign(pageContext, { httpResponse })
     return pageContext
