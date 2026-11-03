@@ -44,7 +44,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
         order: 'pre',
         async handler(name, config) {
           const isClientSide = !isViteServerSide_configEnvironment(name, config)
-          // In dev, the client's global entry sets the constants that depend on the Vike config instead, so that adding or removing a + file updates them
+          // In dev, the global entry sets the constants that depend on the Vike config instead, so that adding or removing a + file updates them
           const vikeConfig = isDev ? undefined : await getVikeConfigInternal()
           return {
             consumer: isClientSide ? 'client' : 'server',
@@ -56,13 +56,13 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
   ]
 }
 
+// The global entry sets the constants at runtime, for what the `define` values don't cover:
+// - The code of node_modules/ packages with ssr.external
+// - In dev, the constants that depend on the Vike config, see `configEnvironment` above
 function getCodeConstantsGlobalThis(isDev: boolean, isClientSide: boolean, vikeConfig: VikeConfigInternal): string[] {
-  // The `define` values don't apply to node_modules/ packages with ssr.external
-  if (!isClientSide) return getCode(getConstants(isDev, false))
-  // In production, the client's `define` values contain every constant
-  if (!isDev) return []
-  // In dev, the client's `define` values lack the constants that depend on the Vike config, see `configEnvironment` above
-  return getCode(getConstants(isDev, true, vikeConfig))
+  // In production, the client's `define` values replace every constant
+  if (isClientSide && !isDev) return []
+  return getCode(getConstants(isDev, isClientSide, vikeConfig))
 }
 
 function getConstants(isDev: boolean, isClientSide: boolean, vikeConfig?: VikeConfigInternal): Constants {
