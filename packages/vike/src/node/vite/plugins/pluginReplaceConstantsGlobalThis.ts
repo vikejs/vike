@@ -32,7 +32,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
   let isDev: boolean
   return [
     {
-      name: 'vike:pluginReplaceConstantsGlobalThis:define',
+      name: 'vike:pluginReplaceConstantsGlobalThis',
       config: {
         handler(config) {
           assert(typeof config._isDev === 'boolean')
