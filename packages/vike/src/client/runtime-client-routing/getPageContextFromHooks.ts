@@ -308,6 +308,7 @@ async function fetchPageContextFromServer(
     pageContextUrl = new URL(pageContextUrl, location.href)
     pageContextUrl.searchParams.set(
       '_vike',
+      // TODO/after-merge: rename errorPage to errorPageData
       // We don't use `import { stringify } from @brillout/json-serializer` to save client-side KBs
       JSON.stringify({ errorPage }),
     )
@@ -362,8 +363,7 @@ async function fetchPageContextFromServer(
 
   if (
     'serverSideError' in pageContextFromServer ||
-    // The server couldn't render the page being navigated to and sent the error page's pageContext instead => throw, so that the client renders the error page
-    // - Otherwise the client renders the page being navigated to with the error page's pageContext
+    // The server couldn't render the page being navigated to and sent the error page's pageContext instead => we throw an error => the error handling of renderPageClient() renders the error page (while automatically picking up the error page's pageContext from `err._pageContextErrorPage`)
     (pageContextFromServer.isErrorPage && !errorPage)
   ) {
     const err = getProjectError(`${errMsg} because an error occurred on the server-side`)
