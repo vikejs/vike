@@ -25,7 +25,6 @@ import { assertOnBeforeRenderHookReturn } from '../../shared-server-client/asser
 import { execHookGuard } from '../../shared-server-client/route/execHookGuard.js'
 import { AbortRender, isAbortPageContext } from '../../shared-server-client/route/abort.js'
 import { pageContextInitIsPassedToClient } from '../../shared-server-client/misc/pageContextInitIsPassedToClient.js'
-import { isServerSideError } from '../../shared-server-client/misc/isServerSideError.js'
 import { execHook } from '../../shared-server-client/hooks/execHook.js'
 import type { HookName } from '../../types/Config.js'
 import type { PageContextCreatedClient } from './createPageContextClient.js'
@@ -309,6 +308,7 @@ async function fetchPageContextFromServer(
     pageContextUrl = new URL(pageContextUrl, location.href)
     pageContextUrl.searchParams.set(
       '_vike',
+      // TODO/after-merge: rename errorPage to errorPageInfo
       // We don't use `import { stringify } from @brillout/json-serializer` to save client-side KBs
       JSON.stringify({ errorPage }),
     )
@@ -361,13 +361,10 @@ async function fetchPageContextFromServer(
     throw err
   }
 
-  // Is there a reason for having two different properties? Can't we use only one property? I guess/think the isServerSideError property was an attempt (a bad idea really) for rendering the error page even though an error occurred on the server-side (which is a bad idea because the added complexity is non-negligible while the added value is minuscule since the error page usually doesn't have any (meaningful / server-side) hooks).
-  // - TODO/ai/after-merge: can we have one prop instead of two?
   if (
     'serverSideError' in pageContextFromServer ||
-    (isServerSideError in pageContextFromServer &&
-      // The error page's pageContext always has isServerSideError
-      !errorPage)
+    // The server couldn't render the page being navigated to and sent the error page's pageContext instead => we throw an error => the error handling of renderPageClient() renders the error page (while automatically picking up the error page's pageContext from `err._pageContextErrorPage`)
+    (pageContextFromServer.isErrorPage && !errorPage)
   ) {
     const err = getProjectError(`${errMsg} because an error occurred on the server-side`)
     attachPageContextErrorPage(err, pageContextFromServer)
@@ -379,7 +376,7 @@ async function fetchPageContextFromServer(
 }
 const _pageContextErrorPage = '_pageContextErrorPage'
 function attachPageContextErrorPage(err: Error, pageContextFromServer: Record<string, unknown>) {
-  if (isServerSideError in pageContextFromServer) {
+  if (pageContextFromServer.isErrorPage) {
     // A server-side hook of the page being navigated to threw an error or called `throw render(abortStatusCode)`, and the server already sent the error page's pageContext instead: keep it, so that the client renders the error page with it
     // - Otherwise the client fetches it again (and the error page's server-side hooks run twice)
     objectAssign(err, { [_pageContextErrorPage]: pageContextFromServer })
