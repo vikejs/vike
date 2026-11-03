@@ -61,13 +61,14 @@ function getCodeConstantsGlobalThis(vikeConfig: VikeConfigInternal, runtimeEnv: 
   const { environmentName, isDev } = runtimeEnv
   // The `define` values don't apply to node_modules/ packages with ssr.external
   if (environmentName !== 'client') return getCode(getConstants(isDev, false))
-  if (isDev) {
-    // The constants missing from the client's `define` values in dev
-    const constantsDefined = getConstants(isDev, true)
-    const constants = Object.entries(getConstants(isDev, true, vikeConfig))
-    return getCode(Object.fromEntries(constants.filter(([name]) => !(name in constantsDefined))))
-  }
-  return []
+  // In production, the client's `define` values contain every constant
+  if (!isDev) return []
+  // The constants missing from the client's `define` values in dev, see `configEnvironment` above
+  const constantsDefined = getConstants(isDev, true)
+  const constantsMissing = Object.entries(getConstants(isDev, true, vikeConfig)).filter(
+    ([name]) => !(name in constantsDefined),
+  )
+  return getCode(Object.fromEntries(constantsMissing))
 }
 
 function getConstants(isDev: boolean, isClientSide: boolean, vikeConfig?: VikeConfigInternal): Constants {
