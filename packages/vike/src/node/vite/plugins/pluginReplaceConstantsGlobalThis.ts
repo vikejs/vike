@@ -11,7 +11,6 @@ import { getConfigValueBuildTime } from '../../../shared-server-client/page-conf
 import { isViteServerSide_configEnvironment } from '../shared/isViteServerSide.js'
 import '../assertEnvVite.js'
 import { objectAssign } from '../../../utils/objectAssign.js'
-const isDebugVal = isDebug()
 
 declare global {
   /** Like `import.meta.env.DEV` but works for `node_modules/` packages with `ssr.external` */
@@ -30,7 +29,7 @@ function getConstants(isDev: boolean, isClientSide: boolean, vikeConfig?: VikeCo
   const constants: Constants = {
     __VIKE__IS_DEV: isDev,
     __VIKE__IS_CLIENT: isClientSide,
-    __VIKE__IS_DEBUG: isDebugVal,
+    __VIKE__IS_DEBUG: isDebug(),
   }
   if (isClientSide) {
     assert(vikeConfig)
