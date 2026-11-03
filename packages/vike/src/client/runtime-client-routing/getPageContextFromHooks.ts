@@ -362,7 +362,8 @@ async function fetchPageContextFromServer(
 
   if (
     'serverSideError' in pageContextFromServer ||
-    // The server sent the error page's pageContext instead of the pageContext of the page being navigated to
+    // The server couldn't render the page being navigated to and sent the error page's pageContext instead => throw, so that the client renders the error page
+    // - Otherwise the client renders the page being navigated to with the error page's pageContext
     (pageContextFromServer.isErrorPage && !errorPage)
   ) {
     const err = getProjectError(`${errMsg} because an error occurred on the server-side`)
