@@ -67,8 +67,8 @@ function getCodeConstantsGlobalThis(isDev: boolean, isClientSide: boolean, vikeC
 function getConstants(isDev: boolean, isClientSide: boolean, vikeConfig?: VikeConfigInternal): Constants {
   return {
     __VIKE__IS_DEV: isDev,
-    __VIKE__IS_DEBUG: isDebugVal,
     __VIKE__IS_CLIENT: isClientSide,
+    __VIKE__IS_DEBUG: isDebugVal,
     ...(vikeConfig && {
       __VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER: isFetchPageContextOfErrorPageFromServer(vikeConfig),
     }),
