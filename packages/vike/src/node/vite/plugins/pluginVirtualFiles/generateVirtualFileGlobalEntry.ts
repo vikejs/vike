@@ -28,7 +28,7 @@ async function generateVirtualFileGlobalEntry(runtimeEnv: RuntimeEnvRuntime, id:
   const { environmentName, isDev } = runtimeEnv
   const isForClientSide = environmentName === 'client'
 
-  lines.push(...getCodeConstantsGlobalThis(isDev, isForClientSide, vikeConfig))
+  lines.push(...getCodeConstantsGlobalThis(isForClientSide, isDev, vikeConfig))
 
   lines.push('export const pageConfigsSerialized = [')
   lines.push(getCodePageConfigsSerialized(pageConfigs, runtimeEnv, importStatements, filesEnv))

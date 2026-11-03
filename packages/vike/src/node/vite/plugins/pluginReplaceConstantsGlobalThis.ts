@@ -87,7 +87,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
 // Support:
 // - Dev with HMR
 // - node_modules/ packages with ssr.external
-function getCodeConstantsGlobalThis(isDev: boolean, isClientSide: boolean, vikeConfig: VikeConfigInternal): string[] {
+function getCodeConstantsGlobalThis(isClientSide: boolean, isDev: boolean, vikeConfig: VikeConfigInternal): string[] {
   if (isClientSide && !isDev) {
     // - Save client-side KBs: in production, the `define` above is enough (since client code is always `noExternal`)
     // - Not for server-side though, because of node_modules/ packages with ssr.external
