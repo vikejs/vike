@@ -33,6 +33,8 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
   return [
     {
       name: 'vike:pluginReplaceConstantsGlobalThis',
+      // Support:
+      // - The Vite process
       config: {
         handler(config) {
           assert(typeof config._isDev === 'boolean')
@@ -40,15 +42,25 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
           Object.assign(globalThis, getConstants(isDev, false))
         },
       },
+      // Support:
+      // - Production with tree-shaking
+      // - __VIKE__NO_EXTERNAL
       configEnvironment: {
         order: 'pre',
         async handler(name, config) {
           const isClientSide = !isViteServerSide_configEnvironment(name, config)
-          // In dev, the global entry sets the constants that depend on the Vike config instead, so that adding or removing a + file updates them
-          const vikeConfig = await getVikeConfigInternal()
+          const constants: Constants = {
+            __VIKE__NO_EXTERNAL: true,
+          }
+          if (!isDev) {
+            const vikeConfig = await getVikeConfigInternal()
+            objectAssign(constants, getConstants(isDev, isClientSide, vikeConfig))
+          } else {
+            // Let getCodeConstantsGlobalThis() inject values in Vike's virtual:vike:global-entry module for HMR support
+          }
           return {
             consumer: isClientSide ? 'client' : 'server',
-            define: getDefine({ ...getConstants(isDev, isClientSide, vikeConfig), __VIKE__NO_EXTERNAL: true }),
+            define: getDefine(constants),
           }
         },
       },
@@ -56,12 +68,15 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
   ]
 }
 
-// The global entry sets the constants at runtime, for what the `define` values don't cover:
-// - The code of node_modules/ packages with ssr.external
-// - In dev, the constants that depend on the Vike config, see `configEnvironment` above
+// Support:
+// - Dev with HMR
+// - node_modules/ packages with ssr.external
 function getCodeConstantsGlobalThis(isDev: boolean, isClientSide: boolean, vikeConfig: VikeConfigInternal): string[] {
-  // In production, the client's `define` values replace every constant
-  if (isClientSide && !isDev) return []
+  if (isClientSide && !isDev) {
+    // - Save client-side KBs: in production, the `define` above is enough (since client code is always `noExternal`)
+    // - Not for server-side though, because of node_modules/ packages with ssr.external
+    return []
+  }
   return getCode(getConstants(isDev, isClientSide, vikeConfig))
 }
 
