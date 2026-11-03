@@ -31,6 +31,9 @@ function handlePageContextRequestUrl(url: string) {
       /* TO-DO/soon/once: pass & use previousUrl
       isPageContextJsonRequest: { previousUrl, errorPage },
       /*/
+      /* TODO/after-merge I think this is clearer?
+      isPageContextJsonRequest: errorPage === null ? true as const : { errorPage },
+      */
       isPageContextJsonRequest: { errorPage },
       //*/
       urlWithoutPageContextRequestSuffix,
