@@ -10,6 +10,7 @@ import { updateType } from '../../../utils/updateType.js'
 import { getPageContextUrlComputed } from '../../../shared-server-client/getPageContextUrlComputed.js'
 import type { GlobalContextServerInternal } from '../globalContext.js'
 import type { PageContextInit } from '../renderPageServer.js'
+import type { handlePageContextRequestUrl } from './handlePageContextRequestUrl.js'
 import {
   createPageContextObject,
   createPageContextShared,
@@ -32,7 +33,7 @@ function createPageContextServer(
     | {
         isPrerendering: false
         urlHandler: null | ((url: string) => string)
-        isClientSideNavigation: boolean
+        isPageContextJsonRequest: ReturnType<typeof handlePageContextRequestUrl>['isPageContextJsonRequest']
       }
   ),
 ) {
@@ -47,7 +48,8 @@ function createPageContextServer(
     _baseAssets: globalContext.baseAssets,
     _pageContextInit: pageContextInit,
     _urlHandler: args.isPrerendering ? null : args.urlHandler,
-    isClientSideNavigation: args.isPrerendering ? false : args.isClientSideNavigation,
+    _isPageContextJsonRequest: args.isPrerendering ? null : args.isPageContextJsonRequest,
+    isClientSideNavigation: args.isPrerendering ? false : !!args.isPageContextJsonRequest,
   })
 
   objectAssign(pageContext, globalContext._globalConfigPublic)

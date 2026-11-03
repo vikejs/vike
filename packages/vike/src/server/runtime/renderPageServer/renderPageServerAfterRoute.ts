@@ -92,7 +92,7 @@ async function renderPageServerAfterRoute<
     }
   }
 
-  if (pageContext.isClientSideNavigation) {
+  if (pageContext._isPageContextJsonRequest) {
     const httpResponse = await createHttpResponsePageJson(getPageContextJson(pageContext), pageContext)
     objectAssign(pageContext, { httpResponse })
     return pageContext
@@ -134,7 +134,6 @@ async function prerenderPageEntry(
     },
 ) {
   objectAssign(pageContext, {
-    _isPageContextJsonRequest: null,
     pageContextsAborted: [],
   })
 
