@@ -33,9 +33,7 @@ function getConstants(isClientSide: boolean, isDev: boolean, vikeConfig: VikeCon
   }
   if (isClientSide) {
     assert(vikeConfig)
-    objectAssign(constants, {
-      __VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER: isFetchPageContextOfErrorPageFromServer(vikeConfig),
-    })
+    constants.__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER = isFetchPageContextOfErrorPageFromServer(vikeConfig)
   }
   return constants
 }
