@@ -60,16 +60,27 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
       // Support:
       // - Production with tree-shaking
       // - __VIKE__NO_EXTERNAL
-      // - Dev: code that reads the constants while it loads, before virtual:vike:global-entry assigns them (e.g. vike-react-zustand imported by +client, @brillout/picocolors on Cloudflare)
+      // - Dev: code that reads constants before virtual:vike:global-entry assigns them, for example:
+      //   - @brillout/picocolors on Cloudflare
+      //     https://github.com/brillout/picocolors/blob/c4fdac83c00578769b6edc5f57702b7f703fa640/picocolors.ts#L5-L6
+      //   - vike-react-zustand imported by +client
+      //     https://github.com/vikejs/vike-react/blob/6fe2ff3ce6bd1b5f05055f867c5fbd07d4f101cd/packages/vike-react-zustand/src/getOrCreateStore.ts#L15
       configEnvironment: {
         order: 'pre',
         async handler(name, config) {
           const isClientSide = !isViteServerSide_configEnvironment(name, config)
-          // In dev, let getCodeConstantsGlobalThis() inject the Vike config's value in Vike's virtual:vike:global-entry module for HMR support
-          const vikeConfig = isDev ? null : await getVikeConfigInternal()
+          const vikeConfig = await getVikeConfigInternal()
+          const constants: Constants = {
+            ...getConstants(isClientSide, isDev, vikeConfig),
+            __VIKE__NO_EXTERNAL: true,
+          }
+          if (isDev) {
+            // Let getCodeConstantsGlobalThis() inject the Vike config's value in Vike's virtual:vike:global-entry module for HMR support
+            delete constants.__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER
+          }
           return {
             consumer: isClientSide ? 'client' : 'server',
-            define: getDefine({ ...getConstants(isClientSide, isDev, vikeConfig), __VIKE__NO_EXTERNAL: true }),
+            define: getDefine(constants),
           }
         },
       },
