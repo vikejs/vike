@@ -9,7 +9,6 @@ import { assert } from '../../../utils/assert.js'
 import { getVikeConfigInternal, type VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 import { getConfigValueBuildTime } from '../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
 import { isViteServerSide_configEnvironment } from '../shared/isViteServerSide.js'
-import type { RuntimeEnvRuntime } from './pluginVirtualFiles/getConfigValueSourcesRelevant.js'
 import '../assertEnvVite.js'
 
 declare global {
@@ -57,10 +56,9 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
   ]
 }
 
-function getCodeConstantsGlobalThis(vikeConfig: VikeConfigInternal, runtimeEnv: RuntimeEnvRuntime): string[] {
-  const { environmentName, isDev } = runtimeEnv
+function getCodeConstantsGlobalThis(isDev: boolean, isClientSide: boolean, vikeConfig: VikeConfigInternal): string[] {
   // The `define` values don't apply to node_modules/ packages with ssr.external
-  if (environmentName !== 'client') return getCode(getConstants(isDev, false))
+  if (!isClientSide) return getCode(getConstants(isDev, false))
   // In production, the client's `define` values contain every constant
   if (!isDev) return []
   // In dev, the client's `define` values lack the constants that depend on the Vike config, see `configEnvironment` above

@@ -31,7 +31,7 @@ function getCode(vikeConfig: VikeConfigInternal, runtimeEnv: RuntimeEnvRuntime, 
   const { environmentName, isDev } = runtimeEnv
   const isForClientSide = environmentName === 'client'
 
-  lines.push(...getCodeConstantsGlobalThis(vikeConfig, runtimeEnv))
+  lines.push(...getCodeConstantsGlobalThis(isDev, isForClientSide, vikeConfig))
 
   lines.push('export const pageConfigsSerialized = [')
   lines.push(getCodePageConfigsSerialized(pageConfigs, runtimeEnv, importStatements, filesEnv))
