@@ -25,7 +25,7 @@ declare global {
 }
 
 type Constants = Record<`__VIKE__${string}`, boolean>
-function getConstants(isDev: boolean, isClientSide: boolean, vikeConfig: VikeConfigInternal | null): Constants {
+function getConstants(isClientSide: boolean, isDev: boolean, vikeConfig: VikeConfigInternal | null): Constants {
   const constants: Constants = {
     __VIKE__IS_DEV: isDev,
     __VIKE__IS_CLIENT: isClientSide,
@@ -51,7 +51,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
         handler(config) {
           assert(typeof config._isDev === 'boolean')
           isDev = config._isDev
-          Object.assign(globalThis, getConstants(isDev, false, null))
+          Object.assign(globalThis, getConstants(false, isDev, null))
         },
       },
       // Support:
@@ -66,7 +66,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
           }
           if (!isDev) {
             const vikeConfig = await getVikeConfigInternal()
-            objectAssign(constants, getConstants(isDev, isClientSide, vikeConfig))
+            objectAssign(constants, getConstants(isClientSide, isDev, vikeConfig))
           } else {
             // Let getCodeConstantsGlobalThis() inject values in Vike's virtual:vike:global-entry module for HMR support
           }
@@ -89,7 +89,7 @@ function getCodeConstantsGlobalThis(isDev: boolean, isClientSide: boolean, vikeC
     // - Not for server-side though, because of node_modules/ packages with ssr.external
     return []
   }
-  return getCode(getConstants(isDev, isClientSide, vikeConfig))
+  return getCode(getConstants(isClientSide, isDev, vikeConfig))
 }
 
 function isFetchPageContextOfErrorPageFromServer(vikeConfig: VikeConfigInternal) {
