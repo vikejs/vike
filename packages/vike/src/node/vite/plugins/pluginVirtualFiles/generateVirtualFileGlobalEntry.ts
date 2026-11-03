@@ -8,10 +8,7 @@ import {
   FilesEnv,
   serializeConfigValues,
 } from '../../../../shared-server-client/page-configs/serialize/serializeConfigValues.js'
-import {
-  getCodeConstantsGlobalThisClientSideDev,
-  getCodeConstantsGlobalThisServerSide,
-} from '../pluginReplaceConstantsGlobalThis.js'
+import { getCodeConstantsGlobalThis } from '../pluginReplaceConstantsGlobalThis.js'
 import type { RuntimeEnvRuntime } from './getConfigValueSourcesRelevant.js'
 import { getEnvironmentEntryPlaceholder } from '../build/pluginEnvironmentEntries.js'
 import '../../assertEnvVite.js'
@@ -34,9 +31,7 @@ function getCode(vikeConfig: VikeConfigInternal, runtimeEnv: RuntimeEnvRuntime, 
   const { environmentName, isDev } = runtimeEnv
   const isForClientSide = environmentName === 'client'
 
-  if (!isForClientSide) {
-    lines.push(...getCodeConstantsGlobalThisServerSide(isDev))
-  }
+  lines.push(...getCodeConstantsGlobalThis(vikeConfig, runtimeEnv))
 
   lines.push('export const pageConfigsSerialized = [')
   lines.push(getCodePageConfigsSerialized(pageConfigs, runtimeEnv, importStatements, filesEnv))
@@ -48,11 +43,6 @@ function getCode(vikeConfig: VikeConfigInternal, runtimeEnv: RuntimeEnvRuntime, 
 
   if (environmentName === 'server') {
     lines.push(getCodeEnvironmentEntries(additionalEnvironmentNames, isDev, importStatements))
-  }
-
-  if (isForClientSide && isDev) {
-    // Injected directly instead of via a virtual module, because Vike regenerates the global entry when a + file is added or removed
-    lines.push(...getCodeConstantsGlobalThisClientSideDev(vikeConfig))
   }
 
   if (!isForClientSide && isDev) {

@@ -1,6 +1,5 @@
 export { pluginReplaceConstantsGlobalThis }
-export { getCodeConstantsGlobalThisServerSide }
-export { getCodeConstantsGlobalThisClientSideDev }
+export { getCodeConstantsGlobalThis }
 // Trick for loading the `declare global` below
 export type _LoadDeclareGlobal__VIKE__IS = never
 
@@ -10,6 +9,7 @@ import { assert } from '../../../utils/assert.js'
 import { getVikeConfigInternal, type VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 import { getConfigValueBuildTime } from '../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
 import { isViteServerSide_configEnvironment } from '../shared/isViteServerSide.js'
+import type { RuntimeEnvRuntime } from './pluginVirtualFiles/getConfigValueSourcesRelevant.js'
 import '../assertEnvVite.js'
 
 declare global {
@@ -24,9 +24,9 @@ declare global {
   var __VIKE__NO_EXTERNAL: true | undefined
 }
 
+type Constants = Record<`__VIKE__${string}`, boolean>
+
 const isDebugVal = isDebug()
-globalThis.__VIKE__IS_CLIENT = false
-globalThis.__VIKE__IS_DEBUG = isDebugVal
 
 function pluginReplaceConstantsGlobalThis(): Plugin[] {
   let isDev: boolean
@@ -37,13 +37,9 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
         handler(config) {
           assert(typeof config._isDev === 'boolean')
           isDev = config._isDev
-          globalThis.__VIKE__IS_DEV = isDev
+          Object.assign(globalThis, getConstantsServerSide(isDev))
           return {
-            define: {
-              'globalThis.__VIKE__IS_DEV': JSON.stringify(isDev),
-              'globalThis.__VIKE__IS_DEBUG': JSON.stringify(isDebugVal),
-              'globalThis.__VIKE__NO_EXTERNAL': 'true',
-            },
+            define: getDefine({ ...getConstantsShared(isDev), __VIKE__NO_EXTERNAL: true }),
           }
         },
       },
@@ -53,11 +49,11 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
           const isClientSide = !isViteServerSide_configEnvironment(name, config)
           return {
             consumer: isClientSide ? 'client' : 'server',
-            define: {
-              'globalThis.__VIKE__IS_CLIENT': JSON.stringify(isClientSide),
+            define: getDefine({
+              ...getConstantsEnvironment(isClientSide),
               // In dev, the client's global entry sets them instead, so that adding or removing a + file updates them
               ...(isDev ? {} : getConstantsFromVikeConfig(await getVikeConfigInternal())),
-            },
+            }),
           }
         },
       },
@@ -65,12 +61,35 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
   ]
 }
 
-// The `globalThis.__VIKE__*` constants that depend on the Vike config
-function getConstantsFromVikeConfig(vikeConfig: VikeConfigInternal): Record<string, string> {
+function getCodeConstantsGlobalThis(vikeConfig: VikeConfigInternal, runtimeEnv: RuntimeEnvRuntime): string[] {
+  const { environmentName, isDev } = runtimeEnv
+  if (environmentName !== 'client') return getCode(getConstantsServerSide(isDev))
+  if (isDev) return getCode(getConstantsFromVikeConfig(vikeConfig))
+  return []
+}
+
+// The `define` values don't apply to the Vite process nor to node_modules/ packages with ssr.external
+function getConstantsServerSide(isDev: boolean): Constants {
+  return { ...getConstantsShared(isDev), ...getConstantsEnvironment(false) }
+}
+
+function getConstantsShared(isDev: boolean): Constants {
   return {
-    'globalThis.__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER': JSON.stringify(
-      isFetchPageContextOfErrorPageFromServer(vikeConfig),
-    ),
+    __VIKE__IS_DEV: isDev,
+    __VIKE__IS_DEBUG: isDebugVal,
+  }
+}
+
+function getConstantsEnvironment(isClientSide: boolean): Constants {
+  return {
+    __VIKE__IS_CLIENT: isClientSide,
+  }
+}
+
+// The `globalThis.__VIKE__*` constants that depend on the Vike config
+function getConstantsFromVikeConfig(vikeConfig: VikeConfigInternal): Constants {
+  return {
+    __VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER: isFetchPageContextOfErrorPageFromServer(vikeConfig),
   }
 }
 
@@ -80,15 +99,12 @@ function isFetchPageContextOfErrorPageFromServer(vikeConfig: VikeConfigInternal)
   return !vikeConfig.prerenderContext.isPrerenderingEnabledForAllPages
 }
 
-// The `define` values don't apply to node_modules/ packages with ssr.external
-function getCodeConstantsGlobalThisServerSide(isDev: boolean) {
-  return [
-    `globalThis.__VIKE__IS_DEV = ${JSON.stringify(isDev)};`,
-    `globalThis.__VIKE__IS_CLIENT = false;`,
-    `globalThis.__VIKE__IS_DEBUG = ${JSON.stringify(isDebugVal)};`,
-  ]
+function getDefine(constants: Constants): Record<string, string> {
+  return Object.fromEntries(
+    Object.entries(constants).map(([name, value]) => [`globalThis.${name}`, JSON.stringify(value)]),
+  )
 }
 
-function getCodeConstantsGlobalThisClientSideDev(vikeConfig: VikeConfigInternal) {
-  return Object.entries(getConstantsFromVikeConfig(vikeConfig)).map(([key, value]) => `${key} = ${value};`)
+function getCode(constants: Constants): string[] {
+  return Object.entries(getDefine(constants)).map(([key, value]) => `${key} = ${value};`)
 }
