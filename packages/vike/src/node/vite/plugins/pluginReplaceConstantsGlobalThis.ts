@@ -63,12 +63,8 @@ function getCodeConstantsGlobalThis(vikeConfig: VikeConfigInternal, runtimeEnv: 
   if (environmentName !== 'client') return getCode(getConstants(isDev, false))
   // In production, the client's `define` values contain every constant
   if (!isDev) return []
-  // The constants missing from the client's `define` values in dev, see `configEnvironment` above
-  const constantsDefined = getConstants(isDev, true)
-  const constantsMissing = Object.entries(getConstants(isDev, true, vikeConfig)).filter(
-    ([name]) => !(name in constantsDefined),
-  )
-  return getCode(Object.fromEntries(constantsMissing))
+  // In dev, the client's `define` values lack the constants that depend on the Vike config, see `configEnvironment` above
+  return getCode(getConstants(isDev, true, vikeConfig))
 }
 
 function getConstants(isDev: boolean, isClientSide: boolean, vikeConfig?: VikeConfigInternal): Constants {
