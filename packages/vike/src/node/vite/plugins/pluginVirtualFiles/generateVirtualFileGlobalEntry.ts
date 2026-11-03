@@ -3,7 +3,7 @@ export { generateVirtualFileGlobalEntry }
 import type { PageConfigBuildTime, PageConfigGlobalBuildTime } from '../../../../types/PageConfig.js'
 import { generateVirtualFileId } from '../../../../shared-server-node/virtualFileId.js'
 import { debug } from './debug.js'
-import { getVikeConfigInternal, type VikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
+import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import {
   FilesEnv,
   serializeConfigValues,
@@ -15,10 +15,6 @@ import '../../assertEnvVite.js'
 
 async function generateVirtualFileGlobalEntry(runtimeEnv: RuntimeEnvRuntime, id: string): Promise<string> {
   const vikeConfig = await getVikeConfigInternal(true)
-  return getCode(vikeConfig, runtimeEnv, id)
-}
-
-function getCode(vikeConfig: VikeConfigInternal, runtimeEnv: RuntimeEnvRuntime, id: string): string {
   const {
     _pageConfigs: pageConfigs,
     _pageConfigGlobal: pageConfigGlobal,
