@@ -11,6 +11,7 @@ import { getConfigValueBuildTime } from '../../../shared-server-client/page-conf
 import { isViteServerSide_configEnvironment } from '../shared/isViteServerSide.js'
 import '../assertEnvVite.js'
 import { objectAssign } from '../../../utils/objectAssign.js'
+const isDebugVal = isDebug()
 
 declare global {
   /** Like `import.meta.env.DEV` but works for `node_modules/` packages with `ssr.external` */
@@ -25,8 +26,20 @@ declare global {
 }
 
 type Constants = Record<`__VIKE__${string}`, boolean>
-
-const isDebugVal = isDebug()
+function getConstants(isDev: boolean, isClientSide: boolean, vikeConfig?: VikeConfigInternal): Constants {
+  const constants: Constants = {
+    __VIKE__IS_DEV: isDev,
+    __VIKE__IS_CLIENT: isClientSide,
+    __VIKE__IS_DEBUG: isDebugVal,
+  }
+  if (isClientSide) {
+    assert(vikeConfig)
+    objectAssign(constants, {
+      __VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER: isFetchPageContextOfErrorPageFromServer(vikeConfig),
+    })
+  }
+  return constants
+}
 
 function pluginReplaceConstantsGlobalThis(): Plugin[] {
   let isDev: boolean
@@ -78,21 +91,6 @@ function getCodeConstantsGlobalThis(isDev: boolean, isClientSide: boolean, vikeC
     return []
   }
   return getCode(getConstants(isDev, isClientSide, vikeConfig))
-}
-
-function getConstants(isDev: boolean, isClientSide: boolean, vikeConfig?: VikeConfigInternal): Constants {
-  const constants: Constants = {
-    __VIKE__IS_DEV: isDev,
-    __VIKE__IS_CLIENT: isClientSide,
-    __VIKE__IS_DEBUG: isDebugVal,
-  }
-  if (isClientSide) {
-    assert(vikeConfig)
-    objectAssign(constants, {
-      __VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER: isFetchPageContextOfErrorPageFromServer(vikeConfig),
-    })
-  }
-  return constants
 }
 
 function isFetchPageContextOfErrorPageFromServer(vikeConfig: VikeConfigInternal) {
