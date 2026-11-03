@@ -13,11 +13,11 @@ import '../assertEnvVite.js'
 import { objectAssign } from '../../../utils/objectAssign.js'
 
 declare global {
-  /** Like `import.meta.env.DEV` but works for `node_modules/` packages with `ssr.external` */
-  var __VIKE__IS_DEV: boolean
+  var __VIKE__IS_DEBUG: boolean
   /** Like `import.meta.env.SSR` but works for `node_modules/` packages with `ssr.external` */
   var __VIKE__IS_CLIENT: boolean
-  var __VIKE__IS_DEBUG: boolean
+  /** Like `import.meta.env.DEV` but works for `node_modules/` packages with `ssr.external` */
+  var __VIKE__IS_DEV: boolean
   /** Whether the client gets the error page's pageContext from the server: the error page has a server-only hook and not every page is pre-rendered */
   var __VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER: boolean
   /** Whether the code was processed by Vite */
@@ -27,8 +27,8 @@ declare global {
 type Constants = Record<`__VIKE__${string}`, boolean>
 function getConstants(isClientSide: boolean, isDev: boolean | null, vikeConfig: VikeConfigInternal | null): Constants {
   const constants: Constants = {
-    __VIKE__IS_CLIENT: isClientSide,
     __VIKE__IS_DEBUG: isDebug(),
+    __VIKE__IS_CLIENT: isClientSide,
   }
   if (isDev !== null) {
     constants.__VIKE__IS_DEV = isDev
