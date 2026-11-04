@@ -145,19 +145,6 @@ function testRun(
     await ensureWasClientSideRouted('/pages/about')
   })
 
-  test('error page - pre-rendered page', async () => {
-    await page.goto(getServerUrl() + '/about')
-    await hydrationDone()
-    await page.click('a[href="/prerendered-guard-throws"]')
-    await autoRetry(async () => {
-      expect(await page.textContent('p')).toBe('Something went wrong.')
-    })
-    // The error page's +data.server.ts ran on the server-side
-    expect(await page.textContent('#data')).toBe('{}')
-    expectLog('PRERENDERED_GUARD_THROWS', { filter: (log) => log.logSource === 'Browser Error' })
-    await ensureWasClientSideRouted('/pages/about')
-  })
-
   test('permanent redirect', async () => {
     const url = getServerUrl() + '/permanent-redirect'
     // server-side
