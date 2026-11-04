@@ -13,7 +13,7 @@ import { hasProp } from '../../../utils/hasProp.js'
 import { isObject } from '../../../utils/isObject.js'
 import { parseUrl } from '../../../utils/parseUrl.js'
 import '../../assertEnvServer.js'
-const pageContextJsonFileExtensionUrls = [
+const pageContextJsonUrls = [
   `/index${pageContextJsonFileExtension_server}`,
   `/index${pageContextJsonFileExtension}`,
 ]
@@ -49,7 +49,7 @@ function isMatch(urlParsed: UrlParsed): boolean {
 }
 
 function getMatch(pathname: string): string | undefined {
-  return pageContextJsonFileExtensionUrls.find((fileExtensionUrl) => pathname.endsWith(fileExtensionUrl))
+  return pageContextJsonUrls.find((fileExtensionUrl) => pathname.endsWith(fileExtensionUrl))
 }
 
 function processUrl(urlParsed: UrlParsed, url: string) {
