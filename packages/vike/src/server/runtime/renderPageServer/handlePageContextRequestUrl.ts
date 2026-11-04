@@ -2,6 +2,7 @@ export { handlePageContextRequestUrl }
 
 import {
   pageContextJsonFileExtension,
+  pageContextJsonFileExtension_server,
   doNotCreateExtraDirectory,
 } from '../../../shared-server-client/getPageContextRequestUrl.js'
 import { modifyUrlSameOrigin } from '../../../shared-server-client/modifyUrlSameOrigin.js'
@@ -12,7 +13,10 @@ import { hasProp } from '../../../utils/hasProp.js'
 import { isObject } from '../../../utils/isObject.js'
 import { parseUrl } from '../../../utils/parseUrl.js'
 import '../../assertEnvServer.js'
-const pageContextJsonFileExtensionUrl = `/index${pageContextJsonFileExtension}`
+const pageContextJsonUrls = [
+  `/index${pageContextJsonFileExtension_server}`,
+  `/index${pageContextJsonFileExtension}`,
+] as const
 
 type UrlParsed = ReturnType<typeof parseUrl>
 
@@ -38,20 +42,23 @@ function handlePageContextRequestUrl(url: string) {
   }
 }
 
-function isMatch(urlParsed: UrlParsed) {
+function isMatch(urlParsed: UrlParsed): boolean {
   const { pathnameOriginal, pathname } = urlParsed
-  assert(
-    pathname.endsWith(pageContextJsonFileExtensionUrl) === pathnameOriginal.endsWith(pageContextJsonFileExtensionUrl),
-  )
-  return pathname.endsWith(pageContextJsonFileExtensionUrl)
+  assert(!!getMatch(pathname) === !!getMatch(pathnameOriginal))
+  return !!getMatch(pathname)
+}
+
+function getMatch(pathname: string) {
+  return pageContextJsonUrls.find((fileExtensionUrl) => pathname.endsWith(fileExtensionUrl))
 }
 
 function processUrl(urlParsed: UrlParsed, url: string) {
   // We cannot use `urlParsed.pathname` because it would break the `urlParsed.pathnameOriginal` value of subsequent `parseUrl()` calls.
   const { pathnameOriginal, search } = urlParsed
   assert(doNotCreateExtraDirectory === false)
-  assert(pathnameOriginal.endsWith(pageContextJsonFileExtensionUrl), { url })
-  let pathnameModified = slice(pathnameOriginal, 0, -1 * pageContextJsonFileExtensionUrl.length)
+  const fileUrl = getMatch(pathnameOriginal)
+  assert(fileUrl, { url })
+  let pathnameModified = slice(pathnameOriginal, 0, -1 * fileUrl.length)
   if (pathnameModified === '') pathnameModified = '/'
   const searchVikeArgs = search?._vike
   const urlWithoutPageContextRequestSuffix = modifyUrlSameOrigin(url, {
