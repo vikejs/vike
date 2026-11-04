@@ -3,6 +3,8 @@ export { getCodeConstantsGlobalThis }
 // Trick for loading the `declare global` below
 export type _LoadDeclareGlobal__VIKE__IS = never
 
+// TODO/after-merge rename ConstantsGlobalThis to GlobalVariables (change other names accordingly)
+
 import type { Plugin } from 'vite'
 import { isDebug } from '../../../utils/debug.js'
 import { assert } from '../../../utils/assert.js'
