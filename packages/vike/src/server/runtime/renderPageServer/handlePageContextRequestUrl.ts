@@ -42,13 +42,13 @@ function handlePageContextRequestUrl(url: string) {
   }
 }
 
-function isMatch(urlParsed: UrlParsed) {
+function isMatch(urlParsed: UrlParsed): boolean {
   const { pathnameOriginal, pathname } = urlParsed
   assert(!!getMatch(pathname) === !!getMatch(pathnameOriginal))
   return !!getMatch(pathname)
 }
 
-function getMatch(pathname: string) {
+function getMatch(pathname: string): string | undefined {
   return pageContextJsonFileExtensionUrls.find((fileExtensionUrl) => pathname.endsWith(fileExtensionUrl))
 }
 
