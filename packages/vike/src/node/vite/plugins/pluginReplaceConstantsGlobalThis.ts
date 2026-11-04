@@ -12,8 +12,8 @@ import { getConfigValueBuildTime } from '../../../shared-server-client/page-conf
 import { isViteServerSide_configEnvironment } from '../shared/isViteServerSide.js'
 import { getViteContext_ifKnown } from '../../api/resolveViteConfigUser.js'
 import '../assertEnvVite.js'
-const globalObject = getGlobalObject<{ constantsPrevious: Partial<Constants> }>('pluginReplaceConstantsGlobalThis.ts', {
-  constantsPrevious: {},
+const globalObject = getGlobalObject<{ constantsBefore: Partial<Constants> }>('pluginReplaceConstantsGlobalThis.ts', {
+  constantsBefore: {},
 })
 
 declare global {
@@ -45,18 +45,18 @@ function getConstants(isClientSide: boolean, isDev: boolean | null, vikeConfig: 
     assert(vikeConfig)
     constants.__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER = isFetchPageContextOfErrorPageFromServer(vikeConfig)
   }
-  assertSameAsPrevious(constants)
+  assertSameAsBefore(constants)
   return constants
 }
-function assertSameAsPrevious(constants: Constants) {
-  const { constantsPrevious } = globalObject
+function assertSameAsBefore(constants: Constants) {
+  const { constantsBefore } = globalObject
   for (const key of CONSTANTS) {
-    const value = constants[key]
-    // `__VIKE__IS_DEV` can be unset early on
-    if (value === undefined) continue
-    const valuePrevious = constantsPrevious[key]
-    assert(valuePrevious === undefined || valuePrevious === value)
-    constantsPrevious[key] = value
+    const now = constants[key]
+    assert(now !== null)
+    if (now === undefined) continue
+    const prev = constantsBefore[key]
+    assert(prev === undefined || prev === now)
+    constantsBefore[key] ??= now
   }
 }
 
