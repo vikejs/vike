@@ -304,7 +304,7 @@ async function fetchPageContextFromServer(
     pageContext._urlRewrite ?? pageContext.urlOriginal,
     !!errorPageInfo,
   )
-  // TODO/after: how about we move this block into getPageContextRequestUrl() ? We could then add comment explaining why/when .server.pageContext.json (if code doens't make it clear already)
+  // TODO/after: how about we move this block into getPageContextRequestUrl() ? We could then add comment explaining why/when .server.pageContext.json (if code doesn't make it clear already)
   /* TO-DO/soon/once: pass & use previousUrl
   pageContextUrl = modifyUrlSameOrigin(pageContextUrl, { search: { _vike: JSON.stringify({ previousUrl: pageContext.previousPageContext.urlOriginal }) } })
   */
