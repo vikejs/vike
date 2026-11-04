@@ -18,7 +18,7 @@ import { readPageContextJson } from './streamedValues.js'
 import type { PageContextConfig, PageFile } from '../../shared-server-client/getPageFiles.js'
 import { analyzePageServerSide } from '../../shared-server-client/getPageFiles/analyzePageServerSide.js'
 import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides.js'
-import { getPageContextRequestUrl } from '../../shared-server-client/getPageContextRequestUrl.js'
+import { type ErrorPageInfo, getPageContextRequestUrl } from '../../shared-server-client/getPageContextRequestUrl.js'
 import { getPageConfig } from '../../shared-server-client/page-configs/helpers.js'
 import { getConfigValueRuntime } from '../../shared-server-client/page-configs/getConfigValueRuntime.js'
 import { assertOnBeforeRenderHookReturn } from '../../shared-server-client/assertOnBeforeRenderHookReturn.js'
@@ -298,24 +298,9 @@ async function fetchPageContextFromServer(
     abortSignal: AbortSignal
     isClientSideNavigation?: boolean
   },
-  errorPageInfo?: { abortStatusCode?: number; abortReason?: unknown },
+  errorPageInfo?: ErrorPageInfo,
 ) {
-  let pageContextUrl: string | URL = getPageContextRequestUrl(
-    pageContext._urlRewrite ?? pageContext.urlOriginal,
-    !!errorPageInfo,
-  )
-  // TODO/after-merge: how about we move this block into getPageContextRequestUrl() ? We could then add comment explaining why/when .server.pageContext.json (if code doesn't make it clear already)
-  /* TO-DO/soon/once: pass & use previousUrl
-  pageContextUrl = modifyUrlSameOrigin(pageContextUrl, { search: { _vike: JSON.stringify({ previousUrl: pageContext.previousPageContext.urlOriginal }) } })
-  */
-  if (errorPageInfo) {
-    pageContextUrl = new URL(pageContextUrl, location.href)
-    pageContextUrl.searchParams.set(
-      '_vike',
-      // We don't use `import { stringify } from @brillout/json-serializer` to save client-side KBs
-      JSON.stringify({ errorPageInfo }),
-    )
-  }
+  const pageContextUrl = getPageContextRequestUrl(pageContext._urlRewrite ?? pageContext.urlOriginal, errorPageInfo)
 
   const errMsg = `${pageContextUrl} couldn't be fetched`
 
