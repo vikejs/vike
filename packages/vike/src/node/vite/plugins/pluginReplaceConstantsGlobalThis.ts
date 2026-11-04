@@ -54,10 +54,10 @@ function getConstants(isClientSide: boolean, isDev: boolean | null, vikeConfig: 
 
 // Support:
 // - The Vite process, early on
-//   - The Vike CLI, Vike's API and the Vite CLI name the command => `__VIKE__IS_DEV` is set
-//   - Otherwise (e.g. Vite's JS API or Vitest) => `__VIKE__IS_DEV` stays unset until the `config` hook below
-const viteContext = getViteContext_ifKnown()
-Object.assign(globalThis, getConstants(false, viteContext === null ? null : viteContext === 'dev', null))
+{
+  const viteContext = getViteContext_ifKnown()
+  Object.assign(globalThis, getConstants(false, viteContext === null ? null : viteContext === 'dev', null))
+}
 
 function pluginReplaceConstantsGlobalThis(): Plugin[] {
   let isDev: boolean
