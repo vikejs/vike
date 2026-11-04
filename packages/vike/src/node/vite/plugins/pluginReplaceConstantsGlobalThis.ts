@@ -55,7 +55,10 @@ function getConstants(isClientSide: boolean, isDev: boolean | null, vikeConfig: 
 
 // Support:
 // - The Vite process, early on
-Object.assign(globalThis, getConstants(false, getViteContext_ifKnown() === 'dev' || null, null))
+{
+  const viteContext = getViteContext_ifKnown()
+  Object.assign(globalThis, getConstants(false, viteContext === null ? null : viteContext === 'dev', null))
+}
 
 function pluginReplaceConstantsGlobalThis(): Plugin[] {
   let isDev: boolean
