@@ -30,11 +30,12 @@ declare global {
   var __VIKE__NO_EXTERNAL: true | undefined
 }
 
-type Constants = Record<`__VIKE__${string}`, boolean>
 // The values that stay the same inside this process
 const CONSTANTS = ['__VIKE__IS_DEBUG', '__VIKE__IS_DEV'] as const
 // The values that can change without a server restart
 const NEEDS_HMR = ['__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER'] as const
+
+type Constants = Record<`__VIKE__${string}`, boolean>
 function getConstants(isClientSide: boolean, isDev: boolean | null, vikeConfig: VikeConfigInternal | null): Constants {
   const constants: Constants = {
     __VIKE__IS_DEBUG: isDebug(),
