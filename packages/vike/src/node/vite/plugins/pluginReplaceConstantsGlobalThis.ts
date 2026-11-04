@@ -6,11 +6,16 @@ export type _LoadDeclareGlobal__VIKE__IS = never
 import type { Plugin } from 'vite'
 import { isDebug } from '../../../utils/debug.js'
 import { assert } from '../../../utils/assert.js'
+import { deepEqual } from '../../../utils/deepEqual.js'
+import { getGlobalObject } from '../../../utils/getGlobalObject.js'
 import { getVikeConfigInternal, type VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 import { getConfigValueBuildTime } from '../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
 import { isViteServerSide_configEnvironment } from '../shared/isViteServerSide.js'
 import { getViteContext_ifKnown } from '../../api/resolveViteConfigUser.js'
+import { isVikeCli } from '../../cli/context.js'
+import { isViteCli } from '../shared/isViteCli.js'
 import '../assertEnvVite.js'
+const globalObject = getGlobalObject<{ constantsPrevious?: unknown }>('pluginReplaceConstantsGlobalThis.ts', {})
 
 declare global {
   var __VIKE__IS_DEBUG: boolean
@@ -37,7 +42,14 @@ function getConstants(isClientSide: boolean, isDev: boolean | null, vikeConfig: 
     assert(vikeConfig)
     constants.__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER = isFetchPageContextOfErrorPageFromServer(vikeConfig)
   }
+  assertSameAsPrevious({ __VIKE__IS_DEBUG: constants.__VIKE__IS_DEBUG, __VIKE__IS_DEV: constants.__VIKE__IS_DEV })
   return constants
+}
+function assertSameAsPrevious(constants: unknown) {
+  // Only a Vike or Vite CLI process runs one command: Vite's JS API and Vike's API can run several, e.g. `build()` then `dev()`
+  if (!isVikeCli() && !isViteCli()) return
+  globalObject.constantsPrevious ??= constants
+  assert(deepEqual(globalObject.constantsPrevious, constants))
 }
 
 // Support:
