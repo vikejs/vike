@@ -38,7 +38,10 @@
 * fetch the error page's server-side `pageContext` upon client-side navigation (closes [#3634](https://github.com/vikejs/vike/issues/3634)) ([#3636](https://github.com/vikejs/vike/issues/3636)) ([f6e6ab8](https://github.com/vikejs/vike/commit/f6e6ab8468803dc505025e95dae6e1221b7ecec2))
 
 
-### BREAKING CHANGES
+### MINOR BREAKING CHANGES
+
+> [!NOTE]
+> We recommend ignoring `MINOR BREAKING CHANGES` unless this version breaks your app, see [Vike Versioning](https://vike.dev/versioning).
 
 * `throw redirect()` and `throw render()` aren't supported for the error page
 
