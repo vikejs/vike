@@ -96,7 +96,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
           }
 
           if (isDev) {
-            // Let getVirtualModuleCodeConstantsGlobalThis() inject NEEDS_HMR into Vike's virtual:vike:global-entry module
+            // Let getVirtualModuleCodeConstantsGlobalThis() inject NEEDS_HMR into the virtual:vike:global-entry module
             // - Because `define` doesn't support HMR
             NEEDS_HMR.forEach((key) => delete constants[key])
           }
