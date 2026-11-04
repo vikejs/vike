@@ -9,6 +9,7 @@ import { assert } from '../../../utils/assert.js'
 import { getVikeConfigInternal, type VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 import { getConfigValueBuildTime } from '../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
 import { isViteServerSide_configEnvironment } from '../shared/isViteServerSide.js'
+import { getViteContext_ifKnown } from '../../api/resolveViteConfigUser.js'
 import '../assertEnvVite.js'
 
 declare global {
@@ -41,7 +42,10 @@ function getConstants(isClientSide: boolean, isDev: boolean | null, vikeConfig: 
 
 // Support:
 // - The Vite process, early on
-Object.assign(globalThis, getConstants(false, null, null))
+//   - The Vike CLI, Vike's API and the Vite CLI name the command => `__VIKE__IS_DEV` is set
+//   - Otherwise (e.g. Vite's JS API or Vitest) => `__VIKE__IS_DEV` stays unset until the `config` hook below
+const viteContext = getViteContext_ifKnown()
+Object.assign(globalThis, getConstants(false, viteContext === null ? null : viteContext === 'dev', null))
 
 function pluginReplaceConstantsGlobalThis(): Plugin[] {
   let isDev: boolean
