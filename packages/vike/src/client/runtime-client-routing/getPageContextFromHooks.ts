@@ -301,7 +301,6 @@ async function fetchPageContextFromServer(
   errorPageInfo?: ErrorPageInfo,
 ) {
   const pageContextUrl = getPageContextRequestUrl(pageContext._urlRewrite ?? pageContext.urlOriginal, errorPageInfo)
-
   const errMsg = `${pageContextUrl} couldn't be fetched`
 
   // Navigating away aborts the request, including the streamed values that are still pending
