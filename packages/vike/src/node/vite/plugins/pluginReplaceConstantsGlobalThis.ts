@@ -1,5 +1,5 @@
 export { pluginReplaceConstantsGlobalThis }
-export { getCodeConstantsGlobalThis }
+export { getVirtualModuleCodeConstantsGlobalThis }
 // Trick for loading the `declare global` below
 export type _LoadDeclareGlobal__VIKE__IS = never
 
@@ -96,7 +96,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
           }
 
           if (isDev) {
-            // Let getCodeConstantsGlobalThis() inject NEEDS_HMR into Vike's virtual:vike:global-entry module
+            // Let getVirtualModuleCodeConstantsGlobalThis() inject NEEDS_HMR into Vike's virtual:vike:global-entry module
             // - Because `define` doesn't support HMR
             NEEDS_HMR.forEach((key) => delete constants[key])
           }
@@ -114,7 +114,11 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
 // Support:
 // - Dev with HMR
 // - node_modules/ packages with ssr.external
-function getCodeConstantsGlobalThis(isClientSide: boolean, isDev: boolean, vikeConfig: VikeConfigInternal): string[] {
+function getVirtualModuleCodeConstantsGlobalThis(
+  isClientSide: boolean,
+  isDev: boolean,
+  vikeConfig: VikeConfigInternal,
+): string[] {
   let constants = getConstants(isClientSide, isDev, vikeConfig)
   if (isClientSide) {
     if (isDev) {

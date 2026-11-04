@@ -8,7 +8,7 @@ import {
   FilesEnv,
   serializeConfigValues,
 } from '../../../../shared-server-client/page-configs/serialize/serializeConfigValues.js'
-import { getCodeConstantsGlobalThis } from '../pluginReplaceConstantsGlobalThis.js'
+import { getVirtualModuleCodeConstantsGlobalThis } from '../pluginReplaceConstantsGlobalThis.js'
 import type { RuntimeEnvRuntime } from './getConfigValueSourcesRelevant.js'
 import { getEnvironmentEntryPlaceholder } from '../build/pluginEnvironmentEntries.js'
 import '../../assertEnvVite.js'
@@ -28,7 +28,7 @@ async function generateVirtualFileGlobalEntry(runtimeEnv: RuntimeEnvRuntime, id:
   const { environmentName, isDev } = runtimeEnv
   const isForClientSide = environmentName === 'client'
 
-  lines.push(...getCodeConstantsGlobalThis(isForClientSide, isDev, vikeConfig))
+  lines.push(...getVirtualModuleCodeConstantsGlobalThis(isForClientSide, isDev, vikeConfig))
 
   lines.push('export const pageConfigsSerialized = [')
   lines.push(getCodePageConfigsSerialized(pageConfigs, runtimeEnv, importStatements, filesEnv))
