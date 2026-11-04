@@ -152,6 +152,8 @@ function testRun(
     await autoRetry(async () => {
       expect(await page.textContent('p')).toBe('Something went wrong.')
     })
+    // The error page's +data.server.ts ran on the server-side
+    expect(await page.textContent('#data')).toBe('{}')
     expectLog('PRERENDERED_GUARD_THROWS', { filter: (log) => log.logSource === 'Browser Error' })
     await ensureWasClientSideRouted('/pages/about')
   })

@@ -281,13 +281,8 @@ async function getPageContextFromHooksServer_errorPage(
   if (res.is404ServerSideRouted) return res
   const { pageContextFromServer } = res
 
-  if (
-    // A static file server ignores the `_vike` search param and answers with the pre-rendered page's own .pageContext.json
-    // - The error page is then rendered without its server-side pageContext
-    pageContextFromServer.pageId !== pageContext.pageId // `errorPageId`
-  ) {
-    return { _hasPageContextFromServer: false }
-  }
+  // This assert() might fail: https://github.com/vikejs/vike/pull/3636#issuecomment-6563275899
+  assert(pageContextFromServer.pageId === pageContext.pageId) // `errorPageId`
 
   // The server's abortReason is the copy that the `_vike` search param carried as JSON (e.g. a `Date` arrives as a
   // string) — we keep the client-side lossless version
@@ -305,7 +300,8 @@ async function fetchPageContextFromServer(
   },
   errorPageInfo?: { abortStatusCode?: number; abortReason?: unknown },
 ) {
-  let pageContextUrl: string | URL = getPageContextRequestUrl(pageContext._urlRewrite ?? pageContext.urlOriginal)
+  const url = pageContext._urlRewrite ?? pageContext.urlOriginal
+  let pageContextUrl: string | URL = getPageContextRequestUrl(url, !!errorPageInfo)
   /* TO-DO/soon/once: pass & use previousUrl
   pageContextUrl = modifyUrlSameOrigin(pageContextUrl, { search: { _vike: JSON.stringify({ previousUrl: pageContext.previousPageContext.urlOriginal }) } })
   */
