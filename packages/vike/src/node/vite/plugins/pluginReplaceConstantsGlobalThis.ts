@@ -9,6 +9,7 @@ import type { Plugin } from 'vite'
 import { isDebug } from '../../../utils/debug.js'
 import { assert } from '../../../utils/assert.js'
 import { getGlobalObject } from '../../../utils/getGlobalObject.js'
+import { pick } from '../../../utils/pick.js'
 import { getVikeConfigInternal, type VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 import { getConfigValueBuildTime } from '../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
 import { isViteServerSide_configEnvironment } from '../shared/isViteServerSide.js'
@@ -111,12 +112,20 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
 // - Dev with HMR
 // - node_modules/ packages with ssr.external
 function getCodeConstantsGlobalThis(isClientSide: boolean, isDev: boolean, vikeConfig: VikeConfigInternal): string[] {
-  if (isClientSide && !isDev) {
-    // - Save client-side KBs: in production, the `define` above is enough (since client code is always `noExternal`)
-    // - Not for server-side though, because of node_modules/ packages with ssr.external
-    return []
+  let constants = getConstants(isClientSide, isDev, vikeConfig)
+  if (isClientSide) {
+    if (!isDev) {
+      // Save client-side KBs: the `define` above is enough (since client code is always `noExternal`)
+      return []
+    } else {
+      // The NEEDS_HMR variables are excluded from `define` above
+      constants = pick(constants, NEEDS_HMR)
+      return getCode(constants)
+    }
+  } else {
+    // node_modules/ packages with ssr.external
+    return getCode(constants)
   }
-  return getCode(getConstants(isClientSide, isDev, vikeConfig))
 }
 
 // Utils
