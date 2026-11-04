@@ -79,7 +79,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
       // Support:
       // - Production with tree-shaking
       // - __VIKE__NO_EXTERNAL
-      // - Dev: code that reads constants before virtual:vike:global-entry assigns them, for example:
+      // - Code that reads constants before virtual:vike:global-entry assigns them, for example:
       //   - @brillout/picocolors on Cloudflare Workers
       //     https://github.com/brillout/picocolors/blob/c4fdac83c00578769b6edc5f57702b7f703fa640/picocolors.ts#L5-L6
       //   - vike-react-zustand imported by +client
