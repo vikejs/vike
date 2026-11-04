@@ -6,18 +6,11 @@ export type _LoadDeclareGlobal__VIKE__IS = never
 import type { Plugin } from 'vite'
 import { isDebug } from '../../../utils/debug.js'
 import { assert } from '../../../utils/assert.js'
-import { getGlobalObject } from '../../../utils/getGlobalObject.js'
 import { getVikeConfigInternal, type VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 import { getConfigValueBuildTime } from '../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
 import { isViteServerSide_configEnvironment } from '../shared/isViteServerSide.js'
 import { getViteContext_ifKnown } from '../../api/resolveViteConfigUser.js'
-import { isVikeCli } from '../../cli/context.js'
-import { isViteCli } from '../shared/isViteCli.js'
 import '../assertEnvVite.js'
-const globalObject = getGlobalObject<{ constantsPrevious: Record<string, boolean> }>(
-  'pluginReplaceConstantsGlobalThis.ts',
-  { constantsPrevious: {} },
-)
 
 declare global {
   var __VIKE__IS_DEBUG: boolean
@@ -44,25 +37,7 @@ function getConstants(isClientSide: boolean, isDev: boolean | null, vikeConfig: 
     assert(vikeConfig)
     constants.__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER = isFetchPageContextOfErrorPageFromServer(vikeConfig)
   }
-  assertConstantsSame(constants, isDev)
   return constants
-}
-function assertConstantsSame(constants: Constants, isDev: boolean | null) {
-  // Only a Vike or Vite CLI process runs one command: Vite's JS API and Vike's API can run several, e.g. `build()` then `dev()`
-  if (!isVikeCli() && !isViteCli()) return
-  const { constantsPrevious } = globalObject
-  for (const [name, value] of Object.entries(constants)) {
-    if (
-      // Differs between client and server
-      name === '__VIKE__IS_CLIENT' ||
-      // Changes in dev upon Vike config change, see getCodeConstantsGlobalThis()
-      (name === '__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER' && isDev)
-    )
-      continue
-    const valuePrevious = constantsPrevious[name]
-    assert(valuePrevious === undefined || valuePrevious === value, { name, value, valuePrevious })
-    constantsPrevious[name] = value
-  }
 }
 
 // Support:
