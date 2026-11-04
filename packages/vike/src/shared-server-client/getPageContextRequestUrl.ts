@@ -18,7 +18,7 @@ type ErrorPageInfo = { abortStatusCode?: number; abortReason?: unknown }
 // See also node/renderPageServer/handlePageContextRequestUrl.ts
 function getPageContextRequestUrl(url: string, errorPageInfo?: ErrorPageInfo): string {
   const fileExtension = errorPageInfo ? pageContextJsonFileExtension_server : pageContextJsonFileExtension
-  const pageContextRequestUrl = urlToFile(url, fileExtension, doNotCreateExtraDirectory)
+  let pageContextRequestUrl = urlToFile(url, fileExtension, doNotCreateExtraDirectory)
   /* TO-DO/soon/once: pass & use previousUrl
   pageContextRequestUrl = modifyUrlSameOrigin(pageContextRequestUrl, { search: { _vike: JSON.stringify({ previousUrl: pageContext.previousPageContext.urlOriginal }) } })
   */
@@ -29,7 +29,7 @@ function getPageContextRequestUrl(url: string, errorPageInfo?: ErrorPageInfo): s
       // We don't use `import { stringify } from @brillout/json-serializer` to save client-side KBs
       JSON.stringify({ errorPageInfo }),
     )
-    return urlObject.href
+    pageContextRequestUrl = urlObject.href
   }
   return pageContextRequestUrl
 }
