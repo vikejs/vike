@@ -95,8 +95,11 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
             __VIKE__NO_EXTERNAL: true,
           }
 
-          // Let getCodeConstantsGlobalThis() inject the Vike config's value in Vike's virtual:vike:global-entry module for HMR support
-          if (isDev) NEEDS_HMR.forEach((key) => delete constants[key])
+          if (isDev) {
+            // Let getCodeConstantsGlobalThis() inject NEEDS_HMR into Vike's virtual:vike:global-entry module
+            // - Because `define` doesn't support HMR
+            NEEDS_HMR.forEach((key) => delete constants[key])
+          }
 
           return {
             consumer: isClientSide ? 'client' : 'server',
@@ -118,7 +121,7 @@ function getCodeConstantsGlobalThis(isClientSide: boolean, isDev: boolean, vikeC
       // Save client-side KBs: the `define` above is enough (since client code is always `noExternal`)
       return []
     } else {
-      // The NEEDS_HMR variables are excluded from `define` above
+      // NEEDS_HMR is excluded from `define` above
       constants = pick(constants, NEEDS_HMR)
       return getCode(constants)
     }
