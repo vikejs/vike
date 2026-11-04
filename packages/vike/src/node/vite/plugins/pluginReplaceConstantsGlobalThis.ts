@@ -6,7 +6,6 @@ export type _LoadDeclareGlobal__VIKE__IS = never
 import type { Plugin } from 'vite'
 import { isDebug } from '../../../utils/debug.js'
 import { assert } from '../../../utils/assert.js'
-import { deepEqual } from '../../../utils/deepEqual.js'
 import { getGlobalObject } from '../../../utils/getGlobalObject.js'
 import { getVikeConfigInternal, type VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 import { getConfigValueBuildTime } from '../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
@@ -15,7 +14,7 @@ import { getViteContext_ifKnown } from '../../api/resolveViteConfigUser.js'
 import { isVikeCli } from '../../cli/context.js'
 import { isViteCli } from '../shared/isViteCli.js'
 import '../assertEnvVite.js'
-const globalObject = getGlobalObject<{ constantsPrevious?: unknown }>('pluginReplaceConstantsGlobalThis.ts', {})
+const globalObject = getGlobalObject<{ constantsFirst?: Constants }>('pluginReplaceConstantsGlobalThis.ts', {})
 
 declare global {
   var __VIKE__IS_DEBUG: boolean
@@ -41,22 +40,22 @@ function getConstants(isClientSide: boolean, isDev: boolean | null, vikeConfig: 
   if (isClientSide) {
     assert(vikeConfig)
     constants.__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER = isFetchPageContextOfErrorPageFromServer(vikeConfig)
+  } else {
+    assertSameAsFirst(constants)
   }
-  assertSameAsPrevious({ __VIKE__IS_DEBUG: constants.__VIKE__IS_DEBUG, __VIKE__IS_DEV: constants.__VIKE__IS_DEV })
   return constants
 }
-function assertSameAsPrevious(constants: unknown) {
-  // Only a Vike or Vite CLI process runs one command: Vite's JS API and Vike's API can run several, e.g. `build()` then `dev()`
-  if (!isVikeCli() && !isViteCli()) return
-  globalObject.constantsPrevious ??= constants
-  assert(deepEqual(globalObject.constantsPrevious, constants))
+function assertSameAsFirst(constants: Constants) {
+  // The first object has `__VIKE__IS_DEV` only if the process's command is known that early
+  const constantsFirst = (globalObject.constantsFirst ??= constants)
+  assert(Object.entries(constantsFirst).every(([key, value]) => constants[key as keyof Constants] === value))
 }
 
 // Support:
 // - The Vite process, early on
-//   - The Vike CLI, Vike's API and the Vite CLI name the command => `__VIKE__IS_DEV` is set
-//   - Otherwise (e.g. Vite's JS API or Vitest) => `__VIKE__IS_DEV` stays unset until the `config` hook below
-const viteContext = getViteContext_ifKnown()
+//   - The Vike CLI and the Vite CLI run one command => `__VIKE__IS_DEV` is set
+//   - Otherwise (Vike's API, Vite's JS API, Vitest) a process can run several => `__VIKE__IS_DEV` stays unset until the `config` hook below
+const viteContext = isVikeCli() || isViteCli() ? getViteContext_ifKnown() : null
 Object.assign(globalThis, getConstants(false, viteContext === null ? null : viteContext === 'dev', null))
 
 function pluginReplaceConstantsGlobalThis(): Plugin[] {
