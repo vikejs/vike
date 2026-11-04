@@ -8,6 +8,7 @@ import { isDebug } from '../../../utils/debug.js'
 import { assert } from '../../../utils/assert.js'
 import { deepEqual } from '../../../utils/deepEqual.js'
 import { getGlobalObject } from '../../../utils/getGlobalObject.js'
+import { pick } from '../../../utils/pick.js'
 import { getVikeConfigInternal, type VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 import { getConfigValueBuildTime } from '../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
 import { isViteServerSide_configEnvironment } from '../shared/isViteServerSide.js'
@@ -28,6 +29,10 @@ declare global {
 }
 
 type Constants = Record<`__VIKE__${string}`, boolean>
+// The values that stay the same in a process
+const CONSTANTS = ['__VIKE__IS_DEBUG', '__VIKE__IS_DEV'] as const
+// The values that can change without a server restart
+const NEEDS_HMR = ['__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER'] as const
 function getConstants(isClientSide: boolean, isDev: boolean | null, vikeConfig: VikeConfigInternal | null): Constants {
   const constants: Constants = {
     __VIKE__IS_DEBUG: isDebug(),
@@ -44,12 +49,7 @@ function getConstants(isClientSide: boolean, isDev: boolean | null, vikeConfig: 
   return constants
 }
 function assertSameAsPrevious(constants: Constants) {
-  // Not constant: `__VIKE__IS_CLIENT` differs per environment, and the error page's constant changes upon a dev edit
-  const {
-    __VIKE__IS_CLIENT: _isClient,
-    __VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER: _isFetch,
-    ...constantsCompared
-  } = constants
+  const constantsCompared = pick(constants, CONSTANTS)
   const constantsPrevious = globalObject.constantsPrevious
   // A value unset on either side isn't compared: `__VIKE__IS_DEV` can be unset early on
   assert(deepEqual({ ...constantsPrevious, ...constantsCompared }, { ...constantsCompared, ...constantsPrevious }))
@@ -96,7 +96,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
           }
           if (isDev) {
             // Let getCodeConstantsGlobalThis() inject the Vike config's value in Vike's virtual:vike:global-entry module for HMR support
-            delete constants.__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER
+            NEEDS_HMR.forEach((key) => delete constants[key])
           }
           return {
             consumer: isClientSide ? 'client' : 'server',
