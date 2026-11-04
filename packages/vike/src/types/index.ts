@@ -72,7 +72,7 @@ export type { InjectFilterEntry } from '../server/runtime/renderPageServer/html/
 
 export { defineConfig } from './defineConfig.js'
 
-export type { _LoadDeclareGlobal__VIKE__IS } from '../node/vite/plugins/pluginReplaceConstantsGlobalThis.js'
+export type { _LoadDeclareGlobal__VIKE__IS } from '../node/vite/plugins/pluginReplaceGlobalVariables.js'
 
 // TO-DO/next-major-release: remove
 import type { ConfigEnv } from './PageConfig.js'

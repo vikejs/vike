@@ -1,9 +1,7 @@
-export { pluginReplaceConstantsGlobalThis }
-export { getVirtualModuleCodeConstantsGlobalThis }
+export { pluginReplaceGlobalVariables }
+export { getVirtualModuleCodeGlobalVariables }
 // Trick for loading the `declare global` below
 export type _LoadDeclareGlobal__VIKE__IS = never
-
-// TODO/after-merge rename ConstantsGlobalThis to GlobalVariables (change other names accordingly)
 
 import type { Plugin } from 'vite'
 import { isDebug } from '../../../utils/debug.js'
@@ -15,9 +13,12 @@ import { getConfigValueBuildTime } from '../../../shared-server-client/page-conf
 import { isViteServerSide_configEnvironment } from '../shared/isViteServerSide.js'
 import { getViteContext_ifKnown } from '../../api/resolveViteConfigUser.js'
 import '../assertEnvVite.js'
-const globalObject = getGlobalObject<{ constantsBefore: Partial<Constants> }>('pluginReplaceConstantsGlobalThis.ts', {
-  constantsBefore: {},
-})
+const globalObject = getGlobalObject<{ globalVariablesBefore: Partial<GlobalVariables> }>(
+  'pluginReplaceGlobalVariables.ts',
+  {
+    globalVariablesBefore: {},
+  },
+)
 
 declare global {
   var __VIKE__IS_DEBUG: boolean
@@ -36,35 +37,40 @@ const CONSTANTS = ['__VIKE__IS_DEBUG', '__VIKE__IS_DEV'] as const
 // Might change without a server restart
 const NEEDS_HMR = ['__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER'] as const
 
-type Constants = Record<`__VIKE__${string}`, boolean>
-function getConstants(isClientSide: boolean, isDev: boolean | null, vikeConfig: VikeConfigInternal | null): Constants {
-  const constants: Constants = {
+type GlobalVariables = Record<`__VIKE__${string}`, boolean>
+function getGlobalVariables(
+  isClientSide: boolean,
+  isDev: boolean | null,
+  vikeConfig: VikeConfigInternal | null,
+): GlobalVariables {
+  const globalVariables: GlobalVariables = {
     __VIKE__IS_DEBUG: isDebug(),
     __VIKE__IS_CLIENT: isClientSide,
   }
   if (isDev !== null) {
-    constants.__VIKE__IS_DEV = isDev
+    globalVariables.__VIKE__IS_DEV = isDev
   }
   if (isClientSide) {
     assert(vikeConfig)
-    constants.__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER = isFetchPageContextOfErrorPageFromServer(vikeConfig)
+    globalVariables.__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER =
+      isFetchPageContextOfErrorPageFromServer(vikeConfig)
   }
-  assertSameAsBefore(constants)
-  return constants
+  assertSameAsBefore(globalVariables)
+  return globalVariables
 }
 
 // Support:
 // - The Vite process, early on
 {
   const viteContext = getViteContext_ifKnown()
-  Object.assign(globalThis, getConstants(false, viteContext === null ? null : viteContext === 'dev', null))
+  Object.assign(globalThis, getGlobalVariables(false, viteContext === null ? null : viteContext === 'dev', null))
 }
 
-function pluginReplaceConstantsGlobalThis(): Plugin[] {
+function pluginReplaceGlobalVariables(): Plugin[] {
   let isDev: boolean
   return [
     {
-      name: 'vike:pluginReplaceConstantsGlobalThis',
+      name: 'vike:pluginReplaceGlobalVariables',
 
       // Support:
       // - The Vite process
@@ -72,14 +78,14 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
         handler(config) {
           assert(typeof config._isDev === 'boolean')
           isDev = config._isDev
-          Object.assign(globalThis, getConstants(false, isDev, null))
+          Object.assign(globalThis, getGlobalVariables(false, isDev, null))
         },
       },
 
       // Support:
       // - Production with tree-shaking
       // - __VIKE__NO_EXTERNAL
-      // - Code that reads constants before virtual:vike:global-entry assigns them, for example:
+      // - Code that reads global variables before virtual:vike:global-entry assigns them, for example:
       //   - @brillout/picocolors on Cloudflare Workers
       //     https://github.com/brillout/picocolors/blob/c4fdac83c00578769b6edc5f57702b7f703fa640/picocolors.ts#L5-L6
       //   - vike-react-zustand imported by +client (theoretical example, not a real-world example)
@@ -90,20 +96,20 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
           const isClientSide = !isViteServerSide_configEnvironment(name, config)
           const vikeConfig = await getVikeConfigInternal()
 
-          const constants: Constants = {
-            ...getConstants(isClientSide, isDev, vikeConfig),
+          const globalVariables: GlobalVariables = {
+            ...getGlobalVariables(isClientSide, isDev, vikeConfig),
             __VIKE__NO_EXTERNAL: true,
           }
 
           if (isDev) {
-            // Let getVirtualModuleCodeConstantsGlobalThis() inject NEEDS_HMR into the virtual:vike:global-entry module
+            // Let getVirtualModuleCodeGlobalVariables() inject NEEDS_HMR into the virtual:vike:global-entry module
             // - Because `define` doesn't support HMR
-            NEEDS_HMR.forEach((key) => delete constants[key])
+            NEEDS_HMR.forEach((key) => delete globalVariables[key])
           }
 
           return {
             consumer: isClientSide ? 'client' : 'server',
-            define: getDefine(constants),
+            define: getDefine(globalVariables),
           }
         },
       },
@@ -114,37 +120,37 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
 // Support:
 // - Dev with HMR
 // - node_modules/ packages with ssr.external
-function getVirtualModuleCodeConstantsGlobalThis(
+function getVirtualModuleCodeGlobalVariables(
   isClientSide: boolean,
   isDev: boolean,
   vikeConfig: VikeConfigInternal,
 ): string[] {
-  let constants = getConstants(isClientSide, isDev, vikeConfig)
+  let globalVariables = getGlobalVariables(isClientSide, isDev, vikeConfig)
   if (isClientSide) {
     if (isDev) {
       // NEEDS_HMR is excluded from `define` above
-      constants = pick(constants, NEEDS_HMR)
-      return getCode(constants)
+      globalVariables = pick(globalVariables, NEEDS_HMR)
+      return getCode(globalVariables)
     } else {
       // Save client-side KBs: the `define` above is enough (since client code is always `noExternal`)
       return []
     }
   } else {
     // node_modules/ packages with ssr.external
-    return getCode(constants)
+    return getCode(globalVariables)
   }
 }
 
 // Utils
-function assertSameAsBefore(constants: Constants) {
-  const { constantsBefore } = globalObject
+function assertSameAsBefore(globalVariables: GlobalVariables) {
+  const { globalVariablesBefore } = globalObject
   for (const key of CONSTANTS) {
-    const now = constants[key]
+    const now = globalVariables[key]
     assert(now !== null)
     if (now === undefined) continue
-    const prev = constantsBefore[key]
+    const prev = globalVariablesBefore[key]
     assert(prev === undefined || prev === now)
-    constantsBefore[key] ??= now
+    globalVariablesBefore[key] ??= now
   }
 }
 function isFetchPageContextOfErrorPageFromServer(vikeConfig: VikeConfigInternal) {
@@ -152,11 +158,11 @@ function isFetchPageContextOfErrorPageFromServer(vikeConfig: VikeConfigInternal)
   if (!errorPage || getConfigValueBuildTime(errorPage, 'hasServerOnlyHook', 'boolean')?.value !== true) return false
   return !vikeConfig.prerenderContext.isPrerenderingEnabledForAllPages
 }
-function getDefine(constants: Constants): Record<string, string> {
+function getDefine(globalVariables: GlobalVariables): Record<string, string> {
   return Object.fromEntries(
-    Object.entries(constants).map(([name, value]) => [`globalThis.${name}`, JSON.stringify(value)]),
+    Object.entries(globalVariables).map(([name, value]) => [`globalThis.${name}`, JSON.stringify(value)]),
   )
 }
-function getCode(constants: Constants): string[] {
-  return Object.entries(getDefine(constants)).map(([key, value]) => `${key} = ${value};`)
+function getCode(globalVariables: GlobalVariables): string[] {
+  return Object.entries(getDefine(globalVariables)).map(([key, value]) => `${key} = ${value};`)
 }
