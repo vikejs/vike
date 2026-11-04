@@ -16,7 +16,7 @@ import '../../assertEnvServer.js'
 const pageContextJsonUrls = [
   `/index${pageContextJsonFileExtension_server}`,
   `/index${pageContextJsonFileExtension}`,
-]
+] as const
 
 type UrlParsed = ReturnType<typeof parseUrl>
 
