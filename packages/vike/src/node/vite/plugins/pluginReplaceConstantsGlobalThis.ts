@@ -117,13 +117,13 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
 function getCodeConstantsGlobalThis(isClientSide: boolean, isDev: boolean, vikeConfig: VikeConfigInternal): string[] {
   let constants = getConstants(isClientSide, isDev, vikeConfig)
   if (isClientSide) {
-    if (!isDev) {
-      // Save client-side KBs: the `define` above is enough (since client code is always `noExternal`)
-      return []
-    } else {
+    if (isDev) {
       // NEEDS_HMR is excluded from `define` above
       constants = pick(constants, NEEDS_HMR)
       return getCode(constants)
+    } else {
+      // Save client-side KBs: the `define` above is enough (since client code is always `noExternal`)
+      return []
     }
   } else {
     // node_modules/ packages with ssr.external
