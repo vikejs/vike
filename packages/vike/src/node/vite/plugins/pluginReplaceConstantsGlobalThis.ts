@@ -29,34 +29,39 @@ declare global {
 
 type Constants = Record<`__VIKE__${string}`, boolean>
 function getConstants(isClientSide: boolean, isDev: boolean | null, vikeConfig: VikeConfigInternal | null): Constants {
-  const viteContext = getViteContext_ifKnown()
-  const isDevOfCommand = viteContext === null ? null : viteContext === 'dev'
-  assert(isDev === null || isDevOfCommand === null || isDev === isDevOfCommand)
-  isDev ??= isDevOfCommand
-  const constantsProcess: Constants = { __VIKE__IS_DEBUG: isDebug() }
-  if (isDev !== null) {
-    constantsProcess.__VIKE__IS_DEV = isDev
+  const constants: Constants = {
+    __VIKE__IS_DEBUG: isDebug(),
+    __VIKE__IS_CLIENT: isClientSide,
   }
-  assertSameAsPrevious(constantsProcess)
-  const constants: Constants = { ...constantsProcess, __VIKE__IS_CLIENT: isClientSide }
+  if (isDev !== null) {
+    constants.__VIKE__IS_DEV = isDev
+  }
   if (isClientSide) {
     assert(vikeConfig)
     constants.__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER = isFetchPageContextOfErrorPageFromServer(vikeConfig)
   }
+  assertSameAsPrevious(constants)
   return constants
 }
 function assertSameAsPrevious(constants: Constants) {
-  // `__VIKE__IS_DEV` can be unset early on, and is then set once
-  const constantsPrevious = { ...constants, ...globalObject.constantsPrevious }
-  assert(deepEqual(constantsPrevious, constants))
-  globalObject.constantsPrevious = constantsPrevious
+  // Not constant: `__VIKE__IS_CLIENT` differs per environment, and the error page's constant changes upon a dev edit
+  const {
+    __VIKE__IS_CLIENT: _isClient,
+    __VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER: _isFetch,
+    ...constantsCompared
+  } = constants
+  const constantsPrevious = globalObject.constantsPrevious
+  // A value unset on either side isn't compared: `__VIKE__IS_DEV` can be unset early on
+  assert(deepEqual({ ...constantsPrevious, ...constantsCompared }, { ...constantsCompared, ...constantsPrevious }))
+  globalObject.constantsPrevious = { ...constantsPrevious, ...constantsCompared }
 }
 
 // Support:
 // - The Vite process, early on
 //   - The Vike CLI, Vike's API and the Vite CLI name the command => `__VIKE__IS_DEV` is set
 //   - Otherwise (e.g. Vite's JS API or Vitest) => `__VIKE__IS_DEV` stays unset until the `config` hook below
-Object.assign(globalThis, getConstants(false, null, null))
+const viteContext = getViteContext_ifKnown()
+Object.assign(globalThis, getConstants(false, viteContext === null ? null : viteContext === 'dev', null))
 
 function pluginReplaceConstantsGlobalThis(): Plugin[] {
   let isDev: boolean
