@@ -86,12 +86,15 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
         async handler(name, config) {
           const isClientSide = !isViteServerSide_configEnvironment(name, config)
           const vikeConfig = await getVikeConfigInternal()
+
           const constants: Constants = {
             ...getConstants(isClientSide, isDev, vikeConfig),
             __VIKE__NO_EXTERNAL: true,
           }
+
           // Let getCodeConstantsGlobalThis() inject the Vike config's value in Vike's virtual:vike:global-entry module for HMR support
           if (isDev) NEEDS_HMR.forEach((key) => delete constants[key])
+
           return {
             consumer: isClientSide ? 'client' : 'server',
             define: getDefine(constants),
