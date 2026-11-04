@@ -50,17 +50,6 @@ function getConstants(isClientSide: boolean, isDev: boolean | null, vikeConfig: 
   assertSameAsBefore(constants)
   return constants
 }
-function assertSameAsBefore(constants: Constants) {
-  const { constantsBefore } = globalObject
-  for (const key of CONSTANTS) {
-    const now = constants[key]
-    assert(now !== null)
-    if (now === undefined) continue
-    const prev = constantsBefore[key]
-    assert(prev === undefined || prev === now)
-    constantsBefore[key] ??= now
-  }
-}
 
 // Support:
 // - The Vite process, early on
@@ -127,6 +116,17 @@ function getCodeConstantsGlobalThis(isClientSide: boolean, isDev: boolean, vikeC
 }
 
 // Utils
+function assertSameAsBefore(constants: Constants) {
+  const { constantsBefore } = globalObject
+  for (const key of CONSTANTS) {
+    const now = constants[key]
+    assert(now !== null)
+    if (now === undefined) continue
+    const prev = constantsBefore[key]
+    assert(prev === undefined || prev === now)
+    constantsBefore[key] ??= now
+  }
+}
 function isFetchPageContextOfErrorPageFromServer(vikeConfig: VikeConfigInternal) {
   const errorPage = vikeConfig._pageConfigs.find((pageConfig) => pageConfig.isErrorPage)
   if (!errorPage || getConfigValueBuildTime(errorPage, 'hasServerOnlyHook', 'boolean')?.value !== true) return false
