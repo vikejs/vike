@@ -14,8 +14,8 @@ import { isObject } from '../../../utils/isObject.js'
 import { parseUrl } from '../../../utils/parseUrl.js'
 import '../../assertEnvServer.js'
 const pageContextJsonFileExtensionUrls = [
-  `/index${pageContextJsonFileExtension}`,
   `/index${pageContextJsonFileExtension_server}`,
+  `/index${pageContextJsonFileExtension}`,
 ]
 
 type UrlParsed = ReturnType<typeof parseUrl>
