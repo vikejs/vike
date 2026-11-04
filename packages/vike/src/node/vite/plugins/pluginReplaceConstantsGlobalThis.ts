@@ -8,7 +8,7 @@ import { isDebug } from '../../../utils/debug.js'
 import { assert } from '../../../utils/assert.js'
 import { getVikeConfigInternal, type VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 import { getConfigValueBuildTime } from '../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
-import { isViteServerSide_configEnvironment } from '../shared/isViteServerSide.js'
+import { isViteServerSide_applyToEnvironment, isViteServerSide_configEnvironment } from '../shared/isViteServerSide.js'
 import '../assertEnvVite.js'
 
 declare global {
@@ -85,16 +85,24 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
         },
       },
     },
+    {
+      name: 'vike:pluginReplaceConstantsGlobalThis:chunks',
+      apply: 'build',
+      applyToEnvironment: isViteServerSide_applyToEnvironment,
+      // Support:
+      // - Production with ssr.external: eager + files run before virtual:vike:global-entry's own code, so every chunk sets the constants first
+      intro: () => getCode(getConstants(false, false, null)).join('\n'),
+    },
   ]
 }
 
 // Support:
 // - Dev with HMR
-// - node_modules/ packages with ssr.external
+// - Dev with ssr.external
 function getCodeConstantsGlobalThis(isClientSide: boolean, isDev: boolean, vikeConfig: VikeConfigInternal): string[] {
-  if (isClientSide && !isDev) {
-    // - Save client-side KBs: in production, the `define` above is enough (since client code is always `noExternal`)
-    // - Not for server-side though, because of node_modules/ packages with ssr.external
+  if (!isDev) {
+    // - Client: the `define` above is enough (since client code is always `noExternal`)
+    // - Server: every chunk sets them, see vike:pluginReplaceConstantsGlobalThis:chunks
     return []
   }
   return getCode(getConstants(isClientSide, isDev, vikeConfig))
