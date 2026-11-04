@@ -48,7 +48,7 @@ function isMatch(urlParsed: UrlParsed): boolean {
   return !!getMatch(pathname)
 }
 
-function getMatch(pathname: string): string | undefined {
+function getMatch(pathname: string) {
   return pageContextJsonUrls.find((fileExtensionUrl) => pathname.endsWith(fileExtensionUrl))
 }
 
@@ -56,9 +56,9 @@ function processUrl(urlParsed: UrlParsed, url: string) {
   // We cannot use `urlParsed.pathname` because it would break the `urlParsed.pathnameOriginal` value of subsequent `parseUrl()` calls.
   const { pathnameOriginal, search } = urlParsed
   assert(doNotCreateExtraDirectory === false)
-  const fileExtensionUrl = getMatch(pathnameOriginal)
-  assert(fileExtensionUrl, { url })
-  let pathnameModified = slice(pathnameOriginal, 0, -1 * fileExtensionUrl.length)
+  const fileUrl = getMatch(pathnameOriginal)
+  assert(fileUrl, { url })
+  let pathnameModified = slice(pathnameOriginal, 0, -1 * fileUrl.length)
   if (pathnameModified === '') pathnameModified = '/'
   const searchVikeArgs = search?._vike
   const urlWithoutPageContextRequestSuffix = modifyUrlSameOrigin(url, {
