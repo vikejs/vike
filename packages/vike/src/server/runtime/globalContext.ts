@@ -152,7 +152,7 @@ function assertGlobalContextIsDefined() {
  */
 async function getGlobalContext(): Promise<GlobalContext> {
   debug('getGlobalContext()')
-  // Let virtual:vike:global-entry set globalThis.__VIKE__IS_DEV first: eager + files calling getGlobalContext() at module level run before that code
+  // Let the server entry finish first: eager + files calling getGlobalContext() at module level run before the entry sets what isProdOptional() reads
   await Promise.resolve()
   const isProduction = isProdOptional()
   // This assertion cannot fail for vike-server users (because when using vike-server it's guaranteed that globalObject.isProduction is set before executing any user-land code and any Vike extension code).
