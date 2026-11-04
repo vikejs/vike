@@ -300,7 +300,11 @@ async function fetchPageContextFromServer(
   },
   errorPageInfo?: { abortStatusCode?: number; abortReason?: unknown },
 ) {
-  let pageContextUrl: string | URL = getPageContextRequestUrl(pageContext._urlRewrite ?? pageContext.urlOriginal)
+  let pageContextUrl: string | URL = getPageContextRequestUrl(
+    pageContext._urlRewrite ?? pageContext.urlOriginal,
+    !!errorPageInfo,
+  )
+  // TODO/after-merge: how about we move this block into getPageContextRequestUrl() ? We could then add comment explaining why/when .server.pageContext.json (if code doesn't make it clear already)
   /* TO-DO/soon/once: pass & use previousUrl
   pageContextUrl = modifyUrlSameOrigin(pageContextUrl, { search: { _vike: JSON.stringify({ previousUrl: pageContext.previousPageContext.urlOriginal }) } })
   */
@@ -312,6 +316,7 @@ async function fetchPageContextFromServer(
       JSON.stringify({ errorPageInfo }),
     )
   }
+
   const errMsg = `${pageContextUrl} couldn't be fetched`
 
   // Navigating away aborts the request, including the streamed values that are still pending
