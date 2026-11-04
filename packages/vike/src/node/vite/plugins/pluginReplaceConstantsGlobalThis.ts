@@ -64,6 +64,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
   return [
     {
       name: 'vike:pluginReplaceConstantsGlobalThis',
+
       // Support:
       // - The Vite process
       config: {
@@ -73,6 +74,7 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
           Object.assign(globalThis, getConstants(false, isDev, null))
         },
       },
+
       // Support:
       // - Production with tree-shaking
       // - __VIKE__NO_EXTERNAL
