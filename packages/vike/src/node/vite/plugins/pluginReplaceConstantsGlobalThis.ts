@@ -6,15 +6,15 @@ export type _LoadDeclareGlobal__VIKE__IS = never
 import type { Plugin } from 'vite'
 import { isDebug } from '../../../utils/debug.js'
 import { assert } from '../../../utils/assert.js'
-import { deepEqual } from '../../../utils/deepEqual.js'
 import { getGlobalObject } from '../../../utils/getGlobalObject.js'
-import { pick } from '../../../utils/pick.js'
 import { getVikeConfigInternal, type VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 import { getConfigValueBuildTime } from '../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
 import { isViteServerSide_configEnvironment } from '../shared/isViteServerSide.js'
 import { getViteContext_ifKnown } from '../../api/resolveViteConfigUser.js'
 import '../assertEnvVite.js'
-const globalObject = getGlobalObject<{ constantsPrevious?: Constants }>('pluginReplaceConstantsGlobalThis.ts', {})
+const globalObject = getGlobalObject<{ constantsPrevious: Partial<Constants> }>('pluginReplaceConstantsGlobalThis.ts', {
+  constantsPrevious: {},
+})
 
 declare global {
   var __VIKE__IS_DEBUG: boolean
@@ -49,11 +49,15 @@ function getConstants(isClientSide: boolean, isDev: boolean | null, vikeConfig: 
   return constants
 }
 function assertSameAsPrevious(constants: Constants) {
-  const constantsCompared = pick(constants, CONSTANTS)
-  const constantsPrevious = globalObject.constantsPrevious
-  // A value unset on either side isn't compared: `__VIKE__IS_DEV` can be unset early on
-  assert(deepEqual({ ...constantsPrevious, ...constantsCompared }, { ...constantsCompared, ...constantsPrevious }))
-  globalObject.constantsPrevious = { ...constantsPrevious, ...constantsCompared }
+  const { constantsPrevious } = globalObject
+  for (const key of CONSTANTS) {
+    const value = constants[key]
+    // `__VIKE__IS_DEV` can be unset early on
+    if (value === undefined) continue
+    const valuePrevious = constantsPrevious[key]
+    assert(valuePrevious === undefined || valuePrevious === value)
+    constantsPrevious[key] = value
+  }
 }
 
 // Support:
