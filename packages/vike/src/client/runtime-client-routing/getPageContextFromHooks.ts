@@ -300,8 +300,10 @@ async function fetchPageContextFromServer(
   },
   errorPageInfo?: { abortStatusCode?: number; abortReason?: unknown },
 ) {
-  const url = pageContext._urlRewrite ?? pageContext.urlOriginal
-  let pageContextUrl: string | URL = getPageContextRequestUrl(url, !!errorPageInfo)
+  let pageContextUrl: string | URL = getPageContextRequestUrl(
+    pageContext._urlRewrite ?? pageContext.urlOriginal,
+    !!errorPageInfo,
+  )
   /* TO-DO/soon/once: pass & use previousUrl
   pageContextUrl = modifyUrlSameOrigin(pageContextUrl, { search: { _vike: JSON.stringify({ previousUrl: pageContext.previousPageContext.urlOriginal }) } })
   */
