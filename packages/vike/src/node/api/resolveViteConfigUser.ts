@@ -220,7 +220,6 @@ type ViteContext = 'build' | 'preview' | 'dev'
 function getViteContext(): ViteContext {
   const viteContext = getViteContext_ifKnown()
   if (viteContext) return viteContext
-
   // Third-party CLIs.
   // - Component development (e.g. Storybook) => let's consider it development
   // - Testing (e.g. Vitest) => let's consider it development
