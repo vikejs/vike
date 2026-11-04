@@ -1,6 +1,7 @@
 export { resolveViteConfigUser }
 export { isResolvingViteConfigUser }
 export { getVikeConfigInternalEarly }
+export { getViteContext_ifKnown }
 export { getViteRoot }
 export { assertViteRoot }
 export { normalizeViteRoot }
@@ -217,6 +218,14 @@ async function loadViteConfigFile(viteConfigUser: InlineConfig | undefined, vite
 
 type ViteContext = 'build' | 'preview' | 'dev'
 function getViteContext(): ViteContext {
+  const viteContext = getViteContext_ifKnown()
+  if (viteContext) return viteContext
+  // Third-party CLIs.
+  // - Component development (e.g. Storybook) => let's consider it development
+  // - Testing (e.g. Vitest) => let's consider it development
+  return 'dev'
+}
+function getViteContext_ifKnown(): ViteContext | null {
   const vikeApiOperation = getVikeApiOperation()
   const viteCommand = getViteCliCommand()
   assert(!(viteCommand && vikeApiOperation))
@@ -234,10 +243,7 @@ function getViteContext(): ViteContext {
     return 'preview'
   }
 
-  // Third-party CLIs.
-  // - Component development (e.g. Storybook) => let's consider it development
-  // - Testing (e.g. Vitest) => let's consider it development
-  return 'dev'
+  return null
 }
 function getViteContextWithOperation(operation: ApiOperation): ViteContext {
   if (operation === 'build' || operation === 'prerender') {

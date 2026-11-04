@@ -8,7 +8,7 @@ import {
   FilesEnv,
   serializeConfigValues,
 } from '../../../../shared-server-client/page-configs/serialize/serializeConfigValues.js'
-import { VIRTUAL_FILE_ID_constantsGlobalThis, getConstantsFromVikeConfig } from '../pluginReplaceConstantsGlobalThis.js'
+import { getVirtualModuleCodeConstantsGlobalThis } from '../pluginReplaceConstantsGlobalThis.js'
 import type { RuntimeEnvRuntime } from './getConfigValueSourcesRelevant.js'
 import { getEnvironmentEntryPlaceholder } from '../build/pluginEnvironmentEntries.js'
 import '../../assertEnvVite.js'
@@ -20,18 +20,7 @@ async function generateVirtualFileGlobalEntry(runtimeEnv: RuntimeEnvRuntime, id:
     _pageConfigGlobal: pageConfigGlobal,
     _additionalEnvironmentNames: additionalEnvironmentNames,
   } = vikeConfig
-  const constantsGlobalThis = getConstantsFromVikeConfig(vikeConfig)
-  return getCode(pageConfigs, pageConfigGlobal, runtimeEnv, id, additionalEnvironmentNames, constantsGlobalThis)
-}
 
-function getCode(
-  pageConfigs: PageConfigBuildTime[],
-  pageConfigGlobal: PageConfigGlobalBuildTime,
-  runtimeEnv: RuntimeEnvRuntime,
-  id: string,
-  additionalEnvironmentNames: string[],
-  constantsGlobalThis: Record<string, string>,
-): string {
   const lines: string[] = []
   const importStatements: string[] = []
   const filesEnv: FilesEnv = new Map()
@@ -39,9 +28,7 @@ function getCode(
   const { environmentName, isDev } = runtimeEnv
   const isForClientSide = environmentName === 'client'
 
-  if (!isForClientSide) {
-    importStatements.push(`import '${VIRTUAL_FILE_ID_constantsGlobalThis}';`)
-  }
+  lines.push(...getVirtualModuleCodeConstantsGlobalThis(isForClientSide, isDev, vikeConfig))
 
   lines.push('export const pageConfigsSerialized = [')
   lines.push(getCodePageConfigsSerialized(pageConfigs, runtimeEnv, importStatements, filesEnv))
@@ -55,24 +42,12 @@ function getCode(
     lines.push(getCodeEnvironmentEntries(additionalEnvironmentNames, isDev, importStatements))
   }
 
-  if (isForClientSide && isDev) {
-    // Injected directly instead of via a virtual module, because Vike regenerates the global entry when a + file is added or removed
-    // - The virtual module `virtual:vike:server:constantsGlobalThis` is server-only and isn't regenerated
-    Object.entries(constantsGlobalThis).forEach(([key, value]) => {
-      lines.push(`${key} = ${value};`)
-    })
-  }
-
   if (!isForClientSide && isDev) {
     // https://vite.dev/guide/api-environment-frameworks.html
     lines.push('if (import.meta.hot) import.meta.hot.accept();')
   }
 
-  let code = [...importStatements, ...lines].join('\n')
-
-  if (!isForClientSide) {
-    code = `import '${VIRTUAL_FILE_ID_constantsGlobalThis}';\n` + code
-  }
+  const code = [...importStatements, ...lines].join('\n')
 
   debug(id, `${environmentName.toUpperCase()}-SIDE`, code)
   return code

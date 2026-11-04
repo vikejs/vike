@@ -1,135 +1,162 @@
 export { pluginReplaceConstantsGlobalThis }
-export { VIRTUAL_FILE_ID_constantsGlobalThis }
-export { getConstantsFromVikeConfig }
+export { getVirtualModuleCodeConstantsGlobalThis }
 // Trick for loading the `declare global` below
 export type _LoadDeclareGlobal__VIKE__IS = never
 
-import type { Plugin, ResolvedConfig } from 'vite'
+// TODO/after-merge rename ConstantsGlobalThis to GlobalVariables (change other names accordingly)
+
+import type { Plugin } from 'vite'
 import { isDebug } from '../../../utils/debug.js'
-import { escapeRegex } from '../../../utils/escapeRegex.js'
-import { addVirtualFileIdPrefix } from '../../../utils/virtualFileId.js'
 import { assert } from '../../../utils/assert.js'
+import { getGlobalObject } from '../../../utils/getGlobalObject.js'
+import { pick } from '../../../utils/pick.js'
 import { getVikeConfigInternal, type VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 import { getConfigValueBuildTime } from '../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
-import {
-  isViteServerSide_applyToEnvironment,
-  isViteServerSide_configEnvironment,
-  isViteServerSide_extraSafe,
-} from '../shared/isViteServerSide.js'
+import { isViteServerSide_configEnvironment } from '../shared/isViteServerSide.js'
+import { getViteContext_ifKnown } from '../../api/resolveViteConfigUser.js'
 import '../assertEnvVite.js'
+const globalObject = getGlobalObject<{ constantsBefore: Partial<Constants> }>('pluginReplaceConstantsGlobalThis.ts', {
+  constantsBefore: {},
+})
 
 declare global {
-  /** Like `import.meta.env.DEV` but works for `node_modules/` packages with `ssr.external` */
-  var __VIKE__IS_DEV: boolean
+  var __VIKE__IS_DEBUG: boolean
   /** Like `import.meta.env.SSR` but works for `node_modules/` packages with `ssr.external` */
   var __VIKE__IS_CLIENT: boolean
-  var __VIKE__IS_DEBUG: boolean
+  /** Like `import.meta.env.DEV` but works for `node_modules/` packages with `ssr.external` */
+  var __VIKE__IS_DEV: boolean
   /** Whether the client gets the error page's pageContext from the server: the error page has a server-only hook and not every page is pre-rendered */
   var __VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER: boolean
   /** Whether the code was processed by Vite */
   var __VIKE__NO_EXTERNAL: true | undefined
 }
 
-const VIRTUAL_FILE_ID_constantsGlobalThis = 'virtual:vike:server:constantsGlobalThis'
+// Stay the same inside this process
+const CONSTANTS = ['__VIKE__IS_DEBUG', '__VIKE__IS_DEV'] as const
+// Might change without a server restart
+const NEEDS_HMR = ['__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER'] as const
 
-const isDebugVal = isDebug()
-globalThis.__VIKE__IS_CLIENT = false
-globalThis.__VIKE__IS_DEBUG = isDebugVal
-
-// === Rolldown filter
-const filterRolldown = {
-  id: {
-    include: new RegExp(escapeRegex(VIRTUAL_FILE_ID_constantsGlobalThis)),
-  },
+type Constants = Record<`__VIKE__${string}`, boolean>
+function getConstants(isClientSide: boolean, isDev: boolean | null, vikeConfig: VikeConfigInternal | null): Constants {
+  const constants: Constants = {
+    __VIKE__IS_DEBUG: isDebug(),
+    __VIKE__IS_CLIENT: isClientSide,
+  }
+  if (isDev !== null) {
+    constants.__VIKE__IS_DEV = isDev
+  }
+  if (isClientSide) {
+    assert(vikeConfig)
+    constants.__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER = isFetchPageContextOfErrorPageFromServer(vikeConfig)
+  }
+  assertSameAsBefore(constants)
+  return constants
 }
-const filterFunction = (id: string) =>
-  id === VIRTUAL_FILE_ID_constantsGlobalThis ||
-  // Vite re-resolves the resolved ID and its URL when a plugin adds the module as a watch file (@vitejs/plugin-rsc)
-  id === addVirtualFileIdPrefix(VIRTUAL_FILE_ID_constantsGlobalThis) ||
-  id === `/@id/__x00__${VIRTUAL_FILE_ID_constantsGlobalThis}`
-// ===
+
+// Support:
+// - The Vite process, early on
+{
+  const viteContext = getViteContext_ifKnown()
+  Object.assign(globalThis, getConstants(false, viteContext === null ? null : viteContext === 'dev', null))
+}
 
 function pluginReplaceConstantsGlobalThis(): Plugin[] {
-  let config: ResolvedConfig
   let isDev: boolean
   return [
     {
-      name: 'vike:pluginReplaceConstantsGlobalThis:define',
+      name: 'vike:pluginReplaceConstantsGlobalThis',
+
+      // Support:
+      // - The Vite process
       config: {
         handler(config) {
           assert(typeof config._isDev === 'boolean')
           isDev = config._isDev
-          globalThis.__VIKE__IS_DEV = isDev
-          return {
-            define: {
-              'globalThis.__VIKE__IS_DEV': JSON.stringify(isDev),
-              'globalThis.__VIKE__IS_DEBUG': JSON.stringify(isDebugVal),
-              'globalThis.__VIKE__NO_EXTERNAL': 'true',
-            },
-          }
+          Object.assign(globalThis, getConstants(false, isDev, null))
         },
       },
+
+      // Support:
+      // - Production with tree-shaking
+      // - __VIKE__NO_EXTERNAL
+      // - Code that reads constants before virtual:vike:global-entry assigns them, for example:
+      //   - @brillout/picocolors on Cloudflare Workers
+      //     https://github.com/brillout/picocolors/blob/c4fdac83c00578769b6edc5f57702b7f703fa640/picocolors.ts#L5-L6
+      //   - vike-react-zustand imported by +client (theoretical example, not a real-world example)
+      //     https://github.com/vikejs/vike-react/blob/6fe2ff3ce6bd1b5f05055f867c5fbd07d4f101cd/packages/vike-react-zustand/src/getOrCreateStore.ts#L15
       configEnvironment: {
         order: 'pre',
         async handler(name, config) {
           const isClientSide = !isViteServerSide_configEnvironment(name, config)
+          const vikeConfig = await getVikeConfigInternal()
+
+          const constants: Constants = {
+            ...getConstants(isClientSide, isDev, vikeConfig),
+            __VIKE__NO_EXTERNAL: true,
+          }
+
+          if (isDev) {
+            // Let getVirtualModuleCodeConstantsGlobalThis() inject NEEDS_HMR into the virtual:vike:global-entry module
+            // - Because `define` doesn't support HMR
+            NEEDS_HMR.forEach((key) => delete constants[key])
+          }
+
           return {
             consumer: isClientSide ? 'client' : 'server',
-            define: {
-              'globalThis.__VIKE__IS_CLIENT': JSON.stringify(isClientSide),
-              // In dev, the client's global entry sets them instead, so that adding or removing a + file updates them
-              ...(isDev ? {} : getConstantsFromVikeConfig(await getVikeConfigInternal())),
-            },
+            define: getDefine(constants),
           }
-        },
-      },
-      configResolved(config_) {
-        config = config_
-      },
-    },
-    // TODO/after-merge: fully remove vike:pluginReplaceConstantsGlobalThis:virtual-file in favor of generateVirtualFileGlobalEntry.ts
-    {
-      name: 'vike:pluginReplaceConstantsGlobalThis:virtual-file',
-      // We only need the virtual file for the server-side (for node_modules/ packages with ssr.external) — the `define` values above always apply to the client-side.
-      applyToEnvironment(env) {
-        return isViteServerSide_applyToEnvironment(env)
-      },
-      resolveId: {
-        filter: filterRolldown,
-        handler(id) {
-          assert(filterFunction(id), { id })
-          return addVirtualFileIdPrefix(VIRTUAL_FILE_ID_constantsGlobalThis)
-        },
-      },
-      load: {
-        filter: filterRolldown,
-        handler(id, options) {
-          assert(filterFunction(id))
-          assert(isViteServerSide_extraSafe(config, this.environment, options))
-          assert(typeof isDev === 'boolean')
-          const code = [
-            `globalThis.__VIKE__IS_DEV = ${JSON.stringify(isDev)};`,
-            `globalThis.__VIKE__IS_CLIENT = false;`,
-            `globalThis.__VIKE__IS_DEBUG = ${JSON.stringify(isDebugVal)};`,
-          ].join('\n')
-          return code
         },
       },
     },
   ]
 }
 
-// The `globalThis.__VIKE__*` constants that depend on the Vike config
-function getConstantsFromVikeConfig(vikeConfig: VikeConfigInternal): Record<string, string> {
-  return {
-    'globalThis.__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER': JSON.stringify(
-      isFetchPageContextOfErrorPageFromServer(vikeConfig),
-    ),
+// Support:
+// - Dev with HMR
+// - node_modules/ packages with ssr.external
+function getVirtualModuleCodeConstantsGlobalThis(
+  isClientSide: boolean,
+  isDev: boolean,
+  vikeConfig: VikeConfigInternal,
+): string[] {
+  let constants = getConstants(isClientSide, isDev, vikeConfig)
+  if (isClientSide) {
+    if (isDev) {
+      // NEEDS_HMR is excluded from `define` above
+      constants = pick(constants, NEEDS_HMR)
+      return getCode(constants)
+    } else {
+      // Save client-side KBs: the `define` above is enough (since client code is always `noExternal`)
+      return []
+    }
+  } else {
+    // node_modules/ packages with ssr.external
+    return getCode(constants)
   }
 }
 
+// Utils
+function assertSameAsBefore(constants: Constants) {
+  const { constantsBefore } = globalObject
+  for (const key of CONSTANTS) {
+    const now = constants[key]
+    assert(now !== null)
+    if (now === undefined) continue
+    const prev = constantsBefore[key]
+    assert(prev === undefined || prev === now)
+    constantsBefore[key] ??= now
+  }
+}
 function isFetchPageContextOfErrorPageFromServer(vikeConfig: VikeConfigInternal) {
   const errorPage = vikeConfig._pageConfigs.find((pageConfig) => pageConfig.isErrorPage)
   if (!errorPage || getConfigValueBuildTime(errorPage, 'hasServerOnlyHook', 'boolean')?.value !== true) return false
   return !vikeConfig.prerenderContext.isPrerenderingEnabledForAllPages
+}
+function getDefine(constants: Constants): Record<string, string> {
+  return Object.fromEntries(
+    Object.entries(constants).map(([name, value]) => [`globalThis.${name}`, JSON.stringify(value)]),
+  )
+}
+function getCode(constants: Constants): string[] {
+  return Object.entries(getDefine(constants)).map(([key, value]) => `${key} = ${value};`)
 }
