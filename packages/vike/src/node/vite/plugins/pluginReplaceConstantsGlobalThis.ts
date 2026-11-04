@@ -41,6 +41,7 @@ function getConstants(isClientSide: boolean, isDev: boolean | null, vikeConfig: 
     assert(vikeConfig)
     constants.__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER = isFetchPageContextOfErrorPageFromServer(vikeConfig)
   } else {
+    // Only server-side: `__VIKE__IS_CLIENT` differs between client and server
     assertSameAsFirst(constants)
   }
   return constants
@@ -53,7 +54,7 @@ function assertSameAsFirst(constants: Constants) {
 
 // Support:
 // - The Vite process, early on
-//   - The Vike CLI and the Vite CLI run one command => `__VIKE__IS_DEV` is set
+//   - The Vike CLI and the Vite CLI run one command (a plugin running a second one fails assertSameAsFirst()) => `__VIKE__IS_DEV` is set
 //   - Otherwise (Vike's API, Vite's JS API, Vitest) a process can run several => `__VIKE__IS_DEV` stays unset until the `config` hook below
 const viteContext = isVikeCli() || isViteCli() ? getViteContext_ifKnown() : null
 Object.assign(globalThis, getConstants(false, viteContext === null ? null : viteContext === 'dev', null))
