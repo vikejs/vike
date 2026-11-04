@@ -90,10 +90,8 @@ function pluginReplaceConstantsGlobalThis(): Plugin[] {
             ...getConstants(isClientSide, isDev, vikeConfig),
             __VIKE__NO_EXTERNAL: true,
           }
-          if (isDev) {
-            // Let getCodeConstantsGlobalThis() inject the Vike config's value in Vike's virtual:vike:global-entry module for HMR support
-            NEEDS_HMR.forEach((key) => delete constants[key])
-          }
+          // Let getCodeConstantsGlobalThis() inject the Vike config's value in Vike's virtual:vike:global-entry module for HMR support
+          if (isDev) NEEDS_HMR.forEach((key) => delete constants[key])
           return {
             consumer: isClientSide ? 'client' : 'server',
             define: getDefine(constants),
