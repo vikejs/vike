@@ -164,7 +164,7 @@ function getVirtualModuleCodeGlobalVariables(
       // Directly inject into the virtual:vike:global-entry module, instead of using a virtual module (see below) => HMR support (Vike invalidates the virtual:vike:global-entry module whenever a user file changes)
       return getCode(globalVariables)
     } else {
-      // Use a virtual module, instead of direclty injecting into the virtual:vike:global-entry module (see above)
+      // Use a virtual module, instead of directly injecting into the virtual:vike:global-entry module (see above)
       // - In order to eagerly set the global variables, so that the top-level of modules can access the global variables (because the imports of virtual:vike:global-entry are executed before the virtual:vike:global-entry module body)
       // - Not needed in dev:
       //   - This module (the Vite process) already assigns the global variables
