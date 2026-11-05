@@ -71,6 +71,7 @@ function getGlobalVariables(
 
 function pluginReplaceGlobalVariables(): Plugin[] {
   let config: ResolvedConfig
+  let vikeConfig: VikeConfigInternal | undefined
   let isDev: boolean
   return [
     {
@@ -98,7 +99,7 @@ function pluginReplaceGlobalVariables(): Plugin[] {
         order: 'pre',
         async handler(name, config) {
           const isClientSide = !isViteServerSide_configEnvironment(name, config)
-          const vikeConfig = await getVikeConfigInternal()
+          vikeConfig = await getVikeConfigInternal()
 
           const globalVariables: GlobalVariables = {
             ...getGlobalVariables(isClientSide, isDev, vikeConfig),
@@ -129,7 +130,8 @@ function pluginReplaceGlobalVariables(): Plugin[] {
         handler(_id, options) {
           assert(!isDev)
           assert(isViteServerSide_extraSafe(config, this.environment, options))
-          return getCode(getGlobalVariables(false, isDev, null)).join('\n')
+          assert(vikeConfig)
+          return getCode(getGlobalVariables(false, false, vikeConfig)).join('\n')
         },
       },
     },
