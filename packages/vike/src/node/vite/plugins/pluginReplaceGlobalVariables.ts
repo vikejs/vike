@@ -120,6 +120,9 @@ function pluginReplaceGlobalVariables(): Plugin[] {
 // Support:
 // - Dev with HMR
 // - node_modules/ packages with ssr.external
+// Limitation:
+// - GLOBAL-VARIABLES_TOP-LEVEL-LIMITATION: An eager + file calling getGlobalContext() at module level, followed by another eager + file with a top-level await => error — see https://github.com/vikejs/vike/pull/3709#issuecomment-6653198559
+//   - If it's a problem: revive the virtual module without breaking HMR — see https://github.com/vikejs/vike/pull/3709#issuecomment-6653546833
 function getVirtualModuleCodeGlobalVariables(
   isClientSide: boolean,
   isDev: boolean,
