@@ -3,14 +3,16 @@ export { getVirtualModuleCodeGlobalVariables }
 // Trick for loading the `declare global` below
 export type _LoadDeclareGlobal__VIKE__IS = never
 
-import type { Plugin } from 'vite'
+import type { Plugin, ResolvedConfig } from 'vite'
 import { isDebug } from '../../../utils/debug.js'
 import { assert } from '../../../utils/assert.js'
 import { getGlobalObject } from '../../../utils/getGlobalObject.js'
 import { pick } from '../../../utils/pick.js'
+import { escapeRegex } from '../../../utils/escapeRegex.js'
+import { addVirtualFileIdPrefix } from '../../../utils/virtualFileId.js'
 import { getVikeConfigInternal, type VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 import { getConfigValueBuildTime } from '../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
-import { isViteServerSide_configEnvironment } from '../shared/isViteServerSide.js'
+import { isViteServerSide_configEnvironment, isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 import { getViteContext_ifKnown } from '../../api/resolveViteConfigUser.js'
 import '../assertEnvVite.js'
 const globalObject = getGlobalObject<{ globalVariablesBefore: Partial<GlobalVariables> }>(
@@ -19,6 +21,7 @@ const globalObject = getGlobalObject<{ globalVariablesBefore: Partial<GlobalVari
     globalVariablesBefore: {},
   },
 )
+const virtualFileIdGlobalVariables = 'virtual:vike:global-variables'
 
 declare global {
   var __VIKE__IS_DEBUG: boolean
@@ -67,6 +70,8 @@ function getGlobalVariables(
 }
 
 function pluginReplaceGlobalVariables(): Plugin[] {
+  let config: ResolvedConfig
+  let vikeConfig: VikeConfigInternal | undefined
   let isDev: boolean
   return [
     {
@@ -94,7 +99,7 @@ function pluginReplaceGlobalVariables(): Plugin[] {
         order: 'pre',
         async handler(name, config) {
           const isClientSide = !isViteServerSide_configEnvironment(name, config)
-          const vikeConfig = await getVikeConfigInternal()
+          vikeConfig ??= await getVikeConfigInternal()
 
           const globalVariables: GlobalVariables = {
             ...getGlobalVariables(isClientSide, isDev, vikeConfig),
@@ -113,6 +118,23 @@ function pluginReplaceGlobalVariables(): Plugin[] {
           }
         },
       },
+
+      // See getVirtualModuleCodeGlobalVariables()
+      configResolved(config_) {
+        config = config_
+      },
+      load: {
+        filter: {
+          id: { include: [new RegExp(`^${escapeRegex(addVirtualFileIdPrefix(virtualFileIdGlobalVariables))}$`)] },
+        },
+        handler(_id, options) {
+          const isClientSide = !isViteServerSide_extraSafe(config, this.environment, options)
+          assert(!isDev) // We inject and import the virtual module only in prod
+          assert(!isClientSide) // We inject and import the virtual module only on the server-side
+          assert(vikeConfig)
+          return getCode(getGlobalVariables(isClientSide, isDev, vikeConfig)).join('\n')
+        },
+      },
     },
   ]
 }
@@ -120,13 +142,11 @@ function pluginReplaceGlobalVariables(): Plugin[] {
 // Support:
 // - Dev with HMR
 // - node_modules/ packages with ssr.external
-// Limitation:
-// - GLOBAL-VARIABLES_TOP-LEVEL-LIMITATION: An eager + file calling getGlobalContext() at module level, followed by another eager + file with a top-level await => error — see https://github.com/vikejs/vike/pull/3709#issuecomment-6653198559
-//   - If it's a problem: revive the virtual module without breaking HMR — see https://github.com/vikejs/vike/pull/3709#issuecomment-6653546833
 function getVirtualModuleCodeGlobalVariables(
   isClientSide: boolean,
   isDev: boolean,
   vikeConfig: VikeConfigInternal,
+  importStatements: string[],
 ): string[] {
   let globalVariables = getGlobalVariables(isClientSide, isDev, vikeConfig)
   if (isClientSide) {
@@ -140,7 +160,20 @@ function getVirtualModuleCodeGlobalVariables(
     }
   } else {
     // node_modules/ packages with ssr.external
-    return getCode(globalVariables)
+    if (isDev) {
+      // Directly inject into the virtual:vike:global-entry module, instead of using a virtual module (see below) => HMR support (Vike invalidates the virtual:vike:global-entry module when the configuration changes)
+      return getCode(globalVariables)
+    } else {
+      // Use a virtual module, instead of directly injecting into the virtual:vike:global-entry module (see above)
+      // - In order to eagerly set the global variables, so that the top-level of modules can access the global variables (because the imports of virtual:vike:global-entry are executed before the virtual:vike:global-entry module body)
+      // - Not needed in dev:
+      //   - This module (the Vite process) already assigns the global variables
+      //   - Cloudflare Workers => 100% noExternal => global variables are set via `define`
+      //     - So far, the NEEDS_HMR variables are only used on the client-side
+      assert(importStatements.length === 0) // It's best if it's the first import, so that any subsequent import can access the global variables
+      importStatements.push(`import '${virtualFileIdGlobalVariables}';`)
+      return []
+    }
   }
 }
 

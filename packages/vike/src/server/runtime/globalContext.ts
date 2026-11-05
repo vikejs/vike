@@ -154,7 +154,6 @@ async function getGlobalContext(): Promise<GlobalContext> {
   debug('getGlobalContext()')
 
   // Let the virtual:vike:global-entry module set globalThis.__VIKE__IS_DEV before isProdOptional() reads it
-  // - Limitation: see GLOBAL-VARIABLES_TOP-LEVEL-LIMITATION
   await Promise.resolve()
 
   const isProduction = isProdOptional()
