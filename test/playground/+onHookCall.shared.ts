@@ -11,12 +11,7 @@ type Hook = Parameters<Extract<Config['onHookCall'], Function>>[0]
 export async function onHookCall(hook: Hook, pageContext: PageContext) {
   assert(pageContext === null || pageContext.isClientSide === true || pageContext.isClientSide === false)
   if (LOG) {
-    console.log(
-      // spellcheck-ignore
-      'Befor hook:',
-      hook.name,
-      hook.filePath,
-    )
+    console.log('Befor hook:', hook.name, hook.filePath)
   }
   try {
     await hook.call()

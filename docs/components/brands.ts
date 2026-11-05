@@ -3,7 +3,6 @@ export { brands }
 import usedByMoonshot from './brands/moonshotai.svg'
 import usedBySurrealDB from './brands/surrealdb.svg'
 import usedByEcosia from './brands/ecosia.svg'
-// spellcheck-ignore
 import usedBySlite from './brands/sliteapp.svg'
 import usedByContra from './brands/contra.svg'
 import usedByAlignable from './brands/alignable.svg'
@@ -31,12 +30,9 @@ const brands: Brand[] = [
     useCasesOrder: -100,
   },
   {
-    // spellcheck-ignore
     website: 'https://slite.com',
     desc: 'AI-powered knowledge base',
-    // spellcheck-ignore
     name: 'Slite',
-    // spellcheck-ignore
     logo: usedBySlite,
     logoScale: 1.08,
     useCasesOrder: -25,
