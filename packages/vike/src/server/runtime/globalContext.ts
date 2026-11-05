@@ -152,8 +152,7 @@ function assertGlobalContextIsDefined() {
  */
 async function getGlobalContext(): Promise<GlobalContext> {
   debug('getGlobalContext()')
-  // Limitation: with ssr.external, an eager + file calling getGlobalContext() at module level, followed by another eager + file with a top-level await, gets the usage error below: that await pauses virtual:vike:global-entry before it sets __VIKE__IS_DEV. https://github.com/vikejs/vike/pull/3709#issuecomment-6653198559
-  // TODO: revive the virtual module that sets __VIKE__IS_DEV, without breaking HMR. https://github.com/vikejs/vike/pull/3709#issuecomment-6653546833
+  // Limitation: see COMMENT_GLOBAL-VARIABLES_TOP-LEVEL
   await Promise.resolve() // Let the virtual:vike:global-entry module set globalThis.__VIKE__IS_DEV before isProdOptional() reads it
   const isProduction = isProdOptional()
   // This assertion cannot fail for vike-server users (because when using vike-server it's guaranteed that globalObject.isProduction is set before executing any user-land code and any Vike extension code).

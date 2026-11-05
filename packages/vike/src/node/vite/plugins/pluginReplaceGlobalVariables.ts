@@ -117,6 +117,9 @@ function pluginReplaceGlobalVariables(): Plugin[] {
   ]
 }
 
+// COMMENT_GLOBAL-VARIABLES_TOP-LEVEL: with ssr.external, an eager + file calling getGlobalContext() at module level, followed by another eager + file with a top-level await, gets the usage error of getGlobalContext(): that await pauses virtual:vike:global-entry before it sets __VIKE__IS_DEV. https://github.com/vikejs/vike/pull/3709#issuecomment-6653198559
+// TODO: revive the virtual module that sets __VIKE__IS_DEV, without breaking HMR. https://github.com/vikejs/vike/pull/3709#issuecomment-6653546833
+
 // Support:
 // - Dev with HMR
 // - node_modules/ packages with ssr.external
