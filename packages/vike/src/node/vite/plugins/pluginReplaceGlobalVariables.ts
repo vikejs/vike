@@ -3,14 +3,16 @@ export { getVirtualModuleCodeGlobalVariables }
 // Trick for loading the `declare global` below
 export type _LoadDeclareGlobal__VIKE__IS = never
 
-import type { Plugin } from 'vite'
+import type { Plugin, ResolvedConfig } from 'vite'
 import { isDebug } from '../../../utils/debug.js'
 import { assert } from '../../../utils/assert.js'
 import { getGlobalObject } from '../../../utils/getGlobalObject.js'
 import { pick } from '../../../utils/pick.js'
+import { escapeRegex } from '../../../utils/escapeRegex.js'
+import { addVirtualFileIdPrefix } from '../../../utils/virtualFileId.js'
 import { getVikeConfigInternal, type VikeConfigInternal } from '../shared/resolveVikeConfigInternal.js'
 import { getConfigValueBuildTime } from '../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
-import { isViteServerSide_configEnvironment } from '../shared/isViteServerSide.js'
+import { isViteServerSide_configEnvironment, isViteServerSide_extraSafe } from '../shared/isViteServerSide.js'
 import { getViteContext_ifKnown } from '../../api/resolveViteConfigUser.js'
 import '../assertEnvVite.js'
 const globalObject = getGlobalObject<{ globalVariablesBefore: Partial<GlobalVariables> }>(
@@ -36,6 +38,8 @@ declare global {
 const CONSTANTS = ['__VIKE__IS_DEBUG', '__VIKE__IS_DEV'] as const
 // Might change without a server restart
 const NEEDS_HMR = ['__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER'] as const
+
+const virtualFileIdGlobalVariables = 'virtual:vike:global-variables'
 
 type GlobalVariables = Record<`__VIKE__${string}`, boolean>
 function getGlobalVariables(
@@ -67,6 +71,7 @@ function getGlobalVariables(
 }
 
 function pluginReplaceGlobalVariables(): Plugin[] {
+  let config: ResolvedConfig
   let isDev: boolean
   return [
     {
@@ -113,6 +118,23 @@ function pluginReplaceGlobalVariables(): Plugin[] {
           }
         },
       },
+
+      configResolved(config_) {
+        config = config_
+      },
+
+      // Support:
+      // - node_modules/ packages with ssr.external, in production
+      load: {
+        filter: {
+          id: { include: [new RegExp(`^${escapeRegex(addVirtualFileIdPrefix(virtualFileIdGlobalVariables))}$`)] },
+        },
+        handler(_id, options) {
+          assert(!isDev)
+          assert(isViteServerSide_extraSafe(config, this.environment, options))
+          return getCode(getGlobalVariables(false, isDev, null)).join('\n')
+        },
+      },
     },
   ]
 }
@@ -127,6 +149,7 @@ function getVirtualModuleCodeGlobalVariables(
   isClientSide: boolean,
   isDev: boolean,
   vikeConfig: VikeConfigInternal,
+  importStatements: string[],
 ): string[] {
   let globalVariables = getGlobalVariables(isClientSide, isDev, vikeConfig)
   if (isClientSide) {
@@ -140,7 +163,14 @@ function getVirtualModuleCodeGlobalVariables(
     }
   } else {
     // node_modules/ packages with ssr.external
-    return getCode(globalVariables)
+    if (isDev) {
+      // In dev, the order doesn't matter: the Vite process already assigned them (or `define` if the environment isn't runnable)
+      return getCode(globalVariables)
+    } else {
+      // An import, because a module's imports run before its body, and the eager + files are imports too
+      importStatements.push(`import '${virtualFileIdGlobalVariables}';`)
+      return []
+    }
   }
 }
 
