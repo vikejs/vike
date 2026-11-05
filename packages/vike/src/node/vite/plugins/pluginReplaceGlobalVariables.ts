@@ -118,12 +118,10 @@ function pluginReplaceGlobalVariables(): Plugin[] {
         },
       },
 
+      // See getVirtualModuleCodeGlobalVariables()
       configResolved(config_) {
         config = config_
       },
-
-      // Support:
-      // - node_modules/ packages with ssr.external, in production
       load: {
         filter: {
           id: { include: [new RegExp(`^${escapeRegex(addVirtualFileIdPrefix(virtualFileIdGlobalVariables))}$`)] },
@@ -141,11 +139,6 @@ function pluginReplaceGlobalVariables(): Plugin[] {
 // Support:
 // - Dev with HMR
 // - node_modules/ packages with ssr.external
-// Limitation:
-// - GLOBAL-VARIABLES_TOP-LEVEL-LIMITATION: With ssr.external, an eager + file importing two helpers, each in its own chunk because lazy + files import it too, one calling getGlobalContext() at module level and the other with a top-level await => error
-//   - If it's a problem: put virtual:vike:global-variables in its own chunk
-// - An eager + file with `await getGlobalContext()` at module level => it waits for itself and Node.js exits with code 13 — see https://github.com/vikejs/vike/pull/3709#issuecomment-6653198559
-//   - If it's a problem: show a usage error
 function getVirtualModuleCodeGlobalVariables(
   isClientSide: boolean,
   isDev: boolean,
@@ -165,11 +158,16 @@ function getVirtualModuleCodeGlobalVariables(
   } else {
     // node_modules/ packages with ssr.external
     if (isDev) {
-      // In dev, the order doesn't matter: the Vite process already assigned them (or `define` if the environment isn't runnable)
+      // Directly inject into the virtual:vike:global-entry module, instead of using a virtual module (see below) => HMR support (Vike invalidates the virtual:vike:global-entry module whenever a user file changes)
       return getCode(globalVariables)
     } else {
-      // An import, because a module's imports run before its body, and the eager + files are imports too
-      assert(importStatements.length === 0)
+      // Use a virtual module, instead of direclty injecting into the virtual:vike:global-entry module (see above)
+      // - In order to eagerly set the global variables, so that the top-level of modules can access the global variables (because the imports of virtual:vike:global-entry are executed before the virtual:vike:global-entry module body)
+      // - Not needed in dev:
+      //   - This module (the Vite process) already assigns the global variables
+      //   - Cloudflare Workers => 100% noExternal => global variables are set via `define`
+      //     - So far, the NEEDS_HMR variables are only used on the client-side
+      assert(importStatements.length === 0) // It's best if it's the first import, so that any subsequent import can access the global variables
       importStatements.push(`import '${virtualFileIdGlobalVariables}';`)
       return []
     }
