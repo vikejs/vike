@@ -161,7 +161,7 @@ function getVirtualModuleCodeGlobalVariables(
   } else {
     // node_modules/ packages with ssr.external
     if (isDev) {
-      // Directly inject into the virtual:vike:global-entry module, instead of using a virtual module (see below) => HMR support (Vike invalidates the virtual:vike:global-entry module whenever a user file changes)
+      // Directly inject into the virtual:vike:global-entry module, instead of using a virtual module (see below) => HMR support (Vike invalidates the virtual:vike:global-entry module when the configuration changes)
       return getCode(globalVariables)
     } else {
       // Use a virtual module, instead of directly injecting into the virtual:vike:global-entry module (see above)
