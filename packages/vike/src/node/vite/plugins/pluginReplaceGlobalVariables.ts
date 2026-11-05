@@ -21,6 +21,7 @@ const globalObject = getGlobalObject<{ globalVariablesBefore: Partial<GlobalVari
     globalVariablesBefore: {},
   },
 )
+const virtualFileIdGlobalVariables = 'virtual:vike:global-variables'
 
 declare global {
   var __VIKE__IS_DEBUG: boolean
@@ -38,8 +39,6 @@ declare global {
 const CONSTANTS = ['__VIKE__IS_DEBUG', '__VIKE__IS_DEV'] as const
 // Might change without a server restart
 const NEEDS_HMR = ['__VIKE__FETCH_PAGE_CONTEXT_OF_ERROR_PAGE_FROM_SERVER'] as const
-
-const virtualFileIdGlobalVariables = 'virtual:vike:global-variables'
 
 type GlobalVariables = Record<`__VIKE__${string}`, boolean>
 function getGlobalVariables(
