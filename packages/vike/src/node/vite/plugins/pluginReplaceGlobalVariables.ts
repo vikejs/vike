@@ -170,7 +170,7 @@ function getVirtualModuleCodeGlobalVariables(
       return getCode(globalVariables)
     } else {
       // An import, because a module's imports run before its body, and the eager + files are imports too
-      assert(importStatements.length===0)
+      assert(importStatements.length === 0)
       importStatements.push(`import '${virtualFileIdGlobalVariables}';`)
       return []
     }
