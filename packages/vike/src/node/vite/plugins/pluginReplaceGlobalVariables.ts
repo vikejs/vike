@@ -128,10 +128,11 @@ function pluginReplaceGlobalVariables(): Plugin[] {
           id: { include: [new RegExp(`^${escapeRegex(addVirtualFileIdPrefix(virtualFileIdGlobalVariables))}$`)] },
         },
         handler(_id, options) {
+          const isClientSide = !isViteServerSide_extraSafe(config, this.environment, options)
           assert(!isDev) // We inject import the virtual module only in prod
-          assert(isViteServerSide_extraSafe(config, this.environment, options)) // We inject import the virtual module only on the server-side
+          assert(!isClientSide) // We inject import the virtual module only on the server-side
           assert(vikeConfig)
-          return getCode(getGlobalVariables(false, false, vikeConfig)).join('\n')
+          return getCode(getGlobalVariables(isClientSide, isDev, vikeConfig)).join('\n')
         },
       },
     },
