@@ -99,7 +99,7 @@ function pluginReplaceGlobalVariables(): Plugin[] {
         order: 'pre',
         async handler(name, config) {
           const isClientSide = !isViteServerSide_configEnvironment(name, config)
-          vikeConfig = await getVikeConfigInternal()
+          vikeConfig ??= await getVikeConfigInternal()
 
           const globalVariables: GlobalVariables = {
             ...getGlobalVariables(isClientSide, isDev, vikeConfig),
