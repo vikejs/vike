@@ -1,3 +1,12 @@
+## [0.4.270](https://github.com/vikejs/vike/compare/v0.4.269...v0.4.270) (2026-11-05)
+
+
+### Bug Fixes
+
+* `getGlobalContext()` at module level works with a later top-level await ([#3725](https://github.com/vikejs/vike/issues/3725)) ([0844218](https://github.com/vikejs/vike/commit/084421806be7640d0b10405a2808da6c1b85f922))
+
+
+
 ## [0.4.269](https://github.com/vikejs/vike/compare/v0.4.268...v0.4.269) (2026-11-04)
 
 
