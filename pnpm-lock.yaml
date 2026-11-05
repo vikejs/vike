@@ -14,9 +14,6 @@ importers:
       '@brillout/replace':
         specifier: ^0.1.6
         version: 0.1.6
-      '@brillout/spellcheck':
-        specifier: ^0.1.3
-        version: 0.1.3
       '@brillout/test-e2e':
         specifier: ^0.6.26
         version: 0.6.26
@@ -2672,10 +2669,6 @@ packages:
   '@brillout/shiki-transformers@4.0.2':
     resolution: {integrity: sha512-LELxHWwiIcYoUc/V0KWgfQMWOjRXNebJt9Z1NM9InjPUQ8fsL0ZxttD7qoBzFvaFIbEUJre3N5jc9FmM5b5MBQ==}
     engines: {node: '>=20'}
-
-  '@brillout/spellcheck@0.1.3':
-    resolution: {integrity: sha512-J01PT4Z1KwWtzj5A1/63je/Td7mA25QybRw2nImgxSiBQyJxNgTN5jmoIELfQMWWZULm/speuS4SGohLZ84Bcg==}
-    hasBin: true
 
   '@brillout/test-e2e@0.6.26':
     resolution: {integrity: sha512-OIXxqMnUB1k8+I2dzy3IYjwRiUOX+pbbR00xQ8Cf31uLGcWFmXyBf3xdBy6qWQ+NQyPRKGntj/0V8xVlz6JCvg==}
@@ -9192,11 +9185,6 @@ snapshots:
     dependencies:
       '@shikijs/core': 4.0.2
       '@shikijs/types': 4.0.2
-
-  '@brillout/spellcheck@0.1.3':
-    dependencies:
-      '@brillout/picocolors': 1.0.31
-      '@brillout/shell': 0.2.2
 
   '@brillout/test-e2e@0.6.26':
     dependencies:

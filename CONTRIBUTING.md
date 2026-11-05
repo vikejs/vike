@@ -90,12 +90,10 @@ pnpm exec test-e2e
 
 Or:
 
-<!-- spellcheck-ignore:on -->
 ```shell
 # Filter
 pnpm exec test-e2e ome-exampl # At the monorepo root
 ```
-<!-- spellcheck-ignore:off -->
 
 <br/>
 
