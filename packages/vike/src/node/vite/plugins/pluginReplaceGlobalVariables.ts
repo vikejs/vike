@@ -129,8 +129,8 @@ function pluginReplaceGlobalVariables(): Plugin[] {
         },
         handler(_id, options) {
           const isClientSide = !isViteServerSide_extraSafe(config, this.environment, options)
-          assert(!isDev) // We inject import the virtual module only in prod
-          assert(!isClientSide) // We inject import the virtual module only on the server-side
+          assert(!isDev) // We inject and import the virtual module only in prod
+          assert(!isClientSide) // We inject and import the virtual module only on the server-side
           assert(vikeConfig)
           return getCode(getGlobalVariables(isClientSide, isDev, vikeConfig)).join('\n')
         },
