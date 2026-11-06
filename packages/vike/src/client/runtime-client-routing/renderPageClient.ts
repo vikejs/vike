@@ -114,9 +114,24 @@ type RenderArgs = {
   doNotReRenderIfSamePage?: boolean
   isClientSideNavigation?: boolean
   pageContextInitClient?: Record<string, unknown>
+  thrown?: { err: unknown }
 }
 async function renderPageClient(renderArgs: RenderArgs) {
   catchInfiniteLoop('renderPageClient()')
+
+  if (renderArgs.thrown) {
+    const pageShown = globalObject.previousPageContext
+    if (
+      pageShown &&
+      // The error page itself threw => rendering the error page again could loop
+      (isErrorPage(pageShown.pageId, pageShown._globalContext._pageConfigs) ||
+        // A newer rendering is already replacing the page that threw
+        pageShown.abortSignal.aborted)
+    ) {
+      logErrorClient(renderArgs.thrown.err, pageShown.abortSignal)
+      return
+    }
+  }
 
   const {
     urlOriginal = getCurrentUrl(),
@@ -127,12 +142,16 @@ async function renderPageClient(renderArgs: RenderArgs) {
     isClientSideNavigation = true,
     pageContextInitClient,
     pageContextsAborted = [],
+    thrown,
   } = renderArgs
   let { scrollTarget } = renderArgs
 
   const abortController = new AbortController()
   const { abortIfOutdated, setHydrationCanBeAborted, setOnRenderClientCalled, isFirstRender } =
     getIsRenderOutdated(abortController)
+
+  // Synchronously => a second thrown value finds the page already being replaced, and doesn't supersede the first one
+  if (thrown) abortPreviousNavigation(abortController)
 
   const pageContextBeginArgs = {
     urlOriginal,
@@ -158,6 +177,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
   }
   const { previousPageContext } = globalObject
 
+  if (thrown) return await handleError(thrown)
   return await renderPageNominal()
 
   async function renderPageNominal() {
@@ -508,6 +528,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     if (pageContextAbort._urlRewrite) {
       await renderPageClient({
         ...renderArgs,
+        thrown: undefined,
         scrollTarget: undefined,
         pageContextsAborted,
       })
@@ -524,6 +545,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
       } else {
         await renderPageClient({
           ...renderArgs,
+          thrown: undefined,
           scrollTarget: undefined,
           urlOriginal: urlRedirect,
           overwriteLastHistoryEntry: false,

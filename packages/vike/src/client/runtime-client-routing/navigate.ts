@@ -1,5 +1,6 @@
 export { navigate }
 export { reload }
+export { renderError }
 
 // import { modifyUrlSameOrigin, ModifyUrlSameOriginOptions } from '../../shared/modifyUrlSameOrigin.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
@@ -47,4 +48,19 @@ async function navigate(url: string, options?: Options): Promise<void> {
 
 async function reload(): Promise<void> {
   await navigate(getCurrentUrl())
+}
+
+/** Let Vike handle an error thrown outside of Vike's hooks, as if a hook threw it: Vike renders the error page, or follows `throw render()` and `throw redirect()`.
+ *
+ * https://vike.dev/renderError
+ *
+ * @param err - The thrown value, e.g. the error of a UI component that threw after its page rendered.
+ */
+async function renderError(err: unknown): Promise<void> {
+  initClientRouter()
+  await renderPageClient({
+    scrollTarget: { preserveScroll: false },
+    thrown: { err },
+    isClientSideNavigation: false, // Nothing navigated => when the error page's .pageContext.json is missing, no hard reload (the reloaded page could throw the same error again, in a loop)
+  })
 }
