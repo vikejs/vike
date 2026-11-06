@@ -44,7 +44,7 @@ The thrown value decides what happens:
 | <Link href="/render">`render('/login')`</Link> | The page `/login`, at the current URL |
 | <Link href="/redirect">`redirect('/some-url')`</Link> | A client-side navigation to `/some-url`, which adds a browser history entry |
 
-> If the error page itself threw, or if another page is already replacing the page that threw, then Vike only logs the error.
+> Vike never reloads the page that threw. If the error page itself threw, if the error page fails to load, or if another page is already replacing the page that threw, then Vike only logs the error.
 
 
 ## See also

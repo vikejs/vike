@@ -61,7 +61,7 @@ async function handleError(err: unknown): Promise<void> {
   await renderPageClient({
     scrollTarget: { preserveScroll: false },
     thrown: { err },
-    isRecovery: true,
-    isClientSideNavigation: false, // Nothing navigated => when the error page's .pageContext.json is missing, no hard reload (the reloaded page could throw the same error again, in a loop)
+    urlThrown: getCurrentUrl(),
+    isClientSideNavigation: false, // Nothing navigated
   })
 }

@@ -115,7 +115,7 @@ type RenderArgs = {
   isClientSideNavigation?: boolean
   pageContextInitClient?: Record<string, unknown>
   thrown?: { err: unknown }
-  isRecovery?: boolean // Vike handles a value thrown outside of Vike's hooks: nothing navigated
+  urlThrown?: string // The URL of the page that threw the value handed to handleError()
 }
 async function renderPageClient(renderArgs: RenderArgs) {
   catchInfiniteLoop('renderPageClient()')
@@ -144,9 +144,13 @@ async function renderPageClient(renderArgs: RenderArgs) {
     pageContextInitClient,
     pageContextsAborted = [],
     thrown,
-    isRecovery = false,
+    urlThrown,
   } = renderArgs
   let { scrollTarget } = renderArgs
+
+  // We never hard load the page that threw: the reloaded page could throw the same value again, in a loop
+  // - `throw redirect('/some-url')` is a navigation to another URL: it can hard load `/some-url`
+  const isRecovery = urlOriginal === urlThrown
 
   const abortController = new AbortController()
   const { abortIfOutdated, setHydrationCanBeAborted, setOnRenderClientCalled, isFirstRender } =
@@ -161,13 +165,14 @@ async function renderPageClient(renderArgs: RenderArgs) {
     isHistoryNavigation,
     pageContextsAborted,
     isClientSideNavigation,
+    isRecovery,
     pageContextInitClient,
     isFirstRender,
     // https://vike.dev/pageContext#abortSignal
     abortSignal: abortController.signal,
   }
 
-  if (globalObject.clientRoutingIsDisabled) {
+  if (globalObject.clientRoutingIsDisabled && !isRecovery) {
     redirectHard(urlOriginal)
     return
   }
@@ -244,7 +249,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
           //    - We do use the client router for rendering the error page, so I don't think this is much of an argument.
           await renderErrorPage({ is404: true })
           */
-          redirectHard(urlOriginal)
+          await hardLoad(pageContext)
           return
         }
 
@@ -252,7 +257,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
         const isClientRoutable = await isClientSideRoutable(pageContextFromRoute.pageId, pageContext)
         if (abortIfOutdated()) return
         if (!isClientRoutable) {
-          redirectHard(urlOriginal)
+          await hardLoad(pageContext)
           return
         }
 
@@ -300,7 +305,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
       }
     }
 
-    const res = await loadPageConfigsLazyClientSideAndExecHook(pageContext, isFirstRender, isRecovery, abortIfOutdated)
+    const res = await loadPageConfigsLazyClientSideAndExecHook(pageContext, isFirstRender, abortIfOutdated)
     /* Already called inside loadPageConfigsLazyClientSideAndExecHook()
     if (abortIfOutdated()) return
     */
@@ -467,7 +472,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
       assertInfo(false, `Rendering error page ${errorPageId}`, { onlyOnce: false })
     }
 
-    const res = await loadPageConfigsLazyClientSideAndExecHook(pageContext, isFirstRender, isRecovery, abortIfOutdated)
+    const res = await loadPageConfigsLazyClientSideAndExecHook(pageContext, isFirstRender, abortIfOutdated)
     /* Already called inside loadPageConfigsLazyClientSideAndExecHook()
     if (abortIfOutdated()) return
     */
@@ -504,6 +509,15 @@ async function renderPageClient(renderArgs: RenderArgs) {
     updateType(pageContext, pageContextFromHooksClient)
 
     await renderPageView(pageContext, args)
+  }
+
+  // The client-side router can't render the page
+  async function hardLoad(pageContext: { urlPathname: string }) {
+    if (isRecovery) {
+      await handleError({ err: new Error(`${pageContext.urlPathname} can't be rendered on the client-side`) })
+    } else {
+      redirectHard(urlOriginal)
+    }
   }
 
   async function handleAbort(
@@ -681,6 +695,7 @@ async function getPageContextBegin(
     isHistoryNavigation,
     pageContextsAborted,
     isClientSideNavigation,
+    isRecovery,
     pageContextInitClient,
     isFirstRender,
     abortSignal,
@@ -690,6 +705,7 @@ async function getPageContextBegin(
     isHistoryNavigation: boolean
     pageContextsAborted: PageContextAborted[]
     isClientSideNavigation: boolean
+    isRecovery: boolean
     pageContextInitClient: Record<string, unknown> | undefined
     isFirstRender: boolean
     abortSignal: AbortSignal
@@ -703,6 +719,7 @@ async function getPageContextBegin(
     isBackwardNavigation,
     isHistoryNavigation,
     isClientSideNavigation,
+    _isRecovery: isRecovery,
     isHydration: isFirstRender && !isForErrorPage,
     isErrorPage: isForErrorPage,
     previousPageContext,
@@ -907,8 +924,10 @@ type PageContextExecuteHook = Omit<
   keyof Awaited<ReturnType<typeof loadPageConfigsLazyClientSide>>
 >
 async function loadPageConfigsLazyClientSideAndExecHook<
-  PageContext extends PageContext_loadPageConfigsLazyClientSide & PageContextExecuteHook & PageContextCreatedClient,
->(pageContext: PageContext, isFirstRender: boolean, isRecovery: boolean, abortIfOutdated: () => boolean) {
+  PageContext extends PageContext_loadPageConfigsLazyClientSide &
+    PageContextExecuteHook &
+    PageContextCreatedClient & { _isRecovery: boolean },
+>(pageContext: PageContext, isFirstRender: boolean, abortIfOutdated: () => boolean) {
   let hasErr = false
   let err: unknown
 
@@ -926,7 +945,7 @@ async function loadPageConfigsLazyClientSideAndExecHook<
   }
   if (abortIfOutdated()) return { skip: true }
   if (hasErr) {
-    if (await handleErrorFetchingStaticAssets(err, pageContext, isFirstRender, isRecovery)) return { skip: true }
+    if (await handleErrorFetchingStaticAssets(err, pageContext, isFirstRender)) return { skip: true }
     return { err }
   }
   objectAssign(pageContext, pageContextAddendum!)
@@ -944,9 +963,8 @@ async function loadPageConfigsLazyClientSideAndExecHook<
 }
 async function handleErrorFetchingStaticAssets(
   err: unknown,
-  pageContext: { urlOriginal: string },
+  pageContext: { urlOriginal: string; _isRecovery: boolean },
   isFirstRender: boolean,
-  isRecovery: boolean,
 ): Promise<boolean> {
   if (import.meta.env.DEV) return false
   if (!isErrorFetchingStaticAssets(err)) return false // Syntax error in user file
@@ -989,9 +1007,8 @@ async function handleErrorFetchingStaticAssets(
   // - Connection problem
 
   // === Recovery ===
-  // We don't reload: the reloaded page could throw the same error again, in a loop
-  // - Vike handles the error like any other error: Vike logs it, and renders the error page unless it's the error page that failed to load
-  if (isRecovery) return false
+  // Vike handles the error like any other error: Vike logs it, and renders the error page unless it's the error page that failed to load
+  if (pageContext._isRecovery) return false
 
   // === Client-side navigation ===
   // We hard load the next page:
