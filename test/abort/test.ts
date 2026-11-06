@@ -289,6 +289,31 @@ function testRun(
       )
     })
 
+    if (isMakingPageContextJsonRequest) {
+      test("handleError() - no hard reload when the .pageContext.json of `throw render('/some-url')` is missing", async () => {
+        const glob = '**/about/index.pageContext.json'
+        await page.route(glob, (route) => route.fulfill({ status: 404, contentType: 'text/plain', body: 'Not Found' }))
+        const stopCounting = countDocumentRequests()
+        await page.goto(url + '?render-about') // The page throws on its own after every load
+        await sleep(1500) // Long enough for several reloads
+        await page.unroute(glob)
+        expect(stopCounting()).toBe(1)
+        expect(await page.textContent('p')).toBe('Something went wrong.')
+        expectLog("couldn't be fetched", { filter: (log) => log.logSource === 'Browser Error' })
+        expectLog('Failed to load resource: the server responded with a status of 404', {
+          filter: (log) => log.logSource === 'Browser Error',
+        })
+      })
+    }
+
+    test("handleError() - `throw redirect('/some-url')` can hard load a page the client can't render", async () => {
+      await page.goto(url + '?redirect-html-only')
+      await expectUrl('/html-only')
+      await autoRetry(async () => {
+        expect(await page.textContent('h1')).toBe('HTML only')
+      })
+    })
+
     // Static assets are hard reloaded only in production
     if (!isDev) {
       test("handleError() - no hard reload loop when the error page's JavaScript is missing", async () => {
