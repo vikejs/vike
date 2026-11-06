@@ -275,6 +275,20 @@ function testRun(
       })
     })
 
+    test("handleError() - no hard reload when `throw render('/some-url')` can't be rendered on the client-side", async () => {
+      const stopCounting = countDocumentRequests()
+      await page.goto(url + '?render-url') // The page throws on its own after every load
+      await sleep(1500) // Long enough for several reloads
+      expect(stopCounting()).toBe(1)
+      expect(await page.textContent('p')).toBe('Something went wrong.')
+      await expectUrl('/throw-after-render?render-url')
+      await autoRetry(() =>
+        expectLog("/does-not-exist can't be rendered on the client-side", {
+          filter: (log) => log.logSource === 'Browser Error',
+        }),
+      )
+    })
+
     // Static assets are hard reloaded only in production
     if (!isDev) {
       test("handleError() - no hard reload loop when the error page's JavaScript is missing", async () => {
@@ -291,6 +305,19 @@ function testRun(
             filter: (log) => log.logSource === 'Browser Error',
           }),
         )
+        expectLog('Failed to load resource: net::ERR_FAILED', { filter: (log) => log.logSource === 'Browser Error' })
+      })
+
+      test('handleError() - no hard reload loop after a failed prefetch disabled client routing', async () => {
+        const glob = '**/assets/entries/pages_about.*.js'
+        await page.route(glob, (route) => route.abort())
+        const stopCounting = countDocumentRequests()
+        await page.goto(url + '?late-after-prefetch') // The prefetch fails, then the page throws, after every load
+        await sleep(1500) // Long enough for several reloads
+        await page.unroute(glob)
+        expect(stopCounting()).toBe(1)
+        expect(await page.textContent('p')).toBe('Something went wrong.')
+        await expectErrThrown()
         expectLog('Failed to load resource: net::ERR_FAILED', { filter: (log) => log.logSource === 'Browser Error' })
       })
     }
