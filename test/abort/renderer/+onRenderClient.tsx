@@ -2,6 +2,7 @@ export default onRenderClient
 
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import { renderError } from 'vike/client/router'
 import { Layout } from './Layout'
 import { assert } from '../utils/assert'
 import type { PageContextClient } from './types'
@@ -19,10 +20,10 @@ async function onRenderClient(pageContext: PageContextClient) {
 
   const container = document.getElementById('root')!
   if (pageContext.isHydration) {
-    root = ReactDOM.hydrateRoot(container, page)
+    root = ReactDOM.hydrateRoot(container, page, { onUncaughtError: renderError })
   } else {
     if (!root) {
-      root = ReactDOM.createRoot(container)
+      root = ReactDOM.createRoot(container, { onUncaughtError: renderError })
     }
     root.render(page)
   }

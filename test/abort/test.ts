@@ -226,6 +226,49 @@ function testRun(
     await testCounter(1)
     await ensureWasClientSideRouted('/pages/index')
   })
+
+  {
+    const url = getServerUrl() + '/throw-after-render'
+    const expectErrThrown = () =>
+      autoRetry(() => expectLog('Thrown after render', { filter: (log) => log.logSource === 'Browser Error' }))
+
+    test('renderError() - UI component throws after its page rendered', async () => {
+      await page.goto(url)
+      await hydrationDone()
+      const historyLength = await page.evaluate(() => window.history.length)
+      await page.click('#throw')
+      await autoRetry(async () => {
+        expect(await page.textContent('p')).toBe('Something went wrong.')
+      })
+      expect(await page.textContent('#data')).toBe('{}')
+      await testCounter()
+      await expectErrThrown()
+      await expectUrl('/throw-after-render')
+      expect(await page.evaluate(() => window.history.length)).toBe(historyLength)
+      await ensureWasClientSideRouted('/pages/throw-after-render')
+    })
+
+    test("renderError() - no hard reload when the error page's .pageContext.json is missing", async () => {
+      const glob = '**/*.pageContext.json*'
+      await page.route(glob, (route) => route.fulfill({ status: 404, contentType: 'text/plain', body: 'Not Found' }))
+      await page.goto(url)
+      await hydrationDone()
+      let documentRequests = 0
+      const onRequest = (request: { isNavigationRequest(): boolean }) => {
+        if (request.isNavigationRequest()) documentRequests++
+      }
+      page.on('request', onRequest)
+      await page.click('#throw')
+      await expectErrThrown()
+      await autoRetry(() => expectLog("couldn't be fetched", { filter: (log) => log.logSource === 'Browser Error' }))
+      page.off('request', onRequest)
+      await page.unroute(glob)
+      expect(documentRequests).toBe(0)
+      expectLog('Failed to load resource: the server responded with a status of 404', {
+        filter: (log) => log.logSource === 'Browser Error',
+      })
+    })
+  }
 }
 
 async function hydrationDone() {
