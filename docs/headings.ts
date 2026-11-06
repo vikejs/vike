@@ -603,6 +603,11 @@ const headings = [
   },
   {
     level: 2,
+    title: '`renderError()`',
+    url: '/renderError',
+  },
+  {
+    level: 2,
     title: '`prefetch()`',
     url: '/prefetch',
   },
