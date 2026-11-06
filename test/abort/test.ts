@@ -243,7 +243,7 @@ function testRun(
     const expectErrThrown = () =>
       autoRetry(() => expectLog('Thrown after render', { filter: (log) => log.logSource === 'Browser Error' }))
 
-    test('renderError() - UI component throws after its page rendered', async () => {
+    test('handleError() - UI component throws after its page rendered', async () => {
       await page.goto(url)
       await hydrationDone()
       const historyLength = await page.evaluate(() => window.history.length)
@@ -259,7 +259,7 @@ function testRun(
       await ensureWasClientSideRouted('/pages/throw-after-render')
     })
 
-    test("renderError() - no hard reload when the error page's .pageContext.json is missing", async () => {
+    test("handleError() - no hard reload when the error page's .pageContext.json is missing", async () => {
       const glob = '**/*.pageContext.json*'
       await page.route(glob, (route) => route.fulfill({ status: 404, contentType: 'text/plain', body: 'Not Found' }))
       await page.goto(url)
@@ -277,7 +277,7 @@ function testRun(
 
     // Static assets are hard reloaded only in production
     if (!isDev) {
-      test("renderError() - no hard reload loop when the error page's JavaScript is missing", async () => {
+      test("handleError() - no hard reload loop when the error page's JavaScript is missing", async () => {
         const glob = '**/assets/entries/pages_error.*.js'
         await page.route(glob, (route) => route.abort())
         const stopCounting = countDocumentRequests()

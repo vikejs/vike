@@ -1,6 +1,6 @@
 export { navigate }
 export { reload }
-export { renderError }
+export { handleError }
 export { prefetch }
 export { onPopState }
 
@@ -10,7 +10,7 @@ import '../assertEnvServer.js'
 // `never` to ensure package.json#exports["./client/router"].types points to type defined by the client-side code
 const navigate: never = (() => warnNoEffect('navigate')) as never
 const reload: never = (() => warnNoEffect('reload')) as never
-const renderError: never = (() => warnNoEffect('renderError')) as never
+const handleError: never = (() => warnNoEffect('handleError')) as never
 const prefetch: never = (() => warnNoEffect('prefetch')) as never
 const onPopState: never = (() => {}) as never
 

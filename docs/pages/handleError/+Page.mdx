@@ -6,17 +6,17 @@ import { ConfigSpec } from '../../components'
   global={null}
 />
 
-The `renderError()` function lets Vike handle a value thrown outside of Vike's hooks, as if a hook threw it. An error shows the <Link href="/error-page">error page</Link> at the current URL, without adding a browser history entry.
+The `handleError()` function lets Vike handle a value thrown outside of Vike's hooks, as if a hook threw it. An error shows the <Link href="/error-page">error page</Link> at the current URL, without adding a browser history entry.
 
-> `renderError()` works only with <Link href="/client-routing">Client Routing</Link>.
+> `handleError()` works only with <Link href="/client-routing">Client Routing</Link>.
 
-The most common use case is a custom <Link href="/onRenderClient">`+onRenderClient`</Link>: when a component throws after its page rendered, no Vike hook is running, so Vike can't catch the error. With React, the user is left with a blank page unless you pass the error to `renderError()`.
+The most common use case is a custom <Link href="/onRenderClient">`+onRenderClient`</Link>: when a component throws after its page rendered, no Vike hook is running, so Vike can't catch the error. With React, the user is left with a blank page unless you pass the error to `handleError()`.
 
 ```tsx
 // /renderer/+onRenderClient.tsx
 
 import ReactDOM from 'react-dom/client'
-import { renderError } from 'vike/client/router'
+import { handleError } from 'vike/client/router'
 
 let root: ReactDOM.Root
 function onRenderClient(pageContext) {
@@ -31,7 +31,7 @@ function onRenderClient(pageContext) {
 
 // React calls it only when no error boundary caught the error
 function onUncaughtError(err: unknown) {
-  renderError(err)
+  handleError(err)
 }
 ```
 

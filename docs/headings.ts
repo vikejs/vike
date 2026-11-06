@@ -603,8 +603,8 @@ const headings = [
   },
   {
     level: 2,
-    title: '`renderError()`',
-    url: '/renderError',
+    title: '`handleError()`',
+    url: '/handleError',
   },
   {
     level: 2,
