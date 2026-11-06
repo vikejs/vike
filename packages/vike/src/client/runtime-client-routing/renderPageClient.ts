@@ -148,7 +148,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
   } = renderArgs
   let { scrollTarget } = renderArgs
 
-  // We never hard load the page that threw: the reloaded page could throw the same value again, in a loop
+  // We don't hard load the page that threw: the reloaded page could throw the same value again, in a loop
   // - `throw redirect('/some-url')` is a navigation to another URL: it can hard load `/some-url`
   const isRecovery = urlOriginal === urlThrown
 
