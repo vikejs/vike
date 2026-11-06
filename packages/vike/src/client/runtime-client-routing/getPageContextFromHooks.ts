@@ -297,6 +297,7 @@ async function fetchPageContextFromServer(
     _urlRewrite?: string
     abortSignal: AbortSignal
     isClientSideNavigation?: boolean
+    _isRecovery?: boolean
   },
   errorPageInfo?: ErrorPageInfo,
 ) {
@@ -315,9 +316,10 @@ async function fetchPageContextFromServer(
     // - The error page's .pageContext.json is also missing when, e.g., a tab runs the bundle of an older deployment that had a server, or the server's build has no error page
     if (response.status === 404) {
       if (
-        errorPageInfo &&
-        // Reloading upon the first render would lead to an infinite reload loop: the reloaded page fails again and requests the error page's .pageContext.json again
-        !pageContext.isClientSideNavigation
+        pageContext._isRecovery || // See `isRecovery` in renderPageClient()
+        (errorPageInfo &&
+          // Reloading upon the first render would lead to an infinite reload loop: the reloaded page fails again and requests the error page's .pageContext.json again
+          !pageContext.isClientSideNavigation)
       ) {
         throw getProjectError(errMsg)
       }

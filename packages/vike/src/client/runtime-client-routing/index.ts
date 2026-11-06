@@ -4,7 +4,7 @@
 //   import { navigate, prefetch } from 'vike'
 // Use package.json#exports to make the imports isomorphic.
 
-export { navigate, reload } from './navigate.js'
+export { navigate, reload, handleError } from './navigate.js'
 export { prefetch } from './prefetch.js'
 export { getPageContextClient } from './renderPageClient.js'
 export { PROJECT_VERSION as version } from '../../utils/PROJECT_VERSION.js'

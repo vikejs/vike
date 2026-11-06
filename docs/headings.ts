@@ -603,6 +603,11 @@ const headings = [
   },
   {
     level: 2,
+    title: '`handleError()`',
+    url: '/handleError',
+  },
+  {
+    level: 2,
     title: '`prefetch()`',
     url: '/prefetch',
   },
