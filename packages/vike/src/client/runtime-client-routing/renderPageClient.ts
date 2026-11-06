@@ -115,6 +115,7 @@ type RenderArgs = {
   isClientSideNavigation?: boolean
   pageContextInitClient?: Record<string, unknown>
   thrown?: { err: unknown }
+  isRecovery?: boolean // Vike handles a value thrown outside of Vike's hooks: nothing navigated
 }
 async function renderPageClient(renderArgs: RenderArgs) {
   catchInfiniteLoop('renderPageClient()')
@@ -143,6 +144,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     pageContextInitClient,
     pageContextsAborted = [],
     thrown,
+    isRecovery = false,
   } = renderArgs
   let { scrollTarget } = renderArgs
 
@@ -298,7 +300,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
       }
     }
 
-    const res = await loadPageConfigsLazyClientSideAndExecHook(pageContext, isFirstRender, abortIfOutdated)
+    const res = await loadPageConfigsLazyClientSideAndExecHook(pageContext, isFirstRender, isRecovery, abortIfOutdated)
     /* Already called inside loadPageConfigsLazyClientSideAndExecHook()
     if (abortIfOutdated()) return
     */
@@ -465,7 +467,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
       assertInfo(false, `Rendering error page ${errorPageId}`, { onlyOnce: false })
     }
 
-    const res = await loadPageConfigsLazyClientSideAndExecHook(pageContext, isFirstRender, abortIfOutdated)
+    const res = await loadPageConfigsLazyClientSideAndExecHook(pageContext, isFirstRender, isRecovery, abortIfOutdated)
     /* Already called inside loadPageConfigsLazyClientSideAndExecHook()
     if (abortIfOutdated()) return
     */
@@ -906,7 +908,7 @@ type PageContextExecuteHook = Omit<
 >
 async function loadPageConfigsLazyClientSideAndExecHook<
   PageContext extends PageContext_loadPageConfigsLazyClientSide & PageContextExecuteHook & PageContextCreatedClient,
->(pageContext: PageContext, isFirstRender: boolean, abortIfOutdated: () => boolean) {
+>(pageContext: PageContext, isFirstRender: boolean, isRecovery: boolean, abortIfOutdated: () => boolean) {
   let hasErr = false
   let err: unknown
 
@@ -924,7 +926,7 @@ async function loadPageConfigsLazyClientSideAndExecHook<
   }
   if (abortIfOutdated()) return { skip: true }
   if (hasErr) {
-    if (await handleErrorFetchingStaticAssets(err, pageContext, isFirstRender)) return { skip: true }
+    if (await handleErrorFetchingStaticAssets(err, pageContext, isFirstRender, isRecovery)) return { skip: true }
     return { err }
   }
   objectAssign(pageContext, pageContextAddendum!)
@@ -944,6 +946,7 @@ async function handleErrorFetchingStaticAssets(
   err: unknown,
   pageContext: { urlOriginal: string },
   isFirstRender: boolean,
+  isRecovery: boolean,
 ): Promise<boolean> {
   if (import.meta.env.DEV) return false
   if (!isErrorFetchingStaticAssets(err)) return false // Syntax error in user file
@@ -984,6 +987,11 @@ async function handleErrorFetchingStaticAssets(
   // Possible causes that lead to this point:
   // - New deployment
   // - Connection problem
+
+  // === Recovery ===
+  // We don't reload: the reloaded page could throw the same error again, in a loop
+  // - Vike handles the error like any other error: Vike logs it, and renders the error page unless it's the error page that failed to load
+  if (isRecovery) return false
 
   // === Client-side navigation ===
   // We hard load the next page:

@@ -1,6 +1,17 @@
 export { testRun as test }
 
-import { run, page, test, expect, getServerUrl, fetchHtml, autoRetry, expectLog, partRegex } from '@brillout/test-e2e'
+import {
+  run,
+  page,
+  test,
+  expect,
+  getServerUrl,
+  fetchHtml,
+  autoRetry,
+  expectLog,
+  partRegex,
+  sleep,
+} from '@brillout/test-e2e'
 import { ensureWasClientSideRouted, expectUrl, testCounter, expectPageContextJsonRequest } from '../utils'
 
 function testRun(
@@ -253,26 +264,53 @@ function testRun(
       await page.route(glob, (route) => route.fulfill({ status: 404, contentType: 'text/plain', body: 'Not Found' }))
       await page.goto(url)
       await hydrationDone()
-      let documentRequests = 0
-      const onRequest = (request: { isNavigationRequest(): boolean }) => {
-        if (request.isNavigationRequest()) documentRequests++
-      }
-      page.on('request', onRequest)
+      const stopCounting = countDocumentRequests()
       await page.click('#throw')
       await expectErrThrown()
       await autoRetry(() => expectLog("couldn't be fetched", { filter: (log) => log.logSource === 'Browser Error' }))
-      page.off('request', onRequest)
       await page.unroute(glob)
-      expect(documentRequests).toBe(0)
+      expect(stopCounting()).toBe(0)
       expectLog('Failed to load resource: the server responded with a status of 404', {
         filter: (log) => log.logSource === 'Browser Error',
       })
     })
+
+    // Static assets are hard reloaded only in production
+    if (!isDev) {
+      test("renderError() - no hard reload loop when the error page's JavaScript is missing", async () => {
+        const glob = '**/assets/entries/pages_error.*.js'
+        await page.route(glob, (route) => route.abort())
+        const stopCounting = countDocumentRequests()
+        await page.goto(url + '?late') // The page throws on its own after every load
+        await sleep(1500) // Long enough for several reloads
+        await page.unroute(glob)
+        expect(stopCounting()).toBe(1)
+        await expectErrThrown()
+        await autoRetry(() =>
+          expectLog('Failed to fetch dynamically imported module', {
+            filter: (log) => log.logSource === 'Browser Error',
+          }),
+        )
+        expectLog('Failed to load resource: net::ERR_FAILED', { filter: (log) => log.logSource === 'Browser Error' })
+      })
+    }
   }
 }
 
 async function hydrationDone() {
   await testCounter()
+}
+
+function countDocumentRequests() {
+  let count = 0
+  const onRequest = (request: { isNavigationRequest(): boolean }) => {
+    if (request.isNavigationRequest()) count++
+  }
+  page.on('request', onRequest)
+  return () => {
+    page.off('request', onRequest)
+    return count
+  }
 }
 
 // Click on Cancel (or OK) of the next window.confirm() dialog
