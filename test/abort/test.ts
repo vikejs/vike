@@ -289,6 +289,12 @@ function testRun(
       )
     })
 
+    test('handleError() - a value that a newer rendering replaces is logged', async () => {
+      await page.goto(url + '?two-values')
+      await autoRetry(() => expectLog('First value', { filter: (log) => log.logSource === 'Browser Error' }))
+      expectLog('Second value', { filter: (log) => log.logSource === 'Browser Error' })
+    })
+
     if (isMakingPageContextJsonRequest) {
       test("handleError() - no hard reload when the .pageContext.json of `throw render('/some-url')` is missing", async () => {
         const glob = '**/about/index.pageContext.json'

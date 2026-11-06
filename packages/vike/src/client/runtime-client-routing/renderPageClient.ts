@@ -180,7 +180,10 @@ async function renderPageClient(renderArgs: RenderArgs) {
   // Await hydration (unless +hydrationCanBeAborted)
   if (!isFirstRender) {
     await globalObject.hydrationAwaitPromise
-    if (abortIfOutdated()) return
+    if (abortIfOutdated()) {
+      if (thrown) logErrorClient(thrown.err, abortController.signal)
+      return
+    }
   }
   const { previousPageContext } = globalObject
 
@@ -415,14 +418,14 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     // pageContext
     const pageContext = await getPageContextBegin(true, pageContextBeginArgs)
-    if (abortIfOutdated()) return
+    if (abortIfOutdated_logThrown()) return
     objectAssign(pageContext, {
       errorWhileRendering: err,
     })
 
     // We also call commitNavigation() here, because the error may have been thrown during routing before the other commitNavigation() above was called
     await commitNavigation(abortController)
-    if (abortIfOutdated()) return
+    if (abortIfOutdated_logThrown()) return
 
     // throw redirect()/render()
     let pageContextAbort: undefined | PageContextAbort
@@ -478,7 +481,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
       assertInfo(false, `Rendering error page ${errorPageId}`, { onlyOnce: false })
     }
 
-    const res = await loadPageConfigsLazyClientSideAndExecHook(pageContext, isFirstRender, abortIfOutdated)
+    const res = await loadPageConfigsLazyClientSideAndExecHook(pageContext, isFirstRender, abortIfOutdated_logThrown)
     /* Already called inside loadPageConfigsLazyClientSideAndExecHook()
     if (abortIfOutdated()) return
     */
@@ -499,7 +502,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
       onError(err)
       return
     }
-    if (abortIfOutdated()) return
+    if (abortIfOutdated_logThrown()) return
     // TO-DO/eventually: create helper assertPageContextFromHook()
     assert(!('urlOriginal' in pageContextFromHooksServer))
     objectAssign(pageContext, pageContextFromHooksServer)
@@ -511,10 +514,17 @@ async function renderPageClient(renderArgs: RenderArgs) {
       onError(err)
       return
     }
-    if (abortIfOutdated()) return
+    if (abortIfOutdated_logThrown()) return
     updateType(pageContext, pageContextFromHooksClient)
 
     await renderPageView(pageContext, args)
+  }
+
+  // Unlike an error, `throw render()` and `throw redirect()` aren't logged by handleError() => a newer rendering would drop them silently
+  function abortIfOutdated_logThrown() {
+    const isOutdated = abortIfOutdated()
+    if (isOutdated && thrown && isAbortError(thrown.err)) logErrorClient(thrown.err, abortController.signal)
+    return isOutdated
   }
 
   // The client-side router can't render the page

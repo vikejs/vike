@@ -7,3 +7,8 @@ if (location.search === '?early-listener') {
     console.log('handleError() settled')
   })
 }
+
+if (location.search === '?two-values') {
+  handleError(new Error('First value'))
+  handleError(new Error('Second value'))
+}
