@@ -320,6 +320,25 @@ function testRun(
         await expectErrThrown()
         expectLog('Failed to load resource: net::ERR_FAILED', { filter: (log) => log.logSource === 'Browser Error' })
       })
+
+      test('handleError() - the first render failed for good', async () => {
+        const urlFailing = url + '?early-listener'
+        const glob = '**/assets/entries/pages_throw-after-render.*.js'
+        await page.route(glob, (route) => route.abort())
+        // The connection is down => Vike keeps the rendered HTML instead of reloading
+        await page.route(urlFailing, (route) =>
+          route.request().method() === 'HEAD' ? route.abort() : route.continue(),
+        )
+        const stopCounting = countDocumentRequests()
+        await page.goto(urlFailing) // The rejected first render reaches handleError()
+        await autoRetry(() => expectLog('handleError() settled'))
+        await page.unroute(glob)
+        await page.unroute(urlFailing)
+        expect(stopCounting()).toBe(1)
+        expect(await page.textContent('p')).toBe('Something went wrong.')
+        expectLog('Failed to fetch dynamically imported module', { filter: (log) => log.logSource === 'Browser Error' })
+        expectLog('Failed to load resource: net::ERR_FAILED', { filter: (log) => log.logSource === 'Browser Error' })
+      })
     }
   }
 }

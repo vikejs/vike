@@ -185,7 +185,13 @@ async function renderPageClient(renderArgs: RenderArgs) {
   const { previousPageContext } = globalObject
 
   if (thrown) return await handleError(thrown)
-  return await renderPageNominal()
+  try {
+    return await renderPageNominal()
+  } catch (err) {
+    // The first render ended for good (e.g. its JavaScript failed to load) => what awaits hydration must go on
+    if (isFirstRender) setHydrationCanBeAborted()
+    throw err
+  }
 
   async function renderPageNominal() {
     const onError = async (err: unknown) => {
