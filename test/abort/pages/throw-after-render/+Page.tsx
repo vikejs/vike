@@ -9,7 +9,7 @@ function Page() {
   const [shouldThrow, setShouldThrow] = useState(false)
   useEffect(() => {
     if (location.search === '?late-after-prefetch') prefetch('/about').then(() => setShouldThrow(true))
-    else if (location.search) setTimeout(() => setShouldThrow(true), 100)
+    else if (location.search && location.search !== '?two-values') setTimeout(() => setShouldThrow(true), 100)
   }, [])
   if (shouldThrow) throw getThrown()
   return (

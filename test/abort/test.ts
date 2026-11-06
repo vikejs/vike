@@ -293,6 +293,7 @@ function testRun(
       await page.goto(url + '?two-values')
       await autoRetry(() => expectLog('First value', { filter: (log) => log.logSource === 'Browser Error' }))
       expectLog('Second value', { filter: (log) => log.logSource === 'Browser Error' })
+      await autoRetry(() => expectLog('handleError() settled'))
     })
 
     if (isMakingPageContextJsonRequest) {

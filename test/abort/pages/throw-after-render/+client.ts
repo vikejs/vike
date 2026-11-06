@@ -9,6 +9,7 @@ if (location.search === '?early-listener') {
 }
 
 if (location.search === '?two-values') {
-  handleError(new Error('First value'))
-  handleError(new Error('Second value'))
+  Promise.all([handleError(new Error('First value')), handleError(new Error('Second value'))]).then(() =>
+    console.log('handleError() settled'),
+  )
 }
