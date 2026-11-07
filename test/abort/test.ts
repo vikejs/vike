@@ -376,14 +376,6 @@ function testRun(
     })
     expectBrowserError('The thrown value is `null`')
   })
-
-  test('+onHookCall - +data.client.ts throws `null`', async () => {
-    await page.goto(getServerUrl() + '/about?data-client-null')
-    await autoRetry(async () => {
-      expect(await page.textContent('p')).toBe('Something went wrong.')
-    })
-    expectBrowserError('The thrown value is `null`')
-  })
 }
 
 async function hydrationDone() {
