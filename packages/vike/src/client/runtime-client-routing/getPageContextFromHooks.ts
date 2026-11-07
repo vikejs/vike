@@ -316,13 +316,14 @@ async function fetchPageContextFromServer(
     // - The error page's .pageContext.json is also missing when, e.g., a tab runs the bundle of an older deployment that had a server, or the server's build has no error page
     if (response.status === 404) {
       if (
-        pageContext._isRecovery || // See `isRecovery` in renderPageClient()
-        (errorPageInfo &&
-          // Reloading upon the first render would lead to an infinite reload loop: the reloaded page fails again and requests the error page's .pageContext.json again
-          !pageContext.isClientSideNavigation)
+        errorPageInfo &&
+        // Reloading upon the first render would lead to an infinite reload loop: the reloaded page fails again and requests the error page's .pageContext.json again
+        !pageContext.isClientSideNavigation
       ) {
         throw getProjectError(errMsg)
       }
+      // We don't hard load the page that threw, see `isRecovery` in renderPageClient()
+      if (pageContext._isRecovery) throw getProjectError(errMsg)
       redirectHard(pageContext.urlOriginal)
       return { is404ServerSideRouted: true as const }
     }
