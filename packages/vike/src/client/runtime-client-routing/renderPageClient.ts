@@ -1023,7 +1023,7 @@ async function handleErrorFetchingStaticAssets(
   // - Connection problem
 
   // === Recovery ===
-  // Vike handles the error like any other error: Vike logs it, and renders the error page unless it's the error page that failed to load
+  // We don't hard load the page that threw, see `isRecovery` above => Vike logs the error, and renders the error page unless it's the error page that failed to load
   if (pageContext._isRecovery) return false
 
   // === Client-side navigation ===
