@@ -149,7 +149,13 @@ async function renderPageClient(renderArgs: RenderArgs) {
   }
 
   // We don't hard load the page that threw: the reloaded page could throw the same value again, in a loop
+  // - `throw render('/some-url')` keeps the URL: it's still the page that threw
   // - `throw redirect('/some-url')` is a navigation to another URL: it can hard load `/some-url`
+  // Support:
+  // - Client Routing disabled by a static asset that failed to load, see `clientRoutingIsDisabled` below
+  // - A page that the client-side router can't render, see hardLoad()
+  // - A missing .pageContext.json, see fetchPageContextFromServer()
+  // - A static asset that fails to load, see handleErrorFetchingStaticAssets()
   const isRecovery = urlOriginal === urlThrown
 
   const abortController = new AbortController()
