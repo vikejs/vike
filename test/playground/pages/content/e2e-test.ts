@@ -42,7 +42,8 @@ function testContent({ isDev, rootDir }: { isDev: boolean; rootDir: string }) {
     expect(resp.headers.get('content-type')).toBe('text/html;charset=utf-8')
     expect(await resp.text()).toContain('<p>An error occurred.</p>')
     expectLog('Some stream error')
-    if (isDev) expectLog('No error page found')
+    // Warned once per server
+    if (isDev) expectLog('No error page found', { allLogs: true })
     // The server may log the response after the client received it
     await autoRetry(
       () => {
