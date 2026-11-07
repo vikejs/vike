@@ -240,8 +240,7 @@ function testRun(
 
   {
     const url = getServerUrl() + '/throw-after-render'
-    const expectErrThrown = () =>
-      autoRetry(() => expectLog('Thrown after render', { filter: (log) => log.logSource === 'Browser Error' }))
+    const expectErrThrown = () => autoRetry(() => expectBrowserError('Thrown after render'))
 
     test('handleError() - UI component throws after its page rendered', async () => {
       await page.goto(url)
@@ -267,12 +266,10 @@ function testRun(
       const stopCounting = countDocumentRequests()
       await page.click('#throw')
       await expectErrThrown()
-      await autoRetry(() => expectLog("couldn't be fetched", { filter: (log) => log.logSource === 'Browser Error' }))
+      await autoRetry(() => expectBrowserError("couldn't be fetched"))
       await page.unroute(glob)
       expect(stopCounting()).toBe(0)
-      expectLog('Failed to load resource: the server responded with a status of 404', {
-        filter: (log) => log.logSource === 'Browser Error',
-      })
+      expectBrowserError('Failed to load resource: the server responded with a status of 404')
     })
 
     test("handleError() - no hard reload when `throw render('/some-url')` can't be rendered on the client-side", async () => {
@@ -282,17 +279,13 @@ function testRun(
       expect(stopCounting()).toBe(1)
       expect(await page.textContent('p')).toBe('Something went wrong.')
       await expectUrl('/throw-after-render?render-url')
-      await autoRetry(() =>
-        expectLog("/does-not-exist can't be rendered on the client-side", {
-          filter: (log) => log.logSource === 'Browser Error',
-        }),
-      )
+      await autoRetry(() => expectBrowserError("/does-not-exist can't be rendered on the client-side"))
     })
 
     test('handleError() - a value that a newer rendering replaces is logged', async () => {
       await page.goto(url + '?two-values')
-      await autoRetry(() => expectLog('First value', { filter: (log) => log.logSource === 'Browser Error' }))
-      expectLog('Second value', { filter: (log) => log.logSource === 'Browser Error' })
+      await autoRetry(() => expectBrowserError('First value'))
+      expectBrowserError('Second value')
       await autoRetry(() => expectLog('handleError() settled'))
     })
 
@@ -306,10 +299,8 @@ function testRun(
         await page.unroute(glob)
         expect(stopCounting()).toBe(1)
         expect(await page.textContent('p')).toBe('Something went wrong.')
-        expectLog("couldn't be fetched", { filter: (log) => log.logSource === 'Browser Error' })
-        expectLog('Failed to load resource: the server responded with a status of 404', {
-          filter: (log) => log.logSource === 'Browser Error',
-        })
+        expectBrowserError("couldn't be fetched")
+        expectBrowserError('Failed to load resource: the server responded with a status of 404')
       })
     }
 
@@ -332,12 +323,8 @@ function testRun(
         await page.unroute(glob)
         expect(stopCounting()).toBe(1)
         await expectErrThrown()
-        await autoRetry(() =>
-          expectLog('Failed to fetch dynamically imported module', {
-            filter: (log) => log.logSource === 'Browser Error',
-          }),
-        )
-        expectLog('Failed to load resource: net::ERR_FAILED', { filter: (log) => log.logSource === 'Browser Error' })
+        await autoRetry(() => expectBrowserError('Failed to fetch dynamically imported module'))
+        expectBrowserError('Failed to load resource: net::ERR_FAILED')
       })
 
       test('handleError() - no hard reload loop after a failed prefetch disabled client routing', async () => {
@@ -350,7 +337,7 @@ function testRun(
         expect(stopCounting()).toBe(1)
         expect(await page.textContent('p')).toBe('Something went wrong.')
         await expectErrThrown()
-        expectLog('Failed to load resource: net::ERR_FAILED', { filter: (log) => log.logSource === 'Browser Error' })
+        expectBrowserError('Failed to load resource: net::ERR_FAILED')
       })
 
       test('handleError() - the first render failed for good', async () => {
@@ -368,8 +355,8 @@ function testRun(
         await page.unroute(urlFailing)
         expect(stopCounting()).toBe(1)
         expect(await page.textContent('p')).toBe('Something went wrong.')
-        expectLog('Failed to fetch dynamically imported module', { filter: (log) => log.logSource === 'Browser Error' })
-        expectLog('Failed to load resource: net::ERR_FAILED', { filter: (log) => log.logSource === 'Browser Error' })
+        expectBrowserError('Failed to fetch dynamically imported module')
+        expectBrowserError('Failed to load resource: net::ERR_FAILED')
       })
     }
   }
@@ -377,6 +364,10 @@ function testRun(
 
 async function hydrationDone() {
   await testCounter()
+}
+
+function expectBrowserError(logText: string) {
+  expectLog(logText, { filter: (log) => log.logSource === 'Browser Error' })
 }
 
 function countDocumentRequests() {
