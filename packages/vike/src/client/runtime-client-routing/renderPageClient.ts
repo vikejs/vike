@@ -408,7 +408,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
   // - Can be rendering the error page
   // - Can be rendering Vike's generic error page (if no error page is defined, or if the error page throws an error)
   async function handleError(args: { err: unknown }) {
-    const { err } = args
+    const err = wrapFalsy(args.err)
     assert(err)
 
     // The first render failed, thus it doesn't hydrate the page anymore: a navigation can now supersede it
@@ -451,7 +451,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     }
 
     // Render error page
-    await renderErrorPage(pageContext, args, pageContextAbort)
+    await renderErrorPage(pageContext, { err }, pageContextAbort)
   }
 
   async function renderErrorPage(
@@ -631,6 +631,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
       try {
         await execHookOnRenderClient(pageContext, getPageContextPublicClient)
       } catch (err) {
+        err = wrapFalsy(err)
         assert(err)
         onRenderClientError = err
       }
@@ -710,6 +711,12 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     return pageContext
   }
+}
+
+// Vike's error handling expects a truthy value, while a hook or a UI component can `throw null`
+function wrapFalsy(err: unknown) {
+  if (err) return err
+  return new Error(`The thrown value is \`${String(err)}\``)
 }
 
 async function getPageContextBegin(
