@@ -282,6 +282,14 @@ function testRun(
       await autoRetry(() => expectBrowserError("/does-not-exist can't be rendered on the client-side"))
     })
 
+    test('handleError() - UI component throws `null`', async () => {
+      await page.goto(url + '?null') // The page throws on its own after every load
+      await autoRetry(async () => {
+        expect(await page.textContent('p')).toBe('Something went wrong.')
+      })
+      expectBrowserError('The thrown value is `null`')
+    })
+
     test('handleError() - a value that a newer rendering replaces is logged', async () => {
       await page.goto(url + '?two-values')
       await autoRetry(() => expectBrowserError('First value'))

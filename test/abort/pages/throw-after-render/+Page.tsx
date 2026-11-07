@@ -34,5 +34,6 @@ function getThrown() {
   if (location.search === '?render-url') return render('/does-not-exist')
   if (location.search === '?render-about') return render('/about')
   if (location.search === '?redirect-html-only') return redirect('/html-only')
+  if (location.search === '?null') return null
   return new Error('Thrown after render')
 }

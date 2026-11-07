@@ -58,6 +58,8 @@ async function reload(): Promise<void> {
  */
 async function handleError(err: unknown): Promise<void> {
   initClientRouter()
+  // Vike's error handling expects a truthy value, while a UI component can `throw null`
+  if (!err) err = new Error(`The thrown value is \`${String(err)}\``)
   await renderPageClient({
     scrollTarget: { preserveScroll: false },
     thrown: { err },
