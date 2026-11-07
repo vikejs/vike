@@ -120,20 +120,6 @@ type RenderArgs = {
 async function renderPageClient(renderArgs: RenderArgs) {
   catchInfiniteLoop('renderPageClient()')
 
-  if (renderArgs.thrown) {
-    const pageShown = globalObject.previousPageContext
-    if (
-      pageShown &&
-      // The error page itself threw => rendering the error page again could loop
-      (isErrorPage(pageShown.pageId, pageShown._globalContext._pageConfigs) ||
-        // A newer rendering is already replacing the page that threw
-        pageShown.abortSignal.aborted)
-    ) {
-      logErrorClient(renderArgs.thrown.err, pageShown.abortSignal)
-      return
-    }
-  }
-
   const {
     urlOriginal = getCurrentUrl(),
     overwriteLastHistoryEntry = false,
@@ -147,6 +133,20 @@ async function renderPageClient(renderArgs: RenderArgs) {
     urlThrown,
   } = renderArgs
   let { scrollTarget } = renderArgs
+
+  if (thrown) {
+    const pageShown = globalObject.previousPageContext
+    if (
+      pageShown &&
+      // The error page itself threw => rendering the error page again could loop
+      (isErrorPage(pageShown.pageId, pageShown._globalContext._pageConfigs) ||
+        // A newer rendering is already replacing the page that threw
+        pageShown.abortSignal.aborted)
+    ) {
+      logErrorClient(thrown.err, pageShown.abortSignal)
+      return
+    }
+  }
 
   // We don't hard load the page that threw: the reloaded page could throw the same value again, in a loop
   // - `throw redirect('/some-url')` is a navigation to another URL: it can hard load `/some-url`
