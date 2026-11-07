@@ -197,7 +197,10 @@ async function renderPageClient(renderArgs: RenderArgs) {
   try {
     return await renderPageNominal()
   } catch (err) {
-    // The first render ended for good (e.g. its JavaScript failed to load) => what awaits hydration must go on
+    // The first render ended for good => what awaits hydration must go on, e.g. handleError() and link clicks
+    // Support:
+    // - The page's JavaScript failed to load and Vike keeps the HTML, see showCurrentBrokenPage()
+    // - Any other error thrown outside of a hook, e.g. a malformed <script id="vike_pageContext">
     if (isFirstRender) setHydrationCanBeAborted()
     throw err
   }
