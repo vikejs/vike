@@ -37,9 +37,9 @@ If `throw redirect()` or `throw render()` doesn't work:
    10:00:00 AM [vike][request(42)] throw redirect('/some-url') intercepted while
    rendering /some-other-url
    ```
-   > Most notably, using `throw redirect()` / `throw render()` inside a UI component usually doesn't work because most <Link href="/ui-frameworks">UI frameworks</Link> intercept the exception, and thus Vike doesn't catch it. With <Link href="/vike-react">`vike-react`</Link> it works while the page renders on the server-side, hydrates, or is navigated to, but not inside `<Suspense>` while streaming, and not when a component re-renders later. Instead, consider using `throw redirect()` / `throw render()` in a Vike hook such as <Link href="/guard">`guard()`</Link> or <Link href="/data">`data()`</Link>, or use <Link href="/navigate">`navigate()`</Link>.
+   > Most notably, using `throw redirect()` / `throw render()` inside a UI component usually doesn't work because most <Link href="/ui-frameworks">UI frameworks</Link> intercept the exception, and thus Vike doesn't catch it. With <Link href="/vike-react">`vike-react`</Link> it works while a page renders on the server-side, hydrates, or renders upon navigation. It doesn't work when a component inside `<Suspense>` throws while the HTML streams (move the check to a Vike hook), or when a component re-renders after the page is shown (e.g. upon a click: call <Link href="/navigate">`navigate()`</Link> in the event handler). With other UI frameworks, consider using `throw redirect()` / `throw render()` in a Vike hook such as <Link href="/guard">`guard()`</Link> or <Link href="/data">`data()`</Link>, or use <Link href="/navigate">`navigate()`</Link>.
  - **Make sure to use `throw redirect()` / `throw render()` within a Vike hook.**  
-   If you use `throw redirect()` / `throw render()` outside of Vike hooks, for example in some server middleware code, then Vike won't be able to intercept it.
+   If you use `throw redirect()` / `throw render()` outside of Vike hooks (and outside the UI component cases above), for example in some server middleware code, then Vike won't be able to intercept it.
 
 If `throw redirect()` doesn't work:
  - **Make sure to add `pageContext.httpResponse.headers` to the HTTP response.**  
