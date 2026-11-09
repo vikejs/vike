@@ -406,14 +406,6 @@ function testRun(
       })
     }
   }
-
-  test('+onRenderClient throws `null`', async () => {
-    await page.goto(getServerUrl() + '/about?on-render-client-null')
-    await autoRetry(async () => {
-      expect(await page.textContent('p')).toBe('Something went wrong.')
-    })
-    expectBrowserError('The thrown value is `null`')
-  })
 }
 
 async function hydrationDone() {

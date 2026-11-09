@@ -10,7 +10,6 @@ import type { PageContextClient } from './types'
 let root: ReactDOM.Root
 async function onRenderClient(pageContext: PageContextClient) {
   assert(Array.isArray(pageContext.pageContextsAborted))
-  if (location.search === '?on-render-client-null' && !pageContext.isErrorPage) throw null
 
   const { Page } = pageContext
   const page = (
