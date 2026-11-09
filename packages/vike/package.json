@@ -138,7 +138,7 @@
     "@brillout/picocolors": "^1.0.31",
     "@brillout/vite-plugin-server-entry": "^0.7.24",
     "@universal-deploy/store": "^0.3.0",
-    "@universal-deploy/vite": "^0.2.2",
+    "@universal-deploy/vite": "^0.2.3",
     "@universal-middleware/core": "^0.7.2",
     "@universal-middleware/node": "^0.2.9",
     "cac": "^6.0.0",
