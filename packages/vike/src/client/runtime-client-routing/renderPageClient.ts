@@ -16,6 +16,7 @@ import { isReact } from '../../utils/isReact.js'
 import { objectAssign } from '../../utils/objectAssign.js'
 import { redirectHard } from '../../utils/redirectHard.js'
 import { updateType } from '../../utils/updateType.js'
+import { wrapFalsyError } from '../../utils/wrapFalsyError.js'
 import {
   getPageContextFromHooksClient,
   getPageContextFromHooksServer,
@@ -363,7 +364,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
   // - Can be rendering the error page
   // - Can be rendering Vike's generic error page (if no error page is defined, or if the error page throws an error)
   async function handleError(args: { err: unknown }) {
-    const { err } = args
+    const err = wrapFalsyError(args.err) // A user hook can `throw null`
     assert(err)
 
     // The first render failed, thus it doesn't hydrate the page anymore: a navigation can now supersede it
@@ -406,7 +407,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     }
 
     // Render error page
-    await renderErrorPage(pageContext, args, pageContextAbort)
+    await renderErrorPage(pageContext, { err }, pageContextAbort)
   }
 
   async function renderErrorPage(
@@ -568,6 +569,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
       try {
         await execHookOnRenderClient(pageContext, getPageContextPublicClient)
       } catch (err) {
+        err = wrapFalsyError(err) // +onRenderClient can `throw null`
         assert(err)
         onRenderClientError = err
       }

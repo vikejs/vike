@@ -216,11 +216,13 @@ function execHookBase<HookReturn>(
   let originalCalled = false
   let originalReturn: HookReturn
   let originalError: unknown
+  let originalThrew = false
   let call = () => {
     originalCalled = true
     try {
       originalReturn = callOriginal()
     } catch (err) {
+      originalThrew = true
       originalError = err
       throw err
     }
@@ -268,7 +270,7 @@ function execHookBase<HookReturn>(
   }
   // Start the call() chain
   call()
-  if (originalError) throw originalError
+  if (originalThrew) throw originalError
   return originalReturn!
 }
 
