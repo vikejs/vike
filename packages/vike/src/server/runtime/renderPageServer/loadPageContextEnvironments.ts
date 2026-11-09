@@ -88,12 +88,17 @@ async function importEnvironmentEntry(
       return parseGlobalEntryPageConfigs(await environment.runner.import(virtualFileId))
     } else {
       // Vike's server runs in a runtime without Vite's dev server (e.g. workerd with @cloudflare/vite-plugin) => the runtime imports the environment's modules
-      // Set by @vitejs/plugin-rsc and @cloudflare/vite-plugin: https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-rsc#__vite_environment_runner_import__
-      const environmentRunnerImport = (globalThis as Record<string, unknown>).__VITE_ENVIRONMENT_RUNNER_IMPORT__ as
-        | undefined
-        | ((environmentName: string, id: string) => Promise<unknown>)
+      const environmentRunnerImport = getEnvironmentRunnerImport()
       assertUsage(environmentRunnerImport, errMsg)
       return parseGlobalEntryPageConfigs(await environmentRunnerImport(environmentName, virtualFileId))
     }
   }
+}
+
+// Utils
+function getEnvironmentRunnerImport() {
+  // Set by @vitejs/plugin-rsc and @cloudflare/vite-plugin: https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-rsc#__vite_environment_runner_import__
+  return (globalThis as Record<string, unknown>).__VITE_ENVIRONMENT_RUNNER_IMPORT__ as
+    | undefined
+    | ((environmentName: string, id: string) => Promise<unknown>)
 }
