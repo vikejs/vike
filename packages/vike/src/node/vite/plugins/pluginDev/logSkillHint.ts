@@ -29,9 +29,9 @@ const globalObject = getGlobalObject('logSkillHint.ts', {
 })
 
 const docsUrl = 'https://vike.dev/ai#skill'
-const seeDocs = `— see ${pc.underline(docsUrl)}`
-const suppressHint = `set ${pc.cyan('+ai.skill')} to ${pc.cyan('false')} to suppress this log.`
-const logMissing = `Add Vike's skill for AI agents (Claude Code, Codex, Cursor, ...) ${seeDocs}, or ${suppressHint}`
+const seeDocs = `— see ${pc.underline(docsUrl)}` as const
+const suppressHint = `set ${pc.cyan('+ai.skill')} to ${pc.cyan('false')} to suppress this log.` as const
+const logMissing = `Recommendation: add Vike's skill for AI agents ${seeDocs} or ${suppressHint}` as const
 const logOutdated = (skillFilePaths: string[]) => {
   const isPlural = skillFilePaths.length > 1
   const files = skillFilePaths.map((f) => pc.cyan(f)).join(', ')
