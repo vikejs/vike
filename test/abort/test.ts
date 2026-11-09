@@ -297,6 +297,17 @@ function testRun(
       await autoRetry(() => expectLog('handleError() settled'))
     })
 
+    test('handleError() - of two values handed over at once after hydration, the first one is rendered', async () => {
+      await page.goto(url)
+      await hydrationDone()
+      await page.click('#two-values')
+      await autoRetry(() => expectLog('handleError() settled'))
+      // Not the render(404) handed over second
+      expect(await page.textContent('p')).toBe('Something went wrong.')
+      expectBrowserError('First value')
+      expectBrowserError('AbortRender')
+    })
+
     test('handleError() - a value handed over once the error page is shown is logged', async () => {
       await page.goto(url)
       await hydrationDone()

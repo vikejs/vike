@@ -26,6 +26,16 @@ function Page() {
         Throw
       </button>
       <button
+        id="two-values"
+        onClick={() =>
+          Promise.all([handleError(new Error('First value')), handleError(render(404))]).then(() =>
+            console.log('handleError() settled'),
+          )
+        }
+      >
+        Hand over two values at once
+      </button>
+      <button
         id="value-after-error-page"
         onClick={async () => {
           await handleError(new Error('First value'))
