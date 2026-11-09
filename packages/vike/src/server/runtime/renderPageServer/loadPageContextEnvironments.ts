@@ -97,7 +97,8 @@ async function importEnvironmentEntry(
 
 // Utils
 function getEnvironmentRunnerImport() {
-  // Set by @vitejs/plugin-rsc and @cloudflare/vite-plugin: https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-rsc#__vite_environment_runner_import__
+  // Set by @vitejs/plugin-rsc and @cloudflare/vite-plugin
+  // https://github.com/vitejs/vite-plugin-react/tree/0e95069a8f90489da74371c9ad35dfc619c1b72e/packages/plugin-rsc#__vite_environment_runner_import__
   return (globalThis as Record<string, unknown>).__VITE_ENVIRONMENT_RUNNER_IMPORT__ as
     | undefined
     | ((environmentName: string, id: string) => Promise<unknown>)
