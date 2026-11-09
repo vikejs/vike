@@ -227,7 +227,7 @@ async function renderPageServerEntryRecursive(
   objectAssign(pageContextNominalPageBegin, { errorWhileRendering: null })
 
   const onError = async (err: unknown) => {
-    err = wrapFalsy(err)
+    err = wrapFalsy(err) // A user hook or UI component can `throw null`
     assert(err)
     assert(pageContextNominalPageSuccess === undefined)
     logRuntimeError(err, pageContextNominalPageBegin)
