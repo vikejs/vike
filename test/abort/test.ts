@@ -297,6 +297,17 @@ function testRun(
       await autoRetry(() => expectLog('handleError() settled'))
     })
 
+    test('handleError() - a value handed over once the error page is shown is logged', async () => {
+      await page.goto(url)
+      await hydrationDone()
+      await page.click('#value-after-error-page')
+      await autoRetry(() => expectLog('handleError() settled'))
+      // Not the render(404) handed over second
+      expect(await page.textContent('p')).toBe('Something went wrong.')
+      expectBrowserError('First value')
+      expectBrowserError('AbortRender')
+    })
+
     if (isMakingPageContextJsonRequest) {
       test("handleError() - no hard reload when the .pageContext.json of `throw render('/some-url')` is missing", async () => {
         const glob = '**/about/index.pageContext.json'

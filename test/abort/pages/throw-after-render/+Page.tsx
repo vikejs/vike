@@ -2,7 +2,7 @@ export default Page
 
 import React, { useEffect, useState } from 'react'
 import { redirect, render } from 'vike/abort'
-import { prefetch } from 'vike/client/router'
+import { handleError, prefetch } from 'vike/client/router'
 import { Counter } from '../index/Counter'
 
 function Page() {
@@ -24,6 +24,17 @@ function Page() {
       <h1>Throw after render</h1>
       <button id="throw" onClick={() => setShouldThrow(true)}>
         Throw
+      </button>
+      <button
+        id="value-after-error-page"
+        onClick={async () => {
+          await handleError(new Error('First value'))
+          // The error page is shown
+          await handleError(render(404))
+          console.log('handleError() settled')
+        }}
+      >
+        Hand over a value once the error page is shown
       </button>
       <Counter />
     </>
