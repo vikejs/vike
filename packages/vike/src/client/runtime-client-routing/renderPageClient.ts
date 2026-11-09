@@ -154,7 +154,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
   // - `throw redirect('/some-url')` is a navigation to another URL: it can hard load `/some-url`
   // Support:
   // - Client Routing disabled by a static asset that failed to load, see `clientRoutingIsDisabled` below
-  // - A page that the client-side router can't render, see hardLoad()
+  // - A page that the client-side router can't render, see redirectHard_unlessRecovery()
   // - A missing .pageContext.json, see fetchPageContextFromServer()
   // - A static asset that fails to load, see handleErrorFetchingStaticAssets()
   const isRecovery = urlOriginal === urlThrown
@@ -268,7 +268,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
           //    - We do use the client router for rendering the error page, so I don't think this is much of an argument.
           await renderErrorPage({ is404: true })
           */
-          await hardLoad(pageContext)
+          await redirectHard_unlessRecovery(pageContext)
           return
         }
 
@@ -276,7 +276,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
         const isClientRoutable = await isClientSideRoutable(pageContextFromRoute.pageId, pageContext)
         if (abortIfOutdated()) return
         if (!isClientRoutable) {
-          await hardLoad(pageContext)
+          await redirectHard_unlessRecovery(pageContext)
           return
         }
 
@@ -538,7 +538,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
   }
 
   // The client-side router can't render the page
-  async function hardLoad(pageContext: { urlPathname: string }) {
+  async function redirectHard_unlessRecovery(pageContext: { urlPathname: string }) {
     if (isRecovery) {
       await handleError({ err: new Error(`${pageContext.urlPathname} can't be rendered on the client-side`) })
     } else {
