@@ -1519,10 +1519,10 @@ importers:
     dependencies:
       '@universal-middleware/core':
         specifier: ^0.7.2
-        version: 0.7.2(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
+        version: 0.7.2(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@1.0.8)
       '@universal-middleware/hono':
         specifier: ^0.6.1
-        version: 0.6.1(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
+        version: 0.6.1(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@1.0.8)
       hono:
         specifier: ^4.13.13
         version: 4.13.13
@@ -1533,8 +1533,8 @@ importers:
         specifier: ^19.2.6
         version: 19.2.6(react@19.2.6)
       srvx:
-        specifier: ^0.12.8
-        version: 0.12.8
+        specifier: ^1.0.8
+        version: 1.0.8
       vike:
         specifier: 0.4.270
         version: link:../../packages/vike
@@ -11320,9 +11320,9 @@ snapshots:
       - h3
       - srvx
 
-  '@universal-middleware/hono@0.6.1(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)':
+  '@universal-middleware/hono@0.6.1(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@1.0.8)':
     dependencies:
-      '@universal-middleware/core': 0.7.2(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@0.12.8)
+      '@universal-middleware/core': 0.7.2(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@1.0.8)
       hono: 4.13.13
     transitivePeerDependencies:
       - '@cloudflare/workers-types'
