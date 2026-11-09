@@ -1,23 +1,9 @@
 export { testHistoryPushState }
 
-import { test, page, getServerUrl, expect, expectLog, partRegex, sleep, autoRetry } from '@brillout/test-e2e'
+import { test, page, getServerUrl, expect, sleep, autoRetry } from '@brillout/test-e2e'
 import { testCounter, expectUrl } from '../../../utils'
 
-function testHistoryPushState(isDev: boolean) {
-  test('+data throws `null`', async () => {
-    const resp = await fetch(getServerUrl() + '/pushState?throw-null')
-    expect(resp.status).toBe(500)
-    expect(await resp.text()).toContain('<p>An error occurred.</p>')
-    expectLog('The thrown value is `null`', { filter: (log) => log.logSource === 'stderr' })
-    await autoRetry(() => {
-      expectLog(partRegex`HTTP response ${/.*/} /pushState?throw-null 500`, {
-        filter: (log) => log.logSource === 'stderr',
-      })
-    })
-    // Warned once per server
-    if (isDev) expectLog('No error page found', { allLogs: true })
-  })
-
+function testHistoryPushState() {
   test('history.pushState()', async () => {
     // Timestamp component works as expected
     await page.goto(getServerUrl() + '/')

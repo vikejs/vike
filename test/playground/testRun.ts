@@ -67,7 +67,7 @@ function testRun(
   testNestedLayout()
   testProgrammaticPage()
   testDefaultAndClearSuffixes()
-  testHistoryPushState(isDev)
+  testHistoryPushState()
   testOtherFrameworkNavigation()
   testStarWars()
   testStreamedValues()
