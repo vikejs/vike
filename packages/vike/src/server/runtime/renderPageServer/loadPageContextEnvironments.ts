@@ -79,12 +79,27 @@ async function importEnvironmentEntry(
   } else {
     // Dev
     assert(!globalContext._isProduction)
-    const environment = globalContext._viteDevServer?.environments[environmentName]
-    assertUsage(
-      isRunnableDevEnvironment(environment),
-      `The Vike environment ${environmentName} should be a server-side environment running in the same runtime (process or worker) as Vike's server`,
-    )
     const virtualFileId = generateVirtualFileIdAdditionalEnvironment(environmentName)
-    return parseGlobalEntryPageConfigs(await environment.runner.import(virtualFileId))
+    const errMsg = `The Vike environment ${environmentName} should be a server-side environment running in the same runtime (process or worker) as Vike's server`
+    if (globalContext._viteDevServer) {
+      // Vike's server runs in Vite's process
+      const environment = globalContext._viteDevServer.environments[environmentName]
+      assertUsage(isRunnableDevEnvironment(environment), errMsg)
+      return parseGlobalEntryPageConfigs(await environment.runner.import(virtualFileId))
+    } else {
+      // Vike's server runs in a runtime without Vite's dev server (e.g. workerd with @cloudflare/vite-plugin) => the runtime imports the environment's modules
+      const environmentRunnerImport = getEnvironmentRunnerImport()
+      assertUsage(environmentRunnerImport, errMsg)
+      return parseGlobalEntryPageConfigs(await environmentRunnerImport(environmentName, virtualFileId))
+    }
   }
+}
+
+// Utils
+function getEnvironmentRunnerImport() {
+  // Set by @vitejs/plugin-rsc and @cloudflare/vite-plugin
+  // https://github.com/vitejs/vite-plugin-react/tree/0e95069a8f90489da74371c9ad35dfc619c1b72e/packages/plugin-rsc#__vite_environment_runner_import__
+  return (globalThis as Record<string, unknown>).__VITE_ENVIRONMENT_RUNNER_IMPORT__ as
+    | undefined
+    | ((environmentName: string, id: string) => Promise<unknown>)
 }

@@ -270,7 +270,7 @@ function execHookBase<HookReturn>(
   }
   // Start the call() chain
   call()
-  if (originalThrew) throw originalError // Even for `throw null`
+  if (originalThrew) throw originalError
   return originalReturn!
 }
 
