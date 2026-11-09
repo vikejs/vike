@@ -15,7 +15,6 @@ import pc from '@brillout/picocolors'
 import { NOT_SERIALIZABLE } from '../../../../shared-server-client/NOT_SERIALIZABLE.js'
 import type { UrlRedirect } from '../../../../shared-server-client/route/abort.js'
 import { pageContextInitIsPassedToClient } from '../../../../shared-server-client/misc/pageContextInitIsPassedToClient.js'
-import { isServerSideError } from '../../../../shared-server-client/misc/isServerSideError.js'
 import { getPropKeys, getPropVal, setPropVal } from './propKeys.js'
 import type { GlobalContextServerInternal } from '../../globalContext.js'
 import type { PageContextCreatedServer } from '../createPageContextServer.js'
@@ -39,7 +38,7 @@ const passToClientBuiltInPageContext = [
   'routeParams',
   'data', // for data() hook
 ]
-const pageToClientBuiltInPageContextError = ['pageProps', 'is404', isServerSideError]
+const pageToClientBuiltInPageContextError = ['pageProps', 'is404', 'isErrorPage']
 
 type PageContextSerialization = PageContextCreatedServer & {
   pageId: string

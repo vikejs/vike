@@ -8,6 +8,7 @@ import { Counter } from '../index/Counter'
 function Page() {
   const pageContext = usePageContext()
   assert(Array.isArray(pageContext.pageContextsAborted))
+  assert(pageContext.isErrorPage === true)
 
   // throw render()
   if (pageContext.abortReason) {
@@ -29,6 +30,7 @@ function Page() {
       <div>
         <h1>{abortStatusCode}</h1>
         <p style={{ fontSize: '1.3em' }}>{abortReason}</p>
+        <p id="data">{JSON.stringify(pageContext.data)}</p>
         <Counter />
       </div>
     </Center>

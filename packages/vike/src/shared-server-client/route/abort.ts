@@ -286,7 +286,7 @@ function logAbort(err: ErrorAbort, isProduction: boolean, pageContext: { urlOrig
 function assertStatusCode(statusCode: number, expected: number[], caller: 'render' | 'redirect') {
   assert(!globalThis.__VIKE__IS_CLIENT || globalThis.__VIKE__IS_DEV || globalThis.__VIKE__IS_DEBUG) // assert tree-shaking
 
-  // double check vike:pluginReplaceConstantsGlobalThis
+  // double check vike:pluginReplaceGlobalVariables
   if (globalThis.__VIKE__IS_CLIENT) {
     assert(isBrowser())
     assert(typeof globalThis.__VIKE__IS_DEV === 'boolean')

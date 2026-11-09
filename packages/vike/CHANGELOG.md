@@ -1,3 +1,63 @@
+## [0.4.270](https://github.com/vikejs/vike/compare/v0.4.269...v0.4.270) (2026-11-05)
+
+
+### Bug Fixes
+
+* `getGlobalContext()` at module level works with a later top-level await ([#3725](https://github.com/vikejs/vike/issues/3725)) ([0844218](https://github.com/vikejs/vike/commit/084421806be7640d0b10405a2808da6c1b85f922))
+
+
+
+## [0.4.269](https://github.com/vikejs/vike/compare/v0.4.268...v0.4.269) (2026-11-04)
+
+
+### Bug Fixes
+
+* `+middleware` accepts an import string in a Vike extension's config type ([#3627](https://github.com/vikejs/vike/issues/3627)) ([3afdf5d](https://github.com/vikejs/vike/commit/3afdf5dcf7ce25fc53db4181e6b609e7b34d3cee))
+* `+onHookCall` logs an async hook's error once (instead of twice) ([#3663](https://github.com/vikejs/vike/issues/3663)) ([25cd9a0](https://github.com/vikejs/vike/commit/25cd9a02b5b36d940181334d2e43bc9b1e508641))
+* `getPageContext({ asyncHook: true })` returns the error page's `pageContext` upon `throw render(abortStatusCode)` ([#3682](https://github.com/vikejs/vike/issues/3682)) ([c77b675](https://github.com/vikejs/vike/commit/c77b67508d3c384b172bc1d749f50f0a006554bc))
+* `pageContext.is404` is `true` upon `throw render(404)` and client-side navigation ([#3633](https://github.com/vikejs/vike/issues/3633)) ([ec7f917](https://github.com/vikejs/vike/commit/ec7f917a986ca75db796d5129c4851e56f8dc717))
+* `pageContext.previousPageContext` no longer keeps all past pageContexts in memory ([#3639](https://github.com/vikejs/vike/issues/3639)) ([b5c67ad](https://github.com/vikejs/vike/commit/b5c67adbb70e92ade85f09e7f492de32984f0f2c))
+* `throw redirect()` and `throw render()` aren't supported for the error page ([#3687](https://github.com/vikejs/vike/issues/3687)) ([7023f02](https://github.com/vikejs/vike/commit/7023f02c50b4ef225ea072a8fa0d5d487de13df1))
+* `throw redirect()` and `throw render()` in the error page's `data()` and `onBeforeRender()` show a usage error ([#3692](https://github.com/vikejs/vike/issues/3692)) ([c99d1a0](https://github.com/vikejs/vike/commit/c99d1a0a4b15bfe15c071cb7b0c79892013726c4))
+* `throw render()` while pre-rendering shows a usage error (instead of failing silently) ([#3690](https://github.com/vikejs/vike/issues/3690)) ([c162329](https://github.com/vikejs/vike/commit/c162329fda7e18e3dfa918e4041eb46ff6a83cda))
+* `vite build` through a symlinked `node_modules/.bin/vite` pre-renders ([#3720](https://github.com/vikejs/vike/issues/3720)) ([c144c11](https://github.com/vikejs/vike/commit/c144c11d63942d8ee9f0b50bfdf1b60ab1682217))
+* an asset without file extension, e.g. `import url from './LICENSE?url'` ([#3672](https://github.com/vikejs/vike/issues/3672)) ([e89c0f2](https://github.com/vikejs/vike/commit/e89c0f2121c46827340da41aa5bca2635a6ce74b))
+* call `onPageTransitionStart()` after routing ([#3667](https://github.com/vikejs/vike/issues/3667)) ([ed47277](https://github.com/vikejs/vike/commit/ed47277e707d506bb2c024e57f3f28d1e9f7d75f))
+* client-side navigation shows the error page when the error page throws on the server-side ([#3681](https://github.com/vikejs/vike/issues/3681)) ([97a0b44](https://github.com/vikejs/vike/commit/97a0b44d11f92dfb0900862f82fcc41ba0b221a8))
+* fix legacy eslint support ([8e4d60d](https://github.com/vikejs/vike/commit/8e4d60d1942da5bbb5f8c1a96f73134929fa3fdd))
+* keep repeated search params upon client-side navigation and in modifyUrl() ([#3645](https://github.com/vikejs/vike/issues/3645)) ([cd26548](https://github.com/vikejs/vike/commit/cd2654867b1d6c08c104a5acdc6f332addbcc50d))
+* linked packages in a folder like `app-shared/` next to `app/` (instead of `[Bug]`) ([#3666](https://github.com/vikejs/vike/issues/3666)) ([82b4041](https://github.com/vikejs/vike/commit/82b4041c5ccc8f5d17dab44da7719f936b36f785))
+* navigation during hydration no longer hangs (closes [#3696](https://github.com/vikejs/vike/issues/3696)) ([#3697](https://github.com/vikejs/vike/issues/3697)) ([e59acec](https://github.com/vikejs/vike/commit/e59acec9ace0273122f358574e8a991f1c05575e))
+* soft deprecate `getPageContext({ asyncHook: true })` ([#3685](https://github.com/vikejs/vike/issues/3685)) ([cab9d0e](https://github.com/vikejs/vike/commit/cab9d0ef5bd6048b3c7e16b986f0f4c509291953))
+* streamed `+data` promise that rejects before the HTML is rendered ([#3705](https://github.com/vikejs/vike/issues/3705)) ([d0037a4](https://github.com/vikejs/vike/commit/d0037a498cb8294fc3784f319e235a1400e0d616))
+* the error page renders after a browser error on a pre-rendered page ([#3717](https://github.com/vikejs/vike/issues/3717)) ([47b6664](https://github.com/vikejs/vike/commit/47b6664499701ab8ecb1001598a73075c2cd0fc7))
+* the setting `name` works when package.json has no `version` ([#3665](https://github.com/vikejs/vike/issues/3665)) ([d17ed37](https://github.com/vikejs/vike/commit/d17ed376ad304b8f37abbff85db395ff4f9aac84))
+* Vike's client code no longer loads twice in dev ([#3651](https://github.com/vikejs/vike/issues/3651)) ([2a992f1](https://github.com/vikejs/vike/commit/2a992f10fb7514c247f28d56cafb7a429fc8d0af))
+* Vite's API with Vike's plugin no longer throws under `node -e` ([#3721](https://github.com/vikejs/vike/issues/3721)) ([358d0af](https://github.com/vikejs/vike/commit/358d0afedb7bac06bd99a960a7d6d71503f9835b))
+
+
+### Features
+
+* [`+csp.sri`](https://vike.dev/csp#sri) (Subresource Integrity) ([#3660](https://github.com/vikejs/vike/issues/3660)) ([5ddaeb8](https://github.com/vikejs/vike/commit/5ddaeb89c0b40d3712c87f3a3efc1012d17054bc))
+* [`pageContext.abortSignal`](https://vike.dev/pageContext#abortSignal) ([#3641](https://github.com/vikejs/vike/issues/3641)) ([bba2caa](https://github.com/vikejs/vike/commit/bba2caaa7a09de226646f3c26e013e3ef0e1e38a))
+* [`pageContext.isErrorPage`](https://vike.dev/pageContext#isErrorPage) ([#3693](https://github.com/vikejs/vike/issues/3693)) ([e4c97ff](https://github.com/vikejs/vike/commit/e4c97ffd49fa5e166c837bd42336842aeca80f54))
+* [`provide`](https://vike.dev/require#provide) (closes [#3662](https://github.com/vikejs/vike/issues/3662)) ([#3664](https://github.com/vikejs/vike/issues/3664)) ([f86ab18](https://github.com/vikejs/vike/commit/f86ab182e7ee601683fd32a30f6a93597284a3b9))
+* [`throw abort()` to abort client-side navigation](https://vike.dev/onBeforeRoute#throw-abort) ([#3659](https://github.com/vikejs/vike/issues/3659)) ([57a213e](https://github.com/vikejs/vike/commit/57a213e390005b75e908690f7c2728b9488d95fe))
+* expose pageContext serialization to vike-react-rsc ([#3638](https://github.com/vikejs/vike/issues/3638)) ([45c1759](https://github.com/vikejs/vike/commit/45c1759b4a1d79f9c23930ad391faf2b695fb98b))
+* fetch the error page's server-side `pageContext` upon client-side navigation (closes [#3634](https://github.com/vikejs/vike/issues/3634)) ([#3636](https://github.com/vikejs/vike/issues/3636)) ([f6e6ab8](https://github.com/vikejs/vike/commit/f6e6ab8468803dc505025e95dae6e1221b7ecec2))
+
+
+### MINOR BREAKING CHANGES
+
+> [!NOTE]
+> We recommend ignoring `MINOR BREAKING CHANGES` unless this version breaks your app, see [Vike Versioning](https://vike.dev/versioning).
+
+* `throw redirect()` and `throw render()` aren't supported for the error page
+
+Co-authored-by: Romuald Brillout <git@brillout.com>
+
+
+
 ## [0.4.268](https://github.com/vikejs/vike/compare/v0.4.267...v0.4.268) (2026-10-15)
 
 

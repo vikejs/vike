@@ -1,5 +1,4 @@
 <template>
-  <!-- spellcheck-ignore:on -->
   <p>
     Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis
     natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec,
@@ -52,5 +51,4 @@
     eu sollicitudin urna dolor sagittis lacus. Donec elit libero, sodales nec, volutpat a, suscipit non, turpis. Nullam
     sagittis.
   </p>
-  <!-- spellcheck-ignore:off -->
 </template>

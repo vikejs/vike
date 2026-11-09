@@ -30,10 +30,10 @@ import { logRuntimeError } from '../loggerRuntime.js'
 import { getPageContextPublicServer } from './getPageContextPublicServer.js'
 import { execHookGuard } from '../../../shared-server-client/route/execHookGuard.js'
 import pc from '@brillout/picocolors'
-import { isServerSideError } from '../../../shared-server-client/misc/isServerSideError.js'
 import type { PageContextCreatedServer } from './createPageContextServer.js'
 import type { PageContextBegin } from '../renderPageServer.js'
 import { getAsyncLocalStorage, type AsyncStore } from '../asyncHook.js'
+import { isAbortError } from '../../../shared-server-client/route/abort.js'
 import '../../assertEnvServer.js'
 
 type PageContextAfterRender = { httpResponse: HttpResponse; errorWhileRendering: null | Error }
@@ -44,6 +44,7 @@ async function renderPageServerAfterRoute<
     _pageContextAlreadyProvidedByOnPrerenderHook?: true
     _skipGuardAndData_experimentalRSC?: boolean | (() => Promise<boolean>)
     is404: null | boolean
+    isErrorPage: boolean
     routeParams: Record<string, string>
     errorWhileRendering: null | Error
     _requestId: number
@@ -57,7 +58,7 @@ async function renderPageServerAfterRoute<
   //  - ID of the error page `_error.page.js`.
   assert(hasProp(pageContext, 'pageId', 'string'))
 
-  const isError: boolean = pageContext.is404 || !!pageContext.errorWhileRendering
+  const isError: boolean = pageContext.isErrorPage
   assert(
     isError ===
       (pageContext.pageId ===
@@ -68,7 +69,7 @@ async function renderPageServerAfterRoute<
 
   const skipGuardAndData = pageContext._skipGuardAndData_experimentalRSC
   if (typeof skipGuardAndData === 'function' ? await skipGuardAndData() : skipGuardAndData) {
-    // TODO/soon check whether pageContext._skipGuardAndData_experimentalRSC is the right API
+    // TO-DO/soon/rsc check whether pageContext._skipGuardAndData_experimentalRSC is the right API
     // https://github.com/vikejs/vike/pull/3646
     // Set by vike-react-rsc e.g. for a server action whose response doesn't show the page
   } else if (!isError) {
@@ -78,16 +79,23 @@ async function renderPageServerAfterRoute<
     try {
       await execHookDataAndOnBeforeRender(pageContext)
     } catch (err) {
-      if (!isSameErrorMessage(err, pageContext.errorWhileRendering)) {
+      if (isAbortError(err)) {
+        // `throw redirect()` and `throw render()` aren't supported for the error page: the caller logs a usage error, see logWrongUsageAbortedErrorPage()
+        throw err
+      } else if (
+        typeof pageContext._isPageContextJsonRequest === 'object' &&
+        pageContext._isPageContextJsonRequest?.errorPageInfo
+      ) {
+        // The error page's .pageContext.json request: the caller logs the error and answers `{ serverSideError: true }`, so that the client throws
+        // - Otherwise the client renders the error page without +data
+        throw err
+      } else if (!isSameErrorMessage(err, pageContext.errorWhileRendering)) {
         logRuntimeError(err, pageContext)
       }
     }
   }
 
-  if (pageContext.isClientSideNavigation) {
-    if (isError) {
-      objectAssign(pageContext, { [isServerSideError]: true })
-    }
+  if (pageContext._isPageContextJsonRequest) {
     const httpResponse = await createHttpResponsePageJson(getPageContextJson(pageContext), pageContext)
     objectAssign(pageContext, { httpResponse })
     return pageContext
@@ -125,10 +133,10 @@ async function prerenderPageEntry(
       _usesClientRouter: boolean
       _pageContextAlreadyProvidedByOnPrerenderHook?: true
       is404: boolean
+      isErrorPage: boolean
     },
 ) {
   objectAssign(pageContext, {
-    _isPageContextJsonRequest: null,
     pageContextsAborted: [],
   })
 

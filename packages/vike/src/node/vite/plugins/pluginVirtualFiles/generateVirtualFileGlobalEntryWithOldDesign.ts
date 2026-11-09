@@ -22,7 +22,6 @@ import { getOutDirs } from '../../shared/getOutDirs.js'
 import { isViteServerSide_extraSafe } from '../../shared/isViteServerSide.js'
 import { resolveIncludeAssetsImportedByServer } from '../../../../server/runtime/renderPageServer/getPageAssets/retrievePageAssetsProd.js'
 import type { Environment } from 'vite'
-import { VIRTUAL_FILE_ID_constantsGlobalThis } from '../pluginReplaceConstantsGlobalThis.js'
 import '../../assertEnvVite.js'
 
 type GlobRoot = {
@@ -58,10 +57,6 @@ async function getCode(
   const isBuild = command === 'build'
   assert(isDev === !isBuild)
   let content = ''
-
-  if (!isForClientSide) {
-    content += `import '${VIRTUAL_FILE_ID_constantsGlobalThis}';\n`
-  }
 
   {
     const globRoots = getGlobRoots(config)

@@ -22,7 +22,7 @@ Paths below are relative to https://vike.dev (e.g. `/data-fetching` → https://
 - /Layout — `+Layout` wraps `+Page`, global/per-group/nested, cumulative, `children`, persists across same-layout nav (tabs)
 - /Wrapper — `+Wrapper` wraps Page + all Layouts (top of tree), for state-mgmt/tool providers, nestable, cumulative
 - /Head — `+Head` server-rendered `<head>` (not updated on client nav), cumulative, favicon/OG/SEO, raw HTML via `dangerouslySetInnerHTML` (XSS caveat)
-- /error-page — `_error` page, 404/500, `throw render(abortStatusCode)`, `is404`, `abortReason`, prerender emits `404.html`
+- /error-page — `_error` page, 404/500, `throw render(abortStatusCode)`, `is404`, `isErrorPage`, `abortReason`, prerender emits `404.html`
 - /client — `+client.js` runs once before hydration (not on client nav), non-cumulative, analytics/error-tracking/cookie-consent init
 
 ## Routing

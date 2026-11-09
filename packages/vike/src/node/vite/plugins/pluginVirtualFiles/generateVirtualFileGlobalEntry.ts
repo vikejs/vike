@@ -8,7 +8,7 @@ import {
   FilesEnv,
   serializeConfigValues,
 } from '../../../../shared-server-client/page-configs/serialize/serializeConfigValues.js'
-import { VIRTUAL_FILE_ID_constantsGlobalThis } from '../pluginReplaceConstantsGlobalThis.js'
+import { getVirtualModuleCodeGlobalVariables } from '../pluginReplaceGlobalVariables.js'
 import type { RuntimeEnvRuntime } from './getConfigValueSourcesRelevant.js'
 import { getEnvironmentEntryPlaceholder } from '../build/pluginEnvironmentEntries.js'
 import '../../assertEnvVite.js'
@@ -20,16 +20,7 @@ async function generateVirtualFileGlobalEntry(runtimeEnv: RuntimeEnvRuntime, id:
     _pageConfigGlobal: pageConfigGlobal,
     _additionalEnvironmentNames: additionalEnvironmentNames,
   } = vikeConfig
-  return getCode(pageConfigs, pageConfigGlobal, runtimeEnv, id, additionalEnvironmentNames)
-}
 
-function getCode(
-  pageConfigs: PageConfigBuildTime[],
-  pageConfigGlobal: PageConfigGlobalBuildTime,
-  runtimeEnv: RuntimeEnvRuntime,
-  id: string,
-  additionalEnvironmentNames: string[],
-): string {
   const lines: string[] = []
   const importStatements: string[] = []
   const filesEnv: FilesEnv = new Map()
@@ -37,9 +28,7 @@ function getCode(
   const { environmentName, isDev } = runtimeEnv
   const isForClientSide = environmentName === 'client'
 
-  if (!isForClientSide) {
-    importStatements.push(`import '${VIRTUAL_FILE_ID_constantsGlobalThis}';`)
-  }
+  lines.push(...getVirtualModuleCodeGlobalVariables(isForClientSide, isDev, vikeConfig, importStatements))
 
   lines.push('export const pageConfigsSerialized = [')
   lines.push(getCodePageConfigsSerialized(pageConfigs, runtimeEnv, importStatements, filesEnv))
@@ -58,11 +47,7 @@ function getCode(
     lines.push('if (import.meta.hot) import.meta.hot.accept();')
   }
 
-  let code = [...importStatements, ...lines].join('\n')
-
-  if (!isForClientSide) {
-    code = `import '${VIRTUAL_FILE_ID_constantsGlobalThis}';\n` + code
-  }
+  const code = [...importStatements, ...lines].join('\n')
 
   debug(id, `${environmentName.toUpperCase()}-SIDE`, code)
   return code

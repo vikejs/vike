@@ -21,6 +21,7 @@ import {
   getPageContextFromHooksServer,
   getPageContextFromHooksClient_firstRender,
   getPageContextFromHooksServer_firstRender,
+  getPageContextFromHooksServer_errorPage,
   type PageContextFromHooksServer,
   setPageContextInitIsPassedToClient,
   processPageContextFromServer,
@@ -110,8 +111,7 @@ type RenderArgs = {
   urlOriginal?: string
   overwriteLastHistoryEntry?: boolean
   pageContextsAborted?: PageContextAborted[]
-  // TODO/after-merge: rename to `doNotRerenderIfSamePage` ?
-  doNotRenderIfSamePage?: boolean
+  doNotReRenderIfSamePage?: boolean
   isClientSideNavigation?: boolean
   pageContextInitClient?: Record<string, unknown>
 }
@@ -123,16 +123,15 @@ async function renderPageClient(renderArgs: RenderArgs) {
     overwriteLastHistoryEntry = false,
     isBackwardNavigation = false,
     isHistoryNavigation = false,
-    doNotRenderIfSamePage,
+    doNotReRenderIfSamePage,
     isClientSideNavigation = true,
     pageContextInitClient,
     pageContextsAborted = [],
   } = renderArgs
   let { scrollTarget } = renderArgs
-  const { previousPageContext } = globalObject
 
   const abortController = new AbortController()
-  const { isRenderOutdated, setHydrationCanBeAborted, setOnRenderClientCalled, isFirstRender } =
+  const { abortIfOutdated, setHydrationCanBeAborted, setOnRenderClientCalled, isFirstRender } =
     getIsRenderOutdated(abortController)
 
   const pageContextBeginArgs = {
@@ -155,8 +154,9 @@ async function renderPageClient(renderArgs: RenderArgs) {
   // Await hydration (unless +hydrationCanBeAborted)
   if (!isFirstRender) {
     await globalObject.hydrationAwaitPromise
-    if (isRenderOutdated()) return
+    if (abortIfOutdated()) return
   }
+  const { previousPageContext } = globalObject
 
   return await renderPageNominal()
 
@@ -167,7 +167,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     // NOT-REALLY-ASYNC: it's only async in development (it retrieves globalContext which is async only in dev)
     const pageContext = await getPageContextBegin(false, pageContextBeginArgs)
-    if (isRenderOutdated()) return
+    if (abortIfOutdated()) return
 
     // Get pageContext serialized in <script id="vike_pageContext" type="application/json">
     if (isFirstRender) {
@@ -189,7 +189,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
       } catch (err) {
         // throw abort()
         if (isAbortError(err) && err._pageContextAbort._navAbort && !isFirstRender) {
-          if (isRenderOutdated()) return
+          if (abortIfOutdated()) return
           // Undo the URL change — upon back/forward navigation, the browser changes the URL
           if (isHistoryNavigation) undoHistoryNavigation(isBackwardNavigation)
           return
@@ -197,7 +197,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
         await onError(err)
         return
       }
-      if (isRenderOutdated()) return
+      if (abortIfOutdated()) return
 
       // TO-DO/eventually: create helper assertPageContextFromHook()
       assert(!('urlOriginal' in pageContextFromRoute))
@@ -228,7 +228,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
         // NOT-REALLY-ASYNC: it will become sync after we remove the 0.4 design
         const isClientRoutable = await isClientSideRoutable(pageContextFromRoute.pageId, pageContext)
-        if (isRenderOutdated()) return
+        if (abortIfOutdated()) return
         if (!isClientRoutable) {
           redirectHard(urlOriginal)
           return
@@ -238,7 +238,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
           pageContextFromRoute.pageId &&
           previousPageContext?.pageId &&
           pageContextFromRoute.pageId === previousPageContext.pageId
-        if (doNotRenderIfSamePage && isSamePage) {
+        if (doNotReRenderIfSamePage && isSamePage) {
           // Skip's Vike's rendering; let the user handle the navigation
           return
         }
@@ -248,12 +248,12 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     // - We commit the navigation after routing, because a navigation can be reverted by:
     //   - `throw abort()` during routing — https://vike.dev/onBeforeRoute#throw-abort
-    //   - `doNotRenderIfSamePage` navigation to the shown page (it leaves the shown page untouched)
+    //   - `doNotReRenderIfSamePage` navigation to the shown page (it leaves the shown page untouched)
     // - The navigation is committed early
     //   - Good for UI performance: we should call abortPreviousNavigation() ASAP
     //   - In production, it's committed synchronously after the user click, see NOT-REALLY-ASYNC comments
     await commitNavigation(abortController)
-    if (isRenderOutdated()) return
+    if (abortIfOutdated()) return
 
     globalObject.currentPageContext = pageContext
     addLinkPrefetchHandlers_unwatch()
@@ -263,7 +263,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
       assert(previousPageContext)
       // We use the hook of the previous page in order to be able to call onPageTransitionStart() before fetching the files of the next page.
       // https://github.com/vikejs/vike/issues/1560
-      // We call it after routing so that it isn't called when Vike doesn't render the next page (e.g. `doNotRenderIfSamePage`).
+      // We call it after routing so that it isn't called when Vike doesn't render the next page (e.g. `doNotReRenderIfSamePage`).
       // https://github.com/vikejs/vike/issues/2927
       if (!globalObject.isTransitioning) {
         globalObject.isTransitioning = true
@@ -274,13 +274,13 @@ async function renderPageClient(renderArgs: RenderArgs) {
           await onError(err)
           return
         }
-        if (isRenderOutdated()) return
+        if (abortIfOutdated()) return
       }
     }
 
-    const res = await loadPageConfigsLazyClientSideAndExecHook(pageContext, isFirstRender, isRenderOutdated)
+    const res = await loadPageConfigsLazyClientSideAndExecHook(pageContext, isFirstRender, abortIfOutdated)
     /* Already called inside loadPageConfigsLazyClientSideAndExecHook()
-    if (isRenderOutdated()) return
+    if (abortIfOutdated()) return
     */
     if (res.skip) return
     if ('err' in res) {
@@ -302,8 +302,8 @@ async function renderPageClient(renderArgs: RenderArgs) {
         )
       }
     }
-    // There wasn't any `await` but the isRenderOutdated() return value may have changed because we called setHydrationCanBeAborted()
-    if (isRenderOutdated()) return
+    // There wasn't any `await` but the abortIfOutdated() return value may have changed because we called setHydrationCanBeAborted()
+    if (abortIfOutdated()) return
 
     // Get pageContext from hooks (fetched from server, and/or directly called on the client-side)
     if (isFirstRender) {
@@ -315,7 +315,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
         await onError(err)
         return
       }
-      if (isRenderOutdated()) return
+      if (abortIfOutdated()) return
       updateType(pageContext, pageContextAugmented)
 
       // Render page view
@@ -328,7 +328,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
         pageContextFromHooksServer = pageContextPrefetched
       } else {
         try {
-          const result = await getPageContextFromHooksServer(pageContext, false)
+          const result = await getPageContextFromHooksServer(pageContext)
           if (result.is404ServerSideRouted) return
           pageContextFromHooksServer = result.pageContextFromHooksServer
           // TO-DO/pageContext-prefetch: remove or change, because this only makes sense for a pre-rendered page
@@ -338,7 +338,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
           return
         }
       }
-      if (isRenderOutdated()) return
+      if (abortIfOutdated()) return
       // TO-DO/eventually: create helper assertPageContextFromHook()
       assert(!('urlOriginal' in pageContextFromHooksServer))
       objectAssign(pageContext, pageContextFromHooksServer)
@@ -351,7 +351,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
         await onError(err)
         return
       }
-      if (isRenderOutdated()) return
+      if (abortIfOutdated()) return
       updateType(pageContext, pageContextFromHooksClient)
 
       return await renderPageView(pageContext)
@@ -366,6 +366,9 @@ async function renderPageClient(renderArgs: RenderArgs) {
     const { err } = args
     assert(err)
 
+    // The first render failed, thus it doesn't hydrate the page anymore: a navigation can now supersede it
+    if (isFirstRender) setHydrationCanBeAborted()
+
     // Logging
     if (!isAbortError(err)) {
       // We don't swallow 404 errors:
@@ -379,21 +382,27 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     // pageContext
     const pageContext = await getPageContextBegin(true, pageContextBeginArgs)
-    if (isRenderOutdated()) return
+    if (abortIfOutdated()) return
     objectAssign(pageContext, {
       errorWhileRendering: err,
     })
 
     // We also call commitNavigation() here, because the error may have been thrown during routing before the other commitNavigation() above was called
     await commitNavigation(abortController)
-    if (isRenderOutdated()) return
+    if (abortIfOutdated()) return
 
     // throw redirect()/render()
     let pageContextAbort: undefined | PageContextAbort
     if (isAbortError(err)) {
       const res = await handleAbort(err, pageContext)
-      if (res.skip) return
-      pageContextAbort = res.pageContextAbort
+      if (res.skip) {
+        // throw redirect('/some-url') / throw render('/some-url')
+        return
+      } else {
+        // throw render(statusCode)
+        pageContextAbort = res.pageContextAbort
+        assert(pageContextAbort.abortStatusCode)
+      }
     }
 
     // Render error page
@@ -436,9 +445,9 @@ async function renderPageClient(renderArgs: RenderArgs) {
       assertInfo(false, `Rendering error page ${errorPageId}`, { onlyOnce: false })
     }
 
-    const res = await loadPageConfigsLazyClientSideAndExecHook(pageContext, isFirstRender, isRenderOutdated)
+    const res = await loadPageConfigsLazyClientSideAndExecHook(pageContext, isFirstRender, abortIfOutdated)
     /* Already called inside loadPageConfigsLazyClientSideAndExecHook()
-    if (isRenderOutdated()) return
+    if (abortIfOutdated()) return
     */
     if (res.skip) return
     if ('err' in res) {
@@ -450,14 +459,14 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
     let pageContextFromHooksServer: PageContextFromHooksServer
     try {
-      const result = await getPageContextFromHooksServer(pageContext, true)
+      const result = await getPageContextFromHooksServer_errorPage(pageContext, args.err)
       if (result.is404ServerSideRouted) return
-      pageContextFromHooksServer = result.pageContextFromHooksServer
+      pageContextFromHooksServer = result
     } catch (err: unknown) {
       onError(err)
       return
     }
-    if (isRenderOutdated()) return
+    if (abortIfOutdated()) return
     // TO-DO/eventually: create helper assertPageContextFromHook()
     assert(!('urlOriginal' in pageContextFromHooksServer))
     objectAssign(pageContext, pageContextFromHooksServer)
@@ -469,7 +478,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
       onError(err)
       return
     }
-    if (isRenderOutdated()) return
+    if (abortIfOutdated()) return
     updateType(pageContext, pageContextFromHooksClient)
 
     await renderPageView(pageContext, args)
@@ -573,7 +582,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
       if (!isErrorPage) return
     }
     /* We don't abort in order to ensure that onHydrationEnd() is called: we abort only after onHydrationEnd() is called.
-    if (isRenderOutdated(true)) return
+    if (abortIfOutdated()) return
     */
 
     // onHydrationEnd()
@@ -584,11 +593,11 @@ async function renderPageClient(renderArgs: RenderArgs) {
         await onError(err)
         if (!isErrorPage) return
       }
-      if (isRenderOutdated(true)) return
+      if (abortIfOutdated()) return
     }
 
     // We purposely abort *after* onHydrationEnd() is called (see comment above).
-    if (isRenderOutdated(true)) return
+    if (abortIfOutdated()) return
 
     // onPageTransitionEnd()
     if (globalObject.isTransitioning) {
@@ -601,7 +610,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
         await onError(err)
         if (!isErrorPage) return
       }
-      if (isRenderOutdated(true)) return
+      if (abortIfOutdated()) return
     }
 
     if (!scrollTarget && previousPageContext) {
@@ -671,6 +680,7 @@ async function getPageContextBegin(
     isHistoryNavigation,
     isClientSideNavigation,
     isHydration: isFirstRender && !isForErrorPage,
+    isErrorPage: isForErrorPage,
     previousPageContext,
     pageContextsAborted,
     abortSignal,
@@ -736,12 +746,11 @@ function getIsRenderOutdated(abortController: AbortController) {
   }
 
   /** Whether the rendering should be aborted because a new rendering has started. We should call this after each `await`. */
-  // TODO/after-merge: rename to abortIfOutdated()
-  const isRenderOutdated = (isRenderCleanup?: true) => {
+  const abortIfOutdated = () => {
     // Never abort first render if `hydrationCanBeAborted` isn't `true`
     {
       const isFirstRender = renderNumber === 1
-      if (isFirstRender && !hydrationCanBeAborted && !isRenderCleanup) {
+      if (isFirstRender && !hydrationCanBeAborted) {
         return false
       }
     }
@@ -750,14 +759,14 @@ function getIsRenderOutdated(abortController: AbortController) {
     const isOutdated = renderNumber !== globalObject.renderCounter
     // Nothing renders this navigation anymore => we fire `pageContext.abortSignal`
     // - Only until +onRenderClient was called:
-    //   - Before +onRenderClient, this navigation is aborted (via `if (isRenderOutdated()) return`) and didn't render the new page (the old page is still fully rendered) => always fire `pageContext.abortSignal`
+    //   - Before +onRenderClient, this navigation is aborted (via `if (abortIfOutdated()) return`) and didn't render the new page (the old page is still fully rendered) => always fire `pageContext.abortSignal`
     //   - After +onRenderClient, the new page may already be shown (the old page is fully replaced) and should stay shown in case the newer navigation (that supersedes this navigation) is cancelled (e.g. `throw abort()`) => we let the abortPreviousNavigation() call of the newer navigation fire `pageContext.abortSignal` instead of firing it here
     if (isOutdated && !onRenderClientCalled) abortController.abort() // i.e. fire pageContext.abortSignal
     return isOutdated
   }
 
   return {
-    isRenderOutdated,
+    abortIfOutdated,
     setHydrationCanBeAborted,
     setOnRenderClientCalled,
     isFirstRender: renderNumber === 1,
@@ -769,7 +778,7 @@ function getRenderCount(): number {
 
 // Once the navigation is committed the navigation cannot be reverted:
 // - The user cannot `throw abort()` anymore — see https://vike.dev/onBeforeRoute#throw-abort
-// - However, it can be superseded by a new navigation (i.e. `if (isRenderOutdated()) return`)
+// - However, it can be superseded by a new navigation (i.e. `if (abortIfOutdated()) return`)
 async function commitNavigation(abortController: AbortController) {
   // Fire `pageContext.abortSignal` of the previous page
   abortPreviousNavigation(abortController)
@@ -840,7 +849,7 @@ function getPageContextClient(): PageContextClient | null {
   return getPageContextPublicClient(pageContext as any) as any
 }
 
-// TODO/soon: check whether this is the right API
+// TO-DO/soon/rsc check whether createPageContextFromServer_experimentalRSC() this is the right API
 // https://github.com/vikejs/vike/pull/3640
 /**
  * Creates a new `pageContext` for the page that `pageContext` renders, with the values of `pageContextFromServer` on top.
@@ -875,7 +884,7 @@ type PageContextExecuteHook = Omit<
 >
 async function loadPageConfigsLazyClientSideAndExecHook<
   PageContext extends PageContext_loadPageConfigsLazyClientSide & PageContextExecuteHook & PageContextCreatedClient,
->(pageContext: PageContext, isFirstRender: boolean, isRenderOutdated: () => boolean) {
+>(pageContext: PageContext, isFirstRender: boolean, abortIfOutdated: () => boolean) {
   let hasErr = false
   let err: unknown
 
@@ -891,7 +900,7 @@ async function loadPageConfigsLazyClientSideAndExecHook<
     err = err_
     hasErr = true
   }
-  if (isRenderOutdated()) return { skip: true }
+  if (abortIfOutdated()) return { skip: true }
   if (hasErr) {
     if (await handleErrorFetchingStaticAssets(err, pageContext, isFirstRender)) return { skip: true }
     return { err }
@@ -904,7 +913,7 @@ async function loadPageConfigsLazyClientSideAndExecHook<
     err = err_
     hasErr = true
   }
-  if (isRenderOutdated()) return { skip: true }
+  if (abortIfOutdated()) return { skip: true }
   if (hasErr) return { err }
 
   return { pageContext }

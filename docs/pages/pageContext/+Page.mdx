@@ -260,8 +260,6 @@ In other words, the value is `false` if the page was reached via <Link href="/cl
 
 > See also: <Link href="/useHydrated" />.
 
-> It's equivalent to <code>{'pageContext.isHydration\u00A0===\u00A0!pageContext.isClientSideNavigation'}</code>, unless the error page is rendered in which case both `pageContext.isHydration` and `pageContext.isClientSideNavigation` are `false`.
-
 > When using <Link href="/server-routing" noBreadcrumb={true} />, the value is always `true`.
 
 <Prop id="isClientSide" />
@@ -359,6 +357,10 @@ export async function data(pageContext: PageContextServer) {
 <Prop id="is404" />
 
 If an error occurs, whether the error is a `404 Page Not Found` or a `500 Internal Error`, see <Link href="/error-page" />.
+
+<Prop id="isErrorPage" />
+
+Whether the error page is being rendered, see <Link href="/error-page" />.
 
 <Prop id="isClientSideNavigation" />
 

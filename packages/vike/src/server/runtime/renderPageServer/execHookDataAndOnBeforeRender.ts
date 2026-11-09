@@ -2,13 +2,16 @@ export { execHookDataAndOnBeforeRender }
 
 import { assertOnBeforeRenderHookReturn } from '../../../shared-server-client/assertOnBeforeRenderHookReturn.js'
 import { execHookServer, type PageContextExecHookServer } from './execHookServer.js'
+import type { PageContext_logRuntime } from '../loggerRuntime.js'
+import { catchStreamedPromises } from './streamedValues/catchStreamedPromises.js'
 import '../../assertEnvServer.js'
 
 async function execHookDataAndOnBeforeRender(
   pageContext: {
     pageId: string
     _pageContextAlreadyProvidedByOnPrerenderHook?: true
-  } & PageContextExecHookServer,
+  } & PageContextExecHookServer &
+    NonNullable<PageContext_logRuntime>,
 ): Promise<void> {
   if (pageContext._pageContextAlreadyProvidedByOnPrerenderHook) {
     return
@@ -21,10 +24,11 @@ async function execHookDataAndOnBeforeRender(
     const pageContextFromHook = {
       data: dataHook.hookReturn,
     }
+    catchStreamedPromises(pageContextFromHook.data, pageContext)
     Object.assign(pageContext, pageContextFromHook)
 
     // Execute +onData
-    if (!pageContext.isClientSideNavigation) {
+    if (!pageContext._isPageContextJsonRequest) {
       await execHookServer('onData', pageContext)
     }
   }
