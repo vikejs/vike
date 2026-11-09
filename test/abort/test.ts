@@ -226,6 +226,22 @@ function testRun(
     await testCounter(1)
     await ensureWasClientSideRouted('/pages/index')
   })
+
+  test('+onRenderClient throws `null`', async () => {
+    await page.goto(getServerUrl() + '/about?on-render-client-null')
+    await autoRetry(async () => {
+      expect(await page.textContent('p')).toBe('Something went wrong.')
+    })
+    expectLog('The thrown value is `null`', { filter: (log) => log.logSource === 'Browser Error' })
+  })
+
+  test('+data.client.ts throws `null`', async () => {
+    await page.goto(getServerUrl() + '/about?data-client-null')
+    await autoRetry(async () => {
+      expect(await page.textContent('p')).toBe('Something went wrong.')
+    })
+    expectLog('The thrown value is `null`', { filter: (log) => log.logSource === 'Browser Error' })
+  })
 }
 
 async function hydrationDone() {
