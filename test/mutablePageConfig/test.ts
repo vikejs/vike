@@ -43,6 +43,29 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview' | 'pnpm run preview:ss
       await waitForHydration()
       await navigate('/a', false)
     })
+
+    test('removing the Vite plugin from vite.config.js', async () => {
+      await navigate('/', false)
+      await sleepBeforeEditFile()
+      {
+        const reloaded = await waitForNavigation()
+        editFile('./vite.config.js', (s) =>
+          s.replace('plugins: [vike(), setOnCreatePageContext()]', 'plugins: [vike()]'),
+        )
+        await reloaded()
+      }
+      await waitForHydration()
+      await navigate('/b', false)
+      await navigate('/', false)
+      await sleepBeforeEditFile()
+      {
+        const reloaded = await waitForNavigation()
+        editFileRevert()
+        await reloaded()
+      }
+      await waitForHydration()
+      await navigate('/b', true)
+    })
   }
 }
 
