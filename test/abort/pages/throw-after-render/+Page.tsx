@@ -30,6 +30,9 @@ function Page() {
       <button id="throw" onClick={() => setShouldThrow(true)}>
         Throw
       </button>
+      <button id="redirect-self" onClick={() => handleError(redirect('/throw-after-render'))}>
+        Hand over redirect() to this page
+      </button>
       <button
         id="value-after-error-page"
         onClick={async () => {

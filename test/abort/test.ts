@@ -352,6 +352,23 @@ function testRun(
       })
     })
 
+    if (isMakingPageContextJsonRequest) {
+      test('handleError() - `throw redirect()` to the URL of the page that threw can hard load it', async () => {
+        await page.goto(url)
+        await hydrationDone()
+        const glob = '**/throw-after-render/index.pageContext.json'
+        await page.route(glob, (route) => route.fulfill({ status: 404, contentType: 'text/plain', body: 'Not Found' }))
+        const stopCounting = countDocumentRequests()
+        await page.click('#redirect-self')
+        await sleep(1500) // Long enough for the hard load
+        await page.unroute(glob)
+        expect(stopCounting()).toBe(1)
+        expect(await page.textContent('h1')).toBe('Throw after render')
+        await testCounter() // The hard load reset the counter
+        expectBrowserError('Failed to load resource: the server responded with a status of 404')
+      })
+    }
+
     // Static assets are hard reloaded only in production
     if (!isDev) {
       test("handleError() - no hard reload loop when the error page's JavaScript is missing", async () => {
