@@ -191,12 +191,12 @@ async function renderPageClient(renderArgs: RenderArgs) {
   }
   const { previousPageContext } = globalObject
 
-  if (thrown) return await handleError(thrown)
+  if (thrown) return await onErrorHandler(thrown)
   return await renderPageNominal()
 
   async function renderPageNominal() {
     const onError = async (err: unknown) => {
-      await handleError({ err })
+      await onErrorHandler({ err })
     }
 
     // NOT-REALLY-ASYNC: it's only async in development (it retrieves globalContext which is async only in dev)
@@ -396,7 +396,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
   // - Can be a URL rewrite upon `throw render('/some-url')`
   // - Can be rendering the error page
   // - Can be rendering Vike's generic error page (if no error page is defined, or if the error page throws an error)
-  async function handleError(args: { err: unknown }) {
+  async function onErrorHandler(args: { err: unknown }) {
     const err = wrapFalsyError(args.err) // A user hook can `throw null`
     assert(err)
 
@@ -521,7 +521,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
   // The client-side router can't render the page
   async function redirectHard_unlessRecovery(pageContext: { urlPathname: string }) {
     if (isRecovery) {
-      await handleError({ err: new Error(`${pageContext.urlPathname} can't be rendered on the client-side`) })
+      await onErrorHandler({ err: new Error(`${pageContext.urlPathname} can't be rendered on the client-side`) })
     } else {
       redirectHard(urlOriginal)
     }
@@ -593,7 +593,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
   ) {
     const onError = async (err: unknown) => {
       if (!isErrorPage) {
-        await handleError({ err })
+        await onErrorHandler({ err })
       } else {
         logErrorClient(err, abortController.signal)
       }
@@ -954,7 +954,7 @@ async function loadPageConfigsLazyClientSideAndExecHook<
   }
   if (abortIfOutdated()) return { skip: true }
   if (hasErr) {
-    if (await handleErrorFetchingStaticAssets(err, pageContext, isFirstRender)) return { skip: true }
+    if (await onErrorFetchingStaticAssets(err, pageContext, isFirstRender)) return { skip: true }
     return { err }
   }
   objectAssign(pageContext, pageContextAddendum!)
@@ -970,7 +970,7 @@ async function loadPageConfigsLazyClientSideAndExecHook<
 
   return { pageContext }
 }
-async function handleErrorFetchingStaticAssets(
+async function onErrorFetchingStaticAssets(
   err: unknown,
   pageContext: { urlOriginal: string; _isRecovery: boolean },
   isFirstRender: boolean,
