@@ -31,6 +31,7 @@ import {
 } from '../../utils/parseUrl-extras.js'
 import { isUrl, parseUrl, isUri } from '../../utils/parseUrl.js'
 import { updateType } from '../../utils/updateType.js'
+import { wrapFalsyError } from '../../utils/wrapFalsyError.js'
 import {
   ErrorAbort,
   getPageContextAddendumAbort,
@@ -226,6 +227,7 @@ async function renderPageServerEntryRecursive(
   objectAssign(pageContextNominalPageBegin, { errorWhileRendering: null })
 
   const onError = async (err: unknown) => {
+    err = wrapFalsyError(err) // A user hook or UI component can `throw null`
     assert(err)
     assert(pageContextNominalPageSuccess === undefined)
     logRuntimeError(err, pageContextNominalPageBegin)
