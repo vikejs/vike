@@ -67,7 +67,30 @@ export default {
 
 The page's `+` files have precedence. Setting a page config afterwards (e.g. upon a file change) reloads the page in development and throws an error when building.
 
-> `onPageConfigs()` also receives `environment`, the Vite environment loading Vike's virtual file, and `resolve(source, importer)`, which resolves an import as that environment's Vite plugins do. Vike awaits it.
+> `onPageConfigs()` also receives `environment`, the Vite environment loading Vike's virtual file (or the one given to `rerunOnPageConfigs()`), and `resolve(source, importer)`, which resolves an import as that environment's Vite plugins do. Vike awaits it.
+
+If your Vite plugin reads files to set page configs, call `rerunOnPageConfigs()` when one of them is modified. Vike then calls `onPageConfigs()` again and generates its virtual files only after it:
+
+```js
+// my-vite-plugin.js
+
+import { rerunOnPageConfigs } from 'vike/plugin'
+
+export default {
+  name: 'my-vite-plugin',
+  vike: {
+    onPageConfigs({ pages }) {
+      // Reads ./product.json
+    }
+  },
+  async hotUpdate({ file }) {
+    // Vite calls hotUpdate() for each of its environments
+    if (this.environment.name === 'client' && file.endsWith('/product.json')) {
+      await rerunOnPageConfigs(this.environment)
+    }
+  }
+}
+```
 
 <Warning>
   Setting a page config is experimental.
