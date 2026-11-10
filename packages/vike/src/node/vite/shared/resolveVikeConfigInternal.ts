@@ -197,6 +197,10 @@ type VikeConfig = Pick<VikeConfigInternal, 'config' | 'pages' | 'prerenderContex
 function setVikeConfigContext(vikeConfigCtx_: VikeConfigContext) {
   // If the user changes Vite's `config.root` => Vite completely reloads itself => setVikeConfigContext() is called again
   globalObject.vikeConfigCtx = vikeConfigCtx_
+  // Vite resolves its config again (e.g. Vite's dev server restarts) => Vite plugins set their values again and Vike generates its virtual files again
+  // - The current config keeps the previous values until Vike reloads it (upon restart: pluginSetGlobalContext)
+  globalObject.pageConfigsWritten = {}
+  if (globalObject.vikeConfigSync) globalObject.vikeConfigsSerialized.delete(globalObject.vikeConfigSync)
 }
 // Vike's config is resolved before Vite's environments are known (Vike's config can modify Vite's config)
 async function setViteEnvironmentNames(viteEnvironmentNames: string[]) {

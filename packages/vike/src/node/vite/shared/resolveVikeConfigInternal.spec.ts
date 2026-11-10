@@ -101,9 +101,24 @@ describe('getVikeConfig().pages[pageId].config', () => {
     expect((await getPageConfig('/pages/index')).configValueSources.prerender).toBeUndefined()
   })
 
-  it('refuses a new value after Vike generated its virtual files', async () => {
-    setVikeConfigSerialized(await getVikeConfigInternal())
+  it('forgets the set values when Vite resolves its config again', async () => {
     const config: Record<string, unknown> = getVikeConfig().pages['/pages/index']!.config
+    setVikeConfigSerialized(await getVikeConfigInternal())
+    setVikeConfigContext({ userRootDir, isDev: false, vikeVitePluginOptions: {} })
+    // The Vite plugin sets its value again
+    config.onCreatePageContext = 'import:./hooks/onCreatePageContext.ssr.js:onCreatePageContext'
+    setVikeConfigContext({ userRootDir, isDev: false, vikeVitePluginOptions: {} })
+    reloadVikeConfig()
+    expect(getDefinedAt(await getPageConfig('/pages/index'), 'onCreatePageContext')).toEqual([
+      '/pages/+onCreatePageContext.ssr.js',
+      '/extension/static.ssr.js',
+    ])
+  })
+
+  it('refuses a new value after Vike generated its virtual files', async () => {
+    const config: Record<string, unknown> = getVikeConfig().pages['/pages/index']!.config
+    config.onCreatePageContext = 'import:./hooks/onCreatePageContext.ssr.js:onCreatePageContext'
+    setVikeConfigSerialized(await getVikeConfigInternal())
     config.onCreatePageContext = 'import:./hooks/onCreatePageContext.ssr.js:onCreatePageContext'
     expect(() => {
       config.onCreatePageContext = 'import:./hooks/onCreatePageContext.server.js:onCreatePageContext'
