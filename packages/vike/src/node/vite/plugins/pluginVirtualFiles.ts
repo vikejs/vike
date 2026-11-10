@@ -2,6 +2,7 @@ export { pluginVirtualFiles }
 
 import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleNode, ModuleGraph } from 'vite'
 import { normalizePath } from 'vite'
+import fs from 'node:fs/promises'
 import { generateVirtualFilePageEntry } from './pluginVirtualFiles/generateVirtualFilePageEntry.js'
 import { generateVirtualFileGlobalEntryWithOldDesign } from './pluginVirtualFiles/generateVirtualFileGlobalEntryWithOldDesign.js'
 import { generateVirtualFileGlobalEntry } from './pluginVirtualFiles/generateVirtualFileGlobalEntry.js'
@@ -145,20 +146,10 @@ async function onFileModified(ctx: HmrContext, config: ResolvedConfig) {
     return vikeVirtualFiles
   }
 
-  // File read by +onCreatePageConfig_experimental
-  {
-    const vikeConfig = await getVikeConfigInternalOptional()
-    const isDev = config._isDev
-    assert(isDev === true)
-    const resolve: ResolveImport = async (source, importer) =>
-      (await server.environments.client.pluginContainer.resolveId(source, importer))?.id
-    if (vikeConfig && (await rerunPageConfigsFromHooks(vikeConfig, isDev, file, async () => ctx.read(), resolve))) {
-      invalidateVikeVirtualFiles(server)
-      await updateUserFiles()
-      // Trigger a full page reload
-      const vikeVirtualFiles = getVikeVirtualFiles(server)
-      return vikeVirtualFiles
-    }
+  if (await rerunPageConfigHooks(file, async () => ctx.read(), server, config)) {
+    // Trigger a full page reload
+    const vikeVirtualFiles = getVikeVirtualFiles(server)
+    return vikeVirtualFiles
   }
 }
 
@@ -185,7 +176,37 @@ async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: V
     (isScriptFile(file) && getVikeConfigError())
   ) {
     reloadAll(file, config, operation, server)
+  } else {
+    // For example, a file that +onCreatePageConfig_experimental tried to read before it existed
+    try {
+      if (await rerunPageConfigHooks(file, () => fs.readFile(file, 'utf-8'), server, config)) {
+        server.ws.send({ type: 'full-reload' })
+      }
+    } catch (err) {
+      // The watcher doesn't handle errors
+      console.error(err)
+    }
   }
+}
+
+// Call +onCreatePageConfig_experimental again for the pages that read `file`
+// - Returns whether a page config changed
+async function rerunPageConfigHooks(
+  file: string,
+  read: () => Promise<string>,
+  server: ViteDevServer,
+  config: ResolvedConfig,
+): Promise<boolean> {
+  const vikeConfig = await getVikeConfigInternalOptional()
+  if (!vikeConfig) return false
+  const isDev = config._isDev
+  assert(isDev === true)
+  const resolve: ResolveImport = async (source, importer) =>
+    (await server.environments.client.pluginContainer.resolveId(source, importer))?.id
+  if (!(await rerunPageConfigsFromHooks(vikeConfig, isDev, file, read, resolve))) return false
+  invalidateVikeVirtualFiles(server)
+  await updateUserFiles()
+  return true
 }
 
 async function isAppDependency(filePathAbsoluteFilesystem: string, moduleGraph: ModuleGraph) {

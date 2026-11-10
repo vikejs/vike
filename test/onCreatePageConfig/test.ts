@@ -1,5 +1,6 @@
 export { testRun }
 
+import fs from 'node:fs'
 import { run, page, test, expect, getServerUrl, editFile, editFileRevert, autoRetry } from '@brillout/test-e2e'
 import {
   ensureWasClientSideRouted,
@@ -38,6 +39,28 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview' | 'pnpm run preview:ss
       {
         const reloaded = await waitForNavigation()
         editFileRevert()
+        await reloaded()
+      }
+      await waitForHydration()
+      await navigate('/a', false)
+    })
+
+    test('creating and removing a file read by +onCreatePageConfig_experimental', async () => {
+      const markerFile = new URL('./pages/a/needs-server.txt', import.meta.url)
+      await navigate('/', false)
+      await sleepBeforeEditFile()
+      {
+        const reloaded = await waitForNavigation()
+        fs.writeFileSync(markerFile, '')
+        await reloaded()
+      }
+      await waitForHydration()
+      await navigate('/a', true)
+      await navigate('/', false)
+      await sleepBeforeEditFile()
+      {
+        const reloaded = await waitForNavigation()
+        fs.unlinkSync(markerFile)
         await reloaded()
       }
       await waitForHydration()
