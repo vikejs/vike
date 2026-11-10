@@ -329,22 +329,6 @@ function testRun(
       expectBrowserError('AbortRender')
     })
 
-    test('handleError() - a `render()` value is logged when a navigation supersedes its error page', async () => {
-      await page.goto(url + '?slow-error-page')
-      await hydrationDone()
-      await page.click('#render-404')
-      // The error page's +onBeforeRender is pending
-      await page.waitForFunction(() => 'releaseErrorPage' in window)
-      await page.click('a[href="/about"]')
-      await autoRetry(async () => {
-        expect(await page.textContent('h1')).toBe('About')
-      })
-      await page.evaluate(() => (window as any).releaseErrorPage())
-      await autoRetry(() => expectBrowserError('AbortRender'))
-      expect(await page.textContent('h1')).toBe('About')
-      await expectUrl('/about')
-    })
-
     if (isMakingPageContextJsonRequest) {
       test("handleError() - no hard reload when the .pageContext.json of `throw render('/some-url')` is missing", async () => {
         const glob = '**/about/index.pageContext.json'

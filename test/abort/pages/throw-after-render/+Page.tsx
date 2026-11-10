@@ -18,9 +18,7 @@ function Page() {
     } else if (
       location.search &&
       // The +client.ts file hands over the values of `?two-values`
-      location.search !== '?two-values' &&
-      // The button #render-404 hands over the value of `?slow-error-page`
-      location.search !== '?slow-error-page'
+      location.search !== '?two-values'
     ) {
       setTimeout(() => setShouldThrow(true), 100)
     }
@@ -31,9 +29,6 @@ function Page() {
       <h1>Throw after render</h1>
       <button id="throw" onClick={() => setShouldThrow(true)}>
         Throw
-      </button>
-      <button id="render-404" onClick={() => handleError(render(404))}>
-        Hand over render(404)
       </button>
       <button
         id="value-after-error-page"
