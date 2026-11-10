@@ -2,7 +2,7 @@ export default plugin
 export { plugin }
 // TO-DO/next-major-release: remove
 export { plugin as ssr }
-export { getVikeConfig } from './shared/resolveVikeConfigInternal.js'
+export { getVikeConfig, rerunOnPageConfigs } from './shared/resolveVikeConfigInternal.js'
 export { PROJECT_VERSION as version } from '../../utils/PROJECT_VERSION.js'
 export type { VikeVitePluginOptions as UserConfig }
 export type { VikeVitePluginOptions }
@@ -56,7 +56,7 @@ declare module 'vite' {
   interface Plugin<A = any> {
     vike?: {
       /**
-       * Set page configs: Vike calls it once per Vike config, before it generates its virtual files.
+       * Set page configs: Vike calls it once per Vike config and upon `rerunOnPageConfigs()`, before it generates its virtual files.
        *
        * https://vike.dev/getVikeConfig
        *

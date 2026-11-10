@@ -23,7 +23,7 @@ const globalObject = getGlobalObject('pluginVirtualFiles/runPageConfigCallbacks.
   callbacksRun: new WeakMap<VikeConfigInternal, Promise<void>>(),
 })
 
-// Call the `vike.onPageConfigs()` of each Vite plugin, once per Vike config, before Vike serializes its page configs
+// Call the `vike.onPageConfigs()` of each Vite plugin, once per Vike config and upon rerunOnPageConfigs(), before Vike serializes its page configs
 async function runPageConfigCallbacks(vikeConfig: VikeConfigInternal, context: PageConfigCallbackContext) {
   let callbacksRun = globalObject.callbacksRun.get(vikeConfig)
   if (!callbacksRun) {

@@ -1,5 +1,6 @@
 // Public usage
 export { getVikeConfig }
+export { rerunOnPageConfigs }
 export type { VikeConfig }
 
 // Internal usage
@@ -103,11 +104,14 @@ import { getVikeApiOperation } from '../../../shared-server-node/api-context.js'
 import { getCliOptions } from '../../cli/context.js'
 import type { PrerenderContextPublic } from '../../prerender/runPrerender.js'
 import { resolvePrerenderConfigGlobal } from '../../prerender/resolvePrerenderConfig.js'
-import type { ResolvedConfig, UserConfig } from 'vite'
+import type { DevEnvironment, ResolvedConfig, UserConfig } from 'vite'
 import { getPublicProxy, type DangerouslyUseInternals } from '../../../shared-server-client/getPublicProxy.js'
 import { setVikeConfigError } from '../../../shared-server-node/getVikeConfigError.js'
 import { invalidateVikeVirtualFiles } from '../plugins/pluginVirtualFiles/invalidateVikeVirtualFiles.js'
-import { clearPageConfigCallbacks } from '../plugins/pluginVirtualFiles/runPageConfigCallbacks.js'
+import {
+  clearPageConfigCallbacks,
+  runPageConfigCallbacks,
+} from '../plugins/pluginVirtualFiles/runPageConfigCallbacks.js'
 import '../assertEnvVite.js'
 assertIsNotProductionRuntime()
 
@@ -188,6 +192,23 @@ function getVikeConfig(
   )
   const vikeConfigPublic = getPublicProxy(vikeConfig, 'vikeConfig')
   return vikeConfigPublic
+}
+// Public usage
+/**
+ * Call the `vike.onPageConfigs()` of each Vite plugin again, with `environment`, e.g. after a file your Vite plugin reads to set page configs is modified. Vike generates its virtual files only after it.
+ *
+ * https://vike.dev/getVikeConfig
+ *
+ * @experimental
+ */
+function rerunOnPageConfigs(environment: DevEnvironment): Promise<void> {
+  const vikeConfig = globalObject.vikeConfigSync
+  assert(vikeConfig)
+  clearPageConfigCallbacks(vikeConfig)
+  return runPageConfigCallbacks(vikeConfig, {
+    environment,
+    resolve: (source, importer) => environment.pluginContainer.resolveId(source, importer),
+  })
 }
 // Public usage
 type VikeConfig = Pick<VikeConfigInternal, 'config' | 'pages' | 'prerenderContext'> & {
