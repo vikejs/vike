@@ -397,7 +397,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
   // - Can be rendering the error page
   // - Can be rendering Vike's generic error page (if no error page is defined, or if the error page throws an error)
   async function handleError(args: { err: unknown }) {
-    const err = wrapFalsyError(args.err) // A user hook or UI component can `throw null`
+    const err = wrapFalsyError(args.err) // A user hook can `throw null`
     assert(err)
 
     // The first render failed, thus it doesn't hydrate the page anymore: a navigation can now supersede it
