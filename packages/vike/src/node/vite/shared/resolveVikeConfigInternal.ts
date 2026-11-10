@@ -638,6 +638,7 @@ function resolvePageConfigWithHookConfigs(
   const configValueSources: ConfigValueSources = objectFromEntries(
     objectEntries(pageConfig.configValueSources).map(([configName, sources]) => [configName, [...sources]]),
   )
+  const configValueSourcesAdded: ConfigValueSources = {}
 
   // Hooks with lower precedence first: each insertion goes before the sources it ties with
   configsFromHooks
@@ -673,8 +674,10 @@ function resolvePageConfigWithHookConfigs(
             sortAfterInheritanceOrderPage(plusFileHook, source.plusFile, locationIdPage, configName) <= 0,
         )
         sources.splice(i === -1 ? sources.length : i, 0, ...sourcesAdded)
+        ;(configValueSourcesAdded[configName] ??= []).push(...sourcesAdded)
       })
     })
+  applyEffectsMetaEnv(pageConfig.configValueSources, configValueSourcesAdded, configDefinitions)
 
   const pageConfigWithHookConfigs = { ...pageConfig, configValueSources }
   return { ...pageConfigWithHookConfigs, configValuesComputed: getComputed(pageConfigWithHookConfigs) }
@@ -1537,6 +1540,20 @@ function applyEffects(
       plusFilesByLocationId,
     )
     applyEffectMetaEnv(configModFromEffect, configValueSources, configDefEffect)
+  })
+}
+// Same as applyEffects() but only applies `meta.env` changes, onto `configValueSourcesAdded`
+function applyEffectsMetaEnv(
+  configValueSources: ConfigValueSources,
+  configValueSourcesAdded: ConfigValueSources,
+  configDefinitions: ConfigDefinitionsInternal,
+) {
+  objectEntries(configDefinitions).forEach(([configNameEffect, configDefEffect]) => {
+    const sourceEffect = configValueSources[configNameEffect]?.[0]
+    if (!sourceEffect) return
+    const effect = runEffect(configNameEffect, configDefEffect, sourceEffect)
+    if (!effect) return
+    applyEffectMetaEnv(effect, configValueSourcesAdded, configDefEffect)
   })
 }
 function runEffect(configName: string, configDef: ConfigDefinitionInternal, source: ConfigValueSource) {

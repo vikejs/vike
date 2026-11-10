@@ -26,6 +26,18 @@ beforeAll(async () => {
     'pages/+onCreatePageContext.ssr.js': 'export default () => {}',
     'pages/index/+Page.js': "export default 'index'",
     'pages/about/+Page.js': "export default 'needs-server'",
+    'pages/effect/+Page.js': "export default 'effect'",
+    'pages/effect/+config.js': [
+      'export default {',
+      '  meta: {',
+      '    serverOnly: {',
+      '      env: { config: true },',
+      '      effect: () => ({ meta: { onCreatePageContext: { env: { server: true, client: false } } } }),',
+      '    },',
+      '  },',
+      '  serverOnly: true,',
+      '}',
+    ].join('\n'),
     'extension/package.json': JSON.stringify({ name: 'extension', type: 'module' }),
     'extension/config.js': [
       'export default {',
@@ -41,6 +53,7 @@ beforeAll(async () => {
     'extension/static.ssr.js': 'export const onCreatePageContext = () => {}',
     'extension/hook.ssr.js': 'export const onCreatePageContext = () => {}',
     'extension/hook.server.js': 'export const onCreatePageContext = () => {}',
+    'extension/hook.js': 'export const onCreatePageContext = () => {}',
   })
   setVikeConfigContext({ userRootDir, isDev: false, vikeVitePluginOptions: {} })
   vikeConfig = await getVikeConfigInternal()
@@ -66,6 +79,18 @@ describe('resolvePageConfigsFromHooks()', () => {
   it('recomputes hasServerOnlyHook per page', () => {
     expect(getPageConfig(pageConfigs, '/pages/index').configValuesComputed.hasServerOnlyHook!.value).toBe(false)
     expect(getPageConfig(pageConfigs, '/pages/about').configValuesComputed.hasServerOnlyHook!.value).toBe(true)
+  })
+
+  it('applies the meta.env set by effects', () => {
+    const pageConfig = getPageConfig(vikeConfig._pageConfigs, '/pages/effect')
+    const sourceHook = pageConfig.configValueSources.onCreatePageConfig_experimental![0]!
+    const pageConfigWithHookConfigs = resolvePageConfigWithHookConfigs(pageConfig, [
+      { config: { onCreatePageContext: 'import:./hook.js:onCreatePageContext' }, sourceHook },
+    ])
+    const sourceAdded = pageConfigWithHookConfigs.configValueSources.onCreatePageContext!.find(
+      ({ definedAt }) => 'filePathToShowToUser' in definedAt && definedAt.filePathToShowToUser === '/extension/hook.js',
+    )
+    expect(sourceAdded!.configEnv).toEqual({ server: true, client: false })
   })
 
   it('refuses configs loaded at config time', () => {
