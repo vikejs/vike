@@ -163,7 +163,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
 
   async function renderPageNominal() {
     const onError = async (err: unknown) => {
-      await handleError({ err })
+      await onErrorHandler({ err })
     }
 
     // NOT-REALLY-ASYNC: it's only async in development (it retrieves globalContext which is async only in dev)
@@ -363,7 +363,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
   // - Can be a URL rewrite upon `throw render('/some-url')`
   // - Can be rendering the error page
   // - Can be rendering Vike's generic error page (if no error page is defined, or if the error page throws an error)
-  async function handleError(args: { err: unknown }) {
+  async function onErrorHandler(args: { err: unknown }) {
     const err = wrapFalsyError(args.err) // A user hook can `throw null`
     assert(err)
 
@@ -548,7 +548,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
   ) {
     const onError = async (err: unknown) => {
       if (!isErrorPage) {
-        await handleError({ err })
+        await onErrorHandler({ err })
       } else {
         logErrorClient(err, abortController.signal)
       }
@@ -904,7 +904,7 @@ async function loadPageConfigsLazyClientSideAndExecHook<
   }
   if (abortIfOutdated()) return { skip: true }
   if (hasErr) {
-    if (await handleErrorFetchingStaticAssets(err, pageContext, isFirstRender)) return { skip: true }
+    if (await onErrorFetchingStaticAssets(err, pageContext, isFirstRender)) return { skip: true }
     return { err }
   }
   objectAssign(pageContext, pageContextAddendum!)
@@ -920,7 +920,7 @@ async function loadPageConfigsLazyClientSideAndExecHook<
 
   return { pageContext }
 }
-async function handleErrorFetchingStaticAssets(
+async function onErrorFetchingStaticAssets(
   err: unknown,
   pageContext: { urlOriginal: string },
   isFirstRender: boolean,
