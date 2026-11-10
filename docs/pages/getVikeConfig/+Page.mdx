@@ -53,19 +53,21 @@ A Vite plugin can set a configuration of a page that is loaded at runtime (e.g. 
 ```js
 // my-vite-plugin.js
 
-import { getVikeConfig } from 'vike/plugin'
-
 export default {
   name: 'my-vite-plugin',
-  configResolved() {
-    const { pages } = getVikeConfig()
-    pages['/pages/product'].config.onCreatePageContext =
-      'import:my-vite-plugin/onCreatePageContext.server:onCreatePageContext'
+  vike: {
+    // Vike calls it for each of its configs (e.g. after a `+` file is created), before it generates its virtual files
+    onPageConfigs({ pages }) {
+      pages['/pages/product'].config.onCreatePageContext =
+        'import:my-vite-plugin/onCreatePageContext.server:onCreatePageContext'
+    }
   }
 }
 ```
 
-The page's `+` files have precedence. Set it before Vike generates its virtual files (e.g. in the `configResolved()` hook): setting it afterwards reloads the page in development and throws an error when building.
+The page's `+` files have precedence. Setting a page config afterwards (e.g. upon a file change) reloads the page in development and throws an error when building.
+
+> `onPageConfigs()` also receives `environment`, the Vite environment loading Vike's virtual file, and `resolve(source, importer)`, which resolves an import as that environment's Vite plugins do. Vike awaits it.
 
 <Warning>
   Setting a page config is experimental.
