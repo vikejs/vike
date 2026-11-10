@@ -53,10 +53,15 @@ A Vite plugin can set a configuration of a page that is loaded at runtime (e.g. 
 ```js
 // my-vite-plugin.js
 
-configResolved() {
-  const { pages } = getVikeConfig()
-  pages['/pages/product'].config.onCreatePageContext =
-    'import:my-vite-plugin/onCreatePageContext.server:onCreatePageContext'
+import { getVikeConfig } from 'vike/plugin'
+
+export default {
+  name: 'my-vite-plugin',
+  configResolved() {
+    const { pages } = getVikeConfig()
+    pages['/pages/product'].config.onCreatePageContext =
+      'import:my-vite-plugin/onCreatePageContext.server:onCreatePageContext'
+  }
 }
 ```
 
