@@ -1,5 +1,5 @@
 import fs from 'node:fs'
-import vike, { getVikeConfig } from 'vike/plugin'
+import vike, { rerunOnPageConfigs } from 'vike/plugin'
 
 export default {
   plugins: [vike(), setOnCreatePageContext()],
@@ -13,8 +13,8 @@ function setOnCreatePageContext() {
         setPageConfigs(pages)
       },
     },
-    handleHotUpdate({ file }) {
-      if (file.endsWith('/+Page.js')) setPageConfigs(getVikeConfig().pages)
+    async hotUpdate({ file }) {
+      if (this.environment.name === 'client' && file.endsWith('/+Page.js')) await rerunOnPageConfigs(this.environment)
     },
   }
 }
