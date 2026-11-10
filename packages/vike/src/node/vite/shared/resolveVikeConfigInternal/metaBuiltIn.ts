@@ -223,6 +223,10 @@ const metaBuiltIn: ConfigDefinitionsBuiltIn = {
   meta: {
     env: { config: true },
   },
+  onCreatePageConfig_experimental: {
+    env: { config: true },
+    cumulative: true,
+  },
   hasServerOnlyHook: {
     env: { server: true, client: true },
     eager: true,
