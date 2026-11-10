@@ -13,6 +13,7 @@ export { isV1Design }
 export { getConfVal }
 export { getConfigDefinitionOptional }
 export { getVikeConfigFromCliOrEnv }
+export { resolvePageConfigWithHookConfigs }
 export { EARLY_SETTINGS }
 export type { VikeConfigInternal }
 export type { PageConfigBuildTimeBeforeComputed }
@@ -623,6 +624,60 @@ function resolvePageConfigBuildTime(
 
   checkType<PageConfigBuildTime>(pageConfig)
   return pageConfig
+}
+
+// Add the configs returned by +onCreatePageConfig_experimental hooks, as if they were set by the +config file defining the hook
+function resolvePageConfigWithHookConfigs(
+  pageConfig: PageConfigBuildTime,
+  configsFromHooks: { config: Config; sourceHook: ConfigValueSource }[],
+): PageConfigBuildTime {
+  assert(globalObject.vikeConfigCtx)
+  const { userRootDir } = globalObject.vikeConfigCtx
+  const { pageId, configDefinitions } = pageConfig
+  const locationIdPage = pageId as LocationId // See resolvePageConfigBuildTime()
+  const configValueSources: ConfigValueSources = objectFromEntries(
+    objectEntries(pageConfig.configValueSources).map(([configName, sources]) => [configName, [...sources]]),
+  )
+
+  // Hooks with lower precedence first: each insertion goes before the sources it ties with
+  configsFromHooks
+    .slice()
+    .reverse()
+    .forEach(({ config, sourceHook }) => {
+      const { plusFile } = sourceHook
+      assert(plusFile)
+      const hookDefinedAt = getConfigDefinedAt('Config', 'onCreatePageConfig_experimental', sourceHook.definedAt)
+      const plusFileHook = getPlusFileFromConfigFile(
+        { fileExports: { default: config }, filePath: plusFile.filePath, extendsFilePaths: [] },
+        !!plusFile.isExtensionConfig,
+        plusFile.locationId,
+        userRootDir,
+      )
+      Object.keys(config).forEach((configName) => {
+        const configNameColored = pc.cyan(configName)
+        const configDef = configDefinitions[configName]
+        assertUsage(
+          configDef,
+          `${hookDefinedAt} returns an unknown config ${configNameColored} for the page ${pageId} — for the list of built-in configs, see ${pc.underline('https://vike.dev/settings')} and ${pc.underline('https://vike.dev/hooks')}`,
+        )
+        assertUsage(
+          !configDef.env.config && !configDef.global && !configDef.vite && !configDef._computed,
+          `${hookDefinedAt} returns the config ${configNameColored} for the page ${pageId}, but it can only return configs that are loaded at runtime`,
+        )
+        const sources = (configValueSources[configName] ??= [])
+        const sourcesAdded = getConfigValueSources(configName, plusFileHook, configDef, userRootDir)
+        // Overrides the value set by the +config file defining the hook
+        const i = sources.findIndex(
+          (source) =>
+            source.plusFile &&
+            sortAfterInheritanceOrderPage(plusFileHook, source.plusFile, locationIdPage, configName) <= 0,
+        )
+        sources.splice(i === -1 ? sources.length : i, 0, ...sourcesAdded)
+      })
+    })
+
+  const pageConfigWithHookConfigs = { ...pageConfig, configValueSources }
+  return { ...pageConfigWithHookConfigs, configValuesComputed: getComputed(pageConfigWithHookConfigs) }
 }
 
 /**
