@@ -27,6 +27,7 @@ type PageConfigsFromHooks = {
   filesReadByPageId: Map<string, Set<string>>
   configsByPageId: Map<string, (Config | undefined)[]>
 }
+type HooksResult = { pageConfig: PageConfigBuildTime; filesRead: Set<string>; configs: (Config | undefined)[] | null }
 
 const globalObject = getGlobalObject('vite/shared/resolveVikeConfigInternal/resolvePageConfigsFromHooks.ts', {
   pageConfigsFromHooks: new WeakMap<VikeConfigInternal, PageConfigsFromHooks>(),
@@ -45,12 +46,15 @@ async function resolvePageConfigsFromHooks(
   }
   const stateRef = state
   stateRef.pageConfigs ??= Promise.all(
-    vikeConfig._pageConfigs.map((pageConfig) => runHooks(pageConfig, vikeConfig, stateRef, resolve, readFile)),
-  ).catch((err) => {
-    // Next Vike virtual file loaded calls the hooks again
-    stateRef.pageConfigs = null
-    throw err
-  })
+    vikeConfig._pageConfigs.map((pageConfig) => runHooks(pageConfig, vikeConfig, resolve, readFile)),
+  ).then(
+    (results) => publish(stateRef, results),
+    (err) => {
+      // Next Vike virtual file loaded calls the hooks again
+      stateRef.pageConfigs = null
+      throw err
+    },
+  )
   return stateRef.pageConfigs
 }
 
@@ -71,33 +75,43 @@ async function rerunPageConfigsFromHooks(
 
   const pageConfigs = await state.pageConfigs
   const readFileModified: ReadFile = (filePath_) => (filePath_ === filePath ? read() : readFile(filePath_))
-  let isChanged = false
-  const pageConfigsNew = await Promise.all(
-    vikeConfig._pageConfigs.map(async (pageConfig, i) => {
-      if (!pageIds.includes(pageConfig.pageId)) return pageConfigs[i]!
-      const configsOld = state.configsByPageId.get(pageConfig.pageId)
-      const pageConfigNew = await runHooks(pageConfig, vikeConfig, state, resolve, readFileModified)
-      if (!deepEqual(configsOld, state.configsByPageId.get(pageConfig.pageId))) isChanged = true
-      return pageConfigNew
+  // Nothing is published if a hook throws => the next call compares against the last published configs
+  const results = await Promise.all(
+    vikeConfig._pageConfigs.map(async (pageConfig, i): Promise<HooksResult> => {
+      if (!pageIds.includes(pageConfig.pageId)) {
+        return { pageConfig: pageConfigs[i]!, filesRead: new Set(), configs: null }
+      }
+      return runHooks(pageConfig, vikeConfig, resolve, readFileModified)
     }),
   )
+  const isChanged = results.some(
+    ({ pageConfig, configs }) => configs && !deepEqual(configs, state.configsByPageId.get(pageConfig.pageId)),
+  )
+  const pageConfigsNew = publish(state, results)
   if (isChanged) state.pageConfigs = Promise.resolve(pageConfigsNew)
   return isChanged
+}
+
+function publish(state: PageConfigsFromHooks, results: HooksResult[]): PageConfigBuildTime[] {
+  results.forEach(({ pageConfig: { pageId }, filesRead, configs }) => {
+    if (!configs) return
+    state.filesReadByPageId.set(pageId, filesRead)
+    state.configsByPageId.set(pageId, configs)
+  })
+  return results.map(({ pageConfig }) => pageConfig)
 }
 
 async function runHooks(
   pageConfig: PageConfigBuildTime,
   vikeConfig: VikeConfigInternal,
-  state: PageConfigsFromHooks,
   resolve: ResolveImport,
   read: ReadFile,
-): Promise<PageConfigBuildTime> {
+): Promise<HooksResult> {
+  const filesRead = new Set<string>()
   const sourcesHook = getHookSources(pageConfig)
-  if (sourcesHook.length === 0) return pageConfig
+  if (sourcesHook.length === 0) return { pageConfig, filesRead, configs: null }
 
   const { pageId } = pageConfig
-  const filesRead = new Set<string>()
-  state.filesReadByPageId.set(pageId, filesRead)
   const hasServerOnlyHook = getConfigValueBuildTime(pageConfig, 'hasServerOnlyHook', 'boolean')?.value
   assert(typeof hasServerOnlyHook === 'boolean')
   const page: Parameters<OnCreatePageConfig>[0] = {
@@ -129,15 +143,14 @@ async function runHooks(
       return { config: config as Config | undefined, sourceHook }
     }),
   )
-  state.configsByPageId.set(
-    pageId,
-    configsFromHooks.map(({ config }) => config),
-  )
-
-  return resolvePageConfigWithHookConfigs(
-    pageConfig,
-    configsFromHooks.flatMap(({ config, sourceHook }) => (config ? [{ config, sourceHook }] : [])),
-  )
+  return {
+    pageConfig: resolvePageConfigWithHookConfigs(
+      pageConfig,
+      configsFromHooks.flatMap(({ config, sourceHook }) => (config ? [{ config, sourceHook }] : [])),
+    ),
+    filesRead,
+    configs: configsFromHooks.map(({ config }) => config),
+  }
 }
 
 function getHookSources(pageConfig: PageConfigBuildTime): ConfigValueSource[] {

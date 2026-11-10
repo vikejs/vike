@@ -2,7 +2,7 @@ import { expect, describe, it, beforeAll, afterAll } from 'vitest'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import { resolvePageConfigsFromHooks } from './resolvePageConfigsFromHooks.js'
+import { resolvePageConfigsFromHooks, rerunPageConfigsFromHooks } from './resolvePageConfigsFromHooks.js'
 import {
   getVikeConfigInternal,
   resolvePageConfigWithHookConfigs,
@@ -24,6 +24,7 @@ beforeAll(async () => {
       'export default { extends: [extension] }',
     ].join('\n'),
     'pages/+onCreatePageContext.ssr.js': 'export default () => {}',
+    'shared.txt': '',
     'pages/index/+Page.js': "export default 'index'",
     'pages/about/+Page.js': "export default 'needs-server'",
     'pages/effect/+Page.js': "export default 'effect'",
@@ -44,8 +45,12 @@ beforeAll(async () => {
       "  name: 'extension',",
       "  onCreatePageContext: 'import:./static.ssr.js:onCreatePageContext',",
       '  onCreatePageConfig_experimental: async (page, { read }) => {',
-      "    const code = await read(page.imports('Page')[0].filePathAbsolute)",
-      "    const fileName = code.includes('needs-server') ? 'hook.server.js' : 'hook.ssr.js'",
+      "    const { filePathAbsolute } = page.imports('Page')[0]",
+      '    const code = await read(filePathAbsolute)',
+      "    const shared = await read(filePathAbsolute.slice(0, filePathAbsolute.indexOf('/pages/')) + '/shared.txt')",
+      "    if (shared.includes('invalid') && page.pageId === '/pages/about') throw new Error('Invalid shared.txt')",
+      "    const isServer = code.includes('needs-server') || (shared.includes('server') && page.pageId === '/pages/index')",
+      "    const fileName = isServer ? 'hook.server.js' : 'hook.ssr.js'",
       '    return { onCreatePageContext: `import:./${fileName}:onCreatePageContext` }',
       '  },',
       '}',
@@ -79,6 +84,22 @@ describe('resolvePageConfigsFromHooks()', () => {
   it('recomputes hasServerOnlyHook per page', () => {
     expect(getPageConfig(pageConfigs, '/pages/index').configValuesComputed.hasServerOnlyHook!.value).toBe(false)
     expect(getPageConfig(pageConfigs, '/pages/about').configValuesComputed.hasServerOnlyHook!.value).toBe(true)
+  })
+
+  it('calls the hooks again after a failed call', async () => {
+    const filePath = path.join(userRootDir, 'shared.txt')
+    const resolve = async () => undefined
+    const isServerIndex = async () =>
+      getPageConfig(await resolvePageConfigsFromHooks(vikeConfig, resolve), '/pages/index').configValuesComputed
+        .hasServerOnlyHook!.value
+    await expect(
+      rerunPageConfigsFromHooks(vikeConfig, filePath, async () => 'server, invalid', resolve),
+    ).rejects.toThrowError('Invalid shared.txt')
+    expect(await isServerIndex()).toBe(false)
+    expect(await rerunPageConfigsFromHooks(vikeConfig, filePath, async () => 'server', resolve)).toBe(true)
+    expect(await isServerIndex()).toBe(true)
+    expect(await rerunPageConfigsFromHooks(vikeConfig, filePath, async () => '', resolve)).toBe(true)
+    expect(await isServerIndex()).toBe(false)
   })
 
   it('applies the meta.env set by effects', () => {
