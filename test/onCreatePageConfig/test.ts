@@ -46,27 +46,36 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview' | 'pnpm run preview:ss
     })
 
     test('creating and removing a file read by +onCreatePageConfig_experimental', async () => {
-      const markerFile = new URL('./pages/a/needs-server.txt', import.meta.url)
-      await navigate('/', false)
-      await sleepBeforeEditFile()
-      {
-        const reloaded = await waitForNavigation()
-        fs.writeFileSync(markerFile, '')
-        await reloaded()
-      }
-      await waitForHydration()
-      await navigate('/a', true)
-      await navigate('/', false)
-      await sleepBeforeEditFile()
-      {
-        const reloaded = await waitForNavigation()
-        fs.unlinkSync(markerFile)
-        await reloaded()
-      }
-      await waitForHydration()
-      await navigate('/a', false)
+      await testCreateAndRemove('./pages/a/needs-server.txt', '')
+    })
+
+    test('creating and removing a + file that changes the result of +onCreatePageConfig_experimental', async () => {
+      await testCreateAndRemove('./pages/a/+needsServer.js', 'export default true')
     })
   }
+}
+
+// The open tab reloads and page A requests .pageContext.json only while the file exists
+async function testCreateAndRemove(filePathRelative: string, content: string) {
+  const filePath = new URL(filePathRelative, import.meta.url)
+  await navigate('/', false)
+  await sleepBeforeEditFile()
+  {
+    const reloaded = await waitForNavigation()
+    fs.writeFileSync(filePath, content)
+    await reloaded()
+  }
+  await waitForHydration()
+  await navigate('/a', true)
+  await navigate('/', false)
+  await sleepBeforeEditFile()
+  {
+    const reloaded = await waitForNavigation()
+    fs.unlinkSync(filePath)
+    await reloaded()
+  }
+  await waitForHydration()
+  await navigate('/a', false)
 }
 
 async function navigate(pathname: '/' | '/a' | '/b', isPageContextJsonRequest: boolean) {

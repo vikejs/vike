@@ -1,5 +1,6 @@
 export { resolvePageConfigsFromHooks }
 export { rerunPageConfigsFromHooks }
+export { hasPageConfigHooks }
 export type { ResolveImport }
 
 import fs from 'node:fs/promises'
@@ -155,6 +156,10 @@ async function runHooks(
     filesRead,
     configs: configsFromHooks.map(({ config }) => config),
   }
+}
+
+function hasPageConfigHooks(vikeConfig: VikeConfigInternal): boolean {
+  return vikeConfig._pageConfigs.some((pageConfig) => getHookSources(pageConfig).length > 0)
 }
 
 function getHookSources(pageConfig: PageConfigBuildTime): ConfigValueSource[] {

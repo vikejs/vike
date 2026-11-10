@@ -20,6 +20,7 @@ import { assertPosixPath } from '../../../utils/path.js'
 import { parseVirtualFileId } from '../../../shared-server-node/virtualFileId.js'
 import { reloadVikeConfig, isV1Design, getVikeConfigInternalOptional } from '../shared/resolveVikeConfigInternal.js'
 import {
+  hasPageConfigHooks,
   rerunPageConfigsFromHooks,
   type ResolveImport,
 } from '../shared/resolveVikeConfigInternal/resolvePageConfigsFromHooks.js'
@@ -176,6 +177,9 @@ async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: V
     (isScriptFile(file) && getVikeConfigError())
   ) {
     reloadAll(file, config, operation, server)
+    // Vite doesn't reload the browser upon a created or removed file => an open tab would keep the page configs of the previous +onCreatePageConfig_experimental results
+    const vikeConfig = await getVikeConfigInternalOptional()
+    if (vikeConfig && hasPageConfigHooks(vikeConfig)) server.ws.send({ type: 'full-reload' })
   } else {
     // For example, a file that +onCreatePageConfig_experimental tried to read before it existed
     try {
