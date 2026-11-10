@@ -18,7 +18,10 @@ import { assert } from '../../../utils/assert.js'
 import { assertPosixPath } from '../../../utils/path.js'
 import { parseVirtualFileId } from '../../../shared-server-node/virtualFileId.js'
 import { reloadVikeConfig, isV1Design, getVikeConfigInternalOptional } from '../shared/resolveVikeConfigInternal.js'
-import type { ResolveImport } from '../shared/resolveVikeConfigInternal/resolvePageConfigsFromHooks.js'
+import {
+  rerunPageConfigsFromHooks,
+  type ResolveImport,
+} from '../shared/resolveVikeConfigInternal/resolvePageConfigsFromHooks.js'
 import { isEnvironmentBuiltIn } from '../../../shared-server-node/vike-environments.js'
 import { isRunnableDevEnvironment } from '../../../utils/isRunnableDevEnvironment.js'
 import pc from '@brillout/picocolors'
@@ -140,6 +143,20 @@ async function onFileModified(ctx: HmrContext, config: ResolvedConfig) {
     // Trigger a full page reload. (Because files such as +config.js can potentially modify Vike's virtual files.)
     const vikeVirtualFiles = getVikeVirtualFiles(server)
     return vikeVirtualFiles
+  }
+
+  // File read by +onCreatePageConfig_experimental
+  {
+    const vikeConfig = await getVikeConfigInternalOptional()
+    const resolve: ResolveImport = async (source, importer) =>
+      (await server.environments.client.pluginContainer.resolveId(source, importer))?.id
+    if (vikeConfig && (await rerunPageConfigsFromHooks(vikeConfig, file, async () => ctx.read(), resolve))) {
+      invalidateVikeVirtualFiles(server)
+      await updateUserFiles()
+      // Trigger a full page reload
+      const vikeVirtualFiles = getVikeVirtualFiles(server)
+      return vikeVirtualFiles
+    }
   }
 }
 
