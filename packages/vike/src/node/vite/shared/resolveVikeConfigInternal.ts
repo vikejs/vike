@@ -106,7 +106,7 @@ import { resolvePrerenderConfigGlobal } from '../../prerender/resolvePrerenderCo
 import type { ResolvedConfig, UserConfig } from 'vite'
 import { getPublicProxy, type DangerouslyUseInternals } from '../../../shared-server-client/getPublicProxy.js'
 import { setVikeConfigError } from '../../../shared-server-node/getVikeConfigError.js'
-import { invalidateVikeVirtualFiles } from '../plugins/pluginVirtualFiles.js'
+import { invalidateVikeVirtualFiles } from '../plugins/pluginVirtualFiles/invalidateVikeVirtualFiles.js'
 import '../assertEnvVite.js'
 assertIsNotProductionRuntime()
 
