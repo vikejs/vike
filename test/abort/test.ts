@@ -297,15 +297,25 @@ function testRun(
       await autoRetry(() => expectLog('handleError() settled'))
     })
 
-    test('handleError() - of two values handed over at once after hydration, the first one is rendered', async () => {
-      await page.goto(url)
+    test('handleError() - a navigation goes on when the page it replaces throws', async () => {
+      // Holds the navigation to /about until it loads the code of /about
+      const isAboutCode = (u: URL) => u.pathname.includes('pages_about') || u.pathname.includes('/pages/about/')
+      let releaseAbout!: () => void
+      const aboutReleased = new Promise<void>((resolve) => (releaseAbout = resolve))
+      await page.route(isAboutCode, async (route) => {
+        await aboutReleased
+        await route.continue()
+      })
+      await page.goto(url + '?throw-on-leave') // The page throws once a navigation aborts it
       await hydrationDone()
-      await page.click('#two-values')
-      await autoRetry(() => expectLog('handleError() settled'))
-      // Not the render(404) handed over second
-      expect(await page.textContent('p')).toBe('Something went wrong.')
-      expectBrowserError('First value')
-      expectBrowserError('AbortRender')
+      await page.click('a[href="/about"]')
+      await expectErrThrown()
+      releaseAbout()
+      await autoRetry(async () => {
+        expect(await page.textContent('h1')).toBe('About')
+      })
+      await page.unroute(isAboutCode)
+      await expectUrl('/about')
     })
 
     test('handleError() - a value handed over once the error page is shown is logged', async () => {

@@ -163,9 +163,6 @@ async function renderPageClient(renderArgs: RenderArgs) {
   const { abortIfOutdated, setHydrationCanBeAborted, setOnRenderClientCalled, isFirstRender } =
     getIsRenderOutdated(abortController)
 
-  // Synchronously => a second thrown value finds the page already being replaced, and doesn't supersede the first one
-  if (thrown) abortPreviousNavigation(abortController)
-
   const pageContextBeginArgs = {
     urlOriginal,
     isBackwardNavigation,

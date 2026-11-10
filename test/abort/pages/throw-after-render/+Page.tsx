@@ -4,12 +4,17 @@ import React, { useEffect, useState } from 'react'
 import { redirect, render } from 'vike/abort'
 import { handleError, prefetch } from 'vike/client/router'
 import { Counter } from '../index/Counter'
+import { usePageContext } from '../../renderer/usePageContext'
 
 function Page() {
+  const pageContext = usePageContext()
   const [shouldThrow, setShouldThrow] = useState(false)
   useEffect(() => {
     if (location.search === '?late-after-prefetch') {
       prefetch('/about').then(() => setShouldThrow(true))
+    } else if (location.search === '?throw-on-leave') {
+      // E.g. a fetch() aborted by pageContext.abortSignal
+      pageContext.abortSignal.addEventListener('abort', () => setShouldThrow(true))
     } else if (
       location.search &&
       // The +client.ts file hands over the values of `?two-values`
@@ -29,16 +34,6 @@ function Page() {
       </button>
       <button id="render-404" onClick={() => handleError(render(404))}>
         Hand over render(404)
-      </button>
-      <button
-        id="two-values"
-        onClick={() =>
-          Promise.all([handleError(new Error('First value')), handleError(render(404))]).then(() =>
-            console.log('handleError() settled'),
-          )
-        }
-      >
-        Hand over two values at once
       </button>
       <button
         id="value-after-error-page"
