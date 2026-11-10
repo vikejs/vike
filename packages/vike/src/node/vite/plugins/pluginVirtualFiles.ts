@@ -18,6 +18,7 @@ import { assert } from '../../../utils/assert.js'
 import { assertPosixPath } from '../../../utils/path.js'
 import { parseVirtualFileId } from '../../../shared-server-node/virtualFileId.js'
 import { reloadVikeConfig, isV1Design, getVikeConfigInternalOptional } from '../shared/resolveVikeConfigInternal.js'
+import type { ResolveImport } from '../shared/resolveVikeConfigInternal/resolvePageConfigsFromHooks.js'
 import { isEnvironmentBuiltIn } from '../../../shared-server-node/vike-environments.js'
 import { isRunnableDevEnvironment } from '../../../utils/isRunnableDevEnvironment.js'
 import pc from '@brillout/picocolors'
@@ -78,15 +79,17 @@ function pluginVirtualFiles(): Plugin[] {
           const isDev = config._isDev
           assert(typeof isDev === 'boolean')
 
+          const resolve: ResolveImport = async (source, importer) => (await this.resolve(source, importer))?.id
+
           const idParsed = parseVirtualFileId(id)
           if (idParsed) {
             if (idParsed.type === 'page-entry') {
-              const code = await generateVirtualFilePageEntry(id, isDev)
+              const code = await generateVirtualFilePageEntry(id, isDev, resolve)
               return code
             }
             if (idParsed.type === 'global-entry') {
               if (!isEnvironmentBuiltIn(idParsed.environmentName)) {
-                return generateVirtualFileGlobalEntry({ environmentName: idParsed.environmentName, isDev }, id)
+                return generateVirtualFileGlobalEntry({ environmentName: idParsed.environmentName, isDev }, id, resolve)
               }
               const code = await generateVirtualFileGlobalEntryWithOldDesign(
                 id,
@@ -94,6 +97,7 @@ function pluginVirtualFiles(): Plugin[] {
                 config,
                 this.environment,
                 isDev,
+                resolve,
               )
               return code
             }
