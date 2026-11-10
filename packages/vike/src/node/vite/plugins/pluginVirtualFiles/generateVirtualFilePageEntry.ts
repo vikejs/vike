@@ -30,7 +30,7 @@ async function generateVirtualFilePageEntry(id: string, isDev: boolean, resolve:
   */
   const { pageId, environmentName } = result
   const vikeConfig = await getVikeConfigInternal(true)
-  const pageConfigs = await resolvePageConfigsFromHooks(vikeConfig, resolve)
+  const pageConfigs = await resolvePageConfigsFromHooks(vikeConfig, isDev, resolve)
   const pageConfig = pageConfigs.find((pageConfig) => pageConfig.pageId === pageId)
 
   if (!isDev) {

@@ -28,6 +28,8 @@ beforeAll(async () => {
     'pages/index/+Page.js': "export default 'index'",
     'pages/about/+Page.js': "export default 'needs-server'",
     'pages/effect/+Page.js': "export default 'effect'",
+    'pages/split/+Page.client.js': "export default 'client'",
+    'pages/split/+Page.server.js': "export default 'server'",
     'pages/effect/+config.js': [
       'export default {',
       '  meta: {',
@@ -45,6 +47,7 @@ beforeAll(async () => {
       "  name: 'extension',",
       "  onCreatePageContext: 'import:./static.ssr.js:onCreatePageContext',",
       '  onCreatePageConfig_experimental: async (page, { read }) => {',
+      "    globalThis.importPathsByPageId = { ...globalThis.importPathsByPageId, [page.pageId]: page.imports('Page').map(({ importPath }) => importPath) }",
       "    const { filePathAbsolute } = page.imports('Page')[0]",
       '    const code = await read(filePathAbsolute)',
       "    const shared = await read(filePathAbsolute.slice(0, filePathAbsolute.indexOf('/pages/')) + '/shared.txt')",
@@ -62,7 +65,7 @@ beforeAll(async () => {
   })
   setVikeConfigContext({ userRootDir, isDev: false, vikeVitePluginOptions: {} })
   vikeConfig = await getVikeConfigInternal()
-  pageConfigs = await resolvePageConfigsFromHooks(vikeConfig, async () => undefined)
+  pageConfigs = await resolvePageConfigsFromHooks(vikeConfig, false, async () => undefined)
 })
 afterAll(() => {
   fs.rmSync(userRootDir, { recursive: true, force: true })
@@ -86,19 +89,26 @@ describe('resolvePageConfigsFromHooks()', () => {
     expect(getPageConfig(pageConfigs, '/pages/about').configValuesComputed.hasServerOnlyHook!.value).toBe(true)
   })
 
+  it('page.imports() returns the files of every environment', () => {
+    expect((globalThis as any).importPathsByPageId['/pages/split']).toEqual([
+      '/pages/split/+Page.client.js',
+      '/pages/split/+Page.server.js',
+    ])
+  })
+
   it('calls the hooks again after a failed call', async () => {
     const filePath = path.join(userRootDir, 'shared.txt')
     const resolve = async () => undefined
     const isServerIndex = async () =>
-      getPageConfig(await resolvePageConfigsFromHooks(vikeConfig, resolve), '/pages/index').configValuesComputed
+      getPageConfig(await resolvePageConfigsFromHooks(vikeConfig, false, resolve), '/pages/index').configValuesComputed
         .hasServerOnlyHook!.value
     await expect(
-      rerunPageConfigsFromHooks(vikeConfig, filePath, async () => 'server, invalid', resolve),
+      rerunPageConfigsFromHooks(vikeConfig, false, filePath, async () => 'server, invalid', resolve),
     ).rejects.toThrowError('Invalid shared.txt')
     expect(await isServerIndex()).toBe(false)
-    expect(await rerunPageConfigsFromHooks(vikeConfig, filePath, async () => 'server', resolve)).toBe(true)
+    expect(await rerunPageConfigsFromHooks(vikeConfig, false, filePath, async () => 'server', resolve)).toBe(true)
     expect(await isServerIndex()).toBe(true)
-    expect(await rerunPageConfigsFromHooks(vikeConfig, filePath, async () => '', resolve)).toBe(true)
+    expect(await rerunPageConfigsFromHooks(vikeConfig, false, filePath, async () => '', resolve)).toBe(true)
     expect(await isServerIndex()).toBe(false)
   })
 

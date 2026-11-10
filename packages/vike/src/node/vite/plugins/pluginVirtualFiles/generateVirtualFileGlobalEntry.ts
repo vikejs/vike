@@ -23,7 +23,7 @@ async function generateVirtualFileGlobalEntry(
   resolve: ResolveImport,
 ): Promise<string> {
   const vikeConfig = await getVikeConfigInternal(true)
-  const pageConfigs = await resolvePageConfigsFromHooks(vikeConfig, resolve)
+  const pageConfigs = await resolvePageConfigsFromHooks(vikeConfig, runtimeEnv.isDev, resolve)
   const { _pageConfigGlobal: pageConfigGlobal, _additionalEnvironmentNames: additionalEnvironmentNames } = vikeConfig
 
   const lines: string[] = []

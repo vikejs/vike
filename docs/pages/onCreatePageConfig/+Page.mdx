@@ -44,7 +44,7 @@ Vike calls it for each page at build time (and in development), and adds the ret
 - `page.isErrorPage`
 - `page.config`: the page's config, without the configs returned by `onCreatePageConfig_experimental()`.
 - `page.hasServerOnlyHook`: whether the page has a server-only hook, in which case Vike fetches `pageContext` from the server upon client-side navigation.
-- `page.imports(configName)`: the files the page imports for a config, e.g. `page.imports('Page')`.
+- `page.imports(configName)`: the files the page imports for a config, in every environment, e.g. `page.imports('Page')` returns both `+Page.client.js` and `+Page.server.js` if the page defines both.
 - `resolve(importPath, importer?)`: resolves an import path with Vite's resolver.
 - `read(filePath)`: reads a file. In development, when the file is modified, Vike calls the hook again and reloads the page if the returned configs changed.
 

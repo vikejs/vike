@@ -148,9 +148,11 @@ async function onFileModified(ctx: HmrContext, config: ResolvedConfig) {
   // File read by +onCreatePageConfig_experimental
   {
     const vikeConfig = await getVikeConfigInternalOptional()
+    const isDev = config._isDev
+    assert(isDev === true)
     const resolve: ResolveImport = async (source, importer) =>
       (await server.environments.client.pluginContainer.resolveId(source, importer))?.id
-    if (vikeConfig && (await rerunPageConfigsFromHooks(vikeConfig, file, async () => ctx.read(), resolve))) {
+    if (vikeConfig && (await rerunPageConfigsFromHooks(vikeConfig, isDev, file, async () => ctx.read(), resolve))) {
       invalidateVikeVirtualFiles(server)
       await updateUserFiles()
       // Trigger a full page reload

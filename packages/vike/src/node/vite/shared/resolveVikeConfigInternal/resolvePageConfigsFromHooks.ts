@@ -11,6 +11,7 @@ import { deepEqual } from '../../../../utils/deepEqual.js'
 import { getGlobalObject } from '../../../../utils/getGlobalObject.js'
 import { isCallable } from '../../../../utils/isCallable.js'
 import { isObject } from '../../../../utils/isObject.js'
+import { unique } from '../../../../utils/unique.js'
 import { getConfigDefinedAt } from '../../../../shared-server-client/page-configs/getConfigDefinedAt.js'
 import { getConfigValueBuildTime } from '../../../../shared-server-client/page-configs/getConfigValueBuildTime.js'
 import {
@@ -37,6 +38,7 @@ const globalObject = getGlobalObject('vite/shared/resolveVikeConfigInternal/reso
 // - Called once per Vike config, by the first Vike virtual file loaded
 async function resolvePageConfigsFromHooks(
   vikeConfig: VikeConfigInternal,
+  isDev: boolean,
   resolve: ResolveImport,
 ): Promise<PageConfigBuildTime[]> {
   let state = globalObject.pageConfigsFromHooks.get(vikeConfig)
@@ -46,7 +48,7 @@ async function resolvePageConfigsFromHooks(
   }
   const stateRef = state
   stateRef.pageConfigs ??= Promise.all(
-    vikeConfig._pageConfigs.map((pageConfig) => runHooks(pageConfig, vikeConfig, resolve, readFile)),
+    vikeConfig._pageConfigs.map((pageConfig) => runHooks(pageConfig, vikeConfig, isDev, resolve, readFile)),
   ).then(
     (results) => publish(stateRef, results),
     (err) => {
@@ -62,6 +64,7 @@ async function resolvePageConfigsFromHooks(
 // - Returns whether a page config changed
 async function rerunPageConfigsFromHooks(
   vikeConfig: VikeConfigInternal,
+  isDev: boolean,
   filePath: string,
   read: () => Promise<string>,
   resolve: ResolveImport,
@@ -81,7 +84,7 @@ async function rerunPageConfigsFromHooks(
       if (!pageIds.includes(pageConfig.pageId)) {
         return { pageConfig: pageConfigs[i]!, filesRead: new Set(), configs: null }
       }
-      return runHooks(pageConfig, vikeConfig, resolve, readFileModified)
+      return runHooks(pageConfig, vikeConfig, isDev, resolve, readFileModified)
     }),
   )
   const isChanged = results.some(
@@ -104,6 +107,7 @@ function publish(state: PageConfigsFromHooks, results: HooksResult[]): PageConfi
 async function runHooks(
   pageConfig: PageConfigBuildTime,
   vikeConfig: VikeConfigInternal,
+  isDev: boolean,
   resolve: ResolveImport,
   read: ReadFile,
 ): Promise<HooksResult> {
@@ -119,7 +123,7 @@ async function runHooks(
     isErrorPage: !!pageConfig.isErrorPage,
     config: vikeConfig.pages[pageId]!.config,
     hasServerOnlyHook,
-    imports: (configName) => getImports(pageConfig, configName),
+    imports: (configName) => getImports(pageConfig, configName, vikeConfig, isDev),
   }
   const ctx: Parameters<OnCreatePageConfig>[1] = {
     resolve,
@@ -161,15 +165,22 @@ function getHookSources(pageConfig: PageConfigBuildTime): ConfigValueSource[] {
   ).filter((source) => !isConfigSourceValueNull(source))
 }
 
-// The files the page imports for `configName`, as Vike's virtual files import them
+// The files the page imports for `configName`, as the page entries of all runtime environments import them
 function getImports(
   pageConfig: PageConfigBuildTime,
   configName: string,
+  vikeConfig: VikeConfigInternal,
+  isDev: boolean,
 ): ReturnType<Parameters<OnCreatePageConfig>[0]['imports']> {
-  const configDef = pageConfig.configDefinitions[configName]
-  if (!configDef) return []
-  const sources = pageConfig.configValueSources[configName] ?? []
-  return (configDef.cumulative ? sources : sources.slice(0, 1))
+  if (!pageConfig.configDefinitions[configName]) return []
+  const isClientRouting = getConfigValueBuildTime(pageConfig, 'clientRouting', 'boolean')?.value ?? false
+  const environmentNames = ['client', 'server', ...vikeConfig._additionalEnvironmentNames]
+  const sources = unique(
+    environmentNames.flatMap((environmentName) =>
+      getConfigValueSourcesRelevant(configName, { environmentName, isClientRouting, isDev }, pageConfig),
+    ),
+  )
+  return sources
     .filter((source) => source.valueLoadedViaImport)
     .map((source) => {
       const { definedAt } = source

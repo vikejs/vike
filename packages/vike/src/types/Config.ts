@@ -327,7 +327,7 @@ type OnCreatePageConfig = (
     config: ConfigResolved
     /** Whether the page has a server-only hook, without the configs returned by `onCreatePageConfig_experimental()` */
     hasServerOnlyHook: boolean
-    /** The files the page imports for a config, e.g. `page.imports('Page')` */
+    /** The files the page imports for a config, in every environment, e.g. `page.imports('Page')` */
     imports(configName: string): {
       importPath: string
       importer: string | null
