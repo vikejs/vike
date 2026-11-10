@@ -78,6 +78,15 @@ describe('getVikeConfig().pages[pageId].config', () => {
     ])
   })
 
+  it('sets the current config through the page config of an earlier one', async () => {
+    const config: Record<string, unknown> = getVikeConfig().pages['/pages/index']!.config
+    config.onCreatePageContext = 'import:./hooks/onCreatePageContext.server.js:onCreatePageContext'
+    reloadVikeConfig()
+    await getVikeConfigInternal()
+    config.onCreatePageContext = 'import:./hooks/onCreatePageContext.ssr.js:onCreatePageContext'
+    expect((await getPageConfig('/pages/index')).configValuesComputed.hasServerOnlyHook!.value).toBe(false)
+  })
+
   it('refuses configs loaded at config time', async () => {
     const config: Record<string, unknown> = getVikeConfig().pages['/pages/index']!.config
     expect(() => {

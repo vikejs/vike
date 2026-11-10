@@ -123,6 +123,7 @@ const globalObject = getGlobalObject('vite/shared/resolveVikeConfigInternal.ts',
   // The values set by Vite plugins, see makePageConfigsWritable()
   pageConfigsWritten: {} as Record<string, Record<string, unknown>>,
   vikeConfigsSerialized: new WeakSet<VikeConfigInternal>(),
+  pageConfigsWithoutWrittenValues: new WeakMap<VikeConfigInternal, PageConfigBuildTime[]>(),
 })
 type VikeConfigContext = { userRootDir: string; isDev: boolean; vikeVitePluginOptions: unknown }
 type PrerenderContext = {
@@ -412,40 +413,55 @@ async function resolveVikeConfigInternal(
 
 // Vite plugins can set runtime configs: getVikeConfig().pages[pageId].config.someConfig = someValue
 function makePageConfigsWritable(vikeConfig: VikeConfigInternal) {
-  assert(globalObject.vikeConfigCtx)
-  const { isDev } = globalObject.vikeConfigCtx
-  vikeConfig._pageConfigs.forEach((pageConfig, i) => {
-    const { pageId } = pageConfig
+  globalObject.pageConfigsWithoutWrittenValues.set(vikeConfig, [...vikeConfig._pageConfigs])
+  vikeConfig._pageConfigs.forEach(({ pageId }) => {
     // Vike reloaded its config => keep the values set by Vite plugins
     const pageConfigWritten = globalObject.pageConfigsWritten[pageId]
-    if (pageConfigWritten)
-      vikeConfig._pageConfigs[i] = resolvePageConfigWithWrittenValues(pageConfig, pageConfigWritten)
+    if (pageConfigWritten) applyWrittenValues(vikeConfig, pageId, pageConfigWritten)
     const page = vikeConfig.pages[pageId]
     assert(page)
     page.config = new Proxy(page.config, {
       set(_, configName: string, value) {
-        const pageConfigWrittenOld = globalObject.pageConfigsWritten[pageId] ?? {}
-        if (deepEqual(pageConfigWrittenOld[configName], value)) return true
-        const isSerialized = globalObject.vikeConfigsSerialized.has(vikeConfig)
-        assertUsage(
-          isDev || !isSerialized,
-          `Cannot set ${pc.cyan(configName)} of the page ${pageId} after Vike generated its virtual files: set it earlier, e.g. in the ${pc.cyan('configResolved()')} hook of your Vite plugin`,
-        )
-        const pageConfigWrittenNew = { ...pageConfigWrittenOld, [configName]: value }
-        vikeConfig._pageConfigs[i] = resolvePageConfigWithWrittenValues(pageConfig, pageConfigWrittenNew)
-        globalObject.pageConfigsWritten[pageId] = pageConfigWrittenNew
-        if (isSerialized) {
-          // Development: Vike's virtual files are outdated
-          const viteDevServer = getViteDevServer()
-          assert(viteDevServer)
-          invalidateVikeVirtualFiles(viteDevServer)
-          updateUserFiles()
-          viteDevServer.ws.send({ type: 'full-reload' })
-        }
+        setPageConfigValue(pageId, configName, value)
         return true
       },
     })
   })
+}
+function setPageConfigValue(pageId: string, configName: string, value: unknown) {
+  const pageConfigWrittenOld = globalObject.pageConfigsWritten[pageId] ?? {}
+  if (deepEqual(pageConfigWrittenOld[configName], value)) return
+  // The current config, also when the Vite plugin holds the page config of an earlier one
+  const vikeConfig = globalObject.vikeConfigSync
+  assert(vikeConfig && globalObject.vikeConfigCtx)
+  const isSerialized = globalObject.vikeConfigsSerialized.has(vikeConfig)
+  assertUsage(
+    globalObject.vikeConfigCtx.isDev || !isSerialized,
+    `Cannot set ${pc.cyan(configName)} of the page ${pageId} after Vike generated its virtual files: set it earlier, e.g. in the ${pc.cyan('configResolved()')} hook of your Vite plugin`,
+  )
+  const pageConfigWrittenNew = { ...pageConfigWrittenOld, [configName]: value }
+  applyWrittenValues(vikeConfig, pageId, pageConfigWrittenNew)
+  globalObject.pageConfigsWritten[pageId] = pageConfigWrittenNew
+  if (isSerialized) {
+    // Development: Vike's virtual files are outdated
+    const viteDevServer = getViteDevServer()
+    assert(viteDevServer)
+    invalidateVikeVirtualFiles(viteDevServer)
+    updateUserFiles()
+    viteDevServer.ws.send({ type: 'full-reload' })
+  }
+}
+function applyWrittenValues(
+  vikeConfig: VikeConfigInternal,
+  pageId: string,
+  pageConfigWritten: Record<string, unknown>,
+) {
+  // Upon a config error, the current config is getVikeConfigDummy() which has no page
+  const pageConfigs = globalObject.pageConfigsWithoutWrittenValues.get(vikeConfig) ?? []
+  const i = pageConfigs.findIndex((pageConfig) => pageConfig.pageId === pageId)
+  // The page was removed => the value is kept in case it's added back
+  if (i === -1) return
+  vikeConfig._pageConfigs[i] = resolvePageConfigWithWrittenValues(pageConfigs[i]!, pageConfigWritten)
 }
 function setVikeConfigSerialized(vikeConfig: VikeConfigInternal) {
   globalObject.vikeConfigsSerialized.add(vikeConfig)
