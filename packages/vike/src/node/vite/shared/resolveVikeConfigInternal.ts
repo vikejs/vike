@@ -107,6 +107,7 @@ import type { ResolvedConfig, UserConfig } from 'vite'
 import { getPublicProxy, type DangerouslyUseInternals } from '../../../shared-server-client/getPublicProxy.js'
 import { setVikeConfigError } from '../../../shared-server-node/getVikeConfigError.js'
 import { invalidateVikeVirtualFiles } from '../plugins/pluginVirtualFiles/invalidateVikeVirtualFiles.js'
+import { clearPageConfigCallbacks } from '../plugins/pluginVirtualFiles/runPageConfigCallbacks.js'
 import '../assertEnvVite.js'
 assertIsNotProductionRuntime()
 
@@ -202,6 +203,7 @@ function setVikeConfigContext(vikeConfigCtx_: VikeConfigContext) {
   const vikeConfig = globalObject.vikeConfigSync
   if (vikeConfig) {
     globalObject.vikeConfigsSerialized.delete(vikeConfig)
+    clearPageConfigCallbacks(vikeConfig)
     globalObject.pageConfigsWithoutWrittenValues.get(vikeConfig)?.forEach((pageConfig, i) => {
       vikeConfig._pageConfigs[i] = pageConfig
     })
@@ -446,7 +448,7 @@ function setPageConfigValue(pageId: string, configName: string, value: unknown) 
   const isSerialized = globalObject.vikeConfigsSerialized.has(vikeConfig)
   assertUsage(
     globalObject.vikeConfigCtx.isDev || !isSerialized,
-    `Cannot set ${pc.cyan(configName)} of the page ${pageId} after Vike generated its virtual files: set it earlier, e.g. in the ${pc.cyan('configResolved()')} hook of your Vite plugin`,
+    `Cannot set ${pc.cyan(configName)} of the page ${pageId} after Vike generated its virtual files: set it in ${pc.cyan('vike.onPageConfigs()')} of your Vite plugin`,
   )
   const pageConfigWrittenNew = { ...pageConfigWrittenOld, [configName]: value }
   applyWrittenValues(vikeConfig, pageId, pageConfigWrittenNew)
