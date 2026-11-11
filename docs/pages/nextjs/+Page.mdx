@@ -42,6 +42,7 @@ Finally, Vike is a community project: instead of leaning on a framework with bus
 | SPA-only mode (popular for PWAs) ***                   | Yes                                                        | Limited: [no dynamic routing in App Router](https://github.com/vercel/next.js/discussions/64660)                       |
 | <p align="center">**Integrations**</p>                                                    |                                                            |                               |
 HTTP server | No*, bring your own | Baked-in, custom server partially supported with caveats[[1]](https://github.com/vikejs/vike/issues/158#issuecomment-1355306156)[[2]](https://stackoverflow.com/questions/58742343/do-i-have-to-use-express-in-next-js-project/70945468#70945468) |
+| WebSockets                                                      | Yes, natively (via +server / crossws or custom server)   | No (requires custom server or third-party services like Pusher/Ably)                           |
 | Apollo Client with SSR                                          | Fully supported                                            | Partially supported           |
 | Relay with SSR                                                  | Fully supported                                            | Partially supported           |
 | <p align="center">**Extras**</p>                                |                                                            |                               |
@@ -96,9 +97,9 @@ HTTP server | No*, bring your own | Baked-in, custom server partially supported 
   - Vike was built to be without such conflicts of interest.
 
 8. **Next.js is leaning on serverless and complicates usage when you don't want it.**
-  - Next.js is architecturally optimized for serverless and edge environments (split functions per route, automatic bundling for cloud functions). If you want to run a simple, long-running, traditional stateful Node.js monolith or tightly control a custom microservice infrastructure, Next.js's build output and runtime assumptions make it feel increasingly heavyweight and over-engineered.
-  - Vike, by contrast, compiles down to standard server middleware that you can drop into any vanilla Express, Fastify, or custom Node process effortlessly (for the case where you want to deploy to a long running server process). This gives Vike the best of both worlds, since it also 
-has first-class serverless support (e.g. it supports running on Cloudflare Workers via the official [@cloudflare/vite-plugin](https://developers.cloudflare.com/workers/vite-plugin/), which enables local development in the same [`workerd` environment](https://github.com/cloudflare/workerd) as in production.)
+  - Next.js is architecturally optimized for serverless and edge environments (split functions per route, automatic bundling for cloud functions). If you want to run a simple, long-running, traditional stateful Node.js monolith, WebSockets, or tightly control a custom microservice infrastructure, Next.js's build output and runtime assumptions make it feel heavyweight and over-engineered (with workarounds that break Vercel compatibility). WebSockets is a concrete example of why stateful server control matters. Stateful, long-lived connections work natively in Vike without breaking deployment compatibility.
+  - Vike, by contrast, compiles down to standard server middleware that you can drop effortlessly into any vanilla Express, Fastify, Hono, or custom Node process (for the case where you want to deploy to a long running server process, f.ex. if you want to use WebSockets). With zero loss of framework features or deployment compatibility. This gives Vike the best of both worlds, since it also has first-class serverless support (e.g. run on Cloudflare Workers via the official [@cloudflare/vite-plugin](https://developers.cloudflare.com/workers/vite-plugin/), which enables local development in the same [`workerd` environment](https://github.com/cloudflare/workerd) as in production).
+
 
 
 ## Deployment / hosting
@@ -128,7 +129,7 @@ An illustration of the problem: with Next.js server actions you no longer handwr
 
 These kinds of difficulties led the open source community to develop [Open-Next.js](https://open-next.js.org/), a project to make Serverless deployment of Next.js on generic Functions-as-a-Service (FaaS) platforms easier (specifically on AWS Lambda). It allows easier integration with AWS and reduces Next.js's ties to Vercel. But that is a moving target with things breaking frequently, [according to a person](https://x.com/thdxr/status/1740115107005280592) working closely with the matter.
 
-Edge deployment with Next.js is another story. [Cloudflare](https://blog.cloudflare.com/next-on-pages), the most prominent edge hosting provider, uses its own runtime instead of Node.js. Meaning that some Next.js apps built to run on Node.js won't immediately work on the Edge. So Next.js has an Edge Runtime toolkit/mode that uses only a subset of the Node.js API, but it has [a lot of issues](https://github.com/search?q=repo%3Avercel%2Fnext.js+edge+runtime&type=issues).
+Edge deployment with Next.js is another story. [Cloudflare](https://blog.cloudflare.com/next-on-pages), the most prominent edge hosting provider, uses its own runtime instead of Node.js. Meaning that some Next.js apps built to run on Node.js won't immediately work on the Edge. So Next.js has an Edge Runtime toolkit/mode that uses only a subset of the Node.js API, but it has [a lot of issues](https://github.com/search?q=repo%3Avercel%2Fnext.js+edge+runtime&type=issues). All in all, Next.js's serverless-first architecture forces you into external workarounds (like with WebSockets).
 
 
 ### Vike - hosting agnostic
@@ -145,7 +146,7 @@ You can develop apps with a server that doesn't depend on Node.js and deploy it 
 
 > You do need Node.js for local development, as the development runtime of [Vite (the dev- and build-toolkit used by Vike)](https://vitejs.dev/) depends on Node.js. But Vite's runtime isn't needed in production. Consequently, since Vike's runtime doesn't depend on Node.js, there are no dependencies on Node.js in production.
 
-To integrate Vike, you simply add Vike's middleware to your server (Express.js, Fastify, Edge Worker, Serverless Function, etc.).
+To integrate Vike, you simply add Vike's middleware to your server (Express.js, Fastify, Edge Worker, Serverless Function, etc.). Because Vike gives you direct access to the underlying HTTP server, you can attach persistent WebSocket connections natively alongside your app. Via standard libraries like [ws](https://github.com/websockets/ws) and [Socket.IO](https://socket.io/), or go directly via Vike's `+server` with [crossws](https://github.com/h3js/crossws).
 
 With Vike, you have full control over your server and over your deployment strategy, two critical aspects of your business.
 
@@ -197,7 +198,7 @@ If your product either should be:
 
 - leaning more towards being an _app_ than a _site/page_.
 - having a lot of dynamically generated and/or frequently updating content (coming from a DB), where caching doesn't give a lot of gains.
-- having a [single unified model for data loading](https://x.com/DevtoolsFM/status/1756091319632683073) that may include polling and [live UI updates](https://www.flightcontrol.dev/blog/nextjs-app-router-migration-the-good-bad-and-ugly#bad-have-to-add-client-side-fetching-for-live-ui-updates).
+- having a [single unified model for data loading](https://x.com/DevtoolsFM/status/1756091319632683073) that may include polling and [live UI updates](https://www.flightcontrol.dev/blog/nextjs-app-router-migration-the-good-bad-and-ugly#bad-have-to-add-client-side-fetching-for-live-ui-updates). For live UI updates and real-time collaborative apps, Vike supports native WebSockets out of the box without forcing you to bolt on third-party real-time providers.
 - local/offline-first, and/or a [PWA](https://web.dev/learn/pwa/assets-and-data#platform-specific_apps_vs_pwa).
 - cross-platform (reusing code between web and native), since native platforms are typically client-centered (and it [isn't prioritized](https://github.com/reactjs/rfcs/blob/main/text/0188-server-components.md#what-does-it-mean-for-react-native) or very clear how React Server Components would work on React Native).
 - using less server resources (scalability, cost-wise), in favor of requiring slightly more processing power on the client. Like using a SPA-only mode (static export, to serve from CDN, with no server compute needed), which is often a favored approach for PWAs.
