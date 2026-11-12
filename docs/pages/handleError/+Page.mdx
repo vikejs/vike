@@ -1,0 +1,55 @@
+import { Link } from '@brillout/docpress'
+import { ConfigSpec } from '../../components'
+
+<ConfigSpec
+  env="client (server can import but not call it)"
+  global={null}
+/>
+
+The `handleError()` function lets Vike handle a value thrown outside of Vike's hooks, as if a hook threw it. An error shows the <Link href="/error-page">error page</Link> at the current URL, without adding a browser history entry.
+
+> `handleError()` works only with <Link href="/client-routing">Client Routing</Link>.
+
+The most common use case is a custom <Link href="/onRenderClient">`+onRenderClient`</Link>: when a component throws after its page rendered, no Vike hook is running, so Vike can't catch the error. With React, the user is left with a blank page unless you pass the error to `handleError()`.
+
+```tsx
+// /renderer/+onRenderClient.tsx
+
+import ReactDOM from 'react-dom/client'
+import { handleError } from 'vike/client/router'
+
+let root: ReactDOM.Root
+function onRenderClient(pageContext) {
+  // ...
+  if (pageContext.isHydration) {
+    root = ReactDOM.hydrateRoot(container, page, { onUncaughtError })
+  } else {
+    root ??= ReactDOM.createRoot(container, { onUncaughtError })
+    root.render(page)
+  }
+}
+
+// React calls it only when no error boundary caught the error
+function onUncaughtError(err: unknown) {
+  handleError(err)
+}
+```
+
+The thrown value decides what happens:
+
+| Value | Result |
+| --- | --- |
+| An error | The error page |
+| <Link href="/render">`render(404)`</Link> | The error page, with `pageContext.is404` |
+| <Link href="/render">`render('/login')`</Link> | The page `/login`, at the current URL |
+| <Link href="/redirect">`redirect('/some-url')`</Link> | A client-side navigation to `/some-url`, which adds a browser history entry |
+
+> Vike doesn't reload the page that threw, unless a <Link href="/redirect">`redirect()`</Link> points to that page. If the error page itself threw, if the error page fails to load, or if another page is already replacing the page that threw, then Vike only logs the error.
+
+
+## See also
+
+- <Link href="/error-page" />
+- <Link href="/abort" />
+- <Link href="/reload" />
+- <Link href="/onRenderClient" />

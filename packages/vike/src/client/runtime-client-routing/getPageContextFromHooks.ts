@@ -297,6 +297,7 @@ async function fetchPageContextFromServer(
     _urlRewrite?: string
     abortSignal: AbortSignal
     isClientSideNavigation?: boolean
+    _isRecovery?: boolean
   },
   errorPageInfo?: ErrorPageInfo,
 ) {
@@ -321,6 +322,8 @@ async function fetchPageContextFromServer(
       ) {
         throw getProjectError(errMsg)
       }
+      // We don't hard load the page that threw, see `isRecovery` in renderPageClient()
+      if (pageContext._isRecovery) throw getProjectError(errMsg)
       redirectHard(pageContext.urlOriginal)
       return { is404ServerSideRouted: true as const }
     }
