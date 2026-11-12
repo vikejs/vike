@@ -24,6 +24,7 @@ export type {
   Config,
   ConfigMeta as Meta,
   KeepScrollPosition,
+  OnCreatePageConfig,
 } from './Config.js'
 
 export type { ImportString } from '../node/vite/shared/importString.js'

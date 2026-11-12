@@ -2,6 +2,7 @@ export { pluginVirtualFiles }
 
 import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleNode, ModuleGraph } from 'vite'
 import { normalizePath } from 'vite'
+import fs from 'node:fs/promises'
 import { generateVirtualFilePageEntry } from './pluginVirtualFiles/generateVirtualFilePageEntry.js'
 import { generateVirtualFileGlobalEntryWithOldDesign } from './pluginVirtualFiles/generateVirtualFileGlobalEntryWithOldDesign.js'
 import { generateVirtualFileGlobalEntry } from './pluginVirtualFiles/generateVirtualFileGlobalEntry.js'
@@ -18,6 +19,11 @@ import { assert } from '../../../utils/assert.js'
 import { assertPosixPath } from '../../../utils/path.js'
 import { parseVirtualFileId } from '../../../shared-server-node/virtualFileId.js'
 import { reloadVikeConfig, isV1Design, getVikeConfigInternalOptional } from '../shared/resolveVikeConfigInternal.js'
+import {
+  hasPageConfigHooks,
+  rerunPageConfigsFromHooks,
+  type ResolveImport,
+} from '../shared/resolveVikeConfigInternal/resolvePageConfigsFromHooks.js'
 import { isEnvironmentBuiltIn } from '../../../shared-server-node/vike-environments.js'
 import { isRunnableDevEnvironment } from '../../../utils/isRunnableDevEnvironment.js'
 import pc from '@brillout/picocolors'
@@ -78,15 +84,17 @@ function pluginVirtualFiles(): Plugin[] {
           const isDev = config._isDev
           assert(typeof isDev === 'boolean')
 
+          const resolve: ResolveImport = async (source, importer) => (await this.resolve(source, importer))?.id
+
           const idParsed = parseVirtualFileId(id)
           if (idParsed) {
             if (idParsed.type === 'page-entry') {
-              const code = await generateVirtualFilePageEntry(id, isDev)
+              const code = await generateVirtualFilePageEntry(id, isDev, resolve)
               return code
             }
             if (idParsed.type === 'global-entry') {
               if (!isEnvironmentBuiltIn(idParsed.environmentName)) {
-                return generateVirtualFileGlobalEntry({ environmentName: idParsed.environmentName, isDev }, id)
+                return generateVirtualFileGlobalEntry({ environmentName: idParsed.environmentName, isDev }, id, resolve)
               }
               const code = await generateVirtualFileGlobalEntryWithOldDesign(
                 id,
@@ -94,6 +102,7 @@ function pluginVirtualFiles(): Plugin[] {
                 config,
                 this.environment,
                 isDev,
+                resolve,
               )
               return code
             }
@@ -137,6 +146,12 @@ async function onFileModified(ctx: HmrContext, config: ResolvedConfig) {
     const vikeVirtualFiles = getVikeVirtualFiles(server)
     return vikeVirtualFiles
   }
+
+  if (await rerunPageConfigHooks(file, async () => ctx.read(), server, config)) {
+    // Trigger a full page reload
+    const vikeVirtualFiles = getVikeVirtualFiles(server)
+    return vikeVirtualFiles
+  }
 }
 
 async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: ViteDevServer, config: ResolvedConfig) {
@@ -162,7 +177,40 @@ async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: V
     (isScriptFile(file) && getVikeConfigError())
   ) {
     reloadAll(file, config, operation, server)
+    // Vite doesn't reload the browser upon a created or removed file => an open tab would keep the page configs of the previous +onCreatePageConfig_experimental results
+    const vikeConfig = await getVikeConfigInternalOptional()
+    if (vikeConfig && hasPageConfigHooks(vikeConfig)) server.ws.send({ type: 'full-reload' })
+  } else {
+    // For example, a file that +onCreatePageConfig_experimental tried to read before it existed
+    try {
+      if (await rerunPageConfigHooks(file, () => fs.readFile(file, 'utf-8'), server, config)) {
+        server.ws.send({ type: 'full-reload' })
+      }
+    } catch (err) {
+      // The watcher doesn't handle errors
+      console.error(err)
+    }
   }
+}
+
+// Call +onCreatePageConfig_experimental again for the pages that read `file`
+// - Returns whether a page config changed
+async function rerunPageConfigHooks(
+  file: string,
+  read: () => Promise<string>,
+  server: ViteDevServer,
+  config: ResolvedConfig,
+): Promise<boolean> {
+  const vikeConfig = await getVikeConfigInternalOptional()
+  if (!vikeConfig) return false
+  const isDev = config._isDev
+  assert(isDev === true)
+  const resolve: ResolveImport = async (source, importer) =>
+    (await server.environments.client.pluginContainer.resolveId(source, importer))?.id
+  if (!(await rerunPageConfigsFromHooks(vikeConfig, isDev, file, read, resolve))) return false
+  invalidateVikeVirtualFiles(server)
+  await updateUserFiles()
+  return true
 }
 
 async function isAppDependency(filePathAbsoluteFilesystem: string, moduleGraph: ModuleGraph) {

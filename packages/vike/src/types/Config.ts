@@ -10,6 +10,7 @@ export type { HookNamePage }
 export type { HookNameGlobal }
 export type { Route }
 export type { KeepScrollPosition }
+export type { OnCreatePageConfig }
 export type { Vercel }
 
 // TO-DO/next-major-release: remove
@@ -50,6 +51,7 @@ import type { Vike } from './VikeNamespace.js'
 import type { HooksTimeoutProvidedByUser } from '../shared-server-client/hooks/getHook.js'
 import type { PageContextClient, PageContextServer } from './PageContext.js'
 import type { GlobalContext } from './GlobalContext.js'
+import type { ConfigResolved } from './Config/ConfigResolved.js'
 import type { InlineConfig } from 'vite'
 import type { PassToClientPublic } from '../server/runtime/renderPageServer/html/serializeContext.js'
 import type { CliPreviewConfig } from '../node/api/preview.js'
@@ -309,6 +311,38 @@ type KeepScrollPosition =
   | string[]
   | ((pageContext: PageContextClient) => boolean | string | string[])
 
+/** Hook called at config time for each page: the configs it returns are added to the page.
+ *
+ * The returned configs must be runtime configs, and must not depend on the Vite environment calling the hook.
+ *
+ * @experimental
+ *
+ * https://vike.dev/onCreatePageConfig
+ */
+type OnCreatePageConfig = (
+  page: {
+    pageId: string
+    isErrorPage: boolean
+    /** The page's config, without the configs returned by `onCreatePageConfig_experimental()` */
+    config: ConfigResolved
+    /** Whether the page has a server-only hook, without the configs returned by `onCreatePageConfig_experimental()` */
+    hasServerOnlyHook: boolean
+    /** The files the page imports for a config, in every environment, e.g. `page.imports('Page')` */
+    imports(configName: string): {
+      importPath: string
+      importer: string | null
+      filePathAbsolute: string | null
+      exportName: string
+    }[]
+  },
+  ctx: {
+    /** Resolve an import path with Vite's resolver */
+    resolve(source: string, importer?: string): Promise<string | undefined>
+    /** Read a file — in development, modifying it calls the hook again */
+    read(file: string): Promise<string>
+  },
+) => Config | undefined | Promise<Config | undefined>
+
 /** The page's route.
  *
  * https://vike.dev/routing
@@ -490,6 +524,14 @@ type ConfigBuiltIn = {
    * https://vike.dev/meta
    */
   meta?: ConfigMeta | ImportStringList
+
+  /** Hook called at config time for each page: the configs it returns are added to the page.
+   *
+   * @experimental
+   *
+   * https://vike.dev/onCreatePageConfig
+   */
+  onCreatePageConfig_experimental?: OnCreatePageConfig | ImportStringList
 
   /** Vite configuration.
    *
