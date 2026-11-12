@@ -1,10 +1,11 @@
 export { pluginVirtualFiles }
 
-import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleNode, ModuleGraph } from 'vite'
+import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleGraph } from 'vite'
 import { normalizePath } from 'vite'
 import { generateVirtualFilePageEntry } from './pluginVirtualFiles/generateVirtualFilePageEntry.js'
 import { generateVirtualFileGlobalEntryWithOldDesign } from './pluginVirtualFiles/generateVirtualFileGlobalEntryWithOldDesign.js'
 import { generateVirtualFileGlobalEntry } from './pluginVirtualFiles/generateVirtualFileGlobalEntry.js'
+import { invalidateVikeVirtualFiles, getVikeVirtualFiles } from './pluginVirtualFiles/invalidateVikeVirtualFiles.js'
 import { escapeRegex } from '../../../utils/escapeRegex.js'
 import { isScriptFile } from '../../../utils/isScriptFile.js'
 import {
@@ -19,7 +20,6 @@ import { assertPosixPath } from '../../../utils/path.js'
 import { parseVirtualFileId } from '../../../shared-server-node/virtualFileId.js'
 import { reloadVikeConfig, isV1Design, getVikeConfigInternalOptional } from '../shared/resolveVikeConfigInternal.js'
 import { isEnvironmentBuiltIn } from '../../../shared-server-node/vike-environments.js'
-import { isRunnableDevEnvironment } from '../../../utils/isRunnableDevEnvironment.js'
 import pc from '@brillout/picocolors'
 import { logConfigInfo } from '../shared/loggerDev.js'
 import { getFilePathToShowToUserModule } from '../shared/getFilePath.js'
@@ -213,35 +213,6 @@ function reloadAll(
   reloadVikeConfig()
 
   updateUserFiles()
-}
-
-function invalidateVikeVirtualFiles(server: ViteDevServer) {
-  const vikeVirtualFiles = getVikeVirtualFiles(server)
-  vikeVirtualFiles.forEach((mod) => {
-    server.moduleGraph.invalidateModule(mod)
-  })
-  // - `server.moduleGraph` only covers the `client` and `ssr` environments, while additional environments (e.g. `rsc`) also load Vike's virtual files
-  Object.values(server.environments).forEach((environment) => {
-    environment.moduleGraph.idToModuleMap.forEach((mod, id) => {
-      if (parseVirtualFileId(id)) environment.moduleGraph.invalidateModule(mod)
-    })
-    if (!isRunnableDevEnvironment(environment)) return
-    const { evaluatedModules } = environment.runner
-    evaluatedModules.idToModuleMap.forEach((mod, id) => {
-      if (parseVirtualFileId(id)) evaluatedModules.invalidateModule(mod)
-    })
-  })
-}
-
-function getVikeVirtualFiles(server: ViteDevServer): ModuleNode[] {
-  const vikeVirtualFiles = Array.from(server.moduleGraph.urlToModuleMap.keys())
-    .filter((url) => parseVirtualFileId(url))
-    .map((url) => {
-      const mod = server.moduleGraph.urlToModuleMap.get(url)
-      assert(mod)
-      return mod
-    })
-  return vikeVirtualFiles
 }
 
 function existsInViteModuleGraph(file: string, moduleGraph: ModuleGraph): boolean {

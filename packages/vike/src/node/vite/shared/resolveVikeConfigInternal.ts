@@ -13,6 +13,7 @@ export { isV1Design }
 export { getConfVal }
 export { getConfigDefinitionOptional }
 export { getVikeConfigFromCliOrEnv }
+export { setVikeConfigSerialized }
 export { EARLY_SETTINGS }
 export type { VikeConfigInternal }
 export type { PageConfigBuildTimeBeforeComputed }
@@ -66,7 +67,7 @@ import {
   applyFilesystemRoutingRootEffect,
 } from './resolveVikeConfigInternal/filesystemRouting.js'
 import type { VikeTranspileCache } from './resolveVikeConfigInternal/transpileAndExecuteFile.js'
-import { getViteDevServer, vikeConfigErrorRecoverMsg } from '../../../server/runtime/globalContext.js'
+import { getViteDevServer, updateUserFiles, vikeConfigErrorRecoverMsg } from '../../../server/runtime/globalContext.js'
 import { logConfigInfo, logErrorServerDev } from './loggerDev.js'
 import { swallowViteLogForceOptimization_enable, swallowViteLogForceOptimization_disable } from './loggerVite.js'
 import pc from '@brillout/picocolors'
@@ -105,6 +106,7 @@ import { resolvePrerenderConfigGlobal } from '../../prerender/resolvePrerenderCo
 import type { ResolvedConfig, UserConfig } from 'vite'
 import { getPublicProxy, type DangerouslyUseInternals } from '../../../shared-server-client/getPublicProxy.js'
 import { setVikeConfigError } from '../../../shared-server-node/getVikeConfigError.js'
+import { invalidateVikeVirtualFiles } from '../plugins/pluginVirtualFiles/invalidateVikeVirtualFiles.js'
 import '../assertEnvVite.js'
 assertIsNotProductionRuntime()
 
@@ -118,6 +120,10 @@ const globalObject = getGlobalObject('vite/shared/resolveVikeConfigInternal.ts',
   vikeConfigCtx: null as VikeConfigContext | null, // Information provided by Vite's `config` and Vike's CLI. We could, if we want or need to, completely remove the dependency on Vite.
   prerenderContext: null as null | PrerenderContext,
   viteEnvironmentNames: null as null | string[],
+  // The values set by Vite plugins, see makePageConfigsWritable()
+  pageConfigsWritten: {} as Record<string, Record<string, unknown>>,
+  vikeConfigsSerialized: new WeakSet<VikeConfigInternal>(),
+  pageConfigsWithoutWrittenValues: new WeakMap<VikeConfigInternal, PageConfigBuildTime[]>(),
 })
 type VikeConfigContext = { userRootDir: string; isDev: boolean; vikeVitePluginOptions: unknown }
 type PrerenderContext = {
@@ -191,6 +197,15 @@ type VikeConfig = Pick<VikeConfigInternal, 'config' | 'pages' | 'prerenderContex
 function setVikeConfigContext(vikeConfigCtx_: VikeConfigContext) {
   // If the user changes Vite's `config.root` => Vite completely reloads itself => setVikeConfigContext() is called again
   globalObject.vikeConfigCtx = vikeConfigCtx_
+  // Vite resolves its config again (e.g. Vite's dev server restarts) => Vite plugins set their values again and Vike generates its virtual files again
+  globalObject.pageConfigsWritten = {}
+  const vikeConfig = globalObject.vikeConfigSync
+  if (vikeConfig) {
+    globalObject.vikeConfigsSerialized.delete(vikeConfig)
+    globalObject.pageConfigsWithoutWrittenValues.get(vikeConfig)?.forEach((pageConfig, i) => {
+      vikeConfig._pageConfigs[i] = pageConfig
+    })
+  }
 }
 // Vike's config is resolved before Vite's environments are known (Vike's config can modify Vite's config)
 async function setViteEnvironmentNames(viteEnvironmentNames: string[]) {
@@ -399,9 +414,66 @@ async function resolveVikeConfigInternal(
     _extensions,
     _additionalEnvironmentNames: additionalEnvironmentNames,
   }
+  makePageConfigsWritable(vikeConfig)
   globalObject.vikeConfigSync = vikeConfig
 
   return vikeConfig
+}
+
+// Vite plugins can set runtime configs: getVikeConfig().pages[pageId].config.someConfig = someValue
+function makePageConfigsWritable(vikeConfig: VikeConfigInternal) {
+  globalObject.pageConfigsWithoutWrittenValues.set(vikeConfig, [...vikeConfig._pageConfigs])
+  vikeConfig._pageConfigs.forEach(({ pageId }) => {
+    // Vike reloaded its config => keep the values set by Vite plugins
+    const pageConfigWritten = globalObject.pageConfigsWritten[pageId]
+    if (pageConfigWritten) applyWrittenValues(vikeConfig, pageId, pageConfigWritten)
+    const page = vikeConfig.pages[pageId]
+    assert(page)
+    page.config = new Proxy(page.config, {
+      set(_, configName: string, value) {
+        setPageConfigValue(pageId, configName, value)
+        return true
+      },
+    })
+  })
+}
+function setPageConfigValue(pageId: string, configName: string, value: unknown) {
+  const pageConfigWrittenOld = globalObject.pageConfigsWritten[pageId] ?? {}
+  if (deepEqual(pageConfigWrittenOld[configName], value)) return
+  // The current config, also when the Vite plugin holds the page config of an earlier one
+  const vikeConfig = globalObject.vikeConfigSync
+  assert(vikeConfig && globalObject.vikeConfigCtx)
+  const isSerialized = globalObject.vikeConfigsSerialized.has(vikeConfig)
+  assertUsage(
+    globalObject.vikeConfigCtx.isDev || !isSerialized,
+    `Cannot set ${pc.cyan(configName)} of the page ${pageId} after Vike generated its virtual files: set it earlier, e.g. in the ${pc.cyan('configResolved()')} hook of your Vite plugin`,
+  )
+  const pageConfigWrittenNew = { ...pageConfigWrittenOld, [configName]: value }
+  applyWrittenValues(vikeConfig, pageId, pageConfigWrittenNew)
+  globalObject.pageConfigsWritten[pageId] = pageConfigWrittenNew
+  if (isSerialized) {
+    // Development: Vike's virtual files are outdated
+    const viteDevServer = getViteDevServer()
+    assert(viteDevServer)
+    invalidateVikeVirtualFiles(viteDevServer)
+    updateUserFiles()
+    viteDevServer.ws.send({ type: 'full-reload' })
+  }
+}
+function applyWrittenValues(
+  vikeConfig: VikeConfigInternal,
+  pageId: string,
+  pageConfigWritten: Record<string, unknown>,
+) {
+  // Upon a config error, the current config is getVikeConfigDummy() which has no page
+  const pageConfigs = globalObject.pageConfigsWithoutWrittenValues.get(vikeConfig) ?? []
+  const i = pageConfigs.findIndex((pageConfig) => pageConfig.pageId === pageId)
+  // The page was removed => the value is kept in case it's added back
+  if (i === -1) return
+  vikeConfig._pageConfigs[i] = resolvePageConfigWithWrittenValues(pageConfigs[i]!, pageConfigWritten)
+}
+function setVikeConfigSerialized(vikeConfig: VikeConfigInternal) {
+  globalObject.vikeConfigsSerialized.add(vikeConfig)
 }
 
 function resolveGlobalConfig(pageConfigGlobal: PageConfigGlobalBuildTime, pageConfigs: PageConfigBuildTime[]) {
@@ -623,6 +695,48 @@ function resolvePageConfigBuildTime(
 
   checkType<PageConfigBuildTime>(pageConfig)
   return pageConfig
+}
+
+// Add the values set by Vite plugins, with the lowest precedence
+function resolvePageConfigWithWrittenValues(
+  pageConfig: PageConfigBuildTime,
+  pageConfigWritten: Record<string, unknown>,
+): PageConfigBuildTime {
+  assert(globalObject.vikeConfigCtx)
+  const { userRootDir } = globalObject.vikeConfigCtx
+  const { pageId, configDefinitions } = pageConfig
+  // Import paths are resolved relative to the user root directory
+  const plusFile = getPlusFileFromConfigFile(
+    {
+      fileExports: { default: pageConfigWritten },
+      filePath: getFilePathResolved({ userRootDir, filePathAbsoluteUserRootDir: '/vite.config.js' }),
+      extendsFilePaths: [],
+    },
+    false,
+    '/' as LocationId,
+    userRootDir,
+  )
+  const configValueSources: ConfigValueSources = { ...pageConfig.configValueSources }
+  const configValueSourcesAdded: ConfigValueSources = {}
+  Object.keys(pageConfigWritten).forEach((configName) => {
+    const configNameColored = pc.cyan(configName)
+    const configDef = configDefinitions[configName]
+    assertUsage(
+      configDef,
+      `Cannot set the unknown config ${configNameColored} of the page ${pageId} — for the list of built-in configs, see ${pc.underline('https://vike.dev/settings')} and ${pc.underline('https://vike.dev/hooks')}`,
+    )
+    assertUsage(
+      !configDef.env.config && !configDef.global && !configDef.vite && !configDef._computed,
+      `Cannot set ${configNameColored} of the page ${pageId}: only configs loaded at runtime can be set`,
+    )
+    const sourcesAdded = getConfigValueSources(configName, plusFile, configDef, userRootDir)
+    configValueSources[configName] = [...(configValueSources[configName] ?? []), ...sourcesAdded]
+    configValueSourcesAdded[configName] = sourcesAdded
+  })
+  applyEffectsMetaEnv(pageConfig.configValueSources, configValueSourcesAdded, configDefinitions)
+
+  const pageConfigWithWrittenValues = { ...pageConfig, configValueSources }
+  return { ...pageConfigWithWrittenValues, configValuesComputed: getComputed(pageConfigWithWrittenValues) }
 }
 
 /**
@@ -1482,6 +1596,20 @@ function applyEffects(
       plusFilesByLocationId,
     )
     applyEffectMetaEnv(configModFromEffect, configValueSources, configDefEffect)
+  })
+}
+// Same as applyEffects() but only applies `meta.env` changes, onto `configValueSourcesAdded`
+function applyEffectsMetaEnv(
+  configValueSources: ConfigValueSources,
+  configValueSourcesAdded: ConfigValueSources,
+  configDefinitions: ConfigDefinitionsInternal,
+) {
+  objectEntries(configDefinitions).forEach(([configNameEffect, configDefEffect]) => {
+    const sourceEffect = configValueSources[configNameEffect]?.[0]
+    if (!sourceEffect) return
+    const effect = runEffect(configNameEffect, configDefEffect, sourceEffect)
+    if (!effect) return
+    applyEffectMetaEnv(effect, configValueSourcesAdded, configDefEffect)
   })
 }
 function runEffect(configName: string, configDef: ConfigDefinitionInternal, source: ConfigValueSource) {
