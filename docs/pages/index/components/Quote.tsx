@@ -19,7 +19,7 @@ const Blockquote = ({ children, authorPictures, className, ...props }: QuoteProp
     <div className={cmMerge('flex flex-col md:flex-row items-center gap-3 justify-between', className)} {...props}>
       <div className="flex flex-1 order-2">
         <QuoteSvgIcon />
-        <blockquote className="italic text-grey text-left text-sm">{children}</blockquote>
+        <blockquote className="italic text-grey text-left text-sm px-4 py-1">{children}</blockquote>
       </div>
       <div className="order-1">
         {authorPictures && authorPictures.length > 0 && (

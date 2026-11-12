@@ -1,0 +1,19 @@
+/* While the <bati-widget> loads: the smallest height it has in each width range, so that loading only grows the page */
+.bati-widget-loading {
+  min-height: 2029px;
+}
+@media (min-width: 365px) {
+  .bati-widget-loading {
+    min-height: 1829px;
+  }
+}
+@media (min-width: 457px) {
+  .bati-widget-loading {
+    min-height: 1629px;
+  }
+}
+@media (min-width: 64rem) {
+  .bati-widget-loading {
+    min-height: 1139px;
+  }
+}

@@ -288,15 +288,7 @@ function DX_InlineHighlight({
 }) {
   return (
     <Link href={href}>
-      <span
-        style={{
-          backgroundColor: color,
-          color: 'var(--color-text)',
-          borderRadius: 4,
-          paddingLeft: 4,
-          paddingRight: 4,
-        }}
-      >
+      <span className="dx-inline-highlight" style={{ '--highlight-color': color } as React.CSSProperties}>
         {children}
       </span>
     </Link>
