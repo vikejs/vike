@@ -156,7 +156,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
   // - Client Routing disabled by a static asset that failed to load, see `clientRoutingIsDisabled` below
   // - A page that the client-side router can't render, see redirectHard_unlessRecovery()
   // - A missing .pageContext.json, see fetchPageContextFromServer()
-  // - A static asset that fails to load, see handleErrorFetchingStaticAssets()
+  // - A static asset that fails to load, see onErrorFetchingStaticAssets()
   const isRecovery = urlOriginal === urlThrown
 
   const abortController = new AbortController()
