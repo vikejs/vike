@@ -3,8 +3,8 @@ export { generateVirtualFilePageEntry }
 import { assert, getDebugInfoStr, getProjectError } from '../../../../utils/assert.js'
 import type { PageConfigBuildTime } from '../../../../types/PageConfig.js'
 import { parseVirtualFileId, generateVirtualFileId } from '../../../../shared-server-node/virtualFileId.js'
-import { getVikeConfigInternal, setVikeConfigSerialized } from '../../shared/resolveVikeConfigInternal.js'
-import { runPageConfigCallbacks, type PageConfigCallbackContext } from './runPageConfigCallbacks.js'
+import { getVikeConfigForSerialization } from '../../shared/resolveVikeConfigInternal.js'
+import type { PageConfigCallbackContext } from './runPageConfigCallbacks.js'
 import { extractAssetsAddQuery } from '../../../../shared-server-node/extractAssetsQuery.js'
 import { debug } from './debug.js'
 import {
@@ -30,9 +30,7 @@ async function generateVirtualFilePageEntry(
   }
   */
   const { pageId, environmentName } = result
-  const vikeConfig = await getVikeConfigInternal(true)
-  await runPageConfigCallbacks(vikeConfig, context)
-  setVikeConfigSerialized(vikeConfig)
+  const vikeConfig = await getVikeConfigForSerialization(context)
   const { _pageConfigs: pageConfigs } = vikeConfig
   const pageConfig = pageConfigs.find((pageConfig) => pageConfig.pageId === pageId)
 

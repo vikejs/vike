@@ -5,6 +5,7 @@ export type { VikeConfig }
 
 // Internal usage
 export { getVikeConfigInternal }
+export { getVikeConfigForSerialization }
 export { getVikeConfigInternalOptional }
 export { setVikeConfigContext }
 export { setViteEnvironmentNames }
@@ -111,6 +112,7 @@ import { invalidateVikeVirtualFiles } from '../plugins/pluginVirtualFiles/invali
 import {
   clearPageConfigCallbacks,
   runPageConfigCallbacks,
+  type PageConfigCallbackContext,
 } from '../plugins/pluginVirtualFiles/runPageConfigCallbacks.js'
 import '../assertEnvVite.js'
 assertIsNotProductionRuntime()
@@ -161,6 +163,13 @@ async function getVikeConfigInternal(
   assert(globalObject.vikeConfigCtx)
   const { userRootDir, isDev, vikeVitePluginOptions } = globalObject.vikeConfigCtx
   const vikeConfig = await getOrResolveVikeConfig(userRootDir, isDev, vikeVitePluginOptions, doNotRestartViteOnError)
+  return vikeConfig
+}
+
+async function getVikeConfigForSerialization(context: PageConfigCallbackContext): Promise<VikeConfigInternal> {
+  const vikeConfig = await getVikeConfigInternal(true)
+  await runPageConfigCallbacks(vikeConfig, context)
+  setVikeConfigSerialized(vikeConfig)
   return vikeConfig
 }
 

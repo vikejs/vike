@@ -3,8 +3,8 @@ export { generateVirtualFileGlobalEntry }
 import type { PageConfigBuildTime, PageConfigGlobalBuildTime } from '../../../../types/PageConfig.js'
 import { generateVirtualFileId } from '../../../../shared-server-node/virtualFileId.js'
 import { debug } from './debug.js'
-import { runPageConfigCallbacks, type PageConfigCallbackContext } from './runPageConfigCallbacks.js'
-import { getVikeConfigInternal, setVikeConfigSerialized } from '../../shared/resolveVikeConfigInternal.js'
+import type { PageConfigCallbackContext } from './runPageConfigCallbacks.js'
+import { getVikeConfigForSerialization } from '../../shared/resolveVikeConfigInternal.js'
 import {
   FilesEnv,
   serializeConfigValues,
@@ -19,9 +19,7 @@ async function generateVirtualFileGlobalEntry(
   id: string,
   context: PageConfigCallbackContext,
 ): Promise<string> {
-  const vikeConfig = await getVikeConfigInternal(true)
-  await runPageConfigCallbacks(vikeConfig, context)
-  setVikeConfigSerialized(vikeConfig)
+  const vikeConfig = await getVikeConfigForSerialization(context)
   const {
     _pageConfigs: pageConfigs,
     _pageConfigGlobal: pageConfigGlobal,
