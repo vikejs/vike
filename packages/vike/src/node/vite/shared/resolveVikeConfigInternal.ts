@@ -50,6 +50,8 @@ import type {
   DefinedBy,
 } from '../../../types/PageConfig.js'
 import type { Config } from '../../../types/Config.js'
+import type { ConfigResolved } from '../../../types/Config/ConfigResolved.js'
+import type { ImportStringList } from './importString.js'
 import {
   metaBuiltIn,
   type ConfigDefinitionsInternal,
@@ -190,9 +192,18 @@ function getVikeConfig(
   return vikeConfigPublic
 }
 // Public usage
-type VikeConfig = Pick<VikeConfigInternal, 'config' | 'pages' | 'prerenderContext'> & {
+type VikeConfig = Pick<VikeConfigInternal, 'config' | 'prerenderContext'> & {
+  pages: Record<string, PageWritable<VikeConfigInternal['pages'][string]>>
   /** https://vike.dev/warning/internals */
   dangerouslyUseInternals: DangerouslyUseInternals<VikeConfigInternal>
+}
+// Vite plugins can set page configs, see makePageConfigsWritable()
+type PageWritable<Page> = Page extends unknown ? Omit<Page, 'config'> & { config: PageConfigWritable } : never
+// Like a + file, a Vite plugin can set a config by its pointer import
+type PageConfigWritable = {
+  [K in keyof ConfigResolved]:
+    | ConfigResolved[K]
+    | (K extends keyof Config ? Extract<Config[K], ImportStringList> : never)
 }
 
 function setVikeConfigContext(vikeConfigCtx_: VikeConfigContext) {
