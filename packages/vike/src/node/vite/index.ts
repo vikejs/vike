@@ -2,12 +2,13 @@ export default plugin
 export { plugin }
 // TO-DO/next-major-release: remove
 export { plugin as ssr }
-export { getVikeConfig } from './shared/resolveVikeConfigInternal.js'
+export { getVikeConfig, rerunOnPageConfigs } from './shared/resolveVikeConfigInternal.js'
 export { PROJECT_VERSION as version } from '../../utils/PROJECT_VERSION.js'
 export type { VikeVitePluginOptions as UserConfig }
 export type { VikeVitePluginOptions }
 
 import type { Plugin } from 'vite'
+import type { OnPageConfigs } from './plugins/pluginVirtualFiles/runPageConfigCallbacks.js'
 import { getClientEntrySrcDev } from './shared/getClientEntrySrcDev.js'
 import { setGetClientEntrySrcDev } from '../../server/runtime/renderPageServer/getPageAssets/retrievePageAssetsDev.js'
 import { assertIsNotProductionRuntime } from '../../utils/assertSetup.js'
@@ -50,6 +51,21 @@ import { pluginUniversalDeploy } from './plugins/pluginUniversalDeploy.js'
 // We don't call this in ./onLoad.ts to avoid a cyclic dependency with utils.ts
 setGetClientEntrySrcDev(getClientEntrySrcDev)
 assertIsNotProductionRuntime()
+
+declare module 'vite' {
+  interface Plugin<A = any> {
+    vike?: {
+      /**
+       * Set page configs: Vike calls it once per Vike config and upon `rerunOnPageConfigs()`, before it generates its virtual files.
+       *
+       * https://vike.dev/getVikeConfig
+       *
+       * @experimental
+       */
+      onPageConfigs?: OnPageConfigs
+    }
+  }
+}
 
 type PluginInterop = Record<string, unknown> & { name: string }
 // Return `PluginInterop` instead of `Plugin` to avoid type mismatch upon different Vite versions

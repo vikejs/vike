@@ -1,9 +1,11 @@
 // Public usage
 export { getVikeConfig }
+export { rerunOnPageConfigs }
 export type { VikeConfig }
 
 // Internal usage
 export { getVikeConfigInternal }
+export { getVikeConfigForSerialization }
 export { getVikeConfigInternalOptional }
 export { setVikeConfigContext }
 export { setViteEnvironmentNames }
@@ -103,10 +105,15 @@ import { getVikeApiOperation } from '../../../shared-server-node/api-context.js'
 import { getCliOptions } from '../../cli/context.js'
 import type { PrerenderContextPublic } from '../../prerender/runPrerender.js'
 import { resolvePrerenderConfigGlobal } from '../../prerender/resolvePrerenderConfig.js'
-import type { ResolvedConfig, UserConfig } from 'vite'
+import type { DevEnvironment, ResolvedConfig, UserConfig } from 'vite'
 import { getPublicProxy, type DangerouslyUseInternals } from '../../../shared-server-client/getPublicProxy.js'
 import { setVikeConfigError } from '../../../shared-server-node/getVikeConfigError.js'
 import { invalidateVikeVirtualFiles } from '../plugins/pluginVirtualFiles/invalidateVikeVirtualFiles.js'
+import {
+  clearPageConfigCallbacks,
+  runPageConfigCallbacks,
+  type PageConfigCallbackContext,
+} from '../plugins/pluginVirtualFiles/runPageConfigCallbacks.js'
 import '../assertEnvVite.js'
 assertIsNotProductionRuntime()
 
@@ -159,6 +166,13 @@ async function getVikeConfigInternal(
   return vikeConfig
 }
 
+async function getVikeConfigForSerialization(context: PageConfigCallbackContext): Promise<VikeConfigInternal> {
+  const vikeConfig = await getVikeConfigInternal(true)
+  await runPageConfigCallbacks(vikeConfig, context)
+  setVikeConfigSerialized(vikeConfig)
+  return vikeConfig
+}
+
 // TO-DO/eventually: this maybe(/probably?) isn't safe against race conditions upon file changes in development, thus:
 // - Like getGlobalContext() and getGlobalContextSync() — make getVikeConfig() async and provide a getVikeConfigSync() while discourage using it
 // Public usage
@@ -189,6 +203,23 @@ function getVikeConfig(
   return vikeConfigPublic
 }
 // Public usage
+/**
+ * Call the `vike.onPageConfigs()` of each Vite plugin again, with `environment`, e.g. after a file your Vite plugin reads to set page configs is modified. Vike generates its virtual files only after it.
+ *
+ * https://vike.dev/getVikeConfig
+ *
+ * @experimental
+ */
+function rerunOnPageConfigs(environment: DevEnvironment): Promise<void> {
+  const vikeConfig = globalObject.vikeConfigSync
+  assert(vikeConfig)
+  clearPageConfigCallbacks(vikeConfig)
+  return runPageConfigCallbacks(vikeConfig, {
+    environment,
+    resolve: (source, importer) => environment.pluginContainer.resolveId(source, importer),
+  })
+}
+// Public usage
 type VikeConfig = Pick<VikeConfigInternal, 'config' | 'pages' | 'prerenderContext'> & {
   /** https://vike.dev/warning/internals */
   dangerouslyUseInternals: DangerouslyUseInternals<VikeConfigInternal>
@@ -202,6 +233,7 @@ function setVikeConfigContext(vikeConfigCtx_: VikeConfigContext) {
   const vikeConfig = globalObject.vikeConfigSync
   if (vikeConfig) {
     globalObject.vikeConfigsSerialized.delete(vikeConfig)
+    clearPageConfigCallbacks(vikeConfig)
     globalObject.pageConfigsWithoutWrittenValues.get(vikeConfig)?.forEach((pageConfig, i) => {
       vikeConfig._pageConfigs[i] = pageConfig
     })
@@ -446,7 +478,7 @@ function setPageConfigValue(pageId: string, configName: string, value: unknown) 
   const isSerialized = globalObject.vikeConfigsSerialized.has(vikeConfig)
   assertUsage(
     globalObject.vikeConfigCtx.isDev || !isSerialized,
-    `Cannot set ${pc.cyan(configName)} of the page ${pageId} after Vike generated its virtual files: set it earlier, e.g. in the ${pc.cyan('configResolved()')} hook of your Vite plugin`,
+    `Cannot set ${pc.cyan(configName)} of the page ${pageId} after Vike generated its virtual files: set it in ${pc.cyan('vike.onPageConfigs()')} of your Vite plugin`,
   )
   const pageConfigWrittenNew = { ...pageConfigWrittenOld, [configName]: value }
   applyWrittenValues(vikeConfig, pageId, pageConfigWrittenNew)
