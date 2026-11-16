@@ -28,7 +28,6 @@ function setPageConfigs() {
       const code = fs.readFileSync(new URL(`.${pageId}/+Page.tsx`, import.meta.url), 'utf-8')
       // A `.ssr` hook doesn't run upon client-side navigation => no .pageContext.json request
       const fileName = code.includes('needs-server') ? 'onCreatePageContext.server.ts' : 'onCreatePageContext.ssr.ts'
-      // @ts-expect-error The type is the hook's, not its pointer import's
       page.config.onCreatePageContext = `import:.${pageGroup}/${fileName}:onCreatePageContext`
     })
 }
