@@ -56,7 +56,7 @@ declare module 'vite' {
   interface Plugin<A = any> {
     vike?: {
       /**
-       * Set page configs: Vike calls it once per Vike config and, in development, after each file change, before it generates its virtual files.
+       * Vike calls it before it generates its virtual files and, in development, again after each file change.
        *
        * https://vike.dev/getVikeConfig
        *
