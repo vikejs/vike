@@ -6,7 +6,6 @@ import { generateVirtualFilePageEntry } from './pluginVirtualFiles/generateVirtu
 import { generateVirtualFileGlobalEntryWithOldDesign } from './pluginVirtualFiles/generateVirtualFileGlobalEntryWithOldDesign.js'
 import { generateVirtualFileGlobalEntry } from './pluginVirtualFiles/generateVirtualFileGlobalEntry.js'
 import { invalidateVikeVirtualFiles, getVikeVirtualFiles } from './pluginVirtualFiles/invalidateVikeVirtualFiles.js'
-import type { PageConfigCallbackContext } from './pluginVirtualFiles/runPageConfigCallbacks.js'
 import { escapeRegex } from '../../../utils/escapeRegex.js'
 import { isScriptFile } from '../../../utils/isScriptFile.js'
 import {
@@ -78,20 +77,16 @@ function pluginVirtualFiles(): Plugin[] {
           id = removeVirtualFileIdPrefix(id)
           const isDev = config._isDev
           assert(typeof isDev === 'boolean')
-          const context: PageConfigCallbackContext = {
-            environment: this.environment,
-            resolve: (source, importer) => this.resolve(source, importer),
-          }
 
           const idParsed = parseVirtualFileId(id)
           if (idParsed) {
             if (idParsed.type === 'page-entry') {
-              const code = await generateVirtualFilePageEntry(id, isDev, context)
+              const code = await generateVirtualFilePageEntry(id, isDev)
               return code
             }
             if (idParsed.type === 'global-entry') {
               if (!isEnvironmentBuiltIn(idParsed.environmentName)) {
-                return generateVirtualFileGlobalEntry({ environmentName: idParsed.environmentName, isDev }, id, context)
+                return generateVirtualFileGlobalEntry({ environmentName: idParsed.environmentName, isDev }, id)
               }
               const code = await generateVirtualFileGlobalEntryWithOldDesign(
                 id,
@@ -99,7 +94,6 @@ function pluginVirtualFiles(): Plugin[] {
                 config,
                 this.environment,
                 isDev,
-                context,
               )
               return code
             }
@@ -168,8 +162,6 @@ async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: V
     (isScriptFile(file) && getVikeConfigError())
   ) {
     reloadAll(file, config, operation, server)
-    // Vite doesn't reload the browser upon a created or removed file => an open tab would keep the page configs set by the previous `vike.onPageConfigs()` calls
-    if (config.plugins.some((plugin) => plugin.vike?.onPageConfigs)) server.ws.send({ type: 'full-reload' })
   }
 }
 

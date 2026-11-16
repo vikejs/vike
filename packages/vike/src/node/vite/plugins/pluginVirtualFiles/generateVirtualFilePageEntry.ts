@@ -3,8 +3,7 @@ export { generateVirtualFilePageEntry }
 import { assert, getDebugInfoStr, getProjectError } from '../../../../utils/assert.js'
 import type { PageConfigBuildTime } from '../../../../types/PageConfig.js'
 import { parseVirtualFileId, generateVirtualFileId } from '../../../../shared-server-node/virtualFileId.js'
-import { getVikeConfigForSerialization } from '../../shared/resolveVikeConfigInternal.js'
-import type { PageConfigCallbackContext } from './runPageConfigCallbacks.js'
+import { getVikeConfigInternal, setVikeConfigSerialized } from '../../shared/resolveVikeConfigInternal.js'
 import { extractAssetsAddQuery } from '../../../../shared-server-node/extractAssetsQuery.js'
 import { debug } from './debug.js'
 import {
@@ -16,11 +15,7 @@ import { getConfigValueBuildTime } from '../../../../shared-server-client/page-c
 import { resolveIncludeAssetsImportedByServer } from '../../../../server/runtime/renderPageServer/getPageAssets/retrievePageAssetsProd.js'
 import '../../assertEnvVite.js'
 
-async function generateVirtualFilePageEntry(
-  id: string,
-  isDev: boolean,
-  context: PageConfigCallbackContext,
-): Promise<string> {
+async function generateVirtualFilePageEntry(id: string, isDev: boolean): Promise<string> {
   const result = parseVirtualFileId(id)
   assert(result && result.type === 'page-entry')
   /* This assertion fails when using includeAssetsImportedByServer
@@ -30,7 +25,8 @@ async function generateVirtualFilePageEntry(
   }
   */
   const { pageId, environmentName } = result
-  const vikeConfig = await getVikeConfigForSerialization(context)
+  const vikeConfig = await getVikeConfigInternal(true)
+  setVikeConfigSerialized(vikeConfig)
   const { _pageConfigs: pageConfigs } = vikeConfig
   const pageConfig = pageConfigs.find((pageConfig) => pageConfig.pageId === pageId)
 
