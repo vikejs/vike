@@ -6,7 +6,7 @@ import { ConfigSpec } from '../../components'
   global={null}
 />
 
-A hook of your Vite plugin that Vike calls before it generates its virtual files and, in development, again after each file change. Use it to <Link href="/getVikeConfig#set-a-page-config">set page configs</Link>:
+A hook of your Vite plugin that Vike calls before it generates its virtual files. In development, Vike calls it again after a file change, or, if the change reloads Vike's config (e.g. editing `+config.js`), when it next generates its virtual files. Use it to <Link href="/getVikeConfig#set-a-page-config">set page configs</Link>:
 
 ```js
 // my-vite-plugin.js

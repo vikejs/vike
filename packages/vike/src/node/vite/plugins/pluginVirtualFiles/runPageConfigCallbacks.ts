@@ -29,7 +29,7 @@ async function runPageConfigCallbacks(plugins: readonly Plugin[]) {
   await callbacksRun
 }
 
-// Development: Vike calls the `vike.onCreatePageConfigs()` of each Vite plugin again after each file change
+// Development: Vike calls the `vike.onCreatePageConfigs()` of each Vite plugin again after a file change that doesn't reload Vike's config
 async function rerunPageConfigCallbacks(plugins: readonly Plugin[]) {
   clearPageConfigCallbacks(await getVikeConfigInternal(true))
   await runPageConfigCallbacks(plugins)
