@@ -1,11 +1,11 @@
 export { pluginVirtualFiles }
 
-import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleGraph, DevEnvironment } from 'vite'
+import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleGraph } from 'vite'
 import { normalizePath } from 'vite'
 import { generateVirtualFilePageEntry } from './pluginVirtualFiles/generateVirtualFilePageEntry.js'
 import { generateVirtualFileGlobalEntryWithOldDesign } from './pluginVirtualFiles/generateVirtualFileGlobalEntryWithOldDesign.js'
 import { generateVirtualFileGlobalEntry } from './pluginVirtualFiles/generateVirtualFileGlobalEntry.js'
-import type { PageConfigCallbackContext } from './pluginVirtualFiles/runPageConfigCallbacks.js'
+import { runPageConfigCallbacks, rerunPageConfigCallbacks } from './pluginVirtualFiles/runPageConfigCallbacks.js'
 import { escapeRegex } from '../../../utils/escapeRegex.js'
 import { isScriptFile } from '../../../utils/isScriptFile.js'
 import {
@@ -18,12 +18,7 @@ import {
 import { assert } from '../../../utils/assert.js'
 import { assertPosixPath } from '../../../utils/path.js'
 import { parseVirtualFileId } from '../../../shared-server-node/virtualFileId.js'
-import {
-  reloadVikeConfig,
-  isV1Design,
-  getVikeConfigInternalOptional,
-  rerunPageConfigCallbacks,
-} from '../shared/resolveVikeConfigInternal.js'
+import { reloadVikeConfig, isV1Design, getVikeConfigInternalOptional } from '../shared/resolveVikeConfigInternal.js'
 import { isEnvironmentBuiltIn } from '../../../shared-server-node/vike-environments.js'
 import pc from '@brillout/picocolors'
 import { logConfigInfo } from '../shared/loggerDev.js'
@@ -83,20 +78,19 @@ function pluginVirtualFiles(): Plugin[] {
           id = removeVirtualFileIdPrefix(id)
           const isDev = config._isDev
           assert(typeof isDev === 'boolean')
-          const context: PageConfigCallbackContext = {
-            environment: this.environment,
-            resolve: (source, importer) => this.resolve(source, importer),
-          }
 
           const idParsed = parseVirtualFileId(id)
           if (idParsed) {
+            // Vike generates its virtual files after the Vite plugins set page configs
+            await runPageConfigCallbacks(config.plugins)
+
             if (idParsed.type === 'page-entry') {
-              const code = await generateVirtualFilePageEntry(id, isDev, context)
+              const code = await generateVirtualFilePageEntry(id, isDev)
               return code
             }
             if (idParsed.type === 'global-entry') {
               if (!isEnvironmentBuiltIn(idParsed.environmentName)) {
-                return generateVirtualFileGlobalEntry({ environmentName: idParsed.environmentName, isDev }, id, context)
+                return generateVirtualFileGlobalEntry({ environmentName: idParsed.environmentName, isDev }, id)
               }
               const code = await generateVirtualFileGlobalEntryWithOldDesign(
                 id,
@@ -104,7 +98,6 @@ function pluginVirtualFiles(): Plugin[] {
                 config,
                 this.environment,
                 isDev,
-                context,
               )
               return code
             }
@@ -128,7 +121,7 @@ function pluginVirtualFiles(): Plugin[] {
           // Vite calls hotUpdate() for each of its environments
           if (this.environment.name !== 'client' || !hasPageConfigCallbacks(config)) return
           // Vike's virtual files await it, while the HMR of the modified file doesn't
-          rerunOnFileChange(type, file, server, this.environment).catch((err) => console.error(err))
+          rerunOnFileChange(type, file, server, config).catch((err) => console.error(err))
         },
       },
     },
@@ -202,7 +195,7 @@ async function rerunOnFileChange(
   type: 'create' | 'update' | 'delete',
   file: string,
   server: ViteDevServer,
-  environment: DevEnvironment,
+  config: ResolvedConfig,
 ) {
   if (
     // Vike's own temporary file
@@ -211,7 +204,7 @@ async function rerunOnFileChange(
     (await isVikeConfigReload(type, file, server.moduleGraph))
   )
     return
-  await rerunPageConfigCallbacks(environment)
+  await rerunPageConfigCallbacks(config.plugins)
 }
 
 async function isAppDependency(filePathAbsoluteFilesystem: string, moduleGraph: ModuleGraph) {

@@ -4,8 +4,6 @@ export type { VikeConfig }
 
 // Internal usage
 export { getVikeConfigInternal }
-export { getVikeConfigForSerialization }
-export { rerunPageConfigCallbacks }
 export { getVikeConfigInternalOptional }
 export { setVikeConfigContext }
 export { setViteEnvironmentNames }
@@ -105,15 +103,11 @@ import { getVikeApiOperation } from '../../../shared-server-node/api-context.js'
 import { getCliOptions } from '../../cli/context.js'
 import type { PrerenderContextPublic } from '../../prerender/runPrerender.js'
 import { resolvePrerenderConfigGlobal } from '../../prerender/resolvePrerenderConfig.js'
-import type { DevEnvironment, ResolvedConfig, UserConfig } from 'vite'
+import type { ResolvedConfig, UserConfig } from 'vite'
 import { getPublicProxy, type DangerouslyUseInternals } from '../../../shared-server-client/getPublicProxy.js'
 import { setVikeConfigError } from '../../../shared-server-node/getVikeConfigError.js'
 import { invalidateVikeVirtualFiles } from '../plugins/pluginVirtualFiles/invalidateVikeVirtualFiles.js'
-import {
-  clearPageConfigCallbacks,
-  runPageConfigCallbacks,
-  type PageConfigCallbackContext,
-} from '../plugins/pluginVirtualFiles/runPageConfigCallbacks.js'
+import { clearPageConfigCallbacks } from '../plugins/pluginVirtualFiles/runPageConfigCallbacks.js'
 import '../assertEnvVite.js'
 assertIsNotProductionRuntime()
 
@@ -166,13 +160,6 @@ async function getVikeConfigInternal(
   return vikeConfig
 }
 
-async function getVikeConfigForSerialization(context: PageConfigCallbackContext): Promise<VikeConfigInternal> {
-  const vikeConfig = await getVikeConfigInternal(true)
-  await runPageConfigCallbacks(vikeConfig, context)
-  setVikeConfigSerialized(vikeConfig)
-  return vikeConfig
-}
-
 // TO-DO/eventually: this maybe(/probably?) isn't safe against race conditions upon file changes in development, thus:
 // - Like getGlobalContext() and getGlobalContextSync() — make getVikeConfig() async and provide a getVikeConfigSync() while discourage using it
 // Public usage
@@ -201,16 +188,6 @@ function getVikeConfig(
   )
   const vikeConfigPublic = getPublicProxy(vikeConfig, 'vikeConfig')
   return vikeConfigPublic
-}
-// Development: Vike calls the `vike.onCreatePageConfigs()` of each Vite plugin again after each file change
-function rerunPageConfigCallbacks(environment: DevEnvironment): Promise<void> {
-  const vikeConfig = globalObject.vikeConfigSync
-  assert(vikeConfig)
-  clearPageConfigCallbacks(vikeConfig)
-  return runPageConfigCallbacks(vikeConfig, {
-    environment,
-    resolve: (source, importer) => environment.pluginContainer.resolveId(source, importer),
-  })
 }
 // Public usage
 type VikeConfig = Pick<VikeConfigInternal, 'config' | 'pages' | 'prerenderContext'> & {
