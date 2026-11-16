@@ -1,9 +1,27 @@
 export { testRun as test }
 
-import { run, page, test, expect, getServerUrl, fetchHtml, expectLog, autoRetry } from '@brillout/test-e2e'
-import { ensureWasClientSideRouted, expectPageContextJsonRequest, expectUrl, testCounter } from '../utils'
+import {
+  run,
+  page,
+  test,
+  expect,
+  getServerUrl,
+  fetchHtml,
+  expectLog,
+  autoRetry,
+  editFile,
+  editFileRevert,
+} from '@brillout/test-e2e'
+import {
+  ensureWasClientSideRouted,
+  expectPageContextJsonRequest,
+  expectUrl,
+  sleepBeforeEditFile,
+  testCounter,
+  waitForNavigation,
+} from '../utils'
 
-function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
+function testRun(cmd: 'pnpm run dev' | 'pnpm run preview' | 'pnpm run preview:ssg') {
   run(cmd)
 
   const isDev = cmd === 'pnpm run dev'
@@ -107,6 +125,59 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     expect(await page.textContent('body')).toContain('per-page data() was called in env: client')
   })
 
+  test('Request pageContext JSON only if necessary: onCreatePageContext() set by a Vite plugin', async () => {
+    await page.goto(getServerUrl() + '/')
+    await testCounter()
+    await navigate('/mutable-page-config/a', false)
+    await navigate('/mutable-page-config/b', true)
+    await navigate('/', true)
+  })
+
+  if (isDev) {
+    test('modifying a file read by the Vite plugin', async () => {
+      await sleepBeforeEditFile()
+      {
+        const reloaded = await waitForNavigation()
+        editFile('./pages/mutable-page-config/a/+Page.tsx', (s) => `// needs-server\n${s}`)
+        await reloaded()
+      }
+      await testCounter()
+      await navigate('/mutable-page-config/a', true)
+      await navigate('/', true)
+      await sleepBeforeEditFile()
+      {
+        const reloaded = await waitForNavigation()
+        editFileRevert()
+        await reloaded()
+      }
+      await testCounter()
+      await navigate('/mutable-page-config/a', false)
+      await navigate('/', true)
+    })
+
+    test('removing the Vite plugin from vite.config.ts', async () => {
+      await sleepBeforeEditFile()
+      {
+        const reloaded = await waitForNavigation()
+        editFile('./vite.config.ts', (s) =>
+          s.replace('plugins: [vike(), react(), setOnCreatePageContext()]', 'plugins: [vike(), react()]'),
+        )
+        await reloaded()
+      }
+      await testCounter()
+      await navigate('/mutable-page-config/b', false)
+      await navigate('/', true)
+      await sleepBeforeEditFile()
+      {
+        const reloaded = await waitForNavigation()
+        editFileRevert()
+        await reloaded()
+      }
+      await testCounter()
+      await navigate('/mutable-page-config/b', true)
+    })
+  }
+
   /* Re-use this test for upcoming new error when requestPageContextOnNavigation is set to 'minimal' or false
   test('wrong hook suppressing usage', async () => {
     await fetchHtml('/page-2')
@@ -124,4 +195,20 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     }
   })
   */
+}
+
+async function navigate(
+  pathname: '/' | '/mutable-page-config/a' | '/mutable-page-config/b',
+  isPageContextJsonRequest: boolean,
+) {
+  const done = expectPageContextJsonRequest(isPageContextJsonRequest)
+  await page.click(`a[href="${pathname}"]`)
+  await expectUrl(pathname)
+  await autoRetry(async () => {
+    expect(await page.textContent('h1')).toBe(
+      { '/': 'Page', '/mutable-page-config/a': 'Page A', '/mutable-page-config/b': 'Page B' }[pathname],
+    )
+  })
+  await ensureWasClientSideRouted('/pages/index')
+  done()
 }
