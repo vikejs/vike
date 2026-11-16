@@ -1,6 +1,6 @@
 export { runPageConfigCallbacks }
 export { clearPageConfigCallbacks }
-export type { OnPageConfigs }
+export type { OnCreatePageConfigs }
 export type { PageConfigCallbackContext }
 
 import type { Environment } from 'vite'
@@ -15,7 +15,7 @@ type PageConfigCallbackContext = {
   /** Resolves an import as the environment's plugins do */
   resolve: (source: string, importer?: string) => Promise<{ id: string } | null>
 }
-type OnPageConfigs = (
+type OnCreatePageConfigs = (
   args: { pages: Record<string, { config: Config }> } & PageConfigCallbackContext,
 ) => void | Promise<void>
 
@@ -23,7 +23,7 @@ const globalObject = getGlobalObject('pluginVirtualFiles/runPageConfigCallbacks.
   callbacksRun: new WeakMap<VikeConfigInternal, Promise<void>>(),
 })
 
-// Call the `vike.onPageConfigs()` of each Vite plugin, once per Vike config and, in development, after each file change, before Vike serializes its page configs
+// Call the `vike.onCreatePageConfigs()` of each Vite plugin, once per Vike config and, in development, after each file change, before Vike serializes its page configs
 async function runPageConfigCallbacks(vikeConfig: VikeConfigInternal, context: PageConfigCallbackContext) {
   let callbacksRun = globalObject.callbacksRun.get(vikeConfig)
   if (!callbacksRun) {
@@ -31,7 +31,7 @@ async function runPageConfigCallbacks(vikeConfig: VikeConfigInternal, context: P
     // A page config is set as a + file sets it
     const pages = vikeConfig.pages as Record<string, { config: Config }>
     callbacksRun = (async () => {
-      for (const plugin of plugins) await plugin.vike?.onPageConfigs?.({ pages, ...context })
+      for (const plugin of plugins) await plugin.vike?.onCreatePageConfigs?.({ pages, ...context })
     })()
     globalObject.callbacksRun.set(vikeConfig, callbacksRun)
     // The next Vike virtual file loaded calls the callbacks again

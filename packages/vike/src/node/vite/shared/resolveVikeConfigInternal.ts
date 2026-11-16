@@ -202,7 +202,7 @@ function getVikeConfig(
   const vikeConfigPublic = getPublicProxy(vikeConfig, 'vikeConfig')
   return vikeConfigPublic
 }
-// Development: Vike calls the `vike.onPageConfigs()` of each Vite plugin again after each file change
+// Development: Vike calls the `vike.onCreatePageConfigs()` of each Vite plugin again after each file change
 function rerunPageConfigCallbacks(environment: DevEnvironment): Promise<void> {
   const vikeConfig = globalObject.vikeConfigSync
   assert(vikeConfig)
@@ -471,7 +471,7 @@ function setPageConfigValue(pageId: string, configName: string, value: unknown) 
   const isSerialized = globalObject.vikeConfigsSerialized.has(vikeConfig)
   assertUsage(
     globalObject.vikeConfigCtx.isDev || !isSerialized,
-    `Cannot set ${pc.cyan(configName)} of the page ${pageId} after Vike generated its virtual files: set it in ${pc.cyan('vike.onPageConfigs()')} of your Vite plugin`,
+    `Cannot set ${pc.cyan(configName)} of the page ${pageId} after Vike generated its virtual files: set it in ${pc.cyan('vike.onCreatePageConfigs()')} of your Vite plugin`,
   )
   const pageConfigWrittenNew = { ...pageConfigWrittenOld, [configName]: value }
   applyWrittenValues(vikeConfig, pageId, pageConfigWrittenNew)

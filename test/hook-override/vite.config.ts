@@ -15,7 +15,7 @@ function setOnCreatePageContext() {
   return {
     name: 'setOnCreatePageContext',
     vike: {
-      onPageConfigs({ pages }: { pages: Record<string, { config: Config }> }) {
+      onCreatePageConfigs({ pages }: { pages: Record<string, { config: Config }> }) {
         Object.entries(pages)
           .filter(([pageId]) => pageId.startsWith(`${pageGroup}/`))
           .forEach(([pageId, page]) => {

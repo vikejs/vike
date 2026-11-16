@@ -187,7 +187,7 @@ async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: V
     (isScriptFile(file) && getVikeConfigError())
   ) {
     reloadAll(file, config, operation, server)
-    // Vite doesn't reload the browser upon a created or removed file => an open tab would keep the page configs set by the previous `vike.onPageConfigs()` calls
+    // Vite doesn't reload the browser upon a created or removed file => an open tab would keep the page configs set by the previous `vike.onCreatePageConfigs()` calls
     if (hasPageConfigCallbacks(config)) server.ws.send({ type: 'full-reload' })
   }
 }
@@ -243,7 +243,7 @@ function reloadAll(
 }
 
 function hasPageConfigCallbacks(config: ResolvedConfig): boolean {
-  return config.plugins.some((plugin) => plugin.vike?.onPageConfigs)
+  return config.plugins.some((plugin) => plugin.vike?.onCreatePageConfigs)
 }
 
 function existsInViteModuleGraph(file: string, moduleGraph: ModuleGraph): boolean {

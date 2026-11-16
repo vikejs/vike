@@ -56,8 +56,8 @@ A Vite plugin can set a configuration of a page that is loaded at runtime (e.g. 
 export default {
   name: 'my-vite-plugin',
   vike: {
-    // Vike calls it for each of its configs (e.g. after a `+` file is created), before it generates its virtual files
-    onPageConfigs({ pages }) {
+    // Vike calls it before it generates its virtual files
+    onCreatePageConfigs({ pages }) {
       pages['/pages/product'].config.onCreatePageContext =
         'import:my-vite-plugin/onCreatePageContext.server:onCreatePageContext'
     }
@@ -65,35 +65,9 @@ export default {
 }
 ```
 
-The page's `+` files have precedence. Setting a page config afterwards (e.g. upon a file change) reloads the page in development and throws an error when building.
+The page's `+` files have precedence. In development, Vike calls `onCreatePageConfigs()` again after each file change (e.g. of a file your Vite plugin reads to set page configs) and reloads the page if a page config changed. Setting a page config outside of `onCreatePageConfigs()` after Vike generated its virtual files throws an error when building.
 
-> `onPageConfigs()` also receives `environment`, the Vite environment loading Vike's virtual file (or the one given to `rerunOnPageConfigs()`), and `resolve(source, importer)`, which resolves an import as that environment's Vite plugins do. Vike awaits it.
-
-If your Vite plugin reads files to set page configs, call `rerunOnPageConfigs()` when one of them is modified. Vike then calls `onPageConfigs()` again and generates its virtual files only after it:
-
-```js
-// my-vite-plugin.js
-
-import { readFileSync } from 'node:fs'
-import { rerunOnPageConfigs } from 'vike/plugin'
-
-export default {
-  name: 'my-vite-plugin',
-  vike: {
-    onPageConfigs({ pages }) {
-      // ./product.json is e.g. { "onCreatePageContext": "import:my-vite-plugin/onCreatePageContext.server:onCreatePageContext" }
-      const { onCreatePageContext } = JSON.parse(readFileSync(new URL('./product.json', import.meta.url), 'utf8'))
-      pages['/pages/product'].config.onCreatePageContext = onCreatePageContext
-    }
-  },
-  async hotUpdate({ file }) {
-    // Vite calls hotUpdate() for each of its environments
-    if (this.environment.name === 'client' && file.endsWith('/product.json')) {
-      await rerunOnPageConfigs(this.environment)
-    }
-  }
-}
-```
+> `onCreatePageConfigs()` also receives `environment`, the Vite environment loading Vike's virtual file (the `client` environment upon a file change), and `resolve(source, importer)`, which resolves an import as that environment's Vite plugins do. Vike awaits it.
 
 <Warning>
   Setting a page config is experimental.

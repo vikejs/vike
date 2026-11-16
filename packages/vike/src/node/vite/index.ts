@@ -8,7 +8,7 @@ export type { VikeVitePluginOptions as UserConfig }
 export type { VikeVitePluginOptions }
 
 import type { Plugin } from 'vite'
-import type { OnPageConfigs } from './plugins/pluginVirtualFiles/runPageConfigCallbacks.js'
+import type { OnCreatePageConfigs } from './plugins/pluginVirtualFiles/runPageConfigCallbacks.js'
 import { getClientEntrySrcDev } from './shared/getClientEntrySrcDev.js'
 import { setGetClientEntrySrcDev } from '../../server/runtime/renderPageServer/getPageAssets/retrievePageAssetsDev.js'
 import { assertIsNotProductionRuntime } from '../../utils/assertSetup.js'
@@ -62,7 +62,7 @@ declare module 'vite' {
        *
        * @experimental
        */
-      onPageConfigs?: OnPageConfigs
+      onCreatePageConfigs?: OnCreatePageConfigs
     }
   }
 }
