@@ -1,6 +1,6 @@
 export { pluginVirtualFiles }
 
-import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleGraph } from 'vite'
+import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleGraph, DevEnvironment } from 'vite'
 import { normalizePath } from 'vite'
 import { generateVirtualFilePageEntry } from './pluginVirtualFiles/generateVirtualFilePageEntry.js'
 import { generateVirtualFileGlobalEntryWithOldDesign } from './pluginVirtualFiles/generateVirtualFileGlobalEntryWithOldDesign.js'
@@ -124,11 +124,11 @@ function pluginVirtualFiles(): Plugin[] {
       // After the client hotUpdate() of the other Vite plugins => a Vite plugin caching the files it reads has already invalidated the modified one
       hotUpdate: {
         order: 'post',
-        handler() {
+        handler({ type, file, server }) {
           // Vite calls hotUpdate() for each of its environments
           if (this.environment.name !== 'client' || !hasPageConfigCallbacks(config)) return
           // Vike's virtual files await it, while the HMR of the modified file doesn't
-          rerunPageConfigCallbacks(this.environment).catch((err) => console.error(err))
+          rerunOnFileChange(type, file, server, this.environment).catch((err) => console.error(err))
         },
       },
     },
@@ -169,12 +169,22 @@ async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: V
   if (isTemporaryBuildFile(file)) return
   const operation = isRemove ? 'removed' : 'created'
   debugFileChange('server.watcher', file, operation)
-  const { moduleGraph } = server
-  const isAppFile = await isAppDependency(file, moduleGraph)
 
-  if (
-    // Vike config (non-runtime) code
-    isAppFile?.isConfigDependency ||
+  if (await isVikeConfigReload(isRemove ? 'delete' : 'create', file, server.moduleGraph)) {
+    reloadAll(file, config, operation, server)
+    // Vite doesn't reload the browser upon a created or removed file => an open tab would keep the page configs set by the previous `vike.onCreatePageConfigs()` calls
+    if (hasPageConfigCallbacks(config)) server.ws.send({ type: 'full-reload' })
+  }
+}
+
+// Whether Vike reloads its config upon the file change
+async function isVikeConfigReload(type: 'create' | 'update' | 'delete', file: string, moduleGraph: ModuleGraph) {
+  const isAppFile = await isAppDependency(file, moduleGraph)
+  // Vike config (non-runtime) code
+  if (isAppFile.isConfigDependency) return true
+  // Only onFileCreatedOrRemoved() reloads Vike's config for the cases below
+  if (type === 'update') return false
+  return (
     // New + file => not tracked yet by Vike (`vikeConfigObject._vikeConfigDependencies`) nor Vite (`moduleGraph`)
     isPlusFile(file) ||
     // Trick: when fixing the path of a relative import => we don't know whether `file` is the imported file => we take a leap of faith when the conditions below are met.
@@ -184,12 +194,24 @@ async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: V
     //   ```bash
     //   rm someImportedFile.js && sleep 2 && git checkout someImportedFile.js
     //   ```
-    (isScriptFile(file) && getVikeConfigError())
-  ) {
-    reloadAll(file, config, operation, server)
-    // Vite doesn't reload the browser upon a created or removed file => an open tab would keep the page configs set by the previous `vike.onCreatePageConfigs()` calls
-    if (hasPageConfigCallbacks(config)) server.ws.send({ type: 'full-reload' })
-  }
+    (isScriptFile(file) && !!getVikeConfigError())
+  )
+}
+
+async function rerunOnFileChange(
+  type: 'create' | 'update' | 'delete',
+  file: string,
+  server: ViteDevServer,
+  environment: DevEnvironment,
+) {
+  if (
+    // Vike's own temporary file
+    isTemporaryBuildFile(file) ||
+    // The new Vike config calls the hook before Vike generates its virtual files
+    (await isVikeConfigReload(type, file, server.moduleGraph))
+  )
+    return
+  await rerunPageConfigCallbacks(environment)
 }
 
 async function isAppDependency(filePathAbsoluteFilesystem: string, moduleGraph: ModuleGraph) {
