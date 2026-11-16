@@ -74,13 +74,16 @@ If your Vite plugin reads files to set page configs, call `rerunOnPageConfigs()`
 ```js
 // my-vite-plugin.js
 
+import { readFileSync } from 'node:fs'
 import { rerunOnPageConfigs } from 'vike/plugin'
 
 export default {
   name: 'my-vite-plugin',
   vike: {
     onPageConfigs({ pages }) {
-      // Reads ./product.json
+      // ./product.json is e.g. { "onCreatePageContext": "import:my-vite-plugin/onCreatePageContext.server:onCreatePageContext" }
+      const { onCreatePageContext } = JSON.parse(readFileSync(new URL('./product.json', import.meta.url), 'utf8'))
+      pages['/pages/product'].config.onCreatePageContext = onCreatePageContext
     }
   },
   async hotUpdate({ file }) {
