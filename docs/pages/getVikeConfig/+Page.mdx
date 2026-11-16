@@ -48,25 +48,7 @@ function myVitePlugin(): Plugin {
 
 ## Set a page config
 
-A Vite plugin can set a configuration of a page that is loaded at runtime (e.g. a hook), as if a `+` file of the page set it:
-
-```js
-// my-vite-plugin.js
-
-import { getVikeConfig } from 'vike/plugin'
-
-export default {
-  name: 'my-vite-plugin',
-  vike: {
-    // Vike calls it before it generates its virtual files and, in development, again after each file change
-    onCreatePageConfigs() {
-      const { pages } = getVikeConfig()
-      pages['/pages/product'].config.onCreatePageContext =
-        'import:my-vite-plugin/onCreatePageContext.server:onCreatePageContext'
-    }
-  }
-}
-```
+A Vite plugin can set a configuration of a page that is loaded at runtime (e.g. a hook), as if a `+` file of the page set it, see <Link href="/onCreatePageConfigs" />.
 
 The page's `+` files have precedence. Set it before Vike generates its virtual files (e.g. in `vike.onCreatePageConfigs()`): setting it afterwards reloads the page in development and throws an error when building.
 
@@ -77,6 +59,7 @@ The page's `+` files have precedence. Set it before Vike generates its virtual f
 ## See also
 
 - <Link href="/config#files" />
+- <Link href="/onCreatePageConfigs" />
 - <Link href="/getGlobalContext" />
 - <Link href="/globalContext#config">API > `globalContext.config`</Link>
 - <Link href="/globalContext#pages">API > `globalContext.pages`</Link>

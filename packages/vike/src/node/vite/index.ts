@@ -58,7 +58,7 @@ declare module 'vite' {
       /**
        * Vike calls it before it generates its virtual files and, in development, again after each file change.
        *
-       * https://vike.dev/getVikeConfig
+       * https://vike.dev/onCreatePageConfigs
        *
        * @experimental
        */

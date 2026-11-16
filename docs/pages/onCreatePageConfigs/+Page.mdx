@@ -1,0 +1,33 @@
+import { Warning, Link } from '@brillout/docpress'
+import { ConfigSpec } from '../../components'
+
+<ConfigSpec
+  env="config (dev & build)"
+  global={null}
+/>
+
+A hook of your Vite plugin that Vike calls before it generates its virtual files and, in development, again after each file change. Use it to <Link href="/getVikeConfig#set-a-page-config">set page configs</Link>:
+
+```js
+// my-vite-plugin.js
+
+import { getVikeConfig } from 'vike/plugin'
+
+export default {
+  name: 'my-vite-plugin',
+  vike: {
+    onCreatePageConfigs() {
+      const { pages } = getVikeConfig()
+      pages['/pages/product'].config.onCreatePageContext =
+        'import:my-vite-plugin/onCreatePageContext.server:onCreatePageContext'
+    }
+  }
+}
+```
+
+<Warning>It's an experimental feature: expect breaking changes in any minor version update.</Warning>
+
+## See also
+
+- <Link href="/getVikeConfig" />
+- [Vite > Plugin API](https://vite.dev/guide/api-plugin.html)
