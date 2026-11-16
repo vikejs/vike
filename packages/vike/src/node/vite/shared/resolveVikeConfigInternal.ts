@@ -448,7 +448,7 @@ function setPageConfigValue(pageId: string, configName: string, value: unknown) 
   const isSerialized = globalObject.vikeConfigsSerialized.has(vikeConfig)
   assertUsage(
     globalObject.vikeConfigCtx.isDev || !isSerialized,
-    `Cannot set ${pc.cyan(configName)} of the page ${pageId} after Vike generated its virtual files: set it in ${pc.cyan('vike.onCreatePageConfigs()')} of your Vite plugin`,
+    `Cannot set ${pc.cyan(configName)} of the page ${pageId} after Vike generated its virtual files: set it earlier, e.g. in the ${pc.cyan('configResolved()')} hook of your Vite plugin`,
   )
   const pageConfigWrittenNew = { ...pageConfigWrittenOld, [configName]: value }
   applyWrittenValues(vikeConfig, pageId, pageConfigWrittenNew)

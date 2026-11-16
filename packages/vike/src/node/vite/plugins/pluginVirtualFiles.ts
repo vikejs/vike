@@ -165,8 +165,6 @@ async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: V
 
   if (await isVikeConfigReload(isRemove ? 'delete' : 'create', file, server.moduleGraph)) {
     reloadAll(file, config, operation, server)
-    // Vite doesn't reload the browser upon a created or removed file => an open tab would keep the page configs set by the previous `vike.onCreatePageConfigs()` calls
-    if (hasPageConfigCallbacks(config)) server.ws.send({ type: 'full-reload' })
   }
 }
 
