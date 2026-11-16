@@ -5,7 +5,6 @@ import { normalizePath } from 'vite'
 import { generateVirtualFilePageEntry } from './pluginVirtualFiles/generateVirtualFilePageEntry.js'
 import { generateVirtualFileGlobalEntryWithOldDesign } from './pluginVirtualFiles/generateVirtualFileGlobalEntryWithOldDesign.js'
 import { generateVirtualFileGlobalEntry } from './pluginVirtualFiles/generateVirtualFileGlobalEntry.js'
-import { invalidateVikeVirtualFiles, getVikeVirtualFiles } from './pluginVirtualFiles/invalidateVikeVirtualFiles.js'
 import { escapeRegex } from '../../../utils/escapeRegex.js'
 import { isScriptFile } from '../../../utils/isScriptFile.js'
 import {
@@ -28,6 +27,7 @@ import { isPlusFile } from '../shared/resolveVikeConfigInternal/crawlPlusFiles.j
 import { isTemporaryBuildFile } from '../shared/resolveVikeConfigInternal/transpileAndExecuteFile.js'
 import { debugFileChange, getVikeConfigError } from '../../../shared-server-node/getVikeConfigError.js'
 import '../assertEnvVite.js'
+import { getVikeVirtualFiles, invalidateVikeVirtualFiles } from './pluginVirtualFiles/invalidateVikeVirtualFiles.js'
 
 // === Rolldown filter
 const filterRolldown = {
