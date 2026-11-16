@@ -1,11 +1,11 @@
 // Public usage
 export { getVikeConfig }
-export { rerunOnPageConfigs }
 export type { VikeConfig }
 
 // Internal usage
 export { getVikeConfigInternal }
 export { getVikeConfigForSerialization }
+export { rerunPageConfigCallbacks }
 export { getVikeConfigInternalOptional }
 export { setVikeConfigContext }
 export { setViteEnvironmentNames }
@@ -202,15 +202,8 @@ function getVikeConfig(
   const vikeConfigPublic = getPublicProxy(vikeConfig, 'vikeConfig')
   return vikeConfigPublic
 }
-// Public usage
-/**
- * Call the `vike.onPageConfigs()` of each Vite plugin again, with `environment`, e.g. after a file your Vite plugin reads to set page configs is modified. Vike generates its virtual files only after it.
- *
- * https://vike.dev/getVikeConfig
- *
- * @experimental
- */
-function rerunOnPageConfigs(environment: DevEnvironment): Promise<void> {
+// Development: Vike calls the `vike.onPageConfigs()` of each Vite plugin again after each file change
+function rerunPageConfigCallbacks(environment: DevEnvironment): Promise<void> {
   const vikeConfig = globalObject.vikeConfigSync
   assert(vikeConfig)
   clearPageConfigCallbacks(vikeConfig)

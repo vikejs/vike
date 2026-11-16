@@ -155,6 +155,24 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview' | 'pnpm run preview:ss
       await navigate('/', true)
     })
 
+    test('modifying a +config file', async () => {
+      await sleepBeforeEditFile()
+      {
+        const reloaded = await waitForNavigation()
+        editFile('./pages/+config.ts', (s) => `${s}// modified\n`)
+        await reloaded()
+      }
+      expectLog('modified /pages/+config.ts')
+      await testCounter()
+      await sleepBeforeEditFile()
+      {
+        const reloaded = await waitForNavigation()
+        editFileRevert()
+        await reloaded()
+      }
+      await testCounter()
+    })
+
     test('removing the Vite plugin from vite.config.ts', async () => {
       await sleepBeforeEditFile()
       {

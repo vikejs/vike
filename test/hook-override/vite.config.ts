@@ -1,6 +1,6 @@
 import fs from 'node:fs'
 import react from '@vitejs/plugin-react'
-import vike, { rerunOnPageConfigs } from 'vike/plugin'
+import vike from 'vike/plugin'
 import type { Config } from 'vike/types'
 import type { UserConfig } from 'vite'
 
@@ -27,10 +27,6 @@ function setOnCreatePageContext() {
             page.config.onCreatePageContext = `import:.${pageGroup}/${fileName}:onCreatePageContext`
           })
       },
-    },
-    async hotUpdate(this: { environment: any }, { file }: { file: string }) {
-      if (this.environment.name === 'client' && file.includes(`${pageGroup}/`) && file.endsWith('/+Page.tsx'))
-        await rerunOnPageConfigs(this.environment)
     },
   }
 }

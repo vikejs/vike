@@ -19,7 +19,12 @@ import {
 import { assert } from '../../../utils/assert.js'
 import { assertPosixPath } from '../../../utils/path.js'
 import { parseVirtualFileId } from '../../../shared-server-node/virtualFileId.js'
-import { reloadVikeConfig, isV1Design, getVikeConfigInternalOptional } from '../shared/resolveVikeConfigInternal.js'
+import {
+  reloadVikeConfig,
+  isV1Design,
+  getVikeConfigInternalOptional,
+  rerunPageConfigCallbacks,
+} from '../shared/resolveVikeConfigInternal.js'
 import { isEnvironmentBuiltIn } from '../../../shared-server-node/vike-environments.js'
 import pc from '@brillout/picocolors'
 import { logConfigInfo } from '../shared/loggerDev.js'
@@ -113,6 +118,20 @@ function pluginVirtualFiles(): Plugin[] {
         },
       },
     },
+    {
+      // Its own plugin: Vite doesn't call the handleHotUpdate() of a plugin that defines hotUpdate()
+      name: 'vike:pluginVirtualFiles:rerun',
+      // After the client hotUpdate() of the other Vite plugins => a Vite plugin caching the files it reads has already invalidated the modified one
+      hotUpdate: {
+        order: 'post',
+        handler() {
+          // Vite calls hotUpdate() for each of its environments
+          if (this.environment.name !== 'client' || !hasPageConfigCallbacks(config)) return
+          // Vike's virtual files await it, while the HMR of the modified file doesn't
+          rerunPageConfigCallbacks(this.environment).catch((err) => console.error(err))
+        },
+      },
+    },
   ]
 }
 
@@ -169,7 +188,7 @@ async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: V
   ) {
     reloadAll(file, config, operation, server)
     // Vite doesn't reload the browser upon a created or removed file => an open tab would keep the page configs set by the previous `vike.onPageConfigs()` calls
-    if (config.plugins.some((plugin) => plugin.vike?.onPageConfigs)) server.ws.send({ type: 'full-reload' })
+    if (hasPageConfigCallbacks(config)) server.ws.send({ type: 'full-reload' })
   }
 }
 
@@ -221,6 +240,10 @@ function reloadAll(
   reloadVikeConfig()
 
   updateUserFiles()
+}
+
+function hasPageConfigCallbacks(config: ResolvedConfig): boolean {
+  return config.plugins.some((plugin) => plugin.vike?.onPageConfigs)
 }
 
 function existsInViteModuleGraph(file: string, moduleGraph: ModuleGraph): boolean {
