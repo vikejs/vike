@@ -27,7 +27,10 @@ type Part =
 function resolveUrlPathname(routeString: string, routeParams: Record<string, string>): string {
   let parts: Part[] = [{ val: routeString, type: 'ROUTE_STRING' }]
 
-  Object.entries(routeParams).forEach(([key, val]) => {
+  // Longest first, so that e.g. `@page` doesn't replace the prefix of `@pageId`
+  const routeParamsSorted = Object.entries(routeParams).sort(([a], [b]) => b.length - a.length)
+
+  routeParamsSorted.forEach(([key, val]) => {
     if (key.startsWith('*')) {
       assert(key === '*' || /\d+/.test(key.slice(1)))
       assertUsage(key === '*', "Resolving URL with multiple globs isn't implemented yet")
