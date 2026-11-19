@@ -375,6 +375,7 @@ function processPageContextFromServer(pageContext: Record<string, unknown>) {
   assertUsage(!('urlOriginal' in pageContext), "Adding 'urlOriginal' to passToClient is forbidden")
   assert(hasProp(pageContext, 'pageId', 'string'))
   removeBuiltInOverrides(pageContext)
+  pageContext._pageContextFromServerKeys = Object.keys(pageContext) // Used by createPageContextFromServer_experimentalRSC()
 }
 
 // TO-DO/next-major-release: remove

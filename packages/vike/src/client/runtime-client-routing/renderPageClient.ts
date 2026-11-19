@@ -869,6 +869,10 @@ function createPageContextFromServer_experimentalRSC(
   const pageContextNew = forkPageContext(
     (pageContext as PageContextClient & { _originalObject: Record<string, unknown> })._originalObject,
   )
+  // Remove the values the previous server answer sent, as a navigation's new pageContext doesn't have them (e.g. `data` after a `throw render()` to a page without `+data`)
+  ;(pageContextNew._pageContextFromServerKeys as string[] | undefined)?.forEach((key) => delete pageContextNew[key])
+  // As a navigation's, unless the answer is the error page's
+  objectAssign(pageContextNew, { isErrorPage: false })
   objectAssign(pageContextNew, pageContextFromServerCopy)
   // A navigation reads previousPageContext when it starts, sets currentPageContext after routing, and sets previousPageContext when it renders
   if (globalObject.currentPageContext === globalObject.previousPageContext) {
