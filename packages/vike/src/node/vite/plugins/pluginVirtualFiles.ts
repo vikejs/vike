@@ -5,6 +5,7 @@ import { normalizePath } from 'vite'
 import { generateVirtualFilePageEntry } from './pluginVirtualFiles/generateVirtualFilePageEntry.js'
 import { generateVirtualFileGlobalEntryWithOldDesign } from './pluginVirtualFiles/generateVirtualFileGlobalEntryWithOldDesign.js'
 import { generateVirtualFileGlobalEntry } from './pluginVirtualFiles/generateVirtualFileGlobalEntry.js'
+import { runPageConfigCallbacks, rerunPageConfigCallbacks } from './pluginVirtualFiles/runPageConfigCallbacks.js'
 import { escapeRegex } from '../../../utils/escapeRegex.js'
 import { isScriptFile } from '../../../utils/isScriptFile.js'
 import {
@@ -80,6 +81,9 @@ function pluginVirtualFiles(): Plugin[] {
 
           const idParsed = parseVirtualFileId(id)
           if (idParsed) {
+            // Vike generates its virtual files after the Vite plugins set page configs
+            await runPageConfigCallbacks(config.plugins)
+
             if (idParsed.type === 'page-entry') {
               const code = await generateVirtualFilePageEntry(id, isDev)
               return code
@@ -104,6 +108,20 @@ function pluginVirtualFiles(): Plugin[] {
         handler(server) {
           server.watcher.prependListener('add', (file) => onFileCreatedOrRemoved(file, false, server, config))
           server.watcher.prependListener('unlink', (file) => onFileCreatedOrRemoved(file, true, server, config))
+        },
+      },
+    },
+    {
+      // Its own plugin: Vite doesn't call the handleHotUpdate() of a plugin that defines hotUpdate()
+      name: 'vike:pluginVirtualFiles:rerun',
+      // After the client hotUpdate() of the other Vite plugins => a Vite plugin caching the files it reads has already invalidated the modified one
+      hotUpdate: {
+        order: 'post',
+        handler({ type, file, server }) {
+          // Vite calls hotUpdate() for each of its environments
+          if (this.environment.name !== 'client' || !hasPageConfigCallbacks(config)) return
+          // Vike's virtual files await it, while the HMR of the modified file doesn't
+          rerunOnFileChange(type, file, server, config).catch((err) => console.error(err))
         },
       },
     },
@@ -144,12 +162,20 @@ async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: V
   if (isTemporaryBuildFile(file)) return
   const operation = isRemove ? 'removed' : 'created'
   debugFileChange('server.watcher', file, operation)
-  const { moduleGraph } = server
-  const isAppFile = await isAppDependency(file, moduleGraph)
 
-  if (
-    // Vike config (non-runtime) code
-    isAppFile?.isConfigDependency ||
+  if (await isVikeConfigReload(isRemove ? 'delete' : 'create', file, server.moduleGraph)) {
+    reloadAll(file, config, operation, server)
+  }
+}
+
+// Whether Vike reloads its config upon the file change
+async function isVikeConfigReload(type: 'create' | 'update' | 'delete', file: string, moduleGraph: ModuleGraph) {
+  const isAppFile = await isAppDependency(file, moduleGraph)
+  // Vike config (non-runtime) code
+  if (isAppFile.isConfigDependency) return true
+  // Only onFileCreatedOrRemoved() reloads Vike's config for the cases below
+  if (type === 'update') return false
+  return (
     // New + file => not tracked yet by Vike (`vikeConfigObject._vikeConfigDependencies`) nor Vite (`moduleGraph`)
     isPlusFile(file) ||
     // Trick: when fixing the path of a relative import => we don't know whether `file` is the imported file => we take a leap of faith when the conditions below are met.
@@ -159,10 +185,24 @@ async function onFileCreatedOrRemoved(file: string, isRemove: boolean, server: V
     //   ```bash
     //   rm someImportedFile.js && sleep 2 && git checkout someImportedFile.js
     //   ```
-    (isScriptFile(file) && getVikeConfigError())
-  ) {
-    reloadAll(file, config, operation, server)
-  }
+    (isScriptFile(file) && !!getVikeConfigError())
+  )
+}
+
+async function rerunOnFileChange(
+  type: 'create' | 'update' | 'delete',
+  file: string,
+  server: ViteDevServer,
+  config: ResolvedConfig,
+) {
+  if (
+    // Vike's own temporary file
+    isTemporaryBuildFile(file) ||
+    // The new Vike config calls the hook before Vike generates its virtual files
+    (await isVikeConfigReload(type, file, server.moduleGraph))
+  )
+    return
+  await rerunPageConfigCallbacks(config.plugins)
 }
 
 async function isAppDependency(filePathAbsoluteFilesystem: string, moduleGraph: ModuleGraph) {
@@ -213,6 +253,10 @@ function reloadAll(
   reloadVikeConfig()
 
   updateUserFiles()
+}
+
+function hasPageConfigCallbacks(config: ResolvedConfig): boolean {
+  return config.plugins.some((plugin) => plugin.vike?.onCreatePageConfigs)
 }
 
 function existsInViteModuleGraph(file: string, moduleGraph: ModuleGraph): boolean {
