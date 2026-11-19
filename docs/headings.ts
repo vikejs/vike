@@ -733,6 +733,12 @@ const headings = [
   },
   {
     level: 2,
+    title: '`+onCreatePageConfig_experimental()` hook',
+    titleInNav: '`+onCreatePageConfig_experimental()`',
+    url: '/onCreatePageConfig',
+  },
+  {
+    level: 2,
     title: '`+meta`',
     url: '/meta',
     sectionTitles: [
