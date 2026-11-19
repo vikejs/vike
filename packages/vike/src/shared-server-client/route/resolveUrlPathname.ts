@@ -36,9 +36,8 @@ function resolveUrlPathname(routeString: string, routeParams: Record<string, str
     }
     return { key, val }
   })
-  // Longest first, so that `@page` doesn't match the beginning of `@pageId`
+  // Longest first, so that `@someParam` doesn't match the beginning of `@someParamSuffix`
   params.sort((a, b) => b.key.length - a.key.length)
-
   params.forEach(({ key, val }) => {
     parts = parts
       .map((part) => {
