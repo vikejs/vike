@@ -27,13 +27,18 @@ type Part =
 function resolveUrlPathname(routeString: string, routeParams: Record<string, string>): string {
   let parts: Part[] = [{ val: routeString, type: 'ROUTE_STRING' }]
 
-  Object.entries(routeParams).forEach(([key, val]) => {
+  const params = Object.entries(routeParams).map(([key, val]) => {
     if (key.startsWith('*')) {
       assert(key === '*' || /\d+/.test(key.slice(1)))
       assertUsage(key === '*', "Resolving URL with multiple globs isn't implemented yet")
     } else {
       key = `@${key}`
     }
+    return { key, val }
+  })
+  // Longest first, so that `@someParam` doesn't match the beginning of `@someParamSuffix`
+  params.sort((a, b) => b.key.length - a.key.length)
+  params.forEach(({ key, val }) => {
     parts = parts
       .map((part) => {
         if (part.type === 'URL') {
