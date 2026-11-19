@@ -115,11 +115,12 @@ async function testCounter(inc: 0 | 1 | 2 | 3 = 0) {
     },
     { timeout: 5 * 1000 },
   )
-  // autoRetry() in case page isn't hydrated yet
+  // Await hydration — clicking repeatedly until the value changes is flaky: a click can land while the previous one is still being processed, overshooting `currentValue + 1`.
+  await page.waitForFunction(() => !!(window as any)._vike?.fullyRenderedUrl)
+  const btn = page.locator('button', { hasText: 'Counter' }).first()
+  await btn.click()
   await autoRetry(
     async () => {
-      const btn = page.locator('button', { hasText: 'Counter' }).first()
-      await btn.click()
       expect(await btn.textContent()).toBe(`Counter ${currentValue + 1}`)
     },
     { timeout: 5 * 1000 },
