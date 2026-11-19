@@ -115,6 +115,8 @@ type RenderArgs = {
   doNotReRenderIfSamePage?: boolean
   isClientSideNavigation?: boolean
   pageContextInitClient?: Record<string, unknown>
+  thrown?: { err: unknown }
+  urlThrown?: string // The URL of the page that threw the value handed to handleError()
 }
 async function renderPageClient(renderArgs: RenderArgs) {
   catchInfiniteLoop('renderPageClient()')
@@ -128,8 +130,34 @@ async function renderPageClient(renderArgs: RenderArgs) {
     isClientSideNavigation = true,
     pageContextInitClient,
     pageContextsAborted = [],
+    thrown,
+    urlThrown,
   } = renderArgs
   let { scrollTarget } = renderArgs
+
+  if (thrown) {
+    const pageShown = globalObject.previousPageContext
+    if (
+      pageShown &&
+      // The error page itself threw => rendering the error page again could loop
+      (isErrorPage(pageShown.pageId, pageShown._globalContext._pageConfigs) ||
+        // A newer rendering is already replacing the page that threw
+        pageShown.abortSignal.aborted)
+    ) {
+      logErrorClient(thrown.err, pageShown.abortSignal)
+      return
+    }
+  }
+
+  // We don't hard load the page that threw: the reloaded page could throw the same value again, in a loop
+  // - `throw render('/some-url')` keeps the URL: it's still the page that threw
+  // - `throw redirect('/some-url')` is a navigation: it can hard load `/some-url`, even when it's the URL of the page that threw
+  // Support:
+  // - Client Routing disabled by a static asset that failed to load, see `clientRoutingIsDisabled` below
+  // - A page that the client-side router can't render, see redirectHard_unlessRecovery()
+  // - A missing .pageContext.json, see fetchPageContextFromServer()
+  // - A static asset that fails to load, see onErrorFetchingStaticAssets()
+  const isRecovery = urlOriginal === urlThrown
 
   const abortController = new AbortController()
   const { abortIfOutdated, setHydrationCanBeAborted, setOnRenderClientCalled, isFirstRender } =
@@ -141,13 +169,14 @@ async function renderPageClient(renderArgs: RenderArgs) {
     isHistoryNavigation,
     pageContextsAborted,
     isClientSideNavigation,
+    isRecovery,
     pageContextInitClient,
     isFirstRender,
     // https://vike.dev/pageContext#abortSignal
     abortSignal: abortController.signal,
   }
 
-  if (globalObject.clientRoutingIsDisabled) {
+  if (globalObject.clientRoutingIsDisabled && !isRecovery) {
     redirectHard(urlOriginal)
     return
   }
@@ -155,10 +184,14 @@ async function renderPageClient(renderArgs: RenderArgs) {
   // Await hydration (unless +hydrationCanBeAborted)
   if (!isFirstRender) {
     await globalObject.hydrationAwaitPromise
-    if (abortIfOutdated()) return
+    if (abortIfOutdated()) {
+      if (thrown) logErrorClient(thrown.err, abortController.signal)
+      return
+    }
   }
   const { previousPageContext } = globalObject
 
+  if (thrown) return await onErrorHandler(thrown)
   return await renderPageNominal()
 
   async function renderPageNominal() {
@@ -223,7 +256,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
           //    - We do use the client router for rendering the error page, so I don't think this is much of an argument.
           await renderErrorPage({ is404: true })
           */
-          redirectHard(urlOriginal)
+          await redirectHard_unlessRecovery(pageContext)
           return
         }
 
@@ -231,7 +264,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
         const isClientRoutable = await isClientSideRoutable(pageContextFromRoute.pageId, pageContext)
         if (abortIfOutdated()) return
         if (!isClientRoutable) {
-          redirectHard(urlOriginal)
+          await redirectHard_unlessRecovery(pageContext)
           return
         }
 
@@ -485,6 +518,15 @@ async function renderPageClient(renderArgs: RenderArgs) {
     await renderPageView(pageContext, args)
   }
 
+  // The client-side router can't render the page
+  async function redirectHard_unlessRecovery(pageContext: { urlPathname: string }) {
+    if (isRecovery) {
+      await onErrorHandler({ err: new Error(`${pageContext.urlPathname} can't be rendered on the client-side`) })
+    } else {
+      redirectHard(urlOriginal)
+    }
+  }
+
   async function handleAbort(
     err: ErrorAbort,
     pageContext: PageContextBegin,
@@ -509,6 +551,7 @@ async function renderPageClient(renderArgs: RenderArgs) {
     if (pageContextAbort._urlRewrite) {
       await renderPageClient({
         ...renderArgs,
+        thrown: undefined,
         scrollTarget: undefined,
         pageContextsAborted,
       })
@@ -525,6 +568,8 @@ async function renderPageClient(renderArgs: RenderArgs) {
       } else {
         await renderPageClient({
           ...renderArgs,
+          thrown: undefined,
+          urlThrown: undefined, // `throw redirect()` can hard load the page that threw, see `isRecovery`
           scrollTarget: undefined,
           urlOriginal: urlRedirect,
           overwriteLastHistoryEntry: false,
@@ -659,6 +704,7 @@ async function getPageContextBegin(
     isHistoryNavigation,
     pageContextsAborted,
     isClientSideNavigation,
+    isRecovery,
     pageContextInitClient,
     isFirstRender,
     abortSignal,
@@ -668,6 +714,7 @@ async function getPageContextBegin(
     isHistoryNavigation: boolean
     pageContextsAborted: PageContextAborted[]
     isClientSideNavigation: boolean
+    isRecovery: boolean
     pageContextInitClient: Record<string, unknown> | undefined
     isFirstRender: boolean
     abortSignal: AbortSignal
@@ -681,6 +728,7 @@ async function getPageContextBegin(
     isBackwardNavigation,
     isHistoryNavigation,
     isClientSideNavigation,
+    _isRecovery: isRecovery,
     isHydration: isFirstRender && !isForErrorPage,
     isErrorPage: isForErrorPage,
     previousPageContext,
@@ -885,7 +933,9 @@ type PageContextExecuteHook = Omit<
   keyof Awaited<ReturnType<typeof loadPageConfigsLazyClientSide>>
 >
 async function loadPageConfigsLazyClientSideAndExecHook<
-  PageContext extends PageContext_loadPageConfigsLazyClientSide & PageContextExecuteHook & PageContextCreatedClient,
+  PageContext extends PageContext_loadPageConfigsLazyClientSide &
+    PageContextExecuteHook &
+    PageContextCreatedClient & { _isRecovery: boolean },
 >(pageContext: PageContext, isFirstRender: boolean, abortIfOutdated: () => boolean) {
   let hasErr = false
   let err: unknown
@@ -922,7 +972,7 @@ async function loadPageConfigsLazyClientSideAndExecHook<
 }
 async function onErrorFetchingStaticAssets(
   err: unknown,
-  pageContext: { urlOriginal: string },
+  pageContext: { urlOriginal: string; _isRecovery: boolean },
   isFirstRender: boolean,
 ): Promise<boolean> {
   if (import.meta.env.DEV) return false
@@ -964,6 +1014,10 @@ async function onErrorFetchingStaticAssets(
   // Possible causes that lead to this point:
   // - New deployment
   // - Connection problem
+
+  // === Recovery ===
+  // We don't hard load the page that threw, see `isRecovery` above => Vike logs the error, and renders the error page unless it's the error page that failed to load
+  if (pageContext._isRecovery) return false
 
   // === Client-side navigation ===
   // We hard load the next page:

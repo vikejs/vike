@@ -1,6 +1,17 @@
 export { testRun as test }
 
-import { run, page, test, expect, getServerUrl, fetchHtml, autoRetry, expectLog, partRegex } from '@brillout/test-e2e'
+import {
+  run,
+  page,
+  test,
+  expect,
+  getServerUrl,
+  fetchHtml,
+  autoRetry,
+  expectLog,
+  partRegex,
+  sleep,
+} from '@brillout/test-e2e'
 import { ensureWasClientSideRouted, expectUrl, testCounter, expectPageContextJsonRequest } from '../utils'
 
 function testRun(
@@ -226,10 +237,179 @@ function testRun(
     await testCounter(1)
     await ensureWasClientSideRouted('/pages/index')
   })
+
+  {
+    const url = getServerUrl() + '/throw-after-render'
+    const expectErrThrown = () => autoRetry(() => expectBrowserError('Thrown after render'))
+
+    test('handleError() - UI component throws after its page rendered', async () => {
+      await page.goto(url)
+      await hydrationDone()
+      const historyLength = await page.evaluate(() => window.history.length)
+      await page.click('#throw')
+      await autoRetry(async () => {
+        expect(await page.textContent('p')).toBe('Something went wrong.')
+      })
+      expect(await page.textContent('#data')).toBe('{}')
+      await testCounter()
+      await expectErrThrown()
+      await expectUrl('/throw-after-render')
+      expect(await page.evaluate(() => window.history.length)).toBe(historyLength)
+      await ensureWasClientSideRouted('/pages/throw-after-render')
+    })
+
+    test("handleError() - no hard reload when the error page's .pageContext.json is missing", async () => {
+      const glob = '**/*.pageContext.json*'
+      await page.route(glob, (route) => route.fulfill({ status: 404, contentType: 'text/plain', body: 'Not Found' }))
+      await page.goto(url)
+      await hydrationDone()
+      const stopCounting = countDocumentRequests()
+      await page.click('#throw')
+      await expectErrThrown()
+      await autoRetry(() => expectBrowserError("couldn't be fetched"))
+      await page.unroute(glob)
+      expect(stopCounting()).toBe(0)
+      expectBrowserError('Failed to load resource: the server responded with a status of 404')
+    })
+
+    test("handleError() - no hard reload when `throw render('/some-url')` can't be rendered on the client-side", async () => {
+      const stopCounting = countDocumentRequests()
+      await page.goto(url + '?render-url') // The page throws on its own after every load
+      await sleep(1500) // Long enough for several reloads
+      expect(stopCounting()).toBe(1)
+      expect(await page.textContent('p')).toBe('Something went wrong.')
+      await expectUrl('/throw-after-render?render-url')
+      await autoRetry(() => expectBrowserError("/does-not-exist can't be rendered on the client-side"))
+    })
+
+    test('handleError() - a value that a newer rendering replaces is logged', async () => {
+      await page.goto(url + '?two-values')
+      await autoRetry(() => expectBrowserError('First value'))
+      expectBrowserError('Second value')
+      await autoRetry(() => expectLog('handleError() settled'))
+    })
+
+    test('handleError() - a navigation goes on when the page it replaces throws', async () => {
+      // Holds the navigation to /about until it loads the code of /about
+      const isAboutCode = (u: URL) => u.pathname.includes('pages_about') || u.pathname.includes('/pages/about/')
+      let releaseAbout!: () => void
+      const aboutReleased = new Promise<void>((resolve) => (releaseAbout = resolve))
+      await page.route(isAboutCode, async (route) => {
+        await aboutReleased
+        await route.continue()
+      })
+      await page.goto(url + '?throw-on-leave') // The page throws once a navigation aborts it
+      await hydrationDone()
+      await page.click('a[href="/about"]')
+      await expectErrThrown()
+      releaseAbout()
+      await autoRetry(async () => {
+        expect(await page.textContent('h1')).toBe('About')
+      })
+      await page.unroute(isAboutCode)
+      await expectUrl('/about')
+    })
+
+    test('handleError() - a value handed over once the error page is shown is logged', async () => {
+      await page.goto(url)
+      await hydrationDone()
+      await page.click('#value-after-error-page')
+      await autoRetry(() => expectLog('handleError() settled'))
+      // Not the render(404) handed over second
+      expect(await page.textContent('p')).toBe('Something went wrong.')
+      expectBrowserError('First value')
+      expectBrowserError('AbortRender')
+    })
+
+    if (isMakingPageContextJsonRequest) {
+      test("handleError() - no hard reload when the .pageContext.json of `throw render('/some-url')` is missing", async () => {
+        const glob = '**/about/index.pageContext.json'
+        await page.route(glob, (route) => route.fulfill({ status: 404, contentType: 'text/plain', body: 'Not Found' }))
+        const stopCounting = countDocumentRequests()
+        await page.goto(url + '?render-about') // The page throws on its own after every load
+        await sleep(1500) // Long enough for several reloads
+        await page.unroute(glob)
+        expect(stopCounting()).toBe(1)
+        expect(await page.textContent('p')).toBe('Something went wrong.')
+        expectBrowserError("couldn't be fetched")
+        expectBrowserError('Failed to load resource: the server responded with a status of 404')
+      })
+    }
+
+    test("handleError() - `throw redirect('/some-url')` can hard load a page the client can't render", async () => {
+      await page.goto(url + '?redirect-html-only')
+      await expectUrl('/html-only')
+      await autoRetry(async () => {
+        expect(await page.textContent('h1')).toBe('HTML only')
+      })
+    })
+
+    if (isMakingPageContextJsonRequest) {
+      test('handleError() - `throw redirect()` to the URL of the page that threw can hard load it', async () => {
+        await page.goto(url)
+        await hydrationDone()
+        const glob = '**/throw-after-render/index.pageContext.json'
+        await page.route(glob, (route) => route.fulfill({ status: 404, contentType: 'text/plain', body: 'Not Found' }))
+        const stopCounting = countDocumentRequests()
+        await page.click('#redirect-self')
+        await sleep(1500) // Long enough for the hard load
+        await page.unroute(glob)
+        expect(stopCounting()).toBe(1)
+        expect(await page.textContent('h1')).toBe('Throw after render')
+        await testCounter() // The hard load reset the counter
+        expectBrowserError('Failed to load resource: the server responded with a status of 404')
+      })
+    }
+
+    // Static assets are hard reloaded only in production
+    if (!isDev) {
+      test("handleError() - no hard reload loop when the error page's JavaScript is missing", async () => {
+        const glob = '**/assets/entries/pages_error.*.js'
+        await page.route(glob, (route) => route.abort())
+        const stopCounting = countDocumentRequests()
+        await page.goto(url + '?late') // The page throws on its own after every load
+        await sleep(1500) // Long enough for several reloads
+        await page.unroute(glob)
+        expect(stopCounting()).toBe(1)
+        await expectErrThrown()
+        await autoRetry(() => expectBrowserError('Failed to fetch dynamically imported module'))
+        expectBrowserError('Failed to load resource: net::ERR_FAILED')
+      })
+
+      test('handleError() - no hard reload loop after a failed prefetch disabled client routing', async () => {
+        const glob = '**/assets/entries/pages_about.*.js'
+        await page.route(glob, (route) => route.abort())
+        const stopCounting = countDocumentRequests()
+        await page.goto(url + '?late-after-prefetch') // The prefetch fails, then the page throws, after every load
+        await sleep(1500) // Long enough for several reloads
+        await page.unroute(glob)
+        expect(stopCounting()).toBe(1)
+        expect(await page.textContent('p')).toBe('Something went wrong.')
+        await expectErrThrown()
+        expectBrowserError('Failed to load resource: net::ERR_FAILED')
+      })
+    }
+  }
 }
 
 async function hydrationDone() {
   await testCounter()
+}
+
+function expectBrowserError(logText: string) {
+  expectLog(logText, { filter: (log) => log.logSource === 'Browser Error' })
+}
+
+function countDocumentRequests() {
+  let count = 0
+  const onRequest = (request: { isNavigationRequest(): boolean }) => {
+    if (request.isNavigationRequest()) count++
+  }
+  page.on('request', onRequest)
+  return () => {
+    page.off('request', onRequest)
+    return count
+  }
 }
 
 // Click on Cancel (or OK) of the next window.confirm() dialog

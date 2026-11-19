@@ -74,6 +74,7 @@ Paths below are relative to https://vike.dev (e.g. `/data-fetching` → https://
 - /render — `throw render()` (`vike/abort`) render another page WITHOUT changing URL, error pages by status (401/403/404/500), `abortReason`/`abortStatusCode`
 - /navigate — `navigate()` programmatic client nav, `keepScrollPosition`, `overwriteLastHistoryEntry`, extra `pageContext`; Client Routing only
 - /reload — `reload()` client reload via Client Router (faster than `location.reload()`), auth refresh
+- /handleError — `handleError(err)` let Vike handle a value thrown outside its hooks (UI component after render, root error hook): error page, `render()`, `redirect()`; Client Routing only
 - /prefetch — `prefetch()` prefetch next-page assets; Client Routing; pairs with `+prefetchStaticAssets`
 - /ClientOnly — `<ClientOnly>` render children client-only within SSR, fallback during SSR/hydration, avoids "window is not defined", auto code-split
 - /modifyUrl — `modifyUrl()` edit URL parts (pathname/protocol/hostname/port) keeping query; i18n locale extraction
