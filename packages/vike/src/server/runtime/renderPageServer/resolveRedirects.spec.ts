@@ -25,6 +25,9 @@ describe('resolveRouteStringRedirect', () => {
     )
     expect(resolveRouteStringRedirect('/@a', '/a/@a', '/@a')).toEqual('/a/@a')
     expect(resolveRouteStringRedirect('/@a/@b', '/a/@a/@b', '/@b/1')).toEqual('/a/@b/1')
+    // https://github.com/vikejs/vike/issues/3750
+    expect(resolveRouteStringRedirect('/p/@page/@pageId', '/posts/@pageId', '/p/a/42')).toEqual('/posts/42')
+    expect(resolveRouteStringRedirect('/old/@id/@idx', '/new/@id/@idx', '/old/1/2')).toEqual('/new/1/2')
   })
   it('handles invalid redirects', () => {
     expect(() => resolveRouteStringRedirect('a', 'b', '/')).toThrowErrorMatchingInlineSnapshot(

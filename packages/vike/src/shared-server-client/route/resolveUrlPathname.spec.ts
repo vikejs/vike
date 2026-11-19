@@ -15,6 +15,13 @@ describe('resolveUrlPathname', () => {
     expect(resolveUrlPathname('/*', { '*': '*' })).toEqual('/*')
   })
 
+  it('parameter name that is a prefix of another', () => {
+    expect(resolveUrlPathname('/@page/@pageId', { page: 'a', pageId: '42' })).toEqual('/a/42')
+    expect(resolveUrlPathname('/@page/@pageId', { pageId: '42', page: 'a' })).toEqual('/a/42')
+    expect(resolveUrlPathname('/@pageId/@page', { page: 'a', pageId: '42' })).toEqual('/42/a')
+    expect(resolveUrlPathname('/@id/@id-x', { id: '1', 'id-x': '2' })).toEqual('/1/2')
+  })
+
   // Not implemented yet
   // it('multiple globs', () => {
   //   expect(resolveUrlPathname('/*/*', { '*1': '*2', '*2': '*' })).toEqual('/*2/*')
