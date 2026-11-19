@@ -15,7 +15,7 @@ const Footer = () => {
   })
 
   return (
-    <footer className="bg-gray-100">
+    <footer className="bg-gray-100 dark:bg-transparent">
       <div className="container mx-auto text-center">
         <div onClick={handleScrollToTopClick} className="cursor-pointer">
           <VikeNitedaniAnimated width="70" height="70" className="hidden md:block mx-auto w-30 py-8 mt-20" />
