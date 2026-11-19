@@ -21,11 +21,12 @@ function testRun(cmd: `pnpm run ${'dev' | 'preview' | 'preview:ssg'}`) {
   })
 
   test('synced state', async () => {
-    // autoRetry() for awaiting client-side code loading & executing
+    // Await hydration — see testCounter() below
+    await page.waitForFunction(() => !!(window as any)._vike?.fullyRenderedUrl)
+    expect(await page.textContent(counter1)).toBe('Counter 1')
+    await page.click(counter1)
     await autoRetry(
       async () => {
-        expect(await page.textContent(counter1)).toBe('Counter 1')
-        await page.click(counter1)
         expect(await page.textContent(counter1)).toContain('Counter 2')
       },
       { timeout: 5 * 1000 },
