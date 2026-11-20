@@ -7,8 +7,12 @@ To [self-host](https://en.wikipedia.org/wiki/Self-hosting_(network)) your app:
    ```shell
    $ vike build
    ```
-   > This generates a `dist/` folder that you typically upload to your production server.
-1. Start your app in your production server:
+1. Copy `dist/` to your server. For a standard build, copy `package.json` and your lockfile alongside it and install your production dependencies from that directory. For example, with npm:
+   ```shell
+   $ npm ci --omit=dev
+   ```
+   > A <Link href="/server#standalone">standalone build</Link> can be deployed with just `dist/`.
+1. From the directory containing `dist/`, start your app:
    ```shell
    $ node ./dist/server/index.mjs # or Bun/Deno
    ```
