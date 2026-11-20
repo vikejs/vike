@@ -29,7 +29,7 @@ describe('getPageContext()', () => {
     expect(reads).toEqual({ hookOfA: '/a', requestB: null })
   })
 
-  it('returns the provided pageContext only to the hook the extension calls next, with and without a store', async () => {
+  it('reads the provided pageContext immediately and returns null after the queued clear, with and without a store', async () => {
     const asyncLocalStorage = await getAsyncLocalStorage()
     assert(asyncLocalStorage)
     const provideThenRead = async () => {
