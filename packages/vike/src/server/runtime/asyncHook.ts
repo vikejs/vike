@@ -67,7 +67,7 @@ function providePageContext_withAsyncHook(pageContext: null | PageContextClient 
   const asyncStore = getAsyncStore()
   if (!asyncStore) return false
   asyncStore.pageContextProvided = pageContext
-  // It's for the hook the extension calls next — not for what the request runs later, e.g. a component rendered upon HTML streaming
+  // `pageContextProvided` is for the hook the extension calls next — not for what the request runs later, e.g. a component rendered upon HTML streaming
   Promise.resolve().then(() => {
     asyncStore.pageContextProvided = null
   })
