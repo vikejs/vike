@@ -28,6 +28,21 @@ describe('getPageContext()', () => {
     })
     expect(reads).toEqual({ hookOfA: '/a', requestB: null })
   })
+
+  it('returns the provided pageContext only to the hook the extension calls next, with and without a store', async () => {
+    const asyncLocalStorage = await getAsyncLocalStorage()
+    assert(asyncLocalStorage)
+    const provideThenRead = async () => {
+      providePageContext(getPageContextPublicServer(createPageContext('/a')))
+      const hookOfExtension = getUrlOfPageContext()
+      await null
+      // E.g. a component rendered upon HTML streaming: useConfig() must not take the pageContext of the hook
+      return { hookOfExtension, afterwards: getUrlOfPageContext() }
+    }
+    const expected = { hookOfExtension: '/a', afterwards: null }
+    expect(await asyncLocalStorage.run({ requestId: 1 }, provideThenRead)).toEqual(expected)
+    expect(await provideThenRead()).toEqual(expected)
+  })
 })
 
 // Request A and request B are woken up by the same promise: B's continuation is already queued when A's continuation runs
