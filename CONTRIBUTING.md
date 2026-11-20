@@ -8,6 +8,7 @@ To develop Vike's source code:
 
 - [Get started](#get-started)
 - [Run tests](#run-tests)
+- [Publish to npm](#publish-to-npm)
 
 <br/>
 
@@ -125,6 +126,42 @@ pnpm build # At the monorepo root
 cd docs/ # From the monorepo root
 pnpm run dev
 ```
+
+<br/>
+
+
+## Publish to npm
+
+Maintainers can manually run the **Publish to npm** GitHub Actions workflow to publish `vike` using [npm trusted publishing](https://docs.npmjs.com/trusted-publishers/).
+
+### One-time setup
+
+In the `vike` package's npm settings, add a GitHub Actions trusted publisher:
+
+| Field | Value |
+| --- | --- |
+| Organization or user | `vikejs` |
+| Repository | `vike` |
+| Workflow filename | `publish.yml` |
+| Environment name | `release` |
+| Allowed actions | Enable direct publishing with `npm publish` |
+
+Complete the first successful publish within two days of creating the configuration, before it expires. No npm publishing token or GitHub secret is needed.
+
+### Publish
+
+The workflow publishes the version already committed in `packages/vike/package.json`. Prepare the version, changelog, and Git tag beforehand; the workflow doesn't create or update them. The existing `pnpm run release` commands also publish to npm, so don't use them just to prepare a version for this workflow.
+
+Once `publish.yml` is merged into the default branch, open **Actions → Publish to npm → Run workflow**, select the release branch, and choose the npm dist-tag (`latest` for stable releases, `beta` for prereleases). The selected version must not already exist on npm. Any protection rules on the `release` environment apply.
+
+Alternatively, from the repository:
+
+```shell
+gh workflow run publish.yml --ref main -f tag=latest
+gh run watch
+```
+
+The workflow installs dependencies from the pnpm lockfile, builds Vike, and publishes from `packages/vike/`, including its `prepack` step. Publishing only runs when manually triggered in `vikejs/vike`.
 
 <br/>
 
