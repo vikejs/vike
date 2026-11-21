@@ -296,10 +296,7 @@ function getPageContext_sync<PageContext = PageContextClient | PageContextServer
   return pageContextPublic as any
 }
 function providePageContext(pageContext: null | PageContextClient | PageContextServer) {
-  providePageContextInternal(pageContext as any)
-}
-function providePageContextInternal(pageContext: null | PageContextExecHook) {
-  globalObject.pageContext = pageContext
+  globalObject.pageContext = pageContext as any
   // Promise.resolve() is quicker than process.nextTick() and setImmediate()
   // https://stackoverflow.com/questions/67949576/process-nexttick-before-promise-resolve-then
   Promise.resolve().then(() => {
