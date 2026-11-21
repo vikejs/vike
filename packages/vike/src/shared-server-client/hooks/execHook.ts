@@ -205,8 +205,14 @@ function execHookBase<HookReturn>(
   const configValue = globalContext._pageConfigGlobal.configValues['onHookCall']
 
   const callOriginal = () => {
-    providePageContextInternal(pageContext)
-    return hookFnCaller()
+    const pageContextPrevious = globalObject.pageContext
+    globalObject.pageContext = pageContext
+    try {
+      return hookFnCaller()
+    } finally {
+      // Only while the hook runs synchronously — the code that runs afterwards may belong to another HTTP request
+      globalObject.pageContext = pageContextPrevious
+    }
   }
 
   // +onHookCall doesn't exist
@@ -289,16 +295,8 @@ function getPageContext_sync<PageContext = PageContextClient | PageContextServer
     : getPageContextPublicShared(pageContext)
   return pageContextPublic as any
 }
-/**
- * Provide `pageContext` for universal hooks.
- *
- * https://vike.dev/getPageContext
- */
 function providePageContext(pageContext: null | PageContextClient | PageContextServer) {
-  providePageContextInternal(pageContext as any)
-}
-function providePageContextInternal(pageContext: null | PageContextExecHook) {
-  globalObject.pageContext = pageContext
+  globalObject.pageContext = pageContext as any
   // Promise.resolve() is quicker than process.nextTick() and setImmediate()
   // https://stackoverflow.com/questions/67949576/process-nexttick-before-promise-resolve-then
   Promise.resolve().then(() => {
