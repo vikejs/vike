@@ -7,17 +7,23 @@ To [self-host](https://en.wikipedia.org/wiki/Self-hosting_(network)) your app:
    ```shell
    $ vike build
    ```
-1. Copy `dist/` to your server. For a standard build, copy `package.json` and your lockfile alongside it and install your production dependencies from that directory. For example, with npm:
-   ```shell
-   $ npm ci --omit=dev
-   ```
-   > A <Link href="/server#standalone">standalone build</Link> can be deployed with just `dist/`.
-1. From the directory containing `dist/`, start your app:
+1. Copy `dist/` to your server and <Link href="#runtime-dependencies">install any runtime dependencies</Link>.
+1. Start your app from the directory containing `dist/`:
    ```shell
    $ node ./dist/server/index.mjs # or Bun/Deno
    ```
 
 You can use <Link href="/serverEntry">`+serverEntry.js`</Link> for more control over the server entry.
+
+## Runtime dependencies
+
+A standard build can import dependencies from `node_modules` at runtime. Copy `package.json` and your lockfile alongside `dist/`, then install production dependencies from that directory. For example, with npm:
+
+```shell
+$ npm ci --omit=dev
+```
+
+A <Link href="/server#standalone">standalone build</Link> can be deployed with just `dist/`.
 
 ## See also
 
