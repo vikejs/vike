@@ -43,16 +43,34 @@ describe('getPageContext()', () => {
     expect(await asyncLocalStorage.run({ requestId: 1 }, provideThenRead)).toEqual(expected)
     expect(await provideThenRead()).toEqual(expected)
   })
+
+  it('returns null to another request and after the hook, upon a hook called inside providePageContext(pageContext, fn)', async () => {
+    // E.g. vike-react's +onRenderHtml hook: it awaits, then calls +onAfterRenderHtml inside providePageContext()
+    const requestA = async (shared: Promise<void>) =>
+      await execHookOfRequestA(async () => {
+        const pageContext = getPageContext<PageContextServer>()
+        await shared
+        const hookOfExtension = providePageContext(pageContext, () => getUrlOfPageContext())
+        // E.g. a component rendered upon HTML streaming: useConfig() must not take the pageContext of the hook
+        return { hookOfExtension, afterwards: getUrlOfPageContext() }
+      })
+    const expected = { hookOfA: { hookOfExtension: '/a', afterwards: null }, requestB: null }
+    expect(await runTwoRequests(requestA)).toEqual(expected)
+    // No AsyncLocalStorage store, e.g. Cloudflare without `nodejs_compat`
+    expect(await runTwoRequests(requestA, false)).toEqual(expected)
+  })
 })
 
 // Request A and request B are woken up by the same promise: B's continuation is already queued when A's continuation runs
-async function runTwoRequests(requestA: (shared: Promise<void>) => Promise<unknown>) {
+async function runTwoRequests(requestA: (shared: Promise<void>) => Promise<unknown>, withStore = true) {
   const asyncLocalStorage = await getAsyncLocalStorage()
   assert(asyncLocalStorage)
+  const runRequest = <RequestReturn>(requestId: number, request: () => RequestReturn) =>
+    withStore ? asyncLocalStorage.run({ requestId }, request) : request()
   const shared = new Promise<void>((resolve) => setTimeout(resolve, 0))
   const [hookOfA, requestB] = await Promise.all([
-    asyncLocalStorage.run({ requestId: 1 }, () => requestA(shared)),
-    asyncLocalStorage.run({ requestId: 2 }, async () => {
+    runRequest(1, () => requestA(shared)),
+    runRequest(2, async () => {
       await shared
       return getUrlOfPageContext()
     }),

@@ -204,16 +204,7 @@ function execHookBase<HookReturn>(
   assert(hookName !== 'onHookCall') // ensure no infinite loop
   const configValue = globalContext._pageConfigGlobal.configValues['onHookCall']
 
-  const callOriginal = () => {
-    const pageContextPrevious = globalObject.pageContext
-    globalObject.pageContext = pageContext
-    try {
-      return hookFnCaller()
-    } finally {
-      // Only while the hook runs synchronously — the code that runs afterwards may belong to another HTTP request
-      globalObject.pageContext = pageContextPrevious
-    }
-  }
+  const callOriginal = () => providePageContextInternal(pageContext, hookFnCaller)
 
   // +onHookCall doesn't exist
   if (!configValue?.value) return callOriginal()
@@ -295,11 +286,27 @@ function getPageContext_sync<PageContext = PageContextClient | PageContextServer
     : getPageContextPublicShared(pageContext)
   return pageContextPublic as any
 }
-function providePageContext(pageContext: null | PageContextClient | PageContextServer) {
+function providePageContext<FnReturn>(
+  pageContext: null | PageContextClient | PageContextServer,
+  fn: () => FnReturn,
+): FnReturn
+function providePageContext(pageContext: null | PageContextClient | PageContextServer): void
+function providePageContext<FnReturn>(pageContext: null | PageContextClient | PageContextServer, fn?: () => FnReturn) {
+  if (fn) return providePageContextInternal(pageContext as any, fn)
   globalObject.pageContext = pageContext as any
   // Promise.resolve() is quicker than process.nextTick() and setImmediate()
   // https://stackoverflow.com/questions/67949576/process-nexttick-before-promise-resolve-then
   Promise.resolve().then(() => {
     globalObject.pageContext = null
   })
+}
+function providePageContextInternal<FnReturn>(pageContext: null | PageContextExecHook, fn: () => FnReturn): FnReturn {
+  const pageContextPrevious = globalObject.pageContext
+  globalObject.pageContext = pageContext
+  try {
+    return fn()
+  } finally {
+    // Only while fn() runs synchronously — the code that runs afterwards may belong to another HTTP request
+    globalObject.pageContext = pageContextPrevious
+  }
 }

@@ -50,11 +50,22 @@ function getPageContext<PageContext = PageContextClient | PageContextServer>({
 }
 
 /**
+ * Provide `pageContext` for universal hooks while `fn()` runs synchronously.
+ *
+ * https://vike.dev/getPageContext
+ */
+function providePageContext<FnReturn>(
+  pageContext: null | PageContextClient | PageContextServer,
+  fn: () => FnReturn,
+): FnReturn
+/**
  * Provide `pageContext` for universal hooks.
  *
  * https://vike.dev/getPageContext
  */
-function providePageContext(pageContext: null | PageContextClient | PageContextServer) {
+function providePageContext(pageContext: null | PageContextClient | PageContextServer): void
+function providePageContext<FnReturn>(pageContext: null | PageContextClient | PageContextServer, fn?: () => FnReturn) {
+  if (fn) return providePageContext_sync(pageContext, fn)
   // The request's AsyncLocalStorage store => code of another HTTP request never reads this `pageContext`
   const isProvided = providePageContext_withAsyncHook(pageContext)
   // No store, e.g. Cloudflare without `nodejs_compat`
