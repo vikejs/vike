@@ -294,9 +294,26 @@ function getPageContext_sync<PageContext = PageContextClient | PageContextServer
 function providePageContext<FnReturn>(
   pageContext: null | PageContextClient | PageContextServer,
   fn: () => FnReturn,
-): FnReturn {
-  // Old versions of `vike-{react,vue,solid}` call providePageContext(pageContext) without `fn`
-  assertUsage(fn, 'Update vike-react, vike-vue or vike-solid to its latest version')
+): FnReturn
+// TO-DO/next-major-release: remove
+/** @deprecated Update vike-react, vike-vue or vike-solid to its latest version */
+function providePageContext(pageContext: null | PageContextClient | PageContextServer): void
+function providePageContext<FnReturn>(
+  pageContext: null | PageContextClient | PageContextServer,
+  fn?: () => FnReturn,
+): FnReturn | void {
+  // TO-DO/next-major-release: remove
+  if (!fn) {
+    // Old versions of `vike-{react,vue,solid}` call providePageContext(pageContext) without `fn`
+    assertWarning(false, 'Update vike-react, vike-vue or vike-solid to its latest version', { onlyOnce: true })
+    globalObject.pageContext = pageContext as any
+    // Promise.resolve() is quicker than process.nextTick() and setImmediate()
+    // https://stackoverflow.com/questions/67949576/process-nexttick-before-promise-resolve-then
+    Promise.resolve().then(() => {
+      globalObject.pageContext = null
+    })
+    return
+  }
   return providePageContextInternal(pageContext as any, fn)
 }
 function providePageContextInternal<FnReturn>(pageContext: null | PageContextExecHook, fn: () => FnReturn): FnReturn {
@@ -306,6 +323,7 @@ function providePageContextInternal<FnReturn>(pageContext: null | PageContextExe
     return fn()
   } finally {
     // Only while fn() runs synchronously — the code that runs afterwards may belong to another HTTP request
+    // https://github.com/telefunc/telefunc/pull/520
     globalObject.pageContext = pageContextPrevious
   }
 }
