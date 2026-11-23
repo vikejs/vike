@@ -16,35 +16,7 @@ describe('getPageContext()', () => {
     expect(reads).toEqual({ hookOfA: '/a', requestB: null })
   })
 
-  it('returns null to another request, upon a hook called by an extension', async () => {
-    const reads = await runTwoRequests(async (shared) => {
-      // E.g. vike-react's +onRenderHtml hook: it awaits, then calls providePageContext() before calling +onAfterRenderHtml
-      return await execHookOfRequestA(async () => {
-        const pageContext = getPageContext<PageContextServer>()
-        await shared
-        providePageContext(pageContext)
-        return getUrlOfPageContext()
-      })
-    })
-    expect(reads).toEqual({ hookOfA: '/a', requestB: null })
-  })
-
-  it('reads the provided pageContext immediately and returns null after the queued clear, with and without a store', async () => {
-    const asyncLocalStorage = await getAsyncLocalStorage()
-    assert(asyncLocalStorage)
-    const provideThenRead = async () => {
-      providePageContext(getPageContextPublicServer(createPageContext('/a')))
-      const hookOfExtension = getUrlOfPageContext()
-      await null
-      // E.g. a component rendered upon HTML streaming: useConfig() must not take the pageContext of the hook
-      return { hookOfExtension, afterwards: getUrlOfPageContext() }
-    }
-    const expected = { hookOfExtension: '/a', afterwards: null }
-    expect(await asyncLocalStorage.run({ requestId: 1 }, provideThenRead)).toEqual(expected)
-    expect(await provideThenRead()).toEqual(expected)
-  })
-
-  it('returns null to another request and after the hook, upon a hook called inside providePageContext(pageContext, fn)', async () => {
+  it('returns null to another request and after the hook, upon a hook called by an extension', async () => {
     // E.g. vike-react's +onRenderHtml hook: it awaits, then calls +onAfterRenderHtml inside providePageContext()
     const requestA = async (shared: Promise<void>) =>
       await execHookOfRequestA(async () => {

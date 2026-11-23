@@ -286,19 +286,18 @@ function getPageContext_sync<PageContext = PageContextClient | PageContextServer
     : getPageContextPublicShared(pageContext)
   return pageContextPublic as any
 }
+/**
+ * Provide `pageContext` for universal hooks while `fn()` runs synchronously.
+ *
+ * https://vike.dev/getPageContext
+ */
 function providePageContext<FnReturn>(
   pageContext: null | PageContextClient | PageContextServer,
   fn: () => FnReturn,
-): FnReturn
-function providePageContext(pageContext: null | PageContextClient | PageContextServer): void
-function providePageContext<FnReturn>(pageContext: null | PageContextClient | PageContextServer, fn?: () => FnReturn) {
-  if (fn) return providePageContextInternal(pageContext as any, fn)
-  globalObject.pageContext = pageContext as any
-  // Promise.resolve() is quicker than process.nextTick() and setImmediate()
-  // https://stackoverflow.com/questions/67949576/process-nexttick-before-promise-resolve-then
-  Promise.resolve().then(() => {
-    globalObject.pageContext = null
-  })
+): FnReturn {
+  // Old versions of `vike-{react,vue,solid}` call providePageContext(pageContext) without `fn`
+  assertUsage(fn, 'Update vike-react, vike-vue or vike-solid to its latest version')
+  return providePageContextInternal(pageContext as any, fn)
 }
 function providePageContextInternal<FnReturn>(pageContext: null | PageContextExecHook, fn: () => FnReturn): FnReturn {
   const pageContextPrevious = globalObject.pageContext
