@@ -287,7 +287,7 @@ function getPageContext_sync<PageContext = PageContextClient | PageContextServer
   return pageContextPublic as any
 }
 /**
- * Provide `pageContext` for universal hooks while `fn()` runs synchronously.
+ * Provide `pageContext` for universal hooks.
  *
  * https://vike.dev/getPageContext
  */
