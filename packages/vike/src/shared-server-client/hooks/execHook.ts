@@ -324,7 +324,7 @@ function providePageContextInternal<FnReturn>(pageContext: null | PageContextExe
     return fn()
   } finally {
     // Only while fn() runs synchronously — the code that runs afterwards may belong to another HTTP request
-    // https://github.com/telefunc/telefunc/pull/520
+    // https://github.com/telefunc/telefunc/pull/520#issuecomment-7134162671
     globalObject.pageContext = pageContextPrevious
   }
 }
