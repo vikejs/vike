@@ -1521,8 +1521,8 @@ importers:
         specifier: ^0.7.2
         version: 0.7.2(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@1.0.8)
       '@universal-middleware/hono':
-        specifier: ^0.6.1
-        version: 0.6.1(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@1.0.8)
+        specifier: ^0.6.2
+        version: 0.6.2(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@1.0.8)
       hono:
         specifier: ^4.13.13
         version: 4.13.13
@@ -5156,8 +5156,8 @@ packages:
     peerDependencies:
       hono: ^4
 
-  '@universal-middleware/hono@0.6.1':
-    resolution: {integrity: sha512-Zw74AwvjPxV0W6sHTTZKQZQU4xuz1U9Ffl43iJn74GrHRvozw5V1QcZVG9UkTw6qzFhzE+mVWU4QxZr5b65xHA==}
+  '@universal-middleware/hono@0.6.2':
+    resolution: {integrity: sha512-9jtQfEyDGzik0OVbJIsqPTQLQ9Z9PC51yysL9nTKQGx8gh0u5XxL97N/YulFjQKez3KXVm+e+Hx/RVRjdcQR0A==}
     engines: {node: '>=22'}
     peerDependencies:
       hono: ^4
@@ -11320,7 +11320,7 @@ snapshots:
       - h3
       - srvx
 
-  '@universal-middleware/hono@0.6.1(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@1.0.8)':
+  '@universal-middleware/hono@0.6.2(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@1.0.8)':
     dependencies:
       '@universal-middleware/core': 0.7.2(@hattip/core@0.0.49)(@types/express@5.0.6)(hono@4.13.13)(srvx@1.0.8)
       hono: 4.13.13
