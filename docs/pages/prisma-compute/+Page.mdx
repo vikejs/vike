@@ -1,0 +1,206 @@
+import { Link } from '@brillout/docpress'
+import { ServerStep } from '../../components'
+
+[Prisma Compute](https://www.prisma.io/compute) is a hosting platform for TypeScript apps. It runs your production server on [Bun](https://bun.com), next to an optional [Prisma Postgres](https://www.prisma.io/postgres) database, so you can use it for <Link href="/ssr">SSR</Link> and <Link href="/api-routes">API routes</Link>.
+
+There is no Vite adapter to install: you <Link href="/self-host">build your app as usual</Link> and declare it with [Prisma Composer](https://www.prisma.io/docs/composer), which uploads `dist/` and starts `dist/server/index.mjs`.
+
+
+## Get started
+
+### 1. Set `+server`
+
+<ServerStep />
+
+### 2. Install
+
+Install the Composer packages and the Prisma CLI:
+
+```shell
+npm install @prisma/composer @prisma/composer-prisma-cloud
+npm install -D prisma
+```
+
+> The Prisma CLI requires Node.js 22.18 or later.
+
+### 3. Declare your app
+
+Create `service.ts`, which points to your build output:
+
+```ts ts-only
+// service.ts
+
+import node from '@prisma/composer/node'
+import { compute } from '@prisma/composer-prisma-cloud'
+
+export default compute({
+  name: 'web',
+  deps: {},
+  build: node({
+    module: import.meta.url,
+    dir: './dist',
+    entry: 'server/index.mjs',
+    // Vite doesn't bundle npm packages into dist/server/
+    dependencies: 'external'
+  })
+})
+```
+
+Create `module.ts`, which names your Prisma Compute project:
+
+```ts ts-only
+// module.ts
+
+import { module } from '@prisma/composer'
+import webService from './service.ts'
+
+export default module('my-app', ({ provision }) => {
+  provision(webService)
+})
+```
+
+> If you use TypeScript, set [`allowImportingTsExtensions`](https://www.typescriptlang.org/tsconfig/#allowImportingTsExtensions) to `true` in your `tsconfig.json`, because of the `.ts` import path.
+
+Create `prisma.config.ts`, which sets the region your project is created in:
+
+```ts ts-only
+// prisma.config.ts
+
+import { defineConfig as composer } from '@prisma/composer/config'
+import { nodeBuild } from '@prisma/composer/node/control'
+import { prismaCloud, prismaState } from '@prisma/composer-prisma-cloud/control'
+import { definePrismaConfig } from 'prisma/config'
+
+export default definePrismaConfig({
+  composer: composer({
+    entry: './module.ts',
+    extensions: [prismaCloud({ region: 'eu-central-1' }), nodeBuild()],
+    state: prismaState()
+  })
+})
+```
+
+Then listen on the port and host that Prisma Compute expects:
+
+```ts
+// +server.ts
+
+import type { Server } from 'vike/types'
+import service from './service' // [!code ++]
+
+export default {
+  // ...
+  prod: {
+    port: service.port(), // [!code ++]
+    hostname: '0.0.0.0' // [!code ++]
+  }
+} satisfies Server
+```
+
+> See <Link href="/server#settings" />.
+
+### 4. Deploy
+
+Sign in to your [Prisma account](https://console.prisma.io):
+
+```shell
+npx prisma auth login
+```
+
+Then build and deploy:
+
+```shell
+npx vike build
+npx prisma deploy
+```
+
+> The `$ prisma deploy` command doesn't build your app, so make sure to run `$ vike build` first.
+
+The command prints the URL of your app:
+
+```
+my-app.web: https://xxxxxxxxxxxxxxxxxxxxxxxx.fra.prisma.build
+```
+
+
+## Database
+
+Your app can declare a [Prisma Postgres](https://www.prisma.io/postgres) database as a dependency: `$ prisma deploy` then creates the database and passes its connection string to your server, without any environment variable to set.
+
+```ts ts-only
+// service.ts
+
+import node from '@prisma/composer/node'
+import { compute, rawPostgres } from '@prisma/composer-prisma-cloud' // [!code ++]
+
+export default compute({
+  name: 'web',
+  deps: { db: rawPostgres() }, // [!code ++]
+  build: node({
+    // ...
+  })
+})
+```
+
+```ts ts-only
+// module.ts
+
+import { module } from '@prisma/composer'
+import { rawPostgres } from '@prisma/composer-prisma-cloud' // [!code ++]
+import webService from './service.ts'
+
+export default module('my-app', ({ provision }) => {
+  const db = provision(rawPostgres({ name: 'database' })) // [!code ++]
+  provision(webService, { deps: { db } }) // [!code ++]
+})
+```
+
+You can then use `service.load()` to get the connection string and use it with any PostgreSQL client, for example with [node-postgres](https://node-postgres.com) and Hono:
+
+```ts
+// +server.ts
+
+import { Hono } from 'hono'
+import vike from '@vikejs/hono'
+import pg from 'pg'
+import type { Server } from 'vike/types'
+import service from './service'
+
+const { db } = service.load()
+
+const app = new Hono()
+vike(app)
+
+app.get('/api/visits', async (c) => {
+  const client = new pg.Client({ connectionString: db.url })
+  await client.connect()
+  try {
+    await client.query('CREATE TABLE IF NOT EXISTS visits (id serial PRIMARY KEY, at timestamptz DEFAULT now())')
+    await client.query('INSERT INTO visits DEFAULT VALUES')
+    const { rows } = await client.query('SELECT count(*)::int AS visits FROM visits')
+    return c.json(rows[0])
+  } finally {
+    await client.end()
+  }
+})
+
+export default {
+  fetch: app.fetch,
+  prod: {
+    port: service.port(),
+    hostname: '0.0.0.0'
+  }
+} satisfies Server
+```
+
+> Prisma Compute suspends your server while it's idle, so open a connection per request instead of keeping one open for the lifetime of the process.
+
+> To run your app locally with a local database, run `$ vike build` followed by `$ npx prisma dev`.
+
+
+## See also
+
+- [Prisma Docs > Prisma Compute](https://www.prisma.io/docs/compute)
+- [Prisma Docs > Prisma Composer](https://www.prisma.io/docs/composer)
+- <Link href="/self-host" />
+- <Link href="/server" />
