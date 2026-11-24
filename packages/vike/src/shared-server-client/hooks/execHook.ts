@@ -306,7 +306,7 @@ function providePageContext<FnReturn>(
   // TO-DO/next-major-release: remove
   if (!fn) {
     // Old versions of `vike-{react,vue,solid}` call providePageContext(pageContext) without `fn`
-    assertWarning(false, 'Update vike-react, vike-vue or vike-solid to its latest version', { onlyOnce: true })
+    assertWarning(false, 'Update vike-react / vike-vue / vike-solid to its latest version', { onlyOnce: true })
     globalObject.pageContext = pageContext
     // Promise.resolve() is quicker than process.nextTick() and setImmediate()
     // https://stackoverflow.com/questions/67949576/process-nexttick-before-promise-resolve-then
