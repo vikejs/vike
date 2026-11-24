@@ -318,7 +318,6 @@ function providePageContext<FnReturn>(
   return providePageContextInternal(pageContext, fn)
 }
 function providePageContextInternal<FnReturn>(pageContext: null | PageContextExecHook, fn: () => FnReturn): FnReturn {
-  // Calls can be nested: vike-{react,vue,solid} call providePageContext() inside a hook that Vike calls with its pageContext already provided
   const pageContextPrevious = globalObject.pageContext
   globalObject.pageContext = pageContext
   try {
@@ -326,6 +325,7 @@ function providePageContextInternal<FnReturn>(pageContext: null | PageContextExe
   } finally {
     // Only while fn() runs synchronously — the code that runs afterwards may belong to another HTTP request
     // https://github.com/telefunc/telefunc/pull/520#issuecomment-7134162671
+    // We restore the previous value because calls can be nested: +onRenderClient of vike-react calls providePageContext() for each +onBeforeRenderClient hook
     globalObject.pageContext = pageContextPrevious
   }
 }
