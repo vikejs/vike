@@ -296,7 +296,7 @@ function providePageContext<FnReturn>(
   fn: () => FnReturn,
 ): FnReturn
 // TO-DO/next-major-release: remove
-/** @deprecated Update vike-react, vike-vue or vike-solid to its latest version */
+/** @deprecated Update vike-react / vike-vue / vike-solid to its latest version */
 function providePageContext(pageContext: null | PageContextClient | PageContextServer): void
 function providePageContext<FnReturn>(
   pageContextPublic: null | PageContextClient | PageContextServer,
