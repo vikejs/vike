@@ -318,6 +318,7 @@ function providePageContext<FnReturn>(
   return providePageContextInternal(pageContext, fn)
 }
 function providePageContextInternal<FnReturn>(pageContext: null | PageContextExecHook, fn: () => FnReturn): FnReturn {
+  // Calls can be nested: vike-{react,vue,solid} call providePageContext() inside a hook that Vike calls with its pageContext already provided
   const pageContextPrevious = globalObject.pageContext
   globalObject.pageContext = pageContext
   try {
