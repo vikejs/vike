@@ -145,7 +145,6 @@ Paths below are relative to https://vike.dev (e.g. `/data-fetching` → https://
 - /netlify — Netlify SSR/static, `@netlify/vite-plugin`, partial pre-rendering, Netlify Functions
 - /aws — AWS Lambda serverless, SST / Flightcontrol / Serverless Framework / SAM
 - /edgeone-pages — EdgeOne Pages (Tencent), `@edgeone/vite`, SSR/streaming/static, `serverWrapper`
-- /prisma-compute — Prisma Compute (Bun), no Vite adapter: Prisma Composer `service.ts`/`module.ts`/`prisma.config.ts`, `vike build` + `prisma deploy`, `prod.port`/`prod.hostname`, Prisma Postgres via `rawPostgres()`/`service.load()`
 - /managed-hosts — managed hosting overview, `+server` universal deploy, `vike(app)`/`renderPage()` fallback, auto provider detection
 - /github-pages — GitHub Pages static, requires pre-rendering, `.nojekyll`, base-URL subdir, GitHub Actions
 - /cloudflare-pages — Cloudflare Pages (deprecated → Workers), Pages Functions for SSR, migration

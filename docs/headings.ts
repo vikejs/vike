@@ -281,11 +281,6 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Prisma Compute',
-    url: '/prisma-compute',
-  },
-  {
-    level: 2,
     title: 'Managed Hosts',
     titleInNav: '... more',
     url: '/managed-hosts',
@@ -1083,6 +1078,10 @@ function tools() {
       {
         title: 'Payload CMS',
         url: '/payload',
+      },
+      {
+        title: 'Prisma',
+        url: '/prisma',
       },
       {
         title: 'AI',
