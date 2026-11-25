@@ -1080,6 +1080,10 @@ function tools() {
         url: '/payload',
       },
       {
+        title: 'Prisma',
+        url: '/prisma',
+      },
+      {
         title: 'AI',
         url: '/ai',
       },
