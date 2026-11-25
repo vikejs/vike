@@ -24,7 +24,6 @@ import {
   normalizeUrlPathname,
   removeBaseServer,
   modifyUrlPathname,
-  modifyUrlPath,
   prependBase,
   removeUrlOrigin,
   setUrlOrigin,
@@ -586,7 +585,7 @@ async function getPermanentRedirect(pageContextBegin: PageContextBegin, globalCo
   const urlWithoutBase = removeBaseServer(pageContext.urlOriginal, globalContext.baseServer)
   let origin: null | string = null
   let urlTargetExternal: null | string = null
-  let urlTarget = modifyUrlPath(urlWithoutBase, (urlPathname) => {
+  let urlTarget = modifyUrlPathname(urlWithoutBase, (urlPathname) => {
     const urlTarget = resolveRedirects(globalContext.config.redirects ?? [], urlPathname)
     if (urlTarget === null) return null
     if (!isUrl(urlTarget)) {

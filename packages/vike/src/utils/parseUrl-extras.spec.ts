@@ -1,4 +1,4 @@
-import { modifyUrlPath, normalizeUrlPathname, removeUrlOrigin, setUrlOrigin } from './parseUrl-extras.js'
+import { modifyUrlPathname, normalizeUrlPathname, removeUrlOrigin, setUrlOrigin } from './parseUrl-extras.js'
 import { expect, describe, it } from 'vitest'
 
 describe('normalizeUrlPathname()', () => {
@@ -37,7 +37,7 @@ describe('normalizeUrlPathname()', () => {
   }
 })
 
-describe('modifyUrlPath()', () => {
+describe('modifyUrlPathname()', () => {
   it('merges search and hash', () => {
     // https://github.com/vikejs/vike/issues/3765
     expect(m('/promo?fbclid=1', '/shop?utm_source=promo')).toBe('/shop?utm_source=promo&fbclid=1')
@@ -55,7 +55,7 @@ describe('modifyUrlPath()', () => {
     expect(m('/a?b=1', '?c=2')).toBe('?c=2&b=1')
   })
   function m(url: string, pathModified: string) {
-    return modifyUrlPath(url, () => pathModified)
+    return modifyUrlPathname(url, () => pathModified)
   }
 })
 
