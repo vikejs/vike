@@ -204,7 +204,7 @@ function execHookBase<HookReturn>(
   assert(hookName !== 'onHookCall') // ensure no infinite loop
   const configValue = globalContext._pageConfigGlobal.configValues['onHookCall']
 
-  const callOriginal = () => providePageContextInternal(pageContext, hookFnCaller)
+  const callOriginal = () => withProvidedPageContext(pageContext, hookFnCaller)
 
   // +onHookCall doesn't exist
   if (!configValue?.value) return callOriginal()
@@ -315,9 +315,9 @@ function providePageContext<FnReturn>(
     })
     return
   }
-  return providePageContextInternal(pageContext, fn)
+  return withProvidedPageContext(pageContext, fn)
 }
-function providePageContextInternal<FnReturn>(pageContext: null | PageContextExecHook, fn: () => FnReturn): FnReturn {
+function withProvidedPageContext<FnReturn>(pageContext: null | PageContextExecHook, fn: () => FnReturn): FnReturn {
   const pageContextPrevious = globalObject.pageContext
   globalObject.pageContext = pageContext
   try {
