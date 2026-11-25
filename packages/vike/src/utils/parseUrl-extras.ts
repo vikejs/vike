@@ -93,7 +93,7 @@ function normalize(urlPathname: string): string {
 
 function modifyUrlPath(
   url: string,
-  // Returns the new pathname, optionally with a search and a hash
+  // Returns the new path: pathname + optional search and hash
   modifier: (urlPathname: string) => string | null,
 ): string {
   const { origin, pathnameOriginal, searchOriginal, hashOriginal } = parseUrl(url, '/')
