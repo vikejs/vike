@@ -44,7 +44,6 @@ export default {
     // TEST: redirect edge cases
     '/external-redirect': 'https://app.nmrium.org#?toc=https://cheminfo.github.io/nmr-dataset-demo/samples.json',
     // TEST: redirect target with a search or hash — https://github.com/vikejs/vike/issues/3765
-    // (Globs, so that these redirects aren't pre-rendered: a pre-rendered redirect cannot preserve the URL's search.)
     '/promo/*': '/shop?utm_source=promo',
     '/docs/*': '/guide#install',
     '/ext/*': 'https://example.org/?ref=vike',
