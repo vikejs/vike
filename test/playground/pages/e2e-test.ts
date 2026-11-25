@@ -76,6 +76,10 @@ function testRedirectMailto(isDev: boolean) {
       'https://app.nmrium.org#?toc=https://cheminfo.github.io/nmr-dataset-demo/samples.json',
       isDev,
     )
+    // https://github.com/vikejs/vike/issues/3765
+    await testRedirect('/promo/summer?fbclid=1', '/shop?utm_source=promo&fbclid=1', isDev)
+    await testRedirect('/docs/setup?a=1', '/guide?a=1#install', isDev)
+    await testRedirect('/ext/vike?a=1', 'https://example.org/?ref=vike&a=1', isDev)
   })
 }
 

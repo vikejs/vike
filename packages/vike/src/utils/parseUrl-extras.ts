@@ -2,7 +2,7 @@ export { prependBase }
 export { isBaseAssets }
 export { normalizeUrlPathname }
 export { removeBaseServer }
-export { modifyUrlPathname }
+export { modifyUrlPath }
 export { removeUrlOrigin }
 export { setUrlOrigin }
 export { getUrlPretty }
@@ -65,7 +65,7 @@ function isBaseAssets(base: string): boolean {
 }
 
 function normalizeUrlPathname(urlOriginal: string, trailingSlash: boolean, baseServer: string): string | null {
-  const urlNormalized = modifyUrlPathname(urlOriginal, (urlPathname) => {
+  const urlNormalized = modifyUrlPath(urlOriginal, (urlPathname) => {
     assert(urlPathname.startsWith('/'))
     let urlPathnameNormalized = normalize(urlPathname)
     if (urlPathnameNormalized === '/') {
@@ -91,14 +91,25 @@ function normalize(urlPathname: string): string {
   return '/' + urlPathname.split('/').filter(Boolean).join('/')
 }
 
-function modifyUrlPathname(url: string, modifier: (urlPathname: string) => string | null): string {
+function modifyUrlPath(
+  url: string,
+  // Returns the new path: pathname + optional search and hash
+  modifier: (urlPathname: string) => string | null,
+): string {
   const { origin, pathnameOriginal, searchOriginal, hashOriginal } = parseUrl(url, '/')
-  const pathnameModified = modifier(pathnameOriginal)
-  if (pathnameModified === null) return url
+  // `pathNew` can contain search and hash
+  const pathNew = modifier(pathnameOriginal)
+  if (pathNew === null || pathNew === pathnameOriginal) return url
+  const pathNewParsed = parseUrl(pathNew, '/')
+  assert(pathNewParsed.origin === null)
+  const searchNew =
+    pathNewParsed.searchOriginal && searchOriginal
+      ? `${pathNewParsed.searchOriginal}&${searchOriginal.slice(1)}`
+      : (pathNewParsed.searchOriginal ?? searchOriginal)
+  const hashNew = pathNewParsed.hashOriginal ?? hashOriginal
   assertUrlComponents(url, origin, pathnameOriginal, searchOriginal, hashOriginal)
-  const urlModified = createUrlFromComponents(origin, pathnameModified, searchOriginal, hashOriginal)
-  assert((pathnameOriginal === pathnameModified) === (url === urlModified))
-  return urlModified
+  const urlNew = createUrlFromComponents(origin, pathNewParsed.pathnameOriginal, searchNew, hashNew)
+  return urlNew
 }
 
 function removeUrlOrigin(url: string): { urlModified: string; origin: string | null } {

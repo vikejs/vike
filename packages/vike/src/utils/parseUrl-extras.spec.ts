@@ -1,4 +1,4 @@
-import { normalizeUrlPathname, removeUrlOrigin, setUrlOrigin } from './parseUrl-extras.js'
+import { modifyUrlPath, normalizeUrlPathname, removeUrlOrigin, setUrlOrigin } from './parseUrl-extras.js'
 import { expect, describe, it } from 'vitest'
 
 describe('normalizeUrlPathname()', () => {
@@ -34,6 +34,28 @@ describe('normalizeUrlPathname()', () => {
   })
   function n(urlOriginal: string) {
     return normalizeUrlPathname(urlOriginal, false, '/')
+  }
+})
+
+describe('modifyUrlPath()', () => {
+  it('merges search and hash', () => {
+    // https://github.com/vikejs/vike/issues/3765
+    expect(m('/promo?fbclid=1', '/shop?utm_source=promo')).toBe('/shop?utm_source=promo&fbclid=1')
+    expect(m('/docs?a=1', '/guide#install')).toBe('/guide?a=1#install')
+    expect(m('/docs?a=1#old', '/guide?b=2#install')).toBe('/guide?b=2&a=1#install')
+    expect(m('https://a.org/b?c=1', '/d?e=2')).toBe('https://a.org/d?e=2&c=1')
+  })
+  it('preserves search and hash as-is', () => {
+    expect(m('/a?with&some-args#hash', '/b')).toBe('/b?with&some-args#hash')
+    expect(m('/a', '/b?with&some-args#hash')).toBe('/b?with&some-args#hash')
+  })
+  it('path without pathname', () => {
+    // E.g. removeUrlOrigin('https://app.nmrium.org#?toc=samples.json').urlModified
+    expect(m('/a?b=1', '#?toc=samples.json')).toBe('?b=1#?toc=samples.json')
+    expect(m('/a?b=1', '?c=2')).toBe('?c=2&b=1')
+  })
+  function m(url: string, pathModified: string) {
+    return modifyUrlPath(url, () => pathModified)
   }
 })
 

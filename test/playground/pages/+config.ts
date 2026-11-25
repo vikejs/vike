@@ -43,6 +43,10 @@ export default {
     '/admins/*': 'https://admin.example.org/*',
     // TEST: redirect edge cases
     '/external-redirect': 'https://app.nmrium.org#?toc=https://cheminfo.github.io/nmr-dataset-demo/samples.json',
+    // TEST: redirect target with a search or hash — https://github.com/vikejs/vike/issues/3765
+    '/promo/*': '/shop?utm_source=promo',
+    '/docs/*': '/guide#install',
+    '/ext/*': 'https://example.org/?ref=vike',
   },
   extends: [vikeReact],
   meta: {
