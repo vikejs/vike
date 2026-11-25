@@ -317,15 +317,15 @@ function providePageContext<FnReturn>(
   }
   return withProvidedPageContext(pageContext, fn)
 }
+// We provide `pageContext` only while `fn()` runs synchronously
+// - The code that runs afterwards may belong to another HTTP request => using a queue (e.g. `process.nextTick()`) means potentially leaking the pageContext to another HTTP request and is a security issue, see https://github.com/telefunc/telefunc/pull/520#issuecomment-7134162671
 function withProvidedPageContext<FnReturn>(pageContext: null | PageContextExecHook, fn: () => FnReturn): FnReturn {
   const pageContextPrevious = globalObject.pageContext
   globalObject.pageContext = pageContext
   try {
     return fn()
   } finally {
-    // Only while fn() runs synchronously — the code that runs afterwards may belong to another HTTP request
-    // https://github.com/telefunc/telefunc/pull/520#issuecomment-7134162671
-    // We restore the previous value because calls can be nested: +onRenderClient of vike-react calls providePageContext() for each +onBeforeRenderClient hook
+    // We restore the previous value because calls can be nested: +onRenderClient of vike-react calls providePageContext() for +onBeforeRenderClient
     globalObject.pageContext = pageContextPrevious
   }
 }
