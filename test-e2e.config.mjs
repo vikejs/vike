@@ -176,6 +176,9 @@ but you've requested "2025-07-18". Falling back to "2025-07-12"...
 
       // [vike][request(1)][Warning] The onBeforeRender() hook defined by /renderer/+onBeforeRender.js is slow: it's taking more than 4 seconds (https://vike.dev/hooksTimeout)
       "is slow: it's taking more than",
+
+      // [18:28:16.945][/test/vike-react-redux/.test-dev.test.ts][pnpm run dev][stderr] 6:28:16 PM [vike][request-1][Warning] Update vike-react / vike-vue / vike-solid to its latest version
+      'Update vike-react / vike-vue / vike-solid to its latest version',
     ].some((t) => logText.includes(t)) ||
     //
     // TO-DO/eventually: move everything to the array above
