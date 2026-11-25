@@ -2,7 +2,7 @@ export { prependBase }
 export { isBaseAssets }
 export { normalizeUrlPathname }
 export { removeBaseServer }
-export { modifyUrlPathname }
+export { modifyUrlPath }
 export { removeUrlOrigin }
 export { setUrlOrigin }
 export { getUrlPretty }
@@ -65,7 +65,7 @@ function isBaseAssets(base: string): boolean {
 }
 
 function normalizeUrlPathname(urlOriginal: string, trailingSlash: boolean, baseServer: string): string | null {
-  const urlNormalized = modifyUrlPathname(urlOriginal, (urlPathname) => {
+  const urlNormalized = modifyUrlPath(urlOriginal, (urlPathname) => {
     assert(urlPathname.startsWith('/'))
     let urlPathnameNormalized = normalize(urlPathname)
     if (urlPathnameNormalized === '/') {
@@ -91,10 +91,10 @@ function normalize(urlPathname: string): string {
   return '/' + urlPathname.split('/').filter(Boolean).join('/')
 }
 
-// `modifier()` can also return a search and a hash, e.g. `/pathname?search#hash`
+// `modifier()` returns the new pathname, optionally with a search and a hash, e.g. `/pathname?search#hash`
 // - The search of `url` is appended to the search returned by `modifier()`
 // - The hash of `url` is preserved only if `modifier()` doesn't return a hash
-function modifyUrlPathname(url: string, modifier: (urlPathname: string) => string | null): string {
+function modifyUrlPath(url: string, modifier: (urlPathname: string) => string | null): string {
   const { origin, pathnameOriginal, searchOriginal, hashOriginal } = parseUrl(url, '/')
   const pathModified = modifier(pathnameOriginal)
   if (pathModified === null || pathModified === pathnameOriginal) return url
