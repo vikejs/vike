@@ -91,23 +91,25 @@ function normalize(urlPathname: string): string {
   return '/' + urlPathname.split('/').filter(Boolean).join('/')
 }
 
-// `modifier()` returns the new pathname, optionally with a search and a hash, e.g. `/pathname?search#hash`
-// - The search of `url` is appended to the search returned by `modifier()`
-// - The hash of `url` is preserved only if `modifier()` doesn't return a hash
-function modifyUrlPath(url: string, modifier: (urlPathname: string) => string | null): string {
+function modifyUrlPath(
+  url: string,
+  // Returns the new pathname, optionally with a search and a hash
+  modifier: (urlPathname: string) => string | null,
+): string {
   const { origin, pathnameOriginal, searchOriginal, hashOriginal } = parseUrl(url, '/')
-  const pathModified = modifier(pathnameOriginal)
-  if (pathModified === null || pathModified === pathnameOriginal) return url
+  // `pathNew` can contain search and hash
+  const pathNew = modifier(pathnameOriginal)
+  if (pathNew === null || pathNew === pathnameOriginal) return url
+  const pathNewParsed = parseUrl(pathNew, '/')
+  assert(pathNewParsed.origin === null)
+  const searchNew =
+    pathNewParsed.searchOriginal && searchOriginal
+      ? `${pathNewParsed.searchOriginal}&${searchOriginal.slice(1)}`
+      : (pathNewParsed.searchOriginal ?? searchOriginal)
+  const hashNew = pathNewParsed.hashOriginal ?? hashOriginal
   assertUrlComponents(url, origin, pathnameOriginal, searchOriginal, hashOriginal)
-  const path = parseUrl(pathModified, '/')
-  assert(path.origin === null)
-  const search =
-    path.searchOriginal && searchOriginal
-      ? `${path.searchOriginal}&${searchOriginal.slice(1)}`
-      : (path.searchOriginal ?? searchOriginal)
-  const hash = path.hashOriginal ?? hashOriginal
-  const urlModified = createUrlFromComponents(origin, path.pathnameOriginal, search, hash)
-  return urlModified
+  const urlNew = createUrlFromComponents(origin, pathNewParsed.pathnameOriginal, searchNew, hashNew)
+  return urlNew
 }
 
 function removeUrlOrigin(url: string): { urlModified: string; origin: string | null } {
