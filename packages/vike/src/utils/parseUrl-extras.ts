@@ -3,6 +3,7 @@ export { isBaseAssets }
 export { normalizeUrlPathname }
 export { removeBaseServer }
 export { modifyUrlPathname }
+export { modifyUrlPath }
 export { removeUrlOrigin }
 export { setUrlOrigin }
 export { getUrlPretty }
@@ -98,6 +99,24 @@ function modifyUrlPathname(url: string, modifier: (urlPathname: string) => strin
   assertUrlComponents(url, origin, pathnameOriginal, searchOriginal, hashOriginal)
   const urlModified = createUrlFromComponents(origin, pathnameModified, searchOriginal, hashOriginal)
   assert((pathnameOriginal === pathnameModified) === (url === urlModified))
+  return urlModified
+}
+
+// Same as modifyUrlPathname() but `modifier()` can also return a search and a hash, e.g. `/pathname?search#hash`
+// - The search of `url` is appended to the search returned by `modifier()`
+// - The hash of `url` is preserved only if `modifier()` doesn't return a hash
+function modifyUrlPath(url: string, modifier: (urlPathname: string) => string | null): string {
+  const { origin, pathnameOriginal, searchOriginal, hashOriginal } = parseUrl(url, '/')
+  const pathModified = modifier(pathnameOriginal)
+  if (pathModified === null) return url
+  const path = parseUrl(pathModified, '/')
+  assert(path.origin === null)
+  const search =
+    path.searchOriginal && searchOriginal
+      ? `${path.searchOriginal}&${searchOriginal.slice(1)}`
+      : (path.searchOriginal ?? searchOriginal)
+  const hash = path.hashOriginal ?? hashOriginal
+  const urlModified = createUrlFromComponents(origin, path.pathnameOriginal, search, hash)
   return urlModified
 }
 
