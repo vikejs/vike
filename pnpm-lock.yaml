@@ -12,8 +12,8 @@ importers:
         specifier: ^1.9.4
         version: 1.9.4
       '@brillout/release-me':
-        specifier: ^0.5.5
-        version: 0.5.5(conventional-commits-filter@5.0.0)
+        specifier: ^0.5.7
+        version: 0.5.7(conventional-commits-filter@5.0.0)
       '@brillout/replace':
         specifier: ^0.1.6
         version: 0.1.6
@@ -2689,8 +2689,8 @@ packages:
   '@brillout/picocolors@1.0.31':
     resolution: {integrity: sha512-xFCPBefU/AevF8XkwXSd/jIHA0fWw+mZ/gd5x2WOc5ysG7keHnU8m0gwY2Bvq5lvTyjwT4tiyow6fnMoYdmSqw==}
 
-  '@brillout/release-me@0.5.5':
-    resolution: {integrity: sha512-hm8VwCV0i7J03vLXVJkR/JzPDHkoX4c5BlHJkTKgfSsyVxZj5oZR7VEHKBGrcUDpaQ38LT02OyCPKSLgPRHuWw==}
+  '@brillout/release-me@0.5.7':
+    resolution: {integrity: sha512-LmCAmojPIIjkeSAIaB59hEitx9gbTVJqwBWGGCwyGs1EU1dUA5Nj0OBwY2vSfsm8d5bcUOTJsp9Tj2ZD8xDIkw==}
     hasBin: true
 
   '@brillout/replace@0.1.6':
@@ -9477,7 +9477,7 @@ snapshots:
 
   '@brillout/picocolors@1.0.31': {}
 
-  '@brillout/release-me@0.5.5(conventional-commits-filter@5.0.0)':
+  '@brillout/release-me@0.5.7(conventional-commits-filter@5.0.0)':
     dependencies:
       '@brillout/picocolors': 1.0.31
       commander: 11.1.0
