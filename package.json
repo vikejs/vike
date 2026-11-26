@@ -45,5 +45,5 @@
     "playwright-chromium": "1.65.1",
     "vitest": "^5.1.2"
   },
-  "packageManager": "pnpm@9.15.9"
+  "packageManager": "pnpm@10.34.9"
 }
