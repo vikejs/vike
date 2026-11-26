@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@types/express": "^5.0.6",
-    "@types/node": "^17.0.31",
+    "@types/node": "^24.10.1",
     "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^4.7.0",

@@ -30,7 +30,7 @@ import type { UserConfig } from 'vite'
 export default {
   resolve: {
     alias: {
-     "#root": __dirname,
+     "#root": import.meta.dirname,
     }
   }
 } satisfies UserConfig

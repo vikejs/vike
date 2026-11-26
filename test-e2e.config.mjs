@@ -96,7 +96,8 @@ function tolerateError({ logSource, logText, testInfo }) {
       //   - vite:css (19%)
       //   - telefunc:pluginTransformTelefuncFiles (19%)
       // See https://rolldown.rs/options/checks#plugintimings for more details.
-      'Your build spent significant time in plugins',
+      // [10:21:41.296][/docs/.test-preview.test.ts][pnpm run preview][stderr] [PLUGIN_TIMINGS] JavaScript callbacks ran for 9.8s of the 10.3s build (95%).
+      '[PLUGIN_TIMINGS]',
 
       // Error: clientOnly() is deprecated — use <ClientOnly> https://vike.dev/ClientOnly
       'clientOnly() is deprecated',

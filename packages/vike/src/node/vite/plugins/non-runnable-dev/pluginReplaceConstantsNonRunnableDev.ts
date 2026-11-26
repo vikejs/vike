@@ -75,7 +75,9 @@ function pluginReplaceConstantsNonRunnableDev(): Plugin[] {
           assert(filterFunction2(code))
           if (isRunnableDevEnvironment(this.environment)) return
           const { magicString, getMagicStringResult } = getMagicString(code, id)
-          magicString.replaceAll(DYNAMIC_IMPORT, 'import')
+          // Not a literal import(), otherwise Vite records globalContext.js as an importer of virtual:vike:global-entry:server => each page edit invalidates Vike's runtime and every pre-bundled dependency importing vike/* (e.g. vike-react's onRenderHtml, leading to React's warning "Detected multiple renderers")
+          // - The `/@id/` prefix, otherwise Vite's fetchModule() resolves a bare `virtual:` id as an npm package
+          magicString.replaceAll(DYNAMIC_IMPORT, '((id) => import(/* @vite-ignore */ "/@id/" + id))')
           return getMagicStringResult()
         },
       },

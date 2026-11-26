@@ -5,7 +5,7 @@ import type { UserConfig } from 'vite'
 const config: UserConfig = {
   resolve: {
     alias: {
-      '#root': __dirname,
+      '#root': import.meta.dirname,
     },
   },
   plugins: [vike(), react()],
