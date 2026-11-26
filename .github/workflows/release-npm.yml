@@ -8,7 +8,7 @@
 
 # DON'T MODIFY THIS FILE: it's a copy of https://github.com/brillout/release-me/blob/main/.github/workflows/release-npm.yml created and updated by `$ pnpm exec release-me init`.
 
-name: Release
+name: Release Npm
 on:
   # Stable release
   push:
