@@ -400,7 +400,7 @@ function getRolldownOutputs(build: ResolvedBuildEnvironmentOptions): RolldownOut
   // @ts-ignore
   const { output } = build.rolldownOptions
   if (!isArray(output)) {
-    return [output]
+    return [output as any]
   }
   return output as any[]
 }
