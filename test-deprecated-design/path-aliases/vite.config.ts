@@ -6,7 +6,7 @@ const config: UserConfig = {
   resolve: {
     alias: {
       // We prefix path aliases with '#', see https://vike.dev/path-aliases#vite
-      '#root': __dirname,
+      '#root': import.meta.dirname,
     },
   },
   plugins: [

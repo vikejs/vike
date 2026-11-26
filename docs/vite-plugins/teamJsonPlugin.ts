@@ -1,6 +1,6 @@
 export { teamJsonPlugin }
 
-import { teamData } from '../pages/team/teamData'
+import { teamData } from '../pages/team/teamData.js'
 import type { Plugin } from 'vite'
 
 // Serves the team list as /team.json — same data that powers

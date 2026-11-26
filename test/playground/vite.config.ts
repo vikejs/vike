@@ -10,7 +10,7 @@ throw new Error('erri')
 export default {
   // TEST: funky build output directory
   build: {
-    outDir: `${__dirname}/../../test/playground/dist/nested`,
+    outDir: `${import.meta.dirname}/../../test/playground/dist/nested`,
     assetsDir: '/nested-dir/assets',
     // TEST: https://github.com/vikejs/vike/issues/2315
     //minify: 'terser'
