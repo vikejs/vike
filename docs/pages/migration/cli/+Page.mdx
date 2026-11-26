@@ -44,7 +44,7 @@ import { renderPage } from 'vike/server' // [!code --]
 import { renderPage, createDevMiddleware } from 'vike/server' // [!code ++]
 
 const isProduction = process.env.NODE_ENV === 'production'
-const root = `${__dirname}/..`
+const root = `${import.meta.dirname}/..`
 
 startServer()
 
@@ -63,7 +63,7 @@ async function startServer() {
     const { devMiddleware } = await createDevMiddleware({ root }) // [!code ++]
     app.use(devMiddleware) // [!code ++]
   } else {
-    app.use(express.static(`${root}/${outDir}/client`))
+    app.use(express.static(`${root}/dist/client`))
   }
 
   // SSR middleware
