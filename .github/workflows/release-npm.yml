@@ -1,0 +1,49 @@
+# Publishes to npm, see https://github.com/brillout/release-me#npm-release
+# - By pushing a release tag, or
+# - by pressing the "Run workflow" button.
+
+# Security notes (ALWAYS READ THIS):
+# - ONLY RELEASE COMMITS YOU TRUST: review a pull request before commit-releasing it — it runs with npm publish rights for all of this repository's packages.
+# - USERS WITH WRITE ACCESS CAN PUBLISH: only add repository write access to people you trust.
+
+# DON'T MODIFY THIS FILE: it's a copy of https://github.com/brillout/release-me/blob/main/.github/workflows/release-npm.yml created and updated by `$ pnpm exec release-me init`.
+
+name: Release
+on:
+  # Stable release
+  push:
+    tags:
+      # v1.2.3
+      - 'v[0-9]*'
+      # some-package@1.2.3
+      - '**@[0-9]*'
+  # Commit release
+  workflow_dispatch:
+    inputs:
+      ref: { description: 'Commit to commit-release: SHA, branch, or refs/pull/<number>/head (default: the selected branch). It runs with full npm publish rights: ALWAYS REVIEW a pull request before commit-releasing it. To re-publish a stable release, select its tag in "Use workflow from" instead.' }
+      package: { description: 'Package (commit-release only, default: all)' }
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      # Checks out the released commit
+      - uses: actions/checkout@v7
+        with:
+          # Empty: the pushed tag, or the commit of "Use workflow from"
+          ref: ${{ inputs.ref }}
+      - uses: actions/setup-node@v7
+        with:
+          # Node.js 26 bundles npm >= 11.5.1, which trusted publishing requires
+          node-version: 26
+      - uses: pnpm/action-setup@v6
+      - run: pnpm install
+      - run: pnpm exec release-me ci-publish
+        env:
+          # - Stable release: the release tag (pushed, or selected in "Use workflow from" with an empty input `ref`)
+          # - Commit release: empty
+          RELEASE_TAG: ${{ github.ref_type == 'tag' && !inputs.ref && github.ref_name || '' }}
+          SELECTED_PACKAGE: ${{ inputs.package }}
