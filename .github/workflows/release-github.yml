@@ -4,7 +4,7 @@
 
 # DON'T MODIFY THIS FILE: it's a copy of https://github.com/brillout/release-me/blob/main/.github/workflows/release-github.yml created and updated by `$ pnpm exec release-me init`.
 
-name: GitHub Release
+name: Release GitHub
 
 on:
   push:
@@ -44,7 +44,9 @@ jobs:
           # All commits and tags: release dates and the commits of missing tags are read from the Git history
           fetch-depth: 0
       - uses: pnpm/action-setup@v6
-      - run: pnpm install
+      # Syncing GitHub Releases doesn't need the dependencies' install scripts, which can stall the run (e.g. a
+      # `playwright-chromium` stuck downloading its browser)
+      - run: pnpm install --ignore-scripts
       - name: Create GitHub releases
         run: pnpm exec release-me github-release-sync
         env:
