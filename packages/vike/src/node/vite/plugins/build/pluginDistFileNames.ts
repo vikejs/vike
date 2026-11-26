@@ -22,6 +22,7 @@ type PreRenderedChunk = Rollup.PreRenderedChunk
 type PreRenderedAsset = Rollup.PreRenderedAsset
 
 function pluginDistFileNames(): Plugin[] {
+  let additionalEnvironmentNames: string[]
   return [
     {
       name: 'vike:build:pluginDistFileNames',
@@ -29,7 +30,8 @@ function pluginDistFileNames(): Plugin[] {
       enforce: 'post',
       configResolved: {
         async handler(config) {
-          const { _additionalEnvironmentNames: additionalEnvironmentNames } = await getVikeConfigInternal()
+          const vikeConfig = await getVikeConfigInternal()
+          additionalEnvironmentNames = vikeConfig._additionalEnvironmentNames
           Object.entries(config.environments).forEach(([envName, envConfig]) => {
             // Vike doesn't own the builds of additional environments (e.g. `rsc`): it only emits `entry-environment.mjs` there
             if (additionalEnvironmentNames.includes(envName)) return
@@ -40,6 +42,14 @@ function pluginDistFileNames(): Plugin[] {
             disableCSSBundling(config, build)
           })
         },
+      },
+
+      outputOptions(output) {
+        if (additionalEnvironmentNames.includes(this.environment.name)) return
+        return disableCSSBundling_codeSplitting(
+          output as RolldownOutputOptions,
+          this.environment.config,
+        ) as typeof output
       },
     },
   ]
@@ -280,22 +290,8 @@ function disableCSSBundling(config: ResolvedConfig, build: ResolvedBuildEnvironm
       // `codeSplitting: false` => single-bundle mode; respect the user's choice.
       if (codeSplitting === false) continue
 
-      // `codeSplitting` set as an object => Rolldown ignores `manualChunks`, so inject a group into `codeSplitting.groups` instead.
-      if (codeSplitting && typeof codeSplitting === 'object') {
-        if (codeSplittingHasWorkaround.has(codeSplitting)) continue
-        codeSplittingHasWorkaround.add(codeSplitting)
-        codeSplitting.groups ??= []
-        codeSplitting.groups.push({
-          test: /\.css$/,
-          name: (moduleId: string) => getCssChunkName(moduleId, config) ?? null,
-          /*
-          // Default priority — user-defined groups with the same priority appear earlier in the array and win the match.
-          // https://rolldown.rs/options/output-advanced-chunks
-          priority: 0
-          */
-        })
-        continue
-      }
+      // `codeSplitting` set as an object => Rolldown ignores `manualChunks`, so inject a group into `codeSplitting.groups` instead: see disableCSSBundling_codeSplitting()
+      if (codeSplitting && typeof codeSplitting === 'object') continue
 
       // `codeSplitting` unset / `true` => wrap `manualChunks` (Rolldown auto-converts it to a group).
       // - Rolldown supports `manualChunks` whenever `codeSplitting` isn't an object (despite what the migration guide implies).
@@ -308,7 +304,35 @@ function disableCSSBundling(config: ResolvedConfig, build: ResolvedBuildEnvironm
     }
   }
 }
-const codeSplittingHasWorkaround = new WeakSet<object>()
+// Applied in the `outputOptions()` hook instead of the Vite config, because Rolldown < 1.2.10 rejects `debugName` while Rolldown >= 1.2.10 warns if it's missing
+// - Rolldown validates the Vite config's `build.rolldownOptions.output`, but not the return value of `outputOptions()`
+function disableCSSBundling_codeSplitting(
+  output: RolldownOutputOptions,
+  config: ResolvedConfig,
+): RolldownOutputOptions | undefined {
+  const { codeSplitting } = output
+  if (!codeSplitting || typeof codeSplitting !== 'object') return
+  return {
+    ...output,
+    codeSplitting: {
+      ...codeSplitting,
+      groups: [
+        ...(codeSplitting.groups ?? []),
+        {
+          test: /\.css$/,
+          name: (moduleId: string) => getCssChunkName(moduleId, config) ?? null,
+          // @ts-ignore Missing in the types of Rolldown < 1.2.10
+          debugName: 'vike:disableCSSBundling',
+          /*
+          // Default priority — user-defined groups with the same priority appear earlier in the array and win the match.
+          // https://rolldown.rs/options/output-advanced-chunks
+          priority: 0
+          */
+        },
+      ],
+    },
+  }
+}
 
 function wrapManualChunks(
   output: Rollup.OutputOptions | RolldownOutputOptions,
