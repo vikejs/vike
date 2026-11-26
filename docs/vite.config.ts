@@ -2,8 +2,8 @@ import svgr from 'vite-plugin-svgr'
 import type { UserConfig } from 'vite'
 import vike from 'vike/plugin'
 import tailwindcss from '@tailwindcss/vite'
-import { skillCodeBlockPlugin } from './vite-plugins/skillCodeBlockPlugin.js'
-import { teamJsonPlugin } from './vite-plugins/teamJsonPlugin.js'
+import { skillCodeBlockPlugin } from './vite-plugins/skillCodeBlockPlugin.ts'
+import { teamJsonPlugin } from './vite-plugins/teamJsonPlugin.ts'
 
 export default {
   optimizeDeps: { include: ['@batijs/elements'] },

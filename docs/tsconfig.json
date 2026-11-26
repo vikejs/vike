@@ -4,6 +4,8 @@
     "module": "ESNext",
     "target": "ES2022",
     "moduleResolution": "Bundler",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "types": ["@brillout/docpress/types", "vite/client"],
     "esModuleInterop": true,
