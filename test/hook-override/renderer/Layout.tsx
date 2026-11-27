@@ -15,6 +15,8 @@ function Layout({ children, pageContext }: { children: React.ReactNode; pageCont
             <Nav href="/page-2" />
             <Nav href="/page-3" />
             <Nav href="/page-4" />
+            <Nav href="/mutable-page-config/a" />
+            <Nav href="/mutable-page-config/b" />
           </Sidebar>
           <Content>{children}</Content>
         </Frame>
