@@ -5,6 +5,10 @@ import { generateVirtualFileId } from '../../../../shared-server-node/virtualFil
 import { debug } from './debug.js'
 import { getVikeConfigInternal } from '../../shared/resolveVikeConfigInternal.js'
 import {
+  resolvePageConfigsFromHooks,
+  type ResolveImport,
+} from '../../shared/resolveVikeConfigInternal/resolvePageConfigsFromHooks.js'
+import {
   FilesEnv,
   serializeConfigValues,
 } from '../../../../shared-server-client/page-configs/serialize/serializeConfigValues.js'
@@ -13,13 +17,14 @@ import type { RuntimeEnvRuntime } from './getConfigValueSourcesRelevant.js'
 import { getEnvironmentEntryPlaceholder } from '../build/pluginEnvironmentEntries.js'
 import '../../assertEnvVite.js'
 
-async function generateVirtualFileGlobalEntry(runtimeEnv: RuntimeEnvRuntime, id: string): Promise<string> {
+async function generateVirtualFileGlobalEntry(
+  runtimeEnv: RuntimeEnvRuntime,
+  id: string,
+  resolve: ResolveImport,
+): Promise<string> {
   const vikeConfig = await getVikeConfigInternal(true)
-  const {
-    _pageConfigs: pageConfigs,
-    _pageConfigGlobal: pageConfigGlobal,
-    _additionalEnvironmentNames: additionalEnvironmentNames,
-  } = vikeConfig
+  const pageConfigs = await resolvePageConfigsFromHooks(vikeConfig, runtimeEnv.isDev, resolve)
+  const { _pageConfigGlobal: pageConfigGlobal, _additionalEnvironmentNames: additionalEnvironmentNames } = vikeConfig
 
   const lines: string[] = []
   const importStatements: string[] = []

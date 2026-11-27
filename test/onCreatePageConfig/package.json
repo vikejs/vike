@@ -1,0 +1,12 @@
+{
+  "scripts": {
+    "dev": "vike dev",
+    "preview": "vike build && vike preview",
+    "preview:ssg": "vike build --prerender && vike preview --prerender"
+  },
+  "dependencies": {
+    "vike": "0.4.270",
+    "vite": "^7.3.1"
+  },
+  "type": "module"
+}
