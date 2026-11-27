@@ -1466,6 +1466,10 @@ function api() {
         url: '/getVikeConfig',
       },
       {
+        title: '`vike.onCreatePageConfigs()`',
+        url: '/onCreatePageConfigs',
+      },
+      {
         title: '`reactStrictMode`',
         url: '/reactStrictMode',
       },
